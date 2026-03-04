@@ -1,0 +1,171 @@
+{
+  "tags": {
+    "example": "```tsx\n// Uncontrolled usage\n<Steps.Root defaultStep={0} count={3}>\n  <Steps.List>...</Steps.List>\n  <Steps.Content index={0}>Step 1 content</Steps.Content>\n</Steps.Root>\n\n// Controlled usage\n<Steps.Root step={currentStep} onStepChange={handleStepChange} count={3}>\n  ...\n</Steps.Root>\n```",
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Steps.Root\n\nContainer component that manages step state and provides context to child components.\nWraps Chakra UI's Steps.Root component with Nimbus styling.",
+  "displayName": "StepsRoot",
+  "methods": [],
+  "props": {
+    "count": {
+      "defaultValue": null,
+      "description": "Total number of steps.",
+      "name": "count",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "number"
+      }
+    },
+    "defaultStep": {
+      "defaultValue": {
+        "value": "0"
+      },
+      "description": "Initial step index for uncontrolled usage (0-based).\nUse this when you don't need to control the step state externally.",
+      "name": "defaultStep",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "step": {
+      "defaultValue": null,
+      "description": "Current step index for controlled usage (0-based).\nWhen provided, the component becomes controlled and you must\nhandle step changes via onStepChange.",
+      "name": "step",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "number"
+      }
+    },
+    "onStepChange": {
+      "defaultValue": null,
+      "description": "Callback fired when the step changes.\nRequired for controlled usage.",
+      "name": "onStepChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(details: ChakraSteps.ChangeDetails) => void"
+      }
+    },
+    "onStepComplete": {
+      "defaultValue": null,
+      "description": "Callback fired when a step is completed.",
+      "name": "onStepComplete",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "() => void"
+      }
+    },
+    "linear": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "If true, restricts navigation to sequential progress only.\nUsers can only navigate forward to the next incomplete step,\nor back to completed steps.",
+      "name": "linear",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "size": {
+      "defaultValue": {
+        "value": "\"sm\""
+      },
+      "description": "Size variant of the steps.\n- xs: 24px indicator, compact text\n- sm: 32px indicator, standard text (default)\n- md: 40px indicator, larger text",
+      "name": "size",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "orientation": {
+      "defaultValue": {
+        "value": "\"horizontal\""
+      },
+      "description": "Orientation of the steps layout.\n- horizontal: Steps arranged in a row\n- vertical: Steps arranged in a column",
+      "name": "orientation",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "children": {
+      "defaultValue": null,
+      "description": "Child components",
+      "name": "children",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref to the root element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

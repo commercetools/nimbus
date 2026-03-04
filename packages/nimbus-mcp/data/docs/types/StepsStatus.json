@@ -1,0 +1,57 @@
+{
+  "tags": {
+    "example": "```tsx\n<Steps.Indicator>\n  <Steps.Status\n    complete={<CheckIcon />}\n    incomplete={<Steps.Number />}\n    current={<LoadingIcon />}\n  />\n</Steps.Indicator>\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Steps.Status\n\nRenders different content based on step state.\nThis is a render prop component from Chakra UI that doesn't need a slot.",
+  "displayName": "StepsStatus",
+  "methods": [],
+  "props": {
+    "complete": {
+      "defaultValue": null,
+      "description": "Content to show when step is complete",
+      "name": "complete",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "incomplete": {
+      "defaultValue": null,
+      "description": "Content to show when step is incomplete",
+      "name": "incomplete",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "current": {
+      "defaultValue": null,
+      "description": "Content to show when step is current (defaults to incomplete if not provided)",
+      "name": "current",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

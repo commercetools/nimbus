@@ -1,0 +1,11 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "PageContent.Column - A column within a multi-column PageContent layout.\n\nSupports sticky positioning via the `sticky` prop. Use the `top` style prop\nto customize the sticky offset.",
+  "displayName": "PageContentColumn",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": true
+}

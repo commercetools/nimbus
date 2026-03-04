@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "id": "Icons",
+    "title": "Icons",
+    "description": "display Icons",
+    "order": 5,
+    "repoPath": "packages/nimbus-icons/README.mdx",
+    "menu": [
+      "Icons"
+    ],
+    "route": "icons",
+    "tags": [
+      "icons"
+    ],
+    "toc": [],
+    "layout": "no-sidebar",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Icons\n\nIcons come from a separate package. Each Icon is a react component that can be\nused in any other component.\n\n> [!NOTE]  \n> If you can't find a fitting Icon, you may want to use the external\n> [material ui icon search](https://mui.com/material-ui/material-icons/?theme=Outlined&query=access#search-material-icons)\n> as the search below does not have access to Icon meta-data, only to\n> component-names.\n\nHere is the list of available icons:\n\n<IconSearch />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Icons\n\nIcons come from a separate package. Each Icon is a react component that can be\nused in any other component.\n\n> [!NOTE]  \n> If you can't find a fitting Icon, you may want to use the external\n> [material ui icon search](https://mui.com/material-ui/material-icons/?theme=Outlined&query=access#search-material-icons)\n> as the search below does not have access to Icon meta-data, only to\n> component-names.\n\nHere is the list of available icons:\n\n<IconSearch />\n",
+      "toc": []
+    }
+  }
+}

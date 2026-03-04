@@ -1,0 +1,296 @@
+{
+  "meta": {
+    "id": "Home-Testing-Setup",
+    "title": "Testing Setup",
+    "description": "Configure Jest or Vitest to test Nimbus components",
+    "order": 1.6,
+    "repoPath": "packages/nimbus/src/docs/home-testing-setup.mdx",
+    "menu": [
+      "Home",
+      "Getting Started",
+      "Testing Setup"
+    ],
+    "route": "home/getting-started/testing-setup",
+    "tags": [
+      "guide",
+      "testing",
+      "jest",
+      "vitest"
+    ],
+    "toc": [
+      {
+        "value": "Why JSDOM Polyfills?",
+        "href": "#why-jsdom-polyfills",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Jest Setup",
+        "href": "#jest-setup",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "1. Add Polyfills to Setup Files",
+        "href": "#1-add-polyfills-to-setup-files",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Complete Example",
+        "href": "#complete-example",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "2. Write Tests",
+        "href": "#2-write-tests",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Vitest Setup",
+        "href": "#vitest-setup",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "1. Add Polyfills to Setup Files",
+        "href": "#1-add-polyfills-to-setup-files-1",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Complete Example",
+        "href": "#complete-example-1",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "2. Write Tests",
+        "href": "#2-write-tests-1",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Testing Best Practices",
+        "href": "#testing-best-practices",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Always Use NimbusProvider",
+        "href": "#always-use-nimbusprovider",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Create a Test Utility",
+        "href": "#create-a-test-utility",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          2
+        ],
+        "parent": "root"
+      }
+    ],
+    "icon": "Science",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Testing Setup\n\nNimbus components require specific polyfills to work in JSDOM test environments (Jest, Vitest). This guide shows you how to configure your test runner to work with Nimbus.\n\n## Why JSDOM Polyfills?\n\nJSDOM is a headless browser environment used by Jest and Vitest. It doesn't include all browser APIs that Chakra UI and React Aria (which Nimbus is built on) depend on. Nimbus provides polyfills for these missing APIs.\n\nThe polyfills include:\n- `structuredClone` - Required by Chakra UI for theme configuration\n- `window.matchMedia` - Required for responsive design and color mode\n- `ResizeObserver` - Required for responsive components\n- `IntersectionObserver` - Required for lazy loading and viewport tracking\n- `Element.prototype.scrollTo/scrollIntoView` - Required for focus management\n- `requestAnimationFrame` - Required for animations and transitions\n\n## Jest Setup\n\n### 1. Add Polyfills to Setup Files\n\nAdd Nimbus polyfills to your Jest configuration's `setupFiles` array:\n\n```javascript\n// jest.config.js\nmodule.exports = {\n  setupFiles: [\n    '@commercetools/nimbus/setup-jsdom-polyfills'\n  ]\n};\n```\n\n### Complete Example\n\n```javascript\n// jest.config.js\nmodule.exports = {\n  testEnvironment: 'jsdom',\n  setupFiles: [\n    // Add Nimbus polyfills BEFORE other setup files\n    '@commercetools/nimbus/setup-jsdom-polyfills'\n  ],\n  setupFilesAfterEnv: [\n    '@testing-library/jest-dom',\n  ],\n  moduleNameMapper: {\n    '\\\\.(css|less|scss|sass)$': 'identity-obj-proxy',\n  },\n};\n```\n\n### 2. Write Tests\n\nWith the polyfills configured, you can test Nimbus components:\n\n```typescript\n// button.test.tsx\nimport { render, screen } from '@testing-library/react';\nimport { NimbusProvider } from '@commercetools/nimbus';\nimport { Button } from '@commercetools/nimbus';\n\ndescribe('Button', () => {\n  it('renders button text', () => {\n    render(\n      <NimbusProvider>\n        <Button>Click me</Button>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument();\n  });\n});\n```\n\n> [!IMPORTANT]  \n> Always wrap your components in `<NimbusProvider>` when testing, just like in your application.\n\n## Vitest Setup\n\n### 1. Add Polyfills to Setup Files\n\nAdd Nimbus polyfills to your Vitest configuration:\n\n```typescript\n// vitest.config.ts\nimport { defineConfig } from 'vitest/config';\n\nexport default defineConfig({\n  test: {\n    environment: 'jsdom',\n    setupFiles: [\n      '@commercetools/nimbus/setup-jsdom-polyfills'\n    ],\n  },\n});\n```\n\n### Complete Example\n\n```typescript\n// vitest.config.ts\nimport { defineConfig } from 'vitest/config';\nimport react from '@vitejs/plugin-react';\n\nexport default defineConfig({\n  plugins: [react()],\n  test: {\n    environment: 'jsdom',\n    setupFiles: [\n      // Add Nimbus polyfills\n      '@commercetools/nimbus/setup-jsdom-polyfills',\n      // Add other setup files\n      './test/setup.ts',\n    ],\n    globals: true,\n  },\n});\n```\n\n### 2. Write Tests\n\n```typescript\n// button.test.tsx\nimport { render, screen } from '@testing-library/react';\nimport { describe, it, expect } from 'vitest';\nimport { NimbusProvider } from '@commercetools/nimbus';\nimport { Button } from '@commercetools/nimbus';\n\ndescribe('Button', () => {\n  it('renders button text', () => {\n    render(\n      <NimbusProvider>\n        <Button>Click me</Button>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument();\n  });\n});\n```\n\n## Testing Best Practices\n\n### Always Use NimbusProvider\n\nWrap your test components in `NimbusProvider`:\n\n```typescript\n// ✅ Correct\nrender(\n  <NimbusProvider>\n    <YourComponent />\n  </NimbusProvider>\n);\n\n// ❌ Incorrect - will cause errors\nrender(<YourComponent />);\n```\n\n### Create a Test Utility\n\nFor convenience, create a custom render function:\n\n```typescript\n// test-utils.tsx\nimport { render, RenderOptions } from '@testing-library/react';\nimport { NimbusProvider } from '@commercetools/nimbus';\nimport { ReactElement } from 'react';\n\nexport function renderWithNimbus(\n  ui: ReactElement,\n  options?: RenderOptions\n) {\n  return render(ui, {\n    wrapper: ({ children }) => <NimbusProvider>{children}</NimbusProvider>,\n    ...options,\n  });\n}\n\n// Usage in tests\nimport { renderWithNimbus } from './test-utils';\n\nrenderWithNimbus(<Button>Click me</Button>);\n```\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Testing Setup\n\nNimbus components require specific polyfills to work in JSDOM test environments (Jest, Vitest). This guide shows you how to configure your test runner to work with Nimbus.\n\n## Why JSDOM Polyfills?\n\nJSDOM is a headless browser environment used by Jest and Vitest. It doesn't include all browser APIs that Chakra UI and React Aria (which Nimbus is built on) depend on. Nimbus provides polyfills for these missing APIs.\n\nThe polyfills include:\n- `structuredClone` - Required by Chakra UI for theme configuration\n- `window.matchMedia` - Required for responsive design and color mode\n- `ResizeObserver` - Required for responsive components\n- `IntersectionObserver` - Required for lazy loading and viewport tracking\n- `Element.prototype.scrollTo/scrollIntoView` - Required for focus management\n- `requestAnimationFrame` - Required for animations and transitions\n\n## Jest Setup\n\n### 1. Add Polyfills to Setup Files\n\nAdd Nimbus polyfills to your Jest configuration's `setupFiles` array:\n\n```javascript\n// jest.config.js\nmodule.exports = {\n  setupFiles: [\n    '@commercetools/nimbus/setup-jsdom-polyfills'\n  ]\n};\n```\n\n### Complete Example\n\n```javascript\n// jest.config.js\nmodule.exports = {\n  testEnvironment: 'jsdom',\n  setupFiles: [\n    // Add Nimbus polyfills BEFORE other setup files\n    '@commercetools/nimbus/setup-jsdom-polyfills'\n  ],\n  setupFilesAfterEnv: [\n    '@testing-library/jest-dom',\n  ],\n  moduleNameMapper: {\n    '\\\\.(css|less|scss|sass)$': 'identity-obj-proxy',\n  },\n};\n```\n\n### 2. Write Tests\n\nWith the polyfills configured, you can test Nimbus components:\n\n```typescript\n// button.test.tsx\nimport { render, screen } from '@testing-library/react';\nimport { NimbusProvider } from '@commercetools/nimbus';\nimport { Button } from '@commercetools/nimbus';\n\ndescribe('Button', () => {\n  it('renders button text', () => {\n    render(\n      <NimbusProvider>\n        <Button>Click me</Button>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument();\n  });\n});\n```\n\n> [!IMPORTANT]  \n> Always wrap your components in `<NimbusProvider>` when testing, just like in your application.\n\n## Vitest Setup\n\n### 1. Add Polyfills to Setup Files\n\nAdd Nimbus polyfills to your Vitest configuration:\n\n```typescript\n// vitest.config.ts\nimport { defineConfig } from 'vitest/config';\n\nexport default defineConfig({\n  test: {\n    environment: 'jsdom',\n    setupFiles: [\n      '@commercetools/nimbus/setup-jsdom-polyfills'\n    ],\n  },\n});\n```\n\n### Complete Example\n\n```typescript\n// vitest.config.ts\nimport { defineConfig } from 'vitest/config';\nimport react from '@vitejs/plugin-react';\n\nexport default defineConfig({\n  plugins: [react()],\n  test: {\n    environment: 'jsdom',\n    setupFiles: [\n      // Add Nimbus polyfills\n      '@commercetools/nimbus/setup-jsdom-polyfills',\n      // Add other setup files\n      './test/setup.ts',\n    ],\n    globals: true,\n  },\n});\n```\n\n### 2. Write Tests\n\n```typescript\n// button.test.tsx\nimport { render, screen } from '@testing-library/react';\nimport { describe, it, expect } from 'vitest';\nimport { NimbusProvider } from '@commercetools/nimbus';\nimport { Button } from '@commercetools/nimbus';\n\ndescribe('Button', () => {\n  it('renders button text', () => {\n    render(\n      <NimbusProvider>\n        <Button>Click me</Button>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument();\n  });\n});\n```\n\n## Testing Best Practices\n\n### Always Use NimbusProvider\n\nWrap your test components in `NimbusProvider`:\n\n```typescript\n// ✅ Correct\nrender(\n  <NimbusProvider>\n    <YourComponent />\n  </NimbusProvider>\n);\n\n// ❌ Incorrect - will cause errors\nrender(<YourComponent />);\n```\n\n### Create a Test Utility\n\nFor convenience, create a custom render function:\n\n```typescript\n// test-utils.tsx\nimport { render, RenderOptions } from '@testing-library/react';\nimport { NimbusProvider } from '@commercetools/nimbus';\nimport { ReactElement } from 'react';\n\nexport function renderWithNimbus(\n  ui: ReactElement,\n  options?: RenderOptions\n) {\n  return render(ui, {\n    wrapper: ({ children }) => <NimbusProvider>{children}</NimbusProvider>,\n    ...options,\n  });\n}\n\n// Usage in tests\nimport { renderWithNimbus } from './test-utils';\n\nrenderWithNimbus(<Button>Click me</Button>);\n```\n",
+      "toc": [
+        {
+          "value": "Why JSDOM Polyfills?",
+          "href": "#why-jsdom-polyfills",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Jest Setup",
+          "href": "#jest-setup",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "1. Add Polyfills to Setup Files",
+          "href": "#1-add-polyfills-to-setup-files",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Complete Example",
+          "href": "#complete-example",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "2. Write Tests",
+          "href": "#2-write-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Vitest Setup",
+          "href": "#vitest-setup",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "1. Add Polyfills to Setup Files",
+          "href": "#1-add-polyfills-to-setup-files-1",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Complete Example",
+          "href": "#complete-example-1",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "2. Write Tests",
+          "href": "#2-write-tests-1",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing Best Practices",
+          "href": "#testing-best-practices",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Always Use NimbusProvider",
+          "href": "#always-use-nimbusprovider",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Create a Test Utility",
+          "href": "#create-a-test-utility",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,470 @@
+{
+  "meta": {
+    "id": "Patterns-NumberInputField",
+    "title": "Number input field",
+    "exportName": "NumberInputField",
+    "description": "This pattern component integrates the NumberInput within a FormField using a simple, consistent, and opinionated API.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/patterns/fields/number-input-field/number-input-field.mdx",
+    "menu": [
+      "Patterns",
+      "Fields",
+      "Number input field"
+    ],
+    "route": "patterns/fields/number-input-field",
+    "tags": [
+      "component",
+      "pattern",
+      "field",
+      "NumberInput",
+      "NumberInputField"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nNumberInputField is a pattern component that combines the FormField wrapper with the NumberInput component. This integration provides a complete form field experience including accessible labels, helper text descriptions, info popovers for supplementary information, and comprehensive validation and error handling, all through a simplified, opinionated API.\n\nThe component features increment and decrement buttons, keyboard navigation, locale-aware number formatting, and supports min/max constraints, step values, and custom format options for currency, percentages, and other numeric formats.\n\n### Resources\n\nFor detailed guidance on the individual components that make up this pattern, consult the component guidelines:\n\n- [NumberInput Guidelines](/components/inputs/number-input) - Numeric input patterns, formatting options, and interaction guidelines\n- [FormField Guidelines](/components/inputs/formfield) - Label options, helper text, validation patterns, and form field accessibility\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-fields-numberinputfield--docs)\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nNumberInputField is a pattern component that combines the FormField wrapper with the NumberInput component. This integration provides a complete form field experience including accessible labels, helper text descriptions, info popovers for supplementary information, and comprehensive validation and error handling, all through a simplified, opinionated API.\n\nThe component features increment and decrement buttons, keyboard navigation, locale-aware number formatting, and supports min/max constraints, step values, and custom format options for currency, percentages, and other numeric formats.\n\n### Resources\n\nFor detailed guidance on the individual components that make up this pattern, consult the component guidelines:\n\n- [NumberInput Guidelines](/components/inputs/number-input) - Numeric input patterns, formatting options, and interaction guidelines\n- [FormField Guidelines](/components/inputs/formfield) - Label options, helper text, validation patterns, and form field accessibility\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-fields-numberinputfield--docs)\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Comparison: field pattern vs manual composition\n\n**With NumberInputField:**\n```tsx\n<NumberInputField\n  label=\"Quantity\"\n  description=\"Enter the product quantity\"\n  value={quantity}\n  onChange={setQuantity}\n  minValue={1}\n  maxValue={100}\n  errors={errors}\n  touched={touched}\n  isRequired\n/>\n```\n\n**Manual composition:**\n```tsx\n<FormField.Root isInvalid={!!(errors && touched)} isRequired>\n  <FormField.Label>Quantity</FormField.Label>\n  <FormField.Input>\n    <NumberInput\n      value={quantity}\n      onChange={setQuantity}\n      minValue={1}\n      maxValue={100}\n      width=\"full\"\n    />\n  </FormField.Input>\n  <FormField.Description>\n    Enter the product quantity\n  </FormField.Description>\n  {touched && errors && (\n    <FormField.Error>\n      <FieldErrors errors={errors} />\n    </FormField.Error>\n  )}\n</FormField.Root>\n```\n\n### When to use which\n\n**Use NumberInputField when:**\n- Building standard forms with typical field layouts\n- You want consistent field patterns across your app\n- You need built-in error handling with FieldErrors\n- You want to minimize boilerplate code\n\n**Use NumberInput with manual FormField composition when:**\n- You need custom field layouts\n- You're building complex, non-standard forms\n- You need granular control over FormField sub-components\n- You require a different error handling implementation\n\n## Getting started\n\n### Import\n\n```tsx\nimport { NumberInputField, type NumberInputFieldProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe simplest implementation with a label and controlled state:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<number>(0);\n\n  return (\n    <NumberInputField\n      label=\"Quantity\"\n      value={value}\n      onChange={setValue}\n    />\n  );\n}\n```\n\n## Usage examples\n\n### Size options\n\nThe `sm` and `md` size variants are available to match your interface density:\n\n```jsx live-dev\nconst App = () => {\n  const [valueSmall, setValueSmall] = useState<number>(0);\n  const [valueMedium, setValueMedium] = useState<number>(0);\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <NumberInputField\n        size=\"sm\"\n        label=\"Small input\"\n        value={valueSmall}\n        onChange={setValueSmall}\n        placeholder=\"0\"\n      />\n      <NumberInputField\n        size=\"md\"\n        label=\"Medium input\"\n        value={valueMedium}\n        onChange={setValueMedium}\n        placeholder=\"0 (default)\"\n      />\n    </Stack>\n  );\n}\n```\n\n### Visual variants\n\nChoose between `solid` and `ghost` variants to match your design context:\n\n```jsx live-dev\nconst App = () => {\n  const [valueSolid, setValueSolid] = useState<number>(42);\n  const [valueGhost, setValueGhost] = useState<number>(42);\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <NumberInputField\n        variant=\"solid\"\n        label=\"Solid variant\"\n        value={valueSolid}\n        onChange={setValueSolid}\n        placeholder=\"0\"\n      />\n      <NumberInputField\n        variant=\"ghost\"\n        label=\"Ghost variant\"\n        value={valueGhost}\n        onChange={setValueGhost}\n        placeholder=\"0\"\n      />\n    </Stack>\n  );\n}\n```\n\n### With description\n\nAdd helper text below the input to provide context:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<number>(10);\n\n  return (\n    <NumberInputField\n      label=\"Product quantity\"\n      description=\"Enter the number of items in stock\"\n      value={value}\n      onChange={setValue}\n      minValue={0}\n    />\n  );\n}\n```\n\n### With validation errors\n\nShow error messages when the field is touched and has validation errors:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<number | undefined>(undefined);\n  const [touched, setTouched] = useState<boolean>(false);\n\n  // Simulate validation: require a value and minimum of 1\n  const errors = touched && (!value || value < 1) ? { missing: true } : undefined;\n\n  return (\n    <NumberInputField\n      label=\"Quantity\"\n      description=\"Enter at least 1 item\"\n      value={value}\n      onChange={setValue}\n      onBlur={() => setTouched(true)}\n      errors={errors}\n      touched={touched}\n      isRequired\n      minValue={1}\n      placeholder=\"0\"\n    />\n  );\n}\n```\n\n**Note**: Errors only display when both `touched={true}` and `errors` exist. This prevents showing errors before the user interacts with the field.\n\n### With info popover\n\nProvide additional context through an info button and popover:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<number>(50);\n\n  return (\n    <NumberInputField\n      label=\"Stock Level\"\n      description=\"Current inventory count\"\n      info=\"This represents the total quantity available in all warehouses. The value updates automatically when orders are placed or shipments are received.\"\n      value={value}\n      onChange={setValue}\n      minValue={0}\n    />\n  );\n}\n```\n\n### Required field\n\nMark fields as required with the `isRequired` prop:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<number | undefined>(undefined);\n\n  return (\n    <NumberInputField\n      label=\"Age\"\n      description=\"Enter your age\"\n      value={value}\n      onChange={setValue}\n      isRequired\n      minValue={0}\n      maxValue={120}\n      placeholder=\"0\"\n    />\n  );\n}\n```\n\n### Disabled state\n\nPrevent user interaction with the `isDisabled` prop:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<number>(999);\n\n  return (\n    <NumberInputField\n      label=\"System-calculated total\"\n      description=\"This field is automatically calculated\"\n      value={value}\n      onChange={setValue}\n      isDisabled\n    />\n  );\n}\n```\n\n### Read-only state\n\nDisplay a non-editable value with the `isReadOnly` prop:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<number>(12345);\n\n  return (\n    <NumberInputField\n      label=\"Order number\"\n      description=\"This value is automatically generated\"\n      value={value}\n      onChange={setValue}\n      isReadOnly\n    />\n  );\n}\n```\n\n### Min and max constraints\n\nEnforce value boundaries with `minValue` and `maxValue`:\n\n```jsx live-dev\nconst App = () => {\n  const [percentage, setPercentage] = useState<number>(50);\n\n  return (\n    <NumberInputField\n      label=\"Discount percentage\"\n      description=\"Enter a value between 0 and 100\"\n      value={percentage}\n      onChange={setPercentage}\n      minValue={0}\n      maxValue={100}\n      trailingElement=\"%\"\n    />\n  );\n}\n```\n\n### Custom step increments\n\nUse the `step` prop to control increment/decrement amounts:\n\n```jsx live-dev\nconst App = () => {\n  const [price, setPrice] = useState<number>(5.00);\n\n  return (\n    <NumberInputField\n      label=\"Price\"\n      description=\"Increments of $0.25\"\n      value={price}\n      onChange={setPrice}\n      step={0.25}\n      minValue={0}\n      formatOptions={{\n        style: 'currency',\n        currency: 'USD',\n      }}\n    />\n  );\n}\n```\n\n### Currency formatting\n\nFormat values as currency using `formatOptions`:\n\n```jsx live-dev\nconst App = () => {\n  const [amount, setAmount] = useState<number>(1234.56);\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <NumberInputField\n        label=\"USD Amount\"\n        value={amount}\n        onChange={setAmount}\n        formatOptions={{\n          style: 'currency',\n          currency: 'USD',\n        }}\n      />\n      <NumberInputField\n        label=\"EUR Amount\"\n        value={amount}\n        onChange={setAmount}\n        formatOptions={{\n          style: 'currency',\n          currency: 'EUR',\n        }}\n      />\n      <NumberInputField\n        label=\"JPY Amount\"\n        value={amount}\n        onChange={setAmount}\n        formatOptions={{\n          style: 'currency',\n          currency: 'JPY',\n        }}\n      />\n    </Stack>\n  );\n}\n```\n\n### Percentage formatting\n\nFormat values as percentages:\n\n```jsx live-dev\nconst App = () => {\n  const [rate, setRate] = useState<number>(0.25);\n\n  return (\n    <NumberInputField\n      label=\"Interest Rate\"\n      description=\"Enter as a decimal (0.25 = 25%)\"\n      value={rate}\n      onChange={setRate}\n      step={0.01}\n      minValue={0}\n      maxValue={1}\n      formatOptions={{\n        style: 'percent',\n      }}\n    />\n  );\n}\n```\n\n### With leading element\n\nAdd icons or text before the input:\n\n```jsx live-dev\nconst App = () => {\n  const [price, setPrice] = useState<number>(99.99);\n\n  return (\n    <NumberInputField\n      label=\"Product price\"\n      description=\"Enter the price in USD\"\n      value={price}\n      onChange={setPrice}\n      leadingElement=\"$\"\n      minValue={0}\n    />\n  );\n}\n```\n\n### With trailing element\n\nAdd units or symbols after the input:\n\n```jsx live-dev\nconst App = () => {\n  const [weight, setWeight] = useState<number>(150);\n  const [temperature, setTemperature] = useState<number>(72);\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <NumberInputField\n        label=\"Weight\"\n        value={weight}\n        onChange={setWeight}\n        trailingElement=\"lbs\"\n        minValue={0}\n      />\n      <NumberInputField\n        label=\"Temperature\"\n        value={temperature}\n        onChange={setTemperature}\n        trailingElement=\"°F\"\n      />\n    </Stack>\n  );\n}\n```\n\n### Decimal precision\n\nControl decimal places with format options:\n\n```jsx live-dev\nconst App = () => {\n  const [value1, setValue1] = useState<number>(3.14159);\n  const [value2, setValue2] = useState<number>(3.14159);\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <NumberInputField\n        label=\"Two decimal places\"\n        value={value1}\n        onChange={setValue1}\n        formatOptions={{\n          minimumFractionDigits: 2,\n          maximumFractionDigits: 2,\n        }}\n      />\n      <NumberInputField\n        label=\"Four decimal places\"\n        value={value2}\n        onChange={setValue2}\n        formatOptions={{\n          minimumFractionDigits: 4,\n          maximumFractionDigits: 4,\n        }}\n      />\n    </Stack>\n  );\n}\n```\n\n## Component requirements\n\n### Error handling\n\nNumberInputField uses the `FieldErrors` component to display validation errors with built-in localized messages. For custom error messages, use the `renderError` prop (see [Custom error rendering](#custom-error-rendering) below).\n\n**Error object format** (`FieldErrorsData`):\n```tsx\ntype FieldErrorsData = {\n  [key: string]: boolean | string | ReactNode;\n};\n\n// Common numeric validation errors:\nconst errors = {\n  missing: true,         // \"This field is required\"\n  negative: true,        // \"Please enter a positive number\"\n  belowMin: true,        // \"Value is below minimum\"\n  aboveMax: true,        // \"Value is above maximum\"\n  fractions: true,       // \"Please enter a whole number\"\n  custom: \"Must be even\" // Custom message\n};\n```\n\n## Accessibility\n\nNumberInputField provides comprehensive accessibility through [FormField](components/inputs/formfield) and [NumberInput](components/inputs/number-input):\n\n**Automatic ARIA relationships:**\n- Labels connected via `aria-labelledby`\n- Descriptions connected via `aria-describedby`\n- Error messages connected via `aria-describedby`\n- Required fields indicated with `aria-required`\n- Invalid state indicated with `aria-invalid`\n- Value bounds communicated via `aria-valuemin` and `aria-valuemax`\n- Current value communicated via `aria-valuenow`\n- Increment/decrement buttons with localized `aria-label`\n\nIf your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:\n\n```tsx\nconst PERSISTENT_ID = \"example-number-input\";\n\nexport const Example = () => (\n  <NumberInputField\n    id={PERSISTENT_ID}\n    label=\"Quantity\"\n    value={value}\n    onChange={setValue}\n  />\n);\n```\n\n#### Keyboard navigation\n\nThe component supports standard numeric input keyboard interaction:\n- `Tab` / `Shift+Tab`: Move focus to/from the input\n- `Arrow Up` / `Arrow Down`: Increment/decrement value (when focused)\n- `Page Up` / `Page Down`: Increment/decrement by larger amount\n- `Home`: Set to minimum value (if `minValue` specified)\n- `End`: Set to maximum value (if `maxValue` specified)\n- Number keys: Enter numeric values\n- `-` (minus): Enter negative values (if allowed)\n- `.` (period): Enter decimal point\n\n## Form integration\n\nNumberInputField integrates seamlessly with Formik:\n\n```tsx\nimport { useFormik } from 'formik';\nimport { NumberInputField, Button, Stack } from '@commercetools/nimbus';\n\nconst MyForm = () => {\n  const formik = useFormik({\n    initialValues: {\n      quantity: 1,\n      price: 0,\n    },\n    validate: (values) => {\n      const errors = {};\n\n      if (!values.quantity) {\n        errors.quantity = { missing: true };\n      } else if (values.quantity < 1) {\n        errors.quantity = { belowMin: true };\n      } else if (values.quantity > 100) {\n        errors.quantity = { aboveMax: true };\n      }\n\n      if (!values.price) {\n        errors.price = { missing: true };\n      } else if (values.price < 0) {\n        errors.price = { negative: true };\n      }\n\n      return errors;\n    },\n    onSubmit: (values) => {\n      console.log('Submitted:', values);\n    },\n  });\n\n  return (\n    <form onSubmit={formik.handleSubmit}>\n      <Stack direction=\"column\" gap=\"400\">\n        <NumberInputField\n          name=\"quantity\"\n          label=\"Quantity\"\n          description=\"Enter quantity (1-100)\"\n          value={formik.values.quantity}\n          onChange={(value) => formik.setFieldValue('quantity', value)}\n          onBlur={() => formik.setFieldTouched('quantity', true)}\n          errors={formik.errors.quantity}\n          touched={formik.touched.quantity}\n          minValue={1}\n          maxValue={100}\n          isRequired\n        />\n        <NumberInputField\n          name=\"price\"\n          label=\"Price\"\n          description=\"Enter product price\"\n          value={formik.values.price}\n          onChange={(value) => formik.setFieldValue('price', value)}\n          onBlur={() => formik.setFieldTouched('price', true)}\n          errors={formik.errors.price}\n          touched={formik.touched.price}\n          minValue={0}\n          formatOptions={{\n            style: 'currency',\n            currency: 'USD',\n          }}\n          isRequired\n        />\n        <Button type=\"submit\">Submit</Button>\n      </Stack>\n    </form>\n  );\n};\n```\n\n**Key integration points:**\n- **Value/OnChange**: Connect Formik values with `value` and `setFieldValue`\n- **OnBlur**: Mark field as touched on blur\n- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or strings)\n- **Touched**: Pass `touched.fieldName` to control error visibility\n- **Validation**: Use `minValue`/`maxValue` for client-side bounds checking\n\n## API reference\n\n<PropsTable id=\"NumberInputField\" />\n\n### Custom error rendering\n\nUse the `renderError` prop to customize how specific error keys are displayed:\n\n```tsx\n<NumberInputField\n  label=\"Age\"\n  value={value}\n  onChange={setValue}\n  errors={{ tooYoung: true, invalidAge: true }}\n  touched={true}\n  renderError={(key) => {\n    switch (key) {\n      case 'tooYoung':\n        return 'You must be at least 18 years old';\n      case 'invalidAge':\n        return 'Please enter a valid age between 18 and 120';\n      default:\n        return null; // Fall back to FieldErrors built-in messages\n    }\n  }}\n/>\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using NumberInputField within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic rendering tests\n\nVerify the component renders with expected elements:\n\n```tsx\nimport { render, screen } from '@testing-library/react';\nimport { NumberInputField } from '@commercetools/nimbus';\n\ndescribe('NumberInputField', () => {\n  it('renders label and input', () => {\n    render(\n      <NumberInputField\n        label=\"Quantity\"\n        value={0}\n        onChange={() => {}}\n      />\n    );\n\n    // Verify label is rendered\n    expect(screen.getByText('Quantity')).toBeInTheDocument();\n\n    // Verify input is rendered with spinbutton role\n    expect(screen.getByRole('spinbutton', { name: /quantity/i })).toBeInTheDocument();\n  });\n\n  it('renders description text', () => {\n    render(\n      <NumberInputField\n        label=\"Quantity\"\n        description=\"Enter product quantity\"\n        value={0}\n        onChange={() => {}}\n      />\n    );\n\n    expect(screen.getByText('Enter product quantity')).toBeInTheDocument();\n  });\n\n  it('shows required indicator', () => {\n    render(\n      <NumberInputField\n        label=\"Required field\"\n        value={0}\n        onChange={() => {}}\n        isRequired\n      />\n    );\n\n    const input = screen.getByRole('spinbutton');\n    expect(input).toHaveAttribute('aria-required', 'true');\n  });\n\n  it('renders increment and decrement buttons', () => {\n    render(\n      <NumberInputField\n        label=\"Quantity\"\n        value={5}\n        onChange={() => {}}\n      />\n    );\n\n    expect(screen.getByLabelText('Increment')).toBeInTheDocument();\n    expect(screen.getByLabelText('Decrement')).toBeInTheDocument();\n  });\n});\n```\n\n### Interaction tests\n\nTest user interactions with the component:\n\n```tsx\nimport { render, screen, waitFor } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\nimport { NumberInputField } from '@commercetools/nimbus';\n\ndescribe('NumberInputField interactions', () => {\n  it('calls onChange when user types', async () => {\n    const user = userEvent.setup();\n    const handleChange = jest.fn();\n\n    render(\n      <NumberInputField\n        label=\"Quantity\"\n        value={0}\n        onChange={handleChange}\n      />\n    );\n\n    const input = screen.getByRole('spinbutton', { name: /quantity/i });\n    await user.clear(input);\n    await user.type(input, '42');\n\n    expect(handleChange).toHaveBeenCalled();\n    // Last call should be with 42\n    expect(handleChange).toHaveBeenLastCalledWith(42);\n  });\n\n  it('increments value when increment button clicked', async () => {\n    const user = userEvent.setup();\n    const handleChange = jest.fn();\n\n    render(\n      <NumberInputField\n        label=\"Quantity\"\n        value={5}\n        onChange={handleChange}\n      />\n    );\n\n    const incrementButton = screen.getByLabelText('Increment');\n    await user.click(incrementButton);\n\n    expect(handleChange).toHaveBeenCalledWith(6);\n  });\n\n  it('decrements value when decrement button clicked', async () => {\n    const user = userEvent.setup();\n    const handleChange = jest.fn();\n\n    render(\n      <NumberInputField\n        label=\"Quantity\"\n        value={5}\n        onChange={handleChange}\n      />\n    );\n\n    const decrementButton = screen.getByLabelText('Decrement');\n    await user.click(decrementButton);\n\n    expect(handleChange).toHaveBeenCalledWith(4);\n  });\n\n  it('calls onBlur when input loses focus', async () => {\n    const user = userEvent.setup();\n    const handleBlur = jest.fn();\n\n    render(\n      <NumberInputField\n        label=\"Quantity\"\n        value={0}\n        onChange={() => {}}\n        onBlur={handleBlur}\n      />\n    );\n\n    const input = screen.getByRole('spinbutton');\n    await user.click(input);\n    await user.tab(); // Move focus away\n\n    expect(handleBlur).toHaveBeenCalledTimes(1);\n  });\n\n  it('does not call onChange when disabled', async () => {\n    const user = userEvent.setup();\n    const handleChange = jest.fn();\n\n    render(\n      <NumberInputField\n        label=\"Quantity\"\n        value={0}\n        onChange={handleChange}\n        isDisabled\n      />\n    );\n\n    const input = screen.getByRole('spinbutton');\n    expect(input).toBeDisabled();\n\n    // Buttons should also be disabled\n    expect(screen.getByLabelText('Increment')).toBeDisabled();\n    expect(screen.getByLabelText('Decrement')).toBeDisabled();\n\n    // Attempt to type (should not work)\n    await user.type(input, '42');\n    expect(handleChange).not.toHaveBeenCalled();\n  });\n});\n```\n\n### Testing validation and errors\n\nTest error handling and validation behavior:\n\n```tsx\nimport { render, screen } from '@testing-library/react';\nimport { NumberInputField } from '@commercetools/nimbus';\n\ndescribe('NumberInputField validation', () => {\n  it('does not show errors when untouched', () => {\n    render(\n      <NumberInputField\n        label=\"Quantity\"\n        value={0}\n        onChange={() => {}}\n        errors={{ missing: true }}\n        touched={false}\n      />\n    );\n\n    // Error should not be visible\n    expect(screen.queryByText(/required/i)).not.toBeInTheDocument();\n  });\n\n  it('shows errors when touched', () => {\n    render(\n      <NumberInputField\n        label=\"Quantity\"\n        value={0}\n        onChange={() => {}}\n        errors={{ missing: true }}\n        touched={true}\n      />\n    );\n\n    // Error should be visible\n    expect(screen.getByText(/required/i)).toBeInTheDocument();\n  });\n\n  it('shows custom error messages', () => {\n    render(\n      <NumberInputField\n        label=\"Age\"\n        value={10}\n        onChange={() => {}}\n        errors={{ tooYoung: true }}\n        touched={true}\n        renderError={(key) => {\n          if (key === 'tooYoung') return 'Must be at least 18';\n          return null;\n        }}\n      />\n    );\n\n    expect(screen.getByText('Must be at least 18')).toBeInTheDocument();\n  });\n\n  it('applies invalid styling when isInvalid is true', () => {\n    render(\n      <NumberInputField\n        label=\"Quantity\"\n        value={0}\n        onChange={() => {}}\n        isInvalid\n      />\n    );\n\n    const input = screen.getByRole('spinbutton');\n    expect(input).toHaveAttribute('data-invalid', 'true');\n  });\n});\n```\n\n### Testing min/max constraints\n\nTest boundary validation:\n\n```tsx\nimport { render, screen } from '@testing-library/react';\nimport { NumberInputField } from '@commercetools/nimbus';\n\ndescribe('NumberInputField constraints', () => {\n  it('applies min and max values', () => {\n    render(\n      <NumberInputField\n        label=\"Percentage\"\n        value={50}\n        onChange={() => {}}\n        minValue={0}\n        maxValue={100}\n      />\n    );\n\n    const input = screen.getByRole('spinbutton');\n    expect(input).toHaveAttribute('aria-valuemin', '0');\n    expect(input).toHaveAttribute('aria-valuemax', '100');\n  });\n\n  it('communicates current value via aria-valuenow', () => {\n    render(\n      <NumberInputField\n        label=\"Quantity\"\n        value={42}\n        onChange={() => {}}\n      />\n    );\n\n    const input = screen.getByRole('spinbutton');\n    expect(input).toHaveAttribute('aria-valuenow', '42');\n  });\n});\n```\n\n### Testing format options\n\nTest number formatting:\n\n```tsx\nimport { render, screen } from '@testing-library/react';\nimport { NumberInputField } from '@commercetools/nimbus';\n\ndescribe('NumberInputField formatting', () => {\n  it('formats as currency', () => {\n    render(\n      <NumberInputField\n        label=\"Price\"\n        value={1234.56}\n        onChange={() => {}}\n        formatOptions={{\n          style: 'currency',\n          currency: 'USD',\n        }}\n      />\n    );\n\n    const input = screen.getByRole('spinbutton');\n    expect(input).toHaveValue('$1,234.56');\n  });\n\n  it('formats as percentage', () => {\n    render(\n      <NumberInputField\n        label=\"Rate\"\n        value={0.25}\n        onChange={() => {}}\n        formatOptions={{\n          style: 'percent',\n        }}\n      />\n    );\n\n    const input = screen.getByRole('spinbutton');\n    expect(input).toHaveValue('25%');\n  });\n});\n```\n\n## Resources\n\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-fields-numberinputfield--docs)\n- [NumberInput Component](/components/inputs/number-input)\n- [FormField Component](/components/inputs/formfield)\n- [FieldErrors Component](/components/forms/fielderrors)\n- [React Aria NumberField](https://react-spectrum.adobe.com/react-aria/NumberField.html)\n- [ARIA Spinbutton Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/spinbutton/)\n",
+      "toc": [
+        {
+          "value": "Comparison: field pattern vs manual composition",
+          "href": "#comparison-field-pattern-vs-manual-composition",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "When to use which",
+          "href": "#when-to-use-which",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size options",
+          "href": "#size-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual variants",
+          "href": "#visual-variants",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With description",
+          "href": "#with-description",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With validation errors",
+          "href": "#with-validation-errors",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With info popover",
+          "href": "#with-info-popover",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Required field",
+          "href": "#required-field",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Disabled state",
+          "href": "#disabled-state",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Read-only state",
+          "href": "#read-only-state",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Min and max constraints",
+          "href": "#min-and-max-constraints",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            9
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom step increments",
+          "href": "#custom-step-increments",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            10
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Currency formatting",
+          "href": "#currency-formatting",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            11
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Percentage formatting",
+          "href": "#percentage-formatting",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            12
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With leading element",
+          "href": "#with-leading-element",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            13
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With trailing element",
+          "href": "#with-trailing-element",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            14
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Decimal precision",
+          "href": "#decimal-precision",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            15
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Error handling",
+          "href": "#error-handling",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Form integration",
+          "href": "#form-integration",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom error rendering",
+          "href": "#custom-error-rendering",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic rendering tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Interaction tests",
+          "href": "#interaction-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing validation and errors",
+          "href": "#testing-validation-and-errors",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing min/max constraints",
+          "href": "#testing-minmax-constraints",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing format options",
+          "href": "#testing-format-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            9
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

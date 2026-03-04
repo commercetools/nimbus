@@ -1,0 +1,13 @@
+{
+  "tags": {
+    "experimental": "This hook is experimental and may change in future versions.",
+    "param": "light - The value to return when the color mode is light\ndark - The value to return when the color mode is dark",
+    "returns": "The appropriate value based on the current color mode"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Hook that returns a value based on the current color mode.",
+  "displayName": "useColorModeValue",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

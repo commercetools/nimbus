@@ -1,0 +1,535 @@
+{
+  "meta": {
+    "id": "Components-TagGroup",
+    "title": "Tag group",
+    "exportName": "TagGroup",
+    "description": "A tag group is a compact, interactive element. It categorizes, labels, or adds attributes to objects for quick recognition and filtering.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/tag-group/tag-group.mdx",
+    "menu": [
+      "Components",
+      "Data Display",
+      "Tag group"
+    ],
+    "route": "components/data-display/tag-group",
+    "tags": [
+      "component",
+      "tag",
+      "chip",
+      "label",
+      "removable"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Visual options",
+        "href": "#visual-options",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size",
+        "href": "#size",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Toggle buttons vs clearable tag groups",
+        "href": "#toggle-buttons-vs-clearable-tag-groups",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=4292-25466",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "guidelines",
+        "title": "Guidelines",
+        "order": 2
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nThe tag group organizes a collection of individual tag components, allowing\nusers to efficiently scan and understand multiple pieces of metadata or filter\ncriteria associated with a product, order, or entity in a compact, manageable\nspace.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=4292-25466)\n[Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-taggroup--docs)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Size\n\nThe large size of the tag within tag groups is the default, the small size is\nmeant for more compact uses. The more tags present, consider smaller sizes to\nmake the information more compact and easily read for the user.\n\n```jsx live\nconst App = () => {\n  const smallTag = [{ id: \"cherries\", name: \"Cherries\" }];\n  const mediumTag = [{ id: \"kiwis\", name: \"Kiwis\" }];\n  const largeTag = [{ id: \"apples\", name: \"Apples\" }];\n\n  return (\n    <Stack direction=\"row\" gap=\"400\" alignItems=\"flex-start\">\n      <Box>\n        <Text as=\"p\" textStyle=\"sm\" fontWeight=\"bold\" marginBottom=\"200\">Large</Text>\n        <TagGroup.Root size=\"lg\" aria-label=\"Large tags\" onRemove={() => {}}>\n          <TagGroup.TagList items={largeTag}>\n            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </Box>\n      <Box>\n        <Text as=\"p\" textStyle=\"sm\" fontWeight=\"bold\" marginBottom=\"200\">Medium</Text>\n        <TagGroup.Root size=\"md\" aria-label=\"Medium tags\" onRemove={() => {}}>\n          <TagGroup.TagList items={mediumTag}>\n            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </Box>\n      <Box>\n        <Text as=\"p\" textStyle=\"sm\" fontWeight=\"bold\" marginBottom=\"200\">Small</Text>\n        <TagGroup.Root size=\"sm\" aria-label=\"Small tags\" onRemove={() => {}}>\n          <TagGroup.TagList items={smallTag}>\n            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </Box>\n    </Stack>\n  );\n}\n```\n\n### Toggle buttons vs clearable tag groups\n\nAllow users to toggle the active state of a tag, or be able to remove tags by\nadding a \"close\" icon to each tag. Avoid mixing these interactions within the\nsame group.\n\n```jsx live\nconst App = () => {\n  const [selectedToggleTags, setSelectedToggleTags] = useState(new Set([\"vegetables\"]));\n\n  const removableTags = [\n    { id: \"remove1\", name: \"Remove me first\" },\n    { id: \"remove2\", name: \"Remove me second\" },\n    { id: \"remove3\", name: \"Remove me last\" },\n  ];\n\n  const toggleTags = [\n    { id: \"fruits\", name: \"Fruits\" },\n    { id: \"vegetables\", name: \"Vegetables\" },\n    { id: \"meat\", name: \"Meat\" },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"600\" alignItems=\"flex-start\">\n      <Box>\n        <Text as=\"p\" textStyle=\"sm\" marginBottom=\"200\" fontWeight=\"bold\">Removable tag group</Text>\n        <TagGroup.Root aria-label=\"Removable tags\" onRemove={() => {}}>\n          <TagGroup.TagList items={removableTags}>\n            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </Box>\n\n      <Box>\n        <Text as=\"p\" textStyle=\"sm\" marginBottom=\"200\" fontWeight=\"bold\">Toggleable tag group</Text>\n        <TagGroup.Root\n          aria-label=\"Toggle tags\"\n          selectionMode=\"multiple\"\n          selectedKeys={selectedToggleTags}\n          onSelectionChange={setSelectedToggleTags}\n        >\n          <TagGroup.TagList items={toggleTags}>\n            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </Box>\n    </Stack>\n  );\n}\n```\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nThe tag group organizes a collection of individual tag components, allowing\nusers to efficiently scan and understand multiple pieces of metadata or filter\ncriteria associated with a product, order, or entity in a compact, manageable\nspace.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=4292-25466)\n[Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-taggroup--docs)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Size\n\nThe large size of the tag within tag groups is the default, the small size is\nmeant for more compact uses. The more tags present, consider smaller sizes to\nmake the information more compact and easily read for the user.\n\n```jsx live\nconst App = () => {\n  const smallTag = [{ id: \"cherries\", name: \"Cherries\" }];\n  const mediumTag = [{ id: \"kiwis\", name: \"Kiwis\" }];\n  const largeTag = [{ id: \"apples\", name: \"Apples\" }];\n\n  return (\n    <Stack direction=\"row\" gap=\"400\" alignItems=\"flex-start\">\n      <Box>\n        <Text as=\"p\" textStyle=\"sm\" fontWeight=\"bold\" marginBottom=\"200\">Large</Text>\n        <TagGroup.Root size=\"lg\" aria-label=\"Large tags\" onRemove={() => {}}>\n          <TagGroup.TagList items={largeTag}>\n            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </Box>\n      <Box>\n        <Text as=\"p\" textStyle=\"sm\" fontWeight=\"bold\" marginBottom=\"200\">Medium</Text>\n        <TagGroup.Root size=\"md\" aria-label=\"Medium tags\" onRemove={() => {}}>\n          <TagGroup.TagList items={mediumTag}>\n            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </Box>\n      <Box>\n        <Text as=\"p\" textStyle=\"sm\" fontWeight=\"bold\" marginBottom=\"200\">Small</Text>\n        <TagGroup.Root size=\"sm\" aria-label=\"Small tags\" onRemove={() => {}}>\n          <TagGroup.TagList items={smallTag}>\n            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </Box>\n    </Stack>\n  );\n}\n```\n\n### Toggle buttons vs clearable tag groups\n\nAllow users to toggle the active state of a tag, or be able to remove tags by\nadding a \"close\" icon to each tag. Avoid mixing these interactions within the\nsame group.\n\n```jsx live\nconst App = () => {\n  const [selectedToggleTags, setSelectedToggleTags] = useState(new Set([\"vegetables\"]));\n\n  const removableTags = [\n    { id: \"remove1\", name: \"Remove me first\" },\n    { id: \"remove2\", name: \"Remove me second\" },\n    { id: \"remove3\", name: \"Remove me last\" },\n  ];\n\n  const toggleTags = [\n    { id: \"fruits\", name: \"Fruits\" },\n    { id: \"vegetables\", name: \"Vegetables\" },\n    { id: \"meat\", name: \"Meat\" },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"600\" alignItems=\"flex-start\">\n      <Box>\n        <Text as=\"p\" textStyle=\"sm\" marginBottom=\"200\" fontWeight=\"bold\">Removable tag group</Text>\n        <TagGroup.Root aria-label=\"Removable tags\" onRemove={() => {}}>\n          <TagGroup.TagList items={removableTags}>\n            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </Box>\n\n      <Box>\n        <Text as=\"p\" textStyle=\"sm\" marginBottom=\"200\" fontWeight=\"bold\">Toggleable tag group</Text>\n        <TagGroup.Root\n          aria-label=\"Toggle tags\"\n          selectionMode=\"multiple\"\n          selectedKeys={selectedToggleTags}\n          onSelectionChange={setSelectedToggleTags}\n        >\n          <TagGroup.TagList items={toggleTags}>\n            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </Box>\n    </Stack>\n  );\n}\n```\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual options",
+          "href": "#visual-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size",
+          "href": "#size",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Toggle buttons vs clearable tag groups",
+          "href": "#toggle-buttons-vs-clearable-tag-groups",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => {\n  const vegetableOptions = [\n  { id: \"tomato\", name: \"Tomato\" },\n  { id: \"zucchini\", name: \"Zucchini\" },\n  { id: \"peppers\", name: \"Peppers\" },\n  ];\n\n  return (\n    <TagGroup.Root onRemove={() => {}}>\n      <TagGroup.TagList items={vegetableOptions}>\n        {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n      </TagGroup.TagList>\n    </TagGroup.Root>\n  );\n}\n```\n\n### Accessibility standards\n\n- **Keyboard focus:** Ensure the user can navigate to and between individual\n  tags (if interactive/removable) using the Tab key.\n- **ARIA labels for removal:** For removable tags, the close button/icon must\n  have a clear `aria-label` (e.g., \"Remove filter: [Tag Label]\") to inform\n  screen readers exactly what is being dismissed.\n- **Contrast:** Verify that the text contrast ratio against the tag's background\n  color meets WCAG AA standards (4.5:1).\n- **Logical reading order:** The order in which the tags are read by a screen\n  reader must logically align with the visual order.\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { TagGroup } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe TagGroup component is a compound component that displays a collection of tags. It consists of three parts: `TagGroup.Root`, `TagGroup.TagList`, and `TagGroup.Tag`:\n\n```jsx live-dev\nconst App = () => (\n  <TagGroup.Root aria-label=\"Categories\">\n    <TagGroup.TagList>\n      <TagGroup.Tag>Electronics</TagGroup.Tag>\n      <TagGroup.Tag>Clothing</TagGroup.Tag>\n      <TagGroup.Tag>Home & Garden</TagGroup.Tag>\n    </TagGroup.TagList>\n  </TagGroup.Root>\n)\n```\n\n## Usage examples\n\n### Size options\n\nThe `sm`, `md`, and `lg` size variants are available to match your interface density:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <TagGroup.Root size=\"sm\" aria-label=\"Small tags\">\n      <TagGroup.TagList>\n        <TagGroup.Tag>Small</TagGroup.Tag>\n        <TagGroup.Tag>Compact</TagGroup.Tag>\n        <TagGroup.Tag>Dense</TagGroup.Tag>\n      </TagGroup.TagList>\n    </TagGroup.Root>\n\n    <TagGroup.Root size=\"md\" aria-label=\"Medium tags\">\n      <TagGroup.TagList>\n        <TagGroup.Tag>Medium</TagGroup.Tag>\n        <TagGroup.Tag>Standard</TagGroup.Tag>\n        <TagGroup.Tag>Default</TagGroup.Tag>\n      </TagGroup.TagList>\n    </TagGroup.Root>\n\n    <TagGroup.Root size=\"lg\" aria-label=\"Large tags\">\n      <TagGroup.TagList>\n        <TagGroup.Tag>Large</TagGroup.Tag>\n        <TagGroup.Tag>Comfortable</TagGroup.Tag>\n        <TagGroup.Tag>Spacious</TagGroup.Tag>\n      </TagGroup.TagList>\n    </TagGroup.Root>\n  </Stack>\n)\n```\n\n### Dynamic collections with items\n\nUse the `items` prop with a render function for dynamic data:\n\n```jsx live-dev\nconst App = () => {\n  const categories = [\n    { id: 'electronics', name: 'Electronics' },\n    { id: 'clothing', name: 'Clothing' },\n    { id: 'home', name: 'Home & Garden' },\n    { id: 'sports', name: 'Sports & Outdoors' },\n  ];\n\n  return (\n    <TagGroup.Root aria-label=\"Product categories\">\n      <TagGroup.TagList items={categories}>\n        {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n      </TagGroup.TagList>\n    </TagGroup.Root>\n  );\n}\n```\n\nThe `items` prop accepts an array of objects, and the render function receives each item as an argument. This pattern is useful when working with dynamic data from APIs or state management.\n\n### Color palette\n\nCustomize tag colors by setting the `colorPalette` prop on individual `TagGroup.Tag` components. This prop accepts semantic colors (primary, info, critical, warning, positive) or system colors (blue, green, red, purple, etc.) to establish the color context for that tag.\n\nNote that the `colorPalette` prop selects which palette to use, but doesn't immediately change the visuals. You must also reference color tokens (e.g. `backgroundColor=\"colorPalette.11\"`, `color=\"colorPalette.6\"`) to actually apply the intended colors.\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <TagGroup.Root aria-label=\"Primary tags\">\n      <TagGroup.TagList>\n        <TagGroup.Tag colorPalette=\"primary\" backgroundColor=\"colorPalette.11\" color=\"colorPalette.contrast\">\n          Primary\n        </TagGroup.Tag>\n        <TagGroup.Tag colorPalette=\"primary\" backgroundColor=\"colorPalette.3\">\n          Default\n        </TagGroup.Tag>\n      </TagGroup.TagList>\n    </TagGroup.Root>\n\n    <TagGroup.Root aria-label=\"Blue tags\">\n      <TagGroup.TagList>\n        <TagGroup.Tag colorPalette=\"blue\" backgroundColor=\"colorPalette.9\" color=\"colorPalette.contrast\">\n          Blue\n        </TagGroup.Tag>\n        <TagGroup.Tag colorPalette=\"blue\" backgroundColor=\"colorPalette.3\">\n          Information\n        </TagGroup.Tag>\n      </TagGroup.TagList>\n    </TagGroup.Root>\n\n    <TagGroup.Root aria-label=\"Red tags\">\n      <TagGroup.TagList>\n        <TagGroup.Tag colorPalette=\"red\" backgroundColor=\"colorPalette.9\" color=\"colorPalette.contrast\">\n          Red\n        </TagGroup.Tag>\n        <TagGroup.Tag colorPalette=\"critical\" backgroundColor=\"colorPalette.3\" color=\"colorPalette.11\">\n          Error\n        </TagGroup.Tag>\n      </TagGroup.TagList>\n    </TagGroup.Root>\n\n    <TagGroup.Root aria-label=\"Green tags\">\n      <TagGroup.TagList>\n        <TagGroup.Tag colorPalette=\"green\" backgroundColor=\"colorPalette.8\" color=\"colorPalette.12\">\n          Green\n        </TagGroup.Tag>\n        <TagGroup.Tag colorPalette=\"green\" backgroundColor=\"colorPalette.4\" color=\"colorPalette.11\">\n          Accent\n        </TagGroup.Tag>\n      </TagGroup.TagList>\n    </TagGroup.Root>\n  </Stack>\n)\n\n```\n> [!TIP]\\\n> See the [Colors documentation](/home/design-tokens/colors) for detailed information about color tokens and how to use them effectively.\n\n### Removable tags\n\nEnable tag removal by providing an `onRemove` handler. Users can remove tags by clicking the remove button or pressing Backspace:\n\n```jsx live-dev\nconst App = () => {\n  const [tags, setTags] = useState([\n    { id: 'react', name: 'React' },\n    { id: 'typescript', name: 'TypeScript' },\n    { id: 'nodejs', name: 'Node.js' },\n    { id: 'graphql', name: 'GraphQL' },\n  ]);\n\n  const handleRemove = (keys) => {\n    setTags(tags.filter(tag => !keys.has(tag.id)));\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"300\">\n      <TagGroup.Root \n        aria-label=\"Tech stack\" \n        onRemove={handleRemove}\n      >\n        <TagGroup.TagList items={tags}>\n          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n        </TagGroup.TagList>\n      </TagGroup.Root>\n      <Text fontSize=\"sm\" color=\"fg.muted\">\n        {tags.length} {tags.length === 1 ? 'tag' : 'tags'} remaining\n      </Text>\n    </Stack>\n  );\n}\n```\n\n**Keyboard interaction**: When focused on a tag, press `Backspace` or `Delete` to remove it.\n\n### Single selection\n\nUse `selectionMode=\"single\"` to allow selecting one tag at a time:\n\n```jsx live-dev\nconst App = () => {\n  const [selected, setSelected] = useState(new Set());\n\n  const priorities = [\n    { id: 'low', name: 'Low' },\n    { id: 'medium', name: 'Medium' },\n    { id: 'high', name: 'High' },\n    { id: 'urgent', name: 'Urgent' },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"300\">\n      <TagGroup.Root\n        aria-label=\"Select priority\"\n        selectionMode=\"single\"\n        selectedKeys={selected}\n        onSelectionChange={setSelected}\n      >\n        <TagGroup.TagList items={priorities}>\n          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n        </TagGroup.TagList>\n      </TagGroup.Root>\n      <Text fontSize=\"sm\">\n        Selected: {selected.size > 0 ? [...selected][0] : 'None'}\n      </Text>\n    </Stack>\n  );\n}\n```\n\n### Multiple selection\n\nUse `selectionMode=\"multiple\"` to allow selecting multiple tags:\n\n```jsx live-dev\nconst App = () => {\n  const [selected, setSelected] = useState(new Set(['electronics']));\n\n  const filters = [\n    { id: 'electronics', name: 'Electronics' },\n    { id: 'clothing', name: 'Clothing' },\n    { id: 'home', name: 'Home & Garden' },\n    { id: 'sports', name: 'Sports' },\n    { id: 'books', name: 'Books' },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"300\">\n      <TagGroup.Root\n        aria-label=\"Filter categories\"\n        selectionMode=\"multiple\"\n        selectedKeys={selected}\n        onSelectionChange={setSelected}\n      >\n        <TagGroup.TagList items={filters}>\n          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n        </TagGroup.TagList>\n      </TagGroup.Root>\n      <Text fontSize=\"sm\">\n        {selected.size} {selected.size === 1 ? 'filter' : 'filters'} selected\n      </Text>\n    </Stack>\n  );\n}\n```\n\n**Note**: When using `selectionMode=\"single\"` or `selectionMode=\"multiple\"`, tags cannot be removed. These modes are mutually exclusive with the removal functionality.\n\n### Disabled state\n\nDisable the entire tag group or individual tags:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Stack direction=\"column\" gap=\"200\">\n      <Text fontSize=\"sm\" fontWeight=\"semibold\">Disabled group:</Text>\n      <TagGroup.Root aria-label=\"Disabled tags\" isDisabled>\n        <TagGroup.TagList>\n          <TagGroup.Tag>Disabled</TagGroup.Tag>\n          <TagGroup.Tag>Not interactive</TagGroup.Tag>\n        </TagGroup.TagList>\n      </TagGroup.Root>\n    </Stack>\n\n    <Stack direction=\"column\" gap=\"200\">\n      <Text fontSize=\"sm\" fontWeight=\"semibold\">Individual disabled tags:</Text>\n      <TagGroup.Root aria-label=\"Mixed tags\" selectionMode=\"multiple\">\n        <TagGroup.TagList>\n          <TagGroup.Tag>Available</TagGroup.Tag>\n          <TagGroup.Tag isDisabled>Disabled</TagGroup.Tag>\n          <TagGroup.Tag>Available</TagGroup.Tag>\n        </TagGroup.TagList>\n      </TagGroup.Root>\n    </Stack>\n  </Stack>\n)\n```\n\n## Component requirements\n\n## Accessibility\n\nThe TagGroup component is built on React Aria's TagGroup, which provides comprehensive accessibility support. However, you must always provide an accessible label:\n\n**Provide a label** using one of these methods:\n\n- Using a visible label with `aria-labelledby`:\n\n```tsx\n<Text id=\"tag-label\">Categories</Text>\n<TagGroup.Root aria-labelledby=\"tag-label\">\n  <TagGroup.TagList>\n    <TagGroup.Tag>Electronics</TagGroup.Tag>\n  </TagGroup.TagList>\n</TagGroup.Root>\n```\n\n- Using `aria-label` for a non-visible label:\n\n```tsx\n<TagGroup.Root aria-label=\"Product categories\">\n  <TagGroup.TagList>\n    <TagGroup.Tag>Electronics</TagGroup.Tag>\n  </TagGroup.TagList>\n</TagGroup.Root>\n```\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"example-tag-group\";\n\nexport const Example = () => (\n  <TagGroup.Root id={PERSISTENT_ID} aria-label=\"Categories\">\n    <TagGroup.TagList>\n      <TagGroup.Tag>Electronics</TagGroup.Tag>\n    </TagGroup.TagList>\n  </TagGroup.Root>\n);\n```\n\n#### Keyboard navigation\n\nThe component supports full keyboard interaction:\n\n- `Tab`: Moves focus into and out of the tag group\n- `Arrow Left` / `Arrow Right`: Navigates between tags within the group\n- `Enter` / `Space`: Selects the focused tag (when selection mode is enabled)\n- `Backspace` / `Delete`: Removes the focused tag (when `onRemove` is provided)\n- Focus wraps from the last tag to the first and vice versa\n\n## API reference\n\n<PropsTable id=\"TagGroup\" />\n\n## Common patterns\n\n### Filter chips with removal\n\nDisplay active filters that can be removed:\n\n```jsx live-dev\nconst App = () => {\n  const [filters, setFilters] = useState([\n    { id: 'price-low', name: 'Price: Low to High', category: 'sort' },\n    { id: 'instock', name: 'In Stock', category: 'availability' },\n    { id: 'brand-apple', name: 'Apple', category: 'brand' },\n  ]);\n\n  const handleRemove = (keys) => {\n    setFilters(filters.filter(f => !keys.has(f.id)));\n  };\n\n  const handleClearAll = () => {\n    setFilters([]);\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"300\">\n      <Stack direction=\"row\" justify=\"space-between\" align=\"center\">\n        <Text fontSize=\"sm\" fontWeight=\"semibold\">Active Filters</Text>\n        {filters.length > 0 && (\n          <Button size=\"sm\" variant=\"ghost\" onPress={handleClearAll}>\n            Clear all\n          </Button>\n        )}\n      </Stack>\n      {filters.length > 0 ? (\n        <TagGroup.Root \n          aria-label=\"Active filters\" \n          onRemove={handleRemove}\n          colorPalette=\"blue\"\n        >\n          <TagGroup.TagList items={filters}>\n            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      ) : (\n        <Text fontSize=\"sm\" color=\"fg.muted\">No filters applied</Text>\n      )}\n    </Stack>\n  );\n}\n```\n\n### Category selector\n\nUse single selection for choosing one category:\n\n```jsx live-dev\nconst App = () => {\n  const [selected, setSelected] = useState(new Set(['all']));\n  const [itemCount, setItemCount] = useState(124);\n\n  const categories = [\n    { id: 'all', name: 'All Products', count: 124 },\n    { id: 'new', name: 'New Arrivals', count: 18 },\n    { id: 'sale', name: 'On Sale', count: 32 },\n    { id: 'featured', name: 'Featured', count: 12 },\n  ];\n\n  const handleSelectionChange = (keys) => {\n    setSelected(keys);\n    const selectedId = [...keys][0];\n    const category = categories.find(c => c.id === selectedId);\n    setItemCount(category?.count || 0);\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"300\">\n      <TagGroup.Root\n        aria-label=\"Product categories\"\n        selectionMode=\"single\"\n        selectedKeys={selected}\n        onSelectionChange={handleSelectionChange}\n      >\n        <TagGroup.TagList items={categories}>\n          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n        </TagGroup.TagList>\n      </TagGroup.Root>\n      <Text fontSize=\"sm\" color=\"fg.muted\">\n        Showing {itemCount} products\n      </Text>\n    </Stack>\n  );\n}\n```\n\n### Multi-select filter\n\nAllow multiple selections for filtering:\n\n```jsx live-dev\nconst App = () => {\n  const [selectedSizes, setSelectedSizes] = useState(new Set());\n  const [selectedColors, setSelectedColors] = useState(new Set());\n\n  const sizes = [\n    { id: 'xs', name: 'XS' },\n    { id: 's', name: 'S' },\n    { id: 'm', name: 'M' },\n    { id: 'l', name: 'L' },\n    { id: 'xl', name: 'XL' },\n  ];\n\n  const colors = [\n    { id: 'black', name: 'Black' },\n    { id: 'white', name: 'White' },\n    { id: 'blue', name: 'Blue' },\n    { id: 'red', name: 'Red' },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontSize=\"sm\" fontWeight=\"semibold\">Size</Text>\n        <TagGroup.Root\n          aria-label=\"Select sizes\"\n          selectionMode=\"multiple\"\n          selectedKeys={selectedSizes}\n          onSelectionChange={setSelectedSizes}\n          size=\"sm\"\n        >\n          <TagGroup.TagList items={sizes}>\n            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </Stack>\n\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontSize=\"sm\" fontWeight=\"semibold\">Color</Text>\n        <TagGroup.Root\n          aria-label=\"Select colors\"\n          selectionMode=\"multiple\"\n          selectedKeys={selectedColors}\n          onSelectionChange={setSelectedColors}\n          size=\"sm\"\n          colorPalette=\"purple\"\n        >\n          <TagGroup.TagList items={colors}>\n            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </Stack>\n\n      <Text fontSize=\"sm\" color=\"fg.muted\">\n        Filters: {selectedSizes.size + selectedColors.size} selected\n      </Text>\n    </Stack>\n  );\n}\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using TagGroup within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the component renders with expected tags\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { TagGroup, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"TagGroup - Basic rendering\", () => {\n  it(\"renders tags with content\", () => {\n    render(\n      <NimbusProvider>\n        <TagGroup.Root aria-label=\"Categories\">\n          <TagGroup.TagList>\n            <TagGroup.Tag>Electronics</TagGroup.Tag>\n            <TagGroup.Tag>Clothing</TagGroup.Tag>\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByText(\"Electronics\")).toBeInTheDocument();\n    expect(screen.getByText(\"Clothing\")).toBeInTheDocument();\n  });\n\n  it(\"renders with dynamic items\", () => {\n    const items = [\n      { id: \"electronics\", name: \"Electronics\" },\n      { id: \"clothing\", name: \"Clothing\" },\n    ];\n\n    render(\n      <NimbusProvider>\n        <TagGroup.Root aria-label=\"Categories\">\n          <TagGroup.TagList items={items}>\n            {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByText(\"Electronics\")).toBeInTheDocument();\n    expect(screen.getByText(\"Clothing\")).toBeInTheDocument();\n  });\n});\n```\n\n### Selection Tests\n\nTest single and multiple selection modes\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { TagGroup, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"TagGroup - Selection\", () => {\n  it(\"handles single selection\", async () => {\n    const user = userEvent.setup();\n    const handleSelectionChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <TagGroup.Root\n          aria-label=\"Priority\"\n          selectionMode=\"single\"\n          onSelectionChange={handleSelectionChange}\n        >\n          <TagGroup.TagList>\n            <TagGroup.Tag id=\"low\">Low</TagGroup.Tag>\n            <TagGroup.Tag id=\"high\">High</TagGroup.Tag>\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </NimbusProvider>\n    );\n\n    const lowTag = screen.getByText(\"Low\");\n    await user.click(lowTag);\n\n    await waitFor(() => {\n      expect(handleSelectionChange).toHaveBeenCalled();\n      const selection = handleSelectionChange.mock.calls[0][0];\n      expect(selection.has(\"low\")).toBe(true);\n    });\n  });\n\n  it(\"handles multiple selection\", async () => {\n    const user = userEvent.setup();\n    const handleSelectionChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <TagGroup.Root\n          aria-label=\"Filters\"\n          selectionMode=\"multiple\"\n          onSelectionChange={handleSelectionChange}\n        >\n          <TagGroup.TagList>\n            <TagGroup.Tag id=\"tag1\">Tag 1</TagGroup.Tag>\n            <TagGroup.Tag id=\"tag2\">Tag 2</TagGroup.Tag>\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </NimbusProvider>\n    );\n\n    await user.click(screen.getByText(\"Tag 1\"));\n    await user.click(screen.getByText(\"Tag 2\"));\n\n    await waitFor(() => {\n      expect(handleSelectionChange).toHaveBeenCalledTimes(2);\n    });\n  });\n});\n```\n\n### Removal Tests\n\nTest tag removal functionality\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { TagGroup, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"TagGroup - Removal\", () => {\n  it(\"calls onRemove when remove button is clicked\", async () => {\n    const user = userEvent.setup();\n    const handleRemove = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <TagGroup.Root aria-label=\"Tags\" onRemove={handleRemove}>\n          <TagGroup.TagList>\n            <TagGroup.Tag id=\"tag1\">Tag 1</TagGroup.Tag>\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </NimbusProvider>\n    );\n\n    const removeButton = screen.getByLabelText(\"Remove tag\");\n    await user.click(removeButton);\n\n    await waitFor(() => {\n      expect(handleRemove).toHaveBeenCalledWith(\n        expect.objectContaining({\n          has: expect.any(Function),\n        })\n      );\n    });\n  });\n\n  it(\"removes tag with keyboard\", async () => {\n    const user = userEvent.setup();\n    const handleRemove = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <TagGroup.Root aria-label=\"Tags\" onRemove={handleRemove}>\n          <TagGroup.TagList>\n            <TagGroup.Tag id=\"tag1\">Tag 1</TagGroup.Tag>\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </NimbusProvider>\n    );\n\n    const tag = screen.getByText(\"Tag 1\");\n    await user.click(tag);\n    await user.keyboard(\"{Backspace}\");\n\n    await waitFor(() => {\n      expect(handleRemove).toHaveBeenCalled();\n    });\n  });\n});\n```\n\n### Keyboard Navigation Tests\n\nTest keyboard interactions\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { TagGroup, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"TagGroup - Keyboard navigation\", () => {\n  it(\"navigates between tags with arrow keys\", async () => {\n    const user = userEvent.setup();\n\n    render(\n      <NimbusProvider>\n        <TagGroup.Root aria-label=\"Tags\">\n          <TagGroup.TagList>\n            <TagGroup.Tag>First</TagGroup.Tag>\n            <TagGroup.Tag>Second</TagGroup.Tag>\n            <TagGroup.Tag>Third</TagGroup.Tag>\n          </TagGroup.TagList>\n        </TagGroup.Root>\n      </NimbusProvider>\n    );\n\n    // Tab to enter the tag group\n    await user.tab();\n    expect(document.activeElement?.textContent).toContain(\"First\");\n\n    // Arrow right to next tag\n    await user.keyboard(\"{ArrowRight}\");\n    expect(document.activeElement?.textContent).toContain(\"Second\");\n\n    // Arrow left to previous tag\n    await user.keyboard(\"{ArrowLeft}\");\n    expect(document.activeElement?.textContent).toContain(\"First\");\n  });\n});\n```\n\n\n## Resources\n\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-taggroup--docs)\n- [React Aria TagGroup](https://react-spectrum.adobe.com/react-aria/TagGroup.html)\n- [ARIA Tag Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tag/)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size options",
+          "href": "#size-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Dynamic collections with items",
+          "href": "#dynamic-collections-with-items",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Color palette",
+          "href": "#color-palette",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Removable tags",
+          "href": "#removable-tags",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Single selection",
+          "href": "#single-selection",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Multiple selection",
+          "href": "#multiple-selection",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Disabled state",
+          "href": "#disabled-state",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Filter chips with removal",
+          "href": "#filter-chips-with-removal",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Category selector",
+          "href": "#category-selector",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Multi-select filter",
+          "href": "#multi-select-filter",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Selection Tests",
+          "href": "#selection-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Removal Tests",
+          "href": "#removal-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard Navigation Tests",
+          "href": "#keyboard-navigation-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "guidelines": {
+      "mdx": "\n## Guidelines\n\nThese guidelines provide comprehensive direction for designing and developing\ntags within Nimbus.\n\n### Best practices\n\n- **Limit the number of tags:** Avoid overwhelming users with too many tags.\n- **Maintain consistent styling:** Ensure tags look and behave uniformly across\n  the product.\n- **Provide clear affordance for removal:** If tags are removable, make the\n  close icon visible and interactive.\n- **Do not mix toggle-able and removable tags within the same area:** These are\n  different types of selective interactions, avoid mixing to avoid confusion and\n  clear use in your interface.\n- **Single context:** Ensure all tags within a single group are relevant to one\n  entity or topic (e.g., all tags describe a single product's features, or all\n  tags represent filters applied to a list).\n- **Conciseness:** Keep tag labels short and easily readable (ideally one or two\n  words). If the text is too long, it should be truncated, and a tooltip should\n  reveal the full context.\n- **Logical ordering:** Arrange tags in a predictable, logical sequence, such as\n  alphabetically, by date added, or by importance.\n- **Color consistency:** Use color consistently to convey meaning. Define a\n  clear palette for status tags (e.g., Green for \"In Stock\") and neutral colors\n  for simple categorization.\n- **Handling overflow:** Implement a clear strategy for managing too many tags\n  (e.g., collapsing the list and showing a \"+X more\" count or allowing\n  horizontal scrolling).\n\n### Usage\n\nTags are used to display keywords. They also help filter data, allowing users to\nnarrow down lists of items, and show selected options, representing choices in\nmulti-select inputs.\n\n> [!TIP]\\\n> When to use\n\n- **Displaying metadata/attributes:** To showcase several non-hierarchical\n  attributes of an item (e.g., product size, material, color, collection name).\n- **Filtering statuses (interactive tags):** To show the user which filters are\n  currently applied, often allowing them to click an 'x' to remove the filter\n  immediately.\n- **Categorization (non-interactive tags):** To quickly label and organize\n  content pieces (e.g., \"New,\" \"Beta,\" \"Requires Review\").\n- **Highlighting key status:** To draw attention to critical, secondary status\n  information (e.g., \"Out of Stock,\" \"Draft\").\n\n> [!CAUTION]\\\n> When not to use\n\n- **Primary navigation:** Do not use tags to replace main menu links or primary\n  navigation structures.\n- **Long sentences/descriptions:** If you need to convey complex sentences or\n  lengthy descriptions, use standard body text or a detail panel instead.\n- **Too many options:** If the list of possible tags is extremely long and\n  variable (over 10-15 per group), consider using a multi-select dropdown with\n  categorization instead.\n- **Destructive actions:** Tags should not be used as the sole trigger for\n  complex, destructive, or irreversible actions.\n- **Mixing toggle-able and removable tags:** is not a good use of tooling, it\n  creates a very confusing experience for users.\n\n### Tags and tag group in use\n\n> [!TIP]\\\n> **Do**\n>\n> - Do keep tag phrases short and descriptive.\n> - Do keep removable tags easy to remove, and toggle-able tags easy to click.\n>   Avoid moving them or shuffling them while a user is interacting with them.\n>   Moving targets are harder to click.\n> - Do keep styling and sizing consistent within the same context.\n> - Do limit the amount of tags per context to not overwhelm the UI.\n\n```jsx live\nconst App = () => {\n  const [selected, setSelected] = useState(\n    new Set([\"pop\", \"jazz\", \"hip-hop\", \"reggae\"])\n  );\n\n  const musicGenres = [\n    { id: \"rock\", name: \"Rock\" },\n    { id: \"pop\", name: \"Pop\" },\n    { id: \"jazz\", name: \"Jazz\" },\n    { id: \"hip-hop\", name: \"Hip Hop\" },\n    { id: \"classical\", name: \"Classical\" },\n    { id: \"reggae\", name: \"Reggae\" },\n    { id: \"electronic\", name: \"Electronic\" },\n    { id: \"country\", name: \"Country\" },\n  ];\n\n  return (\n    <Box width=\"9600\">\n      <TagGroup.Root\n        aria-label=\"Music genres\"\n        selectionMode=\"multiple\"\n        selectedKeys={selected}\n        onSelectionChange={setSelected}\n      >\n        <TagGroup.TagList items={musicGenres} gap=\"300\">\n          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}\n        </TagGroup.TagList>\n      </TagGroup.Root>\n    </Box>\n  );\n};\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don’t use long, multi-word phrases for tags.\n> - Don't mix clearable or toggle status within tag groups. All should have the\n>   same functions within the same context.\n> - Don't overload the UI with an excessive number of tags.\n> - Don't use colors that are a misuse of semantic meanings. Use the neutral\n>   color options if colors are meant to show variety.\n\n```jsx live\nconst App = () => (\n  <Stack gap=\"300\">\n    <Text fontWeight=\"700\">Select music categories</Text>\n    <Flex gap=\"300\" flexWrap=\"wrap\">\n      <TagGroup.Root aria-label=\"non-removable music tags\" selectionMode=\"none\">\n        <TagGroup.TagList gap=\"300\">\n          <TagGroup.Tag id=\"pop\" colorPalette=\"warning\">\n            Pop\n          </TagGroup.Tag>\n          <TagGroup.Tag id=\"jazz\" colorPalette=\"positive\">\n            Jazz\n          </TagGroup.Tag>\n          <TagGroup.Tag id=\"reggae\" colorPalette=\"warning\">\n            Reggae\n          </TagGroup.Tag>\n          <TagGroup.Tag id=\"electronic\" colorPalette=\"critical\">\n            Electronic\n          </TagGroup.Tag>\n          <TagGroup.Tag id=\"hip-hop\" colorPalette=\"positive\">\n            Hip Hop\n          </TagGroup.Tag>\n        </TagGroup.TagList>\n      </TagGroup.Root>\n      <TagGroup.Root\n        aria-label=\"removable music tags\"\n        selectionMode=\"none\"\n        onRemove={() => {}}\n      >\n        <TagGroup.TagList gap=\"300\">\n          <TagGroup.Tag id=\"rock\" colorPalette=\"critical\">\n            Rock\n          </TagGroup.Tag>\n          <TagGroup.Tag id=\"classical\" colorPalette=\"warning\">\n            Classical\n          </TagGroup.Tag>\n          <TagGroup.Tag id=\"country\" colorPalette=\"critical\">\n            Country\n          </TagGroup.Tag>\n        </TagGroup.TagList>\n      </TagGroup.Root>\n    </Flex>\n  </Stack>\n);\n```\n",
+      "toc": [
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Tags and tag group in use",
+          "href": "#tags-and-tag-group-in-use",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

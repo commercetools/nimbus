@@ -1,0 +1,11 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Table.Root\n\nThe root table container that provides context for all table slots.",
+  "displayName": "TableRoot",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": true
+}

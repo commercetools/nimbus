@@ -1,0 +1,138 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Dialog.Root - The root component that provides context and state management",
+  "displayName": "DialogRoot",
+  "methods": [],
+  "props": {
+    "children": {
+      "defaultValue": null,
+      "description": "The children components (Trigger, Content, etc.)",
+      "name": "children",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/dialog/dialog.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "isOpen": {
+      "defaultValue": null,
+      "description": "Whether the dialog is open (controlled mode)",
+      "name": "isOpen",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/dialog/dialog.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "defaultOpen": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether the dialog is open by default (uncontrolled mode)",
+      "name": "defaultOpen",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/dialog/dialog.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isDismissable": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether the dialog can be dismissed by clicking the backdrop or pressing Escape.\nIf true, clicking outside the dialog or pressing Escape will close it.",
+      "name": "isDismissable",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/dialog/dialog.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isKeyboardDismissDisabled": {
+      "defaultValue": {
+        "value": "false"
+      },
+      "description": "Whether keyboard dismissal (Escape key) is disabled.\nIf true, pressing Escape will NOT close the dialog.",
+      "name": "isKeyboardDismissDisabled",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/dialog/dialog.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "shouldCloseOnInteractOutside": {
+      "defaultValue": null,
+      "description": "Function to determine whether the dialog should close when interacting outside.\nReceives the event and returns true to allow closing, false to prevent.",
+      "name": "shouldCloseOnInteractOutside",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/dialog/dialog.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(element: Element) => boolean"
+      }
+    },
+    "onOpenChange": {
+      "defaultValue": null,
+      "description": "Callback fired when the dialog open state changes\n@param isOpen - Whether the dialog is now open",
+      "name": "onOpenChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/dialog/dialog.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(isOpen: boolean) => void"
+      }
+    },
+    "aria-label": {
+      "defaultValue": null,
+      "description": "A Title for the dialog, optional, as long as the Dialog.Title component is user\nor there is a Heading component used inside the Dialog with\na `slot`-property set to `title`.",
+      "name": "aria-label",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/dialog/dialog.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

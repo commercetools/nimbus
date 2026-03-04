@@ -1,0 +1,27 @@
+{
+  "tags": {
+    "example": "```tsx\n<Stack direction=\"row\">\n  <Button>Left</Button>\n  <Spacer />\n  <Button>Right</Button>\n</Stack>\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Spacer component that fills available space in flex layouts.",
+  "displayName": "Spacer",
+  "methods": [],
+  "props": {
+    "ref": {
+      "defaultValue": null,
+      "description": "Reference to the spacer element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/spacer/spacer.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

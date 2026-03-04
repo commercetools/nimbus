@@ -1,0 +1,481 @@
+{
+  "meta": {
+    "id": "Components-Stack",
+    "title": "Stack",
+    "exportName": "Stack",
+    "description": "An easily customizable Stack component, re-exported from Chakra UI stack component, that provides a consistent and responsive layout structure across different products. Stacks allow you to effortlessly build flexible layouts with automatic distribution. You can arrange elements horizontally or vertically, adding spacing and/or separators between each item.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/stack/stack.mdx",
+    "menu": [
+      "Components",
+      "Layout",
+      "Stack"
+    ],
+    "route": "components/layout/stack",
+    "tags": [
+      "component",
+      "stack",
+      "layout",
+      "vertical",
+      "horizontal"
+    ],
+    "toc": [
+      {
+        "value": "Basic usage",
+        "href": "#basic-usage",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With direction",
+        "href": "#with-direction",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With spacing",
+        "href": "#with-spacing",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With separator",
+        "href": "#with-separator",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          3
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Basic usage\n\n```jsx\nimport { Stack } from \"@commercetools/nimbus\";\n```\n\n```jsx live\nconst App = () => (\n  <Stack>\n    {\" \"}\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">\n      Item 1\n    </Box>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">\n      Item 2\n    </Box>\n  </Stack>\n);\n```\n\n### With direction\n\nUse the direction prop to change the layout direction. The default direction is\n\"column\" (vertical). Set it to \"row\" for horizontal stacking.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\">\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Item 1</Box>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Item 2</Box>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Item 3</Box>\n  </Stack>\n)\n```\n\n### With spacing\n\n```jsx live\nconst App = () => (\n  <Stack gap=\"100\">\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Spaced Item 1</Box>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Spaced Item 2</Box>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Spaced Item 3</Box>\n  </Stack>\n)\n```\n\n### With separator\n\nAdd a visual separator between stacked items using the separator prop. You can\nalso use custom separators like icons or styled elements.\n\n```jsx live\nconst App = () => (\n <Stack separator={<hr />}>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Spaced Item with separator 1</Box>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Spaced Item with separator 2</Box>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Spaced Item with separator 3</Box>\n </Stack>\n)\n```\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Basic usage\n\n```jsx\nimport { Stack } from \"@commercetools/nimbus\";\n```\n\n```jsx live\nconst App = () => (\n  <Stack>\n    {\" \"}\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">\n      Item 1\n    </Box>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">\n      Item 2\n    </Box>\n  </Stack>\n);\n```\n\n### With direction\n\nUse the direction prop to change the layout direction. The default direction is\n\"column\" (vertical). Set it to \"row\" for horizontal stacking.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\">\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Item 1</Box>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Item 2</Box>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Item 3</Box>\n  </Stack>\n)\n```\n\n### With spacing\n\n```jsx live\nconst App = () => (\n  <Stack gap=\"100\">\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Spaced Item 1</Box>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Spaced Item 2</Box>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Spaced Item 3</Box>\n  </Stack>\n)\n```\n\n### With separator\n\nAdd a visual separator between stacked items using the separator prop. You can\nalso use custom separators like icons or styled elements.\n\n```jsx live\nconst App = () => (\n <Stack separator={<hr />}>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Spaced Item with separator 1</Box>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Spaced Item with separator 2</Box>\n    <Box key=\"1\" p=\"400\" bg=\"primary.7\">Spaced Item with separator 3</Box>\n </Stack>\n)\n```\n",
+      "toc": [
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With direction",
+          "href": "#with-direction",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With spacing",
+          "href": "#with-spacing",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With separator",
+          "href": "#with-separator",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Button variant=\"solid\">First</Button>\n    <Button variant=\"outline\">Second</Button>\n    <Button variant=\"ghost\">Third</Button>\n  </Stack>\n);\n```\n\n### Accessibility standards\n\n- **Use semantic HTML:** Stack is a layout component that renders a `div` by\n  default. Use the `as` prop to apply semantic elements when the stack has\n  semantic meaning (e.g., `nav`, `section`).\n- **Maintain reading order:** Ensure the visual stack order matches the DOM\n  order so screen readers navigate content logically.\n- **Avoid layout-only containers:** When possible, apply stack styles directly\n  to semantic parent elements.\n- **Focus order:** Ensure keyboard focus follows the logical stacking order (top\n  to bottom for column, left to right for row).\n- **Responsive design:** Ensure stacked layouts adapt appropriately for\n  different screen sizes and orientations.\n- **Don't rely on visual spacing alone:** Use semantic HTML to convey\n  relationships between stacked items, not just visual separation.\n\n### Resources\n\n- [WCAG 1.3.2 Meaningful Sequence](https://www.w3.org/WAI/WCAG21/Understanding/meaningful-sequence.html)\n- [WCAG 2.4.3 Focus Order](https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html)\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { Stack, type StackProps } from \"@commercetools/nimbus\";\n```\n\n### Basic usage\n\nBy default, Stack arranges children vertically with no gap:\n\n```jsx live-dev\nconst App = () => (\n  <Stack>\n    <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\">\n      Item 1\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\">\n      Item 2\n    </Box>\n    <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\">\n      Item 3\n    </Box>\n  </Stack>\n)\n```\n\n## Usage examples\n\n### Direction variants\n\nControl the layout direction with the `direction` prop. Supports `column` (default), `row`, `column-reverse`, and `row-reverse`:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Stack direction=\"row\" gap=\"200\">\n      <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\" flex=\"1\">Row Item 1</Box>\n      <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\" flex=\"1\">Row Item 2</Box>\n      <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\" flex=\"1\">Row Item 3</Box>\n    </Stack>\n    \n    <Stack direction=\"column\" gap=\"200\">\n      <Box p=\"400\" bg=\"info.7\" borderRadius=\"200\">Column Item 1</Box>\n      <Box p=\"400\" bg=\"info.7\" borderRadius=\"200\">Column Item 2</Box>\n      <Box p=\"400\" bg=\"info.7\" borderRadius=\"200\">Column Item 3</Box>\n    </Stack>\n    \n    <Stack direction=\"row-reverse\" gap=\"200\">\n      <Box p=\"400\" bg=\"positive.7\" borderRadius=\"200\">Reverse 1</Box>\n      <Box p=\"400\" bg=\"positive.7\" borderRadius=\"200\">Reverse 2</Box>\n      <Box p=\"400\" bg=\"positive.7\" borderRadius=\"200\">Reverse 3</Box>\n    </Stack>\n  </Stack>\n)\n```\n\n### Gap and spacing\n\nUse the `gap` prop to control spacing between items. Accepts Nimbus spacing tokens:\n\n```jsx live-dev\nconst App = () => {\n  const [gap, setGap] = useState<StackProps[\"gap\"]>(\"200\");\n  \n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Stack direction=\"row\" gap=\"200\" align=\"center\">\n        <Text fontWeight=\"600\">Gap:</Text>\n        <Button size=\"2xs\" onClick={() => setGap(\"100\")}>Small (100)</Button>\n        <Button size=\"2xs\" onClick={() => setGap(\"300\")}>Medium (300)</Button>\n        <Button size=\"2xs\" onClick={() => setGap(\"600\")}>Large (600)</Button>\n      </Stack>\n      \n      <Stack direction=\"row\" gap={gap}>\n        <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\">Item 1</Box>\n        <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\">Item 2</Box>\n        <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\">Item 3</Box>\n      </Stack>\n      \n      <Text fontSize=\"sm\" color=\"neutral.11\">\n        Current gap: {gap}\n      </Text>\n    </Stack>\n  );\n}\n```\n\n### With separator\n\nAdd visual separators between items using the `separator` prop:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"600\">\n    <Stack \n      direction=\"column\" \n      separator={<Box height=\"25\" bg=\"neutral.6\" />}\n    >\n      <Box p=\"400\">\n        <Text fontWeight=\"600\">Section 1</Text>\n        <Text fontSize=\"sm\" color=\"neutral.11\">Content for first section</Text>\n      </Box>\n      <Box p=\"400\">\n        <Text fontWeight=\"600\">Section 2</Text>\n        <Text fontSize=\"sm\" color=\"neutral.11\">Content for second section</Text>\n      </Box>\n      <Box p=\"400\">\n        <Text fontWeight=\"600\">Section 3</Text>\n        <Text fontSize=\"sm\" color=\"neutral.11\">Content for third section</Text>\n      </Box>\n    </Stack>\n    \n    <Stack \n      direction=\"row\" \n      separator={<Box width=\"25\" bg=\"neutral.6\" height=\"full\" />}\n    >\n      <Box p=\"400\" flex=\"1\">\n        <Text fontWeight=\"600\">Left</Text>\n      </Box>\n      <Box p=\"400\" flex=\"1\">\n        <Text fontWeight=\"600\">Center</Text>\n      </Box>\n      <Box p=\"400\" flex=\"1\">\n        <Text fontWeight=\"600\">Right</Text>\n      </Box>\n    </Stack>\n  </Stack>\n)\n```\n\n### Alignment options\n\nControl alignment with `align` and `justify` props:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Box>\n      <Text fontWeight=\"600\" mb=\"200\">Horizontal alignment (align):</Text>\n      <Stack direction=\"row\" gap=\"400\">\n        <Stack direction=\"column\" gap=\"200\" align=\"flex-start\" bg=\"neutral.3\" p=\"400\" borderRadius=\"200\" flex=\"1\">\n          <Text fontSize=\"sm\" fontWeight=\"600\">Start</Text>\n          <Box p=\"200\" bg=\"primary.7\" borderRadius=\"200\">Item</Box>\n        </Stack>\n        <Stack direction=\"column\" gap=\"200\" align=\"center\" bg=\"neutral.3\" p=\"400\" borderRadius=\"200\" flex=\"1\">\n          <Text fontSize=\"sm\" fontWeight=\"600\">Center</Text>\n          <Box p=\"200\" bg=\"primary.7\" borderRadius=\"200\">Item</Box>\n        </Stack>\n        <Stack direction=\"column\" gap=\"200\" align=\"flex-end\" bg=\"neutral.3\" p=\"400\" borderRadius=\"200\" flex=\"1\">\n          <Text fontSize=\"sm\" fontWeight=\"600\">End</Text>\n          <Box p=\"200\" bg=\"primary.7\" borderRadius=\"200\">Item</Box>\n        </Stack>\n      </Stack>\n    </Box>\n    \n    <Box>\n      <Text fontWeight=\"600\" mb=\"200\">Vertical alignment (justify):</Text>\n      <Stack direction=\"row\" gap=\"400\">\n        <Stack direction=\"row\" gap=\"200\" justify=\"flex-start\" bg=\"neutral.3\" p=\"400\" borderRadius=\"200\" flex=\"1\" height=\"2000\">\n          <Box p=\"200\" bg=\"info.7\" borderRadius=\"200\">Start</Box>\n        </Stack>\n        <Stack direction=\"row\" gap=\"200\" justify=\"center\" bg=\"neutral.3\" p=\"400\" borderRadius=\"200\" flex=\"1\" height=\"2000\">\n          <Box p=\"200\" bg=\"info.7\" borderRadius=\"200\">Center</Box>\n        </Stack>\n        <Stack direction=\"row\" gap=\"200\" justify=\"space-between\" bg=\"neutral.3\" p=\"400\" borderRadius=\"200\" flex=\"1\" height=\"2000\">\n          <Box p=\"200\" bg=\"info.7\" borderRadius=\"200\">Between</Box>\n          <Box p=\"200\" bg=\"info.7\" borderRadius=\"200\">Between</Box>\n        </Stack>\n      </Stack>\n    </Box>\n  </Stack>\n)\n```\n\n### Wrapping behavior\n\nControl how items wrap with the `wrap` prop:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Box>\n      <Text fontWeight=\"600\" mb=\"200\">Wrap (default):</Text>\n      <Stack direction=\"row\" wrap=\"wrap\" gap=\"200\" bg=\"neutral.3\" p=\"400\" borderRadius=\"200\">\n        {Array.from({ length: 12 }, (_, i) => (\n          <Box key={i} p=\"300\" bg=\"primary.7\" borderRadius=\"200\" minWidth=\"1600\">\n            Item {i + 1}\n          </Box>\n        ))}\n      </Stack>\n    </Box>\n    \n    <Box>\n      <Text fontWeight=\"600\" mb=\"200\">No wrap (overflow):</Text>\n      <Stack direction=\"row\" wrap=\"nowrap\" gap=\"200\" bg=\"neutral.3\" p=\"400\" borderRadius=\"200\" overflow=\"auto\">\n        {Array.from({ length: 12 }, (_, i) => (\n          <Box key={i} p=\"300\" bg=\"info.7\" borderRadius=\"200\" minWidth=\"1600\">\n            Item {i + 1}\n          </Box>\n        ))}\n      </Stack>\n    </Box>\n  </Stack>\n)\n```\n\n### Responsive layouts\n\nStack supports responsive prop values for different breakpoints:\n\n```jsx live-dev\nconst App = () => (\n  <Stack \n    direction={{ base: \"column\", md: \"row\" }}\n    gap={{ base: \"300\", md: \"600\" }}\n    align={{ base: \"stretch\", md: \"center\" }}\n  >\n    <Box p=\"600\" bg=\"primary.7\" borderRadius=\"200\" flex=\"1\">\n      <Text fontWeight=\"600\" mb=\"200\">Card 1</Text>\n      <Text fontSize=\"sm\">Stacks vertically on mobile, horizontally on desktop</Text>\n    </Box>\n    <Box p=\"600\" bg=\"primary.7\" borderRadius=\"200\" flex=\"1\">\n      <Text fontWeight=\"600\" mb=\"200\">Card 2</Text>\n      <Text fontSize=\"sm\">Resize the window to see the layout change</Text>\n    </Box>\n    <Box p=\"600\" bg=\"primary.7\" borderRadius=\"200\" flex=\"1\">\n      <Text fontWeight=\"600\" mb=\"200\">Card 3</Text>\n      <Text fontSize=\"sm\">Gap also adjusts responsively</Text>\n    </Box>\n  </Stack>\n)\n```\n\n## Component requirements\n\n### Usage context\n\nStack should be used when you need to:\n- Arrange multiple elements in a single direction (horizontal or vertical)\n- Apply consistent spacing between elements\n- Add separators between items\n- Create responsive layouts that change direction based on viewport\n\nFor more complex grid-based layouts, consider using the `Grid` component. For simple flex containers with more control over individual item properties, consider using `Flex` or `Box`.\n\n## Accessibility\n\nStack is a layout component with no inherent accessibility requirements. However:\n\n- Ensure child elements have appropriate accessibility attributes\n- Use semantic HTML elements within Stack when appropriate\n- Consider reading order when using `row-reverse` or `column-reverse`\n- Test keyboard navigation flows through stacked elements\n\n#### Persistent ID\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\n<Stack id=\"main-navigation-stack\">\n  {/* children */}\n</Stack>\n```\n\n## API reference\n\n<PropsTable id=\"Stack\" />\n\n## Common patterns\n\n### Navigation bar with actions\n\nUse Stack to create navigation layouts with items on opposite ends:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"row\" align=\"center\" gap=\"400\" p=\"400\" bg=\"neutral.2\" borderRadius=\"200\">\n    <Text fontWeight=\"600\" fontSize=\"lg\">Logo</Text>\n    <Spacer />\n    <Stack direction=\"row\" gap=\"200\">\n      <Button size=\"xs\" variant=\"ghost\">Home</Button>\n      <Button size=\"xs\" variant=\"ghost\">Products</Button>\n      <Button size=\"xs\" variant=\"ghost\">About</Button>\n      <Button size=\"xs\" variant=\"outline\">Sign In</Button>\n    </Stack>\n  </Stack>\n)\n```\n\n### Form sections with separators\n\nOrganize form sections with visual separators:\n\n```jsx live-dev\nconst App = () => (\n  <Stack \n    direction=\"column\" \n    separator={<Box height=\"25\" bg=\"neutral.6\" />}\n    divideY=\"1px\"\n  >\n    <Stack direction=\"column\" gap=\"300\" p=\"400\">\n      <Text fontWeight=\"600\">Personal Information</Text>\n      <TextInput label=\"Full Name\" />\n      <TextInput label=\"Email Address\" />\n    </Stack>\n    \n    <Stack direction=\"column\" gap=\"300\" p=\"400\">\n      <Text fontWeight=\"600\">Shipping Address</Text>\n      <TextInput label=\"Street Address\" />\n      <Stack direction=\"row\" gap=\"200\">\n        <TextInput label=\"City\" />\n        <TextInput label=\"Postal Code\" />\n      </Stack>\n    </Stack>\n    \n    <Stack direction=\"column\" gap=\"300\" p=\"400\">\n      <Text fontWeight=\"600\">Payment Method</Text>\n      <TextInput label=\"Card Number\" />\n      <Stack direction=\"row\" gap=\"200\">\n        <TextInput label=\"Expiry Date\" />\n        <TextInput label=\"CVV\" />\n      </Stack>\n    </Stack>\n  </Stack>\n)\n```\n\n### Action button groups\n\nCreate consistent button groups with proper spacing:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"600\" align=\"stretch\">\n    <Box>\n      <Text fontWeight=\"600\" mb=\"300\">Primary/Secondary Actions:</Text>\n      <Stack direction=\"row\" gap=\"200\" justify=\"flex-end\">\n        <Button variant=\"ghost\">Cancel</Button>\n        <Button variant=\"solid\" colorPalette=\"primary\">Save</Button>\n      </Stack>\n    </Box>\n    \n    <Box>\n      <Text fontWeight=\"600\" mb=\"300\">Multiple Actions:</Text>\n      <Stack direction=\"row\" gap=\"200\" justify=\"space-between\">\n        <Button variant=\"outline\" colorPalette=\"critical\">Delete</Button>\n        <Stack direction=\"row\" gap=\"200\">\n          <Button variant=\"ghost\">Cancel</Button>\n          <Button variant=\"outline\">Save Draft</Button>\n          <Button variant=\"solid\" colorPalette=\"primary\">Publish</Button>\n        </Stack>\n      </Stack>\n    </Box>\n    \n    <Box>\n      <Text fontWeight=\"600\" mb=\"300\">Icon Buttons:</Text>\n      <Stack direction=\"row\" gap=\"100\">\n        <IconButton aria-label=\"Edit\" size=\"xs\" variant=\"ghost\">\n          <Icons.Edit />\n        </IconButton>\n        <IconButton aria-label=\"Copy\" size=\"xs\" variant=\"ghost\">\n          <Icons.ContentCopy />\n        </IconButton>\n        <IconButton aria-label=\"Share\" size=\"xs\" variant=\"ghost\">\n          <Icons.Share />\n        </IconButton>\n        <IconButton aria-label=\"Delete\" size=\"xs\" variant=\"ghost\" colorPalette=\"critical\">\n          <Icons.Delete />\n        </IconButton>\n      </Stack>\n    </Box>\n  </Stack>\n)\n```\n\n### Card content layouts\n\nStructure card content with proper spacing:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Card.Root>\n      <Card.Content>\n        <Stack direction=\"column\" gap=\"300\">\n          <Stack direction=\"row\" justify=\"space-between\" align=\"center\">\n            <Text fontWeight=\"600\" fontSize=\"lg\">Product Details</Text>\n            <IconButton aria-label=\"More options\" size=\"xs\" variant=\"ghost\">\n              <Icons.MoreVert />\n            </IconButton>\n          </Stack>\n          \n          <Stack direction=\"column\" gap=\"200\">\n            <Stack direction=\"row\" justify=\"space-between\">\n              <Text color=\"neutral.11\">SKU:</Text>\n              <Text fontWeight=\"500\">ABC-12345</Text>\n            </Stack>\n            <Stack direction=\"row\" justify=\"space-between\">\n              <Text color=\"neutral.11\">Price:</Text>\n              <Text fontWeight=\"500\">$99.99</Text>\n            </Stack>\n            <Stack direction=\"row\" justify=\"space-between\">\n              <Text color=\"neutral.11\">Stock:</Text>\n              <Text fontWeight=\"500\" color=\"positive.11\">In Stock</Text>\n            </Stack>\n          </Stack>\n          \n          <Stack direction=\"row\" gap=\"200\" justify=\"flex-end\">\n            <Button size=\"xs\" variant=\"outline\">Edit</Button>\n            <Button size=\"xs\" variant=\"solid\" colorPalette=\"primary\">View Details</Button>\n          </Stack>\n        </Stack>\n      </Card.Content>\n    </Card.Root>\n  </Stack>\n)\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using Stack within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the Stack component renders with expected structure and children\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Stack, Box, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Stack - Basic rendering\", () => {\n  it(\"renders Stack with children\", () => {\n    render(\n      <NimbusProvider>\n        <Stack data-testid=\"test-stack\">\n          <Box>Item 1</Box>\n          <Box>Item 2</Box>\n          <Box>Item 3</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = screen.getByTestId(\"test-stack\");\n    expect(stack).toBeInTheDocument();\n    expect(stack).toHaveTextContent(\"Item 1\");\n    expect(stack).toHaveTextContent(\"Item 2\");\n    expect(stack).toHaveTextContent(\"Item 3\");\n  });\n\n  it(\"applies direction prop correctly\", () => {\n    render(\n      <NimbusProvider>\n        <Stack data-testid=\"row-stack\" direction=\"row\">\n          <Box>Item 1</Box>\n          <Box>Item 2</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = screen.getByTestId(\"row-stack\");\n    expect(stack).toHaveStyle({ flexDirection: \"row\" });\n  });\n\n  it(\"applies gap prop for spacing\", () => {\n    render(\n      <NimbusProvider>\n        <Stack data-testid=\"spaced-stack\" gap=\"400\">\n          <Box>Item 1</Box>\n          <Box>Item 2</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = screen.getByTestId(\"spaced-stack\");\n    expect(stack).toHaveStyle({ gap: \"var(--nimbus-spacing-400)\" });\n  });\n});\n```\n\n### Layout Behavior Tests\n\nTest different layout configurations and responsive behavior\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Stack, Box, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Stack - Layout behavior\", () => {\n  it(\"renders with column direction by default\", () => {\n    render(\n      <NimbusProvider>\n        <Stack data-testid=\"default-stack\">\n          <Box>Item 1</Box>\n          <Box>Item 2</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = screen.getByTestId(\"default-stack\");\n    // Chakra Stack defaults to column direction\n    expect(stack).toHaveStyle({ display: \"flex\" });\n  });\n\n  it(\"handles horizontal layout with row direction\", () => {\n    render(\n      <NimbusProvider>\n        <Stack data-testid=\"horizontal-stack\" direction=\"row\" gap=\"200\">\n          <Button>Left</Button>\n          <Button>Right</Button>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = screen.getByTestId(\"horizontal-stack\");\n    expect(stack).toHaveStyle({ flexDirection: \"row\" });\n    expect(screen.getByRole(\"button\", { name: \"Left\" })).toBeInTheDocument();\n    expect(screen.getByRole(\"button\", { name: \"Right\" })).toBeInTheDocument();\n  });\n\n  it(\"applies alignment props correctly\", () => {\n    render(\n      <NimbusProvider>\n        <Stack\n          data-testid=\"aligned-stack\"\n          direction=\"row\"\n          align=\"center\"\n          justify=\"space-between\"\n        >\n          <Box>Left</Box>\n          <Box>Right</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = screen.getByTestId(\"aligned-stack\");\n    expect(stack).toHaveStyle({\n      alignItems: \"center\",\n      justifyContent: \"space-between\",\n    });\n  });\n\n  it(\"applies wrap prop for multi-row layouts\", () => {\n    render(\n      <NimbusProvider>\n        <Stack data-testid=\"wrapped-stack\" direction=\"row\" wrap=\"wrap\">\n          {Array.from({ length: 10 }, (_, i) => (\n            <Box key={i}>Item {i + 1}</Box>\n          ))}\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = screen.getByTestId(\"wrapped-stack\");\n    expect(stack).toHaveStyle({ flexWrap: \"wrap\" });\n  });\n});\n```\n\n### Separator Tests\n\nTest rendering of separators between stack items\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Stack, Box, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Stack - Separators\", () => {\n  it(\"renders separator elements between children\", () => {\n    render(\n      <NimbusProvider>\n        <Stack\n          data-testid=\"separated-stack\"\n          separator={<Box data-testid=\"separator\">---</Box>}\n        >\n          <Box>Item 1</Box>\n          <Box>Item 2</Box>\n          <Box>Item 3</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const separators = screen.getAllByTestId(\"separator\");\n    // Should have n-1 separators for n items\n    expect(separators).toHaveLength(2);\n  });\n\n  it(\"renders custom separator components\", () => {\n    render(\n      <NimbusProvider>\n        <Stack\n          separator={<Box height=\"25\" bg=\"neutral.6\" data-testid=\"divider\" />}\n        >\n          <Box>Section 1</Box>\n          <Box>Section 2</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const dividers = screen.getAllByTestId(\"divider\");\n    expect(dividers).toHaveLength(1);\n  });\n});\n```\n\n### Style Props Tests\n\nTest that Stack accepts and applies Chakra style props\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Stack, Box, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Stack - Style props\", () => {\n  it(\"applies background color prop\", () => {\n    render(\n      <NimbusProvider>\n        <Stack data-testid=\"styled-stack\" bg=\"primary.7\" p=\"400\">\n          <Box>Content</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = screen.getByTestId(\"styled-stack\");\n    expect(stack).toHaveStyle({\n      padding: \"var(--nimbus-spacing-400)\",\n    });\n    // Background color is applied via colorPalette system\n  });\n\n  it(\"applies border radius and border props\", () => {\n    render(\n      <NimbusProvider>\n        <Stack\n          data-testid=\"bordered-stack\"\n          borderRadius=\"200\"\n          borderWidth=\"25\"\n          borderColor=\"neutral.6\"\n        >\n          <Box>Content</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = screen.getByTestId(\"bordered-stack\");\n    // Border styles are applied (checking presence, not exact CSS vars)\n    expect(stack).toBeInTheDocument();\n  });\n\n  it(\"applies width and height props\", () => {\n    render(\n      <NimbusProvider>\n        <Stack data-testid=\"sized-stack\" width=\"6400\" height=\"3200\">\n          <Box>Content</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = screen.getByTestId(\"sized-stack\");\n    expect(stack).toHaveStyle({\n      width: \"var(--nimbus-sizes-6400)\",\n      height: \"var(--nimbus-sizes-3200)\",\n    });\n  });\n\n  it(\"applies overflow props\", () => {\n    render(\n      <NimbusProvider>\n        <Stack data-testid=\"overflow-stack\" overflow=\"auto\">\n          <Box>Content</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = screen.getByTestId(\"overflow-stack\");\n    expect(stack).toHaveStyle({ overflow: \"auto\" });\n  });\n});\n```\n\n### Props Forwarding Tests\n\nVerify that Stack forwards standard HTML and ARIA attributes\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Stack, Box, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Stack - Props forwarding\", () => {\n  it(\"forwards data attributes\", () => {\n    render(\n      <NimbusProvider>\n        <Stack data-testid=\"data-stack\" data-custom=\"custom-value\">\n          <Box>Content</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = screen.getByTestId(\"data-stack\");\n    expect(stack).toHaveAttribute(\"data-custom\", \"custom-value\");\n  });\n\n  it(\"forwards className prop\", () => {\n    render(\n      <NimbusProvider>\n        <Stack data-testid=\"class-stack\" className=\"custom-class\">\n          <Box>Content</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = screen.getByTestId(\"class-stack\");\n    expect(stack).toHaveClass(\"custom-class\");\n  });\n\n  it(\"forwards id prop\", () => {\n    render(\n      <NimbusProvider>\n        <Stack id=\"unique-stack-id\">\n          <Box>Content</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = document.getElementById(\"unique-stack-id\");\n    expect(stack).toBeInTheDocument();\n  });\n\n  it(\"forwards ARIA attributes\", () => {\n    render(\n      <NimbusProvider>\n        <Stack\n          data-testid=\"aria-stack\"\n          aria-label=\"Navigation stack\"\n          role=\"navigation\"\n        >\n          <Box>Content</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const stack = screen.getByTestId(\"aria-stack\");\n    expect(stack).toHaveAttribute(\"aria-label\", \"Navigation stack\");\n    expect(stack).toHaveAttribute(\"role\", \"navigation\");\n  });\n});\n```\n\n### Ref Forwarding Tests\n\nVerify that Stack properly forwards refs to the underlying DOM element\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Stack, Box, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Stack - Ref forwarding\", () => {\n  it(\"forwards ref to underlying div element\", () => {\n    const ref = { current: null as HTMLDivElement | null };\n\n    render(\n      <NimbusProvider>\n        <Stack ref={ref}>\n          <Box>Content</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    expect(ref.current).toBeInstanceOf(HTMLDivElement);\n  });\n\n  it(\"allows access to DOM methods through ref\", () => {\n    const ref = { current: null as HTMLDivElement | null };\n\n    render(\n      <NimbusProvider>\n        <Stack ref={ref}>\n          <Box>Content</Box>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    expect(ref.current).not.toBeNull();\n    expect(typeof ref.current?.getBoundingClientRect).toBe(\"function\");\n  });\n});\n```\n\n\n## Resources\n\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-stack--docs)\n- [Chakra UI Stack Documentation](https://www.chakra-ui.com/docs/components/stack)\n- [Box Component](/components/layout/box)\n- [Flex Component](/components/layout/flex)\n- [Spacer Component](/components/layout/spacer)\n- [Grid Component](/components/layout/grid)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Direction variants",
+          "href": "#direction-variants",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Gap and spacing",
+          "href": "#gap-and-spacing",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With separator",
+          "href": "#with-separator",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Alignment options",
+          "href": "#alignment-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Wrapping behavior",
+          "href": "#wrapping-behavior",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Responsive layouts",
+          "href": "#responsive-layouts",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage context",
+          "href": "#usage-context",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Persistent ID",
+          "href": "#persistent-id",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Navigation bar with actions",
+          "href": "#navigation-bar-with-actions",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Form sections with separators",
+          "href": "#form-sections-with-separators",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Action button groups",
+          "href": "#action-button-groups",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Card content layouts",
+          "href": "#card-content-layouts",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Layout Behavior Tests",
+          "href": "#layout-behavior-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Separator Tests",
+          "href": "#separator-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Style Props Tests",
+          "href": "#style-props-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Props Forwarding Tests",
+          "href": "#props-forwarding-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Ref Forwarding Tests",
+          "href": "#ref-forwarding-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

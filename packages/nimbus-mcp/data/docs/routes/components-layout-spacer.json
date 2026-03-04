@@ -1,0 +1,573 @@
+{
+  "meta": {
+    "id": "Components-Spacer",
+    "title": "Spacer",
+    "exportName": "Spacer",
+    "description": "A simple layout component that automatically fills available space in flex layouts using flexGrow 1.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/spacer/spacer.mdx",
+    "menu": [
+      "Components",
+      "Layout",
+      "Spacer"
+    ],
+    "route": "components/layout/spacer",
+    "tags": [
+      "component",
+      "layout",
+      "flex"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Key features",
+        "href": "#key-features",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Basic Usage",
+        "href": "#basic-usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Navigation Layout",
+        "href": "#navigation-layout",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Multiple Spacers",
+        "href": "#multiple-spacers",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Vertical Layout",
+        "href": "#vertical-layout",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With Custom Styling",
+        "href": "#with-custom-styling",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          5
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "guidelines",
+        "title": "Guidelines",
+        "order": 2
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nSpacer is a utility component designed to create flexible spacing between\nelements in flex layouts. It automatically expands to fill any remaining space,\nmaking it perfect for creating navigation bars, toolbars, and other layouts\nwhere you need to push elements apart.\n\n### Key features\n\n- **Automatic Space Filling**: Uses `flexGrow: 1` to occupy all available space\n- **Works in Any Direction**: Supports both horizontal and vertical flex layouts\n- **Flexible Styling**: Can accept any Chakra UI Box props for custom styling\n- **Zero Configuration**: Works out of the box with no required props\n\n## Variables\n\nGet familiar with the features.\n\n### Basic Usage\n\nThe most common use case is pushing elements to opposite ends of a container.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" width=\"full\">\n    <Button variant=\"solid\">Left</Button>\n    <Spacer />\n    <Button variant=\"outline\">Right</Button>\n  </Stack>\n)\n```\n\n### Navigation Layout\n\nCreate navigation-style layouts with multiple element groups.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" width=\"full\">\n    <Button variant=\"ghost\">Home</Button>\n    <Button variant=\"ghost\">About</Button>\n    <Button variant=\"ghost\">Services</Button>\n    <Spacer />\n    <Button variant=\"ghost\">Profile</Button>\n    <Button variant=\"solid\">Sign In</Button>\n  </Stack>\n)\n```\n\n### Multiple Spacers\n\nUse multiple spacers to distribute space evenly between elements.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" width=\"full\">\n    <Button variant=\"outline\">First</Button>\n    <Spacer />\n    <Button variant=\"outline\">Second</Button>\n    <Spacer />\n    <Button variant=\"outline\">Third</Button>\n  </Stack>\n)\n```\n\n### Vertical Layout\n\nSpacer works in vertical layouts too.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"column\" height=\"400px\" width=\"200px\" borderWidth=\"1px\" borderRadius=\"200\">\n    <Box padding=\"400\" backgroundColor=\"neutral.3\" borderRadius=\"200 200 0 0\">\n      Header\n    </Box>\n    <Spacer />\n    <Box padding=\"400\" backgroundColor=\"neutral.3\" borderRadius=\"0 0 200 200\">\n      Footer\n    </Box>\n  </Stack>\n)\n```\n\n### With Custom Styling\n\nSpacer accepts all Chakra UI Box props for custom styling.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" width=\"full\">\n    <Button variant=\"solid\">Start</Button>\n    <Spacer backgroundColor=\"primary.3\" borderRadius=\"200\" minHeight=\"40px\" />\n    <Button variant=\"solid\">End</Button>\n  </Stack>\n)\n```\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nSpacer is a utility component designed to create flexible spacing between\nelements in flex layouts. It automatically expands to fill any remaining space,\nmaking it perfect for creating navigation bars, toolbars, and other layouts\nwhere you need to push elements apart.\n\n### Key features\n\n- **Automatic Space Filling**: Uses `flexGrow: 1` to occupy all available space\n- **Works in Any Direction**: Supports both horizontal and vertical flex layouts\n- **Flexible Styling**: Can accept any Chakra UI Box props for custom styling\n- **Zero Configuration**: Works out of the box with no required props\n\n## Variables\n\nGet familiar with the features.\n\n### Basic Usage\n\nThe most common use case is pushing elements to opposite ends of a container.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" width=\"full\">\n    <Button variant=\"solid\">Left</Button>\n    <Spacer />\n    <Button variant=\"outline\">Right</Button>\n  </Stack>\n)\n```\n\n### Navigation Layout\n\nCreate navigation-style layouts with multiple element groups.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" width=\"full\">\n    <Button variant=\"ghost\">Home</Button>\n    <Button variant=\"ghost\">About</Button>\n    <Button variant=\"ghost\">Services</Button>\n    <Spacer />\n    <Button variant=\"ghost\">Profile</Button>\n    <Button variant=\"solid\">Sign In</Button>\n  </Stack>\n)\n```\n\n### Multiple Spacers\n\nUse multiple spacers to distribute space evenly between elements.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" width=\"full\">\n    <Button variant=\"outline\">First</Button>\n    <Spacer />\n    <Button variant=\"outline\">Second</Button>\n    <Spacer />\n    <Button variant=\"outline\">Third</Button>\n  </Stack>\n)\n```\n\n### Vertical Layout\n\nSpacer works in vertical layouts too.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"column\" height=\"400px\" width=\"200px\" borderWidth=\"1px\" borderRadius=\"200\">\n    <Box padding=\"400\" backgroundColor=\"neutral.3\" borderRadius=\"200 200 0 0\">\n      Header\n    </Box>\n    <Spacer />\n    <Box padding=\"400\" backgroundColor=\"neutral.3\" borderRadius=\"0 0 200 200\">\n      Footer\n    </Box>\n  </Stack>\n)\n```\n\n### With Custom Styling\n\nSpacer accepts all Chakra UI Box props for custom styling.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" width=\"full\">\n    <Button variant=\"solid\">Start</Button>\n    <Spacer backgroundColor=\"primary.3\" borderRadius=\"200\" minHeight=\"40px\" />\n    <Button variant=\"solid\">End</Button>\n  </Stack>\n)\n```\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Key features",
+          "href": "#key-features",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Navigation Layout",
+          "href": "#navigation-layout",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Multiple Spacers",
+          "href": "#multiple-spacers",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Vertical Layout",
+          "href": "#vertical-layout",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With Custom Styling",
+          "href": "#with-custom-styling",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" width=\"full\">\n    <Button variant=\"solid\">Left</Button>\n    <Spacer />\n    <Button variant=\"outline\">Right</Button>\n  </Stack>\n)\n```\n\n### Accessibility standards\n\n- **Semantic Structure**: Spacer should not affect document semantics or screen\n  reader navigation\n- **Visual Only**: The spacing created by Spacer is purely visual and should not\n  convey meaning\n- **Alternative Approaches**: If spacing conveys important information, consider\n  using semantic HTML elements with appropriate ARIA attributes\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { Spacer, type SpacerProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe simplest implementation uses Spacer to push elements apart in a flex container:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"row\" width=\"full\">\n    <Button>Left</Button>\n    <Spacer />\n    <Button>Right</Button>\n  </Stack>\n)\n```\n\nThe Spacer component automatically fills available space using `flexGrow=\"1\"`, pushing elements to opposite ends of the container.\n\n## Usage examples\n\n### Horizontal spacing\n\nUse Spacer to separate elements horizontally in a row layout:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Stack direction=\"row\" width=\"full\">\n      <Text fontWeight=\"600\">Product Name</Text>\n      <Spacer />\n      <Text color=\"neutral.11\">$49.99</Text>\n    </Stack>\n    \n    <Stack direction=\"row\" width=\"full\">\n      <Button variant=\"outline\" size=\"xs\">Cancel</Button>\n      <Spacer />\n      <Button variant=\"solid\" size=\"xs\">Save</Button>\n    </Stack>\n  </Stack>\n)\n```\n\n### Navigation layout\n\nCreate navigation bars with grouped elements:\n\n```jsx live-dev\nconst App = () => (\n  <Stack \n    direction=\"row\" \n    width=\"full\" \n    padding=\"300\" \n    backgroundColor=\"neutral.2\" \n    borderRadius=\"200\"\n  >\n    <Button variant=\"ghost\" size=\"xs\">Home</Button>\n    <Button variant=\"ghost\" size=\"xs\">About</Button>\n    <Button variant=\"ghost\" size=\"xs\">Services</Button>\n    <Spacer />\n    <Button variant=\"ghost\" size=\"xs\">Profile</Button>\n    <Button variant=\"solid\" size=\"xs\">Sign In</Button>\n  </Stack>\n)\n```\n\n### Multiple spacers\n\nUse multiple Spacer components to distribute space evenly:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"row\" width=\"full\">\n    <Button variant=\"outline\">First</Button>\n    <Spacer />\n    <Button variant=\"outline\">Second</Button>\n    <Spacer />\n    <Button variant=\"outline\">Third</Button>\n  </Stack>\n)\n```\n\nEach Spacer receives an equal share of available space, creating even distribution.\n\n### Vertical layout\n\nSpacer works in vertical layouts too:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" height=\"6400\" width=\"4800\" borderWidth=\"25\" borderColor=\"neutral.6\" borderRadius=\"200\" padding=\"400\">\n    <Stack direction=\"column\" gap=\"200\">\n      <Text fontSize=\"lg\" fontWeight=\"600\">Card Title</Text>\n      <Text fontSize=\"sm\" color=\"neutral.11\">\n        This card demonstrates vertical spacing with a Spacer component.\n      </Text>\n    </Stack>\n    \n    <Spacer />\n    \n    <Stack direction=\"row\" gap=\"200\">\n      <Button variant=\"outline\" size=\"xs\">Cancel</Button>\n      <Button variant=\"solid\" size=\"xs\">Confirm</Button>\n    </Stack>\n  </Stack>\n)\n```\n\n### With custom styling\n\nAlthough typically invisible, Spacer accepts all Box props for custom styling:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Stack direction=\"row\" width=\"full\">\n      <Text fontWeight=\"600\">Default (invisible)</Text>\n      <Spacer />\n      <Text>Right side</Text>\n    </Stack>\n    \n    <Stack direction=\"row\" width=\"full\">\n      <Text fontWeight=\"600\">With background</Text>\n      <Spacer backgroundColor=\"primary.3\" borderRadius=\"200\" />\n      <Text>Right side</Text>\n    </Stack>\n    \n    <Stack direction=\"row\" width=\"full\">\n      <Text fontWeight=\"600\">With border</Text>\n      <Spacer borderTop=\"50 dashed\" borderColor=\"neutral.6\" />\n      <Text>Right side</Text>\n    </Stack>\n  </Stack>\n)\n```\n\n### Toolbar layout\n\nCreate toolbar or header layouts with grouped actions:\n\n```jsx live-dev\nconst App = () => (\n  <Stack \n    direction=\"row\" \n    width=\"full\" \n    padding=\"300\" \n    backgroundColor=\"neutral.2\" \n    borderRadius=\"200\"\n    alignItems=\"center\"\n  >\n    <Text fontWeight=\"600\" fontSize=\"sm\">Document.pdf</Text>\n    <Spacer />\n    <Stack direction=\"row\" gap=\"200\">\n      <Button variant=\"ghost\" size=\"xs\">\n        <Icons.Download />\n      </Button>\n      <Button variant=\"ghost\" size=\"xs\">\n        <Icons.Share />\n      </Button>\n      <Button variant=\"ghost\" size=\"xs\">\n        <Icons.MoreVert />\n      </Button>\n    </Stack>\n  </Stack>\n)\n```\n\n## Component requirements\n\n### Usage context\n\nThe Spacer component **must** be used within a flex container (such as Stack or Box with display=\"flex\"). It uses `flexGrow=\"1\"` to occupy available space, which only works in flex layouts.\n\n**Valid usage:**\n```tsx\n<Stack direction=\"row\">\n  <Button>Left</Button>\n  <Spacer />\n  <Button>Right</Button>\n</Stack>\n```\n\n**Invalid usage (not in flex container):**\n```tsx\n<div>\n  <Button>Left</Button>\n  <Spacer /> {/* Won't work - parent is not a flex container */}\n  <Button>Right</Button>\n</div>\n```\n\n## Accessibility\n\nThe Spacer component is a layout utility and has no accessibility requirements. It's purely visual and doesn't contain interactive content or convey information to users.\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"navigation-spacer\";\n\nexport const Navigation = () => (\n  <Stack direction=\"row\">\n    <Button>Home</Button>\n    <Spacer id={PERSISTENT_ID} />\n    <Button>Profile</Button>\n  </Stack>\n);\n```\n\n## API reference\n\n<PropsTable id=\"Spacer\" />\n\n## Common patterns\n\n### Navigation bar with logo\n\nCommon pattern for navigation bars with logo on left and actions on right:\n\n```jsx live-dev\nconst App = () => (\n  <Stack \n    direction=\"row\" \n    width=\"full\" \n    padding=\"400\" \n    backgroundColor=\"neutral.2\" \n    borderRadius=\"200\"\n    alignItems=\"center\"\n  >\n    <Stack direction=\"row\" gap=\"200\" alignItems=\"center\">\n      <Box \n        width=\"512\" \n        height=\"512\" \n        backgroundColor=\"primary.9\" \n        borderRadius=\"200\"\n      />\n      <Text fontWeight=\"600\">Brand</Text>\n    </Stack>\n    \n    <Spacer />\n    \n    <Stack direction=\"row\" gap=\"300\">\n      <Button variant=\"ghost\" size=\"xs\">Products</Button>\n      <Button variant=\"ghost\" size=\"xs\">Pricing</Button>\n      <Button variant=\"ghost\" size=\"xs\">About</Button>\n      <Button variant=\"solid\" size=\"xs\">Sign Up</Button>\n    </Stack>\n  </Stack>\n)\n```\n\n### Card with footer actions\n\nPattern for cards with actions positioned at opposite ends:\n\n```jsx live-dev\nconst App = () => (\n  <Card.Root width=\"6400\">\n    <Card.Content>\n      <Stack direction=\"column\" gap=\"300\">\n        <Stack direction=\"column\" gap=\"200\">\n          <Text fontSize=\"lg\" fontWeight=\"600\">Delete Item?</Text>\n          <Text fontSize=\"sm\" color=\"neutral.11\">\n            This action cannot be undone. The item will be permanently deleted.\n          </Text>\n        </Stack>\n        \n        <Stack direction=\"row\" gap=\"200\">\n          <Button variant=\"outline\" size=\"xs\">Cancel</Button>\n          <Spacer />\n          <Button variant=\"solid\" size=\"xs\" colorPalette=\"critical\">\n            Delete\n          </Button>\n        </Stack>\n      </Stack>\n    </Card.Content>\n  </Card.Root>\n)\n```\n\n### List items with actions\n\nPattern for list items with metadata and actions separated:\n\n```jsx live-dev\nconst App = () => {\n  const items = [\n    { id: 1, name: 'Annual Report 2024.pdf', size: '2.4 MB', date: 'Dec 10' },\n    { id: 2, name: 'Meeting Notes.docx', size: '156 KB', date: 'Dec 9' },\n    { id: 3, name: 'Budget Planning.xlsx', size: '892 KB', date: 'Dec 8' },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"200\">\n      {items.map((item) => (\n        <Stack \n          key={item.id}\n          direction=\"row\" \n          padding=\"300\" \n          backgroundColor=\"neutral.2\" \n          borderRadius=\"200\"\n          alignItems=\"center\"\n        >\n          <Stack direction=\"column\" gap=\"100\">\n            <Text fontSize=\"sm\" fontWeight=\"600\">{item.name}</Text>\n            <Text fontSize=\"xs\" color=\"neutral.11\">\n              {item.size} · {item.date}\n            </Text>\n          </Stack>\n          \n          <Spacer />\n          \n          <Stack direction=\"row\" gap=\"100\">\n            <Button variant=\"ghost\" size=\"2xs\">\n              <Icons.Download />\n            </Button>\n            <Button variant=\"ghost\" size=\"2xs\">\n              <Icons.MoreVert />\n            </Button>\n          </Stack>\n        </Stack>\n      ))}\n    </Stack>\n  );\n}\n```\n\n### Form footer actions\n\nPattern for form layouts with actions at opposite ends:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\" width=\"full\">\n    <FormField.Root>\n      <FormField.Label>Project Name</FormField.Label>\n      <FormField.Input>\n        <TextInput placeholder=\"Enter project name\" />\n      </FormField.Input>\n    </FormField.Root>\n    \n    <FormField.Root>\n      <FormField.Label>Description</FormField.Label>\n      <FormField.Input>\n        <MultilineTextInput placeholder=\"Enter description\" rows={3} />\n      </FormField.Input>\n    </FormField.Root>\n    \n    <Stack direction=\"row\" gap=\"200\">\n      <Button variant=\"outline\" size=\"xs\">Cancel</Button>\n      <Spacer />\n      <Button variant=\"outline\" size=\"xs\">Save as Draft</Button>\n      <Button variant=\"solid\" size=\"xs\">Publish</Button>\n    </Stack>\n  </Stack>\n)\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using Spacer within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the component renders and applies flexGrow\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Spacer, Stack, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Spacer - Basic rendering\", () => {\n  it(\"renders spacer element\", () => {\n    render(\n      <NimbusProvider>\n        <Stack direction=\"row\">\n          <Button>Left</Button>\n          <Spacer data-testid=\"spacer\" />\n          <Button>Right</Button>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const spacer = screen.getByTestId(\"spacer\");\n    expect(spacer).toBeInTheDocument();\n  });\n\n  it(\"applies flexGrow style\", () => {\n    render(\n      <NimbusProvider>\n        <Spacer data-testid=\"spacer\" />\n      </NimbusProvider>\n    );\n\n    const spacer = screen.getByTestId(\"spacer\");\n    expect(spacer).toHaveStyle({ flexGrow: \"1\" });\n  });\n\n  it(\"renders as a div element\", () => {\n    render(\n      <NimbusProvider>\n        <Spacer data-testid=\"spacer\" />\n      </NimbusProvider>\n    );\n\n    const spacer = screen.getByTestId(\"spacer\");\n    expect(spacer.tagName).toBe(\"DIV\");\n  });\n});\n```\n\n### Layout Behavior Tests\n\nTest spacer behavior in flex layouts\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Spacer, Stack, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Spacer - Layout behavior\", () => {\n  it(\"works in horizontal flex layout\", () => {\n    render(\n      <NimbusProvider>\n        <Stack direction=\"row\" data-testid=\"container\">\n          <Button>Left</Button>\n          <Spacer data-testid=\"spacer\" />\n          <Button>Right</Button>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const container = screen.getByTestId(\"container\");\n    const spacer = screen.getByTestId(\"spacer\");\n\n    expect(container).toBeInTheDocument();\n    expect(spacer).toBeInTheDocument();\n    expect(spacer).toHaveStyle({ flexGrow: \"1\" });\n  });\n\n  it(\"works in vertical flex layout\", () => {\n    render(\n      <NimbusProvider>\n        <Stack direction=\"column\" data-testid=\"container\" height=\"400px\">\n          <Button>Top</Button>\n          <Spacer data-testid=\"spacer\" />\n          <Button>Bottom</Button>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const container = screen.getByTestId(\"container\");\n    const spacer = screen.getByTestId(\"spacer\");\n\n    expect(container).toBeInTheDocument();\n    expect(spacer).toBeInTheDocument();\n    expect(spacer).toHaveStyle({ flexGrow: \"1\" });\n  });\n\n  it(\"supports multiple spacers in same container\", () => {\n    render(\n      <NimbusProvider>\n        <Stack direction=\"row\">\n          <Button>First</Button>\n          <Spacer data-testid=\"spacer-1\" />\n          <Button>Second</Button>\n          <Spacer data-testid=\"spacer-2\" />\n          <Button>Third</Button>\n        </Stack>\n      </NimbusProvider>\n    );\n\n    const spacer1 = screen.getByTestId(\"spacer-1\");\n    const spacer2 = screen.getByTestId(\"spacer-2\");\n\n    expect(spacer1).toBeInTheDocument();\n    expect(spacer2).toBeInTheDocument();\n    expect(spacer1).toHaveStyle({ flexGrow: \"1\" });\n    expect(spacer2).toHaveStyle({ flexGrow: \"1\" });\n  });\n});\n```\n\n### Custom Styling Tests\n\nTest that Spacer accepts Box props for styling\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Spacer, Stack, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Spacer - Custom styling\", () => {\n  it(\"accepts backgroundColor prop\", () => {\n    render(\n      <NimbusProvider>\n        <Spacer data-testid=\"spacer\" backgroundColor=\"primary.3\" />\n      </NimbusProvider>\n    );\n\n    const spacer = screen.getByTestId(\"spacer\");\n    expect(spacer).toBeInTheDocument();\n    // Note: backgroundColor is applied via Chakra's system, actual color computation happens at runtime\n  });\n\n  it(\"accepts borderRadius prop\", () => {\n    render(\n      <NimbusProvider>\n        <Spacer data-testid=\"spacer\" borderRadius=\"200\" />\n      </NimbusProvider>\n    );\n\n    const spacer = screen.getByTestId(\"spacer\");\n    expect(spacer).toBeInTheDocument();\n  });\n\n  it(\"accepts border props\", () => {\n    render(\n      <NimbusProvider>\n        <Spacer\n          data-testid=\"spacer\"\n          borderTop=\"2px dashed\"\n          borderColor=\"neutral.6\"\n        />\n      </NimbusProvider>\n    );\n\n    const spacer = screen.getByTestId(\"spacer\");\n    expect(spacer).toBeInTheDocument();\n  });\n\n  it(\"accepts height prop for vertical spacing\", () => {\n    render(\n      <NimbusProvider>\n        <Spacer data-testid=\"spacer\" height=\"50px\" />\n      </NimbusProvider>\n    );\n\n    const spacer = screen.getByTestId(\"spacer\");\n    expect(spacer).toHaveStyle({ height: \"50px\" });\n  });\n});\n```\n\n### Props Forwarding Tests\n\nTest that standard HTML attributes are forwarded\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Spacer, Stack, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Spacer - Props forwarding\", () => {\n  it(\"forwards data attributes\", () => {\n    render(\n      <NimbusProvider>\n        <Spacer data-testid=\"spacer\" data-custom=\"custom-value\" />\n      </NimbusProvider>\n    );\n\n    const spacer = screen.getByTestId(\"spacer\");\n    expect(spacer).toHaveAttribute(\"data-custom\", \"custom-value\");\n  });\n\n  it(\"forwards className prop\", () => {\n    render(\n      <NimbusProvider>\n        <Spacer data-testid=\"spacer\" className=\"custom-class\" />\n      </NimbusProvider>\n    );\n\n    const spacer = screen.getByTestId(\"spacer\");\n    expect(spacer).toHaveClass(\"custom-class\");\n  });\n\n  it(\"forwards id prop\", () => {\n    render(\n      <NimbusProvider>\n        <Spacer id=\"custom-id\" />\n      </NimbusProvider>\n    );\n\n    const spacer = document.getElementById(\"custom-id\");\n    expect(spacer).toBeInTheDocument();\n  });\n\n  it(\"forwards aria attributes\", () => {\n    render(\n      <NimbusProvider>\n        <Spacer data-testid=\"spacer\" aria-label=\"spacer element\" />\n      </NimbusProvider>\n    );\n\n    const spacer = screen.getByTestId(\"spacer\");\n    expect(spacer).toHaveAttribute(\"aria-label\", \"spacer element\");\n  });\n});\n```\n\n### Ref Forwarding Tests\n\nTest that refs are properly forwarded\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Spacer, Stack, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Spacer - Ref forwarding\", () => {\n  it(\"forwards ref to underlying element\", () => {\n    const ref = { current: null as HTMLDivElement | null };\n\n    render(\n      <NimbusProvider>\n        <Spacer ref={ref} />\n      </NimbusProvider>\n    );\n\n    expect(ref.current).toBeInstanceOf(HTMLDivElement);\n  });\n\n  it(\"allows ref access to DOM methods\", () => {\n    const ref = { current: null as HTMLDivElement | null };\n\n    render(\n      <NimbusProvider>\n        <Spacer ref={ref} data-testid=\"spacer\" />\n      </NimbusProvider>\n    );\n\n    expect(ref.current?.getAttribute(\"data-testid\")).toBe(\"spacer\");\n  });\n});\n```\n\n\n## Resources\n\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-spacer--docs)\n- [Chakra UI Box](https://chakra-ui.com/docs/components/box)\n- [CSS Flexbox Guide](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)\n- [Stack Component](/components/layout/stack)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Horizontal spacing",
+          "href": "#horizontal-spacing",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Navigation layout",
+          "href": "#navigation-layout",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Multiple spacers",
+          "href": "#multiple-spacers",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Vertical layout",
+          "href": "#vertical-layout",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With custom styling",
+          "href": "#with-custom-styling",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Toolbar layout",
+          "href": "#toolbar-layout",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage context",
+          "href": "#usage-context",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Navigation bar with logo",
+          "href": "#navigation-bar-with-logo",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Card with footer actions",
+          "href": "#card-with-footer-actions",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "List items with actions",
+          "href": "#list-items-with-actions",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Form footer actions",
+          "href": "#form-footer-actions",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Layout Behavior Tests",
+          "href": "#layout-behavior-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom Styling Tests",
+          "href": "#custom-styling-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Props Forwarding Tests",
+          "href": "#props-forwarding-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Ref Forwarding Tests",
+          "href": "#ref-forwarding-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "guidelines": {
+      "mdx": "\n## Guidelines\n\nUse this component strategically to create flexible layouts.\n\n### Best practices\n\n- **Use in Flex Containers**: Spacer only works within flex or grid layouts\n  (Stack, HStack, VStack, etc.)\n- **Semantic HTML**: Spacer renders a `<div>` element, so use it appropriately\n  in your document structure\n- **Multiple Spacers**: When using multiple spacers, they will divide the\n  available space equally\n- **Custom Styling**: You can pass any Box props to customize appearance when\n  needed\n\n### When to use\n\n> [!TIP]\\\n> When to use\n\n- **Navigation Bars**: Separate logo from menu items or push actions to the\n  right\n- **Toolbars**: Group related tools with flexible spacing between groups\n- **Card Footers**: Push action buttons to opposite ends\n- **Forms**: Create space between form sections or buttons\n- **Headers**: Separate title from actions or utilities\n\n> [!CAUTION]\\\n> When not to use\n\n- **Fixed Spacing**: Use Stack's `gap` prop or Box's `margin` for consistent,\n  fixed spacing\n- **Non-Flex Layouts**: Spacer requires a flex or grid parent to work\n- **Complex Grids**: Use CSS Grid for two-dimensional layouts instead\n- **Content Spacing**: Don't use for spacing within text content - use\n  typography components\n",
+      "toc": [
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "When to use",
+          "href": "#when-to-use",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

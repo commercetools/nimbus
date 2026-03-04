@@ -1,0 +1,9 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Props for the Table.ColumnGroup component\n\nColumn group container (colgroup element) for defining column widths.",
+  "displayName": "TableColumnGroupProps",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

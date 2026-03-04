@@ -1,0 +1,12 @@
+{
+  "tags": {
+    "description": "Use Table for **static, read-only data displays**. It renders\nsemantic HTML table markup without interactive features. Perfect for small\ndatasets (< 50 rows), product specifications, pricing tiers, or reference content.\n\n**When to use Table (simple):**\n- Static content displays (specifications, comparisons, pricing)\n- Small datasets (< 50 rows) without pagination needs\n- Read-only data that users only need to view\n- Simple layouts without sorting, filtering, or selection\n\n**When to upgrade to DataTable (complex):**\n- Sorting columns in ascending/descending order\n- Row selection for bulk actions\n- Column management (show/hide, reorder, resize)\n- Search and filtering across data\n- Pagination for large datasets (> 50 rows)\n- Server-side data operations\n- Nested/hierarchical data with expansion",
+    "see": "{@link DataTable } for interactive tables with sorting, filtering, and selection"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Props for the Table.Root component\n\nThe root table container that wraps all table parts.",
+  "displayName": "TableRootProps",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

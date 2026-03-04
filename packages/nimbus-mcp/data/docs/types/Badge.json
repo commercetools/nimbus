@@ -1,0 +1,43 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/data-display/badge}",
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Badge\n\nBriefly highlights or categorizes associated UI elements with concise visual cues for status or metadata.",
+  "displayName": "Badge",
+  "methods": [],
+  "props": {
+    "children": {
+      "defaultValue": null,
+      "description": "Content to display inside the badge",
+      "name": "children",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/badge/badge.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref forwarding to the root element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/badge/badge.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLSpanElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

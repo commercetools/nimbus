@@ -1,0 +1,39 @@
+{
+  "meta": {
+    "id": "ZIndex",
+    "title": "Z-Indices",
+    "description": "The list of available z-index tokens",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/tokens/z-indices.mdx",
+    "menu": [
+      "Home",
+      "Design Tokens",
+      "Other",
+      "Z-Indices"
+    ],
+    "route": "home/design-tokens/other/z-indices",
+    "tags": [
+      "z-index",
+      "layer",
+      "stacking",
+      "context"
+    ],
+    "toc": [],
+    "icon": "Layers",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Z-Indices\n\nThe list of available z-index tokens.\n\n<GenericTokenTableDemo category=\"zIndex\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Z-Indices\n\nThe list of available z-index tokens.\n\n<GenericTokenTableDemo category=\"zIndex\" />\n",
+      "toc": []
+    }
+  }
+}

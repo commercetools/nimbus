@@ -1,0 +1,80 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "MainPage.Content - The main content area that wraps PageContent.Root\ninternally. Forwards `variant` and `columns` props to PageContent for\nwidth constraints and column layouts.",
+  "displayName": "MainPageContent",
+  "methods": [],
+  "props": {
+    "as": {
+      "defaultValue": null,
+      "description": "",
+      "name": "as",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.33.0_@emotion+react@11.14.0_@types+react@19.2.14_react@19.2.0__react_b7a7ada84db66a361121c9c3a146300f/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "PolymorphicProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.33.0_@emotion+react@11.14.0_@types+react@19.2.14_react@19.2.0__react_b7a7ada84db66a361121c9c3a146300f/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "PolymorphicProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ElementType"
+      }
+    },
+    "css": {
+      "defaultValue": null,
+      "description": "",
+      "name": "css",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.33.0_@emotion+react@11.14.0_@types+react@19.2.14_react@19.2.0__react_b7a7ada84db66a361121c9c3a146300f/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+        "name": "JsxStyleProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@chakra-ui+react@3.33.0_@emotion+react@11.14.0_@types+react@19.2.14_react@19.2.0__react_b7a7ada84db66a361121c9c3a146300f/node_modules/@chakra-ui/react/dist/types/styled-system/factory.types.d.ts",
+          "name": "JsxStyleProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "SystemStyleObject | Omit<SystemStyleObject[], keyof any[]>"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/main-page/main-page.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLElement>"
+      }
+    },
+    "variant": {
+      "defaultValue": null,
+      "description": "Width constraint variant forwarded to PageContent.Root",
+      "name": "variant",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/main-page/main-page.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ConditionalValue<\"full\" | \"wide\" | \"narrow\">"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

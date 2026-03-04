@@ -1,0 +1,42 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# TabList\n\nA container for the tab buttons that allows users to switch between different panels.",
+  "displayName": "TabsList",
+  "methods": [],
+  "props": {
+    "tabs": {
+      "defaultValue": null,
+      "description": "",
+      "name": "tabs",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "TabItemProps[]"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tabs/tabs.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

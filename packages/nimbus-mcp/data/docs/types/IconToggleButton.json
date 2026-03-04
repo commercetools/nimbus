@@ -1,0 +1,40 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# IconToggleButton\n============================================================\nA toggle button with only an icon as child. It is based\non the regular `ToggleButton` component, but with a few adjustments.",
+  "displayName": "IconToggleButton",
+  "methods": [],
+  "props": {
+    "aria-label": {
+      "defaultValue": null,
+      "description": "Required accessible label for the icon button",
+      "name": "aria-label",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/icon-toggle-button/icon-toggle-button.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "string"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref forwarding to the button element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/icon-toggle-button/icon-toggle-button.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLButtonElement>"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

@@ -1,0 +1,9 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Promise toast configuration for loading/success/error states.",
+  "displayName": "ToastPromiseOptions",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

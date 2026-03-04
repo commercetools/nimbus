@@ -1,0 +1,770 @@
+{
+  "meta": {
+    "id": "Components-LocalizedField",
+    "title": "Localized field",
+    "exportName": "LocalizedField",
+    "description": "A localized field is a single component that enables users to input and manage content for multiple language versions of a piece of data within one unified form area.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/localized-field/localized-field.mdx",
+    "menu": [
+      "Components",
+      "Forms",
+      "Localized field"
+    ],
+    "route": "components/forms/localized-field",
+    "tags": [
+      "component",
+      "form",
+      "l10n",
+      "i18n",
+      "localization"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size",
+        "href": "#size",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Expand and hide",
+        "href": "#expand-and-hide",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Localized field combinations",
+        "href": "#localized-field-combinations",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          3
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "guidelines",
+        "title": "Guidelines",
+        "order": 2
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nThe localized field component serves as a container that displays and manages\ncontent across various defined locales. It minimizes clutter by allowing users\nto toggle between language versions using a control while ensuring that the data\nfor each specified locale is correctly captured, validated, and stored in the\napplication.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system)\n[Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-localizedfield--docs)\n\n## Variables\n\nGet familiar with the features.\n\n### Size\n\nThere are two supported sizes for localized fields, the default (md) and a\nsmaller version for more compact needs (sm).\n\n```jsx live\nconst App = () => {\n  const [smValues, setSmValues] = useState({ en: 'Hello world', de: 'Hallo Welt' });\n  const [mdValues, setMdValues] = useState({ en: 'Hello world', de: 'Hallo Welt' });\n\n  return (\n    <Box>\n      <LocalizedField\n        size=\"md\"\n        defaultLocaleOrCurrency=\"en\"\n        valuesByLocaleOrCurrency={mdValues}\n        onChange={(e) => {\n          setMdValues({\n            ...mdValues,\n            [e.target.locale]: e.target.value\n          });\n        }}\n      />\n       <LocalizedField\n        size=\"sm\"\n        defaultLocaleOrCurrency=\"en\"\n        valuesByLocaleOrCurrency={smValues}\n        onChange={(e) => {\n          setSmValues({\n            ...smValues,\n            [e.target.locale]: e.target.value\n          });\n        }}\n      />\n    </Box>\n  );\n};\n```\n\n### Expand and hide\n\nAllow users to be able to expand and minimize localized fields to simplify a\npage, or expand to see everything when needed.\n\n```jsx live\nconst App = () => {\n  const [values, setValues] = useState({ en: 'Hello world', de: 'Hallo Welt', es: 'Hola Mundo', nl: 'Hallo Wereld' });\n\n  return (\n    <LocalizedField\n      size=\"md\"\n      defaultLocaleOrCurrency=\"en\"\n      defaultExpanded\n      valuesByLocaleOrCurrency={values}\n      onChange={(e) => {\n        setValues({\n          ...values,\n          [e.target.locale]: e.target.value\n        });\n      }}\n    />\n  );\n};\n```\n\n### Localized field combinations\n\nCombine with rich text, text, multiline text, richttext, and moneyinput to give\nusers more availability for localized input details.\n\n```jsx live\nconst App = () => {\n  const [enValues, setEnValues] = useState({\n    en: 'hello',\n  });\n\n  const [deValues, setDeValues] = useState({\n    de: 'hallo',\n  });\n\n  return (\n    <Box>\n      <LocalizedField\n        type=\"richText\"\n        defaultLocaleOrCurrency=\"en\"\n        valuesByLocaleOrCurrency={enValues}\n        onChange={(e) => {\n          setEnValues({\n            ...enValues,\n            [e.target.locale]: e.target.value\n          });\n        }}\n      />\n      <LocalizedField\n        type=\"richText\"\n        defaultLocaleOrCurrency=\"de\"\n        valuesByLocaleOrCurrency={deValues}\n        onChange={(e) => {\n          setDeValues({\n            ...enValues,\n            [e.target.locale]: e.target.value\n          });\n        }}\n      />\n    </Box>\n  );\n};\n```\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nThe localized field component serves as a container that displays and manages\ncontent across various defined locales. It minimizes clutter by allowing users\nto toggle between language versions using a control while ensuring that the data\nfor each specified locale is correctly captured, validated, and stored in the\napplication.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system)\n[Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-localizedfield--docs)\n\n## Variables\n\nGet familiar with the features.\n\n### Size\n\nThere are two supported sizes for localized fields, the default (md) and a\nsmaller version for more compact needs (sm).\n\n```jsx live\nconst App = () => {\n  const [smValues, setSmValues] = useState({ en: 'Hello world', de: 'Hallo Welt' });\n  const [mdValues, setMdValues] = useState({ en: 'Hello world', de: 'Hallo Welt' });\n\n  return (\n    <Box>\n      <LocalizedField\n        size=\"md\"\n        defaultLocaleOrCurrency=\"en\"\n        valuesByLocaleOrCurrency={mdValues}\n        onChange={(e) => {\n          setMdValues({\n            ...mdValues,\n            [e.target.locale]: e.target.value\n          });\n        }}\n      />\n       <LocalizedField\n        size=\"sm\"\n        defaultLocaleOrCurrency=\"en\"\n        valuesByLocaleOrCurrency={smValues}\n        onChange={(e) => {\n          setSmValues({\n            ...smValues,\n            [e.target.locale]: e.target.value\n          });\n        }}\n      />\n    </Box>\n  );\n};\n```\n\n### Expand and hide\n\nAllow users to be able to expand and minimize localized fields to simplify a\npage, or expand to see everything when needed.\n\n```jsx live\nconst App = () => {\n  const [values, setValues] = useState({ en: 'Hello world', de: 'Hallo Welt', es: 'Hola Mundo', nl: 'Hallo Wereld' });\n\n  return (\n    <LocalizedField\n      size=\"md\"\n      defaultLocaleOrCurrency=\"en\"\n      defaultExpanded\n      valuesByLocaleOrCurrency={values}\n      onChange={(e) => {\n        setValues({\n          ...values,\n          [e.target.locale]: e.target.value\n        });\n      }}\n    />\n  );\n};\n```\n\n### Localized field combinations\n\nCombine with rich text, text, multiline text, richttext, and moneyinput to give\nusers more availability for localized input details.\n\n```jsx live\nconst App = () => {\n  const [enValues, setEnValues] = useState({\n    en: 'hello',\n  });\n\n  const [deValues, setDeValues] = useState({\n    de: 'hallo',\n  });\n\n  return (\n    <Box>\n      <LocalizedField\n        type=\"richText\"\n        defaultLocaleOrCurrency=\"en\"\n        valuesByLocaleOrCurrency={enValues}\n        onChange={(e) => {\n          setEnValues({\n            ...enValues,\n            [e.target.locale]: e.target.value\n          });\n        }}\n      />\n      <LocalizedField\n        type=\"richText\"\n        defaultLocaleOrCurrency=\"de\"\n        valuesByLocaleOrCurrency={deValues}\n        onChange={(e) => {\n          setDeValues({\n            ...enValues,\n            [e.target.locale]: e.target.value\n          });\n        }}\n      />\n    </Box>\n  );\n};\n```\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size",
+          "href": "#size",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Expand and hide",
+          "href": "#expand-and-hide",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Localized field combinations",
+          "href": "#localized-field-combinations",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => {\n  const [values, setValues] = useState({ en: 'Hello world', de: 'Hallo Welt' });\n\n  return (\n\n      <LocalizedField\n        size=\"md\"\n        defaultLocaleOrCurrency=\"en\"\n        valuesByLocaleOrCurrency={values}\n        onChange={(e) => {\n          setValues({\n            ...values,\n            [e.target.locale]: e.target.value\n          });\n        }}\n      />\n\n  );\n};\n```\n\n### Accessibility standards\n\n- **Focus management:** Ensure the Tab order moves logically between the active\n  input field and the language switching controls. When the language is\n  switched, focus should return to the newly visible input field.\n- **Keyboard operability:** The language switching controls (tabs, buttons) must\n  be fully navigable and operable via the keyboard.\n- **ARIA roles:** Ensure the active input field correctly inherits all necessary\n  ARIA attributes (e.g., aria-required, aria-invalid) from the FormField\n  component.\n- **Screen reader communication:** Ensure screen readers announce the change of\n  language context when the user activates a different locale input, often by\n  announcing the new tab or language code.\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { LocalizedField, type LocalizedFieldProps, type LocalizedString, type LocalizedCurrency } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe LocalizedField component manages multiple locale-specific or currency-specific input fields with expand/collapse functionality. It requires controlled mode with an `onChange` handler:\n\n```jsx live-dev\nconst App = () => {\n  const [values, setValues] = React.useState({\n    en: 'Hello',\n    de: 'Hallo',\n    es: 'Hola'\n  });\n\n  const handleChange = (e) => {\n    setValues(prev => ({\n      ...prev,\n      [e.target.locale]: e.target.value\n    }));\n  };\n\n  return (\n    <LocalizedField\n      type=\"text\"\n      label=\"Product Name\"\n      defaultLocaleOrCurrency=\"en\"\n      valuesByLocaleOrCurrency={values}\n      onChange={handleChange}\n    />\n  );\n};\n```\n\n## Working with localized values\n\nThe LocalizedField component uses specialized types for managing multi-locale and multi-currency data.\n\n### LocalizedString type\n\nFor `text`, `multiLine`, and `richText` input types, use the `LocalizedString` type:\n\n```tsx\nimport { type LocalizedString } from '@commercetools/nimbus';\n\n// LocalizedString maps locale codes to string values\nconst productName: LocalizedString = {\n  'en': 'Product',\n  'de': 'Produkt',\n  'es': 'Producto',\n  'fr-FR': 'Produit'\n};\n```\n\n### LocalizedCurrency type\n\nFor `money` input type, use the `LocalizedCurrency` type:\n\n```tsx\nimport { type LocalizedCurrency, type MoneyInputValue } from '@commercetools/nimbus';\n\n// LocalizedCurrency maps currency codes to MoneyInputValue objects\nconst prices: LocalizedCurrency = {\n  'USD': {\n    amount: '99.99',\n    currencyCode: 'USD'\n  },\n  'EUR': {\n    amount: '89.99',\n    currencyCode: 'EUR'\n  },\n  'GBP': {\n    amount: '79.99',\n    currencyCode: 'GBP'\n  }\n};\n```\n\n### LocalizedFieldChangeEvent\n\nThe component uses a custom change event for consistency across browsers and input types:\n\n```tsx\nimport { type LocalizedFieldChangeEvent } from '@commercetools/nimbus';\n\nconst handleChange = (e: LocalizedFieldChangeEvent) => {\n  console.log('Locale:', e.target.locale);        // e.g., \"en\", \"de\"\n  console.log('Currency:', e.target.currency);    // e.g., \"USD\" (for money type)\n  console.log('Value:', e.target.value);          // string or MoneyInputValue\n  console.log('Field ID:', e.target.id);          // e.g., \"product-name.en\"\n  console.log('Field name:', e.target.name);      // e.g., \"productName.en\"\n};\n```\n\n## Usage examples\n\n### Size options\n\nLocalizedField supports two size variants:\n\n```jsx live-dev\nconst App = () => {\n  const [smallValues, setSmallValues] = React.useState({\n    en: 'Small',\n    de: 'Klein'\n  });\n\n  const [mediumValues, setMediumValues] = React.useState({\n    en: 'Medium',\n    de: 'Mittel'\n  });\n\n  return (\n    <Stack direction=\"column\" gap=\"600\">\n      <LocalizedField\n        size=\"sm\"\n        type=\"text\"\n        label=\"Small Size\"\n        defaultLocaleOrCurrency=\"en\"\n        valuesByLocaleOrCurrency={smallValues}\n        onChange={(e) => setSmallValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}\n      />\n\n      <LocalizedField\n        size=\"md\"\n        type=\"text\"\n        label=\"Medium Size (default)\"\n        defaultLocaleOrCurrency=\"en\"\n        valuesByLocaleOrCurrency={mediumValues}\n        onChange={(e) => setMediumValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}\n      />\n    </Stack>\n  );\n};\n```\n\n### Input types\n\nLocalizedField supports four input types: `text`, `multiLine`, `richText`, and `money`.\n\n#### Text input type\n\nSingle-line text input for short content:\n\n```jsx live-dev\nconst App = () => {\n  const [values, setValues] = React.useState({\n    en: 'Product Name',\n    de: 'Produktname',\n    es: 'Nombre del producto'\n  });\n\n  return (\n    <LocalizedField\n      type=\"text\"\n      label=\"Product Name\"\n      description=\"Short product title\"\n      defaultLocaleOrCurrency=\"en\"\n      valuesByLocaleOrCurrency={values}\n      onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}\n    />\n  );\n};\n```\n\n#### MultiLine input type\n\nTextarea for longer content:\n\n```jsx live-dev\nconst App = () => {\n  const [values, setValues] = React.useState({\n    en: 'This is a detailed product description.',\n    de: 'Dies ist eine detaillierte Produktbeschreibung.',\n    es: 'Esta es una descripción detallada del producto.'\n  });\n\n  return (\n    <LocalizedField\n      type=\"multiLine\"\n      label=\"Product Description\"\n      description=\"Detailed product information\"\n      defaultLocaleOrCurrency=\"en\"\n      valuesByLocaleOrCurrency={values}\n      onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}\n    />\n  );\n};\n```\n\n#### RichText input type\n\nRich text editor for formatted content:\n\n```jsx live-dev\nconst App = () => {\n  const [values, setValues] = React.useState({\n    en: '<p><strong>Bold</strong> and <em>italic</em> text</p>',\n    de: '<p><strong>Fett</strong> und <em>kursiv</em> Text</p>'\n  });\n\n  return (\n    <LocalizedField\n      type=\"richText\"\n      label=\"Marketing Content\"\n      description=\"Rich formatted content with styling\"\n      defaultLocaleOrCurrency=\"en\"\n      valuesByLocaleOrCurrency={values}\n      onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}\n    />\n  );\n};\n```\n\n#### Money input type\n\nCurrency-specific price inputs:\n\n```jsx live-dev\nconst App = () => {\n  const [prices, setPrices] = React.useState({\n    USD: { amount: '99.99', currencyCode: 'USD' },\n    EUR: { amount: '89.99', currencyCode: 'EUR' },\n    GBP: { amount: '79.99', currencyCode: 'GBP' }\n  });\n\n  const handlePriceChange = (e) => {\n    setPrices(prev => ({\n      ...prev,\n      [e.target.currency]: {\n        amount: e.target.value.amount,\n        currencyCode: e.target.currency\n      }\n    }));\n  };\n\n  return (\n    <LocalizedField\n      type=\"money\"\n      label=\"Product Price\"\n      description=\"Price in different currencies\"\n      defaultLocaleOrCurrency=\"USD\"\n      valuesByLocaleOrCurrency={prices}\n      onChange={handlePriceChange}\n    />\n  );\n};\n```\n\n### Expand/collapse behavior\n\nBy default, LocalizedField displays only the default locale and provides a toggle to expand:\n\n```jsx live-dev\nconst App = () => {\n  const [values, setValues] = React.useState({\n    en: 'English content',\n    de: 'German content',\n    es: 'Spanish content',\n    'fr-FR': 'French content'\n  });\n\n  return (\n    <Stack direction=\"column\" gap=\"600\">\n      <LocalizedField\n        type=\"text\"\n        label=\"Collapsed by default\"\n        description=\"Click the language icon to expand and view all locales\"\n        defaultLocaleOrCurrency=\"en\"\n        valuesByLocaleOrCurrency={values}\n        onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}\n      />\n\n      <LocalizedField\n        type=\"text\"\n        label=\"Expanded by default\"\n        description=\"Opens with all locales visible\"\n        defaultLocaleOrCurrency=\"en\"\n        defaultExpanded={true}\n        valuesByLocaleOrCurrency={values}\n        onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}\n      />\n\n      <LocalizedField\n        type=\"text\"\n        label=\"Always expanded\"\n        description=\"Toggle button hidden, all locales always visible\"\n        defaultLocaleOrCurrency=\"en\"\n        displayAllLocalesOrCurrencies={true}\n        valuesByLocaleOrCurrency={values}\n        onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}\n      />\n    </Stack>\n  );\n};\n```\n\n### Placeholders and descriptions\n\nAdd placeholders and per-locale descriptions for better user guidance:\n\n```jsx live-dev\nconst App = () => {\n  const [values, setValues] = React.useState({\n    en: '',\n    de: '',\n    es: ''\n  });\n\n  const placeholders = {\n    en: 'Enter English name...',\n    de: 'Deutschen Namen eingeben...',\n    es: 'Ingrese nombre en español...'\n  };\n\n  const descriptions = {\n    en: 'English is the primary language',\n    de: 'German translation',\n    es: 'Spanish translation'\n  };\n\n  return (\n    <LocalizedField\n      type=\"text\"\n      label=\"Product Name\"\n      description=\"Localized product name\"\n      defaultLocaleOrCurrency=\"en\"\n      valuesByLocaleOrCurrency={values}\n      placeholdersByLocaleOrCurrency={placeholders}\n      descriptionsByLocaleOrCurrency={descriptions}\n      displayAllLocalesOrCurrencies={true}\n      onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}\n    />\n  );\n};\n```\n\n### Validation and error handling\n\nLocalizedField supports both group-level and per-locale validation:\n\n#### Group-level validation\n\nErrors that apply to the entire field group:\n\n```jsx live-dev\nconst App = () => {\n  const [values, setValues] = React.useState({\n    en: '',\n    de: '',\n    es: ''\n  });\n  const [touched, setTouched] = React.useState(false);\n\n  const hasValues = Object.values(values).some(v => v !== '');\n  const error = touched && !hasValues ? 'At least one translation is required' : undefined;\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <LocalizedField\n        type=\"text\"\n        label=\"Product Name\"\n        description=\"Provide at least one translation\"\n        defaultLocaleOrCurrency=\"en\"\n        valuesByLocaleOrCurrency={values}\n        error={error}\n        touched={touched}\n        isRequired={true}\n        onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}\n        onBlur={() => setTouched(true)}\n      />\n\n      <Text fontSize=\"300\" color=\"neutral.11\">\n        Blur the field to trigger validation\n      </Text>\n    </Stack>\n  );\n};\n```\n\n#### Per-locale validation\n\nDifferent errors for specific locales:\n\n```jsx live-dev\nconst App = () => {\n  const [values, setValues] = React.useState({\n    en: 'Valid name',\n    de: 'ab',\n    es: ''\n  });\n  const [touchedLocales, setTouchedLocales] = React.useState({});\n\n  const validateLocale = (locale, value) => {\n    if (!value) return 'This field is required';\n    if (value.length < 3) return 'Must be at least 3 characters';\n    return undefined;\n  };\n\n  const errors = Object.keys(values).reduce((acc, locale) => {\n    const error = validateLocale(locale, values[locale]);\n    if (error && touchedLocales[locale]) {\n      acc[locale] = error;\n    }\n    return acc;\n  }, {});\n\n  return (\n    <LocalizedField\n      type=\"text\"\n      label=\"Product Name\"\n      description=\"Each locale must have at least 3 characters\"\n      defaultLocaleOrCurrency=\"en\"\n      displayAllLocalesOrCurrencies={true}\n      valuesByLocaleOrCurrency={values}\n      errorsByLocaleOrCurrency={errors}\n      touched={true}\n      onChange={(e) => setValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}\n      onBlur={(_, locale) => setTouchedLocales(prev => ({ ...prev, [locale]: true }))}\n    />\n  );\n};\n```\n\n### Required and disabled states\n\nShow required indicator and disable user interaction:\n\n```jsx live-dev\nconst App = () => {\n  const [requiredValues, setRequiredValues] = React.useState({\n    en: '',\n    de: ''\n  });\n\n  const [disabledValues] = React.useState({\n    en: 'This field is disabled',\n    de: 'Dieses Feld ist deaktiviert'\n  });\n\n  return (\n    <Stack direction=\"column\" gap=\"600\">\n      <LocalizedField\n        type=\"text\"\n        label=\"Required Field\"\n        description=\"This field must be filled out\"\n        isRequired={true}\n        defaultLocaleOrCurrency=\"en\"\n        valuesByLocaleOrCurrency={requiredValues}\n        onChange={(e) => setRequiredValues(prev => ({ ...prev, [e.target.locale]: e.target.value }))}\n      />\n\n      <LocalizedField\n        type=\"text\"\n        label=\"Disabled Field\"\n        description=\"This field cannot be edited\"\n        isDisabled={true}\n        defaultLocaleOrCurrency=\"en\"\n        valuesByLocaleOrCurrency={disabledValues}\n        onChange={() => {}}\n      />\n    </Stack>\n  );\n};\n```\n\n### Read-only state\n\nDisplay values without allowing edits:\n\n```jsx live-dev\nconst App = () => {\n  const [values] = React.useState({\n    en: 'Read-only English value',\n    de: 'Schreibgeschützter deutscher Wert',\n    es: 'Valor español de solo lectura'\n  });\n\n  return (\n    <LocalizedField\n      type=\"text\"\n      label=\"System Generated Name\"\n      description=\"This value is automatically generated and cannot be edited\"\n      isReadOnly={true}\n      defaultLocaleOrCurrency=\"en\"\n      valuesByLocaleOrCurrency={values}\n      onChange={() => {}}\n    />\n  );\n};\n```\n\n## Utility methods\n\nLocalizedField provides static utility methods for common operations:\n\n### Field attribute helpers\n\nGenerate consistent field IDs and names with locale suffixes:\n\n```tsx\n// LocalizedField.getId(base, locale) - Formats: \"base.locale\"\nLocalizedField.getId('productName', 'en');  // \"productName.en\"\nLocalizedField.getId('productName', 'de');  // \"productName.de\"\n\n// LocalizedField.getName(base, locale) - Same formatting\nLocalizedField.getName('productName', 'en');  // \"productName.en\"\n```\n\n### Value checking utilities\n\nCheck if fields have been touched or are empty:\n\n```tsx\nimport { LocalizedField } from '@commercetools/nimbus';\n\nconst values = { en: 'Hello', de: '', es: '' };\nconst touched = { en: true, de: false, es: false };\n\n// Check if any locale has been touched\nLocalizedField.isTouched(touched);  // true\n\n// Check if all locales are empty\nLocalizedField.isEmpty(values);  // false (en has a value)\n```\n\n### LocalizedString helpers\n\nCreate and manipulate LocalizedString objects:\n\n```tsx\n// Create empty LocalizedString with specific locales\nconst emptyValues = LocalizedField.createLocalizedString(['en', 'de', 'es'], {});\n// Result: { en: '', de: '', es: '' }\n\n// Merge with existing values\nconst existingValues = { en: 'Hello' };\nconst merged = LocalizedField.createLocalizedString(['en', 'de', 'es'], existingValues);\n// Result: { en: 'Hello', de: '', es: '' }\n\n// Remove empty translations\nconst values = { en: 'Hello', de: '', es: 'Hola' };\nconst cleaned = LocalizedField.omitEmptyTranslations(values);\n// Result: { en: 'Hello', es: 'Hola' }\n```\n\n### Money value utilities\n\nWork with LocalizedCurrency values:\n\n```tsx\n// Convert money values to different format\nconst prices = {\n  USD: { amount: '99.99', currencyCode: 'USD' },\n  EUR: { amount: '89.99', currencyCode: 'EUR' }\n};\n\n// Parse money values for processing\nconst parsed = LocalizedField.parseMoneyValues(prices);\n\n// Get currencies with high precision amounts\nconst highPrecision = LocalizedField.getHighPrecisionCurrencies(prices);\n\n// Get empty currency entries\nconst empty = LocalizedField.getEmptyCurrencies(prices);\n```\n\n### Error handling utilities\n\nConvert error objects for compatibility:\n\n```tsx\n// Standard error message component\nconst ErrorMessage = LocalizedField.RequiredValueErrorMessage;\n\n// Convert errors to field error format\nconst errors = { missing: true, invalid: false };\nconst fieldErrors = LocalizedField.toFieldErrors(errors);\n```\n\n## Component requirements\n\n## Accessibility\n\nLocalizedField implements comprehensive accessibility features to ensure WCAG 2.1 AA compliance.\n\n#### Role\n\n- `role=\"group\"` - The fieldset groups related locale/currency fields\n- Each locale field has appropriate input roles (`textbox`, `spinbutton` for money)\n\n#### Labeling\n\n- Group label via `<legend>` element (or `aria-label` if no visible label)\n- Each locale field labeled with its language/currency code\n- Required fields indicated with `aria-required=\"true\"`\n- Invalid fields indicated with `aria-invalid=\"true\"`\n- Error messages linked via `aria-describedby`\n\n#### Keyboard navigation\n\n| Key | Action |\n|-----|--------|\n| `Tab` | Move focus between locale fields and controls |\n| `Shift + Tab` | Move focus backwards |\n| `Enter` / `Space` | Toggle expand/collapse when focused on language icon button |\n| `Escape` | Close info dialog (if open) |\n\nFor individual input types, standard keyboard behavior applies:\n- Text/multiLine: Standard text input navigation\n- RichText: Rich text editor keyboard shortcuts\n- Money: Number input behavior with arrow keys for increment/decrement\n\n#### Persistent ID\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** `id` to the component:\n\n```tsx\n<LocalizedField\n  id=\"product-name-localized\"\n  name=\"productName\"\n  // ... other props\n/>\n```\n\nThe component will automatically append locale/currency codes to create unique IDs for each field (e.g., `product-name-localized.en`, `product-name-localized.de`).\n\n## API reference\n\n<PropsTable id=\"LocalizedField\" />\n\n## Common patterns\n\n### Multi-currency pricing\n\nManage prices across multiple currencies:\n\n```jsx live-dev\nconst App = () => {\n  const [prices, setPrices] = React.useState({\n    USD: { amount: '99.99', currencyCode: 'USD' },\n    EUR: { amount: '89.99', currencyCode: 'EUR' },\n    GBP: { amount: '79.99', currencyCode: 'GBP' },\n    JPY: { amount: '12500', currencyCode: 'JPY' }\n  });\n\n  const handlePriceChange = (e) => {\n    setPrices(prev => ({\n      ...prev,\n      [e.target.currency]: {\n        amount: e.target.value.amount,\n        currencyCode: e.target.currency\n      }\n    }));\n  };\n\n  const validatePrices = () => {\n    const empty = LocalizedField.getEmptyCurrencies(prices);\n    if (empty.length > 0) {\n      console.warn('Empty prices for:', empty);\n    }\n  };\n\n  return (\n    <LocalizedField\n      type=\"money\"\n      label=\"Product Price\"\n      description=\"Set prices for all supported currencies\"\n      defaultLocaleOrCurrency=\"USD\"\n      valuesByLocaleOrCurrency={prices}\n      onChange={handlePriceChange}\n      onBlur={validatePrices}\n      isRequired={true}\n    />\n  );\n};\n```\n\n### Conditional locale validation\n\nApply different validation rules per locale:\n\n```jsx live-dev\nconst App = () => {\n  const [values, setValues] = React.useState({\n    en: '',\n    de: '',\n    es: '',\n    'fr-FR': ''\n  });\n\n  const [touchedLocales, setTouchedLocales] = React.useState({});\n\n  // Different validation rules per locale\n  const validateLocale = (locale, value) => {\n    // English is required\n    if (locale === 'en') {\n      if (!value) return 'English name is required';\n      if (value.length < 3) return 'Must be at least 3 characters';\n    }\n\n    // Other locales are optional but must meet length requirement if provided\n    if (value && value.length < 3) {\n      return 'Must be at least 3 characters';\n    }\n\n    return undefined;\n  };\n\n  const errors = Object.keys(values).reduce((acc, locale) => {\n    const error = validateLocale(locale, values[locale] || '');\n    if (error && touchedLocales[locale]) {\n      acc[locale] = error;\n    }\n    return acc;\n  }, {});\n\n  return (\n    <LocalizedField\n      type=\"text\"\n      label=\"Product Name\"\n      description=\"English name is required, other languages optional\"\n      defaultLocaleOrCurrency=\"en\"\n      displayAllLocalesOrCurrencies={true}\n      valuesByLocaleOrCurrency={values}\n      errorsByLocaleOrCurrency={errors}\n      touched={true}\n      isRequired={true}\n      onChange={(e) => {\n        setValues(prev => ({\n          ...prev,\n          [e.target.locale]: e.target.value\n        }));\n      }}\n      onBlur={(_, locale) => {\n        setTouchedLocales(prev => ({ ...prev, [locale]: true }));\n      }}\n    />\n  );\n};\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using LocalizedField within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the LocalizedField renders with expected structure and locale fields\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  LocalizedField,\n  NimbusProvider,\n  type LocalizedString,\n  type LocalizedCurrency,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"LocalizedField - Basic rendering\", () => {\n  it(\"renders with default locale visible\", () => {\n    const values: LocalizedString = {\n      en: \"Hello\",\n      de: \"Hallo\",\n      es: \"Hola\",\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"text\"\n          label=\"Product Name\"\n          defaultLocaleOrCurrency=\"en\"\n          valuesByLocaleOrCurrency={values}\n          onChange={vi.fn()}\n        />\n      </NimbusProvider>\n    );\n\n    // Verify group label\n    expect(screen.getByText(\"Product Name\")).toBeInTheDocument();\n\n    // Verify default locale input is visible\n    expect(screen.getByDisplayValue(\"Hello\")).toBeInTheDocument();\n\n    // Verify expand button exists\n    expect(\n      screen.getByRole(\"button\", { name: /language/i })\n    ).toBeInTheDocument();\n  });\n\n  it(\"renders all locales when displayAllLocalesOrCurrencies is true\", () => {\n    const values: LocalizedString = {\n      en: \"Hello\",\n      de: \"Hallo\",\n      es: \"Hola\",\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"text\"\n          label=\"Product Name\"\n          defaultLocaleOrCurrency=\"en\"\n          displayAllLocalesOrCurrencies={true}\n          valuesByLocaleOrCurrency={values}\n          onChange={vi.fn()}\n        />\n      </NimbusProvider>\n    );\n\n    // All locale values should be visible\n    expect(screen.getByDisplayValue(\"Hello\")).toBeInTheDocument();\n    expect(screen.getByDisplayValue(\"Hallo\")).toBeInTheDocument();\n    expect(screen.getByDisplayValue(\"Hola\")).toBeInTheDocument();\n  });\n\n  it(\"renders money type with currency inputs\", () => {\n    const prices: LocalizedCurrency = {\n      USD: { amount: \"99.99\", currencyCode: \"USD\" },\n      EUR: { amount: \"89.99\", currencyCode: \"EUR\" },\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"money\"\n          label=\"Product Price\"\n          defaultLocaleOrCurrency=\"USD\"\n          displayAllLocalesOrCurrencies={true}\n          valuesByLocaleOrCurrency={prices}\n          onChange={vi.fn()}\n        />\n      </NimbusProvider>\n    );\n\n    // Verify currency labels (there will be multiple matches due to MoneyInput internal structure)\n    expect(screen.getAllByText(\"USD\").length).toBeGreaterThan(0);\n    expect(screen.getAllByText(\"EUR\").length).toBeGreaterThan(0);\n  });\n});\n```\n\n### Expand/Collapse Interactions\n\nTest the expand/collapse functionality for viewing all locale fields\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  LocalizedField,\n  NimbusProvider,\n  type LocalizedString,\n  type LocalizedCurrency,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"LocalizedField - Expand/collapse\", () => {\n  it(\"expands to show all locales when toggle button is clicked\", async () => {\n    const user = userEvent.setup();\n    const values: LocalizedString = {\n      en: \"Hello\",\n      de: \"Hallo\",\n      es: \"Hola\",\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"text\"\n          label=\"Product Name\"\n          defaultLocaleOrCurrency=\"en\"\n          valuesByLocaleOrCurrency={values}\n          onChange={vi.fn()}\n        />\n      </NimbusProvider>\n    );\n\n    // Initially only default locale visible\n    expect(screen.getByDisplayValue(\"Hello\")).toBeInTheDocument();\n    expect(screen.queryByDisplayValue(\"Hallo\")).not.toBeInTheDocument();\n\n    // Click expand button\n    const expandButton = screen.getByRole(\"button\", { name: /language/i });\n    await user.click(expandButton);\n\n    // All locales should now be visible\n    expect(screen.getByDisplayValue(\"Hello\")).toBeInTheDocument();\n    expect(screen.getByDisplayValue(\"Hallo\")).toBeInTheDocument();\n    expect(screen.getByDisplayValue(\"Hola\")).toBeInTheDocument();\n  });\n\n  it(\"starts expanded when defaultExpanded is true\", () => {\n    const values: LocalizedString = {\n      en: \"Hello\",\n      de: \"Hallo\",\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"text\"\n          label=\"Product Name\"\n          defaultLocaleOrCurrency=\"en\"\n          defaultExpanded={true}\n          valuesByLocaleOrCurrency={values}\n          onChange={vi.fn()}\n        />\n      </NimbusProvider>\n    );\n\n    // All locales visible on mount\n    expect(screen.getByDisplayValue(\"Hello\")).toBeInTheDocument();\n    expect(screen.getByDisplayValue(\"Hallo\")).toBeInTheDocument();\n  });\n});\n```\n\n### Value Updates\n\nTest onChange handler with LocalizedFieldChangeEvent\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  LocalizedField,\n  NimbusProvider,\n  type LocalizedString,\n  type LocalizedCurrency,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"LocalizedField - Value updates\", () => {\n  it(\"calls onChange with locale and value when text input changes\", async () => {\n    const user = userEvent.setup();\n    const onChange = vi.fn();\n    const values: LocalizedString = {\n      en: \"Hello\",\n      de: \"\",\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"text\"\n          label=\"Product Name\"\n          defaultLocaleOrCurrency=\"en\"\n          displayAllLocalesOrCurrencies={true}\n          valuesByLocaleOrCurrency={values}\n          onChange={onChange}\n        />\n      </NimbusProvider>\n    );\n\n    const germanInput = screen.getByLabelText(/de/i);\n    await user.type(germanInput, \"Hallo\");\n\n    // Verify onChange called with correct event structure\n    expect(onChange).toHaveBeenCalled();\n    const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1][0];\n    expect(lastCall.target.locale).toBe(\"de\");\n    expect(lastCall.target.value).toContain(\"o\"); // Last character typed\n  });\n\n  it(\"renders money input type with currency values\", () => {\n    const prices: LocalizedCurrency = {\n      USD: { amount: \"99.99\", currencyCode: \"USD\" },\n      EUR: { amount: \"89.99\", currencyCode: \"EUR\" },\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"money\"\n          label=\"Product Price\"\n          defaultLocaleOrCurrency=\"USD\"\n          displayAllLocalesOrCurrencies={true}\n          valuesByLocaleOrCurrency={prices}\n          onChange={vi.fn()}\n        />\n      </NimbusProvider>\n    );\n\n    // Verify money inputs are present\n    const inputs = screen.getAllByRole(\"textbox\");\n    expect(inputs.length).toBeGreaterThan(0);\n\n    // Verify currency values are displayed\n    expect(screen.getByDisplayValue(\"99.99\")).toBeInTheDocument();\n    expect(screen.getByDisplayValue(\"89.99\")).toBeInTheDocument();\n  });\n});\n```\n\n### Validation and Errors\n\nTest error display at both group and per-locale levels\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  LocalizedField,\n  NimbusProvider,\n  type LocalizedString,\n  type LocalizedCurrency,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"LocalizedField - Validation\", () => {\n  it(\"displays group-level error message\", () => {\n    const values: LocalizedString = {\n      en: \"\",\n      de: \"\",\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"text\"\n          label=\"Product Name\"\n          defaultLocaleOrCurrency=\"en\"\n          valuesByLocaleOrCurrency={values}\n          error=\"At least one translation is required\"\n          touched={true}\n          onChange={vi.fn()}\n        />\n      </NimbusProvider>\n    );\n\n    expect(\n      screen.getByText(\"At least one translation is required\")\n    ).toBeInTheDocument();\n  });\n\n  it(\"displays per-locale error messages\", () => {\n    const values: LocalizedString = {\n      en: \"ab\",\n      de: \"\",\n    };\n\n    const errors = {\n      en: \"Must be at least 3 characters\",\n      de: \"This field is required\",\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"text\"\n          label=\"Product Name\"\n          defaultLocaleOrCurrency=\"en\"\n          displayAllLocalesOrCurrencies={true}\n          valuesByLocaleOrCurrency={values}\n          errorsByLocaleOrCurrency={errors}\n          touched={true}\n          onChange={vi.fn()}\n        />\n      </NimbusProvider>\n    );\n\n    expect(\n      screen.getByText(\"Must be at least 3 characters\")\n    ).toBeInTheDocument();\n    expect(screen.getByText(\"This field is required\")).toBeInTheDocument();\n  });\n\n  it(\"marks field as invalid with aria-invalid\", () => {\n    const values: LocalizedString = {\n      en: \"\",\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"text\"\n          label=\"Product Name\"\n          defaultLocaleOrCurrency=\"en\"\n          valuesByLocaleOrCurrency={values}\n          error=\"Required\"\n          touched={true}\n          onChange={vi.fn()}\n        />\n      </NimbusProvider>\n    );\n\n    const input = screen.getByRole(\"textbox\");\n    expect(input).toHaveAttribute(\"aria-invalid\", \"true\");\n  });\n});\n```\n\n### Component States\n\nTest required, disabled, and read-only states\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  LocalizedField,\n  NimbusProvider,\n  type LocalizedString,\n  type LocalizedCurrency,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"LocalizedField - States\", () => {\n  it(\"displays required indicator\", () => {\n    const values: LocalizedString = {\n      en: \"\",\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"text\"\n          label=\"Product Name\"\n          defaultLocaleOrCurrency=\"en\"\n          valuesByLocaleOrCurrency={values}\n          isRequired={true}\n          onChange={vi.fn()}\n        />\n      </NimbusProvider>\n    );\n\n    const input = screen.getByRole(\"textbox\");\n    expect(input).toHaveAttribute(\"aria-required\", \"true\");\n  });\n\n  it(\"disables all inputs when isDisabled is true\", () => {\n    const values: LocalizedString = {\n      en: \"Hello\",\n      de: \"Hallo\",\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"text\"\n          label=\"Product Name\"\n          defaultLocaleOrCurrency=\"en\"\n          displayAllLocalesOrCurrencies={true}\n          valuesByLocaleOrCurrency={values}\n          isDisabled={true}\n          onChange={vi.fn()}\n        />\n      </NimbusProvider>\n    );\n\n    const inputs = screen.getAllByRole(\"textbox\");\n    inputs.forEach((input) => {\n      expect(input).toBeDisabled();\n    });\n  });\n\n  it(\"makes inputs read-only when isReadOnly is true\", () => {\n    const values: LocalizedString = {\n      en: \"Hello\",\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"text\"\n          label=\"Product Name\"\n          defaultLocaleOrCurrency=\"en\"\n          valuesByLocaleOrCurrency={values}\n          isReadOnly={true}\n          onChange={vi.fn()}\n        />\n      </NimbusProvider>\n    );\n\n    const input = screen.getByRole(\"textbox\");\n    expect(input).toHaveAttribute(\"readonly\");\n  });\n});\n```\n\n### Utility Methods\n\nTest static utility methods for field management\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  LocalizedField,\n  NimbusProvider,\n  type LocalizedString,\n  type LocalizedCurrency,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"LocalizedField - Utility methods\", () => {\n  it(\"getId and getName format field attributes correctly\", () => {\n    expect(LocalizedField.getId(\"productName\", \"en\")).toBe(\"productName.en\");\n    expect(LocalizedField.getName(\"productName\", \"de\")).toBe(\"productName.de\");\n  });\n\n  it(\"isTouched returns true when any locale is touched\", () => {\n    const touched = { en: true, de: false, es: false };\n    expect(LocalizedField.isTouched(touched)).toBe(true);\n\n    const allUntouched = { en: false, de: false };\n    expect(LocalizedField.isTouched(allUntouched)).toBe(false);\n  });\n\n  it(\"isEmpty returns true when all values are empty\", () => {\n    const emptyValues = { en: \"\", de: \"\", es: \"\" };\n    expect(LocalizedField.isEmpty(emptyValues)).toBe(true);\n\n    const hasValue = { en: \"Hello\", de: \"\", es: \"\" };\n    expect(LocalizedField.isEmpty(hasValue)).toBe(false);\n  });\n\n  it(\"createLocalizedString creates object with specified locales\", () => {\n    const result = LocalizedField.createLocalizedString([\"en\", \"de\", \"es\"], {});\n    expect(result).toEqual({ en: \"\", de: \"\", es: \"\" });\n\n    // Merges with existing values\n    const withExisting = LocalizedField.createLocalizedString([\"en\", \"de\"], {\n      en: \"Hello\",\n    });\n    expect(withExisting).toEqual({ en: \"Hello\", de: \"\" });\n  });\n\n  it(\"omitEmptyTranslations removes empty values\", () => {\n    const values = { en: \"Hello\", de: \"\", es: \"Hola\", fr: \"\" };\n    const result = LocalizedField.omitEmptyTranslations(values);\n    expect(result).toEqual({ en: \"Hello\", es: \"Hola\" });\n  });\n});\n```\n\n### Placeholders and Descriptions\n\nTest per-locale placeholders and descriptions\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  LocalizedField,\n  NimbusProvider,\n  type LocalizedString,\n  type LocalizedCurrency,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"LocalizedField - Placeholders and descriptions\", () => {\n  it(\"displays per-locale placeholders\", () => {\n    const values: LocalizedString = {\n      en: \"\",\n      de: \"\",\n    };\n\n    const placeholders: LocalizedString = {\n      en: \"Enter English name...\",\n      de: \"Deutschen Namen eingeben...\",\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"text\"\n          label=\"Product Name\"\n          defaultLocaleOrCurrency=\"en\"\n          displayAllLocalesOrCurrencies={true}\n          valuesByLocaleOrCurrency={values}\n          placeholdersByLocaleOrCurrency={placeholders}\n          onChange={vi.fn()}\n        />\n      </NimbusProvider>\n    );\n\n    expect(\n      screen.getByPlaceholderText(\"Enter English name...\")\n    ).toBeInTheDocument();\n    expect(\n      screen.getByPlaceholderText(\"Deutschen Namen eingeben...\")\n    ).toBeInTheDocument();\n  });\n\n  it(\"displays per-locale descriptions\", () => {\n    const values: LocalizedString = {\n      en: \"\",\n      de: \"\",\n    };\n\n    const descriptions = {\n      en: \"English is the primary language\",\n      de: \"German translation\",\n    };\n\n    render(\n      <NimbusProvider>\n        <LocalizedField\n          type=\"text\"\n          label=\"Product Name\"\n          defaultLocaleOrCurrency=\"en\"\n          displayAllLocalesOrCurrencies={true}\n          valuesByLocaleOrCurrency={values}\n          descriptionsByLocaleOrCurrency={descriptions}\n          onChange={vi.fn()}\n        />\n      </NimbusProvider>\n    );\n\n    expect(\n      screen.getByText(\"English is the primary language\")\n    ).toBeInTheDocument();\n    expect(screen.getByText(\"German translation\")).toBeInTheDocument();\n  });\n});\n```\n\n\n## Resources\n\n- [Storybook - LocalizedField](https://nimbus-storybook.vercel.app/?path=/docs/components-localizedfield--docs)\n- [FormField Component](/components/inputs/formfield)\n- [MoneyInput Component](/components/inputs/moneyinput)\n- [React Aria - useField](https://react-spectrum.adobe.com/react-aria/useField.html)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Working with localized values",
+          "href": "#working-with-localized-values",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "LocalizedString type",
+          "href": "#localizedstring-type",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "LocalizedCurrency type",
+          "href": "#localizedcurrency-type",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "LocalizedFieldChangeEvent",
+          "href": "#localizedfieldchangeevent",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size options",
+          "href": "#size-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Input types",
+          "href": "#input-types",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Text input type",
+          "href": "#text-input-type",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "MultiLine input type",
+          "href": "#multiline-input-type",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "RichText input type",
+          "href": "#richtext-input-type",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Money input type",
+          "href": "#money-input-type",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Expand/collapse behavior",
+          "href": "#expandcollapse-behavior",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Placeholders and descriptions",
+          "href": "#placeholders-and-descriptions",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Validation and error handling",
+          "href": "#validation-and-error-handling",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Group-level validation",
+          "href": "#group-level-validation",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            5,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Per-locale validation",
+          "href": "#per-locale-validation",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            5,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Required and disabled states",
+          "href": "#required-and-disabled-states",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Read-only state",
+          "href": "#read-only-state",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Utility methods",
+          "href": "#utility-methods",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Field attribute helpers",
+          "href": "#field-attribute-helpers",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Value checking utilities",
+          "href": "#value-checking-utilities",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "LocalizedString helpers",
+          "href": "#localizedstring-helpers",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Money value utilities",
+          "href": "#money-value-utilities",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Error handling utilities",
+          "href": "#error-handling-utilities",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Role",
+          "href": "#role",
+          "depth": 4,
+          "numbering": [
+            1,
+            6,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Labeling",
+          "href": "#labeling",
+          "depth": 4,
+          "numbering": [
+            1,
+            6,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            6,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Persistent ID",
+          "href": "#persistent-id",
+          "depth": 4,
+          "numbering": [
+            1,
+            6,
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Multi-currency pricing",
+          "href": "#multi-currency-pricing",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Conditional locale validation",
+          "href": "#conditional-locale-validation",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            9
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            9,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Expand/Collapse Interactions",
+          "href": "#expandcollapse-interactions",
+          "depth": 3,
+          "numbering": [
+            1,
+            9,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Value Updates",
+          "href": "#value-updates",
+          "depth": 3,
+          "numbering": [
+            1,
+            9,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Validation and Errors",
+          "href": "#validation-and-errors",
+          "depth": 3,
+          "numbering": [
+            1,
+            9,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component States",
+          "href": "#component-states",
+          "depth": 3,
+          "numbering": [
+            1,
+            9,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Utility Methods",
+          "href": "#utility-methods-1",
+          "depth": 3,
+          "numbering": [
+            1,
+            9,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Placeholders and Descriptions",
+          "href": "#placeholders-and-descriptions-1",
+          "depth": 3,
+          "numbering": [
+            1,
+            9,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            10
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "guidelines": {
+      "mdx": "\n## Guidelines\n\nLocalized field guidelines ensure the consistent design, accessibility, and\nefficient management of content that requires simultaneous input and storage\nacross multiple defined language versions.\n\n### Best practices\n\n- **Prioritize default locale:** Always ensure the primary or default locale is\n  easily accessible and the first field a user sees.\n- **Use clear flags/labels:** The language switcher controls must clearly and\n  concisely indicate the active locale to prevent accidental input into the\n  wrong language version.\n- **Maintain content consistency:** The underlying input component chosen for\n  renderItem must remain the same for every single locale instance to ensure\n  data integrity and predictable behavior.\n- **Handle text expansion:** Design the surrounding layout and container with\n  enough horizontal space to accommodate text expansion in wordier languages\n  like German or French.\n- **Provide contextual tools:** If the underlying input is complex (like a rich\n  text editor), ensure localization features (like spellcheck based on the\n  active locale) are supported.\n\n### Usage\n\nA localized field's usage is to efficiently capture and manage content that must\nbe translated and stored for multiple language versions within a single form.\n\n> [!TIP]\\\n> When to use\n\n- **Product descriptions/titles:** For any field that must be translated for\n  customer-facing display (e.g., product titles, category names, SEO keywords).\n- **Multiple language input:** When a user (typically a content manager or\n  merchant) is responsible for entering content for all supported markets from\n  one interface.\n- **Structured metadata:** For input fields that hold localized metadata (e.g.,\n  unique localized pricing tiers, currency symbols, SEO, or tax explanations).\n\n> [!CAUTION]\\\n> When not to use\n\n- **Non-translatable data:** When capturing internal IDs, SKUs, inventory\n  counts, or purely numerical data that does not change by language. Use a\n  standard Text Input or Number Input instead.\n- **Single-language input:** If the application supports only one language, or\n  if the user is only ever responsible for one market's content.\n- **Large, multi-page content:** For entire pages or long-form documentation\n  that would require a complex translation workflow; use a dedicated content\n  management system instead.\n\n### Do’s and don’ts for the localized field\n\n> [!TIP]\\\n> **Do**\n>\n> - Ensure switching languages preserves the content of the input field\n>   currently being edited, allowing easy comparison.\n> - If needed, you can include a visual indicator with a country or language\n>   code on the active input field for clarity.\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't hide the language switcher interface completely unless an external\n>   system (like a global header) explicitly manages it.\n> - Don't allow the underlying input component to change across locales (e.g.,\n>   using a text input for English and a text area for French).\n> - Don't allow users to input data into a locale that is not defined in the\n>   component's locales variable.\n",
+      "toc": [
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Do’s and don’ts for the localized field",
+          "href": "#dos-and-donts-for-the-localized-field",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

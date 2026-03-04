@@ -1,0 +1,27 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "PageContent.Root - The root layout container that provides width constraints\nand column layout via CSS grid.\n\nUses a 3-column centering grid (`1fr minmax(min, max) 1fr`) to enforce\nmin/max width constraints. An inner content div (targeted via `data-slot`)\nhandles column layout when `columns` is set.",
+  "displayName": "PageContentRoot",
+  "methods": [],
+  "props": {
+    "ref": {
+      "defaultValue": null,
+      "description": "",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/page-content/page-content.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

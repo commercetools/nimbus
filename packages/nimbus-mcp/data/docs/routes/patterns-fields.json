@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "id": "Patterns-Fields",
+    "title": "Fields",
+    "description": "Field pattern components that integrate inputs within FormField for consistent form layouts",
+    "order": 1,
+    "repoPath": "packages/nimbus/src/docs/fields.mdx",
+    "menu": [
+      "Patterns",
+      "Fields"
+    ],
+    "route": "patterns/fields",
+    "tags": [
+      "patterns",
+      "fields",
+      "forms"
+    ],
+    "toc": [
+      {
+        "value": "When to use field patterns",
+        "href": "#when-to-use-field-patterns",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Available field patterns",
+        "href": "#available-field-patterns",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      }
+    ],
+    "icon": "Input",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Fields\n\nField pattern components provide a consistent way to integrate input components within FormField wrappers. These patterns simplify form building by combining labels, descriptions, validation, and error handling into a single, opinionated API.\n\n## When to use field patterns\n\nField patterns are ideal for:\n- Building standard forms with consistent field layouts\n- Reducing boilerplate in form code\n- Ensuring accessibility best practices across all form fields\n- Integrating with form libraries like Formik\n\n## Available field patterns\n\n<CategoryOverview variant=\"list\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Fields\n\nField pattern components provide a consistent way to integrate input components within FormField wrappers. These patterns simplify form building by combining labels, descriptions, validation, and error handling into a single, opinionated API.\n\n## When to use field patterns\n\nField patterns are ideal for:\n- Building standard forms with consistent field layouts\n- Reducing boilerplate in form code\n- Ensuring accessibility best practices across all form fields\n- Integrating with form libraries like Formik\n\n## Available field patterns\n\n<CategoryOverview variant=\"list\" />\n",
+      "toc": [
+        {
+          "value": "When to use field patterns",
+          "href": "#when-to-use-field-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Available field patterns",
+          "href": "#available-field-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

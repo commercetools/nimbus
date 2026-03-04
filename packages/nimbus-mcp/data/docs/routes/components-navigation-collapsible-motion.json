@@ -1,0 +1,628 @@
+{
+  "meta": {
+    "id": "Components-CollapsibleMotion",
+    "title": "Collapsible motion",
+    "exportName": "CollapsibleMotion",
+    "description": "A modern, accessible implementation of collapsible content with smooth height animations. Built with React Aria for accessibility and Chakra UI for consistent theming.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/collapsible-motion/collapsible-motion.mdx",
+    "menu": [
+      "Components",
+      "Navigation",
+      "Collapsible motion"
+    ],
+    "route": "components/navigation/collapsible-motion",
+    "tags": [
+      "component",
+      "collapsible",
+      "accordion",
+      "disclosure",
+      "animation",
+      "accessibility"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Key features",
+        "href": "#key-features",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Basic Usage",
+        "href": "#basic-usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Controlled Mode",
+        "href": "#controlled-mode",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Custom Animation Settings",
+        "href": "#custom-animation-settings",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Dynamic Content",
+        "href": "#dynamic-content",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Integration with other components",
+        "href": "#integration-with-other-components",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Performance",
+        "href": "#performance",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Styling",
+        "href": "#styling",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Related Components",
+        "href": "#related-components",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nCollapsibleMotion is a compound component that provides smooth, accessible\ncollapsible content with height animations. It combines React Aria's\naccessibility features with Chakra UI's theming system to deliver a robust\nfoundation for disclosure patterns, accordions, and expandable content sections.\n\n### Key features\n\n- **Smooth height animations**: Customizable duration with automatic content\n  measurement\n- **Full accessibility support**: Proper ARIA attributes and screen reader\n  compatibility\n- **Controlled and uncontrolled modes**: Flexible state management options\n- **Focus management**: Content visibility handled properly for screen readers\n- **Responsive design**: Works seamlessly across all screen sizes\n- **Chakra UI integration**: Consistent theming with the design system\n\n## Variables\n\n### Basic Usage\n\nThe simplest way to use CollapsibleMotion is in uncontrolled mode with default\nsettings:\n\n```jsx live\nconst App = () => {\n  return (\n    <CollapsibleMotion.Root defaultExpanded={false}>\n      <Button mb={4}>Toggle Content</Button>\n      <CollapsibleMotion.Content>\n        <Box p={4} bg=\"gray.50\" borderRadius=\"md\">\n          <Text>\n            This content will smoothly expand and collapse when the button is clicked.\n            The animation uses the default duration of 200ms.\n          </Text>\n        </Box>\n      </CollapsibleMotion.Content>\n    </CollapsibleMotion.Root>\n  );\n};\n```\n\n### Controlled Mode\n\nFor more complex scenarios, you can control the expanded state from a parent\ncomponent:\n\n```jsx live\nconst App = () => {\n  const [isExpanded, setIsExpanded] = useState(false);\n\n  return (\n    <div>\n      <Button\n        onClick={() => setIsExpanded(!isExpanded)}\n        mb={4}\n      >\n        {isExpanded ? 'Collapse' : 'Expand'} Content\n      </Button>\n\n      <CollapsibleMotion.Root\n        isExpanded={isExpanded}\n        onExpandedChange={setIsExpanded}\n      >\n        <CollapsibleMotion.Content>\n          <Box p={4} bg=\"blue.50\" borderRadius=\"md\">\n            <Text>\n              This content is controlled by the parent component's state.\n              The parent can react to changes and implement custom logic.\n            </Text>\n          </Box>\n        </CollapsibleMotion.Content>\n      </CollapsibleMotion.Root>\n    </div>\n  );\n};\n```\n\n### Custom Animation Settings\n\nYou can customize the minimum height and animation duration:\n\n```jsx live\nconst App = () => {\n  return (\n    <CollapsibleMotion.Root defaultExpanded={false}>\n      <Button mb={4}>Toggle Content</Button>\n      <CollapsibleMotion.Content\n        minHeight={40}\n        animationDuration={500}\n      >\n        <Box p={6} bg=\"green.50\" borderRadius=\"md\" minH=\"150px\">\n          <Text mb={4}>\n            This content has a minimum height of 40px when collapsed\n            and uses a slower animation duration of 500ms.\n          </Text>\n          <Text>\n            The minimum height allows for partial visibility of content\n            even when collapsed, which can be useful for previews.\n          </Text>\n        </Box>\n      </CollapsibleMotion.Content>\n    </CollapsibleMotion.Root>\n  );\n};\n```\n\n### Dynamic Content\n\nCollapsibleMotion automatically handles content that changes size:\n\n```jsx live\nconst App = () => {\n  const [content, setContent] = useState('short');\n\n  const contentMap = {\n    short: \"Short content\",\n    long: \"This is much longer content that demonstrates how the component automatically adjusts to content changes. The component re-measures the content height when it changes and handles the animation smoothly.\"\n  };\n\n  return (\n    <div>\n      <Box mb={4}>\n        <Button\n          onClick={() => setContent('short')}\n          mr={2}\n          variant={content === 'short' ? 'solid' : 'outline'}\n          size=\"sm\"\n        >\n          Short\n        </Button>\n        <Button\n          onClick={() => setContent('long')}\n          variant={content === 'long' ? 'solid' : 'outline'}\n          size=\"sm\"\n        >\n          Long\n        </Button>\n      </Box>\n\n      <CollapsibleMotion.Root defaultExpanded={true}>\n        <Button mb={4}>Toggle Dynamic Content</Button>\n        <CollapsibleMotion.Content>\n          <Box p={4} bg=\"orange.50\" borderRadius=\"md\">\n            <Text>{contentMap[content]}</Text>\n          </Box>\n        </CollapsibleMotion.Content>\n      </CollapsibleMotion.Root>\n    </div>\n  );\n};\n```\n\n## Integration with other components\n\nCollapsibleMotion works well with other Nimbus components to create rich\ninteractive experiences:\n\n```jsx live\nconst App = () => {\n  const [expandedSections, setExpandedSections] = useState(new Set());\n\n  const toggleSection = (section) => {\n    const newSections = new Set(expandedSections);\n    if (newSections.has(section)) {\n      newSections.delete(section);\n    } else {\n      newSections.add(section);\n    }\n    setExpandedSections(newSections);\n  };\n\n  return (\n    <Stack spacing={4}>\n      {['personal', 'billing', 'preferences'].map(section => (\n        <Box key={section} border=\"1px solid\" borderColor=\"gray.200\" borderRadius=\"md\">\n          <CollapsibleMotion.Root\n            isExpanded={expandedSections.has(section)}\n            onExpandedChange={() => toggleSection(section)}\n          >\n            <Button\n              w=\"full\"\n              variant=\"ghost\"\n              justifyContent=\"space-between\"\n              p={4}\n              rightIcon={expandedSections.has(section) ? '−' : '+'}\n            >\n              {section.charAt(0).toUpperCase() + section.slice(1)} Information\n            </Button>\n\n            <CollapsibleMotion.Content>\n              <Box p={4} borderTop=\"1px solid\" borderColor=\"gray.200\">\n                <Text>\n                  Content for {section} section. This demonstrates how\n                  CollapsibleMotion can be integrated with other components\n                  to create accordion-like interfaces.\n                </Text>\n              </Box>\n            </CollapsibleMotion.Content>\n          </CollapsibleMotion.Root>\n        </Box>\n      ))}\n    </Stack>\n  );\n};\n```\n\n## Best practices\n\n### Performance\n\n- **Content Measurement**: The component automatically measures content height,\n  but avoid deeply nested or complex layouts within collapsible content when\n  possible\n- **Animation Duration**: Use reasonable animation durations (100-500ms) to\n  balance smoothness with perceived performance\n- **Dynamic Content**: The component handles content changes efficiently, but\n  minimize frequent content updates during animations\n\n### Styling\n\n- **Consistent Animations**: Use consistent animation durations across your\n  application\n- **Visual Feedback**: Provide clear visual feedback for expanded/collapsed\n  states\n- **Responsive Design**: Consider how collapsible content behaves on different\n  screen sizes\n\n## Related Components\n\n- **Accordion**: For managing multiple collapsible sections\n- **Disclosure**: For simpler show/hide functionality without animations\n- **Modal**: For larger content that should overlay the page\n- **Drawer**: For slide-out content panels\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nCollapsibleMotion is a compound component that provides smooth, accessible\ncollapsible content with height animations. It combines React Aria's\naccessibility features with Chakra UI's theming system to deliver a robust\nfoundation for disclosure patterns, accordions, and expandable content sections.\n\n### Key features\n\n- **Smooth height animations**: Customizable duration with automatic content\n  measurement\n- **Full accessibility support**: Proper ARIA attributes and screen reader\n  compatibility\n- **Controlled and uncontrolled modes**: Flexible state management options\n- **Focus management**: Content visibility handled properly for screen readers\n- **Responsive design**: Works seamlessly across all screen sizes\n- **Chakra UI integration**: Consistent theming with the design system\n\n## Variables\n\n### Basic Usage\n\nThe simplest way to use CollapsibleMotion is in uncontrolled mode with default\nsettings:\n\n```jsx live\nconst App = () => {\n  return (\n    <CollapsibleMotion.Root defaultExpanded={false}>\n      <Button mb={4}>Toggle Content</Button>\n      <CollapsibleMotion.Content>\n        <Box p={4} bg=\"gray.50\" borderRadius=\"md\">\n          <Text>\n            This content will smoothly expand and collapse when the button is clicked.\n            The animation uses the default duration of 200ms.\n          </Text>\n        </Box>\n      </CollapsibleMotion.Content>\n    </CollapsibleMotion.Root>\n  );\n};\n```\n\n### Controlled Mode\n\nFor more complex scenarios, you can control the expanded state from a parent\ncomponent:\n\n```jsx live\nconst App = () => {\n  const [isExpanded, setIsExpanded] = useState(false);\n\n  return (\n    <div>\n      <Button\n        onClick={() => setIsExpanded(!isExpanded)}\n        mb={4}\n      >\n        {isExpanded ? 'Collapse' : 'Expand'} Content\n      </Button>\n\n      <CollapsibleMotion.Root\n        isExpanded={isExpanded}\n        onExpandedChange={setIsExpanded}\n      >\n        <CollapsibleMotion.Content>\n          <Box p={4} bg=\"blue.50\" borderRadius=\"md\">\n            <Text>\n              This content is controlled by the parent component's state.\n              The parent can react to changes and implement custom logic.\n            </Text>\n          </Box>\n        </CollapsibleMotion.Content>\n      </CollapsibleMotion.Root>\n    </div>\n  );\n};\n```\n\n### Custom Animation Settings\n\nYou can customize the minimum height and animation duration:\n\n```jsx live\nconst App = () => {\n  return (\n    <CollapsibleMotion.Root defaultExpanded={false}>\n      <Button mb={4}>Toggle Content</Button>\n      <CollapsibleMotion.Content\n        minHeight={40}\n        animationDuration={500}\n      >\n        <Box p={6} bg=\"green.50\" borderRadius=\"md\" minH=\"150px\">\n          <Text mb={4}>\n            This content has a minimum height of 40px when collapsed\n            and uses a slower animation duration of 500ms.\n          </Text>\n          <Text>\n            The minimum height allows for partial visibility of content\n            even when collapsed, which can be useful for previews.\n          </Text>\n        </Box>\n      </CollapsibleMotion.Content>\n    </CollapsibleMotion.Root>\n  );\n};\n```\n\n### Dynamic Content\n\nCollapsibleMotion automatically handles content that changes size:\n\n```jsx live\nconst App = () => {\n  const [content, setContent] = useState('short');\n\n  const contentMap = {\n    short: \"Short content\",\n    long: \"This is much longer content that demonstrates how the component automatically adjusts to content changes. The component re-measures the content height when it changes and handles the animation smoothly.\"\n  };\n\n  return (\n    <div>\n      <Box mb={4}>\n        <Button\n          onClick={() => setContent('short')}\n          mr={2}\n          variant={content === 'short' ? 'solid' : 'outline'}\n          size=\"sm\"\n        >\n          Short\n        </Button>\n        <Button\n          onClick={() => setContent('long')}\n          variant={content === 'long' ? 'solid' : 'outline'}\n          size=\"sm\"\n        >\n          Long\n        </Button>\n      </Box>\n\n      <CollapsibleMotion.Root defaultExpanded={true}>\n        <Button mb={4}>Toggle Dynamic Content</Button>\n        <CollapsibleMotion.Content>\n          <Box p={4} bg=\"orange.50\" borderRadius=\"md\">\n            <Text>{contentMap[content]}</Text>\n          </Box>\n        </CollapsibleMotion.Content>\n      </CollapsibleMotion.Root>\n    </div>\n  );\n};\n```\n\n## Integration with other components\n\nCollapsibleMotion works well with other Nimbus components to create rich\ninteractive experiences:\n\n```jsx live\nconst App = () => {\n  const [expandedSections, setExpandedSections] = useState(new Set());\n\n  const toggleSection = (section) => {\n    const newSections = new Set(expandedSections);\n    if (newSections.has(section)) {\n      newSections.delete(section);\n    } else {\n      newSections.add(section);\n    }\n    setExpandedSections(newSections);\n  };\n\n  return (\n    <Stack spacing={4}>\n      {['personal', 'billing', 'preferences'].map(section => (\n        <Box key={section} border=\"1px solid\" borderColor=\"gray.200\" borderRadius=\"md\">\n          <CollapsibleMotion.Root\n            isExpanded={expandedSections.has(section)}\n            onExpandedChange={() => toggleSection(section)}\n          >\n            <Button\n              w=\"full\"\n              variant=\"ghost\"\n              justifyContent=\"space-between\"\n              p={4}\n              rightIcon={expandedSections.has(section) ? '−' : '+'}\n            >\n              {section.charAt(0).toUpperCase() + section.slice(1)} Information\n            </Button>\n\n            <CollapsibleMotion.Content>\n              <Box p={4} borderTop=\"1px solid\" borderColor=\"gray.200\">\n                <Text>\n                  Content for {section} section. This demonstrates how\n                  CollapsibleMotion can be integrated with other components\n                  to create accordion-like interfaces.\n                </Text>\n              </Box>\n            </CollapsibleMotion.Content>\n          </CollapsibleMotion.Root>\n        </Box>\n      ))}\n    </Stack>\n  );\n};\n```\n\n## Best practices\n\n### Performance\n\n- **Content Measurement**: The component automatically measures content height,\n  but avoid deeply nested or complex layouts within collapsible content when\n  possible\n- **Animation Duration**: Use reasonable animation durations (100-500ms) to\n  balance smoothness with perceived performance\n- **Dynamic Content**: The component handles content changes efficiently, but\n  minimize frequent content updates during animations\n\n### Styling\n\n- **Consistent Animations**: Use consistent animation durations across your\n  application\n- **Visual Feedback**: Provide clear visual feedback for expanded/collapsed\n  states\n- **Responsive Design**: Consider how collapsible content behaves on different\n  screen sizes\n\n## Related Components\n\n- **Accordion**: For managing multiple collapsible sections\n- **Disclosure**: For simpler show/hide functionality without animations\n- **Modal**: For larger content that should overlay the page\n- **Drawer**: For slide-out content panels\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Key features",
+          "href": "#key-features",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Controlled Mode",
+          "href": "#controlled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom Animation Settings",
+          "href": "#custom-animation-settings",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Dynamic Content",
+          "href": "#dynamic-content",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Integration with other components",
+          "href": "#integration-with-other-components",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Performance",
+          "href": "#performance",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Styling",
+          "href": "#styling",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Related Components",
+          "href": "#related-components",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => (\n  <CollapsibleMotion.Root defaultExpanded={false}>\n    <CollapsibleMotion.Trigger asChild>\n      <Button>Toggle Content</Button>\n    </CollapsibleMotion.Trigger>\n    <CollapsibleMotion.Content>\n      <Box p=\"400\" bg=\"neutral.2\" borderRadius=\"200\">\n        <Text>This content expands and collapses</Text>\n      </Box>\n    </CollapsibleMotion.Content>\n  </CollapsibleMotion.Root>\n)\n```\n\n### Accessibility standards\n\n- **Clear trigger elements:** Always provide clear, descriptive trigger buttons\n  or elements that indicate their purpose.\n- **Semantic HTML structure:** Use semantic HTML within collapsible content to\n  ensure proper document structure.\n- **Clear focus indicators:** Ensure trigger elements have clear, visible focus\n  indicators for keyboard navigation.\n- **State communication:** Use appropriate ARIA attributes to communicate the\n  expanded/collapsed state to screen readers.\n- **Animation considerations:** Animations respect `prefers-reduced-motion` user\n  preferences for users with vestibular disorders.\n\n### Resources\n\n- [React ARIA Disclosure Docs](https://react-spectrum.adobe.com/react-aria/useDisclosure.html)\n- [ARIA Disclosure Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/disclosure/)\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { CollapsibleMotion, type CollapsibleMotionRootProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe simplest implementation uses uncontrolled mode with compound component pattern:\n\n```jsx live-dev\nconst App = () => (\n  <CollapsibleMotion.Root defaultExpanded={false}>\n    <CollapsibleMotion.Trigger asChild>\n      <Button>Toggle Content</Button>\n    </CollapsibleMotion.Trigger>\n    <CollapsibleMotion.Content>\n      <Box p=\"400\" bg=\"neutral.2\" borderRadius=\"200\">\n        <Text>This content expands and collapses</Text>\n      </Box>\n    </CollapsibleMotion.Content>\n  </CollapsibleMotion.Root>\n)\n```\n\n## Usage examples\n\n### Uncontrolled mode\n\nFor simpler use cases, use uncontrolled mode with `defaultExpanded`:\n\n```jsx live-dev\nconst App = () => {\n  const [eventLog, setEventLog] = useState<string>('No events yet');\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <CollapsibleMotion.Root\n        defaultExpanded={false}\n        onExpandedChange={(isExpanded) => {\n          setEventLog(`Content is now ${isExpanded ? 'expanded' : 'collapsed'}`);\n        }}\n      >\n        <CollapsibleMotion.Trigger asChild>\n          <Button>Toggle Content</Button>\n        </CollapsibleMotion.Trigger>\n        <CollapsibleMotion.Content>\n          <Box p=\"400\" bg=\"blue.2\" borderRadius=\"200\">\n            <Text>Collapsible content area</Text>\n          </Box>\n        </CollapsibleMotion.Content>\n      </CollapsibleMotion.Root>\n      <Text fontSize=\"sm\" color=\"neutral.11\">Event: {eventLog}</Text>\n    </Stack>\n  );\n}\n```\n\nUse uncontrolled mode when you need to capture state changes without managing state yourself.\n\n### Controlled mode\n\nFor scenarios requiring programmatic control or coordination with other components, use controlled mode:\n\n```jsx live-dev\nconst App = () => {\n  const [isExpanded, setIsExpanded] = useState<CollapsibleMotionRootProps[\"isExpanded\"]>(false);\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Button onPress={() => setIsExpanded(!isExpanded)}>\n        {isExpanded ? 'Collapse' : 'Expand'} (External Control)\n      </Button>\n      <CollapsibleMotion.Root\n        isExpanded={isExpanded}\n        onExpandedChange={setIsExpanded}\n      >\n        <CollapsibleMotion.Trigger asChild>\n          <Button>Toggle (Internal Control)</Button>\n        </CollapsibleMotion.Trigger>\n        <CollapsibleMotion.Content>\n          <Box p=\"400\" bg=\"green.2\" borderRadius=\"200\">\n            <Text>\n              This content can be controlled both externally (button above)\n              and internally (trigger button). Both stay synchronized.\n            </Text>\n          </Box>\n        </CollapsibleMotion.Content>\n      </CollapsibleMotion.Root>\n      <Text fontSize=\"sm\" color=\"neutral.11\">\n        Current state: {isExpanded ? 'Expanded' : 'Collapsed'}\n      </Text>\n    </Stack>\n  );\n}\n```\n\nUse controlled mode when you need to:\n- Synchronize the expanded state with external controls\n- Programmatically expand or collapse the content\n- Coordinate multiple collapsible sections\n\n### Disabled state\n\nPrevent interactions by setting `isDisabled`:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <CollapsibleMotion.Root isDisabled={true} defaultExpanded={false}>\n      <CollapsibleMotion.Trigger asChild>\n        <Button>Toggle Content (Disabled)</Button>\n      </CollapsibleMotion.Trigger>\n      <CollapsibleMotion.Content>\n        <Box p=\"400\" bg=\"neutral.3\" borderRadius=\"200\">\n          <Text>This content cannot be toggled when disabled</Text>\n        </Box>\n      </CollapsibleMotion.Content>\n    </CollapsibleMotion.Root>\n    <Text fontSize=\"sm\" color=\"neutral.11\">\n      The trigger button is disabled and cannot expand the content\n    </Text>\n  </Stack>\n)\n```\n\n### Custom trigger with asChild\n\nUse the `asChild` prop to render your own custom trigger element:\n\n```jsx live-dev\nconst App = () => (\n  <CollapsibleMotion.Root defaultExpanded={false}>\n    <CollapsibleMotion.Trigger asChild>\n      <Button variant=\"outline\" colorPalette=\"blue\">\n        <Icons.KeyboardArrowDown />\n        Custom Styled Trigger\n      </Button>\n    </CollapsibleMotion.Trigger>\n    <CollapsibleMotion.Content>\n      <Box p=\"400\" bg=\"purple.2\" borderRadius=\"200\">\n        <Text>Content revealed by custom trigger</Text>\n      </Box>\n    </CollapsibleMotion.Content>\n  </CollapsibleMotion.Root>\n)\n```\n\n### Custom animations\n\nCustomize the expand/collapse animations using Chakra's animation system:\n\n```jsx live-dev\nconst App = () => (\n  <CollapsibleMotion.Root defaultExpanded={false}>\n    <CollapsibleMotion.Trigger asChild>\n      <Button>Toggle with Custom Animation</Button>\n    </CollapsibleMotion.Trigger>\n    <CollapsibleMotion.Content\n      animationName={{\n        _open: \"slide-from-top, fade-in\",\n        _closed: \"slide-to-top, fade-out\",\n      }}\n      animationDuration=\"slow\"\n    >\n      <Box p=\"400\" bg=\"orange.2\" borderRadius=\"200\">\n        <Text>\n          This content uses custom animation timing and effects.\n          Notice the slower, more deliberate motion.\n        </Text>\n      </Box>\n    </CollapsibleMotion.Content>\n  </CollapsibleMotion.Root>\n)\n```\n\n### Dynamic content\n\nThe component automatically handles content size changes with ResizeObserver:\n\n```jsx live-dev\nconst App = () => {\n  const [contentSize, setContentSize] = useState<'short' | 'medium' | 'long'>('short');\n\n  const content = {\n    short: 'Short content',\n    medium: 'This is medium length content that demonstrates how the component handles different content sizes.',\n    long: 'This is very long content that shows how CollapsibleMotion automatically re-measures content height when it changes. The component uses ResizeObserver to detect size changes and animate to the new height, ensuring a polished user experience even with dynamic content.',\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Stack direction=\"row\" gap=\"200\">\n        <Button\n          onPress={() => setContentSize('short')}\n          variant={contentSize === 'short' ? 'solid' : 'outline'}\n          size=\"xs\"\n        >\n          Short\n        </Button>\n        <Button\n          onPress={() => setContentSize('medium')}\n          variant={contentSize === 'medium' ? 'solid' : 'outline'}\n          size=\"xs\"\n        >\n          Medium\n        </Button>\n        <Button\n          onPress={() => setContentSize('long')}\n          variant={contentSize === 'long' ? 'solid' : 'outline'}\n          size=\"xs\"\n        >\n          Long\n        </Button>\n      </Stack>\n      <CollapsibleMotion.Root defaultExpanded={true}>\n        <CollapsibleMotion.Trigger asChild>\n          <Button>Toggle Dynamic Content</Button>\n        </CollapsibleMotion.Trigger>\n        <CollapsibleMotion.Content>\n          <Box p=\"400\" bg=\"teal.2\" borderRadius=\"200\">\n            <Text>{content[contentSize]}</Text>\n          </Box>\n        </CollapsibleMotion.Content>\n      </CollapsibleMotion.Root>\n    </Stack>\n  );\n}\n```\n\n### Without trigger\n\nFor external-only control, omit the Trigger component:\n\n```jsx live-dev\nconst App = () => {\n  const [isExpanded, setIsExpanded] = useState<CollapsibleMotionRootProps[\"isExpanded\"]>(false);\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Button onPress={() => setIsExpanded(!isExpanded)}>\n        {isExpanded ? 'Hide' : 'Show'} Details\n      </Button>\n      <CollapsibleMotion.Root isExpanded={isExpanded}>\n        <CollapsibleMotion.Content>\n          <Box p=\"400\" bg=\"pink.2\" borderRadius=\"200\">\n            <Text>\n              This content is controlled entirely by the external button above.\n              No internal trigger is provided.\n            </Text>\n          </Box>\n        </CollapsibleMotion.Content>\n      </CollapsibleMotion.Root>\n    </Stack>\n  );\n}\n```\n\n## Component requirements\n\n## Accessibility\n\nThe CollapsibleMotion component handles most accessibility requirements internally through React Aria integration. The component automatically provides:\n\n- Proper ARIA attributes (`aria-expanded`, `aria-controls`, `aria-hidden`)\n- Keyboard navigation support\n- Focus management\n- Screen reader announcements\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"example-collapsible-motion\";\n\nexport const Example = () => (\n  <CollapsibleMotion.Root id={PERSISTENT_ID} defaultExpanded={false}>\n    <CollapsibleMotion.Trigger asChild>\n      <Button>Toggle</Button>\n    </CollapsibleMotion.Trigger>\n    <CollapsibleMotion.Content>\n      <Text>Content here</Text>\n    </CollapsibleMotion.Content>\n  </CollapsibleMotion.Root>\n);\n```\n\n#### Keyboard navigation\n\nThe component supports full keyboard interaction:\n- `Tab` / `Shift+Tab`: Move focus to/from the trigger button\n- `Enter` / `Space`: Toggle the expanded/collapsed state when trigger is focused\n- `Escape`: No default behavior (can be customized in your implementation)\n\n## API reference\n\n<PropsTable id=\"CollapsibleMotion\" />\n\n## Common patterns\n\n### FAQ section\n\nCreate an expandable FAQ section with multiple collapsible items:\n\n```jsx live-dev\nconst App = () => {\n  const faqs = [\n    {\n      question: 'What is CollapsibleMotion?',\n      answer: 'CollapsibleMotion is a compound component that provides expand/collapse animations with full accessibility support via React Aria.',\n    },\n    {\n      question: 'When should I use controlled mode?',\n      answer: 'Use controlled mode when you need to programmatically control the expanded state, synchronize with external controls, or coordinate multiple collapsible sections.',\n    },\n    {\n      question: 'Can I customize the animations?',\n      answer: 'Yes! You can customize animations using Chakra animation names and durations on the Content component.',\n    },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      {faqs.map((faq, index) => (\n        <CollapsibleMotion.Root key={index} defaultExpanded={false}>\n          <CollapsibleMotion.Trigger asChild>\n            <Button width=\"full\" justifyContent=\"space-between\">\n              {faq.question}\n              <Icons.KeyboardArrowDown />\n            </Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Box p=\"400\" bg=\"neutral.2\" borderRadius=\"200\">\n              <Text>{faq.answer}</Text>\n            </Box>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      ))}\n    </Stack>\n  );\n}\n```\n\n### Accordion-style navigation\n\nCreate an accordion by coordinating multiple CollapsibleMotion components:\n\n```jsx live-dev\nconst App = () => {\n  const [expandedSection, setExpandedSection] = useState<string | null>('section1');\n\n  const sections = [\n    { id: 'section1', title: 'Getting Started', content: 'Learn the basics of getting started with our platform.' },\n    { id: 'section2', title: 'Advanced Features', content: 'Explore advanced features and customization options.' },\n    { id: 'section3', title: 'API Reference', content: 'Complete API documentation and examples.' },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"200\">\n      {sections.map((section) => (\n        <CollapsibleMotion.Root\n          key={section.id}\n          isExpanded={expandedSection === section.id}\n          onExpandedChange={(isExpanded) => {\n            setExpandedSection(isExpanded ? section.id : null);\n          }}\n        >\n          <CollapsibleMotion.Trigger asChild>\n            <Button\n              width=\"full\"\n              justifyContent=\"space-between\"\n              variant={expandedSection === section.id ? 'solid' : 'outline'}\n            >\n              {section.title}\n              <Icons.KeyboardArrowDown />\n            </Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Box p=\"400\" bg=\"neutral.2\" borderRadius=\"200\">\n              <Text>{section.content}</Text>\n            </Box>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      ))}\n    </Stack>\n  );\n}\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using CollapsibleMotion within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the component renders with expected elements and initial state\n\n```tsx\nimport React from \"react\";\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  CollapsibleMotion,\n  NimbusProvider,\n  Button,\n  Box,\n  Text,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"CollapsibleMotion - Basic rendering\", () => {\n  it(\"renders trigger and content\", () => {\n    render(\n      <NimbusProvider>\n        <CollapsibleMotion.Root defaultExpanded={false}>\n          <CollapsibleMotion.Trigger asChild>\n            <Button>Toggle</Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Text>Collapsible content</Text>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByRole(\"button\", { name: /toggle/i })).toBeInTheDocument();\n    expect(screen.getByText(/collapsible content/i)).toBeInTheDocument();\n  });\n\n  it(\"renders with correct initial expanded state\", () => {\n    render(\n      <NimbusProvider>\n        <CollapsibleMotion.Root defaultExpanded={false}>\n          <CollapsibleMotion.Trigger asChild>\n            <Button>Toggle</Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Text>Content</Text>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      </NimbusProvider>\n    );\n\n    const button = screen.getByRole(\"button\");\n    expect(button).toHaveAttribute(\"aria-expanded\", \"false\");\n  });\n\n  it(\"renders with defaultExpanded true\", () => {\n    render(\n      <NimbusProvider>\n        <CollapsibleMotion.Root defaultExpanded={true}>\n          <CollapsibleMotion.Trigger asChild>\n            <Button>Toggle</Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Text>Content</Text>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      </NimbusProvider>\n    );\n\n    const button = screen.getByRole(\"button\");\n    expect(button).toHaveAttribute(\"aria-expanded\", \"true\");\n  });\n});\n```\n\n### Interaction Tests\n\nTest user interactions like clicking the trigger to expand/collapse\n\n```tsx\nimport React from \"react\";\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  CollapsibleMotion,\n  NimbusProvider,\n  Button,\n  Box,\n  Text,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"CollapsibleMotion - Interactions\", () => {\n  it(\"toggles expanded state when trigger is clicked\", async () => {\n    const user = userEvent.setup();\n    render(\n      <NimbusProvider>\n        <CollapsibleMotion.Root defaultExpanded={false}>\n          <CollapsibleMotion.Trigger asChild>\n            <Button>Toggle</Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Box data-testid=\"content\">\n              <Text>Collapsible content</Text>\n            </Box>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      </NimbusProvider>\n    );\n\n    const button = screen.getByRole(\"button\");\n\n    // Initially collapsed\n    expect(button).toHaveAttribute(\"aria-expanded\", \"false\");\n\n    // Click to expand\n    await user.click(button);\n    expect(button).toHaveAttribute(\"aria-expanded\", \"true\");\n\n    // Click to collapse\n    await user.click(button);\n    expect(button).toHaveAttribute(\"aria-expanded\", \"false\");\n  });\n\n  it(\"calls onExpandedChange callback when toggled\", async () => {\n    const user = userEvent.setup();\n    const handleExpandedChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <CollapsibleMotion.Root\n          defaultExpanded={false}\n          onExpandedChange={handleExpandedChange}\n        >\n          <CollapsibleMotion.Trigger asChild>\n            <Button>Toggle</Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Text>Content</Text>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      </NimbusProvider>\n    );\n\n    const button = screen.getByRole(\"button\");\n    await user.click(button);\n\n    expect(handleExpandedChange).toHaveBeenCalledWith(true);\n  });\n\n  it(\"supports keyboard interaction with Enter key\", async () => {\n    const user = userEvent.setup();\n    render(\n      <NimbusProvider>\n        <CollapsibleMotion.Root defaultExpanded={false}>\n          <CollapsibleMotion.Trigger asChild>\n            <Button>Toggle</Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Text>Content</Text>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      </NimbusProvider>\n    );\n\n    const button = screen.getByRole(\"button\");\n    button.focus();\n    await user.keyboard(\"{Enter}\");\n\n    expect(button).toHaveAttribute(\"aria-expanded\", \"true\");\n  });\n});\n```\n\n### Controlled Mode Tests\n\nTest controlled state management with isExpanded prop\n\n```tsx\nimport React from \"react\";\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  CollapsibleMotion,\n  NimbusProvider,\n  Button,\n  Box,\n  Text,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"CollapsibleMotion - Controlled mode\", () => {\n  it(\"respects controlled isExpanded prop\", async () => {\n    const { rerender } = render(\n      <NimbusProvider>\n        <CollapsibleMotion.Root isExpanded={false}>\n          <CollapsibleMotion.Trigger asChild>\n            <Button>Toggle</Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Text>Content</Text>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      </NimbusProvider>\n    );\n\n    const button = screen.getByRole(\"button\");\n    expect(button).toHaveAttribute(\"aria-expanded\", \"false\");\n\n    // Update to expanded - wait for animation state updates\n    rerender(\n      <NimbusProvider>\n        <CollapsibleMotion.Root isExpanded={true}>\n          <CollapsibleMotion.Trigger asChild>\n            <Button>Toggle</Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Text>Content</Text>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      </NimbusProvider>\n    );\n\n    await waitFor(() => {\n      expect(button).toHaveAttribute(\"aria-expanded\", \"true\");\n    });\n  });\n\n  it(\"calls onExpandedChange in controlled mode\", async () => {\n    const user = userEvent.setup();\n    const handleExpandedChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <CollapsibleMotion.Root\n          isExpanded={false}\n          onExpandedChange={handleExpandedChange}\n        >\n          <CollapsibleMotion.Trigger asChild>\n            <Button>Toggle</Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Text>Content</Text>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      </NimbusProvider>\n    );\n\n    const button = screen.getByRole(\"button\");\n    await user.click(button);\n\n    expect(handleExpandedChange).toHaveBeenCalledWith(true);\n  });\n});\n```\n\n### Disabled State Tests\n\nVerify disabled state prevents interactions\n\n```tsx\nimport React from \"react\";\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  CollapsibleMotion,\n  NimbusProvider,\n  Button,\n  Box,\n  Text,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"CollapsibleMotion - Disabled state\", () => {\n  it(\"renders trigger as disabled when isDisabled is true\", () => {\n    render(\n      <NimbusProvider>\n        <CollapsibleMotion.Root isDisabled={true} defaultExpanded={false}>\n          <CollapsibleMotion.Trigger asChild>\n            <Button>Toggle</Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Text>Content</Text>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      </NimbusProvider>\n    );\n\n    const button = screen.getByRole(\"button\");\n    expect(button).toBeDisabled();\n  });\n\n  it(\"does not toggle state when disabled trigger is clicked\", async () => {\n    const user = userEvent.setup();\n    const handleExpandedChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <CollapsibleMotion.Root\n          isDisabled={true}\n          defaultExpanded={false}\n          onExpandedChange={handleExpandedChange}\n        >\n          <CollapsibleMotion.Trigger asChild>\n            <Button>Toggle</Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Text>Content</Text>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      </NimbusProvider>\n    );\n\n    const button = screen.getByRole(\"button\");\n    await user.click(button);\n\n    // Should not change state or call callback\n    expect(button).toHaveAttribute(\"aria-expanded\", \"false\");\n    expect(handleExpandedChange).not.toHaveBeenCalled();\n  });\n});\n```\n\n### Accessibility Tests\n\nVerify ARIA attributes and accessibility features\n\n```tsx\nimport React from \"react\";\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  CollapsibleMotion,\n  NimbusProvider,\n  Button,\n  Box,\n  Text,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"CollapsibleMotion - Accessibility\", () => {\n  it(\"sets correct ARIA attributes on trigger\", () => {\n    render(\n      <NimbusProvider>\n        <CollapsibleMotion.Root defaultExpanded={false}>\n          <CollapsibleMotion.Trigger asChild>\n            <Button>Toggle</Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Text>Content</Text>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      </NimbusProvider>\n    );\n\n    const button = screen.getByRole(\"button\");\n    expect(button).toHaveAttribute(\"aria-expanded\", \"false\");\n    expect(button).toHaveAttribute(\"aria-controls\");\n  });\n\n  it(\"updates aria-expanded when toggled\", async () => {\n    const user = userEvent.setup();\n    render(\n      <NimbusProvider>\n        <CollapsibleMotion.Root defaultExpanded={false}>\n          <CollapsibleMotion.Trigger asChild>\n            <Button>Toggle</Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Text>Content</Text>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      </NimbusProvider>\n    );\n\n    const button = screen.getByRole(\"button\");\n\n    // Initially false\n    expect(button).toHaveAttribute(\"aria-expanded\", \"false\");\n\n    // After click, should be true\n    await user.click(button);\n    expect(button).toHaveAttribute(\"aria-expanded\", \"true\");\n  });\n\n  it(\"supports custom id for tracking\", () => {\n    const trackingId = \"test-collapsible-motion\";\n    render(\n      <NimbusProvider>\n        <CollapsibleMotion.Root id={trackingId} defaultExpanded={false}>\n          <CollapsibleMotion.Trigger asChild>\n            <Button>Toggle</Button>\n          </CollapsibleMotion.Trigger>\n          <CollapsibleMotion.Content>\n            <Text>Content</Text>\n          </CollapsibleMotion.Content>\n        </CollapsibleMotion.Root>\n      </NimbusProvider>\n    );\n\n    const root = screen.getByRole(\"button\").closest(\"div\");\n    expect(root).toHaveAttribute(\"id\", trackingId);\n  });\n});\n```\n\n### External Control Tests\n\nTest using CollapsibleMotion without an internal trigger\n\n```tsx\nimport React from \"react\";\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  CollapsibleMotion,\n  NimbusProvider,\n  Button,\n  Box,\n  Text,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"CollapsibleMotion - Without trigger\", () => {\n  it(\"works with external control and no trigger component\", async () => {\n    const user = userEvent.setup();\n\n    const TestComponent = () => {\n      const [isExpanded, setIsExpanded] = React.useState(false);\n\n      return (\n        <NimbusProvider>\n          <Button onPress={() => setIsExpanded(!isExpanded)}>\n            External Toggle\n          </Button>\n          <CollapsibleMotion.Root isExpanded={isExpanded}>\n            <CollapsibleMotion.Content>\n              <Text>Content controlled externally</Text>\n            </CollapsibleMotion.Content>\n          </CollapsibleMotion.Root>\n        </NimbusProvider>\n      );\n    };\n\n    render(<TestComponent />);\n\n    const externalButton = screen.getByRole(\"button\", {\n      name: /external toggle/i,\n    });\n    const content = screen.getByText(/content controlled externally/i);\n\n    // Initially collapsed (not visible due to Presence)\n    expect(content).toBeInTheDocument();\n\n    // Click external button to expand\n    await user.click(externalButton);\n\n    // Content should be visible after animation\n    await waitFor(() => {\n      expect(content).toBeVisible();\n    });\n  });\n});\n```\n\n\n## Resources\n\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-layout-collapsiblemotion--docs)\n- [React Aria useDisclosure](https://react-spectrum.adobe.com/react-aria/useDisclosure.html)\n- [Chakra UI Presence](https://www.chakra-ui.com/docs/components/presence)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Uncontrolled mode",
+          "href": "#uncontrolled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Controlled mode",
+          "href": "#controlled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Disabled state",
+          "href": "#disabled-state",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom trigger with asChild",
+          "href": "#custom-trigger-with-aschild",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom animations",
+          "href": "#custom-animations",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Dynamic content",
+          "href": "#dynamic-content",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Without trigger",
+          "href": "#without-trigger",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "FAQ section",
+          "href": "#faq-section",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accordion-style navigation",
+          "href": "#accordion-style-navigation",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Interaction Tests",
+          "href": "#interaction-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Controlled Mode Tests",
+          "href": "#controlled-mode-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Disabled State Tests",
+          "href": "#disabled-state-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility Tests",
+          "href": "#accessibility-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "External Control Tests",
+          "href": "#external-control-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

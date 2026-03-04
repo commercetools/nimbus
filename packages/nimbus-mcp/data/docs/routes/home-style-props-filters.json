@@ -1,0 +1,396 @@
+{
+  "meta": {
+    "id": "Style Props-Filters",
+    "title": "Filters",
+    "description": "JSX style props for applying various filters to elements.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/filters.mdx",
+    "menu": [
+      "Home",
+      "Style Props",
+      "Filters"
+    ],
+    "route": "home/style-props/filters",
+    "tags": [
+      "document"
+    ],
+    "toc": [
+      {
+        "value": "Filter",
+        "href": "#filter",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Blur",
+        "href": "#blur",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Contrast",
+        "href": "#contrast",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Drop Shadow",
+        "href": "#drop-shadow",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Grayscale",
+        "href": "#grayscale",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Hue Rotate",
+        "href": "#hue-rotate",
+        "depth": 2,
+        "numbering": [
+          1,
+          6
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Invert",
+        "href": "#invert",
+        "depth": 2,
+        "numbering": [
+          1,
+          7
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Saturate",
+        "href": "#saturate",
+        "depth": 2,
+        "numbering": [
+          1,
+          8
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Sepia",
+        "href": "#sepia",
+        "depth": 2,
+        "numbering": [
+          1,
+          9
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Backdrop Filter",
+        "href": "#backdrop-filter",
+        "depth": 2,
+        "numbering": [
+          1,
+          10
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Backdrop Blur",
+        "href": "#backdrop-blur",
+        "depth": 2,
+        "numbering": [
+          1,
+          11
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Backdrop Contrast",
+        "href": "#backdrop-contrast",
+        "depth": 2,
+        "numbering": [
+          1,
+          12
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Backdrop Grayscale",
+        "href": "#backdrop-grayscale",
+        "depth": 2,
+        "numbering": [
+          1,
+          13
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Backdrop Hue Rotate",
+        "href": "#backdrop-hue-rotate",
+        "depth": 2,
+        "numbering": [
+          1,
+          14
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Backdrop Invert",
+        "href": "#backdrop-invert",
+        "depth": 2,
+        "numbering": [
+          1,
+          15
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Backdrop Opacity",
+        "href": "#backdrop-opacity",
+        "depth": 2,
+        "numbering": [
+          1,
+          16
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Backdrop Saturate",
+        "href": "#backdrop-saturate",
+        "depth": 2,
+        "numbering": [
+          1,
+          17
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Backdrop Sepia",
+        "href": "#backdrop-sepia",
+        "depth": 2,
+        "numbering": [
+          1,
+          18
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Filters\n\nJSX style props for applying various filters to elements.\n\n## Filter\n\nUse the `filter` prop to apply visual effects like blur or color shift to an\nelement.\n\n```jsx\n<Box filter=\"blur(5px)\" />\n<Box filter=\"grayscale(80%)\" />\n```\n\n| Prop     | CSS Property | Token Category |\n| -------- | ------------ | -------------- |\n| `filter` | `filter`     | -              |\n\n## Blur\n\nUse the `blur` prop to apply a blur effect to an element. The requirement for\nthis prop is to set the `filter` prop to `auto`.\n\n```jsx\n// hardcoded value\n<Box filter=\"auto\" blur=\"5px\" />\n\n// token value\n<Box filter=\"auto\" blur=\"sm\" />\n```\n\n| Prop   | CSS Property | Token Category |\n| ------ | ------------ | -------------- |\n| `blur` | `--blur`     | `blurs`        |\n\n## Contrast\n\nUse the `contrast` prop to apply a contrast effect to an element. The\nrequirement for this prop is to use the `filter` prop and set it to `auto`.\n\n```jsx\n<Box filter=\"auto\" contrast=\"0.3\" />\n```\n\n| Prop       | CSS Property | Token Category |\n| ---------- | ------------ | -------------- |\n| `contrast` | `--contrast` | -              |\n\n## Drop Shadow\n\nUse the `dropShadow` prop to apply a drop shadow effect to an element. The\nrequirement for this prop is to use the `filter` prop and set it to `auto`.\n\n```jsx\n<Box filter=\"auto\" dropShadow=\"0px 0px 10px rgba(0, 0, 0, 0.5)\" />\n```\n\n| Prop         | CSS Property    | Token Category |\n| ------------ | --------------- | -------------- |\n| `dropShadow` | `--drop-shadow` | -              |\n\n## Grayscale\n\nUse the `grayscale` prop to apply a grayscale effect to an element. The\nrequirement for this prop is to use the `filter` prop and set it to `auto`.\n\n```jsx\n<Box filter=\"auto\" grayscale=\"64%\" />\n```\n\n| Prop        | CSS Property  | Token Category |\n| ----------- | ------------- | -------------- |\n| `grayscale` | `--grayscale` | -              |\n\n## Hue Rotate\n\nUse the `hueRotate` prop to apply a hue rotate effect to an element. The\nrequirement for this prop is to use the `filter` prop and set it to `auto`.\n\n```jsx\n<Box filter=\"auto\" hueRotate=\"30deg\" />\n```\n\n| Prop        | CSS Property   | Token Category |\n| ----------- | -------------- | -------------- |\n| `hueRotate` | `--hue-rotate` | -              |\n\n## Invert\n\nUse the `invert` prop to apply an invert effect to an element. The requirement\nfor this prop is to use the `filter` prop and set it to `auto`.\n\n```jsx\n<Box filter=\"auto\" invert=\"40%\" />\n```\n\n| Prop     | CSS Property | Token Category |\n| -------- | ------------ | -------------- |\n| `invert` | `--invert`   | -              |\n\n## Saturate\n\nUse the `saturate` prop to apply a saturate effect to an element. The\nrequirement for this prop is to use the `filter` prop and set it to `auto`.\n\n```jsx\n<Box filter=\"auto\" saturate=\"0.4\" />\n```\n\n| Prop       | CSS Property | Token Category |\n| ---------- | ------------ | -------------- |\n| `saturate` | `--saturate` | -              |\n\n## Sepia\n\nUse the `sepia` prop to apply a sepia effect to an element. The requirement for\nthis prop is to use the `filter` prop and set it to `auto`.\n\n```jsx\n<Box filter=\"auto\" sepia=\"0.4\" />\n```\n\n| Prop    | CSS Property | Token Category |\n| ------- | ------------ | -------------- |\n| `sepia` | `--sepia`    | -              |\n\n## Backdrop Filter\n\nUse the `backdropFilter` prop to apply visual effects like blur or color shift\nto the area behind an element. This creates a translucent effect.\n\n```jsx\n<Box backdropFilter=\"blur(5px)\" />\n<Box backdropFilter=\"grayscale(80%)\" />\n```\n\n| Prop             | CSS Property      | Token Category |\n| ---------------- | ----------------- | -------------- |\n| `backdropFilter` | `backdrop-filter` | -              |\n\n## Backdrop Blur\n\nUse the `backdropBlur` prop to apply a blur effect to the area behind an\nelement. The requirement for this prop is to set the `backdropFilter` prop to\n`auto`.\n\n```jsx\n// hardcoded value\n<Box backdropFilter=\"auto\" backdropBlur=\"5px\" />\n\n// token value\n<Box backdropFilter=\"auto\" backdropBlur=\"sm\" />\n```\n\n| Prop           | CSS Property      | Token Category |\n| -------------- | ----------------- | -------------- |\n| `backdropBlur` | `--backdrop-blur` | `blurs`        |\n\n## Backdrop Contrast\n\nUse the `backdropContrast` prop to apply a contrast effect to the area behind an\nelement. The requirement for this prop is to use the `backdropFilter` prop and\nset it to `auto`.\n\n```jsx\n<Box backdropFilter=\"auto\" backdropContrast=\"0.3\" />\n```\n\n| Prop               | CSS Property          | Token Category |\n| ------------------ | --------------------- | -------------- |\n| `backdropContrast` | `--backdrop-contrast` | -              |\n\n## Backdrop Grayscale\n\nUse the `backdropGrayscale` prop to apply a grayscale effect to the area behind\nan element. The requirement for this prop is to use the `backdropFilter` prop\nand set it to `auto`.\n\n```jsx\n<Box backdropFilter=\"auto\" backdropGrayscale=\"64%\" />\n```\n\n| Prop                | CSS Property           | Token Category |\n| ------------------- | ---------------------- | -------------- |\n| `backdropGrayscale` | `--backdrop-grayscale` | -              |\n\n## Backdrop Hue Rotate\n\nUse the `backdropHueRotate` prop to apply a hue rotate effect to the area behind\nan element. The requirement for this prop is to use the `backdropFilter` prop\nand set it to `auto`.\n\n```jsx\n<Box backdropFilter=\"auto\" backdropHueRotate=\"30deg\" />\n```\n\n| Prop                | CSS Property            | Token Category |\n| ------------------- | ----------------------- | -------------- |\n| `backdropHueRotate` | `--backdrop-hue-rotate` | -              |\n\n## Backdrop Invert\n\nUse the `backdropInvert` prop to apply an invert effect to the area behind an\nelement. The requirement for this prop is to use the `backdropFilter` prop and\nset it to `auto`.\n\n```jsx\n<Box backdropFilter=\"auto\" backdropInvert=\"40%\" />\n```\n\n| Prop             | CSS Property        | Token Category |\n| ---------------- | ------------------- | -------------- |\n| `backdropInvert` | `--backdrop-invert` | -              |\n\n## Backdrop Opacity\n\nUse the `backdropOpacity` prop to apply an opacity effect to the area behind an\nelement. The requirement for this prop is to use the `backdropFilter` prop and\nset it to `auto`.\n\n```jsx\n<Box backdropFilter=\"auto\" backdropOpacity=\"0.4\" />\n```\n\n| Prop              | CSS Property         | Token Category |\n| ----------------- | -------------------- | -------------- |\n| `backdropOpacity` | `--backdrop-opacity` | -              |\n\n## Backdrop Saturate\n\nUse the `backdropSaturate` prop to apply a saturate effect to the area behind an\nelement. The requirement for this prop is to use the `backdropFilter` prop and\nset it to `auto`.\n\n```jsx\n<Box backdropFilter=\"auto\" backdropSaturate=\"0.4\" />\n```\n\n| Prop               | CSS Property          | Token Category |\n| ------------------ | --------------------- | -------------- |\n| `backdropSaturate` | `--backdrop-saturate` | -              |\n\n## Backdrop Sepia\n\nUse the `backdropSepia` prop to apply a sepia effect to the area behind an\nelement. The requirement for this prop is to use the `backdropFilter` prop and\nset it to `auto`.\n\n```jsx\n<Box backdropFilter=\"auto\" backdropSepia=\"0.4\" />\n```\n\n| Prop            | CSS Property       | Token Category |\n| --------------- | ------------------ | -------------- |\n| `backdropSepia` | `--backdrop-sepia` | -              |\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Filters\n\nJSX style props for applying various filters to elements.\n\n## Filter\n\nUse the `filter` prop to apply visual effects like blur or color shift to an\nelement.\n\n```jsx\n<Box filter=\"blur(5px)\" />\n<Box filter=\"grayscale(80%)\" />\n```\n\n| Prop     | CSS Property | Token Category |\n| -------- | ------------ | -------------- |\n| `filter` | `filter`     | -              |\n\n## Blur\n\nUse the `blur` prop to apply a blur effect to an element. The requirement for\nthis prop is to set the `filter` prop to `auto`.\n\n```jsx\n// hardcoded value\n<Box filter=\"auto\" blur=\"5px\" />\n\n// token value\n<Box filter=\"auto\" blur=\"sm\" />\n```\n\n| Prop   | CSS Property | Token Category |\n| ------ | ------------ | -------------- |\n| `blur` | `--blur`     | `blurs`        |\n\n## Contrast\n\nUse the `contrast` prop to apply a contrast effect to an element. The\nrequirement for this prop is to use the `filter` prop and set it to `auto`.\n\n```jsx\n<Box filter=\"auto\" contrast=\"0.3\" />\n```\n\n| Prop       | CSS Property | Token Category |\n| ---------- | ------------ | -------------- |\n| `contrast` | `--contrast` | -              |\n\n## Drop Shadow\n\nUse the `dropShadow` prop to apply a drop shadow effect to an element. The\nrequirement for this prop is to use the `filter` prop and set it to `auto`.\n\n```jsx\n<Box filter=\"auto\" dropShadow=\"0px 0px 10px rgba(0, 0, 0, 0.5)\" />\n```\n\n| Prop         | CSS Property    | Token Category |\n| ------------ | --------------- | -------------- |\n| `dropShadow` | `--drop-shadow` | -              |\n\n## Grayscale\n\nUse the `grayscale` prop to apply a grayscale effect to an element. The\nrequirement for this prop is to use the `filter` prop and set it to `auto`.\n\n```jsx\n<Box filter=\"auto\" grayscale=\"64%\" />\n```\n\n| Prop        | CSS Property  | Token Category |\n| ----------- | ------------- | -------------- |\n| `grayscale` | `--grayscale` | -              |\n\n## Hue Rotate\n\nUse the `hueRotate` prop to apply a hue rotate effect to an element. The\nrequirement for this prop is to use the `filter` prop and set it to `auto`.\n\n```jsx\n<Box filter=\"auto\" hueRotate=\"30deg\" />\n```\n\n| Prop        | CSS Property   | Token Category |\n| ----------- | -------------- | -------------- |\n| `hueRotate` | `--hue-rotate` | -              |\n\n## Invert\n\nUse the `invert` prop to apply an invert effect to an element. The requirement\nfor this prop is to use the `filter` prop and set it to `auto`.\n\n```jsx\n<Box filter=\"auto\" invert=\"40%\" />\n```\n\n| Prop     | CSS Property | Token Category |\n| -------- | ------------ | -------------- |\n| `invert` | `--invert`   | -              |\n\n## Saturate\n\nUse the `saturate` prop to apply a saturate effect to an element. The\nrequirement for this prop is to use the `filter` prop and set it to `auto`.\n\n```jsx\n<Box filter=\"auto\" saturate=\"0.4\" />\n```\n\n| Prop       | CSS Property | Token Category |\n| ---------- | ------------ | -------------- |\n| `saturate` | `--saturate` | -              |\n\n## Sepia\n\nUse the `sepia` prop to apply a sepia effect to an element. The requirement for\nthis prop is to use the `filter` prop and set it to `auto`.\n\n```jsx\n<Box filter=\"auto\" sepia=\"0.4\" />\n```\n\n| Prop    | CSS Property | Token Category |\n| ------- | ------------ | -------------- |\n| `sepia` | `--sepia`    | -              |\n\n## Backdrop Filter\n\nUse the `backdropFilter` prop to apply visual effects like blur or color shift\nto the area behind an element. This creates a translucent effect.\n\n```jsx\n<Box backdropFilter=\"blur(5px)\" />\n<Box backdropFilter=\"grayscale(80%)\" />\n```\n\n| Prop             | CSS Property      | Token Category |\n| ---------------- | ----------------- | -------------- |\n| `backdropFilter` | `backdrop-filter` | -              |\n\n## Backdrop Blur\n\nUse the `backdropBlur` prop to apply a blur effect to the area behind an\nelement. The requirement for this prop is to set the `backdropFilter` prop to\n`auto`.\n\n```jsx\n// hardcoded value\n<Box backdropFilter=\"auto\" backdropBlur=\"5px\" />\n\n// token value\n<Box backdropFilter=\"auto\" backdropBlur=\"sm\" />\n```\n\n| Prop           | CSS Property      | Token Category |\n| -------------- | ----------------- | -------------- |\n| `backdropBlur` | `--backdrop-blur` | `blurs`        |\n\n## Backdrop Contrast\n\nUse the `backdropContrast` prop to apply a contrast effect to the area behind an\nelement. The requirement for this prop is to use the `backdropFilter` prop and\nset it to `auto`.\n\n```jsx\n<Box backdropFilter=\"auto\" backdropContrast=\"0.3\" />\n```\n\n| Prop               | CSS Property          | Token Category |\n| ------------------ | --------------------- | -------------- |\n| `backdropContrast` | `--backdrop-contrast` | -              |\n\n## Backdrop Grayscale\n\nUse the `backdropGrayscale` prop to apply a grayscale effect to the area behind\nan element. The requirement for this prop is to use the `backdropFilter` prop\nand set it to `auto`.\n\n```jsx\n<Box backdropFilter=\"auto\" backdropGrayscale=\"64%\" />\n```\n\n| Prop                | CSS Property           | Token Category |\n| ------------------- | ---------------------- | -------------- |\n| `backdropGrayscale` | `--backdrop-grayscale` | -              |\n\n## Backdrop Hue Rotate\n\nUse the `backdropHueRotate` prop to apply a hue rotate effect to the area behind\nan element. The requirement for this prop is to use the `backdropFilter` prop\nand set it to `auto`.\n\n```jsx\n<Box backdropFilter=\"auto\" backdropHueRotate=\"30deg\" />\n```\n\n| Prop                | CSS Property            | Token Category |\n| ------------------- | ----------------------- | -------------- |\n| `backdropHueRotate` | `--backdrop-hue-rotate` | -              |\n\n## Backdrop Invert\n\nUse the `backdropInvert` prop to apply an invert effect to the area behind an\nelement. The requirement for this prop is to use the `backdropFilter` prop and\nset it to `auto`.\n\n```jsx\n<Box backdropFilter=\"auto\" backdropInvert=\"40%\" />\n```\n\n| Prop             | CSS Property        | Token Category |\n| ---------------- | ------------------- | -------------- |\n| `backdropInvert` | `--backdrop-invert` | -              |\n\n## Backdrop Opacity\n\nUse the `backdropOpacity` prop to apply an opacity effect to the area behind an\nelement. The requirement for this prop is to use the `backdropFilter` prop and\nset it to `auto`.\n\n```jsx\n<Box backdropFilter=\"auto\" backdropOpacity=\"0.4\" />\n```\n\n| Prop              | CSS Property         | Token Category |\n| ----------------- | -------------------- | -------------- |\n| `backdropOpacity` | `--backdrop-opacity` | -              |\n\n## Backdrop Saturate\n\nUse the `backdropSaturate` prop to apply a saturate effect to the area behind an\nelement. The requirement for this prop is to use the `backdropFilter` prop and\nset it to `auto`.\n\n```jsx\n<Box backdropFilter=\"auto\" backdropSaturate=\"0.4\" />\n```\n\n| Prop               | CSS Property          | Token Category |\n| ------------------ | --------------------- | -------------- |\n| `backdropSaturate` | `--backdrop-saturate` | -              |\n\n## Backdrop Sepia\n\nUse the `backdropSepia` prop to apply a sepia effect to the area behind an\nelement. The requirement for this prop is to use the `backdropFilter` prop and\nset it to `auto`.\n\n```jsx\n<Box backdropFilter=\"auto\" backdropSepia=\"0.4\" />\n```\n\n| Prop            | CSS Property       | Token Category |\n| --------------- | ------------------ | -------------- |\n| `backdropSepia` | `--backdrop-sepia` | -              |\n",
+      "toc": [
+        {
+          "value": "Filter",
+          "href": "#filter",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Blur",
+          "href": "#blur",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Contrast",
+          "href": "#contrast",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Drop Shadow",
+          "href": "#drop-shadow",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Grayscale",
+          "href": "#grayscale",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Hue Rotate",
+          "href": "#hue-rotate",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Invert",
+          "href": "#invert",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Saturate",
+          "href": "#saturate",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Sepia",
+          "href": "#sepia",
+          "depth": 2,
+          "numbering": [
+            1,
+            9
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Backdrop Filter",
+          "href": "#backdrop-filter",
+          "depth": 2,
+          "numbering": [
+            1,
+            10
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Backdrop Blur",
+          "href": "#backdrop-blur",
+          "depth": 2,
+          "numbering": [
+            1,
+            11
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Backdrop Contrast",
+          "href": "#backdrop-contrast",
+          "depth": 2,
+          "numbering": [
+            1,
+            12
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Backdrop Grayscale",
+          "href": "#backdrop-grayscale",
+          "depth": 2,
+          "numbering": [
+            1,
+            13
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Backdrop Hue Rotate",
+          "href": "#backdrop-hue-rotate",
+          "depth": 2,
+          "numbering": [
+            1,
+            14
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Backdrop Invert",
+          "href": "#backdrop-invert",
+          "depth": 2,
+          "numbering": [
+            1,
+            15
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Backdrop Opacity",
+          "href": "#backdrop-opacity",
+          "depth": 2,
+          "numbering": [
+            1,
+            16
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Backdrop Saturate",
+          "href": "#backdrop-saturate",
+          "depth": 2,
+          "numbering": [
+            1,
+            17
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Backdrop Sepia",
+          "href": "#backdrop-sepia",
+          "depth": 2,
+          "numbering": [
+            1,
+            18
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

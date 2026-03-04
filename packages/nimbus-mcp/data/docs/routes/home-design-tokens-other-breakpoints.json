@@ -1,0 +1,61 @@
+{
+  "meta": {
+    "id": "Breakpoints",
+    "title": "Breakpoints",
+    "description": "The list of available breakpoints",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/tokens/breakpoints.mdx",
+    "menu": [
+      "Home",
+      "Design Tokens",
+      "Other",
+      "Breakpoints"
+    ],
+    "route": "home/design-tokens/other/breakpoints",
+    "tags": [
+      "z-index",
+      "layer",
+      "stacking",
+      "context"
+    ],
+    "toc": [
+      {
+        "value": "Tokens",
+        "href": "#tokens",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "icon": "DesktopWindows",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Breakpoints\n\nBreakpoints define specific screen widths at which your design should adapt to\nprovide an optimal viewing experience for users. They are thresholds that\nrepresent a starting point for changes in styling, such as font sizes, layouts,\nand visibility of elements.\n\nEach breakpoint is a minimum width, meaning that styles associated with that\nbreakpoint apply to screen sizes equal to or larger than the specified width.\nThe styles remain active until the next breakpoint threshold is reached.\n\n## Tokens\n\nThe breakpoints **start** at the specified value and **end** at the next\nbreakpoint value. The following breakpoint-tokens are supported:\n\n<GenericTokenTableDemo category=\"breakpoints\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Breakpoints\n\nBreakpoints define specific screen widths at which your design should adapt to\nprovide an optimal viewing experience for users. They are thresholds that\nrepresent a starting point for changes in styling, such as font sizes, layouts,\nand visibility of elements.\n\nEach breakpoint is a minimum width, meaning that styles associated with that\nbreakpoint apply to screen sizes equal to or larger than the specified width.\nThe styles remain active until the next breakpoint threshold is reached.\n\n## Tokens\n\nThe breakpoints **start** at the specified value and **end** at the next\nbreakpoint value. The following breakpoint-tokens are supported:\n\n<GenericTokenTableDemo category=\"breakpoints\" />\n",
+      "toc": [
+        {
+          "value": "Tokens",
+          "href": "#tokens",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

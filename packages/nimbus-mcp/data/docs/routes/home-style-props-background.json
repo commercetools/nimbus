@@ -1,0 +1,236 @@
+{
+  "meta": {
+    "id": "Style Props-Background",
+    "title": "Background",
+    "description": "JSX style props for styling background colors, gradients, and images.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/background.mdx",
+    "menu": [
+      "Home",
+      "Style Props",
+      "Background"
+    ],
+    "route": "home/style-props/background",
+    "tags": [
+      "document"
+    ],
+    "toc": [
+      {
+        "value": "Background Attachment",
+        "href": "#background-attachment",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Background Blend Mode",
+        "href": "#background-blend-mode",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Background Clip",
+        "href": "#background-clip",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Background Color",
+        "href": "#background-color",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Background Origin",
+        "href": "#background-origin",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Background Position",
+        "href": "#background-position",
+        "depth": 2,
+        "numbering": [
+          1,
+          6
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Background Repeat",
+        "href": "#background-repeat",
+        "depth": 2,
+        "numbering": [
+          1,
+          7
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Background Size",
+        "href": "#background-size",
+        "depth": 2,
+        "numbering": [
+          1,
+          8
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Background Image",
+        "href": "#background-image",
+        "depth": 2,
+        "numbering": [
+          1,
+          9
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Background Gradient",
+        "href": "#background-gradient",
+        "depth": 2,
+        "numbering": [
+          1,
+          10
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Background\n\nJSX style props for styling background colors, gradients, and images.\n\n## Background Attachment\n\nUse `bgAttachment` to control the attachment of a background image.\n\n```jsx\n<Box bgAttachment=\"fixed\" bgImage=\"url(...)\" />\n```\n\n| Prop                                   | CSS Property            | Token Category |\n| -------------------------------------- | ----------------------- | -------------- |\n| `bgAttachment`, `backgroundAttachment` | `background-attachment` | -              |\n\n## Background Blend Mode\n\nUse `bgBlendMode` prop to control how an element's background image should blend\nwith the its background color.\n\n```jsx\n<Box bgBlendMode=\"multiply\" bgColor=\"red.200\" bgImage=\"url(...)\" />\n```\n\n## Background Clip\n\nUse `bgClip` to control the clipping of a background image.\n\n```jsx\n<Box bgClip=\"border-box\" bgImage=\"url(...)\" />\n```\n\n| Prop                       | CSS Property      | Token Category |\n| -------------------------- | ----------------- | -------------- |\n| `bgClip`, `backgroundClip` | `background-clip` | -              |\n\n## Background Color\n\nUse `bg`, `bgColor`, or `backgroundColor` props to set the background color of\nan element.\n\n```jsx\n<Box bg=\"red.200\" />\n<Box bgColor=\"red.200\" />\n\n// with opacity modifier\n<Box bg=\"blue.200/30\" />\n<Box bgColor=\"blue.200/30\" />\n```\n\n| Prop                         | CSS Property       | Token Category |\n| ---------------------------- | ------------------ | -------------- |\n| `bg`, `background`           | `background`       | `colors`       |\n| `bgColor`, `backgroundColor` | `background-color` | `colors`       |\n\n## Background Origin\n\nUse `bgOrigin` or `backgroundOrigin` to control the origin of a background\nimage.\n\n```jsx\n<Box bgOrigin=\"border-box\" bgImage=\"url(...)\" />\n```\n\n| Prop                           | CSS Property        | Token Category |\n| ------------------------------ | ------------------- | -------------- |\n| `bgOrigin`, `backgroundOrigin` | `background-origin` | -              |\n\n## Background Position\n\nProperties for controlling the src and position of a background image.\n\n```jsx\n<Box bgImage=\"url(...)\" bgPosition=\"center\" />\n```\n\n| Prop                                 | CSS Property       | Token Category |\n| ------------------------------------ | ------------------ | -------------- |\n| `bgPosition`, `backgroundPosition`   | `background-image` | -              |\n| `bgPositionX`, `backgroundPositionX` | `background-image` | -              |\n| `bgPositionY`, `backgroundPositionY` | `background-image` | -              |\n\n## Background Repeat\n\nUse `bgRepeat` or `backgroundRepeat` to control the repeat of a background\nimage.\n\n```jsx\n<Box bgRepeat=\"no-repeat\" bgImage=\"url(...)\" />\n```\n\n| Prop                           | CSS Property        | Token Category |\n| ------------------------------ | ------------------- | -------------- |\n| `bgRepeat`, `backgroundRepeat` | `background-repeat` | -              |\n\n## Background Size\n\nUse `bgSize` or `backgroundSize` to control the size of a background image.\n\n```jsx\n<Box bgSize=\"cover\" bgImage=\"url(...)\" />\n```\n\n| Prop                       | CSS Property      | Token Category |\n| -------------------------- | ----------------- | -------------- |\n| `bgSize`, `backgroundSize` | `background-size` | -              |\n\n## Background Image\n\nUse `bgImage` or `backgroundImage` to set the background image of an element.\n\n```jsx\n<Box bgImage=\"url(...)\" />\n<Box bgImage=\"radial-gradient(circle, #0000 45%, #000f 48%)\" />\n<Box bgImage=\"linear-gradient(black, white)\" />\n\n// with token reference\n<Box bgImage=\"linear-gradient({colors.red.200}, {colors.blue.200})\" />\n```\n\n| Prop                         | CSS Property       | Token Category |\n| ---------------------------- | ------------------ | -------------- |\n| `bgImage`, `backgroundImage` | `background-image` | assets         |\n\n## Background Gradient\n\nProperties to create a background gradient based on color stops.\n\n```jsx\n<Box bgGradient=\"to-r\" gradientFrom=\"red.200\" gradientTo=\"blue.200\" />\n```\n\n| Prop           | CSS Property       | Token Category |\n| -------------- | ------------------ | -------------- |\n| `bgGradient`   | `background-image` | `gradients`    |\n| `textGradient` | `background-image` | `gradients`    |\n| `gradientFrom` | `--gradient-from`  | `colors`       |\n| `gradientTo`   | `--gradient-to`    | `colors`       |\n| `gradientVia`  | `--gradient-via`   | `colors`       |\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Background\n\nJSX style props for styling background colors, gradients, and images.\n\n## Background Attachment\n\nUse `bgAttachment` to control the attachment of a background image.\n\n```jsx\n<Box bgAttachment=\"fixed\" bgImage=\"url(...)\" />\n```\n\n| Prop                                   | CSS Property            | Token Category |\n| -------------------------------------- | ----------------------- | -------------- |\n| `bgAttachment`, `backgroundAttachment` | `background-attachment` | -              |\n\n## Background Blend Mode\n\nUse `bgBlendMode` prop to control how an element's background image should blend\nwith the its background color.\n\n```jsx\n<Box bgBlendMode=\"multiply\" bgColor=\"red.200\" bgImage=\"url(...)\" />\n```\n\n## Background Clip\n\nUse `bgClip` to control the clipping of a background image.\n\n```jsx\n<Box bgClip=\"border-box\" bgImage=\"url(...)\" />\n```\n\n| Prop                       | CSS Property      | Token Category |\n| -------------------------- | ----------------- | -------------- |\n| `bgClip`, `backgroundClip` | `background-clip` | -              |\n\n## Background Color\n\nUse `bg`, `bgColor`, or `backgroundColor` props to set the background color of\nan element.\n\n```jsx\n<Box bg=\"red.200\" />\n<Box bgColor=\"red.200\" />\n\n// with opacity modifier\n<Box bg=\"blue.200/30\" />\n<Box bgColor=\"blue.200/30\" />\n```\n\n| Prop                         | CSS Property       | Token Category |\n| ---------------------------- | ------------------ | -------------- |\n| `bg`, `background`           | `background`       | `colors`       |\n| `bgColor`, `backgroundColor` | `background-color` | `colors`       |\n\n## Background Origin\n\nUse `bgOrigin` or `backgroundOrigin` to control the origin of a background\nimage.\n\n```jsx\n<Box bgOrigin=\"border-box\" bgImage=\"url(...)\" />\n```\n\n| Prop                           | CSS Property        | Token Category |\n| ------------------------------ | ------------------- | -------------- |\n| `bgOrigin`, `backgroundOrigin` | `background-origin` | -              |\n\n## Background Position\n\nProperties for controlling the src and position of a background image.\n\n```jsx\n<Box bgImage=\"url(...)\" bgPosition=\"center\" />\n```\n\n| Prop                                 | CSS Property       | Token Category |\n| ------------------------------------ | ------------------ | -------------- |\n| `bgPosition`, `backgroundPosition`   | `background-image` | -              |\n| `bgPositionX`, `backgroundPositionX` | `background-image` | -              |\n| `bgPositionY`, `backgroundPositionY` | `background-image` | -              |\n\n## Background Repeat\n\nUse `bgRepeat` or `backgroundRepeat` to control the repeat of a background\nimage.\n\n```jsx\n<Box bgRepeat=\"no-repeat\" bgImage=\"url(...)\" />\n```\n\n| Prop                           | CSS Property        | Token Category |\n| ------------------------------ | ------------------- | -------------- |\n| `bgRepeat`, `backgroundRepeat` | `background-repeat` | -              |\n\n## Background Size\n\nUse `bgSize` or `backgroundSize` to control the size of a background image.\n\n```jsx\n<Box bgSize=\"cover\" bgImage=\"url(...)\" />\n```\n\n| Prop                       | CSS Property      | Token Category |\n| -------------------------- | ----------------- | -------------- |\n| `bgSize`, `backgroundSize` | `background-size` | -              |\n\n## Background Image\n\nUse `bgImage` or `backgroundImage` to set the background image of an element.\n\n```jsx\n<Box bgImage=\"url(...)\" />\n<Box bgImage=\"radial-gradient(circle, #0000 45%, #000f 48%)\" />\n<Box bgImage=\"linear-gradient(black, white)\" />\n\n// with token reference\n<Box bgImage=\"linear-gradient({colors.red.200}, {colors.blue.200})\" />\n```\n\n| Prop                         | CSS Property       | Token Category |\n| ---------------------------- | ------------------ | -------------- |\n| `bgImage`, `backgroundImage` | `background-image` | assets         |\n\n## Background Gradient\n\nProperties to create a background gradient based on color stops.\n\n```jsx\n<Box bgGradient=\"to-r\" gradientFrom=\"red.200\" gradientTo=\"blue.200\" />\n```\n\n| Prop           | CSS Property       | Token Category |\n| -------------- | ------------------ | -------------- |\n| `bgGradient`   | `background-image` | `gradients`    |\n| `textGradient` | `background-image` | `gradients`    |\n| `gradientFrom` | `--gradient-from`  | `colors`       |\n| `gradientTo`   | `--gradient-to`    | `colors`       |\n| `gradientVia`  | `--gradient-via`   | `colors`       |\n",
+      "toc": [
+        {
+          "value": "Background Attachment",
+          "href": "#background-attachment",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Background Blend Mode",
+          "href": "#background-blend-mode",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Background Clip",
+          "href": "#background-clip",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Background Color",
+          "href": "#background-color",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Background Origin",
+          "href": "#background-origin",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Background Position",
+          "href": "#background-position",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Background Repeat",
+          "href": "#background-repeat",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Background Size",
+          "href": "#background-size",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Background Image",
+          "href": "#background-image",
+          "depth": 2,
+          "numbering": [
+            1,
+            9
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Background Gradient",
+          "href": "#background-gradient",
+          "depth": 2,
+          "numbering": [
+            1,
+            10
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,511 @@
+{
+  "meta": {
+    "id": "Components-Image",
+    "title": "Image",
+    "exportName": "Image",
+    "description": "An image component is used to display visual content like photographs, illustrations, or graphics within the UI to support, illustrate, or enhance textual information.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/image/image.mdx",
+    "menu": [
+      "Components",
+      "Media",
+      "Image"
+    ],
+    "route": "components/media/image",
+    "tags": [
+      "component",
+      "image",
+      "picture",
+      "media"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Basic functions",
+        "href": "#basic-functions",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "guidelines",
+        "title": "Guidelines",
+        "order": 2
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nThe image component offers core features designed for optimal performance,\naccessibility, and responsiveness when displaying visual content.\n\n## Basic functions\n\n```jsx live\nconst App = () => (\n  <Image\n    src=\"/images/image/image-sample.png\"\n    alt=\"Example image showing basic functionality\"\n    width=\"100%\"\n    maxWidth=\"9600\"\n  />\n)\n```\n\n- **Source set (`srcSet`) and sizes:** This allows the component to define\n  multiple image sources at different resolutions, enabling the browser to\n  automatically select the most appropriate, performant image based on the\n  user's viewport size.\n- **Alternative text (`alt`):** It mandates the inclusion of descriptive\n  alternative text, which is crucial for accessibility, ensuring screen readers\n  convey the image's meaning.\n- **Lazy loading:** The component supports native lazy loading, which delays the\n  loading of images outside the user's viewport, significantly improving initial\n  page load performance.\n- **Loading behavior:** Allows control over the image loading strategy (e.g.,\n  eager vs. lazy) to prioritize critical visuals first seen.\n- **Aspect ratio and fill:** The component can maintain a specific aspect ratio\n  or fill its container, ensuring consistent sizing and preventing layout shift\n  during loading.\n- **Decoding:** It allows specification of the image decoding strategy (sync,\n  async, or auto) to optimize rendering performance.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nThe image component offers core features designed for optimal performance,\naccessibility, and responsiveness when displaying visual content.\n\n## Basic functions\n\n```jsx live\nconst App = () => (\n  <Image\n    src=\"/images/image/image-sample.png\"\n    alt=\"Example image showing basic functionality\"\n    width=\"100%\"\n    maxWidth=\"9600\"\n  />\n)\n```\n\n- **Source set (`srcSet`) and sizes:** This allows the component to define\n  multiple image sources at different resolutions, enabling the browser to\n  automatically select the most appropriate, performant image based on the\n  user's viewport size.\n- **Alternative text (`alt`):** It mandates the inclusion of descriptive\n  alternative text, which is crucial for accessibility, ensuring screen readers\n  convey the image's meaning.\n- **Lazy loading:** The component supports native lazy loading, which delays the\n  loading of images outside the user's viewport, significantly improving initial\n  page load performance.\n- **Loading behavior:** Allows control over the image loading strategy (e.g.,\n  eager vs. lazy) to prioritize critical visuals first seen.\n- **Aspect ratio and fill:** The component can maintain a specific aspect ratio\n  or fill its container, ensuring consistent sizing and preventing layout shift\n  during loading.\n- **Decoding:** It allows specification of the image decoding strategy (sync,\n  async, or auto) to optimize rendering performance.\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic functions",
+          "href": "#basic-functions",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => (\n  <Image\n    src=\"/images/image/image-sample.png\"\n    alt=\"luxury metallic green handbag with floral handle. Mangosteen accessory hangs off the bag, and sitting on the table with the bag are small accessories, a pen, lipstick, and small notebook.\"\n    width=\"4000\"\n  />\n)\n```\n\n### Accessibility standards\n\n- **Alt text is mandatory:** Every image must have an `alt` attribute. If the\n  image is decorative, use a null/empty attribute (`alt=\"\"`). If it conveys\n  meaning, the alt text must be descriptive and functional.\n- **Complex images:** For charts, graphs, or infographics, the text alternative\n  must go beyond the title to describe the key information conveyed by the\n  image.\n- **Performance:** Optimize images to ensure they load quickly. Slow loading can\n  significantly impair the experience for users on poor connections.\n- **No conveyance of action:** If an image is a link or button, its text\n  alternative must describe the action of the link/button, not just the image\n  itself (e.g., `alt=\"View product details\"`).\n- **Contrast for text in images:** If the image contains critical text, ensure\n  that the text meets WCAG contrast standards within the image itself.\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { Image, type ImageProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe Image component displays images with built-in support for accessibility, lazy loading, and responsive behavior.\n\n```jsx live-dev\nconst App = () => (\n  <Image \n    src=\"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop\"\n    alt=\"Mountain landscape with blue sky\"\n    rounded=\"md\"\n    maxWidth=\"400px\"\n  />\n)\n```\n\n## Usage examples\n\n### Aspect ratio control\n\nUse the `aspectRatio` prop to maintain a specific aspect ratio regardless of the image's natural dimensions:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"row\" gap=\"400\">\n    <Box maxWidth=\"250px\">\n      <Image \n        src=\"https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop\"\n        alt=\"Landscape with 16:9 ratio\"\n        aspectRatio={16 / 9}\n        rounded=\"md\"\n      />\n    </Box>\n    <Box maxWidth=\"250px\">\n      <Image \n        src=\"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop\"\n        alt=\"Square 1:1 ratio\"\n        aspectRatio={1}\n        rounded=\"md\"\n      />\n    </Box>\n    <Box maxWidth=\"250px\">\n      <Image \n        src=\"https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=400&h=300&fit=crop\"\n        alt=\"Portrait 3:4 ratio\"\n        aspectRatio={3 / 4}\n        rounded=\"md\"\n      />\n    </Box>\n  </Stack>\n)\n```\n\n### Object fit options\n\nControl how the image fills its container using the `fit` prop. This maps to the CSS `object-fit` property:\n\n```jsx live-dev\nconst App = () => (\n  <Stack gap=\"400\">\n    <Box>\n      <Text fontWeight=\"semibold\" marginBottom=\"200\">cover (default)</Text>\n      <Image \n        src=\"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop\"\n        alt=\"Cover fit example\"\n        fit=\"cover\"\n        width=\"300px\"\n        height=\"200px\"\n        rounded=\"md\"\n        border=\"1px solid\"\n        borderColor=\"border.muted\"\n      />\n    </Box>\n    <Box>\n      <Text fontWeight=\"semibold\" marginBottom=\"200\">contain</Text>\n      <Image \n        src=\"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop\"\n        alt=\"Contain fit example\"\n        fit=\"contain\"\n        width=\"300px\"\n        height=\"200px\"\n        rounded=\"md\"\n        border=\"1px solid\"\n        borderColor=\"border.muted\"\n      />\n    </Box>\n    <Box>\n      <Text fontWeight=\"semibold\" marginBottom=\"200\">fill</Text>\n      <Image \n        src=\"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop\"\n        alt=\"Fill fit example\"\n        fit=\"fill\"\n        width=\"300px\"\n        height=\"200px\"\n        rounded=\"md\"\n        border=\"1px solid\"\n        borderColor=\"border.muted\"\n      />\n    </Box>\n  </Stack>\n)\n```\n\n### Object position\n\nUse the `align` prop to control the focal point of the image within its container:\n\n```jsx live-dev\nconst App = () => (\n  <Stack gap=\"400\">\n    <Box>\n      <Text fontWeight=\"semibold\" marginBottom=\"200\">Top aligned</Text>\n      <Image \n        src=\"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop\"\n        alt=\"Top aligned image\"\n        fit=\"cover\"\n        align=\"top\"\n        width=\"300px\"\n        height=\"200px\"\n        rounded=\"md\"\n      />\n    </Box>\n    <Box>\n      <Text fontWeight=\"semibold\" marginBottom=\"200\">Center aligned (default)</Text>\n      <Image \n        src=\"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop\"\n        alt=\"Center aligned image\"\n        fit=\"cover\"\n        align=\"center\"\n        width=\"300px\"\n        height=\"200px\"\n        rounded=\"md\"\n      />\n    </Box>\n    <Box>\n      <Text fontWeight=\"semibold\" marginBottom=\"200\">Bottom aligned</Text>\n      <Image \n        src=\"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=600&fit=crop\"\n        alt=\"Bottom aligned image\"\n        fit=\"cover\"\n        align=\"bottom\"\n        width=\"300px\"\n        height=\"200px\"\n        rounded=\"md\"\n      />\n    </Box>\n  </Stack>\n)\n```\n\n### Lazy loading\n\nEnable lazy loading to defer loading images until they're near the viewport, improving initial page load performance:\n\n```jsx live-dev\nconst App = () => (\n  <Stack gap=\"400\">\n    <Box>\n      <Text fontWeight=\"semibold\" marginBottom=\"200\">Lazy loading enabled</Text>\n      <Image \n        src=\"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&h=300&fit=crop\"\n        alt=\"Nature scene\"\n        loading=\"lazy\"\n        rounded=\"md\"\n        maxWidth=\"400px\"\n      />\n    </Box>\n    <Box>\n      <Text fontWeight=\"semibold\" marginBottom=\"200\">Eager loading</Text>\n      <Image \n        src=\"https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop\"\n        alt=\"Forest landscape\"\n        loading=\"eager\"\n        rounded=\"md\"\n        maxWidth=\"400px\"\n      />\n    </Box>\n  </Stack>\n)\n```\n\n### Responsive images\n\nUse `srcSet` and `sizes` to serve different image resolutions based on the device's screen size and pixel density:\n\n```jsx live-dev\nconst App = () => (\n  <Image \n    src=\"https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800&fit=crop\"\n    srcSet=\"\n      https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=400&fit=crop 400w,\n      https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800&fit=crop 800w,\n      https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=1200&fit=crop 1200w\n    \"\n    sizes=\"(max-width: 600px) 400px, (max-width: 1200px) 800px, 1200px\"\n    alt=\"Responsive nature image\"\n    rounded=\"md\"\n    maxWidth=\"full\"\n  />\n)\n```\n\n### Circular images\n\nCreate circular images for avatars or profile pictures using border radius:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"row\" gap=\"400\" alignItems=\"center\">\n    <Image \n      src=\"https://i.pravatar.cc/150?img=1\"\n      alt=\"User profile\"\n      boxSize=\"100px\"\n      borderRadius=\"full\"\n      fit=\"cover\"\n    />\n    <Image \n      src=\"https://i.pravatar.cc/150?img=2\"\n      alt=\"User profile\"\n      boxSize=\"80px\"\n      borderRadius=\"full\"\n      fit=\"cover\"\n    />\n    <Image \n      src=\"https://i.pravatar.cc/150?img=3\"\n      alt=\"User profile\"\n      boxSize=\"60px\"\n      borderRadius=\"full\"\n      fit=\"cover\"\n    />\n  </Stack>\n)\n```\n\n## Component requirements\n\n### Usage context\n\nThe Image component is a styled wrapper around the native HTML `<img>` element with enhanced features:\n\n**When to use Image:**\n- When you need Chakra UI styling capabilities (responsive props, theme tokens)\n- For consistent styling across your application\n- When using features like `fit` or `align` props for easier object-fit control\n- For integration with Nimbus theme and design system\n\n**When to use native `<img>`:**\n- In simple cases where no styling or special features are needed\n- When optimizing for minimal bundle size\n- For static content that doesn't require theme integration\n\n## Accessibility\n\nThe Image component provides accessibility through proper HTML image semantics and ARIA support.\n\n#### Mandatory alt text\n\nEvery image must have an `alt` attribute. The alt text should:\n- Describe the image content and context for screen reader users\n- Be empty (`alt=\"\"`) for purely decorative images\n- Describe the action if the image is interactive (e.g., part of a link or button)\n- Provide meaningful information, not just \"image\" or the file name\n\n```jsx live-dev\nconst App = () => (\n  <Stack gap=\"400\">\n    <Box>\n      <Text fontWeight=\"semibold\" marginBottom=\"200\">Informative image</Text>\n      <Image\n        src=\"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop\"\n        alt=\"Snow-capped mountain peaks at sunrise with pink and orange sky\"\n        rounded=\"md\"\n        maxWidth=\"400px\"\n      />\n    </Box>\n    <Box>\n      <Text fontWeight=\"semibold\" marginBottom=\"200\">Decorative image (empty alt)</Text>\n      <Image\n        src=\"https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop\"\n        alt=\"\"\n        rounded=\"md\"\n        maxWidth=\"400px\"\n      />\n    </Box>\n  </Stack>\n)\n```\n\n### Accessibility standards\n\n- **Role**: The Image component renders as an `<img>` element with implicit `img` role\n- **Labeling**: Always provide descriptive `alt` text. For complex images (charts, diagrams), consider providing additional context through captions or aria-describedby\n\n#### Keyboard navigation\n\nImages are not focusable by default. Keyboard navigation only applies when images are wrapped in interactive elements such as buttons or links. In those cases, ensure the wrapping element has proper focus indicators and keyboard event handlers.\n\n#### Persistent ID tracking\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"product-hero-image\";\n\nexport const Example = () => (\n  <Image \n    id={PERSISTENT_ID}\n    src=\"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&fit=crop\"\n    alt=\"Featured product image\"\n  />\n);\n```\n\n## API reference\n\n<PropsTable id=\"Image\" />\n\n\nThe Image component accepts all standard HTML `<img>` attributes including:\n- `src`: Image source URL\n- `alt`: Alternative text for accessibility\n- `srcSet`: Responsive image sources\n- `sizes`: Size hints for responsive images\n- `loading`: \"lazy\" or \"eager\" loading behavior\n- `decoding`: \"async\", \"sync\", or \"auto\" for image decoding\n- `crossOrigin`: CORS settings\n- `referrerPolicy`: Referrer policy for image requests\n\nPlus Chakra UI style props and the following enhanced props:\n- `fit`: Object fit behavior (maps to `object-fit` CSS property)\n- `align`: Object position (maps to `object-position` CSS property)\n\n\n## Common patterns\n\n### Product image display\n\nDisplay product images with consistent aspect ratios and hover effects:\n\n```jsx live-dev\nconst App = () => (\n  <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap=\"400\">\n    <Box>\n      <Image \n        src=\"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&fit=crop\"\n        alt=\"Modern minimalist watch with leather strap\"\n        aspectRatio={1}\n        rounded=\"md\"\n        transition=\"transform 0.2s\"\n        _hover={{ transform: \"scale(1.05)\" }}\n        cursor=\"pointer\"\n      />\n      <Text fontWeight=\"semibold\" marginTop=\"200\">Classic Watch</Text>\n      <Text color=\"fg.muted\">$299.00</Text>\n    </Box>\n    <Box>\n      <Image \n        src=\"https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&fit=crop\"\n        alt=\"White designer sunglasses on marble surface\"\n        aspectRatio={1}\n        rounded=\"md\"\n        transition=\"transform 0.2s\"\n        _hover={{ transform: \"scale(1.05)\" }}\n        cursor=\"pointer\"\n      />\n      <Text fontWeight=\"semibold\" marginTop=\"200\">Designer Sunglasses</Text>\n      <Text color=\"fg.muted\">$189.00</Text>\n    </Box>\n    <Box>\n      <Image \n        src=\"https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=400&fit=crop\"\n        alt=\"Brown leather sneakers with white soles\"\n        aspectRatio={1}\n        rounded=\"md\"\n        transition=\"transform 0.2s\"\n        _hover={{ transform: \"scale(1.05)\" }}\n        cursor=\"pointer\"\n      />\n      <Text fontWeight=\"semibold\" marginTop=\"200\">Leather Sneakers</Text>\n      <Text color=\"fg.muted\">$159.00</Text>\n    </Box>\n  </SimpleGrid>\n)\n```\n\n### Avatar with fallback\n\nUse Image within custom avatar implementations or as profile pictures:\n\n```jsx live-dev\nconst App = () => {\n  const [imageError, setImageError] = React.useState(false);\n  \n  const handleError = () => {\n    setImageError(true);\n  };\n  \n  return (\n    <Stack direction=\"row\" gap=\"400\" alignItems=\"center\">\n      <Box position=\"relative\">\n        {!imageError ? (\n          <Image \n            src=\"https://i.pravatar.cc/150?img=8\"\n            alt=\"John Doe profile picture\"\n            boxSize=\"80px\"\n            borderRadius=\"full\"\n            fit=\"cover\"\n            onError={handleError}\n          />\n        ) : (\n          <Box \n            boxSize=\"80px\"\n            borderRadius=\"full\"\n            bg=\"bg.muted\"\n            display=\"flex\"\n            alignItems=\"center\"\n            justifyContent=\"center\"\n            fontWeight=\"semibold\"\n            fontSize=\"xl\"\n          >\n            JD\n          </Box>\n        )}\n      </Box>\n      <Box>\n        <Text fontWeight=\"semibold\">John Doe</Text>\n        <Text color=\"fg.muted\" fontSize=\"sm\">Product Designer</Text>\n      </Box>\n    </Stack>\n  );\n}\n```\n\n### Hero image with overlay\n\nCreate hero sections with images and text overlays:\n\n```jsx live-dev\nconst App = () => (\n  <Box position=\"relative\" height=\"400px\" rounded=\"lg\" overflow=\"hidden\">\n    <Image \n      src=\"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&fit=crop\"\n      alt=\"Mountain landscape hero background\"\n      fit=\"cover\"\n      width=\"full\"\n      height=\"full\"\n    />\n    <Box \n      position=\"absolute\"\n      top=\"0\"\n      left=\"0\"\n      right=\"0\"\n      bottom=\"0\"\n      bg=\"blackAlpha.600\"\n      display=\"flex\"\n      alignItems=\"center\"\n      justifyContent=\"center\"\n      flexDirection=\"column\"\n      gap=\"400\"\n      padding=\"600\"\n    >\n      <Text \n        fontSize=\"4xl\" \n        fontWeight=\"bold\" \n        color=\"white\"\n        textAlign=\"center\"\n      >\n        Explore the Great Outdoors\n      </Text>\n      <Text \n        fontSize=\"lg\" \n        color=\"white\"\n        textAlign=\"center\"\n        maxWidth=\"600px\"\n      >\n        Discover breathtaking landscapes and unforgettable adventures\n      </Text>\n      <Button colorPalette=\"teal\" size=\"md\">\n        Start Your Journey\n      </Button>\n    </Box>\n  </Box>\n)\n```\n\n### Image gallery grid\n\nDisplay a grid of images with consistent sizing and spacing:\n\n```jsx live-dev\nconst App = () => (\n  <SimpleGrid columns={{ base: 2, md: 3 }} gap=\"300\">\n    <Image \n      src=\"https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&fit=crop\"\n      alt=\"Mountain landscape\"\n      aspectRatio={4 / 3}\n      rounded=\"md\"\n      fit=\"cover\"\n      cursor=\"pointer\"\n      transition=\"opacity 0.2s\"\n      _hover={{ opacity: 0.8 }}\n    />\n    <Image \n      src=\"https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&fit=crop\"\n      alt=\"Forest path\"\n      aspectRatio={4 / 3}\n      rounded=\"md\"\n      fit=\"cover\"\n      cursor=\"pointer\"\n      transition=\"opacity 0.2s\"\n      _hover={{ opacity: 0.8 }}\n    />\n    <Image \n      src=\"https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400&fit=crop\"\n      alt=\"Forest wilderness\"\n      aspectRatio={4 / 3}\n      rounded=\"md\"\n      fit=\"cover\"\n      cursor=\"pointer\"\n      transition=\"opacity 0.2s\"\n      _hover={{ opacity: 0.8 }}\n    />\n    <Image \n      src=\"https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=400&fit=crop\"\n      alt=\"Misty forest\"\n      aspectRatio={4 / 3}\n      rounded=\"md\"\n      fit=\"cover\"\n      cursor=\"pointer\"\n      transition=\"opacity 0.2s\"\n      _hover={{ opacity: 0.8 }}\n    />\n    <Image \n      src=\"https://images.unsplash.com/photo-1448375240586-882707db888b?w=400&fit=crop\"\n      alt=\"Golden field\"\n      aspectRatio={4 / 3}\n      rounded=\"md\"\n      fit=\"cover\"\n      cursor=\"pointer\"\n      transition=\"opacity 0.2s\"\n      _hover={{ opacity: 0.8 }}\n    />\n    <Image \n      src=\"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&fit=crop\"\n      alt=\"Ocean beach\"\n      aspectRatio={4 / 3}\n      rounded=\"md\"\n      fit=\"cover\"\n      cursor=\"pointer\"\n      transition=\"opacity 0.2s\"\n      _hover={{ opacity: 0.8 }}\n    />\n  </SimpleGrid>\n)\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using Image within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the Image component renders with expected attributes and structure\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Image, NimbusProvider, Box } from \"@commercetools/nimbus\";\n\ndescribe(\"Image - Basic rendering\", () => {\n  it(\"renders with src and alt attributes\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Test image description\"\n          data-testid=\"test-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"test-image\") as HTMLImageElement;\n    expect(image).toBeInTheDocument();\n    expect(image.src).toBe(\"https://example.com/image.jpg\");\n    expect(image.alt).toBe(\"Test image description\");\n  });\n\n  it(\"renders as an img element\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Test image\"\n          data-testid=\"test-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"test-image\");\n    expect(image.tagName).toBe(\"IMG\");\n  });\n\n  it(\"applies custom data attributes\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Test image\"\n          data-testid=\"test-image\"\n          data-custom=\"custom-value\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"test-image\");\n    expect(image).toHaveAttribute(\"data-custom\", \"custom-value\");\n  });\n});\n```\n\n### Aspect Ratio Tests\n\nTest aspect ratio control for consistent image dimensions\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Image, NimbusProvider, Box } from \"@commercetools/nimbus\";\n\ndescribe(\"Image - Aspect ratio\", () => {\n  it(\"renders with aspect ratio styling\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Square image\"\n          aspectRatio={1}\n          data-testid=\"square-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"square-image\");\n    expect(image).toBeInTheDocument();\n  });\n\n  it(\"renders with 16:9 aspect ratio\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Widescreen image\"\n          aspectRatio={16 / 9}\n          data-testid=\"widescreen-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"widescreen-image\");\n    expect(image).toBeInTheDocument();\n  });\n});\n```\n\n### Object Fit Tests\n\nVerify different object-fit behaviors for image scaling\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Image, NimbusProvider, Box } from \"@commercetools/nimbus\";\n\ndescribe(\"Image - Object fit\", () => {\n  it(\"renders with cover fit\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Cover fit image\"\n          fit=\"cover\"\n          data-testid=\"cover-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"cover-image\");\n    expect(image).toBeInTheDocument();\n  });\n\n  it(\"renders with contain fit\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Contain fit image\"\n          fit=\"contain\"\n          data-testid=\"contain-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"contain-image\");\n    expect(image).toBeInTheDocument();\n  });\n\n  it(\"renders with fill fit\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Fill fit image\"\n          fit=\"fill\"\n          data-testid=\"fill-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"fill-image\");\n    expect(image).toBeInTheDocument();\n  });\n});\n```\n\n### Loading Behavior Tests\n\nTest lazy loading and eager loading configurations\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Image, NimbusProvider, Box } from \"@commercetools/nimbus\";\n\ndescribe(\"Image - Loading behavior\", () => {\n  it(\"renders with lazy loading attribute\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Lazy loaded image\"\n          loading=\"lazy\"\n          data-testid=\"lazy-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"lazy-image\");\n    expect(image).toHaveAttribute(\"loading\", \"lazy\");\n  });\n\n  it(\"renders with eager loading attribute\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Eager loaded image\"\n          loading=\"eager\"\n          data-testid=\"eager-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"eager-image\");\n    expect(image).toHaveAttribute(\"loading\", \"eager\");\n  });\n\n  it(\"handles onLoad callback\", () => {\n    const onLoad = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Image with load handler\"\n          onLoad={onLoad}\n          data-testid=\"load-handler-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"load-handler-image\");\n    expect(image).toBeInTheDocument();\n  });\n});\n```\n\n### Responsive Images Tests\n\nTest srcSet and sizes for responsive image delivery\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Image, NimbusProvider, Box } from \"@commercetools/nimbus\";\n\ndescribe(\"Image - Responsive images\", () => {\n  it(\"renders with srcSet attribute\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image-800w.jpg\"\n          srcSet=\"https://example.com/image-400w.jpg 400w, https://example.com/image-800w.jpg 800w\"\n          alt=\"Responsive image\"\n          data-testid=\"srcset-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"srcset-image\") as HTMLImageElement;\n    expect(image.srcset).toContain(\"400w\");\n    expect(image.srcset).toContain(\"800w\");\n  });\n\n  it(\"renders with sizes attribute\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          srcSet=\"https://example.com/image-400w.jpg 400w, https://example.com/image-800w.jpg 800w\"\n          sizes=\"(max-width: 600px) 400px, 800px\"\n          alt=\"Responsive image with sizes\"\n          data-testid=\"sizes-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"sizes-image\") as HTMLImageElement;\n    expect(image.sizes).toBe(\"(max-width: 600px) 400px, 800px\");\n  });\n});\n```\n\n### Accessibility Tests\n\nVerify proper accessibility attributes and behavior\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Image, NimbusProvider, Box } from \"@commercetools/nimbus\";\n\ndescribe(\"Image - Accessibility\", () => {\n  it(\"requires alt text for accessibility\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Descriptive alt text\"\n          data-testid=\"accessible-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"accessible-image\");\n    expect(image).toHaveAccessibleName(\"Descriptive alt text\");\n  });\n\n  it(\"supports empty alt for decorative images\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/decorative.jpg\"\n          alt=\"\"\n          data-testid=\"decorative-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"decorative-image\") as HTMLImageElement;\n    expect(image.alt).toBe(\"\");\n  });\n\n  it(\"applies aria attributes when provided\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Test image\"\n          aria-describedby=\"image-description\"\n          data-testid=\"aria-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"aria-image\");\n    expect(image).toHaveAttribute(\"aria-describedby\", \"image-description\");\n  });\n});\n```\n\n### Styling Tests\n\nTest custom styling and responsive style props\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Image, NimbusProvider, Box } from \"@commercetools/nimbus\";\n\ndescribe(\"Image - Styling\", () => {\n  it(\"applies custom width and height\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Sized image\"\n          width=\"300px\"\n          height=\"200px\"\n          data-testid=\"sized-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"sized-image\");\n    expect(image).toBeInTheDocument();\n  });\n\n  it(\"applies border radius styling\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Rounded image\"\n          borderRadius=\"full\"\n          data-testid=\"rounded-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"rounded-image\");\n    expect(image).toBeInTheDocument();\n  });\n\n  it(\"applies custom className\", () => {\n    render(\n      <NimbusProvider>\n        <Image\n          src=\"https://example.com/image.jpg\"\n          alt=\"Custom class image\"\n          className=\"custom-image-class\"\n          data-testid=\"class-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"class-image\");\n    expect(image).toHaveClass(\"custom-image-class\");\n  });\n});\n```\n\n### Integration Tests\n\nTest Image component within common layout patterns\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Image, NimbusProvider, Box } from \"@commercetools/nimbus\";\n\ndescribe(\"Image - Integration\", () => {\n  it(\"renders within a Box container\", () => {\n    render(\n      <NimbusProvider>\n        <Box maxWidth=\"400px\">\n          <Image\n            src=\"https://example.com/image.jpg\"\n            alt=\"Boxed image\"\n            data-testid=\"boxed-image\"\n          />\n        </Box>\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"boxed-image\");\n    expect(image).toBeInTheDocument();\n  });\n\n  it(\"renders with id for tracking\", () => {\n    const persistentId = \"product-image-123\";\n\n    render(\n      <NimbusProvider>\n        <Image\n          id={persistentId}\n          src=\"https://example.com/product.jpg\"\n          alt=\"Product image\"\n          data-testid=\"tracked-image\"\n        />\n      </NimbusProvider>\n    );\n\n    const image = screen.getByTestId(\"tracked-image\");\n    expect(image).toHaveAttribute(\"id\", persistentId);\n  });\n});\n```\n\n\n## Resources\n\n- [Chakra UI Image Documentation](https://www.chakra-ui.com/docs/components/image)\n- [MDN: The Image Embed element](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img)\n- [WCAG Image Alternative Text Guidelines](https://www.w3.org/WAI/tutorials/images/)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Aspect ratio control",
+          "href": "#aspect-ratio-control",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Object fit options",
+          "href": "#object-fit-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Object position",
+          "href": "#object-position",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Lazy loading",
+          "href": "#lazy-loading",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Responsive images",
+          "href": "#responsive-images",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Circular images",
+          "href": "#circular-images",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage context",
+          "href": "#usage-context",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Mandatory alt text",
+          "href": "#mandatory-alt-text",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Persistent ID tracking",
+          "href": "#persistent-id-tracking",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Product image display",
+          "href": "#product-image-display",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Avatar with fallback",
+          "href": "#avatar-with-fallback",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Hero image with overlay",
+          "href": "#hero-image-with-overlay",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Image gallery grid",
+          "href": "#image-gallery-grid",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Aspect Ratio Tests",
+          "href": "#aspect-ratio-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Object Fit Tests",
+          "href": "#object-fit-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Loading Behavior Tests",
+          "href": "#loading-behavior-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Responsive Images Tests",
+          "href": "#responsive-images-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility Tests",
+          "href": "#accessibility-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Styling Tests",
+          "href": "#styling-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Integration Tests",
+          "href": "#integration-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "guidelines": {
+      "mdx": "\n## Guidelines\n\nImage guidelines establish best practices for the selection, display, and\noptimization of visual content, ensuring accessibility, performance, and visual\nconsistency across all contexts. They govern image quality, responsive behavior,\nappropriate usage of formats, and adherence to critical accessibility standards\nlike meaningful alt text.\n\n### Best practices\n\n- **Relevance:** Ensure the image directly supports or enhances the content it\n  is paired with; avoid purely decorative or confusing visuals.\n- **Quality and format:** Use high-quality, appropriately sized images.\n  - **JPEG/WebP:** For photographs and complex images.\n  - **PNG:** For images requiring transparency or simple graphics.\n  - **SVG:** For logos, icons, and illustrations that need crisp scaling.\n- **Responsiveness:** Implement responsive design principles so images scale\n  correctly and maintain aspect ratios across various screen sizes without\n  distorting or breaking the layout.\n- **Performance optimization:** Compress images to minimize file size and ensure\n  fast loading times. Implement lazy loading for images that appear below the\n  fold.\n- **Visual hierarchy:** Images should contribute to, but not dominate, the\n  visual hierarchy unless they are the primary content (e.g., product hero\n  image).\n- **Maintain brand style:** Ensure all illustrations and graphics adhere to the\n  established brand style and color palette.\n",
+      "toc": [
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

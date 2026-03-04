@@ -1,0 +1,27 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Alert.Title - Displays the title text for the alert",
+  "displayName": "AlertTitle",
+  "methods": [],
+  "props": {
+    "ref": {
+      "defaultValue": null,
+      "description": "",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/alert/alert.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

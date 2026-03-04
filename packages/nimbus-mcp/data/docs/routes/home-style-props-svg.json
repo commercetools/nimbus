@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "id": "Style Props-SVG",
+    "title": "SVG",
+    "description": "JSX style props for SVG elements.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/svg.mdx",
+    "menu": [
+      "Home",
+      "Style Props",
+      "SVG"
+    ],
+    "route": "home/style-props/svg",
+    "tags": [
+      "document"
+    ],
+    "toc": [
+      {
+        "value": "Fill",
+        "href": "#fill",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Stroke",
+        "href": "#stroke",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Stroke Width",
+        "href": "#stroke-width",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# SVG\n\nJSX style props for SVG elements.\n\n## Fill\n\nUse the `fill` prop to set the fill color of an SVG element.\n\n```jsx\n<chakra.svg fill=\"blue.500\">\n  <path d=\"...\" />\n</chakra.svg>\n```\n\n| Prop   | CSS Property | Token Category |\n| ------ | ------------ | -------------- |\n| `fill` | `fill`       | `colors`       |\n\n## Stroke\n\nUse the `stroke` prop to set the stroke color of an SVG element.\n\n```jsx\n<chakra.svg stroke=\"blue.500\">\n  <path d=\"...\" />\n</chakra.svg>\n```\n\n| Prop     | CSS Property | Token Category |\n| -------- | ------------ | -------------- |\n| `stroke` | `stroke`     | `colors`       |\n\n## Stroke Width\n\nUse the `strokeWidth` prop to set the stroke width of an SVG element.\n\n```jsx\n<chakra.svg strokeWidth=\"1px\">\n  <path d=\"...\" />\n</chakra.svg>\n```\n\n| Prop          | CSS Property   | Token Category |\n| ------------- | -------------- | -------------- |\n| `strokeWidth` | `stroke-width` | `borderWidths` |\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# SVG\n\nJSX style props for SVG elements.\n\n## Fill\n\nUse the `fill` prop to set the fill color of an SVG element.\n\n```jsx\n<chakra.svg fill=\"blue.500\">\n  <path d=\"...\" />\n</chakra.svg>\n```\n\n| Prop   | CSS Property | Token Category |\n| ------ | ------------ | -------------- |\n| `fill` | `fill`       | `colors`       |\n\n## Stroke\n\nUse the `stroke` prop to set the stroke color of an SVG element.\n\n```jsx\n<chakra.svg stroke=\"blue.500\">\n  <path d=\"...\" />\n</chakra.svg>\n```\n\n| Prop     | CSS Property | Token Category |\n| -------- | ------------ | -------------- |\n| `stroke` | `stroke`     | `colors`       |\n\n## Stroke Width\n\nUse the `strokeWidth` prop to set the stroke width of an SVG element.\n\n```jsx\n<chakra.svg strokeWidth=\"1px\">\n  <path d=\"...\" />\n</chakra.svg>\n```\n\n| Prop          | CSS Property   | Token Category |\n| ------------- | -------------- | -------------- |\n| `strokeWidth` | `stroke-width` | `borderWidths` |\n",
+      "toc": [
+        {
+          "value": "Fill",
+          "href": "#fill",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Stroke",
+          "href": "#stroke",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Stroke Width",
+          "href": "#stroke-width",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

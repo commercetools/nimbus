@@ -1,0 +1,593 @@
+{
+  "meta": {
+    "id": "Components-Tabs",
+    "title": "Tabs",
+    "exportName": "Tabs",
+    "description": "Organizes content into distinct sections, enabling users to switch views within a single container.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/tabs/tabs.mdx",
+    "menu": [
+      "Components",
+      "Navigation",
+      "Tabs"
+    ],
+    "route": "components/navigation/tabs",
+    "tags": [
+      "component",
+      "navigation",
+      "tabs"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Direction for tabs",
+        "href": "#direction-for-tabs",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Horizontal tabs",
+        "href": "#horizontal-tabs",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Vertical tabs",
+        "href": "#vertical-tabs",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=8571-34966&m=dev",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "guidelines",
+        "title": "Guidelines",
+        "order": 2
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nTabs are a navigational component used to organize and switch between different\nsections of content within the same contextual view, allowing users to access\nmultiple related pages or views without navigating away from the main screen.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=8571-34966&m=dev)\n[React Aria Docs](https://react-spectrum.adobe.com/react-aria/Tabs.html)\n\n## Variables\n\nGet familiar with the features.\n\n### Direction for tabs\n\nTabs can be oriented horizontally or vertically to suit different layout\nrequirements.\n\n#### Horizontal tabs\n\nOrganize and display distinct, related sections of content immediately beneath a\ncommon navigation bar or header, serving primarily to group content contextually\nwhile conserving vertical screen space.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"column\" gap=\"600\">\n    <Box>\n      <Text fontWeight=\"bold\" mb=\"300\">Large</Text>\n      <Tabs.Root size=\"lg\">\n        <Tabs.List>\n          <Tabs.Tab id=\"general\">General info</Tabs.Tab>\n          <Tabs.Tab id=\"history\">History</Tabs.Tab>\n          <Tabs.Tab id=\"subscription\">Subscription</Tabs.Tab>\n          <Tabs.Tab id=\"downloads\">Downloads</Tabs.Tab>\n        </Tabs.List>\n        <Tabs.Panels pt=\"400\">\n          <Tabs.Panel id=\"general\">General information content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"history\">History content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"subscription\">Subscription content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"downloads\">Downloads content goes here.</Tabs.Panel>\n        </Tabs.Panels>\n      </Tabs.Root>\n    </Box>\n\n    <Box>\n      <Text fontWeight=\"bold\" mb=\"300\">Medium</Text>\n      <Tabs.Root size=\"md\">\n        <Tabs.List>\n          <Tabs.Tab id=\"general\">General info</Tabs.Tab>\n          <Tabs.Tab id=\"history\">History</Tabs.Tab>\n          <Tabs.Tab id=\"subscription\">Subscription</Tabs.Tab>\n          <Tabs.Tab id=\"downloads\">Downloads</Tabs.Tab>\n        </Tabs.List>\n        <Tabs.Panels pt=\"400\">\n          <Tabs.Panel id=\"general\">General information content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"history\">History content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"subscription\">Subscription content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"downloads\">Downloads content goes here.</Tabs.Panel>\n        </Tabs.Panels>\n      </Tabs.Root>\n    </Box>\n\n    <Box>\n      <Text fontWeight=\"bold\" mb=\"300\">Small</Text>\n      <Tabs.Root size=\"sm\">\n        <Tabs.List>\n          <Tabs.Tab id=\"general\">General info</Tabs.Tab>\n          <Tabs.Tab id=\"history\">History</Tabs.Tab>\n          <Tabs.Tab id=\"subscription\">Subscription</Tabs.Tab>\n          <Tabs.Tab id=\"downloads\">Downloads</Tabs.Tab>\n        </Tabs.List>\n        <Tabs.Panels pt=\"400\">\n          <Tabs.Panel id=\"general\">General information content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"history\">History content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"subscription\">Subscription content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"downloads\">Downloads content goes here.</Tabs.Panel>\n        </Tabs.Panels>\n      </Tabs.Root>\n    </Box>\n  </Stack>\n)\n```\n\n#### Vertical tabs\n\nMaximize horizontal reading space and accommodate a larger number of\nconsistently visible options than traditional horizontal tabs allow.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"1000\">\n    <Box flex=\"1\">\n      <Text fontWeight=\"bold\" mb=\"300\">Vertical left</Text>\n      <Tabs.Root orientation=\"vertical\" placement=\"start\">\n        <Tabs.List>\n          <Tabs.Tab id=\"foryou\">\n            <Icons.SentimentSatisfied />\n            For you\n          </Tabs.Tab>\n          <Tabs.Tab id=\"recent\">\n            <Icons.Schedule />\n            Recent\n          </Tabs.Tab>\n          <Tabs.Tab id=\"starred\">\n            <Icons.Star />\n            Starred\n          </Tabs.Tab>\n          <Tabs.Tab id=\"apps\">\n            <Icons.Apps />\n            Apps\n          </Tabs.Tab>\n        </Tabs.List>\n        <Tabs.Panels>\n          <Tabs.Panel id=\"foryou\">For you content</Tabs.Panel>\n          <Tabs.Panel id=\"recent\">Recent content</Tabs.Panel>\n          <Tabs.Panel id=\"starred\">Starred content</Tabs.Panel>\n          <Tabs.Panel id=\"apps\">Apps content</Tabs.Panel>\n        </Tabs.Panels>\n      </Tabs.Root>\n    </Box>\n\n    <Box flex=\"1\">\n      <Text fontWeight=\"bold\" mb=\"300\">Vertical right</Text>\n      <Tabs.Root orientation=\"vertical\" placement=\"end\">\n        <Tabs.List>\n          <Tabs.Tab id=\"foryou\">\n            <Icons.SentimentSatisfied />\n            For you\n          </Tabs.Tab>\n          <Tabs.Tab id=\"recent\">\n            <Icons.Schedule />\n            Recent\n          </Tabs.Tab>\n          <Tabs.Tab id=\"starred\">\n            <Icons.Star />\n            Starred\n          </Tabs.Tab>\n          <Tabs.Tab id=\"apps\">\n            <Icons.Apps />\n            Apps\n          </Tabs.Tab>\n        </Tabs.List>\n        <Tabs.Panels>\n          <Tabs.Panel id=\"foryou\">For you content</Tabs.Panel>\n          <Tabs.Panel id=\"recent\">Recent content</Tabs.Panel>\n          <Tabs.Panel id=\"starred\">Starred content</Tabs.Panel>\n          <Tabs.Panel id=\"apps\">Apps content</Tabs.Panel>\n        </Tabs.Panels>\n      </Tabs.Root>\n    </Box>\n  </Stack>\n)\n```\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nTabs are a navigational component used to organize and switch between different\nsections of content within the same contextual view, allowing users to access\nmultiple related pages or views without navigating away from the main screen.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=8571-34966&m=dev)\n[React Aria Docs](https://react-spectrum.adobe.com/react-aria/Tabs.html)\n\n## Variables\n\nGet familiar with the features.\n\n### Direction for tabs\n\nTabs can be oriented horizontally or vertically to suit different layout\nrequirements.\n\n#### Horizontal tabs\n\nOrganize and display distinct, related sections of content immediately beneath a\ncommon navigation bar or header, serving primarily to group content contextually\nwhile conserving vertical screen space.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"column\" gap=\"600\">\n    <Box>\n      <Text fontWeight=\"bold\" mb=\"300\">Large</Text>\n      <Tabs.Root size=\"lg\">\n        <Tabs.List>\n          <Tabs.Tab id=\"general\">General info</Tabs.Tab>\n          <Tabs.Tab id=\"history\">History</Tabs.Tab>\n          <Tabs.Tab id=\"subscription\">Subscription</Tabs.Tab>\n          <Tabs.Tab id=\"downloads\">Downloads</Tabs.Tab>\n        </Tabs.List>\n        <Tabs.Panels pt=\"400\">\n          <Tabs.Panel id=\"general\">General information content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"history\">History content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"subscription\">Subscription content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"downloads\">Downloads content goes here.</Tabs.Panel>\n        </Tabs.Panels>\n      </Tabs.Root>\n    </Box>\n\n    <Box>\n      <Text fontWeight=\"bold\" mb=\"300\">Medium</Text>\n      <Tabs.Root size=\"md\">\n        <Tabs.List>\n          <Tabs.Tab id=\"general\">General info</Tabs.Tab>\n          <Tabs.Tab id=\"history\">History</Tabs.Tab>\n          <Tabs.Tab id=\"subscription\">Subscription</Tabs.Tab>\n          <Tabs.Tab id=\"downloads\">Downloads</Tabs.Tab>\n        </Tabs.List>\n        <Tabs.Panels pt=\"400\">\n          <Tabs.Panel id=\"general\">General information content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"history\">History content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"subscription\">Subscription content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"downloads\">Downloads content goes here.</Tabs.Panel>\n        </Tabs.Panels>\n      </Tabs.Root>\n    </Box>\n\n    <Box>\n      <Text fontWeight=\"bold\" mb=\"300\">Small</Text>\n      <Tabs.Root size=\"sm\">\n        <Tabs.List>\n          <Tabs.Tab id=\"general\">General info</Tabs.Tab>\n          <Tabs.Tab id=\"history\">History</Tabs.Tab>\n          <Tabs.Tab id=\"subscription\">Subscription</Tabs.Tab>\n          <Tabs.Tab id=\"downloads\">Downloads</Tabs.Tab>\n        </Tabs.List>\n        <Tabs.Panels pt=\"400\">\n          <Tabs.Panel id=\"general\">General information content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"history\">History content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"subscription\">Subscription content goes here.</Tabs.Panel>\n          <Tabs.Panel id=\"downloads\">Downloads content goes here.</Tabs.Panel>\n        </Tabs.Panels>\n      </Tabs.Root>\n    </Box>\n  </Stack>\n)\n```\n\n#### Vertical tabs\n\nMaximize horizontal reading space and accommodate a larger number of\nconsistently visible options than traditional horizontal tabs allow.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"1000\">\n    <Box flex=\"1\">\n      <Text fontWeight=\"bold\" mb=\"300\">Vertical left</Text>\n      <Tabs.Root orientation=\"vertical\" placement=\"start\">\n        <Tabs.List>\n          <Tabs.Tab id=\"foryou\">\n            <Icons.SentimentSatisfied />\n            For you\n          </Tabs.Tab>\n          <Tabs.Tab id=\"recent\">\n            <Icons.Schedule />\n            Recent\n          </Tabs.Tab>\n          <Tabs.Tab id=\"starred\">\n            <Icons.Star />\n            Starred\n          </Tabs.Tab>\n          <Tabs.Tab id=\"apps\">\n            <Icons.Apps />\n            Apps\n          </Tabs.Tab>\n        </Tabs.List>\n        <Tabs.Panels>\n          <Tabs.Panel id=\"foryou\">For you content</Tabs.Panel>\n          <Tabs.Panel id=\"recent\">Recent content</Tabs.Panel>\n          <Tabs.Panel id=\"starred\">Starred content</Tabs.Panel>\n          <Tabs.Panel id=\"apps\">Apps content</Tabs.Panel>\n        </Tabs.Panels>\n      </Tabs.Root>\n    </Box>\n\n    <Box flex=\"1\">\n      <Text fontWeight=\"bold\" mb=\"300\">Vertical right</Text>\n      <Tabs.Root orientation=\"vertical\" placement=\"end\">\n        <Tabs.List>\n          <Tabs.Tab id=\"foryou\">\n            <Icons.SentimentSatisfied />\n            For you\n          </Tabs.Tab>\n          <Tabs.Tab id=\"recent\">\n            <Icons.Schedule />\n            Recent\n          </Tabs.Tab>\n          <Tabs.Tab id=\"starred\">\n            <Icons.Star />\n            Starred\n          </Tabs.Tab>\n          <Tabs.Tab id=\"apps\">\n            <Icons.Apps />\n            Apps\n          </Tabs.Tab>\n        </Tabs.List>\n        <Tabs.Panels>\n          <Tabs.Panel id=\"foryou\">For you content</Tabs.Panel>\n          <Tabs.Panel id=\"recent\">Recent content</Tabs.Panel>\n          <Tabs.Panel id=\"starred\">Starred content</Tabs.Panel>\n          <Tabs.Panel id=\"apps\">Apps content</Tabs.Panel>\n        </Tabs.Panels>\n      </Tabs.Root>\n    </Box>\n  </Stack>\n)\n```\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Direction for tabs",
+          "href": "#direction-for-tabs",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Horizontal tabs",
+          "href": "#horizontal-tabs",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Vertical tabs",
+          "href": "#vertical-tabs",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => (\n  <Tabs.Root defaultSelectedKey=\"history\">\n    <Tabs.List>\n      <Tabs.Tab id=\"general\">General info</Tabs.Tab>\n      <Tabs.Tab id=\"history\">History</Tabs.Tab>\n      <Tabs.Tab id=\"subscription\">Subscription</Tabs.Tab>\n      <Tabs.Tab id=\"downloads\">Downloads</Tabs.Tab>\n    </Tabs.List>\n    <Tabs.Panels pt=\"400\">\n      <Tabs.Panel id=\"general\">\n        <Stack direction=\"column\" gap=\"200\">\n          <Text>Name: Jon Doe</Text>\n          <Text>Email: Jon.Doe@domain.com</Text>\n        </Stack>\n      </Tabs.Panel>\n      <Tabs.Panel id=\"history\">\n        <List.Root>\n          <List.Item>03.15.25 - Jon Doe created an account.</List.Item>\n          <List.Item>04.03.25 - Jon Doe updated profile information.</List.Item>\n          <List.Item>06.06.25 - Jon Doe made their first purchase.</List.Item>\n        </List.Root>\n      </Tabs.Panel>\n      <Tabs.Panel id=\"subscription\">\n        <Stack direction=\"column\" gap=\"200\">\n          <Text>Current subscription: Coffee delivery subscription $15/mo</Text>\n        </Stack>\n      </Tabs.Panel>\n      <Tabs.Panel id=\"downloads\">\n        <Stack direction=\"column\" gap=\"200\">\n          <Text>No downloads available</Text>\n        </Stack>\n      </Tabs.Panel>\n    </Tabs.Panels>\n  </Tabs.Root>\n)\n```\n\n### Accessibility standards\n\n- **Keyboard navigation:** The Tab key should move focus to the entire tab list.\n  The Left/Right Arrow keys must be used to navigate between tabs once the tab\n  list is focused. Enter or Space selects the focused tab.\n- **ARIA roles and states:**\n  - The container must use `role=\"tablist\"`.\n  - Individual tabs must use `role=\"tab\"` and `aria-selected=\"true/false\"`.\n  - The content area must use `role=\"tabpanel\"` and be linked to its respective\n    tab via `aria-labelledby`.\n- **Focus management:** Ensure that when a tab is activated, focus moves\n  logically to the associated tab panel or the first interactive element within\n  it.\n- **Contrast:** The contrast ratio between the active tab text and its\n  background must be high, and the focus indicator must be easily visible.\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { Tabs, type TabsProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe Tabs component supports two approaches depending on your needs.\n\nFor maximum control over tab structure and content, use the **Compound API** with manual composition:\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Tabs.Root>\n      <Tabs.List>\n        <Tabs.Tab id=\"tab1\">First Tab</Tabs.Tab>\n        <Tabs.Tab id=\"tab2\">Second Tab</Tabs.Tab>\n        <Tabs.Tab id=\"tab3\">Third Tab</Tabs.Tab>\n      </Tabs.List>\n      <Tabs.Panels>\n        <Tabs.Panel id=\"tab1\">\n          <Text>Content for the first tab.</Text>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"tab2\">\n          <Text>Content for the second tab.</Text>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"tab3\">\n          <Text>Content for the third tab.</Text>\n        </Tabs.Panel>\n      </Tabs.Panels>\n    </Tabs.Root>\n  );\n};\n```\n\nFor data-driven tabs that render from an array, use the **Dynamic rendering** approach:\n\n```jsx live-dev\nconst App = () => {\n  const tabs = [\n    {\n      id: 'tab1',\n      tabLabel: 'First Tab',\n      panelContent: <Text>Content for the first tab.</Text>,\n    },\n    {\n      id: 'tab2',\n      tabLabel: 'Second Tab',\n      panelContent: <Text>Content for the second tab.</Text>,\n    },\n    {\n      id: 'tab3',\n      tabLabel: 'Third Tab',\n      panelContent: <Text>Content for the third tab.</Text>,\n    },\n  ];\n\n  return <Tabs.Root tabs={tabs} tabListAriaLabel=\"Tab sections\" />;\n};\n```\n\nWhen using the `tabs` prop, provide a `tabListAriaLabel` for accessibility. This label is applied to the tab list element for screen readers.\n\n## Usage examples\n\n### Size variants\n\nThe Tabs component supports three size variants: `sm`, `md` (default), and `lg`.\n\n```jsx live-dev\nconst App = () => {\n  const tabs = [\n    { id: '1', tabLabel: 'Overview', panelContent: 'Overview content' },\n    { id: '2', tabLabel: 'Details', panelContent: 'Details content' },\n    { id: '3', tabLabel: 'Settings', panelContent: 'Settings content' },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"600\">\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"500\">Small</Text>\n        <Tabs.Root size=\"sm\" tabs={tabs} />\n      </Stack>\n\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"500\">Medium (default)</Text>\n        <Tabs.Root size=\"md\" tabs={tabs} />\n      </Stack>\n\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"500\">Large</Text>\n        <Tabs.Root size=\"lg\" tabs={tabs} />\n      </Stack>\n    </Stack>\n  );\n};\n```\n\n### Visual variants\n\nThe Tabs component offers two visual styles:\n- **line** (default) - Tabs with an underline indicator\n- **pills** - Tabs with a pill-shaped background when active\n\n```jsx live-dev\nconst App = () => {\n  const tabs = [\n    { id: '1', tabLabel: 'Dashboard', panelContent: 'Dashboard view' },\n    { id: '2', tabLabel: 'Analytics', panelContent: 'Analytics view' },\n    { id: '3', tabLabel: 'Reports', panelContent: 'Reports view' },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"600\">\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"500\">Line variant (default)</Text>\n        <Tabs.Root variant=\"line\" tabs={tabs} />\n      </Stack>\n\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"500\">Pills variant</Text>\n        <Tabs.Root variant=\"pills\" tabs={tabs} />\n      </Stack>\n    </Stack>\n  );\n};\n```\n\n### Orientation\n\nTabs can be displayed horizontally or vertically using the `orientation` prop.\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Stack direction=\"column\" gap=\"600\">\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"500\">Horizontal (default)</Text>\n        <Tabs.Root orientation=\"horizontal\">\n          <Tabs.List>\n            <Tabs.Tab id=\"home\">Home</Tabs.Tab>\n            <Tabs.Tab id=\"about\">About</Tabs.Tab>\n            <Tabs.Tab id=\"contact\">Contact</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"home\">\n              <Text>Welcome to our homepage!</Text>\n            </Tabs.Panel>\n            <Tabs.Panel id=\"about\">\n              <Text>Learn more about us.</Text>\n            </Tabs.Panel>\n            <Tabs.Panel id=\"contact\">\n              <Text>Get in touch with us.</Text>\n            </Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </Stack>\n\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"500\">Vertical</Text>\n        <Tabs.Root orientation=\"vertical\">\n          <Tabs.List>\n            <Tabs.Tab id=\"profile\">Profile</Tabs.Tab>\n            <Tabs.Tab id=\"security\">Security</Tabs.Tab>\n            <Tabs.Tab id=\"notifications\">Notifications</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"profile\">\n              <Text>Manage your profile settings.</Text>\n            </Tabs.Panel>\n            <Tabs.Panel id=\"security\">\n              <Text>Configure security options.</Text>\n            </Tabs.Panel>\n            <Tabs.Panel id=\"notifications\">\n              <Text>Adjust notification preferences.</Text>\n            </Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </Stack>\n    </Stack>\n  );\n};\n```\n\n### Placement\n\nThe `placement` prop controls where the tab list appears relative to the panels:\n- **horizontal orientation**: `start` (left-aligned) or `end` (right-aligned)\n- **vertical orientation**: `start` (tabs on left) or `end` (tabs on right)\n\n```jsx live-dev\nconst App = () => {\n  const tabs = [\n    { id: '1', tabLabel: 'First', panelContent: 'First panel content' },\n    { id: '2', tabLabel: 'Second', panelContent: 'Second panel content' },\n    { id: '3', tabLabel: 'Third', panelContent: 'Third panel content' },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"600\">\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"500\">Horizontal with placement=\"start\"</Text>\n        <Tabs.Root orientation=\"horizontal\" placement=\"start\" tabs={tabs} />\n      </Stack>\n\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"500\">Horizontal with placement=\"end\"</Text>\n        <Tabs.Root orientation=\"horizontal\" placement=\"end\" tabs={tabs} />\n      </Stack>\n\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"500\">Vertical with placement=\"start\" (tabs on left)</Text>\n        <Tabs.Root orientation=\"vertical\" placement=\"start\" tabs={tabs} />\n      </Stack>\n\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"500\">Vertical with placement=\"end\" (tabs on right)</Text>\n        <Tabs.Root orientation=\"vertical\" placement=\"end\" tabs={tabs} />\n      </Stack>\n    </Stack>\n  );\n};\n```\n\n### Disabled tabs\n\nIndividual tabs can be disabled using the `disabledKeys` prop on `Tabs.Root`, or the `isDisabled` prop on individual `Tabs.Tab` components.\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Stack direction=\"column\" gap=\"600\">\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"500\">Disabled via disabledKeys prop</Text>\n        <Tabs.Root disabledKeys={['tab2']}>\n          <Tabs.List>\n            <Tabs.Tab id=\"tab1\">Active Tab</Tabs.Tab>\n            <Tabs.Tab id=\"tab2\">Disabled Tab</Tabs.Tab>\n            <Tabs.Tab id=\"tab3\">Another Active Tab</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"tab1\">\n              <Text>First tab content is accessible.</Text>\n            </Tabs.Panel>\n            <Tabs.Panel id=\"tab2\">\n              <Text>This content cannot be accessed.</Text>\n            </Tabs.Panel>\n            <Tabs.Panel id=\"tab3\">\n              <Text>Third tab content is accessible.</Text>\n            </Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </Stack>\n\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"500\">Disabled via isDisabled prop</Text>\n        <Tabs.Root>\n          <Tabs.List>\n            <Tabs.Tab id=\"enabled1\">Available</Tabs.Tab>\n            <Tabs.Tab id=\"disabled1\" isDisabled>\n              Unavailable\n            </Tabs.Tab>\n            <Tabs.Tab id=\"enabled2\">Available</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"enabled1\">\n              <Text>This tab is enabled.</Text>\n            </Tabs.Panel>\n            <Tabs.Panel id=\"disabled1\">\n              <Text>This tab is disabled.</Text>\n            </Tabs.Panel>\n            <Tabs.Panel id=\"enabled2\">\n              <Text>This tab is also enabled.</Text>\n            </Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </Stack>\n    </Stack>\n  );\n};\n```\n\n### Dynamic tabs with tabs prop\n\nFor dynamic content, pass an array of tab configurations to the `tabs` prop. This is useful when tab data comes from an API or changes at runtime.\n\n```jsx live-dev\nconst App = () => {\n  const [tabs, setTabs] = useState([\n    {\n      id: '1',\n      tabLabel: 'Introduction',\n      panelContent: 'Welcome to our product documentation.',\n    },\n    {\n      id: '2',\n      tabLabel: 'Getting Started',\n      panelContent: 'Learn how to get started with our product.',\n    },\n    {\n      id: '3',\n      tabLabel: 'API Reference',\n      panelContent: 'Explore our comprehensive API documentation.',\n    },\n  ]);\n\n  const addTab = () => {\n    const newId = String(tabs.length + 1);\n    setTabs([\n      ...tabs,\n      {\n        id: newId,\n        tabLabel: `Tab ${newId}`,\n        panelContent: `Dynamic content for tab ${newId}`,\n      },\n    ]);\n  };\n\n  const removeLastTab = () => {\n    if (tabs.length > 1) {\n      setTabs(tabs.slice(0, -1));\n    }\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Stack direction=\"row\" gap=\"300\">\n        <Button onClick={addTab} size=\"md\">\n          Add Tab\n        </Button>\n        <Button onClick={removeLastTab} size=\"md\" variant=\"outline\">\n          Remove Last Tab\n        </Button>\n      </Stack>\n\n      <Tabs.Root tabs={tabs} />\n    </Stack>\n  );\n};\n```\n\n### Manual composition with compound API\n\nUse the compound API for more control over tab and panel rendering, including custom content and complex layouts.\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Tabs.Root variant=\"pills\">\n      <Tabs.List>\n        <Tabs.Tab id=\"overview\">\n          <Icons.Home />\n          Overview\n        </Tabs.Tab>\n        <Tabs.Tab id=\"analytics\">\n          <Icons.BarChart />\n          Analytics\n        </Tabs.Tab>\n        <Tabs.Tab id=\"settings\">\n          <Icons.Settings />\n          Settings\n        </Tabs.Tab>\n      </Tabs.List>\n      <Tabs.Panels>\n        <Tabs.Panel id=\"overview\">\n          <Stack direction=\"column\" gap=\"300\" padding=\"400\">\n            <Heading as=\"h3\" fontSize=\"500\">\n              Dashboard Overview\n            </Heading>\n            <Text>\n              View your key metrics and recent activity at a glance.\n            </Text>\n          </Stack>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"analytics\">\n          <Stack direction=\"column\" gap=\"300\" padding=\"400\">\n            <Heading as=\"h3\" fontSize=\"500\">\n              Analytics & Reports\n            </Heading>\n            <Text>\n              Dive deep into your data with comprehensive analytics tools.\n            </Text>\n          </Stack>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"settings\">\n          <Stack direction=\"column\" gap=\"300\" padding=\"400\">\n            <Heading as=\"h3\" fontSize=\"500\">\n              Configuration Settings\n            </Heading>\n            <Text>\n              Customize your experience with advanced settings options.\n            </Text>\n          </Stack>\n        </Tabs.Panel>\n      </Tabs.Panels>\n    </Tabs.Root>\n  );\n};\n```\n\n### Uncontrolled mode\n\nBy default, Tabs operates in uncontrolled mode where it manages its own state. Use `defaultSelectedKey` to set the initially selected tab.\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Tabs.Root defaultSelectedKey=\"tab2\">\n      <Tabs.List>\n        <Tabs.Tab id=\"tab1\">Tab 1</Tabs.Tab>\n        <Tabs.Tab id=\"tab2\">Tab 2 (Initially Selected)</Tabs.Tab>\n        <Tabs.Tab id=\"tab3\">Tab 3</Tabs.Tab>\n      </Tabs.List>\n      <Tabs.Panels>\n        <Tabs.Panel id=\"tab1\">\n          <Text>First tab content</Text>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"tab2\">\n          <Text>Second tab content - selected by default</Text>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"tab3\">\n          <Text>Third tab content</Text>\n        </Tabs.Panel>\n      </Tabs.Panels>\n    </Tabs.Root>\n  );\n};\n```\n\n### Controlled mode\n\nFor full control over tab selection, use the `selectedKey` and `onSelectionChange` props.\n\n```jsx live-dev\nconst App = () => {\n  const [selectedTab, setSelectedTab] = useState<TabsProps['selectedKey']>('profile');\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Text>\n        Currently selected tab: <strong>{String(selectedTab)}</strong>\n      </Text>\n\n      <Tabs.Root\n        selectedKey={selectedTab}\n        onSelectionChange={setSelectedTab}\n      >\n        <Tabs.List>\n          <Tabs.Tab id=\"profile\">Profile</Tabs.Tab>\n          <Tabs.Tab id=\"account\">Account</Tabs.Tab>\n          <Tabs.Tab id=\"preferences\">Preferences</Tabs.Tab>\n        </Tabs.List>\n        <Tabs.Panels>\n          <Tabs.Panel id=\"profile\">\n            <Text>Manage your profile information</Text>\n          </Tabs.Panel>\n          <Tabs.Panel id=\"account\">\n            <Text>View and edit account settings</Text>\n          </Tabs.Panel>\n          <Tabs.Panel id=\"preferences\">\n            <Text>Customize your preferences</Text>\n          </Tabs.Panel>\n        </Tabs.Panels>\n      </Tabs.Root>\n\n      <Stack direction=\"row\" gap=\"300\">\n        <Button\n          size=\"md\"\n          onClick={() => setSelectedTab('profile')}\n          variant={selectedTab === 'profile' ? 'solid' : 'outline'}\n        >\n          Go to Profile\n        </Button>\n        <Button\n          size=\"md\"\n          onClick={() => setSelectedTab('account')}\n          variant={selectedTab === 'account' ? 'solid' : 'outline'}\n        >\n          Go to Account\n        </Button>\n        <Button\n          size=\"md\"\n          onClick={() => setSelectedTab('preferences')}\n          variant={selectedTab === 'preferences' ? 'solid' : 'outline'}\n        >\n          Go to Preferences\n        </Button>\n      </Stack>\n    </Stack>\n  );\n};\n```\n\n## Component requirements\n\n## Accessibility\n\nThe Tabs component follows WCAG 2.1 AA guidelines and implements the WAI-ARIA tabs pattern.\n\n#### Role\n\n- `Tabs.Root` contains the tablist and tabpanels\n- `Tabs.List` has `role=\"tablist\"`\n- `Tabs.Tab` has `role=\"tab\"` with `aria-selected` indicating active state\n- `Tabs.Panel` has `role=\"tabpanel\"` and is associated with its tab via `aria-labelledby`\n\n#### Labeling\n\n- Each tab must have an `id` prop that matches its corresponding panel\n- Tab content should be descriptive and concise\n- Complex tab labels can include icons and text\n- When using the `tabs` prop API, provide `tabListAriaLabel` to label the tab list for screen readers\n- When using the compound API, apply `aria-label` directly to `Tabs.List`\n\n#### Keyboard navigation\n\n| Key | Action |\n|-----|--------|\n| `Tab` | Move focus into and out of the tab list |\n| `ArrowRight` / `ArrowDown` | Move focus to the next tab (horizontal/vertical) |\n| `ArrowLeft` / `ArrowUp` | Move focus to the previous tab (horizontal/vertical) |\n| `Home` | Move focus to the first tab |\n| `End` | Move focus to the last tab |\n| `Enter` / `Space` | Activate the focused tab (when `keyboardActivation=\"manual\"`) |\n\n#### Persistent ID\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"user-settings-tabs\";\n\nexport const SettingsTabs = () => (\n  <Tabs.Root id={PERSISTENT_ID}>\n    <Tabs.List>\n      <Tabs.Tab id=\"profile\">Profile</Tabs.Tab>\n      <Tabs.Tab id=\"security\">Security</Tabs.Tab>\n    </Tabs.List>\n    <Tabs.Panels>\n      <Tabs.Panel id=\"profile\">Profile content</Tabs.Panel>\n      <Tabs.Panel id=\"security\">Security content</Tabs.Panel>\n    </Tabs.Panels>\n  </Tabs.Root>\n);\n```\n\n## API reference\n\n<PropsTable id=\"Tabs\" />\n\n## Common patterns\n\n### Tab content with icons\n\nCombine icons with text labels for more expressive tabs.\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Tabs.Root variant=\"pills\" size=\"lg\">\n      <Tabs.List>\n        <Tabs.Tab id=\"dashboard\">\n          <Icons.Dashboard />\n          Dashboard\n        </Tabs.Tab>\n        <Tabs.Tab id=\"reports\">\n          <Icons.Assessment />\n          Reports\n        </Tabs.Tab>\n        <Tabs.Tab id=\"settings\">\n          <Icons.Settings />\n          Settings\n        </Tabs.Tab>\n      </Tabs.List>\n      <Tabs.Panels>\n        <Tabs.Panel id=\"dashboard\">\n          <Stack direction=\"column\" gap=\"300\" padding=\"500\">\n            <Text>Dashboard content with key metrics and visualizations.</Text>\n          </Stack>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"reports\">\n          <Stack direction=\"column\" gap=\"300\" padding=\"500\">\n            <Text>Generate and view comprehensive reports.</Text>\n          </Stack>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"settings\">\n          <Stack direction=\"column\" gap=\"300\" padding=\"500\">\n            <Text>Configure application settings and preferences.</Text>\n          </Stack>\n        </Tabs.Panel>\n      </Tabs.Panels>\n    </Tabs.Root>\n  );\n};\n```\n\n### Tabs with badges\n\nDisplay notification counts or status indicators alongside tab labels using badges.\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Tabs.Root>\n      <Tabs.List>\n        <Tabs.Tab id=\"inbox\">\n          <Stack direction=\"row\" gap=\"200\" alignItems=\"center\">\n            <Text>Inbox</Text>\n            <Badge colorPalette=\"primary\" size=\"xs\">12</Badge>\n          </Stack>\n        </Tabs.Tab>\n        <Tabs.Tab id=\"drafts\">\n          <Stack direction=\"row\" gap=\"200\" alignItems=\"center\">\n            <Text>Drafts</Text>\n            <Badge colorPalette=\"neutral\" size=\"xs\">3</Badge>\n          </Stack>\n        </Tabs.Tab>\n        <Tabs.Tab id=\"sent\">\n          <Text>Sent</Text>\n        </Tabs.Tab>\n        <Tabs.Tab id=\"spam\">\n          <Stack direction=\"row\" gap=\"200\" alignItems=\"center\">\n            <Text>Spam</Text>\n            <Badge colorPalette=\"critical\" size=\"xs\">2</Badge>\n          </Stack>\n        </Tabs.Tab>\n      </Tabs.List>\n      <Tabs.Panels>\n        <Tabs.Panel id=\"inbox\">\n          <Stack direction=\"column\" gap=\"300\" padding=\"400\">\n            <Text>You have 12 new messages in your inbox.</Text>\n          </Stack>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"drafts\">\n          <Stack direction=\"column\" gap=\"300\" padding=\"400\">\n            <Text>You have 3 draft messages.</Text>\n          </Stack>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"sent\">\n          <Stack direction=\"column\" gap=\"300\" padding=\"400\">\n            <Text>View your sent messages.</Text>\n          </Stack>\n        </Tabs.Panel>\n        <Tabs.Panel id=\"spam\">\n          <Stack direction=\"column\" gap=\"300\" padding=\"400\">\n            <Text>2 messages marked as spam.</Text>\n          </Stack>\n        </Tabs.Panel>\n      </Tabs.Panels>\n    </Tabs.Root>\n  );\n};\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using Tabs within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the Tabs component renders with expected structure and accessibility attributes\n\n```tsx\nimport React from \"react\";\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Tabs, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Tabs - Basic rendering\", () => {\n  it(\"renders tabs with correct structure\", () => {\n    render(\n      <NimbusProvider>\n        <Tabs.Root>\n          <Tabs.List>\n            <Tabs.Tab id=\"tab1\">First Tab</Tabs.Tab>\n            <Tabs.Tab id=\"tab2\">Second Tab</Tabs.Tab>\n            <Tabs.Tab id=\"tab3\">Third Tab</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"tab1\">First panel content</Tabs.Panel>\n            <Tabs.Panel id=\"tab2\">Second panel content</Tabs.Panel>\n            <Tabs.Panel id=\"tab3\">Third panel content</Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </NimbusProvider>\n    );\n\n    // Verify tablist is present\n    expect(screen.getByRole(\"tablist\")).toBeInTheDocument();\n\n    // Verify all tabs are rendered\n    expect(screen.getByRole(\"tab\", { name: \"First Tab\" })).toBeInTheDocument();\n    expect(screen.getByRole(\"tab\", { name: \"Second Tab\" })).toBeInTheDocument();\n    expect(screen.getByRole(\"tab\", { name: \"Third Tab\" })).toBeInTheDocument();\n\n    // Verify first tab is selected by default\n    expect(screen.getByRole(\"tab\", { name: \"First Tab\" })).toHaveAttribute(\n      \"aria-selected\",\n      \"true\"\n    );\n\n    // Verify corresponding panel is visible\n    expect(screen.getByRole(\"tabpanel\")).toHaveTextContent(\n      \"First panel content\"\n    );\n  });\n\n  it(\"renders tabs with dynamic tabs prop\", () => {\n    const tabs = [\n      { id: \"1\", tabLabel: \"Overview\", panelContent: \"Overview content\" },\n      { id: \"2\", tabLabel: \"Details\", panelContent: \"Details content\" },\n      { id: \"3\", tabLabel: \"Settings\", panelContent: \"Settings content\" },\n    ];\n\n    render(\n      <NimbusProvider>\n        <Tabs.Root tabs={tabs} />\n      </NimbusProvider>\n    );\n\n    expect(screen.getByRole(\"tab\", { name: \"Overview\" })).toBeInTheDocument();\n    expect(screen.getByRole(\"tab\", { name: \"Details\" })).toBeInTheDocument();\n    expect(screen.getByRole(\"tab\", { name: \"Settings\" })).toBeInTheDocument();\n  });\n\n  it(\"applies size variants correctly\", () => {\n    const { rerender } = render(\n      <NimbusProvider>\n        <Tabs.Root size=\"sm\" data-testid=\"tabs\">\n          <Tabs.List>\n            <Tabs.Tab id=\"tab1\">Tab 1</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"tab1\">Content</Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </NimbusProvider>\n    );\n\n    const tabsRoot = screen.getByTestId(\"tabs\");\n    expect(tabsRoot).toBeInTheDocument();\n\n    // Rerender with different size\n    rerender(\n      <NimbusProvider>\n        <Tabs.Root size=\"lg\" data-testid=\"tabs\">\n          <Tabs.List>\n            <Tabs.Tab id=\"tab1\">Tab 1</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"tab1\">Content</Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByTestId(\"tabs\")).toBeInTheDocument();\n  });\n\n  it(\"applies visual variants correctly\", () => {\n    const { rerender } = render(\n      <NimbusProvider>\n        <Tabs.Root variant=\"line\" data-testid=\"tabs\">\n          <Tabs.List>\n            <Tabs.Tab id=\"tab1\">Tab 1</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"tab1\">Content</Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByTestId(\"tabs\")).toBeInTheDocument();\n\n    // Rerender with pills variant\n    rerender(\n      <NimbusProvider>\n        <Tabs.Root variant=\"pills\" data-testid=\"tabs\">\n          <Tabs.List>\n            <Tabs.Tab id=\"tab1\">Tab 1</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"tab1\">Content</Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByTestId(\"tabs\")).toBeInTheDocument();\n  });\n});\n```\n\n### Interaction Tests\n\nTest user interactions including clicking tabs and keyboard navigation\n\n```tsx\nimport React from \"react\";\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Tabs, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Tabs - Interactions\", () => {\n  it(\"switches tabs when clicked\", async () => {\n    const user = userEvent.setup();\n\n    render(\n      <NimbusProvider>\n        <Tabs.Root>\n          <Tabs.List>\n            <Tabs.Tab id=\"tab1\">First</Tabs.Tab>\n            <Tabs.Tab id=\"tab2\">Second</Tabs.Tab>\n            <Tabs.Tab id=\"tab3\">Third</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"tab1\">First content</Tabs.Panel>\n            <Tabs.Panel id=\"tab2\">Second content</Tabs.Panel>\n            <Tabs.Panel id=\"tab3\">Third content</Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </NimbusProvider>\n    );\n\n    // Initially first tab is selected\n    expect(screen.getByRole(\"tabpanel\")).toHaveTextContent(\"First content\");\n\n    // Click second tab\n    await user.click(screen.getByRole(\"tab\", { name: \"Second\" }));\n\n    // Verify second tab is now selected\n    expect(screen.getByRole(\"tab\", { name: \"Second\" })).toHaveAttribute(\n      \"aria-selected\",\n      \"true\"\n    );\n    expect(screen.getByRole(\"tabpanel\")).toHaveTextContent(\"Second content\");\n\n    // Click third tab\n    await user.click(screen.getByRole(\"tab\", { name: \"Third\" }));\n\n    // Verify third tab is now selected\n    expect(screen.getByRole(\"tab\", { name: \"Third\" })).toHaveAttribute(\n      \"aria-selected\",\n      \"true\"\n    );\n    expect(screen.getByRole(\"tabpanel\")).toHaveTextContent(\"Third content\");\n  });\n\n  it(\"supports keyboard navigation with arrow keys\", async () => {\n    const user = userEvent.setup();\n\n    render(\n      <NimbusProvider>\n        <Tabs.Root orientation=\"horizontal\">\n          <Tabs.List>\n            <Tabs.Tab id=\"tab1\">First</Tabs.Tab>\n            <Tabs.Tab id=\"tab2\">Second</Tabs.Tab>\n            <Tabs.Tab id=\"tab3\">Third</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"tab1\">First content</Tabs.Panel>\n            <Tabs.Panel id=\"tab2\">Second content</Tabs.Panel>\n            <Tabs.Panel id=\"tab3\">Third content</Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </NimbusProvider>\n    );\n\n    const firstTab = screen.getByRole(\"tab\", { name: \"First\" });\n    const secondTab = screen.getByRole(\"tab\", { name: \"Second\" });\n    const thirdTab = screen.getByRole(\"tab\", { name: \"Third\" });\n\n    // Use userEvent.tab() to focus first tab (avoids act() warnings)\n    await user.tab();\n    expect(firstTab).toHaveFocus();\n\n    // Navigate to second tab with ArrowRight\n    await user.keyboard(\"{ArrowRight}\");\n    expect(secondTab).toHaveFocus();\n\n    // Navigate to third tab with ArrowRight\n    await user.keyboard(\"{ArrowRight}\");\n    expect(thirdTab).toHaveFocus();\n\n    // Navigate back to second tab with ArrowLeft\n    await user.keyboard(\"{ArrowLeft}\");\n    expect(secondTab).toHaveFocus();\n\n    // Activate with Enter\n    await user.keyboard(\"{Enter}\");\n    expect(secondTab).toHaveAttribute(\"aria-selected\", \"true\");\n  });\n\n  it(\"supports Home and End keys for navigation\", async () => {\n    const user = userEvent.setup();\n\n    render(\n      <NimbusProvider>\n        <Tabs.Root>\n          <Tabs.List>\n            <Tabs.Tab id=\"tab1\">First</Tabs.Tab>\n            <Tabs.Tab id=\"tab2\">Second</Tabs.Tab>\n            <Tabs.Tab id=\"tab3\">Third</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"tab1\">First content</Tabs.Panel>\n            <Tabs.Panel id=\"tab2\">Second content</Tabs.Panel>\n            <Tabs.Panel id=\"tab3\">Third content</Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </NimbusProvider>\n    );\n\n    const firstTab = screen.getByRole(\"tab\", { name: \"First\" });\n    const thirdTab = screen.getByRole(\"tab\", { name: \"Third\" });\n\n    // Use userEvent.tab() to focus first tab (avoids act() warnings)\n    await user.tab();\n\n    // Press End to jump to last tab\n    await user.keyboard(\"{End}\");\n    expect(thirdTab).toHaveFocus();\n\n    // Press Home to jump to first tab\n    await user.keyboard(\"{Home}\");\n    expect(firstTab).toHaveFocus();\n  });\n});\n```\n\n### Controlled Mode Tests\n\nTest controlled mode with selectedKey and onSelectionChange props\n\n```tsx\nimport React from \"react\";\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Tabs, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Tabs - Controlled mode\", () => {\n  it(\"handles controlled mode with selectedKey and onSelectionChange\", async () => {\n    const user = userEvent.setup();\n    const handleSelectionChange = vi.fn();\n\n    const ControlledTabs = () => {\n      const [selectedKey, setSelectedKey] = React.useState<string | number>(\n        \"tab1\"\n      );\n\n      return (\n        <Tabs.Root\n          selectedKey={selectedKey}\n          onSelectionChange={(key) => {\n            setSelectedKey(key);\n            handleSelectionChange(key);\n          }}\n        >\n          <Tabs.List>\n            <Tabs.Tab id=\"tab1\">First</Tabs.Tab>\n            <Tabs.Tab id=\"tab2\">Second</Tabs.Tab>\n            <Tabs.Tab id=\"tab3\">Third</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"tab1\">First content</Tabs.Panel>\n            <Tabs.Panel id=\"tab2\">Second content</Tabs.Panel>\n            <Tabs.Panel id=\"tab3\">Third content</Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      );\n    };\n\n    render(\n      <NimbusProvider>\n        <ControlledTabs />\n      </NimbusProvider>\n    );\n\n    // Initially first tab is selected\n    expect(screen.getByRole(\"tab\", { name: \"First\" })).toHaveAttribute(\n      \"aria-selected\",\n      \"true\"\n    );\n\n    // Click second tab\n    await user.click(screen.getByRole(\"tab\", { name: \"Second\" }));\n\n    // Verify callback was called\n    expect(handleSelectionChange).toHaveBeenCalledWith(\"tab2\");\n\n    // Verify second tab is now selected\n    expect(screen.getByRole(\"tab\", { name: \"Second\" })).toHaveAttribute(\n      \"aria-selected\",\n      \"true\"\n    );\n  });\n\n  it(\"respects defaultSelectedKey for uncontrolled mode\", () => {\n    render(\n      <NimbusProvider>\n        <Tabs.Root defaultSelectedKey=\"tab2\">\n          <Tabs.List>\n            <Tabs.Tab id=\"tab1\">First</Tabs.Tab>\n            <Tabs.Tab id=\"tab2\">Second</Tabs.Tab>\n            <Tabs.Tab id=\"tab3\">Third</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"tab1\">First content</Tabs.Panel>\n            <Tabs.Panel id=\"tab2\">Second content</Tabs.Panel>\n            <Tabs.Panel id=\"tab3\">Third content</Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </NimbusProvider>\n    );\n\n    // Second tab should be selected by default\n    expect(screen.getByRole(\"tab\", { name: \"Second\" })).toHaveAttribute(\n      \"aria-selected\",\n      \"true\"\n    );\n    expect(screen.getByRole(\"tabpanel\")).toHaveTextContent(\"Second content\");\n  });\n});\n```\n\n### Disabled States Tests\n\nTest disabled tabs via disabledKeys prop and isDisabled prop\n\n```tsx\nimport React from \"react\";\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Tabs, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Tabs - Disabled states\", () => {\n  it(\"disables tabs via disabledKeys prop\", async () => {\n    const user = userEvent.setup();\n\n    render(\n      <NimbusProvider>\n        <Tabs.Root disabledKeys={[\"tab2\"]}>\n          <Tabs.List>\n            <Tabs.Tab id=\"tab1\">First</Tabs.Tab>\n            <Tabs.Tab id=\"tab2\">Second (Disabled)</Tabs.Tab>\n            <Tabs.Tab id=\"tab3\">Third</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"tab1\">First content</Tabs.Panel>\n            <Tabs.Panel id=\"tab2\">Second content</Tabs.Panel>\n            <Tabs.Panel id=\"tab3\">Third content</Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </NimbusProvider>\n    );\n\n    const disabledTab = screen.getByRole(\"tab\", {\n      name: \"Second (Disabled)\",\n    });\n\n    // Verify tab is disabled\n    expect(disabledTab).toHaveAttribute(\"aria-disabled\", \"true\");\n\n    // Try to click disabled tab\n    await user.click(disabledTab);\n\n    // Verify disabled tab did not become selected\n    expect(disabledTab).not.toHaveAttribute(\"aria-selected\", \"true\");\n\n    // First tab should still be selected\n    expect(screen.getByRole(\"tab\", { name: \"First\" })).toHaveAttribute(\n      \"aria-selected\",\n      \"true\"\n    );\n  });\n\n  it(\"disables individual tabs via isDisabled prop\", async () => {\n    const user = userEvent.setup();\n\n    render(\n      <NimbusProvider>\n        <Tabs.Root>\n          <Tabs.List>\n            <Tabs.Tab id=\"tab1\">Available</Tabs.Tab>\n            <Tabs.Tab id=\"tab2\" isDisabled>\n              Unavailable\n            </Tabs.Tab>\n            <Tabs.Tab id=\"tab3\">Available</Tabs.Tab>\n          </Tabs.List>\n          <Tabs.Panels>\n            <Tabs.Panel id=\"tab1\">First content</Tabs.Panel>\n            <Tabs.Panel id=\"tab2\">Second content</Tabs.Panel>\n            <Tabs.Panel id=\"tab3\">Third content</Tabs.Panel>\n          </Tabs.Panels>\n        </Tabs.Root>\n      </NimbusProvider>\n    );\n\n    const disabledTab = screen.getByRole(\"tab\", { name: \"Unavailable\" });\n\n    // Verify tab is disabled\n    expect(disabledTab).toHaveAttribute(\"aria-disabled\", \"true\");\n\n    // Try to click disabled tab\n    await user.click(disabledTab);\n\n    // Verify disabled tab did not become selected\n    expect(disabledTab).not.toHaveAttribute(\"aria-selected\", \"true\");\n  });\n});\n```\n\n### Dynamic Tabs Tests\n\nTest dynamic tab rendering and updates\n\n```tsx\nimport React from \"react\";\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Tabs, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Tabs - Dynamic tabs\", () => {\n  it(\"updates when tabs array changes\", () => {\n    const initialTabs = [\n      { id: \"1\", tabLabel: \"First\", panelContent: \"First content\" },\n      { id: \"2\", tabLabel: \"Second\", panelContent: \"Second content\" },\n    ];\n\n    const { rerender } = render(\n      <NimbusProvider>\n        <Tabs.Root tabs={initialTabs} />\n      </NimbusProvider>\n    );\n\n    // Verify initial tabs\n    expect(screen.getByRole(\"tab\", { name: \"First\" })).toBeInTheDocument();\n    expect(screen.getByRole(\"tab\", { name: \"Second\" })).toBeInTheDocument();\n\n    // Update tabs array\n    const updatedTabs = [\n      ...initialTabs,\n      { id: \"3\", tabLabel: \"Third\", panelContent: \"Third content\" },\n    ];\n\n    rerender(\n      <NimbusProvider>\n        <Tabs.Root tabs={updatedTabs} />\n      </NimbusProvider>\n    );\n\n    // Verify new tab is rendered\n    expect(screen.getByRole(\"tab\", { name: \"First\" })).toBeInTheDocument();\n    expect(screen.getByRole(\"tab\", { name: \"Second\" })).toBeInTheDocument();\n    expect(screen.getByRole(\"tab\", { name: \"Third\" })).toBeInTheDocument();\n  });\n\n  it(\"handles empty tabs array gracefully\", () => {\n    const { container } = render(\n      <NimbusProvider>\n        <Tabs.Root tabs={[]} />\n      </NimbusProvider>\n    );\n\n    // Component should render without errors\n    expect(container).toBeInTheDocument();\n  });\n});\n```\n\n\n## Resources\n\n- [Tabs Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-tabs--docs)\n- [React Aria Tabs Documentation](https://react-spectrum.adobe.com/react-aria/Tabs.html)\n- [WAI-ARIA Tabs Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size variants",
+          "href": "#size-variants",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual variants",
+          "href": "#visual-variants",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Orientation",
+          "href": "#orientation",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Placement",
+          "href": "#placement",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Disabled tabs",
+          "href": "#disabled-tabs",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Dynamic tabs with tabs prop",
+          "href": "#dynamic-tabs-with-tabs-prop",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Manual composition with compound API",
+          "href": "#manual-composition-with-compound-api",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Uncontrolled mode",
+          "href": "#uncontrolled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Controlled mode",
+          "href": "#controlled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            9
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Role",
+          "href": "#role",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Labeling",
+          "href": "#labeling",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Persistent ID",
+          "href": "#persistent-id",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Tab content with icons",
+          "href": "#tab-content-with-icons",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Tabs with badges",
+          "href": "#tabs-with-badges",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Interaction Tests",
+          "href": "#interaction-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Controlled Mode Tests",
+          "href": "#controlled-mode-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Disabled States Tests",
+          "href": "#disabled-states-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Dynamic Tabs Tests",
+          "href": "#dynamic-tabs-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "guidelines": {
+      "mdx": "\n## Guidelines\n\nProvides a structured, predictable pattern for displaying multiple panes of\nrelated content in the same area. It minimizes screen clutter by allowing\ncontent sections to be easily hidden and revealed, typically used for navigation\nwithin a product or configuration panel.\n\n### Best practices\n\n- **Consistency and context:** Ensure all content within the tab panels is\n  closely related to the parent context (e.g., all tabs relate to \"User\n  Settings\" or \"Product Details\").\n- **Concise labels:** Keep tab labels short (one or two words is ideal) and\n  descriptive, clearly indicating the content of the corresponding panel.\n- **Maintain visibility:** Ensure the current active tab is clearly\n  distinguishable from inactive tabs using strong visual cues (e.g., accent\n  color, bold text, contrasting underline).\n- **Maintain content position:** Do not use tabs to reorganize or filter the\n  content of a single continuous list. The content associated with each tab\n  should be unique and distinct.\n- **Limit number of tabs:** Avoid creating a large number of tabs (ideally 3–7\n  visible tabs) to prevent horizontal scrolling or overcrowding, which harms\n  usability. Use a dropdown menu or alternative navigation pattern for overflow.\n- **Avoid sub-navigation:** Do not place secondary navigation elements (like\n  another row of tabs) directly inside the tab panel unless absolutely\n  necessary.\n\n### Usage\n\nTabs are used to organize related content into distinct, switchable sections,\nallowing users to efficiently access different views within the same area\nwithout leaving the context of the main page.\n\n> [!TIP]\\\n> When to use\n\n- **Organizing related views:** To switch between different views of the same\n  object (e.g., \"Details,\" \"Inventory,\" \"History\" tabs on a Product page).\n- **Configuration settings:** For grouping diverse settings categories (e.g.,\n  \"General,\" \"Billing,\" \"Security\" sections within a settings page).\n- **Conserving vertical space:** To maximize vertical screen space by presenting\n  options horizontally.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Primary site navigation:** Do not use tabs for navigating between major,\n  top-level sections of an application (use main navigation menus or links\n  instead).\n- **Too many options:** If the number of tabs causes horizontal scrolling or\n  requires hiding options in an overflow menu on desktop.\n- **Linear workflows:** Avoid using tabs to guide users through a mandatory,\n  step-by-step process.\n\n### Tab labeling\n\n> [!TIP]\\\n> **Do**\n>\n> - Choose concise, descriptive labels (1-2 words) that accurately preview the\n>   content within the panel to aid quick visual scanning.\n> - Ensure all tab content is closely related to the parent screen's context,\n>   maintaining a single-page feel.\n> - Implement an overflow strategy (like a \"More\" menu) if the tab count exceeds\n>   7, rather than allowing horizontal scrolling, which is poor usability.\n> - Verify that content inside the hidden tab panels remains available to screen\n>   readers, aligning with accessibility best practices.\n\n```jsx live\nconst App = () => (\n  <Tabs.Root defaultSelectedKey=\"history\">\n    <Tabs.List>\n      <Tabs.Tab id=\"general\">General info</Tabs.Tab>\n      <Tabs.Tab id=\"history\">History</Tabs.Tab>\n      <Tabs.Tab id=\"subscription\">Subscription</Tabs.Tab>\n      <Tabs.Tab id=\"downloads\">Downloads</Tabs.Tab>\n    </Tabs.List>\n    <Tabs.Panels pt=\"400\">\n      <Tabs.Panel id=\"general\">\n        <Stack direction=\"column\" gap=\"200\">\n          <Text>Name: Jon Doe</Text>\n          <Text>Email: Jon.Doe@domain.com</Text>\n        </Stack>\n      </Tabs.Panel>\n      <Tabs.Panel id=\"history\">\n        <List.Root>\n          <List.Item>03.15.25 - Jon Doe created an account.</List.Item>\n          <List.Item>04.03.25 - Jon Doe updated profile information.</List.Item>\n          <List.Item>06.06.25 - Jon Doe made their first purchase.</List.Item>\n        </List.Root>\n      </Tabs.Panel>\n      <Tabs.Panel id=\"subscription\">\n        <Stack direction=\"column\" gap=\"200\">\n          <Text>Current subscription: Coffee delivery subscription $15/mo</Text>\n        </Stack>\n      </Tabs.Panel>\n      <Tabs.Panel id=\"downloads\">\n        <Stack direction=\"column\" gap=\"200\">\n          <Text>No downloads available</Text>\n        </Stack>\n      </Tabs.Panel>\n    </Tabs.Panels>\n  </Tabs.Root>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't use tabs for site-wide or primary application navigation; reserve them\n>   for internal to pages, contextual navigation.\n> - Don't place tabs on the screen if they cause the content area below them to\n>   feel disconnected or unrelated.\n> - Don't use tabs to reorganize the content of a single continuous list; the\n>   content under each tab should be unique and distinct.\n> - Don't use overly long, descriptive sentences as tab labels, as they clutter\n>   the interface and harm quick visual scanning.\n\n```jsx live\nconst App = () => (\n  <Tabs.Root defaultSelectedKey=\"fruit\">\n    <Tabs.List>\n      <Tabs.Tab id=\"grocerylist\">Grocery list</Tabs.Tab>\n      <Tabs.Tab id=\"fruit\">Fruit</Tabs.Tab>\n      <Tabs.Tab id=\"veggies\">Veggies</Tabs.Tab>\n      <Tabs.Tab id=\"junkfood\">Junk food</Tabs.Tab>\n    </Tabs.List>\n    <Tabs.Panels pt=\"400\">\n      <Tabs.Panel id=\"grocerylist\">\n        <List.Root>\n          <List.Item>Peaches</List.Item>\n          <List.Item>Durian</List.Item>\n          <List.Item>Mangosteen</List.Item>\n          <List.Item>Carrots</List.Item>\n          <List.Item>Broccoli</List.Item>\n          <List.Item>Spinach</List.Item>\n          <List.Item>Potato chips</List.Item>\n          <List.Item>Cookies</List.Item>\n          <List.Item>Candy bars</List.Item>\n        </List.Root>\n      </Tabs.Panel>\n      <Tabs.Panel id=\"fruit\">\n        <List.Root>\n          <List.Item>Peaches</List.Item>\n          <List.Item>Durian</List.Item>\n          <List.Item>Mangosteen</List.Item>\n        </List.Root>\n      </Tabs.Panel>\n      <Tabs.Panel id=\"veggies\">\n        <List.Root>\n          <List.Item>Carrots</List.Item>\n          <List.Item>Broccoli</List.Item>\n          <List.Item>Spinach</List.Item>\n        </List.Root>\n      </Tabs.Panel>\n      <Tabs.Panel id=\"junkfood\">\n        <List.Root>\n          <List.Item>Potato chips</List.Item>\n          <List.Item>Cookies</List.Item>\n          <List.Item>Candy bars</List.Item>\n        </List.Root>\n      </Tabs.Panel>\n    </Tabs.Panels>\n  </Tabs.Root>\n)\n```\n",
+      "toc": [
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Tab labeling",
+          "href": "#tab-labeling",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

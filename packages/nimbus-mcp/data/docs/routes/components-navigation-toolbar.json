@@ -1,0 +1,549 @@
+{
+  "meta": {
+    "id": "Components-Toolbar",
+    "title": "Toolbar",
+    "exportName": "Toolbar",
+    "description": "Toolbars organize related actions and controls in a compact bar for easy access. They provide consistent placement for common or contextual tasks within an application.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/toolbar/toolbar.mdx",
+    "menu": [
+      "Components",
+      "Navigation",
+      "Toolbar"
+    ],
+    "route": "components/navigation/toolbar",
+    "tags": [
+      "component",
+      "toolbar",
+      "actions",
+      "controls"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Visual options",
+        "href": "#visual-options",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Horizontal",
+        "href": "#horizontal",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Vertical",
+        "href": "#vertical",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Plain and outline",
+        "href": "#plain-and-outline",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Groups",
+        "href": "#groups",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5733-23105&m=dev",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "guidelines",
+        "title": "Guidelines",
+        "order": 2
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nA toolbar is a handy container that organizes a group of related buttons and\ntools, using both horizontal and vertical layouts to fit the screen;\nessentially, it gives users quick access to the most common actions they need\nright now.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5733-23105&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Horizontal\n\nMost commonly used, horizontal toolbars should sit above the content meant to be\naltered.\n\n```jsx live\nconst App = () => (\n  <Toolbar orientation=\"horizontal\">\n    <Group>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatBold />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatItalic />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatUnderlined />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.MoreHoriz />\n      </IconButton>\n    </Group>\n    <Separator orientation=\"vertical\" />\n    <Group>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatListBulleted />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatListNumbered />\n      </IconButton>\n    </Group>\n  </Toolbar>\n)\n```\n\n#### Vertical\n\nVertical toolbars are less common, but in the right interface it can be more\nhelpful than a horizontal placement.\n\n```jsx live\nconst App = () => (\n  <Toolbar orientation=\"vertical\">\n    <IconButton size=\"xs\" variant=\"ghost\">\n      <Icons.FormatBold />\n    </IconButton>\n    <IconButton size=\"xs\" variant=\"ghost\">\n      <Icons.FormatItalic />\n    </IconButton>\n    <IconButton size=\"xs\" variant=\"ghost\">\n      <Icons.FormatUnderlined />\n    </IconButton>\n    <IconButton size=\"xs\" variant=\"ghost\">\n      <Icons.MoreHoriz />\n    </IconButton>\n  </Toolbar>\n)\n```\n\n#### Plain and outline\n\nTwo versions are available, a plain version that has a slight shadow to lift,\nand an outlined version that has more contrast from elements around it. The\nplain version without an outline is most common.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"600\" alignItems=\"center\">\n    <Toolbar variant=\"plain\" size=\"xs\">\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatBold />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatItalic />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatUnderlined />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.MoreHoriz />\n      </IconButton>\n    </Toolbar>\n\n    <Toolbar variant=\"outline\" size=\"xs\">\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatBold />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatItalic />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatUnderlined />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.MoreHoriz />\n      </IconButton>\n    </Toolbar>\n  </Stack>\n)\n```\n\n### Groups\n\nGrouping similar tools is a common best practice within all toolbars. Please\ncombine similar tools in groups to make it easier for users to make choices\nquickly. If there are a lot of tools within a group, fold them under a menu\nbutton and leave 2-3 out that are the most popular choices.\n\n```jsx live\nconst App = () => (\n  <Toolbar size=\"xs\">\n    <Group>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatBold />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatItalic />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatUnderlined />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.MoreHoriz />\n      </IconButton>\n    </Group>\n    <Separator orientation=\"vertical\" />\n    <Group>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatListBulleted />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatListNumbered />\n      </IconButton>\n    </Group>\n  </Toolbar>\n)\n```\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nA toolbar is a handy container that organizes a group of related buttons and\ntools, using both horizontal and vertical layouts to fit the screen;\nessentially, it gives users quick access to the most common actions they need\nright now.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5733-23105&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Horizontal\n\nMost commonly used, horizontal toolbars should sit above the content meant to be\naltered.\n\n```jsx live\nconst App = () => (\n  <Toolbar orientation=\"horizontal\">\n    <Group>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatBold />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatItalic />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatUnderlined />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.MoreHoriz />\n      </IconButton>\n    </Group>\n    <Separator orientation=\"vertical\" />\n    <Group>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatListBulleted />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatListNumbered />\n      </IconButton>\n    </Group>\n  </Toolbar>\n)\n```\n\n#### Vertical\n\nVertical toolbars are less common, but in the right interface it can be more\nhelpful than a horizontal placement.\n\n```jsx live\nconst App = () => (\n  <Toolbar orientation=\"vertical\">\n    <IconButton size=\"xs\" variant=\"ghost\">\n      <Icons.FormatBold />\n    </IconButton>\n    <IconButton size=\"xs\" variant=\"ghost\">\n      <Icons.FormatItalic />\n    </IconButton>\n    <IconButton size=\"xs\" variant=\"ghost\">\n      <Icons.FormatUnderlined />\n    </IconButton>\n    <IconButton size=\"xs\" variant=\"ghost\">\n      <Icons.MoreHoriz />\n    </IconButton>\n  </Toolbar>\n)\n```\n\n#### Plain and outline\n\nTwo versions are available, a plain version that has a slight shadow to lift,\nand an outlined version that has more contrast from elements around it. The\nplain version without an outline is most common.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"600\" alignItems=\"center\">\n    <Toolbar variant=\"plain\" size=\"xs\">\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatBold />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatItalic />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatUnderlined />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.MoreHoriz />\n      </IconButton>\n    </Toolbar>\n\n    <Toolbar variant=\"outline\" size=\"xs\">\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatBold />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatItalic />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatUnderlined />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.MoreHoriz />\n      </IconButton>\n    </Toolbar>\n  </Stack>\n)\n```\n\n### Groups\n\nGrouping similar tools is a common best practice within all toolbars. Please\ncombine similar tools in groups to make it easier for users to make choices\nquickly. If there are a lot of tools within a group, fold them under a menu\nbutton and leave 2-3 out that are the most popular choices.\n\n```jsx live\nconst App = () => (\n  <Toolbar size=\"xs\">\n    <Group>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatBold />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatItalic />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatUnderlined />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.MoreHoriz />\n      </IconButton>\n    </Group>\n    <Separator orientation=\"vertical\" />\n    <Group>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatListBulleted />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatListNumbered />\n      </IconButton>\n    </Group>\n  </Toolbar>\n)\n```\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual options",
+          "href": "#visual-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Horizontal",
+          "href": "#horizontal",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Vertical",
+          "href": "#vertical",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Plain and outline",
+          "href": "#plain-and-outline",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Groups",
+          "href": "#groups",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => (\n  <Toolbar orientation=\"horizontal\">\n    <Group>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatBold />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatItalic />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatUnderlined />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.MoreHoriz />\n      </IconButton>\n    </Group>\n    <Separator orientation=\"vertical\" />\n    <Group>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatListBulleted />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\">\n        <Icons.FormatListNumbered />\n      </IconButton>\n    </Group>\n  </Toolbar>\n)\n```\n\n### Accessibility standards\n\n- **Keyboard Navigation:** Ensure all interactive elements within the toolbar\n  are navigable using the tab key in a logical order, following the order of\n  items.\n- **ARIA Roles:** Apply the ARIA role toolbar to the container element.\n- **Labeling:** Provide descriptive, concise aria-labels for the toolbar\n  container and for all icon buttons to ensure screen reader users understand\n  the component's purpose and the action it performs.\n- **Provide clear status:**\n  - Use the disabled state for actions that are temporarily unavailable. Do not\n    hide actions that are simply disabled, as this can cause shifting layouts\n    and confuse users.\n  - Clearly communicate the reason an action is disabled via tooltips or other\n    contextual help.\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { Toolbar, type ToolbarProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe simplest implementation creates a horizontal toolbar with default styling:\n\n```jsx live-dev\nconst App = () => (\n  <Toolbar>\n    <Button variant=\"ghost\">File</Button>\n    <Button variant=\"ghost\">Edit</Button>\n    <Button variant=\"ghost\">View</Button>\n  </Toolbar>\n)\n```\n\n## Usage examples\n\n### Size options\n\nThe `xs` and `md` size variants are available to match your interface density:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Box>\n      <Text textStyle=\"sm\" mb=\"200\" color=\"neutral.11\">Size: xs</Text>\n      <Toolbar size=\"xs\">\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"New\">\n          <Icons.Add />\n        </IconButton>\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Save\">\n          <Icons.Save />\n        </IconButton>\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Print\">\n          <Icons.Print />\n        </IconButton>\n      </Toolbar>\n    </Box>\n    <Box>\n      <Text textStyle=\"sm\" mb=\"200\" color=\"neutral.11\">Size: md</Text>\n      <Toolbar size=\"md\">\n        <IconButton size=\"md\" variant=\"ghost\" aria-label=\"New\">\n          <Icons.Add />\n        </IconButton>\n        <IconButton size=\"md\" variant=\"ghost\" aria-label=\"Save\">\n          <Icons.Save />\n        </IconButton>\n        <IconButton size=\"md\" variant=\"ghost\" aria-label=\"Print\">\n          <Icons.Print />\n        </IconButton>\n      </Toolbar>\n    </Box>\n  </Stack>\n)\n```\n\n### Visual variants\n\nChoose between `plain` and `outline` variants to match your design context:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Box>\n      <Text textStyle=\"sm\" mb=\"200\" color=\"neutral.11\">Variant: plain</Text>\n      <Toolbar variant=\"plain\">\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Undo\">\n          <Icons.Undo />\n        </IconButton>\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Redo\">\n          <Icons.Redo />\n        </IconButton>\n      </Toolbar>\n    </Box>\n    <Box>\n      <Text textStyle=\"sm\" mb=\"200\" color=\"neutral.11\">Variant: outline</Text>\n      <Toolbar variant=\"outline\">\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Undo\">\n          <Icons.Undo />\n        </IconButton>\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Redo\">\n          <Icons.Redo />\n        </IconButton>\n      </Toolbar>\n    </Box>\n  </Stack>\n)\n```\n\n### Orientation\n\nThe `orientation` prop controls the layout direction and keyboard navigation:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"600\" alignItems=\"flex-start\">\n    <Box>\n      <Text textStyle=\"sm\" mb=\"200\" color=\"neutral.11\">Horizontal (default)</Text>\n      <Toolbar orientation=\"horizontal\">\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Home\">\n          <Icons.Home />\n        </IconButton>\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Search\">\n          <Icons.Search />\n        </IconButton>\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Settings\">\n          <Icons.Settings />\n        </IconButton>\n      </Toolbar>\n    </Box>\n    <Box>\n      <Text textStyle=\"sm\" mb=\"200\" color=\"neutral.11\">Vertical</Text>\n      <Toolbar orientation=\"vertical\">\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Home\">\n          <Icons.Home />\n        </IconButton>\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Search\">\n          <Icons.Search />\n        </IconButton>\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Settings\">\n          <Icons.Settings />\n        </IconButton>\n      </Toolbar>\n    </Box>\n  </Stack>\n)\n```\n\n**Behavioral differences:**\n- `orientation=\"horizontal\"`: Arrow Left/Right keys navigate between controls\n- `orientation=\"vertical\"`: Arrow Up/Down keys navigate between controls\n\n### With Groups and Separators\n\nOrganize toolbar controls using `Group` and `Separator` components:\n\n```jsx live-dev\nconst App = () => (\n  <Toolbar>\n    <Group>\n      <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"New\">\n        <Icons.Add />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Open\">\n        <Icons.FolderOpen />\n      </IconButton>\n    </Group>\n    <Separator orientation=\"vertical\" />\n    <Group>\n      <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Save\">\n        <Icons.Save />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Print\">\n        <Icons.Print />\n      </IconButton>\n    </Group>\n    <Separator orientation=\"vertical\" />\n    <Group>\n      <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Undo\">\n        <Icons.Undo />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Redo\">\n        <Icons.Redo />\n      </IconButton>\n    </Group>\n  </Toolbar>\n)\n```\n\n### With ToggleButtonGroup\n\nIntegrate toggle button groups for stateful toolbar controls:\n\n```jsx live-dev\nconst App = () => (\n  <Toolbar variant=\"outline\">\n    <ToggleButtonGroup.Root\n      selectionMode=\"multiple\"\n      defaultSelectedKeys={[\"bold\"]}\n    >\n      <IconToggleButton\n        id=\"bold\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Bold\"\n      >\n        <Icons.FormatBold />\n      </IconToggleButton>\n      <IconToggleButton\n        id=\"italic\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Italic\"\n      >\n        <Icons.FormatItalic />\n      </IconToggleButton>\n      <IconToggleButton\n        id=\"underline\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Underline\"\n      >\n        <Icons.FormatUnderlined />\n      </IconToggleButton>\n    </ToggleButtonGroup.Root>\n    <Separator orientation=\"vertical\" />\n    <ToggleButtonGroup.Root\n      selectionMode=\"single\"\n      defaultSelectedKeys={[\"left\"]}\n    >\n      <IconToggleButton\n        id=\"left\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Align Left\"\n      >\n        <Icons.FormatAlignLeft />\n      </IconToggleButton>\n      <IconToggleButton\n        id=\"center\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Align Center\"\n      >\n        <Icons.FormatAlignCenter />\n      </IconToggleButton>\n      <IconToggleButton\n        id=\"right\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Align Right\"\n      >\n        <Icons.FormatAlignRight />\n      </IconToggleButton>\n    </ToggleButtonGroup.Root>\n  </Toolbar>\n)\n```\n\n## Component requirements\n\n## Accessibility\n\nThe Toolbar component handles most accessibility requirements internally, including:\n- Setting the `role=\"toolbar\"` attribute\n- Managing keyboard navigation with arrow keys\n- Setting proper `aria-orientation` based on the `orientation` prop\n\nHowever, you should always provide an accessible label for the toolbar. This can be done by:\n\n- Using `aria-label` for a direct label:\n\n```tsx\n<Toolbar aria-label=\"Text formatting controls\">\n  {/* toolbar controls */}\n</Toolbar>\n```\n\n- Using `aria-labelledby` to reference a visible label:\n\n```tsx\n<Text id=\"toolbar-label\">Text Formatting</Text>\n<Toolbar aria-labelledby=\"toolbar-label\">\n  {/* toolbar controls */}\n</Toolbar>\n```\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"example-toolbar\";\n\nexport const Example = () => (\n  <Toolbar id={PERSISTENT_ID} aria-label=\"Main toolbar\">\n    {/* toolbar controls */}\n  </Toolbar>\n);\n```\n\n#### Keyboard navigation\n\nThe component supports full keyboard interaction:\n- `Tab` / `Shift+Tab`: Move focus into and out of the toolbar\n- `Arrow Left` / `Arrow Right`: Navigate between controls in horizontal toolbars\n- `Arrow Up` / `Arrow Down`: Navigate between controls in vertical toolbars\n- `Home`: Focus first control in the toolbar\n- `End`: Focus last control in the toolbar\n\n## API reference\n\n<PropsTable id=\"Toolbar\" />\n\n## Common patterns\n\n### Text editor toolbar\n\nCreate a comprehensive text formatting toolbar with multiple control groups:\n\n```jsx live-dev\nconst App = () => {\n  const [textStyle, setTextStyle] = useState(\"p\");\n\n  const textStyles = [\n    { id: \"h1\", label: \"Heading 1\" },\n    { id: \"h2\", label: \"Heading 2\" },\n    { id: \"p\", label: \"Paragraph\" },\n  ];\n\n  const selectedTextStyle = textStyles.find((v) => v.id === textStyle);\n\n  return (\n    <Toolbar size=\"md\" variant=\"outline\" aria-label=\"Text formatting\">\n      <Group>\n        <Menu.Root onAction={(v) => setTextStyle(String(v))}>\n          <Menu.Trigger\n            borderRadius=\"200\"\n            border=\"1px solid\"\n            borderColor=\"neutral.6\"\n            width=\"3500\"\n            aria-label=\"Text style\"\n          >\n            <Box display=\"flex\" alignItems=\"center\" gap=\"200\" px=\"200\">\n              <Text>{selectedTextStyle?.label}</Text>\n              <Icons.KeyboardArrowDown />\n            </Box>\n          </Menu.Trigger>\n          <Menu.Content>\n            {textStyles.map((style) => (\n              <Menu.Item key={style.id} id={style.id}>\n                {style.label}\n              </Menu.Item>\n            ))}\n          </Menu.Content>\n        </Menu.Root>\n      </Group>\n      <Separator orientation=\"vertical\" />\n      <ToggleButtonGroup.Root\n        selectionMode=\"multiple\"\n        defaultSelectedKeys={[\"bold\"]}\n        aria-label=\"Text formatting\"\n      >\n        <IconToggleButton id=\"bold\" size=\"xs\" variant=\"ghost\" aria-label=\"Bold\">\n          <Icons.FormatBold />\n        </IconToggleButton>\n        <IconToggleButton id=\"italic\" size=\"xs\" variant=\"ghost\" aria-label=\"Italic\">\n          <Icons.FormatItalic />\n        </IconToggleButton>\n        <IconToggleButton id=\"underline\" size=\"xs\" variant=\"ghost\" aria-label=\"Underline\">\n          <Icons.FormatUnderlined />\n        </IconToggleButton>\n      </ToggleButtonGroup.Root>\n      <Separator orientation=\"vertical\" />\n      <ToggleButtonGroup.Root\n        selectionMode=\"single\"\n        defaultSelectedKeys={[\"left\"]}\n        aria-label=\"Text alignment\"\n      >\n        <IconToggleButton id=\"left\" size=\"xs\" variant=\"ghost\" aria-label=\"Align Left\">\n          <Icons.FormatAlignLeft />\n        </IconToggleButton>\n        <IconToggleButton id=\"center\" size=\"xs\" variant=\"ghost\" aria-label=\"Align Center\">\n          <Icons.FormatAlignCenter />\n        </IconToggleButton>\n        <IconToggleButton id=\"right\" size=\"xs\" variant=\"ghost\" aria-label=\"Align Right\">\n          <Icons.FormatAlignRight />\n        </IconToggleButton>\n      </ToggleButtonGroup.Root>\n    </Toolbar>\n  );\n}\n```\n\n### Navigation toolbar\n\nBuild a vertical navigation toolbar for sidebar layouts:\n\n```jsx live-dev\nconst App = () => (\n  <Toolbar\n    orientation=\"vertical\"\n    variant=\"outline\"\n    aria-label=\"Navigation\"\n  >\n    <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Home\">\n      <Icons.Home />\n    </IconButton>\n    <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Search\">\n      <Icons.Search />\n    </IconButton>\n    <Separator orientation=\"horizontal\" />\n    <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Settings\">\n      <Icons.Settings />\n    </IconButton>\n    <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Profile\">\n      <Icons.Person />\n    </IconButton>\n    <Separator orientation=\"horizontal\" />\n    <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Logout\">\n      <Icons.Logout />\n    </IconButton>\n  </Toolbar>\n)\n```\n\n### Action toolbar\n\nCreate a simple action toolbar with primary controls:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\" width=\"full\">\n    <Toolbar aria-label=\"Document actions\">\n      <Group>\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"New document\">\n          <Icons.Add />\n        </IconButton>\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Open document\">\n          <Icons.FolderOpen />\n        </IconButton>\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Save document\">\n          <Icons.Save />\n        </IconButton>\n      </Group>\n      <Separator orientation=\"vertical\" />\n      <Group>\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Undo\">\n          <Icons.Undo />\n        </IconButton>\n        <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Redo\" isDisabled>\n          <Icons.Redo />\n        </IconButton>\n      </Group>\n    </Toolbar>\n    <Box\n      p=\"600\"\n      borderRadius=\"200\"\n      borderWidth=\"1px\"\n      borderColor=\"neutral.6\"\n      minHeight=\"6000\"\n    >\n      <Text color=\"neutral.11\">Document content area</Text>\n    </Box>\n  </Stack>\n)\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using Toolbar within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the component renders with expected elements\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Toolbar, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Toolbar - Basic rendering\", () => {\n  it(\"renders toolbar with role attribute\", () => {\n    render(\n      <NimbusProvider>\n        <Toolbar aria-label=\"Main toolbar\">\n          <Button size=\"xs\">File</Button>\n        </Toolbar>\n      </NimbusProvider>\n    );\n\n    // Verify toolbar is rendered with correct role\n    expect(\n      screen.getByRole(\"toolbar\", { name: /main toolbar/i })\n    ).toBeInTheDocument();\n  });\n\n  it(\"renders with horizontal orientation by default\", () => {\n    render(\n      <NimbusProvider>\n        <Toolbar aria-label=\"Test toolbar\">\n          <Button size=\"xs\">File</Button>\n        </Toolbar>\n      </NimbusProvider>\n    );\n\n    const toolbar = screen.getByRole(\"toolbar\");\n    expect(toolbar).toHaveAttribute(\"aria-orientation\", \"horizontal\");\n  });\n\n  it(\"renders with vertical orientation when specified\", () => {\n    render(\n      <NimbusProvider>\n        <Toolbar orientation=\"vertical\" aria-label=\"Test toolbar\">\n          <Button size=\"xs\">File</Button>\n        </Toolbar>\n      </NimbusProvider>\n    );\n\n    const toolbar = screen.getByRole(\"toolbar\");\n    expect(toolbar).toHaveAttribute(\"aria-orientation\", \"vertical\");\n  });\n});\n```\n\n### Keyboard Navigation Tests\n\nTest keyboard navigation with the toolbar\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Toolbar, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Toolbar - Keyboard navigation\", () => {\n  it(\"navigates between controls with arrow keys in horizontal toolbar\", async () => {\n    const user = userEvent.setup();\n    render(\n      <NimbusProvider>\n        <Toolbar aria-label=\"Test toolbar\">\n          <Button size=\"xs\" data-testid=\"btn-1\">\n            File\n          </Button>\n          <Button size=\"xs\" data-testid=\"btn-2\">\n            Edit\n          </Button>\n          <Button size=\"xs\" data-testid=\"btn-3\">\n            View\n          </Button>\n        </Toolbar>\n      </NimbusProvider>\n    );\n\n    const btn1 = screen.getByTestId(\"btn-1\");\n    const btn2 = screen.getByTestId(\"btn-2\");\n    const btn3 = screen.getByTestId(\"btn-3\");\n\n    // Focus first button\n    await user.click(btn1);\n    expect(btn1).toHaveFocus();\n\n    // Navigate with Arrow Right\n    await user.keyboard(\"{ArrowRight}\");\n    expect(btn2).toHaveFocus();\n\n    await user.keyboard(\"{ArrowRight}\");\n    expect(btn3).toHaveFocus();\n\n    // Navigate backwards with Arrow Left\n    await user.keyboard(\"{ArrowLeft}\");\n    expect(btn2).toHaveFocus();\n  });\n\n  it(\"navigates between controls with arrow keys in vertical toolbar\", async () => {\n    const user = userEvent.setup();\n    render(\n      <NimbusProvider>\n        <Toolbar orientation=\"vertical\" aria-label=\"Test toolbar\">\n          <Button size=\"xs\" data-testid=\"btn-1\">\n            Home\n          </Button>\n          <Button size=\"xs\" data-testid=\"btn-2\">\n            Search\n          </Button>\n          <Button size=\"xs\" data-testid=\"btn-3\">\n            Settings\n          </Button>\n        </Toolbar>\n      </NimbusProvider>\n    );\n\n    const btn1 = screen.getByTestId(\"btn-1\");\n    const btn2 = screen.getByTestId(\"btn-2\");\n    const btn3 = screen.getByTestId(\"btn-3\");\n\n    // Focus first button\n    await user.click(btn1);\n    expect(btn1).toHaveFocus();\n\n    // Navigate with Arrow Down\n    await user.keyboard(\"{ArrowDown}\");\n    expect(btn2).toHaveFocus();\n\n    await user.keyboard(\"{ArrowDown}\");\n    expect(btn3).toHaveFocus();\n\n    // Navigate backwards with Arrow Up\n    await user.keyboard(\"{ArrowUp}\");\n    expect(btn2).toHaveFocus();\n  });\n});\n```\n\n### Testing Toolbar Children\n\nTest that toolbar properly contains and manages child elements\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Toolbar, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Toolbar - Children\", () => {\n  it(\"renders multiple child buttons\", () => {\n    render(\n      <NimbusProvider>\n        <Toolbar aria-label=\"Test toolbar\">\n          <Button size=\"xs\">File</Button>\n          <Button size=\"xs\">Edit</Button>\n          <Button size=\"xs\">View</Button>\n        </Toolbar>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByRole(\"button\", { name: /file/i })).toBeInTheDocument();\n    expect(screen.getByRole(\"button\", { name: /edit/i })).toBeInTheDocument();\n    expect(screen.getByRole(\"button\", { name: /view/i })).toBeInTheDocument();\n  });\n\n  it(\"maintains button functionality within toolbar\", async () => {\n    const user = userEvent.setup();\n    const handleClick = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <Toolbar aria-label=\"Test toolbar\">\n          <Button size=\"xs\" onClick={handleClick} data-testid=\"clickable-btn\">\n            Click me\n          </Button>\n        </Toolbar>\n      </NimbusProvider>\n    );\n\n    const button = screen.getByTestId(\"clickable-btn\");\n    await user.click(button);\n\n    // Verify the click handler was called (may be called multiple times due to event bubbling)\n    expect(handleClick).toHaveBeenCalled();\n  });\n});\n```\n\n\n## Resources\n\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-toolbar--docs)\n- [React Aria Toolbar](https://react-spectrum.adobe.com/react-aria/Toolbar.html)\n- [ARIA Toolbar Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/toolbar/)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size options",
+          "href": "#size-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual variants",
+          "href": "#visual-variants",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Orientation",
+          "href": "#orientation",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With Groups and Separators",
+          "href": "#with-groups-and-separators",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With ToggleButtonGroup",
+          "href": "#with-togglebuttongroup",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Text editor toolbar",
+          "href": "#text-editor-toolbar",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Navigation toolbar",
+          "href": "#navigation-toolbar",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Action toolbar",
+          "href": "#action-toolbar",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard Navigation Tests",
+          "href": "#keyboard-navigation-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing Toolbar Children",
+          "href": "#testing-toolbar-children",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "guidelines": {
+      "mdx": "\n## Guidelines\n\nThese guidelines provide comprehensive direction for designing and developing\ntoolbars within Nimbus.\n\n### Best practices\n\n- **Contextual placement:** Place the toolbar directly above the content it\n  controls (e.g., above a text editor, above a data table). This ensures an\n  immediate, clear connection between the tools and the content being modified.\n- **Logical grouping:** Group related actions visually using small separators\n  (like vertical lines or subtle spacing) to aid readability. For example, group\n  text alignment controls together, and export actions together.\n- **Hierarchical order:** Arrange items based on usage frequency and logical\n  flow, placing the most common or primary actions prominently on the left (in\n  LTR languages).\n- **Minimize clutter:** Avoid overcrowding the toolbar. If there are too many\n  items, use secondary controls like overflow menus to hide less frequently used\n  actions.\n\n### Usage\n\nA toolbar's use is to provide a dedicated, contextual area for a set of related,\nfrequently used actions and controls to manage the content directly below it.\n\n> [!TIP]\\\n> When to use\n\n- **Group related actions and controls** in a compact, container.\n- **Offer contextual actions** relevant to the content being viewed or edited\n  (e.g., formatting options in a text editor, or bulk actions for a list or\n  table).\n- **Maintain screen space** by consolidating many items into a single, compact\n  bar.\n\n> [!CAUTION]\\\n> When not to use\n\n- **The primary purpose is navigation** between different pages or application\n  views; use a navigation component or tabs instead.\n- **Actions are rarely used or require complex input;** use a menu or modal\n  dialog to house these actions to simplify.\n- **The area needs to display a large amount of primary content** without being\n  obscured.\n- **Only one or two actions are needed** for a view; consider placing these\n  directly or within a relevant component, like a card.\n\n### Toolbar in use\n\n> [!TIP]\\\n> **Do**\n>\n> - Do group related actions and controls in a compact container.\n> - Offer contextual actions relevant to the content being viewed or edited\n>   (e.g., formatting options in a text editor, or bulk actions for a list).\n> - Maintain screen space by consolidating many items into a single, compact\n>   bar.\n\n```jsx live\nconst App = () => (\n  <Toolbar aria-label=\"Text formatting\">\n    <Select.Root\n      size=\"sm\"\n      defaultSelectedKey=\"paragraph\"\n      aria-label=\"Text style\"\n      isClearable={false}\n    >\n      <Select.Options>\n        <Select.Option id=\"heading1\">Heading 1</Select.Option>\n        <Select.Option id=\"heading2\">Heading 2</Select.Option>\n        <Select.Option id=\"paragraph\">Paragraph</Select.Option>\n      </Select.Options>\n    </Select.Root>\n    <Separator orientation=\"vertical\" />\n    <ToggleButtonGroup.Root\n      selectionMode=\"multiple\"\n      defaultSelectedKeys={[\"bold\"]}\n    >\n      <IconToggleButton id=\"bold\" size=\"xs\" variant=\"ghost\" aria-label=\"Bold\">\n        <Icons.FormatBold />\n      </IconToggleButton>\n      <IconToggleButton\n        id=\"italic\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Italic\"\n      >\n        <Icons.FormatItalic />\n      </IconToggleButton>\n      <IconToggleButton\n        id=\"underline\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Underline\"\n      >\n        <Icons.FormatUnderlined />\n      </IconToggleButton>\n    </ToggleButtonGroup.Root>\n    <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"More formatting options\">\n      <Icons.MoreHoriz />\n    </IconButton>\n    <Separator orientation=\"vertical\" />\n    <ToggleButtonGroup.Root selectionMode=\"single\" defaultSelectedKeys={[]}>\n      <IconToggleButton\n        id=\"bulleted\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Bulleted list\"\n      >\n        <Icons.FormatListBulleted />\n      </IconToggleButton>\n      <IconToggleButton\n        id=\"numbered\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Numbered list\"\n      >\n        <Icons.FormatListNumbered />\n      </IconToggleButton>\n    </ToggleButtonGroup.Root>\n    <Separator orientation=\"vertical\" />\n    <Group>\n      <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Undo\" isDisabled>\n        <Icons.Undo />\n      </IconButton>\n      <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Redo\">\n        <Icons.Redo />\n      </IconButton>\n    </Group>\n  </Toolbar>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't overcrowd the toolbar with too many items; use an overflow menu\n>   instead.\n> - Don't place unrelated actions next to each other without visual separation\n>   to group similar functions.\n> - Don't use a standard text button with a label when an icon button is\n>   sufficient and space is limited.\n> - Don't assume the user understands an icon without a descriptive tooltip.\n> - Don't hide actions that are temporarily disabled, as this causes shifting\n>   elements and breaks muscle memory.\n\n```jsx live\nconst App = () => (\n  <Toolbar aria-label=\"Text formatting\">\n    <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"View\">\n      <Icons.Apps />\n    </IconButton>\n    <ToggleButtonGroup.Root\n      selectionMode=\"multiple\"\n      defaultSelectedKeys={[\"bold\"]}\n    >\n      <IconToggleButton id=\"bold\" size=\"xs\" variant=\"ghost\" aria-label=\"Bold\">\n        <Icons.FormatBold />\n      </IconToggleButton>\n      <IconToggleButton\n        id=\"italic\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Italic\"\n      >\n        <Icons.FormatItalic />\n      </IconToggleButton>\n      <IconToggleButton\n        id=\"underline\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Underline\"\n      >\n        <Icons.FormatUnderlined />\n      </IconToggleButton>\n      <IconToggleButton\n        id=\"strikethrough\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Strikethrough\"\n      >\n        <Icons.FormatStrikethrough />\n      </IconToggleButton>\n    </ToggleButtonGroup.Root>\n    <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Format size\">\n      <Icons.FormatSize />\n    </IconButton>\n    <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Insert link\">\n      <Icons.InsertLink />\n    </IconButton>\n    <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Brightness\">\n      <Icons.Brightness6 />\n    </IconButton>\n    <ToggleButtonGroup.Root selectionMode=\"single\" defaultSelectedKeys={[]}>\n      <IconToggleButton\n        id=\"bulleted\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Bulleted list\"\n      >\n        <Icons.FormatListBulleted />\n      </IconToggleButton>\n      <IconToggleButton\n        id=\"numbered\"\n        size=\"xs\"\n        variant=\"ghost\"\n        aria-label=\"Numbered list\"\n      >\n        <Icons.FormatListNumbered />\n      </IconToggleButton>\n    </ToggleButtonGroup.Root>\n    <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Delete\">\n      <Icons.Delete />\n    </IconButton>\n    <IconButton size=\"xs\" variant=\"ghost\" aria-label=\"Upload\">\n      <Icons.CloudUpload />\n    </IconButton>\n  </Toolbar>\n);\n```\n",
+      "toc": [
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Toolbar in use",
+          "href": "#toolbar-in-use",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

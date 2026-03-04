@@ -1,0 +1,479 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "DraggableList.Item - An individual draggable item within the list\n\nHandles drag interactions and provides visual feedback during dragging.\nSupports optional removal with remove button.",
+  "displayName": "DraggableListItem",
+  "methods": [],
+  "props": {
+    "isDisabled": {
+      "defaultValue": null,
+      "description": "Whether the item is disabled.",
+      "name": "isDisabled",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxItemProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxItemProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "children": {
+      "defaultValue": null,
+      "description": "The children of the component. A function may be provided to alter the children based on component state.",
+      "name": "children",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "RenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "RenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onPress": {
+      "defaultValue": null,
+      "description": "Handler that is called when the press is released over the target.",
+      "name": "onPress",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "PressEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onPressStart": {
+      "defaultValue": null,
+      "description": "Handler that is called when a press interaction starts.",
+      "name": "onPressStart",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "PressEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onPressEnd": {
+      "defaultValue": null,
+      "description": "Handler that is called when a press interaction ends, either\nover the target or when the pointer leaves the target.",
+      "name": "onPressEnd",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "PressEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onPressChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the press state changes.",
+      "name": "onPressChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "PressEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onPressUp": {
+      "defaultValue": null,
+      "description": "Handler that is called when a press is released over the target, regardless of\nwhether it started on the target or not.",
+      "name": "onPressUp",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "PressEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "PressEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "href": {
+      "defaultValue": null,
+      "description": "A URL to link to. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#href).",
+      "name": "href",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "LinkDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "LinkDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "target": {
+      "defaultValue": null,
+      "description": "The target window for the link. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#target).",
+      "name": "target",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "LinkDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "LinkDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "rel": {
+      "defaultValue": null,
+      "description": "The relationship between the linked resource and the current page. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/rel).",
+      "name": "rel",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "LinkDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "LinkDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "value": {
+      "defaultValue": null,
+      "description": "The object value that this item represents. When using dynamic collections, this is set automatically.",
+      "name": "value",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxItemProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxItemProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "id": {
+      "defaultValue": null,
+      "description": "The unique id of the item.",
+      "name": "id",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxItemProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxItemProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "render": {
+      "defaultValue": null,
+      "description": "Overrides the default DOM element with a custom render function.\nThis allows rendering existing components with built-in styles and behaviors\nsuch as router links, animation libraries, and pre-styled components.\n\nRequirements:\n\n* You must render the expected element type (e.g. if `<button>` is expected, you cannot render an `<a>`).\n* Only a single root DOM element can be rendered (no fragments).\n* You must pass through props and ref to the underlying DOM element, merging with your own prop as appropriate.",
+      "name": "render",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "DOMRenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "DOMRenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onHoverStart": {
+      "defaultValue": null,
+      "description": "Handler that is called when a hover interaction starts.",
+      "name": "onHoverStart",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "HoverEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "HoverEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onHoverEnd": {
+      "defaultValue": null,
+      "description": "Handler that is called when a hover interaction ends.",
+      "name": "onHoverEnd",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "HoverEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "HoverEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onHoverChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the hover state changes.",
+      "name": "onHoverChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "HoverEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "HoverEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onAction": {
+      "defaultValue": null,
+      "description": "Handler that is called when a user performs an action on the item. The exact user event depends on\nthe collection's `selectionBehavior` prop and the interaction modality.",
+      "name": "onAction",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxItemProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxItemProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "textValue": {
+      "defaultValue": null,
+      "description": "A string representation of the item's contents, used for features like typeahead.",
+      "name": "textValue",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxItemProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxItemProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "hrefLang": {
+      "defaultValue": null,
+      "description": "Hints at the human language of the linked URL. See[MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#hreflang).",
+      "name": "hrefLang",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "LinkDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "LinkDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "download": {
+      "defaultValue": null,
+      "description": "Causes the browser to download the linked URL. A string may be provided to suggest a file name. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#download).",
+      "name": "download",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "LinkDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "LinkDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "ping": {
+      "defaultValue": null,
+      "description": "A space-separated list of URLs to ping when the link is followed. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#ping).",
+      "name": "ping",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "LinkDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "LinkDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "referrerPolicy": {
+      "defaultValue": null,
+      "description": "How much of the referrer to send when following the link. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#referrerpolicy).",
+      "name": "referrerPolicy",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "LinkDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "LinkDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "routerOptions": {
+      "defaultValue": null,
+      "description": "Options for the configured client side router.",
+      "name": "routerOptions",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "LinkDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "LinkDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref to the item container element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/draggable-list/draggable-list.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    },
+    "onRemoveItem": {
+      "defaultValue": null,
+      "description": "Callback fired when the remove button is pressed.\nThe remove button is only rendered when this callback is provided.\n@param key - The key of the item being removed",
+      "name": "onRemoveItem",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/draggable-list/draggable-list.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(key: Key) => void"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

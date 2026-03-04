@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "id": "TokensShadows",
+    "title": "Shadows",
+    "description": "The list of available shadow tokens",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/tokens/shadows.mdx",
+    "menu": [
+      "Home",
+      "Design Tokens",
+      "Shadows"
+    ],
+    "route": "home/design-tokens/shadows",
+    "tags": [
+      "shadows"
+    ],
+    "toc": [
+      {
+        "value": "Tokens",
+        "href": "#tokens",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "icon": "Texture",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Shadows\n\nThe list of available shadow tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"shadows\" demoProperty=\"boxShadow\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Shadows\n\nThe list of available shadow tokens\n\n## Tokens\n\n<GenericTokenTableDemo category=\"shadows\" demoProperty=\"boxShadow\" />\n",
+      "toc": [
+        {
+          "value": "Tokens",
+          "href": "#tokens",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

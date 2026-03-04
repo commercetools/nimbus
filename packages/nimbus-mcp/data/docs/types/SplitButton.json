@@ -1,0 +1,9 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# SplitButton\n\nA split-button component that combines a primary action button with a dropdown menu.\n\nShows a primary action button + dropdown trigger. The primary button automatically\nexecutes the first enabled Menu.Item action, while the dropdown trigger opens a menu\nwith all available options.\n\nUse with Menu.Item, Menu.Section, and Separator components for content.",
+  "displayName": "SplitButton",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

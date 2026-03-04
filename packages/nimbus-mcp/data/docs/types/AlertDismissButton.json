@@ -1,0 +1,11 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Alert.DismissButton - Button to dismiss or close the alert",
+  "displayName": "AlertDismissButton",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": true
+}

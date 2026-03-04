@@ -1,0 +1,43 @@
+{
+  "tags": {
+    "example": "```tsx\n// Default indicator (shows number and checkmark when complete)\n<Steps.Indicator />\n\n// Custom content\n<Steps.Indicator>\n  <MyCustomIcon />\n</Steps.Indicator>\n```",
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Steps.Indicator\n\nVisual marker showing step status (number, icon, or custom content).\nWraps Chakra UI's Steps.Indicator with Nimbus styling.",
+  "displayName": "StepsIndicator",
+  "methods": [],
+  "props": {
+    "children": {
+      "defaultValue": null,
+      "description": "Custom content to display in the indicator",
+      "name": "children",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref to the indicator element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

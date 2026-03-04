@@ -1,0 +1,410 @@
+{
+  "meta": {
+    "id": "Group",
+    "title": "Group",
+    "description": "Groups related elements.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/group/group.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "Group"
+    ],
+    "route": "components/inputs/group",
+    "tags": [
+      "component"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Basic Usage",
+        "href": "#basic-usage",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      }
+    ]
+  },
+  "mdx": "\n# Group\n\nGroups related elements together for better organization and layout.\n\n## Overview\n\nThe Group component provides a flexible way to group related UI elements with consistent spacing and alignment. It's particularly useful for creating forms, toolbars, and other collections of interactive elements.\n\n## Variables\n\nGet familiar with the features.\n\n### Basic Usage\n\n```jsx-live\nconst App = () => (\n  <Group>\n    <Button>First</Button>\n    <Button>Second</Button>\n    <Button>Third</Button>\n  </Group>\n)\n```\n\n## Accessibility\n\nThis component follows WCAG 2.1 AA guidelines.",
+  "views": {
+    "overview": {
+      "mdx": "\n# Group\n\nGroups related elements together for better organization and layout.\n\n## Overview\n\nThe Group component provides a flexible way to group related UI elements with consistent spacing and alignment. It's particularly useful for creating forms, toolbars, and other collections of interactive elements.\n\n## Variables\n\nGet familiar with the features.\n\n### Basic Usage\n\n```jsx-live\nconst App = () => (\n  <Group>\n    <Button>First</Button>\n    <Button>Second</Button>\n    <Button>Third</Button>\n  </Group>\n)\n```\n\n## Accessibility\n\nThis component follows WCAG 2.1 AA guidelines.",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { Group, type GroupProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\n```jsx-live-dev\nconst App = () => {\n  return (\n    <Group aria-label=\"Action buttons\">\n      <Button>Save</Button>\n      <Button>Cancel</Button>\n      <Button>Delete</Button>\n    </Group>\n  );\n};\n```\n\n## Usage examples\n\n### Grouping with spacing\n\nUse Chakra UI style props like `gap` to control spacing between grouped elements:\n\n```jsx-live-dev\nconst App = () => {\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Group aria-label=\"Compact button group\" gap=\"100\">\n        <Button size=\"xs\">Edit</Button>\n        <Button size=\"xs\">Copy</Button>\n        <Button size=\"xs\">Delete</Button>\n      </Group>\n\n      <Group aria-label=\"Default button group\" gap=\"300\">\n        <Button>Edit</Button>\n        <Button>Copy</Button>\n        <Button>Delete</Button>\n      </Group>\n\n      <Group aria-label=\"Extra small button group\" gap=\"200\">\n        <Button size=\"2xs\">Edit</Button>\n        <Button size=\"2xs\">Copy</Button>\n        <Button size=\"2xs\">Delete</Button>\n      </Group>\n    </Stack>\n  );\n};\n```\n\n### With accessibility labels\n\nAlways provide descriptive `aria-label` values to help screen reader users understand the purpose of the group:\n\n```jsx-live-dev\nconst App = () => {\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Group aria-label=\"Text formatting controls\" gap=\"200\">\n        <IconButton aria-label=\"Bold\">\n          <Icons.FormatBold />\n        </IconButton>\n        <IconButton aria-label=\"Italic\">\n          <Icons.FormatItalic />\n        </IconButton>\n        <IconButton aria-label=\"Underline\">\n          <Icons.FormatUnderlined />\n        </IconButton>\n      </Group>\n\n      <Group aria-label=\"Document actions\" gap=\"300\">\n        <Button startIcon={<Icons.Save />}>Save</Button>\n        <Button startIcon={<Icons.Print />}>Print</Button>\n        <Button startIcon={<Icons.Share />}>Share</Button>\n      </Group>\n    </Stack>\n  );\n};\n```\n\n### With hover handlers\n\nGroup provides hover event handlers for tracking user interactions:\n\n```jsx-live-dev\nconst App = () => {\n  const [isHovering, setIsHovering] = useState(false);\n  const [hoverCount, setHoverCount] = useState(0);\n\n  return (\n    <Stack direction=\"column\" gap=\"400\" alignItems=\"flex-start\">\n      <Group\n        aria-label=\"Interactive button group\"\n        gap=\"300\"\n        onHoverStart={() => {\n          setIsHovering(true);\n          setHoverCount((prev) => prev + 1);\n        }}\n        onHoverEnd={() => setIsHovering(false)}\n        padding=\"400\"\n        borderRadius=\"200\"\n        backgroundColor={isHovering ? 'primary.2' : 'transparent'}\n        transition=\"background-color 0.2s\"\n      >\n        <Button>Action 1</Button>\n        <Button>Action 2</Button>\n        <Button>Action 3</Button>\n      </Group>\n\n      <Stack direction=\"column\" gap=\"100\">\n        <Text fontSize=\"350\">\n          Status: {isHovering ? 'Hovering' : 'Not hovering'}\n        </Text>\n        <Text fontSize=\"350\" color=\"fg.muted\">\n          Hover count: {hoverCount}\n        </Text>\n      </Stack>\n    </Stack>\n  );\n};\n```\n\n### Flexible layout with style props\n\nGroup supports all Chakra UI style props for flexible layout customization:\n\n```jsx-live-dev\nconst App = () => {\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Group\n        aria-label=\"Centered button group\"\n        gap=\"300\"\n        justifyContent=\"center\"\n        width=\"100%\"\n        padding=\"400\"\n        borderRadius=\"200\"\n        backgroundColor=\"neutral.2\"\n      >\n        <Button>Left</Button>\n        <Button>Center</Button>\n        <Button>Right</Button>\n      </Group>\n\n      <Group\n        aria-label=\"Space-between button group\"\n        gap=\"300\"\n        justifyContent=\"space-between\"\n        width=\"100%\"\n        padding=\"400\"\n        borderRadius=\"200\"\n        backgroundColor=\"primary.2\"\n      >\n        <Button>Start</Button>\n        <Button>End</Button>\n      </Group>\n\n      <Group\n        aria-label=\"Vertical button group\"\n        gap=\"200\"\n        flexDirection=\"column\"\n        alignItems=\"stretch\"\n        padding=\"400\"\n        borderRadius=\"200\"\n        backgroundColor=\"positive.2\"\n      >\n        <Button>First</Button>\n        <Button>Second</Button>\n        <Button>Third</Button>\n      </Group>\n    </Stack>\n  );\n};\n```\n\n## Component requirements\n\n## Accessibility\n\nThe Group component follows WCAG 2.1 AA guidelines and implements proper semantic grouping:\n\n#### Role\n\n- Automatically applies `role=\"group\"` to identify related elements\n- Groups should have a descriptive `aria-label` or `aria-labelledby` to provide context\n\n#### Labeling\n\nAlways provide an accessible name for groups:\n\n```tsx\n// Using aria-label\n<Group aria-label=\"Text formatting controls\">\n  {/* controls */}\n</Group>\n\n// Using aria-labelledby\n<>\n  <Heading id=\"toolbar-heading\">Editing Tools</Heading>\n  <Group aria-labelledby=\"toolbar-heading\">\n    {/* tools */}\n  </Group>\n</>\n```\n\n#### Keyboard navigation\n\nGroup is a semantic container that does not interfere with keyboard navigation. Each child element maintains its own keyboard interaction patterns.\n\n#### Persistent ID\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"primary-action-group\";\n\nexport const ActionToolbar = () => (\n  <Group id={PERSISTENT_ID} aria-label=\"Primary actions\">\n    <Button>Save</Button>\n    <Button>Cancel</Button>\n  </Group>\n);\n```\n\n## API reference\n\n<PropsTable id=\"Group\" />\n\n## Common patterns\n\n### Button groups\n\nGroup related actions together for better visual hierarchy:\n\n```jsx-live-dev\nconst App = () => {\n  return (\n    <Stack direction=\"column\" gap=\"400\" alignItems=\"flex-start\">\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"600\">Primary Actions</Text>\n        <Group aria-label=\"Primary actions\" gap=\"300\">\n          <Button variant=\"solid\">Save</Button>\n          <Button variant=\"outline\">Save Draft</Button>\n          <Button variant=\"ghost\">Cancel</Button>\n        </Group>\n      </Stack>\n\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"600\">Destructive Actions</Text>\n        <Group aria-label=\"Destructive actions\" gap=\"300\">\n          <Button colorPalette=\"critical\">Delete</Button>\n          <Button variant=\"outline\" colorPalette=\"critical\">\n            Archive\n          </Button>\n        </Group>\n      </Stack>\n\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"600\">Icon Button Group</Text>\n        <Group aria-label=\"Text alignment controls\" gap=\"100\">\n          <IconButton aria-label=\"Align left\">\n            <Icons.FormatAlignLeft />\n          </IconButton>\n          <IconButton aria-label=\"Align center\">\n            <Icons.FormatAlignCenter />\n          </IconButton>\n          <IconButton aria-label=\"Align right\">\n            <Icons.FormatAlignRight />\n          </IconButton>\n          <IconButton aria-label=\"Align justify\">\n            <Icons.FormatAlignJustify />\n          </IconButton>\n        </Group>\n      </Stack>\n    </Stack>\n  );\n};\n```\n\n### Form field grouping\n\nUse Group to organize related form controls:\n\n```jsx-live-dev\nconst App = () => {\n  const [firstName, setFirstName] = useState('');\n  const [lastName, setLastName] = useState('');\n\n  return (\n    <Stack direction=\"column\" gap=\"400\" maxWidth=\"600px\">\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"600\">Name</Text>\n        <Group aria-label=\"Name fields\" gap=\"300\">\n          <TextInput\n            placeholder=\"First name\"\n            value={firstName}\n            onChange={setFirstName}\n            flex=\"1\"\n          />\n          <TextInput\n            placeholder=\"Last name\"\n            value={lastName}\n            onChange={setLastName}\n            flex=\"1\"\n          />\n        </Group>\n      </Stack>\n\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"600\">Date Range</Text>\n        <Group aria-label=\"Date range fields\" gap=\"300\">\n          <TextInput placeholder=\"Start date\" flex=\"1\" />\n          <Text alignSelf=\"center\">to</Text>\n          <TextInput placeholder=\"End date\" flex=\"1\" />\n        </Group>\n      </Stack>\n    </Stack>\n  );\n};\n```\n\n### Toolbar layouts\n\nCreate accessible toolbars with grouped controls:\n\n```jsx-live-dev\nconst App = () => {\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Group\n        aria-label=\"Document editing toolbar\"\n        gap=\"300\"\n        padding=\"300\"\n        borderRadius=\"200\"\n        backgroundColor=\"neutral.2\"\n      >\n        <Group aria-label=\"Clipboard operations\" gap=\"100\">\n          <IconButton aria-label=\"Cut\" size=\"xs\">\n            <Icons.ContentCut />\n          </IconButton>\n          <IconButton aria-label=\"Copy\" size=\"xs\">\n            <Icons.ContentCopy />\n          </IconButton>\n          <IconButton aria-label=\"Paste\" size=\"xs\">\n            <Icons.ContentPaste />\n          </IconButton>\n        </Group>\n\n        <Separator orientation=\"vertical\" height=\"24px\" />\n\n        <Group aria-label=\"Text formatting\" gap=\"100\">\n          <IconButton aria-label=\"Bold\" size=\"xs\">\n            <Icons.FormatBold />\n          </IconButton>\n          <IconButton aria-label=\"Italic\" size=\"xs\">\n            <Icons.FormatItalic />\n          </IconButton>\n          <IconButton aria-label=\"Underline\" size=\"xs\">\n            <Icons.FormatUnderlined />\n          </IconButton>\n        </Group>\n\n        <Separator orientation=\"vertical\" height=\"24px\" />\n\n        <Group aria-label=\"Text alignment\" gap=\"100\">\n          <IconButton aria-label=\"Align left\" size=\"xs\">\n            <Icons.FormatAlignLeft />\n          </IconButton>\n          <IconButton aria-label=\"Align center\" size=\"xs\">\n            <Icons.FormatAlignCenter />\n          </IconButton>\n          <IconButton aria-label=\"Align right\" size=\"xs\">\n            <Icons.FormatAlignRight />\n          </IconButton>\n        </Group>\n      </Group>\n    </Stack>\n  );\n};\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using Group within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the Group component renders correctly with children\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Group, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Group - Basic rendering\", () => {\n  it(\"renders group with children\", () => {\n    render(\n      <NimbusProvider>\n        <Group aria-label=\"Test group\">\n          <Button>First</Button>\n          <Button>Second</Button>\n          <Button>Third</Button>\n        </Group>\n      </NimbusProvider>\n    );\n\n    const group = screen.getByRole(\"group\", { name: \"Test group\" });\n    expect(group).toBeInTheDocument();\n\n    // Verify all children are rendered\n    expect(screen.getByRole(\"button\", { name: \"First\" })).toBeInTheDocument();\n    expect(screen.getByRole(\"button\", { name: \"Second\" })).toBeInTheDocument();\n    expect(screen.getByRole(\"button\", { name: \"Third\" })).toBeInTheDocument();\n  });\n\n  it(\"applies custom className and id\", () => {\n    render(\n      <NimbusProvider>\n        <Group\n          aria-label=\"Custom group\"\n          className=\"custom-class\"\n          id=\"custom-id\"\n        >\n          <Button>Content</Button>\n        </Group>\n      </NimbusProvider>\n    );\n\n    const group = screen.getByRole(\"group\", { name: \"Custom group\" });\n    expect(group).toHaveClass(\"custom-class\");\n    expect(group).toHaveAttribute(\"id\", \"custom-id\");\n  });\n});\n```\n\n### Accessibility Tests\n\nVerify the Group component follows accessibility best practices\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Group, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Group - Accessibility\", () => {\n  it('applies role=\"group\" to the container', () => {\n    render(\n      <NimbusProvider>\n        <Group aria-label=\"Accessible group\">\n          <Button>Action</Button>\n        </Group>\n      </NimbusProvider>\n    );\n\n    const group = screen.getByRole(\"group\");\n    expect(group).toHaveAttribute(\"role\", \"group\");\n  });\n\n  it(\"supports aria-label for screen readers\", () => {\n    render(\n      <NimbusProvider>\n        <Group aria-label=\"Action buttons\">\n          <Button>Save</Button>\n          <Button>Cancel</Button>\n        </Group>\n      </NimbusProvider>\n    );\n\n    const group = screen.getByRole(\"group\", { name: \"Action buttons\" });\n    expect(group).toHaveAttribute(\"aria-label\", \"Action buttons\");\n  });\n\n  it(\"supports aria-labelledby for external labels\", () => {\n    render(\n      <NimbusProvider>\n        <div>\n          <h2 id=\"group-heading\">Form Actions</h2>\n          <Group aria-labelledby=\"group-heading\">\n            <Button>Submit</Button>\n            <Button>Reset</Button>\n          </Group>\n        </div>\n      </NimbusProvider>\n    );\n\n    const group = screen.getByRole(\"group\", { name: \"Form Actions\" });\n    expect(group).toHaveAttribute(\"aria-labelledby\", \"group-heading\");\n  });\n});\n```\n\n### Hover Handler Tests\n\nTest hover event handlers on the Group component\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Group, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Group - Hover handlers\", () => {\n  it(\"calls onHoverStart when mouse enters the group\", async () => {\n    const user = userEvent.setup();\n    const onHoverStart = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <Group aria-label=\"Hover group\" onHoverStart={onHoverStart}>\n          <Button>Action</Button>\n        </Group>\n      </NimbusProvider>\n    );\n\n    const group = screen.getByRole(\"group\", { name: \"Hover group\" });\n    await user.hover(group);\n\n    expect(onHoverStart).toHaveBeenCalledTimes(1);\n  });\n\n  it(\"calls onHoverEnd when mouse leaves the group\", async () => {\n    const user = userEvent.setup();\n    const onHoverEnd = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <Group aria-label=\"Hover group\" onHoverEnd={onHoverEnd}>\n          <Button>Action</Button>\n        </Group>\n      </NimbusProvider>\n    );\n\n    const group = screen.getByRole(\"group\", { name: \"Hover group\" });\n    await user.hover(group);\n    await user.unhover(group);\n\n    expect(onHoverEnd).toHaveBeenCalledTimes(1);\n  });\n\n  it(\"calls onHoverChange with hover state\", async () => {\n    const user = userEvent.setup();\n    const onHoverChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <Group aria-label=\"Hover group\" onHoverChange={onHoverChange}>\n          <Button>Action</Button>\n        </Group>\n      </NimbusProvider>\n    );\n\n    const group = screen.getByRole(\"group\", { name: \"Hover group\" });\n\n    // Hover over the group\n    await user.hover(group);\n    expect(onHoverChange).toHaveBeenCalledWith(true);\n\n    // Unhover from the group\n    await user.unhover(group);\n    expect(onHoverChange).toHaveBeenCalledWith(false);\n  });\n});\n```\n\n### Style Props Tests\n\nTest Chakra UI style props support\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Group, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Group - Style props\", () => {\n  it(\"supports gap style prop for spacing\", () => {\n    render(\n      <NimbusProvider>\n        <Group aria-label=\"Spaced group\" gap=\"300\">\n          <Button>First</Button>\n          <Button>Second</Button>\n        </Group>\n      </NimbusProvider>\n    );\n\n    const group = screen.getByRole(\"group\", { name: \"Spaced group\" });\n    expect(group).toBeInTheDocument();\n    // Note: Gap styling is applied via CSS, testing visual appearance\n    // would require integration or E2E tests\n  });\n\n  it(\"supports layout style props\", () => {\n    render(\n      <NimbusProvider>\n        <Group\n          aria-label=\"Custom layout\"\n          flexDirection=\"column\"\n          alignItems=\"flex-start\"\n          padding=\"400\"\n        >\n          <Button>Action</Button>\n        </Group>\n      </NimbusProvider>\n    );\n\n    const group = screen.getByRole(\"group\", { name: \"Custom layout\" });\n    expect(group).toBeInTheDocument();\n    // Layout styles are applied via Chakra UI's style props system\n  });\n\n  it(\"supports color and background style props\", () => {\n    render(\n      <NimbusProvider>\n        <Group\n          aria-label=\"Styled group\"\n          backgroundColor=\"primary.2\"\n          borderRadius=\"200\"\n        >\n          <Button>Action</Button>\n        </Group>\n      </NimbusProvider>\n    );\n\n    const group = screen.getByRole(\"group\", { name: \"Styled group\" });\n    expect(group).toBeInTheDocument();\n    // Color and background styles are applied via Chakra UI\n  });\n});\n```\n\n### Integration Tests\n\nTest common usage patterns and integration scenarios\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Group, Button, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Group - Integration patterns\", () => {\n  it(\"works with button groups for toolbars\", () => {\n    render(\n      <NimbusProvider>\n        <Group aria-label=\"Text formatting toolbar\">\n          <Button aria-label=\"Bold\">B</Button>\n          <Button aria-label=\"Italic\">I</Button>\n          <Button aria-label=\"Underline\">U</Button>\n        </Group>\n      </NimbusProvider>\n    );\n\n    const group = screen.getByRole(\"group\", {\n      name: \"Text formatting toolbar\",\n    });\n    expect(group).toBeInTheDocument();\n\n    // Verify all toolbar buttons are accessible\n    expect(screen.getByRole(\"button\", { name: \"Bold\" })).toBeInTheDocument();\n    expect(screen.getByRole(\"button\", { name: \"Italic\" })).toBeInTheDocument();\n    expect(\n      screen.getByRole(\"button\", { name: \"Underline\" })\n    ).toBeInTheDocument();\n  });\n\n  it(\"maintains keyboard navigation of child elements\", async () => {\n    const user = userEvent.setup();\n    const onFirstClick = vi.fn();\n    const onSecondClick = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <Group aria-label=\"Navigation group\">\n          <Button onClick={onFirstClick}>First</Button>\n          <Button onClick={onSecondClick}>Second</Button>\n        </Group>\n      </NimbusProvider>\n    );\n\n    // Tab to first button and activate\n    await user.tab();\n    await user.keyboard(\"{Enter}\");\n    expect(onFirstClick).toHaveBeenCalledTimes(1);\n\n    // Tab to second button and activate\n    await user.tab();\n    await user.keyboard(\"{Enter}\");\n    expect(onSecondClick).toHaveBeenCalledTimes(1);\n  });\n\n  it(\"supports nested groups for complex layouts\", () => {\n    render(\n      <NimbusProvider>\n        <Group aria-label=\"Main toolbar\">\n          <Group aria-label=\"File operations\">\n            <Button>New</Button>\n            <Button>Open</Button>\n            <Button>Save</Button>\n          </Group>\n          <Group aria-label=\"Edit operations\">\n            <Button>Cut</Button>\n            <Button>Copy</Button>\n            <Button>Paste</Button>\n          </Group>\n        </Group>\n      </NimbusProvider>\n    );\n\n    // Verify all groups are present\n    expect(\n      screen.getByRole(\"group\", { name: \"Main toolbar\" })\n    ).toBeInTheDocument();\n    expect(\n      screen.getByRole(\"group\", { name: \"File operations\" })\n    ).toBeInTheDocument();\n    expect(\n      screen.getByRole(\"group\", { name: \"Edit operations\" })\n    ).toBeInTheDocument();\n  });\n});\n```\n\n\n## Resources\n\n- [Storybook Documentation](https://nimbus-storybook.vercel.app/?path=/docs/components-group--docs)\n- [React Aria Group Documentation](https://react-spectrum.adobe.com/react-aria/Group.html)\n- [WCAG 2.1 Grouping Guidelines](https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Grouping with spacing",
+          "href": "#grouping-with-spacing",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With accessibility labels",
+          "href": "#with-accessibility-labels",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With hover handlers",
+          "href": "#with-hover-handlers",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Flexible layout with style props",
+          "href": "#flexible-layout-with-style-props",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Role",
+          "href": "#role",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Labeling",
+          "href": "#labeling",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Persistent ID",
+          "href": "#persistent-id",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Button groups",
+          "href": "#button-groups",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Form field grouping",
+          "href": "#form-field-grouping",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Toolbar layouts",
+          "href": "#toolbar-layouts",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility Tests",
+          "href": "#accessibility-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Hover Handler Tests",
+          "href": "#hover-handler-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Style Props Tests",
+          "href": "#style-props-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Integration Tests",
+          "href": "#integration-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

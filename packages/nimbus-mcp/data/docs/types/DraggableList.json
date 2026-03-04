@@ -1,0 +1,12 @@
+{
+  "tags": {
+    "example": "```tsx\n<DraggableList.Root items={items} aria-label=\"Task list\">\n  {(item) => (\n    <DraggableList.Item key={item.id} id={item.id}>\n      {item.content}\n    </DraggableList.Item>\n  )}\n</DraggableList.Root>\n```",
+    "see": "https://react-spectrum.adobe.com/react-aria/dnd.html"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "DraggableList\n============================================================\nA drag-and-drop list component for reordering items.\nBuilt with React Aria Components for accessibility and keyboard navigation.\n\nFeatures:\n- Drag-and-drop reordering with visual feedback\n- Keyboard navigation support\n- Controlled and uncontrolled modes\n- Accessible drag-and-drop interactions\n- Customizable item rendering\n\n**Important:** You must provide either an `aria-label` or `aria-labelledby`\nprop for accessibility. The drag-and-drop functionality will not work properly\nwithout an accessible label.",
+  "displayName": "DraggableList",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

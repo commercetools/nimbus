@@ -1,0 +1,732 @@
+{
+  "meta": {
+    "id": "Components-DatePicker",
+    "title": "DatePicker",
+    "description": "a UI component for users to enter or select a specific calendar date.",
+    "lifecycleState": "Alpha",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/date-picker/date-picker.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "DatePicker"
+    ],
+    "route": "components/inputs/datepicker",
+    "tags": [
+      "component",
+      "date",
+      "calendar"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Visual options",
+        "href": "#visual-options",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Medium",
+        "href": "#medium",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Small",
+        "href": "#small",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources-1",
+        "depth": 4,
+        "numbering": [
+          1,
+          3,
+          1,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "guidelines",
+        "title": "Guidelines",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n# DatePicker\n\nA date picker is a UI component for users to input or select a specific calendar\ndate.\n\n## Overview\n\nDate picker can be simple or complex, allowing users to select a single date and\nor specific times. There are two offered sizes, the default being medium for\nmost use cases.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2923-4379&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Medium\n\n```jsx-live\n const App = () => <DatePicker size=\"md\" aria-label=\"Enter a date\" width=\"1/3\" />\n```\n\n#### Small\n\n```jsx-live\n const App = () => <DatePicker size=\"sm\" aria-label=\"Enter a date\" width=\"1/3\" />\n```\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => <DatePicker aria-label=\"Enter a date\" />\n```\n\n### Accessibility standards\n\n- Always provide a visible label for the input.\n- Clearly associate the label with the input using the for attribute on the\n  `<label>` and a matching id on the input element.\n- Ensure sufficient color contrast for all elements (text, borders, icons, focus\n  indicators).\n- Clearly indicate the focused state.\n- Support keyboard navigation:\n  - Use Tab to navigate to and from the date input.\n  - Use Enter or Space to open/close the date picker (if applicable).\n  - Use arrow keys to navigate within the calendar grid (if a date picker is\n    provided).\n  - Allow users to select dates using Enter or Space.\n- Communicate errors clearly, using both visual cues (e.g., color) and\n  descriptive error messages.\n- Provide clear instructions on the expected date format (e.g., MM/DD/YYYY).\n- Ensure screen readers announce the selected date and any navigation changes\n  within a date picker.\n- Provide an accessible way to clear the date input.\n\n#### Resources\n\n- [React Spectrum](https://react-spectrum.adobe.com/react-spectrum/DatePicker.html)\n- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/)\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# DatePicker\n\nA date picker is a UI component for users to input or select a specific calendar\ndate.\n\n## Overview\n\nDate picker can be simple or complex, allowing users to select a single date and\nor specific times. There are two offered sizes, the default being medium for\nmost use cases.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2923-4379&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Medium\n\n```jsx-live\n const App = () => <DatePicker size=\"md\" aria-label=\"Enter a date\" width=\"1/3\" />\n```\n\n#### Small\n\n```jsx-live\n const App = () => <DatePicker size=\"sm\" aria-label=\"Enter a date\" width=\"1/3\" />\n```\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => <DatePicker aria-label=\"Enter a date\" />\n```\n\n### Accessibility standards\n\n- Always provide a visible label for the input.\n- Clearly associate the label with the input using the for attribute on the\n  `<label>` and a matching id on the input element.\n- Ensure sufficient color contrast for all elements (text, borders, icons, focus\n  indicators).\n- Clearly indicate the focused state.\n- Support keyboard navigation:\n  - Use Tab to navigate to and from the date input.\n  - Use Enter or Space to open/close the date picker (if applicable).\n  - Use arrow keys to navigate within the calendar grid (if a date picker is\n    provided).\n  - Allow users to select dates using Enter or Space.\n- Communicate errors clearly, using both visual cues (e.g., color) and\n  descriptive error messages.\n- Provide clear instructions on the expected date format (e.g., MM/DD/YYYY).\n- Ensure screen readers announce the selected date and any navigation changes\n  within a date picker.\n- Provide an accessible way to clear the date input.\n\n#### Resources\n\n- [React Spectrum](https://react-spectrum.adobe.com/react-spectrum/DatePicker.html)\n- [W3C ARIA Authoring Practices Guide (APG)](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/)\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual options",
+          "href": "#visual-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Medium",
+          "href": "#medium",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Small",
+          "href": "#small",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources-1",
+          "depth": 4,
+          "numbering": [
+            1,
+            3,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { DatePicker, type DatePickerProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe simplest implementation uses uncontrolled mode with an accessible label:\n\n```jsx-live-dev\nconst App = () => (\n  <DatePicker aria-label=\"Select a date\" />\n)\n```\n\n## Working with date values\n\nThe DatePicker component relies on [`@internationalized/date`](https://react-spectrum.adobe.com/internationalized/date/index.html)'s date types for type-safe date handling. This library provides calendar-system-aware date representations that work correctly across different locales and time zones.\n\n### Date types\n\nThe library provides several date types, each with different levels of precision:\n\n```tsx\nimport { CalendarDate, CalendarDateTime, ZonedDateTime } from '@internationalized/date';\n\n// Date only (no time component)\nconst date = new CalendarDate(\n  2025, // year\n  6,    // month (1-12)\n  15    // day\n);\n\n// Date and time (no timezone)\nconst dateTime = new CalendarDateTime(\n  2025, // year\n  6,    // month (1-12)\n  15,   // day\n  14,   // hour (0-23)\n  30,   // minute (0-59)\n  0     // second (0-59)\n);\n\n// Date, time, and timezone\nconst zonedDateTime = new ZonedDateTime(\n  2025,                    // year\n  6,                       // month (1-12)\n  15,                      // day\n  'America/New_York',      // IANA time zone identifier\n  -4 * 60 * 60 * 1000,     // offset in milliseconds (EDT: -4 hours)\n  14,                      // hour (0-23)\n  30,                      // minute (0-59)\n  0                        // second (0-59)\n);\n```\n\n### Creating date values\n\nUse the appropriate constructor based on the precision you need:\n\n```tsx\nimport { CalendarDate, CalendarDateTime } from '@internationalized/date';\n\n// For date-only pickers\nconst birthDate = new CalendarDate(1990, 5, 15);\n\n// For date and time pickers\nconst appointmentTime = new CalendarDateTime(2025, 12, 25, 10, 30, 0);\n```\n\n### Converting to strings\n\nUse the `toString()` method to convert date values to ISO 8601 format:\n\n```tsx\nconst date = new CalendarDate(2025, 6, 15);\ndate.toString(); // \"2025-06-15\"\n\nconst dateTime = new CalendarDateTime(2025, 6, 15, 14, 30, 0);\ndateTime.toString(); // \"2025-06-15T14:30:00\"\n```\n\n> [!TIP]\\\n> See [@internationalized/date documentation](https://react-spectrum.adobe.com/internationalized/date/) for complete API reference and advanced usage.\n\n## Usage examples\n\n### Size options\n\nThe `sm` and `md` size variants are available to match your interface density:\n\n```jsx-live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <DatePicker size=\"sm\" aria-label=\"Small date picker\" />\n    <DatePicker size=\"md\" aria-label=\"Medium date picker\" />\n  </Stack>\n)\n```\n\n### Visual variants\n\nChoose between `solid` and `ghost` variants to match your design context:\n\n```jsx-live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <DatePicker variant=\"solid\" aria-label=\"Solid variant\" />\n    <DatePicker variant=\"ghost\" aria-label=\"Ghost variant\" />\n  </Stack>\n)\n```\n\n**Behavioral differences:**\n- `variant=\"solid\"`: Outlined input with background, suitable for forms\n- `variant=\"ghost\"`: Subtle background on hover, suitable for inline editing\n\n### Granularity control\n\nThe `granularity` prop controls which date/time segments are displayed and whether the calendar popover automatically closes on selection:\n\n```jsx-live-dev\nimport { CalendarDate, CalendarDateTime } from '@internationalized/date';\n\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">Day (date only - closes on select)</Text>\n      <DatePicker\n        granularity=\"day\"\n        defaultValue={new CalendarDate(2025, 6, 15)}\n        aria-label=\"Day granularity\"\n      />\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">Hour (date + hour - stays open for time)</Text>\n      <DatePicker\n        granularity=\"hour\"\n        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 0, 0)}\n        aria-label=\"Hour granularity\"\n      />\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">Minute (date + hour + minute - stays open)</Text>\n      <DatePicker\n        granularity=\"minute\"\n        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30, 0)}\n        aria-label=\"Minute granularity\"\n      />\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">Second (full precision - stays open)</Text>\n      <DatePicker\n        granularity=\"second\"\n        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30, 45)}\n        aria-label=\"Second granularity\"\n      />\n    </Stack>\n  </Stack>\n)\n```\n\n**Automatic close behavior:**\n- When `granularity=\"day\"` (date only): Calendar closes automatically after selecting a date\n- When time is included (hour, minute, second): Calendar stays open so users can set both date and time\n\n### Hour cycle\n\nControl the time display format using the `hourCycle` prop when working with time values:\n\n```jsx-live-dev\nimport { CalendarDateTime } from '@internationalized/date';\n\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">12-hour format (2:30 PM)</Text>\n      <DatePicker\n        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30, 0)}\n        hourCycle={12}\n        granularity=\"minute\"\n        aria-label=\"12-hour format\"\n      />\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">24-hour format (14:30)</Text>\n      <DatePicker\n        defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30, 0)}\n        hourCycle={24}\n        granularity=\"minute\"\n        aria-label=\"24-hour format\"\n      />\n    </Stack>\n  </Stack>\n)\n```\n\n### Time zone handling\n\nWhen using `ZonedDateTime` values, control time zone display with the `hideTimeZone` prop:\n\n```jsx-live-dev\nimport { ZonedDateTime } from '@internationalized/date';\n\nconst App = () => {\n  const zonedDateTime = new ZonedDateTime(\n    2025,                    // year\n    6,                       // month (1-12)\n    15,                      // day\n    'America/New_York',      // IANA time zone identifier\n    -4 * 60 * 60 * 1000,     // offset in milliseconds (EDT: -4 hours)\n    14,                      // hour (0-23)\n    30,                      // minute (0-59)\n    0                        // second (0-59)\n  );\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Stack direction=\"column\" gap=\"100\">\n        <Text fontSize=\"sm\" fontWeight=\"600\">With time zone displayed</Text>\n        <DatePicker\n          defaultValue={zonedDateTime}\n          hideTimeZone={false}\n          granularity=\"minute\"\n          aria-label=\"Date with timezone\"\n        />\n      </Stack>\n      <Stack direction=\"column\" gap=\"100\">\n        <Text fontSize=\"sm\" fontWeight=\"600\">Time zone hidden</Text>\n        <DatePicker\n          defaultValue={zonedDateTime}\n          hideTimeZone={true}\n          granularity=\"minute\"\n          aria-label=\"Date without timezone\"\n        />\n      </Stack>\n    </Stack>\n  );\n}\n```\n\n### Placeholder values\n\nSet a starting point for keyboard input when the field is empty using `placeholderValue`:\n\n```jsx-live-dev\nimport { CalendarDate } from '@internationalized/date';\n\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">With placeholder (starts at 2025-06-15)</Text>\n      <DatePicker\n        placeholderValue={new CalendarDate(2025, 6, 15)}\n        aria-label=\"Date with placeholder\"\n      />\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">Without placeholder (starts at today)</Text>\n      <DatePicker aria-label=\"Date without placeholder\" />\n    </Stack>\n  </Stack>\n)\n```\n\n### Close on select behavior\n\nControl whether the calendar closes automatically after date selection using `shouldCloseOnSelect`:\n\n```jsx-live-dev\nimport { CalendarDate } from '@internationalized/date';\n\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">Auto-close enabled (default for day granularity)</Text>\n      <DatePicker\n        granularity=\"day\"\n        shouldCloseOnSelect={true}\n        aria-label=\"Auto-close picker\"\n      />\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">Auto-close disabled (stays open)</Text>\n      <DatePicker\n        granularity=\"day\"\n        shouldCloseOnSelect={false}\n        aria-label=\"Manual close picker\"\n      />\n    </Stack>\n  </Stack>\n)\n```\n\n**Note:** When `granularity` includes time (hour, minute, second), `shouldCloseOnSelect` is automatically set to `false` to allow users to set both date and time.\n\n### Min/max validation\n\nRestrict date selection to a specific range using `minValue` and `maxValue`:\n\n```jsx-live-dev\nimport { CalendarDate } from '@internationalized/date';\n\nconst App = () => {\n  const [date, setDate] = useState(null);\n  const minDate = new CalendarDate(2025, 6, 1);\n  const maxDate = new CalendarDate(2025, 6, 30);\n  \n  const isInvalid = date && (\n    date.compare(minDate) < 0 || \n    date.compare(maxDate) > 0\n  );\n\n  return (\n    <FormField.Root isInvalid={!!isInvalid}>\n      <FormField.Label>Select a date in June 2025</FormField.Label>\n      <FormField.Input>\n        <DatePicker\n          value={date}\n          onChange={setDate}\n          minValue={minDate}\n          maxValue={maxDate}\n          aria-label=\"Date range validation\"\n        />\n      </FormField.Input>\n      <FormField.Description>\n        Valid range: June 1-30, 2025\n      </FormField.Description>\n      {isInvalid && (\n        <FormField.Error>\n          Date must be between {minDate.toString()} and {maxDate.toString()}\n        </FormField.Error>\n      )}\n    </FormField.Root>\n  );\n}\n```\n\n### State variations\n\nDatePicker supports disabled, read-only, required, and invalid states:\n\n```jsx-live-dev\nimport { CalendarDate } from '@internationalized/date';\n\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">Default</Text>\n      <DatePicker\n        defaultValue={new CalendarDate(2025, 6, 15)}\n        aria-label=\"Default state\"\n      />\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">Disabled</Text>\n      <DatePicker\n        defaultValue={new CalendarDate(2025, 6, 15)}\n        isDisabled\n        aria-label=\"Disabled state\"\n      />\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">Read-only</Text>\n      <DatePicker\n        defaultValue={new CalendarDate(2025, 6, 15)}\n        isReadOnly\n        aria-label=\"Read-only state\"\n      />\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">Required</Text>\n      <DatePicker\n        isRequired\n        aria-label=\"Required state\"\n      />\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\">\n      <Text fontSize=\"sm\" fontWeight=\"600\">Invalid</Text>\n      <DatePicker\n        defaultValue={new CalendarDate(2025, 6, 15)}\n        isInvalid\n        aria-label=\"Invalid state\"\n      />\n    </Stack>\n  </Stack>\n)\n```\n\n### Uncontrolled mode\n\nFor simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:\n\n```jsx-live-dev\nimport { CalendarDate, type DateValue } from '@internationalized/date';\n\nconst App = () => {\n  const [displayValue, setDisplayValue] = useState('No date selected');\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <DatePicker\n        defaultValue={new CalendarDate(2025, 6, 15)}\n        onChange={(value: DateValue | null) => {\n          setDisplayValue(value ? value.toString() : 'No date selected');\n        }}\n        aria-label=\"Uncontrolled date picker\"\n      />\n      <Text fontSize=\"sm\">Selected: {displayValue}</Text>\n    </Stack>\n  );\n}\n```\n\nUse uncontrolled mode when you need to capture the selected date without managing state yourself.\n\n### Controlled mode\n\nFor scenarios requiring programmatic control or coordination with other components, use controlled mode:\n\n```jsx-live-dev\nimport { CalendarDate, type DateValue } from '@internationalized/date';\n\nconst App = () => {\n  const [value, setValue] = useState<DateValue | null>(new CalendarDate(2025, 6, 15));\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <DatePicker\n        value={value}\n        onChange={setValue}\n        aria-label=\"Controlled date picker\"\n      />\n      <Text fontSize=\"sm\">\n        {value ? `Selected: ${value.toString()}` : 'No selection'}\n      </Text>\n      <Stack direction=\"row\" gap=\"200\">\n        <Button onPress={() => setValue(new CalendarDate(2025, 1, 1))}>\n          Set to Jan 1\n        </Button>\n        <Button onPress={() => setValue(new CalendarDate(2025, 12, 31))}>\n          Set to Dec 31\n        </Button>\n        <Button onPress={() => setValue(null)}>\n          Clear\n        </Button>\n      </Stack>\n    </Stack>\n  );\n}\n```\n\nUse controlled mode when you need to:\n- Synchronize the value with external state\n- Validate or transform selections\n- Clear or programmatically set the value\n\n### Popover control\n\nControl the calendar popover's open state programmatically:\n\n```jsx-live-dev\nimport { CalendarDate } from '@internationalized/date';\n\nconst App = () => {\n  const [isOpen, setIsOpen] = useState(false);\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <DatePicker\n        defaultValue={new CalendarDate(2025, 6, 15)}\n        isOpen={isOpen}\n        onOpenChange={setIsOpen}\n        aria-label=\"Controlled popover\"\n      />\n      <Text fontSize=\"sm\">Popover is {isOpen ? 'open' : 'closed'}</Text>\n      <Stack direction=\"row\" gap=\"200\">\n        <Button onPress={() => setIsOpen(true)}>\n          Open Calendar\n        </Button>\n        <Button onPress={() => setIsOpen(false)}>\n          Close Calendar\n        </Button>\n      </Stack>\n    </Stack>\n  );\n}\n```\n\n### Internationalization\n\nDatePicker automatically adapts to different locales when wrapped with `NimbusI18nProvider`:\n\n```jsx-live-dev\nimport { CalendarDate } from '@internationalized/date';\n\nconst App = () => {\n  const [locale, setLocale] = useState('en-US');\n  const dateValue = new CalendarDate(2025, 6, 15);\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Stack direction=\"row\" gap=\"200\">\n        <Button\n          variant={locale === 'en-US' ? 'solid' : 'outline'}\n          onPress={() => setLocale('en-US')}\n        >\n          English (US)\n        </Button>\n        <Button\n          variant={locale === 'de-DE' ? 'solid' : 'outline'}\n          onPress={() => setLocale('de-DE')}\n        >\n          German\n        </Button>\n        <Button\n          variant={locale === 'ja-JP' ? 'solid' : 'outline'}\n          onPress={() => setLocale('ja-JP')}\n        >\n          Japanese\n        </Button>\n      </Stack>\n      <NimbusI18nProvider locale={locale}>\n        <DatePicker\n          defaultValue={dateValue}\n          aria-label=\"Localized date picker\"\n        />\n      </NimbusI18nProvider>\n      <Text fontSize=\"sm\">Current locale: {locale}</Text>\n    </Stack>\n  );\n}\n```\n\n## Component requirements\n\n### Date value requirements\n\nAll date values **must** use `@internationalized/date` types:\n- `CalendarDate` for date-only pickers (year, month, day)\n- `CalendarDateTime` for date and time without timezone\n- `ZonedDateTime` for date, time, and timezone information\n\n## Accessibility\n\nThe DatePicker handles most accessibility requirements internally through React Aria's DatePicker. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:\n\n- Wrapping the DatePicker in a FormField (recommended for forms):\n\n```tsx\n<FormField.Root>\n  <FormField.Label>Birth Date</FormField.Label>\n  <FormField.Input>\n    <DatePicker />\n  </FormField.Input>\n</FormField.Root>\n```\n\n- Associating a `<label>` element with the DatePicker using `aria-labelledby`:\n\n```tsx\n<label id=\"label-id\">\n  {msg.format(labelMessage)}\n</label>\n<DatePicker aria-labelledby=\"label-id\" />\n```\n\nIf your design requires that the label should not be visible, the label should be set using the `aria-label` prop:\n\n```tsx\n<DatePicker aria-label={msg.format(labelMessage)} />\n```\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"example-date-picker\";\n\nexport const Example = () => (\n  <DatePicker id={PERSISTENT_ID} aria-label=\"Enter date\" />\n);\n```\n\n#### Keyboard navigation\n\nThe component supports full keyboard interaction for navigating and editing date segments, as well as calendar navigation:\n\n**Date input segments:**\n- `Tab` / `Shift+Tab`: Move between date segments (day, month, year, hour, etc.)\n- `Arrow Up` / `Arrow Down`: Increment or decrement the focused segment\n- `Page Up` / `Page Down`: Increment or decrement the focused segment by larger steps\n- `Home` / `End`: Set segment to minimum or maximum value\n- `0-9`: Type digits to set segment value\n- `Backspace`: Clear the focused segment\n\n**Calendar button:**\n- `Enter` / `Space`: Open the calendar popover\n\n**Calendar navigation:**\n- `Arrow keys`: Navigate between dates\n- `Enter` / `Space`: Select the focused date\n- `Page Up` / `Page Down`: Navigate by month\n- `Shift + Page Up` / `Shift + Page Down`: Navigate by year\n- `Home` / `End`: Navigate to start/end of row\n- `Escape`: Close the calendar popover\n\n## API reference\n\n<PropsTable id=\"DatePicker\" />\n\n## Common patterns\n\n### Appointment scheduler\n\nA pattern for scheduling appointments with date and time selection:\n\n```jsx-live-dev\nimport { CalendarDateTime, type DateValue } from '@internationalized/date';\n\nconst App = () => {\n  const [appointmentTime, setAppointmentTime] = useState<DateValue | null>(\n    new CalendarDateTime(2025, 12, 15, 10, 0, 0)\n  );\n  \n  const businessHoursStart = 9;\n  const businessHoursEnd = 17;\n  \n  const isInvalidTime = appointmentTime && \n    'hour' in appointmentTime && (\n      appointmentTime.hour < businessHoursStart || \n      appointmentTime.hour >= businessHoursEnd\n    );\n\n  return (\n    <FormField.Root isInvalid={isInvalidTime}>\n      <FormField.Label>Appointment Time</FormField.Label>\n      <FormField.Input>\n        <DatePicker\n          value={appointmentTime}\n          onChange={setAppointmentTime}\n          granularity=\"minute\"\n          hourCycle={12}\n          aria-label=\"Appointment time\"\n        />\n      </FormField.Input>\n      <FormField.Description>\n        Select a date and time between 9:00 AM and 5:00 PM\n      </FormField.Description>\n      {isInvalidTime && (\n        <FormField.Error>\n          Please select a time during business hours (9 AM - 5 PM)\n        </FormField.Error>\n      )}\n      {appointmentTime && !isInvalidTime && (\n        <Text fontSize=\"sm\" mt=\"200\">\n          ✅ Appointment scheduled for {appointmentTime.toString()}\n        </Text>\n      )}\n    </FormField.Root>\n  );\n}\n```\n\n### Due date selector\n\nPattern for setting due dates with past date validation:\n\n```jsx-live-dev\nimport { CalendarDate, today, getLocalTimeZone, type DateValue } from '@internationalized/date';\n\nconst App = () => {\n  const [dueDate, setDueDate] = useState<DateValue | null>(null);\n  const todayDate = today(getLocalTimeZone());\n  \n  const isInvalid = dueDate && dueDate.compare(todayDate) < 0;\n\n  return (\n    <FormField.Root isInvalid={!!isInvalid}>\n      <FormField.Label>Task Due Date</FormField.Label>\n      <FormField.Input>\n        <DatePicker\n          value={dueDate}\n          onChange={setDueDate}\n          minValue={todayDate}\n          placeholderValue={todayDate}\n          aria-label=\"Due date\"\n        />\n      </FormField.Input>\n      <FormField.Description>\n        Select a future date for task completion\n      </FormField.Description>\n      {isInvalid && (\n        <FormField.Error>\n          Due date cannot be in the past\n        </FormField.Error>\n      )}\n    </FormField.Root>\n  );\n}\n```\n\n### Event date selector\n\nPattern for selecting event dates with a reasonable range:\n\n```jsx-live-dev\nimport { CalendarDate, today, getLocalTimeZone, type DateValue } from '@internationalized/date';\n\nconst App = () => {\n  const [eventDate, setEventDate] = useState<DateValue | null>(null);\n  const todayDate = today(getLocalTimeZone());\n  const maxDate = todayDate.add({ years: 2 });\n\n  return (\n    <FormField.Root>\n      <FormField.Label>Event Date</FormField.Label>\n      <FormField.Input>\n        <DatePicker\n          value={eventDate}\n          onChange={setEventDate}\n          minValue={todayDate}\n          maxValue={maxDate}\n          placeholderValue={todayDate.add({ months: 1 })}\n          aria-label=\"Event date\"\n        />\n      </FormField.Input>\n      <FormField.Description>\n        Select a date within the next 2 years\n      </FormField.Description>\n      {eventDate && (\n        <Text fontSize=\"sm\" mt=\"200\">\n          Event scheduled for {eventDate.toString()}\n        </Text>\n      )}\n    </FormField.Root>\n  );\n}\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using DatePicker within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the DatePicker renders with expected elements and structure\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, within, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { DatePicker, NimbusProvider } from \"@commercetools/nimbus\";\nimport { CalendarDate, CalendarDateTime } from \"@internationalized/date\";\n\ndescribe(\"DatePicker - Basic rendering\", () => {\n  it(\"renders with proper structure and accessibility\", () => {\n    render(\n      <NimbusProvider>\n        <DatePicker aria-label=\"Select a date\" />\n      </NimbusProvider>\n    );\n\n    const dateGroup = screen.getByRole(\"group\", { name: \"Select a date\" });\n    expect(dateGroup).toBeInTheDocument();\n    expect(dateGroup).toHaveAttribute(\"aria-label\", \"Select a date\");\n  });\n\n  it(\"renders date input segments\", () => {\n    render(\n      <NimbusProvider>\n        <DatePicker aria-label=\"Select a date\" />\n      </NimbusProvider>\n    );\n\n    const dateSegments = screen.getAllByRole(\"spinbutton\");\n    expect(dateSegments.length).toBeGreaterThanOrEqual(3);\n  });\n\n  it(\"renders calendar toggle button\", () => {\n    render(\n      <NimbusProvider>\n        <DatePicker aria-label=\"Select a date\" />\n      </NimbusProvider>\n    );\n\n    const calendarButton = screen.getByRole(\"button\", { name: /calendar/i });\n    expect(calendarButton).toBeInTheDocument();\n  });\n\n  it(\"renders with default value\", () => {\n    const defaultValue = new CalendarDate(2025, 6, 15);\n\n    render(\n      <NimbusProvider>\n        <DatePicker defaultValue={defaultValue} aria-label=\"Select a date\" />\n      </NimbusProvider>\n    );\n\n    const dateSegments = screen.getAllByRole(\"spinbutton\");\n    expect(dateSegments[0]).toHaveAttribute(\"aria-valuenow\", \"6\");\n    expect(dateSegments[1]).toHaveAttribute(\"aria-valuenow\", \"15\");\n    expect(dateSegments[2]).toHaveAttribute(\"aria-valuenow\", \"2025\");\n  });\n});\n```\n\n### Interaction Tests\n\nTest user interactions with date segments and calendar\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, within, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { DatePicker, NimbusProvider } from \"@commercetools/nimbus\";\nimport { CalendarDate, CalendarDateTime } from \"@internationalized/date\";\n\ndescribe(\"DatePicker - Interactions\", () => {\n  it(\"allows keyboard input in date segments\", async () => {\n    const user = userEvent.setup();\n\n    render(\n      <NimbusProvider>\n        <DatePicker aria-label=\"Select a date\" />\n      </NimbusProvider>\n    );\n\n    const dateSegments = screen.getAllByRole(\"spinbutton\");\n    const firstSegment = dateSegments[0];\n\n    await user.click(firstSegment);\n    await user.keyboard(\"12\");\n\n    await waitFor(() => {\n      expect(firstSegment).toHaveAttribute(\"aria-valuenow\", \"12\");\n    });\n  });\n\n  it(\"opens calendar popover when button is clicked\", async () => {\n    const user = userEvent.setup();\n\n    render(\n      <NimbusProvider>\n        <DatePicker aria-label=\"Select a date\" />\n      </NimbusProvider>\n    );\n\n    const calendarButton = screen.getByRole(\"button\", { name: /calendar/i });\n\n    expect(\n      within(document.body).queryByRole(\"application\")\n    ).not.toBeInTheDocument();\n\n    await user.click(calendarButton);\n\n    await waitFor(() => {\n      expect(\n        within(document.body).queryByRole(\"application\")\n      ).toBeInTheDocument();\n    });\n  });\n\n  it(\"closes calendar popover with Escape key\", async () => {\n    const user = userEvent.setup();\n\n    render(\n      <NimbusProvider>\n        <DatePicker aria-label=\"Select a date\" />\n      </NimbusProvider>\n    );\n\n    const calendarButton = screen.getByRole(\"button\", { name: /calendar/i });\n    await user.click(calendarButton);\n\n    await waitFor(() => {\n      expect(\n        within(document.body).queryByRole(\"application\")\n      ).toBeInTheDocument();\n    });\n\n    await user.keyboard(\"{Escape}\");\n\n    await waitFor(() => {\n      expect(\n        within(document.body).queryByRole(\"application\")\n      ).not.toBeInTheDocument();\n    });\n  });\n\n  it(\"allows date selection from calendar\", async () => {\n    const user = userEvent.setup();\n    const onChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <DatePicker onChange={onChange} aria-label=\"Select a date\" />\n      </NimbusProvider>\n    );\n\n    const calendarButton = screen.getByRole(\"button\", { name: /calendar/i });\n    await user.click(calendarButton);\n\n    await waitFor(() => {\n      expect(\n        within(document.body).queryByRole(\"application\")\n      ).toBeInTheDocument();\n    });\n\n    const day5Cell = document.body.querySelector('[aria-label*=\"5,\"]');\n    if (day5Cell) {\n      await user.click(day5Cell);\n\n      await waitFor(() => {\n        expect(onChange).toHaveBeenCalled();\n      });\n    }\n  });\n\n  it(\"navigates between segments with Tab key\", async () => {\n    const user = userEvent.setup();\n\n    render(\n      <NimbusProvider>\n        <DatePicker aria-label=\"Select a date\" />\n      </NimbusProvider>\n    );\n\n    const dateSegments = screen.getAllByRole(\"spinbutton\");\n\n    await user.tab();\n\n    await waitFor(() => {\n      expect(dateSegments[0]).toHaveFocus();\n    });\n\n    await user.keyboard(\"{ArrowRight}\");\n\n    if (dateSegments.length > 1) {\n      await waitFor(() => {\n        expect(dateSegments[1]).toHaveFocus();\n      });\n    }\n  });\n});\n```\n\n### Controlled Mode Tests\n\nTest controlled component behavior with external state\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, within, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { DatePicker, NimbusProvider } from \"@commercetools/nimbus\";\nimport { CalendarDate, CalendarDateTime } from \"@internationalized/date\";\n\ndescribe(\"DatePicker - Controlled mode\", () => {\n  it(\"renders controlled value\", () => {\n    const value = new CalendarDate(2025, 6, 15);\n\n    render(\n      <NimbusProvider>\n        <DatePicker\n          value={value}\n          onChange={vi.fn()}\n          aria-label=\"Select a date\"\n        />\n      </NimbusProvider>\n    );\n\n    const dateSegments = screen.getAllByRole(\"spinbutton\");\n    expect(dateSegments[0]).toHaveAttribute(\"aria-valuenow\", \"6\");\n    expect(dateSegments[1]).toHaveAttribute(\"aria-valuenow\", \"15\");\n    expect(dateSegments[2]).toHaveAttribute(\"aria-valuenow\", \"2025\");\n  });\n\n  it(\"calls onChange when date is modified\", async () => {\n    const user = userEvent.setup();\n    const onChange = vi.fn();\n    const value = new CalendarDate(2025, 6, 15);\n\n    render(\n      <NimbusProvider>\n        <DatePicker\n          value={value}\n          onChange={onChange}\n          aria-label=\"Select a date\"\n        />\n      </NimbusProvider>\n    );\n\n    const dateSegments = screen.getAllByRole(\"spinbutton\");\n    await user.click(dateSegments[0]);\n    await user.keyboard(\"{Control>}a{/Control}\");\n    await user.keyboard(\"8\");\n\n    await waitFor(() => {\n      expect(onChange).toHaveBeenCalled();\n    });\n  });\n\n  it(\"updates when value prop changes\", () => {\n    const { rerender } = render(\n      <NimbusProvider>\n        <DatePicker\n          value={new CalendarDate(2025, 6, 15)}\n          onChange={vi.fn()}\n          aria-label=\"Select a date\"\n        />\n      </NimbusProvider>\n    );\n\n    const dateSegments = screen.getAllByRole(\"spinbutton\");\n    expect(dateSegments[0]).toHaveAttribute(\"aria-valuenow\", \"6\");\n\n    rerender(\n      <NimbusProvider>\n        <DatePicker\n          value={new CalendarDate(2025, 12, 25)}\n          onChange={vi.fn()}\n          aria-label=\"Select a date\"\n        />\n      </NimbusProvider>\n    );\n\n    expect(dateSegments[0]).toHaveAttribute(\"aria-valuenow\", \"12\");\n    expect(dateSegments[1]).toHaveAttribute(\"aria-valuenow\", \"25\");\n  });\n});\n```\n\n### State Tests\n\nTest different component states (disabled, readonly, required, invalid)\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, within, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { DatePicker, NimbusProvider } from \"@commercetools/nimbus\";\nimport { CalendarDate, CalendarDateTime } from \"@internationalized/date\";\n\ndescribe(\"DatePicker - States\", () => {\n  it(\"renders in disabled state\", () => {\n    render(\n      <NimbusProvider>\n        <DatePicker\n          isDisabled\n          defaultValue={new CalendarDate(2025, 6, 15)}\n          aria-label=\"Select a date\"\n        />\n      </NimbusProvider>\n    );\n\n    const clearButton = screen.getByRole(\"button\", { name: /clear/i });\n    expect(clearButton).toBeDisabled();\n  });\n\n  it(\"renders in readonly state\", () => {\n    render(\n      <NimbusProvider>\n        <DatePicker\n          isReadOnly\n          defaultValue={new CalendarDate(2025, 6, 15)}\n          aria-label=\"Select a date\"\n        />\n      </NimbusProvider>\n    );\n\n    const calendarButton = screen.getByRole(\"button\", { name: /calendar/i });\n    expect(calendarButton).toBeDisabled();\n  });\n\n  it(\"renders in required state\", () => {\n    render(\n      <NimbusProvider>\n        <DatePicker isRequired aria-label=\"Select a date\" />\n      </NimbusProvider>\n    );\n\n    const dateGroup = screen.getByRole(\"group\");\n    expect(dateGroup).toBeInTheDocument();\n  });\n\n  it(\"renders in invalid state\", () => {\n    render(\n      <NimbusProvider>\n        <DatePicker\n          isInvalid\n          defaultValue={new CalendarDate(2025, 6, 15)}\n          aria-label=\"Select a date\"\n        />\n      </NimbusProvider>\n    );\n\n    const dateGroup = screen.getByRole(\"group\");\n    expect(dateGroup).toBeInTheDocument();\n  });\n});\n```\n\n### Granularity Tests\n\nTest different time granularity levels\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, within, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { DatePicker, NimbusProvider } from \"@commercetools/nimbus\";\nimport { CalendarDate, CalendarDateTime } from \"@internationalized/date\";\n\ndescribe(\"DatePicker - Granularity\", () => {\n  it(\"renders date-only segments with day granularity\", () => {\n    render(\n      <NimbusProvider>\n        <DatePicker\n          granularity=\"day\"\n          defaultValue={new CalendarDate(2025, 6, 15)}\n          aria-label=\"Select a date\"\n        />\n      </NimbusProvider>\n    );\n\n    const dateSegments = screen.getAllByRole(\"spinbutton\");\n    expect(dateSegments).toHaveLength(3);\n  });\n\n  it(\"renders hour segments with hour granularity\", () => {\n    render(\n      <NimbusProvider>\n        <DatePicker\n          granularity=\"hour\"\n          defaultValue={new CalendarDateTime(2025, 6, 15, 14)}\n          aria-label=\"Select a date\"\n        />\n      </NimbusProvider>\n    );\n\n    const dateSegments = screen.getAllByRole(\"spinbutton\");\n    expect(dateSegments.length).toBeGreaterThanOrEqual(4);\n  });\n\n  it(\"renders minute segments with minute granularity\", () => {\n    render(\n      <NimbusProvider>\n        <DatePicker\n          granularity=\"minute\"\n          defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30)}\n          aria-label=\"Select a date\"\n        />\n      </NimbusProvider>\n    );\n\n    const dateSegments = screen.getAllByRole(\"spinbutton\");\n    expect(dateSegments.length).toBeGreaterThanOrEqual(5);\n  });\n\n  it(\"renders second segments with second granularity\", () => {\n    render(\n      <NimbusProvider>\n        <DatePicker\n          granularity=\"second\"\n          defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30, 45)}\n          aria-label=\"Select a date\"\n        />\n      </NimbusProvider>\n    );\n\n    const dateSegments = screen.getAllByRole(\"spinbutton\");\n    expect(dateSegments.length).toBeGreaterThanOrEqual(6);\n  });\n});\n```\n\n### Hour Cycle Tests\n\nTest 12-hour and 24-hour time formats\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, within, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { DatePicker, NimbusProvider } from \"@commercetools/nimbus\";\nimport { CalendarDate, CalendarDateTime } from \"@internationalized/date\";\n\ndescribe(\"DatePicker - Hour cycle\", () => {\n  it(\"displays 12-hour format with AM/PM\", () => {\n    render(\n      <NimbusProvider>\n        <DatePicker\n          granularity=\"minute\"\n          hourCycle={12}\n          defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30)}\n          aria-label=\"Select a date\"\n        />\n      </NimbusProvider>\n    );\n\n    const dateSegments = screen.getAllByRole(\"spinbutton\");\n    const hourSegment = dateSegments[3];\n\n    expect(hourSegment).toHaveAttribute(\"aria-valuetext\", \"2 PM\");\n  });\n\n  it(\"displays 24-hour format without AM/PM\", () => {\n    render(\n      <NimbusProvider>\n        <DatePicker\n          granularity=\"minute\"\n          hourCycle={24}\n          defaultValue={new CalendarDateTime(2025, 6, 15, 14, 30)}\n          aria-label=\"Select a date\"\n        />\n      </NimbusProvider>\n    );\n\n    const dateSegments = screen.getAllByRole(\"spinbutton\");\n    const hourSegment = dateSegments[3];\n\n    expect(hourSegment).toHaveAttribute(\"aria-valuenow\", \"14\");\n  });\n});\n```\n\n### Popover Control Tests\n\nTest controlled popover open/close state\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, within, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { DatePicker, NimbusProvider } from \"@commercetools/nimbus\";\nimport { CalendarDate, CalendarDateTime } from \"@internationalized/date\";\n\ndescribe(\"DatePicker - Popover control\", () => {\n  it(\"opens popover when isOpen is true\", async () => {\n    render(\n      <NimbusProvider>\n        <DatePicker\n          isOpen={true}\n          onOpenChange={vi.fn()}\n          aria-label=\"Select a date\"\n        />\n      </NimbusProvider>\n    );\n\n    await waitFor(() => {\n      expect(\n        within(document.body).queryByRole(\"application\")\n      ).toBeInTheDocument();\n    });\n  });\n\n  it(\"calls onOpenChange when popover state changes\", async () => {\n    const user = userEvent.setup();\n    const onOpenChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <DatePicker onOpenChange={onOpenChange} aria-label=\"Select a date\" />\n      </NimbusProvider>\n    );\n\n    const calendarButton = screen.getByRole(\"button\", { name: /calendar/i });\n    await user.click(calendarButton);\n\n    await waitFor(() => {\n      expect(onOpenChange).toHaveBeenCalledWith(true);\n    });\n  });\n});\n```\n\n\n## Resources\n\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-date-datepicker--docs)\n- [React Aria DatePicker](https://react-spectrum.adobe.com/react-aria/DatePicker.html)\n- [ARIA Date Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/spinbutton/)\n- [@internationalized/date](https://react-spectrum.adobe.com/internationalized/date/)\n- [DateInput Component](/components/inputs/dateinput)\n- [Calendar Component](/components/inputs/calendar)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Working with date values",
+          "href": "#working-with-date-values",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Date types",
+          "href": "#date-types",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Creating date values",
+          "href": "#creating-date-values",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Converting to strings",
+          "href": "#converting-to-strings",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size options",
+          "href": "#size-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual variants",
+          "href": "#visual-variants",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Granularity control",
+          "href": "#granularity-control",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Hour cycle",
+          "href": "#hour-cycle",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Time zone handling",
+          "href": "#time-zone-handling",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Placeholder values",
+          "href": "#placeholder-values",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Close on select behavior",
+          "href": "#close-on-select-behavior",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Min/max validation",
+          "href": "#minmax-validation",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "State variations",
+          "href": "#state-variations",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            9
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Uncontrolled mode",
+          "href": "#uncontrolled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            10
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Controlled mode",
+          "href": "#controlled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            11
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Popover control",
+          "href": "#popover-control",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            12
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Internationalization",
+          "href": "#internationalization",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            13
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Date value requirements",
+          "href": "#date-value-requirements",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Appointment scheduler",
+          "href": "#appointment-scheduler",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Due date selector",
+          "href": "#due-date-selector",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Event date selector",
+          "href": "#event-date-selector",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Interaction Tests",
+          "href": "#interaction-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Controlled Mode Tests",
+          "href": "#controlled-mode-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "State Tests",
+          "href": "#state-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Granularity Tests",
+          "href": "#granularity-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Hour Cycle Tests",
+          "href": "#hour-cycle-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Popover Control Tests",
+          "href": "#popover-control-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            9
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "guidelines": {
+      "mdx": "\n## Guidelines\n\nDate picker guidelines establish a standardized approach for creating intuitive\nand accessible date input components, ensuring consistency in presentation and\ninteraction for selecting dates across all applications.\n\n### Best practices\n\n- **Clear labeling:** Use explicit and descriptive labels that clearly indicate\n  what date information is needed (e.g., \"Date of Birth,\" \"Event Date\").\n- **Provide format hints:** Clearly display the expected date format (e.g.,\n  MM/DD/YYYY, YYYY-MM-DD) using placeholder text or helper text.\n- **Offer multiple input methods:** Allow users to both manually type in the\n  date and select it from a visual calendar picker.\n- **Use input masks:** Consider using input masks to guide formatting as the\n  user types, but ensure they don't hinder accessibility or flexibility.\n- **Validate input:** Provide real-time validation and clear error messages for\n  incorrect date formats or invalid dates.\n- **Show current date:** In a calendar picker, clearly highlight the current\n  date for easy reference.\n- **Enable easy navigation:** Make it simple to navigate months and years within\n  the calendar picker (e.g., using forward/backward buttons and year dropdown).\n- **Indicate selected date:** Clearly visually distinguish the selected date in\n  the calendar.\n- **Handle unavailable dates:** If certain dates are unavailable (e.g., past\n  dates for future events), clearly indicate them as disabled.\n- **Ensure keyboard accessibility:** Make all parts of the DatePicker (input,\n  calendar) navigable and operable using the keyboard.\n- **Provide sufficient contrast:** Ensure adequate color contrast between text,\n  icons, and background elements for accessibility.\n- **Localization:** Adapt the date format and calendar display to the user's\n  locale.\n- **Offer preset ranges:** For date range selections, provide common presets\n  like \"Last week,\" \"This month,\" etc.\n\n### Usage\n\n> [!TIP]\\\n> When to use\n\n- **Specific date selection required:** When users need to choose a particular\n  date, such as a birthdate, appointment date, or event date.\n- **Date-related tasks:** For features involving scheduling, filtering by date,\n  setting deadlines, or defining date ranges.\n- **Standardized input format:** To ensure users enter dates in a consistent and\n  predictable format, reducing data entry errors.\n- **Visual calendar navigation:** When users benefit from a visual\n  representation of a calendar to navigate and select dates, especially for date\n  ranges or when the day of the week is relevant.\n- **Accessibility needs:** To provide an accessible alternative to manual text\n  input for users with disabilities, including keyboard navigation and screen\n  reader support.\n- **Clear date context:** When the date is a primary piece of information and\n  needs to be explicitly chosen.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Approximate or vague dates:** When the exact date is not critical, and users\n  might only know a month or year (consider a select dropdown or a less specific\n  input).\n- **Dates far in the past or future:** For dates like birth dates, consider a\n  direct text input with clear formatting hints or segmented inputs\n  (month/day/year) to avoid excessive calendar navigation. However, a date\n  picker can still be suitable if well-implemented with year selection.\n- **Simple \"today\" or \"now\" selection:** For actions that simply require the\n  current date or time, a button or automated function might be more efficient.\n- **Limited screen real estate:** On very constrained interfaces, a compact text\n  input with a clear format might be preferred over an expanded calendar, though\n  accessibility should still be a priority.\n- **High frequency of typing known dates:** If users frequently know the exact\n  date they need to enter and typing is faster for them, a well-formatted text\n  input with validation might be sufficient alongside (or instead of) a date\n  picker. (e.g. birthdays)\n- **Binary \"yes/no\" for date-related options:** For simple choices like \"Remind\n  me?\" (implying the current date/time), a checkbox or switch might be more\n  appropriate.\n\n### Labels and messaging\n\nClear labels and concise messaging are crucial for a date input to ensure users\nunderstand what date information is required and how to provide it correctly.\n\n> [!TIP]\\\n> **Do**\n>\n> - Do use a clear and descriptive label (e.g., \"Date of Birth,\" \"Event Date\").\n> - Do provide clear formatting hints (e.g., MM/DD/YYYY) as placeholder text or\n>   helper text.\n> - Do validate the input and provide clear error messages for incorrect formats\n>   or invalid dates.\n\n![labels and messaging - do's](/images/date-picker/labels-and-messaging-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't rely solely on placeholder text for the label.\n> - Don't use ambiguous date formats without clear guidance.\n> - Don't fail to provide feedback on invalid input.\n\n![labels and messaging - don'ts](/images/date-picker/labels-and-messaging-dont.png)\n\n### Interaction and selection\n\nThe ideal date picker interaction offers a seamless experience through intuitive\ncalendar navigation, clear visual feedback on selection, and the flexibility of\nboth direct typing and visual selection to accommodate user preferences and\naccessibility needs.\n\n> [!TIP]\\\n> **Do**\n>\n> - Do highlight the current date in the calendar picker for reference.\n> - Do provide a visual calendar picker for easy selection, especially for\n>   non-familiar dates or date ranges.\n> - Do allow manual text input as an alternative for users who prefer it or know\n>   the date.\n> - Do clearly indicate the selected date(s) in the calendar.\n> - Do enable easy navigation between months and years in the calendar.\n> - Do consider providing preset date ranges (e.g., \"Last Week,\" \"Next Month\")\n>   when relevant.\n\n![interaction and selection - do's](/images/date-picker/interaction-and-selection-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't use it for selecting vague or non-specific timeframes (e.g., \"sometime\n>   next year\").\n> - Don't force users to only use the calendar picker if they prefer typing.\n> - Don't use it for simple \"today\" selections where a button might suffice.\n> - Don't auto-advance between date segments (day/month/year) in text input, as\n>   it can hinder error correction.\n> - Don't make calendar navigation cumbersome.\n\n![interaction and selection - don'ts](/images/date-picker/interaction-and-selection-dont.png)",
+      "toc": [
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Labels and messaging",
+          "href": "#labels-and-messaging",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Interaction and selection",
+          "href": "#interaction-and-selection",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            4
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

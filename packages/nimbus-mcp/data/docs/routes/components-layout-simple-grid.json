@@ -1,0 +1,519 @@
+{
+  "meta": {
+    "id": "Components-SimpleGrid",
+    "title": "Simple grid",
+    "exportName": "SimpleGrid",
+    "description": "SimpleGrid offers an intuitive way to easily create responsive grid layouts.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/simple-grid/simple-grid.mdx",
+    "menu": [
+      "Components",
+      "Layout",
+      "Simple grid"
+    ],
+    "route": "components/layout/simple-grid",
+    "tags": [
+      "component",
+      "grid",
+      "simple",
+      "layout",
+      "columns"
+    ],
+    "toc": [
+      {
+        "value": "Basic usage",
+        "href": "#basic-usage",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With columns",
+        "href": "#with-columns",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Auto responsive layout",
+        "href": "#auto-responsive-layout",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Simple grid with colSpan",
+        "href": "#simple-grid-with-colspan",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With row and column gap",
+        "href": "#with-row-and-column-gap",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Basic usage\n\nUse SimpleGrid → When you need a quick, responsive, equal-sized grid (e.g.,\nproduct listings, image galleries).\n\n```jsx\nimport { SimpleGrid } from \"@commercetools/nimbus\";\n```\n\n```jsx live\nconst App = () => (\n  <SimpleGrid gap=\"100\">\n    <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n      Item 1\n    </Box>\n    <Box key=\"2\" p=\"400\" bg=\"neutral.7\">\n      Item 2\n    </Box>\n  </SimpleGrid>\n)\n```\n\n## With columns\n\nUse the columns prop to define the number of columns in the grid layout.\n\n```jsx live\nconst App = () => (\n  <SimpleGrid gap=\"100\" columns={2}>\n    <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n      Item 1\n    </Box>\n    <Box key=\"2\" p=\"400\" bg=\"neutral.7\">\n      Item 2\n    </Box>\n    <Box key=\"3\" p=\"400\" bg=\"neutral.7\">\n      Item 3\n    </Box>\n    <Box key=\"4\" p=\"400\" bg=\"neutral.7\">\n      Item 4\n    </Box>\n  </SimpleGrid>\n)\n```\n\n## Auto responsive layout\n\nAn Auto-Responsive Grid dynamically adjusts the number of columns and item sizes\nbased on the viewport width, ensuring an adaptive and fluid layout. adjust\nviewport to see layout rearrangements.\n\n```jsx live\nconst App = () => (\n  <SimpleGrid gap=\"100\" minChildWidth=\"sm\">\n    <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n      Item 1\n    </Box>\n    <Box key=\"2\" p=\"400\" bg=\"neutral.7\">\n      Item 2\n    </Box>\n    <Box key=\"3\" p=\"400\" bg=\"neutral.7\">\n      Item 3\n    </Box>\n    <Box key=\"4\" p=\"400\" bg=\"neutral.7\">\n      Item 4\n    </Box>\n  </SimpleGrid>\n)\n```\n\n## Simple grid with colSpan\n\n```jsx live\nconst App = () => (\n  <SimpleGrid\n    columns={{ base: 2, md: 4 }}\n    gap={{ base: \"600\", md: \"1000\" }}\n  >\n    <SimpleGrid.Item colSpan={{ base: 1, md: 3 }}>\n      <Box height=\"20\" p=\"400\" bg=\"neutral.7\">\n        Column 1\n      </Box>\n    </SimpleGrid.Item>\n    <SimpleGrid.Item colSpan={{ base: 1, md: 1 }}>\n      <Box height=\"20\" p=\"400\" bg=\"neutral.7\">\n        Column 2\n      </Box>\n    </SimpleGrid.Item>\n  </SimpleGrid>\n)\n```\n\n## With row and column gap\n\n```jsx live\nconst App = () => (\n  <SimpleGrid rowGap=\"400\" columnGap=\"200\" columns={2}>\n    <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n      Item 1\n    </Box>\n    <Box key=\"2\" p=\"400\" bg=\"neutral.7\">\n      Item 2\n    </Box>\n    <Box key=\"3\" p=\"400\" bg=\"neutral.7\">\n      Item 3\n    </Box>\n    <Box key=\"4\" p=\"400\" bg=\"neutral.7\">\n      Item 4\n    </Box>\n  </SimpleGrid>\n)\n```\n\n<PropsTable id=\"SimpleGrid\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Basic usage\n\nUse SimpleGrid → When you need a quick, responsive, equal-sized grid (e.g.,\nproduct listings, image galleries).\n\n```jsx\nimport { SimpleGrid } from \"@commercetools/nimbus\";\n```\n\n```jsx live\nconst App = () => (\n  <SimpleGrid gap=\"100\">\n    <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n      Item 1\n    </Box>\n    <Box key=\"2\" p=\"400\" bg=\"neutral.7\">\n      Item 2\n    </Box>\n  </SimpleGrid>\n)\n```\n\n## With columns\n\nUse the columns prop to define the number of columns in the grid layout.\n\n```jsx live\nconst App = () => (\n  <SimpleGrid gap=\"100\" columns={2}>\n    <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n      Item 1\n    </Box>\n    <Box key=\"2\" p=\"400\" bg=\"neutral.7\">\n      Item 2\n    </Box>\n    <Box key=\"3\" p=\"400\" bg=\"neutral.7\">\n      Item 3\n    </Box>\n    <Box key=\"4\" p=\"400\" bg=\"neutral.7\">\n      Item 4\n    </Box>\n  </SimpleGrid>\n)\n```\n\n## Auto responsive layout\n\nAn Auto-Responsive Grid dynamically adjusts the number of columns and item sizes\nbased on the viewport width, ensuring an adaptive and fluid layout. adjust\nviewport to see layout rearrangements.\n\n```jsx live\nconst App = () => (\n  <SimpleGrid gap=\"100\" minChildWidth=\"sm\">\n    <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n      Item 1\n    </Box>\n    <Box key=\"2\" p=\"400\" bg=\"neutral.7\">\n      Item 2\n    </Box>\n    <Box key=\"3\" p=\"400\" bg=\"neutral.7\">\n      Item 3\n    </Box>\n    <Box key=\"4\" p=\"400\" bg=\"neutral.7\">\n      Item 4\n    </Box>\n  </SimpleGrid>\n)\n```\n\n## Simple grid with colSpan\n\n```jsx live\nconst App = () => (\n  <SimpleGrid\n    columns={{ base: 2, md: 4 }}\n    gap={{ base: \"600\", md: \"1000\" }}\n  >\n    <SimpleGrid.Item colSpan={{ base: 1, md: 3 }}>\n      <Box height=\"20\" p=\"400\" bg=\"neutral.7\">\n        Column 1\n      </Box>\n    </SimpleGrid.Item>\n    <SimpleGrid.Item colSpan={{ base: 1, md: 1 }}>\n      <Box height=\"20\" p=\"400\" bg=\"neutral.7\">\n        Column 2\n      </Box>\n    </SimpleGrid.Item>\n  </SimpleGrid>\n)\n```\n\n## With row and column gap\n\n```jsx live\nconst App = () => (\n  <SimpleGrid rowGap=\"400\" columnGap=\"200\" columns={2}>\n    <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n      Item 1\n    </Box>\n    <Box key=\"2\" p=\"400\" bg=\"neutral.7\">\n      Item 2\n    </Box>\n    <Box key=\"3\" p=\"400\" bg=\"neutral.7\">\n      Item 3\n    </Box>\n    <Box key=\"4\" p=\"400\" bg=\"neutral.7\">\n      Item 4\n    </Box>\n  </SimpleGrid>\n)\n```\n\n<PropsTable id=\"SimpleGrid\" />\n",
+      "toc": [
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With columns",
+          "href": "#with-columns",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Auto responsive layout",
+          "href": "#auto-responsive-layout",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Simple grid with colSpan",
+          "href": "#simple-grid-with-colspan",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With row and column gap",
+          "href": "#with-row-and-column-gap",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => (\n  <SimpleGrid columns={3} gap=\"400\">\n    <Box bg=\"gray.100\" p=\"400\">Item 1</Box>\n    <Box bg=\"gray.100\" p=\"400\">Item 2</Box>\n    <Box bg=\"gray.100\" p=\"400\">Item 3</Box>\n  </SimpleGrid>\n);\n```\n\n### Accessibility standards\n\n- **Use semantic HTML:** SimpleGrid is a layout component that renders a `div`\n  by default. Use the `as` prop to apply semantic elements when the grid has\n  semantic meaning.\n- **Maintain reading order:** Ensure the visual grid order matches the DOM order\n  so screen readers navigate content in a logical sequence.\n- **Avoid layout-only containers:** When possible, apply grid styles directly to\n  semantic elements.\n- **Responsive design:** Ensure grid layouts adapt appropriately for different\n  screen sizes and zoom levels without breaking.\n- **Focus order:** Ensure keyboard focus follows a logical order through grid\n  items.\n- **Don't convey meaning through position alone:** Important relationships\n  should be conveyed through semantic HTML and ARIA attributes, not just visual\n  layout.\n\n### Resources\n\n- [WCAG 1.3.2 Meaningful Sequence](https://www.w3.org/WAI/WCAG21/Understanding/meaningful-sequence.html)\n- [WCAG 2.4.3 Focus Order](https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html)\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { SimpleGrid, type SimpleGridProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nSimpleGrid creates a grid layout with equal-sized children. Use it for quick, responsive layouts without complex grid configuration:\n\n```jsx live-dev\nconst App = () => (\n  <SimpleGrid columns={2} gap=\"400\">\n    <Box p=\"600\" bg=\"info.7\" borderRadius=\"200\">\n      <Text>Item 1</Text>\n    </Box>\n    <Box p=\"600\" bg=\"info.7\" borderRadius=\"200\">\n      <Text>Item 2</Text>\n    </Box>\n    <Box p=\"600\" bg=\"info.7\" borderRadius=\"200\">\n      <Text>Item 3</Text>\n    </Box>\n    <Box p=\"600\" bg=\"info.7\" borderRadius=\"200\">\n      <Text>Item 4</Text>\n    </Box>\n  </SimpleGrid>\n)\n```\n\n## Usage examples\n\n### Fixed columns\n\nUse the `columns` prop to define a fixed number of columns:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"600\">\n    <Stack direction=\"column\" gap=\"200\">\n      <Text fontWeight=\"600\">Two columns</Text>\n      <SimpleGrid columns={2} gap=\"400\">\n        <Box p=\"600\" bg=\"info.7\" borderRadius=\"200\">\n          <Text>Item 1</Text>\n        </Box>\n        <Box p=\"600\" bg=\"info.7\" borderRadius=\"200\">\n          <Text>Item 2</Text>\n        </Box>\n        <Box p=\"600\" bg=\"info.7\" borderRadius=\"200\">\n          <Text>Item 3</Text>\n        </Box>\n        <Box p=\"600\" bg=\"info.7\" borderRadius=\"200\">\n          <Text>Item 4</Text>\n        </Box>\n      </SimpleGrid>\n    </Stack>\n\n    <Stack direction=\"column\" gap=\"200\">\n      <Text fontWeight=\"600\">Three columns</Text>\n      <SimpleGrid columns={3} gap=\"400\">\n        <Box p=\"600\" bg=\"positive.7\" borderRadius=\"200\">\n          <Text>Item 1</Text>\n        </Box>\n        <Box p=\"600\" bg=\"positive.7\" borderRadius=\"200\">\n          <Text>Item 2</Text>\n        </Box>\n        <Box p=\"600\" bg=\"positive.7\" borderRadius=\"200\">\n          <Text>Item 3</Text>\n        </Box>\n        <Box p=\"600\" bg=\"positive.7\" borderRadius=\"200\">\n          <Text>Item 4</Text>\n        </Box>\n        <Box p=\"600\" bg=\"positive.7\" borderRadius=\"200\">\n          <Text>Item 5</Text>\n        </Box>\n        <Box p=\"600\" bg=\"positive.7\" borderRadius=\"200\">\n          <Text>Item 6</Text>\n        </Box>\n      </SimpleGrid>\n    </Stack>\n  </Stack>\n)\n```\n\n### Auto-responsive layout\n\nUse `minChildWidth` to create auto-responsive grids that adjust column count based on available space:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <SimpleGrid minChildWidth=\"200px\" gap=\"400\">\n      <Box p=\"600\" bg=\"warning.7\" borderRadius=\"200\">\n        <Text fontWeight=\"600\">Card 1</Text>\n        <Text fontSize=\"sm\">Resize the window to see columns adjust</Text>\n      </Box>\n      <Box p=\"600\" bg=\"warning.7\" borderRadius=\"200\">\n        <Text fontWeight=\"600\">Card 2</Text>\n        <Text fontSize=\"sm\">Columns wrap automatically</Text>\n      </Box>\n      <Box p=\"600\" bg=\"warning.7\" borderRadius=\"200\">\n        <Text fontWeight=\"600\">Card 3</Text>\n        <Text fontSize=\"sm\">Based on minChildWidth</Text>\n      </Box>\n      <Box p=\"600\" bg=\"warning.7\" borderRadius=\"200\">\n        <Text fontWeight=\"600\">Card 4</Text>\n        <Text fontSize=\"sm\">No media queries needed</Text>\n      </Box>\n      <Box p=\"600\" bg=\"warning.7\" borderRadius=\"200\">\n        <Text fontWeight=\"600\">Card 5</Text>\n        <Text fontSize=\"sm\">Responsive by default</Text>\n      </Box>\n      <Box p=\"600\" bg=\"warning.7\" borderRadius=\"200\">\n        <Text fontWeight=\"600\">Card 6</Text>\n        <Text fontSize=\"sm\">Equal-sized children</Text>\n      </Box>\n    </SimpleGrid>\n    <Text fontSize=\"sm\" color=\"neutral.11\">\n      Try resizing the browser window to see the grid adapt\n    </Text>\n  </Stack>\n)\n```\n\n### Responsive columns\n\nDefine different column counts for different breakpoints:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <SimpleGrid \n      columns={{ base: 1, sm: 2, md: 3, lg: 4 }}\n      gap=\"400\"\n    >\n      <Box p=\"600\" bg=\"primary.7\" borderRadius=\"200\">\n        <Text fontWeight=\"600\">Product 1</Text>\n        <Text fontSize=\"sm\">$29.99</Text>\n      </Box>\n      <Box p=\"600\" bg=\"primary.7\" borderRadius=\"200\">\n        <Text fontWeight=\"600\">Product 2</Text>\n        <Text fontSize=\"sm\">$39.99</Text>\n      </Box>\n      <Box p=\"600\" bg=\"primary.7\" borderRadius=\"200\">\n        <Text fontWeight=\"600\">Product 3</Text>\n        <Text fontSize=\"sm\">$49.99</Text>\n      </Box>\n      <Box p=\"600\" bg=\"primary.7\" borderRadius=\"200\">\n        <Text fontWeight=\"600\">Product 4</Text>\n        <Text fontSize=\"sm\">$59.99</Text>\n      </Box>\n      <Box p=\"600\" bg=\"primary.7\" borderRadius=\"200\">\n        <Text fontWeight=\"600\">Product 5</Text>\n        <Text fontSize=\"sm\">$69.99</Text>\n      </Box>\n      <Box p=\"600\" bg=\"primary.7\" borderRadius=\"200\">\n        <Text fontWeight=\"600\">Product 6</Text>\n        <Text fontSize=\"sm\">$79.99</Text>\n      </Box>\n    </SimpleGrid>\n    <Text fontSize=\"sm\" color=\"neutral.11\">\n      1 column on mobile → 2 on small → 3 on medium → 4 on large screens\n    </Text>\n  </Stack>\n)\n```\n\n### Column spanning\n\nUse `SimpleGrid.Item` with `colSpan` to make items span multiple columns:\n\n```jsx live-dev\nconst App = () => (\n  <SimpleGrid \n    columns={{ base: 2, md: 4 }}\n    gap=\"400\"\n  >\n    <SimpleGrid.Item colSpan={{ base: 2, md: 3 }}>\n      <Box p=\"600\" bg=\"info.7\" borderRadius=\"200\">\n        <Text fontWeight=\"600\">Featured Item</Text>\n        <Text fontSize=\"sm\">Spans 2 columns on mobile, 3 on desktop</Text>\n      </Box>\n    </SimpleGrid.Item>\n    <SimpleGrid.Item colSpan={{ base: 2, md: 1 }}>\n      <Box p=\"600\" bg=\"positive.7\" borderRadius=\"200\">\n        <Text fontWeight=\"600\">Sidebar</Text>\n        <Text fontSize=\"sm\">Full width on mobile</Text>\n      </Box>\n    </SimpleGrid.Item>\n    <SimpleGrid.Item colSpan={1}>\n      <Box p=\"600\" bg=\"neutral.7\" borderRadius=\"200\">\n        <Text>Item 1</Text>\n      </Box>\n    </SimpleGrid.Item>\n    <SimpleGrid.Item colSpan={1}>\n      <Box p=\"600\" bg=\"neutral.7\" borderRadius=\"200\">\n        <Text>Item 2</Text>\n      </Box>\n    </SimpleGrid.Item>\n    <SimpleGrid.Item colSpan={1}>\n      <Box p=\"600\" bg=\"neutral.7\" borderRadius=\"200\">\n        <Text>Item 3</Text>\n      </Box>\n    </SimpleGrid.Item>\n    <SimpleGrid.Item colSpan={1}>\n      <Box p=\"600\" bg=\"neutral.7\" borderRadius=\"200\">\n        <Text>Item 4</Text>\n      </Box>\n    </SimpleGrid.Item>\n  </SimpleGrid>\n)\n```\n\n### Custom gap spacing\n\nControl row and column gaps independently:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"600\">\n    <Stack direction=\"column\" gap=\"200\">\n      <Text fontWeight=\"600\">Equal gap on all sides</Text>\n      <SimpleGrid columns={3} gap=\"400\">\n        <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\">\n          <Text fontSize=\"sm\">Item 1</Text>\n        </Box>\n        <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\">\n          <Text fontSize=\"sm\">Item 2</Text>\n        </Box>\n        <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\">\n          <Text fontSize=\"sm\">Item 3</Text>\n        </Box>\n        <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\">\n          <Text fontSize=\"sm\">Item 4</Text>\n        </Box>\n        <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\">\n          <Text fontSize=\"sm\">Item 5</Text>\n        </Box>\n        <Box p=\"400\" bg=\"primary.7\" borderRadius=\"200\">\n          <Text fontSize=\"sm\">Item 6</Text>\n        </Box>\n      </SimpleGrid>\n    </Stack>\n\n    <Stack direction=\"column\" gap=\"200\">\n      <Text fontWeight=\"600\">Different row and column gaps</Text>\n      <SimpleGrid columns={3} columnGap=\"200\" rowGap=\"600\">\n        <Box p=\"400\" bg=\"info.7\" borderRadius=\"200\">\n          <Text fontSize=\"sm\">Item 1</Text>\n        </Box>\n        <Box p=\"400\" bg=\"info.7\" borderRadius=\"200\">\n          <Text fontSize=\"sm\">Item 2</Text>\n        </Box>\n        <Box p=\"400\" bg=\"info.7\" borderRadius=\"200\">\n          <Text fontSize=\"sm\">Item 3</Text>\n        </Box>\n        <Box p=\"400\" bg=\"info.7\" borderRadius=\"200\">\n          <Text fontSize=\"sm\">Item 4</Text>\n        </Box>\n        <Box p=\"400\" bg=\"info.7\" borderRadius=\"200\">\n          <Text fontSize=\"sm\">Item 5</Text>\n        </Box>\n        <Box p=\"400\" bg=\"info.7\" borderRadius=\"200\">\n          <Text fontSize=\"sm\">Item 6</Text>\n        </Box>\n      </SimpleGrid>\n    </Stack>\n  </Stack>\n)\n```\n\n### Responsive gap values\n\nGap spacing can also be responsive:\n\n```jsx live-dev\nconst App = () => (\n  <SimpleGrid \n    columns={{ base: 2, md: 3 }}\n    gap={{ base: \"200\", md: \"400\", lg: \"600\" }}\n  >\n    <Box p=\"600\" bg=\"positive.7\" borderRadius=\"200\">\n      <Text fontWeight=\"600\">Item 1</Text>\n      <Text fontSize=\"sm\">Gap increases on larger screens</Text>\n    </Box>\n    <Box p=\"600\" bg=\"positive.7\" borderRadius=\"200\">\n      <Text fontWeight=\"600\">Item 2</Text>\n    </Box>\n    <Box p=\"600\" bg=\"positive.7\" borderRadius=\"200\">\n      <Text fontWeight=\"600\">Item 3</Text>\n    </Box>\n    <Box p=\"600\" bg=\"positive.7\" borderRadius=\"200\">\n      <Text fontWeight=\"600\">Item 4</Text>\n    </Box>\n    <Box p=\"600\" bg=\"positive.7\" borderRadius=\"200\">\n      <Text fontWeight=\"600\">Item 5</Text>\n    </Box>\n    <Box p=\"600\" bg=\"positive.7\" borderRadius=\"200\">\n      <Text fontWeight=\"600\">Item 6</Text>\n    </Box>\n  </SimpleGrid>\n)\n```\n\n## Component requirements\n\n### Usage context\n\nSimpleGrid should be used when you need:\n- Quick, responsive grid layouts with minimal configuration\n- Equal-sized grid items (product cards, image galleries, data cards)\n- Auto-responsive layouts that adapt to container width\n- Simple column-based layouts without complex positioning\n\n**When to use SimpleGrid vs Grid:**\n\nUse **SimpleGrid** when:\n- All items should be equal size\n- You need auto-responsive behavior with `minChildWidth`\n- Layout is based on a simple column count\n- You want minimal configuration\n\nUse **Grid** when:\n- Items need different sizes (row/column spanning)\n- You need grid template areas for complex layouts\n- Precise control over grid structure is required\n- Creating dashboard layouts or complex page structures\n\n## Accessibility\n\nSimpleGrid is a layout component that doesn't add semantic meaning by itself. Ensure accessible markup:\n\n#### Semantic Structure\n\n- Wrap related content in appropriate semantic elements (`<article>`, `<section>`, `<nav>`)\n- Use proper heading hierarchy within grid items\n- Ensure grid items have meaningful content structure\n\n```tsx\n<SimpleGrid columns={3} gap=\"400\" as=\"section\" aria-labelledby=\"products-heading\">\n  <h2 id=\"products-heading\" className=\"sr-only\">Available Products</h2>\n  {products.map(product => (\n    <article key={product.id}>\n      <h3>{product.name}</h3>\n      <p>{product.description}</p>\n    </article>\n  ))}\n</SimpleGrid>\n```\n\n#### Keyboard navigation\n\n- Grid layout doesn't affect keyboard navigation\n- Ensure interactive elements within grid items are keyboard accessible\n- Maintain logical tab order\n\n#### Persistent ID\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"product-grid\";\n\nexport const ProductGrid = () => (\n  <SimpleGrid id={PERSISTENT_ID} columns={3} gap=\"400\">\n    <Box>Product 1</Box>\n    <Box>Product 2</Box>\n    <Box>Product 3</Box>\n  </SimpleGrid>\n);\n```\n\n## API reference\n\n<PropsTable id=\"SimpleGrid\" />\n\n## Common patterns\n\n### Product grid\n\nDisplay products in a responsive grid layout:\n\n```jsx live-dev\nconst App = () => {\n  const products = [\n    { id: 1, name: \"Wireless Mouse\", price: \"$29.99\", stock: \"In Stock\" },\n    { id: 2, name: \"Mechanical Keyboard\", price: \"$89.99\", stock: \"In Stock\" },\n    { id: 3, name: \"USB-C Hub\", price: \"$49.99\", stock: \"Low Stock\" },\n    { id: 4, name: \"Monitor Stand\", price: \"$39.99\", stock: \"In Stock\" },\n    { id: 5, name: \"Laptop Sleeve\", price: \"$24.99\", stock: \"In Stock\" },\n    { id: 6, name: \"Cable Organizer\", price: \"$14.99\", stock: \"In Stock\" },\n  ];\n\n  return (\n    <SimpleGrid \n      columns={{ base: 1, sm: 2, md: 3 }}\n      gap=\"400\"\n    >\n      {products.map((product) => (\n        <Box \n          key={product.id}\n          p=\"600\"\n          bg=\"neutral.2\"\n          borderRadius=\"200\"\n          borderWidth=\"1px\"\n          borderColor=\"neutral.6\"\n          _hover={{ borderColor: \"primary.7\", bg: \"neutral.3\" }}\n          transition=\"all 0.2s\"\n        >\n          <Stack direction=\"column\" gap=\"300\">\n            <Text fontWeight=\"600\" fontSize=\"lg\">{product.name}</Text>\n            <Stack direction=\"row\" justify=\"space-between\" align=\"center\">\n              <Text fontWeight=\"600\" color=\"primary.11\">{product.price}</Text>\n              <Text fontSize=\"sm\" color={product.stock === \"In Stock\" ? \"positive.11\" : \"warning.11\"}>\n                {product.stock}\n              </Text>\n            </Stack>\n            <Button size=\"sm\" variant=\"outline\">Add to Cart</Button>\n          </Stack>\n        </Box>\n      ))}\n    </SimpleGrid>\n  );\n}\n```\n\n### Image gallery\n\nCreate responsive image galleries:\n\n```jsx live-dev\nconst App = () => {\n  const images = [\n    { id: 1, alt: \"Landscape 1\", color: \"primary.7\" },\n    { id: 2, alt: \"Landscape 2\", color: \"info.7\" },\n    { id: 3, alt: \"Landscape 3\", color: \"positive.7\" },\n    { id: 4, alt: \"Landscape 4\", color: \"warning.7\" },\n    { id: 5, alt: \"Landscape 5\", color: \"critical.7\" },\n    { id: 6, alt: \"Landscape 6\", color: \"neutral.7\" },\n  ];\n\n  return (\n    <SimpleGrid minChildWidth=\"150px\" gap=\"300\">\n      {images.map((image) => (\n        <Box\n          key={image.id}\n          aspectRatio=\"4/3\"\n          bg={image.color}\n          borderRadius=\"200\"\n          display=\"flex\"\n          alignItems=\"center\"\n          justifyContent=\"center\"\n          cursor=\"pointer\"\n          transition=\"transform 0.2s\"\n          _hover={{ transform: \"scale(1.05)\" }}\n        >\n          <Text color=\"white\" fontWeight=\"600\">{image.alt}</Text>\n        </Box>\n      ))}\n    </SimpleGrid>\n  );\n}\n```\n\n### Dashboard widgets\n\nLayout dashboard cards in a responsive grid:\n\n```jsx live-dev\nconst App = () => {\n  const stats = [\n    { label: \"Total Sales\", value: \"$12,345\", change: \"+12.5%\", trend: \"up\" },\n    { label: \"Orders\", value: \"1,234\", change: \"+8.2%\", trend: \"up\" },\n    { label: \"Customers\", value: \"5,678\", change: \"-2.4%\", trend: \"down\" },\n    { label: \"Revenue\", value: \"$45,678\", change: \"+15.3%\", trend: \"up\" },\n  ];\n\n  return (\n    <SimpleGrid \n      columns={{ base: 1, sm: 2, lg: 4 }}\n      gap=\"400\"\n    >\n      {stats.map((stat, index) => (\n        <Box\n          key={index}\n          p=\"600\"\n          bg=\"neutral.2\"\n          borderRadius=\"200\"\n          borderWidth=\"1px\"\n          borderColor=\"neutral.6\"\n        >\n          <Stack direction=\"column\" gap=\"200\">\n            <Text fontSize=\"sm\" color=\"neutral.11\">{stat.label}</Text>\n            <Text fontSize=\"2xl\" fontWeight=\"700\">{stat.value}</Text>\n            <Text \n              fontSize=\"sm\" \n              fontWeight=\"600\"\n              color={stat.trend === \"up\" ? \"positive.11\" : \"critical.11\"}\n            >\n              {stat.change}\n            </Text>\n          </Stack>\n        </Box>\n      ))}\n    </SimpleGrid>\n  );\n}\n```\n\n### Feature cards\n\nDisplay feature highlights in a grid:\n\n```jsx live-dev\nconst App = () => {\n  const features = [\n    { \n      icon: Icons.Speed, \n      title: \"Fast Performance\", \n      description: \"Lightning-fast load times and smooth interactions\"\n    },\n    { \n      icon: Icons.Security, \n      title: \"Secure by Default\", \n      description: \"Enterprise-grade security for your data\"\n    },\n    { \n      icon: Icons.CloudDone, \n      title: \"Cloud Storage\", \n      description: \"Unlimited cloud storage for all your files\"\n    },\n    { \n      icon: Icons.Devices, \n      title: \"Cross-Platform\", \n      description: \"Works seamlessly across all your devices\"\n    },\n    { \n      icon: Icons.Support, \n      title: \"24/7 Support\", \n      description: \"Round-the-clock customer support\"\n    },\n    { \n      icon: Icons.Analytics, \n      title: \"Analytics\", \n      description: \"Detailed insights and reporting tools\"\n    },\n  ];\n\n  return (\n    <SimpleGrid \n      columns={{ base: 1, md: 2, lg: 3 }}\n      gap=\"600\"\n    >\n      {features.map((feature, index) => (\n        <Stack key={index} direction=\"column\" gap=\"300\" align=\"center\" textAlign=\"center\">\n          <Icon as={feature.icon} size=\"xl\" color=\"primary.11\" />\n          <Text fontWeight=\"600\" fontSize=\"lg\">{feature.title}</Text>\n          <Text fontSize=\"sm\" color=\"neutral.11\">{feature.description}</Text>\n        </Stack>\n      ))}\n    </SimpleGrid>\n  );\n}\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using SimpleGrid within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify SimpleGrid renders with expected structure and children\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { SimpleGrid, Box, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"SimpleGrid - Basic rendering\", () => {\n  it(\"renders children in a grid layout\", () => {\n    render(\n      <NimbusProvider>\n        <SimpleGrid data-testid=\"grid\">\n          <Box data-testid=\"item-1\">Item 1</Box>\n          <Box data-testid=\"item-2\">Item 2</Box>\n          <Box data-testid=\"item-3\">Item 3</Box>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    const grid = screen.getByTestId(\"grid\");\n    expect(grid).toBeInTheDocument();\n    expect(screen.getByTestId(\"item-1\")).toBeInTheDocument();\n    expect(screen.getByTestId(\"item-2\")).toBeInTheDocument();\n    expect(screen.getByTestId(\"item-3\")).toBeInTheDocument();\n  });\n\n  it(\"renders with correct display style\", () => {\n    render(\n      <NimbusProvider>\n        <SimpleGrid data-testid=\"grid\">\n          <Box>Item</Box>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    const grid = screen.getByTestId(\"grid\");\n    expect(grid).toHaveStyle({ display: \"grid\" });\n  });\n\n  it(\"forwards data attributes\", () => {\n    render(\n      <NimbusProvider>\n        <SimpleGrid data-testid=\"test-grid\" data-custom=\"value\">\n          <Box>Item</Box>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    const grid = screen.getByTestId(\"test-grid\");\n    expect(grid).toHaveAttribute(\"data-custom\", \"value\");\n  });\n});\n```\n\n### Column Configuration Tests\n\nTest different column configurations and responsive behavior\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { SimpleGrid, Box, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"SimpleGrid - Column configuration\", () => {\n  it(\"applies fixed column count\", () => {\n    render(\n      <NimbusProvider>\n        <SimpleGrid columns={3} data-testid=\"grid\">\n          <Box>Item 1</Box>\n          <Box>Item 2</Box>\n          <Box>Item 3</Box>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    const grid = screen.getByTestId(\"grid\");\n    expect(grid).toHaveStyle({\n      gridTemplateColumns: \"repeat(3, minmax(0, 1fr))\",\n    });\n  });\n\n  it(\"applies minChildWidth for auto-responsive layout\", () => {\n    render(\n      <NimbusProvider>\n        <SimpleGrid minChildWidth=\"200px\" data-testid=\"grid\">\n          <Box>Item 1</Box>\n          <Box>Item 2</Box>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    const grid = screen.getByTestId(\"grid\");\n    expect(grid).toHaveStyle({\n      gridTemplateColumns: \"repeat(auto-fit, minmax(200px, 1fr))\",\n    });\n  });\n\n  it(\"supports responsive column values\", () => {\n    render(\n      <NimbusProvider>\n        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} data-testid=\"grid\">\n          <Box>Item 1</Box>\n          <Box>Item 2</Box>\n          <Box>Item 3</Box>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    const grid = screen.getByTestId(\"grid\");\n    expect(grid).toBeInTheDocument();\n    // Responsive values are applied via CSS classes\n    expect(grid).toHaveClass(/css-/);\n  });\n});\n```\n\n### Gap Spacing Tests\n\nTest gap, columnGap, and rowGap properties\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { SimpleGrid, Box, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"SimpleGrid - Gap spacing\", () => {\n  it(\"applies uniform gap\", () => {\n    render(\n      <NimbusProvider>\n        <SimpleGrid gap=\"400\" data-testid=\"grid\">\n          <Box>Item 1</Box>\n          <Box>Item 2</Box>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    const grid = screen.getByTestId(\"grid\");\n    expect(grid).toBeInTheDocument();\n    // Gap is applied via Chakra tokens\n  });\n\n  it(\"applies separate column and row gaps\", () => {\n    render(\n      <NimbusProvider>\n        <SimpleGrid columnGap=\"200\" rowGap=\"400\" data-testid=\"grid\">\n          <Box>Item 1</Box>\n          <Box>Item 2</Box>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    const grid = screen.getByTestId(\"grid\");\n    expect(grid).toBeInTheDocument();\n  });\n\n  it(\"supports responsive gap values\", () => {\n    render(\n      <NimbusProvider>\n        <SimpleGrid gap={{ base: \"200\", md: \"400\" }} data-testid=\"grid\">\n          <Box>Item 1</Box>\n          <Box>Item 2</Box>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    const grid = screen.getByTestId(\"grid\");\n    expect(grid).toBeInTheDocument();\n  });\n});\n```\n\n### Column Spanning Tests\n\nTest SimpleGrid.Item with colSpan property\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { SimpleGrid, Box, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"SimpleGrid - Column spanning\", () => {\n  it(\"renders SimpleGrid.Item with colSpan\", () => {\n    render(\n      <NimbusProvider>\n        <SimpleGrid columns={4} data-testid=\"grid\">\n          <SimpleGrid.Item colSpan={2} data-testid=\"span-item\">\n            <Box>Spanning Item</Box>\n          </SimpleGrid.Item>\n          <SimpleGrid.Item colSpan={1}>\n            <Box>Item 1</Box>\n          </SimpleGrid.Item>\n          <SimpleGrid.Item colSpan={1}>\n            <Box>Item 2</Box>\n          </SimpleGrid.Item>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    const spanItem = screen.getByTestId(\"span-item\");\n    expect(spanItem).toBeInTheDocument();\n    expect(screen.getByText(\"Spanning Item\")).toBeInTheDocument();\n  });\n\n  it(\"supports responsive colSpan values\", () => {\n    render(\n      <NimbusProvider>\n        <SimpleGrid columns={{ base: 2, md: 4 }} data-testid=\"grid\">\n          <SimpleGrid.Item\n            colSpan={{ base: 2, md: 3 }}\n            data-testid=\"responsive-span\"\n          >\n            <Box>Responsive Spanning Item</Box>\n          </SimpleGrid.Item>\n          <SimpleGrid.Item colSpan={1}>\n            <Box>Item 1</Box>\n          </SimpleGrid.Item>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    const responsiveSpan = screen.getByTestId(\"responsive-span\");\n    expect(responsiveSpan).toBeInTheDocument();\n  });\n});\n```\n\n### Accessibility Tests\n\nVerify accessibility attributes and semantic structure\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { SimpleGrid, Box, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"SimpleGrid - Accessibility\", () => {\n  it(\"forwards aria-label attribute\", () => {\n    render(\n      <NimbusProvider>\n        <SimpleGrid aria-label=\"Product grid\" data-testid=\"grid\">\n          <Box>Item 1</Box>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    const grid = screen.getByTestId(\"grid\");\n    expect(grid).toHaveAttribute(\"aria-label\", \"Product grid\");\n  });\n\n  it(\"supports custom element types with as prop\", () => {\n    render(\n      <NimbusProvider>\n        <SimpleGrid as=\"section\" data-testid=\"grid\">\n          <Box>Item 1</Box>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    const grid = screen.getByTestId(\"grid\");\n    expect(grid.tagName).toBe(\"SECTION\");\n  });\n\n  it(\"maintains accessible structure with semantic children\", () => {\n    render(\n      <NimbusProvider>\n        <SimpleGrid\n          as=\"section\"\n          aria-labelledby=\"grid-heading\"\n          data-testid=\"grid\"\n        >\n          <h2 id=\"grid-heading\" style={{ display: \"none\" }}>\n            Products\n          </h2>\n          <article>\n            <h3>Product 1</h3>\n          </article>\n          <article>\n            <h3>Product 2</h3>\n          </article>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    const grid = screen.getByTestId(\"grid\");\n    expect(grid).toHaveAttribute(\"aria-labelledby\", \"grid-heading\");\n    expect(screen.getByText(\"Product 1\")).toBeInTheDocument();\n    expect(screen.getByText(\"Product 2\")).toBeInTheDocument();\n  });\n});\n```\n\n### Ref Forwarding Tests\n\nVerify ref forwarding to the underlying DOM element\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { SimpleGrid, Box, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"SimpleGrid - Ref forwarding\", () => {\n  it(\"forwards ref to the grid element\", () => {\n    const ref = { current: null as HTMLDivElement | null };\n\n    render(\n      <NimbusProvider>\n        <SimpleGrid ref={ref} data-testid=\"grid\">\n          <Box>Item 1</Box>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    expect(ref.current).toBeInstanceOf(HTMLDivElement);\n    expect(ref.current).toHaveAttribute(\"data-testid\", \"grid\");\n  });\n\n  it(\"allows access to DOM methods through ref\", () => {\n    const ref = { current: null as HTMLDivElement | null };\n\n    render(\n      <NimbusProvider>\n        <SimpleGrid ref={ref}>\n          <Box>Item 1</Box>\n        </SimpleGrid>\n      </NimbusProvider>\n    );\n\n    expect(ref.current?.querySelector).toBeDefined();\n    expect(ref.current?.getBoundingClientRect).toBeDefined();\n  });\n});\n```\n\n\n## Resources\n\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-simplegrid--docs)\n- [Chakra UI SimpleGrid Documentation](https://www.chakra-ui.com/docs/components/simple-grid)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Fixed columns",
+          "href": "#fixed-columns",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Auto-responsive layout",
+          "href": "#auto-responsive-layout",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Responsive columns",
+          "href": "#responsive-columns",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Column spanning",
+          "href": "#column-spanning",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom gap spacing",
+          "href": "#custom-gap-spacing",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Responsive gap values",
+          "href": "#responsive-gap-values",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage context",
+          "href": "#usage-context",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Semantic Structure",
+          "href": "#semantic-structure",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Persistent ID",
+          "href": "#persistent-id",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Product grid",
+          "href": "#product-grid",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Image gallery",
+          "href": "#image-gallery",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Dashboard widgets",
+          "href": "#dashboard-widgets",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Feature cards",
+          "href": "#feature-cards",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Column Configuration Tests",
+          "href": "#column-configuration-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Gap Spacing Tests",
+          "href": "#gap-spacing-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Column Spanning Tests",
+          "href": "#column-spanning-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility Tests",
+          "href": "#accessibility-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Ref Forwarding Tests",
+          "href": "#ref-forwarding-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

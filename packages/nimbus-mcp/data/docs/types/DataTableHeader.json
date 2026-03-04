@@ -1,0 +1,11 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "DataTable.Header - The table header section that renders column headers with sorting capabilities",
+  "displayName": "DataTableHeader",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": true
+}

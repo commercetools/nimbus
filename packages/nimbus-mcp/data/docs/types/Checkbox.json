@@ -1,0 +1,42 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/inputs/checkbox}"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Checkbox\n\nDisplays a checkbox.",
+  "displayName": "Checkbox",
+  "methods": [],
+  "props": {
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref forwarding to the label element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/checkbox/checkbox.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLLabelElement>"
+      }
+    },
+    "children": {
+      "defaultValue": null,
+      "description": "The label content to display next to the checkbox",
+      "name": "children",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/checkbox/checkbox.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

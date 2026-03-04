@@ -1,0 +1,36 @@
+{
+  "meta": {
+    "id": "Spacing",
+    "title": "Spacing",
+    "description": "Spacing tokens are used to define the space between elements.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/tokens/spacing.mdx",
+    "menu": [
+      "Home",
+      "Design Tokens",
+      "Spacing"
+    ],
+    "route": "home/design-tokens/spacing",
+    "tags": [
+      "space",
+      "spacing"
+    ],
+    "toc": [],
+    "icon": "SpaceBar",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Spacing Tokens\n\nSpacing tokens are used to define the space between elements. They are used to\ncreate consistent spacing between elements and to ensure that the layout is\nvisually balanced.\n\n> [!NOTE]  \n> Every token has a negative equivalent, in case you need to apply a negative\n> margin etc. Access the negative version by prependind the token name with a\n> dash. e.g. `-100`, `-400`, `-1000`, etc.\n\n<br />\n\n<SpacingTokenDemo />\n\n<br />\n\n> [!TIP]  \n> To quickly calculate the token value in px, take the token name and divide it\n> by 25. e.g. `100 / 25 = 4px`, `400 / 25 = 16px`, `1000 / 25 = 40px`, etc.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Spacing Tokens\n\nSpacing tokens are used to define the space between elements. They are used to\ncreate consistent spacing between elements and to ensure that the layout is\nvisually balanced.\n\n> [!NOTE]  \n> Every token has a negative equivalent, in case you need to apply a negative\n> margin etc. Access the negative version by prependind the token name with a\n> dash. e.g. `-100`, `-400`, `-1000`, etc.\n\n<br />\n\n<SpacingTokenDemo />\n\n<br />\n\n> [!TIP]  \n> To quickly calculate the token value in px, take the token name and divide it\n> by 25. e.g. `100 / 25 = 4px`, `400 / 25 = 16px`, `1000 / 25 = 40px`, etc.\n",
+      "toc": []
+    }
+  }
+}

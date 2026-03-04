@@ -1,0 +1,9 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Props for the Steps.Status component.\nRenders different content based on step state.",
+  "displayName": "StepsStatusProps",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

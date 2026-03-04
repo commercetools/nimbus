@@ -1,0 +1,11 @@
+{
+  "tags": {
+    "example": "```tsx\n// Info page (no footer)\n<MainPage.Root>\n  <MainPage.Header>\n    <MainPage.Title title=\"Products\" />\n    <MainPage.Actions>\n      <Button>Add Product</Button>\n    </MainPage.Actions>\n  </MainPage.Header>\n  <MainPage.Content variant=\"wide\">\n    {content}\n  </MainPage.Content>\n</MainPage.Root>\n\n// Form page (with footer)\n<MainPage.Root>\n  <MainPage.Header>\n    <MainPage.Title title=\"Settings\" />\n  </MainPage.Header>\n  <MainPage.Content variant=\"narrow\">\n    {form fields}\n  </MainPage.Content>\n  <MainPage.Footer>\n    <Button variant=\"ghost\">Cancel</Button>\n    <Button>Save</Button>\n  </MainPage.Footer>\n</MainPage.Root>\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "MainPage\n============================================================\nA page skeleton compound component providing title, header actions,\ncontent area, and optional footer. Replaces MC's FormMainPage,\nInfoMainPage, TabularMainPage, and CustomFormMainPage with a single\ncomposable component.",
+  "displayName": "MainPage",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

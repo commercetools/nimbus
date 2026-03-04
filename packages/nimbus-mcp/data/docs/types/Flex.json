@@ -1,0 +1,13 @@
+{
+  "tags": {
+    "supportsStyleProps": "",
+    "see": "{@link https://nimbus-documentation.vercel.app/components/layout/flex}",
+    "example": "```tsx\n<Flex gap=\"400\" direction=\"row\" align=\"center\">\n  <Box>Item 1</Box>\n  <Box>Item 2</Box>\n</Flex>\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Flex\n\nThe Flex component is used to create layouts based on CSS display flex.\n\nBuilt on top of Chakra UI's Flex component with Nimbus theming.",
+  "displayName": "Flex",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": true
+}

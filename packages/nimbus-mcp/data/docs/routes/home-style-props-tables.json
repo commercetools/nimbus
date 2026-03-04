@@ -1,0 +1,116 @@
+{
+  "meta": {
+    "id": "Style Props-Tables",
+    "title": "Tables",
+    "description": "JSX style props for styling table elements.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/tables.mdx",
+    "menu": [
+      "Home",
+      "Style Props",
+      "Tables"
+    ],
+    "route": "home/style-props/tables",
+    "tags": [
+      "document"
+    ],
+    "toc": [
+      {
+        "value": "Border Spacing",
+        "href": "#border-spacing",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Border Spacing X",
+        "href": "#border-spacing-x",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Border Spacing Y",
+        "href": "#border-spacing-y",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Caption Side",
+        "href": "#caption-side",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Tables\n\nJSX style props for styling table elements.\n\n## Border Spacing\n\nControl the border-spacing property of a table.\n\n```jsx\n<chakra.table borderSpacing=\"2\">\n  <tbody>\n    <tr>\n      <td>Cell 1</td>\n      <td>Cell 2</td>\n    </tr>\n  </tbody>\n</chakra.table>\n```\n\n| Prop            | CSS Property     | Token Category |\n| --------------- | ---------------- | -------------- |\n| `borderSpacing` | `border-spacing` | `spacing`      |\n\n## Border Spacing X\n\nUse the `borderSpacingX` prop to set the horizontal border-spacing property of a\ntable.\n\n```jsx\n<chakra.table borderSpacingX=\"2\">\n  <tbody>\n    <tr>\n      <td>Cell 1</td>\n      <td>Cell 2</td>\n    </tr>\n  </tbody>\n</chakra.table>\n```\n\n| Prop             | CSS Property     | Token Category |\n| ---------------- | ---------------- | -------------- |\n| `borderSpacingX` | `border-spacing` | `spacing`      |\n\n## Border Spacing Y\n\nUse the `borderSpacingY` prop to set the vertical border-spacing property of a\ntable.\n\n```jsx\n<chakra.table borderSpacingY=\"2\">\n  <tbody>\n    <tr>\n      <td>Cell 1</td>\n      <td>Cell 2</td>\n    </tr>\n  </tbody>\n</chakra.table>\n```\n\n| Prop             | CSS Property     | Token Category |\n| ---------------- | ---------------- | -------------- |\n| `borderSpacingY` | `border-spacing` | `spacing`      |\n\n## Caption Side\n\nUse the `captionSide` prop to set the side of the caption of a table.\n\n```jsx\n<table>\n  <chakra.caption captionSide=\"bottom\">This is a caption</chakra.caption>\n  <tbody>\n    <tr>\n      <td>Cell 1</td>\n      <td>Cell 2</td>\n    </tr>\n  </tbody>\n</table>\n```\n\n| Prop          | CSS Property   | Token Category |\n| ------------- | -------------- | -------------- |\n| `captionSide` | `caption-side` | -              |\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Tables\n\nJSX style props for styling table elements.\n\n## Border Spacing\n\nControl the border-spacing property of a table.\n\n```jsx\n<chakra.table borderSpacing=\"2\">\n  <tbody>\n    <tr>\n      <td>Cell 1</td>\n      <td>Cell 2</td>\n    </tr>\n  </tbody>\n</chakra.table>\n```\n\n| Prop            | CSS Property     | Token Category |\n| --------------- | ---------------- | -------------- |\n| `borderSpacing` | `border-spacing` | `spacing`      |\n\n## Border Spacing X\n\nUse the `borderSpacingX` prop to set the horizontal border-spacing property of a\ntable.\n\n```jsx\n<chakra.table borderSpacingX=\"2\">\n  <tbody>\n    <tr>\n      <td>Cell 1</td>\n      <td>Cell 2</td>\n    </tr>\n  </tbody>\n</chakra.table>\n```\n\n| Prop             | CSS Property     | Token Category |\n| ---------------- | ---------------- | -------------- |\n| `borderSpacingX` | `border-spacing` | `spacing`      |\n\n## Border Spacing Y\n\nUse the `borderSpacingY` prop to set the vertical border-spacing property of a\ntable.\n\n```jsx\n<chakra.table borderSpacingY=\"2\">\n  <tbody>\n    <tr>\n      <td>Cell 1</td>\n      <td>Cell 2</td>\n    </tr>\n  </tbody>\n</chakra.table>\n```\n\n| Prop             | CSS Property     | Token Category |\n| ---------------- | ---------------- | -------------- |\n| `borderSpacingY` | `border-spacing` | `spacing`      |\n\n## Caption Side\n\nUse the `captionSide` prop to set the side of the caption of a table.\n\n```jsx\n<table>\n  <chakra.caption captionSide=\"bottom\">This is a caption</chakra.caption>\n  <tbody>\n    <tr>\n      <td>Cell 1</td>\n      <td>Cell 2</td>\n    </tr>\n  </tbody>\n</table>\n```\n\n| Prop          | CSS Property   | Token Category |\n| ------------- | -------------- | -------------- |\n| `captionSide` | `caption-side` | -              |\n",
+      "toc": [
+        {
+          "value": "Border Spacing",
+          "href": "#border-spacing",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Border Spacing X",
+          "href": "#border-spacing-x",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Border Spacing Y",
+          "href": "#border-spacing-y",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Caption Side",
+          "href": "#caption-side",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

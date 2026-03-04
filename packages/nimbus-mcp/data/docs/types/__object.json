@@ -1,0 +1,12 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/inputs/combobox}",
+    "example": "```tsx\n<ComboBox.Root items={items}>\n  <ComboBox.Trigger />\n  <ComboBox.Popover>\n    <ComboBox.ListBox>\n      {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}\n    </ComboBox.ListBox>\n  </ComboBox.Popover>\n</ComboBox.Root>\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# ComboBox\n============================================================\n\nA searchable, filterable selection component with single and multi-select support.\nBuilt with React Aria Components for accessibility and keyboard navigation.",
+  "displayName": "__object",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

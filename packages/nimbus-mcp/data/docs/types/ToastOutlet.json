@@ -1,0 +1,12 @@
+{
+  "tags": {
+    "example": "```tsx\nimport { ToastOutlet } from \"@commercetools/nimbus\";\n\nfunction App() {\n  return (\n    <>\n      <YourApp />\n      <ToastOutlet />\n    </>\n  );\n}\n```",
+    "internal": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "ToastOutlet - Renders all toast regions.\n\nMount this component once at the root of your application (NimbusProvider\ndoes this automatically and prevents duplicates when nested).\nToasts appear when created via the `toast()` imperative API.\n\nThe outlet defers rendering of `<Toaster>` instances until the first\ntoast is actually created. This avoids mounting internal state machines\n(and their DOM event listeners) when toasts are never used, and\neliminates spurious `act(...)` warnings in JSDOM-based tests.",
+  "displayName": "ToastOutlet",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

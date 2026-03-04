@@ -1,0 +1,9 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Props for the Table.ColumnHeader component\n\nHeader cell (th element) used in header rows.",
+  "displayName": "TableColumnHeaderProps",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

@@ -1,0 +1,382 @@
+{
+  "meta": {
+    "id": "Patterns-SearchInputField",
+    "title": "Search input field",
+    "exportName": "SearchInputField",
+    "description": "This pattern component integrates the SearchInput within a FormField using a simple, consistent, and opinionated API.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/patterns/fields/search-input-field/search-input-field.mdx",
+    "menu": [
+      "Patterns",
+      "Fields",
+      "Search input field"
+    ],
+    "route": "patterns/fields/search-input-field",
+    "tags": [
+      "component",
+      "pattern",
+      "field",
+      "SearchInput",
+      "SearchInputField"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nSearchInputField is a pattern component that combines the FormField wrapper with the SearchInput component. This integration provides a complete form field experience including accessible labels, helper text descriptions, info popovers for supplementary information, and comprehensive validation and error handling, all through a simplified, opinionated API.\n\nThe component features a built-in search icon, a clear button that appears when text is entered, keyboard shortcuts (Escape to clear, Enter to submit), and supports various visual variants and sizes.\n\n### Resources\n\nFor detailed guidance on the individual components that make up this pattern, consult the component guidelines:\n\n- [SearchInput Guidelines](/components/inputs/searchinput) - Search input patterns, interaction guidelines, and accessibility standards\n- [FormField Guidelines](/components/inputs/formfield) - Label options, helper text, validation patterns, and form field accessibility\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-fields-searchinputfield--docs)\n\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nSearchInputField is a pattern component that combines the FormField wrapper with the SearchInput component. This integration provides a complete form field experience including accessible labels, helper text descriptions, info popovers for supplementary information, and comprehensive validation and error handling, all through a simplified, opinionated API.\n\nThe component features a built-in search icon, a clear button that appears when text is entered, keyboard shortcuts (Escape to clear, Enter to submit), and supports various visual variants and sizes.\n\n### Resources\n\nFor detailed guidance on the individual components that make up this pattern, consult the component guidelines:\n\n- [SearchInput Guidelines](/components/inputs/searchinput) - Search input patterns, interaction guidelines, and accessibility standards\n- [FormField Guidelines](/components/inputs/formfield) - Label options, helper text, validation patterns, and form field accessibility\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-fields-searchinputfield--docs)\n\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Comparison: field pattern vs manual composition\n\n**With SearchInputField:**\n```tsx\n<SearchInputField\n  label=\"Search products\"\n  description=\"Enter keywords to search\"\n  value={value}\n  onChange={setValue}\n  errors={errors}\n  touched={touched}\n  isRequired\n/>\n```\n\n**Manual composition:**\n```tsx\n<FormField.Root isInvalid={!!(errors && touched)} isRequired>\n  <FormField.Label>Search products</FormField.Label>\n  <FormField.Input>\n    <SearchInput\n      value={value}\n      onChange={setValue}\n      width=\"full\"\n    />\n  </FormField.Input>\n  <FormField.Description>\n    Enter keywords to search\n  </FormField.Description>\n  {touched && errors && (\n    <FormField.Error>\n      <FieldErrors errors={errors} />\n    </FormField.Error>\n  )}\n</FormField.Root>\n```\n\n### When to use which\n\n**Use SearchInputField when:**\n- Building standard forms with search functionality\n- You want consistent field patterns across your app\n- You need built-in error handling with FieldErrors\n- You want to minimize boilerplate code\n- You need search-specific features (clear button, search icon)\n\n**Use SearchInput with manual FormField composition when:**\n- You need custom field layouts\n- You're building complex, non-standard forms\n- You need granular control over FormField sub-components\n- You require a different error handling implementation\n\n## Getting started\n\n### Import\n\n```tsx\nimport { SearchInputField, type SearchInputFieldProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe simplest implementation with a label and controlled state:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<string>('');\n\n  return (\n    <SearchInputField\n      label=\"Search products\"\n      value={value}\n      onChange={setValue}\n      placeholder=\"Search...\"\n    />\n  );\n}\n```\n\n## Usage examples\n\n### Size options\n\nThe `sm` and `md` size variants are available to match your interface density:\n\n```jsx live-dev\nconst App = () => {\n  const [valueSmall, setValueSmall] = useState<string>('');\n  const [valueMedium, setValueMedium] = useState<string>('');\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <SearchInputField\n        size=\"sm\"\n        label=\"Small search\"\n        value={valueSmall}\n        onChange={setValueSmall}\n        placeholder=\"Search...\"\n      />\n      <SearchInputField\n        size=\"md\"\n        label=\"Medium search\"\n        value={valueMedium}\n        onChange={setValueMedium}\n        placeholder=\"Search...\"\n      />\n    </Stack>\n  );\n}\n```\n\n### Visual variants\n\nChoose between `solid` and `ghost` variants to match your design context:\n\n```jsx live-dev\nconst App = () => {\n  const [valueSolid, setValueSolid] = useState<string>('');\n  const [valueGhost, setValueGhost] = useState<string>('');\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <SearchInputField\n        variant=\"solid\"\n        label=\"Solid variant\"\n        value={valueSolid}\n        onChange={setValueSolid}\n        placeholder=\"Search...\"\n      />\n      <SearchInputField\n        variant=\"ghost\"\n        label=\"Ghost variant\"\n        value={valueGhost}\n        onChange={setValueGhost}\n        placeholder=\"Search...\"\n      />\n    </Stack>\n  );\n}\n```\n\n### With description\n\nAdd helper text below the input to provide context:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<string>('');\n\n  return (\n    <SearchInputField\n      label=\"Search products\"\n      description=\"Enter keywords, product names, or SKUs to find what you're looking for\"\n      value={value}\n      onChange={setValue}\n      placeholder=\"Search...\"\n    />\n  );\n}\n```\n\n### With validation errors\n\nShow error messages when the field is touched and has validation errors:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<string>('');\n  const [touched, setTouched] = useState<boolean>(false);\n\n  // Simulate validation: require at least 2 characters\n  const errors = touched && value.length < 2 ? { missing: true } : undefined;\n\n  return (\n    <SearchInputField\n      label=\"Search products\"\n      description=\"Enter at least 2 characters\"\n      value={value}\n      onChange={setValue}\n      onBlur={() => setTouched(true)}\n      errors={errors}\n      touched={touched}\n      isRequired\n      placeholder=\"Search...\"\n    />\n  );\n}\n```\n\n**Note**: Errors only display when both `touched={true}` and `errors` exist. This prevents showing errors before the user interacts with the field.\n\n### With info popover\n\nProvide additional context through an info button and popover:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<string>('');\n\n  return (\n    <SearchInputField\n      label=\"Search products\"\n      description=\"Enter keywords to search\"\n      info=\"You can search by product name, SKU, description, or category. Use quotes for exact phrases.\"\n      value={value}\n      onChange={setValue}\n      placeholder=\"Search...\"\n    />\n  );\n}\n```\n\n### Required field\n\nMark fields as required with the `isRequired` prop:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<string>('');\n\n  return (\n    <SearchInputField\n      label=\"Search products\"\n      description=\"Enter keywords to search\"\n      value={value}\n      onChange={setValue}\n      isRequired\n      placeholder=\"Search...\"\n    />\n  );\n}\n```\n\n### Disabled state\n\nPrevent user interaction with the `isDisabled` prop:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<string>('Cannot edit this');\n\n  return (\n    <SearchInputField\n      label=\"Search\"\n      description=\"This field cannot be modified\"\n      value={value}\n      onChange={setValue}\n      isDisabled\n      placeholder=\"Search...\"\n    />\n  );\n}\n```\n\n### Read-only state\n\nDisplay a non-editable value with the `isReadOnly` prop:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<string>('laptop');\n\n  return (\n    <SearchInputField\n      label=\"Current search\"\n      description=\"This value is read-only\"\n      value={value}\n      onChange={setValue}\n      isReadOnly\n      placeholder=\"Search...\"\n    />\n  );\n}\n```\n\n### Clear button functionality\n\nThe SearchInput component includes a built-in clear button that appears when there's text in the input:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState<string>('laptop');\n\n  return (\n    <SearchInputField\n      label=\"Search products\"\n      description=\"Type to search, clear button appears when there's text\"\n      value={value}\n      onChange={setValue}\n      placeholder=\"Search...\"\n    />\n  );\n}\n```\n\nThe clear button:\n- Appears automatically when the input has a value\n- Clears the input when clicked\n- Supports keyboard shortcuts (Escape key to clear)\n\n## Component requirements\n\n### Error handling\n\nSearchInputField uses the `FieldErrors` component to display validation errors with built-in localized messages. For custom error messages, use the `renderError` prop (see [Custom error rendering](#custom-error-rendering) below).\n\n**Error object format** (`FieldErrorsData`):\n```tsx\ntype FieldErrorsData = {\n  [key: string]: boolean | string | ReactNode;\n};\n\n// Examples:\nconst errors = {\n  missing: true,              // Built-in message: \"This field is required\"\n  invalidFormat: true,        // Built-in message: \"Please enter a valid format\"\n  custom: \"Custom error text\" // Custom message\n};\n```\n\n## Accessibility\n\nSearchInputField provides comprehensive accessibility through [FormField](components/inputs/formfield):\n\n**Automatic ARIA relationships:**\n- Labels connected via `aria-labelledby`\n- Descriptions connected via `aria-describedby`\n- Error messages connected via `aria-describedby`\n- Required fields indicated with `aria-required`\n- Invalid state indicated with `aria-invalid`\n- Search role via `role=\"searchbox\"`\n\nIf your use case requires tracking and analytics for this component, add a **persistent**, **unique** id:\n\n```tsx\nconst PERSISTENT_ID = \"example-search-input\";\n\nexport const Example = () => (\n  <SearchInputField\n    id={PERSISTENT_ID}\n    label=\"Search products\"\n    value={value}\n    onChange={setValue}\n  />\n);\n```\n\n#### Keyboard navigation\n\nThe component supports standard search input keyboard interaction:\n- `Tab` / `Shift+Tab`: Move focus to/from the input\n- `Arrow keys`: Navigate within the text\n- `Home` / `End`: Move to start/end of text\n- `Ctrl+A` / `Cmd+A`: Select all text\n- `Escape`: Clear the input (built-in SearchInput feature)\n- `Enter`: Submit search (if onSubmit handler is provided)\n\n## Form integration\n\nSearchInputField integrates seamlessly with Formik:\n\n```tsx\nimport { useFormik } from 'formik';\nimport { SearchInputField, Button, Stack } from '@commercetools/nimbus';\n\nconst MyForm = () => {\n  const formik = useFormik({\n    initialValues: {\n      search: '',\n    },\n    validate: (values) => {\n      const errors = {};\n\n      if (!values.search) {\n        errors.search = { missing: true };\n      } else if (values.search.length < 2) {\n        errors.search = { tooShort: true };\n      }\n\n      return errors;\n    },\n    onSubmit: (values) => {\n      console.log('Searching for:', values.search);\n    },\n  });\n\n  return (\n    <form onSubmit={formik.handleSubmit}>\n      <Stack direction=\"column\" gap=\"400\">\n        <SearchInputField\n          name=\"search\"\n          label=\"Search products\"\n          description=\"Enter keywords to search\"\n          value={formik.values.search}\n          onChange={(value) => formik.setFieldValue('search', value)}\n          onBlur={() => formik.setFieldTouched('search', true)}\n          errors={formik.errors.search}\n          touched={formik.touched.search}\n          isRequired\n          placeholder=\"Search...\"\n        />\n        <Button type=\"submit\">Search</Button>\n      </Stack>\n    </form>\n  );\n};\n```\n\n**Key integration points:**\n- **Value/OnChange**: Connect Formik values with `value` and `setFieldValue`\n- **OnBlur**: Mark field as touched on blur\n- **Errors**: Pass `errors.fieldName` (supports `FieldErrorsData` format or strings)\n- **Touched**: Pass `touched.fieldName` to control error visibility\n\n## API reference\n\n<PropsTable id=\"SearchInputField\" />\n\n### Custom error rendering\n\nUse the `renderError` prop to customize how specific error keys are displayed:\n\n```tsx\n<SearchInputField\n  label=\"Search products\"\n  value={value}\n  onChange={setValue}\n  errors={{ invalidSearch: true, tooShort: true }}\n  touched={true}\n  renderError={(key) => {\n    switch (key) {\n      case 'invalidSearch':\n        return 'Please enter a valid search query';\n      case 'tooShort':\n        return 'Search query must be at least 2 characters long';\n      default:\n        return null; // Fall back to FieldErrors built-in messages\n    }\n  }}\n/>\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using SearchInputField within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic rendering tests\n\nVerify the component renders with expected elements:\n\n```tsx\nimport { render, screen } from '@testing-library/react';\nimport { SearchInputField } from '@commercetools/nimbus';\n\ndescribe('SearchInputField', () => {\n  it('renders label and input', () => {\n    render(\n      <SearchInputField\n        label=\"Search products\"\n        value=\"\"\n        onChange={() => {}}\n      />\n    );\n\n    // Verify label is rendered\n    expect(screen.getByText('Search products')).toBeInTheDocument();\n\n    // Verify input is rendered with searchbox role\n    expect(screen.getByRole('searchbox', { name: /search products/i })).toBeInTheDocument();\n  });\n\n  it('renders description text', () => {\n    render(\n      <SearchInputField\n        label=\"Search\"\n        description=\"Enter keywords to search\"\n        value=\"\"\n        onChange={() => {}}\n      />\n    );\n\n    expect(screen.getByText('Enter keywords to search')).toBeInTheDocument();\n  });\n\n  it('shows required indicator', () => {\n    render(\n      <SearchInputField\n        label=\"Search\"\n        value=\"\"\n        onChange={() => {}}\n        isRequired\n      />\n    );\n\n    // Check for required indicator (typically an asterisk or aria-required)\n    const input = screen.getByRole('searchbox');\n    expect(input).toHaveAttribute('aria-required', 'true');\n  });\n});\n```\n\n### Interaction tests\n\nTest user interactions with the component:\n\n```tsx\nimport { render, screen, waitFor } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\nimport { SearchInputField } from '@commercetools/nimbus';\n\ndescribe('SearchInputField interactions', () => {\n  it('calls onChange when user types', async () => {\n    const user = userEvent.setup();\n    const handleChange = jest.fn();\n\n    render(\n      <SearchInputField\n        label=\"Search\"\n        value=\"\"\n        onChange={handleChange}\n      />\n    );\n\n    const input = screen.getByRole('searchbox', { name: /search/i });\n    await user.type(input, 'laptop');\n\n    expect(handleChange).toHaveBeenCalledTimes(6); // Once per character\n    expect(handleChange).toHaveBeenLastCalledWith('laptop');\n  });\n\n  it('calls onBlur when input loses focus', async () => {\n    const user = userEvent.setup();\n    const handleBlur = jest.fn();\n\n    render(\n      <SearchInputField\n        label=\"Search\"\n        value=\"\"\n        onChange={() => {}}\n        onBlur={handleBlur}\n      />\n    );\n\n    const input = screen.getByRole('searchbox');\n    await user.click(input);\n    await user.tab(); // Move focus away\n\n    expect(handleBlur).toHaveBeenCalledTimes(1);\n  });\n\n  it('does not call onChange when disabled', async () => {\n    const user = userEvent.setup();\n    const handleChange = jest.fn();\n\n    render(\n      <SearchInputField\n        label=\"Search\"\n        value=\"\"\n        onChange={handleChange}\n        isDisabled\n      />\n    );\n\n    const input = screen.getByRole('searchbox');\n    expect(input).toBeDisabled();\n\n    // Attempt to type (should not work)\n    await user.type(input, 'test');\n    expect(handleChange).not.toHaveBeenCalled();\n  });\n});\n```\n\n### Testing validation and errors\n\nTest error handling and validation behavior:\n\n```tsx\nimport { render, screen } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\nimport { SearchInputField } from '@commercetools/nimbus';\n\ndescribe('SearchInputField validation', () => {\n  it('does not show errors when untouched', () => {\n    render(\n      <SearchInputField\n        label=\"Search\"\n        value=\"\"\n        onChange={() => {}}\n        errors={{ missing: true }}\n        touched={false}\n      />\n    );\n\n    // Error should not be visible\n    expect(screen.queryByText(/required/i)).not.toBeInTheDocument();\n  });\n\n  it('shows errors when touched', () => {\n    render(\n      <SearchInputField\n        label=\"Search\"\n        value=\"\"\n        onChange={() => {}}\n        errors={{ missing: true }}\n        touched={true}\n      />\n    );\n\n    // Error should be visible\n    expect(screen.getByText(/required/i)).toBeInTheDocument();\n  });\n\n  it('shows custom error messages', () => {\n    render(\n      <SearchInputField\n        label=\"Search\"\n        value=\"\"\n        onChange={() => {}}\n        errors={{ invalidFormat: true }}\n        touched={true}\n        renderError={(key) => {\n          if (key === 'invalidFormat') return 'Please enter a valid search query';\n          return null;\n        }}\n      />\n    );\n\n    expect(screen.getByText('Please enter a valid search query')).toBeInTheDocument();\n  });\n\n  it('applies invalid styling when isInvalid is true', () => {\n    render(\n      <SearchInputField\n        label=\"Search\"\n        value=\"\"\n        onChange={() => {}}\n        isInvalid\n      />\n    );\n\n    const input = screen.getByRole('searchbox');\n    expect(input).toHaveAttribute('aria-invalid', 'true');\n  });\n});\n```\n\n## Resources\n\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-fields-searchinputfield--docs)\n- [SearchInput Component](/components/inputs/searchinput)\n- [FormField Component](/components/inputs/formfield)\n- [FieldErrors Component](/components/forms/fielderrors)\n- [React Aria SearchField](https://react-spectrum.adobe.com/react-aria/SearchField.html)\n\n",
+      "toc": [
+        {
+          "value": "Comparison: field pattern vs manual composition",
+          "href": "#comparison-field-pattern-vs-manual-composition",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "When to use which",
+          "href": "#when-to-use-which",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size options",
+          "href": "#size-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual variants",
+          "href": "#visual-variants",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With description",
+          "href": "#with-description",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With validation errors",
+          "href": "#with-validation-errors",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With info popover",
+          "href": "#with-info-popover",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Required field",
+          "href": "#required-field",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Disabled state",
+          "href": "#disabled-state",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Read-only state",
+          "href": "#read-only-state",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Clear button functionality",
+          "href": "#clear-button-functionality",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            9
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Error handling",
+          "href": "#error-handling",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Form integration",
+          "href": "#form-integration",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom error rendering",
+          "href": "#custom-error-rendering",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic rendering tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Interaction tests",
+          "href": "#interaction-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing validation and errors",
+          "href": "#testing-validation-and-errors",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            9
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

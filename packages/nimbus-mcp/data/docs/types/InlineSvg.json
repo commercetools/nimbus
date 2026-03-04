@@ -1,0 +1,43 @@
+{
+  "tags": {
+    "example": "```tsx\n<InlineSvg\n  data='<svg viewBox=\"0 0 24 24\"><path d=\"M12 2L2 7v10c0 5.55 3.84 10.74 9 12...\"/></svg>'\n  size=\"md\"\n  color=\"primary.9\"\n/>\n```",
+    "see": "{@link https://nimbus-documentation.vercel.app/components/media/inline-svg}"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# InlineSvg\n\nRenders arbitrary SVG markup as an icon with built-in XSS protection.\nThe component sanitizes the provided SVG string to remove potentially\ndangerous elements and attributes before rendering.",
+  "displayName": "InlineSvg",
+  "methods": [],
+  "props": {
+    "data": {
+      "defaultValue": null,
+      "description": "SVG content as a string to be rendered inline",
+      "name": "data",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/inline-svg/inline-svg.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "string"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref forwarding to the SVG element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/inline-svg/inline-svg.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<SVGSVGElement>"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

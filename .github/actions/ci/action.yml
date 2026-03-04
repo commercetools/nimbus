@@ -26,7 +26,7 @@ runs:
       shell: bash
 
     - name: Building packages
-      # Skip docs build - saves disk space and build time
-      # Vercel handles docs deployment and builds them separately
-      run: pnpm build:tokens && pnpm build:packages
+      # Skip full docs build (Vite app) - Vercel handles that separately
+      # But generate docs data so MCP tools have component metadata
+      run: pnpm build:tokens && pnpm build:packages && pnpm build:docs-data && pnpm build:mcp
       shell: bash

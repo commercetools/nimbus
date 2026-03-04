@@ -1,0 +1,9 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Props for the Steps.Separator component.\nVisual line connecting step indicators.",
+  "displayName": "StepsSeparatorProps",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

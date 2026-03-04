@@ -1,0 +1,586 @@
+{
+  "meta": {
+    "id": "Components-InlineSvg",
+    "title": "Inline svg",
+    "exportName": "InlineSvg",
+    "description": "The InlineSvg component allows you to render arbitrary SVG markup as an icon with built-in XSS protection. It sanitizes the provided SVG string to remove potentially dangerous elements and attributes before rendering.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/inline-svg/inline-svg.mdx",
+    "menu": [
+      "Components",
+      "Media",
+      "Inline svg"
+    ],
+    "route": "components/media/inline-svg",
+    "tags": [
+      "component",
+      "svg",
+      "icon",
+      "inline",
+      "security"
+    ],
+    "toc": [
+      {
+        "value": "Key features",
+        "href": "#key-features",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Basic usage",
+        "href": "#basic-usage",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Sizes",
+        "href": "#sizes",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Predefined sizes",
+        "href": "#predefined-sizes",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Custom sizes",
+        "href": "#custom-sizes",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Colors",
+        "href": "#colors",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Complex SVG",
+        "href": "#complex-svg",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Multi-Color SVG",
+        "href": "#multi-color-svg",
+        "depth": 2,
+        "numbering": [
+          1,
+          6
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Security",
+        "href": "#security",
+        "depth": 2,
+        "numbering": [
+          1,
+          7
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Best practices",
+        "href": "#best-practices",
+        "depth": 2,
+        "numbering": [
+          1,
+          8
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Key features\n\n- **Security First**: Automatic sanitization of SVG content to prevent XSS\n  attacks\n- **API Compatible**: Drop-in replacement for existing InlineSvg implementations\n- **Accessibility**: Support for title and description elements\n- **Consistent Styling**: Uses the same recipe system as the Icon component\n- **Performance**: Memoized sanitization for optimal re-renders\n- **Zero External Dependencies**: Uses native browser APIs for parsing and\n  sanitization\n\n## Basic usage\n\n```jsx live\nconst App = () => {\n  const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5\n  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0\n  3.78-3.4 6.86-8.55 11.54L12 21.35z\" fill=\"currentColor\"/>\n  </svg>`;\n\n  return (\n    <InlineSvg data={svgData} size=\"md\" />\n  );\n};\n```\n\n## Sizes\n\n### Predefined sizes\n\nThe component supports all standard icon sizes through the `size` prop:\n\n```jsx live\nconst App = () => {\n  const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5\n  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0\n  3.78-3.4 6.86-8.55 11.54L12 21.35z\" fill=\"currentColor\"/>\n  </svg>`;\n\n  return (\n    <Flex gap=\"400\" align=\"center\">\n      <InlineSvg data={svgData} size=\"2xs\" />\n      <InlineSvg data={svgData} size=\"xs\" />\n      <InlineSvg data={svgData} size=\"sm\" />\n      <InlineSvg data={svgData} size=\"md\" />\n      <InlineSvg data={svgData} size=\"lg\" />\n      <InlineSvg data={svgData} size=\"xl\" />\n    </Flex>\n  );\n};\n```\n\n### Custom sizes\n\nFor custom sizing, you can use the `boxSize`, `width`, or `height` props with\nany valid CSS value or design token:\n\n```jsx live\nconst App = () => {\n  const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5\n  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0\n  3.78-3.4 6.86-8.55 11.54L12 21.35z\" fill=\"currentColor\"/>\n  </svg>`;\n\n  return (\n    <Flex gap=\"400\" align=\"center\">\n      <InlineSvg data={svgData} boxSize=\"800\"/>\n      <InlineSvg data={svgData} boxSize=\"1600\"/>\n      <InlineSvg data={svgData} width=\"800\" height=\"800\"/>\n    </Flex>\n  );\n};\n```\n\n## Colors\n\nApply colors using design tokens:\n\n```jsx live\nconst App = () => {\n  const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5\n  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0\n  3.78-3.4 6.86-8.55 11.54L12 21.35z\" fill=\"currentColor\"/>\n  </svg>`;\n\n  return (\n    <Flex gap=\"400\" align=\"center\">\n      <InlineSvg data={svgData} size=\"lg\" color=\"primary.9\" />\n      <InlineSvg data={svgData} size=\"lg\" color=\"neutral.9\" />\n      <InlineSvg data={svgData} size=\"lg\" color=\"info.9\" />\n      <InlineSvg data={svgData} size=\"lg\" color=\"positive.9\" />\n      <InlineSvg data={svgData} size=\"lg\" color=\"warning.9\" />\n      <InlineSvg data={svgData} size=\"lg\" color=\"critical.9\" />\n    </Flex>\n  );\n};\n```\n\n## Complex SVG\n\nThe component preserves complex SVG structures including groups, multiple paths,\nand transformations:\n\n```jsx live\nconst App = () => {\n  const svgData = `<svg fill=\"none\" height=\"24\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\">\n  <path d=\"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z\"/>\n  <polyline points=\"7.5 4.21 12 6.81 16.5 4.21\"/>\n  <polyline points=\"7.5 19.79 7.5 14.6 3 12\"/>\n  <polyline points=\"21 12 16.5 14.6 16.5 19.79\"/>\n  <polyline points=\"3.27 6.96 12 12.01 20.73 6.96\"/>\n  <line x1=\"12\" x2=\"12\" y1=\"22.08\" y2=\"12\"/>\n</svg>`;\n\n  return (\n    <InlineSvg data={svgData} size=\"xl\" color=\"primary.9\" />\n  );\n};\n```\n\n## Multi-Color SVG\n\nSVGs with inline colors are preserved:\n\n```jsx live\nconst App = () => {\n  const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\" fill=\"#e11d48\"/>\n  <circle cx=\"12\" cy=\"12\" r=\"5\" fill=\"#10b981\"/>\n  <path d=\"M12 9v6M9 12h6\" stroke=\"white\" stroke-width=\"2\"/>\n</svg>`;\n\n  return (\n    <InlineSvg data={svgData} size=\"xl\" />\n  );\n};\n```\n\n## Security\n\nThe component automatically sanitizes potentially dangerous content:\n\n- Removes `<script>` tags\n- Removes event handlers (onclick, onload, etc.)\n- Removes `<style>` tags\n- Sanitizes URLs in href attributes (blocks javascript:, data:, etc.)\n- Removes other potentially dangerous elements\n\n```jsx live\nconst App = () => {\n  // This malicious SVG content will be sanitized\n  const maliciousSvg = `<svg fill=\"none\" height=\"24\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\" onclick=\"alert('XSS')\" onLoad=\"alert('XSS2')\">\n  <path d=\"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z\" onmouseover=\"alert('XSS4')\"/>\n  <polyline points=\"7.5 4.21 12 6.81 16.5 4.21\"/>\n  <polyline points=\"7.5 19.79 7.5 14.6 3 12\"/>\n  <polyline points=\"21 12 16.5 14.6 16.5 19.79\"/>\n  <polyline points=\"3.27 6.96 12 12.01 20.73 6.96\"/>\n  <line x1=\"12\" x2=\"12\" y1=\"22.08\" y2=\"12\"/>\n  <style>body { display: none; }</style>\n  <script>alert('XSS3')</script>\n</svg>`;\n\n  return (\n    <Stack gap=\"400\">\n      <Text>The following SVG has malicious content that gets sanitized:</Text>\n      <InlineSvg data={maliciousSvg} size=\"lg\" />\n      <Text fontSize=\"sm\" color=\"neutral.9\">\n        Script tags, event handlers, and style tags are automatically removed\n      </Text>\n    </Stack>\n  );\n};\n```\n\n## Best practices\n\n1. **Always provide a title** for non-decorative SVGs\n2. **Use design tokens** for colors to maintain consistency\n3. **Test with real SVG data** from your actual use cases\n4. **Validate SVG markup** before storing in your database\n5. **Consider performance** for very large or complex SVGs\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Key features\n\n- **Security First**: Automatic sanitization of SVG content to prevent XSS\n  attacks\n- **API Compatible**: Drop-in replacement for existing InlineSvg implementations\n- **Accessibility**: Support for title and description elements\n- **Consistent Styling**: Uses the same recipe system as the Icon component\n- **Performance**: Memoized sanitization for optimal re-renders\n- **Zero External Dependencies**: Uses native browser APIs for parsing and\n  sanitization\n\n## Basic usage\n\n```jsx live\nconst App = () => {\n  const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5\n  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0\n  3.78-3.4 6.86-8.55 11.54L12 21.35z\" fill=\"currentColor\"/>\n  </svg>`;\n\n  return (\n    <InlineSvg data={svgData} size=\"md\" />\n  );\n};\n```\n\n## Sizes\n\n### Predefined sizes\n\nThe component supports all standard icon sizes through the `size` prop:\n\n```jsx live\nconst App = () => {\n  const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5\n  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0\n  3.78-3.4 6.86-8.55 11.54L12 21.35z\" fill=\"currentColor\"/>\n  </svg>`;\n\n  return (\n    <Flex gap=\"400\" align=\"center\">\n      <InlineSvg data={svgData} size=\"2xs\" />\n      <InlineSvg data={svgData} size=\"xs\" />\n      <InlineSvg data={svgData} size=\"sm\" />\n      <InlineSvg data={svgData} size=\"md\" />\n      <InlineSvg data={svgData} size=\"lg\" />\n      <InlineSvg data={svgData} size=\"xl\" />\n    </Flex>\n  );\n};\n```\n\n### Custom sizes\n\nFor custom sizing, you can use the `boxSize`, `width`, or `height` props with\nany valid CSS value or design token:\n\n```jsx live\nconst App = () => {\n  const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5\n  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0\n  3.78-3.4 6.86-8.55 11.54L12 21.35z\" fill=\"currentColor\"/>\n  </svg>`;\n\n  return (\n    <Flex gap=\"400\" align=\"center\">\n      <InlineSvg data={svgData} boxSize=\"800\"/>\n      <InlineSvg data={svgData} boxSize=\"1600\"/>\n      <InlineSvg data={svgData} width=\"800\" height=\"800\"/>\n    </Flex>\n  );\n};\n```\n\n## Colors\n\nApply colors using design tokens:\n\n```jsx live\nconst App = () => {\n  const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5\n  3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0\n  3.78-3.4 6.86-8.55 11.54L12 21.35z\" fill=\"currentColor\"/>\n  </svg>`;\n\n  return (\n    <Flex gap=\"400\" align=\"center\">\n      <InlineSvg data={svgData} size=\"lg\" color=\"primary.9\" />\n      <InlineSvg data={svgData} size=\"lg\" color=\"neutral.9\" />\n      <InlineSvg data={svgData} size=\"lg\" color=\"info.9\" />\n      <InlineSvg data={svgData} size=\"lg\" color=\"positive.9\" />\n      <InlineSvg data={svgData} size=\"lg\" color=\"warning.9\" />\n      <InlineSvg data={svgData} size=\"lg\" color=\"critical.9\" />\n    </Flex>\n  );\n};\n```\n\n## Complex SVG\n\nThe component preserves complex SVG structures including groups, multiple paths,\nand transformations:\n\n```jsx live\nconst App = () => {\n  const svgData = `<svg fill=\"none\" height=\"24\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\">\n  <path d=\"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z\"/>\n  <polyline points=\"7.5 4.21 12 6.81 16.5 4.21\"/>\n  <polyline points=\"7.5 19.79 7.5 14.6 3 12\"/>\n  <polyline points=\"21 12 16.5 14.6 16.5 19.79\"/>\n  <polyline points=\"3.27 6.96 12 12.01 20.73 6.96\"/>\n  <line x1=\"12\" x2=\"12\" y1=\"22.08\" y2=\"12\"/>\n</svg>`;\n\n  return (\n    <InlineSvg data={svgData} size=\"xl\" color=\"primary.9\" />\n  );\n};\n```\n\n## Multi-Color SVG\n\nSVGs with inline colors are preserved:\n\n```jsx live\nconst App = () => {\n  const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n  <rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\" fill=\"#e11d48\"/>\n  <circle cx=\"12\" cy=\"12\" r=\"5\" fill=\"#10b981\"/>\n  <path d=\"M12 9v6M9 12h6\" stroke=\"white\" stroke-width=\"2\"/>\n</svg>`;\n\n  return (\n    <InlineSvg data={svgData} size=\"xl\" />\n  );\n};\n```\n\n## Security\n\nThe component automatically sanitizes potentially dangerous content:\n\n- Removes `<script>` tags\n- Removes event handlers (onclick, onload, etc.)\n- Removes `<style>` tags\n- Sanitizes URLs in href attributes (blocks javascript:, data:, etc.)\n- Removes other potentially dangerous elements\n\n```jsx live\nconst App = () => {\n  // This malicious SVG content will be sanitized\n  const maliciousSvg = `<svg fill=\"none\" height=\"24\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\" onclick=\"alert('XSS')\" onLoad=\"alert('XSS2')\">\n  <path d=\"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z\" onmouseover=\"alert('XSS4')\"/>\n  <polyline points=\"7.5 4.21 12 6.81 16.5 4.21\"/>\n  <polyline points=\"7.5 19.79 7.5 14.6 3 12\"/>\n  <polyline points=\"21 12 16.5 14.6 16.5 19.79\"/>\n  <polyline points=\"3.27 6.96 12 12.01 20.73 6.96\"/>\n  <line x1=\"12\" x2=\"12\" y1=\"22.08\" y2=\"12\"/>\n  <style>body { display: none; }</style>\n  <script>alert('XSS3')</script>\n</svg>`;\n\n  return (\n    <Stack gap=\"400\">\n      <Text>The following SVG has malicious content that gets sanitized:</Text>\n      <InlineSvg data={maliciousSvg} size=\"lg\" />\n      <Text fontSize=\"sm\" color=\"neutral.9\">\n        Script tags, event handlers, and style tags are automatically removed\n      </Text>\n    </Stack>\n  );\n};\n```\n\n## Best practices\n\n1. **Always provide a title** for non-decorative SVGs\n2. **Use design tokens** for colors to maintain consistency\n3. **Test with real SVG data** from your actual use cases\n4. **Validate SVG markup** before storing in your database\n5. **Consider performance** for very large or complex SVGs\n",
+      "toc": [
+        {
+          "value": "Key features",
+          "href": "#key-features",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Sizes",
+          "href": "#sizes",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Predefined sizes",
+          "href": "#predefined-sizes",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom sizes",
+          "href": "#custom-sizes",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Colors",
+          "href": "#colors",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Complex SVG",
+          "href": "#complex-svg",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Multi-Color SVG",
+          "href": "#multi-color-svg",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Security",
+          "href": "#security",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => (\n  <InlineSvg\n    svgContent='<svg viewBox=\"0 0 24 24\"><circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"currentColor\" /></svg>'\n  />\n);\n```\n\n### Accessibility standards\n\n- **Decorative SVGs:** The SVG is rendered with `role=\"presentation\"` by default\n  as it's intended for decorative use. This hides the SVG from screen readers.\n- **Accessible SVGs:** If you need accessible SVGs, include `<title>` and\n  `<desc>` elements directly in your SVG markup - they will be preserved during\n  sanitization.\n- **Avoid conveying meaning through decorative images:** Don't rely on\n  decorative SVGs to communicate important information.\n- **Provide text alternatives:** Ensure important information is available\n  through text content, not just visual elements.\n\n## Resources\n\n- [W3C SVG Accessibility](https://www.w3.org/WAI/tutorials/images/)\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { InlineSvg, type InlineSvgProps } from \"@commercetools/nimbus\";\n```\n\n### Basic usage\n\n```jsx live-dev\nconst App = () => {\n  const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z\" fill=\"currentColor\"/>\n  </svg>`;\n  \n  return <InlineSvg data={svgData} size=\"md\" />;\n};\n```\n\n## Usage examples\n\n### Size variants\n\nInlineSvg supports the same size variants as the Icon component.\n\n```jsx live-dev\nconst App = () => {\n  const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"currentColor\"/>\n  </svg>`;\n  \n  return (\n    <Stack gap=\"400\" direction=\"row\" align=\"center\">\n      <InlineSvg data={svgData} size=\"2xs\" />\n      <InlineSvg data={svgData} size=\"xs\" />\n      <InlineSvg data={svgData} size=\"sm\" />\n      <InlineSvg data={svgData} size=\"md\" />\n      <InlineSvg data={svgData} size=\"lg\" />\n      <InlineSvg data={svgData} size=\"xl\" />\n    </Stack>\n  );\n};\n```\n\n### Color customization\n\nUse the `color` prop to control the icon color. The SVG should use `currentColor` to inherit the color.\n\n```jsx live-dev\nconst App = () => {\n  const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 2.18l8 3.6v8.72c0 4.55-3.12 8.86-8 10.19-4.88-1.33-8-5.64-8-10.19V7.78l8-3.6z\" fill=\"currentColor\"/>\n  </svg>`;\n  \n  return (\n    <Stack gap=\"400\" direction=\"row\">\n      <InlineSvg data={svgData} size=\"lg\" color=\"primary.9\" />\n      <InlineSvg data={svgData} size=\"lg\" color=\"info.9\" />\n      <InlineSvg data={svgData} size=\"lg\" color=\"positive.9\" />\n      <InlineSvg data={svgData} size=\"lg\" color=\"warning.9\" />\n      <InlineSvg data={svgData} size=\"lg\" color=\"critical.9\" />\n    </Stack>\n  );\n};\n```\n\n### Multi-color SVGs\n\nInlineSvg preserves inline colors defined in the SVG markup. Use this for icons with multiple colors that shouldn't inherit `currentColor`.\n\n```jsx live-dev\nconst App = () => {\n  const multiColorSvg = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\" fill=\"#e11d48\"/>\n    <circle cx=\"12\" cy=\"12\" r=\"5\" fill=\"#10b981\"/>\n    <path d=\"M12 9v6M9 12h6\" stroke=\"white\" stroke-width=\"2\"/>\n  </svg>`;\n  \n  return (\n    <Stack gap=\"400\">\n      <Box>\n        <Text mb=\"200\" fontWeight=\"semibold\">Multi-color SVG</Text>\n        <InlineSvg data={multiColorSvg} size=\"xl\" />\n      </Box>\n      \n      <Text fontSize=\"sm\" color=\"neutral.3\">\n        Colors defined in the SVG are preserved regardless of the color prop\n      </Text>\n    </Stack>\n  );\n};\n```\n\n### Complex SVG structures\n\nInlineSvg handles complex SVG markup with multiple paths, groups, and attributes.\n\n```jsx live-dev\nconst App = () => {\n  const complexSvg = `<svg fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z\"/>\n    <polyline points=\"7.5 4.21 12 6.81 16.5 4.21\"/>\n    <polyline points=\"7.5 19.79 7.5 14.6 3 12\"/>\n    <polyline points=\"21 12 16.5 14.6 16.5 19.79\"/>\n    <polyline points=\"3.27 6.96 12 12.01 20.73 6.96\"/>\n    <line x1=\"12\" x2=\"12\" y1=\"22.08\" y2=\"12\"/>\n  </svg>`;\n  \n  return <InlineSvg data={complexSvg} size=\"xl\" color=\"primary.9\" />;\n};\n```\n\n### Dynamic SVG content\n\nInlineSvg is useful when working with SVG strings from APIs or databases.\n\n```jsx live-dev\nconst App = () => {\n  const [selectedIcon, setSelectedIcon] = React.useState('heart');\n  \n  const icons = {\n    heart: `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path d=\"M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z\" fill=\"currentColor\"/>\n    </svg>`,\n    star: `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path d=\"M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z\" fill=\"currentColor\"/>\n    </svg>`,\n    check: `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path d=\"M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z\" fill=\"currentColor\"/>\n    </svg>`\n  };\n  \n  return (\n    <Stack gap=\"400\">\n      <Stack gap=\"200\" direction=\"row\">\n        <Button\n          size=\"sm\"\n          variant={selectedIcon === 'heart' ? 'solid' : 'outline'}\n          onClick={() => setSelectedIcon('heart')}\n        >\n          Heart\n        </Button>\n        <Button\n          size=\"sm\"\n          variant={selectedIcon === 'star' ? 'solid' : 'outline'}\n          onClick={() => setSelectedIcon('star')}\n        >\n          Star\n        </Button>\n        <Button\n          size=\"sm\"\n          variant={selectedIcon === 'check' ? 'solid' : 'outline'}\n          onClick={() => setSelectedIcon('check')}\n        >\n          Check\n        </Button>\n      </Stack>\n      \n      <Box \n        p=\"600\" \n        bg=\"neutral.7\" \n        borderRadius=\"md\"\n        display=\"flex\"\n        alignItems=\"center\"\n        justifyContent=\"center\"\n      >\n        <InlineSvg \n          data={icons[selectedIcon]} \n          size=\"xl\" \n          color=\"primary.9\" \n        />\n      </Box>\n    </Stack>\n  );\n};\n```\n\n## Component requirements\n\n### Usage context\n\n**When to use InlineSvg**:\n- Rendering SVG markup from strings (API responses, databases, CMS)\n- Dynamic SVG content that needs sanitization\n- When you need XSS protection for user-generated SVG content\n- SVG icons that aren't available in the nimbus-icons library\n\n**When NOT to use**:\n- For static icons - use the `Icon` component with `@commercetools/nimbus-icons` instead\n- For images - use the `Image` component\n- When you need `asChild` composition - InlineSvg always renders as an SVG element\n\n### Security\n\n**XSS Protection**: InlineSvg automatically sanitizes SVG content to remove:\n- `<script>` tags and event handlers (`onclick`, `onload`, etc.)\n- `<style>` tags (to prevent CSS injection)\n- Dangerous attributes like `xlink:href` with malicious payloads\n- Other potentially harmful SVG features\n\n**Safe SVG Requirements**:\n- SVG must be valid XML\n- Use `fill=\"currentColor\"` or `stroke=\"currentColor\"` for color inheritance\n- Avoid external resources (external stylesheets, fonts)\n- Test SVG content from untrusted sources\n\n```jsx live-dev\nconst App = () => {\n  // This malicious SVG will be sanitized - script tags and event handlers removed\n  const maliciousSvg = `<svg viewBox=\"0 0 24 24\" onclick=\"alert('XSS')\" xmlns=\"http://www.w3.org/2000/svg\">\n    <script>alert('malicious')</script>\n    <path d=\"M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z\" fill=\"currentColor\"/>\n  </svg>`;\n  \n  return (\n    <Stack gap=\"400\">\n      <InlineSvg data={maliciousSvg} size=\"lg\" color=\"positive.9\" />\n      <Text fontSize=\"sm\" color=\"neutral.3\">\n        The SVG renders safely - malicious content has been removed\n      </Text>\n    </Stack>\n  );\n};\n```\n\n## Accessibility\n\n**Role**: InlineSvg renders with `role=\"presentation\"` by default, treating the SVG as decorative.\n\n**Labeling**: For meaningful icons, provide accessible labels using surrounding context or ARIA attributes:\n\n```tsx\n<Button>\n  <InlineSvg data={saveSvg} size=\"sm\" />\n  Save Document\n</Button>\n```\n\n**Standalone icons**: If the InlineSvg is the only content, ensure proper labeling:\n\n```tsx\n<button aria-label=\"Save document\">\n  <InlineSvg data={saveSvg} size=\"md\" />\n</button>\n```\n\n### Persistent ID\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"feature-icon\";\n\nexport const FeatureIcon = () => {\n  const svgData = `<svg viewBox=\"0 0 24 24\">...</svg>`;\n  \n  return (\n    <InlineSvg \n      id={PERSISTENT_ID} \n      data={svgData} \n      size=\"lg\" \n      color=\"primary.9\" \n    />\n  );\n};\n```\n\n## API reference\n\n<PropsTable id=\"InlineSvg\" />\n\n## Common patterns\n\n### Loading SVG from API\n\nHandle loading states and errors when fetching SVG data from an API.\n\n```jsx live-dev\nconst App = () => {\n  const [svgData, setSvgData] = React.useState<string | null>(null);\n  const [isLoading, setIsLoading] = React.useState(false);\n  const [error, setError] = React.useState<string | null>(null);\n  \n  const loadSvg = () => {\n    setIsLoading(true);\n    setError(null);\n    \n    // Simulate API call\n    setTimeout(() => {\n      const mockSvg = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n        <path d=\"M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z\" fill=\"currentColor\"/>\n      </svg>`;\n      setSvgData(mockSvg);\n      setIsLoading(false);\n    }, 1000);\n  };\n  \n  return (\n    <Stack gap=\"400\">\n      <Button onClick={loadSvg} isDisabled={isLoading}>\n        {isLoading ? 'Loading...' : 'Load Icon from API'}\n      </Button>\n      \n      {svgData && (\n        <Box \n          p=\"400\" \n          bg=\"positive.7\" \n          borderRadius=\"md\"\n          display=\"flex\"\n          alignItems=\"center\"\n          gap=\"300\"\n        >\n          <InlineSvg data={svgData} size=\"lg\" color=\"positive.9\" />\n          <Text>Icon loaded successfully!</Text>\n        </Box>\n      )}\n      \n      {error && (\n        <Box p=\"400\" bg=\"critical.7\" borderRadius=\"md\">\n          <Text color=\"critical.9\">{error}</Text>\n        </Box>\n      )}\n    </Stack>\n  );\n};\n```\n\n### Fallback for invalid SVG\n\nHandle cases where SVG data might be invalid or fail sanitization.\n\n```jsx live-dev\nconst App = () => {\n  const [svgInput, setSvgInput] = React.useState('');\n  const [displaySvg, setDisplaySvg] = React.useState<string | null>(null);\n  \n  const validSvg = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"currentColor\"/>\n  </svg>`;\n  \n  const invalidSvg = 'This is not valid SVG markup';\n  \n  return (\n    <Stack gap=\"400\">\n      <Stack gap=\"200\" direction=\"row\">\n        <Button size=\"sm\" onClick={() => setDisplaySvg(validSvg)}>\n          Show Valid SVG\n        </Button>\n        <Button size=\"sm\" onClick={() => setDisplaySvg(invalidSvg)}>\n          Show Invalid SVG\n        </Button>\n        <Button size=\"sm\" onClick={() => setDisplaySvg(null)}>\n          Clear\n        </Button>\n      </Stack>\n      \n      {displaySvg && (\n        <Box p=\"400\" bg=\"neutral.7\" borderRadius=\"md\">\n          {displaySvg.includes('<svg') ? (\n            <Stack gap=\"200\" direction=\"row\" align=\"center\">\n              <InlineSvg data={displaySvg} size=\"lg\" color=\"positive.9\" />\n              <Text>Valid SVG rendered</Text>\n            </Stack>\n          ) : (\n            <Stack gap=\"200\" direction=\"row\" align=\"center\">\n              <Icon name=\"error\" size=\"lg\" color=\"critical.9\" />\n              <Text>Invalid SVG - showing fallback icon</Text>\n            </Stack>\n          )}\n        </Box>\n      )}\n    </Stack>\n  );\n};\n```\n\n### Icon library from database\n\nManage a collection of SVG icons stored as strings.\n\n```jsx live-dev\nconst App = () => {\n  // Simulated icon library from database\n  const iconLibrary = [\n    {\n      id: 'dashboard',\n      name: 'Dashboard',\n      svg: `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n        <path d=\"M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z\" fill=\"currentColor\"/>\n      </svg>`\n    },\n    {\n      id: 'settings',\n      name: 'Settings',\n      svg: `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n        <path d=\"M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z\" fill=\"currentColor\"/>\n      </svg>`\n    },\n    {\n      id: 'profile',\n      name: 'Profile',\n      svg: `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n        <path d=\"M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z\" fill=\"currentColor\"/>\n      </svg>`\n    }\n  ];\n  \n  return (\n    <Stack gap=\"400\">\n      <Text fontWeight=\"semibold\">Icon Library</Text>\n      <Stack gap=\"300\">\n        {iconLibrary.map((icon) => (\n          <Box \n            key={icon.id}\n            p=\"300\" \n            bg=\"neutral.7\" \n            borderRadius=\"md\"\n            display=\"flex\"\n            alignItems=\"center\"\n            gap=\"300\"\n          >\n            <InlineSvg data={icon.svg} size=\"md\" color=\"primary.9\" />\n            <Text>{icon.name}</Text>\n          </Box>\n        ))}\n      </Stack>\n    </Stack>\n  );\n};\n```\n\n### Custom icon button\n\nCreate icon buttons using SVG strings.\n\n```jsx live-dev\nconst App = () => {\n  const [count, setCount] = React.useState(0);\n  \n  const plusSvg = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z\" fill=\"currentColor\"/>\n  </svg>`;\n  \n  const minusSvg = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M19 13H5v-2h14v2z\" fill=\"currentColor\"/>\n  </svg>`;\n  \n  return (\n    <Stack gap=\"400\">\n      <Stack gap=\"300\" direction=\"row\" align=\"center\">\n        <Button\n          size=\"sm\"\n          onClick={() => setCount(count - 1)}\n          isDisabled={count <= 0}\n        >\n          <InlineSvg data={minusSvg} size=\"sm\" />\n        </Button>\n        \n        <Box \n          minW=\"60px\" \n          textAlign=\"center\" \n          p=\"200\" \n          bg=\"neutral.7\" \n          borderRadius=\"md\"\n        >\n          <Text fontWeight=\"bold\">{count}</Text>\n        </Box>\n        \n        <Button\n          size=\"sm\"\n          onClick={() => setCount(count + 1)}\n        >\n          <InlineSvg data={plusSvg} size=\"sm\" />\n        </Button>\n      </Stack>\n    </Stack>\n  );\n};\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using InlineSvg within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Usage Tests\n\nVerify InlineSvg renders SVG content correctly from string data\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { InlineSvg, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"InlineSvg - Basic usage\", () => {\n  it(\"renders valid SVG content from string\", () => {\n    const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n      <circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"currentColor\"/>\n    </svg>`;\n\n    render(\n      <NimbusProvider>\n        <InlineSvg data={svgData} size=\"md\" data-testid=\"inline-svg\" />\n      </NimbusProvider>\n    );\n\n    const svg = screen.getByTestId(\"inline-svg\");\n    expect(svg).toBeInTheDocument();\n    expect(svg.tagName).toBe(\"svg\");\n    expect(svg).toHaveAttribute(\"viewBox\", \"0 0 24 24\");\n    expect(svg.querySelector(\"circle\")).toBeInTheDocument();\n  });\n\n  it(\"preserves SVG attributes from the source\", () => {\n    const svgData = `<svg fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path d=\"M12 2L2 7v10l10 5 10-5V7z\"/>\n    </svg>`;\n\n    render(\n      <NimbusProvider>\n        <InlineSvg data={svgData} size=\"md\" data-testid=\"inline-svg\" />\n      </NimbusProvider>\n    );\n\n    const svg = screen.getByTestId(\"inline-svg\");\n    expect(svg).toHaveAttribute(\"viewBox\", \"0 0 24 24\");\n    expect(svg).toHaveAttribute(\"stroke\", \"currentColor\");\n    expect(svg.querySelector(\"path\")).toBeInTheDocument();\n  });\n\n  it(\"handles invalid SVG gracefully\", () => {\n    // Suppress expected warning when invalid SVG is passed\n    const consoleSpy = vi.spyOn(console, \"warn\").mockImplementation(() => {});\n\n    const invalidSvg = \"This is not valid SVG markup\";\n\n    render(\n      <NimbusProvider>\n        <InlineSvg data={invalidSvg} size=\"md\" data-testid=\"inline-svg\" />\n      </NimbusProvider>\n    );\n\n    // Component should not render when SVG is invalid\n    expect(screen.queryByTestId(\"inline-svg\")).not.toBeInTheDocument();\n\n    // Verify the warning was called and restore\n    expect(consoleSpy).toHaveBeenCalledWith(\n      \"InlineSvg: No SVG element found in markup\"\n    );\n    consoleSpy.mockRestore();\n  });\n});\n```\n\n### Security Tests\n\nVerify SVG sanitization removes malicious content\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { InlineSvg, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"InlineSvg - Security\", () => {\n  it(\"removes script tags from SVG\", () => {\n    const maliciousSvg = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n      <script>alert('XSS')</script>\n      <circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"currentColor\"/>\n    </svg>`;\n\n    render(\n      <NimbusProvider>\n        <InlineSvg data={maliciousSvg} size=\"md\" data-testid=\"inline-svg\" />\n      </NimbusProvider>\n    );\n\n    const svg = screen.getByTestId(\"inline-svg\");\n    expect(svg.querySelector(\"script\")).not.toBeInTheDocument();\n  });\n\n  it(\"removes event handlers from SVG elements\", () => {\n    const maliciousSvg = `<svg viewBox=\"0 0 24 24\" onclick=\"alert('XSS')\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path onclick=\"alert('XSS2')\" d=\"M12 2L2 7v10l10 5 10-5V7z\" fill=\"currentColor\"/>\n    </svg>`;\n\n    render(\n      <NimbusProvider>\n        <InlineSvg data={maliciousSvg} size=\"md\" data-testid=\"inline-svg\" />\n      </NimbusProvider>\n    );\n\n    const svg = screen.getByTestId(\"inline-svg\");\n    expect(svg).not.toHaveAttribute(\"onclick\");\n\n    const path = svg.querySelector(\"path\");\n    expect(path).not.toHaveAttribute(\"onclick\");\n  });\n\n  it(\"removes style tags from SVG\", () => {\n    const maliciousSvg = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n      <style>body { display: none; }</style>\n      <circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"currentColor\"/>\n    </svg>`;\n\n    render(\n      <NimbusProvider>\n        <InlineSvg data={maliciousSvg} size=\"md\" data-testid=\"inline-svg\" />\n      </NimbusProvider>\n    );\n\n    const svg = screen.getByTestId(\"inline-svg\");\n    expect(svg.querySelector(\"style\")).not.toBeInTheDocument();\n  });\n});\n```\n\n### Styling Tests\n\nVerify size variants and color customization\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { InlineSvg, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"InlineSvg - Styling\", () => {\n  it(\"applies size variants\", () => {\n    const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n      <circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"currentColor\"/>\n    </svg>`;\n\n    const { rerender } = render(\n      <NimbusProvider>\n        <InlineSvg data={svgData} size=\"sm\" data-testid=\"inline-svg\" />\n      </NimbusProvider>\n    );\n\n    expect(screen.getByTestId(\"inline-svg\")).toBeInTheDocument();\n\n    rerender(\n      <NimbusProvider>\n        <InlineSvg data={svgData} size=\"lg\" data-testid=\"inline-svg\" />\n      </NimbusProvider>\n    );\n\n    expect(screen.getByTestId(\"inline-svg\")).toBeInTheDocument();\n  });\n\n  it(\"preserves multi-color SVG attributes\", () => {\n    const multiColorSvg = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n      <rect x=\"0\" y=\"0\" width=\"24\" height=\"24\" fill=\"#e11d48\"/>\n      <circle cx=\"12\" cy=\"12\" r=\"5\" fill=\"#10b981\"/>\n    </svg>`;\n\n    render(\n      <NimbusProvider>\n        <InlineSvg data={multiColorSvg} size=\"md\" data-testid=\"inline-svg\" />\n      </NimbusProvider>\n    );\n\n    const svg = screen.getByTestId(\"inline-svg\");\n    const rect = svg.querySelector(\"rect\");\n    const circle = svg.querySelector(\"circle\");\n\n    expect(rect).toHaveAttribute(\"fill\", \"#e11d48\");\n    expect(circle).toHaveAttribute(\"fill\", \"#10b981\");\n  });\n\n  it(\"always renders as svg element\", () => {\n    const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n      <circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"currentColor\"/>\n    </svg>`;\n\n    render(\n      <NimbusProvider>\n        <InlineSvg data={svgData} size=\"md\" data-testid=\"inline-svg\" />\n      </NimbusProvider>\n    );\n\n    const element = screen.getByTestId(\"inline-svg\");\n    expect(element.tagName.toLowerCase()).toBe(\"svg\");\n  });\n});\n```\n\n### Accessibility Tests\n\nVerify accessibility attributes and presentation role\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { InlineSvg, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"InlineSvg - Accessibility\", () => {\n  it(\"renders with presentation role\", () => {\n    const svgData = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n      <circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"currentColor\"/>\n    </svg>`;\n\n    render(\n      <NimbusProvider>\n        <InlineSvg data={svgData} size=\"md\" />\n      </NimbusProvider>\n    );\n\n    const svg = screen.getByRole(\"presentation\");\n    expect(svg).toBeInTheDocument();\n  });\n});\n```\n\n### Complex SVG Tests\n\nVerify handling of complex SVG structures\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { InlineSvg, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"InlineSvg - Complex SVG\", () => {\n  it(\"handles SVG with multiple paths and elements\", () => {\n    const complexSvg = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n      <path d=\"M12 2L2 7v10l10 5 10-5V7z\"/>\n      <polyline points=\"7.5 4.21 12 6.81 16.5 4.21\"/>\n      <line x1=\"12\" x2=\"12\" y1=\"22.08\" y2=\"12\"/>\n    </svg>`;\n\n    render(\n      <NimbusProvider>\n        <InlineSvg data={complexSvg} size=\"md\" data-testid=\"inline-svg\" />\n      </NimbusProvider>\n    );\n\n    const svg = screen.getByTestId(\"inline-svg\");\n    expect(svg.querySelector(\"path\")).toBeInTheDocument();\n    expect(svg.querySelector(\"polyline\")).toBeInTheDocument();\n    expect(svg.querySelector(\"line\")).toBeInTheDocument();\n  });\n\n  it(\"preserves nested SVG groups\", () => {\n    const groupedSvg = `<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\">\n      <g fill=\"currentColor\">\n        <circle cx=\"8\" cy=\"12\" r=\"3\"/>\n        <circle cx=\"16\" cy=\"12\" r=\"3\"/>\n      </g>\n    </svg>`;\n\n    render(\n      <NimbusProvider>\n        <InlineSvg data={groupedSvg} size=\"md\" data-testid=\"inline-svg\" />\n      </NimbusProvider>\n    );\n\n    const svg = screen.getByTestId(\"inline-svg\");\n    const group = svg.querySelector(\"g\");\n    expect(group).toBeInTheDocument();\n    expect(group?.querySelectorAll(\"circle\")).toHaveLength(2);\n  });\n});\n```\n\n\n## Resources\n\n- [InlineSvg component in Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-inlinesvg--docs)\n- [Icon component](/components/media/icon) - For static icons from the nimbus-icons library\n- [SVG on MDN](https://developer.mozilla.org/en-US/docs/Web/SVG)\n- [Content Security Policy for SVG](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size variants",
+          "href": "#size-variants",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Color customization",
+          "href": "#color-customization",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Multi-color SVGs",
+          "href": "#multi-color-svgs",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Complex SVG structures",
+          "href": "#complex-svg-structures",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Dynamic SVG content",
+          "href": "#dynamic-svg-content",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage context",
+          "href": "#usage-context",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Security",
+          "href": "#security",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Persistent ID",
+          "href": "#persistent-id",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Loading SVG from API",
+          "href": "#loading-svg-from-api",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Fallback for invalid SVG",
+          "href": "#fallback-for-invalid-svg",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Icon library from database",
+          "href": "#icon-library-from-database",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom icon button",
+          "href": "#custom-icon-button",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Usage Tests",
+          "href": "#basic-usage-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Security Tests",
+          "href": "#security-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Styling Tests",
+          "href": "#styling-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility Tests",
+          "href": "#accessibility-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Complex SVG Tests",
+          "href": "#complex-svg-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

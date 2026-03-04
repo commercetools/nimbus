@@ -1,0 +1,44 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "TagGroup.Root - The root component that provides context and state management for the tag group",
+  "displayName": "TagGroupRoot",
+  "methods": [],
+  "props": {
+    "size": {
+      "defaultValue": {
+        "value": "\"lg\""
+      },
+      "description": "Size variant of the tag group",
+      "name": "size",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tag-group/tag-group.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "SlotRecipeProps<\"nimbusTagGroup\">"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/tag-group/tag-group.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<(props: TagGroupProps & RefAttributes<HTMLDivElement>) => ReactElement<unknown, string | JSXElementConstructor<any>>>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

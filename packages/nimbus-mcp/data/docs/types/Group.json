@@ -1,0 +1,124 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "",
+  "displayName": "Group",
+  "methods": [],
+  "props": {
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref forwarding to the root element",
+      "name": "ref",
+      "parent": {
+        "fileName": "nimbus/packages/nimbus/src/components/group/group.types.tsx",
+        "name": "GroupProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/group/group.types.tsx",
+          "name": "GroupProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<(props: GroupProps & RefAttributes<HTMLDivElement>) => ReactElement<unknown, string | JSXElementConstructor<any>>>"
+      }
+    },
+    "isDisabled": {
+      "defaultValue": null,
+      "description": "Whether the item is disabled.",
+      "name": "isDisabled",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "ListBoxItemProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "ListBoxItemProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onHoverStart": {
+      "defaultValue": null,
+      "description": "Handler that is called when a hover interaction starts.",
+      "name": "onHoverStart",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "HoverEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "HoverEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onHoverEnd": {
+      "defaultValue": null,
+      "description": "Handler that is called when a hover interaction ends.",
+      "name": "onHoverEnd",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "HoverEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "HoverEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onHoverChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the hover state changes.",
+      "name": "onHoverChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "HoverEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "HoverEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "isInvalid": {
+      "defaultValue": null,
+      "description": "Whether the group is invalid.",
+      "name": "isInvalid",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "GroupProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "GroupProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

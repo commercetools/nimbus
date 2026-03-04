@@ -1,0 +1,12 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/typography/code}",
+    "experimental": "This component is experimental and may change or be removed in future versions."
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Code\n\nrenders code blocks",
+  "displayName": "Code",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

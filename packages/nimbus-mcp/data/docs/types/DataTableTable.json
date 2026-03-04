@@ -1,0 +1,51 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "DataTable.Table - The main table element that wraps the header and body components",
+  "displayName": "DataTableTable",
+  "methods": [],
+  "props": {
+    "translate": {
+      "defaultValue": null,
+      "description": "",
+      "name": "translate",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"yes\" | \"no\"",
+        "value": [
+          {
+            "value": "\"yes\""
+          },
+          {
+            "value": "\"no\""
+          }
+        ]
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLTableElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

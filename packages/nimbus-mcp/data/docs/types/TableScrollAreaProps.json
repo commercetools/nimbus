@@ -1,0 +1,9 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Props for the Table.ScrollArea component\n\nWrapper for tables with scrolling behavior.",
+  "displayName": "TableScrollAreaProps",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

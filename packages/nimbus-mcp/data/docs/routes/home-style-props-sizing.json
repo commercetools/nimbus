@@ -1,0 +1,244 @@
+{
+  "meta": {
+    "id": "Style Props-Sizing",
+    "title": "Sizing",
+    "description": "JSX style props for sizing an element",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/sizing.mdx",
+    "menu": [
+      "Home",
+      "Style Props",
+      "Sizing"
+    ],
+    "route": "home/style-props/sizing",
+    "tags": [
+      "document"
+    ],
+    "toc": [
+      {
+        "value": "Width",
+        "href": "#width",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Fractional width",
+        "href": "#fractional-width",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Viewport width",
+        "href": "#viewport-width",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Max width",
+        "href": "#max-width",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Min width",
+        "href": "#min-width",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Height",
+        "href": "#height",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Fractional height",
+        "href": "#fractional-height",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Relative heights",
+        "href": "#relative-heights",
+        "depth": 3,
+        "numbering": [
+          1,
+          4,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Max height",
+        "href": "#max-height",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Min height",
+        "href": "#min-height",
+        "depth": 2,
+        "numbering": [
+          1,
+          6
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Sizing\n\nJSX style props for sizing an element\n\n## Width\n\nUse the `width` or `w` property to set the width of an element.\n\n```jsx\n// hardcoded values\n<Box width=\"64px\" />\n<Box w=\"4rem\" />\n\n// token values\n<Box width=\"5\" />\n<Box w=\"5\" />\n```\n\n### Fractional width\n\nUse can set fractional widths using the `width` or `w` property.\n\nValues can be within the following ranges:\n\n- Thirds: `1/3` to `2/3`\n- Fourths: `1/4` to `3/4`\n- Fifths: `1/5` to `4/5`\n- Sixths: `1/6` to `5/6`\n- Twelfths: `1/12` to `11/12`\n\n```jsx\n// half width\n<Flex>\n  <Box width=\"1/2\" />\n  <Box width=\"1/2\" />\n</Flex>\n\n// thirds\n<Flex>\n  <Box width=\"1/3\" />\n  <Box width=\"2/3\" />\n</Flex>\n\n// fourths\n<Flex>\n  <Box width=\"1/4\" />\n  <Box width=\"3/4\" />\n</Flex>\n\n// fifths\n<Flex>\n  <Box width=\"1/5\" />\n  <Box width=\"4/5\" />\n</Flex>\n\n// sixths\n<Flex>\n  <Box width=\"1/6\" />\n  <Box width=\"5/6\" />\n</Flex>\n\n// twelfths\n<Flex>\n  <Box width=\"3/12\" />\n  <Box width=\"9/12\" />\n</Flex>\n```\n\n### Viewport width\n\nUse the modern viewport width values `dvw`, `svw`, `lvw`.\n\n> [!NOTE]  \n> `dvw` maps to `100dvw`, `svw` maps to `100svw`, `lvw` maps to `100lvw`.\n\n```jsx\n<Box width=\"dvw\" />\n<Box w=\"dvw\" /> // shorthand\n```\n\n| Prop         | CSS Property | Token Category |\n| ------------ | ------------ | -------------- |\n| `w`, `width` | `width`      | `sizes`        |\n\n## Max width\n\nUse the `maxWidth` or `maxW` property to set the maximum width of an element.\n\n```jsx\n// hardcoded values\n<Box maxWidth=\"640px\" />\n<Box maxW=\"4rem\" /> // shorthand\n\n// token values\n<Box maxWidth=\"xl\" />\n<Box maxW=\"2xl\" /> // shorthand\n```\n\n| Prop               | CSS Property | Token Category |\n| ------------------ | ------------ | -------------- |\n| `maxW`, `maxWidth` | `max-width`  | `sizes`        |\n\n## Min width\n\nUse the `minWidth` or `minW` property to set the minimum width of an element.\n\n```jsx\n// hardcoded values\n<Box minWidth=\"64px\" />\n<Box minW=\"4rem\" /> // shorthand\n\n// token values\n<Box minWidth=\"8\" />\n<Box minW=\"10\" /> // shorthand\n```\n\n| Prop               | CSS Property | Token Category |\n| ------------------ | ------------ | -------------- |\n| `w`, `width`       | `width`      | `sizing`       |\n| `maxW`, `maxWidth` | `max-width`  | `sizing`       |\n| `minW`, `minWidth` | `min-width`  | `sizing`       |\n\n## Height\n\nUse the `height` or `h` property to set the height of an element.\n\n```jsx\n// hardcoded values\n<Box height=\"40px\" />\n<Box h=\"0.4rem\" /> // shorthand\n\n// token values\n<Box height=\"5\" />\n<Box h=\"5\" /> // shorthand\n```\n\n### Fractional height\n\nUse can set fractional heights using the `height` or `h` property.\n\nValues can be within the following ranges:\n\n- Thirds: `1/3` to `2/3`\n- Fourths: `1/4` to `3/4`\n- Fifths: `1/5` to `4/5`\n- Sixths: `1/6` to `5/6`\n\n```jsx\n<Box height=\"1/2\" />\n<Box h=\"1/2\" /> // shorthand\n```\n\n### Relative heights\n\nUse the modern relative height values `dvh`, `svh`, `lvh`.\n\n> [!NOTE]  \n> `dvh` maps to `100dvh`, `svh` maps to `100svh`, `lvh` maps to `100lvh`.\n\n```jsx\n<Box height=\"dvh\" />\n<Box h=\"dvh\" /> // shorthand\n```\n\n## Max height\n\nUse the `maxHeight` or `maxH` property to set the maximum height of an element.\n\n```jsx\n// hardcoded values\n<Box maxHeight=\"40px\" />\n<Box maxH=\"0.4rem\" /> // shorthand\n\n// token values\n<Box maxHeight=\"8\" />\n<Box maxH=\"10\" /> // shorthand\n```\n\n## Min height\n\nUse the `minHeight` or `minH` property to set the minimum height of an element.\n\n```jsx\n// hardcoded values\n<Box minHeight=\"40px\" />\n<Box minH=\"0.4rem\" /> // shorthand\n\n// token values\n<Box minHeight=\"8\" />\n<Box minH=\"10\" /> // shorthand\n```\n\n| Prop                | CSS Property | Token Category |\n| ------------------- | ------------ | -------------- |\n| `h`, `height`       | `height`     | `sizes`        |\n| `maxH`, `maxHeight` | `max-height` | `sizes`        |\n| `minH`, `minHeight` | `min-height` | `sizes`        |\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Sizing\n\nJSX style props for sizing an element\n\n## Width\n\nUse the `width` or `w` property to set the width of an element.\n\n```jsx\n// hardcoded values\n<Box width=\"64px\" />\n<Box w=\"4rem\" />\n\n// token values\n<Box width=\"5\" />\n<Box w=\"5\" />\n```\n\n### Fractional width\n\nUse can set fractional widths using the `width` or `w` property.\n\nValues can be within the following ranges:\n\n- Thirds: `1/3` to `2/3`\n- Fourths: `1/4` to `3/4`\n- Fifths: `1/5` to `4/5`\n- Sixths: `1/6` to `5/6`\n- Twelfths: `1/12` to `11/12`\n\n```jsx\n// half width\n<Flex>\n  <Box width=\"1/2\" />\n  <Box width=\"1/2\" />\n</Flex>\n\n// thirds\n<Flex>\n  <Box width=\"1/3\" />\n  <Box width=\"2/3\" />\n</Flex>\n\n// fourths\n<Flex>\n  <Box width=\"1/4\" />\n  <Box width=\"3/4\" />\n</Flex>\n\n// fifths\n<Flex>\n  <Box width=\"1/5\" />\n  <Box width=\"4/5\" />\n</Flex>\n\n// sixths\n<Flex>\n  <Box width=\"1/6\" />\n  <Box width=\"5/6\" />\n</Flex>\n\n// twelfths\n<Flex>\n  <Box width=\"3/12\" />\n  <Box width=\"9/12\" />\n</Flex>\n```\n\n### Viewport width\n\nUse the modern viewport width values `dvw`, `svw`, `lvw`.\n\n> [!NOTE]  \n> `dvw` maps to `100dvw`, `svw` maps to `100svw`, `lvw` maps to `100lvw`.\n\n```jsx\n<Box width=\"dvw\" />\n<Box w=\"dvw\" /> // shorthand\n```\n\n| Prop         | CSS Property | Token Category |\n| ------------ | ------------ | -------------- |\n| `w`, `width` | `width`      | `sizes`        |\n\n## Max width\n\nUse the `maxWidth` or `maxW` property to set the maximum width of an element.\n\n```jsx\n// hardcoded values\n<Box maxWidth=\"640px\" />\n<Box maxW=\"4rem\" /> // shorthand\n\n// token values\n<Box maxWidth=\"xl\" />\n<Box maxW=\"2xl\" /> // shorthand\n```\n\n| Prop               | CSS Property | Token Category |\n| ------------------ | ------------ | -------------- |\n| `maxW`, `maxWidth` | `max-width`  | `sizes`        |\n\n## Min width\n\nUse the `minWidth` or `minW` property to set the minimum width of an element.\n\n```jsx\n// hardcoded values\n<Box minWidth=\"64px\" />\n<Box minW=\"4rem\" /> // shorthand\n\n// token values\n<Box minWidth=\"8\" />\n<Box minW=\"10\" /> // shorthand\n```\n\n| Prop               | CSS Property | Token Category |\n| ------------------ | ------------ | -------------- |\n| `w`, `width`       | `width`      | `sizing`       |\n| `maxW`, `maxWidth` | `max-width`  | `sizing`       |\n| `minW`, `minWidth` | `min-width`  | `sizing`       |\n\n## Height\n\nUse the `height` or `h` property to set the height of an element.\n\n```jsx\n// hardcoded values\n<Box height=\"40px\" />\n<Box h=\"0.4rem\" /> // shorthand\n\n// token values\n<Box height=\"5\" />\n<Box h=\"5\" /> // shorthand\n```\n\n### Fractional height\n\nUse can set fractional heights using the `height` or `h` property.\n\nValues can be within the following ranges:\n\n- Thirds: `1/3` to `2/3`\n- Fourths: `1/4` to `3/4`\n- Fifths: `1/5` to `4/5`\n- Sixths: `1/6` to `5/6`\n\n```jsx\n<Box height=\"1/2\" />\n<Box h=\"1/2\" /> // shorthand\n```\n\n### Relative heights\n\nUse the modern relative height values `dvh`, `svh`, `lvh`.\n\n> [!NOTE]  \n> `dvh` maps to `100dvh`, `svh` maps to `100svh`, `lvh` maps to `100lvh`.\n\n```jsx\n<Box height=\"dvh\" />\n<Box h=\"dvh\" /> // shorthand\n```\n\n## Max height\n\nUse the `maxHeight` or `maxH` property to set the maximum height of an element.\n\n```jsx\n// hardcoded values\n<Box maxHeight=\"40px\" />\n<Box maxH=\"0.4rem\" /> // shorthand\n\n// token values\n<Box maxHeight=\"8\" />\n<Box maxH=\"10\" /> // shorthand\n```\n\n## Min height\n\nUse the `minHeight` or `minH` property to set the minimum height of an element.\n\n```jsx\n// hardcoded values\n<Box minHeight=\"40px\" />\n<Box minH=\"0.4rem\" /> // shorthand\n\n// token values\n<Box minHeight=\"8\" />\n<Box minH=\"10\" /> // shorthand\n```\n\n| Prop                | CSS Property | Token Category |\n| ------------------- | ------------ | -------------- |\n| `h`, `height`       | `height`     | `sizes`        |\n| `maxH`, `maxHeight` | `max-height` | `sizes`        |\n| `minH`, `minHeight` | `min-height` | `sizes`        |\n",
+      "toc": [
+        {
+          "value": "Width",
+          "href": "#width",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Fractional width",
+          "href": "#fractional-width",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Viewport width",
+          "href": "#viewport-width",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Max width",
+          "href": "#max-width",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Min width",
+          "href": "#min-width",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Height",
+          "href": "#height",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Fractional height",
+          "href": "#fractional-height",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Relative heights",
+          "href": "#relative-heights",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Max height",
+          "href": "#max-height",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Min height",
+          "href": "#min-height",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

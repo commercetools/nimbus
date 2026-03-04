@@ -1,0 +1,29 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Drawer.CloseTrigger - A button that closes the drawer when activated",
+  "displayName": "DrawerCloseTrigger",
+  "methods": [],
+  "props": {
+    "aria-label": {
+      "defaultValue": {
+        "value": "\"Close drawer\""
+      },
+      "description": "Accessible label for the close button",
+      "name": "aria-label",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/drawer/drawer.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

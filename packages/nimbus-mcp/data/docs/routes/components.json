@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "id": "Components",
+    "title": "Components",
+    "description": "React components for building robust and visually appealing applications.",
+    "order": 3,
+    "repoPath": "packages/nimbus/src/docs/components.mdx",
+    "menu": [
+      "Components"
+    ],
+    "route": "components",
+    "tags": [
+      "components",
+      "react"
+    ],
+    "toc": [],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Components\n\n<CategoryOverview />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Components\n\n<CategoryOverview />\n",
+      "toc": []
+    }
+  }
+}

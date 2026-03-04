@@ -1,0 +1,11 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/typography/heading}"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Heading\n\nrenders a heading",
+  "displayName": "Heading",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

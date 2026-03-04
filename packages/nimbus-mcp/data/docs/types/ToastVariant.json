@@ -1,0 +1,9 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Toast visual variant.\n- solid: Bold colored background with contrast text (default)\n- subtle: Subtle background with border\n- accent-start: Subtle background with a colored accent line on the inline-start edge",
+  "displayName": "ToastVariant",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

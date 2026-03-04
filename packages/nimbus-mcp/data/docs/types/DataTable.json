@@ -1,0 +1,618 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "",
+  "displayName": "DataTable",
+  "methods": [],
+  "props": {
+    "ref": {
+      "defaultValue": null,
+      "description": "React ref to be forwarded to the root element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    },
+    "columns": {
+      "defaultValue": null,
+      "description": "",
+      "name": "columns",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "DataTableColumnItem<T>[]"
+      }
+    },
+    "unstyled": {
+      "defaultValue": null,
+      "description": "",
+      "name": "unstyled",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "rows": {
+      "defaultValue": null,
+      "description": "",
+      "name": "rows",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "DataTableRowItem<T>[]"
+      }
+    },
+    "visibleColumns": {
+      "defaultValue": null,
+      "description": "",
+      "name": "visibleColumns",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string[]"
+      }
+    },
+    "renderEmptyState": {
+      "defaultValue": null,
+      "description": "",
+      "name": "renderEmptyState",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(props: TableBodyRenderProps) => ReactNode"
+      }
+    },
+    "isResizable": {
+      "defaultValue": null,
+      "description": "",
+      "name": "isResizable",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "isRowClickable": {
+      "defaultValue": null,
+      "description": "",
+      "name": "isRowClickable",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "allowsSorting": {
+      "defaultValue": null,
+      "description": "",
+      "name": "allowsSorting",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "search": {
+      "defaultValue": null,
+      "description": "",
+      "name": "search",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "maxHeight": {
+      "defaultValue": null,
+      "description": "",
+      "name": "maxHeight",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string | number"
+      }
+    },
+    "sortDescriptor": {
+      "defaultValue": null,
+      "description": "",
+      "name": "sortDescriptor",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "SortDescriptor"
+      }
+    },
+    "defaultSortDescriptor": {
+      "defaultValue": null,
+      "description": "",
+      "name": "defaultSortDescriptor",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "SortDescriptor"
+      }
+    },
+    "onSortChange": {
+      "defaultValue": null,
+      "description": "",
+      "name": "onSortChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(descriptor: SortDescriptor) => void"
+      }
+    },
+    "selectionMode": {
+      "defaultValue": null,
+      "description": "",
+      "name": "selectionMode",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"single\" | \"none\" | \"multiple\"",
+        "value": [
+          {
+            "value": "\"single\""
+          },
+          {
+            "value": "\"none\""
+          },
+          {
+            "value": "\"multiple\""
+          }
+        ]
+      }
+    },
+    "selectionBehavior": {
+      "defaultValue": null,
+      "description": "",
+      "name": "selectionBehavior",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "\"toggle\" | \"replace\"",
+        "value": [
+          {
+            "value": "\"toggle\""
+          },
+          {
+            "value": "\"replace\""
+          }
+        ]
+      }
+    },
+    "disallowEmptySelection": {
+      "defaultValue": null,
+      "description": "",
+      "name": "disallowEmptySelection",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "selectedKeys": {
+      "defaultValue": null,
+      "description": "",
+      "name": "selectedKeys",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Selection"
+      }
+    },
+    "defaultSelectedKeys": {
+      "defaultValue": null,
+      "description": "",
+      "name": "defaultSelectedKeys",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Selection"
+      }
+    },
+    "onSelectionChange": {
+      "defaultValue": null,
+      "description": "",
+      "name": "onSelectionChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(keys: Selection) => void"
+      }
+    },
+    "onRowClick": {
+      "defaultValue": null,
+      "description": "",
+      "name": "onRowClick",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(row: DataTableRowItem<T>) => void"
+      }
+    },
+    "onDetailsClick": {
+      "defaultValue": null,
+      "description": "",
+      "name": "onDetailsClick",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(row: DataTableRowItem<T>) => void"
+      }
+    },
+    "renderDetails": {
+      "defaultValue": null,
+      "description": "",
+      "name": "renderDetails",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(row: DataTableRowItem<T>) => ReactNode"
+      }
+    },
+    "density": {
+      "defaultValue": null,
+      "description": "",
+      "name": "density",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "enum",
+        "raw": "DataTableDensity",
+        "value": [
+          {
+            "value": "\"default\""
+          },
+          {
+            "value": "\"condensed\""
+          }
+        ]
+      }
+    },
+    "isTruncated": {
+      "defaultValue": null,
+      "description": "",
+      "name": "isTruncated",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "boolean"
+      }
+    },
+    "footer": {
+      "defaultValue": null,
+      "description": "",
+      "name": "footer",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        },
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "nestedKey": {
+      "defaultValue": null,
+      "description": "",
+      "name": "nestedKey",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "disabledKeys": {
+      "defaultValue": null,
+      "description": "",
+      "name": "disabledKeys",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Selection"
+      }
+    },
+    "onRowAction": {
+      "defaultValue": null,
+      "description": "",
+      "name": "onRowAction",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(row: DataTableRowItem<T>, action: \"click\" | \"select\") => void"
+      }
+    },
+    "expandedRows": {
+      "defaultValue": null,
+      "description": "Controlled expansion state - map of row IDs to their expanded state",
+      "name": "expandedRows",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Set<string>"
+      }
+    },
+    "defaultExpandedRows": {
+      "defaultValue": null,
+      "description": "Default expansion state for uncontrolled mode",
+      "name": "defaultExpandedRows",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Set<string>"
+      }
+    },
+    "onExpandRowsChange": {
+      "defaultValue": null,
+      "description": "Callback fired when expansion state changes",
+      "name": "onExpandRowsChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(expanded: Set<string>) => void"
+      }
+    },
+    "pinnedRows": {
+      "defaultValue": null,
+      "description": "",
+      "name": "pinnedRows",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Set<string>"
+      }
+    },
+    "defaultPinnedRows": {
+      "defaultValue": null,
+      "description": "",
+      "name": "defaultPinnedRows",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Set<string>"
+      }
+    },
+    "onPinToggle": {
+      "defaultValue": null,
+      "description": "",
+      "name": "onPinToggle",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(rowId: string) => void"
+      }
+    },
+    "onColumnsChange": {
+      "defaultValue": null,
+      "description": "",
+      "name": "onColumnsChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(columns: DataTableColumnItem<T>[]) => void"
+      }
+    },
+    "onSettingsChange": {
+      "defaultValue": null,
+      "description": "",
+      "name": "onSettingsChange",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "(action: string) => void"
+      }
+    },
+    "customSettings": {
+      "defaultValue": null,
+      "description": "",
+      "name": "customSettings",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/data-table.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "DataTableCustomSettings"
+      }
+    }
+  },
+  "supportsStyleProps": false
+}

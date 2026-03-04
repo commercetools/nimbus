@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "id": "Components-Forms",
+    "title": "Forms",
+    "description": "Components for form validation, localization, and error handling.",
+    "order": 11,
+    "repoPath": "packages/nimbus/src/docs/forms.mdx",
+    "menu": [
+      "Components",
+      "Forms"
+    ],
+    "route": "components/forms",
+    "tags": [
+      "forms",
+      "validation",
+      "errors",
+      "localization"
+    ],
+    "toc": [],
+    "icon": "DynamicForm",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Forms\n\nComponents for form validation, localization, and error handling.\n\n<CategoryOverview variant=\"list\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Forms\n\nComponents for form validation, localization, and error handling.\n\n<CategoryOverview variant=\"list\" />\n",
+      "toc": []
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "tags": {
+    "example": "```tsx\n<ComboBox.Root>\n  <ComboBox.Trigger />\n  <ComboBox.Popover>\n    <ComboBox.ListBox>\n      <ComboBox.Item value=\"option1\">Option 1</ComboBox.Item>\n    </ComboBox.ListBox>\n  </ComboBox.Popover>\n</ComboBox.Root>\n```",
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# ComboBox.Trigger\n\nThe trigger element that contains the input field and controls for the combobox.\nAutomatically renders the tag group (for multi-select), input field, toggle button, and clear button.\nHandles click interactions to focus the input when clicking anywhere on the trigger area.",
+  "displayName": "ComboBoxTrigger",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": true
+}

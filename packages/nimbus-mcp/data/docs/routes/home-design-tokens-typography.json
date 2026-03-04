@@ -1,0 +1,184 @@
+{
+  "meta": {
+    "id": "TokensTypography",
+    "title": "Typography",
+    "description": "everything typography related",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/docs/tokens/typography.mdx",
+    "menu": [
+      "Home",
+      "Design Tokens",
+      "Typography"
+    ],
+    "route": "home/design-tokens/typography",
+    "tags": [
+      "text",
+      "headings",
+      "strong",
+      "bold",
+      "italic",
+      "emphasize"
+    ],
+    "toc": [
+      {
+        "value": "Text Styles",
+        "href": "#text-styles",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Available Text Styles",
+        "href": "#available-text-styles",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Fonts",
+        "href": "#fonts",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Font Sizes",
+        "href": "#font-sizes",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Font Weights",
+        "href": "#font-weights",
+        "depth": 2,
+        "numbering": [
+          1,
+          4
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Letter Spacings",
+        "href": "#letter-spacings",
+        "depth": 2,
+        "numbering": [
+          1,
+          5
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Line Heights",
+        "href": "#line-heights",
+        "depth": 2,
+        "numbering": [
+          1,
+          6
+        ],
+        "parent": "root"
+      }
+    ],
+    "icon": "FormatSize",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      }
+    ]
+  },
+  "mdx": "\n# Typography\n\nBelow you'll find the raw tokens to change typography styles on a text-element.\n\n## Text Styles\n\nText styles are collections of multiple typography rules (such as `font-size`,\n`line-height`, `letter-spacing` etc.) that create a specific, reusable style.\n\n> [!NOTE]  \n> I added `caption`, `detail` & `body` from our existing styles, but they are\n> essentially just combinations of font-size & line-height and can be mapped to\n> `xs`, `sm` & `md`. The `headline` looks can be achieved by using the\n> textStyles on the `<Heading/>` component.\n\n```jsx\n<Text textStyle=\"nameOfDesiredTextStyle\">Heading 1</Text>\n```\n\n### Available Text Styles\n\n<TextStylesDemo />\n\n## Fonts\n\n<GenericTokenTableDemo category=\"fonts\" demoProperty=\"fontFamily\" />\n\n## Font Sizes\n\n<GenericTokenTableDemo category=\"fontSizes\" demoProperty=\"fontSize\" />\n\n## Font Weights\n\n<GenericTokenTableDemo category=\"fontWeights\" demoProperty=\"fontWeight\" />\n\n## Letter Spacings\n\n<GenericTokenTableDemo category=\"letterSpacings\" demoProperty=\"letterSpacing\" />\n\n## Line Heights\n\n<GenericTokenTableDemo category=\"lineHeights\" demoProperty=\"lineHeight\" />\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# Typography\n\nBelow you'll find the raw tokens to change typography styles on a text-element.\n\n## Text Styles\n\nText styles are collections of multiple typography rules (such as `font-size`,\n`line-height`, `letter-spacing` etc.) that create a specific, reusable style.\n\n> [!NOTE]  \n> I added `caption`, `detail` & `body` from our existing styles, but they are\n> essentially just combinations of font-size & line-height and can be mapped to\n> `xs`, `sm` & `md`. The `headline` looks can be achieved by using the\n> textStyles on the `<Heading/>` component.\n\n```jsx\n<Text textStyle=\"nameOfDesiredTextStyle\">Heading 1</Text>\n```\n\n### Available Text Styles\n\n<TextStylesDemo />\n\n## Fonts\n\n<GenericTokenTableDemo category=\"fonts\" demoProperty=\"fontFamily\" />\n\n## Font Sizes\n\n<GenericTokenTableDemo category=\"fontSizes\" demoProperty=\"fontSize\" />\n\n## Font Weights\n\n<GenericTokenTableDemo category=\"fontWeights\" demoProperty=\"fontWeight\" />\n\n## Letter Spacings\n\n<GenericTokenTableDemo category=\"letterSpacings\" demoProperty=\"letterSpacing\" />\n\n## Line Heights\n\n<GenericTokenTableDemo category=\"lineHeights\" demoProperty=\"lineHeight\" />\n",
+      "toc": [
+        {
+          "value": "Text Styles",
+          "href": "#text-styles",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Available Text Styles",
+          "href": "#available-text-styles",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Fonts",
+          "href": "#fonts",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Font Sizes",
+          "href": "#font-sizes",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Font Weights",
+          "href": "#font-weights",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Letter Spacings",
+          "href": "#letter-spacings",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Line Heights",
+          "href": "#line-heights",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

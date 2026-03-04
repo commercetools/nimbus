@@ -1,0 +1,570 @@
+{
+  "meta": {
+    "id": "Components-ScopedSearchInput",
+    "title": "Scoped search input",
+    "exportName": "ScopedSearchInput",
+    "description": "Enables users to define where their search query is applied using a closely paired scope selector.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/scoped-search-input/scoped-search-input.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "Scoped search input"
+    ],
+    "route": "components/inputs/scoped-search-input",
+    "tags": [
+      "component",
+      "input",
+      "search",
+      "select",
+      "scoped"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size",
+        "href": "#size",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With form fields",
+        "href": "#with-form-fields",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7190-35198&m=dev",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "guidelines",
+        "title": "Guidelines",
+        "order": 2
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nThe scoped search input combines an input field with a functional scope selector\n(often a dropdown or button group), ensuring users can precisely target their\nquery to a specific data segment, such as searching only 'Products' or only\n'Customers', yielding more accurate and relevant results.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7190-35198&m=dev)\n[React Aria SearchField](https://react-spectrum.adobe.com/react-aria/SearchField.html)\n\n## Variables\n\nGet familiar with the features.\n\n### Size\n\nThere are two sizes, the default is medium (md) and supporting a more compact\nsize (sm).\n\n```jsx live\nconst App = () => {\n  const [valueSm, setValueSm] = useState({ text: '', option: 'all' });\n  const [valueMd, setValueMd] = useState({ text: '', option: 'all' });\n\n  const options = [\n    { label: 'All fields', value: 'all' },\n    { label: 'Name', value: 'name' },\n    { label: 'Email', value: 'email' },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <ScopedSearchInput\n        size=\"md\"\n        value={valueMd}\n        onValueChange={setValueMd}\n        onSubmit={(val) => console.log('Search:', val)}\n        options={options}\n        searchPlaceholder=\"Search...\"\n      />\n      <ScopedSearchInput\n        size=\"sm\"\n        value={valueSm}\n        onValueChange={setValueSm}\n        onSubmit={(val) => console.log('Search:', val)}\n        options={options}\n        searchPlaceholder=\"Search...\"\n      />\n    </Stack>\n  );\n};\n```\n\n### With form fields\n\nWhen used in combination with form field patterns there is more support for any\nlabel, description, and error states needed.\n\n```jsx live\nconst App = () => {\n  const [value, setValue] = useState({ text: '', option: 'all' });\n\n  const options = [\n    { label: 'All fields', value: 'all' },\n    { label: 'Name', value: 'name' },\n    { label: 'Email', value: 'email' },\n  ];\n\n  return (\n    <Box width=\"600px\">\n      <FormField.Root isRequired>\n        <FormField.Label>Label</FormField.Label>\n        <FormField.Input>\n          <ScopedSearchInput\n            value={value}\n            onValueChange={setValue}\n            onSubmit={(val) => console.log('Search:', val)}\n            options={options}\n            searchPlaceholder=\"Search...\"\n          />\n        </FormField.Input>\n        <FormField.Description>Descriptive text</FormField.Description>\n        <FormField.InfoBox>\n          Info box content\n        </FormField.InfoBox>\n      </FormField.Root>\n    </Box>\n  );\n};\n```\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nThe scoped search input combines an input field with a functional scope selector\n(often a dropdown or button group), ensuring users can precisely target their\nquery to a specific data segment, such as searching only 'Products' or only\n'Customers', yielding more accurate and relevant results.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7190-35198&m=dev)\n[React Aria SearchField](https://react-spectrum.adobe.com/react-aria/SearchField.html)\n\n## Variables\n\nGet familiar with the features.\n\n### Size\n\nThere are two sizes, the default is medium (md) and supporting a more compact\nsize (sm).\n\n```jsx live\nconst App = () => {\n  const [valueSm, setValueSm] = useState({ text: '', option: 'all' });\n  const [valueMd, setValueMd] = useState({ text: '', option: 'all' });\n\n  const options = [\n    { label: 'All fields', value: 'all' },\n    { label: 'Name', value: 'name' },\n    { label: 'Email', value: 'email' },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <ScopedSearchInput\n        size=\"md\"\n        value={valueMd}\n        onValueChange={setValueMd}\n        onSubmit={(val) => console.log('Search:', val)}\n        options={options}\n        searchPlaceholder=\"Search...\"\n      />\n      <ScopedSearchInput\n        size=\"sm\"\n        value={valueSm}\n        onValueChange={setValueSm}\n        onSubmit={(val) => console.log('Search:', val)}\n        options={options}\n        searchPlaceholder=\"Search...\"\n      />\n    </Stack>\n  );\n};\n```\n\n### With form fields\n\nWhen used in combination with form field patterns there is more support for any\nlabel, description, and error states needed.\n\n```jsx live\nconst App = () => {\n  const [value, setValue] = useState({ text: '', option: 'all' });\n\n  const options = [\n    { label: 'All fields', value: 'all' },\n    { label: 'Name', value: 'name' },\n    { label: 'Email', value: 'email' },\n  ];\n\n  return (\n    <Box width=\"600px\">\n      <FormField.Root isRequired>\n        <FormField.Label>Label</FormField.Label>\n        <FormField.Input>\n          <ScopedSearchInput\n            value={value}\n            onValueChange={setValue}\n            onSubmit={(val) => console.log('Search:', val)}\n            options={options}\n            searchPlaceholder=\"Search...\"\n          />\n        </FormField.Input>\n        <FormField.Description>Descriptive text</FormField.Description>\n        <FormField.InfoBox>\n          Info box content\n        </FormField.InfoBox>\n      </FormField.Root>\n    </Box>\n  );\n};\n```\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size",
+          "href": "#size",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With form fields",
+          "href": "#with-form-fields",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => {\n  const [value, setValue] = useState({ text: '', option: 'all' });\n\n  const options = [\n    { label: 'All fields', value: 'all' },\n    { label: 'Name', value: 'name' },\n    { label: 'Email', value: 'email' },\n  ];\n\n  return (\n    <ScopedSearchInput\n      value={value}\n      onValueChange={setValue}\n      onSubmit={(val) => console.log('Search:', val)}\n      options={options}\n      searchPlaceholder=\"Search...\"\n    />\n  );\n};\n```\n\n### Accessibility standards\n\n- **Keyboard flow**: Ensure the Tab order moves logically between the scope\n  selector and the text input field.\n- **ARIA roles**: The scope selector (if a dropdown) must use the appropriate\n  ARIA roles (role=\"combobox\", aria-expanded).\n- **Labeling**: Provide clear programmatic labels for both the search input\n  (`aria-label` or visible `<label>`) and the scope selector to explain their\n  function to screen readers.\n- **State communication**: Use aria-live regions if search results appear\n  dynamically, to announce the updated results count after a scope change or\n  query submission.\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { ScopedSearchInput, type ScopedSearchInputProps, type ScopedSearchInputValue } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe ScopedSearchInput combines a select dropdown with a search input field, enabling users to filter searches by category or field type. It requires controlled mode with `value` and `onSubmit`:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState({ text: '', option: 'all' });\n\n  const options = [\n    { label: 'All Fields', value: 'all' },\n    { label: 'Name', value: 'name' },\n    { label: 'Email', value: 'email' },\n    { label: 'Phone', value: 'phone' },\n  ];\n\n  return (\n    <ScopedSearchInput\n      value={value}\n      onValueChange={setValue}\n      onSubmit={(val) => console.log('Search:', val)}\n      options={options}\n      selectPlaceholder=\"Select field\"\n      searchPlaceholder=\"Enter search term...\"\n    />\n  );\n}\n```\n\n## Usage examples\n\n### Size options\n\nThe `sm` and `md` size variants are available to match your interface density:\n\n```jsx live-dev\nconst App = () => {\n  const [valueSm, setValueSm] = useState({ text: '', option: 'name' });\n  const [valueMd, setValueMd] = useState({ text: '', option: 'name' });\n\n  const options = [\n    { label: 'Name', value: 'name' },\n    { label: 'Email', value: 'email' },\n    { label: 'Phone', value: 'phone' },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"400\" alignItems=\"flex-start\">\n      <ScopedSearchInput\n        size=\"sm\"\n        value={valueSm}\n        onValueChange={setValueSm}\n        onSubmit={console.log}\n        options={options}\n        searchPlaceholder=\"Small size...\"\n      />\n      <ScopedSearchInput\n        size=\"md\"\n        value={valueMd}\n        onValueChange={setValueMd}\n        onSubmit={console.log}\n        options={options}\n        searchPlaceholder=\"Medium size...\"\n      />\n    </Stack>\n  );\n}\n```\n\n### Grouped options\n\nOrganize filter categories using option groups for better organization:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState({ text: '', option: 'email' });\n\n  const groupedOptions = [\n    {\n      label: 'Contact Info',\n      options: [\n        { label: 'Email', value: 'email' },\n        { label: 'Phone', value: 'phone' },\n      ],\n    },\n    {\n      label: 'Personal Info',\n      options: [\n        { label: 'Name', value: 'name' },\n        { label: 'Address', value: 'address' },\n      ],\n    },\n  ];\n\n  return (\n    <ScopedSearchInput\n      value={value}\n      onValueChange={setValue}\n      onSubmit={(val) => console.log('Search:', val)}\n      options={groupedOptions}\n      searchPlaceholder=\"Search...\"\n    />\n  );\n}\n```\n\n### Auto-focus behavior\n\nAfter selecting a filter option, the search input automatically receives focus, allowing users to immediately start typing without clicking:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState({ text: '', option: 'all' });\n\n  const options = [\n    { label: 'All Fields', value: 'all' },\n    { label: 'Name', value: 'name' },\n    { label: 'Email', value: 'email' },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"200\">\n      <Text fontSize=\"sm\" color=\"fg.muted\">\n        Select a different option to see auto-focus in action\n      </Text>\n      <ScopedSearchInput\n        value={value}\n        onValueChange={setValue}\n        onSubmit={console.log}\n        options={options}\n        searchPlaceholder=\"Type after selecting...\"\n      />\n    </Stack>\n  );\n}\n```\n\n### State management patterns\n\nUse separate callbacks for granular control over state changes:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState({ text: '', option: 'name' });\n  const [history, setHistory] = useState([]);\n\n  const options = [\n    { label: 'Name', value: 'name' },\n    { label: 'Email', value: 'email' },\n    { label: 'Phone', value: 'phone' },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <ScopedSearchInput\n        value={value}\n        onTextChange={(text) => {\n          setHistory((prev) => [...prev, `Text changed: \"${text}\"`]);\n        }}\n        onOptionChange={(option) => {\n          setHistory((prev) => [...prev, `Option changed: \"${option}\"`]);\n        }}\n        onValueChange={setValue}\n        onSubmit={(val) => {\n          setHistory((prev) => [...prev, `Submitted: ${val.option} = \"${val.text}\"`]);\n        }}\n        options={options}\n        searchPlaceholder=\"Type to track changes...\"\n      />\n      <Stack direction=\"column\" gap=\"100\" fontSize=\"sm\">\n        <Text fontWeight=\"medium\">Current state:</Text>\n        <Text>Option: {value.option}, Text: \"{value.text}\"</Text>\n        {history.length > 0 && (\n          <>\n            <Text fontWeight=\"medium\" marginTop=\"200\">Event history:</Text>\n            {history.slice(-3).map((event, i) => (\n              <Text key={i} color=\"fg.muted\">{event}</Text>\n            ))}\n          </>\n        )}\n      </Stack>\n    </Stack>\n  );\n}\n```\n\n**Available callbacks:**\n- `onValueChange`: Fires when either text or option changes (receives complete value object)\n- `onTextChange`: Fires only when search text changes\n- `onOptionChange`: Fires only when selected option changes\n- `onSubmit`: Fires when user submits search (Enter key or search button)\n- `onReset`: Fires when user clears the search text\n\n### Component states\n\nThe component supports common input states:\n\n```jsx live-dev\nconst App = () => {\n  const [normalValue, setNormalValue] = useState({ text: '', option: 'all' });\n  const [disabledValue, setDisabledValue] = useState({ text: 'disabled', option: 'all' });\n  const [readonlyValue, setReadonlyValue] = useState({ text: 'readonly', option: 'all' });\n  const [invalidValue, setInvalidValue] = useState({ text: 'error', option: 'all' });\n  const [requiredValue, setRequiredValue] = useState({ text: '', option: 'all' });\n\n  const options = [\n    { label: 'All Fields', value: 'all' },\n    { label: 'Name', value: 'name' },\n  ];\n\n  return (\n    <Stack direction=\"column\" gap=\"400\" alignItems=\"flex-start\">\n      <Stack direction=\"column\" gap=\"100\">\n        <Text fontSize=\"sm\" fontWeight=\"medium\">Normal</Text>\n        <ScopedSearchInput\n          value={normalValue}\n          onValueChange={setNormalValue}\n          onSubmit={console.log}\n          options={options}\n          searchPlaceholder=\"Normal state...\"\n        />\n      </Stack>\n      <Stack direction=\"column\" gap=\"100\">\n        <Text fontSize=\"sm\" fontWeight=\"medium\">Disabled</Text>\n        <ScopedSearchInput\n          value={disabledValue}\n          onValueChange={setDisabledValue}\n          onSubmit={console.log}\n          options={options}\n          isDisabled\n        />\n      </Stack>\n      <Stack direction=\"column\" gap=\"100\">\n        <Text fontSize=\"sm\" fontWeight=\"medium\">Read-only</Text>\n        <ScopedSearchInput\n          value={readonlyValue}\n          onValueChange={setReadonlyValue}\n          onSubmit={console.log}\n          options={options}\n          isReadOnly\n        />\n      </Stack>\n      <Stack direction=\"column\" gap=\"100\">\n        <Text fontSize=\"sm\" fontWeight=\"medium\">Invalid</Text>\n        <ScopedSearchInput\n          value={invalidValue}\n          onValueChange={setInvalidValue}\n          onSubmit={console.log}\n          options={options}\n          isInvalid\n        />\n      </Stack>\n      <Stack direction=\"column\" gap=\"100\">\n        <Text fontSize=\"sm\" fontWeight=\"medium\">Required</Text>\n        <ScopedSearchInput\n          value={requiredValue}\n          onValueChange={setRequiredValue}\n          onSubmit={console.log}\n          options={options}\n          isRequired\n        />\n      </Stack>\n    </Stack>\n  );\n}\n```\n\n### isEmpty utility\n\nUse the static `isEmpty` method to validate search input before submission:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState({ text: '', option: 'name' });\n  const [validationMessage, setValidationMessage] = useState('');\n\n  const options = [\n    { label: 'Name', value: 'name' },\n    { label: 'Email', value: 'email' },\n  ];\n\n  const handleSubmit = (val) => {\n    if (ScopedSearchInput.isEmpty(val)) {\n      setValidationMessage('❌ Please enter a search term');\n    } else {\n      setValidationMessage(`✓ Searching ${val.option} for: \"${val.text}\"`);\n    }\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"300\">\n      <ScopedSearchInput\n        value={value}\n        onValueChange={(val) => {\n          setValue(val);\n          setValidationMessage('');\n        }}\n        onSubmit={handleSubmit}\n        options={options}\n        searchPlaceholder=\"Type here...\"\n      />\n      <Stack direction=\"row\" gap=\"200\" alignItems=\"center\">\n        <Button onClick={() => handleSubmit(value)}>\n          Submit Search\n        </Button>\n        {validationMessage && (\n          <Text\n            fontSize=\"sm\"\n            color={validationMessage.startsWith('❌') ? 'critical.11' : 'positive.11'}\n          >\n            {validationMessage}\n          </Text>\n        )}\n      </Stack>\n    </Stack>\n  );\n}\n```\n\n### Controlled mode\n\nThe ScopedSearchInput requires controlled mode with explicit state management:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState({ text: '', option: 'products' });\n  const [lastSubmission, setLastSubmission] = useState(null);\n\n  const options = [\n    { label: 'Products', value: 'products' },\n    { label: 'Orders', value: 'orders' },\n    { label: 'Customers', value: 'customers' },\n  ];\n\n  const handleSubmit = (val) => {\n    setLastSubmission(val);\n  };\n\n  const handleClear = () => {\n    setValue({ ...value, text: '' });\n    setLastSubmission(null);\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <ScopedSearchInput\n        value={value}\n        onValueChange={setValue}\n        onSubmit={handleSubmit}\n        onReset={handleClear}\n        options={options}\n        selectPlaceholder=\"Select category\"\n        searchPlaceholder=\"Enter search term...\"\n      />\n      <Stack direction=\"column\" gap=\"200\" fontSize=\"sm\">\n        <Text fontWeight=\"medium\">Current state:</Text>\n        <Text>Category: {value.option}</Text>\n        <Text>Search text: {value.text || '(empty)'}</Text>\n        {lastSubmission && (\n          <>\n            <Text fontWeight=\"medium\" marginTop=\"200\">Last submission:</Text>\n            <Text>Searched {lastSubmission.option} for: \"{lastSubmission.text}\"</Text>\n          </>\n        )}\n      </Stack>\n    </Stack>\n  );\n}\n```\n\n## Component requirements\n\n## Accessibility\n\nThe ScopedSearchInput is built with React Aria Components and follows WCAG 2.1 AA guidelines.\n\n#### Role\n\nBoth the select dropdown and search input maintain their respective semantic roles:\n- Select trigger: `role=\"button\"` with appropriate ARIA attributes\n- Search input: `role=\"searchbox\"`\n\n#### Labeling\n\nProvide accessible labels for both parts using `selectAriaLabel` and `searchAriaLabel`:\n\n```tsx\n<ScopedSearchInput\n  selectAriaLabel=\"Filter search by field\"\n  searchAriaLabel=\"Search term\"\n  // ... other props\n/>\n```\n\nWhen using FormField, the field label automatically associates with both inputs via `aria-labelledby`.\n\n#### Keyboard navigation\n\n| Key | Action |\n|-----|--------|\n| `Tab` | Move focus between select dropdown and search input |\n| `Enter` (in select) | Open dropdown menu |\n| `Arrow Up/Down` (in select) | Navigate options |\n| `Enter` (in search) | Submit search |\n| `Escape` | Close dropdown (when open) |\n\n#### ARIA attributes\n\nThe component automatically manages:\n- `aria-controls`: Links select to search input\n- `aria-labelledby`: Associates with FormField label\n- `aria-describedby`: Associates with FormField description and errors\n- `aria-invalid`: Indicates validation state\n\n#### Persistent ID\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\n<ScopedSearchInput\n  id=\"product-search\"\n  value={value}\n  onValueChange={setValue}\n  onSubmit={handleSearch}\n  options={options}\n/>\n```\n\nThis ensures consistent tracking across sessions and makes it easier to target specific instances for analytics or testing.\n\n## API reference\n\n<PropsTable id=\"ScopedSearchInput\" />\n\n## Common patterns\n\n### Form integration with validation\n\nIntegrate with FormField for complete form functionality:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState({ text: '', option: 'products' });\n  const [error, setError] = useState('');\n  const [touched, setTouched] = useState(false);\n\n  const options = [\n    { label: 'Products', value: 'products' },\n    { label: 'Orders', value: 'orders' },\n    { label: 'Customers', value: 'customers' },\n  ];\n\n  const handleSubmit = (val) => {\n    setTouched(true);\n    if (ScopedSearchInput.isEmpty(val)) {\n      setError('Search term is required');\n    } else if (val.text.length < 3) {\n      setError('Search term must be at least 3 characters');\n    } else {\n      setError('');\n      console.log('Valid search:', val);\n    }\n  };\n\n  const handleChange = (val) => {\n    setValue(val);\n    if (touched && error) {\n      setError('');\n    }\n  };\n\n  return (\n    <FormField.Root isInvalid={!!(error && touched)}>\n      <FormField.Label>Search</FormField.Label>\n      <FormField.Input>\n        <ScopedSearchInput\n          value={value}\n          onValueChange={handleChange}\n          onSubmit={handleSubmit}\n          options={options}\n          selectPlaceholder=\"Category\"\n          searchPlaceholder=\"Enter at least 3 characters...\"\n          isInvalid={!!(error && touched)}\n        />\n      </FormField.Input>\n      <FormField.Description>\n        Select a category and enter your search term\n      </FormField.Description>\n      {touched && error && (\n        <FormField.Error>{error}</FormField.Error>\n      )}\n    </FormField.Root>\n  );\n}\n```\n\n### Advanced search with filters\n\nImplement a full-featured search interface with multiple filter categories:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = useState({ text: '', option: 'name' });\n  const [results, setResults] = useState([]);\n  const [isSearching, setIsSearching] = useState(false);\n\n  const searchOptions = [\n    {\n      label: 'Product Info',\n      options: [\n        { label: 'Product Name', value: 'name' },\n        { label: 'SKU', value: 'sku' },\n        { label: 'Description', value: 'description' },\n      ],\n    },\n    {\n      label: 'Attributes',\n      options: [\n        { label: 'Brand', value: 'brand' },\n        { label: 'Category', value: 'category' },\n      ],\n    },\n  ];\n\n  const mockSearch = (searchValue) => {\n    setIsSearching(true);\n    setTimeout(() => {\n      // Simulate API response\n      const mockResults = [\n        `Found results in ${searchValue.option}: \"${searchValue.text}\"`,\n        `Result 1 matching ${searchValue.text}`,\n        `Result 2 matching ${searchValue.text}`,\n      ];\n      setResults(mockResults);\n      setIsSearching(false);\n    }, 500);\n  };\n\n  const handleSubmit = (val) => {\n    if (!ScopedSearchInput.isEmpty(val)) {\n      mockSearch(val);\n    }\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <ScopedSearchInput\n        value={value}\n        onValueChange={setValue}\n        onSubmit={handleSubmit}\n        options={searchOptions}\n        selectPlaceholder=\"Search by...\"\n        searchPlaceholder=\"Enter search term...\"\n      />\n      {isSearching && (\n        <Text fontSize=\"sm\" color=\"fg.muted\">Searching...</Text>\n      )}\n      {!isSearching && results.length > 0 && (\n        <Stack direction=\"column\" gap=\"200\">\n          <Text fontSize=\"sm\" fontWeight=\"medium\">Search Results:</Text>\n          {results.map((result, i) => (\n            <Text key={i} fontSize=\"sm\">{result}</Text>\n          ))}\n        </Stack>\n      )}\n    </Stack>\n  );\n}\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using ScopedSearchInput in your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the component renders with expected elements and structure\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  ScopedSearchInput,\n  NimbusProvider,\n  type ScopedSearchInputValue,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"ScopedSearchInput - Basic rendering\", () => {\n  it(\"renders both select dropdown and search input\", () => {\n    const value: ScopedSearchInputValue = { text: \"\", option: \"all\" };\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onSubmit={vi.fn()}\n          options={defaultOptions}\n        />\n      </NimbusProvider>\n    );\n\n    // Verify select trigger is present\n    expect(\n      screen.getByRole(\"button\", { name: /all fields/i })\n    ).toBeInTheDocument();\n\n    // Verify search input is present\n    expect(screen.getByRole(\"searchbox\")).toBeInTheDocument();\n  });\n\n  it(\"displays selected option in select trigger\", () => {\n    const value: ScopedSearchInputValue = { text: \"john\", option: \"name\" };\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onSubmit={vi.fn()}\n          options={defaultOptions}\n        />\n      </NimbusProvider>\n    );\n\n    expect(screen.getByRole(\"button\", { name: /name/i })).toBeInTheDocument();\n  });\n\n  it(\"displays search text in input field\", () => {\n    const value: ScopedSearchInputValue = { text: \"test query\", option: \"all\" };\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onSubmit={vi.fn()}\n          options={defaultOptions}\n        />\n      </NimbusProvider>\n    );\n\n    const searchInput = screen.getByRole(\"searchbox\");\n    expect(searchInput).toHaveValue(\"test query\");\n  });\n});\n```\n\n### User Interaction Tests\n\nTest user interactions including typing, selecting options, and submitting\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  ScopedSearchInput,\n  NimbusProvider,\n  type ScopedSearchInputValue,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"ScopedSearchInput - Interactions\", () => {\n  it(\"allows typing in search input\", async () => {\n    const user = userEvent.setup();\n    const value: ScopedSearchInputValue = { text: \"\", option: \"all\" };\n    const handleValueChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onValueChange={handleValueChange}\n          onSubmit={vi.fn()}\n          options={defaultOptions}\n        />\n      </NimbusProvider>\n    );\n\n    const searchInput = screen.getByRole(\"searchbox\");\n    await user.type(searchInput, \"test\");\n\n    // Verify callback was called (typing happens character by character)\n    expect(handleValueChange).toHaveBeenCalled();\n  });\n\n  it(\"allows selecting different option from dropdown\", async () => {\n    const user = userEvent.setup();\n    const value: ScopedSearchInputValue = { text: \"\", option: \"all\" };\n    const handleValueChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onValueChange={handleValueChange}\n          onSubmit={vi.fn()}\n          options={defaultOptions}\n        />\n      </NimbusProvider>\n    );\n\n    // Open dropdown\n    const selectTrigger = screen.getByRole(\"button\", { name: /all fields/i });\n    await user.click(selectTrigger);\n\n    // Wait for dropdown to appear\n    await waitFor(() => {\n      expect(screen.getByRole(\"listbox\")).toBeInTheDocument();\n    });\n\n    // Select \"Name\" option\n    const nameOption = screen.getByRole(\"option\", { name: \"Name\" });\n    await user.click(nameOption);\n\n    // Verify callback was called with new option\n    expect(handleValueChange).toHaveBeenCalledWith(\n      expect.objectContaining({ option: \"name\" })\n    );\n  });\n\n  it(\"submits search when Enter is pressed in search input\", async () => {\n    const user = userEvent.setup();\n    const value: ScopedSearchInputValue = {\n      text: \"test query\",\n      option: \"name\",\n    };\n    const handleSubmit = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onSubmit={handleSubmit}\n          options={defaultOptions}\n        />\n      </NimbusProvider>\n    );\n\n    const searchInput = screen.getByRole(\"searchbox\");\n    await user.click(searchInput);\n    await user.keyboard(\"{Enter}\");\n\n    expect(handleSubmit).toHaveBeenCalledWith(value);\n  });\n\n  it(\"clears search text when clear button is clicked\", async () => {\n    const user = userEvent.setup();\n    const value: ScopedSearchInputValue = { text: \"test\", option: \"all\" };\n    const handleValueChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onValueChange={handleValueChange}\n          onSubmit={vi.fn()}\n          options={defaultOptions}\n        />\n      </NimbusProvider>\n    );\n\n    // Find and click clear button\n    const clearButton = screen.getByRole(\"button\", { name: /clear/i });\n    await user.click(clearButton);\n\n    // Verify text was cleared (option remains)\n    expect(handleValueChange).toHaveBeenCalledWith(\n      expect.objectContaining({ text: \"\", option: \"all\" })\n    );\n  });\n});\n```\n\n### Callback Tests\n\nTest separate callbacks for text, option, and combined value changes\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  ScopedSearchInput,\n  NimbusProvider,\n  type ScopedSearchInputValue,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"ScopedSearchInput - Callbacks\", () => {\n  it(\"calls onTextChange when search text changes\", async () => {\n    const user = userEvent.setup();\n    const value: ScopedSearchInputValue = { text: \"\", option: \"all\" };\n    const handleTextChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onTextChange={handleTextChange}\n          onSubmit={vi.fn()}\n          options={defaultOptions}\n        />\n      </NimbusProvider>\n    );\n\n    const searchInput = screen.getByRole(\"searchbox\");\n    await user.type(searchInput, \"test\");\n\n    // Verify callback was called for text changes\n    expect(handleTextChange).toHaveBeenCalled();\n  });\n\n  it(\"calls onOptionChange when option is selected\", async () => {\n    const user = userEvent.setup();\n    const value: ScopedSearchInputValue = { text: \"\", option: \"all\" };\n    const handleOptionChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onOptionChange={handleOptionChange}\n          onSubmit={vi.fn()}\n          options={defaultOptions}\n        />\n      </NimbusProvider>\n    );\n\n    // Open and select from dropdown\n    await user.click(screen.getByRole(\"button\", { name: /all fields/i }));\n    await waitFor(() => {\n      expect(screen.getByRole(\"listbox\")).toBeInTheDocument();\n    });\n    await user.click(screen.getByRole(\"option\", { name: \"Email\" }));\n\n    expect(handleOptionChange).toHaveBeenCalledWith(\"email\");\n  });\n\n  it(\"calls onValueChange for both text and option changes\", async () => {\n    const user = userEvent.setup();\n    const value: ScopedSearchInputValue = { text: \"\", option: \"all\" };\n    const handleValueChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onValueChange={handleValueChange}\n          onSubmit={vi.fn()}\n          options={defaultOptions}\n        />\n      </NimbusProvider>\n    );\n\n    // Type text\n    const searchInput = screen.getByRole(\"searchbox\");\n    await user.type(searchInput, \"test\");\n    expect(handleValueChange).toHaveBeenCalled();\n\n    // Change option\n    handleValueChange.mockClear();\n    await user.click(screen.getByRole(\"button\", { name: /all fields/i }));\n    await waitFor(() => {\n      expect(screen.getByRole(\"listbox\")).toBeInTheDocument();\n    });\n    await user.click(screen.getByRole(\"option\", { name: \"Name\" }));\n\n    expect(handleValueChange).toHaveBeenCalledWith(\n      expect.objectContaining({ option: \"name\" })\n    );\n  });\n});\n```\n\n### State Tests\n\nTest disabled, readonly, invalid, and required states\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  ScopedSearchInput,\n  NimbusProvider,\n  type ScopedSearchInputValue,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"ScopedSearchInput - States\", () => {\n  it(\"disables both inputs when isDisabled is true\", () => {\n    const value: ScopedSearchInputValue = { text: \"test\", option: \"all\" };\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onSubmit={vi.fn()}\n          options={defaultOptions}\n          isDisabled\n        />\n      </NimbusProvider>\n    );\n\n    // Check select button has disabled attribute\n    const selectButton = screen.getByRole(\"button\", { name: /all fields/i });\n    expect(selectButton).toBeDisabled();\n\n    // Check search input is disabled\n    expect(screen.getByRole(\"searchbox\")).toBeDisabled();\n  });\n\n  it(\"makes both inputs readonly when isReadOnly is true\", () => {\n    const value: ScopedSearchInputValue = { text: \"test\", option: \"all\" };\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onSubmit={vi.fn()}\n          options={defaultOptions}\n          isReadOnly\n        />\n      </NimbusProvider>\n    );\n\n    // Search input should be readonly\n    expect(screen.getByRole(\"searchbox\")).toHaveAttribute(\"readonly\");\n  });\n\n  it(\"applies invalid state styling when isInvalid is true\", () => {\n    const value: ScopedSearchInputValue = { text: \"invalid\", option: \"all\" };\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onSubmit={vi.fn()}\n          options={defaultOptions}\n          isInvalid\n        />\n      </NimbusProvider>\n    );\n\n    const searchInput = screen.getByRole(\"searchbox\");\n    expect(searchInput).toBeInvalid();\n  });\n\n  it(\"marks inputs as required when isRequired is true\", () => {\n    const value: ScopedSearchInputValue = { text: \"\", option: \"all\" };\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onSubmit={vi.fn()}\n          options={defaultOptions}\n          isRequired\n        />\n      </NimbusProvider>\n    );\n\n    // Check search input has required attribute\n    const searchInput = screen.getByRole(\"searchbox\");\n    expect(searchInput).toBeRequired();\n  });\n});\n```\n\n### Validation Tests\n\nTest the isEmpty utility and validation patterns\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  ScopedSearchInput,\n  NimbusProvider,\n  type ScopedSearchInputValue,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"ScopedSearchInput - Validation\", () => {\n  it(\"isEmpty returns true for empty text\", () => {\n    const value: ScopedSearchInputValue = { text: \"\", option: \"all\" };\n    expect(ScopedSearchInput.isEmpty(value)).toBe(true);\n  });\n\n  it(\"isEmpty returns true for whitespace-only text\", () => {\n    const value: ScopedSearchInputValue = { text: \"   \", option: \"all\" };\n    expect(ScopedSearchInput.isEmpty(value)).toBe(true);\n  });\n\n  it(\"isEmpty returns false for non-empty text\", () => {\n    const value: ScopedSearchInputValue = {\n      text: \"search term\",\n      option: \"all\",\n    };\n    expect(ScopedSearchInput.isEmpty(value)).toBe(false);\n  });\n\n  it(\"validates on submit using isEmpty utility\", async () => {\n    const user = userEvent.setup();\n    const value: ScopedSearchInputValue = { text: \"\", option: \"all\" };\n    const handleSubmit = vi.fn((val: ScopedSearchInputValue) => {\n      if (ScopedSearchInput.isEmpty(val)) {\n        // Return validation error instead of throwing\n        return { error: \"Search term required\" };\n      }\n      return { success: true };\n    });\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onSubmit={handleSubmit}\n          options={defaultOptions}\n        />\n      </NimbusProvider>\n    );\n\n    const searchInput = screen.getByRole(\"searchbox\");\n    await user.click(searchInput);\n    await user.keyboard(\"{Enter}\");\n\n    // Verify submit was called\n    expect(handleSubmit).toHaveBeenCalled();\n    // Verify it returned an error for empty value\n    const result = handleSubmit.mock.results[0].value;\n    expect(result).toEqual({ error: \"Search term required\" });\n  });\n});\n```\n\n### Grouped Options Tests\n\nTest option group functionality\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport {\n  ScopedSearchInput,\n  NimbusProvider,\n  type ScopedSearchInputValue,\n} from \"@commercetools/nimbus\";\n\ndescribe(\"ScopedSearchInput - Grouped options\", () => {\n  const groupedOptions = [\n    {\n      label: \"Contact Info\",\n      options: [\n        { label: \"Email\", value: \"email\" },\n        { label: \"Phone\", value: \"phone\" },\n      ],\n    },\n    {\n      label: \"Personal Info\",\n      options: [\n        { label: \"Name\", value: \"name\" },\n        { label: \"Address\", value: \"address\" },\n      ],\n    },\n  ];\n\n  it(\"renders option groups correctly\", async () => {\n    const user = userEvent.setup();\n    const value: ScopedSearchInputValue = { text: \"\", option: \"email\" };\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onSubmit={vi.fn()}\n          options={groupedOptions}\n        />\n      </NimbusProvider>\n    );\n\n    // Open dropdown\n    await user.click(screen.getByRole(\"button\", { name: /email/i }));\n\n    // Wait for dropdown\n    await waitFor(() => {\n      expect(screen.getByRole(\"listbox\")).toBeInTheDocument();\n    });\n\n    // Verify groups are present (groups typically render as separate elements)\n    expect(screen.getByRole(\"option\", { name: \"Email\" })).toBeInTheDocument();\n    expect(screen.getByRole(\"option\", { name: \"Phone\" })).toBeInTheDocument();\n    expect(screen.getByRole(\"option\", { name: \"Name\" })).toBeInTheDocument();\n    expect(screen.getByRole(\"option\", { name: \"Address\" })).toBeInTheDocument();\n  });\n\n  it(\"allows selecting options from different groups\", async () => {\n    const user = userEvent.setup();\n    const value: ScopedSearchInputValue = { text: \"\", option: \"email\" };\n    const handleOptionChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <ScopedSearchInput\n          aria-label=\"Scoped search\"\n          value={value}\n          onOptionChange={handleOptionChange}\n          onSubmit={vi.fn()}\n          options={groupedOptions}\n        />\n      </NimbusProvider>\n    );\n\n    // Select option from second group\n    await user.click(screen.getByRole(\"button\", { name: /email/i }));\n    await waitFor(() => {\n      expect(screen.getByRole(\"listbox\")).toBeInTheDocument();\n    });\n    await user.click(screen.getByRole(\"option\", { name: \"Name\" }));\n\n    expect(handleOptionChange).toHaveBeenCalledWith(\"name\");\n  });\n});\n```\n\n\n## Resources\n\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-scopedsearchinput--docs)\n- [SearchInput Component](/components/inputs/searchinput)\n- [Select Component](/components/inputs/select)\n- [React Aria SearchField](https://react-spectrum.adobe.com/react-aria/SearchField.html)\n- [React Aria Select](https://react-spectrum.adobe.com/react-aria/Select.html)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size options",
+          "href": "#size-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Grouped options",
+          "href": "#grouped-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Auto-focus behavior",
+          "href": "#auto-focus-behavior",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "State management patterns",
+          "href": "#state-management-patterns",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component states",
+          "href": "#component-states",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "isEmpty utility",
+          "href": "#isempty-utility",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Controlled mode",
+          "href": "#controlled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Role",
+          "href": "#role",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Labeling",
+          "href": "#labeling",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "ARIA attributes",
+          "href": "#aria-attributes",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Persistent ID",
+          "href": "#persistent-id",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Form integration with validation",
+          "href": "#form-integration-with-validation",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Advanced search with filters",
+          "href": "#advanced-search-with-filters",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "User Interaction Tests",
+          "href": "#user-interaction-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Callback Tests",
+          "href": "#callback-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "State Tests",
+          "href": "#state-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Validation Tests",
+          "href": "#validation-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Grouped Options Tests",
+          "href": "#grouped-options-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "guidelines": {
+      "mdx": "\n## Guidelines\n\nScoped search guidelines establish how the component is used to manage\nmulti-domain data, ensuring consistency and accessibility in defining the search\ncontext.\n\n### Best practices\n\n- **Set a smart default**: Choose the default scope that will be used by the\n  vast majority of users. This saves the user an extra click most of the time.\n- **Instant application of scope**: When the user changes the scope (e.g.,\n  switches from \"All\" to \"Orders\"), that choice should be applied immediately\n  without requiring the user to re-type the search query.\n- **Default scope clarity**: Always define a clear, logical default scope (e.g.,\n  \"All\" or the most common category) and clearly display it before the user\n  interacts with the component.\n- **Persistent scope**: Ensure the scope selector remains visible and accessible\n  next to the input field, clearly communicating the current search context at\n  all times.\n- **Intuitive scope options**: Keep scope options concise and meaningful to the\n  area that they are being placed in.\n- **Display results contextually**: When the search results page loads,\n  reiterate the search parameters clearly: \"Showing 15 results for 'Jackets'\n  within the 'Products' scope.\"\n- **Handle zero results gracefully**: If the user selects a very narrow scope\n  and gets zero results, suggest alternative, broader scopes they can try\n  without leaving the current page.\n- **Clear iconography**: If the scope selector uses icons, ensure they are\n  universally understood and directly relate to the content they filter.\n\n### Usage\n\nThe scoped search component is used to enable users to perform precise searches\nby filtering the query to a specific, predefined domain or content area, leading\nto more relevant results.\n\n> [!TIP]\\\n> When to use\n\n- **Multi-domain data**: When the application contains large, distinct data\n  types that users often need to query separately (e.g., searching for \"Jackets\"\n  within Products vs. searching for \"Jackets\" within Customers).\n- **Precision is key**: When users require highly precise results and filtering\n  the search domain reduces irrelevant noise (common in back-office solutions).\n- **Restricted permissions**: To restrict searches based on user permissions\n  (e.g., a manager can search \"All Teams,\" but a team member can only search \"My\n  Team\").\n\n> [!CAUTION]\\\n> When not to use\n\n- **Homogeneous data**: When all data belongs to a single, unified domain and\n  scoping would offer minimal benefit (e.g., searching within a simple, short\n  blog archive).\n- **Global search default**: If the vast majority of users always search\n  \"everything,\" avoid forcing them to define a scope. A single global search\n  with filters applied after the results load is often better.\n- **Limited screen space**: If screen real estate is minimal, avoid the\n  dual-component structure of scoped search; consider a single input with\n  filtering options revealed on search results page.\n\n### Scoped search do's and don'ts\n\n> [!TIP]\\\n> **Do**\n>\n> - Ensure the scope selector is accessible and its current state is conveyed\n>   via ARIA.\n> - Use concise labels for scope options, the short and descriptive is best.\n> - Do set a smart default for scopes.\n\n```jsx live\nconst App = () => {\n  const [value, setValue] = useState({ text: '', option: 'all' });\n\n  const options = [\n    { label: 'All fields', value: 'all' },\n    { label: 'Products', value: 'products' },\n    { label: 'Customers', value: 'customers' },\n  ];\n\n  return (\n    <ScopedSearchInput\n      value={value}\n      onValueChange={setValue}\n      onSubmit={(val) => console.log('Search:', val)}\n      options={options}\n      searchPlaceholder=\"Search...\"\n    />\n  );\n};\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't use confusing or abstract icons for scopes\n> - Don't reset the scope back to the default after every search or page\n>   refresh.\n> - Don't mix global and scoped results.\n> - Don't offer too many scopes.\n> - Don't force users to select a scope, determine a reasonable default for\n>   users.\n> - Don't use highly technical or internal terms for scope labels (e.g.,\n>   \"Database Table A\" instead of \"Products\").\n\n```jsx live\nconst App = () => {\n  const [value, setValue] = useState({ text: '', option: 'complex-query' });\n\n  const options = [\n    { label: 'Products that were published in the last month but no other time', value: 'complex-query' },\n    { label: 'Categories', value: 'categories' },\n    { label: 'Products not published this month', value: 'not-published' },\n    { label: 'Products published by Kevin that have been recalled in May', value: 'oh-kevin' },\n  ];\n\n  return (\n    <ScopedSearchInput\n      value={value}\n      onValueChange={setValue}\n      onSubmit={(val) => console.log('Search:', val)}\n      options={options}\n      searchPlaceholder=\"Search...\"\n    />\n  );\n};\n```\n",
+      "toc": [
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Scoped search do's and don'ts",
+          "href": "#scoped-search-dos-and-donts",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

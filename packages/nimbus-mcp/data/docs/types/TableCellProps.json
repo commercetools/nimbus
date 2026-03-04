@@ -1,0 +1,9 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Props for the Table.Cell component\n\nData cell (td element) used in body and footer rows.",
+  "displayName": "TableCellProps",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

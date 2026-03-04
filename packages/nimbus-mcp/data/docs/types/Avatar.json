@@ -1,0 +1,89 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/media/avatar}",
+    "supportsStyleProps": "",
+    "example": "```tsx\n<Avatar firstName=\"John\" lastName=\"Doe\" src=\"https://example.com/avatar.jpg\" />\n```\n```tsx\n// With initials fallback\n<Avatar firstName=\"Jane\" lastName=\"Smith\" />\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Avatar\n============================================================\nA small image or icon that identifies and personalizes the user within the interface.\nDisplays user images or automatically generates initials from first and last names.\nFalls back to initials if image fails to load.",
+  "displayName": "Avatar",
+  "methods": [],
+  "props": {
+    "firstName": {
+      "defaultValue": null,
+      "description": "First name for generating initials",
+      "name": "firstName",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/avatar/avatar.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "string"
+      }
+    },
+    "lastName": {
+      "defaultValue": null,
+      "description": "Last name for generating initials",
+      "name": "lastName",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/avatar/avatar.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "string"
+      }
+    },
+    "src": {
+      "defaultValue": null,
+      "description": "Image source URL for the avatar",
+      "name": "src",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/avatar/avatar.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "alt": {
+      "defaultValue": null,
+      "description": "Alternative text for the avatar image",
+      "name": "alt",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/avatar/avatar.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref forwarding to the root element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/avatar/avatar.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

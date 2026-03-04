@@ -1,0 +1,393 @@
+{
+  "meta": {
+    "id": "Components-Grid",
+    "title": "Grid",
+    "exportName": "Grid",
+    "description": "The Grid Layout Component provides a flexible and responsive way to structure content using a two-dimensional grid system. It allows elements to be arranged in rows and columns, enabling dynamic and efficient layouts for different screen sizes. The component accepts all the chakra supported properties and Grid.Item as children elements.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/grid/grid.mdx",
+    "menu": [
+      "Components",
+      "Layout",
+      "Grid"
+    ],
+    "route": "components/layout/grid",
+    "tags": [
+      "component",
+      "grid",
+      "layout",
+      "columns",
+      "rows"
+    ],
+    "toc": [
+      {
+        "value": "Basic usage",
+        "href": "#basic-usage",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With columns",
+        "href": "#with-columns",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With varying layout",
+        "href": "#with-varying-layout",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "With template areas properties",
+        "href": "#with-template-areas-properties",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          3
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Basic usage\n\nUse Grid → When you need fine control over layout, spanning, and custom grid\nbehaviors.\n\n```jsx\nimport { Grid } from \"@commercetools/nimbus\";\n```\n\nTo use the Grid layout, ensure to wrap the individual grid items inside of the\n`<Grid.Item>` component\n\n```jsx live\nconst App = () => (\n  <Grid gap=\"100\">\n    <Grid.Item>\n      <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n        Item 1\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n        Item 2\n      </Box>\n    </Grid.Item>\n  </Grid>\n)\n```\n\n### With columns\n\n```jsx live\nconst App = () => (\n  <Grid gap=\"100\" templateColumns=\"repeat(2, 1fr)\">\n    <Grid.Item>\n      <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n        Item 1\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n        Item 2\n      </Box>\n    </Grid.Item>\n  </Grid>\n)\n```\n\n### With varying layout\n\nShowcases how elements can span multiple rows and columns within a structured\ngrid. This layout is useful for dashboards, content cards, or complex UI\ncomponents where elements need different sizes while maintaining alignment.\n\n```jsx live\nconst App = () => (\n  <Grid\n    h=\"200px\"\n    templateRows=\"repeat(2, 1fr)\"\n    templateColumns=\"repeat(5, 1fr)\"\n    gap={4}\n  >\n    <Grid.Item rowSpan={2} colSpan={1}>\n      <Box p=\"400\" bg=\"neutral.7\">\n        colSpan=1\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={2}>\n      <Box p=\"400\" bg=\"neutral.7\">\n        colSpan=2\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={2}>\n      <Box p=\"400\" bg=\"neutral.7\">\n        colSpan=2\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={4}>\n      <Box p=\"400\" bg=\"neutral.7\">\n        colSpan=4\n      </Box>\n    </Grid.Item>\n  </Grid>\n)\n```\n\n### With template areas properties\n\nDemonstrate layout with template areas - shows how to create a common page\nlayout pattern\n\n```jsx live\nconst App = () => (\n <Grid\n    h=\"400px\"\n    templateAreas={`\n      \"header header\"\n      \"nav main\"\n      \"footer footer\"\n    `}\n    templateColumns=\"200px 1fr\"\n    gap=\"400\"\n  >\n    <Grid.Item gridArea=\"header\">\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\">\n        Header\n      </Box>\n    </Grid.Item>\n    <Grid.Item gridArea=\"nav\">\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\">\n        Navigation\n      </Box>\n    </Grid.Item>\n    <Grid.Item gridArea=\"main\">\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\">\n        Main Content\n      </Box>\n    </Grid.Item>\n    <Grid.Item gridArea=\"footer\">\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\">\n        Footer\n      </Box>\n    </Grid.Item>\n  </Grid>\n)\n```\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Basic usage\n\nUse Grid → When you need fine control over layout, spanning, and custom grid\nbehaviors.\n\n```jsx\nimport { Grid } from \"@commercetools/nimbus\";\n```\n\nTo use the Grid layout, ensure to wrap the individual grid items inside of the\n`<Grid.Item>` component\n\n```jsx live\nconst App = () => (\n  <Grid gap=\"100\">\n    <Grid.Item>\n      <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n        Item 1\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n        Item 2\n      </Box>\n    </Grid.Item>\n  </Grid>\n)\n```\n\n### With columns\n\n```jsx live\nconst App = () => (\n  <Grid gap=\"100\" templateColumns=\"repeat(2, 1fr)\">\n    <Grid.Item>\n      <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n        Item 1\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box key=\"1\" p=\"400\" bg=\"neutral.7\">\n        Item 2\n      </Box>\n    </Grid.Item>\n  </Grid>\n)\n```\n\n### With varying layout\n\nShowcases how elements can span multiple rows and columns within a structured\ngrid. This layout is useful for dashboards, content cards, or complex UI\ncomponents where elements need different sizes while maintaining alignment.\n\n```jsx live\nconst App = () => (\n  <Grid\n    h=\"200px\"\n    templateRows=\"repeat(2, 1fr)\"\n    templateColumns=\"repeat(5, 1fr)\"\n    gap={4}\n  >\n    <Grid.Item rowSpan={2} colSpan={1}>\n      <Box p=\"400\" bg=\"neutral.7\">\n        colSpan=1\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={2}>\n      <Box p=\"400\" bg=\"neutral.7\">\n        colSpan=2\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={2}>\n      <Box p=\"400\" bg=\"neutral.7\">\n        colSpan=2\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={4}>\n      <Box p=\"400\" bg=\"neutral.7\">\n        colSpan=4\n      </Box>\n    </Grid.Item>\n  </Grid>\n)\n```\n\n### With template areas properties\n\nDemonstrate layout with template areas - shows how to create a common page\nlayout pattern\n\n```jsx live\nconst App = () => (\n <Grid\n    h=\"400px\"\n    templateAreas={`\n      \"header header\"\n      \"nav main\"\n      \"footer footer\"\n    `}\n    templateColumns=\"200px 1fr\"\n    gap=\"400\"\n  >\n    <Grid.Item gridArea=\"header\">\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\">\n        Header\n      </Box>\n    </Grid.Item>\n    <Grid.Item gridArea=\"nav\">\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\">\n        Navigation\n      </Box>\n    </Grid.Item>\n    <Grid.Item gridArea=\"main\">\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\">\n        Main Content\n      </Box>\n    </Grid.Item>\n    <Grid.Item gridArea=\"footer\">\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\">\n        Footer\n      </Box>\n    </Grid.Item>\n  </Grid>\n)\n```\n",
+      "toc": [
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With columns",
+          "href": "#with-columns",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With varying layout",
+          "href": "#with-varying-layout",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With template areas properties",
+          "href": "#with-template-areas-properties",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => (\n  <Grid templateColumns=\"repeat(3, 1fr)\" gap=\"400\">\n    <Box bg=\"gray.100\" p=\"400\">Item 1</Box>\n    <Box bg=\"gray.100\" p=\"400\">Item 2</Box>\n    <Box bg=\"gray.100\" p=\"400\">Item 3</Box>\n  </Grid>\n);\n```\n\n### Accessibility standards\n\n- **Use semantic HTML:** Grid is a layout component that renders a `div` by\n  default. Use the `as` prop to apply semantic elements when appropriate.\n- **Maintain reading order:** Ensure the visual grid order matches the DOM order\n  so screen readers navigate content logically.\n- **Avoid layout-only containers:** When possible, apply grid styles directly to\n  semantic elements rather than wrapping content in non-semantic divs.\n- **Responsive design:** Ensure grid layouts adapt appropriately for different\n  screen sizes and zoom levels.\n- **Focus order:** Ensure keyboard focus follows a logical order through grid\n  items.\n- **Don't rely on visual position alone:** Important relationships or\n  information should be conveyed through semantic HTML, not just visual\n  positioning.\n\n### Resources\n\n- [WCAG 1.3.2 Meaningful Sequence](https://www.w3.org/WAI/WCAG21/Understanding/meaningful-sequence.html)\n- [WCAG 2.4.3 Focus Order](https://www.w3.org/WAI/WCAG21/Understanding/focus-order.html)\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { Grid, type GridProps } from \"@commercetools/nimbus\";\n```\n\n### Basic usage\n\n```jsx live-dev\nconst App = () => (\n  <Grid gap=\"100\">\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\">\n        Item 1\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\">\n        Item 2\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\">\n        Item 3\n      </Box>\n    </Grid.Item>\n  </Grid>\n);\n```\n\n## Usage examples\n\n### Column-based layout\n\nUse the `templateColumns` prop to define the number and size of columns in your grid.\n\n```jsx live-dev\nconst App = () => (\n  <Grid gap=\"100\" templateColumns=\"repeat(3, 1fr)\">\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\">\n        Item 1\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\">\n        Item 2\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\">\n        Item 3\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\">\n        Item 4\n      </Box>\n    </Grid.Item>\n  </Grid>\n);\n```\n\n### Row and column spanning\n\nGrid items can span multiple rows or columns using the `rowSpan` and `colSpan` props on `Grid.Item`.\n\n```jsx live-dev\nconst App = () => (\n  <Grid\n    h=\"200px\"\n    templateRows=\"repeat(2, 1fr)\"\n    templateColumns=\"repeat(5, 1fr)\"\n    gap=\"100\"\n  >\n    <Grid.Item rowSpan={2} colSpan={1}>\n      <Box p=\"400\" bg=\"primary.7\" h=\"full\">\n        Sidebar\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={2}>\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\">\n        Top Left\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={2}>\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\">\n        Top Right\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={4}>\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\">\n        Bottom Section\n      </Box>\n    </Grid.Item>\n  </Grid>\n);\n```\n\n### Template areas\n\nUse named grid areas to create semantic layouts. This approach is particularly useful for common page layouts.\n\n```jsx live-dev\nconst App = () => (\n  <Grid\n    h=\"400px\"\n    templateAreas={`\n      \"header header\"\n      \"nav main\"\n      \"footer footer\"\n    `}\n    templateColumns=\"200px 1fr\"\n    gap=\"400\"\n  >\n    <Grid.Item gridArea=\"header\">\n      <Box p=\"400\" bg=\"primary.7\" h=\"full\">\n        Header\n      </Box>\n    </Grid.Item>\n    <Grid.Item gridArea=\"nav\">\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\">\n        Navigation\n      </Box>\n    </Grid.Item>\n    <Grid.Item gridArea=\"main\">\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\">\n        Main Content\n      </Box>\n    </Grid.Item>\n    <Grid.Item gridArea=\"footer\">\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\">\n        Footer\n      </Box>\n    </Grid.Item>\n  </Grid>\n);\n```\n\n### Responsive grids\n\nGrid properties can be responsive using Chakra UI's responsive syntax with breakpoint objects.\n\n```jsx live-dev\nconst App = () => (\n  <Grid\n    gap=\"100\"\n    templateColumns={{\n      base: \"1fr\",\n      sm: \"repeat(2, 1fr)\",\n      md: \"repeat(3, 1fr)\",\n      lg: \"repeat(4, 1fr)\",\n    }}\n  >\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\">\n        Item 1\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\">\n        Item 2\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\">\n        Item 3\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\">\n        Item 4\n      </Box>\n    </Grid.Item>\n  </Grid>\n);\n```\n\n### Gap variations\n\nControl spacing between grid items using the `gap` prop, or use `columnGap` and `rowGap` for independent control.\n\n```jsx live-dev\nconst App = () => (\n  <Stack gap=\"400\">\n    <Box>\n      <Text mb=\"100\" fontWeight=\"semibold\">\n        Uniform gap\n      </Text>\n      <Grid gap=\"200\" templateColumns=\"repeat(3, 1fr)\">\n        <Grid.Item>\n          <Box p=\"400\" bg=\"neutral.7\">\n            Item 1\n          </Box>\n        </Grid.Item>\n        <Grid.Item>\n          <Box p=\"400\" bg=\"neutral.7\">\n            Item 2\n          </Box>\n        </Grid.Item>\n        <Grid.Item>\n          <Box p=\"400\" bg=\"neutral.7\">\n            Item 3\n          </Box>\n        </Grid.Item>\n      </Grid>\n    </Box>\n\n    <Box>\n      <Text mb=\"100\" fontWeight=\"semibold\">\n        Different row and column gaps\n      </Text>\n      <Grid rowGap=\"400\" columnGap=\"100\" templateColumns=\"repeat(3, 1fr)\">\n        <Grid.Item>\n          <Box p=\"400\" bg=\"neutral.7\">\n            Item 1\n          </Box>\n        </Grid.Item>\n        <Grid.Item>\n          <Box p=\"400\" bg=\"neutral.7\">\n            Item 2\n          </Box>\n        </Grid.Item>\n        <Grid.Item>\n          <Box p=\"400\" bg=\"neutral.7\">\n            Item 3\n          </Box>\n        </Grid.Item>\n        <Grid.Item>\n          <Box p=\"400\" bg=\"neutral.7\">\n            Item 4\n          </Box>\n        </Grid.Item>\n        <Grid.Item>\n          <Box p=\"400\" bg=\"neutral.7\">\n            Item 5\n          </Box>\n        </Grid.Item>\n        <Grid.Item>\n          <Box p=\"400\" bg=\"neutral.7\">\n            Item 6\n          </Box>\n        </Grid.Item>\n      </Grid>\n    </Box>\n  </Stack>\n);\n```\n\n## Component requirements\n\n### Usage context\n\n**Grid vs SimpleGrid**: Use Grid when you need fine-grained control over layout with template areas, custom spanning, or complex grid configurations. Use SimpleGrid for simpler, uniform grid layouts where items have equal size.\n\n**Grid.Item wrapper**: Always wrap child elements in `Grid.Item` components to ensure proper grid behavior and enable spanning props.\n\n## Accessibility\n\n**Role**: Grid renders as a `<div>` with `display: grid`. It has no implicit ARIA role.\n\n**Labeling**: For grids that represent data tables or require context, use `aria-label` or `aria-labelledby`:\n\n```tsx\n<Grid aria-label=\"Product catalog\">\n  {/* Grid items */}\n</Grid>\n```\n\n**Keyboard navigation**: Grid itself doesn't provide keyboard navigation. If your grid contains interactive elements, ensure they maintain logical tab order.\n\n### Persistent ID\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"product-grid\";\n\nexport const ProductGrid = () => (\n  <Grid id={PERSISTENT_ID} templateColumns=\"repeat(3, 1fr)\" gap=\"400\">\n    <Grid.Item>\n      <ProductCard />\n    </Grid.Item>\n    {/* More items */}\n  </Grid>\n);\n```\n\n## API reference\n\n<PropsTable id=\"Grid\" />\n\n## Common patterns\n\n### Dashboard layout\n\nA responsive dashboard layout with varying widget sizes.\n\n```jsx live-dev\nconst App = () => (\n  <Grid\n    templateColumns=\"repeat(12, 1fr)\"\n    templateRows=\"repeat(3, 100px)\"\n    gap=\"400\"\n  >\n    <Grid.Item colSpan={{ base: 12, md: 8 }} rowSpan={2}>\n      <Box p=\"400\" bg=\"primary.7\" h=\"full\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\" mb=\"200\">\n          Main Chart\n        </Text>\n        <Text color=\"neutral.11\">Primary analytics visualization</Text>\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={{ base: 12, md: 4 }} rowSpan={2}>\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\" mb=\"200\">\n          Statistics\n        </Text>\n        <Text color=\"neutral.11\">Key metrics summary</Text>\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={{ base: 12, md: 4 }}>\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\">Recent Activity</Text>\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={{ base: 12, md: 4 }}>\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\">Notifications</Text>\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={{ base: 12, md: 4 }}>\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\">Quick Actions</Text>\n      </Box>\n    </Grid.Item>\n  </Grid>\n);\n```\n\n### Card gallery with featured item\n\nA gallery layout where one item is featured more prominently.\n\n```jsx live-dev\nconst App = () => (\n  <Grid\n    templateColumns=\"repeat(4, 1fr)\"\n    templateRows=\"repeat(2, 150px)\"\n    gap=\"400\"\n  >\n    <Grid.Item colSpan={2} rowSpan={2}>\n      <Box\n        p=\"400\"\n        bg=\"primary.7\"\n        h=\"full\"\n        borderRadius=\"md\"\n        display=\"flex\"\n        flexDirection=\"column\"\n        justifyContent=\"center\"\n        alignItems=\"center\"\n      >\n        <Text fontWeight=\"bold\" fontSize=\"xl\" mb=\"200\">\n          Featured Product\n        </Text>\n        <Text color=\"neutral.11\">Premium collection highlight</Text>\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={2}>\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\">Product 2</Text>\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\">Product 3</Text>\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\" h=\"full\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\">Product 4</Text>\n      </Box>\n    </Grid.Item>\n  </Grid>\n);\n```\n\n### Sidebar layout with sticky navigation\n\nA page layout with a sticky sidebar using template areas.\n\n```jsx live-dev\nconst App = () => (\n  <Grid\n    minH=\"400px\"\n    templateAreas={`\n      \"sidebar content\"\n    `}\n    templateColumns=\"250px 1fr\"\n    gap=\"400\"\n  >\n    <Grid.Item gridArea=\"sidebar\">\n      <Box p=\"400\" bg=\"neutral.7\" borderRadius=\"md\" position=\"sticky\" top=\"0\">\n        <Text fontWeight=\"bold\" mb=\"300\">\n          Navigation\n        </Text>\n        <Stack gap=\"200\">\n          <Text>Dashboard</Text>\n          <Text>Products</Text>\n          <Text>Orders</Text>\n          <Text>Customers</Text>\n          <Text>Settings</Text>\n        </Stack>\n      </Box>\n    </Grid.Item>\n    <Grid.Item gridArea=\"content\">\n      <Box p=\"400\" bg=\"neutral.7\" borderRadius=\"md\" minH=\"400px\">\n        <Text fontWeight=\"bold\" mb=\"300\">\n          Main Content\n        </Text>\n        <Text color=\"neutral.11\">\n          Your page content goes here. The sidebar will remain visible as users\n          scroll.\n        </Text>\n      </Box>\n    </Grid.Item>\n  </Grid>\n);\n```\n\n### Form sections grid\n\nOrganize form fields in a structured grid layout.\n\n```jsx live-dev\nconst App = () => (\n  <Grid templateColumns=\"repeat(2, 1fr)\" gap=\"400\">\n    <Grid.Item colSpan={2}>\n      <Box p=\"400\" bg=\"primary.7\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\">Account Information</Text>\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\" mb=\"200\">\n          First Name\n        </Text>\n        <Text fontSize=\"sm\" color=\"neutral.11\">\n          Input field placeholder\n        </Text>\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\" mb=\"200\">\n          Last Name\n        </Text>\n        <Text fontSize=\"sm\" color=\"neutral.11\">\n          Input field placeholder\n        </Text>\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={2}>\n      <Box p=\"400\" bg=\"neutral.7\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\" mb=\"200\">\n          Email Address\n        </Text>\n        <Text fontSize=\"sm\" color=\"neutral.11\">\n          Input field placeholder\n        </Text>\n      </Box>\n    </Grid.Item>\n    <Grid.Item colSpan={2}>\n      <Box p=\"400\" bg=\"primary.7\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\">Contact Preferences</Text>\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\" mb=\"200\">\n          Phone\n        </Text>\n        <Text fontSize=\"sm\" color=\"neutral.11\">\n          Input field placeholder\n        </Text>\n      </Box>\n    </Grid.Item>\n    <Grid.Item>\n      <Box p=\"400\" bg=\"neutral.7\" borderRadius=\"md\">\n        <Text fontWeight=\"bold\" mb=\"200\">\n          Preferred Contact Method\n        </Text>\n        <Text fontSize=\"sm\" color=\"neutral.11\">\n          Select placeholder\n        </Text>\n      </Box>\n    </Grid.Item>\n  </Grid>\n);\n```\n\n## Resources\n\n- [Grid component in Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-grid--docs)\n- [Chakra UI Grid documentation](https://www.chakra-ui.com/docs/components/grid)\n- [CSS Grid Layout on MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout)\n- [SimpleGrid component](/components/layout/simplegrid) - For simpler, uniform grid layouts\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Column-based layout",
+          "href": "#column-based-layout",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Row and column spanning",
+          "href": "#row-and-column-spanning",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Template areas",
+          "href": "#template-areas",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Responsive grids",
+          "href": "#responsive-grids",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Gap variations",
+          "href": "#gap-variations",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage context",
+          "href": "#usage-context",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Persistent ID",
+          "href": "#persistent-id",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Dashboard layout",
+          "href": "#dashboard-layout",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Card gallery with featured item",
+          "href": "#card-gallery-with-featured-item",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Sidebar layout with sticky navigation",
+          "href": "#sidebar-layout-with-sticky-navigation",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Form sections grid",
+          "href": "#form-sections-grid",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

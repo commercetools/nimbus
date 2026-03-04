@@ -1,0 +1,28 @@
+{
+  "tags": {
+    "example": "```tsx\n<Steps.Indicator>\n  <Steps.Number />\n</Steps.Indicator>\n```",
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Steps.Number\n\nDisplays the step number (1-indexed).\nWraps Chakra UI's Steps.Number with Nimbus styling.",
+  "displayName": "StepsNumber",
+  "methods": [],
+  "props": {
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref to the number element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

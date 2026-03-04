@@ -1,0 +1,663 @@
+{
+  "meta": {
+    "id": "Components-Icon",
+    "title": "Icon",
+    "exportName": "Icon",
+    "description": "An icon is a small graphical symbol used to represent an object, action, or idea within a user interface.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/icon/icon.mdx",
+    "menu": [
+      "Components",
+      "Media",
+      "Icon"
+    ],
+    "route": "components/media/icon",
+    "tags": [
+      "component",
+      "icon",
+      "svg",
+      "graphic",
+      "symbol"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Visual options",
+        "href": "#visual-options",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Default and in color",
+        "href": "#default-and-in-color",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Custom SVG",
+        "href": "#custom-svg",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Predefined sizes",
+        "href": "#predefined-sizes",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Custom size",
+        "href": "#custom-size",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          4
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "guidelines",
+        "title": "Guidelines",
+        "order": 2
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nNimbus uses the Material Design icon library and adds custom SVG icons.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Material Design Icon Library](https://www.figma.com/community/file/1014241558898418245)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Default and in color\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\">\n    <Icon size=\"xs\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"xs\" color=\"primary.11\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"xs\" color=\"info.11\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"xs\" color=\"positive.11\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"xs\" color=\"warning.11\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"xs\" color=\"critical.11\"><Icons.SentimentSatisfied /></Icon>\n  </Stack>\n);\n```\n\n#### Custom SVG\n\n```jsx live\nconst App = () => {\n  const blackLogo = `<svg width=\"31\" height=\"36\" viewBox=\"0 0 31 36\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M0 26.6043V10.7769C0 10.3383 0.473841 10.0655 0.853697 10.2835L14.5611 18.1965C14.9136 18.4002 15.1303 18.7761 15.1303 19.1821V35.0094C15.1303 35.448 14.6564 35.7208 14.2766 35.5028L0.569131 27.5898C0.216688 27.3862 0 27.0102 0 26.6043Z\" fill=\"currentColor\"/>\n    <path d=\"M1.77896 7.94303L15.2723 0.152726C15.6248 -0.0509085 16.0582 -0.0509085 16.4106 0.152726L29.904 7.94303C30.3778 8.21716 30.3778 8.90116 29.904 9.17528L16.4106 16.9656C16.0582 17.1692 15.6248 17.1692 15.2723 16.9656L1.77896 9.17528C1.30512 8.90116 1.30512 8.21716 1.77896 7.94303Z\" fill=\"currentColor\"/>\n    <path d=\"M16.5532 35.0107V20.3334C16.5532 19.8948 17.0271 19.622 17.4069 19.84L29.9043 27.0559C30.3781 27.3301 30.3781 28.0141 29.9043 28.2882L17.4069 35.5041C17.0271 35.7234 16.5532 35.4493 16.5532 35.0107Z\" fill=\"currentColor\"/>\n  </svg>`;\n\n  const colorLogo = `<svg width=\"31\" height=\"36\" viewBox=\"0 0 31 36\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M0.259521 26.6043V10.7769C0.259521 10.3383 0.733362 10.0655 1.11322 10.2835L14.8207 18.1965C15.1731 18.4002 15.3898 18.7761 15.3898 19.1821V35.0094C15.3898 35.448 14.916 35.7208 14.5361 35.5028L0.828653 27.5898C0.476209 27.3862 0.259521 27.0102 0.259521 26.6043Z\" fill=\"#6359FF\"/>\n    <path d=\"M2.03849 7.94303L15.5319 0.152726C15.8843 -0.0509085 16.3177 -0.0509085 16.6701 0.152726L30.1635 7.94303C30.6373 8.21716 30.6373 8.90116 30.1635 9.17528L16.6701 16.9656C16.3177 17.1692 15.8843 17.1692 15.5319 16.9656L2.03849 9.17528C1.56465 8.90116 1.56465 8.21716 2.03849 7.94303Z\" fill=\"#FFC806\"/>\n    <path d=\"M16.8127 35.0107V20.3334C16.8127 19.8948 17.2866 19.622 17.6664 19.84L30.1638 27.0559C30.6377 27.3301 30.6377 28.0141 30.1638 28.2882L17.6664 35.5041C17.2866 35.7234 16.8127 35.4493 16.8127 35.0107Z\" fill=\"#0BBFBF\"/>\n  </svg>`;\n\n  return (\n    <Stack direction=\"row\" gap=\"400\" alignItems=\"center\">\n      <Icon size=\"xs\"><InlineSvg data={blackLogo} /></Icon>\n      <Icon size=\"xs\"><InlineSvg data={colorLogo} /></Icon>\n    </Stack>\n  );\n};\n```\n\n#### Predefined sizes\n\nThe `Icon` component comes with a set of predefined sizes that can be applied\nusing the `size` prop.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"400\" alignItems=\"center\">\n    <Icon size=\"2xs\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"xs\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"sm\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"md\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"lg\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"xl\"><Icons.SentimentSatisfied /></Icon>\n  </Stack>\n);\n```\n\n#### Custom size\n\nYou can apply a custom size to the `Icon` using the `boxSize` style prop.\n\n```jsx live\nconst App = () => <Icon boxSize=\"3200\"><Icons.SentimentSatisfied /></Icon>;\n```\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nNimbus uses the Material Design icon library and adds custom SVG icons.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Material Design Icon Library](https://www.figma.com/community/file/1014241558898418245)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Default and in color\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\">\n    <Icon size=\"xs\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"xs\" color=\"primary.11\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"xs\" color=\"info.11\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"xs\" color=\"positive.11\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"xs\" color=\"warning.11\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"xs\" color=\"critical.11\"><Icons.SentimentSatisfied /></Icon>\n  </Stack>\n);\n```\n\n#### Custom SVG\n\n```jsx live\nconst App = () => {\n  const blackLogo = `<svg width=\"31\" height=\"36\" viewBox=\"0 0 31 36\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M0 26.6043V10.7769C0 10.3383 0.473841 10.0655 0.853697 10.2835L14.5611 18.1965C14.9136 18.4002 15.1303 18.7761 15.1303 19.1821V35.0094C15.1303 35.448 14.6564 35.7208 14.2766 35.5028L0.569131 27.5898C0.216688 27.3862 0 27.0102 0 26.6043Z\" fill=\"currentColor\"/>\n    <path d=\"M1.77896 7.94303L15.2723 0.152726C15.6248 -0.0509085 16.0582 -0.0509085 16.4106 0.152726L29.904 7.94303C30.3778 8.21716 30.3778 8.90116 29.904 9.17528L16.4106 16.9656C16.0582 17.1692 15.6248 17.1692 15.2723 16.9656L1.77896 9.17528C1.30512 8.90116 1.30512 8.21716 1.77896 7.94303Z\" fill=\"currentColor\"/>\n    <path d=\"M16.5532 35.0107V20.3334C16.5532 19.8948 17.0271 19.622 17.4069 19.84L29.9043 27.0559C30.3781 27.3301 30.3781 28.0141 29.9043 28.2882L17.4069 35.5041C17.0271 35.7234 16.5532 35.4493 16.5532 35.0107Z\" fill=\"currentColor\"/>\n  </svg>`;\n\n  const colorLogo = `<svg width=\"31\" height=\"36\" viewBox=\"0 0 31 36\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n    <path d=\"M0.259521 26.6043V10.7769C0.259521 10.3383 0.733362 10.0655 1.11322 10.2835L14.8207 18.1965C15.1731 18.4002 15.3898 18.7761 15.3898 19.1821V35.0094C15.3898 35.448 14.916 35.7208 14.5361 35.5028L0.828653 27.5898C0.476209 27.3862 0.259521 27.0102 0.259521 26.6043Z\" fill=\"#6359FF\"/>\n    <path d=\"M2.03849 7.94303L15.5319 0.152726C15.8843 -0.0509085 16.3177 -0.0509085 16.6701 0.152726L30.1635 7.94303C30.6373 8.21716 30.6373 8.90116 30.1635 9.17528L16.6701 16.9656C16.3177 17.1692 15.8843 17.1692 15.5319 16.9656L2.03849 9.17528C1.56465 8.90116 1.56465 8.21716 2.03849 7.94303Z\" fill=\"#FFC806\"/>\n    <path d=\"M16.8127 35.0107V20.3334C16.8127 19.8948 17.2866 19.622 17.6664 19.84L30.1638 27.0559C30.6377 27.3301 30.6377 28.0141 30.1638 28.2882L17.6664 35.5041C17.2866 35.7234 16.8127 35.4493 16.8127 35.0107Z\" fill=\"#0BBFBF\"/>\n  </svg>`;\n\n  return (\n    <Stack direction=\"row\" gap=\"400\" alignItems=\"center\">\n      <Icon size=\"xs\"><InlineSvg data={blackLogo} /></Icon>\n      <Icon size=\"xs\"><InlineSvg data={colorLogo} /></Icon>\n    </Stack>\n  );\n};\n```\n\n#### Predefined sizes\n\nThe `Icon` component comes with a set of predefined sizes that can be applied\nusing the `size` prop.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"400\" alignItems=\"center\">\n    <Icon size=\"2xs\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"xs\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"sm\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"md\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"lg\"><Icons.SentimentSatisfied /></Icon>\n    <Icon size=\"xl\"><Icons.SentimentSatisfied /></Icon>\n  </Stack>\n);\n```\n\n#### Custom size\n\nYou can apply a custom size to the `Icon` using the `boxSize` style prop.\n\n```jsx live\nconst App = () => <Icon boxSize=\"3200\"><Icons.SentimentSatisfied /></Icon>;\n```\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual options",
+          "href": "#visual-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Default and in color",
+          "href": "#default-and-in-color",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom SVG",
+          "href": "#custom-svg",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Predefined sizes",
+          "href": "#predefined-sizes",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom size",
+          "href": "#custom-size",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            4
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => <Icon size=\"xs\"><Icons.SentimentSatisfied /></Icon>;\n```\n\n### Accessibility standards\n\nIcons can be a powerful bridge for merchants navigating interfaces with reading,\nlanguage, attention, or low vision challenges. For those icons appearing without\naccompanying text, however, developers must proactively apply an\n`accessibilityLabel` prop to provide an `aria-label`, spoken description that\nscreen readers can convey to users.\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { Icon, type IconProps } from \"@commercetools/nimbus\";\nimport { CheckCircle, Settings, Delete } from \"@commercetools/nimbus-icons\";\n```\n\n> [!NOTE]  \n> Icons are imported separately from `@commercetools/nimbus-icons`, which provides a comprehensive set of Material Design icons and custom Nimbus icons.\n\n### Basic usage\n\nIcons can be used in two ways: by passing the icon component as a child, or using the `as` prop as shorthand:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"row\" gap=\"400\" align=\"center\">\n    {/* Using children */}\n    <Icon>\n      <Icons.CheckCircle />\n    </Icon>\n    \n    {/* Using as prop (shorthand) */}\n    <Icon as={Icons.Settings} />\n  </Stack>\n)\n```\n\n## Usage examples\n\n### Size variants\n\nIcon provides six predefined size variants that can be applied using the `size` prop:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"row\" gap=\"400\" align=\"center\">\n    <Stack direction=\"column\" gap=\"100\" align=\"center\">\n      <Icon size=\"2xs\" as={Icons.Star} />\n      <Text fontSize=\"xs\">2xs</Text>\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\" align=\"center\">\n      <Icon size=\"xs\" as={Icons.Star} />\n      <Text fontSize=\"xs\">xs</Text>\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\" align=\"center\">\n      <Icon size=\"sm\" as={Icons.Star} />\n      <Text fontSize=\"xs\">sm</Text>\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\" align=\"center\">\n      <Icon size=\"md\" as={Icons.Star} />\n      <Text fontSize=\"xs\">md</Text>\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\" align=\"center\">\n      <Icon size=\"lg\" as={Icons.Star} />\n      <Text fontSize=\"xs\">lg</Text>\n    </Stack>\n    <Stack direction=\"column\" gap=\"100\" align=\"center\">\n      <Icon size=\"xl\" as={Icons.Star} />\n      <Text fontSize=\"xs\">xl</Text>\n    </Stack>\n  </Stack>\n)\n```\n\n### Custom size\n\nFor sizes beyond the predefined variants, use the `boxSize` style prop:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"row\" gap=\"400\" align=\"center\">\n    <Icon boxSize=\"1600\" as={Icons.Favorite} />\n    <Icon boxSize=\"2400\" as={Icons.Favorite} />\n    <Icon boxSize=\"3200\" as={Icons.Favorite} />\n  </Stack>\n)\n```\n\n### Color customization\n\nIcons inherit the current text color by default, but can be customized using the `color` prop with Nimbus color tokens or any valid CSS color:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Stack direction=\"row\" gap=\"300\" align=\"center\">\n      <Icon as={Icons.Info} color=\"primary.11\" size=\"lg\" />\n      <Icon as={Icons.CheckCircle} color=\"positive.11\" size=\"lg\" />\n      <Icon as={Icons.Warning} color=\"warning.11\" size=\"lg\" />\n      <Icon as={Icons.Error} color=\"critical.11\" size=\"lg\" />\n      <Icon as={Icons.Help} color=\"info.11\" size=\"lg\" />\n    </Stack>\n    \n    <Stack direction=\"row\" gap=\"300\" align=\"center\">\n      <Icon as={Icons.Favorite} color=\"deeppink\" size=\"lg\" />\n      <Icon as={Icons.Star} color=\"gold\" size=\"lg\" />\n      <Icon as={Icons.Palette} color=\"rebeccapurple\" size=\"lg\" />\n    </Stack>\n  </Stack>\n)\n```\n\n### Using the `as` prop\n\nThe `as` prop provides a convenient shorthand for rendering an icon without nesting:\n\n```jsx live-dev\nconst App = () => {\n  const [iconType, setIconType] = React.useState<IconProps[\"as\"]>(Icons.Home);\n  \n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Stack direction=\"row\" gap=\"200\">\n        <Button size=\"xs\" onClick={() => setIconType(Icons.Home)}>Home</Button>\n        <Button size=\"xs\" onClick={() => setIconType(Icons.Settings)}>Settings</Button>\n        <Button size=\"xs\" onClick={() => setIconType(Icons.Notifications)}>Notifications</Button>\n        <Button size=\"xs\" onClick={() => setIconType(Icons.AccountCircle)}>Account</Button>\n      </Stack>\n      \n      <Stack direction=\"row\" gap=\"300\" align=\"center\">\n        <Icon as={iconType} size=\"xl\" color=\"primary.11\" />\n        <Text>Selected icon changes dynamically</Text>\n      </Stack>\n    </Stack>\n  );\n}\n```\n\n### With custom SVG\n\nWhile Icon is primarily designed for use with icons from `@commercetools/nimbus-icons`, you can also pass custom SVG elements as children. The key is to use `forwardRef` and spread props to ensure proper color inheritance and sizing:\n\n```jsx live-dev\nconst App = () => {\n  const CustomLayersIcon = React.forwardRef((props, ref) => (\n    <svg \n      ref={ref}\n      viewBox=\"0 0 31 36\" \n      fill=\"none\" \n      xmlns=\"http://www.w3.org/2000/svg\"\n      {...props}\n    >\n      <path d=\"M0 26.6043V10.7769C0 10.3383 0.473841 10.0655 0.853697 10.2835L14.5611 18.1965C14.9136 18.4002 15.1303 18.7761 15.1303 19.1821V35.0094C15.1303 35.448 14.6564 35.7208 14.2766 35.5028L0.569131 27.5898C0.216688 27.3862 0 27.0102 0 26.6043Z\" fill=\"currentColor\"/>\n      <path d=\"M1.77896 7.94303L15.2723 0.152726C15.6248 -0.0509085 16.0582 -0.0509085 16.4106 0.152726L29.904 7.94303C30.3778 8.21716 30.3778 8.90116 29.904 9.17528L16.4106 16.9656C16.0582 17.1692 15.6248 17.1692 15.2723 16.9656L1.77896 9.17528C1.30512 8.90116 1.30512 8.21716 1.77896 7.94303Z\" fill=\"currentColor\"/>\n      <path d=\"M16.5532 35.0107V20.3334C16.5532 19.8948 17.0271 19.622 17.4069 19.84L29.9043 27.0559C30.3781 27.3301 30.3781 28.0141 29.9043 28.2882L17.4069 35.5041C17.0271 35.7234 16.5532 35.4493 16.5532 35.0107Z\" fill=\"currentColor\"/>\n    </svg>\n  ));\n  \n  return (\n    <Stack direction=\"row\" gap=\"400\" align=\"center\">\n      <Icon size=\"sm\" color=\"neutral.11\">\n        <CustomLayersIcon />\n      </Icon>\n      <Icon size=\"md\" color=\"primary.11\">\n        <CustomLayersIcon />\n      </Icon>\n      <Icon size=\"lg\" color=\"positive.11\">\n        <CustomLayersIcon />\n      </Icon>\n    </Stack>\n  );\n}\n```\n\n### Responsive sizing\n\nIcon supports responsive prop values for different breakpoints:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Icon \n      as={Icons.Smartphone}\n      size={{ base: \"sm\", md: \"md\", lg: \"xl\" }}\n      color=\"primary.11\"\n    />\n    <Text fontSize=\"sm\" color=\"neutral.11\">\n      Icon size changes from sm → md → xl as viewport increases\n    </Text>\n  </Stack>\n)\n```\n\n### Styling with Chakra props\n\nIcon accepts all Chakra UI SVG props for advanced styling:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"row\" gap=\"400\" align=\"center\">\n    <Icon \n      as={Icons.FavoriteBorder}\n      size=\"xl\"\n      color=\"critical.11\"\n      opacity=\"0.7\"\n      _hover={{ opacity: 1, transform: \"scale(1.1)\" }}\n      transition=\"all 0.2s\"\n      cursor=\"pointer\"\n    />\n    <Icon \n      as={Icons.Star}\n      size=\"xl\"\n      color=\"warning.11\"\n      filter=\"drop-shadow(0 2px 4px rgba(0,0,0,0.2))\"\n    />\n    <Icon \n      as={Icons.Lightbulb}\n      size=\"xl\"\n      color=\"info.11\"\n      transform=\"rotate(15deg)\"\n    />\n  </Stack>\n)\n```\n\n## Component requirements\n\n### Usage context\n\nIcon should be used when you need to:\n- Display visual symbols from the Nimbus icon library\n- Add icons to buttons, menus, lists, or other UI elements\n- Create status indicators or visual cues\n- Maintain consistent icon sizing and styling\n\nIcons from `@commercetools/nimbus-icons` include:\n- **Material Design icons**: Comprehensive set of standard UI icons\n- **Custom Nimbus icons**: Brand-specific and specialized icons (Figma, Github, CommercetoolsCube, etc.)\n\n## Accessibility\n\nIcon is a visual element that requires proper accessibility considerations:\n\n#### ARIA Attributes\n\n- Use `aria-label` for standalone icons that convey meaning\n- Use `aria-hidden=\"true\"` for decorative icons next to text labels\n- Ensure sufficient color contrast (avoid relying solely on color)\n\n```tsx\n{/* Standalone icon - needs label */}\n<IconButton aria-label=\"Delete item\" icon={Icons.Delete} />\n\n{/* Decorative icon with text - hide from screen readers */}\n<Button>\n  <Icon as={Icons.Save} aria-hidden=\"true\" />\n  Save Document\n</Button>\n```\n\n#### Keyboard navigation\n\nIcons themselves are not interactive. When icons need to be clickable:\n- Wrap them in Button or IconButton components\n- Ensure the parent element is keyboard accessible\n- Provide appropriate focus indicators\n\n#### Persistent ID\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\n<Icon id=\"status-icon-success\" as={Icons.CheckCircle} />\n```\n\n## API reference\n\n<PropsTable id=\"Icon\" />\n\n## Common patterns\n\n### Icons in buttons\n\nCombine icons with buttons for enhanced visual communication:\n\n```jsx live-dev\nconst App = () => (\n    <Stack direction=\"row\" gap=\"200\">\n      <Button size=\"xs\" variant=\"solid\" colorPalette=\"primary\">\n        <Icon as={Icons.Add} />\n        Create New\n      </Button>\n      <Button size=\"xs\" variant=\"outline\">\n        <Icon as={Icons.Save} />\n        Save\n      </Button>\n      <Button size=\"xs\" variant=\"ghost\">\n        <Icon as={Icons.Delete} />\n        Delete\n      </Button>\n    </Stack>\n)\n```\n\n### Status indicators\n\nUse colored icons to indicate status or state:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"300\">\n    <Stack direction=\"row\" gap=\"300\" align=\"center\">\n      <Icon as={Icons.CheckCircle} color=\"positive.11\" size=\"sm\" />\n      <Text>Operation completed successfully</Text>\n    </Stack>\n    <Stack direction=\"row\" gap=\"300\" align=\"center\">\n      <Icon as={Icons.Error} color=\"critical.11\" size=\"sm\" />\n      <Text>An error occurred</Text>\n    </Stack>\n    <Stack direction=\"row\" gap=\"300\" align=\"center\">\n      <Icon as={Icons.Warning} color=\"warning.11\" size=\"sm\" />\n      <Text>Warning: Check your input</Text>\n    </Stack>\n    <Stack direction=\"row\" gap=\"300\" align=\"center\">\n      <Icon as={Icons.Info} color=\"info.11\" size=\"sm\" />\n      <Text>Additional information available</Text>\n    </Stack>\n  </Stack>\n)\n```\n\n### Navigation icons\n\nCreate icon-based navigation elements:\n\n```jsx live-dev\nconst App = () => {\n  const [selected, setSelected] = React.useState(\"home\");\n  \n  const NavItem = ({ id, icon, label }) => (\n    <Stack \n      direction=\"column\" \n      gap=\"100\" \n      align=\"center\"\n      p=\"300\"\n      borderRadius=\"200\"\n      bg={selected === id ? \"primary.3\" : \"transparent\"}\n      color={selected === id ? \"primary.11\" : \"neutral.11\"}\n      cursor=\"pointer\"\n      onClick={() => setSelected(id)}\n      _hover={{ bg: selected === id ? \"primary.3\" : \"neutral.3\" }}\n    >\n      <Icon as={icon} size=\"md\" />\n      <Text fontSize=\"xs\">{label}</Text>\n    </Stack>\n  );\n  \n  return (\n    <Stack direction=\"row\" gap=\"200\" p=\"400\" bg=\"neutral.2\" borderRadius=\"200\">\n      <NavItem id=\"home\" icon={Icons.Home} label=\"Home\" />\n      <NavItem id=\"search\" icon={Icons.Search} label=\"Search\" />\n      <NavItem id=\"notifications\" icon={Icons.Notifications} label=\"Alerts\" />\n      <NavItem id=\"settings\" icon={Icons.Settings} label=\"Settings\" />\n    </Stack>\n  );\n}\n```\n\n### Icon lists\n\nDisplay lists with icon indicators:\n\n```jsx live-dev\nconst App = () => {\n  const features = [\n    { icon: Icons.CheckCircle, text: \"Real-time synchronization\", color: \"positive.11\" },\n    { icon: Icons.Security, text: \"Enterprise-grade security\", color: \"info.11\" },\n    { icon: Icons.Speed, text: \"Lightning-fast performance\", color: \"primary.11\" },\n    { icon: Icons.CloudDone, text: \"Cloud-based storage\", color: \"info.11\" },\n  ];\n  \n  return (\n    <Stack direction=\"column\" gap=\"300\">\n      {features.map((feature, index) => (\n        <Stack key={index} direction=\"row\" gap=\"300\" align=\"center\">\n          <Icon as={feature.icon} color={feature.color} size=\"sm\" />\n          <Text>{feature.text}</Text>\n        </Stack>\n      ))}\n    </Stack>\n  );\n}\n```\n\n### File type indicators\n\nUse icons to represent different file types or content:\n\n```jsx live-dev\nconst App = () => {\n  const files = [\n    { name: \"Document.pdf\", icon: Icons.PictureAsPdf, color: \"critical.11\" },\n    { name: \"Spreadsheet.xlsx\", icon: Icons.TableChart, color: \"positive.11\" },\n    { name: \"Presentation.pptx\", icon: Icons.Slideshow, color: \"warning.11\" },\n    { name: \"Image.jpg\", icon: Icons.Image, color: \"info.11\" },\n    { name: \"Archive.zip\", icon: Icons.FolderZip, color: \"neutral.11\" },\n  ];\n  \n  return (\n    <Stack direction=\"column\" gap=\"200\">\n      {files.map((file, index) => (\n        <Stack \n          key={index} \n          direction=\"row\" \n          gap=\"300\" \n          align=\"center\"\n          p=\"300\"\n          borderRadius=\"200\"\n          _hover={{ bg: \"neutral.3\" }}\n        >\n          <Icon as={file.icon} color={file.color} size=\"md\" />\n          <Text>{file.name}</Text>\n        </Stack>\n      ))}\n    </Stack>\n  );\n}\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using Icon within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the Icon component renders with expected structure\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Icon, NimbusProvider } from \"@commercetools/nimbus\";\nimport { CheckCircle, Settings, Star } from \"@commercetools/nimbus-icons\";\n\ndescribe(\"Icon - Basic rendering\", () => {\n  it(\"renders icon with children\", () => {\n    render(\n      <NimbusProvider>\n        <Icon data-testid=\"icon-children\">\n          <CheckCircle />\n        </Icon>\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-children\");\n    expect(icon).toBeInTheDocument();\n    expect(icon.tagName).toBe(\"svg\");\n  });\n\n  it(\"renders icon using as prop\", () => {\n    render(\n      <NimbusProvider>\n        <Icon as={Settings} data-testid=\"icon-as-prop\" />\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-as-prop\");\n    expect(icon).toBeInTheDocument();\n    expect(icon.tagName).toBe(\"svg\");\n  });\n\n  it(\"renders as inline-block display\", () => {\n    render(\n      <NimbusProvider>\n        <Icon as={Star} data-testid=\"icon-display\" />\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-display\");\n    expect(icon).toHaveStyle({ display: \"inline\" });\n  });\n});\n```\n\n### Size Variant Tests\n\nTest predefined size variants and custom sizing\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Icon, NimbusProvider } from \"@commercetools/nimbus\";\nimport { CheckCircle, Settings, Star } from \"@commercetools/nimbus-icons\";\n\ndescribe(\"Icon - Size variants\", () => {\n  it(\"applies 2xs size variant\", () => {\n    render(\n      <NimbusProvider>\n        <Icon as={Star} size=\"2xs\" data-testid=\"icon-2xs\" />\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-2xs\");\n    // boxSize \"600\" token should be applied\n    expect(icon).toHaveClass(\"nimbus-icon\");\n  });\n\n  it(\"applies xs size variant\", () => {\n    render(\n      <NimbusProvider>\n        <Icon as={Star} size=\"xs\" data-testid=\"icon-xs\" />\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-xs\");\n    expect(icon).toHaveClass(\"nimbus-icon\");\n  });\n\n  it(\"applies md size variant\", () => {\n    render(\n      <NimbusProvider>\n        <Icon as={Star} size=\"md\" data-testid=\"icon-md\" />\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-md\");\n    expect(icon).toHaveClass(\"nimbus-icon\");\n  });\n\n  it(\"applies xl size variant\", () => {\n    render(\n      <NimbusProvider>\n        <Icon as={Star} size=\"xl\" data-testid=\"icon-xl\" />\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-xl\");\n    expect(icon).toHaveClass(\"nimbus-icon\");\n  });\n\n  it(\"applies custom size with boxSize prop\", () => {\n    render(\n      <NimbusProvider>\n        <Icon as={Star} boxSize=\"2400\" data-testid=\"icon-custom-size\" />\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-custom-size\");\n    expect(icon).toHaveStyle({\n      width: \"var(--nimbus-sizes-2400)\",\n      height: \"var(--nimbus-sizes-2400)\",\n    });\n  });\n});\n```\n\n### Color Customization Tests\n\nTest icon color prop with various values\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Icon, NimbusProvider } from \"@commercetools/nimbus\";\nimport { CheckCircle, Settings, Star } from \"@commercetools/nimbus-icons\";\n\ndescribe(\"Icon - Color customization\", () => {\n  it(\"applies color from Nimbus color token\", () => {\n    render(\n      <NimbusProvider>\n        <Icon as={CheckCircle} color=\"primary.11\" data-testid=\"icon-color\" />\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-color\");\n    expect(icon).toBeInTheDocument();\n    // Color is applied through Chakra's color system\n  });\n\n  it(\"applies custom CSS color\", () => {\n    render(\n      <NimbusProvider>\n        <Icon as={Star} color=\"deeppink\" data-testid=\"icon-custom-color\" />\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-custom-color\");\n    expect(icon).toHaveStyle({ color: \"rgb(255, 20, 147)\" });\n  });\n\n  it(\"inherits color when not specified\", () => {\n    render(\n      <NimbusProvider>\n        <div style={{ color: \"blue\" }}>\n          <Icon as={Settings} data-testid=\"icon-inherit-color\" />\n        </div>\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-inherit-color\");\n    expect(icon).toBeInTheDocument();\n  });\n});\n```\n\n### Style Props Tests\n\nTest that Icon accepts color and boxSize props\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Icon, NimbusProvider } from \"@commercetools/nimbus\";\nimport { CheckCircle, Settings, Star } from \"@commercetools/nimbus-icons\";\n\ndescribe(\"Icon - Style props\", () => {\n  it(\"applies boxSize for width and height\", () => {\n    render(\n      <NimbusProvider>\n        <Icon as={Star} boxSize=\"1600\" data-testid=\"icon-boxsize\" />\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-boxsize\");\n    expect(icon).toHaveStyle({\n      width: \"var(--nimbus-sizes-1600)\",\n      height: \"var(--nimbus-sizes-1600)\",\n    });\n  });\n\n  it(\"combines size and color props\", () => {\n    render(\n      <NimbusProvider>\n        <Icon\n          as={Star}\n          size=\"lg\"\n          color=\"primary.11\"\n          data-testid=\"icon-combined\"\n        />\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-combined\");\n    expect(icon).toHaveClass(\"nimbus-icon\");\n    // Color is applied via Chakra's color system\n    expect(icon).toHaveAttribute(\"data-testid\", \"icon-combined\");\n  });\n});\n```\n\n### Props Forwarding Tests\n\nVerify that Icon forwards data and ARIA attributes\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Icon, NimbusProvider } from \"@commercetools/nimbus\";\nimport { CheckCircle, Settings, Star } from \"@commercetools/nimbus-icons\";\n\ndescribe(\"Icon - Props forwarding\", () => {\n  it(\"forwards data attributes\", () => {\n    render(\n      <NimbusProvider>\n        <Icon\n          as={CheckCircle}\n          data-testid=\"icon-data\"\n          data-custom=\"custom-value\"\n        />\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-data\");\n    expect(icon).toHaveAttribute(\"data-custom\", \"custom-value\");\n  });\n\n  it(\"forwards ARIA attributes\", () => {\n    render(\n      <NimbusProvider>\n        <Icon\n          as={CheckCircle}\n          aria-label=\"Success icon\"\n          aria-hidden=\"false\"\n          data-testid=\"icon-aria\"\n        />\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-aria\");\n    expect(icon).toHaveAttribute(\"aria-label\", \"Success icon\");\n    expect(icon).toHaveAttribute(\"aria-hidden\", \"false\");\n  });\n\n  it(\"supports aria-hidden for decorative icons\", () => {\n    render(\n      <NimbusProvider>\n        <Icon as={Star} aria-hidden=\"true\" data-testid=\"icon-decorative\" />\n      </NimbusProvider>\n    );\n\n    const icon = screen.getByTestId(\"icon-decorative\");\n    expect(icon).toHaveAttribute(\"aria-hidden\", \"true\");\n  });\n});\n```\n\n### Ref Forwarding Tests\n\nVerify that Icon properly forwards refs to the underlying SVG element\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Icon, NimbusProvider } from \"@commercetools/nimbus\";\nimport { CheckCircle, Settings, Star } from \"@commercetools/nimbus-icons\";\n\ndescribe(\"Icon - Ref forwarding\", () => {\n  it(\"forwards ref to underlying SVG element\", () => {\n    const ref = { current: null as SVGSVGElement | null };\n\n    render(\n      <NimbusProvider>\n        <Icon ref={ref} as={CheckCircle} />\n      </NimbusProvider>\n    );\n\n    expect(ref.current).toBeInstanceOf(SVGSVGElement);\n    expect(ref.current?.tagName).toBe(\"svg\");\n  });\n\n  it(\"allows access to DOM methods through ref\", () => {\n    const ref = { current: null as SVGSVGElement | null };\n\n    render(\n      <NimbusProvider>\n        <Icon ref={ref} as={Settings} />\n      </NimbusProvider>\n    );\n\n    expect(ref.current).not.toBeNull();\n    expect(typeof ref.current?.getBoundingClientRect).toBe(\"function\");\n  });\n});\n```\n\n### Custom SVG Tests\n\nTest Icon with custom SVG elements\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { Icon, NimbusProvider } from \"@commercetools/nimbus\";\nimport { CheckCircle, Settings, Star } from \"@commercetools/nimbus-icons\";\n\ndescribe(\"Icon - Custom SVG\", () => {\n  it(\"renders custom SVG as children\", () => {\n    const CustomSvg = () => (\n      <svg data-testid=\"custom-svg\" viewBox=\"0 0 24 24\" fill=\"currentColor\">\n        <path d=\"M12 2L2 7l10 5 10-5-10-5z\" />\n      </svg>\n    );\n\n    render(\n      <NimbusProvider>\n        <Icon>\n          <CustomSvg />\n        </Icon>\n      </NimbusProvider>\n    );\n\n    const customSvg = screen.getByTestId(\"custom-svg\");\n    expect(customSvg).toBeInTheDocument();\n  });\n\n  it(\"applies size to custom SVG\", () => {\n    const CustomSvg = () => (\n      <svg data-testid=\"custom-svg-sized\" viewBox=\"0 0 24 24\">\n        <circle cx=\"12\" cy=\"12\" r=\"10\" />\n      </svg>\n    );\n\n    render(\n      <NimbusProvider>\n        <Icon size=\"lg\">\n          <CustomSvg />\n        </Icon>\n      </NimbusProvider>\n    );\n\n    const customSvg = screen.getByTestId(\"custom-svg-sized\");\n    // The custom SVG is rendered as a child of the Icon wrapper\n    expect(customSvg).toBeInTheDocument();\n  });\n});\n```\n\n\n## Resources\n\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-icon--docs)\n- [Material Design Icons](https://fonts.google.com/icons)\n- [ARIA Authoring Practices - Icon Usage](https://www.w3.org/WAI/ARIA/apg/)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size variants",
+          "href": "#size-variants",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom size",
+          "href": "#custom-size",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Color customization",
+          "href": "#color-customization",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Using the as prop",
+          "href": "#using-the-as-prop",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With custom SVG",
+          "href": "#with-custom-svg",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Responsive sizing",
+          "href": "#responsive-sizing",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Styling with Chakra props",
+          "href": "#styling-with-chakra-props",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage context",
+          "href": "#usage-context",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "ARIA Attributes",
+          "href": "#aria-attributes",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Persistent ID",
+          "href": "#persistent-id",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Icons in buttons",
+          "href": "#icons-in-buttons",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Status indicators",
+          "href": "#status-indicators",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Navigation icons",
+          "href": "#navigation-icons",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Icon lists",
+          "href": "#icon-lists",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "File type indicators",
+          "href": "#file-type-indicators",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size Variant Tests",
+          "href": "#size-variant-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Color Customization Tests",
+          "href": "#color-customization-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Style Props Tests",
+          "href": "#style-props-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Props Forwarding Tests",
+          "href": "#props-forwarding-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Ref Forwarding Tests",
+          "href": "#ref-forwarding-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom SVG Tests",
+          "href": "#custom-svg-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "guidelines": {
+      "mdx": "\n## Guidelines\n\nIcon guidelines establish principles for designing and using consistent,\nrecognizable, and accessible graphical symbols. They ensure icons clearly convey\nmeaning, maintain visual harmony, and function effectively across various\ncontexts and screen sizes while adhering to accessibility standards.\n\n### Best practices\n\n- **Clarity & Recognition:**\n  - **Be intuitive:** Design icons that are instantly recognizable and clearly\n    convey their meaning without needing extensive explanation.\n  - **Supplement with text:** If an icon's meaning might be ambiguous, pair it\n    with a text label, especially for critical actions.\n- **Consistency & Style:**\n  - **Maintain visual harmony:** Ensure all icons adhere to a consistent visual\n    style (e.g., line weight, fill vs. outline, corner radius, perspective).\n  - **Use consistently:** Always use the same icon to represent the same action\n    or concept throughout the entire product.\n  - **Ensure proper alignment:** Pay attention to pixel grid alignment for\n    crispness, especially at smaller sizes.\n- **Usability & Interaction:**\n  - **Provide clear states:** Ideally, if using an icon as an interactive\n    element, use the [Icon button](components/inputs/iconbutton) to enable\n    distinct visual states (e.g., hover, focus, active, disabled).\n  - **Ensure sufficient target size:** Make clickable icons large enough for\n    easy interaction, especially on touch devices (minimum 44x44px target area).\n- **Accessibility:**\n  - **Always provide text alternatives:** Use alt text for `<img>` tags or\n    aria-label for interactive SVG icons to convey their meaning to screen\n    readers.\n  - **Ensure sufficient contrast:** Verify that icons have enough color contrast\n    against their background.\n  - **Don't rely solely on icons:** Critical information should not be conveyed\n    only by an icon; always have a text equivalent or context.\n- **Scalability & Optimization:**\n  - **Design for scalability:** Create icons in a vector format (like SVG) to\n    ensure they look sharp at any size.\n  - **Optimize performance:** Minimize icon file sizes to ensure fast loading\n    times.\n\n### Usage\n\n> [!TIP]\\\n> When to use\n\n- **To supplement text labels:** When paired with text, icons enhance\n  comprehension, add visual interest, and aid scannability, especially for\n  common actions (e.g., a \"Save\" icon next to the word \"Save\").\n- **For universally recognized actions:** When an icon's meaning is clear\n  without any text label (e.g., \"Print,\" \"Search,\" \"Home,\" \"Trash/Delete\").\n  These are excellent for saving space.\n- **To indicate state or status:** Showing the status of an item (e.g., a \"lock\"\n  icon for private, an \"eye\" icon for visible, a \"check\" icon for completed).\n- **For brand recognition & aesthetics:** To reinforce brand identity or add a\n  consistent visual style where the icon is purely decorative or supplementary\n  to already clear text.\n- **In space-constrained areas:** In toolbars, navigation bars, or other areas\n  where screen real estate is minimal, provided the icons are highly intuitive.\n- **To aid users with reading/language difficulties:** Icons can serve as\n  powerful visual cues for users who struggle with text-heavy interfaces or who\n  are not fluent in the interface's language.\n\n> [!CAUTION]\\\n> When not to use\n\n- **As the sole indicator for ambiguous actions:** If an icon's meaning isn't\n  immediately obvious or could be misinterpreted, do not use it without a text\n  label or a tooltip. This is a common accessibility and usability pitfall.\n- **For critical information without redundancy:** Never rely only on an icon to\n  convey crucial information (e.g., an error, a warning) that a user must\n  understand. Always pair it with text or color.\n- **Over-decorating:** Using too many icons purely for aesthetic reasons can\n  lead to visual clutter and distract users from important content or actions.\n- **Inconsistent usage:** Using the same icon for different meanings in\n  different parts of the application, or different icons for the same meaning.\n  This creates confusion.\n- **Unscalable or low-resolution icons:** Using raster images that pixelate when\n  scaled up, or icons that lose clarity at small sizes.\n- **Overly complex or detailed icons:** Icons should be simple and easy to\n  understand at a glance. Too much detail makes them hard to interpret,\n  especially at smaller sizes.\n- **Obscuring important content:** Placing icons in a way that blocks or\n  detracts from the main content.\n- **Neglecting accessibility attributes:** Not providing alt text or aria-labels\n  for icons used as interactive elements or conveying meaning, leaving screen\n  reader users without context.\n",
+      "toc": [
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

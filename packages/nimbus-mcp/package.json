@@ -13,7 +13,8 @@
     }
   },
   "scripts": {
-    "build": "tsup",
+    "prebuild": "node scripts/prebuild.mjs",
+    "build": "pnpm prebuild && tsup",
     "dev": "tsx src/index.ts",
     "mcp-inspector": "mcp-inspector tsx src/index.ts",
     "mcp-inspector:cli": "mcp-inspector --cli tsx src/index.ts"

@@ -1,0 +1,1056 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/inputs/search-input}",
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# SearchInput\n\nA search input component that allows users to enter search queries with built-in\nclear functionality. Built on React Aria's SearchField for accessibility.",
+  "displayName": "SearchInput",
+  "methods": [],
+  "props": {
+    "slot": {
+      "defaultValue": null,
+      "description": "A slot name for the component. Slots allow the component to receive props from a parent component.\nAn explicit `null` value indicates that the local props completely override all props received from a parent.",
+      "name": "slot",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "SlotProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "SlotProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "isDisabled": {
+      "defaultValue": null,
+      "description": "Whether the input is disabled.",
+      "name": "isDisabled",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "InputBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "InputBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "children": {
+      "defaultValue": null,
+      "description": "The children of the component. A function may be provided to alter the children based on component state.",
+      "name": "children",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "RenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "RenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "autoFocus": {
+      "defaultValue": null,
+      "description": "Whether the element should receive focus on render.",
+      "name": "autoFocus",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusableProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusableProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onFocus": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element receives focus.",
+      "name": "onFocus",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onBlur": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element loses focus.",
+      "name": "onBlur",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onFocusChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the element's focus status changes.",
+      "name": "onFocusChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "FocusEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "FocusEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onKeyDown": {
+      "defaultValue": null,
+      "description": "Handler that is called when a key is pressed.",
+      "name": "onKeyDown",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "KeyboardEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "KeyboardEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onKeyUp": {
+      "defaultValue": null,
+      "description": "Handler that is called when a key is released.",
+      "name": "onKeyUp",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+        "name": "KeyboardEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/events.d.ts",
+          "name": "KeyboardEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "aria-haspopup": {
+      "defaultValue": null,
+      "description": "Indicates the availability and type of interactive popup element, such as menu or dialog, that can be triggered by an element.",
+      "name": "aria-haspopup",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+textfield@3.12.7_react@19.2.0/node_modules/@react-types/textfield/src/index.d.ts",
+        "name": "AriaTextFieldProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+textfield@3.12.7_react@19.2.0/node_modules/@react-types/textfield/src/index.d.ts",
+          "name": "AriaTextFieldProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "aria-controls": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) whose contents or presence are controlled by the current element.",
+      "name": "aria-controls",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+textfield@3.12.7_react@19.2.0/node_modules/@react-types/textfield/src/index.d.ts",
+        "name": "AriaTextFieldProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+textfield@3.12.7_react@19.2.0/node_modules/@react-types/textfield/src/index.d.ts",
+          "name": "AriaTextFieldProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "type": {
+      "defaultValue": {
+        "value": "'search'"
+      },
+      "description": "The type of input to render. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#htmlattrdeftype).",
+      "name": "type",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+searchfield@3.6.7_react@19.2.0/node_modules/@react-types/searchfield/src/index.d.ts",
+        "name": "AriaSearchFieldProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+searchfield@3.6.7_react@19.2.0/node_modules/@react-types/searchfield/src/index.d.ts",
+          "name": "AriaSearchFieldProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "form": {
+      "defaultValue": null,
+      "description": "The `<form>` element to associate the input with.\nThe value of this attribute must be the id of a `<form>` in the same document.\nSee [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input#form).",
+      "name": "form",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "InputDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "InputDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "name": {
+      "defaultValue": null,
+      "description": "The name of the input element, used when submitting an HTML form. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#htmlattrdefname).",
+      "name": "name",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "InputDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "InputDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "value": {
+      "defaultValue": null,
+      "description": "The current value (controlled).",
+      "name": "value",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "ValueBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "ValueBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "excludeFromTabOrder": {
+      "defaultValue": null,
+      "description": "Whether to exclude the element from the sequential tab order. If true,\nthe element will not be focusable via the keyboard by tabbing. This should\nbe avoided except in rare scenarios where an alternative means of accessing\nthe element or its functionality via the keyboard is available.",
+      "name": "excludeFromTabOrder",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "FocusableDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "FocusableDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "id": {
+      "defaultValue": null,
+      "description": "The element's unique identifier. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/id).",
+      "name": "id",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "DOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "DOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "aria-label": {
+      "defaultValue": null,
+      "description": "Defines a string value that labels the current element.",
+      "name": "aria-label",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "aria-labelledby": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that labels the current element.",
+      "name": "aria-labelledby",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "aria-describedby": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that describes the object.",
+      "name": "aria-describedby",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "aria-details": {
+      "defaultValue": null,
+      "description": "Identifies the element (or elements) that provide a detailed, extended description for the object.",
+      "name": "aria-details",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaLabelingProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaLabelingProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "className": {
+      "defaultValue": {
+        "value": "'react-aria-Popover'"
+      },
+      "description": "The CSS [className](https://developer.mozilla.org/en-US/docs/Web/API/Element/className) for the element. A function may be provided to compute the class based on component state.",
+      "name": "className",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "PopoverProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "PopoverProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "style": {
+      "defaultValue": null,
+      "description": "The inline [style](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/style) for the element. A function may be provided to compute the style based on component state.",
+      "name": "style",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "StyleRenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "StyleRenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "render": {
+      "defaultValue": null,
+      "description": "Overrides the default DOM element with a custom render function.\nThis allows rendering existing components with built-in styles and behaviors\nsuch as router links, animation libraries, and pre-styled components.\n\nRequirements:\n\n* You must render the expected element type (e.g. if `<button>` is expected, you cannot render an `<a>`).\n* Only a single root DOM element can be rendered (no fragments).\n* You must pass through props and ref to the underlying DOM element, merging with your own prop as appropriate.",
+      "name": "render",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "DOMRenderProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "DOMRenderProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onChange": {
+      "defaultValue": null,
+      "description": "Handler that is called when the value changes.",
+      "name": "onChange",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "ValueBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "ValueBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "isRequired": {
+      "defaultValue": null,
+      "description": "Whether user input is required on the input before form submission.",
+      "name": "isRequired",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "Validation"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "Validation"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "isInvalid": {
+      "defaultValue": null,
+      "description": "Whether the input value is invalid.",
+      "name": "isInvalid",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "Validation"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "Validation"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "isReadOnly": {
+      "defaultValue": null,
+      "description": "Whether the input can be selected but not changed by the user.",
+      "name": "isReadOnly",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "InputBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "InputBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "validationBehavior": {
+      "defaultValue": {
+        "value": "'native'"
+      },
+      "description": "Whether to use native HTML form validation to prevent form submission\nwhen the value is missing or invalid, or mark the field as required\nor invalid via ARIA.",
+      "name": "validationBehavior",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+        "name": "RACValidation"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/react-aria-components@1.15.1_react-dom@19.2.0_react@19.2.0__react@19.2.0/node_modules/react-aria-components/dist/types.d.ts",
+          "name": "RACValidation"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "validate": {
+      "defaultValue": null,
+      "description": "A function that returns an error message if a given value is invalid.\nValidation errors are displayed to the user when the form is submitted\nif `validationBehavior=\"native\"`. For realtime validation, use the `isInvalid`\nprop instead.",
+      "name": "validate",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "Validation"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "Validation"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "aria-errormessage": {
+      "defaultValue": null,
+      "description": "Identifies the element that provides an error message for the object.",
+      "name": "aria-errormessage",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "AriaValidationProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "AriaValidationProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "aria-activedescendant": {
+      "defaultValue": null,
+      "description": "Identifies the currently active element when DOM focus is on a composite widget, textbox, group, or application.",
+      "name": "aria-activedescendant",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+textfield@3.12.7_react@19.2.0/node_modules/@react-types/textfield/src/index.d.ts",
+        "name": "AriaTextFieldProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+textfield@3.12.7_react@19.2.0/node_modules/@react-types/textfield/src/index.d.ts",
+          "name": "AriaTextFieldProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "aria-autocomplete": {
+      "defaultValue": null,
+      "description": "Indicates whether inputting text could trigger display of one or more predictions of the user's intended value for an input and specifies how predictions would be\npresented if they are made.",
+      "name": "aria-autocomplete",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+textfield@3.12.7_react@19.2.0/node_modules/@react-types/textfield/src/index.d.ts",
+        "name": "AriaTextFieldProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+textfield@3.12.7_react@19.2.0/node_modules/@react-types/textfield/src/index.d.ts",
+          "name": "AriaTextFieldProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onCopy": {
+      "defaultValue": null,
+      "description": "Handler that is called when the user copies text. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/oncopy).",
+      "name": "onCopy",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onCut": {
+      "defaultValue": null,
+      "description": "Handler that is called when the user cuts text. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/oncut).",
+      "name": "onCut",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onPaste": {
+      "defaultValue": null,
+      "description": "Handler that is called when the user pastes text. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/onpaste).",
+      "name": "onPaste",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onCompositionEnd": {
+      "defaultValue": null,
+      "description": "Handler that is called when a text composition system completes or cancels the current text composition session. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionend_event).",
+      "name": "onCompositionEnd",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onCompositionStart": {
+      "defaultValue": null,
+      "description": "Handler that is called when a text composition system starts a new text composition session. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionstart_event).",
+      "name": "onCompositionStart",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onCompositionUpdate": {
+      "defaultValue": null,
+      "description": "Handler that is called when a new character is received in the current text composition session. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Element/compositionupdate_event).",
+      "name": "onCompositionUpdate",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onBeforeInput": {
+      "defaultValue": null,
+      "description": "Handler that is called when the input value is about to be modified. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/beforeinput_event).",
+      "name": "onBeforeInput",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onInput": {
+      "defaultValue": null,
+      "description": "Handler that is called when the input value is modified. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/input_event).",
+      "name": "onInput",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onSubmit": {
+      "defaultValue": null,
+      "description": "Handler that is called when the SearchField is submitted.",
+      "name": "onSubmit",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+searchfield@3.6.7_react@19.2.0/node_modules/@react-types/searchfield/src/index.d.ts",
+        "name": "SearchFieldProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+searchfield@3.6.7_react@19.2.0/node_modules/@react-types/searchfield/src/index.d.ts",
+          "name": "SearchFieldProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onSelect": {
+      "defaultValue": null,
+      "description": "Handler that is called when text in the input is selected. See [MDN](https://developer.mozilla.org/en-US/docs/Web/API/Element/select_event).",
+      "name": "onSelect",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMEvents"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMEvents"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "enterKeyHint": {
+      "defaultValue": null,
+      "description": "An enumerated attribute that defines what action label or icon to preset for the enter key on virtual keyboards. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/enterkeyhint).",
+      "name": "enterKeyHint",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+searchfield@3.6.7_react@19.2.0/node_modules/@react-types/searchfield/src/index.d.ts",
+        "name": "AriaSearchFieldProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+searchfield@3.6.7_react@19.2.0/node_modules/@react-types/searchfield/src/index.d.ts",
+          "name": "AriaSearchFieldProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "defaultValue": {
+      "defaultValue": null,
+      "description": "The default value (uncontrolled).",
+      "name": "defaultValue",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+        "name": "ValueBase"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/inputs.d.ts",
+          "name": "ValueBase"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "autoComplete": {
+      "defaultValue": null,
+      "description": "Describes the type of autocomplete functionality the input should provide if any. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#htmlattrdefautocomplete).",
+      "name": "autoComplete",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "maxLength": {
+      "defaultValue": null,
+      "description": "The maximum number of characters supported by the input. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#htmlattrdefmaxlength).",
+      "name": "maxLength",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "minLength": {
+      "defaultValue": null,
+      "description": "The minimum number of characters required by the input. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#htmlattrdefminlength).",
+      "name": "minLength",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "pattern": {
+      "defaultValue": null,
+      "description": "Regex pattern that the value of the input must match to be valid. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#htmlattrdefpattern).",
+      "name": "pattern",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "inputMode": {
+      "defaultValue": null,
+      "description": "Hints at the type of data that might be entered by the user while editing the element or its contents. See [MDN](https://html.spec.whatwg.org/multipage/interaction.html#input-modalities:-the-inputmode-attribute).",
+      "name": "inputMode",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "autoCorrect": {
+      "defaultValue": null,
+      "description": "An attribute that takes as its value a space-separated string that describes what, if any, type of autocomplete functionality the input should provide. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#autocomplete).",
+      "name": "autoCorrect",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "spellCheck": {
+      "defaultValue": null,
+      "description": "An enumerated attribute that defines whether the element may be checked for spelling errors. See [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/spellcheck).",
+      "name": "spellCheck",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+        "name": "TextInputDOMProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+shared@3.33.0_react@19.2.0/node_modules/@react-types/shared/src/dom.d.ts",
+          "name": "TextInputDOMProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "onClear": {
+      "defaultValue": null,
+      "description": "Handler that is called when the clear button is pressed.",
+      "name": "onClear",
+      "parent": {
+        "fileName": "nimbus/node_modules/.pnpm/@react-types+searchfield@3.6.7_react@19.2.0/node_modules/@react-types/searchfield/src/index.d.ts",
+        "name": "SearchFieldProps"
+      },
+      "declarations": [
+        {
+          "fileName": "nimbus/node_modules/.pnpm/@react-types+searchfield@3.6.7_react@19.2.0/node_modules/@react-types/searchfield/src/index.d.ts",
+          "name": "SearchFieldProps"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "any"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref forwarding to the input element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/search-input/search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLInputElement>"
+      }
+    },
+    "placeholder": {
+      "defaultValue": null,
+      "description": "Placeholder text for the search input",
+      "name": "placeholder",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/search-input/search-input.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "string"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

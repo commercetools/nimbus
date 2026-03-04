@@ -1,0 +1,11 @@
+{
+  "tags": {
+    "example": "```tsx\n// Uncontrolled usage\n<Steps.Root defaultStep={0} count={3}>\n  <Steps.List>...</Steps.List>\n  <Steps.Content index={0}>Step 1 content</Steps.Content>\n</Steps.Root>\n\n// Controlled usage\n<Steps.Root step={currentStep} onStepChange={handleStepChange} count={3}>\n  ...\n</Steps.Root>\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Props for the Steps.Root component.\nContainer component that manages step state and provides context to child components.",
+  "displayName": "StepsRootProps",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

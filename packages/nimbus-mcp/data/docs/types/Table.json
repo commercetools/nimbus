@@ -1,0 +1,9 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Export Table with all sub-components as a compound component",
+  "displayName": "Table",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

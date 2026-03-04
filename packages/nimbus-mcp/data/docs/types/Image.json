@@ -1,0 +1,12 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/media/image}",
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Image\n\nA component to display images with support for fallback.",
+  "displayName": "Image",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": true
+}

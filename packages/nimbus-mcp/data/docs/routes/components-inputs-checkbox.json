@@ -1,0 +1,774 @@
+{
+  "meta": {
+    "id": "Components-Checkbox",
+    "title": "Checkbox",
+    "exportName": "Checkbox",
+    "description": "Checkbox allows for toggling of features, allowing users to select more than one option where needed. Checkboxes support selected, unselected, indeterminate, and disabled states.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/checkbox/checkbox.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "Checkbox"
+    ],
+    "route": "components/inputs/checkbox",
+    "tags": [
+      "component",
+      "checkbox",
+      "input",
+      "toggle",
+      "boolean"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Selection",
+        "href": "#selection",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Unchecked",
+        "href": "#unchecked",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Select",
+        "href": "#select",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Indeterminate",
+        "href": "#indeterminate",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Validation",
+        "href": "#validation",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Default",
+        "href": "#default",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Invalid",
+        "href": "#invalid",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Disabled",
+        "href": "#disabled",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Vertical and horizontal lists",
+        "href": "#vertical-and-horizontal-lists",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Vertical",
+        "href": "#vertical",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          3,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Horizontal",
+        "href": "#horizontal",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          3,
+          2
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2571&t=WljaKGkdJ1dZn3oM-4",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "guidelines",
+        "title": "Guidelines",
+        "order": 2
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nCheckboxes are commonly used in forms, settings panels, and other interactive\ncontexts where users can choose one or more options from a set. See below\nvariables for further choices.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2571&t=WljaKGkdJ1dZn3oM-4)\n\n## Variables\n\nGet familiar with the features.\n\n### Selection\n\n#### Unchecked\n\nRepresents the default or unchosen state.\n\n```jsx live\nconst App = () => <Checkbox>Label</Checkbox>\n```\n\n#### Select\n\nVisually confirms a user’s choice and is essential for form submissions and\ninteractive elements.\n\n```jsx live\nconst App = () => <Checkbox isSelected>Label</Checkbox>\n```\n\n#### Indeterminate\n\nIf some, but not all, of the sub-options are selected, it will visually indicate\nthat the selection is partial or mixed.\n\n```jsx live\nconst App = () => <Checkbox isIndeterminate>Label</Checkbox>\n```\n\n### Validation\n\n#### Default\n\nThis is the standard initial state of the checkbox that doesn’t have a reason to\nbe invalid or disabled for the user.\n\n```jsx live\nconst App = () => <Checkbox isSelected ml=\"600\">Default tone</Checkbox>\n```\n\n#### Invalid\n\nAn invalid validation state for a checkbox indicates that the user's input (or\nlack thereof) for that checkbox is not acceptable according to the application's\nrules.\n\n```jsx live\nconst App = () => <Checkbox isInvalid>Invalid</Checkbox>\n```\n\n#### Disabled\n\nThis is the styling of disabled elements. The icon is dimmed but the label\nremains legible.\n\n```jsx live\nconst App = () => <Checkbox isDisabled>Disabled</Checkbox>\n```\n\n### Vertical and horizontal lists\n\n#### Vertical\n\nVertical lists are the most common and generally recommended approach for\ncheckbox lists unless there's a specific reason to use a different layout.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Checkbox>Option 1</Checkbox>\n    <Checkbox>Option 2</Checkbox>\n  </Stack>\n)\n```\n\n#### Horizontal\n\nThese lists are best when they are concise, visually distinct, and don't require\nmuch scanning. Used often in filters.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"600\">\n    <Checkbox>Option 1</Checkbox>\n    <Checkbox>Option 2</Checkbox>\n  </Stack>\n)\n```\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nCheckboxes are commonly used in forms, settings panels, and other interactive\ncontexts where users can choose one or more options from a set. See below\nvariables for further choices.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-2571&t=WljaKGkdJ1dZn3oM-4)\n\n## Variables\n\nGet familiar with the features.\n\n### Selection\n\n#### Unchecked\n\nRepresents the default or unchosen state.\n\n```jsx live\nconst App = () => <Checkbox>Label</Checkbox>\n```\n\n#### Select\n\nVisually confirms a user’s choice and is essential for form submissions and\ninteractive elements.\n\n```jsx live\nconst App = () => <Checkbox isSelected>Label</Checkbox>\n```\n\n#### Indeterminate\n\nIf some, but not all, of the sub-options are selected, it will visually indicate\nthat the selection is partial or mixed.\n\n```jsx live\nconst App = () => <Checkbox isIndeterminate>Label</Checkbox>\n```\n\n### Validation\n\n#### Default\n\nThis is the standard initial state of the checkbox that doesn’t have a reason to\nbe invalid or disabled for the user.\n\n```jsx live\nconst App = () => <Checkbox isSelected ml=\"600\">Default tone</Checkbox>\n```\n\n#### Invalid\n\nAn invalid validation state for a checkbox indicates that the user's input (or\nlack thereof) for that checkbox is not acceptable according to the application's\nrules.\n\n```jsx live\nconst App = () => <Checkbox isInvalid>Invalid</Checkbox>\n```\n\n#### Disabled\n\nThis is the styling of disabled elements. The icon is dimmed but the label\nremains legible.\n\n```jsx live\nconst App = () => <Checkbox isDisabled>Disabled</Checkbox>\n```\n\n### Vertical and horizontal lists\n\n#### Vertical\n\nVertical lists are the most common and generally recommended approach for\ncheckbox lists unless there's a specific reason to use a different layout.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Checkbox>Option 1</Checkbox>\n    <Checkbox>Option 2</Checkbox>\n  </Stack>\n)\n```\n\n#### Horizontal\n\nThese lists are best when they are concise, visually distinct, and don't require\nmuch scanning. Used often in filters.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"600\">\n    <Checkbox>Option 1</Checkbox>\n    <Checkbox>Option 2</Checkbox>\n  </Stack>\n)\n```\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Selection",
+          "href": "#selection",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Unchecked",
+          "href": "#unchecked",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Select",
+          "href": "#select",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Indeterminate",
+          "href": "#indeterminate",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Validation",
+          "href": "#validation",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Default",
+          "href": "#default",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Invalid",
+          "href": "#invalid",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Disabled",
+          "href": "#disabled",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Vertical and horizontal lists",
+          "href": "#vertical-and-horizontal-lists",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Vertical",
+          "href": "#vertical",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Horizontal",
+          "href": "#horizontal",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            3,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => <Checkbox>Test me</Checkbox>\n```\n\n### Accessibility standards\n\n- **Info and relationships:** Programmatically determine or provide information\n  and relationships conveyed through presentation in text. Use the `<label>`\n  element and the `for` attribute to associate every checkbox with a clear,\n  descriptive label. Ensure screen readers can access and interpret the checkbox\n  label.\n- **Group related checkboxes:** Group related checkboxes using `<fieldset>` and\n  `<legend>` to provide context. Label the checkbox group using `<legend>`.\n- **Use of color:** Avoid relying solely on color to convey information or\n  checkbox state. Ensure the checked/unchecked state is programmatically\n  determinable and conveyed through visual appearance (e.g., the checkbox's\n  state).\n- **Keyboard accessibility:** Make all checkbox functionality operable through a\n  keyboard interface. Enable users to navigate to the checkbox using the Tab\n  key. Allow users to change the checkbox state using the Spacebar or Enter key.\n- **Clear purpose:** Make the purpose of the checkbox clear from the surrounding\n  context or its label. Avoid generic labels like \"Option\" or \"Select.\" Provide\n  specific and descriptive labels.\n- **Focus visible:** Provide a visible keyboard focus indicator for checkboxes.\n  Visually indicate when a checkbox has focus (e.g., highlight, outline, change\n  in appearance). Avoid relying solely on color change for focus indication.\n- **Labels or instructions:** Provide clear labels or instructions for\n  checkboxes. Reinforce the information provided by the `<label>` element. Aid\n  users with cognitive disabilities by providing clear instructions.\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { Checkbox, type CheckboxProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe simplest implementation uses uncontrolled mode:\n\n```jsx live-dev\nconst App = () => (\n  <Checkbox>Accept terms and conditions</Checkbox>\n)\n```\n\n## Usage examples\n\n### Selection states\n\nThe Checkbox supports three selection states: unchecked (default), checked, and indeterminate.\n\n#### Unchecked\n\nThe default state when no selection has been made:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Checkbox>Option 1</Checkbox>\n    <Checkbox>Option 2</Checkbox>\n  </Stack>\n)\n```\n\n#### Checked\n\nUse the `isSelected` prop to indicate a checked state:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Checkbox isSelected>Option 1</Checkbox>\n    <Checkbox isSelected>Option 2</Checkbox>\n  </Stack>\n)\n```\n\n#### Indeterminate\n\nUse the `isIndeterminate` prop to show a partial selection state, commonly used for \"select all\" scenarios:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Checkbox isIndeterminate>Select all</Checkbox>\n    <Checkbox isSelected>Option 1</Checkbox>\n    <Checkbox>Option 2</Checkbox>\n  </Stack>\n)\n```\n\n### Validation and disabled states\n\n#### Invalid state\n\nUse the `isInvalid` prop to indicate validation errors:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Checkbox isInvalid>Required field</Checkbox>\n    <Checkbox isSelected isInvalid>Invalid selection</Checkbox>\n  </Stack>\n)\n```\n\n#### Disabled state\n\nDisable checkbox interaction with the `isDisabled` prop:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Checkbox isDisabled>Disabled checkbox</Checkbox>\n    <Checkbox isSelected isDisabled>Disabled and checked</Checkbox>\n    <Checkbox isIndeterminate isDisabled>Disabled and indeterminate</Checkbox>\n  </Stack>\n)\n```\n\n### Uncontrolled mode\n\nFor simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:\n\n```jsx live-dev\nconst App = () => {\n  const [displayValue, setDisplayValue] = useState<boolean>(false);\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Text fontSize=\"sm\">\n        {displayValue ? 'Notifications enabled' : 'Notifications disabled'}\n      </Text>\n      <Checkbox\n        defaultValue={false}\n        onChange={(isSelected) => {\n          setDisplayValue(isSelected);\n        }}\n      >\n        Enable notifications\n      </Checkbox>\n    </Stack>\n  );\n}\n```\n\nUse uncontrolled mode when you need to capture the selected state without managing state yourself.\n\n### Controlled mode\n\nFor scenarios requiring programmatic control or coordination with other components, use controlled mode:\n\n```jsx live-dev\nconst App = () => {\n  const [isSelected, setIsSelected] = useState<boolean>(false);\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Text fontSize=\"sm\">\n        {isSelected ? 'Terms accepted' : 'Terms not accepted'}\n      </Text>\n      <Checkbox\n        isSelected={isSelected}\n        onChange={setIsSelected}\n      >\n        Accept terms and conditions\n      </Checkbox>\n      <Button\n        size=\"sm\"\n        onClick={() => setIsSelected(!isSelected)}\n      >\n        {isSelected ? 'Uncheck' : 'Check'}\n      </Button>\n    </Stack>\n  );\n}\n```\n\nUse controlled mode when you need to:\n- Synchronize the value with external state\n- Validate or transform selections\n- Clear or programmatically set the value\n- React to changes in real-time\n\n## Component requirements\n\n## Accessibility\n\nThe Checkbox handles most accessibility requirements internally. However, you must always associate an internationalized label with the component. Visual labels are preferable, and can be set by:\n\n- Using the `CheckboxField` pattern component (recommended, if available)\n- Providing label content via the `children` prop:\n\n```tsx\n<Checkbox>\n  {msg.format(checkboxLabelMessage)}\n</Checkbox>\n```\n\n- Associating a `<label>` element with the `Checkbox` using `aria-labelledby`:\n\n```tsx\n<label id=\"checkbox-label\">\n  {msg.format(labelMessage)}\n</label>\n<Checkbox aria-labelledby=\"checkbox-label\" />\n```\n\n- Associating a `<label>` element with the `Checkbox` using `htmlFor`:\n\n```tsx\n<label htmlFor=\"checkbox-id\">\n  {msg.format(labelMessage)}\n</label>\n<Checkbox id=\"checkbox-id\" />\n```\n\nIf your design requires that the label should not be visible, the label should be set using the `aria-label` prop:\n\n```tsx\n<Checkbox aria-label={msg.format(labelMessage)} />\n```\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"terms-acceptance-checkbox\";\n\nexport const TermsCheckbox = () => (\n  <Checkbox id={PERSISTENT_ID}>\n    Accept terms and conditions\n  </Checkbox>\n);\n```\n\n#### Keyboard navigation\n\nThe component supports full keyboard interaction:\n- `Tab` / `Shift+Tab`: Navigate to/from the checkbox\n- `Space` / `Enter`: Toggle the checkbox state when focused\n\n## API reference\n\n<PropsTable id=\"Checkbox\" />\n\n## Common patterns\n\n### Checkbox group\n\nGroup related checkboxes together for multiple selections:\n\n```jsx live-dev\nconst App = () => {\n  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);\n\n  const options = [\n    { id: 'option1', label: 'Email notifications' },\n    { id: 'option2', label: 'SMS notifications' },\n    { id: 'option3', label: 'Push notifications' },\n  ];\n\n  const handleToggle = (optionId: string) => {\n    setSelectedOptions((prev) =>\n      prev.includes(optionId)\n        ? prev.filter((id) => id !== optionId)\n        : [...prev, optionId]\n    );\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      {options.map((option) => (\n        <Checkbox\n          key={option.id}\n          isSelected={selectedOptions.includes(option.id)}\n          onChange={() => handleToggle(option.id)}\n        >\n          {option.label}\n        </Checkbox>\n      ))}\n      <Text fontSize=\"sm\">\n        Selected: {selectedOptions.length} of {options.length}\n      </Text>\n    </Stack>\n  );\n}\n```\n\n### Select all pattern\n\nImplement a \"select all\" checkbox with indeterminate state:\n\n```jsx live-dev\nconst App = () => {\n  const [items, setItems] = useState([\n    { id: '1', label: 'Item 1', selected: false },\n    { id: '2', label: 'Item 2', selected: true },\n    { id: '3', label: 'Item 3', selected: false },\n  ]);\n\n  const allSelected = items.every((item) => item.selected);\n  const someSelected = items.some((item) => item.selected) && !allSelected;\n\n  const handleSelectAll = (isSelected: boolean) => {\n    setItems((prev) =>\n      prev.map((item) => ({ ...item, selected: isSelected }))\n    );\n  };\n\n  const handleToggleItem = (id: string) => {\n    setItems((prev) =>\n      prev.map((item) =>\n        item.id === id ? { ...item, selected: !item.selected } : item\n      )\n    );\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Checkbox\n        isSelected={allSelected}\n        isIndeterminate={someSelected}\n        onChange={handleSelectAll}\n      >\n        Select all\n      </Checkbox>\n      <Stack direction=\"column\" gap=\"200\" ml=\"600\">\n        {items.map((item) => (\n          <Checkbox\n            key={item.id}\n            isSelected={item.selected}\n            onChange={() => handleToggleItem(item.id)}\n          >\n            {item.label}\n          </Checkbox>\n        ))}\n      </Stack>\n    </Stack>\n  );\n}\n```\n\n### Form integration example\n\nIntegrate checkboxes with form state management:\n\n```jsx live-dev\nconst App = () => {\n  const [formData, setFormData] = useState({\n    acceptTerms: false,\n    subscribeNewsletter: false,\n    shareData: false,\n  });\n\n  const handleChange = (field: string) => (isSelected: boolean) => {\n    setFormData((prev) => ({ ...prev, [field]: isSelected }));\n  };\n\n  const handleSubmit = () => {\n    if (!formData.acceptTerms) {\n      alert('Please accept the terms and conditions');\n      return;\n    }\n    alert('Form submitted!');\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"600\">\n      <Checkbox\n        isSelected={formData.acceptTerms}\n        onChange={handleChange('acceptTerms')}\n        isInvalid={!formData.acceptTerms}\n      >\n        I accept the terms and conditions\n      </Checkbox>\n      <Checkbox\n        isSelected={formData.subscribeNewsletter}\n        onChange={handleChange('subscribeNewsletter')}\n      >\n        Subscribe to newsletter\n      </Checkbox>\n      <Checkbox\n        isSelected={formData.shareData}\n        onChange={handleChange('shareData')}\n      >\n        Allow data sharing for analytics\n      </Checkbox>\n      <Button onClick={handleSubmit}>Submit</Button>\n    </Stack>\n  );\n}\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using Checkbox within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the component renders with expected elements\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Checkbox, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Checkbox - Basic rendering\", () => {\n  it(\"renders checkbox element\", () => {\n    render(\n      <NimbusProvider>\n        <Checkbox>Test checkbox</Checkbox>\n      </NimbusProvider>\n    );\n\n    // Verify checkbox is present\n    expect(screen.getByRole(\"checkbox\")).toBeInTheDocument();\n  });\n\n  it(\"renders with label text\", () => {\n    render(\n      <NimbusProvider>\n        <Checkbox>Accept terms</Checkbox>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByText(\"Accept terms\")).toBeInTheDocument();\n  });\n\n  it(\"renders with aria-label when no children provided\", () => {\n    render(\n      <NimbusProvider>\n        <Checkbox aria-label=\"Test checkbox\" />\n      </NimbusProvider>\n    );\n\n    expect(\n      screen.getByRole(\"checkbox\", { name: /test checkbox/i })\n    ).toBeInTheDocument();\n  });\n\n  it(\"renders unchecked by default\", () => {\n    render(\n      <NimbusProvider>\n        <Checkbox>Unchecked checkbox</Checkbox>\n      </NimbusProvider>\n    );\n\n    const checkbox = screen.getByRole(\"checkbox\");\n    expect(checkbox).not.toBeChecked();\n  });\n});\n```\n\n### Selection State Tests\n\nTest different selection states (checked, unchecked, indeterminate)\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Checkbox, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Checkbox - Selection states\", () => {\n  it(\"renders checked state\", () => {\n    render(\n      <NimbusProvider>\n        <Checkbox isSelected>Checked checkbox</Checkbox>\n      </NimbusProvider>\n    );\n\n    const checkbox = screen.getByRole(\"checkbox\");\n    expect(checkbox).toBeChecked();\n  });\n\n  it(\"renders indeterminate state\", () => {\n    render(\n      <NimbusProvider>\n        <Checkbox isIndeterminate>Indeterminate checkbox</Checkbox>\n      </NimbusProvider>\n    );\n\n    const checkbox = screen.getByRole(\"checkbox\");\n    // React Aria sets indeterminate state on the input element, not aria-checked\n    expect(checkbox).toHaveProperty(\"indeterminate\", true);\n  });\n\n  it(\"renders unchecked state explicitly\", () => {\n    render(\n      <NimbusProvider>\n        <Checkbox isSelected={false}>Unchecked checkbox</Checkbox>\n      </NimbusProvider>\n    );\n\n    const checkbox = screen.getByRole(\"checkbox\");\n    expect(checkbox).not.toBeChecked();\n  });\n});\n```\n\n### Interaction Tests\n\nTest user interactions with the component\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Checkbox, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Checkbox - Interactions\", () => {\n  it(\"toggles when clicked\", async () => {\n    const user = userEvent.setup();\n    render(\n      <NimbusProvider>\n        <Checkbox>Toggle me</Checkbox>\n      </NimbusProvider>\n    );\n\n    const checkbox = screen.getByRole(\"checkbox\");\n    expect(checkbox).not.toBeChecked();\n\n    await user.click(checkbox);\n\n    expect(checkbox).toBeChecked();\n  });\n\n  it(\"calls onChange callback when toggled\", async () => {\n    const user = userEvent.setup();\n    const handleChange = vi.fn();\n    render(\n      <NimbusProvider>\n        <Checkbox onChange={handleChange}>Test checkbox</Checkbox>\n      </NimbusProvider>\n    );\n\n    const checkbox = screen.getByRole(\"checkbox\");\n    await user.click(checkbox);\n\n    expect(handleChange).toHaveBeenCalledWith(true);\n  });\n\n  it(\"toggles with spacebar when focused\", async () => {\n    const user = userEvent.setup();\n    render(\n      <NimbusProvider>\n        <Checkbox>Keyboard toggle</Checkbox>\n      </NimbusProvider>\n    );\n\n    // Use userEvent.tab() instead of element.focus() to avoid act() warnings\n    await user.tab();\n    await user.keyboard(\" \");\n\n    expect(screen.getByRole(\"checkbox\")).toBeChecked();\n  });\n\n  it(\"toggles with enter key when focused\", async () => {\n    const user = userEvent.setup();\n    render(\n      <NimbusProvider>\n        <Checkbox>Enter toggle</Checkbox>\n      </NimbusProvider>\n    );\n\n    // Use userEvent.tab() instead of element.focus() to avoid act() warnings\n    await user.tab();\n    await user.keyboard(\"{Enter}\");\n\n    expect(screen.getByRole(\"checkbox\")).toBeChecked();\n  });\n});\n```\n\n### Testing Controlled Mode\n\nTest controlled component behavior\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Checkbox, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Checkbox - Controlled mode\", () => {\n  it(\"displays controlled value\", () => {\n    render(\n      <NimbusProvider>\n        <Checkbox isSelected={true} onChange={() => {}}>\n          Controlled checkbox\n        </Checkbox>\n      </NimbusProvider>\n    );\n\n    const checkbox = screen.getByRole(\"checkbox\");\n    expect(checkbox).toBeChecked();\n  });\n\n  it(\"updates when controlled value changes\", () => {\n    const { rerender } = render(\n      <NimbusProvider>\n        <Checkbox isSelected={false} onChange={() => {}}>\n          Controlled checkbox\n        </Checkbox>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByRole(\"checkbox\")).not.toBeChecked();\n\n    rerender(\n      <NimbusProvider>\n        <Checkbox isSelected={true} onChange={() => {}}>\n          Controlled checkbox\n        </Checkbox>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByRole(\"checkbox\")).toBeChecked();\n  });\n\n  it(\"calls onChange when user interacts with controlled checkbox\", async () => {\n    const user = userEvent.setup();\n    const handleChange = vi.fn();\n    render(\n      <NimbusProvider>\n        <Checkbox isSelected={false} onChange={handleChange}>\n          Controlled checkbox\n        </Checkbox>\n      </NimbusProvider>\n    );\n\n    const checkbox = screen.getByRole(\"checkbox\");\n    await user.click(checkbox);\n\n    expect(handleChange).toHaveBeenCalledWith(true);\n  });\n});\n```\n\n### Testing Validation States\n\nTest different validation and state variations\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Checkbox, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"Checkbox - Validation states\", () => {\n  it(\"renders disabled state\", () => {\n    render(\n      <NimbusProvider>\n        <Checkbox isDisabled>Disabled checkbox</Checkbox>\n      </NimbusProvider>\n    );\n\n    const checkbox = screen.getByRole(\"checkbox\");\n    expect(checkbox).toBeDisabled();\n  });\n\n  it(\"does not toggle when disabled\", async () => {\n    const user = userEvent.setup();\n    const handleChange = vi.fn();\n    render(\n      <NimbusProvider>\n        <Checkbox isDisabled onChange={handleChange}>\n          Disabled checkbox\n        </Checkbox>\n      </NimbusProvider>\n    );\n\n    const checkbox = screen.getByRole(\"checkbox\");\n    await user.click(checkbox);\n\n    expect(checkbox).not.toBeChecked();\n    expect(handleChange).not.toHaveBeenCalled();\n  });\n\n  it(\"renders invalid state\", () => {\n    render(\n      <NimbusProvider>\n        <Checkbox isInvalid>Invalid checkbox</Checkbox>\n      </NimbusProvider>\n    );\n\n    const checkbox = screen.getByRole(\"checkbox\");\n    expect(checkbox).toHaveAttribute(\"aria-invalid\", \"true\");\n  });\n\n  it(\"renders checked and disabled state\", () => {\n    render(\n      <NimbusProvider>\n        <Checkbox isSelected isDisabled>\n          Checked and disabled\n        </Checkbox>\n      </NimbusProvider>\n    );\n\n    const checkbox = screen.getByRole(\"checkbox\");\n    expect(checkbox).toBeChecked();\n    expect(checkbox).toBeDisabled();\n  });\n\n  it(\"renders indeterminate and invalid state\", () => {\n    render(\n      <NimbusProvider>\n        <Checkbox isIndeterminate isInvalid>\n          Indeterminate and invalid\n        </Checkbox>\n      </NimbusProvider>\n    );\n\n    const checkbox = screen.getByRole(\"checkbox\");\n    // React Aria sets indeterminate state on the input element, not aria-checked\n    expect(checkbox).toHaveProperty(\"indeterminate\", true);\n    expect(checkbox).toHaveAttribute(\"aria-invalid\", \"true\");\n  });\n});\n```\n\n\n## Resources\n\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-checkbox--docs)\n- [React Aria Checkbox](https://react-spectrum.adobe.com/react-aria/Checkbox.html)\n- [ARIA Checkbox Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/checkbox/)\n\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Selection states",
+          "href": "#selection-states",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Unchecked",
+          "href": "#unchecked",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Checked",
+          "href": "#checked",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Indeterminate",
+          "href": "#indeterminate",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Validation and disabled states",
+          "href": "#validation-and-disabled-states",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Invalid state",
+          "href": "#invalid-state",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Disabled state",
+          "href": "#disabled-state",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Uncontrolled mode",
+          "href": "#uncontrolled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Controlled mode",
+          "href": "#controlled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Checkbox group",
+          "href": "#checkbox-group",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Select all pattern",
+          "href": "#select-all-pattern",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Form integration example",
+          "href": "#form-integration-example",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Selection State Tests",
+          "href": "#selection-state-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Interaction Tests",
+          "href": "#interaction-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing Controlled Mode",
+          "href": "#testing-controlled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing Validation States",
+          "href": "#testing-validation-states",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "guidelines": {
+      "mdx": "\n## Guidelines\n\nEnsure users can clearly perceive and interact with binary selection options,\nproviding visual and programmatic cues for their checked or unchecked state,\nalong with accessible labels for understanding their purpose.\n\n### Best practices\n\n- **Utilize positive phrasing in checkbox labels:** Prefer 'Enable\n  notifications' over 'Disable notifications’.\n- **Clear Labels:** Use descriptive labels that clearly explain the checkbox's\n  purpose.\n- **Logical Grouping:** Group related checkboxes together visually and\n  logically.\n- **Visual Feedback:** Provide clear visual feedback when the checkbox is\n  checked or unchecked.\n- **Error Handling:** If a checkbox is required, provide clear error messages if\n  the user forgets to check it.\n\n### Usage\n\n- **Single Checkbox:** Used for binary choices (e.g., \"I agree to the terms and\n  conditions\").\n- **Checkbox Groups:** Allow users to select multiple options from a list.\n- **Within Tables or Lists:** Checkboxes can be used for bulk actions, like\n  selecting multiple items in a table.\n\n### Logical grouping\n\nMaintain a clear and predictable order for checkboxes to facilitate efficient\nscanning and selection.\n\n> [!TIP]\\\n> **Do**\n>\n> - Capitalize the first letter of the label.\n> - Use short and clear labeling.\n> - Group information easily for the user to make the correct selection to\n>   accomplish their goals.\n\n```jsx live\nconst App = () => (\n  <Grid templateColumns=\"repeat(2, 1fr)\" gap=\"400\">\n    <Grid.Item>\n      <Checkbox isIndeterminate>All general fields</Checkbox>\n    </Grid.Item>\n    <Grid.Item>\n      <Stack direction=\"column\">\n        <Checkbox isSelected isDisabled>Product key</Checkbox>\n        <Checkbox isSelected>Name</Checkbox>\n        <Checkbox>Product type key</Checkbox>\n        <Checkbox>Description</Checkbox>\n        <Checkbox>Category keys</Checkbox>\n      </Stack>\n    </Grid.Item>\n  </Grid>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don’t overwhelm the user with options that are uncategorized.\n> - There is no reason to use all caps or punctuation.\n\n```jsx live\nconst App = () => (\n  <Grid templateColumns=\"repeat(2, 1fr)\" gap=\"400\">\n    <Grid.Item>\n      <Stack direction=\"column\">\n        <Checkbox isSelected>Product key</Checkbox>\n        <Checkbox isSelected>NAME...</Checkbox>\n        <Checkbox>Valid from</Checkbox>\n        <Checkbox>Discount prices</Checkbox>\n        <Checkbox>Asset name!</Checkbox>\n      </Stack>\n    </Grid.Item>\n    <Grid.Item>\n      <Stack direction=\"column\">\n        <Checkbox isSelected>Price key?</Checkbox>\n        <Checkbox isSelected>Price value.</Checkbox>\n        <Checkbox>PRICE COUNTRY</Checkbox>\n        <Checkbox isSelected>Valid until</Checkbox>\n        <Checkbox>Category keys.</Checkbox>\n      </Stack>\n    </Grid.Item>\n  </Grid>\n)\n```\n\n### Positive framing\n\nFrame checkbox actions with affirmative language to promote clarity and user\nconfidence.\n\n> [!TIP]\\\n> **Do**\n>\n> - Simple labels provide clear options for users.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"1400\" alignItems=\"center\">\n    <Text fontSize=\"300\" fontWeight=\"500\">Preferences</Checkbox>\n    <Checkbox isSelected>Include product and variant information</Checkbox>\n  </Stack>\n)\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don’t contradict available options. This information should be simplified\n>   further.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"row\" gap=\"1400\" alignItems=\"top\">\n    <Text fontSize=\"300\" fontWeight=\"500\">Preferences</Checkbox>\n\n    <Stack direction=\"column\">\n      <Checkbox isIndeterminate>Don’t include Product- and Variant- level information in every row.</Checkbox>\n      <Checkbox isSelected ml=\"600\">Don’t include Variant level information, but keep Product- level information.</Checkbox>\n    </Stack>\n  </Stack>\n)\n```\n",
+      "toc": [
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Logical grouping",
+          "href": "#logical-grouping",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Positive framing",
+          "href": "#positive-framing",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            4
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

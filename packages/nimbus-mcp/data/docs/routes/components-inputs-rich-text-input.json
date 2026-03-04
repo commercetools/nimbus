@@ -1,0 +1,599 @@
+{
+  "meta": {
+    "id": "Components-RichTextInput",
+    "title": "Rich text input",
+    "exportName": "RichTextInput",
+    "description": "The rich text input component allows users to input and format text using a user friendly interface. Changing standard text inputs into fully featured edits, supporting formatting, linking, and embedding.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/rich-text-input/rich-text-input.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "Rich text input"
+    ],
+    "route": "components/inputs/rich-text-input",
+    "tags": [
+      "component",
+      "rich-text",
+      "editor",
+      "formatting"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Toolbar features",
+        "href": "#toolbar-features",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Minimum and maximum height",
+        "href": "#minimum-and-maximum-height",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          2
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7190-34429&m=dev",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "guidelines",
+        "title": "Guidelines",
+        "order": 2
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nRich text input is made of two parts, the input where users can add text, and a\ntoolbar. This toolbar has been arranged to suit user's needs for text editing.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Slate.js Documentation](https://docs.slatejs.org/)\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7190-34429&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Toolbar features\n\nUsers can change type styles, toggle bold, italics, underline, strikethrough,\ncode sections, superscript, subscript, bullet points and numbered lists. Undo\nand redo buttons are icon buttons.\n\n```jsx live\nconst App = () => {\n  const [value, setValue] = React.useState(\"<p><strong>Nimbus</strong> dolor sit amet, consectetur adipiscing elit. Aliquam <em>component</em> felis, vel consistency elementum. Sed design tokens ut turpis ac <u>user experience</u> maximus. Integer accessibility vitae nibh id clarity interface tincidunt.</p>\");\n\n  return (\n    <RichTextInput\n      value={value}\n      onChange={setValue}\n      placeholder=\"Try formatting some text...\"\n    />\n  );\n};\n```\n\n### Minimum and maximum height\n\nThese can be fully configured as needed. Toolbar should remain sticky to the top\nof the input. Set the minimum height to ensure at least a few lines of content\nare visible.\n\n```jsx live\nconst App = () => {\n  const [value, setValue] = React.useState(\"<p>Nimbus dolor sit amet, consectetur adipiscing elit. Aliquam component felis, vel consistency elementum. Sed design tokens ut turpis ac user experience maximus. Integer accessibility vitae nibh id clarity interface tincidunt.</p>\");\n\n  return (\n    <RichTextInput\n      minHeight=\"7200\"\n      maxHeight=\"9600\"\n      value={value}\n      onChange={setValue}\n      placeholder=\"Start typing...\"\n    />\n  );\n};\n```\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nRich text input is made of two parts, the input where users can add text, and a\ntoolbar. This toolbar has been arranged to suit user's needs for text editing.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Slate.js Documentation](https://docs.slatejs.org/)\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=7190-34429&m=dev)\n\n## Variables\n\nGet familiar with the features.\n\n### Toolbar features\n\nUsers can change type styles, toggle bold, italics, underline, strikethrough,\ncode sections, superscript, subscript, bullet points and numbered lists. Undo\nand redo buttons are icon buttons.\n\n```jsx live\nconst App = () => {\n  const [value, setValue] = React.useState(\"<p><strong>Nimbus</strong> dolor sit amet, consectetur adipiscing elit. Aliquam <em>component</em> felis, vel consistency elementum. Sed design tokens ut turpis ac <u>user experience</u> maximus. Integer accessibility vitae nibh id clarity interface tincidunt.</p>\");\n\n  return (\n    <RichTextInput\n      value={value}\n      onChange={setValue}\n      placeholder=\"Try formatting some text...\"\n    />\n  );\n};\n```\n\n### Minimum and maximum height\n\nThese can be fully configured as needed. Toolbar should remain sticky to the top\nof the input. Set the minimum height to ensure at least a few lines of content\nare visible.\n\n```jsx live\nconst App = () => {\n  const [value, setValue] = React.useState(\"<p>Nimbus dolor sit amet, consectetur adipiscing elit. Aliquam component felis, vel consistency elementum. Sed design tokens ut turpis ac user experience maximus. Integer accessibility vitae nibh id clarity interface tincidunt.</p>\");\n\n  return (\n    <RichTextInput\n      minHeight=\"7200\"\n      maxHeight=\"9600\"\n      value={value}\n      onChange={setValue}\n      placeholder=\"Start typing...\"\n    />\n  );\n};\n```\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Toolbar features",
+          "href": "#toolbar-features",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Minimum and maximum height",
+          "href": "#minimum-and-maximum-height",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => {\n  const [value, setValue] = React.useState(\"\");\n\n  return (\n    <RichTextInput\n      value={value}\n      onChange={setValue}\n      placeholder=\"Start typing...\"\n    />\n  );\n};\n```\n\n### Accessibility standards\n\n- **Semantic markup:** Ensure the editor outputs semantic HTML (e.g., `<h1>`,\n  `<ul>`, `<strong>`) to be correctly interpreted by screen readers.\n- **Keyboard access:** Ensure all toolbar controls are accessible via the tab\n  key. Users must be able to navigate and apply formatting without a mouse.\n- **ARIA:** Apply appropriate ARIA attributes to the toolbar and its controls,\n  such as `aria-label` for toggle icon buttons.\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { RichTextInput, type RichTextInputProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe simplest implementation uses uncontrolled mode:\n\n```jsx live-dev\nconst App = () => (\n  <RichTextInput placeholder=\"Start typing...\" />\n)\n```\n\n## Working with Slate.js and HTML values\n\nThe RichTextInput relies on Slate.js for rich text editing capabilities. Slate.js is a customizable framework for building rich text editors in React. While Slate.js uses its own internal data structure, RichTextInput handles conversion to and from HTML automatically.\n\n### HTML value format\n\nRichTextInput accepts and returns HTML strings for the `value`, `defaultValue`, and `onChange` props:\n\n```tsx\n// Example HTML value\nconst htmlValue = `\n<p>This is a <strong>paragraph</strong> with formatting.</p>\n<h2>This is a heading</h2>\n<ul>\n  <li>List item 1</li>\n  <li>List item 2</li>\n</ul>\n`;\n```\n\n### Supported HTML elements\n\nRichTextInput supports these HTML elements through the formatting toolbar:\n\n- **Paragraphs**: `<p>`\n- **Headings**: `<h1>`, `<h2>`, `<h3>`, `<h4>`, `<h5>`\n- **Text formatting**: `<strong>` (bold), `<em>` (italic), `<u>` (underline), `<del>` (strikethrough)\n- **Lists**: `<ul>` (unordered), `<ol>` (ordered), `<li>` (list items)\n- **Code**: `<code>` (inline), `<pre><code>` (code block)\n- **Quotes**: `<blockquote>`\n- **Links**: `<a href=\"...\">`\n- **Subscript/Superscript**: `<sub>`, `<sup>`\n\n### Internal conversion\n\nRichTextInput automatically handles conversion between HTML and Slate.js's internal format:\n\n1. **Input**: HTML string → Slate.js structure (when setting `value` or `defaultValue`)\n2. **Output**: Slate.js structure → HTML string (when calling `onChange`)\n\nYou don't need to work with Slate.js types directly - just provide and receive HTML strings.\n\n> [!TIP]\\\n> For advanced use cases requiring direct Slate.js manipulation, see the [Slate.js documentation](https://docs.slatejs.org/) for complete API reference.\n\n## Usage examples\n\n### Uncontrolled mode\n\nUse `defaultValue` for simple forms where you don't need to control the value:\n\n```jsx live-dev\nconst App = () => {\n  const handleSubmit = (event) => {\n    event.preventDefault();\n    const formData = new FormData(event.currentTarget);\n    const content = formData.get('content');\n    console.log('Submitted content:', content);\n  };\n\n  return (\n    <form onSubmit={handleSubmit}>\n      <Stack direction=\"column\" gap=\"400\">\n        <RichTextInput\n          name=\"content\"\n          defaultValue=\"<p>Edit this <strong>content</strong>!</p>\"\n          placeholder=\"Enter your content...\"\n        />\n        <Button type=\"submit\">Submit</Button>\n      </Stack>\n    </form>\n  );\n};\n```\n\n### Controlled mode\n\nUse `value` and `onChange` when you need to manage the editor state:\n\n```jsx live-dev\nconst App = () => {\n  const [value, setValue] = React.useState<RichTextInputProps['value']>(\n    '<p>This is <strong>controlled</strong> content.</p>'\n  );\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <RichTextInput\n        value={value}\n        onChange={setValue}\n        placeholder=\"Type something...\"\n      />\n      <Stack direction=\"column\" gap=\"200\">\n        <Text fontWeight=\"600\">Current HTML value:</Text>\n        <Box\n          padding=\"300\"\n          backgroundColor=\"neutral.2\"\n          borderRadius=\"200\"\n          maxHeight=\"200px\"\n          overflow=\"auto\"\n        >\n          <Text fontFamily=\"mono\" fontSize=\"300\">\n            {value}\n          </Text>\n        </Box>\n      </Stack>\n    </Stack>\n  );\n};\n```\n\n### With placeholder\n\nShow helpful placeholder text when the editor is empty:\n\n```jsx live-dev\nconst App = () => (\n  <RichTextInput placeholder=\"Enter your blog post content here...\" />\n)\n```\n\n### With default value\n\nInitialize the editor with existing content:\n\n```jsx live-dev\nconst App = () => (\n  <RichTextInput\n    defaultValue={`\n      <h2>Welcome to Rich Text Editing</h2>\n      <p>This editor supports <strong>bold</strong>, <em>italic</em>, and <u>underlined</u> text.</p>\n      <ul>\n        <li>Create bullet lists</li>\n        <li>Format text with the toolbar</li>\n        <li>Use keyboard shortcuts</li>\n      </ul>\n    `}\n  />\n)\n```\n\n### Disabled state\n\nPrevent editing with the `isDisabled` prop:\n\n```jsx live-dev\nconst App = () => (\n  <RichTextInput\n    isDisabled\n    defaultValue=\"<p>This editor is <strong>disabled</strong> and cannot be edited.</p>\"\n  />\n)\n```\n\n### Read-only state\n\nDisplay content without editing capabilities (toolbar is hidden):\n\n```jsx live-dev\nconst App = () => (\n  <RichTextInput\n    isReadOnly\n    defaultValue={`\n      <h3>Read-Only Content</h3>\n      <p>This content can be <strong>selected</strong> but not <em>edited</em>.</p>\n      <p>Note: The toolbar is hidden in read-only mode.</p>\n    `}\n  />\n)\n```\n\n### Invalid state\n\nShow validation errors with the `isInvalid` prop:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"200\">\n    <RichTextInput\n      isInvalid\n      placeholder=\"This field is required...\"\n    />\n    <Text color=\"critical.11\" fontSize=\"350\">\n      Content is required\n    </Text>\n  </Stack>\n)\n```\n\n## Component requirements\n\n## Accessibility\n\nRichTextInput is built with accessibility in mind and follows WCAG 2.1 AA guidelines.\n\n#### Role\n\nThe editor exposes a `textbox` role with `contenteditable` for keyboard and screen reader accessibility.\n\n#### Labeling\n\nWhen using RichTextInput in forms, provide a visible label using FormField or a custom label element:\n\n```jsx live-dev\nconst App = () => (\n  <FormField.Root>\n    <FormField.Label>Article Content</FormField.Label>\n    <FormField.Input>\n      <RichTextInput placeholder=\"Write your article...\" />\n    </FormField.Input>\n    <FormField.Description>\n      Use the toolbar to format your content\n    </FormField.Description>\n  </FormField.Root>\n)\n```\n\n#### Keyboard shortcuts\n\nRichTextInput supports standard keyboard shortcuts for formatting:\n\n| Shortcut | Action |\n|----------|--------|\n| `Cmd/Ctrl + B` | Toggle bold |\n| `Cmd/Ctrl + I` | Toggle italic |\n| `Cmd/Ctrl + U` | Toggle underline |\n| `Cmd/Ctrl + K` | Insert/edit link |\n| `Cmd/Ctrl + Z` | Undo |\n| `Cmd/Ctrl + Shift + Z` | Redo |\n| `Tab` | Navigate between toolbar buttons |\n| `Enter` | Activate focused toolbar button |\n\n#### Persistent ID\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\n<RichTextInput id=\"article-content-editor\" />\n```\n\n## API reference\n\n<PropsTable id=\"RichTextInput\" />\n\n## Common patterns\n\n### Form integration with validation\n\nIntegrate RichTextInput with form libraries:\n\n```jsx live-dev\nconst App = () => {\n  const [content, setContent] = React.useState('');\n  const [touched, setTouched] = React.useState(false);\n  const [submitted, setSubmitted] = React.useState(false);\n\n  const isEmpty = (html) => {\n    const text = html.replace(/<[^>]*>/g, '').trim();\n    return text.length === 0;\n  };\n\n  const error = (touched || submitted) && isEmpty(content)\n    ? 'Content is required'\n    : null;\n\n  const handleSubmit = (event) => {\n    event.preventDefault();\n    setSubmitted(true);\n\n    if (!isEmpty(content)) {\n      console.log('Submitted:', content);\n      alert('Form submitted successfully!');\n    }\n  };\n\n  return (\n    <form onSubmit={handleSubmit}>\n      <Stack direction=\"column\" gap=\"400\">\n        <FormField.Root isInvalid={!!error}>\n          <FormField.Label isRequired>\n            Article Content\n          </FormField.Label>\n          <FormField.Input>\n            <RichTextInput\n              value={content}\n              onChange={setContent}\n              onBlur={() => setTouched(true)}\n              placeholder=\"Write your article...\"\n              isInvalid={!!error}\n            />\n          </FormField.Input>\n          <FormField.Description>\n            Minimum 10 characters required\n          </FormField.Description>\n          {error && (\n            <FormField.Error>{error}</FormField.Error>\n          )}\n        </FormField.Root>\n        <Button type=\"submit\">Submit Article</Button>\n      </Stack>\n    </form>\n  );\n};\n```\n\n### Content length validation\n\nValidate content length by parsing HTML:\n\n```jsx live-dev\nconst App = () => {\n  const [content, setContent] = React.useState('');\n\n  const getTextLength = (html) => {\n    return html.replace(/<[^>]*>/g, '').trim().length;\n  };\n\n  const textLength = getTextLength(content);\n  const minLength = 10;\n  const maxLength = 500;\n  const isValid = textLength >= minLength && textLength <= maxLength;\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <FormField.Root isInvalid={!isValid && textLength > 0}>\n        <FormField.Label>Post Content</FormField.Label>\n        <FormField.Input>\n          <RichTextInput\n            value={content}\n            onChange={setContent}\n            placeholder=\"Write your post...\"\n            isInvalid={!isValid && textLength > 0}\n          />\n        </FormField.Input>\n        <Stack direction=\"row\" justifyContent=\"space-between\">\n          <FormField.Description>\n            {textLength < minLength && textLength > 0\n              ? `${minLength - textLength} more characters needed`\n              : textLength > maxLength\n              ? `${textLength - maxLength} characters over limit`\n              : 'Character count within range'}\n          </FormField.Description>\n          <Text\n            fontSize=\"350\"\n            color={isValid || textLength === 0 ? 'neutral.11' : 'critical.11'}\n          >\n            {textLength} / {maxLength}\n          </Text>\n        </Stack>\n      </FormField.Root>\n    </Stack>\n  );\n};\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using RichTextInput in your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Usage Tests\n\nTest basic RichTextInput rendering and HTML value handling\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport { useState } from \"react\";\nimport { RichTextInput, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"RichTextInput - Basic usage\", () => {\n  it(\"renders with default HTML value\", () => {\n    const initialContent = \"<p>Welcome to the <strong>editor</strong>!</p>\";\n\n    render(\n      <NimbusProvider>\n        <RichTextInput defaultValue={initialContent} />\n      </NimbusProvider>\n    );\n\n    const editor = screen.getByRole(\"textbox\");\n    expect(editor).toHaveTextContent(\"Welcome to the editor!\");\n    expect(editor.querySelector(\"strong\")).toHaveTextContent(\"editor\");\n  });\n\n  it(\"displays placeholder when empty\", async () => {\n    render(\n      <NimbusProvider>\n        <RichTextInput placeholder=\"Start typing...\" />\n      </NimbusProvider>\n    );\n\n    const editor = screen.getByRole(\"textbox\");\n    // Slate.js uses data-slate-placeholder for empty state\n    await waitFor(() => {\n      const placeholder = editor.querySelector(\"[data-slate-placeholder]\");\n      expect(placeholder).toBeInTheDocument();\n    });\n  });\n});\n```\n\n### Controlled vs Uncontrolled Tests\n\nTest controlled and uncontrolled component patterns\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport { useState } from \"react\";\nimport { RichTextInput, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"RichTextInput - Controlled vs Uncontrolled\", () => {\n  it(\"works in uncontrolled mode with defaultValue\", () => {\n    render(\n      <NimbusProvider>\n        <RichTextInput defaultValue=\"<p>Uncontrolled content</p>\" />\n      </NimbusProvider>\n    );\n\n    const editor = screen.getByRole(\"textbox\");\n    expect(editor).toHaveTextContent(\"Uncontrolled content\");\n  });\n\n  it(\"works in controlled mode with value and onChange\", () => {\n    const TestComponent = () => {\n      const [value, setValue] = useState(\"<p>Controlled content</p>\");\n      return <RichTextInput value={value} onChange={setValue} />;\n    };\n\n    render(\n      <NimbusProvider>\n        <TestComponent />\n      </NimbusProvider>\n    );\n\n    const editor = screen.getByRole(\"textbox\");\n    expect(editor).toHaveTextContent(\"Controlled content\");\n  });\n});\n```\n\n### HTML Format Support Tests\n\nTest different HTML formats and structures the component accepts\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport { useState } from \"react\";\nimport { RichTextInput, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"RichTextInput - HTML format support\", () => {\n  it(\"renders text formatting (bold, italic, underline)\", () => {\n    const html =\n      \"<p>Plain <strong>bold</strong> <em>italic</em> <u>underline</u></p>\";\n\n    render(\n      <NimbusProvider>\n        <RichTextInput defaultValue={html} />\n      </NimbusProvider>\n    );\n\n    const editor = screen.getByRole(\"textbox\");\n    expect(editor.querySelector(\"strong\")).toHaveTextContent(\"bold\");\n    expect(editor.querySelector(\"em\")).toHaveTextContent(\"italic\");\n    expect(editor.querySelector(\"u\")).toHaveTextContent(\"underline\");\n  });\n\n  it(\"renders headings (h1-h5)\", () => {\n    const html = `\n      <h1>Heading 1</h1>\n      <h2>Heading 2</h2>\n      <h3>Heading 3</h3>\n    `;\n\n    render(\n      <NimbusProvider>\n        <RichTextInput defaultValue={html} />\n      </NimbusProvider>\n    );\n\n    const editor = screen.getByRole(\"textbox\");\n    expect(editor.querySelector(\"h1\")).toHaveTextContent(\"Heading 1\");\n    expect(editor.querySelector(\"h2\")).toHaveTextContent(\"Heading 2\");\n    expect(editor.querySelector(\"h3\")).toHaveTextContent(\"Heading 3\");\n  });\n\n  it(\"renders lists (ordered and unordered)\", () => {\n    const html = `\n      <ul>\n        <li>Bullet 1</li>\n        <li>Bullet 2</li>\n      </ul>\n      <ol>\n        <li>Number 1</li>\n        <li>Number 2</li>\n      </ol>\n    `;\n\n    render(\n      <NimbusProvider>\n        <RichTextInput defaultValue={html} />\n      </NimbusProvider>\n    );\n\n    const editor = screen.getByRole(\"textbox\");\n    const bulletList = editor.querySelector(\"ul\");\n    const numberedList = editor.querySelector(\"ol\");\n\n    expect(bulletList?.querySelectorAll(\"li\")).toHaveLength(2);\n    expect(numberedList?.querySelectorAll(\"li\")).toHaveLength(2);\n  });\n\n  it(\"renders blockquotes and code\", () => {\n    const html = `\n      <blockquote>This is a quote</blockquote>\n      <p>Inline <code>code</code> example</p>\n      <pre><code>Block code example</code></pre>\n    `;\n\n    render(\n      <NimbusProvider>\n        <RichTextInput defaultValue={html} />\n      </NimbusProvider>\n    );\n\n    const editor = screen.getByRole(\"textbox\");\n    expect(editor.querySelector(\"blockquote\")).toHaveTextContent(\n      \"This is a quote\"\n    );\n    expect(editor.querySelector(\"code\")).toHaveTextContent(\"code\");\n  });\n});\n```\n\n### State Management Tests\n\nTest disabled, read-only, and invalid states\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport { useState } from \"react\";\nimport { RichTextInput, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"RichTextInput - State management\", () => {\n  it(\"disables editor when isDisabled is true\", () => {\n    render(\n      <NimbusProvider>\n        <RichTextInput isDisabled defaultValue=\"<p>Cannot edit this</p>\" />\n      </NimbusProvider>\n    );\n\n    const editor = screen.getByRole(\"textbox\");\n    expect(editor).toHaveAttribute(\"contenteditable\", \"false\");\n  });\n\n  it(\"hides toolbar in read-only mode\", () => {\n    render(\n      <NimbusProvider>\n        <RichTextInput isReadOnly defaultValue=\"<p>Read-only content</p>\" />\n      </NimbusProvider>\n    );\n\n    const toolbar = screen.queryByRole(\"toolbar\");\n    expect(toolbar).not.toBeInTheDocument();\n  });\n\n  it(\"applies invalid styling for validation errors\", () => {\n    const { container } = render(\n      <NimbusProvider>\n        <RichTextInput isInvalid />\n      </NimbusProvider>\n    );\n\n    const root = container.querySelector('[role=\"group\"]');\n    expect(root).toHaveAttribute(\"data-invalid\", \"true\");\n  });\n});\n```\n\n### Form Validation Tests\n\nTest validation patterns and utility functions for forms\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport { useState } from \"react\";\nimport { RichTextInput, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"RichTextInput - Form validation\", () => {\n  it(\"provides isEmpty utility for content validation\", () => {\n    const isEmpty = (html: string) => {\n      const text = html.replace(/<[^>]*>/g, \"\").trim();\n      return text.length === 0;\n    };\n\n    // Empty states\n    expect(isEmpty(\"\")).toBe(true);\n    expect(isEmpty(\"<p></p>\")).toBe(true);\n    expect(isEmpty(\"<p>   </p>\")).toBe(true);\n\n    // Non-empty states\n    expect(isEmpty(\"<p>Content</p>\")).toBe(false);\n    expect(isEmpty(\"<p>   Content   </p>\")).toBe(false);\n  });\n\n  it(\"provides getTextLength utility for character counting\", () => {\n    const getTextLength = (html: string) => {\n      return html.replace(/<[^>]*>/g, \"\").trim().length;\n    };\n\n    const html = \"<p>Hello <strong>world</strong>!</p>\";\n    const length = getTextLength(html);\n\n    // Should count only visible characters, not HTML tags\n    expect(length).toBe(12); // \"Hello world!\" = 12 characters\n  });\n\n  it(\"integrates with form validation patterns\", () => {\n    const isEmpty = (html: string) => {\n      const text = html.replace(/<[^>]*>/g, \"\").trim();\n      return text.length === 0;\n    };\n\n    const TestForm = () => {\n      const [content, setContent] = useState(\"\");\n      const [error, setError] = useState(\"\");\n\n      const validate = () => {\n        if (isEmpty(content)) {\n          setError(\"Content is required\");\n        } else {\n          setError(\"\");\n        }\n      };\n\n      return (\n        <form>\n          <RichTextInput\n            value={content}\n            onChange={setContent}\n            isInvalid={!!error}\n            aria-describedby={error ? \"error-message\" : undefined}\n          />\n          {error && (\n            <div id=\"error-message\" role=\"alert\">\n              {error}\n            </div>\n          )}\n          <button type=\"button\" onClick={validate}>\n            Validate\n          </button>\n        </form>\n      );\n    };\n\n    render(\n      <NimbusProvider>\n        <TestForm />\n      </NimbusProvider>\n    );\n\n    const editor = screen.getByRole(\"textbox\");\n    expect(editor).toBeInTheDocument();\n    expect(editor).toHaveAttribute(\"contenteditable\", \"true\");\n  });\n});\n```\n\n### Accessibility Tests\n\nTest accessibility features and ARIA attributes\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen, waitFor } from \"@testing-library/react\";\nimport { useState } from \"react\";\nimport { RichTextInput, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"RichTextInput - Accessibility\", () => {\n  it(\"provides textbox role for screen readers\", () => {\n    render(\n      <NimbusProvider>\n        <RichTextInput />\n      </NimbusProvider>\n    );\n\n    const editor = screen.getByRole(\"textbox\");\n    expect(editor).toBeInTheDocument();\n  });\n\n  it(\"provides toolbar role for formatting controls\", () => {\n    render(\n      <NimbusProvider>\n        <RichTextInput />\n      </NimbusProvider>\n    );\n\n    const toolbar = screen.getByRole(\"toolbar\");\n    expect(toolbar).toBeInTheDocument();\n  });\n\n  it(\"works with error messages for validation feedback\", () => {\n    render(\n      <NimbusProvider>\n        <div>\n          <RichTextInput isInvalid />\n          <div role=\"alert\">Content is required</div>\n        </div>\n      </NimbusProvider>\n    );\n\n    const editor = screen.getByRole(\"textbox\");\n    expect(editor).toBeInTheDocument();\n\n    const errorMessage = screen.getByRole(\"alert\");\n    expect(errorMessage).toHaveTextContent(\"Content is required\");\n  });\n});\n```\n\n\n## Resources\n\n- [RichTextInput Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-richtextinput--docs)\n- [Slate.js Documentation](https://docs.slatejs.org/)\n- [FormField Component](/components/inputs/formfield)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Working with Slate.js and HTML values",
+          "href": "#working-with-slatejs-and-html-values",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "HTML value format",
+          "href": "#html-value-format",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Supported HTML elements",
+          "href": "#supported-html-elements",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Internal conversion",
+          "href": "#internal-conversion",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Uncontrolled mode",
+          "href": "#uncontrolled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Controlled mode",
+          "href": "#controlled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With placeholder",
+          "href": "#with-placeholder",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With default value",
+          "href": "#with-default-value",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Disabled state",
+          "href": "#disabled-state",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Read-only state",
+          "href": "#read-only-state",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Invalid state",
+          "href": "#invalid-state",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Role",
+          "href": "#role",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Labeling",
+          "href": "#labeling",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard shortcuts",
+          "href": "#keyboard-shortcuts",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Persistent ID",
+          "href": "#persistent-id",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Form integration with validation",
+          "href": "#form-integration-with-validation",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Content length validation",
+          "href": "#content-length-validation",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Usage Tests",
+          "href": "#basic-usage-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Controlled vs Uncontrolled Tests",
+          "href": "#controlled-vs-uncontrolled-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "HTML Format Support Tests",
+          "href": "#html-format-support-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "State Management Tests",
+          "href": "#state-management-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Form Validation Tests",
+          "href": "#form-validation-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility Tests",
+          "href": "#accessibility-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            9
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "guidelines": {
+      "mdx": "\n## Guidelines\n\nThese guidelines provide comprehensive direction for designing and developing\nrich text inputs within Nimbus.\n\n### Best practices\n\n- **Make responsive changes:** Apply changes immediately to the selected text\n  upon clicking a toolbar control.\n- **Utilize tooltips and labels:** Include tooltips for all toolbar actions to\n  enhance discoverability and accessibility.\n- **Keep a user's focus:** Maintain the user's focus within the text area after\n  an action or toggle is selected.\n- **Allow for common shortcuts:** Support standard keyboard shortcuts for\n  formatting (e.g., Ctrl/Cmd+B for bold).\n- **Make it easier to correct mistakes:** Offer an undo/redo history for content\n  changes, and allow for a large enough input window so a user can quickly read\n  content without needing to scroll line by line.\n- **Tailor tooling:** Determine the required formatting options based on the\n  user's needs for the specific application.\n- **Curate tools into meaningful similar collections:** Group related controls\n  logically in the toolbar (e.g., text styling, lists, media).\n\n## Usage\n\nRich text inputs should be used in areas where a user knows that a longer\nresponse or description is expected.\n\n> [!TIP]\\\n> When to use\n\n- **Editing long-form content:** Such as product descriptions, knowledge base\n  articles, or email bodies, where visual hierarchy and style are necessary for\n  readability.\n- **Formatting text:** Such as applying bold, italics, underlines, or specific\n  heading levels.\n- **Structuring content:** With bulleted or numbered lists.\n- **Embedding external elements:** Like links, images, or videos within other\n  content.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Short answers:** Or single-line inputs, such as names, titles, or search\n  queries.\n- **Specific data entry:** Unformatted text is required, like SKUs, passwords,\n  or simple codes.\n- **Plain text communication:** Such as chat messages or comments, where\n  formatting options can clutter the interface or distract from the\n  conversation.\n- **Inputs that need to be strictly controlled:** Where the application's style\n  guide should be the only source of formatting (e.g., when there is passing\n  through of styling and content to another site).\n\n### Rich text input in use\n\n> [!TIP]\\\n> **Do**\n>\n> - Do use tooltips for tools represented by icons. In the case of paragraph\n>   styles show the style in the dropdown, not just stated in plain text.\n> - Do provide more height for the input to see a few lines of text and reduce\n>   scrolling.\n> - Do utilize an undo and redo button to assist a user with writing and editing\n>   text when possible.\n\n```jsx live\nconst App = () => (\n  <RichTextInput\n    defaultValue=\"<p>Nimbus dolor sit amet, consectetur adipiscing elit. Aliquam component felis, vel consistency elementum. Sed design tokens ut turpis ac <strong>user experience</strong> maximus. Integer accessibility vitae nibh id clarity interface tincidunt.</p>\"\n    placeholder=\"Write your product description here.\"\n  />\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't make the input so small that you cannot easily see a few lines of\n>   text.\n> - Don't move the rich text toolbar to sit on the bottom of the input.\n> - Don't overload the rich text toolbar with tools that are unnecessary.\n\n```jsx live\nconst App = () => (\n  <RichTextInput\n    height=\"2000\"\n    defaultValue=\"<p>Nimbus dolor sit amet, consectetur adipiscing elit. Aliquam component felis, vel consistency elementum. Sed design tokens ut turpis ac <strong>user experience</strong> maximus. Integer accessibility vitae nibh id clarity interface tincidunt.</p>\"\n    placeholder=\"Write your product description here.\"\n  />\n);\n```\n",
+      "toc": [
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Rich text input in use",
+          "href": "#rich-text-input-in-use",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

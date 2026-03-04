@@ -1,0 +1,9 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Props for the Steps.Trigger component.\nClickable element within each step for direct navigation.",
+  "displayName": "StepsTriggerProps",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

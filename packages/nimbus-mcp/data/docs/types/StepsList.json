@@ -1,0 +1,43 @@
+{
+  "tags": {
+    "example": "```tsx\n<Steps.List>\n  <Steps.Item index={0}>...</Steps.Item>\n  <Steps.Item index={1}>...</Steps.Item>\n</Steps.List>\n```",
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# Steps.List\n\nContainer for grouping step items. Wraps Chakra UI's Steps.List\nwith Nimbus styling.",
+  "displayName": "StepsList",
+  "methods": [],
+  "props": {
+    "children": {
+      "defaultValue": null,
+      "description": "Child components (Steps.Item)",
+      "name": "children",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": true,
+      "type": {
+        "name": "ReactNode"
+      }
+    },
+    "ref": {
+      "defaultValue": null,
+      "description": "Ref to the list element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/steps/steps.types.ts",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

@@ -1,0 +1,27 @@
+{
+  "tags": {
+    "supportsStyleProps": ""
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "DataTable.Footer - Optional footer section for displaying summary information, pagination, or actions",
+  "displayName": "DataTableFooter",
+  "methods": [],
+  "props": {
+    "ref": {
+      "defaultValue": null,
+      "description": "React ref to be forwarded to the footer element",
+      "name": "ref",
+      "declarations": [
+        {
+          "fileName": "nimbus/packages/nimbus/src/components/data-table/components/data-table.footer.tsx",
+          "name": "TypeLiteral"
+        }
+      ],
+      "required": false,
+      "type": {
+        "name": "Ref<HTMLDivElement>"
+      }
+    }
+  },
+  "supportsStyleProps": true
+}

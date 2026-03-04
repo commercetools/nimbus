@@ -1,0 +1,12 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/data-display/tag-group}",
+    "example": "```tsx\n<TagGroup.Root>\n  <TagGroup.TagList>\n    <TagGroup.Tag>Tag 1</TagGroup.Tag>\n    <TagGroup.Tag>Tag 2</TagGroup.Tag>\n  </TagGroup.TagList>\n</TagGroup.Root>\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "TagGroup\n============================================================\nA tag group is a focusable list of labels, categories, keywords, filters, or other items, with support for keyboard navigation, selection, and removal.",
+  "displayName": "TagGroup",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

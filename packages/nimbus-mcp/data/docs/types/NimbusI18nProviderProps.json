@@ -1,0 +1,9 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Props for the NimbusI18nProvider component.\nProvides internationalization context for React Aria components (dates, numbers, etc.).",
+  "displayName": "NimbusI18nProviderProps",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

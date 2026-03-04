@@ -1,0 +1,593 @@
+{
+  "meta": {
+    "id": "Components-List",
+    "title": "List",
+    "exportName": "List",
+    "description": "The list component organizes related items or data into a vertical, scannable format.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/list/list.mdx",
+    "menu": [
+      "Components",
+      "Typography",
+      "List"
+    ],
+    "route": "components/typography/list",
+    "tags": [
+      "component",
+      "list",
+      "collections",
+      "ordered",
+      "unordered"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Basic options",
+        "href": "#basic-options",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Vertical lists",
+        "href": "#vertical-lists",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Alignment",
+        "href": "#alignment",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Nested items, added gap space, and item wrapping",
+        "href": "#nested-items-added-gap-space-and-item-wrapping",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          3
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "guidelines",
+        "title": "Guidelines",
+        "order": 2
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nThe list component presents structured content which can include details such as\ntext, icons, and actions, in a vertical arrangement. With improved readability\nletting readers quickly scan the content and compare relevant details.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[W3C: Lists](https://www.w3.org/WAI/tutorials/page-structure/content/#lists)\n[Chakra UI: List](https://chakra-ui.com/docs/components/list)\n\n## Variables\n\nGet familiar with the features.\n\n### Basic options\n\n#### Vertical lists\n\nVertical lists can function differently based on need. Using bullet points,\nnumbered lists, and icons or emojis will help users understand the information\ndifferently as needed.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"800\" alignItems=\"flex-start\">\n    <List.Root>\n      <List.Item>Red pandas</List.Item>\n      <List.Item>Pangolins</List.Item>\n      <List.Item>Opossums</List.Item>\n      <List.Item>Aye-ayes</List.Item>\n      <List.Item>Okapi</List.Item>\n    </List.Root>\n    <List.Root as=\"ol\">\n      <List.Item>Boil water</List.Item>\n      <List.Item>Add pasta</List.Item>\n      <List.Item>Wait patiently to cook</List.Item>\n      <List.Item>Remove and drain pasta</List.Item>\n      <List.Item>Add final ingredients and serve</List.Item>\n    </List.Root>\n    <List.Root variant=\"plain\">\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"positive.9\">\n            <Icons.Circle />\n          </Icon>\n        </List.Indicator>\n        Reading a book\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"positive.9\">\n            <Icons.Circle />\n          </Icon>\n        </List.Indicator>\n        Talking to a friend\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"positive.9\">\n            <Icons.Circle />\n          </Icon>\n        </List.Indicator>\n        Going for a walk\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"critical.11\"><Icons.Close /></Icon>\n        </List.Indicator>\n        Doomscrolling\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"critical.11\"><Icons.Close /></Icon>\n        </List.Indicator>\n        Not eating a treat\n      </List.Item>\n    </List.Root>\n  </Stack>\n)\n```\n\n#### Alignment\n\nList items are aligned to the left, center and the right. Choose what suits the\ninformation to be shown based on language and data.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"600\" alignItems=\"flex-start\">\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"bold\" textAlign=\"left\">Left</Text>\n      <List.Root>\n        <List.Item textAlign=\"left\">Red pandas</List.Item>\n        <List.Item textAlign=\"left\">Pangolins</List.Item>\n        <List.Item textAlign=\"left\">Opossums</List.Item>\n        <List.Item textAlign=\"left\">Aye-ayes</List.Item>\n        <List.Item textAlign=\"left\">Okapi</List.Item>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"bold\" textAlign=\"center\">Center</Text>\n      <List.Root>\n        <List.Item textAlign=\"center\">Red pandas</List.Item>\n        <List.Item textAlign=\"center\">Pangolins</List.Item>\n        <List.Item textAlign=\"center\">Opossums</List.Item>\n        <List.Item textAlign=\"center\">Aye-ayes</List.Item>\n        <List.Item textAlign=\"center\">Okapi</List.Item>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"bold\" textAlign=\"right\">Right</Text>\n      <List.Root>\n        <List.Item textAlign=\"right\">Red pandas</List.Item>\n        <List.Item textAlign=\"right\">Pangolins</List.Item>\n        <List.Item textAlign=\"right\">Opossums</List.Item>\n        <List.Item textAlign=\"right\">Aye-ayes</List.Item>\n        <List.Item textAlign=\"right\">Okapi</List.Item>\n      </List.Root>\n    </Stack>\n  </Stack>\n)\n```\n\n#### Nested items, added gap space, and item wrapping\n\nWhen nesting related items, maintain proper spacing and wrapping to keep the\nstructure intact. Avoid long lines of text; if necessary, rephrase to make it\nshorter or use body text instead of bullet points, which should be reserved for\nconcise information.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"800\" alignItems=\"flex-start\">\n    <Stack gap=\"200\">\n      <Text fontWeight=\"bold\">Nested items</Text>\n      <List.Root>\n        <List.Item>\n          Password requirements:\n          <List.Root pl=\"400\">\n            <List.Item>8 characters and 3 numbers</List.Item>\n            <List.Item>One special character (!@#$%^&*)</List.Item>\n          </List.Root>\n        </List.Item>\n        <List.Item>\n          Name and email requirements\n          <List.Root pl=\"400\">\n            <List.Item>Validation process</List.Item>\n          </List.Root>\n        </List.Item>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\">\n      <Text fontWeight=\"bold\">Gap space</Text>\n      <List.Root gap=\"400\">\n        <List.Item>\n          Password requirements:\n          <List.Root pl=\"400\">\n            <List.Item>8 characters and 3 numbers</List.Item>\n            <List.Item>One special character (!@#$%^&*)</List.Item>\n          </List.Root>\n        </List.Item>\n        <List.Item>\n          Name and email requirements\n          <List.Root pl=\"400\">\n            <List.Item>Validation process</List.Item>\n          </List.Root>\n        </List.Item>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\">\n      <Text fontWeight=\"bold\">Item wrapping</Text>\n      <List.Root maxWidth=\"200px\">\n        <List.Item>\n          Password requirements:\n          <List.Root pl=\"400\">\n            <List.Item>8 characters and 3 numbers</List.Item>\n            <List.Item>One special character (!@#$%^&*)</List.Item>\n          </List.Root>\n        </List.Item>\n        <List.Item>\n          Name and email requirements\n          <List.Root pl=\"400\">\n            <List.Item>Validation process</List.Item>\n          </List.Root>\n        </List.Item>\n      </List.Root>\n    </Stack>\n  </Stack>\n)\n```\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nThe list component presents structured content which can include details such as\ntext, icons, and actions, in a vertical arrangement. With improved readability\nletting readers quickly scan the content and compare relevant details.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[W3C: Lists](https://www.w3.org/WAI/tutorials/page-structure/content/#lists)\n[Chakra UI: List](https://chakra-ui.com/docs/components/list)\n\n## Variables\n\nGet familiar with the features.\n\n### Basic options\n\n#### Vertical lists\n\nVertical lists can function differently based on need. Using bullet points,\nnumbered lists, and icons or emojis will help users understand the information\ndifferently as needed.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"800\" alignItems=\"flex-start\">\n    <List.Root>\n      <List.Item>Red pandas</List.Item>\n      <List.Item>Pangolins</List.Item>\n      <List.Item>Opossums</List.Item>\n      <List.Item>Aye-ayes</List.Item>\n      <List.Item>Okapi</List.Item>\n    </List.Root>\n    <List.Root as=\"ol\">\n      <List.Item>Boil water</List.Item>\n      <List.Item>Add pasta</List.Item>\n      <List.Item>Wait patiently to cook</List.Item>\n      <List.Item>Remove and drain pasta</List.Item>\n      <List.Item>Add final ingredients and serve</List.Item>\n    </List.Root>\n    <List.Root variant=\"plain\">\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"positive.9\">\n            <Icons.Circle />\n          </Icon>\n        </List.Indicator>\n        Reading a book\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"positive.9\">\n            <Icons.Circle />\n          </Icon>\n        </List.Indicator>\n        Talking to a friend\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"positive.9\">\n            <Icons.Circle />\n          </Icon>\n        </List.Indicator>\n        Going for a walk\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"critical.11\"><Icons.Close /></Icon>\n        </List.Indicator>\n        Doomscrolling\n      </List.Item>\n      <List.Item>\n        <List.Indicator>\n          <Icon color=\"critical.11\"><Icons.Close /></Icon>\n        </List.Indicator>\n        Not eating a treat\n      </List.Item>\n    </List.Root>\n  </Stack>\n)\n```\n\n#### Alignment\n\nList items are aligned to the left, center and the right. Choose what suits the\ninformation to be shown based on language and data.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"600\" alignItems=\"flex-start\">\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"bold\" textAlign=\"left\">Left</Text>\n      <List.Root>\n        <List.Item textAlign=\"left\">Red pandas</List.Item>\n        <List.Item textAlign=\"left\">Pangolins</List.Item>\n        <List.Item textAlign=\"left\">Opossums</List.Item>\n        <List.Item textAlign=\"left\">Aye-ayes</List.Item>\n        <List.Item textAlign=\"left\">Okapi</List.Item>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"bold\" textAlign=\"center\">Center</Text>\n      <List.Root>\n        <List.Item textAlign=\"center\">Red pandas</List.Item>\n        <List.Item textAlign=\"center\">Pangolins</List.Item>\n        <List.Item textAlign=\"center\">Opossums</List.Item>\n        <List.Item textAlign=\"center\">Aye-ayes</List.Item>\n        <List.Item textAlign=\"center\">Okapi</List.Item>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"bold\" textAlign=\"right\">Right</Text>\n      <List.Root>\n        <List.Item textAlign=\"right\">Red pandas</List.Item>\n        <List.Item textAlign=\"right\">Pangolins</List.Item>\n        <List.Item textAlign=\"right\">Opossums</List.Item>\n        <List.Item textAlign=\"right\">Aye-ayes</List.Item>\n        <List.Item textAlign=\"right\">Okapi</List.Item>\n      </List.Root>\n    </Stack>\n  </Stack>\n)\n```\n\n#### Nested items, added gap space, and item wrapping\n\nWhen nesting related items, maintain proper spacing and wrapping to keep the\nstructure intact. Avoid long lines of text; if necessary, rephrase to make it\nshorter or use body text instead of bullet points, which should be reserved for\nconcise information.\n\n```jsx live\nconst App = () => (\n  <Stack direction=\"horizontal\" gap=\"800\" alignItems=\"flex-start\">\n    <Stack gap=\"200\">\n      <Text fontWeight=\"bold\">Nested items</Text>\n      <List.Root>\n        <List.Item>\n          Password requirements:\n          <List.Root pl=\"400\">\n            <List.Item>8 characters and 3 numbers</List.Item>\n            <List.Item>One special character (!@#$%^&*)</List.Item>\n          </List.Root>\n        </List.Item>\n        <List.Item>\n          Name and email requirements\n          <List.Root pl=\"400\">\n            <List.Item>Validation process</List.Item>\n          </List.Root>\n        </List.Item>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\">\n      <Text fontWeight=\"bold\">Gap space</Text>\n      <List.Root gap=\"400\">\n        <List.Item>\n          Password requirements:\n          <List.Root pl=\"400\">\n            <List.Item>8 characters and 3 numbers</List.Item>\n            <List.Item>One special character (!@#$%^&*)</List.Item>\n          </List.Root>\n        </List.Item>\n        <List.Item>\n          Name and email requirements\n          <List.Root pl=\"400\">\n            <List.Item>Validation process</List.Item>\n          </List.Root>\n        </List.Item>\n      </List.Root>\n    </Stack>\n    <Stack gap=\"200\">\n      <Text fontWeight=\"bold\">Item wrapping</Text>\n      <List.Root maxWidth=\"200px\">\n        <List.Item>\n          Password requirements:\n          <List.Root pl=\"400\">\n            <List.Item>8 characters and 3 numbers</List.Item>\n            <List.Item>One special character (!@#$%^&*)</List.Item>\n          </List.Root>\n        </List.Item>\n        <List.Item>\n          Name and email requirements\n          <List.Root pl=\"400\">\n            <List.Item>Validation process</List.Item>\n          </List.Root>\n        </List.Item>\n      </List.Root>\n    </Stack>\n  </Stack>\n)\n```\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic options",
+          "href": "#basic-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Vertical lists",
+          "href": "#vertical-lists",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Alignment",
+          "href": "#alignment",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Nested items, added gap space, and item wrapping",
+          "href": "#nested-items-added-gap-space-and-item-wrapping",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () => (\n  <List.Root>\n    <List.Item>\n      Password requirements:\n      <List.Root pl=\"400\">\n        <List.Item>8 characters and 3 numbers</List.Item>\n        <List.Item>One special character (!@#$%^&*)</List.Item>\n      </List.Root>\n    </List.Item>\n    <List.Item>\n      Name and email requirements\n      <List.Root pl=\"400\">\n        <List.Item>Validation process</List.Item>\n      </List.Root>\n    </List.Item>\n  </List.Root>\n)\n```\n\n### Accessibility standards\n\n- **Keyboard navigation:** Ensure all interactive list items are navigable using\n  the Tab key and fully operable using the Enter or Spacebar keys.\n- **ARIA roles:** Use semantic HTML (`<ul>`, `<ol>`) when possible. For custom\n  interactive lists, use appropriate ARIA roles (e.g., `role=\"listbox\"`,\n  `role=\"option\"`) to define the component's structure.\n- **Focus indicators:** Provide a strong, clear visual focus indicator on the\n  entire list item when it is being accessed via the keyboard.\n- **Text alternatives:** Ensure any icons or custom elements within the list\n  item have appropriate aria-label or descriptive text.\n- **Reading order:** The programmatic reading order must logically match the\n  visual vertical order.\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { List } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe simplest implementation renders as an unordered list (`<ul>`) by default:\n\n```jsx live-dev\nconst App = () => (\n  <List.Root>\n    <List.Item>First item</List.Item>\n    <List.Item>Second item</List.Item>\n    <List.Item>Third item</List.Item>\n  </List.Root>\n)\n```\n\n## Usage examples\n\n### Visual variants\n\nThe List component supports two visual variants: `marker` (default) and `plain`. The `marker` variant displays native list markers (bullets or numbers), while `plain` removes markers and is ideal for custom indicators.\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"row\" gap=\"600\" alignItems=\"flex-start\">\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"600\">Marker variant (default)</Text>\n      <List.Root variant=\"marker\">\n        <List.Item>Red pandas</List.Item>\n        <List.Item>Pangolins</List.Item>\n        <List.Item>Opossums</List.Item>\n      </List.Root>\n    </Stack>\n\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"600\">Plain variant</Text>\n      <List.Root variant=\"plain\">\n        <List.Item>\n          <List.Indicator>\n            <Icon color=\"positive.9\"><Icons.Circle /></Icon>\n          </List.Indicator>\n          Reading a book\n        </List.Item>\n        <List.Item>\n          <List.Indicator>\n            <Icon color=\"positive.9\"><Icons.Circle /></Icon>\n          </List.Indicator>\n          Going for a walk\n        </List.Item>\n      </List.Root>\n    </Stack>\n  </Stack>\n)\n```\n\n### Alignment options\n\nControl the alignment of list items using the `align` prop. Options include `start` (default), `center`, and `end`:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"row\" gap=\"600\" alignItems=\"flex-start\">\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"600\">Start (default)</Text>\n      <List.Root align=\"start\">\n        <List.Item>Left-aligned item</List.Item>\n        <List.Item>Another item</List.Item>\n      </List.Root>\n    </Stack>\n\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"600\">Center</Text>\n      <List.Root align=\"center\">\n        <List.Item>Center-aligned item</List.Item>\n        <List.Item>Another item</List.Item>\n      </List.Root>\n    </Stack>\n\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"600\">End</Text>\n      <List.Root align=\"end\">\n        <List.Item>Right-aligned item</List.Item>\n        <List.Item>Another item</List.Item>\n      </List.Root>\n    </Stack>\n  </Stack>\n)\n```\n\n### Ordered lists\n\nBy default, `List.Root` renders as an unordered list (`<ul>`). Use the `as=\"ol\"` prop when you need an ordered list:\n\n```jsx live-dev\nconst App = () => (\n  <Stack gap=\"200\">\n    <Text fontWeight=\"600\">Ordered list (&lt;ol&gt;)</Text>\n    <List.Root as=\"ol\">\n      <List.Item>Boil water</List.Item>\n      <List.Item>Add pasta</List.Item>\n      <List.Item>Wait patiently to cook</List.Item>\n      <List.Item>Remove and drain pasta</List.Item>\n    </List.Root>\n  </Stack>\n)\n```\n\n### Custom indicators\n\nUse `List.Indicator` with the `plain` variant to add custom markers, icons, or other visual elements before list items:\n\n```jsx live-dev\nconst App = () => (\n  <List.Root variant=\"plain\">\n    <List.Item>\n      <List.Indicator>\n        <Icon color=\"positive.9\"><Icons.Check /></Icon>\n      </List.Indicator>\n      Completed task\n    </List.Item>\n    <List.Item>\n      <List.Indicator>\n        <Icon color=\"warning.9\"><Icons.Warning /></Icon>\n      </List.Indicator>\n      Task with warning\n    </List.Item>\n    <List.Item>\n      <List.Indicator>\n        <Icon color=\"critical.11\"><Icons.Close /></Icon>\n      </List.Indicator>\n      Failed task\n    </List.Item>\n  </List.Root>\n)\n```\n\n### Nested lists\n\nLists can be nested to create hierarchical structures. Use proper indentation and spacing to maintain visual hierarchy:\n\n```jsx live-dev\nconst App = () => (\n  <List.Root gap=\"400\">\n    <List.Item>\n      Password requirements:\n      <List.Root pl=\"400\" gap=\"100\">\n        <List.Item>8 characters and 3 numbers</List.Item>\n        <List.Item>One special character (!@#$%^&*)</List.Item>\n      </List.Root>\n    </List.Item>\n    <List.Item>\n      Name and email requirements:\n      <List.Root pl=\"400\" gap=\"200\">\n        <List.Item>Validation process</List.Item>\n      </List.Root>\n    </List.Item>\n  </List.Root>\n)\n```\n\n### Spacing and gap\n\nControl spacing between list items using the `gap` prop, which accepts Nimbus spacing tokens:\n\n```jsx live-dev\nconst App = () => (\n  <Stack direction=\"row\" gap=\"600\" alignItems=\"flex-start\">\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"600\">Small gap (200)</Text>\n      <List.Root gap=\"200\">\n        <List.Item>Item 1</List.Item>\n        <List.Item>Item 2</List.Item>\n        <List.Item>Item 3</List.Item>\n      </List.Root>\n    </Stack>\n\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"600\">Medium gap (400)</Text>\n      <List.Root gap=\"400\">\n        <List.Item>Item 1</List.Item>\n        <List.Item>Item 2</List.Item>\n        <List.Item>Item 3</List.Item>\n      </List.Root>\n    </Stack>\n\n    <Stack gap=\"200\" flex=\"1\">\n      <Text fontWeight=\"600\">Large gap (600)</Text>\n      <List.Root gap=\"600\">\n        <List.Item>Item 1</List.Item>\n        <List.Item>Item 2</List.Item>\n        <List.Item>Item 3</List.Item>\n      </List.Root>\n    </Stack>\n  </Stack>\n)\n```\n\n## Component requirements\n\n### Usage context\n\nList should be used when you need to:\n- Display a series of related items in a vertical format\n- Organize structured content with clear hierarchy\n- Present navigation menus or option lists\n- Show task lists, metadata, or brief information\n\nFor image-heavy content or complex data comparison, consider using other components like Card or DataTable instead.\n\n## Accessibility\n\nThe List component uses semantic HTML (`<ul>`, `<ol>`, `<li>`) to convey structure to assistive technologies. By default, `List.Root` renders as `<ul>` and `List.Item` renders as `<li>`. Use the `as=\"ol\"` prop when you need an ordered list:\n\n```tsx\n// ✅ Default - renders as <ul>\n<List.Root>\n  <List.Item>Item 1</List.Item>\n</List.Root>\n\n// ✅ Ordered list - use as=\"ol\"\n<List.Root as=\"ol\">\n  <List.Item>Item 1</List.Item>\n</List.Root>\n```\n\nFor custom indicators, ensure they have appropriate accessibility attributes:\n\n```tsx\n<List.Root variant=\"plain\">\n  <List.Item>\n    <List.Indicator>\n      <Icon aria-label=\"Completed\" color=\"positive.9\">\n        <Icons.Check />\n      </Icon>\n    </List.Indicator>\n    Task completed\n  </List.Item>\n</List.Root>\n```\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"example-list\";\n\nexport const Example = () => (\n  <List.Root id={PERSISTENT_ID}>\n    <List.Item>Item 1</List.Item>\n  </List.Root>\n);\n```\n\n#### Keyboard navigation\n\nThe List component itself doesn't handle keyboard interactions, as it's a presentational component. However, when list items are interactive (e.g., clickable), ensure they are keyboard accessible:\n\n- `Tab` / `Shift+Tab`: Navigate between interactive list items\n- `Enter` / `Space`: Activate the focused list item\n- Ensure interactive items have proper focus indicators\n\n## API reference\n\n<PropsTable id=\"List\" />\n\n## Common patterns\n\n### Task list with status indicators\n\nCreate a task list with visual status indicators:\n\n```jsx live-dev\nconst App = () => {\n  const tasks = [\n    { id: 1, text: \"Review design mockups\", completed: true },\n    { id: 2, text: \"Write component documentation\", completed: true },\n    { id: 3, text: \"Fix accessibility issues\", completed: false },\n    { id: 4, text: \"Update test coverage\", completed: false },\n  ];\n\n  return (\n    <List.Root variant=\"plain\">\n      {tasks.map((task) => (\n        <List.Item key={task.id}>\n          <List.Indicator>\n            <Icon\n              color={task.completed ? \"positive.9\" : \"neutral.7\"}\n            >\n              {task.completed ? <Icons.Check /> : <Icons.Circle />}\n            </Icon>\n          </List.Indicator>\n          <Text\n            textDecoration={task.completed ? \"line-through\" : \"none\"}\n            color={task.completed ? \"neutral.9\" : \"fg.default\"}\n          >\n            {task.text}\n          </Text>\n        </List.Item>\n      ))}\n    </List.Root>\n  );\n}\n```\n\n### Navigation menu\n\nUse List to create navigation menus:\n\n```jsx live-dev\nconst App = () => {\n  const menuItems = [\n    \"Home\",\n    \"Products\",\n    \"About\",\n    \"Contact\",\n  ];\n\n  return (\n    <Box p=\"400\" bg=\"neutral.2\" borderRadius=\"200\" width=\"fit-content\">\n      <List.Root variant=\"plain\">\n        {menuItems.map((item, index) => (\n          <List.Item key={index}>\n            <Link href={`#${item.toLowerCase()}`}>\n              {item}\n            </Link>\n          </List.Item>\n        ))}\n      </List.Root>\n    </Box>\n  );\n}\n```\n\n### Requirements checklist\n\nDisplay a requirements checklist with nested items:\n\n```jsx live-dev\nconst App = () => (\n  <Box p=\"400\" bg=\"neutral.1\" borderRadius=\"200\">\n    <Text fontWeight=\"600\" mb=\"300\">Account Setup Requirements</Text>\n    <List.Root gap=\"200\">\n      <List.Item>\n        Password requirements:\n        <List.Root pl=\"400\" gap=\"200\" mt=\"200\">\n          <List.Item>Minimum 8 characters</List.Item>\n          <List.Item>At least 3 numbers</List.Item>\n          <List.Item>One special character (!@#$%^&*)</List.Item>\n        </List.Root>\n      </List.Item>\n      <List.Item>\n        Profile information:\n        <List.Root pl=\"400\" gap=\"200\" mt=\"200\">\n          <List.Item>Full name</List.Item>\n          <List.Item>Email address</List.Item>\n          <List.Item>Phone number (optional)</List.Item>\n        </List.Root>\n      </List.Item>\n    </List.Root>\n  </Box>\n)\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using List in your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the List component renders with expected structure and children\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { List, NimbusProvider, Icon } from \"@commercetools/nimbus\";\nimport { Check, Close } from \"@commercetools/nimbus-icons\";\n\ndescribe(\"List - Basic rendering\", () => {\n  it(\"renders List.Root with children\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root data-testid=\"test-list\">\n          <List.Item>Item 1</List.Item>\n          <List.Item>Item 2</List.Item>\n          <List.Item>Item 3</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"test-list\");\n    expect(list).toBeInTheDocument();\n    expect(list).toHaveTextContent(\"Item 1\");\n    expect(list).toHaveTextContent(\"Item 2\");\n    expect(list).toHaveTextContent(\"Item 3\");\n  });\n\n  it(\"renders as semantic ul element by default\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root data-testid=\"unordered-list\">\n          <List.Item>Item 1</List.Item>\n          <List.Item>Item 2</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"unordered-list\");\n    expect(list.tagName).toBe(\"UL\");\n  });\n\n  it(\"renders as semantic ol element with as prop\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root as=\"ol\" data-testid=\"ordered-list\">\n          <List.Item>Item 1</List.Item>\n          <List.Item>Item 2</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"ordered-list\");\n    expect(list.tagName).toBe(\"OL\");\n  });\n\n  it(\"renders List.Item with content\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root>\n          <List.Item data-testid=\"list-item\">List item content</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const item = screen.getByTestId(\"list-item\");\n    expect(item).toBeInTheDocument();\n    expect(item).toHaveTextContent(\"List item content\");\n  });\n});\n```\n\n### Variant Tests\n\nTest different visual variants of the List component\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { List, NimbusProvider, Icon } from \"@commercetools/nimbus\";\nimport { Check, Close } from \"@commercetools/nimbus-icons\";\n\ndescribe(\"List - Variants\", () => {\n  it(\"renders with marker variant by default\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root data-testid=\"marker-list\">\n          <List.Item>Item 1</List.Item>\n          <List.Item>Item 2</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"marker-list\");\n    expect(list).toBeInTheDocument();\n    // Marker variant applies list-style styling\n  });\n\n  it(\"renders with plain variant\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root variant=\"plain\" data-testid=\"plain-list\">\n          <List.Item>Item 1</List.Item>\n          <List.Item>Item 2</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"plain-list\");\n    expect(list).toBeInTheDocument();\n  });\n\n  it(\"renders custom indicators with plain variant\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root variant=\"plain\" data-testid=\"indicator-list\">\n          <List.Item>\n            <List.Indicator>\n              <Icon>\n                <Check />\n              </Icon>\n            </List.Indicator>\n            Item with indicator\n          </List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"indicator-list\");\n    expect(list).toBeInTheDocument();\n    expect(list).toHaveTextContent(\"Item with indicator\");\n  });\n});\n```\n\n### Alignment Tests\n\nTest alignment options for list items\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { List, NimbusProvider, Icon } from \"@commercetools/nimbus\";\nimport { Check, Close } from \"@commercetools/nimbus-icons\";\n\ndescribe(\"List - Alignment\", () => {\n  it(\"applies start alignment by default\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root align=\"start\" data-testid=\"start-list\">\n          <List.Item>Item 1</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"start-list\");\n    expect(list).toBeInTheDocument();\n  });\n\n  it(\"applies center alignment\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root align=\"center\" data-testid=\"center-list\">\n          <List.Item>Item 1</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"center-list\");\n    expect(list).toBeInTheDocument();\n  });\n\n  it(\"applies end alignment\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root align=\"end\" data-testid=\"end-list\">\n          <List.Item>Item 1</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"end-list\");\n    expect(list).toBeInTheDocument();\n  });\n});\n```\n\n### Nested Lists Tests\n\nTest nested list structures\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { List, NimbusProvider, Icon } from \"@commercetools/nimbus\";\nimport { Check, Close } from \"@commercetools/nimbus-icons\";\n\ndescribe(\"List - Nested lists\", () => {\n  it(\"renders nested lists correctly\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root data-testid=\"parent-list\">\n          <List.Item>\n            Parent item\n            <List.Root data-testid=\"nested-list\">\n              <List.Item>Nested item 1</List.Item>\n              <List.Item>Nested item 2</List.Item>\n            </List.Root>\n          </List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const parentList = screen.getByTestId(\"parent-list\");\n    const nestedList = screen.getByTestId(\"nested-list\");\n\n    expect(parentList).toBeInTheDocument();\n    expect(nestedList).toBeInTheDocument();\n    expect(parentList).toHaveTextContent(\"Parent item\");\n    expect(nestedList).toHaveTextContent(\"Nested item 1\");\n    expect(nestedList).toHaveTextContent(\"Nested item 2\");\n  });\n});\n```\n\n### Style Props Tests\n\nTest that List accepts and applies Chakra style props\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { List, NimbusProvider, Icon } from \"@commercetools/nimbus\";\nimport { Check, Close } from \"@commercetools/nimbus-icons\";\n\ndescribe(\"List - Style props\", () => {\n  it(\"applies gap prop for spacing\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root gap=\"400\" data-testid=\"spaced-list\">\n          <List.Item>Item 1</List.Item>\n          <List.Item>Item 2</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"spaced-list\");\n    expect(list).toBeInTheDocument();\n  });\n\n  it(\"applies padding prop\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root p=\"400\" data-testid=\"padded-list\">\n          <List.Item>Item 1</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"padded-list\");\n    expect(list).toBeInTheDocument();\n  });\n\n  it(\"applies background color prop\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root\n          bg=\"neutral.2\"\n          p=\"400\"\n          borderRadius=\"200\"\n          data-testid=\"styled-list\"\n        >\n          <List.Item>Item 1</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"styled-list\");\n    expect(list).toBeInTheDocument();\n  });\n});\n```\n\n### Props Forwarding Tests\n\nVerify that List forwards standard HTML and ARIA attributes\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { List, NimbusProvider, Icon } from \"@commercetools/nimbus\";\nimport { Check, Close } from \"@commercetools/nimbus-icons\";\n\ndescribe(\"List - Props forwarding\", () => {\n  it(\"forwards data attributes\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root data-testid=\"data-list\" data-custom=\"custom-value\">\n          <List.Item>Content</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"data-list\");\n    expect(list).toHaveAttribute(\"data-custom\", \"custom-value\");\n  });\n\n  it(\"forwards className prop\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root data-testid=\"class-list\" className=\"custom-class\">\n          <List.Item>Content</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"class-list\");\n    expect(list).toHaveClass(\"custom-class\");\n  });\n\n  it(\"forwards id prop\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root id=\"unique-list-id\">\n          <List.Item>Content</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = document.getElementById(\"unique-list-id\");\n    expect(list).toBeInTheDocument();\n  });\n\n  it(\"forwards ARIA attributes\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root\n          data-testid=\"aria-list\"\n          aria-label=\"Navigation list\"\n          role=\"navigation\"\n        >\n          <List.Item>Content</List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const list = screen.getByTestId(\"aria-list\");\n    expect(list).toHaveAttribute(\"aria-label\", \"Navigation list\");\n    expect(list).toHaveAttribute(\"role\", \"navigation\");\n  });\n});\n```\n\n### Indicator Tests\n\nTest List.Indicator component functionality\n\n```tsx\nimport { describe, it, expect } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport { List, NimbusProvider, Icon } from \"@commercetools/nimbus\";\nimport { Check, Close } from \"@commercetools/nimbus-icons\";\n\ndescribe(\"List - Indicator\", () => {\n  it(\"renders List.Indicator with content\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root variant=\"plain\">\n          <List.Item data-testid=\"item-with-indicator\">\n            <List.Indicator data-testid=\"indicator\">\n              <Icon>\n                <Check />\n              </Icon>\n            </List.Indicator>\n            Item content\n          </List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    const indicator = screen.getByTestId(\"indicator\");\n    const item = screen.getByTestId(\"item-with-indicator\");\n\n    expect(indicator).toBeInTheDocument();\n    expect(item).toHaveTextContent(\"Item content\");\n  });\n\n  it(\"renders multiple items with different indicators\", () => {\n    render(\n      <NimbusProvider>\n        <List.Root variant=\"plain\">\n          <List.Item>\n            <List.Indicator>\n              <Icon>\n                <Check />\n              </Icon>\n            </List.Indicator>\n            Item 1\n          </List.Item>\n          <List.Item>\n            <List.Indicator>\n              <Icon>\n                <Close />\n              </Icon>\n            </List.Indicator>\n            Item 2\n          </List.Item>\n        </List.Root>\n      </NimbusProvider>\n    );\n\n    expect(screen.getByText(\"Item 1\")).toBeInTheDocument();\n    expect(screen.getByText(\"Item 2\")).toBeInTheDocument();\n  });\n});\n```\n\n\n## Resources\n\n- [Chakra UI: List](https://chakra-ui.com/docs/components/list)\n- [W3C: Lists](https://www.w3.org/WAI/tutorials/page-structure/content/#lists)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual variants",
+          "href": "#visual-variants",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Alignment options",
+          "href": "#alignment-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Ordered lists",
+          "href": "#ordered-lists",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom indicators",
+          "href": "#custom-indicators",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Nested lists",
+          "href": "#nested-lists",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Spacing and gap",
+          "href": "#spacing-and-gap",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage context",
+          "href": "#usage-context",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            4,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Task list with status indicators",
+          "href": "#task-list-with-status-indicators",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Navigation menu",
+          "href": "#navigation-menu",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Requirements checklist",
+          "href": "#requirements-checklist",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variant Tests",
+          "href": "#variant-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Alignment Tests",
+          "href": "#alignment-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Nested Lists Tests",
+          "href": "#nested-lists-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Style Props Tests",
+          "href": "#style-props-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Props Forwarding Tests",
+          "href": "#props-forwarding-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Indicator Tests",
+          "href": "#indicator-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "guidelines": {
+      "mdx": "\n## Guidelines\n\nList guidelines aim to provide users the best experience when understanding\ninformation that is being conveyed through the interface.\n\n### Best practices\n\n- **Consistency in content:** Ensure all items within a single list adhere to\n  the same content structure (e.g., if one item has an icon and metadata, all\n  items should).\n- **Clear hierarchy:** Use typography, indentation, and visual separators to\n  establish a clear hierarchy between list items and their sub-elements.\n- **Easy scanning:** Prioritize short, primary information at the beginning of\n  each list item to enable quick scanning.\n- **Interactivity:** Clearly distinguish interactive list items\n  (tappable/clickable) from static, informational ones using visual cues like\n  hover states and pointers.\n- **State management:** Define consistent visual states for list items,\n  including default, hover, focused, selected, and disabled.\n- **Grouping:** Use dividers, headers, or subtle visual spacing to group related\n  items within a long list (e.g., grouping customers by status or date).\n- **Limited information:** Avoid cramming too much detail into a single list\n  item; use secondary detail panels, cards, or dedicated pages for complex\n  information.\n\n### Usage\n\nLists are fundamental UI components used to display a series of related items,\nallowing users to quickly scan, organize, and interact with structured data or\noptions.\n\n> [!TIP]\\\n> When to use\n\n- **Navigation menus:** For primary or secondary menus where items are primarily\n  text links.\n- **Short metadata/tasks:** For displaying a history log, task list, or brief\n  metadata where the vertical format is optimal for chronological or simple item\n  tracking.\n- **Structured options:** To present settings, filters, or menu choices where\n  hierarchy and text are the main content.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Image-heavy content:** For displaying a collection where the visual preview\n  (e.g., product image) is the most critical element.\n- **Wide data sets:** When the content requires many columns of data that won't\n  fit on a single line, even on a large screen.\n- **Complex data comparison:** When the user needs to compare many different\n  data points across items, use a data table instead.\n\n### Do's and don'ts for implementing a list\n\n> [!TIP]\\\n> **Do**\n>\n> - Ensure adequate padding and spacing to clearly separate each list item.\n> - Provide clear feedback when an item is selected or activated.\n> - Use semantic HTML (`<ul>`, `<ol>`, `<li>`) to convey structure to assistive\n>   technologies.\n> - Allow content within the list item to truncate gracefully, revealing the\n>   full text via a tooltip or expansion interactive.\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't use generic links like \"Click here\"; make the entire interactive item\n>   text descriptive.\n> - Don't mix vastly different content structures or types of items in one list.\n> - Don't neglect a strategy for empty states (what happens when the list has no\n>   items?).\n> - Don't use low-contrast text for critical list item details.\n",
+      "toc": [
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Do's and don'ts for implementing a list",
+          "href": "#dos-and-donts-for-implementing-a-list",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

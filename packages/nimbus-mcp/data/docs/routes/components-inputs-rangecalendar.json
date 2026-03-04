@@ -1,0 +1,616 @@
+{
+  "meta": {
+    "id": "Components-RangeCalendar",
+    "title": "RangeCalendar",
+    "description": "Calendar Range display a grid of days in one or more months and allow users to select a range of dates.",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/range-calendar/range-calendar.mdx",
+    "menu": [
+      "Components",
+      "Inputs",
+      "RangeCalendar"
+    ],
+    "route": "components/inputs/rangecalendar",
+    "tags": [
+      "component",
+      "calendar"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Visual options",
+        "href": "#visual-options",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Date range",
+        "href": "#date-range",
+        "depth": 4,
+        "numbering": [
+          1,
+          2,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility",
+        "href": "#accessibility",
+        "depth": 2,
+        "numbering": [
+          1,
+          3
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Accessibility standards",
+        "href": "#accessibility-standards",
+        "depth": 3,
+        "numbering": [
+          1,
+          3,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "guidelines",
+        "title": "Guidelines",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n# RangeCalendar\n\nRange calendar displays a grid of days in one or more months and allow users to\nselect a range of dates.\n\n## Overview\n\nThe calendar component is most often used within the popover component when a\nuser interacts with a date input. Easily toggle, month, year, and select a\nrange.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=5818-15651)\n[Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-date-rangecalendar--docs)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Date range\n\nAllow users to select a range of dates.\n\n```jsx-live\nconst App = () => <RangeCalendar aria-label=\"Enter dates\" />\n```\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => <RangeCalendar aria-label=\"Enter dates\" />\n```\n\n### Accessibility standards\n\n- Ensure the calendar is navigable using a keyboard.\n  - Use Tab to move focus to and from the calendar component.\n  - Use Enter or Space to activate controls (e.g., to open/close the calendar,\n    select a date, or navigate months/years).\n  - Use arrow keys to navigate between days within the calendar grid.\n  - Ensure focus is clearly visible on the currently selected day or navigated\n    day.\n- Clearly indicate the current month and year.\n- Provide accessible controls for navigating to previous and next months/years.\n  These controls should have clear `aria-label` attributes if they are\n  icon-only.\n- Ensure selected dates are clearly distinguished visually and announced by\n  screen readers.\n- Communicate invalid or unavailable dates (e.g., past dates, blackout dates) to\n  screen readers.\n- Provide a mechanism for users to select a specific date (e.g., clicking a day,\n  or typing a date into an associated input field).\n- Announce changes in month or year to screen readers.\n- Ensure sufficient color contrast for all calendar elements (text, borders,\n  icons, selected states, hover states).\n",
+  "views": {
+    "overview": {
+      "mdx": "\n# RangeCalendar\n\nRange calendar displays a grid of days in one or more months and allow users to\nselect a range of dates.\n\n## Overview\n\nThe calendar component is most often used within the popover component when a\nuser interacts with a date input. Easily toggle, month, year, and select a\nrange.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?m=auto&node-id=5818-15651)\n[Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-date-rangecalendar--docs)\n\n## Variables\n\nGet familiar with the features.\n\n### Visual options\n\n#### Date range\n\nAllow users to select a range of dates.\n\n```jsx-live\nconst App = () => <RangeCalendar aria-label=\"Enter dates\" />\n```\n\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx-live\nconst App = () => <RangeCalendar aria-label=\"Enter dates\" />\n```\n\n### Accessibility standards\n\n- Ensure the calendar is navigable using a keyboard.\n  - Use Tab to move focus to and from the calendar component.\n  - Use Enter or Space to activate controls (e.g., to open/close the calendar,\n    select a date, or navigate months/years).\n  - Use arrow keys to navigate between days within the calendar grid.\n  - Ensure focus is clearly visible on the currently selected day or navigated\n    day.\n- Clearly indicate the current month and year.\n- Provide accessible controls for navigating to previous and next months/years.\n  These controls should have clear `aria-label` attributes if they are\n  icon-only.\n- Ensure selected dates are clearly distinguished visually and announced by\n  screen readers.\n- Communicate invalid or unavailable dates (e.g., past dates, blackout dates) to\n  screen readers.\n- Provide a mechanism for users to select a specific date (e.g., clicking a day,\n  or typing a date into an associated input field).\n- Announce changes in month or year to screen readers.\n- Ensure sufficient color contrast for all calendar elements (text, borders,\n  icons, selected states, hover states).\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Visual options",
+          "href": "#visual-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Date range",
+          "href": "#date-range",
+          "depth": 4,
+          "numbering": [
+            1,
+            2,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { RangeCalendar, type RangeCalendarProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\nThe simplest implementation displays a single-month calendar for date range selection:\n\n```jsx-live-dev\nconst App = () => (\n  <RangeCalendar aria-label=\"Select date range\" />\n)\n```\n\n## Working with date values\n\nThe RangeCalendar relies on `@internationalized/date`'s library for type-safe date handling. This library provides calendar system support, time zone handling, and locale-aware date formatting.\n\n### Date value types\n\nThe primary date type for RangeCalendar is `CalendarDate` for date-only scenarios:\n\n```tsx\nimport { CalendarDate } from '@internationalized/date';\n\n// Date only (no time)\nconst date = new CalendarDate(2024, 1, 15);\n```\n\n### Creating date values\n\nUse helper functions to parse ISO strings or create dates programmatically:\n\n```tsx\nimport { parseDate, today, getLocalTimeZone } from '@internationalized/date';\n\n// Parse ISO date string\nconst date = parseDate('2024-01-15');\n\n// Get today's date\nconst todayDate = today(getLocalTimeZone());\n\n// Create relative dates\nconst nextWeek = today(getLocalTimeZone()).add({ weeks: 1 });\n```\n\n### Converting to ISO strings\n\nUse `.toString()` to convert date objects for API/backend consumption:\n\n```tsx\nconst date = new CalendarDate(2024, 1, 15);\ndate.toString(); // \"2024-01-15\"\n\n// Convert date ranges for API calls\nconst dateRange = {\n  start: new CalendarDate(2024, 1, 15),\n  end: new CalendarDate(2024, 1, 20)\n};\n\nconst apiPayload = {\n  startDate: dateRange.start.toString(), // \"2024-01-15\"\n  endDate: dateRange.end.toString()      // \"2024-01-20\"\n};\n```\n\n### Date range structure\n\nThe component expects and returns date ranges in this structure:\n\n```tsx\nimport type { RangeValue } from '@commercetools/nimbus';\nimport type { DateValue } from '@internationalized/date';\n\ntype DateRange = RangeValue<DateValue>;\n\n// Example:\nconst range: DateRange = {\n  start: new CalendarDate(2024, 1, 15),\n  end: new CalendarDate(2024, 1, 20)\n};\n```\n\n> [!TIP]\\\n> See [@internationalized/date documentation](https://react-spectrum.adobe.com/internationalized/date/) for complete API reference and advanced usage.\n\n## Usage examples\n\n### Multi-month display\n\nThe `visibleDuration` prop allows displaying multiple months simultaneously:\n\n```jsx-live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"600\">\n    <Text fontWeight=\"600\">Two months:</Text>\n    <RangeCalendar\n      aria-label=\"Select date range\"\n      visibleDuration={{ months: 2 }}\n    />\n    <Text fontWeight=\"600\">Three months:</Text>\n    <RangeCalendar\n      aria-label=\"Select date range\"\n      visibleDuration={{ months: 3 }}\n    />\n  </Stack>\n)\n```\n\n### Paging behavior\n\nThe `pageBehavior` prop controls how navigation moves between months:\n\n```jsx-live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"600\">\n    <Box>\n      <Text fontWeight=\"600\" mb=\"200\">Single paging (one month at a time):</Text>\n      <RangeCalendar\n        aria-label=\"Select date range\"\n        visibleDuration={{ months: 2 }}\n        pageBehavior=\"single\"\n      />\n    </Box>\n    <Box>\n      <Text fontWeight=\"600\" mb=\"200\">Visible paging (all visible months at once):</Text>\n      <RangeCalendar\n        aria-label=\"Select date range\"\n        visibleDuration={{ months: 2 }}\n        pageBehavior=\"visible\"\n      />\n    </Box>\n  </Stack>\n)\n```\n\n**Behavioral differences:**\n- `pageBehavior=\"single\"`: Navigates one month at a time\n- `pageBehavior=\"visible\"`: Navigates by the number of visible months\n\n### Date constraints\n\nUse `minValue` and `maxValue` to restrict the selectable date range:\n\n```jsx-live-dev\nconst App = () => {\n  const todayDate = today(getLocalTimeZone());\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Text textStyle=\"sm\" color=\"neutral.11\">\n        Selection limited to dates from 1 week ago to 4 weeks ahead.\n      </Text>\n      <RangeCalendar\n        aria-label=\"Select date range\"\n        minValue={todayDate.subtract({ weeks: 1 })}\n        maxValue={todayDate.add({ weeks: 4 })}\n      />\n    </Stack>\n  );\n}\n```\n\n### Unavailable dates\n\nUse `isDateUnavailable` to mark specific dates as unavailable for selection:\n\n```jsx-live-dev\nconst App = () => {\n  // Mark weekends as unavailable\n  const isWeekend = (date) => {\n    const dayOfWeek = date.toDate(getLocalTimeZone()).getDay();\n    return dayOfWeek === 0 || dayOfWeek === 6;\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Text textStyle=\"sm\" color=\"neutral.11\">\n        Weekends are unavailable for selection.\n      </Text>\n      <RangeCalendar\n        aria-label=\"Select date range\"\n        isDateUnavailable={isWeekend}\n      />\n    </Stack>\n  );\n}\n```\n\n### Non-contiguous ranges\n\nEnable selection of ranges that span across unavailable dates with `allowsNonContiguousRanges`:\n\n```jsx-live-dev\nconst App = () => {\n  // Mark Mondays as unavailable\n  const isMonday = (date) => {\n    return date.toDate(getLocalTimeZone()).getDay() === 1;\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Text textStyle=\"sm\" color=\"neutral.11\">\n        Mondays are unavailable, but ranges can span across them.\n      </Text>\n      <RangeCalendar\n        aria-label=\"Select date range\"\n        allowsNonContiguousRanges={true}\n        isDateUnavailable={isMonday}\n      />\n    </Stack>\n  );\n}\n```\n\n### Custom week start\n\nUse `firstDayOfWeek` to change which day starts the week:\n\n```jsx-live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"400\">\n    <Text textStyle=\"sm\" color=\"neutral.11\">\n      Week starts on Monday (common in European locales):\n    </Text>\n    <RangeCalendar\n      aria-label=\"Select date range\"\n      firstDayOfWeek=\"mon\"\n    />\n  </Stack>\n)\n```\n\n### Form states\n\nThe component supports disabled and read-only states:\n\n```jsx-live-dev\nconst App = () => {\n  const defaultRange = {\n    start: today(getLocalTimeZone()).add({ days: 3 }),\n    end: today(getLocalTimeZone()).add({ days: 8 }),\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"600\">\n      <Box>\n        <Text fontWeight=\"600\" mb=\"200\">Disabled:</Text>\n        <RangeCalendar\n          aria-label=\"Disabled calendar\"\n          isDisabled\n          defaultValue={defaultRange}\n        />\n      </Box>\n      <Box>\n        <Text fontWeight=\"600\" mb=\"200\">Read-only:</Text>\n        <RangeCalendar\n          aria-label=\"Read-only calendar\"\n          isReadOnly\n          defaultValue={defaultRange}\n        />\n      </Box>\n    </Stack>\n  );\n}\n```\n\n### Uncontrolled mode\n\nFor simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`:\n\n```jsx-live-dev\nconst App = () => {\n  const [selectedRange, setSelectedRange] = useState<RangeCalendarProps[\"value\"]>({\n    start: today(getLocalTimeZone()).add({ days: 3 }),\n    end: today(getLocalTimeZone()).add({ days: 8 }),\n  });\n\n  const formatDate = (date) => {\n    return date.toDate(getLocalTimeZone()).toLocaleDateString('en-US', {\n      month: 'short',\n      day: 'numeric',\n      year: 'numeric',\n    });\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <RangeCalendar\n        aria-label=\"Select date range\"\n        defaultValue={{\n          start: today(getLocalTimeZone()).add({ days: 3 }),\n          end: today(getLocalTimeZone()).add({ days: 8 }),\n        }}\n        onChange={setSelectedRange}\n      />\n      <Box p=\"200\" bg=\"neutral.2\" borderRadius=\"200\">\n        <Text fontWeight=\"600\" mb=\"200\">Selected Range:</Text>\n        <Text>\n          {selectedRange\n            ? `${formatDate(selectedRange.start)} to ${formatDate(selectedRange.end)}`\n            : 'No range selected'}\n        </Text>\n      </Box>\n    </Stack>\n  );\n}\n```\n\nUse uncontrolled mode when you need to capture the selected value without managing state yourself.\n\n### Controlled mode\n\nFor scenarios requiring programmatic control or coordination with other components, use controlled mode:\n\n```jsx-live-dev\nconst App = () => {\n  const [value, setValue] = useState<RangeCalendarProps[\"value\"]>({\n    start: today(getLocalTimeZone()).add({ days: 3 }),\n    end: today(getLocalTimeZone()).add({ days: 8 }),\n  });\n\n  const formatDate = (date) => {\n    return date.toDate(getLocalTimeZone()).toLocaleDateString('en-US', {\n      month: 'short',\n      day: 'numeric',\n      year: 'numeric',\n    });\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <RangeCalendar\n        aria-label=\"Select date range\"\n        value={value}\n        onChange={setValue}\n      />\n      <Box p=\"200\" bg=\"neutral.2\" borderRadius=\"200\">\n        <Text fontWeight=\"600\" mb=\"200\">Selected Range:</Text>\n        <Text>\n          {value\n            ? `${formatDate(value.start)} to ${formatDate(value.end)}`\n            : 'No range selected'}\n        </Text>\n      </Box>\n      <Button\n        variant=\"outline\"\n        onPress={() => setValue(null)}\n        isDisabled={!value}\n      >\n        Clear selection\n      </Button>\n    </Stack>\n  );\n}\n```\n\nUse controlled mode when you need to:\n- Synchronize the date range with external state\n- Validate or transform date selections\n- Clear or programmatically set the date range\n\n### Internationalization\n\nThe calendar automatically adapts to the locale provided by `NimbusI18nProvider`:\n\n```jsx-live-dev\nconst App = () => (\n  <Stack direction=\"column\" gap=\"600\">\n    <Box>\n      <Text fontWeight=\"600\" mb=\"200\">German (de-DE):</Text>\n      <NimbusI18nProvider locale=\"de-DE\">\n        <RangeCalendar aria-label=\"Datumsbereich auswählen\" />\n      </NimbusI18nProvider>\n    </Box>\n    <Box>\n      <Text fontWeight=\"600\" mb=\"200\">Spanish (es-MX):</Text>\n      <NimbusI18nProvider locale=\"es-MX\">\n        <RangeCalendar aria-label=\"Seleccionar rango de fechas\" />\n      </NimbusI18nProvider>\n    </Box>\n  </Stack>\n)\n```\n\n## Component requirements\n\n### Date value types\n\nAll date values **must** use `@internationalized/date` types:\n- `CalendarDate` for date-only scenarios (most common)\n- Other types from `@internationalized/date` as needed\n\n## Accessibility\n\nThe RangeCalendar handles most accessibility requirements internally. However, you must always associate an internationalized label with the component using the `aria-label` prop:\n\n```tsx\n<RangeCalendar aria-label={msg.format(labelMessage)} />\n```\n\nAlternatively, use `aria-labelledby` to reference a visible label:\n\n```tsx\n<label id=\"calendar-label\">\n  {msg.format(labelMessage)}\n</label>\n<RangeCalendar aria-labelledby=\"calendar-label\" />\n```\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"example-range-calendar\";\n\nexport const Example = () => (\n  <RangeCalendar id={PERSISTENT_ID} aria-label=\"Select dates\" />\n);\n```\n\n#### Keyboard navigation\n\nThe component supports full keyboard interaction:\n- `Tab` / `Shift+Tab`: Navigate between calendar controls and cells\n- `Arrow keys`: Navigate between days within the calendar grid\n- `Enter` / `Space`: Select a date (first press sets start, second press sets end)\n- `Page Up` / `Page Down`: Navigate to previous/next month\n- `Shift + Page Up` / `Shift + Page Down`: Navigate to previous/next year\n\n## API reference\n\n<PropsTable id=\"RangeCalendar\" />\n\n## Common patterns\n\n### Booking period selection\n\nFor booking systems that need to prevent selections before today and limit booking windows:\n\n```jsx-live-dev\nconst App = () => {\n  const [bookingRange, setBookingRange] = useState<RangeCalendarProps[\"value\"]>(null);\n  const todayDate = today(getLocalTimeZone());\n\n  // Calculate booking duration in days\n  const getDuration = (range) => {\n    if (!range) return 0;\n    const startMs = range.start.toDate(getLocalTimeZone()).getTime();\n    const endMs = range.end.toDate(getLocalTimeZone()).getTime();\n    return Math.ceil((endMs - startMs) / (1000 * 60 * 60 * 24)) + 1;\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <RangeCalendar\n        aria-label=\"Select booking dates\"\n        visibleDuration={{ months: 2 }}\n        minValue={todayDate}\n        maxValue={todayDate.add({ months: 3 })}\n        value={bookingRange}\n        onChange={setBookingRange}\n      />\n      {bookingRange && (\n        <Box p=\"300\" bg=\"primary.2\" borderRadius=\"200\">\n          <Text fontWeight=\"600\">Booking Summary:</Text>\n          <Text textStyle=\"sm\">Duration: {getDuration(bookingRange)} days</Text>\n        </Box>\n      )}\n    </Stack>\n  );\n}\n```\n\n### Business days only selection\n\nFor scenarios where only business days (weekdays) are selectable:\n\n```jsx-live-dev\nconst App = () => {\n  const [dateRange, setDateRange] = useState<RangeCalendarProps[\"value\"]>(null);\n\n  const isWeekend = (date) => {\n    const dayOfWeek = date.toDate(getLocalTimeZone()).getDay();\n    return dayOfWeek === 0 || dayOfWeek === 6;\n  };\n\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Text textStyle=\"sm\" color=\"neutral.11\">\n        Only business days (Monday-Friday) can be selected.\n      </Text>\n      <RangeCalendar\n        aria-label=\"Select business days\"\n        isDateUnavailable={isWeekend}\n        value={dateRange}\n        onChange={setDateRange}\n      />\n      {dateRange && (\n        <Text textStyle=\"sm\">\n          Selected: {dateRange.start.toString()} to {dateRange.end.toString()}\n        </Text>\n      )}\n    </Stack>\n  );\n}\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using RangeCalendar within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the component renders with expected elements\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, within } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { CalendarDate, today, getLocalTimeZone } from \"@internationalized/date\";\nimport { RangeCalendar, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"RangeCalendar - Basic rendering\", () => {\n  it(\"renders calendar grid\", () => {\n    render(\n      <NimbusProvider>\n        <RangeCalendar aria-label=\"Select date range\" />\n      </NimbusProvider>\n    );\n\n    expect(screen.getByRole(\"grid\")).toBeInTheDocument();\n  });\n\n  it(\"renders navigation buttons\", () => {\n    render(\n      <NimbusProvider>\n        <RangeCalendar aria-label=\"Select date range\" />\n      </NimbusProvider>\n    );\n\n    // Month navigation\n    expect(\n      screen.getByRole(\"button\", { name: /previous month/i })\n    ).toBeInTheDocument();\n    expect(\n      screen.getByRole(\"button\", { name: /next month/i })\n    ).toBeInTheDocument();\n\n    // Year navigation\n    expect(\n      screen.getByRole(\"button\", { name: /previous year/i })\n    ).toBeInTheDocument();\n    expect(\n      screen.getByRole(\"button\", { name: /next year/i })\n    ).toBeInTheDocument();\n  });\n\n  it(\"renders date cells in the grid\", () => {\n    render(\n      <NimbusProvider>\n        <RangeCalendar aria-label=\"Select date range\" />\n      </NimbusProvider>\n    );\n\n    // Check for date buttons within the grid\n    const grid = screen.getByRole(\"grid\");\n    const gridCells = within(grid).getAllByRole(\"gridcell\");\n\n    // A month should have at least 28 days\n    expect(gridCells.length).toBeGreaterThanOrEqual(28);\n  });\n});\n```\n\n### Interaction Tests\n\nTest user interactions with the component\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, within } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { CalendarDate, today, getLocalTimeZone } from \"@internationalized/date\";\nimport { RangeCalendar, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"RangeCalendar - Interactions\", () => {\n  it(\"navigates to next month when clicking next button\", async () => {\n    const user = userEvent.setup();\n\n    render(\n      <NimbusProvider>\n        <RangeCalendar aria-label=\"Select date range\" />\n      </NimbusProvider>\n    );\n\n    const nextMonthButton = screen.getByRole(\"button\", {\n      name: /next month/i,\n    });\n\n    await user.click(nextMonthButton);\n\n    // The calendar should have navigated (button should still be present)\n    expect(\n      screen.getByRole(\"button\", { name: /next month/i })\n    ).toBeInTheDocument();\n  });\n\n  it(\"navigates to previous year when clicking previous year button\", async () => {\n    const user = userEvent.setup();\n\n    render(\n      <NimbusProvider>\n        <RangeCalendar aria-label=\"Select date range\" />\n      </NimbusProvider>\n    );\n\n    const prevYearButton = screen.getByRole(\"button\", {\n      name: /previous year/i,\n    });\n\n    await user.click(prevYearButton);\n\n    // The calendar should have navigated\n    expect(\n      screen.getByRole(\"button\", { name: /previous year/i })\n    ).toBeInTheDocument();\n  });\n});\n```\n\n### Testing Controlled Mode\n\nTest controlled component behavior with value and onChange\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, within } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { CalendarDate, today, getLocalTimeZone } from \"@internationalized/date\";\nimport { RangeCalendar, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"RangeCalendar - Controlled mode\", () => {\n  it(\"displays provided date range value\", () => {\n    const dateRange = {\n      start: new CalendarDate(2024, 6, 15),\n      end: new CalendarDate(2024, 6, 20),\n    };\n\n    render(\n      <NimbusProvider>\n        <RangeCalendar\n          aria-label=\"Select date range\"\n          value={dateRange}\n          onChange={() => {}}\n        />\n      </NimbusProvider>\n    );\n\n    // The calendar should render with the provided range\n    expect(screen.getByRole(\"grid\")).toBeInTheDocument();\n\n    // Find cells with selected state\n    const grid = screen.getByRole(\"grid\");\n    const selectedCells = within(grid)\n      .getAllByRole(\"gridcell\")\n      .filter((cell) => cell.getAttribute(\"aria-selected\") === \"true\");\n\n    // Multiple cells should be selected for a range\n    expect(selectedCells.length).toBeGreaterThan(0);\n  });\n\n  it(\"renders with null value (no selection)\", () => {\n    const handleChange = vi.fn();\n\n    render(\n      <NimbusProvider>\n        <RangeCalendar\n          aria-label=\"Select date range\"\n          value={null}\n          onChange={handleChange}\n        />\n      </NimbusProvider>\n    );\n\n    // Calendar should render without errors\n    expect(screen.getByRole(\"grid\")).toBeInTheDocument();\n  });\n});\n```\n\n### Testing Component States\n\nTest disabled and read-only states\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, within } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { CalendarDate, today, getLocalTimeZone } from \"@internationalized/date\";\nimport { RangeCalendar, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"RangeCalendar - States\", () => {\n  it(\"renders in disabled state\", () => {\n    const dateRange = {\n      start: new CalendarDate(2024, 6, 15),\n      end: new CalendarDate(2024, 6, 20),\n    };\n\n    render(\n      <NimbusProvider>\n        <RangeCalendar\n          aria-label=\"Select date range\"\n          isDisabled\n          defaultValue={dateRange}\n        />\n      </NimbusProvider>\n    );\n\n    // The grid should still render\n    expect(screen.getByRole(\"grid\")).toBeInTheDocument();\n  });\n\n  it(\"renders in read-only state with value displayed\", () => {\n    const dateRange = {\n      start: new CalendarDate(2024, 6, 15),\n      end: new CalendarDate(2024, 6, 20),\n    };\n\n    render(\n      <NimbusProvider>\n        <RangeCalendar\n          aria-label=\"Select date range\"\n          isReadOnly\n          value={dateRange}\n          onChange={() => {}}\n        />\n      </NimbusProvider>\n    );\n\n    // Calendar should render\n    expect(screen.getByRole(\"grid\")).toBeInTheDocument();\n\n    // Selected cells should be visible\n    const grid = screen.getByRole(\"grid\");\n    const selectedCells = within(grid)\n      .getAllByRole(\"gridcell\")\n      .filter((cell) => cell.getAttribute(\"aria-selected\") === \"true\");\n    expect(selectedCells.length).toBeGreaterThan(0);\n  });\n});\n```\n\n### Testing Date Constraints\n\nTest minValue, maxValue, and isDateUnavailable\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen, within } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { CalendarDate, today, getLocalTimeZone } from \"@internationalized/date\";\nimport { RangeCalendar, NimbusProvider } from \"@commercetools/nimbus\";\n\ndescribe(\"RangeCalendar - Date constraints\", () => {\n  it(\"marks dates outside min/max as disabled\", () => {\n    const todayDate = today(getLocalTimeZone());\n\n    render(\n      <NimbusProvider>\n        <RangeCalendar\n          aria-label=\"Select date range\"\n          minValue={todayDate}\n          maxValue={todayDate.add({ days: 7 })}\n        />\n      </NimbusProvider>\n    );\n\n    // Check that the calendar renders with constraints applied\n    const grid = screen.getByRole(\"grid\");\n    const gridCells = within(grid).getAllByRole(\"gridcell\");\n\n    // Some cells should be disabled (outside the allowed range)\n    const disabledCells = gridCells.filter(\n      (cell) => cell.getAttribute(\"aria-disabled\") === \"true\"\n    );\n    expect(disabledCells.length).toBeGreaterThan(0);\n  });\n\n  it(\"marks custom unavailable dates as disabled\", () => {\n    // Mark all Mondays as unavailable\n    const isMonday = (date: { toDate: (tz: string) => Date }) => {\n      return date.toDate(getLocalTimeZone()).getDay() === 1;\n    };\n\n    render(\n      <NimbusProvider>\n        <RangeCalendar\n          aria-label=\"Select date range\"\n          isDateUnavailable={isMonday}\n        />\n      </NimbusProvider>\n    );\n\n    // The calendar should render with some unavailable dates\n    const grid = screen.getByRole(\"grid\");\n    const gridCells = within(grid).getAllByRole(\"gridcell\");\n    const disabledCells = gridCells.filter(\n      (cell) => cell.getAttribute(\"aria-disabled\") === \"true\"\n    );\n\n    // At least some cells should be disabled (Mondays)\n    expect(disabledCells.length).toBeGreaterThan(0);\n  });\n\n  it(\"renders with visible duration showing multiple months\", () => {\n    render(\n      <NimbusProvider>\n        <RangeCalendar\n          aria-label=\"Select date range\"\n          visibleDuration={{ months: 2 }}\n        />\n      </NimbusProvider>\n    );\n\n    // Multiple grids should be rendered for multiple months\n    const grids = screen.getAllByRole(\"grid\");\n    expect(grids.length).toBe(2);\n  });\n});\n```\n\n\n## Resources\n\n- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-date-rangecalendar--docs)\n- [React Aria RangeCalendar](https://react-spectrum.adobe.com/react-aria/RangeCalendar.html)\n- [ARIA Grid Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/grid/)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Working with date values",
+          "href": "#working-with-date-values",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Date value types",
+          "href": "#date-value-types",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Creating date values",
+          "href": "#creating-date-values",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Converting to ISO strings",
+          "href": "#converting-to-iso-strings",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Date range structure",
+          "href": "#date-range-structure",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Multi-month display",
+          "href": "#multi-month-display",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Paging behavior",
+          "href": "#paging-behavior",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Date constraints",
+          "href": "#date-constraints",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Unavailable dates",
+          "href": "#unavailable-dates",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Non-contiguous ranges",
+          "href": "#non-contiguous-ranges",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Custom week start",
+          "href": "#custom-week-start",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Form states",
+          "href": "#form-states",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Uncontrolled mode",
+          "href": "#uncontrolled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Controlled mode",
+          "href": "#controlled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            9
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Internationalization",
+          "href": "#internationalization",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            10
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Date value types",
+          "href": "#date-value-types-1",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 4,
+          "numbering": [
+            1,
+            5,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Booking period selection",
+          "href": "#booking-period-selection",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Business days only selection",
+          "href": "#business-days-only-selection",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Interaction Tests",
+          "href": "#interaction-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing Controlled Mode",
+          "href": "#testing-controlled-mode",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing Component States",
+          "href": "#testing-component-states",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing Date Constraints",
+          "href": "#testing-date-constraints",
+          "depth": 3,
+          "numbering": [
+            1,
+            8,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            9
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "guidelines": {
+      "mdx": "\n## Guidelines\n\nCalendar guidelines focus on creating intuitive and accessible interfaces for\nviewing, navigating, and interacting with dates and events.\n\n### Best practices\n\n- **Clear visual hierarchy:** Distinguish between days, weeks, months, and\n  years. Highlight the current date and any selected dates.\n- **Intuitive navigation:** Provide clear controls to move between different\n  time periods (days, weeks, months, years).\n- **Easy date range selection:** For applications requiring date ranges, provide\n  an intuitive way to select start and end dates, often with visual\n  highlighting.\n- **Clear labels and instructions:** Provide clear labels for navigation\n  controls and any interactive elements within the calendar.\n\n### Usage\n\nA calendar is used to visually display and manage time-based information,\nallowing users to view, schedule, and interact with dates. A common way this\ncomponent is used is within the popover, and paired with the date input.\n\n> [!TIP]\\\n> When to use\n\n- **Scheduling:** When users need to select specific dates.\n- **Visualizing time-based data:** To display data or to filter data in a\n  corresponding visual.\n- **Date range selection:** When users need to select a start and end date for a\n  period.\n- **Browsing dates:** When users need to navigate through different days, weeks,\n  or months to find a specific date.\n- **Contextual awareness of dates:** When the day of the week or the\n  relationship between dates is important for decision-making.\n- **Recurring events:** To allow users to set up and manage events that repeat\n  on a regular basis.\n\n### Keeping interactions simple\n\nSimple calendar interactions are vital because they minimize user effort and\ncognitive load, allowing for quick and efficient time management, the calendar's\nprimary function.\n\n> [!TIP]\\\n> **Do**\n>\n> - Provide clear navigation. Make it easy to move between days, weeks, months,\n>   and years using intuitive controls (arrows, drop downs).\n> - Enable easy date range selection. If your application requires date ranges,\n>   make the selection process straightforward (e.g., click start, click end).\n> - Consider time zones (if applicable). If your application deals with users in\n>   different time zones, handle and display times accordingly.\n> - Ensure navigation controls are clearly labeled and their function is\n>   obvious.\n\n![interaction - do's](/images/range-calendar/interaction-do.png)\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Don't over clutter. Avoid displaying too much information on the calendar\n>   grid at once, which can make it overwhelming.\n> - Don't make navigation confusing. Ensure navigation controls are clearly\n>   labeled and their function is obvious.\n> - Don't use it for simple date input. If users know the exact date, a direct\n>   date input field might be more efficient.\n> - Don't auto-submit on date selection. Avoid automatically submitting forms or\n>   triggering actions immediately after a date is selected.\n\n![interaction - dont's](/images/range-calendar/interaction-dont.png)",
+      "toc": [
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keeping interactions simple",
+          "href": "#keeping-interactions-simple",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

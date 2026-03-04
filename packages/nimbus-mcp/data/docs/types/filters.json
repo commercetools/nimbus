@@ -1,0 +1,11 @@
+{
+  "tags": {
+    "example": "Basic filter usage\n```tsx\nimport { ComboBox } from '@commercetools/nimbus';\n\nfunction MyComponent() {\nreturn (\n<ComboBox.Root\nitems={items}\nfilter={ComboBox.filters.filterByStartsWith}\n>\n<ComboBox.Trigger />\n<ComboBox.Popover>\n<ComboBox.ListBox>\n {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}\n</ComboBox.ListBox>\n</ComboBox.Popover>\n</ComboBox.Root>\n);\n}\n```\nMulti-property search\n```tsx\nconst productFilter = ComboBox.filters.createMultiPropertyFilter<Product>([\n'name',\n'category',\n'description'\n]);\n\nfunction ProductSearch() {\nreturn (\n<ComboBox.Root items={products} filter={productFilter}>\n<ComboBox.Trigger />\n<ComboBox.Popover>\n<ComboBox.ListBox>\n {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}\n</ComboBox.ListBox>\n</ComboBox.Popover>\n</ComboBox.Root>\n);\n}\n```\nSection-aware filtering\n```tsx\nconst sectionFilter = ComboBox.filters.createSectionAwareFilter(\nComboBox.filters.filterByFuzzy\n);\n\nfunction SectionedSearch() {\nreturn (\n<ComboBox.Root items={sectionsWithItems} filter={sectionFilter}>\n<ComboBox.Trigger />\n<ComboBox.Popover>\n<ComboBox.ListBox>\n {(section) => (\n   <ComboBox.Section>\n     {(item) => <ComboBox.Option>{item.name}</ComboBox.Option>}\n   </ComboBox.Section>\n )}\n</ComboBox.ListBox>\n</ComboBox.Popover>\n</ComboBox.Root>\n);\n}\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "# ComboBox.filters\n\nBuilt-in filter functions and utilities for customizing ComboBox filtering behavior.\nThese filters can be passed to the `filter` prop on ComboBox.Root to control how options are filtered based on user input.\n\n**Available Filters:**\n- `filterByText`: Default substring matching (case-insensitive)\n- `filterByStartsWith`: Prefix matching\n- `filterByCaseSensitive`: Exact case substring matching\n- `filterByWordBoundary`: Word boundary matching\n- `filterByFuzzy`: Fuzzy matching (characters in order)\n- `createMultiPropertyFilter`: Search across multiple object properties\n- `createRankedFilter`: Custom scoring/ranking logic\n- `createMultiTermFilter`: OR logic for multiple search terms\n- `createSectionAwareFilter`: Preserves section structure while filtering",
+  "displayName": "filters",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

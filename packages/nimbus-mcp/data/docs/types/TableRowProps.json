@@ -1,0 +1,9 @@
+{
+  "tags": {},
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Props for the Table.Row component\n\nIndividual table row (tr element).",
+  "displayName": "TableRowProps",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}

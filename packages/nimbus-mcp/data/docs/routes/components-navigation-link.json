@@ -1,0 +1,554 @@
+{
+  "meta": {
+    "id": "Components-link",
+    "title": "Link",
+    "exportName": "Link",
+    "description": "A link is a clickable element that navigates users to another page, section of the page, or resource, and is visually distinguished by styling.",
+    "lifecycleState": "Stable",
+    "order": 999,
+    "repoPath": "packages/nimbus/src/components/link/link.mdx",
+    "menu": [
+      "Components",
+      "Navigation",
+      "Link"
+    ],
+    "route": "components/navigation/link",
+    "tags": [
+      "component",
+      "link",
+      "anchor",
+      "navigation",
+      "href"
+    ],
+    "toc": [
+      {
+        "value": "Overview",
+        "href": "#overview",
+        "depth": 2,
+        "numbering": [
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Resources",
+        "href": "#resources",
+        "depth": 3,
+        "numbering": [
+          1,
+          1,
+          1
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Variables",
+        "href": "#variables",
+        "depth": 2,
+        "numbering": [
+          1,
+          2
+        ],
+        "parent": "root"
+      },
+      {
+        "value": "Size and text styling",
+        "href": "#size-and-text-styling",
+        "depth": 3,
+        "numbering": [
+          1,
+          2,
+          1
+        ],
+        "parent": "root"
+      }
+    ],
+    "figmaLink": "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=384-5726",
+    "layout": "app-frame",
+    "tabs": [
+      {
+        "key": "overview",
+        "title": "Overview",
+        "order": 0
+      },
+      {
+        "key": "guidelines",
+        "title": "Guidelines",
+        "order": 2
+      },
+      {
+        "key": "dev",
+        "title": "Implementation",
+        "order": 3
+      },
+      {
+        "key": "a11y",
+        "title": "Accessibility",
+        "order": 4
+      }
+    ]
+  },
+  "mdx": "\n## Overview\n\nThe link is flexible to many uses and matching text styles for common\nplacements. Most commonly used in dialog boxes, alerts, and within body copy.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[React ARIA](https://react-spectrum.adobe.com/react-spectrum/Link.html#link)\n[ARIA Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/link/)\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=384-5726)\n\n## Variables\n\nGet familiar with the features.\n\n### Size and text styling\n\nLinks should be within text, and should take on that styling when used, and\nprovide the additional link stylings to let the user know that the text is\ninteractive.\n",
+  "views": {
+    "overview": {
+      "mdx": "\n## Overview\n\nThe link is flexible to many uses and matching text styles for common\nplacements. Most commonly used in dialog boxes, alerts, and within body copy.\n\n### Resources\n\nDeep dive into implementation details and access the Nimbus design library.\n\n[React ARIA](https://react-spectrum.adobe.com/react-spectrum/Link.html#link)\n[ARIA Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/link/)\n[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=384-5726)\n\n## Variables\n\nGet familiar with the features.\n\n### Size and text styling\n\nLinks should be within text, and should take on that styling when used, and\nprovide the additional link stylings to let the user know that the text is\ninteractive.\n",
+      "toc": [
+        {
+          "value": "Overview",
+          "href": "#overview",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Variables",
+          "href": "#variables",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size and text styling",
+          "href": "#size-and-text-styling",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "a11y": {
+      "mdx": "\n## Accessibility\n\nAccessibility ensures that digital content and functionality are usable by\neveryone, including people with disabilities, by addressing visual, auditory,\ncognitive, and physical limitations.\n\n```jsx live\nconst App = () =>  (\n  <Link href=\"#\" size=\"md\" fontColor=\"primary\">\n    Click me... with your keyboard\n  </Link>\n );\n```\n\n### Accessibility standards\n\n- **Non-text content:** Provide text alternatives for any non-text content\n  within or associated with links (e.g., icons embedded in links). Use alt text\n  for images within links and provide text equivalents for other non-text\n  content.\n- **Use of color:** Avoid relying solely on color to distinguish links from\n  surrounding text. Provide additional visual cues, such as underlines, bold\n  text, or icons, to indicate links. Ensure that links remain distinguishable\n  even when color is not available.\n- **Color contrast:** Ensure sufficient color contrast between link text and the\n  surrounding text and background. Use a contrast checking tool to verify that\n  the contrast ratio meets the minimum requirements.\n- **Keyboard accessibility:** Make all links fully operable using the keyboard.\n  Enable users to navigate to links using the Tab key. Allow users to activate\n  links using the Enter key.\n- **Link purpose:** Write link text that clearly describes the destination or\n  purpose of the link. Avoid generic link text such as \"click here\" or \"read\n  more\" without sufficient context. Ensure that the link's purpose is clear from\n  the surrounding context.\n- **Focus visible:** Provide a clear and visible focus indicator for links when\n  they receive keyboard focus. Visually distinguish the focus state from the\n  default state using outlines, highlights, or other visual cues. Avoid relying\n  solely on color changes to indicate focus.\n- **Language of parts:** If a link leads to content in a different language, use\n  the `lang` attribute to indicate the language of the linked content.\n- **On focus:** Prevent links from unexpectedly changing the context of the page\n  when they receive focus. Ensure that any context changes are initiated by the\n  user activating the link.\n- **Name, role, value:** Use the `<a>` element correctly to define links. Ensure\n  that assistive technologies can correctly interpret links and their\n  attributes. Use ARIA attributes (e.g., `aria-label`, `aria-describedby`) when\n  necessary to provide additional information to assistive technologies,\n  especially for complex links or custom implementations.\n",
+      "toc": [
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility standards",
+          "href": "#accessibility-standards",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "dev": {
+      "mdx": "\n## Getting started\n\n### Import\n\n```tsx\nimport { Link, type LinkProps } from '@commercetools/nimbus';\n```\n\n### Basic usage\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Link href=\"#\">\n      Go to Dashboard\n    </Link>\n  );\n};\n```\n\n## Usage examples\n\n### Size options\n\nThe Link component supports three size variants: `xs`, `sm`, and `md` (default).\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Link href=\"#\" size=\"xs\">\n        Extra small link\n      </Link>\n      <Link href=\"#\" size=\"sm\">\n        Small link\n      </Link>\n      <Link href=\"#\" size=\"md\">\n        Medium link (default)\n      </Link>\n    </Stack>\n  );\n};\n```\n\n### Font color variants\n\nControl the link color with the `fontColor` prop. Use `primary` for the theme's primary color or `inherit` to match the parent text color.\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Text>\n        This text contains a <Link href=\"#\" fontColor=\"primary\">primary colored link</Link> inline.\n      </Text>\n      <Text>\n        This text contains a <Link href=\"#\" fontColor=\"inherit\">link that inherits</Link> the text color.\n      </Text>\n    </Stack>\n  );\n};\n```\n\n### Opening links in new tabs\n\nFor external links, use `target=\"_blank\"` with `rel=\"noopener noreferrer\"` for security.\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Link\n      href=\"https://commercetools.com\"\n      target=\"_blank\"\n      rel=\"noopener noreferrer\"\n    >\n      Visit commercetools.com (opens in new tab)\n    </Link>\n  );\n};\n```\n\n### Download links\n\nUse the `download` attribute to prompt file downloads.\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Link\n      href=\"/files/report.pdf\"\n      download=\"monthly-report.pdf\"\n    >\n      Download Monthly Report\n    </Link>\n  );\n};\n```\n\n### With icons\n\nCombine links with icons for enhanced visual communication.\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Link href=\"https://docs.example.com\" target=\"_blank\" rel=\"noopener noreferrer\">\n        <Icons.OpenInNew />\n        Documentation\n      </Link>\n      <Link href=\"/files/guide.pdf\" download>\n        <Icons.Download />\n        Download Guide\n      </Link>\n      <Link href=\"mailto:support@example.com\">\n        <Icons.Email />\n        Email Support\n      </Link>\n    </Stack>\n  );\n};\n```\n\n### Using asChild pattern\n\nThe `asChild` prop allows you to use custom elements while maintaining Link's styling and behavior.\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Link asChild href=\"/profile\">\n      <button type=\"button\">\n        View Profile\n      </button>\n    </Link>\n  );\n};\n```\n\n### Email and phone links\n\nCreate accessible mailto and tel links.\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Link href=\"mailto:support@example.com\">\n        support@example.com\n      </Link>\n      <Link href=\"tel:+1234567890\">\n        +1 (234) 567-890\n      </Link>\n    </Stack>\n  );\n};\n```\n\n## Component requirements\n\n### Role\n\nThe Link component renders as an anchor (`<a>`) element by default with the implicit `link` role, providing proper semantic meaning for assistive technologies.\n\n## Accessibility\n\nLinks must have accessible labels that clearly describe their destination or purpose:\n\n- Use descriptive link text that makes sense out of context\n- Avoid generic text like \"click here\" or \"read more\"\n- For icon-only links, provide an `aria-label`\n\n```jsx live-dev\nconst App = () => {\n  return (\n    <Stack direction=\"column\" gap=\"400\">\n      <Link href=\"/articles/new-feature\" aria-label=\"Read article about new feature\">\n        <Icons.Article />\n      </Link>\n      <Text>\n        Learn more about our <Link href=\"/features\">product features</Link>.\n      </Text>\n    </Stack>\n  );\n};\n```\n\nIf your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:\n\n```tsx\nconst PERSISTENT_ID = \"header-dashboard-link\";\n\nexport const Example = () => (\n  <Link id={PERSISTENT_ID} href=\"/dashboard\">\n    Dashboard\n  </Link>\n);\n```\n\n### Keyboard navigation\n\nThe Link component supports standard keyboard interactions:\n\n| Key | Action |\n|-----|--------|\n| `Tab` | Move focus to/from the link |\n| `Enter` | Activate the link |\n| `Shift + Tab` | Move focus to previous focusable element |\n\n\n## API reference\n\n<PropsTable id=\"Link\" />\n\n## Common patterns\n\n### External links with security\n\nAlways use `rel=\"noopener noreferrer\"` when opening external links in new tabs to prevent security vulnerabilities.\n\n```tsx\n<Link\n  href=\"https://external-site.com\"\n  target=\"_blank\"\n  rel=\"noopener noreferrer\"\n>\n  External Link\n</Link>\n```\n\n### Navigation links with state\n\nWhen using with routing libraries like React Router, use the `asChild` pattern:\n\n```tsx\nimport { Link as RouterLink } from 'react-router-dom';\n\n<Link asChild>\n  <RouterLink to=\"/dashboard\">\n    Dashboard\n  </RouterLink>\n</Link>\n```\n\n### Conditional link styling\n\nCombine with Chakra UI style props for custom styling:\n\n```tsx\n<Link\n  href=\"/profile\"\n  fontWeight=\"bold\"\n  textDecoration=\"none\"\n  _hover={{ textDecoration: \"underline\" }}\n>\n  Profile\n</Link>\n```\n\n## Testing your implementation\n\nThese examples demonstrate how to test your implementation when using Link within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.\n\n### Basic Rendering Tests\n\nVerify the Link component renders with expected elements and attributes\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Link, NimbusProvider } from \"@commercetools/nimbus\";\nimport type { NimbusRouterConfig } from \"../nimbus-provider/nimbus-provider.types\";\n\ndescribe(\"Link - Basic rendering\", () => {\n  it(\"renders a link with text content\", () => {\n    render(\n      <NimbusProvider>\n        <Link href=\"/dashboard\">Go to Dashboard</Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\", { name: \"Go to Dashboard\" });\n    expect(link).toBeInTheDocument();\n    expect(link).toHaveAttribute(\"href\", \"/dashboard\");\n  });\n\n  it(\"renders with custom href\", () => {\n    render(\n      <NimbusProvider>\n        <Link href=\"https://commercetools.com\">Visit Site</Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\");\n    expect(link).toHaveAttribute(\"href\", \"https://commercetools.com\");\n  });\n\n  it(\"forwards ref to anchor element\", () => {\n    const ref = { current: null };\n    render(\n      <NimbusProvider>\n        <Link href=\"/page\" ref={ref}>\n          Link with Ref\n        </Link>\n      </NimbusProvider>\n    );\n\n    expect(ref.current).toBeInstanceOf(HTMLAnchorElement);\n  });\n});\n```\n\n### Navigation Tests\n\nTest link navigation behavior and click handling\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Link, NimbusProvider } from \"@commercetools/nimbus\";\nimport type { NimbusRouterConfig } from \"../nimbus-provider/nimbus-provider.types\";\n\ndescribe(\"Link - Navigation\", () => {\n  it(\"handles click events\", async () => {\n    const user = userEvent.setup();\n    const handleClick = vi.fn();\n\n    render(\n      <NimbusProvider router={mockRouter}>\n        <Link href=\"/page\" onClick={handleClick}>\n          Clickable Link\n        </Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\");\n    await user.click(link);\n\n    expect(handleClick).toHaveBeenCalled();\n  });\n\n  it(\"supports keyboard activation with Enter key\", async () => {\n    const user = userEvent.setup();\n    const handleClick = vi.fn();\n\n    render(\n      <NimbusProvider router={mockRouter}>\n        <Link href=\"/page\" onClick={handleClick}>\n          Keyboard Link\n        </Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\");\n    link.focus();\n    await user.keyboard(\"{Enter}\");\n\n    expect(handleClick).toHaveBeenCalled();\n  });\n\n  it(\"is focusable with Tab key\", async () => {\n    const user = userEvent.setup();\n\n    render(\n      <NimbusProvider>\n        <Link href=\"/page\">Focusable Link</Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\");\n    await user.tab();\n\n    expect(link).toHaveFocus();\n  });\n});\n```\n\n### External Link Tests\n\nTest external link behavior with target and rel attributes\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Link, NimbusProvider } from \"@commercetools/nimbus\";\nimport type { NimbusRouterConfig } from \"../nimbus-provider/nimbus-provider.types\";\n\ndescribe(\"Link - External links\", () => {\n  it(\"opens external links in new tab with proper security attributes\", () => {\n    render(\n      <NimbusProvider>\n        <Link\n          href=\"https://external-site.com\"\n          target=\"_blank\"\n          rel=\"noopener noreferrer\"\n        >\n          External Link\n        </Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\");\n    expect(link).toHaveAttribute(\"target\", \"_blank\");\n    expect(link).toHaveAttribute(\"rel\", \"noopener noreferrer\");\n  });\n\n  it(\"supports download attribute for file downloads\", () => {\n    render(\n      <NimbusProvider>\n        <Link href=\"/files/report.pdf\" download=\"report.pdf\">\n          Download Report\n        </Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\");\n    expect(link).toHaveAttribute(\"download\", \"report.pdf\");\n  });\n});\n```\n\n### Size Variant Tests\n\nVerify different size options render correctly\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Link, NimbusProvider } from \"@commercetools/nimbus\";\nimport type { NimbusRouterConfig } from \"../nimbus-provider/nimbus-provider.types\";\n\ndescribe(\"Link - Size variants\", () => {\n  it(\"renders with extra small size\", () => {\n    render(\n      <NimbusProvider>\n        <Link href=\"/page\" size=\"xs\">\n          Extra Small Link\n        </Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\");\n    expect(link).toBeInTheDocument();\n  });\n\n  it(\"renders with small size\", () => {\n    render(\n      <NimbusProvider>\n        <Link href=\"/page\" size=\"sm\">\n          Small Link\n        </Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\");\n    expect(link).toBeInTheDocument();\n  });\n\n  it(\"renders with medium size (default)\", () => {\n    render(\n      <NimbusProvider>\n        <Link href=\"/page\" size=\"md\">\n          Medium Link\n        </Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\");\n    expect(link).toBeInTheDocument();\n  });\n});\n```\n\n### Font Color Variant Tests\n\nVerify different font color options render correctly\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Link, NimbusProvider } from \"@commercetools/nimbus\";\nimport type { NimbusRouterConfig } from \"../nimbus-provider/nimbus-provider.types\";\n\ndescribe(\"Link - Font color variants\", () => {\n  it(\"renders with primary color\", () => {\n    render(\n      <NimbusProvider>\n        <Link href=\"/page\" fontColor=\"primary\">\n          Primary Link\n        </Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\");\n    expect(link).toBeInTheDocument();\n  });\n\n  it(\"renders with inherited color\", () => {\n    render(\n      <NimbusProvider>\n        <Link href=\"/page\" fontColor=\"inherit\">\n          Inherited Color Link\n        </Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\");\n    expect(link).toBeInTheDocument();\n  });\n});\n```\n\n### Accessibility Tests\n\nVerify accessibility features and ARIA attributes\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Link, NimbusProvider } from \"@commercetools/nimbus\";\nimport type { NimbusRouterConfig } from \"../nimbus-provider/nimbus-provider.types\";\n\ndescribe(\"Link - Accessibility\", () => {\n  it(\"supports aria-label for icon-only links\", () => {\n    render(\n      <NimbusProvider>\n        <Link href=\"/profile\" aria-label=\"View user profile\">\n          👤\n        </Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\", { name: \"View user profile\" });\n    expect(link).toBeInTheDocument();\n  });\n\n  it(\"supports custom id for tracking\", () => {\n    render(\n      <NimbusProvider>\n        <Link href=\"/page\" id=\"nav-dashboard-link\">\n          Dashboard\n        </Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\");\n    expect(link).toHaveAttribute(\"id\", \"nav-dashboard-link\");\n  });\n\n  it(\"supports data attributes for testing\", () => {\n    render(\n      <NimbusProvider>\n        <Link href=\"/page\" data-testid=\"custom-link\">\n          Test Link\n        </Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByTestId(\"custom-link\");\n    expect(link).toBeInTheDocument();\n  });\n});\n```\n\n### Special Link Types Tests\n\nTest email, phone, and other special link types\n\n```tsx\nimport { describe, it, expect, vi } from \"vitest\";\nimport { render, screen } from \"@testing-library/react\";\nimport userEvent from \"@testing-library/user-event\";\nimport { Link, NimbusProvider } from \"@commercetools/nimbus\";\nimport type { NimbusRouterConfig } from \"../nimbus-provider/nimbus-provider.types\";\n\ndescribe(\"Link - Special link types\", () => {\n  it(\"creates mailto links correctly\", () => {\n    render(\n      <NimbusProvider>\n        <Link href=\"mailto:support@example.com\">Email Support</Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\");\n    expect(link).toHaveAttribute(\"href\", \"mailto:support@example.com\");\n  });\n\n  it(\"creates tel links correctly\", () => {\n    render(\n      <NimbusProvider>\n        <Link href=\"tel:+1234567890\">Call Us</Link>\n      </NimbusProvider>\n    );\n\n    const link = screen.getByRole(\"link\");\n    expect(link).toHaveAttribute(\"href\", \"tel:+1234567890\");\n  });\n});\n```\n\n\n## Resources\n\n- [Link Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-link--docs)\n- [React Aria Link](https://react-spectrum.adobe.com/react-aria/Link.html)\n- [WCAG Link Guidelines](https://www.w3.org/WAI/WCAG21/Understanding/link-purpose-in-context.html)\n",
+      "toc": [
+        {
+          "value": "Getting started",
+          "href": "#getting-started",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Import",
+          "href": "#import",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic usage",
+          "href": "#basic-usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage examples",
+          "href": "#usage-examples",
+          "depth": 2,
+          "numbering": [
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size options",
+          "href": "#size-options",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Font color variants",
+          "href": "#font-color-variants",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Opening links in new tabs",
+          "href": "#opening-links-in-new-tabs",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Download links",
+          "href": "#download-links",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "With icons",
+          "href": "#with-icons",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Using asChild pattern",
+          "href": "#using-aschild-pattern",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Email and phone links",
+          "href": "#email-and-phone-links",
+          "depth": 3,
+          "numbering": [
+            1,
+            2,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Component requirements",
+          "href": "#component-requirements",
+          "depth": 2,
+          "numbering": [
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Role",
+          "href": "#role",
+          "depth": 3,
+          "numbering": [
+            1,
+            3,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility",
+          "href": "#accessibility",
+          "depth": 2,
+          "numbering": [
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Keyboard navigation",
+          "href": "#keyboard-navigation",
+          "depth": 3,
+          "numbering": [
+            1,
+            4,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "API reference",
+          "href": "#api-reference",
+          "depth": 2,
+          "numbering": [
+            1,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Common patterns",
+          "href": "#common-patterns",
+          "depth": 2,
+          "numbering": [
+            1,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "External links with security",
+          "href": "#external-links-with-security",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Navigation links with state",
+          "href": "#navigation-links-with-state",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Conditional link styling",
+          "href": "#conditional-link-styling",
+          "depth": 3,
+          "numbering": [
+            1,
+            6,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Testing your implementation",
+          "href": "#testing-your-implementation",
+          "depth": 2,
+          "numbering": [
+            1,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Basic Rendering Tests",
+          "href": "#basic-rendering-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Navigation Tests",
+          "href": "#navigation-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "External Link Tests",
+          "href": "#external-link-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Size Variant Tests",
+          "href": "#size-variant-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Font Color Variant Tests",
+          "href": "#font-color-variant-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            5
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Accessibility Tests",
+          "href": "#accessibility-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            6
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Special Link Types Tests",
+          "href": "#special-link-types-tests",
+          "depth": 3,
+          "numbering": [
+            1,
+            7,
+            7
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Resources",
+          "href": "#resources",
+          "depth": 2,
+          "numbering": [
+            1,
+            8
+          ],
+          "parent": "root"
+        }
+      ]
+    },
+    "guidelines": {
+      "mdx": "\n## Guidelines\n\nLink guidelines ensure that interactive text or elements are clearly\nidentifiable, describe their destination or function, are keyboard accessible,\nand maintain sufficient visual contrast for all users.\n\n### Best practices\n\n- **Links are meant to be used in inline placements, buttons are standalone\n  elements.** Additionally, if you need an icon next to your link, use a link\n  styled button instead of using a link and an icon.\n- **Use links for navigation** rather than to complete an action. Links are\n  tertiary actions should give users access to information or navigate to other\n  pages when helpful to the user.\n  - Stylized navigation like footers and nav items are more often buttons rather\n    than links.\n- **Use clear and concise text:** Use link text that accurately and concisely\n  describes the destination or purpose of the link. Avoid generic phrases like\n  \"click here\". Remember that translation will add 20% more length on average.\n- **Accessibility:** Default color contrast passes accessibility guidelines, if\n  customizing, please ensure your links pass color contrast guidelines. Use ARIA\n  attributes to provide additional context to assistive technologies.\n\n### Usage\n\nLinked text, the clickable text that forms a hyperlink, should be used\nstrategically to enhance navigation and provide access to relevant information.\n\n> [!TIP]\\\n> When to use\n\n- **Navigation:** Users expect links to move them from to one location to\n  another within a product. When moving outside the product or when opening a\n  new page, use the\n  [link styled button](/components/inputs/button#tertiary-actions).\n- **Tertiary actions that need explanation:** when showing a user an error or\n  explanation it is nice to offer a link for the user.\n- **Contextual information:** To provide access to related content, definitions,\n  or supporting materials.\n\n> [!CAUTION]\\\n> When not to use\n\n- **Redundancy:** If the same destination can be reached through more intuitive\n  navigation (e.g., menus, breadcrumbs).\n- **Disrupting flow:** Overuse of links within paragraphs can disrupt the\n  reading flow and make it difficult for users to focus on the main content.\n- **Ambiguity:** If the link text is unclear or doesn't accurately describe the\n  destination, it can lead to confusion and frustration.\n- **Accessibility issues:** If links are not properly styled or labeled, they\n  can be inaccessible to users with disabilities.\n\n### Length of text\n\nKeep text links short and accurately describe the action that will be taken.\n\n> [!TIP]\\\n> **Do**\n>\n> - Explain where the link will go clearly, but keep it short as possible.\n\n```jsx live\nconst App = () => (\n  <Link href=\"#\" size=\"sm\" fontColor=\"primary\">\n    Manage permissions\n  </Link>\n );\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not make an entire sentence a hyperlink.\n\n```jsx live\nconst App = () => (\n  <Link href=\"#\" size=\"sm\" fontColor=\"primary\">\n    Click here to know all there is to know about making custom views in the Merchant Center.\n  </Link>\n );\n```\n\n### Actions\n\nUsers expect links to navigate rather than submit actions. Do not use links to\ndo what a button would accomplish better.\n\n> [!TIP]\\\n> **Do**\n>\n> - Implementations like this are more familiar to the user. They will expect to\n>   navigate to the page where they can accomplish this action.\n\n```jsx live\nconst App = () =>  (\n   <Box>\n    There has been an issue with your payment.{\" \"}\n    <Link href=\"#\" fontColor=\"primary\">\n      Update payment\n    </Link>\n  </Box>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not use links for actions that buttons are more commonly used for.\n\n```jsx live\nconst App = () => (\n   <Stack direction=\"horizontal\" alignItems=\"center\" gap=\"400\" >\n     <Link href=\"#\" fontColor=\"primary\">\n      Save\n     </Link>\n     <Link href=\"#\" fontColor=\"primary\">\n      Delete\n     </Link>\n  </Stack>\n);\n```\n\n### Links inside alerts\n\nText links inherit colors depending on placement.\n\n> [!TIP]\\\n> **Do**\n>\n> - If possible lead the user to where they can fix or learn more about what\n>   happened so they might correct the action to complete their task.\n\n```jsx live\nconst App = () =>  (\n  <Alert.Root colorPalette=\"critical\" variant=\"outlined\" width=\"9600\">\n    <Alert.Description>\n     Something went wrong. <Link>Read more</Link>\n    </Alert.Description>\n    <Alert.DismissButton />\n  </Alert.Root>\n);\n```\n\n> [!CAUTION]\\\n> **Don't**\n>\n> - Do not link the entire message, do not have multiple sentences in a link.\n> - Do not use default link colors when you can use inherited colors to provide\n>   the best consistency for a user.\n\n```jsx live\nconst App = () =>(\n  <Alert.Root colorPalette=\"critical\" variant=\"outlined\" width=\"9600\">\n    <Alert.Description>\n     <Link color=\"primary\">Something went wrong. Read more</Link>\n    </Alert.Description>\n    <Alert.DismissButton />\n  </Alert.Root>\n);\n```\n",
+      "toc": [
+        {
+          "value": "Guidelines",
+          "href": "#guidelines",
+          "depth": 2,
+          "numbering": [
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Best practices",
+          "href": "#best-practices",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            1
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Usage",
+          "href": "#usage",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            2
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Length of text",
+          "href": "#length-of-text",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            3
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Actions",
+          "href": "#actions",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            4
+          ],
+          "parent": "root"
+        },
+        {
+          "value": "Links inside alerts",
+          "href": "#links-inside-alerts",
+          "depth": 3,
+          "numbering": [
+            1,
+            1,
+            5
+          ],
+          "parent": "root"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "tags": {
+    "see": "{@link https://nimbus-documentation.vercel.app/components/feedback/alert}",
+    "example": "```tsx\n<Alert.Root tone=\"info\" variant=\"outlined\">\n  <Alert.Title>Information</Alert.Title>\n  <Alert.Description>This is an informational alert message.</Alert.Description>\n</Alert.Root>\n```"
+  },
+  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
+  "description": "Alert\n============================================================\nProvides feedback to the user about the status of an action or system event",
+  "displayName": "Alert",
+  "methods": [],
+  "props": {},
+  "supportsStyleProps": false
+}
