@@ -13,7 +13,7 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
     "dev": "tsx src/index.ts",
     "mcp-inspector": "mcp-inspector tsx src/index.ts",
     "mcp-inspector:cli": "mcp-inspector --cli tsx src/index.ts"
@@ -26,7 +26,8 @@
   "devDependencies": {
     "@modelcontextprotocol/inspector": "catalog:tooling",
     "@types/node": "catalog:utils",
-    "typescript": "catalog:tooling",
-    "tsx": "catalog:tooling"
+    "tsup": "catalog:tooling",
+    "tsx": "catalog:tooling",
+    "typescript": "catalog:tooling"
   }
 }
