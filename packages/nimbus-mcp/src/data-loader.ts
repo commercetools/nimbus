@@ -22,32 +22,16 @@ function findPackageRoot(): string {
 
 const PACKAGE_ROOT = findPackageRoot();
 
-/** Path to route-manifest.json when running inside the monorepo. */
-const MONOREPO_DATA_DIR = resolve(PACKAGE_ROOT, "../../apps/docs/src/data");
+/**
+ * Root data directory. Prebuild steps populate subdirectories here:
+ * - data/docs/  — docs data (copy-docs-data.mjs)
+ * - data/...    — future data sources
+ */
+const DATA_DIR = resolve(PACKAGE_ROOT, "data");
 
-/** Path to bundled data shipped with the npm package. */
-const BUNDLED_DATA_DIR = resolve(PACKAGE_ROOT, "data");
-
-/** Marker file used to detect monorepo mode. */
-const MONOREPO_MARKER = resolve(MONOREPO_DATA_DIR, "route-manifest.json");
-
-// ---------------------------------------------------------------------------
-// Mode detection
-// ---------------------------------------------------------------------------
-
-let _isMonorepo: boolean | null = null;
-
-/** Returns `true` when running inside the Nimbus monorepo. */
-export function isMonorepoMode(): boolean {
-  if (_isMonorepo === null) {
-    _isMonorepo = existsSync(MONOREPO_MARKER);
-  }
-  return _isMonorepo;
-}
-
-/** Returns the resolved data directory for the current mode. */
+/** Returns the root data directory. */
 export function getDataDir(): string {
-  return isMonorepoMode() ? MONOREPO_DATA_DIR : BUNDLED_DATA_DIR;
+  return DATA_DIR;
 }
 
 // ---------------------------------------------------------------------------
@@ -95,7 +79,9 @@ export interface RouteManifest {
   routes: RouteManifestEntry[];
 }
 
-export const getRouteManifest = lazyJson<RouteManifest>("route-manifest.json");
+export const getRouteManifest = lazyJson<RouteManifest>(
+  "docs/route-manifest.json"
+);
 
 // ---------------------------------------------------------------------------
 // Per-component route data
@@ -120,7 +106,7 @@ export interface RouteData {
  * Example: `getRouteData("components-inputs-button")`
  */
 export async function getRouteData(slug: string): Promise<RouteData> {
-  const fullPath = resolve(getDataDir(), "routes", `${slug}.json`);
+  const fullPath = resolve(getDataDir(), "docs/routes", `${slug}.json`);
   return readJson<RouteData>(fullPath);
 }
 
@@ -151,7 +137,7 @@ export interface TypeData {
  * Example: `getTypeData("Button")`
  */
 export async function getTypeData(componentName: string): Promise<TypeData> {
-  const fullPath = resolve(getDataDir(), "types", `${componentName}.json`);
+  const fullPath = resolve(getDataDir(), "docs/types", `${componentName}.json`);
   return readJson<TypeData>(fullPath);
 }
 
@@ -159,7 +145,7 @@ export async function getTypeData(componentName: string): Promise<TypeData> {
 // Types index
 // ---------------------------------------------------------------------------
 
-export const getTypesIndex = lazyJson<TypeData[]>("types.json");
+export const getTypesIndex = lazyJson<TypeData[]>("docs/types.json");
 
 // ---------------------------------------------------------------------------
 // Search index
@@ -175,7 +161,9 @@ export interface SearchIndexEntry {
   content: string;
 }
 
-export const getSearchIndex = lazyJson<SearchIndexEntry[]>("search-index.json");
+export const getSearchIndex = lazyJson<SearchIndexEntry[]>(
+  "docs/search-index.json"
+);
 
 // ---------------------------------------------------------------------------
 // Docs (token / icon data is embedded in the docs.json manifest)
@@ -196,7 +184,7 @@ export interface DocEntry {
 
 export type DocsManifest = Record<string, DocEntry>;
 
-export const getDocsManifest = lazyJson<DocsManifest>("docs.json");
+export const getDocsManifest = lazyJson<DocsManifest>("docs/docs.json");
 
 // ---------------------------------------------------------------------------
 // Convenience: token data

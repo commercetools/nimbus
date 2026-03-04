@@ -68,9 +68,12 @@ pnpm install
 pnpm --filter @commercetools/nimbus-mcp build
 ```
 
-### Running from source (no build needed)
+### Running from source
+
+Requires a prebuild to copy docs data first:
 
 ```bash
+pnpm --filter @commercetools/nimbus-mcp prebuild
 pnpm --filter @commercetools/nimbus-mcp dev
 ```
 
@@ -131,14 +134,43 @@ export function registerMyTool(server: McpServer): void {
 
 That's it — no other files need changing.
 
-## Data Availability
+## Data & Build Pipeline
 
-The server has two runtime modes:
+The MCP server reads generated docs data (route manifest, search index, types,
+and per-component route JSON) from `data/docs/` inside the package directory.
 
-- **Monorepo mode** (detected automatically): reads live data from
-  `apps/docs/src/data/`. Run `pnpm build:docs` first to generate these files.
-- **Standalone mode** (npm package): reads from a bundled `data/` directory
-  shipped with the package.
+### How data gets into `data/docs/`
 
-Tools that depend on docs data will return a graceful error message if data
-files are not present.
+The package has a **prebuild** step that runs automatically before `tsup`:
+
+```
+pnpm build  →  pnpm prebuild  →  tsup
+                    │
+                    ▼
+            scripts/prebuild.mjs
+                    │
+                    ▼
+            scripts/copy-docs-data.mjs
+                    │
+    copies apps/docs/src/data/ → data/docs/
+```
+
+The prebuild orchestrator (`scripts/prebuild.mjs`) runs an array of steps in
+order. Currently the only step is `copy-docs-data`, which copies
+`route-manifest.json`, `search-index.json`, `routes/`, and `types/` from the
+docs app into `data/docs/`. New prebuild steps can be added to the array.
+
+The `data/` directory is gitignored — it is always regenerated at build time.
+
+### Build order (CI and local)
+
+```
+tokens → packages (excl. mcp) → docs-data → mcp (prebuild + tsup)
+```
+
+The root `build:docs-data` script runs only the docs data generation (not the
+full Vite app build), keeping CI fast. The full `pnpm build` runs the complete
+docs build which also produces the data files.
+
+Tools that depend on docs data return a graceful error message if data files are
+not present.
