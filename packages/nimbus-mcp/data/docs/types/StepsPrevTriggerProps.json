@@ -1,9 +1,0 @@
-{
-  "tags": {},
-  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
-  "description": "Props for the Steps.PrevTrigger component.\nNavigation button to go to previous step.",
-  "displayName": "StepsPrevTriggerProps",
-  "methods": [],
-  "props": {},
-  "supportsStyleProps": false
-}

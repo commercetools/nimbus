@@ -1,9 +1,0 @@
-{
-  "tags": {},
-  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
-  "description": "Props for the Table.Column component\n\nColumn definition (col element) for setting individual column properties.\nThe primary prop for this component is `htmlWidth` which sets the width attribute.",
-  "displayName": "TableColumnProps",
-  "methods": [],
-  "props": {},
-  "supportsStyleProps": false
-}

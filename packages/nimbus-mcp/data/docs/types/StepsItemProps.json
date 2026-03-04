@@ -1,9 +1,0 @@
-{
-  "tags": {},
-  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
-  "description": "Props for the Steps.Item component.\nContainer for a single step (trigger + separator).\nItems are automatically indexed based on render order.",
-  "displayName": "StepsItemProps",
-  "methods": [],
-  "props": {},
-  "supportsStyleProps": false
-}

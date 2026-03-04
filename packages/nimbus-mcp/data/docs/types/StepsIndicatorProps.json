@@ -1,9 +1,0 @@
-{
-  "tags": {},
-  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
-  "description": "Props for the Steps.Indicator component.\nVisual marker showing step status (number, icon, or custom content).",
-  "displayName": "StepsIndicatorProps",
-  "methods": [],
-  "props": {},
-  "supportsStyleProps": false
-}

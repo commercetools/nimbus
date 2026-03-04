@@ -1,9 +1,0 @@
-{
-  "tags": {},
-  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
-  "description": "Toast manager API for imperative toast control.",
-  "displayName": "ToastManagerApi",
-  "methods": [],
-  "props": {},
-  "supportsStyleProps": false
-}

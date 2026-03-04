@@ -1,0 +1,3 @@
+# Copied from apps/docs/src/data/ by prebuild step (scripts/copy-docs-data.mjs).
+# Always regenerated during `pnpm build` — no need to commit.
+data/

@@ -1,9 +1,0 @@
-{
-  "tags": {},
-  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
-  "description": "Formatter interface that provides a clean API for accessing localized messages.\nSimilar to React Aria's LocalizedStringFormatter but adapted for Nimbus's message structure.",
-  "displayName": "LocalizedStringFormatter",
-  "methods": [],
-  "props": {},
-  "supportsStyleProps": false
-}

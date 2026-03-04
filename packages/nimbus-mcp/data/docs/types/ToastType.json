@@ -1,9 +1,0 @@
-{
-  "tags": {},
-  "filePath": "/Users/byronwall/workspaces/ct/nimbus/packages/nimbus/src/index.ts",
-  "description": "Toast type determines visual styling and ARIA semantics.\n- info: Informational messages (role=\"status\", polite)\n- success: Success confirmations (role=\"status\", polite)\n- warning: Warning messages (role=\"status\", polite)\n- error: Error messages (role=\"alert\", assertive)",
-  "displayName": "ToastType",
-  "methods": [],
-  "props": {},
-  "supportsStyleProps": false
-}
