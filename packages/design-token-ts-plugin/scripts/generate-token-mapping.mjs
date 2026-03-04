@@ -1,5 +1,3 @@
-/* global console, process */
-
 /**
  * Generates a JSON mapping file containing resolved/formatted values for tokens
  * that the TS plugin can't handle from designTokens alone:

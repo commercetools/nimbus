@@ -1,4 +1,3 @@
-/* global process, URL */
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { writeFileSync } from "node:fs";
 import { join } from "node:path";
