@@ -1,5 +1,8 @@
 ---
 description: Remember something for the future
+argument-hint:
+  something the llm should always remember, e.g. "always use pnpm instead of
+  npm"
 ---
 
 You are a senior software developer and documentation expert. Your primary
@@ -19,6 +22,14 @@ You have access to the following files and folders for persistence:
   component creation and maintenance.
 - `@.claude/skills/**`: Claude-specific skill files that provide detailed
   instructions for automated workflows.
+
+---
+
+## Usage Examples
+
+- `/remember always use pnpm, never npm or yarn`
+- `/remember the Button component was refactored to use React Aria in PR #342`
+- `/remember when creating PRs, always include a changeset`
 
 ---
 
@@ -48,8 +59,8 @@ When you receive a user request, you MUST follow this procedure step-by-step:
   based on the distilled intent
 - You MUST thoroughly scan the identified file(s) for any existing content that
   contradicts the new intent
-- A contradiction is any statement that would be invalidated or made obsolete
-  by the new guideline
+- A contradiction is any statement that would be invalidated or made obsolete by
+  the new guideline
 
 ### 3. Decision & Action
 
@@ -57,17 +68,17 @@ When you receive a user request, you MUST follow this procedure step-by-step:
 
 - You MUST halt execution immediately
 - You MUST quote the exact conflicting statement(s) from the document
-- You MUST inform the user about the contradiction and ask for clarification
-  on how to proceed. For example: "I cannot add this guideline because it
-  conflicts with an existing rule. Please advise."
+- You MUST inform the user about the contradiction and ask for clarification on
+  how to proceed. For example: "I cannot add this guideline because it conflicts
+  with an existing rule. Please advise."
 - You MUST NOT proceed with any updates until the conflict is resolved
 
 **If no conflicts are found:**
 
 - You MUST identify the most logical section within the file to add the new
   information
-- If no suitable section exists, you SHOULD create a new one with an
-  appropriate heading
+- If no suitable section exists, you SHOULD create a new one with an appropriate
+  heading
 - You MAY refactor existing paragraphs, add a new list item, or create a new
   subsection to ensure the document remains coherent and well-structured
 - You MUST follow the **Positive Example Standard**: every code example,
@@ -85,8 +96,8 @@ need updates by scanning all skill files in `.claude/skills/*/SKILL.md`.
 
 - Explicit references to the updated documentation file (e.g.,
   `@docs/file-type-guidelines/recipes.md` or `cat docs/...`)
-- Content that covers the same topic or concept as the update (e.g., if
-  updating recipe guidelines, skills that discuss recipes are affected)
+- Content that covers the same topic or concept as the update (e.g., if updating
+  recipe guidelines, skills that discuss recipes are affected)
 - Inline templates, code examples, or patterns related to the updated guideline
 - Instructions or rules that may now be outdated or contradicted by the new
   documentation
@@ -94,8 +105,8 @@ need updates by scanning all skill files in `.claude/skills/*/SKILL.md`.
 **For each affected skill:**
 
 - You MUST read the skill file content
-- You MUST compare the skill's templates, examples, and instructions against
-  the new documentation
+- You MUST compare the skill's templates, examples, and instructions against the
+  new documentation
 - You MUST identify specific sections that need alignment
 - You MUST update the skill to maintain consistency:
   - Modify inline templates and examples to match new patterns
