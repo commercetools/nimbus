@@ -393,8 +393,20 @@ export const Menu = {
 };
 ```
 
+## Component vs Pattern
+
+Before diving into component architecture decisions, determine whether your new
+code is a **component** (new primitive with its own recipe/slots/React Aria) or
+a **pattern** (composition of existing components). This determines where the
+code lives (`src/components/` vs `src/patterns/`) and what file infrastructure
+is needed.
+
+See the full guide: **[Component vs Pattern](./component-vs-pattern.md)**
+
 ## Related Guidelines
 
+- [Component vs Pattern](./component-vs-pattern.md) - When to create a component
+  vs a pattern
 - [Main Component](./main-component.md) - Implementation patterns
 - [Compound Components](./compound-components.md) - Multi-part components
 - [Recipes](./recipes.md) - Styling decisions
