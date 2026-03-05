@@ -3,6 +3,12 @@
  */
 
 :root {
+  --aspect-ratio-square: 1;
+  --aspect-ratio-landscape: 1.3333;
+  --aspect-ratio-portrait: 0.75;
+  --aspect-ratio-wide: 1.7777;
+  --aspect-ratio-ultrawide: 3.6;
+  --aspect-ratio-golden: 1.618;
   --blur-100: 4px;
   --blur-200: 8px;
   --blur-300: 12px;
@@ -2151,6 +2157,11 @@
   --text-style-caption: [object Object];
   --text-style-detail: [object Object];
   --text-style-body: [object Object];
+  --letter-spacing-tighter: -5%;
+  --letter-spacing-tight: -2.5%;
+  --letter-spacing-wide: 2.5%;
+  --letter-spacing-wider: 5%;
+  --letter-spacing-widest: 10%;
   --size-25: 1px;
   --size-50: 2px;
   --size-100: 4px;
@@ -2282,6 +2293,10 @@
   --cursor-radio: default;
   --cursor-slider: default;
   --cursor-switch: pointer;
+  --animation-spin: spin 1s cubic-bezier(0, 0, 1, 1) infinite;
+  --animation-ping: ping 1s cubic-bezier(0, 0, 0.58, 1) infinite;
+  --animation-pulse: pulse 2s cubic-bezier(0.42, 0, 0.58, 1) infinite;
+  --animation-bounce: bounce 2s infinite;
   --breakpoints-sm: 480px;
   --breakpoints-md: 768px;
   --breakpoints-lg: 1024px;

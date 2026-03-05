@@ -4,24 +4,12 @@
 
 export default {
   aspectRatio: {
-    square: {
-      value: 1,
-    },
-    landscape: {
-      value: 1.3333,
-    },
-    portrait: {
-      value: 0.75,
-    },
-    wide: {
-      value: 1.7777,
-    },
-    ultrawide: {
-      value: 3.6,
-    },
-    golden: {
-      value: 1.618,
-    },
+    square: 1,
+    landscape: 1.3333,
+    portrait: 0.75,
+    wide: 1.7777,
+    ultrawide: 3.6,
+    golden: 1.618,
   },
   blur: {
     "100": "4px",
@@ -2686,21 +2674,11 @@ export default {
     },
   },
   letterSpacing: {
-    tighter: {
-      value: "-5%",
-    },
-    tight: {
-      value: "-2.5%",
-    },
-    wide: {
-      value: "2.5%",
-    },
-    wider: {
-      value: "5%",
-    },
-    widest: {
-      value: "10%",
-    },
+    tighter: "-5%",
+    tight: "-2.5%",
+    wide: "2.5%",
+    wider: "5%",
+    widest: "10%",
   },
   size: {
     "25": "1px",
@@ -2850,18 +2828,10 @@ export default {
     switch: "pointer",
   },
   animation: {
-    spin: {
-      value: "spin 1s cubic-bezier(0, 0, 1, 1) infinite",
-    },
-    ping: {
-      value: "ping 1s cubic-bezier(0, 0, 0.58, 1) infinite",
-    },
-    pulse: {
-      value: "pulse 2s cubic-bezier(0.42, 0, 0.58, 1) infinite",
-    },
-    bounce: {
-      value: "bounce 2s infinite",
-    },
+    spin: "spin 1s cubic-bezier(0, 0, 1, 1) infinite",
+    ping: "ping 1s cubic-bezier(0, 0, 0.58, 1) infinite",
+    pulse: "pulse 2s cubic-bezier(0.42, 0, 0.58, 1) infinite",
+    bounce: "bounce 2s infinite",
   },
   breakpoints: {
     sm: "480px",
