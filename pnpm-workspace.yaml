@@ -8,7 +8,7 @@ catalogs:
   tooling:
     "@fission-ai/openspec": ^1.2.0
     eslint-plugin-react-hooks: ^7.0.1
-    globals: ^17.3.0
+    globals: ^17.4.0
     glob: ^13.0.6
     typescript: ~5.9.3
     typescript-eslint: ^8.56.1
@@ -19,7 +19,7 @@ catalogs:
     "@babel/runtime": ^7.28.6
     "@babel/preset-typescript": ^7.28.5
     "@eslint/js": ^10.0.1
-    "@react-types/shared": ^3.33.0
+    "@react-types/shared": ^3.33.1
     eslint: ^10.0.2
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.5
