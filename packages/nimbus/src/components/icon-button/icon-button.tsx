@@ -12,7 +12,12 @@ import { Button } from "@/components";
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/iconbutton}
  */
 export const IconButton = (props: IconButtonProps) => {
-  const { children, ref: forwardedRef, ...restProps } = props;
+  const {
+    children,
+    ref: forwardedRef,
+    "aria-label": ariaLabel,
+    ...restProps
+  } = props;
 
   // Create a local ref and merge with forwarded ref
   const localRef = useRef<HTMLButtonElement>(null);
@@ -44,10 +49,10 @@ export const IconButton = (props: IconButtonProps) => {
 
       return () => clearTimeout(timeoutId);
     }
-  }, [props["aria-label"], restProps.slot]);
+  }, [ariaLabel, restProps.slot]);
 
   return (
-    <Button px={0} py={0} {...restProps} ref={ref}>
+    <Button px={0} py={0} aria-label={ariaLabel} {...restProps} ref={ref}>
       {children}
     </Button>
   );

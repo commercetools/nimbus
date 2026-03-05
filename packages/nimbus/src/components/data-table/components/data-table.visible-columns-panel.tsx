@@ -45,10 +45,6 @@ export const VisibleColumnsPanel = ({
   const [searchValue, setSearchValue] = useState("");
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
 
-  if (!hiddenItems || !visibleItems) {
-    return null;
-  }
-
   // Derive searched items from hiddenItems and searchValue using useMemo
   // This ensures searchedHiddenItems is always in sync on every render
   const searchedHiddenItems = useMemo(() => {
@@ -120,6 +116,10 @@ export const VisibleColumnsPanel = ({
     },
     [handleVisibleColumnsUpdate]
   );
+
+  if (!hiddenItems || !visibleItems) {
+    return null;
+  }
 
   return (
     <Stack mt="800">

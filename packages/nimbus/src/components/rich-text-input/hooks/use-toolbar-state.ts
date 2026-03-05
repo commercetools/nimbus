@@ -50,6 +50,7 @@ export const useToolbarState = ({
         isBlockActive(editor, type as CustomElement["type"])
       ) || "paragraph"
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection, editor.children]);
 
   const selectedTextStyle = textStyles.find((v) => v.id === currentTextStyle);
@@ -93,6 +94,7 @@ export const useToolbarState = ({
     if (isMarkActive(editor, "italic")) keys.push("italic");
     if (isMarkActive(editor, "underline")) keys.push("underline");
     return new Set(keys);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection, editor.children, Editor.marks(editor)]);
 
   // Get currently selected list formatting key
@@ -101,15 +103,18 @@ export const useToolbarState = ({
     if (isBlockActive(editor, "bulleted-list")) keys.push("bulleted-list");
     if (isBlockActive(editor, "numbered-list")) keys.push("numbered-list");
     return new Set(keys);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection, editor.children]);
 
   // Check history state for undo/redo buttons
   const hasUndos = useMemo(() => {
     return editor.history && editor.history.undos.length > 0;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection, editor.children]);
 
   const hasRedos = useMemo(() => {
     return editor.history && editor.history.redos.length > 0;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selection, editor.children]);
 
   return {

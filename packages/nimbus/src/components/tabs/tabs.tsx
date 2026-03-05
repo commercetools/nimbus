@@ -110,7 +110,14 @@ export const Tabs = {
   Panel: TabsPanel,
 };
 
-export type { TabsProps, TabListProps, TabItemProps } from "./tabs.types";
+export type {
+  TabsProps,
+  TabListProps,
+  TabProps,
+  TabPanelsProps,
+  TabPanelProps,
+  TabItemProps,
+} from "./tabs.types";
 
 /**
  * todo: get rid of this, this is needed for the react-docgen-typescript script

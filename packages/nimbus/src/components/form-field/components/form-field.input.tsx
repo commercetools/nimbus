@@ -19,6 +19,7 @@ export const FormFieldInput = ({
       input: children,
       inputSlotProps,
     }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children, setContext]);
 
   return null;

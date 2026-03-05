@@ -28,6 +28,7 @@ export const FormFieldError = ({
         errorSlotProps: undefined,
       }));
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children, setContext]);
 
   return null;
