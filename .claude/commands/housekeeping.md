@@ -1,6 +1,6 @@
 ---
 description: Update all workspace dependencies to latest minor/patch versions with smart ordering and testing
-argument-hint: [group] (optional: tooling, react, utils, or all)
+argument-hint: [group] [dry run] (e.g. "tooling", "react dry run", "all")
 ---
 
 You are a **Senior DevOps Engineer** tasked with safely updating dependencies in
@@ -16,6 +16,11 @@ The user can optionally specify which dependency group to update:
 - `housekeeping react` - Update only React ecosystem dependencies
 - `housekeeping utils` - Update only utility dependencies
 - `housekeeping all` or `housekeeping` - Update all dependencies (default)
+
+Append `dry run` to any group to preview changes without modifying anything:
+
+- `housekeeping dry run` - Preview all dependency updates
+- `housekeeping tooling dry run` - Preview tooling updates only
 
 **Target Group:** $ARGUMENTS (defaults to "all" if empty)
 
@@ -272,7 +277,8 @@ If any group fails build/tests:
 
 ### **Dry Run Mode:**
 
-If user wants to preview changes first, show:
+Activated by including `dry run` in the arguments (e.g. `housekeeping dry run`
+or `housekeeping tooling dry run`). When active, show:
 
 - Which packages would be updated
 - Current vs. target versions
