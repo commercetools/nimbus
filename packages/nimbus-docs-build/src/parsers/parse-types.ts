@@ -5,8 +5,10 @@
  * with access to proper tsconfig paths
  */
 import fs from "fs/promises";
+import path from "path";
 import docgen from "react-docgen-typescript";
 import type { ComponentDoc } from "react-docgen-typescript";
+import ts from "typescript";
 import { processComponentTypes } from "./process-types.js";
 import type { DocsBuilderConfig } from "../types/config.js";
 
@@ -31,8 +33,19 @@ export async function parseTypes(
       shouldRemoveUndefinedFromOptional: true,
     };
 
-    // Parse all types from the index file
-    const rawTypes = docgen.parse(indexPath, options);
+    // Find the tsconfig nearest to the component index file so that
+    // react-docgen-typescript inherits moduleResolution, paths, etc.
+    // Without this, subpath imports like @chakra-ui/react/styled-system
+    // fail to resolve and recipe props (variant, size, …) are lost.
+    const tsconfigPath = ts.findConfigFile(
+      path.dirname(indexPath),
+      ts.sys.fileExists,
+      "tsconfig.json"
+    );
+
+    const rawTypes = tsconfigPath
+      ? docgen.withCustomConfig(tsconfigPath, options).parse(indexPath)
+      : docgen.parse(indexPath, options);
 
     // Process types (filter + enrich)
     const processedTypes = processComponentTypes(rawTypes, config.propFilter);

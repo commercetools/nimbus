@@ -110,8 +110,8 @@ describe("get_component — props section", () => {
 
     const data = JSON.parse(text);
     expect(data.component).toBe("Button");
-    // Should have roughly 7 component-specific props, not ~50 total
-    expect(data.propCount).toBeLessThan(15);
+    // Should have the full API-reference prop set (not hundreds of DOM/system props)
+    expect(data.propCount).toBeLessThan(60);
     expect(data.propCount).toBeGreaterThan(0);
     expect(Array.isArray(data.props)).toBe(true);
   });
@@ -128,20 +128,20 @@ describe("get_component — props section", () => {
     expect(names).toContain("colorPalette");
   });
 
-  it("excludes inherited Chakra/React Aria props", async () => {
+  it("excludes low-level DOM/Chakra system props", async () => {
     const { text } = await callGetComponent(client, {
       name: "Button",
       section: "props",
     });
     const data = JSON.parse(text);
     const names = data.props.map((p: { name: string }) => p.name);
-    // These are inherited and should be filtered out
+    // Low-level DOM, Chakra system, and internal props should be filtered out
     expect(names).not.toContain("as");
     expect(names).not.toContain("asChild");
     expect(names).not.toContain("css");
     expect(names).not.toContain("unstyled");
-    expect(names).not.toContain("onPress");
-    expect(names).not.toContain("autoFocus");
+    expect(names).not.toContain("key");
+    expect(names).not.toContain("recipe");
   });
 
   it("each prop has the expected shape", async () => {

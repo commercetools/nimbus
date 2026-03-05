@@ -38,22 +38,27 @@ const VIEW_KEY_MAP: Record<string, string> = {
 // Props filtering
 // ---------------------------------------------------------------------------
 
-/** Parent type names that indicate an inherited (non-component-specific) prop. */
+/**
+ * Parent type names that indicate low-level inherited props which should be
+ * filtered out.  This matches the docs-site filter in nimbus-docs-build so
+ * the MCP tool returns the same prop set as the API reference page.
+ */
 const INHERITED_PARENT_NAMES = new Set([
+  // Low-level HTML / DOM
+  "HTMLAttributes",
+  "DOMAttributes",
+  "ButtonHTMLAttributes",
+  "GlobalDOMEvents",
+  "GlobalDOMAttributes",
+  "AriaAttributes",
+  "HtmlProps",
+  // Chakra system internals
+  "SystemProperties",
+  "Conditions",
+  // Chakra polymorphic / unstyled
   "PolymorphicProps",
   "JsxStyleProps",
   "UnstyledProp",
-  "AriaBaseButtonProps",
-  "AriaLabelingProps",
-  "FocusableProps",
-  "FocusableDOMProps",
-  "FocusEvents",
-  "KeyboardEvents",
-  "PressEvents",
-  "ButtonProps",
-  "LinkButtonProps",
-  "DOMProps",
-  "AriaButtonElementTypeProps",
 ]);
 
 interface FilteredProp {
@@ -64,10 +69,17 @@ interface FilteredProp {
   defaultValue?: string;
 }
 
-/** Filters type data to only component-specific props. */
+/** Props excluded by name (matches docs-site filter). */
+const EXCLUDED_PROP_NAMES = new Set(["key", "recipe"]);
+
+/** Filters type data to match the docs-site API reference. */
 function filterProps(typeData: TypeData): FilteredProp[] {
   return Object.values(typeData.props)
-    .filter((p) => !p.parent || !INHERITED_PARENT_NAMES.has(p.parent.name))
+    .filter(
+      (p) =>
+        !EXCLUDED_PROP_NAMES.has(p.name) &&
+        (!p.parent || !INHERITED_PARENT_NAMES.has(p.parent.name))
+    )
     .map((p) => {
       const prop: FilteredProp = {
         name: p.name,
