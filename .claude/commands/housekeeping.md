@@ -244,9 +244,45 @@ For each dependency group (or the specified target group):
    )"
    ```
 
-5. **Optional Changeset Creation:**
-   - Ask if user wants to create a changeset for these updates
-   - If yes, generate appropriate changeset entry
+5. **Changeset Creation (Required When Published Packages Are Affected):**
+
+   After all updates are committed, determine if any updated dependencies are
+   used by published packages. The published packages in this repo are:
+   `@commercetools/nimbus`, `@commercetools/nimbus-tokens`,
+   `@commercetools/nimbus-icons`, and
+   `@commercetools/nimbus-design-token-ts-plugin` (see `.changeset/config.json`
+   `fixed` array).
+
+   **When to create a changeset:**
+   - If ANY updated dependency appears in a published package's `dependencies`
+     or `peerDependencies` (not just `devDependencies`), you MUST create a
+     changeset
+   - The `react` and `utils` catalog groups almost always affect published
+     packages since they contain runtime dependencies
+   - The `tooling` catalog group typically does NOT require a changeset since
+     those are devDependencies only — but verify by checking if any tooling
+     package appears in a published package's `dependencies`
+
+   **How to create the changeset:**
+
+   Create a file at `.changeset/housekeeping-deps-update.md` (use a descriptive
+   name) with the following format:
+
+   ```markdown
+   ---
+   "@commercetools/nimbus": patch
+   ---
+
+   Update runtime dependencies: [list the key updated packages and version
+   bumps]
+   ```
+
+   - Use `patch` level since minor/patch dependency bumps are backward
+     compatible
+   - Only list the package(s) that actually have affected runtime dependencies
+     in the frontmatter (e.g., if only `@commercetools/nimbus` uses the updated
+     deps, only list that one)
+   - Include the changeset in the final commit before pushing
 
 ---
 
