@@ -27,9 +27,6 @@ export const ComboBoxHiddenInput = <T extends object>(
     inputValue,
   } = props;
 
-  // Don't render if no name prop provided
-  if (!name) return null;
-
   // Compute the value for form submission based on formValue prop
   // Following React Aria's pattern: https://react-spectrum.adobe.com/react-aria/ComboBox.html#html-forms
   const value = useMemo(() => {
@@ -72,6 +69,9 @@ export const ComboBoxHiddenInput = <T extends object>(
     collection,
     inputValue,
   ]);
+
+  // Don't render if no name prop provided
+  if (!name) return null;
 
   return (
     <input

@@ -307,6 +307,8 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
       leadingElement,
       triggerRef,
       inputRef,
+      isLoading,
+      size,
       isDisabled,
       isRequired,
       isInvalid,
@@ -677,7 +679,7 @@ const ComboBoxRootInner = <T extends object>(
       inputRef.current?.focus();
       setFocusStrategy("first");
     }
-  }, [controlledIsOpen, isOpen, onOpenChange]);
+  }, [controlledIsOpen, isOpen, onOpenChange, inputRef]);
 
   // Input change handler (opens menu when menuTrigger="input")
   const handleInputChange = useCallback(
@@ -786,6 +788,8 @@ const ComboBoxRootInner = <T extends object>(
       shouldCloseOnSelect,
       setIsOpen,
       isInputControlled,
+      asyncConfig,
+      onAsyncSelectedItemsChange,
     ]
   );
 
@@ -952,7 +956,13 @@ const ComboBoxRootInner = <T extends object>(
         inputRef.current?.focus();
       }
     },
-    [normalizedSelectedKeys, handleSelectionChange, isDisabled, isReadOnly]
+    [
+      normalizedSelectedKeys,
+      handleSelectionChange,
+      isDisabled,
+      isReadOnly,
+      inputRef,
+    ]
   );
 
   // ============================================================
@@ -1128,6 +1138,7 @@ const ComboBoxRootInner = <T extends object>(
     setIsOpen,
     selectionMode,
     inputValue,
+    inputRef,
   ]);
 
   // Close menu on blur (with delay to allow option clicks)
@@ -1161,7 +1172,7 @@ const ComboBoxRootInner = <T extends object>(
     if (autoFocus && inputRef.current && !isDisabled) {
       inputRef.current.focus();
     }
-  }, [autoFocus, isDisabled]);
+  }, [autoFocus, isDisabled, inputRef]);
 
   // Notify parent of open state changes (uncontrolled mode)
   const prevIsOpenRef = useRef(isOpen);
@@ -1312,7 +1323,7 @@ const ComboBoxRootInner = <T extends object>(
     return () => {
       resizeObserver.disconnect();
     };
-  }, []);
+  }, [triggerRef]);
 
   // ============================================================
   // CONTEXT PROVIDERS
