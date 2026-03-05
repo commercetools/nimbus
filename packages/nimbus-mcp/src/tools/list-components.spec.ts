@@ -8,18 +8,15 @@ import { createTestClient } from "../test-utils.js";
 /**
  * Behavioral tests for the list_components tool.
  *
- * Uses the real route manifest (monorepo mode) so counts and names reflect
- * the actual component catalog. Tests are written to be resilient to new
- * components being added — they assert minimums and shapes, not exact lists.
+ * Reads the route manifest from data/docs/ (populated by the prebuild step).
+ * Tests are written to be resilient to new components being added — they
+ * assert minimums and shapes, not exact lists.
  *
- * Skipped when the route manifest is not available (e.g. CI without a docs build).
+ * Skipped when data/docs/ has not been populated (run `pnpm prebuild` first).
  */
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const MANIFEST_PATH = resolve(
-  __dirname,
-  "../../../../apps/docs/src/data/route-manifest.json"
-);
+const MANIFEST_PATH = resolve(__dirname, "../../data/docs/route-manifest.json");
 const HAS_MANIFEST = existsSync(MANIFEST_PATH);
 
 type ComponentSummary = {

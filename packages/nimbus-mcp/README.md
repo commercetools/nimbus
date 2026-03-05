@@ -68,9 +68,12 @@ pnpm install
 pnpm --filter @commercetools/nimbus-mcp build
 ```
 
-### Running from source (no build needed)
+### Running from source
+
+Requires a prebuild to copy docs data first:
 
 ```bash
+pnpm --filter @commercetools/nimbus-mcp prebuild
 pnpm --filter @commercetools/nimbus-mcp dev
 ```
 
@@ -134,19 +137,7 @@ That's it — no other files need changing.
 ## Data & Build Pipeline
 
 The MCP server reads generated docs data (route manifest, search index, types,
-and per-component route JSON). This data is produced by the docs build scripts
-in `apps/docs/`.
-
-### Runtime modes
-
-- **Monorepo mode** (detected automatically): reads live data from
-  `apps/docs/src/data/`. Run `pnpm build:docs-data` from the repo root to
-  generate these files.
-- **Bundled mode** (standalone / npm package): reads from `data/docs/` inside
-  this package directory.
-
-Tools that depend on docs data return a graceful error message if data files are
-not present.
+and per-component route JSON) from `data/docs/` inside the package directory.
 
 ### How data gets into `data/docs/`
 
@@ -180,3 +171,6 @@ tokens → packages (excl. mcp) → docs-data → mcp (prebuild + tsup)
 The root `build:docs-data` script runs only the docs data generation (not the
 full Vite app build), keeping CI fast. The full `pnpm build` runs the complete
 docs build which also produces the data files.
+
+Tools that depend on docs data return a graceful error message if data files are
+not present.
