@@ -1,26 +1,15 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { existsSync } from "node:fs";
-import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { createTestClient } from "../test-utils.js";
 
 /**
  * Behavioral tests for the get_component tool.
  *
- * Uses real route manifest and type data (monorepo mode). Tests verify
- * the tool against Button (a well-documented component) and assert shapes
- * rather than exact content to stay resilient to documentation edits.
- *
- * Skipped when the route manifest is not available (e.g. CI without a docs build).
+ * Uses real route manifest and type data from data/docs/ (populated by the
+ * prebuild step). Tests verify the tool against Button (a well-documented
+ * component) and assert shapes rather than exact content to stay resilient
+ * to documentation edits.
  */
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const MANIFEST_PATH = resolve(
-  __dirname,
-  "../../../../apps/docs/src/data/route-manifest.json"
-);
-const HAS_MANIFEST = existsSync(MANIFEST_PATH);
 
 async function callGetComponent(
   client: Client,
@@ -39,7 +28,7 @@ async function callGetComponent(
 // Metadata (no section)
 // ---------------------------------------------------------------------------
 
-describe.runIf(HAS_MANIFEST)("get_component — metadata", () => {
+describe("get_component — metadata", () => {
   let client: Client;
   let close: () => Promise<void>;
 
@@ -99,7 +88,7 @@ describe.runIf(HAS_MANIFEST)("get_component — metadata", () => {
 // Props section
 // ---------------------------------------------------------------------------
 
-describe.runIf(HAS_MANIFEST)("get_component — props section", () => {
+describe("get_component — props section", () => {
   let client: Client;
   let close: () => Promise<void>;
 
@@ -173,7 +162,7 @@ describe.runIf(HAS_MANIFEST)("get_component — props section", () => {
 // Accessibility section
 // ---------------------------------------------------------------------------
 
-describe.runIf(HAS_MANIFEST)("get_component — accessibility section", () => {
+describe("get_component — accessibility section", () => {
   let client: Client;
   let close: () => Promise<void>;
 
@@ -201,7 +190,7 @@ describe.runIf(HAS_MANIFEST)("get_component — accessibility section", () => {
 // Recipe section
 // ---------------------------------------------------------------------------
 
-describe.runIf(HAS_MANIFEST)("get_component — recipe section", () => {
+describe("get_component — recipe section", () => {
   let client: Client;
   let close: () => Promise<void>;
 
@@ -247,7 +236,7 @@ describe.runIf(HAS_MANIFEST)("get_component — recipe section", () => {
 // Other content sections
 // ---------------------------------------------------------------------------
 
-describe.runIf(HAS_MANIFEST)("get_component — content sections", () => {
+describe("get_component — content sections", () => {
   let client: Client;
   let close: () => Promise<void>;
 
