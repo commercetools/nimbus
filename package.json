@@ -11,8 +11,10 @@
     ]
   },
   "scripts": {
-    "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs",
-    "build:packages": "pnpm -r --filter './packages/*' build",
+    "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs && pnpm run build:mcp",
+    "build:packages": "pnpm -r --filter './packages/*' --filter '!@commercetools/nimbus-mcp' build",
+    "build:mcp": "pnpm --filter @commercetools/nimbus-mcp build",
+    "build:docs-data": "pnpm --filter docs build:docs",
     "build:docs": "pnpm --filter './apps/docs' build",
     "build:tokens": "pnpm --filter @commercetools/nimbus-tokens run build && preconstruct build",
     "changeset": "changeset",
@@ -83,6 +85,7 @@
     "eslint": "catalog:tooling",
     "eslint-config-prettier": "catalog:tooling",
     "eslint-plugin-prettier": "catalog:tooling",
+    "eslint-plugin-react-hooks": "catalog:tooling",
     "eslint-plugin-storybook": "catalog:tooling",
     "globals": "catalog:tooling",
     "playwright": "catalog:tooling",

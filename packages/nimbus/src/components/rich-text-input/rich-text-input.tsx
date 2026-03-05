@@ -70,6 +70,7 @@ export const RichTextInput = (props: RichTextInputProps) => {
       console.warn("Failed to parse initial HTML, using empty value:", error);
       return createEmptyValue();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Empty deps - only compute once on mount
 
   // Track the current serialized value for change detection

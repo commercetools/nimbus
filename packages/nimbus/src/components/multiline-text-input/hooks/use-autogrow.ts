@@ -43,7 +43,7 @@ export function useAutogrow(
 
     // Set the new height
     textarea.style.height = `${finalHeight}px`;
-  }, [enabled]);
+  }, [enabled, ref]);
 
   // Set up auto-grow behavior with event listeners
   useEffect(() => {
@@ -64,5 +64,5 @@ export function useAutogrow(
     return () => {
       textarea.removeEventListener("input", handleInput);
     };
-  }, [adjustHeight, enabled]);
+  }, [adjustHeight, enabled, ref]);
 }

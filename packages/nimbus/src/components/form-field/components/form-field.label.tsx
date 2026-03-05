@@ -29,6 +29,7 @@ export const FormFieldLabel = ({
         labelSlotProps: undefined,
       }));
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [children, setContext]);
 
   return null;
