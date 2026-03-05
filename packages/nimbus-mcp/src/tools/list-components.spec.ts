@@ -1,7 +1,4 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { existsSync } from "node:fs";
-import { resolve, dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { createTestClient } from "../test-utils.js";
 
@@ -11,13 +8,7 @@ import { createTestClient } from "../test-utils.js";
  * Reads the route manifest from data/docs/ (populated by the prebuild step).
  * Tests are written to be resilient to new components being added — they
  * assert minimums and shapes, not exact lists.
- *
- * Skipped when data/docs/ has not been populated (run `pnpm prebuild` first).
  */
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const MANIFEST_PATH = resolve(__dirname, "../../data/docs/route-manifest.json");
-const HAS_MANIFEST = existsSync(MANIFEST_PATH);
 
 type ComponentSummary = {
   title: string;
@@ -44,7 +35,7 @@ async function callListComponents(
   return JSON.parse(text) as ComponentSummary[];
 }
 
-describe.runIf(HAS_MANIFEST)("list_components — no params", () => {
+describe("list_components — no params", () => {
   let client: Client;
   let close: () => Promise<void>;
 
@@ -94,7 +85,7 @@ describe.runIf(HAS_MANIFEST)("list_components — no params", () => {
   });
 });
 
-describe.runIf(HAS_MANIFEST)("list_components — category filter", () => {
+describe("list_components — category filter", () => {
   let client: Client;
   let close: () => Promise<void>;
 
@@ -137,7 +128,7 @@ describe.runIf(HAS_MANIFEST)("list_components — category filter", () => {
   });
 });
 
-describe.runIf(HAS_MANIFEST)("list_components — query search", () => {
+describe("list_components — query search", () => {
   let client: Client;
   let close: () => Promise<void>;
 
