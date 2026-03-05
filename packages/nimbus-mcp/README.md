@@ -131,14 +131,52 @@ export function registerMyTool(server: McpServer): void {
 
 That's it — no other files need changing.
 
-## Data Availability
+## Data & Build Pipeline
 
-The server has two runtime modes:
+The MCP server reads generated docs data (route manifest, search index, types,
+and per-component route JSON). This data is produced by the docs build scripts
+in `apps/docs/`.
+
+### Runtime modes
 
 - **Monorepo mode** (detected automatically): reads live data from
-  `apps/docs/src/data/`. Run `pnpm build:docs` first to generate these files.
-- **Standalone mode** (npm package): reads from a bundled `data/` directory
-  shipped with the package.
+  `apps/docs/src/data/`. Run `pnpm build:docs-data` from the repo root to
+  generate these files.
+- **Bundled mode** (standalone / npm package): reads from `data/docs/` inside
+  this package directory.
 
-Tools that depend on docs data will return a graceful error message if data
-files are not present.
+Tools that depend on docs data return a graceful error message if data files are
+not present.
+
+### How data gets into `data/docs/`
+
+The package has a **prebuild** step that runs automatically before `tsup`:
+
+```
+pnpm build  →  pnpm prebuild  →  tsup
+                    │
+                    ▼
+            scripts/prebuild.mjs
+                    │
+                    ▼
+            scripts/copy-docs-data.mjs
+                    │
+    copies apps/docs/src/data/ → data/docs/
+```
+
+The prebuild orchestrator (`scripts/prebuild.mjs`) runs an array of steps in
+order. Currently the only step is `copy-docs-data`, which copies
+`route-manifest.json`, `search-index.json`, `routes/`, and `types/` from the
+docs app into `data/docs/`. New prebuild steps can be added to the array.
+
+The `data/` directory is gitignored — it is always regenerated at build time.
+
+### Build order (CI and local)
+
+```
+tokens → packages (excl. mcp) → docs-data → mcp (prebuild + tsup)
+```
+
+The root `build:docs-data` script runs only the docs data generation (not the
+full Vite app build), keeping CI fast. The full `pnpm build` runs the complete
+docs build which also produces the data files.

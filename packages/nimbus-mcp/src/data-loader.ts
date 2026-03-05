@@ -26,7 +26,7 @@ const PACKAGE_ROOT = findPackageRoot();
 const MONOREPO_DATA_DIR = resolve(PACKAGE_ROOT, "../../apps/docs/src/data");
 
 /** Path to bundled data shipped with the npm package. */
-const BUNDLED_DATA_DIR = resolve(PACKAGE_ROOT, "data");
+const BUNDLED_DATA_DIR = resolve(PACKAGE_ROOT, "data/docs");
 
 /** Marker file used to detect monorepo mode. */
 const MONOREPO_MARKER = resolve(MONOREPO_DATA_DIR, "route-manifest.json");

@@ -10,6 +10,7 @@ import eslint from "@eslint/js";
 import tseslint from "typescript-eslint";
 import eslintPluginPrettier from "eslint-plugin-prettier";
 import eslintConfigPrettier from "eslint-config-prettier";
+import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 
 // Import storybook plugin using createRequire for CommonJS compatibility
@@ -64,6 +65,15 @@ export default tseslint.config(
     },
     rules: {
       "prettier/prettier": "error",
+    },
+  },
+  /**
+   * Node.js globals for script files
+   */
+  {
+    files: ["**/scripts/**/*.mjs"],
+    languageOptions: {
+      globals: globals.node,
     },
   },
   /**

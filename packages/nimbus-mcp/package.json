@@ -13,7 +13,8 @@
     }
   },
   "scripts": {
-    "build": "tsup",
+    "prebuild": "node scripts/prebuild.mjs",
+    "build": "pnpm prebuild && tsup",
     "dev": "tsx src/index.ts",
     "mcp-inspector": "mcp-inspector tsx src/index.ts",
     "mcp-inspector:cli": "mcp-inspector --cli tsx src/index.ts"
@@ -24,6 +25,9 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
+    "@commercetools/nimbus": "workspace:^",
+    "@commercetools/nimbus-icons": "workspace:^",
+    "@commercetools/nimbus-tokens": "workspace:^",
     "@modelcontextprotocol/inspector": "catalog:tooling",
     "@types/node": "catalog:utils",
     "tsup": "catalog:tooling",

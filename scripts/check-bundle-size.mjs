@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-/* global console, process, URL */
 
 /**
  * Bundle size check script for Nimbus.
