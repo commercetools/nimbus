@@ -135,11 +135,7 @@ describe("get_component — props section", () => {
     });
     const data = JSON.parse(text);
     const names = data.props.map((p: { name: string }) => p.name);
-    // Low-level DOM, Chakra system, and internal props should be filtered out
-    expect(names).not.toContain("as");
-    expect(names).not.toContain("asChild");
-    expect(names).not.toContain("css");
-    expect(names).not.toContain("unstyled");
+    // Low-level DOM and internal props should be filtered out
     expect(names).not.toContain("key");
     expect(names).not.toContain("recipe");
   });

@@ -55,10 +55,6 @@ const INHERITED_PARENT_NAMES = new Set([
   // Chakra system internals
   "SystemProperties",
   "Conditions",
-  // Chakra polymorphic / unstyled
-  "PolymorphicProps",
-  "JsxStyleProps",
-  "UnstyledProp",
 ]);
 
 interface FilteredProp {
