@@ -235,12 +235,8 @@ export interface IconCatalog {
   icons: IconCatalogEntry[];
 }
 
-/**
- * Returns the full icon catalog. The catalog is always read from the bundled
- * data directory regardless of monorepo vs standalone mode, since it is
- * generated from source files rather than from the docs build.
- */
+/** Returns the full icon catalog. */
 export async function getIconCatalog(): Promise<IconCatalog> {
-  const catalogPath = resolve(BUNDLED_DATA_DIR, "icons.json");
+  const catalogPath = resolve(getDataDir(), "icons.json");
   return readJson<IconCatalog>(catalogPath);
 }
