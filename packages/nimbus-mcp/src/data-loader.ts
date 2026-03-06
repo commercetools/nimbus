@@ -222,3 +222,20 @@ export async function getIconData(): Promise<DocEntry | undefined> {
     (entry) => entry.meta.id === "Icons" || entry.meta.route.includes("icons")
   );
 }
+
+// ---------------------------------------------------------------------------
+// Flattened token data
+// ---------------------------------------------------------------------------
+
+export type { FlatToken, FlatTokenData } from "./processors/flatten-tokens.js";
+
+export { reverseLookup } from "./processors/flatten-tokens.js";
+
+/**
+ * Loads the pre-built flattened token data from `data/tokens.json`.
+ */
+export async function getFlatTokenData(): Promise<
+  import("./processors/flatten-tokens.js").FlatTokenData
+> {
+  return readJson(resolve(getDataDir(), "tokens.json"));
+}

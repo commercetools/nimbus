@@ -14,7 +14,8 @@
   },
   "scripts": {
     "prebuild": "node scripts/prebuild.mjs",
-    "build": "pnpm prebuild && tsup",
+    "build": "pnpm prebuild && tsx src/processors/build-token-data.ts && tsup",
+    "build:tokens": "tsx src/processors/build-token-data.ts",
     "dev": "tsx src/index.ts",
     "mcp-inspector": "mcp-inspector tsx src/index.ts",
     "mcp-inspector:cli": "mcp-inspector --cli tsx src/index.ts"
