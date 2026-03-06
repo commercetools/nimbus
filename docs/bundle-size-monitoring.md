@@ -144,11 +144,13 @@ The output looks like this:
 ```
 Package                                   Format     Current    Baseline     Delta  Status
 ----------------------------------------------------------------------------------------
-@commercetools/nimbus-icons                  cjs     2.06 MB     2.06 MB     +0.0%    ok
-@commercetools/nimbus-icons                  esm     1.48 MB     1.48 MB     +0.0%    ok
-@commercetools/nimbus                        esm     1.47 MB     1.47 MB     +0.0%    ok
+@commercetools/nimbus-icons                  cjs    2108.6 KB   2108.6 KB    +0.0%    ok
+@commercetools/nimbus-icons                  esm    1519.1 KB   1519.1 KB    +0.0%    ok
+@commercetools/nimbus                        esm    1510.9 KB   1510.9 KB    +0.0%    ok
 ...
 ```
+
+All sizes are displayed in KB for easy comparison across packages.
 
 ## Adjusting the Threshold
 
