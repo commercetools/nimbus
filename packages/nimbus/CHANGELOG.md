@@ -1,5 +1,114 @@
 # @commercetools/nimbus
 
+## 2.8.0
+
+### Minor Changes
+
+- [#1146](https://github.com/commercetools/nimbus/pull/1146)
+  [`b276a8d`](https://github.com/commercetools/nimbus/commit/b276a8d1e694f53b4e7405b335620a05428e9845)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Add PageContent
+  compound component for structured page layouts with configurable column widths
+  and sticky positioning support
+
+- [#1072](https://github.com/commercetools/nimbus/pull/1072)
+  [`77872bd`](https://github.com/commercetools/nimbus/commit/77872bd4998902643463eb74f866c5847a03cc02)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Toast: add Toast
+  notification system
+
+  Imperative toast API with full Nimbus styling and accessibility support.
+  - `toast()` function with convenience shorthands (`toast.info()`,
+    `toast.success()`, `toast.warning()`, `toast.error()`)
+  - `toast.promise()` for loading → success/error state transitions
+  - `toast.update()`, `toast.dismiss()`, `toast.remove()` for programmatic
+    control
+  - 4 semantic types (info, success, warning, error) with correct ARIA roles
+    (`status` / `alert`)
+  - 3 visual variants: `accent-start` (default), `solid`, `subtle`
+  - 4 corner placements with independent stacking and Alt+Shift numpad hotkeys
+  - Localized dismiss button label via `useLocalizedStringFormatter` (en, de,
+    es, fr-FR, pt-BR)
+  - `ToastOutlet` auto-mounted by `NimbusProvider` with nested-provider
+    deduplication guard
+  - SSR-safe lazy toaster initialization
+
+- [#1086](https://github.com/commercetools/nimbus/pull/1086)
+  [`f657124`](https://github.com/commercetools/nimbus/commit/f657124762e7574583a887b3e237b8d0ca626e5b)
+  Thanks [@jaikamat](https://github.com/jaikamat)! - Update Slate dependencies
+  and migrate RichTextInput component to use new API's
+
+- [#1071](https://github.com/commercetools/nimbus/pull/1071)
+  [`e4bedb8`](https://github.com/commercetools/nimbus/commit/e4bedb8c1a86b0c9f44f4b24b0e3fbbf3f4c5b8a)
+  Thanks [@ddouglasz](https://github.com/ddouglasz)! - Add automatic Inter font
+  loading to NimbusProvider via new `loadFonts` prop (default: true). Fonts load
+  from Google Fonts CSS API v2 with preconnect optimization for performance. Set
+  `loadFonts={false}` in contexts where fonts are already loaded (e.g., Merchant
+  Center).
+
+- [#1165](https://github.com/commercetools/nimbus/pull/1165)
+  [`d41a865`](https://github.com/commercetools/nimbus/commit/d41a865f30c3983b0e39e91998fa4bae437ba745)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Add link-based tab
+  navigation support:
+  - Add `href`, `target`, `rel`, and `routerOptions` props to `TabProps` and
+    `TabItemProps` for router-integrated tab navigation
+  - Add `shouldForceMount` prop to `TabPanelProps` to keep panels mounted in the
+    DOM when not selected
+  - Export additional public types: `TabProps`, `TabPanelsProps`,
+    `TabPanelProps`
+
+  **Breaking:** `TabPanelProps.tabs` has been removed and replaced with
+  `TabPanelProps.id`. The `tabs` prop on individual panels was vestigial and
+  non-functional, so this is unlikely to affect consumers.
+
+### Patch Changes
+
+- [#1172](https://github.com/commercetools/nimbus/pull/1172)
+  [`8ce73fd`](https://github.com/commercetools/nimbus/commit/8ce73fdd112329e5ffda339c2d85b29b74091ae7)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Replace
+  `@chakra-ui/react` barrel imports with modular subpath imports
+  (`/styled-system`, `/box`, `/steps`, `/toast`, `/hooks`, `/preset-base`)
+  across all 181 source files. Add local `mergeRefs` utility to eliminate the
+  last barrel import dependency. Update docs, templates, and skill files to
+  prevent reintroduction.
+
+- [#1155](https://github.com/commercetools/nimbus/pull/1155)
+  [`97747d1`](https://github.com/commercetools/nimbus/commit/97747d1e6f36c74164b0faca8b89dddca3cf3bf7)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Add documentation and
+  story for intercepting Drawer close attempts using `isDismissable` with
+  controlled mode, demonstrating the unsaved changes confirmation pattern.
+
+- [#1152](https://github.com/commercetools/nimbus/pull/1152)
+  [`ac07dfa`](https://github.com/commercetools/nimbus/commit/ac07dfa51d1077bb3bb5417b5f03fa6633dbaee7)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Menu: fix Menu.Content
+  not forwarding style props to the popover container
+
+  Style props (e.g. `width`, `minWidth`) passed to `Menu.Content` are now
+  correctly applied to the popover container element.
+
+- [#1154](https://github.com/commercetools/nimbus/pull/1154)
+  [`71bfb5e`](https://github.com/commercetools/nimbus/commit/71bfb5e4526966a9f65324f6f3ebe734e49bb557)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Fix React hooks
+  dependency issues across multiple components (combobox, data-table,
+  date-picker, money-input, multiline-text-input, icon-button, localized-field,
+  rich-text-input) by adding missing dependencies and correcting hook ordering
+
+- [#1204](https://github.com/commercetools/nimbus/pull/1204)
+  [`fc29cb7`](https://github.com/commercetools/nimbus/commit/fc29cb78a9ddb8c027931562062196ea8e680caa)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Update runtime
+  dependencies: @chakra-ui/react 3.33.0→3.34.0, react-aria 3.46.0→3.47.0,
+  react-aria-components 1.15.1→1.16.0, react-stately 3.44.0→3.45.0,
+  @react-aria/interactions 3.27.0→3.27.1, @internationalized/date 3.11.0→3.12.0,
+  dompurify 3.3.1→3.3.2
+
+- [#1168](https://github.com/commercetools/nimbus/pull/1168)
+  [`651439c`](https://github.com/commercetools/nimbus/commit/651439c0d58bbcbcf2c3ad0f2eeb1cb65a74e6b8)
+  Thanks [@ddouglasz](https://github.com/ddouglasz)! - Remove duplicate
+  component title and description from docs overview page
+
+- Updated dependencies
+  [[`a09983d`](https://github.com/commercetools/nimbus/commit/a09983d93ea4c0918d451b1dae9f826d5d75aea9)]:
+  - @commercetools/nimbus-tokens@2.8.0
+  - @commercetools/nimbus-icons@2.8.0
+
 ## 2.7.0
 
 ### Minor Changes
