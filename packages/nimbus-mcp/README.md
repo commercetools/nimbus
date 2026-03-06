@@ -46,9 +46,10 @@ npx @commercetools/nimbus-mcp
 
 ## Available Tools
 
-| Tool              | Description                                             |
-| ----------------- | ------------------------------------------------------- |
-| `list_components` | Returns names and descriptions of all Nimbus components |
+| Tool              | Description                                                                        |
+| ----------------- | ---------------------------------------------------------------------------------- |
+| `list_components` | Returns names and descriptions of all Nimbus components and patterns               |
+| `get_component`   | Returns detailed info about a component or pattern (metadata, props, recipe, docs) |
 
 More tools are being added. See `src/tools/` for the full list.
 
