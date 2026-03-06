@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { createTestClient } from "../test-utils.js";
-import { log } from "node:console";
 
 /**
  * Behavioral tests for the get_component tool.
@@ -160,7 +159,9 @@ describe("get_component — props section", () => {
       section: "props",
     });
     const data = JSON.parse(text);
-    const variantProp = data.props.find((p: { name: string }) => p.name === "variant");
+    const variantProp = data.props.find(
+      (p: { name: string }) => p.name === "variant"
+    );
     expect(variantProp).toBeDefined();
     expect(variantProp.defaultValue).toBe('"subtle"');
   });
