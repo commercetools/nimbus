@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { FormField, RadioInput, Stack } from "@commercetools/nimbus";
+import { FormField, RadioInput, Stack, Tooltip } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 
 /**
@@ -445,6 +445,49 @@ export const WithFormField: StoryObj = {
         await expect(radioRaphael).toBeChecked();
         await expect(radioDonatello).not.toBeChecked();
         await expect(radioLeonardo).not.toBeChecked();
+      }
+    );
+  },
+};
+
+/**
+ * Verifies that RadioInput.Option can trigger a Tooltip when wrapped in Tooltip.Root
+ */
+export const WithTooltip: Story = {
+  render: () => (
+    <Stack gap="1000">
+      <RadioInput.Root
+        aria-label="storybook-radio-tooltip"
+        name="storybook-radio-tooltip"
+      >
+        <Tooltip.Root delay={0} closeDelay={0}>
+          <RadioInput.Option value="first">First Option</RadioInput.Option>
+          <Tooltip.Content>Tooltip for first</Tooltip.Content>
+        </Tooltip.Root>
+        <Tooltip.Root delay={0} closeDelay={0}>
+          <RadioInput.Option value="second">Second Option</RadioInput.Option>
+          <Tooltip.Content>Tooltip for second</Tooltip.Content>
+        </Tooltip.Root>
+      </RadioInput.Root>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+    const firstOption = within(canvasElement).getByLabelText("First Option");
+
+    await step("Tooltip appears on focus", async () => {
+      await userEvent.tab();
+      await expect(firstOption).toHaveFocus();
+      await canvas.findByRole("tooltip", { name: "Tooltip for first" });
+    });
+
+    await step(
+      "Radio option still selects while tooltip is shown",
+      async () => {
+        await userEvent.keyboard(" ");
+        await expect(firstOption).toBeChecked();
       }
     );
   },

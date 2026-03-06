@@ -1,6 +1,12 @@
 import { useRef } from "react";
 import { useToggleState } from "react-stately";
-import { useFocusRing, useSwitch, useObjectRef, mergeProps } from "react-aria";
+import {
+  useFocusRing,
+  useSwitch,
+  useObjectRef,
+  useFocusable,
+  mergeProps,
+} from "react-aria";
 import { extractStyleProps, mergeRefs } from "@/utils";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { VisuallyHidden } from "@/components";
@@ -36,6 +42,15 @@ export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
 
   const { isFocused, focusProps } = useFocusRing();
 
+  // Enable tooltip trigger support: reads from FocusableContext (set by Tooltip.Root)
+  // to apply hover/focus handlers to the visible label element. No-op outside tooltips.
+  // Must be called after useSwitch so the ref sync targets rootRef, not the hidden input.
+  const rootRef = useRef<HTMLLabelElement>(null);
+  const { focusableProps } = useFocusable(
+    { excludeFromTabOrder: true },
+    rootRef
+  );
+
   const stateProps = {
     "data-selected": state.isSelected,
     "data-invalid": props.isInvalid,
@@ -48,6 +63,8 @@ export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
       {...recipeProps}
       {...stateProps}
       {...styleProps}
+      {...focusableProps}
+      ref={rootRef}
     >
       <SwitchTrackSlot data-slot="track" {...stateProps}>
         <SwitchThumbSlot data-slot="thumb" {...stateProps} />
