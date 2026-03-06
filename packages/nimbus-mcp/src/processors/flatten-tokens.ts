@@ -274,7 +274,7 @@ function normaliseValue(value: string): string {
 // File I/O
 // ---------------------------------------------------------------------------
 
-/** Default path to theme-tokens.ts relative to the monorepo root. */
+/** Default path to theme-tokens.ts relative to this file. */
 function defaultThemeTokensPath(): string {
   return resolve(
     __dirname,
