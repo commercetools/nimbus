@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { createTestClient } from "../test-utils.js";
+import { log } from "node:console";
 
 /**
  * Behavioral tests for the get_component tool.
@@ -152,6 +153,17 @@ describe("get_component — props section", () => {
       expect(typeof prop.required).toBe("boolean");
     }
   });
+
+  it("includes default values for props that have them", async () => {
+    const { text } = await callGetComponent(client, {
+      name: "Button",
+      section: "props",
+    });
+    const data = JSON.parse(text);
+    const variantProp = data.props.find((p: { name: string }) => p.name === "variant");
+    expect(variantProp).toBeDefined();
+    expect(variantProp.defaultValue).toBe('"subtle"');
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -179,52 +191,6 @@ describe("get_component — accessibility section", () => {
     expect(isError).toBeFalsy();
     // Should be non-trivial markdown content
     expect(text.length).toBeGreaterThan(100);
-  });
-});
-
-// ---------------------------------------------------------------------------
-// Recipe section
-// ---------------------------------------------------------------------------
-
-describe("get_component — recipe section", () => {
-  let client: Client;
-  let close: () => Promise<void>;
-
-  beforeAll(async () => {
-    const ctx = createTestClient();
-    await ctx.connect();
-    client = ctx.client;
-    close = ctx.close;
-  });
-
-  afterAll(() => close());
-
-  it("returns variant and size values for Button", async () => {
-    const { text, isError } = await callGetComponent(client, {
-      name: "Button",
-      section: "recipe",
-    });
-    expect(isError).toBeFalsy();
-
-    const data = JSON.parse(text);
-    expect(data.component).toBe("Button");
-    expect(data.variants).toBeDefined();
-    // Button has size and variant
-    expect(data.variants.size).toBeDefined();
-    expect(data.variants.variant).toBeDefined();
-    expect(data.variants.size.length).toBeGreaterThan(0);
-    expect(data.variants.variant.length).toBeGreaterThan(0);
-  });
-
-  it("includes default variant values", async () => {
-    const { text } = await callGetComponent(client, {
-      name: "Button",
-      section: "recipe",
-    });
-    const data = JSON.parse(text);
-    expect(data.defaultVariants).toBeDefined();
-    expect(data.defaultVariants.size).toBe("md");
-    expect(data.defaultVariants.variant).toBe("subtle");
   });
 });
 

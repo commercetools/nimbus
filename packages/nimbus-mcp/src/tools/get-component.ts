@@ -89,51 +89,6 @@ function filterProps(typeData: TypeData): FilteredProp[] {
 }
 
 // ---------------------------------------------------------------------------
-// Recipe extraction
-// ---------------------------------------------------------------------------
-
-interface RecipeInfo {
-  variants: Record<string, string[]>;
-  defaultVariants?: Record<string, string>;
-}
-
-/**
- * Extracts variant and size values from a recipe file by reading the
- * built route data's MDX or falling back to type information.
- *
- * We parse variant keys from the component's type definitions since recipe
- * source files aren't available as JSON. The type data encodes variant
- * values in the prop type string (e.g. `ConditionalValue<"sm" | "md">`).
- */
-function extractRecipeFromTypes(typeData: TypeData): RecipeInfo {
-  const variants: Record<string, string[]> = {};
-  const defaults: Record<string, string> = {};
-
-  for (const prop of Object.values(typeData.props)) {
-    // Only look at component-specific props that encode variant values
-    if (prop.parent && INHERITED_PARENT_NAMES.has(prop.parent.name)) continue;
-
-    const match = prop.type.name.match(
-      /ConditionalValue<(.+)>|^"([^"]+)"(?:\s*\|\s*"([^"]+)")*$/
-    );
-    if (!match) continue;
-
-    const raw = match[1] || match[0];
-    const values = [...raw.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
-    if (values.length > 0) {
-      variants[prop.name] = values;
-      if (prop.defaultValue) {
-        defaults[prop.name] = prop.defaultValue.value.replace(/"/g, "");
-      }
-    }
-  }
-
-  const result: RecipeInfo = { variants };
-  if (Object.keys(defaults).length > 0) result.defaultVariants = defaults;
-  return result;
-}
-
-// ---------------------------------------------------------------------------
 // Route resolution helpers
 // ---------------------------------------------------------------------------
 
@@ -324,37 +279,6 @@ export function registerGetComponent(server: McpServer): void {
                 {
                   type: "text" as const,
                   text: `Type data not available for "${exportName}".`,
-                },
-              ],
-              isError: true,
-            };
-          }
-        }
-
-        // Section: recipe
-        if (section === "recipe") {
-          const exportName = entry.exportName ?? entry.title;
-          try {
-            const typeData = await getTypeData(exportName);
-            const recipe = extractRecipeFromTypes(typeData);
-            return {
-              content: [
-                {
-                  type: "text" as const,
-                  text: JSON.stringify(
-                    { component: exportName, ...recipe },
-                    null,
-                    2
-                  ),
-                },
-              ],
-            };
-          } catch {
-            return {
-              content: [
-                {
-                  type: "text" as const,
-                  text: `Recipe data not available for "${exportName}".`,
                 },
               ],
               isError: true,
