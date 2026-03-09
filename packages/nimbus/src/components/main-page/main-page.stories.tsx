@@ -436,24 +436,31 @@ export const FormPage: Story = {
 };
 
 /**
- * Tabular page pattern - Header with Actions, Content wrapping Tabs.
+ * Tabular page pattern - Tab list in Header, Tab panels in Content.
+ * Tabs.Root wraps both containers so they share context.
  */
 export const TabularPage: Story = {
   render: () => (
-    <MainPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
-      <MainPage.Header>
-        <MainPage.Title>Product Details</MainPage.Title>
-        <MainPage.Actions>
-          <Button>Publish</Button>
-        </MainPage.Actions>
-      </MainPage.Header>
-      <MainPage.Content>
-        <Tabs.Root defaultSelectedKey="general">
-          <Tabs.List>
+    <Tabs.Root defaultSelectedKey="general">
+      <MainPage.Root
+        border="solid-25"
+        borderColor="neutral.6"
+        borderRadius="200"
+      >
+        <MainPage.Header paddingBottom="0">
+          <MainPage.Title>Product Details</MainPage.Title>
+          <MainPage.Subtitle>Tabs</MainPage.Subtitle>
+          <MainPage.Actions>
+            <Button>Undo</Button>
+            <Button>Publish</Button>
+          </MainPage.Actions>
+          <Tabs.List gridColumn="1 / -1" mt="200">
             <Tabs.Tab id="general">General</Tabs.Tab>
             <Tabs.Tab id="variants">Variants</Tabs.Tab>
             <Tabs.Tab id="images">Images</Tabs.Tab>
           </Tabs.List>
+        </MainPage.Header>
+        <MainPage.Content>
           <Tabs.Panels>
             <Tabs.Panel id="general">
               <Box padding="400">
@@ -471,9 +478,9 @@ export const TabularPage: Story = {
               </Box>
             </Tabs.Panel>
           </Tabs.Panels>
-        </Tabs.Root>
-      </MainPage.Content>
-    </MainPage.Root>
+        </MainPage.Content>
+      </MainPage.Root>
+    </Tabs.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);

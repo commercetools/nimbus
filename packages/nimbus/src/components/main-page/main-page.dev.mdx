@@ -202,6 +202,102 @@ const App = () => (
 )
 ```
 
+## Usage examples
+
+### Info main page (read-only)
+
+For pages that display information without form actions, omit the MainPage.Footer.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header borderBottom='none' paddingBottom='0'>
+      <MainPage.Title>Products</MainPage.Title>
+      <MainPage.Actions>
+        <Button variant="ghost">Export</Button>
+        <Button>Add Product</Button>
+      </MainPage.Actions>
+    </MainPage.Header>
+    <MainPage.Content>
+      <Text>Product list content goes here.</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+### Form main page (with footer)
+
+For pages with form actions, add a MainPage.Footer containing action buttons.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title>Project Settings</MainPage.Title>
+    </MainPage.Header>
+    <MainPage.Content>
+      <Stack gap="400">
+        <FormField.Root>
+          <FormField.Label>Project name</FormField.Label>
+          <FormField.Input>
+            <TextInput placeholder="e.g. My Store" />
+          </FormField.Input>
+        </FormField.Root>
+        <FormField.Root>
+          <FormField.Label>Description</FormField.Label>
+          <FormField.Input>
+            <TextInput placeholder="Describe the project" />
+          </FormField.Input>
+        </FormField.Root>
+      </Stack>
+    </MainPage.Content>
+    <MainPage.Footer>
+      <Stack direction="row" gap="200" justify="flex-end" width="100%">
+        <Button variant="ghost">Cancel</Button>
+        <Button>Save</Button>
+      </Stack>
+    </MainPage.Footer>
+  </MainPage.Root>
+)
+```
+
+### Tabular main page (with tabs)
+
+For pages with tabbed navigation, compose Tabs inside MainPage.Content.
+
+```jsx live-dev
+const App = () => (
+  <Tabs.Root defaultSelectedKey="general">
+    <MainPage.Root>
+      <MainPage.Header paddingBottom="0">
+        <MainPage.Title>Product Details</MainPage.Title>
+        <MainPage.Actions>
+          <Button>Publish</Button>
+        </MainPage.Actions>
+        <Tabs.List gridColumn="1 / -1" mt="200">
+          <Tabs.Tab id="general">General</Tabs.Tab>
+          <Tabs.Tab id="variants">Variants</Tabs.Tab>
+          <Tabs.Tab id="images">Images</Tabs.Tab>
+        </Tabs.List>
+      </MainPage.Header>
+      <MainPage.Content>
+        <Tabs.Panels>
+          <Tabs.Panel id="general">
+            <Text>General information content</Text>
+          </Tabs.Panel>
+          <Tabs.Panel id="variants">
+            <Text>Variants content</Text>
+          </Tabs.Panel>
+          <Tabs.Panel id="images">
+            <Text>Images content</Text>
+          </Tabs.Panel>
+        </Tabs.Panels>
+      </MainPage.Content>
+    </MainPage.Root>
+  </Tabs.Root>
+)
+```
+
 ## Component requirements
 
 ### Accessibility

@@ -29,37 +29,42 @@ export const mainPageRecipe = defineSlotRecipe({
     header: {
       display: "grid",
       gridTemplateColumns: "1fr auto",
-      alignItems: "center",
-      paddingX: "600",
-      paddingY: "400",
+      alignItems: "400",
+      // margin to ensure border does not reach the edge of the page
+      margin: "{spacing.800} {spacing.900} 0",
+      paddingBottom: "600",
       borderBottom: "solid-25",
       borderColor: "neutral.6",
     },
     title: {
       gridColumn: "1",
+      alignSelf: "center",
+      alignItems: "center",
       fontSize: "500",
       fontWeight: "600",
-      lineHeight: "tight",
+      lineHeight: "800",
       color: "neutral.12",
     },
     subtitle: {
       gridColumn: "1",
-      fontSize: "250",
+      alignSelf: "center",
+      mt: "200",
+      textStyle: "sm",
       color: "neutral.11",
     },
     actions: {
       gridColumn: "2",
-      gridRow: "1 / -1",
+      gridRow: "1 / span 2",
       display: "flex",
       alignItems: "center",
+      justifyItems: "end",
       gap: "200",
     },
     content: {
       overflow: "auto",
       // Uses margin (not padding) to preserve sticky positioning
       // for child components like DataTable, matching appKit behavior.
-      marginX: "600",
-      marginY: "600",
+      margin: "{spacing.800} {spacing.900}",
     },
     footer: {
       borderTop: "solid-25",
