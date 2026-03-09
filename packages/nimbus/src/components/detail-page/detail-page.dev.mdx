@@ -83,7 +83,7 @@ const App = () => (
 
 ### Tabular detail page (with tabs)
 
-For pages with tabbed navigation, compose `Tabs` between the header and footer.
+For pages with tabbed navigation, compose `Tabs` inside `DetailPage.Content`.
 
 ```jsx live-dev
 const App = () => (
@@ -93,30 +93,26 @@ const App = () => (
       <DetailPage.Title>Customer Details</DetailPage.Title>
       <DetailPage.Subtitle>customer@example.com</DetailPage.Subtitle>
     </DetailPage.Header>
-    <Tabs.Root defaultSelectedKey="general">
-      <Tabs.List>
-        <Tabs.Tab id="general">General</Tabs.Tab>
-        <Tabs.Tab id="addresses">Addresses</Tabs.Tab>
-        <Tabs.Tab id="orders">Orders</Tabs.Tab>
-      </Tabs.List>
-      <Tabs.Panels>
-        <Tabs.Panel id="general">
-          <DetailPage.Content>
+    <DetailPage.Content>
+      <Tabs.Root defaultSelectedKey="general">
+        <Tabs.List>
+          <Tabs.Tab id="general">General</Tabs.Tab>
+          <Tabs.Tab id="addresses">Addresses</Tabs.Tab>
+          <Tabs.Tab id="orders">Orders</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panels py="400">
+          <Tabs.Panel id="general">
             <Text>General information content</Text>
-          </DetailPage.Content>
-        </Tabs.Panel>
-        <Tabs.Panel id="addresses">
-          <DetailPage.Content>
+          </Tabs.Panel>
+          <Tabs.Panel id="addresses">
             <Text>Addresses content</Text>
-          </DetailPage.Content>
-        </Tabs.Panel>
-        <Tabs.Panel id="orders">
-          <DetailPage.Content>
+          </Tabs.Panel>
+          <Tabs.Panel id="orders">
             <Text>Orders content</Text>
-          </DetailPage.Content>
-        </Tabs.Panel>
-      </Tabs.Panels>
-    </Tabs.Root>
+          </Tabs.Panel>
+        </Tabs.Panels>
+      </Tabs.Root>
+    </DetailPage.Content>
   </DetailPage.Root>
 )
 ```
