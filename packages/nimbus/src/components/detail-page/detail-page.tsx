@@ -1,6 +1,7 @@
 import {
   DetailPageRoot,
   DetailPageHeader,
+  DetailPageHeaderActions,
   DetailPageBackLink,
   DetailPageTitle,
   DetailPageSubtitle,
@@ -24,6 +25,9 @@ import {
  *   <DetailPage.Header>
  *     <DetailPage.BackLink href="/products">Back to products</DetailPage.BackLink>
  *     <DetailPage.Title>Product Details</DetailPage.Title>
+ *     <DetailPage.HeaderActions>
+ *       <Button>Edit</Button>
+ *     </DetailPage.HeaderActions>
  *     <DetailPage.Subtitle>SKU-12345</DetailPage.Subtitle>
  *   </DetailPage.Header>
  *   <DetailPage.Content>
@@ -65,6 +69,22 @@ export const DetailPage = {
    * ```
    */
   Header: DetailPageHeader,
+  /**
+   * # DetailPage.HeaderActions
+   *
+   * A container for action buttons displayed alongside the title.
+   * Place inside `DetailPage.Header` — the grid layout positions it
+   * automatically next to the title.
+   *
+   * @example
+   * ```tsx
+   * <DetailPage.HeaderActions>
+   *   <Button>Save</Button>
+   *   <Button variant="ghost">Delete</Button>
+   * </DetailPage.HeaderActions>
+   * ```
+   */
+  HeaderActions: DetailPageHeaderActions,
   /**
    * # DetailPage.BackLink
    *
@@ -135,6 +155,7 @@ export const DetailPage = {
 export {
   DetailPageRoot as _DetailPageRoot,
   DetailPageHeader as _DetailPageHeader,
+  DetailPageHeaderActions as _DetailPageHeaderActions,
   DetailPageBackLink as _DetailPageBackLink,
   DetailPageTitle as _DetailPageTitle,
   DetailPageSubtitle as _DetailPageSubtitle,
