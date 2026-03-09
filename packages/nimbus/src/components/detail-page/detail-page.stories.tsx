@@ -5,11 +5,15 @@ import { within, expect, userEvent } from "storybook/test";
 const meta: Meta<typeof DetailPage.Root> = {
   title: "Components/DetailPage",
   component: DetailPage.Root,
+  tags: ["autodocs"],
+  parameters: {
+    layout: "fullscreen",
+  },
 };
 
 export default meta;
 
-type Story = StoryObj<typeof DetailPage.Root>;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Info detail page (read-only, no footer)
@@ -118,6 +122,55 @@ export const FormDetailPage: Story = {
       await expect(canvas.getByRole("contentinfo")).toBeInTheDocument();
       await expect(canvas.getByText("Save")).toBeInTheDocument();
       await expect(canvas.getByText("Cancel")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Detail page with header actions (title + action buttons in a row)
+ * Demonstrates the HeaderActions sub-component positioned alongside the title
+ */
+export const WithHeaderActions: Story = {
+  render: () => (
+    <DetailPage.Root data-testid="detail-page-actions">
+      <DetailPage.Header>
+        <DetailPage.BackLink href="/discounts">
+          Back to discounts
+        </DetailPage.BackLink>
+        <DetailPage.Title>Cart Discount Details</DetailPage.Title>
+        <DetailPage.HeaderActions>
+          <Button size="sm" variant="ghost">
+            Duplicate
+          </Button>
+          <Button size="sm">Save</Button>
+        </DetailPage.HeaderActions>
+        <DetailPage.Subtitle>10% off all items</DetailPage.Subtitle>
+      </DetailPage.Header>
+      <DetailPage.Content>
+        <Stack gap="400">
+          <Text>Discount configuration form fields would go here.</Text>
+        </Stack>
+      </DetailPage.Content>
+      <DetailPage.Footer>
+        <Stack direction="row" gap="200">
+          <Button>Save</Button>
+          <Button variant="ghost">Cancel</Button>
+        </Stack>
+      </DetailPage.Footer>
+    </DetailPage.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders title and actions in a row", async () => {
+      await expect(
+        canvas.getByRole("heading", { name: "Cart Discount Details" })
+      ).toBeInTheDocument();
+      await expect(canvas.getByText("Duplicate")).toBeInTheDocument();
+    });
+
+    await step("Renders subtitle below the title row", async () => {
+      await expect(canvas.getByText("10% off all items")).toBeInTheDocument();
     });
   },
 };
