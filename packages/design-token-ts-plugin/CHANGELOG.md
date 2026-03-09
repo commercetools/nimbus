@@ -1,5 +1,22 @@
 # @commercetools/nimbus-design-token-ts-plugin
 
+## 2.8.0
+
+### Minor Changes
+
+- [#1121](https://github.com/commercetools/nimbus/pull/1121)
+  [`20f9600`](https://github.com/commercetools/nimbus/commit/20f960056e6a9445daf929f7b9ad0e1d051a5f0b)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Add resolved values for
+  semantic colors (bg, fg, border.\*), textStyles, layerStyles, and
+  letterSpacing to TS plugin autocomplete. Semantic colors now show both light
+  and dark mode values.
+
+### Patch Changes
+
+- Updated dependencies
+  [[`a09983d`](https://github.com/commercetools/nimbus/commit/a09983d93ea4c0918d451b1dae9f826d5d75aea9)]:
+  - @commercetools/nimbus-tokens@2.8.0
+
 ## 2.7.0
 
 ### Patch Changes
