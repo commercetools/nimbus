@@ -1,0 +1,181 @@
+---
+id: Components-DetailPage
+title: DetailPage
+exportName: DetailPage
+description: A compound layout component for detail views with back navigation, header, scrollable content area, and optional footer. Replaces TabularDetailPage, InfoDetailPage, and CustomFormDetailPage from Merchant Center Application Kit.
+documentState: InitialDraft
+lifecycleState: Stable
+order: 999
+menu:
+  - Components
+  - Layout
+  - DetailPage
+tags:
+  - component
+  - layout
+  - detail-page
+  - page
+---
+
+## Overview
+
+DetailPage provides the structural layout for detail views — pages that show
+or edit a single resource. It composes a fixed header with back navigation, a
+scrollable content area, and an optional footer for form actions.
+
+The component uses a compound pattern where each part is a separate
+sub-component, giving full control over composition while maintaining
+consistent layout behavior.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+## Variables
+
+Get familiar with the features.
+
+### Info page (read-only)
+
+A simple detail page without a footer, suitable for read-only views.
+
+```jsx live
+const App = () => (
+  <DetailPage.Root>
+    <DetailPage.Header>
+      <DetailPage.BackLink href="/products">
+        Back to products
+      </DetailPage.BackLink>
+      <DetailPage.Title>Product Details</DetailPage.Title>
+      <DetailPage.Subtitle>SKU-12345</DetailPage.Subtitle>
+    </DetailPage.Header>
+    <DetailPage.Content>
+      <Stack gap="400">
+        <Text>This is a read-only info page with no footer.</Text>
+        <Text>Use this pattern for pages that display information without form actions.</Text>
+      </Stack>
+    </DetailPage.Content>
+  </DetailPage.Root>
+)
+```
+
+### Form page (with footer)
+
+A detail page with a footer containing action buttons for form submission.
+
+```jsx live
+const App = () => (
+  <DetailPage.Root>
+    <DetailPage.Header>
+      <DetailPage.BackLink href="/orders">
+        Back to orders
+      </DetailPage.BackLink>
+      <DetailPage.Title>Edit Order</DetailPage.Title>
+      <DetailPage.Subtitle>Order #ORD-2024-001</DetailPage.Subtitle>
+    </DetailPage.Header>
+    <DetailPage.Content>
+      <Text>Form fields would go here.</Text>
+    </DetailPage.Content>
+    <DetailPage.Footer>
+      <Stack direction="horizontal" gap="200">
+        <Button variant="solid" colorPalette="primary">Save</Button>
+        <Button variant="ghost">Cancel</Button>
+      </Stack>
+    </DetailPage.Footer>
+  </DetailPage.Root>
+)
+```
+
+### Header actions
+
+Action buttons can be placed alongside the title using `DetailPage.HeaderActions`.
+The header uses CSS grid to automatically position actions next to the title.
+
+```jsx live
+const App = () => (
+  <DetailPage.Root>
+    <DetailPage.Header>
+      <DetailPage.BackLink href="/discounts">
+        Back to discounts
+      </DetailPage.BackLink>
+      <DetailPage.Title>Cart Discount Details</DetailPage.Title>
+      <DetailPage.HeaderActions>
+        <Button size="sm" variant="ghost">Duplicate</Button>
+        <Button size="sm" variant="solid" colorPalette="primary">Save</Button>
+      </DetailPage.HeaderActions>
+      <DetailPage.Subtitle>10% off all items</DetailPage.Subtitle>
+    </DetailPage.Header>
+    <DetailPage.Content>
+      <Text>Discount configuration form fields would go here.</Text>
+    </DetailPage.Content>
+  </DetailPage.Root>
+)
+```
+
+### Tabular page (with tabs)
+
+Compose with the `Tabs` component inside `DetailPage.Content` for tabbed navigation.
+
+```jsx live
+const App = () => (
+  <DetailPage.Root>
+    <DetailPage.Header>
+      <DetailPage.BackLink href="/customers">
+        Back to customers
+      </DetailPage.BackLink>
+      <DetailPage.Title>Customer Details</DetailPage.Title>
+      <DetailPage.Subtitle>customer@example.com</DetailPage.Subtitle>
+    </DetailPage.Header>
+    <DetailPage.Content>
+      <Tabs.Root defaultSelectedKey="general">
+        <Tabs.List>
+          <Tabs.Tab id="general">General</Tabs.Tab>
+          <Tabs.Tab id="addresses">Addresses</Tabs.Tab>
+          <Tabs.Tab id="orders">Orders</Tabs.Tab>
+        </Tabs.List>
+        <Tabs.Panels py="400">
+          <Tabs.Panel id="general">
+            <Text>General information content</Text>
+          </Tabs.Panel>
+          <Tabs.Panel id="addresses">
+            <Text>Addresses content</Text>
+          </Tabs.Panel>
+          <Tabs.Panel id="orders">
+            <Text>Orders content</Text>
+          </Tabs.Panel>
+        </Tabs.Panels>
+      </Tabs.Root>
+    </DetailPage.Content>
+  </DetailPage.Root>
+)
+```
+
+## Specs
+
+<PropsTable id="DetailPage" />
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone.
+
+### Accessibility standards
+
+- **Semantic landmarks:** Header renders as `<header>`, content as `<main>`,
+  and footer as `<footer>` (`contentinfo`), providing a clear page structure
+  for assistive technologies.
+- **Heading hierarchy:** The title renders as an `h1` element, establishing
+  proper document outline.
+- **Back navigation:** The back link uses a native `<a>` element with React
+  Aria's `useLink` hook, ensuring keyboard and screen reader accessibility.
+- **Reading order:** DOM order matches visual order across all layout
+  configurations.
+
+## Predecessor
+
+DetailPage replaces `TabularDetailPage`, `InfoDetailPage`,
+`CustomFormDetailPage`, and `FormDetailPage` from Merchant Center Application
+Kit (`@commercetools-frontend/application-components`). For detailed migration
+instructions, see the
+[Migration guide](/components/layout/detailpage/dev)
+in the implementation docs.
