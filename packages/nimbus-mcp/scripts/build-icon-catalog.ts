@@ -5,7 +5,8 @@
  * names, categories, and import paths, then builds a searchable catalog with
  * normalized keywords. Outputs JSON to `packages/nimbus-mcp/data/icons.json`.
  *
- * Run via: pnpm --filter @commercetools/nimbus-mcp catalog:icons
+ * Can be used as a prebuild step or run directly via CLI:
+ *   tsx scripts/build-icon-catalog.ts
  */
 
 import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
@@ -21,8 +22,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ICONS_SRC = resolve(__dirname, "../../nimbus-icons/src");
 const MATERIAL_ICONS_INDEX = resolve(ICONS_SRC, "material-icons/index.ts");
 const NIMBUS_ICONS_INDEX = resolve(ICONS_SRC, "index.ts");
-const OUTPUT_DIR = resolve(__dirname, "../data");
-const OUTPUT_FILE = resolve(OUTPUT_DIR, "icons.json");
+const PACKAGE_ROOT = resolve(__dirname, "..");
 
 // ---------------------------------------------------------------------------
 // Synonym map for enhanced keyword searchability
@@ -315,17 +315,19 @@ function scanCustomIcons(): IconCatalogEntry[] {
 }
 
 // ---------------------------------------------------------------------------
-// Main
+// Public API
 // ---------------------------------------------------------------------------
 
-function buildIconCatalog(): void {
-  console.log("Building icon catalog...");
+/**
+ * Builds the icon catalog and writes it to `data/icons.json`.
+ *
+ * @param outDir - Output directory. Defaults to `<package-root>/data`.
+ */
+export async function buildIconCatalog(outDir?: string) {
+  const resolvedOutDir = outDir ?? resolve(PACKAGE_ROOT, "data");
 
   const materialIcons = scanMaterialIcons();
-  console.log(`  Found ${materialIcons.length} Material icons`);
-
   const customIcons = scanCustomIcons();
-  console.log(`  Found ${customIcons.length} custom icons`);
 
   // Merge, with custom icons taking priority over material ones of the same
   // name. This mirrors how nimbus-icons/src/index.ts re-exports: custom
@@ -340,11 +342,22 @@ function buildIconCatalog(): void {
     icons: allIcons,
   };
 
-  mkdirSync(OUTPUT_DIR, { recursive: true });
-  writeFileSync(OUTPUT_FILE, JSON.stringify(catalog, null, 2) + "\n", "utf-8");
+  mkdirSync(resolvedOutDir, { recursive: true });
+  const outPath = resolve(resolvedOutDir, "icons.json");
+  writeFileSync(outPath, JSON.stringify(catalog, null, 2) + "\n", "utf-8");
 
-  console.log(`\nCatalog written to: ${OUTPUT_FILE}`);
-  console.log(`Total icons: ${catalog.count}`);
+  console.log(
+    `Wrote ${catalog.count} icons (${materialIcons.length} material, ${customIcons.length} custom) → ${outPath}`
+  );
 }
 
-buildIconCatalog();
+// Run as CLI when executed directly
+const isDirectRun =
+  process.argv[1] && resolve(process.argv[1]).includes("build-icon-catalog");
+
+if (isDirectRun) {
+  buildIconCatalog().catch((err) => {
+    console.error(err);
+    process.exitCode = 1;
+  });
+}

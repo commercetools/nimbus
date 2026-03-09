@@ -1,6 +1,10 @@
-import { copyDocsData } from "./copy-docs-data.mjs";
+import { copyDocsData } from "./copy-docs-data.js";
+import { buildIconCatalog } from "./build-icon-catalog.js";
 
-const steps = [{ name: "Copy docs data", fn: copyDocsData }];
+const steps = [
+  { name: "Copy docs data", fn: copyDocsData },
+  { name: "Build icon catalog", fn: buildIconCatalog },
+];
 
 for (const step of steps) {
   const start = performance.now();
