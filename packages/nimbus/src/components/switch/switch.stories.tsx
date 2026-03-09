@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box, Stack, Switch } from "@commercetools/nimbus";
+import { Box, Stack, Switch, Tooltip } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { createRef, useState } from "react";
 
@@ -198,6 +198,43 @@ export const WithRef: Story = {
 
     await step("Does accept ref's", async () => {
       await expect(switchRef.current).toBe(switchEl);
+    });
+  },
+};
+
+/**
+ * Verifies that Switch can trigger a Tooltip when wrapped in Tooltip.Root
+ */
+export const WithTooltip: Story = {
+  args: {
+    children: "Switch with Tooltip",
+    onChange: fn(),
+  },
+  render: (args) => (
+    <Tooltip.Root delay={0} closeDelay={0}>
+      <Switch {...args} />
+      <Tooltip.Content>Switch tooltip text</Tooltip.Content>
+    </Tooltip.Root>
+  ),
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+    const switchRoot = canvasElement.querySelector('[data-slot="root"]');
+
+    if (!switchRoot) {
+      throw new Error("Switch root not found");
+    }
+
+    await step("Tooltip appears on focus", async () => {
+      await userEvent.tab();
+      await canvas.findByRole("tooltip", { name: "Switch tooltip text" });
+    });
+
+    await step("Switch still toggles while tooltip is shown", async () => {
+      await userEvent.keyboard(" ");
+      await expect(args.onChange).toHaveBeenCalledTimes(1);
+      await expect(switchRoot.getAttribute("data-selected")).toBe("true");
     });
   },
 };
