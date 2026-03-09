@@ -22,6 +22,18 @@ export interface DesignToken {
   category: string;
 }
 
+/** A single result from the search_docs tool. */
+export interface DocSearchResult {
+  /** Page title. */
+  title: string;
+  /** Short page description. */
+  description: string;
+  /** Route path to the documentation page. */
+  path: string;
+  /** Content snippet highlighting the match. */
+  snippet: string;
+}
+
 /** Result returned by MCP tool handlers. */
 export interface ToolResult {
   content: Array<{
