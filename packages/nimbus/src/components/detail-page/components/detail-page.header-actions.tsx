@@ -1,6 +1,5 @@
 import { DetailPageHeaderActionsSlot } from "../detail-page.slots";
 import type { DetailPageHeaderActionsProps } from "../detail-page.types";
-import { extractStyleProps } from "@/utils";
 
 /**
  * DetailPage.HeaderActions - Action buttons displayed alongside the title
@@ -12,10 +11,8 @@ export const DetailPageHeaderActions = ({
   children,
   ...props
 }: DetailPageHeaderActionsProps) => {
-  const [styleProps, functionalProps] = extractStyleProps(props);
-
   return (
-    <DetailPageHeaderActionsSlot ref={ref} {...styleProps} {...functionalProps}>
+    <DetailPageHeaderActionsSlot ref={ref} {...props}>
       {children}
     </DetailPageHeaderActionsSlot>
   );

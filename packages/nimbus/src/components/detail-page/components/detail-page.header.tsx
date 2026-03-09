@@ -1,6 +1,5 @@
 import { DetailPageHeaderSlot } from "../detail-page.slots";
 import type { DetailPageHeaderProps } from "../detail-page.types";
-import { extractStyleProps } from "@/utils";
 
 /**
  * DetailPage.Header - The header section containing back link, title, and subtitle
@@ -12,10 +11,8 @@ export const DetailPageHeader = ({
   children,
   ...props
 }: DetailPageHeaderProps) => {
-  const [styleProps, functionalProps] = extractStyleProps(props);
-
   return (
-    <DetailPageHeaderSlot ref={ref} {...styleProps} {...functionalProps}>
+    <DetailPageHeaderSlot ref={ref} {...props}>
       {children}
     </DetailPageHeaderSlot>
   );
