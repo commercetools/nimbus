@@ -1,8 +1,9 @@
-import { createSlotRecipeContext } from "@chakra-ui/react";
+import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import type { SlotComponent } from "../../type-utils/slot-types";
 import type {
   DetailPageRootSlotProps,
   DetailPageHeaderSlotProps,
+  DetailPageHeaderActionsSlotProps,
   DetailPageBackLinkSlotProps,
   DetailPageTitleSlotProps,
   DetailPageSubtitleSlotProps,
@@ -26,6 +27,14 @@ export const DetailPageHeaderSlot: SlotComponent<
   HTMLElement,
   DetailPageHeaderSlotProps
 > = withContext<HTMLElement, DetailPageHeaderSlotProps>("header", "header");
+
+export const DetailPageHeaderActionsSlot: SlotComponent<
+  HTMLDivElement,
+  DetailPageHeaderActionsSlotProps
+> = withContext<HTMLDivElement, DetailPageHeaderActionsSlotProps>(
+  "div",
+  "headerActions"
+);
 
 export const DetailPageBackLinkSlot: SlotComponent<
   HTMLAnchorElement,
