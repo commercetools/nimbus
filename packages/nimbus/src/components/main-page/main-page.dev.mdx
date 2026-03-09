@@ -33,7 +33,7 @@ const App = () => (
 
 ### MainPage.Header
 
-The header section uses a two-column grid layout. Title, Subtitle, and any custom content flow into the left column. Actions spans all rows on the right and collapses when not present.
+The header section uses a two-column grid layout. Title, Subtitle, and any custom content flow into the left column (column 1). Actions spans all rows on the right (column 2) and collapses when not present.
 
 ```jsx live-dev
 const App = () => (
@@ -52,9 +52,9 @@ const App = () => (
 )
 ```
 
-### MainPage.Title
+#### MainPage.Title
 
-Renders a styled `<h1>` element. Accepts children for the title text.
+Renders a styled `<h1>` element pinned to grid column 1. Accepts children for the title text.
 
 ```jsx live-dev
 const App = () => (
@@ -69,9 +69,9 @@ const App = () => (
 )
 ```
 
-### MainPage.Subtitle
+#### MainPage.Subtitle
 
-Optional subtitle rendered as a `<p>` element below the title. Place it as a sibling of Title inside the Header.
+Optional subtitle rendered as a `<p>` element pinned to grid column 1, below the title. Place it as a sibling of Title inside the Header.
 
 ```jsx live-dev
 const App = () => (
@@ -87,27 +87,9 @@ const App = () => (
 )
 ```
 
-The Header accepts any content, so you can replace Title with custom elements if needed.
+#### MainPage.Actions
 
-```jsx live-dev
-const App = () => (
-  <MainPage.Root>
-    <MainPage.Header>
-      <Stack direction="row" gap="200" align="center">
-        <Heading as="h1">Custom Title</Heading>
-        <Badge variant="info">Draft</Badge>
-      </Stack>
-    </MainPage.Header>
-    <MainPage.Content>
-      <Text>Content area</Text>
-    </MainPage.Content>
-  </MainPage.Root>
-)
-```
-
-### MainPage.Actions
-
-A flex container with gap for action buttons. Positioned on the right side of the header via CSS grid, spanning all rows.
+A flex container with gap for action buttons. Pinned to grid column 2 (right), spanning all rows.
 
 ```jsx live-dev
 const App = () => (
@@ -118,6 +100,56 @@ const App = () => (
         <Button variant="ghost">Export</Button>
         <Button>Add Product</Button>
       </MainPage.Actions>
+    </MainPage.Header>
+    <MainPage.Content>
+      <Text>Content area</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+#### Custom elements in the header
+
+Any additional children placed in the Header default to column 2 (right). To place a custom element on the left side, set `gridColumn="1"`.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <MainPage.Title mb='100'>Page Title</MainPage.Title>
+      <Badge 
+        gridColumn="1"
+        justifySelf="flex-start"
+        colorPalette="blue"
+        size="xs"
+      >
+        Custom in column 1
+      </Badge>
+      <Badge 
+        colorPalette="mint"
+        justifySelf="flex-end" 
+        size='xs'
+      >
+        Custom in column 2
+      </Badge>
+    </MainPage.Header>
+    <MainPage.Content>
+      <Text>Content area</Text>
+    </MainPage.Content>
+  </MainPage.Root>
+)
+```
+
+The Header also accepts any content in place of the standard sub-components for full customization.
+
+```jsx live-dev
+const App = () => (
+  <MainPage.Root>
+    <MainPage.Header>
+      <Stack direction="row" gap="200" align="center">
+        <Heading as="h1">Custom Title</Heading>
+        <Badge colorPalette="info">Draft</Badge>
+      </Stack>
     </MainPage.Header>
     <MainPage.Content>
       <Text>Content area</Text>
@@ -169,6 +201,23 @@ const App = () => (
   </MainPage.Root>
 )
 ```
+
+## Component requirements
+
+### Accessibility
+
+MainPage uses semantic HTML landmarks for assistive technology navigation:
+
+- **Header** renders as `<header>` (banner landmark)
+- **Title** renders as `<h1>` for the page heading
+- **Content** renders as `<main>` (main landmark)
+- **Footer** renders as `<footer>` (contentinfo landmark)
+
+Since `<main>` should be unique per page, avoid nesting multiple MainPage components.
+
+### Keyboard navigation
+
+MainPage is a layout skeleton with no interactive behavior of its own. Focus moves naturally through landmark regions via the `Tab` key, allowing screen reader users to jump between header, main content, and footer using landmark navigation shortcuts.
 
 ## API reference
 

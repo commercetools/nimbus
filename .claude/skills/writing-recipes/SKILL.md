@@ -97,7 +97,6 @@ import { defineRecipe } from '@chakra-ui/react/styled-system'
  */
 export const {componentName}Recipe = defineRecipe({
   className: '{component-name}',
-  description: 'Recipe for {ComponentName} component',
 
   base: {
     // Base styles - MUST use Nimbus tokens
@@ -133,7 +132,6 @@ import { defineSlotRecipe } from '@chakra-ui/react/styled-system'
  */
 export const {componentName}Recipe = defineSlotRecipe({
   className: '{component-name}',
-  description: 'Recipe for {ComponentName} component',
 
   slots: ['root', /* slot names */],
 
@@ -278,7 +276,7 @@ You MUST validate against these requirements:
 
 - [ ] MUST use `defineRecipe()` or `defineSlotRecipe()`
 - [ ] MUST have `className` property (kebab-case)
-- [ ] MUST have `description` property
+
 - [ ] MUST have JSDoc comment with link
 
 #### Token Usage (CRITICAL)

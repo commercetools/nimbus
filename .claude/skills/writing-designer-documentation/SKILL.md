@@ -66,6 +66,7 @@ packages/nimbus/src/components/{component}/{component}.mdx
 ---
 id: Components-ComponentName
 title: Component Name
+exportName: ComponentName
 description: Brief one-line description
 documentState: InitialDraft # InitialDraft|ReviewedInternal|Published
 lifecycleState: Stable # Experimental|Alpha|Beta|Stable|Deprecated
@@ -233,7 +234,7 @@ links, clearer explanations.
 
 - [ ] File location:
       `packages/nimbus/src/components/{component}/{component}.mdx` (MUST match)
-- [ ] All required frontmatter fields present (MUST exist)
+- [ ] All required frontmatter fields present: id, title, exportName, description, order, menu, tags (MUST exist)
 - [ ] ID follows pattern: `Components-{ComponentName}` (MUST match, breaks
       search/routing if wrong)
 - [ ] Menu hierarchy includes proper category (MUST have)

@@ -36,21 +36,23 @@ export const mainPageRecipe = defineSlotRecipe({
       borderColor: "neutral.6",
     },
     title: {
+      gridColumn: "1",
       fontSize: "500",
       fontWeight: "600",
       lineHeight: "tight",
       color: "neutral.12",
     },
     subtitle: {
+      gridColumn: "1",
       fontSize: "250",
       color: "neutral.11",
     },
     actions: {
+      gridColumn: "2",
+      gridRow: "1 / -1",
       display: "flex",
       alignItems: "center",
       gap: "200",
-      gridColumn: "2",
-      gridRow: "1 / -1",
     },
     content: {
       overflow: "auto",
