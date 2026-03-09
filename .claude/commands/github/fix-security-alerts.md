@@ -151,7 +151,34 @@ grep -l '"<package-name>"' package.json packages/*/package.json
 pnpm why <package-name>
 ```
 
-### 3.4 Check for Existing Dependabot PRs
+### 3.4 Audit Existing pnpm Overrides
+
+Read the `pnpm.overrides` object in the root `package.json` and evaluate each
+entry:
+
+1. **Check if the override is still needed**: Search `pnpm-lock.yaml` for the
+   package name. If no resolved version of the package exists in the lockfile
+   (beyond the override spec itself), the override is stale and should be
+   removed.
+2. **Check if the override target is outdated**: If the override pins to a
+   specific version or range for security reasons, verify the vulnerable
+   versions it guards against are still present in the dependency tree. If all
+   transitive consumers have already upgraded past the vulnerable range, the
+   override is no longer needed.
+3. **Check for version-range overrides with no matching input**: For overrides
+   like `"package@>=X <Y": ">=Z"`, check if any version in the `X..Y` range
+   exists in the lockfile. If not, the override has no effect and can be
+   removed.
+
+Classify each override as:
+
+| Status     | Meaning                                                   |
+| ---------- | --------------------------------------------------------- |
+| **Keep**   | Override is actively resolving a version in the lockfile  |
+| **Remove** | No matching versions in lockfile — override has no effect |
+| **Update** | Override target version should be bumped                  |
+
+### 3.5 Check for Existing Dependabot PRs
 
 ```bash
 gh pr list --search "author:app/dependabot" --json number,title,url
@@ -193,7 +220,26 @@ Found X security alerts: Y auto-fixable, Z need manual attention
 └─────────────────┴──────────┴─────────────────────────────────────────────────┘
 ```
 
-### 4.4 Existing Dependabot PRs Notice
+### 4.4 Overrides Cleanup Table
+
+If any existing overrides were classified as **Remove** or **Update** in step
+3.4, present them:
+
+```markdown
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ OVERRIDES CLEANUP │
+├──────────────────────────────────┬──────────┬────────────────────────────────┤
+│ Override │ Status │ Reason │
+├──────────────────────────────────┼──────────┼────────────────────────────────┤
+│ tmp: ^0.2.5 │ Remove │ Not in dependency tree │ │ glob@>=10.2.0
+<10.5.0: >=10.5.0 │ Remove │ No matching versions in lock │
+└──────────────────────────────────┴──────────┴────────────────────────────────┘
+```
+
+If all overrides are still valid, note: "All existing overrides are still active
+— no cleanup needed."
+
+### 4.5 Existing Dependabot PRs Notice
 
 ```markdown
 Note: X existing Dependabot PRs will be superseded:
@@ -202,7 +248,7 @@ Note: X existing Dependabot PRs will be superseded:
 - #124: Bump axios from 0.21.1 to 0.21.4
 ```
 
-### 4.5 All Manual Case
+### 4.6 All Manual Case
 
 **If ALL alerts need manual attention**: Display the manual attention table,
 then exit with:
@@ -213,7 +259,7 @@ All X alerts require manual attention. See reasons above.
 No automatic fixes can be applied. Address each issue manually or wait for patches.
 ```
 
-### 4.6 Request Approval
+### 4.7 Request Approval
 
 ```
 Proceed with auto-fixable updates? (y/n)
@@ -512,6 +558,8 @@ The PR is ready for review.
 - You MUST close superseded Dependabot PRs when creating a new PR
 - You MUST NOT attempt to fix alerts that require major version upgrades
 - You MUST NOT attempt to fix transitive dependency vulnerabilities directly
+- You MUST audit existing `pnpm.overrides` in `package.json` and remove stale
+  entries that no longer resolve any versions in the lockfile
 - You SHOULD sort alerts by severity (CRITICAL > HIGH > MEDIUM > LOW) in tables
 
 ## RFC 2119 Key Words
