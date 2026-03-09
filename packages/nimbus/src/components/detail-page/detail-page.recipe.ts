@@ -11,6 +11,7 @@ export const detailPageSlotRecipe = defineSlotRecipe({
     "backLink",
     "title",
     "subtitle",
+    "headerActions",
     "content",
     "footer",
   ],
@@ -25,13 +26,23 @@ export const detailPageSlotRecipe = defineSlotRecipe({
       width: "100%",
     },
     header: {
-      display: "flex",
-      flexDirection: "column",
-      gap: "200",
+      display: "grid",
+      gridTemplateColumns: "1fr auto",
+      gridTemplateAreas: `
+        "backLink    backLink"
+        "title       headerActions"
+        "subtitle    subtitle"
+      `,
+      columnGap: "400",
+      rowGap: "200",
+      alignItems: "center",
       paddingX: "600",
       paddingY: "400",
+      borderBottom: "solid-25",
+      borderColor: "neutral.6",
     },
     backLink: {
+      gridArea: "backLink",
       display: "inline-flex",
       alignItems: "center",
       gap: "100",
@@ -40,23 +51,34 @@ export const detailPageSlotRecipe = defineSlotRecipe({
       fontSize: "250",
       lineHeight: "1",
       cursor: "pointer",
+      justifySelf: "start",
       _hover: {
         color: "neutral.12",
         textDecoration: "underline",
       },
     },
     title: {
+      gridArea: "title",
       fontSize: "500",
       fontWeight: "600",
       lineHeight: "tight",
       color: "neutral.12",
     },
     subtitle: {
+      gridArea: "subtitle",
       fontSize: "250",
       color: "neutral.11",
     },
+    headerActions: {
+      gridArea: "headerActions",
+      display: "flex",
+      alignItems: "center",
+      gap: "200",
+    },
     content: {
       flex: "1",
+      flexBasis: "0",
+      overflowY: "auto",
       paddingX: "600",
       paddingY: "400",
     },

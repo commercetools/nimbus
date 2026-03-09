@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { DetailPage, Tabs, NimbusProvider } from "@commercetools/nimbus";
+import {
+  DetailPage,
+  Tabs,
+  Button,
+  NimbusProvider,
+} from "@commercetools/nimbus";
 
 /**
  * @docs-section info-detail-page
@@ -68,10 +73,46 @@ describe("DetailPage - Form page (with footer)", () => {
 });
 
 /**
+ * @docs-section header-actions
+ * @docs-title Detail Page with Header Actions
+ * @docs-description A detail page with action buttons alongside the title
+ * @docs-order 3
+ */
+describe("DetailPage - With header actions", () => {
+  it("renders title and actions in a horizontal row", () => {
+    render(
+      <NimbusProvider>
+        <DetailPage.Root>
+          <DetailPage.Header>
+            <DetailPage.BackLink href="/discounts">
+              Back to discounts
+            </DetailPage.BackLink>
+            <DetailPage.Title>Cart Discount Details</DetailPage.Title>
+            <DetailPage.HeaderActions>
+              <Button size="sm" variant="ghost">
+                Duplicate
+              </Button>
+              <Button size="sm">Save</Button>
+            </DetailPage.HeaderActions>
+            <DetailPage.Subtitle>10% off all items</DetailPage.Subtitle>
+          </DetailPage.Header>
+          <DetailPage.Content>Discount form content</DetailPage.Content>
+        </DetailPage.Root>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByText("Cart Discount Details")).toBeInTheDocument();
+    expect(screen.getByText("Duplicate")).toBeInTheDocument();
+    expect(screen.getByText("Save")).toBeInTheDocument();
+    expect(screen.getByText("10% off all items")).toBeInTheDocument();
+  });
+});
+
+/**
  * @docs-section tabular-detail-page
  * @docs-title Tabular Detail Page
  * @docs-description A detail page with tabbed content navigation
- * @docs-order 3
+ * @docs-order 4
  */
 describe("DetailPage - Tabular page (with tabs)", () => {
   it("renders a tabular detail page with tabs", () => {

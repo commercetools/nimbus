@@ -3,7 +3,7 @@ import type {
   HTMLChakraProps,
   SlotRecipeProps,
   UnstyledProp,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react/styled-system";
 
 // ============================================================
 // RECIPE PROPS
@@ -24,6 +24,8 @@ export type DetailPageRootSlotProps = HTMLChakraProps<
 >;
 
 export type DetailPageHeaderSlotProps = HTMLChakraProps<"header">;
+
+export type DetailPageHeaderActionsSlotProps = HTMLChakraProps<"div">;
 
 export type DetailPageBackLinkSlotProps = HTMLChakraProps<"a">;
 
@@ -48,6 +50,12 @@ export type DetailPageHeaderProps =
   OmitInternalProps<DetailPageHeaderSlotProps> & {
     children?: React.ReactNode;
     ref?: React.Ref<HTMLElement>;
+  };
+
+export type DetailPageHeaderActionsProps =
+  OmitInternalProps<DetailPageHeaderActionsSlotProps> & {
+    children?: React.ReactNode;
+    ref?: React.Ref<HTMLDivElement>;
   };
 
 export type DetailPageBackLinkProps =
