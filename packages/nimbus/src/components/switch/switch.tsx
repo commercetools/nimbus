@@ -37,6 +37,9 @@ export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
   const [recipeProps, recipeLessProps] = recipe.splitVariantProps(props);
   const [styleProps, functionalProps] = extractStyleProps(recipeLessProps);
 
+  const isAriaDisabled =
+    props["aria-disabled"] === true || props["aria-disabled"] === "true";
+
   const state = useToggleState(props);
   const { inputProps } = useSwitch(functionalProps, state, ref);
 
@@ -50,9 +53,6 @@ export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
     { excludeFromTabOrder: true },
     rootRef
   );
-
-  const isAriaDisabled =
-    props["aria-disabled"] === true || props["aria-disabled"] === "true";
 
   const stateProps = {
     "data-selected": state.isSelected,

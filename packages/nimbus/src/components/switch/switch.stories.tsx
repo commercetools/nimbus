@@ -268,8 +268,8 @@ export const WithTooltipDisabled: Story = {
       await expect(switchRoot.getAttribute("data-disabled")).toBe("true");
     });
 
-    await step("Tooltip appears on hover", async () => {
-      await userEvent.hover(switchRoot);
+    await step("Tooltip appears on focus", async () => {
+      (switchRoot as HTMLElement).focus();
       await canvas.findByRole("tooltip", { name: "Disabled switch tooltip" });
     });
 
