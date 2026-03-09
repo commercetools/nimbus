@@ -1,6 +1,5 @@
 import { DetailPageTitleSlot } from "../detail-page.slots";
 import type { DetailPageTitleProps } from "../detail-page.types";
-import { extractStyleProps } from "@/utils";
 
 /**
  * DetailPage.Title - The page title heading
@@ -12,10 +11,8 @@ export const DetailPageTitle = ({
   children,
   ...props
 }: DetailPageTitleProps) => {
-  const [styleProps, functionalProps] = extractStyleProps(props);
-
   return (
-    <DetailPageTitleSlot ref={ref} {...styleProps} {...functionalProps}>
+    <DetailPageTitleSlot ref={ref} {...props}>
       {children}
     </DetailPageTitleSlot>
   );

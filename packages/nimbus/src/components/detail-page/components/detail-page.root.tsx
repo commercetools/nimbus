@@ -1,7 +1,6 @@
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { DetailPageRootSlot } from "../detail-page.slots";
 import type { DetailPageProps } from "../detail-page.types";
-import { extractStyleProps } from "@/utils";
 
 /**
  * DetailPage.Root - The root container for the detail page layout
@@ -14,16 +13,10 @@ export const DetailPageRoot = ({
   ...props
 }: DetailPageProps) => {
   const recipe = useSlotRecipe({ key: "nimbusDetailPage" });
-  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
-  const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
+  const [recipeProps, restProps] = recipe.splitVariantProps(props);
 
   return (
-    <DetailPageRootSlot
-      ref={ref}
-      {...recipeProps}
-      {...styleProps}
-      {...functionalProps}
-    >
+    <DetailPageRootSlot ref={ref} {...recipeProps} {...restProps}>
       {children}
     </DetailPageRootSlot>
   );

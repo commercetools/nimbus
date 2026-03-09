@@ -1,6 +1,5 @@
 import { DetailPageSubtitleSlot } from "../detail-page.slots";
 import type { DetailPageSubtitleProps } from "../detail-page.types";
-import { extractStyleProps } from "@/utils";
 
 /**
  * DetailPage.Subtitle - Optional subtitle text below the page title
@@ -12,10 +11,8 @@ export const DetailPageSubtitle = ({
   children,
   ...props
 }: DetailPageSubtitleProps) => {
-  const [styleProps, functionalProps] = extractStyleProps(props);
-
   return (
-    <DetailPageSubtitleSlot ref={ref} {...styleProps} {...functionalProps}>
+    <DetailPageSubtitleSlot ref={ref} {...props}>
       {children}
     </DetailPageSubtitleSlot>
   );
