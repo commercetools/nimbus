@@ -122,16 +122,13 @@ export const DetailPage = {
   /**
    * # DetailPage.Content
    *
-   * The main content area. The content width is controlled by the
-   * `contentVariant` prop on `DetailPage.Root` (`wide`, `narrow`, `full`).
+   * The main content area of the detail page.
    *
    * @example
    * ```tsx
-   * <DetailPage.Root contentVariant="narrow">
-   *   <DetailPage.Content>
-   *     Form fields here
-   *   </DetailPage.Content>
-   * </DetailPage.Root>
+   * <DetailPage.Content>
+   *   Form fields here
+   * </DetailPage.Content>
    * ```
    */
   Content: DetailPageContent,
