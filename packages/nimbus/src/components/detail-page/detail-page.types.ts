@@ -1,7 +1,6 @@
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   HTMLChakraProps,
-  SlotRecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react/styled-system";
 
@@ -9,10 +8,7 @@ import type {
 // RECIPE PROPS
 // ============================================================
 
-export type DetailPageRecipeProps = {
-  /** Content width variant (wide, narrow, full) */
-  contentVariant?: SlotRecipeProps<"nimbusDetailPage">["contentVariant"];
-} & UnstyledProp;
+export type DetailPageRecipeProps = UnstyledProp;
 
 // ============================================================
 // SLOT PROPS

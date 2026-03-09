@@ -34,7 +34,7 @@ export const detailPageSlotRecipe = defineSlotRecipe({
         "subtitle    subtitle"
       `,
       columnGap: "400",
-      rowGap: "200",
+      rowGap: "400",
       alignItems: "center",
       paddingX: "600",
       paddingY: "400",
@@ -42,18 +42,19 @@ export const detailPageSlotRecipe = defineSlotRecipe({
       borderColor: "neutral.6",
     },
     backLink: {
+      focusRing: "outside",
+      colorPalette: "primary",
       gridArea: "backLink",
       display: "inline-flex",
       alignItems: "center",
       gap: "100",
-      color: "neutral.11",
-      textDecoration: "none",
-      fontSize: "250",
-      lineHeight: "1",
+      color: "colorPalette.11",
+      textStyle: "sm",
+      fontWeight: "500",
       cursor: "pointer",
       justifySelf: "start",
       _hover: {
-        color: "neutral.12",
+        color: "colorPalette.12",
         textDecoration: "underline",
       },
     },
@@ -66,7 +67,7 @@ export const detailPageSlotRecipe = defineSlotRecipe({
     },
     subtitle: {
       gridArea: "subtitle",
-      fontSize: "250",
+      textStyle: "sm",
       color: "neutral.11",
     },
     headerActions: {
@@ -78,7 +79,6 @@ export const detailPageSlotRecipe = defineSlotRecipe({
     content: {
       flex: "1",
       flexBasis: "0",
-      overflowY: "auto",
       paddingX: "600",
       paddingY: "400",
     },
@@ -88,33 +88,5 @@ export const detailPageSlotRecipe = defineSlotRecipe({
       borderTop: "solid-25",
       borderColor: "neutral.6",
     },
-  },
-
-  variants: {
-    contentVariant: {
-      wide: {
-        content: {
-          maxWidth: "breakpoint-xl",
-          marginX: "auto",
-          width: "100%",
-        },
-      },
-      narrow: {
-        content: {
-          maxWidth: "breakpoint-md",
-          marginX: "auto",
-          width: "100%",
-        },
-      },
-      full: {
-        content: {
-          maxWidth: "100%",
-        },
-      },
-    },
-  },
-
-  defaultVariants: {
-    contentVariant: "full",
   },
 });

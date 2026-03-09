@@ -142,7 +142,9 @@ export const WithHeaderActions: Story = {
           <Button size="sm" variant="ghost">
             Duplicate
           </Button>
-          <Button size="sm">Save</Button>
+          <Button size="sm" variant="solid" colorPalette="primary">
+            Save
+          </Button>
         </DetailPage.HeaderActions>
         <DetailPage.Subtitle>10% off all items</DetailPage.Subtitle>
       </DetailPage.Header>
@@ -153,7 +155,9 @@ export const WithHeaderActions: Story = {
       </DetailPage.Content>
       <DetailPage.Footer>
         <Stack direction="row" gap="200">
-          <Button>Save</Button>
+          <Button variant="solid" colorPalette="primary">
+            Save
+          </Button>
           <Button variant="ghost">Cancel</Button>
         </Stack>
       </DetailPage.Footer>
@@ -189,30 +193,26 @@ export const TabularDetailPage: Story = {
         <DetailPage.Title>Customer Details</DetailPage.Title>
         <DetailPage.Subtitle>customer@example.com</DetailPage.Subtitle>
       </DetailPage.Header>
-      <Tabs.Root defaultSelectedKey="general">
-        <Tabs.List>
-          <Tabs.Tab id="general">General</Tabs.Tab>
-          <Tabs.Tab id="addresses">Addresses</Tabs.Tab>
-          <Tabs.Tab id="orders">Orders</Tabs.Tab>
-        </Tabs.List>
-        <Tabs.Panels>
-          <Tabs.Panel id="general">
-            <DetailPage.Content>
+      <DetailPage.Content>
+        <Tabs.Root defaultSelectedKey="general">
+          <Tabs.List>
+            <Tabs.Tab id="general">General</Tabs.Tab>
+            <Tabs.Tab id="addresses">Addresses</Tabs.Tab>
+            <Tabs.Tab id="orders">Orders</Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Panels py="400">
+            <Tabs.Panel id="general">
               <Text>General information content</Text>
-            </DetailPage.Content>
-          </Tabs.Panel>
-          <Tabs.Panel id="addresses">
-            <DetailPage.Content>
+            </Tabs.Panel>
+            <Tabs.Panel id="addresses">
               <Text>Addresses content</Text>
-            </DetailPage.Content>
-          </Tabs.Panel>
-          <Tabs.Panel id="orders">
-            <DetailPage.Content>
+            </Tabs.Panel>
+            <Tabs.Panel id="orders">
               <Text>Orders content</Text>
-            </DetailPage.Content>
-          </Tabs.Panel>
-        </Tabs.Panels>
-      </Tabs.Root>
+            </Tabs.Panel>
+          </Tabs.Panels>
+        </Tabs.Root>
+      </DetailPage.Content>
     </DetailPage.Root>
   ),
   play: async ({ canvasElement, step }) => {
