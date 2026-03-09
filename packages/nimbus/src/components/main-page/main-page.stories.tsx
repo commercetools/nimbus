@@ -2,12 +2,21 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Box,
   Button,
+  DataTable,
+  FormField,
   MainPage,
+  MoneyInput,
   Stack,
   Tabs,
   Text,
+  TextInput,
+} from "@commercetools/nimbus";
+import type {
+  DataTableColumnItem,
+  MoneyInputValue,
 } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
+import { useState } from "react";
 
 const meta: Meta<typeof MainPage.Root> = {
   title: "Components/MainPage",
@@ -186,12 +195,18 @@ export const WithFooter: Story = {
       </MainPage.Header>
       <MainPage.Content>
         <Stack gap="400">
-          <Box bg="neutral.3" padding="400" borderRadius="200">
-            <Text>Project name field</Text>
-          </Box>
-          <Box bg="neutral.3" padding="400" borderRadius="200">
-            <Text>Project description field</Text>
-          </Box>
+          <FormField.Root>
+            <FormField.Label>Project name</FormField.Label>
+            <FormField.Input>
+              <TextInput placeholder="e.g. My Store" />
+            </FormField.Input>
+          </FormField.Root>
+          <FormField.Root>
+            <FormField.Label>Description</FormField.Label>
+            <FormField.Input>
+              <TextInput placeholder="Describe the project" />
+            </FormField.Input>
+          </FormField.Root>
         </Stack>
       </MainPage.Content>
       <MainPage.Footer>
@@ -228,8 +243,61 @@ export const WithFooter: Story = {
   },
 };
 
+type Product = {
+  id: string;
+  name: string;
+  sku: string;
+  price: string;
+  status: string;
+};
+
+const productColumns: DataTableColumnItem<Product>[] = [
+  { id: "name", header: "Name", accessor: (row) => row.name },
+  { id: "sku", header: "SKU", accessor: (row) => row.sku },
+  { id: "price", header: "Price", accessor: (row) => row.price },
+  { id: "status", header: "Status", accessor: (row) => row.status },
+];
+
+const productRows: Product[] = [
+  {
+    id: "1",
+    name: "Classic T-Shirt",
+    sku: "TSH-001",
+    price: "€29.99",
+    status: "Published",
+  },
+  {
+    id: "2",
+    name: "Denim Jacket",
+    sku: "JKT-042",
+    price: "€89.00",
+    status: "Published",
+  },
+  {
+    id: "3",
+    name: "Running Shoes",
+    sku: "SHO-118",
+    price: "€119.50",
+    status: "Draft",
+  },
+  {
+    id: "4",
+    name: "Canvas Backpack",
+    sku: "BAG-007",
+    price: "€45.00",
+    status: "Published",
+  },
+  {
+    id: "5",
+    name: "Wool Beanie",
+    sku: "HAT-023",
+    price: "€18.99",
+    status: "Draft",
+  },
+];
+
 /**
- * Info page pattern - Header with Actions, Content, no Footer.
+ * Info page pattern - Header with Actions, Content with DataTable, no Footer.
  */
 export const InfoPage: Story = {
   render: () => (
@@ -242,9 +310,7 @@ export const InfoPage: Story = {
         </MainPage.Actions>
       </MainPage.Header>
       <MainPage.Content>
-        <Box bg="neutral.3" padding="600" borderRadius="200">
-          <Text fontWeight="bold">Product list table would go here</Text>
-        </Box>
+        <DataTable columns={productColumns} rows={productRows} />
       </MainPage.Content>
     </MainPage.Root>
   ),
@@ -267,10 +333,10 @@ export const InfoPage: Story = {
       ).toBeInTheDocument();
     });
 
-    await step("Content is rendered", async () => {
-      await expect(
-        canvas.getByText("Product list table would go here")
-      ).toBeInTheDocument();
+    await step("DataTable renders product rows", async () => {
+      await expect(canvas.getByText("Classic T-Shirt")).toBeInTheDocument();
+      await expect(canvas.getByText("Denim Jacket")).toBeInTheDocument();
+      await expect(canvas.getByText("Running Shoes")).toBeInTheDocument();
     });
 
     await step("No footer is rendered", async () => {
@@ -280,35 +346,59 @@ export const InfoPage: Story = {
 };
 
 /**
- * Form page pattern - Header, Content, Footer with action buttons.
+ * Form page pattern - Header, Content with form fields, Footer with action buttons.
  */
 export const FormPage: Story = {
-  render: () => (
-    <MainPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
-      <MainPage.Header>
-        <MainPage.Title>Project Settings</MainPage.Title>
-      </MainPage.Header>
-      <MainPage.Content>
-        <Stack gap="400">
-          <Box bg="neutral.3" padding="400" borderRadius="200">
-            <Text>Project name field</Text>
-          </Box>
-          <Box bg="neutral.3" padding="400" borderRadius="200">
-            <Text>Project description field</Text>
-          </Box>
-          <Box bg="neutral.3" padding="400" borderRadius="200">
-            <Text>Project currency field</Text>
-          </Box>
-        </Stack>
-      </MainPage.Content>
-      <MainPage.Footer>
-        <Stack direction="row" gap="200" justify="flex-end" width="100%">
-          <Button variant="ghost">Cancel</Button>
-          <Button>Save</Button>
-        </Stack>
-      </MainPage.Footer>
-    </MainPage.Root>
-  ),
+  render: () => {
+    const [money, setMoney] = useState<MoneyInputValue>({
+      amount: "",
+      currencyCode: "EUR",
+    });
+
+    return (
+      <MainPage.Root
+        border="solid-25"
+        borderColor="neutral.6"
+        borderRadius="200"
+      >
+        <MainPage.Header>
+          <MainPage.Title>Project Settings</MainPage.Title>
+        </MainPage.Header>
+        <MainPage.Content>
+          <Stack gap="400">
+            <FormField.Root>
+              <FormField.Label>Project name</FormField.Label>
+              <FormField.Input>
+                <TextInput placeholder="e.g. My Store" />
+              </FormField.Input>
+            </FormField.Root>
+            <FormField.Root>
+              <FormField.Label>Description</FormField.Label>
+              <FormField.Input>
+                <TextInput placeholder="Describe the project" />
+              </FormField.Input>
+            </FormField.Root>
+            <FormField.Root>
+              <FormField.Label>Project currency</FormField.Label>
+              <FormField.Input>
+                <MoneyInput
+                  value={money}
+                  onValueChange={setMoney}
+                  currencies={["EUR", "USD", "GBP"]}
+                />
+              </FormField.Input>
+            </FormField.Root>
+          </Stack>
+        </MainPage.Content>
+        <MainPage.Footer>
+          <Stack direction="row" gap="200" justify="flex-end" width="100%">
+            <Button variant="ghost">Cancel</Button>
+            <Button>Save</Button>
+          </Stack>
+        </MainPage.Footer>
+      </MainPage.Root>
+    );
+  },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -318,13 +408,18 @@ export const FormPage: Story = {
       );
     });
 
-    await step("Content children are rendered", async () => {
-      await expect(canvas.getByText("Project name field")).toBeInTheDocument();
+    await step("Form fields are rendered", async () => {
+      await expect(canvas.getByText("Project name")).toBeInTheDocument();
+      await expect(canvas.getByText("Description")).toBeInTheDocument();
+      await expect(canvas.getByText("Project currency")).toBeInTheDocument();
+    });
+
+    await step("Text inputs are rendered", async () => {
       await expect(
-        canvas.getByText("Project description field")
+        canvas.getByPlaceholderText("e.g. My Store")
       ).toBeInTheDocument();
       await expect(
-        canvas.getByText("Project currency field")
+        canvas.getByPlaceholderText("Describe the project")
       ).toBeInTheDocument();
     });
 
