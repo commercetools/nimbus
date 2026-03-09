@@ -37,6 +37,9 @@ export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
   const [recipeProps, recipeLessProps] = recipe.splitVariantProps(props);
   const [styleProps, functionalProps] = extractStyleProps(recipeLessProps);
 
+  const isAriaDisabled =
+    props["aria-disabled"] === true || props["aria-disabled"] === "true";
+
   const state = useToggleState(props);
   const { inputProps } = useSwitch(functionalProps, state, ref);
 
@@ -54,7 +57,7 @@ export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
   const stateProps = {
     "data-selected": state.isSelected,
     "data-invalid": props.isInvalid,
-    "data-disabled": props.isDisabled,
+    "data-disabled": props.isDisabled || isAriaDisabled,
     "data-focus": isFocused || undefined,
   };
   return (
@@ -64,6 +67,7 @@ export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
       {...stateProps}
       {...styleProps}
       {...focusableProps}
+      {...(isAriaDisabled && { "data-allow-pointer": true })}
       ref={rootRef}
     >
       <SwitchTrackSlot data-slot="track" {...stateProps}>
@@ -72,6 +76,7 @@ export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
           <input
             data-slot="input"
             {...mergeProps(inputProps, focusProps)}
+            {...(isAriaDisabled && { disabled: true })}
             ref={ref}
           />
         </VisuallyHidden>

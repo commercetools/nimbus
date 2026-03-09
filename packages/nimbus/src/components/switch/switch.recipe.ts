@@ -23,6 +23,10 @@ export const switchSlotRecipe = defineSlotRecipe({
         layerStyle: "disabled",
         pointerEvents: "none",
       },
+      ["&[data-disabled='true'][data-allow-pointer]"]: {
+        pointerEvents: "auto",
+        cursor: "default",
+      },
     },
     label: {
       flexShrink: 0,

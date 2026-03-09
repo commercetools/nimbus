@@ -239,6 +239,48 @@ export const WithTooltip: Story = {
   },
 };
 
+/**
+ * Verifies that a disabled Switch (via aria-disabled) can still trigger a Tooltip
+ * but does not toggle its state.
+ */
+export const WithTooltipDisabled: Story = {
+  args: {
+    children: "Disabled Switch with Tooltip",
+    onChange: fn(),
+  },
+  render: (args) => (
+    <Tooltip.Root delay={0} closeDelay={0}>
+      <Switch {...args} aria-disabled={true} />
+      <Tooltip.Content>Disabled switch tooltip</Tooltip.Content>
+    </Tooltip.Root>
+  ),
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+    const switchRoot = canvasElement.querySelector('[data-slot="root"]');
+
+    if (!switchRoot) {
+      throw new Error("Switch root not found");
+    }
+
+    await step("Shows disabled styling", async () => {
+      await expect(switchRoot.getAttribute("data-disabled")).toBe("true");
+    });
+
+    await step("Tooltip appears on focus", async () => {
+      (switchRoot as HTMLElement).focus();
+      await canvas.findByRole("tooltip", { name: "Disabled switch tooltip" });
+    });
+
+    await step("Switch does not toggle when clicked", async () => {
+      await userEvent.click(switchRoot);
+      await expect(args.onChange).toHaveBeenCalledTimes(0);
+      await expect(switchRoot.getAttribute("data-selected")).toBe("false");
+    });
+  },
+};
+
 export const Sizes: Story = {
   args: {
     children: "Switch Label",
