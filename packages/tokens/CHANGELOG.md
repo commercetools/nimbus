@@ -1,5 +1,16 @@
 # @commercetools/nimbus-tokens
 
+## 2.8.0
+
+### Patch Changes
+
+- [#1192](https://github.com/commercetools/nimbus/pull/1192)
+  [`a09983d`](https://github.com/commercetools/nimbus/commit/a09983d93ea4c0918d451b1dae9f826d5d75aea9)
+  Thanks [@dependabot](https://github.com/apps/dependabot)! - Fix
+  style-dictionary v5 compatibility: migrate aspectRatio, letterSpacing, and
+  animation tokens to DTCG `$value` format, and scope brace-expansion override
+  to unblock minimatch@10
+
 ## 2.7.0
 
 ## 2.6.0
