@@ -1,5 +1,25 @@
 # @commercetools/nimbus
 
+## 2.9.0
+
+### Minor Changes
+
+- [#1217](https://github.com/commercetools/nimbus/pull/1217)
+  [`ad32e05`](https://github.com/commercetools/nimbus/commit/ad32e05eb93cb61408b8112ede594bf736a55c30)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - feat(switch): support
+  disabled styling and tooltip on aria-disabled switches
+
+  When `aria-disabled` is set on a Switch, the component now applies disabled
+  visual styles (`data-disabled`) and disables the hidden input to prevent
+  toggling, while keeping pointer events enabled so tooltips can trigger on
+  hover.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@2.9.0
+  - @commercetools/nimbus-icons@2.9.0
+
 ## 2.8.0
 
 ### Minor Changes
