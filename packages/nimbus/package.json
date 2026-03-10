@@ -68,6 +68,7 @@
   "devDependencies": {
     "@chakra-ui/react": "catalog:react",
     "@chromatic-com/storybook": "catalog:tooling",
+    "chromatic": "catalog:tooling",
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
     "@internationalized/date": "catalog:react",
@@ -128,6 +129,7 @@
     "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
     "postinstall": "chakra typegen ./dist/index.es.js || true",
     "bundles:analyze": "ANALYZE_BUNDLE=true vite build",
+    "chromatic": "chromatic --exit-zero-on-changes",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build --stats-json"
   }

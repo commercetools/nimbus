@@ -19,7 +19,6 @@
     "build:tokens": "pnpm --filter @commercetools/nimbus-tokens run build && preconstruct build",
     "build-storybook": "pnpm --filter @commercetools/nimbus build && pnpm --filter @commercetools/nimbus run build-storybook",
     "changeset": "changeset",
-    "chromatic": "chromatic",
     "openspec": "openspec",
     "changeset:version-and-format": "changeset version && prettier --write --parser json '**/package.json' && pnpm install --lockfile-only",
     "changeset:status": "changeset status --verbose",

@@ -7,24 +7,6 @@ on:
   pull_request:
 
 jobs:
-  chromatic:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
-      - name: Installing dependencies and building packages
-        uses: ./.github/actions/ci
-
-      - name: Run Chromatic
-        run: pnpm chromatic --config-path packages/nimbus/chromatic.config.json
-        env:
-          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-
   build-and-test:
     runs-on: ubuntu-latest
     permissions:
