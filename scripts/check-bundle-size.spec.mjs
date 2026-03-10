@@ -82,25 +82,8 @@ describe("check-bundle-size", () => {
 });
 
 describe("update-bundle-sizes", () => {
-<<<<<<< tf/bundle-info-alignment
   withBaselineGuard();
 
-=======
-  const fixtureBaseline = join(ROOT, "bundle-sizes.json");
-  let originalBaseline;
-
-  beforeAll(() => {
-    // Save original baseline
-    originalBaseline = execSync(`cat ${fixtureBaseline}`, {
-      encoding: "utf-8",
-    });
-  });
-
-  afterAll(() => {
-    // Restore original baseline
-    writeFileSync(fixtureBaseline, originalBaseline);
-  });
->>>>>>> main
   it("exits 0 and writes bundle-sizes.json", () => {
     const result = run(UPDATE_SCRIPT);
     expect(result.status).toBe(0);
