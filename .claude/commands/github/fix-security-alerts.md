@@ -154,29 +154,40 @@ pnpm why <package-name>
 ### 3.4 Audit Existing pnpm Overrides
 
 Read the `pnpm.overrides` object in the root `package.json` and evaluate each
-entry:
+entry using the appropriate checklist:
 
-1. **Check if the override is still needed**: Search `pnpm-lock.yaml` for the
-   package name. If no resolved version of the package exists in the lockfile
-   (beyond the override spec itself), the override is stale and should be
-   removed.
-2. **Check if the override target is outdated**: If the override pins to a
-   specific version or range for security reasons, verify the vulnerable
-   versions it guards against are still present in the dependency tree. If all
-   transitive consumers have already upgraded past the vulnerable range, the
-   override is no longer needed.
-3. **Check for version-range overrides with no matching input**: For overrides
-   like `"package@>=X <Y": ">=Z"`, check if any version in the `X..Y` range
-   exists in the lockfile. If not, the override has no effect and can be
-   removed.
+**For non-security overrides (catalog pins, compatibility fixes):**
+
+1. Search `pnpm-lock.yaml` for the package name
+2. If no resolved version exists in the lockfile → Remove (stale)
+3. If versions found → Keep
+
+**For security overrides (version-range overrides that fix vulnerabilities):**
+
+1. Run `pnpm why <package-name>` to find which parent packages depend on it
+2. Check if the parent package still declares a dependency on the vulnerable
+   range (inspect the parent's `package.json` in `node_modules`)
+3. If the parent still depends on the vulnerable range → **Keep** (the override
+   is actively protecting against it)
+4. If the parent has updated its own dependency to a safe version → **Remove**
+
+⚠️ **CRITICAL: A security override that blocks a vulnerable version from
+resolving will CAUSE that version to disappear from the lockfile. The absence of
+the vulnerable version does NOT mean the override is stale — it means the
+override is working. Always verify by checking the parent package before
+removing.**
+
+**For all overrides, also check:**
+
+- Whether the override target version should be bumped to a newer safe version
 
 Classify each override as:
 
-| Status     | Meaning                                                   |
-| ---------- | --------------------------------------------------------- |
-| **Keep**   | Override is actively resolving a version in the lockfile  |
-| **Remove** | No matching versions in lockfile — override has no effect |
-| **Update** | Override target version should be bumped                  |
+| Status     | Meaning                                                           |
+| ---------- | ----------------------------------------------------------------- |
+| **Keep**   | Override is actively resolving a version OR parent still needs it |
+| **Remove** | Package absent from lockfile AND parent updated to safe version   |
+| **Update** | Override target version should be bumped to newer safe version    |
 
 ### 3.5 Check for Existing Dependabot PRs
 
@@ -560,6 +571,11 @@ The PR is ready for review.
 - You MUST NOT attempt to fix transitive dependency vulnerabilities directly
 - You MUST audit existing `pnpm.overrides` in `package.json` and remove stale
   entries that no longer resolve any versions in the lockfile
+- You MUST NOT assume a security override is stale just because the vulnerable
+  version is absent from `pnpm-lock.yaml` — the override is why it's absent.
+  Always verify by checking if the parent package still declares a vulnerable
+  dependency range (use `pnpm why <package>` and inspect parent's
+  `package.json`)
 - You SHOULD sort alerts by severity (CRITICAL > HIGH > MEDIUM > LOW) in tables
 
 ## RFC 2119 Key Words
