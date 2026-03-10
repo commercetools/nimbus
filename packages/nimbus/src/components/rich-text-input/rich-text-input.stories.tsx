@@ -839,7 +839,9 @@ export const OnChangeCallback: Story = {
     const canvas = within(canvasElement);
     const editor = canvas.getByRole("textbox");
 
-    // Focus the editor and wait for it to be ready before typing
+    // Focus the editor and wait for it to be ready before typing.
+    // Tiptap emits an editor transaction on focus which triggers onChange,
+    // so we wait for the count to increment before typing.
     await userEvent.click(editor);
     await waitFor(() => {
       expect(canvas.getByText(/Change count: [1-9]/)).toBeInTheDocument();
@@ -854,6 +856,8 @@ export const OnChangeCallback: Story = {
       const changeCountElement = canvas.getByText(/Change count: \d+/);
       const count = Number(changeCountElement.textContent?.match(/\d+/)?.[0]);
       expect(count).toBeGreaterThanOrEqual(5);
+      // Guard against runaway onChange loops (a known ProseMirror failure mode)
+      expect(count).toBeLessThan(50);
     });
 
     // Test HTML output
