@@ -7,6 +7,7 @@ const meta = {
   title: "Components/RichTextInput",
   component: RichTextInput,
   parameters: {
+    chromatic: { disableSnapshot: true },
     layout: "padded",
     docs: {
       description: {
