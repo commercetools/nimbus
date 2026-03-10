@@ -5,7 +5,7 @@ import { getIconCatalog, type IconCatalog } from "../data-loader.js";
 import type { IconCatalogEntry } from "../types.js";
 
 /** Maximum number of results to return. */
-const MAX_RESULTS = 20;
+const MAX_ICON_RESULTS = 20;
 
 /** Cached catalog + Fuse instance (created on first call). */
 let cachedCatalog: IconCatalog | undefined;
@@ -54,13 +54,13 @@ async function searchIcons(query: string): Promise<IconCatalogEntry[]> {
   });
 
   if (substringMatches.length > 0) {
-    return substringMatches.slice(0, MAX_RESULTS);
+    return substringMatches.slice(0, MAX_ICON_RESULTS);
   }
 
   // Pass 2: fuzzy fallback — filter out low-quality matches
   const fuse = await getFuse();
   return fuse
-    .search(query, { limit: MAX_RESULTS })
+    .search(query, { limit: MAX_ICON_RESULTS })
     .filter((r) => (r.score ?? 1) < 0.35)
     .map((r) => r.item);
 }
@@ -70,7 +70,7 @@ async function searchIcons(query: string): Promise<IconCatalogEntry[]> {
  *
  * Accepts a `query` param and performs a two-pass search (substring then
  * Fuse.js fuzzy) against icon names and keywords from the icon catalog.
- * Returns up to {@link MAX_RESULTS} matching icons with their import paths.
+ * Returns up to {@link MAX_ICON_RESULTS} matching icons with their import paths.
  */
 export function registerSearchIcons(server: McpServer): void {
   server.registerTool(
