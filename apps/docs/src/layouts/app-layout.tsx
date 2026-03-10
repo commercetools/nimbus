@@ -12,8 +12,7 @@ import { AppNavBar } from "@/components/navigation/app-nav-bar";
 import { Menu } from "@/components/navigation/menu";
 import { Toc } from "@/components/navigation/toc";
 import { BreadcrumbNav } from "@/components/navigation/breadcrumb";
-//import { DevOnly } from "@/components/utils/dev-only";
-//import { DocumentMetaSettings } from "@/components/document-meta-settings/document-meta-settings";
+
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
 import { useSidebarScrollRestoration } from "@/hooks/use-sidebar-scroll-restoration";
 import { useHashNavigation } from "@/hooks/use-hash-navigation";
@@ -67,12 +66,6 @@ export function AppLayout() {
       {/* Right Aside (TOC only - Settings disabled) */}
       <AppFrame.RightAside>
         <Stack gap="800">
-          {/* Disabled for now to show consumer view */}
-          {/* <DevOnly>
-            <Suspense fallback={<LoadingSpinner />}>
-              <DocumentMetaSettings />
-            </Suspense>
-          </DevOnly> */}
           <Suspense fallback={<LoadingSpinner />}>
             <Toc />
           </Suspense>

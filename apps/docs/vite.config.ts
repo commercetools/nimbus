@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import { fileSystemApiPlugin } from "./vite-plugins/vite-plugin-fs-api";
+
 import { mdxHmrPlugin } from "./vite-plugins/vite-plugin-mdx-hmr";
 import tsconfigPaths from "vite-tsconfig-paths";
 import viteCompression from "vite-plugin-compression";
@@ -22,7 +22,7 @@ export default defineConfig({
       plugins: [],
     }),
     tsconfigPaths(),
-    fileSystemApiPlugin(),
+
     mdxHmrPlugin(),
     // Gzip and Brotli compression
     viteCompression({
