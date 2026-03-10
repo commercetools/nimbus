@@ -7,23 +7,6 @@ import type { IconCatalogEntry } from "../types.js";
 /** Maximum number of results to return. */
 const MAX_RESULTS = 20;
 
-/** Shape returned for each icon in the response array. */
-interface IconResult {
-  name: string;
-  importPath: string;
-  category: "material" | "custom";
-  keywords: string[];
-}
-
-function toResult(entry: IconCatalogEntry): IconResult {
-  return {
-    name: entry.name,
-    importPath: entry.importPath,
-    category: entry.category,
-    keywords: entry.keywords,
-  };
-}
-
 /** Cached catalog + Fuse instance (created on first call). */
 let cachedCatalog: IconCatalog | undefined;
 let fuseInstance: Fuse<IconCatalogEntry> | undefined;
@@ -57,7 +40,7 @@ async function getFuse(): Promise<Fuse<IconCatalogEntry>> {
  * Pass 1: Substring match — query contains a keyword or keyword contains query.
  * Pass 2: Fuse.js fuzzy fallback.
  */
-async function searchIcons(query: string): Promise<IconResult[]> {
+async function searchIcons(query: string): Promise<IconCatalogEntry[]> {
   const catalog = await getCatalog();
   const needle = query.toLowerCase();
 
@@ -71,7 +54,7 @@ async function searchIcons(query: string): Promise<IconResult[]> {
   });
 
   if (substringMatches.length > 0) {
-    return substringMatches.slice(0, MAX_RESULTS).map(toResult);
+    return substringMatches.slice(0, MAX_RESULTS);
   }
 
   // Pass 2: fuzzy fallback — filter out low-quality matches
@@ -79,7 +62,7 @@ async function searchIcons(query: string): Promise<IconResult[]> {
   return fuse
     .search(query, { limit: MAX_RESULTS })
     .filter((r) => (r.score ?? 1) < 0.35)
-    .map((r) => toResult(r.item));
+    .map((r) => r.item);
 }
 
 /**

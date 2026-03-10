@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { createTestClient } from "../test-utils.js";
+import type { IconCatalogEntry } from "../types.js";
 
 /**
  * Behavioral tests for the search_icons tool.
@@ -9,17 +10,10 @@ import { createTestClient } from "../test-utils.js";
  * Tests assert result shapes and known icon matches.
  */
 
-type IconResult = {
-  name: string;
-  importPath: string;
-  category: "material" | "custom";
-  keywords: string[];
-};
-
 async function callSearchIcons(
   client: Client,
   args: { query: string }
-): Promise<IconResult[]> {
+): Promise<IconCatalogEntry[]> {
   const result = await client.callTool({
     name: "search_icons",
     arguments: args,
@@ -29,7 +23,7 @@ async function callSearchIcons(
   )?.text;
 
   if (!text || text.startsWith("No icons found")) return [];
-  return JSON.parse(text) as IconResult[];
+  return JSON.parse(text) as IconCatalogEntry[];
 }
 
 describe("search_icons — basic search", () => {
