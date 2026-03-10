@@ -1,11 +1,11 @@
 import { copyDocsData } from "./copy-docs-data.js";
-import { buildIconCatalog } from "./build-icon-catalog.js";
 import { buildTokenData } from "./build-token-data.js";
+import { buildIconCatalog } from "./build-icon-catalog.js";
 
 const steps = [
   { name: "Copy docs data", fn: copyDocsData },
-  { name: "Build icon catalog", fn: buildIconCatalog },
   { name: "Build token data", fn: buildTokenData },
+  { name: "Build icon catalog", fn: buildIconCatalog },
 ];
 
 for (const step of steps) {

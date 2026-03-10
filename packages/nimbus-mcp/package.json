@@ -15,7 +15,6 @@
   "scripts": {
     "prebuild": "tsx scripts/prebuild.ts",
     "build": "pnpm prebuild && tsup",
-    "build:tokens": "tsx src/processors/build-token-data.ts",
     "dev": "tsx src/index.ts",
     "mcp-inspector": "mcp-inspector tsx src/index.ts",
     "mcp-inspector:cli": "mcp-inspector --cli tsx src/index.ts"
