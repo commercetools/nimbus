@@ -24,6 +24,7 @@ jobs:
         uses: chromaui/action@latest
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          skip: ${{ github.event.pull_request.draft == true }}
           onlyChanged: true
           storybookBaseDir: packages/nimbus
           buildScriptName: build-storybook
