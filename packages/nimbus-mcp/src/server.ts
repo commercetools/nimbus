@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { registerGetComponent } from "./tools/get-component.js";
 import { registerListComponents } from "./tools/list-components.js";
 import { registerSearchDocs } from "./tools/search-docs.js";
+import { registerSearchIcons } from "./tools/search-icons.js";
 
 /**
  * Creates and configures the Nimbus MCP server.
@@ -27,6 +28,7 @@ export function createServer(): McpServer {
   registerGetComponent(server);
   registerListComponents(server);
   registerSearchDocs(server);
+  registerSearchIcons(server);
 
   return server;
 }
