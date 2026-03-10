@@ -1,0 +1,128 @@
+---
+title: DetailPage
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+DetailPage guidelines help you choose the right layout configuration for
+resource detail views, ensuring consistent navigation patterns and content
+structure across your application.
+
+### Best practices
+
+- **Always include a back link:** Every detail page should provide a clear path
+  back to the parent list or overview. The back link label should name the
+  destination, not just say "Back".
+- **Keep the header concise:** Use the title for the resource name and the
+  subtitle for a secondary identifier (SKU, email, order number). Don't overload
+  the header with content that belongs in the body.
+- **Use header actions sparingly:** Limit header actions to 2–3 high-priority
+  operations. Move secondary actions into a menu or into the content area.
+- **Place form actions in the footer:** Save, cancel, and submit buttons belong
+  in the footer, not the header. The footer stays anchored at the bottom,
+  providing a consistent location for form actions.
+- **Omit the footer for read-only pages:** Info pages that display data without
+  editing don't need a footer. Removing it gives the content area more vertical
+  space.
+- **Use Tabs for multi-section content:** When a detail page has distinct content
+  sections, compose Tabs inside `DetailPage.Content` rather than stacking
+  everything vertically.
+
+### Usage
+
+DetailPage provides the structural shell for any page focused on a single
+resource — viewing, editing, or creating. The correct configuration depends on
+whether the page is read-only, editable, or tabbed.
+
+> [!TIP]\
+> When to use
+
+- **Read-only resource pages:** Use DetailPage without a footer when displaying
+  information that the user cannot edit (e.g., order details, customer profile).
+- **Editable resource pages:** Use DetailPage with a footer for pages that
+  include a form with save/cancel actions.
+- **Tabbed resource pages:** Use DetailPage with Tabs inside the content area
+  when the resource has multiple logical sections (e.g., General, Addresses,
+  Orders).
+- **Resource creation pages:** Use DetailPage with a footer for "create new"
+  flows where the user fills out a form and submits.
+
+> [!CAUTION]\
+> When not to use
+
+- **List pages:** DetailPage is for single-resource views. For pages that show a
+  list or table of resources, use the appropriate list page layout.
+- **Dashboards:** Dashboard pages with multiple widgets or summary cards have
+  different layout needs. DetailPage's single-column scrollable area is not
+  suited for dashboard grids.
+- **Wizards or multi-step flows:** Step-by-step creation flows need dedicated
+  wizard patterns, not a detail page layout.
+
+### Back link labeling
+
+The back link is the primary navigation element. Its label should clearly
+communicate where the user will go.
+
+> [!TIP]\
+> **Do**
+>
+> - Label the back link with the destination: "Back to products", "Back to
+>   orders", "Back to customers".
+> - Keep the label short and scannable.
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't use generic labels like "Back" or "Go back" — they don't tell the user
+>   where they'll end up.
+> - Don't use the back link for unrelated navigation. It should always return to
+>   the parent list or overview.
+
+### Header content structure
+
+The header organizes the page identity. Keep it focused on identification.
+
+> [!TIP]\
+> **Do**
+>
+> - Use the title for the resource's primary name or identifier.
+> - Use the subtitle for a secondary identifier (SKU, email, ID).
+> - Place 1–2 high-priority actions in the header actions area.
+
+```jsx live
+const App = () => (
+  <DetailPage.Root>
+    <DetailPage.Header>
+      <DetailPage.BackLink href="/products">
+        Back to products
+      </DetailPage.BackLink>
+      <DetailPage.Title>Wireless Headphones</DetailPage.Title>
+      <DetailPage.HeaderActions>
+        <Button size="sm" variant="ghost">Duplicate</Button>
+      </DetailPage.HeaderActions>
+      <DetailPage.Subtitle>SKU-WH-2024-001</DetailPage.Subtitle>
+    </DetailPage.Header>
+    <DetailPage.Content>
+      <Text>Page content goes here.</Text>
+    </DetailPage.Content>
+  </DetailPage.Root>
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't put descriptions, status badges, or metadata in the title or subtitle.
+>   These belong in the content area.
+> - Don't add more than 3 actions to the header. Use a menu for overflow actions.
+
+### Predecessor
+
+DetailPage replaces `TabularDetailPage`, `InfoDetailPage`,
+`CustomFormDetailPage`, and `FormDetailPage` from Merchant Center Application
+Kit (`@commercetools-frontend/application-components`). For detailed migration
+instructions, see the
+[Migration guide](/components/layout/detailpage/dev)
+in the implementation docs.
