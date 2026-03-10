@@ -1,14 +1,9 @@
 {
   "name": "nimbus",
   "private": true,
-  "workspaces": [
-    "packages/*",
-    "apps/*"
-  ],
+  "workspaces": ["packages/*", "apps/*"],
   "preconstruct": {
-    "packages": [
-      "packages/tokens"
-    ]
+    "packages": ["packages/tokens"]
   },
   "scripts": {
     "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs && pnpm run build:mcp",
@@ -51,18 +46,17 @@
       "react-aria-components": "catalog:react",
       "react-stately": "catalog:react",
       "@react-aria/interactions": "catalog:react",
-      "tmp": "^0.2.5",
       "@isaacs/brace-expansion": "^5.0.1",
       "brace-expansion@<2": "^2.0.2",
       "mdast-util-to-hast": "^13.2.1",
-      "glob@>=10.2.0 <10.5.0": ">=10.5.0",
-      "glob@>=11.0.0 <11.1.0": ">=11.1.0",
       "js-yaml": "^3.14.2",
       "qs": "^6.14.2",
       "axios": ">=1.13.5",
       "minimatch@>=3.0.0 <3.1.4": "3.1.4",
-      "minimatch@>=5.0.0 <5.1.8": ">=5.1.8",
-      "minimatch@>=9.0.0 <9.0.7": ">=9.0.7",
+      "svgo": ">=3.3.3",
+      "hono": ">=4.12.4",
+      "@hono/node-server": ">=1.19.10",
+      "ajv@>=8.0.0 <8.18.0": ">=8.18.0",
       "minimatch@>=10.0.0 <10.2.3": ">=10.2.3"
     },
     "onlyBuiltDependencies": [
@@ -77,7 +71,7 @@
   "devDependencies": {
     "@babel/core": "catalog:tooling",
     "@changesets/changelog-github": "0.6.0",
-    "@changesets/cli": "2.29.8",
+    "@changesets/cli": "2.30.0",
     "@commercetools/nimbus": "workspace:^",
     "@eslint/js": "catalog:tooling",
     "@fission-ai/openspec": "catalog:tooling",

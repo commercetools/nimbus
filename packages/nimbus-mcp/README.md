@@ -71,10 +71,12 @@ pnpm --filter @commercetools/nimbus-mcp build
 
 ### Running from source
 
-Requires a prebuild to copy docs data first:
+Requires a prebuild to copy docs data, generate the icon catalog, and generate token data first:
 
 ```bash
 pnpm --filter @commercetools/nimbus-mcp prebuild
+pnpm --filter @commercetools/nimbus-mcp catalog:icons
+pnpm --filter @commercetools/nimbus-mcp build:tokens
 pnpm --filter @commercetools/nimbus-mcp dev
 ```
 
@@ -142,16 +144,17 @@ and per-component route JSON) from `data/docs/` inside the package directory.
 
 ### How data gets into `data/docs/`
 
-The package has a **prebuild** step that runs automatically before `tsup`:
+The package has a **prebuild** step, an **icon catalog** step, and a **token
+flattener** step that run automatically before `tsup`:
 
 ```
-pnpm build  →  pnpm prebuild  →  tsup
-                    │
-                    ▼
-            scripts/prebuild.mjs
-                    │
-                    ▼
-            scripts/copy-docs-data.mjs
+pnpm build  →  pnpm prebuild  →  build-icon-catalog.ts  →  build-token-data.ts  →  tsup
+                    │                       │                        │
+                    ▼                       ▼                        ▼
+            scripts/prebuild.mjs    scripts/build-icon-catalog.ts   src/processors/build-token-data.ts
+                    │                       │                        │
+                    ▼                       ▼                        ▼
+            scripts/copy-docs-data.mjs   data/icons.json          data/tokens.json
                     │
     copies apps/docs/src/data/ → data/docs/
 ```
@@ -160,6 +163,16 @@ The prebuild orchestrator (`scripts/prebuild.mjs`) runs an array of steps in
 order. Currently the only step is `copy-docs-data`, which copies
 `route-manifest.json`, `search-index.json`, `routes/`, and `types/` from the
 docs app into `data/docs/`. New prebuild steps can be added to the array.
+
+After prebuild, `build-icon-catalog.ts` scans `packages/nimbus-icons/src/` and
+generates `data/icons.json` — a searchable catalog of all icon names,
+categories, import paths, and normalized keywords. This can also be run
+standalone via `pnpm --filter @commercetools/nimbus-mcp catalog:icons`.
+
+Then, `build-token-data.ts` reads the raw tokens and writes a flattened
+`data/tokens.json` with all tokens, a by-category index, and a reverse-lookup
+map. This can also be run standalone via
+`pnpm --filter @commercetools/nimbus-mcp build:tokens`.
 
 The `data/` directory is gitignored — it is always regenerated at build time.
 

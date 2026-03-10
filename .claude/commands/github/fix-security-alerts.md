@@ -151,7 +151,45 @@ grep -l '"<package-name>"' package.json packages/*/package.json
 pnpm why <package-name>
 ```
 
-### 3.4 Check for Existing Dependabot PRs
+### 3.4 Audit Existing pnpm Overrides
+
+Read the `pnpm.overrides` object in the root `package.json` and evaluate each
+entry using the appropriate checklist:
+
+**For non-security overrides (catalog pins, compatibility fixes):**
+
+1. Search `pnpm-lock.yaml` for the package name
+2. If no resolved version exists in the lockfile → Remove (stale)
+3. If versions found → Keep
+
+**For security overrides (version-range overrides that fix vulnerabilities):**
+
+1. Run `pnpm why <package-name>` to find which parent packages depend on it
+2. Check if the parent package still declares a dependency on the vulnerable
+   range (inspect the parent's `package.json` in `node_modules`)
+3. If the parent still depends on the vulnerable range → **Keep** (the override
+   is actively protecting against it)
+4. If the parent has updated its own dependency to a safe version → **Remove**
+
+⚠️ **CRITICAL: A security override that blocks a vulnerable version from
+resolving will CAUSE that version to disappear from the lockfile. The absence of
+the vulnerable version does NOT mean the override is stale — it means the
+override is working. Always verify by checking the parent package before
+removing.**
+
+**For all overrides, also check:**
+
+- Whether the override target version should be bumped to a newer safe version
+
+Classify each override as:
+
+| Status     | Meaning                                                           |
+| ---------- | ----------------------------------------------------------------- |
+| **Keep**   | Override is actively resolving a version OR parent still needs it |
+| **Remove** | Package absent from lockfile AND parent updated to safe version   |
+| **Update** | Override target version should be bumped to newer safe version    |
+
+### 3.5 Check for Existing Dependabot PRs
 
 ```bash
 gh pr list --search "author:app/dependabot" --json number,title,url
@@ -193,7 +231,26 @@ Found X security alerts: Y auto-fixable, Z need manual attention
 └─────────────────┴──────────┴─────────────────────────────────────────────────┘
 ```
 
-### 4.4 Existing Dependabot PRs Notice
+### 4.4 Overrides Cleanup Table
+
+If any existing overrides were classified as **Remove** or **Update** in step
+3.4, present them:
+
+```markdown
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ OVERRIDES CLEANUP │
+├──────────────────────────────────┬──────────┬────────────────────────────────┤
+│ Override │ Status │ Reason │
+├──────────────────────────────────┼──────────┼────────────────────────────────┤
+│ tmp: ^0.2.5 │ Remove │ Not in dependency tree │ │ glob@>=10.2.0
+<10.5.0: >=10.5.0 │ Remove │ No matching versions in lock │
+└──────────────────────────────────┴──────────┴────────────────────────────────┘
+```
+
+If all overrides are still valid, note: "All existing overrides are still active
+— no cleanup needed."
+
+### 4.5 Existing Dependabot PRs Notice
 
 ```markdown
 Note: X existing Dependabot PRs will be superseded:
@@ -202,7 +259,7 @@ Note: X existing Dependabot PRs will be superseded:
 - #124: Bump axios from 0.21.1 to 0.21.4
 ```
 
-### 4.5 All Manual Case
+### 4.6 All Manual Case
 
 **If ALL alerts need manual attention**: Display the manual attention table,
 then exit with:
@@ -213,7 +270,7 @@ All X alerts require manual attention. See reasons above.
 No automatic fixes can be applied. Address each issue manually or wait for patches.
 ```
 
-### 4.6 Request Approval
+### 4.7 Request Approval
 
 ```
 Proceed with auto-fixable updates? (y/n)
@@ -512,6 +569,13 @@ The PR is ready for review.
 - You MUST close superseded Dependabot PRs when creating a new PR
 - You MUST NOT attempt to fix alerts that require major version upgrades
 - You MUST NOT attempt to fix transitive dependency vulnerabilities directly
+- You MUST audit existing `pnpm.overrides` in `package.json` and remove stale
+  entries that no longer resolve any versions in the lockfile
+- You MUST NOT assume a security override is stale just because the vulnerable
+  version is absent from `pnpm-lock.yaml` — the override is why it's absent.
+  Always verify by checking if the parent package still declares a vulnerable
+  dependency range (use `pnpm why <package>` and inspect parent's
+  `package.json`)
 - You SHOULD sort alerts by severity (CRITICAL > HIGH > MEDIUM > LOW) in tables
 
 ## RFC 2119 Key Words
