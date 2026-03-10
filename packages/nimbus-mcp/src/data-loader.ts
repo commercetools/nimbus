@@ -240,3 +240,20 @@ export async function getIconCatalog(): Promise<IconCatalog> {
   const catalogPath = resolve(getDataDir(), "icons.json");
   return readJson<IconCatalog>(catalogPath);
 }
+
+// ---------------------------------------------------------------------------
+// Flattened token data
+// ---------------------------------------------------------------------------
+
+export type { FlatToken, FlatTokenData } from "./processors/flatten-tokens.js";
+
+export { reverseLookup } from "./processors/flatten-tokens.js";
+
+/**
+ * Loads the pre-built flattened token data from `data/tokens.json`.
+ */
+export async function getFlatTokenData(): Promise<
+  import("./processors/flatten-tokens.js").FlatTokenData
+> {
+  return readJson(resolve(getDataDir(), "tokens.json"));
+}
