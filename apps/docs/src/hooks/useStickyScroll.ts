@@ -80,12 +80,3 @@ export function useStickyScroll() {
 
   return { sidebarRef, sidebarStyles };
 }
-
-/**
- * Variation of useStickyScroll that allows independent handling of multiple sidebars
- *
- * @returns Function to create sidebar hooks with unique IDs
- */
-export function createSidebarHook() {
-  return () => useStickyScroll();
-}
