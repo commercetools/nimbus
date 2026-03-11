@@ -196,6 +196,27 @@ export const Default: Story = {
  */
 export const ButtonAsTrigger: Story = {
   args: {},
+  parameters: {
+    // Scoped to this story for POC purposes — validates that Chromatic captures
+    // fixed-position overlay components correctly.
+    //
+    // "fullscreen" is required so the drawer's position:fixed overlay fills the
+    // full iframe viewport. Without it, Chromatic clips the snapshot and the
+    // open drawer is invisible in the diff.
+    //
+    // TODO: If all drawer stories need animation capture, consider moving
+    // layout + chromatic params to meta level and auditing the impact on other stories.
+    layout: "fullscreen",
+    chromatic: {
+      // The drawer uses CSS animations (slide-from-right-full). We need to wait
+      // for the animation to finish before Chromatic takes the snapshot.
+      // pauseAnimationAtEnd:true was tried but freezes the animation at frame 0
+      // (offscreen), so we use a delay instead.
+      delay: 500,
+      // Explicit viewport ensures consistent snapshot width across runs.
+      viewports: [1200],
+    },
+  },
   render: (args) => (
     <Drawer.Root {...args}>
       <Drawer.Trigger asChild>
@@ -276,6 +297,17 @@ export const ButtonAsTrigger: Story = {
           interval: 50,
         }
       );
+    });
+
+    // Leave drawer open for Chromatic to snapshot
+    await step("Open drawer for Chromatic snapshot", async () => {
+      const customButton = canvas.getByRole("button", {
+        name: "Open with Custom Button",
+      });
+      await userEvent.click(customButton);
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
     });
   },
 };
