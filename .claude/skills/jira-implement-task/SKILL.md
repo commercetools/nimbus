@@ -1,6 +1,5 @@
 ---
-description:
-  Fetch Jira ticket, create branch, implement changes, commit, push, open PR.
+description: Fetch Jira ticket, create branch, implement changes, commit, push, open PR.
 argument-hint: <ticket-key>
 ---
 
@@ -32,6 +31,12 @@ Use the Atlassian MCP tools to retrieve the ticket:
    - **Issue type**: Task, Story, Bug, etc.
 
 If the ticket cannot be found, report the error and stop.
+
+### Jira Description Format (CRITICAL)
+
+When writing any text back to Jira (comments, description updates), you MUST use
+**Markdown format**, NOT Atlassian Document Format (ADF). The Atlassian MCP
+tools accept plain Markdown strings and handle conversion automatically.
 
 ## Step 2: Create a Feature Branch
 
