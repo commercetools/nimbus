@@ -10,6 +10,9 @@ const MAX_ICON_RESULTS = 10;
 /** Number of results returned per page. */
 const PAGE_SIZE = 5;
 
+/** Minimum keyword length for substring matching to avoid single-char noise. */
+const MIN_KEYWORD_LENGTH = 2;
+
 /** Cached catalog + Fuse instance (created on first call). */
 let cachedCatalog: IconCatalog | undefined;
 let fuseInstance: Fuse<IconCatalogEntry> | undefined;
@@ -47,14 +50,26 @@ async function searchIcons(query: string): Promise<IconCatalogEntry[]> {
   const catalog = await getCatalog();
   const needle = query.toLowerCase();
 
-  // Pass 1: substring match on name and keywords
-  const substringMatches = catalog.icons.filter((icon) => {
+  // Pass 1: substring match on name and keywords, name matches ranked first
+  const nameMatches: IconCatalogEntry[] = [];
+  const keywordMatches: IconCatalogEntry[] = [];
+
+  for (const icon of catalog.icons) {
     const nameLower = icon.name.toLowerCase();
-    if (nameLower.includes(needle) || needle.includes(nameLower)) return true;
-    return icon.keywords.some(
-      (kw) => kw.includes(needle) || needle.includes(kw)
-    );
-  });
+    if (nameLower.includes(needle) || needle.includes(nameLower)) {
+      nameMatches.push(icon);
+    } else if (
+      icon.keywords.some(
+        (kw) =>
+          kw.length >= MIN_KEYWORD_LENGTH &&
+          (kw.includes(needle) || needle.includes(kw))
+      )
+    ) {
+      keywordMatches.push(icon);
+    }
+  }
+
+  const substringMatches = [...nameMatches, ...keywordMatches];
 
   if (substringMatches.length > 0) {
     return substringMatches.slice(0, MAX_ICON_RESULTS);
