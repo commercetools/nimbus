@@ -37,7 +37,7 @@ export const Separator = ({
 
   return (
     <SeparatorRoot asChild {...recipeProps} {...styleProps}>
-      <RaSeparator ref={forwardedRef} {...functionalProps} />
+      <RaSeparator ref={forwardedRef} tabIndex={0} {...functionalProps} />
     </SeparatorRoot>
   );
 };
