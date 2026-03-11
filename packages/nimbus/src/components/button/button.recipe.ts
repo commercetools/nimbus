@@ -129,7 +129,7 @@ export const buttonRecipe = defineRecipe({
       },
       subtle: {
         bg: "colorPalette.3",
-        color: "colorPalette.11",
+        color: "colorPalette.4",
         _hover: {
           bg: "colorPalette.4",
         },
