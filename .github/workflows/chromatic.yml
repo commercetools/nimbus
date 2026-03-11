@@ -4,22 +4,8 @@ on:
   push:
     branches:
       - main
-    paths:
-      - "packages/nimbus/**"
-      - "!packages/nimbus/chromatic.config.json"
-      - "!packages/nimbus/.storybook/main.ts"
-      - "!packages/nimbus/package.json"
-      - "packages/tokens/**"
-      - "packages/nimbus-icons/**"
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
-    paths:
-      - "packages/nimbus/**"
-      - "!packages/nimbus/chromatic.config.json"
-      - "!packages/nimbus/.storybook/main.ts"
-      - "!packages/nimbus/package.json"
-      - "packages/tokens/**"
-      - "packages/nimbus-icons/**"
 
 jobs:
   chromatic:
@@ -33,10 +19,25 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v46
+        with:
+          files: |
+            packages/nimbus/**
+            packages/tokens/**
+            packages/nimbus-icons/**
+          files_ignore: |
+            packages/nimbus/chromatic.config.json
+            packages/nimbus/.storybook/main.ts
+            packages/nimbus/package.json
+
       - name: Installing dependencies and building packages
+        if: steps.changed-files.outputs.any_changed == 'true'
         uses: ./.github/actions/ci
 
       - name: Run Chromatic
+        if: steps.changed-files.outputs.any_changed == 'true'
         uses: chromaui/action@latest
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
