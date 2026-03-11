@@ -76,7 +76,6 @@ Before writing examples, check the actual component implementation:
 id: Components-ComponentName
 title: Component Name
 description: Brief one-line description
-documentState: InitialDraft
 order: 999
 menu:
   - Components

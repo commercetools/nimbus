@@ -481,7 +481,7 @@ The component SHALL provide comprehensive documentation per nimbus-core standard
 #### Scenario: MDX documentation file
 - **WHEN** loading-spinner.mdx exists
 - **THEN** SHALL include frontmatter with id, title, description
-- **AND** SHALL include documentState, order, menu, tags
+- **AND** SHALL include order, menu, tags
 - **AND** SHALL include figmaLink to design library
 - **AND** SHALL provide usage guidelines and best practices
 

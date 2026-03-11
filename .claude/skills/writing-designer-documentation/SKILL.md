@@ -67,7 +67,6 @@ packages/nimbus/src/components/{component}/{component}.mdx
 id: Components-ComponentName
 title: Component Name
 description: Brief one-line description
-documentState: InitialDraft # InitialDraft|ReviewedInternal|Published
 lifecycleState: Stable # Experimental|Alpha|Beta|Stable|Deprecated
 order: 999
 menu:
