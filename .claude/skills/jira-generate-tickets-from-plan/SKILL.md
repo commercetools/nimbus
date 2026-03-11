@@ -53,13 +53,49 @@ You MUST extract from the plan:
 
 Each ticket MUST have:
 
-| Field       | Required | Description                                                 |
-| ----------- | -------- | ----------------------------------------------------------- |
-| summary     | Yes      | Short title, prefixed with feature area                     |
-| description | Yes      | Markdown body with scope and acceptance criteria            |
-| issueType   | Yes      | Task, Story, or Spike                                       |
-| labels      | Yes      | Feature label + phase label (e.g., `nimbus-mcp`, `phase-1`) |
-| component   | No       | Jira component if applicable                                |
+| Field       | Required | Description                                               |
+| ----------- | -------- | --------------------------------------------------------- |
+| summary     | Yes      | Short title — see Phase Title Format below                |
+| description | Yes      | Markdown body with scope and acceptance criteria          |
+| issueType   | Yes      | Task, Story, or Spike                                     |
+| labels      | Yes      | Feature label + phase-task label — see Phase Labels below |
+| component   | No       | Jira component if applicable                              |
+
+### Phase Title Format
+
+When the plan contains multiple phases, you MUST include the phase number in
+every ticket summary. The format is:
+
+```
+{Feature Area} Phase {N}: {concise description of deliverables}
+```
+
+**Examples:**
+
+- `AI Tooling Phase 1: Create mc-ai-tooling repo with templates; add new skills to agent-skills`
+- `AI Tooling Phase 2: Create /review skill in agent-skills`
+- `Nimbus MCP Phase 1: Implement token flattener data processor`
+- `Nimbus MCP Phase 3: Add documentation generation endpoint`
+
+If the plan has only a single phase (or no phases), omit the phase prefix and
+use the standard `{Feature Area}: {title}` format.
+
+### Phase Labels
+
+When phases are present, each ticket MUST have a compound label combining the
+phase number and task type, formatted as `Phase-{N}:{task-type}`. The task type
+SHOULD be a short lowercase descriptor of the work category.
+
+**Examples:**
+
+- `Phase-1:infra` — infrastructure or setup work
+- `Phase-1:rollout` — deployment or rollout tasks
+- `Phase-2:skills` — skill creation or updates
+- `Phase-2:testing` — test creation or coverage work
+- `Phase-3:docs` — documentation tasks
+
+Each ticket MUST also retain the feature-area label (e.g., `nimbus-mcp`,
+`ai-tooling`) alongside the phase-task label.
 
 ### Description Template
 
@@ -112,7 +148,62 @@ Create a table mapping all dependencies:
 | CRAFT-XXXX  | CRAFT-YYYY | [why]  |
 ```
 
-## Step 3: Create Tickets in Jira
+## Step 3: User Approval (REQUIRED)
+
+Before creating or updating ANY tickets in Jira (including the epic), you MUST
+present a human-readable preview to the user and wait for explicit approval.
+
+### Preview Format
+
+Display each ticket in a clear, scannable format:
+
+```markdown
+## Ticket Preview — {N} tickets under {EPIC-KEY}
+
+### 1. [{issueType}] {summary}
+
+**Labels:** {label1}, {label2}
+**Dependencies:** {predecessor tickets, or "None"}
+
+{description text — full scope and acceptance criteria}
+
+---
+
+### 2. [{issueType}] {summary}
+
+...
+```
+
+### Dependency Summary
+
+After the ticket list, include the dependency table:
+
+```markdown
+## Dependency Map
+
+| #   | Predecessor | Successor | Reason |
+| --- | ----------- | --------- | ------ |
+| 1   | Ticket 1    | Ticket 3  | [why]  |
+```
+
+### Approval Gate
+
+- You MUST ask the user to confirm before proceeding: _"Does this look correct?
+  I'll create these tickets once you approve."_
+- You MUST NOT call any Jira creation or update MCP tools until the user
+  explicitly approves
+- If the user requests changes, update the preview and re-present for approval
+- If the user says "dry-run", output the preview and stop (do not ask for
+  approval to create)
+
+## Step 4: Create Tickets in Jira
+
+### Description Format (CRITICAL)
+
+You MUST pass all `description` fields as **Markdown text**, NOT Atlassian
+Document Format (ADF). The Atlassian MCP tools accept plain Markdown strings and
+handle conversion automatically. Sending ADF will result in malformed ticket
+descriptions.
 
 ### Jira MCP Tool Usage
 
@@ -123,10 +214,10 @@ cloudId: "commercetools.atlassian.net"
 projectKey: <derived from epic>
 issueTypeName: "Task" | "Story" | "Spike"
 parent: <epic-key>
-summary: "<prefix>: <title>"
+summary: "<Feature Area> Phase <N>: <title>"
 description: <markdown description>
 additional_fields:
-  labels: [<feature-label>, <phase-label>]
+  labels: [<feature-label>, "Phase-<N>:<task-type>"]
   components: [{"id": "<component-id>"}]  # if applicable
 ```
 
@@ -145,7 +236,7 @@ field requires the Jira REST API `update` mechanism, which the MCP tool's
 `fields` parameter does not expose. This is a
 [known limitation](https://community.atlassian.com/forums/Atlassian-Remote-MCP-Server/Using-MCP-how-do-you-Link-two-tickets-together-creation-or-edit/td-p/3064213).
 
-## Step 4: Generate Dependency Link Script
+## Step 5: Generate Dependency Link Script
 
 Since the MCP tool cannot create issue links, generate a shell script that uses
 the Jira REST API directly.
@@ -265,7 +356,7 @@ create_link() {
 - The script SHOULD include a `--cleanup` flag to remove links from a prior bad
   run (query each ticket's links, filter by type, DELETE each link ID)
 
-## Step 5: Update Plan Document
+## Step 6: Update Plan Document
 
 After creating tickets, you MUST update the plan/tickets markdown file to:
 
@@ -277,6 +368,7 @@ After creating tickets, you MUST update the plan/tickets markdown file to:
 
 Before declaring done, verify:
 
+- [ ] User approved the ticket preview before any Jira creation
 - [ ] All tickets created with correct parent epic
 - [ ] All tickets have labels and component (if applicable)
 - [ ] All tickets have acceptance criteria in description
