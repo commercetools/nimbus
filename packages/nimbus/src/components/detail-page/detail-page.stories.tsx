@@ -1,5 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { DetailPage, Button, Tabs, Stack, Text } from "@commercetools/nimbus";
+import {
+  DetailPage,
+  Button,
+  IconButton,
+  Tabs,
+  Stack,
+  Text,
+  Toolbar,
+} from "@commercetools/nimbus";
+import { Save, Print, Undo, Redo } from "@commercetools/nimbus-icons";
 import { within, expect, userEvent } from "storybook/test";
 
 const meta: Meta<typeof DetailPage.Root> = {
@@ -256,4 +265,41 @@ export const TabularDetailPage: Story = {
       await expect(canvas.getByText("Addresses content")).toBeInTheDocument();
     });
   },
+};
+
+/**
+ * Detail page with custom header content
+ * Demonstrates placing additional content like a Toolbar inside the Header component
+ */
+export const WithCustomHeaderContent: Story = {
+  render: () => (
+    <DetailPage.Root data-testid="detail-page-toolbar">
+      <DetailPage.Header>
+        <DetailPage.BackLink href="/documents">
+          Back to documents
+        </DetailPage.BackLink>
+        <DetailPage.Title>Document Editor</DetailPage.Title>
+        <DetailPage.Subtitle>Last edited 2 hours ago</DetailPage.Subtitle>
+        <Toolbar variant="outline">
+          <IconButton aria-label="Undo" size="sm" variant="ghost">
+            <Undo />
+          </IconButton>
+          <IconButton aria-label="Redo" size="sm" variant="ghost">
+            <Redo />
+          </IconButton>
+          <IconButton aria-label="Save" size="sm" variant="ghost">
+            <Save />
+          </IconButton>
+          <IconButton aria-label="Print" size="sm" variant="ghost">
+            <Print />
+          </IconButton>
+        </Toolbar>
+      </DetailPage.Header>
+      <DetailPage.Content>
+        <Stack gap="400">
+          <Text>Document content would go here.</Text>
+        </Stack>
+      </DetailPage.Content>
+    </DetailPage.Root>
+  ),
 };
