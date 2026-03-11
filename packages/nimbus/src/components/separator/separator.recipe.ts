@@ -13,6 +13,7 @@ export const separatorRecipe = defineRecipe({
     flexShrink: "0",
     colorPalette: "neutral",
     backgroundColor: "colorPalette.6",
+    opacity: 0,
   },
 
   // Available variants for customizing the component's appearance
