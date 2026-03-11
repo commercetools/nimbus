@@ -26,7 +26,10 @@
       }
     }
   },
-  "files": ["dist", "package.json"],
+  "files": [
+    "dist",
+    "package.json"
+  ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -35,10 +38,14 @@
     "type": "git",
     "url": "https://github.com/commercetools/nimbus.git"
   },
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "typesVersions": {
     "*": {
-      "*": ["./dist/index.d.ts"]
+      "*": [
+        "./dist/index.d.ts"
+      ]
     }
   },
   "dependencies": {
@@ -60,6 +67,8 @@
   },
   "devDependencies": {
     "@chakra-ui/react": "catalog:react",
+    "@chromatic-com/storybook": "catalog:tooling",
+    "chromatic": "catalog:tooling",
     "@commercetools/nimbus-design-token-ts-plugin": "workspace:^",
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
@@ -121,7 +130,8 @@
     "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
     "postinstall": "chakra typegen ./dist/index.es.js || true",
     "bundles:analyze": "ANALYZE_BUNDLE=true vite build",
+    "chromatic": "chromatic --exit-zero-on-changes",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build --stats-json"
   }
 }
