@@ -79,6 +79,12 @@ Read the ticket description carefully and implement all requested changes:
 - If the ticket references specific files, modify those files
 - If the ticket is a documentation change, focus on content accuracy
 - If the ticket is a code change, follow the project's component guidelines
+- If the ticket requires new types, search for adjacent or colocated type files
+  first (e.g., `types.ts`, `*.types.ts`) to reuse existing patterns, shared
+  types, and naming conventions before creating new ones
+- If implementation changes affect behavior, check whether colocated tests
+  (`.spec.tsx`, `.stories.tsx`, `.docs.spec.tsx`) or documentation (`.dev.mdx`)
+  need corresponding updates
 - If the ticket is ambiguous, ask the user for clarification before proceeding
 - If the ticket implements a new component, implement an OpenSpec proposal using
   the `/propose-component` command.
