@@ -149,33 +149,3 @@ const App = () => (
   </DetailPage.Root>
 )
 ```
-
-## Specs
-
-<PropsTable id="DetailPage" />
-
-## Accessibility
-
-Accessibility ensures that digital content and functionality are usable by
-everyone.
-
-### Accessibility standards
-
-- **Semantic landmarks:** Header renders as `<header>`, content as `<main>`,
-  and footer as `<footer>` (`contentinfo`), providing a clear page structure
-  for assistive technologies.
-- **Heading hierarchy:** The title renders as an `h1` element, establishing
-  proper document outline.
-- **Back navigation:** The back link uses a native `<a>` element with React
-  Aria's `useLink` hook, ensuring keyboard and screen reader accessibility.
-- **Reading order:** DOM order matches visual order across all layout
-  configurations.
-
-## Predecessor
-
-DetailPage replaces `TabularDetailPage`, `InfoDetailPage`,
-`CustomFormDetailPage`, and `FormDetailPage` from Merchant Center Application
-Kit (`@commercetools-frontend/application-components`). For detailed migration
-instructions, see the
-[Migration guide](/components/layout/detailpage/dev)
-in the implementation docs.
