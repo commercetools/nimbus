@@ -4,8 +4,11 @@ import { z } from "zod";
 import { getIconCatalog, type IconCatalog } from "../data-loader.js";
 import type { IconCatalogEntry } from "../types.js";
 
-/** Maximum number of results to return. */
-const MAX_ICON_RESULTS = 20;
+/** Maximum number of matches the search will consider. */
+const MAX_ICON_RESULTS = 10;
+
+/** Number of results returned per page. */
+const PAGE_SIZE = 5;
 
 /** Cached catalog + Fuse instance (created on first call). */
 let cachedCatalog: IconCatalog | undefined;
@@ -68,9 +71,10 @@ async function searchIcons(query: string): Promise<IconCatalogEntry[]> {
 /**
  * Registers the `search_icons` tool on the given MCP server.
  *
- * Accepts a `query` param and performs a two-pass search (substring then
- * Fuse.js fuzzy) against icon names and keywords from the icon catalog.
- * Returns up to {@link MAX_ICON_RESULTS} matching icons with their import paths.
+ * Accepts a `query` param and an optional `offset` for pagination.
+ * Performs a two-pass search (substring then Fuse.js fuzzy) against icon names
+ * and keywords from the icon catalog. Returns a page of {@link PAGE_SIZE}
+ * results with metadata about total matches and how to fetch more.
  */
 export function registerSearchIcons(server: McpServer): void {
   server.registerTool(
@@ -79,27 +83,72 @@ export function registerSearchIcons(server: McpServer): void {
       title: "Search Icons",
       description:
         "Fuzzy-search Nimbus icons by name or keyword. " +
-        "Returns matching icon names with import paths from @commercetools/nimbus-icons.",
+        "Returns matching icon names with import paths from @commercetools/nimbus-icons. " +
+        `Results are paginated (${PAGE_SIZE} per page). Use the offset parameter to retrieve additional results.`,
       inputSchema: {
         query: z
           .string()
           .describe(
             'Search query to match against icon names and keywords, e.g. "checkmark", "arrow", "settings".'
           ),
+        offset: z
+          .number()
+          .int()
+          .min(0)
+          .default(0)
+          .describe(
+            "Starting index for paginated results. Omit or pass 0 for the first page."
+          ),
       },
     },
-    async ({ query }) => {
+    async ({ query, offset }) => {
       try {
-        const results = await searchIcons(query);
+        const catalog = await getCatalog();
+        const allResults = await searchIcons(query);
+        const page = allResults.slice(offset, offset + PAGE_SIZE);
+        const hasMore = offset + PAGE_SIZE < allResults.length;
+
+        if (allResults.length === 0) {
+          return {
+            content: [
+              {
+                type: "text" as const,
+                text: JSON.stringify(
+                  {
+                    query,
+                    totalIcons: catalog.icons.length,
+                    totalResults: 0,
+                    results: [],
+                  },
+                  null,
+                  2
+                ),
+              },
+            ],
+          };
+        }
+
+        const payload: Record<string, unknown> = {
+          query,
+          totalIcons: catalog.icons.length,
+          totalResults: allResults.length,
+          offset,
+          pageSize: PAGE_SIZE,
+          hasMore,
+          results: page,
+        };
+
+        if (hasMore) {
+          payload.hint =
+            `Showing ${offset + 1}–${offset + page.length} of ${allResults.length} matches. ` +
+            `Call search_icons again with offset: ${offset + PAGE_SIZE} to see more.`;
+        }
 
         return {
           content: [
             {
               type: "text" as const,
-              text:
-                results.length > 0
-                  ? JSON.stringify(results, null, 2)
-                  : `No icons found matching "${query}".`,
+              text: JSON.stringify(payload, null, 2),
             },
           ],
         };
