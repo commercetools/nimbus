@@ -36,7 +36,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
   base: {
     root: {
       display: "grid",
-      width: "auto",
+      width: "fit-content",
       gridTemplateAreas: fieldGroupGrid,
       gap: "100",
     },
@@ -126,6 +126,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       },
     },
     localeFieldInput: {
+      display: "flex",
       borderLeftRadius: 0,
       // remove outline on left side so that it looks like there is a continuous outline around the label and input.
       // This is because `FormField` does not allow wrapping the two in a div, so we cannot use `FocusWithin`.
@@ -154,4 +155,5 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       richText: {},
     },
   },
+  defaultVariants: { size: "md" },
 });

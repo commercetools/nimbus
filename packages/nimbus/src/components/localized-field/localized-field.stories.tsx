@@ -21,6 +21,8 @@ import {
   hintStoryProps,
   descriptionsAndWarningsStoryProps,
   errorsAndValidationStoryProps,
+  defaultWidthStoryProps,
+  fullWidthStoryProps,
 } from "./utils/test-data";
 import {
   withStableDocument,
@@ -2045,5 +2047,64 @@ export const ErrorsAndValidation: Story = {
       // Close controls for cleanup
       await closeFieldControls(canvas, "money");
     });
+  },
+};
+
+export const CustomWidth: Story = {
+  render: () => {
+    return (
+      <>
+        <Stack gap="600">
+          <Text fontWeight="bold">Default width (auto)</Text>
+          <LocalizedFieldStoryComponent {...defaultWidthStoryProps} />
+          <Text fontWeight="bold">width=&quot;full&quot;</Text>
+          <LocalizedFieldStoryComponent {...fullWidthStoryProps} />
+        </Stack>
+      </>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    const inputTypes = ["text", "multiLine", "richText", "money"] as const;
+
+    for (const type of inputTypes) {
+      await step(
+        `${type}: full-width input is wider than default-width input`,
+        async () => {
+          const defaultField = canvas.getByRole("group", {
+            name: new RegExp(`Default Width - ${type}$`),
+          });
+          const fullField = canvas.getByRole("group", {
+            name: new RegExp(`Full Width - ${type}$`),
+          });
+
+          // For richText, the input is a contenteditable div not a textbox
+          const defaultInput =
+            type === "richText"
+              ? defaultField.querySelector<HTMLElement>(
+                  '[contenteditable="true"]'
+                )!
+              : within(defaultField).getByRole("textbox");
+          const fullInput =
+            type === "richText"
+              ? fullField.querySelector<HTMLElement>(
+                  '[contenteditable="true"]'
+                )!
+              : within(fullField).getByRole("textbox");
+
+          const defaultRect = defaultInput.getBoundingClientRect();
+          const fullRect = fullInput.getBoundingClientRect();
+
+          // Full-width input should be wider than default
+          expect(fullRect.width).toBeGreaterThan(defaultRect.width);
+
+          // Full-width field root should be wider than default field root
+          const defaultFieldRect = defaultField.getBoundingClientRect();
+          const fullFieldRect = fullField.getBoundingClientRect();
+          expect(fullFieldRect.width).toBeGreaterThan(defaultFieldRect.width);
+        }
+      );
+    }
   },
 };
