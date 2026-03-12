@@ -2050,31 +2050,104 @@ export const ErrorsAndValidation: Story = {
 };
 
 /**
- * Debug story for investigating width="full" behavior.
- * Renders a LocalizedField with width="full" inside a fixed-width container
- * so you can visually verify whether the field stretches to fill the space.
+ * Debug story for investigating width behavior on LocalizedField.
+ * Shows various width values and a Stack layout to verify the field
+ * respects width props correctly.
  */
-export const WidthFull: Story = {
+export const WidthDebug: Story = {
   render: () => {
+    const fieldProps = baseStoryProps.text.fieldProps;
+    const fieldData = baseStoryProps.text;
+
     return (
-      <Box
-        width="600px"
-        border="solid-25"
-        borderColor="neutral.7"
-        padding="400"
-      >
-        <LocalizedFieldStoryComponent
-          {...singleValueStoryProps}
-          types={["text"]}
-          text={{
-            ...singleValueStoryProps.text,
-            fieldProps: {
-              ...singleValueStoryProps.text.fieldProps,
-              width: "full",
-            },
-          }}
-        />
-      </Box>
+      <Stack gap="600">
+        <Text fontWeight="bold">width="full" (inside 600px container)</Text>
+        <Box
+          width="600px"
+          border="solid-25"
+          borderColor="neutral.7"
+          padding="400"
+        >
+          <LocalizedFieldStoryComponent
+            {...baseStoryProps}
+            types={["text"]}
+            text={{
+              ...fieldData,
+              fieldProps: { ...fieldProps, width: "full" },
+            }}
+          />
+        </Box>
+
+        <Text fontWeight="bold">width="400px"</Text>
+        <Box border="solid-25" borderColor="neutral.7" padding="400">
+          <LocalizedFieldStoryComponent
+            {...baseStoryProps}
+            types={["text"]}
+            text={{
+              ...fieldData,
+              fieldProps: { ...fieldProps, width: "400px" },
+            }}
+          />
+        </Box>
+
+        <Text fontWeight="bold">width="50%"</Text>
+        <Box border="solid-25" borderColor="neutral.7" padding="400">
+          <LocalizedFieldStoryComponent
+            {...baseStoryProps}
+            types={["text"]}
+            text={{
+              ...fieldData,
+              fieldProps: { ...fieldProps, width: "50%" },
+            }}
+          />
+        </Box>
+
+        <Text fontWeight="bold">No width (default) inside a Stack</Text>
+        <Stack
+          direction="row"
+          gap="400"
+          border="solid-25"
+          borderColor="neutral.7"
+          padding="400"
+        >
+          <LocalizedFieldStoryComponent
+            {...baseStoryProps}
+            types={["text"]}
+            text={fieldData}
+          />
+          <LocalizedFieldStoryComponent
+            {...baseStoryProps}
+            types={["text"]}
+            text={fieldData}
+          />
+        </Stack>
+
+        <Text fontWeight="bold">width="full" inside a Stack</Text>
+        <Stack
+          direction="row"
+          gap="400"
+          border="solid-25"
+          borderColor="neutral.7"
+          padding="400"
+        >
+          <LocalizedFieldStoryComponent
+            {...baseStoryProps}
+            types={["text"]}
+            text={{
+              ...fieldData,
+              fieldProps: { ...fieldProps, width: "full" },
+            }}
+          />
+          <LocalizedFieldStoryComponent
+            {...baseStoryProps}
+            types={["text"]}
+            text={{
+              ...fieldData,
+              fieldProps: { ...fieldProps, width: "full" },
+            }}
+          />
+        </Stack>
+      </Stack>
     );
   },
 };
