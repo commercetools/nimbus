@@ -239,12 +239,10 @@ export function registerSearchDocs(server: McpServer): void {
         const matchedIds = new Set(matched.map((e) => e.id));
 
         // Phase 2: Load full route data for candidates and search all views.
-        const loadPromises = allCandidates
-          .slice(0, 20)
-          .map(async (entry) => {
-            const viewMatch = await searchRouteViews(entry.route, query);
-            return { entry, viewMatch, wasMatched: matchedIds.has(entry.id) };
-          });
+        const loadPromises = allCandidates.slice(0, 20).map(async (entry) => {
+          const viewMatch = await searchRouteViews(entry.route, query);
+          return { entry, viewMatch, wasMatched: matchedIds.has(entry.id) };
+        });
 
         const loaded = await Promise.all(loadPromises);
 
