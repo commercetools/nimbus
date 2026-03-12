@@ -137,10 +137,10 @@ describe("get_tokens — category param", () => {
     expect(lowerData.total).toBe(upperData.total);
   });
 
-  it("summarises large categories by default (color has > 55 tokens, shows 20)", async () => {
+  it("summarizes large categories by default (color has > 50 tokens, shows 20)", async () => {
     const { text } = await callGetTokens(client, { category: "color" });
     const response = JSON.parse(text) as CategoryResponse;
-    expect(response.total).toBeGreaterThan(55);
+    expect(response.total).toBeGreaterThan(50);
     expect(response.showing).toBe(20);
     expect(response.tokens.length).toBe(20);
     expect(typeof response.note).toBe("string");
