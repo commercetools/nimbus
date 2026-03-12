@@ -25,8 +25,9 @@ how to work in this repo.
 | **Component workflow**   | Command/process for new components (e.g., `/propose-component`) | None                  |
 | **Available agents**     | Specialized agents for research, coding, review                 | None                  |
 
-If a setting is not found in `CLAUDE.md` or `AGENTS.md`, check `docs/` or
-`rules/` directories. If still not found, use the fallback default.
+If a setting is not found in `CLAUDE.md`, `AGENTS.md`, `rules/`, or `/docs`, ask the
+user whether they want to add it to `CLAUDE.md`, `AGENTS.md`, `rules/` or `/docs` — or
+use the fallback default for this run only.
 
 ## Step 1: Fetch Ticket Details
 
