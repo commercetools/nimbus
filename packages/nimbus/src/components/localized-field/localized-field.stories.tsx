@@ -2053,12 +2053,14 @@ export const ErrorsAndValidation: Story = {
 export const CustomWidth: Story = {
   render: () => {
     return (
-      <Stack gap="600">
-        <Text fontWeight="bold">Default width (auto)</Text>
-        <LocalizedFieldStoryComponent {...defaultWidthStoryProps} />
-        <Text fontWeight="bold">width=&quot;full&quot;</Text>
-        <LocalizedFieldStoryComponent {...fullWidthStoryProps} />
-      </Stack>
+      <>
+        <Stack gap="600">
+          <Text fontWeight="bold">Default width (auto)</Text>
+          <LocalizedFieldStoryComponent {...defaultWidthStoryProps} />
+          <Text fontWeight="bold">width=&quot;full&quot;</Text>
+          <LocalizedFieldStoryComponent {...fullWidthStoryProps} />
+        </Stack>
+      </>
     );
   },
   play: async ({ canvasElement, step }) => {

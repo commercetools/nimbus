@@ -128,7 +128,6 @@ export const LocalizedFieldLocaleField = ({
           >
             <InputComponent
               {...otherProps}
-              width="full"
               size={size}
               value={inputValue as string & MoneyInputValue}
               onChange={handleChange}
