@@ -76,7 +76,7 @@ export const SelectRoot = function SelectRoot({
           >
             {isClearable && (
               <Flex width="600" my="auto">
-                <SelectClearButton />
+                <SelectClearButton isDisabled={isLoading || isDisabled} />
               </Flex>
             )}
 
