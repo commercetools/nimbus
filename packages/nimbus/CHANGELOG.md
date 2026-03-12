@@ -1,5 +1,34 @@
 # @commercetools/nimbus
 
+## 2.9.1
+
+### Patch Changes
+
+- [#1244](https://github.com/commercetools/nimbus/pull/1244)
+  [`8a2924d`](https://github.com/commercetools/nimbus/commit/8a2924d86fb18e1b44cc2c981dd579212e3a0032)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - fix(form-field): resolve
+  cursor jumping to end when typing in the middle of controlled inputs
+
+- [#1245](https://github.com/commercetools/nimbus/pull/1245)
+  [`dc9643b`](https://github.com/commercetools/nimbus/commit/dc9643b07efcb08bcebb5be317e067ffd7c686d2)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - fix(select): disable
+  clear button when select is disabled
+
+- [#1246](https://github.com/commercetools/nimbus/pull/1246)
+  [`56d7318`](https://github.com/commercetools/nimbus/commit/56d7318eaa08f55af74dc7640cd4a8ed76c30538)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - fix(LocalizedField):
+  set default CSS variables for font-size/line-height and fix width="full"
+  support
+  - `--localized-field-font-size` and `--localized-field-line-height` are now
+    defined in the base recipe so description, label, and error text always
+    renders with correct font sizing
+  - `width="full"` style prop now correctly causes inputs to stretch to fill
+    available space for all input types (text, multiLine, richText, money)
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@2.9.1
+  - @commercetools/nimbus-icons@2.9.1
+
 ## 2.9.0
 
 ### Minor Changes
