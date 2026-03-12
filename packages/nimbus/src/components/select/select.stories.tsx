@@ -446,11 +446,11 @@ export const Disabled: Story = {
 };
 
 /**
- * DisabledClearable
+ * DisabledClearButton
  * Verifies that the clear button is rendered but disabled when the select is disabled
  * @see https://github.com/commercetools/nimbus/issues/1243
  */
-export const DisabledClearable: Story = {
+export const DisabledClearButton: Story = {
   render: () => {
     return (
       <Select.Root

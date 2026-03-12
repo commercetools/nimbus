@@ -26,7 +26,7 @@ export const SelectClearButton = ({ isDisabled }: { isDisabled?: boolean }) => {
     <ClearPressResponder>
       <IconButton
         slot={null}
-        pointerEvents="all"
+        pointerEvents={isDisabled ? "none" : "all"}
         size="2xs"
         variant="ghost"
         isDisabled={isDisabled}
