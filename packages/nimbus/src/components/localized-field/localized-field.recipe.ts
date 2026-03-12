@@ -36,9 +36,10 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
   base: {
     root: {
       display: "grid",
-      width: "auto",
       gridTemplateAreas: fieldGroupGrid,
       gap: "100",
+      "--localized-field-font-size": "fontSizes.350",
+      "--localized-field-line-height": "lineHeights.500",
     },
     label: {
       gridArea: "label",
