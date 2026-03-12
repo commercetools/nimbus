@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   Box,
@@ -7,7 +8,7 @@ import {
   Stack,
   TextInput,
 } from "@commercetools/nimbus";
-import { userEvent, within, expect } from "storybook/test";
+import { fn, userEvent, within, expect } from "storybook/test";
 
 const meta: Meta<typeof FormField.Root> = {
   title: "Components/FormField",
@@ -410,6 +411,60 @@ export const UsingASelectInput: Story = {
         await expect(selectTrigger.getAttribute("aria-describedby")).toContain(
           description.id
         );
+      }
+    );
+  },
+};
+
+export const Controlled: Story = {
+  render: () => {
+    const [value, setValue] = useState("");
+    const handleChange = fn((newValue: string) => {
+      setValue(newValue);
+    });
+
+    return (
+      <Stack gap="400">
+        <FormField.Root>
+          <FormField.Label>Project name</FormField.Label>
+          <FormField.Input>
+            <TextInput
+              placeholder="Type something..."
+              value={value}
+              onChange={handleChange}
+            />
+          </FormField.Input>
+          <FormField.Description>
+            Controlled component example
+          </FormField.Description>
+        </FormField.Root>
+        <Box data-testid="value-display">Current value: {value}</Box>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox");
+    const valueDisplay = canvas.getByTestId("value-display");
+
+    await step("Controlled value updates when typing", async () => {
+      await userEvent.type(input, "Hello");
+      await expect(input).toHaveValue("Hello");
+      await expect(valueDisplay).toHaveTextContent("Current value: Hello");
+    });
+
+    await step(
+      "Cursor position is preserved when typing in the middle",
+      async () => {
+        // Place cursor after "He" (position 2)
+        const inputEl = input as HTMLInputElement;
+        inputEl.setSelectionRange(2, 2);
+        await userEvent.type(input, "XY", {
+          skipClick: true,
+        });
+        await expect(input).toHaveValue("HeXYllo");
+        // Verify cursor is at position 4 (after the inserted "XY")
+        await expect(inputEl.selectionStart).toBe(4);
       }
     );
   },
