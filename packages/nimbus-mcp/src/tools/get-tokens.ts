@@ -44,7 +44,7 @@ export function registerGetTokens(server: McpServer): void {
           .positive()
           .optional()
           .describe(
-            "Maximum number of tokens to return for a category. Defaults to all tokens for small categories, and 20 for large categories (> 50 tokens)."
+            "Maximum number of tokens to return for a category. Only applies when category is provided. Defaults to all tokens for small categories, and 20 for large categories (> 55 tokens)."
           ),
       },
     },
