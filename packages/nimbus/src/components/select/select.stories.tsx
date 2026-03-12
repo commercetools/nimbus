@@ -445,6 +445,46 @@ export const Disabled: Story = {
   },
 };
 
+/**
+ * DisabledClearable
+ * Verifies that the clear button is not rendered when the select is disabled
+ * @see https://github.com/commercetools/nimbus/issues/1243
+ */
+export const DisabledClearable: Story = {
+  render: () => {
+    return (
+      <Select.Root
+        isDisabled
+        isClearable
+        defaultSelectedKey="apples"
+        aria-label="Select a fruit"
+        data-testid="select"
+      >
+        <Select.Options>
+          <Select.Option id="apples">Apples</Select.Option>
+          <Select.Option id="bananas">Bananas</Select.Option>
+          <Select.Option id="oranges">Oranges</Select.Option>
+        </Select.Options>
+      </Select.Root>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const select = canvas.getByTestId("select");
+
+    await step(
+      "Clear button is rendered but disabled when select is disabled",
+      async () => {
+        const clearButton = select.querySelector(
+          '[aria-label="Clear selection"]'
+        );
+        await expect(clearButton).toBeInTheDocument();
+        await expect(clearButton).toBeDisabled();
+      }
+    );
+  },
+};
+
 export const DisabledOptions: Story = {
   render: () => {
     return (

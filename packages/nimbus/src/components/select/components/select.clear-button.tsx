@@ -11,7 +11,7 @@ import { selectMessagesStrings } from "../select.messages";
  *
  * @supportsStyleProps
  */
-export const SelectClearButton = () => {
+export const SelectClearButton = ({ isDisabled }: { isDisabled?: boolean }) => {
   const msg = useLocalizedStringFormatter(selectMessagesStrings);
   const state = useContext(SelectStateContext);
   if (!state?.selectedKey) {
@@ -29,6 +29,7 @@ export const SelectClearButton = () => {
         pointerEvents="all"
         size="2xs"
         variant="ghost"
+        isDisabled={isDisabled}
         aria-label={msg.format("clearSelection")}
         aria-labelledby=""
         onPress={onPressRequest}
