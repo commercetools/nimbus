@@ -156,6 +156,6 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
     },
   },
   defaultVariants: {
-    size: "sm",
+    size: "md",
   },
 });
