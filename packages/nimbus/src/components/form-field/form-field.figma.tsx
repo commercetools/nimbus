@@ -7,7 +7,7 @@ figma.connect(
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=349-2763",
   {
     props: {
-      isRequired: figma.boolean("is required#349:18"),
+      isRequired: figma.boolean("is required"),
       direction: figma.enum("Label placement", {
         Top: "column",
         left: "row",

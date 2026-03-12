@@ -17,7 +17,7 @@ figma.connect(
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=271-412",
   {
     props: {
-      isClearable: figma.boolean("Clear button#274:0"),
+      isClearable: figma.boolean("Clear button"),
       isInvalid: figma.enum("State", { Invalid: true }),
       isDisabled: figma.enum("State", { Disabled: true }),
       variant: figma.enum("Appearance", {

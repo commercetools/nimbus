@@ -10,7 +10,7 @@ figma.connect(
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=8334-32318",
   {
     props: {
-      footer: figma.boolean("Footer#7819:9", {
+      footer: figma.boolean("Footer", {
         true: <Drawer.Footer>Footer content</Drawer.Footer>,
         false: undefined,
       }),
