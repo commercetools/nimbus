@@ -23,6 +23,9 @@
     "clean:intl": "find ../nimbus/src/components -type d -name 'intl' -exec rm -rf {} +"
   },
   "devDependencies": {
-    "@internationalized/string-compiler": "catalog:react"
+    "@internationalized/string-compiler": "catalog:react",
+    "@types/node": "catalog:utils",
+    "glob": "catalog:tooling",
+    "prettier": "catalog:tooling"
   }
 }
