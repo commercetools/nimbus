@@ -11,7 +11,7 @@ catalogs:
     globals: ^17.4.0
     glob: ^13.0.6
     typescript: ~5.9.3
-    typescript-eslint: ^8.56.1
+    typescript-eslint: ^8.57.0
     tsup: ^8.5.1
     tsx: ^4.21.0
     "@modelcontextprotocol/inspector": ^0.21.1
@@ -20,11 +20,11 @@ catalogs:
     "@babel/preset-typescript": ^7.28.5
     "@eslint/js": ^10.0.1
     "@react-types/shared": ^3.33.1
-    eslint: ^10.0.2
+    eslint: ^10.0.3
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.5
     eslint-plugin-react-refresh: ^0.5.2
-    express-rate-limit: ^8.3.0
+    express-rate-limit: ^8.3.1
     prettier: ^3.8.1
     "@preconstruct/cli": ^2.8.12
     "@vitejs/plugin-react": ^5.1.4
