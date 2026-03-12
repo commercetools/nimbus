@@ -435,7 +435,6 @@ export function LocalizedFieldStoryComponent(
                 {...fieldProps}
                 id={id}
                 name={name}
-                width="full"
                 type={type} // text is the default type
                 label={`${fieldProps?.label} - ${type}`}
                 size={props.size}

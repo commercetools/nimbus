@@ -348,6 +348,50 @@ export const descriptionsAndWarningsStoryProps = {
   },
 };
 
+export const defaultWidthStoryProps = {
+  id: "defaultWidth",
+  name: "defaultWidth",
+  types: allFieldTypes,
+  text: {
+    fieldData: baseLocaleData,
+    fieldProps: { label: "Default Width" },
+  },
+  multiLine: {
+    fieldData: baseLocaleData,
+    fieldProps: { label: "Default Width" },
+  },
+  richText: {
+    fieldData: baseLocaleData,
+    fieldProps: { label: "Default Width" },
+  },
+  money: {
+    fieldData: baseCurrencyData,
+    fieldProps: { label: "Default Width" },
+  },
+};
+
+export const fullWidthStoryProps = {
+  id: "fullWidth",
+  name: "fullWidth",
+  types: allFieldTypes,
+  text: {
+    fieldData: baseLocaleData,
+    fieldProps: { label: "Full Width", width: "full" as const },
+  },
+  multiLine: {
+    fieldData: baseLocaleData,
+    fieldProps: { label: "Full Width", width: "full" as const },
+  },
+  richText: {
+    fieldData: baseLocaleData,
+    fieldProps: { label: "Full Width", width: "full" as const },
+  },
+  money: {
+    fieldData: baseCurrencyData,
+    fieldProps: { label: "Full Width", width: "full" as const },
+  },
+};
+
 export const errorsAndValidationStoryProps = {
   id: "localizedFieldErrorsAndValidations",
   name: "localized field errors and validations story",
