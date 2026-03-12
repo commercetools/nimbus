@@ -2,15 +2,14 @@ import { createContext, type ReactNode } from "react";
 import type {
   FormFieldDescriptionSlotProps,
   FormFieldErrorSlotProps,
-  FormFieldInputSlotProps,
   FormFieldLabelSlotProps,
 } from "../form-field.types";
+
+export type FormFieldInputProps = Record<string, unknown>;
 
 export type FormFieldContextPayloadType = {
   label: ReactNode;
   labelSlotProps?: FormFieldLabelSlotProps;
-  input: ReactNode;
-  inputSlotProps?: FormFieldInputSlotProps;
   description: ReactNode;
   descriptionSlotProps?: FormFieldDescriptionSlotProps;
   error: ReactNode;
@@ -25,6 +24,7 @@ export type FormFieldContextPayloadType = {
 export type FormFieldContextType = {
   context: FormFieldContextPayloadType;
   setContext: React.Dispatch<React.SetStateAction<FormFieldContextPayloadType>>;
+  inputProps: FormFieldInputProps;
 };
 
 export const FormFieldContext = createContext<FormFieldContextType>({
@@ -33,7 +33,7 @@ export const FormFieldContext = createContext<FormFieldContextType>({
     description: null,
     error: null,
     info: null,
-    input: null,
   },
   setContext: () => {},
+  inputProps: {},
 });

@@ -1,12 +1,4 @@
-import {
-  Children,
-  cloneElement,
-  isValidElement,
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
-} from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import type { FormFieldProps } from "../form-field.types";
 import { useField, useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
@@ -17,7 +9,6 @@ import {
 import {
   FormFieldDescriptionSlot,
   FormFieldErrorSlot,
-  FormFieldInputSlot,
   FormFieldLabelSlot,
   FormFieldPopoverSlot,
   FormFieldRootSlot,
@@ -50,7 +41,6 @@ export const FormFieldRoot = function FormFieldRoot({
     description: null,
     error: null,
     info: null,
-    input: null,
     isInvalid,
     isRequired,
     isDisabled,
@@ -101,7 +91,10 @@ export const FormFieldRoot = function FormFieldRoot({
     [fieldProps, isInvalid, isRequired, isDisabled, isReadOnly]
   );
 
-  const contextValue = useMemo(() => ({ context, setContext }), [context]);
+  const contextValue = useMemo(
+    () => ({ context, setContext, inputProps }),
+    [context, inputProps]
+  );
 
   return (
     <FormFieldContext.Provider value={contextValue}>
@@ -150,18 +143,6 @@ export const FormFieldRoot = function FormFieldRoot({
               </DialogTrigger>
             )}
           </FormFieldLabelSlot>
-        )}
-        {context.input && (
-          <FormFieldInputSlot {...context.inputSlotProps}>
-            {Children.map(context.input, (child) => {
-              // Important: Check if the child is a valid React element before cloning.
-              if (isValidElement(child)) {
-                return cloneElement(child, inputProps);
-              }
-              // If it's not a valid element (e.g., text node, null, undefined), return it as is.
-              return child;
-            })}
-          </FormFieldInputSlot>
         )}
         {context.description && (
           <FormFieldDescriptionSlot
