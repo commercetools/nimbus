@@ -30,6 +30,8 @@ export interface DocSearchResult {
   description: string;
   /** Route path to the documentation page. */
   path: string;
+  /** Which view the match was found in (e.g. "overview", "dev", "guidelines", "a11y"). */
+  matchedView?: string;
   /** Content snippet highlighting the match. */
   snippet: string;
 }

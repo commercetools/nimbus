@@ -100,3 +100,54 @@ describe("search_docs — relevance", () => {
     expect(results.length).toBeGreaterThan(0);
   });
 });
+
+describe("search_docs — deep content search (phase 2)", () => {
+  let client: Client;
+  let close: () => Promise<void>;
+
+  beforeAll(async () => {
+    const ctx = createTestClient();
+    await ctx.connect();
+    client = ctx.client;
+    close = ctx.close;
+  });
+
+  afterAll(() => close());
+
+  it("finds content from dev views (import paths, props)", async () => {
+    const results = await callSearchDocs(client, { query: "ButtonProps" });
+    expect(results.length).toBeGreaterThan(0);
+    const hasButton = results.some(
+      (r) => r.title === "Button" || r.path.includes("button")
+    );
+    expect(hasButton).toBe(true);
+  });
+
+  it("finds content from guidelines views", async () => {
+    // "do" and "don't" patterns are typically in guidelines
+    const results = await callSearchDocs(client, {
+      query: "Button Guidelines",
+    });
+    expect(results.length).toBeGreaterThan(0);
+    const guidelineMatch = results.find((r) => r.matchedView === "guidelines");
+    expect(guidelineMatch).toBeDefined();
+  });
+
+  it("returns matchedView when match is not in overview", async () => {
+    // "import" statements are in the dev view, not overview
+    const results = await callSearchDocs(client, {
+      query: "import Button from",
+    });
+    const devMatch = results.find((r) => r.matchedView === "dev");
+    expect(devMatch).toBeDefined();
+  });
+
+  it("snippet comes from the matched view content", async () => {
+    const results = await callSearchDocs(client, { query: "ButtonProps" });
+    const buttonResult = results.find(
+      (r) => r.title === "Button" || r.path.includes("button")
+    );
+    expect(buttonResult).toBeDefined();
+    expect(buttonResult!.snippet.toLowerCase()).toContain("buttonprops");
+  });
+});
