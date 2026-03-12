@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getFlatTokenData, reverseLookup } from "../data-loader.js";
 
 /** Threshold above which a category is considered "large". */
-const LARGE_CATEGORY_THRESHOLD = 50;
+const LARGE_CATEGORY_THRESHOLD = 55;
 
 /** Default number of tokens to show for large categories when no limit is specified. */
 const LARGE_CATEGORY_DEFAULT_LIMIT = 20;
@@ -12,7 +12,7 @@ const LARGE_CATEGORY_DEFAULT_LIMIT = 20;
  * Registers the `get_tokens` tool on the given MCP server.
  *
  * - No params: returns all token categories with counts
- * - `category` param: returns tokens in that category (summarised for large categories)
+ * - `category` param: returns tokens in that category (summarized for large categories)
  * - `value` param: reverse-lookup to find which tokens resolve to that value
  */
 export function registerGetTokens(server: McpServer): void {
@@ -23,7 +23,7 @@ export function registerGetTokens(server: McpServer): void {
       description:
         "Returns Nimbus design tokens. " +
         "No params: lists all categories with counts. " +
-        "With category: returns tokens in that category (large categories like color are summarised by default). " +
+        "With category: returns tokens in that category (large categories like color are summarized by default). " +
         'With value: reverse-lookup to find which tokens resolve to that value (e.g. "16px" → spacing.400).',
       inputSchema: {
         category: z
