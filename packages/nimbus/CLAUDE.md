@@ -185,9 +185,25 @@ The Storybook configuration has two distinct modes:
   - Tests run against production-like code
   - Ensures tests validate actual published behavior
 
-#### Testing Your Changes
+#### Testing Your Changes (Local TDD)
 
-To test component changes in Storybook tests, follow this workflow:
+For iterative red/green/refactor TDD, use the dev test commands which resolve
+`@commercetools/nimbus` directly to source files — no build step required:
+
+```bash
+# Run all tests against source files (RECOMMENDED for TDD)
+pnpm test:dev
+
+# Run only Storybook tests against source files
+pnpm test:storybook:dev
+
+# Run a specific test file against source files
+pnpm test:dev packages/nimbus/src/components/button/button.stories.tsx
+```
+
+#### Testing Your Changes (CI / Build Verification)
+
+To validate against the built bundle (as consumers will use it):
 
 ```bash
 # 1. Make your changes to component source files
@@ -201,7 +217,7 @@ pnpm test:storybook
 pnpm test packages/nimbus/src/components/button/button.stories.tsx
 ```
 
-**Why build is required:**
+**Why build is required for `pnpm test`:**
 
 - Tests import from `@commercetools/nimbus` which resolves to `dist/` during
   testing

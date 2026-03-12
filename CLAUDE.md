@@ -278,6 +278,12 @@ pnpm test:unit
 # Run only Storybook tests (browser-based, slower)
 pnpm test:storybook
 
+# Run all tests against source files (no build required, use for TDD)
+pnpm test:dev
+
+# Run only Storybook tests against source files (no build required)
+pnpm test:storybook:dev
+
 # Run specific test file
 pnpm test packages/nimbus/src/components/button/button.spec.tsx
 pnpm test packages/nimbus/src/components/button/button.stories.tsx
@@ -455,6 +461,11 @@ The testing system uses Vitest with three distinct test categories:
 
 See [Testing Strategy Guide](./docs/file-type-guidelines/testing-strategy.md)
 for detailed rules and examples.
+
+### Git Conventions
+
+See [Git Conventions](./docs/git-conventions.md) for branch naming, commit
+message format, and test commands.
 
 ### Build Dependencies
 
