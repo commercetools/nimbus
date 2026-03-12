@@ -12,9 +12,9 @@ figma.connect(
         "Leading element + text": <Card.Header>Card Title</Card.Header>,
       }),
       leadingElement: figma.enum("Content type", {
-        "Leading element + text": figma.instance("Leading element#2545:0"),
+        "Leading element + text": figma.instance("Leading element"),
       }),
-      instance: figma.instance("→ Instance#3214:5"),
+      instance: figma.instance("→ Instance"),
       children: figma.children("*"),
     },
     example: (props) => (

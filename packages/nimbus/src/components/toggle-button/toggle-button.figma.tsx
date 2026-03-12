@@ -6,10 +6,10 @@ figma.connect(
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5707-16295",
   {
     props: {
-      iconRight: figma.instance("→ Icon right#67:2"),
-      iconLeft: figma.instance("→ Icon Left#67:3"),
-      leftIcon: figma.boolean("Left icon#2415:0"),
-      rightIcon: figma.boolean("Right icon#2415:97"),
+      iconRight: figma.instance("→ Icon right"),
+      iconLeft: figma.instance("→ Icon Left"),
+      leftIcon: figma.boolean("Left icon"),
+      rightIcon: figma.boolean("Right icon"),
       variant: figma.enum("Variant", {
         Outlined: "outline",
         Ghost: "ghost",
