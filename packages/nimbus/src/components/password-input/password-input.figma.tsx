@@ -6,7 +6,7 @@ figma.connect(
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=3982-23614",
   {
     props: {
-      leadingElement: figma.boolean("Leading element#7958:47"),
+      leadingElement: figma.boolean("Leading element"),
       isInvalid: figma.enum("State", { Invalid: true }),
       isDisabled: figma.enum("State", { Disabled: true }),
       variant: figma.enum("Appearance", {

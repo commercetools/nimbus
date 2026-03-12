@@ -6,7 +6,7 @@ figma.connect(
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5729-17280",
   {
     props: {
-      icon: figma.instance("Icon#67:3"),
+      icon: figma.instance("Icon"),
       isDisabled: figma.enum("State", { Disabled: true }),
       isSelected: figma.enum("Toggled", { YES: true }),
       variant: figma.enum("Variant", {

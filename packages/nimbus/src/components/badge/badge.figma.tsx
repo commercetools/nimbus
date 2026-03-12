@@ -6,15 +6,15 @@ figma.connect(
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2656-4638",
   {
     props: {
-      iconLeft: figma.boolean("Left icon#2415:0", {
-        true: figma.instance("→ Icon Left#67:3"),
+      iconLeft: figma.boolean("Left icon", {
+        true: figma.instance("→ Icon Left"),
         false: undefined,
       }),
-      iconRight: figma.boolean("Right icon#2415:97", {
-        true: figma.instance("→ Icon right#67:2"),
+      iconRight: figma.boolean("Right icon", {
+        true: figma.instance("→ Icon right"),
         false: undefined,
       }),
-      children: figma.string("Label#2702:111"),
+      children: figma.string("Label"),
       size: figma.enum("Size", {
         md: "md",
         xs: "xs",

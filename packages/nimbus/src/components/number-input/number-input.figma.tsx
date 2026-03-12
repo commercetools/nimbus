@@ -6,8 +6,8 @@ figma.connect(
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=3889-9483",
   {
     props: {
-      leadingElement: figma.boolean("Leading element#7958:64"),
-      trailingElement: figma.boolean("Trailing element#7958:81"),
+      leadingElement: figma.boolean("Leading element"),
+      trailingElement: figma.boolean("Trailing element"),
       isInvalid: figma.enum("State", { Invalid: true }),
       isDisabled: figma.enum("State", { Disabled: true }),
       variant: figma.enum("Appearance", {
