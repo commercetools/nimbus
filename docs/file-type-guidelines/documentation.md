@@ -81,14 +81,10 @@ These fields appear in some components but are not required:
 ---
 # Lifecycle indicators (when applicable)
 lifecycleState: Experimental|Alpha|Beta|Stable|Deprecated|EOL
-documentState: InitialDraft|ReviewedInternal|Published
 
 # Design resources (when available)
 figmaLink: >-
   https://www.figma.com/design/...
-
-# Legacy fields (avoid in new components)
-documentAudiences: []
 ---
 ```
 
@@ -405,7 +401,6 @@ title: Badge
 description:
   Briefly highlights or categorizes associated UI elements with concise visual
   cues for status or metadata.
-documentState: InitialDraft
 order: 999
 menu:
   - Components
@@ -448,7 +443,6 @@ figmaLink: >-
 id: Components-TextInput
 title: TextInput
 description: An input component that takes in a text as input
-documentState: InitialDraft
 order: 999
 menu:
   - Components
