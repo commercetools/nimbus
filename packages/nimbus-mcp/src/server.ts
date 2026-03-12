@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { registerGetComponent } from "./tools/get-component.js";
+import { registerGetTokens } from "./tools/get-tokens.js";
 import { registerListComponents } from "./tools/list-components.js";
 
 /**
@@ -24,6 +25,7 @@ export function createServer(): McpServer {
 
   // Register all tools
   registerGetComponent(server);
+  registerGetTokens(server);
   registerListComponents(server);
 
   return server;
