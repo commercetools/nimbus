@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect, userEvent } from "storybook/test";
 import {
   LocalizedField,
+  Box,
   Stack,
   Text,
   type MoneyInputValue,
@@ -2045,5 +2046,35 @@ export const ErrorsAndValidation: Story = {
       // Close controls for cleanup
       await closeFieldControls(canvas, "money");
     });
+  },
+};
+
+/**
+ * Debug story for investigating width="full" behavior.
+ * Renders a LocalizedField with width="full" inside a fixed-width container
+ * so you can visually verify whether the field stretches to fill the space.
+ */
+export const WidthFull: Story = {
+  render: () => {
+    return (
+      <Box
+        width="600px"
+        border="solid-25"
+        borderColor="neutral.7"
+        padding="400"
+      >
+        <LocalizedFieldStoryComponent
+          {...singleValueStoryProps}
+          types={["text"]}
+          text={{
+            ...singleValueStoryProps.text,
+            fieldProps: {
+              ...singleValueStoryProps.text.fieldProps,
+              width: "full",
+            },
+          }}
+        />
+      </Box>
+    );
   },
 };

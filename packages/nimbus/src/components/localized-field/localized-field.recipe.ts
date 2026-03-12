@@ -154,4 +154,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       richText: {},
     },
   },
+  defaultVariants: {
+    size: "md",
+  },
 });
