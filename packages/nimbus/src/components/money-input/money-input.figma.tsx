@@ -1,0 +1,19 @@
+import figma from "@figma/code-connect/react";
+import { MoneyInput } from "./money-input";
+
+figma.connect(
+  MoneyInput,
+  "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5424-21590",
+  {
+    props: {
+      highPrecisionIndicator: figma.boolean("High precision indicator#8509:0"),
+      isInvalid: figma.enum("State", { Invalid: true }),
+      isDisabled: figma.enum("State", { Disabled: true }),
+      size: figma.enum("Size", {
+        sm: "sm",
+        md: "md",
+      }),
+    },
+    example: (props) => <MoneyInput {...props} />,
+  }
+);
