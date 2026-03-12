@@ -8,6 +8,7 @@
 import { glob } from "glob";
 import * as fs from "fs";
 import * as path from "path";
+import { LOCALE_CODES } from "./locales";
 
 // Type definitions for message descriptors in .i18n.ts files
 type MessageDescriptor = {
@@ -97,6 +98,44 @@ async function extractMessages() {
   console.log(
     `\n✅ Extracted ${Object.keys(output).length} messages to ${path.relative(process.cwd(), outputPath)}`
   );
+
+  // Propagate new messages to locale data files so the build pipeline can find them
+  const dataDir = path.join(process.cwd(), "packages/i18n/data");
+  let propagatedCount = 0;
+
+  for (const locale of LOCALE_CODES) {
+    const localePath = path.join(dataDir, `${locale}.json`);
+    let localeData: TransifexOutput = {};
+
+    if (fs.existsSync(localePath)) {
+      localeData = JSON.parse(fs.readFileSync(localePath, "utf-8"));
+    }
+
+    let added = 0;
+    for (const [key, value] of Object.entries(sortedOutput)) {
+      if (!(key in localeData)) {
+        localeData[key] = value;
+        added++;
+      }
+    }
+
+    if (added > 0) {
+      // Sort and write back
+      const sorted: TransifexOutput = {};
+      for (const k of Object.keys(localeData).sort()) {
+        sorted[k] = localeData[k];
+      }
+      fs.writeFileSync(localePath, JSON.stringify(sorted, null, 2) + "\n");
+      console.log(`  📝 ${locale}.json: added ${added} new message(s)`);
+      propagatedCount += added;
+    }
+  }
+
+  if (propagatedCount > 0) {
+    console.log(
+      `\n📦 Propagated new messages to locale files (English defaults until translated)`
+    );
+  }
 }
 
 // Run extraction
