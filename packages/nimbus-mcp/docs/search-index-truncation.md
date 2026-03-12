@@ -1,4 +1,4 @@
-# Search Index Truncation: Problem and Options
+# Search Index Truncation: Problem and Resolution
 
 ## Problem
 
@@ -48,7 +48,7 @@ live.
 content: stripMarkdown(doc.mdx).slice(0, 500),
 ```
 
-## Options
+## Options considered
 
 ### Option 1: Increase the content limit
 
@@ -111,7 +111,7 @@ appropriate weight.
   (search config)
 - Slightly more implementation effort than option 2
 
-### Option 4: Two-phase search with lazy-loaded route files (recommended)
+### Option 4: Two-phase search with lazy-loaded route files (implemented)
 
 Use the lightweight search index for candidate discovery (phase 1), then
 lazy-load the full route JSON files for matched candidates and search across all
@@ -168,14 +168,31 @@ component-tagged pages to avoid missing deep-content-only matches.
   match any metadata
 - More implementation complexity than options 1–3
 
-## Recommendation
+## Decision
 
-Option 4 (two-phase lazy-load) is the recommended approach. It solves the root
-problem completely — all four views become searchable without any build pipeline
+**Option 4 was implemented** in `src/tools/search-docs.ts`. It solves the root
+problem completely — all four views are now searchable without any build pipeline
 changes. The latency cost (~10–30ms) is invisible in the context of MCP tool
-calls. Options 1–3 are partial fixes that either leave content gaps or require
-build-time extraction logic that needs ongoing maintenance.
+calls. Options 1–3 were rejected as partial fixes that either leave content gaps
+or require build-time extraction logic that needs ongoing maintenance.
 
-The route files with full view content already exist on disk. This approach
-simply reads them at query time instead of trying to cram everything into an
-index at build time.
+### Implementation details
+
+- **Phase 1** uses the existing `search-index.json` for candidate discovery via
+  exact substring and Fuse.js fuzzy matching. If fewer than 5 candidates are
+  found, all component-tagged pages are added as fallback candidates.
+- **Phase 2** loads route JSON files (`data/docs/routes/<slug>.json`) for up to
+  20 candidates via `getRouteData()`. Each view's MDX is stripped of markdown
+  and searched for query tokens. Results with deep view matches are ranked
+  higher than metadata-only matches.
+- Fallback-expanded entries are filtered out if phase 2 found no content match,
+  preventing nonsense queries from returning irrelevant results.
+- Results include a `matchedView` field (e.g. `"dev"`, `"guidelines"`) when the
+  match came from a non-overview view, and snippets are extracted from the
+  actual matched content.
+
+### Files changed
+
+- `src/tools/search-docs.ts` — two-phase search implementation
+- `src/tools/search-docs.spec.ts` — 11 tests including deep content search
+- `src/types.ts` — added `matchedView` field to `DocSearchResult`
