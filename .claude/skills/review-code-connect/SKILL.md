@@ -161,7 +161,129 @@ Invalid, Loading, Selected":
   instances that have their own Code Connect definition. It does NOT capture
   plain layers or components without Code Connect.
 
-**BOOLEAN properties**
+**Compound component children pattern**
+
+All compound/container components (Root-level components that nest other
+connected sub-components) MUST include `figma.children("*")` in their props and
+render `{props.children}` in the example. This ensures nested connected
+components appear in Dev Mode output instead of an empty self-closing tag.
+
+```tsx
+// ✅ Correct — children rendered, shows nested structure
+props: {
+  size: figma.enum("Size", { md: "md", sm: "sm" }),
+  children: figma.children("*"),
+},
+example: (props) => (
+  <Component.Root size={props.size}>{props.children}</Component.Root>
+),
+
+// ❌ Wrong — self-closing, hides component structure
+example: (props) => <Component.Root size={props.size} />,
+```
+
+Components that should use this pattern: any compound component with connected
+sub-components (e.g., Accordion.Root, FormField.Root, TagGroup.Root, Dialog.Root,
+Tabs.Root, etc.).
+
+**Instance swap as composed children**
+
+INSTANCE_SWAP properties that represent configurable child components (not just
+icons) should be rendered as children in the example to show the composed
+structure:
+
+```tsx
+// FormField "Input type" swaps between TextInput, Select, DatePicker, etc.
+props: {
+  input: figma.instance("Input type"),
+  children: figma.children("*"),
+},
+example: (props) => (
+  <FormField.Root>
+    <FormField.Label>Label</FormField.Label>
+    {props.input}
+    {props.children}
+  </FormField.Root>
+),
+```
+
+**Static structural elements in examples**
+
+When a compound component always includes certain sub-components that are not
+Figma-configurable (e.g., Label in FormField, Body in Drawer), include them as
+static elements in the example so developers see the expected structure:
+
+```tsx
+example: (props) => (
+  <FormField.Root>
+    <FormField.Label>Label</FormField.Label>
+    {props.input}
+    {props.children}
+  </FormField.Root>
+),
+```
+
+**Variant-based sub-component selection**
+
+When a single Figma component uses a VARIANT to switch between different code
+sub-components, create separate `figma.connect()` calls for the same Figma node,
+each with a `variant` discriminator:
+
+```tsx
+// "Message style" VARIANT with "Error" and "Help text" values
+// → Two connects to the same Figma node, one per variant value
+
+figma.connect(
+  FormField.Error,
+  "https://www.figma.com/design/...?node-id=2289-1115",
+  {
+    variant: { "Message style": "Error" },
+    example: () => <FormField.Error>Error message</FormField.Error>,
+  }
+);
+
+figma.connect(
+  FormField.Description,
+  "https://www.figma.com/design/...?node-id=2289-1115",
+  {
+    variant: { "Message style": "Help text" },
+    example: () => <FormField.Description>Help text</FormField.Description>,
+  }
+);
+```
+
+Use this pattern whenever a Figma VARIANT selects between fundamentally different
+code components (not just prop values).
+
+**BOOLEAN visibility toggles for sub-components**
+
+When a BOOLEAN property controls the visibility of a sub-component that is not
+a separate Figma component set (i.e., it's a nested layer without its own
+`figma.connect()`), use `figma.boolean()` with a mapping that conditionally
+renders the sub-component JSX:
+
+```tsx
+props: {
+  infoBox: figma.boolean("Info", {
+    true: <FormField.InfoBox>Additional info</FormField.InfoBox>,
+    false: undefined,
+  }),
+},
+example: (props) => (
+  <FormField.Root>
+    <FormField.Label>Label</FormField.Label>
+    {props.infoBox}
+    {props.children}
+  </FormField.Root>
+),
+```
+
+Use this pattern whenever a Figma BOOLEAN toggles a nested element that maps to
+a real code sub-component but doesn't have its own Figma component set node ID.
+Common examples: info boxes, help text indicators, footer sections, clear
+buttons rendered as sub-components.
+
+**BOOLEAN properties (general)**
 
 - Check if the boolean controls visibility of a slotted element → may map to a
   code prop
@@ -245,10 +367,21 @@ Component: Button
 - INSTANCE_SWAP properties are always mappable — use `figma.instance()`
 - When mapping enum values, always check the recipe for exact value strings
   (e.g., "outline" not "Outlined", "solid" not "Solid")
+- **colorPalette values MUST be lowercase** — Figma uses "Primary", "Critical"
+  etc. but code uses "primary", "critical"
 - Boolean variant detection: YES/NO, On/Off, True/False → use
   `figma.boolean()`
+- VARIANT with YES/NO values where the Figma type is VARIANT (not BOOLEAN) →
+  use `figma.enum("PropName", { YES: true })`, NOT `figma.boolean()`
 - `figma.children("*")` only works when nested components have their own
   `figma.connect()` — check if sub-components have Code Connect before using
+- **Every compound/container component MUST use `figma.children("*")`** — never
+  render a Root component as self-closing if it has connected sub-components
+- **Strip `#NNN:NN` suffixes** — Figma property names in `code-connect-data.json`
+  include internal IDs (e.g., `"Clear button#274:0"`). Strip the `#` suffix when
+  writing `figma.xxx()` calls — Code Connect uses just the human-readable name
+  (e.g., `"Clear button"`)
 - Generate files from scratch — do not try to edit existing .figma.tsx files
 - Process one component at a time for accuracy
 - Run `npx prettier --write` on modified files after generating
+- Validate with `npx figma connect publish --dry-run` after generating

@@ -10,7 +10,12 @@ figma.connect(
         Default: "md",
         Size2: "sm",
       }),
+      children: figma.children("*"),
     },
-    example: (props) => <DraggableList.Root size={props.size} />,
+    example: (props) => (
+      <DraggableList.Root size={props.size}>
+        {props.children}
+      </DraggableList.Root>
+    ),
   }
 );

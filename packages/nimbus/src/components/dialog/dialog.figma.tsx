@@ -10,6 +10,9 @@ figma.connect(
   Dialog.Root,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5818-30486",
   {
-    example: () => <Dialog.Root />,
+    props: {
+      children: figma.children("*"),
+    },
+    example: (props) => <Dialog.Root>{props.children}</Dialog.Root>,
   }
 );

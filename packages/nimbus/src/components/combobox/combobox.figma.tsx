@@ -53,7 +53,12 @@ figma.connect(
         YES: "multiple",
         NO: "single",
       }),
+      children: figma.children("*"),
     },
-    example: (props) => <ComboBox.Root selectionMode={props.selectionMode} />,
+    example: (props) => (
+      <ComboBox.Root selectionMode={props.selectionMode}>
+        {props.children}
+      </ComboBox.Root>
+    ),
   }
 );

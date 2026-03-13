@@ -8,6 +8,9 @@ figma.connect(
   Tooltip.Root,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=346-862",
   {
-    example: () => <Tooltip.Root />,
+    props: {
+      children: figma.children("*"),
+    },
+    example: (props) => <Tooltip.Root>{props.children}</Tooltip.Root>,
   }
 );

@@ -18,6 +18,14 @@ figma.connect(
         Ghost: "flat",
       }),
     },
-    example: (props) => <Alert.Root {...props} />,
+    example: (props) => (
+      <Alert.Root
+        isClearable={props.isClearable}
+        colorPalette={props.colorPalette}
+        variant={props.variant}
+      >
+        Alert message
+      </Alert.Root>
+    ),
   }
 );
