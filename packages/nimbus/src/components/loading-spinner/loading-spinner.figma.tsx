@@ -18,6 +18,8 @@ figma.connect(
         white: "white",
       }),
     },
-    example: (props) => <LoadingSpinner {...props} />,
+    example: (props) => (
+      <LoadingSpinner size={props.size} colorPalette={props.colorPalette} />
+    ),
   }
 );

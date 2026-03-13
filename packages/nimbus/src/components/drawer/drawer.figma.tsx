@@ -14,13 +14,15 @@ figma.connect(
         true: <Drawer.Footer>Footer content</Drawer.Footer>,
         false: undefined,
       }),
+      children: figma.children("*"),
     },
     example: (props) => (
       <Drawer.Root>
         <Drawer.Body>
-          Drawer content
-          {props.footer}
+          <Drawer.Header>Drawer Title</Drawer.Header>
+          {props.children}
         </Drawer.Body>
+        {props.footer}
       </Drawer.Root>
     ),
   }

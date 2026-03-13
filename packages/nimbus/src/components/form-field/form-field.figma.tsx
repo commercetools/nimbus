@@ -13,7 +13,7 @@ figma.connect(
         left: "row",
       }),
       size: figma.enum("Size", {
-        xs: "xs",
+        xs: "sm",
         md: "md",
       }),
       infoBox: figma.boolean("Info", {

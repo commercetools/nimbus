@@ -14,6 +14,6 @@ figma.connect(
         Vertical: "vertical",
       }),
     },
-    example: (props) => <Separator {...props} />,
+    example: (props) => <Separator orientation={props.orientation} />,
   }
 );

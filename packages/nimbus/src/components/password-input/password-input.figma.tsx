@@ -18,6 +18,13 @@ figma.connect(
         sm: "sm",
       }),
     },
-    example: (props) => <PasswordInput {...props} />,
+    example: (props) => (
+      <PasswordInput
+        variant={props.variant}
+        size={props.size}
+        isInvalid={props.isInvalid}
+        isDisabled={props.isDisabled}
+      />
+    ),
   }
 );

@@ -19,6 +19,16 @@ figma.connect(
         "2xs": "2xs",
       }),
     },
-    example: (props) => <SplitButton {...props} />,
+    example: (props) => (
+      <SplitButton
+        aria-label="More actions"
+        variant={props.variant}
+        size={props.size}
+        isDisabled={props.isDisabled}
+        onAction={() => {}}
+      >
+        {/* Menu.Item children */}
+      </SplitButton>
+    ),
   }
 );

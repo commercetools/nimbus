@@ -22,6 +22,12 @@ figma.connect(
         Warning: "warning",
       }),
     },
-    example: (props) => <Avatar {...props} />,
+    example: (props) => (
+      <Avatar
+        size={props.size}
+        colorPalette={props.colorPalette}
+        isDisabled={props.isDisabled}
+      />
+    ),
   }
 );

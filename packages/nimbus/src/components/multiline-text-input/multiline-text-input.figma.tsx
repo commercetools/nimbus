@@ -20,6 +20,14 @@ figma.connect(
         sm: "sm",
       }),
     },
-    example: (props) => <MultilineTextInput {...props} />,
+    example: (props) => (
+      <MultilineTextInput
+        variant={props.variant}
+        size={props.size}
+        showResizeIcon={props.showResizeIcon}
+        isInvalid={props.isInvalid}
+        isDisabled={props.isDisabled}
+      />
+    ),
   }
 );

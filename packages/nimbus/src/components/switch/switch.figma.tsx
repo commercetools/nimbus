@@ -13,6 +13,14 @@ figma.connect(
         sm: "sm",
       }),
     },
-    example: (props) => <Switch {...props} />,
+    example: (props) => (
+      <Switch
+        isSelected={props.isSelected}
+        isDisabled={props.isDisabled}
+        size={props.size}
+      >
+        Label
+      </Switch>
+    ),
   }
 );

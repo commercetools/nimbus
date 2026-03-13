@@ -29,3 +29,45 @@ figma.connect(
     ),
   }
 );
+
+// --- Variant-specific: Critical alert ---
+figma.connect(
+  Alert.Root,
+  "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=339-5419",
+  {
+    variant: { Tone: "Critical" },
+    example: () => (
+      <Alert.Root colorPalette="critical" variant="outlined">
+        Something went wrong. Please try again.
+      </Alert.Root>
+    ),
+  }
+);
+
+// --- Variant-specific: Positive alert ---
+figma.connect(
+  Alert.Root,
+  "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=339-5419",
+  {
+    variant: { Tone: "Positive" },
+    example: () => (
+      <Alert.Root colorPalette="positive" variant="outlined">
+        Changes saved successfully.
+      </Alert.Root>
+    ),
+  }
+);
+
+// --- Variant-specific: Warning alert ---
+figma.connect(
+  Alert.Root,
+  "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=339-5419",
+  {
+    variant: { Tone: "Warning" },
+    example: () => (
+      <Alert.Root colorPalette="warning" variant="outlined">
+        Please review before continuing.
+      </Alert.Root>
+    ),
+  }
+);
