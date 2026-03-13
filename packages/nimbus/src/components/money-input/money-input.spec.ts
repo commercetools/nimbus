@@ -136,34 +136,69 @@ describe("MoneyInput Static Methods", () => {
     });
 
     describe("Special currency handling", () => {
-      it("Handles JPY (0 fraction digits)", () => {
-        const result = MoneyInput.convertToMoneyValue(
-          { amount: "100", currencyCode: "JPY" },
-          ""
-        );
+      describe("JPY", () => {
+        it("Returns centPrecision with 0 fraction digits", () => {
+          const result = MoneyInput.convertToMoneyValue(
+            { amount: "100", currencyCode: "JPY" },
+            ""
+          );
 
-        expect(result?.type).toBe("centPrecision");
-        expect(result?.centAmount).toBe(100);
-        expect(result?.fractionDigits).toBe(0);
+          expect(result?.type).toBe("centPrecision");
+          expect(result?.centAmount).toBe(100);
+          expect(result?.fractionDigits).toBe(0);
+        });
+
+        it("Warns when locale is not provided", () => {
+          capturedWarnings = [];
+
+          MoneyInput.convertToMoneyValue(
+            { amount: "100", currencyCode: "JPY" },
+            ""
+          );
+
+          expect(
+            capturedWarnings.some((warning) =>
+              warning.some(
+                (arg: unknown) =>
+                  typeof arg === "string" &&
+                  arg.includes("locale must be provided")
+              )
+            )
+          ).toBe(true);
+        });
       });
 
-      it("Warns when locale is not provided", () => {
-        capturedWarnings = [];
+      describe("HUF0 (0 fraction variant)", () => {
+        it("Returns centPrecision with 0 fraction digits and whole-number centAmount", () => {
+          const result = MoneyInput.convertToMoneyValue(
+            { amount: "500", currencyCode: "HUF0" },
+            "en"
+          );
 
-        MoneyInput.convertToMoneyValue(
-          { amount: "100", currencyCode: "JPY" },
-          ""
-        );
+          expect(result?.type).toBe("centPrecision");
+          expect(result?.currencyCode).toBe("HUF0");
+          expect(result?.centAmount).toBe(500);
+          expect(result?.fractionDigits).toBe(0);
+        });
 
-        expect(
-          capturedWarnings.some((warning) =>
-            warning.some(
-              (arg: unknown) =>
-                typeof arg === "string" &&
-                arg.includes("locale must be provided")
+        it("Warns when locale is not provided", () => {
+          capturedWarnings = [];
+
+          MoneyInput.convertToMoneyValue(
+            { amount: "100", currencyCode: "HUF0" },
+            ""
+          );
+
+          expect(
+            capturedWarnings.some((warning) =>
+              warning.some(
+                (arg: unknown) =>
+                  typeof arg === "string" &&
+                  arg.includes("locale must be provided")
+              )
             )
-          )
-        ).toBe(true);
+          ).toBe(true);
+        });
       });
     });
   });
@@ -244,6 +279,23 @@ describe("MoneyInput Static Methods", () => {
 
         // Spanish uses comma for decimals
         expect(result.amount).toContain(",");
+      });
+    });
+
+    describe("0 fraction variant parsing", () => {
+      it("Parses cent precision HUF0 (0 fraction variant) value", () => {
+        const result = MoneyInput.parseMoneyValue(
+          {
+            type: "centPrecision",
+            currencyCode: "HUF0",
+            centAmount: 500,
+            fractionDigits: 0,
+          },
+          "en"
+        );
+
+        expect(result.amount).toBe("500");
+        expect(result.currencyCode).toBe("HUF0");
       });
     });
 
@@ -417,6 +469,26 @@ describe("MoneyInput Static Methods", () => {
         expect(
           MoneyInput.isHighPrecision(
             { amount: "100", currencyCode: "JPY" },
+            "en"
+          )
+        ).toBe(false);
+      });
+    });
+
+    describe("TRY0 (0 fraction variant)", () => {
+      it("Returns true when TRY0 has decimal places", () => {
+        expect(
+          MoneyInput.isHighPrecision(
+            { amount: "50.5", currencyCode: "TRY0" },
+            "en"
+          )
+        ).toBe(true);
+      });
+
+      it("Returns false when TRY0 has no decimal places", () => {
+        expect(
+          MoneyInput.isHighPrecision(
+            { amount: "50", currencyCode: "TRY0" },
             "en"
           )
         ).toBe(false);
