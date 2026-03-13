@@ -37,5 +37,6 @@
     "plugins": [
       { "name": "@commercetools/nimbus-design-token-ts-plugin" }
     ]
-  }
+  },
+  "exclude": ["src/**/*.figma.tsx"]
 }
