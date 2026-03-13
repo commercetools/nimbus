@@ -8,7 +8,6 @@ figma.connect(
     props: {
       showResizeIcon: figma.boolean("Show resize icon"),
       leadingElement: figma.boolean("Leading element"),
-      trailingElement: figma.boolean("Trailing element"),
       isInvalid: figma.enum("State", { Invalid: true }),
       isDisabled: figma.enum("State", { Disabled: true }),
       variant: figma.enum("Appearance", {
@@ -25,6 +24,7 @@ figma.connect(
         variant={props.variant}
         size={props.size}
         showResizeIcon={props.showResizeIcon}
+        leadingElement={props.leadingElement}
         isInvalid={props.isInvalid}
         isDisabled={props.isDisabled}
       />

@@ -23,6 +23,8 @@ figma.connect(
       <TextInput
         variant={props.variant}
         size={props.size}
+        leadingElement={props.leadingElement}
+        trailingElement={props.trailingElement}
         isInvalid={props.isInvalid}
         isDisabled={props.isDisabled}
       />
