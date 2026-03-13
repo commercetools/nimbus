@@ -1,5 +1,5 @@
 import figma from "@figma/code-connect/react";
-import { ToastOutlet } from "./toast";
+import { ToastOutlet } from "./components/toast.outlet";
 
 // Toast is invoked via toast.create(), not as a JSX component.
 // This connects the Figma component to ToastOutlet for Dev Mode reference.

@@ -27,7 +27,12 @@ figma.connect(
         Vertical: "vertical",
         horizontal: "horizontal",
       }),
+      children: figma.children("*"),
     },
-    example: (props) => <RadioInput.Root orientation={props.orientation} />,
+    example: (props) => (
+      <RadioInput.Root orientation={props.orientation}>
+        {props.children}
+      </RadioInput.Root>
+    ),
   }
 );
