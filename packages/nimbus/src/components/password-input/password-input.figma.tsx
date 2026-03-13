@@ -22,6 +22,7 @@ figma.connect(
       <PasswordInput
         variant={props.variant}
         size={props.size}
+        leadingElement={props.leadingElement}
         isInvalid={props.isInvalid}
         isDisabled={props.isDisabled}
       />

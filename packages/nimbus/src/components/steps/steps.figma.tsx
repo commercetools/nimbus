@@ -14,7 +14,9 @@ figma.connect(
       children: figma.children("*"),
     },
     example: (props) => (
-      <Steps.Root size={props.size}>{props.children}</Steps.Root>
+      <Steps.Root size={props.size} count={3}>
+        {props.children}
+      </Steps.Root>
     ),
   }
 );

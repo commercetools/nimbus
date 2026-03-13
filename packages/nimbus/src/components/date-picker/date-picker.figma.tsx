@@ -6,8 +6,6 @@ figma.connect(
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2960-3987",
   {
     props: {
-      isClearable: figma.boolean("Clear button"),
-      calendarButton: figma.boolean("Calendar button"),
       leadingElement: figma.boolean("Leading element"),
       isInvalid: figma.enum("State", { Invalid: true }),
       isDisabled: figma.enum("State", { Disabled: true }),
@@ -24,7 +22,7 @@ figma.connect(
       <DatePicker
         variant={props.variant}
         size={props.size}
-        isClearable={props.isClearable}
+        leadingElement={props.leadingElement}
         isInvalid={props.isInvalid}
         isDisabled={props.isDisabled}
       />

@@ -6,7 +6,10 @@ figma.connect(
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=339-5419",
   {
     props: {
-      isClearable: figma.boolean("Clear button"),
+      dismissButton: figma.boolean("Clear button", {
+        true: <Alert.DismissButton />,
+        false: undefined,
+      }),
       colorPalette: figma.enum("Tone", {
         Critical: "critical",
         Info: "info",
@@ -19,12 +22,9 @@ figma.connect(
       }),
     },
     example: (props) => (
-      <Alert.Root
-        isClearable={props.isClearable}
-        colorPalette={props.colorPalette}
-        variant={props.variant}
-      >
+      <Alert.Root colorPalette={props.colorPalette} variant={props.variant}>
         Alert message
+        {props.dismissButton}
       </Alert.Root>
     ),
   }
