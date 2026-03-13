@@ -33,7 +33,10 @@ figma.connect(
         sm: "sm",
         lg: "lg",
       }),
+      children: figma.children("*"),
     },
-    example: (props) => <TagGroup.Root {...props} />,
+    example: (props) => (
+      <TagGroup.Root size={props.size}>{props.children}</TagGroup.Root>
+    ),
   }
 );

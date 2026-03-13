@@ -11,7 +11,10 @@ figma.connect(
         sm: "sm",
         md: "md",
       }),
+      children: figma.children("*"),
     },
-    example: (props) => <Steps.Root size={props.size} />,
+    example: (props) => (
+      <Steps.Root size={props.size}>{props.children}</Steps.Root>
+    ),
   }
 );

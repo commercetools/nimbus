@@ -10,7 +10,10 @@ figma.connect(
         md: "md",
         xs: "xs",
       }),
+      children: figma.children("*"),
     },
-    example: (props) => <Accordion.Root {...props} />,
+    example: (props) => (
+      <Accordion.Root size={props.size}>{props.children}</Accordion.Root>
+    ),
   }
 );

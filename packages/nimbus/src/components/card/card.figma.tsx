@@ -44,9 +44,12 @@ figma.connect(
         Yes: "elevated",
         No: "none",
       }),
+      children: figma.children("*"),
     },
     example: (props) => (
-      <Card.Root borderStyle={props.borderStyle} elevation={props.elevation} />
+      <Card.Root borderStyle={props.borderStyle} elevation={props.elevation}>
+        {props.children}
+      </Card.Root>
     ),
   }
 );
