@@ -20,13 +20,16 @@ figma.connect(
         "Vertical left": "start",
         "Vertical right": "end",
       }),
+      children: figma.children("*"),
     },
     example: (props) => (
       <Tabs.Root
         size={props.size}
         orientation={props.orientation}
         placement={props.placement}
-      />
+      >
+        {props.children}
+      </Tabs.Root>
     ),
   }
 );

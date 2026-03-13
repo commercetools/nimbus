@@ -20,6 +20,16 @@ figma.connect(
         sm: "sm",
       }),
     },
-    example: (props) => <IconToggleButton {...props} />,
+    example: (props) => (
+      <IconToggleButton
+        aria-label="Action"
+        variant={props.variant}
+        size={props.size}
+        isDisabled={props.isDisabled}
+        isSelected={props.isSelected}
+      >
+        {props.icon}
+      </IconToggleButton>
+    ),
   }
 );

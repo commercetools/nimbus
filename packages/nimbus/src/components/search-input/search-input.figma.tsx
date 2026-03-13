@@ -18,6 +18,14 @@ figma.connect(
         sm: "sm",
       }),
     },
-    example: (props) => <SearchInput {...props} />,
+    example: (props) => (
+      <SearchInput
+        variant={props.variant}
+        size={props.size}
+        isClearable={props.isClearable}
+        isInvalid={props.isInvalid}
+        isDisabled={props.isDisabled}
+      />
+    ),
   }
 );

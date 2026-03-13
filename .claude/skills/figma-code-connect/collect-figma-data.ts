@@ -1,10 +1,9 @@
-#!/usr/bin/env npx tsx
 /**
  * Collects raw data for Figma Code Connect and writes it to
- * scripts/code-connect-data.json.
+ * .claude/skills/figma-code-connect/code-connect-data.json.
  *
  * Usage:
- *   npx tsx scripts/generate-code-connect.ts
+ *   pnpm exec tsx .claude/skills/figma-code-connect/collect-figma-data.ts
  *
  * Requires FIGMA_ACCESS_TOKEN in .env or environment.
  */
@@ -19,9 +18,9 @@ import { config } from "dotenv";
 // ---------------------------------------------------------------------------
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = resolve(__dirname, "..");
+const ROOT = process.cwd();
 const COMPONENTS_DIR = join(ROOT, "packages/nimbus/src/components");
-const OUTPUT_FILE = join(ROOT, "scripts/code-connect-data.json");
+const OUTPUT_FILE = join(__dirname, "code-connect-data.json");
 
 // The main Nimbus design system Figma file
 const FIGMA_FILE_KEY = "AvtPX6g7OGGCRvNlatGOIY";

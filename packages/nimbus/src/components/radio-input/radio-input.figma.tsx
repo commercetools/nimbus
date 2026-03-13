@@ -13,7 +13,11 @@ figma.connect(
     props: {
       isDisabled: figma.enum("State", { Disabled: true }),
     },
-    example: (props) => <RadioInput.Option {...props} />,
+    example: (props) => (
+      <RadioInput.Option value="option" isDisabled={props.isDisabled}>
+        Option label
+      </RadioInput.Option>
+    ),
   }
 );
 

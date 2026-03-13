@@ -14,6 +14,13 @@ figma.connect(
         md: "md",
       }),
     },
-    example: (props) => <MoneyInput {...props} />,
+    example: (props) => (
+      <MoneyInput
+        size={props.size}
+        highPrecisionIndicator={props.highPrecisionIndicator}
+        isInvalid={props.isInvalid}
+        isDisabled={props.isDisabled}
+      />
+    ),
   }
 );

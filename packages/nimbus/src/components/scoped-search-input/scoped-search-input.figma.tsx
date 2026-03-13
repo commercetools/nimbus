@@ -12,6 +12,8 @@ figma.connect(
         md: "md",
       }),
     },
-    example: (props) => <ScopedSearchInput {...props} />,
+    example: (props) => (
+      <ScopedSearchInput isDisabled={props.isDisabled} size={props.size} />
+    ),
   }
 );

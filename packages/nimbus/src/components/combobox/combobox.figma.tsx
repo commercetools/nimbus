@@ -6,8 +6,10 @@ figma.connect(
   ComboBox.ListBox,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6358-56723",
   {
-    props: {},
-    example: () => <ComboBox.ListBox />,
+    props: {
+      children: figma.children("*"),
+    },
+    example: (props) => <ComboBox.ListBox>{props.children}</ComboBox.ListBox>,
   }
 );
 
@@ -58,6 +60,36 @@ figma.connect(
     example: (props) => (
       <ComboBox.Root selectionMode={props.selectionMode}>
         {props.children}
+      </ComboBox.Root>
+    ),
+  }
+);
+
+// --- Variant-specific: Single-select combobox ---
+figma.connect(
+  ComboBox.Root,
+  "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6358-58494",
+  {
+    variant: { "Multi-select": "NO" },
+    example: () => (
+      <ComboBox.Root selectionMode="single">
+        <ComboBox.Trigger />
+        <ComboBox.ListBox />
+      </ComboBox.Root>
+    ),
+  }
+);
+
+// --- Variant-specific: Multi-select combobox ---
+figma.connect(
+  ComboBox.Root,
+  "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6358-58494",
+  {
+    variant: { "Multi-select": "YES" },
+    example: () => (
+      <ComboBox.Root selectionMode="multiple">
+        <ComboBox.Trigger />
+        <ComboBox.ListBox />
       </ComboBox.Root>
     ),
   }

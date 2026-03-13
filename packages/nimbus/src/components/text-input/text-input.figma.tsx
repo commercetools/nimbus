@@ -19,6 +19,13 @@ figma.connect(
         sm: "sm",
       }),
     },
-    example: (props) => <TextInput {...props} />,
+    example: (props) => (
+      <TextInput
+        variant={props.variant}
+        size={props.size}
+        isInvalid={props.isInvalid}
+        isDisabled={props.isDisabled}
+      />
+    ),
   }
 );
