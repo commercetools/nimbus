@@ -6,8 +6,10 @@ figma.connect(
   Select.Options,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6358-56585",
   {
-    props: {},
-    example: () => <Select.Options />,
+    props: {
+      children: figma.children("*"),
+    },
+    example: (props) => <Select.Options>{props.children}</Select.Options>,
   }
 );
 
@@ -36,7 +38,9 @@ figma.connect(
         isDisabled={props.isDisabled}
         variant={props.variant}
         size={props.size}
-      />
+      >
+        <Select.Options>{/* Option items */}</Select.Options>
+      </Select.Root>
     ),
   }
 );

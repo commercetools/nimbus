@@ -19,6 +19,13 @@ figma.connect(
         sm: "sm",
       }),
     },
-    example: (props) => <TimeInput {...props} />,
+    example: (props) => (
+      <TimeInput
+        variant={props.variant}
+        size={props.size}
+        isInvalid={props.isInvalid}
+        isDisabled={props.isDisabled}
+      />
+    ),
   }
 );

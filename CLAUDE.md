@@ -188,6 +188,15 @@ with TypeScript, React Aria Components, and Chakra UI v3.
 - **Documentation**: JSDoc-extracted API documentation site and Storybook for
   component development
 
+## Package Execution
+
+Always use `pnpx` or `pnpm exec` instead of `npx` to execute packages:
+
+```bash
+pnpx tsx script.ts
+pnpm exec prettier --write .
+```
+
 ## Development Commands
 
 ### Setup and Installation

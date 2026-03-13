@@ -20,6 +20,14 @@ figma.connect(
         sm: "sm",
       }),
     },
-    example: (props) => <DatePicker {...props} />,
+    example: (props) => (
+      <DatePicker
+        variant={props.variant}
+        size={props.size}
+        isClearable={props.isClearable}
+        isInvalid={props.isInvalid}
+        isDisabled={props.isDisabled}
+      />
+    ),
   }
 );

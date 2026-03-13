@@ -15,7 +15,15 @@ figma.connect(
       }),
       isDisabled: figma.enum("State", { Disabled: true }),
     },
-    example: (props) => <TagGroup.Tag {...props} />,
+    example: (props) => (
+      <TagGroup.Tag
+        size={props.size}
+        isClearable={props.isClearable}
+        isDisabled={props.isDisabled}
+      >
+        Tag label
+      </TagGroup.Tag>
+    ),
   }
 );
 

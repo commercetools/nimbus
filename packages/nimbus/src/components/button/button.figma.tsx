@@ -6,10 +6,14 @@ figma.connect(
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=67-549",
   {
     props: {
-      iconRight: figma.instance("→ Icon right"),
-      iconLeft: figma.instance("→ Icon Left"),
-      leftIcon: figma.boolean("Left icon"),
-      rightIcon: figma.boolean("Right icon"),
+      iconRight: figma.boolean("Right icon", {
+        true: figma.instance("→ Icon right"),
+        false: undefined,
+      }),
+      iconLeft: figma.boolean("Left icon", {
+        true: figma.instance("→ Icon Left"),
+        false: undefined,
+      }),
       variant: figma.enum("Variant", {
         Solid: "solid",
         Outlined: "outline",
@@ -28,6 +32,17 @@ figma.connect(
         Critical: "critical",
       }),
     },
-    example: (props) => <Button {...props} />,
+    example: (props) => (
+      <Button
+        variant={props.variant}
+        size={props.size}
+        colorPalette={props.colorPalette}
+        isDisabled={props.isDisabled}
+      >
+        {props.iconLeft}
+        Button label
+        {props.iconRight}
+      </Button>
+    ),
   }
 );
