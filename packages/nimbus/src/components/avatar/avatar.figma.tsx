@@ -24,6 +24,8 @@ figma.connect(
     },
     example: (props) => (
       <Avatar
+        firstName="Jane"
+        lastName="Doe"
         size={props.size}
         colorPalette={props.colorPalette}
         isDisabled={props.isDisabled}
