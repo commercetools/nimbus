@@ -1,7 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import Fuse from "fuse.js";
 import { z } from "zod";
-import { getIconCatalog, type IconCatalog } from "../data-loader.js";
+import { getIconCatalog } from "../data-loader.js";
 import type { IconCatalogEntry } from "../types.js";
 
 /** Maximum number of matches the search will consider. */
@@ -13,20 +13,12 @@ const PAGE_SIZE = 5;
 /** Minimum keyword length for substring matching to avoid single-char noise. */
 const MIN_KEYWORD_LENGTH = 2;
 
-/** Cached catalog + Fuse instance (created on first call). */
-let cachedCatalog: IconCatalog | undefined;
+/** Cached Fuse instance (created on first call). */
 let fuseInstance: Fuse<IconCatalogEntry> | undefined;
-
-async function getCatalog(): Promise<IconCatalog> {
-  if (!cachedCatalog) {
-    cachedCatalog = await getIconCatalog();
-  }
-  return cachedCatalog;
-}
 
 async function getFuse(): Promise<Fuse<IconCatalogEntry>> {
   if (!fuseInstance) {
-    const catalog = await getCatalog();
+    const catalog = await getIconCatalog();
     fuseInstance = new Fuse(catalog.icons, {
       keys: [
         { name: "name", weight: 2 },
@@ -47,7 +39,7 @@ async function getFuse(): Promise<Fuse<IconCatalogEntry>> {
  * Pass 2: Fuse.js fuzzy fallback.
  */
 async function searchIcons(query: string): Promise<IconCatalogEntry[]> {
-  const catalog = await getCatalog();
+  const catalog = await getIconCatalog();
   const needle = query.toLowerCase();
 
   // Pass 1: substring match on name and keywords, name matches ranked first
@@ -118,7 +110,7 @@ export function registerSearchIcons(server: McpServer): void {
     },
     async ({ query, offset }) => {
       try {
-        const catalog = await getCatalog();
+        const catalog = await getIconCatalog();
         const allResults = await searchIcons(query);
         const page = allResults.slice(offset, offset + PAGE_SIZE);
         const hasMore = offset + PAGE_SIZE < allResults.length;

@@ -154,10 +154,7 @@ export async function getIconData(): Promise<DocEntry | undefined> {
 // ---------------------------------------------------------------------------
 
 /** Returns the full icon catalog. */
-export async function getIconCatalog(): Promise<IconCatalog> {
-  const catalogPath = resolve(getDataDir(), "icons.json");
-  return readJson<IconCatalog>(catalogPath);
-}
+export const getIconCatalog = lazyJson<IconCatalog>("icons.json");
 
 // ---------------------------------------------------------------------------
 // Flattened token data
