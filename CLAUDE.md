@@ -7,8 +7,8 @@ These instructions are for AI assistants working in this project.
 Always open `@/openspec/AGENTS.md` when the request:
 
 - Mentions planning or proposals (words like proposal, spec, change, plan)
-- Introduces new capabilities, breaking changes, architecture shifts, or big
-  performance/security work
+- Is not clearly a fix (bug fix, typo, formatting, config tweak, docs for
+  existing behavior, or test addition for existing behavior)
 - Sounds ambiguous and you need the authoritative spec before coding
 
 Use `@/openspec/AGENTS.md` to learn:
@@ -29,33 +29,21 @@ Choose the command that matches your task:
 flowchart TD
     Start[What do you want to do?] --> A{Creating NEW<br/>component?}
     A -->|Yes| ProposeComponent["/propose-component ComponentName"]
-    A -->|No| B{Fixing a bug?}
+    A -->|No| B{Just a fix?<br/>bug, typo, docs,<br/>config, tests}
 
     B -->|Yes| DirectFix["Just implement directly<br/>No ceremony needed"]
-    B -->|No| C{Updating<br/>documentation?}
-
-    C -->|Yes| CreateDocs["/create-eng-docs ComponentName"]
-    C -->|No| D{Breaking change<br/>or architecture?}
-
-    D -->|Yes| OpenSpec["/openspec:proposal"]
-    D -->|No| E{Updating specific<br/>file type?}
-
-    E -->|Yes| UseSkill["Use skill directly:<br/>/writing-types, /writing-stories, etc."]
-    E -->|No| Other["Describe your task<br/>I'll guide you"]
+    B -->|No| OpenSpec["/openspec:proposal"]
 
     style ProposeComponent fill:#4CAF50
     style DirectFix fill:#4CAF50
-    style CreateDocs fill:#4CAF50
     style OpenSpec fill:#4CAF50
-    style UseSkill fill:#FFC107
 ```
 
 **90% of the time, you need ONE of these:**
 
 - **Creating a component?** → `/propose-component ComponentName`
-- **Fixing a bug?** → Just implement directly (no ceremony)
-- **Updating docs?** → `/create-eng-docs ComponentName`
-- **Breaking change?** → `/openspec:proposal`
+- **Just a fix?** → Just implement directly (no ceremony)
+- **Everything else?** → `/openspec:proposal`
 
 ## Common Workflows
 
@@ -109,7 +97,7 @@ Use the `/create-eng-docs` command:
 This creates both `.dev.mdx` and `.docs.spec.tsx` files with comprehensive
 documentation.
 
-### Making Breaking Changes
+### Any Other Change
 
 Use the `/openspec:proposal` command:
 
@@ -117,12 +105,10 @@ Use the `/openspec:proposal` command:
 /openspec:proposal
 ```
 
-This creates a change proposal for:
-
-- Architecture changes
-- Breaking API changes
-- Cross-cutting concerns
-- Performance optimizations
+Any change that isn't a fix requires a proposal. This includes but is not
+limited to: architecture changes, breaking API changes, new features,
+cross-cutting concerns, performance optimizations, and semantic decisions that
+expand what the library accepts as valid input.
 
 ## Understanding How It Works (Optional)
 
@@ -159,34 +145,29 @@ This creates a change proposal for:
 
 ### When to Use OpenSpec
 
+**An OpenSpec proposal is the default for any change that is not a fix.**
+
 **Use `/propose-component`** for NEW UI components:
 
 - Creates OpenSpec proposal + Nimbus component standards
 - Validates against WCAG, React Aria, Chakra UI patterns
 - Generates TDD task list with acceptance criteria
 
-**Use `/openspec:proposal`** for everything else:
+**Use `/openspec:proposal`** for all other non-fix changes.
 
-- Architecture changes
-- Breaking API changes
-- Cross-cutting concerns
-- Performance optimizations
-- New patterns (not components)
-
-**Skip OpenSpec** for:
+**Skip OpenSpec only for:**
 
 - Bug fixes (restoring intended behavior)
 - Typos, formatting, comments
-- Documentation updates
+- Documentation updates (documenting existing/spec'd behavior)
 - Test additions for existing behavior
 - Dependency updates (non-breaking)
 
 ## OpenSpec Proposal Guidance
 
-For non-fix changes (new features, breaking changes, architecture shifts),
-suggest creating an OpenSpec proposal via `/openspec:proposal` before
-implementing. Proceed directly only for bug fixes, typos, config changes, and
-tests for existing behavior.
+Every change needs a reason. If the change is not a fix (bug fix, typo, config
+tweak, docs for existing behavior, or test for existing behavior), it SHOULD
+have an OpenSpec proposal via `/openspec:proposal` before implementation.
 
 ## Project Overview
 
