@@ -6,6 +6,7 @@ import type {
   SelectRootSlotProps,
   SelectTriggerSlotProps,
   SelectTriggerLabelSlotProps,
+  SelectPopoverSlotProps,
   SelectOptionsSlotProps,
   SelectOptionSlotProps,
   SelectOptionGroupSlotProps,
@@ -37,6 +38,12 @@ export const SelectTriggerLabelSlot = withContext<
   HTMLButtonElement,
   SelectTriggerLabelSlotProps
 >("span", "triggerLabel");
+
+// Popover container
+export const SelectPopoverSlot = withContext<
+  HTMLDivElement,
+  SelectPopoverSlotProps
+>("div", "popover");
 
 // ListBox
 export const SelectOptionsSlot = withContext<

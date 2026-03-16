@@ -20,6 +20,7 @@ import {
   SelectTriggerSlot,
   SelectTriggerLabelSlot,
   SelectLeadingElementSlot,
+  SelectPopoverSlot,
 } from "./../select.slots";
 import { SelectClearButton } from "./select.clear-button";
 import { type SelectProps } from "./../select.types";
@@ -94,7 +95,9 @@ export const SelectRoot = function SelectRoot({
           </Flex>
         </chakra.div>
 
-        <RaPopover>{children}</RaPopover>
+        <SelectPopoverSlot asChild>
+          <RaPopover>{children}</RaPopover>
+        </SelectPopoverSlot>
       </RaSelect>
     </SelectRootSlot>
   );

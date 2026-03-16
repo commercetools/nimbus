@@ -10,6 +10,7 @@ export const selectSlotRecipe = defineSlotRecipe({
     "leadingElement",
     "trigger",
     "triggerLabel",
+    "popover",
     "options",
     "optionGroup",
     "option",
@@ -82,15 +83,26 @@ export const selectSlotRecipe = defineSlotRecipe({
         color: "critical.11",
       },
     },
-    // Popover
-    options: {
-      "--scrollbar-color": "colors.neutral.8",
-      "--scrollbar-bg": "colors.neutral.3",
-
+    // Popover container
+    popover: {
       bg: "bg",
       borderRadius: "200",
       boxShadow: "5",
       minWidth: "var(--trigger-width)",
+      overflow: "hidden",
+      "&[data-entering]": {
+        animationName: "fade-in, scale-in",
+        animationDuration: "fast",
+      },
+      "&[data-exiting]": {
+        animationName: "fade-out, scale-out",
+        animationDuration: "faster",
+      },
+    },
+    // ListBox
+    options: {
+      "--scrollbar-color": "colors.neutral.8",
+      "--scrollbar-bg": "colors.neutral.3",
       p: "200",
       focusRing: "outside",
       maxHeight: "40svh",
