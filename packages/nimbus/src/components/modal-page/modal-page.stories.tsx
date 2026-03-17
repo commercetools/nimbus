@@ -430,6 +430,13 @@ export const KeyboardNavigation: Story = {
       });
     });
 
+    await step("Back button receives initial focus on open", async () => {
+      const backButton = canvas.getByRole("button", {
+        name: /go back to/i,
+      });
+      await waitFor(() => expect(backButton).toHaveFocus(), { timeout: 1000 });
+    });
+
     await step("Escape key closes the modal page", async () => {
       await userEvent.keyboard("{Escape}");
       await waitFor(() => {
