@@ -193,6 +193,75 @@ const App = () => {
 }
 ```
 
+### Stacked pages
+
+Use when a workflow requires drilling into a sub-task — for example, opening
+"Add Variant" while the "Edit Product" page is open. Place the second
+`ModalPage.Root` inside the first `ModalPage.Content`. Each page manages its
+own independent open state.
+
+```jsx live
+const App = () => {
+  const [isFirstOpen, setIsFirstOpen] = React.useState(false);
+  const [isSecondOpen, setIsSecondOpen] = React.useState(false);
+  return (
+    <Stack>
+      <Button onPress={() => setIsFirstOpen(true)}>Open Edit Product</Button>
+      <ModalPage.Root
+        isOpen={isFirstOpen}
+        onClose={() => setIsFirstOpen(false)}
+      >
+        <ModalPage.TopBar
+          previousPathLabel="Products"
+          currentPathLabel="Edit Product"
+        />
+        <ModalPage.Header>
+          <ModalPage.Title
+            title="Edit Product"
+            subtitle="Update the product details"
+          />
+        </ModalPage.Header>
+        <ModalPage.Content>
+          <Stack>
+            <Text>Product form content goes here.</Text>
+            <Button onPress={() => setIsSecondOpen(true)}>
+              Open Add Variant
+            </Button>
+          </Stack>
+
+          <ModalPage.Root
+            isOpen={isSecondOpen}
+            onClose={() => setIsSecondOpen(false)}
+          >
+            <ModalPage.TopBar
+              previousPathLabel="Edit Product"
+              currentPathLabel="Add Variant"
+            />
+            <ModalPage.Header>
+              <ModalPage.Title
+                title="Add Variant"
+                subtitle="Define a new product variant"
+              />
+            </ModalPage.Header>
+            <ModalPage.Content>
+              <Text>Variant form content goes here.</Text>
+            </ModalPage.Content>
+            <ModalPage.Footer>
+              <Button slot="close" variant="outline">Cancel</Button>
+              <Button variant="solid">Save Variant</Button>
+            </ModalPage.Footer>
+          </ModalPage.Root>
+        </ModalPage.Content>
+        <ModalPage.Footer>
+          <Button slot="close" variant="outline">Cancel</Button>
+          <Button variant="solid">Save Product</Button>
+        </ModalPage.Footer>
+      </ModalPage.Root>
+    </Stack>
+  );
+}
+```
+
 ## Guidelines
 
 Use ModalPage strategically to enhance user workflow without disrupting the

@@ -201,6 +201,84 @@ const App = () => {
 }
 ```
 
+### Stacked modal pages
+
+When a workflow requires drilling into a sub-task (e.g. adding a variant
+while editing a product), place a second `ModalPage.Root` inside the first
+`ModalPage.Content`. Each modal page manages its own independent state.
+
+The breadcrumb in `ModalPage.TopBar` naturally reflects the depth:
+set `previousPathLabel` to the parent page's title so the back button
+reads contextually.
+
+Behaviour that works automatically:
+- Escape closes only the topmost page
+- Focus is trapped in the topmost page; previous page is inert
+- When the second page closes, focus returns to its trigger inside the first page
+- When the first page closes, focus returns to the original page trigger
+
+```jsx live-dev
+const App = () => {
+  const [isFirstOpen, setIsFirstOpen] = useState(false);
+  const [isSecondOpen, setIsSecondOpen] = useState(false);
+  return (
+    <Stack>
+      <Button onPress={() => setIsFirstOpen(true)}>Open Edit Product</Button>
+      <ModalPage.Root
+        isOpen={isFirstOpen}
+        onClose={() => setIsFirstOpen(false)}
+      >
+        <ModalPage.TopBar
+          previousPathLabel="Products"
+          currentPathLabel="Edit Product"
+        />
+        <ModalPage.Header>
+          <ModalPage.Title
+            title="Edit Product"
+            subtitle="Update the product details"
+          />
+        </ModalPage.Header>
+        <ModalPage.Content>
+          <Stack>
+            <Text>Product form content goes here.</Text>
+            <Button onPress={() => setIsSecondOpen(true)}>
+              Open Add Variant
+            </Button>
+          </Stack>
+
+          <ModalPage.Root
+            isOpen={isSecondOpen}
+            onClose={() => setIsSecondOpen(false)}
+          >
+            <ModalPage.TopBar
+              previousPathLabel="Edit Product"
+              currentPathLabel="Add Variant"
+            />
+            <ModalPage.Header>
+              <ModalPage.Title
+                title="Add Variant"
+                subtitle="Define a new product variant"
+              />
+            </ModalPage.Header>
+            <ModalPage.Content>
+              <Text>Variant form content goes here.</Text>
+            </ModalPage.Content>
+            <ModalPage.Footer>
+              <Button slot="close" variant="outline">Cancel</Button>
+              <Button variant="solid">Save Variant</Button>
+            </ModalPage.Footer>
+          </ModalPage.Root>
+        </ModalPage.Content>
+        <ModalPage.Footer>
+          <Button slot="close" variant="outline">Cancel</Button>
+          <Button variant="solid">Save Product</Button>
+        </ModalPage.Footer>
+      </ModalPage.Root>
+    </Stack>
+  );
+}
+```
+
 ## Component requirements
 
 ### Accessible dialog label
