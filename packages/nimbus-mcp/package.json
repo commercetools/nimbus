@@ -2,8 +2,11 @@
   "name": "@commercetools/nimbus-mcp",
   "version": "0.1.0",
   "description": "MCP server for the Nimbus design system",
-  "private": true,
   "type": "module",
+  "files": [
+    "dist",
+    "data"
+  ],
   "bin": {
     "nimbus-mcp": "./dist/index.js"
   },
