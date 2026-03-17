@@ -21,9 +21,8 @@ export const modalPageRecipe = defineSlotRecipe({
       gap: "200",
       px: "600",
       py: "300",
-      borderBottomWidth: "1px",
-      borderBottomStyle: "solid",
-      borderBottomColor: "border",
+      borderBottom: "solid-25",
+      borderColor: "border",
     },
     header: {
       display: "grid",
@@ -32,9 +31,8 @@ export const modalPageRecipe = defineSlotRecipe({
       mx: "900",
       mt: "800",
       pb: "600",
-      borderBottomWidth: "1px",
-      borderBottomStyle: "solid",
-      borderBottomColor: "border",
+      borderBottom: "solid-25",
+      borderColor: "border",
     },
     title: {
       gridColumn: "1",
@@ -47,16 +45,16 @@ export const modalPageRecipe = defineSlotRecipe({
     },
     content: {
       overflow: "auto",
-      m: "800",
-      mx: "900",
+      // Use padding (not margin) on the scroll container so that content
+      // near the edges is not clipped at the margin boundary when scrolling.
+      py: "800",
+      px: "900",
     },
     footer: {
-      borderTopWidth: "1px",
-      borderTopStyle: "solid",
-      borderTopColor: "border",
+      borderTop: "solid-25",
+      borderColor: "border",
       px: "600",
       py: "400",
     },
   },
-  defaultVariants: {},
 });

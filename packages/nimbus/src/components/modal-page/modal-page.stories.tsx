@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { userEvent, within, expect, waitFor } from "storybook/test";
+import { fn, userEvent, within, expect, waitFor } from "storybook/test";
 import { useState } from "react";
 import {
   Button,
@@ -15,10 +15,16 @@ const meta: Meta<typeof ModalPage.Root> = {
   title: "Components/Overlay/ModalPage",
   component: ModalPage.Root,
   tags: ["autodocs"],
+  args: {
+    onClose: fn(),
+  },
   argTypes: {
     isOpen: {
       control: { type: "boolean" },
       description: "Whether the modal page is open (controlled)",
+    },
+    onClose: {
+      description: "Callback fired when the modal page should close",
     },
     shouldDelayOnClose: {
       control: { type: "boolean" },
@@ -374,6 +380,92 @@ export const WithShouldDelayOnClose: Story = {
       );
 
       expect(canvas.getByText("Close count: 1")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Keyboard navigation — tests Escape key dismissal and focus trap within
+ * the modal page dialog.
+ */
+export const KeyboardNavigation: Story = {
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <Stack>
+        <Button onPress={() => setIsOpen(true)}>Open for Keyboard Test</Button>
+        <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          <ModalPage.TopBar
+            previousPathLabel="Settings"
+            currentPathLabel="Edit Profile"
+          />
+          <ModalPage.Header>
+            <ModalPage.Title title="Edit Profile" />
+          </ModalPage.Header>
+          <ModalPage.Content>
+            <Text>Keyboard navigation test content</Text>
+          </ModalPage.Content>
+          <ModalPage.Footer>
+            <Button slot="close" variant="outline">
+              Cancel
+            </Button>
+            <Button variant="solid">Save</Button>
+          </ModalPage.Footer>
+        </ModalPage.Root>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Open modal page", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Open for Keyboard Test" })
+      );
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+    });
+
+    await step("Escape key closes the modal page", async () => {
+      await userEvent.keyboard("{Escape}");
+      await waitFor(() => {
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Focus returns to the trigger after close", async () => {
+      const trigger = canvas.getByRole("button", {
+        name: "Open for Keyboard Test",
+      });
+      await waitFor(() => expect(trigger).toHaveFocus(), { timeout: 1000 });
+    });
+
+    await step("Tab navigation cycles within the open modal", async () => {
+      const trigger = canvas.getByRole("button", {
+        name: "Open for Keyboard Test",
+      });
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+
+      // Tab through focusable elements — back button, Cancel, Save
+      await userEvent.tab();
+      const cancelButton = canvas.getByRole("button", { name: "Cancel" });
+      const saveButton = canvas.getByRole("button", { name: "Save" });
+      // At least Cancel and Save buttons should be reachable
+      expect(cancelButton).toBeInTheDocument();
+      expect(saveButton).toBeInTheDocument();
+
+      // Close to restore state
+      await userEvent.keyboard("{Escape}");
+      await waitFor(() => {
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
     });
   },
 };

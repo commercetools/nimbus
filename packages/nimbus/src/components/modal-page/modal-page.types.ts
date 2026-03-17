@@ -13,6 +13,7 @@ type ModalPageRecipeProps = UnstyledProp;
 
 // ============================================================
 // SLOT PROPS
+// (used internally by createSlotRecipeContext — not part of the public API)
 // ============================================================
 
 export type ModalPageRootSlotProps = HTMLChakraProps<
@@ -32,8 +33,12 @@ export type ModalPageFooterSlotProps = HTMLChakraProps<"footer">;
 
 /**
  * Props for ModalPage.Root
+ *
+ * ModalPage.Root renders a Drawer internally — it does not expose Drawer or
+ * div style props. The fullscreen layout is hardcoded; only the listed props
+ * are accepted.
  */
-export type ModalPageRootProps = OmitInternalProps<ModalPageRootSlotProps> & {
+export type ModalPageRootProps = {
   /** Whether the modal page is open (controlled) */
   isOpen: boolean;
   /** Callback fired when the modal page should close */
@@ -44,9 +49,9 @@ export type ModalPageRootProps = OmitInternalProps<ModalPageRootSlotProps> & {
    * @default false
    */
   shouldDelayOnClose?: boolean;
-  /** Child components */
+  /** Child components — TopBar, Header, Content, Footer */
   children: React.ReactNode;
-  /** Ref forwarded to the inner dialog element */
+  /** Ref forwarded to the inner grid container */
   ref?: React.Ref<HTMLDivElement>;
 };
 

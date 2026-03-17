@@ -35,10 +35,11 @@ export const ModalPageTopBar = ({
       <Text color="neutral.11" textStyle="sm">
         {previousPathLabel}
       </Text>
-      <Text color="neutral.11" textStyle="sm">
+      {/* Separator is decorative — hidden from screen readers */}
+      <Text color="neutral.11" textStyle="sm" aria-hidden="true">
         /
       </Text>
-      <Text textStyle="sm" fontWeight="medium">
+      <Text textStyle="sm" fontWeight="medium" aria-current="page">
         {currentPathLabel}
       </Text>
     </ModalPageTopBarSlot>
