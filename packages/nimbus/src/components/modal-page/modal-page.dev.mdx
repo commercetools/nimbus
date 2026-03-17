@@ -1,0 +1,92 @@
+---
+title: ModalPage Developer Documentation
+---
+
+import { Canvas, Controls, Meta, Story } from "@storybook/addon-docs/blocks";
+
+<Meta title="Components/Overlay/ModalPage" />
+
+# ModalPage — Engineering Docs
+
+A fullscreen modal overlay for form, info, and tabular page patterns.
+Wraps `Drawer` internally with `placement="right"` and near-full-width layout.
+
+## Basic Usage
+
+```tsx
+import { useState } from "react";
+import { ModalPage, Button } from "@commercetools/nimbus";
+
+function Example() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Open Modal Page</Button>
+      <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <ModalPage.TopBar
+          previousPathLabel="Products"
+          currentPathLabel="Edit Product"
+        />
+        <ModalPage.Header>
+          <ModalPage.Title
+            title="Edit Product"
+            subtitle="Update the product details"
+          />
+          <ModalPage.Actions>
+            <Button size="sm" variant="outline">Preview</Button>
+          </ModalPage.Actions>
+        </ModalPage.Header>
+        <ModalPage.Content>
+          {/* Form content */}
+        </ModalPage.Content>
+        <ModalPage.Footer>
+          <Button slot="close" variant="outline">Cancel</Button>
+          <Button variant="solid">Save</Button>
+        </ModalPage.Footer>
+      </ModalPage.Root>
+    </>
+  );
+}
+```
+
+## Closing the Modal
+
+There are three ways to close a ModalPage:
+
+1. **Back button in TopBar** — uses React Aria `slot="close"` to hook into dialog close
+2. **Any button with `slot="close"`** — React Aria routes this through the dialog close path
+3. **Escape key** — keyboard dismissal (always enabled)
+
+All close paths fire `onOpenChange(false)` on the underlying Drawer, which calls `onClose()`.
+
+## shouldDelayOnClose
+
+When `shouldDelayOnClose={true}`, the `onClose` callback is called after 300ms delay:
+
+```tsx
+<ModalPage.Root
+  isOpen={isOpen}
+  onClose={() => setIsOpen(false)}
+  shouldDelayOnClose
+>
+  {/* ... */}
+</ModalPage.Root>
+```
+
+Use this when you need animation time before unmounting.
+
+## Multi-column Content
+
+Use `ModalPage.Column` (re-exports `PageContent.Column`) for multi-column layouts:
+
+```tsx
+<ModalPage.Content variant="wide" columns="2/1">
+  <ModalPage.Column>
+    {/* Main form */}
+  </ModalPage.Column>
+  <ModalPage.Column sticky>
+    {/* Sidebar summary */}
+  </ModalPage.Column>
+</ModalPage.Content>
+```

@@ -1,0 +1,28 @@
+---
+title: ModalPage Accessibility
+---
+
+# ModalPage — Accessibility
+
+## ARIA Roles
+
+- `ModalPage.Root` renders a `dialog` role via React Aria's Dialog component
+- `ModalPage.Title` renders an `h2` with `slot="title"` connecting it to the dialog's accessible name
+- `ModalPage.TopBar` back button uses `aria-label` with the `previousPathLabel` value
+
+## Focus Management
+
+- Focus is trapped within the modal when open
+- On close, focus returns to the element that triggered the modal
+- The dialog is labelled by `ModalPage.Title` via React Aria slot wiring
+
+## Keyboard Navigation
+
+| Key | Action |
+|-----|--------|
+| `Escape` | Closes the modal page |
+| `Tab` / `Shift+Tab` | Moves focus between interactive elements |
+
+## Dismissal
+
+The back button in `ModalPage.TopBar` uses `slot="close"` from React Aria, which natively routes through the dialog's close mechanism.
