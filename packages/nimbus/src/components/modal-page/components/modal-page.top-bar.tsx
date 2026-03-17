@@ -29,6 +29,7 @@ export const ModalPageTopBar = ({
         size="xs"
         variant="ghost"
         aria-label={msg.format("backButton", { previousPathLabel })}
+        autoFocus
       >
         <ArrowBack />
       </IconButton>
