@@ -1,27 +1,27 @@
 ---
-title: ModalPage Developer Documentation
+title: ModalPage Component
+tab-title: Implementation
+tab-order: 3
 ---
 
-import { Canvas, Controls, Meta, Story } from "@storybook/addon-docs/blocks";
+## Getting started
 
-<Meta title="Components/Overlay/ModalPage" />
-
-# ModalPage — Engineering Docs
-
-A fullscreen modal overlay for form, info, and tabular page patterns.
-Wraps `Drawer` internally with `placement="right"` and near-full-width layout.
-
-## Basic Usage
+### Import
 
 ```tsx
-import { useState } from "react";
-import { ModalPage, Button } from "@commercetools/nimbus";
+import { ModalPage } from '@commercetools/nimbus';
+```
 
-function Example() {
+### Basic usage
+
+ModalPage is a controlled compound component. The basic implementation shows
+how to manage open state and compose the required sub-components:
+
+```jsx live-dev
+const App = () => {
   const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <>
+    <Stack>
       <Button onPress={() => setIsOpen(true)}>Open Modal Page</Button>
       <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <ModalPage.TopBar
@@ -38,55 +38,239 @@ function Example() {
           </ModalPage.Actions>
         </ModalPage.Header>
         <ModalPage.Content>
-          {/* Form content */}
+          <Text>Form content goes here.</Text>
         </ModalPage.Content>
         <ModalPage.Footer>
           <Button slot="close" variant="outline">Cancel</Button>
           <Button variant="solid">Save</Button>
         </ModalPage.Footer>
       </ModalPage.Root>
-    </>
+    </Stack>
   );
 }
 ```
 
-## Closing the Modal
+## Usage examples
 
-There are three ways to close a ModalPage:
+### Closing the modal page
 
-1. **Back button in TopBar** — uses React Aria `slot="close"` to hook into dialog close
-2. **Any button with `slot="close"`** — React Aria routes this through the dialog close path
-3. **Escape key** — keyboard dismissal (always enabled)
+There are three ways to close a ModalPage — all route through the same
+`onClose` callback:
 
-All close paths fire `onOpenChange(false)` on the underlying Drawer, which calls `onClose()`.
+1. **Back button in TopBar** — uses React Aria `slot="close"`, hooked into the dialog close path
+2. **Any button with `slot="close"`** — React Aria natively routes this through the dialog
+3. **Escape key** — always enabled; matches browser/OS convention and WCAG 2.1 SC 2.1.2
 
-## shouldDelayOnClose
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <Stack>
+      <Button onPress={() => setIsOpen(true)}>Open</Button>
+      <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <ModalPage.TopBar
+          previousPathLabel="Products"
+          currentPathLabel="Edit Product"
+        />
+        <ModalPage.Header>
+          <ModalPage.Title title="Edit Product" />
+        </ModalPage.Header>
+        <ModalPage.Content>
+          <Text>
+            Close via: back button in TopBar, slot="close" button, or Escape key.
+          </Text>
+        </ModalPage.Content>
+        <ModalPage.Footer>
+          <Button slot="close" variant="outline">Cancel</Button>
+          <Button variant="solid">Save</Button>
+        </ModalPage.Footer>
+      </ModalPage.Root>
+    </Stack>
+  );
+}
+```
 
-When `shouldDelayOnClose={true}`, the `onClose` callback is called after 300ms delay:
+### Delayed close for animations
+
+When `shouldDelayOnClose` is set, `onClose` is called after a 300ms delay.
+Use this when your app needs time to run an exit animation before unmounting
+the modal:
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <Stack>
+      <Button onPress={() => setIsOpen(true)}>Open with Delayed Close</Button>
+      <ModalPage.Root
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        shouldDelayOnClose
+      >
+        <ModalPage.TopBar
+          previousPathLabel="Dashboard"
+          currentPathLabel="Settings"
+        />
+        <ModalPage.Header>
+          <ModalPage.Title
+            title="Settings"
+            subtitle="onClose fires after 300ms"
+          />
+        </ModalPage.Header>
+        <ModalPage.Content>
+          <Text>The onClose callback is delayed by 300ms.</Text>
+        </ModalPage.Content>
+        <ModalPage.Footer>
+          <Button slot="close" variant="outline">Close</Button>
+        </ModalPage.Footer>
+      </ModalPage.Root>
+    </Stack>
+  );
+}
+```
+
+### Multi-column content
+
+`ModalPage.Column` re-exports `PageContent.Column`. Use it with `columns="2/1"`
+or `columns="1/1"` on `ModalPage.Content` for side-by-side layouts:
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <Stack>
+      <Button onPress={() => setIsOpen(true)}>Open Two-Column Page</Button>
+      <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <ModalPage.TopBar
+          previousPathLabel="Products"
+          currentPathLabel="Edit Product"
+        />
+        <ModalPage.Header>
+          <ModalPage.Title title="Edit Product" />
+        </ModalPage.Header>
+        <ModalPage.Content variant="wide" columns="2/1">
+          <ModalPage.Column>
+            <Text>Main form (2/3 width)</Text>
+          </ModalPage.Column>
+          <ModalPage.Column sticky>
+            <Text>Summary sidebar (1/3 width, sticky)</Text>
+          </ModalPage.Column>
+        </ModalPage.Content>
+        <ModalPage.Footer>
+          <Button slot="close" variant="outline">Cancel</Button>
+          <Button variant="solid">Save</Button>
+        </ModalPage.Footer>
+      </ModalPage.Root>
+    </Stack>
+  );
+}
+```
+
+### Header actions
+
+Use `ModalPage.Actions` to place secondary actions (e.g. Preview, Export) in
+the right column of the header grid:
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <Stack>
+      <Button onPress={() => setIsOpen(true)}>Open with Header Actions</Button>
+      <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <ModalPage.TopBar
+          previousPathLabel="Products"
+          currentPathLabel="Edit Product"
+        />
+        <ModalPage.Header>
+          <ModalPage.Title
+            title="Edit Product"
+            subtitle="Last saved 2 minutes ago"
+          />
+          <ModalPage.Actions>
+            <Button size="sm" variant="ghost">Preview</Button>
+            <Button size="sm" variant="outline">Export</Button>
+          </ModalPage.Actions>
+        </ModalPage.Header>
+        <ModalPage.Content>
+          <Text>Content area</Text>
+        </ModalPage.Content>
+      </ModalPage.Root>
+    </Stack>
+  );
+}
+```
+
+## Component requirements
+
+### Accessible dialog label
+
+The dialog must have an accessible name. Use `ModalPage.Title` (recommended):
 
 ```tsx
-<ModalPage.Root
-  isOpen={isOpen}
-  onClose={() => setIsOpen(false)}
-  shouldDelayOnClose
->
-  {/* ... */}
+<ModalPage.Header>
+  <ModalPage.Title title="Edit Product" />
+</ModalPage.Header>
+```
+
+`ModalPage.Title` renders an `h2` with React Aria's `slot="title"`, which
+automatically associates it as the dialog's accessible name via `aria-labelledby`.
+
+### Controlled state
+
+ModalPage is controlled-only. You must always supply both `isOpen` and
+`onClose`:
+
+```tsx
+const [isOpen, setIsOpen] = useState(false);
+
+<ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+  ...
 </ModalPage.Root>
 ```
 
-Use this when you need animation time before unmounting.
+## Accessibility
 
-## Multi-column Content
+ModalPage handles most accessibility requirements internally through React
+Aria's Dialog. Key implementation details:
 
-Use `ModalPage.Column` (re-exports `PageContent.Column`) for multi-column layouts:
+- `role="dialog"` is applied to the content by React Aria
+- `aria-modal="true"` is set, blocking interaction with the background
+- Focus is trapped inside the modal while open
+- Focus returns to the triggering element on close
+- Escape key dismissal is always active (WCAG 2.1 SC 2.1.2)
+- Backdrop click is disabled — full-page forms should not close accidentally
 
-```tsx
-<ModalPage.Content variant="wide" columns="2/1">
-  <ModalPage.Column>
-    {/* Main form */}
-  </ModalPage.Column>
-  <ModalPage.Column sticky>
-    {/* Sidebar summary */}
-  </ModalPage.Column>
-</ModalPage.Content>
-```
+#### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| `Escape` | Closes the modal page |
+| `Tab` / `Shift+Tab` | Navigate focusable elements within the modal |
+
+#### ARIA attributes
+
+- `role="dialog"`: Applied to the dialog container
+- `aria-labelledby`: Automatically linked to the `ModalPage.Title` h2 via React Aria slot wiring
+- `aria-modal="true"`: Marks the overlay as modal to screen readers
+- `aria-current="page"`: Applied to the current path label in `ModalPage.TopBar`
+- `aria-hidden="true"`: Applied to the `/` breadcrumb separator
+
+## API reference
+
+<PropsTable id="ModalPage" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using ModalPage
+in your application. As the component's internal functionality is already tested
+by Nimbus, these patterns help you verify your integration and application-specific
+logic.
+
+{{docs-tests: modal-page.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-overlay-modalpage--docs)
+- [React Aria Dialog](https://react-spectrum.adobe.com/react-aria/Dialog.html)
+- [ARIA Dialog Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
