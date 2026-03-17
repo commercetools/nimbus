@@ -90,45 +90,6 @@ const App = () => {
 }
 ```
 
-### Delayed close for animations
-
-When `shouldDelayOnClose` is set, `onClose` is called after a 300ms delay.
-Use this when your app needs time to run an exit animation before unmounting
-the modal:
-
-```jsx live-dev
-const App = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <Stack>
-      <Button onPress={() => setIsOpen(true)}>Open with Delayed Close</Button>
-      <ModalPage.Root
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        shouldDelayOnClose
-      >
-        <ModalPage.TopBar
-          previousPathLabel="Dashboard"
-          currentPathLabel="Settings"
-        />
-        <ModalPage.Header>
-          <ModalPage.Title
-            title="Settings"
-            subtitle="onClose fires after 300ms"
-          />
-        </ModalPage.Header>
-        <ModalPage.Content>
-          <Text>The onClose callback is delayed by 300ms.</Text>
-        </ModalPage.Content>
-        <ModalPage.Footer>
-          <Button slot="close" variant="outline">Close</Button>
-        </ModalPage.Footer>
-      </ModalPage.Root>
-    </Stack>
-  );
-}
-```
-
 ### Multi-column content
 
 `ModalPage.Column` re-exports `PageContent.Column`. Use it with `columns="2/1"`

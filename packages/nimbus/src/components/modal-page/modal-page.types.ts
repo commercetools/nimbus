@@ -43,12 +43,6 @@ export type ModalPageRootProps = {
   isOpen: boolean;
   /** Callback fired when the modal page should close */
   onClose: () => void;
-  /**
-   * When true, delays calling onClose by 300ms.
-   * Useful for close animations before unmounting.
-   * @default false
-   */
-  shouldDelayOnClose?: boolean;
   /** Child components — TopBar, Header, Content, Footer */
   children: React.ReactNode;
   /** Ref forwarded to the inner grid container */

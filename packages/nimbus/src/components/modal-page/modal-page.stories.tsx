@@ -26,10 +26,6 @@ const meta: Meta<typeof ModalPage.Root> = {
     onClose: {
       description: "Callback fired when the modal page should close",
     },
-    shouldDelayOnClose: {
-      control: { type: "boolean" },
-      description: "Delays calling onClose by 300ms for animation",
-    },
   },
 };
 
@@ -303,83 +299,6 @@ export const WithTopBarNavigation: Story = {
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
       });
-    });
-  },
-};
-
-/**
- * Demonstrates shouldDelayOnClose — closes after 300ms delay.
- */
-export const WithShouldDelayOnClose: Story = {
-  render: () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [closeCount, setCloseCount] = useState(0);
-
-    const handleClose = () => {
-      setCloseCount((c) => c + 1);
-      setIsOpen(false);
-    };
-
-    return (
-      <Stack>
-        <Button onPress={() => setIsOpen(true)}>Open with Delayed Close</Button>
-        <Text>Close count: {closeCount}</Text>
-        <ModalPage.Root
-          isOpen={isOpen}
-          onClose={handleClose}
-          shouldDelayOnClose
-        >
-          <ModalPage.TopBar
-            previousPathLabel="Dashboard"
-            currentPathLabel="Settings"
-          />
-          <ModalPage.Header>
-            <ModalPage.Title
-              title="Settings"
-              subtitle="Closes with 300ms delay"
-            />
-          </ModalPage.Header>
-          <ModalPage.Content>
-            <Text>
-              The onClose callback is called after a 300ms delay when
-              shouldDelayOnClose is true.
-            </Text>
-          </ModalPage.Content>
-          <ModalPage.Footer>
-            <Button slot="close" variant="outline">
-              Close
-            </Button>
-          </ModalPage.Footer>
-        </ModalPage.Root>
-      </Stack>
-    );
-  },
-
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(
-      (canvasElement.parentNode as HTMLElement) ?? canvasElement
-    );
-
-    await step("Open modal page", async () => {
-      await userEvent.click(
-        canvas.getByRole("button", { name: "Open with Delayed Close" })
-      );
-      await waitFor(() => {
-        expect(canvas.getByRole("dialog")).toBeInTheDocument();
-      });
-    });
-
-    await step("Close via footer button and verify delayed close", async () => {
-      await userEvent.click(canvas.getByRole("button", { name: "Close" }));
-
-      await waitFor(
-        () => {
-          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-        },
-        { timeout: 1000 }
-      );
-
-      expect(canvas.getByText("Close count: 1")).toBeInTheDocument();
     });
   },
 };
