@@ -355,6 +355,10 @@
     "developer_comment": "Label for showing all language inputs when toggle button is pressed",
     "string": "Mostrar todos los idiomas"
   },
+  "Nimbus.ModalPage.backButton": {
+    "developer_comment": "aria-label for the back navigation button in ModalPage.TopBar",
+    "string": "Go back to {previousPathLabel}"
+  },
   "Nimbus.MoneyInput.amountInputLabel": {
     "developer_comment": "aria-label for amount input",
     "string": "Cantidad"
