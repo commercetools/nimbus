@@ -61,6 +61,7 @@ frontmatter fields:
 ---
 id: Components-ComponentName # Required: Unique identifier (Components-{ComponentName})
 title: Component Name # Required: Display name
+exportName: ComponentName # Required: PascalCased name as exported from @commercetools/nimbus
 description: Brief description of the component # Required: One-line component description
 order: 999 # Required: Menu display order (use 999 as default)
 menu: # Required: Menu hierarchy array
@@ -550,7 +551,8 @@ Supported in the Nimbus documentation site:
 ### Required Elements
 
 - [ ] MDX files exist with `.mdx` extension
-- [ ] **Required frontmatter fields**: id, title, description, order, menu, tags
+- [ ] **Required frontmatter fields**: id, title, exportName, description,
+      order, menu, tags
 - [ ] Unique `id` field following `Components-{ComponentName}` pattern
 - [ ] Proper `menu` hierarchy with category placement
 - [ ] Tags array including `component` and relevant keywords

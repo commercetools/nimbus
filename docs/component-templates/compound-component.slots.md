@@ -13,10 +13,10 @@ import {
   createSlotRecipeContext,
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
-import { componentNameSlotRecipe } from "./component-name.recipe";
 
+// Use the registered recipe key (must match theme/slot-recipes/index.ts)
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: componentNameSlotRecipe,
+  key: "nimbusComponentName",
 });
 
 // CRITICAL: Export both type AND component for each slot
