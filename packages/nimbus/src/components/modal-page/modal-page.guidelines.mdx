@@ -1,0 +1,32 @@
+---
+title: ModalPage Guidelines
+---
+
+# ModalPage — Design Guidelines
+
+## When to use ModalPage
+
+Use `ModalPage` for complex workflows that:
+
+- Require a dedicated full-screen context
+- Are initiated from a list or detail page
+- May contain forms, tabs, or rich content
+- Need clear "back to previous page" navigation
+
+## Layout Patterns
+
+### Form Page
+
+Use when the user needs to create or edit an entity. Always include a Footer with Save/Cancel actions.
+
+### Info Page
+
+Use for read-only detail views. Footer is optional.
+
+### Tabular Page
+
+Use when the content is organized into multiple sections via Tabs. Use `variant="full"` on Content.
+
+## Navigation
+
+Always provide meaningful `previousPathLabel` and `currentPathLabel` to help users understand their location context.

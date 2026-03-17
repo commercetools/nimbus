@@ -1,0 +1,25 @@
+---
+title: ModalPage
+---
+
+# ModalPage
+
+A fullscreen modal overlay for form, info, and tabular pages.
+Migrates ~29 modal page patterns from Merchant Center Application Kit to Nimbus.
+
+## Overview
+
+ModalPage wraps `Drawer` with `placement="right"` and near-full-width, full-height styling.
+It provides a structured compound component API for the three modal page variants:
+
+- **Form page** — with footer action bar
+- **Info page** — read-only content, no footer required
+- **Tabular page** — with Tabs inside Content
+
+## Key Features
+
+- Controlled-only open state (`isOpen` + `onClose`)
+- Back navigation via TopBar with breadcrumb labels
+- Optional delayed close (`shouldDelayOnClose`) for animations
+- Multi-column content via `ModalPage.Content` + `ModalPage.Column`
+- WCAG 2.1 AA accessible (dialog role, focus management, keyboard navigation)
