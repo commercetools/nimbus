@@ -16,6 +16,11 @@ const meta: Meta<typeof TabNav.Root> = {
       options: ["tabs"],
       description: "Visual style variant of the tab navigation",
     },
+    size: {
+      control: "select",
+      options: ["sm", "md", "lg"],
+      description: "Size of the tab navigation items",
+    },
   },
 };
 
@@ -183,6 +188,118 @@ export const KeyboardNavigation: Story = {
         await expect(thirdLink).toHaveFocus();
       }
     );
+  },
+};
+
+/**
+ * Demonstrates the three size variants: `sm`, `md` (default), and `lg`.
+ * Size controls font size and padding on each item, matching the Tabs size scale.
+ */
+export const Sizes: Story = {
+  render: () => (
+    <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <div key={size}>
+          <p style={{ marginBottom: "0.5rem", fontWeight: 600 }}>{size}</p>
+          <TabNav.Root aria-label={`Order navigation (${size})`} size={size}>
+            <TabNav.Item href="/orders/123/general" isCurrent>
+              General
+            </TabNav.Item>
+            <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+            <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
+          </TabNav.Root>
+        </div>
+      ))}
+    </div>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("All three size variants render nav landmarks", async () => {
+      const navs = canvas.getAllByRole("navigation");
+      await expect(navs).toHaveLength(3);
+    });
+  },
+};
+
+/**
+ * Demonstrates `isDisabled` on individual items. Disabled items are visually
+ * dimmed, cannot be clicked, and are removed from the tab sequence.
+ * React Aria's `useLink` handles the disabled behaviour.
+ */
+export const WithDisabledItem: Story = {
+  render: () => (
+    <TabNav.Root aria-label="Order navigation">
+      <TabNav.Item href="/orders/123/general" isCurrent data-testid="active">
+        General
+      </TabNav.Item>
+      <TabNav.Item href="/orders/123/items" data-testid="normal">
+        Items
+      </TabNav.Item>
+      <TabNav.Item
+        href="/orders/123/shipping"
+        isDisabled
+        data-testid="disabled"
+      >
+        Shipping
+      </TabNav.Item>
+    </TabNav.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Disabled item has no href", async () => {
+      const disabledItem = canvas.getByTestId("disabled");
+      await expect(disabledItem).not.toHaveAttribute("href");
+    });
+
+    await step("Disabled item has aria-disabled attribute", async () => {
+      const disabledItem = canvas.getByTestId("disabled");
+      await expect(disabledItem).toHaveAttribute("aria-disabled", "true");
+    });
+
+    await step("Non-disabled items retain their href", async () => {
+      const activeItem = canvas.getByTestId("active");
+      const normalItem = canvas.getByTestId("normal");
+      await expect(activeItem).toHaveAttribute("href", "/orders/123/general");
+      await expect(normalItem).toHaveAttribute("href", "/orders/123/items");
+    });
+  },
+};
+
+/**
+ * Demonstrates `target` and `rel` props for opening a navigation item in a
+ * new browser tab — standard anchor semantics, e.g. for external references.
+ */
+export const WithExternalLink: Story = {
+  render: () => (
+    <TabNav.Root aria-label="Order navigation">
+      <TabNav.Item href="/orders/123/general" isCurrent>
+        General
+      </TabNav.Item>
+      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+      <TabNav.Item
+        href="https://example.com/docs"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-testid="external"
+      >
+        Docs ↗
+      </TabNav.Item>
+    </TabNav.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("External link has target=_blank", async () => {
+      const externalLink = canvas.getByTestId("external");
+      await expect(externalLink).toHaveAttribute("target", "_blank");
+    });
+
+    await step("External link has rel=noopener noreferrer", async () => {
+      const externalLink = canvas.getByTestId("external");
+      await expect(externalLink).toHaveAttribute("rel", "noopener noreferrer");
+    });
   },
 };
 

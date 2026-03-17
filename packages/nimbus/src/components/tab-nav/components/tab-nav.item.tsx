@@ -19,19 +19,27 @@ export const TabNavItem = ({
   children,
   href,
   isCurrent,
+  isDisabled,
+  target,
+  rel,
   ref: forwardedRef,
   ...rest
 }: TabNavItemProps) => {
   const localRef = useRef<HTMLAnchorElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
-  const { linkProps } = useLink({ ...rest, href, elementType: "a" }, ref);
+  const { linkProps } = useLink(
+    { ...rest, href, isDisabled, elementType: "a" },
+    ref
+  );
 
   return (
     <TabNavItemSlot
       {...mergeProps(rest, linkProps, {
-        href,
+        href: isDisabled ? undefined : href,
         ref,
+        target,
+        rel,
         "aria-current": isCurrent ? ("page" as const) : undefined,
       })}
     >

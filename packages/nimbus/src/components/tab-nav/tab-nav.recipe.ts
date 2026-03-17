@@ -27,11 +27,11 @@ export const tabNavSlotRecipe = defineSlotRecipe({
       justifyContent: "center",
       gap: "200",
       fontWeight: "500",
-      fontSize: "350",
-      paddingTop: "200",
-      paddingRight: "400",
-      paddingBottom: "200",
-      paddingLeft: "400",
+      fontSize: "var(--tab-nav-font-size)",
+      paddingTop: "var(--tab-nav-padding-top)",
+      paddingRight: "var(--tab-nav-padding-right)",
+      paddingBottom: "var(--tab-nav-padding-bottom)",
+      paddingLeft: "var(--tab-nav-padding-left)",
       textDecoration: "none",
       transition: "all 150ms ease",
       boxShadow: "0 2px 0 0 transparent",
@@ -41,6 +41,9 @@ export const tabNavSlotRecipe = defineSlotRecipe({
       '&[aria-current="page"]': {
         color: "primary.9",
         boxShadow: "0 2px 0 0 {colors.primary.9}",
+      },
+      _disabled: {
+        layerStyle: "disabled",
       },
       _focusVisible: {
         layerStyle: "focusRing",
@@ -52,9 +55,39 @@ export const tabNavSlotRecipe = defineSlotRecipe({
     variant: {
       tabs: {},
     },
+    size: {
+      sm: {
+        item: {
+          "--tab-nav-font-size": "fontSizes.300",
+          "--tab-nav-padding-top": "spacing.100",
+          "--tab-nav-padding-right": "spacing.300",
+          "--tab-nav-padding-bottom": "spacing.100",
+          "--tab-nav-padding-left": "spacing.300",
+        },
+      },
+      md: {
+        item: {
+          "--tab-nav-font-size": "fontSizes.350",
+          "--tab-nav-padding-top": "spacing.200",
+          "--tab-nav-padding-right": "spacing.400",
+          "--tab-nav-padding-bottom": "spacing.200",
+          "--tab-nav-padding-left": "spacing.400",
+        },
+      },
+      lg: {
+        item: {
+          "--tab-nav-font-size": "fontSizes.400",
+          "--tab-nav-padding-top": "spacing.300",
+          "--tab-nav-padding-right": "spacing.600",
+          "--tab-nav-padding-bottom": "spacing.300",
+          "--tab-nav-padding-left": "spacing.600",
+        },
+      },
+    },
   },
 
   defaultVariants: {
     variant: "tabs",
+    size: "md",
   },
 });

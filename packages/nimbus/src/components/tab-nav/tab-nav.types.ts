@@ -15,6 +15,11 @@ type TabNavRecipeProps = {
    * @default "tabs"
    */
   variant?: SlotRecipeProps<"nimbusTabNav">["variant"];
+  /**
+   * Size of the tab navigation items
+   * @default "md"
+   */
+  size?: SlotRecipeProps<"nimbusTabNav">["size"];
 };
 
 // ============================================================
@@ -69,6 +74,22 @@ export type TabNavItemProps = TabNavItemVariantProps & {
    * @default false
    */
   isCurrent?: boolean;
+  /**
+   * Whether the item is disabled. Disabled items cannot be interacted with
+   * and are visually dimmed.
+   * @default false
+   */
+  isDisabled?: boolean;
+  /**
+   * The target window for the link.
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#target
+   */
+  target?: React.HTMLAttributeAnchorTarget;
+  /**
+   * The relationship between the current document and the linked URL.
+   * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#rel
+   */
+  rel?: string;
   /**
    * The label content displayed inside the link.
    */
