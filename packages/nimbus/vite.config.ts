@@ -118,7 +118,7 @@ export default defineConfig(async () => {
         },
         formats: ["es", "cjs"] satisfies LibraryFormats[],
       },
-      rollupOptions: {
+      rolldownOptions: {
         // `treeShakeable` naively adds an @__PURE__ annotation to each top-level module in our `dist`
         // https://github.com/TomerAberbach/rollup-plugin-tree-shakeable?tab=readme-ov-file#why
         plugins: [treeShakeable()],

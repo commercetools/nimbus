@@ -42,10 +42,9 @@ export default defineConfig({
     // Chunk size warning limit (KB)
     chunkSizeWarningLimit: 500,
     // Minification
-    minify: "esbuild",
     // Sourcemaps for production debugging
     sourcemap: false,
-    rollupOptions: {
+    rolldownOptions: {
       output: {
         // Advanced manual chunking strategy
         manualChunks: (id) => {
