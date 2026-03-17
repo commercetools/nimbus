@@ -254,9 +254,12 @@ This helps confirm whether your changes require a build before testing.
 
 #### Common Pitfalls
 
-- ❌ **Making changes and immediately running tests** - Tests will use old code
-- ❌ **Expecting HMR in test mode** - Tests intentionally use built bundle
-- ✅ **Build first, then test** - Ensures tests validate actual changes
+- ❌ **Making changes and running `pnpm test` without building** - Tests use the
+  built bundle, not source
+- ✅ **Use `pnpm test:dev` for TDD** - Runs tests against source files, no build
+  required
+- ✅ **Build first, then `pnpm test`** - For CI/final validation of the built
+  bundle
 - ✅ **Use `pnpm start:storybook` for rapid iteration** - Live preview with HMR
 
 ## Package Architecture

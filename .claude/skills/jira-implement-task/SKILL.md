@@ -5,9 +5,25 @@ argument-hint: <ticket-key>
 
 # Implement Jira Task
 
+> **IMPORTANT — Restore Context**
+>
+> This skill uses `/agent-restore-context` to survive `/clear` and `/compact`.
+>
+> - **Step 0**: `/agent-restore-context check` to verify the hook is set up.
+> - **Step 3a**: `/agent-restore-context write jira-implement-task` after
+>   creating the implementation plan.
+> - **Before each `/clear`**: `/agent-restore-context write jira-implement-task`
+>   with the updated current task number and all other necessary information.
+> - **Step 3e**: `/agent-restore-context delete jira-implement-task` when done.
+
 You are a software engineer. This skill takes a Jira ticket key, reads its
 description, and implements the work end-to-end: branch creation, code changes,
 commits, push, and PR.
+
+## Step 0: Verify Restore Context
+
+Invoke `/agent-restore-context check`. This verifies the hook is configured and
+will invoke `/setup-agent-restore-context` if needed.
 
 ## Project Configuration
 
@@ -55,25 +71,35 @@ out the existing branch or create a new one with a `-v2` suffix.
    files to modify/create.
 2. **Read existing files**: Always read files before modifying them.
 3. **Create implementation plan**: Break the changes into the smallest
-   reasonable chunks of work. Save the plan as
-   `<branch-name>-implementation-plan.md` in the repo root. Each task should be
-   independently testable and committable.
+   reasonable chunks of work. Save the plan to
+   `<skills-dir>/jira-implement-task/plans/<TICKET-KEY>-plan.md` (where
+   `<skills-dir>` is `.agents/skills/` or `.claude/skills/` per the detected
+   layout). Each task should be independently testable and committable. Commit
+   the plan so it can be shared for handoff. Delete it before merging or keep
+   it as a record.
+4. **Create restore context**: Invoke `/agent-restore-context write jira-implement-task`
+   with content that includes the ticket key, branch name, plan file path,
+   current task number (1), and the instruction to invoke
+   `/jira-implement-task <TICKET-KEY>` and read the plan file before doing any
+   work.
 
 ### 3b: Red/Green Testing Loop (per task)
 
 For each task in the implementation plan, follow this cycle:
 
-1. **Clear context** at the start of each task to keep focus tight.
-2. **Write tests first** (red phase): Write or update tests that capture the
+1. Invoke `/agent-restore-context write jira-implement-task` with the current
+   task number.
+2. Run `/clear`.
+3. **Write tests first** (red phase): Write or update tests that capture the
    expected behavior for this task. Tests should fail at this point.
-3. **Get user approval on tests**: Present the tests to the user and get
+4. **Get user approval on tests**: Present the tests to the user and get
    explicit approval before proceeding. Do NOT implement changes until tests are
    approved.
-4. **Commit the tests**: Once approved, commit the failing tests with a message
+5. **Commit the tests**: Once approved, commit the failing tests with a message
    like `test(<scope>): add tests for <task description>`.
-5. **Implement changes** (green phase): Write the minimum code to make the tests
+6. **Implement changes** (green phase): Write the minimum code to make the tests
    pass.
-6. **Run tests**: Verify all tests pass using the project's **test command
+7. **Run tests**: Verify all tests pass using the project's **test command
    (files)**.
 
 ### 3c: Three Strikes Policy
@@ -82,8 +108,9 @@ If the implementation fails to make tests pass after **3 attempts**:
 
 1. **Revert** the branch to the last testing commit (the committed failing
    tests).
-2. **Clear context** completely.
-3. **Try again** from the green phase with a fresh approach.
+2. Invoke `/agent-restore-context write jira-implement-task`.
+3. Run `/clear`.
+4. **Try again** from the green phase with a fresh approach.
 
 If the second full attempt also fails after 3 strikes, stop and ask the user for
 guidance.
@@ -93,8 +120,10 @@ guidance.
 Once tests pass:
 
 1. Commit the implementation changes.
-2. **Clear context**.
-3. Move on to the next task in the implementation plan.
+2. Invoke `/agent-restore-context write jira-implement-task` with the next
+   task number.
+3. Run `/clear`.
+4. Move on to the next task in the implementation plan.
 
 ### 3e: Completion
 
@@ -102,8 +131,9 @@ Once all tasks in the plan are implemented and passing:
 
 1. **Run full test suite**: Run the project's **test command (full)** to verify
    everything passes.
-2. Ask the user to **remove the implementation plan file** from the repo root.
-3. Proceed to Step 4 (push and PR creation).
+2. Invoke `/agent-restore-context delete jira-implement-task`.
+3. Ask the user whether to **delete the implementation plan file** or keep it.
+4. Proceed to Step 4 (push and PR creation).
 
 ### Guidelines
 

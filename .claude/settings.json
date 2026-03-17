@@ -8,6 +8,17 @@
     "command": "bash .claude/bin/statusline.sh"
   },
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/skills/setup-agent-restore-context/resources/agent-restore-context.sh"
+          }
+        ]
+      }
+    ],
     "PreToolUse": [
       {
         "matcher": "*",
