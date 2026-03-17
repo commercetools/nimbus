@@ -13,27 +13,25 @@ import type { ModalPageRootProps } from "../modal-page.types";
  * Dismissal: backdrop click is disabled (no accidental close on a full-page
  * form). Escape key remains active (isKeyboardDismissDisabled defaults to
  * false), matching standard browser/OS modal behaviour and WCAG 2.1 SC 2.1.2.
+ *
+ * Exit animations are handled automatically: the Drawer recipe defines
+ * [data-exiting] CSS animations (fade-out on overlay, slide-to-right-full on
+ * modal), and React Aria's ModalOverlay waits for animationend before
+ * unmounting — no manual delay needed.
  */
 export const ModalPageRoot = ({
   ref,
   isOpen,
   onClose,
-  shouldDelayOnClose = false,
   children,
 }: ModalPageRootProps) => {
   const handleOpenChange = useCallback(
     (open: boolean) => {
       if (!open) {
-        if (shouldDelayOnClose) {
-          setTimeout(() => {
-            onClose();
-          }, 300);
-        } else {
-          onClose();
-        }
+        onClose();
       }
     },
-    [onClose, shouldDelayOnClose]
+    [onClose]
   );
 
   return (
