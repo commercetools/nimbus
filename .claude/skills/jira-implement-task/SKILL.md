@@ -1,9 +1,25 @@
 ---
 description: Fetch Jira ticket, create branch, implement changes, commit, push, open PR.
-argument-hint: <ticket-key>
+argument-hint: <ticket-key> [--gw | --worktree]
 ---
 
 # Implement Jira Task
+
+You are a software engineer. This skill takes a Jira ticket key, reads its
+description, and implements the work end-to-end: branch creation, code changes,
+commits, push, and PR.
+
+## Argument Parsing
+
+Parse `$ARGUMENTS` to extract:
+
+- **Ticket key**: The Jira ticket key (e.g., `NIMBUS-123`). Required.
+- **`--gw`**: Use the `gw` CLI to create a worktree for the feature branch.
+- **`--worktree`**: Use Claude Code's `EnterWorktree` tool to create an isolated
+  worktree. Falls back to `git worktree add` if `EnterWorktree` is unavailable.
+
+`--gw` and `--worktree` are mutually exclusive. If neither is provided, use the
+default behavior (create a branch in the current working tree).
 
 > **IMPORTANT — Restore Context**
 >
@@ -15,10 +31,6 @@ argument-hint: <ticket-key>
 > - **Before each `/clear`**: `/agent-restore-context write jira-implement-task`
 >   with the updated current task number and all other necessary information.
 > - **Step 3e**: `/agent-restore-context delete jira-implement-task` when done.
-
-You are a software engineer. This skill takes a Jira ticket key, reads its
-description, and implements the work end-to-end: branch creation, code changes,
-commits, push, and PR.
 
 ## Step 0: Verify Restore Context
 
@@ -59,9 +71,49 @@ to Jira, never ADF — the MCP tools handle conversion.
 
 ## Step 2: Create a Feature Branch
 
-Create a branch from the project's **base branch** using the project's **branch
-naming** convention. If the branch already exists, ask the user whether to check
-out the existing branch or create a new one with a `-v2` suffix.
+Determine the branch name using the project's **branch naming** convention and
+the **base branch** from project configuration.
+
+### Default mode (no flag)
+
+Create a branch from the base branch in the current working tree:
+
+```bash
+git checkout <base-branch>
+git pull
+git checkout -b <branch-name>
+```
+
+If the branch already exists, ask the user whether to check out the existing
+branch or create a new one with a `-v2` suffix.
+
+### `--gw` mode
+
+Use the `gw` CLI to create a worktree with the feature branch:
+
+```bash
+gw task <branch-name>
+```
+
+This creates a new worktree and switches into it. All subsequent work in this
+skill happens inside the worktree directory returned by `gw`. Include the
+worktree path in the restore context so future `/clear` cycles can `cd` back
+into it.
+
+### `--worktree` mode
+
+Use Claude Code's `EnterWorktree` tool to create an isolated worktree:
+
+1. Call `EnterWorktree` with `name` set to the branch name.
+2. If `EnterWorktree` is unavailable or fails, fall back to manual git
+   worktree creation:
+   ```bash
+   git worktree add .claude/worktrees/<branch-name> -b <branch-name> <base-branch>
+   cd .claude/worktrees/<branch-name>
+   ```
+3. All subsequent work in this skill happens inside the worktree directory.
+   Include the worktree path in the restore context so future `/clear` cycles
+   can `cd` back into it.
 
 ## Step 3: Implement Changes
 

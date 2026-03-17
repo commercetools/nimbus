@@ -195,4 +195,3 @@ packages/nimbus/src/components/**/*.messages.ts
 
 # Agent restore context files (used by skills to survive /clear and /compact)
 .agent-restore-context-*
-*-implementation-plan.md
