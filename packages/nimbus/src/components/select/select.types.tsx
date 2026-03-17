@@ -39,8 +39,6 @@ export type SelectTriggerSlotProps = HTMLChakraProps<"button">;
 
 export type SelectTriggerLabelSlotProps = HTMLChakraProps<"span">;
 
-export type SelectPopoverSlotProps = HTMLChakraProps<"div">;
-
 export type SelectOptionsSlotProps = HTMLChakraProps<"div">;
 
 export type SelectOptionSlotProps = HTMLChakraProps<"div">;
