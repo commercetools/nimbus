@@ -45,7 +45,7 @@ const App = () => {
 ### Accessibility standards
 
 - **Role identification**: ModalPage has `role="dialog"` with proper labeling via `ModalPage.Title`.
-- **Focus management**: Focus moves into the modal on open and returns to the trigger on close.
+- **Focus management**: Focus moves to the back button on open and returns to the trigger on close.
 - **Focus containment**: Tab navigation stays within the modal while it is open.
 - **Accessible names**: `ModalPage.Title` renders an `h2` with `slot="title"`, automatically linked as `aria-labelledby`.
 - **Modal indication**: `aria-modal="true"` is set, blocking screen reader interaction with the background.
