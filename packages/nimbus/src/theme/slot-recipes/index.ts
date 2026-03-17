@@ -32,6 +32,7 @@ import { selectSlotRecipe } from "@/components/select/select.recipe";
 import { splitButtonSlotRecipe } from "@/components/split-button/split-button.recipe";
 import { switchSlotRecipe } from "@/components/switch/switch.recipe";
 import { tableSlotRecipe } from "@/components/table/table.recipe";
+import { tabNavSlotRecipe } from "@/components/tab-nav/tab-nav.recipe";
 import { tabsSlotRecipe } from "@/components/tabs/tabs.recipe";
 import { tagGroupSlotRecipe } from "@/components/tag-group/tag-group.recipe";
 import { textInputSlotRecipe } from "@/components/text-input/text-input.recipe";
@@ -101,6 +102,7 @@ export const slotRecipes = {
   nimbusSplitButton: splitButtonSlotRecipe,
   nimbusSwitch: switchSlotRecipe,
   nimbusTable: tableSlotRecipe,
+  nimbusTabNav: tabNavSlotRecipe,
   nimbusTabs: tabsSlotRecipe,
   nimbusTagGroup: tagGroupSlotRecipe,
   nimbusTextInput: textInputSlotRecipe,
