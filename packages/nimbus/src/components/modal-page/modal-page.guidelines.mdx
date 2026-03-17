@@ -1,32 +1,35 @@
 ---
-title: ModalPage Guidelines
+title: ModalPage
+tab-title: Guidelines
+tab-order: 2
 ---
 
-# ModalPage — Design Guidelines
+## Guidelines
 
-## When to use ModalPage
+Use ModalPage strategically to enhance user workflow without disrupting the
+experience.
 
-Use `ModalPage` for complex workflows that:
+### Best practices
 
-- Require a dedicated full-screen context
-- Are initiated from a list or detail page
-- May contain forms, tabs, or rich content
-- Need clear "back to previous page" navigation
+- **Always provide a title**: Use `ModalPage.Title` so screen readers can identify the dialog
+- **Use meaningful navigation labels**: `previousPathLabel` and `currentPathLabel` orient the user within the application
+- **Include footer actions for forms**: Form pages should always have Save/Cancel in `ModalPage.Footer`
+- **Avoid disabling Escape key**: Keyboard dismissal is always active — it matches OS conventions and WCAG 2.1
+- **Keep content focused**: ModalPage should have a single, clear purpose — a form, a detail view, or a tabular view
+- **Use the right variant**: Choose the content variant that matches your data (`wide`, `narrow`, or `full`)
 
-## Layout Patterns
+> [!TIP]\
+> When to use
 
-### Form Page
+- **Complex editing workflows**: Creating or editing entities with many fields (product forms, order details)
+- **Multi-section detail views**: When content is too rich for a standard Drawer
+- **Tabular data workflows**: When the content is organized into tabs (General, Items, Shipping)
+- **Full-page focused context**: When the user must focus entirely on the task before returning to the list
 
-Use when the user needs to create or edit an entity. Always include a Footer with Save/Cancel actions.
+> [!CAUTION]\
+> When not to use
 
-### Info Page
-
-Use for read-only detail views. Footer is optional.
-
-### Tabular Page
-
-Use when the content is organized into multiple sections via Tabs. Use `variant="full"` on Content.
-
-## Navigation
-
-Always provide meaningful `previousPathLabel` and `currentPathLabel` to help users understand their location context.
+- **Simple confirmation dialogs**: Use `Dialog` instead — ModalPage is for content-rich workflows
+- **Single-form quick edits**: Use `Drawer` instead — reserve ModalPage for complex, multi-field scenarios
+- **Navigation overlays**: Use proper routing for moving between application sections
+- **Informational banners or toasts**: Use `Alert` or `Toast` for non-blocking messages
