@@ -1,0 +1,436 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { userEvent, within, expect, waitFor } from "storybook/test";
+import { useState } from "react";
+import {
+  Button,
+  FormField,
+  ModalPage,
+  Stack,
+  Tabs,
+  Text,
+  TextInput,
+} from "@commercetools/nimbus";
+
+const meta: Meta<typeof ModalPage.Root> = {
+  title: "Components/Overlay/ModalPage",
+  component: ModalPage.Root,
+  tags: ["autodocs"],
+  argTypes: {
+    isOpen: {
+      control: { type: "boolean" },
+      description: "Whether the modal page is open (controlled)",
+    },
+    shouldDelayOnClose: {
+      control: { type: "boolean" },
+      description: "Delays calling onClose by 300ms for animation",
+    },
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+/**
+ * Basic info page — title, subtitle, no footer.
+ */
+export const InfoPage: Story = {
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <Stack>
+        <Button onPress={() => setIsOpen(true)}>Open Info Page</Button>
+        <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          <ModalPage.TopBar
+            previousPathLabel="Products"
+            currentPathLabel="Product Details"
+          />
+          <ModalPage.Header>
+            <ModalPage.Title
+              title="Product Details"
+              subtitle="View the product information"
+            />
+          </ModalPage.Header>
+          <ModalPage.Content>
+            <Text>This is the info page content area.</Text>
+          </ModalPage.Content>
+        </ModalPage.Root>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Open modal page via trigger", async () => {
+      const trigger = canvas.getByRole("button", { name: "Open Info Page" });
+      await userEvent.click(trigger);
+
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+
+      expect(
+        canvas.getByRole("heading", { name: "Product Details" })
+      ).toBeInTheDocument();
+    });
+
+    await step("Close via back button in top bar", async () => {
+      const backButton = canvas.getByRole("button", {
+        name: /go back to products/i,
+      });
+      await userEvent.click(backButton);
+
+      await waitFor(() => {
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Form page — with footer containing save/cancel actions.
+ */
+export const FormPage: Story = {
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [name, setName] = useState("");
+    return (
+      <Stack>
+        <Button onPress={() => setIsOpen(true)}>Open Form Page</Button>
+        <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          <ModalPage.TopBar
+            previousPathLabel="Products"
+            currentPathLabel="Add Product"
+          />
+          <ModalPage.Header>
+            <ModalPage.Title
+              title="Add Product"
+              subtitle="Fill in the product details"
+            />
+            <ModalPage.Actions>
+              <Button size="sm" variant="outline">
+                Preview
+              </Button>
+            </ModalPage.Actions>
+          </ModalPage.Header>
+          <ModalPage.Content>
+            <FormField.Root>
+              <FormField.Label>Product Name</FormField.Label>
+              <FormField.Input>
+                <TextInput
+                  placeholder="Enter product name"
+                  value={name}
+                  onChange={setName}
+                />
+              </FormField.Input>
+            </FormField.Root>
+          </ModalPage.Content>
+          <ModalPage.Footer>
+            <Button slot="close" variant="outline">
+              Cancel
+            </Button>
+            <Button variant="solid">Save</Button>
+          </ModalPage.Footer>
+        </ModalPage.Root>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Open form page", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Open Form Page" })
+      );
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+    });
+
+    await step("Footer buttons are visible", async () => {
+      expect(
+        canvas.getByRole("button", { name: "Cancel" })
+      ).toBeInTheDocument();
+      expect(canvas.getByRole("button", { name: "Save" })).toBeInTheDocument();
+    });
+
+    await step("Cancel closes the modal via slot=close", async () => {
+      await userEvent.click(canvas.getByRole("button", { name: "Cancel" }));
+      await waitFor(() => {
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Tabular page — with Tabs component inside Content.
+ */
+export const TabularPage: Story = {
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <Stack>
+        <Button onPress={() => setIsOpen(true)}>Open Tabular Page</Button>
+        <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          <ModalPage.TopBar
+            previousPathLabel="Orders"
+            currentPathLabel="Order #12345"
+          />
+          <ModalPage.Header>
+            <ModalPage.Title
+              title="Order #12345"
+              subtitle="Order from 2024-01-15"
+            />
+          </ModalPage.Header>
+          <ModalPage.Content variant="full">
+            <Tabs.Root>
+              <Tabs.List aria-label="Order sections">
+                <Tabs.Tab id="general">General</Tabs.Tab>
+                <Tabs.Tab id="items">Items</Tabs.Tab>
+                <Tabs.Tab id="shipping">Shipping</Tabs.Tab>
+              </Tabs.List>
+              <Tabs.Panel id="general">
+                <Text>General order information</Text>
+              </Tabs.Panel>
+              <Tabs.Panel id="items">
+                <Text>Order items list</Text>
+              </Tabs.Panel>
+              <Tabs.Panel id="shipping">
+                <Text>Shipping details</Text>
+              </Tabs.Panel>
+            </Tabs.Root>
+          </ModalPage.Content>
+        </ModalPage.Root>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Open tabular page", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Open Tabular Page" })
+      );
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+    });
+
+    await step("Tabs are navigable", async () => {
+      const itemsTab = canvas.getByRole("tab", { name: "Items" });
+      await userEvent.click(itemsTab);
+      expect(canvas.getByText("Order items list")).toBeInTheDocument();
+    });
+
+    await step("Close modal page", async () => {
+      const backButton = canvas.getByRole("button", {
+        name: /go back to orders/i,
+      });
+      await userEvent.click(backButton);
+      await waitFor(() => {
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Demonstrates TopBar navigation labels.
+ */
+export const WithTopBarNavigation: Story = {
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+      <Stack>
+        <Button onPress={() => setIsOpen(true)}>Open with Navigation</Button>
+        <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+          <ModalPage.TopBar
+            previousPathLabel="Product catalog"
+            currentPathLabel="Edit: Awesome T-Shirt XL"
+          />
+          <ModalPage.Header>
+            <ModalPage.Title title="Edit: Awesome T-Shirt XL" />
+          </ModalPage.Header>
+          <ModalPage.Content>
+            <Text>Content area</Text>
+          </ModalPage.Content>
+        </ModalPage.Root>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Open modal and verify top bar labels", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Open with Navigation" })
+      );
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+
+      expect(canvas.getByText("Product catalog")).toBeInTheDocument();
+      expect(
+        canvas.getByRole("heading", { name: "Edit: Awesome T-Shirt XL" })
+      ).toBeInTheDocument();
+    });
+
+    await step("Back button aria-label references previous path", async () => {
+      const backButton = canvas.getByRole("button", {
+        name: /go back to product catalog/i,
+      });
+      expect(backButton).toBeInTheDocument();
+
+      await userEvent.click(backButton);
+      await waitFor(() => {
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
+ * Demonstrates shouldDelayOnClose — closes after 300ms delay.
+ */
+export const WithShouldDelayOnClose: Story = {
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [closeCount, setCloseCount] = useState(0);
+
+    const handleClose = () => {
+      setCloseCount((c) => c + 1);
+      setIsOpen(false);
+    };
+
+    return (
+      <Stack>
+        <Button onPress={() => setIsOpen(true)}>Open with Delayed Close</Button>
+        <Text>Close count: {closeCount}</Text>
+        <ModalPage.Root
+          isOpen={isOpen}
+          onClose={handleClose}
+          shouldDelayOnClose
+        >
+          <ModalPage.TopBar
+            previousPathLabel="Dashboard"
+            currentPathLabel="Settings"
+          />
+          <ModalPage.Header>
+            <ModalPage.Title
+              title="Settings"
+              subtitle="Closes with 300ms delay"
+            />
+          </ModalPage.Header>
+          <ModalPage.Content>
+            <Text>
+              The onClose callback is called after a 300ms delay when
+              shouldDelayOnClose is true.
+            </Text>
+          </ModalPage.Content>
+          <ModalPage.Footer>
+            <Button slot="close" variant="outline">
+              Close
+            </Button>
+          </ModalPage.Footer>
+        </ModalPage.Root>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Open modal page", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Open with Delayed Close" })
+      );
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+    });
+
+    await step("Close via footer button and verify delayed close", async () => {
+      await userEvent.click(canvas.getByRole("button", { name: "Close" }));
+
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 1000 }
+      );
+
+      expect(canvas.getByText("Close count: 1")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * SmokeTest — renders the full compound structure in an always-open state
+ * for visual regression baseline.
+ */
+export const SmokeTest: Story = {
+  render: () => (
+    <ModalPage.Root isOpen onClose={() => {}}>
+      <ModalPage.TopBar
+        previousPathLabel="Products"
+        currentPathLabel="Editing product"
+      />
+      <ModalPage.Header>
+        <ModalPage.Title
+          title="Edit Product"
+          subtitle="Update the product information"
+        />
+        <ModalPage.Actions>
+          <Button size="sm" variant="outline">
+            Preview
+          </Button>
+        </ModalPage.Actions>
+      </ModalPage.Header>
+      <ModalPage.Content>
+        <Text>Smoke test content area</Text>
+      </ModalPage.Content>
+      <ModalPage.Footer>
+        <Button slot="close" variant="outline">
+          Cancel
+        </Button>
+        <Button variant="solid">Save</Button>
+      </ModalPage.Footer>
+    </ModalPage.Root>
+  ),
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Full compound structure renders", async () => {
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+      expect(
+        canvas.getByRole("heading", { name: "Edit Product" })
+      ).toBeInTheDocument();
+      expect(canvas.getByText("Products")).toBeInTheDocument();
+      expect(canvas.getByText("Editing product")).toBeInTheDocument();
+      expect(canvas.getByText("Smoke test content area")).toBeInTheDocument();
+      expect(
+        canvas.getByRole("button", { name: "Cancel" })
+      ).toBeInTheDocument();
+      expect(canvas.getByRole("button", { name: "Save" })).toBeInTheDocument();
+    });
+  },
+};
