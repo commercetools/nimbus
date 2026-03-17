@@ -2,4 +2,5 @@
 "@commercetools/nimbus": patch
 ---
 
-feat(money-input): add non-ISO zero-fraction currency variants (CZK0, HUF0, ILS0, KZT0, TRY0, TWD0)
+Add support in MoneyInput component for non-ISO currencies with zero fraction
+digits (CZK0, HUF0, ILS0, KZT0, TRY0, TWD0)
