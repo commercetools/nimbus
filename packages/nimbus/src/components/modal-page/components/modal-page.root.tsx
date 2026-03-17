@@ -1,20 +1,18 @@
 import { useCallback } from "react";
-import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { Drawer } from "../../drawer/drawer";
-import { modalPageRecipe } from "../modal-page.recipe";
 import { ModalPageRootSlot } from "../modal-page.slots";
 import type { ModalPageRootProps } from "../modal-page.types";
 
 /**
- * ModalPage.Root — renders a fullscreen Drawer (placement="right") with a grid layout.
+ * ModalPage.Root — fullscreen modal page overlay.
  *
- * Hardcodes fullscreen overrides on the Drawer.Content element:
- * - width: calc(100vw - token(spacing.1200))
- * - height: 100dvh, maxH: 100dvh
- * - borderRadius: 0
- * - custom boxShadow
+ * Renders a right-side Drawer with near-full-width, full-height layout.
+ * Provides the slot recipe context for all ModalPage sub-components via a
+ * CSS grid container (rows: topBar / header / content / footer).
  *
- * @supportsStyleProps
+ * Dismissal: backdrop click is disabled (no accidental close on a full-page
+ * form). Escape key remains active (isKeyboardDismissDisabled defaults to
+ * false), matching standard browser/OS modal behaviour and WCAG 2.1 SC 2.1.2.
  */
 export const ModalPageRoot = ({
   ref,
@@ -23,9 +21,6 @@ export const ModalPageRoot = ({
   shouldDelayOnClose = false,
   children,
 }: ModalPageRootProps) => {
-  const recipe = useSlotRecipe({ recipe: modalPageRecipe });
-  const [recipeProps] = recipe.splitVariantProps({});
-
   const handleOpenChange = useCallback(
     (open: boolean) => {
       if (!open) {
@@ -46,19 +41,18 @@ export const ModalPageRoot = ({
       isOpen={isOpen}
       onOpenChange={handleOpenChange}
       placement="right"
+      // Disable backdrop-click dismissal — fullscreen modal pages must not
+      // close on accidental outside click. Escape key remains active.
       isDismissable={false}
-      isKeyboardDismissDisabled={false}
     >
       <Drawer.Content
-        width="calc(100vw - var(--spacing-1200, 48px))"
+        width="calc(100vw - {spacing.1200})"
         height="100dvh"
         maxH="100dvh"
         borderRadius="0"
         boxShadow="-4px 0px 24px 0px {colors.neutral.a4}"
       >
-        <ModalPageRootSlot ref={ref} {...recipeProps}>
-          {children}
-        </ModalPageRootSlot>
+        <ModalPageRootSlot ref={ref}>{children}</ModalPageRootSlot>
       </Drawer.Content>
     </Drawer.Root>
   );

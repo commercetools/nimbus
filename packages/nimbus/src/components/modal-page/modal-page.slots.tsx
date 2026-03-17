@@ -24,6 +24,9 @@ export const ModalPageTopBarSlot: SlotComponent<
   ModalPageTopBarSlotProps
 > = withContext<HTMLDivElement, ModalPageTopBarSlotProps>("div", "topBar");
 
+// <header> inside a <dialog> does NOT get the `banner` landmark role — it
+// becomes a generic element. This is correct: no landmark pollution inside the
+// dialog's sectioning context (ARIA spec §5.3.3).
 export const ModalPageHeaderSlot: SlotComponent<
   HTMLElement,
   ModalPageHeaderSlotProps
@@ -44,6 +47,9 @@ export const ModalPageContentSlot: SlotComponent<
   ModalPageContentSlotProps
 > = withContext<HTMLDivElement, ModalPageContentSlotProps>("div", "content");
 
+// <footer> inside a <dialog> does NOT get the `contentinfo` landmark role —
+// it becomes a generic element. This is correct: no landmark pollution inside
+// the dialog's sectioning context (ARIA spec §5.3.3).
 export const ModalPageFooterSlot: SlotComponent<
   HTMLElement,
   ModalPageFooterSlotProps
