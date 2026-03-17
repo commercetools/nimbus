@@ -136,14 +136,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       minWidth: "var(--nimbus-combobox-trigger-width)",
       overflow: "hidden",
       padding: 0,
-      "&[data-entering]": {
-        animationName: "fade-in, scale-in",
-        animationDuration: "fast",
-      },
-      "&[data-exiting]": {
-        animationName: "fade-out, scale-out",
-        animationDuration: "faster",
-      },
     },
     listBox: {
       "--scrollbar-color": "colors.neutral.8",
