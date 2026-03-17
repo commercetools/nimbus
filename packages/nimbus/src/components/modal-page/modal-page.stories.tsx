@@ -478,6 +478,160 @@ export const KeyboardNavigation: Story = {
 };
 
 /**
+ * Stacked modal pages — demonstrates opening a second ModalPage on top of
+ * the first, as used in "Edit Product → Add Variant" workflows.
+ */
+export const StackedModalPages: Story = {
+  render: () => {
+    const [isFirstOpen, setIsFirstOpen] = useState(false);
+    const [isSecondOpen, setIsSecondOpen] = useState(false);
+    return (
+      <Stack>
+        <Button onPress={() => setIsFirstOpen(true)}>Open Edit Product</Button>
+        <ModalPage.Root
+          isOpen={isFirstOpen}
+          onClose={() => setIsFirstOpen(false)}
+        >
+          <ModalPage.TopBar
+            previousPathLabel="Products"
+            currentPathLabel="Edit Product"
+          />
+          <ModalPage.Header>
+            <ModalPage.Title
+              title="Edit Product"
+              subtitle="Update the product details"
+            />
+          </ModalPage.Header>
+          <ModalPage.Content>
+            <Stack>
+              <Text>Product form content goes here.</Text>
+              <Button onPress={() => setIsSecondOpen(true)}>
+                Open Add Variant
+              </Button>
+            </Stack>
+
+            <ModalPage.Root
+              isOpen={isSecondOpen}
+              onClose={() => setIsSecondOpen(false)}
+            >
+              <ModalPage.TopBar
+                previousPathLabel="Edit Product"
+                currentPathLabel="Add Variant"
+              />
+              <ModalPage.Header>
+                <ModalPage.Title
+                  title="Add Variant"
+                  subtitle="Define a new product variant"
+                />
+              </ModalPage.Header>
+              <ModalPage.Content>
+                <Text>Variant form content goes here.</Text>
+              </ModalPage.Content>
+              <ModalPage.Footer>
+                <Button slot="close" variant="outline">
+                  Cancel
+                </Button>
+                <Button variant="solid">Save Variant</Button>
+              </ModalPage.Footer>
+            </ModalPage.Root>
+          </ModalPage.Content>
+          <ModalPage.Footer>
+            <Button slot="close" variant="outline">
+              Cancel
+            </Button>
+            <Button variant="solid">Save Product</Button>
+          </ModalPage.Footer>
+        </ModalPage.Root>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Open first modal page", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Open Edit Product" })
+      );
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+      expect(
+        canvas.getByRole("heading", { name: "Edit Product" })
+      ).toBeInTheDocument();
+    });
+
+    await step("Open second modal page on top of first", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Open Add Variant" })
+      );
+      await waitFor(() => {
+        expect(canvas.getAllByRole("dialog")).toHaveLength(2);
+      });
+      expect(
+        canvas.getByRole("heading", { name: "Add Variant" })
+      ).toBeInTheDocument();
+    });
+
+    await step("Close second modal via back button", async () => {
+      const backButton = canvas.getByRole("button", {
+        name: /go back to edit product/i,
+      });
+      await userEvent.click(backButton);
+      await waitFor(() => {
+        expect(canvas.getAllByRole("dialog")).toHaveLength(1);
+      });
+      expect(
+        canvas.getByRole("heading", { name: "Edit Product" })
+      ).toBeInTheDocument();
+    });
+
+    await step(
+      "'Open Add Variant' button is still present in first page",
+      async () => {
+        expect(
+          canvas.getByRole("button", { name: "Open Add Variant" })
+        ).toBeInTheDocument();
+      }
+    );
+
+    await step("Re-open second modal and close via Escape", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Open Add Variant" })
+      );
+      await waitFor(() => {
+        expect(canvas.getAllByRole("dialog")).toHaveLength(2);
+      });
+
+      await userEvent.keyboard("{Escape}");
+      await waitFor(() => {
+        expect(canvas.getAllByRole("dialog")).toHaveLength(1);
+      });
+      expect(
+        canvas.getByRole("heading", { name: "Edit Product" })
+      ).toBeInTheDocument();
+    });
+
+    await step("Close first modal via back button", async () => {
+      const backButton = canvas.getByRole("button", {
+        name: /go back to products/i,
+      });
+      await userEvent.click(backButton);
+      await waitFor(() => {
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+    });
+
+    await step("Focus returns to page-level trigger", async () => {
+      const trigger = canvas.getByRole("button", { name: "Open Edit Product" });
+      await waitFor(() => expect(trigger).toHaveFocus(), { timeout: 1000 });
+    });
+  },
+};
+
+/**
  * SmokeTest — renders the full compound structure in an always-open state
  * for visual regression baseline.
  */
