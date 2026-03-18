@@ -1,4 +1,3 @@
-import type React from "react";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   HTMLChakraProps,
