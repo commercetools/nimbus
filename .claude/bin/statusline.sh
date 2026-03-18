@@ -130,7 +130,7 @@ total_k=$(( total_tokens / 1000 ))
 free_k=$(( free_tokens / 1000 ))
 
 # Generate brick visualization (30 bricks total)
-total_bricks=32
+total_bricks=16
 if [[ $total_tokens -gt 0 ]]; then
     used_bricks=$(( (used_tokens * total_bricks) / total_tokens ))
 else
@@ -138,20 +138,19 @@ else
 fi
 free_bricks=$((total_bricks - used_bricks))
 
-# Determine model badge colors based on model type
-model_upper=$(echo "$model" | tr '[:lower:]' '[:upper:]')
+# Determine model badge colors based on model type (short labels)
 if echo "$model" | grep -qi "haiku"; then
-    # Haiku: Green background, white text
-    model_badge="\033[48;2;0;170;0m\033[97m $model_upper \033[0m"
+    model_short="HK$(echo "$model" | grep -oE '[0-9]+\.[0-9]+')"
+    model_badge="\033[48;2;0;170;0m\033[97m ${model_short} \033[0m"
 elif echo "$model" | grep -qi "sonnet"; then
-    # Sonnet: Yellow background, black text
-    model_badge="\033[48;2;255;170;0m\033[30m $model_upper \033[0m"
+    model_short="SN$(echo "$model" | grep -oE '[0-9]+\.[0-9]+')"
+    model_badge="\033[48;2;255;170;0m\033[30m ${model_short} \033[0m"
 elif echo "$model" | grep -qi "opus"; then
-    # Opus: Red background, white text
-    model_badge="\033[48;2;204;0;0m\033[97m $model_upper \033[0m"
+    model_short="OP$(echo "$model" | grep -oE '[0-9]+\.[0-9]+')"
+    model_badge="\033[48;2;204;0;0m\033[97m ${model_short} \033[0m"
 else
-    # Default: Cyan text in brackets
-    model_badge="\033[1;36m[$model_upper]\033[0m"
+    model_short=$(echo "$model" | tr '[:lower:]' '[:upper:]')
+    model_badge="\033[1;36m[${model_short}]\033[0m"
 fi
 
 # Build brick line with Model badge and single colour (cyan for used, dim white for free)
@@ -177,50 +176,36 @@ for ((i=0; i<free_bricks; i++)); do
     brick_line+="\033[2;37m░\033[0m"
 done
 
-brick_line+=" | \033[1m${usage_pct}%\033[0m (${used_k}k/${total_k}k)"
-
-# Add free space with color based on remaining percentage
-# >30% free = Green, 20-30% free = Yellow, <20% free = Red
-free_pct=$((100 - usage_pct))
-if [[ $free_pct -gt 30 ]]; then
-    free_color="\033[1;32m"  # Green - safe
-elif [[ $free_pct -gt 20 ]]; then
-    free_color="\033[1;33m"  # Yellow - caution
+if [[ $usage_pct -lt 70 ]]; then
+    pct_color="\033[1;32m"  # Green - safe
+elif [[ $usage_pct -lt 80 ]]; then
+    pct_color="\033[1;33m"  # Yellow - caution
 else
-    free_color="\033[1;31m"  # Red - critical
+    pct_color="\033[1;31m"  # Red - critical
 fi
-brick_line+=" | ${free_color}${free_k}k free\033[0m"
+brick_line+=" ${pct_color}${usage_pct}%\033[0m ${used_k}k/${total_k}k"
 
-# Add duration (HHh MMm format)
-brick_line+=" | ${duration_hours}h ${duration_min}m"
-
-# Add cost with session total only if history was cleared (conversation_cost != session_cost)
+# Add cost: 💰$conv ($session·duration) or just 💰$conv (duration) if no session total
 if command -v bc &> /dev/null; then
-    # Check if session cost is non-zero
     if (( $(echo "$total_cost_usd > 0" | bc -l 2>/dev/null || echo "0") )); then
-        # Format both conversation cost and total session cost using bc for proper decimal handling
         conversation_cost=$(echo "scale=2; $cost_usd / 1" | bc -l 2>/dev/null || echo "0.00")
-        session_cost=$(echo "scale=2; $total_cost_usd / 1" | bc -l 2>/dev/null || echo "0.00")
+        session_cost=$(echo "scale=0; $total_cost_usd / 1" | bc -l 2>/dev/null || echo "0")
 
-        # Ensure we have leading zero for values like .45 -> 0.45
         [[ "$conversation_cost" =~ ^\. ]] && conversation_cost="0${conversation_cost}"
         [[ "$session_cost" =~ ^\. ]] && session_cost="0${session_cost}"
 
-        # Only show session cost in parentheses if history was cleared (costs differ)
-        if [[ "$conversation_cost" != "$session_cost" ]]; then
-            brick_line+=" | \033[0;33m💰 \$${conversation_cost} (\$${session_cost})\033[0m"
+        if [[ "$conversation_cost" != "$(echo "scale=2; $total_cost_usd / 1" | bc -l)" ]]; then
+            brick_line+=" | \033[0;33m💰\$${conversation_cost} (\$${session_cost}·${duration_hours}h)\033[0m"
         else
-            brick_line+=" | \033[0;33m💰 \$${conversation_cost}\033[0m"
+            brick_line+=" | \033[0;33m💰\$${conversation_cost} (${duration_hours}h)\033[0m"
         fi
     fi
 else
-    # Fallback without bc: simple string comparison
     if [[ "$total_cost_usd" != "0" && "$total_cost_usd" != "0.0" && "$total_cost_usd" != "0.00" && -n "$total_cost_usd" ]]; then
-        # Only show session cost if different from conversation cost
         if [[ "$cost_usd" != "$total_cost_usd" ]]; then
-            brick_line+=" | \033[0;33m💰 \$${cost_usd} (\$${total_cost_usd})\033[0m"
+            brick_line+=" | \033[0;33m💰\$${cost_usd} (\$${total_cost_usd}·${duration_hours}h)\033[0m"
         else
-            brick_line+=" | \033[0;33m💰 \$${cost_usd}\033[0m"
+            brick_line+=" | \033[0;33m💰\$${cost_usd} (${duration_hours}h)\033[0m"
         fi
     fi
 fi
