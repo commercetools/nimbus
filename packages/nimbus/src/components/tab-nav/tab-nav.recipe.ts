@@ -6,6 +6,14 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  *
  * Renders navigation semantics (`<nav>` + `<a>`) with visual styling that
  * matches the Tabs `line` (horizontal underline) variant.
+ *
+ * ⚠️  VISUAL TWIN — KEEP IN SYNC WITH `tabs.recipe.ts`
+ * TabNav and Tabs are intentionally separate components with separate recipes
+ * (different semantics: navigation links vs. content-panel widget). They do NOT
+ * share a recipe. However, the `tabs` variant of TabNav is designed to be
+ * visually identical to the `line` horizontal variant of Tabs. If you change
+ * colors, spacing, typography, transitions, or focus styles in one, apply the
+ * equivalent change to the other.
  */
 export const tabNavSlotRecipe = defineSlotRecipe({
   slots: ["root", "item"],
