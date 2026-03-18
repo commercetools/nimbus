@@ -35,7 +35,7 @@ default behavior (create a branch in the current working tree).
 ## Step 0: Verify Restore Context
 
 Invoke `/agent-restore-context check`. This verifies the hook is configured and
-will invoke `/setup-agent-restore-context` if needed.
+will invoke `/agent-restore-context-setup` if needed.
 
 ## Project Configuration
 

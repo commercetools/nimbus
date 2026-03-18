@@ -1,5 +1,5 @@
 ---
-name: setup-agent-restore-context
+name: agent-restore-context-setup
 description: Set up the restore-context hook so skills can survive /clear and /compact. Detects .claude/ vs .agents/ layout automatically.
 disable-model-invocation: false
 allowed-tools: Bash, Grep, Glob, Read, Edit, Write
@@ -41,7 +41,7 @@ is already configured and stop.
 
 ### 3. Locate the Hook Script
 
-The script is at `<skills-dir>/setup-agent-restore-context/resources/agent-restore-context.sh`
+The script is at `<skills-dir>/agent-restore-context-setup/resources/agent-restore-context.sh`
 (using the skills directory from step 1).
 
 Verify the script exists and is executable. If not executable, run `chmod +x`.
@@ -74,7 +74,7 @@ existing hooks — add to or create the `SessionStart` array:
       "hooks": [
         {
           "type": "command",
-          "command": "bash <skills-dir>/setup-agent-restore-context/resources/agent-restore-context.sh"
+          "command": "bash <skills-dir>/agent-restore-context-setup/resources/agent-restore-context.sh"
         }
       ]
     }

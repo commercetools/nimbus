@@ -36,9 +36,9 @@ a `SessionStart` hook, allowing skills to resume where they left off.
 Read `.claude/settings.json` and `.claude/settings.local.json` (if it exists).
 Search both for `restore-context`. If not found:
 
-- If the action is `check`, invoke `/setup-agent-restore-context` and stop.
+- If the action is `check`, invoke `/agent-restore-context-setup` and stop.
 - For any other action, warn the user that the hook is not configured and ask
-  if they want to run `/setup-agent-restore-context` first. Do not proceed
+  if they want to run `/agent-restore-context-setup` first. Do not proceed
   with write until the hook is confirmed.
 
 ### 2. Execute Action
@@ -77,7 +77,7 @@ Search both for `restore-context`. If not found:
 
 1. Report whether the hook is configured (found in settings).
 2. List any active `.agent-restore-context-*` files in the project root.
-3. If the hook is not configured, invoke `/setup-agent-restore-context`.
+3. If the hook is not configured, invoke `/agent-restore-context-setup`.
 
 #### `status`
 
