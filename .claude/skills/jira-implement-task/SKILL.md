@@ -1,6 +1,6 @@
 ---
 description: Fetch Jira ticket, create branch, implement changes, commit, push, open PR.
-argument-hint: <ticket-key>
+argument-hint: <ticket-key> [--gw | --worktree]
 ---
 
 # Implement Jira Task
@@ -9,15 +9,53 @@ You are a software engineer. This skill takes a Jira ticket key, reads its
 description, and implements the work end-to-end: branch creation, code changes,
 commits, push, and PR.
 
-## Overview
+## Argument Parsing
 
-Given a Jira ticket key (e.g., `CRAFT-2118`), this skill will:
+Parse `$ARGUMENTS` to extract:
 
-1. Fetch the ticket details from Jira
-2. Create a feature branch named after the ticket
-3. Implement the changes described in the ticket
-4. Commit with conventional commit messages referencing the ticket
-5. Push the branch and open a pull request
+- **Ticket key**: The Jira ticket key (e.g., `NIMBUS-123`). Required.
+- **`--gw`**: Use the `gw` CLI to create a worktree for the feature branch.
+- **`--worktree`**: Use Claude Code's `EnterWorktree` tool to create an isolated
+  worktree. Falls back to `git worktree add` if `EnterWorktree` is unavailable.
+
+`--gw` and `--worktree` are mutually exclusive. If neither is provided, use the
+default behavior (create a branch in the current working tree).
+
+> **IMPORTANT — Restore Context**
+>
+> This skill uses `/agent-restore-context` to survive `/clear` and `/compact`.
+>
+> - **Step 0**: `/agent-restore-context check` to verify the hook is set up.
+> - **Step 3a**: `/agent-restore-context write jira-implement-task` after
+>   creating the implementation plan.
+> - **Before each `/clear`**: `/agent-restore-context write jira-implement-task`
+>   with the updated current task number and all other necessary information.
+> - **Step 3e**: `/agent-restore-context delete jira-implement-task` when done.
+
+## Step 0: Verify Restore Context
+
+Invoke `/agent-restore-context check`. This verifies the hook is configured and
+will invoke `/setup-agent-restore-context` if needed.
+
+## Project Configuration
+
+Before starting, read the project's `CLAUDE.md` and/or `AGENTS.md` to determine
+the following project-specific settings. These files are the source of truth for
+how to work in this repo.
+
+| Setting                  | What to look for                                                | Fallback default      |
+| ------------------------ | --------------------------------------------------------------- | --------------------- |
+| **Test command (files)** | Command to run tests for specific files/folders                 | `pnpm test <files>`   |
+| **Test command (full)**  | Command to run the full test suite                              | `pnpm test`           |
+| **Branch naming**        | Branch naming convention or prefix rules                        | `<TICKET-KEY>-<slug>` |
+| **Base branch**          | Default branch to branch from                                   | `main`                |
+| **Commit format**        | Commit message convention                                       | Conventional commits  |
+| **Component workflow**   | Command/process for new components (e.g., `/propose-component`) | None                  |
+| **Available agents**     | Specialized agents for research, coding, review                 | None                  |
+
+If a setting is not found in `CLAUDE.md`, `AGENTS.md`, `rules/`, or `/docs`, ask the
+user whether they want to add it to `CLAUDE.md`, `AGENTS.md`, `rules/` or `/docs` — or
+use the fallback default for this run only.
 
 ## Step 1: Fetch Ticket Details
 
@@ -25,123 +63,148 @@ Use the Atlassian MCP tools to retrieve the ticket:
 
 1. Call `mcp__atlassian__getAccessibleAtlassianResources` to get the cloud ID
 2. Call `mcp__atlassian__getJiraIssue` with the cloud ID and ticket key
-3. Extract from the response:
-   - **Summary**: ticket title
-   - **Description**: full requirements, acceptance criteria, files to modify
-   - **Issue type**: Task, Story, Bug, etc.
+3. Extract: **Summary**, **Description** (requirements, acceptance criteria,
+   files), and **Issue type**
 
-If the ticket cannot be found, report the error and stop.
-
-### Jira Description Format (CRITICAL)
-
-When writing any text back to Jira (comments, description updates), you MUST use
-**Markdown format**, NOT Atlassian Document Format (ADF). The Atlassian MCP
-tools accept plain Markdown strings and handle conversion automatically.
+If the ticket cannot be found, report the error and stop. Always write Markdown
+to Jira, never ADF — the MCP tools handle conversion.
 
 ## Step 2: Create a Feature Branch
 
-Create a branch from `main` using this naming convention:
+Determine the branch name using the project's **branch naming** convention and
+the **base branch** from project configuration.
 
-```
-<TICKET-KEY>-<short-slug>
-```
+### Default mode (no flag)
 
-Rules:
-
-- Use the ticket key as prefix (e.g., `CRAFT-2118`)
-- Follow with a dash-separated slug derived from the ticket summary
-- Keep the slug concise (3-5 words max)
-- Use lowercase for the slug portion
-- Use dashes (`-`) as separators, never slashes (`/`)
-
-Examples:
-
-- `CRAFT-2118-color-tokens-wcag-docs`
-- `CRAFT-1234-add-toast-component`
-- `CRAFT-5678-fix-menu-keyboard-nav`
+Create a branch from the base branch in the current working tree:
 
 ```bash
-git checkout -b <branch-name> main
+git checkout <base-branch>
+git pull
+git checkout -b <branch-name>
 ```
+
+If the branch already exists, ask the user whether to check out the existing
+branch or create a new one with a `-v2` suffix.
+
+### `--gw` mode
+
+Use the `gw` CLI to create a worktree with the feature branch:
+
+```bash
+gw task <branch-name>
+```
+
+This creates a new worktree and switches into it. All subsequent work in this
+skill happens inside the worktree directory returned by `gw`. Include the
+worktree path in the restore context so future `/clear` cycles can `cd` back
+into it.
+
+### `--worktree` mode
+
+Use Claude Code's `EnterWorktree` tool to create an isolated worktree:
+
+1. Call `EnterWorktree` with `name` set to the branch name.
+2. If `EnterWorktree` is unavailable or fails, fall back to manual git
+   worktree creation:
+   ```bash
+   git worktree add .claude/worktrees/<branch-name> -b <branch-name> <base-branch>
+   cd .claude/worktrees/<branch-name>
+   ```
+3. All subsequent work in this skill happens inside the worktree directory.
+   Include the worktree path in the restore context so future `/clear` cycles
+   can `cd` back into it.
 
 ## Step 3: Implement Changes
 
-Read the ticket description carefully and implement all requested changes:
+### 3a: Understand Scope and Plan
 
-1. **Understand scope**: Identify all files to modify/create from the ticket
-2. **Read existing files**: Always read files before modifying them
-3. **Make changes**: Implement the requirements from the ticket description
-4. **Follow conventions**: Use existing code patterns and project standards
-5. **Check acceptance criteria**: Verify each criterion from the ticket is met
+1. **Understand scope**: Read the ticket description carefully. Identify all
+   files to modify/create.
+2. **Read existing files**: Always read files before modifying them.
+3. **Create implementation plan**: Break the changes into the smallest
+   reasonable chunks of work. Save the plan to
+   `<skills-dir>/jira-implement-task/plans/<TICKET-KEY>-plan.md` (where
+   `<skills-dir>` is `.agents/skills/` or `.claude/skills/` per the detected
+   layout). Each task should be independently testable and committable. Commit
+   the plan so it can be shared for handoff. Delete it before merging or keep
+   it as a record.
+4. **Create restore context**: Invoke `/agent-restore-context write jira-implement-task`
+   with content that includes the ticket key, branch name, plan file path,
+   current task number (1), and the instruction to invoke
+   `/jira-implement-task <TICKET-KEY>` and read the plan file before doing any
+   work.
+
+### 3b: Red/Green Testing Loop (per task)
+
+For each task in the implementation plan, follow this cycle:
+
+1. Invoke `/agent-restore-context write jira-implement-task` with the current
+   task number.
+2. Run `/clear`.
+3. **Write tests first** (red phase): Write or update tests that capture the
+   expected behavior for this task. Tests should fail at this point.
+4. **Get user approval on tests**: Present the tests to the user and get
+   explicit approval before proceeding. Do NOT implement changes until tests are
+   approved.
+5. **Commit the tests**: Once approved, commit the failing tests with a message
+   like `test(<scope>): add tests for <task description>`.
+6. **Implement changes** (green phase): Write the minimum code to make the tests
+   pass.
+7. **Run tests**: Verify all tests pass using the project's **test command
+   (files)**.
+
+### 3c: Three Strikes Policy
+
+If the implementation fails to make tests pass after **3 attempts**:
+
+1. **Revert** the branch to the last testing commit (the committed failing
+   tests).
+2. Invoke `/agent-restore-context write jira-implement-task`.
+3. Run `/clear`.
+4. **Try again** from the green phase with a fresh approach.
+
+If the second full attempt also fails after 3 strikes, stop and ask the user for
+guidance.
+
+### 3d: Commit and Advance
+
+Once tests pass:
+
+1. Commit the implementation changes.
+2. Invoke `/agent-restore-context write jira-implement-task` with the next
+   task number.
+3. Run `/clear`.
+4. Move on to the next task in the implementation plan.
+
+### 3e: Completion
+
+Once all tasks in the plan are implemented and passing:
+
+1. **Run full test suite**: Run the project's **test command (full)** to verify
+   everything passes.
+2. Invoke `/agent-restore-context delete jira-implement-task`.
+3. Ask the user whether to **delete the implementation plan file** or keep it.
+4. Proceed to Step 4 (push and PR creation).
 
 ### Guidelines
 
-- If the ticket references specific files, modify those files
-- If the ticket is a documentation change, focus on content accuracy
-- If the ticket is a code change, follow the project's component guidelines
-- If the ticket requires new types, search for adjacent or colocated type files
-  first (e.g., `types.ts`, `*.types.ts`) to reuse existing patterns, shared
-  types, and naming conventions before creating new ones
-- If implementation changes affect behavior, check whether colocated tests
-  (`.spec.tsx`, `.stories.tsx`, `.docs.spec.tsx`) or documentation (`.dev.mdx`)
-  need corresponding updates
+- Follow the project's conventions from `CLAUDE.md` / `AGENTS.md`
 - If the ticket is ambiguous, ask the user for clarification before proceeding
-- If the ticket implements a new component, implement an OpenSpec proposal using
-  the `/propose-component` command.
-- Use the appropriate agents (nimbus-researcher, nimbus-coder, nimbus-reviewer)
-  when the task complexity warrants it
+- If the project defines a **component workflow**, use it for new component
+  tickets
+- If the project defines **available agents**, use them when task complexity
+  warrants it
 
-## Step 4: Commit Changes
-
-Create commits using conventional commit format:
-
-```
-<type>(<scope>): <description>
-
-<body>
-
-<TICKET-KEY>
-
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
-```
-
-### Commit Cadence
-
-Ask the user to confirm before committing. Commit at these natural checkpoints:
-
-- After each acceptance criterion from the ticket is satisfied
-- After a major logical change is implemented (e.g., a new section added, a
-  refactor completed, a file restructured)
-- Before moving on to a different type of change (e.g., switching from content
-  updates to structural reordering)
-
-Do NOT batch all changes into a single commit at the end. Incremental commits
-give the user review points and make the PR history easier to follow.
-
-### Commit Rules
-
-- **type**: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, etc.
-- **scope**: component or area affected (e.g., `colors`, `button`, `tokens`)
-- **description**: concise summary of what changed
-- **body**: optional, for additional context on why
-- **footer**: always include the ticket key for traceability
-- Split logically independent changes into separate commits
-- Each commit should be atomic and pass lint/typecheck independently
-
-## Step 5: Push and Create PR
+## Step 4: Push and Create PR
 
 Push the branch and create a pull request:
 
 ```bash
 git push -u origin <branch-name>
-```
-
-Create the PR using `gh pr create` with this format:
-
-```bash
 gh pr create --title "<type>(<scope>): <summary>" --body "$(cat <<'EOF'
 ## Summary
-<1-3 bullet points describing the changes>
+<1-5 bullet points describing the changes>
 
 Closes <TICKET-KEY>
 
@@ -153,45 +216,7 @@ EOF
 )"
 ```
 
-### PR Rules
-
-- PR title should match conventional commit format
-- Keep the title under 70 characters
-- Summary should reference what changed and why
-- Include `Closes <TICKET-KEY>` to auto-link the Jira ticket
-- Test plan should include concrete verification steps
-- Return the PR URL to the user when done
-
-## Validation Checklist
-
-Before declaring done, verify:
-
-- [ ] Ticket details were fetched successfully
-- [ ] Branch created from `main` with correct naming
-- [ ] All acceptance criteria from the ticket are addressed
-- [ ] Commits use conventional format with ticket key
-- [ ] Branch pushed to remote
-- [ ] PR created with summary, ticket reference, and test plan
-- [ ] PR URL provided to the user
-
-## Error Recovery
-
-### Ticket not found
-
-- Verify the ticket key format (e.g., `CRAFT-2118`)
-- Check that the Atlassian MCP connection is working
-- Ask the user to verify the ticket key
-
-### Branch already exists
-
-- Ask the user if they want to check out the existing branch or create a new one
-- If creating new, append a suffix (e.g., `-v2`)
-
-### Push fails
-
-- Check if the remote is accessible
-- Verify the branch name doesn't conflict with protected branches
-- Report the error to the user
+Return the PR URL to the user when done.
 
 ---
 

@@ -536,8 +536,7 @@ await step("Verify state changes", async () => {
 You MUST verify the changes:
 
 ```bash
-pnpm --filter @commercetools/nimbus build
-pnpm test packages/nimbus/src/components/{component}/{component}.stories.tsx
+pnpm test:dev packages/nimbus/src/components/{component}/{component}.stories.tsx
 ```
 
 ## Validate Mode

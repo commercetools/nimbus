@@ -185,9 +185,25 @@ The Storybook configuration has two distinct modes:
   - Tests run against production-like code
   - Ensures tests validate actual published behavior
 
-#### Testing Your Changes
+#### Testing Your Changes (Local TDD)
 
-To test component changes in Storybook tests, follow this workflow:
+For iterative red/green/refactor TDD, use the dev test commands which resolve
+`@commercetools/nimbus` directly to source files — no build step required:
+
+```bash
+# Run all tests against source files (RECOMMENDED for TDD)
+pnpm test:dev
+
+# Run only Storybook tests against source files
+pnpm test:storybook:dev
+
+# Run a specific test file against source files
+pnpm test:dev packages/nimbus/src/components/button/button.stories.tsx
+```
+
+#### Testing Your Changes (CI / Build Verification)
+
+To validate against the built bundle (as consumers will use it):
 
 ```bash
 # 1. Make your changes to component source files
@@ -201,7 +217,7 @@ pnpm test:storybook
 pnpm test packages/nimbus/src/components/button/button.stories.tsx
 ```
 
-**Why build is required:**
+**Why build is required for `pnpm test`:**
 
 - Tests import from `@commercetools/nimbus` which resolves to `dist/` during
   testing
@@ -238,9 +254,12 @@ This helps confirm whether your changes require a build before testing.
 
 #### Common Pitfalls
 
-- ❌ **Making changes and immediately running tests** - Tests will use old code
-- ❌ **Expecting HMR in test mode** - Tests intentionally use built bundle
-- ✅ **Build first, then test** - Ensures tests validate actual changes
+- ❌ **Making changes and running `pnpm test` without building** - Tests use the
+  built bundle, not source
+- ✅ **Use `pnpm test:dev` for TDD** - Runs tests against source files, no build
+  required
+- ✅ **Build first, then `pnpm test`** - For CI/final validation of the built
+  bundle
 - ✅ **Use `pnpm start:storybook` for rapid iteration** - Live preview with HMR
 
 ## Package Architecture

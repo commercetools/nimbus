@@ -87,10 +87,13 @@ const config: StorybookConfig = {
     }
 
     // Developer visibility: log which mode is active
-    const mode = isDevelopment
-      ? "DEVELOPMENT (HMR enabled, using source files)"
-      : "PRODUCTION/TEST (using built bundle)";
-    console.log(`[Storybook] Running in ${mode}`);
+    // When VITEST_USE_SOURCE is set, the dev config handles its own logging
+    if (process.env.VITEST_USE_SOURCE !== "true") {
+      const mode = isDevelopment
+        ? "DEVELOPMENT (HMR enabled, using source files)"
+        : "PRODUCTION/TEST (using built bundle)";
+      console.log(`[Storybook] Running in ${mode}`);
+    }
 
     return mergeConfig(config, {
       resolve: {

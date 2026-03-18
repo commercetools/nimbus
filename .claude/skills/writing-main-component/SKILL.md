@@ -809,13 +809,10 @@ After any update, you MUST verify:
 # 1. Type check
 pnpm --filter @commercetools/nimbus typecheck
 
-# 2. Build
-pnpm --filter @commercetools/nimbus build
+# 2. Run tests against source (no build required)
+pnpm test:dev packages/nimbus/src/components/{component}/{component}.stories.tsx
 
-# 3. Run tests
-pnpm test packages/nimbus/src/components/{component}/{component}.stories.tsx
-
-# 4. Validate compliance
+# 3. Validate compliance
 /writing-main-component validate {ComponentName}
 ```
 

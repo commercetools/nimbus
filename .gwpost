@@ -1,0 +1,3 @@
+# Runs after a new gw worktree is created to set up the environment
+pnpm install --frozen-lockfile
+pnpm build
