@@ -17,43 +17,48 @@ export const tabNavSlotRecipe = defineSlotRecipe({
       display: "flex",
       flexDirection: "row",
       width: "100%",
-      boxShadow: "0 1px 0 0 {colors.neutral.6}",
     },
     item: {
-      color: "neutral.12",
-      cursor: "pointer",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       gap: "200",
-      fontWeight: "500",
       fontSize: "var(--tab-nav-font-size)",
       paddingTop: "var(--tab-nav-padding-top)",
       paddingRight: "var(--tab-nav-padding-right)",
       paddingBottom: "var(--tab-nav-padding-bottom)",
       paddingLeft: "var(--tab-nav-padding-left)",
-      textDecoration: "none",
-      transition: "all 150ms ease",
-      boxShadow: "0 2px 0 0 transparent",
-      _hover: {
-        color: "primary.11",
-      },
-      '&[aria-current="page"]': {
-        color: "primary.9",
-        boxShadow: "0 2px 0 0 {colors.primary.9}",
-      },
-      _disabled: {
-        layerStyle: "disabled",
-      },
-      _focusVisible: {
-        layerStyle: "focusRing",
-      },
     },
   },
 
   variants: {
     variant: {
-      tabs: {},
+      tabs: {
+        root: {
+          boxShadow: "0 1px 0 0 {colors.neutral.6}",
+        },
+        item: {
+          color: "neutral.12",
+          cursor: "pointer",
+          fontWeight: "500",
+          textDecoration: "none",
+          transition: "all 150ms ease",
+          boxShadow: "0 2px 0 0 transparent",
+          _hover: {
+            color: "primary.11",
+          },
+          '&[aria-current="page"]': {
+            color: "primary.9",
+            boxShadow: "0 2px 0 0 {colors.primary.9}",
+          },
+          _disabled: {
+            layerStyle: "disabled",
+          },
+          _focusVisible: {
+            layerStyle: "focusRing",
+          },
+        },
+      },
     },
     size: {
       sm: {
