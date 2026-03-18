@@ -38,8 +38,8 @@
 
 ## 4. Documentation
 
-- [ ] 4.1 Create developer documentation (`tab-nav.dev.mdx`)
-- [ ] 4.2 Create consumer implementation tests (`tab-nav.docs.spec.tsx`)
+- [x] 4.1 Create developer documentation (`tab-nav.dev.mdx`)
+- [x] 4.2 Create consumer implementation tests (`tab-nav.docs.spec.tsx`)
 
 ## 5. Validation
 
@@ -48,4 +48,19 @@
 - [x] 5.2 Build succeeds (`pnpm --filter @commercetools/nimbus build`)
 - [ ] 5.3 Storybook story tests pass
       (`pnpm test packages/nimbus/src/components/tab-nav/tab-nav.stories.tsx`)
+      <!-- blocked by pre-existing Vite 8 / use-sync-external-store CJS interop infra issue, unrelated to TabNav -->
 - [ ] 5.4 Full test suite passes
+
+## 6. Review fixes (post-review)
+
+- [x] 6.1 Fix broken frontmatter delimiter in `tab-nav.mdx` and `tab-nav.a11y.mdx` (spurious second `---`)
+- [x] 6.2 Add `UnstyledProp` to `TabNavRecipeProps` in `tab-nav.types.ts`
+- [x] 6.3 Update `TabNavItemSlotProps` to `HTMLChakraProps<"a", TabNavRecipeProps>`
+- [x] 6.4 Add `HELPER TYPES` section with JSDoc on `TabNavItemBaseProps`
+- [x] 6.5 Consolidate three separate size `jsx live` blocks into one in `tab-nav.mdx`
+- [x] 6.6 Remove placeholder `[Figma library](link-tbd)` from `tab-nav.mdx`
+- [x] 6.7 Remove placeholder `[TabNav Storybook](link-tbd)` from `tab-nav.dev.mdx`
+- [x] 6.8 Change `StoryObj<typeof TabNav.Root>` → `StoryObj<typeof meta>` in stories
+- [x] 6.9 Remove `data-testid` from `KeyboardNavigation` story; use `getByRole` queries
+- [x] 6.10 Merge `WithActiveItem` inactive-items assertion into `Base`; remove `WithActiveItem` story
+- [x] 6.11 Add `Variants` story between `Sizes` and `KeyboardNavigation`
