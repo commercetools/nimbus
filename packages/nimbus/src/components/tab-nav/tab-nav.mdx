@@ -1,5 +1,4 @@
 ---
----
 id: Components-TabNav
 title: TabNav
 exportName: TabNav
@@ -31,7 +30,6 @@ Use `TabNav` in page headers where each item links to a different URL (e.g.,
 
 Deep dive into implementation details and access the Nimbus design library.
 
-[Figma library](link-tbd)
 [React Aria useLink](https://react-spectrum.adobe.com/react-aria/useLink.html)
 
 ## Variables
@@ -43,45 +41,22 @@ Get familiar with the features.
 `TabNav` supports three size variants — `sm`, `md` (default), and `lg` — that
 control font size and padding on each item.
 
-#### Small
-
 ```jsx live
 const App = () => (
-  <TabNav.Root aria-label="Order navigation" size="sm">
-    <TabNav.Item href="/orders/123/general" isCurrent>
-      General
-    </TabNav.Item>
-    <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-    <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
-  </TabNav.Root>
-)
-```
-
-#### Medium
-
-```jsx live
-const App = () => (
-  <TabNav.Root aria-label="Order navigation" size="md">
-    <TabNav.Item href="/orders/123/general" isCurrent>
-      General
-    </TabNav.Item>
-    <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-    <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
-  </TabNav.Root>
-)
-```
-
-#### Large
-
-```jsx live
-const App = () => (
-  <TabNav.Root aria-label="Order navigation" size="lg">
-    <TabNav.Item href="/orders/123/general" isCurrent>
-      General
-    </TabNav.Item>
-    <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-    <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
-  </TabNav.Root>
+  <Stack direction="column" gap="800">
+    {["sm", "md", "lg"].map((size) => (
+      <Stack key={size} direction="column" gap="300">
+        <Text fontWeight="600">{size}</Text>
+        <TabNav.Root aria-label={`Order navigation (${size})`} size={size}>
+          <TabNav.Item href="/orders/123/general" isCurrent>
+            General
+          </TabNav.Item>
+          <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+          <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
+        </TabNav.Root>
+      </Stack>
+    ))}
+  </Stack>
 )
 ```
 

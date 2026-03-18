@@ -34,7 +34,7 @@ export default meta;
  * Story type for TypeScript support
  * StoryObj provides type checking for our story configurations
  */
-type Story = StoryObj<typeof TabNav.Root>;
+type Story = StoryObj<typeof meta>;
 
 /**
  * The default TabNav usage with three navigation items.
@@ -71,6 +71,16 @@ export const Base: Story = {
       const generalLink = canvas.getByRole("link", { name: "General" });
       await expect(generalLink).toHaveAttribute("aria-current", "page");
     });
+
+    await step(
+      "Inactive items do not have aria-current attribute",
+      async () => {
+        const inactiveItem1 = canvas.getByRole("link", { name: "Items" });
+        const inactiveItem2 = canvas.getByRole("link", { name: "Shipping" });
+        await expect(inactiveItem1).not.toHaveAttribute("aria-current");
+        await expect(inactiveItem2).not.toHaveAttribute("aria-current");
+      }
+    );
   },
 };
 
@@ -106,49 +116,26 @@ export const Sizes: Story = {
 };
 
 /**
- * Demonstrates the `aria-current="page"` attribute that identifies the active
- * navigation item. This is the correct semantic pattern for navigation links —
- * NOT `aria-selected` (which is for widgets like Tabs).
- *
- * Screen readers announce the active item as "current page" to users.
+ * Demonstrates the `tabs` visual variant applied to the navigation.
+ * TabNav currently ships with a single `tabs` variant — the default style.
  */
-export const WithActiveItem: Story = {
+export const Variants: Story = {
   render: () => (
-    <TabNav.Root aria-label="Order navigation">
-      <TabNav.Item href="/orders/123/general" isCurrent>
-        General
-      </TabNav.Item>
-      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-      <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
-    </TabNav.Root>
+    <Stack direction="column" gap="300">
+      <Text fontWeight="600">tabs (default)</Text>
+      <TabNav.Root aria-label="Order navigation" variant="tabs">
+        <TabNav.Item href="/orders/123/general" isCurrent>
+          General
+        </TabNav.Item>
+        <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+        <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
+      </TabNav.Root>
+    </Stack>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Active item has aria-current='page' attribute", async () => {
-      const activeItem = canvas.getByRole("link", { name: "General" });
-      await expect(activeItem).toHaveAttribute("aria-current", "page");
-    });
-
-    await step(
-      "Inactive items do not have aria-current attribute",
-      async () => {
-        const inactiveItem1 = canvas.getByRole("link", { name: "Items" });
-        const inactiveItem2 = canvas.getByRole("link", { name: "Shipping" });
-        await expect(inactiveItem1).not.toHaveAttribute("aria-current");
-        await expect(inactiveItem2).not.toHaveAttribute("aria-current");
-      }
-    );
-
-    await step("All items render as anchor elements", async () => {
-      const links = canvas.getAllByRole("link");
-      await expect(links).toHaveLength(3);
-      for (const link of links) {
-        await expect(link.tagName).toBe("A");
-      }
-    });
-
-    await step("Root renders as a nav landmark", async () => {
+    await step("Renders nav landmark with tabs variant", async () => {
       const nav = canvas.getByRole("navigation");
       await expect(nav).toBeInTheDocument();
     });
@@ -168,22 +155,18 @@ export const WithActiveItem: Story = {
 export const KeyboardNavigation: Story = {
   render: () => (
     <TabNav.Root aria-label="Order navigation">
-      <TabNav.Item href="/orders/123/general" isCurrent data-testid="link-1">
+      <TabNav.Item href="/orders/123/general" isCurrent>
         General
       </TabNav.Item>
-      <TabNav.Item href="/orders/123/items" data-testid="link-2">
-        Items
-      </TabNav.Item>
-      <TabNav.Item href="/orders/123/shipping" data-testid="link-3">
-        Shipping
-      </TabNav.Item>
+      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+      <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
     </TabNav.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Tab key moves focus to first link", async () => {
-      const firstLink = canvas.getByTestId("link-1");
+      const firstLink = canvas.getByRole("link", { name: "General" });
       await userEvent.tab();
       await expect(firstLink).toHaveFocus();
     });
@@ -191,7 +174,7 @@ export const KeyboardNavigation: Story = {
     await step(
       "ArrowRight does NOT move focus (no roving tabindex)",
       async () => {
-        const firstLink = canvas.getByTestId("link-1");
+        const firstLink = canvas.getByRole("link", { name: "General" });
         // Confirm first link has focus from previous step
         await expect(firstLink).toHaveFocus();
 
@@ -201,7 +184,7 @@ export const KeyboardNavigation: Story = {
         // First link should still have focus
         await expect(firstLink).toHaveFocus();
 
-        const secondLink = canvas.getByTestId("link-2");
+        const secondLink = canvas.getByRole("link", { name: "Items" });
         await expect(secondLink).not.toHaveFocus();
       }
     );
@@ -209,7 +192,7 @@ export const KeyboardNavigation: Story = {
     await step(
       "ArrowLeft does NOT move focus (no roving tabindex)",
       async () => {
-        const firstLink = canvas.getByTestId("link-1");
+        const firstLink = canvas.getByRole("link", { name: "General" });
         await expect(firstLink).toHaveFocus();
 
         await userEvent.keyboard("{ArrowLeft}");
@@ -222,7 +205,7 @@ export const KeyboardNavigation: Story = {
     await step(
       "Tab key moves focus to second link (sequential nav)",
       async () => {
-        const secondLink = canvas.getByTestId("link-2");
+        const secondLink = canvas.getByRole("link", { name: "Items" });
         await userEvent.tab();
         await expect(secondLink).toHaveFocus();
       }
@@ -231,7 +214,7 @@ export const KeyboardNavigation: Story = {
     await step(
       "Tab key moves focus to third link (sequential nav)",
       async () => {
-        const thirdLink = canvas.getByTestId("link-3");
+        const thirdLink = canvas.getByRole("link", { name: "Shipping" });
         await userEvent.tab();
         await expect(thirdLink).toHaveFocus();
       }

@@ -4,6 +4,7 @@ import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   HTMLChakraProps,
   SlotRecipeProps,
+  UnstyledProp,
 } from "@chakra-ui/react/styled-system";
 
 // ============================================================
@@ -21,7 +22,7 @@ type TabNavRecipeProps = {
    * @default "md"
    */
   size?: SlotRecipeProps<"nimbusTabNav">["size"];
-};
+} & UnstyledProp;
 
 // ============================================================
 // SLOT PROPS
@@ -29,7 +30,7 @@ type TabNavRecipeProps = {
 
 export type TabNavRootSlotProps = HTMLChakraProps<"nav", TabNavRecipeProps>;
 
-export type TabNavItemSlotProps = HTMLChakraProps<"a">;
+export type TabNavItemSlotProps = HTMLChakraProps<"a", TabNavRecipeProps>;
 
 // ============================================================
 // MAIN PROPS
@@ -47,6 +48,16 @@ export type TabNavProps = OmitInternalProps<TabNavRootSlotProps> & {
   [key: `data-${string}`]: unknown;
 };
 
+// ============================================================
+// HELPER TYPES
+// ============================================================
+
+/**
+ * Base props for TabNav.Item, stripping native `onFocus`, `onBlur`, and
+ * `onClick` in favour of React Aria's equivalents from `AriaLinkOptions`.
+ * React Aria's versions carry the correct synthetic event types and are
+ * required for consistent cross-browser interaction handling via `useLink`.
+ */
 type TabNavItemBaseProps = Omit<
   OmitInternalProps<TabNavItemSlotProps>,
   "onFocus" | "onBlur" | "onClick"
