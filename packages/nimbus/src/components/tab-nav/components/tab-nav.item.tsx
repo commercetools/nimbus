@@ -26,7 +26,7 @@ export const TabNavItem = ({
   return (
     <TabNavItemSlot asChild ref={ref} {...rest}>
       <RALink
-        href={href}
+        href={isDisabled ? undefined : href}
         isDisabled={isDisabled}
         target={target}
         rel={rel}
