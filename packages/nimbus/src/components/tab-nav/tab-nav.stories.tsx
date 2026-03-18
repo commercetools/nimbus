@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
-import { TabNav } from "@commercetools/nimbus";
+import { Stack, TabNav, Text } from "@commercetools/nimbus";
 
 /**
  * Storybook metadata configuration
@@ -10,6 +10,10 @@ import { TabNav } from "@commercetools/nimbus";
 const meta: Meta<typeof TabNav.Root> = {
   title: "Components/TabNav",
   component: TabNav.Root,
+  tags: ["autodocs"],
+  parameters: {
+    layout: "padded",
+  },
   argTypes: {
     variant: {
       control: "select",
@@ -47,6 +51,58 @@ export const Base: Story = {
       <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
     </TabNav.Root>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders a nav landmark", async () => {
+      const nav = canvas.getByRole("navigation");
+      await expect(nav).toBeInTheDocument();
+    });
+
+    await step("Renders all navigation links as anchor elements", async () => {
+      const links = canvas.getAllByRole("link");
+      await expect(links).toHaveLength(3);
+      for (const link of links) {
+        await expect(link.tagName).toBe("A");
+      }
+    });
+
+    await step("Active item has aria-current='page'", async () => {
+      const generalLink = canvas.getByRole("link", { name: "General" });
+      await expect(generalLink).toHaveAttribute("aria-current", "page");
+    });
+  },
+};
+
+/**
+ * Demonstrates the three size variants: `sm`, `md` (default), and `lg`.
+ * Size controls font size and padding on each item, matching the Tabs size scale.
+ */
+export const Sizes: Story = {
+  render: () => (
+    <Stack direction="column" gap="800">
+      {(["sm", "md", "lg"] as const).map((size) => (
+        <Stack key={size} direction="column" gap="300">
+          <Text fontWeight="600">{size}</Text>
+          <TabNav.Root aria-label={`Order navigation (${size})`} size={size}>
+            <TabNav.Item href="/orders/123/general" isCurrent>
+              General
+            </TabNav.Item>
+            <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+            <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
+          </TabNav.Root>
+        </Stack>
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("All three size variants render nav landmarks", async () => {
+      const navs = canvas.getAllByRole("navigation");
+      await expect(navs).toHaveLength(3);
+    });
+  },
 };
 
 /**
@@ -59,34 +115,26 @@ export const Base: Story = {
 export const WithActiveItem: Story = {
   render: () => (
     <TabNav.Root aria-label="Order navigation">
-      <TabNav.Item
-        href="/orders/123/general"
-        isCurrent
-        data-testid="active-item"
-      >
+      <TabNav.Item href="/orders/123/general" isCurrent>
         General
       </TabNav.Item>
-      <TabNav.Item href="/orders/123/items" data-testid="inactive-item-1">
-        Items
-      </TabNav.Item>
-      <TabNav.Item href="/orders/123/shipping" data-testid="inactive-item-2">
-        Shipping
-      </TabNav.Item>
+      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+      <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
     </TabNav.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Active item has aria-current='page' attribute", async () => {
-      const activeItem = canvas.getByTestId("active-item");
+      const activeItem = canvas.getByRole("link", { name: "General" });
       await expect(activeItem).toHaveAttribute("aria-current", "page");
     });
 
     await step(
       "Inactive items do not have aria-current attribute",
       async () => {
-        const inactiveItem1 = canvas.getByTestId("inactive-item-1");
-        const inactiveItem2 = canvas.getByTestId("inactive-item-2");
+        const inactiveItem1 = canvas.getByRole("link", { name: "Items" });
+        const inactiveItem2 = canvas.getByRole("link", { name: "Shipping" });
         await expect(inactiveItem1).not.toHaveAttribute("aria-current");
         await expect(inactiveItem2).not.toHaveAttribute("aria-current");
       }
@@ -192,37 +240,6 @@ export const KeyboardNavigation: Story = {
 };
 
 /**
- * Demonstrates the three size variants: `sm`, `md` (default), and `lg`.
- * Size controls font size and padding on each item, matching the Tabs size scale.
- */
-export const Sizes: Story = {
-  render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-      {(["sm", "md", "lg"] as const).map((size) => (
-        <div key={size}>
-          <p style={{ marginBottom: "0.5rem", fontWeight: 600 }}>{size}</p>
-          <TabNav.Root aria-label={`Order navigation (${size})`} size={size}>
-            <TabNav.Item href="/orders/123/general" isCurrent>
-              General
-            </TabNav.Item>
-            <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-            <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
-          </TabNav.Root>
-        </div>
-      ))}
-    </div>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("All three size variants render nav landmarks", async () => {
-      const navs = canvas.getAllByRole("navigation");
-      await expect(navs).toHaveLength(3);
-    });
-  },
-};
-
-/**
  * Demonstrates `isDisabled` on individual items. Disabled items are visually
  * dimmed, cannot be clicked, and are removed from the tab sequence.
  * React Aria's `useLink` handles the disabled behaviour.
@@ -230,17 +247,11 @@ export const Sizes: Story = {
 export const WithDisabledItem: Story = {
   render: () => (
     <TabNav.Root aria-label="Order navigation">
-      <TabNav.Item href="/orders/123/general" isCurrent data-testid="active">
+      <TabNav.Item href="/orders/123/general" isCurrent>
         General
       </TabNav.Item>
-      <TabNav.Item href="/orders/123/items" data-testid="normal">
-        Items
-      </TabNav.Item>
-      <TabNav.Item
-        href="/orders/123/shipping"
-        isDisabled
-        data-testid="disabled"
-      >
+      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+      <TabNav.Item href="/orders/123/shipping" isDisabled>
         Shipping
       </TabNav.Item>
     </TabNav.Root>
@@ -249,21 +260,41 @@ export const WithDisabledItem: Story = {
     const canvas = within(canvasElement);
 
     await step("Disabled item has no href", async () => {
-      const disabledItem = canvas.getByTestId("disabled");
+      const disabledItem = canvas.getByRole("link", { name: "Shipping" });
       await expect(disabledItem).not.toHaveAttribute("href");
     });
 
     await step("Disabled item has aria-disabled attribute", async () => {
-      const disabledItem = canvas.getByTestId("disabled");
+      const disabledItem = canvas.getByRole("link", { name: "Shipping" });
       await expect(disabledItem).toHaveAttribute("aria-disabled", "true");
     });
 
     await step("Non-disabled items retain their href", async () => {
-      const activeItem = canvas.getByTestId("active");
-      const normalItem = canvas.getByTestId("normal");
+      const activeItem = canvas.getByRole("link", { name: "General" });
+      const normalItem = canvas.getByRole("link", { name: "Items" });
       await expect(activeItem).toHaveAttribute("href", "/orders/123/general");
       await expect(normalItem).toHaveAttribute("href", "/orders/123/items");
     });
+
+    await step(
+      "Tab key skips the disabled item (not in tab sequence)",
+      async () => {
+        const generalLink = canvas.getByRole("link", { name: "General" });
+        const itemsLink = canvas.getByRole("link", { name: "Items" });
+        const shippingLink = canvas.getByRole("link", { name: "Shipping" });
+
+        // Tab to first focusable link
+        await userEvent.tab();
+        await expect(generalLink).toHaveFocus();
+
+        // Tab to second focusable link — disabled Shipping should be skipped
+        await userEvent.tab();
+        await expect(itemsLink).toHaveFocus();
+
+        // Shipping is never focused
+        await expect(shippingLink).not.toHaveFocus();
+      }
+    );
   },
 };
 
@@ -282,7 +313,6 @@ export const WithExternalLink: Story = {
         href="https://example.com/docs"
         target="_blank"
         rel="noopener noreferrer"
-        data-testid="external"
       >
         Docs ↗
       </TabNav.Item>
@@ -292,12 +322,12 @@ export const WithExternalLink: Story = {
     const canvas = within(canvasElement);
 
     await step("External link has target=_blank", async () => {
-      const externalLink = canvas.getByTestId("external");
+      const externalLink = canvas.getByRole("link", { name: "Docs ↗" });
       await expect(externalLink).toHaveAttribute("target", "_blank");
     });
 
     await step("External link has rel=noopener noreferrer", async () => {
-      const externalLink = canvas.getByTestId("external");
+      const externalLink = canvas.getByRole("link", { name: "Docs ↗" });
       await expect(externalLink).toHaveAttribute("rel", "noopener noreferrer");
     });
   },

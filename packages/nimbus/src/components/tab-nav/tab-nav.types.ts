@@ -1,3 +1,4 @@
+import type React from "react";
 import type { AriaLinkOptions } from "react-aria";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
@@ -28,7 +29,7 @@ type TabNavRecipeProps = {
 
 export type TabNavRootSlotProps = HTMLChakraProps<"nav", TabNavRecipeProps>;
 
-export type TabNavItemSlotProps = HTMLChakraProps<"a", TabNavRecipeProps>;
+export type TabNavItemSlotProps = HTMLChakraProps<"a">;
 
 // ============================================================
 // MAIN PROPS
@@ -40,18 +41,13 @@ export type TabNavItemSlotProps = HTMLChakraProps<"a", TabNavRecipeProps>;
  */
 export type TabNavProps = OmitInternalProps<TabNavRootSlotProps> & {
   /**
-   * The navigation items to render inside the tab nav.
-   * Use `TabNav.Item` components as children.
-   */
-  children?: React.ReactNode;
-  /**
    * A ref to the root `<nav>` element.
    */
   ref?: React.Ref<HTMLElement>;
   [key: `data-${string}`]: unknown;
 };
 
-type TabNavItemVariantProps = Omit<
+type TabNavItemBaseProps = Omit<
   OmitInternalProps<TabNavItemSlotProps>,
   "onFocus" | "onBlur" | "onClick"
 > &
@@ -63,7 +59,7 @@ type TabNavItemVariantProps = Omit<
  * Props for the TabNav.Item component.
  * Renders an `<a>` element styled as a tab navigation link.
  */
-export type TabNavItemProps = TabNavItemVariantProps & {
+export type TabNavItemProps = TabNavItemBaseProps & {
   /**
    * The URL this navigation item links to.
    */
