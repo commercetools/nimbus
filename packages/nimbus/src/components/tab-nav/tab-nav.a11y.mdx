@@ -1,0 +1,44 @@
+---
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx live
+const App = () => (
+  <TabNav.Root aria-label="Order navigation">
+    <TabNav.Item href="/orders/123/general" isCurrent>
+      General
+    </TabNav.Item>
+    <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+    <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
+    <TabNav.Item href="/orders/123/history">History</TabNav.Item>
+  </TabNav.Root>
+)
+```
+
+### Accessibility standards
+
+- **Landmark role:** `TabNav.Root` renders a `<nav>` HTML element — a navigation
+  landmark. Always provide an `aria-label` to identify the landmark, especially
+  when a page contains multiple `<nav>` elements.
+- **Link semantics:** `TabNav.Item` renders an `<a>` element with the implicit
+  `link` role. Do **not** use `role="tab"` — this component is not a tablist
+  widget.
+- **Active page indication:** The active item uses `aria-current="page"` — **not**
+  `aria-selected`. Screen readers announce this as "current page" to users.
+- **Keyboard navigation:** `TabNav` uses standard sequential keyboard navigation.
+  The `Tab` key moves focus to the next link and `Shift + Tab` moves to the
+  previous link. Arrow keys do **not** cycle focus between items — this is
+  intentional and differs from the `Tabs` widget pattern.
+- **Disabled items:** Disabled items carry `aria-disabled="true"` and are
+  excluded from the tab sequence, so keyboard users skip them naturally.
+- **Contrast:** Ensure sufficient contrast between link text and the background
+  in all states (default, hover, active, focused, disabled). The focus indicator
+  must be clearly visible.
