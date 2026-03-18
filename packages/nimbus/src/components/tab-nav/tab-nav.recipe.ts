@@ -44,6 +44,7 @@ export const tabNavSlotRecipe = defineSlotRecipe({
           textDecoration: "none",
           transition: "all 150ms ease",
           boxShadow: "0 2px 0 0 transparent",
+          focusRing: "outside",
           _hover: {
             color: "primary.11",
           },
@@ -53,9 +54,6 @@ export const tabNavSlotRecipe = defineSlotRecipe({
           },
           _disabled: {
             layerStyle: "disabled",
-          },
-          _focusVisible: {
-            layerStyle: "focusRing",
           },
         },
       },
