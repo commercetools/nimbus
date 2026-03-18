@@ -1,6 +1,4 @@
-import { useRef } from "react";
-import { useLink, useObjectRef, mergeProps } from "react-aria";
-import { mergeRefs } from "@/utils";
+import { Link as RALink } from "react-aria-components";
 import { TabNavItemSlot } from "../tab-nav.slots";
 import type { TabNavItemProps } from "../tab-nav.types";
 
@@ -22,28 +20,20 @@ export const TabNavItem = ({
   isDisabled,
   target,
   rel,
-  ref: forwardedRef,
+  ref,
   ...rest
 }: TabNavItemProps) => {
-  const localRef = useRef<HTMLAnchorElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
-
-  const { linkProps } = useLink(
-    { ...rest, href, isDisabled, elementType: "a" },
-    ref
-  );
-
   return (
-    <TabNavItemSlot
-      {...mergeProps(rest, linkProps, {
-        href: isDisabled ? undefined : href,
-        ref,
-        target,
-        rel,
-        "aria-current": isCurrent ? ("page" as const) : undefined,
-      })}
-    >
-      {children}
+    <TabNavItemSlot asChild ref={ref} {...rest}>
+      <RALink
+        href={href}
+        isDisabled={isDisabled}
+        target={target}
+        rel={rel}
+        aria-current={isCurrent ? "page" : undefined}
+      >
+        {children}
+      </RALink>
     </TabNavItemSlot>
   );
 };

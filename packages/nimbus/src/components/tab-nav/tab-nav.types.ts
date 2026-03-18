@@ -1,5 +1,4 @@
 import type React from "react";
-import type { AriaLinkOptions } from "react-aria";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   HTMLChakraProps,
@@ -48,29 +47,11 @@ export type TabNavProps = OmitInternalProps<TabNavRootSlotProps> & {
   [key: `data-${string}`]: unknown;
 };
 
-// ============================================================
-// HELPER TYPES
-// ============================================================
-
-/**
- * Base props for TabNav.Item, stripping native `onFocus`, `onBlur`, and
- * `onClick` in favour of React Aria's equivalents from `AriaLinkOptions`.
- * React Aria's versions carry the correct synthetic event types and are
- * required for consistent cross-browser interaction handling via `useLink`.
- */
-type TabNavItemBaseProps = Omit<
-  OmitInternalProps<TabNavItemSlotProps>,
-  "onFocus" | "onBlur" | "onClick"
-> &
-  Pick<AriaLinkOptions, "onFocus" | "onBlur" | "onClick"> & {
-    [key: `data-${string}`]: unknown;
-  };
-
 /**
  * Props for the TabNav.Item component.
  * Renders an `<a>` element styled as a tab navigation link.
  */
-export type TabNavItemProps = TabNavItemBaseProps & {
+export type TabNavItemProps = OmitInternalProps<TabNavItemSlotProps> & {
   /**
    * The URL this navigation item links to.
    */
@@ -105,4 +86,5 @@ export type TabNavItemProps = TabNavItemBaseProps & {
    * A ref to the underlying `<a>` element.
    */
   ref?: React.Ref<HTMLAnchorElement>;
+  [key: `data-${string}`]: unknown;
 };
