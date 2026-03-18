@@ -48,6 +48,15 @@ Verify the script exists and is executable. If not executable, run `chmod +x`.
 
 ### 4. Register the Hook
 
+#### Permission check
+
+Run `gh repo view --json viewerPermission --jq '.viewerPermission'`. If the
+result is `READ`, warn the user that the repo is read-only — any changes made
+to `.claude/settings.json` or `.gitignore` will need to be committed and pushed
+manually. Continue with the rest of the steps as normal.
+
+#### Choose settings file
+
 Ask the user:
 
 > "Should I add the restore-context hook to `.claude/settings.json`
