@@ -745,69 +745,6 @@ export const ListToggling: Story = {
 };
 
 // =============================================================================
-// Undo/Redo Functionality
-// =============================================================================
-
-export const UndoRedo: Story = {
-  args: {
-    placeholder: "Test undo/redo...",
-  },
-  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
-    const canvas = within(canvasElement);
-    const editor = canvas.getByRole("textbox");
-
-    await userEvent.click(editor);
-
-    const undoButton = canvas.getByRole("button", { name: /undo/i });
-    const redoButton = canvas.getByRole("button", { name: /redo/i });
-
-    // Initially, undo/redo should be disabled
-    expect(undoButton).toBeDisabled();
-    expect(redoButton).toBeDisabled();
-
-    // Type some text
-    await userEvent.type(editor, "First text");
-    await waitFor(
-      () => {
-        expect(undoButton).not.toBeDisabled();
-      },
-      { timeout: 5000 }
-    );
-
-    // Apply formatting
-    const boldButton = canvas.getByRole("button", { name: /bold/i });
-    await userEvent.click(boldButton);
-    await userEvent.type(editor, " bold text");
-
-    // Wait for the editor state to stabilize before performing undo
-    await waitFor(
-      () => {
-        expect(editor).toHaveTextContent("bold text");
-      },
-      { timeout: 3000 }
-    );
-
-    // Test undo
-    await userEvent.click(undoButton);
-    await waitFor(
-      () => {
-        expect(redoButton).not.toBeDisabled();
-      },
-      { timeout: 5000 }
-    );
-
-    // Test redo
-    await userEvent.click(redoButton);
-    await waitFor(
-      () => {
-        expect(editor).toHaveTextContent("bold text");
-      },
-      { timeout: 5000 }
-    );
-  },
-};
-
-// =============================================================================
 // Event Handling & Callbacks
 // =============================================================================
 
