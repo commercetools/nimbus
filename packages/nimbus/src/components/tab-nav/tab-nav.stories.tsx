@@ -3,9 +3,7 @@ import { expect, userEvent, within } from "storybook/test";
 import { Stack, TabNav, Text } from "@commercetools/nimbus";
 
 /**
- * Storybook metadata configuration
- * - title: determines the location in the sidebar
- * - component: references the component being documented
+ * `TabNav` provides URL-based navigation styled as tabs.
  */
 const meta: Meta<typeof TabNav.Root> = {
   title: "Components/TabNav",
