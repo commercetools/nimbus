@@ -198,7 +198,13 @@ Once all tasks in the plan are implemented and passing:
 
 ## Step 4: Push and Create PR
 
-Push the branch and create a pull request:
+### Permission check
+
+Run `gh repo view --json viewerPermission --jq '.viewerPermission'`. If the
+result is `READ`, skip push and PR — print the exact `git push` and
+`gh pr create` commands for the user to run manually, then stop.
+
+### Push and create PR
 
 ```bash
 git push -u origin <branch-name>

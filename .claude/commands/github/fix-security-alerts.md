@@ -50,6 +50,11 @@ gh auth status
 
 **If not authenticated**: Stop and instruct user to run `gh auth login` first.
 
+Also run `gh repo view --json viewerPermission --jq '.viewerPermission'`. **If
+the result is `READ`**: Note this upfront. All local work (analysis, fixes,
+commits) will proceed normally, but push and PR creation will be skipped — print
+the exact commands for the user to run manually instead.
+
 ### 1.2 Check for Clean Working Tree
 
 ```bash

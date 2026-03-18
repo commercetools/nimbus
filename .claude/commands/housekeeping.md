@@ -146,7 +146,13 @@ For each dependency group (or the specified target group):
    - Note: Keep frozen packages and "already at latest" packages separate in the
      PR body
 
-4. **Create Pull Request:**
+4. **Permission check before push:**
+
+   Run `gh repo view --json viewerPermission --jq '.viewerPermission'`. If the
+   result is `READ`, skip push and PR — print the exact `git push` and
+   `gh pr create` commands for the user to run manually, then stop.
+
+5. **Create Pull Request:**
 
    **Important:** Replace all placeholder values in the PR body template:
    - `[package]: [old] → [new]` with actual package updates
@@ -244,7 +250,7 @@ For each dependency group (or the specified target group):
    )"
    ```
 
-5. **Changeset Creation (Required When Published Packages Are Affected):**
+6. **Changeset Creation (Required When Published Packages Are Affected):**
 
    After all updates are committed, determine if any updated dependencies are
    used by published packages. The published packages in this repo are:
