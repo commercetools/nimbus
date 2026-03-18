@@ -12,8 +12,8 @@ import type { TabNavProps } from "../tab-nav.types";
  *
  * @supportsStyleProps
  */
-export const TabNavRoot = ({ children, ...props }: TabNavProps) => {
-  return <TabNavRootSlot {...props}>{children}</TabNavRootSlot>;
+export const TabNavRoot = (props: TabNavProps) => {
+  return <TabNavRootSlot {...props} />;
 };
 
 TabNavRoot.displayName = "TabNav.Root";
