@@ -1,13 +1,20 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import Fuse from "fuse.js";
+import { readdir } from "node:fs/promises";
+import { resolve } from "node:path";
 import { z } from "zod";
 import {
   getRouteManifest,
   getRouteData,
   getTypeData,
-  type RouteManifestEntry,
-  type TypeData,
+  getDataDir,
 } from "../data-loader.js";
+import type {
+  RouteManifestEntry,
+  TypeData,
+  FilteredProp,
+  ComponentMetadata,
+} from "../types.js";
 
 // ---------------------------------------------------------------------------
 // Section definitions
@@ -20,7 +27,6 @@ const SECTION_KEYS = [
   "implementation",
   "accessibility",
   "props",
-  "recipe",
 ] as const;
 
 /**
@@ -57,16 +63,8 @@ const INHERITED_PARENT_NAMES = new Set([
   "Conditions",
 ]);
 
-interface FilteredProp {
-  name: string;
-  type: string;
-  required: boolean;
-  description: string;
-  defaultValue?: string;
-}
-
 /** Props excluded by name (matches docs-site filter). */
-const EXCLUDED_PROP_NAMES = new Set(["key", "recipe"]);
+const EXCLUDED_PROP_NAMES = new Set(["key"]);
 
 /** Filters type data to match the docs-site API reference. */
 function filterProps(typeData: TypeData): FilteredProp[] {
@@ -86,6 +84,62 @@ function filterProps(typeData: TypeData): FilteredProp[] {
       if (p.defaultValue) prop.defaultValue = p.defaultValue.value;
       return prop;
     });
+}
+
+/**
+ * For compound components (e.g. Drawer → DrawerRoot, DrawerContent, …),
+ * the top-level type file has no props. This function finds all sub-component
+ * type files matching `${exportName}*.json`, aggregates their filtered props,
+ * and tags each prop with the sub-component name.
+ */
+async function aggregateSubComponentProps(
+  exportName: string
+): Promise<FilteredProp[]> {
+  const typesDir = resolve(getDataDir(), "docs/types");
+  let files: string[];
+  try {
+    files = await readdir(typesDir);
+  } catch {
+    return [];
+  }
+
+  // Build a set of top-level component export names so we can exclude them
+  // from sub-component candidates (e.g. "Icon" should not pull in "IconButton").
+  const manifest = await getRouteManifest();
+  const topLevelNames = new Set(
+    manifest.routes
+      .filter((r) => CATALOG_CATEGORIES.has(r.category))
+      .map((r) => (r.exportName ?? r.title).toLowerCase())
+  );
+
+  const prefix = exportName.toLowerCase();
+  const subFiles = files.filter((f) => {
+    const base = f.replace(/\.json$/, "");
+    const baseLower = base.toLowerCase();
+    return (
+      f.endsWith(".json") &&
+      baseLower.startsWith(prefix) &&
+      baseLower !== prefix && // exclude the top-level file itself
+      !base.includes(".") && // exclude method exports (e.g. FieldErrors.getBuiltInMessage)
+      !base.endsWith("Props") && // exclude type-only duplicates (e.g. StepsRootProps)
+      !topLevelNames.has(baseLower) // exclude standalone top-level components
+    );
+  });
+
+  const settled = await Promise.allSettled(
+    subFiles.map(async (file) => {
+      const subName = file.replace(/\.json$/, "");
+      const typeData = await getTypeData(subName);
+      return filterProps(typeData).map((p) => ({
+        ...p,
+        subComponent: subName,
+      }));
+    })
+  );
+
+  return settled
+    .filter((r) => r.status === "fulfilled")
+    .flatMap((r) => (r as PromiseFulfilledResult<FilteredProp[]>).value);
 }
 
 // ---------------------------------------------------------------------------
@@ -139,16 +193,6 @@ function pathToSlug(path: string): string {
 // Response builders
 // ---------------------------------------------------------------------------
 
-interface ComponentMetadata {
-  name: string;
-  exportName?: string;
-  description: string;
-  path: string;
-  subcategory?: string;
-  tags?: string[];
-  sections: string[];
-}
-
 function buildMetadataResponse(
   entry: RouteManifestEntry,
   availableSections: string[]
@@ -179,7 +223,6 @@ function buildMetadataResponse(
  * - `name` only: returns component metadata + list of available sections
  * - `name` + `section`: returns the requested section content
  *   - `props`: filtered JSON (component-specific only)
- *   - `recipe`: variant/size values extracted from type data
  *   - `overview` / `guidelines` / `implementation` / `accessibility`: MDX markdown
  */
 export function registerGetComponent(server: McpServer): void {
@@ -190,7 +233,7 @@ export function registerGetComponent(server: McpServer): void {
       description:
         "Returns detailed information about a Nimbus component or pattern. " +
         "With name only: returns metadata and available sections. " +
-        "With name + section: returns section content (overview, guidelines, implementation, accessibility, props, recipe).",
+        "With name + section: returns section content (overview, guidelines, implementation, accessibility, props).",
       inputSchema: {
         name: z
           .string()
@@ -232,11 +275,7 @@ export function registerGetComponent(server: McpServer): void {
           );
           return canonical ? canonical[0] : key;
         });
-        const availableSections = [
-          ...viewSections,
-          "props",
-          "recipe",
-        ] as string[];
+        const availableSections = [...viewSections, "props"] as string[];
 
         // No section requested — return metadata + section list
         if (!section) {
@@ -256,20 +295,23 @@ export function registerGetComponent(server: McpServer): void {
           const exportName = entry.exportName ?? entry.title;
           try {
             const typeData = await getTypeData(exportName);
-            const filtered = filterProps(typeData);
+            let filtered = filterProps(typeData);
+
+            // Compound components have no props on the top-level export.
+            // Aggregate from sub-component type files (e.g. DrawerRoot, DrawerContent).
+            if (filtered.length === 0) {
+              filtered = await aggregateSubComponentProps(exportName);
+            }
+
             return {
               content: [
                 {
                   type: "text" as const,
-                  text: JSON.stringify(
-                    {
-                      component: exportName,
-                      propCount: filtered.length,
-                      props: filtered,
-                    },
-                    null,
-                    2
-                  ),
+                  text: JSON.stringify({
+                    component: exportName,
+                    propCount: filtered.length,
+                    props: filtered,
+                  }),
                 },
               ],
             };

@@ -1,17 +1,8 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import Fuse from "fuse.js";
 import { z } from "zod";
-import { getRouteManifest, type RouteManifestEntry } from "../data-loader.js";
-
-/** Shape returned for each component in the response array. */
-interface ComponentSummary {
-  title: string;
-  description: string;
-  path: string;
-  exportName?: string;
-  subcategory?: string;
-  tags?: string[];
-}
+import { getRouteManifest } from "../data-loader.js";
+import type { RouteManifestEntry, ComponentSummary } from "../types.js";
 
 /** Normalises a route entry into a sparse ComponentSummary. */
 function toSummary(route: RouteManifestEntry): ComponentSummary {

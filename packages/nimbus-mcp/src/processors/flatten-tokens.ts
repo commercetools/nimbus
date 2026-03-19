@@ -1,34 +1,9 @@
 import { readFile } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import type { FlatToken, FlatTokenData } from "../types.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-/** A single flattened design token. */
-export interface FlatToken {
-  /** Dot-separated token name (e.g. "spacing.400"). */
-  name: string;
-  /** Resolved token value (e.g. "16px"). */
-  value: string;
-  /** Top-level category (e.g. "spacing", "color", "fontSize"). */
-  category: string;
-  /** Path segments from root to this token. */
-  path: string[];
-}
-
-/** Complete output of the token flattener. */
-export interface FlatTokenData {
-  /** All tokens in a flat list. */
-  tokens: FlatToken[];
-  /** Tokens grouped by category. */
-  byCategory: Record<string, FlatToken[]>;
-  /** Reverse-lookup: value → list of token names that resolve to it. */
-  reverseLookup: Record<string, string[]>;
-}
 
 // ---------------------------------------------------------------------------
 // Helpers

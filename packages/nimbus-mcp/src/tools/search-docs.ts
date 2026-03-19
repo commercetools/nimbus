@@ -1,16 +1,19 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import Fuse from "fuse.js";
 import { z } from "zod";
-import {
-  getSearchIndex,
-  getRouteData,
-  type SearchIndexEntry,
-  type RouteData,
-} from "../data-loader.js";
-import type { DocSearchResult } from "../types.js";
+import { getSearchIndex, getRouteData } from "../data-loader.js";
+import type {
+  SearchIndexEntry,
+  RouteData,
+  DocSearchResult,
+  CandidateResult,
+  ViewMatch,
+} from "../types.js";
 
 const MAX_RESULTS = 10;
 const SNIPPET_LENGTH = 200;
+/** Number of candidates passed to phase 2 (deep route-file search). */
+const PHASE2_CANDIDATE_LIMIT = MAX_RESULTS * 2;
 
 /** Cached Fuse instance for the search index (created on first fuzzy search). */
 let fuseInstance: Fuse<SearchIndexEntry> | undefined;
@@ -68,13 +71,6 @@ function extractSnippet(content: string, query: string): string {
 /** Convert a route slug to the file name format (route slashes → dashes). */
 function routeToSlug(route: string): string {
   return route.replace(/\//g, "-");
-}
-
-interface CandidateResult {
-  /** Entries that matched in phase 1 (exact or fuzzy on metadata). */
-  matched: SearchIndexEntry[];
-  /** Additional entries added as fallback candidates for deep search. */
-  expanded: SearchIndexEntry[];
 }
 
 /**
@@ -145,11 +141,6 @@ function findCandidates(
   return { matched, expanded };
 }
 
-interface ViewMatch {
-  viewKey: string;
-  content: string;
-}
-
 /**
  * Phase 2: Load the full route data for a candidate and search across all
  * views for the query. Returns the best matching view, or null if no view
@@ -168,23 +159,25 @@ async function searchRouteViews(
     return null;
   }
 
-  // Collect all searchable views.
-  const views: Array<{ key: string; content: string }> = [];
+  // Collect all searchable views. Store lowercased content once to avoid
+  // repeated toLowerCase() calls across the two search passes below.
+  const views: Array<{ key: string; content: string; lower: string }> = [];
 
   if (routeData.views) {
     for (const [key, view] of Object.entries(routeData.views)) {
       if (view.mdx) {
-        views.push({ key, content: stripMarkdown(view.mdx) });
+        const content = stripMarkdown(view.mdx);
+        views.push({ key, content, lower: content.toLowerCase() });
       }
     }
   } else if (routeData.mdx) {
-    views.push({ key: "overview", content: stripMarkdown(routeData.mdx) });
+    const content = stripMarkdown(routeData.mdx);
+    views.push({ key: "overview", content, lower: content.toLowerCase() });
   }
 
   // Find the first view where every query token appears.
   for (const view of views) {
-    const lower = view.content.toLowerCase();
-    if (tokens.every((t) => lower.includes(t))) {
+    if (tokens.every((t) => view.lower.includes(t))) {
       return { viewKey: view.key, content: view.content };
     }
   }
@@ -193,8 +186,7 @@ async function searchRouteViews(
   let bestView: (typeof views)[number] | null = null;
   let bestHits = 0;
   for (const view of views) {
-    const lower = view.content.toLowerCase();
-    const hits = tokens.filter((t) => lower.includes(t)).length;
+    const hits = tokens.filter((t) => view.lower.includes(t)).length;
     if (hits > bestHits) {
       bestHits = hits;
       bestView = view;
@@ -223,9 +215,10 @@ export function registerSearchDocs(server: McpServer): void {
     {
       title: "Search Docs",
       description:
-        "Searches across all Nimbus documentation (components, patterns, guides, tokens) " +
-        "including implementation details, props, guidelines, and accessibility views. " +
-        "Returns the top matching pages with content snippets from the matched section.",
+        "Search all Nimbus docs (components, patterns, hooks, icons, tokens) including guidelines and accessibility views. " +
+        "Returns matching pages with content snippets. Props are not searchable here — use get_component with section='props' for prop details. " +
+        "Each result has a category — follow up with: get_component ('Components', 'Patterns'), " +
+        "get_tokens ('Tokens'), search_icons ('Icons'). For other categories the snippet is the primary content.",
       inputSchema: {
         query: z
           .string()
@@ -244,10 +237,12 @@ export function registerSearchDocs(server: McpServer): void {
         const matchedIds = new Set(matched.map((e) => e.id));
 
         // Phase 2: Load full route data for candidates and search all views.
-        const loadPromises = allCandidates.slice(0, 20).map(async (entry) => {
-          const viewMatch = await searchRouteViews(entry.route, query);
-          return { entry, viewMatch, wasMatched: matchedIds.has(entry.id) };
-        });
+        const loadPromises = allCandidates
+          .slice(0, PHASE2_CANDIDATE_LIMIT)
+          .map(async (entry) => {
+            const viewMatch = await searchRouteViews(entry.route, query);
+            return { entry, viewMatch, wasMatched: matchedIds.has(entry.id) };
+          });
 
         const loaded = await Promise.all(loadPromises);
 
@@ -271,6 +266,7 @@ export function registerSearchDocs(server: McpServer): void {
             title: entry.title,
             description: entry.description,
             path: entry.route,
+            category: entry.menu[0] ?? "",
             ...(viewMatch && viewMatch.viewKey !== "overview"
               ? { matchedView: viewMatch.viewKey }
               : {}),

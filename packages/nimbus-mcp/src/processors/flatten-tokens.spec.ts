@@ -5,8 +5,8 @@ import {
   flattenTokenTree,
   flattenTokensFromFile,
   reverseLookup,
-  type FlatTokenData,
 } from "./flatten-tokens.js";
+import type { FlatTokenData } from "../types.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const THEME_TOKENS_PATH = resolve(

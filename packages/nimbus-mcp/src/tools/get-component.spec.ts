@@ -54,7 +54,6 @@ describe("get_component — metadata", () => {
     expect(data.path).toBe("/components/buttons/button");
     expect(Array.isArray(data.sections)).toBe(true);
     expect(data.sections).toContain("props");
-    expect(data.sections).toContain("recipe");
   });
 
   it("is case-insensitive", async () => {
@@ -126,6 +125,7 @@ describe("get_component — props section", () => {
     expect(names).toContain("variant");
     expect(names).toContain("size");
     expect(names).toContain("colorPalette");
+    expect(names).toContain("isDisabled");
   });
 
   it("excludes low-level DOM/Chakra system props", async () => {
@@ -164,6 +164,111 @@ describe("get_component — props section", () => {
     );
     expect(variantProp).toBeDefined();
     expect(variantProp.defaultValue).toBe('"subtle"');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Compound component props (sub-component aggregation)
+// ---------------------------------------------------------------------------
+
+describe("get_component — compound component props", () => {
+  let client: Client;
+  let close: () => Promise<void>;
+
+  beforeAll(async () => {
+    const ctx = createTestClient();
+    await ctx.connect();
+    client = ctx.client;
+    close = ctx.close;
+  });
+
+  afterAll(() => close());
+
+  it("returns aggregated props for a compound component (Drawer)", async () => {
+    const { text, isError } = await callGetComponent(client, {
+      name: "Drawer",
+      section: "props",
+    });
+    expect(isError).toBeFalsy();
+
+    const data = JSON.parse(text);
+    expect(data.component).toBe("Drawer");
+    expect(data.propCount).toBeGreaterThan(0);
+    expect(Array.isArray(data.props)).toBe(true);
+  });
+
+  it("tags each prop with its subComponent name", async () => {
+    const { text } = await callGetComponent(client, {
+      name: "Drawer",
+      section: "props",
+    });
+    const data = JSON.parse(text);
+    for (const prop of data.props) {
+      expect(typeof prop.subComponent).toBe("string");
+      expect(prop.subComponent.toLowerCase()).toMatch(/^drawer/);
+    }
+  });
+
+  it("includes known Drawer props (e.g. isOpen from DrawerRoot)", async () => {
+    const { text } = await callGetComponent(client, {
+      name: "Drawer",
+      section: "props",
+    });
+    const data = JSON.parse(text);
+    const names = data.props.map((p: { name: string }) => p.name);
+    expect(names).toContain("isOpen");
+  });
+
+  it("does not include standalone top-level components as sub-components (Icon)", async () => {
+    const { text } = await callGetComponent(client, {
+      name: "Icon",
+      section: "props",
+    });
+    const data = JSON.parse(text);
+    const subComponents = [
+      ...new Set(
+        data.props
+          .map((p: { subComponent?: string }) => p.subComponent)
+          .filter(Boolean)
+      ),
+    ];
+    // IconButton and IconToggleButton are standalone components, not sub-components of Icon
+    expect(subComponents).not.toContain("IconButton");
+    expect(subComponents).not.toContain("IconToggleButton");
+  });
+
+  it("does not include *Props type files as sub-components (Steps)", async () => {
+    const { text } = await callGetComponent(client, {
+      name: "Steps",
+      section: "props",
+    });
+    const data = JSON.parse(text);
+    const subComponents = [
+      ...new Set(
+        data.props
+          .map((p: { subComponent?: string }) => p.subComponent)
+          .filter(Boolean)
+      ),
+    ] as string[];
+    // *Props files are type-only duplicates and should be excluded
+    expect(subComponents.some((s) => s.endsWith("Props"))).toBe(false);
+  });
+
+  it("does not include method exports as sub-components (FieldErrors)", async () => {
+    const { text } = await callGetComponent(client, {
+      name: "FieldErrors",
+      section: "props",
+    });
+    const data = JSON.parse(text);
+    const subComponents = [
+      ...new Set(
+        data.props
+          .map((p: { subComponent?: string }) => p.subComponent)
+          .filter(Boolean)
+      ),
+    ] as string[];
+    // Method exports like FieldErrors.getBuiltInMessage should be excluded
+    expect(subComponents.some((s) => s.includes("."))).toBe(false);
   });
 });
 
