@@ -2,7 +2,13 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import Fuse from "fuse.js";
 import { z } from "zod";
 import { getIconCatalog } from "../data-loader.js";
-import type { IconCatalogEntry, SearchIconsResponse } from "../types.js";
+import type {
+  FuseCache,
+  IconCatalogEntry,
+  RelevanceFields,
+  SearchIconsResponse,
+} from "../types.js";
+import { rankByRelevance } from "../utils/relevance.js";
 
 /** Number of results returned per page. */
 const PAGE_SIZE = 10;
@@ -12,12 +18,6 @@ const PAGE_SIZE = 10;
  * Also used as Fuse.js minMatchCharLength so both passes share the same threshold.
  */
 const MIN_KEYWORD_LENGTH = 2;
-
-/** Cached Fuse instance and icon list (created on first call, avoids double catalog load). */
-interface FuseCache {
-  fuse: Fuse<IconCatalogEntry>;
-  icons: IconCatalogEntry[];
-}
 
 let fuseCache: FuseCache | undefined;
 
@@ -31,6 +31,8 @@ async function getFuse(): Promise<FuseCache> {
           { name: "name", weight: 2 },
           { name: "keywords", weight: 1 },
         ],
+        // Fuse surfaces candidates up to this threshold; the post-filter
+        // (score < 0.35) is intentionally tighter to discard borderline matches.
         threshold: 0.4,
         ignoreLocation: true,
         includeScore: true,
@@ -41,41 +43,50 @@ async function getFuse(): Promise<FuseCache> {
   return fuseCache;
 }
 
+/** Maps an icon entry to RelevanceFields for ranking. */
+function toRelevanceFields(icon: IconCatalogEntry): RelevanceFields {
+  return {
+    title: icon.name,
+    description: "",
+    tags: icon.keywords.join(" "),
+  };
+}
+
 /**
  * Two-pass search matching the list_components pattern:
- * Pass 1: Substring match — query contains a keyword or keyword contains query.
+ * Pass 1: Substring match — icon name/keyword contains the query.
  * Pass 2: Fuse.js fuzzy fallback.
  */
 async function searchIcons(query: string): Promise<IconCatalogEntry[]> {
   const { fuse, icons } = await getFuse();
-  const needle = query.toLowerCase();
+  const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+  const needle = tokens.join(" ");
 
-  // Pass 1: substring match on name and keywords, name matches ranked first.
+  // Pass 1: substring match on name and keywords.
   // Only checks if the icon name/keyword contains the needle — not the reverse —
   // to avoid short icon names matching inside long or nonsense query strings.
-  const nameMatches: IconCatalogEntry[] = [];
-  const keywordMatches: IconCatalogEntry[] = [];
+  const substringMatches: IconCatalogEntry[] = [];
 
   for (const icon of icons) {
     const nameLower = icon.name.toLowerCase();
     if (nameLower.includes(needle)) {
-      nameMatches.push(icon);
+      substringMatches.push(icon);
     } else if (
       icon.keywords.some(
-        (kw) => kw.length >= MIN_KEYWORD_LENGTH && kw.includes(needle)
+        (kw) =>
+          kw.length >= MIN_KEYWORD_LENGTH && kw.toLowerCase().includes(needle)
       )
     ) {
-      keywordMatches.push(icon);
+      substringMatches.push(icon);
     }
   }
 
-  const substringMatches = [...nameMatches, ...keywordMatches];
-
   if (substringMatches.length > 0) {
-    return substringMatches;
+    return rankByRelevance(substringMatches, tokens, toRelevanceFields);
   }
 
-  // Pass 2: fuzzy fallback — filter out low-quality matches
+  // Pass 2: fuzzy fallback — post-filter is tighter than Fuse threshold
+  // (0.35 vs 0.4) to discard borderline matches that Fuse surfaces.
   return fuse
     .search(query)
     .filter((r) => (r.score ?? 1) < 0.35)
@@ -102,6 +113,7 @@ export function registerSearchIcons(server: McpServer): void {
       inputSchema: {
         query: z
           .string()
+          .min(1)
           .describe(
             'Search query to match against icon names and keywords, e.g. "checkmark", "arrow", "settings".'
           ),

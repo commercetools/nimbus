@@ -2,6 +2,8 @@
  * Shared type definitions for the Nimbus MCP server.
  */
 
+import type Fuse from "fuse.js";
+
 // ---------------------------------------------------------------------------
 // Core types
 // ---------------------------------------------------------------------------
@@ -273,9 +275,15 @@ export interface SearchIconsResponse {
   query: string;
   importPath: string;
   totalResults: number;
-  offset?: number;
-  pageSize?: number;
-  hasMore?: boolean;
+  offset: number;
+  pageSize: number;
+  hasMore: boolean;
   hint?: string;
   results: IconResult[];
+}
+
+/** Cached Fuse instance and icon list (created on first call, avoids double catalog load). */
+export interface FuseCache {
+  fuse: Fuse<IconCatalogEntry>;
+  icons: IconCatalogEntry[];
 }

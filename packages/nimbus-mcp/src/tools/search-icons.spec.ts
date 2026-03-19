@@ -22,7 +22,11 @@ async function callSearchIcons(
     (c) => c.type === "text"
   )?.text;
 
-  return JSON.parse(text!) as SearchIconsResponse;
+  if (!text) {
+    throw new Error("search_icons returned no text content");
+  }
+
+  return JSON.parse(text) as SearchIconsResponse;
 }
 
 describe("search_icons — basic search", () => {
