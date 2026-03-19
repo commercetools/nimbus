@@ -66,3 +66,21 @@ console.log = (...args: unknown[]) => {
   if (isCssParseNoise(args)) return;
   originalConsoleLog.apply(console, args);
 };
+
+// Intercept process.stderr.write as a final safety net.
+// Vitest workers may route JSDOM virtualConsole output directly to stderr,
+// bypassing the console.error patch above.
+const originalStderrWrite = process.stderr.write.bind(process.stderr);
+process.stderr.write = (
+  chunk: Uint8Array | string,
+  ...rest: unknown[]
+): boolean => {
+  if (
+    typeof chunk === "string" &&
+    chunk.includes("Could not parse CSS stylesheet")
+  ) {
+    return true;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (originalStderrWrite as any)(chunk, ...rest);
+};
