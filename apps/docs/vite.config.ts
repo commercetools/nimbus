@@ -56,14 +56,9 @@ export default defineConfig({
 
           // Framework chunks
           if (id.includes("node_modules")) {
-            // React vendor chunk
-            if (id.includes("react") || id.includes("react-dom")) {
-              return "react-vendor";
-            }
-
-            // MDX runtime chunk
-            if (id.includes("@mdx-js")) {
-              return "mdx-runtime";
+            // Nimbus Icons chunk (must be before nimbus-ui check)
+            if (id.includes("@commercetools/nimbus-icons")) {
+              return "nimbus-icons";
             }
 
             // Nimbus UI chunk
@@ -71,9 +66,18 @@ export default defineConfig({
               return "nimbus-ui";
             }
 
-            // Nimbus Icons chunk
-            if (id.includes("@commercetools/nimbus-icons")) {
-              return "nimbus-icons";
+            // React vendor chunk — match only react and react-dom core packages,
+            // not react-aria, react-stately, etc. which belong in the general vendor chunk
+            if (
+              /\/node_modules\/(react-dom|react)\//.test(id) ||
+              id.includes("/scheduler/")
+            ) {
+              return "react-vendor";
+            }
+
+            // MDX runtime chunk
+            if (id.includes("@mdx-js")) {
+              return "mdx-runtime";
             }
 
             // Syntax highlighting chunk

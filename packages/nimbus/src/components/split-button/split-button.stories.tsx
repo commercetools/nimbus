@@ -20,7 +20,7 @@ export const Basic: Story = {
   render: () => (
     <SplitButton
       defaultOpen={true}
-      onAction={(id) => console.log(`Action: ${id}`)}
+      onAction={() => {}}
       aria-label="More actions"
       icon={<Save />}
     >

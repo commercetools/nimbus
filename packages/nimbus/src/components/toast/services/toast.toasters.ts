@@ -2,6 +2,9 @@ import { createToaster } from "@chakra-ui/react/toast";
 import type { ToastPlacement } from "../toast.types";
 import { ALL_PLACEMENTS, PLACEMENT_HOTKEYS } from "../constants";
 
+/** Local alias to avoid exposing transitive @zag-js/toast types in declarations. */
+type Toaster = ReturnType<typeof createToaster>;
+
 /**
  * Lazily-initialized toaster instances per placement.
  *
@@ -83,13 +86,13 @@ export function onToastersActivated(callback: () => void): () => void {
 /**
  * Get toaster for a specific placement.
  */
-export function getToaster(placement: ToastPlacement) {
+export function getToaster(placement: ToastPlacement): Toaster | undefined {
   return ensureToasters().get(placement);
 }
 
 /**
  * Get all toaster entries (used by ToastOutlet for rendering).
  */
-export function getToasterEntries() {
+export function getToasterEntries(): Array<[ToastPlacement, Toaster]> {
   return Array.from(ensureToasters().entries());
 }

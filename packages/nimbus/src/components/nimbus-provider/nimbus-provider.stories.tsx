@@ -35,7 +35,6 @@ const mockRouter: NimbusRouterConfig = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   navigate: (href: string, options?: any) => {
     mockNavigate(href, options);
-    console.log(`Navigating to: ${useHref(href)}`, options);
   },
   useHref,
 };
