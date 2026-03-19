@@ -12,6 +12,9 @@ import type { DocSearchResult } from "../types.js";
 const MAX_RESULTS = 10;
 const SNIPPET_LENGTH = 200;
 
+/** Cached Fuse instance for the search index (created on first fuzzy search). */
+let fuseInstance: Fuse<SearchIndexEntry> | undefined;
+
 /**
  * Minimum number of phase-1 candidates before we expand to all component pages.
  * If the lightweight index returns fewer than this, we broaden the candidate
@@ -103,18 +106,20 @@ function findCandidates(
   }
 
   // Fuzzy fallback — broaden the candidate pool.
-  const fuse = new Fuse(index, {
-    keys: [
-      { name: "title", weight: 3 },
-      { name: "description", weight: 2 },
-      { name: "tags", weight: 2 },
-      { name: "content", weight: 1 },
-    ],
-    threshold: 0.4,
-    ignoreLocation: true,
-    minMatchCharLength: 3,
-  });
-  const fuzzyMatches = fuse.search(query).map((r) => r.item);
+  if (!fuseInstance) {
+    fuseInstance = new Fuse(index, {
+      keys: [
+        { name: "title", weight: 3 },
+        { name: "description", weight: 2 },
+        { name: "tags", weight: 2 },
+        { name: "content", weight: 1 },
+      ],
+      threshold: 0.4,
+      ignoreLocation: true,
+      minMatchCharLength: 3,
+    });
+  }
+  const fuzzyMatches = fuseInstance.search(query).map((r) => r.item);
 
   // Merge exact + fuzzy, deduplicated, keeping exact matches first.
   const seen = new Set(exactMatches.map((e) => e.id));
@@ -280,7 +285,7 @@ export function registerSearchDocs(server: McpServer): void {
               type: "text" as const,
               text:
                 output.length > 0
-                  ? JSON.stringify(output, null, 2)
+                  ? JSON.stringify(output)
                   : "No matching documentation found.",
             },
           ],

@@ -117,7 +117,7 @@ export function registerListComponents(server: McpServer): void {
               type: "text" as const,
               text:
                 summaries.length > 0
-                  ? JSON.stringify(summaries, null, 2)
+                  ? JSON.stringify(summaries)
                   : "No components found.",
             },
           ],
