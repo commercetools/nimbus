@@ -880,7 +880,7 @@ export const DescriptionsAndWarnings: Story = {
             );
             const localeField = await getInputForLocaleField(textField, "en");
             // Make sure input's event handlers are initialized
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            await new Promise((resolve) => setTimeout(resolve, 50));
             // Focusing input sets `touched` to `true`
             await localeField.focus();
             // Make sure description field is set as field's aria-describedby element
@@ -998,7 +998,7 @@ export const DescriptionsAndWarnings: Story = {
               "en"
             );
             // Make sure input's event handlers are initialized
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            await new Promise((resolve) => setTimeout(resolve, 50));
             // Focusing input sets `touched` to `true`
             await localeField.focus();
             // Make sure description field is set as field's aria-describedby element
@@ -1145,7 +1145,7 @@ export const DescriptionsAndWarnings: Story = {
               "en"
             );
             // Make sure input's event handlers are initialized
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            await new Promise((resolve) => setTimeout(resolve, 50));
             // Focusing input sets `touched` to `true`
             await localeField.focus();
             // Make sure description field is set as field's aria-describedby element
@@ -1284,7 +1284,7 @@ export const DescriptionsAndWarnings: Story = {
             );
             const localeField = await getInputForLocaleField(moneyField, "USD");
             // Make sure input's event handlers are initialized
-            await new Promise((resolve) => setTimeout(resolve, 100));
+            await new Promise((resolve) => setTimeout(resolve, 50));
             // Focusing input sets `touched` to `true`
             await localeField.focus();
             // Make sure description field is set as field's aria-describedby element
@@ -1412,7 +1412,7 @@ export const ErrorsAndValidation: Story = {
         // Focus on the default locale input to trigger touched state
         const defaultInput = await getInputForLocaleField(textField, "en");
         // Make sure input's event handlers are initialized
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 50));
         await defaultInput.focus();
         // Verify group-level errors ARE now visible after being touched
         await checkFieldError(textField, baseContextFields.error);
@@ -1448,7 +1448,7 @@ export const ErrorsAndValidation: Story = {
           // Disable the "Show Error" checkbox to remove group-level errors
           await toggleFieldContolCheckbox(canvas, "text", "Show Error");
           // Give toggle time to render
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 50));
           // Verify group-level errors are NOT visible
           await checkFieldItemNotRendered(textField, baseContextFields.error);
           await checkFieldItemNotRendered(textField, legacyError!);
@@ -1472,7 +1472,7 @@ export const ErrorsAndValidation: Story = {
           // Toggle the "Show Errors" checkbox to enable locale-specific errors
           await toggleFieldContolCheckbox(canvas, "text", "Show Errors");
           // Give toggle time to render
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 50));
           // Verify field is auto-expanded due to locale-specific errors
           await checkFieldIsExpanded(textField, "text", baseLocales, "en");
           // Verify toggle button is expanded and disabled
@@ -1506,7 +1506,7 @@ export const ErrorsAndValidation: Story = {
           // Disable the "Show Errors" checkbox to remove locale-specific errors
           await toggleFieldContolCheckbox(canvas, "text", "Show Errors");
           // Give toggle time to render
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 50));
           // Verify locale-specific error messages are NOT visible
           await checkFieldItemNotRendered(
             textField,
@@ -1596,7 +1596,7 @@ export const ErrorsAndValidation: Story = {
           // Disable the "Show Error" checkbox to remove group-level errors
           await toggleFieldContolCheckbox(canvas, "multiLine", "Show Error");
           // Give toggle time to render
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 50));
           // Verify group-level errors are NOT visible
           await checkFieldItemNotRendered(
             multiLineField,
@@ -1629,7 +1629,7 @@ export const ErrorsAndValidation: Story = {
           // Toggle the "Show Errors" checkbox to enable locale-specific errors
           await toggleFieldContolCheckbox(canvas, "multiLine", "Show Errors");
           // Give toggle time to render
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 50));
           // Verify field is auto-expanded due to locale-specific errors
           await checkFieldIsExpanded(
             multiLineField,
@@ -1674,7 +1674,7 @@ export const ErrorsAndValidation: Story = {
           // Disable the "Show Errors" checkbox to remove locale-specific errors
           await toggleFieldContolCheckbox(canvas, "multiLine", "Show Errors");
           // Give toggle time to render
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 50));
           // Verify locale-specific error messages are NOT visible
           await checkFieldItemNotRendered(
             multiLineField,
@@ -1722,7 +1722,7 @@ export const ErrorsAndValidation: Story = {
           "en"
         );
         // Give richText input time to initialize event handlers
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 50));
         await defaultInput.focus();
         // Verify group-level errors ARE now visible after being touched
         await checkFieldError(richTextField, baseContextFields.error);
@@ -1767,7 +1767,7 @@ export const ErrorsAndValidation: Story = {
           // Disable the "Show Error" checkbox to remove group-level errors
           await toggleFieldContolCheckbox(canvas, "richText", "Show Error");
           // Give toggle time to render
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 50));
           // Verify group-level errors are NOT visible
           await checkFieldItemNotRendered(
             richTextField,
@@ -1800,7 +1800,7 @@ export const ErrorsAndValidation: Story = {
           // Toggle the "Show Errors" checkbox to enable locale-specific errors
           await toggleFieldContolCheckbox(canvas, "richText", "Show Errors");
           // Give toggle time to render
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 50));
           // Verify field is auto-expanded due to locale-specific errors
           await checkFieldIsExpanded(
             richTextField,
@@ -1846,7 +1846,7 @@ export const ErrorsAndValidation: Story = {
           // Disable the "Show Errors" checkbox to remove locale-specific errors
           await toggleFieldContolCheckbox(canvas, "richText", "Show Errors");
           // Give toggle time to render
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 50));
           // Verify locale-specific error messages are NOT visible
           await checkFieldItemNotRendered(
             richTextField,
@@ -1939,7 +1939,7 @@ export const ErrorsAndValidation: Story = {
           // Disable the "Show Error" checkbox to remove group-level errors
           await toggleFieldContolCheckbox(canvas, "money", "Show Error");
           // Give toggle time to render
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 50));
           // Verify group-level errors are NOT visible
           await checkFieldItemNotRendered(
             moneyField,
@@ -1972,7 +1972,7 @@ export const ErrorsAndValidation: Story = {
           // Toggle the "Show Errors" checkbox to enable locale-specific errors
           await toggleFieldContolCheckbox(canvas, "money", "Show Errors");
           // Give toggle time to render
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 50));
           // Verify field is auto-expanded due to locale-specific errors
           await checkFieldIsExpanded(
             moneyField,
@@ -2014,7 +2014,7 @@ export const ErrorsAndValidation: Story = {
           // Disable the "Show Errors" checkbox to remove locale-specific errors
           await toggleFieldContolCheckbox(canvas, "money", "Show Errors");
           // Give toggle time to render
-          await new Promise((resolve) => setTimeout(resolve, 100));
+          await new Promise((resolve) => setTimeout(resolve, 50));
           // Verify locale-specific error messages are NOT visible
           for await (const currency of baseCurrencies) {
             if (currency !== "USD") {

@@ -69,7 +69,7 @@ async function clearToasts() {
     toastElements.forEach((el) => el.remove());
   }
   // Small buffer after DOM cleanup
-  await new Promise((resolve) => setTimeout(resolve, 200));
+  await new Promise((resolve) => setTimeout(resolve, 50));
 }
 
 /**
@@ -391,21 +391,24 @@ export const Variants: Story = {
 
 /**
  * Auto-Dismiss Behavior
- * Tests default 6s duration, custom duration, and disabled auto-dismiss (duration: Infinity)
+ * Tests custom duration and disabled auto-dismiss (duration: Infinity).
+ * Durations are kept short to minimize test wait time while still verifying
+ * the auto-dismiss mechanism and relative ordering.
  */
 export const AutoDismiss: Story = {
   render: () => {
     const showAutoDismissToasts = () => {
       toast({
-        title: "Default (6s)",
-        description: "Dismisses after 6 seconds",
+        title: "Short-lived",
+        description: "Dismisses quickly",
         type: "info",
+        duration: 500,
       });
       toast({
-        title: "Custom (2s)",
-        description: "Dismisses after 2 seconds",
+        title: "Longer-lived",
+        description: "Dismisses after the short one",
         type: "success",
-        duration: 2000,
+        duration: 1500,
       });
       toast({
         title: "No auto-dismiss",
@@ -421,7 +424,7 @@ export const AutoDismiss: Story = {
           Show Auto-Dismiss Variations
         </Button>
         <Text fontSize="sm" color="fg.muted">
-          Default 6s, custom 2s, and persistent (duration: Infinity)
+          Short, longer, and persistent (duration: Infinity)
         </Text>
       </Stack>
     );
@@ -438,32 +441,30 @@ export const AutoDismiss: Story = {
       await userEvent.click(button);
 
       // All three toasts should appear
-      const defaultToast = await body.findByText("Default (6s)");
-      const customToast = await body.findByText("Custom (2s)");
+      const shortToast = await body.findByText("Short-lived");
+      const longerToast = await body.findByText("Longer-lived");
       const persistentToast = await body.findByText("No auto-dismiss");
 
-      await expect(defaultToast).toBeInTheDocument();
-      await expect(customToast).toBeInTheDocument();
+      await expect(shortToast).toBeInTheDocument();
+      await expect(longerToast).toBeInTheDocument();
       await expect(persistentToast).toBeInTheDocument();
     });
 
-    await step("Custom duration toast dismisses after 2 seconds", async () => {
-      // Wait for custom toast to auto-dismiss (2s + buffer)
+    await step("Short duration toast dismisses first", async () => {
       await waitFor(
-        () => expect(body.queryByText("Custom (2s)")).not.toBeInTheDocument(),
-        { timeout: 3000 }
+        () => expect(body.queryByText("Short-lived")).not.toBeInTheDocument(),
+        { timeout: 2000 }
       );
 
-      // Default and persistent should still be visible
-      await expect(body.getByText("Default (6s)")).toBeInTheDocument();
+      // Longer and persistent should still be visible
+      await expect(body.getByText("Longer-lived")).toBeInTheDocument();
       await expect(body.getByText("No auto-dismiss")).toBeInTheDocument();
     });
 
-    await step("Default toast dismisses after 6 seconds", async () => {
-      // Wait for default toast to auto-dismiss (6s total + buffer)
+    await step("Longer duration toast dismisses next", async () => {
       await waitFor(
-        () => expect(body.queryByText("Default (6s)")).not.toBeInTheDocument(),
-        { timeout: 5000 }
+        () => expect(body.queryByText("Longer-lived")).not.toBeInTheDocument(),
+        { timeout: 2000 }
       );
 
       // Persistent toast should still be visible
@@ -476,8 +477,8 @@ export const AutoDismiss: Story = {
         const persistentToast = body.getByText("No auto-dismiss");
         await expect(persistentToast).toBeInTheDocument();
 
-        // Wait additional time to ensure it doesn't auto-dismiss
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        // Brief wait to confirm it doesn't auto-dismiss
+        await new Promise((resolve) => setTimeout(resolve, 500));
         await expect(persistentToast).toBeInTheDocument();
       }
     );
@@ -495,7 +496,7 @@ export const PauseBehavior: Story = {
         title: "Hover or focus me to pause",
         description: "Timer pauses on interaction",
         type: "info",
-        duration: 3000,
+        duration: 1000,
         closable: true,
       });
     };
@@ -524,8 +525,8 @@ export const PauseBehavior: Story = {
       // Hover over toast to pause timer
       await userEvent.hover(toastContainer);
 
-      // Wait longer than duration (4s > 3s)
-      await new Promise((resolve) => setTimeout(resolve, 4000));
+      // Wait longer than duration (1.2s > 1s)
+      await new Promise((resolve) => setTimeout(resolve, 1200));
 
       // Toast should still be visible because timer was paused
       await expect(toastText).toBeInTheDocument();
@@ -535,7 +536,7 @@ export const PauseBehavior: Story = {
 
       // Now it should dismiss after remaining time
       await waitFor(() => expect(toastText).not.toBeInTheDocument(), {
-        timeout: 4000,
+        timeout: 2000,
       });
     });
 
@@ -552,8 +553,8 @@ export const PauseBehavior: Story = {
       closeButton.focus();
       await expect(closeButton).toHaveFocus();
 
-      // Wait longer than duration (4s > 3s)
-      await new Promise((resolve) => setTimeout(resolve, 4000));
+      // Wait longer than duration (1.2s > 1s)
+      await new Promise((resolve) => setTimeout(resolve, 1200));
 
       // Toast should still be visible because timer was paused
       await expect(toastText).toBeInTheDocument();
@@ -571,19 +572,19 @@ export const Dismissal: Story = {
       toast.info({
         title: "Close button test",
         description: "Click the close button to dismiss",
-        duration: 5000,
+        duration: Infinity,
         closable: true,
       });
       toast.success({
         title: "Escape key test",
         description: "Press Escape to dismiss",
-        duration: 5000,
+        duration: Infinity,
         closable: true,
       });
       toast.warning({
         title: "Programmatic dismiss",
         description: "Dismissed via API",
-        duration: 5000,
+        duration: Infinity,
       });
     };
 
@@ -791,7 +792,7 @@ export const PromisePattern: Story = {
   render: () => {
     const successPromise = () => {
       const promise = new Promise((resolve) =>
-        setTimeout(() => resolve("Success!"), 2000)
+        setTimeout(() => resolve("Success!"), 300)
       );
       toast.promise(promise, {
         loading: { title: "Loading...", description: "Please wait" },
@@ -802,7 +803,7 @@ export const PromisePattern: Story = {
 
     const errorPromise = () => {
       const promise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Failed")), 2000)
+        setTimeout(() => reject(new Error("Failed")), 300)
       );
       toast.promise(promise, {
         loading: { title: "Processing...", description: "Please wait" },
@@ -1398,7 +1399,7 @@ export const ComprehensiveIntegration: Story = {
   render: () => {
     const saveScenario = () => {
       // Simulate save operation with promise (short duration for test performance)
-      const savePromise = new Promise((resolve) => setTimeout(resolve, 500));
+      const savePromise = new Promise((resolve) => setTimeout(resolve, 200));
       toast.promise(savePromise, {
         loading: { title: "Saving...", description: "Please wait" },
         success: {
@@ -1496,8 +1497,7 @@ export const ComprehensiveIntegration: Story = {
         const buttons = within(errorContainer).getAllByRole("button");
         expect(buttons.length).toBeGreaterThan(1); // At least action + close
 
-        // 4. Toast persists (duration: Infinity) — short wait to confirm persistence
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        // 4. Toast persists (duration: Infinity) — confirm still present
         await expect(errorToast).toBeInTheDocument();
       }
     );

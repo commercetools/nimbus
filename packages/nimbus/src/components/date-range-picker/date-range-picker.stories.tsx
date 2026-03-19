@@ -285,7 +285,7 @@ export const Base: Story = {
         await userEvent.click(day5Cell);
 
         // Wait for selection to be processed
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 100));
 
         // Find and click day 10
         const day10Cell = document.body.querySelector('[aria-label*="10,"]')!;
@@ -751,7 +751,7 @@ export const Controlled: Story = {
         await userEvent.click(day5Cell);
 
         // Wait for selection to be processed
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        await new Promise((resolve) => setTimeout(resolve, 100));
 
         // Find and click day 10
         const day10Cell = document.body.querySelector('[aria-label*="10,"]')!;
@@ -2365,7 +2365,7 @@ export const MinMaxValues: Story = {
         await userEvent.keyboard("{Escape}");
 
         // Wait for the calendar to close
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 30));
 
         await waitFor(async () => {
           const calendar = within(document.body).queryByRole("grid");
