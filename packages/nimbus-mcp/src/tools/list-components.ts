@@ -1,17 +1,13 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import Fuse from "fuse.js";
 import { z } from "zod";
-import { getRouteManifest, type RouteManifestEntry } from "../data-loader.js";
-
-/** Shape returned for each component in the response array. */
-interface ComponentSummary {
-  title: string;
-  description: string;
-  path: string;
-  exportName?: string;
-  subcategory?: string;
-  tags?: string[];
-}
+import { getRouteManifest } from "../data-loader.js";
+import type {
+  RouteManifestEntry,
+  ComponentSummary,
+  RelevanceFields,
+} from "../types.js";
+import { filterAndRankByRelevance } from "../utils/relevance.js";
 
 /** Normalises a route entry into a sparse ComponentSummary. */
 function toSummary(route: RouteManifestEntry): ComponentSummary {
@@ -77,23 +73,22 @@ export function registerListComponents(server: McpServer): void {
           routes = routes.filter((r) => r.menu[1]?.toLowerCase() === needle);
         }
 
-        // Two-pass search: exact substring first, fuzzy fallback.
+        // Two-pass search: exact substring first (ranked), fuzzy fallback.
         if (query) {
           const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
 
-          // Pass 1: exact substring match — a route matches if every token
-          // appears in at least one of its searchable fields.
-          const exactMatches = routes.filter((r) => {
-            const haystack = [
-              r.title,
-              r.description,
-              r.exportName ?? "",
-              ...r.tags,
-            ]
-              .join(" ")
-              .toLowerCase();
-            return tokens.every((t) => haystack.includes(t));
+          const getFields = (r: RouteManifestEntry): RelevanceFields => ({
+            title: r.title,
+            description: r.description,
+            tags: [...r.tags, r.exportName ?? ""].join(" "),
           });
+
+          // Pass 1: exact substring match, ranked by field-weighted relevance.
+          const exactMatches = filterAndRankByRelevance(
+            routes,
+            tokens,
+            getFields
+          );
 
           if (exactMatches.length > 0) {
             routes = exactMatches;
@@ -117,7 +112,7 @@ export function registerListComponents(server: McpServer): void {
               type: "text" as const,
               text:
                 summaries.length > 0
-                  ? JSON.stringify(summaries, null, 2)
+                  ? JSON.stringify(summaries)
                   : "No components found.",
             },
           ],

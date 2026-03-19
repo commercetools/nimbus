@@ -1,13 +1,21 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import Fuse from "fuse.js";
+import { readdir } from "node:fs/promises";
+import { resolve } from "node:path";
 import { z } from "zod";
 import {
   getRouteManifest,
   getRouteData,
   getTypeData,
-  type RouteManifestEntry,
-  type TypeData,
+  getDataDir,
 } from "../data-loader.js";
+import type {
+  RouteManifestEntry,
+  TypeData,
+  FilteredProp,
+  ComponentMetadata,
+} from "../types.js";
+import { stripMarkdown } from "../utils/markdown.js";
 
 // ---------------------------------------------------------------------------
 // Section definitions
@@ -20,7 +28,6 @@ const SECTION_KEYS = [
   "implementation",
   "accessibility",
   "props",
-  "recipe",
 ] as const;
 
 /**
@@ -57,16 +64,8 @@ const INHERITED_PARENT_NAMES = new Set([
   "Conditions",
 ]);
 
-interface FilteredProp {
-  name: string;
-  type: string;
-  required: boolean;
-  description: string;
-  defaultValue?: string;
-}
-
 /** Props excluded by name (matches docs-site filter). */
-const EXCLUDED_PROP_NAMES = new Set(["key", "recipe"]);
+const EXCLUDED_PROP_NAMES = new Set(["key"]);
 
 /** Filters type data to match the docs-site API reference. */
 function filterProps(typeData: TypeData): FilteredProp[] {
@@ -89,6 +88,82 @@ function filterProps(typeData: TypeData): FilteredProp[] {
 }
 
 // ---------------------------------------------------------------------------
+// Module-level caches
+// ---------------------------------------------------------------------------
+
+/** Cached Fuse instance + derived catalog for resolveComponent fuzzy fallback. */
+let resolveFuseInstance: Fuse<RouteManifestEntry> | undefined;
+let resolveCatalogCache: RouteManifestEntry[] | undefined;
+/** Keyed against manifest.routes (stable lazy-loaded ref) for cache invalidation. */
+let resolveCatalogRoutesRef: RouteManifestEntry[] | undefined;
+
+/** Cached set of top-level export names for sub-component filtering. */
+let topLevelNamesCache: Set<string> | undefined;
+let topLevelNamesRoutesRef: RouteManifestEntry[] | undefined;
+
+/**
+ * For compound components (e.g. Drawer → DrawerRoot, DrawerContent, …),
+ * the top-level type file has no props. This function finds all sub-component
+ * type files matching `${exportName}*.json`, aggregates their filtered props,
+ * and tags each prop with the sub-component name.
+ */
+async function aggregateSubComponentProps(
+  exportName: string
+): Promise<FilteredProp[]> {
+  const typesDir = resolve(getDataDir(), "docs/types");
+  let files: string[];
+  try {
+    files = await readdir(typesDir);
+  } catch {
+    return [];
+  }
+
+  // Build (and cache) a set of top-level component export names so we can
+  // exclude them from sub-component candidates (e.g. "Icon" should not pull
+  // in "IconButton"). Cache is invalidated when the manifest routes reference
+  // changes (e.g. hot-reload).
+  const manifest = await getRouteManifest();
+  if (!topLevelNamesCache || topLevelNamesRoutesRef !== manifest.routes) {
+    topLevelNamesCache = new Set(
+      manifest.routes
+        .filter((r) => CATALOG_CATEGORIES.has(r.category))
+        .map((r) => (r.exportName ?? r.title).toLowerCase())
+    );
+    topLevelNamesRoutesRef = manifest.routes;
+  }
+  const topLevelNames = topLevelNamesCache;
+
+  const prefix = exportName.toLowerCase();
+  const subFiles = files.filter((f) => {
+    const base = f.replace(/\.json$/, "");
+    const baseLower = base.toLowerCase();
+    return (
+      f.endsWith(".json") &&
+      baseLower.startsWith(prefix) &&
+      baseLower !== prefix && // exclude the top-level file itself
+      !base.includes(".") && // exclude method exports (e.g. FieldErrors.getBuiltInMessage)
+      !base.endsWith("Props") && // exclude type-only duplicates (e.g. StepsRootProps)
+      !topLevelNames.has(baseLower) // exclude standalone top-level components
+    );
+  });
+
+  const settled = await Promise.allSettled(
+    subFiles.map(async (file) => {
+      const subName = file.replace(/\.json$/, "");
+      const typeData = await getTypeData(subName);
+      return filterProps(typeData).map((p) => ({
+        ...p,
+        subComponent: subName,
+      }));
+    })
+  );
+
+  return settled
+    .filter((r) => r.status === "fulfilled")
+    .flatMap((r) => (r as PromiseFulfilledResult<FilteredProp[]>).value);
+}
+
+// ---------------------------------------------------------------------------
 // Route resolution helpers
 // ---------------------------------------------------------------------------
 
@@ -106,9 +181,21 @@ async function resolveComponent(
   const manifest = await getRouteManifest();
   const needle = name.toLowerCase();
 
-  const catalog = manifest.routes.filter(
-    (r) => CATALOG_CATEGORIES.has(r.category) && r.menu.length === 3
-  );
+  // Rebuild catalog + Fuse only when the manifest reference changes (e.g. hot-reload).
+  // Keyed against manifest.routes (stable lazy-loaded ref) — not against the
+  // derived catalog array, which would be a new reference on every call.
+  if (!resolveCatalogCache || resolveCatalogRoutesRef !== manifest.routes) {
+    resolveCatalogCache = manifest.routes.filter(
+      (r) => CATALOG_CATEGORIES.has(r.category) && r.menu.length === 3
+    );
+    resolveFuseInstance = new Fuse(resolveCatalogCache, {
+      keys: ["title", "exportName"],
+      threshold: 0.3,
+      ignoreLocation: true,
+    });
+    resolveCatalogRoutesRef = manifest.routes;
+  }
+  const catalog = resolveCatalogCache;
 
   // Pass 1: exact match
   const exact = catalog.find((r) => {
@@ -119,13 +206,8 @@ async function resolveComponent(
   });
   if (exact) return exact;
 
-  // Pass 2: fuzzy fallback for typo tolerance
-  const fuse = new Fuse(catalog, {
-    keys: ["title", "exportName"],
-    threshold: 0.3,
-    ignoreLocation: true,
-  });
-  const fuzzyResults = fuse.search(name);
+  // Pass 2: fuzzy fallback (uses cached Fuse instance built above).
+  const fuzzyResults = resolveFuseInstance!.search(name);
   return fuzzyResults[0]?.item;
 }
 
@@ -138,16 +220,6 @@ function pathToSlug(path: string): string {
 // ---------------------------------------------------------------------------
 // Response builders
 // ---------------------------------------------------------------------------
-
-interface ComponentMetadata {
-  name: string;
-  exportName?: string;
-  description: string;
-  path: string;
-  subcategory?: string;
-  tags?: string[];
-  sections: string[];
-}
 
 function buildMetadataResponse(
   entry: RouteManifestEntry,
@@ -179,7 +251,6 @@ function buildMetadataResponse(
  * - `name` only: returns component metadata + list of available sections
  * - `name` + `section`: returns the requested section content
  *   - `props`: filtered JSON (component-specific only)
- *   - `recipe`: variant/size values extracted from type data
  *   - `overview` / `guidelines` / `implementation` / `accessibility`: MDX markdown
  */
 export function registerGetComponent(server: McpServer): void {
@@ -190,7 +261,7 @@ export function registerGetComponent(server: McpServer): void {
       description:
         "Returns detailed information about a Nimbus component or pattern. " +
         "With name only: returns metadata and available sections. " +
-        "With name + section: returns section content (overview, guidelines, implementation, accessibility, props, recipe).",
+        "With name + section: returns section content (overview, guidelines, implementation, accessibility, props).",
       inputSchema: {
         name: z
           .string()
@@ -232,11 +303,7 @@ export function registerGetComponent(server: McpServer): void {
           );
           return canonical ? canonical[0] : key;
         });
-        const availableSections = [
-          ...viewSections,
-          "props",
-          "recipe",
-        ] as string[];
+        const availableSections = [...viewSections, "props"] as string[];
 
         // No section requested — return metadata + section list
         if (!section) {
@@ -245,7 +312,7 @@ export function registerGetComponent(server: McpServer): void {
             content: [
               {
                 type: "text" as const,
-                text: JSON.stringify(metadata, null, 2),
+                text: JSON.stringify(metadata),
               },
             ],
           };
@@ -256,20 +323,23 @@ export function registerGetComponent(server: McpServer): void {
           const exportName = entry.exportName ?? entry.title;
           try {
             const typeData = await getTypeData(exportName);
-            const filtered = filterProps(typeData);
+            let filtered = filterProps(typeData);
+
+            // Compound components have no props on the top-level export.
+            // Aggregate from sub-component type files (e.g. DrawerRoot, DrawerContent).
+            if (filtered.length === 0) {
+              filtered = await aggregateSubComponentProps(exportName);
+            }
+
             return {
               content: [
                 {
                   type: "text" as const,
-                  text: JSON.stringify(
-                    {
-                      component: exportName,
-                      propCount: filtered.length,
-                      props: filtered,
-                    },
-                    null,
-                    2
-                  ),
+                  text: JSON.stringify({
+                    component: exportName,
+                    propCount: filtered.length,
+                    props: filtered,
+                  }),
                 },
               ],
             };
@@ -317,7 +387,7 @@ export function registerGetComponent(server: McpServer): void {
           content: [
             {
               type: "text" as const,
-              text: view.mdx,
+              text: stripMarkdown(view.mdx),
             },
           ],
         };
