@@ -4,11 +4,8 @@ import { z } from "zod";
 import { getIconCatalog } from "../data-loader.js";
 import type { IconCatalogEntry } from "../types.js";
 
-/** Maximum number of matches the search will consider. */
-const MAX_ICON_RESULTS = 10;
-
 /** Number of results returned per page. */
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 10;
 
 /** Minimum keyword length for substring matching to avoid single-char noise. */
 const MIN_KEYWORD_LENGTH = 2;
@@ -64,13 +61,13 @@ async function searchIcons(query: string): Promise<IconCatalogEntry[]> {
   const substringMatches = [...nameMatches, ...keywordMatches];
 
   if (substringMatches.length > 0) {
-    return substringMatches.slice(0, MAX_ICON_RESULTS);
+    return substringMatches;
   }
 
   // Pass 2: fuzzy fallback — filter out low-quality matches
   const fuse = await getFuse();
   return fuse
-    .search(query, { limit: MAX_ICON_RESULTS })
+    .search(query)
     .filter((r) => (r.score ?? 1) < 0.35)
     .map((r) => r.item);
 }
@@ -110,7 +107,6 @@ export function registerSearchIcons(server: McpServer): void {
     },
     async ({ query, offset }) => {
       try {
-        const catalog = await getIconCatalog();
         const allResults = await searchIcons(query);
         const page = allResults.slice(offset, offset + PAGE_SIZE);
         const hasMore = offset + PAGE_SIZE < allResults.length;
@@ -120,16 +116,12 @@ export function registerSearchIcons(server: McpServer): void {
             content: [
               {
                 type: "text" as const,
-                text: JSON.stringify(
-                  {
-                    query,
-                    totalIcons: catalog.icons.length,
-                    totalResults: 0,
-                    results: [],
-                  },
-                  null,
-                  2
-                ),
+                text: JSON.stringify({
+                  query,
+                  importPath: "@commercetools/nimbus-icons",
+                  totalResults: 0,
+                  results: [],
+                }),
               },
             ],
           };
@@ -137,12 +129,16 @@ export function registerSearchIcons(server: McpServer): void {
 
         const payload: Record<string, unknown> = {
           query,
-          totalIcons: catalog.icons.length,
+          importPath: "@commercetools/nimbus-icons",
           totalResults: allResults.length,
           offset,
           pageSize: PAGE_SIZE,
           hasMore,
-          results: page,
+          results: page.map(({ name, category, keywords }) => ({
+            name,
+            category,
+            keywords,
+          })),
         };
 
         if (hasMore) {
@@ -155,7 +151,7 @@ export function registerSearchIcons(server: McpServer): void {
           content: [
             {
               type: "text" as const,
-              text: JSON.stringify(payload, null, 2),
+              text: JSON.stringify(payload),
             },
           ],
         };
