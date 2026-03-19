@@ -79,6 +79,16 @@ describe("search_icons — basic search", () => {
     expect(response.totalResults).toBe(0);
     expect(response.results).toEqual([]);
   });
+
+  it("returns zero results for a long nonsense query containing short icon names", async () => {
+    // A long garbage string that contains substrings matching short icon names
+    // (e.g. "sd", "in") — should not match via reverse-substring logic
+    const response = await callSearchIcons(client, {
+      query: "dsfawedsf;sdklmf klsdjqwin ipwsder y",
+    });
+    expect(response.totalResults).toBe(0);
+    expect(response.results).toEqual([]);
+  });
 });
 
 describe("search_icons — pagination", () => {

@@ -50,19 +50,19 @@ async function searchIcons(query: string): Promise<IconCatalogEntry[]> {
   const { fuse, icons } = await getFuse();
   const needle = query.toLowerCase();
 
-  // Pass 1: substring match on name and keywords, name matches ranked first
+  // Pass 1: substring match on name and keywords, name matches ranked first.
+  // Only checks if the icon name/keyword contains the needle — not the reverse —
+  // to avoid short icon names matching inside long or nonsense query strings.
   const nameMatches: IconCatalogEntry[] = [];
   const keywordMatches: IconCatalogEntry[] = [];
 
   for (const icon of icons) {
     const nameLower = icon.name.toLowerCase();
-    if (nameLower.includes(needle) || needle.includes(nameLower)) {
+    if (nameLower.includes(needle)) {
       nameMatches.push(icon);
     } else if (
       icon.keywords.some(
-        (kw) =>
-          kw.length >= MIN_KEYWORD_LENGTH &&
-          (kw.includes(needle) || needle.includes(kw))
+        (kw) => kw.length >= MIN_KEYWORD_LENGTH && kw.includes(needle)
       )
     ) {
       keywordMatches.push(icon);
@@ -136,9 +136,7 @@ export function registerSearchIcons(server: McpServer): void {
         };
 
         if (hasMore) {
-          payload.hint =
-            `Showing ${offset + 1}–${offset + page.length} of ${allResults.length} matches. ` +
-            `Call search_icons again with offset: ${offset + PAGE_SIZE} to see more.`;
+          payload.hint = `Use \`offset: ${offset + PAGE_SIZE}\` for more results (${allResults.length} total).`;
         }
 
         return {
