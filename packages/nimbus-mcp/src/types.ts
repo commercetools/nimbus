@@ -37,8 +37,9 @@ export interface DocSearchResult {
   /**
    * Top-level category of the page (e.g. "Components", "Guides", "Tokens").
    * Equivalent to `category` on RouteManifestEntry — derived from menu[0].
+   * Omitted when the page has no menu hierarchy.
    */
-  category: string;
+  category?: string;
   /** Which view the match was found in (e.g. "overview", "dev", "guidelines", "a11y"). */
   matchedView?: string;
   /** Content snippet highlighting the match. */
@@ -246,4 +247,16 @@ export interface CandidateResult {
 export interface ViewMatch {
   viewKey: string;
   content: string;
+}
+
+// ---------------------------------------------------------------------------
+// Relevance scoring (used by utils/relevance and tools)
+// ---------------------------------------------------------------------------
+
+/** Fields used for relevance scoring. Tags should be pre-joined into a string. */
+export interface RelevanceFields {
+  title: string;
+  description: string;
+  tags: string;
+  content?: string;
 }

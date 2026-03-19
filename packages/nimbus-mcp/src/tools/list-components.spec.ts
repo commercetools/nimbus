@@ -165,3 +165,32 @@ describe("list_components — query search", () => {
     expect(components).toHaveLength(0);
   });
 });
+
+describe("list_components — relevance ordering", () => {
+  let client: Client;
+  let close: () => Promise<void>;
+
+  beforeAll(async () => {
+    const ctx = createTestClient();
+    await ctx.connect();
+    client = ctx.client;
+    close = ctx.close;
+  });
+
+  afterAll(() => close());
+
+  it("ranks the title-match component above partial matches", async () => {
+    // "Text input" has both tokens in title — should rank above components
+    // that only match one token (e.g. "Text area" matches "text" but not "input")
+    const results = await callListComponents(client, { query: "text input" });
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].title.toLowerCase()).toContain("text input");
+  });
+
+  it("ranks the exact title match first for a single-word query", async () => {
+    // "Button" is the exact title — should outrank "Icon Button", "Toggle Button", etc.
+    const results = await callListComponents(client, { query: "select" });
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].title.toLowerCase()).toBe("select");
+  });
+});

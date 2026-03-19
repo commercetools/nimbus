@@ -11,6 +11,16 @@
 - **Never pretty-print JSON** from MCP tool results. Keep JSON compact/minified
   when displaying or processing it — pretty-printed JSON is verbose and wastes
   context space.
+- **Never return raw MDX content** from tool responses. Strip extra whitespace
+  and unnecessary characters before returning — do not return MDX verbatim, for
+  the same reason JSON must not be pretty-printed.
+
+## Performance
+
+- **Cache Fuse instances** — any method that uses Fuse.js for fuzzy search MUST
+  cache the `Fuse` instance (e.g., as a module-level variable or class field)
+  rather than constructing a new one on every call. Rebuilding the index on each
+  invocation is expensive and adds measurable latency to search tools.
 
 ## Build Scripts
 

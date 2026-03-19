@@ -8,15 +8,20 @@ import type {
   DocSearchResult,
   CandidateResult,
   ViewMatch,
+  RelevanceFields,
 } from "../types.js";
+import {
+  scoreRelevance,
+  filterAndRankByRelevance,
+} from "../utils/relevance.js";
+import { stripMarkdown } from "../utils/markdown.js";
 
 const MAX_RESULTS = 10;
 const SNIPPET_LENGTH = 200;
+/** Characters of context shown before the matched token in a snippet. */
+const SNIPPET_LEAD = 80;
 /** Number of candidates passed to phase 2 (deep route-file search). */
 const PHASE2_CANDIDATE_LIMIT = MAX_RESULTS * 2;
-
-/** Cached Fuse instance for the search index (created on first fuzzy search). */
-let fuseInstance: Fuse<SearchIndexEntry> | undefined;
 
 /**
  * Minimum number of phase-1 candidates before we expand to all component pages.
@@ -25,29 +30,22 @@ let fuseInstance: Fuse<SearchIndexEntry> | undefined;
  */
 const MIN_CANDIDATES = 5;
 
-/** Strip markdown formatting from text for plain-text search and snippets. */
-function stripMarkdown(text: string): string {
-  return text
-    .replace(/#{1,6}\s/g, "")
-    .replace(/\*\*([^*]+)\*\*/g, "$1")
-    .replace(/\*([^*]+)\*/g, "$1")
-    .replace(/`([^`]+)`/g, "$1")
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-    .replace(/!\[([^\]]*)\]\([^)]+\)/g, "")
-    .trim();
-}
+/** Cached Fuse instance + the index reference it was built from. */
+let fuseInstance: Fuse<SearchIndexEntry> | undefined;
+let fuseIndexRef: SearchIndexEntry[] | undefined;
 
-/** Extracts a content snippet around the first match of any query token. */
-function extractSnippet(content: string, query: string): string {
-  const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+/**
+ * Extracts a content snippet anchored to the earliest occurrence of any query
+ * token so the excerpt is as close to the start of the document as possible.
+ */
+function extractSnippet(content: string, tokens: string[]): string {
   const lower = content.toLowerCase();
 
   let bestIndex = -1;
   for (const token of tokens) {
     const idx = lower.indexOf(token);
-    if (idx !== -1) {
+    if (idx !== -1 && (bestIndex === -1 || idx < bestIndex)) {
       bestIndex = idx;
-      break;
     }
   }
 
@@ -58,7 +56,7 @@ function extractSnippet(content: string, query: string): string {
     );
   }
 
-  const start = Math.max(0, bestIndex - 80);
+  const start = Math.max(0, bestIndex - SNIPPET_LEAD);
   const end = Math.min(content.length, start + SNIPPET_LENGTH);
   let snippet = content.slice(start, end).trim();
 
@@ -73,36 +71,37 @@ function routeToSlug(route: string): string {
   return route.replace(/\//g, "-");
 }
 
+/** Maps a SearchIndexEntry to RelevanceFields for scoring. */
+function entryFields(entry: SearchIndexEntry): RelevanceFields {
+  return {
+    title: entry.title,
+    description: entry.description,
+    tags: entry.tags.join(" "),
+    content: entry.content,
+  };
+}
+
 /**
  * Phase 1: Lightweight search against the in-memory search index.
+ * Accepts pre-parsed tokens to avoid redundant tokenisation.
  * Returns matched entries and fallback expansion candidates separately
  * so the caller can distinguish real metadata matches from speculative ones.
  */
 function findCandidates(
   index: SearchIndexEntry[],
-  query: string
+  query: string,
+  tokens: string[]
 ): CandidateResult {
-  const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
-
-  // Exact substring match — entry matches if every token appears in its fields.
-  const exactMatches = index.filter((entry) => {
-    const haystack = [
-      entry.title,
-      entry.description,
-      entry.content,
-      ...entry.tags,
-    ]
-      .join(" ")
-      .toLowerCase();
-    return tokens.every((t) => haystack.includes(t));
-  });
+  // Exact substring match — single-pass filter + rank via shared utility.
+  const exactMatches = filterAndRankByRelevance(index, tokens, entryFields);
 
   if (exactMatches.length >= MIN_CANDIDATES) {
     return { matched: exactMatches, expanded: [] };
   }
 
   // Fuzzy fallback — broaden the candidate pool.
-  if (!fuseInstance) {
+  // Invalidate cache when the index reference changes (e.g. hot-reload).
+  if (!fuseInstance || fuseIndexRef !== index) {
     fuseInstance = new Fuse(index, {
       keys: [
         { name: "title", weight: 3 },
@@ -114,6 +113,7 @@ function findCandidates(
       ignoreLocation: true,
       minMatchCharLength: 3,
     });
+    fuseIndexRef = index;
   }
   const fuzzyMatches = fuseInstance.search(query).map((r) => r.item);
 
@@ -143,15 +143,14 @@ function findCandidates(
 
 /**
  * Phase 2: Load the full route data for a candidate and search across all
- * views for the query. Returns the best matching view, or null if no view
+ * views for the query. Accepts pre-parsed tokens to avoid redundant
+ * tokenisation. Returns the best matching view, or null if no view
  * contains the query tokens.
  */
 async function searchRouteViews(
   route: string,
-  query: string
+  tokens: string[]
 ): Promise<ViewMatch | null> {
-  const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
-
   let routeData: RouteData;
   try {
     routeData = await getRouteData(routeToSlug(route));
@@ -160,7 +159,7 @@ async function searchRouteViews(
   }
 
   // Collect all searchable views. Store lowercased content once to avoid
-  // repeated toLowerCase() calls across the two search passes below.
+  // repeated toLowerCase() calls inside the search loop below.
   const views: Array<{ key: string; content: string; lower: string }> = [];
 
   if (routeData.views) {
@@ -175,26 +174,23 @@ async function searchRouteViews(
     views.push({ key: "overview", content, lower: content.toLowerCase() });
   }
 
-  // Find the first view where every query token appears.
-  for (const view of views) {
-    if (tokens.every((t) => view.lower.includes(t))) {
-      return { viewKey: view.key, content: view.content };
-    }
-  }
-
-  // Partial match: find the view with the most token hits.
-  let bestView: (typeof views)[number] | null = null;
+  // Single pass: return the first full match; track best partial as fallback.
+  let bestPartial: (typeof views)[number] | null = null;
   let bestHits = 0;
+
   for (const view of views) {
     const hits = tokens.filter((t) => view.lower.includes(t)).length;
+    if (hits === tokens.length) {
+      return { viewKey: view.key, content: view.content };
+    }
     if (hits > bestHits) {
       bestHits = hits;
-      bestView = view;
+      bestPartial = view;
     }
   }
 
-  if (bestView && bestHits > 0) {
-    return { viewKey: bestView.key, content: bestView.content };
+  if (bestPartial && bestHits > 0) {
+    return { viewKey: bestPartial.key, content: bestPartial.content };
   }
 
   return null;
@@ -231,18 +227,33 @@ export function registerSearchDocs(server: McpServer): void {
       try {
         const index = await getSearchIndex();
 
+        // Tokenise once; pass pre-parsed tokens to all downstream functions.
+        const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
+
         // Phase 1: Find candidates from lightweight index.
-        const { matched, expanded } = findCandidates(index, query);
-        const allCandidates = [...matched, ...expanded];
+        const { matched, expanded } = findCandidates(index, query, tokens);
+
+        // Cap expansion so genuine matches always consume their share of the
+        // phase-2 I/O budget before fallback pages fill the remainder.
+        const matchedCapped = matched.slice(0, PHASE2_CANDIDATE_LIMIT);
+        const expandedCapped = expanded.slice(
+          0,
+          Math.max(0, PHASE2_CANDIDATE_LIMIT - matchedCapped.length)
+        );
+        const allCandidates = [...matchedCapped, ...expandedCapped];
         const matchedIds = new Set(matched.map((e) => e.id));
 
         // Phase 2: Load full route data for candidates and search all views.
-        const loadPromises = allCandidates
-          .slice(0, PHASE2_CANDIDATE_LIMIT)
-          .map(async (entry) => {
-            const viewMatch = await searchRouteViews(entry.route, query);
-            return { entry, viewMatch, wasMatched: matchedIds.has(entry.id) };
-          });
+        // Compute phase-1 score so the phase-2 sort can use it as a tiebreaker.
+        const loadPromises = allCandidates.map(async (entry) => {
+          const viewMatch = await searchRouteViews(entry.route, tokens);
+          return {
+            entry,
+            viewMatch,
+            wasMatched: matchedIds.has(entry.id),
+            phase1Score: scoreRelevance(entryFields(entry), tokens),
+          };
+        });
 
         const loaded = await Promise.all(loadPromises);
 
@@ -253,27 +264,31 @@ export function registerSearchDocs(server: McpServer): void {
           ({ viewMatch, wasMatched }) => wasMatched || viewMatch !== null
         );
 
-        // Sort: entries with a deep view match rank higher, then by original order.
+        // Sort: viewMatch presence is the primary signal (gets a large bonus),
+        // phase-1 relevance score breaks ties within each group.
         relevant.sort((a, b) => {
-          const aMatch = a.viewMatch ? 1 : 0;
-          const bMatch = b.viewMatch ? 1 : 0;
-          return bMatch - aMatch;
+          const aScore = (a.viewMatch ? 1000 : 0) + a.phase1Score;
+          const bScore = (b.viewMatch ? 1000 : 0) + b.phase1Score;
+          return bScore - aScore;
         });
 
         const output: DocSearchResult[] = relevant
           .slice(0, MAX_RESULTS)
-          .map(({ entry, viewMatch }) => ({
-            title: entry.title,
-            description: entry.description,
-            path: entry.route,
-            category: entry.menu[0] ?? "",
-            ...(viewMatch && viewMatch.viewKey !== "overview"
-              ? { matchedView: viewMatch.viewKey }
-              : {}),
-            snippet: viewMatch
-              ? extractSnippet(viewMatch.content, query)
-              : extractSnippet(entry.content, query),
-          }));
+          .map(({ entry, viewMatch }) => {
+            const category = entry.menu[0];
+            return {
+              title: entry.title,
+              description: entry.description,
+              path: entry.route,
+              ...(category ? { category } : {}),
+              ...(viewMatch && viewMatch.viewKey !== "overview"
+                ? { matchedView: viewMatch.viewKey }
+                : {}),
+              snippet: viewMatch
+                ? extractSnippet(viewMatch.content, tokens)
+                : extractSnippet(stripMarkdown(entry.content), tokens),
+            };
+          });
 
         return {
           content: [

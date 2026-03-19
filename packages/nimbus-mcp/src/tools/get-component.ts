@@ -15,6 +15,7 @@ import type {
   FilteredProp,
   ComponentMetadata,
 } from "../types.js";
+import { stripMarkdown } from "../utils/markdown.js";
 
 // ---------------------------------------------------------------------------
 // Section definitions
@@ -86,6 +87,20 @@ function filterProps(typeData: TypeData): FilteredProp[] {
     });
 }
 
+// ---------------------------------------------------------------------------
+// Module-level caches
+// ---------------------------------------------------------------------------
+
+/** Cached Fuse instance + derived catalog for resolveComponent fuzzy fallback. */
+let resolveFuseInstance: Fuse<RouteManifestEntry> | undefined;
+let resolveCatalogCache: RouteManifestEntry[] | undefined;
+/** Keyed against manifest.routes (stable lazy-loaded ref) for cache invalidation. */
+let resolveCatalogRoutesRef: RouteManifestEntry[] | undefined;
+
+/** Cached set of top-level export names for sub-component filtering. */
+let topLevelNamesCache: Set<string> | undefined;
+let topLevelNamesRoutesRef: RouteManifestEntry[] | undefined;
+
 /**
  * For compound components (e.g. Drawer → DrawerRoot, DrawerContent, …),
  * the top-level type file has no props. This function finds all sub-component
@@ -103,14 +118,20 @@ async function aggregateSubComponentProps(
     return [];
   }
 
-  // Build a set of top-level component export names so we can exclude them
-  // from sub-component candidates (e.g. "Icon" should not pull in "IconButton").
+  // Build (and cache) a set of top-level component export names so we can
+  // exclude them from sub-component candidates (e.g. "Icon" should not pull
+  // in "IconButton"). Cache is invalidated when the manifest routes reference
+  // changes (e.g. hot-reload).
   const manifest = await getRouteManifest();
-  const topLevelNames = new Set(
-    manifest.routes
-      .filter((r) => CATALOG_CATEGORIES.has(r.category))
-      .map((r) => (r.exportName ?? r.title).toLowerCase())
-  );
+  if (!topLevelNamesCache || topLevelNamesRoutesRef !== manifest.routes) {
+    topLevelNamesCache = new Set(
+      manifest.routes
+        .filter((r) => CATALOG_CATEGORIES.has(r.category))
+        .map((r) => (r.exportName ?? r.title).toLowerCase())
+    );
+    topLevelNamesRoutesRef = manifest.routes;
+  }
+  const topLevelNames = topLevelNamesCache;
 
   const prefix = exportName.toLowerCase();
   const subFiles = files.filter((f) => {
@@ -160,9 +181,21 @@ async function resolveComponent(
   const manifest = await getRouteManifest();
   const needle = name.toLowerCase();
 
-  const catalog = manifest.routes.filter(
-    (r) => CATALOG_CATEGORIES.has(r.category) && r.menu.length === 3
-  );
+  // Rebuild catalog + Fuse only when the manifest reference changes (e.g. hot-reload).
+  // Keyed against manifest.routes (stable lazy-loaded ref) — not against the
+  // derived catalog array, which would be a new reference on every call.
+  if (!resolveCatalogCache || resolveCatalogRoutesRef !== manifest.routes) {
+    resolveCatalogCache = manifest.routes.filter(
+      (r) => CATALOG_CATEGORIES.has(r.category) && r.menu.length === 3
+    );
+    resolveFuseInstance = new Fuse(resolveCatalogCache, {
+      keys: ["title", "exportName"],
+      threshold: 0.3,
+      ignoreLocation: true,
+    });
+    resolveCatalogRoutesRef = manifest.routes;
+  }
+  const catalog = resolveCatalogCache;
 
   // Pass 1: exact match
   const exact = catalog.find((r) => {
@@ -173,13 +206,8 @@ async function resolveComponent(
   });
   if (exact) return exact;
 
-  // Pass 2: fuzzy fallback for typo tolerance
-  const fuse = new Fuse(catalog, {
-    keys: ["title", "exportName"],
-    threshold: 0.3,
-    ignoreLocation: true,
-  });
-  const fuzzyResults = fuse.search(name);
+  // Pass 2: fuzzy fallback (uses cached Fuse instance built above).
+  const fuzzyResults = resolveFuseInstance!.search(name);
   return fuzzyResults[0]?.item;
 }
 
@@ -284,7 +312,7 @@ export function registerGetComponent(server: McpServer): void {
             content: [
               {
                 type: "text" as const,
-                text: JSON.stringify(metadata, null, 2),
+                text: JSON.stringify(metadata),
               },
             ],
           };
@@ -359,7 +387,7 @@ export function registerGetComponent(server: McpServer): void {
           content: [
             {
               type: "text" as const,
-              text: view.mdx,
+              text: stripMarkdown(view.mdx),
             },
           ],
         };

@@ -3,10 +3,7 @@ import { existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import type {
-  IconCatalogEntry,
-  RouteManifestEntry,
   RouteManifest,
-  RouteDataView,
   RouteData,
   TypeData,
   SearchIndexEntry,
