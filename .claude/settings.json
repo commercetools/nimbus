@@ -14,7 +14,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash .claude/skills/setup-agent-restore-context/resources/agent-restore-context.sh"
+            "command": "bash .claude/skills/agent-restore-context-setup/resources/agent-restore-context.sh"
           }
         ]
       }
