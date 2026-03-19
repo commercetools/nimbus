@@ -19,6 +19,8 @@ export default defineConfig(async () => {
         exclude: ["src/**/*.stories.{ts,tsx}", "node_modules", "dist"],
         globals: true,
         setupFiles: ["./src/test/unit-test-setup.ts"],
+        // Reuse module cache across test files to reduce import overhead
+        isolate: false,
       },
     })
   );

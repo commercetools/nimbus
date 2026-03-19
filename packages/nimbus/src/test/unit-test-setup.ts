@@ -6,6 +6,20 @@
 // Import JSDOM polyfills (structuredClone, matchMedia)
 import "./setup-jsdom-polyfills";
 
+// Make HTMLElement.prototype.focus writable so React Aria's
+// setupGlobalFocusEvents can patch it. JSDOM defines focus as a
+// non-configurable property; without this, isolate:false causes
+// "Cannot set property focus" errors when the shared environment
+// is reused across test files.
+if (typeof HTMLElement !== "undefined") {
+  const originalFocus = HTMLElement.prototype.focus;
+  Object.defineProperty(HTMLElement.prototype, "focus", {
+    configurable: true,
+    writable: true,
+    value: originalFocus,
+  });
+}
+
 // Import jest-dom matchers
 import "@testing-library/jest-dom";
 
