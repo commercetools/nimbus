@@ -44,12 +44,12 @@ catalogs:
     "@testing-library/react": ^16.3.2
     playwright: ^1.58.2
     vitest: ^4.1.0
-    storybook: ^10.2.19
-    eslint-plugin-storybook: ^10.2.19
-    "@storybook/addon-a11y": ^10.2.19
-    "@storybook/addon-docs": ^10.2.19
-    "@storybook/addon-vitest": ^10.2.19
-    "@storybook/react-vite": ^10.2.19
+    storybook: ^10.3.0
+    eslint-plugin-storybook: ^10.3.0
+    "@storybook/addon-a11y": ^10.3.0
+    "@storybook/addon-docs": ^10.3.0
+    "@storybook/addon-vitest": ^10.3.0
+    "@storybook/react-vite": ^10.3.0
     "@vueless/storybook-dark-mode": ^10.0.7
     "@github-ui/storybook-addon-performance-panel": ^1.1.4
     jsdom: ^29.0.0
