@@ -260,3 +260,22 @@ export interface RelevanceFields {
   tags: string;
   content?: string;
 }
+
+/** A single icon result returned by search_icons (importPath hoisted to envelope). */
+export interface IconResult {
+  name: string;
+  category: "material" | "custom";
+  keywords: string[];
+}
+
+/** Shape returned by the paginated search_icons tool. */
+export interface SearchIconsResponse {
+  query: string;
+  importPath: string;
+  totalResults: number;
+  offset?: number;
+  pageSize?: number;
+  hasMore?: boolean;
+  hint?: string;
+  results: IconResult[];
+}

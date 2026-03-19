@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { createTestClient } from "../test-utils.js";
-import type { IconCatalogEntry } from "../types.js";
+import type { IconResult, SearchIconsResponse } from "../types.js";
 
 /**
  * Behavioral tests for the search_icons tool.
@@ -9,18 +9,6 @@ import type { IconCatalogEntry } from "../types.js";
  * Reads the icon catalog from data/icons.json (populated by the prebuild step).
  * Tests assert result shapes, pagination metadata, and known icon matches.
  */
-
-/** Shape returned by the paginated search_icons tool. */
-interface SearchIconsResponse {
-  query: string;
-  totalIcons: number;
-  totalResults: number;
-  offset?: number;
-  pageSize?: number;
-  hasMore?: boolean;
-  hint?: string;
-  results: IconCatalogEntry[];
-}
 
 async function callSearchIcons(
   client: Client,
@@ -59,9 +47,9 @@ describe("search_icons — basic search", () => {
   it("every entry has the required fields", async () => {
     const response = await callSearchIcons(client, { query: "arrow" });
     expect(response.results.length).toBeGreaterThan(0);
+    expect(response.importPath).toBe("@commercetools/nimbus-icons");
     for (const icon of response.results) {
       expect(typeof icon.name).toBe("string");
-      expect(icon.importPath).toBe("@commercetools/nimbus-icons");
       expect(["material", "custom"]).toContain(icon.category);
       expect(Array.isArray(icon.keywords)).toBe(true);
     }
@@ -69,22 +57,21 @@ describe("search_icons — basic search", () => {
 
   it("returns pagination metadata", async () => {
     const response = await callSearchIcons(client, { query: "arrow" });
-    expect(response.totalIcons).toBeGreaterThan(0);
     expect(response.totalResults).toBeGreaterThan(0);
     expect(response.offset).toBe(0);
-    expect(response.pageSize).toBe(5);
+    expect(response.pageSize).toBe(10);
     expect(typeof response.hasMore).toBe("boolean");
   });
 
-  it("pages results at 5 per page", async () => {
+  it("pages results at 10 per page", async () => {
     const response = await callSearchIcons(client, { query: "arrow" });
-    expect(response.results.length).toBeLessThanOrEqual(5);
+    expect(response.results.length).toBeLessThanOrEqual(10);
   });
 
-  it("caps total results at 10", async () => {
-    // "s" is a very broad query that should match many icons
+  it("returns all matching results for a broad query", async () => {
+    // "s" is a very broad query — totalResults should reflect actual matches
     const response = await callSearchIcons(client, { query: "s" });
-    expect(response.totalResults).toBeLessThanOrEqual(10);
+    expect(response.totalResults).toBeGreaterThan(10);
   });
 
   it("returns zero results for a nonsense query", async () => {
@@ -109,7 +96,7 @@ describe("search_icons — pagination", () => {
 
   it("returns hasMore and hint when more results exist", async () => {
     const response = await callSearchIcons(client, { query: "arrow" });
-    // "arrow" should match more than 5 icons
+    // "arrow" should match more than 10 icons
     expect(response.hasMore).toBe(true);
     expect(response.hint).toBeDefined();
     expect(response.hint).toContain("offset");
@@ -119,7 +106,7 @@ describe("search_icons — pagination", () => {
     const page1 = await callSearchIcons(client, { query: "arrow" });
     const page2 = await callSearchIcons(client, {
       query: "arrow",
-      offset: 5,
+      offset: 10,
     });
 
     expect(page2.results.length).toBeGreaterThan(0);
@@ -132,12 +119,23 @@ describe("search_icons — pagination", () => {
   });
 
   it("returns hasMore: false on the last page", async () => {
+    // Fetch page 1 to learn totalResults, then jump past the end
+    const page1 = await callSearchIcons(client, { query: "home" });
+    const lastPageOffset = page1.totalResults; // offset beyond all results
     const response = await callSearchIcons(client, {
-      query: "arrow",
-      offset: 5,
+      query: "home",
+      offset: lastPageOffset,
     });
     expect(response.hasMore).toBe(false);
     expect(response.hint).toBeUndefined();
+  });
+
+  it("echoes the requested offset in the response", async () => {
+    const response = await callSearchIcons(client, {
+      query: "arrow",
+      offset: 10,
+    });
+    expect(response.offset).toBe(10);
   });
 });
 
@@ -157,17 +155,20 @@ describe("search_icons — acceptance criteria", () => {
   it('search_icons("CheckCircle") returns CheckCircle across pages', async () => {
     const page1 = await callSearchIcons(client, { query: "CheckCircle" });
     const page2 = page1.hasMore
-      ? await callSearchIcons(client, { query: "CheckCircle", offset: 5 })
-      : { results: [] as IconCatalogEntry[] };
+      ? await callSearchIcons(client, { query: "CheckCircle", offset: 10 })
+      : { results: [] as IconResult[] };
 
     const names = [...page1.results, ...page2.results].map((r) => r.name);
     expect(names).toContain("CheckCircle");
   });
 
-  it("results include correct import paths", async () => {
+  it("importPath is hoisted to envelope, not per result", async () => {
     const response = await callSearchIcons(client, { query: "checkmark" });
+    expect(response.importPath).toBe("@commercetools/nimbus-icons");
     for (const icon of response.results) {
-      expect(icon.importPath).toBe("@commercetools/nimbus-icons");
+      expect(
+        (icon as unknown as Record<string, unknown>).importPath
+      ).toBeUndefined();
     }
   });
 });

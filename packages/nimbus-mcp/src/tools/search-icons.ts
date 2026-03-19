@@ -2,32 +2,43 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import Fuse from "fuse.js";
 import { z } from "zod";
 import { getIconCatalog } from "../data-loader.js";
-import type { IconCatalogEntry } from "../types.js";
+import type { IconCatalogEntry, SearchIconsResponse } from "../types.js";
 
 /** Number of results returned per page. */
 const PAGE_SIZE = 10;
 
-/** Minimum keyword length for substring matching to avoid single-char noise. */
+/**
+ * Minimum keyword length for substring matching to avoid single-char noise.
+ * Also used as Fuse.js minMatchCharLength so both passes share the same threshold.
+ */
 const MIN_KEYWORD_LENGTH = 2;
 
-/** Cached Fuse instance (created on first call). */
-let fuseInstance: Fuse<IconCatalogEntry> | undefined;
+/** Cached Fuse instance and icon list (created on first call, avoids double catalog load). */
+interface FuseCache {
+  fuse: Fuse<IconCatalogEntry>;
+  icons: IconCatalogEntry[];
+}
 
-async function getFuse(): Promise<Fuse<IconCatalogEntry>> {
-  if (!fuseInstance) {
+let fuseCache: FuseCache | undefined;
+
+async function getFuse(): Promise<FuseCache> {
+  if (!fuseCache) {
     const catalog = await getIconCatalog();
-    fuseInstance = new Fuse(catalog.icons, {
-      keys: [
-        { name: "name", weight: 2 },
-        { name: "keywords", weight: 1 },
-      ],
-      threshold: 0.4,
-      ignoreLocation: true,
-      includeScore: true,
-      minMatchCharLength: 2,
-    });
+    fuseCache = {
+      icons: catalog.icons,
+      fuse: new Fuse(catalog.icons, {
+        keys: [
+          { name: "name", weight: 2 },
+          { name: "keywords", weight: 1 },
+        ],
+        threshold: 0.4,
+        ignoreLocation: true,
+        includeScore: true,
+        minMatchCharLength: MIN_KEYWORD_LENGTH,
+      }),
+    };
   }
-  return fuseInstance;
+  return fuseCache;
 }
 
 /**
@@ -36,14 +47,14 @@ async function getFuse(): Promise<Fuse<IconCatalogEntry>> {
  * Pass 2: Fuse.js fuzzy fallback.
  */
 async function searchIcons(query: string): Promise<IconCatalogEntry[]> {
-  const catalog = await getIconCatalog();
+  const { fuse, icons } = await getFuse();
   const needle = query.toLowerCase();
 
   // Pass 1: substring match on name and keywords, name matches ranked first
   const nameMatches: IconCatalogEntry[] = [];
   const keywordMatches: IconCatalogEntry[] = [];
 
-  for (const icon of catalog.icons) {
+  for (const icon of icons) {
     const nameLower = icon.name.toLowerCase();
     if (nameLower.includes(needle) || needle.includes(nameLower)) {
       nameMatches.push(icon);
@@ -65,7 +76,6 @@ async function searchIcons(query: string): Promise<IconCatalogEntry[]> {
   }
 
   // Pass 2: fuzzy fallback — filter out low-quality matches
-  const fuse = await getFuse();
   return fuse
     .search(query)
     .filter((r) => (r.score ?? 1) < 0.35)
@@ -111,23 +121,7 @@ export function registerSearchIcons(server: McpServer): void {
         const page = allResults.slice(offset, offset + PAGE_SIZE);
         const hasMore = offset + PAGE_SIZE < allResults.length;
 
-        if (allResults.length === 0) {
-          return {
-            content: [
-              {
-                type: "text" as const,
-                text: JSON.stringify({
-                  query,
-                  importPath: "@commercetools/nimbus-icons",
-                  totalResults: 0,
-                  results: [],
-                }),
-              },
-            ],
-          };
-        }
-
-        const payload: Record<string, unknown> = {
+        const payload: SearchIconsResponse = {
           query,
           importPath: "@commercetools/nimbus-icons",
           totalResults: allResults.length,
