@@ -73,6 +73,14 @@ export default defineConfig(async () => {
             port: 63315,
           },
         },
+        // Pre-bundle dependencies to avoid re-transforming per test file
+        deps: {
+          optimizer: {
+            web: {
+              enabled: true,
+            },
+          },
+        },
         coverage: {
           exclude: [
             ...coverageConfigDefaults.exclude,
