@@ -23,7 +23,7 @@ describe("Main page (no back link)", () => {
           <DefaultPage.Header>
             <DefaultPage.Title>Product Catalog</DefaultPage.Title>
             <DefaultPage.Actions>
-              <Button tone="primary">Add Product</Button>
+              <Button>Add Product</Button>
             </DefaultPage.Actions>
           </DefaultPage.Header>
           <DefaultPage.Content>
@@ -78,8 +78,8 @@ describe("Main page (no back link)", () => {
             </Stack>
           </DefaultPage.Content>
           <DefaultPage.Footer>
-            <Button tone="primary">Save Discount</Button>
-            <Button variant="secondary">Cancel</Button>
+            <Button>Save Discount</Button>
+            <Button variant="ghost">Cancel</Button>
           </DefaultPage.Footer>
         </DefaultPage.Root>
       </NimbusProvider>
@@ -141,8 +141,8 @@ describe("Detail page (with back link)", () => {
             </Stack>
           </DefaultPage.Content>
           <DefaultPage.Footer>
-            <Button tone="primary">Save Changes</Button>
-            <Button variant="secondary">Cancel</Button>
+            <Button>Save Changes</Button>
+            <Button variant="ghost">Cancel</Button>
           </DefaultPage.Footer>
         </DefaultPage.Root>
       </NimbusProvider>
@@ -171,10 +171,8 @@ describe("With header actions", () => {
             </DefaultPage.BackLink>
             <DefaultPage.Title>Order #12345</DefaultPage.Title>
             <DefaultPage.Actions>
-              <Button tone="critical" variant="secondary">
-                Cancel Order
-              </Button>
-              <Button tone="primary">Process Order</Button>
+              <Button variant="ghost">Cancel Order</Button>
+              <Button>Process Order</Button>
             </DefaultPage.Actions>
             <DefaultPage.Subtitle>
               Placed on March 15, 2026
