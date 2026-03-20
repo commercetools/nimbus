@@ -23,3 +23,4 @@ a6f2988	0.22	0.00	2.71	discard	word set for O(1) lookups (overhead > benefit at 
 a52f1cf	0.20	0.00	2.53	keep	remove combinedLower filter, direct per-view search
 97a1196	0.22	0.00	2.53	keep	reduce match limit to 2KB per view (no significant gain)
 410dd81	0.20	0.00	2.53	keep	batch-warm views then search synchronously
+ed500a7	0.20	0.00	2.53	keep	single-token fast path in filterAndRankPreLowered
