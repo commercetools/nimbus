@@ -65,3 +65,13 @@ e28a666	Text	0.17	0.12	keep	extractStyleProps fast path
 e28a666	Link	0.35	0.27	keep	extractStyleProps fast path
 e28a666	Switch	1.49	1.22	keep	extractStyleProps fast path
 e28a666	Select	4.03	1.88	keep	chakra.div→div + SelectOption memo
+2443d0d	Button	0.59	0.47	keep	final: memo on Box+Flex, 100 iterations
+2443d0d	TextInput	0.69	0.52	keep	final: memo on Box+Flex
+2443d0d	Checkbox	1.68	1.25	keep	final: memo on Box+Flex
+2443d0d	Badge	0.22	0.18	keep	final: memo on Box+Flex
+2443d0d	IconButton	0.45	0.36	keep	final: memo on Box+Flex
+2443d0d	Text	0.17	0.13	keep	final: memo on Box+Flex
+2443d0d	Link	0.32	0.26	keep	final: memo on Box+Flex
+2443d0d	Switch	1.62	1.24	keep	final: memo on Box+Flex (noisy p95)
+2443d0d	Select	3.37	1.80	keep	final: memo on Box+Flex
+2443d0d	Tooltip	0.65	0.52	keep	final: memo on Box+Flex
