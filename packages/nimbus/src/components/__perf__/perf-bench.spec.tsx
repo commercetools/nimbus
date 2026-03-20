@@ -19,6 +19,8 @@ import {
   Text,
   Link,
   Switch,
+  Select,
+  Tooltip,
   NimbusProvider,
 } from "../../index";
 import { Delete } from "@commercetools/nimbus-icons";
@@ -94,4 +96,64 @@ describe("Perf/Benchmarks", () => {
       expect(result.p95).toBeLessThan(100);
     });
   }
+
+  // Compound component benchmarks using JSX directly
+  it("Select mount benchmark", () => {
+    const durations: number[] = [];
+    const onRender = (_id: string, _phase: string, actualDuration: number) => {
+      durations.push(actualDuration);
+    };
+    for (let i = 0; i < ITERATIONS; i++) {
+      const { unmount } = render(
+        <NimbusProvider loadFonts={false}>
+          <Profiler id="bench" onRender={onRender}>
+            <Select.Root>
+              <Select.Options aria-label="test" placeholder="Pick one">
+                <Select.Option id="a">Alpha</Select.Option>
+                <Select.Option id="b">Beta</Select.Option>
+                <Select.Option id="c">Gamma</Select.Option>
+              </Select.Options>
+            </Select.Root>
+          </Profiler>
+        </NimbusProvider>
+      );
+      unmount();
+    }
+    cleanup();
+    const sorted = [...durations].sort((a, b) => a - b);
+    const p95 = sorted[Math.floor(sorted.length * 0.95)];
+    const avg = durations.reduce((a, b) => a + b, 0) / durations.length;
+    console.log(
+      `PERF_RESULT: component=Select p95=${p95.toFixed(2)} avg=${avg.toFixed(2)}`
+    );
+    expect(p95).toBeLessThan(100);
+  });
+
+  it("Tooltip mount benchmark", () => {
+    const durations: number[] = [];
+    const onRender = (_id: string, _phase: string, actualDuration: number) => {
+      durations.push(actualDuration);
+    };
+    for (let i = 0; i < ITERATIONS; i++) {
+      const { unmount } = render(
+        <NimbusProvider loadFonts={false}>
+          <Profiler id="bench" onRender={onRender}>
+            <Tooltip.Root>
+              <Button>Hover</Button>
+              <Tooltip.Content>Info</Tooltip.Content>
+            </Tooltip.Root>
+          </Profiler>
+        </NimbusProvider>
+      );
+      unmount();
+    }
+    cleanup();
+    const sorted = [...durations].sort((a, b) => a - b);
+    const p95 = sorted[Math.floor(sorted.length * 0.95)];
+    const avg = durations.reduce((a, b) => a + b, 0) / durations.length;
+    console.log(
+      `PERF_RESULT: component=Tooltip p95=${p95.toFixed(2)} avg=${avg.toFixed(2)}`
+    );
+    expect(p95).toBeLessThan(100);
+  });
 });
