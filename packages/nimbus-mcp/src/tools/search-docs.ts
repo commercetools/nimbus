@@ -99,6 +99,19 @@ function routeToSlug(route: string): string {
   return route.replace(/\//g, "-");
 }
 
+/** Cache for stripped markdown content, keyed by the raw mdx string reference. */
+const strippedCache = new WeakMap<object, string>();
+
+/** Strip markdown with caching. Uses the RouteDataView object as cache key. */
+function cachedStripMarkdown(viewObj: { mdx: string }): string {
+  let stripped = strippedCache.get(viewObj);
+  if (stripped === undefined) {
+    stripped = stripMarkdown(viewObj.mdx);
+    strippedCache.set(viewObj, stripped);
+  }
+  return stripped;
+}
+
 /** Maps a SearchIndexEntry to RelevanceFields for scoring. */
 function entryFields(entry: SearchIndexEntry): RelevanceFields {
   return {
@@ -198,12 +211,14 @@ async function searchRouteViews(
   if (routeData.views) {
     for (const [key, view] of Object.entries(routeData.views)) {
       if (view.mdx) {
-        const content = stripMarkdown(view.mdx);
+        const content = cachedStripMarkdown(view);
         views.push({ key, content, lower: content.toLowerCase() });
       }
     }
   } else if (routeData.mdx) {
-    const content = stripMarkdown(routeData.mdx);
+    const content = cachedStripMarkdown(
+      routeData as unknown as { mdx: string }
+    );
     views.push({ key: "overview", content, lower: content.toLowerCase() });
   }
 
