@@ -30,8 +30,6 @@ export const detailPageSlotRecipe = defineSlotRecipe({
     header: {
       display: "grid",
       gridTemplateColumns: "1fr auto",
-      columnGap: "400",
-      rowGap: "400",
       alignItems: "center",
       // margin to ensure border does not reach the edge of the page
       margin: "{spacing.800} {spacing.900} 0",
@@ -46,6 +44,7 @@ export const detailPageSlotRecipe = defineSlotRecipe({
       display: "inline-flex",
       alignItems: "center",
       gap: "100",
+      mb: "400",
       color: "colorPalette.11",
       textStyle: "sm",
       fontWeight: "500",
@@ -85,14 +84,14 @@ export const detailPageSlotRecipe = defineSlotRecipe({
       mt: "200",
     },
     content: {
+      overflow: "auto",
       paddingX: "900",
       paddingY: "800",
-      minHeight: 0,
     },
     footer: {
       borderTop: "solid-25",
       borderColor: "neutral.6",
-      marginX: "{spacing.900}",
+      paddingX: "600",
       paddingY: "400",
     },
   },
