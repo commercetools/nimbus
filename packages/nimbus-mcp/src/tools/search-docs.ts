@@ -9,7 +9,10 @@ import type {
   ViewMatch,
   LoweredRelevanceFields,
 } from "../types.js";
-import { filterAndRankPreLowered } from "../utils/relevance.js";
+import {
+  filterAndRankPreLowered,
+  fuzzyScorePreLowered,
+} from "../utils/relevance.js";
 import { stripMarkdown } from "../utils/markdown.js";
 
 const MAX_RESULTS = 10;
@@ -25,15 +28,19 @@ function deriveToolHint(route: string): string | undefined {
 const SNIPPET_LENGTH = 200;
 /** Characters of context shown before the matched token in a snippet. */
 const SNIPPET_LEAD = 80;
-/** Number of candidates passed to phase 2 (deep route-file search). */
-const PHASE2_CANDIDATE_LIMIT = MAX_RESULTS;
+/**
+ * Number of candidates passed to phase 2 (deep route-file search).
+ * Set higher than MAX_RESULTS so phase 2 has room to find deep-content
+ * matches that phase 1's lightweight index missed.
+ */
+const PHASE2_CANDIDATE_LIMIT = 30;
 
 /**
  * Minimum number of phase-1 candidates before we expand to all component pages.
  * If the lightweight index returns fewer than this, we broaden the candidate
  * pool so deep-content-only matches aren't missed.
  */
-const MIN_CANDIDATES = 5;
+const MIN_CANDIDATES = 10;
 
 /** Pre-computed lowercased fields for each search index entry. */
 let loweredFieldsCache:
@@ -175,6 +182,25 @@ function findCandidates(
   for (const { entry } of partialScored) {
     seen.add(entry.id);
     matched.push(entry);
+  }
+
+  // Fuzzy fallback: if still too few, use edit-distance matching on titles,
+  // descriptions, and tags. This handles typos ("btn", "colours", "a]ccessibility").
+  if (matched.length < MIN_CANDIDATES) {
+    const fuzzyScored: Array<{ entry: SearchIndexEntry; score: number }> = [];
+    for (const entry of index) {
+      if (seen.has(entry.id)) continue;
+      const fields = loweredMap.get(entry)!;
+      const score = fuzzyScorePreLowered(fields, tokens);
+      if (score > 0) {
+        fuzzyScored.push({ entry, score });
+      }
+    }
+    fuzzyScored.sort((a, b) => b.score - a.score);
+    for (const { entry } of fuzzyScored) {
+      seen.add(entry.id);
+      matched.push(entry);
+    }
   }
 
   // If still too few, expand to all component-tagged pages as fallback.
