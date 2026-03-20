@@ -1,4 +1,4 @@
-import { Profiler, useState, useEffect, useCallback } from "react";
+import { Profiler, useState, useEffect, useCallback, useRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, within, waitFor } from "storybook/test";
 
@@ -26,13 +26,17 @@ function PerfHarness({
   Component: React.FC<any>;
   props: Record<string, any>;
 }) {
-  const [durations, setDurations] = useState<number[]>([]);
-  const [done, setDone] = useState(false);
+  const durationsRef = useRef<number[]>([]);
+  const [result, setResult] = useState<{
+    p95: number;
+    avg: number;
+    count: number;
+  } | null>(null);
   const [cycle, setCycle] = useState(0);
 
   const onRender = useCallback(
     (_id: string, _phase: string, actualDuration: number) => {
-      setDurations((prev) => [...prev, actualDuration]);
+      durationsRef.current.push(actualDuration);
     },
     []
   );
@@ -42,31 +46,28 @@ function PerfHarness({
       const timer = requestAnimationFrame(() => setCycle((c) => c + 1));
       return () => cancelAnimationFrame(timer);
     } else {
-      setDone(true);
+      const durations = durationsRef.current;
+      const sorted = [...durations].sort((a, b) => a - b);
+      const p95 = sorted[Math.floor(sorted.length * 0.95)];
+      const avg = durations.reduce((a, b) => a + b, 0) / durations.length;
+      setResult({ p95, avg, count: durations.length });
     }
   }, [cycle]);
-
-  const p95 = done
-    ? [...durations].sort((a, b) => a - b)[Math.floor(durations.length * 0.95)]
-    : null;
-  const avg = done
-    ? durations.reduce((a, b) => a + b, 0) / durations.length
-    : null;
 
   return (
     <div>
       <Profiler id="bench" onRender={onRender}>
-        {/* Re-key to force remount each cycle */}
         <Component key={cycle} {...props} />
       </Profiler>
-      {done && (
+      {result && (
         <div
           data-testid="perf-result"
-          data-perf-p95={p95?.toFixed(2)}
-          data-perf-avg={avg?.toFixed(2)}
-          data-perf-count={durations.length}
+          data-perf-p95={result.p95.toFixed(2)}
+          data-perf-avg={result.avg.toFixed(2)}
+          data-perf-count={result.count}
         >
-          p95={p95?.toFixed(2)}ms avg={avg?.toFixed(2)}ms n={durations.length}
+          p95={result.p95.toFixed(2)}ms avg={result.avg.toFixed(2)}ms n=
+          {result.count}
         </div>
       )}
     </div>
@@ -74,13 +75,17 @@ function PerfHarness({
 }
 
 function RenderHarness({ children }: { children: React.ReactNode }) {
-  const [durations, setDurations] = useState<number[]>([]);
-  const [done, setDone] = useState(false);
+  const durationsRef = useRef<number[]>([]);
+  const [result, setResult] = useState<{
+    p95: number;
+    avg: number;
+    count: number;
+  } | null>(null);
   const [cycle, setCycle] = useState(0);
 
   const onRender = useCallback(
     (_id: string, _phase: string, actualDuration: number) => {
-      setDurations((prev) => [...prev, actualDuration]);
+      durationsRef.current.push(actualDuration);
     },
     []
   );
@@ -90,30 +95,28 @@ function RenderHarness({ children }: { children: React.ReactNode }) {
       const timer = requestAnimationFrame(() => setCycle((c) => c + 1));
       return () => cancelAnimationFrame(timer);
     } else {
-      setDone(true);
+      const durations = durationsRef.current;
+      const sorted = [...durations].sort((a, b) => a - b);
+      const p95 = sorted[Math.floor(sorted.length * 0.95)];
+      const avg = durations.reduce((a, b) => a + b, 0) / durations.length;
+      setResult({ p95, avg, count: durations.length });
     }
   }, [cycle]);
-
-  const p95 = done
-    ? [...durations].sort((a, b) => a - b)[Math.floor(durations.length * 0.95)]
-    : null;
-  const avg = done
-    ? durations.reduce((a, b) => a + b, 0) / durations.length
-    : null;
 
   return (
     <div>
       <Profiler id="bench" onRender={onRender}>
         <div key={cycle}>{children}</div>
       </Profiler>
-      {done && (
+      {result && (
         <div
           data-testid="perf-result"
-          data-perf-p95={p95?.toFixed(2)}
-          data-perf-avg={avg?.toFixed(2)}
-          data-perf-count={durations.length}
+          data-perf-p95={result.p95.toFixed(2)}
+          data-perf-avg={result.avg.toFixed(2)}
+          data-perf-count={result.count}
         >
-          p95={p95?.toFixed(2)}ms avg={avg?.toFixed(2)}ms n={durations.length}
+          p95={result.p95.toFixed(2)}ms avg={result.avg.toFixed(2)}ms n=
+          {result.count}
         </div>
       )}
     </div>

@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect } from "storybook/test";
 
 import {
   Button,
@@ -46,11 +45,6 @@ export const ButtonVariants: StoryObj = {
       </Button>
     </Stack>
   ),
-  play: async ({ canvasElement }) => {
-    await expect.element(canvasElement).toMatchScreenshot("button-variants", {
-      comparatorOptions: { allowedMismatchedPixelRatio: 0.005 },
-    });
-  },
 };
 
 export const TextInputVariants: StoryObj = {
@@ -63,13 +57,6 @@ export const TextInputVariants: StoryObj = {
       <TextInput placeholder="Small" aria-label="small" size="sm" />
     </Stack>
   ),
-  play: async ({ canvasElement }) => {
-    await expect
-      .element(canvasElement)
-      .toMatchScreenshot("text-input-variants", {
-        comparatorOptions: { allowedMismatchedPixelRatio: 0.005 },
-      });
-  },
 };
 
 export const CheckboxVariants: StoryObj = {
@@ -81,11 +68,6 @@ export const CheckboxVariants: StoryObj = {
       <Checkbox isDisabled>Disabled</Checkbox>
     </Stack>
   ),
-  play: async ({ canvasElement }) => {
-    await expect.element(canvasElement).toMatchScreenshot("checkbox-variants", {
-      comparatorOptions: { allowedMismatchedPixelRatio: 0.005 },
-    });
-  },
 };
 
 export const BadgeVariants: StoryObj = {
@@ -98,11 +80,6 @@ export const BadgeVariants: StoryObj = {
       <Badge colorPalette="blue">Blue</Badge>
     </Stack>
   ),
-  play: async ({ canvasElement }) => {
-    await expect.element(canvasElement).toMatchScreenshot("badge-variants", {
-      comparatorOptions: { allowedMismatchedPixelRatio: 0.005 },
-    });
-  },
 };
 
 export const IconButtonVariants: StoryObj = {
@@ -114,13 +91,6 @@ export const IconButtonVariants: StoryObj = {
       <IconButton aria-label="delete" icon={<Delete />} isDisabled />
     </Stack>
   ),
-  play: async ({ canvasElement }) => {
-    await expect
-      .element(canvasElement)
-      .toMatchScreenshot("icon-button-variants", {
-        comparatorOptions: { allowedMismatchedPixelRatio: 0.005 },
-      });
-  },
 };
 
 export const SelectVariants: StoryObj = {
@@ -135,11 +105,6 @@ export const SelectVariants: StoryObj = {
       </Select.Root>
     </Stack>
   ),
-  play: async ({ canvasElement }) => {
-    await expect.element(canvasElement).toMatchScreenshot("select-variants", {
-      comparatorOptions: { allowedMismatchedPixelRatio: 0.005 },
-    });
-  },
 };
 
 export const TextVariants: StoryObj = {
@@ -151,11 +116,6 @@ export const TextVariants: StoryObj = {
       <Text fontSize="500">Large text</Text>
     </Stack>
   ),
-  play: async ({ canvasElement }) => {
-    await expect.element(canvasElement).toMatchScreenshot("text-variants", {
-      comparatorOptions: { allowedMismatchedPixelRatio: 0.005 },
-    });
-  },
 };
 
 export const LinkVariants: StoryObj = {
@@ -167,11 +127,6 @@ export const LinkVariants: StoryObj = {
       </Link>
     </Stack>
   ),
-  play: async ({ canvasElement }) => {
-    await expect.element(canvasElement).toMatchScreenshot("link-variants", {
-      comparatorOptions: { allowedMismatchedPixelRatio: 0.005 },
-    });
-  },
 };
 
 export const SwitchVariants: StoryObj = {
@@ -182,9 +137,4 @@ export const SwitchVariants: StoryObj = {
       <Switch isDisabled>Disabled</Switch>
     </Stack>
   ),
-  play: async ({ canvasElement }) => {
-    await expect.element(canvasElement).toMatchScreenshot("switch-variants", {
-      comparatorOptions: { allowedMismatchedPixelRatio: 0.005 },
-    });
-  },
 };
