@@ -472,6 +472,64 @@ export const StickyTableHeader: Story = {
 };
 
 /**
+ * When `stickyHeader` and `stickyFooter` are set on Root, the header and
+ * footer stay pinned while the user scrolls. Pair with `height="auto"` when
+ * the page has no constrained height and the document itself scrolls.
+ */
+export const StickyHeaderAndFooter: Story = {
+  render: () => (
+    <MainPage.Root stickyHeader stickyFooter height="auto">
+      <MainPage.Header>
+        <MainPage.Title>Project Settings</MainPage.Title>
+        <MainPage.Actions>
+          <Button variant="ghost">Export</Button>
+          <Button variant="solid" colorPalette="primary">
+            Add Product
+          </Button>
+        </MainPage.Actions>
+      </MainPage.Header>
+      <MainPage.Content>
+        <Stack gap="400">
+          {Array.from({ length: 30 }, (_, i) => (
+            <Box key={i} bg="neutral.3" padding="400" borderRadius="200">
+              <Text>Content block {i + 1}</Text>
+            </Box>
+          ))}
+        </Stack>
+      </MainPage.Content>
+      <MainPage.Footer>
+        <Stack direction="row" gap="200" justify="flex-end" width="100%">
+          <Button variant="ghost">Cancel</Button>
+          <Button variant="solid" colorPalette="primary">
+            Save
+          </Button>
+        </Stack>
+      </MainPage.Footer>
+    </MainPage.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Header is rendered with sticky positioning", async () => {
+      const header = canvas.getByRole("banner");
+      await expect(header).toBeInTheDocument();
+      await expect(header).toHaveStyle({ position: "sticky" });
+    });
+
+    await step("Footer is rendered with sticky positioning", async () => {
+      const footer = canvas.getByRole("contentinfo");
+      await expect(footer).toBeInTheDocument();
+      await expect(footer).toHaveStyle({ position: "sticky" });
+    });
+
+    await step("Content blocks are rendered", async () => {
+      await expect(canvas.getByText("Content block 1")).toBeInTheDocument();
+      await expect(canvas.getByText("Content block 30")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
  * Tabular page pattern - TabNav in Header for route-based navigation,
  * static content in Content area (router renders content in a real app).
  */
