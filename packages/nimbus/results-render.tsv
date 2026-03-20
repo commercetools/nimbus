@@ -75,3 +75,13 @@ e28a666	Select	4.03	1.88	keep	chakra.div→div + SelectOption memo
 2443d0d	Switch	1.62	1.24	keep	final: memo on Box+Flex (noisy p95)
 2443d0d	Select	3.37	1.80	keep	final: memo on Box+Flex
 2443d0d	Tooltip	0.65	0.52	keep	final: memo on Box+Flex
+f3dbd73	Button	0.63	0.47	keep	3-run median with all memo optimizations
+f3dbd73	TextInput	0.72	0.53	keep	3-run median (-19% from baseline)
+f3dbd73	Checkbox	1.53	1.19	keep	3-run median (-21% from baseline)
+f3dbd73	Badge	0.24	0.19	keep	3-run median (-27% from baseline)
+f3dbd73	IconButton	0.44	0.35	keep	3-run median (-23% from baseline)
+f3dbd73	Text	0.18	0.13	keep	3-run median (-10% from baseline)
+f3dbd73	Link	0.35	0.26	keep	3-run median (stable)
+f3dbd73	Switch	1.39	1.17	keep	3-run median (-16% from baseline)
+f3dbd73	Select	3.39	1.81	keep	3-run median (new benchmark)
+f3dbd73	Tooltip	0.68	0.53	keep	3-run median (new benchmark)
