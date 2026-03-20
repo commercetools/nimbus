@@ -125,16 +125,6 @@ function getCachedViewContent(viewObj: { mdx: string }): CachedViewContent {
   return cached;
 }
 
-/** Maps a SearchIndexEntry to RelevanceFields for scoring. */
-function entryFields(entry: SearchIndexEntry): RelevanceFields {
-  return {
-    title: entry.title,
-    description: entry.description,
-    tags: entry.tags.join(" "),
-    content: entry.content,
-  };
-}
-
 /**
  * Phase 1: Lightweight search against the in-memory search index.
  * Accepts pre-parsed tokens to avoid redundant tokenisation.
