@@ -6,7 +6,7 @@
  * is scored exactly once regardless of list size.
  */
 
-import type { RelevanceFields } from "../types.js";
+import type { RelevanceFields, LoweredRelevanceFields } from "../types.js";
 
 /** Field weights. Higher = more relevant when a query token matches this field. */
 const WEIGHTS = { title: 8, description: 4, tags: 4, content: 1 } as const;
@@ -110,4 +110,60 @@ export function filterAndRankByRelevance<T>(
   }
 
   return scored.sort((a, b) => b.score - a.score).map(({ item }) => item);
+}
+
+/**
+ * Like filterAndRankByRelevance but accepts pre-lowercased fields,
+ * avoiding repeated toLowerCase() calls on every search invocation.
+ */
+export function filterAndRankPreLowered<T>(
+  items: T[],
+  tokens: string[],
+  getLowered: (item: T) => LoweredRelevanceFields
+): T[] {
+  if (items.length === 0 || tokens.length === 0) return items;
+
+  const scored: Array<{ item: T; score: number }> = [];
+
+  for (const item of items) {
+    const { title, description, tags, content } = getLowered(item);
+
+    const allPresent = tokens.every(
+      (t) =>
+        title.includes(t) ||
+        description.includes(t) ||
+        tags.includes(t) ||
+        content.includes(t)
+    );
+    if (!allPresent) continue;
+
+    let score = 0;
+    for (const t of tokens) {
+      if (title.includes(t)) score += WEIGHTS.title;
+      if (description.includes(t)) score += WEIGHTS.description;
+      if (tags.includes(t)) score += WEIGHTS.tags;
+      if (content.includes(t)) score += WEIGHTS.content;
+    }
+
+    scored.push({ item, score });
+  }
+
+  return scored.sort((a, b) => b.score - a.score).map(({ item }) => item);
+}
+
+/**
+ * Scores relevance using pre-lowercased fields.
+ */
+export function scorePreLowered(
+  fields: LoweredRelevanceFields,
+  tokens: string[]
+): number {
+  let score = 0;
+  for (const t of tokens) {
+    if (fields.title.includes(t)) score += WEIGHTS.title;
+    if (fields.description.includes(t)) score += WEIGHTS.description;
+    if (fields.tags.includes(t)) score += WEIGHTS.tags;
+    if (fields.content.includes(t)) score += WEIGHTS.content;
+  }
+  return score;
 }

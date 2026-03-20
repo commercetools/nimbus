@@ -1,1 +1,3 @@
 commit	search_p95	get_component_p95	startup_ms	status	description
+baseline	9.15	0.16	1.95	keep	baseline - no changes
+15aa3ff	9.02	0.00	1.90	keep	cache getRouteData results in memory

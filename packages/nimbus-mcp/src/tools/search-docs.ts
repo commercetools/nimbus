@@ -9,10 +9,13 @@ import type {
   CandidateResult,
   ViewMatch,
   RelevanceFields,
+  LoweredRelevanceFields,
 } from "../types.js";
 import {
   scoreRelevance,
   filterAndRankByRelevance,
+  filterAndRankPreLowered,
+  scorePreLowered,
 } from "../utils/relevance.js";
 import { stripMarkdown } from "../utils/markdown.js";
 
@@ -42,6 +45,31 @@ const MIN_CANDIDATES = 5;
 /** Cached Fuse instance + the index reference it was built from. */
 let fuseInstance: Fuse<SearchIndexEntry> | undefined;
 let fuseIndexRef: SearchIndexEntry[] | undefined;
+
+/** Pre-computed lowercased fields for each search index entry. */
+let loweredFieldsCache:
+  | Map<SearchIndexEntry, LoweredRelevanceFields>
+  | undefined;
+let loweredFieldsIndexRef: SearchIndexEntry[] | undefined;
+
+function getLoweredFields(
+  index: SearchIndexEntry[]
+): Map<SearchIndexEntry, LoweredRelevanceFields> {
+  if (loweredFieldsCache && loweredFieldsIndexRef === index)
+    return loweredFieldsCache;
+  const map = new Map<SearchIndexEntry, LoweredRelevanceFields>();
+  for (const entry of index) {
+    map.set(entry, {
+      title: entry.title.toLowerCase(),
+      description: entry.description.toLowerCase(),
+      tags: entry.tags.join(" ").toLowerCase(),
+      content: entry.content?.toLowerCase() ?? "",
+    });
+  }
+  loweredFieldsCache = map;
+  loweredFieldsIndexRef = index;
+  return map;
+}
 
 /**
  * Extracts a content snippet anchored to the earliest occurrence of any query
@@ -99,10 +127,15 @@ function entryFields(entry: SearchIndexEntry): RelevanceFields {
 function findCandidates(
   index: SearchIndexEntry[],
   query: string,
-  tokens: string[]
+  tokens: string[],
+  loweredMap: Map<SearchIndexEntry, LoweredRelevanceFields>
 ): CandidateResult {
-  // Exact substring match — single-pass filter + rank via shared utility.
-  const exactMatches = filterAndRankByRelevance(index, tokens, entryFields);
+  // Exact substring match — single-pass filter + rank using pre-lowered fields.
+  const exactMatches = filterAndRankPreLowered(
+    index,
+    tokens,
+    (entry) => loweredMap.get(entry)!
+  );
 
   if (exactMatches.length >= MIN_CANDIDATES) {
     return { matched: exactMatches, expanded: [] };
@@ -238,8 +271,16 @@ export function registerSearchDocs(server: McpServer): void {
         // Tokenise once; pass pre-parsed tokens to all downstream functions.
         const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
 
+        // Pre-compute lowered fields once per index.
+        const loweredMap = getLoweredFields(index);
+
         // Phase 1: Find candidates from lightweight index.
-        const { matched, expanded } = findCandidates(index, query, tokens);
+        const { matched, expanded } = findCandidates(
+          index,
+          query,
+          tokens,
+          loweredMap
+        );
 
         // Cap expansion so genuine matches always consume their share of the
         // phase-2 I/O budget before fallback pages fill the remainder.
@@ -259,7 +300,7 @@ export function registerSearchDocs(server: McpServer): void {
             entry,
             viewMatch,
             wasMatched: matchedIds.has(entry.id),
-            phase1Score: scoreRelevance(entryFields(entry), tokens),
+            phase1Score: scorePreLowered(loweredMap.get(entry)!, tokens),
           };
         });
 
