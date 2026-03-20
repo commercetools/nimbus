@@ -7,3 +7,11 @@ commit	component	p95_ms	avg_ms	status	description
 9359332	Text	0.20	0.14	keep	baseline
 9359332	Link	0.34	0.29	keep	baseline
 9359332	Switch	1.66	1.31	keep	baseline
+38d8d81	Button	0.72	0.56	keep	cache isValidProperty in extractStyleProps
+38d8d81	TextInput	0.87	0.61	keep	cache isValidProperty in extractStyleProps
+38d8d81	Checkbox	2.00	1.41	keep	cache isValidProperty in extractStyleProps
+38d8d81	Badge	0.32	0.21	keep	cache isValidProperty in extractStyleProps
+38d8d81	IconButton	0.55	0.41	keep	cache isValidProperty in extractStyleProps
+38d8d81	Text	0.19	0.14	keep	cache isValidProperty in extractStyleProps
+38d8d81	Link	0.38	0.29	keep	cache isValidProperty in extractStyleProps
+38d8d81	Switch	1.37	1.22	keep	cache isValidProperty in extractStyleProps

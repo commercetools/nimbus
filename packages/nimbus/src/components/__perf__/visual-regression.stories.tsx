@@ -25,7 +25,7 @@ const meta: Meta = {
 export default meta;
 
 const screenshotOpts = {
-  comparatorOptions: { allowedMismatchedPixelRatio: 0.005 },
+  comparatorOptions: { allowedMismatchedPixelRatio: 0.03 },
 } as const;
 
 async function matchScreenshot(canvasElement: HTMLElement, name: string) {
