@@ -97,27 +97,12 @@ proposal). This keeps the components decoupled:
 - Not all pages need width constraints (e.g., full-bleed dashboards)
 - Avoids forced dependency between DefaultPage and PageContent
 
-### Layout Modes: Constrained vs Flexible
-
-The component supports two explicit layout modes via the `layout` prop:
-
-- **`"constrained"` (default)**: Root has `height: 100%`. The CSS grid
-  (`auto 1fr auto`) means header and footer are naturally pinned — only the
-  content area scrolls via `overflow: auto`. No `position: sticky` needed.
-- **`"flexible"`**: Root has `height: auto` and grows with content. The entire
-  page scrolls. `stickyHeader` and `stickyFooter` become available to pin
-  header/footer with `position: sticky`.
-
-A TypeScript discriminated union on `DefaultPageProps` prevents consumers from
-using `stickyHeader`/`stickyFooter` without `layout="flexible"`, making invalid
-states unrepresentable at compile time.
-
 ### Sticky Variants
 
 `stickyHeader` and `stickyFooter` are boolean recipe variants that apply
 `position: sticky` with appropriate `top`/`bottom` values and a background color.
-These are only available when `layout="flexible"` — in constrained mode, header
-and footer are always pinned by the grid and sticky positioning is unnecessary.
+These are useful for long forms where the header or footer should remain visible
+during scrolling.
 
 ### No Built-in PageContent
 

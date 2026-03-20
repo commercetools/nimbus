@@ -28,7 +28,7 @@ The component SHALL export as a compound component namespace.
 
 - **WHEN** consumer renders DefaultPage with BackLink
 - **THEN** SHALL render back link in header above the title
-- **AND** Actions SHALL align with the title row (not the back link row)
+- **AND** header grid SHALL adjust Actions positioning via CSS `:has()`
 
 #### Scenario: Form page usage (with footer)
 
@@ -40,67 +40,71 @@ The component SHALL export as a compound component namespace.
 
 - **WHEN** consumer renders TabNav inside DefaultPage.Header
 - **THEN** SHALL render tab navigation below the title row
-- **AND** header bottom padding SHALL be removed when TabNav is present
+- **AND** header padding bottom SHALL be removed via CSS `:has()`
 
-### Requirement: Root Layout
+### Requirement: Root Grid Layout
 
-The Root component SHALL support two explicit layout modes via a `layout` prop.
+The Root component SHALL use CSS grid for the page skeleton layout.
 
-#### Scenario: Constrained layout (default)
+#### Scenario: Grid structure
 
-- **WHEN** `layout` is `"constrained"` or omitted on DefaultPage.Root
-- **THEN** Root SHALL fill its parent height
-- **AND** Header and Footer SHALL remain visible without scrolling
-- **AND** Content SHALL scroll independently when it overflows
-
-#### Scenario: Flexible layout
-
-- **WHEN** `layout` is `"flexible"` on DefaultPage.Root
-- **THEN** Root SHALL grow with its content (no fixed height)
-- **AND** the entire page SHALL scroll as a single unit
+- **WHEN** DefaultPage.Root is rendered
+- **THEN** SHALL use `grid-template-rows: auto 1fr auto`
+- **AND** SHALL use `grid-template-columns: 1fr`
+- **AND** SHALL fill full height and width of parent
 
 #### Scenario: Footer absent
 
 - **WHEN** DefaultPage.Footer is not rendered inside Root
-- **THEN** footer space SHALL collapse
+- **THEN** the third grid row (auto) SHALL collapse to zero height
 - **AND** content SHALL fill remaining space below header
 
 ### Requirement: Header Layout
 
-The Header SHALL arrange title, actions, back link, and tab navigation.
+The component SHALL use CSS grid for header layout.
 
-#### Scenario: Header structure
+#### Scenario: Grid structure
 
 - **WHEN** Header renders
-- **THEN** Title and Actions SHALL appear on the same row
-- **AND** Title SHALL take available horizontal space
-- **AND** Actions SHALL be end-aligned
+- **THEN** SHALL use CSS grid with template columns `1fr auto`
+- **AND** SHALL align items center
+- **AND** SHALL apply padding tokens: top `800`, horizontal `900`, bottom `600`
 
 #### Scenario: Visual separation
 
 - **WHEN** Header renders
-- **THEN** SHALL display a bottom border separating it from content
+- **THEN** SHALL display a bottom border using `solid-25` border token
+- **AND** SHALL use `neutral.6` border color
 
 #### Scenario: Actions positioning (without BackLink)
 
 - **WHEN** Actions is placed inside Header without BackLink
-- **THEN** Actions SHALL vertically span the title and subtitle rows
+- **THEN** SHALL be positioned in grid column 2, spanning rows 1-2
+- **AND** SHALL display as flex row with gap of token `200`
 
 #### Scenario: Actions positioning (with BackLink)
 
 - **WHEN** Actions is placed inside Header WITH BackLink
-- **THEN** Actions SHALL vertically span the title and subtitle rows
-- **AND** Actions SHALL NOT span the back link row
+- **THEN** SHALL be positioned in grid column 2, spanning rows 2-3
+- **AND** CSS rule `&:has(.nimbus-default-page__backLink)` SHALL shift actions
+  down to align with title row
+
+#### Scenario: TabNav removes padding
+
+- **WHEN** TabNav is present inside Header
+- **THEN** CSS rule `&:has(.nimbus-default-page__tabNav)` SHALL set
+  `paddingBottom: 0`
 
 ### Requirement: Back Navigation Link
 
-The component SHALL provide optional accessible back navigation.
+The component SHALL provide optional accessible back navigation using React Aria.
 
 #### Scenario: Link rendering
 
 - **WHEN** BackLink renders
 - **THEN** SHALL render as a semantic `<a>` element
-- **AND** SHALL be accessible via keyboard and screen reader
+- **AND** SHALL use React Aria `useLink` hook for keyboard and screen reader
+  accessibility
 - **AND** SHALL require `href` prop for navigation target
 
 #### Scenario: Default accessible name
@@ -120,13 +124,13 @@ The component SHALL provide optional accessible back navigation.
 - **WHEN** BackLink renders
 - **THEN** SHALL display an ArrowBack icon before the text
 - **AND** SHALL use primary color palette with hover underline
-- **AND** SHALL span the full header width
+- **AND** SHALL span full grid width (column 1 / -1)
 - **AND** SHALL have focus ring for keyboard navigation
 
 #### Scenario: BackLink is optional
 
 - **WHEN** DefaultPage renders without BackLink
-- **THEN** header SHALL render normally without adjustment
+- **THEN** header grid SHALL render normally without adjustment
 - **AND** component SHALL function as a main-level page
 
 ### Requirement: TabNav Sub-Component
@@ -136,61 +140,46 @@ The component SHALL provide a layout slot for tab navigation in the header.
 #### Scenario: TabNav rendering
 
 - **WHEN** TabNav renders inside Header
-- **THEN** SHALL span the full header width
-- **AND** SHALL appear below the title row
+- **THEN** SHALL span full grid width (column 1 / -1)
+- **AND** SHALL apply top margin token `200`
 
 #### Scenario: TabNav is optional
 
 - **WHEN** DefaultPage renders without TabNav
-- **THEN** header SHALL render with standard padding
+- **THEN** header SHALL render with standard padding bottom
 - **AND** no adjustment to header layout
 
 ### Requirement: Sticky Variants
 
-The component SHALL support sticky header and footer positioning only in
-flexible layout mode.
+The component SHALL support sticky header and footer positioning.
 
-#### Scenario: Sticky header in flexible layout
+#### Scenario: Sticky header
 
-- **WHEN** `layout` is `"flexible"` and `stickyHeader` is true
-- **THEN** header SHALL remain visible at the top of the viewport during scroll
+- **WHEN** `stickyHeader` prop is true on Root
+- **THEN** header SHALL use `position: sticky` with `top: 0`
+- **AND** SHALL use `zIndex: 1` and background color `bg`
 
-#### Scenario: Sticky footer in flexible layout
+#### Scenario: Sticky footer
 
-- **WHEN** `layout` is `"flexible"` and `stickyFooter` is true
-- **THEN** footer SHALL remain visible at the bottom of the viewport during
-  scroll
+- **WHEN** `stickyFooter` prop is true on Root
+- **THEN** footer SHALL use `position: sticky` with `bottom: 0`
+- **AND** SHALL use `zIndex: 1` and background color `bg`
 
-#### Scenario: No sticky in constrained layout
+#### Scenario: No sticky by default
 
-- **WHEN** `layout` is `"constrained"` or omitted
-- **THEN** `stickyHeader` and `stickyFooter` props SHALL NOT be available
-- **AND** TypeScript SHALL produce a compile error if they are provided
-
-#### Scenario: Default in flexible layout
-
-- **WHEN** `layout` is `"flexible"` and neither `stickyHeader` nor
-  `stickyFooter` is provided
-- **THEN** header and footer SHALL scroll with the page content
+- **WHEN** neither `stickyHeader` nor `stickyFooter` is provided
+- **THEN** header and footer SHALL scroll with content
 
 ### Requirement: Content Area
 
-The component SHALL provide a main content area.
+The component SHALL provide a scrollable main content area.
 
 #### Scenario: Content rendering
 
 - **WHEN** DefaultPage.Content is rendered
 - **THEN** SHALL render as `<main>` element
-
-#### Scenario: Constrained content scrolling
-
-- **WHEN** `layout` is `"constrained"` or omitted
-- **THEN** Content SHALL scroll independently when it overflows
-
-#### Scenario: Flexible content scrolling
-
-- **WHEN** `layout` is `"flexible"`
-- **THEN** Content SHALL scroll with the rest of the page
+- **AND** SHALL use `overflow: auto` for independent scrolling
+- **AND** SHALL apply padding tokens: horizontal `900`, vertical `800`
 
 #### Scenario: Content is plain container
 
@@ -221,36 +210,49 @@ The component SHALL visually separate the footer from content.
 #### Scenario: Footer border
 
 - **WHEN** Footer renders
-- **THEN** SHALL display a top border separating it from content
+- **THEN** SHALL display a top border using `solid-25` border token
+- **AND** SHALL use `neutral.6` border color
+- **AND** SHALL apply padding using tokens `900` horizontal and `400` vertical
+
+### Requirement: Multi-Slot Recipe
+
+The component SHALL use a multi-slot recipe registered as `nimbusDefaultPage`.
+
+#### Scenario: Slot definition
+
+- **WHEN** the recipe is defined
+- **THEN** SHALL define slots: root, header, backLink, title, subtitle, actions,
+  tabNav, content, footer
+- **AND** SHALL use className "nimbus-default-page"
+
+#### Scenario: Recipe registration
+
+- **WHEN** DefaultPage component is used
+- **THEN** recipe SHALL be registered in theme/slot-recipes/index.ts
+- **AND** registration SHALL use "nimbusDefaultPage" key
+
+#### Scenario: Variant definition
+
+- **WHEN** the recipe defines variants
+- **THEN** SHALL define `stickyHeader` boolean variant
+- **AND** SHALL define `stickyFooter` boolean variant
 
 ### Requirement: Type Definitions
 
-The component SHALL provide comprehensive TypeScript types with discriminated
-union enforcement.
+The component SHALL provide comprehensive TypeScript types.
 
-#### Scenario: Root props discriminated union
+#### Scenario: Root props type
 
 - **WHEN** DefaultPageProps type is defined
-- **THEN** SHALL use a discriminated union on the `layout` prop
-- **AND** the `"constrained"` branch (and default/omitted) SHALL NOT include
-  `stickyHeader` or `stickyFooter`
-- **AND** the `"flexible"` branch SHALL include optional `stickyHeader` and
-  `stickyFooter` boolean props
-- **AND** both branches SHALL include children, ref, and style props
-
-#### Scenario: Type error on invalid combinations
-
-- **WHEN** consumer passes `stickyHeader` without `layout="flexible"`
-- **THEN** TypeScript SHALL produce a compile error
-- **WHEN** consumer passes `stickyFooter` without `layout="flexible"`
-- **THEN** TypeScript SHALL produce a compile error
-- **WHEN** consumer passes `layout="constrained"` with `stickyHeader`
-- **THEN** TypeScript SHALL produce a compile error
+- **THEN** SHALL include `stickyHeader` and `stickyFooter` variant props
+- **AND** SHALL extend OmitInternalProps of DefaultPageRootSlotProps
+- **AND** SHALL include children and ref
 
 #### Scenario: BackLink props type
 
 - **WHEN** DefaultPageBackLinkProps type is defined
 - **THEN** SHALL require `href: string` prop
+- **AND** SHALL extend OmitInternalProps of DefaultPageBackLinkSlotProps
 
 #### Scenario: Slot props types
 

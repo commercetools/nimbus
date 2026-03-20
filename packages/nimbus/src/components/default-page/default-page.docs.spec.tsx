@@ -23,7 +23,7 @@ describe("Main page (no back link)", () => {
           <DefaultPage.Header>
             <DefaultPage.Title>Product Catalog</DefaultPage.Title>
             <DefaultPage.Actions>
-              <Button>Add Product</Button>
+              <Button tone="primary">Add Product</Button>
             </DefaultPage.Actions>
           </DefaultPage.Header>
           <DefaultPage.Content>
@@ -78,8 +78,8 @@ describe("Main page (no back link)", () => {
             </Stack>
           </DefaultPage.Content>
           <DefaultPage.Footer>
-            <Button>Save Discount</Button>
-            <Button variant="ghost">Cancel</Button>
+            <Button tone="primary">Save Discount</Button>
+            <Button variant="secondary">Cancel</Button>
           </DefaultPage.Footer>
         </DefaultPage.Root>
       </NimbusProvider>
@@ -141,8 +141,8 @@ describe("Detail page (with back link)", () => {
             </Stack>
           </DefaultPage.Content>
           <DefaultPage.Footer>
-            <Button>Save Changes</Button>
-            <Button variant="ghost">Cancel</Button>
+            <Button tone="primary">Save Changes</Button>
+            <Button variant="secondary">Cancel</Button>
           </DefaultPage.Footer>
         </DefaultPage.Root>
       </NimbusProvider>
@@ -171,8 +171,10 @@ describe("With header actions", () => {
             </DefaultPage.BackLink>
             <DefaultPage.Title>Order #12345</DefaultPage.Title>
             <DefaultPage.Actions>
-              <Button variant="ghost">Cancel Order</Button>
-              <Button>Process Order</Button>
+              <Button tone="critical" variant="secondary">
+                Cancel Order
+              </Button>
+              <Button tone="primary">Process Order</Button>
             </DefaultPage.Actions>
             <DefaultPage.Subtitle>
               Placed on March 15, 2026
@@ -196,93 +198,8 @@ describe("With header actions", () => {
 });
 
 /**
- * @docs-section layout-modes
- * @docs-order 4
- * @docs-title Layout modes
- */
-describe("Layout modes", () => {
-  it("renders a constrained layout page (default, height: 100%)", () => {
-    render(
-      <NimbusProvider>
-        <DefaultPage.Root>
-          <DefaultPage.Header>
-            <DefaultPage.Title>Product Catalog</DefaultPage.Title>
-          </DefaultPage.Header>
-          <DefaultPage.Content>
-            <Text>
-              Constrained layout: the page fills its parent and only the content
-              area scrolls.
-            </Text>
-          </DefaultPage.Content>
-          <DefaultPage.Footer>
-            <Button>Save</Button>
-          </DefaultPage.Footer>
-        </DefaultPage.Root>
-      </NimbusProvider>
-    );
-
-    expect(screen.getByText("Product Catalog")).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "Constrained layout: the page fills its parent and only the content area scrolls."
-      )
-    ).toBeInTheDocument();
-  });
-
-  it("renders a flexible layout page that scrolls as a whole", () => {
-    render(
-      <NimbusProvider>
-        <DefaultPage.Root layout="flexible">
-          <DefaultPage.Header>
-            <DefaultPage.Title>Long Form Page</DefaultPage.Title>
-          </DefaultPage.Header>
-          <DefaultPage.Content>
-            <Text>
-              Flexible layout: the whole page scrolls. Use stickyHeader or
-              stickyFooter to pin zones.
-            </Text>
-          </DefaultPage.Content>
-        </DefaultPage.Root>
-      </NimbusProvider>
-    );
-
-    expect(screen.getByText("Long Form Page")).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        "Flexible layout: the whole page scrolls. Use stickyHeader or stickyFooter to pin zones."
-      )
-    ).toBeInTheDocument();
-  });
-
-  it("renders a flexible layout page with sticky header and footer", () => {
-    render(
-      <NimbusProvider>
-        <DefaultPage.Root layout="flexible" stickyHeader stickyFooter>
-          <DefaultPage.Header>
-            <DefaultPage.Title>Edit Customer</DefaultPage.Title>
-          </DefaultPage.Header>
-          <DefaultPage.Content>
-            <Stack gap="400">
-              <Text>First name</Text>
-              <Text>Last name</Text>
-            </Stack>
-          </DefaultPage.Content>
-          <DefaultPage.Footer>
-            <Button>Save Changes</Button>
-            <Button variant="ghost">Cancel</Button>
-          </DefaultPage.Footer>
-        </DefaultPage.Root>
-      </NimbusProvider>
-    );
-
-    expect(screen.getByText("Edit Customer")).toBeInTheDocument();
-    expect(screen.getByText("Save Changes")).toBeInTheDocument();
-  });
-});
-
-/**
  * @docs-section tab-navigation
- * @docs-order 5
+ * @docs-order 4
  * @docs-title With tab navigation
  */
 describe("With tab navigation", () => {
