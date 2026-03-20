@@ -1,7 +1,6 @@
-import { useRef } from "react";
 import { chakra, useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef } from "react-aria";
-import { extractStyleProps, mergeRefs } from "@/utils";
+import { extractStyleProps } from "@/utils";
 
 import {
   KeyboardArrowDown as DropdownIndicatorIcon,
@@ -39,8 +38,7 @@ export const SelectRoot = function SelectRoot({
   isClearable = true,
   ...props
 }: SelectProps) {
-  const localRef = useRef<HTMLDivElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const ref = useObjectRef(forwardedRef);
   const recipe = useSlotRecipe({ recipe: selectSlotRecipe });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
   const [styleProps, restProps] = extractStyleProps(restRecipeProps);
