@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useButton, useObjectRef } from "react-aria";
 import { ButtonContext, useContextProps } from "react-aria-components";
 import { ButtonRoot } from "./button.slots.tsx";
@@ -10,7 +11,7 @@ import type { ButtonProps } from "./button.types.ts";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/button}
  */
-const ButtonComponent = (props: ButtonProps) => {
+const ButtonComponent = memo((props: ButtonProps) => {
   const { ref: forwardedRef, as, asChild, children, ...rest } = props;
 
   const ref = useObjectRef(forwardedRef);
@@ -44,7 +45,7 @@ const ButtonComponent = (props: ButtonProps) => {
       {children}
     </ButtonRoot>
   );
-};
+});
 
 // Manually assign a displayName for debugging purposes
 ButtonComponent.displayName = "Button";
