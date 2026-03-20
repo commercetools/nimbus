@@ -1,5 +1,4 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import Fuse from "fuse.js";
 import { z } from "zod";
 import { getSearchIndex, getRouteData } from "../data-loader.js";
 import type {
@@ -8,12 +7,9 @@ import type {
   DocSearchResult,
   CandidateResult,
   ViewMatch,
-  RelevanceFields,
   LoweredRelevanceFields,
 } from "../types.js";
 import {
-  scoreRelevance,
-  filterAndRankByRelevance,
   filterAndRankPreLowered,
   scorePreLowered,
 } from "../utils/relevance.js";
@@ -41,10 +37,6 @@ const PHASE2_CANDIDATE_LIMIT = MAX_RESULTS;
  * pool so deep-content-only matches aren't missed.
  */
 const MIN_CANDIDATES = 5;
-
-/** Cached Fuse instance + the index reference it was built from. */
-let fuseInstance: Fuse<SearchIndexEntry> | undefined;
-let fuseIndexRef: SearchIndexEntry[] | undefined;
 
 /** Pre-computed lowercased fields for each search index entry. */
 let loweredFieldsCache:
