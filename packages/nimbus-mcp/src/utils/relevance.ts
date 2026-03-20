@@ -126,15 +126,10 @@ export function filterAndRankPreLowered<T>(
   const scored: Array<{ item: T; score: number }> = [];
 
   for (const item of items) {
-    const { title, description, tags, content } = getLowered(item);
+    const fields = getLowered(item);
+    const { title, description, tags, content, combined } = fields;
 
-    const allPresent = tokens.every(
-      (t) =>
-        title.includes(t) ||
-        description.includes(t) ||
-        tags.includes(t) ||
-        content.includes(t)
-    );
+    const allPresent = tokens.every((t) => combined.includes(t));
     if (!allPresent) continue;
 
     let score = 0;

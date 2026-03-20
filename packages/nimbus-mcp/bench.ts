@@ -73,11 +73,16 @@ function getLoweredFields(
     return loweredFieldsCache;
   const map = new Map<SearchIndexEntry, LoweredRelevanceFields>();
   for (const entry of index) {
+    const title = entry.title.toLowerCase();
+    const description = entry.description.toLowerCase();
+    const tags = entry.tags.join(" ").toLowerCase();
+    const content = entry.content?.toLowerCase() ?? "";
     map.set(entry, {
-      title: entry.title.toLowerCase(),
-      description: entry.description.toLowerCase(),
-      tags: entry.tags.join(" ").toLowerCase(),
-      content: entry.content?.toLowerCase() ?? "",
+      title,
+      description,
+      tags,
+      content,
+      combined: title + " " + description + " " + tags + " " + content,
     });
   }
   loweredFieldsCache = map;
@@ -133,17 +138,9 @@ function findCandidates(
   for (const entry of index) {
     if (seen.has(entry.id)) continue;
     const fields = loweredMap.get(entry)!;
-    const combined =
-      fields.title +
-      " " +
-      fields.description +
-      " " +
-      fields.tags +
-      " " +
-      fields.content;
     let score = 0;
     for (const t of tokens) {
-      if (combined.includes(t)) score += scorePreLowered(fields, [t]);
+      if (fields.combined.includes(t)) score += scorePreLowered(fields, [t]);
     }
     if (score > 0) {
       partialScored.push({ entry, score });
