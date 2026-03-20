@@ -1,15 +1,16 @@
 import { system } from "@/theme";
 
 // Cache for isValidProperty lookups — property names are finite and reused across renders
-const validPropertyCache = new Map<string, boolean>();
+// Using Object.create(null) for prototype-free lookup (faster than Map for string keys)
+const validPropertyCache: Record<string, boolean> = Object.create(null);
 
 function isStyleProperty(key: string): boolean {
-  let cached = validPropertyCache.get(key);
-  if (cached === undefined) {
-    cached = system.isValidProperty(key);
-    validPropertyCache.set(key, cached);
+  if (key in validPropertyCache) {
+    return validPropertyCache[key];
   }
-  return cached;
+  const result = system.isValidProperty(key);
+  validPropertyCache[key] = result;
+  return result;
 }
 
 /**
