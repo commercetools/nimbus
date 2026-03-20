@@ -34,15 +34,14 @@ const App = () => (
 
 | | `TabNav` | `Tabs` |
 |---|---|---|
-| **Use case** | Route-based navigation between pages/views | Switching content panels on the same page |
-| **HTML element** | `<nav>` + `<a>` | `role="tablist"` + `role="tab"` |
+| **Use case** | Page-level navigation between routes | Switching content panels within a page |
+| **HTML semantics** | `<nav>` + `<a>` | `role="tablist"` + `role="tab"` |
 | **Active state** | `aria-current="page"` | `aria-selected="true"` |
 | **Keyboard** | Sequential Tab key | Arrow keys (roving tabindex) |
-| **URL** | Changes URL | Does not change URL |
+| **Content** | No panel — content managed by router | Owns associated `TabPanel` |
+| **URL** | Always (`href` required) | Optional (`href` prop) |
 
-Use `TabNav` for page headers where each tab links to a different route (e.g., `/orders/123/general`, `/orders/123/items`).
-
-Use `Tabs` for content panels that live on the same page with no URL change.
+Both `TabNav` and `Tabs` support client-side routing — the deciding factor is whether the component owns its content panels or delegates to the router. Use `TabNav` when each item navigates to a different route and the router manages what's rendered. Use `Tabs` when the content lives alongside the tab list.
 
 ## Usage examples
 
