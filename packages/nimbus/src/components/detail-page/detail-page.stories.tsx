@@ -4,14 +4,11 @@ import {
   DetailPage,
   Button,
   DataTable,
-  IconButton,
   Stack,
   TabNav,
   Text,
-  Toolbar,
 } from "@commercetools/nimbus";
 import type { DataTableColumnItem } from "@commercetools/nimbus";
-import { Save, Print, Undo, Redo } from "@commercetools/nimbus-icons";
 import { within, expect } from "storybook/test";
 
 type OrderLine = {
@@ -377,41 +374,4 @@ export const StickyHeaderAndFooter: Story = {
       await expect(canvas.getByText("Content block 30")).toBeInTheDocument();
     });
   },
-};
-
-/**
- * Detail page with custom header content
- * Demonstrates placing additional content like a Toolbar inside the Header component
- */
-export const WithCustomHeaderContent: Story = {
-  render: () => (
-    <DetailPage.Root data-testid="detail-page-toolbar">
-      <DetailPage.Header>
-        <DetailPage.BackLink href="/documents">
-          Back to documents
-        </DetailPage.BackLink>
-        <DetailPage.Title>Document Editor</DetailPage.Title>
-        <DetailPage.Subtitle>Last edited 2 hours ago</DetailPage.Subtitle>
-        <Toolbar variant="outline" gridColumn="1 / -1">
-          <IconButton aria-label="Undo" size="sm" variant="ghost">
-            <Undo />
-          </IconButton>
-          <IconButton aria-label="Redo" size="sm" variant="ghost">
-            <Redo />
-          </IconButton>
-          <IconButton aria-label="Save" size="sm" variant="ghost">
-            <Save />
-          </IconButton>
-          <IconButton aria-label="Print" size="sm" variant="ghost">
-            <Print />
-          </IconButton>
-        </Toolbar>
-      </DetailPage.Header>
-      <DetailPage.Content>
-        <Stack gap="400">
-          <Text>Document content would go here.</Text>
-        </Stack>
-      </DetailPage.Content>
-    </DetailPage.Root>
-  ),
 };
