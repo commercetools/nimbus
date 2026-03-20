@@ -21,6 +21,9 @@ import {
   Switch,
   Select,
   Tooltip,
+  Separator,
+  Heading,
+  LoadingSpinner,
   NimbusProvider,
 } from "../../index";
 import { Delete } from "@commercetools/nimbus-icons";
@@ -85,6 +88,17 @@ describe("Perf/Benchmarks", () => {
       props: { children: "Click here", href: "#" },
     },
     { name: "Switch", Component: Switch, props: { children: "Toggle" } },
+    { name: "Separator", Component: Separator, props: {} },
+    {
+      name: "Heading",
+      Component: Heading,
+      props: { children: "Hello", as: "h2" },
+    },
+    {
+      name: "LoadingSpinner",
+      Component: LoadingSpinner,
+      props: { "aria-label": "Loading" },
+    },
   ];
 
   for (const { name, Component, props } of components) {
