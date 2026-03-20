@@ -105,3 +105,16 @@ f26d18e	Link	0.33	0.26	keep	-3% from baseline
 f26d18e	Switch	1.38	1.16	keep	-17% from baseline
 f26d18e	Select	3.32	1.76	keep	(new benchmark)
 f26d18e	Tooltip	0.66	0.52	keep	(new benchmark)
+46b6a49	Button	0.60	0.44	keep	final stable measurements (100 iters)
+46b6a49	TextInput	0.76	0.52	keep	final (-15% from baseline avg)
+46b6a49	Checkbox	1.56	1.20	keep	final (-18% from baseline avg)
+46b6a49	Badge	0.24	0.18	keep	final (-36% from baseline p95)
+46b6a49	IconButton	0.50	0.37	keep	final (-23% from baseline avg)
+46b6a49	Text	0.18	0.13	keep	final (-10% from baseline)
+46b6a49	Link	0.34	0.27	keep	final (stable)
+46b6a49	Switch	1.35	1.17	keep	final (-19% from baseline)
+46b6a49	Separator	0.34	0.24	keep	new benchmark
+46b6a49	Heading	0.23	0.17	keep	new benchmark
+46b6a49	LoadingSpinner	0.41	0.32	keep	new benchmark
+46b6a49	Select	3.18	1.79	keep	final (new benchmark)
+46b6a49	Tooltip	0.69	0.55	keep	final (new benchmark)
