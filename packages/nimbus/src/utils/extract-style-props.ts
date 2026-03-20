@@ -17,22 +17,29 @@ function isStyleProperty(key: string): boolean {
  * @param props The props object to separate
  * @returns A tuple containing [styleProps, otherProps]
  */
+const EMPTY_STYLE_PROPS: Record<string, unknown> = {};
+
 export function extractStyleProps<T extends object>(
   props: T
 ): [Record<string, unknown>, Omit<T, string>] {
-  const styleProps: Record<string, unknown> = {};
+  const keys = Object.keys(props);
+  if (keys.length === 0) {
+    return [EMPTY_STYLE_PROPS, props as Omit<T, string>];
+  }
+
+  let styleProps: Record<string, unknown> | undefined;
   const otherProps: Record<string, unknown> = {};
 
-  const keys = Object.keys(props);
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
     const value = (props as Record<string, unknown>)[key];
     if (isStyleProperty(key)) {
+      if (!styleProps) styleProps = {};
       styleProps[key] = value;
     } else {
       otherProps[key] = value;
     }
   }
 
-  return [styleProps, otherProps as Omit<T, string>];
+  return [styleProps ?? EMPTY_STYLE_PROPS, otherProps as Omit<T, string>];
 }
