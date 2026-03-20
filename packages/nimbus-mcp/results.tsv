@@ -21,3 +21,4 @@ a6f2988	0.22	0.00	2.71	discard	word set for O(1) lookups (overhead > benefit at 
 492b9ce	0.20	0.00	2.53	keep	inline phase1 scoring, remove scorePreLowered import
 4607730	0.24	0.00	2.61	discard	single-token fast path (added overhead, worse p95)
 a52f1cf	0.20	0.00	2.53	keep	remove combinedLower filter, direct per-view search
+97a1196	0.22	0.00	2.53	keep	reduce match limit to 2KB per view (no significant gain)
