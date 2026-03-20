@@ -20,9 +20,10 @@ export const detailPageSlotRecipe = defineSlotRecipe({
 
   base: {
     root: {
-      display: "flex",
-      flexDirection: "column",
-      minHeight: "0",
+      display: "grid",
+      gridTemplateRows: "auto 1fr auto",
+      gridTemplateColumns: "1fr",
+      height: "100%",
       width: "100%",
     },
     header: {
@@ -31,8 +32,9 @@ export const detailPageSlotRecipe = defineSlotRecipe({
       columnGap: "400",
       rowGap: "400",
       alignItems: "center",
-      paddingX: "600",
-      paddingY: "400",
+      // margin to ensure border does not reach the edge of the page
+      margin: "{spacing.800} {spacing.900} 0",
+      paddingBottom: "600",
       borderBottom: "solid-25",
       borderColor: "neutral.6",
     },
@@ -56,33 +58,37 @@ export const detailPageSlotRecipe = defineSlotRecipe({
     title: {
       gridColumn: "1",
       alignSelf: "center",
+      alignItems: "center",
       fontSize: "500",
       fontWeight: "600",
-      lineHeight: "tight",
+      lineHeight: "800",
       color: "neutral.12",
     },
     subtitle: {
       gridColumn: "1",
+      alignSelf: "center",
+      mt: "200",
       textStyle: "sm",
       color: "neutral.11",
     },
     headerActions: {
       gridColumn: "2",
-      gridRow: "2",
+      gridRow: "2 / span 2",
       display: "flex",
+      alignItems: "center",
+      justifyItems: "end",
       gap: "200",
     },
     content: {
-      flex: "1",
-      flexBasis: "0",
-      paddingX: "600",
-      paddingY: "400",
+      paddingX: "900",
+      paddingY: "800",
+      minHeight: 0,
     },
     footer: {
-      paddingX: "600",
-      paddingY: "400",
       borderTop: "solid-25",
       borderColor: "neutral.6",
+      marginX: "{spacing.900}",
+      paddingY: "400",
     },
   },
 });

@@ -1,18 +1,44 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
+  Box,
   DetailPage,
   Button,
+  DataTable,
   IconButton,
   Tabs,
   Stack,
   Text,
   Toolbar,
 } from "@commercetools/nimbus";
+import type { DataTableColumnItem } from "@commercetools/nimbus";
 import { Save, Print, Undo, Redo } from "@commercetools/nimbus-icons";
 import { within, expect, userEvent } from "storybook/test";
 
+type OrderLine = {
+  id: string;
+  product: string;
+  sku: string;
+  qty: number;
+  price: string;
+};
+
+const orderLineColumns: DataTableColumnItem<OrderLine>[] = [
+  { id: "product", header: "Product", accessor: (row) => row.product },
+  { id: "sku", header: "SKU", accessor: (row) => row.sku },
+  { id: "qty", header: "Qty", accessor: (row) => String(row.qty) },
+  { id: "price", header: "Price", accessor: (row) => row.price },
+];
+
+const orderLineRows: OrderLine[] = Array.from({ length: 25 }, (_, i) => ({
+  id: String(i + 1),
+  product: `Product ${i + 1}`,
+  sku: `SKU-${String(i + 1).padStart(3, "0")}`,
+  qty: (i % 5) + 1,
+  price: `€${((i + 1) * 9.99).toFixed(2)}`,
+}));
+
 const meta: Meta<typeof DetailPage.Root> = {
-  title: "Components/DetailPage",
+  title: "Patterns/Pages/DetailPage",
   component: DetailPage.Root,
   tags: ["autodocs"],
   parameters: {
@@ -268,6 +294,34 @@ export const TabularDetailPage: Story = {
 };
 
 /**
+ * Detail page with a scrollable DataTable — used to verify that the DataTable's
+ * sticky header remains functional when content overflows. Scroll down inside
+ * the page to confirm the table header sticks at the top of the content area.
+ */
+export const StickyTableHeader: Story = {
+  render: () => (
+    <Box height="500px" border="solid-25" borderColor="neutral.6">
+      <DetailPage.Root data-testid="detail-page-sticky">
+        <DetailPage.Header>
+          <DetailPage.BackLink href="/orders">
+            Back to orders
+          </DetailPage.BackLink>
+          <DetailPage.Title>Order Lines</DetailPage.Title>
+          <DetailPage.Subtitle>Order #ORD-2024-001</DetailPage.Subtitle>
+        </DetailPage.Header>
+        <DetailPage.Content>
+          <DataTable
+            columns={orderLineColumns}
+            rows={orderLineRows}
+            maxHeight="100%"
+          />
+        </DetailPage.Content>
+      </DetailPage.Root>
+    </Box>
+  ),
+};
+
+/**
  * Detail page with custom header content
  * Demonstrates placing additional content like a Toolbar inside the Header component
  */
@@ -280,7 +334,7 @@ export const WithCustomHeaderContent: Story = {
         </DetailPage.BackLink>
         <DetailPage.Title>Document Editor</DetailPage.Title>
         <DetailPage.Subtitle>Last edited 2 hours ago</DetailPage.Subtitle>
-        <Toolbar variant="outline">
+        <Toolbar variant="outline" gridColumn="1 / -1">
           <IconButton aria-label="Undo" size="sm" variant="ghost">
             <Undo />
           </IconButton>
