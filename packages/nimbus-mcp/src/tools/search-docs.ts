@@ -205,7 +205,13 @@ function findCandidates(
 
 /** Cached route view data with pre-computed combined lowered content. */
 interface CachedRouteViews {
-  views: Array<{ key: string; content: string; lower: string }>;
+  views: Array<{
+    key: string;
+    content: string;
+    lower: string;
+    /** Truncated lower for matching (4KB cap). */
+    matchLower: string;
+  }>;
   /** All view content concatenated and lowered — for fast negative filtering. */
   combinedLower: string;
 }
@@ -229,26 +235,45 @@ async function getRouteViews(route: string): Promise<CachedRouteViews> {
     return empty;
   }
 
-  const views: Array<{ key: string; content: string; lower: string }> = [];
+  const MATCH_LIMIT = 4096;
+  const rawViews: Array<{
+    key: string;
+    content: string;
+    lower: string;
+    matchLower: string;
+  }> = [];
   if (routeData.views) {
     for (const [key, view] of Object.entries(routeData.views)) {
       if (view.mdx) {
         const { stripped, lower } = getCachedViewContent(view);
-        views.push({ key, content: stripped, lower });
+        rawViews.push({
+          key,
+          content: stripped,
+          lower,
+          matchLower:
+            lower.length > MATCH_LIMIT ? lower.slice(0, MATCH_LIMIT) : lower,
+        });
       }
     }
   } else if (routeData.mdx) {
     const { stripped, lower } = getCachedViewContent(
       routeData as unknown as { mdx: string }
     );
-    views.push({ key: "overview", content: stripped, lower });
+    rawViews.push({
+      key: "overview",
+      content: stripped,
+      lower,
+      matchLower:
+        lower.length > MATCH_LIMIT ? lower.slice(0, MATCH_LIMIT) : lower,
+    });
   }
 
   // Sort by content length (shortest first) for faster early-exit on full matches.
-  views.sort((a, b) => a.lower.length - b.lower.length);
+  rawViews.sort((a, b) => a.matchLower.length - b.matchLower.length);
+  const views = rawViews;
   const result: CachedRouteViews = {
     views,
-    combinedLower: views.map((v) => v.lower).join(" "),
+    combinedLower: views.map((v) => v.lower.slice(0, MATCH_LIMIT)).join(" "),
   };
   routeViewsCache.set(slug, result);
   return result;
@@ -283,7 +308,7 @@ async function searchRouteViews(
   for (const view of views) {
     let hits = 0;
     for (let i = 0; i < tokenCount; i++) {
-      if (view.lower.includes(tokens[i])) hits++;
+      if (view.matchLower.includes(tokens[i])) hits++;
     }
     if (hits === tokenCount) {
       return { viewKey: view.key, content: view.content };
