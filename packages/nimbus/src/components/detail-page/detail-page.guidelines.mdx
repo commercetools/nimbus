@@ -26,9 +26,9 @@ structure across your application.
 - **Omit the footer for read-only pages:** Info pages that display data without
   editing don't need a footer. Removing it gives the content area more vertical
   space.
-- **Use Tabs for multi-section content:** When a detail page has distinct content
-  sections, compose Tabs inside `DetailPage.Content` rather than stacking
-  everything vertically.
+- **Use TabNav for multi-section navigation:** When a detail page has distinct
+  content sections, compose TabNav inside `DetailPage.Header` for route-based
+  navigation rather than stacking everything vertically.
 
 ### Usage
 
@@ -43,7 +43,7 @@ whether the page is read-only, editable, or tabbed.
   information that the user cannot edit (e.g., order details, customer profile).
 - **Editable resource pages:** Use DetailPage with a footer for pages that
   include a form with save/cancel actions.
-- **Tabbed resource pages:** Use DetailPage with Tabs inside the content area
+- **Tabbed resource pages:** Use DetailPage with TabNav inside the content area
   when the resource has multiple logical sections (e.g., General, Addresses,
   Orders).
 - **Resource creation pages:** Use DetailPage with a footer for "create new"

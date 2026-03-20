@@ -5,3 +5,4 @@ export { MainPageSubtitle } from "./main-page.subtitle";
 export { MainPageActions } from "./main-page.actions";
 export { MainPageContent } from "./main-page.content";
 export { MainPageFooter } from "./main-page.footer";
+export { MainPageTabNav } from "./main-page.tab-nav";

@@ -7,7 +7,7 @@ import {
   MainPage,
   MoneyInput,
   Stack,
-  Tabs,
+  TabNav,
   Text,
   TextInput,
 } from "@commercetools/nimbus";
@@ -436,51 +436,35 @@ export const FormPage: Story = {
 };
 
 /**
- * Tabular page pattern - Tab list in Header, Tab panels in Content.
- * Tabs.Root wraps both containers so they share context.
+ * Tabular page pattern - TabNav in Header for route-based navigation,
+ * static content in Content area (router renders content in a real app).
  */
-export const TabularPage: Story = {
+export const WithTabNavigation: Story = {
   render: () => (
-    <Tabs.Root defaultSelectedKey="general">
-      <MainPage.Root
-        border="solid-25"
-        borderColor="neutral.6"
-        borderRadius="200"
-      >
-        <MainPage.Header paddingBottom="0">
-          <MainPage.Title>Product Details</MainPage.Title>
-          <MainPage.Subtitle>Tabs</MainPage.Subtitle>
-          <MainPage.Actions>
-            <Button>Undo</Button>
-            <Button>Publish</Button>
-          </MainPage.Actions>
-          <Tabs.List gridColumn="1 / -1" mt="200">
-            <Tabs.Tab id="general">General</Tabs.Tab>
-            <Tabs.Tab id="variants">Variants</Tabs.Tab>
-            <Tabs.Tab id="images">Images</Tabs.Tab>
-          </Tabs.List>
-        </MainPage.Header>
-        <MainPage.Content>
-          <Tabs.Panels>
-            <Tabs.Panel id="general">
-              <Box padding="400">
-                <Text>General information content</Text>
-              </Box>
-            </Tabs.Panel>
-            <Tabs.Panel id="variants">
-              <Box padding="400">
-                <Text>Variants content</Text>
-              </Box>
-            </Tabs.Panel>
-            <Tabs.Panel id="images">
-              <Box padding="400">
-                <Text>Images content</Text>
-              </Box>
-            </Tabs.Panel>
-          </Tabs.Panels>
-        </MainPage.Content>
-      </MainPage.Root>
-    </Tabs.Root>
+    <MainPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+      <MainPage.Header paddingBottom="0">
+        <MainPage.Title>Product Details</MainPage.Title>
+        <MainPage.Subtitle>Navigation</MainPage.Subtitle>
+        <MainPage.Actions>
+          <Button>Undo</Button>
+          <Button>Publish</Button>
+        </MainPage.Actions>
+        <MainPage.TabNav>
+          <TabNav.Root aria-label="Product sections">
+            <TabNav.Item href="/products/123/general" isCurrent>
+              General
+            </TabNav.Item>
+            <TabNav.Item href="/products/123/variants">Variants</TabNav.Item>
+            <TabNav.Item href="/products/123/images">Images</TabNav.Item>
+          </TabNav.Root>
+        </MainPage.TabNav>
+      </MainPage.Header>
+      <MainPage.Content>
+        <Box padding="400">
+          <Text>General information content</Text>
+        </Box>
+      </MainPage.Content>
+    </MainPage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -498,19 +482,21 @@ export const TabularPage: Story = {
       ).toBeInTheDocument();
     });
 
-    await step("Content renders Tabs children", async () => {
+    await step("Renders navigation links", async () => {
+      const nav = canvas.getByRole("navigation");
+      await expect(nav).toBeInTheDocument();
       await expect(
-        canvas.getByRole("tab", { name: "General" })
+        canvas.getByRole("link", { name: "General" })
+      ).toHaveAttribute("aria-current", "page");
+      await expect(
+        canvas.getByRole("link", { name: "Variants" })
       ).toBeInTheDocument();
       await expect(
-        canvas.getByRole("tab", { name: "Variants" })
-      ).toBeInTheDocument();
-      await expect(
-        canvas.getByRole("tab", { name: "Images" })
+        canvas.getByRole("link", { name: "Images" })
       ).toBeInTheDocument();
     });
 
-    await step("Active tab panel content is visible", async () => {
+    await step("Shows content for current route", async () => {
       await expect(
         canvas.getByText("General information content")
       ).toBeInTheDocument();
