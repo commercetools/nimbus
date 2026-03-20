@@ -25,3 +25,5 @@ ce57f3a	IconButton	0.58	0.43	keep	avoid spread+delete in extractStyleProps
 ce57f3a	Text	0.20	0.13	keep	avoid spread+delete in extractStyleProps
 ce57f3a	Link	0.56	0.29	keep	avoid spread+delete in extractStyleProps
 ce57f3a	Switch	1.30	1.20	keep	avoid spread+delete in extractStyleProps
+85c4a4d	Button	0.68	0.60	keep	simplify Button ref chain
+85c4a4d	IconButton	0.46	0.40	keep	simplify Button ref chain (uses Button internally)
