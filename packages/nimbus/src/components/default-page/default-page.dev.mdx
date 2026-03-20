@@ -1,0 +1,497 @@
+---
+title: DefaultPage Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { DefaultPage, type DefaultPageProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+DefaultPage uses a compound pattern to structure both main and detail views.
+At minimum, wrap `DefaultPage.Header` (with `DefaultPage.Title`) and
+`DefaultPage.Content` inside `DefaultPage.Root`.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.Title>Products</DefaultPage.Title>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Text>Your page content goes here.</Text>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+## Sub-components
+
+### DefaultPage.Header
+
+The header section uses a two-column grid layout. `Title`, `Subtitle`, and any
+custom content with `gridColumn="1"` flow into the left column. `Actions` spans
+all rows on the right column and collapses when not present. When `BackLink` is
+present, `Actions` automatically shifts down to align with the title row.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.Title>Products</DefaultPage.Title>
+      <DefaultPage.Actions>
+        <Button variant="ghost">Export</Button>
+        <Button variant="solid" colorPalette="primary">Add Product</Button>
+      </DefaultPage.Actions>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Text>Content area</Text>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+### DefaultPage.Title
+
+Renders a styled `<h1>` element pinned to grid column 1. Accepts children for
+the title text.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.Title>Products</DefaultPage.Title>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Text>Content area</Text>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+### DefaultPage.Subtitle
+
+Optional subtitle rendered as a `<p>` element pinned to grid column 1, below
+the title. Place it as a sibling of `Title` inside the `Header`.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.Title>Products</DefaultPage.Title>
+      <DefaultPage.Subtitle>Manage your product catalog</DefaultPage.Subtitle>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Text>Content area</Text>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+### DefaultPage.Actions
+
+A flex container with gap for action buttons. Pinned to grid column 2 (right),
+spanning all rows. When `BackLink` is present, the grid automatically shifts
+`Actions` to the title row.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.Title>Products</DefaultPage.Title>
+      <DefaultPage.Actions>
+        <Button variant="ghost">Export</Button>
+        <Button variant="solid" colorPalette="primary">Add Product</Button>
+      </DefaultPage.Actions>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Text>Content area</Text>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+### DefaultPage.BackLink
+
+Optional back navigation link that renders as a semantic `<a>` element.
+Requires an `href` prop. Include it for detail views to signal the parent list
+or overview; omit it entirely for top-level main pages.
+
+The default `aria-label` is "Go back" (provided via i18n). Override it with a
+descriptive label when the destination context matters.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.BackLink href="/products">
+        Back to products
+      </DefaultPage.BackLink>
+      <DefaultPage.Title>Wireless Headphones</DefaultPage.Title>
+      <DefaultPage.Subtitle>SKU-WH-2024-001</DefaultPage.Subtitle>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Text>Product detail content</Text>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+### DefaultPage.TabNav
+
+Layout container for tab navigation in the header. Positions itself in the
+header grid's last row at full width. Place it inside `DefaultPage.Header`,
+after `Title` and `Subtitle`.
+
+Wrap a `TabNav.Root` inside, or use `as={TabNav.Root}` for a flatter DOM.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.Title>Customer Details</DefaultPage.Title>
+      <DefaultPage.Subtitle>customer@example.com</DefaultPage.Subtitle>
+      <DefaultPage.TabNav>
+        <TabNav.Root aria-label="Customer sections">
+          <TabNav.Item href="/customers/123/general" isCurrent>General</TabNav.Item>
+          <TabNav.Item href="/customers/123/addresses">Addresses</TabNav.Item>
+          <TabNav.Item href="/customers/123/orders">Orders</TabNav.Item>
+        </TabNav.Root>
+      </DefaultPage.TabNav>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Text>General information content</Text>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+### DefaultPage.Content
+
+The main content area with scrollable overflow. Uses margin-based spacing to
+preserve sticky positioning for child components like `DataTable`.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.Title>Page Title</DefaultPage.Title>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Box bg="neutral.3" padding="400" borderRadius="200">
+        <Text>Content area with automatic padding spacing</Text>
+      </Box>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+### DefaultPage.Footer
+
+Optional footer for page-level actions. Omit it entirely when the page has no
+form actions — the footer grid row collapses automatically when absent.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.Title>Project Settings</DefaultPage.Title>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Box bg="neutral.3" padding="400" borderRadius="200">
+        <Text>Form content</Text>
+      </Box>
+    </DefaultPage.Content>
+    <DefaultPage.Footer>
+      <Stack direction="row" gap="200" justify="flex-end" width="100%">
+        <Button variant="ghost">Cancel</Button>
+        <Button variant="solid" colorPalette="primary">Save</Button>
+      </Stack>
+    </DefaultPage.Footer>
+  </DefaultPage.Root>
+)
+```
+
+### Custom elements in the header
+
+Any additional children placed in the `Header` default to column 2 (right). To
+place a custom element on the left side of the header grid, set
+`gridColumn="1"`.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.Title mb="100">Page Title</DefaultPage.Title>
+      <Badge
+        gridColumn="1"
+        justifySelf="flex-start"
+        colorPalette="blue"
+        size="xs"
+      >
+        Custom in column 1
+      </Badge>
+      <Badge
+        colorPalette="mint"
+        justifySelf="flex-end"
+        size="xs"
+      >
+        Custom in column 2
+      </Badge>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Text>Content area</Text>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+## Usage examples
+
+### Info main page (no BackLink, no Footer)
+
+For top-level pages that display information without form actions, omit both
+`DefaultPage.BackLink` and `DefaultPage.Footer`.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.Title>Products</DefaultPage.Title>
+      <DefaultPage.Subtitle>Manage your product catalog</DefaultPage.Subtitle>
+      <DefaultPage.Actions>
+        <Button variant="ghost">Export</Button>
+        <Button variant="solid" colorPalette="primary">Add Product</Button>
+      </DefaultPage.Actions>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Text>Product list content goes here.</Text>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+### Form main page (with Footer)
+
+For top-level pages with form actions, add `DefaultPage.Footer` containing
+action buttons. Omit `DefaultPage.BackLink` since this is a main-level page.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.Title>Project Settings</DefaultPage.Title>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Stack gap="400">
+        <FormField.Root>
+          <FormField.Label>Project name</FormField.Label>
+          <FormField.Input>
+            <TextInput placeholder="e.g. My Store" />
+          </FormField.Input>
+        </FormField.Root>
+        <FormField.Root>
+          <FormField.Label>Description</FormField.Label>
+          <FormField.Input>
+            <TextInput placeholder="Describe the project" />
+          </FormField.Input>
+        </FormField.Root>
+      </Stack>
+    </DefaultPage.Content>
+    <DefaultPage.Footer>
+      <Stack direction="row" gap="200" justify="flex-end" width="100%">
+        <Button variant="ghost">Cancel</Button>
+        <Button variant="solid" colorPalette="primary">Save</Button>
+      </Stack>
+    </DefaultPage.Footer>
+  </DefaultPage.Root>
+)
+```
+
+### Info detail page (with BackLink, no Footer)
+
+For detail pages that display information without form actions, include
+`DefaultPage.BackLink` and omit `DefaultPage.Footer`.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.BackLink href="/products">Back to products</DefaultPage.BackLink>
+      <DefaultPage.Title>Wireless Headphones</DefaultPage.Title>
+      <DefaultPage.Subtitle>SKU-WH-2024-001</DefaultPage.Subtitle>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Stack gap="400">
+        <Text>This is a read-only detail page with product information.</Text>
+      </Stack>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+### Form detail page (with BackLink and Footer)
+
+For detail pages with form actions, include both `DefaultPage.BackLink` and
+`DefaultPage.Footer`.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.BackLink href="/orders">Back to orders</DefaultPage.BackLink>
+      <DefaultPage.Title>Edit Order</DefaultPage.Title>
+      <DefaultPage.Subtitle>Order #ORD-2024-001</DefaultPage.Subtitle>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Stack gap="400">
+        <Text>Form fields would go here.</Text>
+      </Stack>
+    </DefaultPage.Content>
+    <DefaultPage.Footer>
+      <Stack direction="row" gap="200" justify="flex-end" width="100%">
+        <Button variant="ghost">Cancel</Button>
+        <Button variant="solid" colorPalette="primary">Save</Button>
+      </Stack>
+    </DefaultPage.Footer>
+  </DefaultPage.Root>
+)
+```
+
+### Tab navigation
+
+For pages with route-based tab navigation, compose `TabNav` inside
+`DefaultPage.Header`. Unlike `Tabs` (which switches content panels), `TabNav`
+renders navigation links — in a real app, the router handles content rendering.
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.BackLink href="/customers">Back to customers</DefaultPage.BackLink>
+      <DefaultPage.Title>Customer Details</DefaultPage.Title>
+      <DefaultPage.Subtitle>customer@example.com</DefaultPage.Subtitle>
+      <DefaultPage.TabNav>
+        <TabNav.Root aria-label="Customer sections">
+          <TabNav.Item href="/customers/123/general" isCurrent>General</TabNav.Item>
+          <TabNav.Item href="/customers/123/addresses">Addresses</TabNav.Item>
+          <TabNav.Item href="/customers/123/orders">Orders</TabNav.Item>
+        </TabNav.Root>
+      </DefaultPage.TabNav>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Box py="400">
+        <Text>General information content</Text>
+      </Box>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+## Component parts
+
+| Part | Description |
+|------|-------------|
+| `DefaultPage.Root` | Page container providing layout context and optional sticky variant props |
+| `DefaultPage.Header` | Header section; two-column grid for title area (left) and actions (right) |
+| `DefaultPage.BackLink` | Optional back navigation link (requires `href`); omit for main pages |
+| `DefaultPage.Title` | Page title (renders as `h1`) |
+| `DefaultPage.Subtitle` | Optional subtitle text (renders as `p`) |
+| `DefaultPage.Actions` | Flex container for action buttons, right-aligned in the header grid |
+| `DefaultPage.TabNav` | Layout container for tab navigation; place inside `Header` |
+| `DefaultPage.Content` | Scrollable main content area |
+| `DefaultPage.Footer` | Optional footer for form actions; omit for read-only pages |
+
+## Accessibility
+
+DefaultPage follows WCAG 2.1 AA guidelines using semantic HTML landmarks and a
+proper heading hierarchy.
+
+### Landmark roles
+
+- `DefaultPage.Header` uses the `<header>` element (banner landmark)
+- `DefaultPage.Content` uses the `<main>` element (main landmark)
+- `DefaultPage.Footer` uses the `<footer>` element (contentinfo landmark)
+- `DefaultPage.Title` renders as an `<h1>`, ensuring correct heading hierarchy
+- `DefaultPage.BackLink` renders as a semantic `<a>` element with a default
+  `aria-label` of "Go back" via i18n
+
+### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus between interactive elements (back link, actions, tabs, content, footer buttons) |
+| `Shift + Tab` | Move focus in reverse order |
+| `Enter` / `Space` | Activate the focused link or button |
+
+### Screen reader behavior
+
+| Element | Role | Announced as |
+|---------|------|--------------|
+| `DefaultPage.Header` | `banner` | "banner" landmark |
+| `DefaultPage.BackLink` | `link` | Link with aria-label (e.g. "Go back" or custom label) |
+| `DefaultPage.Title` | `heading` (level 1) | "Products, heading level 1" |
+| `DefaultPage.Content` | `main` | "main" landmark |
+| `DefaultPage.Footer` | `contentinfo` | "contentinfo" landmark |
+
+### Labeling best practices
+
+- Override `DefaultPage.BackLink`'s default `aria-label="Go back"` with a
+  destination-specific label (e.g. `aria-label="Back to products"`) when the
+  destination context is important.
+- When composing with `TabNav`, always provide an `aria-label` on `TabNav.Root`
+  to describe the navigation group for screen readers.
+- Because `<main>` must be unique per page, avoid nesting multiple `DefaultPage`
+  components in a single view.
+
+## API reference
+
+<PropsTable id="DefaultPage" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using DefaultPage
+within your application.
+
+{{docs-tests: default-page.docs.spec.tsx}}
+
+## Migrating from Merchant Center Application Kit
+
+DefaultPage replaces all eight page components from
+[`@commercetools-frontend/application-components`](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components):
+
+| Application Kit Component | Nimbus Equivalent |
+|---|---|
+| `<InfoMainPage title="...">` | `<DefaultPage.Root>` + Header/Title + Content (no BackLink, no Footer) |
+| `<FormMainPage title="..." onPrimaryButtonClick={...}>` | `<DefaultPage.Root>` + Header/Title + Content + Footer with buttons (no BackLink) |
+| `<CustomFormMainPage formControls={...}>` | Same as FormMainPage — Footer accepts any children |
+| `<TabularMainPage tabControls={...}>` | `<DefaultPage.Root>` + Header/Title + TabNav + Content (no BackLink) |
+| `<InfoDetailPage title="...">` | `<DefaultPage.Root>` + Header/BackLink/Title + Content (no Footer) |
+| `<FormDetailPage title="..." onPrimaryButtonClick={...}>` | `<DefaultPage.Root>` + Header/BackLink/Title + Content + Footer with buttons |
+| `<CustomFormDetailPage formControls={...}>` | Same as FormDetailPage — Footer accepts any children |
+| `<TabularDetailPage tabControls={...}>` | `<DefaultPage.Root>` + Header/BackLink/Title + TabNav + Content |
+
+Key differences from Application Kit:
+
+- **Composition over configuration** — Instead of 10+ props for button labels,
+  handlers, and visibility, compose your own buttons in `Footer` or `Actions`
+- **BackLink determines the pattern** — Include `DefaultPage.BackLink` for
+  detail views; omit it for main pages. No separate component needed
+- **No built-in tab routing** — Use `TabNav` inside `DefaultPage.Header` for
+  route-based navigation
+- **Title and subtitle as children** — `<DefaultPage.Title>Products</DefaultPage.Title>`
+  and `<DefaultPage.Subtitle>` replace `title` and `subtitle` props
+- **No `customTitleRow`** — The Header accepts any content, including custom
+  elements with `gridColumn="1"` for left placement
+- **No `Intl` static property** — Use your own i18n solution for button labels
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-pages-defaultpage--docs)
+- [MC Application Components](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components) (predecessor)

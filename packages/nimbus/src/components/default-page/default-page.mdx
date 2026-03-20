@@ -1,0 +1,214 @@
+---
+id: Components-DefaultPage
+title: DefaultPage
+exportName: DefaultPage
+description: A unified page layout component for both main-level and detail views, providing header with optional back navigation, scrollable content area, tab navigation, and optional footer. Replaces all eight MC page variants.
+documentState: InitialDraft
+lifecycleState: Beta
+order: 999
+menu:
+  - Patterns
+  - Pages
+  - DefaultPage
+tags:
+  - component
+  - layout
+  - default-page
+  - page-skeleton
+  - detail-page
+  - main-page
+---
+
+## Overview
+
+DefaultPage is a unified compound component that structures both top-level and
+detail views into three zones: a fixed header, a scrollable content area, and an
+optional footer. It replaces both `MainPage` and `DetailPage`, consolidating all
+eight MC page variants into a single flexible primitive.
+
+The presence or absence of `DefaultPage.BackLink` determines which pattern is in
+use: omit it for top-level main pages; include it for detail views that need
+back navigation.
+
+### Key features
+
+- **DefaultPage.Header** — Two-column grid that positions Title and Subtitle on
+  the left and Actions on the right
+- **DefaultPage.BackLink** — Optional back navigation link that shifts the
+  Actions area down to align with the title row; omit entirely for main pages
+- **DefaultPage.Title** — Styled `<h1>` element for the page heading
+- **DefaultPage.Subtitle** — Optional `<p>` element for secondary descriptive
+  text below the title
+- **DefaultPage.Actions** — Flex container for action buttons, right-aligned in
+  the header grid
+- **DefaultPage.TabNav** — Optional tab navigation wrapper for route-based page
+  sections; place inside `DefaultPage.Header`
+- **DefaultPage.Content** — Scrollable main content area with spacing that
+  preserves sticky positioning for child components
+- **DefaultPage.Footer** — Optional action bar for form pages; omit it and the
+  grid row collapses automatically
+- **Composable** — Arrange sub-components freely to cover read-only, editable,
+  creation, and tabbed patterns from the same primitives
+
+### Resources
+
+[MC Application Components](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components)
+
+## Variables
+
+Get familiar with the sub-components.
+
+### Main page (no BackLink)
+
+A top-level page with title, subtitle, and header actions. Omit `BackLink` for
+any page that is not a subordinate detail view.
+
+```jsx live
+const App = () => (
+  <DefaultPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Header>
+      <DefaultPage.Title>Products</DefaultPage.Title>
+      <DefaultPage.Subtitle>Manage your product catalog</DefaultPage.Subtitle>
+      <DefaultPage.Actions>
+        <Button variant="ghost">Export</Button>
+        <Button variant="solid" colorPalette="primary">Add Product</Button>
+      </DefaultPage.Actions>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Box bg="neutral.3" padding="600" borderRadius="200">
+        <Text>Content area</Text>
+      </Box>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+### Detail page (with BackLink)
+
+A detail view with back navigation. Adding `DefaultPage.BackLink` signals that
+this is a subordinate page. The Actions area shifts down to align with the title
+row automatically.
+
+```jsx live
+const App = () => (
+  <DefaultPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Header>
+      <DefaultPage.BackLink href="/products">
+        Back to products
+      </DefaultPage.BackLink>
+      <DefaultPage.Title>Wireless Headphones</DefaultPage.Title>
+      <DefaultPage.Subtitle>SKU-WH-2024-001</DefaultPage.Subtitle>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Stack gap="400">
+        <Text>Product information is displayed here.</Text>
+        <Text>Use this pattern for read-only resource views.</Text>
+      </Stack>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+### Form page with footer
+
+Include `DefaultPage.Footer` for pages with save or submit actions. Omit it on
+read-only pages — the grid row collapses automatically.
+
+```jsx live
+const App = () => (
+  <DefaultPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Header>
+      <DefaultPage.BackLink href="/orders">
+        Back to orders
+      </DefaultPage.BackLink>
+      <DefaultPage.Title>Edit Order</DefaultPage.Title>
+      <DefaultPage.Subtitle>Order #ORD-2024-001</DefaultPage.Subtitle>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Box bg="neutral.3" padding="400" borderRadius="200">
+        <Text>Form fields would go here.</Text>
+      </Box>
+    </DefaultPage.Content>
+    <DefaultPage.Footer>
+      <Stack direction="row" gap="200" justify="flex-end" width="100%">
+        <Button variant="ghost">Cancel</Button>
+        <Button variant="solid" colorPalette="primary">Save</Button>
+      </Stack>
+    </DefaultPage.Footer>
+  </DefaultPage.Root>
+)
+```
+
+### Header actions
+
+Action buttons placed alongside the title using `DefaultPage.Actions`. The
+header grid positions Actions on the right, spanning all title rows.
+
+```jsx live
+const App = () => (
+  <DefaultPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Header>
+      <DefaultPage.BackLink href="/discounts">
+        Back to discounts
+      </DefaultPage.BackLink>
+      <DefaultPage.Title>Cart Discount Details</DefaultPage.Title>
+      <DefaultPage.Actions>
+        <Button size="sm" variant="ghost">Duplicate</Button>
+        <Button size="sm" variant="solid" colorPalette="primary">Save</Button>
+      </DefaultPage.Actions>
+      <DefaultPage.Subtitle>10% off all items</DefaultPage.Subtitle>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Text>Discount configuration form fields would go here.</Text>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+### Tab navigation
+
+Compose with the `TabNav` component inside `DefaultPage.Header` for route-based
+tab navigation. In a real app, the router renders content for the current route.
+
+```jsx live
+const App = () => (
+  <DefaultPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Header>
+      <DefaultPage.BackLink href="/customers">
+        Back to customers
+      </DefaultPage.BackLink>
+      <DefaultPage.Title>Customer Details</DefaultPage.Title>
+      <DefaultPage.Subtitle>customer@example.com</DefaultPage.Subtitle>
+      <DefaultPage.TabNav>
+        <TabNav.Root aria-label="Customer sections">
+          <TabNav.Item href="/customers/123/general" isCurrent>General</TabNav.Item>
+          <TabNav.Item href="/customers/123/addresses">Addresses</TabNav.Item>
+          <TabNav.Item href="/customers/123/orders">Orders</TabNav.Item>
+        </TabNav.Root>
+      </DefaultPage.TabNav>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Box py="400">
+        <Text>General information content</Text>
+      </Box>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+## Accessibility
+
+DefaultPage uses semantic HTML landmarks to provide a clear document structure
+for assistive technologies:
+
+- **Header** renders as `<header>` (banner landmark)
+- **Title** renders as `<h1>` for the page heading
+- **Content** renders as `<main>` (main landmark)
+- **Footer** renders as `<footer>` (contentinfo landmark)
+- **BackLink** renders as a semantic `<a>` element
+
+These landmarks allow screen reader users to navigate directly between page
+sections. Because `<main>` must be unique per page, avoid nesting multiple
+`DefaultPage` components in a single view. When composing with `TabNav`, provide
+an `aria-label` on `TabNav.Root` to describe the navigation group for screen
+readers.

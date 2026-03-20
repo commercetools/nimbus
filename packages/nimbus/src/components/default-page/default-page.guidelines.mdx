@@ -1,0 +1,222 @@
+---
+title: DefaultPage
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+DefaultPage guidelines help you choose the right layout configuration for both
+top-level and detail views, ensuring consistent navigation patterns and content
+structure across your application.
+
+### Best practices
+
+- **Start with the simplest composition:** Every page needs `Root`, `Header`
+  with `Title`, and `Content`. Only add `BackLink`, `Actions`, `Subtitle`,
+  `TabNav`, and `Footer` when the page requires them.
+- **Use BackLink to signal detail views:** Include `DefaultPage.BackLink` for
+  any page that is subordinate to a parent list or overview. Omit it entirely
+  for top-level main pages.
+- **Always label the back link with its destination:** The back link label
+  should name where the user will go, not just say "Back".
+- **Keep the header concise:** Use the title for the resource name and the
+  subtitle for a secondary identifier (SKU, email, order number). Don't overload
+  the header with content that belongs in the body.
+- **Use Actions sparingly:** Limit header actions to 2–3 high-priority
+  operations. Move secondary actions into a menu or into the content area.
+- **Place form actions in the footer:** Save, cancel, and submit buttons belong
+  in `DefaultPage.Footer`, not the header. The footer stays anchored at the
+  bottom, providing a consistent location for form actions.
+- **Omit the footer for read-only pages:** Pages that display data without
+  editing don't need a footer. Removing it gives the content area more vertical
+  space and avoids implying that user input is expected.
+- **Use TabNav for multi-section navigation:** When a page has distinct content
+  sections reachable via routing, compose `TabNav` inside `DefaultPage.Header`
+  rather than stacking all sections vertically.
+
+### Usage
+
+DefaultPage works for any full-page view in your application. The pattern you
+use depends on whether the page is a top-level main view or a subordinate detail
+view, and whether it is read-only or editable.
+
+> [!TIP]\
+> When to use
+
+- **Top-level read-only views:** Use DefaultPage without `BackLink` or `Footer`
+  when displaying a list, table, or overview that the user cannot edit directly
+  (e.g., product list, order overview).
+- **Top-level form views:** Use DefaultPage without `BackLink` but with
+  `Footer` for top-level pages that include a form with save/cancel actions
+  (e.g., project settings, global configuration).
+- **Detail read-only views:** Use DefaultPage with `BackLink` but without
+  `Footer` when displaying information for a single resource the user cannot
+  edit (e.g., order details, customer profile in read mode).
+- **Detail editable views:** Use DefaultPage with both `BackLink` and `Footer`
+  for pages focused on editing a single resource (e.g., editing a product,
+  updating an order).
+- **Tabbed views:** Use DefaultPage with `TabNav` inside the `Header` when a
+  page (main or detail) has multiple logical sections reachable by route.
+- **Resource creation pages:** Use DefaultPage with `Footer` for "create new"
+  flows where the user fills out a form and submits.
+
+> [!CAUTION]\
+> When not to use
+
+- **Modals, dialogs, or drawers:** DefaultPage is designed for full-page views
+  only. Use the appropriate overlay components for secondary workflows.
+- **Nested inside another DefaultPage:** Each view should have a single
+  DefaultPage at its root. Nesting creates duplicate `<main>` landmarks, which
+  violates WCAG.
+- **Dashboards with widget grids:** DefaultPage's single-column scrollable
+  content area is not suited for dashboard layouts with multiple side-by-side
+  widgets or summary cards.
+- **Wizards or multi-step flows:** Step-by-step creation flows need dedicated
+  wizard patterns, not a default page layout.
+
+### Choosing between main page and detail page patterns
+
+The distinction between a main page and a detail page is determined by a single
+prop: `DefaultPage.BackLink`.
+
+| Signal | Main page pattern | Detail page pattern |
+|--------|------------------|---------------------|
+| `DefaultPage.BackLink` | Omit | Include with destination `href` |
+| Typical content | Lists, tables, overviews | Single resource: view, edit, or create |
+| Typical header | Title + Subtitle + Actions | BackLink + Title + Subtitle (+ optional Actions) |
+| Footer | Optional (form pages only) | Optional (editable pages only) |
+
+When in doubt: if the user navigated *into* this page from a list, it is a
+detail page and should have a back link.
+
+### Back link labeling
+
+The back link is the primary navigation element on detail pages. Its label
+should clearly communicate where the user will go.
+
+> [!TIP]\
+> **Do**
+>
+> - Label the back link with the destination: "Back to products", "Back to
+>   orders", "Back to customers".
+> - Keep the label short and scannable.
+> - Override the default `aria-label` with a destination-specific value when
+>   the destination context is important.
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't use generic labels like "Back" or "Go back" — they don't tell the
+>   user where they'll end up.
+> - Don't use the back link for unrelated navigation. It should always return
+>   to the parent list or overview.
+
+### Header content structure
+
+The header organizes the page identity. Keep it focused on identification and
+primary actions.
+
+> [!TIP]\
+> **Do**
+>
+> - Use the title for the resource's primary name or identifier.
+> - Use the subtitle for a secondary identifier (SKU, email, ID, or brief
+>   description).
+> - Place 1–2 high-priority actions in `DefaultPage.Actions`.
+> - Use `gridColumn="1"` for any custom element that should appear in the left
+>   column alongside the title.
+
+```jsx live
+const App = () => (
+  <DefaultPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Header>
+      <DefaultPage.BackLink href="/products">
+        Back to products
+      </DefaultPage.BackLink>
+      <DefaultPage.Title>Wireless Headphones</DefaultPage.Title>
+      <DefaultPage.Actions>
+        <Button size="sm" variant="ghost">Duplicate</Button>
+      </DefaultPage.Actions>
+      <DefaultPage.Subtitle>SKU-WH-2024-001</DefaultPage.Subtitle>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Text>Page content goes here.</Text>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't put descriptions, status badges, or metadata in the title or subtitle.
+>   These belong in the content area.
+> - Don't add more than 3 actions to the header. Use a menu for overflow
+>   actions.
+> - Don't put form submission buttons (Save, Cancel) in `Actions`. Those belong
+>   in `Footer`.
+
+### Footer usage
+
+Footer is intended for page-level form actions. Omit it entirely for read-only
+pages — the grid row collapses automatically.
+
+> [!TIP]\
+> **Do**
+>
+> - Place the primary action button on the right and secondary actions to its
+>   left.
+> - Use `variant="ghost"` for secondary actions like Cancel to create visual
+>   hierarchy.
+> - Omit `DefaultPage.Footer` entirely when the page has no form actions.
+
+```jsx live
+const App = () => (
+  <DefaultPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Header>
+      <DefaultPage.BackLink href="/orders">
+        Back to orders
+      </DefaultPage.BackLink>
+      <DefaultPage.Title>Edit Order</DefaultPage.Title>
+      <DefaultPage.Subtitle>Order #ORD-2024-001</DefaultPage.Subtitle>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Box bg="neutral.3" padding="400" borderRadius="200">
+        <Text>Form fields</Text>
+      </Box>
+    </DefaultPage.Content>
+    <DefaultPage.Footer>
+      <Stack direction="row" gap="200" justify="flex-end" width="100%">
+        <Button variant="ghost">Cancel</Button>
+        <Button variant="solid" colorPalette="primary">Save</Button>
+      </Stack>
+    </DefaultPage.Footer>
+  </DefaultPage.Root>
+)
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't include a `Footer` on read-only pages. An empty footer creates
+>   confusion about whether the page expects user input.
+> - Don't use `Footer` for navigation or informational content.
+
+### Predecessor
+
+DefaultPage replaces all eight page components from Merchant Center Application
+Kit (`@commercetools-frontend/application-components`):
+
+**Main page components replaced:**
+`InfoMainPage`, `FormMainPage`, `CustomFormMainPage`, `TabularMainPage`
+
+**Detail page components replaced:**
+`InfoDetailPage`, `FormDetailPage`, `CustomFormDetailPage`, `TabularDetailPage`
+
+For detailed migration instructions, see the
+[Migration guide](/components/layout/defaultpage/dev#migrating-from-merchant-center-application-kit)
+in the implementation docs. For the original Application Kit documentation, see
+[Components for Main Pages](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components#components-for-main-pages)
+and
+[Components for Detail Pages](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components#components-for-detail-pages).
