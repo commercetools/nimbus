@@ -23,7 +23,7 @@ import type {
 // ============================================================
 
 const meta: Meta<typeof DefaultPage.Root> = {
-  title: "Patterns/pages/DefaultPage",
+  title: "Components/Layout/DefaultPage",
   component: DefaultPage.Root,
   parameters: { layout: "fullscreen" },
   tags: ["autodocs"],
