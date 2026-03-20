@@ -112,39 +112,31 @@ const App = () => (
 )
 ```
 
-### Tabular page (with tabs)
+### Page with tab navigation
 
-Compose with the `Tabs` component inside `DetailPage.Content` for tabbed navigation.
+Compose with the `TabNav` component inside `DetailPage.Header` for route-based tab navigation. In a real app, the router renders content for the current route.
 
 ```jsx live
 const App = () => (
   <DetailPage.Root>
-    <DetailPage.Header>
+    <DetailPage.Header paddingBottom="0">
       <DetailPage.BackLink href="/customers">
         Back to customers
       </DetailPage.BackLink>
       <DetailPage.Title>Customer Details</DetailPage.Title>
       <DetailPage.Subtitle>customer@example.com</DetailPage.Subtitle>
+      <DetailPage.TabNav>
+        <TabNav.Root aria-label="Customer sections">
+          <TabNav.Item href="/customers/123/general" isCurrent>General</TabNav.Item>
+          <TabNav.Item href="/customers/123/addresses">Addresses</TabNav.Item>
+          <TabNav.Item href="/customers/123/orders">Orders</TabNav.Item>
+        </TabNav.Root>
+      </DetailPage.TabNav>
     </DetailPage.Header>
     <DetailPage.Content>
-      <Tabs.Root defaultSelectedKey="general">
-        <Tabs.List>
-          <Tabs.Tab id="general">General</Tabs.Tab>
-          <Tabs.Tab id="addresses">Addresses</Tabs.Tab>
-          <Tabs.Tab id="orders">Orders</Tabs.Tab>
-        </Tabs.List>
-        <Tabs.Panels py="400">
-          <Tabs.Panel id="general">
-            <Text>General information content</Text>
-          </Tabs.Panel>
-          <Tabs.Panel id="addresses">
-            <Text>Addresses content</Text>
-          </Tabs.Panel>
-          <Tabs.Panel id="orders">
-            <Text>Orders content</Text>
-          </Tabs.Panel>
-        </Tabs.Panels>
-      </Tabs.Root>
+      <Box py="400">
+        <Text>General information content</Text>
+      </Box>
     </DetailPage.Content>
   </DetailPage.Root>
 )

@@ -7,6 +7,7 @@ import type {
   DetailPageBackLinkSlotProps,
   DetailPageTitleSlotProps,
   DetailPageSubtitleSlotProps,
+  DetailPageTabNavSlotProps,
   DetailPageContentSlotProps,
   DetailPageFooterSlotProps,
 } from "./detail-page.types";
@@ -56,6 +57,11 @@ export const DetailPageSubtitleSlot: SlotComponent<
   "p",
   "subtitle"
 );
+
+export const DetailPageTabNavSlot: SlotComponent<
+  HTMLDivElement,
+  DetailPageTabNavSlotProps
+> = withContext<HTMLDivElement, DetailPageTabNavSlotProps>("div", "tabNav");
 
 export const DetailPageContentSlot: SlotComponent<
   HTMLElement,

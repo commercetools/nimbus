@@ -12,6 +12,7 @@ export const detailPageSlotRecipe = defineSlotRecipe({
     "title",
     "subtitle",
     "headerActions",
+    "tabNav",
     "content",
     "footer",
   ],
@@ -78,6 +79,10 @@ export const detailPageSlotRecipe = defineSlotRecipe({
       alignItems: "center",
       justifyItems: "end",
       gap: "200",
+    },
+    tabNav: {
+      gridColumn: "1 / -1",
+      mt: "200",
     },
     content: {
       paddingX: "900",

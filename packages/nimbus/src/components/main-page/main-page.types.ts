@@ -20,6 +20,8 @@ export type MainPageSubtitleSlotProps = HTMLChakraProps<"p">;
 
 export type MainPageActionsSlotProps = HTMLChakraProps<"div">;
 
+export type MainPageTabNavSlotProps = HTMLChakraProps<"div">;
+
 export type MainPageContentSlotProps = HTMLChakraProps<"main">;
 
 export type MainPageFooterSlotProps = HTMLChakraProps<"footer">;
@@ -63,6 +65,13 @@ export type MainPageActionsProps = MainPageActionsSlotProps & {
   /** Action buttons or controls */
   children?: React.ReactNode;
   /** Ref to the actions container element */
+  ref?: React.Ref<HTMLDivElement>;
+};
+
+export type MainPageTabNavProps = MainPageTabNavSlotProps & {
+  /** Tab navigation content (TabNav.Root or TabNav.Item elements) */
+  children?: React.ReactNode;
+  /** Ref to the container element */
   ref?: React.Ref<HTMLDivElement>;
 };
 

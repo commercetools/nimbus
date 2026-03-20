@@ -5,7 +5,7 @@ import {
   MainPage,
   NimbusProvider,
   Stack,
-  Tabs,
+  TabNav,
   Text,
 } from "@commercetools/nimbus";
 
@@ -83,38 +83,39 @@ describe("MainPage - Usage examples", () => {
     expect(screen.getByText("Save")).toBeInTheDocument();
   });
 
-  it("renders a tabular page with tabs", () => {
+  it("renders a page with tab navigation", () => {
     render(
       <NimbusProvider>
         <MainPage.Root>
-          <MainPage.Header>
+          <MainPage.Header paddingBottom="0">
             <MainPage.Title>Product Details</MainPage.Title>
             <MainPage.Actions>
               <Button>Publish</Button>
             </MainPage.Actions>
+            <MainPage.TabNav>
+              <TabNav.Root aria-label="Product sections">
+                <TabNav.Item href="/products/123/general" isCurrent>
+                  General
+                </TabNav.Item>
+                <TabNav.Item href="/products/123/variants">
+                  Variants
+                </TabNav.Item>
+              </TabNav.Root>
+            </MainPage.TabNav>
           </MainPage.Header>
           <MainPage.Content>
-            <Tabs.Root defaultSelectedKey="general">
-              <Tabs.List>
-                <Tabs.Tab id="general">General</Tabs.Tab>
-                <Tabs.Tab id="variants">Variants</Tabs.Tab>
-              </Tabs.List>
-              <Tabs.Panels>
-                <Tabs.Panel id="general">
-                  <Text>General tab content</Text>
-                </Tabs.Panel>
-                <Tabs.Panel id="variants">
-                  <Text>Variants tab content</Text>
-                </Tabs.Panel>
-              </Tabs.Panels>
-            </Tabs.Root>
+            <Text>General information content</Text>
           </MainPage.Content>
         </MainPage.Root>
       </NimbusProvider>
     );
 
     expect(screen.getByText("Product Details")).toBeInTheDocument();
-    expect(screen.getByText("General")).toBeInTheDocument();
-    expect(screen.getByText("Variants")).toBeInTheDocument();
+    expect(screen.getByRole("navigation")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "General" })).toHaveAttribute(
+      "aria-current",
+      "page"
+    );
+    expect(screen.getByRole("link", { name: "Variants" })).toBeInTheDocument();
   });
 });

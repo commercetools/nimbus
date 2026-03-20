@@ -1,9 +1,11 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import {
+  Box,
   DetailPage,
-  Tabs,
+  TabNav,
   Button,
+  Text,
   NimbusProvider,
 } from "@commercetools/nimbus";
 
@@ -110,51 +112,51 @@ describe("DetailPage - With header actions", () => {
 
 /**
  * @docs-section tabular-detail-page
- * @docs-title Tabular Detail Page
- * @docs-description A detail page with tabbed content navigation
+ * @docs-title Detail Page with Tab Navigation
+ * @docs-description A detail page with route-based tab navigation
  * @docs-order 4
  */
-describe("DetailPage - Tabular page (with tabs)", () => {
-  it("renders a tabular detail page with tabs", () => {
+describe("DetailPage - With tab navigation", () => {
+  it("renders a detail page with tab navigation", () => {
     render(
       <NimbusProvider>
         <DetailPage.Root>
-          <DetailPage.Header>
+          <DetailPage.Header paddingBottom="0">
             <DetailPage.BackLink href="/customers">
               Back to customers
             </DetailPage.BackLink>
             <DetailPage.Title>Customer Details</DetailPage.Title>
             <DetailPage.Subtitle>customer@example.com</DetailPage.Subtitle>
+            <DetailPage.TabNav>
+              <TabNav.Root aria-label="Customer sections">
+                <TabNav.Item href="/customers/123/general" isCurrent>
+                  General
+                </TabNav.Item>
+                <TabNav.Item href="/customers/123/addresses">
+                  Addresses
+                </TabNav.Item>
+                <TabNav.Item href="/customers/123/orders">Orders</TabNav.Item>
+              </TabNav.Root>
+            </DetailPage.TabNav>
           </DetailPage.Header>
-          <Tabs.Root defaultSelectedKey="general">
-            <Tabs.List aria-label="Customer sections">
-              <Tabs.Tab id="general">General</Tabs.Tab>
-              <Tabs.Tab id="addresses">Addresses</Tabs.Tab>
-              <Tabs.Tab id="orders">Orders</Tabs.Tab>
-            </Tabs.List>
-            <Tabs.Panels>
-              <Tabs.Panel id="general">
-                <DetailPage.Content>
-                  General information content
-                </DetailPage.Content>
-              </Tabs.Panel>
-              <Tabs.Panel id="addresses">
-                <DetailPage.Content>Addresses content</DetailPage.Content>
-              </Tabs.Panel>
-              <Tabs.Panel id="orders">
-                <DetailPage.Content>Orders content</DetailPage.Content>
-              </Tabs.Panel>
-            </Tabs.Panels>
-          </Tabs.Root>
+          <DetailPage.Content>
+            <Box py="400">
+              <Text>General information content</Text>
+            </Box>
+          </DetailPage.Content>
         </DetailPage.Root>
       </NimbusProvider>
     );
 
     expect(screen.getByText("Customer Details")).toBeInTheDocument();
     expect(screen.getByText("customer@example.com")).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: "General" })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: "Addresses" })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: "Orders" })).toBeInTheDocument();
+    expect(screen.getByRole("navigation")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "General" })).toHaveAttribute(
+      "aria-current",
+      "page"
+    );
+    expect(screen.getByRole("link", { name: "Addresses" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Orders" })).toBeInTheDocument();
     expect(screen.getByText("General information content")).toBeInTheDocument();
   });
 });

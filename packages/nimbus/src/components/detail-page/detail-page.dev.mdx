@@ -81,37 +81,29 @@ const App = () => (
 )
 ```
 
-### Tabular detail page (with tabs)
+### Detail page with tab navigation
 
-For pages with tabbed navigation, compose `Tabs` inside `DetailPage.Content`.
+For pages with route-based tab navigation, compose `TabNav` inside `DetailPage.Header`. Unlike `Tabs` (which switches content panels), `TabNav` renders navigation links — in a real app, the router handles content rendering.
 
 ```jsx live-dev
 const App = () => (
   <DetailPage.Root>
-    <DetailPage.Header>
+    <DetailPage.Header paddingBottom="0">
       <DetailPage.BackLink href="/customers">Back to customers</DetailPage.BackLink>
       <DetailPage.Title>Customer Details</DetailPage.Title>
       <DetailPage.Subtitle>customer@example.com</DetailPage.Subtitle>
+      <DetailPage.TabNav>
+        <TabNav.Root aria-label="Customer sections">
+          <TabNav.Item href="/customers/123/general" isCurrent>General</TabNav.Item>
+          <TabNav.Item href="/customers/123/addresses">Addresses</TabNav.Item>
+          <TabNav.Item href="/customers/123/orders">Orders</TabNav.Item>
+        </TabNav.Root>
+      </DetailPage.TabNav>
     </DetailPage.Header>
     <DetailPage.Content>
-      <Tabs.Root defaultSelectedKey="general">
-        <Tabs.List>
-          <Tabs.Tab id="general">General</Tabs.Tab>
-          <Tabs.Tab id="addresses">Addresses</Tabs.Tab>
-          <Tabs.Tab id="orders">Orders</Tabs.Tab>
-        </Tabs.List>
-        <Tabs.Panels py="400">
-          <Tabs.Panel id="general">
-            <Text>General information content</Text>
-          </Tabs.Panel>
-          <Tabs.Panel id="addresses">
-            <Text>Addresses content</Text>
-          </Tabs.Panel>
-          <Tabs.Panel id="orders">
-            <Text>Orders content</Text>
-          </Tabs.Panel>
-        </Tabs.Panels>
-      </Tabs.Root>
+      <Box py="400">
+        <Text>General information content</Text>
+      </Box>
     </DetailPage.Content>
   </DetailPage.Root>
 )
@@ -128,6 +120,7 @@ const App = () => (
 | `DetailPage.Subtitle` | Optional subtitle text |
 | `DetailPage.Content` | Main content area |
 | `DetailPage.HeaderActions` | Optional action buttons alongside the title |
+| `DetailPage.TabNav` | Tab-styled navigation for route-based page sections (place in Header) |
 | `DetailPage.Footer` | Optional footer for form actions |
 
 ## Accessibility
@@ -145,7 +138,7 @@ The DetailPage component follows WCAG 2.1 AA guidelines by using semantic HTML l
 #### Labeling
 
 - `DetailPage.BackLink` receives a default `aria-label` of "Go back" via i18n. Override with a custom `aria-label` when the destination context is important (e.g. `aria-label="Back to products"`).
-- When composing with `Tabs`, provide an `aria-label` on `Tabs.List` to describe the tab group for screen readers.
+- When composing with `TabNav`, provide an `aria-label` on `TabNav.Root` to describe the navigation group for screen readers.
 
 #### Keyboard navigation
 
