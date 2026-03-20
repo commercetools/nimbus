@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, memo } from "react";
 import type { IconButtonProps } from "./icon-button.types";
 import { Button } from "@/components";
 
@@ -9,7 +9,7 @@ import { Button } from "@/components";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/iconbutton}
  */
-export const IconButton = (props: IconButtonProps) => {
+export const IconButton = memo((props: IconButtonProps) => {
   const {
     children,
     ref: forwardedRef,
@@ -53,6 +53,6 @@ export const IconButton = (props: IconButtonProps) => {
       {children}
     </Button>
   );
-};
+});
 
 IconButton.displayName = "IconButton";
