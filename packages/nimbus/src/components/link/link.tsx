@@ -1,8 +1,6 @@
-import { useRef } from "react";
 import { LinkRoot } from "./link.slots";
 import type { LinkProps } from "./link.types";
 import { useLink, useObjectRef, mergeProps } from "react-aria";
-import { mergeRefs } from "@/utils";
 
 /**
  * # Link
@@ -14,8 +12,7 @@ import { mergeRefs } from "@/utils";
 export const Link = (props: LinkProps) => {
   const { as, asChild, children, ref: forwardedRef, ...rest } = props;
 
-  const localRef = useRef<HTMLAnchorElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const ref = useObjectRef(forwardedRef);
 
   const elementType = (as as string) || (asChild ? "span" : "a") || "a";
   const { linkProps } = useLink({ ...rest, elementType }, ref);
