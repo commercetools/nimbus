@@ -124,23 +124,46 @@ export function filterAndRankPreLowered<T>(
   if (items.length === 0 || tokens.length === 0) return items;
 
   const scored: Array<{ item: T; score: number }> = [];
+  const tokenCount = tokens.length;
 
-  for (const item of items) {
-    const fields = getLowered(item);
-    const { title, description, tags, content, combined } = fields;
-
-    const allPresent = tokens.every((t) => combined.includes(t));
-    if (!allPresent) continue;
-
-    let score = 0;
-    for (const t of tokens) {
+  // Fast path for single-token queries (most common case).
+  if (tokenCount === 1) {
+    const t = tokens[0];
+    for (const item of items) {
+      const { title, description, tags, content } = getLowered(item);
+      let score = 0;
       if (title.includes(t)) score += WEIGHTS.title;
       if (description.includes(t)) score += WEIGHTS.description;
       if (tags.includes(t)) score += WEIGHTS.tags;
       if (content.includes(t)) score += WEIGHTS.content;
+      if (score > 0) scored.push({ item, score });
     }
+  } else {
+    for (const item of items) {
+      const fields = getLowered(item);
+      const { title, description, tags, content, combined } = fields;
 
-    scored.push({ item, score });
+      // Check all tokens present using manual loop (avoids .every() overhead).
+      let allPresent = true;
+      for (let i = 0; i < tokenCount; i++) {
+        if (!combined.includes(tokens[i])) {
+          allPresent = false;
+          break;
+        }
+      }
+      if (!allPresent) continue;
+
+      let score = 0;
+      for (let i = 0; i < tokenCount; i++) {
+        const t = tokens[i];
+        if (title.includes(t)) score += WEIGHTS.title;
+        if (description.includes(t)) score += WEIGHTS.description;
+        if (tags.includes(t)) score += WEIGHTS.tags;
+        if (content.includes(t)) score += WEIGHTS.content;
+      }
+
+      scored.push({ item, score });
+    }
   }
 
   return scored.sort((a, b) => b.score - a.score).map(({ item }) => item);
