@@ -221,7 +221,7 @@ export const WithHeaderActions: Story = {
 export const WithTabNavigation: Story = {
   render: () => (
     <DetailPage.Root data-testid="detail-page-tabular">
-      <DetailPage.Header paddingBottom="0">
+      <DetailPage.Header>
         <DetailPage.BackLink href="/customers">
           Back to customers
         </DetailPage.BackLink>

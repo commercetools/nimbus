@@ -536,7 +536,7 @@ export const StickyHeaderAndFooter: Story = {
 export const WithTabNavigation: Story = {
   render: () => (
     <MainPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
-      <MainPage.Header paddingBottom="0">
+      <MainPage.Header>
         <MainPage.Title>Product Details</MainPage.Title>
         <MainPage.Subtitle>Navigation</MainPage.Subtitle>
         <MainPage.Actions>

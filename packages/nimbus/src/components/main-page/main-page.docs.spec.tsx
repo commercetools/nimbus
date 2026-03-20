@@ -87,7 +87,7 @@ describe("MainPage - Usage examples", () => {
     render(
       <NimbusProvider>
         <MainPage.Root>
-          <MainPage.Header paddingBottom="0">
+          <MainPage.Header>
             <MainPage.Title>Product Details</MainPage.Title>
             <MainPage.Actions>
               <Button>Publish</Button>
