@@ -55,7 +55,7 @@ async function bench(
 const MAX_RESULTS = 10;
 const SNIPPET_LENGTH = 200;
 const SNIPPET_LEAD = 80;
-const PHASE2_CANDIDATE_LIMIT = MAX_RESULTS * 2;
+const PHASE2_CANDIDATE_LIMIT = MAX_RESULTS + 2;
 const MIN_CANDIDATES = 5;
 
 let fuseInstance: Fuse<SearchIndexEntry> | undefined;
@@ -181,13 +181,25 @@ function getCachedViewContent(viewObj: { mdx: string }): CachedViewContent {
   return cached;
 }
 
-async function searchRouteViews(route: string, tokens: string[]) {
+const routeViewsCache = new Map<
+  string,
+  Array<{ key: string; content: string; lower: string }>
+>();
+
+async function getRouteViews(route: string) {
+  const slug = routeToSlug(route);
+  const cached = routeViewsCache.get(slug);
+  if (cached) return cached;
+
   let routeData;
   try {
-    routeData = await getRouteData(routeToSlug(route));
+    routeData = await getRouteData(slug);
   } catch {
-    return null;
+    const empty: Array<{ key: string; content: string; lower: string }> = [];
+    routeViewsCache.set(slug, empty);
+    return empty;
   }
+
   const views: Array<{ key: string; content: string; lower: string }> = [];
   if (routeData.views) {
     for (const [key, view] of Object.entries(routeData.views)) {
@@ -202,11 +214,25 @@ async function searchRouteViews(route: string, tokens: string[]) {
     );
     views.push({ key: "overview", content: stripped, lower });
   }
+
+  routeViewsCache.set(slug, views);
+  return views;
+}
+
+async function searchRouteViews(route: string, tokens: string[]) {
+  const views = await getRouteViews(route);
+  if (views.length === 0) return null;
+
   let bestPartial: (typeof views)[number] | null = null;
   let bestHits = 0;
+  const tokenCount = tokens.length;
+
   for (const view of views) {
-    const hits = tokens.filter((t) => view.lower.includes(t)).length;
-    if (hits === tokens.length) {
+    let hits = 0;
+    for (let i = 0; i < tokenCount; i++) {
+      if (view.lower.includes(tokens[i])) hits++;
+    }
+    if (hits === tokenCount) {
       return { viewKey: view.key, content: view.content };
     }
     if (hits > bestHits) {

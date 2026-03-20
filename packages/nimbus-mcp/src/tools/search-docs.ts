@@ -33,7 +33,7 @@ const SNIPPET_LENGTH = 200;
 /** Characters of context shown before the matched token in a snippet. */
 const SNIPPET_LEAD = 80;
 /** Number of candidates passed to phase 2 (deep route-file search). */
-const PHASE2_CANDIDATE_LIMIT = MAX_RESULTS * 2;
+const PHASE2_CANDIDATE_LIMIT = MAX_RESULTS + 2;
 
 /**
  * Minimum number of phase-1 candidates before we expand to all component pages.
@@ -202,27 +202,33 @@ function findCandidates(
   return { matched, expanded };
 }
 
+/** Cache of collected views per route slug, avoiding re-processing on repeat queries. */
+const routeViewsCache = new Map<
+  string,
+  Array<{ key: string; content: string; lower: string }>
+>();
+
 /**
- * Phase 2: Load the full route data for a candidate and search across all
- * views for the query. Accepts pre-parsed tokens to avoid redundant
- * tokenisation. Returns the best matching view, or null if no view
- * contains the query tokens.
+ * Collects and caches the searchable views for a route. Returns cached
+ * result on subsequent calls for the same slug.
  */
-async function searchRouteViews(
-  route: string,
-  tokens: string[]
-): Promise<ViewMatch | null> {
+async function getRouteViews(
+  route: string
+): Promise<Array<{ key: string; content: string; lower: string }>> {
+  const slug = routeToSlug(route);
+  const cached = routeViewsCache.get(slug);
+  if (cached) return cached;
+
   let routeData: RouteData;
   try {
-    routeData = await getRouteData(routeToSlug(route));
+    routeData = await getRouteData(slug);
   } catch {
-    return null;
+    const empty: Array<{ key: string; content: string; lower: string }> = [];
+    routeViewsCache.set(slug, empty);
+    return empty;
   }
 
-  // Collect all searchable views. Store lowercased content once to avoid
-  // repeated toLowerCase() calls inside the search loop below.
   const views: Array<{ key: string; content: string; lower: string }> = [];
-
   if (routeData.views) {
     for (const [key, view] of Object.entries(routeData.views)) {
       if (view.mdx) {
@@ -237,13 +243,31 @@ async function searchRouteViews(
     views.push({ key: "overview", content: stripped, lower });
   }
 
-  // Single pass: return the first full match; track best partial as fallback.
+  routeViewsCache.set(slug, views);
+  return views;
+}
+
+/**
+ * Phase 2: Search across all views for a candidate route.
+ * Uses cached view data to avoid repeated processing.
+ */
+async function searchRouteViews(
+  route: string,
+  tokens: string[]
+): Promise<ViewMatch | null> {
+  const views = await getRouteViews(route);
+  if (views.length === 0) return null;
+
   let bestPartial: (typeof views)[number] | null = null;
   let bestHits = 0;
+  const tokenCount = tokens.length;
 
   for (const view of views) {
-    const hits = tokens.filter((t) => view.lower.includes(t)).length;
-    if (hits === tokens.length) {
+    let hits = 0;
+    for (let i = 0; i < tokenCount; i++) {
+      if (view.lower.includes(tokens[i])) hits++;
+    }
+    if (hits === tokenCount) {
       return { viewKey: view.key, content: view.content };
     }
     if (hits > bestHits) {
