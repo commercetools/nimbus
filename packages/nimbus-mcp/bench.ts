@@ -181,12 +181,13 @@ function getCachedViewContent(viewObj: { mdx: string }): CachedViewContent {
   return cached;
 }
 
-const routeViewsCache = new Map<
-  string,
-  Array<{ key: string; content: string; lower: string }>
->();
+interface CachedRouteViews {
+  views: Array<{ key: string; content: string; lower: string }>;
+  combinedLower: string;
+}
+const routeViewsCache = new Map<string, CachedRouteViews>();
 
-async function getRouteViews(route: string) {
+async function getRouteViews(route: string): Promise<CachedRouteViews> {
   const slug = routeToSlug(route);
   const cached = routeViewsCache.get(slug);
   if (cached) return cached;
@@ -195,7 +196,7 @@ async function getRouteViews(route: string) {
   try {
     routeData = await getRouteData(slug);
   } catch {
-    const empty: Array<{ key: string; content: string; lower: string }> = [];
+    const empty: CachedRouteViews = { views: [], combinedLower: "" };
     routeViewsCache.set(slug, empty);
     return empty;
   }
@@ -215,17 +216,31 @@ async function getRouteViews(route: string) {
     views.push({ key: "overview", content: stripped, lower });
   }
 
-  routeViewsCache.set(slug, views);
-  return views;
+  views.sort((a, b) => a.lower.length - b.lower.length);
+  const result: CachedRouteViews = {
+    views,
+    combinedLower: views.map((v) => v.lower).join(" "),
+  };
+  routeViewsCache.set(slug, result);
+  return result;
 }
 
 async function searchRouteViews(route: string, tokens: string[]) {
-  const views = await getRouteViews(route);
+  const { views, combinedLower } = await getRouteViews(route);
   if (views.length === 0) return null;
+
+  const tokenCount = tokens.length;
+  let anyMatch = false;
+  for (let i = 0; i < tokenCount; i++) {
+    if (combinedLower.includes(tokens[i])) {
+      anyMatch = true;
+      break;
+    }
+  }
+  if (!anyMatch) return null;
 
   let bestPartial: (typeof views)[number] | null = null;
   let bestHits = 0;
-  const tokenCount = tokens.length;
 
   for (const view of views) {
     let hits = 0;

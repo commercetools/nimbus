@@ -8,3 +8,4 @@ b67c7c7	0.93	0.00	1.95	keep	replace Fuse.js with partial-match scorer (20x faste
 d66e809	0.25	0.00	2.52	keep	pre-compute combined lowered string for faster partial matching
 8c37067	0.33	0.00	2.51	discard	inline scoring and avoid array allocs (no improvement, noise)
 0950161	0.22	0.00	2.58	keep	reduce phase2 candidates 20→12, cache route views per slug
+55249b8	0.23	0.00	1.98	keep	sort views by length for faster early-exit (marginal)
