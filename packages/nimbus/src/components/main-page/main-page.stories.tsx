@@ -435,6 +435,42 @@ export const FormPage: Story = {
   },
 };
 
+const manyProductRows: Product[] = Array.from({ length: 25 }, (_, i) => ({
+  id: String(i + 1),
+  name: `Product ${i + 1}`,
+  sku: `SKU-${String(i + 1).padStart(3, "0")}`,
+  price: `€${((i + 1) * 9.99).toFixed(2)}`,
+  status: i % 3 === 0 ? "Draft" : "Published",
+}));
+
+/**
+ * Main page with a scrollable DataTable — used to verify that the DataTable's
+ * sticky header remains functional when content overflows. Scroll down inside
+ * the page to confirm the table header sticks at the top of the content area.
+ */
+export const StickyTableHeader: Story = {
+  render: () => (
+    <Box height="500px" border="solid-25" borderColor="neutral.6">
+      <MainPage.Root>
+        <MainPage.Header>
+          <MainPage.Title>Products</MainPage.Title>
+          <MainPage.Actions>
+            <Button variant="ghost">Export</Button>
+            <Button>Add Product</Button>
+          </MainPage.Actions>
+        </MainPage.Header>
+        <MainPage.Content>
+          <DataTable
+            columns={productColumns}
+            rows={manyProductRows}
+            maxHeight="100%"
+          />
+        </MainPage.Content>
+      </MainPage.Root>
+    </Box>
+  ),
+};
+
 /**
  * Tabular page pattern - TabNav in Header for route-based navigation,
  * static content in Content area (router renders content in a real app).
