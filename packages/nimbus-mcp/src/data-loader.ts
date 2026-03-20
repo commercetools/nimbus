@@ -79,13 +79,20 @@ export const getRouteManifest = lazyJson<RouteManifest>(
 // Per-component route data
 // ---------------------------------------------------------------------------
 
+/** Cache for per-component route data, keyed by slug. */
+const routeDataCache = new Map<string, RouteData>();
+
 /**
  * Loads a per-component route JSON by slug.
  * Example: `getRouteData("components-inputs-button")`
  */
 export async function getRouteData(slug: string): Promise<RouteData> {
+  const cached = routeDataCache.get(slug);
+  if (cached) return cached;
   const fullPath = resolve(getDataDir(), "docs/routes", `${slug}.json`);
-  return readJson<RouteData>(fullPath);
+  const data = await readJson<RouteData>(fullPath);
+  routeDataCache.set(slug, data);
+  return data;
 }
 
 // ---------------------------------------------------------------------------
