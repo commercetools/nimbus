@@ -1,6 +1,4 @@
 import { useRef, useEffect } from "react";
-import { useObjectRef } from "react-aria";
-import { mergeRefs } from "@/utils";
 import type { IconButtonProps } from "./icon-button.types";
 import { Button } from "@/components";
 
@@ -19,12 +17,9 @@ export const IconButton = (props: IconButtonProps) => {
     ...restProps
   } = props;
 
-  // Create a local ref and merge with forwarded ref
   const localRef = useRef<HTMLButtonElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
-  // Runtime accessibility check
-  // Use setTimeout to defer check until after React Aria applies context props
+  // Runtime accessibility check (dev only)
   useEffect(() => {
     if (process.env.NODE_ENV !== "production") {
       const timeoutId = setTimeout(() => {
@@ -33,10 +28,7 @@ export const IconButton = (props: IconButtonProps) => {
           const hasAriaLabel =
             element.hasAttribute("aria-label") ||
             element.hasAttribute("aria-labelledby");
-
-          // Skip warning if component is using slot-based context (Button will handle it)
           const isUsingSlot = element.hasAttribute("slot");
-
           if (!hasAriaLabel && !isUsingSlot) {
             console.warn(
               "Nimbus: IconButton requires an accessible label. " +
@@ -46,13 +38,18 @@ export const IconButton = (props: IconButtonProps) => {
           }
         }
       }, 0);
-
       return () => clearTimeout(timeoutId);
     }
   }, [ariaLabel, restProps.slot]);
 
   return (
-    <Button px={0} py={0} aria-label={ariaLabel} {...restProps} ref={ref}>
+    <Button
+      px={0}
+      py={0}
+      aria-label={ariaLabel}
+      {...restProps}
+      ref={forwardedRef ?? localRef}
+    >
       {children}
     </Button>
   );
