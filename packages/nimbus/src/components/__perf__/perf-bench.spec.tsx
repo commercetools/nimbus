@@ -25,7 +25,7 @@ import {
 } from "../../index";
 import { Delete } from "@commercetools/nimbus-icons";
 
-const ITERATIONS = 50;
+const ITERATIONS = 100;
 
 function benchmarkMount(
   Component: React.FC<any>,
