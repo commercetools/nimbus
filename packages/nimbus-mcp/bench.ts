@@ -126,29 +126,37 @@ function findCandidates(
   if (exactMatches.length >= MIN_CANDIDATES) {
     return { matched: exactMatches, expanded: [] as SearchIndexEntry[] };
   }
-  if (!fuseInstance || fuseIndexRef !== index) {
-    fuseInstance = new Fuse(index, {
-      keys: [
-        { name: "title", weight: 3 },
-        { name: "description", weight: 2 },
-        { name: "tags", weight: 2 },
-        { name: "content", weight: 1 },
-      ],
-      threshold: 0.4,
-      ignoreLocation: true,
-      minMatchCharLength: 3,
-    });
-    fuseIndexRef = index;
-  }
-  const fuzzyMatches = fuseInstance.search(query).map((r) => r.item);
+
   const seen = new Set(exactMatches.map((e) => e.id));
-  const matched = [...exactMatches];
-  for (const entry of fuzzyMatches) {
-    if (!seen.has(entry.id)) {
-      seen.add(entry.id);
-      matched.push(entry);
+  const partialScored: Array<{ entry: SearchIndexEntry; score: number }> = [];
+
+  for (const entry of index) {
+    if (seen.has(entry.id)) continue;
+    const fields = loweredMap.get(entry)!;
+    const combined =
+      fields.title +
+      " " +
+      fields.description +
+      " " +
+      fields.tags +
+      " " +
+      fields.content;
+    let score = 0;
+    for (const t of tokens) {
+      if (combined.includes(t)) score += scorePreLowered(fields, [t]);
+    }
+    if (score > 0) {
+      partialScored.push({ entry, score });
     }
   }
+
+  partialScored.sort((a, b) => b.score - a.score);
+  const matched = [...exactMatches];
+  for (const { entry } of partialScored) {
+    seen.add(entry.id);
+    matched.push(entry);
+  }
+
   const expanded: SearchIndexEntry[] = [];
   if (matched.length < MIN_CANDIDATES) {
     for (const entry of index) {
