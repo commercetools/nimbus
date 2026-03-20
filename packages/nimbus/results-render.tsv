@@ -95,3 +95,13 @@ f3dbd73	Tooltip	0.68	0.53	keep	3-run median (new benchmark)
 33bfa17	Switch	1.41	1.16	keep	final (-15% from baseline)
 33bfa17	Select	3.36	1.77	keep	final (new benchmark)
 33bfa17	Tooltip	0.64	0.54	keep	final (new benchmark)
+f26d18e	Button	0.62	0.46	keep	+AlertRoot memo, Object.create(null) cache
+f26d18e	TextInput	0.69	0.50	keep	-22% from baseline
+f26d18e	Checkbox	1.58	1.22	keep	-18% from baseline
+f26d18e	Badge	0.27	0.18	keep	-18% from baseline
+f26d18e	IconButton	0.44	0.35	keep	-23% from baseline
+f26d18e	Text	0.18	0.13	keep	-10% from baseline
+f26d18e	Link	0.33	0.26	keep	-3% from baseline
+f26d18e	Switch	1.38	1.16	keep	-17% from baseline
+f26d18e	Select	3.32	1.76	keep	(new benchmark)
+f26d18e	Tooltip	0.66	0.52	keep	(new benchmark)
