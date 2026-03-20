@@ -33,3 +33,6 @@ fb44d5d	Switch	1.28	1.21	keep	(measurement alongside TextInput change)
 0818b5e	Checkbox	1.92	1.34	keep	remove duplicate useSlotRecipe (cleaner, no perf change)
 0818b5e	Select	3.58	1.87	keep	baseline with compound benchmarks
 0818b5e	Tooltip	1.01	0.57	keep	baseline with compound benchmarks
+06fa9be	Button	0.61	0.55	keep	React.memo on Button
+06fa9be	Checkbox	1.96	1.34	keep	React.memo on Checkbox (p95=1.60 in isolated run)
+06fa9be	Switch	1.40	1.18	keep	React.memo on Switch
