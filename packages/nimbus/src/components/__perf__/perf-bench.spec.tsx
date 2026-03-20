@@ -156,4 +156,67 @@ describe("Perf/Benchmarks", () => {
     );
     expect(p95).toBeLessThan(100);
   });
+
+  // Update (re-render) benchmarks — render once, then re-render N times with same props
+  function benchmarkUpdate(
+    Component: React.FC<any>,
+    props: Record<string, any>
+  ): { p95: number; avg: number; count: number } {
+    const durations: number[] = [];
+    const onRender = (_id: string, phase: string, actualDuration: number) => {
+      // Only measure update renders, skip initial mount
+      if (phase === "update") {
+        durations.push(actualDuration);
+      }
+    };
+
+    const { rerender, unmount } = render(
+      <NimbusProvider loadFonts={false}>
+        <Profiler id="bench-update" onRender={onRender}>
+          <Component {...props} />
+        </Profiler>
+      </NimbusProvider>
+    );
+
+    for (let i = 0; i < ITERATIONS; i++) {
+      rerender(
+        <NimbusProvider loadFonts={false}>
+          <Profiler id="bench-update" onRender={onRender}>
+            <Component {...props} />
+          </Profiler>
+        </NimbusProvider>
+      );
+    }
+    unmount();
+    cleanup();
+
+    const sorted = [...durations].sort((a, b) => a - b);
+    const p95 = sorted[Math.floor(sorted.length * 0.95)] ?? 0;
+    const avg =
+      durations.length > 0
+        ? durations.reduce((a, b) => a + b, 0) / durations.length
+        : 0;
+    return { p95, avg, count: durations.length };
+  }
+
+  const updateComponents = [
+    { name: "Button", Component: Button, props: { children: "Click me" } },
+    {
+      name: "Checkbox",
+      Component: Checkbox,
+      props: { children: "Check me" },
+    },
+    { name: "Switch", Component: Switch, props: { children: "Toggle" } },
+    { name: "Badge", Component: Badge, props: { children: "Status" } },
+  ];
+
+  for (const { name, Component, props } of updateComponents) {
+    it(`${name} update benchmark`, () => {
+      const result = benchmarkUpdate(Component, props);
+      console.log(
+        `PERF_RESULT_UPDATE: component=${name} p95=${result.p95.toFixed(2)} avg=${result.avg.toFixed(2)}`
+      );
+      expect(result.p95).toBeLessThan(100);
+    });
+  }
 });
