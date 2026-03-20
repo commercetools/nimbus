@@ -313,6 +313,73 @@ export const StickyTableHeader: Story = {
 };
 
 /**
+ * When `stickyHeader` and `stickyFooter` are set on Root, the header and
+ * footer stay pinned while the user scrolls. Pair with `height="auto"` when
+ * the page has no constrained height and the document itself scrolls.
+ */
+export const StickyHeaderAndFooter: Story = {
+  render: () => (
+    <DetailPage.Root
+      stickyHeader
+      stickyFooter
+      height="auto"
+      data-testid="detail-page-sticky"
+    >
+      <DetailPage.Header>
+        <DetailPage.BackLink href="/orders">Back to orders</DetailPage.BackLink>
+        <DetailPage.Title>Edit Order</DetailPage.Title>
+        <DetailPage.HeaderActions>
+          <Button size="sm" variant="ghost">
+            Duplicate
+          </Button>
+          <Button size="sm" variant="solid" colorPalette="primary">
+            Save
+          </Button>
+        </DetailPage.HeaderActions>
+        <DetailPage.Subtitle>Order #ORD-2024-001</DetailPage.Subtitle>
+      </DetailPage.Header>
+      <DetailPage.Content>
+        <Stack gap="400">
+          {Array.from({ length: 30 }, (_, i) => (
+            <Box key={i} bg="neutral.3" padding="400" borderRadius="200">
+              <Text>Content block {i + 1}</Text>
+            </Box>
+          ))}
+        </Stack>
+      </DetailPage.Content>
+      <DetailPage.Footer>
+        <Stack direction="row" gap="200" justify="flex-end" width="100%">
+          <Button variant="ghost">Cancel</Button>
+          <Button variant="solid" colorPalette="primary">
+            Save
+          </Button>
+        </Stack>
+      </DetailPage.Footer>
+    </DetailPage.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Header is rendered with sticky positioning", async () => {
+      const header = canvas.getByRole("banner");
+      await expect(header).toBeInTheDocument();
+      await expect(header).toHaveStyle({ position: "sticky" });
+    });
+
+    await step("Footer is rendered with sticky positioning", async () => {
+      const footer = canvas.getByRole("contentinfo");
+      await expect(footer).toBeInTheDocument();
+      await expect(footer).toHaveStyle({ position: "sticky" });
+    });
+
+    await step("Content blocks are rendered", async () => {
+      await expect(canvas.getByText("Content block 1")).toBeInTheDocument();
+      await expect(canvas.getByText("Content block 30")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
  * Detail page with custom header content
  * Demonstrates placing additional content like a Toolbar inside the Header component
  */
