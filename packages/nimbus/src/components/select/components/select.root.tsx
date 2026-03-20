@@ -1,4 +1,4 @@
-import { chakra, useSlotRecipe } from "@chakra-ui/react/styled-system";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef } from "react-aria";
 import { extractStyleProps } from "@/utils";
 
@@ -51,7 +51,7 @@ export const SelectRoot = function SelectRoot({
   return (
     <SelectRootSlot asChild ref={ref} {...recipeProps} {...styleProps}>
       <RaSelect {...raSelectProps}>
-        <chakra.div position="relative">
+        <div style={{ position: "relative" }}>
           <SelectTriggerSlot zIndex={0} asChild>
             <RaButton>
               {leadingElement && (
@@ -90,7 +90,7 @@ export const SelectRoot = function SelectRoot({
               </Box>
             </Flex>
           </Flex>
-        </chakra.div>
+        </div>
 
         <RaPopover>{children}</RaPopover>
       </RaSelect>
