@@ -33,7 +33,7 @@ const SNIPPET_LENGTH = 200;
 /** Characters of context shown before the matched token in a snippet. */
 const SNIPPET_LEAD = 80;
 /** Number of candidates passed to phase 2 (deep route-file search). */
-const PHASE2_CANDIDATE_LIMIT = MAX_RESULTS + 2;
+const PHASE2_CANDIDATE_LIMIT = MAX_RESULTS;
 
 /**
  * Minimum number of phase-1 candidates before we expand to all component pages.

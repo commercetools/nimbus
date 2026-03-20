@@ -9,3 +9,5 @@ d66e809	0.25	0.00	2.52	keep	pre-compute combined lowered string for faster parti
 8c37067	0.33	0.00	2.51	discard	inline scoring and avoid array allocs (no improvement, noise)
 0950161	0.22	0.00	2.58	keep	reduce phase2 candidates 20→12, cache route views per slug
 55249b8	0.23	0.00	1.98	keep	sort views by length for faster early-exit (marginal)
+aa74919	0.21	0.00	2.48	keep	combined lowered view content for fast negative filter
+604ec7c	0.22	0.00	2.61	discard	skip phase2 when enough p1 matches (broke matchedView tests)
