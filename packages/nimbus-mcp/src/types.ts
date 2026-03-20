@@ -267,4 +267,6 @@ export interface LoweredRelevanceFields {
   description: string;
   tags: string;
   content: string;
+  /** All fields concatenated for fast single-string search. */
+  combined: string;
 }
