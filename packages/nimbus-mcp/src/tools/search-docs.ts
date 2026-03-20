@@ -154,32 +154,36 @@ function findCandidates(
     return { matched: exactMatches, expanded: [] };
   }
 
-  // Fuzzy fallback — broaden the candidate pool.
-  // Invalidate cache when the index reference changes (e.g. hot-reload).
-  if (!fuseInstance || fuseIndexRef !== index) {
-    fuseInstance = new Fuse(index, {
-      keys: [
-        { name: "title", weight: 3 },
-        { name: "description", weight: 2 },
-        { name: "tags", weight: 2 },
-        { name: "content", weight: 1 },
-      ],
-      threshold: 0.4,
-      ignoreLocation: true,
-      minMatchCharLength: 3,
-    });
-    fuseIndexRef = index;
-  }
-  const fuzzyMatches = fuseInstance.search(query).map((r) => r.item);
-
-  // Merge exact + fuzzy, deduplicated, keeping exact matches first.
+  // Partial-match fallback: score entries by how many tokens match in any field.
+  // Much faster than Fuse.js while still providing relevant results.
   const seen = new Set(exactMatches.map((e) => e.id));
-  const matched = [...exactMatches];
-  for (const entry of fuzzyMatches) {
-    if (!seen.has(entry.id)) {
-      seen.add(entry.id);
-      matched.push(entry);
+  const partialScored: Array<{ entry: SearchIndexEntry; score: number }> = [];
+
+  for (const entry of index) {
+    if (seen.has(entry.id)) continue;
+    const fields = loweredMap.get(entry)!;
+    const combined =
+      fields.title +
+      " " +
+      fields.description +
+      " " +
+      fields.tags +
+      " " +
+      fields.content;
+    let score = 0;
+    for (const t of tokens) {
+      if (combined.includes(t)) score += scorePreLowered(fields, [t]);
     }
+    if (score > 0) {
+      partialScored.push({ entry, score });
+    }
+  }
+
+  partialScored.sort((a, b) => b.score - a.score);
+  const matched = [...exactMatches];
+  for (const { entry } of partialScored) {
+    seen.add(entry.id);
+    matched.push(entry);
   }
 
   // If still too few, expand to all component-tagged pages as fallback.
