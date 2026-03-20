@@ -19,3 +19,4 @@ a6f2988	0.22	0.00	2.71	discard	word set for O(1) lookups (overhead > benefit at 
 583940d	0.20	0.00	2.64	keep	truncate view content to 4KB for matching
 648687f	0.19	0.00	2.65	keep	remove unused Fuse.js import from search-docs
 492b9ce	0.20	0.00	2.53	keep	inline phase1 scoring, remove scorePreLowered import
+4607730	0.24	0.00	2.61	discard	single-token fast path (added overhead, worse p95)
