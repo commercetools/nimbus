@@ -1,1 +1,9 @@
 commit	component	p95_ms	avg_ms	status	description
+9359332	Button	0.66	0.56	keep	baseline
+9359332	TextInput	0.89	0.65	keep	baseline
+9359332	Checkbox	1.93	1.46	keep	baseline
+9359332	Badge	0.33	0.22	keep	baseline
+9359332	IconButton	0.57	0.44	keep	baseline
+9359332	Text	0.20	0.14	keep	baseline
+9359332	Link	0.34	0.29	keep	baseline
+9359332	Switch	1.66	1.31	keep	baseline

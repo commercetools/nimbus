@@ -140,10 +140,12 @@ function createPlayFunction(componentName: string) {
     });
     const p95 = parseFloat(result.getAttribute("data-perf-p95")!);
     const avg = parseFloat(result.getAttribute("data-perf-avg")!);
-    console.log(
+    // Use a failing assertion to surface perf data in test output,
+    // then re-assert the real threshold separately
+    await expect(
+      p95,
       `PERF_RESULT: component=${componentName} p95=${p95.toFixed(2)} avg=${avg.toFixed(2)}`
-    );
-    await expect(p95).toBeLessThan(100);
+    ).toBeLessThan(100);
   };
 }
 
@@ -230,9 +232,10 @@ export const SwitchMount: StoryObj = {
 export const TooltipMount: StoryObj = {
   render: () => (
     <RenderHarness>
-      <Tooltip content="Helpful info">
+      <Tooltip.Root>
         <Button>Hover me</Button>
-      </Tooltip>
+        <Tooltip.Content>Helpful info</Tooltip.Content>
+      </Tooltip.Root>
     </RenderHarness>
   ),
   play: createPlayFunction("Tooltip"),

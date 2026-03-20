@@ -1,4 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { page } from "@vitest/browser/context";
+import { expect as vitestExpect } from "vitest";
 
 import {
   Button,
@@ -11,7 +13,6 @@ import {
   Text,
   Link,
   Switch,
-  Tooltip,
 } from "@commercetools/nimbus";
 import { Delete } from "@commercetools/nimbus-icons";
 
@@ -22,6 +23,16 @@ const meta: Meta = {
   },
 };
 export default meta;
+
+const screenshotOpts = {
+  comparatorOptions: { allowedMismatchedPixelRatio: 0.005 },
+} as const;
+
+async function matchScreenshot(canvasElement: HTMLElement, name: string) {
+  await vitestExpect
+    .element(page.elementLocator(canvasElement))
+    .toMatchScreenshot(name, screenshotOpts);
+}
 
 export const ButtonVariants: StoryObj = {
   render: () => (
@@ -45,6 +56,9 @@ export const ButtonVariants: StoryObj = {
       </Button>
     </Stack>
   ),
+  play: async ({ canvasElement }) => {
+    await matchScreenshot(canvasElement, "button-variants");
+  },
 };
 
 export const TextInputVariants: StoryObj = {
@@ -57,6 +71,9 @@ export const TextInputVariants: StoryObj = {
       <TextInput placeholder="Small" aria-label="small" size="sm" />
     </Stack>
   ),
+  play: async ({ canvasElement }) => {
+    await matchScreenshot(canvasElement, "text-input-variants");
+  },
 };
 
 export const CheckboxVariants: StoryObj = {
@@ -68,6 +85,9 @@ export const CheckboxVariants: StoryObj = {
       <Checkbox isDisabled>Disabled</Checkbox>
     </Stack>
   ),
+  play: async ({ canvasElement }) => {
+    await matchScreenshot(canvasElement, "checkbox-variants");
+  },
 };
 
 export const BadgeVariants: StoryObj = {
@@ -80,6 +100,9 @@ export const BadgeVariants: StoryObj = {
       <Badge colorPalette="blue">Blue</Badge>
     </Stack>
   ),
+  play: async ({ canvasElement }) => {
+    await matchScreenshot(canvasElement, "badge-variants");
+  },
 };
 
 export const IconButtonVariants: StoryObj = {
@@ -91,6 +114,9 @@ export const IconButtonVariants: StoryObj = {
       <IconButton aria-label="delete" icon={<Delete />} isDisabled />
     </Stack>
   ),
+  play: async ({ canvasElement }) => {
+    await matchScreenshot(canvasElement, "icon-button-variants");
+  },
 };
 
 export const SelectVariants: StoryObj = {
@@ -105,6 +131,9 @@ export const SelectVariants: StoryObj = {
       </Select.Root>
     </Stack>
   ),
+  play: async ({ canvasElement }) => {
+    await matchScreenshot(canvasElement, "select-variants");
+  },
 };
 
 export const TextVariants: StoryObj = {
@@ -116,6 +145,9 @@ export const TextVariants: StoryObj = {
       <Text fontSize="500">Large text</Text>
     </Stack>
   ),
+  play: async ({ canvasElement }) => {
+    await matchScreenshot(canvasElement, "text-variants");
+  },
 };
 
 export const LinkVariants: StoryObj = {
@@ -127,6 +159,9 @@ export const LinkVariants: StoryObj = {
       </Link>
     </Stack>
   ),
+  play: async ({ canvasElement }) => {
+    await matchScreenshot(canvasElement, "link-variants");
+  },
 };
 
 export const SwitchVariants: StoryObj = {
@@ -137,4 +172,7 @@ export const SwitchVariants: StoryObj = {
       <Switch isDisabled>Disabled</Switch>
     </Stack>
   ),
+  play: async ({ canvasElement }) => {
+    await matchScreenshot(canvasElement, "switch-variants");
+  },
 };
