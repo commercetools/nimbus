@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef } from "react-aria";
 import { extractStyleProps } from "@/utils";
@@ -29,7 +30,7 @@ import { selectSlotRecipe } from "../select.recipe";
  *
  * @supportsStyleProps
  */
-export const SelectRoot = function SelectRoot({
+export const SelectRoot = memo(function SelectRoot({
   ref: forwardedRef,
   children,
   leadingElement,
@@ -96,6 +97,6 @@ export const SelectRoot = function SelectRoot({
       </RaSelect>
     </SelectRootSlot>
   );
-};
+});
 
 SelectRoot.displayName = "Select.Root";
