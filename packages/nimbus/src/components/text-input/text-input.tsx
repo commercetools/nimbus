@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, type Context } from "react";
-import { mergeRefs } from "@/utils";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import {
   useObjectRef,
@@ -31,7 +30,7 @@ const TextInputComponent = (props: TextInputProps) => {
 
   const rootRef = useRef<HTMLDivElement>(null);
   const localRef = useRef<HTMLInputElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const ref = useObjectRef(forwardedRef);
 
   const [styleProps, otherProps] = extractStyleProps(remainingProps);
 
@@ -54,31 +53,31 @@ const TextInputComponent = (props: TextInputProps) => {
    * to React Aria props (isDisabled, isRequired) since React Aria's useTextField
    * hook expects the latter. Remove DOM attributes to prevent React warnings.
    */
-  const normalizedInputContext = useMemo(
-    () => ({
+  // Skip context normalization + mergeProps when no context is present (common case)
+  const inputFieldProps = useMemo(() => {
+    if (!inputContext) return otherProps;
+
+    const normalizedInputContext = {
       ...inputContext,
-      isDisabled: inputContext?.isDisabled ?? inputContext?.disabled,
-      isRequired: inputContext?.isRequired ?? inputContext?.required,
-      isReadOnly: inputContext?.isReadOnly ?? inputContext?.readOnly,
+      isDisabled: inputContext.isDisabled ?? inputContext.disabled,
+      isRequired: inputContext.isRequired ?? inputContext.required,
+      isReadOnly: inputContext.isReadOnly ?? inputContext.readOnly,
       // Explicit boolean coercion for aria-invalid: "false" string is truthy!
       isInvalid:
-        inputContext?.isInvalid ??
-        (inputContext?.["aria-invalid"] === true ||
-        inputContext?.["aria-invalid"] === "true"
+        inputContext.isInvalid ??
+        (inputContext["aria-invalid"] === true ||
+        inputContext["aria-invalid"] === "true"
           ? true
-          : inputContext?.["aria-invalid"] === false ||
-              inputContext?.["aria-invalid"] === "false"
+          : inputContext["aria-invalid"] === false ||
+              inputContext["aria-invalid"] === "false"
             ? false
             : undefined),
       disabled: undefined,
       required: undefined,
       readOnly: undefined,
-    }),
-    [inputContext]
-  );
-
-  // Merge context with component props (component props take precedence)
-  const inputFieldProps = mergeProps(normalizedInputContext, otherProps);
+    };
+    return mergeProps(normalizedInputContext, otherProps);
+  }, [inputContext, otherProps]);
 
   /**
    * useTextField converts React Aria props to DOM attributes with proper ARIA
