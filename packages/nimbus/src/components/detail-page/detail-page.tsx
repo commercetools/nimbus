@@ -7,6 +7,7 @@ import {
   DetailPageSubtitle,
   DetailPageContent,
   DetailPageFooter,
+  DetailPageTabNav,
 } from "./components";
 
 /**
@@ -147,6 +148,30 @@ export const DetailPage = {
    * ```
    */
   Footer: DetailPageFooter,
+  /**
+   * # DetailPage.TabNav
+   *
+   * Layout container for tab navigation in the header.
+   * Positions itself in the header grid's last row at full width.
+   * Place inside `DetailPage.Header` with `paddingBottom="0"`.
+   *
+   * Wrap a `TabNav.Root` inside, or use `as={TabNav.Root}` for a flatter DOM.
+   *
+   * @example
+   * ```tsx
+   * <DetailPage.Header paddingBottom="0">
+   *   <DetailPage.BackLink href="/customers">Back</DetailPage.BackLink>
+   *   <DetailPage.Title>Customer Details</DetailPage.Title>
+   *   <DetailPage.TabNav>
+   *     <TabNav.Root aria-label="Customer sections">
+   *       <TabNav.Item href="/general" isCurrent>General</TabNav.Item>
+   *       <TabNav.Item href="/addresses">Addresses</TabNav.Item>
+   *     </TabNav.Root>
+   *   </DetailPage.TabNav>
+   * </DetailPage.Header>
+   * ```
+   */
+  TabNav: DetailPageTabNav,
 };
 
 export {
@@ -158,4 +183,5 @@ export {
   DetailPageSubtitle as _DetailPageSubtitle,
   DetailPageContent as _DetailPageContent,
   DetailPageFooter as _DetailPageFooter,
+  DetailPageTabNav as _DetailPageTabNav,
 };
