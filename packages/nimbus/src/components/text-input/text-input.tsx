@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, type Context } from "react";
+import { useEffect, useMemo, useRef, memo, type Context } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import {
   useObjectRef,
@@ -17,7 +17,7 @@ import {
 } from "./text-input.slots";
 import type { TextInputProps, TextInputContextValue } from "./text-input.types";
 
-const TextInputComponent = (props: TextInputProps) => {
+const TextInputComponent = memo((props: TextInputProps) => {
   const {
     leadingElement,
     trailingElement,
@@ -139,7 +139,7 @@ const TextInputComponent = (props: TextInputProps) => {
       </TextInputRootSlot>
     </InputContext.Provider>
   );
-};
+});
 
 TextInputComponent.displayName = "TextInput";
 
