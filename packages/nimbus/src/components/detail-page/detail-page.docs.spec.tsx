@@ -121,7 +121,7 @@ describe("DetailPage - With tab navigation", () => {
     render(
       <NimbusProvider>
         <DetailPage.Root>
-          <DetailPage.Header paddingBottom="0">
+          <DetailPage.Header>
             <DetailPage.BackLink href="/customers">
               Back to customers
             </DetailPage.BackLink>

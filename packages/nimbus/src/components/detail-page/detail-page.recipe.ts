@@ -36,6 +36,9 @@ export const detailPageSlotRecipe = defineSlotRecipe({
       paddingBottom: "600",
       borderBottom: "solid-25",
       borderColor: "neutral.6",
+      "&:has(.nimbus-detail-page__tabNav)": {
+        paddingBottom: "0",
+      },
     },
     backLink: {
       focusRing: "outside",
