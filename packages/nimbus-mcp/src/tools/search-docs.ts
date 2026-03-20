@@ -224,7 +224,7 @@ async function getRouteViews(route: string): Promise<CachedRouteViews> {
     return empty;
   }
 
-  const MATCH_LIMIT = 4096;
+  const MATCH_LIMIT = 2048;
   const rawViews: Array<{
     key: string;
     content: string;
