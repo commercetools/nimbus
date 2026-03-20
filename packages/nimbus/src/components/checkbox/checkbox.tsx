@@ -1,3 +1,4 @@
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { Check, Remove as Minus } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
 import type { CheckboxProps } from "./checkbox.types";
@@ -18,15 +19,17 @@ import {
 export const Checkbox = (props: CheckboxProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;
 
-  // Separate style props from functional props.
-  // CheckboxRoot (via withProvider) handles recipe/variant splitting internally.
-  const [styleProps, functionalProps] = extractStyleProps(restProps);
+  const recipe = useSlotRecipe({ key: "nimbusCheckbox" });
+  const [recipeProps, remainingProps] = recipe.splitVariantProps(restProps);
+
+  const [styleProps, functionalProps] = extractStyleProps(remainingProps);
 
   return (
     <CheckboxRoot
       ref={forwardedRef}
       data-slot="root"
       {...functionalProps}
+      {...recipeProps}
       {...styleProps}
     >
       {({
