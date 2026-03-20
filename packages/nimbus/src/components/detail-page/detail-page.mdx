@@ -41,7 +41,7 @@ A simple detail page without a footer, suitable for read-only views.
 
 ```jsx live
 const App = () => (
-  <DetailPage.Root>
+  <DetailPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
     <DetailPage.Header>
       <DetailPage.BackLink href="/products">
         Back to products
@@ -65,7 +65,7 @@ A detail page with a footer containing action buttons for form submission.
 
 ```jsx live
 const App = () => (
-  <DetailPage.Root>
+  <DetailPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
     <DetailPage.Header>
       <DetailPage.BackLink href="/orders">
         Back to orders
@@ -93,7 +93,7 @@ The header uses CSS grid to automatically position actions next to the title.
 
 ```jsx live
 const App = () => (
-  <DetailPage.Root>
+  <DetailPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
     <DetailPage.Header>
       <DetailPage.BackLink href="/discounts">
         Back to discounts
@@ -118,7 +118,7 @@ Compose with the `TabNav` component inside `DetailPage.Header` for route-based t
 
 ```jsx live
 const App = () => (
-  <DetailPage.Root>
+  <DetailPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
     <DetailPage.Header paddingBottom="0">
       <DetailPage.BackLink href="/customers">
         Back to customers
