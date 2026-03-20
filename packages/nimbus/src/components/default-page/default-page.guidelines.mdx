@@ -129,23 +129,21 @@ primary actions.
 
 ```jsx live
 const App = () => (
-  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
-    <DefaultPage.Root>
-      <DefaultPage.Header>
-        <DefaultPage.BackLink href="/products">
-          Back to products
-        </DefaultPage.BackLink>
-        <DefaultPage.Title>Wireless Headphones</DefaultPage.Title>
-        <DefaultPage.Actions>
-          <Button size="sm" variant="ghost">Duplicate</Button>
-        </DefaultPage.Actions>
-        <DefaultPage.Subtitle>SKU-WH-2024-001</DefaultPage.Subtitle>
-      </DefaultPage.Header>
-      <DefaultPage.Content>
-        <Text>Page content goes here.</Text>
-      </DefaultPage.Content>
-    </DefaultPage.Root>
-  </Box>
+  <DefaultPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Header>
+      <DefaultPage.BackLink href="/products">
+        Back to products
+      </DefaultPage.BackLink>
+      <DefaultPage.Title>Wireless Headphones</DefaultPage.Title>
+      <DefaultPage.Actions>
+        <Button size="sm" variant="ghost">Duplicate</Button>
+      </DefaultPage.Actions>
+      <DefaultPage.Subtitle>SKU-WH-2024-001</DefaultPage.Subtitle>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Text>Page content goes here.</Text>
+    </DefaultPage.Content>
+  </DefaultPage.Root>
 )
 ```
 
@@ -175,28 +173,26 @@ pages — the grid row collapses automatically.
 
 ```jsx live
 const App = () => (
-  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
-    <DefaultPage.Root>
-      <DefaultPage.Header>
-        <DefaultPage.BackLink href="/orders">
-          Back to orders
-        </DefaultPage.BackLink>
-        <DefaultPage.Title>Edit Order</DefaultPage.Title>
-        <DefaultPage.Subtitle>Order #ORD-2024-001</DefaultPage.Subtitle>
-      </DefaultPage.Header>
-      <DefaultPage.Content>
-        <Box bg="neutral.3" padding="400" borderRadius="200">
-          <Text>Form fields</Text>
-        </Box>
-      </DefaultPage.Content>
-      <DefaultPage.Footer>
-        <Stack direction="row" gap="200" justify="flex-end" width="100%">
-          <Button variant="ghost">Cancel</Button>
-          <Button variant="solid" colorPalette="primary">Save</Button>
-        </Stack>
-      </DefaultPage.Footer>
-    </DefaultPage.Root>
-  </Box>
+  <DefaultPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Header>
+      <DefaultPage.BackLink href="/orders">
+        Back to orders
+      </DefaultPage.BackLink>
+      <DefaultPage.Title>Edit Order</DefaultPage.Title>
+      <DefaultPage.Subtitle>Order #ORD-2024-001</DefaultPage.Subtitle>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Box bg="neutral.3" padding="400" borderRadius="200">
+        <Text>Form fields</Text>
+      </Box>
+    </DefaultPage.Content>
+    <DefaultPage.Footer>
+      <Stack direction="row" gap="200" justify="flex-end" width="100%">
+        <Button variant="ghost">Cancel</Button>
+        <Button variant="solid" colorPalette="primary">Save</Button>
+      </Stack>
+    </DefaultPage.Footer>
+  </DefaultPage.Root>
 )
 ```
 
@@ -207,3 +203,20 @@ const App = () => (
 >   confusion about whether the page expects user input.
 > - Don't use `Footer` for navigation or informational content.
 
+### Predecessor
+
+DefaultPage replaces all eight page components from Merchant Center Application
+Kit (`@commercetools-frontend/application-components`):
+
+**Main page components replaced:**
+`InfoMainPage`, `FormMainPage`, `CustomFormMainPage`, `TabularMainPage`
+
+**Detail page components replaced:**
+`InfoDetailPage`, `FormDetailPage`, `CustomFormDetailPage`, `TabularDetailPage`
+
+For detailed migration instructions, see the
+[Migration guide](/components/layout/defaultpage/dev#migrating-from-merchant-center-application-kit)
+in the implementation docs. For the original Application Kit documentation, see
+[Components for Main Pages](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components#components-for-main-pages)
+and
+[Components for Detail Pages](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components#components-for-detail-pages).
