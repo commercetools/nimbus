@@ -1,5 +1,17 @@
 import { system } from "@/theme";
 
+// Cache for isValidProperty lookups — property names are finite and reused across renders
+const validPropertyCache = new Map<string, boolean>();
+
+function isStyleProperty(key: string): boolean {
+  let cached = validPropertyCache.get(key);
+  if (cached === undefined) {
+    cached = system.isValidProperty(key);
+    validPropertyCache.set(key, cached);
+  }
+  return cached;
+}
+
 /**
  * Extracts chakra-ui style-props from an object, separating them from other props
  * @param props The props object to separate
@@ -11,16 +23,14 @@ export function extractStyleProps<T extends object>(
   const styleProps: Record<string, unknown> = {};
   const otherProps = { ...props } as Record<string, unknown>;
 
-  // Process only own properties
-  Object.keys(props).forEach((key) => {
-    if (
-      Object.prototype.hasOwnProperty.call(props, key) &&
-      system.isValidProperty(key)
-    ) {
+  const keys = Object.keys(props);
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    if (isStyleProperty(key)) {
       styleProps[key] = props[key as keyof T];
       delete otherProps[key];
     }
-  });
+  }
 
   return [styleProps, otherProps as Omit<T, string>];
 }
