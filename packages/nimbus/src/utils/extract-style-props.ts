@@ -21,14 +21,16 @@ export function extractStyleProps<T extends object>(
   props: T
 ): [Record<string, unknown>, Omit<T, string>] {
   const styleProps: Record<string, unknown> = {};
-  const otherProps = { ...props } as Record<string, unknown>;
+  const otherProps: Record<string, unknown> = {};
 
   const keys = Object.keys(props);
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
+    const value = (props as Record<string, unknown>)[key];
     if (isStyleProperty(key)) {
-      styleProps[key] = props[key as keyof T];
-      delete otherProps[key];
+      styleProps[key] = value;
+    } else {
+      otherProps[key] = value;
     }
   }
 

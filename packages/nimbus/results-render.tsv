@@ -15,3 +15,5 @@ commit	component	p95_ms	avg_ms	status	description
 38d8d81	Text	0.19	0.14	keep	cache isValidProperty in extractStyleProps
 38d8d81	Link	0.38	0.29	keep	cache isValidProperty in extractStyleProps
 38d8d81	Switch	1.37	1.22	keep	cache isValidProperty in extractStyleProps
+cd111b3	Switch	1.38	1.24	keep	simplify ref handling (no gain, cleaner code)
+355ca39	Checkbox	2.06	1.40	discard	remove redundant useSlotRecipe (no improvement)
