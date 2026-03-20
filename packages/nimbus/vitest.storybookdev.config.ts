@@ -80,6 +80,8 @@ export default defineConfig(async () => {
         globals: true,
         testTimeout: 60000,
         hookTimeout: 60000,
+        // Retry once for flaky browser tests (e.g. Slate/Tiptap init races)
+        retry: 1,
         browser: {
           enabled: true,
           provider: playwright({
