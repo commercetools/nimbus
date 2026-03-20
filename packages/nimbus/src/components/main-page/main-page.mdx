@@ -56,7 +56,7 @@ const App = () => (
       <MainPage.Subtitle>Optional subtitle text</MainPage.Subtitle>
       <MainPage.Actions>
         <Button variant="ghost">Secondary</Button>
-        <Button>Primary Action</Button>
+        <Button variant="solid" colorPalette="primary">Primary Action</Button>
       </MainPage.Actions>
     </MainPage.Header>
     <MainPage.Content>
@@ -74,13 +74,13 @@ The Content area provides scrollable overflow with margin-based spacing that pre
 
 ```jsx live
 const App = () => (
-  <MainPage.Root border='solid-25' borderColor='blue.6' borderRadius="200">
+  <MainPage.Root border='solid-25' borderColor='neutral.6' borderRadius="200">
     <MainPage.Header>
       <MainPage.Title>Content Example</MainPage.Title>
     </MainPage.Header>
     <MainPage.Content>
-      <Box bg="blue.3" padding="400" borderRadius="200">
-        <Text color="blue.12">Content with automatic margin spacing</Text>
+      <Box bg="neutral.3" padding="400" borderRadius="200">
+        <Text>Content with automatic padding spacing</Text>
       </Box>
     </MainPage.Content>
   </MainPage.Root>
@@ -105,7 +105,7 @@ const App = () => (
     <MainPage.Footer>
       <Stack direction="row" gap="200" justify="flex-end" width="100%">
         <Button variant="ghost">Cancel</Button>
-        <Button>Save</Button>
+        <Button variant="solid" colorPalette="primary">Save</Button>
       </Stack>
     </MainPage.Footer>
   </MainPage.Root>
