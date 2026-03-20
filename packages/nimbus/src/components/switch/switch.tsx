@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, memo } from "react";
 import { useToggleState } from "react-stately";
 import {
   useFocusRing,
@@ -26,7 +26,7 @@ import { switchSlotRecipe } from "./switch.recipe";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/switch}
  */
-export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
+export const Switch = memo(({ ref: externalRef, ...props }: SwitchProps) => {
   const inputRef = useObjectRef(externalRef);
 
   const recipe = useSlotRecipe({ recipe: switchSlotRecipe });
@@ -86,5 +86,5 @@ export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
       )}
     </SwitchRootSlot>
   );
-};
+});
 Switch.displayName = "Switch";
