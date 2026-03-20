@@ -234,6 +234,8 @@ async function getRouteViews(
     views.push({ key: "overview", content: stripped, lower });
   }
 
+  // Sort by content length (shortest first) for faster early-exit on full matches.
+  views.sort((a, b) => a.lower.length - b.lower.length);
   routeViewsCache.set(slug, views);
   return views;
 }
