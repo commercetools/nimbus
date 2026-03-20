@@ -92,7 +92,7 @@ export const detailPageSlotRecipe = defineSlotRecipe({
     footer: {
       borderTop: "solid-25",
       borderColor: "neutral.6",
-      paddingX: "600",
+      paddingX: "900",
       paddingY: "400",
     },
   },
