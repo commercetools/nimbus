@@ -56,3 +56,12 @@ fb44d5d	Switch	1.28	1.21	keep	(measurement alongside TextInput change)
 82e04b4	Switch	1.50	1.20	keep	memo on Switch
 82e04b4	Select	3.45	1.85	keep	memo on SelectOption (no mount gain)
 82e04b4	Tooltip	0.67	0.53	keep	stable
+e28a666	Button	0.71	0.59	keep	extractStyleProps fast path + lazy alloc
+e28a666	TextInput	0.87	0.63	keep	extractStyleProps fast path
+e28a666	Checkbox	1.52	1.29	keep	extractStyleProps fast path
+e28a666	Badge	0.26	0.21	keep	extractStyleProps fast path
+e28a666	IconButton	0.47	0.37	keep	extractStyleProps fast path
+e28a666	Text	0.17	0.12	keep	extractStyleProps fast path
+e28a666	Link	0.35	0.27	keep	extractStyleProps fast path
+e28a666	Switch	1.49	1.22	keep	extractStyleProps fast path
+e28a666	Select	4.03	1.88	keep	chakra.div→div + SelectOption memo
