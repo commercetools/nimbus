@@ -260,9 +260,7 @@ async function getRouteViews(route: string): Promise<CachedRouteViews> {
 
 /**
  * Phase 2: Search across all views for a candidate route.
- * Uses a two-level strategy:
- * 1. Fast negative filter: check if ANY token appears in combined content.
- * 2. Per-view search: find the best matching view for snippets.
+ * Uses combined content for fast negative filter, then finds best view.
  */
 async function searchRouteViews(
   route: string,
@@ -271,7 +269,7 @@ async function searchRouteViews(
   const { views, combinedLower } = await getRouteViews(route);
   if (views.length === 0) return null;
 
-  // Fast negative filter: if no tokens match the combined content, skip.
+  // Fast negative filter using combined content.
   const tokenCount = tokens.length;
   let anyMatch = false;
   for (let i = 0; i < tokenCount; i++) {
@@ -282,7 +280,8 @@ async function searchRouteViews(
   }
   if (!anyMatch) return null;
 
-  let bestPartial: (typeof views)[number] | null = null;
+  // Single pass: find best view.
+  let bestView: (typeof views)[number] | null = null;
   let bestHits = 0;
 
   for (const view of views) {
@@ -295,15 +294,13 @@ async function searchRouteViews(
     }
     if (hits > bestHits) {
       bestHits = hits;
-      bestPartial = view;
+      bestView = view;
     }
   }
 
-  if (bestPartial && bestHits > 0) {
-    return { viewKey: bestPartial.key, content: bestPartial.content };
-  }
-
-  return null;
+  return bestView && bestHits > 0
+    ? { viewKey: bestView.key, content: bestView.content }
+    : null;
 }
 
 /**
