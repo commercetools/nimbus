@@ -3,3 +3,4 @@ baseline	9.15	0.16	1.95	keep	baseline - no changes
 15aa3ff	9.02	0.00	1.90	keep	cache getRouteData results in memory
 3b2469e	8.73	0.00	2.33	keep	pre-lowercase search index fields
 d5e454d	8.76	0.00	2.47	keep	cache stripMarkdown results (big win on exact-match queries)
+b67c7c7	0.93	0.00	1.95	keep	replace Fuse.js with partial-match scorer (20x faster on fuzzy queries)

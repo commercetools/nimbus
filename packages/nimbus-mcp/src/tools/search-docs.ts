@@ -99,17 +99,22 @@ function routeToSlug(route: string): string {
   return route.replace(/\//g, "-");
 }
 
-/** Cache for stripped markdown content, keyed by the raw mdx string reference. */
-const strippedCache = new WeakMap<object, string>();
+/** Cached stripped + lowered content per view object. */
+interface CachedViewContent {
+  stripped: string;
+  lower: string;
+}
+const viewContentCache = new WeakMap<object, CachedViewContent>();
 
-/** Strip markdown with caching. Uses the RouteDataView object as cache key. */
-function cachedStripMarkdown(viewObj: { mdx: string }): string {
-  let stripped = strippedCache.get(viewObj);
-  if (stripped === undefined) {
-    stripped = stripMarkdown(viewObj.mdx);
-    strippedCache.set(viewObj, stripped);
+/** Get cached stripped and lowered content for a view object. */
+function getCachedViewContent(viewObj: { mdx: string }): CachedViewContent {
+  let cached = viewContentCache.get(viewObj);
+  if (!cached) {
+    const stripped = stripMarkdown(viewObj.mdx);
+    cached = { stripped, lower: stripped.toLowerCase() };
+    viewContentCache.set(viewObj, cached);
   }
-  return stripped;
+  return cached;
 }
 
 /** Maps a SearchIndexEntry to RelevanceFields for scoring. */
@@ -215,15 +220,15 @@ async function searchRouteViews(
   if (routeData.views) {
     for (const [key, view] of Object.entries(routeData.views)) {
       if (view.mdx) {
-        const content = cachedStripMarkdown(view);
-        views.push({ key, content, lower: content.toLowerCase() });
+        const { stripped, lower } = getCachedViewContent(view);
+        views.push({ key, content: stripped, lower });
       }
     }
   } else if (routeData.mdx) {
-    const content = cachedStripMarkdown(
+    const { stripped, lower } = getCachedViewContent(
       routeData as unknown as { mdx: string }
     );
-    views.push({ key: "overview", content, lower: content.toLowerCase() });
+    views.push({ key: "overview", content: stripped, lower });
   }
 
   // Single pass: return the first full match; track best partial as fallback.
