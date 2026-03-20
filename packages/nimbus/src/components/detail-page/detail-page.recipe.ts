@@ -68,6 +68,7 @@ export const detailPageSlotRecipe = defineSlotRecipe({
       gridColumn: "1",
       alignSelf: "center",
       mt: "200",
+      mb: "200",
       textStyle: "sm",
       color: "neutral.11",
     },
