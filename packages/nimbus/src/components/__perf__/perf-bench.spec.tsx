@@ -219,4 +219,65 @@ describe("Perf/Benchmarks", () => {
       expect(result.p95).toBeLessThan(100);
     });
   }
+
+  // Prop-change update benchmarks — re-render with different props each time
+  function benchmarkPropChange(
+    Component: React.FC<any>,
+    propsFactory: (i: number) => Record<string, any>
+  ): { p95: number; avg: number; count: number } {
+    const durations: number[] = [];
+    const onRender = (_id: string, phase: string, actualDuration: number) => {
+      if (phase === "update") {
+        durations.push(actualDuration);
+      }
+    };
+
+    const { rerender, unmount } = render(
+      <NimbusProvider loadFonts={false}>
+        <Profiler id="bench-propchange" onRender={onRender}>
+          <Component {...propsFactory(0)} />
+        </Profiler>
+      </NimbusProvider>
+    );
+
+    for (let i = 1; i <= ITERATIONS; i++) {
+      rerender(
+        <NimbusProvider loadFonts={false}>
+          <Profiler id="bench-propchange" onRender={onRender}>
+            <Component {...propsFactory(i)} />
+          </Profiler>
+        </NimbusProvider>
+      );
+    }
+    unmount();
+    cleanup();
+
+    const sorted = [...durations].sort((a, b) => a - b);
+    const p95 = sorted[Math.floor(sorted.length * 0.95)] ?? 0;
+    const avg =
+      durations.length > 0
+        ? durations.reduce((a, b) => a + b, 0) / durations.length
+        : 0;
+    return { p95, avg, count: durations.length };
+  }
+
+  it("Button prop-change benchmark", () => {
+    const result = benchmarkPropChange(Button, (i) => ({
+      children: `Click ${i}`,
+    }));
+    console.log(
+      `PERF_RESULT_PROPCHANGE: component=Button p95=${result.p95.toFixed(2)} avg=${result.avg.toFixed(2)}`
+    );
+    expect(result.p95).toBeLessThan(100);
+  });
+
+  it("Checkbox prop-change benchmark", () => {
+    const result = benchmarkPropChange(Checkbox, (i) => ({
+      children: `Check ${i}`,
+    }));
+    console.log(
+      `PERF_RESULT_PROPCHANGE: component=Checkbox p95=${result.p95.toFixed(2)} avg=${result.avg.toFixed(2)}`
+    );
+    expect(result.p95).toBeLessThan(100);
+  });
 });
