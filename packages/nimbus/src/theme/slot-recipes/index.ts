@@ -1,6 +1,5 @@
 import { accordionSlotRecipe } from "@/components/accordion/accordion.recipe";
 import { defaultPageSlotRecipe } from "@/components/default-page/default-page.recipe";
-import { detailPageSlotRecipe } from "@/components/detail-page/detail-page.recipe";
 import { stepsSlotRecipe } from "@/components/steps/steps.recipe";
 import { alertRecipe } from "@/components/alert/alert.recipe";
 import { calendarSlotRecipe } from "@/components/calendar/calendar.recipe";
@@ -80,7 +79,6 @@ export const slotRecipes = {
   nimbusCombobox: comboBoxSlotRecipe,
   nimbusDataTable: dataTableSlotRecipe,
   nimbusDefaultPage: defaultPageSlotRecipe,
-  nimbusDetailPage: detailPageSlotRecipe,
   nimbusDateInput: dateInputSlotRecipe,
   nimbusDatePicker: datePickerSlotRecipe,
   nimbusDateRangePicker: dateRangePickerSlotRecipe,
