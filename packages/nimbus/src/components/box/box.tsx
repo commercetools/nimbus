@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { type HTMLChakraProps } from "@chakra-ui/react/styled-system";
 import { Box as ChakraBox } from "@chakra-ui/react/box";
 
@@ -15,9 +16,9 @@ export type BoxProps = HTMLChakraProps<"div"> & {
  *
  * @supportsStyleProps
  */
-export const Box = (props: BoxProps) => {
+export const Box = memo((props: BoxProps) => {
   const { ref, ...restProps } = props;
   return <ChakraBox ref={ref} {...restProps} />;
-};
+});
 
 Box.displayName = "Box";
