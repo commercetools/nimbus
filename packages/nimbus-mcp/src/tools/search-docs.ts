@@ -279,17 +279,18 @@ async function getRouteViews(route: string): Promise<CachedRouteViews> {
 
 /**
  * Phase 2: Search across all views for a candidate route.
- * Uses combined content for fast negative filter, then finds best view.
+ * Synchronous when views are cached, async only on first load.
  */
-async function searchRouteViews(
+function searchRouteViewsSync(
   route: string,
   tokens: string[]
-): Promise<ViewMatch | null> {
-  const { views } = await getRouteViews(route);
+): ViewMatch | null {
+  const slug = routeToSlug(route);
+  const cached = routeViewsCache.get(slug);
+  if (!cached) return null; // Will be loaded async and retried
+  const { views } = cached;
   if (views.length === 0) return null;
 
-  // Direct per-view search (no combined filter — saves one 16KB includes for
-  // candidates that match, which is the common case after phase 1 filtering).
   const tokenCount = tokens.length;
   let bestView: (typeof views)[number] | null = null;
   let bestHits = 0;
@@ -311,6 +312,24 @@ async function searchRouteViews(
   return bestView && bestHits > 0
     ? { viewKey: bestView.key, content: bestView.content }
     : null;
+}
+
+/**
+ * Eagerly loads all route views for candidates, then searches synchronously.
+ */
+async function warmAndSearchViews(
+  candidates: SearchIndexEntry[],
+  tokens: string[]
+): Promise<Map<string, ViewMatch | null>> {
+  // Warm the cache for all candidates in parallel.
+  await Promise.all(candidates.map((e) => getRouteViews(e.route)));
+
+  // Now search synchronously from cache.
+  const results = new Map<string, ViewMatch | null>();
+  for (const entry of candidates) {
+    results.set(entry.id, searchRouteViewsSync(entry.route, tokens));
+  }
+  return results;
 }
 
 /**
@@ -381,18 +400,14 @@ export function registerSearchDocs(server: McpServer): void {
           phase1Scores.set(entry.id, s);
         }
 
-        // Phase 2: Search all views for candidates.
-        const loadPromises = allCandidates.map(async (entry) => {
-          const viewMatch = await searchRouteViews(entry.route, tokens);
-          return {
-            entry,
-            viewMatch,
-            wasMatched: matchedIds.has(entry.id),
-            phase1Score: phase1Scores.get(entry.id)!,
-          };
-        });
-
-        const loaded = await Promise.all(loadPromises);
+        // Phase 2: Warm route view caches, then search synchronously.
+        const viewResults = await warmAndSearchViews(allCandidates, tokens);
+        const loaded = allCandidates.map((entry) => ({
+          entry,
+          viewMatch: viewResults.get(entry.id) ?? null,
+          wasMatched: matchedIds.has(entry.id),
+          phase1Score: phase1Scores.get(entry.id)!,
+        }));
 
         // Keep entries that either matched in phase 1 OR found a deep match
         // in phase 2. This filters out expanded fallback entries that had
