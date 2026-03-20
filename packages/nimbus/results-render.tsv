@@ -46,3 +46,13 @@ fb44d5d	Switch	1.28	1.21	keep	(measurement alongside TextInput change)
 0a5b7c5	Switch	1.53	1.22	keep	React.memo on Switch
 0a5b7c5	Select	3.43	1.85	keep	baseline
 0a5b7c5	Tooltip	0.60	0.51	keep	baseline
+82e04b4	Button	0.61	0.53	keep	memo on all components + SelectOption
+82e04b4	TextInput	0.84	0.60	keep	memo on all components
+82e04b4	Checkbox	2.14	1.34	keep	noisy p95 but avg stable
+82e04b4	Badge	0.21	0.18	keep	memo + simplified refs
+82e04b4	IconButton	0.53	0.38	keep	memo on IconButton
+82e04b4	Text	0.20	0.14	keep	memo on Text
+82e04b4	Link	0.32	0.25	keep	memo on Link
+82e04b4	Switch	1.50	1.20	keep	memo on Switch
+82e04b4	Select	3.45	1.85	keep	memo on SelectOption (no mount gain)
+82e04b4	Tooltip	0.67	0.53	keep	stable
