@@ -14,7 +14,7 @@ import {
   Switch,
   Tooltip,
 } from "@commercetools/nimbus";
-import { BinLinearIcon } from "@commercetools/nimbus-icons";
+import { Delete } from "@commercetools/nimbus-icons";
 
 const meta: Meta = {
   title: "Perf/VisualRegression",
@@ -108,18 +108,10 @@ export const BadgeVariants: StoryObj = {
 export const IconButtonVariants: StoryObj = {
   render: () => (
     <Stack gap="200" padding="200" direction="row">
-      <IconButton aria-label="delete" icon={<BinLinearIcon />} />
-      <IconButton
-        aria-label="delete"
-        icon={<BinLinearIcon />}
-        variant="solid"
-      />
-      <IconButton
-        aria-label="delete"
-        icon={<BinLinearIcon />}
-        variant="outline"
-      />
-      <IconButton aria-label="delete" icon={<BinLinearIcon />} isDisabled />
+      <IconButton aria-label="delete" icon={<Delete />} />
+      <IconButton aria-label="delete" icon={<Delete />} variant="solid" />
+      <IconButton aria-label="delete" icon={<Delete />} variant="outline" />
+      <IconButton aria-label="delete" icon={<Delete />} isDisabled />
     </Stack>
   ),
   play: async ({ canvasElement }) => {

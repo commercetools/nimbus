@@ -15,7 +15,7 @@ import {
   Switch,
   Tooltip,
 } from "@commercetools/nimbus";
-import { BinLinearIcon } from "@commercetools/nimbus-icons";
+import { Delete } from "@commercetools/nimbus-icons";
 
 const ITERATIONS = 50;
 
@@ -179,7 +179,7 @@ export const IconButtonMount: StoryObj = {
   render: () => (
     <PerfHarness
       Component={IconButton}
-      props={{ "aria-label": "delete", icon: <BinLinearIcon /> }}
+      props={{ "aria-label": "delete", icon: <Delete /> }}
     />
   ),
   play: createPlayFunction("IconButton"),
