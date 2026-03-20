@@ -4,4 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default { backLink: `Zurück` };
+export default { backLink: `Go back` };
