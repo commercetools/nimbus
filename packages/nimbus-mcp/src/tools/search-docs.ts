@@ -193,19 +193,19 @@ function findCandidates(
   return { matched, expanded };
 }
 
-/** Cache of collected views per route slug, avoiding re-processing on repeat queries. */
-const routeViewsCache = new Map<
-  string,
-  Array<{ key: string; content: string; lower: string }>
->();
+/** Cached route view data with pre-computed combined lowered content. */
+interface CachedRouteViews {
+  views: Array<{ key: string; content: string; lower: string }>;
+  /** All view content concatenated and lowered — for fast negative filtering. */
+  combinedLower: string;
+}
+const routeViewsCache = new Map<string, CachedRouteViews>();
 
 /**
  * Collects and caches the searchable views for a route. Returns cached
  * result on subsequent calls for the same slug.
  */
-async function getRouteViews(
-  route: string
-): Promise<Array<{ key: string; content: string; lower: string }>> {
+async function getRouteViews(route: string): Promise<CachedRouteViews> {
   const slug = routeToSlug(route);
   const cached = routeViewsCache.get(slug);
   if (cached) return cached;
@@ -214,7 +214,7 @@ async function getRouteViews(
   try {
     routeData = await getRouteData(slug);
   } catch {
-    const empty: Array<{ key: string; content: string; lower: string }> = [];
+    const empty: CachedRouteViews = { views: [], combinedLower: "" };
     routeViewsCache.set(slug, empty);
     return empty;
   }
@@ -236,24 +236,40 @@ async function getRouteViews(
 
   // Sort by content length (shortest first) for faster early-exit on full matches.
   views.sort((a, b) => a.lower.length - b.lower.length);
-  routeViewsCache.set(slug, views);
-  return views;
+  const result: CachedRouteViews = {
+    views,
+    combinedLower: views.map((v) => v.lower).join(" "),
+  };
+  routeViewsCache.set(slug, result);
+  return result;
 }
 
 /**
  * Phase 2: Search across all views for a candidate route.
- * Uses cached view data to avoid repeated processing.
+ * Uses a two-level strategy:
+ * 1. Fast negative filter: check if ANY token appears in combined content.
+ * 2. Per-view search: find the best matching view for snippets.
  */
 async function searchRouteViews(
   route: string,
   tokens: string[]
 ): Promise<ViewMatch | null> {
-  const views = await getRouteViews(route);
+  const { views, combinedLower } = await getRouteViews(route);
   if (views.length === 0) return null;
+
+  // Fast negative filter: if no tokens match the combined content, skip.
+  const tokenCount = tokens.length;
+  let anyMatch = false;
+  for (let i = 0; i < tokenCount; i++) {
+    if (combinedLower.includes(tokens[i])) {
+      anyMatch = true;
+      break;
+    }
+  }
+  if (!anyMatch) return null;
 
   let bestPartial: (typeof views)[number] | null = null;
   let bestHits = 0;
-  const tokenCount = tokens.length;
 
   for (const view of views) {
     let hits = 0;
