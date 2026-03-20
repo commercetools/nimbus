@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   Grid as ChakraGrid,
   GridItem,
@@ -16,10 +17,10 @@ export type GridProps = ChakraGridProps & {
   ref?: React.Ref<HTMLDivElement>;
 };
 
-const GridComponent = (props: GridProps) => {
+const GridComponent = memo((props: GridProps) => {
   const { ref, ...restProps } = props;
   return <ChakraGrid ref={ref} {...restProps} />;
-};
+});
 
 GridComponent.displayName = "Grid";
 
