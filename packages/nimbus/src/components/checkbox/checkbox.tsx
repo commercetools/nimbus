@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Check, Remove as Minus } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
 import type { CheckboxProps } from "./checkbox.types";
@@ -15,7 +16,7 @@ import {
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/checkbox}
  */
-export const Checkbox = (props: CheckboxProps) => {
+export const Checkbox = memo((props: CheckboxProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;
 
   // extractStyleProps separates Chakra style props from functional/variant props.
@@ -61,5 +62,5 @@ export const Checkbox = (props: CheckboxProps) => {
       }}
     </CheckboxRoot>
   );
-};
+});
 Checkbox.displayName = "Checkbox";
