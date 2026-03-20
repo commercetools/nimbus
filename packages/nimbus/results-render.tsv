@@ -30,3 +30,6 @@ ce57f3a	Switch	1.30	1.20	keep	avoid spread+delete in extractStyleProps
 fb44d5d	TextInput	0.74	0.59	keep	skip context normalization when no context
 fb44d5d	Checkbox	1.89	1.40	keep	(measurement alongside TextInput change)
 fb44d5d	Switch	1.28	1.21	keep	(measurement alongside TextInput change)
+0818b5e	Checkbox	1.92	1.34	keep	remove duplicate useSlotRecipe (cleaner, no perf change)
+0818b5e	Select	3.58	1.87	keep	baseline with compound benchmarks
+0818b5e	Tooltip	1.01	0.57	keep	baseline with compound benchmarks
