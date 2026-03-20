@@ -165,7 +165,12 @@ function findCandidates(
     const fields = loweredMap.get(entry)!;
     let score = 0;
     for (const t of tokens) {
-      if (fields.combined.includes(t)) score += scorePreLowered(fields, [t]);
+      if (fields.combined.includes(t)) {
+        if (fields.title.includes(t)) score += 8;
+        if (fields.description.includes(t)) score += 4;
+        if (fields.tags.includes(t)) score += 4;
+        if (fields.content.includes(t)) score += 1;
+      }
     }
     if (score > 0) {
       partialScored.push({ entry, score });
