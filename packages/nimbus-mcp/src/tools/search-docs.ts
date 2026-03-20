@@ -9,10 +9,7 @@ import type {
   ViewMatch,
   LoweredRelevanceFields,
 } from "../types.js";
-import {
-  filterAndRankPreLowered,
-  scorePreLowered,
-} from "../utils/relevance.js";
+import { filterAndRankPreLowered } from "../utils/relevance.js";
 import { stripMarkdown } from "../utils/markdown.js";
 
 const MAX_RESULTS = 10;
@@ -379,15 +376,28 @@ export function registerSearchDocs(server: McpServer): void {
         const allCandidates = [...matchedCapped, ...expandedCapped];
         const matchedIds = new Set(matched.map((e) => e.id));
 
-        // Phase 2: Load full route data for candidates and search all views.
-        // Compute phase-1 score so the phase-2 sort can use it as a tiebreaker.
+        // Pre-compute phase-1 scores synchronously.
+        const phase1Scores = new Map<string, number>();
+        for (const entry of allCandidates) {
+          const f = loweredMap.get(entry)!;
+          let s = 0;
+          for (const t of tokens) {
+            if (f.title.includes(t)) s += 8;
+            if (f.description.includes(t)) s += 4;
+            if (f.tags.includes(t)) s += 4;
+            if (f.content.includes(t)) s += 1;
+          }
+          phase1Scores.set(entry.id, s);
+        }
+
+        // Phase 2: Search all views for candidates.
         const loadPromises = allCandidates.map(async (entry) => {
           const viewMatch = await searchRouteViews(entry.route, tokens);
           return {
             entry,
             viewMatch,
             wasMatched: matchedIds.has(entry.id),
-            phase1Score: scorePreLowered(loweredMap.get(entry)!, tokens),
+            phase1Score: phase1Scores.get(entry.id)!,
           };
         });
 
