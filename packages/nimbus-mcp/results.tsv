@@ -5,3 +5,5 @@ baseline	9.15	0.16	1.95	keep	baseline - no changes
 d5e454d	8.76	0.00	2.47	keep	cache stripMarkdown results (big win on exact-match queries)
 b67c7c7	0.93	0.00	1.95	keep	replace Fuse.js with partial-match scorer (20x faster on fuzzy queries)
 46f3c77	0.28	0.00	2.55	keep	cache stripped+lowered view content (33x faster than baseline)
+d66e809	0.25	0.00	2.52	keep	pre-compute combined lowered string for faster partial matching
+8c37067	0.33	0.00	2.51	discard	inline scoring and avoid array allocs (no improvement, noise)
