@@ -55,7 +55,7 @@ async function bench(
 const MAX_RESULTS = 10;
 const SNIPPET_LENGTH = 200;
 const SNIPPET_LEAD = 80;
-const PHASE2_CANDIDATE_LIMIT = MAX_RESULTS + 2;
+const PHASE2_CANDIDATE_LIMIT = MAX_RESULTS;
 const MIN_CANDIDATES = 5;
 
 let fuseInstance: Fuse<SearchIndexEntry> | undefined;
