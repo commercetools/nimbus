@@ -24,6 +24,7 @@ export const defaultPageSlotRecipe = defineSlotRecipe({
       display: "grid",
       gridTemplateRows: "auto 1fr auto",
       gridTemplateColumns: "1fr",
+      height: "100%",
       width: "100%",
     },
     header: {
@@ -91,6 +92,7 @@ export const defaultPageSlotRecipe = defineSlotRecipe({
       mt: "200",
     },
     content: {
+      overflow: "auto",
       paddingX: "900",
       paddingY: "800",
     },
@@ -103,31 +105,6 @@ export const defaultPageSlotRecipe = defineSlotRecipe({
   },
 
   variants: {
-    layout: {
-      /**
-       * Constrained layout: the page fills the parent container height.
-       * Only the content area scrolls. The header and footer are naturally
-       * pinned by the CSS grid.
-       */
-      constrained: {
-        root: {
-          height: "100%",
-        },
-        content: {
-          overflow: "auto",
-        },
-      },
-      /**
-       * Flexible layout: the page grows with its content.
-       * The whole scroll container scrolls. Use `stickyHeader`/`stickyFooter`
-       * to pin the header or footer.
-       */
-      flexible: {
-        root: {
-          height: "auto",
-        },
-      },
-    },
     stickyHeader: {
       true: {
         header: {
@@ -148,9 +125,5 @@ export const defaultPageSlotRecipe = defineSlotRecipe({
         },
       },
     },
-  },
-
-  defaultVariants: {
-    layout: "constrained",
   },
 });
