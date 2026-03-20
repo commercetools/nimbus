@@ -169,14 +169,19 @@ function findCandidates(
   return { matched, expanded };
 }
 
-const strippedCache = new WeakMap<object, string>();
-function cachedStripMarkdown(viewObj: { mdx: string }): string {
-  let stripped = strippedCache.get(viewObj);
-  if (stripped === undefined) {
-    stripped = stripMarkdown(viewObj.mdx);
-    strippedCache.set(viewObj, stripped);
+interface CachedViewContent {
+  stripped: string;
+  lower: string;
+}
+const viewContentCache = new WeakMap<object, CachedViewContent>();
+function getCachedViewContent(viewObj: { mdx: string }): CachedViewContent {
+  let cached = viewContentCache.get(viewObj);
+  if (!cached) {
+    const stripped = stripMarkdown(viewObj.mdx);
+    cached = { stripped, lower: stripped.toLowerCase() };
+    viewContentCache.set(viewObj, cached);
   }
-  return stripped;
+  return cached;
 }
 
 async function searchRouteViews(route: string, tokens: string[]) {
@@ -190,15 +195,15 @@ async function searchRouteViews(route: string, tokens: string[]) {
   if (routeData.views) {
     for (const [key, view] of Object.entries(routeData.views)) {
       if (view.mdx) {
-        const content = cachedStripMarkdown(view);
-        views.push({ key, content, lower: content.toLowerCase() });
+        const { stripped, lower } = getCachedViewContent(view);
+        views.push({ key, content: stripped, lower });
       }
     }
   } else if (routeData.mdx) {
-    const content = cachedStripMarkdown(
+    const { stripped, lower } = getCachedViewContent(
       routeData as unknown as { mdx: string }
     );
-    views.push({ key: "overview", content, lower: content.toLowerCase() });
+    views.push({ key: "overview", content: stripped, lower });
   }
   let bestPartial: (typeof views)[number] | null = null;
   let bestHits = 0;
