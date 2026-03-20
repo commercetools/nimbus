@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { mergeProps, useProgressBar } from "react-aria";
 import { LoadingSpinnerRoot } from "./loading-spinner.slots";
 import type { LoadingSpinnerProps } from "./loading-spinner.types";
@@ -16,7 +17,7 @@ const pointerPath =
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/loadingspinner}
  */
-export const LoadingSpinner = (props: LoadingSpinnerProps) => {
+export const LoadingSpinner = memo((props: LoadingSpinnerProps) => {
   const msg = useLocalizedStringFormatter(loadingSpinnerMessagesStrings);
   const defaultLabel = msg.format("default");
   const { ref, "aria-label": ariaLabel = defaultLabel, ...restProps } = props;
@@ -50,6 +51,6 @@ export const LoadingSpinner = (props: LoadingSpinnerProps) => {
       </svg>
     </LoadingSpinnerRoot>
   );
-};
+});
 
 LoadingSpinner.displayName = "LoadingSpinner";

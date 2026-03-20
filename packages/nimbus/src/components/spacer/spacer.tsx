@@ -5,6 +5,7 @@
  * Uses flexGrow="1" to fill remaining space.
  */
 
+import { memo } from "react";
 import { Box } from "@chakra-ui/react/box";
 import type { SpacerProps } from "./spacer.types";
 
@@ -20,8 +21,8 @@ import type { SpacerProps } from "./spacer.types";
  * </Stack>
  * ```
  */
-export const Spacer = ({ ref, ...props }: SpacerProps) => {
+export const Spacer = memo(({ ref, ...props }: SpacerProps) => {
   return <Box ref={ref} flexGrow={1} {...props} />;
-};
+});
 
 Spacer.displayName = "Spacer";

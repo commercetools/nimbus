@@ -1,3 +1,4 @@
+import { memo } from "react";
 import type { InlineSvgProps } from "./inline-svg.types";
 import { InlineSvgRootSlot } from "./inline-svg.slots";
 import { useInlineSvg } from "./hooks";
@@ -20,7 +21,7 @@ import { useInlineSvg } from "./hooks";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/media/inline-svg}
  */
-export const InlineSvg = (props: InlineSvgProps) => {
+export const InlineSvg = memo((props: InlineSvgProps) => {
   const { data, ref, slot, ...rest } = props;
 
   const { isValid, svgAttributes, innerSvgContent } = useInlineSvg(data);
@@ -41,6 +42,6 @@ export const InlineSvg = (props: InlineSvgProps) => {
       />
     </InlineSvgRootSlot>
   );
-};
+});
 
 InlineSvg.displayName = "InlineSvg";

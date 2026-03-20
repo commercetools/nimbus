@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, memo } from "react";
 import { Close as CloseIcon } from "@commercetools/nimbus-icons";
 import { IconButton } from "@/components";
 import { SelectStateContext } from "react-aria-components";
@@ -11,33 +11,35 @@ import { selectMessagesStrings } from "../select.messages";
  *
  * @supportsStyleProps
  */
-export const SelectClearButton = ({ isDisabled }: { isDisabled?: boolean }) => {
-  const msg = useLocalizedStringFormatter(selectMessagesStrings);
-  const state = useContext(SelectStateContext);
-  if (!state?.selectedKey) {
-    return null;
+export const SelectClearButton = memo(
+  ({ isDisabled }: { isDisabled?: boolean }) => {
+    const msg = useLocalizedStringFormatter(selectMessagesStrings);
+    const state = useContext(SelectStateContext);
+    if (!state?.selectedKey) {
+      return null;
+    }
+
+    const onPressRequest = () => {
+      state?.setSelectedKey(null);
+    };
+
+    return (
+      <ClearPressResponder>
+        <IconButton
+          slot={null}
+          pointerEvents={isDisabled ? "none" : "all"}
+          size="2xs"
+          variant="ghost"
+          isDisabled={isDisabled}
+          aria-label={msg.format("clearSelection")}
+          aria-labelledby=""
+          onPress={onPressRequest}
+        >
+          <CloseIcon />
+        </IconButton>
+      </ClearPressResponder>
+    );
   }
-
-  const onPressRequest = () => {
-    state?.setSelectedKey(null);
-  };
-
-  return (
-    <ClearPressResponder>
-      <IconButton
-        slot={null}
-        pointerEvents={isDisabled ? "none" : "all"}
-        size="2xs"
-        variant="ghost"
-        isDisabled={isDisabled}
-        aria-label={msg.format("clearSelection")}
-        aria-labelledby=""
-        onPress={onPressRequest}
-      >
-        <CloseIcon />
-      </IconButton>
-    </ClearPressResponder>
-  );
-};
+);
 
 SelectClearButton.displayName = "Select.ClearButton";

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   Image as ChakraImage,
   type ImageProps as ChakraImageProps,
@@ -14,8 +15,8 @@ export type ImageProps = ChakraImageProps;
  *
  * @supportsStyleProps
  */
-export const Image = (props: ImageProps) => {
+export const Image = memo((props: ImageProps) => {
   return <ChakraImage {...props} />;
-};
+});
 
 Image.displayName = "Image";

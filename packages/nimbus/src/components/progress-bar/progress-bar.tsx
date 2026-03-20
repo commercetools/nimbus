@@ -1,10 +1,10 @@
-import { useRef } from "react";
+import { memo } from "react";
 import {
   ProgressBar as RaProgressBar,
   Label as RaLabel,
 } from "react-aria-components";
 import { useObjectRef } from "react-aria";
-import { extractStyleProps, mergeRefs } from "@/utils";
+import { extractStyleProps } from "@/utils";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { Flex, Box } from "@/components";
 import {
@@ -33,7 +33,7 @@ import type { ProgressBarProps } from "./progress-bar.types";
  * - Supports variants, sizes, etc. configured in the recipe
  * - Allows overriding styles by using style-props
  */
-export const ProgressBar = (props: ProgressBarProps) => {
+export const ProgressBar = memo((props: ProgressBarProps) => {
   const {
     ref: forwardedRef,
     value,
@@ -57,8 +57,7 @@ export const ProgressBar = (props: ProgressBarProps) => {
   });
   const [styleProps] = extractStyleProps(remainingProps);
 
-  const localRef = useRef<HTMLDivElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const ref = useObjectRef(forwardedRef);
 
   return (
     <ProgressBarRootSlot
@@ -121,6 +120,6 @@ export const ProgressBar = (props: ProgressBarProps) => {
       </RaProgressBar>
     </ProgressBarRootSlot>
   );
-};
+});
 
 ProgressBar.displayName = "ProgressBar";

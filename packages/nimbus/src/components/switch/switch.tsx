@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, memo } from "react";
 import { useToggleState } from "react-stately";
 import {
   useFocusRing,
@@ -7,7 +7,7 @@ import {
   useFocusable,
   mergeProps,
 } from "react-aria";
-import { extractStyleProps, mergeRefs } from "@/utils";
+import { extractStyleProps } from "@/utils";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { VisuallyHidden } from "@/components";
 import type { SwitchProps } from "./switch.types";
@@ -26,11 +26,8 @@ import { switchSlotRecipe } from "./switch.recipe";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/switch}
  */
-export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
-  const localRef = useRef<HTMLInputElement>(null);
-  const ref = useObjectRef(
-    externalRef ? mergeRefs(localRef, externalRef) : localRef
-  );
+export const Switch = memo(({ ref: externalRef, ...props }: SwitchProps) => {
+  const inputRef = useObjectRef(externalRef);
 
   const recipe = useSlotRecipe({ recipe: switchSlotRecipe });
 
@@ -41,7 +38,7 @@ export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
     props["aria-disabled"] === true || props["aria-disabled"] === "true";
 
   const state = useToggleState(props);
-  const { inputProps } = useSwitch(functionalProps, state, ref);
+  const { inputProps } = useSwitch(functionalProps, state, inputRef);
 
   const { isFocused, focusProps } = useFocusRing();
 
@@ -77,7 +74,7 @@ export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
             data-slot="input"
             {...mergeProps(inputProps, focusProps)}
             {...(isAriaDisabled && { disabled: true })}
-            ref={ref}
+            ref={inputRef}
           />
         </VisuallyHidden>
       </SwitchTrackSlot>
@@ -89,5 +86,5 @@ export const Switch = ({ ref: externalRef, ...props }: SwitchProps) => {
       )}
     </SwitchRootSlot>
   );
-};
+});
 Switch.displayName = "Switch";

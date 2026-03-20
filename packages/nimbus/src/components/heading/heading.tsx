@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { HeadingContext, useContextProps } from "react-aria-components";
 import { HeadingRoot } from "./heading.slots";
 import type { HeadingRootSlotProps } from "./heading.types";
@@ -26,7 +27,7 @@ export type HeadingProps = HeadingRootSlotProps & {
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/typography/heading}
  */
-export const Heading = ({ ref: forwardedRef, ...props }: HeadingProps) => {
+export const Heading = memo(({ ref: forwardedRef, ...props }: HeadingProps) => {
   const [contextProps, ref] = useContextProps(
     props,
     forwardedRef ?? null,
@@ -41,6 +42,6 @@ export const Heading = ({ ref: forwardedRef, ...props }: HeadingProps) => {
       slot={props.slot ?? undefined}
     />
   );
-};
+});
 
 Heading.displayName = "Heading";
