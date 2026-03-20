@@ -7,12 +7,15 @@ import {
   getRouteData,
   getTypeData,
 } from "./src/data-loader.js";
-import { filterAndRankByRelevance } from "./src/utils/relevance.js";
+import {
+  filterAndRankPreLowered,
+  scorePreLowered,
+} from "./src/utils/relevance.js";
 import { stripMarkdown } from "./src/utils/markdown.js";
 import Fuse from "fuse.js";
 import type {
   SearchIndexEntry,
-  RelevanceFields,
+  LoweredRelevanceFields,
   RouteManifestEntry,
 } from "./src/types.js";
 
@@ -58,13 +61,28 @@ const MIN_CANDIDATES = 5;
 let fuseInstance: Fuse<SearchIndexEntry> | undefined;
 let fuseIndexRef: SearchIndexEntry[] | undefined;
 
-function entryFields(entry: SearchIndexEntry): RelevanceFields {
-  return {
-    title: entry.title,
-    description: entry.description,
-    tags: entry.tags.join(" "),
-    content: entry.content,
-  };
+let loweredFieldsCache:
+  | Map<SearchIndexEntry, LoweredRelevanceFields>
+  | undefined;
+let loweredFieldsIndexRef: SearchIndexEntry[] | undefined;
+
+function getLoweredFields(
+  index: SearchIndexEntry[]
+): Map<SearchIndexEntry, LoweredRelevanceFields> {
+  if (loweredFieldsCache && loweredFieldsIndexRef === index)
+    return loweredFieldsCache;
+  const map = new Map<SearchIndexEntry, LoweredRelevanceFields>();
+  for (const entry of index) {
+    map.set(entry, {
+      title: entry.title.toLowerCase(),
+      description: entry.description.toLowerCase(),
+      tags: entry.tags.join(" ").toLowerCase(),
+      content: entry.content?.toLowerCase() ?? "",
+    });
+  }
+  loweredFieldsCache = map;
+  loweredFieldsIndexRef = index;
+  return map;
 }
 
 function extractSnippet(content: string, tokens: string[]): string {
@@ -97,9 +115,14 @@ function routeToSlug(route: string): string {
 function findCandidates(
   index: SearchIndexEntry[],
   query: string,
-  tokens: string[]
+  tokens: string[],
+  loweredMap: Map<SearchIndexEntry, LoweredRelevanceFields>
 ) {
-  const exactMatches = filterAndRankByRelevance(index, tokens, entryFields);
+  const exactMatches = filterAndRankPreLowered(
+    index,
+    tokens,
+    (entry) => loweredMap.get(entry)!
+  );
   if (exactMatches.length >= MIN_CANDIDATES) {
     return { matched: exactMatches, expanded: [] as SearchIndexEntry[] };
   }
@@ -178,7 +201,13 @@ async function searchRouteViews(route: string, tokens: string[]) {
 async function simulateSearchDocs(query: string) {
   const index = await getSearchIndex();
   const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
-  const { matched, expanded } = findCandidates(index, query, tokens);
+  const loweredMap = getLoweredFields(index);
+  const { matched, expanded } = findCandidates(
+    index,
+    query,
+    tokens,
+    loweredMap
+  );
   const matchedCapped = matched.slice(0, PHASE2_CANDIDATE_LIMIT);
   const expandedCapped = expanded.slice(
     0,

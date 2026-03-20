@@ -260,3 +260,11 @@ export interface RelevanceFields {
   tags: string;
   content?: string;
 }
+
+/** Pre-lowercased relevance fields to avoid repeated toLowerCase() calls. */
+export interface LoweredRelevanceFields {
+  title: string;
+  description: string;
+  tags: string;
+  content: string;
+}
