@@ -166,7 +166,12 @@ export default defineConfig(async () => {
         rollupTypes: false,
         include: ["src/**/*"],
         // Don't declare types for stories and tests in bundle.
-        exclude: ["src/**/*.stories.*", "src/**/*.spec.*", "src/test/**/*"],
+        exclude: [
+          "src/**/*.stories.*",
+          "src/**/*.spec.*",
+          "src/**/*.test-*.*",
+          "src/test/**/*",
+        ],
       })
     );
     // Run analyzer if the ANALYZE_BUNDLE env var is present

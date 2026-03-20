@@ -43,7 +43,7 @@ import {
   initialVisibleColumns,
   managerRows,
   initialHiddenColumns,
-} from "./test-data";
+} from "./data-table.test-data";
 
 import type {
   DataTableRowItem,

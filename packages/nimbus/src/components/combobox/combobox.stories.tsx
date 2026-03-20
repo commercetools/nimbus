@@ -4,13 +4,13 @@ import { userEvent, within, expect, waitFor } from "storybook/test";
 import { Box, Dialog, FormField, Stack, Text } from "@commercetools/nimbus";
 import { Search } from "@commercetools/nimbus-icons";
 import { ComboBox } from "./combobox";
-import { type SimpleOption, simpleOptions } from "./utils/test-data";
+import { type SimpleOption, simpleOptions } from "./utils/combobox.test-data";
 import {
   ComposedComboBox,
   type Pokemon,
   PokemonOption,
   createMockAsyncLoad,
-} from "./utils/test-utils";
+} from "./utils/combobox.test-utils";
 
 // Helper functions to reduce test verbosity - should be here since storybook has problems with importing RTL methods from other files
 

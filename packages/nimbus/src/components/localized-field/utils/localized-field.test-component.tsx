@@ -1,7 +1,7 @@
 import { useReducer, useCallback } from "react";
 import { useId } from "react-aria";
 import { LocalizedField, type LocalizedFieldChangeEvent } from "../index";
-import { type LocalizedStoryData } from "./test-data";
+import { type LocalizedStoryData } from "./localized-field.test-data";
 import type {
   LocalizedFieldProps,
   LocalizedString,

@@ -23,7 +23,7 @@ import {
   errorsAndValidationStoryProps,
   defaultWidthStoryProps,
   fullWidthStoryProps,
-} from "./utils/test-data";
+} from "./utils/localized-field.test-data";
 import {
   withStableDocument,
   checkFieldIsCollapsed,
@@ -45,8 +45,8 @@ import {
   checkFieldError,
   checkLocaleFieldDescription,
   checkLocaleFieldError,
-} from "./utils/test-utils";
-import { LocalizedFieldStoryComponent } from "./utils/localized-field.story-component";
+} from "./utils/localized-field.test-utils";
+import { LocalizedFieldStoryComponent } from "./utils/localized-field.test-component";
 
 const meta: Meta<typeof LocalizedField> = {
   title: "Components/LocalizedField",

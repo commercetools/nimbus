@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Badge, Box, Image, Stack, Text } from "@/components";
+import { Badge, Box, Image, Stack, Text } from "@commercetools/nimbus";
 import { ComboBox } from "../combobox";
 import type { ComboBoxRootProps } from "../combobox.types";
 import { defaultGetTextValue } from "./collection";
