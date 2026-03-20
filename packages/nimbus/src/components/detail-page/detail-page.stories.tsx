@@ -38,7 +38,7 @@ const orderLineRows: OrderLine[] = Array.from({ length: 25 }, (_, i) => ({
 }));
 
 const meta: Meta<typeof DetailPage.Root> = {
-  title: "Patterns/Pages/DetailPage",
+  title: "Patterns/pages/DetailPage",
   component: DetailPage.Root,
   tags: ["autodocs"],
   parameters: {
