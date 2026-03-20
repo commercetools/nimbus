@@ -276,21 +276,12 @@ async function searchRouteViews(
   route: string,
   tokens: string[]
 ): Promise<ViewMatch | null> {
-  const { views, combinedLower } = await getRouteViews(route);
+  const { views } = await getRouteViews(route);
   if (views.length === 0) return null;
 
-  // Fast negative filter using combined content.
+  // Direct per-view search (no combined filter — saves one 16KB includes for
+  // candidates that match, which is the common case after phase 1 filtering).
   const tokenCount = tokens.length;
-  let anyMatch = false;
-  for (let i = 0; i < tokenCount; i++) {
-    if (combinedLower.includes(tokens[i])) {
-      anyMatch = true;
-      break;
-    }
-  }
-  if (!anyMatch) return null;
-
-  // Single pass: find best view.
   let bestView: (typeof views)[number] | null = null;
   let bestHits = 0;
 
