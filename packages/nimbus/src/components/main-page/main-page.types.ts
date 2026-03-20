@@ -6,6 +6,13 @@ import type { HTMLChakraProps, UnstyledProp } from "@chakra-ui/react";
 
 type MainPageRecipeProps = UnstyledProp;
 
+type MainPageRecipeVariantProps = {
+  /** When true, the header stays pinned at the top of the viewport while scrolling */
+  stickyHeader?: boolean;
+  /** When true, the footer stays pinned at the bottom of the viewport while scrolling */
+  stickyFooter?: boolean;
+};
+
 // ============================================================
 // SLOT PROPS
 // ============================================================
@@ -30,12 +37,13 @@ export type MainPageFooterSlotProps = HTMLChakraProps<"footer">;
 // MAIN PROPS
 // ============================================================
 
-export type MainPageRootProps = MainPageRootSlotProps & {
-  /** The page sections (Header, Content, Footer) */
-  children?: React.ReactNode;
-  /** Ref to the root div element */
-  ref?: React.Ref<HTMLDivElement>;
-};
+export type MainPageRootProps = MainPageRecipeVariantProps &
+  MainPageRootSlotProps & {
+    /** The page sections (Header, Content, Footer) */
+    children?: React.ReactNode;
+    /** Ref to the root div element */
+    ref?: React.Ref<HTMLDivElement>;
+  };
 
 /** Convenience alias for MainPageRootProps */
 export type MainPageProps = MainPageRootProps;

@@ -96,4 +96,27 @@ export const detailPageSlotRecipe = defineSlotRecipe({
       paddingY: "400",
     },
   },
+
+  variants: {
+    stickyHeader: {
+      true: {
+        header: {
+          position: "sticky",
+          top: 0,
+          zIndex: 1,
+          bg: "bg",
+        },
+      },
+    },
+    stickyFooter: {
+      true: {
+        footer: {
+          position: "sticky",
+          bottom: 0,
+          zIndex: 1,
+          bg: "bg",
+        },
+      },
+    },
+  },
 });

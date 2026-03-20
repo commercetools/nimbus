@@ -10,6 +10,13 @@ import type {
 
 export type DetailPageRecipeProps = UnstyledProp;
 
+type DetailPageRecipeVariantProps = {
+  /** When true, the header stays pinned at the top of the viewport while scrolling */
+  stickyHeader?: boolean;
+  /** When true, the footer stays pinned at the bottom of the viewport while scrolling */
+  stickyFooter?: boolean;
+};
+
 // ============================================================
 // SLOT PROPS
 // ============================================================
@@ -39,10 +46,11 @@ export type DetailPageFooterSlotProps = HTMLChakraProps<"footer">;
 // MAIN PROPS
 // ============================================================
 
-export type DetailPageProps = OmitInternalProps<DetailPageRootSlotProps> & {
-  children?: React.ReactNode;
-  ref?: React.Ref<HTMLDivElement>;
-};
+export type DetailPageProps = DetailPageRecipeVariantProps &
+  OmitInternalProps<DetailPageRootSlotProps> & {
+    children?: React.ReactNode;
+    ref?: React.Ref<HTMLDivElement>;
+  };
 
 export type DetailPageHeaderProps =
   OmitInternalProps<DetailPageHeaderSlotProps> & {
