@@ -1,6 +1,7 @@
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, within } from "storybook/test";
-import { Stack, TabNav, Text } from "@commercetools/nimbus";
+import { Box, Stack, TabNav, Text } from "@commercetools/nimbus";
 
 /**
  * `TabNav` provides URL-based navigation styled as tabs.
@@ -310,6 +311,90 @@ export const WithExternalLink: Story = {
     await step("External link has rel=noopener noreferrer", async () => {
       const externalLink = canvas.getByRole("link", { name: "Docs ↗" });
       await expect(externalLink).toHaveAttribute("rel", "noopener noreferrer");
+    });
+  },
+};
+
+/**
+ * Simulates the primary TabNav use case: client-side view switching with
+ * persistent navigation. Clicking a tab updates `aria-current="page"` and
+ * swaps the content without a full page reload.
+ *
+ * In a real app, `isCurrent` is derived from the router (e.g. `useMatch`)
+ * and links trigger actual route changes. This story uses local state to
+ * reproduce the same behaviour in isolation.
+ *
+ * Key things to observe:
+ * - The nav bar persists while the content area changes
+ * - `aria-current="page"` updates on each click
+ * - Only one item is active at a time
+ */
+export const WithViewSwitching: Story = {
+  render: () => {
+    const items = [
+      { href: "/orders/123/general", label: "General" },
+      { href: "/orders/123/items", label: "Items" },
+      { href: "/orders/123/shipping", label: "Shipping" },
+    ] as const;
+
+    const content: Record<string, string> = {
+      "/orders/123/general": "General settings and order details.",
+      "/orders/123/items": "Line items and quantities.",
+      "/orders/123/shipping": "Shipping address and carrier information.",
+    };
+
+    const [activePath, setActivePath] = useState<string>(items[0].href);
+
+    return (
+      <Stack gap="400">
+        <TabNav.Root aria-label="Order navigation">
+          {items.map((item) => (
+            <TabNav.Item
+              key={item.href}
+              href={item.href}
+              isCurrent={activePath === item.href}
+              onClick={(e) => {
+                e.preventDefault();
+                setActivePath(item.href);
+              }}
+            >
+              {item.label}
+            </TabNav.Item>
+          ))}
+        </TabNav.Root>
+        <Box padding="400">{content[activePath]}</Box>
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("General is active by default", async () => {
+      const generalLink = canvas.getByRole("link", { name: "General" });
+      await expect(generalLink).toHaveAttribute("aria-current", "page");
+    });
+
+    await step("Clicking Items makes it active", async () => {
+      const itemsLink = canvas.getByRole("link", { name: "Items" });
+      await userEvent.click(itemsLink);
+      await expect(itemsLink).toHaveAttribute("aria-current", "page");
+    });
+
+    await step("General is no longer active after switching", async () => {
+      const generalLink = canvas.getByRole("link", { name: "General" });
+      await expect(generalLink).not.toHaveAttribute("aria-current");
+    });
+
+    await step("Content area updates to reflect active tab", async () => {
+      await expect(
+        canvas.getByText("Line items and quantities.")
+      ).toBeInTheDocument();
+    });
+
+    await step("Clicking Shipping makes it active", async () => {
+      const shippingLink = canvas.getByRole("link", { name: "Shipping" });
+      await userEvent.click(shippingLink);
+      await expect(shippingLink).toHaveAttribute("aria-current", "page");
     });
   },
 };
