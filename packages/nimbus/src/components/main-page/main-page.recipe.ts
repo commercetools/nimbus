@@ -31,8 +31,8 @@ export const mainPageRecipe = defineSlotRecipe({
       display: "grid",
       gridTemplateColumns: "1fr auto",
       alignItems: "center",
-      // margin to ensure border does not reach the edge of the page
-      margin: "{spacing.800} {spacing.900} 0",
+      paddingTop: "800",
+      paddingX: "900",
       paddingBottom: "600",
       borderBottom: "solid-25",
       borderColor: "neutral.6",
