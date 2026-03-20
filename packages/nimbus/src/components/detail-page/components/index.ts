@@ -6,3 +6,4 @@ export { DetailPageTitle } from "./detail-page.title";
 export { DetailPageSubtitle } from "./detail-page.subtitle";
 export { DetailPageContent } from "./detail-page.content";
 export { DetailPageFooter } from "./detail-page.footer";
+export { DetailPageTabNav } from "./detail-page.tab-nav";

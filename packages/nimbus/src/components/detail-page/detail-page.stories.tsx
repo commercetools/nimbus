@@ -5,14 +5,14 @@ import {
   Button,
   DataTable,
   IconButton,
-  Tabs,
   Stack,
+  TabNav,
   Text,
   Toolbar,
 } from "@commercetools/nimbus";
 import type { DataTableColumnItem } from "@commercetools/nimbus";
 import { Save, Print, Undo, Redo } from "@commercetools/nimbus-icons";
-import { within, expect, userEvent } from "storybook/test";
+import { within, expect } from "storybook/test";
 
 type OrderLine = {
   id: string;
@@ -215,38 +215,32 @@ export const WithHeaderActions: Story = {
 };
 
 /**
- * Tabular detail page (with Tabs between header and footer)
- * Demonstrates integration with the Tabs component for tabbed content
+ * Detail page with tab navigation (using TabNav for route-based navigation)
+ * Demonstrates integration with the TabNav component for page-level navigation
  */
-export const TabularDetailPage: Story = {
+export const WithTabNavigation: Story = {
   render: () => (
     <DetailPage.Root data-testid="detail-page-tabular">
-      <DetailPage.Header>
+      <DetailPage.Header paddingBottom="0">
         <DetailPage.BackLink href="/customers">
           Back to customers
         </DetailPage.BackLink>
         <DetailPage.Title>Customer Details</DetailPage.Title>
         <DetailPage.Subtitle>customer@example.com</DetailPage.Subtitle>
+        <DetailPage.TabNav>
+          <TabNav.Root aria-label="Customer sections">
+            <TabNav.Item href="/customers/123/general" isCurrent>
+              General
+            </TabNav.Item>
+            <TabNav.Item href="/customers/123/addresses">Addresses</TabNav.Item>
+            <TabNav.Item href="/customers/123/orders">Orders</TabNav.Item>
+          </TabNav.Root>
+        </DetailPage.TabNav>
       </DetailPage.Header>
       <DetailPage.Content>
-        <Tabs.Root defaultSelectedKey="general">
-          <Tabs.List>
-            <Tabs.Tab id="general">General</Tabs.Tab>
-            <Tabs.Tab id="addresses">Addresses</Tabs.Tab>
-            <Tabs.Tab id="orders">Orders</Tabs.Tab>
-          </Tabs.List>
-          <Tabs.Panels py="400">
-            <Tabs.Panel id="general">
-              <Text>General information content</Text>
-            </Tabs.Panel>
-            <Tabs.Panel id="addresses">
-              <Text>Addresses content</Text>
-            </Tabs.Panel>
-            <Tabs.Panel id="orders">
-              <Text>Orders content</Text>
-            </Tabs.Panel>
-          </Tabs.Panels>
-        </Tabs.Root>
+        <Box py="400">
+          <Text>General information content</Text>
+        </Box>
       </DetailPage.Content>
     </DetailPage.Root>
   ),
@@ -268,27 +262,24 @@ export const TabularDetailPage: Story = {
       ).toBeInTheDocument();
     });
 
-    await step("Renders tab controls", async () => {
+    await step("Renders navigation links", async () => {
+      const nav = canvas.getByRole("navigation");
+      await expect(nav).toBeInTheDocument();
       await expect(
-        canvas.getByRole("tab", { name: "General" })
+        canvas.getByRole("link", { name: "General" })
+      ).toHaveAttribute("aria-current", "page");
+      await expect(
+        canvas.getByRole("link", { name: "Addresses" })
       ).toBeInTheDocument();
       await expect(
-        canvas.getByRole("tab", { name: "Addresses" })
-      ).toBeInTheDocument();
-      await expect(
-        canvas.getByRole("tab", { name: "Orders" })
+        canvas.getByRole("link", { name: "Orders" })
       ).toBeInTheDocument();
     });
 
-    await step("Renders default tab content", async () => {
+    await step("Shows content for current route", async () => {
       await expect(
         canvas.getByText("General information content")
       ).toBeInTheDocument();
-    });
-
-    await step("Clicking Addresses tab shows addresses content", async () => {
-      await userEvent.click(canvas.getByRole("tab", { name: "Addresses" }));
-      await expect(canvas.getByText("Addresses content")).toBeInTheDocument();
     });
   },
 };

@@ -29,6 +29,8 @@ export type DetailPageTitleSlotProps = HTMLChakraProps<"h1">;
 
 export type DetailPageSubtitleSlotProps = HTMLChakraProps<"p">;
 
+export type DetailPageTabNavSlotProps = HTMLChakraProps<"div">;
+
 export type DetailPageContentSlotProps = HTMLChakraProps<"main">;
 
 export type DetailPageFooterSlotProps = HTMLChakraProps<"footer">;
@@ -72,6 +74,12 @@ export type DetailPageSubtitleProps =
   OmitInternalProps<DetailPageSubtitleSlotProps> & {
     children?: React.ReactNode;
     ref?: React.Ref<HTMLParagraphElement>;
+  };
+
+export type DetailPageTabNavProps =
+  OmitInternalProps<DetailPageTabNavSlotProps> & {
+    children?: React.ReactNode;
+    ref?: React.Ref<HTMLDivElement>;
   };
 
 export type DetailPageContentProps =
