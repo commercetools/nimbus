@@ -143,6 +143,8 @@ export interface SearchIndexEntry {
   route: string;
   menu: string[];
   content: string;
+  /** Pre-computed lowered fields from build step. */
+  _lower?: LoweredRelevanceFields;
 }
 
 /** A documentation entry (from docs manifest). */
