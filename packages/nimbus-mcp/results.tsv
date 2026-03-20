@@ -18,3 +18,4 @@ a6f2988	0.22	0.00	2.71	discard	word set for O(1) lookups (overhead > benefit at 
 978eada	0.23	0.00	2.66	keep	pre-compute lowered fields in search index at build time
 583940d	0.20	0.00	2.64	keep	truncate view content to 4KB for matching
 648687f	0.19	0.00	2.65	keep	remove unused Fuse.js import from search-docs
+492b9ce	0.20	0.00	2.53	keep	inline phase1 scoring, remove scorePreLowered import
