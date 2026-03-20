@@ -30,7 +30,7 @@ export const mainPageRecipe = defineSlotRecipe({
     header: {
       display: "grid",
       gridTemplateColumns: "1fr auto",
-      alignItems: "400",
+      alignItems: "center",
       // margin to ensure border does not reach the edge of the page
       margin: "{spacing.800} {spacing.900} 0",
       paddingBottom: "600",
@@ -67,9 +67,8 @@ export const mainPageRecipe = defineSlotRecipe({
     },
     content: {
       overflow: "auto",
-      // Uses margin (not padding) to preserve sticky positioning
-      // for child components like DataTable, matching appKit behavior.
-      margin: "{spacing.800} {spacing.900}",
+      paddingX: "900",
+      paddingY: "800",
     },
     footer: {
       borderTop: "solid-25",
