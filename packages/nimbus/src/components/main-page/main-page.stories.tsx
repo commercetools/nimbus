@@ -19,7 +19,7 @@ import { within, expect } from "storybook/test";
 import { useState } from "react";
 
 const meta: Meta<typeof MainPage.Root> = {
-  title: "Components/MainPage",
+  title: "Patterns/Pages/MainPage",
   component: MainPage.Root,
   parameters: {
     layout: "fullscreen",

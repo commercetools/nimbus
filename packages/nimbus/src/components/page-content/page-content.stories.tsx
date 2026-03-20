@@ -6,7 +6,7 @@ const variants = ["wide", "narrow", "full"] as const;
 const columnOptions = ["1", "1/1", "2/1"] as const;
 
 const meta: Meta<typeof PageContent.Root> = {
-  title: "Components/PageContent",
+  title: "Patterns/Pages/PageContent",
   component: PageContent.Root,
 };
 
