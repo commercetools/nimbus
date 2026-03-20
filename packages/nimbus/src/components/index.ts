@@ -3,6 +3,7 @@ export * from "./box";
 export * from "./button";
 export * from "./code";
 export * from "./combobox";
+export * from "./detail-page";
 export * from "./dialog";
 export * from "./field-errors";
 export * from "./flex";

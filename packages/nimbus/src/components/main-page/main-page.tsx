@@ -6,6 +6,7 @@ import {
   MainPageActions,
   MainPageContent,
   MainPageFooter,
+  MainPageTabNav,
 } from "./components";
 
 /**
@@ -148,6 +149,29 @@ export const MainPage = {
    * ```
    */
   Footer: MainPageFooter,
+  /**
+   * # MainPage.TabNav
+   *
+   * Layout container for tab navigation in the header.
+   * Positions itself in the header grid's last row at full width.
+   * Place inside `MainPage.Header` with `paddingBottom="0"`.
+   *
+   * Wrap a `TabNav.Root` inside, or use `as={TabNav.Root}` for a flatter DOM.
+   *
+   * @example
+   * ```tsx
+   * <MainPage.Header paddingBottom="0">
+   *   <MainPage.Title>Product Details</MainPage.Title>
+   *   <MainPage.TabNav>
+   *     <TabNav.Root aria-label="Product sections">
+   *       <TabNav.Item href="/general" isCurrent>General</TabNav.Item>
+   *       <TabNav.Item href="/variants">Variants</TabNav.Item>
+   *     </TabNav.Root>
+   *   </MainPage.TabNav>
+   * </MainPage.Header>
+   * ```
+   */
+  TabNav: MainPageTabNav,
 };
 
 export {
@@ -158,4 +182,5 @@ export {
   MainPageActions as _MainPageActions,
   MainPageContent as _MainPageContent,
   MainPageFooter as _MainPageFooter,
+  MainPageTabNav as _MainPageTabNav,
 };

@@ -1,0 +1,143 @@
+---
+id: Components-DetailPage
+title: DetailPage
+exportName: DetailPage
+description: A compound layout component for detail views with back navigation, header, scrollable content area, and optional footer. Replaces TabularDetailPage, InfoDetailPage, and CustomFormDetailPage from Merchant Center Application Kit.
+documentState: InitialDraft
+lifecycleState: Beta
+order: 999
+menu:
+  - Patterns
+  - Pages
+  - DetailPage
+tags:
+  - component
+  - layout
+  - detail-page
+  - page
+---
+
+## Overview
+
+DetailPage provides the structural layout for detail views — pages that show
+or edit a single resource. It composes a fixed header with back navigation, a
+scrollable content area, and an optional footer for form actions.
+
+The component uses a compound pattern where each part is a separate
+sub-component, giving full control over composition while maintaining
+consistent layout behavior.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+## Variables
+
+Get familiar with the features.
+
+### Info page (read-only)
+
+A simple detail page without a footer, suitable for read-only views.
+
+```jsx live
+const App = () => (
+  <DetailPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DetailPage.Header>
+      <DetailPage.BackLink href="/products">
+        Back to products
+      </DetailPage.BackLink>
+      <DetailPage.Title>Product Details</DetailPage.Title>
+      <DetailPage.Subtitle>SKU-12345</DetailPage.Subtitle>
+    </DetailPage.Header>
+    <DetailPage.Content>
+      <Stack gap="400">
+        <Text>This is a read-only info page with no footer.</Text>
+        <Text>Use this pattern for pages that display information without form actions.</Text>
+      </Stack>
+    </DetailPage.Content>
+  </DetailPage.Root>
+)
+```
+
+### Form page (with footer)
+
+A detail page with a footer containing action buttons for form submission.
+
+```jsx live
+const App = () => (
+  <DetailPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DetailPage.Header>
+      <DetailPage.BackLink href="/orders">
+        Back to orders
+      </DetailPage.BackLink>
+      <DetailPage.Title>Edit Order</DetailPage.Title>
+      <DetailPage.Subtitle>Order #ORD-2024-001</DetailPage.Subtitle>
+    </DetailPage.Header>
+    <DetailPage.Content>
+      <Text>Form fields would go here.</Text>
+    </DetailPage.Content>
+    <DetailPage.Footer>
+      <Stack direction="horizontal" gap="200">
+        <Button variant="solid" colorPalette="primary">Save</Button>
+        <Button variant="ghost">Cancel</Button>
+      </Stack>
+    </DetailPage.Footer>
+  </DetailPage.Root>
+)
+```
+
+### Header actions
+
+Action buttons can be placed alongside the title using `DetailPage.HeaderActions`.
+The header uses CSS grid to automatically position actions next to the title.
+
+```jsx live
+const App = () => (
+  <DetailPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DetailPage.Header>
+      <DetailPage.BackLink href="/discounts">
+        Back to discounts
+      </DetailPage.BackLink>
+      <DetailPage.Title>Cart Discount Details</DetailPage.Title>
+      <DetailPage.HeaderActions>
+        <Button size="sm" variant="ghost">Duplicate</Button>
+        <Button size="sm" variant="solid" colorPalette="primary">Save</Button>
+      </DetailPage.HeaderActions>
+      <DetailPage.Subtitle>10% off all items</DetailPage.Subtitle>
+    </DetailPage.Header>
+    <DetailPage.Content>
+      <Text>Discount configuration form fields would go here.</Text>
+    </DetailPage.Content>
+  </DetailPage.Root>
+)
+```
+
+### Page with tab navigation
+
+Compose with the `TabNav` component inside `DetailPage.Header` for route-based tab navigation. In a real app, the router renders content for the current route.
+
+```jsx live
+const App = () => (
+  <DetailPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DetailPage.Header paddingBottom="0">
+      <DetailPage.BackLink href="/customers">
+        Back to customers
+      </DetailPage.BackLink>
+      <DetailPage.Title>Customer Details</DetailPage.Title>
+      <DetailPage.Subtitle>customer@example.com</DetailPage.Subtitle>
+      <DetailPage.TabNav>
+        <TabNav.Root aria-label="Customer sections">
+          <TabNav.Item href="/customers/123/general" isCurrent>General</TabNav.Item>
+          <TabNav.Item href="/customers/123/addresses">Addresses</TabNav.Item>
+          <TabNav.Item href="/customers/123/orders">Orders</TabNav.Item>
+        </TabNav.Root>
+      </DetailPage.TabNav>
+    </DetailPage.Header>
+    <DetailPage.Content>
+      <Box py="400">
+        <Text>General information content</Text>
+      </Box>
+    </DetailPage.Content>
+  </DetailPage.Root>
+)
+```

@@ -261,40 +261,30 @@ const App = () => (
 )
 ```
 
-### Tabular main page (with tabs)
+### Main page with tab navigation
 
-For pages with tabbed navigation, compose Tabs inside MainPage.Content.
+For pages with route-based tab navigation, compose `TabNav` inside `MainPage.Header`. Unlike `Tabs` (which switches content panels), `TabNav` renders navigation links — in a real app, the router handles content rendering.
 
 ```jsx live-dev
 const App = () => (
-  <Tabs.Root defaultSelectedKey="general">
-    <MainPage.Root>
-      <MainPage.Header paddingBottom="0">
-        <MainPage.Title>Product Details</MainPage.Title>
-        <MainPage.Actions>
-          <Button>Publish</Button>
-        </MainPage.Actions>
-        <Tabs.List gridColumn="1 / -1" mt="200">
-          <Tabs.Tab id="general">General</Tabs.Tab>
-          <Tabs.Tab id="variants">Variants</Tabs.Tab>
-          <Tabs.Tab id="images">Images</Tabs.Tab>
-        </Tabs.List>
-      </MainPage.Header>
-      <MainPage.Content>
-        <Tabs.Panels>
-          <Tabs.Panel id="general">
-            <Text>General information content</Text>
-          </Tabs.Panel>
-          <Tabs.Panel id="variants">
-            <Text>Variants content</Text>
-          </Tabs.Panel>
-          <Tabs.Panel id="images">
-            <Text>Images content</Text>
-          </Tabs.Panel>
-        </Tabs.Panels>
-      </MainPage.Content>
-    </MainPage.Root>
-  </Tabs.Root>
+  <MainPage.Root>
+    <MainPage.Header paddingBottom="0">
+      <MainPage.Title>Product Details</MainPage.Title>
+      <MainPage.Actions>
+        <Button>Publish</Button>
+      </MainPage.Actions>
+      <MainPage.TabNav>
+        <TabNav.Root aria-label="Product sections">
+          <TabNav.Item href="/products/123/general" isCurrent>General</TabNav.Item>
+          <TabNav.Item href="/products/123/variants">Variants</TabNav.Item>
+          <TabNav.Item href="/products/123/images">Images</TabNav.Item>
+        </TabNav.Root>
+      </MainPage.TabNav>
+    </MainPage.Header>
+    <MainPage.Content>
+      <Text>General information content</Text>
+    </MainPage.Content>
+  </MainPage.Root>
 )
 ```
 
@@ -335,17 +325,17 @@ MainPage replaces the four main page components from
 | `<InfoMainPage title="...">` | `<MainPage.Root>` + Header/Title + Content (no Footer) |
 | `<FormMainPage title="..." onPrimaryButtonClick={...}>` | `<MainPage.Root>` + Header/Title + Content + Footer with buttons |
 | `<CustomFormMainPage formControls={...}>` | Same as Form — Footer accepts any children |
-| `<TabularMainPage tabControls={...}>` | `<MainPage.Root>` + Header/Title + Content with `<Tabs.Root>` inside |
+| `<TabularMainPage tabControls={...}>` | `<MainPage.Root>` + Header/Title with `<TabNav.Root>` + Content |
 
 Key differences:
 
 - **Composition over configuration** — Instead of 10+ props for button labels, handlers, and visibility, compose your own buttons in Footer or Actions
-- **No built-in tab routing** — Use the Tabs component directly inside Content
+- **No built-in tab routing** — Use the TabNav component inside the Header for route-based navigation
 - **Title and subtitle as children** — `<MainPage.Title>Products</MainPage.Title>` and `<MainPage.Subtitle>...</MainPage.Subtitle>` replace `title` and `subtitle` props on the AppKit page components
 - **No `customTitleRow`** — The Header accepts any content, so replace Title with your own elements
 - **No `Intl` static property** — Use your own i18n solution for button labels
 
 ## Resources
 
-- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-mainpage--docs)
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-pages-mainpage--docs)
 - [MC Application Components - Main Pages](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components#components-for-main-pages) (predecessor)

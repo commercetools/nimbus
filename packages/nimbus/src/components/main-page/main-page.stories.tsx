@@ -7,7 +7,7 @@ import {
   MainPage,
   MoneyInput,
   Stack,
-  Tabs,
+  TabNav,
   Text,
   TextInput,
 } from "@commercetools/nimbus";
@@ -19,7 +19,7 @@ import { within, expect } from "storybook/test";
 import { useState } from "react";
 
 const meta: Meta<typeof MainPage.Root> = {
-  title: "Components/MainPage",
+  title: "Patterns/pages/MainPage",
   component: MainPage.Root,
   parameters: {
     layout: "fullscreen",
@@ -435,52 +435,72 @@ export const FormPage: Story = {
   },
 };
 
+const manyProductRows: Product[] = Array.from({ length: 25 }, (_, i) => ({
+  id: String(i + 1),
+  name: `Product ${i + 1}`,
+  sku: `SKU-${String(i + 1).padStart(3, "0")}`,
+  price: `€${((i + 1) * 9.99).toFixed(2)}`,
+  status: i % 3 === 0 ? "Draft" : "Published",
+}));
+
 /**
- * Tabular page pattern - Tab list in Header, Tab panels in Content.
- * Tabs.Root wraps both containers so they share context.
+ * Main page with a scrollable DataTable — used to verify that the DataTable's
+ * sticky header remains functional when content overflows. Scroll down inside
+ * the page to confirm the table header sticks at the top of the content area.
  */
-export const TabularPage: Story = {
+export const StickyTableHeader: Story = {
   render: () => (
-    <Tabs.Root defaultSelectedKey="general">
-      <MainPage.Root
-        border="solid-25"
-        borderColor="neutral.6"
-        borderRadius="200"
-      >
-        <MainPage.Header paddingBottom="0">
-          <MainPage.Title>Product Details</MainPage.Title>
-          <MainPage.Subtitle>Tabs</MainPage.Subtitle>
+    <Box height="500px" border="solid-25" borderColor="neutral.6">
+      <MainPage.Root>
+        <MainPage.Header>
+          <MainPage.Title>Products</MainPage.Title>
           <MainPage.Actions>
-            <Button>Undo</Button>
-            <Button>Publish</Button>
+            <Button variant="ghost">Export</Button>
+            <Button>Add Product</Button>
           </MainPage.Actions>
-          <Tabs.List gridColumn="1 / -1" mt="200">
-            <Tabs.Tab id="general">General</Tabs.Tab>
-            <Tabs.Tab id="variants">Variants</Tabs.Tab>
-            <Tabs.Tab id="images">Images</Tabs.Tab>
-          </Tabs.List>
         </MainPage.Header>
         <MainPage.Content>
-          <Tabs.Panels>
-            <Tabs.Panel id="general">
-              <Box padding="400">
-                <Text>General information content</Text>
-              </Box>
-            </Tabs.Panel>
-            <Tabs.Panel id="variants">
-              <Box padding="400">
-                <Text>Variants content</Text>
-              </Box>
-            </Tabs.Panel>
-            <Tabs.Panel id="images">
-              <Box padding="400">
-                <Text>Images content</Text>
-              </Box>
-            </Tabs.Panel>
-          </Tabs.Panels>
+          <DataTable
+            columns={productColumns}
+            rows={manyProductRows}
+            maxHeight="100%"
+          />
         </MainPage.Content>
       </MainPage.Root>
-    </Tabs.Root>
+    </Box>
+  ),
+};
+
+/**
+ * Tabular page pattern - TabNav in Header for route-based navigation,
+ * static content in Content area (router renders content in a real app).
+ */
+export const WithTabNavigation: Story = {
+  render: () => (
+    <MainPage.Root border="solid-25" borderColor="neutral.6" borderRadius="200">
+      <MainPage.Header paddingBottom="0">
+        <MainPage.Title>Product Details</MainPage.Title>
+        <MainPage.Subtitle>Navigation</MainPage.Subtitle>
+        <MainPage.Actions>
+          <Button>Undo</Button>
+          <Button>Publish</Button>
+        </MainPage.Actions>
+        <MainPage.TabNav>
+          <TabNav.Root aria-label="Product sections">
+            <TabNav.Item href="/products/123/general" isCurrent>
+              General
+            </TabNav.Item>
+            <TabNav.Item href="/products/123/variants">Variants</TabNav.Item>
+            <TabNav.Item href="/products/123/images">Images</TabNav.Item>
+          </TabNav.Root>
+        </MainPage.TabNav>
+      </MainPage.Header>
+      <MainPage.Content>
+        <Box padding="400">
+          <Text>General information content</Text>
+        </Box>
+      </MainPage.Content>
+    </MainPage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -498,19 +518,21 @@ export const TabularPage: Story = {
       ).toBeInTheDocument();
     });
 
-    await step("Content renders Tabs children", async () => {
+    await step("Renders navigation links", async () => {
+      const nav = canvas.getByRole("navigation");
+      await expect(nav).toBeInTheDocument();
       await expect(
-        canvas.getByRole("tab", { name: "General" })
+        canvas.getByRole("link", { name: "General" })
+      ).toHaveAttribute("aria-current", "page");
+      await expect(
+        canvas.getByRole("link", { name: "Variants" })
       ).toBeInTheDocument();
       await expect(
-        canvas.getByRole("tab", { name: "Variants" })
-      ).toBeInTheDocument();
-      await expect(
-        canvas.getByRole("tab", { name: "Images" })
+        canvas.getByRole("link", { name: "Images" })
       ).toBeInTheDocument();
     });
 
-    await step("Active tab panel content is visible", async () => {
+    await step("Shows content for current route", async () => {
       await expect(
         canvas.getByText("General information content")
       ).toBeInTheDocument();

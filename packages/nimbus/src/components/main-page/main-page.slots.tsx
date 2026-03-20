@@ -6,6 +6,7 @@ import type {
   MainPageTitleSlotProps,
   MainPageSubtitleSlotProps,
   MainPageActionsSlotProps,
+  MainPageTabNavSlotProps,
   MainPageContentSlotProps,
   MainPageFooterSlotProps,
 } from "./main-page.types";
@@ -45,6 +46,11 @@ export const MainPageActionsSlot: SlotComponent<
   HTMLDivElement,
   MainPageActionsSlotProps
 > = withContext<HTMLDivElement, MainPageActionsSlotProps>("div", "actions");
+
+export const MainPageTabNavSlot: SlotComponent<
+  HTMLDivElement,
+  MainPageTabNavSlotProps
+> = withContext<HTMLDivElement, MainPageTabNavSlotProps>("div", "tabNav");
 
 export const MainPageContentSlot: SlotComponent<
   HTMLElement,
