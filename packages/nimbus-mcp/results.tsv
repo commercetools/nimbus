@@ -15,3 +15,4 @@ aa74919	0.21	0.00	2.48	keep	combined lowered view content for fast negative filt
 70b0eaf	0.21	0.00	2.46	keep	inline partial-match scoring (avoids per-token array alloc)
 a6f2988	0.22	0.00	2.71	discard	word set for O(1) lookups (overhead > benefit at this scale)
 03c7d22	0.20	0.00	2.53	keep	clean up searchRouteViews matching logic
+978eada	0.23	0.00	2.66	keep	pre-compute lowered fields in search index at build time
