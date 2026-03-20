@@ -4,4 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default { backLink: `Voltar` };
+export default { backLink: `Go back` };
