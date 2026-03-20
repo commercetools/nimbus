@@ -1,0 +1,348 @@
+---
+title: TabNav Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { TabNav, type TabNavProps, type TabNavItemProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+`TabNav` is a compound component for **page-level route-based navigation** that renders a `<nav>` landmark containing `<a>` anchor elements. The active item is identified with `aria-current="page"`.
+
+```jsx live-dev
+const App = () => (
+  <TabNav.Root aria-label="Order navigation">
+    <TabNav.Item href="/orders/123/general" isCurrent>
+      General
+    </TabNav.Item>
+    <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+    <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
+  </TabNav.Root>
+);
+```
+
+## TabNav vs Tabs
+
+`TabNav` and `Tabs` look similar but serve fundamentally different purposes:
+
+| | `TabNav` | `Tabs` |
+|---|---|---|
+| **Use case** | Page-level navigation between routes | Switching content panels within a page |
+| **HTML semantics** | `<nav>` + `<a>` | `role="tablist"` + `role="tab"` |
+| **Active state** | `aria-current="page"` | `aria-selected="true"` |
+| **Keyboard** | Sequential Tab key | Arrow keys (roving tabindex) |
+| **Content** | No panel — content managed by router | Owns associated `TabPanel` |
+| **URL** | Always (`href` required) | Optional (`href` prop) |
+
+Both `TabNav` and `Tabs` support client-side routing — the deciding factor is whether the component owns its content panels or delegates to the router. Use `TabNav` when each item navigates to a different route and the router manages what's rendered. Use `Tabs` when the content lives alongside the tab list.
+
+## Usage examples
+
+### Client-side view switching
+
+The most common TabNav pattern: a persistent nav bar where clicking an item swaps the visible content without a full page reload. In a real app, `isCurrent` is derived from the router and the `href` triggers a route change. The example below simulates this with local state to show the interaction.
+
+```jsx live-dev
+const items = [
+  { href: '/orders/123/general', label: 'General' },
+  { href: '/orders/123/items', label: 'Items' },
+  { href: '/orders/123/shipping', label: 'Shipping' },
+];
+
+const content = {
+  '/orders/123/general': 'General settings and order details.',
+  '/orders/123/items': 'Line items and quantities.',
+  '/orders/123/shipping': 'Shipping address and carrier information.',
+};
+
+const App = () => {
+  const [activePath, setActivePath] = React.useState(items[0].href);
+
+  return (
+    <Stack gap="400">
+      <TabNav.Root aria-label="Order navigation">
+        {items.map((item) => (
+          <TabNav.Item
+            key={item.href}
+            href={item.href}
+            isCurrent={activePath === item.href}
+            onClick={(e) => { e.preventDefault(); setActivePath(item.href); }}
+          >
+            {item.label}
+          </TabNav.Item>
+        ))}
+      </TabNav.Root>
+      <Box padding="400">{content[activePath]}</Box>
+    </Stack>
+  );
+};
+```
+
+### Active item
+
+Mark the currently viewed page with `isCurrent`. This sets `aria-current="page"` on the anchor element, which screen readers announce as "current page".
+
+```jsx live-dev
+const App = () => (
+  <TabNav.Root aria-label="Order navigation">
+    <TabNav.Item href="/orders/123/general" isCurrent>
+      General
+    </TabNav.Item>
+    <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+    <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
+  </TabNav.Root>
+);
+```
+
+When using a client-side router, set `isCurrent` based on the active route:
+
+```tsx
+import { useLocation } from 'react-router-dom';
+
+const OrderNav = ({ orderId }: { orderId: string }) => {
+  const { pathname } = useLocation();
+
+  return (
+    <TabNav.Root aria-label="Order navigation">
+      <TabNav.Item
+        href={`/orders/${orderId}/general`}
+        isCurrent={pathname.endsWith('/general')}
+      >
+        General
+      </TabNav.Item>
+      <TabNav.Item
+        href={`/orders/${orderId}/items`}
+        isCurrent={pathname.endsWith('/items')}
+      >
+        Items
+      </TabNav.Item>
+    </TabNav.Root>
+  );
+};
+```
+
+### Size variants
+
+The `size` prop controls font size and padding. Available sizes: `sm`, `md` (default), `lg`.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="800">
+    <Stack direction="column" gap="300">
+      <Text fontWeight="500">Small</Text>
+      <TabNav.Root aria-label="Navigation (sm)" size="sm">
+        <TabNav.Item href="/general" isCurrent>General</TabNav.Item>
+        <TabNav.Item href="/items">Items</TabNav.Item>
+        <TabNav.Item href="/shipping">Shipping</TabNav.Item>
+      </TabNav.Root>
+    </Stack>
+    <Stack direction="column" gap="300">
+      <Text fontWeight="500">Medium (default)</Text>
+      <TabNav.Root aria-label="Navigation (md)" size="md">
+        <TabNav.Item href="/general" isCurrent>General</TabNav.Item>
+        <TabNav.Item href="/items">Items</TabNav.Item>
+        <TabNav.Item href="/shipping">Shipping</TabNav.Item>
+      </TabNav.Root>
+    </Stack>
+    <Stack direction="column" gap="300">
+      <Text fontWeight="500">Large</Text>
+      <TabNav.Root aria-label="Navigation (lg)" size="lg">
+        <TabNav.Item href="/general" isCurrent>General</TabNav.Item>
+        <TabNav.Item href="/items">Items</TabNav.Item>
+        <TabNav.Item href="/shipping">Shipping</TabNav.Item>
+      </TabNav.Root>
+    </Stack>
+  </Stack>
+);
+```
+
+### Disabled items
+
+Use `isDisabled` to prevent navigation to items that are not yet accessible. Disabled items are visually dimmed, removed from the tab sequence, and their `href` is stripped.
+
+```jsx live-dev
+const App = () => (
+  <TabNav.Root aria-label="Order navigation">
+    <TabNav.Item href="/orders/123/general" isCurrent>
+      General
+    </TabNav.Item>
+    <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+    <TabNav.Item href="/orders/123/shipping" isDisabled>
+      Shipping
+    </TabNav.Item>
+  </TabNav.Root>
+);
+```
+
+### External links
+
+Use `target` and `rel` to open a navigation item in a new browser tab. Always pair `target="_blank"` with `rel="noopener noreferrer"` for security.
+
+```jsx live-dev
+const App = () => (
+  <TabNav.Root aria-label="Order navigation">
+    <TabNav.Item href="/orders/123/general" isCurrent>
+      General
+    </TabNav.Item>
+    <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+    <TabNav.Item
+      href="https://docs.example.com/orders"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Docs ↗
+    </TabNav.Item>
+  </TabNav.Root>
+);
+```
+
+### With icons
+
+Tab items support inline icons alongside text via the `gap` built into the item layout.
+
+```jsx live-dev
+const App = () => (
+  <TabNav.Root aria-label="Order navigation">
+    <TabNav.Item href="/orders/123/general" isCurrent>
+      <Icons.Info />
+      General
+    </TabNav.Item>
+    <TabNav.Item href="/orders/123/items">
+      <Icons.List />
+      Items
+    </TabNav.Item>
+    <TabNav.Item href="/orders/123/shipping">
+      <Icons.LocalShipping />
+      Shipping
+    </TabNav.Item>
+  </TabNav.Root>
+);
+```
+
+## Component requirements
+
+### Accessibility
+
+The TabNav component uses semantic HTML for navigation — it does not use ARIA roles for the tablist pattern. Accessibility is handled natively by the browser's `<nav>` landmark and `<a>` anchor semantics. `TabNav.Item` uses `useLink` from React Aria for consistent interaction handling.
+
+#### Role
+
+- `TabNav.Root` renders a `<nav>` HTML element — a navigation landmark, **not** `role="tablist"`
+- `TabNav.Item` renders an `<a>` HTML element with the implicit `link` role — **not** `role="tab"`
+- The active item uses `aria-current="page"` — **not** `aria-selected`
+
+#### Labeling
+
+Always provide an `aria-label` on `TabNav.Root` to describe the navigation region. This is especially important when a page contains multiple `<nav>` landmarks.
+
+```tsx
+<TabNav.Root aria-label="Order navigation">
+  ...
+</TabNav.Root>
+```
+
+#### Keyboard navigation
+
+TabNav uses standard sequential keyboard navigation — no roving tabindex, no arrow key cycling.
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus to the next link |
+| `Shift + Tab` | Move focus to the previous link |
+| `Enter` | Activate the focused link |
+
+Arrow keys (`ArrowRight`, `ArrowLeft`) do **not** move focus between items. This is intentional — TabNav is a `<nav>` with standard anchor links, not a `role="tablist"` widget.
+
+#### Persistent ID
+
+If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "order-detail-tab-nav";
+
+export const OrderTabNav = ({ orderId }: { orderId: string }) => (
+  <TabNav.Root id={PERSISTENT_ID} aria-label="Order navigation">
+    <TabNav.Item href={`/orders/${orderId}/general`} isCurrent>
+      General
+    </TabNav.Item>
+  </TabNav.Root>
+);
+```
+
+## API reference
+
+<PropsTable id="TabNav" />
+
+## Common patterns
+
+### Syncing active item with router
+
+In most routing setups you derive `isCurrent` from the current URL rather than managing it in state.
+
+```tsx
+// React Router v6
+import { useMatch } from 'react-router-dom';
+
+const OrderNav = ({ orderId }: { orderId: string }) => (
+  <TabNav.Root aria-label="Order navigation">
+    <TabNav.Item
+      href={`/orders/${orderId}/general`}
+      isCurrent={!!useMatch(`/orders/${orderId}/general`)}
+    >
+      General
+    </TabNav.Item>
+    <TabNav.Item
+      href={`/orders/${orderId}/items`}
+      isCurrent={!!useMatch(`/orders/${orderId}/items`)}
+    >
+      Items
+    </TabNav.Item>
+    <TabNav.Item
+      href={`/orders/${orderId}/shipping`}
+      isCurrent={!!useMatch(`/orders/${orderId}/shipping`)}
+    >
+      Shipping
+    </TabNav.Item>
+  </TabNav.Root>
+);
+```
+
+### Conditionally disabling items
+
+Disable items based on permissions or loading state rather than hiding them — this preserves the layout and communicates to users that the section exists.
+
+```tsx
+const OrderNav = ({ orderId, canViewShipping }: { orderId: string; canViewShipping: boolean }) => (
+  <TabNav.Root aria-label="Order navigation">
+    <TabNav.Item href={`/orders/${orderId}/general`} isCurrent>
+      General
+    </TabNav.Item>
+    <TabNav.Item
+      href={`/orders/${orderId}/shipping`}
+      isDisabled={!canViewShipping}
+    >
+      Shipping
+    </TabNav.Item>
+  </TabNav.Root>
+);
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using TabNav within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: tab-nav.docs.spec.tsx}}
+
+## Resources
+
+- [React Aria useLink](https://react-spectrum.adobe.com/react-aria/useLink.html)
+- [ARIA: navigation landmark](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/navigation_role)
+- [aria-current attribute](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Attributes/aria-current)
+- [Tabs](/components/navigation/tabs) — use when switching content panels on the same page

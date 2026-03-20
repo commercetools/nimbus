@@ -3,6 +3,14 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 /**
  * Recipe configuration for the Tabs component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
+ *
+ * ⚠️  VISUAL TWIN — KEEP IN SYNC WITH `tab-nav.recipe.ts`
+ * Tabs and TabNav are intentionally separate components with separate recipes
+ * (different semantics: content-panel widget vs. navigation links). They do NOT
+ * share a recipe. However, the `line` horizontal variant of Tabs is designed to
+ * be visually identical to the `tabs` variant of TabNav. If you change colors,
+ * spacing, typography, transitions, or focus styles in one, apply the equivalent
+ * change to the other.
  */
 export const tabsSlotRecipe = defineSlotRecipe({
   slots: ["root", "list", "tab", "panels", "panel", "trigger"],

@@ -65,6 +65,7 @@ export * from "./main-page";
 export * from "./page-content";
 export * from "./pagination";
 export * from "./drawer";
+export * from "./tab-nav";
 export * from "./tabs";
 export * from "./toast";
 export * from "./localized-field";

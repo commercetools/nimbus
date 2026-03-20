@@ -30,6 +30,21 @@ Deep dive into implementation details and access the Nimbus design library.
 [Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=8571-34966&m=dev)
 [React Aria Docs](https://react-spectrum.adobe.com/react-aria/Tabs.html)
 
+## Tabs vs TabNav
+
+`Tabs` and `TabNav` look identical but serve fundamentally different purposes.
+
+| | `Tabs` | `TabNav` |
+|---|---|---|
+| **Use case** | Switching content panels within a page | Page-level navigation between routes |
+| **HTML semantics** | `role="tablist"` + `role="tab"` | `<nav>` + `<a>` |
+| **Active state** | `aria-selected="true"` | `aria-current="page"` |
+| **Keyboard** | Arrow keys (roving tabindex) | Sequential Tab key |
+| **Content** | Owns associated `TabPanel` | No panel — content managed by router |
+| **URL** | Optional (`href` prop) | Always (`href` required) |
+
+Both `Tabs` and `TabNav` support client-side routing — the deciding factor is whether the component owns its content panels or delegates to the router. Use `Tabs` when the content lives alongside the tab list. Use [`TabNav`](/components/navigation/tab-nav) when each item navigates to a different route and the router manages what's rendered.
+
 ## Variables
 
 Get familiar with the features.

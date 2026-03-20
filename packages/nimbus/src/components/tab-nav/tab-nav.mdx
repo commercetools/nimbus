@@ -1,0 +1,121 @@
+---
+id: Components-TabNav
+title: TabNav
+exportName: TabNav
+description: Tab-styled navigation links for route-based page navigation.
+lifecycleState: Stable
+order: 999
+menu:
+  - Components
+  - Navigation
+  - TabNav
+tags:
+  - component
+  - navigation
+  - tab-nav
+---
+
+## Overview
+
+TabNav provides tab-styled navigation links for route-based page navigation.
+Unlike `Tabs`, which switch content panels within the same page, `TabNav` renders
+a `<nav>` landmark containing `<a>` anchor elements that link to distinct routes.
+Each item behaves as a standard link, and the active item is identified with
+`aria-current="page"`.
+
+Use `TabNav` in page headers where each item links to a different URL (e.g.,
+`/orders/123/general`, `/orders/123/items`).
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[React Aria useLink](https://react-spectrum.adobe.com/react-aria/useLink.html)
+
+## Variables
+
+Get familiar with the features.
+
+### Sizes
+
+`TabNav` supports three size variants — `sm`, `md` (default), and `lg` — that
+control font size and padding on each item.
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="800">
+    {["sm", "md", "lg"].map((size) => (
+      <Stack key={size} direction="column" gap="300">
+        <Text fontWeight="600">{size}</Text>
+        <TabNav.Root aria-label={`Order navigation (${size})`} size={size}>
+          <TabNav.Item href="/orders/123/general" isCurrent>
+            General
+          </TabNav.Item>
+          <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+          <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
+        </TabNav.Root>
+      </Stack>
+    ))}
+  </Stack>
+)
+```
+
+### Active item
+
+Mark the currently viewed page with `isCurrent`. This renders `aria-current="page"`
+on the anchor, which screen readers announce as "current page" and which applies
+the active underline style.
+
+```jsx live
+const App = () => (
+  <TabNav.Root aria-label="Order navigation">
+    <TabNav.Item href="/orders/123/general" isCurrent>
+      General
+    </TabNav.Item>
+    <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+    <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
+  </TabNav.Root>
+)
+```
+
+### Disabled item
+
+Use `isDisabled` to prevent navigation to items that are not yet accessible.
+Disabled items are visually dimmed and excluded from the tab sequence.
+
+```jsx live
+const App = () => (
+  <TabNav.Root aria-label="Order navigation">
+    <TabNav.Item href="/orders/123/general" isCurrent>
+      General
+    </TabNav.Item>
+    <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+    <TabNav.Item href="/orders/123/shipping" isDisabled>
+      Shipping
+    </TabNav.Item>
+  </TabNav.Root>
+)
+```
+
+### With icons
+
+Tab items support inline icons alongside text via the built-in flex gap layout.
+
+```jsx live
+const App = () => (
+  <TabNav.Root aria-label="Order navigation">
+    <TabNav.Item href="/orders/123/general" isCurrent>
+      <Icons.Info />
+      General
+    </TabNav.Item>
+    <TabNav.Item href="/orders/123/items">
+      <Icons.List />
+      Items
+    </TabNav.Item>
+    <TabNav.Item href="/orders/123/shipping">
+      <Icons.LocalShipping />
+      Shipping
+    </TabNav.Item>
+  </TabNav.Root>
+)
+```
