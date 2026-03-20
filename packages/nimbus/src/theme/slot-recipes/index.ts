@@ -1,6 +1,5 @@
 import { accordionSlotRecipe } from "@/components/accordion/accordion.recipe";
 import { defaultPageSlotRecipe } from "@/components/default-page/default-page.recipe";
-import { detailPageSlotRecipe } from "@/components/detail-page/detail-page.recipe";
 import { stepsSlotRecipe } from "@/components/steps/steps.recipe";
 import { alertRecipe } from "@/components/alert/alert.recipe";
 import { calendarSlotRecipe } from "@/components/calendar/calendar.recipe";
@@ -19,7 +18,6 @@ import { fieldErrorsRecipe } from "@/components/field-errors/field-errors.recipe
 import { formFieldRecipe } from "@/components/form-field/form-field.recipe";
 import { listSlotRecipe } from "@/components/list/list.recipe";
 import { localizedFieldSlotRecipe } from "@/components/localized-field/localized-field.recipe";
-import { mainPageRecipe } from "@/components/main-page/main-page.recipe";
 import { menuSlotRecipe } from "@/components/menu/menu.recipe";
 import { pageContentRecipe } from "@/components/page-content/page-content.recipe";
 import { moneyInputRecipe } from "@/components/money-input/money-input.recipe";
@@ -81,7 +79,6 @@ export const slotRecipes = {
   nimbusCombobox: comboBoxSlotRecipe,
   nimbusDataTable: dataTableSlotRecipe,
   nimbusDefaultPage: defaultPageSlotRecipe,
-  nimbusDetailPage: detailPageSlotRecipe,
   nimbusDateInput: dateInputSlotRecipe,
   nimbusDatePicker: datePickerSlotRecipe,
   nimbusDateRangePicker: dateRangePickerSlotRecipe,
@@ -92,7 +89,6 @@ export const slotRecipes = {
   nimbusFormField: formFieldRecipe,
   nimbusList: listSlotRecipe,
   nimbusLocalizedField: localizedFieldSlotRecipe,
-  nimbusMainPage: mainPageRecipe,
   nimbusMenu: menuSlotRecipe,
   nimbusMoneyInput: moneyInputRecipe,
   nimbusMultilineTextInput: multilineTextInputRecipe,
