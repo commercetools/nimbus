@@ -45,6 +45,46 @@ Both `TabNav` and `Tabs` support client-side routing — the deciding factor is 
 
 ## Usage examples
 
+### Client-side view switching
+
+The most common TabNav pattern: a persistent nav bar where clicking an item swaps the visible content without a full page reload. In a real app, `isCurrent` is derived from the router and the `href` triggers a route change. The example below simulates this with local state to show the interaction.
+
+```jsx live-dev
+const items = [
+  { href: '/orders/123/general', label: 'General' },
+  { href: '/orders/123/items', label: 'Items' },
+  { href: '/orders/123/shipping', label: 'Shipping' },
+];
+
+const content = {
+  '/orders/123/general': 'General settings and order details.',
+  '/orders/123/items': 'Line items and quantities.',
+  '/orders/123/shipping': 'Shipping address and carrier information.',
+};
+
+const App = () => {
+  const [activePath, setActivePath] = React.useState(items[0].href);
+
+  return (
+    <Stack gap="400">
+      <TabNav.Root aria-label="Order navigation">
+        {items.map((item) => (
+          <TabNav.Item
+            key={item.href}
+            href={item.href}
+            isCurrent={activePath === item.href}
+            onClick={(e) => { e.preventDefault(); setActivePath(item.href); }}
+          >
+            {item.label}
+          </TabNav.Item>
+        ))}
+      </TabNav.Root>
+      <Box padding="400">{content[activePath]}</Box>
+    </Stack>
+  );
+};
+```
+
 ### Active item
 
 Mark the currently viewed page with `isCurrent`. This sets `aria-current="page"` on the anchor element, which screen readers announce as "current page".
