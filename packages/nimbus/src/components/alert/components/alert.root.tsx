@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { AlertRoot as AlertRootSlot, AlertIcon } from "../alert.slots";
 import type { AlertProps, AlertRootComponent } from "../alert.types";
 import {
@@ -27,7 +28,7 @@ const getIconFromColorPalette = (colorPalette: AlertProps["colorPalette"]) => {
  *
  * @supportsStyleProps
  */
-export const AlertRoot: AlertRootComponent = (props) => {
+export const AlertRoot: AlertRootComponent = memo((props) => {
   const { ref, children, ...restProps } = props;
 
   return (
@@ -38,6 +39,6 @@ export const AlertRoot: AlertRootComponent = (props) => {
       {children}
     </AlertRootSlot>
   );
-};
+});
 
 AlertRoot.displayName = "Alert.Root";
