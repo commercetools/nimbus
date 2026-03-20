@@ -36,6 +36,9 @@ export const mainPageRecipe = defineSlotRecipe({
       paddingBottom: "600",
       borderBottom: "solid-25",
       borderColor: "neutral.6",
+      "&:has(.nimbus-main-page__tabNav)": {
+        paddingBottom: "0",
+      },
     },
     title: {
       gridColumn: "1",

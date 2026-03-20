@@ -153,13 +153,13 @@ export const DetailPage = {
    *
    * Layout container for tab navigation in the header.
    * Positions itself in the header grid's last row at full width.
-   * Place inside `DetailPage.Header` with `paddingBottom="0"`.
+   * Place inside `DetailPage.Header`.
    *
    * Wrap a `TabNav.Root` inside, or use `as={TabNav.Root}` for a flatter DOM.
    *
    * @example
    * ```tsx
-   * <DetailPage.Header paddingBottom="0">
+   * <DetailPage.Header>
    *   <DetailPage.BackLink href="/customers">Back</DetailPage.BackLink>
    *   <DetailPage.Title>Customer Details</DetailPage.Title>
    *   <DetailPage.TabNav>
