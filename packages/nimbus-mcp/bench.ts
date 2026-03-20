@@ -73,17 +73,21 @@ function getLoweredFields(
     return loweredFieldsCache;
   const map = new Map<SearchIndexEntry, LoweredRelevanceFields>();
   for (const entry of index) {
-    const title = entry.title.toLowerCase();
-    const description = entry.description.toLowerCase();
-    const tags = entry.tags.join(" ").toLowerCase();
-    const content = entry.content?.toLowerCase() ?? "";
-    map.set(entry, {
-      title,
-      description,
-      tags,
-      content,
-      combined: title + " " + description + " " + tags + " " + content,
-    });
+    if (entry._lower) {
+      map.set(entry, entry._lower);
+    } else {
+      const title = entry.title.toLowerCase();
+      const description = entry.description.toLowerCase();
+      const tags = entry.tags.join(" ").toLowerCase();
+      const content = entry.content?.toLowerCase() ?? "";
+      map.set(entry, {
+        title,
+        description,
+        tags,
+        content,
+        combined: title + " " + description + " " + tags + " " + content,
+      });
+    }
   }
   loweredFieldsCache = map;
   loweredFieldsIndexRef = index;
