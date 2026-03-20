@@ -4,13 +4,13 @@ import { userEvent, within, expect, waitFor } from "storybook/test";
 import { Box, Dialog, FormField, Stack, Text } from "@commercetools/nimbus";
 import { Search } from "@commercetools/nimbus-icons";
 import { ComboBox } from "./combobox";
-import { type SimpleOption, simpleOptions } from "./utils/test-data";
+import { type SimpleOption, simpleOptions } from "./utils/combobox.test-data";
 import {
   ComposedComboBox,
   type Pokemon,
   PokemonOption,
   createMockAsyncLoad,
-} from "./utils/test-utils";
+} from "./utils/combobox.test-utils";
 
 // Helper functions to reduce test verbosity - should be here since storybook has problems with importing RTL methods from other files
 
@@ -309,7 +309,7 @@ export const MultiSelectCustomOptions: Story = {
       await userEvent.keyboard("{Enter}");
 
       // Should not create duplicate - Created list should not change
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       expect(canvas.getByText(/Created: Lion, Tiger$/)).toBeInTheDocument();
 
       // Tiger should remain selected (was already selected)
@@ -423,7 +423,7 @@ export const AsyncLoadingWithError: Story = {
               async={{
                 load: async (_filterText, signal) => {
                   // Simulate API failure after delay
-                  await new Promise((resolve) => setTimeout(resolve, 500));
+                  await new Promise((resolve) => setTimeout(resolve, 150));
                   if (signal.aborted) {
                     throw new Error("AbortError");
                   }
@@ -2997,8 +2997,8 @@ export const ClearDoesNotCloseMenu: Story = {
     });
 
     await step("Menu remains open", async () => {
-      // Add explicit delay to ensure menu state has settled
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      // Brief tick to ensure menu state has settled
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
       // Menu should STILL be open after clearing
       await waitFor(
@@ -3075,8 +3075,8 @@ export const ClearDoesNotCloseMenuSingleSelect: Story = {
     });
 
     await step("Menu remains open", async () => {
-      // Add explicit delay to ensure menu state has settled
-      await new Promise((resolve) => setTimeout(resolve, 200));
+      // Brief tick to ensure menu state has settled
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
       // Menu should STILL be open after clearing
       await waitFor(

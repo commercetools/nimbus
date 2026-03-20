@@ -197,7 +197,7 @@ describe("DraggableList - Custom rendering", () => {
           aria-label="Custom rendered list"
         >
           {(item) => (
-            <DraggableList.Item id={item.id}>
+            <DraggableList.Item id={item.id} textValue={item.title}>
               <div>
                 <div>{item.title}</div>
                 <div>Priority: {item.priority}</div>

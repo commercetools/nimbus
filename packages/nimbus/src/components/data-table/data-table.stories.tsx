@@ -43,7 +43,7 @@ import {
   initialVisibleColumns,
   managerRows,
   initialHiddenColumns,
-} from "./test-data";
+} from "./data-table.test-data";
 
 import type {
   DataTableRowItem,
@@ -259,7 +259,6 @@ const ProductDetailsModal = ({
         <Dialog.Footer>
           <Button
             onPress={() => {
-              console.log("Cancel button clicked");
               onClose();
             }}
             variant="outline"
@@ -651,9 +650,7 @@ export const ColumnManager: Story = {
         <DataTableWithModals
           {...args}
           visibleColumns={visible}
-          onRowClick={() => {
-            console.log("row clicked");
-          }}
+          onRowClick={() => {}}
           data-testid="column-manager-table"
         />
       </>

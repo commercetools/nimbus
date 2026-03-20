@@ -6,6 +6,20 @@
 // Import JSDOM polyfills (structuredClone, matchMedia)
 import "./setup-jsdom-polyfills";
 
+// Make HTMLElement.prototype.focus writable so React Aria's
+// setupGlobalFocusEvents can patch it. JSDOM defines focus as a
+// non-configurable property; without this, isolate:false causes
+// "Cannot set property focus" errors when the shared environment
+// is reused across test files.
+if (typeof HTMLElement !== "undefined") {
+  const originalFocus = HTMLElement.prototype.focus;
+  Object.defineProperty(HTMLElement.prototype, "focus", {
+    configurable: true,
+    writable: true,
+    value: originalFocus,
+  });
+}
+
 // Import jest-dom matchers
 import "@testing-library/jest-dom";
 
@@ -17,3 +31,70 @@ import { afterEach } from "vitest";
 afterEach(() => {
   cleanup();
 });
+
+/**
+ * Suppress "Could not parse CSS stylesheet" noise from JSDOM.
+ *
+ * JSDOM's CSSOM parser cannot handle CSS-in-JS stylesheets injected by
+ * Emotion / Chakra UI. These errors are non-actionable and flood test output.
+ *
+ * Two suppression layers:
+ * 1. Patch CSSStyleSheet.replaceSync to swallow parse errors at the source
+ * 2. Filter console methods as a fallback for any that slip through
+ */
+
+// Patch CSSStyleSheet.replaceSync to suppress JSDOM parse errors at the source.
+// JSDOM's CSSOM parser cannot handle modern CSS syntax (nesting, layers, etc.)
+// used by Emotion/Chakra. When replaceSync throws, JSDOM emits the error
+// directly to stderr via virtualConsole, bypassing console.error filtering.
+const originalReplaceSync = CSSStyleSheet.prototype.replaceSync;
+CSSStyleSheet.prototype.replaceSync = function (text: string) {
+  try {
+    originalReplaceSync.call(this, text);
+  } catch {
+    // Silently swallow CSS parse errors — non-actionable in JSDOM
+  }
+};
+
+function isCssParseNoise(args: unknown[]): boolean {
+  return (
+    typeof args[0] === "string" &&
+    args[0].includes("Could not parse CSS stylesheet")
+  );
+}
+
+const originalConsoleError = console.error;
+console.error = (...args: unknown[]) => {
+  if (isCssParseNoise(args)) return;
+  originalConsoleError.apply(console, args);
+};
+
+const originalConsoleWarn = console.warn;
+console.warn = (...args: unknown[]) => {
+  if (isCssParseNoise(args)) return;
+  originalConsoleWarn.apply(console, args);
+};
+
+const originalConsoleLog = console.log;
+console.log = (...args: unknown[]) => {
+  if (isCssParseNoise(args)) return;
+  originalConsoleLog.apply(console, args);
+};
+
+// Intercept process.stderr.write as a final safety net.
+// Vitest workers may route JSDOM virtualConsole output directly to stderr,
+// bypassing the console.error patch above.
+const originalStderrWrite = process.stderr.write.bind(process.stderr);
+process.stderr.write = (
+  chunk: Uint8Array | string,
+  ...rest: unknown[]
+): boolean => {
+  if (
+    typeof chunk === "string" &&
+    chunk.includes("Could not parse CSS stylesheet")
+  ) {
+    return true;
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (originalStderrWrite as any)(chunk, ...rest);
+};

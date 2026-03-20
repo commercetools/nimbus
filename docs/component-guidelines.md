@@ -215,6 +215,9 @@ component-name/
 │   └── index.ts
 ├── utils/                        # Utilities (if needed)
 │   ├── helpers.ts
+│   ├── component-name.test-data.ts   # Test fixtures/mock data (if needed)
+│   ├── component-name.test-utils.ts  # Test helper functions (if needed)
+│   ├── component-name.test-component.tsx # Test wrapper components (if needed)
 │   └── index.ts
 └── constants/                    # Constants (if needed)
     └── index.ts
@@ -233,19 +236,22 @@ component-name/
 
 ### Naming Conventions
 
-| File Type           | Pattern                          | Example                |
-| ------------------- | -------------------------------- | ---------------------- |
-| Component           | `{component-name}.tsx`           | `button.tsx`           |
-| Types               | `{component-name}.types.ts`      | `button.types.ts`      |
-| Recipe              | `{component-name}.recipe.ts`     | `button.recipe.ts`     |
-| Slots               | `{ComponentName}Slot`            | `ButtonSlot`           |
-| Props               | `{ComponentName}Props`           | `ButtonProps`          |
-| Hooks               | `use{Functionality}`             | `useButton`            |
-| i18n                | `{component-name}.i18n.ts`       | `button.i18n.ts`       |
-| Stories             | `{component-name}.stories.tsx`   | `button.stories.tsx`   |
-| Documentation       | `{component-name}.mdx`           | `button.mdx`           |
-| Engineering Docs    | `{component-name}.dev.mdx`       | `button.dev.mdx`       |
-| Documentation Tests | `{component-name}.docs.spec.tsx` | `button.docs.spec.tsx` |
+| File Type           | Pattern                               | Example                     |
+| ------------------- | ------------------------------------- | --------------------------- |
+| Component           | `{component-name}.tsx`                | `button.tsx`                |
+| Types               | `{component-name}.types.ts`           | `button.types.ts`           |
+| Recipe              | `{component-name}.recipe.ts`          | `button.recipe.ts`          |
+| Slots               | `{ComponentName}Slot`                 | `ButtonSlot`                |
+| Props               | `{ComponentName}Props`                | `ButtonProps`               |
+| Hooks               | `use{Functionality}`                  | `useButton`                 |
+| i18n                | `{component-name}.i18n.ts`            | `button.i18n.ts`            |
+| Stories             | `{component-name}.stories.tsx`        | `button.stories.tsx`        |
+| Documentation       | `{component-name}.mdx`                | `button.mdx`                |
+| Engineering Docs    | `{component-name}.dev.mdx`            | `button.dev.mdx`            |
+| Documentation Tests | `{component-name}.docs.spec.tsx`      | `button.docs.spec.tsx`      |
+| Test Data           | `{component-name}.test-data.ts`       | `button.test-data.ts`       |
+| Test Utilities      | `{component-name}.test-utils.ts`      | `button.test-utils.ts`      |
+| Test Components     | `{component-name}.test-component.tsx` | `button.test-component.tsx` |
 
 ### Import Conventions
 

@@ -16,9 +16,18 @@ export default defineConfig(async () => {
         environment: "jsdom",
         // Standard test file patterns
         include: ["src/**/*.spec.{ts,tsx}"],
-        exclude: ["src/**/*.stories.{ts,tsx}", "node_modules", "dist"],
+        exclude: [
+          "src/**/*.stories.{ts,tsx}",
+          // Files using vi.mock() must run isolated to avoid polluting
+          // the shared module cache (see vitest.unit-isolated.config.ts)
+          "src/components/toast/toast.spec.tsx",
+          "node_modules",
+          "dist",
+        ],
         globals: true,
         setupFiles: ["./src/test/unit-test-setup.ts"],
+        // Reuse module cache across test files to reduce import overhead
+        isolate: false,
       },
     })
   );

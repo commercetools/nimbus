@@ -11,7 +11,7 @@ import { ComboBox, NimbusProvider } from "@commercetools/nimbus";
  * @docs-order 1
  */
 describe("ComboBox - Basic rendering", () => {
-  it("renders combobox input", () => {
+  it("renders combobox input", async () => {
     render(
       <NimbusProvider>
         <ComboBox.Root aria-label="Select an animal">
@@ -26,10 +26,12 @@ describe("ComboBox - Basic rendering", () => {
       </NimbusProvider>
     );
 
-    expect(screen.getByRole("combobox")).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole("combobox")).toBeInTheDocument();
+    });
   });
 
-  it("renders with placeholder text", () => {
+  it("renders with placeholder text", async () => {
     render(
       <NimbusProvider>
         <ComboBox.Root
@@ -46,9 +48,11 @@ describe("ComboBox - Basic rendering", () => {
       </NimbusProvider>
     );
 
-    expect(
-      screen.getByPlaceholderText("Search animals...")
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByPlaceholderText("Search animals...")
+      ).toBeInTheDocument();
+    });
   });
 });
 
@@ -158,7 +162,7 @@ describe("ComboBox - Interactions", () => {
  * @docs-order 3
  */
 describe("ComboBox - Single-select mode", () => {
-  it("supports single selection mode", () => {
+  it("supports single selection mode", async () => {
     const handleSelectionChange = vi.fn();
 
     render(
@@ -180,8 +184,9 @@ describe("ComboBox - Single-select mode", () => {
     );
 
     // Verify single-select mode renders correctly
-    const combobox = screen.getByRole("combobox");
-    expect(combobox).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole("combobox")).toBeInTheDocument();
+    });
     expect(handleSelectionChange).not.toHaveBeenCalled();
   });
 });
@@ -193,7 +198,7 @@ describe("ComboBox - Single-select mode", () => {
  * @docs-order 4
  */
 describe("ComboBox - Multi-select mode", () => {
-  it("supports multiple selection mode", () => {
+  it("supports multiple selection mode", async () => {
     const handleSelectionChange = vi.fn();
 
     render(
@@ -215,8 +220,9 @@ describe("ComboBox - Multi-select mode", () => {
     );
 
     // Verify multi-select mode renders correctly
-    const combobox = screen.getByRole("combobox");
-    expect(combobox).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByRole("combobox")).toBeInTheDocument();
+    });
     expect(handleSelectionChange).not.toHaveBeenCalled();
   });
 });
@@ -228,7 +234,7 @@ describe("ComboBox - Multi-select mode", () => {
  * @docs-order 5
  */
 describe("ComboBox - Disabled state", () => {
-  it("renders disabled combobox", () => {
+  it("renders disabled combobox", async () => {
     render(
       <NimbusProvider>
         <ComboBox.Root isDisabled aria-label="Select an animal">
@@ -242,8 +248,9 @@ describe("ComboBox - Disabled state", () => {
       </NimbusProvider>
     );
 
-    const combobox = screen.getByRole("combobox");
-    expect(combobox).toBeDisabled();
+    await waitFor(() => {
+      expect(screen.getByRole("combobox")).toBeDisabled();
+    });
   });
 });
 
@@ -254,7 +261,7 @@ describe("ComboBox - Disabled state", () => {
  * @docs-order 6
  */
 describe("ComboBox - Invalid state", () => {
-  it("renders invalid combobox", () => {
+  it("renders invalid combobox", async () => {
     render(
       <NimbusProvider>
         <ComboBox.Root isInvalid aria-label="Select an animal">
@@ -269,9 +276,11 @@ describe("ComboBox - Invalid state", () => {
     );
 
     // Invalid state is on the root element
-    const combobox = screen.getByRole("combobox");
-    const comboboxRoot = combobox.closest('[data-invalid="true"]');
-    expect(comboboxRoot).toBeInTheDocument();
+    await waitFor(() => {
+      const combobox = screen.getByRole("combobox");
+      const comboboxRoot = combobox.closest('[data-invalid="true"]');
+      expect(comboboxRoot).toBeInTheDocument();
+    });
   });
 });
 

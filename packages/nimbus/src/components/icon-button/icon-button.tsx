@@ -4,6 +4,8 @@ import { mergeRefs } from "@/utils";
 import type { IconButtonProps } from "./icon-button.types";
 import { Button } from "@/components";
 
+declare const process: { env: Record<string, string | undefined> } | undefined;
+
 /**
  * # IconButton
  *
@@ -26,7 +28,10 @@ export const IconButton = (props: IconButtonProps) => {
   // Runtime accessibility check
   // Use setTimeout to defer check until after React Aria applies context props
   useEffect(() => {
-    if (process.env.NODE_ENV !== "production") {
+    if (
+      typeof process !== "undefined" &&
+      process.env.NODE_ENV !== "production"
+    ) {
       const timeoutId = setTimeout(() => {
         const element = localRef.current;
         if (element) {

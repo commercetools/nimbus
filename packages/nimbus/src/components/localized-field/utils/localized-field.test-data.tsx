@@ -3,7 +3,7 @@ import type {
   LocalizedString,
   LocalizedCurrency,
 } from "../localized-field.types";
-import type { LocalizedFieldTypes } from "./localized-field.story-component";
+import type { LocalizedFieldTypes } from "./localized-field.test-component";
 
 export type LocalizedStoryData = {
   values: LocalizedString | LocalizedCurrency;

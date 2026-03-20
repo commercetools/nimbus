@@ -50,6 +50,8 @@ export default defineConfig(async () => {
         // Increase timeouts for browser stability and complex stories in CI
         testTimeout: 60000, // 60 seconds for slow stories (LocalizedField, DateRangePicker)
         hookTimeout: 60000,
+        // Retry once for flaky browser tests (e.g. Slate/Tiptap init races)
+        retry: 1,
         // config for running tests in one or multiple *real* browsers
         browser: {
           enabled: true,

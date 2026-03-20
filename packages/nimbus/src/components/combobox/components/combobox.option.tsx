@@ -43,11 +43,14 @@ export function ComboBoxOption<T extends object>({
   ref,
   ...props
 }: ComboBoxOptionProps<T>) {
-  const [styleProps, restProps] = extractStyleProps(props);
+  const { textValue: textValueProp, ...remainingProps } = props;
+  const [styleProps, restProps] = extractStyleProps(remainingProps);
+  const textValue =
+    textValueProp ?? (typeof children === "string" ? children : undefined);
 
   return (
     <ComboBoxOptionSlot {...styleProps} asChild>
-      <ListBoxItem ref={ref} {...restProps}>
+      <ListBoxItem ref={ref} {...restProps} textValue={textValue}>
         {(renderProps) => {
           const content =
             typeof children === "function"
