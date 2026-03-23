@@ -28,6 +28,7 @@ const DEFAULT_PAGE_SIZE = 20;
  */
 const CATEGORY_PRIORITY: string[] = [
   "color",
+  "colorPalettes",
   "spacing",
   "fontSize",
   "fontWeight",
@@ -43,10 +44,14 @@ const CATEGORY_PRIORITY: string[] = [
 ];
 
 /** Lists all token categories with their counts, prioritized by usage. */
-function listCategories(data: FlatTokenData): TokenCategorySummary[] {
+function listCategories(
+  data: FlatTokenData,
+  virtualCategories: TokenCategorySummary[] = []
+): TokenCategorySummary[] {
   const priorityIndex = new Map(CATEGORY_PRIORITY.map((c, i) => [c, i]));
   return Object.entries(data.byCategory)
     .map(([category, tokens]) => ({ category, count: tokens.length }))
+    .concat(virtualCategories)
     .sort((a, b) => {
       const pa = priorityIndex.get(a.category) ?? CATEGORY_PRIORITY.length;
       const pb = priorityIndex.get(b.category) ?? CATEGORY_PRIORITY.length;
@@ -310,7 +315,21 @@ export function registerGetTokens(server: McpServer): void {
         }
 
         // No params: list all categories with counts
-        const payload = listCategories(data);
+        const virtualCategories: TokenCategorySummary[] = [];
+        const colorTokens = data.byCategory["color"];
+        if (colorTokens) {
+          const palettes = getCachedPalettes(colorTokens);
+          const paletteCount = Object.values(palettes).reduce(
+            (sum, group) => sum + group.length,
+            0
+          );
+          virtualCategories.push({
+            category: "colorPalettes",
+            count: paletteCount,
+          });
+        }
+
+        const payload = listCategories(data, virtualCategories);
         return {
           content: [{ type: "text" as const, text: JSON.stringify(payload) }],
         };
