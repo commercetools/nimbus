@@ -28,7 +28,7 @@ The component SHALL export as a compound component namespace.
 
 - **WHEN** consumer renders DefaultPage with BackLink
 - **THEN** SHALL render back link in header above the title
-- **AND** header grid SHALL adjust Actions positioning via CSS `:has()`
+- **AND** Actions SHALL align with the title row (not the back link row)
 
 #### Scenario: Form page usage (with footer)
 
@@ -40,83 +40,67 @@ The component SHALL export as a compound component namespace.
 
 - **WHEN** consumer renders TabNav inside DefaultPage.Header
 - **THEN** SHALL render tab navigation below the title row
-- **AND** header padding bottom SHALL be removed via CSS `:has()`
+- **AND** header bottom padding SHALL be removed when TabNav is present
 
-### Requirement: Root Grid Layout
+### Requirement: Root Layout
 
 The Root component SHALL support two explicit layout modes via a `layout` prop.
 
 #### Scenario: Constrained layout (default)
 
 - **WHEN** `layout` is `"constrained"` or omitted on DefaultPage.Root
-- **THEN** SHALL use `height: 100%` to fill parent height
-- **AND** SHALL use `grid-template-rows: auto 1fr auto`
-- **AND** SHALL use `grid-template-columns: 1fr`
-- **AND** Content slot SHALL use `overflow: auto` for independent scrolling
-- **AND** header and footer SHALL be naturally pinned by the grid (no sticky
-  positioning needed)
+- **THEN** Root SHALL fill its parent height
+- **AND** Header and Footer SHALL remain visible without scrolling
+- **AND** Content SHALL scroll independently when it overflows
 
 #### Scenario: Flexible layout
 
 - **WHEN** `layout` is `"flexible"` on DefaultPage.Root
-- **THEN** SHALL use `height: auto` so root grows with content
-- **AND** SHALL use `grid-template-rows: auto 1fr auto`
-- **AND** SHALL use `grid-template-columns: 1fr`
-- **AND** Content slot SHALL NOT use `overflow: auto`
+- **THEN** Root SHALL grow with its content (no fixed height)
 - **AND** the entire page SHALL scroll as a single unit
 
 #### Scenario: Footer absent
 
 - **WHEN** DefaultPage.Footer is not rendered inside Root
-- **THEN** the third grid row (auto) SHALL collapse to zero height
+- **THEN** footer space SHALL collapse
 - **AND** content SHALL fill remaining space below header
 
 ### Requirement: Header Layout
 
-The component SHALL use CSS grid for header layout.
+The Header SHALL arrange title, actions, back link, and tab navigation.
 
-#### Scenario: Grid structure
+#### Scenario: Header structure
 
 - **WHEN** Header renders
-- **THEN** SHALL use CSS grid with template columns `1fr auto`
-- **AND** SHALL align items center
-- **AND** SHALL apply padding tokens: top `800`, horizontal `900`, bottom `600`
+- **THEN** Title and Actions SHALL appear on the same row
+- **AND** Title SHALL take available horizontal space
+- **AND** Actions SHALL be end-aligned
 
 #### Scenario: Visual separation
 
 - **WHEN** Header renders
-- **THEN** SHALL display a bottom border using `solid-25` border token
-- **AND** SHALL use `neutral.6` border color
+- **THEN** SHALL display a bottom border separating it from content
 
 #### Scenario: Actions positioning (without BackLink)
 
 - **WHEN** Actions is placed inside Header without BackLink
-- **THEN** SHALL be positioned in grid column 2, spanning rows 1-2
-- **AND** SHALL display as flex row with gap of token `200`
+- **THEN** Actions SHALL vertically span the title and subtitle rows
 
 #### Scenario: Actions positioning (with BackLink)
 
 - **WHEN** Actions is placed inside Header WITH BackLink
-- **THEN** SHALL be positioned in grid column 2, spanning rows 2-3
-- **AND** CSS rule `&:has(.nimbus-default-page__backLink)` SHALL shift actions
-  down to align with title row
-
-#### Scenario: TabNav removes padding
-
-- **WHEN** TabNav is present inside Header
-- **THEN** CSS rule `&:has(.nimbus-default-page__tabNav)` SHALL set
-  `paddingBottom: 0`
+- **THEN** Actions SHALL vertically span the title and subtitle rows
+- **AND** Actions SHALL NOT span the back link row
 
 ### Requirement: Back Navigation Link
 
-The component SHALL provide optional accessible back navigation using React Aria.
+The component SHALL provide optional accessible back navigation.
 
 #### Scenario: Link rendering
 
 - **WHEN** BackLink renders
 - **THEN** SHALL render as a semantic `<a>` element
-- **AND** SHALL use React Aria `useLink` hook for keyboard and screen reader
-  accessibility
+- **AND** SHALL be accessible via keyboard and screen reader
 - **AND** SHALL require `href` prop for navigation target
 
 #### Scenario: Default accessible name
@@ -136,13 +120,13 @@ The component SHALL provide optional accessible back navigation using React Aria
 - **WHEN** BackLink renders
 - **THEN** SHALL display an ArrowBack icon before the text
 - **AND** SHALL use primary color palette with hover underline
-- **AND** SHALL span full grid width (column 1 / -1)
+- **AND** SHALL span the full header width
 - **AND** SHALL have focus ring for keyboard navigation
 
 #### Scenario: BackLink is optional
 
 - **WHEN** DefaultPage renders without BackLink
-- **THEN** header grid SHALL render normally without adjustment
+- **THEN** header SHALL render normally without adjustment
 - **AND** component SHALL function as a main-level page
 
 ### Requirement: TabNav Sub-Component
@@ -152,13 +136,13 @@ The component SHALL provide a layout slot for tab navigation in the header.
 #### Scenario: TabNav rendering
 
 - **WHEN** TabNav renders inside Header
-- **THEN** SHALL span full grid width (column 1 / -1)
-- **AND** SHALL apply top margin token `200`
+- **THEN** SHALL span the full header width
+- **AND** SHALL appear below the title row
 
 #### Scenario: TabNav is optional
 
 - **WHEN** DefaultPage renders without TabNav
-- **THEN** header SHALL render with standard padding bottom
+- **THEN** header SHALL render with standard padding
 - **AND** no adjustment to header layout
 
 ### Requirement: Sticky Variants
@@ -169,14 +153,13 @@ flexible layout mode.
 #### Scenario: Sticky header in flexible layout
 
 - **WHEN** `layout` is `"flexible"` and `stickyHeader` is true
-- **THEN** header SHALL use `position: sticky` with `top: 0`
-- **AND** SHALL use `zIndex: 1` and background color `bg`
+- **THEN** header SHALL remain visible at the top of the viewport during scroll
 
 #### Scenario: Sticky footer in flexible layout
 
 - **WHEN** `layout` is `"flexible"` and `stickyFooter` is true
-- **THEN** footer SHALL use `position: sticky` with `bottom: 0`
-- **AND** SHALL use `zIndex: 1` and background color `bg`
+- **THEN** footer SHALL remain visible at the bottom of the viewport during
+  scroll
 
 #### Scenario: No sticky in constrained layout
 
@@ -198,18 +181,16 @@ The component SHALL provide a main content area.
 
 - **WHEN** DefaultPage.Content is rendered
 - **THEN** SHALL render as `<main>` element
-- **AND** SHALL apply padding tokens: horizontal `900`, vertical `800`
 
 #### Scenario: Constrained content scrolling
 
 - **WHEN** `layout` is `"constrained"` or omitted
-- **THEN** Content SHALL use `overflow: auto` for independent scrolling
+- **THEN** Content SHALL scroll independently when it overflows
 
 #### Scenario: Flexible content scrolling
 
 - **WHEN** `layout` is `"flexible"`
-- **THEN** Content SHALL NOT use `overflow: auto`
-- **AND** content SHALL scroll with the rest of the page
+- **THEN** Content SHALL scroll with the rest of the page
 
 #### Scenario: Content is plain container
 
@@ -240,43 +221,7 @@ The component SHALL visually separate the footer from content.
 #### Scenario: Footer border
 
 - **WHEN** Footer renders
-- **THEN** SHALL display a top border using `solid-25` border token
-- **AND** SHALL use `neutral.6` border color
-- **AND** SHALL apply padding using tokens `900` horizontal and `400` vertical
-
-### Requirement: Multi-Slot Recipe
-
-The component SHALL use a multi-slot recipe registered as `nimbusDefaultPage`.
-
-#### Scenario: Slot definition
-
-- **WHEN** the recipe is defined
-- **THEN** SHALL define slots: root, header, backLink, title, subtitle, actions,
-  tabNav, content, footer
-- **AND** SHALL use className "nimbus-default-page"
-
-#### Scenario: Recipe registration
-
-- **WHEN** DefaultPage component is used
-- **THEN** recipe SHALL be registered in theme/slot-recipes/index.ts
-- **AND** registration SHALL use "nimbusDefaultPage" key
-
-#### Scenario: Layout variant definition
-
-- **WHEN** the recipe defines variants
-- **THEN** SHALL define `layout` variant with `"constrained"` and `"flexible"`
-  values
-- **AND** `"constrained"` SHALL set root `height: 100%` and content
-  `overflow: auto`
-- **AND** `"flexible"` SHALL set root `height: auto` and content without
-  overflow
-- **AND** SHALL default to `"constrained"` via `defaultVariants`
-
-#### Scenario: Sticky variant definition
-
-- **WHEN** the recipe defines variants
-- **THEN** SHALL define `stickyHeader` boolean variant
-- **AND** SHALL define `stickyFooter` boolean variant
+- **THEN** SHALL display a top border separating it from content
 
 ### Requirement: Type Definitions
 
@@ -306,7 +251,6 @@ union enforcement.
 
 - **WHEN** DefaultPageBackLinkProps type is defined
 - **THEN** SHALL require `href: string` prop
-- **AND** SHALL extend OmitInternalProps of DefaultPageBackLinkSlotProps
 
 #### Scenario: Slot props types
 
