@@ -84,7 +84,10 @@ function walkTokenTree(
       } else {
         result.push({
           name: tokenName,
-          value: String(raw),
+          value:
+            typeof raw === "object" && raw !== null
+              ? JSON.stringify(raw)
+              : String(raw),
           category,
           path: tokenPath,
         });
