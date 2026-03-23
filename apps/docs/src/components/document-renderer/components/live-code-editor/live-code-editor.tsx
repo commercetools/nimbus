@@ -1,7 +1,6 @@
 import * as NimbusUi from "@commercetools/nimbus";
 import * as icons from "@commercetools/nimbus-icons";
 import {
-  Flex,
   Box,
   Menu,
   IconButton,
