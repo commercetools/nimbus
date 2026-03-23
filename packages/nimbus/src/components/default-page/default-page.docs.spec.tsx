@@ -197,7 +197,7 @@ describe("With header actions", () => {
 
 /**
  * @docs-section layout-modes
- * @docs-order 5
+ * @docs-order 4
  * @docs-title Layout modes
  */
 describe("Layout modes", () => {
@@ -282,7 +282,7 @@ describe("Layout modes", () => {
 
 /**
  * @docs-section tab-navigation
- * @docs-order 4
+ * @docs-order 5
  * @docs-title With tab navigation
  */
 describe("With tab navigation", () => {
