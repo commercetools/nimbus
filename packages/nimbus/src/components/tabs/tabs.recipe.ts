@@ -20,8 +20,6 @@ export const tabsSlotRecipe = defineSlotRecipe({
   base: {
     root: {
       display: "flex",
-      flex: "1",
-      minHeight: "0",
       width: "100%",
     },
     list: {
