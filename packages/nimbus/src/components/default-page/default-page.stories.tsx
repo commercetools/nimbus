@@ -9,6 +9,7 @@ import {
   FormField,
   MoneyInput,
   Stack,
+  Steps,
   TabNav,
   Text,
   TextInput,
@@ -17,6 +18,7 @@ import type {
   DataTableColumnItem,
   MoneyInputValue,
 } from "@commercetools/nimbus";
+import { Check } from "@commercetools/nimbus-icons";
 
 // ============================================================
 // META
@@ -664,6 +666,191 @@ export const StickyHeaderAndFooter: Story = {
       await expect(
         canvas.getByRole("button", { name: "Cancel" })
       ).toBeInTheDocument();
+    });
+  },
+};
+
+// ============================================================
+// 11. WITH STEPS — Multi-step wizard inside a page
+// ============================================================
+
+/**
+ * A detail page with a Steps wizard in the content area. This pattern is
+ * common in Merchant Center flows such as product creation or checkout
+ * configuration where a multi-step process lives inside a page layout.
+ */
+export const WithSteps: Story = {
+  render: () => {
+    const [currentStep, setCurrentStep] = useState(0);
+    const stepCount = 3;
+
+    return (
+      <DefaultPage.Root
+        border="solid-25"
+        borderColor="neutral.6"
+        borderRadius="200"
+      >
+        <DefaultPage.Header>
+          <DefaultPage.BackLink href="/products">
+            Back to products
+          </DefaultPage.BackLink>
+          <DefaultPage.Title>Create Product</DefaultPage.Title>
+          <DefaultPage.Subtitle>
+            Follow the steps to add a new product to your catalog.
+          </DefaultPage.Subtitle>
+        </DefaultPage.Header>
+        <DefaultPage.Content>
+          <Steps.Root
+            step={currentStep}
+            onStepChange={(details) => setCurrentStep(details.step)}
+            count={stepCount}
+          >
+            <Steps.List>
+              <Steps.Item index={0}>
+                <Steps.Trigger>
+                  <Steps.Indicator>
+                    <Steps.Status
+                      complete={<Check />}
+                      incomplete={<Steps.Number />}
+                    />
+                  </Steps.Indicator>
+                  <Steps.Title>General Info</Steps.Title>
+                </Steps.Trigger>
+                <Steps.Separator />
+              </Steps.Item>
+              <Steps.Item index={1}>
+                <Steps.Trigger>
+                  <Steps.Indicator>
+                    <Steps.Status
+                      complete={<Check />}
+                      incomplete={<Steps.Number />}
+                    />
+                  </Steps.Indicator>
+                  <Steps.Title>Pricing</Steps.Title>
+                </Steps.Trigger>
+                <Steps.Separator />
+              </Steps.Item>
+              <Steps.Item index={2}>
+                <Steps.Trigger>
+                  <Steps.Indicator>
+                    <Steps.Status
+                      complete={<Check />}
+                      incomplete={<Steps.Number />}
+                    />
+                  </Steps.Indicator>
+                  <Steps.Title>Review</Steps.Title>
+                </Steps.Trigger>
+              </Steps.Item>
+            </Steps.List>
+
+            <Steps.Content index={0}>
+              <Stack gap="600" maxWidth="600px" py="600">
+                <FormField.Root isRequired>
+                  <FormField.Label>Product name</FormField.Label>
+                  <FormField.Input>
+                    <TextInput
+                      placeholder="e.g. Classic T-Shirt"
+                      aria-label="Product name"
+                    />
+                  </FormField.Input>
+                </FormField.Root>
+                <FormField.Root>
+                  <FormField.Label>Description</FormField.Label>
+                  <FormField.Input>
+                    <TextInput
+                      placeholder="Short product description"
+                      aria-label="Description"
+                    />
+                  </FormField.Input>
+                </FormField.Root>
+              </Stack>
+            </Steps.Content>
+
+            <Steps.Content index={1}>
+              <Stack gap="600" maxWidth="600px" py="600">
+                <FormField.Root isRequired>
+                  <FormField.Label>Base price</FormField.Label>
+                  <FormField.Input>
+                    <TextInput placeholder="0.00" aria-label="Base price" />
+                  </FormField.Input>
+                </FormField.Root>
+                <FormField.Root>
+                  <FormField.Label>Tax category</FormField.Label>
+                  <FormField.Input>
+                    <TextInput
+                      placeholder="e.g. Standard Rate"
+                      aria-label="Tax category"
+                    />
+                  </FormField.Input>
+                </FormField.Root>
+              </Stack>
+            </Steps.Content>
+
+            <Steps.Content index={2}>
+              <Box py="600">
+                <Text>
+                  Review your product details before publishing. All information
+                  can be edited later.
+                </Text>
+              </Box>
+            </Steps.Content>
+
+            <Steps.CompletedContent>
+              <Box py="600">
+                <Text fontWeight="600" color="success.11">
+                  Product created successfully!
+                </Text>
+              </Box>
+            </Steps.CompletedContent>
+
+            <Stack direction="row" gap="200" pt="400">
+              <Steps.PrevTrigger asChild>
+                <Button variant="ghost" disabled={currentStep === 0}>
+                  Back
+                </Button>
+              </Steps.PrevTrigger>
+              <Steps.NextTrigger asChild>
+                <Button variant="solid">
+                  {currentStep === stepCount - 1 ? "Finish" : "Next"}
+                </Button>
+              </Steps.NextTrigger>
+            </Stack>
+          </Steps.Root>
+        </DefaultPage.Content>
+      </DefaultPage.Root>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders back link", async () => {
+      const backLink = canvas.getByRole("link", { name: /back to products/i });
+      await expect(backLink).toBeInTheDocument();
+    });
+
+    await step("Renders page title", async () => {
+      await expect(
+        canvas.getByRole("heading", { level: 1, name: "Create Product" })
+      ).toBeInTheDocument();
+    });
+
+    await step("Renders all step titles", async () => {
+      await expect(canvas.getByText("General Info")).toBeInTheDocument();
+      await expect(canvas.getByText("Pricing")).toBeInTheDocument();
+      await expect(canvas.getByText("Review")).toBeInTheDocument();
+    });
+
+    await step("Renders step navigation buttons", async () => {
+      await expect(
+        canvas.getByRole("button", { name: "Back" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("button", { name: "Next" })
+      ).toBeInTheDocument();
+    });
+
+    await step("First step content is visible", async () => {
+      await expect(canvas.getByText("Product name")).toBeInTheDocument();
     });
   },
 };
