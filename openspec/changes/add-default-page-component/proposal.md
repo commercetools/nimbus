@@ -29,7 +29,11 @@ navigation, which is now an optional `BackLink` sub-component. When present, CSS
   CSS grid
 - **NEW** `TabNav` sub-component for tab navigation in the header; when present,
   CSS `:has()` automatically removes header `paddingBottom`
-- **NEW** `stickyHeader` and `stickyFooter` variant props on Root
+- **NEW** `layout` prop on Root with `"constrained"` (default) and `"flexible"`
+  modes — constrained fills parent height with scrollable content, flexible
+  grows with content and supports `stickyHeader`/`stickyFooter`
+- **NEW** `stickyHeader` and `stickyFooter` variant props on Root (only
+  available when `layout="flexible"`, enforced by TypeScript discriminated union)
 - **MODIFIED** `packages/nimbus/src/components/index.ts` adds DefaultPage export
 - **MODIFIED** `packages/nimbus/src/theme/slot-recipes/index.ts` registers
   `nimbusDefaultPage` recipe
