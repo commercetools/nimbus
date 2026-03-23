@@ -243,8 +243,7 @@ export function fuzzyScorePreLowered(
 
   for (const token of tokens) {
     if (token.length < 3) continue;
-    const maxDist =
-      token.length <= 4 ? 1 : token.length <= 7 ? 2 : 3;
+    const maxDist = token.length <= 4 ? 1 : token.length <= 7 ? 2 : 3;
 
     // Helper: check if token fuzzy-matches any word in text, OR if token is
     // a substring of the concatenated text (catches "datepicker" in "date picker"
