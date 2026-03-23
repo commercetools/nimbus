@@ -66,12 +66,14 @@ type LiveCodeEditorProps = {
 function DefaultViewMenu({
   defaultView,
   setDefaultView,
+  onOpenChange,
 }: {
   defaultView: "preview" | "editor";
   setDefaultView: (value: "preview" | "editor") => void;
+  onOpenChange?: (isOpen: boolean) => void;
 }) {
   return (
-    <Menu.Root>
+    <Menu.Root onOpenChange={onOpenChange}>
       <Tooltip.Root>
         <Menu.Trigger asChild>
           <IconButton aria-label="Editor settings" size="xs" variant="ghost">
@@ -109,6 +111,7 @@ export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
   const atom = isDevVariant ? defaultLiveDevViewAtom : defaultLiveViewAtom;
   const [defaultView, setDefaultView] = useAtom(atom);
 
+  const [menuOpen, setMenuOpen] = useState(false);
   const [code, setCode] = useState(props.children);
   const [activeTab, setActiveTab] = useState<"preview" | "editor">(defaultView);
 
@@ -164,13 +167,14 @@ export const LiveCodeEditor = (props: LiveCodeEditorProps) => {
         right="0"
         display="flex"
         alignItems="center"
-        opacity="0"
+        opacity={menuOpen ? "1" : "0"}
         transition="opacity 0.15s"
         _groupHover={{ opacity: "1" }}
       >
         <DefaultViewMenu
           defaultView={defaultView}
           setDefaultView={setDefaultView}
+          onOpenChange={setMenuOpen}
         />
       </Box>
     </Box>
