@@ -46,6 +46,8 @@ export interface DocSearchResult {
   matchedView?: string;
   /** Content snippet highlighting the match. */
   snippet: string;
+  /** Suggested tool to call for deeper info on this result. */
+  toolHint?: string;
 }
 
 /** Result returned by MCP tool handlers. */
@@ -196,6 +198,45 @@ export interface FlatTokenData {
   byCategory: Record<string, FlatToken[]>;
   /** Reverse-lookup: value → list of token names that resolve to it. */
   reverseLookup: Record<string, string[]>;
+}
+
+// ---------------------------------------------------------------------------
+// Token tool response types (used by tools/get-tokens)
+// ---------------------------------------------------------------------------
+
+/** Summary of a token category (returned when no params are given). */
+export interface TokenCategorySummary {
+  category: string;
+  count: number;
+}
+
+/** A token entry as returned in tool responses (stripped of redundant fields). */
+export interface TokenResponseEntry {
+  name: string;
+  value: string;
+}
+
+/** Paginated response for a single token category. */
+export interface TokenCategoryResponse {
+  category: string;
+  total: number;
+  showing: number;
+  tokens: TokenResponseEntry[];
+  hint?: string;
+}
+
+/** A palette summary with its name and representative color. */
+export interface PaletteEntry {
+  /** Palette name, valid as a `colorPalette` prop value. */
+  name: string;
+  /** Step 9 value — the primary solid fill color (light / dark). */
+  solid: string;
+}
+
+/** Reverse-lookup response mapping a value to token names. */
+export interface TokenReverseLookupResponse {
+  value: string;
+  tokens: string[];
 }
 
 // ---------------------------------------------------------------------------

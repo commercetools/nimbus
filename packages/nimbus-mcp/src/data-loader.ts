@@ -165,6 +165,4 @@ export { reverseLookup } from "./processors/flatten-tokens.js";
 /**
  * Loads the pre-built flattened token data from `data/tokens.json`.
  */
-export async function getFlatTokenData(): Promise<FlatTokenData> {
-  return readJson(resolve(getDataDir(), "tokens.json"));
-}
+export const getFlatTokenData = lazyJson<FlatTokenData>("tokens.json");

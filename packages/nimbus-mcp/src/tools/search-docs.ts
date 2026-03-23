@@ -17,6 +17,15 @@ import {
 import { stripMarkdown } from "../utils/markdown.js";
 
 const MAX_RESULTS = 10;
+
+/** Maps a route to the most useful follow-up tool, if any. */
+function deriveToolHint(route: string): string | undefined {
+  if (route.includes("design-tokens")) return "get_tokens";
+  if (route.startsWith("components/") || route.startsWith("patterns/"))
+    return "get_component";
+  if (route.startsWith("icons")) return "search_icons";
+  return undefined;
+}
 const SNIPPET_LENGTH = 200;
 /** Characters of context shown before the matched token in a snippet. */
 const SNIPPET_LEAD = 80;
@@ -213,8 +222,7 @@ export function registerSearchDocs(server: McpServer): void {
       description:
         "Search all Nimbus docs (components, patterns, hooks, icons, tokens) including guidelines and accessibility views. " +
         "Returns matching pages with content snippets. Props are not searchable here — use get_component with section='props' for prop details. " +
-        "Each result has a category — follow up with: get_component ('Components', 'Patterns'), " +
-        "get_tokens ('Tokens'), search_icons ('Icons'). For other categories the snippet is the primary content.",
+        "Results include a toolHint field indicating which tool to call for deeper info (e.g. get_component, get_tokens, search_icons).",
       inputSchema: {
         query: z
           .string()
@@ -276,6 +284,7 @@ export function registerSearchDocs(server: McpServer): void {
           .slice(0, MAX_RESULTS)
           .map(({ entry, viewMatch }) => {
             const category = entry.menu[0];
+            const toolHint = deriveToolHint(entry.route);
             return {
               title: entry.title,
               description: entry.description,
@@ -287,6 +296,7 @@ export function registerSearchDocs(server: McpServer): void {
               snippet: viewMatch
                 ? extractSnippet(viewMatch.content, tokens)
                 : extractSnippet(stripMarkdown(entry.content), tokens),
+              ...(toolHint ? { toolHint } : {}),
             };
           });
 
