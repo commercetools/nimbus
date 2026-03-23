@@ -193,6 +193,39 @@ const App = () => (
 )
 ```
 
+### Flexible layout with sticky header and footer
+
+Use `layout="flexible"` when the whole page should scroll. Add `stickyHeader`
+and/or `stickyFooter` to pin those zones while the page scrolls.
+
+```jsx live
+const App = () => (
+  <Box height="400px" overflow="auto" border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root layout="flexible" stickyHeader stickyFooter>
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/products">
+          Back to products
+        </DefaultPage.BackLink>
+        <DefaultPage.Title>Edit product</DefaultPage.Title>
+        <DefaultPage.Subtitle>SKU-001</DefaultPage.Subtitle>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          <Text>With flexible layout the whole page scrolls.</Text>
+          <Text>The header and footer stay pinned via sticky positioning.</Text>
+        </Stack>
+      </DefaultPage.Content>
+      <DefaultPage.Footer>
+        <Stack direction="row" gap="200" justify="flex-end" width="100%">
+          <Button variant="ghost">Cancel</Button>
+          <Button variant="solid" colorPalette="primary">Save</Button>
+        </Stack>
+      </DefaultPage.Footer>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
 ## Accessibility
 
 DefaultPage uses semantic HTML landmarks to provide a clear document structure

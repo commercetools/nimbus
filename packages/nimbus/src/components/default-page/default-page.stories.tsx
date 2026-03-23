@@ -33,7 +33,7 @@ const meta: Meta<typeof DefaultPage.Root> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof DefaultPage.Root>;
 
 // ============================================================
 // SHARED DATA — DataTable stories
@@ -621,7 +621,7 @@ export const TabularDetailPage: Story = {
       borderColor="neutral.6"
       borderRadius="200"
     >
-      <DefaultPage.Root stickyHeader stickyFooter>
+      <DefaultPage.Root layout="flexible" stickyHeader stickyFooter>
         <DefaultPage.Header>
           <DefaultPage.BackLink href="/customers">
             Back to customers
@@ -710,22 +710,24 @@ export const TabularDetailPage: Story = {
 // ============================================================
 
 // ============================================================
-// 10. STICKY HEADER AND FOOTER
+// 10. FLEXIBLE LAYOUT — Whole-page scroll, no sticky
 // ============================================================
 
 /**
- * Both header and footer are sticky while the content area scrolls.
- * Useful for long form pages where save actions should always be accessible.
+ * Flexible layout (`layout="flexible"`) allows the whole page to scroll rather
+ * than constraining the scroll to the content area. Wrap it in a fixed-height
+ * container in Storybook to make the scroll behaviour visible.
  */
-export const StickyHeaderAndFooter: Story = {
+export const FlexibleLayout: Story = {
   render: () => (
     <Box
       height="500px"
+      overflow="auto"
       border="solid-25"
       borderColor="neutral.6"
       borderRadius="200"
     >
-      <DefaultPage.Root stickyHeader stickyFooter>
+      <DefaultPage.Root layout="flexible">
         <DefaultPage.Header>
           <DefaultPage.Title>Edit product</DefaultPage.Title>
           <DefaultPage.Actions>
@@ -734,7 +736,227 @@ export const StickyHeaderAndFooter: Story = {
         </DefaultPage.Header>
         <DefaultPage.Content>
           <Stack gap="600" maxWidth="600px">
+            {Array.from({ length: 10 }, (_, i) => (
+              <FormField.Root key={i}>
+                <FormField.Label>Field {i + 1}</FormField.Label>
+                <FormField.Input>
+                  <TextInput
+                    placeholder={`Value for field ${i + 1}`}
+                    aria-label={`Field ${i + 1}`}
+                  />
+                </FormField.Input>
+              </FormField.Root>
+            ))}
+          </Stack>
+        </DefaultPage.Content>
+        <DefaultPage.Footer>
+          <Stack direction="row" gap="200">
+            <Button colorPalette="primary" variant="solid">
+              Save changes
+            </Button>
+            <Button variant="ghost">Cancel</Button>
+          </Stack>
+        </DefaultPage.Footer>
+      </DefaultPage.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders page title", async () => {
+      await expect(
+        canvas.getByRole("heading", { level: 1, name: "Edit product" })
+      ).toBeInTheDocument();
+    });
+
+    await step("Header does not have sticky positioning", async () => {
+      const header = canvasElement.querySelector("header");
+      await expect(header).toBeInTheDocument();
+      const style = window.getComputedStyle(header!);
+      await expect(style.position).not.toBe("sticky");
+    });
+
+    await step("Footer does not have sticky positioning", async () => {
+      const footer = canvasElement.querySelector("footer");
+      await expect(footer).toBeInTheDocument();
+      const style = window.getComputedStyle(footer!);
+      await expect(style.position).not.toBe("sticky");
+    });
+
+    await step("Renders all form fields", async () => {
+      for (let i = 1; i <= 10; i++) {
+        await expect(canvas.getByLabelText(`Field ${i}`)).toBeInTheDocument();
+      }
+    });
+  },
+};
+
+// ============================================================
+// 11. FLEXIBLE STICKY HEADER — Header pinned while page scrolls
+// ============================================================
+
+/**
+ * Flexible layout with `stickyHeader` pins the header at the top while the
+ * whole page scrolls. The footer scrolls with the content. Useful for long
+ * listing or info pages where the header context should remain visible.
+ */
+export const FlexibleStickyHeader: Story = {
+  render: () => (
+    <Box
+      height="500px"
+      overflow="auto"
+      border="solid-25"
+      borderColor="neutral.6"
+      borderRadius="200"
+    >
+      <DefaultPage.Root layout="flexible" stickyHeader>
+        <DefaultPage.Header>
+          <DefaultPage.Title>Edit customer</DefaultPage.Title>
+          <DefaultPage.Actions>
+            <Button colorPalette="primary" variant="solid">
+              Save changes
+            </Button>
+          </DefaultPage.Actions>
+        </DefaultPage.Header>
+        <DefaultPage.Content>
+          <Stack gap="600" maxWidth="600px">
             {Array.from({ length: 8 }, (_, i) => (
+              <FormField.Root key={i}>
+                <FormField.Label>Field {i + 1}</FormField.Label>
+                <FormField.Input>
+                  <TextInput
+                    placeholder={`Value for field ${i + 1}`}
+                    aria-label={`Field ${i + 1}`}
+                  />
+                </FormField.Input>
+              </FormField.Root>
+            ))}
+          </Stack>
+        </DefaultPage.Content>
+      </DefaultPage.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders page title", async () => {
+      await expect(
+        canvas.getByRole("heading", { level: 1, name: "Edit customer" })
+      ).toBeInTheDocument();
+    });
+
+    await step("Header has sticky positioning", async () => {
+      const header = canvasElement.querySelector("header");
+      await expect(header).toBeInTheDocument();
+      const style = window.getComputedStyle(header!);
+      await expect(style.position).toBe("sticky");
+    });
+
+    await step("Renders form fields in content area", async () => {
+      await expect(canvas.getByLabelText("Field 1")).toBeInTheDocument();
+      await expect(canvas.getByLabelText("Field 8")).toBeInTheDocument();
+    });
+  },
+};
+
+// ============================================================
+// 12. FLEXIBLE STICKY FOOTER — Footer pinned, header scrolls
+// ============================================================
+
+/**
+ * Flexible layout with only `stickyFooter` pins the footer at the bottom while
+ * the header scrolls away with the content. Useful for long form pages where
+ * save actions must always be reachable but header context is less critical.
+ */
+export const FlexibleStickyFooter: Story = {
+  render: () => (
+    <Box
+      height="500px"
+      overflow="auto"
+      border="solid-25"
+      borderColor="neutral.6"
+      borderRadius="200"
+    >
+      <DefaultPage.Root layout="flexible" stickyFooter>
+        <DefaultPage.Header>
+          <DefaultPage.BackLink href="/products">
+            Back to products
+          </DefaultPage.BackLink>
+          <DefaultPage.Title>Edit: Classic T-Shirt</DefaultPage.Title>
+        </DefaultPage.Header>
+        <DefaultPage.Content>
+          <Stack gap="600" maxWidth="600px">
+            {Array.from({ length: 10 }, (_, i) => (
+              <FormField.Root key={i}>
+                <FormField.Label>Field {i + 1}</FormField.Label>
+                <FormField.Input>
+                  <TextInput
+                    placeholder={`Value for field ${i + 1}`}
+                    aria-label={`Field ${i + 1}`}
+                  />
+                </FormField.Input>
+              </FormField.Root>
+            ))}
+          </Stack>
+        </DefaultPage.Content>
+        <DefaultPage.Footer>
+          <Stack direction="row" gap="200">
+            <Button colorPalette="primary" variant="solid">
+              Save changes
+            </Button>
+            <Button variant="ghost">Cancel</Button>
+          </Stack>
+        </DefaultPage.Footer>
+      </DefaultPage.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Header does not have sticky positioning", async () => {
+      const header = canvasElement.querySelector("header");
+      await expect(header).toBeInTheDocument();
+      const style = window.getComputedStyle(header!);
+      await expect(style.position).not.toBe("sticky");
+    });
+
+    await step("Footer has sticky positioning", async () => {
+      const footer = canvasElement.querySelector("footer");
+      await expect(footer).toBeInTheDocument();
+      const style = window.getComputedStyle(footer!);
+      await expect(style.position).toBe("sticky");
+    });
+  },
+};
+
+// ============================================================
+// 13. FLEXIBLE STICKY HEADER AND FOOTER — Both pinned
+// ============================================================
+
+/**
+ * Both header and footer are sticky while the flexible-layout page scrolls.
+ * Use `layout="flexible"` with `stickyHeader` and `stickyFooter` together.
+ * Useful for long form pages where save actions should always be accessible.
+ */
+export const FlexibleStickyHeaderAndFooter: Story = {
+  render: () => (
+    <Box
+      height="500px"
+      overflow="auto"
+      border="solid-25"
+      borderColor="neutral.6"
+      borderRadius="200"
+    >
+      <DefaultPage.Root layout="flexible" stickyHeader stickyFooter>
+        <DefaultPage.Header>
+          <DefaultPage.Title>Edit product</DefaultPage.Title>
+          <DefaultPage.Actions>
+            <Button variant="ghost">Preview</Button>
+          </DefaultPage.Actions>
+        </DefaultPage.Header>
+        <DefaultPage.Content>
+          <Stack gap="600" maxWidth="600px">
+            {Array.from({ length: 10 }, (_, i) => (
               <FormField.Root key={i}>
                 <FormField.Label>Field {i + 1}</FormField.Label>
                 <FormField.Input>
@@ -787,7 +1009,7 @@ export const StickyHeaderAndFooter: Story = {
 };
 
 // ============================================================
-// 11. WITH STEPS — Multi-step wizard inside a page
+// 14. WITH STEPS — Multi-step wizard inside a page
 // ============================================================
 
 /**
