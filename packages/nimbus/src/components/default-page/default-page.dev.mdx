@@ -20,14 +20,16 @@ At minimum, wrap `DefaultPage.Header` (with `DefaultPage.Title`) and
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.Title>Products</DefaultPage.Title>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Text>Your page content goes here.</Text>
-    </DefaultPage.Content>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Products</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Your page content goes here.</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -41,7 +43,7 @@ DefaultPage supports two layout modes controlled by the `layout` prop on
 The default mode. The page fills its parent container (`height: 100%`). Only
 the content area scrolls — the header and footer are naturally pinned by the
 CSS grid and do not need sticky positioning. This is the recommended mode for
-Merchant Center pages embedded inside an application shell.
+pages embedded inside an application shell.
 
 ```jsx live-dev
 const App = () => (
@@ -154,18 +156,20 @@ present, `Actions` automatically shifts down to align with the title row.
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.Title>Products</DefaultPage.Title>
-      <DefaultPage.Actions>
-        <Button variant="ghost">Export</Button>
-        <Button variant="solid" colorPalette="primary">Add Product</Button>
-      </DefaultPage.Actions>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Text>Content area</Text>
-    </DefaultPage.Content>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Products</DefaultPage.Title>
+        <DefaultPage.Actions>
+          <Button variant="ghost">Export</Button>
+          <Button variant="solid" colorPalette="primary">Add Product</Button>
+        </DefaultPage.Actions>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Content area</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -176,14 +180,16 @@ the title text.
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.Title>Products</DefaultPage.Title>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Text>Content area</Text>
-    </DefaultPage.Content>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Products</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Content area</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -194,15 +200,17 @@ the title. Place it as a sibling of `Title` inside the `Header`.
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.Title>Products</DefaultPage.Title>
-      <DefaultPage.Subtitle>Manage your product catalog</DefaultPage.Subtitle>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Text>Content area</Text>
-    </DefaultPage.Content>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Products</DefaultPage.Title>
+        <DefaultPage.Subtitle>Manage your product catalog</DefaultPage.Subtitle>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Content area</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -214,18 +222,20 @@ spanning all rows. When `BackLink` is present, the grid automatically shifts
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.Title>Products</DefaultPage.Title>
-      <DefaultPage.Actions>
-        <Button variant="ghost">Export</Button>
-        <Button variant="solid" colorPalette="primary">Add Product</Button>
-      </DefaultPage.Actions>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Text>Content area</Text>
-    </DefaultPage.Content>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Products</DefaultPage.Title>
+        <DefaultPage.Actions>
+          <Button variant="ghost">Export</Button>
+          <Button variant="solid" colorPalette="primary">Add Product</Button>
+        </DefaultPage.Actions>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Content area</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -241,18 +251,20 @@ omitted, but destination-specific text is strongly recommended for usability.
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.BackLink href="/products">
-        Back to products
-      </DefaultPage.BackLink>
-      <DefaultPage.Title>Wireless Headphones</DefaultPage.Title>
-      <DefaultPage.Subtitle>SKU-WH-2024-001</DefaultPage.Subtitle>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Text>Product detail content</Text>
-    </DefaultPage.Content>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/products">
+          Back to products
+        </DefaultPage.BackLink>
+        <DefaultPage.Title>Wireless Headphones</DefaultPage.Title>
+        <DefaultPage.Subtitle>SKU-WH-2024-001</DefaultPage.Subtitle>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Product detail content</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -266,22 +278,24 @@ Wrap a `TabNav.Root` inside this component.
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.Title>Customer Details</DefaultPage.Title>
-      <DefaultPage.Subtitle>customer@example.com</DefaultPage.Subtitle>
-      <DefaultPage.TabNav>
-        <TabNav.Root aria-label="Customer sections">
-          <TabNav.Item href="/customers/123/general" isCurrent>General</TabNav.Item>
-          <TabNav.Item href="/customers/123/addresses">Addresses</TabNav.Item>
-          <TabNav.Item href="/customers/123/orders">Orders</TabNav.Item>
-        </TabNav.Root>
-      </DefaultPage.TabNav>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Text>General information content</Text>
-    </DefaultPage.Content>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Customer Details</DefaultPage.Title>
+        <DefaultPage.Subtitle>customer@example.com</DefaultPage.Subtitle>
+        <DefaultPage.TabNav>
+          <TabNav.Root aria-label="Customer sections">
+            <TabNav.Item href="/customers/123/general" isCurrent>General</TabNav.Item>
+            <TabNav.Item href="/customers/123/addresses">Addresses</TabNav.Item>
+            <TabNav.Item href="/customers/123/orders">Orders</TabNav.Item>
+          </TabNav.Root>
+        </DefaultPage.TabNav>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>General information content</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -292,16 +306,18 @@ preserve sticky positioning for child components like `DataTable`.
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.Title>Page Title</DefaultPage.Title>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Box bg="neutral.3" padding="400" borderRadius="200">
-        <Text>Content area with automatic padding spacing</Text>
-      </Box>
-    </DefaultPage.Content>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Page Title</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Box bg="neutral.3" padding="400" borderRadius="200">
+          <Text>Content area with automatic padding spacing</Text>
+        </Box>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -312,22 +328,24 @@ form actions — the footer grid row collapses automatically when absent.
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.Title>Project Settings</DefaultPage.Title>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Box bg="neutral.3" padding="400" borderRadius="200">
-        <Text>Form content</Text>
-      </Box>
-    </DefaultPage.Content>
-    <DefaultPage.Footer>
-      <Stack direction="row" gap="200" justify="flex-end" width="100%">
-        <Button variant="ghost">Cancel</Button>
-        <Button variant="solid" colorPalette="primary">Save</Button>
-      </Stack>
-    </DefaultPage.Footer>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Project Settings</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Box bg="neutral.3" padding="400" borderRadius="200">
+          <Text>Form content</Text>
+        </Box>
+      </DefaultPage.Content>
+      <DefaultPage.Footer>
+        <Stack direction="row" gap="200" justify="flex-end" width="100%">
+          <Button variant="ghost">Cancel</Button>
+          <Button variant="solid" colorPalette="primary">Save</Button>
+        </Stack>
+      </DefaultPage.Footer>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -338,22 +356,24 @@ const App = () => (
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.Title>Edit product</DefaultPage.Title>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Text>Form content goes here.</Text>
-    </DefaultPage.Content>
-    <DefaultPage.Footer>
-      <Stack direction="row" gap="200" width="100%">
-        <Button colorPalette="critical" variant="ghost">Delete</Button>
-        <Spacer />
-        <Button variant="solid" colorPalette="primary">Save</Button>
-        <Button variant="ghost">Cancel</Button>
-      </Stack>
-    </DefaultPage.Footer>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Edit product</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Form content goes here.</Text>
+      </DefaultPage.Content>
+      <DefaultPage.Footer>
+        <Stack direction="row" gap="200" width="100%">
+          <Button colorPalette="critical" variant="ghost">Delete</Button>
+          <Spacer />
+          <Button variant="solid" colorPalette="primary">Save</Button>
+          <Button variant="ghost">Cancel</Button>
+        </Stack>
+      </DefaultPage.Footer>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -365,29 +385,31 @@ place a custom element on the left side of the header grid, set
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.Title mb="100">Page Title</DefaultPage.Title>
-      <Badge
-        gridColumn="1"
-        justifySelf="flex-start"
-        colorPalette="blue"
-        size="xs"
-      >
-        Custom in column 1
-      </Badge>
-      <Badge
-        colorPalette="mint"
-        justifySelf="flex-end"
-        size="xs"
-      >
-        Custom in column 2
-      </Badge>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Text>Content area</Text>
-    </DefaultPage.Content>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title mb="100">Page Title</DefaultPage.Title>
+        <Badge
+          gridColumn="1"
+          justifySelf="flex-start"
+          colorPalette="blue"
+          size="xs"
+        >
+          Custom in column 1
+        </Badge>
+        <Badge
+          colorPalette="mint"
+          justifySelf="flex-end"
+          size="xs"
+        >
+          Custom in column 2
+        </Badge>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Content area</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -400,19 +422,21 @@ For top-level pages that display information without form actions, omit both
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.Title>Products</DefaultPage.Title>
-      <DefaultPage.Subtitle>Manage your product catalog</DefaultPage.Subtitle>
-      <DefaultPage.Actions>
-        <Button variant="ghost">Export</Button>
-        <Button variant="solid" colorPalette="primary">Add Product</Button>
-      </DefaultPage.Actions>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Text>Product list content goes here.</Text>
-    </DefaultPage.Content>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Products</DefaultPage.Title>
+        <DefaultPage.Subtitle>Manage your product catalog</DefaultPage.Subtitle>
+        <DefaultPage.Actions>
+          <Button variant="ghost">Export</Button>
+          <Button variant="solid" colorPalette="primary">Add Product</Button>
+        </DefaultPage.Actions>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Product list content goes here.</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -423,33 +447,35 @@ action buttons. Omit `DefaultPage.BackLink` since this is a main-level page.
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.Title>Project Settings</DefaultPage.Title>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Stack gap="400">
-        <FormField.Root>
-          <FormField.Label>Project name</FormField.Label>
-          <FormField.Input>
-            <TextInput placeholder="e.g. My Store" />
-          </FormField.Input>
-        </FormField.Root>
-        <FormField.Root>
-          <FormField.Label>Description</FormField.Label>
-          <FormField.Input>
-            <TextInput placeholder="Describe the project" />
-          </FormField.Input>
-        </FormField.Root>
-      </Stack>
-    </DefaultPage.Content>
-    <DefaultPage.Footer>
-      <Stack direction="row" gap="200" justify="flex-end" width="100%">
-        <Button variant="ghost">Cancel</Button>
-        <Button variant="solid" colorPalette="primary">Save</Button>
-      </Stack>
-    </DefaultPage.Footer>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Project Settings</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          <FormField.Root>
+            <FormField.Label>Project name</FormField.Label>
+            <FormField.Input>
+              <TextInput placeholder="e.g. My Store" />
+            </FormField.Input>
+          </FormField.Root>
+          <FormField.Root>
+            <FormField.Label>Description</FormField.Label>
+            <FormField.Input>
+              <TextInput placeholder="Describe the project" />
+            </FormField.Input>
+          </FormField.Root>
+        </Stack>
+      </DefaultPage.Content>
+      <DefaultPage.Footer>
+        <Stack direction="row" gap="200" justify="flex-end" width="100%">
+          <Button variant="ghost">Cancel</Button>
+          <Button variant="solid" colorPalette="primary">Save</Button>
+        </Stack>
+      </DefaultPage.Footer>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -460,18 +486,20 @@ For detail pages that display information without form actions, include
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.BackLink href="/products">Back to products</DefaultPage.BackLink>
-      <DefaultPage.Title>Wireless Headphones</DefaultPage.Title>
-      <DefaultPage.Subtitle>SKU-WH-2024-001</DefaultPage.Subtitle>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Stack gap="400">
-        <Text>This is a read-only detail page with product information.</Text>
-      </Stack>
-    </DefaultPage.Content>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/products">Back to products</DefaultPage.BackLink>
+        <DefaultPage.Title>Wireless Headphones</DefaultPage.Title>
+        <DefaultPage.Subtitle>SKU-WH-2024-001</DefaultPage.Subtitle>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          <Text>This is a read-only detail page with product information.</Text>
+        </Stack>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -482,24 +510,26 @@ For detail pages with form actions, include both `DefaultPage.BackLink` and
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.BackLink href="/orders">Back to orders</DefaultPage.BackLink>
-      <DefaultPage.Title>Edit Order</DefaultPage.Title>
-      <DefaultPage.Subtitle>Order #ORD-2024-001</DefaultPage.Subtitle>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Stack gap="400">
-        <Text>Form fields would go here.</Text>
-      </Stack>
-    </DefaultPage.Content>
-    <DefaultPage.Footer>
-      <Stack direction="row" gap="200" justify="flex-end" width="100%">
-        <Button variant="ghost">Cancel</Button>
-        <Button variant="solid" colorPalette="primary">Save</Button>
-      </Stack>
-    </DefaultPage.Footer>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/orders">Back to orders</DefaultPage.BackLink>
+        <DefaultPage.Title>Edit Order</DefaultPage.Title>
+        <DefaultPage.Subtitle>Order #ORD-2024-001</DefaultPage.Subtitle>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          <Text>Form fields would go here.</Text>
+        </Stack>
+      </DefaultPage.Content>
+      <DefaultPage.Footer>
+        <Stack direction="row" gap="200" justify="flex-end" width="100%">
+          <Button variant="ghost">Cancel</Button>
+          <Button variant="solid" colorPalette="primary">Save</Button>
+        </Stack>
+      </DefaultPage.Footer>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -511,25 +541,27 @@ renders navigation links — in a real app, the router handles content rendering
 
 ```jsx live-dev
 const App = () => (
-  <DefaultPage.Root>
-    <DefaultPage.Header>
-      <DefaultPage.BackLink href="/customers">Back to customers</DefaultPage.BackLink>
-      <DefaultPage.Title>Customer Details</DefaultPage.Title>
-      <DefaultPage.Subtitle>customer@example.com</DefaultPage.Subtitle>
-      <DefaultPage.TabNav>
-        <TabNav.Root aria-label="Customer sections">
-          <TabNav.Item href="/customers/123/general" isCurrent>General</TabNav.Item>
-          <TabNav.Item href="/customers/123/addresses">Addresses</TabNav.Item>
-          <TabNav.Item href="/customers/123/orders">Orders</TabNav.Item>
-        </TabNav.Root>
-      </DefaultPage.TabNav>
-    </DefaultPage.Header>
-    <DefaultPage.Content>
-      <Box py="400">
-        <Text>General information content</Text>
-      </Box>
-    </DefaultPage.Content>
-  </DefaultPage.Root>
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/customers">Back to customers</DefaultPage.BackLink>
+        <DefaultPage.Title>Customer Details</DefaultPage.Title>
+        <DefaultPage.Subtitle>customer@example.com</DefaultPage.Subtitle>
+        <DefaultPage.TabNav>
+          <TabNav.Root aria-label="Customer sections">
+            <TabNav.Item href="/customers/123/general" isCurrent>General</TabNav.Item>
+            <TabNav.Item href="/customers/123/addresses">Addresses</TabNav.Item>
+            <TabNav.Item href="/customers/123/orders">Orders</TabNav.Item>
+          </TabNav.Root>
+        </DefaultPage.TabNav>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Box py="400">
+          <Text>General information content</Text>
+        </Box>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
 )
 ```
 
@@ -600,42 +632,6 @@ within your application.
 
 {{docs-tests: default-page.docs.spec.tsx}}
 
-## Migrating from Merchant Center Application Kit
-
-DefaultPage replaces all eight page components from
-[`@commercetools-frontend/application-components`](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components):
-
-| Application Kit Component | Nimbus Equivalent |
-|---|---|
-| `<InfoMainPage title="...">` | `<DefaultPage.Root>` + Header/Title + Content (no BackLink, no Footer) |
-| `<FormMainPage title="..." onPrimaryButtonClick={...}>` | `<DefaultPage.Root>` + Header/Title + Content + Footer with buttons (no BackLink) |
-| `<CustomFormMainPage formControls={...}>` | Same as FormMainPage — Footer accepts any children |
-| `<TabularMainPage tabControls={...}>` | `<DefaultPage.Root>` + Header/Title + TabNav + Content (no BackLink) |
-| `<InfoDetailPage title="...">` | `<DefaultPage.Root>` + Header/BackLink/Title + Content (no Footer) |
-| `<FormDetailPage title="..." onPrimaryButtonClick={...}>` | `<DefaultPage.Root>` + Header/BackLink/Title + Content + Footer with buttons |
-| `<CustomFormDetailPage formControls={...}>` | Same as FormDetailPage — Footer accepts any children |
-| `<TabularDetailPage tabControls={...}>` | `<DefaultPage.Root>` + Header/BackLink/Title + TabNav + Content |
-
-> [!NOTE]
-> DefaultPage replaces **all eight** Application Kit page components with a
-> single composable API. The key difference: include `BackLink` for detail views,
-> omit it for main pages.
-
-Key differences from Application Kit:
-
-- **Composition over configuration** — Instead of 10+ props for button labels,
-  handlers, and visibility, compose your own buttons in `Footer` or `Actions`
-- **BackLink determines the pattern** — Include `DefaultPage.BackLink` for
-  detail views; omit it for main pages. No separate component needed
-- **No built-in tab routing** — Use `TabNav` inside `DefaultPage.Header` for
-  route-based navigation
-- **Title and subtitle as children** — `<DefaultPage.Title>Products</DefaultPage.Title>`
-  and `<DefaultPage.Subtitle>` replace `title` and `subtitle` props
-- **No `customTitleRow`** — The Header accepts any content, including custom
-  elements with `gridColumn="1"` for left placement
-- **No `Intl` static property** — Use your own i18n solution for button labels
-
 ## Resources
 
 - [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-layout-defaultpage--docs)
-- [MC Application Components](https://docs.commercetools.com/merchant-center-customizations/tooling-and-configuration/commercetools-frontend-application-components) (predecessor)
