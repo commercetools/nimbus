@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect } from "storybook/test";
 import { useState } from "react";
 import {
+  Badge,
   Box,
   Button,
   DataTable,
@@ -81,6 +82,10 @@ const productColumns: DataTableColumnItem<Product>[] = [
   { id: "price", header: "Price", accessor: (row) => row.price },
   { id: "stock", header: "In stock", accessor: (row) => row.stock },
 ];
+
+// ============================================================
+// BUILDING BLOCKS
+// ============================================================
 
 // ============================================================
 // 1. BASE — Minimal main-page layout
@@ -169,13 +174,15 @@ export const TitleWithSubtitle: Story = {
 };
 
 // ============================================================
-// 3. HEADER ACTIONS
+// 3. CUSTOM TITLE CONTENT — Title with status badge
 // ============================================================
 
 /**
- * Header containing a title and Actions slot with primary and secondary buttons.
+ * Demonstrates placing custom content alongside the title, such as a status
+ * badge. This is a common MC pattern where product or order names are
+ * accompanied by a status indicator.
  */
-export const HeaderActions: Story = {
+export const CustomTitleContent: Story = {
   render: () => (
     <DefaultPage.Root
       border="solid-25"
@@ -183,16 +190,86 @@ export const HeaderActions: Story = {
       borderRadius="200"
     >
       <DefaultPage.Header>
-        <DefaultPage.Title>Orders</DefaultPage.Title>
+        <DefaultPage.BackLink href="/products">
+          Back to products
+        </DefaultPage.BackLink>
+        <DefaultPage.Title>
+          <Stack direction="row" gap="300" alignItems="center">
+            Classic T-Shirt
+            <Badge colorPalette="positive" size="xs">
+              Published
+            </Badge>
+          </Stack>
+        </DefaultPage.Title>
         <DefaultPage.Actions>
-          <Button variant="ghost">Export</Button>
-          <Button variant="solid">Create order</Button>
+          <Button colorPalette="critical" variant="ghost">
+            Unpublish
+          </Button>
         </DefaultPage.Actions>
       </DefaultPage.Header>
       <DefaultPage.Content>
-        <Text>Order list content goes here.</Text>
+        <Text>Product detail content goes here.</Text>
       </DefaultPage.Content>
     </DefaultPage.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders title with badge", async () => {
+      await expect(
+        canvas.getByRole("heading", { level: 1 })
+      ).toBeInTheDocument();
+      await expect(canvas.getByText("Published")).toBeInTheDocument();
+    });
+
+    await step("Badge is inside the heading element", async () => {
+      const heading = canvas.getByRole("heading", { level: 1 });
+      const badge = canvas.getByText("Published");
+      await expect(heading.contains(badge)).toBe(true);
+    });
+  },
+};
+
+// ============================================================
+// MAIN PAGE PATTERNS
+// ============================================================
+
+// ============================================================
+// 4. INFO MAIN PAGE — Listing page with Actions and DataTable
+// ============================================================
+
+/**
+ * The most common Merchant Center page pattern: a listing page with a title,
+ * header action buttons, and a DataTable in the content area.
+ */
+export const InfoMainPage: Story = {
+  render: () => (
+    <Box
+      height="500px"
+      border="solid-25"
+      borderColor="neutral.6"
+      borderRadius="200"
+    >
+      <DefaultPage.Root>
+        <DefaultPage.Header>
+          <DefaultPage.Title>Products</DefaultPage.Title>
+          <DefaultPage.Actions>
+            <Button variant="ghost">Export</Button>
+            <Button colorPalette="primary" variant="solid">
+              Add product
+            </Button>
+          </DefaultPage.Actions>
+        </DefaultPage.Header>
+        <DefaultPage.Content>
+          <DataTable
+            maxHeight="100%"
+            columns={productColumns}
+            rows={productRows}
+            aria-label="Products"
+          />
+        </DefaultPage.Content>
+      </DefaultPage.Root>
+    </Box>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -202,21 +279,26 @@ export const HeaderActions: Story = {
         canvas.getByRole("button", { name: "Export" })
       ).toBeInTheDocument();
       await expect(
-        canvas.getByRole("button", { name: "Create order" })
+        canvas.getByRole("button", { name: "Add product" })
       ).toBeInTheDocument();
+    });
+
+    await step("Renders the data table", async () => {
+      const table = canvas.getByRole("grid", { name: "Products" });
+      await expect(table).toBeInTheDocument();
     });
   },
 };
 
 // ============================================================
-// 4. WITH FOOTER — Form page
+// 5. FORM MAIN PAGE — Form page with footer
 // ============================================================
 
 /**
  * A form page pattern with input fields in the content area and Save / Cancel
  * actions in the Footer slot.
  */
-export const WithFooter: Story = {
+export const FormMainPage: Story = {
   render: () => {
     const [name, setName] = useState("");
 
@@ -255,7 +337,9 @@ export const WithFooter: Story = {
         </DefaultPage.Content>
         <DefaultPage.Footer>
           <Stack direction="row" gap="200">
-            <Button variant="solid">Save product</Button>
+            <Button colorPalette="primary" variant="solid">
+              Save product
+            </Button>
             <Button variant="ghost">Cancel</Button>
           </Stack>
         </DefaultPage.Footer>
@@ -282,7 +366,99 @@ export const WithFooter: Story = {
 };
 
 // ============================================================
-// 5. INFO DETAIL PAGE — Read-only detail view
+// 6. TABULAR MAIN PAGE — Main page with TabNav and footer
+// ============================================================
+
+/**
+ * A main page with tab navigation in the header and a footer with form actions.
+ * This covers the MC settings pattern (e.g., Project Settings) where tabbed
+ * content sections have save/cancel actions.
+ */
+export const TabularMainPage: Story = {
+  render: () => (
+    <DefaultPage.Root
+      border="solid-25"
+      borderColor="neutral.6"
+      borderRadius="200"
+    >
+      <DefaultPage.Header>
+        <DefaultPage.Title>Project settings</DefaultPage.Title>
+        <DefaultPage.Actions>
+          <Button colorPalette="primary" variant="solid">
+            Add channel
+          </Button>
+        </DefaultPage.Actions>
+        <DefaultPage.TabNav>
+          <TabNav.Root aria-label="Settings sections">
+            <TabNav.Item href="#general" isCurrent>
+              General
+            </TabNav.Item>
+            <TabNav.Item href="#international">International</TabNav.Item>
+            <TabNav.Item href="#taxes">Taxes</TabNav.Item>
+            <TabNav.Item href="#shipping">Shipping</TabNav.Item>
+          </TabNav.Root>
+        </DefaultPage.TabNav>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>General settings content goes here.</Text>
+      </DefaultPage.Content>
+      <DefaultPage.Footer>
+        <Stack direction="row" gap="200">
+          <Button colorPalette="primary" variant="solid">
+            Save changes
+          </Button>
+          <Button variant="ghost">Cancel</Button>
+        </Stack>
+      </DefaultPage.Footer>
+    </DefaultPage.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders tab navigation", async () => {
+      const tabNav = canvas.getByRole("navigation", {
+        name: "Settings sections",
+      });
+      await expect(tabNav).toBeInTheDocument();
+    });
+
+    await step("Renders all tab links", async () => {
+      await expect(
+        canvas.getByRole("link", { name: "General" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("link", { name: "International" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("link", { name: "Taxes" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("link", { name: "Shipping" })
+      ).toBeInTheDocument();
+    });
+
+    await step("Current tab has aria-current attribute", async () => {
+      const currentTab = canvas.getByRole("link", { name: "General" });
+      await expect(currentTab).toHaveAttribute("aria-current", "page");
+    });
+
+    await step("Renders footer action buttons", async () => {
+      await expect(
+        canvas.getByRole("button", { name: "Save changes" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("button", { name: "Cancel" })
+      ).toBeInTheDocument();
+    });
+  },
+};
+
+// ============================================================
+// DETAIL PAGE PATTERNS
+// ============================================================
+
+// ============================================================
+// 7. INFO DETAIL PAGE — Read-only detail view
 // ============================================================
 
 /**
@@ -305,7 +481,9 @@ export const InfoDetailPage: Story = {
           SKU-001 · Last updated 3 days ago
         </DefaultPage.Subtitle>
         <DefaultPage.Actions>
-          <Button variant="ghost">Edit</Button>
+          <Button colorPalette="primary" variant="solid">
+            Edit
+          </Button>
         </DefaultPage.Actions>
       </DefaultPage.Header>
       <DefaultPage.Content>
@@ -339,7 +517,7 @@ export const InfoDetailPage: Story = {
 };
 
 // ============================================================
-// 6. FORM DETAIL PAGE — Editable detail view with footer
+// 8. FORM DETAIL PAGE — Editable detail view with footer
 // ============================================================
 
 /**
@@ -366,7 +544,9 @@ export const FormDetailPage: Story = {
           <DefaultPage.Title>Edit: Classic T-Shirt</DefaultPage.Title>
           <DefaultPage.Subtitle>SKU-001</DefaultPage.Subtitle>
           <DefaultPage.Actions>
-            <Button variant="ghost">Delete</Button>
+            <Button colorPalette="critical" variant="ghost">
+              Delete
+            </Button>
           </DefaultPage.Actions>
         </DefaultPage.Header>
         <DefaultPage.Content>
@@ -396,7 +576,9 @@ export const FormDetailPage: Story = {
         </DefaultPage.Content>
         <DefaultPage.Footer>
           <Stack direction="row" gap="200">
-            <Button variant="solid">Save changes</Button>
+            <Button colorPalette="primary" variant="solid">
+              Save changes
+            </Button>
             <Button variant="ghost">Cancel</Button>
           </Stack>
         </DefaultPage.Footer>
@@ -423,110 +605,79 @@ export const FormDetailPage: Story = {
 };
 
 // ============================================================
-// 7. WITH TAB NAVIGATION — Main page with TabNav in header
+// 9. TABULAR DETAIL PAGE — Detail with tabs and footer
 // ============================================================
 
 /**
- * A main page with tab navigation placed inside the header. The header
- * automatically removes its bottom padding when a TabNav is present.
+ * A detail page combining BackLink navigation, header tab navigation, and a
+ * footer with form actions. This covers the most feature-rich MC pattern:
+ * editing within a tabbed detail view (e.g., Order detail, Customer detail).
  */
-export const WithTabNavigation: Story = {
+export const TabularDetailPage: Story = {
   render: () => (
-    <DefaultPage.Root
+    <Box
+      height="500px"
       border="solid-25"
       borderColor="neutral.6"
       borderRadius="200"
     >
-      <DefaultPage.Header>
-        <DefaultPage.Title>Customer details</DefaultPage.Title>
-        <DefaultPage.Actions>
-          <Button variant="solid">Add customer</Button>
-        </DefaultPage.Actions>
-        <DefaultPage.TabNav>
-          <TabNav.Root aria-label="Customer sections">
-            <TabNav.Item href="#general" isCurrent>
-              General
-            </TabNav.Item>
-            <TabNav.Item href="#addresses">Addresses</TabNav.Item>
-            <TabNav.Item href="#orders">Orders</TabNav.Item>
-            <TabNav.Item href="#payments">Payments</TabNav.Item>
-          </TabNav.Root>
-        </DefaultPage.TabNav>
-      </DefaultPage.Header>
-      <DefaultPage.Content>
-        <Text>General customer information goes here.</Text>
-      </DefaultPage.Content>
-    </DefaultPage.Root>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Renders tab navigation", async () => {
-      const tabNav = canvas.getByRole("navigation", {
-        name: "Customer sections",
-      });
-      await expect(tabNav).toBeInTheDocument();
-    });
-
-    await step("Renders all tab links", async () => {
-      await expect(
-        canvas.getByRole("link", { name: "General" })
-      ).toBeInTheDocument();
-      await expect(
-        canvas.getByRole("link", { name: "Addresses" })
-      ).toBeInTheDocument();
-      await expect(
-        canvas.getByRole("link", { name: "Orders" })
-      ).toBeInTheDocument();
-      await expect(
-        canvas.getByRole("link", { name: "Payments" })
-      ).toBeInTheDocument();
-    });
-
-    await step("Current tab has aria-current attribute", async () => {
-      const currentTab = canvas.getByRole("link", { name: "General" });
-      await expect(currentTab).toHaveAttribute("aria-current", "page");
-    });
-  },
-};
-
-// ============================================================
-// 8. DETAIL WITH TAB NAVIGATION
-// ============================================================
-
-/**
- * A detail page combining BackLink navigation with header tab navigation.
- */
-export const DetailWithTabNavigation: Story = {
-  render: () => (
-    <DefaultPage.Root
-      border="solid-25"
-      borderColor="neutral.6"
-      borderRadius="200"
-    >
-      <DefaultPage.Header>
-        <DefaultPage.BackLink href="/customers">
-          Back to customers
-        </DefaultPage.BackLink>
-        <DefaultPage.Title>Jane Smith</DefaultPage.Title>
-        <DefaultPage.Subtitle>customer@example.com</DefaultPage.Subtitle>
-        <DefaultPage.Actions>
-          <Button variant="ghost">Edit</Button>
-        </DefaultPage.Actions>
-        <DefaultPage.TabNav>
-          <TabNav.Root aria-label="Customer sections">
-            <TabNav.Item href="#general" isCurrent>
-              General
-            </TabNav.Item>
-            <TabNav.Item href="#addresses">Addresses</TabNav.Item>
-            <TabNav.Item href="#orders">Orders</TabNav.Item>
-          </TabNav.Root>
-        </DefaultPage.TabNav>
-      </DefaultPage.Header>
-      <DefaultPage.Content>
-        <Text>Customer general information goes here.</Text>
-      </DefaultPage.Content>
-    </DefaultPage.Root>
+      <DefaultPage.Root stickyHeader stickyFooter>
+        <DefaultPage.Header>
+          <DefaultPage.BackLink href="/customers">
+            Back to customers
+          </DefaultPage.BackLink>
+          <DefaultPage.Title>Jane Smith</DefaultPage.Title>
+          <DefaultPage.Subtitle>customer@example.com</DefaultPage.Subtitle>
+          <DefaultPage.Actions>
+            <Button colorPalette="critical" variant="ghost">
+              Delete
+            </Button>
+          </DefaultPage.Actions>
+          <DefaultPage.TabNav>
+            <TabNav.Root aria-label="Customer sections">
+              <TabNav.Item href="#general" isCurrent>
+                General
+              </TabNav.Item>
+              <TabNav.Item href="#addresses">Addresses</TabNav.Item>
+              <TabNav.Item href="#orders">Orders</TabNav.Item>
+            </TabNav.Root>
+          </DefaultPage.TabNav>
+        </DefaultPage.Header>
+        <DefaultPage.Content>
+          <Stack gap="600" maxWidth="600px">
+            <FormField.Root isRequired>
+              <FormField.Label>First name</FormField.Label>
+              <FormField.Input>
+                <TextInput defaultValue="Jane" aria-label="First name" />
+              </FormField.Input>
+            </FormField.Root>
+            <FormField.Root isRequired>
+              <FormField.Label>Last name</FormField.Label>
+              <FormField.Input>
+                <TextInput defaultValue="Smith" aria-label="Last name" />
+              </FormField.Input>
+            </FormField.Root>
+            <FormField.Root>
+              <FormField.Label>Email</FormField.Label>
+              <FormField.Input>
+                <TextInput
+                  defaultValue="customer@example.com"
+                  aria-label="Email"
+                />
+              </FormField.Input>
+            </FormField.Root>
+          </Stack>
+        </DefaultPage.Content>
+        <DefaultPage.Footer>
+          <Stack direction="row" gap="200">
+            <Button colorPalette="primary" variant="solid">
+              Save changes
+            </Button>
+            <Button variant="ghost">Cancel</Button>
+          </Stack>
+        </DefaultPage.Footer>
+      </DefaultPage.Root>
+    </Box>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -536,65 +687,27 @@ export const DetailWithTabNavigation: Story = {
       await expect(backLink).toHaveAttribute("href", "/customers");
     });
 
-    await step("Renders tab navigation alongside back link", async () => {
+    await step("Renders tab navigation", async () => {
       const tabNav = canvas.getByRole("navigation", {
         name: "Customer sections",
       });
       await expect(tabNav).toBeInTheDocument();
     });
+
+    await step("Renders footer action buttons", async () => {
+      await expect(
+        canvas.getByRole("button", { name: "Save changes" })
+      ).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("button", { name: "Cancel" })
+      ).toBeInTheDocument();
+    });
   },
 };
 
 // ============================================================
-// 9. STICKY TABLE HEADER — Constrained height with DataTable
+// ADVANCED FEATURES
 // ============================================================
-
-/**
- * The page content area scrolls independently while the page header remains
- * visible. A DataTable demonstrates realistic scrollable table content.
- */
-export const StickyTableHeader: Story = {
-  render: () => (
-    <Box
-      height="500px"
-      border="solid-25"
-      borderColor="neutral.6"
-      borderRadius="200"
-    >
-      <DefaultPage.Root>
-        <DefaultPage.Header>
-          <DefaultPage.Title>Products</DefaultPage.Title>
-          <DefaultPage.Actions>
-            <Button variant="solid">Add product</Button>
-          </DefaultPage.Actions>
-        </DefaultPage.Header>
-        <DefaultPage.Content>
-          <DataTable
-            maxHeight="100%"
-            columns={productColumns}
-            rows={productRows}
-            aria-label="Products"
-          />
-        </DefaultPage.Content>
-      </DefaultPage.Root>
-    </Box>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Renders the data table", async () => {
-      const table = canvas.getByRole("grid", { name: "Products" });
-      await expect(table).toBeInTheDocument();
-    });
-
-    await step("Header has sticky positioning applied", async () => {
-      const header = canvasElement.querySelector("header");
-      await expect(header).toBeInTheDocument();
-      const style = window.getComputedStyle(header!);
-      await expect(style.position).toBe("sticky");
-    });
-  },
-};
 
 // ============================================================
 // 10. STICKY HEADER AND FOOTER
@@ -636,7 +749,9 @@ export const StickyHeaderAndFooter: Story = {
         </DefaultPage.Content>
         <DefaultPage.Footer>
           <Stack direction="row" gap="200">
-            <Button variant="solid">Save changes</Button>
+            <Button colorPalette="primary" variant="solid">
+              Save changes
+            </Button>
             <Button variant="ghost">Cancel</Button>
           </Stack>
         </DefaultPage.Footer>
@@ -811,7 +926,7 @@ export const WithSteps: Story = {
                 </Button>
               </Steps.PrevTrigger>
               <Steps.NextTrigger asChild>
-                <Button variant="solid">
+                <Button colorPalette="primary" variant="solid">
                   {currentStep === stepCount - 1 ? "Finish" : "Next"}
                 </Button>
               </Steps.NextTrigger>
