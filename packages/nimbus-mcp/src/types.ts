@@ -225,12 +225,24 @@ export interface TokenCategoryResponse {
   hint?: string;
 }
 
-/** A palette summary with its name and representative color. */
+/** A single palette with its name and representative color. */
 export interface PaletteEntry {
   /** Palette name, valid as a `colorPalette` prop value. */
   name: string;
   /** Step 9 value — the primary solid fill color (light / dark). */
   solid: string;
+}
+
+/** Grouped palette response keyed by group name. */
+export interface PaletteGroupResponse {
+  /** Semantic palettes with intent-based names (e.g. primary, critical). */
+  "semantic-palettes": PaletteEntry[];
+  /** Brand-specific palettes (e.g. ctyellow, ctviolet). */
+  "brand-palettes": PaletteEntry[];
+  /** Raw color palettes with no semantic meaning (e.g. amber, red). */
+  "system-palettes": PaletteEntry[];
+  /** Black, white, and alpha variants. */
+  "blacks-and-whites": PaletteEntry[];
 }
 
 /** Reverse-lookup response mapping a value to token names. */

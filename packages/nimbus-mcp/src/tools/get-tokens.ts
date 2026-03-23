@@ -5,6 +5,7 @@ import type {
   FlatToken,
   FlatTokenData,
   PaletteEntry,
+  PaletteGroupResponse,
   TokenCategorySummary,
   TokenCategoryResponse,
   TokenReverseLookupResponse,
@@ -48,16 +49,12 @@ const PALETTE_GROUP_ORDER = [
 ];
 
 /**
- * Extracts palette summaries from color tokens with the step 9 (solid)
- * value so the LLM can distinguish palettes visually.
- * Ordered by group priority (semantic → brand → system → blacks-and-whites),
- * then alphabetically within each group.
+ * Extracts palette summaries from color tokens grouped by palette type,
+ * each with the step 9 (solid) value so the LLM can distinguish palettes.
+ * Palettes are sorted alphabetically within each group.
  */
-function extractPalettes(tokens: FlatToken[]): PaletteEntry[] {
-  const palettes: Record<
-    string,
-    { group: string; name: string; solid: string }
-  > = {};
+function extractPalettes(tokens: FlatToken[]): PaletteGroupResponse {
+  const groups: Record<string, Map<string, PaletteEntry>> = {};
 
   for (const token of tokens) {
     const group = token.path[1];
@@ -65,27 +62,28 @@ function extractPalettes(tokens: FlatToken[]): PaletteEntry[] {
     const step = token.path[3];
     if (!group || !palette || step !== "9") continue;
 
-    const key = `${group}.${palette}`;
-    palettes[key] = { group, name: palette, solid: token.value };
+    if (!groups[group]) groups[group] = new Map();
+    groups[group].set(palette, { name: palette, solid: token.value });
   }
 
-  const entries = Object.values(palettes);
-  const groupOrder = new Map(PALETTE_GROUP_ORDER.map((g, i) => [g, i]));
-  entries.sort((a, b) => {
-    const ga = groupOrder.get(a.group) ?? 999;
-    const gb = groupOrder.get(b.group) ?? 999;
-    if (ga !== gb) return ga - gb;
-    return a.name.localeCompare(b.name);
-  });
+  const toSorted = (group: string): PaletteEntry[] =>
+    [...(groups[group]?.values() ?? [])].sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
 
-  return entries.map(({ name, solid }) => ({ name, solid }));
+  return {
+    "semantic-palettes": toSorted("semantic-palettes"),
+    "brand-palettes": toSorted("brand-palettes"),
+    "system-palettes": toSorted("system-palettes"),
+    "blacks-and-whites": toSorted("blacks-and-whites"),
+  };
 }
 
 /** Cached palette result — computed once since token data is immutable at runtime. */
-let cachedPalettes: PaletteEntry[] | undefined;
+let cachedPalettes: PaletteGroupResponse | undefined;
 
-/** Returns cached palette entries, computing on first call. */
-function getCachedPalettes(colorTokens: FlatToken[]): PaletteEntry[] {
+/** Returns cached palette groups, computing on first call. */
+function getCachedPalettes(colorTokens: FlatToken[]): PaletteGroupResponse {
   if (!cachedPalettes) {
     cachedPalettes = extractPalettes(colorTokens);
   }

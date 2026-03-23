@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { createTestClient } from "../test-utils.js";
 import type {
-  PaletteEntry,
+  PaletteGroupResponse,
   TokenCategorySummary,
   TokenCategoryResponse,
   TokenReverseLookupResponse,
@@ -213,41 +213,45 @@ describe("get_tokens — colorPalettes virtual category", () => {
 
   afterAll(() => close());
 
-  it("returns an array of palette entries with name and solid", async () => {
+  it("returns grouped palette entries with name and solid", async () => {
     const { text } = await callGetTokens(client, {
       category: "colorPalettes",
     });
-    const palettes = JSON.parse(text) as PaletteEntry[];
-    expect(Array.isArray(palettes)).toBe(true);
-    expect(palettes.length).toBeGreaterThan(0);
-    for (const entry of palettes) {
-      expect(typeof entry.name).toBe("string");
-      expect(typeof entry.solid).toBe("string");
-      expect(entry.solid.length).toBeGreaterThan(0);
+    const response = JSON.parse(text) as PaletteGroupResponse;
+    for (const group of [
+      "semantic-palettes",
+      "brand-palettes",
+      "system-palettes",
+      "blacks-and-whites",
+    ] as const) {
+      expect(Array.isArray(response[group])).toBe(true);
+      for (const entry of response[group]) {
+        expect(typeof entry.name).toBe("string");
+        expect(typeof entry.solid).toBe("string");
+        expect(entry.solid.length).toBeGreaterThan(0);
+      }
     }
   });
 
-  it("includes expected palette names", async () => {
+  it("semantic palettes include primary and critical", async () => {
     const { text } = await callGetTokens(client, {
       category: "colorPalettes",
     });
-    const palettes = JSON.parse(text) as PaletteEntry[];
-    const names = palettes.map((p) => p.name);
+    const response = JSON.parse(text) as PaletteGroupResponse;
+    const names = response["semantic-palettes"].map((p) => p.name);
     expect(names).toContain("primary");
+    expect(names).toContain("critical");
     expect(names).toContain("neutral");
-    expect(names).toContain("amber");
-    expect(names).toContain("red");
   });
 
-  it("orders semantic palettes before system palettes", async () => {
+  it("system palettes include amber and red", async () => {
     const { text } = await callGetTokens(client, {
       category: "colorPalettes",
     });
-    const palettes = JSON.parse(text) as PaletteEntry[];
-    const names = palettes.map((p) => p.name);
-    const primaryIdx = names.indexOf("primary");
-    const amberIdx = names.indexOf("amber");
-    expect(primaryIdx).toBeLessThan(amberIdx);
+    const response = JSON.parse(text) as PaletteGroupResponse;
+    const names = response["system-palettes"].map((p) => p.name);
+    expect(names).toContain("amber");
+    expect(names).toContain("red");
   });
 
   it("is case-insensitive", async () => {
