@@ -967,8 +967,6 @@ export const FlexibleStickyFooter: Story = {
     </Box>
   ),
   play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
     await step("Header does not have sticky positioning", async () => {
       const header = canvasElement.querySelector("header");
       await expect(header).toBeInTheDocument();
