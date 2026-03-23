@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { useLink, useObjectRef, mergeProps } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
+import { mergeRefs } from "@/utils";
 import { ArrowBack } from "@commercetools/nimbus-icons";
 import { DefaultPageBackLinkSlot } from "../default-page.slots";
 import type { DefaultPageBackLinkProps } from "../default-page.types";
