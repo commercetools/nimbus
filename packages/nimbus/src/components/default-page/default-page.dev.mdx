@@ -235,8 +235,9 @@ Optional back navigation link that renders as a semantic `<a>` element.
 Requires an `href` prop. Include it for detail views to signal the parent list
 or overview; omit it entirely for top-level main pages.
 
-The default `aria-label` is "Go back" (provided via i18n). Override it with a
-descriptive label when the destination context matters.
+Always provide destination-specific text as children (e.g., "Back to products").
+A generic fallback label "Go back" is provided via i18n when children are
+omitted, but destination-specific text is strongly recommended for usability.
 
 ```jsx live-dev
 const App = () => (
@@ -261,7 +262,7 @@ Layout container for tab navigation in the header. Positions itself in the
 header grid's last row at full width. Place it inside `DefaultPage.Header`,
 after `Title` and `Subtitle`.
 
-Wrap a `TabNav.Root` inside, or use `as={TabNav.Root}` for a flatter DOM.
+Wrap a `TabNav.Root` inside this component.
 
 ```jsx live-dev
 const App = () => (
@@ -324,6 +325,32 @@ const App = () => (
       <Stack direction="row" gap="200" justify="flex-end" width="100%">
         <Button variant="ghost">Cancel</Button>
         <Button variant="solid" colorPalette="primary">Save</Button>
+      </Stack>
+    </DefaultPage.Footer>
+  </DefaultPage.Root>
+)
+```
+
+> [!TIP]
+> Place the primary action first, followed by secondary actions (e.g., Cancel).
+> Use the `Spacer` component to push buttons apart — for example, a destructive
+> action on the left and the primary action on the right:
+
+```jsx live-dev
+const App = () => (
+  <DefaultPage.Root>
+    <DefaultPage.Header>
+      <DefaultPage.Title>Edit product</DefaultPage.Title>
+    </DefaultPage.Header>
+    <DefaultPage.Content>
+      <Text>Form content goes here.</Text>
+    </DefaultPage.Content>
+    <DefaultPage.Footer>
+      <Stack direction="row" gap="200" width="100%">
+        <Button colorPalette="critical" variant="ghost">Delete</Button>
+        <Spacer />
+        <Button variant="solid" colorPalette="primary">Save</Button>
+        <Button variant="ghost">Cancel</Button>
       </Stack>
     </DefaultPage.Footer>
   </DefaultPage.Root>

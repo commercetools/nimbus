@@ -303,47 +303,61 @@ export const FormMainPage: Story = {
     const [name, setName] = useState("");
 
     return (
-      <DefaultPage.Root
+      <Box
+        height="500px"
         border="solid-25"
         borderColor="neutral.6"
         borderRadius="200"
       >
-        <DefaultPage.Header>
-          <DefaultPage.Title>New product</DefaultPage.Title>
-        </DefaultPage.Header>
-        <DefaultPage.Content>
-          <Stack gap="600" maxWidth="600px">
-            <FormField.Root isRequired>
-              <FormField.Label>Product name</FormField.Label>
-              <FormField.Input>
-                <TextInput
-                  value={name}
-                  onChange={(v) => setName(v)}
-                  placeholder="e.g. Classic T-Shirt"
-                  aria-label="Product name"
-                />
-              </FormField.Input>
-            </FormField.Root>
-            <FormField.Root>
-              <FormField.Label>Description</FormField.Label>
-              <FormField.Input>
-                <TextInput
-                  placeholder="Short product description"
-                  aria-label="Description"
-                />
-              </FormField.Input>
-            </FormField.Root>
-          </Stack>
-        </DefaultPage.Content>
-        <DefaultPage.Footer>
-          <Stack direction="row" gap="200">
-            <Button colorPalette="primary" variant="solid">
-              Save product
-            </Button>
-            <Button variant="ghost">Cancel</Button>
-          </Stack>
-        </DefaultPage.Footer>
-      </DefaultPage.Root>
+        <DefaultPage.Root>
+          <DefaultPage.Header>
+            <DefaultPage.Title>New product</DefaultPage.Title>
+          </DefaultPage.Header>
+          <DefaultPage.Content>
+            <Stack gap="600" maxWidth="600px">
+              <FormField.Root isRequired>
+                <FormField.Label>Product name</FormField.Label>
+                <FormField.Input>
+                  <TextInput
+                    value={name}
+                    onChange={(v) => setName(v)}
+                    placeholder="e.g. Classic T-Shirt"
+                    aria-label="Product name"
+                  />
+                </FormField.Input>
+              </FormField.Root>
+              <FormField.Root>
+                <FormField.Label>Description</FormField.Label>
+                <FormField.Input>
+                  <TextInput
+                    placeholder="Short product description"
+                    aria-label="Description"
+                  />
+                </FormField.Input>
+              </FormField.Root>
+              {Array.from({ length: 4 }, (_, i) => (
+                <FormField.Root key={i}>
+                  <FormField.Label>Field {i + 3}</FormField.Label>
+                  <FormField.Input>
+                    <TextInput
+                      placeholder={`Value for field ${i + 3}`}
+                      aria-label={`Field ${i + 3}`}
+                    />
+                  </FormField.Input>
+                </FormField.Root>
+              ))}
+            </Stack>
+          </DefaultPage.Content>
+          <DefaultPage.Footer>
+            <Stack direction="row" gap="200">
+              <Button colorPalette="primary" variant="solid">
+                Save product
+              </Button>
+              <Button variant="ghost">Cancel</Button>
+            </Stack>
+          </DefaultPage.Footer>
+        </DefaultPage.Root>
+      </Box>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -376,41 +390,56 @@ export const FormMainPage: Story = {
  */
 export const TabularMainPage: Story = {
   render: () => (
-    <DefaultPage.Root
+    <Box
+      height="500px"
       border="solid-25"
       borderColor="neutral.6"
       borderRadius="200"
     >
-      <DefaultPage.Header>
-        <DefaultPage.Title>Project settings</DefaultPage.Title>
-        <DefaultPage.Actions>
-          <Button colorPalette="primary" variant="solid">
-            Add channel
-          </Button>
-        </DefaultPage.Actions>
-        <DefaultPage.TabNav>
-          <TabNav.Root aria-label="Settings sections">
-            <TabNav.Item href="#general" isCurrent>
-              General
-            </TabNav.Item>
-            <TabNav.Item href="#international">International</TabNav.Item>
-            <TabNav.Item href="#taxes">Taxes</TabNav.Item>
-            <TabNav.Item href="#shipping">Shipping</TabNav.Item>
-          </TabNav.Root>
-        </DefaultPage.TabNav>
-      </DefaultPage.Header>
-      <DefaultPage.Content>
-        <Text>General settings content goes here.</Text>
-      </DefaultPage.Content>
-      <DefaultPage.Footer>
-        <Stack direction="row" gap="200">
-          <Button colorPalette="primary" variant="solid">
-            Save changes
-          </Button>
-          <Button variant="ghost">Cancel</Button>
-        </Stack>
-      </DefaultPage.Footer>
-    </DefaultPage.Root>
+      <DefaultPage.Root>
+        <DefaultPage.Header>
+          <DefaultPage.Title>Project settings</DefaultPage.Title>
+          <DefaultPage.Actions>
+            <Button colorPalette="primary" variant="solid">
+              Add channel
+            </Button>
+          </DefaultPage.Actions>
+          <DefaultPage.TabNav>
+            <TabNav.Root aria-label="Settings sections">
+              <TabNav.Item href="#general" isCurrent>
+                General
+              </TabNav.Item>
+              <TabNav.Item href="#international">International</TabNav.Item>
+              <TabNav.Item href="#taxes">Taxes</TabNav.Item>
+              <TabNav.Item href="#shipping">Shipping</TabNav.Item>
+            </TabNav.Root>
+          </DefaultPage.TabNav>
+        </DefaultPage.Header>
+        <DefaultPage.Content>
+          <Stack gap="600" maxWidth="600px">
+            {Array.from({ length: 6 }, (_, i) => (
+              <FormField.Root key={i}>
+                <FormField.Label>Setting {i + 1}</FormField.Label>
+                <FormField.Input>
+                  <TextInput
+                    placeholder={`Value for setting ${i + 1}`}
+                    aria-label={`Setting ${i + 1}`}
+                  />
+                </FormField.Input>
+              </FormField.Root>
+            ))}
+          </Stack>
+        </DefaultPage.Content>
+        <DefaultPage.Footer>
+          <Stack direction="row" gap="200">
+            <Button colorPalette="primary" variant="solid">
+              Save changes
+            </Button>
+            <Button variant="ghost">Cancel</Button>
+          </Stack>
+        </DefaultPage.Footer>
+      </DefaultPage.Root>
+    </Box>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -467,34 +496,61 @@ export const TabularMainPage: Story = {
  */
 export const InfoDetailPage: Story = {
   render: () => (
-    <DefaultPage.Root
+    <Box
+      height="500px"
       border="solid-25"
       borderColor="neutral.6"
       borderRadius="200"
     >
-      <DefaultPage.Header>
-        <DefaultPage.BackLink href="/products">
-          Back to products
-        </DefaultPage.BackLink>
-        <DefaultPage.Title>Classic T-Shirt</DefaultPage.Title>
-        <DefaultPage.Subtitle>
-          SKU-001 · Last updated 3 days ago
-        </DefaultPage.Subtitle>
-        <DefaultPage.Actions>
-          <Button colorPalette="primary" variant="solid">
-            Edit
-          </Button>
-        </DefaultPage.Actions>
-      </DefaultPage.Header>
-      <DefaultPage.Content>
-        <Stack gap="400">
-          <Text fontWeight="600">Product details</Text>
-          <Text color="neutral.11">
-            A timeless classic T-Shirt available in multiple colors and sizes.
-          </Text>
-        </Stack>
-      </DefaultPage.Content>
-    </DefaultPage.Root>
+      <DefaultPage.Root>
+        <DefaultPage.Header>
+          <DefaultPage.BackLink href="/products">
+            Back to products
+          </DefaultPage.BackLink>
+          <DefaultPage.Title>Classic T-Shirt</DefaultPage.Title>
+          <DefaultPage.Subtitle>
+            SKU-001 · Last updated 3 days ago
+          </DefaultPage.Subtitle>
+          <DefaultPage.Actions>
+            <Button colorPalette="primary" variant="solid">
+              Edit
+            </Button>
+          </DefaultPage.Actions>
+        </DefaultPage.Header>
+        <DefaultPage.Content>
+          <Stack gap="400">
+            <Text fontWeight="600">Product details</Text>
+            <Text color="neutral.11">
+              A timeless classic T-Shirt available in multiple colors and sizes.
+              Perfect for everyday wear with a comfortable fit and durable
+              fabric.
+            </Text>
+            <Text fontWeight="600" mt="400">
+              Variants
+            </Text>
+            <Text color="neutral.11">
+              Available in S, M, L, XL across 5 colors.
+            </Text>
+            <Text fontWeight="600" mt="400">
+              Pricing
+            </Text>
+            <Text color="neutral.11">
+              Base price: $19.99 · Tax category: Standard Rate
+            </Text>
+            <Text fontWeight="600" mt="400">
+              Inventory
+            </Text>
+            <Text color="neutral.11">
+              142 units in stock across 3 warehouses.
+            </Text>
+            <Text fontWeight="600" mt="400">
+              Categories
+            </Text>
+            <Text color="neutral.11">Apparel → Tops → T-Shirts</Text>
+          </Stack>
+        </DefaultPage.Content>
+      </DefaultPage.Root>
+    </Box>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
