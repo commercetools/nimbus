@@ -21,11 +21,38 @@ const DEFAULT_PAGE_SIZE = 20;
 // Helpers
 // ---------------------------------------------------------------------------
 
-/** Lists all token categories with their counts, sorted alphabetically. */
+/**
+ * Categories ordered by likely usage frequency.
+ * Most-requested categories appear first so the LLM sees
+ * the most relevant options without scanning the full list.
+ */
+const CATEGORY_PRIORITY: string[] = [
+  "color",
+  "spacing",
+  "fontSize",
+  "fontWeight",
+  "lineHeight",
+  "borderRadius",
+  "shadow",
+  "size",
+  "borderWidth",
+  "border",
+  "zIndex",
+  "opacity",
+  "textStyle",
+];
+
+/** Lists all token categories with their counts, prioritized by usage. */
 function listCategories(data: FlatTokenData): TokenCategorySummary[] {
+  const priorityIndex = new Map(CATEGORY_PRIORITY.map((c, i) => [c, i]));
   return Object.entries(data.byCategory)
     .map(([category, tokens]) => ({ category, count: tokens.length }))
-    .sort((a, b) => a.category.localeCompare(b.category));
+    .sort((a, b) => {
+      const pa = priorityIndex.get(a.category) ?? CATEGORY_PRIORITY.length;
+      const pb = priorityIndex.get(b.category) ?? CATEGORY_PRIORITY.length;
+      if (pa !== pb) return pa - pb;
+      return a.category.localeCompare(b.category);
+    });
 }
 
 /**
@@ -60,7 +87,13 @@ function extractPalettes(tokens: FlatToken[]): PaletteGroupResponse {
     const group = token.path[1];
     const palette = token.path[2];
     const step = token.path[3];
-    if (!group || !palette || step !== "9") continue;
+    if (
+      !group ||
+      !palette ||
+      step !== "9" ||
+      (palette.endsWith("Alpha") && group !== "blacks-and-whites")
+    )
+      continue;
 
     if (!groups[group]) groups[group] = new Map();
     groups[group].set(palette, { name: palette, solid: token.value });
@@ -251,9 +284,22 @@ export function registerGetTokens(server: McpServer): void {
             };
           }
 
+          let tokens = data.byCategory[matchKey];
+
+          // Alpha palettes (except blacks-and-whites) are omitted from results
+          // due to sparse usage/documentation. They can be added back if needed
+          // by removing this filter.
+          if (matchKey === "color") {
+            tokens = tokens.filter(
+              (t) =>
+                !t.path[2]?.endsWith("Alpha") ||
+                t.path[1] === "blacks-and-whites"
+            );
+          }
+
           const payload = buildCategoryResponse(
             matchKey,
-            data.byCategory[matchKey],
+            tokens,
             offset,
             limit
           );

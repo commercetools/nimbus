@@ -73,12 +73,16 @@ describe("get_tokens — no params", () => {
     expect(names).toContain("fontSize");
   });
 
-  it("results are sorted alphabetically by category", async () => {
+  it("lists high-priority categories first (color, spacing, fontSize)", async () => {
     const { text } = await callGetTokens(client);
     const categories = JSON.parse(text) as TokenCategorySummary[];
     const names = categories.map((c) => c.category);
-    const sorted = [...names].sort((a, b) => a.localeCompare(b));
-    expect(names).toEqual(sorted);
+    const colorIdx = names.indexOf("color");
+    const spacingIdx = names.indexOf("spacing");
+    const fontSizeIdx = names.indexOf("fontSize");
+    expect(colorIdx).toBe(0);
+    expect(spacingIdx).toBe(1);
+    expect(fontSizeIdx).toBe(2);
   });
 });
 
