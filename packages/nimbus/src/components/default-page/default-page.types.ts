@@ -10,13 +10,6 @@ import type {
 
 export type DefaultPageRecipeProps = UnstyledProp;
 
-type DefaultPageRecipeVariantProps = {
-  /** When true, the header stays pinned at the top of the viewport while scrolling */
-  stickyHeader?: boolean;
-  /** When true, the footer stays pinned at the bottom of the viewport while scrolling */
-  stickyFooter?: boolean;
-};
-
 // ============================================================
 // SLOT PROPS
 // ============================================================
@@ -46,11 +39,65 @@ export type DefaultPageFooterSlotProps = HTMLChakraProps<"footer">;
 // MAIN PROPS
 // ============================================================
 
-export type DefaultPageProps = DefaultPageRecipeVariantProps &
-  OmitInternalProps<DefaultPageRootSlotProps> & {
-    children?: React.ReactNode;
-    ref?: React.Ref<HTMLDivElement>;
-  };
+/**
+ * Shared base props for DefaultPage.Root, common to both layout modes.
+ */
+type DefaultPageBaseProps = OmitInternalProps<DefaultPageRootSlotProps> & {
+  children?: React.ReactNode;
+  ref?: React.Ref<HTMLDivElement>;
+};
+
+/**
+ * Props for DefaultPage.Root when using constrained layout (default).
+ *
+ * The page fills its parent height. The content area scrolls independently
+ * while the header and footer are always pinned by the CSS grid.
+ */
+type DefaultPageConstrainedProps = DefaultPageBaseProps & {
+  /**
+   * Controls the scroll behaviour of the page.
+   *
+   * - `"constrained"` — The page fills its parent container (`height: 100%`).
+   *   Only the content area scrolls. Header and footer are pinned by the grid.
+   * - `"flexible"` — The page grows with its content (`height: auto`). The
+   *   whole page scrolls. Use `stickyHeader`/`stickyFooter` to pin elements.
+   *
+   * @default "constrained"
+   */
+  layout?: "constrained";
+};
+
+/**
+ * Props for DefaultPage.Root when using flexible layout.
+ *
+ * The page grows with its content and the whole page scrolls. Use
+ * `stickyHeader` and/or `stickyFooter` to pin the header or footer.
+ */
+type DefaultPageFlexibleProps = DefaultPageBaseProps & {
+  /**
+   * Controls the scroll behaviour of the page.
+   *
+   * - `"constrained"` — The page fills its parent container (`height: 100%`).
+   *   Only the content area scrolls. Header and footer are pinned by the grid.
+   * - `"flexible"` — The page grows with its content (`height: auto`). The
+   *   whole page scrolls. Use `stickyHeader`/`stickyFooter` to pin elements.
+   */
+  layout: "flexible";
+  /**
+   * Pin the header at the top of the scroll container while the page scrolls.
+   * Only available with `layout="flexible"`.
+   */
+  stickyHeader?: boolean;
+  /**
+   * Pin the footer at the bottom of the scroll container while the page scrolls.
+   * Only available with `layout="flexible"`.
+   */
+  stickyFooter?: boolean;
+};
+
+export type DefaultPageProps =
+  | DefaultPageConstrainedProps
+  | DefaultPageFlexibleProps;
 
 export type DefaultPageHeaderProps =
   OmitInternalProps<DefaultPageHeaderSlotProps> & {

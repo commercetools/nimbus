@@ -196,6 +196,91 @@ describe("With header actions", () => {
 });
 
 /**
+ * @docs-section layout-modes
+ * @docs-order 5
+ * @docs-title Layout modes
+ */
+describe("Layout modes", () => {
+  it("renders a constrained layout page (default, height: 100%)", () => {
+    render(
+      <NimbusProvider>
+        <DefaultPage.Root>
+          <DefaultPage.Header>
+            <DefaultPage.Title>Product Catalog</DefaultPage.Title>
+          </DefaultPage.Header>
+          <DefaultPage.Content>
+            <Text>
+              Constrained layout: the page fills its parent and only the content
+              area scrolls.
+            </Text>
+          </DefaultPage.Content>
+          <DefaultPage.Footer>
+            <Button>Save</Button>
+          </DefaultPage.Footer>
+        </DefaultPage.Root>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByText("Product Catalog")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Constrained layout: the page fills its parent and only the content area scrolls."
+      )
+    ).toBeInTheDocument();
+  });
+
+  it("renders a flexible layout page that scrolls as a whole", () => {
+    render(
+      <NimbusProvider>
+        <DefaultPage.Root layout="flexible">
+          <DefaultPage.Header>
+            <DefaultPage.Title>Long Form Page</DefaultPage.Title>
+          </DefaultPage.Header>
+          <DefaultPage.Content>
+            <Text>
+              Flexible layout: the whole page scrolls. Use stickyHeader or
+              stickyFooter to pin zones.
+            </Text>
+          </DefaultPage.Content>
+        </DefaultPage.Root>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByText("Long Form Page")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Flexible layout: the whole page scrolls. Use stickyHeader or stickyFooter to pin zones."
+      )
+    ).toBeInTheDocument();
+  });
+
+  it("renders a flexible layout page with sticky header and footer", () => {
+    render(
+      <NimbusProvider>
+        <DefaultPage.Root layout="flexible" stickyHeader stickyFooter>
+          <DefaultPage.Header>
+            <DefaultPage.Title>Edit Customer</DefaultPage.Title>
+          </DefaultPage.Header>
+          <DefaultPage.Content>
+            <Stack gap="400">
+              <Text>First name</Text>
+              <Text>Last name</Text>
+            </Stack>
+          </DefaultPage.Content>
+          <DefaultPage.Footer>
+            <Button>Save Changes</Button>
+            <Button variant="ghost">Cancel</Button>
+          </DefaultPage.Footer>
+        </DefaultPage.Root>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByText("Edit Customer")).toBeInTheDocument();
+    expect(screen.getByText("Save Changes")).toBeInTheDocument();
+  });
+});
+
+/**
  * @docs-section tab-navigation
  * @docs-order 4
  * @docs-title With tab navigation
