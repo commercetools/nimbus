@@ -195,6 +195,16 @@ describe("get_tokens — category param", () => {
     expect(response.hint).toBeUndefined();
   });
 
+  it("returns empty results when offset exceeds total", async () => {
+    const { text } = await callGetTokens(client, {
+      category: "spacing",
+      offset: 99999,
+    });
+    const response = JSON.parse(text) as TokenCategoryResponse;
+    expect(response.showing).toBe(0);
+    expect(response.tokens).toEqual([]);
+  });
+
   it("returns isError for an unknown category", async () => {
     const result = await callGetTokens(client, {
       category: "nonexistent-category",
@@ -256,6 +266,22 @@ describe("get_tokens — colorPalettes virtual category", () => {
     const names = response["system-palettes"].map((p) => p.name);
     expect(names).toContain("amber");
     expect(names).toContain("red");
+  });
+
+  it("excludes alpha palette names (e.g. amberAlpha) from non-blacks-and-whites groups", async () => {
+    const { text } = await callGetTokens(client, {
+      category: "colorPalettes",
+    });
+    const response = JSON.parse(text) as PaletteGroupResponse;
+    for (const group of [
+      "semantic-palettes",
+      "brand-palettes",
+      "system-palettes",
+    ] as const) {
+      const names = response[group].map((p) => p.name);
+      const alphas = names.filter((n) => n.endsWith("Alpha"));
+      expect(alphas).toEqual([]);
+    }
   });
 
   it("is case-insensitive", async () => {

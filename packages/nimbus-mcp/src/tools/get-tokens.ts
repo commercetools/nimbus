@@ -68,12 +68,24 @@ function findCategoryKey(
 }
 
 /** Group ordering for color palettes: semantic first, then brand, system, blacks-and-whites. */
-const PALETTE_GROUP_ORDER = [
+const PALETTE_GROUP_ORDER: Array<keyof PaletteGroupResponse> = [
   "semantic-palettes",
   "brand-palettes",
   "system-palettes",
   "blacks-and-whites",
 ];
+
+/**
+ * Returns true if the token is an Alpha palette variant that should be excluded.
+ * Alpha palettes (e.g. amberAlpha) are excluded from results due to sparse
+ * usage/documentation, except for blacks-and-whites which are commonly used.
+ */
+function isExcludedAlphaPalette(token: FlatToken): boolean {
+  return (
+    token.path[2]?.endsWith("Alpha") === true &&
+    token.path[1] !== "blacks-and-whites"
+  );
+}
 
 /**
  * Extracts palette summaries from color tokens grouped by palette type,
@@ -87,12 +99,7 @@ function extractPalettes(tokens: FlatToken[]): PaletteGroupResponse {
     const group = token.path[1];
     const palette = token.path[2];
     const step = token.path[3];
-    if (
-      !group ||
-      !palette ||
-      step !== "9" ||
-      (palette.endsWith("Alpha") && group !== "blacks-and-whites")
-    )
+    if (!group || !palette || step !== "9" || isExcludedAlphaPalette(token))
       continue;
 
     if (!groups[group]) groups[group] = new Map();
@@ -104,15 +111,16 @@ function extractPalettes(tokens: FlatToken[]): PaletteGroupResponse {
       a.name.localeCompare(b.name)
     );
 
-  return {
-    "semantic-palettes": toSorted("semantic-palettes"),
-    "brand-palettes": toSorted("brand-palettes"),
-    "system-palettes": toSorted("system-palettes"),
-    "blacks-and-whites": toSorted("blacks-and-whites"),
-  };
+  return Object.fromEntries(
+    PALETTE_GROUP_ORDER.map((group) => [group, toSorted(group)])
+  ) as PaletteGroupResponse;
 }
 
-/** Cached palette result — computed once since token data is immutable at runtime. */
+/**
+ * Cached palette result — computed once since token data is immutable at runtime.
+ * Token data is loaded from a static JSON file generated at build time and never
+ * changes during the lifetime of the MCP server process, so no invalidation is needed.
+ */
 let cachedPalettes: PaletteGroupResponse | undefined;
 
 /** Returns cached palette groups, computing on first call. */
@@ -286,15 +294,8 @@ export function registerGetTokens(server: McpServer): void {
 
           let tokens = data.byCategory[matchKey];
 
-          // Alpha palettes (except blacks-and-whites) are omitted from results
-          // due to sparse usage/documentation. They can be added back if needed
-          // by removing this filter.
           if (matchKey === "color") {
-            tokens = tokens.filter(
-              (t) =>
-                !t.path[2]?.endsWith("Alpha") ||
-                t.path[1] === "blacks-and-whites"
-            );
+            tokens = tokens.filter((t) => !isExcludedAlphaPalette(t));
           }
 
           const payload = buildCategoryResponse(

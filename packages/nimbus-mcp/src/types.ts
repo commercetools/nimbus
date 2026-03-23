@@ -211,10 +211,7 @@ export interface TokenCategorySummary {
 }
 
 /** A token entry as returned in tool responses (stripped of redundant fields). */
-export interface TokenResponseEntry {
-  name: string;
-  value: string;
-}
+export type TokenResponseEntry = Pick<FlatToken, "name" | "value">;
 
 /** Paginated response for a single token category. */
 export interface TokenCategoryResponse {
