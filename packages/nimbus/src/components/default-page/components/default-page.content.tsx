@@ -12,7 +12,7 @@ export const DefaultPageContent = ({
   ...props
 }: DefaultPageContentProps) => {
   return (
-    <DefaultPageContentSlot ref={ref} {...props}>
+    <DefaultPageContentSlot ref={ref} tabIndex={0} {...props}>
       {children}
     </DefaultPageContentSlot>
   );
