@@ -15,16 +15,15 @@ Parse `$ARGUMENTS` to extract:
 
 - **Ticket key**: The Jira ticket key (e.g., `NIMBUS-123`). Required.
 
-> **IMPORTANT — Restore Context**
+> **Restore Context**
 >
-> This skill uses `/agent-restore-context` to survive `/clear` and `/compact`.
+> This skill uses `/agent-restore-context` as a safety net in case `/compact`
+> or `/clear` happens mid-implementation.
 >
 > - **Step 0**: `/agent-restore-context check` to verify the hook is set up.
-> - **Step 3a**: `/agent-restore-context write jira-implement-task` after
+> - **Step 3a**: `/agent-restore-context write jira-implement-task` once after
 >   creating the implementation plan.
-> - **Before each `/clear`**: `/agent-restore-context write jira-implement-task`
->   with the updated current task number and all other necessary information.
-> - **Step 3e**: `/agent-restore-context delete jira-implement-task` when done.
+> - **Step 3c**: `/agent-restore-context delete jira-implement-task` when done.
 
 ## Step 0: Verify Restore Context
 
@@ -95,53 +94,23 @@ branch or create a new one with a `-v2` suffix.
    it as a record.
 4. **Create restore context**: Invoke `/agent-restore-context write jira-implement-task`
    with content that includes the ticket key, branch name, plan file path,
-   current task number (1), and the instruction to invoke
-   `/jira-implement-task <TICKET-KEY>` and read the plan file before doing any
-   work.
+   and the instruction to read the plan file before doing any work.
 
-### 3b: Red/Green Testing Loop (per task)
+### 3b: Implement Each Task (Red/Green TDD)
 
-For each task in the implementation plan, follow this cycle:
+For each task in the implementation plan:
 
-1. Invoke `/agent-restore-context write jira-implement-task` with the current
-   task number.
-2. Run `/clear`.
-3. **Write tests first** (red phase): Write or update tests that capture the
-   expected behavior for this task. Tests should fail at this point.
-4. **Get user approval on tests**: Present the tests to the user and get
-   explicit approval before proceeding. Do NOT implement changes until tests are
-   approved.
-5. **Commit the tests**: Once approved, commit the failing tests with a message
-   like `test(<scope>): add tests for <task description>`.
-6. **Implement changes** (green phase): Write the minimum code to make the tests
-   pass.
-7. **Run tests**: Verify all tests pass using the project's **test command
+1. **Write tests first** (red phase): Write or update tests that capture the
+   expected behavior. Tests should fail at this point.
+2. **Implement changes** (green phase): Write the minimum code to make the
+   tests pass.
+3. **Run tests**: Verify all tests pass using the project's **test command
    (files)**.
+4. **Commit**: Commit the tests and implementation together.
 
-### 3c: Three Strikes Policy
+If stuck after 3 attempts on a task, stop and ask the user for guidance.
 
-If the implementation fails to make tests pass after **3 attempts**:
-
-1. **Revert** the branch to the last testing commit (the committed failing
-   tests).
-2. Invoke `/agent-restore-context write jira-implement-task`.
-3. Run `/clear`.
-4. **Try again** from the green phase with a fresh approach.
-
-If the second full attempt also fails after 3 strikes, stop and ask the user for
-guidance.
-
-### 3d: Commit and Advance
-
-Once tests pass:
-
-1. Commit the implementation changes.
-2. Invoke `/agent-restore-context write jira-implement-task` with the next
-   task number.
-3. Run `/clear`.
-4. Move on to the next task in the implementation plan.
-
-### 3e: Completion
+### 3c: Completion
 
 Once all tasks in the plan are implemented and passing:
 
