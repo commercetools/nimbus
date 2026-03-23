@@ -561,7 +561,7 @@ export const StickyTableHeader: Story = {
       borderColor="neutral.6"
       borderRadius="200"
     >
-      <DefaultPage.Root stickyHeader>
+      <DefaultPage.Root>
         <DefaultPage.Header>
           <DefaultPage.Title>Products</DefaultPage.Title>
           <DefaultPage.Actions>
@@ -570,6 +570,7 @@ export const StickyTableHeader: Story = {
         </DefaultPage.Header>
         <DefaultPage.Content>
           <DataTable
+            maxHeight="100%"
             columns={productColumns}
             rows={productRows}
             aria-label="Products"
