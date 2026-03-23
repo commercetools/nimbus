@@ -17,10 +17,10 @@
 
 ## Performance
 
-- **Cache Fuse instances** — any method that uses Fuse.js for fuzzy search MUST
-  cache the `Fuse` instance (e.g., as a module-level variable or class field)
-  rather than constructing a new one on every call. Rebuilding the index on each
-  invocation is expensive and adds measurable latency to search tools.
+- **Cache pre-computed data** — search uses pre-lowercased field maps and route
+  view caches to avoid repeated work across queries. When adding new search
+  functionality, prefer caching computed data at module level rather than
+  recomputing per invocation.
 
 ## Build Scripts
 
