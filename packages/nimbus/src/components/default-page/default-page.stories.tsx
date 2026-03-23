@@ -239,8 +239,8 @@ export const CustomTitleContent: Story = {
 // ============================================================
 
 /**
- * The most common Merchant Center page pattern: a listing page with a title,
- * header action buttons, and a DataTable in the content area.
+ * A common page pattern: a listing page with a title, header action buttons,
+ * and a DataTable in the content area.
  */
 export const InfoMainPage: Story = {
   render: () => (
@@ -1068,8 +1068,8 @@ export const FlexibleStickyHeaderAndFooter: Story = {
 
 /**
  * A detail page with a Steps wizard in the content area. This pattern is
- * common in Merchant Center flows such as product creation or checkout
- * configuration where a multi-step process lives inside a page layout.
+ * common in flows such as resource creation or multi-step configuration
+ * where a wizard lives inside a page layout.
  */
 export const WithSteps: Story = {
   parameters: {
