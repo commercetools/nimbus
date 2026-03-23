@@ -284,8 +284,8 @@ export const InfoMainPage: Story = {
     });
 
     await step("Renders the data table", async () => {
-      const table = canvas.getByRole("grid", { name: "Products" });
-      await expect(table).toBeInTheDocument();
+      await expect(canvas.getByText("Classic T-Shirt")).toBeInTheDocument();
+      await expect(canvas.getByText("TS-001")).toBeInTheDocument();
     });
   },
 };
