@@ -1072,6 +1072,30 @@ export const FlexibleStickyHeaderAndFooter: Story = {
  * configuration where a multi-step process lives inside a page layout.
  */
 export const WithSteps: Story = {
+  parameters: {
+    a11y: {
+      config: {
+        rules: [
+          {
+            // Ark UI's Steps architecture places Steps.Item (div) between
+            // Steps.List (tablist) and Steps.Trigger (tab). ARIA requires
+            // tablist to have direct tab children. Ark uses aria-owns as
+            // a workaround, but axe still flags the intermediate divs.
+            // This is an upstream architectural limitation in Ark UI.
+            id: "aria-required-children",
+            enabled: false,
+          },
+          {
+            // Chakra/Ark Steps sets aria-controls on triggers pointing to
+            // content panel IDs even when no Steps.Content is rendered for
+            // that index. This causes axe to report invalid aria-controls.
+            id: "aria-valid-attr-value",
+            enabled: false,
+          },
+        ],
+      },
+    },
+  },
   render: () => {
     const [currentStep, setCurrentStep] = useState(0);
     const stepCount = 3;
