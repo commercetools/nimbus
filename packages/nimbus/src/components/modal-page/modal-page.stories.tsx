@@ -13,7 +13,7 @@ import {
 } from "@commercetools/nimbus";
 
 const meta: Meta<typeof ModalPage.Root> = {
-  title: "Components/Overlay/ModalPage",
+  title: "Components/Layout/ModalPage",
   component: ModalPage.Root,
   tags: ["autodocs"],
   args: {

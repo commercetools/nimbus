@@ -1,10 +1,6 @@
 import { useCallback } from "react";
 import { Drawer } from "../../drawer/drawer";
 import { ModalPageRootSlot } from "../modal-page.slots";
-import {
-  useModalPageDepth,
-  ModalPageDepthProvider,
-} from "../modal-page.depth-context";
 import type { ModalPageRootProps } from "../modal-page.types";
 
 /**
@@ -13,9 +9,6 @@ import type { ModalPageRootProps } from "../modal-page.types";
  * Renders a right-side Drawer with near-full-width, full-height layout.
  * Provides the slot recipe context for all ModalPage sub-components via a
  * CSS grid container (rows: topBar / header / content / footer).
- *
- * Stacking: each nested ModalPage is inset by an additional spacing.600 (24px)
- * to create a visual depth cue showing the layer hierarchy.
  *
  * Dismissal: backdrop click is disabled (no accidental close on a full-page
  * form). Escape key remains active (isKeyboardDismissDisabled defaults to
@@ -32,8 +25,6 @@ export const ModalPageRoot = ({
   onClose,
   children,
 }: ModalPageRootProps) => {
-  const depth = useModalPageDepth();
-
   const handleOpenChange = useCallback(
     (open: boolean) => {
       if (!open) {
@@ -44,27 +35,18 @@ export const ModalPageRoot = ({
   );
 
   return (
-    <ModalPageDepthProvider value={depth + 1}>
-      <Drawer.Root
-        isOpen={isOpen}
-        onOpenChange={handleOpenChange}
-        placement="right"
-        // Disable backdrop-click dismissal — fullscreen modal pages must not
-        // close on accidental outside click. Escape key remains active.
-        isDismissable={false}
-      >
-        <Drawer.Content
-          style={{ "--modal-page-depth": depth } as React.CSSProperties}
-          width="calc(100vw - {spacing.1200} - var(--modal-page-depth, 0) * {spacing.600})"
-          height="100dvh"
-          maxH="100dvh"
-          borderRadius="0"
-          boxShadow="-4px 0px 24px 0px {colors.neutral.a4}"
-        >
-          <ModalPageRootSlot ref={ref}>{children}</ModalPageRootSlot>
-        </Drawer.Content>
-      </Drawer.Root>
-    </ModalPageDepthProvider>
+    <Drawer.Root
+      isOpen={isOpen}
+      onOpenChange={handleOpenChange}
+      placement="right"
+      // Disable backdrop-click dismissal — fullscreen modal pages must not
+      // close on accidental outside click. Escape key remains active.
+      isDismissable={false}
+    >
+      <Drawer.Content>
+        <ModalPageRootSlot ref={ref}>{children}</ModalPageRootSlot>
+      </Drawer.Content>
+    </Drawer.Root>
   );
 };
 

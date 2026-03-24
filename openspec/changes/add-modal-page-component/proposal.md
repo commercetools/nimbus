@@ -27,8 +27,6 @@ sub-components rather than separate component variants.
   focus on open
 - **NEW** `TabNav` sub-component for tabular page patterns; when present,
   header bottom padding is automatically removed
-- **NEW** Stacked modal depth — each nested ModalPage appears visually
-  indented relative to its parent, providing a clear cue of nesting hierarchy
 - **NEW** Controlled-only API (`isOpen` + `onClose`) — no uncontrolled mode
 - **NEW** Backdrop click is disabled to prevent accidental data loss on
   full-page forms; Escape key remains active
