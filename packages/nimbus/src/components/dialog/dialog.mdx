@@ -2,7 +2,10 @@
 id: Components-Dialog
 title: Dialog
 exportName: Dialog
-description: A foundational dialog component for overlays that require user attention and interaction. Built with React Aria Components for accessibility and WCAG 2.1 AA compliance.
+description:
+  A foundational dialog component for overlays that require user attention and
+  interaction. Built with React Aria Components for accessibility and WCAG 2.1
+  AA compliance.
 lifecycleState: Stable
 order: 999
 menu:
@@ -13,6 +16,7 @@ tags:
   - component
   - overlay
   - dialog
+  - modal
   - interactive
 figmaLink: >-
   https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m
@@ -53,25 +57,25 @@ Get familiar with the features.
 ```jsx live
 const App = () => (
   <Dialog.Root>
-    <Dialog.Trigger>
-      Anything can be a trigger
-    </Dialog.Trigger>
+    <Dialog.Trigger>Anything can be a trigger</Dialog.Trigger>
     <Dialog.Content>
       <Dialog.Header>
         <Dialog.Title>Dialog Title</Dialog.Title>
         <Dialog.CloseTrigger />
       </Dialog.Header>
       <Dialog.Body>
-          This is a basic dialog with default settings. It includes a backdrop,
-          title, description, and close button for a complete experience.
+        This is a basic dialog with default settings. It includes a backdrop,
+        title, description, and close button for a complete experience.
       </Dialog.Body>
       <Dialog.Footer>
-        <Button variant="outline" slot="close">Cancel</Button>
+        <Button variant="outline" slot="close">
+          Cancel
+        </Button>
         <Button>Save</Button>
       </Dialog.Footer>
     </Dialog.Content>
   </Dialog.Root>
-)
+);
 ```
 
 ### Size
@@ -81,7 +85,7 @@ a regular style-prop, so you can use all size-tokens but also custom values.
 
 ```jsx live
 const App = () => (
-  <Dialog.Root >
+  <Dialog.Root>
     <Dialog.Trigger asChild>
       <Button>Open Large Dialog</Button>
     </Dialog.Trigger>
@@ -91,13 +95,13 @@ const App = () => (
         <Dialog.CloseTrigger />
       </Dialog.Header>
       <Dialog.Body>
-        This dialog uses a custom width. You can change the width by
-        adjusting the width prop on Dialog.Root to values like "xs", "sm",
-        "md", "lg", "xl", or "full", but also raw css values.
+        This dialog uses a custom width. You can change the width by adjusting
+        the width prop on Dialog.Root to values like "xs", "sm", "md", "lg",
+        "xl", or "full", but also raw css values.
       </Dialog.Body>
     </Dialog.Content>
   </Dialog.Root>
-)
+);
 ```
 
 ### Placement Options
@@ -107,9 +111,22 @@ Position the dialog at different locations using the `placement` prop:
 ```jsx live
 const App = () => {
   const placements = [
-    { value: "center", label: "Center (default)", description: "Centered in the viewport, works well for most use cases" },
-    { value: "top", label: "Top", description: "Appears at the top, useful for notifications or alerts" },
-    { value: "bottom", label: "Bottom", description: "Appears at the bottom, good for mobile-friendly sheets or action panels" }
+    {
+      value: "center",
+      label: "Center (default)",
+      description: "Centered in the viewport, works well for most use cases",
+    },
+    {
+      value: "top",
+      label: "Top",
+      description: "Appears at the top, useful for notifications or alerts",
+    },
+    {
+      value: "bottom",
+      label: "Bottom",
+      description:
+        "Appears at the bottom, good for mobile-friendly sheets or action panels",
+    },
   ];
 
   return (
@@ -124,15 +141,13 @@ const App = () => {
               <Dialog.Title>{placement.label} Placement</Dialog.Title>
               <Dialog.CloseTrigger />
             </Dialog.Header>
-            <Dialog.Body>
-              {placement.description}
-            </Dialog.Body>
+            <Dialog.Body>{placement.description}</Dialog.Body>
           </Dialog.Content>
         </Dialog.Root>
       ))}
     </Stack>
   );
-}
+};
 ```
 
 ### Scroll Behavior
@@ -143,8 +158,16 @@ Handle long content with different scrolling approaches using the
 ```jsx live
 const App = () => {
   const scrollBehaviors = [
-    { value: "outside", label: "Outside (default)", description: "Default scroll behavior, entire dialog scrolls" },
-    { value: "inside", label: "Inside", description: "Contained scrolling within the dialog body" }
+    {
+      value: "outside",
+      label: "Outside (default)",
+      description: "Default scroll behavior, entire dialog scrolls",
+    },
+    {
+      value: "inside",
+      label: "Inside",
+      description: "Contained scrolling within the dialog body",
+    },
   ];
 
   return (
@@ -164,8 +187,9 @@ const App = () => {
                 <Text>{behavior.description}</Text>
                 {Array.from({ length: 20 }, (_, i) => (
                   <Text key={i}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua.
                   </Text>
                 ))}
               </Stack>
@@ -175,7 +199,7 @@ const App = () => {
       ))}
     </Stack>
   );
-}
+};
 ```
 
 ### Controlled State
@@ -188,9 +212,7 @@ const App = () => {
 
   return (
     <Stack>
-      <Button onClick={() => setIsOpen(true)}>
-        Open Controlled Dialog
-      </Button>
+      <Button onClick={() => setIsOpen(true)}>Open Controlled Dialog</Button>
 
       <Text>Dialog is currently: {isOpen ? "open" : "closed"}</Text>
 
@@ -201,20 +223,18 @@ const App = () => {
             <Dialog.CloseTrigger />
           </Dialog.Header>
           <Dialog.Body>
-              This dialog's state is controlled by the parent component.
-              You can open/close it programmatically or through user interaction.
+            This dialog's state is controlled by the parent component. You can
+            open/close it programmatically or through user interaction.
           </Dialog.Body>
           <Dialog.Footer>
             <Button variant="outline" onClick={() => setIsOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setIsOpen(false)}>
-              Save
-            </Button>
+            <Button onClick={() => setIsOpen(false)}>Save</Button>
           </Dialog.Footer>
         </Dialog.Content>
       </Dialog.Root>
     </Stack>
   );
-}
+};
 ```

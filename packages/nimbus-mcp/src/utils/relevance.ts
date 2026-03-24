@@ -191,7 +191,11 @@ export function scorePreLowered(
  * maxDist, avoiding full matrix computation for clearly non-matching strings.
  * O(min(n,m) * maxDist) time, O(min(n,m)) space.
  */
-function boundedLevenshtein(a: string, b: string, maxDist: number): number {
+export function boundedLevenshtein(
+  a: string,
+  b: string,
+  maxDist: number
+): number {
   if (Math.abs(a.length - b.length) > maxDist) return -1;
   if (a === b) return 0;
 
@@ -253,11 +257,13 @@ export function fuzzyScorePreLowered(
       if (text.includes(token)) return true;
       // Also try with spaces removed for compound matching
       if (text.replace(/\s+/g, "").includes(token)) return true;
-      // Then word-level Levenshtein
+      // Then word-level checks: Levenshtein + prefix matching
       for (const word of text.split(/\s+/)) {
-        if (word.length > 0 && boundedLevenshtein(token, word, maxDist) >= 0) {
-          return true;
-        }
+        if (word.length === 0) continue;
+        // Levenshtein for typo tolerance
+        if (boundedLevenshtein(token, word, maxDist) >= 0) return true;
+        // Prefix match: "checkmark" matches "check*" words and vice versa
+        if (token.startsWith(word) || word.startsWith(token)) return true;
       }
       return false;
     };
@@ -268,4 +274,46 @@ export function fuzzyScorePreLowered(
     // Skip content for fuzzy — too many words, too slow, too many false positives
   }
   return score;
+}
+
+/**
+ * Resolves a single name against a list of candidates using Levenshtein
+ * distance. Designed for "find the one best match" use cases like
+ * `get_component` where you have a user-supplied name and need to find the
+ * closest entry by title or alias.
+ *
+ * Returns the best-matching item, or undefined if no candidate is close
+ * enough. Edit distance threshold scales with query length (same as
+ * fuzzyScorePreLowered). Ties are broken by shortest edit distance, then
+ * shortest candidate name (most specific match).
+ */
+export function fuzzyResolveName<T>(
+  needle: string,
+  candidates: T[],
+  getNames: (item: T) => string[]
+): T | undefined {
+  if (needle.length < 2) return undefined;
+  const lower = needle.toLowerCase();
+  const maxDist = lower.length <= 4 ? 1 : lower.length <= 7 ? 2 : 3;
+
+  let bestItem: T | undefined;
+  let bestDist = maxDist + 1;
+  let bestLen = Infinity;
+
+  for (const item of candidates) {
+    for (const name of getNames(item)) {
+      const nameLower = name.toLowerCase();
+      const dist = boundedLevenshtein(lower, nameLower, maxDist);
+      if (
+        dist >= 0 &&
+        (dist < bestDist || (dist === bestDist && nameLower.length < bestLen))
+      ) {
+        bestDist = dist;
+        bestLen = nameLower.length;
+        bestItem = item;
+      }
+    }
+  }
+
+  return bestItem;
 }

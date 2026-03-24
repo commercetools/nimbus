@@ -119,7 +119,7 @@
     "test": "vitest --run",
     "typecheck": "tsc --noEmit",
     "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
-    "postinstall": "chakra typegen ./dist/index.es.js || true",
+    "postinstall": "test -f ./dist/index.es.js && chakra typegen ./dist/index.es.js || true",
     "bundles:analyze": "ANALYZE_BUNDLE=true vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
