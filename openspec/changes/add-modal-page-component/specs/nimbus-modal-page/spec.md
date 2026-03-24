@@ -65,29 +65,6 @@ edge of the viewport.
 - **THEN** SHALL NOT close the modal page
 - **AND** this prevents accidental data loss on full-page forms
 
-### Requirement: Stacked Depth
-
-When multiple ModalPages are nested, each level SHALL appear visually
-indented relative to its parent.
-
-#### Scenario: Single modal page
-
-- **WHEN** a single ModalPage is open
-- **THEN** SHALL display at full overlay width
-
-#### Scenario: Nested modal pages
-
-- **WHEN** a second ModalPage is opened inside the first
-- **THEN** the second page SHALL appear slightly narrower than the first
-- **AND** the edge of the parent page SHALL be visible behind the child
-- **AND** this provides a visual cue of the nesting depth
-
-#### Scenario: Multiple nesting levels
-
-- **WHEN** additional ModalPages are nested beyond two levels
-- **THEN** each subsequent level SHALL be progressively narrower
-- **AND** the indentation SHALL accumulate with each level
-
 ### Requirement: TopBar Navigation
 
 The TopBar SHALL provide breadcrumb navigation with a back button.

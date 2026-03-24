@@ -10,7 +10,7 @@ lifecycleState: Experimental
 order: 999
 menu:
   - Components
-  - Feedback
+  - Layout
   - ModalPage
 tags:
   - component
@@ -40,7 +40,6 @@ It is always controlled — consumers manage the open state with `isOpen` and
 - **Structured layout**: TopBar / Header / Content (scrollable) / Footer
 - **Tab navigation**: `ModalPage.TabNav` for tabular page patterns
 - **Multi-column content**: Use `PageContent.Root` inside `ModalPage.Content` for column layouts
-- **Stacked depth**: Each nested ModalPage is slightly narrower to show visual hierarchy
 - **Accessibility first**: WCAG 2.1 AA compliant with focus management, keyboard navigation, and screen reader support
 
 ### Resources
@@ -197,8 +196,7 @@ const App = () => {
 Use when a workflow requires drilling into a sub-task — for example, opening
 "Add Variant" while the "Edit Product" page is open. Place the second
 `ModalPage.Root` inside the first `ModalPage.Content`. Each page manages its
-own independent open state. Each stacked page is slightly narrower than the
-one beneath it, providing a visual cue of the nesting depth.
+own independent open state.
 
 ```jsx live
 const App = () => {
