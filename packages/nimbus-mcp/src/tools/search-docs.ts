@@ -156,7 +156,6 @@ function findCandidates(
   }
 
   // Partial-match fallback: score entries by how many tokens match in any field.
-  // Much faster than Fuse.js while still providing relevant results.
   const seen = new Set(exactMatches.map((e) => e.id));
   const partialScored: Array<{ entry: SearchIndexEntry; score: number }> = [];
 
@@ -165,12 +164,10 @@ function findCandidates(
     const fields = loweredMap.get(entry)!;
     let score = 0;
     for (const t of tokens) {
-      if (fields.combined.includes(t)) {
-        if (fields.title.includes(t)) score += 8;
-        if (fields.description.includes(t)) score += 4;
-        if (fields.tags.includes(t)) score += 4;
-        if (fields.content.includes(t)) score += 1;
-      }
+      if (fields.title.includes(t)) score += 8;
+      if (fields.description.includes(t)) score += 4;
+      if (fields.tags.includes(t)) score += 4;
+      if (fields.content.includes(t)) score += 1;
     }
     if (score > 0) {
       partialScored.push({ entry, score });
@@ -223,7 +220,7 @@ interface CachedRouteViews {
     key: string;
     content: string;
     lower: string;
-    /** Truncated lower for matching (4KB cap). */
+    /** Truncated lower for matching (2KB cap). */
     matchLower: string;
   }>;
   /** All view content concatenated and lowered — for fast negative filtering. */
