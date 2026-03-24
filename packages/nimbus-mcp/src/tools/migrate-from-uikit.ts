@@ -21,7 +21,7 @@ import type { MigrateComponentResult, MigrateFileResult } from "../types.js";
  *
  * Handles both `import { X } from '...'` and `import X from '...'` forms.
  */
-const UIKIT_IMPORT_RE =
+const UIKIT_IMPORT_REGEX =
   /import\s+(?:\{([^}]+)\}|(\w+))\s+from\s+['"]@commercetools-uikit\/([^'"]+)['"]/g;
 
 /**
@@ -91,9 +91,9 @@ function extractUiKitComponents(fileContent: string): string[] {
 
   let match: RegExpExecArray | null;
   // Reset lastIndex since we reuse the regex
-  UIKIT_IMPORT_RE.lastIndex = 0;
+  UIKIT_IMPORT_REGEX.lastIndex = 0;
 
-  while ((match = UIKIT_IMPORT_RE.exec(fileContent)) !== null) {
+  while ((match = UIKIT_IMPORT_REGEX.exec(fileContent)) !== null) {
     const namedImports = match[1];
     const defaultImport = match[2];
     const packageName = match[3];
