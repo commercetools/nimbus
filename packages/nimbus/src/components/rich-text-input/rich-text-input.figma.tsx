@@ -10,10 +10,9 @@ figma.connect(
       isDisabled: figma.enum("State", { Disabled: true }),
     },
     example: (props) => (
-      <RichTextInput
-        isInvalid={props.isInvalid}
-        isDisabled={props.isDisabled}
-      />
+      <RichTextInput isInvalid={props.isInvalid} isDisabled={props.isDisabled}>
+        {/* label placeholder */}
+      </RichTextInput>
     ),
   }
 );

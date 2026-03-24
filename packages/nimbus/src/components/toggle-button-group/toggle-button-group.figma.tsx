@@ -6,11 +6,8 @@ figma.connect(
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2693-2343",
   {
     props: {
-      size: figma.enum("Size", {
-        sm: "sm",
-        md: "md",
-      }),
       children: figma.children("*"),
+      size: figma.enum("Size", { md: "md" }),
     },
     example: (props) => (
       <ToggleButtonGroup.Root size={props.size}>

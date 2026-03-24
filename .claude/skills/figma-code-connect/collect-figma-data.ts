@@ -9,7 +9,7 @@
  */
 
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
-import { join, resolve, dirname, relative } from "node:path";
+import { join, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { config } from "dotenv";
 
@@ -63,10 +63,10 @@ const FIGMA_TO_CODE: Record<string, FigmaMapping | null> = {
   "Draggable list": { dir: "draggable-list" },
   "Draggable tag": { dir: "tag-group" },
   "Checkbox with label": { dir: "checkbox" },
-  "Checkbox group": { dir: "checkbox" },
-  "Radio button": { dir: "radio-input" },
-  "Radio button with label": { dir: "radio-input" },
-  "Radio group": { dir: "radio-input" },
+  "Checkbox group": null,
+  "Radio button": null,
+  "Radio button with label": { dir: "radio-input", subComponent: "Option" },
+  "Radio group": { dir: "radio-input", subComponent: "Root" },
   "Switch with label": { dir: "switch" },
   "Date Picker": { dir: "date-picker" },
   "Calendar popover": { dir: "date-picker" },
@@ -212,7 +212,12 @@ function parseSubComponents(mainFilePath: string): string[] {
 
 /** Extract prop names from a component's .types.ts file.
  *  Parses explicitly declared properties from type definitions. */
-function parseTypesProps(dirPath: string, dirName: string): string[] {
+function parseTypesProps(
+  dirPath: string,
+  dirName: string,
+  exportName?: string,
+  subComponent?: string
+): string[] {
   // Try both .ts and .tsx extensions
   const tsPath = join(dirPath, `${dirName}.types.ts`);
   const tsxPath = join(dirPath, `${dirName}.types.tsx`);
@@ -227,15 +232,69 @@ function parseTypesProps(dirPath: string, dirName: string): string[] {
   const content = readFileSync(filePath, "utf-8");
   const props = new Set<string>();
 
-  // Match property declarations in type/interface definitions:
-  //   propName?: Type;
-  //   propName: Type;
-  //   /** jsdoc */ propName?: Type;
+  // For compound sub-components, try to find the specific Props type block
+  // e.g., ComboBoxTriggerProps for ComboBox.Trigger
+  if (exportName && subComponent) {
+    const typeName = `${exportName}${subComponent}Props`;
+    // Find the type block: "export type FooBarProps = ... { ... }"
+    // Match from the type name to the next export or end of section
+    const typeBlockRegex = new RegExp(
+      `export type ${typeName}[^=]*=([^;]*\\{[^}]*\\})`,
+      "s"
+    );
+    const blockMatch = content.match(typeBlockRegex);
+    if (blockMatch) {
+      const block = blockMatch[1];
+      const propRegex = /(?:\/\*\*[\s\S]*?\*\/\s*)?^\s{2}(\w+)\??:\s/gm;
+      let match;
+      while ((match = propRegex.exec(block)) !== null) {
+        const propName = match[1];
+        if (
+          propName === "key" ||
+          propName === "ref" ||
+          propName === "slot" ||
+          propName.startsWith("_")
+        ) {
+          continue;
+        }
+        props.add(propName);
+      }
+
+      // Also check the SlotProps type it extends
+      const slotTypeName = `${exportName}${subComponent}SlotProps`;
+      const slotBlockRegex = new RegExp(
+        `export type ${slotTypeName}[^=]*=([^;]*\\{[^}]*\\})`,
+        "s"
+      );
+      const slotMatch = content.match(slotBlockRegex);
+      if (slotMatch) {
+        const slotBlock = slotMatch[1];
+        const slotPropRegex = /(?:\/\*\*[\s\S]*?\*\/\s*)?^\s{2}(\w+)\??:\s/gm;
+        let slotPropMatch;
+        while ((slotPropMatch = slotPropRegex.exec(slotBlock)) !== null) {
+          const propName = slotPropMatch[1];
+          if (
+            propName === "key" ||
+            propName === "ref" ||
+            propName === "slot" ||
+            propName.startsWith("_")
+          ) {
+            continue;
+          }
+          props.add(propName);
+        }
+      }
+
+      return [...props];
+    }
+    // If we can't find the specific sub-component type, fall through to whole-file scan
+  }
+
+  // Fallback: scan entire file for all prop declarations
   const propRegex = /(?:\/\*\*[\s\S]*?\*\/\s*)?^\s{2}(\w+)\??:\s/gm;
   let match;
   while ((match = propRegex.exec(content)) !== null) {
     const propName = match[1];
-    // Skip non-prop patterns (type params, internal fields)
     if (
       propName === "key" ||
       propName === "ref" ||
@@ -369,11 +428,27 @@ function parseRecipeVariants(filePath: string): RecipeVariants {
     }
 
     const groupContent = variantsBlock.slice(startIdx, idx - 1);
-    const keyRegex = /^\s{6,8}(?:"([^"]+)"|'([^']+)'|(\w[\w-]*))\s*:/gm;
+    // Extract only top-level keys (depth 0) — variant values, not slot names
     const values: string[] = [];
-    let keyMatch;
-    while ((keyMatch = keyRegex.exec(groupContent)) !== null) {
-      values.push(keyMatch[1] || keyMatch[2] || keyMatch[3]);
+    let braceDepth = 0;
+    for (let ci = 0; ci < groupContent.length; ci++) {
+      if (groupContent[ci] === "{") {
+        braceDepth++;
+        continue;
+      }
+      if (groupContent[ci] === "}") {
+        braceDepth--;
+        continue;
+      }
+      // Only match keys at depth 0 (variant values)
+      if (braceDepth === 0) {
+        const rest = groupContent.slice(ci);
+        const keyMatch = rest.match(/^(?:"([^"]+)"|'([^']+)'|(\w[\w-]*))\s*:/);
+        if (keyMatch) {
+          values.push(keyMatch[1] || keyMatch[2] || keyMatch[3]);
+          ci += keyMatch[0].length - 1;
+        }
+      }
     }
 
     if (values.length > 0) {
@@ -382,6 +457,44 @@ function parseRecipeVariants(filePath: string): RecipeVariants {
   }
 
   return variants;
+}
+
+/**
+ * Resolve the parent component's directory name by scanning the types file
+ * for imports from sibling component directories.
+ * e.g., icon-button.types.tsx imports ButtonProps from "../button/button.types"
+ * → returns "button"
+ */
+function resolveParentRecipe(dirPath: string, dirName: string): string | null {
+  // Check .types.ts and .types.tsx
+  const tsPath = join(dirPath, `${dirName}.types.ts`);
+  const tsxPath = join(dirPath, `${dirName}.types.tsx`);
+  const filePath = existsSync(tsPath)
+    ? tsPath
+    : existsSync(tsxPath)
+      ? tsxPath
+      : null;
+
+  if (!filePath) return null;
+
+  const content = readFileSync(filePath, "utf-8");
+
+  // Match: import ... from "../<parent-dir>/<parent-dir>.types"
+  const importMatch = content.match(
+    /from\s+["']\.\.\/([\w-]+)\/[\w-]+\.types["']/
+  );
+  if (importMatch) {
+    const parentDir = importMatch[1];
+    // Verify the parent has a recipe
+    const parentRecipe = join(
+      COMPONENTS_DIR,
+      parentDir,
+      `${parentDir}.recipe.ts`
+    );
+    if (existsSync(parentRecipe)) return parentDir;
+  }
+
+  return null;
 }
 
 /** Normalize a name for matching */
@@ -679,10 +792,24 @@ async function main() {
     const comp = matches[0].comp;
     const exportName = comp.exportName || comp.dirName;
 
-    // Parse recipe variants and types props once per component directory
+    // Parse recipe variants once per component directory.
+    // If the component has no recipe, try to inherit from the parent component
+    // (e.g., icon-button wraps button, password-input wraps text-input).
     const recipePath = join(comp.dirPath, `${comp.dirName}.recipe.ts`);
-    const recipeVariants = parseRecipeVariants(recipePath);
-    const typesProps = parseTypesProps(comp.dirPath, comp.dirName);
+    let recipeVariants = parseRecipeVariants(recipePath);
+
+    if (Object.keys(recipeVariants).length === 0) {
+      // Try to find parent recipe by scanning the types file for an extends/import
+      const parentDir = resolveParentRecipe(comp.dirPath, comp.dirName);
+      if (parentDir) {
+        const parentRecipePath = join(
+          COMPONENTS_DIR,
+          parentDir,
+          `${parentDir}.recipe.ts`
+        );
+        recipeVariants = parseRecipeVariants(parentRecipePath);
+      }
+    }
 
     // Resolve file paths (relative to project root)
     const typesTs = join(comp.dirPath, `${comp.dirName}.types.ts`);
@@ -730,6 +857,14 @@ async function main() {
         }
         normalizedFigmaProps[propName] = info;
       }
+
+      // Parse typesProps per sub-component for accurate prop validation
+      const typesProps = parseTypesProps(
+        comp.dirPath,
+        comp.dirName,
+        exportName,
+        subComponent
+      );
 
       const componentLabel = subComponent
         ? `${exportName}.${subComponent}`

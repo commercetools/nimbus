@@ -10,24 +10,20 @@ figma.connect(
       leadingElement: figma.boolean("Leading element"),
       isInvalid: figma.enum("State", { Invalid: true }),
       isDisabled: figma.enum("State", { Disabled: true }),
-      variant: figma.enum("Appearance", {
-        Solid: "solid",
-        Ghost: "ghost",
-      }),
-      size: figma.enum("Size", {
-        md: "md",
-        sm: "sm",
-      }),
+      size: figma.enum("Size", { md: "md", sm: "sm" }),
+      variant: figma.enum("Appearance", { Solid: "solid", Ghost: "ghost" }),
     },
     example: (props) => (
       <TextInput
-        variant={props.variant}
-        size={props.size}
-        leadingElement={props.leadingElement}
         trailingElement={props.trailingElement}
+        leadingElement={props.leadingElement}
         isInvalid={props.isInvalid}
         isDisabled={props.isDisabled}
-      />
+        size={props.size}
+        variant={props.variant}
+      >
+        {/* label placeholder */}
+      </TextInput>
     ),
   }
 );

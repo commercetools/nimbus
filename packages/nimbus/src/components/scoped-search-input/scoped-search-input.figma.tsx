@@ -7,13 +7,16 @@ figma.connect(
   {
     props: {
       isDisabled: figma.enum("State", { Disabled: true }),
-      size: figma.enum("Size", {
-        sm: "sm",
-        md: "md",
-      }),
+      size: figma.enum("Size", { sm: "sm", md: "md" }),
     },
     example: (props) => (
-      <ScopedSearchInput isDisabled={props.isDisabled} size={props.size} />
+      <ScopedSearchInput
+        value={{ option: "", text: "" }}
+        onSubmit={() => {}}
+        options={[]}
+        isDisabled={props.isDisabled}
+        size={props.size}
+      />
     ),
   }
 );

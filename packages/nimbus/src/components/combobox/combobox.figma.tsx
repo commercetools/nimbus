@@ -2,6 +2,7 @@ import figma from "@figma/code-connect/react";
 import { ComboBox } from "./combobox";
 
 // --- Combobox Menu → ComboBox.ListBox ---
+// NOTE: Skipped VARIANT "is multi-select" (boolean-like) → no matching code prop "isMultiSelect"
 figma.connect(
   ComboBox.ListBox,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6358-56723",
@@ -14,6 +15,8 @@ figma.connect(
 );
 
 // --- Combobox Input → ComboBox.Trigger ---
+// NOTE: Skipped BOOLEAN "Clear button" → no matching code prop found
+// NOTE: Skipped VARIANT "Multi select" (boolean-like) → no matching code prop "multiSelect"
 figma.connect(
   ComboBox.Trigger,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6358-57260",
@@ -21,47 +24,21 @@ figma.connect(
     props: {
       isInvalid: figma.enum("State", { Invalid: true }),
       isDisabled: figma.enum("State", { Disabled: true }),
-      variant: figma.enum("Appearance", {
-        Solid: "solid",
-        Ghost: "ghost",
-      }),
-      size: figma.enum("Size", {
-        md: "md",
-        sm: "sm",
-      }),
-      selectionMode: figma.enum("Multi select", {
-        YES: "multiple",
-        NO: "single",
-      }),
     },
-    example: (props) => (
-      <ComboBox.Trigger
-        isInvalid={props.isInvalid}
-        isDisabled={props.isDisabled}
-        variant={props.variant}
-        size={props.size}
-      />
-    ),
+    example: () => <ComboBox.Trigger />,
   }
 );
 
 // --- Combobox with menu open → ComboBox.Root ---
+// NOTE: Skipped VARIANT "Multi-select" (boolean-like) → no matching code prop "multiSelect"
 figma.connect(
   ComboBox.Root,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6358-58494",
   {
     props: {
-      selectionMode: figma.enum("Multi-select", {
-        YES: "multiple",
-        NO: "single",
-      }),
       children: figma.children("*"),
     },
-    example: (props) => (
-      <ComboBox.Root selectionMode={props.selectionMode}>
-        {props.children}
-      </ComboBox.Root>
-    ),
+    example: (props) => <ComboBox.Root>{props.children}</ComboBox.Root>,
   }
 );
 

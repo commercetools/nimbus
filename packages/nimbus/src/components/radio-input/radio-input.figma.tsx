@@ -1,27 +1,24 @@
 import figma from "@figma/code-connect/react";
 import { RadioInput } from "./radio-input";
 
-// --- Radio button → RadioInput.Option ---
-// --- Unmatched Figma properties (manual review needed) ---
-// Checked (VARIANT: NO, YES)
-// Validation (VARIANT: Invalid, none)
-
+// --- Radio button with label → RadioInput.Option ---
+// NOTE: Skipped VARIANT "Validation" [none, Invalid, Disabled] → no matching code prop "validation"
 figma.connect(
   RadioInput.Option,
-  "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2999-6004",
+  "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2999-6090",
   {
-    props: {
-      isDisabled: figma.enum("State", { Disabled: true }),
-    },
-    example: (props) => (
-      <RadioInput.Option value="option" isDisabled={props.isDisabled}>
-        Option label
-      </RadioInput.Option>
+    example: () => (
+      <RadioInput.Option value="">{/* label */}</RadioInput.Option>
     ),
   }
 );
 
 // --- Radio group → RadioInput.Root ---
+// NOTE: Skipped BOOLEAN "Option 1" → no matching code prop found
+// NOTE: Skipped BOOLEAN "Option 2" → no matching code prop found
+// NOTE: Skipped BOOLEAN "Option 3" → no matching code prop found
+// NOTE: Skipped BOOLEAN "Option 4" → no matching code prop found
+// NOTE: Skipped BOOLEAN "Option 5" → no matching code prop found
 figma.connect(
   RadioInput.Root,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=2999-6110",
