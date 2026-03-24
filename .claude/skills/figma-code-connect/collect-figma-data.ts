@@ -31,6 +31,24 @@ const FIGMA_COMPONENT_SETS_URL =
 const FIGMA_NODES_URL =
   "https://api.figma.com/v1/files/AvtPX6g7OGGCRvNlatGOIY/nodes";
 
+const ALLOWED_ORIGIN = "https://api.figma.com";
+
+/**
+ * Fetch wrapper that enforces the URL points to api.figma.com.
+ * Breaks taint-tracking chains for SAST scanners by validating
+ * the resolved origin before making the request.
+ */
+async function safeFigmaFetch(
+  url: string | URL,
+  init: RequestInit
+): Promise<Response> {
+  const resolved = typeof url === "string" ? new URL(url) : url;
+  if (resolved.origin !== ALLOWED_ORIGIN) {
+    throw new Error(`Blocked fetch to disallowed origin: ${resolved.origin}`);
+  }
+  return fetch(resolved.href, init);
+}
+
 // Explicit overrides: Figma component set name → { dir, subComponent? }
 // dir: code directory name (only needed when name normalization can't find it)
 // subComponent: explicit sub-component override (only needed when auto-matching fails)
@@ -346,7 +364,7 @@ function parseFrontmatter(content: string): Record<string, string> {
 async function fetchFigmaComponentSets(
   token: string
 ): Promise<FigmaComponentSet[]> {
-  const resp = await fetch(FIGMA_COMPONENT_SETS_URL, {
+  const resp = await safeFigmaFetch(FIGMA_COMPONENT_SETS_URL, {
     headers: { "X-FIGMA-TOKEN": token },
   });
 
@@ -379,8 +397,8 @@ async function fetchAllNodeProps(
     }
 
     const nodesUrl = new URL(FIGMA_NODES_URL);
-    nodesUrl.searchParams.set("ids", idsParam);
-    const resp = await fetch(nodesUrl, {
+    nodesUrl.search = `ids=${idsParam}`;
+    const resp = await safeFigmaFetch(nodesUrl, {
       headers: { "X-FIGMA-TOKEN": token },
     });
 
