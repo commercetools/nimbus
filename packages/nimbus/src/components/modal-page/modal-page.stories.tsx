@@ -401,13 +401,15 @@ export const KeyboardNavigation: Story = {
         expect(canvas.getByRole("dialog")).toBeInTheDocument();
       });
 
-      // Tab through focusable elements — back button, Cancel, Save
-      await userEvent.tab();
+      // Back button has focus from auto-focus. Tab to Cancel, then Save.
       const cancelButton = canvas.getByRole("button", { name: "Cancel" });
       const saveButton = canvas.getByRole("button", { name: "Save" });
-      // At least Cancel and Save buttons should be reachable
-      expect(cancelButton).toBeInTheDocument();
-      expect(saveButton).toBeInTheDocument();
+
+      await userEvent.tab();
+      await waitFor(() => expect(cancelButton).toHaveFocus());
+
+      await userEvent.tab();
+      await waitFor(() => expect(saveButton).toHaveFocus());
 
       // Close to restore state
       await userEvent.keyboard("{Escape}");
