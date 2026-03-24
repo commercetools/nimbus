@@ -10,6 +10,10 @@ import type { ModalPageRootProps } from "../modal-page.types";
  * Provides the slot recipe context for all ModalPage sub-components via a
  * CSS grid container (rows: topBar / header / content / footer).
  *
+ * Style props (e.g. `width`) are forwarded to the Drawer.Content panel.
+ * The default width is near-fullscreen; consumers can pass a custom `width`
+ * to override.
+ *
  * Dismissal: backdrop click is disabled (no accidental close on a full-page
  * form). Escape key remains active (isKeyboardDismissDisabled defaults to
  * false), matching standard browser/OS modal behaviour and WCAG 2.1 SC 2.1.2.
@@ -24,6 +28,7 @@ export const ModalPageRoot = ({
   isOpen,
   onClose,
   children,
+  width = "calc(100vw - {spacing.1200})",
 }: ModalPageRootProps) => {
   const handleOpenChange = useCallback(
     (open: boolean) => {
@@ -43,7 +48,7 @@ export const ModalPageRoot = ({
       // close on accidental outside click. Escape key remains active.
       isDismissable={false}
     >
-      <Drawer.Content>
+      <Drawer.Content width={width}>
         <ModalPageRootSlot ref={ref}>{children}</ModalPageRootSlot>
       </Drawer.Content>
     </Drawer.Root>

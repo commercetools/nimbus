@@ -565,6 +565,56 @@ export const StackedModalPages: Story = {
 };
 
 /**
+ * Custom page width — pass a `width` prop to ModalPage.Root to override
+ * the default near-fullscreen width.
+ */
+export const CustomPageWidth: Story = {
+  render: () => (
+    <ModalPage.Root isOpen onClose={() => {}} width="600px">
+      <ModalPage.TopBar
+        previousPathLabel="Settings"
+        currentPathLabel="Edit Notification"
+      />
+      <ModalPage.Header>
+        <ModalPage.Title>Edit Notification</ModalPage.Title>
+        <ModalPage.Subtitle>
+          Configure notification preferences
+        </ModalPage.Subtitle>
+      </ModalPage.Header>
+      <ModalPage.Content>
+        <Text>
+          This modal page uses a custom width of 600px instead of the default
+          near-fullscreen width.
+        </Text>
+      </ModalPage.Content>
+      <ModalPage.Footer>
+        <Button slot="close" variant="outline">
+          Cancel
+        </Button>
+        <Button colorPalette="primary" variant="solid">
+          Save
+        </Button>
+      </ModalPage.Footer>
+    </ModalPage.Root>
+  ),
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Renders with custom width", async () => {
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+      expect(
+        canvas.getByRole("heading", { name: "Edit Notification" })
+      ).toBeInTheDocument();
+    });
+  },
+};
+
+/**
  * SmokeTest — renders the full compound structure in an always-open state
  * for visual regression baseline.
  */

@@ -285,6 +285,17 @@ The dialog must have an accessible name. Use `ModalPage.Title` (recommended):
 `ModalPage.Title` automatically provides the accessible name for the dialog.
 Screen readers will announce the title text when the dialog opens.
 
+### Custom page width
+
+The default width is near-fullscreen. Pass a `width` prop to
+`ModalPage.Root` to override:
+
+```tsx
+<ModalPage.Root isOpen={isOpen} onClose={handleClose} width="600px">
+  ...
+</ModalPage.Root>
+```
+
 ### Footer button spacing
 
 `ModalPage.Footer` automatically spaces its children — place buttons directly
