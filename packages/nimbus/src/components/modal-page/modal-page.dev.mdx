@@ -55,9 +55,9 @@ const App = () => {
 There are three ways to close a ModalPage — all route through the same
 `onClose` callback:
 
-1. **Back button in TopBar** — uses React Aria `slot="close"`, hooked into the dialog close path
-2. **Any button with `slot="close"`** — React Aria natively routes this through the dialog
-3. **Escape key** — always enabled; matches browser/OS convention and WCAG 2.1 SC 2.1.2
+1. **Back button in TopBar** — acts as a close trigger, calling `onClose`
+2. **Any button with `slot="close"`** — automatically triggers `onClose`
+3. **Escape key** — always enabled; matches browser/OS convention and WCAG 2.1
 
 ```jsx live-dev
 const App = () => {
@@ -207,6 +207,7 @@ set `previousPathLabel` to the parent page's title so the back button
 reads contextually.
 
 Behaviour that works automatically:
+- Each stacked page is visually indented to indicate depth
 - Escape closes only the topmost page
 - Focus is trapped in the topmost page; previous page is inert
 - When the second page closes, focus returns to its trigger inside the first page
@@ -282,8 +283,20 @@ The dialog must have an accessible name. Use `ModalPage.Title` (recommended):
 </ModalPage.Header>
 ```
 
-`ModalPage.Title` renders an `h2` with React Aria's `slot="title"`, which
-automatically associates it as the dialog's accessible name via `aria-labelledby`.
+`ModalPage.Title` automatically provides the accessible name for the dialog.
+Screen readers will announce the title text when the dialog opens.
+
+### Footer button spacing
+
+`ModalPage.Footer` automatically spaces its children — place buttons directly
+without a layout wrapper:
+
+```tsx
+<ModalPage.Footer>
+  <Button slot="close" variant="outline">Cancel</Button>
+  <Button colorPalette="primary" variant="solid">Save</Button>
+</ModalPage.Footer>
+```
 
 ### Controlled state
 
@@ -300,14 +313,12 @@ const [isOpen, setIsOpen] = useState(false);
 
 ## Accessibility
 
-ModalPage handles most accessibility requirements internally through React
-Aria's Dialog. Key implementation details:
+ModalPage handles most accessibility requirements internally:
 
-- `role="dialog"` is applied to the content by React Aria
-- `aria-modal="true"` is set, blocking interaction with the background
+- The dialog has `role="dialog"` and `aria-modal="true"`
 - Focus is trapped inside the modal while open
-- Focus returns to the triggering element on close
-- Escape key dismissal is always active (WCAG 2.1 SC 2.1.2)
+- Focus moves to the back button on open and returns to the trigger on close
+- Escape key dismissal is always active
 - Backdrop click is disabled — full-page forms should not close accidentally
 
 #### Keyboard navigation
@@ -320,10 +331,10 @@ Aria's Dialog. Key implementation details:
 #### ARIA attributes
 
 - `role="dialog"`: Applied to the dialog container
-- `aria-labelledby`: Automatically linked to the `ModalPage.Title` h2 via React Aria slot wiring
+- `aria-labelledby`: Automatically linked to `ModalPage.Title`
 - `aria-modal="true"`: Marks the overlay as modal to screen readers
 - `aria-current="page"`: Applied to the current path label in `ModalPage.TopBar`
-- `aria-hidden="true"`: Applied to the `/` breadcrumb separator
+- `aria-hidden="true"`: Applied to the breadcrumb separator
 
 ## API reference
 
