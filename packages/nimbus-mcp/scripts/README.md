@@ -10,6 +10,7 @@ All scripts are TypeScript and run via `tsx`.
 | `copy-docs-data.ts`     | Copies generated docs data from `apps/docs/src/data` into `data/docs`       |
 | `build-icon-catalog.ts` | Scans nimbus-icons and builds a searchable catalog at `data/icons.json`     |
 | `build-token-data.ts`   | Flattens design tokens into `data/tokens.json` for runtime lookup           |
+| `build-search-index.ts` | Augments search index with pre-lowered fields for faster runtime matching   |
 
 ## Running
 

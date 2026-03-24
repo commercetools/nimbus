@@ -8,10 +8,13 @@ import type {
   CandidateResult,
   ViewMatch,
   LoweredRelevanceFields,
+  CachedViewContent,
+  CachedRouteViews,
 } from "../types.js";
 import {
   filterAndRankPreLowered,
   fuzzyScorePreLowered,
+  scorePreLowered,
 } from "../utils/relevance.js";
 import { stripMarkdown } from "../utils/markdown.js";
 
@@ -114,11 +117,6 @@ function routeToSlug(route: string): string {
   return route.replace(/\//g, "-");
 }
 
-/** Cached stripped + lowered content per view object. */
-interface CachedViewContent {
-  stripped: string;
-  lower: string;
-}
 const viewContentCache = new WeakMap<object, CachedViewContent>();
 
 /** Get cached stripped and lowered content for a view object. */
@@ -162,13 +160,7 @@ function findCandidates(
   for (const entry of index) {
     if (seen.has(entry.id)) continue;
     const fields = loweredMap.get(entry)!;
-    let score = 0;
-    for (const t of tokens) {
-      if (fields.title.includes(t)) score += 8;
-      if (fields.description.includes(t)) score += 4;
-      if (fields.tags.includes(t)) score += 4;
-      if (fields.content.includes(t)) score += 1;
-    }
+    const score = scorePreLowered(fields, tokens);
     if (score > 0) {
       partialScored.push({ entry, score });
     }
@@ -214,18 +206,6 @@ function findCandidates(
   return { matched, expanded };
 }
 
-/** Cached route view data with pre-computed combined lowered content. */
-interface CachedRouteViews {
-  views: Array<{
-    key: string;
-    content: string;
-    lower: string;
-    /** Truncated lower for matching (2KB cap). */
-    matchLower: string;
-  }>;
-  /** All view content concatenated and lowered — for fast negative filtering. */
-  combinedLower: string;
-}
 const routeViewsCache = new Map<string, CachedRouteViews>();
 
 /**
@@ -402,15 +382,10 @@ export function registerSearchDocs(server: McpServer): void {
         // Pre-compute phase-1 scores synchronously.
         const phase1Scores = new Map<string, number>();
         for (const entry of allCandidates) {
-          const f = loweredMap.get(entry)!;
-          let s = 0;
-          for (const t of tokens) {
-            if (f.title.includes(t)) s += 8;
-            if (f.description.includes(t)) s += 4;
-            if (f.tags.includes(t)) s += 4;
-            if (f.content.includes(t)) s += 1;
-          }
-          phase1Scores.set(entry.id, s);
+          phase1Scores.set(
+            entry.id,
+            scorePreLowered(loweredMap.get(entry)!, tokens)
+          );
         }
 
         // Phase 2: Warm route view caches, then search synchronously.
