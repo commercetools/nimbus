@@ -1086,3 +1086,31 @@ export function getUiKitMigration(
 export function getAllUiKitMigrations(): UiKitMigrationEntry[] {
   return MIGRATION_DATA;
 }
+
+/** Pre-built map of compound root names to their sub-component entries. */
+const COMPOUND_ROOT_MAP = new Map<string, UiKitMigrationEntry[]>();
+for (const entry of MIGRATION_DATA) {
+  const dotIdx = entry.uiKitName.indexOf(".");
+  if (dotIdx > 0) {
+    const root = entry.uiKitName.slice(0, dotIdx);
+    const existing = COMPOUND_ROOT_MAP.get(root);
+    if (existing) {
+      existing.push(entry);
+    } else {
+      COMPOUND_ROOT_MAP.set(root, [entry]);
+    }
+  }
+}
+
+/**
+ * Returns all sub-component migration entries for a compound root name.
+ * e.g. "Spacings" → [Spacings.Stack, Spacings.Inline, Spacings.Inset, ...]
+ *      "Text" → [Text.Body, Text.Caption, Text.Detail, ...]
+ *
+ * Returns undefined if the name is not a compound root.
+ */
+export function getUiKitCompoundMigrations(
+  rootName: string
+): UiKitMigrationEntry[] | undefined {
+  return COMPOUND_ROOT_MAP.get(rootName);
+}

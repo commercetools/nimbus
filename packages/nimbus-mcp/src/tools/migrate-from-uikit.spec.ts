@@ -68,6 +68,32 @@ describe("migrate_from_uikit — componentName mode", () => {
     expect(data.mappingType).toBe("variant");
   });
 
+  it("returns all sub-component mappings for a compound root like Spacings", async () => {
+    const result = await callMigrate({ componentName: "Spacings" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.compoundRoot).toBe("Spacings");
+    expect(data.mappings).toBeInstanceOf(Array);
+    expect(data.mappings.length).toBeGreaterThanOrEqual(4);
+
+    const names = data.mappings.map((m: { uiKitName: string }) => m.uiKitName);
+    expect(names).toContain("Spacings.Stack");
+    expect(names).toContain("Spacings.Inline");
+    expect(names).toContain("Spacings.Inset");
+  });
+
+  it("returns all sub-component mappings for a compound root like Text", async () => {
+    const result = await callMigrate({ componentName: "Text" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.compoundRoot).toBe("Text");
+    expect(data.mappings.length).toBeGreaterThanOrEqual(5);
+
+    const names = data.mappings.map((m: { uiKitName: string }) => m.uiKitName);
+    expect(names).toContain("Text.Body");
+    expect(names).toContain("Text.Headline");
+  });
+
   it("returns error for unknown component", async () => {
     const result = await callMigrate({
       componentName: "NonExistentComponent",
@@ -127,7 +153,13 @@ export const MyComponent = () => <div />;
 import { Spacings, Grid, Card, Text } from '@commercetools-frontend/ui-kit';
 import React from 'react';
 
-export const MyComponent = () => <div />;
+export const MyComponent = () => (
+  <Spacings.Stack>
+    <Card>
+      <Text.Body>Hello</Text.Body>
+    </Card>
+  </Spacings.Stack>
+);
 `
     );
 
@@ -137,6 +169,39 @@ export const MyComponent = () => <div />;
     const names = data.mappings.map((m: { uiKitName: string }) => m.uiKitName);
     expect(names).toContain("Card");
     expect(names).toContain("Grid");
+    // Only the sub-components actually used in the file should appear
+    expect(names).toContain("Spacings.Stack");
+    expect(names).not.toContain("Spacings.Inline");
+    expect(names).not.toContain("Spacings.Inset");
+    expect(names).toContain("Text.Body");
+    expect(names).not.toContain("Text.Headline");
+    // The root names themselves should not appear as unmapped
+    expect(data.unmapped).not.toContain("Spacings");
+    expect(data.unmapped).not.toContain("Text");
+
+    await unlink(barrelFile);
+  });
+
+  it("returns all sub-components when none are explicitly used in the file", async () => {
+    const barrelFile = join(tmpDir, "barrel-no-usage.tsx");
+    await writeFile(
+      barrelFile,
+      `
+import { Spacings } from '@commercetools-frontend/ui-kit';
+
+// Spacings is imported but no specific sub-component usage is detectable
+export const spacing = Spacings;
+`
+    );
+
+    const result = await callMigrate({ filePath: barrelFile });
+    const data = JSON.parse(getText(result));
+
+    const names = data.mappings.map((m: { uiKitName: string }) => m.uiKitName);
+    // Falls back to all sub-components since none were detected
+    expect(names).toContain("Spacings.Stack");
+    expect(names).toContain("Spacings.Inline");
+    expect(names).toContain("Spacings.Inset");
 
     await unlink(barrelFile);
   });

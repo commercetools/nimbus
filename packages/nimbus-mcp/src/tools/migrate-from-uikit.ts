@@ -3,6 +3,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import {
   getUiKitMigration,
+  getUiKitCompoundMigrations,
   getAllUiKitMigrations,
 } from "../data/uikit-migration.js";
 import type { MigrateComponentResult, MigrateFileResult } from "../types.js";
@@ -216,30 +217,48 @@ export function registerMigrateFromUiKit(server: McpServer): void {
       // Mode 1: Single component lookup
       if (componentName) {
         const result = buildComponentResult(componentName);
-        if (!result) {
-          // Try case-insensitive search across all migrations
-          const all = getAllUiKitMigrations();
-          const needle = componentName.toLowerCase();
-          const fuzzy = all.find((e) => e.uiKitName.toLowerCase() === needle);
-          if (fuzzy) {
-            return {
-              content: [
-                {
-                  type: "text" as const,
-                  text: JSON.stringify(buildComponentResult(fuzzy.uiKitName)),
-                },
-              ],
-            };
-          }
-
+        if (result) {
           return {
             content: [
               {
                 type: "text" as const,
-                text: `No migration mapping found for "${componentName}". Use a UI Kit component name like "PrimaryButton", "TextInput", etc.`,
+                text: JSON.stringify(result),
               },
             ],
-            isError: true,
+          };
+        }
+
+        // Check if this is a compound root (e.g. "Spacings" → Spacings.Stack, Spacings.Inline, ...)
+        const compoundEntries = getUiKitCompoundMigrations(componentName);
+        if (compoundEntries) {
+          return {
+            content: [
+              {
+                type: "text" as const,
+                text: JSON.stringify({
+                  compoundRoot: componentName,
+                  note: `"${componentName}" is used as a namespace (e.g. ${compoundEntries.map((e) => e.uiKitName).join(", ")}). Each sub-component has its own mapping.`,
+                  mappings: compoundEntries.map((e) =>
+                    buildComponentResult(e.uiKitName)
+                  ),
+                }),
+              },
+            ],
+          };
+        }
+
+        // Try case-insensitive search across all migrations
+        const all = getAllUiKitMigrations();
+        const needle = componentName.toLowerCase();
+        const fuzzy = all.find((e) => e.uiKitName.toLowerCase() === needle);
+        if (fuzzy) {
+          return {
+            content: [
+              {
+                type: "text" as const,
+                text: JSON.stringify(buildComponentResult(fuzzy.uiKitName)),
+              },
+            ],
           };
         }
 
@@ -247,9 +266,10 @@ export function registerMigrateFromUiKit(server: McpServer): void {
           content: [
             {
               type: "text" as const,
-              text: JSON.stringify(result),
+              text: `No migration mapping found for "${componentName}". Use a UI Kit component name like "PrimaryButton", "TextInput", etc.`,
             },
           ],
+          isError: true,
         };
       }
 
@@ -289,9 +309,25 @@ export function registerMigrateFromUiKit(server: McpServer): void {
         const result = buildComponentResult(name);
         if (result) {
           mappings.push(result);
-        } else {
-          unmapped.push(name);
+          continue;
         }
+        // Expand compound roots, filtered to only sub-components actually
+        // used in the file (e.g. "Spacings" → only Spacings.Stack if that's
+        // the only usage found).
+        const compoundEntries = getUiKitCompoundMigrations(name);
+        if (compoundEntries) {
+          const used = compoundEntries.filter((entry) =>
+            fileContent.includes(entry.uiKitName)
+          );
+          // If no specific sub-components detected, return all (the file may
+          // use dynamic access or the regex may not catch every pattern).
+          const toInclude = used.length > 0 ? used : compoundEntries;
+          for (const entry of toInclude) {
+            mappings.push(buildComponentResult(entry.uiKitName)!);
+          }
+          continue;
+        }
+        unmapped.push(name);
       }
 
       const response: MigrateFileResult = {
