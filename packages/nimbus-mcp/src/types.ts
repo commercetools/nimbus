@@ -2,8 +2,6 @@
  * Shared type definitions for the Nimbus MCP server.
  */
 
-import type Fuse from "fuse.js";
-
 // ---------------------------------------------------------------------------
 // Core types
 // ---------------------------------------------------------------------------
@@ -147,6 +145,8 @@ export interface SearchIndexEntry {
   route: string;
   menu: string[];
   content: string;
+  /** Pre-computed lowered fields from build step. */
+  _lower?: LoweredRelevanceFields;
 }
 
 /** A documentation entry (from docs manifest). */
@@ -332,8 +332,35 @@ export interface SearchIconsResponse {
   results: IconResult[];
 }
 
-/** Cached Fuse instance and icon list (created on first call, avoids double catalog load). */
-export interface FuseCache {
-  fuse: Fuse<IconCatalogEntry>;
-  icons: IconCatalogEntry[];
+// ---------------------------------------------------------------------------
+// Search tool types (used by tools/search-docs)
+// ---------------------------------------------------------------------------
+
+/** Cached stripped + lowered content per view object. */
+export interface CachedViewContent {
+  stripped: string;
+  lower: string;
+}
+
+/** Cached route view data with pre-computed combined lowered content. */
+export interface CachedRouteViews {
+  views: Array<{
+    key: string;
+    content: string;
+    lower: string;
+    /** Truncated lower for matching (content cap). */
+    matchLower: string;
+  }>;
+  /** All view content concatenated and lowered — for fast negative filtering. */
+  combinedLower: string;
+}
+
+/** Pre-lowercased relevance fields to avoid repeated toLowerCase() calls. */
+export interface LoweredRelevanceFields {
+  title: string;
+  description: string;
+  tags: string;
+  content: string;
+  /** All fields concatenated for fast single-string search. */
+  combined: string;
 }

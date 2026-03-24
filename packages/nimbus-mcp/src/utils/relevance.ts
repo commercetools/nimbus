@@ -6,7 +6,7 @@
  * is scored exactly once regardless of list size.
  */
 
-import type { RelevanceFields } from "../types.js";
+import type { RelevanceFields, LoweredRelevanceFields } from "../types.js";
 
 /** Field weights. Higher = more relevant when a query token matches this field. */
 const WEIGHTS = { title: 8, description: 4, tags: 4, content: 1 } as const;
@@ -110,4 +110,210 @@ export function filterAndRankByRelevance<T>(
   }
 
   return scored.sort((a, b) => b.score - a.score).map(({ item }) => item);
+}
+
+/**
+ * Like filterAndRankByRelevance but accepts pre-lowercased fields,
+ * avoiding repeated toLowerCase() calls on every search invocation.
+ */
+export function filterAndRankPreLowered<T>(
+  items: T[],
+  tokens: string[],
+  getLowered: (item: T) => LoweredRelevanceFields
+): T[] {
+  if (items.length === 0 || tokens.length === 0) return items;
+
+  const scored: Array<{ item: T; score: number }> = [];
+  const tokenCount = tokens.length;
+
+  // Fast path for single-token queries (most common case).
+  if (tokenCount === 1) {
+    const t = tokens[0];
+    for (const item of items) {
+      const { title, description, tags, content } = getLowered(item);
+      let score = 0;
+      if (title.includes(t)) score += WEIGHTS.title;
+      if (description.includes(t)) score += WEIGHTS.description;
+      if (tags.includes(t)) score += WEIGHTS.tags;
+      if (content.includes(t)) score += WEIGHTS.content;
+      if (score > 0) scored.push({ item, score });
+    }
+  } else {
+    for (const item of items) {
+      const fields = getLowered(item);
+      const { title, description, tags, content, combined } = fields;
+
+      // Check all tokens present using manual loop (avoids .every() overhead).
+      let allPresent = true;
+      for (let i = 0; i < tokenCount; i++) {
+        if (!combined.includes(tokens[i])) {
+          allPresent = false;
+          break;
+        }
+      }
+      if (!allPresent) continue;
+
+      let score = 0;
+      for (let i = 0; i < tokenCount; i++) {
+        const t = tokens[i];
+        if (title.includes(t)) score += WEIGHTS.title;
+        if (description.includes(t)) score += WEIGHTS.description;
+        if (tags.includes(t)) score += WEIGHTS.tags;
+        if (content.includes(t)) score += WEIGHTS.content;
+      }
+
+      scored.push({ item, score });
+    }
+  }
+
+  return scored.sort((a, b) => b.score - a.score).map(({ item }) => item);
+}
+
+/**
+ * Scores relevance using pre-lowercased fields.
+ */
+export function scorePreLowered(
+  fields: LoweredRelevanceFields,
+  tokens: string[]
+): number {
+  let score = 0;
+  for (const t of tokens) {
+    if (fields.title.includes(t)) score += WEIGHTS.title;
+    if (fields.description.includes(t)) score += WEIGHTS.description;
+    if (fields.tags.includes(t)) score += WEIGHTS.tags;
+    if (fields.content.includes(t)) score += WEIGHTS.content;
+  }
+  return score;
+}
+
+/**
+ * Lightweight Levenshtein distance (bounded). Returns -1 if distance exceeds
+ * maxDist, avoiding full matrix computation for clearly non-matching strings.
+ * O(min(n,m) * maxDist) time, O(min(n,m)) space.
+ */
+export function boundedLevenshtein(
+  a: string,
+  b: string,
+  maxDist: number
+): number {
+  if (Math.abs(a.length - b.length) > maxDist) return -1;
+  if (a === b) return 0;
+
+  // Ensure a is the shorter string for the single-row optimization.
+  if (a.length > b.length) [a, b] = [b, a];
+  const m = a.length;
+  const n = b.length;
+
+  let prev = new Array(m + 1);
+  let curr = new Array(m + 1);
+  for (let i = 0; i <= m; i++) prev[i] = i;
+
+  for (let j = 1; j <= n; j++) {
+    curr[0] = j;
+    let rowMin = j;
+    for (let i = 1; i <= m; i++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      curr[i] = Math.min(prev[i] + 1, curr[i - 1] + 1, prev[i - 1] + cost);
+      if (curr[i] < rowMin) rowMin = curr[i];
+    }
+    if (rowMin > maxDist) return -1;
+    [prev, curr] = [curr, prev];
+  }
+  return prev[m] <= maxDist ? prev[m] : -1;
+}
+
+/**
+ * Fuzzy-scores an entry's fields against query tokens using edit distance.
+ * Returns a score > 0 if any token fuzzy-matches a word in any field.
+ *
+ * Only activated for tokens >= 3 chars (short tokens produce too many false
+ * positives). Max edit distance scales with token length:
+ *   3-4 chars → distance 1, 5-7 chars → distance 2, 8+ chars → distance 3.
+ *
+ * Fuzzy matches are weighted at half the exact-match weight to avoid
+ * outranking precise results.
+ */
+export function fuzzyScorePreLowered(
+  fields: LoweredRelevanceFields,
+  tokens: string[]
+): number {
+  let score = 0;
+  const FUZZY_WEIGHTS = {
+    title: WEIGHTS.title / 2,
+    description: WEIGHTS.description / 2,
+    tags: WEIGHTS.tags / 2,
+    content: WEIGHTS.content / 2,
+  } as const;
+
+  for (const token of tokens) {
+    if (token.length < 3) continue;
+    const maxDist = token.length <= 4 ? 1 : token.length <= 7 ? 2 : 3;
+
+    // Helper: check if token fuzzy-matches any word in text, OR if token is
+    // a substring of the concatenated text (catches "datepicker" in "date picker"
+    // and "btn" in "button").
+    const fuzzyMatchField = (text: string): boolean => {
+      // Substring match (fast) — handles compound words like "datepicker" in "date picker"
+      if (text.includes(token)) return true;
+      // Also try with spaces removed for compound matching
+      if (text.replace(/\s+/g, "").includes(token)) return true;
+      // Then word-level checks: Levenshtein + prefix matching
+      for (const word of text.split(/\s+/)) {
+        if (word.length === 0) continue;
+        // Levenshtein for typo tolerance
+        if (boundedLevenshtein(token, word, maxDist) >= 0) return true;
+        // Prefix match: "checkmark" matches "check*" words and vice versa
+        if (token.startsWith(word) || word.startsWith(token)) return true;
+      }
+      return false;
+    };
+
+    if (fuzzyMatchField(fields.title)) score += FUZZY_WEIGHTS.title;
+    if (fuzzyMatchField(fields.description)) score += FUZZY_WEIGHTS.description;
+    if (fuzzyMatchField(fields.tags)) score += FUZZY_WEIGHTS.tags;
+    // Skip content for fuzzy — too many words, too slow, too many false positives
+  }
+  return score;
+}
+
+/**
+ * Resolves a single name against a list of candidates using Levenshtein
+ * distance. Designed for "find the one best match" use cases like
+ * `get_component` where you have a user-supplied name and need to find the
+ * closest entry by title or alias.
+ *
+ * Returns the best-matching item, or undefined if no candidate is close
+ * enough. Edit distance threshold scales with query length (same as
+ * fuzzyScorePreLowered). Ties are broken by shortest edit distance, then
+ * shortest candidate name (most specific match).
+ */
+export function fuzzyResolveName<T>(
+  needle: string,
+  candidates: T[],
+  getNames: (item: T) => string[]
+): T | undefined {
+  if (needle.length < 2) return undefined;
+  const lower = needle.toLowerCase();
+  const maxDist = lower.length <= 4 ? 1 : lower.length <= 7 ? 2 : 3;
+
+  let bestItem: T | undefined;
+  let bestDist = maxDist + 1;
+  let bestLen = Infinity;
+
+  for (const item of candidates) {
+    for (const name of getNames(item)) {
+      const nameLower = name.toLowerCase();
+      const dist = boundedLevenshtein(lower, nameLower, maxDist);
+      if (
+        dist >= 0 &&
+        (dist < bestDist || (dist === bestDist && nameLower.length < bestLen))
+      ) {
+        bestDist = dist;
+        bestLen = nameLower.length;
+        bestItem = item;
+      }
+    }
+  }
+
+  return bestItem;
 }

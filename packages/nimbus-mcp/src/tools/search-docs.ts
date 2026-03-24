@@ -1,5 +1,4 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import Fuse from "fuse.js";
 import { z } from "zod";
 import { getSearchIndex, getRouteData } from "../data-loader.js";
 import type {
@@ -8,11 +7,14 @@ import type {
   DocSearchResult,
   CandidateResult,
   ViewMatch,
-  RelevanceFields,
+  LoweredRelevanceFields,
+  CachedViewContent,
+  CachedRouteViews,
 } from "../types.js";
 import {
-  scoreRelevance,
-  filterAndRankByRelevance,
+  filterAndRankPreLowered,
+  fuzzyScorePreLowered,
+  scorePreLowered,
 } from "../utils/relevance.js";
 import { stripMarkdown } from "../utils/markdown.js";
 
@@ -29,19 +31,54 @@ function deriveToolHint(route: string): string | undefined {
 const SNIPPET_LENGTH = 200;
 /** Characters of context shown before the matched token in a snippet. */
 const SNIPPET_LEAD = 80;
-/** Number of candidates passed to phase 2 (deep route-file search). */
-const PHASE2_CANDIDATE_LIMIT = MAX_RESULTS * 2;
+/**
+ * Number of candidates passed to phase 2 (deep route-file search).
+ * Set higher than MAX_RESULTS so phase 2 has room to find deep-content
+ * matches that phase 1's lightweight index missed.
+ */
+const PHASE2_CANDIDATE_LIMIT = 30;
 
 /**
  * Minimum number of phase-1 candidates before we expand to all component pages.
  * If the lightweight index returns fewer than this, we broaden the candidate
  * pool so deep-content-only matches aren't missed.
  */
-const MIN_CANDIDATES = 5;
+const MIN_CANDIDATES = 10;
 
-/** Cached Fuse instance + the index reference it was built from. */
-let fuseInstance: Fuse<SearchIndexEntry> | undefined;
-let fuseIndexRef: SearchIndexEntry[] | undefined;
+/** Pre-computed lowercased fields for each search index entry. */
+let loweredFieldsCache:
+  | Map<SearchIndexEntry, LoweredRelevanceFields>
+  | undefined;
+let loweredFieldsIndexRef: SearchIndexEntry[] | undefined;
+
+function getLoweredFields(
+  index: SearchIndexEntry[]
+): Map<SearchIndexEntry, LoweredRelevanceFields> {
+  if (loweredFieldsCache && loweredFieldsIndexRef === index)
+    return loweredFieldsCache;
+  const map = new Map<SearchIndexEntry, LoweredRelevanceFields>();
+  for (const entry of index) {
+    // Use pre-built lowered fields from prebuild step if available.
+    if (entry._lower) {
+      map.set(entry, entry._lower);
+    } else {
+      const title = entry.title.toLowerCase();
+      const description = entry.description.toLowerCase();
+      const tags = entry.tags.join(" ").toLowerCase();
+      const content = entry.content?.toLowerCase() ?? "";
+      map.set(entry, {
+        title,
+        description,
+        tags,
+        content,
+        combined: title + " " + description + " " + tags + " " + content,
+      });
+    }
+  }
+  loweredFieldsCache = map;
+  loweredFieldsIndexRef = index;
+  return map;
+}
 
 /**
  * Extracts a content snippet anchored to the earliest occurrence of any query
@@ -80,14 +117,17 @@ function routeToSlug(route: string): string {
   return route.replace(/\//g, "-");
 }
 
-/** Maps a SearchIndexEntry to RelevanceFields for scoring. */
-function entryFields(entry: SearchIndexEntry): RelevanceFields {
-  return {
-    title: entry.title,
-    description: entry.description,
-    tags: entry.tags.join(" "),
-    content: entry.content,
-  };
+const viewContentCache = new WeakMap<object, CachedViewContent>();
+
+/** Get cached stripped and lowered content for a view object. */
+function getCachedViewContent(viewObj: { mdx: string }): CachedViewContent {
+  let cached = viewContentCache.get(viewObj);
+  if (!cached) {
+    const stripped = stripMarkdown(viewObj.mdx);
+    cached = { stripped, lower: stripped.toLowerCase() };
+    viewContentCache.set(viewObj, cached);
+  }
+  return cached;
 }
 
 /**
@@ -99,38 +139,54 @@ function entryFields(entry: SearchIndexEntry): RelevanceFields {
 function findCandidates(
   index: SearchIndexEntry[],
   query: string,
-  tokens: string[]
+  tokens: string[],
+  loweredMap: Map<SearchIndexEntry, LoweredRelevanceFields>
 ): CandidateResult {
-  // Exact substring match — single-pass filter + rank via shared utility.
-  const exactMatches = filterAndRankByRelevance(index, tokens, entryFields);
+  // Exact substring match — single-pass filter + rank using pre-lowered fields.
+  const exactMatches = filterAndRankPreLowered(
+    index,
+    tokens,
+    (entry) => loweredMap.get(entry)!
+  );
 
   if (exactMatches.length >= MIN_CANDIDATES) {
     return { matched: exactMatches, expanded: [] };
   }
 
-  // Fuzzy fallback — broaden the candidate pool.
-  // Invalidate cache when the index reference changes (e.g. hot-reload).
-  if (!fuseInstance || fuseIndexRef !== index) {
-    fuseInstance = new Fuse(index, {
-      keys: [
-        { name: "title", weight: 3 },
-        { name: "description", weight: 2 },
-        { name: "tags", weight: 2 },
-        { name: "content", weight: 1 },
-      ],
-      threshold: 0.4,
-      ignoreLocation: true,
-      minMatchCharLength: 3,
-    });
-    fuseIndexRef = index;
-  }
-  const fuzzyMatches = fuseInstance.search(query).map((r) => r.item);
-
-  // Merge exact + fuzzy, deduplicated, keeping exact matches first.
+  // Partial-match fallback: score entries by how many tokens match in any field.
   const seen = new Set(exactMatches.map((e) => e.id));
+  const partialScored: Array<{ entry: SearchIndexEntry; score: number }> = [];
+
+  for (const entry of index) {
+    if (seen.has(entry.id)) continue;
+    const fields = loweredMap.get(entry)!;
+    const score = scorePreLowered(fields, tokens);
+    if (score > 0) {
+      partialScored.push({ entry, score });
+    }
+  }
+
+  partialScored.sort((a, b) => b.score - a.score);
   const matched = [...exactMatches];
-  for (const entry of fuzzyMatches) {
-    if (!seen.has(entry.id)) {
+  for (const { entry } of partialScored) {
+    seen.add(entry.id);
+    matched.push(entry);
+  }
+
+  // Fuzzy fallback: if still too few, use edit-distance matching on titles,
+  // descriptions, and tags. This handles typos ("btn", "colours", "a]ccessibility").
+  if (matched.length < MIN_CANDIDATES) {
+    const fuzzyScored: Array<{ entry: SearchIndexEntry; score: number }> = [];
+    for (const entry of index) {
+      if (seen.has(entry.id)) continue;
+      const fields = loweredMap.get(entry)!;
+      const score = fuzzyScorePreLowered(fields, tokens);
+      if (score > 0) {
+        fuzzyScored.push({ entry, score });
+      }
+    }
+    fuzzyScored.sort((a, b) => b.score - a.score);
+    for (const { entry } of fuzzyScored) {
       seen.add(entry.id);
       matched.push(entry);
     }
@@ -150,59 +206,123 @@ function findCandidates(
   return { matched, expanded };
 }
 
+const routeViewsCache = new Map<string, CachedRouteViews>();
+
 /**
- * Phase 2: Load the full route data for a candidate and search across all
- * views for the query. Accepts pre-parsed tokens to avoid redundant
- * tokenisation. Returns the best matching view, or null if no view
- * contains the query tokens.
+ * Collects and caches the searchable views for a route. Returns cached
+ * result on subsequent calls for the same slug.
  */
-async function searchRouteViews(
-  route: string,
-  tokens: string[]
-): Promise<ViewMatch | null> {
+async function getRouteViews(route: string): Promise<CachedRouteViews> {
+  const slug = routeToSlug(route);
+  const cached = routeViewsCache.get(slug);
+  if (cached) return cached;
+
   let routeData: RouteData;
   try {
-    routeData = await getRouteData(routeToSlug(route));
+    routeData = await getRouteData(slug);
   } catch {
-    return null;
+    const empty: CachedRouteViews = { views: [], combinedLower: "" };
+    routeViewsCache.set(slug, empty);
+    return empty;
   }
 
-  // Collect all searchable views. Store lowercased content once to avoid
-  // repeated toLowerCase() calls inside the search loop below.
-  const views: Array<{ key: string; content: string; lower: string }> = [];
-
+  const MATCH_LIMIT = 2048;
+  const rawViews: Array<{
+    key: string;
+    content: string;
+    lower: string;
+    matchLower: string;
+  }> = [];
   if (routeData.views) {
     for (const [key, view] of Object.entries(routeData.views)) {
       if (view.mdx) {
-        const content = stripMarkdown(view.mdx);
-        views.push({ key, content, lower: content.toLowerCase() });
+        const { stripped, lower } = getCachedViewContent(view);
+        rawViews.push({
+          key,
+          content: stripped,
+          lower,
+          matchLower:
+            lower.length > MATCH_LIMIT ? lower.slice(0, MATCH_LIMIT) : lower,
+        });
       }
     }
   } else if (routeData.mdx) {
-    const content = stripMarkdown(routeData.mdx);
-    views.push({ key: "overview", content, lower: content.toLowerCase() });
+    const { stripped, lower } = getCachedViewContent(
+      routeData as unknown as { mdx: string }
+    );
+    rawViews.push({
+      key: "overview",
+      content: stripped,
+      lower,
+      matchLower:
+        lower.length > MATCH_LIMIT ? lower.slice(0, MATCH_LIMIT) : lower,
+    });
   }
 
-  // Single pass: return the first full match; track best partial as fallback.
-  let bestPartial: (typeof views)[number] | null = null;
+  // Sort by content length (shortest first) for faster early-exit on full matches.
+  rawViews.sort((a, b) => a.matchLower.length - b.matchLower.length);
+  const views = rawViews;
+  const result: CachedRouteViews = {
+    views,
+    combinedLower: views.map((v) => v.lower.slice(0, MATCH_LIMIT)).join(" "),
+  };
+  routeViewsCache.set(slug, result);
+  return result;
+}
+
+/**
+ * Phase 2: Search across all views for a candidate route.
+ * Synchronous when views are cached, async only on first load.
+ */
+function searchRouteViewsSync(
+  route: string,
+  tokens: string[]
+): ViewMatch | null {
+  const slug = routeToSlug(route);
+  const cached = routeViewsCache.get(slug);
+  if (!cached) return null; // Will be loaded async and retried
+  const { views } = cached;
+  if (views.length === 0) return null;
+
+  const tokenCount = tokens.length;
+  let bestView: (typeof views)[number] | null = null;
   let bestHits = 0;
 
   for (const view of views) {
-    const hits = tokens.filter((t) => view.lower.includes(t)).length;
-    if (hits === tokens.length) {
+    let hits = 0;
+    for (let i = 0; i < tokenCount; i++) {
+      if (view.matchLower.includes(tokens[i])) hits++;
+    }
+    if (hits === tokenCount) {
       return { viewKey: view.key, content: view.content };
     }
     if (hits > bestHits) {
       bestHits = hits;
-      bestPartial = view;
+      bestView = view;
     }
   }
 
-  if (bestPartial && bestHits > 0) {
-    return { viewKey: bestPartial.key, content: bestPartial.content };
-  }
+  return bestView && bestHits > 0
+    ? { viewKey: bestView.key, content: bestView.content }
+    : null;
+}
 
-  return null;
+/**
+ * Eagerly loads all route views for candidates, then searches synchronously.
+ */
+async function warmAndSearchViews(
+  candidates: SearchIndexEntry[],
+  tokens: string[]
+): Promise<Map<string, ViewMatch | null>> {
+  // Warm the cache for all candidates in parallel.
+  await Promise.all(candidates.map((e) => getRouteViews(e.route)));
+
+  // Now search synchronously from cache.
+  const results = new Map<string, ViewMatch | null>();
+  for (const entry of candidates) {
+    results.set(entry.id, searchRouteViewsSync(entry.route, tokens));
+  }
+  return results;
 }
 
 /**
@@ -238,8 +358,16 @@ export function registerSearchDocs(server: McpServer): void {
         // Tokenise once; pass pre-parsed tokens to all downstream functions.
         const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
 
+        // Pre-compute lowered fields once per index.
+        const loweredMap = getLoweredFields(index);
+
         // Phase 1: Find candidates from lightweight index.
-        const { matched, expanded } = findCandidates(index, query, tokens);
+        const { matched, expanded } = findCandidates(
+          index,
+          query,
+          tokens,
+          loweredMap
+        );
 
         // Cap expansion so genuine matches always consume their share of the
         // phase-2 I/O budget before fallback pages fill the remainder.
@@ -251,19 +379,23 @@ export function registerSearchDocs(server: McpServer): void {
         const allCandidates = [...matchedCapped, ...expandedCapped];
         const matchedIds = new Set(matched.map((e) => e.id));
 
-        // Phase 2: Load full route data for candidates and search all views.
-        // Compute phase-1 score so the phase-2 sort can use it as a tiebreaker.
-        const loadPromises = allCandidates.map(async (entry) => {
-          const viewMatch = await searchRouteViews(entry.route, tokens);
-          return {
-            entry,
-            viewMatch,
-            wasMatched: matchedIds.has(entry.id),
-            phase1Score: scoreRelevance(entryFields(entry), tokens),
-          };
-        });
+        // Pre-compute phase-1 scores synchronously.
+        const phase1Scores = new Map<string, number>();
+        for (const entry of allCandidates) {
+          phase1Scores.set(
+            entry.id,
+            scorePreLowered(loweredMap.get(entry)!, tokens)
+          );
+        }
 
-        const loaded = await Promise.all(loadPromises);
+        // Phase 2: Warm route view caches, then search synchronously.
+        const viewResults = await warmAndSearchViews(allCandidates, tokens);
+        const loaded = allCandidates.map((entry) => ({
+          entry,
+          viewMatch: viewResults.get(entry.id) ?? null,
+          wasMatched: matchedIds.has(entry.id),
+          phase1Score: phase1Scores.get(entry.id)!,
+        }));
 
         // Keep entries that either matched in phase 1 OR found a deep match
         // in phase 2. This filters out expanded fallback entries that had

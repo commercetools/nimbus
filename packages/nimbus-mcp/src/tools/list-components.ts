@@ -1,13 +1,15 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import Fuse from "fuse.js";
 import { z } from "zod";
 import { getRouteManifest } from "../data-loader.js";
 import type {
   RouteManifestEntry,
   ComponentSummary,
-  RelevanceFields,
+  LoweredRelevanceFields,
 } from "../types.js";
-import { filterAndRankByRelevance } from "../utils/relevance.js";
+import {
+  filterAndRankPreLowered,
+  fuzzyScorePreLowered,
+} from "../utils/relevance.js";
 
 /** Normalises a route entry into a sparse ComponentSummary. */
 function toSummary(route: RouteManifestEntry): ComponentSummary {
@@ -28,11 +30,25 @@ function toSummary(route: RouteManifestEntry): ComponentSummary {
   return summary;
 }
 
+/** Build pre-lowered fields for a route entry. */
+function toLowered(r: RouteManifestEntry): LoweredRelevanceFields {
+  const title = r.title.toLowerCase();
+  const description = r.description.toLowerCase();
+  const tags = [...r.tags, r.exportName ?? ""].join(" ").toLowerCase();
+  return {
+    title,
+    description,
+    tags,
+    content: "",
+    combined: title + " " + description + " " + tags,
+  };
+}
+
 /**
  * Registers the `list_components` tool on the given MCP server.
  *
- * Supports optional `category` (subcategory filter) and `query` (Fuse.js
- * fuzzy search) params. Returns a JSON array of component summaries.
+ * Supports optional `category` (subcategory filter) and `query` (fuzzy
+ * search) params. Returns a JSON array of component summaries.
  * Omits null/empty fields (sparse responses).
  */
 export function registerListComponents(server: McpServer): void {
@@ -77,30 +93,38 @@ export function registerListComponents(server: McpServer): void {
         if (query) {
           const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
 
-          const getFields = (r: RouteManifestEntry): RelevanceFields => ({
-            title: r.title,
-            description: r.description,
-            tags: [...r.tags, r.exportName ?? ""].join(" "),
-          });
+          // Build lowered fields for the filtered route set.
+          const loweredMap = new Map<
+            RouteManifestEntry,
+            LoweredRelevanceFields
+          >();
+          for (const r of routes) {
+            loweredMap.set(r, toLowered(r));
+          }
 
           // Pass 1: exact substring match, ranked by field-weighted relevance.
-          const exactMatches = filterAndRankByRelevance(
+          const exactMatches = filterAndRankPreLowered(
             routes,
             tokens,
-            getFields
+            (r) => loweredMap.get(r)!
           );
 
           if (exactMatches.length > 0) {
             routes = exactMatches;
           } else {
-            // Pass 2: fuzzy fallback with a tighter threshold.
-            const fuse = new Fuse(routes, {
-              keys: ["title", "description", "tags", "exportName"],
-              threshold: 0.4,
-              ignoreLocation: true,
-              minMatchCharLength: 3,
-            });
-            routes = fuse.search(query).map((r) => r.item);
+            // Pass 2: fuzzy fallback using bounded Levenshtein.
+            const fuzzyScored: Array<{
+              route: RouteManifestEntry;
+              score: number;
+            }> = [];
+            for (const r of routes) {
+              const score = fuzzyScorePreLowered(loweredMap.get(r)!, tokens);
+              if (score > 0) {
+                fuzzyScored.push({ route: r, score });
+              }
+            }
+            fuzzyScored.sort((a, b) => b.score - a.score);
+            routes = fuzzyScored.map(({ route }) => route);
           }
         }
 

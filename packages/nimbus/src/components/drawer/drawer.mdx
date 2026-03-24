@@ -2,7 +2,10 @@
 id: Components-Drawer
 title: Drawer
 exportName: Drawer
-description: A foundational drawer component for overlays that require user attention and interaction. Built with React Aria Components for accessibility and WCAG 2.1 AA compliance.
+description:
+  A foundational drawer component for overlays that require user attention and
+  interaction. Built with React Aria Components for accessibility and WCAG 2.1
+  AA compliance.
 lifecycleState: Stable
 order: 999
 menu:
@@ -13,6 +16,7 @@ tags:
   - component
   - overlay
   - dialog
+  - modal
   - interactive
 figmaLink: >-
   https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m
@@ -53,25 +57,26 @@ Get familiar with the features.
 ```jsx live
 const App = () => (
   <Drawer.Root>
-    <Drawer.Trigger>
-      Anything can be a trigger
-    </Drawer.Trigger>
+    <Drawer.Trigger>Anything can be a trigger</Drawer.Trigger>
     <Drawer.Content>
       <Drawer.Header>
         <Drawer.Title>Drawer Title</Drawer.Title>
         <Drawer.CloseTrigger />
       </Drawer.Header>
       <Drawer.Body>
-          This is a basic drawer with default settings. It includes a backdrop overlay
-          (enabled by default), title, and close button for a complete experience.
+        This is a basic drawer with default settings. It includes a backdrop
+        overlay (enabled by default), title, and close button for a complete
+        experience.
       </Drawer.Body>
       <Drawer.Footer>
-        <Button variant="outline" slot="close">Cancel</Button>
+        <Button variant="outline" slot="close">
+          Cancel
+        </Button>
         <Button>Save</Button>
       </Drawer.Footer>
     </Drawer.Content>
   </Drawer.Root>
-)
+);
 ```
 
 ### Size
@@ -81,7 +86,7 @@ a regular style-prop, so you can use all size-tokens but also custom values.
 
 ```jsx live
 const App = () => (
-  <Drawer.Root >
+  <Drawer.Root>
     <Drawer.Trigger asChild>
       <Button>Open Large Drawer</Button>
     </Drawer.Trigger>
@@ -91,13 +96,13 @@ const App = () => (
         <Drawer.CloseTrigger />
       </Drawer.Header>
       <Drawer.Body>
-        This drawer uses a custom width. You can change the width by
-        adjusting the width prop on Drawer.Root to values like "xs", "sm",
-        "md", "lg", "xl", or "full", but also raw css values.
+        This drawer uses a custom width. You can change the width by adjusting
+        the width prop on Drawer.Root to values like "xs", "sm", "md", "lg",
+        "xl", or "full", but also raw css values.
       </Drawer.Body>
     </Drawer.Content>
   </Drawer.Root>
-)
+);
 ```
 
 ### Placement Options
@@ -111,19 +116,44 @@ const App = () => {
   const [showBackdrop, setShowBackdrop] = useState(true);
 
   const placements = [
-    { value: "left", label: "Left", description: "Slides in from the left side, ideal for navigation panels or filters" },
-    { value: "right", label: "Right (default)", description: "Slides in from the right side, commonly used for details panels and forms" },
-    { value: "top", label: "Top", description: "Slides in from the top, useful for notifications or alerts" },
-    { value: "bottom", label: "Bottom", description: "Slides in from the bottom, good for mobile-friendly sheets or action panels" }
+    {
+      value: "left",
+      label: "Left",
+      description:
+        "Slides in from the left side, ideal for navigation panels or filters",
+    },
+    {
+      value: "right",
+      label: "Right (default)",
+      description:
+        "Slides in from the right side, commonly used for details panels and forms",
+    },
+    {
+      value: "top",
+      label: "Top",
+      description: "Slides in from the top, useful for notifications or alerts",
+    },
+    {
+      value: "bottom",
+      label: "Bottom",
+      description:
+        "Slides in from the bottom, good for mobile-friendly sheets or action panels",
+    },
   ];
 
   return (
     <Stack direction="column" gap="400">
-      <Checkbox isSelected={showBackdrop} onChange={setShowBackdrop}>Show backdrop</Checkbox>
+      <Checkbox isSelected={showBackdrop} onChange={setShowBackdrop}>
+        Show backdrop
+      </Checkbox>
 
       <Stack direction="row" gap="400" wrap="wrap">
         {placements.map((placement) => (
-          <Drawer.Root key={placement.value} placement={placement.value} showBackdrop={showBackdrop}>
+          <Drawer.Root
+            key={placement.value}
+            placement={placement.value}
+            showBackdrop={showBackdrop}
+          >
             <Drawer.Trigger asChild>
               <Button>{placement.label}</Button>
             </Drawer.Trigger>
@@ -132,16 +162,14 @@ const App = () => {
                 <Drawer.Title>{placement.label} Placement</Drawer.Title>
                 <Drawer.CloseTrigger />
               </Drawer.Header>
-              <Drawer.Body>
-                {placement.description}
-              </Drawer.Body>
+              <Drawer.Body>{placement.description}</Drawer.Body>
             </Drawer.Content>
           </Drawer.Root>
         ))}
       </Stack>
     </Stack>
   );
-}
+};
 ```
 
 ### Controlled State
@@ -167,20 +195,18 @@ const App = () => {
             <Drawer.CloseTrigger />
           </Drawer.Header>
           <Drawer.Body>
-              This drawer's state is controlled by the parent component.
-              You can open/close it programmatically or through user interaction.
+            This drawer's state is controlled by the parent component. You can
+            open/close it programmatically or through user interaction.
           </Drawer.Body>
           <Drawer.Footer>
             <Button variant="outline" onPress={() => setIsOpen(false)}>
               Cancel
             </Button>
-            <Button onPress={() => setIsOpen(false)}>
-              Save
-            </Button>
+            <Button onPress={() => setIsOpen(false)}>Save</Button>
           </Drawer.Footer>
         </Drawer.Content>
       </Drawer.Root>
     </Stack>
   );
-}
+};
 ```

@@ -1,5 +1,4 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import Fuse from "fuse.js";
 import { readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 import { z } from "zod";
@@ -16,6 +15,7 @@ import type {
   ComponentMetadata,
 } from "../types.js";
 import { stripMarkdown } from "../utils/markdown.js";
+import { fuzzyResolveName } from "../utils/relevance.js";
 
 // ---------------------------------------------------------------------------
 // Section definitions
@@ -91,8 +91,7 @@ function filterProps(typeData: TypeData): FilteredProp[] {
 // Module-level caches
 // ---------------------------------------------------------------------------
 
-/** Cached Fuse instance + derived catalog for resolveComponent fuzzy fallback. */
-let resolveFuseInstance: Fuse<RouteManifestEntry> | undefined;
+/** Cached catalog for resolveComponent. */
 let resolveCatalogCache: RouteManifestEntry[] | undefined;
 /** Keyed against manifest.routes (stable lazy-loaded ref) for cache invalidation. */
 let resolveCatalogRoutesRef: RouteManifestEntry[] | undefined;
@@ -181,18 +180,11 @@ async function resolveComponent(
   const manifest = await getRouteManifest();
   const needle = name.toLowerCase();
 
-  // Rebuild catalog + Fuse only when the manifest reference changes (e.g. hot-reload).
-  // Keyed against manifest.routes (stable lazy-loaded ref) — not against the
-  // derived catalog array, which would be a new reference on every call.
+  // Rebuild catalog only when the manifest reference changes (e.g. hot-reload).
   if (!resolveCatalogCache || resolveCatalogRoutesRef !== manifest.routes) {
     resolveCatalogCache = manifest.routes.filter(
       (r) => CATALOG_CATEGORIES.has(r.category) && r.menu.length === 3
     );
-    resolveFuseInstance = new Fuse(resolveCatalogCache, {
-      keys: ["title", "exportName"],
-      threshold: 0.3,
-      ignoreLocation: true,
-    });
     resolveCatalogRoutesRef = manifest.routes;
   }
   const catalog = resolveCatalogCache;
@@ -206,9 +198,14 @@ async function resolveComponent(
   });
   if (exact) return exact;
 
-  // Pass 2: fuzzy fallback (uses cached Fuse instance built above).
-  const fuzzyResults = resolveFuseInstance!.search(name);
-  return fuzzyResults[0]?.item;
+  // Pass 2: fuzzy fallback — find the closest component by Levenshtein
+  // distance on title and exportName. This avoids false positives from
+  // prefix matching (e.g. "NimbusButton" → "Nimbus i18n provider").
+  return fuzzyResolveName(name, catalog, (r) => {
+    const names = [r.title];
+    if (r.exportName) names.push(r.exportName);
+    return names;
+  });
 }
 
 /** Derives the route data slug from a manifest entry's path. */

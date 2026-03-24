@@ -118,7 +118,7 @@ function extractPalettes(tokens: FlatToken[]): PaletteGroupResponse {
 
   return Object.fromEntries(
     PALETTE_GROUP_ORDER.map((group) => [group, toSorted(group)])
-  ) as PaletteGroupResponse;
+  ) as unknown as PaletteGroupResponse;
 }
 
 /**
