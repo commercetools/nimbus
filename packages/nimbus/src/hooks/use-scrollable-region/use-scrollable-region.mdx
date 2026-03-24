@@ -1,0 +1,107 @@
+---
+id: useScrollableRegion
+title: useScrollableRegion
+description: make scrollable containers accessible to keyboard and screen reader users
+order: 999
+menu:
+  - Hooks
+  - useScrollableRegion
+tags:
+  - scroll
+  - overflow
+  - accessibility
+  - keyboard
+  - focus
+---
+
+# useScrollableRegion
+
+Make scrollable containers accessible to keyboard and screen reader users.
+Detects content overflow via `ResizeObserver` and dynamically manages `tabIndex`,
+ARIA roles, accessible name, and a keyboard-only focus ring.
+
+## Basic usage
+
+Import the hook from the package:
+
+```js
+import { useScrollableRegion } from "@commercetools/nimbus";
+```
+
+Attach the returned `ref` and spread `containerProps` onto your scrollable element:
+
+```jsx live
+import { useScrollableRegion } from "@commercetools/nimbus";
+
+const App = () => {
+  const { ref, containerProps } = useScrollableRegion({
+    "aria-label": "Log output",
+  });
+
+  return (
+    <div ref={ref} {...containerProps} style={{ ...containerProps.style, height: "150px" }}>
+      {Array.from({ length: 20 }, (_, i) => (
+        <p key={i}>Log entry {i + 1}</p>
+      ))}
+    </div>
+  );
+};
+```
+
+## With the ScrollableRegion component
+
+For standalone use, the `ScrollableRegion` component wraps the hook:
+
+```jsx live
+import { ScrollableRegion } from "@commercetools/nimbus";
+
+const App = () => (
+  <ScrollableRegion aria-label="Terms and conditions" style={{ height: "150px" }}>
+    {Array.from({ length: 20 }, (_, i) => (
+      <p key={i}>Clause {i + 1}: Lorem ipsum dolor sit amet.</p>
+    ))}
+  </ScrollableRegion>
+);
+```
+
+## Using on compound component parts
+
+The hook is designed to be used on existing elements where you cannot add a
+wrapper component. Spread `containerProps` onto the slot element directly:
+
+```tsx
+const DialogBody = (props) => {
+  const { ref, containerProps } = useScrollableRegion({
+    "aria-label": "Dialog content",
+  });
+  return (
+    <BodySlot ref={ref} {...containerProps}>
+      {props.children}
+    </BodySlot>
+  );
+};
+```
+
+## Reference
+
+```ts
+const { ref, isOverflowing, containerProps } = useScrollableRegion(options);
+```
+
+### Options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `role` | `"region"` \| `"group"` | `"group"` | Landmark role applied when overflowing. |
+| `aria-label` | `string` | &mdash; | Accessible name for the container. |
+| `aria-labelledby` | `string` | &mdash; | ID of the element labeling this region. |
+| `debounceMs` | `number` | `100` | Debounce interval for overflow evaluation. |
+| `overflow` | `"auto"` \| `"scroll"` | `"auto"` | CSS overflow value. |
+
+### Return value
+
+- `ref` &mdash; ref callback to attach to the scrollable DOM element.
+- `isOverflowing` &mdash; boolean indicating whether content overflows.
+- `containerProps` &mdash; spread-ready props object including `tabIndex`, `role`,
+  ARIA attributes, overflow style, and focus ring styles. Only includes
+  semantic attributes when the element is overflowing.
