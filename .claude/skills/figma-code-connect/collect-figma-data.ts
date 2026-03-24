@@ -22,30 +22,14 @@ const ROOT = process.cwd();
 const COMPONENTS_DIR = join(ROOT, "packages/nimbus/src/components");
 const OUTPUT_FILE = join(__dirname, "code-connect-data.json");
 
-// The main Nimbus design system Figma file
-const FIGMA_API_ORIGIN = "https://api.figma.com";
+// The main Nimbus design system Figma file — hardcoded, not user-controlled
 const FIGMA_FILE_KEY = "AvtPX6g7OGGCRvNlatGOIY";
 
-/**
- * Build a validated Figma API URL. Uses the URL constructor with a hardcoded
- * origin so that only api.figma.com can ever be reached, mitigating SSRF.
- */
-function figmaApiUrl(
-  fileKey: string,
-  path: string,
-  query?: Record<string, string>
-): URL {
-  if (!/^[a-zA-Z0-9]+$/.test(fileKey)) {
-    throw new Error(`Invalid Figma file key: ${fileKey}`);
-  }
-  const url = new URL(`/v1/files/${fileKey}/${path}`, FIGMA_API_ORIGIN);
-  if (query) {
-    for (const [k, v] of Object.entries(query)) {
-      url.searchParams.set(k, v);
-    }
-  }
-  return url;
-}
+// Hardcoded API endpoints for the Nimbus Figma file (no dynamic URL construction)
+const FIGMA_COMPONENT_SETS_URL =
+  "https://api.figma.com/v1/files/AvtPX6g7OGGCRvNlatGOIY/component_sets";
+const FIGMA_NODES_URL =
+  "https://api.figma.com/v1/files/AvtPX6g7OGGCRvNlatGOIY/nodes";
 
 // Explicit overrides: Figma component set name → { dir, subComponent? }
 // dir: code directory name (only needed when name normalization can't find it)
@@ -358,12 +342,11 @@ function parseFrontmatter(content: string): Record<string, string> {
   return result;
 }
 
-/** Fetch all component sets from a Figma file */
+/** Fetch all component sets from the Nimbus Figma file */
 async function fetchFigmaComponentSets(
-  token: string,
-  fileKey: string
+  token: string
 ): Promise<FigmaComponentSet[]> {
-  const resp = await fetch(figmaApiUrl(fileKey, "component_sets"), {
+  const resp = await fetch(FIGMA_COMPONENT_SETS_URL, {
     headers: { "X-FIGMA-TOKEN": token },
   });
 
@@ -379,7 +362,6 @@ async function fetchFigmaComponentSets(
 /** Fetch component property definitions for multiple nodes in one API call */
 async function fetchAllNodeProps(
   token: string,
-  fileKey: string,
   nodeIds: string[]
 ): Promise<Map<string, Record<string, FigmaPropertyDef>>> {
   const result = new Map<string, Record<string, FigmaPropertyDef>>();
@@ -396,7 +378,7 @@ async function fetchAllNodeProps(
       await new Promise((r) => setTimeout(r, 1000));
     }
 
-    const resp = await fetch(figmaApiUrl(fileKey, "nodes", { ids: idsParam }), {
+    const resp = await fetch(`${FIGMA_NODES_URL}?ids=${idsParam}`, {
       headers: { "X-FIGMA-TOKEN": token },
     });
 
@@ -749,10 +731,7 @@ async function main() {
 
   // 2. Fetch Figma component sets
   console.log("Fetching Figma component sets...");
-  const figmaComponentSets = await fetchFigmaComponentSets(
-    token,
-    FIGMA_FILE_KEY
-  );
+  const figmaComponentSets = await fetchFigmaComponentSets(token);
   console.log(`Found ${figmaComponentSets.length} Figma component sets\n`);
 
   // 3. Match Figma component sets to code components
@@ -797,11 +776,7 @@ async function main() {
     .flat()
     .map(({ cs }) => cs.node_id);
   console.log(`Fetching properties for ${allNodeIds.length} component sets...`);
-  const allNodeProps = await fetchAllNodeProps(
-    token,
-    FIGMA_FILE_KEY,
-    allNodeIds
-  );
+  const allNodeProps = await fetchAllNodeProps(token, allNodeIds);
   console.log(`Got properties for ${allNodeProps.size} component sets\n`);
 
   // 5. Build the output entries
