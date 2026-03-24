@@ -6994,22 +6994,22 @@ export default {
   },
   shadow: {
     "1": {
-      value: "0 1px 4px hsla(0, 0%, 0%, 0.05)",
+      value: "0 1px 4px 0 hsla(0, 0%, 0%, 0.05)",
     },
     "2": {
-      value: "0 2px 8px hsla(0, 0%, 0%, 0.05)",
+      value: "0 2px 8px 0 hsla(0, 0%, 0%, 0.05)",
     },
     "3": {
-      value: "0 4px 12px hsla(0, 0%, 0%, 0.1)",
+      value: "0 4px 12px 0 hsla(0, 0%, 0%, 0.1)",
     },
     "4": {
-      value: "0 6px 16px hsla(0, 0%, 0%, 0.1)",
+      value: "0 6px 16px 0 hsla(0, 0%, 0%, 0.1)",
     },
     "5": {
-      value: "0 8px 20px hsla(0, 0%, 0%, 0.1)",
+      value: "0 8px 20px 0 hsla(0, 0%, 0%, 0.1)",
     },
     "6": {
-      value: "0 10px 24px hsla(0, 0%, 0%, 0.15)",
+      value: "0 10px 24px 0 hsla(0, 0%, 0%, 0.15)",
     },
   },
   opacity: {
