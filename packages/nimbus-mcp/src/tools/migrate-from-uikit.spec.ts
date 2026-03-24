@@ -119,6 +119,28 @@ export const MyComponent = () => <div />;
     expect(names).toContain("LoadingSpinner");
   });
 
+  it("extracts barrel imports from @commercetools-frontend/ui-kit", async () => {
+    const barrelFile = join(tmpDir, "barrel-import.tsx");
+    await writeFile(
+      barrelFile,
+      `
+import { Spacings, Grid, Card, Text } from '@commercetools-frontend/ui-kit';
+import React from 'react';
+
+export const MyComponent = () => <div />;
+`
+    );
+
+    const result = await callMigrate({ filePath: barrelFile });
+    const data = JSON.parse(getText(result));
+
+    const names = data.mappings.map((m: { uiKitName: string }) => m.uiKitName);
+    expect(names).toContain("Card");
+    expect(names).toContain("Grid");
+
+    await unlink(barrelFile);
+  });
+
   it("returns error for non-existent file", async () => {
     const result = await callMigrate({
       filePath: "/tmp/does-not-exist.tsx",

@@ -12,7 +12,7 @@ import type { MigrateComponentResult, MigrateFileResult } from "../types.js";
 // ---------------------------------------------------------------------------
 
 /**
- * Regex to match `@commercetools-uikit/*` imports.
+ * Regex to match `@commercetools-uikit/*` per-package imports.
  *
  * Captures:
  * - Group 1: named imports (e.g. "PrimaryButton, SecondaryButton")
@@ -23,6 +23,16 @@ import type { MigrateComponentResult, MigrateFileResult } from "../types.js";
  */
 const UIKIT_IMPORT_REGEX =
   /import\s+(?:\{([^}]+)\}|(\w+))\s+from\s+['"]@commercetools-uikit\/([^'"]+)['"]/g;
+
+/**
+ * Regex to match the `@commercetools-frontend/ui-kit` barrel import.
+ * Only named imports are used with this path.
+ *
+ * Captures:
+ * - Group 1: named imports (e.g. "Spacings, Grid, Card, Text")
+ */
+const UIKIT_BARREL_IMPORT_REGEX =
+  /import\s+\{([^}]+)\}\s+from\s+['"]@commercetools-frontend\/ui-kit['"]/g;
 
 /**
  * Maps common UI Kit package names to the component names used in the
@@ -116,6 +126,18 @@ function extractUiKitComponents(fileContent: string): string[] {
       } else {
         components.add(defaultImport);
       }
+    }
+  }
+
+  // Barrel imports: `import { Spacings, Grid, Card } from '@commercetools-frontend/ui-kit'`
+  UIKIT_BARREL_IMPORT_REGEX.lastIndex = 0;
+  while ((match = UIKIT_BARREL_IMPORT_REGEX.exec(fileContent)) !== null) {
+    for (const name of match[1].split(",")) {
+      const trimmed = name
+        .trim()
+        .split(/\s+as\s+/)[0]
+        .trim();
+      if (trimmed) components.add(trimmed);
     }
   }
 
