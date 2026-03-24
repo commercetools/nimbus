@@ -149,12 +149,23 @@ function extractUiKitComponents(fileContent: string): string[] {
 // Result builders
 // ---------------------------------------------------------------------------
 
+/** Icon-related UI Kit names that should hint at the search_icons tool. */
+const ICON_NAMES = new Set([
+  "CustomIcon",
+  "LeadingIcon",
+  "InlineSvg",
+  "Icon Library",
+  "IconButton",
+  "SecondaryIconButton",
+]);
+
 function buildComponentResult(
   uiKitName: string
 ): MigrateComponentResult | null {
   const entry = getUiKitMigration(uiKitName);
   if (!entry) return null;
-  return {
+
+  const result: MigrateComponentResult = {
     uiKitName: entry.uiKitName,
     nimbusEquivalent: entry.nimbusEquivalent,
     importPath: entry.importPath,
@@ -162,6 +173,17 @@ function buildComponentResult(
     notes: entry.notes,
     breakingChanges: entry.breakingChanges,
   };
+
+  // Add hints to use other MCP tools for icons and tokens
+  if (ICON_NAMES.has(uiKitName)) {
+    result.hint =
+      'Use the search_icons tool to find the Nimbus equivalent icon (e.g. search_icons(query: "arrow"))';
+  } else if (entry.importPath === "@commercetools/nimbus-tokens") {
+    result.hint =
+      'Use the search_docs tool to find the relevant design tokens (e.g. search_docs(query: "spacing tokens"))';
+  }
+
+  return result;
 }
 
 // ---------------------------------------------------------------------------

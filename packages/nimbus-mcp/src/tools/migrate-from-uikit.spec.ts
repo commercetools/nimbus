@@ -94,6 +94,24 @@ describe("migrate_from_uikit — componentName mode", () => {
     expect(names).toContain("Text.Headline");
   });
 
+  it("includes a hint for icon-related components", async () => {
+    const result = await callMigrate({ componentName: "CustomIcon" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.hint).toBeTruthy();
+    expect(data.hint).toContain("search_icons");
+  });
+
+  it("includes a hint for token-related components", async () => {
+    const result = await callMigrate({
+      componentName: "Constraints.Horizontal",
+    });
+    const data = JSON.parse(getText(result));
+
+    expect(data.hint).toBeTruthy();
+    expect(data.hint).toContain("search_docs");
+  });
+
   it("returns error for unknown component", async () => {
     const result = await callMigrate({
       componentName: "NonExistentComponent",

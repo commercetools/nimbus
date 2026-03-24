@@ -377,6 +377,8 @@ export interface MigrateComponentResult {
   mappingType: string;
   notes: string;
   breakingChanges: string[];
+  /** Suggestion to use another MCP tool for further assistance. */
+  hint?: string;
 }
 
 /** File-level migration result returned by migrate_from_uikit in filePath mode. */
