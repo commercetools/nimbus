@@ -34,9 +34,6 @@
       // "@types-extensions",
       "node_modules/@types"
     ],
-    "plugins": [
-      { "name": "@commercetools/nimbus-design-token-ts-plugin" }
-    ]
-  },
-  "exclude": ["src/**/*.figma.tsx"]
+    "plugins": [{ "name": "@commercetools/nimbus-design-token-ts-plugin" }]
+  }
 }

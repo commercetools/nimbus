@@ -13,10 +13,7 @@ figma.connect(
         xs: "xs",
         "2xs": "2xs",
       }),
-      colorPalette: figma.enum("Color", {
-        primary: "primary",
-        white: "white",
-      }),
+      colorPalette: figma.enum("Color", { primary: "primary", white: "white" }),
     },
     example: (props) => (
       <LoadingSpinner size={props.size} colorPalette={props.colorPalette} />

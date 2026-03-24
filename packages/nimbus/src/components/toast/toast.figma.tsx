@@ -1,16 +1,27 @@
 import figma from "@figma/code-connect/react";
-import { ToastOutlet } from "./components/toast.outlet";
+import { toast } from "./services/toast.manager";
 
-// Toast is invoked via toast.create(), not as a JSX component.
-// This connects the Figma component to ToastOutlet for Dev Mode reference.
+// --- Toast is an imperative API, not a JSX component ---
 figma.connect(
-  ToastOutlet,
+  "toast",
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=3512-13119",
   {
-    example: () => (
-      // Variant is set per-toast at creation time:
-      // toast.create({ title: "Done", variant: "success" })
-      <ToastOutlet />
-    ),
+    props: {
+      type: figma.enum("Tone", {
+        Neutral: "info",
+        Warning: "warning",
+        Error: "error",
+        Info: "info",
+        Success: "success",
+      }),
+      title: figma.string("Title text"),
+      description: figma.string("Description text"),
+    },
+    example: (props) =>
+      toast({
+        type: props.type,
+        title: props.title,
+        description: props.description,
+      }),
   }
 );

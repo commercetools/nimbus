@@ -14,31 +14,18 @@ figma.connect(
 );
 
 // --- SelectInput → Select.Root ---
+// NOTE: Skipped BOOLEAN "Leading element" → no matching code prop found
 figma.connect(
   Select.Root,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=271-412",
   {
     props: {
-      isClearable: figma.boolean("Clear button"),
-      isInvalid: figma.enum("State", { Invalid: true }),
-      isDisabled: figma.enum("State", { Disabled: true }),
-      variant: figma.enum("Appearance", {
-        Solid: "outline",
-        Ghost: "ghost",
-      }),
-      size: figma.enum("Size", {
-        md: "md",
-        sm: "sm",
-      }),
+      size: figma.enum("Size", { md: "md", sm: "sm" }),
+      children: figma.children("*"),
+      variant: figma.enum("Appearance", { Solid: "outline", Ghost: "ghost" }),
     },
     example: (props) => (
-      <Select.Root
-        isClearable={props.isClearable}
-        isInvalid={props.isInvalid}
-        isDisabled={props.isDisabled}
-        variant={props.variant}
-        size={props.size}
-      >
+      <Select.Root variant={props.variant} size={props.size}>
         <Select.Options>{/* Option items */}</Select.Options>
       </Select.Root>
     ),

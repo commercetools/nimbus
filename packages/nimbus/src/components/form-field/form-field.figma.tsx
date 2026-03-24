@@ -2,26 +2,20 @@ import figma from "@figma/code-connect/react";
 import { FormField } from "./form-field";
 
 // --- Form field → FormField.Root ---
+// NOTE: Skipped INSTANCE_SWAP "Input type" → no matching code prop "inputType"
 figma.connect(
   FormField.Root,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=349-2763",
   {
     props: {
       isRequired: figma.boolean("is required"),
-      direction: figma.enum("Label placement", {
-        Top: "column",
-        left: "row",
-      }),
-      size: figma.enum("Size", {
-        xs: "sm",
-        md: "md",
-      }),
+      children: figma.children("*"),
+      size: figma.enum("Size", { xs: "sm", md: "md" }),
+      direction: figma.enum("Label placement", { Top: "column", left: "row" }),
       infoBox: figma.boolean("Info", {
         true: <FormField.InfoBox>Additional info</FormField.InfoBox>,
         false: undefined,
       }),
-      input: figma.instance("Input type"),
-      children: figma.children("*"),
     },
     example: (props) => (
       <FormField.Root

@@ -1,522 +1,163 @@
 ---
-description: Generate Figma Code Connect .figma.tsx files from collected data by reading component sources and classifying Figma properties
-argument-hint: [component-name] or "all" to process everything
+description: Generate Figma Code Connect .figma.tsx files deterministically from Figma API data
+argument-hint: [component-name] or run without args to process everything
 ---
 
 # Generate Code Connect Skill
 
-You are a Figma Code Connect specialist. This skill generates `.figma.tsx` files
-by reading collected Figma data, component documentation, types, and recipes to
-create accurate property mappings and meaningful examples.
+Generates `.figma.tsx` Code Connect files by fetching Figma component data,
+classifying properties using codified rules, and writing files with string
+templates. No LLM classification involved — output is 100% deterministic.
 
-## Step 0: Collect Figma Data
+## Workflow
 
-Run the collection script to fetch fresh data from the Figma API:
+### Step 1: Collect Figma data
 
 ```bash
 pnpm exec tsx .claude/skills/figma-code-connect/collect-figma-data.ts
 ```
 
-This requires `FIGMA_ACCESS_TOKEN` in `.env` or the environment. The script
-writes `.claude/skills/figma-code-connect/code-connect-data.json`.
+Requires `FIGMA_ACCESS_TOKEN` in `.env` or environment. Fetches component sets
+from the Figma API and writes `code-connect-data.json`.
 
-## Input
+### Step 2: Generate Code Connect files
 
-The generated `code-connect-data.json` (colocated with this skill) contains
-an array of entries. Each entry contains:
+```bash
+# All components
+pnpm exec tsx .claude/skills/figma-code-connect/generate-code-connect.ts
 
-- `component`: Component name (e.g., "Button", "Select.Root")
-- `dirName`: Component directory name
-- `subComponent`: Sub-component name if applicable
-- `figmaName`: Original Figma component set name
-- `figmaUrl`: Full Figma URL for the component set
-- `figmaNodeId`: Figma node ID
-- `figmaProps`: All Figma properties with type info (VARIANT, BOOLEAN, TEXT,
-  INSTANCE_SWAP)
-- `codeMetadata`: Component code information including:
-  - `exportName`: The exported component name
-  - `isCompound`: Whether it's a compound component
-  - `subComponents`: Sub-component keys (e.g., ["Root", "Header", "Content"])
-  - `recipeVariants`: Recipe variant names and values
-  - `typesProps`: Prop names from types file
-  - `files`: Paths to types, recipe, devDocs, stories, mainComponent, and
-    figmaOutput
-
-If an argument is provided, filter to only process entries matching that
-component name. Otherwise, process all entries.
-
-## Generation Process
-
-For each entry in the JSON:
-
-### Step 1: Read Component Sources
-
-Read the files listed in `codeMetadata.files` (types, recipe, dev docs, main
-component) to understand the full API surface — prop names, recipe variant
-values, usage patterns, and compound component structure.
-
-### Step 2: Classify Every Figma Property
-
-For each Figma property, classify it into one of these categories:
-
-| Classification          | Action                                           | Example                                            |
-| ----------------------- | ------------------------------------------------ | -------------------------------------------------- |
-| **prop-mapping**        | Map to a code prop with `figma.xxx()`            | Figma "Size" → code `size` via `figma.enum()`      |
-| **state-decomposition** | Extract booleans from State VARIANT              | State "Disabled" → `isDisabled` via `figma.enum()` |
-| **composition**         | Use `figma.children("*")` or `figma.instance()`  | Nested components → children                       |
-| **visual-only**         | Skip entirely (CSS states, Figma rendering only) | State: Default, Hover, Focused, Pressed            |
-
-### Classification Guidelines
-
-**Visual-only properties** (skip entirely — do NOT include in output):
-
-- `State` values: Default, Hover, Focus/Focused, Pressed, Active — these are CSS
-  states
-- `Focused`/`Is focused` booleans — managed by browser focus
-- Any property that only controls Figma's visual rendering state
-
-**prop-mapping: VARIANT properties**
-
-Match against recipe variants and types props using normalized name comparison:
-
-1. Check recipe variants first (exact source of truth for enum values)
-2. Check types props for non-recipe props
-3. Use known aliases for common Figma→code name mismatches:
-   - Disabled / Is Disabled → `isDisabled`
-   - Invalid / Is Invalid → `isInvalid`
-   - Selected / Is Selected / Toggled → `isSelected`
-   - Loading / Is Loading → `isLoading`
-   - Read only / Is Read Only → `isReadOnly`
-   - Required / Is Required → `isRequired`
-   - Tone / Color / ColorPalette → `colorPalette`
-   - Label / Label text / Text → `children`
-   - Left icon / Leading element → `leadingElement`
-   - Right icon / Trailing element → `trailingElement`
-   - Clear button → `isClearable`
-   - Placeholder / Placeholder text → `placeholder`
-   - Description / Helper text → `description`
-   - Error message → `errorMessage`
-
-For boolean-like VARIANTs (YES/NO, On/Off, True/False options) where the Figma
-type is VARIANT (not BOOLEAN):
-→ Use `figma.enum("PropName", { YES: true })`, NOT `figma.boolean()`
-
-For enum VARIANTs with recipe values:
-→ Use `figma.enum('PropName', { FigmaValue: "codeValue", ... })`
-→ Always use exact recipe values (e.g., "outline" not "Outlined")
-
-**Multi-prop extraction from a single VARIANT**
-
-A single Figma VARIANT can map to **multiple** code props by using separate
-`figma.enum()` calls that each extract different values. Example:
-
-```tsx
-// Figma "Completeness" has: "0%", "50%", "100%", "Indeterminate"
-// → Extract isIndeterminate boolean from "Indeterminate"
-// → Extract value number from percentage options
-isIndeterminate: figma.enum("Completeness", { Indeterminate: true }),
-value: figma.enum("Completeness", { "0%": 0, "50%": 50, "100%": 100 }),
+# Single component
+pnpm exec tsx .claude/skills/figma-code-connect/generate-code-connect.ts button
 ```
 
-**Conditional JSX via `figma.enum()` in props**
+This script:
 
-Code Connect examples are **not executed** — they are treated as string
-templates. Ternaries (`? :`), `&&`, and `===` will appear **verbatim** in Dev
-Mode, not evaluated. All conditional logic must live in the `props` mapping.
+1. Reads `code-connect-data.json`
+2. Classifies each Figma property using codified rules (alias table, state
+   decomposition, boolean detection, recipe variant matching)
+3. Generates `.figma.tsx` files using string templates
+4. Runs prettier on each file
+5. Deletes the intermediate data file
 
-To conditionally render JSX based on a VARIANT, map variant values directly to
-JSX nodes (or `undefined` for variants that shouldn't render):
+### Step 3: Validate
 
-```tsx
-props: {
-  header: figma.enum("Content type", {
-    "Title + text": <Card.Header>Card Title</Card.Header>,
-    // "Custom" is omitted → resolves to undefined → not rendered
-  }),
-  leadingElement: figma.enum("Content type", {
-    "Leading element + text": figma.instance("Leading element"),
-  }),
-},
-example: (props) => (
-  <>
-    {props.leadingElement}
-    {props.header}
-    <Card.Content>{props.children}</Card.Content>
-  </>
-),
+Run typecheck and lint to ensure all generated files are correct:
+
+```bash
+pnpm --filter @commercetools/nimbus typecheck
+pnpm lint
 ```
 
-**state-decomposition: State VARIANT**
+If there are type errors, the most common causes are:
 
-When a "State" VARIANT contains values like "Disabled, Default, Hover, Focus,
-Invalid, Loading, Selected":
+- A prop was included via `KNOWN_VALID_PROPS` but doesn't exist on that specific
+  component → add the Figma prop name to `skipFigmaProps` in the component's
+  override in `code-connect-constants.ts`
+- A VARIANT value wasn't normalized correctly (e.g., "Outlined" → "outlined"
+  instead of "outline") → add the mapping to `VALUE_NORMALIZATIONS` in
+  `code-connect-constants.ts`
+- A wrapper component has no recipe and the parent recipe wasn't resolved →
+  check that the types file imports from the parent component directory
 
-1. Extract meaningful state values into individual boolean props
-2. Use `figma.enum("State", { "Disabled": true })` for each
-3. Skip visual states (Default, Hover, Focus, Pressed, Active)
+If there are lint errors:
 
-**composition: INSTANCE_SWAP and children**
+- Unused `props` parameter → the `exampleJsx` override doesn't reference
+  `props.` but the component has classified props. Either update the exampleJsx
+  to use props, or the generation script should detect this automatically.
 
-- INSTANCE_SWAP properties → `figma.instance('PropName')` — these represent
-  slotted React nodes (icons, leading elements, etc.)
-- When a component has nested sub-components with their own `figma.connect()`
-  definitions → use `figma.children("*")`
-- **IMPORTANT**: `figma.children("*")` only captures nested Figma component
-  instances that have their own Code Connect definition. It does NOT capture
-  plain layers or components without Code Connect.
+### Step 4: Verify NOTE accuracy
 
-**Compound component children pattern**
+Check that all generated `// NOTE:` comments are accurate:
 
-All compound/container components (Root-level components that nest other
-connected sub-components) MUST include `figma.children("*")` in their props and
-render `{props.children}` in the example. This ensures nested connected
-components appear in Dev Mode output instead of an empty self-closing tag.
-
-```tsx
-// ✅ Correct — children rendered, shows nested structure
-props: {
-  size: figma.enum("Size", { md: "md", sm: "sm" }),
-  children: figma.children("*"),
-},
-example: (props) => (
-  <Component.Root size={props.size}>{props.children}</Component.Root>
-),
-
-// ❌ Wrong — self-closing, hides component structure
-example: (props) => <Component.Root size={props.size} />,
+```bash
+grep -rn "NOTE:" packages/nimbus/src/components/**/*.figma.tsx
 ```
 
-**Instance swaps and static structural elements**
+Each NOTE claims a Figma prop was skipped because no matching code prop exists.
+Verify by checking the component's `.types.ts` and `.recipe.ts` files. If a
+NOTE is wrong (the prop actually exists), either:
 
-INSTANCE_SWAP properties representing configurable child components (not just
-icons) should be rendered as children. Always include static sub-components that
-are not Figma-configurable (e.g., Label in FormField, Body in Drawer) so
-developers see the expected structure:
+- Add the prop name to `KNOWN_VALID_PROPS` if it's universally available
+- Add it to the component's `typesProps` via the collect script
+- Add a `rawProps` override in `code-connect-constants.ts`
 
-```tsx
-// FormField: "Input type" swaps between TextInput, Select, etc.
-// FormField.Label is always present (static structural element)
-props: {
-  input: figma.instance("Input type"),
-  children: figma.children("*"),
-},
-example: (props) => (
-  <FormField.Root>
-    <FormField.Label>Label</FormField.Label>
-    {props.input}
-    {props.children}
-  </FormField.Root>
-),
+### Step 5: Review changes
+
+```bash
+git diff
 ```
 
-**Variant-based sub-component selection**
+Present the diff to the user. The user reviews the actual code changes, not
+LLM-generated summaries.
 
-When a single Figma component uses a VARIANT to switch between different code
-sub-components, create separate `figma.connect()` calls for the same Figma node,
-each with a `variant` discriminator:
+### Step 6: Parse (optional)
 
-```tsx
-// "Message style" VARIANT with "Error" and "Help text" values
-// → Two connects to the same Figma node, one per variant value
-
-figma.connect(
-  FormField.Error,
-  "https://www.figma.com/design/...?node-id=2289-1115",
-  {
-    variant: { "Message style": "Error" },
-    example: () => <FormField.Error>Error message</FormField.Error>,
-  }
-);
-
-figma.connect(
-  FormField.Description,
-  "https://www.figma.com/design/...?node-id=2289-1115",
-  {
-    variant: { "Message style": "Help text" },
-    example: () => <FormField.Description>Help text</FormField.Description>,
-  }
-);
+```bash
+pnpx @figma/code-connect connect parse
 ```
 
-**BOOLEAN visibility toggles for sub-components**
+This parses all Code Connect files and surfaces syntax or import errors.
 
-When a BOOLEAN property controls the visibility of a sub-component that is not
-a separate Figma component set (i.e., it's a nested layer without its own
-`figma.connect()`), use `figma.boolean()` with a mapping that conditionally
-renders the sub-component JSX:
+### Step 7: Publish (optional)
 
-```tsx
-props: {
-  infoBox: figma.boolean("Info", {
-    true: <FormField.InfoBox>Additional info</FormField.InfoBox>,
-    false: undefined,
-  }),
-},
-example: (props) => (
-  <FormField.Root>
-    <FormField.Label>Label</FormField.Label>
-    {props.infoBox}
-    {props.children}
-  </FormField.Root>
-),
+Ask the user if they want to publish. If yes:
+
+```bash
+pnpx @figma/code-connect connect publish
 ```
 
-**BOOLEAN properties (general)**
-
-- Check if the boolean controls visibility of a slotted element → may map to a
-  code prop
-- Check types file for matching boolean props
-- If no code equivalent exists, use `figma.boolean('PropName')` to capture the
-  value and include it if it could be useful in the example
-
-### Step 3: Generate the `.figma.tsx` File
-
-Generate a complete `.figma.tsx` file for each component. The file should:
-
-1. Import `figma` from `@figma/code-connect/react`
-2. Import the component from its relative path
-3. Include one `figma.connect()` call per entry (multiple for compound
-   components)
-4. Use meaningful examples that show real usage patterns
-
-#### File Structure
-
-```tsx
-import figma from "@figma/code-connect/react";
-import { ComponentName } from "./component-name";
-
-// --- Figma Name → ComponentName.SubComponent ---
-figma.connect(ComponentName.SubComponent, "https://www.figma.com/design/...", {
-  props: {
-    /* figma.enum(), figma.instance(), figma.children("*"), etc. */
-  },
-  example: (props) => (
-    <ComponentName.SubComponent propName={props.propName}>
-      {props.children}
-    </ComponentName.SubComponent>
-  ),
-});
-```
-
-#### Example Guidelines
-
-**Rule 1: NEVER use `{...props}` spread — always explicit prop names**
-
-Every prop must be passed individually (even for simple 1-2 prop components)
-so designers see exactly which React props correspond to which Figma properties:
-
-```tsx
-// ✅ Correct — every prop is visible
-example: (props) => (
-  <Button
-    variant={props.variant}
-    size={props.size}
-    colorPalette={props.colorPalette}
-    isDisabled={props.isDisabled}
-  >
-    {props.leadingElement}
-    Button label
-    {props.trailingElement}
-  </Button>
-),
-
-// ❌ WRONG — hides prop names from designers
-example: (props) => <Button {...props} />,
-```
-
-**Rule 2: Always include children/slot content**
-
-Components that accept children must render meaningful content in the example.
-Use the appropriate strategy based on the content type:
-
-- **Text content**: Hardcode a representative label string
-- **Icon slots**: Use `figma.boolean()` wrapping `figma.instance()` for
-  conditional icons, render as children
-- **Nested connected sub-components**: Use `figma.children("*")` and render
-  `{props.children}`
-- **Instance swap slots**: Use `figma.instance()` and render in the appropriate
-  position
-
-```tsx
-// Icon buttons: icon as children + required aria-label
-example: (props) => (
-  <IconButton
-    aria-label="Action"
-    variant={props.variant}
-    size={props.size}
-  >
-    {props.icon}
-  </IconButton>
-),
-
-// Buttons with optional icons: conditional icon rendering around text
-props: {
-  leadingElement: figma.boolean("Left icon", {
-    true: figma.instance("→ Icon Left"),
-    false: undefined,
-  }),
-  trailingElement: figma.boolean("Right icon", {
-    true: figma.instance("→ Icon right"),
-    false: undefined,
-  }),
-},
-example: (props) => (
-  <Button variant={props.variant} size={props.size}>
-    {props.leadingElement}
-    Button label
-    {props.trailingElement}
-  </Button>
-),
-
-// Components with label children (Switch, Tag, RadioInput.Option)
-example: (props) => (
-  <Switch isSelected={props.isSelected} size={props.size}>
-    Label
-  </Switch>
-),
-
-// Compound containers: children for nested connected components
-example: (props) => (
-  <Select.Root variant={props.variant} size={props.size}>
-    <Select.Options>{/* Option items */}</Select.Options>
-  </Select.Root>
-),
-```
-
-**Rule 3: Components requiring `aria-label` must include it**
-
-If a component's types make `aria-label` required (e.g., `IconButton`,
-`IconToggleButton`, `SplitButton`), always include a representative
-`aria-label` in the example.
-
-### Step 3.5: Add Variant-Specific Examples
-
-After generating the main `figma.connect()` call (which uses dynamic prop
-mappings), evaluate whether the component benefits from **additional**
-variant-constrained connects that show specific usage patterns.
-
-**When to add variant-specific examples:**
-
-- The component has a Figma VARIANT property with 3+ values that map to
-  meaningfully different usage patterns (e.g., Alert tones, Toast variants,
-  Dialog types)
-- The different variants have different composition structures (e.g., Destructive
-  dialog vs Text dialog)
-- The variant represents a mode switch (e.g., single-select vs multi-select
-  ComboBox, date vs date-range Calendar)
-
-**When NOT to add variant-specific examples:**
-
-- The variant only changes visual styling (e.g., size variants — sm/md/lg)
-- The variant is already clearly communicated by the prop mapping in the main
-  connect
-- The component is a simple leaf component with no composition differences
-  between variants
-
-**Pattern: Tone/color variants with contextual content**
-
-For components like Alert and Toast where different tones imply different
-content:
-
-```tsx
-// Main connect — dynamic, covers all tones
-figma.connect(Alert.Root, FIGMA_URL, {
-  props: {
-    colorPalette: figma.enum("Tone", {
-      Critical: "critical",
-      Info: "info",
-      Warning: "warning",
-      Positive: "positive",
-    }),
-    variant: figma.enum("Variant", { Outlined: "outlined", Ghost: "flat" }),
-  },
-  example: (props) => (
-    <Alert.Root colorPalette={props.colorPalette} variant={props.variant}>
-      Alert message
-    </Alert.Root>
-  ),
-});
-
-// Variant-specific — shows realistic content for one tone (repeat per tone)
-figma.connect(Alert.Root, FIGMA_URL, {
-  variant: { Tone: "Critical" },
-  example: () => (
-    <Alert.Root colorPalette="critical" variant="outlined">
-      Something went wrong. Please try again.
-    </Alert.Root>
-  ),
-});
-```
-
-**Pattern: Mode/composition variants with different structure**
-
-For components where a variant changes the component structure (mode switches,
-content layouts like Dialog Text vs Destructive, single vs multi-select):
-
-```tsx
-// Single-select combobox
-figma.connect(ComboBox.Root, FIGMA_URL, {
-  variant: { "Multi-select": "NO" },
-  example: () => (
-    <ComboBox.Root selectionMode="single">
-      <ComboBox.Trigger />
-      <ComboBox.ListBox />
-    </ComboBox.Root>
-  ),
-});
-
-// Multi-select combobox
-figma.connect(ComboBox.Root, FIGMA_URL, {
-  variant: { "Multi-select": "YES" },
-  example: () => (
-    <ComboBox.Root selectionMode="multiple">
-      <ComboBox.Trigger />
-      <ComboBox.ListBox />
-    </ComboBox.Root>
-  ),
-});
-```
-
-**Key rules for variant-specific examples:**
-
-- Always keep the main generic `figma.connect()` — variant-specific ones are
-  additions, not replacements
-- Variant-specific examples use **static content** (no `figma.xxx()` props) —
-  they show a fixed pattern for that variant
-- Use the Figma VARIANT property name and value as-is in the `variant` object
-  (e.g., `{ Tone: "Critical" }`, not `{ colorPalette: "critical" }`)
-- Include realistic placeholder text that matches the variant's purpose
-
-### Step 4: Format and Validate
-
-After generating:
-
-1. Run `pnpm exec prettier --write` on the generated file
-2. Verify the file has no TypeScript errors by checking imports exist
-
-## Output Format
-
-After processing, summarize changes per component:
+## Architecture
 
 ```
-Component: Button
-  - Props mapped: variant, size, colorPalette, isDisabled (from State)
-  - Composition: icon (instance), children
-  - Skipped visual-only: State (Default, Hover, Focus, Pressed)
-  - File written: packages/nimbus/src/components/button/button.figma.tsx
+collect-figma-data.ts    →  generate-code-connect.ts  →  .figma.tsx files
+(fetch Figma API)           (rules + templates)           (deterministic)
 ```
 
-## Important Rules
+### Classification rules (in generate-code-connect.ts)
 
-- NEVER guess prop names — always verify against the types file and recipe
-- NEVER add props that don't exist on the component's public API
-- **colorPalette values MUST be lowercase** — Figma uses "Primary", "Critical"
-  etc. but code uses "primary", "critical"
-- **Strip `#NNN:NN` suffixes** — Figma property names in `code-connect-data.json`
-  include internal IDs (e.g., `"Clear button#274:0"`). Strip the `#` suffix when
-  writing `figma.xxx()` calls (e.g., `"Clear button"`)
-- Generate files from scratch — do not try to edit existing .figma.tsx files
-- Process one component at a time for accuracy
-- Validate with `pnpm exec figma connect publish --dry-run` after generating
-- After all components are processed, delete the intermediate data file:
-  `rm .claude/skills/figma-code-connect/code-connect-data.json`
+| Rule                       | What it does                                                        |
+| -------------------------- | ------------------------------------------------------------------- |
+| **Alias table**            | Maps Figma names → code prop names (Tone→colorPalette, etc.)        |
+| **State decomposition**    | Splits State VARIANT into individual booleans (Disabled→isDisabled) |
+| **Visual-only skip**       | Drops Default, Hover, Focus, Pressed, Active state values           |
+| **Visual boolean skip**    | Drops Figma-only booleans (Is focused, Show resize icon, etc.)      |
+| **Boolean detection**      | YES/NO, On/Off, True/False VARIANTs → `figma.enum("X", {YES:true})` |
+| **Boolean+Instance**       | Pairs BOOLEAN toggles with INSTANCE_SWAP slots                      |
+| **Recipe matching**        | Matches VARIANT options against recipe variant values               |
+| **Value normalization**    | Normalizes values when no recipe exists (Outlined→outline)          |
+| **Known valid props**      | Trusts common inherited props (isDisabled, variant, size, etc.)     |
+| **Parent recipe fallback** | Inherits recipe from parent component (icon-button→button)          |
+| **Prop validation**        | Only emits props that exist in types, recipe, or known-valid set    |
+
+### Constants (in code-connect-constants.ts)
+
+All classification tables and overrides are in `code-connect-constants.ts`:
+
+- `ALIAS_MAP` — Figma prop name → code prop name (trusted, bypasses validation)
+- `SOFT_ALIAS_MAP` — Name translation only, still validated
+- `VISUAL_STATE_VALUES` — State variant values to skip (hover, focus, etc.)
+- `VISUAL_BOOLEAN_PROPS` — Boolean prop names to skip globally
+- `STATE_BOOLEAN_MAP` — State values → boolean props (disabled→isDisabled)
+- `VALUE_NORMALIZATIONS` — Fallback value transforms when no recipe exists
+- `KNOWN_VALID_PROPS` — Props valid across most components via inheritance
+- `OVERRIDES` — Per-component overrides for complex patterns
+
+### Component overrides
+
+Overrides are only needed for components with complex Figma→code mappings that
+can't be auto-classified:
+
+- **calendar**: Variant-specific connects to DatePicker, RangeCalendar,
+  DateRangePicker
+- **card**: Conditional JSX from Content type VARIANT
+- **combobox**: Variant-specific connects for single/multi-select
+- **dialog, drawer**: Complex nested sub-component example JSX
+- **form-field**: Boolean→sub-component JSX, variant connects for
+  Error/Description
+- **progress-bar**: Multi-prop extraction from Completeness
+- **select**: Non-obvious value mappings (Solid→"outline")
+
+Simple components (icon-button, split-button, password-input, etc.) should NOT
+need overrides — their props are handled by recipe inheritance, value
+normalization, and known-valid props. If you need to add an override for a
+simple component, first check if the generic classification can be improved.
