@@ -2,15 +2,11 @@
 "@commercetools/nimbus": minor
 ---
 
-feat(modal-page): align ModalPage API with DefaultPage component
+feat(modal-page): add ModalPage compound component for fullscreen modal
+workflows
 
-**Breaking changes to ModalPage (Experimental):**
-
-- `ModalPage.Title` now takes `children` instead of `title`/`subtitle` string
-  props
-- Added `ModalPage.Subtitle` as a separate subcomponent for subtitle text
-- `ModalPage.Content` is now a plain wrapper — use `PageContent.Root` explicitly
-  for width constraints and column layouts
-- Removed `ModalPage.Column` re-export — use `PageContent.Column` directly
-- Added `ModalPage.TabNav` slot for tabular page patterns (mirrors
-  DefaultPage.TabNav)
+Introduces the `ModalPage` component — a fullscreen modal overlay for form,
+info, and tabular page patterns. Provides TopBar breadcrumb navigation, Header
+with Title/Subtitle/Actions, TabNav for tabular layouts, scrollable Content
+area, and optional Footer. Built on React Aria Dialog for WCAG 2.1 AA
+compliance.
