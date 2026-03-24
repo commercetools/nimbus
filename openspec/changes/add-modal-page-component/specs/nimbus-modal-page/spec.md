@@ -59,6 +59,12 @@ edge of the viewport.
 - **AND** SHALL cover the full viewport height
 - **AND** SHALL display a backdrop behind the modal page
 
+#### Scenario: Custom width
+
+- **WHEN** consumer provides a `width` prop on ModalPage.Root
+- **THEN** SHALL use the provided width for the modal page panel
+- **AND** SHALL override the default near-fullscreen width
+
 #### Scenario: Backdrop click disabled
 
 - **WHEN** user clicks the backdrop area

@@ -35,9 +35,9 @@ export type ModalPageFooterSlotProps = HTMLChakraProps<"footer">;
 /**
  * Props for ModalPage.Root
  *
- * ModalPage.Root renders a Drawer internally — it does not expose Drawer or
- * div style props. The fullscreen layout is hardcoded; only the listed props
- * are accepted.
+ * ModalPage.Root renders a Drawer internally. Style props (e.g. `width`) are
+ * forwarded to the underlying Drawer.Content panel. The default width is
+ * near-fullscreen; pass a custom `width` to override.
  */
 export type ModalPageRootProps = {
   /** Whether the modal page is open (controlled) */
@@ -48,6 +48,8 @@ export type ModalPageRootProps = {
   children: React.ReactNode;
   /** Ref forwarded to the inner grid container */
   ref?: React.Ref<HTMLDivElement>;
+  /** Custom width for the modal page panel. Defaults to near-fullscreen. */
+  width?: HTMLChakraProps<"div">["width"];
 };
 
 /**
