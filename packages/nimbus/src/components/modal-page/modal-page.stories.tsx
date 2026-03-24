@@ -421,156 +421,144 @@ export const KeyboardNavigation: Story = {
 };
 
 /**
- * Stacked modal pages — opening a second ModalPage on top of the first,
- * as used in "Edit Product → Add Variant" workflows.
+ * Helper component for composable stacked modal pages.
+ * Each NestedModalPage manages its own open state and renders
+ * a trigger button, a ModalPage, and optional children (the next level).
+ */
+const NestedModalPage = ({
+  parentLabel,
+  currentLabel,
+  children,
+}: {
+  parentLabel: string;
+  currentLabel: string;
+  children?: React.ReactNode;
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Open {currentLabel}</Button>
+      <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <ModalPage.TopBar
+          previousPathLabel={parentLabel}
+          currentPathLabel={currentLabel}
+        />
+        <ModalPage.Header>
+          <ModalPage.Title>{currentLabel}</ModalPage.Title>
+        </ModalPage.Header>
+        <ModalPage.Content>
+          <Stack>
+            <Text>{currentLabel} content goes here.</Text>
+            {children}
+          </Stack>
+        </ModalPage.Content>
+        <ModalPage.Footer>
+          <Button slot="close" variant="outline">
+            Cancel
+          </Button>
+          <Button colorPalette="primary" variant="solid">
+            Save
+          </Button>
+        </ModalPage.Footer>
+      </ModalPage.Root>
+    </>
+  );
+};
+
+/**
+ * Stacked modal pages — demonstrates 4 levels of nesting, each visually
+ * indented to show depth. Uses the NestedModalPage helper for composition.
  */
 export const StackedModalPages: Story = {
-  render: () => {
-    const [isFirstOpen, setIsFirstOpen] = useState(false);
-    const [isSecondOpen, setIsSecondOpen] = useState(false);
-    return (
-      <Stack>
-        <Button onPress={() => setIsFirstOpen(true)}>Open Edit Product</Button>
-        <ModalPage.Root
-          isOpen={isFirstOpen}
-          onClose={() => setIsFirstOpen(false)}
-        >
-          <ModalPage.TopBar
-            previousPathLabel="Products"
-            currentPathLabel="Edit Product"
-          />
-          <ModalPage.Header>
-            <ModalPage.Title>Edit Product</ModalPage.Title>
-            <ModalPage.Subtitle>Update the product details</ModalPage.Subtitle>
-          </ModalPage.Header>
-          <ModalPage.Content>
-            <Stack>
-              <Text>Product form content goes here.</Text>
-              <Button onPress={() => setIsSecondOpen(true)}>
-                Open Add Variant
-              </Button>
-            </Stack>
-
-            <ModalPage.Root
-              isOpen={isSecondOpen}
-              onClose={() => setIsSecondOpen(false)}
-            >
-              <ModalPage.TopBar
-                previousPathLabel="Edit Product"
-                currentPathLabel="Add Variant"
-              />
-              <ModalPage.Header>
-                <ModalPage.Title>Add Variant</ModalPage.Title>
-                <ModalPage.Subtitle>
-                  Define a new product variant
-                </ModalPage.Subtitle>
-              </ModalPage.Header>
-              <ModalPage.Content>
-                <Text>Variant form content goes here.</Text>
-              </ModalPage.Content>
-              <ModalPage.Footer>
-                <Button slot="close" variant="outline">
-                  Cancel
-                </Button>
-                <Button colorPalette="primary" variant="solid">
-                  Save Variant
-                </Button>
-              </ModalPage.Footer>
-            </ModalPage.Root>
-          </ModalPage.Content>
-          <ModalPage.Footer>
-            <Button slot="close" variant="outline">
-              Cancel
-            </Button>
-            <Button colorPalette="primary" variant="solid">
-              Save Product
-            </Button>
-          </ModalPage.Footer>
-        </ModalPage.Root>
-      </Stack>
-    );
-  },
+  render: () => (
+    <Stack>
+      <NestedModalPage parentLabel="Products" currentLabel="Edit Product">
+        <NestedModalPage parentLabel="Edit Product" currentLabel="Add Variant">
+          <NestedModalPage
+            parentLabel="Add Variant"
+            currentLabel="Select Attribute"
+          >
+            <NestedModalPage
+              parentLabel="Select Attribute"
+              currentLabel="Create Attribute"
+            />
+          </NestedModalPage>
+        </NestedModalPage>
+      </NestedModalPage>
+    </Stack>
+  ),
 
   play: async ({ canvasElement, step }) => {
     const canvas = within(
       (canvasElement.parentNode as HTMLElement) ?? canvasElement
     );
 
-    await step("Open first modal page", async () => {
+    await step("Open all four levels", async () => {
       await userEvent.click(
         canvas.getByRole("button", { name: "Open Edit Product" })
       );
       await waitFor(() => {
-        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+        expect(canvas.getAllByRole("dialog")).toHaveLength(1);
       });
-      expect(
-        canvas.getByRole("heading", { name: "Edit Product" })
-      ).toBeInTheDocument();
-    });
 
-    await step("Open second modal page on top of first", async () => {
       await userEvent.click(
         canvas.getByRole("button", { name: "Open Add Variant" })
       );
       await waitFor(() => {
         expect(canvas.getAllByRole("dialog")).toHaveLength(2);
       });
+
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Open Select Attribute" })
+      );
+      await waitFor(() => {
+        expect(canvas.getAllByRole("dialog")).toHaveLength(3);
+      });
+
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Open Create Attribute" })
+      );
+      await waitFor(() => {
+        expect(canvas.getAllByRole("dialog")).toHaveLength(4);
+      });
+    });
+
+    await step("Escape closes only the topmost level", async () => {
+      await userEvent.keyboard("{Escape}");
+      await waitFor(() => {
+        expect(canvas.getAllByRole("dialog")).toHaveLength(3);
+      });
       expect(
-        canvas.getByRole("heading", { name: "Add Variant" })
+        canvas.getByRole("heading", { name: "Select Attribute" })
       ).toBeInTheDocument();
     });
 
-    await step("Close second modal via back button", async () => {
+    await step("Back button closes the current level", async () => {
       const backButton = canvas.getByRole("button", {
-        name: /go back to edit product/i,
+        name: /go back to add variant/i,
       });
       await userEvent.click(backButton);
       await waitFor(() => {
-        expect(canvas.getAllByRole("dialog")).toHaveLength(1);
-      });
-      expect(
-        canvas.getByRole("heading", { name: "Edit Product" })
-      ).toBeInTheDocument();
-    });
-
-    await step(
-      "'Open Add Variant' button is still present in first page",
-      async () => {
-        expect(
-          canvas.getByRole("button", { name: "Open Add Variant" })
-        ).toBeInTheDocument();
-      }
-    );
-
-    await step("Re-open second modal and close via Escape", async () => {
-      await userEvent.click(
-        canvas.getByRole("button", { name: "Open Add Variant" })
-      );
-      await waitFor(() => {
         expect(canvas.getAllByRole("dialog")).toHaveLength(2);
       });
+    });
 
+    await step("Close remaining levels via Escape", async () => {
       await userEvent.keyboard("{Escape}");
       await waitFor(() => {
         expect(canvas.getAllByRole("dialog")).toHaveLength(1);
       });
-      expect(
-        canvas.getByRole("heading", { name: "Edit Product" })
-      ).toBeInTheDocument();
-    });
 
-    await step("Close first modal via back button", async () => {
-      const backButton = canvas.getByRole("button", {
-        name: /go back to products/i,
-      });
-      await userEvent.click(backButton);
+      await userEvent.keyboard("{Escape}");
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
       });
     });
 
     await step("Focus returns to page-level trigger", async () => {
-      const trigger = canvas.getByRole("button", { name: "Open Edit Product" });
+      const trigger = canvas.getByRole("button", {
+        name: "Open Edit Product",
+      });
       await waitFor(() => expect(trigger).toHaveFocus(), { timeout: 1000 });
     });
   },
