@@ -1,29 +1,25 @@
 import { ModalPageTitleSlot } from "../modal-page.slots";
 import type { ModalPageTitleProps } from "../modal-page.types";
 import { Heading } from "../../heading/heading";
-import { Text } from "../../text/text";
 
 /**
- * ModalPage.Title — renders an h2 heading and an optional subtitle paragraph.
+ * ModalPage.Title — the page title heading. Renders as an `h2` element.
+ *
+ * Wraps the React Aria `Heading` component with `slot="title"` so the
+ * parent Dialog automatically uses it as the accessible name (aria-labelledby).
  *
  * @supportsStyleProps
  */
 export const ModalPageTitle = ({
   ref,
-  title,
-  subtitle,
+  children,
   ...props
 }: ModalPageTitleProps) => {
   return (
     <ModalPageTitleSlot ref={ref} {...props}>
-      <Heading slot="title" as="h2" textStyle="xl" fontWeight="semibold">
-        {title}
+      <Heading slot="title" as="h2">
+        {children}
       </Heading>
-      {subtitle && (
-        <Text textStyle="sm" color="neutral.11" mt="100">
-          {subtitle}
-        </Text>
-      )}
     </ModalPageTitleSlot>
   );
 };

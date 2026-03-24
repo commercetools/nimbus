@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
-import { Button, ModalPage, NimbusProvider, Text } from "@commercetools/nimbus";
+import {
+  Button,
+  ModalPage,
+  NimbusProvider,
+  PageContent,
+  Text,
+} from "@commercetools/nimbus";
 
 /**
  * @docs-section basic-usage
@@ -32,10 +38,10 @@ describe("ModalPage - Basic usage", () => {
               currentPathLabel="Edit Product"
             />
             <ModalPage.Header>
-              <ModalPage.Title
-                title="Edit Product"
-                subtitle="Update the product details"
-              />
+              <ModalPage.Title>Edit Product</ModalPage.Title>
+              <ModalPage.Subtitle>
+                Update the product details
+              </ModalPage.Subtitle>
             </ModalPage.Header>
             <ModalPage.Content>
               <Text>Form content</Text>
@@ -88,10 +94,8 @@ describe("ModalPage - Form page", () => {
             currentPathLabel="Add Product"
           />
           <ModalPage.Header>
-            <ModalPage.Title
-              title="Add Product"
-              subtitle="Fill in the product details"
-            />
+            <ModalPage.Title>Add Product</ModalPage.Title>
+            <ModalPage.Subtitle>Fill in the product details</ModalPage.Subtitle>
             <ModalPage.Actions>
               <Button size="sm" variant="outline">
                 Preview
@@ -121,9 +125,9 @@ describe("ModalPage - Form page", () => {
  * @docs-section multi-column
  * @docs-title Multi-Column Layout
  * @docs-description
- *   Use ModalPage.Content with columns="2/1" and ModalPage.Column for
- *   side-by-side layouts. ModalPage.Column is a re-export of PageContent.Column
- *   and supports the sticky prop for sticky sidebars.
+ *   Use PageContent.Root with columns="2/1" and PageContent.Column inside
+ *   ModalPage.Content for side-by-side layouts. PageContent.Column supports the
+ *   sticky prop for sticky sidebars.
  * @docs-order 3
  */
 describe("ModalPage - Multi-column layout", () => {
@@ -136,15 +140,17 @@ describe("ModalPage - Multi-column layout", () => {
             currentPathLabel="Edit Product"
           />
           <ModalPage.Header>
-            <ModalPage.Title title="Edit Product" />
+            <ModalPage.Title>Edit Product</ModalPage.Title>
           </ModalPage.Header>
-          <ModalPage.Content variant="wide" columns="2/1">
-            <ModalPage.Column>
-              <Text>Main form area</Text>
-            </ModalPage.Column>
-            <ModalPage.Column sticky>
-              <Text>Summary sidebar</Text>
-            </ModalPage.Column>
+          <ModalPage.Content>
+            <PageContent.Root variant="wide" columns="2/1">
+              <PageContent.Column>
+                <Text>Main form area</Text>
+              </PageContent.Column>
+              <PageContent.Column sticky>
+                <Text>Summary sidebar</Text>
+              </PageContent.Column>
+            </PageContent.Root>
           </ModalPage.Content>
         </ModalPage.Root>
       </NimbusProvider>

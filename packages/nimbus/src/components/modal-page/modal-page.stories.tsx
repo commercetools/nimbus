@@ -5,8 +5,9 @@ import {
   Button,
   FormField,
   ModalPage,
+  PageContent,
   Stack,
-  Tabs,
+  TabNav,
   Text,
   TextInput,
 } from "@commercetools/nimbus";
@@ -47,10 +48,10 @@ export const InfoPage: Story = {
             currentPathLabel="Product Details"
           />
           <ModalPage.Header>
-            <ModalPage.Title
-              title="Product Details"
-              subtitle="View the product information"
-            />
+            <ModalPage.Title>Product Details</ModalPage.Title>
+            <ModalPage.Subtitle>
+              View the product information
+            </ModalPage.Subtitle>
           </ModalPage.Header>
           <ModalPage.Content>
             <Text>This is the info page content area.</Text>
@@ -107,10 +108,8 @@ export const FormPage: Story = {
             currentPathLabel="Add Product"
           />
           <ModalPage.Header>
-            <ModalPage.Title
-              title="Add Product"
-              subtitle="Fill in the product details"
-            />
+            <ModalPage.Title>Add Product</ModalPage.Title>
+            <ModalPage.Subtitle>Fill in the product details</ModalPage.Subtitle>
             <ModalPage.Actions>
               <Button size="sm" variant="outline">
                 Preview
@@ -171,7 +170,7 @@ export const FormPage: Story = {
 };
 
 /**
- * Tabular page — with Tabs component inside Content.
+ * Tabular page — with TabNav in the header and tab content below.
  */
 export const TabularPage: Story = {
   render: () => {
@@ -185,28 +184,20 @@ export const TabularPage: Story = {
             currentPathLabel="Order #12345"
           />
           <ModalPage.Header>
-            <ModalPage.Title
-              title="Order #12345"
-              subtitle="Order from 2024-01-15"
-            />
+            <ModalPage.Title>Order #12345</ModalPage.Title>
+            <ModalPage.Subtitle>Order from 2024-01-15</ModalPage.Subtitle>
+            <ModalPage.TabNav>
+              <TabNav.Root aria-label="Order sections">
+                <TabNav.Item href="#general" isCurrent>
+                  General
+                </TabNav.Item>
+                <TabNav.Item href="#items">Items</TabNav.Item>
+                <TabNav.Item href="#shipping">Shipping</TabNav.Item>
+              </TabNav.Root>
+            </ModalPage.TabNav>
           </ModalPage.Header>
-          <ModalPage.Content variant="full">
-            <Tabs.Root>
-              <Tabs.List aria-label="Order sections">
-                <Tabs.Tab id="general">General</Tabs.Tab>
-                <Tabs.Tab id="items">Items</Tabs.Tab>
-                <Tabs.Tab id="shipping">Shipping</Tabs.Tab>
-              </Tabs.List>
-              <Tabs.Panel id="general">
-                <Text>General order information</Text>
-              </Tabs.Panel>
-              <Tabs.Panel id="items">
-                <Text>Order items list</Text>
-              </Tabs.Panel>
-              <Tabs.Panel id="shipping">
-                <Text>Shipping details</Text>
-              </Tabs.Panel>
-            </Tabs.Root>
+          <ModalPage.Content>
+            <Text>General order information</Text>
           </ModalPage.Content>
         </ModalPage.Root>
       </Stack>
@@ -227,10 +218,14 @@ export const TabularPage: Story = {
       });
     });
 
-    await step("Tabs are navigable", async () => {
-      const itemsTab = canvas.getByRole("tab", { name: "Items" });
-      await userEvent.click(itemsTab);
-      expect(canvas.getByText("Order items list")).toBeInTheDocument();
+    await step("Tab navigation is rendered in header", async () => {
+      const nav = canvas.getByRole("navigation", { name: "Order sections" });
+      expect(nav).toBeInTheDocument();
+      expect(canvas.getByRole("link", { name: "General" })).toBeInTheDocument();
+      expect(canvas.getByRole("link", { name: "Items" })).toBeInTheDocument();
+      expect(
+        canvas.getByRole("link", { name: "Shipping" })
+      ).toBeInTheDocument();
     });
 
     await step("Close modal page", async () => {
@@ -260,7 +255,7 @@ export const WithTopBarNavigation: Story = {
             currentPathLabel="Edit: Awesome T-Shirt XL"
           />
           <ModalPage.Header>
-            <ModalPage.Title title="Edit: Awesome T-Shirt XL" />
+            <ModalPage.Title>Edit: Awesome T-Shirt XL</ModalPage.Title>
           </ModalPage.Header>
           <ModalPage.Content>
             <Text>Content area</Text>
@@ -319,7 +314,7 @@ export const KeyboardNavigation: Story = {
             currentPathLabel="Edit Profile"
           />
           <ModalPage.Header>
-            <ModalPage.Title title="Edit Profile" />
+            <ModalPage.Title>Edit Profile</ModalPage.Title>
           </ModalPage.Header>
           <ModalPage.Content>
             <Text>Keyboard navigation test content</Text>
@@ -416,10 +411,8 @@ export const StackedModalPages: Story = {
             currentPathLabel="Edit Product"
           />
           <ModalPage.Header>
-            <ModalPage.Title
-              title="Edit Product"
-              subtitle="Update the product details"
-            />
+            <ModalPage.Title>Edit Product</ModalPage.Title>
+            <ModalPage.Subtitle>Update the product details</ModalPage.Subtitle>
           </ModalPage.Header>
           <ModalPage.Content>
             <Stack>
@@ -438,10 +431,10 @@ export const StackedModalPages: Story = {
                 currentPathLabel="Add Variant"
               />
               <ModalPage.Header>
-                <ModalPage.Title
-                  title="Add Variant"
-                  subtitle="Define a new product variant"
-                />
+                <ModalPage.Title>Add Variant</ModalPage.Title>
+                <ModalPage.Subtitle>
+                  Define a new product variant
+                </ModalPage.Subtitle>
               </ModalPage.Header>
               <ModalPage.Content>
                 <Text>Variant form content goes here.</Text>
@@ -562,10 +555,8 @@ export const SmokeTest: Story = {
         currentPathLabel="Editing product"
       />
       <ModalPage.Header>
-        <ModalPage.Title
-          title="Edit Product"
-          subtitle="Update the product information"
-        />
+        <ModalPage.Title>Edit Product</ModalPage.Title>
+        <ModalPage.Subtitle>Update the product information</ModalPage.Subtitle>
         <ModalPage.Actions>
           <Button size="sm" variant="outline">
             Preview

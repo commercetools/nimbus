@@ -6,7 +6,17 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * top bar, header, scrollable content, and optional footer.
  */
 export const modalPageRecipe = defineSlotRecipe({
-  slots: ["root", "topBar", "header", "title", "actions", "content", "footer"],
+  slots: [
+    "root",
+    "topBar",
+    "header",
+    "title",
+    "subtitle",
+    "actions",
+    "tabNav",
+    "content",
+    "footer",
+  ],
   className: "nimbus-modal-page",
   base: {
     root: {
@@ -33,15 +43,31 @@ export const modalPageRecipe = defineSlotRecipe({
       pb: "600",
       borderBottom: "solid-25",
       borderColor: "border",
+      "&:has(.nimbus-modal-page__tabNav)": {
+        pb: "0",
+      },
     },
     title: {
       gridColumn: "1",
+      textStyle: "xl",
+      fontWeight: "semibold",
+      color: "neutral.12",
+    },
+    subtitle: {
+      gridColumn: "1",
+      mt: "100",
+      textStyle: "sm",
+      color: "neutral.11",
     },
     actions: {
       gridColumn: "2",
       display: "flex",
       alignItems: "center",
       gap: "200",
+    },
+    tabNav: {
+      gridColumn: "1 / -1",
+      mt: "200",
     },
     content: {
       overflow: "auto",
