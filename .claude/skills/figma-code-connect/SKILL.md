@@ -39,7 +39,17 @@ This script:
 4. Runs prettier on each file
 5. Deletes the intermediate data file
 
-### Step 3: Validate
+### Step 3: Check for changes
+
+```bash
+git diff --stat
+```
+
+If there are no changes, the generated files are already up to date. Inform the
+user and skip to Step 7 (Publish). Do not run validation or review steps when
+there is nothing new to validate.
+
+### Step 4: Validate
 
 Run typecheck and lint to ensure all generated files are correct:
 
@@ -65,7 +75,7 @@ If there are lint errors:
   `props.` but the component has classified props. Either update the exampleJsx
   to use props, or the generation script should detect this automatically.
 
-### Step 4: Verify NOTE accuracy
+### Step 5: Verify NOTE accuracy
 
 Check that all generated `// NOTE:` comments are accurate:
 
@@ -81,7 +91,7 @@ NOTE is wrong (the prop actually exists), either:
 - Add it to the component's `typesProps` via the collect script
 - Add a `rawProps` override in `code-connect-constants.ts`
 
-### Step 5: Review changes
+### Step 6: Review changes
 
 ```bash
 git diff
@@ -90,7 +100,7 @@ git diff
 Present the diff to the user. The user reviews the actual code changes, not
 LLM-generated summaries.
 
-### Step 6: Parse (optional)
+### Step 7: Parse (optional)
 
 ```bash
 pnpx @figma/code-connect connect parse
@@ -98,7 +108,7 @@ pnpx @figma/code-connect connect parse
 
 This parses all Code Connect files and surfaces syntax or import errors.
 
-### Step 7: Publish (optional)
+### Step 8: Publish (optional)
 
 Ask the user if they want to publish. If yes:
 
