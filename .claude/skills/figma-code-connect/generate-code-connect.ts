@@ -77,6 +77,7 @@ import {
   VISUAL_BOOLEAN_PROPS,
   VALUE_NORMALIZATIONS,
   OVERRIDES,
+  EXCLUDED_COMPONENTS,
 } from "./code-connect-constants";
 
 interface ClassifiedProp {
@@ -712,6 +713,7 @@ function main() {
   const byDir = new Map<string, CodeConnectEntry[]>();
   for (const entry of data.entries) {
     if (filterComponent && entry.dirName !== filterComponent) continue;
+    if (EXCLUDED_COMPONENTS.has(entry.dirName)) continue;
     if (!byDir.has(entry.dirName)) byDir.set(entry.dirName, []);
     byDir.get(entry.dirName)!.push(entry);
   }
