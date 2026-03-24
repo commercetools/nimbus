@@ -20,67 +20,19 @@ Make scrollable containers accessible to keyboard and screen reader users.
 Detects content overflow via `ResizeObserver` and dynamically manages `tabIndex`,
 ARIA roles, accessible name, and a keyboard-only focus ring.
 
+> **TIP:** If you just need a standalone scrollable container and don't need to
+> attach the behavior to an existing element, use the
+> [`ScrollableRegion`](/components/scrollable-region) component instead. It
+> wraps this hook and renders the appropriate element automatically.
+
 ## Basic usage
 
-Import the hook from the package:
+Import the hook from the package and attach the returned `ref` and spread
+`containerProps` onto your scrollable element.
 
-```js
-import { useScrollableRegion } from "@commercetools/nimbus";
-```
-
-Attach the returned `ref` and spread `containerProps` onto your scrollable element:
-
-```jsx live
-import { useScrollableRegion } from "@commercetools/nimbus";
-
-const App = () => {
-  const { ref, containerProps } = useScrollableRegion({
-    "aria-label": "Log output",
-  });
-
-  return (
-    <div ref={ref} {...containerProps} style={{ ...containerProps.style, height: "150px" }}>
-      {Array.from({ length: 20 }, (_, i) => (
-        <p key={i}>Log entry {i + 1}</p>
-      ))}
-    </div>
-  );
-};
-```
-
-## With the ScrollableRegion component
-
-For standalone use, the `ScrollableRegion` component wraps the hook:
-
-```jsx live
-import { ScrollableRegion } from "@commercetools/nimbus";
-
-const App = () => (
-  <ScrollableRegion aria-label="Terms and conditions" style={{ height: "150px" }}>
-    {Array.from({ length: 20 }, (_, i) => (
-      <p key={i}>Clause {i + 1}: Lorem ipsum dolor sit amet.</p>
-    ))}
-  </ScrollableRegion>
-);
-```
-
-## Using on compound component parts
-
-The hook is designed to be used on existing elements where you cannot add a
-wrapper component. Spread `containerProps` onto the slot element directly:
-
-```tsx
-const DialogBody = (props) => {
-  const { ref, containerProps } = useScrollableRegion({
-    "aria-label": "Dialog content",
-  });
-  return (
-    <BodySlot ref={ref} {...containerProps}>
-      {props.children}
-    </BodySlot>
-  );
-};
-```
+The hook is designed for cases where you need to apply scrollable-region
+accessibility to an existing element — for example, a compound component slot
+where you cannot introduce a wrapper component.
 
 ## Reference
 
