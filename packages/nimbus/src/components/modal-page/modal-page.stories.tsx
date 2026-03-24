@@ -570,7 +570,7 @@ export const StackedModalPages: Story = {
  */
 export const CustomPageWidth: Story = {
   render: () => (
-    <ModalPage.Root isOpen onClose={() => {}} width="600px">
+    <ModalPage.Root isOpen onClose={() => {}} width="xl">
       <ModalPage.TopBar
         previousPathLabel="Settings"
         currentPathLabel="Edit Notification"
