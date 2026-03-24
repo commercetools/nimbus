@@ -50,7 +50,9 @@ describe("ModalPage - Basic usage", () => {
               <Button slot="close" variant="outline">
                 Cancel
               </Button>
-              <Button variant="solid">Save</Button>
+              <Button colorPalette="primary" variant="solid">
+                Save
+              </Button>
             </ModalPage.Footer>
           </ModalPage.Root>
         </NimbusProvider>
@@ -109,7 +111,9 @@ describe("ModalPage - Form page", () => {
             <Button slot="close" variant="outline">
               Cancel
             </Button>
-            <Button variant="solid">Save</Button>
+            <Button colorPalette="primary" variant="solid">
+              Save
+            </Button>
           </ModalPage.Footer>
         </ModalPage.Root>
       </NimbusProvider>

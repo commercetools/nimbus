@@ -39,7 +39,7 @@ import {
  *   </ModalPage.Content>
  *   <ModalPage.Footer>
  *     <Button slot="close" variant="outline">Cancel</Button>
- *     <Button variant="solid">Save</Button>
+ *     <Button colorPalette="primary" variant="solid">Save</Button>
  *   </ModalPage.Footer>
  * </ModalPage.Root>
  * ```
