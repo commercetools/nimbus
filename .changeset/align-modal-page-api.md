@@ -8,5 +8,4 @@ workflows
 Introduces the `ModalPage` component — a fullscreen modal overlay for form,
 info, and tabular page patterns. Provides TopBar breadcrumb navigation, Header
 with Title/Subtitle/Actions, TabNav for tabular layouts, scrollable Content
-area, and optional Footer. Built on React Aria Dialog for WCAG 2.1 AA
-compliance.
+area, and optional Footer.
