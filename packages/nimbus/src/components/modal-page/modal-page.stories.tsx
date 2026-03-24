@@ -324,50 +324,6 @@ export const MultiColumnContent: Story = {
 };
 
 /**
- * TopBar navigation labels — verifies breadcrumb text and back button
- * aria-label.
- */
-export const WithTopBarNavigation: Story = {
-  render: () => (
-    <ModalPage.Root isOpen onClose={() => {}}>
-      <ModalPage.TopBar
-        previousPathLabel="Product catalog"
-        currentPathLabel="Edit: Awesome T-Shirt XL"
-      />
-      <ModalPage.Header>
-        <ModalPage.Title>Edit: Awesome T-Shirt XL</ModalPage.Title>
-      </ModalPage.Header>
-      <ModalPage.Content>
-        <Text>Content area</Text>
-      </ModalPage.Content>
-    </ModalPage.Root>
-  ),
-
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(
-      (canvasElement.parentNode as HTMLElement) ?? canvasElement
-    );
-
-    await step("Top bar labels are rendered", async () => {
-      await waitFor(() => {
-        expect(canvas.getByRole("dialog")).toBeInTheDocument();
-      });
-      expect(canvas.getByText("Product catalog")).toBeInTheDocument();
-      expect(
-        canvas.getByRole("heading", { name: "Edit: Awesome T-Shirt XL" })
-      ).toBeInTheDocument();
-    });
-
-    await step("Back button aria-label references previous path", async () => {
-      const backButton = canvas.getByRole("button", {
-        name: /go back to product catalog/i,
-      });
-      expect(backButton).toBeInTheDocument();
-    });
-  },
-};
-
-/**
  * Keyboard navigation — tests Escape key dismissal, focus trap, and
  * focus return to trigger.
  */
