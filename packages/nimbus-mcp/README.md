@@ -46,13 +46,14 @@ npx @commercetools/nimbus-mcp
 
 ## Available Tools
 
-| Tool                 | Description                                                                        |
-| -------------------- | ---------------------------------------------------------------------------------- |
-| `list_components`    | Returns names and descriptions of all Nimbus components and patterns               |
-| `get_component`      | Returns detailed info about a component or pattern (metadata, props, recipe, docs) |
-| `search_docs`        | Full-text search across all Nimbus documentation pages                             |
-| `search_icons`       | Fuzzy-search Nimbus icons by name or keyword                                       |
-| `migrate_from_uikit` | Returns migration mappings from UI Kit components to Nimbus equivalents            |
+| Tool                 | Description                                                                            |
+| -------------------- | -------------------------------------------------------------------------------------- |
+| `list_components`    | Returns names and descriptions of all Nimbus components and patterns                   |
+| `get_component`      | Returns detailed info about a component or pattern (metadata, props, recipe, docs)     |
+| `search_docs`        | Full-text search across all Nimbus documentation pages                                 |
+| `search_icons`       | Fuzzy-search Nimbus icons by name or keyword                                           |
+| `get_tokens`         | Returns design tokens — list categories, browse by category, or reverse-lookup a value |
+| `migrate_from_uikit` | Returns migration mappings from UI Kit components to Nimbus equivalents                |
 
 ## Development
 

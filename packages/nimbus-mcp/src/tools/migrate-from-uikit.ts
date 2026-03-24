@@ -149,15 +149,42 @@ function extractUiKitComponents(fileContent: string): string[] {
 // Result builders
 // ---------------------------------------------------------------------------
 
-/** Icon-related UI Kit names that should hint at the search_icons tool. */
-const ICON_NAMES = new Set([
-  "CustomIcon",
-  "LeadingIcon",
-  "InlineSvg",
-  "Icon Library",
-  "IconButton",
-  "SecondaryIconButton",
-]);
+/**
+ * Derives a hint suggesting which MCP tool to use for further assistance.
+ * Returns undefined if no specific tool is more useful than general docs.
+ */
+function deriveToolHint(
+  uiKitName: string,
+  importPath: string | null,
+  notes: string
+): string | undefined {
+  // Icon search — components that map to icons, not icon *buttons*
+  if (importPath === "@commercetools/nimbus-icons") {
+    return 'Use the search_icons tool to find Nimbus icons by name (e.g. search_icons(query: "arrow"))';
+  }
+  if (
+    uiKitName === "CustomIcon" ||
+    uiKitName === "LeadingIcon" ||
+    uiKitName === "InlineSvg"
+  ) {
+    return 'Use the search_icons tool to find the Nimbus equivalent icon (e.g. search_icons(query: "checkmark"))';
+  }
+
+  // Token lookup — entries that map to design tokens or reference token values
+  if (importPath === "@commercetools/nimbus-tokens") {
+    return 'Use the get_tokens tool to browse available design tokens (e.g. get_tokens(category: "spacing"))';
+  }
+  if (notes.includes("spacing token") || notes.includes("design token")) {
+    return 'Use the get_tokens tool to find the correct token values (e.g. get_tokens(category: "spacing"))';
+  }
+
+  // Component lookup — entries that map to a specific Nimbus component
+  if (importPath === "@commercetools/nimbus") {
+    return 'Use the get_component tool to see full API docs for the Nimbus equivalent (e.g. get_component(name: "Button"))';
+  }
+
+  return undefined;
+}
 
 function buildComponentResult(
   uiKitName: string
@@ -174,14 +201,8 @@ function buildComponentResult(
     breakingChanges: entry.breakingChanges,
   };
 
-  // Add hints to use other MCP tools for icons and tokens
-  if (ICON_NAMES.has(uiKitName)) {
-    result.hint =
-      'Use the search_icons tool to find the Nimbus equivalent icon (e.g. search_icons(query: "arrow"))';
-  } else if (entry.importPath === "@commercetools/nimbus-tokens") {
-    result.hint =
-      'Use the search_docs tool to find the relevant design tokens (e.g. search_docs(query: "spacing tokens"))';
-  }
+  const hint = deriveToolHint(uiKitName, entry.importPath, entry.notes);
+  if (hint) result.hint = hint;
 
   return result;
 }

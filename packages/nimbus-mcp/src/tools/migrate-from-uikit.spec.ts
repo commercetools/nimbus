@@ -94,22 +94,34 @@ describe("migrate_from_uikit — componentName mode", () => {
     expect(names).toContain("Text.Headline");
   });
 
-  it("includes a hint for icon-related components", async () => {
+  it("includes a search_icons hint for icon-related components", async () => {
     const result = await callMigrate({ componentName: "CustomIcon" });
     const data = JSON.parse(getText(result));
 
-    expect(data.hint).toBeTruthy();
     expect(data.hint).toContain("search_icons");
   });
 
-  it("includes a hint for token-related components", async () => {
+  it("includes a search_icons hint for Icon Library", async () => {
+    const result = await callMigrate({ componentName: "Icon Library" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.hint).toContain("search_icons");
+  });
+
+  it("includes a get_tokens hint for token-related components", async () => {
     const result = await callMigrate({
       componentName: "Constraints.Horizontal",
     });
     const data = JSON.parse(getText(result));
 
-    expect(data.hint).toBeTruthy();
-    expect(data.hint).toContain("search_docs");
+    expect(data.hint).toContain("get_tokens");
+  });
+
+  it("includes a get_component hint for standard component mappings", async () => {
+    const result = await callMigrate({ componentName: "PrimaryButton" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.hint).toContain("get_component");
   });
 
   it("returns error for unknown component", async () => {
