@@ -2,8 +2,6 @@
  * Shared type definitions for the Nimbus MCP server.
  */
 
-import type Fuse from "fuse.js";
-
 // ---------------------------------------------------------------------------
 // Core types
 // ---------------------------------------------------------------------------
@@ -334,12 +332,6 @@ export interface SearchIconsResponse {
   results: IconResult[];
 }
 
-/** Cached Fuse instance and icon list (created on first call, avoids double catalog load). */
-export interface FuseCache {
-  fuse: Fuse<IconCatalogEntry>;
-  icons: IconCatalogEntry[];
-}
-
 // ---------------------------------------------------------------------------
 // Search tool types (used by tools/search-docs)
 // ---------------------------------------------------------------------------
@@ -362,6 +354,7 @@ export interface CachedRouteViews {
   /** All view content concatenated and lowered — for fast negative filtering. */
   combinedLower: string;
 }
+
 /** Pre-lowercased relevance fields to avoid repeated toLowerCase() calls. */
 export interface LoweredRelevanceFields {
   title: string;
