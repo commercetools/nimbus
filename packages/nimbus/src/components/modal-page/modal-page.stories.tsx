@@ -34,7 +34,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * Basic info page — title, subtitle, no footer.
+ * Basic info page — tests open/close lifecycle via trigger and back button.
  */
 export const InfoPage: Story = {
   render: () => {
@@ -93,132 +93,101 @@ export const InfoPage: Story = {
 };
 
 /**
- * Form page — with footer containing save/cancel actions.
+ * Form page — header actions and footer with save/cancel buttons.
  */
 export const FormPage: Story = {
-  render: () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [name, setName] = useState("");
-    return (
-      <Stack>
-        <Button onPress={() => setIsOpen(true)}>Open Form Page</Button>
-        <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
-          <ModalPage.TopBar
-            previousPathLabel="Products"
-            currentPathLabel="Add Product"
-          />
-          <ModalPage.Header>
-            <ModalPage.Title>Add Product</ModalPage.Title>
-            <ModalPage.Subtitle>Fill in the product details</ModalPage.Subtitle>
-            <ModalPage.Actions>
-              <Button size="sm" variant="outline">
-                Preview
-              </Button>
-            </ModalPage.Actions>
-          </ModalPage.Header>
-          <ModalPage.Content>
-            <FormField.Root>
-              <FormField.Label>Product Name</FormField.Label>
-              <FormField.Input>
-                <TextInput
-                  placeholder="Enter product name"
-                  value={name}
-                  onChange={setName}
-                />
-              </FormField.Input>
-            </FormField.Root>
-          </ModalPage.Content>
-          <ModalPage.Footer>
-            <Button slot="close" variant="outline">
-              Cancel
-            </Button>
-            <Button variant="solid">Save</Button>
-          </ModalPage.Footer>
-        </ModalPage.Root>
-      </Stack>
-    );
-  },
+  render: () => (
+    <ModalPage.Root isOpen onClose={() => {}}>
+      <ModalPage.TopBar
+        previousPathLabel="Products"
+        currentPathLabel="Add Product"
+      />
+      <ModalPage.Header>
+        <ModalPage.Title>Add Product</ModalPage.Title>
+        <ModalPage.Subtitle>Fill in the product details</ModalPage.Subtitle>
+        <ModalPage.Actions>
+          <Button size="sm" variant="outline">
+            Preview
+          </Button>
+        </ModalPage.Actions>
+      </ModalPage.Header>
+      <ModalPage.Content>
+        <FormField.Root>
+          <FormField.Label>Product Name</FormField.Label>
+          <FormField.Input>
+            <TextInput placeholder="Enter product name" />
+          </FormField.Input>
+        </FormField.Root>
+      </ModalPage.Content>
+      <ModalPage.Footer>
+        <Button slot="close" variant="outline">
+          Cancel
+        </Button>
+        <Button colorPalette="primary" variant="solid">
+          Save
+        </Button>
+      </ModalPage.Footer>
+    </ModalPage.Root>
+  ),
 
   play: async ({ canvasElement, step }) => {
     const canvas = within(
       (canvasElement.parentNode as HTMLElement) ?? canvasElement
     );
 
-    await step("Open form page", async () => {
-      await userEvent.click(
-        canvas.getByRole("button", { name: "Open Form Page" })
-      );
+    await step("Header actions and footer buttons are rendered", async () => {
       await waitFor(() => {
         expect(canvas.getByRole("dialog")).toBeInTheDocument();
       });
-    });
-
-    await step("Footer buttons are visible", async () => {
+      expect(
+        canvas.getByRole("button", { name: "Preview" })
+      ).toBeInTheDocument();
       expect(
         canvas.getByRole("button", { name: "Cancel" })
       ).toBeInTheDocument();
       expect(canvas.getByRole("button", { name: "Save" })).toBeInTheDocument();
     });
-
-    await step("Cancel closes the modal via slot=close", async () => {
-      await userEvent.click(canvas.getByRole("button", { name: "Cancel" }));
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
-    });
   },
 };
 
 /**
- * Tabular page — with TabNav in the header and tab content below.
+ * Tabular page — TabNav in the header with tab content below.
  */
 export const TabularPage: Story = {
-  render: () => {
-    const [isOpen, setIsOpen] = useState(false);
-    return (
-      <Stack>
-        <Button onPress={() => setIsOpen(true)}>Open Tabular Page</Button>
-        <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
-          <ModalPage.TopBar
-            previousPathLabel="Orders"
-            currentPathLabel="Order #12345"
-          />
-          <ModalPage.Header>
-            <ModalPage.Title>Order #12345</ModalPage.Title>
-            <ModalPage.Subtitle>Order from 2024-01-15</ModalPage.Subtitle>
-            <ModalPage.TabNav>
-              <TabNav.Root aria-label="Order sections">
-                <TabNav.Item href="#general" isCurrent>
-                  General
-                </TabNav.Item>
-                <TabNav.Item href="#items">Items</TabNav.Item>
-                <TabNav.Item href="#shipping">Shipping</TabNav.Item>
-              </TabNav.Root>
-            </ModalPage.TabNav>
-          </ModalPage.Header>
-          <ModalPage.Content>
-            <Text>General order information</Text>
-          </ModalPage.Content>
-        </ModalPage.Root>
-      </Stack>
-    );
-  },
+  render: () => (
+    <ModalPage.Root isOpen onClose={() => {}}>
+      <ModalPage.TopBar
+        previousPathLabel="Orders"
+        currentPathLabel="Order #12345"
+      />
+      <ModalPage.Header>
+        <ModalPage.Title>Order #12345</ModalPage.Title>
+        <ModalPage.Subtitle>Order from 2024-01-15</ModalPage.Subtitle>
+        <ModalPage.TabNav>
+          <TabNav.Root aria-label="Order sections">
+            <TabNav.Item href="#general" isCurrent>
+              General
+            </TabNav.Item>
+            <TabNav.Item href="#items">Items</TabNav.Item>
+            <TabNav.Item href="#shipping">Shipping</TabNav.Item>
+          </TabNav.Root>
+        </ModalPage.TabNav>
+      </ModalPage.Header>
+      <ModalPage.Content>
+        <Text>General order information</Text>
+      </ModalPage.Content>
+    </ModalPage.Root>
+  ),
 
   play: async ({ canvasElement, step }) => {
     const canvas = within(
       (canvasElement.parentNode as HTMLElement) ?? canvasElement
     );
 
-    await step("Open tabular page", async () => {
-      await userEvent.click(
-        canvas.getByRole("button", { name: "Open Tabular Page" })
-      );
+    await step("Tab navigation is rendered in header", async () => {
       await waitFor(() => {
         expect(canvas.getByRole("dialog")).toBeInTheDocument();
       });
-    });
-
-    await step("Tab navigation is rendered in header", async () => {
       const nav = canvas.getByRole("navigation", { name: "Order sections" });
       expect(nav).toBeInTheDocument();
       expect(canvas.getByRole("link", { name: "General" })).toBeInTheDocument();
@@ -227,57 +196,162 @@ export const TabularPage: Story = {
         canvas.getByRole("link", { name: "Shipping" })
       ).toBeInTheDocument();
     });
-
-    await step("Close modal page", async () => {
-      const backButton = canvas.getByRole("button", {
-        name: /go back to orders/i,
-      });
-      await userEvent.click(backButton);
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
-    });
   },
 };
 
 /**
- * Demonstrates TopBar navigation labels.
+ * Scrollable content — the content area scrolls while TopBar, Header,
+ * and Footer remain pinned.
  */
-export const WithTopBarNavigation: Story = {
-  render: () => {
-    const [isOpen, setIsOpen] = useState(false);
-    return (
-      <Stack>
-        <Button onPress={() => setIsOpen(true)}>Open with Navigation</Button>
-        <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
-          <ModalPage.TopBar
-            previousPathLabel="Product catalog"
-            currentPathLabel="Edit: Awesome T-Shirt XL"
-          />
-          <ModalPage.Header>
-            <ModalPage.Title>Edit: Awesome T-Shirt XL</ModalPage.Title>
-          </ModalPage.Header>
-          <ModalPage.Content>
-            <Text>Content area</Text>
-          </ModalPage.Content>
-        </ModalPage.Root>
-      </Stack>
-    );
-  },
+export const ScrollableContent: Story = {
+  render: () => (
+    <ModalPage.Root isOpen onClose={() => {}}>
+      <ModalPage.TopBar
+        previousPathLabel="Products"
+        currentPathLabel="Add Product"
+      />
+      <ModalPage.Header>
+        <ModalPage.Title>Add Product</ModalPage.Title>
+        <ModalPage.Subtitle>Fill in the product details</ModalPage.Subtitle>
+      </ModalPage.Header>
+      <ModalPage.Content>
+        <Stack gap="600" maxWidth="600px">
+          {Array.from({ length: 12 }, (_, i) => (
+            <FormField.Root key={i}>
+              <FormField.Label>Field {i + 1}</FormField.Label>
+              <FormField.Input>
+                <TextInput
+                  placeholder={`Value for field ${i + 1}`}
+                  aria-label={`Field ${i + 1}`}
+                />
+              </FormField.Input>
+            </FormField.Root>
+          ))}
+        </Stack>
+      </ModalPage.Content>
+      <ModalPage.Footer>
+        <Button slot="close" variant="outline">
+          Cancel
+        </Button>
+        <Button colorPalette="primary" variant="solid">
+          Save
+        </Button>
+      </ModalPage.Footer>
+    </ModalPage.Root>
+  ),
 
   play: async ({ canvasElement, step }) => {
     const canvas = within(
       (canvasElement.parentNode as HTMLElement) ?? canvasElement
     );
 
-    await step("Open modal and verify top bar labels", async () => {
-      await userEvent.click(
-        canvas.getByRole("button", { name: "Open with Navigation" })
-      );
+    await step("All fields and footer are rendered", async () => {
       await waitFor(() => {
         expect(canvas.getByRole("dialog")).toBeInTheDocument();
       });
+      expect(canvas.getByLabelText("Field 1")).toBeInTheDocument();
+      expect(canvas.getByLabelText("Field 12")).toBeInTheDocument();
+      expect(canvas.getByRole("button", { name: "Save" })).toBeInTheDocument();
+    });
+  },
+};
 
+/**
+ * Multi-column layout — PageContent.Root inside ModalPage.Content
+ * for side-by-side column layouts.
+ */
+export const MultiColumnContent: Story = {
+  render: () => (
+    <ModalPage.Root isOpen onClose={() => {}}>
+      <ModalPage.TopBar
+        previousPathLabel="Products"
+        currentPathLabel="Edit Product"
+      />
+      <ModalPage.Header>
+        <ModalPage.Title>Edit Product</ModalPage.Title>
+      </ModalPage.Header>
+      <ModalPage.Content>
+        <PageContent.Root variant="wide" columns="2/1">
+          <PageContent.Column>
+            <Stack gap="600">
+              <Text fontWeight="semibold">Main form area</Text>
+              <FormField.Root>
+                <FormField.Label>Product Name</FormField.Label>
+                <FormField.Input>
+                  <TextInput placeholder="Enter product name" />
+                </FormField.Input>
+              </FormField.Root>
+              <FormField.Root>
+                <FormField.Label>Description</FormField.Label>
+                <FormField.Input>
+                  <TextInput placeholder="Enter description" />
+                </FormField.Input>
+              </FormField.Root>
+            </Stack>
+          </PageContent.Column>
+          <PageContent.Column sticky>
+            <Stack gap="400">
+              <Text fontWeight="semibold">Summary sidebar</Text>
+              <Text>This sidebar stays visible while scrolling.</Text>
+            </Stack>
+          </PageContent.Column>
+        </PageContent.Root>
+      </ModalPage.Content>
+      <ModalPage.Footer>
+        <Button slot="close" variant="outline">
+          Cancel
+        </Button>
+        <Button colorPalette="primary" variant="solid">
+          Save
+        </Button>
+      </ModalPage.Footer>
+    </ModalPage.Root>
+  ),
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Two-column layout is rendered", async () => {
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+      expect(canvas.getByText("Main form area")).toBeInTheDocument();
+      expect(canvas.getByText("Summary sidebar")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * TopBar navigation labels — verifies breadcrumb text and back button
+ * aria-label.
+ */
+export const WithTopBarNavigation: Story = {
+  render: () => (
+    <ModalPage.Root isOpen onClose={() => {}}>
+      <ModalPage.TopBar
+        previousPathLabel="Product catalog"
+        currentPathLabel="Edit: Awesome T-Shirt XL"
+      />
+      <ModalPage.Header>
+        <ModalPage.Title>Edit: Awesome T-Shirt XL</ModalPage.Title>
+      </ModalPage.Header>
+      <ModalPage.Content>
+        <Text>Content area</Text>
+      </ModalPage.Content>
+    </ModalPage.Root>
+  ),
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Top bar labels are rendered", async () => {
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
       expect(canvas.getByText("Product catalog")).toBeInTheDocument();
       expect(
         canvas.getByRole("heading", { name: "Edit: Awesome T-Shirt XL" })
@@ -289,18 +363,13 @@ export const WithTopBarNavigation: Story = {
         name: /go back to product catalog/i,
       });
       expect(backButton).toBeInTheDocument();
-
-      await userEvent.click(backButton);
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
     });
   },
 };
 
 /**
- * Keyboard navigation — tests Escape key dismissal and focus trap within
- * the modal page dialog.
+ * Keyboard navigation — tests Escape key dismissal, focus trap, and
+ * focus return to trigger.
  */
 export const KeyboardNavigation: Story = {
   render: () => {
@@ -323,7 +392,9 @@ export const KeyboardNavigation: Story = {
             <Button slot="close" variant="outline">
               Cancel
             </Button>
-            <Button variant="solid">Save</Button>
+            <Button colorPalette="primary" variant="solid">
+              Save
+            </Button>
           </ModalPage.Footer>
         </ModalPage.Root>
       </Stack>
@@ -392,8 +463,8 @@ export const KeyboardNavigation: Story = {
 };
 
 /**
- * Stacked modal pages — demonstrates opening a second ModalPage on top of
- * the first, as used in "Edit Product → Add Variant" workflows.
+ * Stacked modal pages — opening a second ModalPage on top of the first,
+ * as used in "Edit Product → Add Variant" workflows.
  */
 export const StackedModalPages: Story = {
   render: () => {
@@ -443,7 +514,9 @@ export const StackedModalPages: Story = {
                 <Button slot="close" variant="outline">
                   Cancel
                 </Button>
-                <Button variant="solid">Save Variant</Button>
+                <Button colorPalette="primary" variant="solid">
+                  Save Variant
+                </Button>
               </ModalPage.Footer>
             </ModalPage.Root>
           </ModalPage.Content>
@@ -451,7 +524,9 @@ export const StackedModalPages: Story = {
             <Button slot="close" variant="outline">
               Cancel
             </Button>
-            <Button variant="solid">Save Product</Button>
+            <Button colorPalette="primary" variant="solid">
+              Save Product
+            </Button>
           </ModalPage.Footer>
         </ModalPage.Root>
       </Stack>
@@ -570,7 +645,9 @@ export const SmokeTest: Story = {
         <Button slot="close" variant="outline">
           Cancel
         </Button>
-        <Button variant="solid">Save</Button>
+        <Button colorPalette="primary" variant="solid">
+          Save
+        </Button>
       </ModalPage.Footer>
     </ModalPage.Root>
   ),

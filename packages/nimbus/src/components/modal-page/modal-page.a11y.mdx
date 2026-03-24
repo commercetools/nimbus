@@ -21,10 +21,8 @@ const App = () => {
           currentPathLabel="Edit Product"
         />
         <ModalPage.Header>
-          <ModalPage.Title
-            title="Edit Product"
-            subtitle="Update the product details"
-          />
+          <ModalPage.Title>Edit Product</ModalPage.Title>
+          <ModalPage.Subtitle>Update the product details</ModalPage.Subtitle>
         </ModalPage.Header>
         <ModalPage.Content>
           <Text>
@@ -34,7 +32,7 @@ const App = () => {
         </ModalPage.Content>
         <ModalPage.Footer>
           <Button slot="close" variant="outline">Cancel</Button>
-          <Button variant="solid">Save</Button>
+          <Button colorPalette="primary" variant="solid">Save</Button>
         </ModalPage.Footer>
       </ModalPage.Root>
     </Stack>
