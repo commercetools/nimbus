@@ -45,7 +45,7 @@ const App = () => {
 - **Role identification**: ModalPage has `role="dialog"` with proper labeling via `ModalPage.Title`.
 - **Focus management**: Focus moves to the back button on open and returns to the trigger on close.
 - **Focus containment**: Tab navigation stays within the modal while it is open.
-- **Accessible names**: `ModalPage.Title` renders an `h2` with `slot="title"`, automatically linked as `aria-labelledby`.
+- **Accessible names**: `ModalPage.Title` automatically provides the dialog's accessible name.
 - **Modal indication**: `aria-modal="true"` is set, blocking screen reader interaction with the background.
 - **State announcements**: Screen readers announce when the dialog opens and closes.
 - **Breadcrumb accessibility**: The `/` separator is `aria-hidden="true"`; the current path has `aria-current="page"`.
