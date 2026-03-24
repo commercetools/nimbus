@@ -150,6 +150,9 @@ export const VALUE_NORMALIZATIONS: Record<string, string> = {
   "vertical right": "vertical",
 };
 
+/** Components excluded from Code Connect generation (e.g. imperative APIs) */
+export const EXCLUDED_COMPONENTS = new Set(["toast"]);
+
 /** Components that should be self-closing (no text children) */
 export const SELF_CLOSING_COMPONENTS = new Set([
   "progress-bar",
@@ -494,38 +497,6 @@ figma.connect(
         <ComboBox.Trigger />
         <ComboBox.ListBox />
       </ComboBox.Root>
-    ),
-  }
-);`;
-    },
-  },
-
-  toast: {
-    entries: {
-      "": {
-        skip: true,
-      },
-    },
-    extraImports: [`import { toast } from "./services/toast.manager";`],
-    extraConnects: (entries) => {
-      const url = entries[0].figmaUrl;
-      return `
-// --- Toast is an imperative API, not a JSX component ---
-figma.connect(
-  "toast",
-  "${url}",
-  {
-    props: {
-      type: figma.enum("Tone", { Neutral: "info", Warning: "warning", Error: "error", Info: "info", Success: "success" }),
-      title: figma.string("Title text"),
-      description: figma.string("Description text"),
-    },
-    example: (props) => (
-      toast({
-        type: props.type,
-        title: props.title,
-        description: props.description,
-      })
     ),
   }
 );`;
