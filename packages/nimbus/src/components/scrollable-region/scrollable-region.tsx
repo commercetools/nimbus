@@ -1,4 +1,6 @@
+import { Box } from "@chakra-ui/react/box";
 import { useScrollableRegion } from "@/hooks/use-scrollable-region/use-scrollable-region";
+import type { UseScrollableRegionResolvedOptions } from "@/hooks/use-scrollable-region/use-scrollable-region.types";
 import { mergeRefs } from "@/utils";
 import type { ScrollableRegionProps } from "./scrollable-region.types";
 
@@ -31,13 +33,15 @@ export const ScrollableRegion = ({
   style,
   ...rest
 }: ScrollableRegionProps) => {
-  const { ref, containerProps } = useScrollableRegion({
+  const hookOptions: UseScrollableRegionResolvedOptions = {
     role,
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
     debounceMs,
     overflow,
-  });
+  };
+
+  const { ref, containerProps } = useScrollableRegion(hookOptions);
 
   const mergedRef = mergeRefs(ref, forwardedRef);
 
@@ -47,7 +51,7 @@ export const ScrollableRegion = ({
     : containerProps.style;
 
   return (
-    <div
+    <Box
       ref={mergedRef}
       className={className}
       {...containerProps}
@@ -55,7 +59,7 @@ export const ScrollableRegion = ({
       style={mergedStyle}
     >
       {children}
-    </div>
+    </Box>
   );
 };
 

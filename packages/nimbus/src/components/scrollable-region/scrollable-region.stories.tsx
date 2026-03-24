@@ -8,13 +8,13 @@ import {
 } from "@commercetools/nimbus";
 import { within, expect, userEvent, waitFor } from "storybook/test";
 
-const meta: Meta<typeof ScrollableRegion> = {
+const meta = {
   title: "Components/ScrollableRegion",
   component: ScrollableRegion,
-};
+} satisfies Meta<typeof ScrollableRegion>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ScrollableRegion>;
 
 // Helper to generate enough content to cause overflow
 const OverflowingContent = () => (
@@ -76,8 +76,9 @@ export const NonOverflowing: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const container = canvas.getByText("This content does not overflow.")
-      .parentElement!;
+    const container = canvas.getByText(
+      "This content does not overflow."
+    ).parentElement!;
 
     await step("Does not have tabIndex when not overflowing", async () => {
       await expect(container).not.toHaveAttribute("tabindex");

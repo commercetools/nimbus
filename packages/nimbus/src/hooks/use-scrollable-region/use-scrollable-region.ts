@@ -2,13 +2,15 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useFocusRing } from "react-aria";
 import type {
   UseScrollableRegionOptions,
+  UseScrollableRegionResolvedOptions,
   UseScrollableRegionReturn,
 } from "./use-scrollable-region.types";
 
 const FOCUS_RING_STYLES: React.CSSProperties = {
   outlineWidth: "var(--focus-ring-width)",
   outlineColor: "var(--focus-ring-color)",
-  outlineStyle: "var(--focus-ring-style)" as React.CSSProperties["outlineStyle"],
+  outlineStyle:
+    "var(--focus-ring-style)" as React.CSSProperties["outlineStyle"],
   outlineOffset: "-2px",
 };
 
@@ -38,7 +40,7 @@ const FOCUS_RING_STYLES: React.CSSProperties = {
  * ```
  */
 export function useScrollableRegion(
-  options: UseScrollableRegionOptions = {}
+  options: UseScrollableRegionOptions | UseScrollableRegionResolvedOptions = {}
 ): UseScrollableRegionReturn {
   const {
     role = "group",
