@@ -38,7 +38,8 @@ It is always controlled — consumers manage the open state with `isOpen` and
 - **Controlled-only API**: Explicit `isOpen` + `onClose` — no hidden state
 - **Breadcrumb navigation**: `ModalPage.TopBar` shows previous/current path with an accessible back button
 - **Structured layout**: CSS grid rows — TopBar / Header / Content (scrollable) / Footer
-- **Multi-column content**: `ModalPage.Content` passes `variant` and `columns` to `PageContent.Root`
+- **Tab navigation**: `ModalPage.TabNav` for tabular page patterns
+- **Multi-column content**: Use `PageContent.Root` inside `ModalPage.Content` for column layouts
 - **Accessibility first**: Built on React Aria's Dialog for WCAG 2.1 AA compliance
 
 ### Resources
@@ -66,10 +67,8 @@ const App = () => {
           currentPathLabel="Product Details"
         />
         <ModalPage.Header>
-          <ModalPage.Title
-            title="Product Details"
-            subtitle="View the product information"
-          />
+          <ModalPage.Title>Product Details</ModalPage.Title>
+          <ModalPage.Subtitle>View the product information</ModalPage.Subtitle>
         </ModalPage.Header>
         <ModalPage.Content>
           <Text>Product information goes here.</Text>
@@ -97,10 +96,8 @@ const App = () => {
           currentPathLabel="Add Product"
         />
         <ModalPage.Header>
-          <ModalPage.Title
-            title="Add Product"
-            subtitle="Fill in the product details"
-          />
+          <ModalPage.Title>Add Product</ModalPage.Title>
+          <ModalPage.Subtitle>Fill in the product details</ModalPage.Subtitle>
           <ModalPage.Actions>
             <Button size="sm" variant="outline">Preview</Button>
           </ModalPage.Actions>
@@ -120,8 +117,9 @@ const App = () => {
 
 ### Tabular page
 
-Use when content is organized into multiple sections via Tabs. Use
-`variant="full"` on Content to remove the width constraint.
+Use when content is organized into multiple sections via tab navigation.
+Place `ModalPage.TabNav` inside the header and display the active section
+in the content area.
 
 ```jsx live
 const App = () => {
@@ -135,19 +133,18 @@ const App = () => {
           currentPathLabel="Order #12345"
         />
         <ModalPage.Header>
-          <ModalPage.Title title="Order #12345" subtitle="Placed on 2024-01-15" />
+          <ModalPage.Title>Order #12345</ModalPage.Title>
+          <ModalPage.Subtitle>Placed on 2024-01-15</ModalPage.Subtitle>
+          <ModalPage.TabNav>
+            <TabNav.Root aria-label="Order sections">
+              <TabNav.Item href="#general" isCurrent>General</TabNav.Item>
+              <TabNav.Item href="#items">Items</TabNav.Item>
+              <TabNav.Item href="#shipping">Shipping</TabNav.Item>
+            </TabNav.Root>
+          </ModalPage.TabNav>
         </ModalPage.Header>
-        <ModalPage.Content variant="full">
-          <Tabs.Root>
-            <Tabs.List aria-label="Order sections">
-              <Tabs.Tab id="general">General</Tabs.Tab>
-              <Tabs.Tab id="items">Items</Tabs.Tab>
-              <Tabs.Tab id="shipping">Shipping</Tabs.Tab>
-            </Tabs.List>
-            <Tabs.Panel id="general"><Text>General information</Text></Tabs.Panel>
-            <Tabs.Panel id="items"><Text>Order items</Text></Tabs.Panel>
-            <Tabs.Panel id="shipping"><Text>Shipping details</Text></Tabs.Panel>
-          </Tabs.Root>
+        <ModalPage.Content>
+          <Text>General information</Text>
         </ModalPage.Content>
       </ModalPage.Root>
     </Stack>
@@ -157,8 +154,8 @@ const App = () => {
 
 ### Multi-column content
 
-Use `ModalPage.Column` (a re-export of `PageContent.Column`) for side-by-side
-layouts.
+Use `PageContent.Root` with `columns` inside `ModalPage.Content` for
+side-by-side layouts:
 
 ```jsx live
 const App = () => {
@@ -172,15 +169,17 @@ const App = () => {
           currentPathLabel="Edit Product"
         />
         <ModalPage.Header>
-          <ModalPage.Title title="Edit Product" />
+          <ModalPage.Title>Edit Product</ModalPage.Title>
         </ModalPage.Header>
-        <ModalPage.Content variant="wide" columns="2/1">
-          <ModalPage.Column>
-            <Text>Main form area (2/3 width)</Text>
-          </ModalPage.Column>
-          <ModalPage.Column sticky>
-            <Text>Sidebar summary (1/3 width, sticky)</Text>
-          </ModalPage.Column>
+        <ModalPage.Content>
+          <PageContent.Root variant="wide" columns="2/1">
+            <PageContent.Column>
+              <Text>Main form area (2/3 width)</Text>
+            </PageContent.Column>
+            <PageContent.Column sticky>
+              <Text>Sidebar summary (1/3 width, sticky)</Text>
+            </PageContent.Column>
+          </PageContent.Root>
         </ModalPage.Content>
         <ModalPage.Footer>
           <Button slot="close" variant="outline">Cancel</Button>
@@ -215,10 +214,8 @@ const App = () => {
           currentPathLabel="Edit Product"
         />
         <ModalPage.Header>
-          <ModalPage.Title
-            title="Edit Product"
-            subtitle="Update the product details"
-          />
+          <ModalPage.Title>Edit Product</ModalPage.Title>
+          <ModalPage.Subtitle>Update the product details</ModalPage.Subtitle>
         </ModalPage.Header>
         <ModalPage.Content>
           <Stack>
@@ -237,10 +234,8 @@ const App = () => {
               currentPathLabel="Add Variant"
             />
             <ModalPage.Header>
-              <ModalPage.Title
-                title="Add Variant"
-                subtitle="Define a new product variant"
-              />
+              <ModalPage.Title>Add Variant</ModalPage.Title>
+              <ModalPage.Subtitle>Define a new product variant</ModalPage.Subtitle>
             </ModalPage.Header>
             <ModalPage.Content>
               <Text>Variant form content goes here.</Text>

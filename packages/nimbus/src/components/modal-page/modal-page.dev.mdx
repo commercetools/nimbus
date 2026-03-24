@@ -29,10 +29,8 @@ const App = () => {
           currentPathLabel="Edit Product"
         />
         <ModalPage.Header>
-          <ModalPage.Title
-            title="Edit Product"
-            subtitle="Update the product details"
-          />
+          <ModalPage.Title>Edit Product</ModalPage.Title>
+          <ModalPage.Subtitle>Update the product details</ModalPage.Subtitle>
           <ModalPage.Actions>
             <Button size="sm" variant="outline">Preview</Button>
           </ModalPage.Actions>
@@ -73,7 +71,7 @@ const App = () => {
           currentPathLabel="Edit Product"
         />
         <ModalPage.Header>
-          <ModalPage.Title title="Edit Product" />
+          <ModalPage.Title>Edit Product</ModalPage.Title>
         </ModalPage.Header>
         <ModalPage.Content>
           <Text>
@@ -92,8 +90,8 @@ const App = () => {
 
 ### Multi-column content
 
-`ModalPage.Column` re-exports `PageContent.Column`. Use it with `columns="2/1"`
-or `columns="1/1"` on `ModalPage.Content` for side-by-side layouts:
+Use `PageContent.Root` with `columns` inside `ModalPage.Content` for
+side-by-side layouts:
 
 ```jsx live-dev
 const App = () => {
@@ -107,15 +105,17 @@ const App = () => {
           currentPathLabel="Edit Product"
         />
         <ModalPage.Header>
-          <ModalPage.Title title="Edit Product" />
+          <ModalPage.Title>Edit Product</ModalPage.Title>
         </ModalPage.Header>
-        <ModalPage.Content variant="wide" columns="2/1">
-          <ModalPage.Column>
-            <Text>Main form (2/3 width)</Text>
-          </ModalPage.Column>
-          <ModalPage.Column sticky>
-            <Text>Summary sidebar (1/3 width, sticky)</Text>
-          </ModalPage.Column>
+        <ModalPage.Content>
+          <PageContent.Root variant="wide" columns="2/1">
+            <PageContent.Column>
+              <Text>Main form (2/3 width)</Text>
+            </PageContent.Column>
+            <PageContent.Column sticky>
+              <Text>Summary sidebar (1/3 width, sticky)</Text>
+            </PageContent.Column>
+          </PageContent.Root>
         </ModalPage.Content>
         <ModalPage.Footer>
           <Button slot="close" variant="outline">Cancel</Button>
@@ -144,10 +144,8 @@ const App = () => {
           currentPathLabel="Edit Product"
         />
         <ModalPage.Header>
-          <ModalPage.Title
-            title="Edit Product"
-            subtitle="Last saved 2 minutes ago"
-          />
+          <ModalPage.Title>Edit Product</ModalPage.Title>
+          <ModalPage.Subtitle>Last saved 2 minutes ago</ModalPage.Subtitle>
           <ModalPage.Actions>
             <Button size="sm" variant="ghost">Preview</Button>
             <Button size="sm" variant="outline">Export</Button>
@@ -155,6 +153,42 @@ const App = () => {
         </ModalPage.Header>
         <ModalPage.Content>
           <Text>Content area</Text>
+        </ModalPage.Content>
+      </ModalPage.Root>
+    </Stack>
+  );
+}
+```
+
+### Tabular page with TabNav
+
+Use `ModalPage.TabNav` inside the header for tabular page patterns with
+route-based tab navigation:
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <Stack>
+      <Button onPress={() => setIsOpen(true)}>Open Tabular Page</Button>
+      <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <ModalPage.TopBar
+          previousPathLabel="Orders"
+          currentPathLabel="Order #12345"
+        />
+        <ModalPage.Header>
+          <ModalPage.Title>Order #12345</ModalPage.Title>
+          <ModalPage.Subtitle>Placed on 2024-01-15</ModalPage.Subtitle>
+          <ModalPage.TabNav>
+            <TabNav.Root aria-label="Order sections">
+              <TabNav.Item href="#general" isCurrent>General</TabNav.Item>
+              <TabNav.Item href="#items">Items</TabNav.Item>
+              <TabNav.Item href="#shipping">Shipping</TabNav.Item>
+            </TabNav.Root>
+          </ModalPage.TabNav>
+        </ModalPage.Header>
+        <ModalPage.Content>
+          <Text>General information</Text>
         </ModalPage.Content>
       </ModalPage.Root>
     </Stack>
@@ -194,10 +228,8 @@ const App = () => {
           currentPathLabel="Edit Product"
         />
         <ModalPage.Header>
-          <ModalPage.Title
-            title="Edit Product"
-            subtitle="Update the product details"
-          />
+          <ModalPage.Title>Edit Product</ModalPage.Title>
+          <ModalPage.Subtitle>Update the product details</ModalPage.Subtitle>
         </ModalPage.Header>
         <ModalPage.Content>
           <Stack>
@@ -216,10 +248,8 @@ const App = () => {
               currentPathLabel="Add Variant"
             />
             <ModalPage.Header>
-              <ModalPage.Title
-                title="Add Variant"
-                subtitle="Define a new product variant"
-              />
+              <ModalPage.Title>Add Variant</ModalPage.Title>
+              <ModalPage.Subtitle>Define a new product variant</ModalPage.Subtitle>
             </ModalPage.Header>
             <ModalPage.Content>
               <Text>Variant form content goes here.</Text>
@@ -248,7 +278,7 @@ The dialog must have an accessible name. Use `ModalPage.Title` (recommended):
 
 ```tsx
 <ModalPage.Header>
-  <ModalPage.Title title="Edit Product" />
+  <ModalPage.Title>Edit Product</ModalPage.Title>
 </ModalPage.Header>
 ```
 

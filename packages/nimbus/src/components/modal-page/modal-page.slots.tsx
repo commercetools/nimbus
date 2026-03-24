@@ -5,7 +5,9 @@ import type {
   ModalPageTopBarSlotProps,
   ModalPageHeaderSlotProps,
   ModalPageTitleSlotProps,
+  ModalPageSubtitleSlotProps,
   ModalPageActionsSlotProps,
+  ModalPageTabNavSlotProps,
   ModalPageContentSlotProps,
   ModalPageFooterSlotProps,
 } from "./modal-page.types";
@@ -37,10 +39,23 @@ export const ModalPageTitleSlot: SlotComponent<
   ModalPageTitleSlotProps
 > = withContext<HTMLDivElement, ModalPageTitleSlotProps>("div", "title");
 
+export const ModalPageSubtitleSlot: SlotComponent<
+  HTMLParagraphElement,
+  ModalPageSubtitleSlotProps
+> = withContext<HTMLParagraphElement, ModalPageSubtitleSlotProps>(
+  "p",
+  "subtitle"
+);
+
 export const ModalPageActionsSlot: SlotComponent<
   HTMLDivElement,
   ModalPageActionsSlotProps
 > = withContext<HTMLDivElement, ModalPageActionsSlotProps>("div", "actions");
+
+export const ModalPageTabNavSlot: SlotComponent<
+  HTMLDivElement,
+  ModalPageTabNavSlotProps
+> = withContext<HTMLDivElement, ModalPageTabNavSlotProps>("div", "tabNav");
 
 export const ModalPageContentSlot: SlotComponent<
   HTMLDivElement,

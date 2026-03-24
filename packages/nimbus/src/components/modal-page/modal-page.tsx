@@ -3,11 +3,12 @@ import {
   ModalPageTopBar,
   ModalPageHeader,
   ModalPageTitle,
+  ModalPageSubtitle,
   ModalPageActions,
+  ModalPageTabNav,
   ModalPageContent,
   ModalPageFooter,
 } from "./components";
-import { PageContent } from "../page-content/page-content";
 
 /**
  * ModalPage
@@ -27,7 +28,8 @@ import { PageContent } from "../page-content/page-content";
  *     currentPathLabel="Edit Product"
  *   />
  *   <ModalPage.Header>
- *     <ModalPage.Title title="Edit Product" subtitle="Update the product details" />
+ *     <ModalPage.Title>Edit Product</ModalPage.Title>
+ *     <ModalPage.Subtitle>Update the product details</ModalPage.Subtitle>
  *     <ModalPage.Actions>
  *       <Button>Save</Button>
  *     </ModalPage.Actions>
@@ -81,7 +83,7 @@ export const ModalPage = {
    * @example
    * ```tsx
    * <ModalPage.Header>
-   *   <ModalPage.Title title="Edit Product" />
+   *   <ModalPage.Title>Edit Product</ModalPage.Title>
    *   <ModalPage.Actions>
    *     <Button>Save</Button>
    *   </ModalPage.Actions>
@@ -92,14 +94,25 @@ export const ModalPage = {
   /**
    * # ModalPage.Title
    *
-   * Renders an h2 heading and optional subtitle.
+   * The main page title heading. Renders as an `h2` element.
    *
    * @example
    * ```tsx
-   * <ModalPage.Title title="Edit Product" subtitle="Fill in the product details" />
+   * <ModalPage.Title>Edit Product</ModalPage.Title>
    * ```
    */
   Title: ModalPageTitle,
+  /**
+   * # ModalPage.Subtitle
+   *
+   * An optional subtitle displayed below the title.
+   *
+   * @example
+   * ```tsx
+   * <ModalPage.Subtitle>Fill in the product details</ModalPage.Subtitle>
+   * ```
+   */
+  Subtitle: ModalPageSubtitle,
   /**
    * # ModalPage.Actions
    *
@@ -114,13 +127,36 @@ export const ModalPage = {
    */
   Actions: ModalPageActions,
   /**
-   * # ModalPage.Content
+   * # ModalPage.TabNav
    *
-   * Scrollable content area. Wraps PageContent.Root.
+   * Layout container for tab navigation in the header.
+   * Positions itself in the header grid's last row at full width.
+   * Place inside `ModalPage.Header`.
+   *
+   * Wrap a `TabNav.Root` inside, or use `as={TabNav.Root}` for a flatter DOM.
    *
    * @example
    * ```tsx
-   * <ModalPage.Content variant="wide" columns="1">
+   * <ModalPage.Header>
+   *   <ModalPage.Title>Order Details</ModalPage.Title>
+   *   <ModalPage.TabNav>
+   *     <TabNav.Root aria-label="Order sections">
+   *       <TabNav.Item href="/general" isCurrent>General</TabNav.Item>
+   *       <TabNav.Item href="/items">Items</TabNav.Item>
+   *     </TabNav.Root>
+   *   </ModalPage.TabNav>
+   * </ModalPage.Header>
+   * ```
+   */
+  TabNav: ModalPageTabNav,
+  /**
+   * # ModalPage.Content
+   *
+   * Scrollable content area.
+   *
+   * @example
+   * ```tsx
+   * <ModalPage.Content>
    *   <FormField.Root>...</FormField.Root>
    * </ModalPage.Content>
    * ```
@@ -140,20 +176,6 @@ export const ModalPage = {
    * ```
    */
   Footer: ModalPageFooter,
-  /**
-   * # ModalPage.Column
-   *
-   * Re-export of PageContent.Column for multi-column content layouts.
-   *
-   * @example
-   * ```tsx
-   * <ModalPage.Content variant="wide" columns="2/1">
-   *   <ModalPage.Column>Main form</ModalPage.Column>
-   *   <ModalPage.Column sticky>Sidebar</ModalPage.Column>
-   * </ModalPage.Content>
-   * ```
-   */
-  Column: PageContent.Column,
 };
 
 // Internal named exports for react-docgen
@@ -162,7 +184,9 @@ export {
   ModalPageTopBar as _ModalPageTopBar,
   ModalPageHeader as _ModalPageHeader,
   ModalPageTitle as _ModalPageTitle,
+  ModalPageSubtitle as _ModalPageSubtitle,
   ModalPageActions as _ModalPageActions,
+  ModalPageTabNav as _ModalPageTabNav,
   ModalPageContent as _ModalPageContent,
   ModalPageFooter as _ModalPageFooter,
 };
