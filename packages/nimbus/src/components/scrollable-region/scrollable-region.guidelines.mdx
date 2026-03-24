@@ -1,0 +1,45 @@
+---
+title: ScrollableRegion
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+Design guidelines offer a set of standardized rules and recommendations that
+ensure consistency, usability, and accessibility across all design elements and
+interactions.
+
+### Best practices
+
+- **Always provide an accessible name:** Use `aria-label` or `aria-labelledby`
+  so screen reader users can identify the scrollable area.
+- **Prefer `aria-labelledby`:** When a visible heading already labels the region,
+  reference it with `aria-labelledby` to avoid duplicating text.
+- **Use `role="region"` sparingly:** Reserve it for major page landmarks.
+  Default `role="group"` is sufficient for most cases.
+- **Set a constrained height:** The component only becomes interactive when
+  content overflows, so ensure a fixed or max height is applied.
+
+### Usage
+
+ScrollableRegion ensures that scrollable content areas are usable by everyone.
+
+> [!TIP]\
+> When to use
+
+- Displaying long text content in a constrained area (terms and conditions,
+  log output, changelogs).
+- Any container with `overflow: auto` or `overflow: scroll` that holds
+  non-interactive content.
+- Wrapping content areas in dialogs, drawers, or panels that may overflow.
+
+> [!CAUTION]\
+> When not to use
+
+- Containers that already contain focusable elements (links, buttons, inputs) —
+  keyboard users can already reach and scroll the content.
+- Full-page scrolling — the browser handles keyboard scrolling of the document
+  body natively.
+- When content should not be constrained — consider a different layout instead
+  of forcing a scroll container.

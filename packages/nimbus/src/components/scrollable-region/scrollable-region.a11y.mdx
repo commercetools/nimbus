@@ -1,0 +1,38 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx live
+const App = () => (
+  <ScrollableRegion aria-label="Accessible scrollable content" style={{ height: "150px" }}>
+    {Array.from({ length: 20 }, (_, i) => (
+      <Text key={i}>Content line {i + 1}</Text>
+    ))}
+  </ScrollableRegion>
+)
+```
+
+### Accessibility standards
+
+- **Keyboard operability (WCAG 2.1 SC 2.1.1):** The component adds
+  `tabIndex={0}` when content overflows, making it keyboard-focusable so users
+  can scroll using arrow keys, Page Up/Down, and Home/End.
+- **Conditional semantics:** ARIA `role` and accessible name are only applied
+  when the container overflows, avoiding unnecessary "landmark noise" that can
+  disorient screen reader users.
+- **Focus visibility (WCAG 2.1 SC 2.4.7):** A focus ring is displayed only
+  during keyboard navigation (not mouse interaction), using the global focus
+  ring design tokens for consistency.
+- **Accessible name:** When `role="region"` is used, an accessible name via
+  `aria-label` or `aria-labelledby` is required (enforced at the TypeScript
+  level). For `role="group"`, it is strongly recommended and a development-mode
+  warning is logged if missing.
+- **Focus ring containment:** `outlineOffset: -2px` ensures the focus indicator
+  is not clipped by the container's `overflow` boundary.

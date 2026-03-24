@@ -1,0 +1,109 @@
+---
+id: Components-ScrollableRegion
+title: ScrollableRegion
+exportName: ScrollableRegion
+description: An accessible scrollable container that automatically detects overflow and manages keyboard focus, ARIA roles, and focus ring.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Layout
+  - ScrollableRegion
+tags:
+  - component
+  - scroll
+  - overflow
+  - accessibility
+  - keyboard
+---
+
+## Overview
+
+ScrollableRegion makes scrollable containers accessible to keyboard-only and
+screen reader users. It detects content overflow and dynamically adds
+`tabIndex`, ARIA roles, and a keyboard-only focus ring so users can scroll
+without a mouse.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+## Variables
+
+Get familiar with the features.
+
+### Default (overflowing)
+
+When content overflows, the container becomes keyboard-focusable with a
+`role="group"` landmark and visible focus ring on keyboard navigation.
+
+```jsx live
+const App = () => (
+  <ScrollableRegion aria-label="Log output" style={{ height: "150px" }}>
+    {Array.from({ length: 20 }, (_, i) => (
+      <Text key={i}>Log entry {i + 1}: Application started successfully.</Text>
+    ))}
+  </ScrollableRegion>
+)
+```
+
+### Non-overflowing
+
+When content fits within the container, no ARIA attributes or `tabIndex` are
+applied — avoiding unnecessary "landmark noise" for screen reader users.
+
+```jsx live
+const App = () => (
+  <ScrollableRegion aria-label="Short content" style={{ height: "150px" }}>
+    <Text>This content fits and the container is not focusable.</Text>
+  </ScrollableRegion>
+)
+```
+
+### Role region
+
+Use `role="region"` for major page sections. This requires either `aria-label`
+or `aria-labelledby` to satisfy WCAG landmark naming requirements.
+
+```jsx live
+const App = () => (
+  <ScrollableRegion role="region" aria-label="Terms and conditions" style={{ height: "150px" }}>
+    {Array.from({ length: 20 }, (_, i) => (
+      <Text key={i}>Clause {i + 1}: Lorem ipsum dolor sit amet.</Text>
+    ))}
+  </ScrollableRegion>
+)
+```
+
+### With aria-labelledby
+
+When a visible heading labels the scrollable region, use `aria-labelledby`
+instead of `aria-label` to avoid duplicating text.
+
+```jsx live
+const App = () => (
+  <Box>
+    <Heading id="logs-heading" fontSize="md">Application Logs</Heading>
+    <ScrollableRegion aria-labelledby="logs-heading" style={{ height: "150px" }}>
+      {Array.from({ length: 20 }, (_, i) => (
+        <Text key={i}>Log entry {i + 1}: Request processed.</Text>
+      ))}
+    </ScrollableRegion>
+  </Box>
+)
+```
+
+### Custom overflow
+
+By default, the container uses `overflow: auto`. Set `overflow="scroll"` to
+always show scrollbars.
+
+```jsx live
+const App = () => (
+  <ScrollableRegion aria-label="Always-scrollbar region" overflow="scroll" style={{ height: "150px" }}>
+    {Array.from({ length: 20 }, (_, i) => (
+      <Text key={i}>Entry {i + 1}: Data row content.</Text>
+    ))}
+  </ScrollableRegion>
+)
+```
