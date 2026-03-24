@@ -23,7 +23,15 @@ const COMPONENTS_DIR = join(ROOT, "packages/nimbus/src/components");
 const OUTPUT_FILE = join(__dirname, "code-connect-data.json");
 
 // The main Nimbus design system Figma file
+const FIGMA_API_BASE = "https://api.figma.com/v1/files" as const;
 const FIGMA_FILE_KEY = "AvtPX6g7OGGCRvNlatGOIY";
+
+/** Validate that a file key contains only safe alphanumeric characters */
+function assertSafeFileKey(key: string): void {
+  if (!/^[a-zA-Z0-9]+$/.test(key)) {
+    throw new Error(`Invalid Figma file key: ${key}`);
+  }
+}
 
 // Explicit overrides: Figma component set name → { dir, subComponent? }
 // dir: code directory name (only needed when name normalization can't find it)
@@ -341,10 +349,10 @@ async function fetchFigmaComponentSets(
   token: string,
   fileKey: string
 ): Promise<FigmaComponentSet[]> {
-  const resp = await fetch(
-    `https://api.figma.com/v1/files/${fileKey}/component_sets`,
-    { headers: { "X-FIGMA-TOKEN": token } }
-  );
+  assertSafeFileKey(fileKey);
+  const resp = await fetch(`${FIGMA_API_BASE}/${fileKey}/component_sets`, {
+    headers: { "X-FIGMA-TOKEN": token },
+  });
 
   if (!resp.ok) {
     console.error(`Figma API error: ${resp.status} ${resp.statusText}`);
@@ -376,7 +384,7 @@ async function fetchAllNodeProps(
     }
 
     const resp = await fetch(
-      `https://api.figma.com/v1/files/${fileKey}/nodes?ids=${idsParam}`,
+      `${FIGMA_API_BASE}/${fileKey}/nodes?ids=${idsParam}`,
       { headers: { "X-FIGMA-TOKEN": token } }
     );
 
