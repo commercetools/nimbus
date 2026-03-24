@@ -45,8 +45,8 @@ const { ref, isOverflowing, containerProps } = useScrollableRegion(options);
 | Option | Type | Default | Description |
 |---|---|---|---|
 | `role` | `"region"` \| `"group"` | `"group"` | Landmark role applied when overflowing. |
-| `aria-label` | `string` | &mdash; | Accessible name for the container. |
-| `aria-labelledby` | `string` | &mdash; | ID of the element labeling this region. |
+| `aria-label` | `string` | &mdash; | Accessible name for the container. Required when `role="region"` (either this or `aria-labelledby` must be provided). |
+| `aria-labelledby` | `string` | &mdash; | ID of the element labeling this region. Required when `role="region"` (either this or `aria-label` must be provided). |
 | `debounceMs` | `number` | `100` | Debounce interval for overflow evaluation. |
 | `overflow` | `"auto"` \| `"scroll"` | `"auto"` | CSS overflow value. |
 
