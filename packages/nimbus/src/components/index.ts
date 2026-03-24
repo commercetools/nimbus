@@ -70,3 +70,4 @@ export * from "./tabs";
 export * from "./toast";
 export * from "./localized-field";
 export * from "./steps";
+export * from "./scrollable-region";

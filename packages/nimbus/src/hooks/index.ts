@@ -4,3 +4,4 @@ export * from "./use-color-scheme";
 export * from "./use-color-mode";
 export * from "./use-color-mode-value";
 export * from "./use-localized-string-formatter";
+export * from "./use-scrollable-region";

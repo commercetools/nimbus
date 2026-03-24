@@ -1,0 +1,376 @@
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import {
+  ScrollableRegion,
+  Box,
+  Text,
+  Heading,
+  useScrollableRegion,
+} from "@commercetools/nimbus";
+import { within, expect, userEvent, waitFor } from "storybook/test";
+
+const meta: Meta<typeof ScrollableRegion> = {
+  title: "Components/ScrollableRegion",
+  component: ScrollableRegion,
+};
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+// Helper to generate enough content to cause overflow
+const OverflowingContent = () => (
+  <>
+    {Array.from({ length: 30 }, (_, i) => (
+      <Text key={i}>
+        Line {i + 1}: Content that causes the container to overflow vertically.
+      </Text>
+    ))}
+  </>
+);
+
+const ShortContent = () => <Text>This content does not overflow.</Text>;
+
+// ============================================================
+// Default: overflowing with tabIndex, role, aria-label
+// ============================================================
+export const Default: Story = {
+  render: () => (
+    <ScrollableRegion aria-label="Log output" style={{ height: "200px" }}>
+      <OverflowingContent />
+    </ScrollableRegion>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Has tabIndex=0 when overflowing", async () => {
+      await waitFor(() => {
+        const region = canvas.getByRole("group", { name: "Log output" });
+        expect(region).toHaveAttribute("tabindex", "0");
+      });
+    });
+
+    await step("Has role=group (default) when overflowing", async () => {
+      const region = canvas.getByRole("group", { name: "Log output" });
+      await expect(region).toHaveAttribute("role", "group");
+    });
+
+    await step("Has aria-label when overflowing", async () => {
+      const region = canvas.getByRole("group", { name: "Log output" });
+      await expect(region).toHaveAttribute("aria-label", "Log output");
+    });
+
+    await step("Has overflow style", async () => {
+      const region = canvas.getByRole("group", { name: "Log output" });
+      await expect(region.style.overflow).toBe("auto");
+    });
+  },
+};
+
+// ============================================================
+// NonOverflowing: no tabIndex, no role
+// ============================================================
+export const NonOverflowing: Story = {
+  render: () => (
+    <ScrollableRegion aria-label="Short content" style={{ height: "200px" }}>
+      <ShortContent />
+    </ScrollableRegion>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const container = canvas.getByText("This content does not overflow.")
+      .parentElement!;
+
+    await step("Does not have tabIndex when not overflowing", async () => {
+      await expect(container).not.toHaveAttribute("tabindex");
+    });
+
+    await step("Does not have role when not overflowing", async () => {
+      await expect(container).not.toHaveAttribute("role");
+    });
+
+    await step("Does not have aria-label when not overflowing", async () => {
+      await expect(container).not.toHaveAttribute("aria-label");
+    });
+
+    await step("Renders as a div", async () => {
+      await expect(container.tagName).toBe("DIV");
+    });
+  },
+};
+
+// ============================================================
+// Role region: applies role="region" via ARIA
+// ============================================================
+export const RoleRegion: Story = {
+  render: () => (
+    <ScrollableRegion
+      role="region"
+      aria-label="Main content area"
+      style={{ height: "200px" }}
+    >
+      <OverflowingContent />
+    </ScrollableRegion>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Has role=region when overflowing with role=region",
+      async () => {
+        await waitFor(() => {
+          const region = canvas.getByRole("region", {
+            name: "Main content area",
+          });
+          expect(region).toBeInTheDocument();
+        });
+      }
+    );
+
+    await step("Has aria-label", async () => {
+      const region = canvas.getByRole("region", {
+        name: "Main content area",
+      });
+      await expect(region).toHaveAttribute("aria-label", "Main content area");
+    });
+  },
+};
+
+// ============================================================
+// Keyboard focus ring
+// ============================================================
+export const KeyboardFocusRing: Story = {
+  render: () => (
+    <Box>
+      <Text>Press Tab to focus the scrollable region below:</Text>
+      <ScrollableRegion
+        aria-label="Focusable region"
+        style={{ height: "200px", marginTop: "16px" }}
+      >
+        <OverflowingContent />
+      </ScrollableRegion>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Region becomes focusable when overflowing", async () => {
+      await waitFor(() => {
+        const region = canvas.getByRole("group", {
+          name: "Focusable region",
+        });
+        expect(region).toHaveAttribute("tabindex", "0");
+      });
+    });
+
+    await step("Can receive keyboard focus via Tab", async () => {
+      await userEvent.tab();
+      const region = canvas.getByRole("group", { name: "Focusable region" });
+      await waitFor(() => {
+        expect(region).toHaveFocus();
+      });
+    });
+  },
+};
+
+// ============================================================
+// Custom overflow: scroll
+// ============================================================
+export const OverflowScroll: Story = {
+  render: () => (
+    <ScrollableRegion
+      aria-label="Always-scrollbar region"
+      overflow="scroll"
+      style={{ height: "200px" }}
+    >
+      <OverflowingContent />
+    </ScrollableRegion>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Has overflow: scroll", async () => {
+      await waitFor(() => {
+        const region = canvas.getByRole("group", {
+          name: "Always-scrollbar region",
+        });
+        expect(region.style.overflow).toBe("scroll");
+      });
+    });
+  },
+};
+
+// ============================================================
+// Hook standalone usage
+// ============================================================
+const HookDemo = () => {
+  const { ref, isOverflowing, containerProps } = useScrollableRegion({
+    "aria-label": "Hook demo",
+  });
+
+  return (
+    <div>
+      <Text>{isOverflowing ? "Overflowing" : "Not overflowing"}</Text>
+      <div
+        ref={ref}
+        {...containerProps}
+        style={{ ...containerProps.style, height: "150px" }}
+      >
+        <OverflowingContent />
+      </div>
+    </div>
+  );
+};
+
+export const HookUsage: Story = {
+  render: () => <HookDemo />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Hook detects overflow", async () => {
+      await waitFor(() => {
+        expect(canvas.getByText("Overflowing")).toBeInTheDocument();
+      });
+    });
+
+    await step("Hook provides tabIndex on overflowing element", async () => {
+      const container = canvas.getByRole("group", { name: "Hook demo" });
+      await expect(container).toHaveAttribute("tabindex", "0");
+    });
+
+    await step("Hook provides role on overflowing element", async () => {
+      const container = canvas.getByRole("group", { name: "Hook demo" });
+      await expect(container).toHaveAttribute("role", "group");
+    });
+  },
+};
+
+// ============================================================
+// With aria-labelledby
+// ============================================================
+export const WithAriaLabelledBy: Story = {
+  render: () => (
+    <Box>
+      <Heading id="log-heading">Application Logs</Heading>
+      <ScrollableRegion
+        aria-labelledby="log-heading"
+        style={{ height: "200px" }}
+      >
+        <OverflowingContent />
+      </ScrollableRegion>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Has aria-labelledby when overflowing", async () => {
+      await waitFor(() => {
+        const region = canvas.getByRole("group", {
+          name: "Application Logs",
+        });
+        expect(region).toHaveAttribute("aria-labelledby", "log-heading");
+      });
+    });
+  },
+};
+
+// ============================================================
+// SmokeTest: covers role × overflow prop matrix
+// ============================================================
+export const SmokeTest: Story = {
+  render: () => (
+    <Box display="flex" gap="16px" flexWrap="wrap">
+      <Box>
+        <Text>role=group, overflow=auto</Text>
+        <ScrollableRegion
+          aria-label="Group auto"
+          style={{ height: "100px", width: "200px" }}
+        >
+          <OverflowingContent />
+        </ScrollableRegion>
+      </Box>
+      <Box>
+        <Text>role=group, overflow=scroll</Text>
+        <ScrollableRegion
+          aria-label="Group scroll"
+          overflow="scroll"
+          style={{ height: "100px", width: "200px" }}
+        >
+          <OverflowingContent />
+        </ScrollableRegion>
+      </Box>
+      <Box>
+        <Text>role=region, overflow=auto</Text>
+        <ScrollableRegion
+          role="region"
+          aria-label="Region auto"
+          style={{ height: "100px", width: "200px" }}
+        >
+          <OverflowingContent />
+        </ScrollableRegion>
+      </Box>
+      <Box>
+        <Text>role=region, overflow=scroll</Text>
+        <ScrollableRegion
+          role="region"
+          aria-label="Region scroll"
+          overflow="scroll"
+          style={{ height: "100px", width: "200px" }}
+        >
+          <OverflowingContent />
+        </ScrollableRegion>
+      </Box>
+      <Box>
+        <Text>aria-labelledby</Text>
+        <Heading id="smoke-heading" fontSize="sm">
+          Labelled Region
+        </Heading>
+        <ScrollableRegion
+          aria-labelledby="smoke-heading"
+          style={{ height: "100px", width: "200px" }}
+        >
+          <OverflowingContent />
+        </ScrollableRegion>
+      </Box>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("All overflowing variants have tabIndex=0", async () => {
+      await waitFor(() => {
+        const groupAuto = canvas.getByRole("group", { name: "Group auto" });
+        expect(groupAuto).toHaveAttribute("tabindex", "0");
+      });
+
+      const groupScroll = canvas.getByRole("group", { name: "Group scroll" });
+      await expect(groupScroll).toHaveAttribute("tabindex", "0");
+
+      const regionAuto = canvas.getByRole("region", { name: "Region auto" });
+      await expect(regionAuto).toHaveAttribute("tabindex", "0");
+
+      const regionScroll = canvas.getByRole("region", {
+        name: "Region scroll",
+      });
+      await expect(regionScroll).toHaveAttribute("tabindex", "0");
+
+      const labelled = canvas.getByRole("group", {
+        name: "Labelled Region",
+      });
+      await expect(labelled).toHaveAttribute("tabindex", "0");
+    });
+
+    await step("Region variants have role=region", async () => {
+      const regionAuto = canvas.getByRole("region", { name: "Region auto" });
+      await expect(regionAuto).toHaveAttribute("role", "region");
+
+      const regionScroll = canvas.getByRole("region", {
+        name: "Region scroll",
+      });
+      await expect(regionScroll).toHaveAttribute("role", "region");
+    });
+
+    await step("Group variants have role=group", async () => {
+      const groupAuto = canvas.getByRole("group", { name: "Group auto" });
+      await expect(groupAuto).toHaveAttribute("role", "group");
+    });
+  },
+};
