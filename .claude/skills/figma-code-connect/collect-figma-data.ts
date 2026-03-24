@@ -378,7 +378,9 @@ async function fetchAllNodeProps(
       await new Promise((r) => setTimeout(r, 1000));
     }
 
-    const resp = await fetch(`${FIGMA_NODES_URL}?ids=${idsParam}`, {
+    const nodesUrl = new URL(FIGMA_NODES_URL);
+    nodesUrl.searchParams.set("ids", idsParam);
+    const resp = await fetch(nodesUrl, {
       headers: { "X-FIGMA-TOKEN": token },
     });
 
