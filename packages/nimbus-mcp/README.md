@@ -46,12 +46,13 @@ npx @commercetools/nimbus-mcp
 
 ## Available Tools
 
-| Tool              | Description                                                                        |
-| ----------------- | ---------------------------------------------------------------------------------- |
-| `list_components` | Returns names and descriptions of all Nimbus components and patterns               |
-| `get_component`   | Returns detailed info about a component or pattern (metadata, props, recipe, docs) |
-
-More tools are being added. See `src/tools/` for the full list.
+| Tool                 | Description                                                                        |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| `list_components`    | Returns names and descriptions of all Nimbus components and patterns               |
+| `get_component`      | Returns detailed info about a component or pattern (metadata, props, recipe, docs) |
+| `search_docs`        | Full-text search across all Nimbus documentation pages                             |
+| `search_icons`       | Fuzzy-search Nimbus icons by name or keyword                                       |
+| `migrate_from_uikit` | Returns migration mappings from UI Kit components to Nimbus equivalents            |
 
 ## Development
 
@@ -71,7 +72,8 @@ pnpm --filter @commercetools/nimbus-mcp build
 
 ### Running from source
 
-Requires a prebuild to copy docs data, generate the icon catalog, and generate token data first:
+Requires a prebuild to copy docs data, generate the icon catalog, and generate
+token data first:
 
 ```bash
 pnpm --filter @commercetools/nimbus-mcp prebuild

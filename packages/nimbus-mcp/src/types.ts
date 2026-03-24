@@ -364,3 +364,25 @@ export interface LoweredRelevanceFields {
   /** All fields concatenated for fast single-string search. */
   combined: string;
 }
+
+// ---------------------------------------------------------------------------
+// Migration tool types (used by tools/migrate-from-uikit)
+// ---------------------------------------------------------------------------
+
+/** Single component migration result returned by migrate_from_uikit. */
+export interface MigrateComponentResult {
+  uiKitName: string;
+  nimbusEquivalent: string | null;
+  importPath: string | null;
+  mappingType: string;
+  notes: string;
+  breakingChanges: string[];
+}
+
+/** File-level migration result returned by migrate_from_uikit in filePath mode. */
+export interface MigrateFileResult {
+  filePath: string;
+  mappings: MigrateComponentResult[];
+  /** Component names found in imports but not in the migration database. */
+  unmapped: string[];
+}
