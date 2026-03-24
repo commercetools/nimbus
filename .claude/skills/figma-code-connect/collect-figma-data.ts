@@ -23,14 +23,28 @@ const COMPONENTS_DIR = join(ROOT, "packages/nimbus/src/components");
 const OUTPUT_FILE = join(__dirname, "code-connect-data.json");
 
 // The main Nimbus design system Figma file
-const FIGMA_API_BASE = "https://api.figma.com/v1/files" as const;
+const FIGMA_API_ORIGIN = "https://api.figma.com";
 const FIGMA_FILE_KEY = "AvtPX6g7OGGCRvNlatGOIY";
 
-/** Validate that a file key contains only safe alphanumeric characters */
-function assertSafeFileKey(key: string): void {
-  if (!/^[a-zA-Z0-9]+$/.test(key)) {
-    throw new Error(`Invalid Figma file key: ${key}`);
+/**
+ * Build a validated Figma API URL. Uses the URL constructor with a hardcoded
+ * origin so that only api.figma.com can ever be reached, mitigating SSRF.
+ */
+function figmaApiUrl(
+  fileKey: string,
+  path: string,
+  query?: Record<string, string>
+): URL {
+  if (!/^[a-zA-Z0-9]+$/.test(fileKey)) {
+    throw new Error(`Invalid Figma file key: ${fileKey}`);
   }
+  const url = new URL(`/v1/files/${fileKey}/${path}`, FIGMA_API_ORIGIN);
+  if (query) {
+    for (const [k, v] of Object.entries(query)) {
+      url.searchParams.set(k, v);
+    }
+  }
+  return url;
 }
 
 // Explicit overrides: Figma component set name → { dir, subComponent? }
@@ -349,8 +363,7 @@ async function fetchFigmaComponentSets(
   token: string,
   fileKey: string
 ): Promise<FigmaComponentSet[]> {
-  assertSafeFileKey(fileKey);
-  const resp = await fetch(`${FIGMA_API_BASE}/${fileKey}/component_sets`, {
+  const resp = await fetch(figmaApiUrl(fileKey, "component_sets"), {
     headers: { "X-FIGMA-TOKEN": token },
   });
 
@@ -383,10 +396,9 @@ async function fetchAllNodeProps(
       await new Promise((r) => setTimeout(r, 1000));
     }
 
-    const resp = await fetch(
-      `${FIGMA_API_BASE}/${fileKey}/nodes?ids=${idsParam}`,
-      { headers: { "X-FIGMA-TOKEN": token } }
-    );
+    const resp = await fetch(figmaApiUrl(fileKey, "nodes", { ids: idsParam }), {
+      headers: { "X-FIGMA-TOKEN": token },
+    });
 
     if (!resp.ok) {
       console.warn(
