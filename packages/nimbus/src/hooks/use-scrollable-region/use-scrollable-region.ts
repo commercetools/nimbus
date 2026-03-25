@@ -154,18 +154,17 @@ export function useScrollableRegion(
     [checkOverflow, debouncedCheck]
   );
 
-  // Dev-mode warning: fires when overflow state or label props change
+  // Dev-mode warning: only for role="region" where a label is required
   useEffect(() => {
     if (process.env.NODE_ENV !== "production") {
-      if (isOverflowing && !ariaLabel && !ariaLabelledBy) {
+      if (role === "region" && !ariaLabel && !ariaLabelledBy) {
         console.warn(
-          "[useScrollableRegion] The container is overflowing but has no " +
-            "`aria-label` or `aria-labelledby`. Keyboard users will be able " +
-            "to focus this element but screen readers cannot identify it."
+          '[useScrollableRegion] role="region" requires an accessible name. ' +
+            "Provide `aria-label` or `aria-labelledby`."
         );
       }
     }
-  }, [isOverflowing, ariaLabel, ariaLabelledBy]);
+  }, [role, ariaLabel, ariaLabelledBy]);
 
   // Build containerProps
   const baseStyle: React.CSSProperties = getOverflowStyle(scrollable);
