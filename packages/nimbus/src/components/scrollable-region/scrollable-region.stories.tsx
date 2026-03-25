@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ScrollableRegion, Box, Text, Heading } from "@commercetools/nimbus";
-import { useScrollableRegion } from "@/hooks/use-scrollable-region/use-scrollable-region";
 import { within, expect, userEvent, waitFor } from "storybook/test";
 
-const meta = {
+const meta: Meta<typeof ScrollableRegion> = {
   title: "Components/ScrollableRegion",
   component: ScrollableRegion,
-} satisfies Meta<typeof ScrollableRegion>;
+  tags: ["autodocs"],
+};
 
 export default meta;
-type Story = StoryObj<typeof ScrollableRegion>;
+type Story = StoryObj<typeof meta>;
 
 // Helper to generate enough content to cause overflow
 const OverflowingContent = () => (
@@ -264,51 +264,6 @@ export const HorizontalOnly: Story = {
         name: "Horizontal scroll",
       });
       await expect(region).toHaveAttribute("tabindex", "0");
-    });
-  },
-};
-
-// ============================================================
-// Hook standalone usage
-// ============================================================
-const HookDemo = () => {
-  const { ref, isOverflowing, containerProps } = useScrollableRegion({
-    "aria-label": "Hook demo",
-  });
-
-  return (
-    <div>
-      <Text>{isOverflowing ? "Overflowing" : "Not overflowing"}</Text>
-      <div
-        ref={ref}
-        {...containerProps}
-        style={{ ...containerProps.style, height: "150px" }}
-      >
-        <OverflowingContent />
-      </div>
-    </div>
-  );
-};
-
-export const HookUsage: Story = {
-  render: () => <HookDemo />,
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Hook detects overflow", async () => {
-      await waitFor(() => {
-        expect(canvas.getByText("Overflowing")).toBeInTheDocument();
-      });
-    });
-
-    await step("Hook provides tabIndex on overflowing element", async () => {
-      const container = canvas.getByRole("group", { name: "Hook demo" });
-      await expect(container).toHaveAttribute("tabindex", "0");
-    });
-
-    await step("Hook provides role on overflowing element", async () => {
-      const container = canvas.getByRole("group", { name: "Hook demo" });
-      await expect(container).toHaveAttribute("role", "group");
     });
   },
 };

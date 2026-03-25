@@ -1,11 +1,13 @@
 import type { HTMLChakraProps } from "@chakra-ui/react/styled-system";
 import type { ScrollableOverflow } from "@/hooks/use-scrollable-region/use-scrollable-region.types";
 
+export type { ScrollableOverflow };
+
 // ============================================================
-// CHAKRA DIV PROPS (without hook-controlled attributes)
+// HELPER TYPES
 // ============================================================
 
-type ChakraDivProps = Omit<
+type ScrollableRegionBaseProps = Omit<
   HTMLChakraProps<"div">,
   | "role"
   | "aria-label"
@@ -15,13 +17,7 @@ type ChakraDivProps = Omit<
   | "asChild"
   | "elementType"
   | "css"
->;
-
-// ============================================================
-// SHARED OPTIONS
-// ============================================================
-
-type SharedOptions = {
+> & {
   /** Ref forwarding to the root element. */
   ref?: React.Ref<HTMLElement>;
   /**
@@ -38,46 +34,38 @@ type SharedOptions = {
   scrollable?: ScrollableOverflow;
 };
 
-// ============================================================
-// REGION VARIANT (requires accessible name)
-// ============================================================
-
-type RegionProps = SharedOptions &
-  ChakraDivProps & {
-    /**
-     * The landmark role for the scrollable container.
-     * Use `"region"` for major page sections.
-     */
-    role: "region";
-  } & (
+type ScrollableRegionRegionVariant = ScrollableRegionBaseProps & {
+  /**
+   * The landmark role for the scrollable container.
+   * Use `"region"` for major page sections.
+   */
+  role: "region";
+} & (
     | {
         /** The accessible name. Required when `role="region"`. */
         "aria-label": string;
+        /** ID of the labeling element. Optional when `aria-label` is provided. */
         "aria-labelledby"?: string;
       }
     | {
+        /** The accessible name. Optional when `aria-labelledby` is provided. */
         "aria-label"?: string;
         /** ID of the labeling element. Required when `role="region"` if `aria-label` is not provided. */
         "aria-labelledby": string;
       }
   );
 
-// ============================================================
-// GROUP VARIANT (accessible name optional)
-// ============================================================
-
-type GroupProps = SharedOptions &
-  ChakraDivProps & {
-    /**
-     * The landmark role for the scrollable container.
-     * @default "group"
-     */
-    role?: "group";
-    /** The accessible name for the scrollable container. */
-    "aria-label"?: string;
-    /** ID of the element that labels this scrollable container. */
-    "aria-labelledby"?: string;
-  };
+type ScrollableRegionGroupVariant = ScrollableRegionBaseProps & {
+  /**
+   * The landmark role for the scrollable container.
+   * @default "group"
+   */
+  role?: "group";
+  /** The accessible name for the scrollable container. */
+  "aria-label"?: string;
+  /** ID of the element that labels this scrollable container. */
+  "aria-labelledby"?: string;
+};
 
 // ============================================================
 // MAIN PROPS
@@ -90,4 +78,6 @@ type GroupProps = SharedOptions &
  * When `role="region"`, either `aria-label` or `aria-labelledby` is
  * required at the type level to satisfy WCAG landmark naming requirements.
  */
-export type ScrollableRegionProps = RegionProps | GroupProps;
+export type ScrollableRegionProps =
+  | ScrollableRegionRegionVariant
+  | ScrollableRegionGroupVariant;

@@ -15,6 +15,17 @@ import type { ScrollableRegionProps } from "./scrollable-region.types";
  *
  * ARIA `role` and accessible name are always applied. Only `tabIndex`
  * toggles based on overflow state.
+ *
+ * @see {@link https://nimbus-documentation.vercel.app/components/layout/scrollable-region}
+ *
+ * @supportsStyleProps
+ *
+ * @example
+ * ```tsx
+ * <ScrollableRegion aria-label="Log output" h="200px">
+ *   {content}
+ * </ScrollableRegion>
+ * ```
  */
 export const ScrollableRegion = ({
   ref: forwardedRef,
