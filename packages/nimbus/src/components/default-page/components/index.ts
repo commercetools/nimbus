@@ -1,0 +1,9 @@
+export { DefaultPageRoot } from "./default-page.root";
+export { DefaultPageHeader } from "./default-page.header";
+export { DefaultPageActions } from "./default-page.actions";
+export { DefaultPageBackLink } from "./default-page.back-link";
+export { DefaultPageTitle } from "./default-page.title";
+export { DefaultPageSubtitle } from "./default-page.subtitle";
+export { DefaultPageContent } from "./default-page.content";
+export { DefaultPageFooter } from "./default-page.footer";
+export { DefaultPageTabNav } from "./default-page.tab-nav";

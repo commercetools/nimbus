@@ -1,0 +1,637 @@
+---
+title: DefaultPage Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { DefaultPage, type DefaultPageProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+DefaultPage uses a compound pattern to structure both main and detail views.
+At minimum, wrap `DefaultPage.Header` (with `DefaultPage.Title`) and
+`DefaultPage.Content` inside `DefaultPage.Root`.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Products</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Your page content goes here.</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+## Layout modes
+
+DefaultPage supports two layout modes controlled by the `layout` prop on
+`DefaultPage.Root`.
+
+### Constrained layout (default)
+
+The default mode. The page fills its parent container (`height: 100%`). Only
+the content area scrolls — the header and footer are naturally pinned by the
+CSS grid and do not need sticky positioning. This is the recommended mode for
+pages embedded inside an application shell.
+
+```jsx live-dev
+const App = () => (
+  <Box height="400px" border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Products</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Only this content area scrolls in constrained mode.</Text>
+      </DefaultPage.Content>
+      <DefaultPage.Footer>
+        <Button variant="solid" colorPalette="primary">Save</Button>
+      </DefaultPage.Footer>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+### Flexible layout
+
+Set `layout="flexible"` when the whole page should scroll rather than just
+the content area. This is useful for long-form pages inside a full-page scroll
+container. In this mode, you can optionally pin the header or footer with
+`stickyHeader` and `stickyFooter`.
+
+```jsx live-dev
+const App = () => (
+  <Box height="400px" overflow="auto" border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root layout="flexible" stickyHeader stickyFooter>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Edit product</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          <Text>With flexible layout the whole page scrolls.</Text>
+          <Text>Use stickyHeader / stickyFooter to pin zones.</Text>
+        </Stack>
+      </DefaultPage.Content>
+      <DefaultPage.Footer>
+        <Button variant="solid" colorPalette="primary">Save changes</Button>
+      </DefaultPage.Footer>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+| Prop combination | Behaviour |
+|---|---|
+| `layout="constrained"` (default) | Parent height filled; only content scrolls; header and footer pinned by grid |
+| `layout="flexible"` | Height auto; whole page scrolls; nothing pinned |
+| `layout="flexible" stickyHeader` | Flexible scroll with header pinned at top |
+| `layout="flexible" stickyFooter` | Flexible scroll with footer pinned at bottom |
+| `layout="flexible" stickyHeader stickyFooter` | Flexible scroll with both zones pinned |
+
+> [!TIP]\
+> In **constrained** mode, header and footer are always pinned — you don't need
+> to set any sticky props. Switch to **flexible** mode when you want the whole
+> page to scroll, then opt in to sticky positioning as needed.
+
+> [!NOTE]\
+> `stickyHeader` and `stickyFooter` are only accepted when `layout="flexible"`.
+> TypeScript will produce a compile error if you use them without it.
+
+### Flexible layout with sticky footer only
+
+Use `stickyFooter` without `stickyHeader` when save actions must stay visible
+but the header context can scroll away — common for long detail forms.
+
+```jsx live-dev
+const App = () => (
+  <Box height="400px" overflow="auto" border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root layout="flexible" stickyFooter>
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/products">Back to products</DefaultPage.BackLink>
+        <DefaultPage.Title>Edit: Classic T-Shirt</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          <Text>Scroll down — the header scrolls away but the footer stays pinned.</Text>
+          {Array.from({ length: 8 }, (_, i) => (
+            <FormField.Root key={i}>
+              <FormField.Label>{`Field ${i + 1}`}</FormField.Label>
+              <FormField.Input>
+                <TextInput placeholder={`Value for field ${i + 1}`} />
+              </FormField.Input>
+            </FormField.Root>
+          ))}
+        </Stack>
+      </DefaultPage.Content>
+      <DefaultPage.Footer>
+        <Stack direction="row" gap="200">
+          <Button variant="solid" colorPalette="primary">Save changes</Button>
+          <Button variant="ghost">Cancel</Button>
+        </Stack>
+      </DefaultPage.Footer>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+## Sub-components
+
+### DefaultPage.Header
+
+The header section uses a two-column grid layout. `Title`, `Subtitle`, and any
+custom content with `gridColumn="1"` flow into the left column. `Actions` spans
+all rows on the right column and collapses when not present. When `BackLink` is
+present, `Actions` automatically shifts down to align with the title row.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Products</DefaultPage.Title>
+        <DefaultPage.Actions>
+          <Button variant="ghost">Export</Button>
+          <Button variant="solid" colorPalette="primary">Add Product</Button>
+        </DefaultPage.Actions>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Content area</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+### DefaultPage.Title
+
+Renders a styled `<h1>` element pinned to grid column 1. Accepts children for
+the title text.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Products</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Content area</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+### DefaultPage.Subtitle
+
+Optional subtitle rendered as a `<p>` element pinned to grid column 1, below
+the title. Place it as a sibling of `Title` inside the `Header`.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Products</DefaultPage.Title>
+        <DefaultPage.Subtitle>Manage your product catalog</DefaultPage.Subtitle>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Content area</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+### DefaultPage.Actions
+
+A flex container with gap for action buttons. Pinned to grid column 2 (right),
+spanning all rows. When `BackLink` is present, the grid automatically shifts
+`Actions` to the title row.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Products</DefaultPage.Title>
+        <DefaultPage.Actions>
+          <Button variant="ghost">Export</Button>
+          <Button variant="solid" colorPalette="primary">Add Product</Button>
+        </DefaultPage.Actions>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Content area</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+### DefaultPage.BackLink
+
+Optional back navigation link that renders as a semantic `<a>` element.
+Requires an `href` prop. Include it for detail views to signal the parent list
+or overview; omit it entirely for top-level main pages.
+
+Always provide destination-specific text as children (e.g., "Back to products").
+A generic fallback label "Go back" is provided via i18n when children are
+omitted, but destination-specific text is strongly recommended for usability.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/products">
+          Back to products
+        </DefaultPage.BackLink>
+        <DefaultPage.Title>Wireless Headphones</DefaultPage.Title>
+        <DefaultPage.Subtitle>SKU-WH-2024-001</DefaultPage.Subtitle>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Product detail content</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+### DefaultPage.TabNav
+
+Layout container for tab navigation in the header. Positions itself in the
+header grid's last row at full width. Place it inside `DefaultPage.Header`,
+after `Title` and `Subtitle`.
+
+Wrap a `TabNav.Root` inside this component.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Customer Details</DefaultPage.Title>
+        <DefaultPage.Subtitle>customer@example.com</DefaultPage.Subtitle>
+        <DefaultPage.TabNav>
+          <TabNav.Root aria-label="Customer sections">
+            <TabNav.Item href="/customers/123/general" isCurrent>General</TabNav.Item>
+            <TabNav.Item href="/customers/123/addresses">Addresses</TabNav.Item>
+            <TabNav.Item href="/customers/123/orders">Orders</TabNav.Item>
+          </TabNav.Root>
+        </DefaultPage.TabNav>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>General information content</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+### DefaultPage.Content
+
+The main content area with scrollable overflow. Uses padding-based spacing to
+preserve sticky positioning for child components like `DataTable`.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Page Title</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Box bg="neutral.3" padding="400" borderRadius="200">
+          <Text>Content area with automatic padding spacing</Text>
+        </Box>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+### DefaultPage.Footer
+
+Optional footer for page-level actions. Omit it entirely when the page has no
+form actions — the footer grid row collapses automatically when absent.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Project Settings</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Box bg="neutral.3" padding="400" borderRadius="200">
+          <Text>Form content</Text>
+        </Box>
+      </DefaultPage.Content>
+      <DefaultPage.Footer>
+        <Stack direction="row" gap="200" justify="flex-end" width="100%">
+          <Button variant="ghost">Cancel</Button>
+          <Button variant="solid" colorPalette="primary">Save</Button>
+        </Stack>
+      </DefaultPage.Footer>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+> [!TIP]\
+> Place the primary action first, followed by secondary actions (e.g., Cancel).
+> Use the `Spacer` component to push buttons apart — for example, a destructive
+> action on the left and the primary action on the right:
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Edit product</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Form content goes here.</Text>
+      </DefaultPage.Content>
+      <DefaultPage.Footer>
+        <Stack direction="row" gap="200" width="100%">
+          <Button colorPalette="critical" variant="ghost">Delete</Button>
+          <Spacer />
+          <Button variant="solid" colorPalette="primary">Save</Button>
+          <Button variant="ghost">Cancel</Button>
+        </Stack>
+      </DefaultPage.Footer>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+### Custom elements in the header
+
+Any additional children placed in the `Header` default to column 2 (right). To
+place a custom element on the left side of the header grid, set
+`gridColumn="1"`.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title mb="100">Page Title</DefaultPage.Title>
+        <Badge
+          gridColumn="1"
+          justifySelf="flex-start"
+          colorPalette="blue"
+          size="xs"
+        >
+          Custom in column 1
+        </Badge>
+        <Badge
+          colorPalette="mint"
+          justifySelf="flex-end"
+          size="xs"
+        >
+          Custom in column 2
+        </Badge>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Content area</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+## Usage examples
+
+### Info main page (no BackLink, no Footer)
+
+For top-level pages that display information without form actions, omit both
+`DefaultPage.BackLink` and `DefaultPage.Footer`.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Products</DefaultPage.Title>
+        <DefaultPage.Subtitle>Manage your product catalog</DefaultPage.Subtitle>
+        <DefaultPage.Actions>
+          <Button variant="ghost">Export</Button>
+          <Button variant="solid" colorPalette="primary">Add Product</Button>
+        </DefaultPage.Actions>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Product list content goes here.</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+### Form main page (with Footer)
+
+For top-level pages with form actions, add `DefaultPage.Footer` containing
+action buttons. Omit `DefaultPage.BackLink` since this is a main-level page.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.Title>Project Settings</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          <FormField.Root>
+            <FormField.Label>Project name</FormField.Label>
+            <FormField.Input>
+              <TextInput placeholder="e.g. My Store" />
+            </FormField.Input>
+          </FormField.Root>
+          <FormField.Root>
+            <FormField.Label>Description</FormField.Label>
+            <FormField.Input>
+              <TextInput placeholder="Describe the project" />
+            </FormField.Input>
+          </FormField.Root>
+        </Stack>
+      </DefaultPage.Content>
+      <DefaultPage.Footer>
+        <Stack direction="row" gap="200" justify="flex-end" width="100%">
+          <Button variant="ghost">Cancel</Button>
+          <Button variant="solid" colorPalette="primary">Save</Button>
+        </Stack>
+      </DefaultPage.Footer>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+### Info detail page (with BackLink, no Footer)
+
+For detail pages that display information without form actions, include
+`DefaultPage.BackLink` and omit `DefaultPage.Footer`.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/products">Back to products</DefaultPage.BackLink>
+        <DefaultPage.Title>Wireless Headphones</DefaultPage.Title>
+        <DefaultPage.Subtitle>SKU-WH-2024-001</DefaultPage.Subtitle>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          <Text>This is a read-only detail page with product information.</Text>
+        </Stack>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+### Form detail page (with BackLink and Footer)
+
+For detail pages with form actions, include both `DefaultPage.BackLink` and
+`DefaultPage.Footer`.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/orders">Back to orders</DefaultPage.BackLink>
+        <DefaultPage.Title>Edit Order</DefaultPage.Title>
+        <DefaultPage.Subtitle>Order #ORD-2024-001</DefaultPage.Subtitle>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Stack gap="400">
+          <Text>Form fields would go here.</Text>
+        </Stack>
+      </DefaultPage.Content>
+      <DefaultPage.Footer>
+        <Stack direction="row" gap="200" justify="flex-end" width="100%">
+          <Button variant="ghost">Cancel</Button>
+          <Button variant="solid" colorPalette="primary">Save</Button>
+        </Stack>
+      </DefaultPage.Footer>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+### Tab navigation
+
+For pages with route-based tab navigation, compose `TabNav` inside
+`DefaultPage.Header`. Unlike `Tabs` (which switches content panels), `TabNav`
+renders navigation links — in a real app, the router handles content rendering.
+
+```jsx live-dev
+const App = () => (
+  <Box border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <DefaultPage.Root>
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/customers">Back to customers</DefaultPage.BackLink>
+        <DefaultPage.Title>Customer Details</DefaultPage.Title>
+        <DefaultPage.Subtitle>customer@example.com</DefaultPage.Subtitle>
+        <DefaultPage.TabNav>
+          <TabNav.Root aria-label="Customer sections">
+            <TabNav.Item href="/customers/123/general" isCurrent>General</TabNav.Item>
+            <TabNav.Item href="/customers/123/addresses">Addresses</TabNav.Item>
+            <TabNav.Item href="/customers/123/orders">Orders</TabNav.Item>
+          </TabNav.Root>
+        </DefaultPage.TabNav>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Box py="400">
+          <Text>General information content</Text>
+        </Box>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  </Box>
+)
+```
+
+## Component parts
+
+| Part | Description |
+|------|-------------|
+| `DefaultPage.Root` | Page container providing layout context. Accepts `layout` (`"constrained"` \| `"flexible"`), and `stickyHeader`/`stickyFooter` (flexible mode only) |
+| `DefaultPage.Header` | Header section; two-column grid for title area (left) and actions (right) |
+| `DefaultPage.BackLink` | Optional back navigation link (requires `href`); omit for main pages |
+| `DefaultPage.Title` | Page title (renders as `h1`) |
+| `DefaultPage.Subtitle` | Optional subtitle text (renders as `p`) |
+| `DefaultPage.Actions` | Flex container for action buttons, right-aligned in the header grid |
+| `DefaultPage.TabNav` | Layout container for tab navigation; place inside `Header` |
+| `DefaultPage.Content` | Scrollable main content area |
+| `DefaultPage.Footer` | Optional footer for form actions; omit for read-only pages |
+
+## Accessibility
+
+DefaultPage follows WCAG 2.1 AA guidelines using semantic HTML landmarks and a
+proper heading hierarchy.
+
+### Landmark roles
+
+- `DefaultPage.Header` uses the `<header>` element (banner landmark)
+- `DefaultPage.Content` uses the `<main>` element (main landmark)
+- `DefaultPage.Footer` uses the `<footer>` element (contentinfo landmark)
+- `DefaultPage.Title` renders as an `<h1>`, ensuring correct heading hierarchy
+- `DefaultPage.BackLink` renders as a semantic `<a>` element with a default
+  `aria-label` of "Go back" via i18n
+
+### Keyboard navigation
+
+| Key | Action |
+|-----|--------|
+| `Tab` | Move focus between interactive elements (back link, actions, tabs, content, footer buttons) |
+| `Shift + Tab` | Move focus in reverse order |
+| `Enter` / `Space` | Activate the focused link or button |
+
+### Screen reader behavior
+
+| Element | Role | Announced as |
+|---------|------|--------------|
+| `DefaultPage.Header` | `banner` | "banner" landmark |
+| `DefaultPage.BackLink` | `link` | Link with aria-label (e.g. "Go back" or custom label) |
+| `DefaultPage.Title` | `heading` (level 1) | "Products, heading level 1" |
+| `DefaultPage.Content` | `main` | "main" landmark |
+| `DefaultPage.Footer` | `contentinfo` | "contentinfo" landmark |
+
+### Labeling best practices
+
+- Override `DefaultPage.BackLink`'s default `aria-label="Go back"` with a
+  destination-specific label (e.g. `aria-label="Back to products"`) when the
+  destination context is important.
+- When composing with `TabNav`, always provide an `aria-label` on `TabNav.Root`
+  to describe the navigation group for screen readers.
+- Because `<main>` must be unique per page, avoid nesting multiple `DefaultPage`
+  components in a single view.
+
+## API reference
+
+<PropsTable id="DefaultPage" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using DefaultPage
+within your application.
+
+{{docs-tests: default-page.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-layout-defaultpage--docs)
