@@ -173,13 +173,13 @@ export const KeyboardFocusRing: Story = {
 };
 
 // ============================================================
-// Custom overflow: scroll
+// Custom scrollable: scroll
 // ============================================================
 export const OverflowScroll: Story = {
   render: () => (
     <ScrollableRegion
       aria-label="Always-scrollbar region"
-      overflow="scroll"
+      scrollable="scroll"
       style={{ height: "200px" }}
     >
       <OverflowingContent />
@@ -195,6 +195,82 @@ export const OverflowScroll: Story = {
         });
         expect(region.style.overflow).toBe("scroll");
       });
+    });
+  },
+};
+
+// ============================================================
+// Vertical-only overflow
+// ============================================================
+export const VerticalOnly: Story = {
+  render: () => (
+    <ScrollableRegion
+      aria-label="Vertical scroll"
+      scrollable="y-auto"
+      style={{ height: "200px" }}
+    >
+      <OverflowingContent />
+    </ScrollableRegion>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Has overflowY: auto, overflowX: hidden", async () => {
+      await waitFor(() => {
+        const region = canvas.getByRole("group", {
+          name: "Vertical scroll",
+        });
+        expect(region.style.overflowY).toBe("auto");
+        expect(region.style.overflowX).toBe("hidden");
+      });
+    });
+
+    await step("Detects vertical overflow", async () => {
+      const region = canvas.getByRole("group", { name: "Vertical scroll" });
+      await expect(region).toHaveAttribute("tabindex", "0");
+    });
+  },
+};
+
+// ============================================================
+// Horizontal-only overflow
+// ============================================================
+const WideContent = () => (
+  <Box style={{ whiteSpace: "nowrap" }}>
+    {Array.from({ length: 5 }, (_, i) => (
+      <Text key={i}>{"Long horizontal content ".repeat(20)}</Text>
+    ))}
+  </Box>
+);
+
+export const HorizontalOnly: Story = {
+  render: () => (
+    <ScrollableRegion
+      aria-label="Horizontal scroll"
+      scrollable="x-auto"
+      style={{ width: "300px" }}
+    >
+      <WideContent />
+    </ScrollableRegion>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Has overflowX: auto, overflowY: hidden", async () => {
+      await waitFor(() => {
+        const region = canvas.getByRole("group", {
+          name: "Horizontal scroll",
+        });
+        expect(region.style.overflowX).toBe("auto");
+        expect(region.style.overflowY).toBe("hidden");
+      });
+    });
+
+    await step("Detects horizontal overflow", async () => {
+      const region = canvas.getByRole("group", {
+        name: "Horizontal scroll",
+      });
+      await expect(region).toHaveAttribute("tabindex", "0");
     });
   },
 };
@@ -274,13 +350,13 @@ export const WithAriaLabelledBy: Story = {
 };
 
 // ============================================================
-// SmokeTest: covers role × overflow prop matrix
+// SmokeTest: covers role × scrollable prop matrix
 // ============================================================
 export const SmokeTest: Story = {
   render: () => (
     <Box display="flex" gap="16px" flexWrap="wrap">
       <Box>
-        <Text>role=group, overflow=auto</Text>
+        <Text>role=group, scrollable=auto</Text>
         <ScrollableRegion
           aria-label="Group auto"
           style={{ height: "100px", width: "200px" }}
@@ -289,17 +365,17 @@ export const SmokeTest: Story = {
         </ScrollableRegion>
       </Box>
       <Box>
-        <Text>role=group, overflow=scroll</Text>
+        <Text>role=group, scrollable=scroll</Text>
         <ScrollableRegion
           aria-label="Group scroll"
-          overflow="scroll"
+          scrollable="scroll"
           style={{ height: "100px", width: "200px" }}
         >
           <OverflowingContent />
         </ScrollableRegion>
       </Box>
       <Box>
-        <Text>role=region, overflow=auto</Text>
+        <Text>role=region, scrollable=auto</Text>
         <ScrollableRegion
           role="region"
           aria-label="Region auto"
@@ -309,11 +385,11 @@ export const SmokeTest: Story = {
         </ScrollableRegion>
       </Box>
       <Box>
-        <Text>role=region, overflow=scroll</Text>
+        <Text>role=region, scrollable=scroll</Text>
         <ScrollableRegion
           role="region"
           aria-label="Region scroll"
-          overflow="scroll"
+          scrollable="scroll"
           style={{ height: "100px", width: "200px" }}
         >
           <OverflowingContent />

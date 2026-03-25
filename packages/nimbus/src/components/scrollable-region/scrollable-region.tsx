@@ -27,7 +27,7 @@ export const ScrollableRegion = ({
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
   debounceMs,
-  overflow,
+  scrollable,
   children,
   className,
   style,
@@ -38,7 +38,7 @@ export const ScrollableRegion = ({
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
     debounceMs,
-    overflow,
+    scrollable,
   };
 
   const { ref, containerProps } = useScrollableRegion(hookOptions);

@@ -17,19 +17,18 @@ this criterion.
 - **NEW** `useScrollableRegion` hook in `packages/nimbus/src/hooks/use-scrollable-region/`
   - Detects overflow via `ResizeObserver` with debounced evaluation
   - Dynamically manages `tabIndex`, ARIA role, `aria-label`/`aria-labelledby`,
-    overflow style, and keyboard-only focus ring
+    scroll styles, and keyboard-only focus ring
   - Returns `ref`, `isOverflowing`, and spread-ready `containerProps`
   - Standalone — usable without the companion component (e.g., on compound
     component parts like `Dialog.Body`)
 
 - **NEW** `ScrollableRegion` component in `packages/nimbus/src/components/scrollable-region/`
   - Thin wrapper that subscribes to the hook
-  - Renders `<section>` when `role="region"` and overflowing, `<div>` otherwise
+  - Always renders a Chakra `Box` (`<div>`), uses ARIA attributes for semantics
   - Accepts standard HTML attributes and `children`
 
-No recipe file — the hook provides all required styles (overflow, focus ring)
-via `containerProps`. No slots — single-element component. No i18n — no
-user-facing strings.
+No recipe file — the hook provides all required styles via `containerProps`.
+No slots — single-element component. No i18n — no user-facing strings.
 
 ## Impact
 

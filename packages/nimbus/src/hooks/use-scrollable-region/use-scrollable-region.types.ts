@@ -1,4 +1,24 @@
 /**
+ * Controls which axis is scrollable and how overflow is handled.
+ *
+ * - `"auto"` — both axes, scrollbars appear when needed
+ * - `"scroll"` — both axes, scrollbars always visible
+ * - `"x-auto"` — horizontal only, scrollbar appears when needed
+ * - `"x-scroll"` — horizontal only, scrollbar always visible
+ * - `"y-auto"` — vertical only, scrollbar appears when needed
+ * - `"y-scroll"` — vertical only, scrollbar always visible
+ * - `"none"` — overflow hidden, no scrolling (disables scrollability)
+ */
+export type ScrollableOverflow =
+  | "auto"
+  | "scroll"
+  | "x-auto"
+  | "x-scroll"
+  | "y-auto"
+  | "y-scroll"
+  | "none";
+
+/**
  * Shared options for both `role` variants.
  */
 type BaseOptions = {
@@ -8,10 +28,16 @@ type BaseOptions = {
    */
   debounceMs?: number;
   /**
-   * CSS overflow value applied to the container.
+   * Controls which axis is scrollable and how overflow is handled.
+   *
+   * - `"auto"` — both axes, scrollbars appear when needed (default)
+   * - `"scroll"` — both axes, scrollbars always visible
+   * - `"x-auto"` / `"x-scroll"` — horizontal only
+   * - `"y-auto"` / `"y-scroll"` — vertical only
+   *
    * @default "auto"
    */
-  overflow?: "auto" | "scroll";
+  scrollable?: ScrollableOverflow;
 };
 
 /**

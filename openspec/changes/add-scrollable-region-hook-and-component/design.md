@@ -10,10 +10,11 @@ The implementation is split into two layers:
    existing element (e.g., a compound component slot) without introducing an
    extra DOM wrapper or recipe conflicts.
 
-2. **`ScrollableRegion` component** — a thin `forwardRef` wrapper that calls
-   the hook and renders the appropriate element (`<section>` or `<div>`) with
-   all attributes applied automatically. For standalone use when the consumer
-   does not already have a styled container.
+2. **`ScrollableRegion` component** — a thin wrapper that calls the hook and
+   renders a Chakra `Box` (`<div>`) with all attributes applied automatically.
+   ARIA attributes handle semantics (`role="region"` or `role="group"`).
+   For standalone use when the consumer does not already have a styled
+   container.
 
 ### Why not just a component?
 
@@ -31,10 +32,24 @@ where a developer just needs "a box that scrolls accessibly."
 ## Overflow Detection Strategy
 
 1. A `ResizeObserver` monitors the target element.
-2. On each observation, a debounced check (default 100ms) compares
-   `scrollHeight > clientHeight`.
+2. On each observation, a debounced check (default 100ms) compares scroll
+   dimensions to client dimensions on the axis enabled by the `scrollable`
+   prop.
 3. When overflow state changes, React state updates and `containerProps` are
    recomputed.
+
+The `scrollable` prop controls which axis is checked and how CSS overflow is
+applied:
+
+| Value | CSS applied | Axes checked |
+|---|---|---|
+| `"auto"` (default) | `overflow: auto` | both |
+| `"scroll"` | `overflow: scroll` | both |
+| `"x-auto"` | `overflowX: auto; overflowY: hidden` | horizontal |
+| `"x-scroll"` | `overflowX: scroll; overflowY: hidden` | horizontal |
+| `"y-auto"` | `overflowX: hidden; overflowY: auto` | vertical |
+| `"y-scroll"` | `overflowX: hidden; overflowY: scroll` | vertical |
+| `"none"` | `overflow: hidden` | none |
 
 ### Why ResizeObserver over scroll events?
 
@@ -63,7 +78,7 @@ Inline styles are used instead of a recipe because:
 
 | State | `role="region"` | `role="group"` (default) |
 |-------|-----------------|--------------------------|
-| Overflowing | `<section>` + `aria-label`/`aria-labelledby` + `tabIndex={0}` | `<div role="group">` + `aria-label`/`aria-labelledby` + `tabIndex={0}` |
+| Overflowing | `<div role="region">` + `aria-label`/`aria-labelledby` + `tabIndex={0}` | `<div role="group">` + `aria-label`/`aria-labelledby` + `tabIndex={0}` |
 | Not overflowing | `<div>` (no role, no tabIndex) | `<div>` (no role, no tabIndex) |
 
 When not overflowing, all landmark semantics are removed to avoid "landmark

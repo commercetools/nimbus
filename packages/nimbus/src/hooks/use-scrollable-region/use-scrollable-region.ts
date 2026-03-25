@@ -1,10 +1,45 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useFocusRing } from "react-aria";
 import type {
+  ScrollableOverflow,
   UseScrollableRegionOptions,
   UseScrollableRegionResolvedOptions,
   UseScrollableRegionReturn,
 } from "./use-scrollable-region.types";
+
+/** Maps the `overflow` prop to CSS properties. */
+function getOverflowStyle(overflow: ScrollableOverflow): React.CSSProperties {
+  switch (overflow) {
+    case "auto":
+      return { overflow: "auto" };
+    case "scroll":
+      return { overflow: "scroll" };
+    case "x-auto":
+      return { overflowX: "auto", overflowY: "hidden" };
+    case "x-scroll":
+      return { overflowX: "scroll", overflowY: "hidden" };
+    case "y-auto":
+      return { overflowX: "hidden", overflowY: "auto" };
+    case "y-scroll":
+      return { overflowX: "hidden", overflowY: "scroll" };
+    case "none":
+      return { overflow: "hidden" };
+  }
+}
+
+/** Returns whether the given overflow mode checks the horizontal axis. */
+function checksHorizontal(overflow: ScrollableOverflow): boolean {
+  return (
+    overflow === "auto" || overflow === "scroll" || overflow.startsWith("x-")
+  );
+}
+
+/** Returns whether the given overflow mode checks the vertical axis. */
+function checksVertical(overflow: ScrollableOverflow): boolean {
+  return (
+    overflow === "auto" || overflow === "scroll" || overflow.startsWith("y-")
+  );
+}
 
 const FOCUS_RING_STYLES: React.CSSProperties = {
   outlineWidth: "var(--focus-ring-width)",
@@ -47,7 +82,7 @@ export function useScrollableRegion(
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
     debounceMs = 100,
-    overflow = "auto",
+    scrollable = "auto",
   } = options;
 
   const [isOverflowing, setIsOverflowing] = useState(false);
@@ -60,10 +95,14 @@ export function useScrollableRegion(
   const checkOverflow = useCallback(() => {
     const el = elementRef.current;
     if (!el) return;
-    setIsOverflowing(
-      el.scrollHeight > el.clientHeight || el.scrollWidth > el.clientWidth
-    );
-  }, []);
+
+    const vertical =
+      checksVertical(scrollable) && el.scrollHeight > el.clientHeight;
+    const horizontal =
+      checksHorizontal(scrollable) && el.scrollWidth > el.clientWidth;
+
+    setIsOverflowing(vertical || horizontal);
+  }, [scrollable]);
 
   const debouncedCheck = useCallback(() => {
     if (timerRef.current !== null) {
@@ -129,7 +168,7 @@ export function useScrollableRegion(
   }, [isOverflowing, ariaLabel, ariaLabelledBy]);
 
   // Build containerProps
-  const baseStyle: React.CSSProperties = { overflow };
+  const baseStyle: React.CSSProperties = getOverflowStyle(scrollable);
 
   const containerProps: UseScrollableRegionReturn["containerProps"] = {
     style:

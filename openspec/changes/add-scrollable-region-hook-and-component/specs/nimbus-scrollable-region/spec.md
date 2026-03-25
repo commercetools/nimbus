@@ -16,14 +16,14 @@ returns spread-ready props. The component is a thin wrapper around the hook.
 ## ADDED Requirements
 
 ### Requirement: Hook accepts configuration options
-The hook SHALL accept an options object to configure overflow detection and
-accessibility behaviour.
+The hook SHALL accept an options object to configure scroll behavior and
+accessibility.
 
 #### Scenario: Default options
 - **WHEN** `useScrollableRegion` is called with only `aria-label`
 - **THEN** SHALL default `role` to `"group"`
 - **AND** SHALL default `debounceMs` to `100`
-- **AND** SHALL default `overflow` to `"auto"`
+- **AND** SHALL default `scrollable` to `"auto"`
 
 #### Scenario: Custom role
 - **WHEN** `useScrollableRegion` is called with `role: "region"`
@@ -33,9 +33,22 @@ accessibility behaviour.
 - **WHEN** `useScrollableRegion` is called with `debounceMs: 200`
 - **THEN** SHALL debounce overflow checks by 200ms
 
-#### Scenario: Custom overflow
-- **WHEN** `useScrollableRegion` is called with `overflow: "scroll"`
-- **THEN** SHALL include `overflow: "scroll"` in `containerProps.style`
+#### Scenario: Scrollable axis control
+- **WHEN** `scrollable` is `"auto"` or `"scroll"`
+- **THEN** SHALL enable scrolling on both axes
+- **AND** SHALL detect overflow on both axes
+- **WHEN** `scrollable` is `"y-auto"` or `"y-scroll"`
+- **THEN** SHALL enable scrolling on the vertical axis only
+- **AND** SHALL detect overflow on the vertical axis only
+- **WHEN** `scrollable` is `"x-auto"` or `"x-scroll"`
+- **THEN** SHALL enable scrolling on the horizontal axis only
+- **AND** SHALL detect overflow on the horizontal axis only
+- **WHEN** `scrollable` is `"none"`
+- **THEN** SHALL disable scrolling on both axes
+
+#### Scenario: Type-level enforcement for role="region"
+- **WHEN** `role` is `"region"`
+- **THEN** TypeScript SHALL require either `aria-label` or `aria-labelledby`
 
 ### Requirement: Hook returns ref, isOverflowing, and containerProps
 The hook SHALL return a ref callback, a boolean overflow state, and a
@@ -46,9 +59,9 @@ spread-ready props object.
 - **THEN** SHALL begin observing that element for size changes via `ResizeObserver`
 
 #### Scenario: isOverflowing reflects overflow state
-- **WHEN** the observed element's `scrollHeight` exceeds its `clientHeight`
+- **WHEN** content overflows on the enabled axis
 - **THEN** `isOverflowing` SHALL be `true`
-- **AND** WHEN `scrollHeight` does not exceed `clientHeight`
+- **AND** WHEN content does not overflow on the enabled axis
 - **THEN** `isOverflowing` SHALL be `false`
 
 #### Scenario: containerProps when overflowing
@@ -56,14 +69,14 @@ spread-ready props object.
 - **THEN** `containerProps` SHALL include `tabIndex: 0`
 - **AND** SHALL include the configured `role`
 - **AND** SHALL include `aria-label` or `aria-labelledby` if provided
-- **AND** SHALL include `style` with the configured `overflow` value
+- **AND** SHALL include `style` with the appropriate CSS overflow properties
 
 #### Scenario: containerProps when not overflowing
 - **WHEN** `isOverflowing` is `false`
 - **THEN** `containerProps` SHALL NOT include `tabIndex`
 - **AND** SHALL NOT include `role`
 - **AND** SHALL NOT include `aria-label` or `aria-labelledby`
-- **AND** SHALL include `style` with the configured `overflow` value
+- **AND** SHALL include `style` with the appropriate CSS overflow properties
 
 ### Requirement: Overflow detection uses ResizeObserver with debounce
 The hook SHALL use `ResizeObserver` to detect overflow and debounce the
@@ -72,7 +85,7 @@ evaluation.
 #### Scenario: ResizeObserver monitors dimensions
 - **WHEN** the ref is attached to a DOM element
 - **THEN** SHALL create a `ResizeObserver` to monitor the element
-- **AND** SHALL compare `scrollHeight` to `clientHeight` on each observation
+- **AND** SHALL check overflow on the axis matching the `scrollable` prop
 
 #### Scenario: Debounced evaluation
 - **WHEN** rapid resize events occur within the debounce window
@@ -117,23 +130,22 @@ requirements are not met.
 - **AND** neither `aria-label` nor `aria-labelledby` is provided
 - **THEN** SHALL NOT log a warning
 
-### Requirement: ScrollableRegion component renders correct element
-The component SHALL render the appropriate HTML element based on the `role`
-prop and overflow state.
+### Requirement: ScrollableRegion component renders as a Box
+The component SHALL always render a Chakra `Box` (`<div>`) and use ARIA
+attributes for semantics.
 
 #### Scenario: Overflowing with role="region"
 - **WHEN** the component is overflowing and `role` is `"region"`
-- **THEN** SHALL render a `<section>` element
+- **THEN** SHALL render a `<div>` with `role="region"`
 - **AND** SHALL spread `containerProps` onto the element
 
 #### Scenario: Overflowing with role="group"
 - **WHEN** the component is overflowing and `role` is `"group"` (or default)
-- **THEN** SHALL render a `<div>` element
-- **AND** `containerProps` SHALL include `role="group"`
+- **THEN** SHALL render a `<div>` with `role="group"`
 
 #### Scenario: Not overflowing
 - **WHEN** the component is not overflowing
-- **THEN** SHALL render a `<div>` element without `role` or landmark semantics
+- **THEN** SHALL render a `<div>` without `role` or landmark semantics
 
 #### Scenario: Ref forwarding
 - **WHEN** a `ref` is passed to `ScrollableRegion`
@@ -141,7 +153,7 @@ prop and overflow state.
 - **AND** SHALL merge it with the hook's internal ref
 
 ### Requirement: Component accepts standard HTML attributes
-The component SHALL accept and forward standard HTML div/section attributes.
+The component SHALL accept and forward standard HTML div attributes.
 
 #### Scenario: className and style
 - **WHEN** `className` or `style` props are passed

@@ -93,14 +93,14 @@ const App = () => (
 )
 ```
 
-### Custom overflow
+### Scroll axis control
 
-By default, the container uses `overflow: auto`. Set `overflow="scroll"` to
-always show scrollbars.
+By default, scrolling is enabled on both axes. Use the `scrollable` prop to
+control which axis is scrollable or to disable scrolling entirely.
 
 ```jsx live
 const App = () => (
-  <ScrollableRegion aria-label="Always-scrollbar region" overflow="scroll" style={{ height: "150px" }}>
+  <ScrollableRegion aria-label="Vertical only" scrollable="y-auto" style={{ height: "150px" }}>
     {Array.from({ length: 20 }, (_, i) => (
       <Text key={i}>Entry {i + 1}: Data row content.</Text>
     ))}
