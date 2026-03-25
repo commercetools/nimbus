@@ -44,8 +44,10 @@ export const ScrollableRegion = ({
     ? { ...containerProps.style, ...style }
     : containerProps.style;
 
+  const Element = role === "region" ? chakra.section : chakra.div;
+
   return (
-    <chakra.div
+    <Element
       ref={mergedRef}
       focusVisibleRing="outside"
       {...containerProps}
@@ -53,7 +55,7 @@ export const ScrollableRegion = ({
       style={mergedStyle}
     >
       {children}
-    </chakra.div>
+    </Element>
   );
 };
 

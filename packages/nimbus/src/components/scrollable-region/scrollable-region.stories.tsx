@@ -122,11 +122,11 @@ export const RoleRegion: Story = {
       await expect(region).toHaveAttribute("aria-label", "Main content area");
     });
 
-    await step("Renders as a div with role=region", async () => {
+    await step("Renders as <section> for role=region", async () => {
       const region = canvas.getByRole("region", {
         name: "Main content area",
       });
-      await expect(region.tagName).toBe("DIV");
+      await expect(region.tagName).toBe("SECTION");
     });
   },
 };
