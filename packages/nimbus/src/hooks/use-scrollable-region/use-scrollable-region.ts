@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { useFocusRing } from "react-aria";
 import type {
   ScrollableOverflow,
   UseScrollableRegionOptions,
@@ -41,21 +40,13 @@ function checksVertical(overflow: ScrollableOverflow): boolean {
   );
 }
 
-const FOCUS_RING_STYLES: React.CSSProperties = {
-  outlineWidth: "var(--focus-ring-width)",
-  outlineColor: "var(--focus-ring-color)",
-  outlineStyle:
-    "var(--focus-ring-style)" as React.CSSProperties["outlineStyle"],
-  outlineOffset: "-2px",
-};
-
 /**
  * useScrollableRegion
  * ============================================================
  * Makes scrollable containers accessible to keyboard and screen reader users.
  *
  * Detects content overflow via `ResizeObserver`, dynamically manages
- * `tabIndex`, ARIA roles, accessible name, and a keyboard-only focus ring.
+ * `tabIndex`, ARIA roles, and accessible name.
  *
  * @internal This hook is not part of the public API. Use the
  * `ScrollableRegion` component for consumer-facing usage. The hook is used
@@ -81,8 +72,6 @@ export function useScrollableRegion(
   const elementRef = useRef<HTMLElement | null>(null);
   const observerRef = useRef<ResizeObserver | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const { isFocusVisible, focusProps } = useFocusRing();
 
   const checkOverflow = useCallback(() => {
     const el = elementRef.current;
@@ -159,14 +148,8 @@ export function useScrollableRegion(
   }, [role, ariaLabel, ariaLabelledBy]);
 
   // Build containerProps
-  const baseStyle: React.CSSProperties = getOverflowStyle(scrollable);
-
   const containerProps: UseScrollableRegionReturn["containerProps"] = {
-    style:
-      isOverflowing && isFocusVisible
-        ? { ...baseStyle, ...FOCUS_RING_STYLES }
-        : baseStyle,
-    ...(isOverflowing ? focusProps : {}),
+    style: getOverflowStyle(scrollable),
     // Role and accessible name are always applied so the landmark
     // doesn't appear/disappear as content resizes. Only tabIndex
     // toggles based on overflow state.

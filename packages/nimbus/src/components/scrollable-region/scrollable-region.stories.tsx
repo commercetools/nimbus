@@ -122,11 +122,11 @@ export const RoleRegion: Story = {
       await expect(region).toHaveAttribute("aria-label", "Main content area");
     });
 
-    await step("Renders as <section> by default for role=region", async () => {
+    await step("Renders as a div with role=region", async () => {
       const region = canvas.getByRole("region", {
         name: "Main content area",
       });
-      await expect(region.tagName).toBe("SECTION");
+      await expect(region.tagName).toBe("DIV");
     });
   },
 };
@@ -340,44 +340,6 @@ export const WithAriaLabelledBy: Story = {
 };
 
 // ============================================================
-// Custom `as` prop override
-// ============================================================
-export const CustomElement: Story = {
-  render: () => (
-    <ScrollableRegion
-      as="div"
-      role="region"
-      aria-label="Overridden element"
-      h="200px"
-    >
-      <OverflowingContent />
-    </ScrollableRegion>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step(
-      "Renders as <div> instead of default <section> for role=region",
-      async () => {
-        await waitFor(() => {
-          const region = canvas.getByRole("region", {
-            name: "Overridden element",
-          });
-          expect(region.tagName).toBe("DIV");
-        });
-      }
-    );
-
-    await step("Still has role=region", async () => {
-      const region = canvas.getByRole("region", {
-        name: "Overridden element",
-      });
-      await expect(region).toHaveAttribute("role", "region");
-    });
-  },
-};
-
-// ============================================================
 // Box style props
 // ============================================================
 export const WithBoxProps: Story = {
@@ -499,20 +461,6 @@ export const SmokeTest: Story = {
           Labelled
         </Heading>
         <ScrollableRegion aria-labelledby="smoke-heading" h="80px" w="180px">
-          <OverflowingContent />
-        </ScrollableRegion>
-      </Box>
-
-      {/* as prop override */}
-      <Box>
-        <Text fontSize="sm">as=div + role=region</Text>
-        <ScrollableRegion
-          as="div"
-          role="region"
-          aria-label="as override"
-          h="80px"
-          w="180px"
-        >
           <OverflowingContent />
         </ScrollableRegion>
       </Box>
