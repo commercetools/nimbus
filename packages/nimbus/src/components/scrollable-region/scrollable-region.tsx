@@ -7,18 +7,16 @@ import type { ScrollableRegionProps } from "./scrollable-region.types";
 /**
  * ScrollableRegion
  * ============================================================
- * An accessible scrollable container that automatically detects overflow
- * and manages keyboard focus, ARIA roles, and focus ring.
+ * An accessible scrollable container that detects content overflow and
+ * conditionally adds `tabIndex` so keyboard users can scroll.
  *
  * Uses the internal `useScrollableRegion` hook for overflow detection
  * and accessibility management.
  *
- * Features:
- *
- * - dynamic overflow detection via ResizeObserver (vertical and horizontal)
- * - conditional `tabIndex`, ARIA role, and accessible name based on overflow state
- * - keyboard-only focus ring using react-aria's `useFocusRing`
- * - forwards refs to the underlying DOM element
+ * ARIA `role` and accessible name are always applied. Only `tabIndex`
+ * toggles based on overflow state. Renders as `<section>` for
+ * `role="region"` and `<div>` for `role="group"` by default; override
+ * with the `as` prop.
  */
 export const ScrollableRegion = ({
   ref: forwardedRef,
@@ -27,8 +25,8 @@ export const ScrollableRegion = ({
   "aria-labelledby": ariaLabelledBy,
   debounceMs,
   scrollable,
+  as,
   children,
-  className,
   style,
   ...rest
 }: ScrollableRegionProps) => {
@@ -49,10 +47,13 @@ export const ScrollableRegion = ({
     ? { ...containerProps.style, ...style }
     : containerProps.style;
 
+  // Default element: <section> for role="region", <div> for role="group"
+  const defaultAs = role === "region" ? "section" : "div";
+
   return (
     <Box
+      as={as ?? defaultAs}
       ref={mergedRef}
-      className={className}
       {...containerProps}
       {...rest}
       style={mergedStyle}

@@ -2,7 +2,7 @@
 id: Components-ScrollableRegion
 title: ScrollableRegion
 exportName: ScrollableRegion
-description: An accessible scrollable container that automatically detects overflow and manages keyboard focus, ARIA roles, and focus ring.
+description: An accessible scrollable container that detects overflow and conditionally enables keyboard scrolling with a focus ring.
 lifecycleState: Experimental
 order: 999
 menu:
@@ -20,9 +20,9 @@ tags:
 ## Overview
 
 ScrollableRegion makes scrollable containers accessible to keyboard-only and
-screen reader users. It detects content overflow and dynamically adds
-`tabIndex`, ARIA roles, and a keyboard-only focus ring so users can scroll
-without a mouse.
+screen reader users. It always applies ARIA `role` and accessible name for
+screen readers, and when content overflows it adds `tabIndex` and a
+keyboard-only focus ring so users can scroll without a mouse.
 
 ### Resources
 
@@ -49,8 +49,9 @@ const App = () => (
 
 ### Non-overflowing
 
-When content fits within the container, no ARIA attributes or `tabIndex` are
-applied — avoiding unnecessary "landmark noise" for screen reader users.
+When content fits within the container, the ARIA `role` and accessible name
+remain applied but `tabIndex` is not set — the container is not
+keyboard-focusable when there is nothing to scroll.
 
 ```jsx live
 const App = () => (

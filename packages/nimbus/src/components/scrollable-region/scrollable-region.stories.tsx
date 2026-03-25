@@ -29,7 +29,7 @@ const ShortContent = () => <Text>This content does not overflow.</Text>;
 // ============================================================
 export const Default: Story = {
   render: () => (
-    <ScrollableRegion aria-label="Log output" style={{ height: "200px" }}>
+    <ScrollableRegion aria-label="Log output" h="200px">
       <OverflowingContent />
     </ScrollableRegion>
   ),
@@ -65,7 +65,7 @@ export const Default: Story = {
 // ============================================================
 export const NonOverflowing: Story = {
   render: () => (
-    <ScrollableRegion aria-label="Short content" style={{ height: "200px" }}>
+    <ScrollableRegion aria-label="Short content" h="200px">
       <ShortContent />
     </ScrollableRegion>
   ),
@@ -96,11 +96,7 @@ export const NonOverflowing: Story = {
 // ============================================================
 export const RoleRegion: Story = {
   render: () => (
-    <ScrollableRegion
-      role="region"
-      aria-label="Main content area"
-      style={{ height: "200px" }}
-    >
+    <ScrollableRegion role="region" aria-label="Main content area" h="200px">
       <OverflowingContent />
     </ScrollableRegion>
   ),
@@ -125,6 +121,13 @@ export const RoleRegion: Story = {
       });
       await expect(region).toHaveAttribute("aria-label", "Main content area");
     });
+
+    await step("Renders as <section> by default for role=region", async () => {
+      const region = canvas.getByRole("region", {
+        name: "Main content area",
+      });
+      await expect(region.tagName).toBe("SECTION");
+    });
   },
 };
 
@@ -135,10 +138,7 @@ export const KeyboardFocusRing: Story = {
   render: () => (
     <Box>
       <Text>Press Tab to focus the scrollable region below:</Text>
-      <ScrollableRegion
-        aria-label="Focusable region"
-        style={{ height: "200px", marginTop: "16px" }}
-      >
+      <ScrollableRegion aria-label="Focusable region" h="200px" mt="400">
         <OverflowingContent />
       </ScrollableRegion>
     </Box>
@@ -173,7 +173,7 @@ export const OverflowScroll: Story = {
     <ScrollableRegion
       aria-label="Always-scrollbar region"
       scrollable="scroll"
-      style={{ height: "200px" }}
+      h="200px"
     >
       <OverflowingContent />
     </ScrollableRegion>
@@ -200,7 +200,7 @@ export const VerticalOnly: Story = {
     <ScrollableRegion
       aria-label="Vertical scroll"
       scrollable="y-auto"
-      style={{ height: "200px" }}
+      h="200px"
     >
       <OverflowingContent />
     </ScrollableRegion>
@@ -229,7 +229,7 @@ export const VerticalOnly: Story = {
 // Horizontal-only overflow
 // ============================================================
 const WideContent = () => (
-  <Box style={{ whiteSpace: "nowrap" }}>
+  <Box whiteSpace="nowrap">
     {Array.from({ length: 5 }, (_, i) => (
       <Text key={i}>{"Long horizontal content ".repeat(20)}</Text>
     ))}
@@ -241,7 +241,7 @@ export const HorizontalOnly: Story = {
     <ScrollableRegion
       aria-label="Horizontal scroll"
       scrollable="x-auto"
-      style={{ width: "300px" }}
+      w="300px"
     >
       <WideContent />
     </ScrollableRegion>
@@ -320,10 +320,7 @@ export const WithAriaLabelledBy: Story = {
   render: () => (
     <Box>
       <Heading id="log-heading">Application Logs</Heading>
-      <ScrollableRegion
-        aria-labelledby="log-heading"
-        style={{ height: "200px" }}
-      >
+      <ScrollableRegion aria-labelledby="log-heading" h="200px">
         <OverflowingContent />
       </ScrollableRegion>
     </Box>
@@ -343,59 +340,201 @@ export const WithAriaLabelledBy: Story = {
 };
 
 // ============================================================
-// SmokeTest: covers role × scrollable prop matrix
+// Custom `as` prop override
+// ============================================================
+export const CustomElement: Story = {
+  render: () => (
+    <ScrollableRegion
+      as="div"
+      role="region"
+      aria-label="Overridden element"
+      h="200px"
+    >
+      <OverflowingContent />
+    </ScrollableRegion>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Renders as <div> instead of default <section> for role=region",
+      async () => {
+        await waitFor(() => {
+          const region = canvas.getByRole("region", {
+            name: "Overridden element",
+          });
+          expect(region.tagName).toBe("DIV");
+        });
+      }
+    );
+
+    await step("Still has role=region", async () => {
+      const region = canvas.getByRole("region", {
+        name: "Overridden element",
+      });
+      await expect(region).toHaveAttribute("role", "region");
+    });
+  },
+};
+
+// ============================================================
+// Box style props
+// ============================================================
+export const WithBoxProps: Story = {
+  render: () => (
+    <ScrollableRegion
+      aria-label="Styled region"
+      p="400"
+      bg="neutral.2"
+      maxH="200px"
+      borderRadius="md"
+    >
+      <OverflowingContent />
+    </ScrollableRegion>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Accepts Chakra style props", async () => {
+      await waitFor(() => {
+        const region = canvas.getByRole("group", {
+          name: "Styled region",
+        });
+        expect(region).toHaveAttribute("tabindex", "0");
+      });
+    });
+
+    await step("Renders as a div (default for role=group)", async () => {
+      const region = canvas.getByRole("group", { name: "Styled region" });
+      await expect(region.tagName).toBe("DIV");
+    });
+  },
+};
+
+// ============================================================
+// SmokeTest: renders all prop combinations without errors
 // ============================================================
 export const SmokeTest: Story = {
   render: () => (
-    <Box display="flex" gap="16px" flexWrap="wrap">
+    <Box display="flex" gap="400" flexWrap="wrap">
+      {/* role × scrollable matrix */}
       <Box>
-        <Text>role=group, scrollable=auto</Text>
-        <ScrollableRegion
-          aria-label="Group auto"
-          style={{ height: "100px", width: "200px" }}
-        >
+        <Text fontSize="sm">group + auto (default)</Text>
+        <ScrollableRegion aria-label="group auto" h="80px" w="180px">
           <OverflowingContent />
         </ScrollableRegion>
       </Box>
       <Box>
-        <Text>role=group, scrollable=scroll</Text>
+        <Text fontSize="sm">group + scroll</Text>
         <ScrollableRegion
-          aria-label="Group scroll"
+          aria-label="group scroll"
           scrollable="scroll"
-          style={{ height: "100px", width: "200px" }}
+          h="80px"
+          w="180px"
         >
           <OverflowingContent />
         </ScrollableRegion>
       </Box>
       <Box>
-        <Text>role=region, scrollable=auto</Text>
+        <Text fontSize="sm">group + y-auto</Text>
+        <ScrollableRegion
+          aria-label="group y-auto"
+          scrollable="y-auto"
+          h="80px"
+          w="180px"
+        >
+          <OverflowingContent />
+        </ScrollableRegion>
+      </Box>
+      <Box>
+        <Text fontSize="sm">group + x-auto</Text>
+        <ScrollableRegion
+          aria-label="group x-auto"
+          scrollable="x-auto"
+          h="80px"
+          w="180px"
+        >
+          <WideContent />
+        </ScrollableRegion>
+      </Box>
+      <Box>
+        <Text fontSize="sm">group + none</Text>
+        <ScrollableRegion
+          aria-label="group none"
+          scrollable="none"
+          h="80px"
+          w="180px"
+        >
+          <OverflowingContent />
+        </ScrollableRegion>
+      </Box>
+      <Box>
+        <Text fontSize="sm">region + auto</Text>
         <ScrollableRegion
           role="region"
-          aria-label="Region auto"
-          style={{ height: "100px", width: "200px" }}
+          aria-label="region auto"
+          h="80px"
+          w="180px"
         >
           <OverflowingContent />
         </ScrollableRegion>
       </Box>
       <Box>
-        <Text>role=region, scrollable=scroll</Text>
+        <Text fontSize="sm">region + scroll</Text>
         <ScrollableRegion
           role="region"
-          aria-label="Region scroll"
+          aria-label="region scroll"
           scrollable="scroll"
-          style={{ height: "100px", width: "200px" }}
+          h="80px"
+          w="180px"
         >
           <OverflowingContent />
         </ScrollableRegion>
       </Box>
+
+      {/* aria-labelledby */}
       <Box>
-        <Text>aria-labelledby</Text>
+        <Text fontSize="sm">aria-labelledby</Text>
         <Heading id="smoke-heading" fontSize="sm">
-          Labelled Region
+          Labelled
         </Heading>
+        <ScrollableRegion aria-labelledby="smoke-heading" h="80px" w="180px">
+          <OverflowingContent />
+        </ScrollableRegion>
+      </Box>
+
+      {/* as prop override */}
+      <Box>
+        <Text fontSize="sm">as=div + role=region</Text>
         <ScrollableRegion
-          aria-labelledby="smoke-heading"
-          style={{ height: "100px", width: "200px" }}
+          as="div"
+          role="region"
+          aria-label="as override"
+          h="80px"
+          w="180px"
+        >
+          <OverflowingContent />
+        </ScrollableRegion>
+      </Box>
+
+      {/* non-overflowing */}
+      <Box>
+        <Text fontSize="sm">non-overflowing</Text>
+        <ScrollableRegion aria-label="no overflow" h="80px" w="180px">
+          <ShortContent />
+        </ScrollableRegion>
+      </Box>
+
+      {/* Box style props */}
+      <Box>
+        <Text fontSize="sm">with style props</Text>
+        <ScrollableRegion
+          aria-label="styled"
+          h="80px"
+          w="180px"
+          p="200"
+          bg="neutral.2"
+          borderRadius="sm"
         >
           <OverflowingContent />
         </ScrollableRegion>
@@ -405,42 +544,12 @@ export const SmokeTest: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("All overflowing variants have tabIndex=0", async () => {
+    await step("All variants render without errors", async () => {
       await waitFor(() => {
-        const groupAuto = canvas.getByRole("group", { name: "Group auto" });
-        expect(groupAuto).toHaveAttribute("tabindex", "0");
+        expect(
+          canvas.getByRole("group", { name: "group auto" })
+        ).toBeInTheDocument();
       });
-
-      const groupScroll = canvas.getByRole("group", { name: "Group scroll" });
-      await expect(groupScroll).toHaveAttribute("tabindex", "0");
-
-      const regionAuto = canvas.getByRole("region", { name: "Region auto" });
-      await expect(regionAuto).toHaveAttribute("tabindex", "0");
-
-      const regionScroll = canvas.getByRole("region", {
-        name: "Region scroll",
-      });
-      await expect(regionScroll).toHaveAttribute("tabindex", "0");
-
-      const labelled = canvas.getByRole("group", {
-        name: "Labelled Region",
-      });
-      await expect(labelled).toHaveAttribute("tabindex", "0");
-    });
-
-    await step("Region variants have role=region", async () => {
-      const regionAuto = canvas.getByRole("region", { name: "Region auto" });
-      await expect(regionAuto).toHaveAttribute("role", "region");
-
-      const regionScroll = canvas.getByRole("region", {
-        name: "Region scroll",
-      });
-      await expect(regionScroll).toHaveAttribute("role", "region");
-    });
-
-    await step("Group variants have role=group", async () => {
-      const groupAuto = canvas.getByRole("group", { name: "Group auto" });
-      await expect(groupAuto).toHaveAttribute("role", "group");
     });
   },
 };

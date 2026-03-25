@@ -48,21 +48,19 @@ const App = () => (
 - An accessible name (`aria-label` or `aria-labelledby`) is strongly
   recommended for all scrollable regions. It is enforced at the TypeScript
   level when `role="region"`.
-- In development mode, a `console.warn` is logged if the container overflows
+- In development mode, a `console.warn` is logged when `role="region"` is used
   without an accessible name.
 
 ## Accessibility
 
-The ScrollableRegion component handles accessibility automatically:
+The ScrollableRegion component handles accessibility as follows:
 
-- Adds `tabIndex={0}` only when content overflows, making the container
+- ARIA `role` and accessible name are always applied to the container
+- `tabIndex={0}` is added only when content overflows, making the container
   keyboard-focusable
-- Applies ARIA `role` and accessible name only when overflowing, avoiding
-  landmark noise for screen readers
-- Shows a focus ring only during keyboard navigation (not mouse clicks) via
+- A focus ring is shown only during keyboard navigation (not mouse clicks) via
   react-aria's `useFocusRing`
-- Uses `outlineOffset: -2px` to prevent focus ring clipping by the overflow
-  boundary
+- `outlineOffset: -2px` prevents focus ring clipping by the overflow boundary
 - Detects both vertical and horizontal overflow
 
 If your use case requires tracking and analytics for this component, it is good

@@ -5,8 +5,9 @@
 The ScrollableRegion capability provides a `ScrollableRegion` component and an
 internal `useScrollableRegion` hook that make scrollable containers accessible
 to keyboard and screen reader users. The hook detects content overflow via
-`ResizeObserver`, dynamically manages ARIA attributes and focus ring, and
-returns spread-ready props. The component is a thin wrapper around the hook.
+`ResizeObserver`, always applies ARIA `role` and accessible name, and
+conditionally adds `tabIndex` and a keyboard-only focus ring when overflowing.
+The component is a thin wrapper around the hook.
 
 **Component:** `ScrollableRegion` (public API)
 **Hook:** `useScrollableRegion` (internal — not exported to consumers)
@@ -122,33 +123,36 @@ react-aria's `useFocusRing`.
 The hook SHALL warn developers in development mode when accessibility
 requirements are not met.
 
-#### Scenario: Overflowing without accessible name
-- **WHEN** `isOverflowing` is `true`
+#### Scenario: role="region" without accessible name
+- **WHEN** `role` is `"region"`
 - **AND** neither `aria-label` nor `aria-labelledby` is provided
 - **AND** `process.env.NODE_ENV` is not `"production"`
 - **THEN** SHALL log a `console.warn` describing the missing accessible name
 
-#### Scenario: Not overflowing without accessible name
-- **WHEN** `isOverflowing` is `false`
+#### Scenario: role="group" without accessible name
+- **WHEN** `role` is `"group"`
 - **AND** neither `aria-label` nor `aria-labelledby` is provided
 - **THEN** SHALL NOT log a warning
 
-### Requirement: ScrollableRegion component renders as a Box
-The component SHALL always render a Chakra `Box` (`<div>`) and use ARIA
-attributes for semantics.
+### Requirement: ScrollableRegion component renders as a polymorphic Box
+The component SHALL render a Chakra `Box` with a default HTML element based
+on the `role` prop, overridable via the `as` prop.
 
-#### Scenario: Overflowing with role="region"
-- **WHEN** the component is overflowing and `role` is `"region"`
-- **THEN** SHALL render a `<div>` with `role="region"`
-- **AND** SHALL spread `containerProps` onto the element
+#### Scenario: Default element for role="region"
+- **WHEN** `role` is `"region"` and no `as` prop is provided
+- **THEN** SHALL render a `<section>` element with `role="region"`
 
-#### Scenario: Overflowing with role="group"
-- **WHEN** the component is overflowing and `role` is `"group"` (or default)
-- **THEN** SHALL render a `<div>` with `role="group"`
+#### Scenario: Default element for role="group"
+- **WHEN** `role` is `"group"` (or default) and no `as` prop is provided
+- **THEN** SHALL render a `<div>` element with `role="group"`
+
+#### Scenario: Custom element via `as` prop
+- **WHEN** an `as` prop is provided (e.g., `as="nav"`)
+- **THEN** SHALL render the specified HTML element instead of the default
 
 #### Scenario: Not overflowing
 - **WHEN** the component is not overflowing
-- **THEN** SHALL render a `<div>` with `role` and accessible name intact
+- **THEN** SHALL render with `role` and accessible name intact
 - **AND** SHALL NOT include `tabIndex`
 
 #### Scenario: Ref forwarding
@@ -156,12 +160,17 @@ attributes for semantics.
 - **THEN** SHALL forward the ref to the rendered DOM element
 - **AND** SHALL merge it with the hook's internal ref
 
-### Requirement: Component accepts standard HTML attributes
-The component SHALL accept and forward standard HTML div attributes.
+### Requirement: Component accepts Box props
+The component SHALL accept all Chakra `Box` style props and standard HTML
+attributes.
 
-#### Scenario: className and style
-- **WHEN** `className` or `style` props are passed
-- **THEN** SHALL merge them with hook-provided styles
+#### Scenario: Chakra style props
+- **WHEN** Chakra style props (e.g., `p`, `bg`, `maxH`, `w`) are passed
+- **THEN** SHALL forward them to the underlying `Box`
+
+#### Scenario: style prop
+- **WHEN** a `style` prop is passed
+- **THEN** SHALL merge it with hook-provided styles
 
 #### Scenario: Children
 - **WHEN** `children` are passed

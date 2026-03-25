@@ -4,18 +4,19 @@
 
 The implementation is split into two layers:
 
-1. **`useScrollableRegion` hook** (internal) — encapsulates all overflow
-   detection, debouncing, ARIA attribute management, focus ring logic, and
-   dev-mode warnings. Used internally by Nimbus components that need
-   scrollable-region a11y on existing elements (e.g., compound component
-   slots). Not exported to consumers — the API will stabilize through
-   internal usage before being promoted to the public API.
+1. **`useScrollableRegion` hook** (internal) — encapsulates overflow detection,
+   debouncing, focus ring logic, and dev-mode warnings. Always applies ARIA
+   `role` and accessible name; conditionally adds `tabIndex` when overflowing.
+   Used internally by Nimbus components that need scrollable-region a11y on
+   existing elements (e.g., compound component slots). Not exported to
+   consumers — the API will stabilize through internal usage before being
+   promoted to the public API.
 
 2. **`ScrollableRegion` component** — a thin wrapper that calls the hook and
-   renders a Chakra `Box` (`<div>`) with all attributes applied automatically.
-   ARIA attributes handle semantics (`role="region"` or `role="group"`).
-   For standalone use when the consumer does not already have a styled
-   container.
+   renders a Chakra `Box`. Defaults to `<section>` for `role="region"` and
+   `<div>` for `role="group"`, overridable via the `as` prop. Accepts all
+   Box/Chakra style props. For standalone use when the consumer does not
+   already have a styled container.
 
 ### Why not just a component?
 
@@ -91,7 +92,7 @@ keyboard-reachable when there is actually content to scroll.
 
 In development mode (`process.env.NODE_ENV !== "production"`), the hook logs a
 `console.warn` when:
-- The element overflows
+- `role` is `"region"`
 - Neither `aria-label` nor `aria-labelledby` is provided
 
 This catches a11y violations early without impacting production bundle size.
