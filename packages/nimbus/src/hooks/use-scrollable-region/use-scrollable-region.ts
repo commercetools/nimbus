@@ -176,13 +176,17 @@ export function useScrollableRegion(
         ? { ...baseStyle, ...FOCUS_RING_STYLES }
         : baseStyle,
     ...(isOverflowing ? focusProps : {}),
+    // Role and accessible name are always applied so the landmark
+    // doesn't appear/disappear as content resizes. Only tabIndex
+    // toggles based on overflow state.
+    role,
   };
+
+  if (ariaLabel) containerProps["aria-label"] = ariaLabel;
+  if (ariaLabelledBy) containerProps["aria-labelledby"] = ariaLabelledBy;
 
   if (isOverflowing) {
     containerProps.tabIndex = 0;
-    containerProps.role = role;
-    if (ariaLabel) containerProps["aria-label"] = ariaLabel;
-    if (ariaLabelledBy) containerProps["aria-labelledby"] = ariaLabelledBy;
   }
 
   return { ref, isOverflowing, containerProps };

@@ -79,11 +79,12 @@ Inline styles are used instead of a recipe because:
 | State | `role="region"` | `role="group"` (default) |
 |-------|-----------------|--------------------------|
 | Overflowing | `<div role="region">` + `aria-label`/`aria-labelledby` + `tabIndex={0}` | `<div role="group">` + `aria-label`/`aria-labelledby` + `tabIndex={0}` |
-| Not overflowing | `<div>` (no role, no tabIndex) | `<div>` (no role, no tabIndex) |
+| Not overflowing | `<div role="region">` + `aria-label`/`aria-labelledby` (no tabIndex) | `<div role="group">` + `aria-label`/`aria-labelledby` (no tabIndex) |
 
-When not overflowing, all landmark semantics are removed to avoid "landmark
-noise" — screen reader users would otherwise encounter landmarks for regions
-that do not require keyboard interaction.
+Role and accessible name are always applied so the landmark doesn't
+appear/disappear as content resizes, which would be jarring for screen reader
+users. Only `tabIndex` toggles based on overflow state — the element is only
+keyboard-reachable when there is actually content to scroll.
 
 ## Developer Guardrails
 

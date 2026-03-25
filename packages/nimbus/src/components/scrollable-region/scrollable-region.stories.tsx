@@ -66,7 +66,7 @@ export const Default: Story = {
 };
 
 // ============================================================
-// NonOverflowing: no tabIndex, no role
+// NonOverflowing: has role/aria-label but no tabIndex
 // ============================================================
 export const NonOverflowing: Story = {
   render: () => (
@@ -76,20 +76,18 @@ export const NonOverflowing: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const container = canvas.getByText(
-      "This content does not overflow."
-    ).parentElement!;
+    const container = canvas.getByRole("group", { name: "Short content" });
 
     await step("Does not have tabIndex when not overflowing", async () => {
       await expect(container).not.toHaveAttribute("tabindex");
     });
 
-    await step("Does not have role when not overflowing", async () => {
-      await expect(container).not.toHaveAttribute("role");
+    await step("Still has role when not overflowing", async () => {
+      await expect(container).toHaveAttribute("role", "group");
     });
 
-    await step("Does not have aria-label when not overflowing", async () => {
-      await expect(container).not.toHaveAttribute("aria-label");
+    await step("Still has aria-label when not overflowing", async () => {
+      await expect(container).toHaveAttribute("aria-label", "Short content");
     });
 
     await step("Renders as a div", async () => {

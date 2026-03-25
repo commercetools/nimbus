@@ -64,19 +64,18 @@ spread-ready props object.
 - **AND** WHEN content does not overflow on the enabled axis
 - **THEN** `isOverflowing` SHALL be `false`
 
+#### Scenario: containerProps always includes role and accessible name
+- **THEN** `containerProps` SHALL always include the configured `role`
+- **AND** SHALL always include `aria-label` or `aria-labelledby` if provided
+- **AND** SHALL always include `style` with the appropriate CSS overflow properties
+
 #### Scenario: containerProps when overflowing
 - **WHEN** `isOverflowing` is `true`
 - **THEN** `containerProps` SHALL include `tabIndex: 0`
-- **AND** SHALL include the configured `role`
-- **AND** SHALL include `aria-label` or `aria-labelledby` if provided
-- **AND** SHALL include `style` with the appropriate CSS overflow properties
 
 #### Scenario: containerProps when not overflowing
 - **WHEN** `isOverflowing` is `false`
 - **THEN** `containerProps` SHALL NOT include `tabIndex`
-- **AND** SHALL NOT include `role`
-- **AND** SHALL NOT include `aria-label` or `aria-labelledby`
-- **AND** SHALL include `style` with the appropriate CSS overflow properties
 
 ### Requirement: Overflow detection uses ResizeObserver with debounce
 The hook SHALL use `ResizeObserver` to detect overflow and debounce the
@@ -145,7 +144,8 @@ attributes for semantics.
 
 #### Scenario: Not overflowing
 - **WHEN** the component is not overflowing
-- **THEN** SHALL render a `<div>` without `role` or landmark semantics
+- **THEN** SHALL render a `<div>` with `role` and accessible name intact
+- **AND** SHALL NOT include `tabIndex`
 
 #### Scenario: Ref forwarding
 - **WHEN** a `ref` is passed to `ScrollableRegion`
