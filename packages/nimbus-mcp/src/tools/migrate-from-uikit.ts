@@ -6,7 +6,11 @@ import {
   getUiKitCompoundMigrations,
   getAllUiKitMigrations,
 } from "../data/uikit-migration.js";
-import type { MigrateComponentResult, MigrateFileResult } from "../types.js";
+import type {
+  MigrateComponentResult,
+  MigrateCompoundResult,
+  MigrateFileResult,
+} from "../types.js";
 
 // ---------------------------------------------------------------------------
 // Import extraction
@@ -14,6 +18,7 @@ import type { MigrateComponentResult, MigrateFileResult } from "../types.js";
 
 /**
  * Regex to match `@commercetools-uikit/*` per-package imports.
+ * Skips `import type` statements (type-only imports don't need runtime migration).
  *
  * Captures:
  * - Group 1: named imports (e.g. "PrimaryButton, SecondaryButton")
@@ -21,19 +26,23 @@ import type { MigrateComponentResult, MigrateFileResult } from "../types.js";
  * - Group 3: package scope suffix (e.g. "buttons", "text-input")
  *
  * Handles both `import { X } from '...'` and `import X from '...'` forms.
+ *
+ * ReDoS safety: no nested quantifiers; the negative lookahead is fixed-length.
  */
 const UIKIT_IMPORT_REGEX =
-  /import\s+(?:\{([^}]+)\}|(\w+))\s+from\s+['"]@commercetools-uikit\/([^'"]+)['"]/g;
+  /import\s+(?!type\s)(?:\{([^}]+)\}|(\w+))\s+from\s+['"]@commercetools-uikit\/([^'"]+)['"]/g;
 
 /**
  * Regex to match the `@commercetools-frontend/ui-kit` barrel import.
- * Only named imports are used with this path.
+ * Skips `import type` statements. Only named imports are used with this path.
  *
  * Captures:
  * - Group 1: named imports (e.g. "Spacings, Grid, Card, Text")
+ *
+ * ReDoS safety: no nested quantifiers; the negative lookahead is fixed-length.
  */
 const UIKIT_BARREL_IMPORT_REGEX =
-  /import\s+\{([^}]+)\}\s+from\s+['"]@commercetools-frontend\/ui-kit['"]/g;
+  /import\s+(?!type\s)\{([^}]+)\}\s+from\s+['"]@commercetools-frontend\/ui-kit['"]/g;
 
 /**
  * Maps common UI Kit package names to the component names used in the
@@ -77,7 +86,7 @@ const PACKAGE_TO_COMPONENT: Record<string, string> = {
   "collapsible-panel": "CollapsiblePanel",
   "collapsible-motion": "CollapsibleMotion",
   "field-errors": "FieldErrors",
-  text: "Text.Body",
+  text: "Text",
   label: "Label",
   tag: "Tag",
   stamp: "Stamp",
@@ -87,8 +96,8 @@ const PACKAGE_TO_COMPONENT: Record<string, string> = {
   avatar: "Avatar",
   tooltip: "Tooltip",
   pagination: "Pagination",
-  spacings: "Spacings.Stack",
-  constraints: "Constraints.Horizontal",
+  spacings: "Spacings",
+  constraints: "Constraints",
   icons: "Icon Library",
   "inline-svg": "InlineSvg",
 };
@@ -146,6 +155,25 @@ function extractUiKitComponents(fileContent: string): string[] {
 }
 
 // ---------------------------------------------------------------------------
+// Case-insensitive lookup (pre-built for O(1) access)
+// ---------------------------------------------------------------------------
+
+/** Lazily built lowercase name → original uiKitName map. */
+let _caseInsensitiveMap: Map<string, string> | undefined;
+
+function getCaseInsensitiveMap(): Map<string, string> {
+  if (!_caseInsensitiveMap) {
+    _caseInsensitiveMap = new Map(
+      getAllUiKitMigrations().map((e) => [
+        e.uiKitName.toLowerCase(),
+        e.uiKitName,
+      ])
+    );
+  }
+  return _caseInsensitiveMap;
+}
+
+// ---------------------------------------------------------------------------
 // Result builders
 // ---------------------------------------------------------------------------
 
@@ -155,6 +183,7 @@ function extractUiKitComponents(fileContent: string): string[] {
  */
 function deriveToolHint(
   uiKitName: string,
+  nimbusEquivalent: string | null,
   importPath: string | null,
   notes: string
 ): string | undefined {
@@ -179,8 +208,8 @@ function deriveToolHint(
   }
 
   // Component lookup — entries that map to a specific Nimbus component
-  if (importPath === "@commercetools/nimbus") {
-    return 'Use the get_component tool to see full API docs for the Nimbus equivalent (e.g. get_component(name: "Button"))';
+  if (importPath === "@commercetools/nimbus" && nimbusEquivalent) {
+    return `Use the get_component tool to see full API docs (e.g. get_component(name: "${nimbusEquivalent}"))`;
   }
 
   return undefined;
@@ -201,7 +230,12 @@ function buildComponentResult(
     breakingChanges: entry.breakingChanges,
   };
 
-  const hint = deriveToolHint(uiKitName, entry.importPath, entry.notes);
+  const hint = deriveToolHint(
+    uiKitName,
+    entry.nimbusEquivalent,
+    entry.importPath,
+    entry.notes
+  );
   if (hint) result.hint = hint;
 
   return result;
@@ -274,32 +308,31 @@ export function registerMigrateFromUiKit(server: McpServer): void {
         // Check if this is a compound root (e.g. "Spacings" → Spacings.Stack, Spacings.Inline, ...)
         const compoundEntries = getUiKitCompoundMigrations(componentName);
         if (compoundEntries) {
+          const response: MigrateCompoundResult = {
+            compoundRoot: componentName,
+            note: `"${componentName}" is used as a namespace (e.g. ${compoundEntries.map((e) => e.uiKitName).join(", ")}). Each sub-component has its own mapping.`,
+            mappings: compoundEntries.map(
+              (e) => buildComponentResult(e.uiKitName)!
+            ),
+          };
           return {
             content: [
               {
                 type: "text" as const,
-                text: JSON.stringify({
-                  compoundRoot: componentName,
-                  note: `"${componentName}" is used as a namespace (e.g. ${compoundEntries.map((e) => e.uiKitName).join(", ")}). Each sub-component has its own mapping.`,
-                  mappings: compoundEntries.map((e) =>
-                    buildComponentResult(e.uiKitName)
-                  ),
-                }),
+                text: JSON.stringify(response),
               },
             ],
           };
         }
 
-        // Try case-insensitive search across all migrations
-        const all = getAllUiKitMigrations();
-        const needle = componentName.toLowerCase();
-        const fuzzy = all.find((e) => e.uiKitName.toLowerCase() === needle);
+        // Try case-insensitive fallback via pre-built lowercase map.
+        const fuzzy = getCaseInsensitiveMap().get(componentName.toLowerCase());
         if (fuzzy) {
           return {
             content: [
               {
                 type: "text" as const,
-                text: JSON.stringify(buildComponentResult(fuzzy.uiKitName)),
+                text: JSON.stringify(buildComponentResult(fuzzy)),
               },
             ],
           };
@@ -335,11 +368,16 @@ export function registerMigrateFromUiKit(server: McpServer): void {
       const componentNames = extractUiKitComponents(fileContent);
 
       if (componentNames.length === 0) {
+        const emptyResponse: MigrateFileResult = {
+          filePath: filePath!,
+          mappings: [],
+          unmapped: [],
+        };
         return {
           content: [
             {
               type: "text" as const,
-              text: `No @commercetools-uikit imports found in "${filePath}".`,
+              text: JSON.stringify(emptyResponse),
             },
           ],
         };

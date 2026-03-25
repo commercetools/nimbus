@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
-import { writeFile, unlink, mkdtemp } from "node:fs/promises";
+import { writeFile, rm, mkdtemp } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -117,11 +117,12 @@ describe("migrate_from_uikit — componentName mode", () => {
     expect(data.hint).toContain("get_tokens");
   });
 
-  it("includes a get_component hint for standard component mappings", async () => {
+  it("includes a get_component hint with the Nimbus equivalent name", async () => {
     const result = await callMigrate({ componentName: "PrimaryButton" });
     const data = JSON.parse(getText(result));
 
     expect(data.hint).toContain("get_component");
+    expect(data.hint).toContain("Button");
   });
 
   it("returns error for unknown component", async () => {
@@ -155,7 +156,7 @@ export const MyComponent = () => <div />;
 
   afterAll(async () => {
     try {
-      await unlink(tmpFile);
+      await rm(tmpDir, { recursive: true });
     } catch {
       // ignore cleanup errors
     }
@@ -208,8 +209,6 @@ export const MyComponent = () => (
     // The root names themselves should not appear as unmapped
     expect(data.unmapped).not.toContain("Spacings");
     expect(data.unmapped).not.toContain("Text");
-
-    await unlink(barrelFile);
   });
 
   it("returns all sub-components when none are explicitly used in the file", async () => {
@@ -232,8 +231,6 @@ export const spacing = Spacings;
     expect(names).toContain("Spacings.Stack");
     expect(names).toContain("Spacings.Inline");
     expect(names).toContain("Spacings.Inset");
-
-    await unlink(barrelFile);
   });
 
   it("returns error for non-existent file", async () => {

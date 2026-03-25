@@ -7,13 +7,7 @@
  * Source: migration-mapping.csv cross-referenced with Nimbus docs.
  */
 
-/** The type of migration required for a UI Kit component. */
-export type UiKitMappingType =
-  | "direct" // 1:1 replacement with the same or very similar API
-  | "variant" // Becomes a prop/variant value on a Nimbus component
-  | "compound" // Replaced by composing multiple Nimbus components
-  | "pattern" // Replaced by a design-token or layout pattern
-  | "removed"; // No Nimbus equivalent
+import type { UiKitMappingType } from "../types.js";
 
 /** A single UI Kit → Nimbus migration entry. */
 export interface UiKitMigrationEntry {

@@ -369,12 +369,20 @@ export interface LoweredRelevanceFields {
 // Migration tool types (used by tools/migrate-from-uikit)
 // ---------------------------------------------------------------------------
 
+/** The type of migration required for a UI Kit component. */
+export type UiKitMappingType =
+  | "direct" // 1:1 replacement with the same or very similar API
+  | "variant" // Becomes a prop/variant value on a Nimbus component
+  | "compound" // Replaced by composing multiple Nimbus components
+  | "pattern" // Replaced by a design-token or layout pattern
+  | "removed"; // No Nimbus equivalent
+
 /** Single component migration result returned by migrate_from_uikit. */
 export interface MigrateComponentResult {
   uiKitName: string;
   nimbusEquivalent: string | null;
   importPath: string | null;
-  mappingType: string;
+  mappingType: UiKitMappingType;
   notes: string;
   breakingChanges: string[];
   /** Suggestion to use another MCP tool for further assistance. */
@@ -387,4 +395,11 @@ export interface MigrateFileResult {
   mappings: MigrateComponentResult[];
   /** Component names found in imports but not in the migration database. */
   unmapped: string[];
+}
+
+/** Response for compound root lookups (e.g. "Spacings" → all Spacings.* sub-components). */
+export interface MigrateCompoundResult {
+  compoundRoot: string;
+  note: string;
+  mappings: MigrateComponentResult[];
 }
