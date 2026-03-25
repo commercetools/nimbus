@@ -14,7 +14,7 @@ import { ScrollableRegion, type ScrollableRegionProps } from '@commercetools/nim
 
 ### Basic usage
 
-The simplest implementation wraps content in a fixed-height container:
+The simplest implementation wraps content in a constrained container:
 
 ```jsx live-dev
 const App = () => (
@@ -26,12 +26,26 @@ const App = () => (
 )
 ```
 
+## How it works
+
+ScrollableRegion uses a `ResizeObserver` to detect when content overflows. When
+it does, the container becomes keyboard-focusable via `tabIndex={0}` so users
+can scroll with arrow keys, Page Up/Down, and Home/End.
+
+ARIA `role` and accessible name are always applied — they do not toggle based on
+overflow state. This avoids landmarks appearing and disappearing in the
+accessibility tree as content resizes, which would disorient screen reader users.
+Only `tabIndex` changes.
+
+The component renders as `<section>` when `role="region"` and `<div>` when
+`role="group"` (the default), matching HTML semantics to the ARIA role.
+
 ## Usage examples
 
 ### Role region
 
-Use `role="region"` for major page landmarks. This enforces an accessible name
-via TypeScript — either `aria-label` or `aria-labelledby` must be provided:
+Use `role="region"` for major page landmarks. TypeScript enforces that either
+`aria-label` or `aria-labelledby` is provided:
 
 ```jsx live-dev
 const App = () => (
@@ -43,27 +57,79 @@ const App = () => (
 )
 ```
 
+### With aria-labelledby
+
+When a visible heading already labels the region, use `aria-labelledby` to
+avoid duplicating text:
+
+```jsx live-dev
+const App = () => (
+  <Box>
+    <Heading id="dev-logs-heading" fontSize="md">Application Logs</Heading>
+    <ScrollableRegion aria-labelledby="dev-logs-heading" h="150px">
+      {Array.from({ length: 20 }, (_, i) => (
+        <Text key={i}>Log entry {i + 1}: Request processed.</Text>
+      ))}
+    </ScrollableRegion>
+  </Box>
+)
+```
+
+### Scroll axis control
+
+The `scrollable` prop controls which axis is scrollable and which is checked
+for overflow:
+
+| Value | Behavior |
+|---|---|
+| `"auto"` (default) | Both axes, scrollbars appear when needed |
+| `"scroll"` | Both axes, scrollbars always visible |
+| `"y-auto"` / `"y-scroll"` | Vertical only |
+| `"x-auto"` / `"x-scroll"` | Horizontal only |
+| `"none"` | Overflow hidden, no scrolling |
+
+```jsx live-dev
+const App = () => (
+  <ScrollableRegion aria-label="Vertical only" scrollable="y-auto" h="150px">
+    {Array.from({ length: 20 }, (_, i) => (
+      <Text key={i}>Entry {i + 1}: Data row content.</Text>
+    ))}
+  </ScrollableRegion>
+)
+```
+
+### With Chakra style props
+
+ScrollableRegion accepts all Chakra style props for layout and visual styling:
+
+```jsx live-dev
+const App = () => (
+  <ScrollableRegion
+    aria-label="Styled content"
+    p="400"
+    bg="neutral.2"
+    maxH="150px"
+    borderRadius="md"
+  >
+    {Array.from({ length: 20 }, (_, i) => (
+      <Text key={i}>Entry {i + 1}: Styled scrollable content.</Text>
+    ))}
+  </ScrollableRegion>
+)
+```
+
 ## Component requirements
 
-- An accessible name (`aria-label` or `aria-labelledby`) is strongly
-  recommended for all scrollable regions. It is enforced at the TypeScript
-  level when `role="region"`.
+- An accessible name (`aria-label` or `aria-labelledby`) is required when
+  `role="region"`. This is enforced at the TypeScript level via a discriminated
+  union — omitting it produces a compile error.
+- For `role="group"` (the default), an accessible name is strongly recommended
+  but not enforced.
 - In development mode, a `console.warn` is logged when `role="region"` is used
   without an accessible name.
 
-## Accessibility
-
-The ScrollableRegion component handles accessibility as follows:
-
-- ARIA `role` and accessible name are always applied to the container
-- `tabIndex={0}` is added only when content overflows, making the container
-  keyboard-focusable
-- A focus ring is shown only during keyboard navigation (not mouse clicks) via
-  Chakra's `focusVisibleRing`
-- Detects both vertical and horizontal overflow
-
-If your use case requires tracking and analytics for this component, it is good
-practice to add a **persistent**, **unique** id to the component:
+If your use case requires tracking and analytics, add a **persistent**,
+**unique** id:
 
 ```tsx
 const PERSISTENT_ID = "example-scrollable-region";
@@ -74,16 +140,6 @@ export const Example = () => (
   </ScrollableRegion>
 );
 ```
-
-#### Keyboard navigation
-
-| Key | Action |
-|---|---|
-| `Tab` | Focuses the scrollable region (when overflowing) |
-| `Arrow Up` / `Arrow Down` | Scrolls content vertically |
-| `Arrow Left` / `Arrow Right` | Scrolls content horizontally |
-| `Page Up` / `Page Down` | Scrolls by page |
-| `Home` / `End` | Scrolls to beginning / end |
 
 ## API reference
 

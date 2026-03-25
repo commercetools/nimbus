@@ -3,7 +3,7 @@ id: Components-ScrollableRegion
 title: ScrollableRegion
 exportName: ScrollableRegion
 description: An accessible scrollable container that detects overflow and conditionally enables keyboard scrolling with a focus ring.
-lifecycleState: Experimental
+lifecycleState: Beta
 order: 999
 menu:
   - Components
@@ -61,6 +61,23 @@ const App = () => (
 )
 ```
 
+### Scroll axis control
+
+By default, scrolling is enabled on both axes. Use the `scrollable` prop to
+control which axis is scrollable or to disable scrolling entirely.
+
+```jsx live
+const App = () => (
+  <ScrollableRegion aria-label="Vertical only" scrollable="y-auto" h="150px">
+    {Array.from({ length: 20 }, (_, i) => (
+      <Text key={i}>Entry {i + 1}: Data row content.</Text>
+    ))}
+  </ScrollableRegion>
+)
+```
+
+## Labeling patterns
+
 ### Role region
 
 Use `role="region"` for major page sections. This requires either `aria-label`
@@ -91,20 +108,5 @@ const App = () => (
       ))}
     </ScrollableRegion>
   </Box>
-)
-```
-
-### Scroll axis control
-
-By default, scrolling is enabled on both axes. Use the `scrollable` prop to
-control which axis is scrollable or to disable scrolling entirely.
-
-```jsx live
-const App = () => (
-  <ScrollableRegion aria-label="Vertical only" scrollable="y-auto" h="150px">
-    {Array.from({ length: 20 }, (_, i) => (
-      <Text key={i}>Entry {i + 1}: Data row content.</Text>
-    ))}
-  </ScrollableRegion>
 )
 ```
