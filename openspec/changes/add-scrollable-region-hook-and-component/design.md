@@ -5,18 +5,18 @@
 The implementation is split into two layers:
 
 1. **`useScrollableRegion` hook** (internal) — encapsulates overflow detection,
-   debouncing, focus ring logic, and dev-mode warnings. Always applies ARIA
-   `role` and accessible name; conditionally adds `tabIndex` when overflowing.
-   Used internally by Nimbus components that need scrollable-region a11y on
-   existing elements (e.g., compound component slots). Not exported to
-   consumers — the API will stabilize through internal usage before being
-   promoted to the public API.
+   debouncing, and dev-mode warnings. Always applies ARIA `role` and accessible
+   name; conditionally adds `tabIndex` when overflowing. Does not handle focus
+   ring — that is the component's responsibility. Used internally by Nimbus
+   components that need scrollable-region a11y on existing elements (e.g.,
+   compound component slots). Not exported to consumers — the API will
+   stabilize through internal usage before being promoted to the public API.
 
 2. **`ScrollableRegion` component** — a thin wrapper that calls the hook and
-   renders a Chakra `Box`. Defaults to `<section>` for `role="region"` and
-   `<div>` for `role="group"`, overridable via the `as` prop. Accepts all
-   Box/Chakra style props. For standalone use when the consumer does not
-   already have a styled container.
+   renders `chakra.section` for `role="region"` or `chakra.div` for
+   `role="group"`. Applies a keyboard-only focus ring via Chakra's
+   `focusVisibleRing="outside"`. Accepts all Chakra style props. For standalone
+   use when the consumer does not already have a styled container.
 
 ### Why not just a component?
 
@@ -62,26 +62,18 @@ efficient — it batches observations and does not fire on every pixel of scroll
 
 ## Focus Ring Strategy
 
-The hook uses `useFocusRing()` from `react-aria` to detect keyboard-only focus.
-When `isFocusVisible` is true, inline styles are applied matching the codebase's
-CSS custom properties:
-
-- `outlineWidth: var(--focus-ring-width)`
-- `outlineColor: var(--focus-ring-color)`
-- `outlineStyle: var(--focus-ring-style)`
-- `outlineOffset: -2px` (inset to prevent clipping by `overflow`)
-
-Inline styles are used instead of a recipe because:
-- The hook must work on any element, not just recipe-styled ones
-- Focus ring styles are conditional on both overflow AND keyboard focus
-- The codebase already defines these CSS variables globally
+The focus ring is handled by the `ScrollableRegion` component, not the hook.
+The component applies Chakra's `focusVisibleRing="outside"` style prop, which
+generates a `:focus-visible` CSS rule using the global focus ring design tokens.
+This keeps the hook focused on behavior (overflow detection, ARIA, tabIndex)
+and leaves presentation to the component layer.
 
 ## Conditional Semantics
 
 | State | `role="region"` | `role="group"` (default) |
 |-------|-----------------|--------------------------|
-| Overflowing | `<div role="region">` + `aria-label`/`aria-labelledby` + `tabIndex={0}` | `<div role="group">` + `aria-label`/`aria-labelledby` + `tabIndex={0}` |
-| Not overflowing | `<div role="region">` + `aria-label`/`aria-labelledby` (no tabIndex) | `<div role="group">` + `aria-label`/`aria-labelledby` (no tabIndex) |
+| Overflowing | `<section role="region">` + `aria-label`/`aria-labelledby` + `tabIndex={0}` | `<div role="group">` + `aria-label`/`aria-labelledby` + `tabIndex={0}` |
+| Not overflowing | `<section role="region">` + `aria-label`/`aria-labelledby` (no tabIndex) | `<div role="group">` + `aria-label`/`aria-labelledby` (no tabIndex) |
 
 Role and accessible name are always applied so the landmark doesn't
 appear/disappear as content resizes, which would be jarring for screen reader

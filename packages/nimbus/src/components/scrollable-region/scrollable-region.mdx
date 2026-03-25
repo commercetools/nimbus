@@ -39,7 +39,7 @@ When content overflows, the container becomes keyboard-focusable with a
 
 ```jsx live
 const App = () => (
-  <ScrollableRegion aria-label="Log output" style={{ height: "150px" }}>
+  <ScrollableRegion aria-label="Log output" h="150px">
     {Array.from({ length: 20 }, (_, i) => (
       <Text key={i}>Log entry {i + 1}: Application started successfully.</Text>
     ))}
@@ -55,7 +55,7 @@ keyboard-focusable when there is nothing to scroll.
 
 ```jsx live
 const App = () => (
-  <ScrollableRegion aria-label="Short content" style={{ height: "150px" }}>
+  <ScrollableRegion aria-label="Short content" h="150px">
     <Text>This content fits and the container is not focusable.</Text>
   </ScrollableRegion>
 )
@@ -68,7 +68,7 @@ or `aria-labelledby` to satisfy WCAG landmark naming requirements.
 
 ```jsx live
 const App = () => (
-  <ScrollableRegion role="region" aria-label="Terms and conditions" style={{ height: "150px" }}>
+  <ScrollableRegion role="region" aria-label="Terms and conditions" h="150px">
     {Array.from({ length: 20 }, (_, i) => (
       <Text key={i}>Clause {i + 1}: Lorem ipsum dolor sit amet.</Text>
     ))}
@@ -85,7 +85,7 @@ instead of `aria-label` to avoid duplicating text.
 const App = () => (
   <Box>
     <Heading id="logs-heading" fontSize="md">Application Logs</Heading>
-    <ScrollableRegion aria-labelledby="logs-heading" style={{ height: "150px" }}>
+    <ScrollableRegion aria-labelledby="logs-heading" h="150px">
       {Array.from({ length: 20 }, (_, i) => (
         <Text key={i}>Log entry {i + 1}: Request processed.</Text>
       ))}
@@ -101,7 +101,7 @@ control which axis is scrollable or to disable scrolling entirely.
 
 ```jsx live
 const App = () => (
-  <ScrollableRegion aria-label="Vertical only" scrollable="y-auto" style={{ height: "150px" }}>
+  <ScrollableRegion aria-label="Vertical only" scrollable="y-auto" h="150px">
     {Array.from({ length: 20 }, (_, i) => (
       <Text key={i}>Entry {i + 1}: Data row content.</Text>
     ))}

@@ -6,8 +6,9 @@ The ScrollableRegion capability provides a `ScrollableRegion` component and an
 internal `useScrollableRegion` hook that make scrollable containers accessible
 to keyboard and screen reader users. The hook detects content overflow via
 `ResizeObserver`, always applies ARIA `role` and accessible name, and
-conditionally adds `tabIndex` and a keyboard-only focus ring when overflowing.
-The component is a thin wrapper around the hook.
+conditionally adds `tabIndex` when overflowing. The component is a thin
+wrapper around the hook that also provides a keyboard-only focus ring via
+Chakra's `focusVisibleRing` style prop.
 
 **Component:** `ScrollableRegion` (public API)
 **Hook:** `useScrollableRegion` (internal — not exported to consumers)
@@ -101,19 +102,16 @@ evaluation.
 - **AND** SHALL cancel any pending debounced evaluation
 
 ### Requirement: Focus ring is keyboard-only
-The hook SHALL show a focus ring only during keyboard navigation using
-react-aria's `useFocusRing`.
+The component SHALL show a focus ring only during keyboard navigation using
+Chakra's `focusVisibleRing` style prop.
 
 #### Scenario: Keyboard focus on overflowing element
 - **WHEN** the element is overflowing and receives keyboard focus (Tab key)
-- **THEN** `containerProps.style` SHALL include focus ring outline styles
-- **AND** outline SHALL use `var(--focus-ring-color)`, `var(--focus-ring-width)`,
-  `var(--focus-ring-style)` CSS custom properties
-- **AND** `outlineOffset` SHALL be `-2px` to prevent clipping by overflow
+- **THEN** the component SHALL display a focus ring via `focusVisibleRing="outside"`
 
 #### Scenario: Mouse focus on overflowing element
 - **WHEN** the element is overflowing and receives mouse focus (click)
-- **THEN** `containerProps.style` SHALL NOT include focus ring outline styles
+- **THEN** the component SHALL NOT display a focus ring
 
 #### Scenario: Focus on non-overflowing element
 - **WHEN** the element is not overflowing
@@ -134,21 +132,17 @@ requirements are not met.
 - **AND** neither `aria-label` nor `aria-labelledby` is provided
 - **THEN** SHALL NOT log a warning
 
-### Requirement: ScrollableRegion component renders as a polymorphic Box
-The component SHALL render a Chakra `Box` with a default HTML element based
-on the `role` prop, overridable via the `as` prop.
+### Requirement: ScrollableRegion renders semantic HTML based on role
+The component SHALL render `chakra.section` for `role="region"` and
+`chakra.div` for `role="group"`.
 
 #### Scenario: Default element for role="region"
-- **WHEN** `role` is `"region"` and no `as` prop is provided
+- **WHEN** `role` is `"region"`
 - **THEN** SHALL render a `<section>` element with `role="region"`
 
 #### Scenario: Default element for role="group"
-- **WHEN** `role` is `"group"` (or default) and no `as` prop is provided
+- **WHEN** `role` is `"group"` (or default)
 - **THEN** SHALL render a `<div>` element with `role="group"`
-
-#### Scenario: Custom element via `as` prop
-- **WHEN** an `as` prop is provided (e.g., `as="nav"`)
-- **THEN** SHALL render the specified HTML element instead of the default
 
 #### Scenario: Not overflowing
 - **WHEN** the component is not overflowing
@@ -160,13 +154,13 @@ on the `role` prop, overridable via the `as` prop.
 - **THEN** SHALL forward the ref to the rendered DOM element
 - **AND** SHALL merge it with the hook's internal ref
 
-### Requirement: Component accepts Box props
-The component SHALL accept all Chakra `Box` style props and standard HTML
-attributes.
+### Requirement: Component accepts Chakra style props
+The component SHALL accept all Chakra style props and standard HTML
+attributes via `HTMLChakraProps<"div">`.
 
 #### Scenario: Chakra style props
 - **WHEN** Chakra style props (e.g., `p`, `bg`, `maxH`, `w`) are passed
-- **THEN** SHALL forward them to the underlying `Box`
+- **THEN** SHALL forward them to the underlying element
 
 #### Scenario: style prop
 - **WHEN** a `style` prop is passed

@@ -11,7 +11,7 @@ cognitive, and physical limitations.
 
 ```jsx live
 const App = () => (
-  <ScrollableRegion aria-label="Accessible scrollable content" style={{ height: "150px" }}>
+  <ScrollableRegion aria-label="Accessible scrollable content" h="150px">
     {Array.from({ length: 20 }, (_, i) => (
       <Text key={i}>Content line {i + 1}</Text>
     ))}
@@ -28,11 +28,9 @@ const App = () => (
   the landmark doesn't appear and disappear as content resizes, which would be
   jarring for screen reader users. Only `tabIndex` toggles based on overflow.
 - **Focus visibility (WCAG 2.1 SC 2.4.7):** A focus ring is displayed only
-  during keyboard navigation (not mouse interaction), using the global focus
-  ring design tokens for consistency.
+  during keyboard navigation (not mouse interaction) via Chakra's
+  `focusVisibleRing`, using the global focus ring design tokens for consistency.
 - **Accessible name:** When `role="region"` is used, an accessible name via
   `aria-label` or `aria-labelledby` is required (enforced at the TypeScript
   level and via a development-mode warning). For `role="group"`, an accessible
   name is strongly recommended.
-- **Focus ring containment:** `outlineOffset: -2px` ensures the focus indicator
-  is not clipped by the container's `overflow` boundary.

@@ -30,9 +30,8 @@
       `UseScrollableRegionReturn` with `ref`, `isOverflowing`,
       `containerProps`)
 - [x] 3.2 Implement `useScrollableRegion` hook in `use-scrollable-region.ts`
-      (ResizeObserver, debounced overflow check, useFocusRing, always-applied
-      role/aria, conditional tabIndex, dev-mode warning for role="region",
-      cleanup)
+      (ResizeObserver, debounced overflow check, always-applied role/aria,
+      conditional tabIndex, dev-mode warning for role="region", cleanup)
 - [x] 3.3 Implement types in `scrollable-region.types.ts`
       (`ScrollableRegionProps` based on `BoxProps` + hook options, with `as`
       prop for polymorphic rendering)

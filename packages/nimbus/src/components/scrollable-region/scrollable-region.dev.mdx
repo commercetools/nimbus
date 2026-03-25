@@ -18,7 +18,7 @@ The simplest implementation wraps content in a fixed-height container:
 
 ```jsx live-dev
 const App = () => (
-  <ScrollableRegion aria-label="Log output" style={{ height: "150px" }}>
+  <ScrollableRegion aria-label="Log output" h="150px">
     {Array.from({ length: 20 }, (_, i) => (
       <Text key={i}>Log entry {i + 1}: Application started successfully.</Text>
     ))}
@@ -35,7 +35,7 @@ via TypeScript — either `aria-label` or `aria-labelledby` must be provided:
 
 ```jsx live-dev
 const App = () => (
-  <ScrollableRegion role="region" aria-label="Terms and conditions" style={{ height: "150px" }}>
+  <ScrollableRegion role="region" aria-label="Terms and conditions" h="150px">
     {Array.from({ length: 20 }, (_, i) => (
       <Text key={i}>Clause {i + 1}: Lorem ipsum dolor sit amet.</Text>
     ))}
@@ -59,8 +59,7 @@ The ScrollableRegion component handles accessibility as follows:
 - `tabIndex={0}` is added only when content overflows, making the container
   keyboard-focusable
 - A focus ring is shown only during keyboard navigation (not mouse clicks) via
-  react-aria's `useFocusRing`
-- `outlineOffset: -2px` prevents focus ring clipping by the overflow boundary
+  Chakra's `focusVisibleRing`
 - Detects both vertical and horizontal overflow
 
 If your use case requires tracking and analytics for this component, it is good
@@ -89,13 +88,6 @@ export const Example = () => (
 ## API reference
 
 <PropsTable id="ScrollableRegion" />
-
-## Testing your implementation
-
-These examples demonstrate how to test your implementation when using
-ScrollableRegion within your application.
-
-{{docs-tests: scrollable-region.docs.spec.tsx}}
 
 ## Resources
 
