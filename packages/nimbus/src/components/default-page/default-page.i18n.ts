@@ -1,7 +1,7 @@
 export const messages = {
   backLink: {
     id: "Nimbus.DefaultPage.backLink",
-    description: "Default aria-label for the back navigation link",
+    description: "Default label for the back navigation link",
     defaultMessage: "Go back",
   },
 };
