@@ -132,8 +132,8 @@ export type UseScrollableRegionReturn = {
   isOverflowing: boolean;
   /**
    * Spread-ready props to apply to the scrollable element.
-   * Includes `tabIndex`, `role`, ARIA attributes, overflow, and focus ring
-   * styles — all conditional on overflow and focus state.
+   * Includes `tabIndex`, `role`, ARIA attributes, and overflow styles —
+   * conditional on overflow state.
    */
   containerProps: React.HTMLAttributes<HTMLElement> & {
     style?: React.CSSProperties;

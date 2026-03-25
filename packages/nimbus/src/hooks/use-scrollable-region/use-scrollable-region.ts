@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useDebouncedCallback } from "use-debounce";
+import { devWarn } from "@/utils";
 import type {
   ScrollableOverflow,
   UseScrollableRegionOptions,
@@ -6,7 +8,10 @@ import type {
   UseScrollableRegionReturn,
 } from "./use-scrollable-region.types";
 
-/** Maps the `overflow` prop to CSS properties. */
+/** Internal debounce interval for overflow checks (ms). */
+const DEBOUNCE_MS = 100;
+
+/** Maps the `scrollable` prop to CSS properties. */
 function getOverflowStyle(overflow: ScrollableOverflow): React.CSSProperties {
   switch (overflow) {
     case "auto":
@@ -64,14 +69,13 @@ export function useScrollableRegion(
     role = "group",
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
-    debounceMs = 100,
+    debounceMs = DEBOUNCE_MS,
     scrollable = "auto",
   } = options;
 
   const [isOverflowing, setIsOverflowing] = useState(false);
   const elementRef = useRef<HTMLElement | null>(null);
   const observerRef = useRef<ResizeObserver | null>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const checkOverflow = useCallback(() => {
     const el = elementRef.current;
@@ -85,29 +89,18 @@ export function useScrollableRegion(
     setIsOverflowing(vertical || horizontal);
   }, [scrollable]);
 
-  const debouncedCheck = useCallback(() => {
-    if (timerRef.current !== null) {
-      clearTimeout(timerRef.current);
-    }
-    timerRef.current = setTimeout(() => {
-      checkOverflow();
-      timerRef.current = null;
-    }, debounceMs);
-  }, [checkOverflow, debounceMs]);
+  const debouncedCheck = useDebouncedCallback(checkOverflow, debounceMs);
 
-  // Cleanup observer and timer on unmount
+  // Cleanup observer on unmount
   useEffect(() => {
     return () => {
       if (observerRef.current) {
         observerRef.current.disconnect();
         observerRef.current = null;
       }
-      if (timerRef.current !== null) {
-        clearTimeout(timerRef.current);
-        timerRef.current = null;
-      }
+      debouncedCheck.cancel();
     };
-  }, []);
+  }, [debouncedCheck]);
 
   // Ref callback: sets up / tears down the ResizeObserver
   const ref = useCallback(
@@ -137,13 +130,11 @@ export function useScrollableRegion(
 
   // Dev-mode warning: only for role="region" where a label is required
   useEffect(() => {
-    if (process.env.NODE_ENV !== "production") {
-      if (role === "region" && !ariaLabel && !ariaLabelledBy) {
-        console.warn(
-          '[useScrollableRegion] role="region" requires an accessible name. ' +
-            "Provide `aria-label` or `aria-labelledby`."
-        );
-      }
+    if (role === "region" && !ariaLabel && !ariaLabelledBy) {
+      devWarn(
+        '[useScrollableRegion] role="region" requires an accessible name. ' +
+          "Provide `aria-label` or `aria-labelledby`."
+      );
     }
   }, [role, ariaLabel, ariaLabelledBy]);
 

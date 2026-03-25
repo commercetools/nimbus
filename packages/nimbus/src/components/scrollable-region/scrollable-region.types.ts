@@ -25,11 +25,6 @@ type SharedOptions = {
   /** Ref forwarding to the root element. */
   ref?: React.Ref<HTMLElement>;
   /**
-   * Debounce interval in milliseconds for overflow evaluation.
-   * @default 100
-   */
-  debounceMs?: number;
-  /**
    * Controls which axis is scrollable and how overflow is handled.
    *
    * - `"auto"` — both axes, scrollbars appear when needed (default)

@@ -21,7 +21,6 @@ export const ScrollableRegion = ({
   role = "group",
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
-  debounceMs,
   scrollable,
   children,
   style,
@@ -31,7 +30,6 @@ export const ScrollableRegion = ({
     role,
     "aria-label": ariaLabel,
     "aria-labelledby": ariaLabelledBy,
-    debounceMs,
     scrollable,
   };
 
