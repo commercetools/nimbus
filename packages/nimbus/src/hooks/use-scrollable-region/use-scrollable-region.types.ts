@@ -99,6 +99,8 @@ type GroupOptions = BaseOptions & {
  *
  * When `role` is `"region"`, either `aria-label` or `aria-labelledby`
  * must be provided to satisfy WCAG landmark naming requirements.
+ *
+ * @internal Not part of the public API.
  */
 export type UseScrollableRegionOptions = RegionOptions | GroupOptions;
 
@@ -115,6 +117,8 @@ export type UseScrollableRegionResolvedOptions = BaseOptions & {
 
 /**
  * Return value of the `useScrollableRegion` hook.
+ *
+ * @internal Not part of the public API.
  */
 export type UseScrollableRegionReturn = {
   /**

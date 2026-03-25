@@ -57,22 +57,14 @@ const FOCUS_RING_STYLES: React.CSSProperties = {
  * Detects content overflow via `ResizeObserver`, dynamically manages
  * `tabIndex`, ARIA roles, accessible name, and a keyboard-only focus ring.
  *
- * This hook is part of the public API and intended for direct consumer use,
- * especially when applying scrollable-region a11y to an existing element
- * (e.g., a compound component slot) where the `ScrollableRegion` component
- * wrapper is not appropriate.
+ * @internal This hook is not part of the public API. Use the
+ * `ScrollableRegion` component for consumer-facing usage. The hook is used
+ * internally by Nimbus components that need scrollable-region a11y on
+ * existing elements (e.g., compound component slots).
  *
  * @param options - Configuration for overflow detection and accessibility.
  * @returns An object with `ref`, `isOverflowing`, and `containerProps` to
  *   spread onto the scrollable element.
- *
- * @example
- * ```tsx
- * const { ref, containerProps } = useScrollableRegion({
- *   "aria-label": "Log output",
- * });
- * return <div ref={ref} {...containerProps}>...</div>;
- * ```
  */
 export function useScrollableRegion(
   options: UseScrollableRegionOptions | UseScrollableRegionResolvedOptions = {}

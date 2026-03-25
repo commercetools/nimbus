@@ -4,11 +4,12 @@
 
 The implementation is split into two layers:
 
-1. **`useScrollableRegion` hook** — encapsulates all overflow detection,
-   debouncing, ARIA attribute management, focus ring logic, and dev-mode
-   warnings. This allows consumers to apply scrollable-region a11y to any
-   existing element (e.g., a compound component slot) without introducing an
-   extra DOM wrapper or recipe conflicts.
+1. **`useScrollableRegion` hook** (internal) — encapsulates all overflow
+   detection, debouncing, ARIA attribute management, focus ring logic, and
+   dev-mode warnings. Used internally by Nimbus components that need
+   scrollable-region a11y on existing elements (e.g., compound component
+   slots). Not exported to consumers — the API will stabilize through
+   internal usage before being promoted to the public API.
 
 2. **`ScrollableRegion` component** — a thin wrapper that calls the hook and
    renders a Chakra `Box` (`<div>`) with all attributes applied automatically.

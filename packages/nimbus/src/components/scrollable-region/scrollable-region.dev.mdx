@@ -12,12 +12,6 @@ tab-order: 3
 import { ScrollableRegion, type ScrollableRegionProps } from '@commercetools/nimbus';
 ```
 
-Or use the hook directly for existing elements:
-
-```tsx
-import { useScrollableRegion, type UseScrollableRegionOptions } from '@commercetools/nimbus';
-```
-
 ### Basic usage
 
 The simplest implementation wraps content in a fixed-height container:
@@ -33,30 +27,6 @@ const App = () => (
 ```
 
 ## Usage examples
-
-### Hook usage on existing elements
-
-Use the hook when you need to apply scrollable-region accessibility to an
-element you already control (e.g., a compound component slot):
-
-```jsx live-dev
-const App = () => {
-  const { ref, isOverflowing, containerProps } = useScrollableRegion({
-    "aria-label": "Hook demo",
-  });
-
-  return (
-    <Box>
-      <Text mb="200">{isOverflowing ? "Content overflows" : "Content fits"}</Text>
-      <div ref={ref} {...containerProps} style={{ ...containerProps.style, height: "120px" }}>
-        {Array.from({ length: 15 }, (_, i) => (
-          <Text key={i}>Line {i + 1}</Text>
-        ))}
-      </div>
-    </Box>
-  );
-}
-```
 
 ### Role region
 

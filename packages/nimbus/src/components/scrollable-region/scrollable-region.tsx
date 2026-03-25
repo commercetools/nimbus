@@ -10,9 +10,8 @@ import type { ScrollableRegionProps } from "./scrollable-region.types";
  * An accessible scrollable container that automatically detects overflow
  * and manages keyboard focus, ARIA roles, and focus ring.
  *
- * Uses `useScrollableRegion` internally. For applying scrollable-region
- * a11y to an existing element (e.g., a compound component slot), use
- * the hook directly instead.
+ * Uses the internal `useScrollableRegion` hook for overflow detection
+ * and accessibility management.
  *
  * Features:
  *

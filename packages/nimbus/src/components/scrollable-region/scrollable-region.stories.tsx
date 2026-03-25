@@ -1,11 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import {
-  ScrollableRegion,
-  Box,
-  Text,
-  Heading,
-  useScrollableRegion,
-} from "@commercetools/nimbus";
+import { ScrollableRegion, Box, Text, Heading } from "@commercetools/nimbus";
+import { useScrollableRegion } from "@/hooks/use-scrollable-region/use-scrollable-region";
 import { within, expect, userEvent, waitFor } from "storybook/test";
 
 const meta = {

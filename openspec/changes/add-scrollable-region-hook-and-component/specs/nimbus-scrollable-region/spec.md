@@ -2,16 +2,20 @@
 
 ## Overview
 
-The ScrollableRegion capability provides a `useScrollableRegion` hook and a
-`ScrollableRegion` component that make scrollable containers accessible to
-keyboard and screen reader users. The hook detects content overflow via
+The ScrollableRegion capability provides a `ScrollableRegion` component and an
+internal `useScrollableRegion` hook that make scrollable containers accessible
+to keyboard and screen reader users. The hook detects content overflow via
 `ResizeObserver`, dynamically manages ARIA attributes and focus ring, and
 returns spread-ready props. The component is a thin wrapper around the hook.
 
-**Hook:** `useScrollableRegion`
-**Component:** `ScrollableRegion`
+**Component:** `ScrollableRegion` (public API)
+**Hook:** `useScrollableRegion` (internal — not exported to consumers)
 **Package:** `@commercetools/nimbus`
 **Category:** Utility / Accessibility
+
+> **Note:** The `useScrollableRegion` hook is intentionally kept internal to
+> allow the API to stabilize through internal usage before exposing it to
+> consumers. It may be promoted to the public API in a future release.
 
 ## ADDED Requirements
 
