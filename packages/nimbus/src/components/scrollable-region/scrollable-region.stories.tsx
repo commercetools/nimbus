@@ -9,7 +9,7 @@ const meta: Meta<typeof ScrollableRegion> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ScrollableRegion>;
 
 // Helper to generate enough content to cause overflow
 const OverflowingContent = () => (
