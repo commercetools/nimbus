@@ -189,7 +189,7 @@ describe("ModalPage - Tabular page", () => {
             <ModalPage.Subtitle>Placed on 2024-01-15</ModalPage.Subtitle>
             <ModalPage.TabNav>
               <TabNav.Root aria-label="Order sections">
-                <TabNav.Item href="#general" aria-current="page">
+                <TabNav.Item href="#general" isCurrent>
                   General
                 </TabNav.Item>
                 <TabNav.Item href="#items">Items</TabNav.Item>
