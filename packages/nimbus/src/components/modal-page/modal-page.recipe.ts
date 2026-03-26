@@ -5,7 +5,7 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * Provides a fullscreen modal page layout with a fixed grid structure:
  * top bar, header, scrollable content, and optional footer.
  */
-export const modalPageRecipe = defineSlotRecipe({
+export const modalPageSlotRecipe = defineSlotRecipe({
   slots: [
     "root",
     "topBar",
