@@ -1,0 +1,167 @@
+---
+id: Home-DevTools-MCP-Setup
+title: MCP Server Setup
+description: Install and configure the Nimbus MCP server for your AI assistant
+order: 2
+menu:
+  - Home
+  - Developer Tools
+  - MCP Server
+  - Setup
+tags:
+  - mcp
+  - ai
+  - developer-tools
+  - setup
+icon: Build
+---
+
+# MCP Server Setup
+
+This guide walks through installing the Nimbus MCP server and configuring it for
+your AI assistant. Setup takes about two minutes.
+
+## Installation
+
+### Quick Start (npx)
+
+The fastest way to use the MCP server — no local installation required. The
+assistant runs `npx` on each session start, pulling the latest published version:
+
+```bash
+npx @commercetools/nimbus-mcp
+```
+
+This is the recommended approach for most users. The configuration snippets
+below all use this method.
+
+### Monorepo (contributors)
+
+If you're developing inside the Nimbus monorepo, the MCP server is already
+available as a workspace package. Build it once:
+
+```bash
+pnpm --filter @commercetools/nimbus-mcp build
+```
+
+Then point your assistant at the local build:
+
+```json
+{
+  "command": "node",
+  "args": ["packages/nimbus-mcp/dist/index.js"]
+}
+```
+
+## Configuration by Assistant
+
+Each AI assistant reads MCP server configuration from a JSON file. Add the
+`nimbus` entry to the appropriate file for your tool.
+
+### Claude Code
+
+Add to your project `.mcp.json` (recommended) or global `~/.claude/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "nimbus": {
+      "command": "npx",
+      "args": ["-y", "@commercetools/nimbus-mcp"]
+    }
+  }
+}
+```
+
+Claude Code discovers the server automatically on the next session start.
+
+### Claude Desktop
+
+Open **Settings → Developer → Edit Config**, or edit the config file directly:
+
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "nimbus": {
+      "command": "npx",
+      "args": ["-y", "@commercetools/nimbus-mcp"]
+    }
+  }
+}
+```
+
+Restart Claude Desktop after saving.
+
+### VS Code (Copilot)
+
+Create or edit `.vscode/mcp.json` in your workspace root:
+
+```json
+{
+  "servers": {
+    "nimbus": {
+      "command": "npx",
+      "args": ["-y", "@commercetools/nimbus-mcp"]
+    }
+  }
+}
+```
+
+VS Code picks up the server when the MCP extension is enabled.
+
+### Cursor
+
+Create or edit `.cursor/mcp.json` in your workspace root:
+
+```json
+{
+  "mcpServers": {
+    "nimbus": {
+      "command": "npx",
+      "args": ["-y", "@commercetools/nimbus-mcp"]
+    }
+  }
+}
+```
+
+Cursor discovers the server on the next composer session.
+
+### Windsurf
+
+Create or edit `.windsurf/mcp.json` in your workspace root:
+
+```json
+{
+  "mcpServers": {
+    "nimbus": {
+      "command": "npx",
+      "args": ["-y", "@commercetools/nimbus-mcp"]
+    }
+  }
+}
+```
+
+Windsurf picks up new servers automatically.
+
+## Verify the Setup
+
+After configuring your assistant, verify the server is working by asking a
+simple question:
+
+> _"List all available Nimbus components"_
+
+The assistant should call the `list_components` tool and return a list of
+component names and descriptions. If this works, the MCP server is connected
+and ready to use.
+
+### Troubleshooting
+
+| Symptom                            | Likely cause                                  | Fix                                                          |
+| ---------------------------------- | --------------------------------------------- | ------------------------------------------------------------ |
+| Assistant doesn't see Nimbus tools | Config file not found or malformed JSON        | Check file path and validate JSON syntax                     |
+| `npx` command not found            | Node.js not on the assistant's PATH            | Ensure `node` and `npx` are available in your shell          |
+| Tools return "data not found"      | Running from monorepo without building first   | Run `pnpm build` from the repo root                          |
+| Stale component data               | Using an older cached npx version              | Run `npx @commercetools/nimbus-mcp@latest` to clear cache    |
