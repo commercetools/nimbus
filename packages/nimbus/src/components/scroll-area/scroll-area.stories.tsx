@@ -325,19 +325,20 @@ export const WithAriaLabelledBy: Story = {
 };
 
 // ============================================================
-// With Chakra style props
+// Custom styling: style props on root, content padding via Box
 // ============================================================
-export const WithStyleProps: Story = {
+export const CustomStyling: Story = {
   render: () => (
     <ScrollArea
       maxH="200px"
       w="400px"
-      p="200"
       bg="neutral.2"
       borderRadius="300"
       variant="always"
     >
-      <OverflowingContent />
+      <Box p="200">
+        <OverflowingContent />
+      </Box>
     </ScrollArea>
   ),
   play: async ({ canvasElement, step }) => {
@@ -453,16 +454,17 @@ export const SmokeTest: Story = {
       </Box>
 
       <Box>
-        <Text fontSize="sm">With style props</Text>
+        <Text fontSize="sm">Custom styling</Text>
         <ScrollArea
           maxH="80px"
           w="180px"
-          p="200"
           bg="neutral.2"
           borderRadius="300"
           variant="always"
         >
-          <OverflowingContent />
+          <Box p="200">
+            <OverflowingContent />
+          </Box>
         </ScrollArea>
       </Box>
     </Box>
