@@ -21,19 +21,30 @@ icon: Build
 This guide walks through installing the Nimbus MCP server and configuring it for
 your AI assistant. Setup takes about two minutes.
 
+## Prerequisites
+
+- **Node.js** v18 or later (includes `npx`)
+- An AI assistant that supports MCP (see
+  [supported assistants](/home/developer-tools/mcp-server/overview))
+
+## How It Works
+
+You don't run the MCP server yourself. Instead, you add a small JSON config to
+your AI assistant telling it _how_ to start the server. The assistant launches
+the server automatically when a session begins and communicates with it behind
+the scenes.
+
+All of the configuration snippets below follow this pattern.
+
 ## Installation
 
-### Quick Start (npx)
+### Quick Start (npx — recommended)
 
-The fastest way to use the MCP server — no local installation required. The
-assistant runs `npx` on each session start, pulling the latest published version:
+The simplest option. Your assistant runs `npx` to pull the latest published
+version on each session start — no local install needed.
 
-```bash
-npx @commercetools/nimbus-mcp
-```
-
-This is the recommended approach for most users. The configuration snippets
-below all use this method.
+The `-y` flag in the snippets below tells npx to skip the install confirmation
+prompt so the server starts without user interaction.
 
 ### Monorepo (contributors)
 
@@ -44,12 +55,16 @@ available as a workspace package. Build it once:
 pnpm --filter @commercetools/nimbus-mcp build
 ```
 
-Then point your assistant at the local build:
+Then use this server entry in place of the npx snippets below:
 
 ```json
 {
-  "command": "node",
-  "args": ["packages/nimbus-mcp/dist/index.js"]
+  "mcpServers": {
+    "nimbus": {
+      "command": "node",
+      "args": ["packages/nimbus-mcp/dist/index.js"]
+    }
+  }
 }
 ```
 
@@ -60,7 +75,9 @@ Each AI assistant reads MCP server configuration from a JSON file. Add the
 
 ### Claude Code
 
-Add to your project `.mcp.json` (recommended) or global `~/.claude/mcp.json`:
+Add to your project's `.mcp.json` so every team member on the repo gets the
+server automatically, or to `~/.claude/mcp.json` to enable it across all your
+projects:
 
 ```json
 {
@@ -97,7 +114,10 @@ Restart Claude Desktop after saving.
 
 ### VS Code (Copilot)
 
-Create or edit `.vscode/mcp.json` in your workspace root:
+Create or edit `.vscode/mcp.json` in your workspace root.
+
+> **Note:** VS Code uses `"servers"` as the top-level key, not `"mcpServers"`
+> like the other assistants.
 
 ```json
 {
@@ -110,7 +130,8 @@ Create or edit `.vscode/mcp.json` in your workspace root:
 }
 ```
 
-VS Code picks up the server when the MCP extension is enabled.
+MCP support is built into VS Code 1.99+. Open the Copilot chat panel — if the
+server is configured correctly, Copilot will discover it automatically.
 
 ### Cursor
 
@@ -148,8 +169,8 @@ Windsurf picks up new servers automatically.
 
 ## Verify the Setup
 
-After configuring your assistant, verify the server is working by asking a
-simple question:
+After saving the configuration, open a new chat session in your assistant and
+ask:
 
 > _"List all available Nimbus components"_
 
@@ -157,11 +178,17 @@ The assistant should call the `list_components` tool and return a list of
 component names and descriptions. If this works, the MCP server is connected
 and ready to use.
 
+You can also try more specific queries:
+
+- _"What props does the Button component accept?"_
+- _"What spacing tokens are available in Nimbus?"_
+- _"Find an icon for a shopping cart"_
+
 ### Troubleshooting
 
 | Symptom                            | Likely cause                                  | Fix                                                          |
 | ---------------------------------- | --------------------------------------------- | ------------------------------------------------------------ |
 | Assistant doesn't see Nimbus tools | Config file not found or malformed JSON        | Check file path and validate JSON syntax                     |
-| `npx` command not found            | Node.js not on the assistant's PATH            | Ensure `node` and `npx` are available in your shell          |
-| Tools return "data not found"      | Running from monorepo without building first   | Run `pnpm build` from the repo root                          |
+| `npx` command not found            | Node.js not on the assistant's PATH            | Ensure `node` (v18+) and `npx` are available in your shell   |
+| Tools return "data not found"      | Monorepo users: package not built              | Run `pnpm build` from the repo root (npx users are unaffected) |
 | Stale component data               | Using an older cached npx version              | Run `npx @commercetools/nimbus-mcp@latest` to clear cache    |
