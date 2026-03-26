@@ -38,6 +38,10 @@ export type ModalPageFooterSlotProps = HTMLChakraProps<"footer">;
  * ModalPage.Root renders a Drawer internally. Style props (e.g. `width`) are
  * forwarded to the underlying Drawer.Content panel. The default width is
  * near-fullscreen; pass a custom `width` to override.
+ *
+ * Note: Unlike other sub-components, Root does not extend its slot props
+ * because it wraps a Drawer — Chakra style props are not surfaced to consumers.
+ * Use the `width` prop for panel sizing.
  */
 export type ModalPageRootProps = {
   /** Whether the modal page is open (controlled) */
