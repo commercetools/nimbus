@@ -141,20 +141,15 @@ export const RoleRegion: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Root has role=region", async () => {
+    await step("Viewport has role=region and aria-label", async () => {
       await waitFor(() => {
         const region = canvas.getByRole("region", {
           name: "Main content area",
         });
         expect(region).toBeInTheDocument();
+        expect(region).toHaveAttribute("aria-label", "Main content area");
+        expect(region).toHaveAttribute("data-part", "viewport");
       });
-    });
-
-    await step("Has aria-label", async () => {
-      const region = canvas.getByRole("region", {
-        name: "Main content area",
-      });
-      expect(region).toHaveAttribute("aria-label", "Main content area");
     });
   },
 };
@@ -317,12 +312,13 @@ export const WithAriaLabelledBy: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Root has aria-labelledby", async () => {
+    await step("Viewport has role=region and aria-labelledby", async () => {
       await waitFor(() => {
         const region = canvas.getByRole("region", {
           name: "Application Logs",
         });
         expect(region).toHaveAttribute("aria-labelledby", "log-heading");
+        expect(region).toHaveAttribute("data-part", "viewport");
       });
     });
   },
