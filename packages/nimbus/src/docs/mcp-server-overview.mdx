@@ -1,0 +1,87 @@
+---
+id: Home-DevTools-MCP-Overview
+title: MCP Server Overview
+description: What the Nimbus MCP server is, what it enables, and which AI assistants it supports
+order: 1
+menu:
+  - Home
+  - Developer Tools
+  - MCP Server
+  - Overview
+tags:
+  - mcp
+  - ai
+  - developer-tools
+icon: SmartToy
+---
+
+# MCP Server Overview
+
+The **Nimbus MCP Server** (`@commercetools/nimbus-mcp`) exposes the Nimbus design
+system to AI assistants through the
+[Model Context Protocol (MCP)](https://modelcontextprotocol.io/). AI coding
+tools like Claude Code, Cursor, and Windsurf can query component documentation,
+design tokens, and icons in real time — producing code that follows Nimbus
+conventions out of the box.
+
+## What Is MCP?
+
+The **Model Context Protocol** is an open standard that lets AI assistants call
+external tools over a lightweight JSON-RPC transport. An MCP _server_ advertises
+a set of tools; an MCP _client_ (the AI assistant) discovers and invokes them as
+needed during a conversation.
+
+The Nimbus MCP server runs locally on your machine as a subprocess of the AI
+assistant — no network deployment or API keys required.
+
+## What It Enables
+
+With the MCP server running, an AI assistant can:
+
+- **Look up component APIs** — props, variants, slots, and usage examples for
+  any Nimbus component or pattern
+- **Query design tokens** — colors, spacing, typography, shadows, and other
+  token values by name or category
+- **Search documentation** — full-text search across all Nimbus docs including
+  guidelines and accessibility views
+- **Find icons** — fuzzy-search the icon catalog by name or keyword
+- **List components** — browse all available components filtered by category
+
+This means you can ask your AI assistant questions like _"build a form with
+Nimbus components"_ or _"what spacing tokens are available?"_ and it will have
+accurate, up-to-date answers pulled directly from the design system.
+
+## Available Tools
+
+The server exposes the following tools:
+
+| Tool               | Description                                                                    |
+| ------------------ | ------------------------------------------------------------------------------ |
+| `list_components`  | Returns Nimbus components, optionally filtered by subcategory or fuzzy search  |
+| `get_component`    | Returns detailed info about a component — metadata, props, recipe, and docs    |
+| `get_tokens`       | Returns design tokens, optionally filtered by category or searched by name     |
+| `search_docs`      | Full-text search across all Nimbus documentation pages                         |
+| `search_icons`     | Fuzzy-search the icon catalog by name or keyword                               |
+
+## Supported AI Assistants
+
+The Nimbus MCP server works with any MCP-compatible client. Tested assistants
+include:
+
+| Assistant           | Transport | Configuration                                    |
+| ------------------- | --------- | ------------------------------------------------ |
+| **Claude Code**     | stdio     | `~/.claude/mcp.json` or project `.mcp.json`      |
+| **Claude Desktop**  | stdio     | App settings or `claude_desktop_config.json`      |
+| **VS Code Copilot** | stdio     | `.vscode/mcp.json` in workspace                  |
+| **Cursor**          | stdio     | `.cursor/mcp.json` in workspace                  |
+| **Windsurf**        | stdio     | `.windsurf/mcp.json` in workspace                |
+
+> See the [Setup guide](./mcp-server-setup) for step-by-step configuration
+> instructions for each assistant.
+
+## Package Details
+
+- **Package name:** `@commercetools/nimbus-mcp`
+- **Transport:** stdio (runs as a local subprocess)
+- **Source:** `packages/nimbus-mcp/` in the Nimbus monorepo
+- **Protocol version:** 2024-11-05
