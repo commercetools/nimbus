@@ -674,8 +674,8 @@ importers:
         specifier: ^0.115.0
         version: 0.115.0(slate@0.123.0)
       slate-react:
-        specifier: ^0.123.0
-        version: 0.123.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate-dom@0.123.0(slate@0.123.0))(slate@0.123.0)
+        specifier: ^0.124.0
+        version: 0.124.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate-dom@0.123.0(slate@0.123.0))(slate@0.123.0)
       storybook:
         specifier: catalog:tooling
         version: 10.3.3(@testing-library/dom@10.4.1)(prettier@3.8.1)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -6922,8 +6922,8 @@ packages:
     peerDependencies:
       slate: '>=0.114.3'
 
-  slate-react@0.123.0:
-    resolution: {integrity: sha512-nQwXL1FEacrY9ZFmatRhoBnsySNUX2x6qB77V3oNHd7wWxBJWuzz4GMrBXcVoRE8Gac7Angf8xaNGzb6zcPlHg==}
+  slate-react@0.124.0:
+    resolution: {integrity: sha512-NLN6ME64ChOgJtiVTKwISS1sI/Y8/qN1cwmDTZM9AQJCl+jR3XNCvDsKNrW0kJU+1G3NgIGaYoVWhgIVEIL+Aw==}
     peerDependencies:
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
@@ -15626,7 +15626,7 @@ snapshots:
     dependencies:
       slate: 0.123.0
 
-  slate-react@0.123.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate-dom@0.123.0(slate@0.123.0))(slate@0.123.0):
+  slate-react@0.124.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(slate-dom@0.123.0(slate@0.123.0))(slate@0.123.0):
     dependencies:
       '@juggle/resize-observer': 3.4.0
       direction: 1.0.4
