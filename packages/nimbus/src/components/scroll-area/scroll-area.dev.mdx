@@ -14,7 +14,8 @@ import { ScrollArea, type ScrollAreaProps } from '@commercetools/nimbus';
 
 ### Basic usage
 
-The ScrollArea component provides a scrollable container with custom-styled scrollbar overlays:
+Wrap content in a `ScrollArea` with a size constraint. The scrollbar appears on
+hover or during scrolling:
 
 ```jsx live-dev
 const App = () => (
@@ -69,37 +70,29 @@ const App = () => (
 )
 ```
 
-### Variant and size
+### Content padding
 
-Control scrollbar visibility and thickness:
+Style props on `ScrollArea` apply to the outer root container. For inner content
+padding, wrap children in a `Box`:
 
 ```jsx live-dev
 const App = () => (
-  <Stack gap="600" direction="row" flexWrap="wrap">
-    <Box>
-      <Text fontSize="sm" mb="200" fontWeight="bold">variant="hover" (default)</Text>
-      <ScrollArea maxH="120px" w="200px">
-        {Array.from({ length: 15 }, (_, i) => (
-          <Text key={i} fontSize="sm">Line {i + 1}</Text>
-        ))}
-      </ScrollArea>
+  <ScrollArea maxH="200px" w="400px" bg="neutral.2" borderRadius="300" variant="always">
+    <Box p="200">
+      {Array.from({ length: 20 }, (_, i) => (
+        <Text key={i} fontSize="sm">
+          Line {i + 1}: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        </Text>
+      ))}
     </Box>
-    <Box>
-      <Text fontSize="sm" mb="200" fontWeight="bold">variant="always"</Text>
-      <ScrollArea maxH="120px" w="200px" variant="always">
-        {Array.from({ length: 15 }, (_, i) => (
-          <Text key={i} fontSize="sm">Line {i + 1}</Text>
-        ))}
-      </ScrollArea>
-    </Box>
-  </Stack>
+  </ScrollArea>
 )
 ```
 
 ## Component requirements
 
 - The component must have a size constraint (`maxH`, `maxW`, `h`, `w`) for scrolling to occur
-- For inner content padding, wrap children in a `<Box p="...">` rather than putting padding on `ScrollArea` itself (padding on `ScrollArea` applies to the outer container)
+- For inner content padding, wrap children in a `<Box p="...">` rather than putting padding on `ScrollArea` itself
 
 ## Accessibility
 
@@ -109,6 +102,10 @@ The ScrollArea component ensures keyboard accessibility:
 - **Focus ring**: A Nimbus focus ring appears on the root element when the viewport receives keyboard focus (via `:focus-visible`)
 - **ARIA landmarks**: Pass `role="region"` with an `aria-label` or `aria-labelledby` to create a named landmark for screen reader navigation
 - **TypeScript enforcement**: When `role="region"` is set, TypeScript requires either `aria-label` or `aria-labelledby`
+
+## API reference
+
+<PropsTable id="ScrollArea" />
 
 ## Resources
 
