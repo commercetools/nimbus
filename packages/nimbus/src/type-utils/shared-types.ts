@@ -1,6 +1,7 @@
 import {
   SEMANTIC_COLOR_PALETTES,
   ALL_COLOR_PALETTES,
+  SYSTEM_COLOR_PALETTES,
 } from "@/constants/color-palettes";
 /**
  * Shared type re-exports from external dependencies.
@@ -32,6 +33,13 @@ export type NimbusColorPalette = (typeof ALL_COLOR_PALETTES)[number];
  * Derived from SEMANTIC_PALETTES constant to ensure type safety when referencing palettes.
  */
 type SemanticColorPalette = (typeof SEMANTIC_COLOR_PALETTES)[number];
+
+/**
+ * Union type of the 25 system color palette names.
+ * Derived from SYSTEM_COLOR_PALETTES constant. Useful for components that accept
+ * a system palette (e.g. avatars, tags, data visualization).
+ */
+export type SystemColorPalette = (typeof SYSTEM_COLOR_PALETTES)[number];
 
 /**
  * Utility Type that narrows the colorPalette prop in chakra-ui recipes to only accept semantic color palettes
