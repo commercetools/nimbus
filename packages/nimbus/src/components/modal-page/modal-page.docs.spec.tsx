@@ -204,7 +204,9 @@ describe("ModalPage - Tabular page", () => {
       </NimbusProvider>
     );
 
-    expect(screen.getByText("Order #12345")).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Order #12345" })
+    ).toBeInTheDocument();
     expect(screen.getByText("General")).toBeInTheDocument();
     expect(screen.getByText("Items")).toBeInTheDocument();
     expect(screen.getByText("Shipping")).toBeInTheDocument();
