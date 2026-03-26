@@ -1,0 +1,116 @@
+---
+title: ScrollArea Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { ScrollArea, type ScrollAreaProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The ScrollArea component provides a scrollable container with custom-styled scrollbar overlays:
+
+```jsx live-dev
+const App = () => (
+  <ScrollArea maxH="200px" w="400px">
+    {Array.from({ length: 20 }, (_, i) => (
+      <Text key={i} fontSize="sm">
+        Line {i + 1}: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      </Text>
+    ))}
+  </ScrollArea>
+)
+```
+
+## Usage examples
+
+### Orientation
+
+Use the `orientation` prop to control which scrollbar axes are rendered:
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="600">
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">vertical (default)</Text>
+      <ScrollArea maxH="120px" w="300px" variant="always">
+        {Array.from({ length: 15 }, (_, i) => (
+          <Text key={i} fontSize="sm">Line {i + 1}</Text>
+        ))}
+      </ScrollArea>
+    </Box>
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">horizontal</Text>
+      <ScrollArea maxW="300px" orientation="horizontal" variant="always">
+        <Box whiteSpace="nowrap">
+          {Array.from({ length: 5 }, (_, i) => (
+            <Text key={i} fontSize="sm">{"Long horizontal content ".repeat(15)}</Text>
+          ))}
+        </Box>
+      </ScrollArea>
+    </Box>
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">both</Text>
+      <ScrollArea maxH="120px" maxW="300px" orientation="both" variant="always">
+        <Box whiteSpace="nowrap">
+          {Array.from({ length: 15 }, (_, i) => (
+            <Text key={i} fontSize="sm">{"Both axes content ".repeat(15)}</Text>
+          ))}
+        </Box>
+      </ScrollArea>
+    </Box>
+  </Stack>
+)
+```
+
+### Variant and size
+
+Control scrollbar visibility and thickness:
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="600" direction="row" flexWrap="wrap">
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">variant="hover" (default)</Text>
+      <ScrollArea maxH="120px" w="200px">
+        {Array.from({ length: 15 }, (_, i) => (
+          <Text key={i} fontSize="sm">Line {i + 1}</Text>
+        ))}
+      </ScrollArea>
+    </Box>
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">variant="always"</Text>
+      <ScrollArea maxH="120px" w="200px" variant="always">
+        {Array.from({ length: 15 }, (_, i) => (
+          <Text key={i} fontSize="sm">Line {i + 1}</Text>
+        ))}
+      </ScrollArea>
+    </Box>
+  </Stack>
+)
+```
+
+## Component requirements
+
+- The component must have a size constraint (`maxH`, `maxW`, `h`, `w`) for scrolling to occur
+- For inner content padding, wrap children in a `<Box p="...">` rather than putting padding on `ScrollArea` itself (padding on `ScrollArea` applies to the outer container)
+
+## Accessibility
+
+The ScrollArea component ensures keyboard accessibility:
+
+- **Keyboard focusable**: The scrollable viewport receives `tabIndex={0}` when content overflows, making it reachable via Tab
+- **Focus ring**: A Nimbus focus ring appears on the root element when the viewport receives keyboard focus (via `:focus-visible`)
+- **ARIA landmarks**: Pass `role="region"` with an `aria-label` or `aria-labelledby` to create a named landmark for screen reader navigation
+- **TypeScript enforcement**: When `role="region"` is set, TypeScript requires either `aria-label` or `aria-labelledby`
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-scrollarea--docs)
+- [Chakra UI ScrollArea](https://chakra-ui.com/docs/components/scroll-area)

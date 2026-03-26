@@ -69,4 +69,5 @@ export * from "./tab-nav";
 export * from "./tabs";
 export * from "./toast";
 export * from "./localized-field";
+export * from "./scroll-area";
 export * from "./steps";
