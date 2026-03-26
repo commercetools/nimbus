@@ -54,6 +54,13 @@ export const Default: Story = {
       });
     });
 
+    await step("Viewport has tabIndex when overflowing", async () => {
+      const viewport = canvasElement.querySelector(
+        '[data-part="viewport"]'
+      ) as HTMLElement;
+      expect(viewport).toHaveAttribute("tabindex", "0");
+    });
+
     await step("Detects vertical overflow via data attribute", async () => {
       const viewport = canvasElement.querySelector('[data-part="viewport"]');
       expect(viewport).toHaveAttribute("data-overflow-y");
@@ -90,6 +97,18 @@ export const NonOverflowing: Story = {
         expect(viewport).toBeTruthy();
       });
     });
+
+    await step(
+      "Viewport does not have tabIndex when not overflowing",
+      async () => {
+        await waitFor(() => {
+          const viewport = canvasElement.querySelector(
+            '[data-part="viewport"]'
+          ) as HTMLElement;
+          expect(viewport).not.toHaveAttribute("tabindex");
+        });
+      }
+    );
 
     await step("All compound parts are present", async () => {
       expect(canvasElement.querySelector('[data-part="root"]')).toBeTruthy();
