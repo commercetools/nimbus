@@ -12,16 +12,27 @@ import type { ScrollAreaProps } from "./scroll-area.types";
 const ScrollAreaInner = ({
   children,
   orientation = "vertical",
+  role,
+  "aria-label": ariaLabel,
+  "aria-labelledby": ariaLabelledBy,
 }: {
   children: React.ReactNode;
   orientation?: "vertical" | "horizontal" | "both";
+  role?: React.AriaRole;
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
 }) => {
   const { hasOverflowX, hasOverflowY } = useScrollAreaContext();
   const tabIndex = hasOverflowX || hasOverflowY ? 0 : undefined;
 
   return (
     <>
-      <ChakraScrollArea.Viewport tabIndex={tabIndex}>
+      <ChakraScrollArea.Viewport
+        tabIndex={tabIndex}
+        role={role}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+      >
         <ChakraScrollArea.Content>{children}</ChakraScrollArea.Content>
       </ChakraScrollArea.Viewport>
       {(orientation === "vertical" || orientation === "both") && (
@@ -57,13 +68,17 @@ const ScrollAreaInner = ({
  * ```
  */
 export const ScrollArea = (props: ScrollAreaProps) => {
-  const { ref, children, orientation = "vertical", ...restProps } = props;
+  const {
+    ref,
+    children,
+    orientation = "vertical",
+    role,
+    "aria-label": ariaLabel,
+    "aria-labelledby": ariaLabelledBy,
+    ...restProps
+  } = props;
 
-  if (
-    restProps.role === "region" &&
-    !restProps["aria-label"] &&
-    !restProps["aria-labelledby"]
-  ) {
+  if (role === "region" && !ariaLabel && !ariaLabelledBy) {
     devWarn(
       'ScrollArea with role="region" requires an "aria-label" or ' +
         '"aria-labelledby" prop for accessibility.'
@@ -72,7 +87,14 @@ export const ScrollArea = (props: ScrollAreaProps) => {
 
   return (
     <ChakraScrollArea.Root ref={ref} {...restProps}>
-      <ScrollAreaInner orientation={orientation}>{children}</ScrollAreaInner>
+      <ScrollAreaInner
+        orientation={orientation}
+        role={role}
+        aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
+      >
+        {children}
+      </ScrollAreaInner>
     </ChakraScrollArea.Root>
   );
 };
