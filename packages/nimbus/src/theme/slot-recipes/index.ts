@@ -1,4 +1,5 @@
 import { accordionSlotRecipe } from "@/components/accordion/accordion.recipe";
+import { scrollAreaSlotRecipe } from "@/components/scroll-area/scroll-area.recipe";
 import { defaultPageSlotRecipe } from "@/components/default-page/default-page.recipe";
 import { stepsSlotRecipe } from "@/components/steps/steps.recipe";
 import { alertRecipe } from "@/components/alert/alert.recipe";
@@ -118,4 +119,8 @@ export const slotRecipes = {
   toast: toastRecipe,
   nimbusToggleButtonGroup: buttonGroupRecipe,
   nimbusSteps: stepsSlotRecipe,
+  // NOTE: intentionally NOT prefixed with "nimbus" — the "scrollArea" key
+  // overrides Chakra's built-in scrollArea recipe so that Chakra's
+  // ScrollArea components resolve Nimbus styles through the recipe system.
+  scrollArea: scrollAreaSlotRecipe,
 };
