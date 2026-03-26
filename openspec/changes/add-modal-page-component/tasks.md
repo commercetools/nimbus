@@ -3,9 +3,8 @@
 - [x] 1.1 Create `packages/nimbus/src/components/modal-page/` directory with
       files: `modal-page.tsx`, `modal-page.types.ts`, `modal-page.recipe.ts`,
       `modal-page.slots.tsx`, `modal-page.i18n.ts`, `modal-page.messages.ts`,
-      `modal-page.depth-context.ts`, `components/index.ts`, and individual
-      slot component files
-- [x] 1.2 Register `modalPageRecipe` in `src/theme/slot-recipes/index.ts`
+      `components/index.ts`, and individual slot component files
+- [x] 1.2 Register `modalPageSlotRecipe` in `src/theme/slot-recipes/index.ts`
       as `nimbusModalPage`
 - [x] 1.3 Export ModalPage and types from
       `src/components/modal-page/index.ts`
@@ -22,18 +21,17 @@
       button spacing; header padding removal when TabNav present)
 - [x] 2.3 Implement slot components in `modal-page.slots.tsx`
       (createSlotRecipeContext with key "nimbusModalPage")
-- [x] 2.4 Implement sub-components: Root (controlled Drawer, depth context),
+- [x] 2.4 Implement sub-components: Root (controlled Drawer),
       TopBar (breadcrumb with back button, auto-focus), Header, Title
       (accessible dialog name), Subtitle, Actions, TabNav, Content, Footer
 - [x] 2.5 Implement `modal-page.tsx` compound namespace object with JSDoc
 - [x] 2.6 Implement i18n messages for back button label with locale support
-- [x] 2.7 Implement depth context for stacked modal visual indentation
 
 ## 3. Testing
 
 - [x] 3.1 Write Storybook stories with play functions covering: info page,
       form page, tabular page, scrollable content, multi-column content,
-      keyboard navigation, stacked modal pages, smoke test
+      keyboard navigation, stacked modal pages, custom page width
 - [x] 3.2 Write consumer implementation tests (`modal-page.docs.spec.tsx`)
       covering basic usage, form page, and multi-column layout patterns
 
