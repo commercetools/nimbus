@@ -247,10 +247,6 @@
     "developer_comment": "Default aria-label for the back navigation link",
     "string": "Go back"
   },
-  "Nimbus.DetailPage.backLink": {
-    "developer_comment": "Default aria-label for the back navigation link",
-    "string": "Go back"
-  },
   "Nimbus.Dialog.closeTrigger": {
     "developer_comment": "aria-label for the default close trigger button",
     "string": "Fechar caixa de diálogo"
@@ -553,6 +549,6 @@
   },
   "Nimbus.Toast.dismiss": {
     "developer_comment": "aria-label for the close/dismiss button on a toast notification",
-    "string": "Dismiss"
+    "string": "Fechar"
   }
 }

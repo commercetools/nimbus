@@ -247,10 +247,6 @@
     "developer_comment": "Default aria-label for the back navigation link",
     "string": "Go back"
   },
-  "Nimbus.DetailPage.backLink": {
-    "developer_comment": "Default aria-label for the back navigation link",
-    "string": "Go back"
-  },
   "Nimbus.Dialog.closeTrigger": {
     "developer_comment": "aria-label for the default close trigger button",
     "string": "Close dialog"
