@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import type { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { createTestClient } from "../test-utils.js";
+import type { ComponentSummary } from "../types.js";
 
 /**
  * Behavioral tests for the list_components tool.
@@ -9,15 +10,6 @@ import { createTestClient } from "../test-utils.js";
  * Tests are written to be resilient to new components being added — they
  * assert minimums and shapes, not exact lists.
  */
-
-type ComponentSummary = {
-  title: string;
-  description: string;
-  path: string;
-  exportName?: string;
-  subcategory?: string;
-  tags?: string[];
-};
 
 async function callListComponents(
   client: Client,
