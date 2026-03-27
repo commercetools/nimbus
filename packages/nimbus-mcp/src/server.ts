@@ -4,6 +4,7 @@ import { registerGetTokens } from "./tools/get-tokens.js";
 import { registerListComponents } from "./tools/list-components.js";
 import { registerSearchDocs } from "./tools/search-docs.js";
 import { registerSearchIcons } from "./tools/search-icons.js";
+import { registerMigrateFromUiKit } from "./tools/migrate-from-uikit.js";
 
 /**
  * Creates and configures the Nimbus MCP server.
@@ -31,6 +32,7 @@ export function createServer(): McpServer {
   registerListComponents(server);
   registerSearchDocs(server);
   registerSearchIcons(server);
+  registerMigrateFromUiKit(server);
 
   return server;
 }
