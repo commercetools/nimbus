@@ -247,6 +247,10 @@
     "developer_comment": "Default aria-label for the back navigation link",
     "string": "Go back"
   },
+  "Nimbus.DetailPage.backLink": {
+    "developer_comment": "Default aria-label for the back navigation link",
+    "string": "Go back"
+  },
   "Nimbus.Dialog.closeTrigger": {
     "developer_comment": "aria-label for the default close trigger button",
     "string": "Close dialog"
@@ -350,6 +354,10 @@
   "Nimbus.LocalizedField.showLanguages": {
     "developer_comment": "Label for showing all language inputs when toggle button is pressed",
     "string": "Show all languages"
+  },
+  "Nimbus.ModalPage.backButton": {
+    "developer_comment": "aria-label for the back navigation button in ModalPage.TopBar",
+    "string": "Go back to {previousPathLabel}"
   },
   "Nimbus.MoneyInput.amountInputLabel": {
     "developer_comment": "aria-label for amount input",

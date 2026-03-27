@@ -95,12 +95,6 @@ type DefaultPageFlexibleProps = DefaultPageBaseProps & {
   stickyFooter?: boolean;
 };
 
-/**
- * Discriminated union on the `layout` prop.
- *
- * - `"constrained"` (default) — pinned header/footer, scrollable content.
- * - `"flexible"` — whole-page scroll; unlocks `stickyHeader` / `stickyFooter`.
- */
 export type DefaultPageProps =
   | DefaultPageConstrainedProps
   | DefaultPageFlexibleProps;

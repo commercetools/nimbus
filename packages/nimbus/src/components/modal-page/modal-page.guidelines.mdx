@@ -1,0 +1,35 @@
+---
+title: ModalPage
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+Use ModalPage strategically to enhance user workflow without disrupting the
+experience.
+
+### Best practices
+
+- **Always provide a title**: Use `ModalPage.Title` so screen readers can identify the dialog
+- **Use meaningful navigation labels**: `previousPathLabel` and `currentPathLabel` orient the user within the application
+- **Include footer actions for forms**: Form pages should always have Save/Cancel in `ModalPage.Footer`
+- **Avoid disabling Escape key**: Keyboard dismissal is always active — it matches OS conventions and WCAG 2.1
+- **Keep content focused**: ModalPage should have a single, clear purpose — a form, a detail view, or a tabular view
+- **Use the right variant**: Choose the content variant that matches your data (`wide`, `narrow`, or `full`)
+
+> [!TIP]\
+> When to use
+
+- **Complex editing workflows**: Creating or editing entities with many fields (product forms, order details)
+- **Multi-section detail views**: When content is too rich for a standard Drawer
+- **Tabular data workflows**: When the content is organized into tabs (General, Items, Shipping)
+- **Full-page focused context**: When the user must focus entirely on the task before returning to the list
+
+> [!CAUTION]\
+> When not to use
+
+- **Simple confirmation dialogs**: Use `Dialog` instead — ModalPage is for content-rich workflows
+- **Single-form quick edits**: Use `Drawer` instead — reserve ModalPage for complex, multi-field scenarios
+- **Navigation overlays**: Use proper routing for moving between application sections
+- **Informational banners or toasts**: Use `Alert` or `Toast` for non-blocking messages
