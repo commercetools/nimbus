@@ -6,7 +6,7 @@
  */
 
 import type { ReactNode } from "react";
-import { Box, Grid } from "@commercetools/nimbus";
+import { Box, Grid, ScrollArea } from "@commercetools/nimbus";
 
 export interface AppFrameRootProps {
   children: ReactNode;
@@ -101,35 +101,17 @@ function AppFrameTopBar({ children }: AppFrameTopBarProps) {
  */
 function AppFrameLeftNav({ children }: AppFrameLeftNavProps) {
   return (
-    <Box
-      id="app-frame-left-nav"
+    <ScrollArea
       as="nav"
+      id="app-frame-left-nav"
       gridArea="nav"
-      overflowY="auto"
-      overflowX="hidden"
       borderRight="solid-25"
       borderColor="neutral.3"
       bg="bg"
-      py="400"
-      css={{
-        // Custom scrollbar styling
-        "&::-webkit-scrollbar": {
-          width: "200",
-        },
-        "&::-webkit-scrollbar-track": {
-          background: "{colors.neutral.2}",
-        },
-        "&::-webkit-scrollbar-thumb": {
-          background: "{colors.neutral.3}",
-          borderRadius: "100",
-        },
-        "&::-webkit-scrollbar-thumb:hover": {
-          background: "{colors.neutral.4}",
-        },
-      }}
+      size="sm"
     >
-      {children}
-    </Box>
+      <Box py="400">{children}</Box>
+    </ScrollArea>
   );
 }
 
@@ -138,36 +120,22 @@ function AppFrameLeftNav({ children }: AppFrameLeftNavProps) {
  */
 function AppFrameMainContent({ children }: AppFrameMainContentProps) {
   return (
-    <Box
+    <ScrollArea
       as="main"
       id="main"
       gridArea="main"
-      overflowY="scroll"
-      overflowX="hidden"
-      scrollPaddingTop="120px"
-      p="800"
       bg="bg"
+      size="sm"
       css={{
-        // Custom scrollbar styling
-        "&::-webkit-scrollbar": {
-          width: "200",
-        },
-        "&::-webkit-scrollbar-track": {
-          background: "{colors.neutral.2}",
-        },
-        "&::-webkit-scrollbar-thumb": {
-          background: "{colors.neutral.3}",
-          borderRadius: "100",
-        },
-        "&::-webkit-scrollbar-thumb:hover": {
-          background: "{colors.neutral.4}",
-        },
+        '& [data-part="viewport"]': { scrollPaddingTop: "120px" },
       }}
     >
-      <Box maxWidth="80ch" mx="auto">
-        {children}
+      <Box p="800">
+        <Box maxWidth="80ch" mx="auto">
+          {children}
+        </Box>
       </Box>
-    </Box>
+    </ScrollArea>
   );
 }
 
@@ -176,34 +144,11 @@ function AppFrameMainContent({ children }: AppFrameMainContentProps) {
  */
 function AppFrameRightAside({ children }: AppFrameRightAsideProps) {
   return (
-    <Box
-      as="aside"
-      gridArea="aside"
-      overflowY="auto"
-      overflowX="hidden"
-      bg="bg"
-      pl="800"
-      pr="800"
-      py="400"
-      css={{
-        // Custom scrollbar styling
-        "&::-webkit-scrollbar": {
-          width: "200",
-        },
-        "&::-webkit-scrollbar-track": {
-          background: "{colors.neutral.2}",
-        },
-        "&::-webkit-scrollbar-thumb": {
-          background: "{colors.neutral.3}",
-          borderRadius: "100",
-        },
-        "&::-webkit-scrollbar-thumb:hover": {
-          background: "{colors.neutral.4}",
-        },
-      }}
-    >
-      {children}
-    </Box>
+    <ScrollArea as="aside" gridArea="aside" bg="bg" variant="always" size="sm">
+      <Box px="800" py="400">
+        {children}
+      </Box>
+    </ScrollArea>
   );
 }
 
