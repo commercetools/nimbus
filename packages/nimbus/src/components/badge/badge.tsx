@@ -1,8 +1,6 @@
-import { useRef } from "react";
+import { memo } from "react";
 import { BadgeRoot } from "./badge.slots";
 import type { BadgeProps } from "./badge.types";
-import { mergeRefs } from "@/utils";
-import { useObjectRef, mergeProps } from "react-aria";
 /**
  * # Badge
  *
@@ -12,13 +10,14 @@ import { useObjectRef, mergeProps } from "react-aria";
  * @supportsStyleProps
  */
 
-export const Badge = (props: BadgeProps) => {
+export const Badge = memo((props: BadgeProps) => {
   const { ref: forwardedRef, children, ...rest } = props;
 
-  const localRef = useRef<HTMLSpanElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
-
-  return <BadgeRoot {...mergeProps(rest, { ref })}>{children}</BadgeRoot>;
-};
+  return (
+    <BadgeRoot {...rest} ref={forwardedRef}>
+      {children}
+    </BadgeRoot>
+  );
+});
 
 Badge.displayName = "Badge";

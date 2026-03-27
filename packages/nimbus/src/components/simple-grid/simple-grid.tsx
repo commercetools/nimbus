@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   SimpleGrid as ChakraSimpleGrid,
   type SimpleGridProps as ChakraSimpleGridProps,
@@ -17,10 +18,10 @@ export type SimpleGridProps = ChakraSimpleGridProps & {
   ref?: React.Ref<HTMLDivElement>;
 };
 
-const GridComponent = (props: SimpleGridProps) => {
+const GridComponent = memo((props: SimpleGridProps) => {
   const { ref, ...restProps } = props;
   return <ChakraSimpleGrid ref={ref} {...restProps} />;
-};
+});
 
 GridComponent.displayName = "SimpleGrid";
 

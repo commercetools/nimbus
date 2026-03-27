@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Separator as RaSeparator } from "react-aria-components";
 import { useRecipe } from "@chakra-ui/react/styled-system";
 import { SeparatorRoot } from "./separator.slots";
@@ -20,26 +21,28 @@ import { separatorRecipe } from "./separator.recipe";
  * - built with React Aria for accessibility
  */
 
-export const Separator = ({
-  ref: forwardedRef,
-  orientation = "horizontal",
-  ...props
-}: SeparatorProps) => {
-  const recipe = useRecipe({ recipe: separatorRecipe });
-  const [recipeProps, variantFreeProps] = recipe.splitVariantProps({
-    orientation,
-    ...props,
-  });
-  const [styleProps, functionalProps] = extractStyleProps({
-    orientation,
-    ...variantFreeProps,
-  });
+export const Separator = memo(
+  ({
+    ref: forwardedRef,
+    orientation = "horizontal",
+    ...props
+  }: SeparatorProps) => {
+    const recipe = useRecipe({ recipe: separatorRecipe });
+    const [recipeProps, variantFreeProps] = recipe.splitVariantProps({
+      orientation,
+      ...props,
+    });
+    const [styleProps, functionalProps] = extractStyleProps({
+      orientation,
+      ...variantFreeProps,
+    });
 
-  return (
-    <SeparatorRoot asChild {...recipeProps} {...styleProps}>
-      <RaSeparator ref={forwardedRef} {...functionalProps} />
-    </SeparatorRoot>
-  );
-};
+    return (
+      <SeparatorRoot asChild {...recipeProps} {...styleProps}>
+        <RaSeparator ref={forwardedRef} {...functionalProps} />
+      </SeparatorRoot>
+    );
+  }
+);
 
 Separator.displayName = "Separator";

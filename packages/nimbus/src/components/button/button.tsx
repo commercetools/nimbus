@@ -1,7 +1,6 @@
-import { useRef } from "react";
+import { memo } from "react";
 import { useButton, useObjectRef } from "react-aria";
 import { ButtonContext, useContextProps } from "react-aria-components";
-import { mergeRefs } from "@/utils";
 import { ButtonRoot } from "./button.slots.tsx";
 import type { ButtonProps } from "./button.types.ts";
 
@@ -12,20 +11,13 @@ import type { ButtonProps } from "./button.types.ts";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/button}
  */
-const ButtonComponent = (props: ButtonProps) => {
+const ButtonComponent = memo((props: ButtonProps) => {
   const { ref: forwardedRef, as, asChild, children, ...rest } = props;
 
-  // create a local ref (because the consumer may not provide a forwardedRef)
-  const localRef = useRef<HTMLButtonElement>(null);
-  // merge the local ref with a potentially forwarded ref
-  const baseRef = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const ref = useObjectRef(forwardedRef);
 
   // Consume context props based on slot (this enables slot-aware behavior)
-  const [contextProps, contextRef] = useContextProps(
-    rest,
-    baseRef,
-    ButtonContext
-  );
+  const [contextProps, contextRef] = useContextProps(rest, ref, ButtonContext);
 
   // if asChild is set, for react-aria to add the button-role, the elementType
   // has to be manually set to something else than button
@@ -53,7 +45,7 @@ const ButtonComponent = (props: ButtonProps) => {
       {children}
     </ButtonRoot>
   );
-};
+});
 
 // Manually assign a displayName for debugging purposes
 ButtonComponent.displayName = "Button";

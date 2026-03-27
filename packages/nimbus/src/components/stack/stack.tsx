@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Stack as ChakraStack } from "@chakra-ui/react/stack";
 import type { StackProps } from "./stack.types";
 
@@ -10,9 +11,9 @@ import type { StackProps } from "./stack.types";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/layout/stack}
  */
-export const Stack = (props: StackProps) => {
+export const Stack = memo((props: StackProps) => {
   const { ref, ...restProps } = props;
   return <ChakraStack ref={ref} {...restProps} />;
-};
+});
 
 Stack.displayName = "Stack";

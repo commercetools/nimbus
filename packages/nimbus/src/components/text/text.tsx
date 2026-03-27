@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   Text as ChakraText,
   type TextProps as ChakraTextProps,
@@ -18,7 +19,7 @@ export type TextProps = Omit<ChakraTextProps, "slot"> & {
  *
  * @supportsStyleProps
  */
-export const Text = ({ ref: forwardedRef, ...props }: TextProps) => {
+export const Text = memo(({ ref: forwardedRef, ...props }: TextProps) => {
   const [contextProps, ref] = useContextProps(
     props,
     forwardedRef ?? null,
@@ -31,6 +32,6 @@ export const Text = ({ ref: forwardedRef, ...props }: TextProps) => {
       slot={props.slot ?? undefined}
     />
   );
-};
+});
 
 Text.displayName = "Text";

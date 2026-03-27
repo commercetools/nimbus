@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Flex as ChakraFlex } from "@chakra-ui/react/flex";
 import type { FlexProps } from "./flex.types";
 
@@ -20,9 +21,9 @@ import type { FlexProps } from "./flex.types";
  * </Flex>
  * ```
  */
-export const Flex = (props: FlexProps) => {
+export const Flex = memo((props: FlexProps) => {
   const { ref, ...restProps } = props;
   return <ChakraFlex ref={ref} {...restProps} />;
-};
+});
 
 Flex.displayName = "Flex";

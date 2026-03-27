@@ -1,3 +1,4 @@
+import { memo } from "react";
 import {
   VisuallyHidden as ReactAriaViusallyHidden,
   type VisuallyHiddenProps as ReactAriaVisuallyHiddenProps,
@@ -19,9 +20,9 @@ export type VisuallyHiddenProps = Omit<
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/accessibility/visually-hidden}
  */
-export const VisuallyHidden = (props: VisuallyHiddenProps) => {
+export const VisuallyHidden = memo((props: VisuallyHiddenProps) => {
   const { as = "div", ...leftoverProps } = props;
   return <ReactAriaViusallyHidden elementType={as} {...leftoverProps} />;
-};
+});
 
 VisuallyHidden.displayName = "VisuallyHidden";
