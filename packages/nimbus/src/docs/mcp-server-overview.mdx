@@ -48,6 +48,8 @@ With the MCP server running, an AI assistant can:
   guidelines and accessibility views
 - **Find icons** — fuzzy-search the icon catalog by name or keyword
 - **List components** — browse all available components filtered by category
+- **Migrate from UI Kit** — get migration mappings from `@commercetools-uikit`
+  components to their Nimbus equivalents
 
 This means you can ask your AI assistant questions like _"build a form with
 Nimbus components"_ or _"what spacing tokens are available?"_ and it will have
@@ -64,6 +66,7 @@ The server exposes the following tools:
 | `get_tokens`       | Returns design tokens, optionally filtered by category or searched by name     |
 | `search_docs`      | Full-text search across all Nimbus documentation pages                         |
 | `search_icons`     | Fuzzy-search the icon catalog by name or keyword                               |
+| `migrate_from_uikit` | Returns migration mappings from UI Kit components to Nimbus equivalents       |
 
 ## Supported AI Assistants
 
