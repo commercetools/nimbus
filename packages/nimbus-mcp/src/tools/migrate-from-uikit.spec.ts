@@ -125,6 +125,15 @@ describe("migrate_from_uikit — componentName mode", () => {
     expect(data.hint).toContain("Button");
   });
 
+  it("resolves a component via case-insensitive fallback", async () => {
+    const result = await callMigrate({ componentName: "primarybutton" });
+    const data = JSON.parse(getText(result));
+
+    expect(result.isError).toBeUndefined();
+    expect(data.uiKitName).toBe("PrimaryButton");
+    expect(data.nimbusEquivalent).toBe("Button");
+  });
+
   it("returns error for unknown component", async () => {
     const result = await callMigrate({
       componentName: "NonExistentComponent",
@@ -231,6 +240,72 @@ export const spacing = Spacings;
     expect(names).toContain("Spacings.Stack");
     expect(names).toContain("Spacings.Inline");
     expect(names).toContain("Spacings.Inset");
+  });
+
+  it("skips import type statements", async () => {
+    const typeOnlyFile = join(tmpDir, "type-only.tsx");
+    await writeFile(
+      typeOnlyFile,
+      `
+import type { PrimaryButton } from '@commercetools-uikit/buttons';
+import type TextInput from '@commercetools-uikit/text-input';
+import type { Card } from '@commercetools-frontend/ui-kit';
+import { LoadingSpinner } from '@commercetools-uikit/loading-spinner';
+
+export const MyComponent = () => <div />;
+`
+    );
+
+    const result = await callMigrate({ filePath: typeOnlyFile });
+    const data = JSON.parse(getText(result));
+
+    expect(data.mappings.length).toBe(1);
+    expect(data.mappings[0].uiKitName).toBe("LoadingSpinner");
+  });
+
+  it("extracts the original name from aliased imports", async () => {
+    const aliasFile = join(tmpDir, "aliased.tsx");
+    await writeFile(
+      aliasFile,
+      `
+import { PrimaryButton as PB, SecondaryButton as SB } from '@commercetools-uikit/buttons';
+
+export const MyComponent = () => <div />;
+`
+    );
+
+    const result = await callMigrate({ filePath: aliasFile });
+    const data = JSON.parse(getText(result));
+
+    const names = data.mappings.map((m: { uiKitName: string }) => m.uiKitName);
+    expect(names).toContain("PrimaryButton");
+    expect(names).toContain("SecondaryButton");
+  });
+
+  it("extracts default import from combined default + named type imports", async () => {
+    const combinedFile = join(tmpDir, "combined-import.tsx");
+    await writeFile(
+      combinedFile,
+      `
+import FieldErrors, {
+  type TFieldErrors,
+  type TFieldErrorsProps,
+} from '@commercetools-uikit/field-errors';
+import CollapsiblePanel from '@commercetools-uikit/collapsible-panel';
+
+export const MyComponent = () => <div />;
+`
+    );
+
+    const result = await callMigrate({ filePath: combinedFile });
+    const data = JSON.parse(getText(result));
+
+    const names = data.mappings.map((m: { uiKitName: string }) => m.uiKitName);
+    expect(names).toContain("FieldErrors");
+    expect(names).toContain("CollapsiblePanel");
+    // Type-only named imports should not appear
+    expect(data.unmapped).not.toContain("TFieldErrors");
+    expect(data.unmapped).not.toContain("TFieldErrorsProps");
   });
 
   it("returns error for non-existent file", async () => {

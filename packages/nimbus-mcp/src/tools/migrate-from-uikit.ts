@@ -21,16 +21,20 @@ import type {
  * Skips `import type` statements (type-only imports don't need runtime migration).
  *
  * Captures:
- * - Group 1: named imports (e.g. "PrimaryButton, SecondaryButton")
- * - Group 2: default import name
+ * - Group 1: default import name (e.g. "FieldErrors", "TextInput")
+ * - Group 2: named imports block (e.g. "PrimaryButton, SecondaryButton")
  * - Group 3: package scope suffix (e.g. "buttons", "text-input")
  *
- * Handles both `import { X } from '...'` and `import X from '...'` forms.
+ * Handles:
+ * - `import Default from '...'`
+ * - `import { Named } from '...'`
+ * - `import Default, { Named } from '...'` (combined, possibly multiline)
  *
  * ReDoS safety: no nested quantifiers; the negative lookahead is fixed-length.
+ * Uses [\s\S] inside braces to handle multiline named imports.
  */
 const UIKIT_IMPORT_REGEX =
-  /import\s+(?!type\s)(?:\{([^}]+)\}|(\w+))\s+from\s+['"]@commercetools-uikit\/([^'"]+)['"]/g;
+  /import\s+(?!type\s)(?:(\w+)(?:\s*,\s*\{([^}]*?)\})?\s+from\s+|\{([^}]*?)\}\s+from\s+)['"]@commercetools-uikit\/([^'"]+)['"]/gs;
 
 /**
  * Regex to match the `@commercetools-frontend/ui-kit` barrel import.
@@ -72,7 +76,7 @@ const PACKAGE_TO_COMPONENT: Record<string, string> = {
   "radio-input": "RadioInput",
   "toggle-input": "ToggleInput",
   "localized-text-input": "LocalizedTextInput",
-  "localized-multiline-text-input": "LocalizedMultilineTextField",
+  "localized-multiline-text-input": "LocalizedMultilineTextInput",
   "localized-rich-text-input": "LocalizedRichTextInput",
   "loading-spinner": "LoadingSpinner",
   "progress-bar": "ProgressBar",
@@ -114,27 +118,30 @@ function extractUiKitComponents(fileContent: string): string[] {
   UIKIT_IMPORT_REGEX.lastIndex = 0;
 
   while ((match = UIKIT_IMPORT_REGEX.exec(fileContent)) !== null) {
-    const namedImports = match[1];
-    const defaultImport = match[2];
-    const packageName = match[3];
+    // Groups: (1) default import, (2) named imports (combined with default),
+    //         (3) named-only imports, (4) package name
+    const defaultImport = match[1];
+    const namedImports = match[2] || match[3];
+    const packageName = match[4];
 
-    if (namedImports) {
-      // Named imports: `import { PrimaryButton, SecondaryButton } from '...'`
-      for (const name of namedImports.split(",")) {
-        const trimmed = name
-          .trim()
-          .split(/\s+as\s+/)[0]
-          .trim();
-        if (trimmed) components.add(trimmed);
-      }
-    } else if (defaultImport) {
-      // Default import: `import TextInput from '@commercetools-uikit/text-input'`
-      // Try the package-to-component map first, then use the import name
+    // Process default import
+    if (defaultImport) {
       const mapped = PACKAGE_TO_COMPONENT[packageName];
       if (mapped) {
         components.add(mapped);
       } else {
         components.add(defaultImport);
+      }
+    }
+
+    // Process named imports, skipping type-only names (e.g. "type TFieldErrors")
+    if (namedImports) {
+      for (const name of namedImports.split(",")) {
+        const trimmed = name
+          .trim()
+          .split(/\s+as\s+/)[0]
+          .trim();
+        if (trimmed && !trimmed.startsWith("type ")) components.add(trimmed);
       }
     }
   }
@@ -401,7 +408,7 @@ export function registerMigrateFromUiKit(server: McpServer): void {
             fileContent.includes(entry.uiKitName)
           );
           // If no specific sub-components detected, return all (the file may
-          // use dynamic access or the regex may not catch every pattern).
+          // use dynamic access or destructuring that the string search misses).
           const toInclude = used.length > 0 ? used : compoundEntries;
           for (const entry of toInclude) {
             mappings.push(buildComponentResult(entry.uiKitName)!);
