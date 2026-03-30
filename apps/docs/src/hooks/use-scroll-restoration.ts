@@ -58,5 +58,5 @@ export function useScrollRestoration() {
       scrollPositions.set(location.pathname, scrollContainer.scrollTop);
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [location.pathname, location.hash]);
+  }, [location.pathname, location.hash, mainViewportRef]);
 }

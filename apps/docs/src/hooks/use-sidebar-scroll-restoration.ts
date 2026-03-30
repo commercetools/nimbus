@@ -37,7 +37,7 @@ export function useSidebarScrollRestoration() {
     return () => {
       sidebar.removeEventListener("scroll", saveScroll);
     };
-  }, []);
+  }, [sidebarViewportRef]);
 
   // Restore scroll on navigation
   useEffect(() => {
@@ -138,5 +138,5 @@ export function useSidebarScrollRestoration() {
         timeouts.forEach(clearTimeout);
       };
     }
-  }, [location.pathname]);
+  }, [location.pathname, sidebarViewportRef]);
 }
