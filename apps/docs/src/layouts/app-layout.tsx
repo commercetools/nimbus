@@ -4,7 +4,7 @@
  * Main layout shell using the new Holy Grail AppFrame
  */
 
-import { Suspense } from "react";
+import { Suspense, useRef } from "react";
 import { Outlet } from "react-router-dom";
 import { Stack, LoadingSpinner, Box } from "@commercetools/nimbus";
 import { AppFrame } from "@/components/app-frame";
@@ -12,13 +12,21 @@ import { AppNavBar } from "@/components/navigation/app-nav-bar";
 import { Menu } from "@/components/navigation/menu";
 import { Toc } from "@/components/navigation/toc";
 import { BreadcrumbNav } from "@/components/navigation/breadcrumb";
+import {
+  ScrollContainerProvider,
+  useMainViewport,
+  useSidebarViewport,
+} from "@/contexts/scroll-container-context";
 
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
 import { useSidebarScrollRestoration } from "@/hooks/use-sidebar-scroll-restoration";
 import { useHashNavigation } from "@/hooks/use-hash-navigation";
 import { useRouteInfo } from "@/hooks/use-route-info";
 
-export function AppLayout() {
+function AppLayoutInner() {
+  const mainViewportRef = useMainViewport();
+  const sidebarViewportRef = useSidebarViewport();
+
   // Enable scroll restoration on navigation
   useScrollRestoration();
 
@@ -47,14 +55,14 @@ export function AppLayout() {
       </AppFrame.BreadcrumbBar>
 
       {/* Left Navigation */}
-      <AppFrame.LeftNav>
+      <AppFrame.LeftNav viewportRef={sidebarViewportRef}>
         <Suspense fallback={<LoadingSpinner />}>
           <Menu />
         </Suspense>
       </AppFrame.LeftNav>
 
       {/* Main Content */}
-      <AppFrame.MainContent>
+      <AppFrame.MainContent viewportRef={mainViewportRef}>
         <Suspense fallback={<LoadingSpinner />}>
           {/* Animated wrapper that re-renders on route change */}
           <Box key={baseRoute} animationName="fade-in" animationDuration="slow">
@@ -72,5 +80,19 @@ export function AppLayout() {
         </Stack>
       </AppFrame.RightAside>
     </AppFrame.Root>
+  );
+}
+
+export function AppLayout() {
+  const mainViewportRef = useRef<HTMLDivElement>(null);
+  const sidebarViewportRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <ScrollContainerProvider
+      mainViewportRef={mainViewportRef}
+      sidebarViewportRef={sidebarViewportRef}
+    >
+      <AppLayoutInner />
+    </ScrollContainerProvider>
   );
 }

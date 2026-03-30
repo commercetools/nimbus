@@ -5,7 +5,7 @@
  * All built with Nimbus components
  */
 
-import type { ReactNode } from "react";
+import type { ReactNode, RefObject } from "react";
 import { Box, Grid, ScrollArea } from "@commercetools/nimbus";
 
 export interface AppFrameRootProps {
@@ -22,10 +22,12 @@ export interface AppFrameTopBarProps {
 
 export interface AppFrameLeftNavProps {
   children: ReactNode;
+  viewportRef?: RefObject<HTMLDivElement | null>;
 }
 
 export interface AppFrameMainContentProps {
   children: ReactNode;
+  viewportRef?: RefObject<HTMLDivElement | null>;
 }
 
 export interface AppFrameRightAsideProps {
@@ -99,11 +101,12 @@ function AppFrameTopBar({ children }: AppFrameTopBarProps) {
 /**
  * Left Navigation - Scrollable sidebar
  */
-function AppFrameLeftNav({ children }: AppFrameLeftNavProps) {
+function AppFrameLeftNav({ children, viewportRef }: AppFrameLeftNavProps) {
   return (
     <ScrollArea
       as="nav"
       id="app-frame-left-nav"
+      viewportRef={viewportRef}
       gridArea="nav"
       borderRight="solid-25"
       borderColor="neutral.3"
@@ -118,17 +121,18 @@ function AppFrameLeftNav({ children }: AppFrameLeftNavProps) {
 /**
  * Main Content Area - Scrollable with constrained content width
  */
-function AppFrameMainContent({ children }: AppFrameMainContentProps) {
+function AppFrameMainContent({
+  children,
+  viewportRef,
+}: AppFrameMainContentProps) {
   return (
     <ScrollArea
       as="main"
       id="main"
+      viewportRef={viewportRef}
       gridArea="main"
       bg="bg"
       size="sm"
-      css={{
-        '& [data-part="viewport"]': { scrollPaddingTop: "120px" },
-      }}
     >
       <Box p="800">
         <Box maxWidth="80ch" mx="auto">

@@ -4,19 +4,16 @@
  * Applies an offset to account for sticky headers (breadcrumb + top navigation).
  *
  * @param elementId The ID of the element to scroll to (without the # prefix)
+ * @param scrollContainer The scrollable container element
  */
-export const scrollToAnchor = (elementId: string): void => {
+export const scrollToAnchor = (
+  elementId: string,
+  scrollContainer: HTMLElement
+): void => {
   if (!elementId) return;
 
   // Offset to account for sticky headers (breadcrumb ~48px + top nav ~56px + buffer ~16px)
   const SCROLL_OFFSET = 120;
-
-  // Get the scroll container (the main content area)
-  const scrollContainer = document.getElementById("main");
-  if (!scrollContainer) {
-    console.warn("Scroll container #main not found");
-    return;
-  }
 
   // Try to find the target element
   const element = document.getElementById(elementId);

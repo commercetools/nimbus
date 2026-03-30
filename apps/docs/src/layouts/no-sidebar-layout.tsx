@@ -6,14 +6,20 @@
  * Does not use AppFrame grid to allow true full-width content.
  */
 
-import { Suspense } from "react";
+import { Suspense, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { LoadingSpinner, Box, Flex, ScrollArea } from "@commercetools/nimbus";
 import { AppNavBar } from "@/components/navigation/app-nav-bar";
 import { BreadcrumbNav } from "@/components/navigation/breadcrumb";
+import {
+  ScrollContainerProvider,
+  useMainViewport,
+} from "@/contexts/scroll-container-context";
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
 
-export function NoSidebarLayout() {
+function NoSidebarLayoutInner() {
+  const mainViewportRef = useMainViewport();
+
   // Enable scroll restoration on navigation
   useScrollRestoration();
 
@@ -87,6 +93,7 @@ export function NoSidebarLayout() {
       {/* Main Content - Full width, scrollable */}
       <ScrollArea
         as="main"
+        viewportRef={mainViewportRef}
         flex={1}
         bg="bg"
         width="full"
@@ -119,5 +126,15 @@ export function NoSidebarLayout() {
         </Box>
       </ScrollArea>
     </Flex>
+  );
+}
+
+export function NoSidebarLayout() {
+  const mainViewportRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <ScrollContainerProvider mainViewportRef={mainViewportRef}>
+      <NoSidebarLayoutInner />
+    </ScrollContainerProvider>
   );
 }

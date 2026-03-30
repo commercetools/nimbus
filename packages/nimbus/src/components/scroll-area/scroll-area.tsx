@@ -6,18 +6,21 @@ import { devWarn } from "@/utils";
 import type { ScrollAreaProps } from "./scroll-area.types";
 
 /**
- * Private inner component that renders inside ChakraScrollArea.Root
+ * Private component that renders inside ChakraScrollArea.Root
  * so it can access useScrollAreaContext() for conditional tabIndex.
+ * Composes Viewport + Content + Scrollbar(s) + Corner.
  */
-const ScrollAreaInner = ({
+const ScrollAreaParts = ({
   children,
   orientation = "vertical",
+  viewportRef,
   role,
   "aria-label": ariaLabel,
   "aria-labelledby": ariaLabelledBy,
 }: {
   children: React.ReactNode;
   orientation?: "vertical" | "horizontal" | "both";
+  viewportRef?: React.Ref<HTMLDivElement>;
   role?: React.AriaRole;
   "aria-label"?: string;
   "aria-labelledby"?: string;
@@ -28,6 +31,7 @@ const ScrollAreaInner = ({
   return (
     <>
       <ChakraScrollArea.Viewport
+        ref={viewportRef}
         tabIndex={tabIndex}
         role={role}
         aria-label={ariaLabel}
@@ -70,6 +74,7 @@ const ScrollAreaInner = ({
 export const ScrollArea = (props: ScrollAreaProps) => {
   const {
     ref,
+    viewportRef,
     children,
     orientation = "vertical",
     role,
@@ -87,14 +92,15 @@ export const ScrollArea = (props: ScrollAreaProps) => {
 
   return (
     <ChakraScrollArea.Root ref={ref} {...restProps}>
-      <ScrollAreaInner
+      <ScrollAreaParts
         orientation={orientation}
+        viewportRef={viewportRef}
         role={role}
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
       >
         {children}
-      </ScrollAreaInner>
+      </ScrollAreaParts>
     </ChakraScrollArea.Root>
   );
 };
