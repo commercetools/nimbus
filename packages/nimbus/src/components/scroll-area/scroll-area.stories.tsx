@@ -12,7 +12,7 @@ const meta: Meta<typeof ScrollArea> = {
 };
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 const OverflowingContent = () =>
   Array.from({ length: 30 }, (_, i) => (
@@ -40,30 +40,33 @@ const WideContent = () => (
 // ============================================================
 export const Default: Story = {
   render: () => (
-    <ScrollArea maxH="200px" w="400px" variant="always">
+    <ScrollArea
+      maxH="200px"
+      w="400px"
+      variant="always"
+      ids={{ viewport: "test-viewport" }}
+    >
       <OverflowingContent />
     </ScrollArea>
   ),
   play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+
     await step("Viewport is keyboard-focusable when overflowing", async () => {
       await waitFor(() => {
-        const viewport = canvasElement.querySelector(
-          '[data-part="viewport"]'
-        ) as HTMLElement;
+        const viewport = doc.getElementById("test-viewport") as HTMLElement;
         expect(viewport).toBeTruthy();
         expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight);
       });
     });
 
     await step("Viewport has tabIndex when overflowing", async () => {
-      const viewport = canvasElement.querySelector(
-        '[data-part="viewport"]'
-      ) as HTMLElement;
+      const viewport = doc.getElementById("test-viewport") as HTMLElement;
       expect(viewport).toHaveAttribute("tabindex", "0");
     });
 
     await step("Detects vertical overflow via data attribute", async () => {
-      const viewport = canvasElement.querySelector('[data-part="viewport"]');
+      const viewport = doc.getElementById("test-viewport");
       expect(viewport).toHaveAttribute("data-overflow-y");
     });
 
@@ -85,16 +88,21 @@ export const Default: Story = {
 // ============================================================
 export const NonOverflowing: Story = {
   render: () => (
-    <ScrollArea maxH="200px" w="400px" variant="always">
+    <ScrollArea
+      maxH="200px"
+      w="400px"
+      variant="always"
+      ids={{ viewport: "test-viewport" }}
+    >
       <ShortContent />
     </ScrollArea>
   ),
   play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+
     await step("Component renders with short content", async () => {
       await waitFor(() => {
-        const viewport = canvasElement.querySelector(
-          '[data-part="viewport"]'
-        ) as HTMLElement;
+        const viewport = doc.getElementById("test-viewport") as HTMLElement;
         expect(viewport).toBeTruthy();
       });
     });
@@ -103,9 +111,7 @@ export const NonOverflowing: Story = {
       "Viewport does not have tabIndex when not overflowing",
       async () => {
         await waitFor(() => {
-          const viewport = canvasElement.querySelector(
-            '[data-part="viewport"]'
-          ) as HTMLElement;
+          const viewport = doc.getElementById("test-viewport") as HTMLElement;
           expect(viewport).not.toHaveAttribute("tabindex");
         });
       }
@@ -113,9 +119,7 @@ export const NonOverflowing: Story = {
 
     await step("All compound parts are present", async () => {
       expect(canvasElement.querySelector('[data-part="root"]')).toBeTruthy();
-      expect(
-        canvasElement.querySelector('[data-part="viewport"]')
-      ).toBeTruthy();
+      expect(doc.getElementById("test-viewport")).toBeTruthy();
       expect(canvasElement.querySelector('[data-part="content"]')).toBeTruthy();
       expect(
         canvasElement.querySelector('[data-part="scrollbar"]')
@@ -131,21 +135,27 @@ export const KeyboardFocusRing: Story = {
   render: () => (
     <Box>
       <Text>Press Tab to focus the scroll area below:</Text>
-      <ScrollArea maxH="200px" w="400px" mt="400" variant="always">
+      <ScrollArea
+        maxH="200px"
+        w="400px"
+        mt="400"
+        variant="always"
+        ids={{ viewport: "test-viewport" }}
+      >
         <OverflowingContent />
       </ScrollArea>
     </Box>
   ),
   play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+
     await step("Viewport receives keyboard focus via Tab", async () => {
       await waitFor(() => {
-        const viewport = canvasElement.querySelector(
-          '[data-part="viewport"]'
-        ) as HTMLElement;
+        const viewport = doc.getElementById("test-viewport") as HTMLElement;
         expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight);
       });
       await userEvent.tab();
-      const viewport = canvasElement.querySelector('[data-part="viewport"]');
+      const viewport = doc.getElementById("test-viewport");
       await waitFor(() => {
         expect(viewport).toHaveFocus();
       });
@@ -165,14 +175,21 @@ export const KeyboardFocusRing: Story = {
 // ============================================================
 export const VerticalOnly: Story = {
   render: () => (
-    <ScrollArea maxH="200px" w="400px" variant="always">
+    <ScrollArea
+      maxH="200px"
+      w="400px"
+      variant="always"
+      ids={{ viewport: "test-viewport" }}
+    >
       <OverflowingContent />
     </ScrollArea>
   ),
   play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+
     await step("Detects vertical overflow", async () => {
       await waitFor(() => {
-        const viewport = canvasElement.querySelector('[data-part="viewport"]');
+        const viewport = doc.getElementById("test-viewport");
         expect(viewport).toHaveAttribute("data-overflow-y");
       });
     });
@@ -192,14 +209,21 @@ export const VerticalOnly: Story = {
 // ============================================================
 export const HorizontalOnly: Story = {
   render: () => (
-    <ScrollArea maxW="400px" orientation="horizontal" variant="always">
+    <ScrollArea
+      maxW="400px"
+      orientation="horizontal"
+      variant="always"
+      ids={{ viewport: "test-viewport" }}
+    >
       <WideContent />
     </ScrollArea>
   ),
   play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+
     await step("Detects horizontal overflow", async () => {
       await waitFor(() => {
-        const viewport = canvasElement.querySelector('[data-part="viewport"]');
+        const viewport = doc.getElementById("test-viewport");
         expect(viewport).toHaveAttribute("data-overflow-x");
       });
     });
@@ -336,7 +360,9 @@ export const Sizes: Story = {
 // ============================================================
 export const ExternalControl: Story = {
   render: () => {
-    const scrollArea = useScrollArea();
+    const scrollArea = useScrollArea({
+      ids: { viewport: "test-viewport" },
+    });
 
     return (
       <Box>
@@ -347,20 +373,18 @@ export const ExternalControl: Story = {
     );
   },
   play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+
     await step("Renders with RootProvider and detects overflow", async () => {
       await waitFor(() => {
-        const viewport = canvasElement.querySelector(
-          '[data-part="viewport"]'
-        ) as HTMLElement;
+        const viewport = doc.getElementById("test-viewport") as HTMLElement;
         expect(viewport).toBeTruthy();
         expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight);
       });
     });
 
     await step("Viewport has tabIndex when overflowing", async () => {
-      const viewport = canvasElement.querySelector(
-        '[data-part="viewport"]'
-      ) as HTMLElement;
+      const viewport = doc.getElementById("test-viewport") as HTMLElement;
       expect(viewport).toHaveAttribute("tabindex", "0");
     });
   },

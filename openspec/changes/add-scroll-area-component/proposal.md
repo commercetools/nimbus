@@ -32,13 +32,7 @@ design tokens.
     `:has(:focus-visible)` pattern
   - `orientation` prop to control which scrollbar axes render (`vertical` |
     `horizontal` | `both`)
-  - TypeScript discriminated union enforcing `aria-label` or `aria-labelledby`
-    when `role="region"` is set
-  - Dev-mode warning via `devWarn()` for missing accessible names at runtime
   - Accepts all Chakra style props (`p`, `bg`, `maxH`, `w`, etc.)
-
-- **NEW** `devWarn` utility in `packages/nimbus/src/utils/dev-warn.ts`
-  - Reusable development-mode warning function prefixed with `[Nimbus]`
 
 No custom hook — overflow detection and scroll state are handled by Ark UI's
 zag-js state machine internally. No i18n — no user-facing strings.
@@ -58,7 +52,5 @@ API on top.
 - Affected specs: nimbus-scroll-area (new capability)
 - Affected code:
   - **NEW**: `packages/nimbus/src/components/scroll-area/` (all files)
-  - **NEW**: `packages/nimbus/src/utils/dev-warn.ts`
-  - **MODIFIED**: `packages/nimbus/src/utils/index.ts` (export added)
   - **MODIFIED**: `packages/nimbus/src/components/index.ts` (export added)
   - **MODIFIED**: `packages/nimbus/src/theme/slot-recipes/index.ts` (recipe registered)
