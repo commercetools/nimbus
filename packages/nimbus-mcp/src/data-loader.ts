@@ -79,7 +79,14 @@ export const getRouteManifest = lazyJson<RouteManifest>(
 // Per-component route data
 // ---------------------------------------------------------------------------
 
-/** Cache for per-component route data, keyed by slug. */
+/**
+ * Cache for per-component route data, keyed by slug.
+ *
+ * Lifecycle: grows without eviction. This is safe because the MCP server runs
+ * as a short-lived stdio process — one per editor session — so memory is
+ * reclaimed when the process exits. If the server is ever adapted for SSE or
+ * other long-lived transports, an LRU eviction policy should be added here.
+ */
 const routeDataCache = new Map<string, RouteData>();
 
 /**
