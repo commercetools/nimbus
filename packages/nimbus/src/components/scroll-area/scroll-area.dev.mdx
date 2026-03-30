@@ -148,8 +148,7 @@ The ScrollArea component ensures keyboard accessibility:
 
 - **Keyboard focusable**: The scrollable viewport receives `tabIndex={0}` when content overflows, making it reachable via Tab
 - **Focus ring**: A Nimbus focus ring appears on the root element when the viewport receives keyboard focus (via `:focus-visible`)
-- **ARIA landmarks**: Pass `role="region"` with an `aria-label` or `aria-labelledby` to create a named landmark for screen reader navigation
-- **TypeScript enforcement**: When `role="region"` is set, TypeScript requires either `aria-label` or `aria-labelledby`
+- **ARIA landmarks**: When the scroll area represents a distinct page section, consider adding `role="region"` with an `aria-label` or `aria-labelledby` to create a named landmark for screen reader navigation
 
 ## API reference
 
