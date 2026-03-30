@@ -3,10 +3,9 @@
 ## Overview
 
 The ScrollArea component provides a scrollable container with custom-styled
-scrollbar overlays and keyboard accessibility. It wraps Chakra UI's ScrollArea
-(powered by Ark UI / zag-js) with a single-element API, Nimbus design tokens,
-conditional `tabIndex` for keyboard focusability, and TypeScript enforcement of
-accessible names for `role="region"`.
+scrollbar overlays and keyboard accessibility. It exposes a single-element API,
+uses Nimbus design tokens, conditionally manages keyboard focusability, and
+enforces accessible names for `role="region"` at the type level.
 
 **Component:** `ScrollArea` (public API)
 **Package:** `@commercetools/nimbus`
@@ -17,8 +16,8 @@ accessible names for `role="region"`.
 ### Requirement: Single-element API hides compound internals
 
 The component SHALL present a single `<ScrollArea>` element to consumers,
-assembling Chakra's compound parts (`Viewport`, `Content`, `Scrollbar`,
-`Corner`) internally.
+assembling all internal parts (viewport, content, scrollbars, corner)
+automatically.
 
 #### Scenario: Basic vertical scroll
 
@@ -72,7 +71,7 @@ The component SHALL display a focus ring only during keyboard navigation.
 
 ### Requirement: Scrollbar styling with Nimbus tokens
 
-The component SHALL use a custom Nimbus slot recipe for scrollbar appearance.
+The component SHALL use Nimbus design tokens for scrollbar appearance.
 
 #### Scenario: Scrollbar colors
 
@@ -140,21 +139,37 @@ is used without an accessible name.
 - **WHEN** the app is running in production mode
 - **THEN** SHALL NOT log any warnings
 
-### Requirement: Component accepts Chakra style props
+### Requirement: Component accepts style props
 
-The component SHALL accept all Chakra style props and forward them to the
-root element.
+The component SHALL accept style props and forward them to the root element.
 
 #### Scenario: Style props
 
-- **WHEN** Chakra style props (e.g., `p`, `bg`, `maxH`, `w`, `borderRadius`)
-  are passed
+- **WHEN** style props (e.g., `p`, `bg`, `maxH`, `w`, `borderRadius`) are passed
 - **THEN** SHALL forward them to the root container element
 
 #### Scenario: Ref forwarding
 
 - **WHEN** a `ref` is passed to `ScrollArea`
 - **THEN** SHALL forward the ref to the root DOM element
+
+#### Scenario: Viewport ref
+
+- **WHEN** a `viewportRef` is passed to `ScrollArea`
+- **THEN** SHALL forward the ref to the scrollable viewport element
+- **AND** consumers SHALL be able to use it for programmatic scrolling, scroll
+  event listeners, and reading scroll position
+
+#### Scenario: Custom element IDs
+
+- **WHEN** an `ids` prop is passed (e.g., `ids={{ viewport: "my-viewport" }}`)
+- **THEN** SHALL apply the specified IDs to the corresponding internal elements
+- **AND** consumers SHALL be able to use `getElementById` to access them
+
+#### Scenario: Polymorphic rendering
+
+- **WHEN** an `as` prop is passed (e.g., `as="nav"`, `as="main"`)
+- **THEN** SHALL render the root element as the specified HTML element
 
 #### Scenario: Children
 
