@@ -7,23 +7,7 @@
  * Source: migration-mapping.csv cross-referenced with Nimbus docs.
  */
 
-import type { UiKitMappingType } from "../types.js";
-
-/** A single UI Kit → Nimbus migration entry. */
-export interface UiKitMigrationEntry {
-  /** UI Kit component name (e.g. "PrimaryButton"). */
-  uiKitName: string;
-  /** Nimbus equivalent component(s), or `null` if removed/no equivalent. */
-  nimbusEquivalent: string | null;
-  /** npm import path for the Nimbus equivalent (e.g. "@commercetools/nimbus"). */
-  importPath: string | null;
-  /** How the UI Kit component maps to its Nimbus equivalent. */
-  mappingType: UiKitMappingType;
-  /** Human-readable notes on key prop changes and usage differences. */
-  notes: string;
-  /** Specific breaking changes to be aware of during migration. */
-  breakingChanges: string[];
-}
+import type { UiKitMigrationEntry } from "../types.js";
 
 // ---------------------------------------------------------------------------
 // Migration data
