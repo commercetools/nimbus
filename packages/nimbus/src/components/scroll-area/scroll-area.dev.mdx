@@ -89,6 +89,54 @@ const App = () => (
 )
 ```
 
+### Programmatic scroll access
+
+#### Using `viewportRef`
+
+Use the `viewportRef` prop to get a direct reference to the scrollable viewport
+element. This is the recommended approach when you need to programmatically
+scroll, attach scroll event listeners, or read scroll position:
+
+```tsx
+const viewportRef = useRef<HTMLDivElement>(null);
+
+<ScrollArea viewportRef={viewportRef} maxH="400px">
+  {content}
+</ScrollArea>
+
+// Later: viewportRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+// Or: viewportRef.current.addEventListener('scroll', handler)
+```
+
+#### Using `ids`
+
+When ref-forwarding is impractical (e.g., the scroll container is rendered in a
+different component tree), use the `ids` prop to set a known ID on the viewport
+element for `getElementById` access:
+
+```tsx
+<ScrollArea ids={{ viewport: 'my-scroll-viewport' }} maxH="400px">
+  {content}
+</ScrollArea>
+
+// Later: document.getElementById('my-scroll-viewport').scrollTop
+```
+
+#### Using `useScrollAreaContext`
+
+For components rendered inside a `ScrollArea`, the `useScrollAreaContext` hook
+provides programmatic scroll methods and state without needing a ref:
+
+```tsx
+import { useScrollAreaContext } from '@commercetools/nimbus';
+
+function ScrollToTopButton() {
+  const { scrollToEdge, isAtTop } = useScrollAreaContext();
+  if (isAtTop) return null;
+  return <Button onPress={() => scrollToEdge({ edge: 'top', behavior: 'smooth' })}>Back to top</Button>;
+}
+```
+
 ## Component requirements
 
 - The component must have a size constraint (`maxH`, `maxW`, `h`, `w`) for scrolling to occur

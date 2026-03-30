@@ -6,30 +6,19 @@
 
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
+import { useSidebarViewport } from "@/contexts/scroll-container-context";
 
 const DEBUG = false; // Set to true to enable debug logging
 
-export function useSidebarScrollRestoration(
-  sidebarId: string = "app-frame-left-nav"
-) {
+export function useSidebarScrollRestoration() {
   const location = useLocation();
   const scrollPositionRef = useRef<number>(0);
-  const sidebarRef = useRef<HTMLElement | null>(null);
+  const sidebarViewportRef = useSidebarViewport();
   const previousTopLevelRef = useRef<string>("");
-
-  // Initialize sidebar reference
-  useEffect(() => {
-    const sidebar = document.getElementById(sidebarId);
-    sidebarRef.current = sidebar;
-
-    if (DEBUG) {
-      console.log("[SidebarScroll] Sidebar element found:", !!sidebar);
-    }
-  }, [sidebarId]);
 
   // Save scroll position continuously
   useEffect(() => {
-    const sidebar = sidebarRef.current;
+    const sidebar = sidebarViewportRef.current;
     if (!sidebar) return;
 
     const saveScroll = () => {
@@ -52,7 +41,7 @@ export function useSidebarScrollRestoration(
 
   // Restore scroll on navigation
   useEffect(() => {
-    const sidebar = sidebarRef.current;
+    const sidebar = sidebarViewportRef.current;
     if (!sidebar) return;
 
     // Extract top-level section from pathname (e.g., "/components/..." -> "components")

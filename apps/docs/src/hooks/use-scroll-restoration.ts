@@ -7,6 +7,7 @@
 
 import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
+import { useMainViewport } from "@/contexts/scroll-container-context";
 
 // Store scroll positions for each route
 const scrollPositions = new Map<string, number>();
@@ -14,10 +15,10 @@ const scrollPositions = new Map<string, number>();
 export function useScrollRestoration() {
   const location = useLocation();
   const isRestoringRef = useRef(false);
+  const mainViewportRef = useMainViewport();
 
   useEffect(() => {
-    // Get the scroll container
-    const scrollContainer = document.getElementById("main");
+    const scrollContainer = mainViewportRef.current;
     if (!scrollContainer) {
       return;
     }

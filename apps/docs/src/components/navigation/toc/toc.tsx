@@ -1,6 +1,7 @@
 import { Box, Link, Text } from "@commercetools/nimbus";
 import { useToc } from "@/hooks/useToc";
 import { useClosestHeading } from "./hooks/use-closest-heading.ts";
+import { useMainViewport } from "@/contexts/scroll-container-context";
 import { scrollToAnchor } from "@/utils/scroll-to-anchor";
 
 /**
@@ -10,6 +11,7 @@ import { scrollToAnchor } from "@/utils/scroll-to-anchor";
 export const Toc = () => {
   const activeToc = useToc();
   const closestHeadingId = useClosestHeading();
+  const mainViewportRef = useMainViewport();
 
   // Define indentation levels for different heading depths
   const indent: { [key: number]: string | undefined } = {
@@ -44,8 +46,10 @@ export const Toc = () => {
       window.location.hash = headingId;
     }
 
-    // Use the router's scroll to anchor functionality
-    scrollToAnchor(headingId);
+    // Scroll to the anchor in the main viewport
+    if (mainViewportRef.current) {
+      scrollToAnchor(headingId, mainViewportRef.current);
+    }
   };
 
   if (!activeToc || activeToc.length === 0) {

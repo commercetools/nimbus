@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useMainViewport } from "@/contexts/scroll-container-context";
 
 /**
  * Custom hook to find the closest heading element (h1-h6) to the top of the viewport.
@@ -8,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 export const useClosestHeading = (): string | null => {
   const [closestHeadingId, setClosestHeadingId] = useState<string | null>(null);
   const isHashNavigating = useRef(false);
+  const mainViewportRef = useMainViewport();
 
   useEffect(() => {
     let scrollTimeoutId: number | null = null;
@@ -102,10 +104,9 @@ export const useClosestHeading = (): string | null => {
       }
     };
 
-    // Run on scroll and on initial render
-    const scrollElement = document.getElementById("main");
+    // Listen to the main viewport scroll events
+    const scrollElement = mainViewportRef.current;
 
-    // Listen to both the main element scroll and window scroll to ensure we capture all scroll events
     if (scrollElement) {
       scrollElement.addEventListener("scroll", handleScroll);
     }
@@ -132,7 +133,7 @@ export const useClosestHeading = (): string | null => {
         window.clearTimeout(scrollTimeoutId);
       }
     };
-  }, []);
+  }, [mainViewportRef]);
 
   return closestHeadingId;
 };

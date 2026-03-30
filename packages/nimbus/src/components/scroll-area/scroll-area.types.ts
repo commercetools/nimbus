@@ -7,8 +7,12 @@ type ScrollAreaBaseProps = OmitInternalProps<
 > & {
   /** Content to render inside the scrollable area. */
   children: React.ReactNode;
+  /** The HTML element type to render the root as. */
+  as?: ScrollAreaRootProps["as"];
   /** A ref to the root scroll area element. */
   ref?: React.Ref<HTMLDivElement>;
+  /** A ref to the scrollable viewport element inside the scroll area. */
+  viewportRef?: React.Ref<HTMLDivElement>;
   /**
    * Which scrollbar axes to render.
    * @default "vertical"
