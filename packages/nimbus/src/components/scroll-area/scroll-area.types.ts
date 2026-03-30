@@ -1,4 +1,7 @@
-import type { ScrollAreaRootProps } from "@chakra-ui/react/scroll-area";
+import type {
+  ScrollAreaRootProps,
+  UseScrollAreaReturn,
+} from "@chakra-ui/react/scroll-area";
 import type { OmitInternalProps } from "@/type-utils/omit-props";
 
 /** Props for the `ScrollArea` component. */
@@ -16,6 +19,12 @@ export type ScrollAreaProps = OmitInternalProps<ScrollAreaRootProps> & {
    * @default "vertical"
    */
   orientation?: "vertical" | "horizontal" | "both";
+  /**
+   * An externally created scroll area machine (from `useScrollArea`).
+   * When provided, the component uses `RootProvider` instead of `Root`,
+   * allowing external access to scroll state and programmatic control.
+   */
+  value?: UseScrollAreaReturn;
 };
 
 /**

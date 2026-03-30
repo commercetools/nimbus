@@ -65,14 +65,27 @@ export const ScrollArea = (props: ScrollAreaProps) => {
     viewportRef,
     children,
     orientation = "vertical",
+    value,
     ...restProps
   } = props;
 
+  const parts = (
+    <ScrollAreaParts orientation={orientation} viewportRef={viewportRef}>
+      {children}
+    </ScrollAreaParts>
+  );
+
+  if (value) {
+    return (
+      <ChakraScrollArea.RootProvider ref={ref} value={value} {...restProps}>
+        {parts}
+      </ChakraScrollArea.RootProvider>
+    );
+  }
+
   return (
     <ChakraScrollArea.Root ref={ref} {...restProps}>
-      <ScrollAreaParts orientation={orientation} viewportRef={viewportRef}>
-        {children}
-      </ScrollAreaParts>
+      {parts}
     </ChakraScrollArea.Root>
   );
 };

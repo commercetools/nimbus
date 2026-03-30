@@ -4,8 +4,8 @@
 
 The ScrollArea component provides a scrollable container with custom-styled
 scrollbar overlays and keyboard accessibility. It exposes a single-element API,
-uses Nimbus design tokens, conditionally manages keyboard focusability, and
-enforces accessible names for `role="region"` at the type level.
+uses Nimbus design tokens, and conditionally manages keyboard focusability.
+ARIA roles and accessible names are left to the consumer's discretion.
 
 **Component:** `ScrollArea` (public API)
 **Package:** `@commercetools/nimbus`
@@ -97,47 +97,43 @@ The component SHALL use Nimbus design tokens for scrollbar appearance.
 - **WHEN** `variant="always"`
 - **THEN** scrollbar SHALL be permanently visible
 
-### Requirement: TypeScript enforcement for role="region"
+### Requirement: ARIA role support
 
-TypeScript SHALL enforce an accessible name when `role="region"` is set.
+The component SHALL accept an optional `role` prop of type `React.AriaRole`
+and forward it to the root element. `aria-label` and `aria-labelledby` SHALL
+be optional and forwarded to the root element. No compile-time or runtime
+enforcement is applied — accessibility validation is left to the consumer's
+tooling.
 
-#### Scenario: role="region" with aria-label
+#### Scenario: Custom role
 
 - **WHEN** `role="region"` and `aria-label` are provided
-- **THEN** SHALL compile without TypeScript errors
-
-#### Scenario: role="region" with aria-labelledby
-
-- **WHEN** `role="region"` and `aria-labelledby` are provided
-- **THEN** SHALL compile without TypeScript errors
-
-#### Scenario: role="region" without accessible name
-
-- **WHEN** `role="region"` is set without `aria-label` or `aria-labelledby`
-- **THEN** SHALL produce a TypeScript compilation error
+- **THEN** SHALL forward both attributes to the root element
 
 #### Scenario: No role
 
 - **WHEN** `role` is not set
-- **THEN** `aria-label` and `aria-labelledby` SHALL be optional
-- **AND** SHALL compile without TypeScript errors
+- **THEN** no role attribute SHALL be rendered
+- **AND** `aria-label` and `aria-labelledby` SHALL remain optional
 
-### Requirement: Developer warning for missing accessible name
+### Requirement: External scroll area control via `value` prop
 
-The component SHALL warn developers in development mode when `role="region"`
-is used without an accessible name.
+The component SHALL support external control by accepting a `value` prop
+containing a scroll area machine created via `useScrollArea()`.
 
-#### Scenario: Missing accessible name in development
+#### Scenario: External machine provided
 
-- **WHEN** `role="region"` is set
-- **AND** neither `aria-label` nor `aria-labelledby` is provided
-- **AND** the app is running in development mode
-- **THEN** SHALL log a `[Nimbus]`-prefixed `console.warn`
+- **WHEN** a `value` prop is passed (from `useScrollArea()`)
+- **THEN** SHALL use `RootProvider` instead of `Root` internally
+- **AND** the external machine SHALL provide access to scroll state
+  (`hasOverflowX`, `hasOverflowY`, `isAtTop`, `isAtBottom`, `isAtLeft`,
+  `isAtRight`) and methods (`scrollTo()`, `scrollToEdge()`,
+  `getScrollProgress()`)
 
-#### Scenario: Production mode
+#### Scenario: No value prop
 
-- **WHEN** the app is running in production mode
-- **THEN** SHALL NOT log any warnings
+- **WHEN** `value` is not provided
+- **THEN** SHALL create the scroll area machine internally (default behavior)
 
 ### Requirement: Component accepts style props
 
