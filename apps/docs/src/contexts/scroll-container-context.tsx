@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useMemo,
   type RefObject,
   type ReactNode,
 } from "react";
@@ -13,6 +14,8 @@ interface ScrollContainerContextValue {
 const ScrollContainerContext =
   createContext<ScrollContainerContextValue | null>(null);
 
+const fallbackRef: RefObject<HTMLElement | null> = { current: null };
+
 export function ScrollContainerProvider({
   children,
   mainViewportRef,
@@ -22,14 +25,16 @@ export function ScrollContainerProvider({
   mainViewportRef: RefObject<HTMLElement | null>;
   sidebarViewportRef?: RefObject<HTMLElement | null>;
 }) {
-  const fallbackRef = { current: null };
+  const value = useMemo(
+    () => ({
+      mainViewportRef,
+      sidebarViewportRef: sidebarViewportRef ?? fallbackRef,
+    }),
+    [mainViewportRef, sidebarViewportRef]
+  );
+
   return (
-    <ScrollContainerContext.Provider
-      value={{
-        mainViewportRef,
-        sidebarViewportRef: sidebarViewportRef ?? fallbackRef,
-      }}
-    >
+    <ScrollContainerContext.Provider value={value}>
       {children}
     </ScrollContainerContext.Provider>
   );

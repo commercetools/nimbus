@@ -32,11 +32,7 @@ Chakra's ScrollArea lacks several features from the original spec:
 2. **Keyboard focus ring** — Chakra provides no focus styling. We add a
    `:focus-visible` ring on the root element via `_focusWithin` +
    `:has(:focus-visible)`.
-3. **TypeScript enforcement** — discriminated union types require an accessible
-   name when `role="region"` is set.
-4. **Dev warning** — runtime `console.warn` in development mode for missing
-   accessible names.
-5. **Nimbus design tokens** — scrollbar colors, sizes, and transitions use
+3. **Nimbus design tokens** — scrollbar colors, sizes, and transitions use
    Nimbus token scale.
 
 ## Single-Element API
@@ -65,8 +61,7 @@ Internally, the implementation uses two components (only `ScrollArea` is
 exported):
 
 1. **`ScrollArea`** (public) — extracts `children`, `orientation`, `ref`;
-   runs dev warning check; renders `<ChakraScrollArea.Root>` with forwarded
-   props.
+   renders `<ChakraScrollArea.Root>` with forwarded props.
 
 2. **`ScrollAreaInner`** (private) — renders inside `Root` so it can call
    `useScrollAreaContext()` to read overflow state. Sets conditional `tabIndex`
@@ -107,8 +102,3 @@ built-in key to override the default recipe). Slots:
 | `variant` | `hover`, `always` | `hover` |
 | `size` | `xs`, `sm`, `md`, `lg` | `sm` |
 
-## Developer Guardrails
-
-In development mode, `devWarn()` logs a `[Nimbus]`-prefixed `console.warn`
-when `role="region"` is used without `aria-label` or `aria-labelledby`. This
-catches a11y violations early without impacting production bundle size.

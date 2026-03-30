@@ -3,26 +3,21 @@
 - [x] 1.1 Create `packages/nimbus/src/components/scroll-area/` directory with
       files: `scroll-area.tsx`, `scroll-area.types.ts`, `scroll-area.recipe.ts`,
       `scroll-area.stories.tsx`, `index.ts`
-- [x] 1.2 Create `packages/nimbus/src/utils/dev-warn.ts` utility
-- [x] 1.3 Export `devWarn` from `packages/nimbus/src/utils/index.ts`
-- [x] 1.4 Export `ScrollArea` and `ScrollAreaProps` from
+- [x] 1.2 Export `ScrollArea` and `ScrollAreaProps` from
       `src/components/scroll-area/index.ts`
-- [x] 1.5 Add `export * from "./scroll-area"` to `src/components/index.ts`
-- [x] 1.6 Register `scrollAreaSlotRecipe` as `scrollArea` in
+- [x] 1.3 Add `export * from "./scroll-area"` to `src/components/index.ts`
+- [x] 1.4 Register `scrollAreaSlotRecipe` as `scrollArea` in
       `src/theme/slot-recipes/index.ts`
 
 ## 2. Implementation
 
-- [x] 2.1 Implement discriminated union types in `scroll-area.types.ts`
-      (`ScrollAreaRegionProps` requiring accessible name, `ScrollAreaDefaultProps`
-      with optional aria props)
-- [x] 2.2 Implement slot recipe in `scroll-area.recipe.ts` (Nimbus token colors,
+- [x] 2.1 Implement slot recipe in `scroll-area.recipe.ts` (Nimbus token colors,
       size variants, visibility variants, focus ring on root via `_focusWithin`)
-- [x] 2.3 Implement `ScrollAreaInner` private component (reads
+- [x] 2.2 Implement `ScrollAreaParts` private component (reads
       `useScrollAreaContext()` for conditional `tabIndex`, renders Viewport,
       Content, Scrollbar(s), Corner based on `orientation`)
-- [x] 2.4 Implement `ScrollArea` public component (extracts props, runs
-      `devWarn` check, renders `ChakraScrollArea.Root` with forwarded props)
+- [x] 2.3 Implement `ScrollArea` public component (extracts props,
+      renders `ChakraScrollArea.Root` with forwarded props)
 
 ## 3. Stories
 
