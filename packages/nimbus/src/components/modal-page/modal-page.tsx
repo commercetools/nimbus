@@ -18,6 +18,8 @@ import {
  *
  * Used for the ~29 modal page patterns in Merchant Center (form/info/tabular).
  *
+ * @see {@link https://nimbus-documentation.vercel.app/components/layout/modal-page}
+ *
  * @example
  * ```tsx
  * const [isOpen, setIsOpen] = useState(false);
