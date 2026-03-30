@@ -12,8 +12,8 @@ export const scrollToAnchor = (
 ): void => {
   if (!elementId) return;
 
-  // Offset to account for sticky headers (breadcrumb ~48px + top nav ~56px + buffer ~16px)
-  const SCROLL_OFFSET = 120;
+  // Offset to account for sticky elements within the scroll viewport
+  const SCROLL_OFFSET = 20;
 
   // Try to find the target element
   const element = document.getElementById(elementId);
