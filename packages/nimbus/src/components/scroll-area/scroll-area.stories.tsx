@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { ScrollArea, Box, Text } from "@commercetools/nimbus";
+import { ScrollArea, Box, Text, useScrollArea } from "@commercetools/nimbus";
 import { expect, userEvent, waitFor } from "storybook/test";
 
 const meta: Meta<typeof ScrollArea> = {
@@ -327,6 +327,41 @@ export const Sizes: Story = {
       for (let i = 1; i < widths.length; i++) {
         expect(widths[i]).toBeGreaterThan(widths[i - 1]);
       }
+    });
+  },
+};
+
+// ============================================================
+// External control via useScrollArea + value prop
+// ============================================================
+export const ExternalControl: Story = {
+  render: () => {
+    const scrollArea = useScrollArea();
+
+    return (
+      <Box>
+        <ScrollArea maxH="200px" w="400px" variant="always" value={scrollArea}>
+          <OverflowingContent />
+        </ScrollArea>
+      </Box>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    await step("Renders with RootProvider and detects overflow", async () => {
+      await waitFor(() => {
+        const viewport = canvasElement.querySelector(
+          '[data-part="viewport"]'
+        ) as HTMLElement;
+        expect(viewport).toBeTruthy();
+        expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight);
+      });
+    });
+
+    await step("Viewport has tabIndex when overflowing", async () => {
+      const viewport = canvasElement.querySelector(
+        '[data-part="viewport"]'
+      ) as HTMLElement;
+      expect(viewport).toHaveAttribute("tabindex", "0");
     });
   },
 };

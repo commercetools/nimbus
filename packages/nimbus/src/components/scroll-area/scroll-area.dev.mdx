@@ -122,10 +122,40 @@ element for `getElementById` access:
 // Later: document.getElementById('my-scroll-viewport').scrollTop
 ```
 
-#### Using `useScrollAreaContext`
+#### Using `useScrollArea` (external control)
 
-For components rendered inside a `ScrollArea`, the `useScrollAreaContext` hook
-provides programmatic scroll methods and state without needing a ref:
+When you need to read scroll state or call scroll methods from *outside* the
+`ScrollArea` tree (e.g., in a parent component), create the machine externally
+with `useScrollArea` and pass it via the `value` prop:
+
+```tsx
+import { ScrollArea, useScrollArea } from '@commercetools/nimbus';
+
+function ParentComponent() {
+  const scrollArea = useScrollArea();
+
+  return (
+    <>
+      <button onClick={() => scrollArea.scrollTo({ top: 0, behavior: 'smooth' })}>
+        Scroll to top
+      </button>
+      <p>Has vertical overflow: {String(scrollArea.hasOverflowY)}</p>
+      <ScrollArea maxH="400px" value={scrollArea}>
+        {content}
+      </ScrollArea>
+    </>
+  );
+}
+```
+
+The returned object exposes state (`hasOverflowX`, `hasOverflowY`, `isAtTop`,
+`isAtBottom`, `isAtLeft`, `isAtRight`) and methods (`scrollTo()`,
+`scrollToEdge()`, `getScrollProgress()`).
+
+#### Using `useScrollAreaContext` (internal access)
+
+For components rendered *inside* a `ScrollArea`, the `useScrollAreaContext` hook
+reads the existing machine from React context — no `value` prop needed:
 
 ```tsx
 import { useScrollAreaContext } from '@commercetools/nimbus';
