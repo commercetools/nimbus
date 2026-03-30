@@ -15,9 +15,9 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
       height: "100%",
       position: "relative",
       overflow: "hidden",
-      "--scrollbar-margin": "2px",
-      "--scrollbar-click-area":
-        "calc(var(--scrollbar-size) + calc(var(--scrollbar-margin) * 2))",
+      "--scroll-area-scrollbar-margin": "{sizes.50}",
+      "--scroll-area-scrollbar-click-area":
+        "calc(var(--scroll-area-scrollbar-size) + calc(var(--scroll-area-scrollbar-margin) * 2))",
       _focusWithin: {
         "&:has(:focus-visible)": {
           outlineWidth: "var(--focus-ring-width, 1px)",
@@ -50,48 +50,48 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
       borderRadius: "full",
       transition: "opacity 150ms 300ms",
       position: "relative",
-      margin: "var(--scrollbar-margin)",
+      margin: "var(--scroll-area-scrollbar-margin)",
       "&:not([data-overflow-x], [data-overflow-y])": {
         display: "none",
       },
       bg: "neutral.4",
-      "--thumb-bg": "{colors.neutral.7}",
+      "--scroll-area-thumb-bg": "{colors.neutral.7}",
       "&:is(:hover, :active)": {
-        "--thumb-bg": "{colors.neutral.9}",
+        "--scroll-area-thumb-bg": "{colors.neutral.9}",
       },
       _before: {
         content: '""',
         position: "absolute",
       },
       _vertical: {
-        width: "var(--scrollbar-size)",
+        width: "var(--scroll-area-scrollbar-size)",
         flexDirection: "column",
         "&::before": {
-          width: "var(--scrollbar-click-area)",
+          width: "var(--scroll-area-scrollbar-click-area)",
           height: "100%",
-          insetInlineStart: "calc(var(--scrollbar-margin) * -1)",
+          insetInlineStart: "calc(var(--scroll-area-scrollbar-margin) * -1)",
         },
       },
       _horizontal: {
-        height: "var(--scrollbar-size)",
+        height: "var(--scroll-area-scrollbar-size)",
         flexDirection: "row",
         "&::before": {
-          height: "var(--scrollbar-click-area)",
+          height: "var(--scroll-area-scrollbar-click-area)",
           width: "100%",
-          top: "calc(var(--scrollbar-margin) * -1)",
+          top: "calc(var(--scroll-area-scrollbar-margin) * -1)",
         },
       },
     },
     thumb: {
       borderRadius: "inherit",
-      bg: "var(--thumb-bg)",
+      bg: "var(--scroll-area-thumb-bg)",
       transition: "backgrounds",
       _vertical: { width: "full" },
       _horizontal: { height: "full" },
     },
     corner: {
       bg: "neutral.3",
-      margin: "var(--scrollbar-margin)",
+      margin: "var(--scroll-area-scrollbar-margin)",
       opacity: 0,
       transition: "opacity 150ms 300ms",
       "&[data-hover]": {
@@ -121,22 +121,22 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
     size: {
       xs: {
         root: {
-          "--scrollbar-size": "{sizes.100}",
+          "--scroll-area-scrollbar-size": "{sizes.100}",
         },
       },
       sm: {
         root: {
-          "--scrollbar-size": "{sizes.150}",
+          "--scroll-area-scrollbar-size": "{sizes.150}",
         },
       },
       md: {
         root: {
-          "--scrollbar-size": "{sizes.200}",
+          "--scroll-area-scrollbar-size": "{sizes.200}",
         },
       },
       lg: {
         root: {
-          "--scrollbar-size": "{sizes.300}",
+          "--scroll-area-scrollbar-size": "{sizes.300}",
         },
       },
     },

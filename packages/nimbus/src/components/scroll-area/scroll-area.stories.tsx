@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { ScrollArea, Box, Text, Heading } from "@commercetools/nimbus";
-import { within, expect, userEvent, waitFor } from "storybook/test";
+import { ScrollArea, Box, Text } from "@commercetools/nimbus";
+import { expect, userEvent, waitFor } from "storybook/test";
 
-const meta: Meta = {
+const meta: Meta<typeof ScrollArea> = {
   title: "Components/ScrollArea",
+  component: ScrollArea,
   tags: ["autodocs"],
   parameters: {
     layout: "padded",
@@ -119,37 +120,6 @@ export const NonOverflowing: Story = {
       expect(
         canvasElement.querySelector('[data-part="scrollbar"]')
       ).toBeTruthy();
-    });
-  },
-};
-
-// ============================================================
-// Role region: consumers can set role="region" with aria-label
-// ============================================================
-export const RoleRegion: Story = {
-  render: () => (
-    <ScrollArea
-      maxH="200px"
-      w="400px"
-      role="region"
-      aria-label="Main content area"
-      variant="always"
-    >
-      <OverflowingContent />
-    </ScrollArea>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Viewport has role=region and aria-label", async () => {
-      await waitFor(() => {
-        const region = canvas.getByRole("region", {
-          name: "Main content area",
-        });
-        expect(region).toBeInTheDocument();
-        expect(region).toHaveAttribute("aria-label", "Main content area");
-        expect(region).toHaveAttribute("data-part", "viewport");
-      });
     });
   },
 };
@@ -292,39 +262,6 @@ export const AlwaysVisible: Story = {
 };
 
 // ============================================================
-// With aria-labelledby
-// ============================================================
-export const WithAriaLabelledBy: Story = {
-  render: () => (
-    <Box>
-      <Heading id="log-heading">Application Logs</Heading>
-      <ScrollArea
-        maxH="200px"
-        w="400px"
-        role="region"
-        aria-labelledby="log-heading"
-        variant="always"
-      >
-        <OverflowingContent />
-      </ScrollArea>
-    </Box>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Viewport has role=region and aria-labelledby", async () => {
-      await waitFor(() => {
-        const region = canvas.getByRole("region", {
-          name: "Application Logs",
-        });
-        expect(region).toHaveAttribute("aria-labelledby", "log-heading");
-        expect(region).toHaveAttribute("data-part", "viewport");
-      });
-    });
-  },
-};
-
-// ============================================================
 // Custom styling: style props on root, content padding via Box
 // ============================================================
 export const CustomStyling: Story = {
@@ -441,19 +378,6 @@ export const SmokeTest: Story = {
       </Box>
 
       <Box>
-        <Text fontSize="sm">With role=region</Text>
-        <ScrollArea
-          maxH="80px"
-          w="180px"
-          role="region"
-          aria-label="Labelled region"
-          variant="always"
-        >
-          <OverflowingContent />
-        </ScrollArea>
-      </Box>
-
-      <Box>
         <Text fontSize="sm">Custom styling</Text>
         <ScrollArea
           maxH="80px"
@@ -473,7 +397,7 @@ export const SmokeTest: Story = {
     await step("All variants render without errors", async () => {
       await waitFor(() => {
         const roots = canvasElement.querySelectorAll('[data-part="root"]');
-        expect(roots).toHaveLength(7);
+        expect(roots).toHaveLength(6);
       });
     });
   },

@@ -1,10 +1,8 @@
 import type { ScrollAreaRootProps } from "@chakra-ui/react/scroll-area";
 import type { OmitInternalProps } from "@/type-utils/omit-props";
 
-type ScrollAreaBaseProps = OmitInternalProps<
-  ScrollAreaRootProps,
-  "role" | "aria-label" | "aria-labelledby"
-> & {
+/** Props for the `ScrollArea` component. */
+export type ScrollAreaProps = OmitInternalProps<ScrollAreaRootProps> & {
   /** Content to render inside the scrollable area. */
   children: React.ReactNode;
   /** The HTML element type to render the root as. */
@@ -20,36 +18,14 @@ type ScrollAreaBaseProps = OmitInternalProps<
   orientation?: "vertical" | "horizontal" | "both";
 };
 
-type ScrollAreaRegionProps = ScrollAreaBaseProps & {
-  /**
-   * The ARIA landmark role for the scroll area.
-   * When set to `"region"`, an accessible name is required.
-   */
-  role: "region";
-} & (
-    | {
-        /** The accessible name. Required when `role="region"`. */
-        "aria-label": string;
-        "aria-labelledby"?: string;
-      }
-    | {
-        "aria-label"?: string;
-        /** ID of the labeling element. Required when `role="region"` if `aria-label` is not provided. */
-        "aria-labelledby": string;
-      }
-  );
-
-type ScrollAreaDefaultProps = ScrollAreaBaseProps & {
-  /** The ARIA role for the scroll area. */
-  role?: never;
-  "aria-label"?: string;
-  "aria-labelledby"?: string;
-};
-
 /**
- * Props for the `ScrollArea` component.
- *
- * When `role="region"`, either `aria-label` or `aria-labelledby` is
- * required at the type level to satisfy WCAG landmark naming requirements.
+ * Custom element IDs for ScrollArea's internal parts.
+ * Pass to the `ids` prop to set known IDs for DOM access.
  */
-export type ScrollAreaProps = ScrollAreaRegionProps | ScrollAreaDefaultProps;
+export type ScrollAreaElementIds = Partial<{
+  root: string;
+  viewport: string;
+  content: string;
+  scrollbar: string;
+  thumb: string;
+}>;

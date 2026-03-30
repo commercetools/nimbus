@@ -2,8 +2,12 @@ import {
   ScrollArea as ChakraScrollArea,
   useScrollAreaContext,
 } from "@chakra-ui/react/scroll-area";
-import { devWarn } from "@/utils";
 import type { ScrollAreaProps } from "./scroll-area.types";
+
+type ScrollAreaPartsProps = Pick<
+  ScrollAreaProps,
+  "children" | "orientation" | "viewportRef"
+>;
 
 /**
  * Private component that renders inside ChakraScrollArea.Root
@@ -14,29 +18,13 @@ const ScrollAreaParts = ({
   children,
   orientation = "vertical",
   viewportRef,
-  role,
-  "aria-label": ariaLabel,
-  "aria-labelledby": ariaLabelledBy,
-}: {
-  children: React.ReactNode;
-  orientation?: "vertical" | "horizontal" | "both";
-  viewportRef?: React.Ref<HTMLDivElement>;
-  role?: React.AriaRole;
-  "aria-label"?: string;
-  "aria-labelledby"?: string;
-}) => {
+}: ScrollAreaPartsProps) => {
   const { hasOverflowX, hasOverflowY } = useScrollAreaContext();
   const tabIndex = hasOverflowX || hasOverflowY ? 0 : undefined;
 
   return (
     <>
-      <ChakraScrollArea.Viewport
-        ref={viewportRef}
-        tabIndex={tabIndex}
-        role={role}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-      >
+      <ChakraScrollArea.Viewport ref={viewportRef} tabIndex={tabIndex}>
         <ChakraScrollArea.Content>{children}</ChakraScrollArea.Content>
       </ChakraScrollArea.Viewport>
       {(orientation === "vertical" || orientation === "both") && (
@@ -77,28 +65,12 @@ export const ScrollArea = (props: ScrollAreaProps) => {
     viewportRef,
     children,
     orientation = "vertical",
-    role,
-    "aria-label": ariaLabel,
-    "aria-labelledby": ariaLabelledBy,
     ...restProps
   } = props;
 
-  if (role === "region" && !ariaLabel && !ariaLabelledBy) {
-    devWarn(
-      'ScrollArea with role="region" requires an "aria-label" or ' +
-        '"aria-labelledby" prop for accessibility.'
-    );
-  }
-
   return (
     <ChakraScrollArea.Root ref={ref} {...restProps}>
-      <ScrollAreaParts
-        orientation={orientation}
-        viewportRef={viewportRef}
-        role={role}
-        aria-label={ariaLabel}
-        aria-labelledby={ariaLabelledBy}
-      >
+      <ScrollAreaParts orientation={orientation} viewportRef={viewportRef}>
         {children}
       </ScrollAreaParts>
     </ChakraScrollArea.Root>

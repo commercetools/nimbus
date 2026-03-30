@@ -33,11 +33,8 @@ const App = () => (
   click.
 - **Decorative scrollbars:** The custom scrollbar overlays are purely visual.
   Actual scrolling is handled by the browser's native scroll mechanism.
-- **ARIA landmarks:** Use `role="region"` with `aria-label` or
-  `aria-labelledby` to create a named landmark for screen reader navigation.
-  TypeScript enforces that an accessible name is provided when
-  `role="region"` is set.
-- **Dev warning:** A console warning is logged in development mode if
-  `role="region"` is used without an accessible name.
+- **ARIA landmarks:** When the scroll area represents a distinct page section,
+  consider adding `role="region"` with `aria-label` or `aria-labelledby` to
+  create a named landmark for screen reader navigation.
 - **No keyboard trap:** Standard browser tab order is maintained. Focus moves
   naturally into and out of the scroll area.
