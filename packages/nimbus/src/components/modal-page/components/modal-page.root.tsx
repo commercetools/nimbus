@@ -23,6 +23,9 @@ import type { ModalPageRootProps } from "../modal-page.types";
  * modal), and React Aria's ModalOverlay waits for animationend before
  * unmounting — no manual delay needed.
  */
+// Note: Root wraps a Drawer instead of rendering a slot directly, so the
+// standard useSlotRecipe / splitVariantProps / extractStyleProps pattern does
+// not apply here. Recipe context is provided by ModalPageRootSlot (withProvider).
 export const ModalPageRoot = ({
   ref,
   isOpen,
