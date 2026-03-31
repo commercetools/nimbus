@@ -20,7 +20,7 @@
     "mcp-inspector:cli": "mcp-inspector --cli tsx src/index.ts"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.27.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^3.25.67"
   },
   "devDependencies": {
