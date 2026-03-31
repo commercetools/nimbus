@@ -116,6 +116,9 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
         scrollbar: {
           opacity: "1",
         },
+        corner: {
+          opacity: 1,
+        },
       },
     },
     size: {
