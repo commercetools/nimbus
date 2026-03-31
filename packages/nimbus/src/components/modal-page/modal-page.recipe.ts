@@ -63,6 +63,7 @@ export const modalPageSlotRecipe = defineSlotRecipe({
     },
     actions: {
       gridColumn: "2",
+      gridRow: "1 / span 2",
       display: "flex",
       alignItems: "center",
       gap: "200",

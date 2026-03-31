@@ -12,7 +12,7 @@ export const ModalPageSubtitle = ({
   ...props
 }: ModalPageSubtitleProps) => {
   return (
-    <ModalPageSubtitleSlot ref={ref} {...props}>
+    <ModalPageSubtitleSlot ref={ref} slot="description" {...props}>
       {children}
     </ModalPageSubtitleSlot>
   );

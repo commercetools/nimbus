@@ -109,6 +109,13 @@ The TopBar SHALL provide breadcrumb navigation with a back button.
 - **WHEN** breadcrumb separator renders
 - **THEN** SHALL be hidden from assistive technology
 
+#### Scenario: Previous path label accessibility
+
+- **WHEN** previousPathLabel text renders adjacent to the back button
+- **THEN** SHALL be hidden from assistive technology
+- **AND** SHALL remain visible for sighted users
+- **AND** the back button's aria-label already conveys this information
+
 ### Requirement: Header Layout
 
 The Header SHALL arrange title, subtitle, actions, and optional tab
@@ -120,6 +127,7 @@ navigation.
 - **THEN** Title and Actions SHALL appear on the same row
 - **AND** Title SHALL take available horizontal space
 - **AND** Actions SHALL be end-aligned
+- **AND** Actions SHALL span both the title and subtitle rows
 
 #### Scenario: Subtitle placement
 
@@ -195,6 +203,22 @@ The Title SHALL provide the accessible name for the dialog.
 
 - **WHEN** Title renders
 - **THEN** SHALL render as an h2 heading element
+
+### Requirement: Subtitle as Accessible Description
+
+The Subtitle SHALL provide the accessible description for the dialog.
+
+#### Scenario: Dialog description
+
+- **WHEN** Subtitle renders inside Header
+- **THEN** the dialog SHALL be described by the Subtitle text via
+  `aria-describedby`
+- **AND** screen readers SHALL announce the Subtitle as the dialog description
+
+#### Scenario: No subtitle
+
+- **WHEN** Subtitle is not present
+- **THEN** the dialog SHALL have no `aria-describedby`
 
 ### Requirement: Dismissal Methods
 

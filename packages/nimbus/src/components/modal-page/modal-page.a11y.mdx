@@ -46,11 +46,13 @@ const App = () => {
 - **Role identification**: ModalPage has `role="dialog"` with proper labeling via `ModalPage.Title`.
 - **Focus management**: Focus moves to the back button on open and returns to the trigger on close.
 - **Focus containment**: Tab navigation stays within the modal while it is open.
-- **Accessible names**: `ModalPage.Title` automatically provides the dialog's accessible name.
+- **Accessible names**: `ModalPage.Title` automatically provides the dialog's accessible name via `aria-labelledby`.
+- **Accessible description**: `ModalPage.Subtitle`, when present, automatically provides the dialog's accessible description via `aria-describedby`.
 - **Modal indication**: `aria-modal="true"` is set, blocking screen reader interaction with the background.
 - **State announcements**: Screen readers announce when the dialog opens and closes.
 - **Breadcrumb accessibility**: The `/` separator is `aria-hidden="true"`; the current path has `aria-current="page"`.
 - **Back button label**: The back button in `ModalPage.TopBar` uses a localized `aria-label` referencing the `previousPathLabel`.
+- **Breadcrumb previous path**: The `previousPathLabel` text is `aria-hidden="true"` since the back button's label already conveys this information.
 - **Keyboard dismissal**: Escape key always closes the modal (WCAG 2.1 SC 2.1.2 — No Keyboard Trap).
 - **No keyboard trap**: Focus is contained but always escapable via Escape key.
 - **Focus order**: Logical focus progression through all interactive elements.
