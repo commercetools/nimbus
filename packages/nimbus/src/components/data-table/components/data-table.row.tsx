@@ -316,6 +316,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
           columns={activeColumns}
           ref={rowRef}
           id={row.id}
+          data-clickable={!!onRowClick && !isDisabled}
           className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
           {...restProps}
           dependencies={[isExpanded, search, isTruncated]}
@@ -383,7 +384,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                     maxW="100%"
                     position="relative"
                     overflow="hidden"
-                    cursor={isDisabled ? "not-allowed" : "text"}
+                    cursor={isDisabled ? "not-allowed" : undefined}
                   >
                     {col.render
                       ? col.render({

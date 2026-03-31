@@ -329,7 +329,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         transform: "translate3d(0, 0, 0)",
       },
       "& td, div": {
-        userSelect: "none",
+        userSelect: "text",
       },
       "&:last-child": {
         borderBottom: "none",
