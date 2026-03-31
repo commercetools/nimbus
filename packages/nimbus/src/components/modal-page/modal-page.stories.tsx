@@ -5,12 +5,14 @@ import {
   Button,
   FormField,
   ModalPage,
+  NimbusProvider,
   PageContent,
   Stack,
   TabNav,
   Text,
   TextInput,
 } from "@commercetools/nimbus";
+import type { NimbusRouterConfig } from "@commercetools/nimbus";
 
 const meta: Meta<typeof ModalPage.Root> = {
   title: "Components/Layout/ModalPage",
@@ -152,32 +154,61 @@ export const FormPage: Story = {
 
 /**
  * Tabular page — TabNav in the header with tab content below.
+ * Wrapped in NimbusProvider with a mock router so tab clicks
+ * update the active tab instead of navigating away.
  */
+const TabularPageRender = () => {
+  const [currentTab, setCurrentTab] = useState("#general");
+  const mockRouter: NimbusRouterConfig = {
+    navigate: (href) => setCurrentTab(String(href)),
+  };
+
+  const tabContent: Record<string, string> = {
+    "#general": "General order information",
+    "#items": "Order line items and quantities",
+    "#shipping": "Shipping details and tracking",
+  };
+
+  return (
+    <NimbusProvider router={mockRouter}>
+      <ModalPage.Root isOpen onClose={() => {}}>
+        <ModalPage.TopBar
+          previousPathLabel="Orders"
+          currentPathLabel="Order #12345"
+        />
+        <ModalPage.Header>
+          <ModalPage.Title>Order #12345</ModalPage.Title>
+          <ModalPage.Subtitle>Order from 2024-01-15</ModalPage.Subtitle>
+          <ModalPage.TabNav>
+            <TabNav.Root aria-label="Order sections">
+              <TabNav.Item
+                href="#general"
+                isCurrent={currentTab === "#general"}
+              >
+                General
+              </TabNav.Item>
+              <TabNav.Item href="#items" isCurrent={currentTab === "#items"}>
+                Items
+              </TabNav.Item>
+              <TabNav.Item
+                href="#shipping"
+                isCurrent={currentTab === "#shipping"}
+              >
+                Shipping
+              </TabNav.Item>
+            </TabNav.Root>
+          </ModalPage.TabNav>
+        </ModalPage.Header>
+        <ModalPage.Content>
+          <Text>{tabContent[currentTab]}</Text>
+        </ModalPage.Content>
+      </ModalPage.Root>
+    </NimbusProvider>
+  );
+};
+
 export const TabularPage: Story = {
-  render: () => (
-    <ModalPage.Root isOpen onClose={() => {}}>
-      <ModalPage.TopBar
-        previousPathLabel="Orders"
-        currentPathLabel="Order #12345"
-      />
-      <ModalPage.Header>
-        <ModalPage.Title>Order #12345</ModalPage.Title>
-        <ModalPage.Subtitle>Order from 2024-01-15</ModalPage.Subtitle>
-        <ModalPage.TabNav>
-          <TabNav.Root aria-label="Order sections">
-            <TabNav.Item href="#general" isCurrent>
-              General
-            </TabNav.Item>
-            <TabNav.Item href="#items">Items</TabNav.Item>
-            <TabNav.Item href="#shipping">Shipping</TabNav.Item>
-          </TabNav.Root>
-        </ModalPage.TabNav>
-      </ModalPage.Header>
-      <ModalPage.Content>
-        <Text>General order information</Text>
-      </ModalPage.Content>
-    </ModalPage.Root>
-  ),
+  render: () => <TabularPageRender />,
 
   play: async ({ canvasElement, step }) => {
     const canvas = within(
