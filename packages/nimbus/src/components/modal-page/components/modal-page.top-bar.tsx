@@ -33,7 +33,7 @@ export const ModalPageTopBar = ({
       >
         <ArrowBack />
       </IconButton>
-      <Text color="neutral.11" textStyle="sm">
+      <Text color="neutral.11" textStyle="sm" aria-hidden="true">
         {previousPathLabel}
       </Text>
       {/* Separator is decorative — hidden from screen readers */}
