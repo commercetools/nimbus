@@ -245,6 +245,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           display: "none",
         },
       },
+      // Show divider when the column resizer is keyboard-focused
+      "& th:has([data-focused='true']) .data-table-column-divider": {
+        display: "inherit",
+      },
     },
     column: {
       textAlign: "right",
