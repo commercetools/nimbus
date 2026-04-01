@@ -38,7 +38,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         paddingLeft: "600",
         paddingRight: "600",
         color: "neutral.11",
-        focusRing: "outside",
+        focusVisibleRing: "outside",
         hyphens: "auto",
         "& [data-slot='pin-row-cell']": {
           alignItems: "center",
@@ -355,7 +355,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       paddingLeft: "600",
       paddingRight: "600",
       color: "neutral.11",
-      focusRing: "outside",
+      focusVisibleRing: "outside",
       hyphens: "auto",
       height: "100%",
       "&[data-slot='expand']": {
