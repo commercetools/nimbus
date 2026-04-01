@@ -15,6 +15,7 @@ import type {
   DataTableRowProps,
 } from "../data-table.types";
 import { Box, Checkbox, IconButton, Tooltip } from "@/components";
+import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
 import {
   KeyboardArrowDown,
   KeyboardArrowRight,
@@ -412,16 +413,17 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
               }
             >
               <Tooltip.Root>
-                <IconButton
+                <IconToggleButton
                   key="pin-btn"
                   size="2xs"
                   variant="ghost"
                   aria-label={isPinned ? "Unpin row" : "Pin row"}
                   colorPalette="primary"
-                  onPress={() => togglePin(row.id)}
+                  isSelected={isPinned}
+                  onChange={() => togglePin(row.id)}
                 >
                   <PushPin />
-                </IconButton>
+                </IconToggleButton>
                 <Tooltip.Content placement="top">
                   {isPinned ? "Unpin row" : "Pin row"}
                 </Tooltip.Content>
