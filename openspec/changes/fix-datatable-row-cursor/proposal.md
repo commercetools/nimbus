@@ -34,14 +34,24 @@ GitHub issue: commercetools/nimbus#1319
 - Remove explicit `cursor: "text"` from cell content `<Box>` -- let the
   browser's natural text cursor apply over text, and let the row's
   `cursor: pointer` take effect over non-text areas
+- Change pin button from `IconButton` to `IconToggleButton` -- pinning is a
+  toggle state, not a one-shot action, and should communicate its state to
+  assistive technology via `aria-pressed`
+- Change focus ring behavior from `:focus` to `:focus-visible` on interactive
+  table elements -- focus rings should only appear on keyboard navigation, not
+  on mouse/pointer interaction
+- Show column divider when resizer receives keyboard focus -- previously only
+  visible on header row hover, making it undiscoverable for keyboard-only users
 
 ## Impact
 
 - Affected specs: `nimbus-data-table`
 - Affected code:
   - `packages/nimbus/src/components/data-table/components/data-table.row.tsx` --
-    add `data-clickable` attribute, remove explicit cell cursor
+    add `data-clickable` attribute, remove explicit cell cursor, change pin
+    button to `IconToggleButton`
   - `packages/nimbus/src/components/data-table/data-table.recipe.ts` -- change
-    `userSelect: "none"` back to `"text"` in row slot
+    `userSelect: "none"` back to `"text"` in row slot, switch to
+    `focusVisibleRing`, add resizer keyboard focus divider visibility
   - `packages/nimbus/src/components/data-table/data-table.types.ts` -- remove
     dead `isRowClickable` prop
