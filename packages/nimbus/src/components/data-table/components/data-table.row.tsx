@@ -381,7 +381,6 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                     className={isTruncated ? "truncated-cell" : ""}
                     data-truncated={isTruncated ? "true" : "false"}
                     display="inline-block"
-                    h="100%"
                     minW="0"
                     maxW="100%"
                     position="relative"
