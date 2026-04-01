@@ -33,23 +33,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       display: "block",
       overflow: "auto",
       contain: "layout style",
-
-      /* "& .react-aria-Cell": {
-        paddingTop: "400",
-        paddingBottom: "400",
-        paddingLeft: "600",
-        paddingRight: "600",
-        color: "neutral.11",
-        hyphens: "auto",
-        "& [data-slot='pin-row-cell']": {
-          alignItems: "center",
-          justifyContent: "center",
-          position: "sticky",
-          right: 0,
-          zIndex: 10,
-          backgroundColor: "bg",
-        },
-      }, */
       "& .data-table-row": {
         "& td, div": {
           //userSelect: "text",
