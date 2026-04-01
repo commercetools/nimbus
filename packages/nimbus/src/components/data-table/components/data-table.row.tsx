@@ -359,6 +359,8 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                   w="100%"
                   h="100%"
                   unstyled
+                  cursor="pointer"
+                  focusVisibleRing="inside"
                   borderRadius="0"
                   aria-label={isExpanded ? "Collapse" : "Expand"}
                   onPress={() => toggleExpand(row.id)}

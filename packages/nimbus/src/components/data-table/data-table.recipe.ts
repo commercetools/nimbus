@@ -231,8 +231,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       textAlign: "right",
       position: "relative",
       lineHeight: "450",
-      // 1px = will allow the cell to stretch and fit it's content, but
-      // without applying excess paddding
+      // td height:auto is not "definite" per CSS spec, so child height:100%
+      // collapses to content height. Setting an explicit height makes it
+      // definite; table layout still stretches the cell to match the row,
+      // allowing children (height:100%) to fill the full cell.
       h: "1px",
       p: 0,
       focusVisibleRing: "inside",
@@ -328,6 +330,11 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       height: "100%",
       "&[data-slot='expand']": {
         padding: 0,
+        // td height:auto is not "definite" per CSS spec, so child height:100%
+        // collapses to content height. Setting an explicit height makes it
+        // definite; table layout still stretches the cell to match the row,
+        // allowing the expand button (height:100%) to fill the full cell.
+        height: "1px",
       },
       "&[data-nested-cell]": {
         boxShadow: "inset 2px 0 0 {colors.primary.10}",
