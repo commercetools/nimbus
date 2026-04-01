@@ -34,12 +34,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       overflow: "auto",
       contain: "layout style",
       "& .data-table-row": {
-        "& td, div": {
-          //userSelect: "text",
-        },
-        "&:last-child": {
-          //borderBottom: "none",
-        },
         "& [data-slot='pin-row-cell']": {
           position: "sticky",
           right: 0,
@@ -305,9 +299,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         transition: "background-color 200ms ease",
         transform: "translate3d(0, 0, 0)",
       },
-      "& td, div": {
-        //userSelect: "text",
-      },
       _last: {
         borderBottom: "none",
       },
@@ -327,7 +318,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
     },
     cell: {
-      userSelect: "text",
       paddingTop: "400",
       paddingBottom: "400",
       paddingLeft: "600",
