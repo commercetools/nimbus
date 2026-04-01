@@ -382,15 +382,21 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
     },
     columnResizer: {
-      width: "150",
-      height: "100%",
       position: "absolute",
-      right: 0,
       top: 0,
+      bottom: 0,
+      // We have no odd tokens apart from 1px, so we use calc to
+      // create the odd width of 7px, the 1px separator is centered
+      // in the middle, the right shift of 3px visually centers the
+      // separator within the interactive area
+      width: "calc({sizes.150} + {sizes.25})",
+      right: "calc(-1 * ({sizes.50} + {sizes.25}))",
+      // ##########################################################
+
       cursor: "col-resize",
       transition: "background 100ms",
       background: "transparent",
-      outline: "none",
+
       zIndex: 2,
       "&:hover": {
         background: "var(--focus-ring-color)",
