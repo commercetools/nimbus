@@ -23,22 +23,23 @@ export const dataTableSlotRecipe = defineSlotRecipe({
   className: "nimbus-data-table",
   base: {
     root: {
-      width: "100%",
-      display: "block",
-      overflow: "auto",
-      contain: "layout style",
       // CSS custom properties for pinned row shadows
       "--pinned-shadow-left": "inset 2px 0 0 {colors.neutral.7}",
       "--pinned-shadow-right": "inset -2px 0 0 {colors.neutral.7}",
       "--pinned-shadow-top": "inset 0 2px 0 {colors.neutral.7}",
       "--pinned-shadow-bottom": "inset 0 -2px 0 {colors.neutral.7}",
-      "& .react-aria-Cell": {
+
+      width: "100%",
+      display: "block",
+      overflow: "auto",
+      contain: "layout style",
+
+      /* "& .react-aria-Cell": {
         paddingTop: "400",
         paddingBottom: "400",
         paddingLeft: "600",
         paddingRight: "600",
         color: "neutral.11",
-        focusVisibleRing: "outside",
         hyphens: "auto",
         "& [data-slot='pin-row-cell']": {
           alignItems: "center",
@@ -48,15 +49,13 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           zIndex: 10,
           backgroundColor: "bg",
         },
-      },
+      }, */
       "& .data-table-row": {
-        borderBottom: "1px solid {colors.neutral.3}",
-        focusRing: "outside",
         "& td, div": {
-          userSelect: "text",
+          //userSelect: "text",
         },
         "&:last-child": {
-          borderBottom: "none",
+          //borderBottom: "none",
         },
         "& [data-slot='pin-row-cell']": {
           position: "sticky",
@@ -193,6 +192,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     },
     table: {
       tableLayout: "fixed",
+      borderCollapse: "collapse",
+      borderSpacing: 0,
       boxSizing: "border-box",
       boxShadow: "inset 0 0 0 1px {colors.neutral.3}",
       borderRadius: "0 0 {sizes.200} {sizes.200}",
@@ -249,30 +250,20 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       textAlign: "right",
       position: "relative",
       lineHeight: "450",
-      h: "100%",
-      "&:focus": {
-        outlineWidth: "var(--focus-ring-width)",
-        outlineColor: "var(--focus-ring-color)",
-        outlineStyle: "var(--focus-ring-style)",
-        outlineOffset: "-2px",
-        borderRadius: "2px",
-      },
+      // 1px = will allow the cell to stretch and fit it's content, but
+      // without applying excess paddding
+      h: "1px",
+      p: 0,
+      focusVisibleRing: "inside",
+
       "& > .nimbus-data-table__column-container": {
-        paddingTop: "100",
-        paddingBottom: "100",
-        paddingLeft: "600",
-        paddingRight: "600",
+        py: "100",
+        px: "600",
         display: "flex",
         alignItems: "center",
         h: "100%",
         // https://react-spectrum.adobe.com/react-aria/Table.html#width-values
-        "&:focus": {
-          outlineWidth: "var(--focus-ring-width)",
-          outlineColor: "var(--focus-ring-color)",
-          outlineStyle: "var(--focus-ring-style)",
-          outlineOffset: "-2px",
-          borderRadius: "2px",
-        },
+        focusVisibleRing: "inside",
         "& > span:not(:first-of-type)": {
           flexShrink: 0,
         },
@@ -300,10 +291,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
       "&.pin-rows-column-header": {
         cursor: "default",
-        paddingTop: "100",
-        paddingBottom: "100",
-        paddingLeft: "600",
-        paddingRight: "600",
+        py: "100",
+        px: "600",
         position: "sticky",
         right: 0,
         zIndex: 11,
@@ -322,16 +311,17 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     row: {
       position: "relative",
       borderBottom: "1px solid {colors.neutral.3}",
-      focusRing: "outside",
+      focusVisibleRing: "inside",
+
       "&:hover:not([data-nested-row-expanded])": {
         backgroundColor: "{colors.primary.3}",
         transition: "background-color 200ms ease",
         transform: "translate3d(0, 0, 0)",
       },
       "& td, div": {
-        userSelect: "text",
+        //userSelect: "text",
       },
-      "&:last-child": {
+      _last: {
         borderBottom: "none",
       },
       "&[data-clickable='true']": {
@@ -350,12 +340,13 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
     },
     cell: {
+      userSelect: "text",
       paddingTop: "400",
       paddingBottom: "400",
       paddingLeft: "600",
       paddingRight: "600",
       color: "neutral.11",
-      focusVisibleRing: "outside",
+      focusVisibleRing: "inside",
       hyphens: "auto",
       height: "100%",
       "&[data-slot='expand']": {
