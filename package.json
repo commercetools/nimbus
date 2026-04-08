@@ -68,7 +68,8 @@
       "yaml@1": "1.10.3",
       "yaml@2": ">=2.8.3",
       "path-to-regexp@>=8.0.0 <8.4.0": ">=8.4.0",
-      "happy-dom@<20.8.9": ">=20.8.9"
+      "happy-dom@<20.8.9": ">=20.8.9",
+      "jsdom": "catalog:tooling"
     },
     "onlyBuiltDependencies": [
       "@bundled-es-modules/glob",
