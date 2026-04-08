@@ -1,0 +1,421 @@
+---
+id: MCP-ServerTools-1744156800000
+title: Tool Reference
+description:
+  Complete API reference for all Nimbus MCP server tools — parameters, return
+  shapes, and practical examples.
+order: 3
+menu:
+  - Home
+  - MCP Server
+  - Tool Reference
+tags:
+  - mcp
+  - tools
+  - api
+  - reference
+  - ai
+icon: Build
+---
+
+# Tool Reference
+
+This is the canonical API reference for all tools provided by the Nimbus MCP
+server (`@commercetools/nimbus-mcp`). Each tool is callable via the Model Context
+Protocol and returns structured JSON responses.
+
+---
+
+## list_components
+
+List all Nimbus components with optional filtering by category or fuzzy search.
+
+### Parameters
+
+| Name       | Type     | Required | Description                                                                        |
+| ---------- | -------- | -------- | ---------------------------------------------------------------------------------- |
+| `category` | `string` | No       | Filter by subcategory, e.g. `"Inputs"`, `"Buttons"`, `"Navigation"`. Case-insensitive. |
+| `query`    | `string` | No       | Fuzzy search over component name, description, and tags.                           |
+
+### Return Shape
+
+```ts
+Array<{
+  title: string;
+  description: string;
+  path: string;
+  exportName?: string;
+  subcategory?: string;
+  tags?: string[];
+}>
+```
+
+### Examples
+
+**List all components:**
+
+```json
+{}
+```
+
+**Filter by category:**
+
+```json
+{ "category": "Inputs" }
+```
+
+**Search for a component:**
+
+```json
+{ "query": "date picker" }
+```
+
+---
+
+## get_component
+
+Get detailed information about a specific Nimbus component or pattern. With only
+a name, returns metadata and a list of available sections. With name + section,
+returns the section content.
+
+### Parameters
+
+| Name      | Type     | Required | Description                                                                                        |
+| --------- | -------- | -------- | -------------------------------------------------------------------------------------------------- |
+| `name`    | `string` | Yes      | Component or pattern name, e.g. `"Button"`, `"TextInput"`, `"MoneyInputField"`. Case-insensitive.  |
+| `section` | `enum`   | No       | Section to retrieve: `"overview"`, `"guidelines"`, `"implementation"`, `"accessibility"`, `"props"` |
+
+### Return Shape
+
+**Without `section` (metadata):**
+
+```ts
+{
+  name: string;
+  exportName?: string;
+  description: string;
+  path: string;
+  subcategory?: string;
+  tags?: string[];
+  sections: string[]; // available sections for this component
+}
+```
+
+**With `section: "props"`:**
+
+```ts
+{
+  component: string;
+  propCount: number;
+  props: Array<{
+    name: string;
+    type: string;
+    required: boolean;
+    description: string;
+    defaultValue?: string;
+    subComponent?: string;
+  }>;
+}
+```
+
+**With other sections:** Returns stripped markdown content as plain text.
+
+### Examples
+
+**Get component metadata:**
+
+```json
+{ "name": "Button" }
+```
+
+**Get accessibility guidelines:**
+
+```json
+{ "name": "Select", "section": "accessibility" }
+```
+
+**Get prop API reference:**
+
+```json
+{ "name": "TextInput", "section": "props" }
+```
+
+---
+
+## get_tokens
+
+Access Nimbus design tokens. Lists all categories by default, retrieves tokens
+in a specific category, or performs a reverse-lookup to find which tokens resolve
+to a given value.
+
+### Parameters
+
+| Name       | Type     | Required | Description                                                                                                                                   |
+| ---------- | -------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `category` | `string` | No       | Token category, e.g. `"spacing"`, `"color"`, `"fontSize"`. Use `"colorPalettes"` to list palette names for the `colorPalette` prop. Case-insensitive. |
+| `value`    | `string` | No       | Reverse-lookup: find tokens matching this value, e.g. `"16px"` or `"#0969DA"`. Case-insensitive.                                              |
+| `offset`   | `number` | No       | Starting index for pagination (default `0`). Only applies with `category`.                                                                    |
+| `limit`    | `number` | No       | Max tokens per page. Defaults to all for small categories, 20 for large categories (>55 tokens).                                              |
+
+### Return Shape
+
+**No params (category list):**
+
+```ts
+Array<{
+  category: string;
+  count: number;
+}>
+```
+
+**With `category`:**
+
+```ts
+{
+  category: string;
+  total: number;
+  showing: number;
+  tokens: Array<{ name: string; value: string }>;
+  hint?: string; // pagination hint when more results exist
+}
+```
+
+**With `category: "colorPalettes"`:**
+
+```ts
+{
+  "semantic-palettes": Array<{ name: string; solid: string }>;
+  "brand-palettes": Array<{ name: string; solid: string }>;
+  "system-palettes": Array<{ name: string; solid: string }>;
+  "blacks-and-whites": Array<{ name: string; solid: string }>;
+}
+```
+
+**With `value` (reverse-lookup):**
+
+```ts
+{
+  value: string;
+  tokens: string[]; // token names that resolve to this value
+}
+```
+
+### Examples
+
+**List all token categories:**
+
+```json
+{}
+```
+
+**Get spacing tokens:**
+
+```json
+{ "category": "spacing" }
+```
+
+**Find which tokens equal 16px:**
+
+```json
+{ "value": "16px" }
+```
+
+**Paginate a large category:**
+
+```json
+{ "category": "color", "offset": 20, "limit": 20 }
+```
+
+**List available color palettes:**
+
+```json
+{ "category": "colorPalettes" }
+```
+
+---
+
+## search_docs
+
+Full-text search across all Nimbus documentation — components, patterns, hooks,
+icons, and tokens. Searches titles, descriptions, tags, and full page content
+including guidelines and accessibility views.
+
+### Parameters
+
+| Name    | Type     | Required | Description                                                                     |
+| ------- | -------- | -------- | ------------------------------------------------------------------------------- |
+| `query` | `string` | Yes      | Search query, e.g. `"form validation"`, `"color tokens"`, `"accessibility"`.    |
+
+### Return Shape
+
+```ts
+Array<{
+  title: string;
+  description: string;
+  path: string;
+  category?: string;    // top-level category (e.g. "Components", "Guides")
+  matchedView?: string; // which view matched (e.g. "dev", "guidelines", "a11y")
+  snippet: string;      // content excerpt highlighting the match
+  toolHint?: string;    // suggested follow-up tool (e.g. "get_component")
+}>
+```
+
+Returns up to 10 results, sorted by relevance. The `toolHint` field suggests
+which tool to call for deeper information about a result.
+
+### Examples
+
+**Search for form patterns:**
+
+```json
+{ "query": "form validation" }
+```
+
+**Find accessibility documentation:**
+
+```json
+{ "query": "keyboard navigation" }
+```
+
+**Search for a specific prop or API:**
+
+```json
+{ "query": "onChange" }
+```
+
+---
+
+## search_icons
+
+Fuzzy-search Nimbus icons by name or keyword. Returns paginated results from
+`@commercetools/nimbus-icons`.
+
+### Parameters
+
+| Name     | Type     | Required | Description                                                              |
+| -------- | -------- | -------- | ------------------------------------------------------------------------ |
+| `query`  | `string` | Yes      | Search query, e.g. `"checkmark"`, `"arrow"`, `"settings"`. Min 1 char.  |
+| `offset` | `number` | No       | Starting index for pagination (default `0`).                             |
+
+### Return Shape
+
+```ts
+{
+  query: string;
+  importPath: string;       // always "@commercetools/nimbus-icons"
+  totalResults: number;
+  offset: number;
+  pageSize: number;         // 10 per page
+  hasMore: boolean;
+  hint?: string;            // pagination hint when more results exist
+  results: Array<{
+    name: string;           // exported component name (e.g. "SvgCheckCircle")
+    category: "material" | "custom";
+    keywords: string[];
+  }>;
+}
+```
+
+### Examples
+
+**Search for arrow icons:**
+
+```json
+{ "query": "arrow" }
+```
+
+**Get the next page of results:**
+
+```json
+{ "query": "arrow", "offset": 10 }
+```
+
+**Find settings-related icons:**
+
+```json
+{ "query": "settings" }
+```
+
+---
+
+## migrate_from_uikit
+
+Map UI Kit components to their Nimbus equivalents. Supports single component
+lookup or file analysis to extract all `@commercetools-uikit` imports and return
+migration guidance for each. The MCP provides migration data; the LLM performs
+the actual code rewriting.
+
+### Parameters
+
+| Name            | Type     | Required | Description                                                                                                   |
+| --------------- | -------- | -------- | ------------------------------------------------------------------------------------------------------------- |
+| `componentName` | `string` | No       | UI Kit component name to look up, e.g. `"PrimaryButton"`, `"TextInput"`, `"CollapsiblePanel"`.                |
+| `filePath`      | `string` | No       | Absolute path to a source file. Extracts `@commercetools-uikit/*` imports and returns mappings for each.      |
+
+> At least one of `componentName` or `filePath` must be provided.
+
+### Return Shape
+
+**Single component (`componentName`):**
+
+```ts
+{
+  uiKitName: string;
+  nimbusEquivalent: string | null;
+  importPath: string | null;       // e.g. "@commercetools/nimbus"
+  mappingType: "direct" | "variant" | "compound" | "pattern" | "removed";
+  notes: string;
+  breakingChanges: string[];
+  hint?: string;                   // suggested follow-up tool
+}
+```
+
+**Compound root (e.g. `"Spacings"`):**
+
+```ts
+{
+  compoundRoot: string;
+  note: string;
+  mappings: MigrateComponentResult[]; // one per sub-component
+}
+```
+
+**File analysis (`filePath`):**
+
+```ts
+{
+  filePath: string;
+  mappings: MigrateComponentResult[];
+  unmapped: string[];                 // components not in the migration database
+}
+```
+
+### Mapping Types
+
+| Type       | Meaning                                                     |
+| ---------- | ----------------------------------------------------------- |
+| `direct`   | 1:1 replacement with the same or very similar API           |
+| `variant`  | Becomes a prop/variant value on a Nimbus component          |
+| `compound` | Replaced by composing multiple Nimbus components            |
+| `pattern`  | Replaced by a design-token or layout pattern                |
+| `removed`  | No Nimbus equivalent                                        |
+
+### Examples
+
+**Look up a single component:**
+
+```json
+{ "componentName": "PrimaryButton" }
+```
+
+**Analyze a file for migration:**
+
+```json
+{ "filePath": "/absolute/path/to/my-component.tsx" }
+```
+
+**Look up a compound namespace:**
+
+```json
+{ "componentName": "Spacings" }
+```
