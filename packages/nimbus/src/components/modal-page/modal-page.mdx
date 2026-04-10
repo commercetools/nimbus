@@ -1,0 +1,309 @@
+---
+id: Components-ModalPage
+title: ModalPage
+exportName: ModalPage
+description:
+  A fullscreen modal overlay for form, info, and tabular page patterns.
+  Provides a structured compound component API for complex editing and detail
+  workflows in Merchant Center.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Layout
+  - ModalPage
+tags:
+  - component
+  - overlay
+  - modal
+  - page
+  - dialog
+  - fullscreen
+---
+
+## Overview
+
+ModalPage is a fullscreen overlay that covers nearly the entire viewport,
+providing a dedicated context for complex workflows. It is the Nimbus
+equivalent of the Merchant Center Application Kit's modal page patterns
+(form, info, and tabular variants).
+
+Unlike a regular Drawer, ModalPage has a fixed, structured layout with a
+top navigation bar, header, scrollable content area, and optional footer.
+It is always controlled — consumers manage the open state with `isOpen` and
+`onClose`.
+
+### Key features
+
+- **Controlled-only API**: Explicit `isOpen` + `onClose` — no hidden state
+- **Breadcrumb navigation**: `ModalPage.TopBar` shows previous/current path with an accessible back button
+- **Structured layout**: TopBar / Header / Content (scrollable) / Footer
+- **Tab navigation**: `ModalPage.TabNav` for tabular page patterns
+- **Multi-column content**: Use `PageContent.Root` inside `ModalPage.Content` for column layouts
+- **Accessibility first**: WCAG 2.1 AA compliant with focus management, keyboard navigation, and screen reader support
+
+### Resources
+
+[React Aria Dialog Docs](https://react-spectrum.adobe.com/react-aria/Dialog.html)
+[ARIA Dialog Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
+
+## Variables
+
+Get familiar with the features.
+
+### Info page
+
+A read-only detail view. Footer is optional.
+
+```jsx live
+const App = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  return (
+    <Stack>
+      <Button onPress={() => setIsOpen(true)}>Open Info Page</Button>
+      <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <ModalPage.TopBar
+          previousPathLabel="Products"
+          currentPathLabel="Product Details"
+        />
+        <ModalPage.Header>
+          <ModalPage.Title>Product Details</ModalPage.Title>
+          <ModalPage.Subtitle>View the product information</ModalPage.Subtitle>
+        </ModalPage.Header>
+        <ModalPage.Content>
+          <Text>Product information goes here.</Text>
+        </ModalPage.Content>
+      </ModalPage.Root>
+    </Stack>
+  );
+}
+```
+
+### Form page
+
+Use when the user needs to create or edit an entity. Always include a Footer
+with Save/Cancel actions.
+
+```jsx live
+const App = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  return (
+    <Stack>
+      <Button onPress={() => setIsOpen(true)}>Open Form Page</Button>
+      <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <ModalPage.TopBar
+          previousPathLabel="Products"
+          currentPathLabel="Add Product"
+        />
+        <ModalPage.Header>
+          <ModalPage.Title>Add Product</ModalPage.Title>
+          <ModalPage.Subtitle>Fill in the product details</ModalPage.Subtitle>
+          <ModalPage.Actions>
+            <Button size="sm" variant="outline">Preview</Button>
+          </ModalPage.Actions>
+        </ModalPage.Header>
+        <ModalPage.Content>
+          <Text>Form fields go here.</Text>
+        </ModalPage.Content>
+        <ModalPage.Footer>
+          <Button slot="close" variant="outline">Cancel</Button>
+          <Button colorPalette="primary" variant="solid">Save</Button>
+        </ModalPage.Footer>
+      </ModalPage.Root>
+    </Stack>
+  );
+}
+```
+
+### Tabular page
+
+Use when content is organized into multiple sections via tab navigation.
+Place `ModalPage.TabNav` inside the header and display the active section
+in the content area.
+
+```jsx live
+const App = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  return (
+    <Stack>
+      <Button onPress={() => setIsOpen(true)}>Open Tabular Page</Button>
+      <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <ModalPage.TopBar
+          previousPathLabel="Orders"
+          currentPathLabel="Order #12345"
+        />
+        <ModalPage.Header>
+          <ModalPage.Title>Order #12345</ModalPage.Title>
+          <ModalPage.Subtitle>Placed on 2024-01-15</ModalPage.Subtitle>
+          <ModalPage.TabNav>
+            <TabNav.Root aria-label="Order sections">
+              <TabNav.Item href="#general" isCurrent>General</TabNav.Item>
+              <TabNav.Item href="#items">Items</TabNav.Item>
+              <TabNav.Item href="#shipping">Shipping</TabNav.Item>
+            </TabNav.Root>
+          </ModalPage.TabNav>
+        </ModalPage.Header>
+        <ModalPage.Content>
+          <Text>General information</Text>
+        </ModalPage.Content>
+      </ModalPage.Root>
+    </Stack>
+  );
+}
+```
+
+### Multi-column content
+
+Use `PageContent.Root` with `columns` inside `ModalPage.Content` for
+side-by-side layouts:
+
+```jsx live
+const App = () => {
+  const [isOpen, setIsOpen] = React.useState(false);
+  return (
+    <Stack>
+      <Button onPress={() => setIsOpen(true)}>Open Two-Column Page</Button>
+      <ModalPage.Root isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <ModalPage.TopBar
+          previousPathLabel="Products"
+          currentPathLabel="Edit Product"
+        />
+        <ModalPage.Header>
+          <ModalPage.Title>Edit Product</ModalPage.Title>
+        </ModalPage.Header>
+        <ModalPage.Content>
+          <PageContent.Root variant="wide" columns="2/1">
+            <PageContent.Column>
+              <Text>Main form area (2/3 width)</Text>
+            </PageContent.Column>
+            <PageContent.Column sticky>
+              <Text>Sidebar summary (1/3 width, sticky)</Text>
+            </PageContent.Column>
+          </PageContent.Root>
+        </ModalPage.Content>
+        <ModalPage.Footer>
+          <Button slot="close" variant="outline">Cancel</Button>
+          <Button colorPalette="primary" variant="solid">Save</Button>
+        </ModalPage.Footer>
+      </ModalPage.Root>
+    </Stack>
+  );
+}
+```
+
+### Stacked pages
+
+Use when a workflow requires drilling into a sub-task — for example, opening
+"Add Variant" while the "Edit Product" page is open. Place the second
+`ModalPage.Root` inside the first `ModalPage.Content`. Each page manages its
+own independent open state.
+
+```jsx live
+const App = () => {
+  const [isFirstOpen, setIsFirstOpen] = React.useState(false);
+  const [isSecondOpen, setIsSecondOpen] = React.useState(false);
+  return (
+    <Stack>
+      <Button onPress={() => setIsFirstOpen(true)}>Open Edit Product</Button>
+      <ModalPage.Root
+        isOpen={isFirstOpen}
+        onClose={() => setIsFirstOpen(false)}
+      >
+        <ModalPage.TopBar
+          previousPathLabel="Products"
+          currentPathLabel="Edit Product"
+        />
+        <ModalPage.Header>
+          <ModalPage.Title>Edit Product</ModalPage.Title>
+          <ModalPage.Subtitle>Update the product details</ModalPage.Subtitle>
+        </ModalPage.Header>
+        <ModalPage.Content>
+          <Stack>
+            <Text>Product form content goes here.</Text>
+            <Button onPress={() => setIsSecondOpen(true)}>
+              Open Add Variant
+            </Button>
+          </Stack>
+
+          <ModalPage.Root
+            isOpen={isSecondOpen}
+            onClose={() => setIsSecondOpen(false)}
+          >
+            <ModalPage.TopBar
+              previousPathLabel="Edit Product"
+              currentPathLabel="Add Variant"
+            />
+            <ModalPage.Header>
+              <ModalPage.Title>Add Variant</ModalPage.Title>
+              <ModalPage.Subtitle>Define a new product variant</ModalPage.Subtitle>
+            </ModalPage.Header>
+            <ModalPage.Content>
+              <Text>Variant form content goes here.</Text>
+            </ModalPage.Content>
+            <ModalPage.Footer>
+              <Button slot="close" variant="outline">Cancel</Button>
+              <Button colorPalette="primary" variant="solid">Save Variant</Button>
+            </ModalPage.Footer>
+          </ModalPage.Root>
+        </ModalPage.Content>
+        <ModalPage.Footer>
+          <Button slot="close" variant="outline">Cancel</Button>
+          <Button colorPalette="primary" variant="solid">Save Product</Button>
+        </ModalPage.Footer>
+      </ModalPage.Root>
+    </Stack>
+  );
+}
+```
+
+## Guidelines
+
+Use ModalPage strategically to enhance user workflow without disrupting the
+experience.
+
+### Best practices
+
+- **Always provide a title**: Use `ModalPage.Title` so screen readers can identify the dialog
+- **Use TopBar navigation**: Always supply meaningful `previousPathLabel` and `currentPathLabel`
+- **Footer actions for forms**: Include Save/Cancel in `ModalPage.Footer` for form pages
+- **Prefer Escape key close**: Don't disable keyboard dismissal — it matches OS conventions and WCAG 2.1
+- **Backdrop click is disabled**: Users must close via back button, Cancel, or Escape to prevent accidental data loss
+
+> [!TIP]\
+> When to use
+
+- **Complex editing workflows**: Creating or editing entities with many fields
+- **Multi-section detail views**: When content is too rich for a standard Drawer
+- **Tabular data workflows**: When content requires tabs (general, items, shipping)
+- **Full-page focused context**: When the user needs to focus entirely on the task
+
+> [!CAUTION]\
+> When not to use
+
+- **Simple confirmation dialogs**: Use `Dialog` instead
+- **Single-form quick edits**: Use `Drawer` instead — ModalPage is for complex, multi-field scenarios
+- **Navigation overlays**: Use proper routing for section changes
+
+## Specs
+
+<PropsTable id="ModalPage" />
+
+## Accessibility
+
+### Keyboard Navigation
+
+| Key | Action |
+|-----|--------|
+| `Escape` | Closes the modal page |
+| `Tab` / `Shift+Tab` | Moves focus between interactive elements |
+
+Focus is trapped inside the modal while open and returns to the triggering
+element when the modal closes.
+
+### Screen Reader Support
+
+- The dialog has `role="dialog"` and `aria-modal="true"`
+- `ModalPage.Title` automatically provides the accessible name for the dialog
+- The back button has a localized label referencing the previous path (e.g. "Go back to Products")
+- The breadcrumb separator is hidden from assistive technology
+- The current path label is marked as the current page
