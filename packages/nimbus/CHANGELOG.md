@@ -1,5 +1,71 @@
 # @commercetools/nimbus
 
+## 2.10.0
+
+### Minor Changes
+
+- [#1167](https://github.com/commercetools/nimbus/pull/1167)
+  [`b142cfd`](https://github.com/commercetools/nimbus/commit/b142cfd8079b78476f7344f76a72b7fce498a9d7)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Add `DefaultPage`
+  compound component — a single page layout that covers all eight Merchant
+  Center Application Kit page patterns (info, form, tabular, and custom variants
+  for both main and detail views) through composition. Include `BackLink` for
+  detail views, omit it for main pages.
+
+  Introduces a `layout` prop with two modes: `"constrained"` (default — content
+  scrolls, header/footer pinned by grid) and `"flexible"` (whole page scrolls,
+  with optional `stickyHeader`/`stickyFooter`). A TypeScript discriminated union
+  prevents invalid prop combinations at compile time.
+
+- [#1148](https://github.com/commercetools/nimbus/pull/1148)
+  [`a66d28d`](https://github.com/commercetools/nimbus/commit/a66d28d6c4927622b5d4f891a928c094024ff931)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - MainPage: add MainPage
+  compound component for top-level page layouts
+  - `MainPage.Root` — CSS grid page skeleton with header, content, footer rows
+  - `MainPage.Header` — Two-column grid positioning Title/Subtitle and Actions
+  - `MainPage.Title` — Styled h1 element for the page title
+  - `MainPage.Subtitle` — Optional secondary text below the title
+  - `MainPage.Actions` — Right-aligned container for header action buttons
+  - `MainPage.Content` — Scrollable main content area with margin-based spacing
+  - `MainPage.Footer` — Optional footer for form actions, collapses when omitted
+  - Designer overview, implementation docs, guidelines, and migration guide from
+    AppKit
+
+- [#1148](https://github.com/commercetools/nimbus/pull/1148)
+  [`a66d28d`](https://github.com/commercetools/nimbus/commit/a66d28d6c4927622b5d4f891a928c094024ff931)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Add PageContent
+  compound component for structured page layouts with configurable column widths
+  and sticky positioning support
+
+- [#1273](https://github.com/commercetools/nimbus/pull/1273)
+  [`19b1f14`](https://github.com/commercetools/nimbus/commit/19b1f14d3de333f62672d192e022ce005d552a70)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - feat(tab-nav): add TabNav
+  compound component for page-level navigation
+
+  Introduces the new `TabNav` component for URL-based navigation with accessible
+  tab-style UI. Supports sizes, disabled items, link attributes (`href`,
+  `target`, `rel`) and includes full documentation, stories, and i18n support.
+
+### Patch Changes
+
+- [#1254](https://github.com/commercetools/nimbus/pull/1254)
+  [`8e6f117`](https://github.com/commercetools/nimbus/commit/8e6f11778877efc9aa96e7c7ab2449654123a040)
+  Thanks [@nima-ct](https://github.com/nima-ct)! - Add support in MoneyInput
+  component for non-ISO currencies with zero fraction digits (CZK0, HUF0, ILS0,
+  KZT0, TRY0, TWD0)
+
+- [#1278](https://github.com/commercetools/nimbus/pull/1278)
+  [`dd85d8a`](https://github.com/commercetools/nimbus/commit/dd85d8ad6b1fc0e84b3d2d03065d6100d0c98587)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - ComboBox.Option
+  textValue: derive textValue from string children automatically so consumers
+  don't need to pass it explicitly. Build errors fixed: circular chunk
+  dependency (data-table → icon-toggle-button), TS2742 inferred types
+  (toast.toasters), TS2307 self-referencing import (combobox test-utils), TS2580
+  missing process type (icon-button)
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@2.10.0
+  - @commercetools/nimbus-icons@2.10.0
+
 ## 2.9.1
 
 ### Patch Changes
