@@ -1,0 +1,125 @@
+---
+id: Components-ScrollArea
+title: ScrollArea
+exportName: ScrollArea
+description: A scrollable container with custom-styled scrollbar overlays. Useful for constrained content areas like panels, sidebars, and dialog bodies.
+lifecycleState: Stable
+order: 999
+menu:
+  - Components
+  - Layout
+  - ScrollArea
+tags:
+  - component
+  - scroll-area
+  - layout
+  - overflow
+  - scrollbar
+---
+
+## Overview
+
+ScrollArea constrains content within a fixed region and provides themed
+scrollbar overlays that replace native browser scrollbars. The scrollbar
+appears on hover or during scrolling by default, keeping the interface clean
+until the user needs to scroll. The component is keyboard accessible — when
+content overflows, the area becomes focusable via Tab and scrollable with
+arrow keys.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-scrollarea--docs)
+[Chakra UI ScrollArea](https://chakra-ui.com/docs/components/scroll-area)
+
+## Variables
+
+Get familiar with the features.
+
+### Orientation
+
+Control which axes are scrollable. The default is vertical.
+
+```jsx live
+const App = () => (
+  <Stack gap="600">
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">Vertical (default)</Text>
+      <ScrollArea maxH="120px" w="300px" variant="always">
+        {Array.from({ length: 15 }, (_, i) => (
+          <Text key={i} fontSize="sm">Line {i + 1}: Sample content for vertical scrolling.</Text>
+        ))}
+      </ScrollArea>
+    </Box>
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">Horizontal</Text>
+      <ScrollArea maxW="300px" orientation="horizontal" variant="always">
+        <Box whiteSpace="nowrap">
+          {Array.from({ length: 5 }, (_, i) => (
+            <Text key={i} fontSize="sm">{"Horizontal content ".repeat(15)}</Text>
+          ))}
+        </Box>
+      </ScrollArea>
+    </Box>
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">Both axes</Text>
+      <ScrollArea maxH="120px" maxW="300px" orientation="both" variant="always">
+        <Box whiteSpace="nowrap">
+          {Array.from({ length: 15 }, (_, i) => (
+            <Text key={i} fontSize="sm">{"Bidirectional content ".repeat(15)}</Text>
+          ))}
+        </Box>
+      </ScrollArea>
+    </Box>
+  </Stack>
+);
+```
+
+### Visibility
+
+The scrollbar can appear on hover (default) or stay permanently visible.
+
+```jsx live
+const App = () => (
+  <Stack gap="600" direction="row">
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">Hover (default)</Text>
+      <ScrollArea maxH="120px" w="200px">
+        {Array.from({ length: 15 }, (_, i) => (
+          <Text key={i} fontSize="sm">Line {i + 1}</Text>
+        ))}
+      </ScrollArea>
+    </Box>
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">Always visible</Text>
+      <ScrollArea maxH="120px" w="200px" variant="always">
+        {Array.from({ length: 15 }, (_, i) => (
+          <Text key={i} fontSize="sm">Line {i + 1}</Text>
+        ))}
+      </ScrollArea>
+    </Box>
+  </Stack>
+);
+```
+
+### Size
+
+Control the scrollbar thickness. Available sizes: `xs`, `sm` (default), `md`, `lg`.
+
+```jsx live
+const App = () => (
+  <Stack gap="600" direction="row" flexWrap="wrap">
+    {["xs", "sm", "md", "lg"].map((size) => (
+      <Box key={size}>
+        <Text fontSize="sm" mb="200" fontWeight="bold">{size}</Text>
+        <ScrollArea maxH="120px" w="180px" size={size} variant="always">
+          {Array.from({ length: 15 }, (_, i) => (
+            <Text key={i} fontSize="sm">Line {i + 1}</Text>
+          ))}
+        </ScrollArea>
+      </Box>
+    ))}
+  </Stack>
+);
+```

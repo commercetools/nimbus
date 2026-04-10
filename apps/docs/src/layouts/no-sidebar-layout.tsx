@@ -6,14 +6,20 @@
  * Does not use AppFrame grid to allow true full-width content.
  */
 
-import { Suspense } from "react";
+import { Suspense, useRef } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { LoadingSpinner, Box, Flex } from "@commercetools/nimbus";
+import { LoadingSpinner, Box, Flex, ScrollArea } from "@commercetools/nimbus";
 import { AppNavBar } from "@/components/navigation/app-nav-bar";
 import { BreadcrumbNav } from "@/components/navigation/breadcrumb";
+import {
+  ScrollContainerProvider,
+  useMainViewport,
+} from "@/contexts/scroll-container-context";
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
 
-export function NoSidebarLayout() {
+function NoSidebarLayoutInner() {
+  const mainViewportRef = useMainViewport();
+
   // Enable scroll restoration on navigation
   useScrollRestoration();
 
@@ -85,16 +91,14 @@ export function NoSidebarLayout() {
       </Box>
 
       {/* Main Content - Full width, scrollable */}
-      <Box
+      <ScrollArea
         as="main"
+        viewportRef={mainViewportRef}
         flex={1}
-        overflowY="auto"
-        overflowX="hidden"
-        p="800"
         bg="bg"
         width="full"
+        size="sm"
         css={{
-          // Fade in + slide down animation
           animation: "fadeInSlideDown 0.4s ease-out forwards",
           "@keyframes fadeInSlideDown": {
             from: {
@@ -106,34 +110,31 @@ export function NoSidebarLayout() {
               transform: "translateY(0)",
             },
           },
-          // Custom scrollbar styling
-          "&::-webkit-scrollbar": {
-            width: "8px",
-          },
-          "&::-webkit-scrollbar-track": {
-            background: "var(--colors-neutral-2)",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            background: "var(--colors-neutral-6)",
-            borderRadius: "4px",
-          },
-          "&::-webkit-scrollbar-thumb:hover": {
-            background: "var(--colors-neutral-7)",
-          },
         }}
       >
-        <Suspense fallback={<LoadingSpinner />}>
-          {/* Animated wrapper that re-renders on route change */}
-          <Box
-            key={location.pathname}
-            animationName="fade-in"
-            animationDuration="slow"
-            width="full"
-          >
-            <Outlet />
-          </Box>
-        </Suspense>
-      </Box>
+        <Box p="800">
+          <Suspense fallback={<LoadingSpinner />}>
+            <Box
+              key={location.pathname}
+              animationName="fade-in"
+              animationDuration="slow"
+              width="full"
+            >
+              <Outlet />
+            </Box>
+          </Suspense>
+        </Box>
+      </ScrollArea>
     </Flex>
+  );
+}
+
+export function NoSidebarLayout() {
+  const mainViewportRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <ScrollContainerProvider mainViewportRef={mainViewportRef}>
+      <NoSidebarLayoutInner />
+    </ScrollContainerProvider>
   );
 }

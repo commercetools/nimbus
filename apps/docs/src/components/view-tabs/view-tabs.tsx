@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, useRef, memo } from "react";
 import { Box, Tabs } from "@commercetools/nimbus";
 import type { TabMetadata } from "@/types";
 import { useRouteInfo } from "@/hooks/use-route-info";
+import { useMainViewport } from "@/contexts/scroll-container-context";
 
 export type ViewType = TabMetadata["key"];
 
@@ -24,6 +25,7 @@ interface ViewTabsProps {
  */
 export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
   const { baseRoute, viewKey } = useRouteInfo();
+  const mainViewportRef = useMainViewport();
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const boxRef = useRef<HTMLDivElement>(null);
@@ -62,7 +64,7 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
   // Handle scroll direction to show/hide tabs
   useEffect(() => {
     const SCROLL_THRESHOLD = 5; // Minimum scroll distance to trigger hide/show
-    const mainElement = document.getElementById("main");
+    const mainElement = mainViewportRef.current;
 
     if (!mainElement) return;
 
@@ -97,7 +99,7 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
     return () => {
       mainElement.removeEventListener("scroll", handleScroll);
     };
-  }, [lastScrollY]);
+  }, [lastScrollY, mainViewportRef]);
 
   return (
     <Box
@@ -107,7 +109,7 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
       bg="bg"
       borderRadius="full"
       position="sticky"
-      top="0"
+      top="800"
       zIndex="1"
       css={{
         transform: isVisible ? "translateY(0)" : "translateY(-100%)",
