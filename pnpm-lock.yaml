@@ -363,8 +363,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       fuse.js:
-        specifier: ^7.0.0
-        version: 7.1.0
+        specifier: ^7.3.0
+        version: 7.3.0
       github-slugger:
         specifier: ^2.0.0
         version: 2.0.0
@@ -372,13 +372,13 @@ importers:
         specifier: ^4.0.3
         version: 4.0.3
       jotai:
-        specifier: ^2.16.2
-        version: 2.16.2(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.0)
+        specifier: ^2.19.1
+        version: 2.19.1(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.0)
       lodash:
         specifier: catalog:utils
         version: 4.18.1
       prism-react-renderer:
-        specifier: ^2.4.0
+        specifier: ^2.4.1
         version: 2.4.1(react@19.2.0)
       react:
         specifier: catalog:react
@@ -396,14 +396,14 @@ importers:
         specifier: catalog:react
         version: 19.2.0(react@19.2.0)
       react-live:
-        specifier: ^4.1.7
+        specifier: ^4.1.8
         version: 4.1.8(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-router:
-        specifier: ^7.13.2
-        version: 7.13.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^7.14.0
+        version: 7.14.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-router-dom:
-        specifier: ^7.12.0
-        version: 7.12.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: ^7.14.0
+        version: 7.14.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-stately:
         specifier: 3.45.0
         version: 3.45.0(react@19.2.0)
@@ -411,10 +411,10 @@ importers:
         specifier: ^16.1.1
         version: 16.1.1(react@19.2.0)
       remark-flexible-toc:
-        specifier: ^1.2.4
-        version: 1.2.4(unified@11.0.5)
+        specifier: ^1.2.5
+        version: 1.2.5(unified@11.0.5)
       remark-gfm:
-        specifier: ^4.0.0
+        specifier: ^4.0.1
         version: 4.0.1
       remark-mark-highlight:
         specifier: ^0.1.1
@@ -423,14 +423,14 @@ importers:
         specifier: ^11.0.1
         version: 11.0.1
       use-debounce:
-        specifier: ^10.1.0
-        version: 10.1.0(react@19.2.0)
+        specifier: ^10.1.1
+        version: 10.1.1(react@19.2.0)
       vite-tsconfig-paths:
         specifier: ^6.1.1
         version: 6.1.1(typescript@5.9.3)(vite@7.3.2(@types/node@24.11.0)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.3))
       zod:
-        specifier: ^4.1.12
-        version: 4.1.12
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@commercetools/nimbus-design-token-ts-plugin':
         specifier: workspace:^
@@ -5206,8 +5206,8 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  fuse.js@7.1.0:
-    resolution: {integrity: sha512-trLf4SzuuUxfusZADLINj+dE8clK1frKdmqiJNb1Es75fmI5oY6X2mxLVUciLLjxqw/xr72Dhy+lER6dGd02FQ==}
+  fuse.js@7.3.0:
+    resolution: {integrity: sha512-plz8RVjfcDedTGfVngWH1jmJvBvAwi1v2jecfDerbEnMcmOYUEEwKFTHbNoCiYyzaK2Ws8lABkTCcRSqCY1q4w==}
     engines: {node: '>=10'}
 
   generator-function@2.0.1:
@@ -5631,8 +5631,8 @@ packages:
   jose@6.1.3:
     resolution: {integrity: sha512-0TpaTfihd4QMNwrz/ob2Bp7X04yuxJkjRGi4aKmOqwhov54i6u79oCv7T+C7lo70MKH6BesI3vscD1yb/yzKXQ==}
 
-  jotai@2.16.2:
-    resolution: {integrity: sha512-DH0lBiTXvewsxtqqwjDW6Hg9JPTDnq9LcOsXSFWCAUEt+qj5ohl9iRVX9zQXPPHKLXCdH+5mGvM28fsXMl17/g==}
+  jotai@2.19.1:
+    resolution: {integrity: sha512-sqm9lVZiqBHZH8aSRk32DSiZDHY3yUIlulXYn9GQj7/LvoUdYXSMti7ZPJGo+6zjzKFt5a25k/I6iBCi43PJcw==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
       '@babel/core': '>=7.0.0'
@@ -6561,25 +6561,15 @@ packages:
       '@types/react':
         optional: true
 
-  react-router-dom@7.12.0:
-    resolution: {integrity: sha512-pfO9fiBcpEfX4Tx+iTYKDtPbrSLLCbwJ5EqP+SPYQu1VYCXdy79GSj0wttR0U4cikVdlImZuEZ/9ZNCgoaxwBA==}
+  react-router-dom@7.14.0:
+    resolution: {integrity: sha512-2G3ajSVSZMEtmTjIklRWlNvo8wICEpLihfD/0YMDxbWK2UyP5EGfnoIn9AIQGnF3G/FX0MRbHXdFcD+rL1ZreQ==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
 
-  react-router@7.12.0:
-    resolution: {integrity: sha512-kTPDYPFzDVGIIGNLS5VJykK0HfHLY5MF3b+xj0/tTyNYL1gF1qs7u67Z9jEhQk2sQ98SUaHxlG31g1JtF7IfVw==}
-    engines: {node: '>=20.0.0'}
-    peerDependencies:
-      react: '>=18'
-      react-dom: '>=18'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-
-  react-router@7.13.2:
-    resolution: {integrity: sha512-tX1Aee+ArlKQP+NIUd7SE6Li+CiGKwQtbS+FfRxPX6Pe4vHOo6nr9d++u5cwg+Z8K/x8tP+7qLmujDtfrAoUJA==}
+  react-router@7.14.0:
+    resolution: {integrity: sha512-m/xR9N4LQLmAS0ZhkY2nkPA1N7gQ5TUVa5n8TgANuDTARbn1gt+zLPXEm7W0XDTbrQ2AJSJKhoa6yx1D8BcpxQ==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       react: '>=18'
@@ -6681,6 +6671,11 @@ packages:
 
   remark-flexible-toc@1.2.4:
     resolution: {integrity: sha512-vHQdchXWnPZ2/CQm5iS8Av+Qgi9IXDbhfTueys3h5KF6iNP8UG5qZwJmcrhUWiJcGiZQPZWpRpTIisBQ6gqixA==}
+    peerDependencies:
+      unified: ^11
+
+  remark-flexible-toc@1.2.5:
+    resolution: {integrity: sha512-zlSVdTd21Ggw8E1u6fLP3CMynvOd19z8X//LW8jb9nyk5ei9fGkrn3Nnyy464DTPmolO2DrLT5fT3hNv9RjQhg==}
     peerDependencies:
       unified: ^11
 
@@ -7369,6 +7364,9 @@ packages:
   unist-util-visit@5.0.0:
     resolution: {integrity: sha512-MR04uvD+07cwl/yhVuVWAtw+3GOR/knlL55Nd/wAdblk27GCVt3lqpTivy/tkJcZoNPzTwS1Y+KMojlLDhoTzg==}
 
+  unist-util-visit@5.1.0:
+    resolution: {integrity: sha512-m+vIdyeCOpdr/QeQCu2EzxX/ohgS8KbnPDgFni4dQsfSCtpz8UqDyY5GjRru8PDKuYn7Fq19j1CQ+nJSsGKOzg==}
+
   universalify@0.1.2:
     resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
     engines: {node: '>= 4.0.0'}
@@ -7417,6 +7415,12 @@ packages:
 
   use-debounce@10.1.0:
     resolution: {integrity: sha512-lu87Za35V3n/MyMoEpD5zJv0k7hCn0p+V/fK2kWD+3k2u3kOCwO593UArbczg1fhfs2rqPEnHpULJ3KmGdDzvg==}
+    engines: {node: '>= 16.0.0'}
+    peerDependencies:
+      react: '*'
+
+  use-debounce@10.1.1:
+    resolution: {integrity: sha512-kvds8BHR2k28cFsxW8k3nc/tRga2rs1RHYCqmmGqb90MEeE++oALwzh2COiuBLO1/QXiOuShXoSN2ZpWnMmvuQ==}
     engines: {node: '>= 16.0.0'}
     peerDependencies:
       react: '*'
@@ -13456,7 +13460,7 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  fuse.js@7.1.0: {}
+  fuse.js@7.3.0: {}
 
   generator-function@2.0.1: {}
 
@@ -13904,7 +13908,7 @@ snapshots:
 
   jose@6.1.3: {}
 
-  jotai@2.16.2(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.0):
+  jotai@2.19.1(@babel/core@7.29.0)(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.0):
     optionalDependencies:
       '@babel/core': 7.29.0
       '@babel/template': 7.28.6
@@ -15117,21 +15121,13 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.2.14
 
-  react-router-dom@7.12.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  react-router-dom@7.14.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
-      react-router: 7.12.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-router: 7.14.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
-  react-router@7.12.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
-    dependencies:
-      cookie: 1.1.1
-      react: 19.2.0
-      set-cookie-parser: 2.7.2
-    optionalDependencies:
-      react-dom: 19.2.0(react@19.2.0)
-
-  react-router@7.13.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  react-router@7.14.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       cookie: 1.1.1
       react: 19.2.0
@@ -15301,6 +15297,14 @@ snapshots:
       mdast-util-to-string: 4.0.0
       unified: 11.0.5
       unist-util-visit: 5.0.0
+
+  remark-flexible-toc@1.2.5(unified@11.0.5):
+    dependencies:
+      '@types/mdast': 4.0.4
+      github-slugger: 2.0.0
+      mdast-util-to-string: 4.0.0
+      unified: 11.0.5
+      unist-util-visit: 5.1.0
 
   remark-gfm@4.0.1:
     dependencies:
@@ -16083,6 +16087,12 @@ snapshots:
       unist-util-is: 6.0.1
       unist-util-visit-parents: 6.0.2
 
+  unist-util-visit@5.1.0:
+    dependencies:
+      '@types/unist': 3.0.3
+      unist-util-is: 6.0.1
+      unist-util-visit-parents: 6.0.2
+
   universalify@0.1.2: {}
 
   universalify@2.0.1: {}
@@ -16126,6 +16136,10 @@ snapshots:
       '@types/react': 19.2.14
 
   use-debounce@10.1.0(react@19.2.0):
+    dependencies:
+      react: 19.2.0
+
+  use-debounce@10.1.1(react@19.2.0):
     dependencies:
       react: 19.2.0
 
