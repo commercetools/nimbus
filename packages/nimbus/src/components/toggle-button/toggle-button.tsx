@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { useRecipe } from "@chakra-ui/react/styled-system";
 import { ToggleButton as RaToggleButton } from "react-aria-components";
 import { extractStyleProps } from "@/utils";
@@ -13,19 +14,18 @@ import type { ToggleButtonProps } from "./toggle-button.types";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/togglebutton}
  */
-export const ToggleButton = ({
-  ref: forwardedRef,
-  ...props
-}: ToggleButtonProps) => {
-  const recipe = useRecipe({ key: "nimbusToggleButton" });
-  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
-  const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
+export const ToggleButton = memo(
+  ({ ref: forwardedRef, ...props }: ToggleButtonProps) => {
+    const recipe = useRecipe({ key: "nimbusToggleButton" });
+    const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
+    const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
 
-  return (
-    <ToggleButtonRoot {...recipeProps} {...styleProps} asChild>
-      <RaToggleButton ref={forwardedRef} {...functionalProps} />
-    </ToggleButtonRoot>
-  );
-};
+    return (
+      <ToggleButtonRoot {...recipeProps} {...styleProps} asChild>
+        <RaToggleButton ref={forwardedRef} {...functionalProps} />
+      </ToggleButtonRoot>
+    );
+  }
+);
 
 ToggleButton.displayName = "ToggleButton";

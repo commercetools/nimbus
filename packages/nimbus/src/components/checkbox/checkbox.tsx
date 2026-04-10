@@ -1,4 +1,4 @@
-import { useSlotRecipe } from "@chakra-ui/react/styled-system";
+import { memo } from "react";
 import { Check, Remove as Minus } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
 import type { CheckboxProps } from "./checkbox.types";
@@ -16,20 +16,18 @@ import {
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/checkbox}
  */
-export const Checkbox = (props: CheckboxProps) => {
+export const Checkbox = memo((props: CheckboxProps) => {
   const { ref: forwardedRef, children, ...restProps } = props;
 
-  const recipe = useSlotRecipe({ key: "nimbusCheckbox" });
-  const [recipeProps, remainingProps] = recipe.splitVariantProps(restProps);
-
-  const [styleProps, functionalProps] = extractStyleProps(remainingProps);
+  // extractStyleProps separates Chakra style props from functional/variant props.
+  // CheckboxRoot (via withProvider) handles recipe resolution internally.
+  const [styleProps, functionalProps] = extractStyleProps(restProps);
 
   return (
     <CheckboxRoot
       ref={forwardedRef}
       data-slot="root"
       {...functionalProps}
-      {...recipeProps}
       {...styleProps}
     >
       {({
@@ -64,5 +62,5 @@ export const Checkbox = (props: CheckboxProps) => {
       }}
     </CheckboxRoot>
   );
-};
+});
 Checkbox.displayName = "Checkbox";

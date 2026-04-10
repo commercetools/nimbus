@@ -1,8 +1,7 @@
-import { useRef } from "react";
+import { memo } from "react";
 import { LinkRoot } from "./link.slots";
 import type { LinkProps } from "./link.types";
 import { useLink, useObjectRef, mergeProps } from "react-aria";
-import { mergeRefs } from "@/utils";
 
 /**
  * # Link
@@ -11,11 +10,10 @@ import { mergeRefs } from "@/utils";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/navigation/link}
  */
-export const Link = (props: LinkProps) => {
+export const Link = memo((props: LinkProps) => {
   const { as, asChild, children, ref: forwardedRef, ...rest } = props;
 
-  const localRef = useRef<HTMLAnchorElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const ref = useObjectRef(forwardedRef);
 
   const elementType = (as as string) || (asChild ? "span" : "a") || "a";
   const { linkProps } = useLink({ ...rest, elementType }, ref);
@@ -25,6 +23,6 @@ export const Link = (props: LinkProps) => {
       {children}
     </LinkRoot>
   );
-};
+});
 
 Link.displayName = "Link";

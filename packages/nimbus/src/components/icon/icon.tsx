@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { IconRootSlot } from "./icon.slots";
 import type { IconProps } from "./icon.types";
 
@@ -8,7 +9,7 @@ import type { IconProps } from "./icon.types";
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/media/icon}
  */
-export const Icon = (props: IconProps) => {
+export const Icon = memo((props: IconProps) => {
   const { ref, slot, ...restProps } = props;
   return (
     <IconRootSlot
@@ -18,6 +19,6 @@ export const Icon = (props: IconProps) => {
       {...restProps}
     />
   );
-};
+});
 
 Icon.displayName = "Icon";

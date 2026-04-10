@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { ListBoxItem as RaListBoxItem } from "react-aria-components";
 import { SelectOptionSlot } from "./../select.slots";
 import type { SelectOptionProps } from "../select.types";
@@ -8,7 +9,7 @@ import { extractStyleProps } from "@/utils";
  *
  * @supportsStyleProps
  */
-export const SelectOption = (props: SelectOptionProps) => {
+export const SelectOption = memo((props: SelectOptionProps) => {
   const { ref, ...restProps } = props;
   const [styleProps, functionalProps] = extractStyleProps(restProps);
 
@@ -17,6 +18,6 @@ export const SelectOption = (props: SelectOptionProps) => {
       <RaListBoxItem ref={ref} {...functionalProps} />
     </SelectOptionSlot>
   );
-};
+});
 
 SelectOption.displayName = "Select.Option";

@@ -1,0 +1,120 @@
+commit	component	p95_ms	avg_ms	status	description
+9359332	Button	0.66	0.56	keep	baseline
+9359332	TextInput	0.89	0.65	keep	baseline
+9359332	Checkbox	1.93	1.46	keep	baseline
+9359332	Badge	0.33	0.22	keep	baseline
+9359332	IconButton	0.57	0.44	keep	baseline
+9359332	Text	0.20	0.14	keep	baseline
+9359332	Link	0.34	0.29	keep	baseline
+9359332	Switch	1.66	1.31	keep	baseline
+38d8d81	Button	0.72	0.56	keep	cache isValidProperty in extractStyleProps
+38d8d81	TextInput	0.87	0.61	keep	cache isValidProperty in extractStyleProps
+38d8d81	Checkbox	2.00	1.41	keep	cache isValidProperty in extractStyleProps
+38d8d81	Badge	0.32	0.21	keep	cache isValidProperty in extractStyleProps
+38d8d81	IconButton	0.55	0.41	keep	cache isValidProperty in extractStyleProps
+38d8d81	Text	0.19	0.14	keep	cache isValidProperty in extractStyleProps
+38d8d81	Link	0.38	0.29	keep	cache isValidProperty in extractStyleProps
+38d8d81	Switch	1.37	1.22	keep	cache isValidProperty in extractStyleProps
+cd111b3	Switch	1.38	1.24	keep	simplify ref handling (no gain, cleaner code)
+355ca39	Checkbox	2.06	1.40	discard	remove redundant useSlotRecipe (no improvement)
+ce57f3a	Button	0.73	0.55	keep	avoid spread+delete in extractStyleProps
+ce57f3a	TextInput	0.78	0.61	keep	avoid spread+delete in extractStyleProps
+ce57f3a	Checkbox	1.96	1.47	keep	avoid spread+delete in extractStyleProps
+ce57f3a	Badge	0.25	0.21	keep	avoid spread+delete in extractStyleProps
+ce57f3a	IconButton	0.58	0.43	keep	avoid spread+delete in extractStyleProps
+ce57f3a	Text	0.20	0.13	keep	avoid spread+delete in extractStyleProps
+ce57f3a	Link	0.56	0.29	keep	avoid spread+delete in extractStyleProps
+ce57f3a	Switch	1.30	1.20	keep	avoid spread+delete in extractStyleProps
+85c4a4d	Button	0.68	0.60	keep	simplify Button ref chain
+85c4a4d	IconButton	0.46	0.40	keep	simplify Button ref chain (uses Button internally)
+fb44d5d	TextInput	0.74	0.59	keep	skip context normalization when no context
+fb44d5d	Checkbox	1.89	1.40	keep	(measurement alongside TextInput change)
+fb44d5d	Switch	1.28	1.21	keep	(measurement alongside TextInput change)
+0818b5e	Checkbox	1.92	1.34	keep	remove duplicate useSlotRecipe (cleaner, no perf change)
+0818b5e	Select	3.58	1.87	keep	baseline with compound benchmarks
+0818b5e	Tooltip	1.01	0.57	keep	baseline with compound benchmarks
+06fa9be	Button	0.61	0.55	keep	React.memo on Button
+06fa9be	Checkbox	1.96	1.34	keep	React.memo on Checkbox (p95=1.60 in isolated run)
+06fa9be	Switch	1.40	1.18	keep	React.memo on Switch
+0a5b7c5	Button	0.65	0.52	keep	React.memo on all benchmarked components
+0a5b7c5	TextInput	0.81	0.60	keep	React.memo on TextInput
+0a5b7c5	Checkbox	1.48	1.29	keep	React.memo cascade effect
+0a5b7c5	Badge	0.21	0.17	keep	React.memo on Badge + simplified refs
+0a5b7c5	IconButton	0.54	0.39	keep	React.memo cascade
+0a5b7c5	Text	0.14	0.11	keep	React.memo on Text
+0a5b7c5	Link	0.40	0.25	keep	React.memo on Link
+0a5b7c5	Switch	1.53	1.22	keep	React.memo on Switch
+0a5b7c5	Select	3.43	1.85	keep	baseline
+0a5b7c5	Tooltip	0.60	0.51	keep	baseline
+82e04b4	Button	0.61	0.53	keep	memo on all components + SelectOption
+82e04b4	TextInput	0.84	0.60	keep	memo on all components
+82e04b4	Checkbox	2.14	1.34	keep	noisy p95 but avg stable
+82e04b4	Badge	0.21	0.18	keep	memo + simplified refs
+82e04b4	IconButton	0.53	0.38	keep	memo on IconButton
+82e04b4	Text	0.20	0.14	keep	memo on Text
+82e04b4	Link	0.32	0.25	keep	memo on Link
+82e04b4	Switch	1.50	1.20	keep	memo on Switch
+82e04b4	Select	3.45	1.85	keep	memo on SelectOption (no mount gain)
+82e04b4	Tooltip	0.67	0.53	keep	stable
+e28a666	Button	0.71	0.59	keep	extractStyleProps fast path + lazy alloc
+e28a666	TextInput	0.87	0.63	keep	extractStyleProps fast path
+e28a666	Checkbox	1.52	1.29	keep	extractStyleProps fast path
+e28a666	Badge	0.26	0.21	keep	extractStyleProps fast path
+e28a666	IconButton	0.47	0.37	keep	extractStyleProps fast path
+e28a666	Text	0.17	0.12	keep	extractStyleProps fast path
+e28a666	Link	0.35	0.27	keep	extractStyleProps fast path
+e28a666	Switch	1.49	1.22	keep	extractStyleProps fast path
+e28a666	Select	4.03	1.88	keep	chakra.div→div + SelectOption memo
+2443d0d	Button	0.59	0.47	keep	final: memo on Box+Flex, 100 iterations
+2443d0d	TextInput	0.69	0.52	keep	final: memo on Box+Flex
+2443d0d	Checkbox	1.68	1.25	keep	final: memo on Box+Flex
+2443d0d	Badge	0.22	0.18	keep	final: memo on Box+Flex
+2443d0d	IconButton	0.45	0.36	keep	final: memo on Box+Flex
+2443d0d	Text	0.17	0.13	keep	final: memo on Box+Flex
+2443d0d	Link	0.32	0.26	keep	final: memo on Box+Flex
+2443d0d	Switch	1.62	1.24	keep	final: memo on Box+Flex (noisy p95)
+2443d0d	Select	3.37	1.80	keep	final: memo on Box+Flex
+2443d0d	Tooltip	0.65	0.52	keep	final: memo on Box+Flex
+f3dbd73	Button	0.63	0.47	keep	3-run median with all memo optimizations
+f3dbd73	TextInput	0.72	0.53	keep	3-run median (-19% from baseline)
+f3dbd73	Checkbox	1.53	1.19	keep	3-run median (-21% from baseline)
+f3dbd73	Badge	0.24	0.19	keep	3-run median (-27% from baseline)
+f3dbd73	IconButton	0.44	0.35	keep	3-run median (-23% from baseline)
+f3dbd73	Text	0.18	0.13	keep	3-run median (-10% from baseline)
+f3dbd73	Link	0.35	0.26	keep	3-run median (stable)
+f3dbd73	Switch	1.39	1.17	keep	3-run median (-16% from baseline)
+f3dbd73	Select	3.39	1.81	keep	3-run median (new benchmark)
+f3dbd73	Tooltip	0.68	0.53	keep	3-run median (new benchmark)
+33bfa17	Button	0.62	0.45	keep	final with all memo + utility optimizations
+33bfa17	TextInput	0.72	0.51	keep	final (-19% from baseline)
+33bfa17	Checkbox	1.55	1.20	keep	final (-20% from baseline)
+33bfa17	Badge	0.26	0.19	keep	final (-21% from baseline)
+33bfa17	IconButton	0.44	0.35	keep	final (-23% from baseline)
+33bfa17	Text	0.17	0.12	keep	final (-15% from baseline)
+33bfa17	Link	0.35	0.26	keep	final (stable)
+33bfa17	Switch	1.41	1.16	keep	final (-15% from baseline)
+33bfa17	Select	3.36	1.77	keep	final (new benchmark)
+33bfa17	Tooltip	0.64	0.54	keep	final (new benchmark)
+f26d18e	Button	0.62	0.46	keep	+AlertRoot memo, Object.create(null) cache
+f26d18e	TextInput	0.69	0.50	keep	-22% from baseline
+f26d18e	Checkbox	1.58	1.22	keep	-18% from baseline
+f26d18e	Badge	0.27	0.18	keep	-18% from baseline
+f26d18e	IconButton	0.44	0.35	keep	-23% from baseline
+f26d18e	Text	0.18	0.13	keep	-10% from baseline
+f26d18e	Link	0.33	0.26	keep	-3% from baseline
+f26d18e	Switch	1.38	1.16	keep	-17% from baseline
+f26d18e	Select	3.32	1.76	keep	(new benchmark)
+f26d18e	Tooltip	0.66	0.52	keep	(new benchmark)
+46b6a49	Button	0.60	0.44	keep	final stable measurements (100 iters)
+46b6a49	TextInput	0.76	0.52	keep	final (-15% from baseline avg)
+46b6a49	Checkbox	1.56	1.20	keep	final (-18% from baseline avg)
+46b6a49	Badge	0.24	0.18	keep	final (-36% from baseline p95)
+46b6a49	IconButton	0.50	0.37	keep	final (-23% from baseline avg)
+46b6a49	Text	0.18	0.13	keep	final (-10% from baseline)
+46b6a49	Link	0.34	0.27	keep	final (stable)
+46b6a49	Switch	1.35	1.17	keep	final (-19% from baseline)
+46b6a49	Separator	0.34	0.24	keep	new benchmark
+46b6a49	Heading	0.23	0.17	keep	new benchmark
+46b6a49	LoadingSpinner	0.41	0.32	keep	new benchmark
+46b6a49	Select	3.18	1.79	keep	final (new benchmark)
+46b6a49	Tooltip	0.69	0.55	keep	final (new benchmark)
