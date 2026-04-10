@@ -363,6 +363,18 @@ export interface LoweredRelevanceFields {
   content: string;
   /** All fields concatenated for fast single-string search. */
   combined: string;
+  /** Title with whitespace removed (for compound-word fuzzy matching). */
+  titleNoSpaces?: string;
+  /** Description with whitespace removed (for compound-word fuzzy matching). */
+  descriptionNoSpaces?: string;
+  /** Tags with whitespace removed (for compound-word fuzzy matching). */
+  tagsNoSpaces?: string;
+  /** Pre-split title words (for word-level fuzzy matching). */
+  titleWords?: string[];
+  /** Pre-split description words (for word-level fuzzy matching). */
+  descriptionWords?: string[];
+  /** Pre-split tags words (for word-level fuzzy matching). */
+  tagsWords?: string[];
 }
 
 // ---------------------------------------------------------------------------
