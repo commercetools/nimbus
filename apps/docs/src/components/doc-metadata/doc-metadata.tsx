@@ -1,4 +1,10 @@
-import { Badge, Heading, Stack, Text } from "@commercetools/nimbus";
+import {
+  Badge,
+  Heading,
+  Stack,
+  Text,
+  stringToColorPalette,
+} from "@commercetools/nimbus";
 import { lifecycleStateDescriptions } from "@/schemas/lifecycle-states";
 import type { DocMetadataProps } from "./doc-metadata.types";
 
@@ -49,7 +55,11 @@ export const DocMetadata = ({
         <Stack direction="row" gap="200" alignItems="center" flexWrap="wrap">
           {/* Tags */}
           {tags?.map((tag) => (
-            <Badge key={tag} size="2xs" colorPalette="neutral">
+            <Badge
+              key={tag}
+              size="2xs"
+              colorPalette={stringToColorPalette(tag)}
+            >
               {tag}
             </Badge>
           ))}
