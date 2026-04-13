@@ -3,10 +3,18 @@
   "version": "0.1.0",
   "description": "MCP server for the Nimbus design system",
   "type": "module",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "files": [
     "dist",
     "data"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/commercetools/nimbus.git"
+  },
   "bin": {
     "nimbus-mcp": "./dist/index.js"
   },
