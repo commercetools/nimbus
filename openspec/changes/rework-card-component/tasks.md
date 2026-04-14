@@ -1,6 +1,6 @@
 # Tasks: Rework Card Component
 
-## Task 1: Update recipe — add footer slot, restructure to variant/size, fix display
+## - [x] Task 1: Update recipe — add footer slot, restructure to variant/size, fix display
 
 **File:** `packages/nimbus/src/components/card/card.recipe.ts`
 
@@ -27,7 +27,7 @@
 **Verify:** Recipe compiles, theme typings generate without errors
 (`pnpm --filter @commercetools/nimbus build-theme-typings`)
 
-## Task 2: Update types — rename Content to Body, add Footer, use variant/size
+## - [x] Task 2: Update types — rename Content to Body, add Footer, use variant/size
 
 **File:** `packages/nimbus/src/components/card/card.types.ts`
 
@@ -43,7 +43,7 @@
 
 **Verify:** `pnpm --filter @commercetools/nimbus typecheck`
 
-## Task 3: Update slots — rename content to body, add footer
+## - [x] Task 3: Update slots — rename content to body, add footer
 
 **File:** `packages/nimbus/src/components/card/card.slots.tsx`
 
@@ -53,7 +53,7 @@
 
 **Verify:** Types align with recipe slot names
 
-## Task 4: Rewrite card.root.tsx — remove context, direct rendering
+## - [x] Task 4: Rewrite card.root.tsx — remove context, direct rendering
 
 **File:** `packages/nimbus/src/components/card/components/card.root.tsx`
 
@@ -68,7 +68,7 @@
 
 **Verify:** Component renders children in DOM order
 
-## Task 5: Rewrite card.header.tsx — simple passthrough
+## - [x] Task 5: Rewrite card.header.tsx — simple passthrough
 
 **File:** `packages/nimbus/src/components/card/components/card.header.tsx`
 
@@ -79,7 +79,7 @@
 
 **Verify:** Header renders content directly, no null return
 
-## Task 6: Rename card.content.tsx to card.body.tsx
+## - [x] Task 6: Rename card.content.tsx to card.body.tsx
 
 **File:** `packages/nimbus/src/components/card/components/card.content.tsx` →
 `card.body.tsx`
@@ -93,7 +93,7 @@
 
 **Verify:** Body renders content directly
 
-## Task 7: Create card.footer.tsx
+## - [x] Task 7: Create card.footer.tsx
 
 **File:** `packages/nimbus/src/components/card/components/card.footer.tsx` (new)
 
@@ -105,7 +105,7 @@
 
 **Verify:** Footer renders correctly
 
-## Task 8: Update barrel exports
+## - [x] Task 8: Update barrel exports
 
 **Files:**
 
@@ -116,7 +116,7 @@
 **Verify:** `import { Card } from "@commercetools/nimbus"` provides Root,
 Header, Body, Footer
 
-## Task 9: Update stories
+## - [x] Task 9: Update stories
 
 **File:** `packages/nimbus/src/components/card/card.stories.tsx`
 
@@ -133,7 +133,7 @@ Header, Body, Footer
 
 **Verify:** `pnpm test:dev packages/nimbus/src/components/card/card.stories.tsx`
 
-## Task 10: Update docs spec
+## - [x] Task 10: Update docs spec
 
 **File:** `packages/nimbus/src/components/card/card.docs.spec.tsx`
 
@@ -146,7 +146,7 @@ Header, Body, Footer
 **Verify:**
 `pnpm test:dev packages/nimbus/src/components/card/card.docs.spec.tsx`
 
-## Task 11: Update MDX documentation
+## - [x] Task 11: Update MDX documentation
 
 **Files:** `card.mdx`, `card.dev.mdx`, `card.guidelines.mdx`, `card.a11y.mdx`
 
@@ -157,7 +157,7 @@ Header, Body, Footer
 - Document padding behavior (CSS-driven, adapts to present parts)
 - Document variant options with visual examples
 
-## Task 12: Build and full test
+## - [x] Task 12: Build and full test
 
 - `pnpm --filter @commercetools/nimbus build`
 - `pnpm test:dev` (storybook + unit tests against source)
