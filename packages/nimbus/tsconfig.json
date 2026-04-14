@@ -34,8 +34,6 @@
       // "@types-extensions",
       "node_modules/@types"
     ],
-    "plugins": [
-      { "name": "@commercetools/nimbus-design-token-ts-plugin" }
-    ]
+    "plugins": [{ "name": "@commercetools/nimbus-design-token-ts-plugin" }]
   }
 }
