@@ -14,15 +14,15 @@ import { Box, Card, Link, type CardProps } from '@commercetools/nimbus';
 
 ### Basic usage
 
-The Card component uses a compound pattern to structure content. You must wrap `Card.Header` and `Card.Content` within `Card.Root`.
+The Card component uses a compound pattern to structure content. Wrap `Card.Header`, `Card.Body`, and `Card.Footer` within `Card.Root`.
 
 ```jsx live-dev
 const App = () => (
   <Card.Root>
     <Card.Header>Card Title</Card.Header>
-    <Card.Content>
+    <Card.Body>
       <Text>This is the main card content.</Text>
-    </Card.Content>
+    </Card.Body>
   </Card.Root>
 )
 ```
@@ -31,24 +31,24 @@ const App = () => (
 
 ### Size options
 
-The `cardPadding` prop controls the internal spacing of the card. Available sizes are `sm`, `md`, and `lg`.
+The `size` prop controls the internal padding and gap of the card. Available sizes are `sm`, `md`, and `lg`.
 
 ```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
-    <Card.Root cardPadding="sm">
-      <Card.Header>Small Padding</Card.Header>
-      <Card.Content>Compact content spacing.</Card.Content>
+    <Card.Root size="sm">
+      <Card.Header>Small</Card.Header>
+      <Card.Body>Compact content spacing.</Card.Body>
     </Card.Root>
 
-    <Card.Root cardPadding="md">
-      <Card.Header>Medium Padding</Card.Header>
-      <Card.Content>Standard content spacing (default).</Card.Content>
+    <Card.Root size="md">
+      <Card.Header>Medium</Card.Header>
+      <Card.Body>Standard content spacing (default).</Card.Body>
     </Card.Root>
 
-    <Card.Root cardPadding="lg">
-      <Card.Header>Large Padding</Card.Header>
-      <Card.Content>Spacious content layout.</Card.Content>
+    <Card.Root size="lg">
+      <Card.Header>Large</Card.Header>
+      <Card.Body>Spacious content layout.</Card.Body>
     </Card.Root>
   </Stack>
 )
@@ -56,26 +56,49 @@ const App = () => (
 
 ### Visual variants
 
-Customize the card's appearance using `borderStyle`, `elevation`, and `backgroundStyle`.
+The `variant` prop controls the card's visual treatment.
 
 ```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
-    <Card.Root borderStyle="outlined" elevation="none">
+    <Card.Root variant="outlined">
       <Card.Header>Outlined (Default)</Card.Header>
-      <Card.Content>Standard bordered look.</Card.Content>
+      <Card.Body>Standard bordered look.</Card.Body>
     </Card.Root>
 
-    <Card.Root borderStyle="none" elevation="elevated">
+    <Card.Root variant="elevated">
       <Card.Header>Elevated</Card.Header>
-      <Card.Content>Shadow depth without border.</Card.Content>
+      <Card.Body>Shadow depth without border.</Card.Body>
     </Card.Root>
 
-    <Card.Root backgroundStyle="muted" borderStyle="none">
-      <Card.Header>Muted Background</Card.Header>
-      <Card.Content>Subtle background color for differentiation.</Card.Content>
+    <Card.Root variant="filled">
+      <Card.Header>Filled</Card.Header>
+      <Card.Body>Muted background for differentiation.</Card.Body>
+    </Card.Root>
+
+    <Card.Root variant="plain">
+      <Card.Header>Plain</Card.Header>
+      <Card.Body>Minimal visual treatment.</Card.Body>
     </Card.Root>
   </Stack>
+)
+```
+
+### Card with footer
+
+Use `Card.Footer` for actions and metadata placed below the body content.
+
+```jsx live-dev
+const App = () => (
+  <Card.Root variant="outlined" size="md">
+    <Card.Header>Project Summary</Card.Header>
+    <Card.Body>
+      <Text>The project is on track for the next milestone.</Text>
+    </Card.Body>
+    <Card.Footer>
+      <Button variant="solid" colorPalette="primary" size="sm">View Details</Button>
+    </Card.Footer>
+  </Card.Root>
 )
 ```
 
@@ -95,11 +118,11 @@ const App = () => (
       _hover={{ textDecoration: 'none' }}
       aria-label="Navigate to details"
     >
-      <Card.Root borderStyle="outlined" elevation="elevated">
+      <Card.Root variant="outlined">
         <Card.Header>Navigational Card</Card.Header>
-        <Card.Content>
+        <Card.Body>
           This entire card acts as a link using the system Link component.
-        </Card.Content>
+        </Card.Body>
       </Card.Root>
     </Link>
 
@@ -117,11 +140,11 @@ const App = () => (
       cursor="pointer"
       aria-label="Trigger action"
     >
-      <Card.Root borderStyle="outlined">
+      <Card.Root variant="outlined">
         <Card.Header>Action Card</Card.Header>
-        <Card.Content>
+        <Card.Body>
           Behaves like a button with keyboard support (Tab, Enter, Space).
-        </Card.Content>
+        </Card.Body>
       </Card.Root>
     </Box>
   </Stack>
@@ -145,7 +168,7 @@ const PERSISTENT_ID = "project-summary-card";
 export const Example = () => (
   <Card.Root id={PERSISTENT_ID}>
     <Card.Header>Summary</Card.Header>
-    <Card.Content>...</Card.Content>
+    <Card.Body>...</Card.Body>
   </Card.Root>
 );
 ```
@@ -167,4 +190,3 @@ These examples demonstrate how to test your implementation when using Card withi
 ## Resources
 
 - [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-card--docs)
-

@@ -92,8 +92,8 @@ clear headings and short descriptions.
 
 ```jsx live
 const App = () => (
-  <Card.Root cardPadding="md" borderStyle="outlined" width="8000">
-    <Card.Content>
+  <Card.Root variant="outlined" size="md" width="8000">
+    <Card.Body>
       <Stack gap="400">
         <img src="/images/card/card-discount-template.png" alt="discount template illustration" />
         <Text fontWeight="bold">
@@ -112,7 +112,7 @@ const App = () => (
           </Button>
         </Box>
       </Stack>
-    </Card.Content>
+    </Card.Body>
   </Card.Root>
 );
 ```
@@ -127,8 +127,8 @@ const App = () => (
 
 ```jsx live
 const App = () => (
-  <Card.Root cardPadding="md" borderStyle="outlined" width="1">
-    <Card.Content>
+  <Card.Root variant="outlined" size="md" width="1">
+    <Card.Body>
       <Stack direction="horizontal" gap="400">
         <Stack gap="400" width="1/2">
           <img src="/images/card/card-discount-template.png" alt="discount template illustration" />
@@ -166,7 +166,7 @@ const App = () => (
           </Box>
         </Stack>
       </Stack>
-    </Card.Content>
+    </Card.Body>
   </Card.Root>
 );
 ```
@@ -189,8 +189,8 @@ interaction.
 
 ```jsx live
 const App = () => (
-  <Card.Root cardPadding="md" borderStyle="outlined" width="384px">
-    <Card.Content>
+  <Card.Root variant="outlined" size="md" width="384px">
+    <Card.Body>
       <Stack direction="horizontal" gap="400">
         <Box
           color="primary.11"
@@ -213,7 +213,7 @@ const App = () => (
           </Text>
         </Stack>
       </Stack>
-    </Card.Content>
+    </Card.Body>
   </Card.Root>
 );
 ```
@@ -228,8 +228,8 @@ const App = () => (
 const App = () => (
   <Stack gap="400" alignItems="start">
     {/* Main Card */}
-    <Card.Root cardPadding="md" borderStyle="outlined" width="423px">
-      <Card.Content>
+    <Card.Root variant="outlined" size="md" width="423px">
+      <Card.Body>
         <Stack direction="horizontal" gap="400">
           <Box
             alignSelf="flex-start"
@@ -281,18 +281,18 @@ const App = () => (
             </Stack>
           </Stack>
         </Stack>
-      </Card.Content>
+      </Card.Body>
     </Card.Root>
 
     {/* Bottom Row Cards */}
     <Stack direction="horizontal" gap="400">
       {/* Products Card */}
       <Card.Root
-        cardPadding="md"
-        borderStyle="outlined"
+        variant="outlined"
+        size="md"
         width="201.5px"
       > {/* Half width approx */}
-        <Card.Content>
+        <Card.Body>
           <Stack direction="horizontal" gap="300" alignItems="center">
             <Box
               alignSelf="flex-start"
@@ -311,16 +311,16 @@ const App = () => (
               Products
             </Text>
           </Stack>
-        </Card.Content>
+        </Card.Body>
       </Card.Root>
 
       {/* Discounts Card */}
       <Card.Root
-        cardPadding="md"
-        borderStyle="outlined"
+        variant="outlined"
+        size="md"
         width="201.5px"
       > {/* Half width approx */}
-        <Card.Content>
+        <Card.Body>
           <Stack direction="horizontal" gap="300" alignItems="center">
             <Box
               alignSelf="flex-start"
@@ -339,7 +339,7 @@ const App = () => (
               Discounts
             </Text>
           </Stack>
-        </Card.Content>
+        </Card.Body>
       </Card.Root>
     </Stack>
   </Stack>

@@ -14,7 +14,7 @@ describe("Card - Basic rendering", () => {
       <NimbusProvider>
         <Card.Root>
           <Card.Header>Project X</Card.Header>
-          <Card.Content>Status: Active</Card.Content>
+          <Card.Body>Status: Active</Card.Body>
         </Card.Root>
       </NimbusProvider>
     );
@@ -35,15 +35,43 @@ describe("Card - Basic rendering", () => {
     expect(screen.getByText("Card Title")).toBeInTheDocument();
   });
 
-  it("renders with content only", () => {
+  it("renders with body only", () => {
     render(
       <NimbusProvider>
         <Card.Root>
-          <Card.Content>This is the main content.</Card.Content>
+          <Card.Body>This is the main content.</Card.Body>
         </Card.Root>
       </NimbusProvider>
     );
 
     expect(screen.getByText("This is the main content.")).toBeInTheDocument();
+  });
+
+  it("renders with footer", () => {
+    render(
+      <NimbusProvider>
+        <Card.Root>
+          <Card.Header>Title</Card.Header>
+          <Card.Body>Content</Card.Body>
+          <Card.Footer>Footer actions</Card.Footer>
+        </Card.Root>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByText("Title")).toBeInTheDocument();
+    expect(screen.getByText("Content")).toBeInTheDocument();
+    expect(screen.getByText("Footer actions")).toBeInTheDocument();
+  });
+
+  it("renders with variant and size props", () => {
+    render(
+      <NimbusProvider>
+        <Card.Root variant="elevated" size="lg">
+          <Card.Body>Elevated card</Card.Body>
+        </Card.Root>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByText("Elevated card")).toBeInTheDocument();
   });
 });
