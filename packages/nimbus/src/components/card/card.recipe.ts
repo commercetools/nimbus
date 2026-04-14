@@ -21,6 +21,7 @@ export const cardRecipe = defineSlotRecipe({
       display: "flex",
       flexDirection: "column",
       alignItems: "flex-start",
+      gap: "var(--card-spacing)",
       borderRadius: "300",
       focusVisibleRing: "outside",
     },
@@ -32,13 +33,13 @@ export const cardRecipe = defineSlotRecipe({
   variants: {
     size: {
       sm: {
-        root: { gap: "100", "--card-spacing": "spacing.200" },
+        root: { "--card-spacing": "spacing.200" },
       },
       md: {
-        root: { gap: "200", "--card-spacing": "spacing.400" },
+        root: { "--card-spacing": "spacing.400" },
       },
       lg: {
-        root: { gap: "400", "--card-spacing": "spacing.600" },
+        root: { "--card-spacing": "spacing.600" },
       },
     },
 
