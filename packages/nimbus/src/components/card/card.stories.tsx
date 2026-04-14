@@ -142,43 +142,95 @@ export const Variants: Story = {
 
 /**
  * Header + Body + Footer
- * Demonstrates all three compound parts together
+ * Side-by-side comparison of all sizes without and with dividers
  */
 export const HeaderBodyFooter: Story = {
   render: () => {
     return (
-      <Card.Root variant="outlined" size="md" data-testid="card-full">
-        <Card.Header>
-          <Text fontWeight="bold">Card Title</Text>
-        </Card.Header>
-        <Card.Body>
-          <Text>This is the main card content with all three sections.</Text>
-        </Card.Body>
-        <Card.Footer>
-          <Stack direction="row" gap="200">
-            <Button variant="solid" colorPalette="primary" size="sm">
-              Confirm
-            </Button>
-            <Button variant="ghost" size="sm">
-              Cancel
-            </Button>
-          </Stack>
-        </Card.Footer>
-      </Card.Root>
+      <Stack direction="row" gap="800">
+        <Stack gap="400">
+          <Text fontWeight="bold">Without dividers</Text>
+          {sizes.map((size) => (
+            <Card.Root
+              key={size as string}
+              variant="outlined"
+              size={size}
+              data-testid={`card-full-${size as string}`}
+            >
+              <Card.Header>
+                <Text fontWeight="bold">Header ({size as string})</Text>
+              </Card.Header>
+              <Card.Body>
+                <Text>Body content for the {size as string} size.</Text>
+              </Card.Body>
+              <Card.Footer>
+                <Stack direction="row" gap="200">
+                  <Button variant="solid" colorPalette="primary" size="sm">
+                    Confirm
+                  </Button>
+                  <Button variant="ghost" size="sm">
+                    Cancel
+                  </Button>
+                </Stack>
+              </Card.Footer>
+            </Card.Root>
+          ))}
+        </Stack>
+        <Stack gap="400">
+          <Text fontWeight="bold">With dividers</Text>
+          {sizes.map((size) => (
+            <Card.Root
+              key={size as string}
+              variant="outlined"
+              size={size}
+              data-testid={`card-divided-${size as string}`}
+            >
+              <Card.Header>
+                <Text fontWeight="bold">Header ({size as string})</Text>
+              </Card.Header>
+              <Separator />
+              <Card.Body>
+                <Text>Body content for the {size as string} size.</Text>
+              </Card.Body>
+              <Separator />
+              <Card.Footer>
+                <Stack direction="row" gap="200">
+                  <Button variant="solid" colorPalette="primary" size="sm">
+                    Confirm
+                  </Button>
+                  <Button variant="ghost" size="sm">
+                    Cancel
+                  </Button>
+                </Stack>
+              </Card.Footer>
+            </Card.Root>
+          ))}
+        </Stack>
+      </Stack>
     );
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Renders header, body, and footer content", async () => {
-      await expect(canvas.getByText("Card Title")).toBeInTheDocument();
-      await expect(
-        canvas.getByText(
-          "This is the main card content with all three sections."
-        )
-      ).toBeInTheDocument();
-      await expect(canvas.getByText("Confirm")).toBeInTheDocument();
-      await expect(canvas.getByText("Cancel")).toBeInTheDocument();
+    await step("All sizes render without dividers", async () => {
+      for (const size of sizes) {
+        await expect(
+          canvas.getByTestId(`card-full-${size as string}`)
+        ).toBeInTheDocument();
+      }
+    });
+
+    await step("All sizes render with dividers", async () => {
+      for (const size of sizes) {
+        await expect(
+          canvas.getByTestId(`card-divided-${size as string}`)
+        ).toBeInTheDocument();
+      }
+    });
+
+    await step("Dividers are present", async () => {
+      const separators = canvas.getAllByRole("separator");
+      await expect(separators).toHaveLength(6);
     });
   },
 };
@@ -233,54 +285,6 @@ export const HeaderAndBody: Story = {
       await expect(
         canvas.getByText("Content without a footer.")
       ).toBeInTheDocument();
-    });
-  },
-};
-
-/**
- * With dividers
- * Demonstrates using Separator to visually divide header, body, and footer
- */
-export const WithDividers: Story = {
-  render: () => {
-    return (
-      <Card.Root variant="outlined" size="md" data-testid="card-dividers">
-        <Card.Header>
-          <Text fontWeight="bold">Card Title</Text>
-        </Card.Header>
-        <Separator />
-        <Card.Body>
-          <Text>
-            Main content separated from header and footer by dividers.
-          </Text>
-        </Card.Body>
-        <Separator />
-        <Card.Footer>
-          <Stack direction="row" gap="200">
-            <Button variant="solid" colorPalette="primary" size="sm">
-              Save
-            </Button>
-            <Button variant="ghost" size="sm">
-              Cancel
-            </Button>
-          </Stack>
-        </Card.Footer>
-      </Card.Root>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Renders all sections with separators", async () => {
-      await expect(canvas.getByText("Card Title")).toBeInTheDocument();
-      await expect(
-        canvas.getByText(
-          "Main content separated from header and footer by dividers."
-        )
-      ).toBeInTheDocument();
-      await expect(canvas.getByText("Save")).toBeInTheDocument();
-      const separators = canvas.getAllByRole("separator");
-      await expect(separators).toHaveLength(2);
     });
   },
 };
