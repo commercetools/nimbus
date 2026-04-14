@@ -1,7 +1,8 @@
 import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import type { SlotComponent } from "../../type-utils/slot-types";
 import type {
-  CardContentSlotProps,
+  CardBodySlotProps,
+  CardFooterSlotProps,
   CardHeaderSlotProps,
   CardRootSlotProps,
 } from "./card.types";
@@ -20,5 +21,8 @@ export const CardRoot: SlotComponent<HTMLDivElement, CardRootSlotProps> =
 export const CardHeader: SlotComponent<HTMLDivElement, CardHeaderSlotProps> =
   withContext<HTMLDivElement, CardHeaderSlotProps>("div", "header");
 
-export const CardContent: SlotComponent<HTMLDivElement, CardContentSlotProps> =
-  withContext<HTMLDivElement, CardContentSlotProps>("div", "content");
+export const CardBody: SlotComponent<HTMLDivElement, CardBodySlotProps> =
+  withContext<HTMLDivElement, CardBodySlotProps>("div", "body");
+
+export const CardFooter: SlotComponent<HTMLDivElement, CardFooterSlotProps> =
+  withContext<HTMLDivElement, CardFooterSlotProps>("div", "footer");
