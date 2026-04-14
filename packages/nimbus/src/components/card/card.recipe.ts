@@ -1,9 +1,9 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
-const slotPadding = {
-  px: "var(--card-padding)",
-  _first: { pt: "var(--card-padding)" },
-  _last: { pb: "var(--card-padding)" },
+const slotSpacing = {
+  px: "var(--card-spacing)",
+  _first: { pt: "var(--card-spacing)" },
+  _last: { pb: "var(--card-spacing)" },
 };
 
 /**
@@ -24,21 +24,21 @@ export const cardRecipe = defineSlotRecipe({
       borderRadius: "300",
       focusVisibleRing: "outside",
     },
-    header: slotPadding,
-    body: slotPadding,
-    footer: slotPadding,
+    header: slotSpacing,
+    body: slotSpacing,
+    footer: slotSpacing,
   },
 
   variants: {
     size: {
       sm: {
-        root: { gap: "100", "--card-padding": "spacing.200" },
+        root: { gap: "100", "--card-spacing": "spacing.200" },
       },
       md: {
-        root: { gap: "200", "--card-padding": "spacing.400" },
+        root: { gap: "200", "--card-spacing": "spacing.400" },
       },
       lg: {
-        root: { gap: "400", "--card-padding": "spacing.600" },
+        root: { gap: "400", "--card-spacing": "spacing.600" },
       },
     },
 
