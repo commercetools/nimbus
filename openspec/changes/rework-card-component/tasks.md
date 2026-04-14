@@ -162,4 +162,74 @@ Header, Body, Footer
 - `pnpm --filter @commercetools/nimbus build`
 - `pnpm test:dev` (storybook + unit tests against source)
 - `pnpm --filter @commercetools/nimbus typecheck`
+
+## - [ ] Task 13: Add @react-aria/utils dependency
+
+**Files:**
+
+- `pnpm-workspace.yaml` — add `"@react-aria/utils": 3.33.1` to `react:` catalog
+- `packages/nimbus/package.json` — add `"@react-aria/utils": "catalog:react"` to
+  dependencies
+
+Run `pnpm install`. Verify no version conflicts.
+
+**Verify:** `pnpm --filter @commercetools/nimbus typecheck`
+
+## - [ ] Task 14: Implement slot-based ARIA wiring in Card.Root
+
+**File:** `packages/nimbus/src/components/card/components/card.root.tsx`
+
+- Import `useSlotId` from `@react-aria/utils`
+- Import `Provider`, `HeadingContext`, `TextContext` from
+  `react-aria-components`
+- Call `useSlotId()` twice: once for titleId, once for descriptionId
+- Derive conditional ARIA props (`role="article"`, `aria-labelledby`,
+  `aria-describedby`) when at least one slot is detected
+- Wrap children in
+  `<Provider values={[[HeadingContext, ...], [TextContext, ...]]}>`
+- Pass ARIA props to CardRootSlot
+
+**Verify:** `pnpm --filter @commercetools/nimbus typecheck`
+
+## - [ ] Task 15: Add slot-based accessibility stories
+
+**File:** `packages/nimbus/src/components/card/card.stories.tsx`
+
+- Add `Heading` to imports from `@commercetools/nimbus`
+- Add story: SlotBasedAccessibility (both title + description slots)
+- Add story: WithoutSlots (regression test: no role on plain cards)
+- Add story: TitleSlotOnly (partial slot usage)
+- All stories must have play functions with ARIA attribute assertions
+
+**Verify:**
+`pnpm test:dev packages/nimbus/src/components/card/card.stories.tsx`
+
+## - [ ] Task 16: Update docs spec with slot examples
+
+**File:** `packages/nimbus/src/components/card/card.docs.spec.tsx`
+
+- Add `Heading`, `Text` to imports
+- Add "Slot-based accessibility" describe block
+- Test automatic `aria-labelledby` wiring with `Heading slot="title"`
+- Test `aria-describedby` wiring with `Text slot="description"`
+- Test no-role behavior without slots
+
+**Verify:**
+`pnpm test:dev packages/nimbus/src/components/card/card.docs.spec.tsx`
+
+## - [ ] Task 17: Update MDX documentation
+
+**Files:**
+
+- `card.a11y.mdx` — rewrite with slot-based ARIA guidance, behavior table, code
+  examples
+- `card.dev.mdx` — add "Accessible cards" section with live example, update
+  accessibility notes
+
+## - [ ] Task 18: Build and full test
+
+- `pnpm --filter @commercetools/nimbus build`
+- `pnpm test:dev` (storybook + unit tests against source)
+- `pnpm --filter @commercetools/nimbus typecheck`
+- Verify no regressions in Heading, Text, or Combobox
 - Verify no regressions in other components

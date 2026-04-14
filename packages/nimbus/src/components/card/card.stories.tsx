@@ -4,6 +4,7 @@ import {
   type CardProps,
   Stack,
   Text,
+  Heading,
   Button,
   Separator,
 } from "@commercetools/nimbus";
@@ -301,6 +302,116 @@ export const WithoutCompound: Story = {
       await expect(canvas.getByTestId("card-freeform")).toHaveTextContent(
         "I'm some other flexible content"
       );
+    });
+  },
+};
+
+/**
+ * Slot-based accessibility
+ * Demonstrates automatic ARIA wiring when Heading slot="title" and
+ * Text slot="description" are used inside the card
+ */
+export const SlotBasedAccessibility: Story = {
+  render: () => (
+    <Card.Root variant="outlined" size="md" data-testid="card-a11y">
+      <Card.Header>
+        <Heading slot="title" as="h3">
+          Project Overview
+        </Heading>
+      </Card.Header>
+      <Card.Body>
+        <Text slot="description">
+          This project tracks the quarterly goals for the design system team.
+        </Text>
+      </Card.Body>
+      <Card.Footer>
+        <Button variant="solid" colorPalette="primary" size="sm">
+          View Details
+        </Button>
+      </Card.Footer>
+    </Card.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const card = canvas.getByTestId("card-a11y");
+
+    await step("Card has role='article' when slots are used", async () => {
+      await expect(card).toHaveAttribute("role", "article");
+    });
+
+    await step("Card has aria-labelledby pointing to Heading", async () => {
+      const heading = canvas.getByText("Project Overview");
+      await expect(card.getAttribute("aria-labelledby")).toBe(heading.id);
+    });
+
+    await step("Card has aria-describedby pointing to Text", async () => {
+      const description = canvas.getByText(/quarterly goals/);
+      await expect(card.getAttribute("aria-describedby")).toBe(description.id);
+    });
+  },
+};
+
+/**
+ * Without slots
+ * Verifies that cards without slot props remain plain divs with no ARIA role
+ */
+export const WithoutSlots: Story = {
+  render: () => (
+    <Card.Root variant="outlined" size="md" data-testid="card-no-slots">
+      <Card.Header>
+        <Text fontWeight="bold">Regular Title</Text>
+      </Card.Header>
+      <Card.Body>
+        <Text>Content without slot props.</Text>
+      </Card.Body>
+    </Card.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const card = canvas.getByTestId("card-no-slots");
+
+    await step("Card has no role when slots are not used", async () => {
+      await expect(card).not.toHaveAttribute("role");
+    });
+
+    await step("Card has no aria-labelledby", async () => {
+      await expect(card).not.toHaveAttribute("aria-labelledby");
+    });
+
+    await step("Card has no aria-describedby", async () => {
+      await expect(card).not.toHaveAttribute("aria-describedby");
+    });
+  },
+};
+
+/**
+ * Title slot only
+ * Demonstrates using only the title slot without a description slot
+ */
+export const TitleSlotOnly: Story = {
+  render: () => (
+    <Card.Root variant="outlined" size="md" data-testid="card-title-only">
+      <Card.Header>
+        <Heading slot="title" as="h3">
+          Title Only Card
+        </Heading>
+      </Card.Header>
+      <Card.Body>
+        <Text>Body content without slot prop.</Text>
+      </Card.Body>
+    </Card.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const card = canvas.getByTestId("card-title-only");
+
+    await step("Card gets role='article' with title slot only", async () => {
+      await expect(card).toHaveAttribute("role", "article");
+    });
+
+    await step("Card has aria-labelledby but no aria-describedby", async () => {
+      await expect(card).toHaveAttribute("aria-labelledby");
+      await expect(card).not.toHaveAttribute("aria-describedby");
     });
   },
 };
