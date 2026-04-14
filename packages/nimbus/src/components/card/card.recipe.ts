@@ -1,11 +1,5 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
-const slotSpacing = {
-  px: "var(--card-spacing)",
-  _first: { pt: "var(--card-spacing)" },
-  _last: { pb: "var(--card-spacing)" },
-};
-
 /**
  * Recipe configuration for the Card component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -21,13 +15,24 @@ export const cardRecipe = defineSlotRecipe({
       display: "flex",
       flexDirection: "column",
       alignItems: "flex-start",
-      gap: "var(--card-spacing)",
       borderRadius: "300",
       focusVisibleRing: "outside",
     },
-    header: slotSpacing,
-    body: slotSpacing,
-    footer: slotSpacing,
+    header: {
+      p: "var(--card-spacing)",
+      width: "100%",
+    },
+    body: {
+      p: "var(--card-spacing)",
+      width: "100%",
+      ".nimbus-card__header + &": { pt: 0 },
+    },
+    footer: {
+      p: "var(--card-spacing)",
+      width: "100%",
+      ".nimbus-card__header + &": { pt: 0 },
+      ".nimbus-card__body + &": { pt: 0 },
+    },
   },
 
   variants: {
