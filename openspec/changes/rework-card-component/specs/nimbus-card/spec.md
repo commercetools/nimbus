@@ -266,6 +266,54 @@ The component SHALL support flexible content composition.
 - **AND** SHALL apply slot styling to compound parts
 - **AND** SHALL maintain proper spacing via gap
 
+### Requirement: Slot-Based Accessibility
+
+The component SHALL automatically apply ARIA attributes when React Aria slot
+children are present.
+
+#### Scenario: Full slot wiring
+
+- **WHEN** Card.Root contains `<Heading slot="title">` and
+  `<Text slot="description">`
+- **THEN** SHALL apply `role="article"` on root element
+- **AND** SHALL apply `aria-labelledby` pointing to the Heading's generated ID
+- **AND** SHALL apply `aria-describedby` pointing to the Text's generated ID
+
+#### Scenario: Title slot only
+
+- **WHEN** Card.Root contains `<Heading slot="title">` but no
+  `<Text slot="description">`
+- **THEN** SHALL apply `role="article"` on root element
+- **AND** SHALL apply `aria-labelledby` pointing to the Heading's generated ID
+- **AND** SHALL NOT apply `aria-describedby`
+
+#### Scenario: Description slot only
+
+- **WHEN** Card.Root contains `<Text slot="description">` but no
+  `<Heading slot="title">`
+- **THEN** SHALL apply `role="article"` on root element
+- **AND** SHALL NOT apply `aria-labelledby`
+- **AND** SHALL apply `aria-describedby` pointing to the Text's generated ID
+
+#### Scenario: No slots
+
+- **WHEN** Card.Root contains no slot-prop children
+- **THEN** SHALL NOT apply `role` attribute
+- **AND** SHALL NOT apply `aria-labelledby`
+- **AND** SHALL NOT apply `aria-describedby`
+
+#### Scenario: Manual aria-label
+
+- **WHEN** consumer passes `aria-label` directly to Card.Root
+- **THEN** SHALL forward `aria-label` to the root element
+- **AND** slot-based wiring SHALL still function if slots are also present
+
+#### Scenario: Slot matching
+
+- **WHEN** `<Heading>` without `slot="title"` is inside Card.Root
+- **THEN** SHALL NOT affect the Heading (slot matching is strict)
+- **AND** SHALL NOT apply `role="article"`
+
 ## REMOVED Requirements
 
 ### Requirement: Rendering Optimization

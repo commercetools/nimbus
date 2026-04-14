@@ -114,3 +114,21 @@ variant. This keeps proportional spacing without adding a new prop.
 Cards are block-level containers. `flex` with `flexDirection: column` gives
 natural full-width behavior while maintaining flex layout for internal spacing
 via `gap`.
+
+### Slot-based ARIA wiring via React Aria
+
+Card.Root uses React Aria's `useSlotId` + `Provider` pattern (identical to React
+Aria Components' DropZone) to automatically wire `aria-labelledby` and
+`aria-describedby`. When a consumer places `<Heading slot="title">` or
+`<Text slot="description">` inside a Card, the Card:
+
+1. Gets `role="article"` (only when slots are present)
+2. Gets `aria-labelledby` pointing to the Heading's auto-generated ID
+3. Gets `aria-describedby` pointing to the Text's auto-generated ID
+
+This follows the Adobe React Spectrum Card spec
+([adobe/react-spectrum#2080](https://github.com/adobe/react-spectrum/issues/2080)).
+The wiring is zero-config for consumers and non-breaking: Cards without
+slot-prop children remain plain divs with no role or ARIA attributes. The
+conditional `role="article"` avoids polluting screen reader landmark/article
+navigation for cards that are purely visual containers.

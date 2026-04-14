@@ -102,6 +102,28 @@ const App = () => (
 )
 ```
 
+### Accessible cards
+
+Use `<Heading slot="title">` and `<Text slot="description">` to automatically wire `aria-labelledby` and `aria-describedby` on the card. The card gains `role="article"` only when these slots are used.
+
+```jsx live-dev
+const App = () => (
+  <Card.Root variant="outlined" size="md">
+    <Card.Header>
+      <Heading slot="title" as="h3">Sprint Summary</Heading>
+    </Card.Header>
+    <Card.Body>
+      <Text slot="description">
+        The team completed 85% of planned story points this sprint.
+      </Text>
+    </Card.Body>
+    <Card.Footer>
+      <Button variant="solid" colorPalette="primary" size="sm">View Sprint</Button>
+    </Card.Footer>
+  </Card.Root>
+)
+```
+
 ### Interactive cards
 
 When making a card interactive, avoid placing `onClick` directly on the `Card.Root`. Instead, wrap the card in an anchor tag or use proper ARIA roles to ensure accessibility.
@@ -155,10 +177,12 @@ const App = () => (
 
 ## Accessibility
 
-The `Card` component handles most accessibility requirements internally, rendering semantic `div` elements by default. It acts as a generic container.
+The `Card` component supports automatic ARIA wiring via React Aria's slot system.
 
-- **Headings**: Ensure the content within `Card.Header` follows your page's heading hierarchy (e.g., use `Heading` component or `h3`, `h4` tags).
-- **Interactive Cards**: If a card is interactive (clickable), do not attach `onClick` directly to the card div if possible. Instead, wrap the card in a link or button, or ensure proper ARIA roles (`role="button"`) and keyboard handling (`tabIndex={0}`, Enter/Space key listeners) are implemented.
+- **Automatic ARIA wiring**: Place `<Heading slot="title">` inside the card for automatic `aria-labelledby`. Place `<Text slot="description">` for `aria-describedby`. The card gains `role="article"` only when these slots are used. Without slots, the card remains a plain `<div>`.
+- **Manual labeling**: Pass `aria-label` directly to `Card.Root` when slot-based labeling is not suitable.
+- **Headings**: Ensure the content within `Card.Header` follows your page's heading hierarchy (e.g., use `Heading` component with appropriate `as` prop).
+- **Interactive Cards**: If a card is interactive (clickable), do not attach `onClick` directly to the card div. Instead, wrap the card in a link or button, or ensure proper ARIA roles (`role="button"`) and keyboard handling (`tabIndex={0}`, Enter/Space key listeners) are implemented.
 
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
 
