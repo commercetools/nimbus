@@ -1,4 +1,4 @@
-import { CardRoot, CardHeader, CardContent } from "./components";
+import { CardRoot, CardHeader, CardBody, CardFooter } from "./components";
 
 /**
  * Card
@@ -13,7 +13,8 @@ import { CardRoot, CardHeader, CardContent } from "./components";
  * ```tsx
  * <Card.Root>
  *   <Card.Header>Card Title</Card.Header>
- *   <Card.Content>Card content goes here</Card.Content>
+ *   <Card.Body>Card content goes here</Card.Body>
+ *   <Card.Footer>Card actions</Card.Footer>
  * </Card.Root>
  * ```
  */
@@ -21,15 +22,15 @@ export const Card = {
   /**
    * # Card.Root
    *
-   * The root component that provides context and styling for the card.
-   * Must wrap all card parts (Header, Content) to coordinate their behavior.
-   * Accepts styling variants for padding, border, elevation, and background.
+   * The root component that provides styling for the card.
+   * Must wrap all card parts (Header, Body, Footer).
+   * Accepts `variant` and `size` props for visual treatment and spacing.
    *
    * @example
    * ```tsx
-   * <Card.Root cardPadding="md" borderStyle="outlined" elevation="elevated">
+   * <Card.Root variant="outlined" size="md">
    *   <Card.Header>Title</Card.Header>
-   *   <Card.Content>Content</Card.Content>
+   *   <Card.Body>Content</Card.Body>
    * </Card.Root>
    * ```
    */
@@ -38,40 +39,56 @@ export const Card = {
    * # Card.Header
    *
    * The header section of the card, typically containing the card title
-   * or primary heading. Automatically positioned above the card content
-   * in a consistent layout.
+   * or primary heading. Renders directly in DOM order.
    *
    * @example
    * ```tsx
    * <Card.Root>
    *   <Card.Header>Card Title</Card.Header>
-   *   <Card.Content>Content here</Card.Content>
+   *   <Card.Body>Content here</Card.Body>
    * </Card.Root>
    * ```
    */
   Header: CardHeader,
   /**
-   * # Card.Content
+   * # Card.Body
    *
    * The main content area of the card. Contains the primary information,
-   * body text, or interactive elements. Automatically positioned below
-   * the card header in a consistent layout.
+   * body text, or interactive elements.
    *
    * @example
    * ```tsx
    * <Card.Root>
    *   <Card.Header>Title</Card.Header>
-   *   <Card.Content>
+   *   <Card.Body>
    *     <Text>This is the main card content.</Text>
-   *   </Card.Content>
+   *   </Card.Body>
    * </Card.Root>
    * ```
    */
-  Content: CardContent,
+  Body: CardBody,
+  /**
+   * # Card.Footer
+   *
+   * The footer section of the card for actions and metadata.
+   *
+   * @example
+   * ```tsx
+   * <Card.Root>
+   *   <Card.Header>Title</Card.Header>
+   *   <Card.Body>Content</Card.Body>
+   *   <Card.Footer>
+   *     <Button>Action</Button>
+   *   </Card.Footer>
+   * </Card.Root>
+   * ```
+   */
+  Footer: CardFooter,
 };
 
 export {
   CardRoot as _CardRoot,
   CardHeader as _CardHeader,
-  CardContent as _CardContent,
+  CardBody as _CardBody,
+  CardFooter as _CardFooter,
 };
