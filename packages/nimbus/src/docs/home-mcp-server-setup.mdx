@@ -1,0 +1,194 @@
+---
+id: Home-MCP-Setup
+title: MCP Server Setup
+description: Install and configure the Nimbus MCP server for your AI assistant
+order: 6
+menu:
+  - Home
+  - Getting Started
+  - MCP Server Setup
+tags:
+  - mcp
+  - ai
+  - developer-tools
+  - setup
+icon: Build
+---
+
+# MCP Server Setup
+
+This guide walks through installing the Nimbus MCP server and configuring it for
+your AI assistant. Setup takes about two minutes.
+
+## Prerequisites
+
+- **Node.js** v18 or later (includes `npx`)
+- An AI assistant that supports MCP (see
+  [supported assistants](/home/getting-started/mcp-server-overview))
+
+## How It Works
+
+You don't run the MCP server yourself. Instead, you add a small JSON config to
+your AI assistant telling it _how_ to start the server. The assistant launches
+the server automatically when a session begins and communicates with it behind
+the scenes.
+
+All of the configuration snippets below follow this pattern.
+
+## Installation
+
+### Quick Start (npx — recommended)
+
+The simplest option. Your assistant runs `npx` to pull the latest published
+version on each session start — no local install needed.
+
+The `-y` flag in the snippets below tells npx to skip the install confirmation
+prompt so the server starts without user interaction.
+
+### Monorepo (contributors)
+
+If you're developing inside the Nimbus monorepo, the MCP server is already
+available as a workspace package. Build it once:
+
+```bash
+pnpm --filter @commercetools/nimbus-mcp build
+```
+
+Then use this server entry in place of the npx snippets below:
+
+```json
+{
+  "mcpServers": {
+    "nimbus": {
+      "command": "node",
+      "args": ["packages/nimbus-mcp/dist/index.js"]
+    }
+  }
+}
+```
+
+## Configuration by Assistant
+
+Each AI assistant reads MCP server configuration from a JSON file. Add the
+`nimbus` entry to the appropriate file for your tool.
+
+### Claude Code
+
+Add to your project's `.mcp.json` so every team member on the repo gets the
+server automatically, or to `~/.claude/mcp.json` to enable it across all your
+projects:
+
+```json
+{
+  "mcpServers": {
+    "nimbus": {
+      "command": "npx",
+      "args": ["-y", "@commercetools/nimbus-mcp"]
+    }
+  }
+}
+```
+
+Claude Code discovers the server automatically on the next session start.
+
+### Claude Desktop
+
+Open **Settings → Developer → Edit Config**, or edit the config file directly:
+
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "nimbus": {
+      "command": "npx",
+      "args": ["-y", "@commercetools/nimbus-mcp"]
+    }
+  }
+}
+```
+
+Restart Claude Desktop after saving.
+
+### VS Code (Copilot)
+
+Create or edit `.vscode/mcp.json` in your workspace root.
+
+> **Note:** VS Code uses `"servers"` as the top-level key, not `"mcpServers"`
+> like the other assistants.
+
+```json
+{
+  "servers": {
+    "nimbus": {
+      "command": "npx",
+      "args": ["-y", "@commercetools/nimbus-mcp"]
+    }
+  }
+}
+```
+
+MCP support is built into VS Code 1.99+. Open the Copilot chat panel — if the
+server is configured correctly, Copilot will discover it automatically.
+
+### Cursor
+
+Create or edit `.cursor/mcp.json` in your workspace root:
+
+```json
+{
+  "mcpServers": {
+    "nimbus": {
+      "command": "npx",
+      "args": ["-y", "@commercetools/nimbus-mcp"]
+    }
+  }
+}
+```
+
+Cursor discovers the server on the next composer session.
+
+### Windsurf
+
+Create or edit `.windsurf/mcp.json` in your workspace root:
+
+```json
+{
+  "mcpServers": {
+    "nimbus": {
+      "command": "npx",
+      "args": ["-y", "@commercetools/nimbus-mcp"]
+    }
+  }
+}
+```
+
+Windsurf picks up new servers automatically.
+
+## Verify the Setup
+
+After saving the configuration, open a new chat session in your assistant and
+ask:
+
+> _"List all available Nimbus components"_
+
+The assistant should call the `list_components` tool and return a list of
+component names and descriptions. If this works, the MCP server is connected
+and ready to use.
+
+You can also try more specific queries:
+
+- _"What props does the Button component accept?"_
+- _"What spacing tokens are available in Nimbus?"_
+- _"Find an icon for a shopping cart"_
+- _"How do I migrate PrimaryButton from UI Kit to Nimbus?"_
+
+### Troubleshooting
+
+| Symptom                            | Likely cause                                  | Fix                                                          |
+| ---------------------------------- | --------------------------------------------- | ------------------------------------------------------------ |
+| Assistant doesn't see Nimbus tools | Config file not found or malformed JSON        | Check file path and validate JSON syntax                     |
+| `npx` command not found            | Node.js not on the assistant's PATH            | Ensure `node` (v18+) and `npx` are available in your shell   |
+| Tools return "data not found"      | Monorepo users: package not built              | Run `pnpm build` from the repo root (npx users are unaffected) |
+| Stale component data               | Using an older cached npx version              | Run `npx @commercetools/nimbus-mcp@latest` to clear cache    |
