@@ -14,7 +14,7 @@ templates. No LLM classification involved — output is 100% deterministic.
 ### Step 1: Collect Figma data
 
 ```bash
-pnpm exec tsx .claude/skills/figma-code-connect/collect-figma-data.ts
+pnpm exec tsx .claude/skills/nimbus-code-connect/collect-figma-data.ts
 ```
 
 Requires `FIGMA_ACCESS_TOKEN` in `.env` or environment. Fetches component sets
@@ -24,10 +24,10 @@ from the Figma API and writes `code-connect-data.json`.
 
 ```bash
 # All components
-pnpm exec tsx .claude/skills/figma-code-connect/generate-code-connect.ts
+pnpm exec tsx .claude/skills/nimbus-code-connect/generate-code-connect.ts
 
 # Single component
-pnpm exec tsx .claude/skills/figma-code-connect/generate-code-connect.ts button
+pnpm exec tsx .claude/skills/nimbus-code-connect/generate-code-connect.ts button
 ```
 
 This script:

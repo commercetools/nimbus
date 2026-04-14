@@ -2,6 +2,7 @@ import figma from "@figma/code-connect/react";
 import { SearchInput } from "./search-input";
 
 // NOTE: Skipped BOOLEAN "Clear button" → no matching code prop found
+// NOTE: Skipped State "Placeholder" → no mapping in STATE_BOOLEAN_MAP
 figma.connect(
   SearchInput,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=6005-17483",

@@ -1,6 +1,7 @@
 import figma from "@figma/code-connect/react";
 import { SplitButton } from "./split-button";
 
+// NOTE: Skipped State "Outlined" → no mapping in STATE_BOOLEAN_MAP
 figma.connect(
   SplitButton,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=5748-38651",

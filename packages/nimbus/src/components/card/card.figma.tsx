@@ -2,7 +2,6 @@ import figma from "@figma/code-connect/react";
 import { Card } from "./card";
 
 // --- Card content → Card.Content ---
-// NOTE: Skipped INSTANCE_SWAP "Leading element" → no matching code prop "leadingElement"
 // NOTE: Skipped INSTANCE_SWAP "image" → no matching code prop "image"
 figma.connect(
   Card.Content,
@@ -14,9 +13,7 @@ figma.connect(
         "Title + text": <Card.Header>Card Title</Card.Header>,
         "Leading element + text": <Card.Header>Card Title</Card.Header>,
       }),
-      leadingElement: figma.enum("Content type", {
-        "Leading element + text": figma.instance("Leading element"),
-      }),
+      leadingElement: figma.instance("Leading element"),
       instance: figma.instance("→ Instance"),
     },
     example: (props) => (

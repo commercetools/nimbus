@@ -11,7 +11,7 @@ figma.connect(
       isRequired: figma.boolean("is required"),
       children: figma.children("*"),
       size: figma.enum("Size", { xs: "sm", md: "md" }),
-      direction: figma.enum("Label placement", { Top: "column", left: "row" }),
+      direction: figma.enum("Label placement", { Top: "column", Left: "row" }),
       infoBox: figma.boolean("Info", {
         true: <FormField.InfoBox>Additional info</FormField.InfoBox>,
         false: undefined,

@@ -368,7 +368,7 @@ export const OVERRIDES: Record<string, ComponentOverride> = {
             position: "attribute",
           },
           direction: {
-            code: `figma.enum("Label placement", { Top: "column", left: "row" })`,
+            code: `figma.enum("Label placement", { Top: "column", Left: "row" })`,
             position: "attribute",
           },
           infoBox: {
@@ -425,7 +425,7 @@ figma.connect(
             position: "child",
           },
           leadingElement: {
-            code: `figma.enum("Content type", { "Leading element + text": figma.instance("Leading element") })`,
+            code: `figma.instance("Leading element")`,
             position: "leading",
           },
           instance: {
@@ -433,7 +433,7 @@ figma.connect(
             position: "child",
           },
         },
-        skipFigmaProps: ["Content type", "→ Instance"],
+        skipFigmaProps: ["Content type", "→ Instance", "Leading element"],
         exampleJsx: `<>
       {props.leadingElement}
       {props.header}

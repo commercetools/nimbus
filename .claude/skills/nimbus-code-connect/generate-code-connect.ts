@@ -3,7 +3,7 @@
  * deterministically — no LLM involvement.
  *
  * Usage:
- *   pnpm exec tsx .claude/skills/figma-code-connect/generate-code-connect.ts [component-name]
+ *   pnpm exec tsx .claude/skills/nimbus-code-connect/generate-code-connect.ts [component-name]
  *
  * Reads code-connect-data.json (produced by collect-figma-data.ts) and writes
  * .figma.tsx files directly into component directories.
@@ -104,12 +104,12 @@ interface ConnectSpec {
 // ---------------------------------------------------------------------------
 
 /** Strip Figma internal property IDs: "Clear button#274:0" → "Clear button" */
-function cleanPropName(name: string): string {
+export function cleanPropName(name: string): string {
   return name.replace(/#\d+:\d+$/, "").trim();
 }
 
 /** Try to match a Figma enum value to a recipe variant value */
-function matchEnumValue(
+export function matchEnumValue(
   figmaValue: string,
   recipeValues: string[]
 ): string | null {
@@ -120,11 +120,15 @@ function matchEnumValue(
     if (rv.toLowerCase() === lower) return rv;
   }
 
-  // Strip trailing "d" (Outlined → outline)
-  if (lower.endsWith("d")) {
-    const stripped = lower.slice(0, -1);
+  // Strip trailing "d" only for known design-token cases (e.g. Outlined → outline)
+  const STRIP_TRAILING_D: Record<string, string> = {
+    outlined: "outline",
+    filled: "fill",
+  };
+  if (STRIP_TRAILING_D[lower]) {
+    const mapped = STRIP_TRAILING_D[lower];
     for (const rv of recipeValues) {
-      if (rv.toLowerCase() === stripped) return rv;
+      if (rv.toLowerCase() === mapped) return rv;
     }
   }
 
@@ -132,7 +136,7 @@ function matchEnumValue(
 }
 
 /** Convert a string to camelCase (strips → prefix and #ID suffix) */
-function toCamelCase(str: string): string {
+export function toCamelCase(str: string): string {
   return str
     .replace(/^→\s*/, "")
     .replace(/[#\d:]+$/, "")
@@ -147,7 +151,7 @@ function toCamelCase(str: string): string {
 }
 
 /** Format a key for use in an object literal */
-function formatKey(key: string): string {
+export function formatKey(key: string): string {
   return /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key) ? key : JSON.stringify(key);
 }
 
@@ -158,7 +162,10 @@ function formatValue(value: string | number | boolean): string {
 }
 
 /** Check if a Figma prop name matches a code prop name (case-insensitive, ignore spaces) */
-function matchesCodeProp(figmaName: string, codePropName: string): boolean {
+export function matchesCodeProp(
+  figmaName: string,
+  codePropName: string
+): boolean {
   const a = figmaName.toLowerCase().replace(/[\s\-_]+/g, "");
   const b = codePropName.toLowerCase();
   return a === b;
@@ -208,7 +215,7 @@ interface ClassifyResult {
 }
 
 /** Check if a prop name exists on the component (in typesProps, recipeVariants, or KNOWN_VALID_PROPS) */
-function isValidCodeProp(
+export function isValidCodeProp(
   codePropName: string,
   typesProps: string[],
   recipeVariants: Record<string, string[]>
@@ -220,7 +227,7 @@ function isValidCodeProp(
   );
 }
 
-function classifyProps(entry: CodeConnectEntry): ClassifyResult {
+export function classifyProps(entry: CodeConnectEntry): ClassifyResult {
   const props: ClassifiedProp[] = [];
   const fixmes: string[] = [];
   const { figmaProps, codeMetadata } = entry;
@@ -265,10 +272,11 @@ function classifyProps(entry: CodeConnectEntry): ClassifyResult {
     switch (prop.type) {
       case "INSTANCE_SWAP": {
         const codePropName = ALIAS_MAP[lowerClean] || toCamelCase(cleanName);
+        const words = lowerClean.split(/[\s\-_]+/);
         const position: PropPosition =
-          lowerClean.includes("left") || lowerClean.includes("leading")
+          words.includes("left") || words.includes("leading")
             ? "leading"
-            : lowerClean.includes("right") || lowerClean.includes("trailing")
+            : words.includes("right") || words.includes("trailing")
               ? "trailing"
               : "child";
         if (isValidCodeProp(codePropName, typesProps, recipeVariants)) {
@@ -371,6 +379,10 @@ function classifyProps(entry: CodeConnectEntry): ClassifyResult {
             } else if (codePropName) {
               fixmes.push(
                 `Skipped State "${option}" → "${codePropName}" not found on component`
+              );
+            } else {
+              fixmes.push(
+                `Skipped State "${option}" → no mapping in STATE_BOOLEAN_MAP`
               );
             }
           }
@@ -530,7 +542,7 @@ function generatePropsBlock(props: ClassifiedProp[]): string {
   return `    props: {\n${lines.join("\n")}\n    },`;
 }
 
-function generateExampleJsx(
+export function generateExampleJsx(
   componentRef: string,
   props: ClassifiedProp[],
   typesProps: string[],
@@ -775,14 +787,20 @@ function main() {
     // Write file
     writeFileSync(outputPath, content, "utf-8");
 
-    // Format with prettier
+    // Format with prettier — failure likely means generated code has syntax errors
     try {
       execSync(`pnpm exec prettier --write "${outputPath}"`, {
         stdio: "pipe",
         cwd: ROOT,
       });
-    } catch {
-      warnings.push(`  prettier failed for ${dirName}`);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error(
+        `  ⚠ prettier failed for ${dirName} — generated file may have syntax errors:\n    ${msg}`
+      );
+      warnings.push(
+        `  prettier FAILED for ${dirName} (possible syntax error in generated code)`
+      );
     }
 
     filesWritten++;
@@ -808,4 +826,8 @@ function main() {
   console.log(`\nRun 'git diff' to review changes.`);
 }
 
-main();
+// Only run when executed directly (not when imported by tests)
+const importUrl = fileURLToPath(import.meta.url);
+if (importUrl === process.argv[1] || importUrl === process.argv[1] + ".ts") {
+  main();
+}

@@ -1,9 +1,9 @@
 /**
  * Collects raw data for Figma Code Connect and writes it to
- * .claude/skills/figma-code-connect/code-connect-data.json.
+ * .claude/skills/nimbus-code-connect/code-connect-data.json.
  *
  * Usage:
- *   pnpm exec tsx .claude/skills/figma-code-connect/collect-figma-data.ts
+ *   pnpm exec tsx .claude/skills/nimbus-code-connect/collect-figma-data.ts
  *
  * Requires FIGMA_ACCESS_TOKEN in .env or environment.
  */
@@ -103,7 +103,7 @@ const FIGMA_TO_CODE: Record<string, FigmaMapping | null> = {
   Controls: { dir: "accordion" },
   "Table cell": { dir: "data-table" },
   Step: { dir: "steps" },
-  "Toast ": { dir: "toast" },
+  "Toast ": { dir: "toast" }, // Figma component has trailing space in name
   Toast: { dir: "toast" },
 
   // --- Sub-component overrides (auto-matching can't resolve) ---
@@ -823,6 +823,15 @@ async function main() {
           `${parentDir}.recipe.ts`
         );
         recipeVariants = parseRecipeVariants(parentRecipePath);
+        if (Object.keys(recipeVariants).length === 0) {
+          console.warn(
+            `  ⚠ ${comp.dirName}: parent recipe "${parentDir}" also has no variants`
+          );
+        }
+      } else {
+        console.warn(
+          `  ⚠ ${comp.dirName}: no recipe found and no parent recipe resolved — variant mappings will be incomplete`
+        );
       }
     }
 
