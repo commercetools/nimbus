@@ -1,5 +1,11 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
+const slotPadding = {
+  px: "var(--card-padding)",
+  _first: { pt: "var(--card-padding)" },
+  _last: { pb: "var(--card-padding)" },
+};
+
 /**
  * Recipe configuration for the Card component.
  * Defines the styling variants and base styles using Chakra UI's recipe system.
@@ -18,69 +24,21 @@ export const cardRecipe = defineSlotRecipe({
       borderRadius: "300",
       focusVisibleRing: "outside",
     },
+    header: slotPadding,
+    body: slotPadding,
+    footer: slotPadding,
   },
 
   variants: {
     size: {
       sm: {
-        root: {
-          gap: "100",
-        },
-        header: {
-          px: "200",
-          _first: { pt: "200" },
-          _last: { pb: "200" },
-        },
-        body: {
-          px: "200",
-          _first: { pt: "200" },
-          _last: { pb: "200" },
-        },
-        footer: {
-          px: "200",
-          _first: { pt: "200" },
-          _last: { pb: "200" },
-        },
+        root: { gap: "100", "--card-padding": "spacing.200" },
       },
       md: {
-        root: {
-          gap: "200",
-        },
-        header: {
-          px: "400",
-          _first: { pt: "400" },
-          _last: { pb: "400" },
-        },
-        body: {
-          px: "400",
-          _first: { pt: "400" },
-          _last: { pb: "400" },
-        },
-        footer: {
-          px: "400",
-          _first: { pt: "400" },
-          _last: { pb: "400" },
-        },
+        root: { gap: "200", "--card-padding": "spacing.400" },
       },
       lg: {
-        root: {
-          gap: "400",
-        },
-        header: {
-          px: "600",
-          _first: { pt: "600" },
-          _last: { pb: "600" },
-        },
-        body: {
-          px: "600",
-          _first: { pt: "600" },
-          _last: { pb: "600" },
-        },
-        footer: {
-          px: "600",
-          _first: { pt: "600" },
-          _last: { pb: "600" },
-        },
+        root: { gap: "400", "--card-padding": "spacing.600" },
       },
     },
 
