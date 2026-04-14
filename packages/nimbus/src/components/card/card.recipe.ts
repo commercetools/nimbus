@@ -33,7 +33,7 @@ export const cardRecipe = defineSlotRecipe({
   variants: {
     size: {
       sm: {
-        root: { "--card-spacing": "spacing.200" },
+        root: { "--card-spacing": "spacing.300" },
       },
       md: {
         root: { "--card-spacing": "spacing.400" },
