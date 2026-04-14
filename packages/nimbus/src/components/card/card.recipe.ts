@@ -25,11 +25,16 @@ export const cardRecipe = defineSlotRecipe({
     body: {
       p: "var(--card-spacing)",
       width: "100%",
+      // When directly preceded by header, collapse top padding (header's
+      // bottom padding provides the gap). When a non-slot element like
+      // Separator sits between them, both slots keep full padding for
+      // visually balanced spacing around the element.
       ".nimbus-card__header + &": { pt: 0 },
     },
     footer: {
       p: "var(--card-spacing)",
       width: "100%",
+      // Same adjacent-sibling collapsing as body — see comment above.
       ".nimbus-card__header + &": { pt: 0 },
       ".nimbus-card__body + &": { pt: 0 },
     },

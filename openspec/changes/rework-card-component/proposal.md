@@ -75,10 +75,14 @@ consumer value. Removing it aligns Card with the rest of the library.
 
 ### CSS-only padding distribution
 
-Move padding from Root to individual slots using `:first-child` / `:last-child`
-pseudo-selectors (Chakra `_first` / `_last` conditions). This ensures correct
-top/bottom padding regardless of which combination of Header/Body/Footer is
-present, with no runtime logic.
+Move padding from Root to individual slots. Each slot receives full padding
+(`p: --card-spacing`). When two card slots are directly adjacent, the later slot
+suppresses its own top padding via adjacent sibling class selectors (e.g.
+`.nimbus-card__header + .nimbus-card__body`). This ensures correct spacing
+regardless of which combination of Header/Body/Footer is present, with no
+runtime logic. When a non-slot element (e.g. Separator) sits between slots, both
+slots retain full padding, providing visually balanced spacing around the
+element.
 
 ### Standard `variant` and `size` props
 
@@ -88,14 +92,14 @@ separate props (`cardPadding`, `borderStyle`, `elevation`, `backgroundStyle`)
 are replaced by:
 
 **`size`** (sm | md | lg, default: md) — replaces `cardPadding`:
-- Controls padding on slots and gap between children
-- sm: padding 200, gap 100
-- md: padding 400, gap 200
-- lg: padding 600, gap 400
+- Sets `--card-spacing` CSS variable used for all slot padding
+- sm: spacing.300
+- md: spacing.400
+- lg: spacing.600
 
 **`variant`** (outlined | elevated | filled | plain, default: outlined) —
 replaces `borderStyle` + `elevation` + `backgroundStyle`:
-- `outlined`: border solid-25 + colorPalette.3, default bg, no shadow (current default)
+- `outlined`: border solid-25 + colorPalette.6, default bg, no shadow (current default)
 - `elevated`: no border, shadow level 1, default bg
 - `filled`: no border, no shadow, colorPalette.2 muted bg
 - `plain`: no border, no shadow, default bg (minimal)
@@ -104,10 +108,12 @@ This eliminates the 12-permutation combinatorial explosion and gives consumers
 the same vocabulary used by Button, Alert, Badge, Tabs, and every other Nimbus
 component.
 
-### Gap tied to size variant
+### Unified spacing via `--card-spacing`
 
-Instead of a hardcoded `gap="200"`, the Root flex gap scales with the `size`
-variant. This keeps proportional spacing without adding a new prop.
+Instead of a hardcoded `gap="200"`, a single `--card-spacing` CSS variable
+controls both slot padding and inter-slot spacing. Each size variant sets this
+variable, and adjacent sibling selectors collapse redundant padding between
+slots. This keeps proportional spacing without adding a new prop.
 
 ### display: flex (not inline-flex)
 

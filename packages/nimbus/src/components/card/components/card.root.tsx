@@ -36,21 +36,18 @@ export const CardRoot = ({ ref, children, ...props }: CardProps) => {
 
   return (
     <Provider
-      values={
+      values={[
         [
-          [
-            HeadingContext,
-            { slots: { [DEFAULT_SLOT]: {}, title: { id: titleId } } },
-          ],
-          [
-            TextContext,
-            {
-              slots: { [DEFAULT_SLOT]: {}, description: { id: descriptionId } },
-            },
-          ],
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ] as any
-      }
+          HeadingContext,
+          { slots: { [DEFAULT_SLOT]: {}, title: { id: titleId } } },
+        ],
+        [
+          TextContext,
+          {
+            slots: { [DEFAULT_SLOT]: {}, description: { id: descriptionId } },
+          },
+        ],
+      ]}
     >
       <CardRootSlot ref={ref} {...recipeProps} {...ariaProps} {...restProps}>
         {children}

@@ -41,8 +41,9 @@ The component SHALL provide root container with styling configuration.
 
 - **WHEN** Card.Root renders with child parts
 - **THEN** SHALL use CSS flexbox column layout
-- **AND** SHALL apply gap between children that scales with size variant
-- **AND** gap SHALL be 100 token for sm, 200 token for md, 400 token for lg
+- **AND** SHALL use a unified `--card-spacing` CSS variable for all spacing
+- **AND** spacing between adjacent slot children equals `--card-spacing` (via
+  slot padding, not flexbox gap)
 - **AND** SHALL NOT wrap children in an intermediate Stack component
 
 #### Scenario: Style prop forwarding
@@ -66,10 +67,10 @@ The component SHALL provide header section for titles and metadata.
 
 #### Scenario: Header padding
 
-- **WHEN** Card.Header is the first child of Card.Root
-- **THEN** SHALL receive top padding via CSS `:first-child` selector
-- **AND** SHALL always receive horizontal padding from the size variant
-- **AND** SHALL NOT receive bottom padding (gap handles spacing between parts)
+- **WHEN** Card.Header renders
+- **THEN** SHALL receive full padding (`p: --card-spacing`) on all sides
+- **AND** when followed directly by Body or Footer, the next slot suppresses its
+  own top padding via adjacent sibling selectors
 
 ### Requirement: Main Content Area
 
@@ -86,9 +87,9 @@ The component SHALL provide primary content container named Body.
 #### Scenario: Body padding
 
 - **WHEN** Card.Body renders
-- **THEN** SHALL receive horizontal padding from the size variant
-- **AND** SHALL receive top padding via `:first-child` if it is the first child
-- **AND** SHALL receive bottom padding via `:last-child` if it is the last child
+- **THEN** SHALL receive full padding (`p: --card-spacing`) on all sides
+- **AND** SHALL suppress top padding when directly preceded by Card.Header
+  (adjacent sibling selector)
 
 ### Requirement: Footer Section
 
@@ -104,10 +105,12 @@ The component SHALL provide footer section for actions and metadata.
 
 #### Scenario: Footer padding
 
-- **WHEN** Card.Footer is the last child of Card.Root
-- **THEN** SHALL receive bottom padding via CSS `:last-child` selector
-- **AND** SHALL always receive horizontal padding from the size variant
-- **AND** SHALL NOT receive top padding (gap handles spacing between parts)
+- **WHEN** Card.Footer renders
+- **THEN** SHALL receive full padding (`p: --card-spacing`) on all sides
+- **AND** SHALL suppress top padding when directly preceded by Card.Header or
+  Card.Body (adjacent sibling selectors)
+- **AND** when a non-slot element (e.g. Separator) sits between slots, both
+  slots retain full padding for visually balanced spacing around the element
 
 ### Requirement: Size Options
 
@@ -117,26 +120,23 @@ nimbus-core standards.
 #### Scenario: Small size
 
 - **WHEN** size="sm" is set on Root
-- **THEN** SHALL apply 200 token as horizontal padding on all slots
-- **AND** SHALL apply 200 token as top padding on first child
-- **AND** SHALL apply 200 token as bottom padding on last child
-- **AND** SHALL apply 100 token as gap between children
+- **THEN** SHALL set `--card-spacing` to `spacing.300` token
+- **AND** all slots SHALL use `--card-spacing` for padding on all sides
+- **AND** adjacent slots SHALL collapse top padding on the later slot
 
 #### Scenario: Medium size
 
 - **WHEN** size="md" is set or no value provided (default)
-- **THEN** SHALL apply 400 token as horizontal padding on all slots
-- **AND** SHALL apply 400 token as top padding on first child
-- **AND** SHALL apply 400 token as bottom padding on last child
-- **AND** SHALL apply 200 token as gap between children
+- **THEN** SHALL set `--card-spacing` to `spacing.400` token
+- **AND** all slots SHALL use `--card-spacing` for padding on all sides
+- **AND** adjacent slots SHALL collapse top padding on the later slot
 
 #### Scenario: Large size
 
 - **WHEN** size="lg" is set on Root
-- **THEN** SHALL apply 600 token as horizontal padding on all slots
-- **AND** SHALL apply 600 token as top padding on first child
-- **AND** SHALL apply 600 token as bottom padding on last child
-- **AND** SHALL apply 400 token as gap between children
+- **THEN** SHALL set `--card-spacing` to `spacing.600` token
+- **AND** all slots SHALL use `--card-spacing` for padding on all sides
+- **AND** adjacent slots SHALL collapse top padding on the later slot
 
 ### Requirement: Visual Variant Options
 
@@ -146,7 +146,7 @@ standards.
 #### Scenario: Outlined variant
 
 - **WHEN** variant="outlined" is set or no value provided (default)
-- **THEN** SHALL render with solid-25 border using colorPalette.3
+- **THEN** SHALL render with solid-25 border using colorPalette.6
 - **AND** SHALL use default background (bg token)
 - **AND** SHALL have no shadow
 

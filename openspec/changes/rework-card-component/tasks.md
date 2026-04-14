@@ -16,7 +16,7 @@
     - `_first`: top padding matching size
     - `_last`: bottom padding matching size
 - Add `variant` option (outlined, elevated, filled, plain):
-  - `outlined`: border solid-25 + colorPalette.3, bg, no shadow
+  - `outlined`: border solid-25 + colorPalette.6, bg, no shadow
   - `elevated`: no border, shadow 1, bg
   - `filled`: no border, no shadow, colorPalette.2 bg
   - `plain`: no border, no shadow, bg
@@ -163,7 +163,7 @@ Header, Body, Footer
 - `pnpm test:dev` (storybook + unit tests against source)
 - `pnpm --filter @commercetools/nimbus typecheck`
 
-## - [ ] Task 13: Add @react-aria/utils dependency
+## - [x] Task 13: Add @react-aria/utils dependency
 
 **Files:**
 
@@ -175,7 +175,7 @@ Run `pnpm install`. Verify no version conflicts.
 
 **Verify:** `pnpm --filter @commercetools/nimbus typecheck`
 
-## - [ ] Task 14: Implement slot-based ARIA wiring in Card.Root
+## - [x] Task 14: Implement slot-based ARIA wiring in Card.Root
 
 **File:** `packages/nimbus/src/components/card/components/card.root.tsx`
 
@@ -191,7 +191,7 @@ Run `pnpm install`. Verify no version conflicts.
 
 **Verify:** `pnpm --filter @commercetools/nimbus typecheck`
 
-## - [ ] Task 15: Add slot-based accessibility stories
+## - [x] Task 15: Add slot-based accessibility stories
 
 **File:** `packages/nimbus/src/components/card/card.stories.tsx`
 
@@ -204,7 +204,7 @@ Run `pnpm install`. Verify no version conflicts.
 **Verify:**
 `pnpm test:dev packages/nimbus/src/components/card/card.stories.tsx`
 
-## - [ ] Task 16: Update docs spec with slot examples
+## - [x] Task 16: Update docs spec with slot examples
 
 **File:** `packages/nimbus/src/components/card/card.docs.spec.tsx`
 
@@ -217,7 +217,7 @@ Run `pnpm install`. Verify no version conflicts.
 **Verify:**
 `pnpm test:dev packages/nimbus/src/components/card/card.docs.spec.tsx`
 
-## - [ ] Task 17: Update MDX documentation
+## - [x] Task 17: Update MDX documentation
 
 **Files:**
 
@@ -226,7 +226,7 @@ Run `pnpm install`. Verify no version conflicts.
 - `card.dev.mdx` — add "Accessible cards" section with live example, update
   accessibility notes
 
-## - [ ] Task 18: Build and full test
+## - [x] Task 18: Build and full test
 
 - `pnpm --filter @commercetools/nimbus build`
 - `pnpm test:dev` (storybook + unit tests against source)
