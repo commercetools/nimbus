@@ -47,7 +47,7 @@ export const cardRecipe = defineSlotRecipe({
       outlined: {
         root: {
           border: "solid-25",
-          borderColor: "colorPalette.3",
+          borderColor: "colorPalette.6",
           backgroundColor: "bg",
         },
       },

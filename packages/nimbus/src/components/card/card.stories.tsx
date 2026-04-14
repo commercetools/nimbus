@@ -141,150 +141,141 @@ export const Variants: Story = {
 };
 
 /**
- * Header + Body + Footer
- * Side-by-side comparison of all sizes without and with dividers
+ * Part combinations
+ * Side-by-side comparison of realistic part combinations across all sizes,
+ * without and with dividers: Body only, Header + Body, Header + Body + Footer
  */
-export const HeaderBodyFooter: Story = {
+export const PartCombinations: Story = {
   render: () => {
+    const combinations = [
+      { label: "Body only", hasHeader: false, hasFooter: false },
+      { label: "Header + Body", hasHeader: true, hasFooter: false },
+      { label: "Header + Body + Footer", hasHeader: true, hasFooter: true },
+    ];
+
     return (
-      <Stack direction="row" gap="800">
-        <Stack gap="400">
-          <Text fontWeight="bold">Without dividers</Text>
-          {sizes.map((size) => (
-            <Card.Root
-              key={size as string}
-              variant="outlined"
-              size={size}
-              data-testid={`card-full-${size as string}`}
-            >
-              <Card.Header>
-                <Text fontWeight="bold">Header ({size as string})</Text>
-              </Card.Header>
-              <Card.Body>
-                <Text>Body content for the {size as string} size.</Text>
-              </Card.Body>
-              <Card.Footer>
-                <Stack direction="row" gap="200">
-                  <Button variant="solid" colorPalette="primary" size="sm">
-                    Confirm
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    Cancel
-                  </Button>
-                </Stack>
-              </Card.Footer>
-            </Card.Root>
-          ))}
-        </Stack>
-        <Stack gap="400">
-          <Text fontWeight="bold">With dividers</Text>
-          {sizes.map((size) => (
-            <Card.Root
-              key={size as string}
-              variant="outlined"
-              size={size}
-              data-testid={`card-divided-${size as string}`}
-            >
-              <Card.Header>
-                <Text fontWeight="bold">Header ({size as string})</Text>
-              </Card.Header>
-              <Separator />
-              <Card.Body>
-                <Text>Body content for the {size as string} size.</Text>
-              </Card.Body>
-              <Separator />
-              <Card.Footer>
-                <Stack direction="row" gap="200">
-                  <Button variant="solid" colorPalette="primary" size="sm">
-                    Confirm
-                  </Button>
-                  <Button variant="ghost" size="sm">
-                    Cancel
-                  </Button>
-                </Stack>
-              </Card.Footer>
-            </Card.Root>
-          ))}
-        </Stack>
+      <Stack gap="800">
+        {combinations.map(({ label, hasHeader, hasFooter }) => (
+          <Stack key={label} gap="400">
+            <Text fontWeight="bold">{label}</Text>
+            <Stack direction="row" gap="800">
+              <Stack gap="400">
+                <Text color="neutral.11">Without dividers</Text>
+                {sizes.map((size) => (
+                  <Card.Root
+                    key={size as string}
+                    variant="outlined"
+                    size={size}
+                    data-testid={`card-${label}-${size as string}`}
+                  >
+                    {hasHeader && (
+                      <Card.Header>
+                        <Text fontWeight="bold">Header ({size as string})</Text>
+                      </Card.Header>
+                    )}
+                    <Card.Body>
+                      <Text>Body content for the {size as string} size.</Text>
+                    </Card.Body>
+                    {hasFooter && (
+                      <Card.Footer>
+                        <Stack direction="row" gap="200">
+                          <Button
+                            variant="solid"
+                            colorPalette="primary"
+                            size="sm"
+                          >
+                            Confirm
+                          </Button>
+                          <Button variant="ghost" size="sm">
+                            Cancel
+                          </Button>
+                        </Stack>
+                      </Card.Footer>
+                    )}
+                  </Card.Root>
+                ))}
+              </Stack>
+              <Stack gap="400">
+                <Text color="neutral.11">With dividers</Text>
+                {sizes.map((size) => (
+                  <Card.Root
+                    key={size as string}
+                    variant="outlined"
+                    size={size}
+                    data-testid={`card-${label}-divided-${size as string}`}
+                  >
+                    {hasHeader && (
+                      <>
+                        <Card.Header>
+                          <Text fontWeight="bold">
+                            Header ({size as string})
+                          </Text>
+                        </Card.Header>
+                        <Separator />
+                      </>
+                    )}
+                    <Card.Body>
+                      <Text>Body content for the {size as string} size.</Text>
+                    </Card.Body>
+                    {hasFooter && (
+                      <>
+                        <Separator />
+                        <Card.Footer>
+                          <Stack direction="row" gap="200">
+                            <Button
+                              variant="solid"
+                              colorPalette="primary"
+                              size="sm"
+                            >
+                              Confirm
+                            </Button>
+                            <Button variant="ghost" size="sm">
+                              Cancel
+                            </Button>
+                          </Stack>
+                        </Card.Footer>
+                      </>
+                    )}
+                  </Card.Root>
+                ))}
+              </Stack>
+            </Stack>
+          </Stack>
+        ))}
       </Stack>
     );
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("All sizes render without dividers", async () => {
+    await step("All combinations render across sizes", async () => {
       for (const size of sizes) {
         await expect(
-          canvas.getByTestId(`card-full-${size as string}`)
+          canvas.getByTestId(`card-Body only-${size as string}`)
+        ).toBeInTheDocument();
+        await expect(
+          canvas.getByTestId(`card-Header + Body-${size as string}`)
+        ).toBeInTheDocument();
+        await expect(
+          canvas.getByTestId(`card-Header + Body + Footer-${size as string}`)
         ).toBeInTheDocument();
       }
     });
 
-    await step("All sizes render with dividers", async () => {
+    await step("Divided variants render", async () => {
       for (const size of sizes) {
         await expect(
-          canvas.getByTestId(`card-divided-${size as string}`)
+          canvas.getByTestId(`card-Body only-divided-${size as string}`)
+        ).toBeInTheDocument();
+        await expect(
+          canvas.getByTestId(`card-Header + Body-divided-${size as string}`)
+        ).toBeInTheDocument();
+        await expect(
+          canvas.getByTestId(
+            `card-Header + Body + Footer-divided-${size as string}`
+          )
         ).toBeInTheDocument();
       }
-    });
-
-    await step("Dividers are present", async () => {
-      const separators = canvas.getAllByRole("separator");
-      await expect(separators).toHaveLength(6);
-    });
-  },
-};
-
-/**
- * Body only
- * Demonstrates a card with only the Body part — CSS handles padding correctly
- */
-export const BodyOnly: Story = {
-  render: () => {
-    return (
-      <Card.Root variant="outlined" size="md" data-testid="card-body-only">
-        <Card.Body>
-          <Text>This card only has a body section.</Text>
-        </Card.Body>
-      </Card.Root>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Renders body content", async () => {
-      await expect(
-        canvas.getByText("This card only has a body section.")
-      ).toBeInTheDocument();
-    });
-  },
-};
-
-/**
- * Header + Body (no Footer)
- * Demonstrates the two-part pattern without footer
- */
-export const HeaderAndBody: Story = {
-  render: () => {
-    return (
-      <Card.Root variant="outlined" size="md" data-testid="card-header-body">
-        <Card.Header>
-          <Text fontWeight="bold">Card Title</Text>
-        </Card.Header>
-        <Card.Body>
-          <Text>Content without a footer.</Text>
-        </Card.Body>
-      </Card.Root>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Renders header and body", async () => {
-      await expect(canvas.getByText("Card Title")).toBeInTheDocument();
-      await expect(
-        canvas.getByText("Content without a footer.")
-      ).toBeInTheDocument();
     });
   },
 };
