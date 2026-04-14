@@ -5,6 +5,7 @@ import {
   Stack,
   Text,
   Button,
+  Separator,
 } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
 
@@ -232,6 +233,54 @@ export const HeaderAndBody: Story = {
       await expect(
         canvas.getByText("Content without a footer.")
       ).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * With dividers
+ * Demonstrates using Separator to visually divide header, body, and footer
+ */
+export const WithDividers: Story = {
+  render: () => {
+    return (
+      <Card.Root variant="outlined" size="md" data-testid="card-dividers">
+        <Card.Header>
+          <Text fontWeight="bold">Card Title</Text>
+        </Card.Header>
+        <Separator />
+        <Card.Body>
+          <Text>
+            Main content separated from header and footer by dividers.
+          </Text>
+        </Card.Body>
+        <Separator />
+        <Card.Footer>
+          <Stack direction="row" gap="200">
+            <Button variant="solid" colorPalette="primary" size="sm">
+              Save
+            </Button>
+            <Button variant="ghost" size="sm">
+              Cancel
+            </Button>
+          </Stack>
+        </Card.Footer>
+      </Card.Root>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders all sections with separators", async () => {
+      await expect(canvas.getByText("Card Title")).toBeInTheDocument();
+      await expect(
+        canvas.getByText(
+          "Main content separated from header and footer by dividers."
+        )
+      ).toBeInTheDocument();
+      await expect(canvas.getByText("Save")).toBeInTheDocument();
+      const separators = canvas.getAllByRole("separator");
+      await expect(separators).toHaveLength(2);
     });
   },
 };
