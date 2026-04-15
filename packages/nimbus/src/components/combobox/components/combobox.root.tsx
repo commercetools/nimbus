@@ -364,6 +364,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
                 isDisabled,
                 isInvalid,
                 isRequired,
+                isReadOnly,
                 defaultChildren: null,
               } as T & {
                 defaultChildren: null;
@@ -371,6 +372,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
                 isDisabled: boolean;
                 isInvalid: boolean;
                 isRequired: boolean;
+                isReadOnly: boolean;
               })
             : children}
         </ListBoxContext.Provider>
@@ -380,6 +382,7 @@ export function ComboBoxRoot<T extends object>(props: ComboBoxRootProps<T>) {
       children,
       isDisabled,
       isInvalid,
+      isReadOnly,
       isRequired,
       itemsWithMetadata,
       rootContextValue,
