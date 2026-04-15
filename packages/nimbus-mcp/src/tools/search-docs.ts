@@ -72,6 +72,12 @@ function getLoweredFields(
         tags,
         content,
         combined: title + " " + description + " " + tags + " " + content,
+        titleNoSpaces: title.replace(/\s+/g, ""),
+        descriptionNoSpaces: description.replace(/\s+/g, ""),
+        tagsNoSpaces: tags.replace(/\s+/g, ""),
+        titleWords: title.split(/\s+/).filter(Boolean),
+        descriptionWords: description.split(/\s+/).filter(Boolean),
+        tagsWords: tags.split(/\s+/).filter(Boolean),
       });
     }
   }
@@ -206,6 +212,14 @@ function findCandidates(
   return { matched, expanded };
 }
 
+/**
+ * Cache for per-route searchable views, keyed by slug.
+ *
+ * Lifecycle: grows without eviction. This is safe because the MCP server runs
+ * as a short-lived stdio process — one per editor session — so memory is
+ * reclaimed when the process exits. If the server is ever adapted for SSE or
+ * other long-lived transports, an LRU eviction policy should be added here.
+ */
 const routeViewsCache = new Map<string, CachedRouteViews>();
 
 /**
@@ -247,9 +261,7 @@ async function getRouteViews(route: string): Promise<CachedRouteViews> {
       }
     }
   } else if (routeData.mdx) {
-    const { stripped, lower } = getCachedViewContent(
-      routeData as unknown as { mdx: string }
-    );
+    const { stripped, lower } = getCachedViewContent({ mdx: routeData.mdx });
     rawViews.push({
       key: "overview",
       content: stripped,

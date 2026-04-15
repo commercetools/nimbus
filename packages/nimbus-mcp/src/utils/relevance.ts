@@ -245,32 +245,61 @@ export function fuzzyScorePreLowered(
     content: WEIGHTS.content / 2,
   } as const;
 
+  // Pre-compute noSpaces and words arrays once, falling back to runtime
+  // computation if the pre-split fields aren't available.
+  const fieldData = [
+    {
+      text: fields.title,
+      noSpaces: fields.titleNoSpaces ?? fields.title.replace(/\s+/g, ""),
+      words: fields.titleWords ?? fields.title.split(/\s+/).filter(Boolean),
+      weight: FUZZY_WEIGHTS.title,
+    },
+    {
+      text: fields.description,
+      noSpaces:
+        fields.descriptionNoSpaces ?? fields.description.replace(/\s+/g, ""),
+      words:
+        fields.descriptionWords ??
+        fields.description.split(/\s+/).filter(Boolean),
+      weight: FUZZY_WEIGHTS.description,
+    },
+    {
+      text: fields.tags,
+      noSpaces: fields.tagsNoSpaces ?? fields.tags.replace(/\s+/g, ""),
+      words: fields.tagsWords ?? fields.tags.split(/\s+/).filter(Boolean),
+      weight: FUZZY_WEIGHTS.tags,
+    },
+  ];
+
   for (const token of tokens) {
     if (token.length < 3) continue;
     const maxDist = token.length <= 4 ? 1 : token.length <= 7 ? 2 : 3;
 
-    // Helper: check if token fuzzy-matches any word in text, OR if token is
-    // a substring of the concatenated text (catches "datepicker" in "date picker"
-    // and "btn" in "button").
-    const fuzzyMatchField = (text: string): boolean => {
+    for (const { text, noSpaces, words, weight } of fieldData) {
       // Substring match (fast) — handles compound words like "datepicker" in "date picker"
-      if (text.includes(token)) return true;
-      // Also try with spaces removed for compound matching
-      if (text.replace(/\s+/g, "").includes(token)) return true;
-      // Then word-level checks: Levenshtein + prefix matching
-      for (const word of text.split(/\s+/)) {
-        if (word.length === 0) continue;
-        // Levenshtein for typo tolerance
-        if (boundedLevenshtein(token, word, maxDist) >= 0) return true;
-        // Prefix match: "checkmark" matches "check*" words and vice versa
-        if (token.startsWith(word) || word.startsWith(token)) return true;
+      if (text.includes(token)) {
+        score += weight;
+        continue;
       }
-      return false;
-    };
-
-    if (fuzzyMatchField(fields.title)) score += FUZZY_WEIGHTS.title;
-    if (fuzzyMatchField(fields.description)) score += FUZZY_WEIGHTS.description;
-    if (fuzzyMatchField(fields.tags)) score += FUZZY_WEIGHTS.tags;
+      // Also try with spaces removed for compound matching
+      if (noSpaces.includes(token)) {
+        score += weight;
+        continue;
+      }
+      // Word-level checks: Levenshtein + prefix matching
+      let matched = false;
+      for (const word of words) {
+        if (boundedLevenshtein(token, word, maxDist) >= 0) {
+          matched = true;
+          break;
+        }
+        if (token.startsWith(word) || word.startsWith(token)) {
+          matched = true;
+          break;
+        }
+      }
+      if (matched) score += weight;
+    }
     // Skip content for fuzzy — too many words, too slow, too many false positives
   }
   return score;

@@ -26,6 +26,7 @@ export async function buildSearchIndex(outDir?: string) {
   }>;
 
   for (const entry of index) {
+    if (entry._lower) continue;
     const title = entry.title.toLowerCase();
     const description = entry.description.toLowerCase();
     const tags = entry.tags.join(" ").toLowerCase();
@@ -36,6 +37,12 @@ export async function buildSearchIndex(outDir?: string) {
       tags,
       content,
       combined: title + " " + description + " " + tags + " " + content,
+      titleNoSpaces: title.replace(/\s+/g, ""),
+      descriptionNoSpaces: description.replace(/\s+/g, ""),
+      tagsNoSpaces: tags.replace(/\s+/g, ""),
+      titleWords: title.split(/\s+/).filter(Boolean),
+      descriptionWords: description.split(/\s+/).filter(Boolean),
+      tagsWords: tags.split(/\s+/).filter(Boolean),
     };
   }
 
