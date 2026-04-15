@@ -244,9 +244,6 @@ For each dependency group (or the specified target group):
    3. **React packages frozen** to allow consumer control
    4. **All changes backward compatible** within semver constraints
 
-   ---
-
-   🤖 Generated with [Claude Code](https://claude.ai/claude-code)
    EOF
    )"
    ```
