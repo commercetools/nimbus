@@ -23,41 +23,17 @@ export const dataTableSlotRecipe = defineSlotRecipe({
   className: "nimbus-data-table",
   base: {
     root: {
-      width: "100%",
-      display: "block",
-      overflow: "auto",
-      contain: "layout style",
       // CSS custom properties for pinned row shadows
       "--pinned-shadow-left": "inset 2px 0 0 {colors.neutral.7}",
       "--pinned-shadow-right": "inset -2px 0 0 {colors.neutral.7}",
       "--pinned-shadow-top": "inset 0 2px 0 {colors.neutral.7}",
       "--pinned-shadow-bottom": "inset 0 -2px 0 {colors.neutral.7}",
-      "& .react-aria-Cell": {
-        paddingTop: "400",
-        paddingBottom: "400",
-        paddingLeft: "600",
-        paddingRight: "600",
-        color: "neutral.11",
-        focusRing: "outside",
-        hyphens: "auto",
-        "& [data-slot='pin-row-cell']": {
-          alignItems: "center",
-          justifyContent: "center",
-          position: "sticky",
-          right: 0,
-          zIndex: 10,
-          backgroundColor: "bg",
-        },
-      },
+
+      width: "100%",
+      display: "block",
+      overflow: "auto",
+      contain: "layout style",
       "& .data-table-row": {
-        borderBottom: "1px solid {colors.neutral.3}",
-        focusRing: "outside",
-        "& td, div": {
-          userSelect: "text",
-        },
-        "&:last-child": {
-          borderBottom: "none",
-        },
         "& [data-slot='pin-row-cell']": {
           position: "sticky",
           right: 0,
@@ -193,6 +169,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     },
     table: {
       tableLayout: "fixed",
+      borderCollapse: "collapse",
+      borderSpacing: 0,
       boxSizing: "border-box",
       boxShadow: "inset 0 0 0 1px {colors.neutral.3}",
       borderRadius: "0 0 {sizes.200} {sizes.200}",
@@ -244,35 +222,31 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           display: "none",
         },
       },
+      // Show divider when the column resizer is keyboard-focused
+      "& th:has([data-focused='true']) .data-table-column-divider": {
+        display: "inherit",
+      },
     },
     column: {
       textAlign: "right",
       position: "relative",
       lineHeight: "450",
-      h: "100%",
-      "&:focus": {
-        outlineWidth: "var(--focus-ring-width)",
-        outlineColor: "var(--focus-ring-color)",
-        outlineStyle: "var(--focus-ring-style)",
-        outlineOffset: "-2px",
-        borderRadius: "2px",
-      },
+      // td height:auto is not "definite" per CSS spec, so child height:100%
+      // collapses to content height. Setting an explicit height makes it
+      // definite; table layout still stretches the cell to match the row,
+      // allowing children (height:100%) to fill the full cell.
+      h: "1px",
+      p: 0,
+      focusVisibleRing: "inside",
+
       "& > .nimbus-data-table__column-container": {
-        paddingTop: "100",
-        paddingBottom: "100",
-        paddingLeft: "600",
-        paddingRight: "600",
+        py: "100",
+        px: "600",
         display: "flex",
         alignItems: "center",
         h: "100%",
         // https://react-spectrum.adobe.com/react-aria/Table.html#width-values
-        "&:focus": {
-          outlineWidth: "var(--focus-ring-width)",
-          outlineColor: "var(--focus-ring-color)",
-          outlineStyle: "var(--focus-ring-style)",
-          outlineOffset: "-2px",
-          borderRadius: "2px",
-        },
+        focusVisibleRing: "inside",
         "& > span:not(:first-of-type)": {
           flexShrink: 0,
         },
@@ -300,10 +274,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
       "&.pin-rows-column-header": {
         cursor: "default",
-        paddingTop: "100",
-        paddingBottom: "100",
-        paddingLeft: "600",
-        paddingRight: "600",
+        py: "100",
+        px: "600",
         position: "sticky",
         right: 0,
         zIndex: 11,
@@ -322,16 +294,14 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     row: {
       position: "relative",
       borderBottom: "1px solid {colors.neutral.3}",
-      focusRing: "outside",
+      focusVisibleRing: "inside",
+
       "&:hover:not([data-nested-row-expanded])": {
         backgroundColor: "{colors.primary.3}",
         transition: "background-color 200ms ease",
         transform: "translate3d(0, 0, 0)",
       },
-      "& td, div": {
-        userSelect: "none",
-      },
-      "&:last-child": {
+      _last: {
         borderBottom: "none",
       },
       "&[data-clickable='true']": {
@@ -355,9 +325,15 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       paddingLeft: "600",
       paddingRight: "600",
       color: "neutral.11",
-      focusRing: "outside",
+      focusVisibleRing: "inside",
       hyphens: "auto",
-      height: "100%",
+      // td height:auto is not "definite" per CSS spec, so child height:100%
+      // collapses to content height. Setting an explicit height makes it
+      // definite; table layout still stretches the cell to match the row,
+      // allowing the expand button (height:100%) to fill the full cell.
+      height: "1px",
+
+      // Expand button consuming 100% of available space in the cell
       "&[data-slot='expand']": {
         padding: 0,
       },
@@ -391,15 +367,21 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
     },
     columnResizer: {
-      width: "150",
-      height: "100%",
       position: "absolute",
-      right: 0,
       top: 0,
+      bottom: 0,
+      // We have no odd tokens apart from 1px, so we use calc to
+      // create the odd width of 7px, the 1px separator is centered
+      // in the middle, the right shift of 3px visually centers the
+      // separator within the interactive area
+      width: "calc({sizes.150} + {sizes.25})",
+      right: "calc(-1 * ({sizes.50} + {sizes.25}))",
+      // ##########################################################
+
       cursor: "col-resize",
       transition: "background 100ms",
       background: "transparent",
-      outline: "none",
+
       zIndex: 2,
       "&:hover": {
         background: "var(--focus-ring-color)",

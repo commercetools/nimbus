@@ -115,7 +115,6 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     allowsSorting?: boolean;
     selectionMode?: "none" | "single" | "multiple";
     disallowEmptySelection?: boolean;
-    isRowClickable?: boolean;
     maxHeight?: string | number;
     isTruncated?: boolean;
     density?: "default" | "condensed";
@@ -169,7 +168,6 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   visibleColumns?: string[];
   renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
   isResizable?: boolean;
-  isRowClickable?: boolean;
   allowsSorting?: boolean;
   search?: string;
   maxHeight?: string | number;

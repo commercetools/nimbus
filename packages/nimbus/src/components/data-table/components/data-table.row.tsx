@@ -15,6 +15,7 @@ import type {
   DataTableRowProps,
 } from "../data-table.types";
 import { Box, Checkbox, IconButton, Tooltip } from "@/components";
+import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
 import {
   KeyboardArrowDown,
   KeyboardArrowRight,
@@ -316,6 +317,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
           columns={activeColumns}
           ref={rowRef}
           id={row.id}
+          data-clickable={!!onRowClick && !isDisabled}
           className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
           {...restProps}
           dependencies={[isExpanded, search, isTruncated]}
@@ -358,6 +360,8 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                   w="100%"
                   h="100%"
                   unstyled
+                  cursor="pointer"
+                  focusVisibleRing="inside"
                   borderRadius="0"
                   aria-label={isExpanded ? "Collapse" : "Expand"}
                   onPress={() => toggleExpand(row.id)}
@@ -378,12 +382,11 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                     className={isTruncated ? "truncated-cell" : ""}
                     data-truncated={isTruncated ? "true" : "false"}
                     display="inline-block"
-                    h="100%"
                     minW="0"
                     maxW="100%"
                     position="relative"
                     overflow="hidden"
-                    cursor={isDisabled ? "not-allowed" : "text"}
+                    cursor={isDisabled ? "not-allowed" : undefined}
                   >
                     {col.render
                       ? col.render({
@@ -410,16 +413,17 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
               }
             >
               <Tooltip.Root>
-                <IconButton
+                <IconToggleButton
                   key="pin-btn"
                   size="2xs"
                   variant="ghost"
                   aria-label={isPinned ? "Unpin row" : "Pin row"}
                   colorPalette="primary"
-                  onPress={() => togglePin(row.id)}
+                  isSelected={isPinned}
+                  onChange={() => togglePin(row.id)}
                 >
                   <PushPin />
-                </IconButton>
+                </IconToggleButton>
                 <Tooltip.Content placement="top">
                   {isPinned ? "Unpin row" : "Pin row"}
                 </Tooltip.Content>
