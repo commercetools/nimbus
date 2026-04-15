@@ -113,6 +113,26 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
         },
       },
       always: {
+        viewport: {
+          // Create gutter so the permanently visible scrollbar
+          // doesn't overlay content.
+          // - Vertical scrollbar (Y overflow): use width calc — works
+          //   because width always resolves against a definite parent.
+          // - Horizontal scrollbar (X overflow): use flex + margin —
+          //   height calc doesn't work because the root's height
+          //   comes from maxHeight, and CSS % heights require an
+          //   explicit parent height property.
+          flex: "1",
+          minHeight: "0",
+          "&[data-overflow-y]": {
+            width:
+              "calc(100% - var(--scroll-area-scrollbar-size) - var(--scroll-area-scrollbar-margin) * 2)",
+          },
+          "&[data-overflow-x]": {
+            marginBottom:
+              "calc(var(--scroll-area-scrollbar-size) + var(--scroll-area-scrollbar-margin) * 2)",
+          },
+        },
         scrollbar: {
           opacity: "1",
         },

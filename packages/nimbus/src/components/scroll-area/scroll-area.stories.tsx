@@ -44,7 +44,7 @@ export const Default: Story = {
       maxH="200px"
       w="400px"
       variant="always"
-      ids={{ viewport: "test-viewport" }}
+      ids={{ viewport: "test-viewport-default" }}
     >
       <OverflowingContent />
     </ScrollArea>
@@ -54,19 +54,23 @@ export const Default: Story = {
 
     await step("Viewport is keyboard-focusable when overflowing", async () => {
       await waitFor(() => {
-        const viewport = doc.getElementById("test-viewport") as HTMLElement;
+        const viewport = doc.getElementById(
+          "test-viewport-default"
+        ) as HTMLElement;
         expect(viewport).toBeTruthy();
         expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight);
       });
     });
 
     await step("Viewport has tabIndex when overflowing", async () => {
-      const viewport = doc.getElementById("test-viewport") as HTMLElement;
+      const viewport = doc.getElementById(
+        "test-viewport-default"
+      ) as HTMLElement;
       expect(viewport).toHaveAttribute("tabindex", "0");
     });
 
     await step("Detects vertical overflow via data attribute", async () => {
-      const viewport = doc.getElementById("test-viewport");
+      const viewport = doc.getElementById("test-viewport-default");
       expect(viewport).toHaveAttribute("data-overflow-y");
     });
 
@@ -92,7 +96,7 @@ export const NonOverflowing: Story = {
       maxH="200px"
       w="400px"
       variant="always"
-      ids={{ viewport: "test-viewport" }}
+      ids={{ viewport: "test-viewport-no-overflow" }}
     >
       <ShortContent />
     </ScrollArea>
@@ -102,7 +106,9 @@ export const NonOverflowing: Story = {
 
     await step("Component renders with short content", async () => {
       await waitFor(() => {
-        const viewport = doc.getElementById("test-viewport") as HTMLElement;
+        const viewport = doc.getElementById(
+          "test-viewport-no-overflow"
+        ) as HTMLElement;
         expect(viewport).toBeTruthy();
       });
     });
@@ -111,7 +117,9 @@ export const NonOverflowing: Story = {
       "Viewport does not have tabIndex when not overflowing",
       async () => {
         await waitFor(() => {
-          const viewport = doc.getElementById("test-viewport") as HTMLElement;
+          const viewport = doc.getElementById(
+            "test-viewport-no-overflow"
+          ) as HTMLElement;
           expect(viewport).not.toHaveAttribute("tabindex");
         });
       }
@@ -119,7 +127,7 @@ export const NonOverflowing: Story = {
 
     await step("All compound parts are present", async () => {
       expect(canvasElement.querySelector('[data-part="root"]')).toBeTruthy();
-      expect(doc.getElementById("test-viewport")).toBeTruthy();
+      expect(doc.getElementById("test-viewport-no-overflow")).toBeTruthy();
       expect(canvasElement.querySelector('[data-part="content"]')).toBeTruthy();
       expect(
         canvasElement.querySelector('[data-part="scrollbar"]')
@@ -140,7 +148,7 @@ export const KeyboardFocusRing: Story = {
         w="400px"
         mt="400"
         variant="always"
-        ids={{ viewport: "test-viewport" }}
+        ids={{ viewport: "test-viewport-kbd-focus" }}
       >
         <OverflowingContent />
       </ScrollArea>
@@ -151,11 +159,13 @@ export const KeyboardFocusRing: Story = {
 
     await step("Viewport receives keyboard focus via Tab", async () => {
       await waitFor(() => {
-        const viewport = doc.getElementById("test-viewport") as HTMLElement;
+        const viewport = doc.getElementById(
+          "test-viewport-kbd-focus"
+        ) as HTMLElement;
         expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight);
       });
       await userEvent.tab();
-      const viewport = doc.getElementById("test-viewport");
+      const viewport = doc.getElementById("test-viewport-kbd-focus");
       await waitFor(() => {
         expect(viewport).toHaveFocus();
       });
@@ -179,7 +189,7 @@ export const VerticalOnly: Story = {
       maxH="200px"
       w="400px"
       variant="always"
-      ids={{ viewport: "test-viewport" }}
+      ids={{ viewport: "test-viewport-vert-only" }}
     >
       <OverflowingContent />
     </ScrollArea>
@@ -189,7 +199,7 @@ export const VerticalOnly: Story = {
 
     await step("Detects vertical overflow", async () => {
       await waitFor(() => {
-        const viewport = doc.getElementById("test-viewport");
+        const viewport = doc.getElementById("test-viewport-vert-only");
         expect(viewport).toHaveAttribute("data-overflow-y");
       });
     });
@@ -213,7 +223,7 @@ export const HorizontalOnly: Story = {
       maxW="400px"
       orientation="horizontal"
       variant="always"
-      ids={{ viewport: "test-viewport" }}
+      ids={{ viewport: "test-viewport-horiz-only" }}
     >
       <WideContent />
     </ScrollArea>
@@ -223,7 +233,7 @@ export const HorizontalOnly: Story = {
 
     await step("Detects horizontal overflow", async () => {
       await waitFor(() => {
-        const viewport = doc.getElementById("test-viewport");
+        const viewport = doc.getElementById("test-viewport-horiz-only");
         expect(viewport).toHaveAttribute("data-overflow-x");
       });
     });
@@ -244,6 +254,7 @@ export const HorizontalOnly: Story = {
 export const BothAxes: Story = {
   render: () => (
     <ScrollArea maxH="200px" maxW="400px" orientation="both" variant="always">
+      <OverflowingContent />
       <WideContent />
     </ScrollArea>
   ),
@@ -292,6 +303,21 @@ export const AlwaysVisible: Story = {
         expect(window.getComputedStyle(scrollbar).opacity).toBe("1");
       });
     });
+
+    await step(
+      "Viewport has gutter so scrollbar does not overlay content",
+      async () => {
+        const viewport = canvasElement.querySelector(
+          '[data-part="viewport"]'
+        ) as HTMLElement;
+        const scrollbar = canvasElement.querySelector(
+          '[data-part="scrollbar"]'
+        ) as HTMLElement;
+        const vpRect = viewport.getBoundingClientRect();
+        const sbRect = scrollbar.getBoundingClientRect();
+        expect(vpRect.right).toBeLessThanOrEqual(sbRect.left);
+      }
+    );
   },
 };
 
