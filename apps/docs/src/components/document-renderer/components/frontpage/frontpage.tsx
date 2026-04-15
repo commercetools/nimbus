@@ -39,7 +39,7 @@ const links = [
 export const Frontpage = () => {
   return (
     <Stack gap="400">
-      <Card.Root borderStyle="outlined">
+      <Card.Root variant="outlined">
         <Flex direction="column" width="100%" align="center" py="800">
           <Heading size="7xl" m="auto" letterSpacing={"-.025em"}>
             Nimbus
@@ -55,15 +55,15 @@ export const Frontpage = () => {
         </Flex>
       </Card.Root>
 
-      <SimpleGrid columns={1} gap="400">
+      <SimpleGrid columns={{ base: 1, md: 2 }} gap="400">
         {links.map((link) => (
           <Link
             key={link.href}
             href={link.href?.substring(1)}
             textDecoration="none"
           >
-            <Card.Root borderStyle="outlined" width="full">
-              <Card.Content>
+            <Card.Root variant="outlined" size="lg" width="full">
+              <Card.Body>
                 <Stack direction="row" gap="400" alignItems="center">
                   <Box>
                     <Text textStyle="6xl">{link.icon}</Text>
@@ -77,7 +77,7 @@ export const Frontpage = () => {
                     </Text>
                   </Box>
                 </Stack>
-              </Card.Content>
+              </Card.Body>
             </Card.Root>
           </Link>
         ))}
