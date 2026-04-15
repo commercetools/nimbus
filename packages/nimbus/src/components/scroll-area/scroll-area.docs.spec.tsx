@@ -95,7 +95,7 @@ describe("ScrollArea - Orientation", () => {
 
 /**
  * @docs-section programmatic-access
- * @docs-title Programmatic Access
+ * @docs-title Programmatic scroll access
  * @docs-description Accessing the scrollable viewport via ref or external hook
  * @docs-order 3
  */

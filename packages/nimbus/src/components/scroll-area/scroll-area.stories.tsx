@@ -261,6 +261,16 @@ export const BothAxes: Story = {
       const corner = canvasElement.querySelector('[data-part="corner"]');
       expect(corner).toBeTruthy();
     });
+
+    await step(
+      "Corner is visible in 'always' variant (opacity: 1)",
+      async () => {
+        const corner = canvasElement.querySelector(
+          '[data-part="corner"]'
+        ) as HTMLElement;
+        expect(window.getComputedStyle(corner).opacity).toBe("1");
+      }
+    );
   },
 };
 

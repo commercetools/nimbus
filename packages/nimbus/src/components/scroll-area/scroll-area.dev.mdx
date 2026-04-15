@@ -95,7 +95,8 @@ const App = () => (
 
 Use the `viewportRef` prop to get a direct reference to the scrollable viewport
 element. This is the recommended approach when you need to programmatically
-scroll, attach scroll event listeners, or read scroll position:
+scroll, attach scroll event listeners, or read scroll position. The ref gives
+you direct access to the native DOM `scrollTo()` method:
 
 ```tsx
 const viewportRef = useRef<HTMLDivElement>(null);
@@ -104,7 +105,8 @@ const viewportRef = useRef<HTMLDivElement>(null);
   {content}
 </ScrollArea>
 
-// Later: viewportRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+// Native DOM scrollTo — same API as any scrollable element
+viewportRef.current.scrollTo({ top: 0, behavior: 'smooth' })
 // Or: viewportRef.current.addEventListener('scroll', handler)
 ```
 
@@ -126,7 +128,9 @@ element for `getElementById` access:
 
 When you need to read scroll state or call scroll methods from *outside* the
 `ScrollArea` tree (e.g., in a parent component), create the machine externally
-with `useScrollArea` and pass it via the `value` prop:
+with `useScrollArea` and pass it via the `value` prop. Unlike `viewportRef`
+(which gives you a native DOM element), the `useScrollArea` hook returns a
+state-machine API with scroll state and convenience methods:
 
 ```tsx
 import { ScrollArea, useScrollArea } from '@commercetools/nimbus';
@@ -136,7 +140,7 @@ function ParentComponent() {
 
   return (
     <>
-      <button onClick={() => scrollArea.scrollTo({ top: 0, behavior: 'smooth' })}>
+      <button onClick={() => scrollArea.scrollToEdge({ edge: 'top' })}>
         Scroll to top
       </button>
       <p>Has vertical overflow: {String(scrollArea.hasOverflowY)}</p>

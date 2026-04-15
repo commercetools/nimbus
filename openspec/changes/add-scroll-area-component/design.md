@@ -63,7 +63,7 @@ exported):
 1. **`ScrollArea`** (public) — extracts `children`, `orientation`, `ref`;
    renders `<ChakraScrollArea.Root>` with forwarded props.
 
-2. **`ScrollAreaInner`** (private) — renders inside `Root` so it can call
+2. **`ScrollAreaParts`** (private) — renders inside `Root` so it can call
    `useScrollAreaContext()` to read overflow state. Sets conditional `tabIndex`
    on Viewport. Conditionally renders Scrollbar(s) and Corner based on
    `orientation`.
