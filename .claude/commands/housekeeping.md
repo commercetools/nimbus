@@ -34,9 +34,10 @@ Append `dry run` to any group to preview changes without modifying anything:
 
    ```bash
    # Create and checkout new branch from main
+   # Use YYYYMMDD-HHMM for uniqueness (same timestamp used for changeset filename)
    git checkout main
    git pull origin main
-   git checkout -b housekeeping-$(date +%d-%m-%Y)
+   git checkout -b housekeeping-$(date +%Y%m%d-%H%M)
    ```
 
 2. **Git Status Verification:**
@@ -163,7 +164,7 @@ For each dependency group (or the specified target group):
 
    ```bash
    # Push branch to origin
-   git push -u origin housekeeping-$(date +%d-%m-%Y)
+   git push -u origin <current-branch-name>
 
    # Create PR using GitHub CLI
    gh pr create \
@@ -271,8 +272,14 @@ For each dependency group (or the specified target group):
 
    **How to create the changeset:**
 
-   Create a file at `.changeset/housekeeping-deps-update.md` (use a descriptive
-   name) with the following format:
+   Create a file with a **unique, timestamped name** to avoid collisions when
+   the command runs multiple times before a release. Reuse the same timestamp
+   from the branch name (e.g. if the branch is `housekeeping-20260415-0912`, the
+   changeset file is `.changeset/housekeeping-deps-20260415-0912.md`). This
+   ensures the branch and changeset always correspond, and uniqueness is
+   guaranteed even if the command runs twice in the same day.
+
+   Use the following format for the file content:
 
    ```markdown
    ---
@@ -385,7 +392,7 @@ investigate before proceeding.
 
 The housekeeping command now includes a full git workflow:
 
-1. **🌿 Branch Creation**: Creates `housekeeping-DD-MM-YYYY` branch from main
+1. **🌿 Branch Creation**: Creates `housekeeping-YYYYMMDD-HHMM` branch from main
 2. **📝 Incremental Commits**: Each dependency group gets its own commit
 3. **🏁 Final Verification**: Complete build and test validation
 4. **🚀 Pull Request**: Automatic PR creation with comprehensive summary
