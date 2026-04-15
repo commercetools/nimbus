@@ -1,10 +1,10 @@
 import figma from "@figma/code-connect/react";
 import { Card } from "./card";
 
-// --- Card content → Card.Content ---
+// --- Card content → Card.Body ---
 // NOTE: Skipped INSTANCE_SWAP "image" → no matching code prop "image"
 figma.connect(
-  Card.Content,
+  Card.Body,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=266-482",
   {
     props: {
@@ -20,10 +20,10 @@ figma.connect(
       <>
         {props.leadingElement}
         {props.header}
-        <Card.Content>
+        <Card.Body>
           {props.instance}
           {props.children}
-        </Card.Content>
+        </Card.Body>
       </>
     ),
   }
@@ -36,13 +36,13 @@ figma.connect(
   {
     props: {
       children: figma.children("*"),
-      borderStyle: figma.enum("Outlined", { Yes: "outlined", No: "none" }),
-      elevation: figma.enum("Elevated", { Yes: "elevated", No: "none" }),
+      variant: figma.enum("Elevated", {
+        Yes: "elevated" as const,
+        No: "outlined" as const,
+      }),
     },
     example: (props) => (
-      <Card.Root borderStyle={props.borderStyle} elevation={props.elevation}>
-        {props.children}
-      </Card.Root>
+      <Card.Root variant={props.variant}>{props.children}</Card.Root>
     ),
   }
 );
