@@ -12,7 +12,8 @@
       "@commercetools/nimbus",
       "@commercetools/nimbus-tokens",
       "@commercetools/nimbus-icons",
-      "@commercetools/nimbus-design-token-ts-plugin"
+      "@commercetools/nimbus-design-token-ts-plugin",
+      "@commercetools/nimbus-mcp"
     ]
   ],
   "ignore": ["@commercetools/nimbus-i18n", "color-tokens", "blank-app", "docs"],
