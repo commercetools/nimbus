@@ -1,0 +1,137 @@
+schema: spec-driven
+
+context: |
+  # Project Context
+
+  Nimbus is a comprehensive design system providing React UI components, design
+  tokens, icons, and documentation for building accessible, consistent user
+  interfaces.
+
+  Priorities: Accessibility (WCAG 2.1 AA via React Aria), Consistency
+  (token-based theming), Developer Experience (TypeScript-first), i18n
+  (@internationalized/string + Transifex), Flexibility (compound component
+  patterns).
+
+  ## Tech Stack
+
+  - TypeScript (strict, no `any`), React 18+, React Aria Components, Chakra UI
+    v3 (recipes + design tokens), Vite, pnpm workspaces
+  - Storybook 8 for component development and visual testing
+  - Vitest + Playwright for browser-based story tests, Vitest + JSDOM for unit
+    tests
+  - @internationalized/string for i18n with compile-time message compilation
+
+  ## Package Architecture
+
+  - **@commercetools/nimbus**: Main UI component library (React Aria + Chakra
+    recipes)
+  - **@commercetools/nimbus-tokens**: Semantic design tokens (colors, spacing,
+    typography, shadows, radii)
+  - **@commercetools/nimbus-icons**: SVG icons as React components (Material
+    Icons + custom)
+  - **@commercetools/color-tokens**: Brand color definitions (ctviolet, ctteal,
+    ctyellow)
+  - **@commercetools/nimbus-i18n**: Centralized translations with Transifex sync
+  - **apps/docs**: Documentation SPA with auto-generated API docs and live
+    examples
+
+  Build order: color-tokens → nimbus-tokens → nimbus + icons + i18n → docs.
+  Design tokens must build first; packages have independent TypeScript configs.
+
+  ## Component Architecture
+
+  ### Tiers
+
+  1. **Tier 1 - Simple**: Single component, basic recipe (Button, Badge)
+  2. **Tier 2 - Slot-Based**: Multiple slots, React Aria integration (TextInput,
+     NumberInput)
+  3. **Tier 3 - Compound**: Multiple coordinated parts with `.Root` (Menu,
+     Dialog, Tabs)
+  4. **Tier 4 - Complex**: Generics, context, helpers (DataTable, DatePicker)
+
+  ### Four-Layer Type Architecture
+
+  Every component follows: Recipe Props → Slot Props → Helper Types (Tier 3/4)
+  → Main Props (public API with JSDoc).
+
+  ### Compound Component Pattern
+
+  Compound components use a namespace object: `Component.Root` (always first),
+  `Component.Trigger`, `Component.Content`, `Component.Item`, etc.
+
+  ### Prop Handling
+
+  Root components: split recipe variants → extract style props → forward both.
+  Sub-components: extract style props → forward to slots.
+  Style props go to slot components, functional props go to React Aria.
+
+  ## Conventions
+
+  - Files: kebab-case. Components: PascalCase. Props: `{Name}Props`.
+  - React Aria imports prefixed with `Ra` (e.g., `import { Button as RaButton }`)
+  - i18n keys: `Nimbus.{Component}.{messageKey}`
+  - Never import from barrel exports across component directories (circular
+    chunk deps). Use direct file imports: `@/components/icon/icon.tsx`.
+  - All recipes must be manually registered in theme config.
+  - CSS variables namespaced with component name (e.g., `--accordion-font-size`).
+  - No inline styles, no CSS modules — Chakra recipes and tokens only.
+
+  ## Constraints
+
+  - Strict TypeScript: no `any`, `@ts-ignore`, or loose types
+  - JSDoc required on all props in type definitions
+  - All components need `displayName` set
+  - Component tests only in Storybook stories (browser-based via Playwright)
+  - Unit tests only for utilities and hooks (JSDOM-based)
+  - No snapshot tests — use specific assertions
+  - Storybook tests run against built bundle (`dist/`), not source
+
+  ## Design Token System
+
+  - Semantic colors: primary, neutral, info, positive, warning, critical
+  - Brand colors: ctviolet, ctteal, ctyellow
+  - Spacing: 100–600 scale. Radii: 50–600 + full. Shadows: elevation 1–6.
+  - Always use tokens, never hardcoded colors or spacing values.
+
+  ## Accessibility Requirements
+
+  - Keyboard navigation for all interactive elements
+  - Proper ARIA attributes via React Aria
+  - Focus management and trap patterns
+  - Screen reader announcements
+  - Color contrast compliance (WCAG AA)
+  - Touch target sizes (44x44px minimum)
+
+  ## Component File Structure
+
+  ```
+  packages/nimbus/src/components/{name}/
+  ├── {name}.tsx              # Main implementation
+  ├── {name}.types.ts         # Public API types
+  ├── {name}.recipe.ts        # Styling variants
+  ├── {name}.slots.tsx         # Slot components
+  ├── {name}.i18n.ts           # Translations
+  ├── {name}.stories.tsx       # Storybook stories (required)
+  ├── {name}.mdx               # Documentation (required)
+  ├── {name}.dev.mdx           # Engineering guide
+  ├── {name}.docs.spec.tsx     # Doc test examples
+  ├── components/              # Compound component parts
+  ├── hooks/                   # Component-specific hooks
+  ├── utils/                   # Component utilities
+  └── index.ts                 # Public API barrel export
+  ```
+
+rules:
+  specs:
+    - "All interactive components MUST meet WCAG 2.1 AA compliance — include
+      keyboard navigation, focus management, ARIA attributes, color contrast,
+      and touch target requirements in specs."
+    - "Reference existing specs in openspec/specs/ before writing new
+      requirements to avoid duplicating or contradicting established behavior."
+  tasks:
+    - "Every component MUST have Storybook stories. Non-interactive components
+      need stories covering all visual permutations. Interactive components
+      additionally need play functions that thoroughly test user interactions,
+      keyboard navigation, and accessibility from multiple angles."
+    - "Include recipe registration in theme config as a task when adding new
+      components — missing registration means no styles at runtime."
