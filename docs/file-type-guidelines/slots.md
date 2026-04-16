@@ -24,6 +24,13 @@ bridge React Aria components with the Nimbus styling system.
 - Component doesn't use recipes
 - Only composing existing styled components
 - No custom styling needed
+- **Wrapping a Chakra compound component** — when the component uses Chakra's
+  own compound parts (e.g., `ScrollArea.Root`, `ScrollArea.Viewport`) directly,
+  Chakra's internal slot context already maps each part to the recipe. In this
+  case, define a slot recipe with an unprefixed key to override Chakra's
+  built-in (see
+  [Recipe Registration — Chakra Overrides](./recipes.md#chakra-compound-component-overrides)),
+  but skip the `.slots.tsx` file. Examples: `ScrollArea`, `Toast`.
 
 ## Critical Requirements
 

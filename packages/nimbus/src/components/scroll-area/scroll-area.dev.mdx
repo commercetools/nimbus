@@ -1,0 +1,197 @@
+---
+title: ScrollArea Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { ScrollArea, type ScrollAreaProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+Wrap content in a `ScrollArea` with a size constraint. The scrollbar appears on
+hover or during scrolling:
+
+```jsx live-dev
+const App = () => (
+  <ScrollArea maxH="200px" w="400px">
+    {Array.from({ length: 20 }, (_, i) => (
+      <Text key={i} fontSize="sm">
+        Line {i + 1}: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      </Text>
+    ))}
+  </ScrollArea>
+)
+```
+
+## Usage examples
+
+### Orientation
+
+Use the `orientation` prop to control which scrollbar axes are rendered:
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="600">
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">vertical (default)</Text>
+      <ScrollArea maxH="120px" w="300px" variant="always">
+        {Array.from({ length: 15 }, (_, i) => (
+          <Text key={i} fontSize="sm">Line {i + 1}</Text>
+        ))}
+      </ScrollArea>
+    </Box>
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">horizontal</Text>
+      <ScrollArea maxW="300px" orientation="horizontal" variant="always">
+        <Box whiteSpace="nowrap">
+          {Array.from({ length: 5 }, (_, i) => (
+            <Text key={i} fontSize="sm">{"Long horizontal content ".repeat(15)}</Text>
+          ))}
+        </Box>
+      </ScrollArea>
+    </Box>
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">both</Text>
+      <ScrollArea maxH="120px" maxW="300px" orientation="both" variant="always">
+        <Box whiteSpace="nowrap">
+          {Array.from({ length: 15 }, (_, i) => (
+            <Text key={i} fontSize="sm">{"Both axes content ".repeat(15)}</Text>
+          ))}
+        </Box>
+      </ScrollArea>
+    </Box>
+  </Stack>
+)
+```
+
+### Content padding
+
+Padding props on `ScrollArea` are forwarded to the content area inside the
+scrollable viewport, so `p`, `px`, `py`, etc. work as expected:
+
+```jsx live-dev
+const App = () => (
+  <ScrollArea maxH="200px" w="400px" bg="neutral.2" borderRadius="300" variant="always" p="200">
+    {Array.from({ length: 20 }, (_, i) => (
+      <Text key={i} fontSize="sm">
+        Line {i + 1}: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      </Text>
+    ))}
+  </ScrollArea>
+)
+```
+
+### Programmatic scroll access
+
+#### Using `viewportRef`
+
+Use the `viewportRef` prop to get a direct reference to the scrollable viewport
+element. This is the recommended approach when you need to programmatically
+scroll, attach scroll event listeners, or read scroll position. The ref gives
+you direct access to the native DOM `scrollTo()` method:
+
+```tsx
+const viewportRef = useRef<HTMLDivElement>(null);
+
+<ScrollArea viewportRef={viewportRef} maxH="400px">
+  {content}
+</ScrollArea>
+
+// Native DOM scrollTo — same API as any scrollable element
+viewportRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+// Or: viewportRef.current.addEventListener('scroll', handler)
+```
+
+#### Using `ids`
+
+When ref-forwarding is impractical (e.g., the scroll container is rendered in a
+different component tree), use the `ids` prop to set a known ID on the viewport
+element for `getElementById` access:
+
+```tsx
+<ScrollArea ids={{ viewport: 'my-scroll-viewport' }} maxH="400px">
+  {content}
+</ScrollArea>
+
+// Later: document.getElementById('my-scroll-viewport').scrollTop
+```
+
+#### Using `useScrollArea` (external control)
+
+When you need to read scroll state or call scroll methods from *outside* the
+`ScrollArea` tree (e.g., in a parent component), create the machine externally
+with `useScrollArea` and pass it via the `value` prop. Unlike `viewportRef`
+(which gives you a native DOM element), the `useScrollArea` hook returns a
+state-machine API with scroll state and convenience methods:
+
+```tsx
+import { ScrollArea, useScrollArea } from '@commercetools/nimbus';
+
+function ParentComponent() {
+  const scrollArea = useScrollArea();
+
+  return (
+    <>
+      <button onClick={() => scrollArea.scrollToEdge({ edge: 'top' })}>
+        Scroll to top
+      </button>
+      <p>Has vertical overflow: {String(scrollArea.hasOverflowY)}</p>
+      <ScrollArea maxH="400px" value={scrollArea}>
+        {content}
+      </ScrollArea>
+    </>
+  );
+}
+```
+
+The returned object exposes state (`hasOverflowX`, `hasOverflowY`, `isAtTop`,
+`isAtBottom`, `isAtLeft`, `isAtRight`) and methods (`scrollTo()`,
+`scrollToEdge()`, `getScrollProgress()`).
+
+#### Using `useScrollAreaContext` (internal access)
+
+For components rendered *inside* a `ScrollArea`, the `useScrollAreaContext` hook
+reads the existing machine from React context — no `value` prop needed:
+
+```tsx
+import { useScrollAreaContext } from '@commercetools/nimbus';
+
+function ScrollToTopButton() {
+  const { scrollToEdge, isAtTop } = useScrollAreaContext();
+  if (isAtTop) return null;
+  return <Button onPress={() => scrollToEdge({ edge: 'top', behavior: 'smooth' })}>Back to top</Button>;
+}
+```
+
+## Component requirements
+
+- The component must have a size constraint (`maxH`, `maxW`, `h`, `w`) for scrolling to occur
+
+## Accessibility
+
+The ScrollArea component ensures keyboard accessibility:
+
+- **Keyboard focusable**: The scrollable viewport receives `tabIndex={0}` when content overflows, making it reachable via Tab
+- **Focus ring**: A Nimbus focus ring appears on the root element when the viewport receives keyboard focus (via `:focus-visible`)
+- **ARIA landmarks**: When the scroll area represents a distinct page section, consider adding `role="region"` with an `aria-label` or `aria-labelledby` to create a named landmark for screen reader navigation
+
+## API reference
+
+<PropsTable id="ScrollArea" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using ScrollArea within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: scroll-area.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-scrollarea--docs)
+- [Chakra UI ScrollArea](https://chakra-ui.com/docs/components/scroll-area)

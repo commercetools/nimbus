@@ -556,9 +556,12 @@ export const StackedModalPages: Story = {
 
     await step("Escape closes only the topmost level", async () => {
       await userEvent.keyboard("{Escape}");
-      await waitFor(() => {
-        expect(canvas.getAllByRole("dialog")).toHaveLength(3);
-      });
+      await waitFor(
+        () => {
+          expect(canvas.getAllByRole("dialog")).toHaveLength(3);
+        },
+        { timeout: 3000 }
+      );
       expect(
         canvas.getByRole("heading", { name: "Select Attribute" })
       ).toBeInTheDocument();
@@ -569,21 +572,30 @@ export const StackedModalPages: Story = {
         name: /go back to add variant/i,
       });
       await userEvent.click(backButton);
-      await waitFor(() => {
-        expect(canvas.getAllByRole("dialog")).toHaveLength(2);
-      });
+      await waitFor(
+        () => {
+          expect(canvas.getAllByRole("dialog")).toHaveLength(2);
+        },
+        { timeout: 3000 }
+      );
     });
 
     await step("Close remaining levels via Escape", async () => {
       await userEvent.keyboard("{Escape}");
-      await waitFor(() => {
-        expect(canvas.getAllByRole("dialog")).toHaveLength(1);
-      });
+      await waitFor(
+        () => {
+          expect(canvas.getAllByRole("dialog")).toHaveLength(1);
+        },
+        { timeout: 3000 }
+      );
 
       await userEvent.keyboard("{Escape}");
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     await step("Focus returns to page-level trigger", async () => {

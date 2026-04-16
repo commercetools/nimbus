@@ -1,3 +1,9 @@
+// Non-nimbus-prefixed recipe overrides — placed first to work around a
+// react-docgen-typescript limitation where complex types at the end of
+// large barrel files fail to resolve.
+export * from "./scroll-area";
+export * from "./toast";
+
 export * from "./avatar";
 export * from "./box";
 export * from "./button";
@@ -67,7 +73,6 @@ export * from "./pagination";
 export * from "./drawer";
 export * from "./tab-nav";
 export * from "./tabs";
-export * from "./toast";
 export * from "./localized-field";
 export * from "./steps";
 export * from "./modal-page";

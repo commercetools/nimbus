@@ -433,6 +433,34 @@ export { selectSlotRecipe } from "@/components/select/select.recipe";
 // ... other slot recipes
 ```
 
+### Chakra Compound Component Overrides
+
+When a Nimbus component wraps a Chakra compound component (e.g.,
+`ChakraScrollArea.Root`, `ChakraScrollArea.Viewport`), the recipe key must
+**not** use the `nimbus` prefix. Instead, use the bare Chakra key so that
+Chakra's own compound parts resolve Nimbus styles through the recipe system.
+
+```typescript
+// packages/nimbus/src/theme/slot-recipes/index.ts
+
+// ✅ Correct — overrides Chakra's built-in scrollArea recipe
+scrollArea: scrollAreaSlotRecipe,
+
+// ❌ Wrong — Chakra's ScrollArea.* parts won't find Nimbus styles
+nimbusScrollArea: scrollAreaSlotRecipe,
+```
+
+**When this applies:**
+
+- The component uses Chakra's compound parts directly (no Nimbus `.slots.tsx`)
+- Chakra's internal slot context already maps each part to the recipe key
+- Nimbus only needs to swap the recipe definition at the theme level
+
+**Current examples:** `scrollArea`, `toast`
+
+No `.slots.tsx` file is needed for these components — see
+[Slots — When Slots Aren't Needed](./slots.md#when-slots-arent-needed).
+
 ### Registration Validation
 
 **WARNING**: No automated validation exists!

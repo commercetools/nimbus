@@ -1,4 +1,5 @@
 import { accordionSlotRecipe } from "@/components/accordion/accordion.recipe";
+import { scrollAreaSlotRecipe } from "@/components/scroll-area/scroll-area.recipe";
 import { defaultPageSlotRecipe } from "@/components/default-page/default-page.recipe";
 import { stepsSlotRecipe } from "@/components/steps/steps.recipe";
 import { alertRecipe } from "@/components/alert/alert.recipe";
@@ -111,11 +112,13 @@ export const slotRecipes = {
   nimbusTagGroup: tagGroupSlotRecipe,
   nimbusTextInput: textInputSlotRecipe,
   nimbusTimeInput: timeInputRecipe,
-  // NOTE: intentionally NOT prefixed with "nimbus" — the "toast" key overrides
-  // Chakra's built-in toast recipe so that useToastStyles() in ToastOutlet resolves
-  // Nimbus styles through Chakra's recipe system. Adding the nimbus prefix would
-  // break style resolution. This is the only Nimbus recipe that is an override.
-  toast: toastRecipe,
   nimbusToggleButtonGroup: buttonGroupRecipe,
   nimbusSteps: stepsSlotRecipe,
+  // NOTE: the following recipes are intentionally NOT prefixed with "nimbus"
+  // because they override Chakra's built-in recipes so that Chakra's own
+  // compound components (e.g. ScrollArea.*, ToastOutlet) resolve Nimbus
+  // styles through the recipe system. No .slots.tsx file is needed for
+  // these — the slot context is owned by Chakra's implementation
+  scrollArea: scrollAreaSlotRecipe,
+  toast: toastRecipe,
 };

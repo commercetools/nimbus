@@ -1,0 +1,40 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+```jsx live
+const App = () => (
+  <ScrollArea maxH="200px" w="400px" role="region" aria-label="Example content">
+    {Array.from({ length: 20 }, (_, i) => (
+      <Text key={i} fontSize="sm">
+        Line {i + 1}: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      </Text>
+    ))}
+  </ScrollArea>
+);
+```
+
+### Accessibility standards
+
+- **Keyboard focusable:** The scrollable viewport receives `tabIndex={0}`
+  when content overflows on either axis, making it reachable via Tab and
+  scrollable with Arrow keys, Page Up/Down, Home, and End.
+- **Conditional focusability:** When content does not overflow, `tabIndex` is
+  not set, so the container does not appear in the Tab order unnecessarily.
+- **Keyboard-only focus ring:** A Nimbus focus ring appears on the root
+  element only during keyboard navigation (`:focus-visible`), not on mouse
+  click.
+- **Decorative scrollbars:** The custom scrollbar overlays are purely visual.
+  Actual scrolling is handled by the browser's native scroll mechanism.
+- **ARIA landmarks:** When the scroll area represents a distinct page section,
+  consider adding `role="region"` with `aria-label` or `aria-labelledby` to
+  create a named landmark for screen reader navigation.
+- **No keyboard trap:** Standard browser tab order is maintained. Focus moves
+  naturally into and out of the scroll area.

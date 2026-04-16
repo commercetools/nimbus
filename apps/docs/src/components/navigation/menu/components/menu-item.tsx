@@ -4,6 +4,7 @@ import { Box, Link, Text } from "@commercetools/nimbus";
 import { MenuIcon } from "./menu-icon";
 import { MenuList } from "./menu-list";
 import { useRouteInfo } from "@/hooks/use-route-info";
+import { useSidebarViewport } from "@/contexts/scroll-container-context";
 
 /**
  * MenuItem component
@@ -11,6 +12,7 @@ import { useRouteInfo } from "@/hooks/use-route-info";
  */
 export const MenuItem = ({ item, level }: MenuItemProps) => {
   const { baseRoute } = useRouteInfo();
+  const sidebarViewportRef = useSidebarViewport();
   const activeRoute = baseRoute;
   const isParentItem = activeRoute.includes(item.route);
   const isActiveRoute = activeRoute === item.route;
@@ -26,7 +28,7 @@ export const MenuItem = ({ item, level }: MenuItemProps) => {
 
   // Preserve sidebar scroll position on click
   const handleClick = () => {
-    const sidebar = document.getElementById("app-frame-left-nav");
+    const sidebar = sidebarViewportRef.current;
     if (sidebar) {
       const scrollPos = sidebar.scrollTop;
       // Store scroll position in sessionStorage as backup
