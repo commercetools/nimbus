@@ -601,14 +601,13 @@ export const ContentPadding: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     await step("Padding is applied to the content slot, not root", async () => {
+      // 2 variants × 2 padding states = 4 ScrollArea instances
       await waitFor(() => {
         const roots = canvasElement.querySelectorAll('[data-part="root"]');
-        expect(roots).toHaveLength(2);
+        expect(roots).toHaveLength(4);
       });
 
-      // The second root in each pair has p="400" — verify it lands on content
       const contents = canvasElement.querySelectorAll('[data-part="content"]');
-      // 4 total: 2 variants × 2 padding states
       expect(contents).toHaveLength(4);
 
       // Padded content elements (index 1 and 3) should have non-zero padding
