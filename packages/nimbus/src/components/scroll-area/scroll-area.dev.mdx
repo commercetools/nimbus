@@ -72,19 +72,17 @@ const App = () => (
 
 ### Content padding
 
-Style props on `ScrollArea` apply to the outer root container. For inner content
-padding, wrap children in a `Box`:
+Padding props on `ScrollArea` are forwarded to the content area inside the
+scrollable viewport, so `p`, `px`, `py`, etc. work as expected:
 
 ```jsx live-dev
 const App = () => (
-  <ScrollArea maxH="200px" w="400px" bg="neutral.2" borderRadius="300" variant="always">
-    <Box p="200">
-      {Array.from({ length: 20 }, (_, i) => (
-        <Text key={i} fontSize="sm">
-          Line {i + 1}: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </Text>
-      ))}
-    </Box>
+  <ScrollArea maxH="200px" w="400px" bg="neutral.2" borderRadius="300" variant="always" p="200">
+    {Array.from({ length: 20 }, (_, i) => (
+      <Text key={i} fontSize="sm">
+        Line {i + 1}: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      </Text>
+    ))}
   </ScrollArea>
 )
 ```
@@ -174,7 +172,6 @@ function ScrollToTopButton() {
 ## Component requirements
 
 - The component must have a size constraint (`maxH`, `maxW`, `h`, `w`) for scrolling to occur
-- For inner content padding, wrap children in a `<Box p="...">` rather than putting padding on `ScrollArea` itself
 
 ## Accessibility
 
