@@ -153,8 +153,15 @@ The component SHALL accept style props and forward them to the root element.
 
 #### Scenario: Style props
 
-- **WHEN** style props (e.g., `p`, `bg`, `maxH`, `w`, `borderRadius`) are passed
+- **WHEN** style props (e.g., `bg`, `maxH`, `w`, `borderRadius`) are passed
 - **THEN** SHALL forward them to the root container element
+
+#### Scenario: Padding props
+
+- **WHEN** padding style props (e.g., `p`, `px`, `py`, `pt`) are passed
+- **THEN** SHALL forward them to the Content slot inside the scrollable area
+- **AND** SHALL NOT apply them to the root container element
+- **AND** padding SHALL behave like native `overflow: auto` with padding
 
 #### Scenario: Ref forwarding
 

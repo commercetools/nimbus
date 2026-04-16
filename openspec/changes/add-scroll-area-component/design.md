@@ -49,11 +49,17 @@ not exposed.
 - **Orientation-driven** — scrollbar axes are controlled by a single
   `orientation` prop rather than manual `<Scrollbar orientation="...">`.
 
-### Content padding note
+### Padding prop forwarding
 
 With compound parts hidden, consumers cannot put padding on `Content` directly.
-Style props on `<ScrollArea>` apply to the root container. For inner content
-padding, consumers wrap children in `<Box p="...">`.
+To make `<ScrollArea p="400">` work intuitively, the component extracts all 24
+Chakra padding style props (via `extractPaddingProps` utility) and forwards them
+to the `Content` slot rather than `Root`. This means padding lives inside the
+scrollable area — matching native `overflow: auto` + `padding` behavior.
+
+Without forwarding, padding on `Root` would create dead space between the
+viewport and the absolutely-positioned scrollbar, and the `always` variant
+gutter calculation would misalign.
 
 ## Two-Component Internal Structure
 

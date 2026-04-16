@@ -2,12 +2,16 @@ import {
   ScrollArea as ChakraScrollArea,
   useScrollAreaContext,
 } from "@chakra-ui/react/scroll-area";
+import { extractPaddingProps } from "@/utils";
 import type { ScrollAreaProps } from "./scroll-area.types";
 
 type ScrollAreaPartsProps = Pick<
   ScrollAreaProps,
   "children" | "orientation" | "viewportRef"
->;
+> & {
+  /** Padding style props extracted from Root, applied to Content. */
+  contentPaddingProps?: Record<string, unknown>;
+};
 
 /**
  * Private component that renders inside ChakraScrollArea.Root
@@ -18,6 +22,7 @@ const ScrollAreaParts = ({
   children,
   orientation = "vertical",
   viewportRef,
+  contentPaddingProps,
 }: ScrollAreaPartsProps) => {
   const { hasOverflowX, hasOverflowY } = useScrollAreaContext();
   const tabIndex = hasOverflowX || hasOverflowY ? 0 : undefined;
@@ -25,7 +30,9 @@ const ScrollAreaParts = ({
   return (
     <>
       <ChakraScrollArea.Viewport ref={viewportRef} tabIndex={tabIndex}>
-        <ChakraScrollArea.Content>{children}</ChakraScrollArea.Content>
+        <ChakraScrollArea.Content {...contentPaddingProps}>
+          {children}
+        </ChakraScrollArea.Content>
       </ChakraScrollArea.Viewport>
       {(orientation === "vertical" || orientation === "both") && (
         <ChakraScrollArea.Scrollbar orientation="vertical" />
@@ -69,22 +76,28 @@ export const ScrollArea = (props: ScrollAreaProps) => {
     ...restProps
   } = props;
 
+  const [paddingProps, rootProps] = extractPaddingProps(restProps);
+
   const parts = (
-    <ScrollAreaParts orientation={orientation} viewportRef={viewportRef}>
+    <ScrollAreaParts
+      orientation={orientation}
+      viewportRef={viewportRef}
+      contentPaddingProps={paddingProps}
+    >
       {children}
     </ScrollAreaParts>
   );
 
   if (value) {
     return (
-      <ChakraScrollArea.RootProvider ref={ref} value={value} {...restProps}>
+      <ChakraScrollArea.RootProvider ref={ref} value={value} {...rootProps}>
         {parts}
       </ChakraScrollArea.RootProvider>
     );
   }
 
   return (
-    <ChakraScrollArea.Root ref={ref} {...restProps}>
+    <ChakraScrollArea.Root ref={ref} {...rootProps}>
       {parts}
     </ChakraScrollArea.Root>
   );

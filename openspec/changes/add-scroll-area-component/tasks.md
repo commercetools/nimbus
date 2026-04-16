@@ -46,12 +46,20 @@
 - [x] 5.5 Add StickyContentInPanel story comparing always vs hover in a
       header/body/footer layout with a sticky row
 
-## 6. Validation
+## 6. Padding prop forwarding
 
-- [x] 6.1 TypeScript compiles without errors
+- [x] 6.1 Add `extractPaddingProps` utility in `src/utils/` covering all 24
+      Chakra padding style prop keys
+- [x] 6.2 Split padding props from root props in ScrollArea component and
+      forward to Content slot
+- [x] 6.3 Add PaddingOnRoot story to visualize padding behavior
+
+## 7. Validation
+
+- [x] 7.1 TypeScript compiles without errors
       (`pnpm --filter @commercetools/nimbus typecheck`)
-- [x] 6.2 Build succeeds (`pnpm --filter @commercetools/nimbus build`)
-- [x] 6.3 All Storybook story tests pass
+- [x] 7.2 Build succeeds (`pnpm --filter @commercetools/nimbus build`)
+- [x] 7.3 All Storybook story tests pass
       (`pnpm test:storybook:dev packages/nimbus/src/components/scroll-area/scroll-area.stories.tsx`)
-- [x] 6.4 Lint passes
+- [x] 7.4 Lint passes
       (`pnpm lint -- packages/nimbus/src/components/scroll-area/`)

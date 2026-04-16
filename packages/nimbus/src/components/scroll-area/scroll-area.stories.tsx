@@ -556,6 +556,52 @@ export const StickyContentInPanel: Story = {
 };
 
 // ============================================================
+// Padding on Root: demonstrates broken behavior
+// ============================================================
+export const PaddingOnRoot: Story = {
+  render: () => (
+    <Box display="flex" gap="600" flexWrap="wrap">
+      {(["always", "hover"] as const).map((variant) => (
+        <Box key={variant}>
+          <Text fontSize="sm" mb="200" fontWeight="bold">
+            variant=&quot;{variant}&quot;
+          </Text>
+          <Box display="flex" gap="400">
+            <Box>
+              <Text fontSize="xs" mb="100" color="neutral.11">
+                No padding (correct)
+              </Text>
+              <ScrollArea
+                maxH="200px"
+                w="300px"
+                variant={variant}
+                bg="warning.3"
+              >
+                <OverflowingContent />
+              </ScrollArea>
+            </Box>
+            <Box>
+              <Text fontSize="xs" mb="100" color="neutral.11">
+                p=&quot;400&quot; on Root (broken)
+              </Text>
+              <ScrollArea
+                maxH="200px"
+                w="300px"
+                variant={variant}
+                bg="warning.3"
+                p="400"
+              >
+                <OverflowingContent />
+              </ScrollArea>
+            </Box>
+          </Box>
+        </Box>
+      ))}
+    </Box>
+  ),
+};
+
+// ============================================================
 // Smoke test: all combinations render without errors
 // ============================================================
 export const SmokeTest: Story = {

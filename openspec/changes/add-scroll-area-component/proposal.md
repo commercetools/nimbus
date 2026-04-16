@@ -32,7 +32,9 @@ design tokens.
     `:has(:focus-visible)` pattern
   - `orientation` prop to control which scrollbar axes render (`vertical` |
     `horizontal` | `both`)
-  - Accepts all Chakra style props (`p`, `bg`, `maxH`, `w`, etc.)
+  - Accepts all Chakra style props (`bg`, `maxH`, `w`, etc.) — padding
+    props (`p`, `px`, `py`, etc.) are forwarded to the Content slot so they
+    apply inside the scrollable area
 
 No custom hook — overflow detection and scroll state are handled by Ark UI's
 zag-js state machine internally. No i18n — no user-facing strings.
