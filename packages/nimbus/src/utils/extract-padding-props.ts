@@ -32,6 +32,8 @@ const PADDING_PROP_KEYS = new Set([
 
 /**
  * Extracts padding style-props from an object, separating them from other props.
+ * Responsive values (arrays and objects like `{ base: "200", md: "400" }`)
+ * are supported — they are extracted by key name unchanged.
  * @param props The props object to separate
  * @returns A tuple containing [paddingProps, otherProps]
  */

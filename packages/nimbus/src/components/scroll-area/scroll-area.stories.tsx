@@ -556,9 +556,9 @@ export const StickyContentInPanel: Story = {
 };
 
 // ============================================================
-// Padding on Root: demonstrates broken behavior
+// Content padding: padding props forwarded to inner Content slot
 // ============================================================
-export const PaddingOnRoot: Story = {
+export const ContentPadding: Story = {
   render: () => (
     <Box display="flex" gap="600" flexWrap="wrap">
       {(["always", "hover"] as const).map((variant) => (
@@ -569,26 +569,26 @@ export const PaddingOnRoot: Story = {
           <Box display="flex" gap="400">
             <Box>
               <Text fontSize="xs" mb="100" color="neutral.11">
-                No padding (correct)
+                No padding
               </Text>
               <ScrollArea
                 maxH="200px"
                 w="300px"
                 variant={variant}
-                bg="warning.3"
+                bg="neutral.2"
               >
                 <OverflowingContent />
               </ScrollArea>
             </Box>
             <Box>
               <Text fontSize="xs" mb="100" color="neutral.11">
-                p=&quot;400&quot; on Root (broken)
+                p=&quot;400&quot; (forwarded to content)
               </Text>
               <ScrollArea
                 maxH="200px"
                 w="300px"
                 variant={variant}
-                bg="warning.3"
+                bg="neutral.2"
                 p="400"
               >
                 <OverflowingContent />
@@ -599,6 +599,29 @@ export const PaddingOnRoot: Story = {
       ))}
     </Box>
   ),
+  play: async ({ canvasElement, step }) => {
+    await step("Padding is applied to the content slot, not root", async () => {
+      await waitFor(() => {
+        const roots = canvasElement.querySelectorAll('[data-part="root"]');
+        expect(roots).toHaveLength(2);
+      });
+
+      // The second root in each pair has p="400" — verify it lands on content
+      const contents = canvasElement.querySelectorAll('[data-part="content"]');
+      // 4 total: 2 variants × 2 padding states
+      expect(contents).toHaveLength(4);
+
+      // Padded content elements (index 1 and 3) should have non-zero padding
+      const paddedContent = contents[1] as HTMLElement;
+      const paddedStyles = window.getComputedStyle(paddedContent);
+      expect(paddedStyles.paddingTop).not.toBe("0px");
+
+      // Unpadded content elements (index 0 and 2) should have no padding
+      const unpaddedContent = contents[0] as HTMLElement;
+      const unpaddedStyles = window.getComputedStyle(unpaddedContent);
+      expect(unpaddedStyles.paddingTop).toBe("0px");
+    });
+  },
 };
 
 // ============================================================

@@ -53,9 +53,10 @@ export function useMainViewport(): RefObject<HTMLElement | null> {
 export function useSidebarViewport(): RefObject<HTMLElement | null> {
   const ctx = useContext(ScrollContainerContext);
   if (!ctx) {
-    throw new Error(
-      "useSidebarViewport must be used within ScrollContainerProvider"
+    console.warn(
+      "useSidebarViewport called outside ScrollContainerProvider — returning fallback ref"
     );
+    return fallbackRef;
   }
   return ctx.sidebarViewportRef;
 }
