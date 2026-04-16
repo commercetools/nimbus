@@ -1,5 +1,15 @@
 # @commercetools/nimbus-tokens
 
+## 2.10.0
+
+### Patch Changes
+
+- [#1251](https://github.com/commercetools/nimbus/pull/1251)
+  [`bcf7f7f`](https://github.com/commercetools/nimbus/commit/bcf7f7f8403a5bd6b7b8fe969838cf5edcc6b7ff)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Tokens: The shadow
+  tokens now include an explicit 0 for the spread radius (e.g. 0 1px 4px 0
+  hsla(...) instead of 0 1px 4px hsla(...)).
+
 ## 2.9.1
 
 ## 2.9.0
