@@ -50,6 +50,8 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
       borderRadius: "full",
       transition: "opacity 150ms 300ms",
       position: "relative",
+      // Paint above viewport content (e.g. sticky headers with z-index)
+      zIndex: "1",
       margin: "var(--scroll-area-scrollbar-margin)",
       "&:not([data-overflow-x], [data-overflow-y])": {
         display: "none",

@@ -102,3 +102,23 @@ built-in key to override the default recipe). Slots:
 | `variant` | `hover`, `always` | `hover` |
 | `size` | `xs`, `sm`, `md`, `lg` | `sm` |
 
+### Gutter Strategy for `always` Variant
+
+When `variant="always"`, the scrollbar is permanently visible and must not
+overlay content. The viewport reserves a gutter via CSS:
+
+- **Vertical scrollbar**: `width: calc(100% - scrollbar-size - margin * 2)` —
+  works because width always resolves against a definite parent.
+- **Horizontal scrollbar**: `flex: 1` + `marginBottom` — height calc does not
+  work because the root's height comes from `maxHeight`, and CSS `%` heights
+  require an explicit `height` property on the parent.
+
+Both approaches reference the `--scroll-area-scrollbar-size` custom property,
+so the gutter automatically adapts to the active size variant.
+
+### Scrollbar Stacking Context
+
+The scrollbar uses `zIndex: 1` (with `position: relative` from the recipe) so
+it paints above viewport content that establishes its own stacking context, such
+as sticky-positioned headers.
+

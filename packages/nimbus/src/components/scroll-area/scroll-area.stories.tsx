@@ -1,3 +1,4 @@
+import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ScrollArea, Box, Text, useScrollArea } from "@commercetools/nimbus";
 import { expect, userEvent, waitFor } from "storybook/test";
@@ -43,7 +44,6 @@ export const Default: Story = {
     <ScrollArea
       maxH="200px"
       w="400px"
-      variant="always"
       ids={{ viewport: "test-viewport-default" }}
     >
       <OverflowingContent />
@@ -95,7 +95,6 @@ export const NonOverflowing: Story = {
     <ScrollArea
       maxH="200px"
       w="400px"
-      variant="always"
       ids={{ viewport: "test-viewport-no-overflow" }}
     >
       <ShortContent />
@@ -147,7 +146,6 @@ export const KeyboardFocusRing: Story = {
         maxH="200px"
         w="400px"
         mt="400"
-        variant="always"
         ids={{ viewport: "test-viewport-kbd-focus" }}
       >
         <OverflowingContent />
@@ -188,7 +186,6 @@ export const VerticalOnly: Story = {
     <ScrollArea
       maxH="200px"
       w="400px"
-      variant="always"
       ids={{ viewport: "test-viewport-vert-only" }}
     >
       <OverflowingContent />
@@ -222,7 +219,6 @@ export const HorizontalOnly: Story = {
     <ScrollArea
       maxW="400px"
       orientation="horizontal"
-      variant="always"
       ids={{ viewport: "test-viewport-horiz-only" }}
     >
       <WideContent />
@@ -253,7 +249,7 @@ export const HorizontalOnly: Story = {
 // ============================================================
 export const BothAxes: Story = {
   render: () => (
-    <ScrollArea maxH="200px" maxW="400px" orientation="both" variant="always">
+    <ScrollArea maxH="200px" maxW="400px" orientation="both">
       <OverflowingContent />
       <WideContent />
     </ScrollArea>
@@ -272,16 +268,6 @@ export const BothAxes: Story = {
       const corner = canvasElement.querySelector('[data-part="corner"]');
       expect(corner).toBeTruthy();
     });
-
-    await step(
-      "Corner is visible in 'always' variant (opacity: 1)",
-      async () => {
-        const corner = canvasElement.querySelector(
-          '[data-part="corner"]'
-        ) as HTMLElement;
-        expect(window.getComputedStyle(corner).opacity).toBe("1");
-      }
-    );
   },
 };
 
@@ -290,32 +276,80 @@ export const BothAxes: Story = {
 // ============================================================
 export const AlwaysVisible: Story = {
   render: () => (
-    <ScrollArea maxH="200px" w="400px" variant="always">
-      <OverflowingContent />
-    </ScrollArea>
+    <Box display="flex" gap="600" flexWrap="wrap">
+      <Box>
+        <Text fontSize="sm" mb="200" fontWeight="bold">
+          Vertical
+        </Text>
+        <ScrollArea maxH="200px" w="400px" variant="always">
+          <OverflowingContent />
+        </ScrollArea>
+      </Box>
+      <Box>
+        <Text fontSize="sm" mb="200" fontWeight="bold">
+          Horizontal
+        </Text>
+        <ScrollArea maxW="400px" orientation="horizontal" variant="always">
+          <WideContent />
+        </ScrollArea>
+      </Box>
+      <Box>
+        <Text fontSize="sm" mb="200" fontWeight="bold">
+          Both axes
+        </Text>
+        <ScrollArea
+          maxH="200px"
+          maxW="400px"
+          orientation="both"
+          variant="always"
+        >
+          <OverflowingContent />
+          <WideContent />
+        </ScrollArea>
+      </Box>
+    </Box>
   ),
   play: async ({ canvasElement, step }) => {
-    await step("Scrollbar has opacity 1 (always visible)", async () => {
+    const roots = () =>
+      Array.from(canvasElement.querySelectorAll('[data-part="root"]'));
+
+    await step("All three scroll areas render", async () => {
       await waitFor(() => {
-        const scrollbar = canvasElement.querySelector(
-          '[data-part="scrollbar"]'
-        ) as HTMLElement;
-        expect(window.getComputedStyle(scrollbar).opacity).toBe("1");
+        expect(roots()).toHaveLength(3);
       });
     });
 
     await step(
-      "Viewport has gutter so scrollbar does not overlay content",
+      "Vertical: scrollbar has opacity 1 and gutter reserves space",
       async () => {
-        const viewport = canvasElement.querySelector(
-          '[data-part="viewport"]'
-        ) as HTMLElement;
-        const scrollbar = canvasElement.querySelector(
+        const root = roots()[0];
+        const scrollbar = root.querySelector(
           '[data-part="scrollbar"]'
         ) as HTMLElement;
+        const viewport = root.querySelector(
+          '[data-part="viewport"]'
+        ) as HTMLElement;
+        expect(window.getComputedStyle(scrollbar).opacity).toBe("1");
         const vpRect = viewport.getBoundingClientRect();
         const sbRect = scrollbar.getBoundingClientRect();
         expect(vpRect.right).toBeLessThanOrEqual(sbRect.left);
+      }
+    );
+
+    await step(
+      "Horizontal: scrollbar has opacity 1 and gutter reserves space",
+      async () => {
+        const root = roots()[1];
+        const scrollbar = root.querySelector(
+          '[data-part="scrollbar"]'
+        ) as HTMLElement;
+        const viewport = root.querySelector(
+          '[data-part="viewport"]'
+        ) as HTMLElement;
+        expect(window.getComputedStyle(scrollbar).opacity).toBe("1");
+        const vpRect = viewport.getBoundingClientRect();
+        const sbRect = scrollbar.getBoundingClientRect();
+        expect(vpRect.bottom).toBeLessThanOrEqual(sbRect.top);
       }
     );
   },
@@ -326,13 +360,7 @@ export const AlwaysVisible: Story = {
 // ============================================================
 export const CustomStyling: Story = {
   render: () => (
-    <ScrollArea
-      maxH="200px"
-      w="400px"
-      bg="neutral.2"
-      borderRadius="300"
-      variant="always"
-    >
+    <ScrollArea maxH="200px" w="400px" bg="neutral.2" borderRadius="300">
       <Box p="200">
         <OverflowingContent />
       </Box>
@@ -362,7 +390,7 @@ export const Sizes: Story = {
           <Text fontSize="sm" mb="200" fontWeight="bold">
             size=&quot;{size}&quot;
           </Text>
-          <ScrollArea maxH="150px" w="250px" size={size} variant="always">
+          <ScrollArea maxH="150px" w="250px" size={size}>
             <OverflowingContent />
           </ScrollArea>
         </Box>
@@ -402,7 +430,7 @@ export const ExternalControl: Story = {
 
     return (
       <Box>
-        <ScrollArea maxH="200px" w="400px" variant="always" value={scrollArea}>
+        <ScrollArea maxH="200px" w="400px" value={scrollArea}>
           <OverflowingContent />
         </ScrollArea>
       </Box>
@@ -422,6 +450,107 @@ export const ExternalControl: Story = {
     await step("Viewport has tabIndex when overflowing", async () => {
       const viewport = doc.getElementById("test-viewport") as HTMLElement;
       expect(viewport).toHaveAttribute("tabindex", "0");
+    });
+  },
+};
+
+// ============================================================
+// Sticky content in panel: always vs hover with sticky row
+// ============================================================
+const HeaderFooterLayout = ({
+  variant,
+  label,
+}: {
+  variant: "always" | "hover";
+  label: string;
+}) => (
+  <Box w="400px" border="solid-25" borderColor="neutral.6" borderRadius="200">
+    <Box
+      p="200"
+      bg="neutral.3"
+      borderBottom="solid-25"
+      borderColor="neutral.6"
+      display="flex"
+      justifyContent="space-between"
+    >
+      <Text fontWeight="bold" fontSize="sm">
+        Header — {label}
+      </Text>
+      <Text fontSize="sm" color="neutral.11">
+        Action
+      </Text>
+    </Box>
+    <ScrollArea maxH="200px" variant={variant}>
+      {Array.from({ length: 20 }, (_, i) => (
+        <React.Fragment key={i}>
+          {i === 2 && (
+            <Box
+              position="sticky"
+              top="0"
+              bg="primary.2"
+              p="200"
+              borderBottom="solid-25"
+              borderColor="primary.7"
+              display="flex"
+              justifyContent="space-between"
+              zIndex="1"
+            >
+              <Text fontWeight="bold" fontSize="sm">
+                Sticky row
+              </Text>
+            </Box>
+          )}
+          <Box
+            p="200"
+            borderBottom="solid-25"
+            borderColor="neutral.4"
+            display="flex"
+            justifyContent="space-between"
+          >
+            <Text fontSize="sm">Row {i + 1}</Text>
+            <Text fontSize="sm" color="neutral.11">
+              Detail
+            </Text>
+          </Box>
+        </React.Fragment>
+      ))}
+    </ScrollArea>
+    <Box
+      p="200"
+      bg="neutral.3"
+      borderTop="solid-25"
+      borderColor="neutral.6"
+      display="flex"
+      justifyContent="space-between"
+    >
+      <Text fontSize="sm">Footer</Text>
+      <Text fontSize="sm" color="neutral.11">
+        20 items
+      </Text>
+    </Box>
+  </Box>
+);
+
+export const StickyContentInPanel: Story = {
+  render: () => (
+    <Box display="flex" gap="600" flexWrap="wrap">
+      <HeaderFooterLayout variant="always" label="always" />
+      <HeaderFooterLayout variant="hover" label="hover" />
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    await step("Both layouts render", async () => {
+      await waitFor(() => {
+        const roots = canvasElement.querySelectorAll('[data-part="root"]');
+        expect(roots).toHaveLength(2);
+      });
+    });
+
+    await step("Scrollbar paints above content (z-index)", async () => {
+      const scrollbar = canvasElement.querySelector(
+        '[data-part="scrollbar"]'
+      ) as HTMLElement;
+      expect(window.getComputedStyle(scrollbar).zIndex).toBe("1");
     });
   },
 };

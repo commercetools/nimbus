@@ -96,6 +96,18 @@ The component SHALL use Nimbus design tokens for scrollbar appearance.
 - **THEN** scrollbar SHALL be hidden and appear on hover or during scrolling
 - **WHEN** `variant="always"`
 - **THEN** scrollbar SHALL be permanently visible
+- **AND** the viewport SHALL reserve a gutter so the scrollbar does not overlay
+  content
+
+### Requirement: Scrollbar paints above viewport content
+
+The scrollbar SHALL paint above content inside the viewport, such as
+sticky-positioned elements.
+
+#### Scenario: Sticky content in viewport
+
+- **WHEN** the viewport contains sticky-positioned elements with z-index
+- **THEN** the scrollbar SHALL paint above them
 
 ### Requirement: ARIA role support
 

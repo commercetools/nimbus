@@ -33,12 +33,25 @@
 - [x] 4.2 Create developer documentation (`scroll-area.dev.mdx`)
 - [x] 4.3 Create accessibility documentation (`scroll-area.a11y.mdx`)
 
-## 5. Validation
+## 5. Post-review fixes
 
-- [x] 5.1 TypeScript compiles without errors
+- [x] 5.1 Add gutter to `always` variant so scrollbar does not overlay content
+      (width calc for vertical, flex + marginBottom for horizontal)
+- [x] 5.2 Add `zIndex: 1` to scrollbar base styles so it paints above sticky
+      content inside the viewport
+- [x] 5.3 Remove explicit `variant="always"` from stories that don't test it;
+      default `hover` variant is used unless explicitly testing `always`
+- [x] 5.4 Expand AlwaysVisible story to cover vertical, horizontal, and both
+      axes with gutter assertions
+- [x] 5.5 Add StickyContentInPanel story comparing always vs hover in a
+      header/body/footer layout with a sticky row
+
+## 6. Validation
+
+- [x] 6.1 TypeScript compiles without errors
       (`pnpm --filter @commercetools/nimbus typecheck`)
-- [x] 5.2 Build succeeds (`pnpm --filter @commercetools/nimbus build`)
-- [x] 5.3 All 12 Storybook story tests pass
+- [x] 6.2 Build succeeds (`pnpm --filter @commercetools/nimbus build`)
+- [x] 6.3 All Storybook story tests pass
       (`pnpm test:storybook:dev packages/nimbus/src/components/scroll-area/scroll-area.stories.tsx`)
-- [x] 5.4 Lint passes
+- [x] 6.4 Lint passes
       (`pnpm lint -- packages/nimbus/src/components/scroll-area/`)
