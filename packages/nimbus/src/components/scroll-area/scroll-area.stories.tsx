@@ -252,7 +252,10 @@ export const VerticalWithHorizontalOverflow: Story = {
       {Array.from({ length: 6 }, (_, i) => (
         <Box
           key={i}
-          w="100%"
+          // First card deliberately exceeds the viewport to demonstrate the
+          // "both" default surfacing a horizontal scrollbar when a child
+          // legitimately requests more width than the scroll area has.
+          w={i === 0 ? "150%" : "100%"}
           p="300"
           mb="200"
           border="solid-25"
@@ -277,50 +280,73 @@ export const VerticalWithHorizontalOverflow: Story = {
   play: async ({ canvasElement, step }) => {
     const doc = canvasElement.ownerDocument;
 
+    await step("Content wrapper is pinned to the viewport width", async () => {
+      await waitFor(() => {
+        const viewport = doc.getElementById(
+          "test-viewport-vert-with-horiz-overflow"
+        ) as HTMLElement;
+        const content = viewport.querySelector(
+          '[data-part="content"]'
+        ) as HTMLElement;
+        expect(content.clientWidth).toBe(viewport.clientWidth);
+      });
+    });
+
     await step(
-      "w=100% children are sized to the viewport, not to the widest sibling",
+      "w=100% siblings stay at viewport width even when another child is wider",
       async () => {
-        await waitFor(() => {
-          const viewport = doc.getElementById(
-            "test-viewport-vert-with-horiz-overflow"
-          ) as HTMLElement;
-          const content = viewport.querySelector(
-            '[data-part="content"]'
-          ) as HTMLElement;
-          expect(content.clientWidth).toBe(viewport.clientWidth);
-          const firstCard = content.querySelector(
-            ":scope > div"
-          ) as HTMLElement;
-          expect(firstCard.offsetWidth).toBe(content.clientWidth);
+        const viewport = doc.getElementById(
+          "test-viewport-vert-with-horiz-overflow"
+        ) as HTMLElement;
+        const content = viewport.querySelector(
+          '[data-part="content"]'
+        ) as HTMLElement;
+        const cards = Array.from(
+          content.querySelectorAll(":scope > div")
+        ) as HTMLElement[];
+        // First card is explicitly wider (w="150%").
+        expect(cards[0].offsetWidth).toBeGreaterThan(viewport.clientWidth);
+        // Remaining w="100%" cards are not stretched to match the wide sibling.
+        cards.slice(1).forEach((card) => {
+          expect(card.offsetWidth).toBe(viewport.clientWidth);
         });
       }
     );
 
     await step(
-      "Long title truncates inside the card instead of overflowing",
+      "Long title truncates inside the card instead of painting past it",
       async () => {
         const viewport = doc.getElementById(
           "test-viewport-vert-with-horiz-overflow"
         ) as HTMLElement;
+        // Use the second card — first is intentionally overflowing.
         const title = viewport.querySelector(
-          ":scope [data-part='content'] > div p:nth-child(2)"
+          ":scope [data-part='content'] > div:nth-child(2) p:nth-child(2)"
         ) as HTMLElement;
         expect(title).toBeTruthy();
         const titleStyles = window.getComputedStyle(title);
         expect(titleStyles.textOverflow).toBe("ellipsis");
         expect(titleStyles.whiteSpace).toMatch(/nowrap/);
-        // The title is clipped by its own box, not painting past it.
         expect(title.scrollWidth).toBeGreaterThan(title.clientWidth);
       }
     );
 
     await step(
-      "No horizontal overflow at the viewport level when titles truncate",
+      "Explicit over-sized child surfaces a horizontal scrollbar",
       async () => {
         const viewport = doc.getElementById(
           "test-viewport-vert-with-horiz-overflow"
         ) as HTMLElement;
-        expect(viewport.scrollWidth).toBe(viewport.clientWidth);
+        expect(viewport.scrollWidth).toBeGreaterThan(viewport.clientWidth);
+        const scrollbars = canvasElement.querySelectorAll(
+          '[data-part="scrollbar"]'
+        );
+        const horizontalScrollbar = Array.from(scrollbars).find(
+          (sb) =>
+            sb.getAttribute("data-orientation") === "horizontal" &&
+            window.getComputedStyle(sb).display !== "none"
+        );
+        expect(horizontalScrollbar).toBeTruthy();
       }
     );
   },
