@@ -56,7 +56,12 @@ export type ScrollAreaProps = OmitInternalProps<ScrollAreaRootSlotProps> & {
   viewportRef?: React.Ref<HTMLDivElement>;
   /**
    * Which scrollbar axes to render.
-   * @default "vertical"
+   *
+   * When set to `"vertical"` or `"horizontal"`, the opposite axis is actively
+   * suppressed: Zag's inline `min-width: fit-content` (or `min-height`) is
+   * overridden on the content slot and the viewport clips the other axis.
+   * This prevents silent overflow with no visible scrollbar indicator.
+   * @default "both"
    */
   orientation?: "vertical" | "horizontal" | "both";
   /**

@@ -186,9 +186,17 @@ export const VerticalOnly: Story = {
     <ScrollArea
       maxH="200px"
       w="400px"
+      orientation="vertical"
       ids={{ viewport: "test-viewport-vert-only" }}
     >
-      <OverflowingContent />
+      <Box w="100%">
+        {Array.from({ length: 6 }, (_, i) => (
+          <Text key={i} fontSize="sm" whiteSpace="nowrap">
+            Row {i + 1}:{" "}
+            {"intentionally-wider-than-viewport-content ".repeat(3)}
+          </Text>
+        ))}
+      </Box>
     </ScrollArea>
   ),
   play: async ({ canvasElement, step }) => {
@@ -208,16 +216,31 @@ export const VerticalOnly: Story = {
       expect(scrollbars).toHaveLength(1);
       expect(scrollbars[0]).toHaveAttribute("data-orientation", "vertical");
     });
+
+    await step("Horizontal overflow is actively suppressed", async () => {
+      const viewport = doc.getElementById(
+        "test-viewport-vert-only"
+      ) as HTMLElement;
+      // Viewport clips the x-axis so overflowing children can't be scrolled to.
+      expect(window.getComputedStyle(viewport).overflowX).toBe("hidden");
+      // Content wrapper is sized to the viewport, not to its widest child.
+      const content = viewport.querySelector(
+        '[data-part="content"]'
+      ) as HTMLElement;
+      expect(content.clientWidth).toBe(viewport.clientWidth);
+    });
   },
 };
 
 // ============================================================
-// Orientation="vertical" with content that also overflows horizontally.
+// Default orientation with content that overflows on both axes.
 //
-// Replicates a bug where horizontal overflow is silently scrollable via
-// trackpad/keyboard but no horizontal scrollbar indicator is shown, because
-// Zag always sets `min-width: fit-content` inline on the content slot while
-// our wrapper only renders the vertical scrollbar.
+// Because Zag always sets `min-width: fit-content` inline on the content slot,
+// content can grow past the viewport horizontally even when only vertical
+// scrolling is "intended". The default orientation is `"both"` so the
+// horizontal scrollbar shows up automatically instead of silently scrolling.
+// To strictly clip the other axis, pass `orientation="vertical"` (see the
+// `VerticalOnly` story).
 // ============================================================
 export const VerticalWithHorizontalOverflow: Story = {
   render: () => (
@@ -267,7 +290,7 @@ export const VerticalWithHorizontalOverflow: Story = {
     );
 
     await step(
-      "Bug: no horizontal scrollbar is rendered despite the overflow",
+      "Horizontal scrollbar is rendered so overflow is not silent",
       async () => {
         const scrollbars = canvasElement.querySelectorAll(
           '[data-part="scrollbar"]'
@@ -275,7 +298,24 @@ export const VerticalWithHorizontalOverflow: Story = {
         const horizontalScrollbar = Array.from(scrollbars).find(
           (sb) => sb.getAttribute("data-orientation") === "horizontal"
         );
-        expect(horizontalScrollbar).toBeUndefined();
+        expect(horizontalScrollbar).toBeTruthy();
+      }
+    );
+
+    await step(
+      "w=100% children are sized to the viewport, not to the widest sibling",
+      async () => {
+        const viewport = doc.getElementById(
+          "test-viewport-vert-with-horiz-overflow"
+        ) as HTMLElement;
+        const content = viewport.querySelector(
+          '[data-part="content"]'
+        ) as HTMLElement;
+        expect(content.clientWidth).toBe(viewport.clientWidth);
+        const firstCard = content.querySelector(":scope > div") as HTMLElement;
+        // Card's border-box fills the content wrapper (which is the viewport
+        // width), not the widest nowrap child.
+        expect(firstCard.offsetWidth).toBe(content.clientWidth);
       }
     );
   },
@@ -460,7 +500,7 @@ export const Sizes: Story = {
           <Text fontSize="sm" mb="200" fontWeight="bold">
             size=&quot;{size}&quot;
           </Text>
-          <ScrollArea maxH="150px" w="250px" size={size}>
+          <ScrollArea maxH="150px" w="250px" size={size} orientation="vertical">
             <OverflowingContent />
           </ScrollArea>
         </Box>
