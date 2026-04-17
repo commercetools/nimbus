@@ -80,6 +80,22 @@ export const Default: Story = {
       expect(scrollbar).toHaveAttribute("data-orientation", "vertical");
     });
 
+    await step(
+      "Horizontal scrollbar is hidden when only Y overflows",
+      async () => {
+        await waitFor(() => {
+          const scrollbars = Array.from(
+            canvasElement.querySelectorAll('[data-part="scrollbar"]')
+          );
+          const horizontal = scrollbars.find(
+            (sb) => sb.getAttribute("data-orientation") === "horizontal"
+          );
+          expect(horizontal).toBeTruthy();
+          expect(window.getComputedStyle(horizontal!).display).toBe("none");
+        });
+      }
+    );
+
     await step("Thumb is rendered inside scrollbar", async () => {
       const thumb = canvasElement.querySelector('[data-part="thumb"]');
       expect(thumb).toBeTruthy();
@@ -139,6 +155,109 @@ export const DefaultSurfacesBothScrollbars: Story = {
       const corner = canvasElement.querySelector('[data-part="corner"]');
       expect(corner).toBeTruthy();
     });
+  },
+};
+
+// ============================================================
+// DefaultBoxParity: the "ScrollArea behaves like a Box with overflow:auto"
+// claim, executable. Renders a ScrollArea and an equivalent Box overflow=auto
+// side by side with identical children and asserts matching child geometry.
+// ============================================================
+const BoxParityChildren = () => (
+  <Box display="flex" flexDirection="column" gap="200">
+    <Box w="100%" h="40px" bg="neutral.3" id="parity-w-100" />
+    <Box w="fit-content" px="300" py="200" bg="neutral.3" id="parity-fit">
+      <Text fontSize="xs">fit-content</Text>
+    </Box>
+    <Box w="200px" h="40px" bg="neutral.3" id="parity-pixel" />
+    <Box display="flex" gap="100" id="parity-flex-row">
+      <Box flex="1" h="40px" bg="neutral.3" />
+      <Box flex="2" h="40px" bg="neutral.4" />
+    </Box>
+    <Box whiteSpace="nowrap" id="parity-nowrap">
+      <Text fontSize="sm">
+        {"intentionally-long-unwrappable-token-".repeat(6)}
+      </Text>
+    </Box>
+  </Box>
+);
+
+export const DefaultBoxParity: Story = {
+  render: () => (
+    <Box display="flex" gap="600" alignItems="flex-start">
+      <Box>
+        <Text fontSize="sm" fontWeight="bold" mb="100">
+          ScrollArea (orientation unset)
+        </Text>
+        <Box id="parity-scrollarea-wrap">
+          <ScrollArea
+            maxH="300px"
+            w="320px"
+            ids={{ viewport: "test-viewport-parity-scrollarea" }}
+          >
+            <BoxParityChildren />
+          </ScrollArea>
+        </Box>
+      </Box>
+      <Box>
+        <Text fontSize="sm" fontWeight="bold" mb="100">
+          &lt;Box overflow=&quot;auto&quot;&gt;
+        </Text>
+        <Box
+          id="parity-box-wrap"
+          maxH="300px"
+          w="320px"
+          overflow="auto"
+          tabIndex={0}
+          aria-label="Box-overflow-auto parity comparison"
+        >
+          <BoxParityChildren />
+        </Box>
+      </Box>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+
+    await step(
+      "Each labelled child has matching geometry in both containers",
+      async () => {
+        await waitFor(() => {
+          const scrollArea = doc.getElementById(
+            "parity-scrollarea-wrap"
+          ) as HTMLElement;
+          const boxWrap = doc.getElementById("parity-box-wrap") as HTMLElement;
+          const ids = [
+            "parity-w-100",
+            "parity-fit",
+            "parity-pixel",
+            "parity-flex-row",
+          ];
+          ids.forEach((id) => {
+            const inScrollArea = scrollArea.querySelector(
+              `#${id}`
+            ) as HTMLElement;
+            const inBox = boxWrap.querySelector(`#${id}`) as HTMLElement;
+            expect(inScrollArea).toBeTruthy();
+            expect(inBox).toBeTruthy();
+            expect(inScrollArea.offsetWidth).toBe(inBox.offsetWidth);
+            expect(inScrollArea.offsetHeight).toBe(inBox.offsetHeight);
+          });
+        });
+      }
+    );
+
+    await step(
+      "w=100% child does not stretch to match the nowrap sibling",
+      async () => {
+        const viewport = doc.getElementById(
+          "test-viewport-parity-scrollarea"
+        ) as HTMLElement;
+        const wFull = viewport.querySelector("#parity-w-100") as HTMLElement;
+        expect(wFull.offsetWidth).toBe(viewport.clientWidth);
+        expect(viewport.scrollWidth).toBeGreaterThan(viewport.clientWidth);
+      }
+    );
   },
 };
 
@@ -670,20 +789,40 @@ export const Sizes: Story = {
 // ============================================================
 // External control via useScrollArea + value prop
 // ============================================================
-export const ExternalControl: Story = {
-  render: () => {
-    const scrollArea = useScrollArea({
-      ids: { viewport: "test-viewport" },
-    });
-
-    return (
-      <Box>
-        <ScrollArea maxH="200px" w="400px" value={scrollArea}>
-          <OverflowingContent />
-        </ScrollArea>
+const ExternalControlHarness = () => {
+  const scrollArea = useScrollArea({
+    ids: { viewport: "test-viewport" },
+  });
+  return (
+    <Box>
+      <Box display="flex" gap="200" mb="200">
+        <button
+          type="button"
+          data-testid="external-scroll-to-100"
+          onClick={() => scrollArea.scrollTo({ top: 100 })}
+        >
+          scrollTo top=100
+        </button>
+        <button
+          type="button"
+          data-testid="external-scroll-to-bottom"
+          onClick={() => scrollArea.scrollToEdge({ edge: "bottom" })}
+        >
+          scrollToEdge bottom
+        </button>
+        <span data-testid="external-has-overflow-y">
+          {String(scrollArea.hasOverflowY)}
+        </span>
       </Box>
-    );
-  },
+      <ScrollArea maxH="200px" w="400px" value={scrollArea}>
+        <OverflowingContent />
+      </ScrollArea>
+    </Box>
+  );
+};
+
+export const ExternalControl: Story = {
+  render: () => <ExternalControlHarness />,
   play: async ({ canvasElement, step }) => {
     const doc = canvasElement.ownerDocument;
 
@@ -698,6 +837,193 @@ export const ExternalControl: Story = {
     await step("Viewport has tabIndex when overflowing", async () => {
       const viewport = doc.getElementById("test-viewport") as HTMLElement;
       expect(viewport).toHaveAttribute("tabindex", "0");
+    });
+
+    await step(
+      "hasOverflowY from the hook reflects viewport state",
+      async () => {
+        const readout = canvasElement.querySelector(
+          '[data-testid="external-has-overflow-y"]'
+        ) as HTMLElement;
+        expect(readout.textContent).toBe("true");
+      }
+    );
+
+    await step("scrollTo moves the viewport scroll position", async () => {
+      const viewport = doc.getElementById("test-viewport") as HTMLElement;
+      const button = canvasElement.querySelector(
+        '[data-testid="external-scroll-to-100"]'
+      ) as HTMLButtonElement;
+      expect(viewport.scrollTop).toBe(0);
+      await userEvent.click(button);
+      await waitFor(() => {
+        expect(viewport.scrollTop).toBeGreaterThan(0);
+      });
+    });
+
+    await step("scrollToEdge bottom scrolls to the end", async () => {
+      const viewport = doc.getElementById("test-viewport") as HTMLElement;
+      const button = canvasElement.querySelector(
+        '[data-testid="external-scroll-to-bottom"]'
+      ) as HTMLButtonElement;
+      await userEvent.click(button);
+      await waitFor(() => {
+        expect(
+          viewport.scrollTop + viewport.clientHeight
+        ).toBeGreaterThanOrEqual(viewport.scrollHeight - 1);
+      });
+    });
+  },
+};
+
+// ============================================================
+// DynamicContent: adding children after mount flips the data-overflow and
+// tabIndex state. Regression test for useScrollAreaContext reactivity.
+// ============================================================
+const DynamicContentHarness = () => {
+  const [rows, setRows] = React.useState(2);
+  return (
+    <Box>
+      <Box display="flex" gap="200" mb="200">
+        <button
+          type="button"
+          data-testid="dynamic-add"
+          onClick={() => setRows((n) => n + 20)}
+        >
+          add rows
+        </button>
+        <button
+          type="button"
+          data-testid="dynamic-reset"
+          onClick={() => setRows(2)}
+        >
+          reset
+        </button>
+      </Box>
+      <ScrollArea
+        maxH="200px"
+        w="400px"
+        ids={{ viewport: "test-viewport-dynamic" }}
+      >
+        {Array.from({ length: rows }, (_, i) => (
+          <Text key={i} fontSize="sm">
+            Row {i + 1}
+          </Text>
+        ))}
+      </ScrollArea>
+    </Box>
+  );
+};
+
+export const DynamicContent: Story = {
+  render: () => <DynamicContentHarness />,
+  play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+
+    await step("Initial state: no overflow, no tabIndex", async () => {
+      await waitFor(() => {
+        const viewport = doc.getElementById(
+          "test-viewport-dynamic"
+        ) as HTMLElement;
+        expect(viewport).toBeTruthy();
+        expect(viewport.scrollHeight).toBe(viewport.clientHeight);
+        expect(viewport).not.toHaveAttribute("tabindex");
+      });
+    });
+
+    await step(
+      "After adding rows: overflow detected and tabIndex flips to 0",
+      async () => {
+        await userEvent.click(
+          canvasElement.querySelector(
+            '[data-testid="dynamic-add"]'
+          ) as HTMLButtonElement
+        );
+        await waitFor(() => {
+          const viewport = doc.getElementById(
+            "test-viewport-dynamic"
+          ) as HTMLElement;
+          expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight);
+          expect(viewport).toHaveAttribute("tabindex", "0");
+        });
+      }
+    );
+
+    await step("After resetting: tabIndex is removed again", async () => {
+      await userEvent.click(
+        canvasElement.querySelector(
+          '[data-testid="dynamic-reset"]'
+        ) as HTMLButtonElement
+      );
+      await waitFor(() => {
+        const viewport = doc.getElementById(
+          "test-viewport-dynamic"
+        ) as HTMLElement;
+        expect(viewport.scrollHeight).toBe(viewport.clientHeight);
+        expect(viewport).not.toHaveAttribute("tabindex");
+      });
+    });
+  },
+};
+
+// ============================================================
+// ForwardsApi: public-API surface tests — root ref, ids map, and polymorphic
+// `as`. Each is advertised by the types; these prove they actually work.
+// ============================================================
+const ForwardsApiHarness = () => {
+  const rootRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (rootRef.current) {
+      rootRef.current.setAttribute("data-ref-landed", "true");
+    }
+  }, []);
+  return (
+    <ScrollArea
+      as="section"
+      ref={rootRef}
+      maxH="200px"
+      w="400px"
+      ids={{
+        root: "test-forwards-root",
+        viewport: "test-forwards-viewport",
+        content: "test-forwards-content",
+      }}
+    >
+      <OverflowingContent />
+    </ScrollArea>
+  );
+};
+
+export const ForwardsApi: Story = {
+  render: () => <ForwardsApiHarness />,
+  play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+
+    await step("Root ref lands on the root element", async () => {
+      await waitFor(() => {
+        const root = doc.getElementById("test-forwards-root") as HTMLElement;
+        expect(root).toBeTruthy();
+        expect(root).toHaveAttribute("data-ref-landed", "true");
+        expect(root).toHaveAttribute("data-part", "root");
+      });
+    });
+
+    await step(
+      "Polymorphic `as` renders root as the requested tag",
+      async () => {
+        const root = doc.getElementById("test-forwards-root") as HTMLElement;
+        expect(root.tagName).toBe("SECTION");
+      }
+    );
+
+    await step("All ids in the `ids` map reach the DOM", async () => {
+      for (const id of [
+        "test-forwards-root",
+        "test-forwards-viewport",
+        "test-forwards-content",
+      ]) {
+        expect(doc.getElementById(id)).toBeTruthy();
+      }
     });
   },
 };
@@ -806,139 +1132,144 @@ export const StickyContentInPanel: Story = {
 // ============================================================
 // Content padding: padding props forwarded to inner Content slot
 // ============================================================
+const paddingPropCases = [
+  {
+    prop: "p",
+    viewportId: "test-pad-p",
+    expected: { top: true, right: true, bottom: true, left: true },
+  },
+  {
+    prop: "px",
+    viewportId: "test-pad-px",
+    expected: { top: false, right: true, bottom: false, left: true },
+  },
+  {
+    prop: "py",
+    viewportId: "test-pad-py",
+    expected: { top: true, right: false, bottom: true, left: false },
+  },
+  {
+    prop: "pt",
+    viewportId: "test-pad-pt",
+    expected: { top: true, right: false, bottom: false, left: false },
+  },
+  {
+    prop: "pb",
+    viewportId: "test-pad-pb",
+    expected: { top: false, right: false, bottom: true, left: false },
+  },
+  {
+    prop: "ps",
+    viewportId: "test-pad-ps",
+    expected: { top: false, right: false, bottom: false, left: true },
+  },
+  {
+    prop: "pe",
+    viewportId: "test-pad-pe",
+    expected: { top: false, right: true, bottom: false, left: false },
+  },
+  {
+    prop: "paddingInline",
+    viewportId: "test-pad-paddingInline",
+    expected: { top: false, right: true, bottom: false, left: true },
+  },
+  {
+    prop: "paddingBlock",
+    viewportId: "test-pad-paddingBlock",
+    expected: { top: true, right: false, bottom: true, left: false },
+  },
+] as const;
+
 export const ContentPadding: Story = {
   render: () => (
-    <Box display="flex" gap="600" flexWrap="wrap">
-      {(["always", "hover"] as const).map((variant) => (
-        <Box key={variant}>
-          <Text fontSize="sm" mb="200" fontWeight="bold">
-            variant=&quot;{variant}&quot;
+    <Box display="flex" gap="400" flexWrap="wrap">
+      {paddingPropCases.map(({ prop, viewportId }) => (
+        <Box key={prop}>
+          <Text fontSize="xs" mb="100" color="neutral.11">
+            {prop}=&quot;400&quot;
           </Text>
-          <Box display="flex" gap="400">
-            <Box>
-              <Text fontSize="xs" mb="100" color="neutral.11">
-                No padding
-              </Text>
-              <ScrollArea
-                maxH="200px"
-                w="300px"
-                variant={variant}
-                bg="neutral.2"
-              >
-                <OverflowingContent />
-              </ScrollArea>
-            </Box>
-            <Box>
-              <Text fontSize="xs" mb="100" color="neutral.11">
-                p=&quot;400&quot; (forwarded to content)
-              </Text>
-              <ScrollArea
-                maxH="200px"
-                w="300px"
-                variant={variant}
-                bg="neutral.2"
-                p="400"
-              >
-                <OverflowingContent />
-              </ScrollArea>
-            </Box>
-          </Box>
+          <ScrollArea
+            maxH="200px"
+            w="260px"
+            bg="neutral.2"
+            ids={{ viewport: viewportId }}
+            {...{ [prop]: "400" }}
+          >
+            <OverflowingContent />
+          </ScrollArea>
         </Box>
       ))}
-    </Box>
-  ),
-  play: async ({ canvasElement, step }) => {
-    await step("Padding is applied to the content slot, not root", async () => {
-      // 2 variants × 2 padding states = 4 ScrollArea instances
-      await waitFor(() => {
-        const roots = canvasElement.querySelectorAll('[data-part="root"]');
-        expect(roots).toHaveLength(4);
-      });
-
-      const contents = canvasElement.querySelectorAll('[data-part="content"]');
-      expect(contents).toHaveLength(4);
-
-      // Padded content elements (index 1 and 3) should have non-zero padding
-      const paddedContent = contents[1] as HTMLElement;
-      const paddedStyles = window.getComputedStyle(paddedContent);
-      expect(paddedStyles.paddingTop).not.toBe("0px");
-
-      // Unpadded content elements (index 0 and 2) should have no padding
-      const unpaddedContent = contents[0] as HTMLElement;
-      const unpaddedStyles = window.getComputedStyle(unpaddedContent);
-      expect(unpaddedStyles.paddingTop).toBe("0px");
-    });
-  },
-};
-
-// ============================================================
-// Smoke test: all combinations render without errors
-// ============================================================
-export const SmokeTest: Story = {
-  render: () => (
-    <Box display="flex" gap="400" flexWrap="wrap">
       <Box>
-        <Text fontSize="sm">Vertical overflow</Text>
-        <ScrollArea maxH="80px" w="180px" variant="always">
-          <OverflowingContent />
-        </ScrollArea>
-      </Box>
-
-      <Box>
-        <Text fontSize="sm">Horizontal overflow</Text>
-        <ScrollArea maxW="180px" orientation="horizontal" variant="always">
-          <WideContent />
-        </ScrollArea>
-      </Box>
-
-      <Box>
-        <Text fontSize="sm">Both axes</Text>
+        <Text fontSize="xs" mb="100" color="neutral.11">
+          no padding (control)
+        </Text>
         <ScrollArea
-          maxH="80px"
-          maxW="180px"
-          orientation="both"
-          variant="always"
-        >
-          <WideContent />
-        </ScrollArea>
-      </Box>
-
-      <Box>
-        <Text fontSize="sm">Non-overflowing</Text>
-        <ScrollArea maxH="200px" w="180px" variant="always">
-          <ShortContent />
-        </ScrollArea>
-      </Box>
-
-      <Box>
-        <Text fontSize="sm">Hover variant</Text>
-        <ScrollArea maxH="80px" w="180px" variant="hover">
-          <OverflowingContent />
-        </ScrollArea>
-      </Box>
-
-      <Box>
-        <Text fontSize="sm">Custom styling</Text>
-        <ScrollArea
-          maxH="80px"
-          w="180px"
+          maxH="200px"
+          w="260px"
           bg="neutral.2"
-          borderRadius="300"
-          variant="always"
+          ids={{ viewport: "test-pad-none" }}
         >
-          <Box p="200">
-            <OverflowingContent />
-          </Box>
+          <OverflowingContent />
         </ScrollArea>
       </Box>
     </Box>
   ),
   play: async ({ canvasElement, step }) => {
-    await step("All variants render without errors", async () => {
-      await waitFor(() => {
-        const roots = canvasElement.querySelectorAll('[data-part="root"]');
-        expect(roots).toHaveLength(6);
-      });
-    });
+    const doc = canvasElement.ownerDocument;
+
+    await step(
+      "Control case: no padding on root or content when no padding prop is set",
+      async () => {
+        await waitFor(() => {
+          const viewport = doc.getElementById("test-pad-none") as HTMLElement;
+          const root = viewport.closest('[data-part="root"]') as HTMLElement;
+          const content = viewport.querySelector(
+            '[data-part="content"]'
+          ) as HTMLElement;
+          const rootStyles = window.getComputedStyle(root);
+          const contentStyles = window.getComputedStyle(content);
+          (
+            [
+              "paddingTop",
+              "paddingRight",
+              "paddingBottom",
+              "paddingLeft",
+            ] as const
+          ).forEach((side) => {
+            expect(rootStyles[side]).toBe("0px");
+            expect(contentStyles[side]).toBe("0px");
+          });
+        });
+      }
+    );
+
+    for (const { prop, viewportId, expected } of paddingPropCases) {
+      await step(
+        `${prop} is forwarded to content and not applied to root`,
+        async () => {
+          const viewport = doc.getElementById(viewportId) as HTMLElement;
+          const root = viewport.closest('[data-part="root"]') as HTMLElement;
+          const content = viewport.querySelector(
+            '[data-part="content"]'
+          ) as HTMLElement;
+          const rootStyles = window.getComputedStyle(root);
+          const contentStyles = window.getComputedStyle(content);
+          const sides = [
+            ["paddingTop", expected.top],
+            ["paddingRight", expected.right],
+            ["paddingBottom", expected.bottom],
+            ["paddingLeft", expected.left],
+          ] as const;
+          sides.forEach(([side, shouldBePadded]) => {
+            expect(rootStyles[side]).toBe("0px");
+            if (shouldBePadded) {
+              expect(contentStyles[side]).not.toBe("0px");
+            } else {
+              expect(contentStyles[side]).toBe("0px");
+            }
+          });
+        }
+      );
+    }
   },
 };

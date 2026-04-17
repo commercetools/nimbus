@@ -86,13 +86,15 @@ export type ScrollAreaProps = OmitInternalProps<ScrollAreaRootSlotProps> & {
    * Custom element IDs for ScrollArea's internal parts.
    * Use when you need DOM access via `getElementById` (e.g.,
    * `ids={{ viewport: 'my-viewport' }}`).
+   *
+   * Only `root`, `viewport`, and `content` are honored by the underlying
+   * state machine. Scrollbar and thumb elements are located by data
+   * attributes and cannot be renamed via ids.
    */
   ids?: Partial<{
     root: string;
     viewport: string;
     content: string;
-    scrollbar: string;
-    thumb: string;
   }>;
 };
 
@@ -104,6 +106,4 @@ export type ScrollAreaElementIds = Partial<{
   root: string;
   viewport: string;
   content: string;
-  scrollbar: string;
-  thumb: string;
 }>;
