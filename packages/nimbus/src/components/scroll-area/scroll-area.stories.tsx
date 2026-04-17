@@ -233,14 +233,14 @@ export const VerticalOnly: Story = {
 };
 
 // ============================================================
-// Default orientation with content that overflows on both axes.
+// Full-width cards with truncated long titles.
 //
-// Because Zag always sets `min-width: fit-content` inline on the content slot,
-// content can grow past the viewport horizontally even when only vertical
-// scrolling is "intended". The default orientation is `"both"` so the
-// horizontal scrollbar shows up automatically instead of silently scrolling.
-// To strictly clip the other axis, pass `orientation="vertical"` (see the
-// `VerticalOnly` story).
+// Zag always writes `min-width: fit-content` inline on the content slot so
+// horizontal scroll works. Without our fix the wrapper would grow to fit the
+// widest child, so `w="100%"` cards would inherit the longest title's width
+// and clip past the viewport. With the fix the wrapper is pinned to the
+// viewport, cards fill it cleanly, and per-card `truncate` ellipsizes long
+// titles in place.
 // ============================================================
 export const VerticalWithHorizontalOverflow: Story = {
   render: () => (
@@ -263,7 +263,7 @@ export const VerticalWithHorizontalOverflow: Story = {
           <Text fontSize="xs" color="neutral.11">
             #{20538 + i}
           </Text>
-          <Text fontSize="sm" fontWeight="bold" whiteSpace="nowrap">
+          <Text fontSize="sm" fontWeight="bold" truncate>
             FEC-{765 + i}: Import
             no-direct-currency-for-price-selection-in-all-cart-items
           </Text>
@@ -278,44 +278,49 @@ export const VerticalWithHorizontalOverflow: Story = {
     const doc = canvasElement.ownerDocument;
 
     await step(
-      "Content overflows the viewport on the horizontal axis",
+      "w=100% children are sized to the viewport, not to the widest sibling",
       async () => {
         await waitFor(() => {
           const viewport = doc.getElementById(
             "test-viewport-vert-with-horiz-overflow"
           ) as HTMLElement;
-          expect(viewport.scrollWidth).toBeGreaterThan(viewport.clientWidth);
+          const content = viewport.querySelector(
+            '[data-part="content"]'
+          ) as HTMLElement;
+          expect(content.clientWidth).toBe(viewport.clientWidth);
+          const firstCard = content.querySelector(
+            ":scope > div"
+          ) as HTMLElement;
+          expect(firstCard.offsetWidth).toBe(content.clientWidth);
         });
       }
     );
 
     await step(
-      "Horizontal scrollbar is rendered so overflow is not silent",
-      async () => {
-        const scrollbars = canvasElement.querySelectorAll(
-          '[data-part="scrollbar"]'
-        );
-        const horizontalScrollbar = Array.from(scrollbars).find(
-          (sb) => sb.getAttribute("data-orientation") === "horizontal"
-        );
-        expect(horizontalScrollbar).toBeTruthy();
-      }
-    );
-
-    await step(
-      "w=100% children are sized to the viewport, not to the widest sibling",
+      "Long title truncates inside the card instead of overflowing",
       async () => {
         const viewport = doc.getElementById(
           "test-viewport-vert-with-horiz-overflow"
         ) as HTMLElement;
-        const content = viewport.querySelector(
-          '[data-part="content"]'
+        const title = viewport.querySelector(
+          ":scope [data-part='content'] > div p:nth-child(2)"
         ) as HTMLElement;
-        expect(content.clientWidth).toBe(viewport.clientWidth);
-        const firstCard = content.querySelector(":scope > div") as HTMLElement;
-        // Card's border-box fills the content wrapper (which is the viewport
-        // width), not the widest nowrap child.
-        expect(firstCard.offsetWidth).toBe(content.clientWidth);
+        expect(title).toBeTruthy();
+        const titleStyles = window.getComputedStyle(title);
+        expect(titleStyles.textOverflow).toBe("ellipsis");
+        expect(titleStyles.whiteSpace).toMatch(/nowrap/);
+        // The title is clipped by its own box, not painting past it.
+        expect(title.scrollWidth).toBeGreaterThan(title.clientWidth);
+      }
+    );
+
+    await step(
+      "No horizontal overflow at the viewport level when titles truncate",
+      async () => {
+        const viewport = doc.getElementById(
+          "test-viewport-vert-with-horiz-overflow"
+        ) as HTMLElement;
+        expect(viewport.scrollWidth).toBe(viewport.clientWidth);
       }
     );
   },
