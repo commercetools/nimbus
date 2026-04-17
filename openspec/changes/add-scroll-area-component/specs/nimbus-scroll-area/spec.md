@@ -19,10 +19,12 @@ The component SHALL present a single `<ScrollArea>` element to consumers,
 assembling all internal parts (viewport, content, scrollbars, corner)
 automatically.
 
-#### Scenario: Basic vertical scroll
+#### Scenario: Default orientation surfaces both scrollbars
 
-- **WHEN** `<ScrollArea maxH="200px">` is rendered with overflowing content
-- **THEN** SHALL render a scrollable container with a vertical scrollbar overlay
+- **WHEN** `<ScrollArea maxH="200px">` is rendered without an explicit
+  `orientation` prop
+- **THEN** SHALL default to `orientation="both"` and render both vertical and
+  horizontal scrollbars whenever their axis overflows
 - **AND** SHALL NOT require consumers to use compound sub-components
 
 #### Scenario: Horizontal scroll
@@ -36,6 +38,27 @@ automatically.
 - **WHEN** `orientation="both"` is set
 - **THEN** SHALL render both vertical and horizontal scrollbars
 - **AND** SHALL render a corner element
+
+### Requirement: Strict orientations clip the opposite axis
+
+When `orientation` is `"vertical"` or `"horizontal"`, the viewport SHALL
+actively clip overflow on the opposite axis so descendant overflow cannot
+scroll silently.
+
+#### Scenario: Vertical-only suppresses horizontal overflow
+
+- **WHEN** `orientation="vertical"` is set and descendant content is wider
+  than the viewport
+- **THEN** the viewport SHALL apply `overflow-x: hidden`
+- **AND** the content wrapper SHALL be constrained to viewport width so
+  sibling elements with `width: 100%` size against the viewport, not the
+  widest descendant
+
+#### Scenario: Horizontal-only suppresses vertical overflow
+
+- **WHEN** `orientation="horizontal"` is set and descendant content is
+  taller than the viewport
+- **THEN** the viewport SHALL apply `overflow-y: hidden`
 
 ### Requirement: Conditional keyboard focusability
 
@@ -99,6 +122,61 @@ The component SHALL use Nimbus design tokens for scrollbar appearance.
 - **AND** the viewport SHALL reserve a gutter so the scrollbar does not overlay
   content
 
+### Requirement: Per-axis scrollbar visibility
+
+Each scrollbar SHALL be rendered only when its own axis overflows. A
+vertical scrollbar SHALL NOT appear when only the horizontal axis overflows,
+and vice versa.
+
+#### Scenario: Only vertical axis overflows
+
+- **WHEN** content overflows on the vertical axis but fits horizontally
+- **THEN** the vertical scrollbar SHALL be visible
+- **AND** the horizontal scrollbar SHALL NOT paint, regardless of the
+  `orientation` prop rendering it into the DOM
+
+#### Scenario: Only horizontal axis overflows
+
+- **WHEN** content overflows on the horizontal axis but fits vertically
+- **THEN** the horizontal scrollbar SHALL be visible
+- **AND** the vertical scrollbar SHALL NOT paint
+
+### Requirement: Content wrapper sizes to viewport by default
+
+For the default and `vertical` orientations, the internal content wrapper
+SHALL be sized to the viewport (both width and height) so siblings with
+`width: 100%` size against the viewport, and so consumers can vertically
+center a shorter child with flex/grid + `height: 100%`.
+
+Descendant overflow on either axis SHALL still be surfaced as viewport
+scroll via `scrollHeight` / `scrollWidth`, so scrolling is unaffected.
+
+For `orientation="horizontal"`, the wrapper SHALL instead preserve Zag's
+`min-width: fit-content` so a row of items can scroll horizontally.
+
+#### Scenario: `width: 100%` sibling of a wide child
+
+- **WHEN** a `ScrollArea` with default or vertical orientation contains a
+  sibling with `width: 100%` alongside an intrinsically wider element
+- **THEN** the `width: 100%` sibling SHALL size against the viewport width,
+  not the wider element's width
+
+#### Scenario: Vertical centering of a short child
+
+- **WHEN** a consumer renders a single child with flex/grid centering and
+  `height: 100%` inside a `ScrollArea` whose children are shorter than the
+  viewport
+- **THEN** the child SHALL be vertically centered within the viewport
+- **AND** the content wrapper SHALL fill the viewport vertically so the
+  child's `height: 100%` resolves against a definite height
+
+#### Scenario: Horizontal orientation preserves fit-content
+
+- **WHEN** `orientation="horizontal"` is set with a row of items whose
+  total width exceeds the viewport
+- **THEN** the content wrapper SHALL grow to fit its widest descendants
+- **AND** the horizontal scrollbar SHALL reflect that overflow
+
 ### Requirement: Scrollbar paints above viewport content
 
 The scrollbar SHALL paint above content inside the viewport, such as
@@ -150,11 +228,20 @@ containing a scroll area machine created via `useScrollArea()`.
 ### Requirement: Component accepts style props
 
 The component SHALL accept style props and forward them to the root element.
+Style props that would collide with the component's internal overflow
+contract (`overflow`, `overflowX`, `overflowY`) SHALL be removed from the
+prop surface at the type level.
 
 #### Scenario: Style props
 
 - **WHEN** style props (e.g., `bg`, `maxH`, `w`, `borderRadius`) are passed
 - **THEN** SHALL forward them to the root container element
+
+#### Scenario: Overflow props rejected
+
+- **WHEN** a consumer attempts to pass `overflow`, `overflowX`, or
+  `overflowY`
+- **THEN** the prop SHALL NOT be accepted by the `ScrollArea` type
 
 #### Scenario: Padding props
 
@@ -178,8 +265,11 @@ The component SHALL accept style props and forward them to the root element.
 #### Scenario: Custom element IDs
 
 - **WHEN** an `ids` prop is passed (e.g., `ids={{ viewport: "my-viewport" }}`)
-- **THEN** SHALL apply the specified IDs to the corresponding internal elements
+- **THEN** SHALL apply the specified IDs to the corresponding internal
+  elements
 - **AND** consumers SHALL be able to use `getElementById` to access them
+- **AND** the accepted keys SHALL be limited to `root`, `viewport`, and
+  `content` — the only parts the underlying state machine honors
 
 #### Scenario: Polymorphic rendering
 
