@@ -35,12 +35,23 @@ type ScrollAreaRecipeProps = {
 
 type ScrollAreaRootSlotProps = HTMLChakraProps<"div", ScrollAreaRecipeProps>;
 
+/**
+ * Style props that would collide with ScrollArea's internal overflow control.
+ * The root has `overflow: hidden` from the recipe, the viewport owns
+ * `overflow: auto` / axis clipping, and `orientation` drives the strict
+ * clipping — consumers setting these would silently break scroll behavior.
+ */
+type ConflictingProps = "overflow" | "overflowX" | "overflowY";
+
 // ============================================================
 // MAIN PROPS
 // ============================================================
 
 /** Props for the `ScrollArea` component. */
-export type ScrollAreaProps = OmitInternalProps<ScrollAreaRootSlotProps> & {
+export type ScrollAreaProps = Omit<
+  OmitInternalProps<ScrollAreaRootSlotProps>,
+  ConflictingProps
+> & {
   /** Content to render inside the scrollable area. */
   children: React.ReactNode;
   /**

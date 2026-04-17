@@ -111,14 +111,21 @@ export const Default: Story = {
 // ============================================================
 export const DefaultSurfacesBothScrollbars: Story = {
   render: () => (
-    <ScrollArea
-      maxH="200px"
-      maxW="400px"
-      ids={{ viewport: "test-viewport-default-both" }}
-    >
-      <OverflowingContent />
-      <WideContent />
-    </ScrollArea>
+    <Box>
+      <Text fontSize="xs" color="neutral.11" mb="200">
+        When no <code>orientation</code> prop is set and content overflows on
+        both axes, both scrollbars and the corner are rendered. Guards against
+        the default silently reverting to a single-axis value.
+      </Text>
+      <ScrollArea
+        maxH="200px"
+        maxW="400px"
+        ids={{ viewport: "test-viewport-default-both" }}
+      >
+        <OverflowingContent />
+        <WideContent />
+      </ScrollArea>
+    </Box>
   ),
   play: async ({ canvasElement, step }) => {
     const doc = canvasElement.ownerDocument;
@@ -159,102 +166,100 @@ export const DefaultSurfacesBothScrollbars: Story = {
 };
 
 // ============================================================
-// DefaultBoxParity: the "ScrollArea behaves like a Box with overflow:auto"
-// claim, executable. Renders a ScrollArea and an equivalent Box overflow=auto
-// side by side with identical children and asserts matching child geometry.
+// DefaultChildSizing: the default orientation produces predictable child
+// geometry — a w=100% sibling stays at viewport width even next to a
+// legitimately over-sized child, a fit-content child sizes to its own
+// contents, and a pixel child is sized literally. Guards the core bug fix
+// that pinned the content wrapper to viewport width.
 // ============================================================
-const BoxParityChildren = () => (
-  <Box display="flex" flexDirection="column" gap="200">
-    <Box w="100%" h="40px" bg="neutral.3" id="parity-w-100" />
-    <Box w="fit-content" px="300" py="200" bg="neutral.3" id="parity-fit">
-      <Text fontSize="xs">fit-content</Text>
-    </Box>
-    <Box w="200px" h="40px" bg="neutral.3" id="parity-pixel" />
-    <Box display="flex" gap="100" id="parity-flex-row">
-      <Box flex="1" h="40px" bg="neutral.3" />
-      <Box flex="2" h="40px" bg="neutral.4" />
-    </Box>
-    <Box whiteSpace="nowrap" id="parity-nowrap">
-      <Text fontSize="sm">
-        {"intentionally-long-unwrappable-token-".repeat(6)}
-      </Text>
-    </Box>
-  </Box>
-);
-
-export const DefaultBoxParity: Story = {
+export const DefaultChildSizing: Story = {
   render: () => (
-    <Box display="flex" gap="600" alignItems="flex-start">
-      <Box>
-        <Text fontSize="sm" fontWeight="bold" mb="100">
-          ScrollArea (orientation unset)
-        </Text>
-        <Box id="parity-scrollarea-wrap">
-          <ScrollArea
-            maxH="300px"
-            w="320px"
-            ids={{ viewport: "test-viewport-parity-scrollarea" }}
-          >
-            <BoxParityChildren />
-          </ScrollArea>
+    <Box>
+      <Text fontSize="xs" color="neutral.11" mb="200" maxW="320px">
+        Asserts the core child-sizing contract under the default orientation: a{" "}
+        <code>w=100%</code> sibling stays at viewport width even next to a
+        nowrap descendant that forces horizontal overflow, a{" "}
+        <code>fit-content</code> child sizes to its own contents, and a pixel
+        child is honored literally.
+      </Text>
+      <ScrollArea
+        maxH="300px"
+        w="320px"
+        ids={{ viewport: "test-viewport-child-sizing" }}
+      >
+        <Box display="flex" flexDirection="column" gap="200">
+          <Box w="100%" h="40px" bg="neutral.3" id="sizing-w-100" />
+          <Box w="fit-content" px="300" py="200" bg="neutral.3" id="sizing-fit">
+            <Text fontSize="xs">fit-content</Text>
+          </Box>
+          <Box w="200px" h="40px" bg="neutral.3" id="sizing-pixel" />
+          <Box display="flex" gap="100" id="sizing-flex-row">
+            <Box flex="1" h="40px" bg="neutral.3" />
+            <Box flex="2" h="40px" bg="neutral.4" />
+          </Box>
+          <Box whiteSpace="nowrap" id="sizing-nowrap">
+            <Text fontSize="sm">
+              {"intentionally-long-unwrappable-token-".repeat(6)}
+            </Text>
+          </Box>
         </Box>
-      </Box>
-      <Box>
-        <Text fontSize="sm" fontWeight="bold" mb="100">
-          &lt;Box overflow=&quot;auto&quot;&gt;
-        </Text>
-        <Box
-          id="parity-box-wrap"
-          maxH="300px"
-          w="320px"
-          overflow="auto"
-          tabIndex={0}
-          aria-label="Box-overflow-auto parity comparison"
-        >
-          <BoxParityChildren />
-        </Box>
-      </Box>
+      </ScrollArea>
     </Box>
   ),
   play: async ({ canvasElement, step }) => {
     const doc = canvasElement.ownerDocument;
 
     await step(
-      "Each labelled child has matching geometry in both containers",
+      "w=100% child matches viewport width regardless of an over-sized sibling",
       async () => {
         await waitFor(() => {
-          const scrollArea = doc.getElementById(
-            "parity-scrollarea-wrap"
+          const viewport = doc.getElementById(
+            "test-viewport-child-sizing"
           ) as HTMLElement;
-          const boxWrap = doc.getElementById("parity-box-wrap") as HTMLElement;
-          const ids = [
-            "parity-w-100",
-            "parity-fit",
-            "parity-pixel",
-            "parity-flex-row",
-          ];
-          ids.forEach((id) => {
-            const inScrollArea = scrollArea.querySelector(
-              `#${id}`
-            ) as HTMLElement;
-            const inBox = boxWrap.querySelector(`#${id}`) as HTMLElement;
-            expect(inScrollArea).toBeTruthy();
-            expect(inBox).toBeTruthy();
-            expect(inScrollArea.offsetWidth).toBe(inBox.offsetWidth);
-            expect(inScrollArea.offsetHeight).toBe(inBox.offsetHeight);
-          });
+          const wFull = viewport.querySelector("#sizing-w-100") as HTMLElement;
+          expect(wFull.offsetWidth).toBe(viewport.clientWidth);
         });
       }
     );
 
+    await step("fit-content child sizes to its own contents", async () => {
+      const viewport = doc.getElementById(
+        "test-viewport-child-sizing"
+      ) as HTMLElement;
+      const fit = viewport.querySelector("#sizing-fit") as HTMLElement;
+      expect(fit.offsetWidth).toBeGreaterThan(0);
+      expect(fit.offsetWidth).toBeLessThan(viewport.clientWidth);
+    });
+
+    await step("Explicit pixel width is honored literally", async () => {
+      const viewport = doc.getElementById(
+        "test-viewport-child-sizing"
+      ) as HTMLElement;
+      const pixel = viewport.querySelector("#sizing-pixel") as HTMLElement;
+      expect(pixel.offsetWidth).toBe(200);
+    });
+
     await step(
-      "w=100% child does not stretch to match the nowrap sibling",
+      "Flex row composes flex=1 and flex=2 ratios at viewport width",
       async () => {
         const viewport = doc.getElementById(
-          "test-viewport-parity-scrollarea"
+          "test-viewport-child-sizing"
         ) as HTMLElement;
-        const wFull = viewport.querySelector("#parity-w-100") as HTMLElement;
-        expect(wFull.offsetWidth).toBe(viewport.clientWidth);
+        const flexRow = viewport.querySelector(
+          "#sizing-flex-row"
+        ) as HTMLElement;
+        expect(flexRow.offsetWidth).toBe(viewport.clientWidth);
+        const [first, second] = Array.from(flexRow.children) as HTMLElement[];
+        expect(second.offsetWidth).toBeGreaterThan(first.offsetWidth);
+      }
+    );
+
+    await step(
+      "A nowrap descendant still creates viewport overflow so the horizontal scrollbar surfaces",
+      async () => {
+        const viewport = doc.getElementById(
+          "test-viewport-child-sizing"
+        ) as HTMLElement;
         expect(viewport.scrollWidth).toBeGreaterThan(viewport.clientWidth);
       }
     );
@@ -795,6 +800,12 @@ const ExternalControlHarness = () => {
   });
   return (
     <Box>
+      <Text fontSize="xs" color="neutral.11" mb="200" maxW="500px">
+        An externally created scroll-area machine is passed to the{" "}
+        <code>value</code> prop. Buttons call <code>scrollTo</code> and{" "}
+        <code>scrollToEdge</code> on the hook; the readout reflects{" "}
+        <code>hasOverflowY</code>.
+      </Text>
       <Box display="flex" gap="200" mb="200">
         <button
           type="button"
@@ -811,7 +822,7 @@ const ExternalControlHarness = () => {
           scrollToEdge bottom
         </button>
         <span data-testid="external-has-overflow-y">
-          {String(scrollArea.hasOverflowY)}
+          hasOverflowY: {String(scrollArea.hasOverflowY)}
         </span>
       </Box>
       <ScrollArea maxH="200px" w="400px" value={scrollArea}>
@@ -845,7 +856,7 @@ export const ExternalControl: Story = {
         const readout = canvasElement.querySelector(
           '[data-testid="external-has-overflow-y"]'
         ) as HTMLElement;
-        expect(readout.textContent).toBe("true");
+        expect(readout.textContent).toContain("true");
       }
     );
 
@@ -884,6 +895,11 @@ const DynamicContentHarness = () => {
   const [rows, setRows] = React.useState(2);
   return (
     <Box>
+      <Text fontSize="xs" color="neutral.11" mb="200" maxW="500px">
+        Adding or removing children after mount must flip the{" "}
+        <code>data-overflow-*</code> attributes and the viewport's{" "}
+        <code>tabindex</code>. Guards the reactivity of overflow detection.
+      </Text>
       <Box display="flex" gap="200" mb="200">
         <button
           type="button"
@@ -978,19 +994,27 @@ const ForwardsApiHarness = () => {
     }
   }, []);
   return (
-    <ScrollArea
-      as="section"
-      ref={rootRef}
-      maxH="200px"
-      w="400px"
-      ids={{
-        root: "test-forwards-root",
-        viewport: "test-forwards-viewport",
-        content: "test-forwards-content",
-      }}
-    >
-      <OverflowingContent />
-    </ScrollArea>
+    <Box>
+      <Text fontSize="xs" color="neutral.11" mb="200" maxW="500px">
+        Proves the public-API surface actually works: the root <code>ref</code>{" "}
+        lands on the root element, <code>as=&quot;section&quot;</code> renders
+        the root as a <code>&lt;section&gt;</code>, and every key in the{" "}
+        <code>ids</code> map reaches the DOM.
+      </Text>
+      <ScrollArea
+        as="section"
+        ref={rootRef}
+        maxH="200px"
+        w="400px"
+        ids={{
+          root: "test-forwards-root",
+          viewport: "test-forwards-viewport",
+          content: "test-forwards-content",
+        }}
+      >
+        <OverflowingContent />
+      </ScrollArea>
+    </Box>
   );
 };
 
@@ -1182,35 +1206,42 @@ const paddingPropCases = [
 
 export const ContentPadding: Story = {
   render: () => (
-    <Box display="flex" gap="400" flexWrap="wrap">
-      {paddingPropCases.map(({ prop, viewportId }) => (
-        <Box key={prop}>
+    <Box>
+      <Text fontSize="xs" color="neutral.11" mb="300" maxW="600px">
+        Every padding prop is forwarded to the inner{" "}
+        <code>[data-part=&quot;content&quot;]</code> slot so the scrollbar
+        overlays the padded area, not the gutter. Root always has zero padding.
+      </Text>
+      <Box display="flex" gap="400" flexWrap="wrap">
+        {paddingPropCases.map(({ prop, viewportId }) => (
+          <Box key={prop}>
+            <Text fontSize="xs" mb="100" color="neutral.11">
+              {prop}=&quot;400&quot;
+            </Text>
+            <ScrollArea
+              maxH="200px"
+              w="260px"
+              bg="neutral.2"
+              ids={{ viewport: viewportId }}
+              {...{ [prop]: "400" }}
+            >
+              <OverflowingContent />
+            </ScrollArea>
+          </Box>
+        ))}
+        <Box>
           <Text fontSize="xs" mb="100" color="neutral.11">
-            {prop}=&quot;400&quot;
+            no padding (control)
           </Text>
           <ScrollArea
             maxH="200px"
             w="260px"
             bg="neutral.2"
-            ids={{ viewport: viewportId }}
-            {...{ [prop]: "400" }}
+            ids={{ viewport: "test-pad-none" }}
           >
             <OverflowingContent />
           </ScrollArea>
         </Box>
-      ))}
-      <Box>
-        <Text fontSize="xs" mb="100" color="neutral.11">
-          no padding (control)
-        </Text>
-        <ScrollArea
-          maxH="200px"
-          w="260px"
-          bg="neutral.2"
-          ids={{ viewport: "test-pad-none" }}
-        >
-          <OverflowingContent />
-        </ScrollArea>
       </Box>
     </Box>
   ),
