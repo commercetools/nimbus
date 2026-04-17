@@ -358,40 +358,6 @@ export const KeyboardFocusRing: Story = {
 };
 
 // ============================================================
-// Vertical only scrolling
-// ============================================================
-export const VerticalOnly: Story = {
-  render: () => (
-    <ScrollArea
-      maxH="200px"
-      w="400px"
-      orientation="vertical"
-      ids={{ viewport: "test-viewport-vert-only" }}
-    >
-      <OverflowingContent />
-    </ScrollArea>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const doc = canvasElement.ownerDocument;
-
-    await step("Detects vertical overflow", async () => {
-      await waitFor(() => {
-        const viewport = doc.getElementById("test-viewport-vert-only");
-        expect(viewport).toHaveAttribute("data-overflow-y");
-      });
-    });
-
-    await step("Only vertical scrollbar rendered", async () => {
-      const scrollbars = canvasElement.querySelectorAll(
-        '[data-part="scrollbar"]'
-      );
-      expect(scrollbars).toHaveLength(1);
-      expect(scrollbars[0]).toHaveAttribute("data-orientation", "vertical");
-    });
-  },
-};
-
-// ============================================================
 // StrictOrientations: single-axis orientations actively clip the opposite
 // axis while preserving predictable sibling sizing. One panel per strict
 // orientation, each with an intentionally over-sized child, an intrinsic
@@ -584,66 +550,6 @@ export const StrictOrientations: Story = {
 };
 
 // ============================================================
-// Horizontal only scrolling
-// ============================================================
-export const HorizontalOnly: Story = {
-  render: () => (
-    <ScrollArea
-      maxW="400px"
-      orientation="horizontal"
-      ids={{ viewport: "test-viewport-horiz-only" }}
-    >
-      <WideContent />
-    </ScrollArea>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const doc = canvasElement.ownerDocument;
-
-    await step("Detects horizontal overflow", async () => {
-      await waitFor(() => {
-        const viewport = doc.getElementById("test-viewport-horiz-only");
-        expect(viewport).toHaveAttribute("data-overflow-x");
-      });
-    });
-
-    await step("Only horizontal scrollbar rendered", async () => {
-      const scrollbars = canvasElement.querySelectorAll(
-        '[data-part="scrollbar"]'
-      );
-      expect(scrollbars).toHaveLength(1);
-      expect(scrollbars[0]).toHaveAttribute("data-orientation", "horizontal");
-    });
-  },
-};
-
-// ============================================================
-// Both axes scrolling
-// ============================================================
-export const BothAxes: Story = {
-  render: () => (
-    <ScrollArea maxH="200px" maxW="400px" orientation="both">
-      <OverflowingContent />
-      <WideContent />
-    </ScrollArea>
-  ),
-  play: async ({ canvasElement, step }) => {
-    await step("Both scrollbars rendered", async () => {
-      await waitFor(() => {
-        const scrollbars = canvasElement.querySelectorAll(
-          '[data-part="scrollbar"]'
-        );
-        expect(scrollbars).toHaveLength(2);
-      });
-    });
-
-    await step("Corner element rendered", async () => {
-      const corner = canvasElement.querySelector('[data-part="corner"]');
-      expect(corner).toBeTruthy();
-    });
-  },
-};
-
-// ============================================================
 // Always visible scrollbar variant
 // ============================================================
 export const AlwaysVisible: Story = {
@@ -728,26 +634,83 @@ export const AlwaysVisible: Story = {
 };
 
 // ============================================================
-// Custom styling: style props on root, content padding via Box
+// Custom styling: non-padding style props are routed to the root, not to
+// the viewport or the content slot.
 // ============================================================
 export const CustomStyling: Story = {
   render: () => (
-    <ScrollArea maxH="200px" w="400px" bg="neutral.2" borderRadius="300">
-      <Box p="200">
-        <OverflowingContent />
-      </Box>
-    </ScrollArea>
+    <Box>
+      <Text fontSize="xs" color="neutral.11" mb="200" maxW="500px">
+        Non-padding style props (<code>bg</code>, <code>border</code>,{" "}
+        <code>borderRadius</code>, <code>boxShadow</code>, <code>m</code>) land
+        on the root. The viewport and content slot stay visually untouched so
+        overlay scrollbars paint correctly over the themed root.
+      </Text>
+      <ScrollArea
+        maxH="200px"
+        w="400px"
+        bg="neutral.2"
+        borderRadius="300"
+        border="solid-25"
+        borderColor="primary.9"
+        boxShadow="4"
+        m="200"
+        ids={{ viewport: "test-viewport-custom" }}
+      >
+        <Box p="200">
+          <OverflowingContent />
+        </Box>
+      </ScrollArea>
+    </Box>
   ),
   play: async ({ canvasElement, step }) => {
-    await step("Root accepts Chakra style props", async () => {
-      await waitFor(() => {
-        const root = canvasElement.querySelector(
-          '[data-part="root"]'
-        ) as HTMLElement;
-        const styles = window.getComputedStyle(root);
-        expect(styles.borderRadius).not.toBe("0px");
-      });
-    });
+    const doc = canvasElement.ownerDocument;
+
+    const getParts = () => {
+      const viewport = doc.getElementById(
+        "test-viewport-custom"
+      ) as HTMLElement;
+      const root = viewport.closest('[data-part="root"]') as HTMLElement;
+      const content = viewport.querySelector(
+        '[data-part="content"]'
+      ) as HTMLElement;
+      return {
+        root,
+        viewport,
+        content,
+        rootStyle: window.getComputedStyle(root),
+        viewportStyle: window.getComputedStyle(viewport),
+        contentStyle: window.getComputedStyle(content),
+      };
+    };
+
+    await step(
+      "Root reflects every style prop with non-default values",
+      async () => {
+        await waitFor(() => {
+          const { rootStyle } = getParts();
+          expect(rootStyle.backgroundColor).not.toBe("rgba(0, 0, 0, 0)");
+          expect(rootStyle.borderRadius).not.toBe("0px");
+          expect(rootStyle.borderTopWidth).not.toBe("0px");
+          expect(rootStyle.borderTopColor).not.toBe("rgba(0, 0, 0, 0)");
+          expect(rootStyle.boxShadow).not.toBe("none");
+          expect(rootStyle.marginTop).not.toBe("0px");
+        });
+      }
+    );
+
+    await step(
+      "Viewport and content slot do not inherit root-only style props",
+      async () => {
+        const { viewportStyle, contentStyle } = getParts();
+        expect(viewportStyle.backgroundColor).toBe("rgba(0, 0, 0, 0)");
+        expect(viewportStyle.borderTopWidth).toBe("0px");
+        expect(viewportStyle.boxShadow).toBe("none");
+        expect(contentStyle.backgroundColor).toBe("rgba(0, 0, 0, 0)");
+        expect(contentStyle.borderTopWidth).toBe("0px");
+        expect(contentStyle.marginTop).toBe("0px");
+      }
+    );
   },
 };
 
