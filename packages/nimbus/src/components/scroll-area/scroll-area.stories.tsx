@@ -212,6 +212,76 @@ export const VerticalOnly: Story = {
 };
 
 // ============================================================
+// Orientation="vertical" with content that also overflows horizontally.
+//
+// Replicates a bug where horizontal overflow is silently scrollable via
+// trackpad/keyboard but no horizontal scrollbar indicator is shown, because
+// Zag always sets `min-width: fit-content` inline on the content slot while
+// our wrapper only renders the vertical scrollbar.
+// ============================================================
+export const VerticalWithHorizontalOverflow: Story = {
+  render: () => (
+    <ScrollArea
+      maxH="300px"
+      w="320px"
+      ids={{ viewport: "test-viewport-vert-with-horiz-overflow" }}
+    >
+      {Array.from({ length: 6 }, (_, i) => (
+        <Box
+          key={i}
+          w="100%"
+          p="300"
+          mb="200"
+          border="solid-25"
+          borderColor="neutral.6"
+          borderRadius="200"
+          bg="neutral.2"
+        >
+          <Text fontSize="xs" color="neutral.11">
+            #{20538 + i}
+          </Text>
+          <Text fontSize="sm" fontWeight="bold" whiteSpace="nowrap">
+            FEC-{765 + i}: Import
+            no-direct-currency-for-price-selection-in-all-cart-items
+          </Text>
+          <Text fontSize="xs" color="neutral.11">
+            merchant-center-frontend
+          </Text>
+        </Box>
+      ))}
+    </ScrollArea>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+
+    await step(
+      "Content overflows the viewport on the horizontal axis",
+      async () => {
+        await waitFor(() => {
+          const viewport = doc.getElementById(
+            "test-viewport-vert-with-horiz-overflow"
+          ) as HTMLElement;
+          expect(viewport.scrollWidth).toBeGreaterThan(viewport.clientWidth);
+        });
+      }
+    );
+
+    await step(
+      "Bug: no horizontal scrollbar is rendered despite the overflow",
+      async () => {
+        const scrollbars = canvasElement.querySelectorAll(
+          '[data-part="scrollbar"]'
+        );
+        const horizontalScrollbar = Array.from(scrollbars).find(
+          (sb) => sb.getAttribute("data-orientation") === "horizontal"
+        );
+        expect(horizontalScrollbar).toBeUndefined();
+      }
+    );
+  },
+};
+
+// ============================================================
 // Horizontal only scrolling
 // ============================================================
 export const HorizontalOnly: Story = {
