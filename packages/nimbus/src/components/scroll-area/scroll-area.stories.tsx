@@ -392,6 +392,164 @@ export const VerticalWithHorizontalOverflow: Story = {
 };
 
 // ============================================================
+// Horizontal counterpart of VerticalWithHorizontalOverflow. Row of cards
+// rendered under both the default `"both"` orientation and explicit
+// `"horizontal"` orientation, covering intrinsic-height, over-sized, and
+// full-height children.
+// ============================================================
+const HorizontalWithVerticalOverflowCards = () =>
+  Array.from({ length: 6 }, (_, i) => {
+    const setting =
+      i === 0 ? 'h="260px"' : i === 1 ? "no height prop" : 'h="100%"';
+    const headline =
+      i === 0
+        ? "Intentionally taller than the viewport to demonstrate a child that legitimately exceeds the scroll area height"
+        : i === 1
+          ? "Intrinsic auto height — block sizes to its own content, shorter than the viewport"
+          : "Explicit full height — the common pattern for row items that should always match the scroll area's visible height";
+    const outcome =
+      i === 0
+        ? "expected: overflows, vertical scrollbar surfaces under orientation=both"
+        : i === 1
+          ? "expected: shorter than viewport, aligned to the top"
+          : "expected: fills viewport height regardless of any over-sized sibling";
+    return (
+      <Box
+        key={i}
+        h={i === 0 ? "260px" : i === 1 ? undefined : "100%"}
+        w="220px"
+        flexShrink="0"
+        alignSelf="flex-start"
+        p="300"
+        border="solid-25"
+        borderColor="neutral.6"
+        borderRadius="200"
+        bg="neutral.2"
+      >
+        <Text fontSize="xs" color="neutral.11">
+          {setting}
+        </Text>
+        <Text fontSize="sm" fontWeight="bold" truncate>
+          {headline}
+        </Text>
+        <Text fontSize="xs" color="neutral.11">
+          {outcome}
+        </Text>
+      </Box>
+    );
+  });
+
+export const HorizontalWithVerticalOverflow: Story = {
+  render: () => (
+    <Box display="flex" flexDirection="column" gap="600">
+      <Box>
+        <Text fontSize="sm" fontWeight="bold" mb="100">
+          orientation=&quot;both&quot; (default)
+        </Text>
+        <Text fontSize="xs" color="neutral.11" mb="300">
+          The first item is h=260px, so it overflows the viewport. A vertical
+          scrollbar appears and the item is scrollable. Other h=100% siblings
+          stay at viewport height.
+        </Text>
+        <ScrollArea
+          h="200px"
+          w="500px"
+          ids={{ viewport: "test-viewport-h-both" }}
+        >
+          <Box display="flex" gap="200" h="200px">
+            <HorizontalWithVerticalOverflowCards />
+          </Box>
+        </ScrollArea>
+      </Box>
+      <Box>
+        <Text fontSize="sm" fontWeight="bold" mb="100">
+          orientation=&quot;horizontal&quot;
+        </Text>
+        <Text fontSize="xs" color="neutral.11" mb="300">
+          Same content, but the vertical axis is actively clipped. The tall
+          first item is cut at the viewport edge, no vertical scrollbar appears,
+          and the horizontal scroll still works.
+        </Text>
+        <ScrollArea
+          h="200px"
+          w="500px"
+          orientation="horizontal"
+          ids={{ viewport: "test-viewport-h-horizontal" }}
+        >
+          <Box display="flex" gap="200" h="200px">
+            <HorizontalWithVerticalOverflowCards />
+          </Box>
+        </ScrollArea>
+      </Box>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+
+    const getInstance = (viewportId: string) => {
+      const viewport = doc.getElementById(viewportId) as HTMLElement;
+      const root = viewport.closest('[data-part="root"]') as HTMLElement;
+      const content = viewport.querySelector(
+        '[data-part="content"]'
+      ) as HTMLElement;
+      const row = content.querySelector(":scope > div") as HTMLElement;
+      const cards = Array.from(
+        row.querySelectorAll(":scope > div")
+      ) as HTMLElement[];
+      const scrollbars = Array.from(
+        root.querySelectorAll('[data-part="scrollbar"]')
+      ) as HTMLElement[];
+      const visibleVerticalScrollbar = scrollbars.find(
+        (sb) =>
+          sb.getAttribute("data-orientation") === "vertical" &&
+          window.getComputedStyle(sb).display !== "none"
+      );
+      return { viewport, cards, visibleVerticalScrollbar };
+    };
+
+    await step(
+      "Both instances keep h=100% siblings at viewport height",
+      async () => {
+        await waitFor(() => {
+          for (const id of [
+            "test-viewport-h-both",
+            "test-viewport-h-horizontal",
+          ]) {
+            const { viewport, cards } = getInstance(id);
+            cards.slice(2).forEach((card) => {
+              expect(card.offsetHeight).toBe(viewport.clientHeight);
+            });
+          }
+        });
+      }
+    );
+
+    await step(
+      "orientation=both: tall card overflows and vertical scrollbar is shown",
+      async () => {
+        const { viewport, cards, visibleVerticalScrollbar } = getInstance(
+          "test-viewport-h-both"
+        );
+        expect(cards[0].offsetHeight).toBeGreaterThan(viewport.clientHeight);
+        expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight);
+        expect(visibleVerticalScrollbar).toBeTruthy();
+      }
+    );
+
+    await step(
+      "orientation=horizontal: tall card is clipped and no vertical scrollbar is shown",
+      async () => {
+        const { viewport, visibleVerticalScrollbar } = getInstance(
+          "test-viewport-h-horizontal"
+        );
+        expect(window.getComputedStyle(viewport).overflowY).toBe("hidden");
+        expect(visibleVerticalScrollbar).toBeUndefined();
+      }
+    );
+  },
+};
+
+// ============================================================
 // Horizontal only scrolling
 // ============================================================
 export const HorizontalOnly: Story = {
