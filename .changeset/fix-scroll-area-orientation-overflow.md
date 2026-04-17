@@ -8,4 +8,7 @@ grow to fit its widest child, so siblings sized at `100%` inherited that
 overgrown width. The wrapper is now sized to the viewport by default, and the
 default `orientation` is `"both"` so descendant overflow surfaces a scrollbar
 indicator instead of being silently scrollable. Setting `orientation` to
-`"vertical"` or `"horizontal"` now actively clips the opposite axis.
+`"vertical"` or `"horizontal"` now actively clips the opposite axis. The content
+wrapper now also fills the viewport vertically, so consumers can vertically
+center a shorter child with flex/grid + `height: 100%` — previously the wrapper
+was intrinsic-height and centering resolved against the child's own height.

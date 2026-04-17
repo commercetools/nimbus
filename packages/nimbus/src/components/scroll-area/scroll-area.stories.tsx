@@ -315,6 +315,76 @@ export const NonOverflowing: Story = {
 };
 
 // ============================================================
+// ContentFillsViewport: short children can be vertically centered
+// ============================================================
+// When children are shorter than the viewport, the content slot fills the
+// viewport so consumers can vertically center a single child with flex.
+// Without this, content would be intrinsic-height and centering would
+// resolve against the child's own height — leaving it pinned to the top.
+export const ContentFillsViewport: Story = {
+  render: () => (
+    <ScrollArea
+      h="400px"
+      w="400px"
+      ids={{
+        viewport: "test-viewport-centering",
+        content: "test-content-centering",
+      }}
+    >
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        h="100%"
+        id="centered-child"
+      >
+        <Text fontSize="sm">Centered message</Text>
+      </Box>
+    </ScrollArea>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const doc = canvasElement.ownerDocument;
+
+    await step("Content slot fills viewport vertically", async () => {
+      await waitFor(() => {
+        const viewport = doc.getElementById(
+          "test-viewport-centering"
+        ) as HTMLElement;
+        const content = doc.getElementById(
+          "test-content-centering"
+        ) as HTMLElement;
+        expect(viewport).toBeTruthy();
+        expect(content).toBeTruthy();
+        expect(viewport.clientHeight).toBe(400);
+        expect(content.clientHeight).toBe(viewport.clientHeight);
+      });
+    });
+
+    await step("Child is vertically centered in viewport", async () => {
+      const viewport = doc.getElementById(
+        "test-viewport-centering"
+      ) as HTMLElement;
+      const child = doc.getElementById("centered-child") as HTMLElement;
+      const viewportRect = viewport.getBoundingClientRect();
+      const childRect = child.getBoundingClientRect();
+      const viewportMid = viewportRect.top + viewportRect.height / 2;
+      const childMid = childRect.top + childRect.height / 2;
+      expect(Math.abs(viewportMid - childMid)).toBeLessThanOrEqual(1);
+    });
+
+    await step("Viewport is not overflowing", async () => {
+      await waitFor(() => {
+        const viewport = doc.getElementById(
+          "test-viewport-centering"
+        ) as HTMLElement;
+        expect(viewport).not.toHaveAttribute("tabindex");
+        expect(viewport).not.toHaveAttribute("data-overflow-y");
+      });
+    });
+  },
+};
+
+// ============================================================
 // Keyboard focus ring: Tab focuses viewport, ring appears on root
 // ============================================================
 export const KeyboardFocusRing: Story = {

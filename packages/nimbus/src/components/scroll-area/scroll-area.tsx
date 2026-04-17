@@ -39,7 +39,7 @@ const ScrollAreaParts = ({
   const contentAxisLock =
     orientation === "horizontal"
       ? { minHeight: 0, height: "100%" }
-      : { minWidth: "100%", width: "100%" };
+      : { minWidth: "100%", width: "100%", height: "100%" };
 
   // Belt-and-suspenders: clip the suppressed axis on the viewport so a child
   // with an explicit fixed size larger than the viewport can't escape either.
