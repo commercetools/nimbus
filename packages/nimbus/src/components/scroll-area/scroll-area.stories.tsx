@@ -241,29 +241,44 @@ export const VerticalOnly: Story = {
 //   scrollbar, and `w=100%` siblings still stay at viewport width.
 // ============================================================
 const VerticalWithHorizontalOverflowCards = () =>
-  Array.from({ length: 6 }, (_, i) => (
-    <Box
-      key={i}
-      w={i === 0 ? "150%" : "100%"}
-      p="300"
-      mb="200"
-      border="solid-25"
-      borderColor="neutral.6"
-      borderRadius="200"
-      bg="neutral.2"
-    >
-      <Text fontSize="xs" color="neutral.11">
-        #{20538 + i}
-      </Text>
-      <Text fontSize="sm" fontWeight="bold" truncate>
-        FEC-{765 + i}: Import
-        no-direct-currency-for-price-selection-in-all-cart-items
-      </Text>
-      <Text fontSize="xs" color="neutral.11">
-        merchant-center-frontend
-      </Text>
-    </Box>
-  ));
+  Array.from({ length: 6 }, (_, i) => {
+    const setting =
+      i === 0 ? 'w="150%"' : i === 1 ? "no width prop" : 'w="100%"';
+    const headline =
+      i === 0
+        ? "Intentionally wider than the viewport to demonstrate a child that legitimately exceeds the scroll area width"
+        : i === 1
+          ? "Intrinsic auto width — block fills the parent content box the same way an explicit 100% does, without setting any size"
+          : "Explicit full width — the common pattern for list rows that should always match the scroll area's visible width";
+    const outcome =
+      i === 0
+        ? "expected: overflows, horizontal scrollbar surfaces under orientation=both"
+        : i === 1
+          ? "expected: fills viewport, stays aligned with w=100% siblings"
+          : "expected: fills viewport regardless of any over-sized sibling";
+    return (
+      <Box
+        key={i}
+        w={i === 0 ? "150%" : i === 1 ? undefined : "100%"}
+        p="300"
+        mb="200"
+        border="solid-25"
+        borderColor="neutral.6"
+        borderRadius="200"
+        bg="neutral.2"
+      >
+        <Text fontSize="xs" color="neutral.11">
+          {setting}
+        </Text>
+        <Text fontSize="sm" fontWeight="bold" truncate>
+          {headline}
+        </Text>
+        <Text fontSize="xs" color="neutral.11">
+          {outcome}
+        </Text>
+      </Box>
+    );
+  });
 
 export const VerticalWithHorizontalOverflow: Story = {
   render: () => (
