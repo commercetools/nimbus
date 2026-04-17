@@ -555,6 +555,20 @@ export const StackedModalPages: Story = {
     });
 
     await step("Escape closes only the topmost level", async () => {
+      // Wait for focus to settle in the topmost dialog before pressing Escape.
+      // The back button in the "Create Attribute" modal has autoFocus — without
+      // this assertion, the Escape event can fire before React Aria's focus
+      // management completes, causing it to be handled by the wrong overlay.
+      await waitFor(
+        () => {
+          expect(
+            canvas.getByRole("button", {
+              name: /go back to select attribute/i,
+            })
+          ).toHaveFocus();
+        },
+        { timeout: 3000 }
+      );
       await userEvent.keyboard("{Escape}");
       await waitFor(
         () => {
