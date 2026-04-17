@@ -1,0 +1,214 @@
+---
+title: InfoDialog Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+## Comparison: InfoDialog vs manual Dialog composition
+
+**With InfoDialog:**
+```tsx
+<InfoDialog
+  title="Shipping restrictions"
+  isOpen={isOpen}
+  onOpenChange={setIsOpen}
+>
+  <Text>Some goods cannot be shipped to the selected region.</Text>
+</InfoDialog>
+```
+
+**Manual composition:**
+```tsx
+<Dialog.Root
+  isOpen={isOpen}
+  onOpenChange={setIsOpen}
+  isDismissable
+>
+  <Dialog.Content>
+    <Dialog.Header>
+      <Dialog.Title>Shipping restrictions</Dialog.Title>
+      <Dialog.CloseTrigger />
+    </Dialog.Header>
+    <Dialog.Body>
+      <Text>Some goods cannot be shipped to the selected region.</Text>
+    </Dialog.Body>
+  </Dialog.Content>
+</Dialog.Root>
+```
+
+### When to use which
+
+**Use InfoDialog when:**
+- You need a read-only informational dialog with no footer actions
+- The default dialog size and dismiss behaviour are appropriate
+- You want a flat four-prop API instead of composing six nested elements
+
+**Use Dialog directly when:**
+- You need a non-default size
+- You need to override dismissability (disable overlay click, disable Escape)
+- Your dialog has footer actions (Cancel/Confirm, destructive action, etc.)
+- You need a custom `aria-label` on a non-string title
+
+## Getting started
+
+### Import
+
+```tsx
+import { InfoDialog, type InfoDialogProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The simplest implementation with a string title and controlled open state:
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Show shipping info</Button>
+      <InfoDialog
+        title="Shipping restrictions"
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+      >
+        <Text>
+          Some goods cannot be shipped to the selected region. Review the
+          restricted items and update the shipping address if needed.
+        </Text>
+      </InfoDialog>
+    </>
+  );
+}
+```
+
+## Usage examples
+
+### ReactNode title
+
+The `title` prop accepts any ReactNode, so you can compose a heading with inline elements like a badge or icon:
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Show plan details</Button>
+      <InfoDialog
+        title={
+          <Flex alignItems="center" gap="200">
+            <Text>Plan details</Text>
+            <Badge>Pro</Badge>
+          </Flex>
+        }
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+      >
+        <Text>
+          Your current plan includes unlimited projects and priority support.
+        </Text>
+      </InfoDialog>
+    </>
+  );
+}
+```
+
+When the `title` is not a plain string, consider providing an explicit `aria-label` via the escape hatch below if the composed markup does not form a meaningful accessible name on its own.
+
+### Long, scrollable content
+
+Content that exceeds the available dialog height scrolls within the body; the header with the title and close button stays pinned at the top.
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Show terms</Button>
+      <InfoDialog
+        title="Terms of service"
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+      >
+        <Stack gap="400">
+          {Array.from({ length: 20 }, (_, i) => (
+            <Text key={i}>
+              Paragraph {i + 1}: Lorem ipsum dolor sit amet, consectetur
+              adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
+              dolore magna aliqua.
+            </Text>
+          ))}
+        </Stack>
+      </InfoDialog>
+    </>
+  );
+}
+```
+
+## Close affordances
+
+Because InfoDialog has no footer actions, the underlying Dialog is always rendered with `isDismissable` enabled so the user has multiple ways to close it:
+
+- The X button in the header
+- The Escape key
+- A click on the overlay outside the dialog content
+
+All three routes invoke `onOpenChange(false)`.
+
+## Accessibility
+
+InfoDialog inherits its accessibility guarantees from the Nimbus `Dialog` primitive:
+
+- `role="dialog"` is exposed to assistive technology while open
+- Focus moves into the dialog on open and is trapped within it
+- Focus is restored to the triggering element on close
+- When `title` is a string, the dialog's accessible name is derived from it automatically — no extra `aria-label` is required
+
+If the `title` is a composed ReactNode, consumers remain responsible for any extra affordances their composition needs (for example, an explicit `aria-label` on the trigger or via the escape hatch below).
+
+## Escape hatch
+
+If you need a non-default size, a custom dismiss behaviour, or a custom accessible label, drop down to composing `Dialog` directly. The equivalent manual composition is:
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Open large dialog</Button>
+      <Dialog.Root
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        isDismissable
+        aria-label="Shipping restrictions"
+      >
+        <Dialog.Content size="lg">
+          <Dialog.Header>
+            <Dialog.Title>Shipping restrictions</Dialog.Title>
+            <Dialog.CloseTrigger />
+          </Dialog.Header>
+          <Dialog.Body>
+            <Text>
+              Some goods cannot be shipped to the selected region.
+            </Text>
+          </Dialog.Body>
+        </Dialog.Content>
+      </Dialog.Root>
+    </>
+  );
+}
+```
+
+## API reference
+
+<PropsTable id="InfoDialog" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using InfoDialog within your application. The component's internal behaviour is already covered by Nimbus — these tests help you verify your integration.
+
+{{docs-tests: info-dialog.docs.spec.tsx}}
