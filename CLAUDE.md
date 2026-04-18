@@ -1,26 +1,3 @@
-<!-- OPENSPEC:START -->
-
-# OpenSpec Instructions
-
-These instructions are for AI assistants working in this project.
-
-Always open `@/openspec/AGENTS.md` when the request:
-
-- Mentions planning or proposals (words like proposal, spec, change, plan)
-- Is not clearly a fix (bug fix, typo, formatting, config tweak, docs for
-  existing behavior, or test addition for existing behavior)
-- Sounds ambiguous and you need the authoritative spec before coding
-
-Use `@/openspec/AGENTS.md` to learn:
-
-- How to create and apply change proposals
-- Spec format and conventions
-- Project structure and guidelines
-
-Keep this managed block so 'openspec update' can refresh the instructions.
-
-<!-- OPENSPEC:END -->
-
 ## Quick Start: What Do You Want To Do?
 
 Choose the command that matches your task:
@@ -32,7 +9,7 @@ flowchart TD
     A -->|No| B{Just a fix?<br/>bug, typo, docs,<br/>config, tests}
 
     B -->|Yes| DirectFix["Just implement directly<br/>No ceremony needed"]
-    B -->|No| OpenSpec["/openspec:proposal"]
+    B -->|No| OpenSpec["/opsx:propose"]
 
     style ProposeComponent fill:#4CAF50
     style DirectFix fill:#4CAF50
@@ -43,7 +20,7 @@ flowchart TD
 
 - **Creating a component?** → `/propose-component ComponentName`
 - **Just a fix?** → Just implement directly (no ceremony)
-- **Everything else?** → `/openspec:proposal`
+- **Everything else?** → `/opsx:propose`
 
 ## Common Workflows
 
@@ -99,10 +76,10 @@ documentation.
 
 ### Any Other Change
 
-Use the `/openspec:proposal` command:
+Use the `/opsx:propose` command:
 
 ```
-/openspec:proposal
+/opsx:propose
 ```
 
 Any change that isn't a fix requires a proposal. This includes but is not
@@ -118,7 +95,7 @@ expand what the library accepts as valid input.
 
 - `/propose-component` handles the full component creation process
 - `/create-eng-docs` generates documentation
-- `/openspec:proposal` creates change proposals
+- `/opsx:propose` creates change proposals
 
 **Agents** handle multi-step phases (typically invoked BY commands):
 
@@ -153,7 +130,7 @@ expand what the library accepts as valid input.
 - Validates against WCAG, React Aria, Chakra UI patterns
 - Generates TDD task list with acceptance criteria
 
-**Use `/openspec:proposal`** for all other non-fix changes.
+**Use `/opsx:propose`** for all other non-fix changes.
 
 **Skip OpenSpec only for:**
 
@@ -167,7 +144,7 @@ expand what the library accepts as valid input.
 
 Every change needs a reason. If the change is not a fix (bug fix, typo, config
 tweak, docs for existing behavior, or test for existing behavior), it SHOULD
-have an OpenSpec proposal via `/openspec:proposal` before implementation.
+have an OpenSpec proposal via `/opsx:propose` before implementation.
 
 ## Project Overview
 
