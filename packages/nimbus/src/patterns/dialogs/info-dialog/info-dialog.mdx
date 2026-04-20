@@ -2,7 +2,7 @@
 id: Patterns-InfoDialog
 title: Info dialog
 exportName: InfoDialog
-description: A pre-composed read-only informational dialog with a flat four-prop API.
+description: A pre-composed read-only informational dialog with a flat, minimal API.
 order: 999
 menu:
   - Patterns
@@ -21,7 +21,7 @@ related-components:
 
 InfoDialog is a pattern component that wraps the Dialog primitive in a flat, minimal API for the most common read-only informational dialog shape: a title, some content, and a close affordance. It is the recommended replacement for the Merchant Center Application Kit's `InfoDialog`.
 
-The pattern exposes four props — `title`, `isOpen`, `onOpenChange`, and `children` — and delegates everything else (sizing, stacking, portaling, focus management) to the underlying `Dialog` primitive.
+The pattern exposes a small, flat set of props — `title`, `children`, and optional `isOpen` / `defaultOpen` / `onOpenChange` / `aria-label` — and delegates everything else (sizing, stacking, portaling, focus management) to the underlying `Dialog` primitive.
 
 ### When to use
 
@@ -32,11 +32,11 @@ The pattern exposes four props — `title`, `isOpen`, `onOpenChange`, and `child
 
 - Dialogs that need confirmation, cancellation, or destructive action buttons — use `Dialog` directly or a confirmation pattern
 - Dialogs hosting editable forms — use `Dialog` directly with form wiring
-- Any scenario that needs a non-default size, a custom accessible label on a non-string title, or non-default dismiss behaviour — drop down to `Dialog` directly (see the [escape hatch](#escape-hatch) in the developer documentation)
+- Any scenario that needs a non-default size or non-default dismiss behaviour — drop down to `Dialog` directly (see the escape hatch in the developer documentation)
 
 ### Resources
 
 For detailed guidance on the underlying primitive, consult the component guidelines:
 
-- [Dialog Guidelines](/components/overlay/dialog) — Variants, dismissability, sizing, placement, accessibility
+- [Dialog Guidelines](/components/feedback/dialog) — Variants, dismissability, sizing, placement, accessibility
 - [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-dialogs-infodialog--docs)
