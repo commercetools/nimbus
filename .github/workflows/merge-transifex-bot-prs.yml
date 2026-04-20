@@ -107,7 +107,7 @@ jobs:
               echo "Dry run — skipping compile and commit for PR #$PR_NUM."
             else
               pnpm --filter @commercetools/nimbus-i18n build
-              git add -u packages/nimbus/src/components/
+              git add packages/nimbus/src/components/
               if git diff --cached --quiet; then
                 echo "No compiled output changes for PR #$PR_NUM."
               else
