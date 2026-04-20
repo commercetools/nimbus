@@ -138,7 +138,8 @@ export const Base: Story = {
 
 /**
  * Title accepts any ReactNode, so consumers can compose a heading with inline
- * elements like a badge or icon.
+ * elements like a badge or icon. When the composed title would produce a
+ * confusing accessible name, pass an explicit `aria-label` to override it.
  */
 export const WithReactNodeTitle: Story = {
   render: () => {
@@ -153,6 +154,7 @@ export const WithReactNodeTitle: Story = {
               <Badge>Pro</Badge>
             </Flex>
           }
+          aria-label="Plan details"
           isOpen={isOpen}
           onOpenChange={setIsOpen}
         >
@@ -167,11 +169,11 @@ export const WithReactNodeTitle: Story = {
     const canvas = within(
       (canvasElement.parentNode as HTMLElement) ?? canvasElement
     );
+    const getTrigger = () =>
+      canvas.getByRole("button", { name: "Open info dialog" });
 
     await step("Opens with a composed ReactNode title", async () => {
-      await userEvent.click(
-        canvas.getByRole("button", { name: "Open info dialog" })
-      );
+      await userEvent.click(getTrigger());
 
       await waitFor(() => {
         expect(canvas.getByRole("dialog")).toBeInTheDocument();
@@ -179,6 +181,28 @@ export const WithReactNodeTitle: Story = {
 
       expect(canvas.getByText("Plan details")).toBeInTheDocument();
       expect(canvas.getByText("Pro")).toBeInTheDocument();
+    });
+
+    await step(
+      "aria-label overrides the composed title as the dialog's accessible name",
+      async () => {
+        expect(canvas.getByRole("dialog")).toHaveAccessibleName("Plan details");
+      }
+    );
+
+    await step("Closes via the X button and restores focus", async () => {
+      await userEvent.click(canvas.getByRole("button", { name: /close/i }));
+
+      await waitFor(() => {
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+
+      await waitFor(
+        () => {
+          expect(getTrigger()).toHaveFocus();
+        },
+        { timeout: 1000 }
+      );
     });
   },
 };
@@ -227,10 +251,36 @@ export const LongContent: Story = {
       expect(
         canvas.getByRole("heading", { name: "Terms of service" })
       ).toBeInTheDocument();
-      expect(canvas.getByText(/Paragraph 1:/)).toBeInTheDocument();
+      expect(canvas.getByText(/^Paragraph 1:/)).toBeInTheDocument();
       expect(
         canvas.getByRole("button", { name: /close/i })
       ).toBeInTheDocument();
     });
+
+    await step(
+      "Body scrolls to reveal the last paragraph while the header stays pinned",
+      async () => {
+        const lastParagraph = canvas.getByText(/^Paragraph 25:/);
+        const header = canvas.getByRole("heading", {
+          name: "Terms of service",
+        });
+        const headerTopBeforeScroll = header.getBoundingClientRect().top;
+
+        lastParagraph.scrollIntoView({ block: "end" });
+
+        await waitFor(() => {
+          const paragraphRect = lastParagraph.getBoundingClientRect();
+          expect(paragraphRect.top).toBeLessThan(window.innerHeight);
+          expect(paragraphRect.bottom).toBeGreaterThan(0);
+        });
+
+        // Header position is unchanged because it's pinned outside the
+        // scrollable body region.
+        expect(header.getBoundingClientRect().top).toBeCloseTo(
+          headerTopBeforeScroll,
+          0
+        );
+      }
+    );
   },
 };

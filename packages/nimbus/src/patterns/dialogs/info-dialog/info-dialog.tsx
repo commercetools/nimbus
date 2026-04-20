@@ -5,9 +5,9 @@ import type { InfoDialogProps } from "./info-dialog.types";
  * # InfoDialog
  *
  * A pre-composed, read-only informational dialog pattern built on top of the
- * Nimbus `Dialog` primitive. Exposes a flat four-prop API (`title`, `isOpen`,
- * `onOpenChange`, `children`) for the common case of showing information the
- * user only needs to read and dismiss.
+ * Nimbus `Dialog` primitive. Exposes a flat API (`title`, `children`, and
+ * optional `isOpen` / `defaultOpen` / `onOpenChange` / `aria-label`) for the
+ * common case of showing information the user only needs to read and dismiss.
  *
  * Close affordances: the X button in the header, the Escape key, and a click
  * on the overlay all invoke `onOpenChange(false)`.
@@ -29,10 +29,19 @@ export const InfoDialog = ({
   title,
   children,
   isOpen,
+  defaultOpen,
   onOpenChange,
+  "aria-label": ariaLabel,
 }: InfoDialogProps) => {
   return (
-    <Dialog.Root isOpen={isOpen} onOpenChange={onOpenChange} isDismissable>
+    <Dialog.Root
+      isOpen={isOpen}
+      defaultOpen={defaultOpen}
+      onOpenChange={onOpenChange}
+      aria-label={ariaLabel}
+      isDismissable
+      scrollBehavior="inside"
+    >
       <Dialog.Content>
         <Dialog.Header>
           <Dialog.Title>{title}</Dialog.Title>

@@ -47,7 +47,6 @@ tab-order: 3
 - You need a non-default size
 - You need to override dismissability (disable overlay click, disable Escape)
 - Your dialog has footer actions (Cancel/Confirm, destructive action, etc.)
-- You need a custom `aria-label` on a non-string title
 
 ## Getting started
 
@@ -115,7 +114,23 @@ const App = () => {
 }
 ```
 
-When the `title` is not a plain string, consider providing an explicit `aria-label` via the escape hatch below if the composed markup does not form a meaningful accessible name on its own.
+When the `title` is not a plain string, pass an explicit `aria-label` if the composed markup does not form a meaningful accessible name on its own:
+
+```tsx
+<InfoDialog
+  title={
+    <Flex alignItems="center" gap="200">
+      <Text>Plan details</Text>
+      <Badge>Pro</Badge>
+    </Flex>
+  }
+  aria-label="Plan details"
+  isOpen={isOpen}
+  onOpenChange={setIsOpen}
+>
+  {/* ... */}
+</InfoDialog>
+```
 
 ### Long, scrollable content
 
@@ -167,11 +182,11 @@ InfoDialog inherits its accessibility guarantees from the Nimbus `Dialog` primit
 - Focus is restored to the triggering element on close
 - When `title` is a string, the dialog's accessible name is derived from it automatically — no extra `aria-label` is required
 
-If the `title` is a composed ReactNode, consumers remain responsible for any extra affordances their composition needs (for example, an explicit `aria-label` on the trigger or via the escape hatch below).
+If the `title` is a composed ReactNode, pass an explicit `aria-label` to InfoDialog so the dialog has a meaningful accessible name.
 
 ## Escape hatch
 
-If you need a non-default size, a custom dismiss behaviour, or a custom accessible label, drop down to composing `Dialog` directly. The equivalent manual composition is:
+If you need a non-default size or a custom dismiss behaviour, drop down to composing `Dialog` directly. The equivalent manual composition is:
 
 ```jsx live-dev
 const App = () => {

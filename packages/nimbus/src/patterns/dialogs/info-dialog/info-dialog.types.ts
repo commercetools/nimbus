@@ -4,14 +4,14 @@ import type { ReactNode } from "react";
  * Props for the InfoDialog pattern component.
  *
  * A pre-composed read-only informational dialog built on top of the Nimbus
- * Dialog primitive. The flat four-prop API covers the overwhelmingly common
+ * Dialog primitive. The flat API covers the overwhelmingly common
  * informational-dialog case (string or composed-JSX title, default size,
  * default dismiss behaviour).
  *
- * Consumers needing a non-default size, custom dismissability, or a custom
- * accessible label should compose `Dialog.Root`, `Dialog.Content`,
- * `Dialog.Header`, `Dialog.Title`, `Dialog.Body`, and `Dialog.CloseTrigger`
- * directly (see the "Escape hatch" section in the dev documentation).
+ * Consumers needing a non-default size or custom dismissability should
+ * compose `Dialog.Root`, `Dialog.Content`, `Dialog.Header`, `Dialog.Title`,
+ * `Dialog.Body`, and `Dialog.CloseTrigger` directly (see the "Escape hatch"
+ * section in the dev documentation).
  */
 export type InfoDialogProps = {
   /**
@@ -34,8 +34,21 @@ export type InfoDialogProps = {
 
   /**
    * Whether the dialog is open (controlled mode).
+   *
+   * Pair with `onOpenChange` to drive the dialog from consumer state. When
+   * omitted, use `defaultOpen` to start the dialog open in uncontrolled mode.
    */
   isOpen?: boolean;
+
+  /**
+   * Whether the dialog is open by default (uncontrolled mode).
+   *
+   * Use when the consumer does not need to observe or control the open state.
+   * Ignored when `isOpen` is provided.
+   *
+   * @default false
+   */
+  defaultOpen?: boolean;
 
   /**
    * Callback fired when the open state changes.
@@ -44,4 +57,15 @@ export type InfoDialogProps = {
    * button in the header, the Escape key, or a click on the overlay.
    */
   onOpenChange?: (isOpen: boolean) => void;
+
+  /**
+   * Accessible label for the dialog, forwarded to the underlying
+   * `Dialog.Root`.
+   *
+   * By default the dialog's accessible name is derived from `title`. Provide
+   * this override when `title` is a composed `ReactNode` whose text content
+   * would produce a confusing accessible name (for example a title that
+   * concatenates inline badges or icons).
+   */
+  "aria-label"?: string;
 };

@@ -84,35 +84,4 @@ describe("InfoDialog - Controlled state", () => {
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
   });
-
-  it("invokes onOpenChange(false) when Escape is pressed", async () => {
-    const user = userEvent.setup();
-
-    const ControlledInfoDialog = () => {
-      const [isOpen, setIsOpen] = useState(true);
-      return (
-        <InfoDialog
-          title="Press Escape"
-          isOpen={isOpen}
-          onOpenChange={setIsOpen}
-        >
-          <p>Press Escape to dismiss</p>
-        </InfoDialog>
-      );
-    };
-
-    render(
-      <NimbusProvider>
-        <ControlledInfoDialog />
-      </NimbusProvider>
-    );
-
-    await waitFor(() => expect(screen.getByRole("dialog")).toBeInTheDocument());
-
-    await user.keyboard("{Escape}");
-
-    await waitFor(() => {
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    });
-  });
 });

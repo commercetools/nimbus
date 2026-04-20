@@ -23,7 +23,8 @@ compound namespace) from `@commercetools/nimbus`.
 
 ### Requirement: Flat Props API
 
-The InfoDialog component SHALL accept only four props.
+The InfoDialog component SHALL accept a small, flat set of props that
+together cover the common informational-dialog case.
 
 #### Scenario: Required props
 
@@ -34,8 +35,11 @@ The InfoDialog component SHALL accept only four props.
 #### Scenario: Optional props
 
 - **WHEN** InfoDialog is rendered
-- **THEN** MAY accept `isOpen` typed as `boolean`
+- **THEN** MAY accept `isOpen` typed as `boolean` for controlled usage
+- **AND** MAY accept `defaultOpen` typed as `boolean` for uncontrolled usage
 - **AND** MAY accept `onOpenChange` typed as `(isOpen: boolean) => void`
+- **AND** MAY accept `aria-label` typed as `string` to override the
+  accessible name derived from `title`
 
 #### Scenario: No additional configuration props
 
@@ -43,7 +47,6 @@ The InfoDialog component SHALL accept only four props.
 - **THEN** SHALL NOT declare a `size` prop
 - **AND** SHALL NOT declare a `zIndex` prop
 - **AND** SHALL NOT declare a `getParentSelector` or other portal prop
-- **AND** SHALL NOT declare an `aria-label` prop
 - **AND** SHALL NOT expose a `TextTitle` sub-component
 
 ### Requirement: Internal Composition
@@ -65,18 +68,26 @@ primitive rather than duplicating its logic.
 
 #### Scenario: Prop forwarding
 
-- **WHEN** InfoDialog receives `isOpen` or `onOpenChange`
+- **WHEN** InfoDialog receives `isOpen`, `defaultOpen`, `onOpenChange`,
+  or `aria-label`
 - **THEN** SHALL forward those values to `Dialog.Root`
 
-### Requirement: Controlled Open State
+### Requirement: Open State
 
 The InfoDialog SHALL reflect its open state through the underlying Dialog
-primitive.
+primitive and support both controlled and uncontrolled usage.
 
 #### Scenario: Controlled open
 
 - **WHEN** `isOpen` is `true`
 - **THEN** the dialog SHALL be visible
+
+#### Scenario: Uncontrolled open
+
+- **WHEN** `isOpen` is omitted and `defaultOpen` is `true`
+- **THEN** the dialog SHALL be visible on mount
+- **AND** SHALL close when the user triggers any close affordance without
+  requiring the consumer to manage state
 
 #### Scenario: Controlled close
 
@@ -164,6 +175,12 @@ meet WCAG 2.1 AA dialog requirements.
 - **THEN** the dialog's accessible name SHALL be that string
 - **AND** no additional `aria-label` SHALL be required from the consumer
 
+#### Scenario: Accessible name override
+
+- **WHEN** `aria-label` is provided
+- **THEN** it SHALL be forwarded to `Dialog.Root` and SHALL serve as the
+  dialog's accessible name, overriding the name derived from `title`
+
 ### Requirement: Developer Documentation
 
 The pattern SHALL ship with developer-facing documentation that covers
@@ -181,11 +198,10 @@ both the flat API and an escape hatch for advanced customization.
 - **THEN** SHALL include a section demonstrating the equivalent manual
   `Dialog` composition
 - **AND** SHALL guide consumers to drop down to `Dialog` when they need
-  a non-default size, a custom dismissability behaviour, or a custom
-  accessible label
+  a non-default size or a custom dismissability behaviour
 
 #### Scenario: API reference
 
 - **WHEN** the `.dev.mdx` renders the PropsTable
-- **THEN** SHALL list exactly four props (`title`, `isOpen`,
-  `onOpenChange`, `children`) with their types and JSDoc
+- **THEN** SHALL list the public props (`title`, `children`, `isOpen`,
+  `defaultOpen`, `onOpenChange`, `aria-label`) with their types and JSDoc
