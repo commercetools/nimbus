@@ -1,0 +1,141 @@
+name: Merge Transifex Bot PRs
+
+on:
+  schedule:
+    - cron: '0 5 * * 1,3,5' # At 05:00 AM UTC on Monday, Wednesday, Friday
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (validate and log without merging or committing)'
+        required: false
+        default: 'false'
+        type: boolean
+
+env:
+  TRANSIFEX_BOT_AUTHOR: transifex-integration[bot]
+
+jobs:
+  automerge-transifex-prs:
+    name: Find, Merge, and Compile Transifex Bot PRs
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Generate GitHub token (via CT Changesets App)
+        id: generate_github_token
+        uses: tibdex/github-app-token@v2.1.0
+        with:
+          app_id: ${{ secrets.CT_CHANGESETS_APP_ID }}
+          private_key: ${{ secrets.CT_CHANGESETS_APP_PEM }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ steps.generate_github_token.outputs.token }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4.0.0
+        with:
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.12'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --filter @commercetools/nimbus-i18n...
+
+      - name: Find, merge, and compile Transifex bot PRs
+        run: |
+          DRY_RUN="${{ github.event.inputs.dry_run || 'false' }}"
+          MERGED=false
+
+          PRS=$(gh pr list \
+            --author "${{ env.TRANSIFEX_BOT_AUTHOR }}" \
+            --state open \
+            --base main \
+            --json number \
+            --jq '.[].number')
+
+          if [ -z "$PRS" ]; then
+            echo "No open Transifex bot PRs found."
+            exit 0
+          fi
+
+          for PR_NUM in $PRS; do
+            echo "Processing PR #$PR_NUM..."
+
+            # Skip if any changed files are not JSON
+            NON_JSON=$(gh pr view "$PR_NUM" \
+              --json files \
+              --jq '[.files[].path | select(endswith(".json") | not)] | length')
+            if [ "$NON_JSON" -gt 0 ]; then
+              echo "PR #$PR_NUM has non-JSON files. Skipping."
+              continue
+            fi
+
+            # Skip if any commits are from non-bot authors
+            NON_BOT=$(gh pr view "$PR_NUM" \
+              --json commits \
+              --jq "[.commits[].authors[] | select(.login != \"${{ env.TRANSIFEX_BOT_AUTHOR }}\")] | length")
+            if [ "$NON_BOT" -gt 0 ]; then
+              echo "PR #$PR_NUM has commits from non-bot authors. Skipping."
+              continue
+            fi
+
+            # Approve if not already approved
+            APPROVED=$(gh pr view "$PR_NUM" \
+              --json reviews \
+              --jq '[.reviews[] | select(.state == "APPROVED")] | length')
+            if [ "$APPROVED" -eq 0 ]; then
+              if [ "$DRY_RUN" = "true" ]; then
+                echo "Dry run — skipping approval of PR #$PR_NUM."
+              else
+                gh pr review "$PR_NUM" --approve \
+                  --body "Auto-approved by merge-transifex-bot-prs workflow."
+                echo "Approved PR #$PR_NUM."
+              fi
+            fi
+
+            # Add audit label and merge
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "Dry run — skipping label and merge of PR #$PR_NUM."
+            else
+              gh pr edit "$PR_NUM" --add-label "tx-auto-merge"
+              echo "Labeled PR #$PR_NUM."
+              gh pr merge "$PR_NUM" --merge
+              echo "Merged PR #$PR_NUM."
+              MERGED=true
+            fi
+          done
+
+          # Also implicitly skips compile during dry run since MERGED is never set to true
+          if [ "$MERGED" = false ]; then
+            echo "No PRs were merged."
+            exit 0
+          fi
+
+          # Pull merged changes
+          git pull origin main
+
+          # Compile i18n messages
+          pnpm --filter @commercetools/nimbus-i18n build
+
+          # Commit compiled output if anything changed
+          git config user.name "ct-changesets[bot]"
+          git config user.email "ct-changesets[bot]@users.noreply.github.com"
+          git add -u packages/nimbus/src/components/
+          if git diff --cached --quiet; then
+            echo "No compiled output changes to commit."
+            exit 0
+          fi
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "Dry run — skipping commit of compiled output."
+          else
+            git commit -m "chore(intl): compile translation updates from Transifex"
+            git push origin main
+          fi
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_github_token.outputs.token }}
