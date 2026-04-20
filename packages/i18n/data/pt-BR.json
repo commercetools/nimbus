@@ -1,7 +1,7 @@
 {
   "Nimbus.Alert.dismiss": {
     "developer_comment": "aria-label for the dismiss button in an alert",
-    "string": "Dispensar"
+    "string": "Dispensar TEST"
   },
   "Nimbus.Avatar.avatarLabel": {
     "developer_comment": "aria-label for avatar component with user's full name",
