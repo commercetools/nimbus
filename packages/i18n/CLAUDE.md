@@ -133,10 +133,12 @@ runtime**.
 
 1. Messages are extracted to `data/core.json` and pushed to Transifex
 2. Translators provide translations for all supported locales
-3. Translations are pulled back to `data/[locale].json` (Transifex format)
-4. Build pipeline compiles messages:
-   `pnpm --filter @commercetools/nimbus-i18n build`
-5. Generated `*.messages.ts` files are committed to the repository
+3. Transifex automatically opens a PR with updated `data/[locale].json` files
+4. The `merge-transifex-bot-prs` GitHub Actions workflow takes over
+   automatically:
+   - Runs `pnpm --filter @commercetools/nimbus-i18n build` to compile messages
+   - Commits the generated `*.messages.ts` files to the PR branch
+   - Approves and merges the PR once all checks pass
 
 ### 4. Usage in Components
 
