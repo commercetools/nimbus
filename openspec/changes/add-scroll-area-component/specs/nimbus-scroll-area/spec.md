@@ -143,10 +143,10 @@ and vice versa.
 
 ### Requirement: Content wrapper sizes to viewport by default
 
-For the default and `vertical` orientations, the internal content wrapper
-SHALL be sized to the viewport (both width and height) so siblings with
-`width: 100%` size against the viewport, and so consumers can vertically
-center a shorter child with flex/grid + `height: 100%`.
+For default and `vertical` orientations, the content wrapper SHALL be sized
+to the viewport (both width and height) so siblings with `width: 100%` size
+against the viewport, and so consumers can vertically center a shorter child
+with flex/grid + `height: 100%`.
 
 Descendant overflow on either axis SHALL still be surfaced as viewport
 scroll via `scrollHeight` / `scrollWidth`, so scrolling is unaffected.
