@@ -386,6 +386,8 @@ flowchart TD
   keys, a ticket must be created to notify the localization manager. This
   initiates the professional translation coordination process and ensures proper
   review, context provision, and quality assurance for all translatable content.
+  The `notify-localization-team` GitHub Actions workflow will automatically post
+  a reminder comment on any PR that modifies `.i18n.ts` files.
 
 **Complete Workflow:**
 
@@ -394,7 +396,9 @@ flowchart TD
 3. Commit and merge changes to `main` branch
 4. GitHub-Transifex integration (via `transifex.yml`) automatically syncs
    changes to Transifex
-5. **Create ticket** for localization manager to coordinate translation work
+5. **Create ticket** for localization manager to coordinate translation work _(a
+   reminder comment is automatically posted on the PR by
+   `notify-localization-team`)_
 6. Localization manager coordinates professional translation through Transifex
 7. Transifex automatically creates a pull request when translations are complete
 8. The `merge-transifex-bot-prs` GitHub Actions workflow automatically compiles
