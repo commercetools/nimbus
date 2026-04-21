@@ -97,32 +97,52 @@ async function getMessageKeys(localePath: string): Promise<string[] | null> {
   }
 }
 
-async function generateDictionaries() {
-  const nimbusComponentsDir = path.join(
-    __dirname,
-    "../../nimbus/src/components"
-  );
-
-  // Get all component directories and find those with intl/ directories
-  const componentDirs = await fs.readdir(nimbusComponentsDir);
-  const componentsWithIntl: string[] = [];
-
-  for (const dir of componentDirs) {
-    const componentPath = path.join(nimbusComponentsDir, dir);
-    const intlPath = path.join(componentPath, "intl");
-
+/**
+ * Recursively walk a root directory and return every descendant directory that
+ * contains an `intl/` subdirectory. Used to support components and patterns
+ * (which may be nested under subcategory directories like `fields/`).
+ */
+async function findDirsWithIntl(root: string): Promise<string[]> {
+  const result: string[] = [];
+  const stack: string[] = [root];
+  while (stack.length > 0) {
+    const current = stack.pop()!;
+    let entries;
     try {
-      const stat = await fs.stat(intlPath);
-      if (stat.isDirectory()) {
-        componentsWithIntl.push(dir);
-      }
+      entries = await fs.readdir(current, { withFileTypes: true });
     } catch {
-      // intl/ doesn't exist, skip this component
+      continue;
+    }
+    let hasIntl = false;
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const full = path.join(current, entry.name);
+      if (entry.name === "intl") {
+        hasIntl = true;
+      } else {
+        stack.push(full);
+      }
+    }
+    if (hasIntl && current !== root) {
+      result.push(current);
     }
   }
+  return result;
+}
 
-  for (const componentDir of componentsWithIntl) {
-    const componentPath = path.join(nimbusComponentsDir, componentDir);
+async function generateDictionaries() {
+  const nimbusSrcDir = path.join(__dirname, "../../nimbus/src");
+  const nimbusComponentsDir = path.join(nimbusSrcDir, "components");
+  const nimbusPatternsDir = path.join(nimbusSrcDir, "patterns");
+
+  // Discover all directories with intl/ across components and patterns
+  const componentPaths = [
+    ...(await findDirsWithIntl(nimbusComponentsDir)),
+    ...(await findDirsWithIntl(nimbusPatternsDir)),
+  ];
+
+  for (const componentPath of componentPaths) {
+    const componentDir = path.basename(componentPath);
     const intlPath = path.join(componentPath, "intl");
 
     // Get available locale files
@@ -154,6 +174,20 @@ async function generateDictionaries() {
     const variableName = dirToVariableName(componentDir);
     const fileName = `${componentDir}.messages.ts`;
     const outputPath = path.join(componentPath, fileName);
+
+    // Compute relative path to the normalize-messages util so nested directories
+    // (e.g., patterns/actions/form-action-bar) work alongside top-level components.
+    const normalizeMessagesUtil = path.join(
+      nimbusSrcDir,
+      "utils",
+      "normalize-messages"
+    );
+    const normalizeMessagesRelative = path
+      .relative(componentPath, normalizeMessagesUtil)
+      .replace(/\\/g, "/");
+    const normalizeMessagesImport = normalizeMessagesRelative.startsWith(".")
+      ? normalizeMessagesRelative
+      : `./${normalizeMessagesRelative}`;
 
     // Generate import statements for all available locale files
     const imports = availableLocales
@@ -187,7 +221,7 @@ async function generateDictionaries() {
  */
 
 import { type LocalizedString, type LocalizedStrings } from "@internationalized/string";
-import { normalizeMessages } from "../../utils/normalize-messages";
+import { normalizeMessages } from "${normalizeMessagesImport}";
 
 // Pre-compiled message functions
 ${imports}

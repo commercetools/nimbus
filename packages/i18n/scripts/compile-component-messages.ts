@@ -61,12 +61,52 @@ function componentToDir(component: string): string {
     .replace(/^-/, "");
 }
 
+/**
+ * Recursively walk a directory and return a map of basename → absolute path
+ * for every descendant directory. Used to locate the target directory for a
+ * component in either `components/` or `patterns/` (with arbitrary nesting).
+ */
+async function collectDirsByName(
+  root: string
+): Promise<Record<string, string>> {
+  const result: Record<string, string> = {};
+  const stack: string[] = [root];
+  while (stack.length > 0) {
+    const current = stack.pop()!;
+    let entries;
+    try {
+      entries = await fs.readdir(current, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const full = path.join(current, entry.name);
+      // First match wins (top-down) so `components/` takes precedence if the
+      // same basename exists in both trees.
+      if (!(entry.name in result)) {
+        result[entry.name] = full;
+      }
+      stack.push(full);
+    }
+  }
+  return result;
+}
+
 async function compileComponentMessages() {
   const splitDir = path.join(__dirname, "../.temp/by-component");
-  const nimbusComponentsDir = path.join(
-    __dirname,
-    "../../nimbus/src/components"
-  );
+  const nimbusSrcDir = path.join(__dirname, "../../nimbus/src");
+  const nimbusComponentsDir = path.join(nimbusSrcDir, "components");
+  const nimbusPatternsDir = path.join(nimbusSrcDir, "patterns");
+
+  // Build a lookup of kebab-case directory names to their absolute paths across
+  // components/ and patterns/. Components take precedence on collision.
+  const componentsLookup = await collectDirsByName(nimbusComponentsDir);
+  const patternsLookup = await collectDirsByName(nimbusPatternsDir);
+  const dirLookup: Record<string, string> = {
+    ...patternsLookup,
+    ...componentsLookup,
+  };
 
   // Get all component directories (filter out files, keep only directories)
   const componentDirs = await fs.readdir(splitDir);
@@ -82,11 +122,10 @@ async function compileComponentMessages() {
   for (const component of components) {
     const componentDir = path.join(splitDir, component);
     const componentDirName = componentToDir(component);
-    const outputIntlDir = path.join(
-      nimbusComponentsDir,
-      componentDirName,
-      "intl"
-    );
+    const resolvedComponentDir =
+      dirLookup[componentDirName] ??
+      path.join(nimbusComponentsDir, componentDirName);
+    const outputIntlDir = path.join(resolvedComponentDir, "intl");
 
     // Create intl directory for this component
     await fs.mkdir(outputIntlDir, { recursive: true });
