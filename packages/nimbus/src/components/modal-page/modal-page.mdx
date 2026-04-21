@@ -106,8 +106,11 @@ const App = () => {
           <Text>Form fields go here.</Text>
         </ModalPage.Content>
         <ModalPage.Footer>
-          <Button slot="close" variant="outline">Cancel</Button>
-          <Button colorPalette="primary" variant="solid">Save</Button>
+          <FormActionBar
+            onSave={() => {}}
+            onCancel={() => {}}
+            cancelSlot="close"
+          />
         </ModalPage.Footer>
       </ModalPage.Root>
     </Stack>
@@ -182,8 +185,11 @@ const App = () => {
           </PageContent.Root>
         </ModalPage.Content>
         <ModalPage.Footer>
-          <Button slot="close" variant="outline">Cancel</Button>
-          <Button colorPalette="primary" variant="solid">Save</Button>
+          <FormActionBar
+            onSave={() => {}}
+            onCancel={() => {}}
+            cancelSlot="close"
+          />
         </ModalPage.Footer>
       </ModalPage.Root>
     </Stack>
@@ -241,14 +247,22 @@ const App = () => {
               <Text>Variant form content goes here.</Text>
             </ModalPage.Content>
             <ModalPage.Footer>
-              <Button slot="close" variant="outline">Cancel</Button>
-              <Button colorPalette="primary" variant="solid">Save Variant</Button>
+              <FormActionBar
+                saveLabel="Save Variant"
+                onSave={() => {}}
+                onCancel={() => {}}
+                cancelSlot="close"
+              />
             </ModalPage.Footer>
           </ModalPage.Root>
         </ModalPage.Content>
         <ModalPage.Footer>
-          <Button slot="close" variant="outline">Cancel</Button>
-          <Button colorPalette="primary" variant="solid">Save Product</Button>
+          <FormActionBar
+            saveLabel="Save Product"
+            onSave={() => {}}
+            onCancel={() => {}}
+            cancelSlot="close"
+          />
         </ModalPage.Footer>
       </ModalPage.Root>
     </Stack>

@@ -3,6 +3,7 @@ import { fn, userEvent, within, expect, waitFor } from "storybook/test";
 import { useState } from "react";
 import {
   Button,
+  FormActionBar,
   FormField,
   ModalPage,
   NimbusProvider,
@@ -122,12 +123,11 @@ export const FormPage: Story = {
         </FormField.Root>
       </ModalPage.Content>
       <ModalPage.Footer>
-        <Button slot="close" variant="outline">
-          Cancel
-        </Button>
-        <Button colorPalette="primary" variant="solid">
-          Save
-        </Button>
+        <FormActionBar
+          onSave={() => {}}
+          onCancel={() => {}}
+          cancelSlot="close"
+        />
       </ModalPage.Footer>
     </ModalPage.Root>
   ),
@@ -261,12 +261,11 @@ export const ScrollableContent: Story = {
         </Stack>
       </ModalPage.Content>
       <ModalPage.Footer>
-        <Button slot="close" variant="outline">
-          Cancel
-        </Button>
-        <Button colorPalette="primary" variant="solid">
-          Save
-        </Button>
+        <FormActionBar
+          onSave={() => {}}
+          onCancel={() => {}}
+          cancelSlot="close"
+        />
       </ModalPage.Footer>
     </ModalPage.Root>
   ),
@@ -329,12 +328,11 @@ export const MultiColumnContent: Story = {
         </PageContent.Root>
       </ModalPage.Content>
       <ModalPage.Footer>
-        <Button slot="close" variant="outline">
-          Cancel
-        </Button>
-        <Button colorPalette="primary" variant="solid">
-          Save
-        </Button>
+        <FormActionBar
+          onSave={() => {}}
+          onCancel={() => {}}
+          cancelSlot="close"
+        />
       </ModalPage.Footer>
     </ModalPage.Root>
   ),
@@ -376,12 +374,11 @@ export const KeyboardNavigation: Story = {
             <Text>Keyboard navigation test content</Text>
           </ModalPage.Content>
           <ModalPage.Footer>
-            <Button slot="close" variant="outline">
-              Cancel
-            </Button>
-            <Button colorPalette="primary" variant="solid">
-              Save
-            </Button>
+            <FormActionBar
+              onSave={() => {}}
+              onCancel={() => {}}
+              cancelSlot="close"
+            />
           </ModalPage.Footer>
         </ModalPage.Root>
       </Stack>
@@ -484,12 +481,11 @@ const NestedModalPage = ({
           </Stack>
         </ModalPage.Content>
         <ModalPage.Footer>
-          <Button slot="close" variant="outline">
-            Cancel
-          </Button>
-          <Button colorPalette="primary" variant="solid">
-            Save
-          </Button>
+          <FormActionBar
+            onSave={() => {}}
+            onCancel={() => {}}
+            cancelSlot="close"
+          />
         </ModalPage.Footer>
       </ModalPage.Root>
     </>
@@ -645,12 +641,11 @@ export const CustomPageWidth: Story = {
         </Text>
       </ModalPage.Content>
       <ModalPage.Footer>
-        <Button slot="close" variant="outline">
-          Cancel
-        </Button>
-        <Button colorPalette="primary" variant="solid">
-          Save
-        </Button>
+        <FormActionBar
+          onSave={() => {}}
+          onCancel={() => {}}
+          cancelSlot="close"
+        />
       </ModalPage.Footer>
     </ModalPage.Root>
   ),

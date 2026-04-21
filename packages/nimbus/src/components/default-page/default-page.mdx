@@ -127,10 +127,7 @@ const App = () => (
         </Box>
       </DefaultPage.Content>
       <DefaultPage.Footer>
-        <Stack direction="row" gap="200" justify="flex-end" width="100%">
-          <Button variant="ghost">Cancel</Button>
-          <Button variant="solid" colorPalette="primary">Save</Button>
-        </Stack>
+        <FormActionBar onSave={() => {}} onCancel={() => {}} />
       </DefaultPage.Footer>
     </DefaultPage.Root>
   </Box>
@@ -221,10 +218,7 @@ const App = () => (
         </Stack>
       </DefaultPage.Content>
       <DefaultPage.Footer>
-        <Stack direction="row" gap="200" justify="flex-end" width="100%">
-          <Button variant="ghost">Cancel</Button>
-          <Button variant="solid" colorPalette="primary">Save</Button>
-        </Stack>
+        <FormActionBar onSave={() => {}} onCancel={() => {}} />
       </DefaultPage.Footer>
     </DefaultPage.Root>
   </Box>

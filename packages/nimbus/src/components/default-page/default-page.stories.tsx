@@ -7,6 +7,7 @@ import {
   Button,
   DataTable,
   DefaultPage,
+  FormActionBar,
   FormField,
   MoneyInput,
   Stack,
@@ -349,12 +350,11 @@ export const FormMainPage: Story = {
             </Stack>
           </DefaultPage.Content>
           <DefaultPage.Footer>
-            <Stack direction="row" gap="200">
-              <Button colorPalette="primary" variant="solid">
-                Save product
-              </Button>
-              <Button variant="ghost">Cancel</Button>
-            </Stack>
+            <FormActionBar
+              saveLabel="Save product"
+              onSave={() => {}}
+              onCancel={() => {}}
+            />
           </DefaultPage.Footer>
         </DefaultPage.Root>
       </Box>
@@ -431,12 +431,11 @@ export const TabularMainPage: Story = {
           </Stack>
         </DefaultPage.Content>
         <DefaultPage.Footer>
-          <Stack direction="row" gap="200">
-            <Button colorPalette="primary" variant="solid">
-              Save changes
-            </Button>
-            <Button variant="ghost">Cancel</Button>
-          </Stack>
+          <FormActionBar
+            saveLabel="Save changes"
+            onSave={() => {}}
+            onCancel={() => {}}
+          />
         </DefaultPage.Footer>
       </DefaultPage.Root>
     </Box>
@@ -631,12 +630,11 @@ export const FormDetailPage: Story = {
           </Stack>
         </DefaultPage.Content>
         <DefaultPage.Footer>
-          <Stack direction="row" gap="200">
-            <Button colorPalette="primary" variant="solid">
-              Save changes
-            </Button>
-            <Button variant="ghost">Cancel</Button>
-          </Stack>
+          <FormActionBar
+            saveLabel="Save changes"
+            onSave={() => {}}
+            onCancel={() => {}}
+          />
         </DefaultPage.Footer>
       </DefaultPage.Root>
     );
@@ -725,12 +723,11 @@ export const TabularDetailPage: Story = {
           </Stack>
         </DefaultPage.Content>
         <DefaultPage.Footer>
-          <Stack direction="row" gap="200">
-            <Button colorPalette="primary" variant="solid">
-              Save changes
-            </Button>
-            <Button variant="ghost">Cancel</Button>
-          </Stack>
+          <FormActionBar
+            saveLabel="Save changes"
+            onSave={() => {}}
+            onCancel={() => {}}
+          />
         </DefaultPage.Footer>
       </DefaultPage.Root>
     </Box>
@@ -806,12 +803,11 @@ export const FlexibleLayout: Story = {
           </Stack>
         </DefaultPage.Content>
         <DefaultPage.Footer>
-          <Stack direction="row" gap="200">
-            <Button colorPalette="primary" variant="solid">
-              Save changes
-            </Button>
-            <Button variant="ghost">Cancel</Button>
-          </Stack>
+          <FormActionBar
+            saveLabel="Save changes"
+            onSave={() => {}}
+            onCancel={() => {}}
+          />
         </DefaultPage.Footer>
       </DefaultPage.Root>
     </Box>
@@ -956,12 +952,11 @@ export const FlexibleStickyFooter: Story = {
           </Stack>
         </DefaultPage.Content>
         <DefaultPage.Footer>
-          <Stack direction="row" gap="200">
-            <Button colorPalette="primary" variant="solid">
-              Save changes
-            </Button>
-            <Button variant="ghost">Cancel</Button>
-          </Stack>
+          <FormActionBar
+            saveLabel="Save changes"
+            onSave={() => {}}
+            onCancel={() => {}}
+          />
         </DefaultPage.Footer>
       </DefaultPage.Root>
     </Box>
@@ -1024,12 +1019,11 @@ export const FlexibleStickyHeaderAndFooter: Story = {
           </Stack>
         </DefaultPage.Content>
         <DefaultPage.Footer>
-          <Stack direction="row" gap="200">
-            <Button colorPalette="primary" variant="solid">
-              Save changes
-            </Button>
-            <Button variant="ghost">Cancel</Button>
-          </Stack>
+          <FormActionBar
+            saveLabel="Save changes"
+            onSave={() => {}}
+            onCancel={() => {}}
+          />
         </DefaultPage.Footer>
       </DefaultPage.Root>
     </Box>

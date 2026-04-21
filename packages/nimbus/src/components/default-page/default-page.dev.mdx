@@ -135,10 +135,11 @@ const App = () => (
         </Stack>
       </DefaultPage.Content>
       <DefaultPage.Footer>
-        <Stack direction="row" gap="200">
-          <Button variant="solid" colorPalette="primary">Save changes</Button>
-          <Button variant="ghost">Cancel</Button>
-        </Stack>
+        <FormActionBar
+          saveLabel="Save changes"
+          onSave={() => {}}
+          onCancel={() => {}}
+        />
       </DefaultPage.Footer>
     </DefaultPage.Root>
   </Box>
@@ -339,10 +340,7 @@ const App = () => (
         </Box>
       </DefaultPage.Content>
       <DefaultPage.Footer>
-        <Stack direction="row" gap="200" justify="flex-end" width="100%">
-          <Button variant="ghost">Cancel</Button>
-          <Button variant="solid" colorPalette="primary">Save</Button>
-        </Stack>
+        <FormActionBar onSave={() => {}} onCancel={() => {}} />
       </DefaultPage.Footer>
     </DefaultPage.Root>
   </Box>
@@ -350,9 +348,10 @@ const App = () => (
 ```
 
 > [!TIP]\
-> Place the primary action first, followed by secondary actions (e.g., Cancel).
-> Use the `Spacer` component to push buttons apart — for example, a destructive
-> action on the left and the primary action on the right:
+> For standard save/cancel/delete footers, use the [`FormActionBar`
+> pattern](/patterns/actions/form-action-bar) — it enforces the canonical
+> button order (delete → cancel → save), variants, and loading states so you
+> don't have to reassemble them each time.
 
 ```jsx live-dev
 const App = () => (
@@ -365,17 +364,20 @@ const App = () => (
         <Text>Form content goes here.</Text>
       </DefaultPage.Content>
       <DefaultPage.Footer>
-        <Stack direction="row" gap="200" width="100%">
-          <Button colorPalette="critical" variant="ghost">Delete</Button>
-          <Spacer />
-          <Button variant="solid" colorPalette="primary">Save</Button>
-          <Button variant="ghost">Cancel</Button>
-        </Stack>
+        <FormActionBar
+          onSave={() => {}}
+          onCancel={() => {}}
+          onDelete={() => {}}
+        />
       </DefaultPage.Footer>
     </DefaultPage.Root>
   </Box>
 )
 ```
+
+Drop down to raw `Button` + `Group` / `Stack` only for non-standard layouts
+that FormActionBar doesn't support (e.g., submit + reset + preview, or
+multi-step wizard navigation).
 
 ### Custom elements in the header
 
@@ -469,10 +471,7 @@ const App = () => (
         </Stack>
       </DefaultPage.Content>
       <DefaultPage.Footer>
-        <Stack direction="row" gap="200" justify="flex-end" width="100%">
-          <Button variant="ghost">Cancel</Button>
-          <Button variant="solid" colorPalette="primary">Save</Button>
-        </Stack>
+        <FormActionBar onSave={() => {}} onCancel={() => {}} />
       </DefaultPage.Footer>
     </DefaultPage.Root>
   </Box>
@@ -523,10 +522,7 @@ const App = () => (
         </Stack>
       </DefaultPage.Content>
       <DefaultPage.Footer>
-        <Stack direction="row" gap="200" justify="flex-end" width="100%">
-          <Button variant="ghost">Cancel</Button>
-          <Button variant="solid" colorPalette="primary">Save</Button>
-        </Stack>
+        <FormActionBar onSave={() => {}} onCancel={() => {}} />
       </DefaultPage.Footer>
     </DefaultPage.Root>
   </Box>
