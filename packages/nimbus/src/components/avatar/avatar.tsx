@@ -6,9 +6,7 @@ import { AvatarRoot } from "./avatar.slots";
 import { avatarMessagesStrings } from "./avatar.messages";
 
 function getInitials(firstName: string, lastName: string) {
-  return (
-    firstName.split("")[0].toUpperCase() + lastName.split("")[0].toUpperCase()
-  );
+  return firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
 }
 
 /**
