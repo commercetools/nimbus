@@ -71,12 +71,14 @@ for PR_NUM in $PRS; do
     fi
   fi
 
-  # Add audit label and merge
+  # Add audit label, wait for CI, then merge directly (bypasses the 2-approval
+  # ruleset requirement via ct-changesets bypass actor). auto-merge cannot use bypass
   if [ "$DRY_RUN" = "true" ]; then
     echo "Dry run — skipping label and merge of PR #$PR_NUM."
   else
     gh pr edit "$PR_NUM" --add-label "tx-auto-merge"
-    gh pr merge "$PR_NUM" --squash --auto
+    gh pr checks "$PR_NUM" --watch --fail-fast
+    gh pr merge "$PR_NUM" --squash
     echo "Merged PR #$PR_NUM into main."
   fi
 done
