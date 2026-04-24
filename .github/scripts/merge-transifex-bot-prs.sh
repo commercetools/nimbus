@@ -37,7 +37,12 @@ for PR_NUM in $PRS; do
     continue
   fi
 
-  # Compile on the PR branch and commit
+  # Compile on the PR branch and commit. Since all locale files are immediately seeded with en
+  # defaults, no-op is expected for most Tx PRs when new message keys are extracted (i.e. output
+  # already exists on main before Tx returns with real translations). This is more of a preventative
+  # measure to catch any unexpected changes to compiled output that may arise from changes to the
+  # compilation logic or edge cases in the input JSON.
+  
   if [ "$DRY_RUN" = "true" ]; then
     echo "Dry run — skipping compile and commit for PR #$PR_NUM."
   else
@@ -71,7 +76,7 @@ for PR_NUM in $PRS; do
     echo "Dry run — skipping label and merge of PR #$PR_NUM."
   else
     gh pr edit "$PR_NUM" --add-label "tx-auto-merge"
-    gh pr merge "$PR_NUM" --merge --auto
+    gh pr merge "$PR_NUM" --squash --auto
     echo "Merged PR #$PR_NUM into main."
   fi
 done
