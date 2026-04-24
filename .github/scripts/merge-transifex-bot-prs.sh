@@ -72,7 +72,7 @@ for PR_NUM in $PRS; do
   fi
 
   # Add audit label, wait for CI, then merge directly (bypasses the 2-approval
-  # ruleset requirement via ct-changesets bypass actor — auto-merge cannot use bypass)
+  # ruleset requirement via ct-changesets bypass actor). auto-merge cannot use bypass
   if [ "$DRY_RUN" = "true" ]; then
     echo "Dry run — skipping label and merge of PR #$PR_NUM."
   else
