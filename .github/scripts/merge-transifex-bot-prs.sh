@@ -71,7 +71,7 @@ for PR_NUM in $PRS; do
     echo "Dry run — skipping label and merge of PR #$PR_NUM."
   else
     gh pr edit "$PR_NUM" --add-label "tx-auto-merge"
-    gh pr merge "$PR_NUM" --merge --auto
+    gh pr merge "$PR_NUM" --squash --auto
     echo "Merged PR #$PR_NUM into main."
   fi
 done
