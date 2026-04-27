@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { Card, Heading, Text, NimbusProvider } from "@commercetools/nimbus";
 
 /**
@@ -83,7 +83,7 @@ describe("Card - Basic rendering", () => {
  * @docs-order 2
  */
 describe("Card - Slot-based accessibility", () => {
-  it("renders accessible card with title and description slots", () => {
+  it("wires aria-labelledby and aria-describedby from title and description slots", async () => {
     render(
       <NimbusProvider>
         <Card.Root data-testid="card-slot">
@@ -101,11 +101,21 @@ describe("Card - Slot-based accessibility", () => {
       </NimbusProvider>
     );
 
-    expect(screen.getByText("Product Details")).toBeInTheDocument();
-    expect(screen.getByText(/key features/)).toBeInTheDocument();
+    const card = screen.getByTestId("card-slot");
+    const heading = screen.getByText("Product Details");
+    const description = screen.getByText(/key features/);
+
+    // useSlotId completes its registration on a follow-up render.
+    await waitFor(() => {
+      expect(card).toHaveAttribute("aria-labelledby", heading.id);
+      expect(card).toHaveAttribute("aria-describedby", description.id);
+    });
+
+    // Card is a plain div — set role explicitly if a landmark role is needed.
+    expect(card).not.toHaveAttribute("role");
   });
 
-  it("has no role or ARIA attributes without slots", () => {
+  it("has no role or ARIA labelling attributes without slots", () => {
     render(
       <NimbusProvider>
         <Card.Root data-testid="card-plain">

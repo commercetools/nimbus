@@ -13,8 +13,10 @@ import type { CardProps } from "../card.types";
  * Card.Root - The root component that provides context and styling for the card.
  *
  * When a `<Heading slot="title">` or `<Text slot="description">` is placed
- * inside, the card automatically gains `role="article"` with `aria-labelledby`
- * and/or `aria-describedby` pointing to those elements.
+ * inside, the card automatically receives `aria-labelledby` and/or
+ * `aria-describedby` pointing to those elements. The card itself remains
+ * a plain `<div>` — set `role` explicitly on the consumer side if a landmark
+ * or interactive role is needed.
  *
  * @supportsStyleProps
  */
@@ -25,14 +27,10 @@ export const CardRoot = ({ ref, children, ...props }: CardProps) => {
   const titleId = useSlotId();
   const descriptionId = useSlotId();
 
-  const hasSlots = !!titleId || !!descriptionId;
-  const ariaProps = hasSlots
-    ? {
-        role: "article" as const,
-        "aria-labelledby": titleId || undefined,
-        "aria-describedby": descriptionId || undefined,
-      }
-    : {};
+  const ariaProps = {
+    "aria-labelledby": titleId || undefined,
+    "aria-describedby": descriptionId || undefined,
+  };
 
   return (
     <Provider

@@ -16,7 +16,6 @@ export const cardRecipe = defineSlotRecipe({
       flexDirection: "column",
       alignItems: "flex-start",
       borderRadius: "300",
-      focusVisibleRing: "outside",
     },
     header: {
       p: "var(--card-spacing)",
@@ -29,6 +28,9 @@ export const cardRecipe = defineSlotRecipe({
       // bottom padding provides the gap). When a non-slot element like
       // Separator sits between them, both slots keep full padding for
       // visually balanced spacing around the element.
+      // Class names are Chakra-generated as `${className}__${slotName}`,
+      // so these selectors depend on `className: "nimbus-card"` (above)
+      // and the slot names in the `slots` array.
       ".nimbus-card__header + &": { pt: 0 },
     },
     footer: {

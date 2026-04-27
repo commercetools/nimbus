@@ -268,39 +268,40 @@ The component SHALL support flexible content composition.
 
 ### Requirement: Slot-Based Accessibility
 
-The component SHALL automatically apply ARIA attributes when React Aria slot
-children are present.
+The component SHALL automatically apply ARIA labelling attributes when React
+Aria slot children are present. The component SHALL NOT apply any implicit
+`role` — semantic role is left to the consumer.
 
 #### Scenario: Full slot wiring
 
 - **WHEN** Card.Root contains `<Heading slot="title">` and
   `<Text slot="description">`
-- **THEN** SHALL apply `role="article"` on root element
-- **AND** SHALL apply `aria-labelledby` pointing to the Heading's generated ID
+- **THEN** SHALL apply `aria-labelledby` pointing to the Heading's generated ID
 - **AND** SHALL apply `aria-describedby` pointing to the Text's generated ID
+- **AND** SHALL NOT apply a `role` attribute
 
 #### Scenario: Title slot only
 
 - **WHEN** Card.Root contains `<Heading slot="title">` but no
   `<Text slot="description">`
-- **THEN** SHALL apply `role="article"` on root element
-- **AND** SHALL apply `aria-labelledby` pointing to the Heading's generated ID
+- **THEN** SHALL apply `aria-labelledby` pointing to the Heading's generated ID
 - **AND** SHALL NOT apply `aria-describedby`
+- **AND** SHALL NOT apply a `role` attribute
 
 #### Scenario: Description slot only
 
 - **WHEN** Card.Root contains `<Text slot="description">` but no
   `<Heading slot="title">`
-- **THEN** SHALL apply `role="article"` on root element
+- **THEN** SHALL apply `aria-describedby` pointing to the Text's generated ID
 - **AND** SHALL NOT apply `aria-labelledby`
-- **AND** SHALL apply `aria-describedby` pointing to the Text's generated ID
+- **AND** SHALL NOT apply a `role` attribute
 
 #### Scenario: No slots
 
 - **WHEN** Card.Root contains no slot-prop children
-- **THEN** SHALL NOT apply `role` attribute
-- **AND** SHALL NOT apply `aria-labelledby`
+- **THEN** SHALL NOT apply `aria-labelledby`
 - **AND** SHALL NOT apply `aria-describedby`
+- **AND** SHALL NOT apply a `role` attribute
 
 #### Scenario: Manual aria-label
 
@@ -308,11 +309,16 @@ children are present.
 - **THEN** SHALL forward `aria-label` to the root element
 - **AND** slot-based wiring SHALL still function if slots are also present
 
+#### Scenario: Consumer-provided role
+
+- **WHEN** consumer passes `role` directly to Card.Root
+- **THEN** SHALL forward `role` to the root element
+
 #### Scenario: Slot matching
 
 - **WHEN** `<Heading>` without `slot="title"` is inside Card.Root
 - **THEN** SHALL NOT affect the Heading (slot matching is strict)
-- **AND** SHALL NOT apply `role="article"`
+- **AND** SHALL NOT apply any ARIA labelling attributes
 
 ## REMOVED Requirements
 
