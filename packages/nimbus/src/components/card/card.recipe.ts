@@ -55,7 +55,17 @@ export const cardRecipe = defineSlotRecipe({
       },
     },
 
+    // Variant naming encodes the three independent visual axes that
+    // designers expose in Figma: outlined (border yes/no), elevated
+    // (shadow yes/no), muted (background default/muted). All eight
+    // permutations are enumerated explicitly so the prop surface stays
+    // a single `variant` enum (no compositional booleans).
     variant: {
+      plain: {
+        root: {
+          backgroundColor: "bg",
+        },
+      },
       outlined: {
         root: {
           border: "solid-25",
@@ -69,14 +79,38 @@ export const cardRecipe = defineSlotRecipe({
           backgroundColor: "bg",
         },
       },
-      filled: {
+      "outlined-elevated": {
+        root: {
+          border: "solid-25",
+          borderColor: "colorPalette.6",
+          shadow: "1",
+          backgroundColor: "bg",
+        },
+      },
+      muted: {
         root: {
           backgroundColor: "colorPalette.2",
         },
       },
-      plain: {
+      "outlined-muted": {
         root: {
-          backgroundColor: "bg",
+          border: "solid-25",
+          borderColor: "colorPalette.6",
+          backgroundColor: "colorPalette.2",
+        },
+      },
+      "elevated-muted": {
+        root: {
+          shadow: "1",
+          backgroundColor: "colorPalette.2",
+        },
+      },
+      "outlined-elevated-muted": {
+        root: {
+          border: "solid-25",
+          borderColor: "colorPalette.6",
+          shadow: "1",
+          backgroundColor: "colorPalette.2",
         },
       },
     },

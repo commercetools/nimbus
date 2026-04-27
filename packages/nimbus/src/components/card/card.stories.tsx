@@ -11,11 +11,20 @@ import {
 import { within, expect } from "storybook/test";
 
 const sizes: CardProps["size"][] = ["sm", "md", "lg"];
+
+// Variants enumerate every combination of the three independent visual
+// axes (outlined × elevated × muted background). Listed in the same
+// row-major order as the Figma matrix: outlined×elevated cycles within
+// each background group.
 const variants: CardProps["variant"][] = [
+  "plain",
   "outlined",
   "elevated",
-  "filled",
-  "plain",
+  "outlined-elevated",
+  "muted",
+  "outlined-muted",
+  "elevated-muted",
+  "outlined-elevated-muted",
 ];
 
 const meta: Meta<typeof Card.Root> = {
@@ -103,36 +112,96 @@ export const Sizes: Story = {
 
 /**
  * Variants
- * Demonstrates outlined, elevated, filled, plain visual treatments
+ *
+ * Renders all eight visual permutations as a 4×2 matrix mirroring the
+ * Figma component-property layout: rows cycle outlined×elevated, columns
+ * split by background (default vs. muted).
  */
 export const Variants: Story = {
   render: () => {
+    const rows: {
+      label: string;
+      outlined: boolean;
+      elevated: boolean;
+    }[] = [
+      {
+        label: "outlined: NO,  elevated: NO",
+        outlined: false,
+        elevated: false,
+      },
+      { label: "outlined: YES, elevated: NO", outlined: true, elevated: false },
+      {
+        label: "outlined: NO,  elevated: YES",
+        outlined: false,
+        elevated: true,
+      },
+      { label: "outlined: YES, elevated: YES", outlined: true, elevated: true },
+    ];
+    const backgrounds: {
+      label: string;
+      muted: boolean;
+    }[] = [
+      { label: "background: default", muted: false },
+      { label: "background: muted", muted: true },
+    ];
+
+    const variantFor = (
+      outlined: boolean,
+      elevated: boolean,
+      muted: boolean
+    ): CardProps["variant"] => {
+      const parts = [
+        outlined && "outlined",
+        elevated && "elevated",
+        muted && "muted",
+      ].filter(Boolean);
+      return (
+        parts.length === 0 ? "plain" : parts.join("-")
+      ) as CardProps["variant"];
+    };
+
     return (
-      <Stack gap="400">
-        {variants.map((variant) => (
-          <Card.Root
-            key={variant as string}
-            variant={variant}
-            size="md"
-            data-testid={`card-variant-${variant as string}`}
-          >
-            <Card.Header>
-              <Text fontWeight="bold">Variant: {variant as string}</Text>
-            </Card.Header>
-            <Card.Body>
-              <Text>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      <Stack gap="600">
+        <Stack direction="row" gap="600">
+          {backgrounds.map((bg) => (
+            <Stack key={bg.label} gap="400" flex="1">
+              <Text fontWeight="bold" color="neutral.11">
+                {bg.label}
               </Text>
-            </Card.Body>
-          </Card.Root>
-        ))}
+              {rows.map((row) => {
+                const variant = variantFor(
+                  row.outlined,
+                  row.elevated,
+                  bg.muted
+                );
+                return (
+                  <Card.Root
+                    key={variant as string}
+                    variant={variant}
+                    size="md"
+                    data-testid={`card-variant-${variant as string}`}
+                  >
+                    <Card.Header>
+                      <Text fontWeight="bold">{variant as string}</Text>
+                    </Card.Header>
+                    <Card.Body>
+                      <Text>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      </Text>
+                    </Card.Body>
+                  </Card.Root>
+                );
+              })}
+            </Stack>
+          ))}
+        </Stack>
       </Stack>
     );
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("All variants render", async () => {
+    await step("All eight variants render", async () => {
       for (const variant of variants) {
         const card = canvas.getByTestId(`card-variant-${variant as string}`);
         await expect(card).toBeInTheDocument();
@@ -288,7 +357,7 @@ export const PartCombinations: Story = {
 export const WithoutCompound: Story = {
   render: () => {
     return (
-      <Card.Root variant="filled" size="md" data-testid="card-freeform">
+      <Card.Root variant="muted" size="md" data-testid="card-freeform">
         <div>
           I'm some other flexible content, outside of the compound component
         </div>

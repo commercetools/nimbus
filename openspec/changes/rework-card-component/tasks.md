@@ -233,3 +233,49 @@ Run `pnpm install`. Verify no version conflicts.
 - `pnpm --filter @commercetools/nimbus typecheck`
 - Verify no regressions in Heading, Text, or Combobox
 - Verify no regressions in other components
+
+## - [ ] Task 19: Expand `variant` to all eight visual permutations
+
+Designers exposed `outlined`, `elevated`, and `muted` as three
+independent visual axes in Figma. Replace the four curated variant
+names with all eight permutations as a single kebab-case enum on the
+`variant` prop.
+
+**File:** `packages/nimbus/src/components/card/card.recipe.ts`
+
+- Replace the four named variants with eight kebab entries: `plain`,
+  `outlined`, `elevated`, `outlined-elevated`, `muted`,
+  `outlined-muted`, `elevated-muted`, `outlined-elevated-muted`
+- Each variant SHALL set border, shadow, and background tokens
+  according to the axes encoded in its name
+- Keep `defaultVariants.variant: "outlined"`
+- Rename the previous `filled` variant's styling under the new `muted`
+  key (no other consumer was relying on `filled` since the rework had
+  not yet shipped)
+
+**File:** `packages/nimbus/src/components/card/card.stories.tsx`
+
+- Update the `variants` array to enumerate all eight kebab values
+- Restructure the `Variants` story to render a 4×2 matrix mirroring the
+  Figma component-property layout (rows: outlined×elevated, columns:
+  default vs muted background)
+- Update `WithoutCompound` story to use `muted` (was `filled`)
+- Play function asserts every kebab variant renders
+
+**File:** `packages/nimbus/src/components/card/card.figma.tsx`
+
+- Replace the binary Yes/No mapping with a derived expression that
+  reads each Figma component property and concatenates the matching
+  axes into the kebab variant key
+
+**File:** `packages/nimbus/src/components/card/card.dev.mdx`
+
+- Replace the four-variant example block with a table listing all eight
+  variants and a live example covering the most common ones
+
+**Verify:**
+
+- `pnpm --filter @commercetools/nimbus build-theme-typings` regenerates
+  `nimbusCard.variant` to the kebab union
+- `pnpm --filter @commercetools/nimbus typecheck`
+- `pnpm test:dev packages/nimbus/src/components/card/card.stories.tsx`

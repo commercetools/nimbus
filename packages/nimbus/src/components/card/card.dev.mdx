@@ -56,7 +56,21 @@ const App = () => (
 
 ### Visual variants
 
-The `variant` prop controls the card's visual treatment.
+The `variant` prop controls the card's visual treatment. Eight variants
+expose every combination of three independent axes — `outlined` (border),
+`elevated` (shadow), and `muted` (background) — joined with hyphens.
+Variant names omit any axis that is off.
+
+| variant                       | border | shadow | background |
+| ----------------------------- | :----: | :----: | :--------: |
+| `plain`                       |        |        |  default   |
+| `outlined` _(default)_        |   ✓    |        |  default   |
+| `elevated`                    |        |   ✓    |  default   |
+| `outlined-elevated`           |   ✓    |   ✓    |  default   |
+| `muted`                       |        |        |   muted    |
+| `outlined-muted`              |   ✓    |        |   muted    |
+| `elevated-muted`              |        |   ✓    |   muted    |
+| `outlined-elevated-muted`     |   ✓    |   ✓    |   muted    |
 
 ```jsx live-dev
 const App = () => (
@@ -71,8 +85,13 @@ const App = () => (
       <Card.Body>Shadow depth without border.</Card.Body>
     </Card.Root>
 
-    <Card.Root variant="filled">
-      <Card.Header>Filled</Card.Header>
+    <Card.Root variant="outlined-elevated">
+      <Card.Header>Outlined + elevated</Card.Header>
+      <Card.Body>Both border and shadow.</Card.Body>
+    </Card.Root>
+
+    <Card.Root variant="muted">
+      <Card.Header>Muted</Card.Header>
       <Card.Body>Muted background for differentiation.</Card.Body>
     </Card.Root>
 

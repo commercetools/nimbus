@@ -10,8 +10,12 @@ Rework Card component architecture and API.
 - The four ad-hoc props `cardPadding`, `borderStyle`, `elevation`, and
   `backgroundStyle` are replaced by the standard Nimbus `variant` and `size`
   props.
-  - `variant` (default `"outlined"`) —
-    `"outlined" | "elevated" | "filled" | "plain"`.
+  - `variant` (default `"outlined"`) — eight kebab-case names enumerating every
+    combination of three independent visual axes: `outlined` (border),
+    `elevated` (shadow), `muted` (background). Names list each enabled axis in
+    the fixed order `outlined-elevated-muted` joined with `-`; the all-off case
+    is `plain`. Full set:
+    `"plain" | "outlined" | "elevated" | "outlined-elevated" | "muted" | "outlined-muted" | "elevated-muted" | "outlined-elevated-muted"`.
   - `size` (default `"md"`) — `"sm" | "md" | "lg"`, controlling internal padding
     via the `--card-spacing` CSS variable.
 
