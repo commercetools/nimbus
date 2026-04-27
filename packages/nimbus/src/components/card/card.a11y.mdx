@@ -13,12 +13,14 @@ cognitive, and physical limitations.
 
 Card supports automatic ARIA wiring via React Aria's slot system. When you place
 a `<Heading slot="title">` or `<Text slot="description">` inside a Card, the
-root element automatically gains `role="article"` along with `aria-labelledby`
-and/or `aria-describedby` pointing to those elements.
+root element automatically receives `aria-labelledby` and/or `aria-describedby`
+pointing to those elements. The card itself stays a plain `<div>` — no implicit
+`role` is applied. If you need a landmark role (e.g., `role="article"` or
+`role="region"`), set it explicitly on `Card.Root`.
 
 ```jsx live
 const App = () => (
-  <Card.Root variant="outlined" size="md">
+  <Card.Root variant="outlined" size="md" role="article">
     <Card.Header>
       <Heading slot="title" as="h3">Sprint Summary</Heading>
     </Card.Header>
@@ -36,15 +38,15 @@ const App = () => (
 
 ### Slot behavior
 
-| Slots present | `role` | `aria-labelledby` | `aria-describedby` |
-|---|---|---|---|
-| `Heading slot="title"` + `Text slot="description"` | `article` | points to Heading | points to Text |
-| `Heading slot="title"` only | `article` | points to Heading | — |
-| `Text slot="description"` only | `article` | — | points to Text |
-| No slots | — | — | — |
+| Slots present | `aria-labelledby` | `aria-describedby` |
+|---|---|---|
+| `Heading slot="title"` + `Text slot="description"` | points to Heading | points to Text |
+| `Heading slot="title"` only | points to Heading | — |
+| `Text slot="description"` only | — | points to Text |
+| No slots | — | — |
 
-Cards without slot-prop children remain plain `<div>` elements with no ARIA role
-or attributes. A `<Heading>` or `<Text>` without a `slot` prop is not affected.
+The card never sets a `role` automatically. A `<Heading>` or `<Text>` without
+a `slot` prop is not wired up.
 
 ### Manual labeling
 

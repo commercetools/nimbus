@@ -309,7 +309,8 @@ export const WithoutCompound: Story = {
 /**
  * Slot-based accessibility
  * Demonstrates automatic ARIA wiring when Heading slot="title" and
- * Text slot="description" are used inside the card
+ * Text slot="description" are used inside the card. The card stays a plain
+ * div — no implicit role is set.
  */
 export const SlotBasedAccessibility: Story = {
   render: () => (
@@ -335,8 +336,8 @@ export const SlotBasedAccessibility: Story = {
     const canvas = within(canvasElement);
     const card = canvas.getByTestId("card-a11y");
 
-    await step("Card has role='article' when slots are used", async () => {
-      await expect(card).toHaveAttribute("role", "article");
+    await step("Card has no implicit role", async () => {
+      await expect(card).not.toHaveAttribute("role");
     });
 
     await step("Card has aria-labelledby pointing to Heading", async () => {
@@ -405,13 +406,13 @@ export const TitleSlotOnly: Story = {
     const canvas = within(canvasElement);
     const card = canvas.getByTestId("card-title-only");
 
-    await step("Card gets role='article' with title slot only", async () => {
-      await expect(card).toHaveAttribute("role", "article");
-    });
-
     await step("Card has aria-labelledby but no aria-describedby", async () => {
       await expect(card).toHaveAttribute("aria-labelledby");
       await expect(card).not.toHaveAttribute("aria-describedby");
+    });
+
+    await step("Card has no implicit role", async () => {
+      await expect(card).not.toHaveAttribute("role");
     });
   },
 };

@@ -128,13 +128,12 @@ Aria Components' DropZone) to automatically wire `aria-labelledby` and
 `aria-describedby`. When a consumer places `<Heading slot="title">` or
 `<Text slot="description">` inside a Card, the Card:
 
-1. Gets `role="article"` (only when slots are present)
-2. Gets `aria-labelledby` pointing to the Heading's auto-generated ID
-3. Gets `aria-describedby` pointing to the Text's auto-generated ID
+1. Gets `aria-labelledby` pointing to the Heading's auto-generated ID
+2. Gets `aria-describedby` pointing to the Text's auto-generated ID
 
-This follows the Adobe React Spectrum Card spec
-([adobe/react-spectrum#2080](https://github.com/adobe/react-spectrum/issues/2080)).
-The wiring is zero-config for consumers and non-breaking: Cards without
-slot-prop children remain plain divs with no role or ARIA attributes. The
-conditional `role="article"` avoids polluting screen reader landmark/article
-navigation for cards that are purely visual containers.
+The card itself stays a plain `<div>` — no implicit `role` is applied. The
+labelling is purely additive: cards without slot-prop children remain
+unchanged, and consumers who need a landmark role (e.g., `role="article"` or
+`role="region"`) set it explicitly on `Card.Root`. Avoiding an implicit role
+also prevents semantic conflicts when a Card is embedded inside an interactive
+wrapper (`<button>`, `<a>`), where a nested landmark role would be invalid.
