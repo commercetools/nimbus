@@ -159,7 +159,9 @@ can't be auto-classified:
 
 - **calendar**: Variant-specific connects to DatePicker, RangeCalendar,
   DateRangePicker
-- **card**: Conditional JSX from Content type VARIANT
+- **card**: Conditional JSX from Content type VARIANT; Root composes a single
+  kebab-case `variant` value from three independent Figma boolean/enum props
+  (Outlined / Elevated / Background)
 - **combobox**: Variant-specific connects for single/multi-select
 - **dialog, drawer**: Complex nested sub-component example JSX
 - **form-field**: Boolean→sub-component JSX, variant connects for

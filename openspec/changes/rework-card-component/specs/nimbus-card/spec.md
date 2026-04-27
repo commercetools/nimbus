@@ -140,15 +140,26 @@ nimbus-core standards.
 
 ### Requirement: Visual Variant Options
 
-The component SHALL support variant prop for visual treatment per nimbus-core
-standards.
+The component SHALL support a `variant` prop that exposes every combination of
+three independent visual axes — `outlined` (border yes/no), `elevated` (shadow
+yes/no), and `muted` (background default/muted) — as eight enumerated kebab-case
+values. Variant names list each axis that is on, joined with hyphens, in the
+fixed order `outlined-elevated-muted`. Axes that are off are omitted from the
+name. The all-off case is named `plain`.
+
+#### Scenario: Plain variant
+
+- **WHEN** variant="plain" is set
+- **THEN** SHALL render without border
+- **AND** SHALL have no shadow
+- **AND** SHALL use default background (bg token)
 
 #### Scenario: Outlined variant
 
 - **WHEN** variant="outlined" is set or no value provided (default)
 - **THEN** SHALL render with solid-25 border using colorPalette.6
-- **AND** SHALL use default background (bg token)
 - **AND** SHALL have no shadow
+- **AND** SHALL use default background (bg token)
 
 #### Scenario: Elevated variant
 
@@ -157,19 +168,48 @@ standards.
 - **AND** SHALL apply shadow token level 1
 - **AND** SHALL use default background (bg token)
 
-#### Scenario: Filled variant
+#### Scenario: Outlined + elevated variant
 
-- **WHEN** variant="filled" is set
+- **WHEN** variant="outlined-elevated" is set
+- **THEN** SHALL render with solid-25 border using colorPalette.6
+- **AND** SHALL apply shadow token level 1
+- **AND** SHALL use default background (bg token)
+
+#### Scenario: Muted variant
+
+- **WHEN** variant="muted" is set
 - **THEN** SHALL render without border
 - **AND** SHALL have no shadow
 - **AND** SHALL use colorPalette.2 muted background
 
-#### Scenario: Plain variant
+#### Scenario: Outlined + muted variant
 
-- **WHEN** variant="plain" is set
-- **THEN** SHALL render without border
+- **WHEN** variant="outlined-muted" is set
+- **THEN** SHALL render with solid-25 border using colorPalette.6
 - **AND** SHALL have no shadow
-- **AND** SHALL use default background (bg token)
+- **AND** SHALL use colorPalette.2 muted background
+
+#### Scenario: Elevated + muted variant
+
+- **WHEN** variant="elevated-muted" is set
+- **THEN** SHALL render without border
+- **AND** SHALL apply shadow token level 1
+- **AND** SHALL use colorPalette.2 muted background
+
+#### Scenario: Outlined + elevated + muted variant
+
+- **WHEN** variant="outlined-elevated-muted" is set
+- **THEN** SHALL render with solid-25 border using colorPalette.6
+- **AND** SHALL apply shadow token level 1
+- **AND** SHALL use colorPalette.2 muted background
+
+#### Scenario: Variant name format
+
+- **WHEN** a `variant` value is constructed
+- **THEN** the name SHALL list each enabled axis in the order
+  `outlined`, `elevated`, `muted`, joined with `-`
+- **AND** the name SHALL omit any axis that is off
+- **AND** the all-off case SHALL be named `plain`
 
 ### Requirement: Layout Display
 
@@ -193,7 +233,9 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **THEN** SHALL apply card slot recipe from theme/slot-recipes
 - **AND** SHALL style: root, header, body, footer slots
 - **AND** SHALL support size variants: sm, md, lg
-- **AND** SHALL support variant options: outlined, elevated, filled, plain
+- **AND** SHALL support variant options: plain, outlined, elevated,
+  outlined-elevated, muted, outlined-muted, elevated-muted,
+  outlined-elevated-muted
 
 #### Scenario: Recipe registration
 
@@ -211,7 +253,9 @@ standards.
 
 - **WHEN** CardRecipeProps type is defined
 - **THEN** SHALL include size?: "sm" | "md" | "lg"
-- **AND** SHALL include variant?: "outlined" | "elevated" | "filled" | "plain"
+- **AND** SHALL include variant?: "plain" | "outlined" | "elevated" |
+  "outlined-elevated" | "muted" | "outlined-muted" | "elevated-muted" |
+  "outlined-elevated-muted"
 - **AND** SHALL extend UnstyledProp
 
 #### Scenario: Slot props types

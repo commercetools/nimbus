@@ -97,16 +97,33 @@ are replaced by:
 - md: spacing.400
 - lg: spacing.600
 
-**`variant`** (outlined | elevated | filled | plain, default: outlined) —
-replaces `borderStyle` + `elevation` + `backgroundStyle`:
-- `outlined`: border solid-25 + colorPalette.6, default bg, no shadow (current default)
-- `elevated`: no border, shadow level 1, default bg
-- `filled`: no border, no shadow, colorPalette.2 muted bg
-- `plain`: no border, no shadow, default bg (minimal)
+**`variant`** (default: `outlined`) — replaces `borderStyle` +
+`elevation` + `backgroundStyle`. Designers expose three independent
+visual axes (outlined, elevated, muted), so the variant prop enumerates
+all eight permutations explicitly using a kebab-case naming scheme that
+lists each enabled axis in the fixed order `outlined-elevated-muted`:
 
-This eliminates the 12-permutation combinatorial explosion and gives consumers
-the same vocabulary used by Button, Alert, Badge, Tabs, and every other Nimbus
-component.
+- `plain`: no border, no shadow, default bg
+- `outlined`: border solid-25 + colorPalette.6, default bg, no shadow
+  _(default)_
+- `elevated`: no border, shadow level 1, default bg
+- `outlined-elevated`: border + shadow, default bg
+- `muted`: no border, no shadow, colorPalette.2 muted bg
+- `outlined-muted`: border + muted bg
+- `elevated-muted`: shadow + muted bg
+- `outlined-elevated-muted`: border + shadow + muted bg
+
+This collapses what would have been three separate boolean/enum props
+(`outlined`, `elevated`, `background`) into the single `variant` prop
+that every other Nimbus component already uses, while still giving
+designers and consumers access to every visual cell of the 2×2×2
+matrix shown in the Figma component-property layout.
+
+The kebab-case naming is intentional: this is the first Nimbus
+component to expose a variant matrix wide enough that camelCase names
+(e.g. `outlinedElevatedMuted`) become hard to read. Names list axes in
+a fixed order so consumers never have to guess between
+`elevated-outlined` and `outlined-elevated`.
 
 ### Unified spacing via `--card-spacing`
 

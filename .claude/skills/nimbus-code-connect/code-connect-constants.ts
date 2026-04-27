@@ -417,6 +417,13 @@ figma.connect(
   },
 
   card: {
+    // The Card was reworked: Card.Content → Card.Body (rename), and the four
+    // ad-hoc visual props (cardPadding, borderStyle, elevation, backgroundStyle)
+    // were collapsed into a single kebab-case `variant` prop covering all
+    // eight permutations of three independent axes (outlined × elevated ×
+    // muted-background). Designers expose those axes as three separate Figma
+    // component properties (Outlined / Elevated / Background); we read each
+    // one and compose the variant name in the snippet.
     entries: {
       Content: {
         rawProps: {
@@ -437,26 +444,44 @@ figma.connect(
         exampleJsx: `<>
       {props.leadingElement}
       {props.header}
-      <Card.Content>
+      <Card.Body>
         {props.instance}
         {props.children}
-      </Card.Content>
+      </Card.Body>
     </>`,
       },
       Root: {
         rawProps: {
-          borderStyle: {
-            code: `figma.enum("Outlined", { Yes: "outlined", No: "none" })`,
+          outlined: {
+            code: `figma.boolean("Outlined")`,
             position: "attribute",
           },
-          elevation: {
-            code: `figma.enum("Elevated", { Yes: "elevated", No: "none" })`,
+          elevated: {
+            code: `figma.boolean("Elevated")`,
+            position: "attribute",
+          },
+          muted: {
+            code: `figma.enum("Background", { Default: false, Muted: true })`,
             position: "attribute",
           },
         },
-        skipFigmaProps: ["Outlined", "Elevated"],
+        skipFigmaProps: ["Outlined", "Elevated", "Background"],
+        exampleJsx: `<Card.Root
+      variant={
+        ((
+          [
+            props.outlined && "outlined",
+            props.elevated && "elevated",
+            props.muted && "muted",
+          ].filter(Boolean) as string[]
+        ).join("-") || "plain") as CardProps["variant"]
+      }
+    >
+      {props.children}
+    </Card.Root>`,
       },
     },
+    extraImports: [`import type { CardProps } from "./card.types";`],
   },
 
   combobox: {
