@@ -2,7 +2,13 @@ import { describe, it, expect } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { useState } from "react";
-import { InfoDialog, NimbusProvider } from "@commercetools/nimbus";
+import {
+  Badge,
+  Flex,
+  InfoDialog,
+  NimbusProvider,
+  Text,
+} from "@commercetools/nimbus";
 
 /**
  * @docs-section basic-rendering
@@ -83,5 +89,55 @@ describe("InfoDialog - Controlled state", () => {
     await waitFor(() => {
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
+  });
+});
+
+/**
+ * @docs-section uncontrolled-state
+ * @docs-title Uncontrolled Open State
+ * @docs-description Open the InfoDialog by default without managing state via defaultOpen.
+ * @docs-order 3
+ */
+describe("InfoDialog - Uncontrolled state", () => {
+  it("opens by default in uncontrolled mode via defaultOpen", () => {
+    render(
+      <NimbusProvider>
+        <InfoDialog title="Welcome" defaultOpen>
+          <p>Shown immediately on mount.</p>
+        </InfoDialog>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(screen.getByText("Shown immediately on mount.")).toBeInTheDocument();
+  });
+});
+
+/**
+ * @docs-section accessible-name-override
+ * @docs-title Accessible Name Override
+ * @docs-description Provide an explicit aria-label when a composed ReactNode title does not form a meaningful accessible name.
+ * @docs-order 4
+ */
+describe("InfoDialog - Accessible name override", () => {
+  it("uses aria-label as the accessible name when provided", () => {
+    render(
+      <NimbusProvider>
+        <InfoDialog
+          title={
+            <Flex alignItems="center" gap="200">
+              <Text>Plan details</Text>
+              <Badge>Pro</Badge>
+            </Flex>
+          }
+          aria-label="Plan details"
+          isOpen
+        >
+          <p>Your current plan includes unlimited projects.</p>
+        </InfoDialog>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByRole("dialog")).toHaveAccessibleName("Plan details");
   });
 });
