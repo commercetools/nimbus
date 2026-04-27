@@ -39,14 +39,25 @@ Get familiar with the features.
 
 ### Orientation
 
-Control which axes are scrollable. The default is vertical.
+Control which axes are scrollable. The default is `both`, so overflow on
+either axis surfaces a visible scrollbar.
 
 ```jsx live
 const App = () => (
   <Stack gap="600">
     <Box>
-      <Text fontSize="sm" mb="200" fontWeight="bold">Vertical (default)</Text>
-      <ScrollArea maxH="120px" w="300px" variant="always">
+      <Text fontSize="sm" mb="200" fontWeight="bold">Both (default)</Text>
+      <ScrollArea maxH="120px" maxW="300px" variant="always">
+        <Box whiteSpace="nowrap">
+          {Array.from({ length: 15 }, (_, i) => (
+            <Text key={i} fontSize="sm">{"Bidirectional content ".repeat(15)}</Text>
+          ))}
+        </Box>
+      </ScrollArea>
+    </Box>
+    <Box>
+      <Text fontSize="sm" mb="200" fontWeight="bold">Vertical</Text>
+      <ScrollArea maxH="120px" w="300px" orientation="vertical" variant="always">
         {Array.from({ length: 15 }, (_, i) => (
           <Text key={i} fontSize="sm">Line {i + 1}: Sample content for vertical scrolling.</Text>
         ))}
@@ -58,16 +69,6 @@ const App = () => (
         <Box whiteSpace="nowrap">
           {Array.from({ length: 5 }, (_, i) => (
             <Text key={i} fontSize="sm">{"Horizontal content ".repeat(15)}</Text>
-          ))}
-        </Box>
-      </ScrollArea>
-    </Box>
-    <Box>
-      <Text fontSize="sm" mb="200" fontWeight="bold">Both axes</Text>
-      <ScrollArea maxH="120px" maxW="300px" orientation="both" variant="always">
-        <Box whiteSpace="nowrap">
-          {Array.from({ length: 15 }, (_, i) => (
-            <Text key={i} fontSize="sm">{"Bidirectional content ".repeat(15)}</Text>
           ))}
         </Box>
       </ScrollArea>

@@ -22,10 +22,13 @@
 ## 3. Stories
 
 - [x] 3.1 Write Storybook stories with play functions covering: Default
-      (overflowing, vertical scrollbar, keyboard focusable), NonOverflowing
-      (short content), RoleRegion (role + aria-label), KeyboardFocusRing
-      (Tab focus + ring), VerticalOnly, HorizontalOnly, BothAxes,
-      AlwaysVisible, WithAriaLabelledBy, WithStyleProps, Sizes, SmokeTest
+      (overflowing, vertical scrollbar, keyboard focusable),
+      DefaultSurfacesBothScrollbars, DefaultChildSizing (sibling sizing
+      invariants), NonOverflowing, ContentFillsViewport (vertical centering
+      of a shorter child), KeyboardFocusRing, StrictOrientations (axis
+      clipping + opposite-axis suppression), AlwaysVisible, CustomStyling,
+      Sizes, ExternalControl, DynamicContent, ForwardsApi,
+      StickyContentInPanel, ContentPadding
 
 ## 4. Documentation
 
@@ -63,3 +66,29 @@
       (`pnpm test:storybook:dev packages/nimbus/src/components/scroll-area/scroll-area.stories.tsx`)
 - [x] 7.4 Lint passes
       (`pnpm lint -- packages/nimbus/src/components/scroll-area/`)
+
+## 8. Post-release hotfix (PR #1389)
+
+- [x] 8.1 Override Zag's inline `min-width: fit-content` on the content
+      slot so `width: 100%` siblings size to the viewport instead of the
+      widest descendant
+- [x] 8.2 Change default `orientation` from `"vertical"` to `"both"` so
+      descendant overflow on either axis always surfaces a visible
+      scrollbar indicator
+- [x] 8.3 Clip the opposite axis on the viewport via inline style for
+      strict `orientation="vertical"` / `"horizontal"` so descendants
+      cannot scroll silently
+- [x] 8.4 Give the content wrapper `height: 100%` for default and
+      `vertical` orientations so consumers can vertically center shorter
+      children with flex/grid + `height: 100%`
+- [x] 8.5 Fix recipe so each scrollbar hides based on its own axis data
+      attribute (was: hid only when neither axis overflowed)
+- [x] 8.6 Remove `overflow`, `overflowX`, `overflowY` from
+      `ScrollAreaProps` at the type level
+- [x] 8.7 Reduce `ids` shape to `root`, `viewport`, `content` — the only
+      keys honored by the underlying state machine
+- [x] 8.8 Add stories locking in the new invariants:
+      `DefaultSurfacesBothScrollbars`, `DefaultChildSizing`,
+      `StrictOrientations`, `ContentFillsViewport`
+- [x] 8.9 Remove stories subsumed by the above: `SmokeTest`,
+      `VerticalOnly`, `HorizontalOnly`, `BothAxes`

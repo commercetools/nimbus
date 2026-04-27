@@ -34,6 +34,35 @@ Chakra's ScrollArea lacks several features from the original spec:
    `:has(:focus-visible)`.
 3. **Nimbus design tokens** — scrollbar colors, sizes, and transitions use
    Nimbus token scale.
+4. **Content-wrapper sizing override** — zag-js always writes `min-width:
+   fit-content` inline on the content slot so horizontal scroll works. That
+   stretches the wrapper to the widest child, which silently stretches every
+   `width: 100%` sibling to that overgrown width. For default and `vertical`
+   orientations we override the content slot with `min-width: 100%; width:
+   100%; height: 100%` so siblings size to the viewport and consumers can
+   vertically center shorter children with flex/grid + `height: 100%`.
+   Descendant overflow on either axis still surfaces as viewport scroll via
+   `scrollHeight` / `scrollWidth`, so the default `orientation="both"` still
+   produces a visible horizontal indicator — just without the silent
+   stretching side effect.
+5. **Active axis clipping for strict orientations** — for
+   `orientation="vertical"` / `"horizontal"` we also write `overflowX` /
+   `overflowY: hidden` inline on the viewport so a descendant with an
+   explicit fixed size cannot escape. Inline style is required because
+   zag-js writes `overflow: auto` inline, and recipe classes cannot
+   outspecify inline styles.
+6. **Per-axis scrollbar visibility** — the recipe hides each scrollbar
+   based on its own axis data attribute (`[data-orientation=vertical]:not([data-overflow-y])`
+   and the horizontal counterpart), so a vertical scrollbar never paints
+   when only the horizontal axis overflows.
+7. **`overflow*` removed from props** — `overflow`, `overflowX`, and
+   `overflowY` are omitted from `ScrollAreaProps` because the component
+   owns overflow internally. Consumer values would silently break scroll
+   behavior (the root has `overflow: hidden`, the viewport owns `overflow:
+   auto`, and strict orientations own axis clipping).
+8. **`ids` limited to honored parts** — the `ids` prop accepts only `root`,
+   `viewport`, and `content`. Scrollbar and thumb elements are located by
+   data attributes in the state machine and cannot be renamed.
 
 ## Single-Element API
 

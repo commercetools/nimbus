@@ -31,10 +31,23 @@ design tokens.
   - Keyboard-only focus ring on root element using `_focusWithin` +
     `:has(:focus-visible)` pattern
   - `orientation` prop to control which scrollbar axes render (`vertical` |
-    `horizontal` | `both`)
+    `horizontal` | `both`), defaulting to `"both"` so descendant overflow on
+    either axis always surfaces a visible scrollbar indicator. Setting
+    `orientation` to `"vertical"` or `"horizontal"` actively clips the
+    opposite axis on the viewport.
+  - Content wrapper is sized to the viewport by default (width and height)
+    to preserve `width: 100%` sibling sizing and enable vertical centering of
+    shorter children with flex/grid + `height: 100%`. For strict
+    `orientation="horizontal"`, the wrapper keeps Zag's `min-width:
+    fit-content` so rows of items scroll as usual.
   - Accepts all Chakra style props (`bg`, `maxH`, `w`, etc.) — padding
     props (`p`, `px`, `py`, etc.) are forwarded to the Content slot so they
-    apply inside the scrollable area
+    apply inside the scrollable area. `overflow`, `overflowX`, `overflowY`
+    are removed from the prop surface because the component owns overflow
+    internally and consumer values would break scroll behavior silently.
+  - `ids` prop is limited to `root`, `viewport`, and `content` — the only
+    parts the underlying state machine honors. Scrollbar and thumb elements
+    are located by data attributes and cannot be renamed via `ids`.
 
 No custom hook — overflow detection and scroll state are handled by Ark UI's
 zag-js state machine internally. No i18n — no user-facing strings.
