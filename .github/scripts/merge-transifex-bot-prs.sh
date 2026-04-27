@@ -71,16 +71,13 @@ for PR_NUM in $PRS; do
     fi
   fi
 
-  # Add label, wait for CI, then merge directly:
-  # --squash: repo doesn't allow merge commits
-  # --watch --fail-fast: ensures CI passes before --admin merges
-  # --admin: bypasses the 2-approval rule (Tx bot PRs will never get 2 human approvals)
+  # Add audit label and merge (--squash: repo doesn't allow merge commits;
+  # --auto: merges once all required checks pass)
   if [ "$DRY_RUN" = "true" ]; then
     echo "Dry run — skipping label and merge of PR #$PR_NUM."
   else
     gh pr edit "$PR_NUM" --add-label "tx-auto-merge"
-    gh pr checks "$PR_NUM" --watch --fail-fast
-    gh pr merge "$PR_NUM" --squash --admin
+    gh pr merge "$PR_NUM" --squash --auto
     echo "Merged PR #$PR_NUM into main."
   fi
 done
