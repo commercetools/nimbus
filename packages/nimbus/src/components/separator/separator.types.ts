@@ -9,7 +9,10 @@ import type {
 // RECIPE PROPS
 // ============================================================
 
-type SeparatorRecipeProps = RecipeProps<"nimbusSeparator"> & UnstyledProp;
+type SeparatorRecipeProps = {
+  /** Orientation of the separator */
+  orientation?: RecipeProps<"nimbusSeparator">["orientation"];
+} & UnstyledProp;
 
 // ============================================================
 // SLOT PROPS
