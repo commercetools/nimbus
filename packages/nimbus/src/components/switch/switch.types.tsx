@@ -51,4 +51,9 @@ export type SwitchProps = OmitInternalProps<
      * Ref forwarding to the input element
      */
     ref?: React.Ref<HTMLInputElement>;
+    /**
+     * Size variant of the switch
+     * @default "md"
+     */
+    size?: "sm" | "md";
   };
