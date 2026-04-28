@@ -137,7 +137,7 @@
   },
   "Nimbus.DataTable.settingsTabsAriaLabel": {
     "developer_comment": "aria-label for the settings tabs in the data table manager drawer",
-    "string": "Settings tabs"
+    "string": "Pestañas de configuración"
   },
   "Nimbus.DataTable.textPreviews": {
     "developer_comment": "title for the text previews section in the data table manager layout",
@@ -245,7 +245,7 @@
   },
   "Nimbus.DefaultPage.backLink": {
     "developer_comment": "Default aria-label for the back navigation link",
-    "string": "Go back"
+    "string": "Volver"
   },
   "Nimbus.Dialog.closeTrigger": {
     "developer_comment": "aria-label for the default close trigger button",
@@ -353,7 +353,7 @@
   },
   "Nimbus.ModalPage.backButton": {
     "developer_comment": "aria-label for the back navigation button in ModalPage.TopBar",
-    "string": "Go back to {previousPathLabel}"
+    "string": "Volver a {previousPathLabel}"
   },
   "Nimbus.MoneyInput.amountInputLabel": {
     "developer_comment": "aria-label for amount input",
