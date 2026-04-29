@@ -141,7 +141,7 @@
   },
   "Nimbus.DataTable.settingsTabsAriaLabel": {
     "developer_comment": "aria-label for the settings tabs in the data table manager drawer",
-    "string": "Einstellungs-Tabs"
+    "string": "Einstellungen-Registerkarten"
   },
   "Nimbus.DataTable.textPreviews": {
     "developer_comment": "title for the text previews section in the data table manager layout",
