@@ -16,6 +16,7 @@ jobs:
       - name: Post localization reminder
         run: |
           EXISTING=$(gh pr view "${{ github.event.pull_request.number }}" \
+            --repo "${{ github.repository }}" \
             --json comments \
             --jq '[.comments[] | select(.body | contains("localization ticket"))] | length')
 
@@ -24,7 +25,7 @@ jobs:
             exit 0
           fi
 
-          gh pr comment "${{ github.event.pull_request.number }}" --body "$(cat <<'EOF'
+          gh pr comment "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --body "$(cat <<'EOF'
           **Localization reminder:** This PR adds or modifies \`.i18n.ts\` files.
 
           Please create a Jira ticket for the localization manager to initiate translation of any new or updated strings in Transifex. See [LOC-1766](https://commercetools.atlassian.net/browse/LOC-1766) as an example.
