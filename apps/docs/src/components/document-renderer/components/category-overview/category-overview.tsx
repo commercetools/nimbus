@@ -93,13 +93,12 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
             <Box as="li" width="full" pr="200" pb="200" key={doc.path}>
               <Link textDecoration="none" href={doc.path} width="full">
                 <Card.Root
-                  cardPadding="md"
-                  borderStyle="none"
+                  variant="plain"
                   ml="-400"
                   width="full"
                   _hover={{ bg: "colorPalette.2" }}
                 >
-                  <Card.Content>
+                  <Card.Body>
                     <Flex>
                       <Box color="primary.11" textStyle="2xl" mr="400">
                         <IconComponent id={doc.icon} fallback="ArrowForward" />
@@ -118,7 +117,7 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
                         </Text>
                       </Box>
                     </Flex>
-                  </Card.Content>
+                  </Card.Body>
                 </Card.Root>
               </Link>
             </Box>
@@ -135,11 +134,10 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
           <Link key={doc.path} textDecoration="none" href={doc.path}>
             <Card.Root
               _hover={{ bg: "colorPalette.2" }}
-              cardPadding="md"
-              borderStyle="none"
+              variant="plain"
               width="full"
             >
-              <Card.Content>
+              <Card.Body>
                 <Stack>
                   <Box color="primary.11" textStyle="5xl" mb="200">
                     <IconComponent id={doc.icon} fallback="Layers" />
@@ -157,7 +155,7 @@ const CategoryOverviewContent: FC<{ variant?: string }> = ({ variant }) => {
                     {doc.description}
                   </Text>
                 </Stack>
-              </Card.Content>
+              </Card.Body>
             </Card.Root>
           </Link>
         ))}

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
-import { Card, NimbusProvider } from "@commercetools/nimbus";
+import { render, screen, waitFor } from "@testing-library/react";
+import { Card, Heading, Text, NimbusProvider } from "@commercetools/nimbus";
 
 /**
  * @docs-section basic-rendering
@@ -14,7 +14,7 @@ describe("Card - Basic rendering", () => {
       <NimbusProvider>
         <Card.Root>
           <Card.Header>Project X</Card.Header>
-          <Card.Content>Status: Active</Card.Content>
+          <Card.Body>Status: Active</Card.Body>
         </Card.Root>
       </NimbusProvider>
     );
@@ -35,15 +35,100 @@ describe("Card - Basic rendering", () => {
     expect(screen.getByText("Card Title")).toBeInTheDocument();
   });
 
-  it("renders with content only", () => {
+  it("renders with body only", () => {
     render(
       <NimbusProvider>
         <Card.Root>
-          <Card.Content>This is the main content.</Card.Content>
+          <Card.Body>This is the main content.</Card.Body>
         </Card.Root>
       </NimbusProvider>
     );
 
     expect(screen.getByText("This is the main content.")).toBeInTheDocument();
+  });
+
+  it("renders with footer", () => {
+    render(
+      <NimbusProvider>
+        <Card.Root>
+          <Card.Header>Title</Card.Header>
+          <Card.Body>Content</Card.Body>
+          <Card.Footer>Footer actions</Card.Footer>
+        </Card.Root>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByText("Title")).toBeInTheDocument();
+    expect(screen.getByText("Content")).toBeInTheDocument();
+    expect(screen.getByText("Footer actions")).toBeInTheDocument();
+  });
+
+  it("renders with variant and size props", () => {
+    render(
+      <NimbusProvider>
+        <Card.Root variant="elevated" size="lg">
+          <Card.Body>Elevated card</Card.Body>
+        </Card.Root>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByText("Elevated card")).toBeInTheDocument();
+  });
+});
+
+/**
+ * @docs-section slot-based-accessibility
+ * @docs-title Slot-Based Accessibility
+ * @docs-description Using Heading and Text slots for automatic ARIA wiring
+ * @docs-order 2
+ */
+describe("Card - Slot-based accessibility", () => {
+  it("wires aria-labelledby and aria-describedby from title and description slots", async () => {
+    render(
+      <NimbusProvider>
+        <Card.Root data-testid="card-slot">
+          <Card.Header>
+            <Heading slot="title" as="h3">
+              Product Details
+            </Heading>
+          </Card.Header>
+          <Card.Body>
+            <Text slot="description">
+              Overview of the product's key features.
+            </Text>
+          </Card.Body>
+        </Card.Root>
+      </NimbusProvider>
+    );
+
+    const card = screen.getByTestId("card-slot");
+    const heading = screen.getByText("Product Details");
+    const description = screen.getByText(/key features/);
+
+    // useSlotId completes its registration on a follow-up render.
+    await waitFor(() => {
+      expect(card).toHaveAttribute("aria-labelledby", heading.id);
+      expect(card).toHaveAttribute("aria-describedby", description.id);
+    });
+
+    // Card is a plain div — set role explicitly if a landmark role is needed.
+    expect(card).not.toHaveAttribute("role");
+  });
+
+  it("has no role or ARIA labelling attributes without slots", () => {
+    render(
+      <NimbusProvider>
+        <Card.Root data-testid="card-plain">
+          <Card.Header>Title</Card.Header>
+          <Card.Body>Content</Card.Body>
+        </Card.Root>
+      </NimbusProvider>
+    );
+
+    const card = screen.getByTestId("card-plain");
+
+    expect(card).not.toHaveAttribute("role");
+    expect(card).not.toHaveAttribute("aria-labelledby");
+    expect(card).not.toHaveAttribute("aria-describedby");
   });
 });
