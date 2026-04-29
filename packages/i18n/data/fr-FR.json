@@ -248,7 +248,7 @@
     "string": "Heure de début"
   },
   "Nimbus.DefaultPage.backLink": {
-    "developer_comment": "Default aria-label for the back navigation link",
+    "developer_comment": "Default label for the back navigation link",
     "string": "Retour"
   },
   "Nimbus.Dialog.closeTrigger": {
