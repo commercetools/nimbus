@@ -2,4 +2,4 @@ import { defineTokens } from "@chakra-ui/react/styled-system";
 
 import { themeTokens } from "@commercetools/nimbus-tokens";
 
-export const aspectRatios = defineTokens.durations(themeTokens.aspectRatio);
+export const aspectRatios = defineTokens.aspectRatios(themeTokens.aspectRatio);
