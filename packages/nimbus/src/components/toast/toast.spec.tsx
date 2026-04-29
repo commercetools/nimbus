@@ -485,26 +485,4 @@ describe("ToastManager", () => {
       expect(mockToasterInstance.remove).toHaveBeenCalled();
     });
   });
-
-  describe("Configuration Options", () => {
-    it("Passes pauseOnInteraction: false when specified", () => {
-      toast({ title: "Test", pauseOnInteraction: false });
-
-      expect(mockToasterInstance.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          pauseOnInteraction: false,
-        })
-      );
-    });
-
-    it("Uses default pauseOnInteraction: true", () => {
-      toast({ title: "Test" });
-
-      expect(mockToasterInstance.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          pauseOnInteraction: true,
-        })
-      );
-    });
-  });
 });

@@ -145,8 +145,11 @@ SHALL manage separate pre-created toaster instances for 4 corner placements:
 ### Requirement: Auto-Dismiss
 
 Toasts SHALL auto-dismiss after a configurable duration (default 6 seconds).
-Timers SHALL pause on hover, focus, and page idle (via Chakra's built-in
-`pauseOnInteraction` and `pauseOnPageIdle`).
+Timers SHALL pause on hover, focus, and page idle. Hover and focus pause is
+provided automatically by `@zag-js/toast`'s group machine
+(`onMouseEnter` / `onMouseLeave` / `onFocus` / `onBlur` handlers on the toast
+region) and is not per-toast configurable. Page-idle pause is enabled at
+toaster creation via `pauseOnPageIdle: true`.
 
 #### Scenario: Default auto-dismiss
 
