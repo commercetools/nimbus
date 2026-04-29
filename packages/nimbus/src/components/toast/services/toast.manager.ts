@@ -92,7 +92,6 @@ class ToastManager implements ToastManagerApi {
       ...restOptions,
       action,
       duration,
-      pauseOnInteraction: safeOptions.pauseOnInteraction ?? true,
       meta: {
         closable,
         variant: safeOptions.variant ?? "accent-start",
@@ -214,27 +213,26 @@ class ToastManager implements ToastManagerApi {
     const toaster = getToaster(placement);
 
     if (toaster) {
+      // Map a per-state ToastOptions to the shape zag-js's toaster.promise()
+      // expects. We explicitly pick fields rather than spreading because
+      // ToastOptions includes the consumer-level `placement` field and a
+      // wider `type` enum than zag accepts on the success-state
+      // intersection. Custom visual fields (icon, variant, closable,
+      // aria-live) are tunneled through `meta` so the outlet can read them.
       const mapState = (stateOptions: ToastOptions) => {
-        const {
-          action: consumerAction,
-          icon,
-          variant,
-          closable,
-          "aria-live": stateAriaLive,
-          ...rest
-        } = stateOptions;
         const duration = stateOptions.duration ?? DEFAULT_DURATION;
         const resolvedClosable =
-          closable ?? (duration === Infinity ? true : false);
+          stateOptions.closable ?? (duration === Infinity ? true : false);
         return {
-          ...rest,
+          title: stateOptions.title,
+          description: stateOptions.description,
           duration,
-          action: mapAction(consumerAction),
+          action: mapAction(stateOptions.action),
           meta: {
             closable: resolvedClosable,
-            variant: variant ?? "accent-start",
-            icon,
-            "aria-live": stateAriaLive,
+            variant: stateOptions.variant ?? "accent-start",
+            icon: stateOptions.icon,
+            "aria-live": stateOptions["aria-live"],
           },
         };
       };

@@ -79,8 +79,10 @@ override the default via the `"aria-live"` option on `ToastOptions`.
 ### Auto-Dismiss: 6 Seconds Default
 
 Managed by `ToastManager.create()` which sets `duration: 6000` by default.
-Pause on hover/focus is Chakra's built-in behavior (`pauseOnInteraction: true`).
-Pause on page idle enabled via `pauseOnPageIdle: true`.
+Pause on hover/focus is provided automatically by `@zag-js/toast`'s group
+machine via region-level pointer/focus handlers — it is not per-toast
+configurable. Page-idle pause is enabled at toaster creation via
+`pauseOnPageIdle: true`.
 
 Action buttons do not override the toast duration. Consumers control duration
 independently — an action toast auto-dismisses at the default 6s unless the

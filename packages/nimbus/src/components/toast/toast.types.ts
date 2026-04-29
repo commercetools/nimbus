@@ -63,8 +63,6 @@ export type ToastOptions = {
   placement?: ToastPlacement;
   /** Whether the close button is visible (default: false) */
   closable?: boolean;
-  /** Pause auto-dismiss on hover/focus (default: true) */
-  pauseOnInteraction?: boolean;
   /**
    * Override the default `aria-live` politeness level.
    * By default, `error` toasts use `"assertive"` and all others use `"polite"`.
