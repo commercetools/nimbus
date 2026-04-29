@@ -106,6 +106,37 @@ const App = () => (
 )
 ```
 
+### Missing or partial names
+
+`firstName` and `lastName` are both **optional**. The Avatar handles missing,
+empty, and whitespace-only values defensively:
+
+- If only one name is usable (after trimming whitespace), a single initial
+  is rendered.
+- If neither name yields a usable character, a generic `Person` icon is
+  rendered as the fallback and a localized generic `aria-label`
+  (`"User avatar"`) is applied.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Avatar firstName="John" />            {/* renders "J" */}
+    <Avatar lastName="Doe" />              {/* renders "D" */}
+    <Avatar firstName="" lastName="" />    {/* renders the Person icon */}
+    <Avatar />                             {/* renders the Person icon */}
+  </Stack>
+)
+```
+
+This is intended for cases where user records have incomplete name data —
+common in legacy systems and partial profiles. The component's TypeScript
+contract permits `undefined` so call sites do not need non-null assertions
+or empty-string fallbacks.
+
+Initials extraction is also Unicode codepoint-safe (emoji and astral-plane
+characters are not split mid-surrogate) and trim-aware (leading/trailing
+whitespace is discarded before extracting the first character).
+
 ## Component requirements
 
 ## Accessibility

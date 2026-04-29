@@ -73,7 +73,11 @@ function dirToVariableName(dirName: string): string {
  */
 async function getMessageKeys(localePath: string): Promise<string[] | null> {
   try {
-    const content = await fs.readFile(localePath, "utf-8");
+    const rawContent = await fs.readFile(localePath, "utf-8");
+    // Strip template-literal interpolations like `${args.name}` first, so
+    // their inner `}` doesn't prematurely terminate the [^}]+ match below
+    // and silently drop later message keys.
+    const content = rawContent.replace(/\$\{[^}]*\}/g, "");
     // Extract keys from export default { "key": ... } or { key: ... }
     const match = content.match(/export default\s*\{([^}]+)\}/s);
     if (!match) return null;

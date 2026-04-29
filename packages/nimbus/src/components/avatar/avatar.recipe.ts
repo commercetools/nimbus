@@ -19,6 +19,14 @@ export const avatarRecipe = defineRecipe({
     "button&": {
       cursor: "button",
     },
+    // Person-icon fallback sized relative to the avatar slot. The icon
+    // ships with width/height "1em", which would inherit the recipe's
+    // small text font-size. We override to ~70% of the slot so the icon
+    // visually balances initials text across all sizes.
+    "& > svg": {
+      width: "70%",
+      height: "70%",
+    },
   },
   variants: {
     size: {

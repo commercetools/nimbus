@@ -1,14 +1,37 @@
 import { useState } from "react";
+import { Person } from "@commercetools/nimbus-icons";
 import { Image } from "@/components";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { type AvatarProps } from "./avatar.types";
 import { AvatarRoot } from "./avatar.slots";
 import { avatarMessagesStrings } from "./avatar.messages";
 
-function getInitials(firstName: string, lastName: string) {
-  return (
-    firstName.split("")[0].toUpperCase() + lastName.split("")[0].toUpperCase()
-  );
+/**
+ * Extract a one- or two-character initials string from the supplied names.
+ *
+ * Defensive against missing input: handles `undefined`, empty strings, and
+ * whitespace-only strings by trimming and dropping empty parts. Codepoint-
+ * safe: uses `Array.from` so astral-plane characters (e.g. emoji surrogate
+ * pairs) are not split mid-surrogate. Returns an empty string when neither
+ * input yields a usable character — callers use that signal to render the
+ * `Person` icon fallback instead of text.
+ */
+export function getInitials(firstName?: string, lastName?: string) {
+  const first = Array.from((firstName ?? "").trim())[0]?.toUpperCase() ?? "";
+  const last = Array.from((lastName ?? "").trim())[0]?.toUpperCase() ?? "";
+  return `${first}${last}`;
+}
+
+/**
+ * Compose a display-ready full name from the trimmed non-empty parts.
+ * Returns "" when both inputs are missing/empty/whitespace-only so the
+ * caller can fall back to a generic localized label.
+ */
+export function getFullName(firstName?: string, lastName?: string) {
+  return [firstName, lastName]
+    .map((s) => s?.trim() ?? "")
+    .filter(Boolean)
+    .join(" ");
 }
 
 /**
@@ -16,7 +39,8 @@ function getInitials(firstName: string, lastName: string) {
  * ============================================================
  * A small image or icon that identifies and personalizes the user within the interface.
  * Displays user images or automatically generates initials from first and last names.
- * Falls back to initials if image fails to load.
+ * Falls back to initials if image fails to load, and to a Person icon when no
+ * usable initials can be derived.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/media/avatar}
  *
@@ -32,6 +56,12 @@ function getInitials(firstName: string, lastName: string) {
  * // With initials fallback
  * <Avatar firstName="Jane" lastName="Smith" />
  * ```
+ *
+ * @example
+ * ```tsx
+ * // No names provided — renders the Person icon and a generic localized label
+ * <Avatar />
+ * ```
  */
 export const Avatar = (props: AvatarProps) => {
   const msg = useLocalizedStringFormatter(avatarMessagesStrings);
@@ -39,11 +69,12 @@ export const Avatar = (props: AvatarProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  const fullName = `${firstName} ${lastName}`;
+  const initials = getInitials(firstName, lastName);
+  const fullName = getFullName(firstName, lastName);
 
-  const avatarLabel = msg.format("avatarLabel", {
-    fullName,
-  });
+  const avatarLabel = fullName
+    ? msg.format("avatarLabel", { fullName })
+    : msg.format("avatarLabelGeneric");
 
   const sharedProps = {
     "aria-label": avatarLabel,
@@ -61,17 +92,19 @@ export const Avatar = (props: AvatarProps) => {
     setImageError(true);
   };
 
-  // Show initials if no src provided, image hasn't loaded yet, or image failed
-  const shouldShowInitials = !src || !imageLoaded || imageError;
+  // Show the fallback (initials or Person icon) when no src is provided,
+  // while the image is loading, or when the image failed to load.
+  const shouldShowFallback = !src || !imageLoaded || imageError;
 
   return (
     <AvatarRoot {...sharedProps}>
-      {shouldShowInitials ? getInitials(firstName, lastName) : null}
+      {shouldShowFallback &&
+        (initials.length > 0 ? initials : <Person aria-hidden="true" />)}
 
       {src && (
         <Image
           src={src}
-          alt={alt || fullName}
+          alt={alt || fullName || avatarLabel}
           onLoad={onLoad}
           onError={onError}
           display={imageLoaded && !imageError ? "block" : "none"}
