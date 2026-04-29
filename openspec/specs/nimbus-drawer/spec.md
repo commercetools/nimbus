@@ -31,7 +31,7 @@ The component SHALL export as compound component namespace.
 - **AND** SHALL provide Drawer.CloseTrigger for dismiss button
 - **AND** Root SHALL be first property in namespace
 
-## Drawer Opening
+**Drawer Opening**
 
 ### Requirement: Trigger Control
 The component SHALL provide trigger for opening drawer.
@@ -55,7 +55,7 @@ The component SHALL provide trigger for opening drawer.
 - **AND** SHALL manage state internally
 - **AND** SHALL not require isOpen or onOpenChange props
 
-## Placement and Positioning
+**Placement and Positioning**
 
 ### Requirement: Edge Placement
 The component SHALL support drawer placement from screen edges.
@@ -94,7 +94,7 @@ The component SHALL support drawer placement from screen edges.
 - **AND** SHALL slide out to bottom on close
 - **AND** SHALL span full viewport width
 
-## Focus Management
+**Focus Management**
 
 ### Requirement: Focus Trap
 The component SHALL manage focus appropriately per nimbus-core standards.
@@ -118,7 +118,7 @@ The component SHALL manage focus appropriately per nimbus-core standards.
 - **OR** element that had focus before opening
 - **AND** focus SHALL be visible
 
-## Drawer Closure
+**Drawer Closure**
 
 ### Requirement: Close Behavior
 The component SHALL provide multiple ways to close drawer.
@@ -151,7 +151,7 @@ The component SHALL provide multiple ways to close drawer.
 - **THEN** clicking SHALL close drawer
 - **AND** SHALL work with any button in drawer content
 
-## Overlay and Backdrop
+**Overlay and Backdrop**
 
 ### Requirement: Modal Backdrop
 The component SHALL provide backdrop overlay.
@@ -174,7 +174,7 @@ The component SHALL provide backdrop overlay.
 - **AND** background SHALL remain visible
 - **AND** SHALL still prevent background interaction
 
-## Drawer Animation
+**Drawer Animation**
 
 ### Requirement: Slide Animations
 The component SHALL provide smooth slide transitions.
@@ -201,7 +201,7 @@ The component SHALL provide smooth slide transitions.
 - **AND** top SHALL slide-from-top-full/slide-to-top-full
 - **AND** bottom SHALL slide-from-bottom-full/slide-to-bottom-full
 
-## Scrolling Behavior
+**Scrolling Behavior**
 
 ### Requirement: Content Scrolling
 The component SHALL handle overflow content.
@@ -218,7 +218,7 @@ The component SHALL handle overflow content.
 - **AND** SHALL restore scroll on close
 - **AND** SHALL use overscrollBehaviorY: none
 
-## Drawer Header
+**Drawer Header**
 
 ### Requirement: Title Section
 The component SHALL provide accessible title.
@@ -240,7 +240,7 @@ The component SHALL provide accessible title.
 - **THEN** MAY provide aria-label on Drawer.Root
 - **AND** SHALL ensure drawer has accessible name
 
-## Drawer Body
+**Drawer Body**
 
 ### Requirement: Content Area
 The component SHALL provide main content container.
@@ -257,7 +257,7 @@ The component SHALL provide main content container.
 - **THEN** SHALL be focusable for keyboard scrolling
 - **AND** SHALL show focus ring per nimbus-core standards
 
-## Drawer Footer
+**Drawer Footer**
 
 ### Requirement: Actions Section
 The component SHALL provide action button area.
@@ -275,7 +275,7 @@ The component SHALL provide action button area.
 - **AND** SHALL use flexbox layout
 - **AND** SHALL support slot="close" for dismissal
 
-## Accessibility
+**Accessibility**
 
 ### Requirement: ARIA Dialog Pattern
 The component SHALL implement ARIA dialog pattern per nimbus-core standards.
@@ -309,7 +309,7 @@ The component SHALL use i18n for screen reader text per nimbus-core standards.
 - **AND** message "Close drawer" SHALL translate across locales
 - **AND** SHALL support custom aria-label override
 
-## Styling
+**Styling**
 
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
@@ -336,7 +336,7 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **WHEN** showBackdrop={false}
 - **THEN** SHALL render transparent backdrop
 
-## State Management
+**State Management**
 
 ### Requirement: Controlled Mode
 The component SHALL support controlled state management.
@@ -369,7 +369,7 @@ The component SHALL support uncontrolled state management.
 - **OR** SHALL use defaultOpen for initial state
 - **AND** ModalOverlay SHALL manage its own state
 
-## Advanced Features
+**Advanced Features**
 
 ### Requirement: Interaction Control
 The component SHALL provide fine-grained dismissal control.
@@ -401,7 +401,7 @@ The component SHALL support ref forwarding per nimbus-core standards.
 - **THEN** SHALL forward to button element
 - **AND** ref SHALL reference HTMLButtonElement
 
-## Portal Rendering
+**Portal Rendering**
 
 ### Requirement: Portal Management
 The component SHALL render in React portal.
@@ -413,7 +413,7 @@ The component SHALL render in React portal.
 - **AND** SHALL maintain stacking context
 - **AND** SHALL support nested drawers with z-index layering
 
-## TypeScript Support
+**TypeScript Support**
 
 ### Requirement: Type Safety
 The component SHALL provide comprehensive TypeScript types per nimbus-core standards.
