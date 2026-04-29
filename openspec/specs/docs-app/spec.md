@@ -112,8 +112,6 @@ The system SHALL transform standard language identifiers with meta strings into 
 - **WHEN** MDX contains a fenced code block without `live` in the meta string
 - **THEN** the plugin SHALL NOT modify the lang identifier
 
-**Build System**
-
 ### Requirement: MDX Processing Pipeline
 The system SHALL transform MDX files into route data.
 
@@ -168,8 +166,6 @@ The system SHALL optimize production bundle.
 - **AND** SHALL use hash-based filenames for cache busting
 - **AND** SHALL generate static HTML
 
-**Development Experience**
-
 ### Requirement: Hot Module Replacement
 The system SHALL provide instant feedback during development.
 
@@ -197,8 +193,6 @@ The system SHALL provide REST API for file operations during development.
 - **AND** SHALL validate path traversal attempts
 - **AND** SHALL be development-only (not in production)
 
-**Routing and Content Delivery**
-
 ### Requirement: Dynamic Route Resolution
 The system SHALL use single catch-all route for all content.
 
@@ -213,8 +207,6 @@ The system SHALL use single catch-all route for all content.
 - **WHEN** MDX frontmatter includes menu array
 - **THEN** menu SHALL convert to URL path
 - **AND** example: `["Components", "Inputs", "Button"]` → `/components/inputs/button`
-
-**Special Documentation Components**
 
 ### Requirement: Token Demonstration Components
 The system SHALL provide interactive token demos.
@@ -236,8 +228,6 @@ The system SHALL provide interactive token demos.
 - **THEN** SHALL provide interactive demos for: spacing, sizing, typography, animations
 - **AND** SHALL show visual representations with values
 
-**Content Processing**
-
 ### Requirement: MDX Runtime Evaluation
 The system SHALL compile and evaluate MDX at runtime.
 
@@ -254,8 +244,6 @@ The system SHALL compile and evaluate MDX at runtime.
 - **AND** SHALL provide access to all Nimbus components
 - **AND** SHALL provide access to all icons
 
-**Package Integration**
-
 ### Requirement: Nimbus Package Consumption
 The system SHALL use Nimbus packages for UI and data.
 
@@ -270,8 +258,6 @@ The system SHALL use Nimbus packages for UI and data.
 - **THEN** SHALL use @commercetools/nimbus-docs-build for parsers and builders
 - **AND** SHALL leverage shared schemas and generators
 - **AND** SHALL maintain consistent build logic
-
-**Performance Optimization**
 
 ### Requirement: Lazy Loading
 The system SHALL lazy load route content for optimal initial load.
@@ -290,8 +276,6 @@ The system SHALL optimize static assets.
 - **THEN** SHALL apply Gzip compression
 - **AND** SHALL apply Brotli compression
 - **AND** SHALL generate optimized images
-
-**Deployment**
 
 ### Requirement: Static Site Generation
 The system SHALL produce deployable static assets.
