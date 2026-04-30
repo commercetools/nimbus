@@ -28,6 +28,7 @@ export const DialogContent = (props: DialogContentProps) => {
     shouldCloseOnInteractOutside,
     isOpen,
     onOpenChange,
+    "aria-label": ariaLabel,
   } = useDialogRootContext();
 
   const modalProps = {
@@ -47,7 +48,9 @@ export const DialogContent = (props: DialogContentProps) => {
         <DialogModalSlot asChild>
           <RaModal>
             <DialogContentSlot asChild {...styleProps}>
-              <RaDialog ref={forwardedRef}>{children}</RaDialog>
+              <RaDialog ref={forwardedRef} aria-label={ariaLabel}>
+                {children}
+              </RaDialog>
             </DialogContentSlot>
           </RaModal>
         </DialogModalSlot>
