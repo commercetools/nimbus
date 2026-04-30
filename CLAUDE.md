@@ -323,6 +323,11 @@ pnpm changeset:version-and-format
 pnpm changeset:status
 ```
 
+For changeset content (what to write, what to leave out, audience), see
+[Changeset Conventions](./docs/changeset-conventions.md). Changesets are release
+notes for consumers — describe features and bug fixes from the consumer's
+perspective, not implementation details.
+
 ## Code Architecture
 
 ### Package Structure
