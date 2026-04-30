@@ -23,6 +23,14 @@ const App = () => (
   or what it represents (e.g., "User profile picture," "John Doe's avatar,"
   "Company logo"). If the avatar is purely decorative and doesn't convey any
   meaningful information, the alt attribute should be empty (`alt=""`).
+- **Generic label fallback:** When `firstName` and `lastName` are both
+  missing, empty, or whitespace-only, the Avatar renders a generic
+  `Person` icon and applies a localized generic `aria-label`
+  (`"User avatar"` in English, with translations for all supported
+  locales). This guarantees screen readers always announce a meaningful
+  label even when user identity data is incomplete. Consumers can still
+  override with an explicit `aria-label` prop when more specific context
+  is available.
 - **Info and relationships:** If the avatar is associated with other information
   (e.g., a username, profile link), the relationship should be programmatically
   determinable. This can be achieved using semantic `HTML` (e.g., placing the

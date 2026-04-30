@@ -1,22 +1,19 @@
 import { useState } from "react";
+import { Person } from "@commercetools/nimbus-icons";
 import { Image } from "@/components";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { type AvatarProps } from "./avatar.types";
 import { AvatarRoot } from "./avatar.slots";
 import { avatarMessagesStrings } from "./avatar.messages";
-
-function getInitials(firstName: string, lastName: string) {
-  return (
-    firstName.split("")[0].toUpperCase() + lastName.split("")[0].toUpperCase()
-  );
-}
+import { getInitials, getFullName } from "./utils";
 
 /**
  * Avatar
  * ============================================================
  * A small image or icon that identifies and personalizes the user within the interface.
  * Displays user images or automatically generates initials from first and last names.
- * Falls back to initials if image fails to load.
+ * Falls back to initials if image fails to load, and to a Person icon when no
+ * usable initials can be derived.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/media/avatar}
  *
@@ -32,6 +29,12 @@ function getInitials(firstName: string, lastName: string) {
  * // With initials fallback
  * <Avatar firstName="Jane" lastName="Smith" />
  * ```
+ *
+ * @example
+ * ```tsx
+ * // No names provided — renders the Person icon and a generic localized label
+ * <Avatar />
+ * ```
  */
 export const Avatar = (props: AvatarProps) => {
   const msg = useLocalizedStringFormatter(avatarMessagesStrings);
@@ -39,11 +42,12 @@ export const Avatar = (props: AvatarProps) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
-  const fullName = `${firstName} ${lastName}`;
+  const initials = getInitials(firstName, lastName);
+  const fullName = getFullName(firstName, lastName);
 
-  const avatarLabel = msg.format("avatarLabel", {
-    fullName,
-  });
+  const avatarLabel = fullName
+    ? msg.format("avatarLabel", { fullName })
+    : msg.format("avatarLabelGeneric");
 
   const sharedProps = {
     "aria-label": avatarLabel,
@@ -61,17 +65,19 @@ export const Avatar = (props: AvatarProps) => {
     setImageError(true);
   };
 
-  // Show initials if no src provided, image hasn't loaded yet, or image failed
-  const shouldShowInitials = !src || !imageLoaded || imageError;
+  // Show the fallback (initials or Person icon) when no src is provided,
+  // while the image is loading, or when the image failed to load.
+  const shouldShowFallback = !src || !imageLoaded || imageError;
 
   return (
     <AvatarRoot {...sharedProps}>
-      {shouldShowInitials ? getInitials(firstName, lastName) : null}
+      {shouldShowFallback &&
+        (initials.length > 0 ? initials : <Person aria-hidden="true" />)}
 
       {src && (
         <Image
           src={src}
-          alt={alt || fullName}
+          alt={alt || fullName || avatarLabel}
           onLoad={onLoad}
           onError={onError}
           display={imageLoaded && !imageError ? "block" : "none"}

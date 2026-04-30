@@ -31,13 +31,19 @@ export type AvatarRootSlotProps = HTMLChakraProps<"div", AvatarRecipeProps>;
 export type AvatarProps = OmitInternalProps<AvatarRootSlotProps> &
   HTMLAttributes<HTMLDivElement> & {
     /**
-     * First name for generating initials
+     * First name used to generate initials. Optional — empty,
+     * whitespace-only, or omitted values are handled gracefully and the
+     * component falls back to `lastName` (if usable) or to the `Person`
+     * icon when neither name yields a usable character.
      */
-    firstName: string;
+    firstName?: string;
     /**
-     * Last name for generating initials
+     * Last name used to generate initials. Optional — empty,
+     * whitespace-only, or omitted values are handled gracefully and the
+     * component falls back to `firstName` (if usable) or to the `Person`
+     * icon when neither name yields a usable character.
      */
-    lastName: string;
+    lastName?: string;
     /**
      * Image source URL for the avatar
      */

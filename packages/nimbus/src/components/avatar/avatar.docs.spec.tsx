@@ -108,3 +108,40 @@ describe("Avatar - Accessibility", () => {
     expect(avatar).toHaveAttribute("id", PERSISTENT_ID);
   });
 });
+
+/**
+ * @docs-section missing-names
+ * @docs-title Missing-name fallback tests
+ * @docs-description Verify the Avatar renders a generic icon and label when
+ *   firstName and lastName are missing or empty
+ * @docs-order 4
+ */
+describe("Avatar - Missing names", () => {
+  it("renders the Person icon and generic aria-label when both names are missing", () => {
+    render(
+      <NimbusProvider>
+        <Avatar />
+      </NimbusProvider>
+    );
+
+    const avatar = screen.getByRole("figure");
+    // Generic localized aria-label ("User avatar" in English)
+    expect(avatar).toHaveAttribute("aria-label", "User avatar");
+    // Person icon is rendered as the visual fallback
+    expect(avatar.querySelector("svg")).not.toBeNull();
+    // No initials text is rendered
+    expect(avatar.textContent?.trim()).toBe("");
+  });
+
+  it("renders a single initial when only firstName is provided", () => {
+    render(
+      <NimbusProvider>
+        <Avatar firstName="John" />
+      </NimbusProvider>
+    );
+
+    const avatar = screen.getByRole("figure");
+    expect(avatar.textContent?.trim()).toBe("J");
+    expect(avatar.querySelector("svg")).toBeNull();
+  });
+});
