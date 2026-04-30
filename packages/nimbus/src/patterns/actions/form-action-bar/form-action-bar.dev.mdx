@@ -1,0 +1,243 @@
+---
+title: FormActionBar Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+## Comparison: pattern vs manual composition
+
+**With FormActionBar:**
+
+```tsx
+<FormActionBar
+  onSave={handleSave}
+  onCancel={handleCancel}
+  onDelete={handleDelete}
+  isSaveDisabled={!isDirty}
+  isSaveLoading={isSaving}
+/>
+```
+
+**Manual composition (escape hatch):**
+
+```tsx
+<Group aria-label="Form actions" gap="300">
+  <Button
+    variant="solid"
+    colorPalette="critical"
+    isDisabled={isSaving || isDeleting}
+    onPress={handleDelete}
+  >
+    {isDeleting ? <LoadingSpinner /> : "Delete"}
+  </Button>
+  <Button
+    variant="outline"
+    isDisabled={isSaving || isDeleting}
+    onPress={handleCancel}
+  >
+    Cancel
+  </Button>
+  <Button
+    variant="solid"
+    colorPalette="primary"
+    isDisabled={!isDirty || isSaving || isDeleting}
+    onPress={handleSave}
+  >
+    {isSaving ? <LoadingSpinner /> : "Save"}
+  </Button>
+</Group>
+```
+
+### When to use which
+
+**Use FormActionBar when:**
+
+- Building standard forms with save/cancel/delete actions
+- You want consistent button variants and ordering across your app
+- You need built-in i18n defaults for button labels
+- You want to minimize boilerplate
+
+**Use manual composition with Button + Group when:**
+
+- You need a different action set (e.g., submit + reset + preview)
+- You need custom button layouts or non-standard variants
+- You're building highly specialized forms
+
+## Getting started
+
+### Import
+
+```tsx
+import { FormActionBar, type FormActionBarProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+Provide `onSave` and `onCancel` handlers — labels come from i18n defaults.
+
+```jsx live-dev
+const App = () => (
+  <FormActionBar
+    onSave={() => console.log("Save pressed")}
+    onCancel={() => console.log("Cancel pressed")}
+  />
+);
+```
+
+## Usage examples
+
+### With delete action
+
+Provide `onDelete` to render a destructive delete button at the start of the
+group.
+
+```jsx live-dev
+const App = () => (
+  <FormActionBar
+    onSave={() => console.log("Save")}
+    onCancel={() => console.log("Cancel")}
+    onDelete={() => console.log("Delete")}
+  />
+);
+```
+
+### Disabled save
+
+Disable the save button while the form has validation errors or no pending
+changes.
+
+```jsx live-dev
+const App = () => (
+  <FormActionBar
+    onSave={() => console.log("Save")}
+    onCancel={() => console.log("Cancel")}
+    isSaveDisabled
+  />
+);
+```
+
+### Saving state
+
+Show a loading indicator inside the save button and disable all buttons while
+the save is in flight.
+
+```jsx live-dev
+const App = () => (
+  <FormActionBar
+    onSave={() => {}}
+    onCancel={() => {}}
+    onDelete={() => {}}
+    isSaveLoading
+  />
+);
+```
+
+### Deleting state
+
+The delete button has its own loading state for destructive operations.
+
+```jsx live-dev
+const App = () => (
+  <FormActionBar
+    onSave={() => {}}
+    onCancel={() => {}}
+    onDelete={() => {}}
+    isDeleteLoading
+  />
+);
+```
+
+### Custom labels
+
+Override any of the default labels with `saveLabel`, `cancelLabel`,
+`deleteLabel`. When provided, these bypass the i18n defaults.
+
+```jsx live-dev
+const App = () => (
+  <FormActionBar
+    onSave={() => {}}
+    onCancel={() => {}}
+    onDelete={() => {}}
+    saveLabel="Publish"
+    cancelLabel="Discard"
+    deleteLabel="Archive"
+  />
+);
+```
+
+## Use inside footers
+
+FormActionBar is designed to drop into any footer slot.
+
+```tsx
+<DefaultPage.Footer>
+  <FormActionBar onSave={...} onCancel={...} />
+</DefaultPage.Footer>
+
+<ModalPage.Footer>
+  <FormActionBar onSave={...} onCancel={...} cancelSlot="close" />
+</ModalPage.Footer>
+
+<Drawer.Footer>
+  <FormActionBar onSave={...} onCancel={...} onDelete={...} />
+</Drawer.Footer>
+
+<Dialog.Footer>
+  <FormActionBar onSave={...} onCancel={...} />
+</Dialog.Footer>
+```
+
+## Accessibility
+
+- The `Group` wrapping the buttons has an `aria-label` (defaults to "Form
+  actions", overridable via the `aria-label` prop)
+- All buttons are fully keyboard accessible via `Tab` / `Shift+Tab`
+- Buttons are disabled (not just visually) while a loading state is active, so
+  keyboard and screen-reader users get the same signal as sighted users
+- Button order follows a left-to-right reading order: destructive on the
+  start, dismissive in the middle, confirming on the end
+
+## API reference
+
+<PropsTable id="FormActionBar" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your integration of FormActionBar
+inside a form. The component's own behavior is already tested by Nimbus.
+
+### Verify callbacks
+
+```tsx
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { FormActionBar } from "@commercetools/nimbus";
+
+it("submits the form when save is pressed", async () => {
+  const user = userEvent.setup();
+  const handleSave = vi.fn();
+
+  render(<FormActionBar onSave={handleSave} onCancel={() => {}} />);
+
+  await user.click(screen.getByRole("button", { name: /save/i }));
+  expect(handleSave).toHaveBeenCalledTimes(1);
+});
+```
+
+### Verify delete button visibility
+
+```tsx
+it("hides the delete button when onDelete is not provided", () => {
+  render(<FormActionBar onSave={() => {}} onCancel={() => {}} />);
+
+  expect(
+    screen.queryByRole("button", { name: /delete/i })
+  ).not.toBeInTheDocument();
+});
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-actions-formactionbar--docs)
+- [Button Component](/components/inputs/button)
+- [Group Component](/components/layout/group)

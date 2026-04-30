@@ -132,11 +132,27 @@ runtime**.
 ### 3. Transifex Integration
 
 1. Messages are extracted to `data/core.json` and pushed to Transifex
-2. Translators provide translations for all supported locales
-3. Translations are pulled back to `data/[locale].json` (Transifex format)
-4. Build pipeline compiles messages:
-   `pnpm --filter @commercetools/nimbus-i18n build`
-5. Generated `*.messages.ts` files are committed to the repository
+2. The extraction script (`scripts/extract-messages.ts`) also
+   **auto-propagates** any new keys into all locale data files (`en.json`,
+   `de.json`, etc.) using the English default. This means compiled output for
+   new messages already exists on `main` before Transifex returns translations.
+3. Translators provide translations for all supported locales
+4. Transifex automatically opens a PR with updated `data/[locale].json` files
+5. The `merge-transifex-bot-prs` GitHub Actions workflow takes over
+   automatically:
+   - Runs `pnpm --filter @commercetools/nimbus-i18n build` to compile messages
+   - Commits compiled output back to the PR branch **only if it changed**
+   - Approves and merges the PR once all checks pass
+
+**Why Transifex PRs rarely produce compiled output changes:** Before
+auto-propagation existed, adding a new message key only updated `core.json` and
+`en.json` — all other locale files were missing the key, so when Transifex
+returned translations the compile step would produce new `intl/*.ts` files. Now,
+extraction immediately seeds every locale file with the English default and
+compiles the output onto `main`. By the time Transifex returns real
+translations, the compiled files already exist — Tx PRs only update the source
+JSON. The compile step in the workflow is kept as a safety net for edge cases,
+but "No compiled output changes" is the normal expected result.
 
 ### 4. Usage in Components
 

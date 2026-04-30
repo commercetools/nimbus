@@ -37,8 +37,6 @@ The component SHALL manage monetary values as compound objects with amount and c
 - **AND** SHALL manage state internally
 - **AND** SHALL call change handlers on updates
 
-## Currency Management
-
 ### Requirement: Currency Selection
 The component SHALL provide currency selection via dropdown or label display.
 
@@ -84,8 +82,6 @@ The component SHALL format amounts according to currency specifications.
 - **AND** SHALL preserve numeric value during switch
 - **AND** SHALL trigger both onCurrencyChange and onValueChange handlers
 - **AND** high precision SHALL be recalculated for new currency
-
-## High Precision Support
 
 ### Requirement: High Precision Detection
 The component SHALL detect and indicate when amounts exceed standard currency precision.
@@ -133,8 +129,6 @@ The component SHALL display visual indicator for high precision values.
 - **THEN** SHALL not display badge even if value is high precision
 - **AND** SHALL still preserve high precision internally
 
-## Locale-Aware Formatting
-
 ### Requirement: Locale-Based Number Formatting
 The component SHALL format numbers according to user's locale.
 
@@ -160,8 +154,6 @@ The component SHALL format numbers according to user's locale.
 - **WHEN** locale is RTL (ar, he, etc.)
 - **THEN** SHALL support right-to-left text direction
 - **AND** formatting SHALL adapt via React Aria NumberField
-
-## Event Handling
 
 ### Requirement: Modern Event API
 The component SHALL provide modern type-safe event handlers.
@@ -216,8 +208,6 @@ The component SHALL support focus and blur handling.
 - **AND** SHALL call when currency select loses focus
 - **AND** SHALL format amount on blur before calling handler
 
-## Input States
-
 ### Requirement: Interactive States
 The component SHALL support multiple interaction states per nimbus-core standards.
 
@@ -246,8 +236,6 @@ The component SHALL support multiple interaction states per nimbus-core standard
 - **THEN** SHALL set aria-required on amount input
 - **AND** SHALL be compatible with FormField required indicator
 
-## Field Identification
-
 ### Requirement: Compound Field IDs
 The component SHALL generate unique IDs for amount and currency fields.
 
@@ -268,8 +256,6 @@ The component SHALL generate unique IDs for amount and currency fields.
 - **THEN** amount input name SHALL be "{name}.amount"
 - **AND** currency select name SHALL be "{name}.currencyCode"
 - **AND** names SHALL be suitable for form submission
-
-## Static Methods
 
 ### Requirement: Utility Methods
 The component SHALL provide static helper methods for currency operations.
@@ -309,8 +295,6 @@ The component SHALL provide static helper methods for currency operations.
 - **AND** SHALL return false if value is empty
 - **AND** SHALL use locale for parsing
 
-## NumberInput Integration
-
 ### Requirement: NumberInput Base Features
 The component SHALL inherit NumberInput functionality.
 
@@ -334,8 +318,6 @@ The component SHALL inherit NumberInput functionality.
 - **AND** maximumFractionDigits SHALL be 20 for high precision support
 - **AND** useGrouping SHALL be true for thousands separators
 
-## Size Variants
-
 ### Requirement: Size Support
 The component SHALL support size variants per nimbus-core standards.
 
@@ -345,8 +327,6 @@ The component SHALL support size variants per nimbus-core standards.
 - **AND** SHALL apply size to both amount input and currency select
 - **AND** md SHALL be default size
 - **AND** SHALL adjust height, padding, and font size
-
-## Accessibility
 
 ### Requirement: ARIA Attributes
 The component SHALL provide comprehensive ARIA attributes per nimbus-core standards.
@@ -374,8 +354,6 @@ The component SHALL provide comprehensive ARIA attributes per nimbus-core standa
 - **AND** amount input SHALL support NumberInput keyboard patterns
 - **AND** currency select SHALL support Select keyboard patterns
 
-## Internationalization
-
 ### Requirement: Translatable UI Text
 The component SHALL support i18n for all user-facing text.
 
@@ -391,8 +369,6 @@ The component SHALL support i18n for all user-facing text.
 - **THEN** SHALL use useLocalizedStringFormatter hook
 - **AND** SHALL call msg.format("key")
 - **AND** SHALL support all 5 Nimbus locales (en, de, es, fr-FR, pt-BR)
-
-## Styling
 
 ### Requirement: Multi-Slot Recipe
 The component SHALL use multi-slot recipe per nimbus-core standards.
@@ -416,8 +392,6 @@ The component SHALL use multi-slot recipe per nimbus-core standards.
 - **AND** transform SHALL translateX by negative spacing.1200 token value
 - **AND** SHALL not use NumberInput's trailingElement to avoid layout shift
 
-## Form Integration
-
 ### Requirement: Form Compatibility
 The component SHALL integrate with HTML forms per nimbus-core standards.
 
@@ -434,8 +408,6 @@ The component SHALL integrate with HTML forms per nimbus-core standards.
 - **AND** SHALL inherit isReadOnly state from FormField
 - **AND** SHALL inherit isRequired state from FormField
 - **AND** SHALL work with FormField.Label, FormField.Description, FormField.Error
-
-## Type Safety
 
 ### Requirement: TypeScript Definitions
 The component SHALL provide comprehensive type definitions.
@@ -457,8 +429,6 @@ The component SHALL provide comprehensive type definitions.
 - **THEN** SHALL export slot props types for each slot
 - **AND** types SHALL be auto-generated via Chakra CLI
 - **AND** SHALL provide autocomplete for size variant
-
-## Implementation Notes
 
 ### Requirement: Currency Data Management
 The component SHALL use centralized currency data.

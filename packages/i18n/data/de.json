@@ -137,7 +137,7 @@
   },
   "Nimbus.DataTable.settingsTabsAriaLabel": {
     "developer_comment": "aria-label for the settings tabs in the data table manager drawer",
-    "string": "Settings tabs"
+    "string": "Einstellungs-Tabs"
   },
   "Nimbus.DataTable.textPreviews": {
     "developer_comment": "title for the text previews section in the data table manager layout",
@@ -245,7 +245,7 @@
   },
   "Nimbus.DefaultPage.backLink": {
     "developer_comment": "Default aria-label for the back navigation link",
-    "string": "Go back"
+    "string": "Zurück"
   },
   "Nimbus.Dialog.closeTrigger": {
     "developer_comment": "aria-label for the default close trigger button",
@@ -323,6 +323,22 @@
     "developer_comment": "Error message for minimum length validation",
     "string": "Der Wert ist zu kurz."
   },
+  "Nimbus.FormActionBar.ariaLabel": {
+    "developer_comment": "default aria-label for the form action bar group",
+    "string": "Form actions"
+  },
+  "Nimbus.FormActionBar.cancel": {
+    "developer_comment": "default label for the cancel button in a form action bar",
+    "string": "Cancel"
+  },
+  "Nimbus.FormActionBar.delete": {
+    "developer_comment": "default label for the delete button in a form action bar",
+    "string": "Delete"
+  },
+  "Nimbus.FormActionBar.save": {
+    "developer_comment": "default label for the save button in a form action bar",
+    "string": "Save"
+  },
   "Nimbus.LoadingSpinner.default": {
     "developer_comment": "Default loading message for loading spinners",
     "string": "Daten werden geladen"
@@ -353,7 +369,7 @@
   },
   "Nimbus.ModalPage.backButton": {
     "developer_comment": "aria-label for the back navigation button in ModalPage.TopBar",
-    "string": "Go back to {previousPathLabel}"
+    "string": "Zurück zu {previousPathLabel}"
   },
   "Nimbus.MoneyInput.amountInputLabel": {
     "developer_comment": "aria-label for amount input",

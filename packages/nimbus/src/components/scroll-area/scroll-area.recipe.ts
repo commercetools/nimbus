@@ -53,7 +53,14 @@ export const scrollAreaSlotRecipe = defineSlotRecipe({
       // Paint above viewport content (e.g. sticky headers with z-index)
       zIndex: "1",
       margin: "var(--scroll-area-scrollbar-margin)",
-      "&:not([data-overflow-x], [data-overflow-y])": {
+      // Hide each scrollbar when its own axis isn't overflowing. Zag sets
+      // `data-overflow-x` / `data-overflow-y` on the scrollbar reflecting the
+      // current viewport state, so a vertical scrollbar with no Y overflow
+      // (and vice versa) should not paint even if the other axis overflows.
+      "&[data-orientation=vertical]:not([data-overflow-y])": {
+        display: "none",
+      },
+      "&[data-orientation=horizontal]:not([data-overflow-x])": {
         display: "none",
       },
       bg: "neutral.4",

@@ -1,0 +1,35 @@
+name: Notify Localization Team
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - '**/*.i18n.ts'
+
+jobs:
+  remind-localization-ticket:
+    name: Remind to create localization ticket
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login != 'transifex-integration[bot]'
+
+    steps:
+      - name: Post localization reminder
+        run: |
+          EXISTING=$(gh pr view "${{ github.event.pull_request.number }}" \
+            --repo "${{ github.repository }}" \
+            --json comments \
+            --jq '[.comments[] | select(.body | contains("localization ticket"))] | length')
+
+          if [ "$EXISTING" -gt 0 ]; then
+            echo "Reminder already posted, skipping."
+            exit 0
+          fi
+
+          gh pr comment "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --body "$(cat <<'EOF'
+          **Localization reminder:** This PR adds or modifies \`.i18n.ts\` files.
+
+          Please create a Jira ticket for the localization manager to initiate translation of any new or updated strings in Transifex. See [LOC-1766](https://commercetools.atlassian.net/browse/LOC-1766) as an example.
+          EOF
+          )"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

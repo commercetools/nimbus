@@ -1,0 +1,73 @@
+name: Merge Transifex Bot PRs
+
+on:
+  pull_request:
+    types: [opened]
+    paths:
+      - 'packages/i18n/data/**'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (validate and log without merging or committing)'
+        required: false
+        default: 'false'
+        type: boolean
+
+env:
+  TRANSIFEX_BOT_AUTHOR: transifex-integration[bot]
+
+jobs:
+  automerge-transifex-prs:
+    name: Merge and Compile Transifex Bot PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    if: github.event.pull_request.user.login == 'transifex-integration[bot]' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Generate GitHub token (via CT Changesets App)
+        id: generate_github_token
+        uses: tibdex/github-app-token@v2.1.0
+        with:
+          app_id: ${{ secrets.CT_CHANGESETS_APP_ID }}
+          private_key: ${{ secrets.CT_CHANGESETS_APP_PEM }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          token: ${{ steps.generate_github_token.outputs.token }}
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || 'main' }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4.0.0
+        with:
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24.12'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --filter @commercetools/nimbus-i18n...
+
+      - name: Compile, merge Transifex bot PR
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            PRS="$PR_NUMBER"
+          else
+            PRS=$(gh pr list \
+              --author "$TRANSIFEX_BOT_AUTHOR" \
+              --state open \
+              --base main \
+              --json number \
+              --jq '.[].number')
+          fi
+          export PRS
+          bash .github/scripts/merge-transifex-bot-prs.sh
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_github_token.outputs.token }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          EVENT_NAME: ${{ github.event_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          TRANSIFEX_BOT_AUTHOR: ${{ env.TRANSIFEX_BOT_AUTHOR }}

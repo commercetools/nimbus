@@ -244,7 +244,7 @@
     "string": "Start time"
   },
   "Nimbus.DefaultPage.backLink": {
-    "developer_comment": "Default aria-label for the back navigation link",
+    "developer_comment": "Default label for the back navigation link",
     "string": "Go back"
   },
   "Nimbus.Dialog.closeTrigger": {
@@ -322,6 +322,22 @@
   "Nimbus.FieldErrors.valueTooShort": {
     "developer_comment": "Error message for minimum length validation",
     "string": "This value is too short."
+  },
+  "Nimbus.FormActionBar.ariaLabel": {
+    "developer_comment": "default aria-label for the form action bar group",
+    "string": "Form actions"
+  },
+  "Nimbus.FormActionBar.cancel": {
+    "developer_comment": "default label for the cancel button in a form action bar",
+    "string": "Cancel"
+  },
+  "Nimbus.FormActionBar.delete": {
+    "developer_comment": "default label for the delete button in a form action bar",
+    "string": "Delete"
+  },
+  "Nimbus.FormActionBar.save": {
+    "developer_comment": "default label for the save button in a form action bar",
+    "string": "Save"
   },
   "Nimbus.LoadingSpinner.default": {
     "developer_comment": "Default loading message for loading spinners",

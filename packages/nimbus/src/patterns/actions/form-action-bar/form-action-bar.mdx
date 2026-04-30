@@ -1,0 +1,90 @@
+---
+id: Patterns-FormActionBar
+title: Form action bar
+exportName: FormActionBar
+description: This pattern component provides standard save/cancel/delete action buttons for form footers, working inside any footer slot.
+documentState: InitialDraft
+lifecycleState: Beta
+order: 999
+menu:
+  - Patterns
+  - Actions
+  - Form action bar
+tags:
+  - component
+  - pattern
+  - actions
+  - Button
+  - Group
+related-components:
+  - Button
+  - Group
+---
+
+## Overview
+
+FormActionBar is a pattern component that composes a `Group` of action
+`Button`s for form footers. It replaces the need for separate form-page
+wrappers — one `FormActionBar` works in any footer slot:
+`DefaultPage.Footer`, `ModalPage.Footer`, `Drawer.Footer`, `Dialog.Footer`.
+
+## Anatomy
+
+- An accessible group wrapper labelled "Form actions" (override via
+  `aria-label`).
+- Optional destructive delete button on the leading edge — only rendered when
+  `onDelete` is provided.
+- Cancel button (outline) that reverts pending changes.
+- Primary save button (solid) on the trailing edge.
+
+Button order is fixed: delete → cancel → save. This keeps the primary action
+anchored to the same spot across every form and places destructive actions
+furthest from the primary action to reduce mis-clicks.
+
+## Usage
+
+### When to use
+
+- Any form footer where the user commits or discards pending edits.
+- Detail and full-page create/edit flows (`DefaultPage.Footer`).
+- Modal and drawer forms (`ModalPage.Footer`, `Dialog.Footer`,
+  `Drawer.Footer`).
+
+### When not to use
+
+- For a single action (e.g., "Close") use a standalone `Button`.
+- For toolbar-style actions unrelated to saving a form, use `Group` directly
+  with the buttons you need.
+- For destructive actions that require a separate confirmation step beyond the
+  in-place delete button, pair with an `AlertDialog`.
+
+### Do
+
+- Disable save (`isSaveDisabled`) when the form is pristine or has validation
+  errors.
+- Drive `isSaveLoading` / `isDeleteLoading` from your async submit flow so all
+  actions lock during the mutation.
+- Override labels (`saveLabel`, `cancelLabel`, `deleteLabel`) to match domain
+  vocabulary when "Save"/"Cancel"/"Delete" are not precise (e.g., "Publish",
+  "Discard", "Archive").
+
+### Don't
+
+- Don't render custom action buttons alongside FormActionBar in the same
+  footer — keep the action set predictable.
+- Don't reorder the buttons; delete → cancel → save is load-bearing for muscle
+  memory and accessibility.
+- Don't drive `isSaveDisabled` and `isSaveLoading` from the same piece of
+  state — they are independent flags representing different UX intents (form
+  is invalid / pristine vs. submit is in-flight). Both can be `true`
+  simultaneously, but they should come from distinct sources.
+
+### Resources
+
+For detailed guidance on the individual components that make up this pattern,
+consult the component guidelines:
+
+- [Button Guidelines](/components/inputs/button) - Button variants, sizes, and
+  accessibility
+- [Group Guidelines](/components/layout/group) - Grouping related controls
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-actions-formactionbar--docs)
