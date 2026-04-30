@@ -78,6 +78,7 @@ is to orchestrate these skills, not replace them.
 | `*.slots.tsx`                   | **writing-slots**                   | ALL slot component work                                    |
 | `*.stories.tsx`                 | **writing-stories**                 | ALL story creation/updates                                 |
 | `*.i18n.ts`                     | **writing-i18n**                    | When component has default aria-labels or user-facing text |
+| `utils/*.ts` + `constants/*.ts` | **writing-utils-and-constants**     | ALL pure helper / constant work in a component             |
 | `*.dev.mdx` + `*.docs.spec.tsx` | **writing-developer-documentation** | ALL developer documentation                                |
 | `*.mdx` (designer)              | **writing-designer-documentation**  | ALL designer documentation                                 |
 
@@ -115,11 +116,19 @@ See
 
 **YOU code directly:**
 
-- Main component implementation files (`{component}.tsx`)
+- Main component implementation files (`{component}.tsx`) — these contain the
+  React component ONLY, never pure helpers
 - Component-specific logic and hooks
-- Utility functions colocated with components
 - Integration of slot components with React Aria
 - Barrel exports and index files
+
+**Pure utility functions (non-React, no JSX) MUST live in a `utils/` subfolder
+of the component**, with one function per file, a sibling `{name}.spec.ts`, and
+a `utils/index.ts` barrel. NEVER export utility functions from
+`{component}.tsx`. See `docs/file-type-guidelines/utils-and-constants.md` and
+existing patterns in `combobox/utils/`, `inline-svg/utils/`,
+`money-input/utils/`. Invoke the `writing-utils-and-constants` skill for these
+files.
 
 **INVOKE skills:**
 
