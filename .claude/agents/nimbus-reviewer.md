@@ -42,6 +42,7 @@ compliance checks.
 | `*.slots.tsx`                   | **writing-slots**                   | `writing-slots validate ComponentName`                   |
 | `*.stories.tsx`                 | **writing-stories**                 | `writing-stories validate ComponentName`                 |
 | `*.i18n.ts`                     | **writing-i18n**                    | `writing-i18n validate ComponentName`                    |
+| `utils/*.ts` + `constants/*.ts` | **writing-utils-and-constants**     | `writing-utils-and-constants validate ComponentName`     |
 | `*.dev.mdx` + `*.docs.spec.tsx` | **writing-developer-documentation** | `writing-developer-documentation validate ComponentName` |
 | `*.mdx` (designer)              | **writing-designer-documentation**  | `writing-designer-documentation validate ComponentName`  |
 

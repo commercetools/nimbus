@@ -366,7 +366,34 @@ export const Menu = {
 };
 ```
 
-### 3. DisplayName Convention
+### 3. Pure Helpers Live in `utils/`, Not in the Main File
+
+The main component file MUST contain only the React component(s) it owns. Any
+`export function name(...)` or `export const name = (...) => ...` whose return
+value is **not JSX** is a utility and MUST live in `utils/{kebab-name}.ts`
+instead. See [Utils & Constants](./utils-and-constants.md) for the file shape.
+
+This applies regardless of whether the helper is used once or many times — the
+moment it's exported, it's part of an API surface and belongs in the
+convention-bearing location. A locally-scoped, non-exported `const helper = ...`
+inside the component function body is acceptable.
+
+```typescript
+// ✅ CORRECT — utility in utils/, component imports it
+// avatar/utils/get-initials.ts
+export function getInitials(firstName?: string, lastName?: string) {
+  /* ... */
+}
+
+// avatar/avatar.tsx
+import { getInitials } from "./utils";
+export const Avatar = (props: AvatarProps) => {
+  const initials = getInitials(props.firstName, props.lastName);
+  /* ... */
+};
+```
+
+### 4. DisplayName Convention
 
 Always set displayName for debugging:
 
@@ -1114,6 +1141,10 @@ export const CustomButton = (props: CustomButtonProps) => {
 - [ ] Types re-exported appropriately
 - [ ] i18n messages imported if component has user-facing text
 - [ ] All aria-labels use msg.format()
+- [ ] **No utility exports** — pure helpers (any `export function` or
+      `export const` whose return value is not JSX) MUST live in
+      `utils/{kebab-name}.ts`, not in the main component file. See
+      [Utils & Constants](./utils-and-constants.md).
 
 ### JSDoc Documentation
 

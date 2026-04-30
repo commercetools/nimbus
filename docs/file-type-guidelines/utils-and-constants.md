@@ -30,8 +30,25 @@ non-React logic and static values.
 ### When Utils/Constants Aren't Needed:
 
 - Logic requires React features (use hooks instead)
-- Values are used only once
-- Simple constants (keep in component file)
+- The value is local to a single function body and never exported (a `const`
+  inside the component function is fine)
+- Simple non-exported constants used in one place
+
+## Same Structure for Global and Component-Scoped Utils
+
+The conventions in this document apply identically to:
+
+- **Component-scoped utils**:
+  `packages/nimbus/src/components/{component}/utils/`
+- **Global utils**: `packages/nimbus/src/utils/`
+
+Same file shape (one util per kebab-case file, sibling `*.spec.ts`, `index.ts`
+barrel, JSDoc, pure functions, `as const` for constants). When a
+component-scoped util turns out to be reusable, promotion to global utils is a
+`git mv` — no rewrite, no shape change. Many component-scoped utils are
+inherently too specific to ever be shared, and that is fine; the structural
+parity exists for the cases where promotion is sensible, not as a forced
+migration path.
 
 ## Directory Structure
 
@@ -128,15 +145,18 @@ parameter and return type definitions.
 
 ## Validation Checklist
 
-- [ ] Utils in `utils/` subfolder
+- [ ] Utils in `utils/` subfolder (component-scoped) or
+      `packages/nimbus/src/utils/` (global)
 - [ ] Constants in `constants/` subfolder
-- [ ] Pure functions (no React features in utils)
+- [ ] **One function per kebab-case file** (`get-initials.ts`, `merge-refs.ts`);
+      related helpers MAY share a topic file when tightly coupled
+- [ ] **Sibling `{name}.spec.ts`** for every util file
+- [ ] Pure functions (no React features in utils, no JSX, no side effects at
+      module scope)
 - [ ] Immutable constants with `as const`
 - [ ] JSDoc documentation for all exports
 - [ ] Type-safe function signatures
-- [ ] No side effects in utils
-- [ ] Index files export all items
-- [ ] Tests for complex utilities
+- [ ] `index.ts` barrel re-exports every item
 - [ ] Meaningful, descriptive names
 
 ---

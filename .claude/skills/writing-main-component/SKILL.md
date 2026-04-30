@@ -147,7 +147,7 @@ You MUST validate main component files against these requirements organized by
 category. Each violation MUST be reported with specific line numbers and
 guideline references.
 
-#### Category 1: File Structure & Architecture (6 items)
+#### Category 1: File Structure & Architecture (7 items)
 
 - [ ] **File location**: Component file exists at correct location:
       `packages/nimbus/src/components/{component}/{component}.tsx`
@@ -161,6 +161,15 @@ guideline references.
 - [ ] **DisplayName**: Component has `displayName` set correctly:
   - Single: `Component.displayName = "ComponentName"`
   - Compound part: `ComponentPart.displayName = "Component.Part"`
+- [ ] **No utility exports**: Main component file MUST NOT export pure helper
+      functions (non-React, non-component values). Pure functions live in
+      `utils/{kebab-name}.ts` with a sibling `{kebab-name}.spec.ts` and an
+      `utils/index.ts` barrel — see
+      `docs/file-type-guidelines/utils-and-constants.md` and existing patterns
+      in `combobox/utils/`, `inline-svg/utils/`, `money-input/utils/`.
+      Detection: any `export function name(...)` or
+      `export const name = (...) => ...` where the return value is not JSX is a
+      utility, not a component.
 
 #### Category 2: Component Type & Pattern (7 items)
 
@@ -333,7 +342,7 @@ guideline references.
 - [ ] **Build succeeds**: Component builds without errors:
       `pnpm --filter @commercetools/nimbus build`
 
-### Total Validation Items: 63 across 10 categories
+### Total Validation Items: 64 across 10 categories
 
 ---
 
@@ -367,9 +376,9 @@ When validation completes, you MUST provide a report in this format:
 
 ---
 
-### ✅ Compliant (X/62)
+### ✅ Compliant (X/64)
 
-**Category 1: File Structure & Architecture (X/6)**
+**Category 1: File Structure & Architecture (X/7)**
 
 - [✓] Item description
 - [✓] Item description
