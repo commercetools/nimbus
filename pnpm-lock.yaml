@@ -191,6 +191,9 @@ catalogs:
     lodash:
       specifier: ^4.18.1
       version: 4.18.1
+    zod:
+      specifier: ^4.4.1
+      version: 4.4.1
 
 overrides:
   rollup: ^4.60.2
@@ -441,8 +444,8 @@ importers:
         specifier: ^6.1.1
         version: 6.1.1(typescript@5.9.3)(vite@7.3.2(@types/node@24.12.2)(terser@5.44.0)(tsx@4.21.0)(yaml@2.8.3))
       zod:
-        specifier: ^4.3.6
-        version: 4.3.6
+        specifier: catalog:utils
+        version: 4.4.1
     devDependencies:
       '@commercetools/nimbus-design-token-ts-plugin':
         specifier: workspace:^
@@ -735,8 +738,8 @@ importers:
         specifier: ^8.0.0
         version: 8.0.0
       zod:
-        specifier: ^4.1.12
-        version: 4.1.12
+        specifier: catalog:utils
+        version: 4.4.1
     devDependencies:
       '@types/node':
         specifier: catalog:utils
@@ -774,10 +777,10 @@ importers:
     dependencies:
       '@modelcontextprotocol/sdk':
         specifier: ^1.27.1
-        version: 1.27.1(zod@3.25.76)
+        version: 1.27.1(zod@4.4.1)
       zod:
-        specifier: ^3.25.67
-        version: 3.25.76
+        specifier: catalog:utils
+        version: 4.4.1
     devDependencies:
       '@commercetools/nimbus':
         specifier: workspace:^
@@ -7275,11 +7278,8 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zod@4.1.12:
-    resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
-
-  zod@4.3.6:
-    resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
+  zod@4.4.1:
+    resolution: {integrity: sha512-a6ENMBBGZBsnlSebQ/eKCguSBeGKSf4O7BPnqVPmYGtpBYI7VSqoVqw+QcB7kPRjbqPwhYTpFbVj/RqNz/CT0Q==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -8182,7 +8182,7 @@ snapshots:
       ora: 8.2.0
       posthog-node: 5.24.7
       yaml: 2.8.3
-      zod: 4.3.6
+      zod: 4.4.1
     transitivePeerDependencies:
       - '@types/node'
 
@@ -8609,7 +8609,7 @@ snapshots:
 
   '@mcp-ui/client@6.1.0(@preact/signals-core@1.13.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      '@modelcontextprotocol/ext-apps': 0.3.1(@modelcontextprotocol/sdk@1.27.1(zod@3.25.76))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod@3.25.76)
+      '@modelcontextprotocol/ext-apps': 0.3.1(@modelcontextprotocol/sdk@1.27.1(zod@4.4.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod@3.25.76)
       '@modelcontextprotocol/sdk': 1.27.1(zod@3.25.76)
       '@quilted/threads': 3.3.1(@preact/signals-core@1.13.0)
       '@r2wc/react-to-web-component': 2.1.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -8695,9 +8695,9 @@ snapshots:
 
   '@microsoft/tsdoc@0.15.1': {}
 
-  '@modelcontextprotocol/ext-apps@0.3.1(@modelcontextprotocol/sdk@1.27.1(zod@3.25.76))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod@3.25.76)':
+  '@modelcontextprotocol/ext-apps@0.3.1(@modelcontextprotocol/sdk@1.27.1(zod@4.4.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod@3.25.76)':
     dependencies:
-      '@modelcontextprotocol/sdk': 1.27.1(zod@3.25.76)
+      '@modelcontextprotocol/sdk': 1.27.1(zod@4.4.1)
       zod: 3.25.76
     optionalDependencies:
       '@oven/bun-darwin-aarch64': 1.3.10
@@ -8720,9 +8720,9 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@modelcontextprotocol/ext-apps@1.1.2(@modelcontextprotocol/sdk@1.27.1(zod@3.25.76))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod@3.25.76)':
+  '@modelcontextprotocol/ext-apps@1.1.2(@modelcontextprotocol/sdk@1.27.1(zod@4.4.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod@3.25.76)':
     dependencies:
-      '@modelcontextprotocol/sdk': 1.27.1(zod@3.25.76)
+      '@modelcontextprotocol/sdk': 1.27.1(zod@4.4.1)
       zod: 3.25.76
     optionalDependencies:
       '@oven/bun-darwin-aarch64': 1.3.10
@@ -8759,7 +8759,7 @@ snapshots:
   '@modelcontextprotocol/inspector-client@0.21.2(@preact/signals-core@1.13.0)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)':
     dependencies:
       '@mcp-ui/client': 6.1.0(@preact/signals-core@1.13.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@modelcontextprotocol/ext-apps': 1.1.2(@modelcontextprotocol/sdk@1.27.1(zod@3.25.76))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod@3.25.76)
+      '@modelcontextprotocol/ext-apps': 1.1.2(@modelcontextprotocol/sdk@1.27.1(zod@4.4.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(zod@3.25.76)
       '@modelcontextprotocol/sdk': 1.27.1(zod@3.25.76)
       '@radix-ui/react-checkbox': 1.3.3(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-dialog': 1.1.15(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -8856,6 +8856,28 @@ snapshots:
       raw-body: 3.0.2
       zod: 3.25.76
       zod-to-json-schema: 3.25.1(zod@3.25.76)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@modelcontextprotocol/sdk@1.27.1(zod@4.4.1)':
+    dependencies:
+      '@hono/node-server': 1.19.13(hono@4.12.15)
+      ajv: 8.18.0
+      ajv-formats: 3.0.1(ajv@8.18.0)
+      content-type: 1.0.5
+      cors: 2.8.6
+      cross-spawn: 7.0.6
+      eventsource: 3.0.7
+      eventsource-parser: 3.0.6
+      express: 5.2.1
+      express-rate-limit: 8.3.0(express@5.2.1)
+      hono: 4.12.15
+      jose: 6.1.3
+      json-schema-typed: 8.0.2
+      pkce-challenge: 5.0.1
+      raw-body: 3.0.2
+      zod: 4.4.1
+      zod-to-json-schema: 3.25.1(zod@4.4.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -11718,8 +11740,8 @@ snapshots:
       '@babel/parser': 7.29.0
       eslint: 10.2.1
       hermes-parser: 0.25.1
-      zod: 4.3.6
-      zod-validation-error: 4.0.2(zod@4.3.6)
+      zod: 4.4.1
+      zod-validation-error: 4.0.2(zod@4.4.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -14986,20 +15008,22 @@ snapshots:
     dependencies:
       zod: 3.25.76
 
+  zod-to-json-schema@3.25.1(zod@4.4.1):
+    dependencies:
+      zod: 4.4.1
+
   zod-validation-error@3.5.4(zod@3.25.58):
     dependencies:
       zod: 3.25.58
 
-  zod-validation-error@4.0.2(zod@4.3.6):
+  zod-validation-error@4.0.2(zod@4.4.1):
     dependencies:
-      zod: 4.3.6
+      zod: 4.4.1
 
   zod@3.25.58: {}
 
   zod@3.25.76: {}
 
-  zod@4.1.12: {}
-
-  zod@4.3.6: {}
+  zod@4.4.1: {}
 
   zwitch@2.0.4: {}
