@@ -9,7 +9,7 @@
   },
   "Nimbus.Avatar.avatarLabelGeneric": {
     "developer_comment": "Generic aria-label for the avatar component, used when no first or last name is available to interpolate (e.g. partial user records).",
-    "string": "User avatar"
+    "string": "Generic user avatar"
   },
   "Nimbus.Calendar.nextMonth": {
     "developer_comment": "aria-label for next month navigation button",
