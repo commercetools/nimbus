@@ -1,5 +1,80 @@
 # @commercetools/nimbus
 
+## 2.11.0
+
+### Minor Changes
+
+- [#1404](https://github.com/commercetools/nimbus/pull/1404)
+  [`e5b94d6`](https://github.com/commercetools/nimbus/commit/e5b94d63e62afb5c25d9ca3c5878c281853f9342)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Add FormActionBar
+  pattern — a flat-props wrapper that composes save, cancel, and optional delete
+  buttons for form footers. Works inside any footer slot (`DefaultPage.Footer`,
+  `ModalPage.Footer`, `Drawer.Footer`, `Dialog.Footer`).
+
+  Non-English locales currently ship with English placeholder strings; final
+  translations will land via Transifex.
+
+- [#1388](https://github.com/commercetools/nimbus/pull/1388)
+  [`be3fdac`](https://github.com/commercetools/nimbus/commit/be3fdacd118805fbb245ec1c9f6cd43c76433c55)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - feat(info-dialog): add
+  InfoDialog pattern (FEC-437)
+
+  Also fixes a pre-existing bug in `Dialog.Content` where `aria-label` passed to
+  `Dialog.Root` was stored in context but never forwarded to the underlying
+  `<dialog>` element. ARIA overrides on `Dialog.Root` now apply as expected.
+
+- [#1310](https://github.com/commercetools/nimbus/pull/1310)
+  [`f7130ac`](https://github.com/commercetools/nimbus/commit/f7130acd8a717fb98d7b28b9abbb2e9a18115cfd)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Add ScrollArea layout
+  component — a scrollable, keyboard accessible container with custom-styled
+  scrollbar overlays.
+
+- [#1434](https://github.com/commercetools/nimbus/pull/1434)
+  [`3a27255`](https://github.com/commercetools/nimbus/commit/3a272555fc5aeb3d728b02b594664f1cc58fe025)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Avatar`:
+  - `firstName` and `lastName` are now optional. Avatars with missing or partial
+    names render a generic person icon and a localized accessible label.
+  - Fixes a crash when `firstName` or `lastName` was passed as an empty string.
+  - Names with leading or trailing whitespace, emoji, and non-Latin characters
+    now produce correct initials.
+
+### Patch Changes
+
+- [#1389](https://github.com/commercetools/nimbus/pull/1389)
+  [`9c163ea`](https://github.com/commercetools/nimbus/commit/9c163ea660a1f554de0c60c3d34f91a3a7ad6981)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Fix `ScrollArea` silently
+  overflowing and stretching `width: 100%` children. Zag's default
+  `min-width: fit-content` on the content slot caused the wrapper to grow to fit
+  its widest child, so siblings sized at `100%` inherited that overgrown width.
+  The wrapper is now sized to the viewport by default, and the default
+  `orientation` is `"both"` so descendant overflow surfaces a scrollbar
+  indicator instead of being silently scrollable. Setting `orientation` to
+  `"vertical"` or `"horizontal"` now actively clips the opposite axis. The
+  content wrapper now also fills the viewport vertically, so consumers can
+  vertically center a shorter child with flex/grid + `height: 100%` — previously
+  the wrapper was intrinsic-height and centering resolved against the child's
+  own height.
+
+- [#1432](https://github.com/commercetools/nimbus/pull/1432)
+  [`2c1bf99`](https://github.com/commercetools/nimbus/commit/2c1bf9958ee38920ff083bd53f5d94822713e524)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - The `pauseOnInteraction`
+  option on `ToastOptions` has been removed. The field had no effect at runtime
+  — pause-on-hover and pause-on-focus are always on — but if your code passed it
+  explicitly, TypeScript will now flag it. Drop the prop; toast behavior is
+  unchanged.
+
+  Peer dependency: this release requires `@chakra-ui/react` `^3.35.0`. Bump
+  alongside if you pin Chakra in your project.
+
+  Also bundles the `dompurify` 3.4.1 patch release (transparent to consumers)
+  and corrects the TypeScript type for `aspectRatios` theme tokens (now
+  `string | number`; relevant only if you import these tokens directly with
+  strict types).
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@2.11.0
+  - @commercetools/nimbus-icons@2.11.0
+
 ## 2.10.0
 
 ### Minor Changes
