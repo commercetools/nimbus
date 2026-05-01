@@ -138,11 +138,8 @@ runtime**.
    new messages already exists on `main` before Transifex returns translations.
 3. Translators provide translations for all supported locales
 4. Transifex automatically opens a PR with updated `data/[locale].json` files
-5. The `merge-transifex-bot-prs` GitHub Actions workflow takes over
-   automatically:
-   - Runs `pnpm --filter @commercetools/nimbus-i18n build` to compile messages
-   - Commits compiled output back to the PR branch **only if it changed**
-   - Approves and merges the PR once all checks pass
+5. Run `pnpm --filter @commercetools/nimbus-i18n build` to compile messages,
+   commit any changed output, and merge the PR manually
 
 **Why Transifex PRs rarely produce compiled output changes:** Before
 auto-propagation existed, adding a new message key only updated `core.json` and
