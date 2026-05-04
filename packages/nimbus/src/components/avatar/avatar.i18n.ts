@@ -7,7 +7,7 @@ export const messages = {
   avatarLabelGeneric: {
     id: "Nimbus.Avatar.avatarLabelGeneric",
     description:
-      "Generic aria-label for the avatar component, used when no first name or last name is available to interpolate (e.g. partial user records).",
+      "Generic aria-label for the avatar component, used when no first / last name is available to interpolate (e.g. partial user records).",
     defaultMessage: "Generic user avatar",
   },
 };
