@@ -11,7 +11,7 @@ import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 
 // English default for the `avatarLabelGeneric` i18n key — used when no name
 // is available to interpolate into the standard avatarLabel template.
-const GENERIC_LABEL = "User avatar";
+const GENERIC_LABEL = "Generic user avatar";
 
 /**
  * Storybook metadata configuration
