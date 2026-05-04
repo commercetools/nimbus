@@ -103,11 +103,6 @@ export default defineConfig(async () => {
       optimizeLocales.vite({
         locales: LOCALE_BCP47_CODES,
       }),
-      // Externalize react/react-dom AND rewrite internal `require("react")`
-      // calls inside bundled CJS deps (e.g. use-sync-external-store/cjs/*)
-      // into ESM imports. Replaces the top-level external entries for these.
-      // See `reactExternal` comment above.
-      esmExternalRequirePlugin({ external: reactExternal }),
     ],
     build: {
       // sourcemaps are built into separate files and should therefore be tree-shakeable
@@ -130,9 +125,19 @@ export default defineConfig(async () => {
         formats: ["es", "cjs"] satisfies LibraryFormats[],
       },
       rollupOptions: {
-        // `treeShakeable` naively adds an @__PURE__ annotation to each top-level module in our `dist`
-        // https://github.com/TomerAberbach/rollup-plugin-tree-shakeable?tab=readme-ov-file#why
-        plugins: [treeShakeable()],
+        // - `treeShakeable` naively adds an @__PURE__ annotation to each top-level module in our `dist`
+        //   https://github.com/TomerAberbach/rollup-plugin-tree-shakeable?tab=readme-ov-file#why
+        // - `esmExternalRequirePlugin` externalizes the React family for the
+        //   library build AND rewrites internal `require("react")` calls inside
+        //   bundled CJS deps (e.g. use-sync-external-store/cjs/*) into ESM
+        //   imports. Must be lib-scoped (not in top-level `plugins`) so it does
+        //   not leak into Storybook's iframe build, where externalizing react
+        //   without an importmap breaks the production deployment with
+        //   "Failed to resolve module specifier 'react'".
+        plugins: [
+          treeShakeable(),
+          esmExternalRequirePlugin({ external: reactExternal }),
+        ],
         external,
         output: {
           // Organize chunk files into chunks subfolder
