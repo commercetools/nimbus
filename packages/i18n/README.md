@@ -305,9 +305,9 @@ consumers do not need to install or use this package directly.
    through the Transifex platform
 6. **Automated PR Creation**: Once translations are complete, Transifex
    automatically creates a pull request with updated translation files
-7. **Automated Compilation & Merge**: The `merge-transifex-bot-prs` GitHub
-   Actions workflow detects the PR, compiles translated files into TypeScript
-   message files, commits the output to the PR branch, and auto-merges to `main`
+7. **Manual Compilation & Merge**: Run
+   `pnpm --filter @commercetools/nimbus-i18n build` on the PR branch, commit any
+   compiled output changes, and merge to `main`
 8. **Runtime Usage**: Components import and use compiled `*.messages.ts` files
 
 ```mermaid
@@ -319,7 +319,6 @@ flowchart TD
     LocTicket["📋 Localization Manager<br/>(Manual ticket creation<br/>for new/updated keys)"]
     GitHubIntegration["⚙️ GitHub-Transifex Integration<br/>(Automated via transifex.yml)"]
     AutoPR["🤖 Automated PR<br/>(Created by Transifex<br/>when translations ready)"]
-    AutoWorkflow["⚡ merge-transifex-bot-prs<br/>(GitHub Actions)<br/>compile → commit → merge"]
     TranslatedData["📦 Translated Data<br/>data/en.json<br/>data/de.json<br/>data/es.json<br/>data/fr-FR.json<br/>data/pt-BR.json"]
 
     Start -->|"Custom extraction script<br/>(pnpm extract-intl)"| Extract
@@ -331,8 +330,7 @@ flowchart TD
     LocTicket -.->|"Coordinates<br/>translation"| Transifex
 
     Transifex -->|"Translations complete"| AutoPR
-    AutoPR -->|"Triggers automatically"| AutoWorkflow
-    AutoWorkflow -->|"Compiles & merges"| TranslatedData
+    AutoPR -->|"Manual compile & merge"| TranslatedData
 
     TranslatedData --> BuildPipeline
 
@@ -401,6 +399,5 @@ flowchart TD
    `notify-localization-team`)_
 6. Localization manager coordinates professional translation through Transifex
 7. Transifex automatically creates a pull request when translations are complete
-8. The `merge-transifex-bot-prs` GitHub Actions workflow automatically compiles
-   the translations, commits the compiled output to the PR branch, and merges to
-   `main` — no manual steps required
+8. Run `pnpm --filter @commercetools/nimbus-i18n build` on the PR branch, commit
+   any compiled output changes, and merge to `main`
