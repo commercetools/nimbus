@@ -1,0 +1,373 @@
+---
+title: ConfirmationDialog Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+## Comparison: ConfirmationDialog vs manual Dialog composition
+
+**With ConfirmationDialog:**
+
+```tsx
+<ConfirmationDialog
+  title="Delete project"
+  intent="destructive"
+  isOpen={isOpen}
+  onOpenChange={setIsOpen}
+  onConfirm={handleDelete}
+  onCancel={() => setIsOpen(false)}
+>
+  <Text>This action cannot be undone.</Text>
+</ConfirmationDialog>
+```
+
+**Manual composition:**
+
+```tsx
+<Dialog.Root
+  isOpen={isOpen}
+  onOpenChange={setIsOpen}
+  isDismissable
+>
+  <Dialog.Content>
+    <Dialog.Header>
+      <Dialog.Title>Delete project</Dialog.Title>
+      <Dialog.CloseTrigger />
+    </Dialog.Header>
+    <Dialog.Body>
+      <Text>This action cannot be undone.</Text>
+    </Dialog.Body>
+    <Dialog.Footer>
+      <Button variant="outline" onPress={() => setIsOpen(false)}>
+        Cancel
+      </Button>
+      <Button
+        variant="solid"
+        colorPalette="critical"
+        onPress={() => {
+          handleDelete();
+          setIsOpen(false);
+        }}
+      >
+        Delete
+      </Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>
+```
+
+### When to use which
+
+**Use ConfirmationDialog when:**
+
+- You need a confirm/cancel dialog with default or destructive intent
+- You want localized default Confirm/Cancel labels without wiring `useIntl` boilerplate
+- You want a built-in loading lockout for async confirm handlers
+- You're happy treating Escape, overlay click, and the X button as equivalent to clicking Cancel
+
+**Use Dialog directly when:**
+
+- You need a non-default size or custom dismissability behaviour
+- You need per-button `data-*` attributes (test IDs, tracking)
+- You need to distinguish the cancel button click from ambient dismissals (Escape, overlay, X) in your handlers
+- Your confirm action needs custom styling beyond `default` and `destructive` intent
+
+## Migrating from `merchant-center-application-kit`
+
+The Nimbus `ConfirmationDialog` is intentionally smaller and more opinionated than the app-kit equivalent.
+
+| app-kit prop | Nimbus equivalent |
+| --- | --- |
+| `isOpen`, `onClose` | `isOpen`, `onOpenChange` (close routes through `onCancel` for ambient dismissals) |
+| `title`, `aria-label` | unchanged |
+| `children` | unchanged |
+| `labelPrimary`, `labelSecondary` | `confirmLabel`, `cancelLabel` |
+| `isPrimaryButtonDisabled` | `isConfirmDisabled` |
+| `onCancel`, `onConfirm` | unchanged |
+| `size` | dropped — drop down to `Dialog` for non-default sizes |
+| `zIndex` | dropped — Dialog primitive handles z-index stacking |
+| `dataAttributesPrimaryButton`, `dataAttributesSecondaryButton` | dropped — drop down to `Dialog` to add `data-*` attributes per button |
+| `getParentSelector` | dropped — React Aria handles portaling |
+| `ConfirmationDialog.TextTitle` | dropped — `title` accepts any `ReactNode` |
+| `ConfirmationDialog.Intl` | dropped — pass `confirmLabel` / `cancelLabel` directly |
+| _no equivalent_ | new: `intent="destructive"` for delete/remove flows |
+| _no equivalent_ | new: `isConfirmLoading` for async confirm lockout |
+
+The most consequential semantic change is that **`onClose` and `onCancel` are unified onto a single `onCancel`** that fires from every close path: the cancel button, Escape, overlay click, and the X button. ~55% of audited app-kit consumers already wire both to the same handler, so this is a no-op for the majority. If your app relies on the distinction, drop down to `Dialog` directly.
+
+## Getting started
+
+### Import
+
+```tsx
+import {
+  ConfirmationDialog,
+  type ConfirmationDialogProps,
+} from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+The simplest implementation with a string title and controlled open state:
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Submit order</Button>
+      <ConfirmationDialog
+        title="Submit order"
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        onConfirm={() => {
+          console.log("submitting");
+          setIsOpen(false);
+        }}
+        onCancel={() => setIsOpen(false)}
+      >
+        <Text>You're about to submit this order for fulfillment.</Text>
+      </ConfirmationDialog>
+    </>
+  );
+};
+```
+
+## Usage examples
+
+### Destructive intent
+
+Set `intent="destructive"` for delete, remove, discard, and other irreversible actions. The confirm button receives the critical color palette automatically.
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button colorPalette="critical" onPress={() => setIsOpen(true)}>
+        Delete project
+      </Button>
+      <ConfirmationDialog
+        title="Delete project"
+        intent="destructive"
+        confirmLabel="Delete"
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        onConfirm={() => {
+          console.log("deleting");
+          setIsOpen(false);
+        }}
+        onCancel={() => setIsOpen(false)}
+      >
+        <Text>
+          This will permanently delete the project and all its data.
+        </Text>
+      </ConfirmationDialog>
+    </>
+  );
+};
+```
+
+### Async confirm with loading lockout
+
+When the confirm handler is async, hold `isConfirmLoading` true for the duration. The pattern automatically:
+
+- Shows a spinner inside the confirm button
+- Disables both buttons
+- Suppresses Escape, overlay click, and the X button
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleConfirm = async () => {
+    setIsLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      setIsOpen(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Publish</Button>
+      <ConfirmationDialog
+        title="Publish to production?"
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        isConfirmLoading={isLoading}
+        onConfirm={handleConfirm}
+        onCancel={() => setIsOpen(false)}
+      >
+        <Text>The change will be visible to all customers.</Text>
+      </ConfirmationDialog>
+    </>
+  );
+};
+```
+
+For long-running operations, prefer closing the dialog optimistically and reporting progress via a Toast or a banner, rather than holding the dialog open with a spinner.
+
+### Disabled confirm
+
+Use `isConfirmDisabled` to gate the confirm action on consumer-side validity (e.g. a required acknowledgement checkbox is unchecked).
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [acknowledged, setAcknowledged] = useState(false);
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Continue</Button>
+      <ConfirmationDialog
+        title="Confirm acknowledgement"
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        isConfirmDisabled={!acknowledged}
+        onConfirm={() => setIsOpen(false)}
+        onCancel={() => setIsOpen(false)}
+      >
+        <Stack gap="200">
+          <Text>Please acknowledge before continuing.</Text>
+          <Checkbox isSelected={acknowledged} onChange={setAcknowledged}>
+            I understand
+          </Checkbox>
+        </Stack>
+      </ConfirmationDialog>
+    </>
+  );
+};
+```
+
+### Custom labels
+
+`confirmLabel` and `cancelLabel` accept any `ReactNode`, so consumer-localized strings (e.g. from `intl.formatMessage(...)`) work directly:
+
+```tsx
+<ConfirmationDialog
+  title={intl.formatMessage(messages.unpublishTitle)}
+  confirmLabel={intl.formatMessage(messages.unpublishConfirm)}
+  cancelLabel={intl.formatMessage(messages.unpublishCancel)}
+  isOpen={isOpen}
+  onOpenChange={setIsOpen}
+  onConfirm={handleUnpublish}
+  onCancel={() => setIsOpen(false)}
+>
+  <Text>{intl.formatMessage(messages.unpublishBody)}</Text>
+</ConfirmationDialog>
+```
+
+### ReactNode title with aria-label
+
+`title` accepts any ReactNode, so you can compose a heading with an icon or badge alongside text. When the composed markup wouldn't form a meaningful accessible name, pass `aria-label`:
+
+```tsx
+<ConfirmationDialog
+  title={
+    <Flex alignItems="center" gap="200">
+      <Text>Cancel subscription</Text>
+      <Badge>Pro</Badge>
+    </Flex>
+  }
+  aria-label="Cancel subscription"
+  intent="destructive"
+  confirmLabel="Cancel subscription"
+  cancelLabel="Keep subscription"
+  isOpen={isOpen}
+  onOpenChange={setIsOpen}
+  onConfirm={handleCancel}
+  onCancel={() => setIsOpen(false)}
+>
+  <Text>You'll keep access until the end of the billing period.</Text>
+</ConfirmationDialog>
+```
+
+## Close affordances
+
+Every close path other than the confirm button invokes `onCancel`:
+
+- **Cancel button** → `onCancel()` then `onOpenChange(false)`
+- **Confirm button** → `onConfirm()` then `onOpenChange(false)` (does NOT invoke `onCancel`)
+- **Escape key** → `onCancel()` then `onOpenChange(false)`
+- **Overlay click** → `onCancel()` then `onOpenChange(false)`
+- **X button in header** → `onCancel()` then `onOpenChange(false)`
+
+While `isConfirmLoading` is `true`, all four cancel paths are suppressed and neither callback fires.
+
+## Accessibility
+
+ConfirmationDialog inherits its accessibility guarantees from the Nimbus `Dialog` primitive:
+
+- `role="dialog"` is exposed to assistive technology while open
+- Focus moves into the dialog on open and is trapped within it
+- Focus is restored to the triggering element on close
+- When `title` is a string, the dialog's accessible name is derived from it automatically — no extra `aria-label` is required
+
+If the `title` is a composed ReactNode, pass an explicit `aria-label` so the dialog has a meaningful accessible name.
+
+The cancel button is rendered before the confirm button in DOM order, so the natural first-focusable target is Cancel — a safer default for destructive confirmations.
+
+## Escape hatch
+
+If you need a non-default size, per-button `data-*` attributes, custom dismissability, or a separate `onClose`-vs-`onCancel` distinction, drop down to composing `Dialog` and `Button` directly:
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Open large confirmation</Button>
+      <Dialog.Root
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        isDismissable
+        aria-label="Bulk delete"
+      >
+        <Dialog.Content size="lg">
+          <Dialog.Header>
+            <Dialog.Title>Delete 250 records?</Dialog.Title>
+            <Dialog.CloseTrigger data-test-id="bulk-delete-close" />
+          </Dialog.Header>
+          <Dialog.Body>
+            <Text>This action cannot be undone.</Text>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button
+              variant="outline"
+              data-test-id="bulk-delete-cancel"
+              onPress={() => setIsOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="solid"
+              colorPalette="critical"
+              data-test-id="bulk-delete-confirm"
+              onPress={() => setIsOpen(false)}
+            >
+              Delete
+            </Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
+    </>
+  );
+};
+```
+
+## API reference
+
+<PropsTable id="ConfirmationDialog" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using ConfirmationDialog within your application. The component's internal behaviour is already covered by Nimbus — these tests help you verify your integration.
+
+{{docs-tests: confirmation-dialog.docs.spec.tsx}}

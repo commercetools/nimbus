@@ -15,16 +15,17 @@ icon: OpenInNew
 
 # Dialogs
 
-Dialog pattern components wrap the `Dialog` primitive in small, opinionated APIs for the most common dialog shapes. Use them to avoid hand-composing `Dialog.Root`, `Dialog.Content`, `Dialog.Header`, `Dialog.Title`, `Dialog.Body`, and `Dialog.CloseTrigger` for everyday cases.
+Dialog pattern components wrap the `Dialog` primitive in small, opinionated APIs for the most common dialog shapes. Use them to avoid hand-composing `Dialog.Root`, `Dialog.Content`, `Dialog.Header`, `Dialog.Title`, `Dialog.Body`, `Dialog.Footer`, and `Dialog.CloseTrigger` for everyday cases.
 
 ## When to use dialog patterns
 
 Dialog patterns are ideal for:
-- Read-only informational dialogs (help text, details, metadata)
+- Confirm/cancel decision dialogs (delete, discard, publish, submit) — see `ConfirmationDialog`
+- Read-only informational dialogs (help text, details, metadata) — see `InfoDialog`
 - Simple, scoped dialog shapes that appear many times across an app
 - Reducing boilerplate and ensuring consistent close affordances
 
-For dialogs with bespoke footer actions, non-default sizing, or custom dismiss behaviour, compose the `Dialog` primitive directly.
+For dialogs with bespoke footer actions, non-default sizing, custom dismissability, or per-button `data-*` attributes, compose the `Dialog` primitive directly.
 
 ## Available dialog patterns
 

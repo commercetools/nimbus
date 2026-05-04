@@ -43,6 +43,14 @@
     "developer_comment": "aria-label for toggle button to open/close options",
     "string": "Optionen anzeigen/ verbergen"
   },
+  "Nimbus.ConfirmationDialog.cancel": {
+    "developer_comment": "default label for the cancel button in a confirmation dialog",
+    "string": "Cancel"
+  },
+  "Nimbus.ConfirmationDialog.confirm": {
+    "developer_comment": "default label for the confirm button in a confirmation dialog",
+    "string": "Confirm"
+  },
   "Nimbus.DataTable.comfortable": {
     "developer_comment": "title for the comfortable togglebutton in the data table manager layout",
     "string": "Komfortabel"
