@@ -163,7 +163,6 @@ export default defineConfig(async () => {
   if (!isWatchMode) {
     config.plugins.push(
       dts({
-        rollupTypes: false,
         include: ["src/**/*"],
         // Don't declare types for stories and tests in bundle.
         // Note: src/test/setup-jsdom-polyfills.ts is a published entry point
