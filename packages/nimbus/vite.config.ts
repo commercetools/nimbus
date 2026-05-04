@@ -2,8 +2,7 @@ import { fileURLToPath } from "node:url";
 import { glob } from "glob";
 import optimizeLocales from "@react-aria/optimize-locales-plugin";
 import { defineConfig, esmExternalRequirePlugin } from "vite";
-import type { LibraryFormats } from "vite";
-import type { RollupLog, LoggingFunction } from "rollup";
+import type { LibraryFormats, PluginOption, Rollup } from "vite";
 import react from "@vitejs/plugin-react";
 import viteTsconfigPaths from "vite-tsconfig-paths";
 import dts from "vite-plugin-dts";
@@ -11,55 +10,80 @@ import treeShakeable from "rollup-plugin-tree-shakeable";
 import { analyzer } from "vite-bundle-analyzer";
 import { LOCALE_BCP47_CODES } from "../i18n/scripts/locales";
 
-// Turns every index file inside src/components, along with the main `src/index.ts` and `setup-jsdom-polyfills` entrypoints, into separate entry-points/files for better tree-shaking in consuming apps.
-// Defining entrypoints and chunking files is recommended over using `output.preserveModules` - https://rollupjs.org/configuration-options/#input
-//
-// IMPORTANT: Because each component's index.ts becomes a separate chunk, cross-component imports
-// within Nimbus MUST import directly from implementation files (e.g., button.tsx, button.types.ts)
-// rather than barrel exports (index.ts) to avoid circular chunk dependencies.
-// See docs/component-guidelines.md "Cross-Chunk Import Pattern" for details.
+/**
+ * Builds the entry map for the library build.
+ *
+ * Each component's `index.ts` (under `src/components` or `src/patterns`)
+ * becomes its own entry, plus `src/index.ts` and the jsdom polyfill.
+ * Per-component splitting lets consumers tree-shake to only what they use.
+ * Recommended over `output.preserveModules` —
+ * https://rollupjs.org/configuration-options/#input
+ *
+ * **Important:** because each component's index becomes its own chunk,
+ * cross-component imports inside Nimbus must target implementation files
+ * (`button.tsx`), not barrel exports (`index.ts`), to avoid circular
+ * chunk dependencies. See `docs/component-guidelines.md` →
+ * "Cross-Chunk Import Pattern".
+ */
 const createEntries = async () => {
-  // Only index files are turned into entrypoints, as we don't want to include test files, storybook stories, etc.
   const entries = new Map<string, string>();
-  // Build a glob containing each index.ts file in src/components or src/patterns
   const componentEntryPoints = await glob(
     "src/{components,patterns}/**/index.ts"
   );
-  // Declare an entrypoint for each component's index file. This enables consuming applications to only bundle the components imported into their app, instead of requiring that consumers bundle all components if they use any component.
   for (const file of componentEntryPoints) {
-    // Get the name of the folder containing the index file to maintain semi-unique file/entrypoint names
+    // Use the containing folder name as the entry name (semi-unique).
     const fileName = file.split("/").at(-2)?.split(".")[0];
-    // Don't create an entrypoint if there is not a file name (should not happen)
     if (!fileName) {
       continue;
     }
-    // Set the name of the entrypoint to the folder name, and set its path to the index file in that folder
     entries.set(`${fileName}`, fileURLToPath(new URL(file, import.meta.url)));
   }
-  // Declare main entrypoints, which should be defined in the `exports` field in `package.json`
-  // The 'index' entrypoint bundles all non-component code (theme, hooks, etc), insuring that all necessary code is published
+  // Main entries — must match the `exports` field in `package.json`.
+  // `index` bundles all non-component code (theme, hooks, etc).
   entries.set("index", fileURLToPath(new URL("src/index.ts", import.meta.url)));
-  // Separate entrypoint for the jest polyfill insures that the cjs version of the polyfill is used
+  // Separate entry so the jest polyfill ships as CJS.
   entries.set(
     "setup-jsdom-polyfills",
     fileURLToPath(new URL("src/test/setup-jsdom-polyfills.ts", import.meta.url))
   );
-  // Pass all entrypoints back to config
   return Object.fromEntries(entries);
 };
 
-// React-family externals are declared via `esmExternalRequirePlugin` below
-// (NOT in `external`). Under Rolldown (Vite 8), CJS deps such as
-// `use-sync-external-store/cjs/*` internally call `require("react")`. The
-// plugin both treats these as external AND rewrites those internal `require()`
-// calls into ESM imports — but only if the IDs are NOT also listed in the
-// top-level `external` array, otherwise they're already marked external before
-// the plugin runs and the rewrite no-ops.
-// Ref: https://github.com/vitejs/rolldown-vite/issues/596
-const reactExternal = [/^react(-dom)?(\/.+)?$/];
+/**
+ * External (peer) dependencies — not bundled into the nimbus dist.
+ *
+ * Two arrays exist because of how the upstream packages are published:
+ *
+ * ### `requireRewriteExternals` — via `esmExternalRequirePlugin`
+ *
+ * For packages whose graph contains CJS files calling `require("<name>")`.
+ * The plugin both externalizes them **and** rewrites internal `require()`
+ * calls into ESM imports — without the rewrite, Rolldown leaks
+ * `__require(...)` into our ESM dist and breaks pure-ESM consumers.
+ *
+ * Only React-family hits this today: `react` ships as CJS, and
+ * `use-sync-external-store/cjs/*` (transitively via react-aria /
+ * react-stately) calls `require("react")` internally.
+ *
+ * **Critical:** entries here must **not** also be in `external` below.
+ * If they are, Rolldown externalizes them before the plugin's rewrite
+ * runs, the rewrite no-ops, and `__require(...)` leaks into the dist.
+ * Ref: https://github.com/vitejs/rolldown-vite/issues/596
+ *
+ * ### `external` — via `rollupOptions.external`
+ *
+ * For packages where plain externalization is enough — they ship ESM
+ * (chakra, slate) or are workspace packages.
+ *
+ * **Default to this list when adding a new external.** Move an entry to
+ * `requireRewriteExternals` only if you observe `__require(...)` leaking
+ * into the built output.
+ *
+ * Anything externalized (either list) must also be a peerDependency &
+ * devDependency in this package's `package.json`.
+ */
+const requireRewriteExternals = [/^react(-dom)?(\/.+)?$/];
 
-// Other external dependencies that should not be bundled.
-// NOTE: Anything listed in the external array also needs to be listed as a peerDependency & devDependency in its corresponding package.json.
 const external = [
   // UI frameworks & styling.
   new RegExp("@chakra-ui/react?[^.].*$"),
@@ -93,6 +117,8 @@ export default defineConfig(async () => {
   const entries = await createEntries();
 
   const config = {
+    // Typed as `PluginOption[]` so we can `.push(...)` later (dts/analyzer)
+    // without TS narrowing the element type to the first plugin's literal shape.
     plugins: [
       viteTsconfigPaths(),
       react(),
@@ -103,7 +129,7 @@ export default defineConfig(async () => {
       optimizeLocales.vite({
         locales: LOCALE_BCP47_CODES,
       }),
-    ],
+    ] as PluginOption[],
     build: {
       // sourcemaps are built into separate files and should therefore be tree-shakeable
       // TODO: confirm that sourcemaps aren't being bundled into prod builds of consuming applications
@@ -125,53 +151,48 @@ export default defineConfig(async () => {
         formats: ["es", "cjs"] satisfies LibraryFormats[],
       },
       rollupOptions: {
-        // - `treeShakeable` naively adds an @__PURE__ annotation to each top-level module in our `dist`
-        //   https://github.com/TomerAberbach/rollup-plugin-tree-shakeable?tab=readme-ov-file#why
-        // - `esmExternalRequirePlugin` externalizes the React family for the
-        //   library build AND rewrites internal `require("react")` calls inside
-        //   bundled CJS deps (e.g. use-sync-external-store/cjs/*) into ESM
-        //   imports. Must be lib-scoped (not in top-level `plugins`) so it does
-        //   not leak into Storybook's iframe build, where externalizing react
-        //   without an importmap breaks the production deployment with
-        //   "Failed to resolve module specifier 'react'".
+        /**
+         * `esmExternalRequirePlugin` handles `requireRewriteExternals`
+         * (see the file-top doc).
+         *
+         * **Must live in `rollupOptions.plugins`** (not in the top-level
+         * `plugins` array) so it only applies to nimbus's lib build. If it
+         * leaks into Storybook's iframe build, react gets externalized
+         * there too and the deployed Storybook breaks with
+         * `Uncaught TypeError: Failed to resolve module specifier 'react'`
+         * (no importmap).
+         */
         plugins: [
           treeShakeable(),
-          esmExternalRequirePlugin({ external: reactExternal }),
+          esmExternalRequirePlugin({ external: requireRewriteExternals }),
         ],
         external,
         output: {
-          // Organize chunk files into chunks subfolder
-          chunkFileNames: () => {
-            return `chunks/[name]-[hash].[format].js`;
-          },
+          chunkFileNames: () => `chunks/[name]-[hash].[format].js`,
         },
-        // Suppress barrel export reexport warnings for compound components
-        // These warnings occur due to Nimbus's architectural pattern where compound
-        // components (Menu, Accordion, etc.) import from their own ./components/index.ts barrel.
-        // Example: accordion.tsx imports from ./components/index.ts, which re-exports accordion.header.tsx
-        // This is intentional and safe - it's the documented pattern for compound components.
-        // See docs/file-type-guidelines/compound-components.md for details.
-        onwarn(warning: RollupLog, warn: LoggingFunction) {
+        /**
+         * Suppress reexport warnings for our compound-component pattern.
+         *
+         * Compound components (Menu, Accordion, etc.) import from their own
+         * `./components/index.ts` barrel — e.g. `accordion.tsx` imports from
+         * `./components/index.ts` which re-exports `accordion.header.tsx`.
+         * This is intentional and documented in
+         * `docs/file-type-guidelines/compound-components.md`.
+         */
+        onwarn(warning: Rollup.RollupLog, warn: Rollup.LoggingFunction) {
           if (
             warning.message?.includes("reexported through module") &&
             warning.message?.includes("/components/index.ts")
           ) {
-            // Suppress warnings specifically for:
-            // 1. Compound component internal barrels: src/components/{component}/components/index.ts
-            // 2. Main components barrel: src/components/index.ts
-            // Both are intentional architectural patterns in Nimbus.
             return;
           }
-          // Pass all other warnings through
           warn(warning);
         },
-        // Shake that tree, rollup
         treeshake: true,
         // Reduce memory usage during build
         maxParallelFileOps: 5,
       },
     },
-    // Ensure CommonJS and ES modules are handled properly
     target: "esnext",
     assetsInclude: ["/sb-preview/runtime.js"],
   };
