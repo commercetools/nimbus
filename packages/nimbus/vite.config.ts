@@ -1,7 +1,7 @@
 import { fileURLToPath } from "node:url";
 import { glob } from "glob";
 import optimizeLocales from "@react-aria/optimize-locales-plugin";
-import { defineConfig } from "vite";
+import { defineConfig, esmExternalRequirePlugin } from "vite";
 import type { LibraryFormats } from "vite";
 import type { RollupLog, LoggingFunction } from "rollup";
 import react from "@vitejs/plugin-react";
@@ -48,13 +48,19 @@ const createEntries = async () => {
   return Object.fromEntries(entries);
 };
 
-// External dependencies that should not be bundled.
-// NOTE: Anything listed in the external array also needs to be listed as a peerDependency & devDependency in its corresponding package.json (exception: "react/jsx-runtime").
+// React-family externals are declared via `esmExternalRequirePlugin` below
+// (NOT in `external`). Under Rolldown (Vite 8), CJS deps such as
+// `use-sync-external-store/cjs/*` internally call `require("react")`. The
+// plugin both treats these as external AND rewrites those internal `require()`
+// calls into ESM imports — but only if the IDs are NOT also listed in the
+// top-level `external` array, otherwise they're already marked external before
+// the plugin runs and the rewrite no-ops.
+// Ref: https://github.com/vitejs/rolldown-vite/issues/596
+const reactExternal = [/^react(-dom)?(\/.+)?$/];
+
+// Other external dependencies that should not be bundled.
+// NOTE: Anything listed in the external array also needs to be listed as a peerDependency & devDependency in its corresponding package.json.
 const external = [
-  // React core
-  "react",
-  "react-dom",
-  "react/jsx-runtime",
   // UI frameworks & styling.
   new RegExp("@chakra-ui/react?[^.].*$"),
   // Slate dependencies for RichTextInput
@@ -97,6 +103,11 @@ export default defineConfig(async () => {
       optimizeLocales.vite({
         locales: LOCALE_BCP47_CODES,
       }),
+      // Externalize react/react-dom AND rewrite internal `require("react")`
+      // calls inside bundled CJS deps (e.g. use-sync-external-store/cjs/*)
+      // into ESM imports. Replaces the top-level external entries for these.
+      // See `reactExternal` comment above.
+      esmExternalRequirePlugin({ external: reactExternal }),
     ],
     build: {
       // sourcemaps are built into separate files and should therefore be tree-shakeable
