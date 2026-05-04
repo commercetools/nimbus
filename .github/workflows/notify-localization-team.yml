@@ -18,7 +18,7 @@ jobs:
           EXISTING=$(gh pr view "${{ github.event.pull_request.number }}" \
             --repo "${{ github.repository }}" \
             --json comments \
-            --jq '[.comments[] | select(.body | contains("localization ticket"))] | length')
+            --jq '[.comments[] | select(.body | contains("Localization reminder"))] | length')
 
           if [ "$EXISTING" -gt 0 ]; then
             echo "Reminder already posted, skipping."
