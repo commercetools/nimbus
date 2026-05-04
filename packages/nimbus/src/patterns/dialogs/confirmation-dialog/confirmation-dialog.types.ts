@@ -39,8 +39,15 @@ export type ConfirmationDialogProps = {
    * confirm button. Not invoked when the dialog is dismissed via the
    * cancel button, the close button in the header, the Escape key, or
    * an overlay click.
+   *
+   * If the callback returns a `Promise`, the dialog stays open while
+   * the promise is pending and closes automatically when it
+   * fulfills. If the promise rejects, the dialog stays open so the
+   * consumer can surface the error and let the user retry — pair
+   * with `isConfirmLoading` to render the spinner / lockout while
+   * the promise is in flight.
    */
-  onConfirm: () => void;
+  onConfirm: () => void | Promise<void>;
 
   /**
    * Callback fired when the user cancels — by clicking the cancel button,

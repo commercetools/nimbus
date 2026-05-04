@@ -272,6 +272,49 @@ Symmetric with `title` (which is `ReactNode`) and consistent with the
 Nimbus `Button` accepting `ReactNode` children. Lets consumers pass
 `intl.formatMessage(...)` results directly without coercion.
 
+### Decision: `onConfirm` is Promise-aware; close defers to fulfillment
+
+`onConfirm` is typed `() => void | Promise<void>`. When the consumer
+returns a `Promise`, the pattern keeps the dialog open until the
+promise settles: on fulfillment the pattern calls
+`onOpenChange(false)`; on rejection the dialog stays open so the
+consumer can surface the error and let the user retry. Synchronous
+(`void`) handlers continue to close the dialog immediately, as
+before.
+
+This decision closes a defect surfaced in code review: the original
+implementation called `onOpenChange(false)` synchronously after
+`onConfirm()`, which meant the dialog vanished before any async work
+could run — so a consumer-managed `isConfirmLoading` lockout would
+never paint for the very async-confirm case the prop was designed
+for. The fix is the minimal one consistent with the rest of the
+design: keep `isConfirmLoading` consumer-controlled (no auto-toggle
+— see the now-resolved Open Question below) and only delay the
+pattern's own close call.
+
+- **Alternatives considered**:
+  - **Document a guard pattern.** Tell consumers to suppress
+    `onOpenChange(false)` while a `useRef` mirror of their loading
+    flag is true. Rejected — the required `useRef` workaround for
+    stale closures is exactly the React-internals trap a flat
+    pattern is supposed to absorb, and the failure mode (spinner
+    silently doesn't render) is hard to diagnose.
+  - **Stop calling `setOpen(false)` in `handleConfirm` entirely.**
+    Push close-on-confirm onto every consumer. Rejected — breaks
+    the flat-API promise the proposal sells (~95% of audited usages
+    are simple confirm/cancel where the pattern handles dismissal),
+    and the asymmetry with `handleCancelButton` (which still
+    auto-closes) is actively confusing.
+  - **Auto-toggle `isConfirmLoading` from the returned Promise.**
+    Rejected — see the resolved Open Question below; this would
+    introduce a hidden state machine and diverge from
+    `FormActionBar`'s `isSaveLoading` precedent.
+- **Rationale**: Promise-aware close is strictly additive at the
+  type level (`void` widens to `void | Promise<void>`), preserves
+  sync-confirm semantics unchanged, and makes the existing
+  `isConfirmLoading` prop work correctly for the async case without
+  introducing any new public API or hidden state.
+
 ### Decision: `aria-label` retained as an escape valve
 
 By default the dialog's accessible name is derived from `title`. When
@@ -315,15 +358,17 @@ confusing accessible name, consumers pass `aria-label`. Mirrors the
 
 ## Open Questions
 
-- **Should `onConfirm` support async (auto-toggle `isConfirmLoading`)?**
+- **~~Should `onConfirm` support async (auto-toggle `isConfirmLoading`)?~~ Resolved.**
   The natural ergonomic improvement is for the pattern to detect
   that `onConfirm` returned a `Promise` and flip
   `isConfirmLoading` to `true` for the duration. We **do not** ship
-  this in v1: keeping `isConfirmLoading` consumer-controlled is
+  auto-toggle: keeping `isConfirmLoading` consumer-controlled is
   more explicit (no hidden state machine) and consistent with
-  `FormActionBar`'s `isSaveLoading`. Revisit once the v1 surface
-  has been in use for a release cycle and consumer demand is
-  measurable.
+  `FormActionBar`'s `isSaveLoading`. We **do** ship a related but
+  smaller change — see the "`onConfirm` is Promise-aware; close
+  defers to fulfillment" decision above. Revisit auto-toggle once
+  the v1 surface has been in use for a release cycle and consumer
+  demand is measurable.
 
 - **Should the `Dialog.CloseTrigger` X button be retained or
   suppressed?** The app-kit ConfirmationDialog renders an X close

@@ -31,7 +31,8 @@ props that together cover the common confirm/cancel-dialog case.
 - **WHEN** ConfirmationDialog is rendered
 - **THEN** SHALL require `title` typed as `ReactNode`
 - **AND** SHALL require `children` typed as `ReactNode`
-- **AND** SHALL require `onConfirm` typed as `() => void`
+- **AND** SHALL require `onConfirm` typed as
+  `() => void | Promise<void>`
 - **AND** SHALL require `onCancel` typed as `() => void`
 
 #### Scenario: Optional open-state props
@@ -190,13 +191,36 @@ uncontrolled usage.
 The ConfirmationDialog SHALL invoke `onConfirm` when the user
 explicitly confirms.
 
-#### Scenario: Confirm button click
+#### Scenario: Confirm button click with synchronous handler
 
 - **WHEN** the user clicks the confirm button (and
   `isConfirmDisabled` is not `true` and `isConfirmLoading` is not
   `true`)
+- **AND** `onConfirm` returns `void` (does not return a `Promise`)
 - **THEN** SHALL invoke `onConfirm`
-- **AND** SHALL invoke `onOpenChange(false)`
+- **AND** SHALL invoke `onOpenChange(false)` synchronously
+
+#### Scenario: Confirm button click with async handler that fulfills
+
+- **WHEN** the user clicks the confirm button (and
+  `isConfirmDisabled` is not `true` and `isConfirmLoading` is not
+  `true`)
+- **AND** `onConfirm` returns a `Promise` that fulfills
+- **THEN** SHALL invoke `onConfirm`
+- **AND** SHALL keep the dialog open while the promise is pending
+- **AND** SHALL invoke `onOpenChange(false)` after the promise
+  fulfills
+
+#### Scenario: Confirm button click with async handler that rejects
+
+- **WHEN** the user clicks the confirm button (and
+  `isConfirmDisabled` is not `true` and `isConfirmLoading` is not
+  `true`)
+- **AND** `onConfirm` returns a `Promise` that rejects
+- **THEN** SHALL invoke `onConfirm`
+- **AND** SHALL keep the dialog open while the promise is pending
+- **AND** SHALL leave the dialog open after the promise rejects
+- **AND** SHALL NOT invoke `onOpenChange(false)`
 
 #### Scenario: Confirm button disabled
 

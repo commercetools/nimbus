@@ -460,6 +460,140 @@ export const LoadingLockout: Story = {
 };
 
 /**
+ * When `onConfirm` returns a `Promise`, the dialog stays open while
+ * the promise is pending and closes automatically when it fulfills.
+ * Consumers manage `isConfirmLoading` themselves so the spinner /
+ * lockout is visible during the in-flight period.
+ */
+export const AsyncConfirm: Story = {
+  args: {
+    onCancel: fn(),
+  },
+  render: (args) => {
+    const [isOpen, setIsOpen] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    return (
+      <ConfirmationDialog
+        {...args}
+        title="Submit order"
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        isConfirmLoading={isLoading}
+        onConfirm={async () => {
+          setIsLoading(true);
+          try {
+            await new Promise((resolve) => setTimeout(resolve, 200));
+          } finally {
+            setIsLoading(false);
+          }
+        }}
+      >
+        <Text>This will charge your card.</Text>
+      </ConfirmationDialog>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Dialog opens with confirm button enabled", async () => {
+      await waitFor(() =>
+        expect(canvas.getByRole("dialog")).toBeInTheDocument()
+      );
+      expect(canvas.getByRole("button", { name: /confirm/i })).toBeEnabled();
+    });
+
+    await step(
+      "Clicking confirm engages the loading lockout while the promise is in flight",
+      async () => {
+        await userEvent.click(canvas.getByRole("button", { name: /confirm/i }));
+
+        await waitFor(() =>
+          expect(
+            canvas.getByRole("button", { name: /confirm/i })
+          ).toBeDisabled()
+        );
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+        expect(canvas.getByRole("button", { name: /cancel/i })).toBeDisabled();
+      }
+    );
+
+    await step("Dialog closes after the promise fulfills", async () => {
+      await waitFor(
+        () => expect(canvas.queryByRole("dialog")).not.toBeInTheDocument(),
+        { timeout: 2000 }
+      );
+    });
+  },
+};
+
+/**
+ * When `onConfirm` returns a rejected Promise, the dialog stays open so
+ * the consumer can surface the error and let the user retry. The
+ * spinner / lockout reflects whatever `isConfirmLoading` the consumer
+ * holds across the failed attempt.
+ */
+export const AsyncConfirmRejection: Story = {
+  args: {
+    onCancel: fn(),
+  },
+  render: (args) => {
+    const [isOpen, setIsOpen] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    return (
+      <ConfirmationDialog
+        {...args}
+        title="Submit order"
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        isConfirmLoading={isLoading}
+        onConfirm={async () => {
+          setIsLoading(true);
+          try {
+            await new Promise((_resolve, reject) =>
+              setTimeout(() => reject(new Error("network")), 200)
+            );
+          } finally {
+            setIsLoading(false);
+          }
+        }}
+      >
+        <Text>This will charge your card.</Text>
+      </ConfirmationDialog>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step(
+      "Dialog stays open after the rejected promise settles",
+      async () => {
+        await waitFor(() =>
+          expect(canvas.getByRole("dialog")).toBeInTheDocument()
+        );
+
+        await userEvent.click(canvas.getByRole("button", { name: /confirm/i }));
+
+        // After the promise rejects and the consumer flips
+        // isConfirmLoading back to false, the dialog is still mounted
+        // and the buttons are interactive again so the user can retry.
+        await waitFor(
+          () =>
+            expect(
+              canvas.getByRole("button", { name: /confirm/i })
+            ).toBeEnabled(),
+          { timeout: 2000 }
+        );
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      }
+    );
+  },
+};
+
+/**
  * Title accepts any ReactNode, so consumers can compose a heading with
  * inline elements like a badge or icon. When the composed title would
  * produce a confusing accessible name, pass an explicit `aria-label`.

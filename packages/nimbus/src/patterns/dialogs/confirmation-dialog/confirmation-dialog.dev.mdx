@@ -172,11 +172,11 @@ const App = () => {
 
 ### Async confirm with loading lockout
 
-When the confirm handler is async, hold `isConfirmLoading` true for the duration. The pattern automatically:
+If `onConfirm` returns a `Promise`, the dialog stays open while the promise is pending and closes automatically when it fulfills. Hold `isConfirmLoading` true for the duration so the pattern can:
 
-- Shows a spinner inside the confirm button
-- Disables both buttons
-- Suppresses Escape, overlay click, and the X button
+- Show a spinner inside the confirm button
+- Disable both buttons
+- Suppress Escape, overlay click, and the X button
 
 ```jsx live-dev
 const App = () => {
@@ -187,7 +187,7 @@ const App = () => {
     setIsLoading(true);
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      setIsOpen(false);
+      // Dialog closes automatically when the promise fulfills.
     } finally {
       setIsLoading(false);
     }
@@ -210,6 +210,8 @@ const App = () => {
   );
 };
 ```
+
+If the promise **rejects**, the dialog stays open so the consumer can surface the error (e.g. a Toast or an inline banner) and let the user retry. Let the error propagate out of `onConfirm` to keep the dialog open — catching the error inside the handler resolves the promise successfully and closes the dialog.
 
 For long-running operations, prefer closing the dialog optimistically and reporting progress via a Toast or a banner, rather than holding the dialog open with a spinner.
 
@@ -293,7 +295,7 @@ const App = () => {
 Every close path other than the confirm button invokes `onCancel`:
 
 - **Cancel button** → `onCancel()` then `onOpenChange(false)`
-- **Confirm button** → `onConfirm()` then `onOpenChange(false)` (does NOT invoke `onCancel`)
+- **Confirm button** → `onConfirm()` then `onOpenChange(false)` (after the returned `Promise` fulfills, if any; rejected promises leave the dialog open). Does NOT invoke `onCancel`.
 - **Escape key** → `onCancel()` then `onOpenChange(false)`
 - **Overlay click** → `onCancel()` then `onOpenChange(false)`
 - **X button in header** → `onCancel()` then `onOpenChange(false)`

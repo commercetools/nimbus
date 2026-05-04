@@ -263,6 +263,7 @@ describe("ConfirmationDialog - Trigger pattern", () => {
   it("opens from a consumer-rendered trigger and closes after confirm", async () => {
     const user = userEvent.setup();
     const handleConfirm = vi.fn();
+    const handleCancel = vi.fn();
 
     const App = () => {
       const [isOpen, setIsOpen] = useState(false);
@@ -273,11 +274,8 @@ describe("ConfirmationDialog - Trigger pattern", () => {
             title="Submit order"
             isOpen={isOpen}
             onOpenChange={setIsOpen}
-            onConfirm={() => {
-              handleConfirm();
-              setIsOpen(false);
-            }}
-            onCancel={() => setIsOpen(false)}
+            onConfirm={handleConfirm}
+            onCancel={handleCancel}
           >
             <Text>Submit this order for fulfillment.</Text>
           </ConfirmationDialog>
@@ -300,6 +298,7 @@ describe("ConfirmationDialog - Trigger pattern", () => {
     await user.click(screen.getByRole("button", { name: "Confirm" }));
 
     expect(handleConfirm).toHaveBeenCalledTimes(1);
+    expect(handleCancel).not.toHaveBeenCalled();
     await waitFor(() => {
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });

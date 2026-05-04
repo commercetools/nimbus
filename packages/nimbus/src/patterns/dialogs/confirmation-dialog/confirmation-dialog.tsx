@@ -18,7 +18,10 @@ import type { ConfirmationDialogProps } from "./confirmation-dialog.types";
  * Close affordances: clicking the cancel button, the X button in the
  * header, pressing Escape, or clicking the overlay all invoke `onCancel`
  * and `onOpenChange(false)`. Clicking the confirm button invokes
- * `onConfirm` and `onOpenChange(false)` without firing `onCancel`.
+ * `onConfirm` and then closes — synchronously for `void` returns, or
+ * after the returned `Promise` fulfills for async confirms; rejected
+ * promises leave the dialog open. The confirm path never fires
+ * `onCancel`.
  *
  * When `isConfirmLoading` is `true` the entire dialog is locked: the
  * confirm button shows a spinner and is disabled, the cancel button is
@@ -72,9 +75,26 @@ export const ConfirmationDialog = ({
   const resolvedCancelLabel = cancelLabel ?? msg.format("cancel");
   const confirmColorPalette = intent === "destructive" ? "critical" : "primary";
 
-  const handleConfirm = () => {
-    onConfirm();
-    setOpen(false);
+  const handleConfirm = async () => {
+    const result = onConfirm();
+    // If the consumer returns a Promise, wait for it to settle before
+    // closing — otherwise the dialog vanishes synchronously and the
+    // consumer's `isConfirmLoading` lockout never paints. On rejection
+    // we stay open so the consumer can surface an error and let the
+    // user retry.
+    if (
+      result !== undefined &&
+      typeof (result as Promise<void>).then === "function"
+    ) {
+      try {
+        await result;
+        setOpen(false);
+      } catch {
+        // intentional: stay open on rejection
+      }
+    } else {
+      setOpen(false);
+    }
   };
 
   const handleCancelButton = () => {
@@ -82,11 +102,12 @@ export const ConfirmationDialog = ({
     setOpen(false);
   };
 
-  // The Dialog primitive only invokes its `onOpenChange` for ambient
-  // dismiss paths the pattern does not own — Escape, overlay click, and
-  // the close-button X (which is `slot="close"` inside Dialog.CloseTrigger).
-  // Our cancel and confirm buttons close via `setOpen(false)` directly
-  // and do NOT route through this callback.
+  // `Dialog.Root` invokes its `onOpenChange` for dismiss paths not
+  // driven by an explicit `onPress` in this component — Escape,
+  // overlay click, and the close-button X (which is `slot="close"`
+  // inside Dialog.CloseTrigger). Our cancel and confirm buttons close
+  // via `setOpen(false)` directly and do NOT route through this
+  // callback.
   const handleAmbientOpenChange = (newOpen: boolean) => {
     if (!newOpen) {
       onCancel();

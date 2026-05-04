@@ -38,7 +38,9 @@ primitive directly (documented escape hatch).
 - **NEW** Flat props API:
   - `title: ReactNode`
   - `children: ReactNode`
-  - `onConfirm: () => void`
+  - `onConfirm: () => void | Promise<void>` — if a Promise is
+    returned, the dialog stays open until it fulfills; rejected
+    promises leave the dialog open so the consumer can show an error
   - `onCancel: () => void`
   - `isOpen?: boolean` (controlled mode)
   - `defaultOpen?: boolean` (uncontrolled mode)

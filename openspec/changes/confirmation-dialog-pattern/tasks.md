@@ -119,3 +119,24 @@
 - [x] 6.6 Add a changeset under `.changeset/` describing the new
       `ConfirmationDialog` pattern from the consumer perspective
       (per the changeset conventions)
+
+## 7. Review follow-ups
+
+- [x] 7.1 Widen `onConfirm` to `() => void | Promise<void>` and
+      defer the pattern's `setOpen(false)` until a returned Promise
+      fulfills; leave the dialog open on rejection. (Code review
+      defect: synchronous close before async work meant
+      `isConfirmLoading` lockout never painted for async confirms.)
+- [x] 7.2 Add `AsyncConfirm` and `AsyncConfirmRejection` Storybook
+      stories that exercise the deferred-close path end-to-end
+- [x] 7.3 Strip the redundant `setIsOpen(false)` calls inside
+      `onConfirm` / `onCancel` in
+      `confirmation-dialog.docs.spec.tsx` so the trigger-pattern
+      example doesn't model a misleading consumer pattern, and
+      assert that confirm does not fire `onCancel`
+- [x] 7.4 Update the "Async confirm" section of
+      `confirmation-dialog.dev.mdx` to teach the Promise-aware
+      contract and how to keep the dialog open on rejection
+- [x] 7.5 Reword the `handleAmbientOpenChange` comment in
+      `confirmation-dialog.tsx` so it does not call the X button
+      "ambient" — the pattern owns it via `isDisabled={isConfirmLoading}`
