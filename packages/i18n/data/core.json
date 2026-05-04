@@ -8,7 +8,7 @@
     "string": "Avatar image for {fullName}"
   },
   "Nimbus.Avatar.avatarLabelGeneric": {
-    "developer_comment": "Generic aria-label for the avatar component, used when no first or last name is available to interpolate (e.g. partial user records).",
+    "developer_comment": "Generic aria-label for the avatar component, used when no first name or last name is available to interpolate (e.g. partial user records).",
     "string": "Generic user avatar"
   },
   "Nimbus.Calendar.nextMonth": {
