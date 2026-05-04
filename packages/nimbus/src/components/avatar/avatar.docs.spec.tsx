@@ -125,8 +125,8 @@ describe("Avatar - Missing names", () => {
     );
 
     const avatar = screen.getByRole("figure");
-    // Generic localized aria-label ("User avatar" in English)
-    expect(avatar).toHaveAttribute("aria-label", "User avatar");
+    // Generic localized aria-label ("Generic user avatar" in English)
+    expect(avatar).toHaveAttribute("aria-label", "Generic user avatar");
     // Person icon is rendered as the visual fallback
     expect(avatar.querySelector("svg")).not.toBeNull();
     // No initials text is rendered
