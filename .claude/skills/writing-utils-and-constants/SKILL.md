@@ -242,7 +242,8 @@ When adding a new helper:
 2. **Tokenize the new helper's name** (camelCase boundary).
 3. **For each existing helper**, compute shared content tokens:
    - Drop connectors (`By`, `For`, `From`, `To`, `With`) and generic verbs
-     (`get`, `is`, `has`, `set`, `add`, `do`, `make`)
+     (`get`, `is`, `has`, `set`, `add`, `do`, `make`, `build`, `create`,
+     `extract`, `find`, `try`)
    - Require ≥4 chars
 4. **Check each merge criterion** (shared token / factory relationship /
    direct dependency) against each existing helper.

@@ -91,8 +91,14 @@ of these criteria hold. Otherwise the new helper gets its own file.
 
 Tokenize each name by camelCase boundary. Drop **connectors** (`By`, `For`,
 `From`, `To`, `With`) and **generic verbs** (`get`, `is`, `has`, `set`, `add`,
-`do`, `make`). If any remaining content token of ≥4 characters appears in both
-names, merge.
+`do`, `make`, `build`, `create`, `extract`, `find`, `try`). If any remaining
+content token of ≥4 characters appears in both names, merge.
+
+The generic-verb list is intentionally narrow: a verb belongs on it only when it
+carries no domain meaning on its own (`getThing` and `extractThing` say nothing
+about each other beyond "operates on Thing"). When in doubt, leave the verb as a
+content token — false-negative merges create churn but no incorrect groupings;
+false-positive merges put unrelated helpers in the same file.
 
 | Existing          | New             | Shared content tokens | Merge?               |
 | ----------------- | --------------- | --------------------- | -------------------- |

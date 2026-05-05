@@ -123,12 +123,13 @@ See
 - Barrel exports and index files
 
 **Pure utility functions (non-React, no JSX) MUST live in a `utils/` subfolder
-of the component**, with one function per file, a sibling `{name}.spec.ts`, and
-a `utils/index.ts` barrel. NEVER export utility functions from
-`{component}.tsx`. See `docs/file-type-guidelines/utils-and-constants.md` and
-existing patterns in `combobox/utils/`, `inline-svg/utils/`,
-`money-input/utils/`. Invoke the `writing-utils-and-constants` skill for these
-files.
+of the component**, organized per the merge rule in
+`docs/file-type-guidelines/utils-and-constants.md#file-organization` (solo files
+for unrelated helpers, family files for cohesive sets), with a sibling
+`{name}.spec.ts` per util file and a `utils/index.ts` barrel. NEVER export
+utility functions from `{component}.tsx`. See existing patterns in
+`combobox/utils/`, `inline-svg/utils/`, `money-input/utils/`. Invoke the
+`writing-utils-and-constants` skill for these files.
 
 **INVOKE skills:**
 
