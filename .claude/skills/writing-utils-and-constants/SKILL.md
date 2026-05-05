@@ -113,7 +113,8 @@ specific file path and line number.
       Banned: `helpers.ts`, `utils.ts`, `misc.ts`, or naming a merged file
       after a single export. Promotable and component-coupled helpers do not
       belong in the same file. See
-      [Merge Rule & File Naming](#merge-rule--file-naming) for the procedure.
+      [File Organization](../../../docs/file-type-guidelines/utils-and-constants.md#file-organization)
+      in `utils-and-constants.md` for the full rule.
 - [ ] **Kebab-case filename**: File name matches the function/topic name in
       kebab-case.
 - [ ] **Index barrel**: `utils/index.ts` re-exports every util:
