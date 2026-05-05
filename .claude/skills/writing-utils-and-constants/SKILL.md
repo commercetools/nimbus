@@ -17,12 +17,16 @@ its own file, its own spec, and is re-exported through a barrel.
 
 Patterns enforced:
 
-- One function per file (kebab-case filename matches the function name)
-- Sibling `*.spec.ts` per util (Vitest, JSDOM)
+- One purpose per file; cohesive helpers merge into a single file when they
+  share a meaningful name token, have a factory relationship, or form a direct
+  dependency chain — see [File Organization](../../../docs/file-type-guidelines/utils-and-constants.md#file-organization)
+  in `utils-and-constants.md` for the canonical rule
+- Sibling `*.spec.ts` per util file (one source file = one spec file)
 - `utils/index.ts` barrel re-exporting every util
 - Pure functions only — no React, no JSX, no side effects
 - JSDoc on every export
 - `as const` for constants
+- Don't mix promotable and component-coupled helpers in the same file
 
 ---
 
@@ -63,7 +67,7 @@ Before any operation, you MUST read in parallel:
 packages/nimbus/src/components/{component}/
 ├── {component}.tsx
 ├── utils/
-│   ├── {kebab-name}.ts          # one function per file
+│   ├── {kebab-name}.ts          # one purpose per file (see Merge Rule)
 │   ├── {kebab-name}.spec.ts     # sibling unit test
 │   └── index.ts                 # barrel re-export
 ├── constants/                   # only when constants are needed
@@ -100,10 +104,16 @@ specific file path and line number.
 
 #### Category 2: File Organization (4 items)
 
-- [ ] **One function per file**: Each utility lives in its own
-      `{kebab-name}.ts` file. Bundling unrelated helpers in a single file is a
-      violation; bundling closely-related helpers (e.g. several pure
-      collection-traversal helpers) into a topic file is acceptable.
+- [ ] **One purpose per file**: A solo helper lives in its own
+      `{kebab-name}.ts`. Cohesive helpers merge into a single file when
+      (1) they share a meaningful name token (≥4 chars after dropping generic
+      verbs and connectors), (2) one is a factory for another's signature, or
+      (3) they form a direct dependency chain. Merged files are named for the
+      shared token (agent-noun pluralized: `filters.ts`, `validators.ts`).
+      Banned: `helpers.ts`, `utils.ts`, `misc.ts`, or naming a merged file
+      after a single export. Promotable and component-coupled helpers do not
+      belong in the same file. See
+      [Merge Rule & File Naming](#merge-rule--file-naming) for the procedure.
 - [ ] **Kebab-case filename**: File name matches the function/topic name in
       kebab-case.
 - [ ] **Index barrel**: `utils/index.ts` re-exports every util:
@@ -202,6 +212,53 @@ specific file path and line number.
 2. Run tests: `pnpm test:dev packages/nimbus/src/components/{component}/utils/`
 3. Re-validate: `writing-utils-and-constants validate {ComponentName}`
 ```
+
+---
+
+## Merge Rule Reference
+
+The canonical merge rule — three criteria (shared meaningful name token /
+factory relationship / direct dependency), file-naming formula, coupling
+constraint, scope-agnostic application, promotion guidance, no reverse-merge,
+forward-applied scope, and barrel-stability contract — lives in
+[`docs/file-type-guidelines/utils-and-constants.md` → File Organization](../../../docs/file-type-guidelines/utils-and-constants.md#file-organization).
+That document is the source of truth. Load it before applying the rule (it is
+already in the [Required Research](#required-research-all-modes) list above).
+
+One-line summary for quick reference: **merge into a single family file when
+helpers share a meaningful name token (≥4 chars after dropping generic verbs
+and connectors), when one is a factory for another's signature, or when one
+directly depends on the other. Otherwise solo files. Banned filenames:
+`helpers.ts`, `utils.ts`, `misc.ts`.**
+
+---
+
+## Procedure: Adding a Helper to `utils/`
+
+When adding a new helper:
+
+1. **List existing files** in the folder, with their exports.
+2. **Tokenize the new helper's name** (camelCase boundary).
+3. **For each existing helper**, compute shared content tokens:
+   - Drop connectors (`By`, `For`, `From`, `To`, `With`) and generic verbs
+     (`get`, `is`, `has`, `set`, `add`, `do`, `make`)
+   - Require ≥4 chars
+4. **Check each merge criterion** (shared token / factory relationship /
+   direct dependency) against each existing helper.
+5. **If any criterion fires**, merge into a single file named per the
+   file-naming rule. The PR that adds the connecting helper does the rename
+   and barrel update — not punted as follow-up.
+6. **Update the sibling `*.spec.ts`** the same way (one source file = one
+   spec file).
+7. **Update `utils/index.ts`** barrel.
+8. **Search the component** for any deep imports of renamed files and update
+   them.
+
+The PR that adds a connecting helper performs the rename and barrel update —
+not punted as follow-up. See
+[Scope, Promotion, and Degenerate States](../../../docs/file-type-guidelines/utils-and-constants.md#scope-promotion-and-degenerate-states)
+in the docs for promotion semantics, no-reverse-merge, forward-applied scope,
+and barrel-stability constraints.
 
 ---
 
