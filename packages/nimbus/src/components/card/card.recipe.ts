@@ -16,6 +16,17 @@ export const cardRecipe = defineSlotRecipe({
       flexDirection: "column",
       alignItems: "flex-start",
       borderRadius: "300",
+      // Free-form content: when no slot children are present anywhere
+      // inside Card.Root, padding lives on Root itself so direct
+      // children don't render flush against the border. Slots own
+      // their own padding (see below), so the selector only matches
+      // the no-slots case. `:has()` matches at any depth, which is
+      // intentional: a slot wrapped in another element still pads
+      // itself.
+      "&:not(:has(.nimbus-card__header, .nimbus-card__body, .nimbus-card__footer))":
+        {
+          p: "var(--card-spacing)",
+        },
     },
     header: {
       p: "var(--card-spacing)",

@@ -372,6 +372,15 @@ export const WithoutCompound: Story = {
         "I'm some other flexible content"
       );
     });
+
+    // Without slot children, padding lives on Card.Root itself so direct
+    // children don't render flush against the border. With size="md" the
+    // expected value is spacing.400 (16px).
+    await step("Applies --card-spacing padding to Root", async () => {
+      const card = canvas.getByTestId("card-freeform");
+      const padding = window.getComputedStyle(card).padding;
+      await expect(padding).toBe("16px");
+    });
   },
 };
 

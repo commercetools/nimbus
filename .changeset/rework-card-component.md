@@ -32,3 +32,6 @@ Rework Card component architecture and API.
 - Replaces the previous context-registration pattern (children registering
   themselves with the parent via `useEffect`) with direct rendering. Eliminates
   the double-render cycle and Strict Mode incompatibility.
+- Free-form Card.Root (no Header/Body/Footer slots) keeps `--card-spacing`
+  padding via a CSS `:has()` selector, so direct children never render flush
+  against the border.
