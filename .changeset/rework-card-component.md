@@ -2,7 +2,7 @@
 "@commercetools/nimbus": minor
 ---
 
-Rework Card component architecture and API.
+`Card`: reworked architecture and API.
 
 **Breaking changes**
 
@@ -18,20 +18,21 @@ Rework Card component architecture and API.
     `"plain" | "outlined" | "elevated" | "outlined-elevated" | "muted" | "outlined-muted" | "elevated-muted" | "outlined-elevated-muted"`.
   - `size` (default `"md"`) — `"sm" | "md" | "lg"`, controlling internal padding
     via the `--card-spacing` CSS variable.
+- `Card.Root` is now a block-level `flex` container (previously `inline-flex`),
+  filling available width by default.
 
 **New**
 
 - `Card.Footer` slot for actions and metadata below the body.
+- Free-form `Card.Root` — when used without `Card.Header` / `Card.Body` /
+  `Card.Footer`, padding now lives on the Root itself so arbitrary children
+  never render flush against the border.
 - Slot-based ARIA labelling: placing `<Heading slot="title">` or
   `<Text slot="description">` inside a Card automatically wires
   `aria-labelledby` / `aria-describedby` on the root. The card itself stays a
   plain `<div>` — set `role` explicitly if a landmark role is needed.
 
-**Internal**
+**Fixed**
 
-- Replaces the previous context-registration pattern (children registering
-  themselves with the parent via `useEffect`) with direct rendering. Eliminates
-  the double-render cycle and Strict Mode incompatibility.
-- Free-form Card.Root (no Header/Body/Footer slots) keeps `--card-spacing`
-  padding via a CSS `:has()` selector, so direct children never render flush
-  against the border.
+- Card now renders correctly under React Strict Mode (the previous
+  context-registration pattern caused a double-render cycle).
