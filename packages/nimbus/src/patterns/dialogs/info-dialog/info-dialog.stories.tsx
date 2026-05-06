@@ -261,10 +261,17 @@ export const LongContent: Story = {
       "Body scrolls to reveal the last paragraph while the header stays pinned",
       async () => {
         const lastParagraph = canvas.getByText(/^Paragraph 25:/);
+        const dialog = canvas.getByRole("dialog");
         const header = canvas.getByRole("heading", {
           name: "Terms of service",
         });
-        const headerTopBeforeScroll = header.getBoundingClientRect().top;
+        // Compare positions relative to the dialog rather than the viewport —
+        // scrollIntoView can scroll ancestor containers (including the page),
+        // which would shift viewport-relative coords for both header and dialog
+        // by the same amount but leave their relative offset invariant.
+        const headerOffsetBeforeScroll =
+          header.getBoundingClientRect().top -
+          dialog.getBoundingClientRect().top;
 
         lastParagraph.scrollIntoView({ block: "end" });
 
@@ -274,10 +281,13 @@ export const LongContent: Story = {
           expect(paragraphRect.bottom).toBeGreaterThan(0);
         });
 
-        // Header position is unchanged because it's pinned outside the
-        // scrollable body region.
-        expect(header.getBoundingClientRect().top).toBeCloseTo(
-          headerTopBeforeScroll,
+        // Header position relative to the dialog is unchanged because it's
+        // pinned outside the scrollable body region.
+        const headerOffsetAfterScroll =
+          header.getBoundingClientRect().top -
+          dialog.getBoundingClientRect().top;
+        expect(headerOffsetAfterScroll).toBeCloseTo(
+          headerOffsetBeforeScroll,
           0
         );
       }
