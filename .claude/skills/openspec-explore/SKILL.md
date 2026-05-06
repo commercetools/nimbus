@@ -33,24 +33,28 @@ Enter explore mode. Think deeply. Visualize freely. Follow the conversation wher
 Depending on what the user brings, you might:
 
 **Explore the problem space**
+
 - Ask clarifying questions that emerge from what they said
 - Challenge assumptions
 - Reframe the problem
 - Find analogies
 
 **Investigate the codebase**
+
 - Map existing architecture relevant to the discussion
 - Find integration points
 - Identify patterns already in use
 - Surface hidden complexity
 
 **Compare options**
+
 - Brainstorm multiple approaches
 - Build comparison tables
 - Sketch tradeoffs
 - Recommend a path (if asked)
 
 **Visualize**
+
 ```
 ┌─────────────────────────────────────────┐
 │     Use ASCII diagrams liberally        │
@@ -69,6 +73,7 @@ Depending on what the user brings, you might:
 ```
 
 **Surface risks and unknowns**
+
 - Identify what could go wrong
 - Find gaps in understanding
 - Suggest spikes or investigations
@@ -82,11 +87,13 @@ You have full context of the OpenSpec system. Use it naturally, don't force it.
 ### Check for context
 
 At the start, quickly check what exists:
+
 ```bash
 openspec list --json
 ```
 
 This tells you:
+
 - If there are active changes
 - Their names, schemas, and status
 - What the user might be working on
@@ -114,14 +121,14 @@ If the user mentions a change or you detect one is relevant:
 
 3. **Offer to capture when decisions are made**
 
-    | Insight Type               | Where to Capture               |
-    |----------------------------|--------------------------------|
-    | New requirement discovered | `specs/<capability>/spec.md` |
-    | Requirement changed        | `specs/<capability>/spec.md` |
-    | Design decision made       | `design.md`                  |
-    | Scope changed              | `proposal.md`                |
-    | New work identified        | `tasks.md`                   |
-    | Assumption invalidated     | Relevant artifact              |
+   | Insight Type               | Where to Capture             |
+   | -------------------------- | ---------------------------- |
+   | New requirement discovered | `specs/<capability>/spec.md` |
+   | Requirement changed        | `specs/<capability>/spec.md` |
+   | Design decision made       | `design.md`                  |
+   | Scope changed              | `proposal.md`                |
+   | New work identified        | `tasks.md`                   |
+   | Assumption invalidated     | Relevant artifact            |
 
    Example offers:
    - "That's a design decision. Capture it in design.md?"
@@ -146,6 +153,7 @@ If the user mentions a change or you detect one is relevant:
 ## Handling Different Entry Points
 
 **User brings a vague idea:**
+
 ```
 User: I'm thinking about adding real-time collaboration
 
@@ -169,6 +177,7 @@ You: Real-time collab is a big space. Let me think about this...
 ```
 
 **User brings a specific problem:**
+
 ```
 User: The auth system is a mess
 
@@ -200,6 +209,7 @@ You: [reads codebase]
 ```
 
 **User is stuck mid-implementation:**
+
 ```
 User: /opsx:explore add-auth-system
       The OAuth integration is more complex than expected
@@ -217,6 +227,7 @@ You: [reads change artifacts]
 ```
 
 **User wants to compare options:**
+
 ```
 User: Should we use Postgres or SQLite?
 
@@ -273,6 +284,19 @@ When it feels like things are crystallizing, you might summarize:
 ```
 
 But this summary is optional. Sometimes the thinking IS the value.
+
+---
+
+## Artifact Authoring Rules
+
+When the user asks you to capture thinking by creating or updating
+`proposal.md`, `design.md`, or `spec.md`, you MUST follow these two rules:
+
+1. **Self-containment.** Every requirement, decision, and rationale MUST stand on its own terms inside the artifact. You MUST NOT cite other OpenSpec changes, PRs, or Jira tickets as load-bearing precedent — phrases like "mirrors X", "inherits the workaround from Y", "matches Z precedent", "same as the W pattern", or "follows the X precedent" are forbidden, regardless of whether the referenced work is merged. If a sibling pattern uses the same approach, restate the approach in your own words. Reuse happens at the author's keyboard, not in the document text. Jira ticket and parent-epic references are allowed only in a `## Related` / metadata section, never in the body's reasoning — the "why" of a decision MUST be the underlying engineering rationale, not "because the sibling did it that way."
+
+2. **Spec scenarios state positive behaviour only.** `spec.md` scenarios MUST describe what the component does, not what it doesn't. You MUST NOT enumerate dropped, forbidden, or omitted props / features in `spec.md` scenarios. The exhaustive Required / Optional scenarios are themselves the closure assertion: anything not listed is implicitly not part of the API. Migration deltas ("we dropped X, Y, Z from the predecessor") belong in `proposal.md`'s `What Changes` and `design.md`'s `Non-Goals` and decision rationale, where the engineering "why" lives. If `spec.md` needs to assert API closure explicitly, do it once at the API-surface level (e.g. "`FooProps` is the exhaustive set of props enumerated above; consumers needing additional configuration drop down to the underlying primitive") — never by listing specific examples of what's missing.
+
+These rules apply to both fresh artifacts and edits to existing artifacts: when you "capture this in design.md," do it without name-dropping other proposals, and when you add a scenario to spec.md, state what the component does, not what it doesn't.
 
 ---
 

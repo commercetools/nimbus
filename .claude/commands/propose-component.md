@@ -147,6 +147,21 @@ done and prevent ambiguous task definitions.
       designer-documentation) for documentation tasks
 - [ ] MUST explicitly check standards compliance in validation steps
 
+**Artifact Authoring Rules** (apply to `proposal.md`, `design.md`, `spec.md`):
+
+- [ ] MUST be self-contained — no "mirrors X", "matches Y precedent", "inherits
+      the workaround from Z", or other load-bearing cross-references to other
+      OpenSpec changes, PRs, or Jira tickets, regardless of merged status. If a
+      sibling pattern uses the same approach, restate it in this proposal's own
+      words. Jira ticket / parent-epic references allowed only in a `## Related`
+      / metadata section.
+- [ ] `spec.md` scenarios MUST state positive behaviour only — no enumerated
+      lists of dropped, forbidden, or omitted props / features. The exhaustive
+      Required / Optional scenarios are themselves the closure assertion.
+      Migration deltas (e.g. "we dropped X, Y, Z from the predecessor") belong
+      in `proposal.md`'s `What Changes` and `design.md`'s `Non-Goals` / decision
+      rationale.
+
 **Design-to-Proposal Alignment**:
 
 - [ ] MUST reflect all decisions from brainstorm design

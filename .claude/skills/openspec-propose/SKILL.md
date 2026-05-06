@@ -12,6 +12,7 @@ metadata:
 Propose a new change - create the change and generate all artifacts in one step.
 
 I'll create a change with artifacts:
+
 - proposal.md (what & why)
 - design.md (how)
 - tasks.md (implementation steps)
@@ -27,6 +28,7 @@ When ready to implement, run /opsx:apply
 1. **If no clear input provided, ask what they want to build**
 
    Use the **AskUserQuestion tool** (open-ended, no preset options) to ask:
+
    > "What change do you want to work on? Describe what you want to build or fix."
 
    From their description, derive a kebab-case name (e.g., "add user authentication" → `add-user-auth`).
@@ -34,15 +36,19 @@ When ready to implement, run /opsx:apply
    **IMPORTANT**: Do NOT proceed without understanding what the user wants to build.
 
 2. **Create the change directory**
+
    ```bash
    openspec new change "<name>"
    ```
+
    This creates a scaffolded change at `openspec/changes/<name>/` with `.openspec.yaml`.
 
 3. **Get the artifact build order**
+
    ```bash
    openspec status --change "<name>" --json
    ```
+
    Parse the JSON to get:
    - `applyRequires`: array of artifact IDs needed before implementation (e.g., `["tasks"]`)
    - `artifacts`: list of all artifacts with their status and dependencies
@@ -54,30 +60,30 @@ When ready to implement, run /opsx:apply
    Loop through artifacts in dependency order (artifacts with no pending dependencies first):
 
    a. **For each artifact that is `ready` (dependencies satisfied)**:
-      - Get instructions:
-        ```bash
-        openspec instructions <artifact-id> --change "<name>" --json
-        ```
-      - The instructions JSON includes:
-        - `context`: Project background (constraints for you - do NOT include in output)
-        - `rules`: Artifact-specific rules (constraints for you - do NOT include in output)
-        - `template`: The structure to use for your output file
-        - `instruction`: Schema-specific guidance for this artifact type
-        - `outputPath`: Where to write the artifact
-        - `dependencies`: Completed artifacts to read for context
-      - Read any completed dependency files for context
-      - Create the artifact file using `template` as the structure
-      - Apply `context` and `rules` as constraints - but do NOT copy them into the file
-      - Show brief progress: "Created <artifact-id>"
+   - Get instructions:
+     ```bash
+     openspec instructions <artifact-id> --change "<name>" --json
+     ```
+   - The instructions JSON includes:
+     - `context`: Project background (constraints for you - do NOT include in output)
+     - `rules`: Artifact-specific rules (constraints for you - do NOT include in output)
+     - `template`: The structure to use for your output file
+     - `instruction`: Schema-specific guidance for this artifact type
+     - `outputPath`: Where to write the artifact
+     - `dependencies`: Completed artifacts to read for context
+   - Read any completed dependency files for context
+   - Create the artifact file using `template` as the structure
+   - Apply `context` and `rules` as constraints - but do NOT copy them into the file
+   - Show brief progress: "Created <artifact-id>"
 
    b. **Continue until all `applyRequires` artifacts are complete**
-      - After creating each artifact, re-run `openspec status --change "<name>" --json`
-      - Check if every artifact ID in `applyRequires` has `status: "done"` in the artifacts array
-      - Stop when all `applyRequires` artifacts are done
+   - After creating each artifact, re-run `openspec status --change "<name>" --json`
+   - Check if every artifact ID in `applyRequires` has `status: "done"` in the artifacts array
+   - Stop when all `applyRequires` artifacts are done
 
    c. **If an artifact requires user input** (unclear context):
-      - Use **AskUserQuestion tool** to clarify
-      - Then continue with creation
+   - Use **AskUserQuestion tool** to clarify
+   - Then continue with creation
 
 5. **Show final status**
    ```bash
@@ -87,6 +93,7 @@ When ready to implement, run /opsx:apply
 **Output**
 
 After completing all artifacts, summarize:
+
 - Change name and location
 - List of artifacts created with brief descriptions
 - What's ready: "All artifacts created! Ready for implementation."
@@ -102,7 +109,16 @@ After completing all artifacts, summarize:
   - Do NOT copy `<context>`, `<rules>`, `<project_context>` blocks into the artifact
   - These guide what you write, but should never appear in the output
 
+**Artifact Authoring Rules**
+
+When writing `proposal.md`, `design.md`, or `spec.md`, you MUST follow these two rules:
+
+1. **Self-containment.** Every requirement, decision, and rationale MUST stand on its own terms inside the artifact. You MUST NOT cite other OpenSpec changes, PRs, or Jira tickets as load-bearing precedent — phrases like "mirrors X", "inherits the workaround from Y", "matches Z precedent", "same as the W pattern", or "follows the X precedent" are forbidden, regardless of whether the referenced work is merged. If a sibling pattern uses the same approach, restate the approach in your own words. Reuse happens at the author's keyboard, not in the document text. Jira ticket and parent-epic references are allowed only in a `## Related` / metadata section, never in the body's reasoning — the "why" of a decision MUST be the underlying engineering rationale, not "because the sibling did it that way."
+
+2. **Spec scenarios state positive behaviour only.** `spec.md` scenarios MUST describe what the component does, not what it doesn't. You MUST NOT enumerate dropped, forbidden, or omitted props / features in `spec.md` scenarios. The exhaustive Required / Optional scenarios are themselves the closure assertion: anything not listed is implicitly not part of the API. Migration deltas ("we dropped X, Y, Z from the predecessor") belong in `proposal.md`'s `What Changes` and `design.md`'s `Non-Goals` and decision rationale, where the engineering "why" lives. If `spec.md` needs to assert API closure explicitly, do it once at the API-surface level (e.g. "`FooProps` is the exhaustive set of props enumerated above; consumers needing additional configuration drop down to the underlying primitive") — never by listing specific examples of what's missing.
+
 **Guardrails**
+
 - Create ALL artifacts needed for implementation (as defined by schema's `apply.requires`)
 - Always read dependency artifacts before creating a new one
 - If context is critically unclear, ask the user - but prefer making reasonable decisions to keep momentum

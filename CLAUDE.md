@@ -146,6 +146,31 @@ Every change needs a reason. If the change is not a fix (bug fix, typo, config
 tweak, docs for existing behavior, or test for existing behavior), it SHOULD
 have an OpenSpec proposal via `/opsx:propose` before implementation.
 
+### Artifact Authoring Rules
+
+When writing OpenSpec artifacts (`proposal.md`, `design.md`, `spec.md`):
+
+1. **Self-containment.** Every requirement, decision, and rationale stands on
+   its own terms inside the artifact. Do not cite other OpenSpec changes, PRs,
+   or Jira tickets as load-bearing precedent — phrases like "mirrors X",
+   "inherits the workaround from Y", "matches Z precedent", or "same as the W
+   pattern" are forbidden, regardless of whether the referenced work is merged.
+   Restate the approach in your own words. Jira ticket and parent-epic
+   references are allowed only in a `## Related` / metadata section, never in
+   the body's reasoning.
+2. **Spec scenarios state positive behaviour only.** `spec.md` describes what
+   the component does, not what it doesn't. Do not enumerate dropped, forbidden,
+   or omitted props / features in spec scenarios — the exhaustive Required /
+   Optional scenarios are themselves the closure assertion. Migration deltas
+   ("we dropped X, Y, Z from the predecessor") belong in `proposal.md`'s
+   `What Changes` and `design.md`'s `Non-Goals` / decision rationale.
+
+The full text of these rules lives in the skill and command files
+(`.claude/skills/openspec-propose/SKILL.md`,
+`.claude/skills/openspec-explore/SKILL.md`, `.claude/commands/opsx/propose.md`,
+`.claude/commands/opsx/explore.md`, `.claude/commands/propose-component.md`).
+Keep all locations in sync if these rules change.
+
 ## Project Overview
 
 Nimbus is a multi-package design system monorepo containing React UI components,
