@@ -1,0 +1,398 @@
+---
+title: FormDialog Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+## Comparison: FormDialog vs manual Dialog composition
+
+**With FormDialog:**
+
+```tsx
+<FormDialog
+  title="Edit profile"
+  isOpen={isOpen}
+  onOpenChange={setIsOpen}
+  onSave={handleSave}
+  onCancel={() => setIsOpen(false)}
+  isSaveDisabled={!isDirty}
+>
+  <FormField.Root>
+    <FormField.Label>Display name</FormField.Label>
+    <FormField.Input>
+      <TextInput value={name} onChange={setName} />
+    </FormField.Input>
+  </FormField.Root>
+</FormDialog>
+```
+
+**Manual composition:**
+
+```tsx
+<Dialog.Root isOpen={isOpen} onOpenChange={setIsOpen} isDismissable>
+  <Dialog.Content>
+    <Dialog.Header>
+      <Dialog.Title>Edit profile</Dialog.Title>
+      <Dialog.CloseTrigger />
+    </Dialog.Header>
+    <Dialog.Body>
+      <FormField.Root>
+        <FormField.Label>Display name</FormField.Label>
+        <FormField.Input>
+          <TextInput value={name} onChange={setName} />
+        </FormField.Input>
+      </FormField.Root>
+    </Dialog.Body>
+    <Dialog.Footer>
+      <Button variant="outline" onPress={() => setIsOpen(false)}>
+        Cancel
+      </Button>
+      <Button
+        variant="solid"
+        colorPalette="primary"
+        isDisabled={!isDirty}
+        onPress={() => {
+          handleSave();
+          setIsOpen(false);
+        }}
+      >
+        Save
+      </Button>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>
+```
+
+### When to use which
+
+**Use FormDialog when:**
+
+- You need a save/cancel dialog hosting an editable form
+- You want localized default Save/Cancel labels without wiring `useIntl` boilerplate
+- You want a built-in loading lockout for async save handlers (with in-flight data-loss protection)
+- You're happy treating Escape, overlay click, and the X button as equivalent to clicking Cancel
+
+**Use Dialog directly when:**
+
+- You need a non-default size (e.g. wider for two-column form layouts)
+- You need per-button `data-*` attributes (test IDs, tracking)
+- You need to distinguish the cancel button click from ambient dismissals (Escape, overlay, X) in your handlers
+- You need a confirm/cancel dialog without an editable form — use `ConfirmationDialog` instead
+- You need a read-only informational dialog — use `InfoDialog` instead
+
+## Migrating from `merchant-center-application-kit`
+
+The Nimbus `FormDialog` is intentionally smaller and more opinionated than the app-kit equivalent.
+
+| app-kit prop                                                  | Nimbus equivalent                                                                |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `isOpen`, `onClose`                                           | `isOpen`, `onOpenChange` (close routes through `onCancel` for ambient dismissals) |
+| `title`, `aria-label`                                         | unchanged                                                                        |
+| `children`                                                    | unchanged                                                                        |
+| `labelPrimary`, `labelSecondary`                              | `saveLabel`, `cancelLabel`                                                       |
+| `isPrimaryButtonDisabled`                                     | `isSaveDisabled`                                                                 |
+| `onCancel`, `onSecondaryButtonClick`                          | unified onto a single `onCancel`                                                 |
+| `onPrimaryButtonClick`, `onSubmit`                            | unified onto a single `onSave`                                                   |
+| `size`                                                        | dropped — drop down to `Dialog` for non-default sizes                            |
+| `zIndex`                                                      | dropped — Dialog primitive handles z-index stacking                              |
+| `dataAttributesPrimaryButton`, `dataAttributesSecondaryButton` | dropped — drop down to `Dialog` to add `data-*` attributes per button            |
+| `getParentSelector`                                           | dropped — React Aria handles portaling                                           |
+| _no equivalent_                                               | new: `isSaveLoading` for async save lockout                                      |
+| _no equivalent_                                               | new: `onSave` accepts `() => void \| Promise<void>` for deferred close           |
+
+The most consequential semantic changes are:
+
+1. **`onClose` and `onCancel` are unified onto a single `onCancel`** that fires from every close path: the cancel button, Escape, overlay click, and the X button. If your app relies on the distinction, drop down to `Dialog` directly.
+2. **The pattern does NOT wrap `children` in a `<form>` element.** `onSave` is invoked from the save button's `onPress`, not from a form `submit` event. Consumers wanting Enter-to-submit semantics should wrap their fields in `<form onSubmit={handleSubmit}>` inside `children` and call `onSave` from `handleSubmit`.
+
+## Getting started
+
+### Import
+
+```tsx
+import { FormDialog, type FormDialogProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+The simplest implementation with a string title and controlled open state:
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState("");
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Edit display name</Button>
+      <FormDialog
+        title="Edit display name"
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        onSave={() => {
+          console.log("saving", name);
+          setIsOpen(false);
+        }}
+        onCancel={() => setIsOpen(false)}
+      >
+        <FormField.Root>
+          <FormField.Label>Display name</FormField.Label>
+          <FormField.Input>
+            <TextInput value={name} onChange={setName} />
+          </FormField.Input>
+        </FormField.Root>
+      </FormDialog>
+    </>
+  );
+};
+```
+
+## Usage examples
+
+### Async save with loading lockout
+
+If `onSave` returns a `Promise`, the dialog stays open while the promise is pending and closes automatically when it fulfills. Hold `isSaveLoading` true for the duration so the pattern can:
+
+- Show a spinner inside the save button
+- Disable both buttons
+- Suppress Escape, overlay click, and the X button (preventing accidental in-flight data loss)
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [name, setName] = useState("");
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Dialog closes automatically when the promise fulfills.
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Edit profile</Button>
+      <FormDialog
+        title="Edit profile"
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        isSaveLoading={isLoading}
+        onSave={handleSave}
+        onCancel={() => setIsOpen(false)}
+      >
+        <FormField.Root>
+          <FormField.Label>Display name</FormField.Label>
+          <FormField.Input>
+            <TextInput value={name} onChange={setName} />
+          </FormField.Input>
+        </FormField.Root>
+      </FormDialog>
+    </>
+  );
+};
+```
+
+If the promise **rejects**, the dialog stays open so the consumer can surface validation errors (e.g. server-side field errors as inline `FormField.Error`) and let the user correct and retry. Let the error propagate out of `onSave` to keep the dialog open — catching the error inside the handler resolves the promise successfully and closes the dialog.
+
+For long-running saves, prefer closing the dialog optimistically and reporting progress via a Toast or a banner, rather than holding the dialog open with a spinner.
+
+### Disabled save
+
+Use `isSaveDisabled` to gate the save action on consumer-side validity (e.g. required form fields are empty or invalid).
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState("");
+  const isValid = name.trim().length > 0;
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>New project</Button>
+      <FormDialog
+        title="Create project"
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        isSaveDisabled={!isValid}
+        saveLabel="Create"
+        onSave={() => {
+          console.log("creating", name);
+          setIsOpen(false);
+          setName("");
+        }}
+        onCancel={() => {
+          setIsOpen(false);
+          setName("");
+        }}
+      >
+        <FormField.Root>
+          <FormField.Label>Project name</FormField.Label>
+          <FormField.Input>
+            <TextInput value={name} onChange={setName} />
+          </FormField.Input>
+        </FormField.Root>
+      </FormDialog>
+    </>
+  );
+};
+```
+
+### Custom labels
+
+`saveLabel` and `cancelLabel` accept any `ReactNode`, so consumer-localized strings (e.g. from `intl.formatMessage(...)`) work directly:
+
+```tsx
+<FormDialog
+  title={intl.formatMessage(messages.editProfileTitle)}
+  saveLabel={intl.formatMessage(messages.editProfileSave)}
+  cancelLabel={intl.formatMessage(messages.editProfileCancel)}
+  isOpen={isOpen}
+  onOpenChange={setIsOpen}
+  onSave={handleSave}
+  onCancel={() => setIsOpen(false)}
+>
+  {/* form fields */}
+</FormDialog>
+```
+
+### Enter-to-submit via native `<form>`
+
+The pattern does not wrap `children` in a native `<form>` element. To get Enter-to-submit and browser-native validation, wrap your fields in your own `<form onSubmit={...}>` and call `onSave` from the submit handler:
+
+```tsx
+const handleSubmit = (event) => {
+  event.preventDefault();
+  handleSave();
+};
+
+<FormDialog
+  title="Edit profile"
+  isOpen={isOpen}
+  onOpenChange={setIsOpen}
+  onSave={handleSave}
+  onCancel={() => setIsOpen(false)}
+>
+  <form onSubmit={handleSubmit}>
+    <FormField.Root>
+      <FormField.Label>Display name</FormField.Label>
+      <FormField.Input>
+        <TextInput value={name} onChange={setName} />
+      </FormField.Input>
+    </FormField.Root>
+  </form>
+</FormDialog>;
+```
+
+### ReactNode title with aria-label
+
+`title` accepts any ReactNode, so you can compose a heading with an icon or badge alongside text. When the composed markup wouldn't form a meaningful accessible name, pass `aria-label`:
+
+```tsx
+<FormDialog
+  title={
+    <Flex alignItems="center" gap="200">
+      <Text>Edit billing</Text>
+      <Badge>Pro</Badge>
+    </Flex>
+  }
+  aria-label="Edit billing"
+  isOpen={isOpen}
+  onOpenChange={setIsOpen}
+  onSave={handleSave}
+  onCancel={() => setIsOpen(false)}
+>
+  {/* form fields */}
+</FormDialog>
+```
+
+## Close affordances
+
+Every close path other than the save button invokes `onCancel`:
+
+- **Cancel button** → `onCancel()` then `onOpenChange(false)`
+- **Save button** → `onSave()` then `onOpenChange(false)` (after the returned `Promise` fulfills, if any; rejected promises leave the dialog open). Does NOT invoke `onCancel`.
+- **Escape key** → `onCancel()` then `onOpenChange(false)`
+- **Overlay click** → `onCancel()` then `onOpenChange(false)`
+- **X button in header** → `onCancel()` then `onOpenChange(false)`
+
+While `isSaveLoading` is `true`, all four cancel paths are suppressed and neither callback fires.
+
+## Accessibility
+
+FormDialog inherits its accessibility guarantees from the Nimbus `Dialog` primitive:
+
+- `role="dialog"` is exposed to assistive technology while open
+- Focus moves into the dialog on open and is trapped within it — typically landing on the first focusable form field
+- Focus is restored to the triggering element on close
+- When `title` is a string, the dialog's accessible name is derived from it automatically — no extra `aria-label` is required
+
+If the `title` is a composed ReactNode, pass an explicit `aria-label` so the dialog has a meaningful accessible name.
+
+## Escape hatch
+
+If you need a non-default size (e.g. wider for two-column forms), per-button `data-*` attributes, custom dismissability, or a separate `onClose`-vs-`onCancel` distinction, drop down to composing `Dialog` and `Button` directly:
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState("");
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Open wide form</Button>
+      <Dialog.Root
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        isDismissable
+        aria-label="Edit profile"
+      >
+        <Dialog.Content size="lg">
+          <Dialog.Header>
+            <Dialog.Title>Edit profile</Dialog.Title>
+            <Dialog.CloseTrigger data-test-id="profile-close" />
+          </Dialog.Header>
+          <Dialog.Body>
+            <FormField.Root>
+              <FormField.Label>Display name</FormField.Label>
+              <FormField.Input>
+                <TextInput value={name} onChange={setName} />
+              </FormField.Input>
+            </FormField.Root>
+          </Dialog.Body>
+          <Dialog.Footer>
+            <Button
+              variant="outline"
+              data-test-id="profile-cancel"
+              onPress={() => setIsOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="solid"
+              colorPalette="primary"
+              data-test-id="profile-save"
+              onPress={() => setIsOpen(false)}
+            >
+              Save
+            </Button>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
+    </>
+  );
+};
+```
+
+## API reference
+
+<PropsTable id="FormDialog" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using FormDialog within your application. The component's internal behaviour is already covered by Nimbus — these tests help you verify your integration.
+
+{{docs-tests: form-dialog.docs.spec.tsx}}
