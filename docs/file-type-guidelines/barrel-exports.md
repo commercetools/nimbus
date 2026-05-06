@@ -104,7 +104,7 @@ export type { SelectProps, SelectOption } from "./select.types";
 
 // These remain private (not exported):
 // - ./hooks/use-select-internal.ts
-// - ./utils/select-helpers.ts
+// - ./utils/select-filters.ts
 // - ./components/select-internal-part.tsx
 ```
 

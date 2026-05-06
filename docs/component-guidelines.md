@@ -213,8 +213,9 @@ component-name/
 ├── hooks/                        # Component hooks (if needed)
 │   ├── use-something.ts
 │   └── index.ts
-├── utils/                        # Utilities (if needed)
-│   ├── helpers.ts
+├── utils/                        # Utilities (if needed; see utils-and-constants.md#file-organization)
+│   ├── formatters.ts             # family file (multiple format helpers)
+│   ├── get-initials.ts           # solo helper (no family yet)
 │   ├── component-name.test-data.ts   # Test fixtures/mock data (if needed)
 │   ├── component-name.test-utils.ts  # Test helper functions (if needed)
 │   ├── component-name.test-component.tsx # Test wrapper components (if needed)
