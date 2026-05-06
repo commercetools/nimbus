@@ -9,10 +9,56 @@ Accessibility ensures that digital content and functionality are usable by
 everyone, including people with disabilities, by addressing visual, auditory,
 cognitive, and physical limitations.
 
+### Automatic ARIA wiring
+
+Card supports automatic ARIA wiring via React Aria's slot system. When you place
+a `<Heading slot="title">` or `<Text slot="description">` inside a Card, the
+root element automatically receives `aria-labelledby` and/or `aria-describedby`
+pointing to those elements. The card itself stays a plain `<div>` — no implicit
+`role` is applied. If you need a landmark role (e.g., `role="article"` or
+`role="region"`), set it explicitly on `Card.Root`.
+
 ```jsx live
 const App = () => (
-  <Card.Root cardPadding="md" borderStyle="outlined" elevation="elevated">
-    <Box backgroundColor="#FDE3E3" width="5600" height="500"></Box>
+  <Card.Root variant="outlined" size="md" role="article">
+    <Card.Header>
+      <Heading slot="title" as="h3">Sprint Summary</Heading>
+    </Card.Header>
+    <Card.Body>
+      <Text slot="description">
+        The team completed 85% of planned story points this sprint.
+      </Text>
+    </Card.Body>
+    <Card.Footer>
+      <Button variant="solid" colorPalette="primary" size="sm">View Sprint</Button>
+    </Card.Footer>
+  </Card.Root>
+)
+```
+
+### Slot behavior
+
+| Slots present | `aria-labelledby` | `aria-describedby` |
+|---|---|---|
+| `Heading slot="title"` + `Text slot="description"` | points to Heading | points to Text |
+| `Heading slot="title"` only | points to Heading | — |
+| `Text slot="description"` only | — | points to Text |
+| No slots | — | — |
+
+The card never sets a `role` automatically. A `<Heading>` or `<Text>` without
+a `slot` prop is not wired up.
+
+### Manual labeling
+
+If slot-based labeling is not suitable, pass `aria-label` directly to
+`Card.Root`:
+
+```jsx live
+const App = () => (
+  <Card.Root variant="outlined" size="md" aria-label="Product summary card">
+    <Card.Body>
+      <Text>Content with manual aria-label.</Text>
+    </Card.Body>
   </Card.Root>
 )
 ```
@@ -33,8 +79,6 @@ const App = () => (
   adequate.
 - **Meaningful sequence:** Ensure the content within the card is presented in a
   logical order.
-- **Labels or instructions:** Provide clear labels or instructions for form
-  elements within cards.
 - **Semantic HTML:** Use semantic HTML to ensure compatibility with assistive
   technologies.
 - **Avoid complex interactive cards:** Avoid making the entire card a single

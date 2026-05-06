@@ -30,6 +30,9 @@ catalogs:
     '@react-aria/optimize-locales-plugin':
       specifier: 1.2.0
       version: 1.2.0
+    '@react-aria/utils':
+      specifier: 3.33.1
+      version: 3.33.1
     '@types/react':
       specifier: ^19.2.14
       version: 19.2.14
@@ -556,6 +559,9 @@ importers:
       '@react-aria/interactions':
         specifier: 3.28.0
         version: 3.28.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@react-aria/utils':
+        specifier: catalog:react
+        version: 3.33.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       dequal:
         specifier: catalog:utils
         version: 2.0.3
@@ -2473,6 +2479,26 @@ packages:
 
   '@react-aria/optimize-locales-plugin@1.2.0':
     resolution: {integrity: sha512-pYg1IPksrQVLDcUWvqOt8Isdd6YytW0YhN6Ga6PdYxamqObL8aDB4g3qlFTaQReXaRPFMEo+Wepo8Vt3FBwhDA==}
+
+  '@react-aria/ssr@3.9.10':
+    resolution: {integrity: sha512-hvTm77Pf+pMBhuBm760Li0BVIO38jv1IBws1xFm1NoL26PU+fe+FMW5+VZWyANR6nYL65joaJKZqOdTQMkO9IQ==}
+    engines: {node: '>= 12'}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
+
+  '@react-aria/utils@3.33.1':
+    resolution: {integrity: sha512-kIx1Sj6bbAT0pdqCegHuPanR9zrLn5zMRiM7LN12rgRf55S19ptd9g3ncahArifYTRkfEU9VIn+q0HjfMqS9/w==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
+      react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
+
+  '@react-stately/flags@3.1.2':
+    resolution: {integrity: sha512-2HjFcZx1MyQXoPqcBGALwWWmgFVUk2TuKVIQxCbRq7fPyWXIl6VHcakCLurdtYC2Iks7zizvz0Idv48MQ38DWg==}
+
+  '@react-stately/utils@3.11.0':
+    resolution: {integrity: sha512-8LZpYowJ9eZmmYLpudbo/eclIRnbhWIJZ994ncmlKlouNzKohtM8qTC6B1w1pwUbiwGdUoyzLuQbeaIor5Dvcw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
   '@react-types/shared@3.34.0':
     resolution: {integrity: sha512-gp6xo/s2lX54AlTjOiqwDnxA7UW79BNvI9dB9pr3LZTzRKCd1ZA+ZbgKw/ReIiWuvvVw/8QFJpnqeeFyLocMcQ==}
@@ -9430,6 +9456,31 @@ snapshots:
   '@react-aria/optimize-locales-plugin@1.2.0':
     dependencies:
       unplugin: 1.16.1
+
+  '@react-aria/ssr@3.9.10(react@19.2.0)':
+    dependencies:
+      '@swc/helpers': 0.5.17
+      react: 19.2.0
+
+  '@react-aria/utils@3.33.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+    dependencies:
+      '@react-aria/ssr': 3.9.10(react@19.2.0)
+      '@react-stately/flags': 3.1.2
+      '@react-stately/utils': 3.11.0(react@19.2.0)
+      '@react-types/shared': 3.34.0(react@19.2.0)
+      '@swc/helpers': 0.5.17
+      clsx: 2.1.1
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
+
+  '@react-stately/flags@3.1.2':
+    dependencies:
+      '@swc/helpers': 0.5.17
+
+  '@react-stately/utils@3.11.0(react@19.2.0)':
+    dependencies:
+      '@swc/helpers': 0.5.17
+      react: 19.2.0
 
   '@react-types/shared@3.34.0(react@19.2.0)':
     dependencies:

@@ -47,6 +47,7 @@
     "@github-ui/storybook-addon-performance-panel": "catalog:tooling",
     "@internationalized/string": "catalog:react",
     "@react-aria/interactions": "catalog:react",
+    "@react-aria/utils": "catalog:react",
     "dequal": "catalog:utils",
     "escape-html": "^1.0.3",
     "is-hotkey": "^0.2.0",

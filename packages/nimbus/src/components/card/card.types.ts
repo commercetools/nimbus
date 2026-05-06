@@ -10,14 +10,10 @@ import type {
 // ============================================================
 
 type CardRecipeProps = {
-  /** Internal padding variant for the card content */
-  cardPadding?: SlotRecipeProps<"nimbusCard">["cardPadding"];
-  /** Border style variant (outline, none, etc.) */
-  borderStyle?: SlotRecipeProps<"nimbusCard">["borderStyle"];
-  /** Elevation shadow level for the card */
-  elevation?: SlotRecipeProps<"nimbusCard">["elevation"];
-  /** Background style variant (white, gray, etc.) */
-  backgroundStyle?: SlotRecipeProps<"nimbusCard">["backgroundStyle"];
+  /** Controls padding and gap scaling. */
+  size?: SlotRecipeProps<"nimbusCard">["size"];
+  /** Controls visual treatment (border, shadow, background). */
+  variant?: SlotRecipeProps<"nimbusCard">["variant"];
 } & UnstyledProp;
 
 // ============================================================
@@ -28,24 +24,35 @@ export type CardRootSlotProps = HTMLChakraProps<"div", CardRecipeProps>;
 
 export type CardHeaderSlotProps = HTMLChakraProps<"div">;
 
-export type CardContentSlotProps = HTMLChakraProps<"div">;
+export type CardBodySlotProps = HTMLChakraProps<"div">;
+
+export type CardFooterSlotProps = HTMLChakraProps<"div">;
 
 // ============================================================
 // MAIN PROPS
 // ============================================================
 
+/** Props for the Card.Root component. */
 export type CardProps = OmitInternalProps<CardRootSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
   [key: `data-${string}`]: unknown;
 };
 
+/** Props for the Card.Header component. */
 export type CardHeaderProps = OmitInternalProps<CardHeaderSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
 };
 
-export type CardContentProps = OmitInternalProps<CardContentSlotProps> & {
+/** Props for the Card.Body component. */
+export type CardBodyProps = OmitInternalProps<CardBodySlotProps> & {
+  children?: React.ReactNode;
+  ref?: React.Ref<HTMLDivElement>;
+};
+
+/** Props for the Card.Footer component. */
+export type CardFooterProps = OmitInternalProps<CardFooterSlotProps> & {
   children?: React.ReactNode;
   ref?: React.Ref<HTMLDivElement>;
 };
