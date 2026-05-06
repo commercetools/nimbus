@@ -1,5 +1,5 @@
 ---
-"@commercetools/nimbus": minor
+"@commercetools/nimbus": major
 ---
 
 `Card`: reworked architecture and API.
