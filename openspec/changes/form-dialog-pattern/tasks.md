@@ -11,8 +11,7 @@
 
 - [x] 2.1 Implement `form-dialog.i18n.ts` exporting a `messages` object with two
       entries (`Nimbus.FormDialog.save` defaulting to `"Save"` and
-      `Nimbus.FormDialog.cancel` defaulting to `"Cancel"`), mirroring the
-      `confirmation-dialog.i18n.ts` shape
+      `Nimbus.FormDialog.cancel` defaulting to `"Cancel"`)
 - [x] 2.2 Run `pnpm extract-intl` from repo root to extract the new messages,
       propagate them into every locale file under `packages/i18n/data/`, compile
       per-locale files at
@@ -39,11 +38,11 @@
       `colorPalette="primary"`).
 - [x] 3.3 In `form-dialog.tsx`, internalize open state via
       `useControlledState(isOpen, defaultOpen ?? false, onOpenChange)` from
-      `react-stately/useControlledState` (avoid the `slot="close"` race
-      documented in `confirmation-dialog.tsx`)
+      `react-stately/useControlledState` to avoid the `slot="close"` race
+      where the slot's auto-close and the button's `onPress` both fire
+      `onOpenChange`, double-firing the consumer's `onCancel` handler
 - [x] 3.4 In `form-dialog.tsx`, resolve default labels via
-      `useLocalizedStringFormatter(formDialogMessagesStrings)` from `@/hooks`,
-      following the FormActionBar / ConfirmationDialog precedent
+      `useLocalizedStringFormatter(formDialogMessagesStrings)` from `@/hooks`
 - [x] 3.5 In `form-dialog.tsx`, render a `LoadingSpinner` (`size="2xs"`,
       `ml="100"`) inside the save `Button` when `isSaveLoading` is `true`; set
       `isDisabled` on the save button when `isSaveDisabled` OR `isSaveLoading`;
