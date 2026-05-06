@@ -61,17 +61,6 @@ that together cover the common form-in-a-dialog case.
 - **AND** MAY accept `aria-label` typed as `string` to override the
   accessible name derived from `title`
 
-#### Scenario: No additional configuration props
-
-- **WHEN** the `FormDialogProps` type is inspected
-- **THEN** SHALL NOT declare a `size` prop
-- **AND** SHALL NOT declare a `zIndex` prop
-- **AND** SHALL NOT declare a `getParentSelector` or other portal
-  prop
-- **AND** SHALL NOT declare per-button `data-*` attribute props
-- **AND** SHALL NOT declare an `intent` prop (the save action is
-  always non-destructive)
-
 ### Requirement: Internal Composition
 
 The FormDialog SHALL be implemented by composing the Nimbus `Dialog`
