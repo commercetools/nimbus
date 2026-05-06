@@ -51,7 +51,7 @@ catalogs:
     "@storybook/addon-docs": ^10.3.6
     "@storybook/addon-vitest": ^10.3.6
     "@storybook/react-vite": ^10.3.6
-    "@vueless/storybook-dark-mode": ^10.0.7
+    "@vueless/storybook-dark-mode": ^10.0.8
     "@github-ui/storybook-addon-performance-panel": ^1.1.4
     jsdom: 29.0.1 # pinned: 29.0.2+ breaks Chakra/Emotion CSS in JSDOM (style assertions return padding: 0); reconfirmed against 29.1.0 on 2026-04-29
   react:
