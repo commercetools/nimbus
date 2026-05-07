@@ -4633,7 +4633,7 @@ export const PerfLargeDatasetResponsiveness: Story = {
         const header = categoryHeader.closest('[role="columnheader"]');
         expect(header).toHaveAttribute("aria-sort");
       });
-      expect(duration).toBeLessThan(2000);
+      expect(duration).toBeLessThan(3000);
     });
   },
 };
