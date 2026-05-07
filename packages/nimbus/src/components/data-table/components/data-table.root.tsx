@@ -1,5 +1,10 @@
 import { useMemo, useState, useCallback, useRef, startTransition } from "react";
-import { ResizableTableContainer } from "react-aria-components";
+import {
+  ResizableTableContainer,
+  Virtualizer,
+  TableLayout,
+} from "react-aria-components";
+import type { TableLayoutProps } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
 import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
@@ -60,6 +65,11 @@ export const DataTableRoot = function DataTableRoot<
     onColumnsChange,
     onSettingsChange,
     customSettings,
+    virtualized = false,
+    rowHeight,
+    estimatedRowHeight,
+    headingHeight,
+    estimatedHeadingHeight,
     children,
     ...rest
   } = props;
@@ -261,11 +271,38 @@ export const DataTableRoot = function DataTableRoot<
     [customSettings]
   );
 
+  const layoutOptions: TableLayoutProps | undefined = useMemo(() => {
+    if (!virtualized) return undefined;
+    const opts: TableLayoutProps = {};
+    if (rowHeight != null) opts.rowHeight = rowHeight;
+    if (estimatedRowHeight != null)
+      opts.estimatedRowHeight = estimatedRowHeight;
+    if (headingHeight != null) opts.headingHeight = headingHeight;
+    if (estimatedHeadingHeight != null)
+      opts.estimatedHeadingHeight = estimatedHeadingHeight;
+    return opts;
+  }, [
+    virtualized,
+    rowHeight,
+    estimatedRowHeight,
+    headingHeight,
+    estimatedHeadingHeight,
+  ]);
+
+  const wrappedChildren = virtualized ? (
+    <Virtualizer layout={TableLayout} layoutOptions={layoutOptions}>
+      {children}
+    </Virtualizer>
+  ) : (
+    children
+  );
+
   return (
     <DataTableRootSlot
       ref={ref}
       truncated={isTruncated}
       density={density}
+      virtualized={virtualized || undefined}
       maxH={maxHeight}
       {...rest}
       asChild
@@ -276,7 +313,7 @@ export const DataTableRoot = function DataTableRoot<
         >
           <TableSelectionContext.Provider value={selectionContextValue}>
             <CustomSettingsContext.Provider value={customSettingsContextValue}>
-              {children}
+              {wrappedChildren}
             </CustomSettingsContext.Provider>
           </TableSelectionContext.Provider>
         </DataTableContext.Provider>

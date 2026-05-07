@@ -4803,3 +4803,104 @@ export const PerfSelectionContextIsolation: Story = {
     );
   },
 };
+
+// ============================================================
+// VIRTUALIZATION POC
+// ============================================================
+
+const VIRTUAL_ROW_COUNT = 10_000;
+
+const virtualColumns: DataTableColumnItem[] = [
+  {
+    id: "id",
+    header: "ID",
+    accessor: (row) => row.id as React.ReactNode,
+    isSortable: true,
+  },
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row) => row.name as React.ReactNode,
+    isSortable: true,
+  },
+  {
+    id: "email",
+    header: "Email",
+    accessor: (row) => row.email as React.ReactNode,
+  },
+  {
+    id: "department",
+    header: "Department",
+    accessor: (row) => row.department as React.ReactNode,
+    isSortable: true,
+  },
+  {
+    id: "status",
+    header: "Status",
+    accessor: (row) => row.status as React.ReactNode,
+  },
+];
+
+const departments = [
+  "Engineering",
+  "Marketing",
+  "Sales",
+  "HR",
+  "Finance",
+  "Legal",
+  "Design",
+  "Product",
+];
+const statuses = ["Active", "Inactive", "On Leave"];
+
+const virtualRows: DataTableRowItem[] = Array.from(
+  { length: VIRTUAL_ROW_COUNT },
+  (_, i) => ({
+    id: String(i + 1),
+    name: `User ${i + 1}`,
+    email: `user${i + 1}@example.com`,
+    department: departments[i % departments.length],
+    status: statuses[i % statuses.length],
+  })
+);
+
+export const Virtualized: Story = {
+  render: () => (
+    <Box height="600px">
+      <DataTable
+        columns={virtualColumns}
+        rows={virtualRows}
+        virtualized
+        rowHeight={48}
+        headingHeight={40}
+        maxHeight="600px"
+        allowsSorting
+        selectionMode="multiple"
+      />
+    </Box>
+  ),
+  args: {},
+};
+
+export const VirtualizedComposed: Story = {
+  render: () => (
+    <Box height="600px">
+      <DataTable.Root
+        columns={virtualColumns}
+        rows={virtualRows}
+        virtualized
+        rowHeight={48}
+        headingHeight={40}
+        maxHeight="600px"
+        allowsSorting
+        selectionMode="multiple"
+      >
+        <DataTable.Table aria-label="Virtualized table">
+          <DataTable.Header aria-label="Table header" />
+          <DataTable.Body aria-label="Table body" />
+        </DataTable.Table>
+      </DataTable.Root>
+    </Box>
+  ),
+  args: {},
+};

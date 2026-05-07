@@ -24,6 +24,8 @@ type DataTableSlotRecipeProps = {
   truncated?: boolean;
   /** Density variant controlling row height and padding */
   density?: "default" | "condensed";
+  /** Whether the table uses virtualized rendering */
+  virtualized?: boolean;
 } & UnstyledProp;
 
 // ============================================================
@@ -212,6 +214,16 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
       | undefined
   ) => void;
   customSettings?: DataTableCustomSettings;
+  /** Enable row virtualization for large datasets. Only visible rows are rendered to the DOM. */
+  virtualized?: boolean;
+  /** Fixed row height in pixels for virtualized mode. @default 48 */
+  rowHeight?: number;
+  /** Estimated row height for variable-height rows in virtualized mode. */
+  estimatedRowHeight?: number;
+  /** Fixed heading height in pixels for virtualized mode. @default 48 */
+  headingHeight?: number;
+  /** Estimated heading height in pixels for virtualized mode. @default 48 */
+  estimatedHeadingHeight?: number;
 };
 
 /**Combined props for the TableHeader element (Chakra styles + Aria behavior). */
