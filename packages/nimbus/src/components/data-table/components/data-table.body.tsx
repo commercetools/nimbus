@@ -26,7 +26,8 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
 }: DataTableBodyProps<T>) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const { activeColumns, renderEmptyState } = useDataTableContext<T>();
-  const { sortedRows } = useRowsDataContext<T>();
+  const { sortedRows, expanded, pinnedRows, pinnedRowIds } =
+    useRowsDataContext<T>();
   const [styleProps, restProps] = extractStyleProps(props);
 
   // Use provided aria-label or fall back to default
@@ -38,11 +39,25 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
         ref={ref}
         aria-label={ariaLabel}
         items={sortedRows}
-        dependencies={[activeColumns]}
+        dependencies={[activeColumns, expanded, pinnedRows, pinnedRowIds]}
         renderEmptyState={renderEmptyState ?? DefaultEmptyStateMessage}
         {...restProps}
       >
-        {(row) => <DataTableRow key={row.id} row={row} />}
+        {(row) => {
+          const isPinned = pinnedRows.has(row.id);
+          const pinnedIdx = isPinned ? pinnedRowIds.indexOf(row.id) : -1;
+          return (
+            <DataTableRow
+              key={row.id}
+              row={row}
+              isExpanded={expanded.has(row.id)}
+              isPinned={isPinned}
+              isFirstPinned={pinnedIdx === 0}
+              isLastPinned={pinnedIdx === pinnedRowIds.length - 1}
+              isSinglePinned={pinnedRowIds.length === 1 && isPinned}
+            />
+          );
+        }}
       </RaTableBody>
     </DataTableBodySlot>
   );

@@ -2,6 +2,7 @@ import { createContext, useContext, useMemo } from "react";
 import type {
   DataTableContextValue,
   DataTableRowItem,
+  SortDescriptor,
   CustomSettingsContextValue,
   TableSelectionContextValue,
 } from "../data-table.types";
@@ -9,6 +10,10 @@ import type {
 type RowsDataContextValue<T extends object = Record<string, unknown>> = {
   sortedRows: DataTableRowItem<T>[];
   filteredRows: DataTableRowItem<T>[];
+  sortDescriptor?: SortDescriptor;
+  expanded: Set<string>;
+  pinnedRows: Set<string>;
+  pinnedRowIds: string[];
 };
 
 export const DataTableContext = createContext<DataTableContextValue<

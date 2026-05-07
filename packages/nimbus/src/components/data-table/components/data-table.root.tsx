@@ -126,61 +126,80 @@ export const DataTableRoot = function DataTableRoot<
   );
   const showSelectionColumn = selectionMode !== "none";
 
-  const toggleExpand = useCallback(
-    (id: string) => {
-      startTransition(() => {
-        const newExpanded = new Set(expanded);
-        if (newExpanded.has(id)) {
-          newExpanded.delete(id);
-        } else {
-          newExpanded.add(id);
-        }
-        onExpandRowsChange?.(newExpanded);
-        if (controlledExpandedRows === undefined) {
-          setInternalExpandedRows(newExpanded);
-        }
-      });
-    },
-    [expanded, onExpandRowsChange, controlledExpandedRows]
-  );
+  const expandedRef = useRef(expanded);
+  expandedRef.current = expanded;
+  const controlledExpandedRef = useRef(controlledExpandedRows);
+  controlledExpandedRef.current = controlledExpandedRows;
+  const onExpandRowsChangeRef = useRef(onExpandRowsChange);
+  onExpandRowsChangeRef.current = onExpandRowsChange;
 
-  const togglePin = useCallback(
-    (id: string) => {
-      startTransition(() => {
-        if (onPinToggle) {
-          onPinToggle(id);
-        } else {
-          setInternalPinnedRows((prev) => {
-            const newPinnedRows = new Set(prev);
-            if (newPinnedRows.has(id)) {
-              newPinnedRows.delete(id);
-            } else {
-              newPinnedRows.add(id);
-            }
-            return newPinnedRows;
-          });
-        }
-      });
-    },
-    [onPinToggle]
-  );
+  const toggleExpand = useCallback((id: string) => {
+    startTransition(() => {
+      const current = controlledExpandedRef.current ?? expandedRef.current;
+      const newExpanded = new Set(current);
+      if (newExpanded.has(id)) {
+        newExpanded.delete(id);
+      } else {
+        newExpanded.add(id);
+      }
+      onExpandRowsChangeRef.current?.(newExpanded);
+      if (controlledExpandedRef.current === undefined) {
+        setInternalExpandedRows(newExpanded);
+      }
+    });
+  }, []);
 
-  const handleSortChange = useCallback(
-    (descriptor: SortDescriptor) => {
-      startTransition(() => {
-        if (onSortChange) {
-          onSortChange(descriptor);
-        } else {
-          setInternalSortDescriptor(descriptor);
-        }
-      });
-    },
-    [onSortChange]
-  );
+  const onPinToggleRef = useRef(onPinToggle);
+  onPinToggleRef.current = onPinToggle;
+
+  const togglePin = useCallback((id: string) => {
+    startTransition(() => {
+      if (onPinToggleRef.current) {
+        onPinToggleRef.current(id);
+      } else {
+        setInternalPinnedRows((prev) => {
+          const newPinnedRows = new Set(prev);
+          if (newPinnedRows.has(id)) {
+            newPinnedRows.delete(id);
+          } else {
+            newPinnedRows.add(id);
+          }
+          return newPinnedRows;
+        });
+      }
+    });
+  }, []);
+
+  const onSortChangeRef = useRef(onSortChange);
+  onSortChangeRef.current = onSortChange;
+
+  const handleSortChange = useCallback((descriptor: SortDescriptor) => {
+    startTransition(() => {
+      if (onSortChangeRef.current) {
+        onSortChangeRef.current(descriptor);
+      } else {
+        setInternalSortDescriptor(descriptor);
+      }
+    });
+  }, []);
 
   const rowsDataValue = useMemo(
-    () => ({ sortedRows, filteredRows }),
-    [sortedRows, filteredRows]
+    () => ({
+      sortedRows,
+      filteredRows,
+      sortDescriptor,
+      expanded,
+      pinnedRows,
+      pinnedRowIds,
+    }),
+    [
+      sortedRows,
+      filteredRows,
+      sortDescriptor,
+      expanded,
+      pinnedRows,
+      pinnedRowIds,
+    ]
   );
 
   const contextValue = useMemo(
@@ -189,8 +208,6 @@ export const DataTableRoot = function DataTableRoot<
       rows,
       visibleColumns,
       search,
-      sortDescriptor,
-      expanded,
       allowsSorting,
       selectionMode,
       disallowEmptySelection,
@@ -205,12 +222,10 @@ export const DataTableRoot = function DataTableRoot<
       activeColumns,
       showExpandColumn,
       showSelectionColumn,
-      pinnedRowIds,
       selectRowLabel,
       isResizable,
       disabledKeys,
       onRowAction,
-      pinnedRows,
       onPinToggle,
       togglePin,
       onColumnsChange,
@@ -221,8 +236,6 @@ export const DataTableRoot = function DataTableRoot<
       rows,
       visibleColumns,
       search,
-      sortDescriptor,
-      expanded,
       allowsSorting,
       selectionMode,
       disallowEmptySelection,
@@ -237,12 +250,10 @@ export const DataTableRoot = function DataTableRoot<
       activeColumns,
       showExpandColumn,
       showSelectionColumn,
-      pinnedRowIds,
       selectRowLabel,
       isResizable,
       disabledKeys,
       onRowAction,
-      pinnedRows,
       onPinToggle,
       togglePin,
       onColumnsChange,

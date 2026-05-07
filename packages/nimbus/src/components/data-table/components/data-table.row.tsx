@@ -62,15 +62,27 @@ function stopPropagationForNonInteractiveElements(e: Event) {
   }
 }
 
+type DataTableRowPerRowProps = {
+  isExpanded: boolean;
+  isPinned: boolean;
+  isFirstPinned: boolean;
+  isLastPinned: boolean;
+  isSinglePinned: boolean;
+};
+
 const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   row,
   ref,
+  isExpanded,
+  isPinned,
+  isFirstPinned,
+  isLastPinned,
+  isSinglePinned,
   ...props
-}: DataTableRowProps<T>) => {
+}: DataTableRowProps<T> & DataTableRowPerRowProps) => {
   const {
     activeColumns,
     search,
-    expanded,
     toggleExpand,
     nestedKey,
     disabledKeys,
@@ -79,9 +91,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     isTruncated,
     onRowClick,
     onRowAction,
-    pinnedRows,
     togglePin,
-    pinnedRowIds,
     selectRowLabel,
   } = useStableDataTableContext<T>();
 
@@ -277,13 +287,6 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     nestedKey &&
     row[nestedKey] &&
     (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
-  const isExpanded = expanded.has(row.id);
-  const isPinned = pinnedRows.has(row.id);
-
-  const pinnedRowIndex = isPinned ? pinnedRowIds.indexOf(row.id) : -1;
-  const isFirstPinned = pinnedRowIndex === 0;
-  const isLastPinned = pinnedRowIndex === pinnedRowIds.length - 1;
-  const isSinglePinned = pinnedRowIds.length === 1 && isPinned;
 
   // Generate pinned row CSS classes
   const getPinnedRowClasses = () => {
