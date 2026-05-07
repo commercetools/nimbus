@@ -6153,3 +6153,102 @@ export const PerformanceManySelected: Story = {
     });
   },
 };
+
+/** Helper: find the content area (scrollable container for tags + input) */
+const getContentArea = (root: HTMLElement) =>
+  root.querySelector('[class*="nimbus-combobox__content"]') as HTMLElement;
+
+/**
+ * Verifies content area scroll behavior with many selected tags:
+ * - Content area is scrollable when tags overflow
+ * - Selecting a new item scrolls to bottom (input stays visible)
+ * - Removing a tag does NOT scroll to bottom
+ */
+export const ContentAreaScrollBehavior: Story = {
+  render: () => {
+    const initialKeys = perfOptions.slice(0, 20).map((o) => o.id);
+    const [selectedKeys, setSelectedKeys] =
+      useState<(string | number)[]>(initialKeys);
+
+    return (
+      <Box maxWidth="300px">
+        <ComposedComboBox<SimpleOption>
+          aria-label="Scroll behavior test"
+          items={perfOptions}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+        />
+      </Box>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const comboBox = canvas.getByRole("combobox");
+    const group = canvasElement.querySelector('[role="group"]') as HTMLElement;
+
+    await step("Content area is scrollable with many tags", async () => {
+      const content = getContentArea(group);
+      expect(content).toBeTruthy();
+
+      await waitFor(() => {
+        expect(content.scrollHeight).toBeGreaterThan(content.clientHeight);
+      });
+    });
+
+    await step("Selecting a new item scrolls content to bottom", async () => {
+      const content = getContentArea(group);
+
+      // Scroll to top first
+      content.scrollTop = 0;
+      await waitFor(() => {
+        expect(content.scrollTop).toBe(0);
+      });
+
+      // Select a new option
+      await userEvent.type(comboBox, "030");
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(1);
+      });
+
+      const option = findOptionByText("Option 030");
+      expect(option).toBeTruthy();
+      await userEvent.click(option!);
+
+      // After selection, content should be scrolled near bottom
+      await waitFor(() => {
+        const distanceFromBottom =
+          content.scrollHeight - content.scrollTop - content.clientHeight;
+        expect(distanceFromBottom).toBeLessThan(50);
+      });
+    });
+
+    await step("Removing a tag does NOT scroll content to bottom", async () => {
+      const content = getContentArea(group);
+
+      // Scroll to top
+      content.scrollTop = 0;
+      await waitFor(() => {
+        expect(content.scrollTop).toBe(0);
+      });
+
+      // Remove a tag
+      const removeButton = canvas.getByRole("button", {
+        name: /remove tag option 001/i,
+      });
+      await userEvent.click(removeButton);
+
+      // Wait for the tag to be removed
+      await waitFor(() => {
+        expect(
+          canvas.queryByRole("button", { name: /remove tag option 001/i })
+        ).not.toBeInTheDocument();
+      });
+
+      // Content should still be near the top (not scrolled to bottom)
+      expect(content.scrollTop).toBeLessThan(50);
+    });
+  },
+};
