@@ -1,11 +1,15 @@
 import { useMemo, useState, useCallback, useRef, startTransition } from "react";
-import { ResizableTableContainer } from "react-aria-components";
+import {
+  ResizableTableContainer,
+  Virtualizer,
+  TableLayout,
+} from "react-aria-components";
+import type { TableLayoutProps } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
 import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
 import {
   DataTableContext,
-  InteractionContext,
   CustomSettingsContext,
   TableSelectionContext,
 } from "./data-table.context";
@@ -61,6 +65,11 @@ export const DataTableRoot = function DataTableRoot<
     onColumnsChange,
     onSettingsChange,
     customSettings,
+    virtualized = false,
+    rowHeight,
+    estimatedRowHeight,
+    headingHeight,
+    estimatedHeadingHeight,
     children,
     ...rest
   } = props;
@@ -183,31 +192,14 @@ export const DataTableRoot = function DataTableRoot<
     });
   }, []);
 
-  const interactionValue = useMemo(
-    () => ({
-      sortedRows,
-      filteredRows,
-      sortDescriptor,
-      expanded,
-      pinnedRows,
-      pinnedRowIds,
-    }),
-    [
-      sortedRows,
-      filteredRows,
-      sortDescriptor,
-      expanded,
-      pinnedRows,
-      pinnedRowIds,
-    ]
-  );
-
-  const contextValue = useMemo(
+  const contextValue: DataTableContextValue<T> = useMemo(
     () => ({
       columns,
       rows,
       visibleColumns,
       search,
+      sortDescriptor,
+      expanded,
       allowsSorting,
       selectionMode,
       disallowEmptySelection,
@@ -220,12 +212,16 @@ export const DataTableRoot = function DataTableRoot<
       onDetailsClick,
       toggleExpand,
       activeColumns,
+      filteredRows,
+      sortedRows,
       showExpandColumn,
       showSelectionColumn,
+      pinnedRowIds,
       selectRowLabel,
       isResizable,
       disabledKeys,
       onRowAction,
+      pinnedRows,
       onPinToggle,
       togglePin,
       onColumnsChange,
@@ -236,6 +232,8 @@ export const DataTableRoot = function DataTableRoot<
       rows,
       visibleColumns,
       search,
+      sortDescriptor,
+      expanded,
       allowsSorting,
       selectionMode,
       disallowEmptySelection,
@@ -248,12 +246,16 @@ export const DataTableRoot = function DataTableRoot<
       onDetailsClick,
       toggleExpand,
       activeColumns,
+      filteredRows,
+      sortedRows,
       showExpandColumn,
       showSelectionColumn,
+      pinnedRowIds,
       selectRowLabel,
       isResizable,
       disabledKeys,
       onRowAction,
+      pinnedRows,
       onPinToggle,
       togglePin,
       onColumnsChange,
@@ -277,33 +279,52 @@ export const DataTableRoot = function DataTableRoot<
     [customSettings]
   );
 
+  const layoutOptions: TableLayoutProps | undefined = useMemo(() => {
+    if (!virtualized) return undefined;
+    const opts: TableLayoutProps = {};
+    if (rowHeight != null) opts.rowHeight = rowHeight;
+    if (estimatedRowHeight != null)
+      opts.estimatedRowHeight = estimatedRowHeight;
+    if (headingHeight != null) opts.headingHeight = headingHeight;
+    if (estimatedHeadingHeight != null)
+      opts.estimatedHeadingHeight = estimatedHeadingHeight;
+    return opts;
+  }, [
+    virtualized,
+    rowHeight,
+    estimatedRowHeight,
+    headingHeight,
+    estimatedHeadingHeight,
+  ]);
+
+  const wrappedChildren = virtualized ? (
+    <Virtualizer layout={TableLayout} layoutOptions={layoutOptions}>
+      {children}
+    </Virtualizer>
+  ) : (
+    children
+  );
+
   return (
     <DataTableRootSlot
       ref={ref}
       truncated={isTruncated}
       density={density}
+      virtualized={virtualized || undefined}
       maxH={maxHeight}
       {...rest}
       asChild
     >
       <ResizableTableContainer>
-        <InteractionContext.Provider value={interactionValue}>
-          <DataTableContext.Provider
-            value={
-              contextValue as unknown as DataTableContextValue<
-                Record<string, unknown>
-              >
-            }
-          >
-            <TableSelectionContext.Provider value={selectionContextValue}>
-              <CustomSettingsContext.Provider
-                value={customSettingsContextValue}
-              >
-                {children}
-              </CustomSettingsContext.Provider>
-            </TableSelectionContext.Provider>
-          </DataTableContext.Provider>
-        </InteractionContext.Provider>
+        <DataTableContext.Provider
+          value={contextValue as DataTableContextValue<Record<string, unknown>>}
+        >
+          <TableSelectionContext.Provider value={selectionContextValue}>
+            <CustomSettingsContext.Provider value={customSettingsContextValue}>
+              {wrappedChildren}
+            </CustomSettingsContext.Provider>
+          </TableSelectionContext.Provider>
+        </DataTableContext.Provider>
       </ResizableTableContainer>
     </DataTableRootSlot>
   );
