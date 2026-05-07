@@ -5,6 +5,7 @@ import { mergeRefs } from "@/utils";
 import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
 import {
   DataTableContext,
+  RowsDataContext,
   CustomSettingsContext,
   TableSelectionContext,
 } from "./data-table.context";
@@ -115,11 +116,14 @@ export const DataTableRoot = function DataTableRoot<
   );
 
   const pinnedRowIds = useMemo(
-    () => sortedRows.filter((r) => pinnedRows.has(r.id)).map((r) => r.id),
-    [sortedRows, pinnedRows]
+    () => rows.filter((r) => pinnedRows.has(r.id)).map((r) => r.id),
+    [rows, pinnedRows]
   );
 
-  const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
+  const showExpandColumn = useMemo(
+    () => hasExpandableRows(filteredRows, nestedKey),
+    [filteredRows, nestedKey]
+  );
   const showSelectionColumn = selectionMode !== "none";
 
   const toggleExpand = useCallback(
@@ -174,7 +178,12 @@ export const DataTableRoot = function DataTableRoot<
     [onSortChange]
   );
 
-  const contextValue: DataTableContextValue<T> = useMemo(
+  const rowsDataValue = useMemo(
+    () => ({ sortedRows, filteredRows }),
+    [sortedRows, filteredRows]
+  );
+
+  const contextValue = useMemo(
     () => ({
       columns,
       rows,
@@ -194,8 +203,6 @@ export const DataTableRoot = function DataTableRoot<
       onDetailsClick,
       toggleExpand,
       activeColumns,
-      filteredRows,
-      sortedRows,
       showExpandColumn,
       showSelectionColumn,
       pinnedRowIds,
@@ -228,8 +235,6 @@ export const DataTableRoot = function DataTableRoot<
       onDetailsClick,
       toggleExpand,
       activeColumns,
-      filteredRows,
-      sortedRows,
       showExpandColumn,
       showSelectionColumn,
       pinnedRowIds,
@@ -271,15 +276,23 @@ export const DataTableRoot = function DataTableRoot<
       asChild
     >
       <ResizableTableContainer>
-        <DataTableContext.Provider
-          value={contextValue as DataTableContextValue<Record<string, unknown>>}
-        >
-          <TableSelectionContext.Provider value={selectionContextValue}>
-            <CustomSettingsContext.Provider value={customSettingsContextValue}>
-              {children}
-            </CustomSettingsContext.Provider>
-          </TableSelectionContext.Provider>
-        </DataTableContext.Provider>
+        <RowsDataContext.Provider value={rowsDataValue}>
+          <DataTableContext.Provider
+            value={
+              contextValue as unknown as DataTableContextValue<
+                Record<string, unknown>
+              >
+            }
+          >
+            <TableSelectionContext.Provider value={selectionContextValue}>
+              <CustomSettingsContext.Provider
+                value={customSettingsContextValue}
+              >
+                {children}
+              </CustomSettingsContext.Provider>
+            </TableSelectionContext.Provider>
+          </DataTableContext.Provider>
+        </RowsDataContext.Provider>
       </ResizableTableContainer>
     </DataTableRootSlot>
   );

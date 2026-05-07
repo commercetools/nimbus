@@ -4,7 +4,7 @@ import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import type { DataTableBodyProps, DataTableRowItem } from "../data-table.types";
 import { DataTableBodySlot } from "../data-table.slots";
-import { useDataTableContext } from "./data-table.context";
+import { useDataTableContext, useRowsDataContext } from "./data-table.context";
 import { DataTableRow } from "./data-table.row";
 import { dataTableMessagesStrings } from "../data-table.messages";
 
@@ -25,8 +25,8 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   ...props
 }: DataTableBodyProps<T>) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
-  const { sortedRows, activeColumns, renderEmptyState } =
-    useDataTableContext<T>();
+  const { activeColumns, renderEmptyState } = useDataTableContext<T>();
+  const { sortedRows } = useRowsDataContext<T>();
   const [styleProps, restProps] = extractStyleProps(props);
 
   // Use provided aria-label or fall back to default
