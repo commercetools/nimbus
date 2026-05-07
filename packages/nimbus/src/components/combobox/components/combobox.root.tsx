@@ -709,6 +709,18 @@ const ComboBoxRootInner = <T extends object>(
     [isInputControlled, onInputChange, menuTrigger, setIsOpen]
   );
 
+  // Scroll the content area to the bottom so the input stays visible
+  const scrollContentToBottom = useCallback(() => {
+    const content = triggerRef.current?.querySelector(
+      '[class*="nimbus-combobox__content"]'
+    );
+    if (content) {
+      requestAnimationFrame(() => {
+        content.scrollTop = content.scrollHeight;
+      });
+    }
+  }, [triggerRef]);
+
   // Selection change handler
   // Multi-select: toggle behavior (click to add/remove from selection)
   // Single-select: replace selection and close menu
@@ -767,6 +779,14 @@ const ComboBoxRootInner = <T extends object>(
         onAsyncSelectedItemsChange(selectedItems);
       }
 
+      // Multi-select: scroll content to bottom when adding items so input stays visible
+      if (
+        selectionMode === "multiple" &&
+        actualKeys.size > comparisonKeys.size
+      ) {
+        scrollContentToBottom();
+      }
+
       // Single-select: sync input value with selection and close menu
       if (selectionMode === "single") {
         const selectedKey = Array.from(actualKeys)[0];
@@ -800,6 +820,7 @@ const ComboBoxRootInner = <T extends object>(
       isInputControlled,
       asyncConfig,
       onAsyncSelectedItemsChange,
+      scrollContentToBottom,
     ]
   );
 
