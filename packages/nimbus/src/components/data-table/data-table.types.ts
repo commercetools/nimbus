@@ -126,6 +126,7 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     showExpandColumn: boolean;
     showSelectionColumn: boolean;
     pinnedRowIds: string[];
+    selectRowLabel: string;
     disabledKeys?: Selection;
     onRowAction?: (
       row: DataTableRowItem<T>,

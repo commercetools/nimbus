@@ -16,6 +16,8 @@ import type {
   TableSelectionContextValue,
 } from "../data-table.types";
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { dataTableMessagesStrings } from "../data-table.messages";
 
 /**
  * DataTable.Root - The root container that provides context and state management for the entire data table
@@ -64,6 +66,8 @@ export const DataTableRoot = function DataTableRoot<
 
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
+  const selectRowLabel = msg.format("selectRow");
 
   const [internalSortDescriptor, setInternalSortDescriptor] = useState<
     SortDescriptor | undefined
@@ -189,6 +193,7 @@ export const DataTableRoot = function DataTableRoot<
       showExpandColumn,
       showSelectionColumn,
       pinnedRowIds,
+      selectRowLabel,
       isResizable,
       disabledKeys,
       onRowAction,
@@ -222,6 +227,7 @@ export const DataTableRoot = function DataTableRoot<
       showExpandColumn,
       showSelectionColumn,
       pinnedRowIds,
+      selectRowLabel,
       isResizable,
       disabledKeys,
       onRowAction,

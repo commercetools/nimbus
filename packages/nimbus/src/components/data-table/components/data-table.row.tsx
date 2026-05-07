@@ -22,8 +22,6 @@ import {
   PushPin,
 } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
-import { useLocalizedStringFormatter } from "@/hooks";
-import { dataTableMessagesStrings } from "../data-table.messages";
 
 /**
  * DataTable.Row - Individual row component that renders data cells and handles row-level interactions
@@ -63,12 +61,12 @@ function stopPropagationForNonInteractiveElements(e: Event) {
     e.stopPropagation();
   }
 }
+
 const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   row,
   ref,
   ...props
 }: DataTableRowProps<T>) => {
-  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const {
     activeColumns,
     search,
@@ -84,6 +82,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     pinnedRows,
     togglePin,
     pinnedRowIds,
+    selectRowLabel,
   } = useDataTableContext<T>();
 
   const [styleProps, restProps] = extractStyleProps(props);
@@ -337,7 +336,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                 <Checkbox
                   name="select-row"
                   slot="selection"
-                  aria-label={msg.format("selectRow")}
+                  aria-label={selectRowLabel}
                 />
               </Box>
             </DataTableCell>
