@@ -55,6 +55,10 @@ export type FormDialogProps = {
    * surface validation errors and let the user correct and retry —
    * pair with `isSaveLoading` to render the spinner / lockout while
    * the promise is in flight.
+   *
+   * Only native `Promise` instances are awaited. Custom thenables
+   * (e.g. a third-party Promise polyfill) are treated as synchronous
+   * returns and the dialog closes immediately.
    */
   onSave: () => void | Promise<void>;
 

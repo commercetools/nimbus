@@ -31,10 +31,15 @@ export const Base: Story = {
   args: {
     onSave: fn(),
     onCancel: fn(),
+    onOpenChange: fn(),
   },
   render: (args) => {
     const [isOpen, setIsOpen] = useState(false);
     const [name, setName] = useState("Initial value");
+    const handleOpenChange = (open: boolean) => {
+      setIsOpen(open);
+      args.onOpenChange?.(open);
+    };
     return (
       <>
         <Button onPress={() => setIsOpen(true)}>Edit name</Button>
@@ -42,7 +47,7 @@ export const Base: Story = {
           {...args}
           title="Edit display name"
           isOpen={isOpen}
-          onOpenChange={setIsOpen}
+          onOpenChange={handleOpenChange}
         >
           <FormField.Root>
             <FormField.Label>Display name</FormField.Label>
@@ -61,6 +66,7 @@ export const Base: Story = {
     const getTrigger = () => canvas.getByRole("button", { name: "Edit name" });
     const onSave = args.onSave as ReturnType<typeof fn>;
     const onCancel = args.onCancel as ReturnType<typeof fn>;
+    const onOpenChange = args.onOpenChange as ReturnType<typeof fn>;
 
     await step("Dialog is not rendered initially", async () => {
       expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
@@ -94,10 +100,11 @@ export const Base: Story = {
     });
 
     await step(
-      "Cancel button click invokes onCancel and closes the dialog without firing onSave",
+      "Cancel button click invokes onCancel, fires onOpenChange(false), and closes the dialog without firing onSave",
       async () => {
         onSave.mockClear();
         onCancel.mockClear();
+        onOpenChange.mockClear();
 
         await userEvent.click(canvas.getByRole("button", { name: "Cancel" }));
 
@@ -105,78 +112,91 @@ export const Base: Story = {
           expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
         );
         expect(onCancel).toHaveBeenCalledTimes(1);
+        expect(onOpenChange).toHaveBeenCalledWith(false);
         expect(onSave).not.toHaveBeenCalled();
       }
     );
 
     await step(
-      "Save button click invokes onSave and closes the dialog without firing onCancel",
+      "Save button click invokes onSave, fires onOpenChange(false), and closes the dialog without firing onCancel",
       async () => {
         onSave.mockClear();
         onCancel.mockClear();
+        onOpenChange.mockClear();
 
         await userEvent.click(getTrigger());
         await waitFor(() =>
           expect(canvas.getByRole("dialog")).toBeInTheDocument()
         );
 
+        onOpenChange.mockClear();
         await userEvent.click(canvas.getByRole("button", { name: "Save" }));
 
         await waitFor(() =>
           expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
         );
         expect(onSave).toHaveBeenCalledTimes(1);
+        expect(onOpenChange).toHaveBeenCalledWith(false);
         expect(onCancel).not.toHaveBeenCalled();
       }
     );
 
     await step(
-      "Escape closes the dialog and invokes onCancel exactly once",
+      "Escape closes the dialog, invokes onCancel exactly once, and fires onOpenChange(false)",
       async () => {
         onSave.mockClear();
         onCancel.mockClear();
+        onOpenChange.mockClear();
 
         await userEvent.click(getTrigger());
         await waitFor(() =>
           expect(canvas.getByRole("dialog")).toBeInTheDocument()
         );
 
+        onOpenChange.mockClear();
         await userEvent.keyboard("{Escape}");
 
         await waitFor(() =>
           expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
         );
         expect(onCancel).toHaveBeenCalledTimes(1);
+        expect(onOpenChange).toHaveBeenCalledWith(false);
         expect(onSave).not.toHaveBeenCalled();
       }
     );
 
     await step(
-      "Close button (X) click invokes onCancel and closes the dialog",
+      "Close button (X) click invokes onCancel, fires onOpenChange(false), and closes the dialog",
       async () => {
         onSave.mockClear();
         onCancel.mockClear();
+        onOpenChange.mockClear();
 
         await userEvent.click(getTrigger());
         await waitFor(() =>
           expect(canvas.getByRole("dialog")).toBeInTheDocument()
         );
 
-        await userEvent.click(canvas.getByRole("button", { name: /close/i }));
+        onOpenChange.mockClear();
+        await userEvent.click(
+          canvas.getByRole("button", { name: "Close dialog" })
+        );
 
         await waitFor(() =>
           expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
         );
         expect(onCancel).toHaveBeenCalledTimes(1);
+        expect(onOpenChange).toHaveBeenCalledWith(false);
         expect(onSave).not.toHaveBeenCalled();
       }
     );
 
     await step(
-      "Overlay click invokes onCancel and closes the dialog",
+      "Overlay click invokes onCancel, fires onOpenChange(false), and closes the dialog",
       async () => {
         onSave.mockClear();
         onCancel.mockClear();
+        onOpenChange.mockClear();
 
         await userEvent.click(getTrigger());
         const dialog = await waitFor(() => canvas.getByRole("dialog"));
@@ -189,6 +209,7 @@ export const Base: Story = {
         }
         expect(overlay).not.toBeNull();
 
+        onOpenChange.mockClear();
         await userEvent.pointer([
           {
             target: overlay!,
@@ -201,6 +222,7 @@ export const Base: Story = {
           expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
         );
         expect(onCancel).toHaveBeenCalledTimes(1);
+        expect(onOpenChange).toHaveBeenCalledWith(false);
         expect(onSave).not.toHaveBeenCalled();
       }
     );
@@ -356,8 +378,8 @@ export const LoadingLockout: Story = {
       await waitFor(() =>
         expect(canvas.getByRole("dialog")).toBeInTheDocument()
       );
-      expect(canvas.getByRole("button", { name: /save/i })).toBeDisabled();
-      expect(canvas.getByRole("button", { name: /cancel/i })).toBeDisabled();
+      expect(canvas.getByRole("button", { name: "Save" })).toBeDisabled();
+      expect(canvas.getByRole("button", { name: "Cancel" })).toBeDisabled();
     });
 
     await step(
@@ -404,7 +426,9 @@ export const LoadingLockout: Story = {
         onSave.mockClear();
         onCancel.mockClear();
 
-        const closeButton = canvas.getByRole("button", { name: /close/i });
+        const closeButton = canvas.getByRole("button", {
+          name: "Close dialog",
+        });
         expect(closeButton).toBeDisabled();
 
         await userEvent.click(closeButton);
@@ -464,19 +488,19 @@ export const AsyncSave: Story = {
       await waitFor(() =>
         expect(canvas.getByRole("dialog")).toBeInTheDocument()
       );
-      expect(canvas.getByRole("button", { name: /save/i })).toBeEnabled();
+      expect(canvas.getByRole("button", { name: "Save" })).toBeEnabled();
     });
 
     await step(
       "Clicking save engages the loading lockout while the promise is in flight",
       async () => {
-        await userEvent.click(canvas.getByRole("button", { name: /save/i }));
+        await userEvent.click(canvas.getByRole("button", { name: "Save" }));
 
         await waitFor(() =>
-          expect(canvas.getByRole("button", { name: /save/i })).toBeDisabled()
+          expect(canvas.getByRole("button", { name: "Save" })).toBeDisabled()
         );
         expect(canvas.getByRole("dialog")).toBeInTheDocument();
-        expect(canvas.getByRole("button", { name: /cancel/i })).toBeDisabled();
+        expect(canvas.getByRole("button", { name: "Cancel" })).toBeDisabled();
       }
     );
 
@@ -541,14 +565,14 @@ export const AsyncSaveRejection: Story = {
           expect(canvas.getByRole("dialog")).toBeInTheDocument()
         );
 
-        await userEvent.click(canvas.getByRole("button", { name: /save/i }));
+        await userEvent.click(canvas.getByRole("button", { name: "Save" }));
 
         // After the promise rejects and the consumer flips
         // isSaveLoading back to false, the dialog is still mounted and
         // the buttons are interactive again so the user can retry.
         await waitFor(
           () =>
-            expect(canvas.getByRole("button", { name: /save/i })).toBeEnabled(),
+            expect(canvas.getByRole("button", { name: "Save" })).toBeEnabled(),
           { timeout: 2000 }
         );
         expect(canvas.getByRole("dialog")).toBeInTheDocument();
