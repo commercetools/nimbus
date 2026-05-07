@@ -7,7 +7,7 @@ import type {
   TableSelectionContextValue,
 } from "../data-table.types";
 
-type RowsDataContextValue<T extends object = Record<string, unknown>> = {
+type InteractionContextValue<T extends object = Record<string, unknown>> = {
   sortedRows: DataTableRowItem<T>[];
   filteredRows: DataTableRowItem<T>[];
   sortDescriptor?: SortDescriptor;
@@ -21,10 +21,10 @@ export const DataTableContext = createContext<DataTableContextValue<
 > | null>(null);
 DataTableContext.displayName = "DataTable.Context";
 
-export const RowsDataContext = createContext<RowsDataContextValue<
+export const InteractionContext = createContext<InteractionContextValue<
   Record<string, unknown>
 > | null>(null);
-RowsDataContext.displayName = "DataTable.RowsDataContext";
+InteractionContext.displayName = "DataTable.InteractionContext";
 
 export const TableSelectionContext =
   createContext<TableSelectionContextValue | null>(null);
@@ -40,15 +40,15 @@ export const useDataTableContext = <
   const context = useContext(
     DataTableContext
   ) as DataTableContextValue<T> | null;
-  const rowsData = useContext(
-    RowsDataContext
-  ) as RowsDataContextValue<T> | null;
+  const interactionData = useContext(
+    InteractionContext
+  ) as InteractionContextValue<T> | null;
   if (!context) {
     throw new Error("DataTable components must be used within DataTable.Root");
   }
   return useMemo(
-    () => ({ ...context, ...rowsData }),
-    [context, rowsData]
+    () => ({ ...context, ...interactionData }),
+    [context, interactionData]
   ) as DataTableContextValue<T>;
 };
 
@@ -64,10 +64,12 @@ export const useStableDataTableContext = <
   return context;
 };
 
-export const useRowsDataContext = <
+export const useInteractionContext = <
   T extends object = Record<string, unknown>,
->(): RowsDataContextValue<T> => {
-  const context = useContext(RowsDataContext) as RowsDataContextValue<T> | null;
+>(): InteractionContextValue<T> => {
+  const context = useContext(
+    InteractionContext
+  ) as InteractionContextValue<T> | null;
   if (!context) {
     throw new Error("DataTable components must be used within DataTable.Root");
   }

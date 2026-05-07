@@ -5,7 +5,7 @@ import { mergeRefs } from "@/utils";
 import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
 import {
   DataTableContext,
-  RowsDataContext,
+  InteractionContext,
   CustomSettingsContext,
   TableSelectionContext,
 } from "./data-table.context";
@@ -183,7 +183,7 @@ export const DataTableRoot = function DataTableRoot<
     });
   }, []);
 
-  const rowsDataValue = useMemo(
+  const interactionValue = useMemo(
     () => ({
       sortedRows,
       filteredRows,
@@ -287,7 +287,7 @@ export const DataTableRoot = function DataTableRoot<
       asChild
     >
       <ResizableTableContainer>
-        <RowsDataContext.Provider value={rowsDataValue}>
+        <InteractionContext.Provider value={interactionValue}>
           <DataTableContext.Provider
             value={
               contextValue as unknown as DataTableContextValue<
@@ -303,7 +303,7 @@ export const DataTableRoot = function DataTableRoot<
               </CustomSettingsContext.Provider>
             </TableSelectionContext.Provider>
           </DataTableContext.Provider>
-        </RowsDataContext.Provider>
+        </InteractionContext.Provider>
       </ResizableTableContainer>
     </DataTableRootSlot>
   );
