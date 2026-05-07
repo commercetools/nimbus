@@ -86,10 +86,7 @@ export const FormDialog = ({
     // consumer's `isSaveLoading` lockout never paints. On rejection we
     // stay open so the consumer can surface validation errors and let
     // the user retry.
-    if (
-      result !== undefined &&
-      typeof (result as Promise<void>).then === "function"
-    ) {
+    if (result instanceof Promise) {
       try {
         await result;
         setOpen(false);
