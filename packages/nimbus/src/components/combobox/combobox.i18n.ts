@@ -19,4 +19,9 @@ export const messages = {
     description: "aria-label for combobox menu options",
     defaultMessage: "Options menu",
   },
+  removeTag: {
+    id: "Nimbus.ComboBox.removeTag",
+    description: "aria-label for remove tag button in multi-select ComboBox",
+    defaultMessage: "Remove tag {tagName}",
+  },
 };

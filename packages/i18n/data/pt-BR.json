@@ -35,6 +35,14 @@
     "developer_comment": "aria-label for combobox menu options",
     "string": "Menu de opções"
   },
+  "Nimbus.ComboBox.overflowTagCount": {
+    "developer_comment": "Text for overflow badge showing count of hidden selected tags",
+    "string": "+{count} more"
+  },
+  "Nimbus.ComboBox.removeTag": {
+    "developer_comment": "aria-label for remove tag button in multi-select ComboBox",
+    "string": "Remove tag {tagName}"
+  },
   "Nimbus.ComboBox.selectedValues": {
     "developer_comment": "aria-label for selected values tag group",
     "string": "Selecionar valores"

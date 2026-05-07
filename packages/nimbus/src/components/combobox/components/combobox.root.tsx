@@ -538,9 +538,15 @@ const ComboBoxRootInner = <T extends object>(
 
   // SELECTION STATE
   // Selection state (normalized to Set<Key> for consistency)
+  // Serialize key set to a stable string so the memo only recomputes when
+  // actual keys change, not when the parent passes a new array reference.
+  const selectedKeysFingerprint = Array.isArray(selectedKeysFromProps)
+    ? selectedKeysFromProps.join("\0")
+    : String(selectedKeysFromProps ?? "");
   const normalizedSelectedKeysFromProps = useMemo(
     () => normalizeSelectedKeys(selectedKeysFromProps),
-    [selectedKeysFromProps]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [selectedKeysFingerprint]
   );
 
   const isSelectionControlled = Boolean(onSelectionChange);
@@ -603,6 +609,15 @@ const ComboBoxRootInner = <T extends object>(
   // DERIVED STATE & MEMOIZATION
   // ============================================================
 
+  // Snapshot the selected item's text so filteredCollection doesn't depend on
+  // the full normalizedSelectedKeys Set (which changes on every selection toggle).
+  const singleSelectedTextValue = useMemo(() => {
+    if (selectionMode !== "single") return undefined;
+    const keys = Array.from(normalizedSelectedKeys);
+    if (keys.length === 0) return undefined;
+    return collection.getItem(keys[0])?.textValue;
+  }, [selectionMode, normalizedSelectedKeys, collection]);
+
   // Filtered collection based on input value
   // Uses Collection.filter() to preserve navigation methods (getFirstKey, getLastKey, etc.)
   const filteredCollection = useMemo(() => {
@@ -613,16 +628,8 @@ const ComboBoxRootInner = <T extends object>(
 
     // Single-select UX: if input matches selected item exactly, show full list
     // Enables workflow: select item → click input → see all options (not just the selected one)
-    if (selectionMode === "single") {
-      const selectedKeys = Array.from(normalizedSelectedKeys);
-      if (selectedKeys.length > 0) {
-        const selectedKey = selectedKeys[0];
-        const selectedNode = collection.getItem(selectedKey);
-
-        if (selectedNode?.textValue === inputValue) {
-          return collection;
-        }
-      }
+    if (selectionMode === "single" && singleSelectedTextValue === inputValue) {
+      return collection;
     }
 
     // Custom filter: adapt user-provided filter to Collection.filter() API
@@ -645,10 +652,10 @@ const ComboBoxRootInner = <T extends object>(
         return nodeValue.toLowerCase().includes(lowerInput);
       }) ?? collection
     );
-  }, [collection, inputValue, filter, selectionMode, normalizedSelectedKeys]);
+  }, [collection, inputValue, filter, selectionMode, singleSelectedTextValue]);
 
   // Selected items for TagGroup (multi-select only)
-  // Extract actual item objects from keys to pass to TagGroup component
+  // Extract actual item objects from keys to pass to TagGroup component.
   const selectedItemsFromState = useMemo(
     () =>
       selectionMode === "multiple"
@@ -1145,23 +1152,21 @@ const ComboBoxRootInner = <T extends object>(
   ]);
 
   // Close menu on blur (with delay to allow option clicks)
-  const handleBlur = useCallback(
-    (e: React.FocusEvent) => {
-      if (!shouldCloseOnBlur) return;
+  // Uses triggerRef + popoverRef instead of e.currentTarget (which is the input element,
+  // not the combobox wrapper — it would miss focus moving to the portaled popover).
+  const handleBlur = useCallback(() => {
+    if (!shouldCloseOnBlur) return;
 
-      // Capture currentTarget (React reuses event objects)
-      const comboboxRoot = e.currentTarget;
-
-      // Delay closing to allow option clicks to fire first
-      setTimeout(() => {
-        const currentFocus = document.activeElement;
-        if (!comboboxRoot.contains(currentFocus)) {
-          setIsOpen(false);
-        }
-      }, 150);
-    },
-    [shouldCloseOnBlur, setIsOpen]
-  );
+    // Delay closing to allow option clicks to fire first
+    setTimeout(() => {
+      const currentFocus = document.activeElement;
+      const inTrigger = triggerRef.current?.contains(currentFocus);
+      const inPopover = popoverRef.current?.contains(currentFocus);
+      if (!inTrigger && !inPopover) {
+        setIsOpen(false);
+      }
+    }, 150);
+  }, [shouldCloseOnBlur, setIsOpen, triggerRef, popoverRef]);
 
   // ============================================================
   // EFFECTS
@@ -1271,9 +1276,11 @@ const ComboBoxRootInner = <T extends object>(
   // Track if collection has been populated at least once
   // Prevents closing menu before initial collection build completes
   const collectionPopulatedRef = useRef(false);
-  if (state.collection.size > 0) {
-    collectionPopulatedRef.current = true;
-  }
+  useEffect(() => {
+    if (state.collection.size > 0) {
+      collectionPopulatedRef.current = true;
+    }
+  }, [state.collection.size]);
 
   // Effect: Auto-close menu when no items match filter
   // Replicates React Aria's useComboBoxState behavior
@@ -1333,137 +1340,195 @@ const ComboBoxRootInner = <T extends object>(
   // ============================================================
   // React Aria's Provider component distributes props to child components via context
   // Each context value configures a specific part of the ComboBox (Input, ListBox, Popover, etc.)
+  // Each value is memoized individually so unchanged consumers don't re-render.
 
+  // InputContext: Props for ComboBox.Input component
+  // Configures the input field with ARIA attributes, event handlers, and validation
+  const inputContextValue = useMemo(
+    () => ({
+      ref: inputRef,
+      role: "combobox" as const, // ARIA role for autocomplete input
+      "aria-autocomplete": "list" as const, // Indicates suggestions are in a list
+      "aria-controls":
+        selectionMode === "multiple"
+          ? `${tagGroupId} ${listboxId}` // Multi-select: controls both tags and listbox
+          : listboxId, // Single-select: controls only listbox
+      "aria-expanded": isOpen, // Announces menu open/closed state
+      "aria-activedescendant": state.selectionManager.focusedKey
+        ? `${listboxId}-option-${state.selectionManager.focusedKey}` // Virtual focus: announces focused option
+        : undefined,
+      "aria-describedby":
+        selectionMode === "multiple"
+          ? `${tagGroupId} ${ariaDescribedBy ?? ""}` // Multi-select: references tag group for context
+          : ariaDescribedBy,
+      "aria-label": ariaLabel,
+      "aria-labelledby": ariaLabelledBy,
+      value: inputValue,
+      onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
+        handleInputChange(e.target.value),
+      onKeyDown: handleInputKeyDown,
+      onFocus: handleFocus,
+      onBlur: handleBlur,
+      disabled: isDisabled,
+      readOnly: isReadOnly,
+      required: isRequired,
+      "aria-invalid": isInvalid,
+      placeholder,
+      name,
+      form,
+      validationbehavior: validationBehavior,
+      validate,
+    }),
+    [
+      inputRef,
+      selectionMode,
+      tagGroupId,
+      listboxId,
+      isOpen,
+      state.selectionManager.focusedKey,
+      ariaDescribedBy,
+      ariaLabel,
+      ariaLabelledBy,
+      inputValue,
+      handleInputChange,
+      handleInputKeyDown,
+      handleFocus,
+      handleBlur,
+      isDisabled,
+      isReadOnly,
+      isRequired,
+      isInvalid,
+      placeholder,
+      name,
+      form,
+      validationBehavior,
+      validate,
+    ]
+  );
+
+  // TagGroupContext: Props for ComboBox.TagGroup component (multi-select only)
+  // Renders selected items as removable tags
+  const tagGroupContextValue = useMemo(
+    () => ({
+      id: tagGroupId,
+      "aria-label": msg.format("selectedValues"),
+      items: selectedItemsFromState, // Selected items to display as tags
+      onRemove: removeKey, // Handle tag removal
+    }),
+    [tagGroupId, msg, selectedItemsFromState, removeKey]
+  );
+
+  // ButtonContext: Props for toggle and clear buttons
+  // Uses "slots" pattern to configure multiple buttons via single context
+  const hasSelection = normalizedSelectedKeys.size > 0;
+  const buttonContextValue = useMemo(
+    () => ({
+      slots: {
+        toggle: {
+          onPress: toggleOpen,
+          "aria-label": msg.format("toggleOptions"),
+          isDisabled: isDisabled || isReadOnly,
+          isPressed: isOpen, // Visual indicator that menu is open
+        },
+        clear: {
+          onPress: clearSelection,
+          "aria-label": msg.format("clearSelection"),
+          style: hasSelection ? undefined : { display: "none" },
+          isDisabled: isDisabled || isReadOnly || !hasSelection, // Disabled when nothing selected
+        },
+      },
+    }),
+    [
+      toggleOpen,
+      msg,
+      isDisabled,
+      isReadOnly,
+      isOpen,
+      clearSelection,
+      hasSelection,
+    ]
+  );
+
+  // PopoverContext: Props for ComboBox.Popover component
+  // Controls menu positioning, portal rendering, and open/close behavior
+  // Allow React Aria to close the popover (e.g., on scroll, click outside)
+  // but we still control opening via toggleOpen/setIsOpen
+  const handlePopoverOpenChange = useCallback(
+    (open: boolean) => {
+      if (!open) {
+        setIsOpen(false);
+      }
+    },
+    [setIsOpen]
+  );
+
+  const popoverStyle = useMemo(
+    () =>
+      ({
+        "--nimbus-combobox-trigger-width": triggerWidth,
+      }) as React.CSSProperties, // CSS custom property for menu width
+    [triggerWidth]
+  );
+
+  const popoverContextValue = useMemo(
+    () => ({
+      isOpen: isOpen,
+      onOpenChange: handlePopoverOpenChange,
+      ref: popoverRef,
+      triggerRef: triggerRef, // Popover positions relative to this element
+      scrollRef: listBoxRef, // Enables scroll-into-view for keyboard navigation
+      isNonModal: true, // Non-modal: doesn't trap focus, allows interaction outside
+      trigger: "ComboBox", // Identifies this as a combobox popover (not tooltip, dialog, etc.)
+      placement: "bottom start" as const, // Default placement below trigger, aligned to start
+      style: popoverStyle,
+      clearContexts: [
+        // Clear these contexts so popover content doesn't inherit combobox contexts
+        LabelContext,
+        ButtonContext,
+        InputContext,
+        GroupContext,
+        TextContext,
+      ],
+    }),
+    [
+      isOpen,
+      handlePopoverOpenChange,
+      popoverRef,
+      triggerRef,
+      listBoxRef,
+      popoverStyle,
+    ]
+  );
+
+  // SelectableCollectionContext: Enables virtual focus for keyboard navigation
+  // Virtual focus uses aria-activedescendant instead of moving browser focus
+  const selectableCollectionContextValue = useMemo(
+    () => ({ shouldUseVirtualFocus: true }),
+    []
+  );
+
+  // ListBoxContext: Props for ComboBox.ListBox component
+  // Configures the option list with items, ARIA attributes, and behaviors
+  const listBoxContextValue = useMemo(
+    () => ({
+      items, // Items to render (merged from outer component)
+      id: listboxId, // ID referenced by aria-controls on input
+      ref: listBoxRef, // Ref for scroll positioning
+      renderEmptyState, // Custom empty state renderer
+      shouldFocusWrap, // Whether to wrap focus from last to first item
+      "aria-label": msg.format("options"),
+    }),
+    [items, listboxId, listBoxRef, renderEmptyState, shouldFocusWrap, msg]
+  );
+
+  // Assemble context values array for React Aria's Provider
   const contextValues = [
-    // InputContext: Props for ComboBox.Input component
-    // Configures the input field with ARIA attributes, event handlers, and validation
-    [
-      InputContext,
-      {
-        ref: inputRef,
-        role: "combobox" as const, // ARIA role for autocomplete input
-        "aria-autocomplete": "list" as const, // Indicates suggestions are in a list
-        "aria-controls":
-          selectionMode === "multiple"
-            ? `${tagGroupId} ${listboxId}` // Multi-select: controls both tags and listbox
-            : listboxId, // Single-select: controls only listbox
-        "aria-expanded": isOpen, // Announces menu open/closed state
-        "aria-activedescendant": state.selectionManager.focusedKey
-          ? `${listboxId}-option-${state.selectionManager.focusedKey}` // Virtual focus: announces focused option
-          : undefined,
-        "aria-describedby":
-          selectionMode === "multiple"
-            ? `${tagGroupId} ${ariaDescribedBy ?? ""}` // Multi-select: references tag group for context
-            : ariaDescribedBy,
-        "aria-label": ariaLabel,
-        "aria-labelledby": ariaLabelledBy,
-        value: inputValue,
-        onChange: (e: React.ChangeEvent<HTMLInputElement>) =>
-          handleInputChange(e.target.value),
-        onKeyDown: handleInputKeyDown,
-        onFocus: handleFocus,
-        onBlur: handleBlur,
-        disabled: isDisabled,
-        readOnly: isReadOnly,
-        required: isRequired,
-        "aria-invalid": isInvalid,
-        placeholder,
-        name,
-        form,
-        validationbehavior: validationBehavior,
-        validate,
-      },
-    ],
-
-    // TagGroupContext: Props for ComboBox.TagGroup component (multi-select only)
-    // Renders selected items as removable tags
-    [
-      TagGroupContext,
-      {
-        id: tagGroupId,
-        "aria-label": msg.format("selectedValues"),
-        items: selectedItemsFromState, // Selected items to display as tags
-        onRemove: removeKey, // Handle tag removal
-      },
-    ],
-
-    // ButtonContext: Props for toggle and clear buttons
-    // Uses "slots" pattern to configure multiple buttons via single context
-    [
-      ButtonContext,
-      {
-        slots: {
-          toggle: {
-            onPress: toggleOpen,
-            "aria-label": msg.format("toggleOptions"),
-            isDisabled: isDisabled || isReadOnly,
-            isPressed: isOpen, // Visual indicator that menu is open
-          },
-          clear: {
-            onPress: clearSelection,
-            "aria-label": msg.format("clearSelection"),
-            style:
-              normalizedSelectedKeys.size > 0 ? undefined : { display: "none" },
-            isDisabled:
-              isDisabled ||
-              isReadOnly ||
-              state.selectionManager.selectedKeys.size === 0, // Disabled when nothing selected
-          },
-        },
-      },
-    ],
-
-    // PopoverContext: Props for ComboBox.Popover component
-    // Controls menu positioning, portal rendering, and open/close behavior
-    [
-      PopoverContext,
-      {
-        isOpen: isOpen,
-        // Allow React Aria to close the popover (e.g., on scroll, click outside)
-        // but we still control opening via toggleOpen/setIsOpen
-        onOpenChange: (open: boolean) => {
-          if (!open) {
-            setIsOpen(false);
-          }
-        },
-        ref: popoverRef,
-        triggerRef: triggerRef, // Popover positions relative to this element
-        scrollRef: listBoxRef, // Enables scroll-into-view for keyboard navigation
-        isNonModal: true, // Non-modal: doesn't trap focus, allows interaction outside
-        trigger: "ComboBox", // Identifies this as a combobox popover (not tooltip, dialog, etc.)
-        placement: "bottom start", // Default placement below trigger, aligned to start
-        style: {
-          "--nimbus-combobox-trigger-width": triggerWidth,
-        } as React.CSSProperties, // CSS custom property for menu width
-        clearContexts: [
-          // Clear these contexts so popover content doesn't inherit combobox contexts
-          LabelContext,
-          ButtonContext,
-          InputContext,
-          GroupContext,
-          TextContext,
-        ],
-      },
-    ],
-
-    // SelectableCollectionContext: Enables virtual focus for keyboard navigation
-    // Virtual focus uses aria-activedescendant instead of moving browser focus
-    [SelectableCollectionContext, { shouldUseVirtualFocus: true }],
-
-    // ListBoxContext: Props for ComboBox.ListBox component
-    // Configures the option list with items, ARIA attributes, and behaviors
-    [
-      ListBoxContext,
-      {
-        items, // Items to render (merged from outer component)
-        id: listboxId, // ID referenced by aria-controls on input
-        ref: listBoxRef, // Ref for scroll positioning
-        renderEmptyState, // Custom empty state renderer
-        shouldFocusWrap, // Whether to wrap focus from last to first item
-        "aria-label": msg.format("options"),
-      },
-    ],
-
+    [InputContext, inputContextValue],
+    [TagGroupContext, tagGroupContextValue],
+    [ButtonContext, buttonContextValue],
+    [PopoverContext, popoverContextValue],
+    [SelectableCollectionContext, selectableCollectionContextValue],
+    [ListBoxContext, listBoxContextValue],
     // ListStateContext: React Aria's collection state for managing selection and focus
     [ListStateContext, state],
   ];

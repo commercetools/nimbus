@@ -3,6 +3,7 @@ import { useState, useCallback } from "react";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 import { Box, Dialog, FormField, Stack, Text } from "@commercetools/nimbus";
 import { Search } from "@commercetools/nimbus-icons";
+import { ReactProfilerWrapper } from "@github-ui/storybook-addon-performance-panel/components";
 import { ComboBox } from "./combobox";
 import { type SimpleOption, simpleOptions } from "./utils/combobox.test-data";
 import {
@@ -253,7 +254,7 @@ export const MultiSelectCustomOptions: Story = {
       // Find and click remove button for Lion
       const lionTag = await within(await getTagList(canvas.getByRole("group")))
         .getByText("Lion")
-        .closest('[role="row"]');
+        .closest('[role="listitem"]');
       expect(lionTag).toBeInTheDocument();
 
       const removeButton = within(lionTag as HTMLElement).getByRole("button", {
@@ -6064,5 +6065,91 @@ export const ControlledInputWithSelection: Story = {
 
     // Verify controlled value is displayed, not selected item text
     expect(input).toHaveValue("Custom Value");
+  },
+};
+
+// ============================================================
+// PERFORMANCE
+// ============================================================
+
+const PERF_OPTION_COUNT = 200;
+const PERF_SELECTED_COUNT = 170;
+
+const perfOptions: SimpleOption[] = Array.from(
+  { length: PERF_OPTION_COUNT },
+  (_, i) => ({
+    id: i + 1,
+    name: `Option ${String(i + 1).padStart(3, "0")}`,
+  })
+);
+
+const perfSelectedKeys = perfOptions
+  .slice(0, PERF_SELECTED_COUNT)
+  .map((o) => o.id);
+
+/**
+ * Performance: 170 selected options in multi-select mode.
+ * Renders a ComboBox with 200 total options and 170 pre-selected,
+ * using lightweight tags instead of React Aria's TagGroup collection system.
+ */
+export const PerformanceManySelected: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] =
+      useState<(string | number)[]>(perfSelectedKeys);
+
+    return (
+      <Box maxWidth="400px">
+        <ReactProfilerWrapper id="ComboBox-170-selected">
+          <ComposedComboBox<SimpleOption>
+            aria-label="Performance test combobox"
+            items={perfOptions}
+            selectionMode="multiple"
+            selectedKeys={selectedKeys}
+            onSelectionChange={setSelectedKeys}
+          />
+        </ReactProfilerWrapper>
+      </Box>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const comboBox = canvas.getByRole("combobox");
+
+    await step("Verify all 170 tags are rendered", async () => {
+      const tagList = await getTagList(canvasElement);
+      expect(tagList.childNodes.length).toBe(PERF_SELECTED_COUNT);
+    });
+
+    await step("Remove a tag via remove button", async () => {
+      const removeButton = canvas.getByRole("button", {
+        name: /remove tag option 001/i,
+      });
+      expect(removeButton).toBeTruthy();
+      await userEvent.click(removeButton);
+
+      await waitFor(async () => {
+        const tagList = await getTagList(canvasElement);
+        expect(tagList.childNodes.length).toBe(PERF_SELECTED_COUNT - 1);
+      });
+    });
+
+    await step("Select an unselected option via popover", async () => {
+      await userEvent.click(comboBox);
+      await userEvent.type(comboBox, "200");
+
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(1);
+      });
+
+      const option = findOptionByText("Option 200");
+      expect(option).toBeTruthy();
+      await userEvent.click(option!);
+
+      await waitFor(() => {
+        expect(canvas.getByText("Option 200")).toBeInTheDocument();
+      });
+    });
   },
 };
