@@ -109,8 +109,6 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
     search?: string;
     sortDescriptor?: SortDescriptor;
-    selectedKeys?: Selection;
-    defaultSelectedKeys?: Selection;
     expanded: Set<string>;
     allowsSorting?: boolean;
     selectionMode?: "none" | "single" | "multiple";
@@ -120,7 +118,6 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     density?: "default" | "condensed";
     nestedKey?: string;
     onSortChange?: (descriptor: SortDescriptor) => void;
-    onSelectionChange?: (keys: Selection) => void;
     onRowClick?: (row: DataTableRowItem<T>) => void;
     toggleExpand: (id: string) => void;
     activeColumns: DataTableColumnItem<T>[];
@@ -128,6 +125,7 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     sortedRows: DataTableRowItem<T>[];
     showExpandColumn: boolean;
     showSelectionColumn: boolean;
+    pinnedRowIds: string[];
     disabledKeys?: Selection;
     onRowAction?: (
       row: DataTableRowItem<T>,
@@ -140,6 +138,12 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
     onVisibilityChange?: (visibleColumnIds: string[]) => void;
   };
+
+export type TableSelectionContextValue = {
+  selectedKeys?: Selection;
+  defaultSelectedKeys?: Selection;
+  onSelectionChange?: (keys: Selection) => void;
+};
 
 export type CustomSettingsContextValue = {
   customSettings?: DataTableCustomSettings;

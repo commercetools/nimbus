@@ -4529,3 +4529,257 @@ export const WithCustomSettings: Story = {
     });
   },
 };
+
+// ---------------------------------------------------------------------------
+// Performance regression stories
+// ---------------------------------------------------------------------------
+
+const generatePerfRows = (count: number): DataTableRowItem[] =>
+  Array.from({ length: count }, (_, i) => ({
+    id: String(i + 1),
+    name: `Product ${i + 1}`,
+    category: `Category ${(i % 5) + 1}`,
+  }));
+
+const perfColumns: DataTableColumnItem[] = [
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row: Record<string, unknown>) => row.name as ReactNode,
+    isSortable: true,
+  },
+  {
+    id: "category",
+    header: "Category",
+    accessor: (row: Record<string, unknown>) => row.category as ReactNode,
+    isSortable: true,
+  },
+];
+
+const PinnedIdsProbe = () => {
+  const ctx = DataTable.useDataTableContext();
+  return (
+    <div
+      data-testid="pinned-ids-probe"
+      data-pinned-row-ids={JSON.stringify(ctx.pinnedRowIds)}
+    />
+  );
+};
+
+const SelectionContextProbe = React.memo(function SelectionContextProbe() {
+  DataTable.useDataTableContext();
+  const renderCount = React.useRef(0);
+  renderCount.current++;
+  return (
+    <div data-testid="ctx-probe" data-render-count={renderCount.current} />
+  );
+});
+
+export const PerfLargeDatasetResponsiveness: Story = {
+  render: () => {
+    const largeRows = React.useMemo(() => generatePerfRows(170), []);
+    return (
+      <DataTable
+        columns={perfColumns}
+        rows={largeRows}
+        selectionMode="multiple"
+        allowsSorting
+      />
+    );
+  },
+  args: {},
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Selection toggle with ~170 rows is responsive", async () => {
+      const checkboxes = canvas.getAllByRole("checkbox");
+      const start = performance.now();
+      await userEvent.click(checkboxes[1]);
+      const duration = performance.now() - start;
+
+      await waitFor(() => {
+        expect(checkboxes[1]).toBeChecked();
+      });
+      expect(duration).toBeLessThan(2000);
+    });
+
+    await step("Sorting ~170 rows is responsive", async () => {
+      const categoryHeader = canvas.getByText("Category");
+      const start = performance.now();
+      await userEvent.click(categoryHeader);
+      const duration = performance.now() - start;
+
+      await waitFor(() => {
+        const header = categoryHeader.closest('[role="columnheader"]');
+        expect(header).toHaveAttribute("aria-sort");
+      });
+      expect(duration).toBeLessThan(2000);
+    });
+  },
+};
+
+export const PerfPinnedRowIdsComputation: Story = {
+  render: () => {
+    const [pinnedRows, setPinnedRows] = React.useState(new Set(["1", "3"]));
+
+    const handlePinToggle = (rowId: string) => {
+      setPinnedRows((prev) => {
+        const next = new Set(prev);
+        if (next.has(rowId)) {
+          next.delete(rowId);
+        } else {
+          next.add(rowId);
+        }
+        return next;
+      });
+    };
+
+    return (
+      <DataTable.Root
+        columns={sortableColumns}
+        rows={rows}
+        pinnedRows={pinnedRows}
+        onPinToggle={handlePinToggle}
+        allowsSorting
+        selectionMode="multiple"
+      >
+        <PinnedIdsProbe />
+        <DataTable.Table>
+          <DataTable.Header />
+          <DataTable.Body />
+        </DataTable.Table>
+      </DataTable.Root>
+    );
+  },
+  args: {},
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "pinnedRowIds is pre-computed in context with correct order",
+      async () => {
+        const probe = canvas.getByTestId("pinned-ids-probe");
+        const ids = JSON.parse(probe.getAttribute("data-pinned-row-ids")!);
+        expect(ids).toEqual(["1", "3"]);
+      }
+    );
+  },
+};
+
+export const PerfRowMemoization: Story = {
+  render: () => {
+    const renderCountsRef = React.useRef<Record<string, number>>({});
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+
+    const trackedColumns: DataTableColumnItem[] = React.useMemo(
+      () => [
+        {
+          id: "name",
+          header: "Name",
+          accessor: (row: Record<string, unknown>) => row.name as ReactNode,
+          render: ({ row, value }) => {
+            const rowId = (row as DataTableRowItem).id;
+            renderCountsRef.current[rowId] =
+              (renderCountsRef.current[rowId] || 0) + 1;
+            return (
+              <span
+                data-testid={`rc-${rowId}`}
+                data-render-count={renderCountsRef.current[rowId]}
+              >
+                {value as string}
+              </span>
+            );
+          },
+        },
+        {
+          id: "role",
+          header: "Role",
+          accessor: (row: Record<string, unknown>) => row.role as ReactNode,
+        },
+      ],
+      []
+    );
+
+    return (
+      <DataTable
+        columns={trackedColumns}
+        rows={rows.slice(0, 5)}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+  args: {},
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Selection toggle does not re-render unaffected rows",
+      async () => {
+        const row3 = canvas.getByTestId("rc-3");
+        const initialCount = Number(row3.getAttribute("data-render-count"));
+
+        const checkboxes = canvas.getAllByRole("checkbox");
+        await userEvent.click(checkboxes[1]);
+
+        await waitFor(() => {
+          expect(checkboxes[1]).toBeChecked();
+        });
+
+        const afterCount = Number(
+          canvas.getByTestId("rc-3").getAttribute("data-render-count")
+        );
+        expect(afterCount).toBe(initialCount);
+      }
+    );
+  },
+};
+
+const stableFiveRows = rows.slice(0, 5);
+
+export const PerfSelectionContextIsolation: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+    return (
+      <DataTable.Root
+        columns={columns}
+        rows={stableFiveRows}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      >
+        <SelectionContextProbe />
+        <DataTable.Table>
+          <DataTable.Header />
+          <DataTable.Body />
+        </DataTable.Table>
+      </DataTable.Root>
+    );
+  },
+  args: {},
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Selection change does not re-render non-selection context consumers",
+      async () => {
+        const probe = canvas.getByTestId("ctx-probe");
+        const initialCount = Number(probe.getAttribute("data-render-count"));
+        expect(initialCount).toBe(1);
+
+        const checkboxes = canvas.getAllByRole("checkbox");
+        await userEvent.click(checkboxes[1]);
+
+        await waitFor(() => {
+          expect(checkboxes[1]).toBeChecked();
+        });
+
+        const afterCount = Number(
+          canvas.getByTestId("ctx-probe").getAttribute("data-render-count")
+        );
+        expect(afterCount).toBe(initialCount);
+      }
+    );
+  },
+};

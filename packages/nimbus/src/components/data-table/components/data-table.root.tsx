@@ -3,12 +3,17 @@ import { ResizableTableContainer } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
 import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
-import { DataTableContext, CustomSettingsContext } from "./data-table.context";
+import {
+  DataTableContext,
+  CustomSettingsContext,
+  TableSelectionContext,
+} from "./data-table.context";
 import type {
   DataTableProps,
   SortDescriptor,
   DataTableContextValue,
   CustomSettingsContextValue,
+  TableSelectionContextValue,
 } from "../data-table.types";
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
 
@@ -105,6 +110,11 @@ export const DataTableRoot = function DataTableRoot<
     [filteredRows, sortDescriptor, activeColumns, nestedKey, pinnedRows]
   );
 
+  const pinnedRowIds = useMemo(
+    () => sortedRows.filter((r) => pinnedRows.has(r.id)).map((r) => r.id),
+    [sortedRows, pinnedRows]
+  );
+
   const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
   const showSelectionColumn = selectionMode !== "none";
 
@@ -161,8 +171,6 @@ export const DataTableRoot = function DataTableRoot<
       visibleColumns,
       search,
       sortDescriptor,
-      selectedKeys,
-      defaultSelectedKeys,
       expanded,
       allowsSorting,
       selectionMode,
@@ -172,7 +180,6 @@ export const DataTableRoot = function DataTableRoot<
       density,
       nestedKey,
       onSortChange: handleSortChange,
-      onSelectionChange,
       onRowClick,
       onDetailsClick,
       toggleExpand,
@@ -181,6 +188,7 @@ export const DataTableRoot = function DataTableRoot<
       sortedRows,
       showExpandColumn,
       showSelectionColumn,
+      pinnedRowIds,
       isResizable,
       disabledKeys,
       onRowAction,
@@ -196,8 +204,6 @@ export const DataTableRoot = function DataTableRoot<
       visibleColumns,
       search,
       sortDescriptor,
-      selectedKeys,
-      defaultSelectedKeys,
       expanded,
       allowsSorting,
       selectionMode,
@@ -207,7 +213,6 @@ export const DataTableRoot = function DataTableRoot<
       density,
       nestedKey,
       handleSortChange,
-      onSelectionChange,
       onRowClick,
       onDetailsClick,
       toggleExpand,
@@ -216,6 +221,7 @@ export const DataTableRoot = function DataTableRoot<
       sortedRows,
       showExpandColumn,
       showSelectionColumn,
+      pinnedRowIds,
       isResizable,
       disabledKeys,
       onRowAction,
@@ -225,6 +231,15 @@ export const DataTableRoot = function DataTableRoot<
       onColumnsChange,
       onSettingsChange,
     ]
+  );
+
+  const selectionContextValue: TableSelectionContextValue = useMemo(
+    () => ({
+      selectedKeys,
+      defaultSelectedKeys,
+      onSelectionChange,
+    }),
+    [selectedKeys, defaultSelectedKeys, onSelectionChange]
   );
 
   const customSettingsContextValue: CustomSettingsContextValue = useMemo(
@@ -247,9 +262,11 @@ export const DataTableRoot = function DataTableRoot<
         <DataTableContext.Provider
           value={contextValue as DataTableContextValue<Record<string, unknown>>}
         >
-          <CustomSettingsContext.Provider value={customSettingsContextValue}>
-            {children}
-          </CustomSettingsContext.Provider>
+          <TableSelectionContext.Provider value={selectionContextValue}>
+            <CustomSettingsContext.Provider value={customSettingsContextValue}>
+              {children}
+            </CustomSettingsContext.Provider>
+          </TableSelectionContext.Provider>
         </DataTableContext.Provider>
       </ResizableTableContainer>
     </DataTableRootSlot>
