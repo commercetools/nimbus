@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback, useRef } from "react";
+import { useMemo, useState, useCallback, useRef, startTransition } from "react";
 import { ResizableTableContainer } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
@@ -124,46 +124,52 @@ export const DataTableRoot = function DataTableRoot<
 
   const toggleExpand = useCallback(
     (id: string) => {
-      const newExpanded = new Set(expanded);
-      if (newExpanded.has(id)) {
-        newExpanded.delete(id);
-      } else {
-        newExpanded.add(id);
-      }
-      onExpandRowsChange?.(newExpanded);
-      if (controlledExpandedRows === undefined) {
-        setInternalExpandedRows(newExpanded);
-      }
+      startTransition(() => {
+        const newExpanded = new Set(expanded);
+        if (newExpanded.has(id)) {
+          newExpanded.delete(id);
+        } else {
+          newExpanded.add(id);
+        }
+        onExpandRowsChange?.(newExpanded);
+        if (controlledExpandedRows === undefined) {
+          setInternalExpandedRows(newExpanded);
+        }
+      });
     },
     [expanded, onExpandRowsChange, controlledExpandedRows]
   );
 
   const togglePin = useCallback(
     (id: string) => {
-      if (onPinToggle) {
-        onPinToggle(id);
-      } else {
-        setInternalPinnedRows((prev) => {
-          const newPinnedRows = new Set(prev);
-          if (newPinnedRows.has(id)) {
-            newPinnedRows.delete(id);
-          } else {
-            newPinnedRows.add(id);
-          }
-          return newPinnedRows;
-        });
-      }
+      startTransition(() => {
+        if (onPinToggle) {
+          onPinToggle(id);
+        } else {
+          setInternalPinnedRows((prev) => {
+            const newPinnedRows = new Set(prev);
+            if (newPinnedRows.has(id)) {
+              newPinnedRows.delete(id);
+            } else {
+              newPinnedRows.add(id);
+            }
+            return newPinnedRows;
+          });
+        }
+      });
     },
     [onPinToggle]
   );
 
   const handleSortChange = useCallback(
     (descriptor: SortDescriptor) => {
-      if (onSortChange) {
-        onSortChange(descriptor);
-      } else {
-        setInternalSortDescriptor(descriptor);
-      }
+      startTransition(() => {
+        if (onSortChange) {
+          onSortChange(descriptor);
+        } else {
+          setInternalSortDescriptor(descriptor);
+        }
+      });
     },
     [onSortChange]
   );

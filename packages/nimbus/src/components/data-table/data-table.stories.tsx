@@ -1592,6 +1592,26 @@ export const ClickableRows: Story = {
       }
     );
 
+    await step("Double-clicking text does not trigger onRowClick", async () => {
+      const rows = canvas.getAllByRole("row");
+      const firstDataRow = rows[1];
+      const cells = within(firstDataRow).getAllByRole("gridcell");
+      const textCell = cells.find(
+        (cell) => !within(cell).queryByRole("checkbox")
+      );
+      expect(textCell).toBeTruthy();
+
+      await userEvent.dblClick(textCell!);
+
+      // Wait past the 300ms click timeout to confirm it was cancelled
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // No modal should have opened
+      expect(
+        within(document.body).queryByRole("dialog")
+      ).not.toBeInTheDocument();
+    });
+
     await step("Disabling clickable rows prevents row clicks", async () => {
       // Uncheck the "Clickable Rows" checkbox
       const clickableCheckbox = canvas.getByRole("checkbox", {
