@@ -6,7 +6,6 @@ import type {
   ComboBoxLeadingElementSlotProps,
   ComboBoxContentSlotProps,
   ComboBoxTagGroupSlotProps,
-  ComboBoxTagSlotProps,
   ComboBoxInputSlotProps,
   ComboBoxPopoverSlotProps,
   ComboBoxListBoxSlotProps,
@@ -49,12 +48,6 @@ export const ComboBoxTagGroupSlot = withContext<
   HTMLDivElement,
   ComboBoxTagGroupSlotProps
 >("div", "tagGroup");
-
-// Tag slot - individual tag element in multi-select (lightweight replacement for TagGroup.Tag)
-export const ComboBoxTagSlot = withContext<
-  HTMLSpanElement,
-  ComboBoxTagSlotProps
->("span", "tag");
 
 // Input slot - wrapper for React Aria Input component
 export const ComboBoxInputSlot = withContext<

@@ -7,10 +7,6 @@
 export default {
   clearSelection: `Auswahl löschen`,
   options: `Optionsmenü`,
-  overflowTagCount: (args: Record<string, string | number>) =>
-    `+${args.count} more`,
-  removeTag: (args: Record<string, string | number>) =>
-    `Remove tag ${args.tagName}`,
   selectedValues: `Ausgewählte Werte`,
   toggleOptions: `Optionen anzeigen/ verbergen`,
 };

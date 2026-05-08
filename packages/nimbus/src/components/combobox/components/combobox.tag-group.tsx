@@ -1,14 +1,14 @@
-import { memo, useCallback, useContext } from "react";
-import { TagGroupContext, ButtonContext } from "react-aria-components";
-import type { Key } from "react-stately";
-import { Close as CloseIcon } from "@commercetools/nimbus-icons";
-import { Box } from "@/components/box";
-import { IconButton } from "@/components/icon-button/icon-button";
+import { useContext } from "react";
+import {
+  TagGroupContext,
+  type ContextValue,
+  type TagGroupProps,
+} from "react-aria-components";
+import { TagGroup } from "@/components";
 import { useComboBoxRootContext } from "./combobox.root-context";
-import { ComboBoxTagGroupSlot, ComboBoxTagSlot } from "../combobox.slots";
+import { ComboBoxTagGroupSlot } from "../combobox.slots";
+import type { ComboBoxTagGroupProps } from "../combobox.types";
 import { extractStyleProps } from "@/utils";
-import { useLocalizedStringFormatter } from "@/hooks";
-import { comboboxMessagesStrings } from "../combobox.messages";
 
 /**
  * # ComboBox.TagGroup (Internal Component)
@@ -16,110 +16,63 @@ import { comboboxMessagesStrings } from "../combobox.messages";
  * Internal component that displays selected items as tags in multi-select mode.
  * Automatically rendered by ComboBox.Trigger - not exposed to consumers.
  *
- * Uses lightweight plain elements instead of React Aria's TagGroup collection
- * system for performance — avoids the collection reconciliation overhead when
- * rendering many selected tags.
- *
  * Consumes React-Aria's TagGroupContext, which is populated by the
  * TagGroupContextProvider in ComboBox.Root with:
  * - items: selected items array from collection
  * - onRemove: handler to remove tags
+ * - size: tag size matching ComboBox size
  * - aria-label: accessible label for the tag group
  * - id: generated in ComboBox.Root
+ * - selectionMode: "none" (tags are not selectable)
+ * - disabledKeys: disabled tag keys
  *
  * Renders null in single-select mode to avoid unnecessary DOM elements.
  *
  * @internal
  * @supportsStyleProps
  */
-
-type LightweightTagProps = {
-  itemKey: Key;
-  itemValue: string;
-  isDisabled: boolean;
-  onRemove?: (keys: Set<Key>) => void;
-};
-
-const LightweightTag = memo(function LightweightTag({
-  itemKey,
-  itemValue,
-  isDisabled,
-  onRemove,
-}: LightweightTagProps) {
-  const msg = useLocalizedStringFormatter(comboboxMessagesStrings);
-
-  const handleRemove = useCallback(() => {
-    onRemove?.(new Set([itemKey]));
-  }, [onRemove, itemKey]);
-
-  return (
-    <ComboBoxTagSlot role="listitem" data-disabled={isDisabled || undefined}>
-      {itemValue}
-      {!isDisabled && onRemove && (
-        <ButtonContext.Provider value={{}}>
-          <IconButton
-            size="2xs"
-            variant="ghost"
-            colorPalette="neutral"
-            onPress={handleRemove}
-            aria-label={msg.format("removeTag", { tagName: itemValue })}
-          >
-            <CloseIcon />
-          </IconButton>
-        </ButtonContext.Provider>
-      )}
-    </ComboBoxTagSlot>
-  );
-});
-
-export const ComboBoxTagGroup = (props: Record<string, unknown>) => {
-  const { selectionMode, getKey, getTextValue, isDisabled, isReadOnly } =
+export const ComboBoxTagGroup = (props: ComboBoxTagGroupProps) => {
+  const { selectionMode, size, getKey, getTextValue, isDisabled, isReadOnly } =
     useComboBoxRootContext();
   const [styleProps, functionalProps] = extractStyleProps(props);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const tagGroupContext = useContext<any>(TagGroupContext);
+  const tagGroupContext =
+    useContext<
+      ContextValue<TagGroupProps & { items?: object[] }, HTMLDivElement>
+    >(TagGroupContext);
 
-  const items: object[] =
+  // Extract items from context, handling both direct values and slotted values
+  const items =
     (tagGroupContext && "items" in tagGroupContext
       ? tagGroupContext.items
       : undefined) ?? [];
 
-  const onRemove: ((keys: Set<Key>) => void) | undefined =
-    tagGroupContext && "onRemove" in tagGroupContext
-      ? tagGroupContext.onRemove
-      : undefined;
-
-  const contextId: string | undefined =
-    tagGroupContext && "id" in tagGroupContext ? tagGroupContext.id : undefined;
-
-  const contextAriaLabel: string | undefined =
-    tagGroupContext && "aria-label" in tagGroupContext
-      ? tagGroupContext["aria-label"]
-      : undefined;
-
+  // Only render in multi-select mode
   if (selectionMode !== "multiple") {
     return null;
   }
 
   return (
-    <ComboBoxTagGroupSlot {...styleProps} {...functionalProps}>
-      <Box
-        role="list"
-        id={contextId}
-        aria-label={contextAriaLabel}
-        display="contents"
-      >
-        {items.map((item) => (
-          <LightweightTag
-            key={getKey(item)}
-            itemKey={getKey(item)}
-            itemValue={getTextValue(item)}
-            isDisabled={isDisabled || isReadOnly}
-            onRemove={onRemove}
-          />
-        ))}
-      </Box>
+    <ComboBoxTagGroupSlot {...styleProps} {...functionalProps} asChild>
+      {/* TagGroup.Root receives id from TagGroupContext set by custom-context */}
+      <TagGroup.Root size={size}>
+        <TagGroup.TagList items={items} display="contents">
+          {(item) => {
+            const itemKey = getKey(item);
+            const itemValue = getTextValue(item);
+            return (
+              <TagGroup.Tag
+                id={itemKey}
+                textValue={itemValue}
+                isDisabled={isDisabled || isReadOnly}
+                maxW="100%"
+              >
+                {itemValue}
+              </TagGroup.Tag>
+            );
+          }}
+        </TagGroup.TagList>
+      </TagGroup.Root>
     </ComboBoxTagGroupSlot>
   );
 };

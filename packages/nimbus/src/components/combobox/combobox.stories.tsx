@@ -254,7 +254,7 @@ export const MultiSelectCustomOptions: Story = {
       // Find and click remove button for Lion
       const lionTag = await within(await getTagList(canvas.getByRole("group")))
         .getByText("Lion")
-        .closest('[role="listitem"]');
+        .closest('[role="row"]');
       expect(lionTag).toBeInTheDocument();
 
       const removeButton = within(lionTag as HTMLElement).getByRole("button", {
@@ -6118,7 +6118,8 @@ export const PerformanceManySelected: Story = {
 
     await step("Verify all 170 tags are rendered", async () => {
       const tagList = await getTagList(canvasElement);
-      expect(tagList.childNodes.length).toBe(PERF_SELECTED_COUNT);
+      const tags = tagList.querySelectorAll('[role="row"]');
+      expect(tags.length).toBe(PERF_SELECTED_COUNT);
     });
 
     await step("Remove a tag via remove button", async () => {
@@ -6130,7 +6131,8 @@ export const PerformanceManySelected: Story = {
 
       await waitFor(async () => {
         const tagList = await getTagList(canvasElement);
-        expect(tagList.childNodes.length).toBe(PERF_SELECTED_COUNT - 1);
+        const tags = tagList.querySelectorAll('[role="row"]');
+        expect(tags.length).toBe(PERF_SELECTED_COUNT - 1);
       });
     });
 
