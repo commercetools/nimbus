@@ -35,10 +35,6 @@
     "developer_comment": "aria-label for combobox menu options",
     "string": "Optionsmenü"
   },
-  "Nimbus.ComboBox.removeTag": {
-    "developer_comment": "aria-label for remove tag button in multi-select ComboBox",
-    "string": "Remove tag {tagName}"
-  },
   "Nimbus.ComboBox.selectedValues": {
     "developer_comment": "aria-label for selected values tag group",
     "string": "Ausgewählte Werte"
