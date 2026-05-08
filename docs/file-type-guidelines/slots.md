@@ -66,6 +66,82 @@ export const ButtonRoot: SlotComponent<HTMLButtonElement, ButtonRootProps> =
   withContext<HTMLButtonElement, ButtonRootProps>("button", "root");
 ```
 
+### MUST Invoke Slot Factories at Module Scope
+
+`createRecipeContext`, `createSlotRecipeContext`, `withProvider`, `withContext`,
+and any equivalent factory that returns a React component MUST be invoked at
+module scope. The identity of the component returned by these factories is what
+React uses to reconcile the rendered subtree. Re-invoking a factory inside a
+component or function body produces a new component identity on every render,
+which forces React to unmount and remount the entire styled subtree each time
+the parent renders. When the slot wraps a React Aria collection primitive
+(`TagList`, `ListBox`, `GridList`, `Menu`), the collection is also rebuilt from
+scratch on every render. The cost scales with subtree size and only manifests at
+high item counts, so the bug commonly evades small-scale review.
+
+```typescript
+// menu.slots.tsx
+import {
+  createSlotRecipeContext,
+  type HTMLChakraProps,
+} from "@chakra-ui/react/styled-system";
+import type { SlotComponent } from "../utils/slot-types";
+
+// Factory invoked once, at module scope.
+const { withProvider, withContext } = createSlotRecipeContext({
+  key: "nimbusMenu",
+});
+
+// Each slot is also defined once, at module scope.
+export type MenuRootSlotProps = HTMLChakraProps<"div">;
+export const MenuRootSlot: SlotComponent<HTMLDivElement, MenuRootSlotProps> =
+  withProvider<HTMLDivElement, MenuRootSlotProps>("div", "root");
+```
+
+### Threading Generics Through Slot Wrappers
+
+When a slot needs to expose a generic type parameter to consumers (for example
+`<T extends object>` to type collection items), define the slot once at module
+scope with the generic erased to a concrete type, and preserve the generic only
+at the wrapper's type boundary. The runtime component is identical for every `T`
+— React Aria collection components do not branch on the item type at runtime —
+so this pattern is type-safe and keeps the styled-component identity stable
+across renders.
+
+```typescript
+// tag-group.slots.tsx
+import type { ReactElement } from "react";
+import {
+  createSlotRecipeContext,
+  type HTMLChakraProps,
+} from "@chakra-ui/react/styled-system";
+import { TagList as RaTagList } from "react-aria-components";
+import type { SlotComponent } from "../utils/slot-types";
+import type {
+  TagGroupTagListComponent,
+  TagGroupTagListProps,
+} from "./tag-group.types";
+
+const { withContext } = createSlotRecipeContext({ key: "nimbusTagGroup" });
+
+// Define the slot once at module scope, with the generic erased to `object`.
+const TagListSlotInner: SlotComponent<
+  HTMLDivElement,
+  TagGroupTagListProps<object>
+> = withContext<HTMLDivElement, TagGroupTagListProps<object>>(
+  RaTagList,
+  "tagList"
+);
+
+// The wrapper preserves the generic at the type boundary and delegates to the
+// stable inner component at runtime.
+export const TagGroupTagListSlot = <T extends object>(
+  props: TagGroupTagListProps<T>
+): ReactElement<TagGroupTagListProps<T>, TagGroupTagListComponent<T>> => {
+  return <TagListSlotInner {...(props as TagGroupTagListProps<object>)} />;
+};
+```
+
 ## SlotComponent Utility Type
 
 The `SlotComponent<TElement, TProps>` utility type provides explicit return type
@@ -338,6 +414,12 @@ export const ButtonRoot: SlotComponent<HTMLButtonElement, ButtonRootProps> =
 - [ ] Root slot uses `withProvider` (for multi-slot components)
 - [ ] Child slots use `withContext` (for multi-slot components)
 - [ ] Single-slot components use `withContext`
+- [ ] **All slot factory calls (`createRecipeContext`,
+      `createSlotRecipeContext`, `withProvider`, `withContext`) are at module
+      scope, never inside a component or function body**
+- [ ] **Generic-typed slot wrappers define the inner slot once at module scope
+      with the generic erased to a concrete type, and preserve the generic only
+      at the wrapper's type boundary**
 - [ ] Recipe `key` string used in context creation (matches the registered
       recipe key in `theme/slot-recipes/index.ts`)
 - [ ] `asChild` pattern used with React Aria when needed

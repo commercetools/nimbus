@@ -177,6 +177,84 @@ export type SlotComponent<
 >;
 ```
 
+## Factory Call Site (CRITICAL)
+
+**`createRecipeContext`, `createSlotRecipeContext`, `withProvider`,
+`withContext`, and any equivalent factory that returns a React component MUST
+be invoked at module scope.**
+
+The component identity returned by these factories is what React uses to
+reconcile the rendered subtree. Re-invoking a factory inside a component or
+function body produces a new component identity on every render, which forces
+React to unmount and remount the entire styled subtree each time the parent
+renders. When the slot wraps a React Aria collection primitive (`TagList`,
+`ListBox`, `GridList`, `Menu`), the collection is also rebuilt from scratch
+on every render. The cost scales with subtree size and only manifests at
+high item counts, so the bug commonly evades small-scale review.
+
+```typescript
+// menu.slots.tsx
+import {
+  createSlotRecipeContext,
+  type HTMLChakraProps,
+} from "@chakra-ui/react/styled-system";
+import type { SlotComponent } from "../utils/slot-types";
+
+// Factory invoked once, at module scope.
+const { withProvider, withContext } = createSlotRecipeContext({
+  key: "nimbusMenu",
+});
+
+// Each slot is also defined once, at module scope.
+export type MenuRootSlotProps = HTMLChakraProps<"div">;
+export const MenuRootSlot: SlotComponent<HTMLDivElement, MenuRootSlotProps> =
+  withProvider<HTMLDivElement, MenuRootSlotProps>("div", "root");
+```
+
+### Generic-Typed Slot Wrappers
+
+When a slot must expose a generic type parameter to consumers (for example
+`<T extends object>` to type collection items), define the slot once at
+module scope with the generic erased to a concrete type, and preserve the
+generic only at the wrapper's type boundary. The runtime component is
+identical for every `T` — React Aria collection components do not branch on
+the item type at runtime — so this pattern is type-safe and keeps the
+styled-component identity stable across renders.
+
+```typescript
+// tag-group.slots.tsx
+import type { ReactElement } from "react";
+import {
+  createSlotRecipeContext,
+  type HTMLChakraProps,
+} from "@chakra-ui/react/styled-system";
+import { TagList as RaTagList } from "react-aria-components";
+import type { SlotComponent } from "../utils/slot-types";
+import type {
+  TagGroupTagListComponent,
+  TagGroupTagListProps,
+} from "./tag-group.types";
+
+const { withContext } = createSlotRecipeContext({ key: "nimbusTagGroup" });
+
+// Define the slot once at module scope, with the generic erased to `object`.
+const TagListSlotInner: SlotComponent<
+  HTMLDivElement,
+  TagGroupTagListProps<object>
+> = withContext<HTMLDivElement, TagGroupTagListProps<object>>(
+  RaTagList,
+  "tagList"
+);
+
+// The wrapper preserves the generic at the type boundary and delegates to the
+// stable inner component at runtime.
+export const TagGroupTagListSlot = <T extends object>(
+  props: TagGroupTagListProps<T>
+): ReactElement<TagGroupTagListProps<T>, TagGroupTagListComponent<T>> => {
+  return <TagListSlotInner {...(props as TagGroupTagListProps<object>)} />;
+};
+```
+
 ## File Structure Patterns
 
 ### Pattern 1: Standard Recipe (Single Slot)
@@ -522,6 +600,9 @@ You MUST validate against these requirements:
 - [ ] Child slots use `withContext` (for multi-slot)
 - [ ] Single-slot uses `withContext`
 - [ ] Context parameters correct (element type, slot name)
+- [ ] **All factory calls (`createRecipeContext`, `createSlotRecipeContext`,
+      `withProvider`, `withContext`) are at module scope, never inside a
+      component or function body**
 
 #### Type Safety
 
@@ -529,6 +610,9 @@ You MUST validate against these requirements:
 - [ ] TypeScript generics match element types
 - [ ] Slot names match recipe slot definitions
 - [ ] Props interfaces appropriate for element type
+- [ ] **Generic-typed slot wrappers define the inner slot once at module
+      scope with the generic erased to a concrete type, and preserve the
+      generic only at the wrapper's type boundary**
 
 #### Integration
 

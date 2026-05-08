@@ -65,6 +65,38 @@ import { Button as RaButton } from "react-aria-components";
 import { Select as RaSelect } from "react-aria-components";
 ```
 
+### Preserving WAI-ARIA Composite Widget Patterns
+
+React Aria primitives such as `TagGroup`, `ListBox`, `GridList`, `Menu`, and
+`Table` implement WAI-ARIA composite-widget patterns deliberately. These
+patterns provide:
+
+- A single Tab stop for the entire widget, with arrow-key navigation between
+  items
+- `Delete` / `Backspace` on a focused row triggers `onRemove` and moves focus to
+  a neighbor automatically
+- Focus restoration after item removal
+- RTL-aware arrow-key direction
+
+The cost of these patterns is invisible at small item counts but becomes
+critical at scale. A multi-select with 170 selected tags rendered under the
+`grid` / `row` pattern is a single Tab stop with arrow navigation; the same UI
+flattened to `role="list"` plus a per-item `<button>` requires 170 Tab presses
+to traverse, makes `Delete` a no-op, and drops focus to `<body>` after each
+removal.
+
+When an optimization or styling change is tempted to drop a React Aria
+composite-widget primitive in favor of flatter ARIA roles, the bar is:
+
+1. Profile data showing the primitive itself is the dominant cost
+2. A documented plan that preserves the keyboard-navigation and
+   focus-restoration contract
+3. Review by the accessibility owner of record
+
+Absent these, retain the React Aria primitive and address the performance issue
+at a lower layer (see
+[Performance Investigation Discipline](#performance-investigation-discipline)).
+
 ## Recipe & Slot Decision Matrix
 
 ### When to Create Recipes/Slots
@@ -402,6 +434,44 @@ code lives (`src/components/` vs `src/patterns/`) and what file infrastructure
 is needed.
 
 See the full guide: **[Component vs Pattern](./component-vs-pattern.md)**
+
+## Performance Investigation Discipline
+
+When a performance issue is reported in a high-level component, identify and fix
+the cost at the lowest layer where it lives before changing the consumer. The
+dominant cost is usually one or two layers below the symptom — in a styling
+factory, a slot wrapper, a recipe, or a React Aria primitive — not in the
+consumer's own render code.
+
+### Process
+
+1. Reproduce with a representative load (high item counts, frequent updates) and
+   capture a profile.
+2. Inspect mount / unmount churn first. A subtree that unmounts and remounts on
+   every render typically signals a stale component identity (e.g., a
+   styled-component factory invoked inside a render path — see
+   [Slots: MUST Invoke Slot Factories at Module Scope](./slots.md#must-invoke-slot-factories-at-module-scope))
+   rather than legitimate work.
+3. Walk the cost from the consumer down through wrappers, slot factories, recipe
+   contexts, and React Aria primitives. Apply the fix at the layer where the
+   cost actually lives. Other consumers of the same primitive benefit
+   automatically.
+
+### Why Re-implementing Inside the Consumer Is the Last Resort
+
+Re-implementing rendering inside a high-level consumer (for example, rebuilding
+collection rendering inside ComboBox) creates a fork of the underlying
+primitive. The fork:
+
+- Hides the original bug from every other consumer of that primitive
+- Drifts from upstream React Aria fixes for accessibility, RTL, and focus
+  management
+- Frequently regresses keyboard accessibility silently (see
+  [Preserving WAI-ARIA Composite Widget Patterns](#preserving-wai-aria-composite-widget-patterns))
+- Adds a maintenance surface the design system was supposed to absorb
+
+If the design-system primitive is genuinely the bottleneck and cannot be fixed
+without breaking its public contract, escalate the discussion before forking.
 
 ## Related Guidelines
 
