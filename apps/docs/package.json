@@ -43,7 +43,6 @@
     "remark-mark-highlight": "^0.1.1",
     "slug": "^11.0.1",
     "use-debounce": "^10.1.1",
-    "vite-tsconfig-paths": "^6.1.1",
     "zod": "catalog:utils"
   },
   "devDependencies": {
