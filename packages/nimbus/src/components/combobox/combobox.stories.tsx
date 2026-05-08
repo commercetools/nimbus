@@ -3,6 +3,7 @@ import { useState, useCallback } from "react";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 import { Box, Dialog, FormField, Stack, Text } from "@commercetools/nimbus";
 import { Search } from "@commercetools/nimbus-icons";
+import { ReactProfilerWrapper } from "@github-ui/storybook-addon-performance-panel/components";
 import { ComboBox } from "./combobox";
 import { type SimpleOption, simpleOptions } from "./utils/combobox.test-data";
 import {
@@ -1985,6 +1986,101 @@ export const KeyboardBackspaceRemovesTag: Story = {
       // Koala should remain
       expect(canvas.getByText("Koala")).toBeInTheDocument();
     });
+  },
+};
+
+/**
+ * Keyboard: Tag Group Navigation
+ * Tests that the embedded TagGroup in multi-select mode preserves RAC's
+ * accessible keyboard pattern: single Tab stop, arrow navigation between
+ * tags, and Delete/Backspace to remove a focused tag with focus restoration.
+ */
+export const KeyboardTagGroupNavigation: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3, 4,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify initial tags render as a grid", async () => {
+      const tagGrid = canvas.getByRole("grid");
+      expect(tagGrid).toBeInTheDocument();
+      const tags = within(tagGrid).getAllByRole("row");
+      expect(tags).toHaveLength(4);
+    });
+
+    await step(
+      "Tab enters the tag group and arrow keys navigate between tags",
+      async () => {
+        // Click the input to establish focus, then Shift+Tab into the tag grid
+        const input = canvas.getByRole("combobox");
+        await userEvent.click(input);
+        expect(input).toHaveFocus();
+
+        await userEvent.tab({ shift: true });
+        const tagGrid = canvas.getByRole("grid");
+        expect(tagGrid.contains(document.activeElement)).toBe(true);
+
+        // Navigate to the first tag with Home, then arrow through
+        await userEvent.keyboard("{Home}");
+        expect(document.activeElement?.textContent).toContain("Koala");
+
+        await userEvent.keyboard("{ArrowRight}");
+        expect(document.activeElement?.textContent).toContain("Kangaroo");
+
+        await userEvent.keyboard("{ArrowRight}");
+        expect(document.activeElement?.textContent).toContain("Platypus");
+
+        await userEvent.keyboard("{ArrowLeft}");
+        expect(document.activeElement?.textContent).toContain("Kangaroo");
+      }
+    );
+
+    await step(
+      "Delete removes focused tag and moves focus to neighbor",
+      async () => {
+        // Focus is on Kangaroo from previous step's ArrowLeft
+        expect(document.activeElement?.textContent).toContain("Kangaroo");
+
+        await userEvent.keyboard("{Delete}");
+
+        // Kangaroo should be removed
+        await waitFor(() => {
+          expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+        });
+
+        // Focus should move to a neighboring tag (not fall to body)
+        const tagGrid = canvas.getByRole("grid");
+        expect(tagGrid.contains(document.activeElement)).toBe(true);
+      }
+    );
+
+    await step(
+      "Backspace removes focused tag from within the tag group",
+      async () => {
+        await userEvent.keyboard("{Backspace}");
+
+        // A tag should be removed — 2 remaining (started with 4, removed 2)
+        await waitFor(() => {
+          const tagGrid = canvas.getByRole("grid");
+          const remaining = within(tagGrid).getAllByRole("row");
+          expect(remaining).toHaveLength(2);
+        });
+      }
+    );
   },
 };
 
@@ -6064,5 +6160,192 @@ export const ControlledInputWithSelection: Story = {
 
     // Verify controlled value is displayed, not selected item text
     expect(input).toHaveValue("Custom Value");
+  },
+};
+
+// ============================================================
+// PERFORMANCE
+// ============================================================
+
+const PERF_OPTION_COUNT = 200;
+const PERF_SELECTED_COUNT = 170;
+
+const perfOptions: SimpleOption[] = Array.from(
+  { length: PERF_OPTION_COUNT },
+  (_, i) => ({
+    id: i + 1,
+    name: `Option ${String(i + 1).padStart(3, "0")}`,
+  })
+);
+
+const perfSelectedKeys = perfOptions
+  .slice(0, PERF_SELECTED_COUNT)
+  .map((o) => o.id);
+
+/**
+ * Performance: 170 selected options in multi-select mode.
+ * Renders a ComboBox with 200 total options and 170 pre-selected,
+ * using lightweight tags instead of React Aria's TagGroup collection system.
+ */
+export const PerformanceManySelected: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] =
+      useState<(string | number)[]>(perfSelectedKeys);
+
+    return (
+      <Box maxWidth="400px">
+        <ReactProfilerWrapper id="ComboBox-170-selected">
+          <ComposedComboBox<SimpleOption>
+            aria-label="Performance test combobox"
+            items={perfOptions}
+            selectionMode="multiple"
+            selectedKeys={selectedKeys}
+            onSelectionChange={setSelectedKeys}
+          />
+        </ReactProfilerWrapper>
+      </Box>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const comboBox = canvas.getByRole("combobox");
+
+    await step("Verify all 170 tags are rendered", async () => {
+      const tagList = await getTagList(canvasElement);
+      const tags = tagList.querySelectorAll('[role="row"]');
+      expect(tags.length).toBe(PERF_SELECTED_COUNT);
+    });
+
+    await step("Remove a tag via remove button", async () => {
+      const removeButton = canvas.getByRole("button", {
+        name: /remove tag option 001/i,
+      });
+      expect(removeButton).toBeTruthy();
+      await userEvent.click(removeButton);
+
+      await waitFor(async () => {
+        const tagList = await getTagList(canvasElement);
+        const tags = tagList.querySelectorAll('[role="row"]');
+        expect(tags.length).toBe(PERF_SELECTED_COUNT - 1);
+      });
+    });
+
+    await step("Select an unselected option via popover", async () => {
+      await userEvent.click(comboBox);
+      await userEvent.type(comboBox, "200");
+
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(1);
+      });
+
+      const option = findOptionByText("Option 200");
+      expect(option).toBeTruthy();
+      await userEvent.click(option!);
+
+      await waitFor(() => {
+        expect(canvas.getByText("Option 200")).toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/** Helper: find the content area (scrollable container for tags + input) */
+const getContentArea = (root: HTMLElement) =>
+  root.querySelector('[class*="nimbus-combobox__content"]') as HTMLElement;
+
+/**
+ * Verifies content area scroll behavior with many selected tags:
+ * - Content area is scrollable when tags overflow
+ * - Selecting a new item scrolls to bottom (input stays visible)
+ * - Removing a tag does NOT scroll to bottom
+ */
+export const ContentAreaScrollBehavior: Story = {
+  render: () => {
+    const initialKeys = perfOptions.slice(0, 20).map((o) => o.id);
+    const [selectedKeys, setSelectedKeys] =
+      useState<(string | number)[]>(initialKeys);
+
+    return (
+      <Box maxWidth="300px">
+        <ComposedComboBox<SimpleOption>
+          aria-label="Scroll behavior test"
+          items={perfOptions}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+        />
+      </Box>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const comboBox = canvas.getByRole("combobox");
+    const group = canvasElement.querySelector('[role="group"]') as HTMLElement;
+
+    await step("Content area is scrollable with many tags", async () => {
+      const content = getContentArea(group);
+      expect(content).toBeTruthy();
+
+      await waitFor(() => {
+        expect(content.scrollHeight).toBeGreaterThan(content.clientHeight);
+      });
+    });
+
+    await step("Selecting a new item scrolls content to bottom", async () => {
+      const content = getContentArea(group);
+
+      // Scroll to top first
+      content.scrollTop = 0;
+      await waitFor(() => {
+        expect(content.scrollTop).toBe(0);
+      });
+
+      // Select a new option
+      await userEvent.type(comboBox, "030");
+      await waitFor(() => {
+        const options = getListboxOptions();
+        expect(options.length).toBe(1);
+      });
+
+      const option = findOptionByText("Option 030");
+      expect(option).toBeTruthy();
+      await userEvent.click(option!);
+
+      // After selection, content should be scrolled near bottom
+      await waitFor(() => {
+        const distanceFromBottom =
+          content.scrollHeight - content.scrollTop - content.clientHeight;
+        expect(distanceFromBottom).toBeLessThan(50);
+      });
+    });
+
+    await step("Removing a tag does NOT scroll content to bottom", async () => {
+      const content = getContentArea(group);
+
+      // Scroll to top
+      content.scrollTop = 0;
+      await waitFor(() => {
+        expect(content.scrollTop).toBe(0);
+      });
+
+      // Remove a tag
+      const removeButton = canvas.getByRole("button", {
+        name: /remove tag option 001/i,
+      });
+      await userEvent.click(removeButton);
+
+      // Wait for the tag to be removed
+      await waitFor(() => {
+        expect(
+          canvas.queryByRole("button", { name: /remove tag option 001/i })
+        ).not.toBeInTheDocument();
+      });
+
+      // Content should still be near the top (not scrolled to bottom)
+      expect(content.scrollTop).toBeLessThan(50);
+    });
   },
 };

@@ -37,7 +37,7 @@ export const ComboBoxPopover = ({
       <Popover
         ref={ref}
         isNonModal={true}
-        autoFocus={true}
+        autoFocus={false}
         {...functionalProps}
       >
         {children}

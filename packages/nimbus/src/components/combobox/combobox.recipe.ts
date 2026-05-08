@@ -103,6 +103,12 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       gap: "100",
       minWidth: 0,
       cursor: "text",
+      maxHeight: "var(--combobox-content-max-height, 40svh)",
+      overflowY: "auto",
+      scrollbarWidth: "thin",
+      scrollbarColor: "var(--scrollbar-color) var(--scrollbar-bg)",
+      "--scrollbar-color": "colors.neutral.8",
+      "--scrollbar-bg": "colors.neutral.3",
       "[data-disabled='true'] &": {
         pointerEvents: "none",
       },
