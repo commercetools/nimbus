@@ -43,12 +43,13 @@ export const useDataTableContext = <
   const interactionData = useContext(
     InteractionContext
   ) as InteractionContextValue<T> | null;
+  const selection = useContext(TableSelectionContext);
   if (!context) {
     throw new Error("DataTable components must be used within DataTable.Root");
   }
   return useMemo(
-    () => ({ ...context, ...interactionData }),
-    [context, interactionData]
+    () => ({ ...context, ...interactionData, ...selection }),
+    [context, interactionData, selection]
   ) as DataTableContextValue<T>;
 };
 

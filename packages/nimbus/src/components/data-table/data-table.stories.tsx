@@ -21,6 +21,7 @@ import {
   DataTable,
 } from "@/components";
 import { UPDATE_ACTIONS } from "./constants";
+import { useStableDataTableContext } from "./components/data-table.context";
 import { Palette } from "@commercetools/nimbus-icons";
 
 import {
@@ -4587,7 +4588,7 @@ const PinnedIdsProbe = () => {
 };
 
 const SelectionContextProbe = React.memo(function SelectionContextProbe() {
-  DataTable.useDataTableContext();
+  useStableDataTableContext();
   const renderCount = React.useRef(0);
   renderCount.current++;
   return (
