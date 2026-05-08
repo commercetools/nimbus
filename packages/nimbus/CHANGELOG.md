@@ -1,5 +1,148 @@
 # @commercetools/nimbus
 
+## 3.0.0
+
+### Major Changes
+
+- [#1359](https://github.com/commercetools/nimbus/pull/1359)
+  [`ada970e`](https://github.com/commercetools/nimbus/commit/ada970ebce7f0fa8ad426774d0a4b28243acd575)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Card`: reworked
+  architecture and API.
+
+  **Breaking changes**
+  - `Card.Content` is renamed to `Card.Body`. Replace all usages.
+  - The four ad-hoc props `cardPadding`, `borderStyle`, `elevation`, and
+    `backgroundStyle` are replaced by the standard Nimbus `variant` and `size`
+    props.
+    - `variant` (default `"outlined"`) — eight kebab-case names enumerating
+      every combination of three independent visual axes: `outlined` (border),
+      `elevated` (shadow), `muted` (background). Names list each enabled axis in
+      the fixed order `outlined-elevated-muted` joined with `-`; the all-off
+      case is `plain`. Full set:
+      `"plain" | "outlined" | "elevated" | "outlined-elevated" | "muted" | "outlined-muted" | "elevated-muted" | "outlined-elevated-muted"`.
+    - `size` (default `"md"`) — `"sm" | "md" | "lg"`, controlling internal
+      padding via the `--card-spacing` CSS variable.
+  - `Card.Root` is now a block-level `flex` container (previously
+    `inline-flex`), filling available width by default.
+
+  **New**
+  - `Card.Footer` slot for actions and metadata below the body.
+  - Free-form `Card.Root` — when used without `Card.Header` / `Card.Body` /
+    `Card.Footer`, padding now lives on the Root itself so arbitrary children
+    never render flush against the border.
+  - Slot-based ARIA labelling: placing `<Heading slot="title">` or
+    `<Text slot="description">` inside a Card automatically wires
+    `aria-labelledby` / `aria-describedby` on the root. The card itself stays a
+    plain `<div>` — set `role` explicitly if a landmark role is needed.
+
+  **Fixed**
+  - Card now renders correctly under React Strict Mode (the previous
+    context-registration pattern caused a double-render cycle).
+
+### Minor Changes
+
+- [#1404](https://github.com/commercetools/nimbus/pull/1404)
+  [`e5b94d6`](https://github.com/commercetools/nimbus/commit/e5b94d63e62afb5c25d9ca3c5878c281853f9342)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Add FormActionBar
+  pattern — a flat-props wrapper that composes save, cancel, and optional delete
+  buttons for form footers. Works inside any footer slot (`DefaultPage.Footer`,
+  `ModalPage.Footer`, `Drawer.Footer`, `Dialog.Footer`).
+
+  Non-English locales currently ship with English placeholder strings; final
+  translations will land via Transifex.
+
+- [#1388](https://github.com/commercetools/nimbus/pull/1388)
+  [`be3fdac`](https://github.com/commercetools/nimbus/commit/be3fdacd118805fbb245ec1c9f6cd43c76433c55)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - feat(info-dialog): add
+  InfoDialog pattern (FEC-437)
+
+  Also fixes a pre-existing bug in `Dialog.Content` where `aria-label` passed to
+  `Dialog.Root` was stored in context but never forwarded to the underlying
+  `<dialog>` element. ARIA overrides on `Dialog.Root` now apply as expected.
+
+- [#1310](https://github.com/commercetools/nimbus/pull/1310)
+  [`f7130ac`](https://github.com/commercetools/nimbus/commit/f7130acd8a717fb98d7b28b9abbb2e9a18115cfd)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Add ScrollArea layout
+  component — a scrollable, keyboard accessible container with custom-styled
+  scrollbar overlays.
+
+- [#1434](https://github.com/commercetools/nimbus/pull/1434)
+  [`3a27255`](https://github.com/commercetools/nimbus/commit/3a272555fc5aeb3d728b02b594664f1cc58fe025)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Avatar`:
+  - `firstName` and `lastName` are now optional. Avatars with missing or partial
+    names render a generic person icon and a localized accessible label.
+  - Fixes a crash when `firstName` or `lastName` was passed as an empty string.
+  - Names with leading or trailing whitespace, emoji, and non-Latin characters
+    now produce correct initials.
+
+### Patch Changes
+
+- [#1477](https://github.com/commercetools/nimbus/pull/1477)
+  [`55dd67a`](https://github.com/commercetools/nimbus/commit/55dd67aa4dd3690be92d3910b5da6425677dd977)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - `ComboBox`: improved
+  rendering performance in multi-select mode with many selected items. The tag
+  area now has a max-height with scroll overflow to prevent the trigger from
+  growing unbounded.
+
+- [#1478](https://github.com/commercetools/nimbus/pull/1478)
+  [`c836dea`](https://github.com/commercetools/nimbus/commit/c836dea0e1d2272966c21bdebdb5aaa8c88cb9ed)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Improve DataTable
+  render performance for large datasets (~170+ rows). Sort, expand, and pin
+  interactions now only re-render affected rows instead of all rows. Sort uses
+  `Intl.Collator` for faster natural ordering ("Product 1, 2, 10" instead of "1,
+  10, 100") and pre-computes accessor values. Callbacks stabilized with refs to
+  prevent context churn. Pin button tooltips now use native `title` attributes
+  instead of portal-based tooltip components.
+
+- [#1389](https://github.com/commercetools/nimbus/pull/1389)
+  [`9c163ea`](https://github.com/commercetools/nimbus/commit/9c163ea660a1f554de0c60c3d34f91a3a7ad6981)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Fix `ScrollArea` silently
+  overflowing and stretching `width: 100%` children. Zag's default
+  `min-width: fit-content` on the content slot caused the wrapper to grow to fit
+  its widest child, so siblings sized at `100%` inherited that overgrown width.
+  The wrapper is now sized to the viewport by default, and the default
+  `orientation` is `"both"` so descendant overflow surfaces a scrollbar
+  indicator instead of being silently scrollable. Setting `orientation` to
+  `"vertical"` or `"horizontal"` now actively clips the opposite axis. The
+  content wrapper now also fills the viewport vertically, so consumers can
+  vertically center a shorter child with flex/grid + `height: 100%` — previously
+  the wrapper was intrinsic-height and centering resolved against the child's
+  own height.
+
+- [#1432](https://github.com/commercetools/nimbus/pull/1432)
+  [`2c1bf99`](https://github.com/commercetools/nimbus/commit/2c1bf9958ee38920ff083bd53f5d94822713e524)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - The `pauseOnInteraction`
+  option on `ToastOptions` has been removed. The field had no effect at runtime
+  — pause-on-hover and pause-on-focus are always on — but if your code passed it
+  explicitly, TypeScript will now flag it. Drop the prop; toast behavior is
+  unchanged.
+
+  Peer dependency: this release requires `@chakra-ui/react` `^3.35.0`. Bump
+  alongside if you pin Chakra in your project.
+
+  Also bundles the `dompurify` 3.4.1 patch release (transparent to consumers)
+  and corrects the TypeScript type for `aspectRatios` theme tokens (now
+  `string | number`; relevant only if you import these tokens directly with
+  strict types).
+
+- [#1468](https://github.com/commercetools/nimbus/pull/1468)
+  [`be39b61`](https://github.com/commercetools/nimbus/commit/be39b614efd6a19c0e393c3874e2e4d82f85edec)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Update runtime
+  dependencies: bump `@react-aria/utils` from 3.33.1 to 3.34.0.
+
+- [#1477](https://github.com/commercetools/nimbus/pull/1477)
+  [`55dd67a`](https://github.com/commercetools/nimbus/commit/55dd67aa4dd3690be92d3910b5da6425677dd977)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - `TagGroup`: fix a
+  render-time bug where `TagGroupTagListSlot` instantiated its styled component
+  inside the component function, producing a new component identity on every
+  render. This caused React to unmount and remount the entire tag list (and
+  React Aria to rebuild its collection from scratch) on every parent render —
+  severely impacting performance when many tags were rendered (e.g. in a
+  multi-select ComboBox).
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@3.0.0
+  - @commercetools/nimbus-icons@3.0.0
+
 ## 2.10.0
 
 ### Minor Changes
