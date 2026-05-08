@@ -12,7 +12,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     "leadingElement",
     "content",
     "tagGroup",
-    "tag",
     "input",
     "popover",
     "listBox",
@@ -116,24 +115,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     },
     tagGroup: {
       display: "contents",
-    },
-    tag: {
-      colorPalette: "primary",
-      display: "flex",
-      alignItems: "center",
-      gap: "100",
-      borderRadius: "200",
-      background: "colorPalette.3",
-      fontSize: "var(--tag-font-size)",
-      lineHeight: "var(--tag-line-height)",
-      minH: "var(--tag-min-h)",
-      paddingX: "var(--tag-px)",
-      paddingY: "var(--tag-py, 0)",
-      maxW: "100%",
-      "&[data-disabled]": {
-        layerStyle: "disabled",
-        pointerEvents: "none",
-      },
     },
     input: {
       flex: "0 0 auto",
@@ -254,13 +235,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         leadingElement: {
           minH: "800",
         },
-        tag: {
-          "--tag-min-h": "sizes.600",
-          "--tag-px": "spacing.200",
-          "--tag-py": "0",
-          "--tag-font-size": "fontSizes.350",
-          "--tag-line-height": "lineHeights.400",
-        },
       },
       // Medium
       md: {
@@ -270,13 +244,6 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         },
         leadingElement: {
           minH: "1000",
-        },
-        tag: {
-          "--tag-min-h": "sizes.800",
-          "--tag-px": "spacing.200",
-          "--tag-py": "spacing.100",
-          "--tag-font-size": "fontSizes.400",
-          "--tag-line-height": "lineHeights.500",
         },
       },
     },

@@ -254,7 +254,7 @@ export const MultiSelectCustomOptions: Story = {
       // Find and click remove button for Lion
       const lionTag = await within(await getTagList(canvas.getByRole("group")))
         .getByText("Lion")
-        .closest('[role="listitem"]');
+        .closest('[role="row"]');
       expect(lionTag).toBeInTheDocument();
 
       const removeButton = within(lionTag as HTMLElement).getByRole("button", {
@@ -1986,6 +1986,101 @@ export const KeyboardBackspaceRemovesTag: Story = {
       // Koala should remain
       expect(canvas.getByText("Koala")).toBeInTheDocument();
     });
+  },
+};
+
+/**
+ * Keyboard: Tag Group Navigation
+ * Tests that the embedded TagGroup in multi-select mode preserves RAC's
+ * accessible keyboard pattern: single Tab stop, arrow navigation between
+ * tags, and Delete/Backspace to remove a focused tag with focus restoration.
+ */
+export const KeyboardTagGroupNavigation: Story = {
+  render: () => {
+    const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
+      1, 2, 3, 4,
+    ]);
+
+    return (
+      <ComposedComboBox
+        aria-label="Test combobox"
+        items={simpleOptions}
+        selectionMode="multiple"
+        selectedKeys={selectedKeys}
+        onSelectionChange={setSelectedKeys}
+      />
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify initial tags render as a grid", async () => {
+      const tagGrid = canvas.getByRole("grid");
+      expect(tagGrid).toBeInTheDocument();
+      const tags = within(tagGrid).getAllByRole("row");
+      expect(tags).toHaveLength(4);
+    });
+
+    await step(
+      "Tab enters the tag group and arrow keys navigate between tags",
+      async () => {
+        // Click the input to establish focus, then Shift+Tab into the tag grid
+        const input = canvas.getByRole("combobox");
+        await userEvent.click(input);
+        expect(input).toHaveFocus();
+
+        await userEvent.tab({ shift: true });
+        const tagGrid = canvas.getByRole("grid");
+        expect(tagGrid.contains(document.activeElement)).toBe(true);
+
+        // Navigate to the first tag with Home, then arrow through
+        await userEvent.keyboard("{Home}");
+        expect(document.activeElement?.textContent).toContain("Koala");
+
+        await userEvent.keyboard("{ArrowRight}");
+        expect(document.activeElement?.textContent).toContain("Kangaroo");
+
+        await userEvent.keyboard("{ArrowRight}");
+        expect(document.activeElement?.textContent).toContain("Platypus");
+
+        await userEvent.keyboard("{ArrowLeft}");
+        expect(document.activeElement?.textContent).toContain("Kangaroo");
+      }
+    );
+
+    await step(
+      "Delete removes focused tag and moves focus to neighbor",
+      async () => {
+        // Focus is on Kangaroo from previous step's ArrowLeft
+        expect(document.activeElement?.textContent).toContain("Kangaroo");
+
+        await userEvent.keyboard("{Delete}");
+
+        // Kangaroo should be removed
+        await waitFor(() => {
+          expect(canvas.queryByText("Kangaroo")).not.toBeInTheDocument();
+        });
+
+        // Focus should move to a neighboring tag (not fall to body)
+        const tagGrid = canvas.getByRole("grid");
+        expect(tagGrid.contains(document.activeElement)).toBe(true);
+      }
+    );
+
+    await step(
+      "Backspace removes focused tag from within the tag group",
+      async () => {
+        await userEvent.keyboard("{Backspace}");
+
+        // A tag should be removed — 2 remaining (started with 4, removed 2)
+        await waitFor(() => {
+          const tagGrid = canvas.getByRole("grid");
+          const remaining = within(tagGrid).getAllByRole("row");
+          expect(remaining).toHaveLength(2);
+        });
+      }
+    );
   },
 };
 
@@ -6118,7 +6213,8 @@ export const PerformanceManySelected: Story = {
 
     await step("Verify all 170 tags are rendered", async () => {
       const tagList = await getTagList(canvasElement);
-      expect(tagList.childNodes.length).toBe(PERF_SELECTED_COUNT);
+      const tags = tagList.querySelectorAll('[role="row"]');
+      expect(tags.length).toBe(PERF_SELECTED_COUNT);
     });
 
     await step("Remove a tag via remove button", async () => {
@@ -6130,7 +6226,8 @@ export const PerformanceManySelected: Story = {
 
       await waitFor(async () => {
         const tagList = await getTagList(canvasElement);
-        expect(tagList.childNodes.length).toBe(PERF_SELECTED_COUNT - 1);
+        const tags = tagList.querySelectorAll('[role="row"]');
+        expect(tags.length).toBe(PERF_SELECTED_COUNT - 1);
       });
     });
 

@@ -42,7 +42,6 @@ export type ComboBoxTriggerSlotProps = HTMLChakraProps<"div">;
 export type ComboBoxLeadingElementSlotProps = HTMLChakraProps<"div">;
 export type ComboBoxContentSlotProps = HTMLChakraProps<"div">; // Flex wrapper for tags and input
 export type ComboBoxTagGroupSlotProps = HTMLChakraProps<"div">;
-export type ComboBoxTagSlotProps = HTMLChakraProps<"span">; // Individual tag element in multi-select
 export type ComboBoxInputSlotProps = HTMLChakraProps<"div">; // Wraps React Aria Input
 export type ComboBoxPopoverSlotProps = HTMLChakraProps<"div">;
 export type ComboBoxListBoxSlotProps = HTMLChakraProps<"div">; // Will wrap React Aria ListBox

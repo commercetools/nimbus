@@ -21,15 +21,20 @@ const { withProvider, withContext } = createSlotRecipeContext({
 export const TagGroupRootSlot: SlotComponent<typeof RaTagGroup, TagGroupProps> =
   withProvider<typeof RaTagGroup, TagGroupProps>(RaTagGroup, "root");
 
+// Defined at module scope — calling withContext inside the component would
+// produce a new component identity on every render, forcing React to unmount
+// and remount the entire TagList subtree (and React Aria to rebuild its
+// collection from scratch) on every parent render. That was a hot-path
+// regression for high tag counts.
+const TagListSlotComponent = withContext<
+  HTMLDivElement,
+  TagGroupTagListProps<object>
+>(RaTagList, "tagList");
+
 export const TagGroupTagListSlot = <T extends object>(
   props: TagGroupTagListProps<T>
 ): ReactElement<TagGroupTagListProps<T>, TagGroupTagListComponent<T>> => {
-  const { ref, ...restProps } = props;
-  const SlotComponent = withContext<HTMLDivElement, TagGroupTagListProps<T>>(
-    RaTagList,
-    "tagList"
-  );
-  return <SlotComponent {...restProps} ref={ref} />;
+  return <TagListSlotComponent {...(props as TagGroupTagListProps<object>)} />;
 };
 
 export const TagGroupTagSlot: TagGroupTagComponent = withContext<
