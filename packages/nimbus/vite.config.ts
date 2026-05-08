@@ -4,7 +4,6 @@ import optimizeLocales from "@react-aria/optimize-locales-plugin";
 import { defineConfig, esmExternalRequirePlugin } from "vite";
 import type { LibraryFormats, PluginOption, Rollup } from "vite";
 import react from "@vitejs/plugin-react";
-import viteTsconfigPaths from "vite-tsconfig-paths";
 import dts from "vite-plugin-dts";
 import treeShakeable from "rollup-plugin-tree-shakeable";
 import { analyzer } from "vite-bundle-analyzer";
@@ -120,7 +119,6 @@ export default defineConfig(async () => {
     // Typed as `PluginOption[]` so we can `.push(...)` later (dts/analyzer)
     // without TS narrowing the element type to the first plugin's literal shape.
     plugins: [
-      viteTsconfigPaths(),
       react(),
       // Only package locale strings for locales we internationalize in our products
       // Locales are defined in packages/i18n/scripts/locales.ts (single source of truth)
@@ -218,6 +216,7 @@ export default defineConfig(async () => {
     },
     target: "esnext",
     assetsInclude: ["/sb-preview/runtime.js"],
+    resolve: { tsconfigPaths: true },
   };
 
   if (!isWatchMode) {
