@@ -5,7 +5,6 @@ import { defineConfig, esmExternalRequirePlugin } from "vite";
 import type { LibraryFormats, PluginOption, Rollup } from "vite";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
-import treeShakeable from "rollup-plugin-tree-shakeable";
 import { analyzer } from "vite-bundle-analyzer";
 import { LOCALE_BCP47_CODES } from "../i18n/scripts/locales";
 
@@ -161,7 +160,6 @@ export default defineConfig(async () => {
          * (no importmap).
          */
         plugins: [
-          treeShakeable(),
           esmExternalRequirePlugin({ external: requireRewriteExternals }),
           /**
            * Pin chunk extensions to `.es.js` / `.cjs.js`.

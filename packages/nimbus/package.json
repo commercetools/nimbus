@@ -93,7 +93,6 @@
     "playwright": "catalog:tooling",
     "react": "catalog:react",
     "react-dom": "catalog:react",
-    "rollup-plugin-tree-shakeable": "catalog:tooling",
     "slate": "^0.123.0",
     "slate-history": "^0.115.0",
     "slate-hyperscript": "^0.115.0",
