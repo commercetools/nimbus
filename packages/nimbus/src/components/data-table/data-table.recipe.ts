@@ -424,5 +424,40 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         },
       },
     },
+    virtualized: {
+      true: {
+        row: {
+          // Fill the VirtualizerItem absolute-positioned wrapper
+          width: "100%",
+          height: "100%",
+        },
+        cell: {
+          // Override the table-layout height hack; fill VirtualizerItem and center content
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+        },
+        column: {
+          // Override the table-layout height hack; fill VirtualizerItem and center content
+          h: "100%",
+          "& > .nimbus-data-table__column-container": {
+            py: "100",
+            px: "600",
+            display: "flex",
+            alignItems: "center",
+            h: "100%",
+            focusVisibleRing: "inside",
+            "& > span:not(:first-of-type)": {
+              flexShrink: 0,
+            },
+          },
+        },
+        header: {
+          // Fill the sticky VirtualizerItem header wrapper
+          width: "100%",
+          height: "100%",
+        },
+      },
+    },
   },
 });

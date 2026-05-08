@@ -4,7 +4,10 @@ import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
-import { useDataTableContext } from "./data-table.context";
+import {
+  useDataTableContext,
+  useTableSelectionContext,
+} from "./data-table.context";
 import { DataTableTableSlot } from "../data-table.slots";
 import type { DataTableTableSlotProps } from "../data-table.types";
 import { dataTableMessagesStrings } from "../data-table.messages";
@@ -27,12 +30,12 @@ export const DataTableTable = function DataTableTable({
     sortDescriptor,
     onSortChange,
     selectionMode,
-    onSelectionChange,
-    selectedKeys,
-    defaultSelectedKeys,
     disallowEmptySelection,
     disabledKeys,
   } = useDataTableContext();
+
+  const { selectedKeys, defaultSelectedKeys, onSelectionChange } =
+    useTableSelectionContext();
 
   const [styleProps, restProps] = extractStyleProps(props);
 

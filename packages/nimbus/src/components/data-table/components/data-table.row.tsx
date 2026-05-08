@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback, useEffect, memo } from "react";
 import {
   Row as RaRow,
   Collection as RaCollection,
@@ -14,7 +14,7 @@ import type {
   DataTableColumnItem,
   DataTableRowProps,
 } from "../data-table.types";
-import { Box, Checkbox, IconButton, Tooltip } from "@/components";
+import { Box, Checkbox, IconButton } from "@/components";
 import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
 import {
   KeyboardArrowDown,
@@ -22,8 +22,6 @@ import {
   PushPin,
 } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
-import { useLocalizedStringFormatter } from "@/hooks";
-import { dataTableMessagesStrings } from "../data-table.messages";
 
 /**
  * DataTable.Row - Individual row component that renders data cells and handles row-level interactions
@@ -63,12 +61,12 @@ function stopPropagationForNonInteractiveElements(e: Event) {
     e.stopPropagation();
   }
 }
-export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
+
+const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   row,
   ref,
   ...props
 }: DataTableRowProps<T>) => {
-  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const {
     activeColumns,
     search,
@@ -83,7 +81,8 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
     onRowAction,
     pinnedRows,
     togglePin,
-    sortedRows,
+    pinnedRowIds,
+    selectRowLabel,
   } = useDataTableContext<T>();
 
   const [styleProps, restProps] = extractStyleProps(props);
@@ -281,10 +280,6 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
   const isExpanded = expanded.has(row.id);
   const isPinned = pinnedRows.has(row.id);
 
-  // Calculate pinned row position for styling
-  const pinnedRowIds = sortedRows
-    .filter((r) => pinnedRows.has(r.id))
-    .map((r) => r.id);
   const pinnedRowIndex = isPinned ? pinnedRowIds.indexOf(row.id) : -1;
   const isFirstPinned = pinnedRowIndex === 0;
   const isLastPinned = pinnedRowIndex === pinnedRowIds.length - 1;
@@ -341,7 +336,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                 <Checkbox
                   name="select-row"
                   slot="selection"
-                  aria-label={msg.format("selectRow")}
+                  aria-label={selectRowLabel}
                 />
               </Box>
             </DataTableCell>
@@ -411,23 +406,19 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                   ? "nimbus-table-cell-pin-button-pinned"
                   : "nimbus-table-cell-pin-button"
               }
+              title={isPinned ? "Unpin row" : "Pin row"}
             >
-              <Tooltip.Root>
-                <IconToggleButton
-                  key="pin-btn"
-                  size="2xs"
-                  variant="ghost"
-                  aria-label={isPinned ? "Unpin row" : "Pin row"}
-                  colorPalette="primary"
-                  isSelected={isPinned}
-                  onChange={() => togglePin(row.id)}
-                >
-                  <PushPin />
-                </IconToggleButton>
-                <Tooltip.Content placement="top">
-                  {isPinned ? "Unpin row" : "Pin row"}
-                </Tooltip.Content>
-              </Tooltip.Root>
+              <IconToggleButton
+                key="pin-btn"
+                size="2xs"
+                variant="ghost"
+                aria-label={isPinned ? "Unpin row" : "Pin row"}
+                colorPalette="primary"
+                isSelected={isPinned}
+                onChange={() => togglePin(row.id)}
+              >
+                <PushPin />
+              </IconToggleButton>
             </Box>
           </DataTableCell>
         </RaRow>
@@ -460,6 +451,12 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
       )}
     </>
   );
+};
+
+export const DataTableRow = memo(
+  DataTableRowInner
+) as typeof DataTableRowInner & {
+  displayName?: string;
 };
 
 DataTableRow.displayName = "DataTable.Row";

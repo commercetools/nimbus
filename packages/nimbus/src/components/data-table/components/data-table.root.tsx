@@ -1,16 +1,28 @@
-import { useMemo, useState, useCallback, useRef } from "react";
-import { ResizableTableContainer } from "react-aria-components";
+import { useMemo, useState, useCallback, useRef, startTransition } from "react";
+import {
+  ResizableTableContainer,
+  Virtualizer,
+  TableLayout,
+} from "react-aria-components";
+import type { TableLayoutProps } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
 import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
-import { DataTableContext, CustomSettingsContext } from "./data-table.context";
+import {
+  DataTableContext,
+  CustomSettingsContext,
+  TableSelectionContext,
+} from "./data-table.context";
 import type {
   DataTableProps,
   SortDescriptor,
   DataTableContextValue,
   CustomSettingsContextValue,
+  TableSelectionContextValue,
 } from "../data-table.types";
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { dataTableMessagesStrings } from "../data-table.messages";
 
 /**
  * DataTable.Root - The root container that provides context and state management for the entire data table
@@ -53,12 +65,19 @@ export const DataTableRoot = function DataTableRoot<
     onColumnsChange,
     onSettingsChange,
     customSettings,
+    virtualized = false,
+    rowHeight,
+    estimatedRowHeight,
+    headingHeight,
+    estimatedHeadingHeight,
     children,
     ...rest
   } = props;
 
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
+  const selectRowLabel = msg.format("selectRow");
 
   const [internalSortDescriptor, setInternalSortDescriptor] = useState<
     SortDescriptor | undefined
@@ -105,51 +124,62 @@ export const DataTableRoot = function DataTableRoot<
     [filteredRows, sortDescriptor, activeColumns, nestedKey, pinnedRows]
   );
 
+  const pinnedRowIds = useMemo(
+    () => sortedRows.filter((r) => pinnedRows.has(r.id)).map((r) => r.id),
+    [sortedRows, pinnedRows]
+  );
+
   const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
   const showSelectionColumn = selectionMode !== "none";
 
   const toggleExpand = useCallback(
     (id: string) => {
-      const newExpanded = new Set(expanded);
-      if (newExpanded.has(id)) {
-        newExpanded.delete(id);
-      } else {
-        newExpanded.add(id);
-      }
-      onExpandRowsChange?.(newExpanded);
-      if (controlledExpandedRows === undefined) {
-        setInternalExpandedRows(newExpanded);
-      }
+      startTransition(() => {
+        const newExpanded = new Set(expanded);
+        if (newExpanded.has(id)) {
+          newExpanded.delete(id);
+        } else {
+          newExpanded.add(id);
+        }
+        onExpandRowsChange?.(newExpanded);
+        if (controlledExpandedRows === undefined) {
+          setInternalExpandedRows(newExpanded);
+        }
+      });
     },
     [expanded, onExpandRowsChange, controlledExpandedRows]
   );
 
   const togglePin = useCallback(
     (id: string) => {
-      if (onPinToggle) {
-        onPinToggle(id);
-      } else {
-        setInternalPinnedRows((prev) => {
-          const newPinnedRows = new Set(prev);
-          if (newPinnedRows.has(id)) {
-            newPinnedRows.delete(id);
-          } else {
-            newPinnedRows.add(id);
-          }
-          return newPinnedRows;
-        });
-      }
+      startTransition(() => {
+        if (onPinToggle) {
+          onPinToggle(id);
+        } else {
+          setInternalPinnedRows((prev) => {
+            const newPinnedRows = new Set(prev);
+            if (newPinnedRows.has(id)) {
+              newPinnedRows.delete(id);
+            } else {
+              newPinnedRows.add(id);
+            }
+            return newPinnedRows;
+          });
+        }
+      });
     },
     [onPinToggle]
   );
 
   const handleSortChange = useCallback(
     (descriptor: SortDescriptor) => {
-      if (onSortChange) {
-        onSortChange(descriptor);
-      } else {
-        setInternalSortDescriptor(descriptor);
-      }
+      startTransition(() => {
+        if (onSortChange) {
+          onSortChange(descriptor);
+        } else {
+          setInternalSortDescriptor(descriptor);
+        }
+      });
     },
     [onSortChange]
   );
@@ -161,8 +191,6 @@ export const DataTableRoot = function DataTableRoot<
       visibleColumns,
       search,
       sortDescriptor,
-      selectedKeys,
-      defaultSelectedKeys,
       expanded,
       allowsSorting,
       selectionMode,
@@ -172,7 +200,6 @@ export const DataTableRoot = function DataTableRoot<
       density,
       nestedKey,
       onSortChange: handleSortChange,
-      onSelectionChange,
       onRowClick,
       onDetailsClick,
       toggleExpand,
@@ -181,6 +208,8 @@ export const DataTableRoot = function DataTableRoot<
       sortedRows,
       showExpandColumn,
       showSelectionColumn,
+      pinnedRowIds,
+      selectRowLabel,
       isResizable,
       disabledKeys,
       onRowAction,
@@ -196,8 +225,6 @@ export const DataTableRoot = function DataTableRoot<
       visibleColumns,
       search,
       sortDescriptor,
-      selectedKeys,
-      defaultSelectedKeys,
       expanded,
       allowsSorting,
       selectionMode,
@@ -207,7 +234,6 @@ export const DataTableRoot = function DataTableRoot<
       density,
       nestedKey,
       handleSortChange,
-      onSelectionChange,
       onRowClick,
       onDetailsClick,
       toggleExpand,
@@ -216,6 +242,8 @@ export const DataTableRoot = function DataTableRoot<
       sortedRows,
       showExpandColumn,
       showSelectionColumn,
+      pinnedRowIds,
+      selectRowLabel,
       isResizable,
       disabledKeys,
       onRowAction,
@@ -227,6 +255,15 @@ export const DataTableRoot = function DataTableRoot<
     ]
   );
 
+  const selectionContextValue: TableSelectionContextValue = useMemo(
+    () => ({
+      selectedKeys,
+      defaultSelectedKeys,
+      onSelectionChange,
+    }),
+    [selectedKeys, defaultSelectedKeys, onSelectionChange]
+  );
+
   const customSettingsContextValue: CustomSettingsContextValue = useMemo(
     () => ({
       customSettings,
@@ -234,11 +271,38 @@ export const DataTableRoot = function DataTableRoot<
     [customSettings]
   );
 
+  const layoutOptions: TableLayoutProps | undefined = useMemo(() => {
+    if (!virtualized) return undefined;
+    const opts: TableLayoutProps = {};
+    if (rowHeight != null) opts.rowHeight = rowHeight;
+    if (estimatedRowHeight != null)
+      opts.estimatedRowHeight = estimatedRowHeight;
+    if (headingHeight != null) opts.headingHeight = headingHeight;
+    if (estimatedHeadingHeight != null)
+      opts.estimatedHeadingHeight = estimatedHeadingHeight;
+    return opts;
+  }, [
+    virtualized,
+    rowHeight,
+    estimatedRowHeight,
+    headingHeight,
+    estimatedHeadingHeight,
+  ]);
+
+  const wrappedChildren = virtualized ? (
+    <Virtualizer layout={TableLayout} layoutOptions={layoutOptions}>
+      {children}
+    </Virtualizer>
+  ) : (
+    children
+  );
+
   return (
     <DataTableRootSlot
       ref={ref}
       truncated={isTruncated}
       density={density}
+      virtualized={virtualized || undefined}
       maxH={maxHeight}
       {...rest}
       asChild
@@ -247,9 +311,11 @@ export const DataTableRoot = function DataTableRoot<
         <DataTableContext.Provider
           value={contextValue as DataTableContextValue<Record<string, unknown>>}
         >
-          <CustomSettingsContext.Provider value={customSettingsContextValue}>
-            {children}
-          </CustomSettingsContext.Provider>
+          <TableSelectionContext.Provider value={selectionContextValue}>
+            <CustomSettingsContext.Provider value={customSettingsContextValue}>
+              {wrappedChildren}
+            </CustomSettingsContext.Provider>
+          </TableSelectionContext.Provider>
         </DataTableContext.Provider>
       </ResizableTableContainer>
     </DataTableRootSlot>
