@@ -1,5 +1,7 @@
 # @commercetools/nimbus-icons
 
+## 3.0.0
+
 ## 2.10.0
 
 ## 2.9.1
