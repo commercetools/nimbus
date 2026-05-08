@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect } from "react";
+import { useRef, useCallback, useEffect, memo } from "react";
 import {
   Row as RaRow,
   Collection as RaCollection,
@@ -6,7 +6,7 @@ import {
 } from "react-aria-components";
 import { mergeRefs } from "@/utils";
 import { Highlight } from "@chakra-ui/react/highlight";
-import { useDataTableContext } from "./data-table.context";
+import { useStableDataTableContext } from "./data-table.context";
 import { DataTableCell } from "./data-table.cell";
 import { DataTableRowSlot } from "../data-table.slots";
 import type {
@@ -14,7 +14,7 @@ import type {
   DataTableColumnItem,
   DataTableRowProps,
 } from "../data-table.types";
-import { Box, Checkbox, IconButton, Tooltip } from "@/components";
+import { Box, Checkbox, IconButton } from "@/components";
 import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
 import {
   KeyboardArrowDown,
@@ -22,8 +22,6 @@ import {
   PushPin,
 } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
-import { useLocalizedStringFormatter } from "@/hooks";
-import { dataTableMessagesStrings } from "../data-table.messages";
 
 /**
  * DataTable.Row - Individual row component that renders data cells and handles row-level interactions
@@ -63,16 +61,28 @@ function stopPropagationForNonInteractiveElements(e: Event) {
     e.stopPropagation();
   }
 }
-export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
+
+type DataTableRowPerRowProps = {
+  isExpanded: boolean;
+  isPinned: boolean;
+  isFirstPinned: boolean;
+  isLastPinned: boolean;
+  isSinglePinned: boolean;
+};
+
+const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   row,
   ref,
+  isExpanded,
+  isPinned,
+  isFirstPinned,
+  isLastPinned,
+  isSinglePinned,
   ...props
-}: DataTableRowProps<T>) => {
-  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
+}: DataTableRowProps<T> & DataTableRowPerRowProps) => {
   const {
     activeColumns,
     search,
-    expanded,
     toggleExpand,
     nestedKey,
     disabledKeys,
@@ -81,10 +91,9 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
     isTruncated,
     onRowClick,
     onRowAction,
-    pinnedRows,
     togglePin,
-    sortedRows,
-  } = useDataTableContext<T>();
+    selectRowLabel,
+  } = useStableDataTableContext<T>();
 
   const [styleProps, restProps] = extractStyleProps(props);
 
@@ -278,17 +287,6 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
     nestedKey &&
     row[nestedKey] &&
     (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
-  const isExpanded = expanded.has(row.id);
-  const isPinned = pinnedRows.has(row.id);
-
-  // Calculate pinned row position for styling
-  const pinnedRowIds = sortedRows
-    .filter((r) => pinnedRows.has(r.id))
-    .map((r) => r.id);
-  const pinnedRowIndex = isPinned ? pinnedRowIds.indexOf(row.id) : -1;
-  const isFirstPinned = pinnedRowIndex === 0;
-  const isLastPinned = pinnedRowIndex === pinnedRowIds.length - 1;
-  const isSinglePinned = pinnedRowIds.length === 1 && isPinned;
 
   // Generate pinned row CSS classes
   const getPinnedRowClasses = () => {
@@ -341,7 +339,7 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                 <Checkbox
                   name="select-row"
                   slot="selection"
-                  aria-label={msg.format("selectRow")}
+                  aria-label={selectRowLabel}
                 />
               </Box>
             </DataTableCell>
@@ -411,23 +409,19 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
                   ? "nimbus-table-cell-pin-button-pinned"
                   : "nimbus-table-cell-pin-button"
               }
+              title={isPinned ? "Unpin row" : "Pin row"}
             >
-              <Tooltip.Root>
-                <IconToggleButton
-                  key="pin-btn"
-                  size="2xs"
-                  variant="ghost"
-                  aria-label={isPinned ? "Unpin row" : "Pin row"}
-                  colorPalette="primary"
-                  isSelected={isPinned}
-                  onChange={() => togglePin(row.id)}
-                >
-                  <PushPin />
-                </IconToggleButton>
-                <Tooltip.Content placement="top">
-                  {isPinned ? "Unpin row" : "Pin row"}
-                </Tooltip.Content>
-              </Tooltip.Root>
+              <IconToggleButton
+                key="pin-btn"
+                size="2xs"
+                variant="ghost"
+                aria-label={isPinned ? "Unpin row" : "Pin row"}
+                colorPalette="primary"
+                isSelected={isPinned}
+                onChange={() => togglePin(row.id)}
+              >
+                <PushPin />
+              </IconToggleButton>
             </Box>
           </DataTableCell>
         </RaRow>
@@ -460,6 +454,12 @@ export const DataTableRow = <T extends DataTableRowItem = DataTableRowItem>({
       )}
     </>
   );
+};
+
+export const DataTableRow = memo(
+  DataTableRowInner
+) as typeof DataTableRowInner & {
+  displayName?: string;
 };
 
 DataTableRow.displayName = "DataTable.Row";

@@ -78,29 +78,29 @@ export function sortRows<T extends object>(
   if (sortDescriptor) {
     const column = columns.find((col) => col.id === sortDescriptor.column);
     if (column) {
-      // Sort only the unpinned rows
+      const collator = new Intl.Collator(undefined, {
+        numeric: true,
+        sensitivity: "base",
+      });
+      const valueMap = new Map<string, unknown>();
+      for (const row of unpinned) {
+        valueMap.set(row.id, column.accessor(row));
+      }
+      const direction = sortDescriptor.direction === "ascending" ? 1 : -1;
+
       sortedUnpinnedRows = [...unpinned].sort((a, b) => {
-        const aValue = column.accessor(a);
-        const bValue = column.accessor(b);
+        const aValue = valueMap.get(a.id);
+        const bValue = valueMap.get(b.id);
 
         if (aValue == null && bValue == null) return 0;
         if (aValue == null) return 1;
         if (bValue == null) return -1;
 
-        const aSortValue =
-          typeof aValue === "number" && typeof bValue === "number"
-            ? aValue
-            : String(aValue).toLowerCase();
-        const bSortValue =
-          typeof aValue === "number" && typeof bValue === "number"
-            ? bValue
-            : String(bValue).toLowerCase();
+        if (typeof aValue === "number" && typeof bValue === "number") {
+          return (aValue - bValue) * direction;
+        }
 
-        if (aSortValue < bSortValue)
-          return sortDescriptor.direction === "ascending" ? -1 : 1;
-        if (aSortValue > bSortValue)
-          return sortDescriptor.direction === "ascending" ? 1 : -1;
-        return 0;
+        return collator.compare(String(aValue), String(bValue)) * direction;
       });
     }
   }

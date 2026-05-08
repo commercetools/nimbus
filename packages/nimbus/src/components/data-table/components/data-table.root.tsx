@@ -1,16 +1,24 @@
-import { useMemo, useState, useCallback, useRef } from "react";
+import { useMemo, useState, useCallback, useRef, startTransition } from "react";
 import { ResizableTableContainer } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
 import { DataTableRoot as DataTableRootSlot } from "../data-table.slots";
-import { DataTableContext, CustomSettingsContext } from "./data-table.context";
+import {
+  DataTableContext,
+  InteractionContext,
+  CustomSettingsContext,
+  TableSelectionContext,
+} from "./data-table.context";
 import type {
   DataTableProps,
   SortDescriptor,
   DataTableContextValue,
   CustomSettingsContextValue,
+  TableSelectionContextValue,
 } from "../data-table.types";
 import { filterRows, hasExpandableRows, sortRows } from "../utils/rows.utils";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { dataTableMessagesStrings } from "../data-table.messages";
 
 /**
  * DataTable.Root - The root container that provides context and state management for the entire data table
@@ -59,6 +67,8 @@ export const DataTableRoot = function DataTableRoot<
 
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
+  const selectRowLabel = msg.format("selectRow");
 
   const [internalSortDescriptor, setInternalSortDescriptor] = useState<
     SortDescriptor | undefined
@@ -105,29 +115,47 @@ export const DataTableRoot = function DataTableRoot<
     [filteredRows, sortDescriptor, activeColumns, nestedKey, pinnedRows]
   );
 
-  const showExpandColumn = hasExpandableRows(sortedRows, nestedKey);
+  const pinnedRowIds = useMemo(
+    () => rows.filter((r) => pinnedRows.has(r.id)).map((r) => r.id),
+    [rows, pinnedRows]
+  );
+
+  const showExpandColumn = useMemo(
+    () => hasExpandableRows(filteredRows, nestedKey),
+    [filteredRows, nestedKey]
+  );
   const showSelectionColumn = selectionMode !== "none";
 
-  const toggleExpand = useCallback(
-    (id: string) => {
-      const newExpanded = new Set(expanded);
+  const expandedRef = useRef(expanded);
+  expandedRef.current = expanded;
+  const controlledExpandedRef = useRef(controlledExpandedRows);
+  controlledExpandedRef.current = controlledExpandedRows;
+  const onExpandRowsChangeRef = useRef(onExpandRowsChange);
+  onExpandRowsChangeRef.current = onExpandRowsChange;
+
+  const toggleExpand = useCallback((id: string) => {
+    startTransition(() => {
+      const current = controlledExpandedRef.current ?? expandedRef.current;
+      const newExpanded = new Set(current);
       if (newExpanded.has(id)) {
         newExpanded.delete(id);
       } else {
         newExpanded.add(id);
       }
-      onExpandRowsChange?.(newExpanded);
-      if (controlledExpandedRows === undefined) {
+      onExpandRowsChangeRef.current?.(newExpanded);
+      if (controlledExpandedRef.current === undefined) {
         setInternalExpandedRows(newExpanded);
       }
-    },
-    [expanded, onExpandRowsChange, controlledExpandedRows]
-  );
+    });
+  }, []);
 
-  const togglePin = useCallback(
-    (id: string) => {
-      if (onPinToggle) {
-        onPinToggle(id);
+  const onPinToggleRef = useRef(onPinToggle);
+  onPinToggleRef.current = onPinToggle;
+
+  const togglePin = useCallback((id: string) => {
+    startTransition(() => {
+      if (onPinToggleRef.current) {
+        onPinToggleRef.current(id);
       } else {
         setInternalPinnedRows((prev) => {
           const newPinnedRows = new Set(prev);
@@ -139,31 +167,47 @@ export const DataTableRoot = function DataTableRoot<
           return newPinnedRows;
         });
       }
-    },
-    [onPinToggle]
-  );
+    });
+  }, []);
 
-  const handleSortChange = useCallback(
-    (descriptor: SortDescriptor) => {
-      if (onSortChange) {
-        onSortChange(descriptor);
+  const onSortChangeRef = useRef(onSortChange);
+  onSortChangeRef.current = onSortChange;
+
+  const handleSortChange = useCallback((descriptor: SortDescriptor) => {
+    startTransition(() => {
+      if (onSortChangeRef.current) {
+        onSortChangeRef.current(descriptor);
       } else {
         setInternalSortDescriptor(descriptor);
       }
-    },
-    [onSortChange]
+    });
+  }, []);
+
+  const interactionValue = useMemo(
+    () => ({
+      sortedRows,
+      filteredRows,
+      sortDescriptor,
+      expanded,
+      pinnedRows,
+      pinnedRowIds,
+    }),
+    [
+      sortedRows,
+      filteredRows,
+      sortDescriptor,
+      expanded,
+      pinnedRows,
+      pinnedRowIds,
+    ]
   );
 
-  const contextValue: DataTableContextValue<T> = useMemo(
+  const contextValue = useMemo(
     () => ({
       columns,
       rows,
       visibleColumns,
       search,
-      sortDescriptor,
-      selectedKeys,
-      defaultSelectedKeys,
-      expanded,
       allowsSorting,
       selectionMode,
       disallowEmptySelection,
@@ -172,19 +216,16 @@ export const DataTableRoot = function DataTableRoot<
       density,
       nestedKey,
       onSortChange: handleSortChange,
-      onSelectionChange,
       onRowClick,
       onDetailsClick,
       toggleExpand,
       activeColumns,
-      filteredRows,
-      sortedRows,
       showExpandColumn,
       showSelectionColumn,
+      selectRowLabel,
       isResizable,
       disabledKeys,
       onRowAction,
-      pinnedRows,
       onPinToggle,
       togglePin,
       onColumnsChange,
@@ -195,10 +236,6 @@ export const DataTableRoot = function DataTableRoot<
       rows,
       visibleColumns,
       search,
-      sortDescriptor,
-      selectedKeys,
-      defaultSelectedKeys,
-      expanded,
       allowsSorting,
       selectionMode,
       disallowEmptySelection,
@@ -207,24 +244,30 @@ export const DataTableRoot = function DataTableRoot<
       density,
       nestedKey,
       handleSortChange,
-      onSelectionChange,
       onRowClick,
       onDetailsClick,
       toggleExpand,
       activeColumns,
-      filteredRows,
-      sortedRows,
       showExpandColumn,
       showSelectionColumn,
+      selectRowLabel,
       isResizable,
       disabledKeys,
       onRowAction,
-      pinnedRows,
       onPinToggle,
       togglePin,
       onColumnsChange,
       onSettingsChange,
     ]
+  );
+
+  const selectionContextValue: TableSelectionContextValue = useMemo(
+    () => ({
+      selectedKeys,
+      defaultSelectedKeys,
+      onSelectionChange,
+    }),
+    [selectedKeys, defaultSelectedKeys, onSelectionChange]
   );
 
   const customSettingsContextValue: CustomSettingsContextValue = useMemo(
@@ -244,13 +287,23 @@ export const DataTableRoot = function DataTableRoot<
       asChild
     >
       <ResizableTableContainer>
-        <DataTableContext.Provider
-          value={contextValue as DataTableContextValue<Record<string, unknown>>}
-        >
-          <CustomSettingsContext.Provider value={customSettingsContextValue}>
-            {children}
-          </CustomSettingsContext.Provider>
-        </DataTableContext.Provider>
+        <InteractionContext.Provider value={interactionValue}>
+          <DataTableContext.Provider
+            value={
+              contextValue as unknown as DataTableContextValue<
+                Record<string, unknown>
+              >
+            }
+          >
+            <TableSelectionContext.Provider value={selectionContextValue}>
+              <CustomSettingsContext.Provider
+                value={customSettingsContextValue}
+              >
+                {children}
+              </CustomSettingsContext.Provider>
+            </TableSelectionContext.Provider>
+          </DataTableContext.Provider>
+        </InteractionContext.Provider>
       </ResizableTableContainer>
     </DataTableRootSlot>
   );

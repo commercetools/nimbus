@@ -128,6 +128,8 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     sortedRows: DataTableRowItem<T>[];
     showExpandColumn: boolean;
     showSelectionColumn: boolean;
+    pinnedRowIds: string[];
+    selectRowLabel: string;
     disabledKeys?: Selection;
     onRowAction?: (
       row: DataTableRowItem<T>,
@@ -140,6 +142,12 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
     onVisibilityChange?: (visibleColumnIds: string[]) => void;
   };
+
+export type TableSelectionContextValue = {
+  selectedKeys?: Selection;
+  defaultSelectedKeys?: Selection;
+  onSelectionChange?: (keys: Selection) => void;
+};
 
 export type CustomSettingsContextValue = {
   customSettings?: DataTableCustomSettings;
