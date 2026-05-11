@@ -4,6 +4,48 @@ tab-title: Implementation
 tab-order: 3
 ---
 
+## Getting started
+
+### Import
+
+```tsx
+import { FormDialog, type FormDialogProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+The simplest implementation with a string title and controlled open state:
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [name, setName] = useState("");
+
+  return (
+    <>
+      <Button onPress={() => setIsOpen(true)}>Edit display name</Button>
+      <FormDialog
+        title="Edit display name"
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        onSave={() => {
+          console.log("saving", name);
+          setIsOpen(false);
+        }}
+        onCancel={() => setIsOpen(false)}
+      >
+        <FormField.Root>
+          <FormField.Label>Display name</FormField.Label>
+          <FormField.Input>
+            <TextInput value={name} onChange={setName} />
+          </FormField.Input>
+        </FormField.Root>
+      </FormDialog>
+    </>
+  );
+};
+```
+
 ## Comparison: FormDialog vs manual Dialog composition
 
 **With FormDialog:**
@@ -104,48 +146,6 @@ The most consequential semantic changes are:
 
 1. **`onClose` and `onCancel` are unified onto a single `onCancel`** that fires from every close path: the cancel button, Escape, overlay click, and the X button. If your app relies on the distinction, drop down to `Dialog` directly.
 2. **The pattern does NOT wrap `children` in a `<form>` element.** `onSave` is invoked from the save button's `onPress`, not from a form `submit` event. Consumers wanting Enter-to-submit semantics should wrap their fields in `<form onSubmit={handleSubmit}>` inside `children` and call `onSave` from `handleSubmit`.
-
-## Getting started
-
-### Import
-
-```tsx
-import { FormDialog, type FormDialogProps } from "@commercetools/nimbus";
-```
-
-### Basic usage
-
-The simplest implementation with a string title and controlled open state:
-
-```jsx live-dev
-const App = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [name, setName] = useState("");
-
-  return (
-    <>
-      <Button onPress={() => setIsOpen(true)}>Edit display name</Button>
-      <FormDialog
-        title="Edit display name"
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-        onSave={() => {
-          console.log("saving", name);
-          setIsOpen(false);
-        }}
-        onCancel={() => setIsOpen(false)}
-      >
-        <FormField.Root>
-          <FormField.Label>Display name</FormField.Label>
-          <FormField.Input>
-            <TextInput value={name} onChange={setName} />
-          </FormField.Input>
-        </FormField.Root>
-      </FormDialog>
-    </>
-  );
-};
-```
 
 ## Usage examples
 
