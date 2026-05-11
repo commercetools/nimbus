@@ -277,18 +277,21 @@ export const CustomLabels: Story = {
     onCancel: fn(),
   },
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     return (
-      <ConfirmationDialog
-        {...args}
-        title="Submit order"
-        confirmLabel="Place order"
-        cancelLabel="Keep editing"
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-      >
-        <Text>You're about to submit this order for fulfillment.</Text>
-      </ConfirmationDialog>
+      <>
+        <Button onPress={() => setIsOpen(true)}>Submit order</Button>
+        <ConfirmationDialog
+          {...args}
+          title="Submit order"
+          confirmLabel="Place order"
+          cancelLabel="Keep editing"
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+        >
+          <Text>You're about to submit this order for fulfillment.</Text>
+        </ConfirmationDialog>
+      </>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -297,6 +300,9 @@ export const CustomLabels: Story = {
     );
 
     await step("Renders custom Confirm and Cancel labels", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Submit order" })
+      );
       await waitFor(() =>
         expect(canvas.getByRole("dialog")).toBeInTheDocument()
       );
@@ -321,17 +327,20 @@ export const DisabledConfirm: Story = {
     onCancel: fn(),
   },
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     return (
-      <ConfirmationDialog
-        {...args}
-        title="Confirm acknowledgement"
-        isConfirmDisabled
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-      >
-        <Text>Please review the disclaimer before confirming.</Text>
-      </ConfirmationDialog>
+      <>
+        <Button onPress={() => setIsOpen(true)}>Acknowledge disclaimer</Button>
+        <ConfirmationDialog
+          {...args}
+          title="Confirm acknowledgement"
+          isConfirmDisabled
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+        >
+          <Text>Please review the disclaimer before confirming.</Text>
+        </ConfirmationDialog>
+      </>
     );
   },
   play: async ({ canvasElement, args, step }) => {
@@ -344,6 +353,9 @@ export const DisabledConfirm: Story = {
       "Confirm button is disabled and clicking it does not invoke onConfirm",
       async () => {
         onConfirm.mockClear();
+        await userEvent.click(
+          canvas.getByRole("button", { name: "Acknowledge disclaimer" })
+        );
         await waitFor(() =>
           expect(canvas.getByRole("dialog")).toBeInTheDocument()
         );
@@ -373,17 +385,20 @@ export const LoadingLockout: Story = {
     onCancel: fn(),
   },
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     return (
-      <ConfirmationDialog
-        {...args}
-        title="Submitting…"
-        isConfirmLoading
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-      >
-        <Text>Your request is being processed.</Text>
-      </ConfirmationDialog>
+      <>
+        <Button onPress={() => setIsOpen(true)}>Open loading dialog</Button>
+        <ConfirmationDialog
+          {...args}
+          title="Submitting…"
+          isConfirmLoading
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+        >
+          <Text>Your request is being processed.</Text>
+        </ConfirmationDialog>
+      </>
     );
   },
   play: async ({ canvasElement, args, step }) => {
@@ -394,6 +409,9 @@ export const LoadingLockout: Story = {
     const onCancel = args.onCancel as ReturnType<typeof fn>;
 
     await step("Both buttons are disabled while loading", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Open loading dialog" })
+      );
       await waitFor(() =>
         expect(canvas.getByRole("dialog")).toBeInTheDocument()
       );
@@ -470,26 +488,29 @@ export const AsyncConfirm: Story = {
     onCancel: fn(),
   },
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     return (
-      <ConfirmationDialog
-        {...args}
-        title="Submit order"
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-        isConfirmLoading={isLoading}
-        onConfirm={async () => {
-          setIsLoading(true);
-          try {
-            await new Promise((resolve) => setTimeout(resolve, 200));
-          } finally {
-            setIsLoading(false);
-          }
-        }}
-      >
-        <Text>This will charge your card.</Text>
-      </ConfirmationDialog>
+      <>
+        <Button onPress={() => setIsOpen(true)}>Place order</Button>
+        <ConfirmationDialog
+          {...args}
+          title="Submit order"
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+          isConfirmLoading={isLoading}
+          onConfirm={async () => {
+            setIsLoading(true);
+            try {
+              await new Promise((resolve) => setTimeout(resolve, 200));
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+        >
+          <Text>This will charge your card.</Text>
+        </ConfirmationDialog>
+      </>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -498,6 +519,9 @@ export const AsyncConfirm: Story = {
     );
 
     await step("Dialog opens with confirm button enabled", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Place order" })
+      );
       await waitFor(() =>
         expect(canvas.getByRole("dialog")).toBeInTheDocument()
       );
@@ -539,28 +563,31 @@ export const AsyncConfirmRejection: Story = {
     onCancel: fn(),
   },
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     return (
-      <ConfirmationDialog
-        {...args}
-        title="Submit order"
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-        isConfirmLoading={isLoading}
-        onConfirm={async () => {
-          setIsLoading(true);
-          try {
-            await new Promise((_resolve, reject) =>
-              setTimeout(() => reject(new Error("network")), 200)
-            );
-          } finally {
-            setIsLoading(false);
-          }
-        }}
-      >
-        <Text>This will charge your card.</Text>
-      </ConfirmationDialog>
+      <>
+        <Button onPress={() => setIsOpen(true)}>Try submit order</Button>
+        <ConfirmationDialog
+          {...args}
+          title="Submit order"
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+          isConfirmLoading={isLoading}
+          onConfirm={async () => {
+            setIsLoading(true);
+            try {
+              await new Promise((_resolve, reject) =>
+                setTimeout(() => reject(new Error("network")), 200)
+              );
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+        >
+          <Text>This will charge your card.</Text>
+        </ConfirmationDialog>
+      </>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -571,6 +598,9 @@ export const AsyncConfirmRejection: Story = {
     await step(
       "Dialog stays open after the rejected promise settles",
       async () => {
+        await userEvent.click(
+          canvas.getByRole("button", { name: "Try submit order" })
+        );
         await waitFor(() =>
           expect(canvas.getByRole("dialog")).toBeInTheDocument()
         );
@@ -604,27 +634,30 @@ export const WithReactNodeTitle: Story = {
     onCancel: fn(),
   },
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     return (
-      <ConfirmationDialog
-        {...args}
-        title={
-          <Flex alignItems="center" gap="200">
-            <Text>Cancel subscription</Text>
-            <Badge>Pro</Badge>
-          </Flex>
-        }
-        aria-label="Cancel subscription"
-        intent="destructive"
-        confirmLabel="Cancel subscription"
-        cancelLabel="Keep subscription"
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-      >
-        <Text>
-          You'll keep access until the end of the current billing period.
-        </Text>
-      </ConfirmationDialog>
+      <>
+        <Button onPress={() => setIsOpen(true)}>Manage subscription</Button>
+        <ConfirmationDialog
+          {...args}
+          title={
+            <Flex alignItems="center" gap="200">
+              <Text>Cancel subscription</Text>
+              <Badge>Pro</Badge>
+            </Flex>
+          }
+          aria-label="Cancel subscription"
+          intent="destructive"
+          confirmLabel="Cancel subscription"
+          cancelLabel="Keep subscription"
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+        >
+          <Text>
+            You'll keep access until the end of the current billing period.
+          </Text>
+        </ConfirmationDialog>
+      </>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -633,6 +666,9 @@ export const WithReactNodeTitle: Story = {
     );
 
     await step("Composed title renders with the badge", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Manage subscription" })
+      );
       await waitFor(() =>
         expect(canvas.getByRole("dialog")).toBeInTheDocument()
       );
@@ -665,7 +701,7 @@ export const LongContent: Story = {
     onCancel: fn(),
   },
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const paragraphs = Array.from({ length: 25 }, (_, i) => (
       <Text key={i}>
         Paragraph {i + 1}: Lorem ipsum dolor sit amet, consectetur adipiscing
@@ -674,14 +710,17 @@ export const LongContent: Story = {
       </Text>
     ));
     return (
-      <ConfirmationDialog
-        {...args}
-        title="Accept terms"
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-      >
-        <Stack gap="400">{paragraphs}</Stack>
-      </ConfirmationDialog>
+      <>
+        <Button onPress={() => setIsOpen(true)}>Review terms</Button>
+        <ConfirmationDialog
+          {...args}
+          title="Accept terms"
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+        >
+          <Stack gap="400">{paragraphs}</Stack>
+        </ConfirmationDialog>
+      </>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -692,6 +731,9 @@ export const LongContent: Story = {
     await step(
       "Header and footer remain visible while long body content is rendered",
       async () => {
+        await userEvent.click(
+          canvas.getByRole("button", { name: "Review terms" })
+        );
         await waitFor(() =>
           expect(canvas.getByRole("dialog")).toBeInTheDocument()
         );
