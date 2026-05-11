@@ -239,23 +239,26 @@ export const CustomLabels: Story = {
     onCancel: fn(),
   },
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     return (
-      <FormDialog
-        {...args}
-        title="New project"
-        saveLabel="Create"
-        cancelLabel="Discard"
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-      >
-        <FormField.Root>
-          <FormField.Label>Project name</FormField.Label>
-          <FormField.Input>
-            <TextInput defaultValue="" />
-          </FormField.Input>
-        </FormField.Root>
-      </FormDialog>
+      <>
+        <Button onPress={() => setIsOpen(true)}>New project</Button>
+        <FormDialog
+          {...args}
+          title="New project"
+          saveLabel="Create"
+          cancelLabel="Discard"
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+        >
+          <FormField.Root>
+            <FormField.Label>Project name</FormField.Label>
+            <FormField.Input>
+              <TextInput defaultValue="" />
+            </FormField.Input>
+          </FormField.Root>
+        </FormDialog>
+      </>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -264,6 +267,9 @@ export const CustomLabels: Story = {
     );
 
     await step("Renders custom Save and Cancel labels", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "New project" })
+      );
       await waitFor(() =>
         expect(canvas.getByRole("dialog")).toBeInTheDocument()
       );
@@ -288,22 +294,25 @@ export const SaveDisabled: Story = {
     onCancel: fn(),
   },
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     return (
-      <FormDialog
-        {...args}
-        title="Edit profile"
-        isSaveDisabled
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-      >
-        <FormField.Root>
-          <FormField.Label>Display name</FormField.Label>
-          <FormField.Input>
-            <TextInput defaultValue="" />
-          </FormField.Input>
-        </FormField.Root>
-      </FormDialog>
+      <>
+        <Button onPress={() => setIsOpen(true)}>Edit profile</Button>
+        <FormDialog
+          {...args}
+          title="Edit profile"
+          isSaveDisabled
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+        >
+          <FormField.Root>
+            <FormField.Label>Display name</FormField.Label>
+            <FormField.Input>
+              <TextInput defaultValue="" />
+            </FormField.Input>
+          </FormField.Root>
+        </FormDialog>
+      </>
     );
   },
   play: async ({ canvasElement, args, step }) => {
@@ -316,6 +325,9 @@ export const SaveDisabled: Story = {
       "Save button is disabled and clicking it does not invoke onSave",
       async () => {
         onSave.mockClear();
+        await userEvent.click(
+          canvas.getByRole("button", { name: "Edit profile" })
+        );
         await waitFor(() =>
           expect(canvas.getByRole("dialog")).toBeInTheDocument()
         );
@@ -349,22 +361,25 @@ export const LoadingLockout: Story = {
     onCancel: fn(),
   },
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     return (
-      <FormDialog
-        {...args}
-        title="Saving…"
-        isSaveLoading
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-      >
-        <FormField.Root>
-          <FormField.Label>Display name</FormField.Label>
-          <FormField.Input>
-            <TextInput defaultValue="Pending" />
-          </FormField.Input>
-        </FormField.Root>
-      </FormDialog>
+      <>
+        <Button onPress={() => setIsOpen(true)}>Open saving dialog</Button>
+        <FormDialog
+          {...args}
+          title="Saving…"
+          isSaveLoading
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+        >
+          <FormField.Root>
+            <FormField.Label>Display name</FormField.Label>
+            <FormField.Input>
+              <TextInput defaultValue="Pending" />
+            </FormField.Input>
+          </FormField.Root>
+        </FormDialog>
+      </>
     );
   },
   play: async ({ canvasElement, args, step }) => {
@@ -375,6 +390,9 @@ export const LoadingLockout: Story = {
     const onCancel = args.onCancel as ReturnType<typeof fn>;
 
     await step("Both buttons are disabled while loading", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Open saving dialog" })
+      );
       await waitFor(() =>
         expect(canvas.getByRole("dialog")).toBeInTheDocument()
       );
@@ -452,31 +470,34 @@ export const AsyncSave: Story = {
     onCancel: fn(),
   },
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     return (
-      <FormDialog
-        {...args}
-        title="Edit profile"
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-        isSaveLoading={isLoading}
-        onSave={async () => {
-          setIsLoading(true);
-          try {
-            await new Promise((resolve) => setTimeout(resolve, 200));
-          } finally {
-            setIsLoading(false);
-          }
-        }}
-      >
-        <FormField.Root>
-          <FormField.Label>Display name</FormField.Label>
-          <FormField.Input>
-            <TextInput defaultValue="New name" />
-          </FormField.Input>
-        </FormField.Root>
-      </FormDialog>
+      <>
+        <Button onPress={() => setIsOpen(true)}>Edit profile (async)</Button>
+        <FormDialog
+          {...args}
+          title="Edit profile"
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+          isSaveLoading={isLoading}
+          onSave={async () => {
+            setIsLoading(true);
+            try {
+              await new Promise((resolve) => setTimeout(resolve, 200));
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+        >
+          <FormField.Root>
+            <FormField.Label>Display name</FormField.Label>
+            <FormField.Input>
+              <TextInput defaultValue="New name" />
+            </FormField.Input>
+          </FormField.Root>
+        </FormDialog>
+      </>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -485,6 +506,9 @@ export const AsyncSave: Story = {
     );
 
     await step("Dialog opens with save button enabled", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Edit profile (async)" })
+      );
       await waitFor(() =>
         expect(canvas.getByRole("dialog")).toBeInTheDocument()
       );
@@ -524,33 +548,36 @@ export const AsyncSaveRejection: Story = {
     onCancel: fn(),
   },
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     return (
-      <FormDialog
-        {...args}
-        title="Edit profile"
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-        isSaveLoading={isLoading}
-        onSave={async () => {
-          setIsLoading(true);
-          try {
-            await new Promise((_resolve, reject) =>
-              setTimeout(() => reject(new Error("validation")), 200)
-            );
-          } finally {
-            setIsLoading(false);
-          }
-        }}
-      >
-        <FormField.Root>
-          <FormField.Label>Display name</FormField.Label>
-          <FormField.Input>
-            <TextInput defaultValue="New name" />
-          </FormField.Input>
-        </FormField.Root>
-      </FormDialog>
+      <>
+        <Button onPress={() => setIsOpen(true)}>Try saving profile</Button>
+        <FormDialog
+          {...args}
+          title="Edit profile"
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+          isSaveLoading={isLoading}
+          onSave={async () => {
+            setIsLoading(true);
+            try {
+              await new Promise((_resolve, reject) =>
+                setTimeout(() => reject(new Error("validation")), 200)
+              );
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+        >
+          <FormField.Root>
+            <FormField.Label>Display name</FormField.Label>
+            <FormField.Input>
+              <TextInput defaultValue="New name" />
+            </FormField.Input>
+          </FormField.Root>
+        </FormDialog>
+      </>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -561,6 +588,9 @@ export const AsyncSaveRejection: Story = {
     await step(
       "Dialog stays open after the rejected promise settles",
       async () => {
+        await userEvent.click(
+          canvas.getByRole("button", { name: "Try saving profile" })
+        );
         await waitFor(() =>
           expect(canvas.getByRole("dialog")).toBeInTheDocument()
         );
@@ -592,27 +622,30 @@ export const WithReactNodeTitle: Story = {
     onCancel: fn(),
   },
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     return (
-      <FormDialog
-        {...args}
-        title={
-          <Flex alignItems="center" gap="200">
-            <Text>Edit billing</Text>
-            <Badge>Pro</Badge>
-          </Flex>
-        }
-        aria-label="Edit billing"
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-      >
-        <FormField.Root>
-          <FormField.Label>Billing email</FormField.Label>
-          <FormField.Input>
-            <TextInput defaultValue="" />
-          </FormField.Input>
-        </FormField.Root>
-      </FormDialog>
+      <>
+        <Button onPress={() => setIsOpen(true)}>Manage billing</Button>
+        <FormDialog
+          {...args}
+          title={
+            <Flex alignItems="center" gap="200">
+              <Text>Edit billing</Text>
+              <Badge>Pro</Badge>
+            </Flex>
+          }
+          aria-label="Edit billing"
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+        >
+          <FormField.Root>
+            <FormField.Label>Billing email</FormField.Label>
+            <FormField.Input>
+              <TextInput defaultValue="" />
+            </FormField.Input>
+          </FormField.Root>
+        </FormDialog>
+      </>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -621,6 +654,9 @@ export const WithReactNodeTitle: Story = {
     );
 
     await step("Composed title renders with the badge", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Manage billing" })
+      );
       await waitFor(() =>
         expect(canvas.getByRole("dialog")).toBeInTheDocument()
       );
@@ -648,7 +684,7 @@ export const LongForm: Story = {
     onCancel: fn(),
   },
   render: (args) => {
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const fields = Array.from({ length: 20 }, (_, i) => (
       <FormField.Root key={i}>
         <FormField.Label>Field {i + 1}</FormField.Label>
@@ -658,14 +694,17 @@ export const LongForm: Story = {
       </FormField.Root>
     ));
     return (
-      <FormDialog
-        {...args}
-        title="Edit configuration"
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-      >
-        <Stack gap="400">{fields}</Stack>
-      </FormDialog>
+      <>
+        <Button onPress={() => setIsOpen(true)}>Edit configuration</Button>
+        <FormDialog
+          {...args}
+          title="Edit configuration"
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+        >
+          <Stack gap="400">{fields}</Stack>
+        </FormDialog>
+      </>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -676,6 +715,9 @@ export const LongForm: Story = {
     await step(
       "Header and footer remain visible while long form is rendered",
       async () => {
+        await userEvent.click(
+          canvas.getByRole("button", { name: "Edit configuration" })
+        );
         await waitFor(() =>
           expect(canvas.getByRole("dialog")).toBeInTheDocument()
         );
