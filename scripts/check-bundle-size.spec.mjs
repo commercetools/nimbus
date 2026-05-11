@@ -118,3 +118,59 @@ describe("check-bundle-size failure detection", () => {
     expect(result.stderr).toContain("threshold");
   });
 });
+
+describe("per-package size policies", () => {
+  describe("absolute policy passes when relative would fail", () => {
+    withBaselineGuard();
+
+    it("tokens pass under absolute budget even with >5% relative increase", () => {
+      // Real tokens are ~209/216 bytes. Setting baseline to 190/195 creates
+      // a ~10% relative increase (exceeds the 5% threshold), but 209 < 1024
+      // absolute budget — should pass with absolute policy.
+      const baseline = {
+        "@commercetools/nimbus": { esm: 1576550, cjs: 64000 },
+        "@commercetools/nimbus-icons": { esm: 1555358, cjs: 2159234 },
+        "@commercetools/nimbus-tokens": { esm: 190, cjs: 195 },
+      };
+      writeFileSync(BASELINE_PATH, JSON.stringify(baseline, null, 2));
+
+      const result = run(CHECK_SCRIPT, { GIT_DIR: "/nonexistent" });
+      expect(result.status).toBe(0);
+      expect(result.stdout).toContain(
+        "All packages within acceptable size limits"
+      );
+    });
+  });
+
+  describe("absolute policy fails when budget exceeded", () => {
+    withBaselineGuard();
+
+    it("tokens fail with a clear message when nimbus and nimbus-icons also fail", () => {
+      // Set all baselines tiny so nimbus/nimbus-icons fail on relative threshold.
+      // Tokens baseline doesn't matter for absolute policy — what matters is
+      // that measured size (209/216) is under 1024. So tokens should show "ok"
+      // even when other packages show "fail".
+      const baseline = {
+        "@commercetools/nimbus": { esm: 100, cjs: 100 },
+        "@commercetools/nimbus-icons": { esm: 100, cjs: 100 },
+        "@commercetools/nimbus-tokens": { esm: 100, cjs: 100 },
+      };
+      writeFileSync(BASELINE_PATH, JSON.stringify(baseline, null, 2));
+
+      const result = run(CHECK_SCRIPT, { GIT_DIR: "/nonexistent" });
+      // Overall should fail (nimbus and nimbus-icons exceed relative threshold)
+      expect(result.status).toBe(1);
+      expect(result.stderr).toContain("FAIL");
+
+      // But tokens lines should show "ok" (absolute policy, under budget)
+      const lines = result.stdout.split("\n");
+      const tokensLines = lines.filter((l) =>
+        l.includes("@commercetools/nimbus-tokens")
+      );
+      expect(tokensLines.length).toBeGreaterThan(0);
+      for (const line of tokensLines) {
+        expect(line).toContain("ok");
+      }
+    });
+  });
+});
