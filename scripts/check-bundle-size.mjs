@@ -245,8 +245,7 @@ function compare(currentSizes) {
 
           if (
             localSize != null &&
-            Math.abs(localSize - currentSize) / Math.max(currentSize, 1) <
-              0.001
+            Math.abs(localSize - currentSize) / Math.max(currentSize, 1) < 0.001
           ) {
             status = "approved";
           } else {
