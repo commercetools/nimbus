@@ -12,6 +12,7 @@
  *   1. Measure minified output sizes for each tracked package
  *   2. Write the results to bundle-sizes.json at the repo root
  *   3. You commit and push — CI re-runs and passes
+ *   4. This will be removed soon (testing branch protection rules)
  */
 
 import {
