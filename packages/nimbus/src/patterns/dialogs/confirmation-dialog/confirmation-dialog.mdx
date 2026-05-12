@@ -1,0 +1,45 @@
+---
+id: Patterns-ConfirmationDialog
+title: Confirmation dialog
+exportName: ConfirmationDialog
+description: A pre-composed confirm/cancel dialog with a flat, opinionated API.
+order: 999
+menu:
+  - Patterns
+  - Dialogs
+  - Confirmation dialog
+tags:
+  - component
+  - pattern
+  - dialog
+  - ConfirmationDialog
+related-components:
+  - Dialog
+  - Button
+---
+
+## Overview
+
+ConfirmationDialog is a pattern component that wraps the Dialog primitive plus two Buttons in a flat, opinionated API for the most common confirm/cancel dialog shape: a title, a body, two action callbacks, and optional state and intent props. It is the recommended replacement for the Merchant Center Application Kit's `ConfirmationDialog`.
+
+The pattern exposes a small, flat set of props — `title`, `children`, `onConfirm`, `onCancel`, plus optional state, label, intent, and accessibility props — and delegates everything else (sizing, stacking, portaling, focus management, button styling) to the underlying `Dialog` and `Button` primitives.
+
+### When to use
+
+- Asking the user to confirm an action before it executes (delete, remove, discard, submit, publish)
+- Any scenario that needs a confirm/cancel pair with optional destructive styling and an in-flight loading state
+- Replacing app-kit's `ConfirmationDialog` during the migration
+
+### When not to use
+
+- Read-only informational dialogs without action buttons — use the `InfoDialog` pattern
+- Dialogs hosting editable forms — use `Dialog` directly with form wiring
+- Any scenario that needs a non-default size, custom dismissability behaviour, per-button `data-*` attributes, or a separate `onClose`/`onCancel` distinction — drop down to `Dialog` directly (see the escape hatch in the developer documentation)
+
+### Resources
+
+For detailed guidance on the underlying primitives, consult the component guidelines:
+
+- [Dialog Guidelines](/components/feedback/dialog) — Variants, dismissability, sizing, placement, accessibility
+- [Button Guidelines](/components/forms/button) — Variants, color palettes, loading states
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-dialogs-confirmationdialog--docs)
