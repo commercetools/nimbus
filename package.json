@@ -1,9 +1,14 @@
 {
   "name": "nimbus",
   "private": true,
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "preconstruct": {
-    "packages": ["packages/tokens"]
+    "packages": [
+      "packages/tokens"
+    ]
   },
   "scripts": {
     "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs && pnpm run build:mcp",
@@ -35,6 +40,7 @@
     "test:dev": "pnpm vitest run --config vitest.dev.config.ts",
     "test:storybook:dev": "pnpm vitest run --config vitest.dev.config.ts --project=storybook-dev",
     "check:bundle-size": "node scripts/check-bundle-size.mjs",
+    "check:package-shape": "node scripts/check-package-shape.mjs",
     "update:bundle-sizes": "node scripts/update-bundle-sizes.mjs"
   },
   "packageManager": "pnpm@10.12.3+sha512.467df2c586056165580ad6dfb54ceaad94c5a30f80893ebdec5a44c5aa73c205ae4a5bb9d5ed6bb84ea7c249ece786642bbb49d06a307df218d03da41c317417",
@@ -85,6 +91,7 @@
     ]
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "catalog:tooling",
     "@babel/core": "catalog:tooling",
     "@changesets/changelog-github": "0.7.0",
     "@changesets/cli": "2.30.0",
@@ -102,6 +109,7 @@
     "globals": "catalog:tooling",
     "playwright": "catalog:tooling",
     "prettier": "catalog:tooling",
+    "publint": "catalog:tooling",
     "tsx": "catalog:tooling",
     "typescript": "catalog:tooling",
     "typescript-eslint": "catalog:tooling",

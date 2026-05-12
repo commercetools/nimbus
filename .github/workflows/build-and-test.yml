@@ -39,6 +39,9 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck:strict
 
+      - name: Check package shape (report-only)
+        run: pnpm check:package-shape
+
       - name: Clean temp before tests
         run: rm -rf /tmp/* || true
         shell: bash
