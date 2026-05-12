@@ -1,0 +1,207 @@
+name: Bundle Size Comment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  bundle-size:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-noble
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install GitHub CLI
+        run: |
+          (type -p wget >/dev/null || (apt-get update && apt-get install -y wget)) \
+          && mkdir -p -m 755 /etc/apt/keyrings \
+          && out=$(mktemp) && wget -nv -O "$out" https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+          && cat "$out" | tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+          && chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && apt-get update \
+          && apt-get install -y gh
+
+      - name: Installing dependencies and building packages
+        uses: ./.github/actions/ci
+
+      - name: Fetch baseline from comment chain
+        id: baseline
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Find the most recently merged PR with the bundle-sizes label
+          BASELINE_PR=$(gh pr list \
+            --repo "$GITHUB_REPOSITORY" \
+            --state merged \
+            --label bundle-sizes \
+            --json number \
+            --limit 1 \
+            --jq '.[0].number // empty')
+
+          if [ -n "$BASELINE_PR" ]; then
+            echo "Found baseline PR: #${BASELINE_PR}"
+
+            # Extract the machine-readable data block from the bot comment
+            BASELINE_DATA=$(gh api \
+              "repos/${GITHUB_REPOSITORY}/issues/${BASELINE_PR}/comments" \
+              --jq '.[] | select(.body | contains("bundle-sizes-comment")) | .body' \
+              | grep -o '<!-- bundle-sizes-data-v1: .* -->' \
+              | sed 's/<!-- bundle-sizes-data-v1: //' \
+              | sed 's/ -->//')
+
+            if [ -n "$BASELINE_DATA" ]; then
+              echo "source=comment-chain" >> "$GITHUB_OUTPUT"
+              echo "data=${BASELINE_DATA}" >> "$GITHUB_OUTPUT"
+            else
+              echo "::warning::Could not parse data block from PR #${BASELINE_PR} comment. Falling back to bootstrap file."
+              echo "source=bootstrap" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "No labeled merged PR found. Using bootstrap baseline (bundle-sizes.json)."
+            echo "source=bootstrap" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check for approval label
+        id: approval
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LABELS=$(gh pr view "${{ github.event.pull_request.number }}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --json labels \
+            --jq '.labels[].name')
+
+          if echo "$LABELS" | grep -q '^bundle-size-approved$'; then
+            echo "approved=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "approved=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Measure and compare bundle sizes
+        id: check
+        env:
+          BUNDLE_SIZE_BASELINE:
+            ${{ steps.baseline.outputs.source == 'comment-chain' &&
+            steps.baseline.outputs.data || '' }}
+          BUNDLE_SIZE_APPROVED: ${{ steps.approval.outputs.approved }}
+        run: |
+          set +e
+          node scripts/check-bundle-size.mjs --json > /tmp/bundle-sizes-result.json 2>/tmp/bundle-sizes-stderr.txt
+          EXIT_CODE=$?
+          set -e
+
+          # Show stderr in CI logs
+          cat /tmp/bundle-sizes-stderr.txt >&2 || true
+          # Show JSON result in CI logs
+          cat /tmp/bundle-sizes-result.json
+          echo "exit_code=${EXIT_CODE}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and post comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASELINE_SOURCE: ${{ steps.baseline.outputs.source }}
+        run: |
+          # Parse the JSON result
+          JSON_FILE="/tmp/bundle-sizes-result.json"
+          if [ ! -f "$JSON_FILE" ]; then
+            echo "::error::No bundle size result found"
+            exit 1
+          fi
+
+          HAS_FAILURES=$(node -e "const d=JSON.parse(require('fs').readFileSync('$JSON_FILE','utf-8')); console.log(d.has_failures)")
+          BASELINE_SRC=$(node -e "const d=JSON.parse(require('fs').readFileSync('$JSON_FILE','utf-8')); console.log(d.baseline_source)")
+
+          # Build the markdown comment body
+          COMMENT_BODY=$(node -e "
+            const fs = require('fs');
+            const data = JSON.parse(fs.readFileSync('$JSON_FILE', 'utf-8'));
+            const lines = [];
+            lines.push('<!-- bundle-sizes-comment -->');
+            lines.push('## Bundle Size Report');
+            lines.push('');
+            lines.push('| Package | Format | Current | Baseline | Delta | Status |');
+            lines.push('|---------|--------|--------:|---------:|------:|--------|');
+
+            for (const [pkg, formats] of Object.entries(data.packages)) {
+              for (const [fmt, info] of Object.entries(formats)) {
+                const current = info.current != null ? (info.current / 1024).toFixed(1) + ' KB' : '—';
+                const baseline = info.baseline != null ? (info.baseline / 1024).toFixed(1) + ' KB' : '—';
+                const delta = info.delta_pct != null ? (info.delta_pct >= 0 ? '+' : '') + info.delta_pct.toFixed(1) + '%' : info.status;
+                const icon = info.status === 'ok' ? ':white_check_mark:' : info.status === 'fail' ? ':x:' : info.status === 'approved' ? ':warning:' : ':new:';
+                lines.push('| ' + pkg + ' | ' + fmt + ' | ' + current + ' | ' + baseline + ' | ' + delta + ' | ' + icon + ' ' + info.status + ' |');
+              }
+            }
+
+            lines.push('');
+            lines.push('Baseline source: **' + data.baseline_source + '**');
+            if (data.has_failures) {
+              lines.push('');
+              lines.push('> :x: **One or more packages exceeded their size budget.**');
+              lines.push('> To approve this increase, apply the \`bundle-size-approved\` label and re-run CI.');
+            }
+
+            // Machine-readable data block for the comment chain
+            const sizes = {};
+            for (const [pkg, formats] of Object.entries(data.packages)) {
+              sizes[pkg] = {};
+              for (const [fmt, info] of Object.entries(formats)) {
+                sizes[pkg][fmt] = info.current;
+              }
+            }
+            lines.push('');
+            lines.push('<!-- bundle-sizes-data-v1: ' + JSON.stringify(sizes) + ' -->');
+
+            console.log(lines.join('\n'));
+          ")
+
+          # Find existing comment to update (or create new)
+          EXISTING_COMMENT_ID=$(gh api \
+            "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+            --jq '.[] | select(.body | contains("bundle-sizes-comment")) | .id' \
+            | head -1)
+
+          if [ -n "$EXISTING_COMMENT_ID" ]; then
+            gh api \
+              --method PATCH \
+              "repos/${GITHUB_REPOSITORY}/issues/comments/${EXISTING_COMMENT_ID}" \
+              -f body="$COMMENT_BODY"
+            echo "Updated existing comment #${EXISTING_COMMENT_ID}"
+          else
+            gh api \
+              --method POST \
+              "repos/${GITHUB_REPOSITORY}/issues/${PR_NUMBER}/comments" \
+              -f body="$COMMENT_BODY"
+            echo "Posted new comment"
+          fi
+
+      - name: Fail if thresholds exceeded
+        if:
+          steps.check.outputs.exit_code != '0' &&
+          steps.approval.outputs.approved != 'true'
+        run: |
+          echo "::error::Bundle size check failed. Apply the 'bundle-size-approved' label to approve."
+          exit 1
+
+  post-merge-label:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Add bundle-sizes label
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr edit "${{ github.event.pull_request.number }}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --add-label "bundle-sizes"
