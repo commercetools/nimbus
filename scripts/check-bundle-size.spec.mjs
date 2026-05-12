@@ -101,7 +101,6 @@ describe("check-bundle-size failure detection", () => {
   withBaselineGuard();
 
   it("exits 1 when baseline sizes are much smaller than actual", () => {
-    // Write a baseline with artificially small sizes so the check fails
     const tinyBaseline = {
       "@commercetools/nimbus": { dist: 100 },
       "@commercetools/nimbus-icons": { dist: 100 },
@@ -109,8 +108,6 @@ describe("check-bundle-size failure detection", () => {
     };
     writeFileSync(BASELINE_PATH, JSON.stringify(tinyBaseline, null, 2));
 
-    // Point GIT_DIR to a nonexistent path so git show fails and the
-    // script falls back to the local (tiny) baseline we just wrote.
     const result = run(CHECK_SCRIPT, { GIT_DIR: "/nonexistent" });
     expect(result.status).toBe(1);
     expect(result.stderr).toContain("FAIL");
