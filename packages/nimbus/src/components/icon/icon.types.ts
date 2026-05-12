@@ -22,7 +22,7 @@ export type IconRootSlotProps = HTMLChakraProps<"svg", IconRecipeProps>;
 
 type IconVariantProps = Omit<
   IconRootSlotProps,
-  | keyof React.SVGProps<SVGSVGElement>
+  | keyof Omit<React.SVGProps<SVGSVGElement>, "size">
   | "css"
   | "unstyled"
   | "asChild"
