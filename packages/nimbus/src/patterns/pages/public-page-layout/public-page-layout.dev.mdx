@@ -1,0 +1,184 @@
+---
+title: PublicPageLayout Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { PublicPageLayout, type PublicPageLayoutProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+Provide `children` — all other props are optional.
+
+```jsx live-dev
+const App = () => (
+  <PublicPageLayout welcomeMessage="Welcome">
+    <Text>Login form goes here</Text>
+  </PublicPageLayout>
+);
+```
+
+## Usage examples
+
+### With logo and welcome message
+
+```jsx live-dev
+const App = () => (
+  <PublicPageLayout
+    logo={<Text fontWeight="bold" fontSize="xl">Brand</Text>}
+    welcomeMessage="Welcome to the Merchant Center"
+  >
+    <Text>Login form</Text>
+  </PublicPageLayout>
+);
+```
+
+### Wide content for two columns
+
+Use `contentWidth="wide"` when the content needs more horizontal space, for
+example a two-column registration form.
+
+```jsx live-dev
+const App = () => (
+  <PublicPageLayout
+    logo={<Text fontWeight="bold" fontSize="xl">Brand</Text>}
+    welcomeMessage="Create your account"
+    contentWidth="wide"
+  >
+    <Flex gap="400">
+      <Box flex="1">
+        <Text>Column one</Text>
+      </Box>
+      <Box flex="1">
+        <Text>Column two</Text>
+      </Box>
+    </Flex>
+  </PublicPageLayout>
+);
+```
+
+### With legal footer
+
+```jsx live-dev
+const App = () => (
+  <PublicPageLayout
+    logo={<Text fontWeight="bold" fontSize="xl">Brand</Text>}
+    welcomeMessage="Sign in"
+    legalMessage={
+      <Text fontSize="xs" color="neutral.11">
+        © 2026 commercetools · Privacy Policy · Terms of Service
+      </Text>
+    }
+  >
+    <Text>Login form</Text>
+  </PublicPageLayout>
+);
+```
+
+### With background style
+
+Style props are forwarded to the outer `<main>` wrapper, so you can
+customize the background.
+
+```jsx live-dev
+const App = () => (
+  <PublicPageLayout
+    welcomeMessage="Welcome"
+    bg="neutral.2"
+  >
+    <Text>Content on a tinted background</Text>
+  </PublicPageLayout>
+);
+```
+
+## Escape hatch: manual composition
+
+If you need a layout structure that PublicPageLayout doesn't support (e.g.,
+side-by-side panels, custom spacing), consider using
+[PageContent](/components/layout/page-content) for a more flexible
+column-based layout, or compose Flex and Stack directly for full control.
+
+**With PublicPageLayout:**
+
+```tsx
+<PublicPageLayout
+  logo={<Icon size="xl"><Storefront /></Icon>}
+  welcomeMessage="Welcome to the Merchant Center"
+  legalMessage={<Text fontSize="xs">© 2026 commercetools</Text>}
+>
+  <LoginForm />
+</PublicPageLayout>
+```
+
+**Manual composition:**
+
+```tsx
+<Flex as="main" aria-label="Login page" width="100%" minHeight="100vh" paddingY="600" justify="center">
+  <Stack gap="600" alignItems="center" width="100%">
+    <Flex justify="center">
+      <Icon size="xl"><Storefront /></Icon>
+    </Flex>
+    <Heading as="h2" textAlign="center">
+      Welcome to the Merchant Center
+    </Heading>
+    <Stack gap="600" alignItems="center" width="100%">
+      <Box maxW="sm" width="100%">
+        <LoginForm />
+      </Box>
+      <Box maxW="sm" textAlign="center">
+        <Text fontSize="xs">© 2026 commercetools</Text>
+      </Box>
+    </Stack>
+  </Stack>
+</Flex>
+```
+
+## Accessibility
+
+- The outer element renders as a `<main>` landmark with an `aria-label`
+  (defaults to "Public page", overridable via the `aria-label` prop)
+- The welcome message renders as an `<h2>` heading for document outline
+- Do not nest another `<main>` inside children — one landmark per page
+
+## API reference
+
+<PropsTable id="PublicPageLayout" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your integration of PublicPageLayout.
+The component's own behavior is already tested by Nimbus.
+
+### Verify layout renders
+
+```tsx
+import { render, screen } from "@testing-library/react";
+import { PublicPageLayout } from "@commercetools/nimbus";
+
+it("renders the login page layout", () => {
+  render(
+    <PublicPageLayout
+      welcomeMessage="Welcome"
+      aria-label="Login page"
+    >
+      <form>...</form>
+    </PublicPageLayout>
+  );
+
+  expect(screen.getByRole("main", { name: "Login page" })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "Welcome" })).toBeInTheDocument();
+});
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-pages-publicpagelayout--docs)
+- [Flex Component](/components/layout/flex)
+- [Stack Component](/components/layout/stack)
+- [Heading Component](/components/typography/heading)

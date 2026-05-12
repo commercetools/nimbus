@@ -1,0 +1,78 @@
+---
+id: Patterns-PublicPageLayout
+title: Public page layout
+exportName: PublicPageLayout
+description: A pre-built, centered layout for public-facing pages (login, registration, password reset) with slots for brand logo, welcome heading, main content, and legal footer.
+documentState: InitialDraft
+lifecycleState: Beta
+order: 999
+menu:
+  - Patterns
+  - Pages
+  - Public page layout
+tags:
+  - component
+  - pattern
+  - pages
+  - Flex
+  - Stack
+  - Heading
+  - Text
+related-components:
+  - Flex
+  - Stack
+  - Heading
+  - Text
+---
+
+## Overview
+
+PublicPageLayout is a pattern that composes Flex, Stack, and Heading into a
+centered, full-viewport-height layout for public-facing pages. It replaces
+the Merchant Center's `public-page-layout` component.
+
+The layout vertically stacks: an optional brand logo, an optional welcome
+heading, the main content area, and an optional legal footer — all
+horizontally centered with a constrained max-width.
+
+## Anatomy
+
+- A `<main>` landmark with an accessible label (default: "Public page")
+- Optional logo area, centered horizontally
+- Optional welcome heading rendered as an `<h2>`
+- Content area with a max-width controlled by `contentWidth`
+- Optional legal/footer message area
+
+## Usage
+
+### When to use
+
+- Login, registration, password reset, and other unauthenticated pages
+- Any public-facing page that needs a centered, single-column layout with
+  branding
+
+### When not to use
+
+- Authenticated app pages — use `DefaultPage` or other app layout patterns
+- Pages that need a sidebar or multi-column chrome — compose Flex and Stack
+  directly
+
+### Do
+
+- Pass a brand logo via the `logo` prop for consistent branding
+- Use `contentWidth="wide"` when rendering two-column content
+- Provide a descriptive `aria-label` when the default "Public page" is too
+  generic (e.g., `aria-label="Login page"`)
+
+### Don't
+
+- Don't nest another `<main>` landmark inside children — PublicPageLayout
+  already renders one
+- Don't use this for authenticated layouts that need navigation or sidebars
+
+### Resources
+
+- [Flex](/components/layout/flex) — layout primitive used internally
+- [Stack](/components/layout/stack) — vertical stacking primitive
+- [Heading](/components/typography/heading) — welcome message rendering
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-pages-publicpagelayout--docs)
