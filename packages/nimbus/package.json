@@ -12,16 +12,18 @@
         "default": "./dist/index.es.js"
       },
       "require": {
-        "types": "./dist/index.d.ts",
+        "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
       }
     },
     "./package.json": "./package.json",
     "./setup-jsdom-polyfills": {
       "import": {
+        "types": "./dist/setup-jsdom-polyfills.d.ts",
         "default": "./dist/setup-jsdom-polyfills.es.js"
       },
       "require": {
+        "types": "./dist/setup-jsdom-polyfills.d.cts",
         "default": "./dist/setup-jsdom-polyfills.cjs"
       }
     }
@@ -114,8 +116,9 @@
     "slate-react": "^0.123.0"
   },
   "scripts": {
-    "build": "pnpm run build-theme-typings && pnpm run build:lib",
+    "build": "pnpm run build-theme-typings && pnpm run build:lib && pnpm run build:postbuild-types",
     "build:lib": "vite build",
+    "build:postbuild-types": "node scripts/postbuild-types.mjs",
     "dev": "vite build --watch",
     "test": "vitest --run",
     "typecheck": "tsc --noEmit",

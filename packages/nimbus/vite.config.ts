@@ -166,11 +166,15 @@ export default defineConfig(async () => {
         rollupTypes: false,
         include: ["src/**/*"],
         // Don't declare types for stories and tests in bundle.
+        // Note: src/test/setup-jsdom-polyfills.ts is a published entry point
+        // (see createEntries above), so it must be type-declared — only the
+        // other test-only files in src/test/ are excluded.
         exclude: [
           "src/**/*.stories.*",
           "src/**/*.spec.*",
           "src/**/*.test-*.*",
-          "src/test/**/*",
+          "src/test/unit-test-setup.ts",
+          "src/test/utils.tsx",
         ],
       })
     );
