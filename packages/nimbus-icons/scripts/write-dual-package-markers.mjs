@@ -60,9 +60,13 @@ function isDir(p) {
 
 function resolveImport(fromFileDir, importPath) {
   const abs = join(fromFileDir, importPath);
-  if (existsSync(`${abs}.d.ts`) || existsSync(`${abs}.js`)) return `${importPath}.js`;
+  if (existsSync(`${abs}.d.ts`) || existsSync(`${abs}.js`))
+    return `${importPath}.js`;
   if (isDir(abs)) {
-    if (existsSync(join(abs, "index.d.ts")) || existsSync(join(abs, "index.js"))) {
+    if (
+      existsSync(join(abs, "index.d.ts")) ||
+      existsSync(join(abs, "index.js"))
+    ) {
       return `${importPath}/index.js`;
     }
   }
@@ -103,5 +107,8 @@ function walk(dir, predicate) {
 }
 
 const esmDir = join(DIST, "esm");
-const rewritten = walk(esmDir, (name) => name.endsWith(".js") || name.endsWith(".d.ts"));
+const rewritten = walk(
+  esmDir,
+  (name) => name.endsWith(".js") || name.endsWith(".d.ts")
+);
 console.log(`[postbuild] rewrote imports in ${rewritten} esm file(s)`);

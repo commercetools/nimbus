@@ -55,7 +55,9 @@ for (const { from, to } of RELOCATIONS) {
     process.exit(1);
   }
   copyFileSync(from, to);
-  console.log(`[postbuild-types] relocated ${relative(DIST, from)} → ${relative(DIST, to)}`);
+  console.log(
+    `[postbuild-types] relocated ${relative(DIST, from)} → ${relative(DIST, to)}`
+  );
 }
 
 rmSync(join(DIST, "test"), { recursive: true, force: true });
@@ -77,9 +79,13 @@ function isDir(p) {
  */
 function resolveImport(fromFileDir, importPath) {
   const abs = join(fromFileDir, importPath);
-  if (existsSync(`${abs}.d.ts`) || existsSync(`${abs}.js`)) return `${importPath}.js`;
+  if (existsSync(`${abs}.d.ts`) || existsSync(`${abs}.js`))
+    return `${importPath}.js`;
   if (isDir(abs)) {
-    if (existsSync(join(abs, "index.d.ts")) || existsSync(join(abs, "index.js"))) {
+    if (
+      existsSync(join(abs, "index.d.ts")) ||
+      existsSync(join(abs, "index.js"))
+    ) {
       return `${importPath}/index.js`;
     }
   }

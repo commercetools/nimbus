@@ -11,8 +11,8 @@
  *     map mistakes and ESM/CJS interop foot-guns.
  *   - publint: validates package.json correctness against the npm spec.
  *
- * Report-only: prints findings and always exits 0. CI surfaces output for
- * review without blocking. Flip REPORT_ONLY = false to make it strict.
+ * Exits non-zero on any finding so CI blocks the merge. Flip REPORT_ONLY to
+ * true temporarily if you need the check to surface findings without failing.
  *
  * Usage:
  *   node scripts/check-package-shape.mjs
@@ -94,9 +94,7 @@ function main() {
         existsSync(join(pkg.dir, "dist")) ||
         existsSync(join(pkg.dir, "package.json")); // some pkgs may not have dist/
       if (!distExists) {
-        console.log(
-          `${YELLOW}⚠ Skipping — ${pkg.dir} not found${RESET}`
-        );
+        console.log(`${YELLOW}⚠ Skipping — ${pkg.dir} not found${RESET}`);
         continue;
       }
 
