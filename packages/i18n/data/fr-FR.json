@@ -351,6 +351,14 @@
     "developer_comment": "default label for the save button in a form action bar",
     "string": "Save"
   },
+  "Nimbus.FormDialog.cancel": {
+    "developer_comment": "default label for the cancel button in a form dialog",
+    "string": "Cancel"
+  },
+  "Nimbus.FormDialog.save": {
+    "developer_comment": "default label for the save button in a form dialog",
+    "string": "Save"
+  },
   "Nimbus.LoadingSpinner.default": {
     "developer_comment": "Default loading message for loading spinners",
     "string": "Chargement des données"

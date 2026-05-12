@@ -1,0 +1,45 @@
+---
+id: Patterns-FormDialog
+title: Form dialog
+exportName: FormDialog
+description: A pre-composed save/cancel dialog with a flat, opinionated API for hosting a form in a modal.
+order: 999
+menu:
+  - Patterns
+  - Dialogs
+  - Form dialog
+tags:
+  - component
+  - pattern
+  - dialog
+  - FormDialog
+related-components:
+  - Dialog
+  - Button
+---
+
+## Overview
+
+FormDialog is a pattern component that wraps the Dialog primitive plus two Buttons in a flat, opinionated API for the most common form-in-a-modal shape: a title, form content, two action callbacks, and optional state props. It is the recommended replacement for the Merchant Center Application Kit's `FormDialog`.
+
+The pattern exposes a small, flat set of props — `title`, `children`, `onSave`, `onCancel`, plus optional state, label, and accessibility props — and delegates everything else (sizing, stacking, portaling, focus management, button styling) to the underlying `Dialog` and `Button` primitives.
+
+### When to use
+
+- Hosting an editable form inside a modal (create / edit a single entity, configure settings, edit a profile)
+- Any scenario that needs a save/cancel pair with an in-flight loading state and a unified cancel route across the cancel button and ambient dismiss affordances
+- Replacing app-kit's `FormDialog` during the migration
+
+### When not to use
+
+- Read-only informational dialogs without action buttons — use the `InfoDialog` pattern
+- Confirm/cancel dialogs without an editable form (e.g. "Are you sure you want to delete this?") — use the `ConfirmationDialog` pattern, which adds a destructive intent variant
+- Any scenario that needs a non-default size, custom dismissability behaviour, per-button `data-*` attributes, or a separate `onClose`/`onCancel` distinction — drop down to `Dialog` directly (see the escape hatch in the developer documentation)
+
+### Resources
+
+For detailed guidance on the underlying primitives, consult the component guidelines:
+
+- [Dialog Guidelines](/components/feedback/dialog) — Variants, dismissability, sizing, placement, accessibility
+- [Button Guidelines](/components/forms/button) — Variants, color palettes, loading states
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-dialogs-formdialog--docs)
