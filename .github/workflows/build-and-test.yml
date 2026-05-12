@@ -39,7 +39,7 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck:strict
 
-      - name: Check package shape (report-only)
+      - name: Check package shape
         run: pnpm check:package-shape
 
       - name: Clean temp before tests

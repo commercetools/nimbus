@@ -29,7 +29,7 @@ import { fileURLToPath } from "node:url";
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const ROOT = join(__dirname, "..");
 
-const REPORT_ONLY = true;
+const REPORT_ONLY = false;
 
 const PACKAGES = [
   { name: "@commercetools/nimbus", dir: join(ROOT, "packages/nimbus") },
