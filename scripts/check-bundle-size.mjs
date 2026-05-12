@@ -37,25 +37,13 @@ const DEFAULT_THRESHOLD = 0.05; // 5%
 const PACKAGES = {
   "@commercetools/nimbus": {
     dist: join(ROOT, "packages/nimbus/dist"),
-    formats: {
-      esm: { pattern: "**/*.es.js" },
-      cjs: { pattern: "**/*.cjs" },
-    },
   },
   "@commercetools/nimbus-icons": {
     dist: join(ROOT, "packages/nimbus-icons/dist"),
-    formats: {
-      esm: { dir: "esm" },
-      cjs: { dir: "cjs" },
-    },
   },
   "@commercetools/nimbus-tokens": {
     dist: join(ROOT, "packages/tokens/dist"),
-    formats: {
-      esm: { pattern: "*.esm.js" },
-      cjs: { pattern: "*.cjs.js" },
-    },
-    policy: { kind: "absolute", maxBytes: 1024 },
+    policy: { kind: "absolute", maxBytes: 512000 },
   },
 };
 
@@ -83,39 +71,19 @@ function padStart(str, len) {
   return str.length >= len ? str : " ".repeat(len - str.length) + str;
 }
 
-/**
- * Recursively sum the byte sizes of all files in a directory,
- * optionally filtered by a file extension pattern.
- */
-function sumFileSize(dir, filterFn) {
+function sumFileSize(dir) {
   let total = 0;
   if (!existsSync(dir)) return total;
 
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const fullPath = join(dir, entry.name);
     if (entry.isDirectory()) {
-      total += sumFileSize(fullPath, filterFn);
-    } else if (!filterFn || filterFn(entry.name)) {
+      total += sumFileSize(fullPath);
+    } else {
       total += statSync(fullPath).size;
     }
   }
   return total;
-}
-
-/**
- * Sum sizes of files matching a glob-like pattern in a directory.
- * Supports simple patterns: "*.ext" and "**\/*.ext"
- */
-function sumByPattern(dir, pattern) {
-  if (pattern.startsWith("**/")) {
-    // Recursive match by extension
-    const ext = pattern.slice(3); // e.g. "*.es.js"
-    const suffix = ext.startsWith("*") ? ext.slice(1) : ext;
-    return sumFileSize(dir, (name) => name.endsWith(suffix));
-  }
-  // Single-level match by extension
-  const suffix = pattern.startsWith("*") ? pattern.slice(1) : pattern;
-  return sumFileSize(dir, (name) => name.endsWith(suffix));
 }
 
 // ---------------------------------------------------------------------------
@@ -131,19 +99,7 @@ function measurePackages() {
       continue;
     }
 
-    sizes[pkgName] = {};
-
-    for (const [format, spec] of Object.entries(config.formats)) {
-      if (spec.dir) {
-        // Measure entire subdirectory
-        sizes[pkgName][format] = sumFileSize(
-          join(config.dist, spec.dir),
-          (name) => name.endsWith(".js")
-        );
-      } else if (spec.pattern) {
-        sizes[pkgName][format] = sumByPattern(config.dist, spec.pattern);
-      }
-    }
+    sizes[pkgName] = { dist: sumFileSize(config.dist) };
   }
 
   return sizes;

@@ -64,10 +64,9 @@ describe("check-bundle-size", () => {
     expect(result.stdout).toContain("@commercetools/nimbus-tokens");
   });
 
-  it("reports both esm and cjs formats", () => {
+  it("reports dist format for each package", () => {
     const result = run(CHECK_SCRIPT);
-    expect(result.stdout).toContain("esm");
-    expect(result.stdout).toContain("cjs");
+    expect(result.stdout).toContain("dist");
   });
 
   it("displays all sizes in KB", () => {
@@ -104,9 +103,9 @@ describe("check-bundle-size failure detection", () => {
   it("exits 1 when baseline sizes are much smaller than actual", () => {
     // Write a baseline with artificially small sizes so the check fails
     const tinyBaseline = {
-      "@commercetools/nimbus": { esm: 100, cjs: 100 },
-      "@commercetools/nimbus-icons": { esm: 100, cjs: 100 },
-      "@commercetools/nimbus-tokens": { esm: 1, cjs: 1 },
+      "@commercetools/nimbus": { dist: 100 },
+      "@commercetools/nimbus-icons": { dist: 100 },
+      "@commercetools/nimbus-tokens": { dist: 1 },
     };
     writeFileSync(BASELINE_PATH, JSON.stringify(tinyBaseline, null, 2));
 
@@ -128,9 +127,9 @@ describe("per-package size policies", () => {
       // a ~10% relative increase (exceeds the 5% threshold), but 209 < 1024
       // absolute budget — should pass with absolute policy.
       const baseline = {
-        "@commercetools/nimbus": { esm: 1576550, cjs: 64000 },
-        "@commercetools/nimbus-icons": { esm: 1555358, cjs: 2159234 },
-        "@commercetools/nimbus-tokens": { esm: 190, cjs: 195 },
+        "@commercetools/nimbus": { dist: 16909814 },
+        "@commercetools/nimbus-icons": { dist: 4889696 },
+        "@commercetools/nimbus-tokens": { dist: 380000 },
       };
       writeFileSync(BASELINE_PATH, JSON.stringify(baseline, null, 2));
 
@@ -151,9 +150,9 @@ describe("per-package size policies", () => {
       // that measured size (209/216) is under 1024. So tokens should show "ok"
       // even when other packages show "fail".
       const baseline = {
-        "@commercetools/nimbus": { esm: 100, cjs: 100 },
-        "@commercetools/nimbus-icons": { esm: 100, cjs: 100 },
-        "@commercetools/nimbus-tokens": { esm: 100, cjs: 100 },
+        "@commercetools/nimbus": { dist: 100 },
+        "@commercetools/nimbus-icons": { dist: 100 },
+        "@commercetools/nimbus-tokens": { dist: 100 },
       };
       writeFileSync(BASELINE_PATH, JSON.stringify(baseline, null, 2));
 
