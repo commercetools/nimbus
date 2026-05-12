@@ -13,8 +13,8 @@
  *      (`export * from './foo'`) to include explicit `.js` extensions
  *      (`export * from './foo/index.js'`). vite-plugin-dts doesn't emit
  *      extensions, which causes attw InternalResolutionError under
- *      moduleResolution: "nodenext". TS resolves the `.js` extension back to
- *      the corresponding `.d.ts` automatically.
+ *      moduleResolution: "nodenext". The shared rewriter lives at
+ *      scripts/lib/rewrite-relative-imports.mjs.
  *
  *   3. Duplicate index.d.ts and setup-jsdom-polyfills.d.ts to .d.cts variants
  *      for the CJS exports path. Identical content; the extension flips how
@@ -24,17 +24,10 @@
  * imports.
  */
 
-import {
-  copyFileSync,
-  existsSync,
-  readFileSync,
-  readdirSync,
-  rmSync,
-  statSync,
-  writeFileSync,
-} from "node:fs";
-import { dirname, join, relative } from "node:path";
+import { copyFileSync, existsSync, rmSync } from "node:fs";
+import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
+import { walkAndRewriteImports } from "../../../scripts/lib/rewrite-relative-imports.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const DIST = join(__dirname, "..", "dist");
@@ -65,72 +58,7 @@ rmSync(join(DIST, "test"), { recursive: true, force: true });
 // ---------------------------------------------------------------------------
 // Step 2: rewrite bare relative imports
 
-function isDir(p) {
-  try {
-    return statSync(p).isDirectory();
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Returns the rewritten import path (with explicit .js extension), or null if
- * the target can't be resolved on disk.
- */
-function resolveImport(fromFileDir, importPath) {
-  const abs = join(fromFileDir, importPath);
-  if (existsSync(`${abs}.d.ts`) || existsSync(`${abs}.js`))
-    return `${importPath}.js`;
-  if (isDir(abs)) {
-    if (
-      existsSync(join(abs, "index.d.ts")) ||
-      existsSync(join(abs, "index.js"))
-    ) {
-      return `${importPath}/index.js`;
-    }
-  }
-  return null;
-}
-
-// Matches `from "..."`, `from '...'`, and dynamic `import("...")` calls where
-// the specifier is a relative path. Path can be:
-//   "."           current dir (rare in emitted output)
-//   ".."          parent dir
-//   "./foo"       sibling file or subdir
-//   "../foo/bar"  any relative path with content after the dots
-const IMPORT_RE = /((?:from|import)\s*\(?\s*)(['"])(\.{1,2}(?:\/[^'"]*)?)\2/g;
-
-function rewriteFile(filePath) {
-  const content = readFileSync(filePath, "utf8");
-  const fileDir = dirname(filePath);
-  let changed = false;
-
-  const updated = content.replace(IMPORT_RE, (match, prefix, quote, spec) => {
-    if (/\.(js|mjs|cjs|json)$/.test(spec)) return match;
-    const resolved = resolveImport(fileDir, spec);
-    if (!resolved) return match;
-    changed = true;
-    return `${prefix}${quote}${resolved}${quote}`;
-  });
-
-  if (changed) writeFileSync(filePath, updated);
-  return changed;
-}
-
-function walkDts(dir) {
-  let count = 0;
-  for (const entry of readdirSync(dir, { withFileTypes: true })) {
-    const full = join(dir, entry.name);
-    if (entry.isDirectory()) {
-      count += walkDts(full);
-    } else if (entry.isFile() && entry.name.endsWith(".d.ts")) {
-      if (rewriteFile(full)) count++;
-    }
-  }
-  return count;
-}
-
-const rewritten = walkDts(DIST);
+const rewritten = walkAndRewriteImports(DIST, (name) => name.endsWith(".d.ts"));
 console.log(`[postbuild-types] rewrote imports in ${rewritten} .d.ts file(s)`);
 
 // ---------------------------------------------------------------------------
