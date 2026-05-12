@@ -274,7 +274,11 @@ function compare(currentSizes) {
     }
     console.log(
       JSON.stringify(
-        { baseline_source: baselineSource, packages, has_failures: hasFailures },
+        {
+          baseline_source: baselineSource,
+          packages,
+          has_failures: hasFailures,
+        },
         null,
         2
       )
