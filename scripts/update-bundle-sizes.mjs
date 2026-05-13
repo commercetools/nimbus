@@ -32,24 +32,12 @@ const BASELINE_PATH = join(ROOT, "bundle-sizes.json");
 const PACKAGES = {
   "@commercetools/nimbus": {
     dist: join(ROOT, "packages/nimbus/dist"),
-    formats: {
-      esm: { pattern: "**/*.es.js" },
-      cjs: { pattern: "**/*.cjs" },
-    },
   },
   "@commercetools/nimbus-icons": {
     dist: join(ROOT, "packages/nimbus-icons/dist"),
-    formats: {
-      esm: { dir: "esm" },
-      cjs: { dir: "cjs" },
-    },
   },
   "@commercetools/nimbus-tokens": {
     dist: join(ROOT, "packages/tokens/dist"),
-    formats: {
-      esm: { pattern: "*.esm.js" },
-      cjs: { pattern: "*.cjs.js" },
-    },
   },
 };
 
@@ -77,29 +65,19 @@ function padStart(str, len) {
   return str.length >= len ? str : " ".repeat(len - str.length) + str;
 }
 
-function sumFileSize(dir, filterFn) {
+function sumFileSize(dir) {
   let total = 0;
   if (!existsSync(dir)) return total;
 
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const fullPath = join(dir, entry.name);
     if (entry.isDirectory()) {
-      total += sumFileSize(fullPath, filterFn);
-    } else if (!filterFn || filterFn(entry.name)) {
+      total += sumFileSize(fullPath);
+    } else {
       total += statSync(fullPath).size;
     }
   }
   return total;
-}
-
-function sumByPattern(dir, pattern) {
-  if (pattern.startsWith("**/")) {
-    const ext = pattern.slice(3);
-    const suffix = ext.startsWith("*") ? ext.slice(1) : ext;
-    return sumFileSize(dir, (name) => name.endsWith(suffix));
-  }
-  const suffix = pattern.startsWith("*") ? pattern.slice(1) : pattern;
-  return sumFileSize(dir, (name) => name.endsWith(suffix));
 }
 
 // ---------------------------------------------------------------------------
@@ -115,18 +93,7 @@ function measurePackages() {
       continue;
     }
 
-    sizes[pkgName] = {};
-
-    for (const [format, spec] of Object.entries(config.formats)) {
-      if (spec.dir) {
-        sizes[pkgName][format] = sumFileSize(
-          join(config.dist, spec.dir),
-          (name) => name.endsWith(".js")
-        );
-      } else if (spec.pattern) {
-        sizes[pkgName][format] = sumByPattern(config.dist, spec.pattern);
-      }
-    }
+    sizes[pkgName] = { dist: sumFileSize(config.dist) };
   }
 
   return sizes;
