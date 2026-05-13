@@ -1,12 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect } from "storybook/test";
 import { Storefront } from "@commercetools/nimbus-icons";
+import { Box, Flex, Icon, Stack, Text } from "@commercetools/nimbus";
 import { PublicPageLayout } from "./public-page-layout";
-import { Text } from "@/components/text/text";
-import { Box } from "@/components/box/box";
-import { Flex } from "@/components/flex/flex";
-import { Stack } from "@/components/stack/stack";
-import { Icon } from "@/components/icon/icon";
 
 const meta: Meta<typeof PublicPageLayout> = {
   title: "patterns/pages/PublicPageLayout",
