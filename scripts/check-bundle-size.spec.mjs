@@ -115,6 +115,55 @@ describe("check-bundle-size failure detection", () => {
   });
 });
 
+describe("BUNDLE_SIZE_BASELINE env var", () => {
+  withBaselineGuard();
+
+  it("uses env var as baseline when set to valid JSON", () => {
+    const envBaseline = JSON.stringify({
+      "@commercetools/nimbus": { dist: 16909814 },
+      "@commercetools/nimbus-icons": { dist: 4889696 },
+      "@commercetools/nimbus-tokens": { dist: 417934 },
+    });
+
+    const result = run(CHECK_SCRIPT, {
+      BUNDLE_SIZE_BASELINE: envBaseline,
+      GIT_DIR: "/nonexistent",
+    });
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain("comment-chain");
+  });
+
+  it("exits 1 when env var contains malformed JSON", () => {
+    const result = run(CHECK_SCRIPT, {
+      BUNDLE_SIZE_BASELINE: "not valid json{{{",
+      GIT_DIR: "/nonexistent",
+    });
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("Failed to parse");
+  });
+});
+
+describe("BUNDLE_SIZE_APPROVED env var", () => {
+  withBaselineGuard();
+
+  it("reports approved instead of fail when label is present", () => {
+    const tinyBaseline = {
+      "@commercetools/nimbus": { dist: 100 },
+      "@commercetools/nimbus-icons": { dist: 100 },
+      "@commercetools/nimbus-tokens": { dist: 100 },
+    };
+    writeFileSync(BASELINE_PATH, JSON.stringify(tinyBaseline, null, 2));
+
+    const result = run(CHECK_SCRIPT, {
+      BUNDLE_SIZE_APPROVED: "true",
+      GIT_DIR: "/nonexistent",
+    });
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain("approved");
+    expect(result.stdout).toContain("All packages within acceptable size limits");
+  });
+});
+
 describe("per-package size policies", () => {
   describe("absolute policy passes when relative would fail", () => {
     withBaselineGuard();
