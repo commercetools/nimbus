@@ -30,6 +30,10 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const ROOT = join(__dirname, "..");
 const BASELINE_PATH = join(ROOT, "bundle-sizes.json");
 
+const ENV_BASELINE = process.env.BUNDLE_SIZE_BASELINE || "";
+const IS_APPROVED = process.env.BUNDLE_SIZE_APPROVED === "true";
+const JSON_OUTPUT = process.argv.includes("--json");
+
 // Default threshold (percentage increase over baseline)
 const DEFAULT_THRESHOLD = 0.05; // 5%
 
@@ -211,14 +215,7 @@ function compare(currentSizes) {
         const increase = (currentSize - baselineSize) / baselineSize;
 
         if (increase > threshold) {
-          // Check if the PR's local baseline has been updated to approve this
-          const localPkg = localBaseline?.[pkgName];
-          const localSize = localPkg?.[format];
-
-          if (
-            localSize != null &&
-            Math.abs(localSize - currentSize) / Math.max(currentSize, 1) < 0.001
-          ) {
+          if (IS_APPROVED) {
             status = "approved";
           } else {
             status = "fail";

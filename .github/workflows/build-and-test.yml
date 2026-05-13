@@ -128,13 +128,12 @@ jobs:
             lines.push('|---------|--------|--------:|---------:|------:|--------|');
 
             for (const [pkg, formats] of Object.entries(data.packages)) {
-              for (const [fmt, info] of Object.entries(formats)) {
-                const current = info.current != null ? (info.current / 1024).toFixed(1) + ' KB' : '—';
-                const baseline = info.baseline != null ? (info.baseline / 1024).toFixed(1) + ' KB' : '—';
-                const delta = info.delta_pct != null ? (info.delta_pct >= 0 ? '+' : '') + info.delta_pct.toFixed(1) + '%' : info.status;
-                const icon = info.status === 'ok' ? ':white_check_mark:' : info.status === 'fail' ? ':x:' : info.status === 'approved' ? ':warning:' : ':new:';
-                lines.push('| ' + pkg + ' | ' + fmt + ' | ' + current + ' | ' + baseline + ' | ' + delta + ' | ' + icon + ' ' + info.status + ' |');
-              }
+              const info = formats.dist;
+              const current = info.current != null ? (info.current / 1024).toFixed(1) + ' KB' : '—';
+              const baseline = info.baseline != null ? (info.baseline / 1024).toFixed(1) + ' KB' : '—';
+              const delta = info.delta_pct != null ? (info.delta_pct >= 0 ? '+' : '') + info.delta_pct.toFixed(1) + '%' : info.status;
+              const icon = info.status === 'ok' ? ':white_check_mark:' : info.status === 'fail' ? ':x:' : info.status === 'approved' ? ':warning:' : ':new:';
+              lines.push('| ' + pkg + ' | dist | ' + current + ' | ' + baseline + ' | ' + delta + ' | ' + icon + ' ' + info.status + ' |');
             }
 
             lines.push('');
@@ -147,10 +146,7 @@ jobs:
 
             const sizes = {};
             for (const [pkg, formats] of Object.entries(data.packages)) {
-              sizes[pkg] = {};
-              for (const [fmt, info] of Object.entries(formats)) {
-                sizes[pkg][fmt] = info.current;
-              }
+              sizes[pkg] = { dist: formats.dist.current };
             }
             lines.push('');
             lines.push('<!-- bundle-sizes-data-v1: ' + JSON.stringify(sizes) + ' -->');
