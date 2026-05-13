@@ -76,9 +76,7 @@ lines.push("");
 lines.push(`Baseline source: **${data.baseline_source}**`);
 if (data.has_failures) {
   lines.push("");
-  lines.push(
-    "> :x: **One or more packages exceeded their size budget.**"
-  );
+  lines.push("> :x: **One or more packages exceeded their size budget.**");
   lines.push(
     "> To approve this increase, apply the `bundle-size-approved` label and re-run CI."
   );

@@ -160,7 +160,9 @@ describe("BUNDLE_SIZE_APPROVED env var", () => {
     });
     expect(result.status).toBe(0);
     expect(result.stdout).toContain("approved");
-    expect(result.stdout).toContain("All packages within acceptable size limits");
+    expect(result.stdout).toContain(
+      "All packages within acceptable size limits"
+    );
   });
 });
 
