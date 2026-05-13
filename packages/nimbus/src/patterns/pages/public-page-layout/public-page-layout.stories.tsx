@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect } from "storybook/test";
 import { Storefront } from "@commercetools/nimbus-icons";
-import { Box, Flex, Icon, Stack, Text } from "@commercetools/nimbus";
+import { Box, Icon, PageContent, Stack, Text } from "@commercetools/nimbus";
 import { PublicPageLayout } from "./public-page-layout";
 
 const meta: Meta<typeof PublicPageLayout> = {
@@ -83,26 +83,14 @@ export const WideContent: Story = {
     welcomeMessage: "Create your account",
     contentWidth: "wide",
     children: (
-      <Flex gap="400">
-        <Box
-          flex="1"
-          padding="400"
-          borderWidth="1px"
-          borderColor="neutral.6"
-          borderRadius="200"
-        >
+      <PageContent.Root columns="1/1">
+        <PageContent.Column>
           <Text>Column one</Text>
-        </Box>
-        <Box
-          flex="1"
-          padding="400"
-          borderWidth="1px"
-          borderColor="neutral.6"
-          borderRadius="200"
-        >
+        </PageContent.Column>
+        <PageContent.Column>
           <Text>Column two</Text>
-        </Box>
-      </Flex>
+        </PageContent.Column>
+      </PageContent.Root>
     ),
   },
   play: async ({ canvasElement, step }) => {
