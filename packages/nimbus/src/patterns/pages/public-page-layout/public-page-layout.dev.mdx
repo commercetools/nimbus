@@ -51,14 +51,14 @@ const App = () => (
     welcomeMessage="Create your account"
     contentWidth="wide"
   >
-    <Flex gap="400">
-      <Box flex="1">
+    <PageContent.Root columns="1/1">
+      <PageContent.Column>
         <Text>Column one</Text>
-      </Box>
-      <Box flex="1">
+      </PageContent.Column>
+      <PageContent.Column>
         <Text>Column two</Text>
-      </Box>
-    </Flex>
+      </PageContent.Column>
+    </PageContent.Root>
   </PublicPageLayout>
 );
 ```
