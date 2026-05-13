@@ -9,7 +9,7 @@ import {
   PublicPageLayout,
   Stack,
   Text,
-  TextInput,
+  TextInputField,
 } from "@commercetools/nimbus";
 
 /**
@@ -20,22 +20,15 @@ import {
  */
 describe("PublicPageLayout - Login form integration", () => {
   it("renders a login form inside the layout with accessible landmark", () => {
-    const handleSubmit = vi.fn((e: React.FormEvent) => e.preventDefault());
-
     render(
       <NimbusProvider>
         <PublicPageLayout
           welcomeMessage="Sign in to your account"
           aria-label="Login page"
         >
-          <Stack
-            as="form"
-            aria-label="Login form"
-            onSubmit={handleSubmit}
-            gap="400"
-          >
-            <TextInput label="Email" type="email" />
-            <TextInput label="Password" type="password" />
+          <Stack as="form" aria-label="Login form" gap="400">
+            <TextInputField label="Email" type="email" />
+            <TextInputField label="Password" type="password" />
             <Button type="submit">Sign in</Button>
           </Stack>
         </PublicPageLayout>

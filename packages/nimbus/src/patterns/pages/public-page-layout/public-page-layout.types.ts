@@ -1,10 +1,26 @@
 import type { ReactNode } from "react";
 import type { FlexProps } from "@/components/flex/flex.types";
 
-/**
- * Props specific to the PublicPageLayout pattern (before merging with style
- * props from the outer `<main>` wrapper).
- */
+type PublicPageLayoutStyleProps = Omit<
+  FlexProps,
+  | "as"
+  | "asChild"
+  | "children"
+  | "ref"
+  | "css"
+  | "recipe"
+  | "unstyled"
+  | "direction"
+  | "dir"
+  | "wrap"
+  | "grow"
+  | "shrink"
+  | "basis"
+  | "justify"
+  | "align"
+  | "inline"
+>;
+
 type PublicPageLayoutOwnProps = {
   /**
    * Main content rendered in the center of the layout (e.g., a login form).
@@ -48,16 +64,8 @@ type PublicPageLayoutOwnProps = {
 /**
  * Props for the PublicPageLayout pattern.
  *
- * A pre-built, centered layout for public-facing pages (login, registration,
- * password reset) with slots for brand logo, welcome heading, main content,
- * and legal footer. Composes Flex, Stack, Heading, and Text internally.
- *
- * Style props (e.g., `bg`, `backgroundImage`, `padding`) are forwarded to the
- * outer `<main>` wrapper. For layouts that need a different structure, compose
- * Flex and Stack directly (see the "Escape hatch" section in the dev docs).
+ * Style props (e.g., `bg`, `padding`) are forwarded to the outer `<main>`
+ * wrapper. Structural flex props and polymorphic props are not exposed.
  */
-export type PublicPageLayoutProps = Omit<
-  FlexProps,
-  keyof PublicPageLayoutOwnProps
-> &
+export type PublicPageLayoutProps = PublicPageLayoutStyleProps &
   PublicPageLayoutOwnProps;
