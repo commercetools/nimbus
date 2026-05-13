@@ -1,88 +1,131 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { PublicPageLayout, NimbusProvider, Text } from "@commercetools/nimbus";
+import { userEvent } from "@testing-library/user-event";
+import { useState } from "react";
+import {
+  Button,
+  Link,
+  NimbusProvider,
+  PublicPageLayout,
+  Stack,
+  Text,
+  TextInput,
+} from "@commercetools/nimbus";
 
 /**
- * @docs-section basic-layout
- * @docs-title Render a basic login page layout
- * @docs-description Use PublicPageLayout to wrap a login form with a welcome heading and accessible landmark.
+ * @docs-section login-form-integration
+ * @docs-title Integrate a login form with PublicPageLayout
+ * @docs-description Wrap a login form built with Nimbus components and verify it is accessible inside the main landmark.
  * @docs-order 1
  */
-describe("PublicPageLayout - Basic layout", () => {
-  it("renders the welcome heading and content inside a main landmark", () => {
+describe("PublicPageLayout - Login form integration", () => {
+  it("renders a login form inside the layout with accessible landmark", () => {
+    const handleSubmit = vi.fn((e: React.FormEvent) => e.preventDefault());
+
     render(
       <NimbusProvider>
         <PublicPageLayout
-          welcomeMessage="Welcome to the Merchant Center"
+          welcomeMessage="Sign in to your account"
           aria-label="Login page"
         >
-          <Text>Login form</Text>
+          <Stack
+            as="form"
+            aria-label="Login form"
+            onSubmit={handleSubmit}
+            gap="400"
+          >
+            <TextInput label="Email" type="email" />
+            <TextInput label="Password" type="password" />
+            <Button type="submit">Sign in</Button>
+          </Stack>
         </PublicPageLayout>
       </NimbusProvider>
     );
 
-    expect(
-      screen.getByRole("main", { name: "Login page" })
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: "Welcome to the Merchant Center" })
-    ).toBeInTheDocument();
-    expect(screen.getByText("Login form")).toBeInTheDocument();
+    const main = screen.getByRole("main", { name: "Login page" });
+    expect(main).toBeInTheDocument();
+
+    const form = screen.getByRole("form", { name: "Login form" });
+    expect(main.contains(form)).toBe(true);
   });
 });
 
 /**
- * @docs-section with-legal-message
- * @docs-title Include a legal footer with copyright and links
- * @docs-description Pass a legalMessage to render legal content below the main content area.
+ * @docs-section stateful-auth-flow
+ * @docs-title Handle authentication state with PublicPageLayout
+ * @docs-description Show how PublicPageLayout works with state-driven auth flows that toggle between login and success views.
  * @docs-order 2
  */
-describe("PublicPageLayout - With legal message", () => {
-  it("renders the legal footer alongside the main content", () => {
+describe("PublicPageLayout - Stateful auth flow", () => {
+  function AuthPage() {
+    const [loggedIn, setLoggedIn] = useState(false);
+
+    return (
+      <PublicPageLayout
+        welcomeMessage={loggedIn ? "Welcome back!" : "Sign in"}
+        aria-label="Authentication page"
+      >
+        {loggedIn ? (
+          <Text>You are signed in.</Text>
+        ) : (
+          <Button onPress={() => setLoggedIn(true)}>Log in</Button>
+        )}
+      </PublicPageLayout>
+    );
+  }
+
+  it("updates the welcome message after login", async () => {
+    const user = userEvent.setup();
+
     render(
       <NimbusProvider>
-        <PublicPageLayout
-          welcomeMessage="Sign in"
-          legalMessage={
-            <Text fontSize="xs">
-              © 2026 commercetools · Privacy Policy · Terms of Service
-            </Text>
-          }
-        >
-          <Text>Login form</Text>
-        </PublicPageLayout>
+        <AuthPage />
       </NimbusProvider>
     );
 
-    expect(screen.getByText(/Privacy Policy/)).toBeInTheDocument();
-    expect(screen.getByText(/Terms of Service/)).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { name: "Sign in" })
+    ).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Log in" }));
+
+    expect(
+      screen.getByRole("heading", { name: "Welcome back!" })
+    ).toBeInTheDocument();
+    expect(screen.getByText("You are signed in.")).toBeInTheDocument();
   });
 });
 
 /**
- * @docs-section wide-content
- * @docs-title Use wide content for multi-column registration forms
- * @docs-description Set contentWidth="wide" to give the content area more horizontal space for two-column layouts.
+ * @docs-section legal-footer-with-links
+ * @docs-title Add legal links below the content area
+ * @docs-description Use legalMessage with Nimbus Link components to render accessible legal links below the content area.
  * @docs-order 3
  */
-describe("PublicPageLayout - Wide content", () => {
-  it("renders a wider content area for two-column layouts", () => {
+describe("PublicPageLayout - Legal footer with links", () => {
+  it("renders legal links that are accessible alongside the form", () => {
     render(
       <NimbusProvider>
         <PublicPageLayout
           welcomeMessage="Create your account"
-          contentWidth="wide"
+          legalMessage={
+            <Text fontSize="xs" color="neutral.11">
+              © 2026 commercetools · <Link href="/privacy">Privacy Policy</Link>
+              {" · "}
+              <Link href="/terms">Terms of Service</Link>
+            </Text>
+          }
         >
-          <div data-testid="two-columns" style={{ display: "flex", gap: 16 }}>
-            <div>Column one</div>
-            <div>Column two</div>
-          </div>
+          <Text>Registration form</Text>
         </PublicPageLayout>
       </NimbusProvider>
     );
 
-    expect(screen.getByTestId("two-columns")).toBeInTheDocument();
-    expect(screen.getByText("Column one")).toBeInTheDocument();
-    expect(screen.getByText("Column two")).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: "Privacy Policy" })
+    ).toHaveAttribute("href", "/privacy");
+    expect(
+      screen.getByRole("link", { name: "Terms of Service" })
+    ).toHaveAttribute("href", "/terms");
   });
 });

@@ -1,7 +1,7 @@
 import { Flex } from "@/components/flex/flex";
 import { Heading } from "@/components/heading/heading";
 import { Stack } from "@/components/stack/stack";
-import { Box } from "@chakra-ui/react/box";
+import { Box } from "@/components/box/box";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { publicPageLayoutMessagesStrings } from "./public-page-layout.messages";
 import type { PublicPageLayoutProps } from "./public-page-layout.types";
@@ -58,7 +58,7 @@ export const PublicPageLayout = ({
       {...styleProps}
     >
       <Stack gap="600" alignItems="center" width="100%">
-        {logo && (
+        {logo != null && (
           <Flex data-slot="logo" justify="center">
             {logo}
           </Flex>
@@ -72,7 +72,7 @@ export const PublicPageLayout = ({
           <Box data-slot="content" maxW={maxW} width="100%">
             {children}
           </Box>
-          {legalMessage && (
+          {legalMessage != null && (
             <Box data-slot="legal-message" maxW={maxW} textAlign="center">
               {legalMessage}
             </Box>
