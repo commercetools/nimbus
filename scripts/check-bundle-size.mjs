@@ -345,9 +345,7 @@ function compare(currentSizes) {
 
     console.error(
       `X FAIL: One or more packages exceeded their size budget.\n${details}\n` +
-        `  If this increase is intentional, run:\n` +
-        `    node scripts/update-bundle-sizes.mjs\n` +
-        `  Then commit the updated bundle-sizes.json in your PR.`
+        `  If this increase is intentional, add the \`bundle-size-approved\` label with a comment about the reason for the increase and re-run CI.\n`
     );
     process.exit(1);
   }
