@@ -43,7 +43,7 @@ function writeOutput(key, value) {
 }
 
 const prNumber = gh(
-  `api "repos/${REPO}/pulls?state=closed&labels=bundle-sizes&per_page=1&sort=updated&direction=desc" --jq '[.[] | select(.merged_at != null)] | .[0].number // empty'`
+  `api "repos/${REPO}/pulls?state=closed&labels=bundle-sizes&per_page=5&sort=updated&direction=desc" --jq '[.[] | select(.merged_at != null)] | .[0].number // empty'`
 );
 
 if (!prNumber) {

@@ -71,7 +71,7 @@ jobs:
           echo "exit_code=${EXIT_CODE}" >> "$GITHUB_OUTPUT"
 
       - name: Post bundle size comment
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && steps.bundle-size-check.outputs.exit_code != ''
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
