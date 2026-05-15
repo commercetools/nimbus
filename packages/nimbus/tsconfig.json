@@ -35,5 +35,6 @@
       "node_modules/@types"
     ],
     "plugins": [{ "name": "@commercetools/nimbus-design-token-ts-plugin" }]
-  }
+  },
+  "exclude": ["dist", "storybook-static", "coverage", ".turbo", "node_modules"]
 }
