@@ -22,6 +22,10 @@
  *
  * Steps 1 & 2 run before step 3 so the .d.cts copies inherit the rewritten
  * imports.
+ *
+ * Not idempotent: step 1 removes dist/test/ after relocating, so a second run
+ * without a fresh `vite build` fails on the missing source file. Always run
+ * `vite build` (which emits dist/test/) before invoking this script.
  */
 
 import { copyFileSync, existsSync, rmSync } from "node:fs";
