@@ -3,6 +3,10 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     name: "scripts",
-    include: ["scripts/**/*.spec.{ts,mjs}", ".claude/skills/**/*.spec.ts"],
+    include: [
+      "scripts/**/*.spec.{ts,mjs}",
+      ".claude/skills/**/*.spec.ts",
+      ".github/actions/**/*.spec.{ts,mjs}",
+    ],
   },
 });
