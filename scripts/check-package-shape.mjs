@@ -90,10 +90,7 @@ function main() {
     for (const pkg of PACKAGES) {
       header(pkg.name);
 
-      const distExists =
-        existsSync(join(pkg.dir, "dist")) ||
-        existsSync(join(pkg.dir, "package.json")); // some pkgs may not have dist/
-      if (!distExists) {
+      if (!existsSync(pkg.dir)) {
         console.log(`${YELLOW}⚠ Skipping — ${pkg.dir} not found${RESET}`);
         continue;
       }
