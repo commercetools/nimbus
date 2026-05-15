@@ -14,6 +14,15 @@ runs:
   using: composite
 
   steps:
+    - name: Resolve script directory
+      run: |
+        if [ -d "${{ github.action_path }}" ]; then
+          echo "BUNDLE_SCRIPTS_DIR=${{ github.action_path }}" >> "$GITHUB_ENV"
+        else
+          echo "BUNDLE_SCRIPTS_DIR=${{ github.workspace }}/.github/actions/bundle-size" >> "$GITHUB_ENV"
+        fi
+      shell: bash
+
     - name: Install GitHub CLI
       run: |
         curl -sLo gh.tar.gz https://github.com/cli/cli/releases/download/v2.74.0/gh_2.74.0_linux_amd64.tar.gz
@@ -27,7 +36,7 @@ runs:
       id: baseline
       env:
         GH_TOKEN: ${{ inputs.gh-token }}
-      run: node ${{ github.action_path }}/fetch-bundle-baseline.mjs
+      run: node $BUNDLE_SCRIPTS_DIR/fetch-bundle-baseline.mjs
       shell: bash
 
     - name: Check for approval label
@@ -54,7 +63,7 @@ runs:
         BUNDLE_SIZE_APPROVED: ${{ steps.approval.outputs.approved }}
       run: |
         set +e
-        node ${{ github.action_path }}/check-bundle-size.mjs --json > /tmp/bundle-sizes-result.json 2>/tmp/bundle-sizes-stderr.txt
+        node $BUNDLE_SCRIPTS_DIR/check-bundle-size.mjs --json > /tmp/bundle-sizes-result.json 2>/tmp/bundle-sizes-stderr.txt
         EXIT_CODE=$?
         set -e
 
@@ -68,7 +77,7 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.gh-token }}
         PR_NUMBER: ${{ inputs.pr-number }}
-      run: node ${{ github.action_path }}/post-bundle-size-comment.mjs /tmp/bundle-sizes-result.json
+      run: node $BUNDLE_SCRIPTS_DIR/post-bundle-size-comment.mjs /tmp/bundle-sizes-result.json
       shell: bash
 
     - name: Fail if bundle size thresholds exceeded
