@@ -32,6 +32,14 @@ const ENV_BASELINE = process.env.BUNDLE_SIZE_BASELINE || "";
 const IS_APPROVED = process.env.BUNDLE_SIZE_APPROVED === "true";
 const JSON_OUTPUT = process.argv.includes("--json");
 
+function failWithError(message) {
+  console.error(message);
+  if (JSON_OUTPUT) {
+    console.log(JSON.stringify({ error: message, has_failures: true }));
+  }
+  process.exit(1);
+}
+
 // Default threshold (percentage increase over baseline)
 const DEFAULT_THRESHOLD = 0.05; // 5%
 
@@ -152,8 +160,7 @@ function resolveBaseline() {
     try {
       return { baseline: JSON.parse(ENV_BASELINE), source: "comment-chain" };
     } catch {
-      console.error("Failed to parse BUNDLE_SIZE_BASELINE env var as JSON.");
-      process.exit(1);
+      failWithError("Failed to parse BUNDLE_SIZE_BASELINE env var as JSON.");
     }
   }
 
@@ -170,10 +177,9 @@ function compare(currentSizes) {
   const { baseline, source: baselineSource } = resolveBaseline();
 
   if (!baseline) {
-    console.error(
-      "No baseline found. Run `node scripts/update-bundle-sizes.mjs` to create one."
+    failWithError(
+      "No baseline found. Run `pnpm update:bundle-sizes` to create one."
     );
-    process.exit(1);
   }
 
   let hasFailures = false;
@@ -367,8 +373,7 @@ const anyDistExists = Object.values(PACKAGES).some((config) =>
   existsSync(config.dist)
 );
 if (!anyDistExists) {
-  console.error("No dist directories found.\nRun `pnpm build:packages` first.");
-  process.exit(1);
+  failWithError("No dist directories found.\nRun `pnpm build:packages` first.");
 }
 
 const sizes = measurePackages();

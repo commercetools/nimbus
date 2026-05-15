@@ -8,7 +8,7 @@
  * machine-readable data block that serves as the baseline for future PRs.
  *
  * Usage:
- *   node scripts/post-bundle-size-comment.mjs <json-result-file>
+ *   node .github/actions/bundle-size/post-bundle-size-comment.mjs <json-result-file>
  *
  * Environment variables:
  *   GITHUB_REPOSITORY   owner/repo (set by Actions)
