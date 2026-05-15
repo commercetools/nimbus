@@ -36,5 +36,5 @@
     ],
     "plugins": [{ "name": "@commercetools/nimbus-design-token-ts-plugin" }]
   },
-  "exclude": ["dist", "storybook-static", "coverage", ".turbo", "node_modules"]
+  "exclude": ["dist", "storybook-static", "coverage", "node_modules"]
 }
