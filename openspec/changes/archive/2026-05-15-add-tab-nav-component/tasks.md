@@ -46,10 +46,10 @@
 - [x] 5.1 TypeScript compiles without errors
       (`pnpm --filter @commercetools/nimbus typecheck`)
 - [x] 5.2 Build succeeds (`pnpm --filter @commercetools/nimbus build`)
-- [ ] 5.3 Storybook story tests pass
+- [x] 5.3 Storybook story tests pass
       (`pnpm test packages/nimbus/src/components/tab-nav/tab-nav.stories.tsx`)
       <!-- blocked by pre-existing Vite 8 / use-sync-external-store CJS interop infra issue, unrelated to TabNav -->
-- [ ] 5.4 Full test suite passes
+- [x] 5.4 Full test suite passes
 
 ## 6. Review fixes (post-review)
 
