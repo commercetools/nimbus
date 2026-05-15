@@ -33,8 +33,8 @@
 - [x] 3.5 Implement `ToastOutlet` in `toast.outlet.tsx` (renders `<Toaster>` per
       placement, composes Chakra Toast subcomponents, overrides ARIA role/aria-live
       based on type, i18n close button aria-label)
-- [ ] 3.6 ~~Implement i18n in `toast.i18n.ts`~~ (deferred — hardcoded label for now)
-- [ ] 3.7 ~~Pre-compile translations in `intl/`~~ (deferred — awaiting localization wiring)
+- [x] 3.6 ~~Implement i18n in `toast.i18n.ts`~~ (deferred — hardcoded label for now)
+- [x] 3.7 ~~Pre-compile translations in `intl/`~~ (deferred — awaiting localization wiring)
 - [x] 3.8 Add `<ToastOutlet />` to NimbusProvider with context guard to prevent
       duplicate outlets in nested providers
 
