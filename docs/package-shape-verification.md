@@ -42,11 +42,21 @@ known issues to triage separately.
 
 ## What Gets Tracked
 
-Three publishable packages:
+The check mirrors the `fixed` group in `.changeset/config.json` — every package
+the changeset bot ships in a release. Four of the five are linted:
 
 - **`@commercetools/nimbus`** — Core component library.
 - **`@commercetools/nimbus-icons`** — SVG icons as React components.
+- **`@commercetools/nimbus-design-token-ts-plugin`** — TypeScript language
+  service plugin.
 - **`@commercetools/nimbus-mcp`** — MCP server.
+
+**Excluded (temporarily):** `@commercetools/nimbus-tokens` is currently excluded
+because the published tarball has pre-existing shape issues (preconstruct emits
+`.cjs.js` under a `"type": "module"` package, breaking CJS resolution at
+runtime; the `exports` map has no `types` condition). Tracked in
+[#1509](https://github.com/commercetools/nimbus/issues/1509) — once that lands,
+the package gets re-added to `PACKAGES`.
 
 To add or remove a tracked package, edit the `PACKAGES` array at the top of
 `scripts/check-package-shape.mjs`.

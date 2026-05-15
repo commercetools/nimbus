@@ -33,11 +33,24 @@ const ROOT = join(__dirname, "..");
 
 const REPORT_ONLY = false;
 
+// Mirror of the `fixed` group in .changeset/config.json — every publishable
+// package the changeset bot ships should be linted here.
+//
+// `@commercetools/nimbus-tokens` is intentionally excluded: it ships with a
+// pre-existing shape issue (preconstruct emits `.cjs.js` under a package that
+// declares `"type": "module"`, so the CJS path is broken at runtime, and the
+// exports map has no `types` condition). Tracked in
+// https://github.com/commercetools/nimbus/issues/1509 — re-add this entry when
+// that lands.
 const PACKAGES = [
   { name: "@commercetools/nimbus", dir: join(ROOT, "packages/nimbus") },
   {
     name: "@commercetools/nimbus-icons",
     dir: join(ROOT, "packages/nimbus-icons"),
+  },
+  {
+    name: "@commercetools/nimbus-design-token-ts-plugin",
+    dir: join(ROOT, "packages/design-token-ts-plugin"),
   },
   { name: "@commercetools/nimbus-mcp", dir: join(ROOT, "packages/nimbus-mcp") },
 ];
