@@ -8,9 +8,7 @@ The Select component provides an accessible dropdown selection control following
 **Package:** `@commercetools/nimbus`
 **Type:** Multi-slot component
 **React Aria:** Uses `Select` from react-aria-components
-
 ## Requirements
-
 ### Requirement: Single Selection
 The component SHALL support single-value selection.
 
@@ -165,6 +163,7 @@ The component SHALL support multiple interaction states per nimbus-core standard
 - **WHEN** disabled={true} is set
 - **THEN** SHALL apply disabled styling to trigger
 - **AND** SHALL prevent opening dropdown
+- **AND** SHALL disable the clear button so it cannot be used to remove the selected value
 - **AND** SHALL set aria-disabled="true"
 
 #### Scenario: Read-only state
@@ -236,3 +235,4 @@ The component SHALL integrate with HTML forms per nimbus-core standards.
 - **THEN** SHALL include selected value in form data
 - **AND** SHALL use name prop as field name
 - **AND** SHALL validate before submission
+
