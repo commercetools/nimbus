@@ -42,6 +42,6 @@
     "build:esm": "tsc --project tsconfig.esm.json",
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "build:postbuild": "node scripts/postbuild.mjs",
-    "dev": "pnpm run build:esm && pnpm run build:cjs"
+    "dev": "pnpm run build:esm && pnpm run build:cjs && pnpm run build:postbuild"
   }
 }
