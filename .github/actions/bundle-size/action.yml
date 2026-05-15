@@ -27,7 +27,7 @@ runs:
       id: baseline
       env:
         GH_TOKEN: ${{ inputs.gh-token }}
-      run: node scripts/fetch-bundle-baseline.mjs
+      run: node ${{ github.action_path }}/fetch-bundle-baseline.mjs
       shell: bash
 
     - name: Check for approval label
@@ -54,7 +54,7 @@ runs:
         BUNDLE_SIZE_APPROVED: ${{ steps.approval.outputs.approved }}
       run: |
         set +e
-        node scripts/check-bundle-size.mjs --json > /tmp/bundle-sizes-result.json 2>/tmp/bundle-sizes-stderr.txt
+        node ${{ github.action_path }}/check-bundle-size.mjs --json > /tmp/bundle-sizes-result.json 2>/tmp/bundle-sizes-stderr.txt
         EXIT_CODE=$?
         set -e
 
@@ -68,7 +68,7 @@ runs:
       env:
         GH_TOKEN: ${{ inputs.gh-token }}
         PR_NUMBER: ${{ inputs.pr-number }}
-      run: node scripts/post-bundle-size-comment.mjs /tmp/bundle-sizes-result.json
+      run: node ${{ github.action_path }}/post-bundle-size-comment.mjs /tmp/bundle-sizes-result.json
       shell: bash
 
     - name: Fail if bundle size thresholds exceeded

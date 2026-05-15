@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const ROOT = join(__dirname, "..");
-const CHECK_SCRIPT = join(__dirname, "check-bundle-size.mjs");
+const CHECK_SCRIPT = join(ROOT, ".github/actions/bundle-size/check-bundle-size.mjs");
 const UPDATE_SCRIPT = join(__dirname, "update-bundle-sizes.mjs");
 const BASELINE_PATH = join(ROOT, "bundle-sizes.json");
 

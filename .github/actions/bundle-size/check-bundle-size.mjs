@@ -24,10 +24,8 @@
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { execSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const ROOT = join(__dirname, "..");
+const ROOT = process.cwd();
 const BASELINE_PATH = join(ROOT, "bundle-sizes.json");
 
 const ENV_BASELINE = process.env.BUNDLE_SIZE_BASELINE || "";
