@@ -1,9 +1,22 @@
 ## MODIFIED Requirements
 
-### Requirement: Currency code validation
-The component SHALL validate currency codes against the known currencies data.
+### Requirement: Currency Selection
+The component SHALL provide currency selection via dropdown or label display.
 
-#### Scenario: ISO 4217 currency codes
+#### Scenario: Currency dropdown
+- **WHEN** currencies array is provided with values
+- **THEN** SHALL render Select component for currency selection
+- **AND** SHALL use currency code as both key and display text
+- **AND** SHALL call change handlers when currency changes
+- **AND** SHALL support isCurrencyInputDisabled prop to disable dropdown
+
+#### Scenario: Currency label
+- **WHEN** currencies array is empty or not provided
+- **THEN** SHALL render static label showing current currency code
+- **AND** SHALL not allow currency changes
+- **AND** label SHALL be semantically associated with amount input
+
+#### Scenario: Currency code validation
 - **WHEN** a standard ISO 4217 currency code is provided
 - **THEN** SHALL validate against known currency codes from currencies data
 - **AND** SHALL access fractionDigits from currency data
