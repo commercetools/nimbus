@@ -5,6 +5,10 @@ settings:
   excludeLinksFromLockfile: false
 
 catalogs:
+  default:
+    '@internationalized/date':
+      specifier: ^3.12.1
+      version: 3.12.1
   react:
     '@chakra-ui/cli':
       specifier: ^3.35.0
@@ -18,9 +22,6 @@ catalogs:
     '@emotion/react':
       specifier: ^11.14.0
       version: 11.14.0
-    '@internationalized/date':
-      specifier: ^3.12.1
-      version: 3.12.1
     '@internationalized/string':
       specifier: ^3.2.8
       version: 3.2.8
@@ -366,7 +367,7 @@ importers:
         specifier: catalog:react
         version: 11.14.0(@types/react@19.2.14)(react@19.2.0)
       '@internationalized/date':
-        specifier: catalog:react
+        specifier: 'catalog:'
         version: 3.12.1
       '@mdx-js/mdx':
         specifier: ^3.1.1
@@ -609,7 +610,7 @@ importers:
         specifier: workspace:^
         version: link:../tokens
       '@internationalized/date':
-        specifier: catalog:react
+        specifier: 'catalog:'
         version: 3.12.1
       '@react-aria/optimize-locales-plugin':
         specifier: catalog:react
