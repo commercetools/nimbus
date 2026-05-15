@@ -91,6 +91,107 @@ The component SHALL provide primary content container named Body.
 - **AND** SHALL suppress top padding when directly preceded by Card.Header
   (adjacent sibling selector)
 
+### Requirement: Layout Display
+
+The component SHALL control layout display characteristics.
+
+#### Scenario: Display mode
+
+- **WHEN** Card.Root renders
+- **THEN** SHALL use display: flex
+- **AND** SHALL use flexDirection: column
+- **AND** SHALL allow width override via style props
+- **AND** SHALL align items flex-start for vertical layout
+
+### Requirement: Multi-Slot Recipe
+
+The component SHALL use multi-slot recipe per nimbus-core standards.
+
+#### Scenario: Slot styling
+
+- **WHEN** card renders
+- **THEN** SHALL apply card slot recipe from theme/slot-recipes
+- **AND** SHALL style: root, header, body, footer slots
+- **AND** SHALL support size variants: sm, md, lg
+- **AND** SHALL support variant options: plain, outlined, elevated,
+  outlined-elevated, muted, outlined-muted, elevated-muted,
+  outlined-elevated-muted
+
+#### Scenario: Recipe registration
+
+- **WHEN** Card component is used
+- **THEN** cardRecipe SHALL be registered in theme/slot-recipes/index.ts
+- **AND** registration SHALL use "nimbusCard" key
+- **AND** registration SHALL be manual (no auto-discovery)
+
+### Requirement: Type Definitions
+
+The component SHALL provide comprehensive TypeScript types per nimbus-core
+standards.
+
+#### Scenario: Recipe props type
+
+- **WHEN** CardRecipeProps type is defined
+- **THEN** SHALL include size?: "sm" | "md" | "lg"
+- **AND** SHALL include variant?: "plain" | "outlined" | "elevated" |
+  "outlined-elevated" | "muted" | "outlined-muted" | "elevated-muted" |
+  "outlined-elevated-muted"
+- **AND** SHALL extend UnstyledProp
+
+#### Scenario: Slot props types
+
+- **WHEN** slot props types are defined
+- **THEN** SHALL export CardRootSlotProps extending HTMLChakraProps<"div",
+  CardRecipeProps>
+- **AND** SHALL export CardHeaderSlotProps extending HTMLChakraProps<"div">
+- **AND** SHALL export CardBodySlotProps extending HTMLChakraProps<"div">
+- **AND** SHALL export CardFooterSlotProps extending HTMLChakraProps<"div">
+
+#### Scenario: Main props types
+
+- **WHEN** main component props types are defined
+- **THEN** SHALL export CardProps with children, ref, data-\* attributes
+- **AND** SHALL export CardHeaderProps with children and ref
+- **AND** SHALL export CardBodyProps with children and ref
+- **AND** SHALL export CardFooterProps with children and ref
+- **AND** SHALL omit internal props using OmitInternalProps utility
+- **AND** all props SHALL have JSDoc documentation
+
+### Requirement: Debug Identification
+
+The component SHALL provide display names for debugging per nimbus-core
+standards.
+
+#### Scenario: Display name setting
+
+- **WHEN** Card components are defined
+- **THEN** Card.Root SHALL set displayName="Card.Root"
+- **AND** Card.Header SHALL set displayName="Card.Header"
+- **AND** Card.Body SHALL set displayName="Card.Body"
+- **AND** Card.Footer SHALL set displayName="Card.Footer"
+- **AND** names SHALL appear in React DevTools
+
+### Requirement: Content Flexibility
+
+The component SHALL support flexible content composition.
+
+#### Scenario: Free-form content
+
+- **WHEN** Card.Root contains non-compound children
+- **THEN** SHALL render children directly
+- **AND** SHALL not require Header, Body, or Footer components
+- **AND** SHALL maintain styling from variants
+- **AND** SHALL allow complete layout freedom
+
+#### Scenario: Mixed content
+
+- **WHEN** Card.Root contains both compound parts and other elements
+- **THEN** SHALL render all children in DOM order
+- **AND** SHALL apply slot styling to compound parts
+- **AND** SHALL maintain proper spacing via gap
+
+## ADDED Requirements
+
 ### Requirement: Footer Section
 
 The component SHALL provide footer section for actions and metadata.
@@ -211,105 +312,6 @@ name. The all-off case is named `plain`.
 - **AND** the name SHALL omit any axis that is off
 - **AND** the all-off case SHALL be named `plain`
 
-### Requirement: Layout Display
-
-The component SHALL control layout display characteristics.
-
-#### Scenario: Display mode
-
-- **WHEN** Card.Root renders
-- **THEN** SHALL use display: flex
-- **AND** SHALL use flexDirection: column
-- **AND** SHALL allow width override via style props
-- **AND** SHALL align items flex-start for vertical layout
-
-### Requirement: Multi-Slot Recipe
-
-The component SHALL use multi-slot recipe per nimbus-core standards.
-
-#### Scenario: Slot styling
-
-- **WHEN** card renders
-- **THEN** SHALL apply card slot recipe from theme/slot-recipes
-- **AND** SHALL style: root, header, body, footer slots
-- **AND** SHALL support size variants: sm, md, lg
-- **AND** SHALL support variant options: plain, outlined, elevated,
-  outlined-elevated, muted, outlined-muted, elevated-muted,
-  outlined-elevated-muted
-
-#### Scenario: Recipe registration
-
-- **WHEN** Card component is used
-- **THEN** cardRecipe SHALL be registered in theme/slot-recipes/index.ts
-- **AND** registration SHALL use "nimbusCard" key
-- **AND** registration SHALL be manual (no auto-discovery)
-
-### Requirement: Type Definitions
-
-The component SHALL provide comprehensive TypeScript types per nimbus-core
-standards.
-
-#### Scenario: Recipe props type
-
-- **WHEN** CardRecipeProps type is defined
-- **THEN** SHALL include size?: "sm" | "md" | "lg"
-- **AND** SHALL include variant?: "plain" | "outlined" | "elevated" |
-  "outlined-elevated" | "muted" | "outlined-muted" | "elevated-muted" |
-  "outlined-elevated-muted"
-- **AND** SHALL extend UnstyledProp
-
-#### Scenario: Slot props types
-
-- **WHEN** slot props types are defined
-- **THEN** SHALL export CardRootSlotProps extending HTMLChakraProps<"div",
-  CardRecipeProps>
-- **AND** SHALL export CardHeaderSlotProps extending HTMLChakraProps<"div">
-- **AND** SHALL export CardBodySlotProps extending HTMLChakraProps<"div">
-- **AND** SHALL export CardFooterSlotProps extending HTMLChakraProps<"div">
-
-#### Scenario: Main props types
-
-- **WHEN** main component props types are defined
-- **THEN** SHALL export CardProps with children, ref, data-\* attributes
-- **AND** SHALL export CardHeaderProps with children and ref
-- **AND** SHALL export CardBodyProps with children and ref
-- **AND** SHALL export CardFooterProps with children and ref
-- **AND** SHALL omit internal props using OmitInternalProps utility
-- **AND** all props SHALL have JSDoc documentation
-
-### Requirement: Debug Identification
-
-The component SHALL provide display names for debugging per nimbus-core
-standards.
-
-#### Scenario: Display name setting
-
-- **WHEN** Card components are defined
-- **THEN** Card.Root SHALL set displayName="Card.Root"
-- **AND** Card.Header SHALL set displayName="Card.Header"
-- **AND** Card.Body SHALL set displayName="Card.Body"
-- **AND** Card.Footer SHALL set displayName="Card.Footer"
-- **AND** names SHALL appear in React DevTools
-
-### Requirement: Content Flexibility
-
-The component SHALL support flexible content composition.
-
-#### Scenario: Free-form content
-
-- **WHEN** Card.Root contains non-compound children
-- **THEN** SHALL render children directly
-- **AND** SHALL not require Header, Body, or Footer components
-- **AND** SHALL maintain styling from variants
-- **AND** SHALL allow complete layout freedom
-
-#### Scenario: Mixed content
-
-- **WHEN** Card.Root contains both compound parts and other elements
-- **THEN** SHALL render all children in DOM order
-- **AND** SHALL apply slot styling to compound parts
-- **AND** SHALL maintain proper spacing via gap
-
 ### Requirement: Slot-Based Accessibility
 
 The component SHALL automatically apply ARIA labelling attributes when React
@@ -371,11 +373,6 @@ Aria slot children are present. The component SHALL NOT apply any implicit
 _Removed: The context-based registration pattern (useMemo for context value,
 useEffect for registration) is being removed entirely. There is no context to
 optimize. Standard React rendering applies._
-
-### Requirement: Main Content Area (original Content-based)
-
-_Removed: Replaced by the Body-based Main Content Area requirement above.
-Card.Content is renamed to Card.Body._
 
 ### Requirement: Card Padding Options
 
