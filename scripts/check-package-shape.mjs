@@ -137,8 +137,19 @@ async function checkPackage(pkg, workDir) {
     return { buffer, failures };
   }
 
-  const attwOk = await runTool("attw", "attw", [tarball], log);
-  const publintOk = await runTool("publint", "publint", [tarball], log);
+  // Wrap each tool run so a spawn failure (binary missing from PATH, etc.)
+  // doesn't reject out of Promise.all and bypass the structured summary.
+  const safeRun = async (label, bin) => {
+    try {
+      return await runTool(label, bin, [tarball], log);
+    } catch (err) {
+      log(`${RED}✗ ${label} failed to run: ${err.message}${RESET}\n`);
+      return false;
+    }
+  };
+
+  const attwOk = await safeRun("attw", "attw");
+  const publintOk = await safeRun("publint", "publint");
 
   if (!attwOk) failures.push({ pkg: pkg.name, tool: "attw" });
   if (!publintOk) failures.push({ pkg: pkg.name, tool: "publint" });
