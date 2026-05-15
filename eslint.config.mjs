@@ -71,7 +71,7 @@ export default tseslint.config(
    * Node.js globals for script files
    */
   {
-    files: ["**/scripts/**/*.mjs"],
+    files: ["**/scripts/**/*.mjs", ".github/actions/**/*.mjs"],
     languageOptions: {
       globals: globals.node,
     },
