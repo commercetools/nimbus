@@ -19,7 +19,7 @@ pnpm check:package-shape
 ```
 
 Requires the target packages to be built first
-(`pnpm build:packages && pnpm build:mcp`).
+(`pnpm build:tokens && pnpm build:packages && pnpm build:mcp`).
 
 ## How It Works
 
@@ -132,7 +132,7 @@ No additional services or secrets — just `pnpm pack`, `attw`, and `publint`.
    - A `"type"` mismatch between root `package.json` and a nested directory's
      marker `package.json`.
 4. Reproduce locally with
-   `pnpm build:packages && pnpm build:mcp && pnpm check:package-shape`.
+   `pnpm build:tokens && pnpm build:packages && pnpm build:mcp && pnpm check:package-shape`.
 5. Fix the package shape, not the check. The check is intentionally strict — if
    it's flagging something, real consumers will hit it.
 
