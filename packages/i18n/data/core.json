@@ -451,6 +451,10 @@
     "developer_comment": "aria-label & tooltip for show password button",
     "string": "Show password"
   },
+  "Nimbus.PublicPageLayout.ariaLabel": {
+    "developer_comment": "default aria-label for the public page layout main landmark",
+    "string": "Public page"
+  },
   "Nimbus.RangeCalendar.nextMonth": {
     "developer_comment": "aria-label for next month navigation button",
     "string": "Next month"
