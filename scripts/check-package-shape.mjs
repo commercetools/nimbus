@@ -11,8 +11,10 @@
  *     map mistakes and ESM/CJS interop foot-guns.
  *   - publint: validates package.json correctness against the npm spec.
  *
- * Exits non-zero on any finding so CI blocks the merge. Flip REPORT_ONLY to
- * true temporarily if you need the check to surface findings without failing.
+ * Packages are checked in parallel; per-package output is buffered and printed
+ * in declared order after all finish so the log stays readable. Exits non-zero
+ * on any finding so CI blocks the merge. Flip REPORT_ONLY to true temporarily
+ * if you need the check to surface findings without failing.
  *
  * Usage:
  *   node scripts/check-package-shape.mjs
@@ -20,7 +22,7 @@
  * Requires the target packages to be built first (their dist/ must exist).
  */
 
-import { execSync, spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { mkdtempSync, rmSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -50,73 +52,104 @@ const RESET = "\x1b[0m";
 
 function header(text) {
   const bar = "─".repeat(Math.max(0, 72 - text.length - 2));
-  console.log(`\n${BOLD}${CYAN}${text}${RESET} ${DIM}${bar}${RESET}`);
+  return `\n${BOLD}${CYAN}${text}${RESET} ${DIM}${bar}${RESET}\n`;
 }
 
-function packTarball(pkg, destDir) {
-  const out = execSync(`pnpm pack --pack-destination "${destDir}" --json`, {
-    cwd: pkg.dir,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "inherit"],
+function runCommand(cmd, args, { cwd }) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(cmd, args, {
+      cwd,
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk) => (stdout += chunk.toString()));
+    child.stderr.on("data", (chunk) => (stderr += chunk.toString()));
+    child.on("error", reject);
+    child.on("close", (code) => resolve({ code, stdout, stderr }));
   });
+}
+
+async function packTarball(pkg, destDir) {
+  const { code, stdout, stderr } = await runCommand(
+    "pnpm",
+    ["pack", "--pack-destination", destDir, "--json"],
+    { cwd: pkg.dir }
+  );
+  if (code !== 0) {
+    throw new Error(`pnpm pack exited ${code}\n${stderr}`);
+  }
   // pnpm pack --json's `filename` is an absolute path to the tarball.
-  const parsed = JSON.parse(out);
-  return parsed.filename;
+  return JSON.parse(stdout).filename;
 }
 
-function runTool(label, bin, args) {
-  console.log(`${DIM}$ ${bin} ${args.join(" ")}${RESET}`);
-  const result = spawnSync("pnpm", ["exec", bin, ...args], {
-    cwd: ROOT,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-  });
-  if (result.stdout) process.stdout.write(result.stdout);
-  if (result.stderr) process.stderr.write(result.stderr);
-  const passed = result.status === 0;
-  console.log(
+async function runTool(label, bin, args, log) {
+  log(`${DIM}$ ${bin} ${args.join(" ")}${RESET}\n`);
+  const { code, stdout, stderr } = await runCommand(
+    "pnpm",
+    ["exec", bin, ...args],
+    { cwd: ROOT }
+  );
+  if (stdout) log(stdout);
+  if (stderr) log(stderr);
+  const passed = code === 0;
+  log(
     passed
-      ? `${GREEN}✓ ${label} passed${RESET}`
-      : `${YELLOW}⚠ ${label} reported findings (exit ${result.status})${RESET}`
+      ? `${GREEN}✓ ${label} passed${RESET}\n`
+      : `${YELLOW}⚠ ${label} reported findings (exit ${code})${RESET}\n`
   );
   return passed;
 }
 
-function main() {
+async function checkPackage(pkg, workDir) {
+  const buffer = [];
+  const log = (text) => buffer.push(text);
+  const failures = [];
+
+  log(header(pkg.name));
+
+  if (!existsSync(pkg.dir)) {
+    log(`${YELLOW}⚠ Skipping — ${pkg.dir} not found${RESET}\n`);
+    return { buffer, failures };
+  }
+
+  let tarball;
+  try {
+    tarball = await packTarball(pkg, workDir);
+    log(`${DIM}packed: ${tarball}${RESET}\n\n`);
+  } catch (err) {
+    log(`${RED}✗ Failed to pack ${pkg.name}${RESET}\n`);
+    log(`${err.message}\n`);
+    failures.push({ pkg: pkg.name, tool: "pack" });
+    return { buffer, failures };
+  }
+
+  const attwOk = await runTool("attw", "attw", [tarball], log);
+  const publintOk = await runTool("publint", "publint", [tarball], log);
+
+  if (!attwOk) failures.push({ pkg: pkg.name, tool: "attw" });
+  if (!publintOk) failures.push({ pkg: pkg.name, tool: "publint" });
+
+  return { buffer, failures };
+}
+
+async function main() {
   const workDir = mkdtempSync(join(tmpdir(), "nimbus-pkg-shape-"));
   const failures = [];
 
   try {
-    for (const pkg of PACKAGES) {
-      header(pkg.name);
-
-      if (!existsSync(pkg.dir)) {
-        console.log(`${YELLOW}⚠ Skipping — ${pkg.dir} not found${RESET}`);
-        continue;
-      }
-
-      let tarball;
-      try {
-        tarball = packTarball(pkg, workDir);
-        console.log(`${DIM}packed: ${tarball}${RESET}\n`);
-      } catch (err) {
-        console.log(`${RED}✗ Failed to pack ${pkg.name}${RESET}`);
-        console.log(err.message);
-        failures.push({ pkg: pkg.name, tool: "pack" });
-        continue;
-      }
-
-      const attwOk = runTool("attw", "attw", [tarball]);
-      const publintOk = runTool("publint", "publint", [tarball]);
-
-      if (!attwOk) failures.push({ pkg: pkg.name, tool: "attw" });
-      if (!publintOk) failures.push({ pkg: pkg.name, tool: "publint" });
+    const results = await Promise.all(
+      PACKAGES.map((pkg) => checkPackage(pkg, workDir))
+    );
+    for (const { buffer, failures: pkgFailures } of results) {
+      for (const chunk of buffer) process.stdout.write(chunk);
+      failures.push(...pkgFailures);
     }
   } finally {
     rmSync(workDir, { recursive: true, force: true });
   }
 
-  header("Summary");
+  process.stdout.write(header("Summary"));
   if (failures.length === 0) {
     console.log(`${GREEN}All packages passed both checks.${RESET}`);
     process.exit(0);
