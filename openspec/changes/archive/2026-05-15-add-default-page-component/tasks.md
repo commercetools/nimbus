@@ -53,6 +53,6 @@
 
 - [x] 5.1 TypeScript compiles without errors
 - [x] 5.2 Build succeeds (`pnpm --filter @commercetools/nimbus build`)
-- [ ] 5.3 Storybook stories render all patterns with passing play functions
-- [ ] 5.4 Consumer implementation tests pass
-- [ ] 5.5 Lint passes (`pnpm lint`)
+- [x] 5.3 Storybook stories render all patterns with passing play functions
+- [x] 5.4 Consumer implementation tests pass
+- [x] 5.5 Lint passes (`pnpm lint`)
