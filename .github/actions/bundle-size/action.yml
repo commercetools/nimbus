@@ -1,0 +1,79 @@
+name: Bundle Size Check
+
+description: Measure bundle sizes, compare against baseline, and post results to the PR
+
+inputs:
+  gh-token:
+    description: GitHub token for API access
+    required: true
+  pr-number:
+    description: Pull request number
+    required: true
+
+runs:
+  using: composite
+
+  steps:
+    - name: Install GitHub CLI
+      run: |
+        curl -sLo gh.tar.gz https://github.com/cli/cli/releases/download/v2.74.0/gh_2.74.0_linux_amd64.tar.gz
+        echo "e55c9d49dc49c0b0fef0a9acd3510482fd9e27ff52ae80f8a6e838cd25b4cd89  gh.tar.gz" | sha256sum -c
+        tar xzf gh.tar.gz
+        rm gh.tar.gz
+        echo "$PWD/gh_2.74.0_linux_amd64/bin" >> "$GITHUB_PATH"
+      shell: bash
+
+    - name: Fetch baseline from comment chain
+      id: baseline
+      env:
+        GH_TOKEN: ${{ inputs.gh-token }}
+      run: node scripts/fetch-bundle-baseline.mjs
+      shell: bash
+
+    - name: Check for approval label
+      id: approval
+      env:
+        GH_TOKEN: ${{ inputs.gh-token }}
+      run: |
+        LABELS=$(gh pr view "${{ inputs.pr-number }}" \
+          --repo "$GITHUB_REPOSITORY" \
+          --json labels \
+          --jq '.labels[].name')
+
+        if echo "$LABELS" | grep -q '^bundle-size-approved$'; then
+          echo "approved=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "approved=false" >> "$GITHUB_OUTPUT"
+        fi
+      shell: bash
+
+    - name: Measure and compare bundle sizes
+      id: bundle-size-check
+      env:
+        BUNDLE_SIZE_BASELINE: ${{ steps.baseline.outputs.source == 'comment-chain' && steps.baseline.outputs.data || '' }}
+        BUNDLE_SIZE_APPROVED: ${{ steps.approval.outputs.approved }}
+      run: |
+        set +e
+        node scripts/check-bundle-size.mjs --json > /tmp/bundle-sizes-result.json 2>/tmp/bundle-sizes-stderr.txt
+        EXIT_CODE=$?
+        set -e
+
+        cat /tmp/bundle-sizes-stderr.txt >&2 || true
+        cat /tmp/bundle-sizes-result.json
+        echo "exit_code=${EXIT_CODE}" >> "$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: Post bundle size comment
+      if: steps.bundle-size-check.outputs.exit_code != ''
+      env:
+        GH_TOKEN: ${{ inputs.gh-token }}
+        PR_NUMBER: ${{ inputs.pr-number }}
+      run: node scripts/post-bundle-size-comment.mjs /tmp/bundle-sizes-result.json
+      shell: bash
+
+    - name: Fail if bundle size thresholds exceeded
+      if: steps.bundle-size-check.outputs.exit_code == '1' && steps.approval.outputs.approved != 'true'
+      run: |
+        echo "::error::Bundle size check failed. Apply the 'bundle-size-approved' label to approve."
+        exit 1
+      shell: bash

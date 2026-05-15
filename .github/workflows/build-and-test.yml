@@ -21,67 +21,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Install GitHub CLI
-        if: github.event_name == 'pull_request'
-        run: |
-          curl -sL https://github.com/cli/cli/releases/download/v2.74.0/gh_2.74.0_linux_amd64.tar.gz | tar xz
-          echo "$PWD/gh_2.74.0_linux_amd64/bin" >> "$GITHUB_PATH"
-
       - name: Installing dependencies and building packages
         uses: ./.github/actions/ci
 
-      - name: Fetch baseline from comment chain
+      - name: Bundle size check
         if: github.event_name == 'pull_request'
-        id: baseline
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: node scripts/fetch-bundle-baseline.mjs
-
-      - name: Check for approval label
-        if: github.event_name == 'pull_request'
-        id: approval
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          LABELS=$(gh pr view "${{ github.event.pull_request.number }}" \
-            --repo "$GITHUB_REPOSITORY" \
-            --json labels \
-            --jq '.labels[].name')
-
-          if echo "$LABELS" | grep -q '^bundle-size-approved$'; then
-            echo "approved=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "approved=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Measure and compare bundle sizes
-        if: github.event_name == 'pull_request'
-        id: bundle-size-check
-        env:
-          BUNDLE_SIZE_BASELINE: ${{ steps.baseline.outputs.source == 'comment-chain' && steps.baseline.outputs.data || '' }}
-          BUNDLE_SIZE_APPROVED: ${{ steps.approval.outputs.approved }}
-        run: |
-          set +e
-          node scripts/check-bundle-size.mjs --json > /tmp/bundle-sizes-result.json 2>/tmp/bundle-sizes-stderr.txt
-          EXIT_CODE=$?
-          set -e
-
-          cat /tmp/bundle-sizes-stderr.txt >&2 || true
-          cat /tmp/bundle-sizes-result.json
-          echo "exit_code=${EXIT_CODE}" >> "$GITHUB_OUTPUT"
-
-      - name: Post bundle size comment
-        if: github.event_name == 'pull_request' && steps.bundle-size-check.outputs.exit_code != ''
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: node scripts/post-bundle-size-comment.mjs /tmp/bundle-sizes-result.json
-
-      - name: Fail if bundle size thresholds exceeded
-        if: github.event_name == 'pull_request' && steps.bundle-size-check.outputs.exit_code == '1' && steps.approval.outputs.approved != 'true'
-        run: |
-          echo "::error::Bundle size check failed. Apply the 'bundle-size-approved' label to approve."
-          exit 1
+        uses: ./.github/actions/bundle-size
+        with:
+          gh-token: ${{ github.token }}
+          pr-number: ${{ github.event.pull_request.number }}
 
       - name: Validate OpenSpec proposals
         run: pnpm openspec validate --all --strict
