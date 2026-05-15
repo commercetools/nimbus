@@ -1,14 +1,11 @@
 {
   "@commercetools/nimbus": {
-    "esm": 1576550,
-    "cjs": 64000
+    "dist": 16909814
   },
   "@commercetools/nimbus-icons": {
-    "esm": 1555358,
-    "cjs": 2159234
+    "dist": 4889696
   },
   "@commercetools/nimbus-tokens": {
-    "esm": 209,
-    "cjs": 216
+    "dist": 417934
   }
 }

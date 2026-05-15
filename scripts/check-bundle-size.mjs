@@ -28,31 +28,22 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const ROOT = join(__dirname, "..");
 const BASELINE_PATH = join(ROOT, "bundle-sizes.json");
 
-// Threshold (percentage increase over baseline)
-const THRESHOLD = 0.05; // 5%
+// Default threshold (percentage increase over baseline)
+const DEFAULT_THRESHOLD = 0.05; // 5%
 
-// Packages to measure: name → { dist path, formats }
+// Per-package size policies:
+//   { kind: "relative", threshold }  — fail if increase exceeds threshold (default)
+//   { kind: "absolute", maxBytes }   — fail if measured size exceeds maxBytes
 const PACKAGES = {
   "@commercetools/nimbus": {
     dist: join(ROOT, "packages/nimbus/dist"),
-    formats: {
-      esm: { pattern: "**/*.es.js" },
-      cjs: { pattern: "**/*.cjs" },
-    },
   },
   "@commercetools/nimbus-icons": {
     dist: join(ROOT, "packages/nimbus-icons/dist"),
-    formats: {
-      esm: { dir: "esm" },
-      cjs: { dir: "cjs" },
-    },
   },
   "@commercetools/nimbus-tokens": {
     dist: join(ROOT, "packages/tokens/dist"),
-    formats: {
-      esm: { pattern: "*.esm.js" },
-      cjs: { pattern: "*.cjs.js" },
-    },
+    policy: { kind: "absolute", maxBytes: 512000 },
   },
 };
 
@@ -80,39 +71,19 @@ function padStart(str, len) {
   return str.length >= len ? str : " ".repeat(len - str.length) + str;
 }
 
-/**
- * Recursively sum the byte sizes of all files in a directory,
- * optionally filtered by a file extension pattern.
- */
-function sumFileSize(dir, filterFn) {
+function sumFileSize(dir) {
   let total = 0;
   if (!existsSync(dir)) return total;
 
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const fullPath = join(dir, entry.name);
     if (entry.isDirectory()) {
-      total += sumFileSize(fullPath, filterFn);
-    } else if (!filterFn || filterFn(entry.name)) {
+      total += sumFileSize(fullPath);
+    } else {
       total += statSync(fullPath).size;
     }
   }
   return total;
-}
-
-/**
- * Sum sizes of files matching a glob-like pattern in a directory.
- * Supports simple patterns: "*.ext" and "**\/*.ext"
- */
-function sumByPattern(dir, pattern) {
-  if (pattern.startsWith("**/")) {
-    // Recursive match by extension
-    const ext = pattern.slice(3); // e.g. "*.es.js"
-    const suffix = ext.startsWith("*") ? ext.slice(1) : ext;
-    return sumFileSize(dir, (name) => name.endsWith(suffix));
-  }
-  // Single-level match by extension
-  const suffix = pattern.startsWith("*") ? pattern.slice(1) : pattern;
-  return sumFileSize(dir, (name) => name.endsWith(suffix));
 }
 
 // ---------------------------------------------------------------------------
@@ -128,19 +99,7 @@ function measurePackages() {
       continue;
     }
 
-    sizes[pkgName] = {};
-
-    for (const [format, spec] of Object.entries(config.formats)) {
-      if (spec.dir) {
-        // Measure entire subdirectory
-        sizes[pkgName][format] = sumFileSize(
-          join(config.dist, spec.dir),
-          (name) => name.endsWith(".js")
-        );
-      } else if (spec.pattern) {
-        sizes[pkgName][format] = sumByPattern(config.dist, spec.pattern);
-      }
-    }
+    sizes[pkgName] = { dist: sumFileSize(config.dist) };
   }
 
   return sizes;
@@ -204,6 +163,11 @@ function compare(currentSizes) {
   // Compare each package/format
   for (const [pkgName, formats] of Object.entries(currentSizes)) {
     const baselinePkg = baseline[pkgName];
+    const pkgConfig = PACKAGES[pkgName];
+    const policy = pkgConfig?.policy ?? {
+      kind: "relative",
+      threshold: DEFAULT_THRESHOLD,
+    };
 
     for (const [format, currentSize] of Object.entries(formats)) {
       const baselineSize = baselinePkg?.[format];
@@ -219,23 +183,31 @@ function compare(currentSizes) {
         continue;
       }
 
-      const increase = (currentSize - baselineSize) / baselineSize;
       let status = "ok";
 
-      if (increase > THRESHOLD) {
-        // Check if the PR's local baseline has been updated to approve this
-        const localPkg = localBaseline?.[pkgName];
-        const localSize = localPkg?.[format];
-
-        if (
-          localSize != null &&
-          Math.abs(localSize - currentSize) / Math.max(currentSize, 1) < 0.001
-        ) {
-          // PR baseline matches current measurement — approved
-          status = "approved";
-        } else {
+      if (policy.kind === "absolute") {
+        if (currentSize > policy.maxBytes) {
           status = "fail";
           hasFailures = true;
+        }
+      } else {
+        const threshold = policy.threshold ?? DEFAULT_THRESHOLD;
+        const increase = (currentSize - baselineSize) / baselineSize;
+
+        if (increase > threshold) {
+          // Check if the PR's local baseline has been updated to approve this
+          const localPkg = localBaseline?.[pkgName];
+          const localSize = localPkg?.[format];
+
+          if (
+            localSize != null &&
+            Math.abs(localSize - currentSize) / Math.max(currentSize, 1) < 0.001
+          ) {
+            status = "approved";
+          } else {
+            status = "fail";
+            hasFailures = true;
+          }
         }
       }
 
@@ -317,8 +289,23 @@ function compare(currentSizes) {
   console.log();
 
   if (hasFailures) {
+    const failedRows = rows.filter((r) => r.status === "fail");
+    const details = failedRows
+      .map((r) => {
+        const pkgPolicy = PACKAGES[r.pkg]?.policy ?? {
+          kind: "relative",
+          threshold: DEFAULT_THRESHOLD,
+        };
+        if (pkgPolicy.kind === "absolute") {
+          return `  ${r.pkg}.${r.format} exceeded absolute budget (${formatBytes(r.currentSize)} > ${formatBytes(pkgPolicy.maxBytes)})`;
+        }
+        const threshold = pkgPolicy.threshold ?? DEFAULT_THRESHOLD;
+        return `  ${r.pkg}.${r.format} exceeded ${(threshold * 100).toFixed(0)}% threshold (${formatDelta(r.currentSize, r.baselineSize)})`;
+      })
+      .join("\n");
+
     console.error(
-      `X FAIL: One or more packages exceeded the ${(THRESHOLD * 100).toFixed(0)}% threshold.\n` +
+      `X FAIL: One or more packages exceeded their size budget.\n${details}\n` +
         `  If this increase is intentional, run:\n` +
         `    node scripts/update-bundle-sizes.mjs\n` +
         `  Then commit the updated bundle-sizes.json in your PR.`
