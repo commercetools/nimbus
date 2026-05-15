@@ -90,14 +90,3 @@ The column resizer SHALL be visually discoverable when navigated to via keyboard
 - **AND** the user SHALL be able to see which column boundary they are
   interacting with
 
-## REMOVED Requirements
-
-### Requirement: isRowClickable Prop
-
-**Reason**: The `isRowClickable` prop is defined in types but not consumed by
-any component. The `onRowClick` prop already serves as the indicator of row
-clickability -- if provided, rows are clickable; if not, they aren't. Keeping
-both creates confusion about which one controls behavior.
-
-**Migration**: Remove any usage of `isRowClickable` prop. Use `onRowClick` to
-control row click behavior.

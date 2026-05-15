@@ -25,7 +25,7 @@
 
 - [x] 6.1 Run `pnpm test:dev packages/nimbus/src/components/data-table/data-table.stories.tsx` -- 27/27 tests pass
 - [x] 6.2 Run `pnpm typecheck` -- no type errors
-- [ ] 6.3 Manually verify in Storybook: clickable rows show `cursor: pointer`, text is selectable, text selection does not trigger row click, double-click selects word
-- [ ] 6.4 Manually verify: pin button announces pressed/unpressed state to screen readers
-- [ ] 6.5 Manually verify: focus rings only appear on keyboard navigation, not mouse clicks
-- [ ] 6.6 Manually verify: column divider visible when resizer receives keyboard focus
+- [x] 6.3 Manually verify in Storybook: clickable rows show `cursor: pointer`, text is selectable, text selection does not trigger row click, double-click selects word
+- [x] 6.4 Manually verify: pin button announces pressed/unpressed state to screen readers
+- [x] 6.5 Manually verify: focus rings only appear on keyboard navigation, not mouse clicks
+- [x] 6.6 Manually verify: column divider visible when resizer receives keyboard focus
