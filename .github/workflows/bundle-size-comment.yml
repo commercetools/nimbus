@@ -1,0 +1,28 @@
+name: Bundle Size Post-Merge Label
+
+on:
+  pull_request:
+    types: [closed]
+  workflow_call:
+    inputs:
+      pr-number:
+        description: Pull request number to label
+        required: true
+        type: string
+
+jobs:
+  post-merge-label:
+    # For direct trigger: only run on merged PRs.
+    # For workflow_call: caller is responsible for gating on merged.
+    if: inputs.pr-number || github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Add bundle-sizes label
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr edit "${{ inputs.pr-number || github.event.pull_request.number }}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --add-label "bundle-sizes"

@@ -4,29 +4,41 @@
  * Bundle size check script for Nimbus.
  *
  * Measures minified (not gzipped) sizes of built package output and compares
- * against a baseline committed to the repo (bundle-sizes.json). In CI, the
- * baseline from the main branch is fetched via git to compare against the PR's
- * measured sizes. If the PR's own bundle-sizes.json has been updated to match
- * current sizes, the check treats the increase as approved and passes.
+ * against a baseline. The baseline comes from one of these sources (in order):
  *
- * Usage:
- *   node scripts/check-bundle-size.mjs   # compare against main's baseline
+ *   1. BUNDLE_SIZE_BASELINE env var (JSON string) — set by the CI workflow
+ *      when reading from the comment-chain baseline
+ *   2. git show origin/main:bundle-sizes.json — the committed baseline on main
+ *   3. Local bundle-sizes.json — bootstrap fallback
  *
- * The approval flow:
- *   1. CI fails because a package exceeds the 5% threshold
- *   2. Developer runs: node scripts/update-bundle-sizes.mjs
- *   3. Developer commits the updated bundle-sizes.json
- *   4. CI re-runs — PR baseline matches measured sizes — passes
+ * Flags:
+ *   --json   Output machine-readable JSON instead of the human-readable table
+ *
+ * Environment variables:
+ *   BUNDLE_SIZE_BASELINE   JSON string of baseline sizes (overrides git/file)
+ *   BUNDLE_SIZE_APPROVED   Set to "true" to treat all threshold exceedances
+ *                          as approved (used when bundle-size-approved label
+ *                          is present on the PR)
  */
 
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { execSync } from "node:child_process";
-import { fileURLToPath } from "node:url";
 
-const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const ROOT = join(__dirname, "..");
+const ROOT = process.cwd();
 const BASELINE_PATH = join(ROOT, "bundle-sizes.json");
+
+const ENV_BASELINE = process.env.BUNDLE_SIZE_BASELINE || "";
+const IS_APPROVED = process.env.BUNDLE_SIZE_APPROVED === "true";
+const JSON_OUTPUT = process.argv.includes("--json");
+
+function failWithError(message) {
+  console.error(message);
+  if (JSON_OUTPUT) {
+    console.log(JSON.stringify({ error: message, has_failures: true }));
+  }
+  process.exit(1);
+}
 
 // Default threshold (percentage increase over baseline)
 const DEFAULT_THRESHOLD = 0.05; // 5%
@@ -143,24 +155,36 @@ function loadLocalBaseline() {
 // Compare against baseline
 // ---------------------------------------------------------------------------
 
-function compare(currentSizes) {
-  // Try main branch first, fall back to local
-  const mainBaseline = fetchMainBaseline();
-  const localBaseline = loadLocalBaseline();
-  const baseline = mainBaseline || localBaseline;
-
-  if (!baseline) {
-    console.error(
-      "No baseline found. Run `node scripts/update-bundle-sizes.mjs` to create one."
-    );
-    process.exit(1);
+function resolveBaseline() {
+  if (ENV_BASELINE) {
+    try {
+      return { baseline: JSON.parse(ENV_BASELINE), source: "comment-chain" };
+    } catch {
+      failWithError("Failed to parse BUNDLE_SIZE_BASELINE env var as JSON.");
+    }
   }
 
-  const baselineSource = mainBaseline ? "main branch" : "local file";
+  const mainBaseline = fetchMainBaseline();
+  if (mainBaseline) return { baseline: mainBaseline, source: "main branch" };
+
+  const localBaseline = loadLocalBaseline();
+  if (localBaseline) return { baseline: localBaseline, source: "local file" };
+
+  return { baseline: null, source: null };
+}
+
+function compare(currentSizes) {
+  const { baseline, source: baselineSource } = resolveBaseline();
+
+  if (!baseline) {
+    failWithError(
+      "No baseline found. Run `pnpm update:bundle-sizes` to create one."
+    );
+  }
+
   let hasFailures = false;
   const rows = [];
 
-  // Compare each package/format
   for (const [pkgName, formats] of Object.entries(currentSizes)) {
     const baselinePkg = baseline[pkgName];
     const pkgConfig = PACKAGES[pkgName];
@@ -195,14 +219,7 @@ function compare(currentSizes) {
         const increase = (currentSize - baselineSize) / baselineSize;
 
         if (increase > threshold) {
-          // Check if the PR's local baseline has been updated to approve this
-          const localPkg = localBaseline?.[pkgName];
-          const localSize = localPkg?.[format];
-
-          if (
-            localSize != null &&
-            Math.abs(localSize - currentSize) / Math.max(currentSize, 1) < 0.001
-          ) {
+          if (IS_APPROVED) {
             status = "approved";
           } else {
             status = "fail";
@@ -221,7 +238,6 @@ function compare(currentSizes) {
     }
   }
 
-  // Check for packages removed since baseline
   for (const [pkgName, formats] of Object.entries(baseline)) {
     if (!(pkgName in currentSizes)) {
       for (const [format, baselineSize] of Object.entries(formats)) {
@@ -236,7 +252,6 @@ function compare(currentSizes) {
     }
   }
 
-  // Sort: failures first, then approved, then rest by size descending
   const statusOrder = { fail: 0, approved: 1, new: 2, removed: 3, ok: 4 };
   rows.sort((a, b) => {
     const so = statusOrder[a.status] - statusOrder[b.status];
@@ -244,7 +259,35 @@ function compare(currentSizes) {
     return (b.currentSize ?? 0) - (a.currentSize ?? 0);
   });
 
-  // Print table
+  if (JSON_OUTPUT) {
+    const packages = {};
+    for (const row of rows) {
+      if (!packages[row.pkg]) packages[row.pkg] = {};
+      packages[row.pkg][row.format] = {
+        current: row.currentSize,
+        baseline: row.baselineSize,
+        delta_pct:
+          row.baselineSize != null && row.baselineSize > 0
+            ? ((row.currentSize - row.baselineSize) / row.baselineSize) * 100
+            : null,
+        status: row.status,
+      };
+    }
+    console.log(
+      JSON.stringify(
+        {
+          baseline_source: baselineSource,
+          packages,
+          has_failures: hasFailures,
+        },
+        null,
+        2
+      )
+    );
+    if (hasFailures) process.exit(1);
+    return;
+  }
+
   const STATUS_ICONS = {
     ok: "  ",
     fail: "X ",
@@ -306,9 +349,7 @@ function compare(currentSizes) {
 
     console.error(
       `X FAIL: One or more packages exceeded their size budget.\n${details}\n` +
-        `  If this increase is intentional, run:\n` +
-        `    node scripts/update-bundle-sizes.mjs\n` +
-        `  Then commit the updated bundle-sizes.json in your PR.`
+        `  If this increase is intentional, add the \`bundle-size-approved\` label with a comment about the reason for the increase and re-run CI.\n`
     );
     process.exit(1);
   }
@@ -316,7 +357,7 @@ function compare(currentSizes) {
   const hasApproved = rows.some((r) => r.status === "approved");
   if (hasApproved) {
     console.log(
-      "~ Some packages exceed the threshold but have been approved via bundle-sizes.json update.\n"
+      "~ Some packages exceed the threshold but have been approved via the bundle-size-approved label.\n"
     );
   }
 
@@ -332,8 +373,7 @@ const anyDistExists = Object.values(PACKAGES).some((config) =>
   existsSync(config.dist)
 );
 if (!anyDistExists) {
-  console.error("No dist directories found.\nRun `pnpm build:packages` first.");
-  process.exit(1);
+  failWithError("No dist directories found.\nRun `pnpm build:packages` first.");
 }
 
 const sizes = measurePackages();
