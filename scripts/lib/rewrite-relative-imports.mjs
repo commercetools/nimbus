@@ -21,6 +21,12 @@
  * packages misclassified as relative — shouldn't happen, but defensively)
  * are also left alone.
  *
+ * Note: the regex matches everywhere in the file, including inside JSDoc
+ * `@example` blocks. An `@example import { Foo } from "./bar"` in an emitted
+ * `.d.ts` will get rewritten to `from "./bar.js"` if `./bar` resolves on disk.
+ * That's intentional — the rewritten form is the correct one to show in
+ * examples — but worth knowing if a JSDoc-only diff shows up in code review.
+ *
  * TypeScript resolves the `.js` extension back to the corresponding `.d.ts`
  * automatically. Runtime ESM resolves `./foo/index.js` to the same file
  * Node would have picked on its own.
