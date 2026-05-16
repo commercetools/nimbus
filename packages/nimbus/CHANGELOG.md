@@ -1,5 +1,71 @@
 # @commercetools/nimbus
 
+## 3.1.0
+
+### Minor Changes
+
+- [#1454](https://github.com/commercetools/nimbus/pull/1454)
+  [`61178f8`](https://github.com/commercetools/nimbus/commit/61178f8e3893ef5358ae5a759cc4ec9167b3446d)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `ConfirmationDialog`: new
+  pattern for confirm/cancel flows. Pass `title`, `children`, `onConfirm`, and
+  `onCancel` to render a dialog with localized Confirm and Cancel buttons;
+  cancel, Escape, overlay click, and the close button all route through
+  `onCancel`.
+  - `intent="destructive"` styles the confirm button for delete / discard /
+    publish flows.
+  - `isConfirmLoading` shows a spinner on the confirm button and locks the
+    dialog while the handler is in flight, so async confirm handlers can't race
+    with cancel.
+  - Default button labels are localized via Nimbus i18n; override per-instance
+    with `confirmLabel` / `cancelLabel`.
+
+  See the docs for the full API.
+
+- [#1470](https://github.com/commercetools/nimbus/pull/1470)
+  [`63b709d`](https://github.com/commercetools/nimbus/commit/63b709d5fe08096b803977a11eba2bcdf048cbc5)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - feat(form-dialog): add
+  FormDialog pattern (FEC-436)
+
+  A pre-composed save/cancel dialog for hosting an editable form in a modal.
+  Flat API (`title`, `children`, `onSave`, `onCancel`, plus optional `isOpen` /
+  `defaultOpen` / `onOpenChange`, `saveLabel` / `cancelLabel`, `isSaveDisabled`
+  / `isSaveLoading`, `aria-label`) with localized default "Save" and "Cancel"
+  labels, single unified `onCancel` across the cancel button and ambient dismiss
+  affordances (Escape, overlay, X), Promise-aware `onSave` (the dialog stays
+  open while the returned promise is pending and closes on fulfillment; rejected
+  promises leave it open so the consumer can surface validation errors), and an
+  `isSaveLoading` lockout that disables both buttons and suppresses Escape /
+  overlay / X for the duration to prevent in-flight data loss. Replaces Merchant
+  Center Application Kit's `FormDialog`.
+
+- [#1498](https://github.com/commercetools/nimbus/pull/1498)
+  [`01a0142`](https://github.com/commercetools/nimbus/commit/01a0142e37496c0b37c4ff2394d82e40eace8fba)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Package-shape correctness
+  fixes for strict TypeScript and native Node ESM consumers. Bundler-based
+  consumers (Vite, Webpack, Next.js) see no change.
+
+  ### `@commercetools/nimbus`
+  - `./setup-jsdom-polyfills` now ships type declarations. Consumers using the
+    documented `setupFiles: ['@commercetools/nimbus/setup-jsdom-polyfills']`
+    config in Jest or Vitest get autocomplete and signature checking.
+  - CJS consumers via `require()` (Jest in JSDOM, classic Next.js pages dir)
+    receive correctly-typed declarations. Previously the same `.d.ts` was served
+    for both ESM and CJS paths, producing subtle type mismatches.
+  - Type-checking under `moduleResolution: "nodenext"` or `"node16"` no longer
+    fails on internal Nimbus imports.
+
+  ### `@commercetools/nimbus-icons`
+  - Now importable from native Node ESM (e.g., Node 22+ with `"type": "module"`,
+    certain SSR setups that externalize `node_modules`). Previously the ESM
+    build failed at parse time outside a bundler.
+
+### Patch Changes
+
+- Updated dependencies
+  [[`01a0142`](https://github.com/commercetools/nimbus/commit/01a0142e37496c0b37c4ff2394d82e40eace8fba)]:
+  - @commercetools/nimbus-icons@3.1.0
+  - @commercetools/nimbus-tokens@3.1.0
+
 ## 3.0.0
 
 ### Major Changes
