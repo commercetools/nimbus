@@ -40,6 +40,9 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck:strict
 
+      - name: Check package shape
+        run: pnpm check:package-shape
+
       - name: Clean temp before tests
         run: rm -rf /tmp/* || true
         shell: bash

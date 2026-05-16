@@ -280,11 +280,26 @@ pnpm typecheck
 # Strict type checking (fails on errors)
 pnpm typecheck:strict
 
+# Validate published package shape (attw + publint against packed tarballs)
+pnpm check:package-shape
+
+# Validate published bundle sizes against baseline
+pnpm check:bundle-size
+
 # Package-specific commands
 pnpm --filter @commercetools/nimbus typecheck
 pnpm --filter @commercetools/nimbus build
 pnpm --filter @commercetools/nimbus-tokens build
 ```
+
+`pnpm check:package-shape` packs each publishable package the same way npm would
+and validates the result with `@arethetypeswrong/cli` (types resolve across
+`node10`, `node16` CJS/ESM, `bundler`) and `publint` (`package.json` correctness
+vs the npm spec). Run it locally before pushing changes to a bundler config,
+`package.json` `exports` map, postbuild script, or any publishable entry point.
+See [Package Shape Verification](./docs/package-shape-verification.md) for
+details. For bundle sizes, see
+[Bundle Size Monitoring](./docs/bundle-size-monitoring.md).
 
 ### Workspace-Specific Development
 
