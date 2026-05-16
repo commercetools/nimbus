@@ -3,9 +3,7 @@
 ## Purpose
 
 The Menu component provides an accessible dropdown menu following ARIA menu pattern. It uses compound component architecture with Menu.Root, Menu.Trigger, Menu.Content, and Menu.Item. This component implements WCAG 2.1 AA compliant menu interactions with support for nested submenus, keyboard navigation, and customizable styling through Chakra UI recipes.
-
 ## Requirements
-
 ### Requirement: Namespace Structure
 The component SHALL export as compound component namespace.
 
@@ -185,3 +183,19 @@ Menu.Item SHALL support icons and keyboard shortcuts.
 - **THEN** SHALL display shortcut text at right edge
 - **AND** SHALL be informational only (actual shortcut handling is separate)
 - **AND** SHALL use muted color to distinguish from item text
+
+### Requirement: Content Style Props
+Menu.Content SHALL accept and forward Chakra UI style props to the popover container.
+
+#### Scenario: Width override
+- **WHEN** a `width` prop is passed to Menu.Content
+- **THEN** the flyout container SHALL render with that width
+
+#### Scenario: Style props forwarding
+- **WHEN** any valid Chakra style prop (e.g. `maxHeight`, `minWidth`, `bg`) is passed to Menu.Content
+- **THEN** the prop SHALL be forwarded to the popover slot element
+
+#### Scenario: Existing props unchanged
+- **WHEN** `placement`, `ref`, or `children` are passed to Menu.Content
+- **THEN** they SHALL continue to work as before
+

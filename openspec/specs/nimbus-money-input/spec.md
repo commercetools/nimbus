@@ -13,9 +13,7 @@ The MoneyInput component provides a specialized input for entering monetary amou
 ## Purpose
 
 Provide a specialized monetary input field with currency selection, multi-currency support, high precision handling (up to 20 decimal places), and locale-aware formatting. The component extends NumberInput functionality while supporting currency-specific fraction digits, automatic formatting on blur, and visual indicators for high precision values, maintaining WCAG 2.1 AA compliance throughout.
-
 ## Requirements
-
 ### Requirement: Money Value Handling
 The component SHALL manage monetary values as compound objects with amount and currency code.
 
@@ -54,10 +52,17 @@ The component SHALL provide currency selection via dropdown or label display.
 - **AND** label SHALL be semantically associated with amount input
 
 #### Scenario: Currency code validation
-- **WHEN** currency code is provided
+- **WHEN** a standard ISO 4217 currency code is provided
 - **THEN** SHALL validate against known currency codes from currencies data
-- **AND** SHALL support all ISO 4217 standard currency codes
 - **AND** SHALL access fractionDigits from currency data
+
+#### Scenario: Non-ISO zero-fraction variant currency codes
+- **WHEN** a non-ISO zero-fraction variant code is provided (e.g. `HUF0`, `TRY0`, `CZK0`, `ILS0`, `KZT0`, `TWD0`)
+- **THEN** SHALL recognise the code as valid
+- **AND** SHALL use `fractionDigits: 0` for the currency
+- **AND** `convertToMoneyValue` SHALL return a `centPrecision` value with `fractionDigits: 0`
+- **AND** `parseMoneyValue` SHALL correctly parse the money value with 0 fraction digits
+- **AND** `isHighPrecision` SHALL return true when decimal places are present, false otherwise
 
 ### Requirement: Currency-Specific Formatting
 The component SHALL format amounts according to currency specifications.
@@ -454,3 +459,4 @@ The component SHALL use dual formatting systems.
 - **AND** SHALL create MoneyValue objects with centAmount/preciseAmount
 - **AND** SHALL be independent of NumberInput formatting
 - **AND** SHALL maintain UI-Kit API compatibility
+

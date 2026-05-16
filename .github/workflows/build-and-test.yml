@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: write
     container:
       # Make sure to grab the latest version of the Playwright image
       # https://playwright.dev/docs/docker#pull-the-image
@@ -23,12 +24,12 @@ jobs:
       - name: Installing dependencies and building packages
         uses: ./.github/actions/ci
 
-      - name: Fetch main ref for bundle size baseline
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE" && git fetch origin main --depth=1
+      - name: Bundle size check
         if: github.event_name == 'pull_request'
-
-      - name: Check bundle size
-        run: node scripts/check-bundle-size.mjs
+        uses: ./.github/actions/bundle-size
+        with:
+          gh-token: ${{ github.token }}
+          pr-number: ${{ github.event.pull_request.number }}
 
       - name: Validate OpenSpec proposals
         run: pnpm openspec validate --all --strict
