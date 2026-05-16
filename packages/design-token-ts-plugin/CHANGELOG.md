@@ -1,5 +1,12 @@
 # @commercetools/nimbus-design-token-ts-plugin
 
+## 3.1.0
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@3.1.0
+
 ## 3.0.0
 
 ### Patch Changes

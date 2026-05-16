@@ -1,6 +1,6 @@
 {
   "name": "@commercetools/nimbus-mcp",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "MCP server for the Nimbus design system",
   "type": "module",
   "publishConfig": {
