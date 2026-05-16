@@ -16,7 +16,7 @@
  */
 import { useCallback } from "react";
 import { Editor } from "slate";
-import isHotkey from "is-hotkey";
+import { isHotkey } from "is-hotkey";
 import { HOTKEYS } from "../constants";
 import { toggleMark } from "../utils/slate-helpers";
 import { Softbreaker } from "../utils/slate-helpers";
