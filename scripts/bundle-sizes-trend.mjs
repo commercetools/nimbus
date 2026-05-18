@@ -34,15 +34,17 @@ const limitIdx = args.indexOf("--limit");
 const limit =
   limitIdx !== -1 ? Number.parseInt(args[limitIdx + 1], 10) : DEFAULT_LIMIT;
 
-if (Number.isNaN(limit) || limit < 1) {
-  console.error("Error: --limit must be a positive integer.");
+const MAX_LIMIT = 100;
+
+if (Number.isNaN(limit) || limit < 1 || limit > MAX_LIMIT) {
+  console.error(`Error: --limit must be between 1 and ${MAX_LIMIT}.`);
   process.exit(1);
 }
 
 function gh(args) {
   return execSync(`gh ${args}`, {
     encoding: "utf-8",
-    stdio: ["pipe", "pipe", "pipe"],
+    stdio: ["pipe", "pipe", "inherit"],
   }).trim();
 }
 
@@ -60,7 +62,7 @@ function detectRepo() {
 const repo = detectRepo();
 
 const prsJson = gh(
-  `api "repos/${repo}/pulls?state=closed&labels=bundle-sizes&per_page=${limit}&sort=updated&direction=desc" --jq '[.[] | select(.merged_at != null) | {number, title, merged_at}]'`
+  `api "repos/${repo}/issues?state=closed&labels=bundle-sizes&per_page=${limit}&sort=updated&direction=desc" --jq '[.[] | select(.pull_request.merged_at != null) | {number, title, merged_at: .pull_request.merged_at}]'`
 );
 
 const prs = JSON.parse(prsJson);
