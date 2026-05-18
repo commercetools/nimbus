@@ -2,16 +2,6 @@
 
 import { execSync } from "node:child_process";
 
-try {
-  execSync("gh --version", { stdio: "ignore" });
-} catch {
-  console.error(
-    "Error: GitHub CLI (gh) is not installed.\n" +
-      "Install it from https://cli.github.com and run `gh auth login`."
-  );
-  process.exit(1);
-}
-
 const DEFAULT_LIMIT = 20;
 const DATA_BLOCK_RE = /<!-- bundle-sizes-data-v(\d+): ({.*?}) -->/;
 
@@ -26,6 +16,16 @@ Options:
   --limit N   Number of merged PRs to query (default: ${DEFAULT_LIMIT})
   --help, -h  Show this help message`);
   process.exit(0);
+}
+
+try {
+  execSync("gh --version", { stdio: "ignore" });
+} catch {
+  console.error(
+    "Error: GitHub CLI (gh) is not installed.\n" +
+      "Install it from https://cli.github.com and run `gh auth login`."
+  );
+  process.exit(1);
 }
 
 const limitIdx = args.indexOf("--limit");
