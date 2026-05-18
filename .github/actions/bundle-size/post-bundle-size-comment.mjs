@@ -44,7 +44,8 @@ const data = JSON.parse(readFileSync(JSON_FILE, "utf-8"));
 
 const lines = [];
 lines.push("<!-- bundle-sizes-comment -->");
-lines.push("## Bundle Size Report");
+const timestamp = new Date().toISOString().replace("T", " ").slice(0, 19);
+lines.push(`## Bundle Size Report <sub>Last updated: ${timestamp} UTC</sub>`);
 lines.push("");
 lines.push("| Package | Format | Current | Baseline | Delta | Status |");
 lines.push("|---------|--------|--------:|---------:|------:|--------|");
@@ -86,10 +87,6 @@ const sizes = {};
 for (const [pkg, formats] of Object.entries(data.packages)) {
   sizes[pkg] = { dist: formats.dist.current };
 }
-lines.push("");
-lines.push(
-  `<sub>Last updated: ${new Date().toISOString().replace("T", " ").slice(0, 19)} UTC</sub>`
-);
 lines.push("");
 lines.push(`<!-- bundle-sizes-data-v1: ${JSON.stringify(sizes)} -->`);
 
