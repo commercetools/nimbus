@@ -1,4 +1,8 @@
-## ADDED Requirements
+## Purpose
+
+PublicPageLayout provides a standardized, centered page layout for unauthenticated (public-facing) pages such as login, registration, and password reset screens. It ensures consistent branding, spacing, and accessibility across all public entry points.
+
+## Requirements
 
 ### Requirement: PublicPageLayout renders a centered vertical layout
 
