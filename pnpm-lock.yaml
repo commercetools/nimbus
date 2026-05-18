@@ -5,6 +5,10 @@ settings:
   excludeLinksFromLockfile: false
 
 catalogs:
+  default:
+    glob:
+      specifier: ^13.0.6
+      version: 13.0.6
   react:
     '@chakra-ui/cli':
       specifier: ^3.35.0
@@ -136,9 +140,6 @@ catalogs:
     eslint-plugin-storybook:
       specifier: ^10.3.6
       version: 10.3.6
-    glob:
-      specifier: ^13.0.6
-      version: 13.0.6
     globals:
       specifier: ^17.6.0
       version: 17.6.0
@@ -551,7 +552,7 @@ importers:
         specifier: catalog:utils
         version: 24.12.3
       glob:
-        specifier: catalog:tooling
+        specifier: 'catalog:'
         version: 13.0.6
       prettier:
         specifier: catalog:tooling
@@ -687,7 +688,7 @@ importers:
         specifier: catalog:utils
         version: 3.4.2
       glob:
-        specifier: catalog:tooling
+        specifier: 'catalog:'
         version: 13.0.6
       jsdom:
         specifier: 29.0.1
