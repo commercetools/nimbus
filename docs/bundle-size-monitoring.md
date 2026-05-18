@@ -180,9 +180,15 @@ pnpm bundle-sizes:trend
 # Limit to the last 5
 pnpm bundle-sizes:trend --limit 5
 
+# Output raw JSON (pipeable to jq or other scripts)
+pnpm bundle-sizes:trend --json
+
 # Show usage
 pnpm bundle-sizes:trend --help
 ```
+
+Each PR requires a separate API call to fetch its comments, so higher `--limit`
+values will be slower.
 
 Example output:
 

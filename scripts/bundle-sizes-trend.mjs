@@ -14,6 +14,7 @@ Show bundle size trend from merged PR comments.
 
 Options:
   --limit N   Number of merged PRs to query (default: ${DEFAULT_LIMIT})
+  --json      Output raw JSON instead of a table
   --help, -h  Show this help message`);
   process.exit(0);
 }
@@ -28,6 +29,7 @@ try {
   process.exit(1);
 }
 
+const jsonOutput = args.includes("--json");
 const limitIdx = args.indexOf("--limit");
 const limit =
   limitIdx !== -1 ? Number.parseInt(args[limitIdx + 1], 10) : DEFAULT_LIMIT;
@@ -114,6 +116,11 @@ if (entries.length === 0) {
 
 // Oldest first so deltas read chronologically
 entries.reverse();
+
+if (jsonOutput) {
+  console.log(JSON.stringify(entries, null, 2));
+  process.exit(0);
+}
 
 const allPackages = [
   ...new Set(entries.flatMap((e) => Object.keys(e.sizes))),
