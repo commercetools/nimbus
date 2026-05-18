@@ -45,8 +45,9 @@ const data = JSON.parse(readFileSync(JSON_FILE, "utf-8"));
 const lines = [];
 lines.push("<!-- bundle-sizes-comment -->");
 const timestamp = new Date().toISOString().replace("T", " ").slice(0, 19);
-lines.push(`## Bundle Size Report <sub>Last updated: ${timestamp} UTC</sub>`);
+lines.push("## Bundle Size Report");
 lines.push("");
+lines.push(`<sub>Last updated: ${timestamp} UTC</sub>`);
 lines.push("| Package | Format | Current | Baseline | Delta | Status |");
 lines.push("|---------|--------|--------:|---------:|------:|--------|");
 
