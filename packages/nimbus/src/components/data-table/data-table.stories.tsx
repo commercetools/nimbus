@@ -4562,21 +4562,6 @@ const generatePerfRows = (count: number): DataTableRowItem[] =>
     category: `Category ${(i % 5) + 1}`,
   }));
 
-const perfColumns: DataTableColumnItem[] = [
-  {
-    id: "name",
-    header: "Name",
-    accessor: (row: Record<string, unknown>) => row.name as ReactNode,
-    isSortable: true,
-  },
-  {
-    id: "category",
-    header: "Category",
-    accessor: (row: Record<string, unknown>) => row.category as ReactNode,
-    isSortable: true,
-  },
-];
-
 const PinnedIdsProbe = () => {
   const ctx = DataTable.useDataTableContext();
   return (
