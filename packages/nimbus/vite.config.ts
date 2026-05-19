@@ -161,34 +161,15 @@ export default defineConfig(async () => {
          */
         plugins: [
           esmExternalRequirePlugin({ external: requireRewriteExternals }),
-          /**
-           * Pin chunk extensions to `.es.js` / `.cjs.js`.
-           *
-           * Vite 8/Rolldown changed the `[format]` placeholder from `es` →
-           * `esm` for the ESM output, which would shift our chunk filenames
-           * from `*.es.js` to `*.esm.js`. The bundle-size script
-           * (`scripts/check-bundle-size.mjs`) hard-codes the pattern
-           * `**\/*.es.js`, so the upgrade would break its measurement.
-           *
-           * `outputOptions` runs once per output (i.e. once per format) and
-           * exposes `format`, which `chunkFileNames` (called per chunk) does
-           * not. We use it to write a literal `chunkFileNames` per format —
-           * sidestepping `[format]` entirely.
-           */
-          {
-            name: "nimbus-pin-chunk-extensions",
-            outputOptions(options: Rollup.OutputOptions) {
-              return {
-                ...options,
-                chunkFileNames:
-                  options.format === "es"
-                    ? "chunks/[name]-[hash].es.js"
-                    : "chunks/[name]-[hash].cjs.js",
-              };
-            },
-          },
         ],
         external,
+        output: {
+          // Keep chunks out of dist/ root so entry points are easier to find.
+          // Vite 8/Rolldown renders `[format]` as `esm`/`cjs` (was `es`/`cjs`
+          // pre-Rolldown). Nothing outside this build depends on the chunk
+          // extension — entry-point filenames are produced by `lib.fileName`.
+          chunkFileNames: "chunks/[name]-[hash].[format].js",
+        },
         /**
          * Suppress reexport warnings for our compound-component pattern.
          *
