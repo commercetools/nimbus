@@ -93,8 +93,6 @@
     "playwright": "catalog:tooling",
     "react": "catalog:react",
     "react-dom": "catalog:react",
-    "rollup": "catalog:tooling",
-    "rollup-plugin-tree-shakeable": "catalog:tooling",
     "slate": "^0.123.0",
     "slate-history": "^0.115.0",
     "slate-hyperscript": "^0.115.0",
@@ -102,7 +100,6 @@
     "storybook": "catalog:tooling",
     "vite": "catalog:tooling",
     "vite-plugin-dts": "catalog:tooling",
-    "vite-tsconfig-paths": "catalog:tooling",
     "vitest": "catalog:tooling"
   },
   "peerDependencies": {

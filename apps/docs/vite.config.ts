@@ -2,7 +2,6 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 
 import { mdxHmrPlugin } from "./vite-plugins/vite-plugin-mdx-hmr";
-import tsconfigPaths from "vite-tsconfig-paths";
 import viteCompression from "vite-plugin-compression";
 import path from "path";
 
@@ -21,8 +20,6 @@ export default defineConfig({
       // Enable React Compiler optimizations
       plugins: [],
     }),
-    tsconfigPaths(),
-
     mdxHmrPlugin(),
     // Gzip and Brotli compression
     viteCompression({
@@ -141,6 +138,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ["react", "react-dom", "jotai"],
   },
+  resolve: { tsconfigPaths: true },
   define: {
     ["process.env.REPO_ROOT"]: JSON.stringify(path.resolve(__dirname, "../..")),
   },
