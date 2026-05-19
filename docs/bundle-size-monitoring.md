@@ -1,10 +1,10 @@
 # Bundle Size Monitoring
 
-Nimbus includes a lightweight bundle size check that runs in CI. It measures the
-minified (not gzipped) size of each published package's output and compares
-against a baseline committed to the repo (`bundle-sizes.json`). If any package
-grows beyond a 5% threshold the CI job fails, preventing accidental size
-regressions from being merged.
+Nimbus includes a bundle size check that runs on every pull request. It measures
+the minified (not gzipped) output of each published package, compares against a
+baseline derived from the most recently merged PR, and posts a sticky comment
+with the results. If any package exceeds its size policy the CI job fails,
+preventing accidental regressions from being merged.
 
 ## Quick Reference
 
@@ -12,125 +12,157 @@ regressions from being merged.
 # Check sizes against baseline (what CI runs)
 pnpm check:bundle-size
 
-# Update the baseline after an intentional size change
-node scripts/update-bundle-sizes.mjs
-
 # View bundle size trend across recent merged PRs
 pnpm bundle-sizes:trend
+
+# View trend as JSON (pipeable to jq or other scripts)
+pnpm bundle-sizes:trend --json
 ```
 
 ## How It Works
 
-The script (`scripts/check-bundle-size.mjs`) does the following:
+### The Comment Chain
 
-1. Measures minified output sizes for each tracked package, broken down by
-   format (ESM and CJS).
-2. Fetches `bundle-sizes.json` from the `main` branch via `git show` as the
-   baseline (falls back to local file if main has no baseline yet).
-3. Compares each package/format — if any exceeds the 5% threshold, it checks
-   whether the PR's local `bundle-sizes.json` has been updated to match the
-   current sizes (the "approval" mechanism).
-4. Prints a table with current size, baseline size, percentage delta, and
-   status.
-5. Exits with code 1 if any entry exceeds the threshold without approval.
+Every PR gets a sticky bot comment showing a table of current sizes, baselines,
+deltas, and pass/fail status. This comment includes a machine-readable data
+block (`<!-- bundle-sizes-data-v1: {...} -->`) that records the measured sizes.
 
-## Threshold
+When the next PR opens, the CI action queries the most recently merged PR with
+the `bundle-sizes` label, extracts the data block from its bot comment, and uses
+that as the baseline. This creates a chain: each merged PR's comment becomes the
+next PR's baseline.
 
-| Increase | Effect            |
-| -------- | ----------------- |
-| 0 – 5%   | OK, no action     |
-| > 5%     | CI fails (exit 1) |
+If no labeled merged PR exists yet (e.g., first run after setup), the action
+falls back to `bundle-sizes.json` in the repo root as a bootstrap baseline. This
+file is only meant to seed the very first comparison — once a few PRs have
+merged and built up the comment chain, the file becomes stale and is no longer
+consulted. Do not rely on it as a long-term baseline.
 
-The threshold is defined at the top of `scripts/check-bundle-size.mjs`
-(`THRESHOLD`) and can be adjusted as the project evolves.
+### Baseline Resolution Order
+
+1. **Comment chain** — data block from the most recently merged PR with the
+   `bundle-sizes` label (primary, used in normal operation)
+2. **`bundle-sizes.json` on main** — via
+   `git show origin/main:bundle-sizes.json` (bootstrap fallback only)
+3. **Local `bundle-sizes.json`** — last resort for initial setup
+
+### Post-Merge Labeling
+
+After a PR merges, a separate workflow
+(`.github/workflows/bundle-size-comment.yml`) automatically adds the
+`bundle-sizes` label to the merged PR. This is the tracking label that makes the
+PR discoverable as a baseline source — it is not the approval label.
 
 ## What Gets Tracked
 
-Three published packages are tracked, each with ESM and CJS formats:
+Three published packages are tracked:
 
-- **`@commercetools/nimbus`** — The core component library.
-- **`@commercetools/nimbus-icons`** — SVG icons as React components.
-- **`@commercetools/nimbus-tokens`** — Design tokens.
+| Package                        | Policy            | Details                       |
+| ------------------------------ | ----------------- | ----------------------------- |
+| `@commercetools/nimbus`        | Relative (5%)     | Core component library        |
+| `@commercetools/nimbus-icons`  | Relative (5%)     | SVG icons as React components |
+| `@commercetools/nimbus-tokens` | Absolute (512 KB) | Design tokens                 |
 
-The baseline file (`bundle-sizes.json`) is committed to the repo root and looks
-like this:
+### Per-Package Policies
 
-```json
-{
-  "@commercetools/nimbus": { "esm": 1541463, "cjs": 60526 },
-  "@commercetools/nimbus-icons": { "esm": 1555358, "cjs": 2159234 },
-  "@commercetools/nimbus-tokens": { "esm": 209, "cjs": 216 }
-}
+Most packages use the **relative threshold** (default 5%). If the `dist` output
+grows more than 5% compared to the baseline, the check fails.
+
+Small packages like `nimbus-tokens` use an **absolute budget** instead. Rather
+than a percentage, the policy defines a hard ceiling in bytes. This prevents
+trivially small increases from being ignored — a 100-byte increase on a 2 KB
+package is a 5% jump, but an absolute budget of 512 KB is clearer for packages
+that should stay tiny.
+
+Policies are defined in `.github/actions/bundle-size/check-bundle-size.mjs`:
+
+```js
+"@commercetools/nimbus-tokens": {
+  dist: "packages/tokens/dist",
+  policy: { kind: "absolute", maxBytes: 512000 },
+},
 ```
+
+## The PR Comment
+
+Every PR receives a bot comment titled **Bundle Size Report** that shows:
+
+| Column   | Description                                   |
+| -------- | --------------------------------------------- |
+| Package  | Package name                                  |
+| Format   | `dist`                                        |
+| Current  | Measured size of the PR's build output (KB)   |
+| Baseline | Size from the comment-chain baseline (KB)     |
+| Delta    | Percentage change from baseline               |
+| Status   | `ok`, `fail`, `new`, `removed`, or `approved` |
+
+The comment is updated in place on each CI run (not duplicated). It includes a
+timestamp so reviewers can see when the data was last refreshed.
 
 ## Common Scenarios
 
 ### Your PR Fails the Bundle Size Check
 
-1. Look at the CI output to see which packages exceeded the threshold and by how
-   much.
-2. If the increase is **unintentional**, investigate what changed. Common
-   causes:
-   - A new dependency was added to a component that was previously lightweight.
-   - An import was changed from a deep path to a barrel export, pulling in extra
-     code.
-   - Tree-shaking broke due to side effects in a module.
-3. If the increase is **intentional** (e.g. a new feature that legitimately adds
-   code), approve it:
+1. Look at the bot comment on your PR to see which packages exceeded their
+   policy.
+2. If the increase is **unintentional**, investigate. Common causes:
+   - A new dependency pulled in extra code.
+   - An import changed from a deep path to a barrel export.
+   - Tree-shaking broke due to side effects.
+3. If the increase is **intentional** (a new feature that legitimately adds
+   code), approve it by adding the `bundle-size-approved` label to the PR and
+   re-running CI. The check will pass with an `approved` status.
 
-   ```bash
-   pnpm build:packages
-   node scripts/update-bundle-sizes.mjs
-   git add bundle-sizes.json
-   git commit -m "chore: approve bundle size increase"
-   ```
+### Approving a Size Increase
 
-   The reviewer will see the `bundle-sizes.json` diff in the PR review, making
-   bundle increases an explicit, reviewed decision.
+1. Push your PR.
+2. CI fails — the bot comment shows which packages exceeded the threshold.
+3. You (or a reviewer) decide the increase is expected.
+4. Add the **`bundle-size-approved`** label to the PR.
+5. Re-run CI — the check sees the label and passes with `approved` status.
+6. The reviewer sees the delta in the bot comment, making the increase an
+   explicit, reviewed decision.
+
+No files need to be committed to approve an increase — the label is the approval
+mechanism.
 
 ### A New Package Format Was Added
 
 New entries that aren't in the baseline are reported as `new` status and do
-**not** cause a failure. Run `node scripts/update-bundle-sizes.mjs` to include
-them in the baseline.
+**not** cause a failure.
 
 ### A Package Was Removed
 
-Removed entries are reported as `removed` status. Update the baseline to clean
-them out.
+Removed entries are reported as `removed` status and do not cause a failure.
 
 ## CI Integration
 
 The check runs in the `build-and-test` workflow
-(`.github/workflows/build-and-test.yml`) immediately after the build step:
+(`.github/workflows/build-and-test.yml`) on pull requests:
 
 ```yaml
-- name: Check bundle size
-  run: node scripts/check-bundle-size.mjs
+- name: Bundle size check
+  if: github.event_name == 'pull_request'
+  uses: ./.github/actions/bundle-size
+  with:
+    gh-token: ${{ github.token }}
+    pr-number: ${{ github.event.pull_request.number }}
 ```
 
-No additional dependencies, services, or secrets are required — the script uses
-only Node.js built-ins (`fs`, `path`, `child_process`) and git.
+The action:
 
-## Approval Flow
-
-The approval mechanism is designed so that bundle size increases are visible in
-PR review:
-
-1. Push PR.
-2. CI fails: "X FAIL: @commercetools/nimbus esm increased 8.2% (threshold 5%)"
-3. You decide this is expected.
-4. Run: `node scripts/update-bundle-sizes.mjs`
-5. Commit the updated `bundle-sizes.json`.
-6. CI re-runs — PR baseline matches measured size — passes.
-7. Reviewer sees the `bundle-sizes.json` diff in the PR.
-
-No post-merge CI commits or special GitHub permissions are needed. The PR itself
-carries the baseline update.
+1. Fetches the baseline from the comment chain
+   (`.github/actions/bundle-size/fetch-bundle-baseline.mjs`)
+2. Checks for the `bundle-size-approved` label
+3. Measures and compares sizes
+   (`.github/actions/bundle-size/check-bundle-size.mjs`)
+4. Posts or updates the bot comment
+   (`.github/actions/bundle-size/post-bundle-size-comment.mjs`)
+5. Fails the job if thresholds are exceeded and the approval label is absent
 
 ## Running Locally
 
-You need built packages. If you don't have them:
+You need built packages:
 
 ```bash
 pnpm build:packages
@@ -142,25 +174,43 @@ Then run the check:
 pnpm check:bundle-size
 ```
 
-The output looks like this:
+The output shows a table with current size, baseline, delta, and status for each
+tracked package. All sizes are displayed in KB.
 
-```
-Package                                   Format     Current    Baseline     Delta  Status
-----------------------------------------------------------------------------------------
-@commercetools/nimbus-icons                  cjs    2108.6 KB   2108.6 KB    +0.0%    ok
-@commercetools/nimbus-icons                  esm    1519.1 KB   1519.1 KB    +0.0%    ok
-@commercetools/nimbus                        esm    1510.9 KB   1510.9 KB    +0.0%    ok
-...
+## Viewing the Trend
+
+The `bundle-sizes:trend` command reconstructs a historical view of bundle sizes
+from merged PR comments. It queries merged PRs with the `bundle-sizes` label,
+parses the data block from each bot comment, and prints a chronological table
+with per-package sizes and deltas.
+
+```bash
+# Show trend for the last 20 merged PRs (default)
+pnpm bundle-sizes:trend
+
+# Limit to the last 5
+pnpm bundle-sizes:trend --limit 5
+
+# Output raw JSON (pipeable to jq or other scripts)
+pnpm bundle-sizes:trend --json
+
+# Show usage
+pnpm bundle-sizes:trend --help
 ```
 
-All sizes are displayed in KB for easy comparison across packages.
+Each PR requires a separate API call to fetch its comments, so higher `--limit`
+values will be slower.
+
+Requires the [GitHub CLI](https://cli.github.com) (`gh`) to be installed and
+authenticated. The script is read-only — it only queries the API, never writes.
 
 ## Adjusting the Threshold
 
-Edit the constant at the top of `scripts/check-bundle-size.mjs`:
+Edit the constant at the top of
+`.github/actions/bundle-size/check-bundle-size.mjs`:
 
 ```js
-const THRESHOLD = 0.05; // 5%
+const DEFAULT_THRESHOLD = 0.05; // 5%
 ```
 
 If we find the threshold too sensitive or too lenient after a few weeks of use,
@@ -203,3 +253,5 @@ Example output:
 
 Requires the [GitHub CLI](https://cli.github.com) (`gh`) to be installed and
 authenticated. The script is read-only — it only queries the API, never writes.
+For absolute budgets, edit the `policy` field on the relevant package
+definition.
