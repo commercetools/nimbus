@@ -14,6 +14,9 @@ pnpm check:bundle-size
 
 # Update the baseline after an intentional size change
 node scripts/update-bundle-sizes.mjs
+
+# View bundle size trend across recent merged PRs
+pnpm bundle-sizes:trend
 ```
 
 ## How It Works
@@ -162,3 +165,41 @@ const THRESHOLD = 0.05; // 5%
 
 If we find the threshold too sensitive or too lenient after a few weeks of use,
 adjust it and commit the change.
+
+## Viewing the Trend
+
+The `bundle-sizes:trend` command reconstructs a historical view of bundle sizes
+from merged PR comments. Each merged PR with the `bundle-sizes` label has a
+machine-readable data block in its bot comment — this command queries those
+comments and prints a chronological table with per-package sizes and deltas.
+
+```bash
+# Show trend for the last 20 merged PRs (default)
+pnpm bundle-sizes:trend
+
+# Limit to the last 5
+pnpm bundle-sizes:trend --limit 5
+
+# Output raw JSON (pipeable to jq or other scripts)
+pnpm bundle-sizes:trend --json
+
+# Show usage
+pnpm bundle-sizes:trend --help
+```
+
+Each PR requires a separate API call to fetch its comments, so higher `--limit`
+values will be slower.
+
+Example output:
+
+```
+┌─────────┬─────────┬──────────────────────┬──────────────┬─────────────┬──────────┐
+│ (index) │ PR      │ Title                │ Merged       │ nimbus (KB) │ nimbus Δ │
+├─────────┼─────────┼──────────────────────┼──────────────┼─────────────┼──────────┤
+│ 0       │ '#1499' │ 'FEC-912: comment…'  │ '2026-05-15' │ '16583.0'   │ '—'      │
+│ 1       │ '#1498' │ 'chore(ci): add …'   │ '2026-05-16' │ '16588.2'   │ '+5.1'   │
+└─────────┴─────────┴──────────────────────┴──────────────┴─────────────┴──────────┘
+```
+
+Requires the [GitHub CLI](https://cli.github.com) (`gh`) to be installed and
+authenticated. The script is read-only — it only queries the API, never writes.
