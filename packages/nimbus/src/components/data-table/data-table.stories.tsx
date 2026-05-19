@@ -4562,21 +4562,6 @@ const generatePerfRows = (count: number): DataTableRowItem[] =>
     category: `Category ${(i % 5) + 1}`,
   }));
 
-const perfColumns: DataTableColumnItem[] = [
-  {
-    id: "name",
-    header: "Name",
-    accessor: (row: Record<string, unknown>) => row.name as ReactNode,
-    isSortable: true,
-  },
-  {
-    id: "category",
-    header: "Category",
-    accessor: (row: Record<string, unknown>) => row.category as ReactNode,
-    isSortable: true,
-  },
-];
-
 const PinnedIdsProbe = () => {
   const ctx = DataTable.useDataTableContext();
   return (
@@ -4599,9 +4584,46 @@ const SelectionContextProbe = React.memo(function SelectionContextProbe() {
 export const PerfLargeDatasetResponsiveness: Story = {
   render: () => {
     const largeRows = React.useMemo(() => generatePerfRows(170), []);
+    const renderCountsRef = React.useRef<Record<string, number>>({});
+
+    // Instrument the Name column so each row stamps its own render count
+    // onto a data attribute. The selection-toggle step asserts on these
+    // counts instead of wall-clock time, which is too noisy on shared CI
+    // runners to threshold reliably.
+    const instrumentedColumns: DataTableColumnItem[] = React.useMemo(
+      () => [
+        {
+          id: "name",
+          header: "Name",
+          accessor: (row: Record<string, unknown>) => row.name as ReactNode,
+          isSortable: true,
+          render: ({ row, value }) => {
+            const rowId = (row as DataTableRowItem).id;
+            renderCountsRef.current[rowId] =
+              (renderCountsRef.current[rowId] || 0) + 1;
+            return (
+              <span
+                data-testid={`perf-rc-${rowId}`}
+                data-render-count={renderCountsRef.current[rowId]}
+              >
+                {value as string}
+              </span>
+            );
+          },
+        },
+        {
+          id: "category",
+          header: "Category",
+          accessor: (row: Record<string, unknown>) => row.category as ReactNode,
+          isSortable: true,
+        },
+      ],
+      []
+    );
+
     return (
       <DataTable
-        columns={perfColumns}
+        columns={instrumentedColumns}
         rows={largeRows}
         selectionMode="multiple"
         allowsSorting
@@ -4612,29 +4634,51 @@ export const PerfLargeDatasetResponsiveness: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Selection toggle with ~170 rows is responsive", async () => {
-      const checkboxes = canvas.getAllByRole("checkbox");
-      const start = performance.now();
-      await userEvent.click(checkboxes[1]);
-      const duration = performance.now() - start;
+    await step(
+      "Selection toggle with ~170 rows does not re-render unaffected rows",
+      async () => {
+        // Sample rows distributed across the dataset. If row memoization
+        // regresses (e.g., a parent re-renders every row on each selection
+        // change) these counts will increment when the first checkbox is
+        // toggled.
+        const sampleIds = ["50", "100", "150"];
+        const initialCounts = sampleIds.map((id) =>
+          Number(
+            canvas
+              .getByTestId(`perf-rc-${id}`)
+              .getAttribute("data-render-count")
+          )
+        );
 
-      await waitFor(() => {
-        expect(checkboxes[1]).toBeChecked();
-      });
-      expect(duration).toBeLessThan(2000);
-    });
+        const checkboxes = canvas.getAllByRole("checkbox");
+        await userEvent.click(checkboxes[1]);
 
-    await step("Sorting ~170 rows is responsive", async () => {
+        await waitFor(() => {
+          expect(checkboxes[1]).toBeChecked();
+        });
+
+        sampleIds.forEach((id, i) => {
+          const afterCount = Number(
+            canvas
+              .getByTestId(`perf-rc-${id}`)
+              .getAttribute("data-render-count")
+          );
+          expect(afterCount).toBe(initialCounts[i]);
+        });
+      }
+    );
+
+    await step("Sorting ~170 rows completes and sets aria-sort", async () => {
+      // Sorting reorders rows, so a render-count assertion would not be
+      // meaningful here. This step stays as a smoke test that the
+      // interaction completes and the column header reflects sort state.
       const categoryHeader = canvas.getByText("Category");
-      const start = performance.now();
       await userEvent.click(categoryHeader);
-      const duration = performance.now() - start;
 
       await waitFor(() => {
         const header = categoryHeader.closest('[role="columnheader"]');
         expect(header).toHaveAttribute("aria-sort");
       });
-      expect(duration).toBeLessThan(3000);
     });
   },
 };

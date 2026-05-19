@@ -740,7 +740,15 @@ export const LongForm: Story = {
         const header = canvas.getByRole("heading", {
           name: "Edit configuration",
         });
-        const headerTopBeforeScroll = header.getBoundingClientRect().top;
+        const dialog = canvas.getByRole("dialog");
+        // Measure the header offset relative to the dialog rather than the
+        // viewport — scrollIntoView can scroll ancestor scroll containers
+        // (including the page), which shifts viewport-relative coordinates
+        // by a sub-pixel amount even when the header is correctly pinned
+        // inside the dialog.
+        const headerOffsetBeforeScroll =
+          header.getBoundingClientRect().top -
+          dialog.getBoundingClientRect().top;
 
         lastField.scrollIntoView({ block: "end" });
 
@@ -750,8 +758,11 @@ export const LongForm: Story = {
           expect(fieldRect.bottom).toBeGreaterThan(0);
         });
 
-        expect(header.getBoundingClientRect().top).toBeCloseTo(
-          headerTopBeforeScroll,
+        const headerOffsetAfterScroll =
+          header.getBoundingClientRect().top -
+          dialog.getBoundingClientRect().top;
+        expect(headerOffsetAfterScroll).toBeCloseTo(
+          headerOffsetBeforeScroll,
           0
         );
       }
