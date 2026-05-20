@@ -8,13 +8,18 @@
  * the result to GITHUB_OUTPUT for downstream workflow steps.
  *
  * Outputs (via GITHUB_OUTPUT):
- *   source   — "comment-chain" or "bootstrap"
+ *   source   — "comment-chain" when the baseline was found, or "bootstrap"
+ *              when it was not (comment chain not yet established, or broken)
  *   data     — JSON string of baseline sizes (only when source is "comment-chain")
+ *
+ * When source is "bootstrap", downstream steps should fall back to a local
+ * bundle-sizes.json bootstrap file. If that file does not exist either, the
+ * comment chain must be established first — see docs/bundle-size-monitoring.md.
  *
  * Environment variables:
  *   GITHUB_REPOSITORY   owner/repo (set by Actions)
  *   GH_TOKEN            GitHub token for API access
- *   GITHUB_OUTPUT        Path to the output file (set by Actions)
+ *   GITHUB_OUTPUT       Path to the output file (set by Actions)
  */
 
 import { execSync } from "node:child_process";
@@ -42,13 +47,28 @@ function writeOutput(key, value) {
   }
 }
 
-const prNumber = gh(
-  `api "repos/${REPO}/issues?state=closed&labels=bundle-sizes&per_page=5&sort=updated&direction=desc" --jq '[.[] | select(.pull_request.merged_at != null)] | .[0].number // empty'`
-);
+let prNumber;
+try {
+  prNumber = gh(
+    `api "repos/${REPO}/issues?state=closed&labels=bundle-sizes&per_page=5&sort=updated&direction=desc" --jq '[.[] | select(.pull_request.merged_at != null)] | .[0].number // empty'`
+  );
+} catch {
+  // gh CLI or API call failed entirely
+}
 
 if (!prNumber) {
-  console.log(
-    "No labeled merged PR found. Using bootstrap baseline (bundle-sizes.json)."
+  console.warn(
+    [
+      "Warning: No merged PR with the `bundle-sizes` label was found.",
+      "",
+      "This means either:",
+      "  1. The comment chain has not been established yet (first-time setup)",
+      "  2. The GitHub API call failed (check GH_TOKEN permissions and network access)",
+      "  3. The `bundle-sizes` label has been removed from all previously-merged PRs",
+      "",
+      "Falling back to bootstrap baseline (bundle-sizes.json).",
+      "See docs/bundle-size-monitoring.md for setup instructions.",
+    ].join("\n")
   );
   writeOutput("source", "bootstrap");
   process.exit(0);
@@ -64,7 +84,15 @@ const match = commentBody.match(/<!-- bundle-sizes-data-v1: ({.*?}) -->/);
 
 if (!match) {
   console.warn(
-    `::warning::Could not parse data block from PR #${prNumber} comment. Falling back to bootstrap file.`
+    [
+      `Warning: Found baseline PR #${prNumber} but could not parse the data block`,
+      "from its bot comment. The comment may have been edited or deleted.",
+      "",
+      `Check PR #${prNumber}'s comments for a github-actions[bot] comment`,
+      "containing a <!-- bundle-sizes-data-v1: {...} --> block.",
+      "",
+      "Falling back to bootstrap baseline (bundle-sizes.json).",
+    ].join("\n")
   );
   writeOutput("source", "bootstrap");
   process.exit(0);
