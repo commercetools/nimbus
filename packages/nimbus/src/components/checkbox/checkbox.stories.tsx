@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Checkbox, Stack } from "@commercetools/nimbus";
+import { Box, Checkbox, Stack } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 
 const meta: Meta<typeof Checkbox> = {
@@ -174,6 +174,48 @@ export const StyleProps: Story = {
         getComputedStyle(htmlLabel).getPropertyValue("margin-inline")
       ).toBe("40px");
     });
+  },
+};
+
+/**
+ * Truncation
+ * Verifies that long labels can be truncated when placed in a constrained-width
+ * container. The label slot must shrink (no hard `flex-shrink: 0`) and allow
+ * `min-width: 0` so the child's `truncate` styles can take effect.
+ */
+export const Truncation: Story = {
+  render: () => (
+    <Box width="240px" borderWidth="1px" borderColor="neutral.6" p="200">
+      <Checkbox
+        // @ts-expect-error: data-testid is not a valid prop
+        data-testid="test-checkbox-truncation"
+        width="100%"
+      >
+        <Box truncate data-testid="test-checkbox-truncation-label">
+          @commercetools-frontend-extensions-very-long-package-name
+        </Box>
+      </Checkbox>
+    </Box>
+  ),
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const label = canvas.getByTestId(
+      "test-checkbox-truncation-label"
+    ) as HTMLElement;
+
+    await step(
+      "Label child is truncated within the constrained container",
+      async () => {
+        // The truncated Box must not exceed the 240px container; with the
+        // recipe correctly allowing the label slot to shrink, the rendered
+        // width should be bounded by the parent rather than the intrinsic
+        // width of the text content.
+        const labelRect = label.getBoundingClientRect();
+        await expect(labelRect.width).toBeLessThanOrEqual(240);
+        await expect(label.scrollWidth).toBeGreaterThan(labelRect.width);
+      }
+    );
   },
 };
 
