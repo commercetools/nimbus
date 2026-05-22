@@ -7,10 +7,6 @@ const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const ROOT = join(__dirname, "../../..");
 const CHECK_SCRIPT = join(__dirname, "check-bundle-size.mjs");
 
-/**
- * Run a script and return { status, stdout, stderr }.
- * Never throws — captures exit code instead.
- */
 function run(script, env = {}) {
   try {
     const stdout = execSync(`node ${script}`, {
@@ -29,9 +25,17 @@ function run(script, env = {}) {
   }
 }
 
+const VALID_BASELINE = JSON.stringify({
+  "@commercetools/nimbus": { dist: 16909814 },
+  "@commercetools/nimbus-icons": { dist: 4889696 },
+  "@commercetools/nimbus-tokens": { dist: 417934 },
+});
+
 describe("check-bundle-size", () => {
-  it("exits 0 when packages are built and baseline exists", () => {
-    const result = run(CHECK_SCRIPT);
+  it("exits 0 when packages are built and baseline is provided", () => {
+    const result = run(CHECK_SCRIPT, {
+      BUNDLE_SIZE_BASELINE: VALID_BASELINE,
+    });
     expect(result.status).toBe(0);
     expect(result.stdout).toContain(
       "All packages within acceptable size limits"
@@ -39,23 +43,36 @@ describe("check-bundle-size", () => {
   });
 
   it("reports all three tracked packages", () => {
-    const result = run(CHECK_SCRIPT);
+    const result = run(CHECK_SCRIPT, {
+      BUNDLE_SIZE_BASELINE: VALID_BASELINE,
+    });
     expect(result.stdout).toContain("@commercetools/nimbus");
     expect(result.stdout).toContain("@commercetools/nimbus-icons");
     expect(result.stdout).toContain("@commercetools/nimbus-tokens");
   });
 
   it("reports dist format for each package", () => {
-    const result = run(CHECK_SCRIPT);
+    const result = run(CHECK_SCRIPT, {
+      BUNDLE_SIZE_BASELINE: VALID_BASELINE,
+    });
     expect(result.stdout).toContain("dist");
   });
 
   it("displays all sizes in KB", () => {
-    const result = run(CHECK_SCRIPT);
+    const result = run(CHECK_SCRIPT, {
+      BUNDLE_SIZE_BASELINE: VALID_BASELINE,
+    });
     const sizePattern = /\d+\.\d+ KB/;
     expect(result.stdout).toMatch(sizePattern);
     expect(result.stdout).not.toMatch(/\d+ B/);
     expect(result.stdout).not.toMatch(/\d+\.\d+ MB/);
+  });
+
+  it("reports baseline source as comment-chain", () => {
+    const result = run(CHECK_SCRIPT, {
+      BUNDLE_SIZE_BASELINE: VALID_BASELINE,
+    });
+    expect(result.stdout).toContain("comment-chain");
   });
 });
 
@@ -78,14 +95,8 @@ describe("check-bundle-size failure detection", () => {
 
 describe("BUNDLE_SIZE_BASELINE env var", () => {
   it("uses env var as baseline when set to valid JSON", () => {
-    const envBaseline = JSON.stringify({
-      "@commercetools/nimbus": { dist: 16909814 },
-      "@commercetools/nimbus-icons": { dist: 4889696 },
-      "@commercetools/nimbus-tokens": { dist: 417934 },
-    });
-
     const result = run(CHECK_SCRIPT, {
-      BUNDLE_SIZE_BASELINE: envBaseline,
+      BUNDLE_SIZE_BASELINE: VALID_BASELINE,
     });
     expect(result.status).toBe(0);
     expect(result.stdout).toContain("comment-chain");
@@ -162,5 +173,20 @@ describe("per-package size policies", () => {
         expect(line).toContain("ok");
       }
     });
+  });
+});
+
+describe("diagnostic errors", () => {
+  it("shows diagnostic message when no baseline is available", () => {
+    const result = run(CHECK_SCRIPT, {
+      BUNDLE_SIZE_BASELINE: "",
+      GH_TOKEN: "",
+      GITHUB_REPOSITORY: "",
+      // Point gh at a nonexistent config so stored credentials aren't used
+      GH_CONFIG_DIR: "/tmp/nonexistent-gh-config-dir",
+    });
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain("No baseline available");
+    expect(result.stderr).toContain("comment chain");
   });
 });

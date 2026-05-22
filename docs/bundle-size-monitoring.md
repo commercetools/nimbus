@@ -32,19 +32,16 @@ the `bundle-sizes` label, extracts the data block from its bot comment, and uses
 that as the baseline. This creates a chain: each merged PR's comment becomes the
 next PR's baseline.
 
-If no labeled merged PR exists yet (e.g., first run after setup), the action
-falls back to `bundle-sizes.json` in the repo root as a bootstrap baseline. This
-file is only meant to seed the very first comparison — once a few PRs have
-merged and built up the comment chain, the file becomes stale and is no longer
-consulted. Do not rely on it as a long-term baseline.
+### Bootstrapping
 
-### Baseline Resolution Order
+The comment chain must be seeded by a **bootstrap file** (`bundle-sizes.json` in
+the repo root). This file is only needed for the very first PR — once that PR
+merges and receives the `bundle-sizes` label with a valid bot comment, the
+comment chain is self-sustaining and the bootstrap file should be deleted.
 
-1. **Comment chain** — data block from the most recently merged PR with the
-   `bundle-sizes` label (primary, used in normal operation)
-2. **`bundle-sizes.json` on main** — via
-   `git show origin/main:bundle-sizes.json` (bootstrap fallback only)
-3. **Local `bundle-sizes.json`** — last resort for initial setup
+If the comment chain is ever lost (e.g., all `bundle-sizes` labels are removed),
+create a new bootstrap file to re-seed it. See
+[First-Time Setup](#first-time-setup) below.
 
 ### Post-Merge Labeling
 
@@ -162,20 +159,18 @@ The action:
 
 ## Running Locally
 
-You need built packages:
+You need built packages and the [GitHub CLI](https://cli.github.com) (`gh`)
+installed and authenticated:
 
 ```bash
 pnpm build:packages
-```
-
-Then run the check:
-
-```bash
 pnpm check:bundle-size
 ```
 
-The output shows a table with current size, baseline, delta, and status for each
-tracked package. All sizes are displayed in KB.
+When `BUNDLE_SIZE_BASELINE` is not set (the normal local case), the script
+automatically fetches the baseline from the comment chain via `gh`. The output
+shows a table with current size, baseline, delta, and status for each tracked
+package. All sizes are displayed in KB.
 
 ## Viewing the Trend
 
@@ -183,45 +178,6 @@ The `bundle-sizes:trend` command reconstructs a historical view of bundle sizes
 from merged PR comments. It queries merged PRs with the `bundle-sizes` label,
 parses the data block from each bot comment, and prints a chronological table
 with per-package sizes and deltas.
-
-```bash
-# Show trend for the last 20 merged PRs (default)
-pnpm bundle-sizes:trend
-
-# Limit to the last 5
-pnpm bundle-sizes:trend --limit 5
-
-# Output raw JSON (pipeable to jq or other scripts)
-pnpm bundle-sizes:trend --json
-
-# Show usage
-pnpm bundle-sizes:trend --help
-```
-
-Each PR requires a separate API call to fetch its comments, so higher `--limit`
-values will be slower.
-
-Requires the [GitHub CLI](https://cli.github.com) (`gh`) to be installed and
-authenticated. The script is read-only — it only queries the API, never writes.
-
-## Adjusting the Threshold
-
-Edit the constant at the top of
-`.github/actions/bundle-size/check-bundle-size.mjs`:
-
-```js
-const DEFAULT_THRESHOLD = 0.05; // 5%
-```
-
-If we find the threshold too sensitive or too lenient after a few weeks of use,
-adjust it and commit the change.
-
-## Viewing the Trend
-
-The `bundle-sizes:trend` command reconstructs a historical view of bundle sizes
-from merged PR comments. Each merged PR with the `bundle-sizes` label has a
-machine-readable data block in its bot comment — this command queries those
-comments and prints a chronological table with per-package sizes and deltas.
 
 ```bash
 # Show trend for the last 20 merged PRs (default)
@@ -253,5 +209,57 @@ Example output:
 
 Requires the [GitHub CLI](https://cli.github.com) (`gh`) to be installed and
 authenticated. The script is read-only — it only queries the API, never writes.
-For absolute budgets, edit the `policy` field on the relevant package
-definition.
+
+## First-Time Setup
+
+To establish the comment chain for the first time (or re-establish it after it
+breaks):
+
+1. Build all packages:
+
+   ```bash
+   pnpm build:packages
+   ```
+
+2. Measure current sizes and write them to `bundle-sizes.json`:
+
+   ```bash
+   node -e "
+     import { readdirSync, existsSync, statSync, writeFileSync } from 'fs';
+     import { join } from 'path';
+     function sum(dir) {
+       let t = 0;
+       if (!existsSync(dir)) return t;
+       for (const e of readdirSync(dir, { withFileTypes: true }))
+         t += e.isDirectory() ? sum(join(dir, e.name)) : statSync(join(dir, e.name)).size;
+       return t;
+     }
+     const sizes = {
+       '@commercetools/nimbus': { dist: sum('packages/nimbus/dist') },
+       '@commercetools/nimbus-icons': { dist: sum('packages/nimbus-icons/dist') },
+       '@commercetools/nimbus-tokens': { dist: sum('packages/tokens/dist') },
+     };
+     writeFileSync('bundle-sizes.json', JSON.stringify(sizes, null, 2) + '\n');
+     console.log('Wrote bundle-sizes.json:', sizes);
+   "
+   ```
+
+3. Commit `bundle-sizes.json`, push a PR, and merge it. The CI action will use
+   the bootstrap file as the baseline, post a bot comment with the measured
+   sizes, and the post-merge workflow will add the `bundle-sizes` label.
+
+4. After the PR merges, delete `bundle-sizes.json` from the repo — the comment
+   chain is now self-sustaining.
+
+## Adjusting the Threshold
+
+Edit the constant at the top of
+`.github/actions/bundle-size/check-bundle-size.mjs`:
+
+```js
+const DEFAULT_THRESHOLD = 0.05; // 5%
+```
+
+If we find the threshold too sensitive or too lenient after a few weeks of use,
+adjust it and commit the change. For absolute budgets, edit the `policy` field
+on the relevant package definition.

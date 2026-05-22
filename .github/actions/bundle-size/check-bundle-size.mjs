@@ -4,29 +4,31 @@
  * Bundle size check script for Nimbus.
  *
  * Measures minified (not gzipped) sizes of built package output and compares
- * against a baseline. The baseline comes from one of these sources (in order):
+ * against a baseline from the comment chain (the most recently merged PR with
+ * the `bundle-sizes` label).
  *
- *   1. BUNDLE_SIZE_BASELINE env var (JSON string) — set by the CI workflow
- *      when reading from the comment-chain baseline
- *   2. git show origin/main:bundle-sizes.json — the committed baseline on main
- *   3. Local bundle-sizes.json — bootstrap fallback
+ * In CI the baseline is passed via the BUNDLE_SIZE_BASELINE env var (set by
+ * fetch-bundle-baseline.mjs). When run locally without that env var, the
+ * script calls fetch-bundle-baseline.mjs automatically (requires `gh` CLI).
  *
  * Flags:
  *   --json   Output machine-readable JSON instead of the human-readable table
  *
  * Environment variables:
- *   BUNDLE_SIZE_BASELINE   JSON string of baseline sizes (overrides git/file)
+ *   BUNDLE_SIZE_BASELINE   JSON string of baseline sizes
  *   BUNDLE_SIZE_APPROVED   Set to "true" to treat all threshold exceedances
  *                          as approved (used when bundle-size-approved label
  *                          is present on the PR)
  */
 
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 import { execSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 const ROOT = process.cwd();
-const BASELINE_PATH = join(ROOT, "bundle-sizes.json");
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const BOOTSTRAP_PATH = join(ROOT, "bundle-sizes.json");
 
 const ENV_BASELINE = process.env.BUNDLE_SIZE_BASELINE || "";
 const IS_APPROVED = process.env.BUNDLE_SIZE_APPROVED === "true";
@@ -118,42 +120,43 @@ function measurePackages() {
 }
 
 // ---------------------------------------------------------------------------
-// Fetch baseline from main branch via git
+// Baseline resolution
 // ---------------------------------------------------------------------------
 
-function fetchMainBaseline() {
-  // Try origin/main first (works in CI shallow clones), then local main
-  for (const ref of ["origin/main", "main"]) {
-    try {
-      const content = execSync(`git show ${ref}:bundle-sizes.json`, {
-        encoding: "utf-8",
-        cwd: ROOT,
-        stdio: ["pipe", "pipe", "pipe"],
-      });
-      return JSON.parse(content);
-    } catch {
-      // try next ref
-    }
-  }
+function fetchBaselineFromCommentChain() {
+  const fetchScript = join(__dirname, "fetch-bundle-baseline.mjs");
+  try {
+    const output = execSync(`node ${fetchScript}`, {
+      encoding: "utf-8",
+      cwd: ROOT,
+      stdio: ["pipe", "pipe", "pipe"],
+      env: { ...process.env, GITHUB_OUTPUT: "" },
+    });
 
-  console.warn(
-    "Could not fetch bundle-sizes.json from main branch.\n" +
-      "  This is expected on the initial setup or if main has no baseline yet.\n" +
-      "  Falling back to local bundle-sizes.json.\n"
-  );
+    const sourceMatch = output.match(/^source=(.+)$/m);
+    const dataMatch = output.match(/^data=(.+)$/m);
+
+    if (sourceMatch?.[1] === "comment-chain" && dataMatch?.[1]) {
+      return JSON.parse(dataMatch[1]);
+    }
+  } catch (err) {
+    const stderr = err.stderr || "";
+    if (stderr) console.error(stderr.trimEnd());
+  }
   return null;
 }
 
-function loadLocalBaseline() {
-  if (!existsSync(BASELINE_PATH)) {
+function loadBootstrapBaseline() {
+  if (!existsSync(BOOTSTRAP_PATH)) {
     return null;
   }
-  return JSON.parse(readFileSync(BASELINE_PATH, "utf-8"));
+  console.log(
+    "Using bootstrap baseline (bundle-sizes.json). This file is only needed\n" +
+      "to seed the comment chain — once a PR merges with a bot comment, the\n" +
+      "file can be deleted.\n"
+  );
+  return JSON.parse(readFileSync(BOOTSTRAP_PATH, "utf-8"));
 }
-
-// ---------------------------------------------------------------------------
-// Compare against baseline
-// ---------------------------------------------------------------------------
 
 function resolveBaseline() {
   if (ENV_BASELINE) {
@@ -164,11 +167,18 @@ function resolveBaseline() {
     }
   }
 
-  const mainBaseline = fetchMainBaseline();
-  if (mainBaseline) return { baseline: mainBaseline, source: "main branch" };
+  console.log(
+    "BUNDLE_SIZE_BASELINE not set — fetching from comment chain via gh CLI...\n"
+  );
+  const commentChainBaseline = fetchBaselineFromCommentChain();
+  if (commentChainBaseline) {
+    return { baseline: commentChainBaseline, source: "comment-chain" };
+  }
 
-  const localBaseline = loadLocalBaseline();
-  if (localBaseline) return { baseline: localBaseline, source: "local file" };
+  const bootstrapBaseline = loadBootstrapBaseline();
+  if (bootstrapBaseline) {
+    return { baseline: bootstrapBaseline, source: "bootstrap file" };
+  }
 
   return { baseline: null, source: null };
 }
@@ -178,7 +188,21 @@ function compare(currentSizes) {
 
   if (!baseline) {
     failWithError(
-      "No baseline found. Run `pnpm update:bundle-sizes` to create one."
+      [
+        "No baseline available. The comment-chain fetch did not produce a",
+        "baseline, and no bootstrap file (bundle-sizes.json) was found.",
+        "",
+        "This means either:",
+        "  1. The comment chain has not been established yet (first-time setup)",
+        "  2. The GitHub API call failed (check GH_TOKEN / gh auth status)",
+        "  3. The `bundle-sizes` label has been removed from all previously-merged PRs",
+        "",
+        "If this is a first-time setup, create a bundle-sizes.json bootstrap file",
+        "to seed the comment chain. See docs/bundle-size-monitoring.md for instructions.",
+        "",
+        "If the chain was previously working, re-add the `bundle-sizes` label to the",
+        "most recently merged PR that has a valid bot comment.",
+      ].join("\n")
     );
   }
 
