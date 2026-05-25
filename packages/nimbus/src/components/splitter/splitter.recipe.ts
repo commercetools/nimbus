@@ -4,16 +4,23 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * Recipe configuration for the Splitter component.
  *
  * Slots:
- * - `root` — flex container holding the two panes and the handle.
+ * - `root` — flex container holding the two panes. Position-relative so the
+ *   absolutely-positioned handle can sit on the boundary.
  * - `pane` — a resizable region; size is driven from props via inline style.
- * - `handle` — interactive separator the user drags. Carries the focus ring,
- *   hover state, and disabled visuals. Hit area is expanded via a pseudo-element
- *   so even thin visual handles meet the 24×24 CSS-pixel touch target.
+ *   The two panes together fill 100% of the root.
+ * - `handle` — interactive separator the user drags. Positioned absolutely on
+ *   the boundary between the panes (no flex track, so the panes' content
+ *   touches edge-to-edge). The visible track stays transparent until hover or
+ *   keyboard focus to keep the resting layout uncluttered. Hit area is
+ *   expanded via a `_before` pseudo-element so the handle always meets the
+ *   24×24 CSS-pixel touch target (WCAG 2.5.5) even when the visible track is
+ *   thinner than that.
  *
  * Variants:
  * - `orientation`: `horizontal` (default) | `vertical` — flex direction +
- *   cursor + axis-specific handle dimensions.
- * - `size`: `sm` | `md` (default) | `lg` — visual thickness of the handle.
+ *   axis-specific handle dimensions.
+ * - `size`: `sm` | `md` (default) | `lg` — visual thickness of the handle's
+ *   track (only seen on hover/focus).
  *
  * @see https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/
  */
@@ -34,25 +41,26 @@ export const splitterSlotRecipe = defineSlotRecipe({
       minHeight: 0,
     },
     handle: {
-      flex: "none",
+      position: "absolute",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      position: "relative",
       backgroundColor: "transparent",
       transitionProperty: "background-color",
       transitionDuration: "fast",
       zIndex: 1,
-      // Expand the interactive hit area to meet the 24x24 CSS pixel touch
-      // target requirement (WCAG 2.5.5), even when the visible track is thin.
+      // Expand the interactive hit area to at least 24x24 CSS pixels so the
+      // handle meets WCAG 2.5.5 even when the visible track is thinner.
       _before: {
         content: '""',
         position: "absolute",
-        inset: 0,
+        top: "50%",
+        left: "50%",
         minWidth: "600",
         minHeight: "600",
-        // Center the expanded hit area on the visible track.
-        transform: "translate(0, 0)",
+        width: "100%",
+        height: "100%",
+        transform: "translate(-50%, -50%)",
       },
       _hover: {
         backgroundColor: "neutral.6",
@@ -71,11 +79,21 @@ export const splitterSlotRecipe = defineSlotRecipe({
     orientation: {
       horizontal: {
         root: { flexDirection: "row" },
-        handle: { height: "100%", cursor: "col-resize" },
+        handle: {
+          top: 0,
+          height: "100%",
+          cursor: "col-resize",
+          transform: "translateX(-50%)",
+        },
       },
       vertical: {
         root: { flexDirection: "column" },
-        handle: { width: "100%", cursor: "row-resize" },
+        handle: {
+          left: 0,
+          width: "100%",
+          cursor: "row-resize",
+          transform: "translateY(-50%)",
+        },
       },
     },
     size: {

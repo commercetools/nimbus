@@ -242,6 +242,14 @@ export const SplitterHandle = ({
 
   const ariaControls = prevId ? paneDomIds[prevId] : undefined;
 
+  // Position the absolute-positioned handle on the boundary between the two
+  // panes. The recipe's `transform: translate(±50%)` centers the visible
+  // track on this offset so the interactive area straddles both panes.
+  const positionStyle =
+    orientation === "horizontal"
+      ? { left: `${prevSize}%` }
+      : { top: `${prevSize}%` };
+
   const combinedProps = mergeProps(
     separatorProps,
     moveProps,
@@ -259,7 +267,7 @@ export const SplitterHandle = ({
       "data-disabled": bothDisabled || undefined,
       onKeyDown: handleKeyDown,
       onDoubleClick: handleDoubleClick,
-      style,
+      style: { ...positionStyle, ...style },
     },
     props
   );
