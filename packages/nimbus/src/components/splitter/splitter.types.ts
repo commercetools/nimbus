@@ -1,16 +1,18 @@
-import type { RecipeVariantProps, HTMLChakraProps } from "@chakra-ui/react";
+import type {
+  RecipeVariantProps,
+  HTMLChakraProps,
+} from "@chakra-ui/react/styled-system";
 import type { ReactNode } from "react";
-import { windowSplitterSlotRecipe } from "./window-splitter.recipe";
+import { splitterSlotRecipe } from "./splitter.recipe";
 
 // ============================================================
-// Root Component (`<WindowSplitter.Root>`)
+// Root Component (`<Splitter.Root>`)
 // ============================================================
 
-export interface WindowSplitterRootProps
-  extends HTMLChakraProps<
-    "div",
-    RecipeVariantProps<typeof windowSplitterSlotRecipe>
-  > {
+export interface SplitterRootProps extends HTMLChakraProps<
+  "div",
+  RecipeVariantProps<typeof splitterSlotRecipe>
+> {
   /**
    * The orientation of the splitter
    * @default "horizontal"
@@ -64,10 +66,10 @@ export interface WindowSplitterRootProps
 }
 
 // ============================================================
-// Pane Component (`<WindowSplitter.Pane>`)
+// Pane Component (`<Splitter.Pane>`)
 // ============================================================
 
-export interface WindowSplitterPaneProps extends HTMLChakraProps<"div"> {
+export interface SplitterPaneProps extends HTMLChakraProps<"div"> {
   /**
    * Whether this is the primary pane (the one that gets resized)
    */
@@ -80,10 +82,10 @@ export interface WindowSplitterPaneProps extends HTMLChakraProps<"div"> {
 }
 
 // ============================================================
-// Separator Component (`<WindowSplitter.Separator>`)
+// Separator Component (`<Splitter.Separator>`)
 // ============================================================
 
-export interface WindowSplitterSeparatorProps extends HTMLChakraProps<"div"> {
+export interface SplitterSeparatorProps extends HTMLChakraProps<"div"> {
   /**
    * Accessible label for the separator
    * @default "Resize panes"

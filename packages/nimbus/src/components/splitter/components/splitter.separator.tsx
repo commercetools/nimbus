@@ -6,14 +6,14 @@ import {
   useObjectRef,
   mergeProps,
 } from "react-aria";
-import { mergeRefs } from "@chakra-ui/react";
-import { WindowSplitterSeparatorSlot } from "../window-splitter.slots";
-import { useWindowSplitterContext } from "./../window-splitter";
-import type { WindowSplitterSeparatorProps } from "../window-splitter.types";
+import { mergeRefs } from "@/utils";
+import { SplitterSeparatorSlot } from "../splitter.slots";
+import { useSplitterContext } from "./../splitter";
+import type { SplitterSeparatorProps } from "../splitter.types";
 
-export const WindowSplitterSeparator = forwardRef<
+export const SplitterSeparator = forwardRef<
   HTMLDivElement,
-  WindowSplitterSeparatorProps
+  SplitterSeparatorProps
 >(
   (
     {
@@ -24,7 +24,7 @@ export const WindowSplitterSeparator = forwardRef<
     },
     ref
   ) => {
-    const context = useWindowSplitterContext();
+    const context = useSplitterContext();
     const {
       value,
       setValue,
@@ -163,10 +163,8 @@ export const WindowSplitterSeparator = forwardRef<
       props
     );
 
-    return (
-      <WindowSplitterSeparatorSlot ref={separatorRef} {...combinedProps} />
-    );
+    return <SplitterSeparatorSlot ref={separatorRef} {...combinedProps} />;
   }
 );
 
-WindowSplitterSeparator.displayName = "WindowSplitter.Separator";
+SplitterSeparator.displayName = "Splitter.Separator";

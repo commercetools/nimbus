@@ -1,7 +1,7 @@
-import { defineSlotRecipe } from "@chakra-ui/react";
+import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
-export const windowSplitterSlotRecipe = defineSlotRecipe({
-  className: "nimbus-window-splitter",
+export const splitterSlotRecipe = defineSlotRecipe({
+  className: "nimbus-splitter",
   slots: ["root", "pane", "separator"],
   base: {
     root: {

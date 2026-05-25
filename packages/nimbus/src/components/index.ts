@@ -76,4 +76,4 @@ export * from "./tabs";
 export * from "./localized-field";
 export * from "./steps";
 export * from "./modal-page";
-export * from "./window-splitter";
+export * from "./splitter";
