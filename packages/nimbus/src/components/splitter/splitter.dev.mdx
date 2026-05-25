@@ -1,0 +1,191 @@
+---
+title: Splitter Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Splitter, useSplitterLayout } from "@commercetools/nimbus";
+import type { SplitterRootProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+```tsx
+<Splitter.Root
+  orientation="horizontal"
+  panes={{
+    nav: { defaultSize: 30, minSize: 15 },
+    main: { defaultSize: 70, minSize: 25 },
+  }}
+>
+  <Splitter.Pane id="nav">
+    {/* nav content */}
+  </Splitter.Pane>
+  <Splitter.Handle />
+  <Splitter.Pane id="main">
+    {/* main content */}
+  </Splitter.Pane>
+</Splitter.Root>
+```
+
+## Design model
+
+### Uncontrolled by design
+
+The Splitter owns its sizes state internally. The reason is performance:
+drag operations fire at roughly 60Hz; if `sizes` were a controlled prop the
+consumer's `setState` would be called every tick, re-rendering everything
+above the splitter in the tree. For an app shell wrapping a large React
+subtree, that's a meaningful cost for no real benefit — splitter sizes are
+UI ergonomics, not application state.
+
+The public surface is `defaultSizes` (read once on mount) plus
+`onSizesChange` (notification only). For everything that controlled state
+would otherwise solve, use the companion `useSplitterLayout` hook.
+
+### Id-keyed configuration
+
+Each `Splitter.Pane` carries only its `id`. All per-pane configuration
+(`minSize`, `maxSize`, `defaultSize`, `disabled`, `collapsible`,
+`collapsedSize`) lives on `Splitter.Root` in the `panes` map keyed by that id:
+
+```tsx
+<Splitter.Root
+  panes={{
+    nav:  { minSize: 10, collapsible: true },
+    main: { minSize: 20 },
+  }}
+  defaultSizes={{ nav: 30, main: 70 }}
+  onSizesChange={(sizes) => console.log(sizes)}
+>
+  <Splitter.Pane id="nav">…</Splitter.Pane>
+  <Splitter.Handle />
+  <Splitter.Pane id="main">…</Splitter.Pane>
+</Splitter.Root>
+```
+
+Id-keyed instead of index-based for four reasons:
+
+1. **Reorder-safe persistence.** Swapping the panes between releases doesn't
+   invalidate stored layouts. Unknown ids in storage are dropped; missing
+   ids fall back to per-pane defaults.
+2. **Readable APIs.** `layout.collapse("nav")` beats `layout.collapse(0)`.
+3. **Clean ARIA.** `aria-controls` on the handle is just the DOM id of the
+   previous Pane sibling.
+4. **Configuration on Root.** Nothing leaks onto `<Splitter.Pane>`, which
+   matches the project rule and keeps the JSX flat.
+
+### 2-pane primitive, composable via nesting
+
+`Splitter.Root` accepts exactly two `Pane` children with one `Handle`
+between them. For 3+ regions, nest one Splitter inside the children of a
+`Pane`:
+
+```tsx
+<Splitter.Root panes={{ nav: {…}, rest: {…} }}>
+  <Splitter.Pane id="nav">…</Splitter.Pane>
+  <Splitter.Handle />
+  <Splitter.Pane id="rest">
+    <Splitter.Root panes={{ main: {…}, aside: {…} }}>
+      <Splitter.Pane id="main">…</Splitter.Pane>
+      <Splitter.Handle />
+      <Splitter.Pane id="aside">…</Splitter.Pane>
+    </Splitter.Root>
+  </Splitter.Pane>
+</Splitter.Root>
+```
+
+The 2-pane shape is what the W3C window splitter ARIA pattern is specified
+against. Nesting gives screen-reader users a tree of self-contained widgets,
+each matching the W3C example exactly. Flat N-pane with a cascading resize
+algorithm would resize panes that `aria-controls` doesn't point at, with no
+clean ARIA expression — and is the bulk of the complexity in libraries like
+`react-resizable-panels` for layouts that nesting already covers cleanly.
+
+## The `useSplitterLayout` hook
+
+`useSplitterLayout` covers the two use cases that drove most requests for a
+controlled prop: persistence and cross-app imperative commands. Internally
+it holds a ref that `Splitter.Root` populates on mount; calls to
+`collapse`/`expand`/`setSizes` go through that ref. The component re-renders
+when sizes change; the hook never holds React state for sizes.
+
+```tsx
+const layout = useSplitterLayout({
+  initialSizes: { nav: 30, main: 70 },
+  id: "ide-layout",            // → localStorage key
+  // storage: { load, save },  // custom adapter overrides `id`
+  // debounceMs: 200,
+});
+
+<Splitter.Root
+  panes={{ nav: {…}, main: {…} }}
+  defaultSizes={layout.defaultSizes}
+  onSizesChange={layout.onSizesChange}
+  __layoutRef={layout.__layoutRef}
+>
+  …
+</Splitter.Root>
+
+layout.collapse("nav");
+layout.expand("nav");
+layout.setSizes({ nav: 0, main: 100 });
+const current = layout.getSizes();
+const isHidden = layout.isCollapsed("nav");
+```
+
+### SSR
+
+The hook is SSR-safe: on the server, `defaultSizes` falls back to
+`initialSizes` without touching `localStorage`. On the client, it reads
+storage synchronously during the first render — no `useEffect` flicker
+between the fallback and the hydrated value.
+
+### Reconciliation
+
+When stored sizes differ from `initialSizes` (renamed pane, dropped pane,
+floating-point drift), the hook reconciles:
+
+- Drop ids that aren't in `initialSizes`.
+- Fill in `initialSizes[id]` for any id missing from storage.
+- Normalize within ±1% sum drift; fall back to `initialSizes` if the drift
+  is larger.
+- Log a development-only warning when reconciliation alters the record.
+
+## Disabled state
+
+A pane configured with `disabled: true` in the `panes` map cannot lose space
+to drag operations. When **both** panes are disabled, the handle is removed
+from the tab order (`tabIndex={-1}`) and gets `aria-disabled="true"`.
+
+```tsx
+<Splitter.Root
+  panes={{
+    nav: { defaultSize: 30, disabled: true },
+    main: { defaultSize: 70, disabled: true },
+  }}
+>
+  …
+</Splitter.Root>
+```
+
+## Out of scope
+
+Intentionally not supported on this primitive:
+
+- **3+ panes per splitter** — use nesting.
+- **Cascading resize.** With only two panes there is nowhere to spill
+  remainder; drag clamps at the boundary.
+- **Controlled `sizes` prop.** Use `useSplitterLayout` for the same outcomes
+  without the re-render cost.
+- **Multiple size units** (px / rem / vh). Percentages only.
+- **App-shell behaviour** (responsive collapse to drawers, landmark slots).
+  That belongs to a separate pattern component (`AppLayout`) which composes
+  `Splitter`.
+- **Per-handle configuration.** A 2-pane splitter has one handle; behaviour
+  is configured on `Root`.

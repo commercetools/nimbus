@@ -1,53 +1,15 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
-import {
-  Box,
-  Heading,
-  Text,
-  List,
-  Button,
-  ScrollArea,
-} from "@commercetools/nimbus";
-import { userEvent, within, expect, fn } from "storybook/test";
+import { useRef } from "react";
+import { Box, Button, Heading, ScrollArea, Stack } from "@commercetools/nimbus";
+import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import { Splitter } from "./splitter";
+import { useSplitterLayout } from "./hooks/use-splitter-layout";
 
-const meta: Meta<typeof Splitter.Root> = {
-  title: "Components/Splitter",
-  component: Splitter.Root,
-  parameters: {
-    layout: "fullscreen",
-  },
-  argTypes: {
-    orientation: {
-      control: { type: "radio" },
-      options: ["horizontal", "vertical"],
-    },
-    value: {
-      control: { type: "range", min: 0, max: 100, step: 1 },
-    },
-    defaultValue: {
-      control: { type: "range", min: 0, max: 100, step: 1 },
-    },
-    minValue: {
-      control: { type: "range", min: 0, max: 50, step: 1 },
-    },
-    maxValue: {
-      control: { type: "range", min: 50, max: 100, step: 1 },
-    },
-    step: {
-      control: { type: "range", min: 1, max: 20, step: 1 },
-    },
-    isDisabled: {
-      control: { type: "boolean" },
-    },
-  },
-};
-
-export default meta;
-type Story = StoryObj<typeof Splitter.Root>;
-
-// ScrollArea wraps the entire pane content so it owns the scroll viewport;
-// the colored Box is the visible content surface.
+/**
+ * Pane content wrapped in a ScrollArea so overflow stays inside the pane and
+ * doesn't push the splitter layout around.
+ */
 const DemoPane = ({
   bg,
   title,
@@ -67,733 +29,634 @@ const DemoPane = ({
   </ScrollArea>
 );
 
-const PrimaryPaneContent = () => (
-  <ScrollArea h="100%" w="100%">
-    <Box p="400" bg="indigo.3" minH="100%">
-      <Heading size="lg" mb="300">
-        Primary Pane
-      </Heading>
-      <Text mb="300">
-        This is the primary pane content. It can contain any React content.
-      </Text>
-      <Text mb="300">
-        The size of this pane is controlled by the splitter value.
-      </Text>
-      <Text mb="300">
-        Try dragging the separator or using keyboard navigation (Tab to focus,
-        then arrow keys).
-      </Text>
-      {Array.from({ length: 40 }, (_, i) => (
-        <Text key={i} mb="200">
-          Scrollable line {i + 1}
-        </Text>
-      ))}
-    </Box>
-  </ScrollArea>
-);
+const meta: Meta<typeof Splitter.Root> = {
+  title: "Components/Splitter",
+  component: Splitter.Root,
+  parameters: {
+    layout: "fullscreen",
+  },
+  argTypes: {
+    orientation: {
+      control: { type: "radio" },
+      options: ["horizontal", "vertical"],
+    },
+    keyboardStep: {
+      control: { type: "range", min: 1, max: 20, step: 1 },
+    },
+    disableDoubleClick: { control: { type: "boolean" } },
+  },
+};
 
-const SecondaryPaneContent = () => (
-  <ScrollArea h="100%" w="100%">
-    <Box p="400" bg="amber.3" minH="100%">
-      <Heading size="lg" mb="300">
-        Secondary Pane
-      </Heading>
-      <Text mb="300">This is the secondary pane content.</Text>
-      <Text mb="300">
-        Its size is automatically calculated as 100% - primary pane size.
-      </Text>
-      <List.Root>
-        {Array.from({ length: 20 }, (_, i) => (
-          <List.Item key={i}>Item {i + 1}</List.Item>
-        ))}
-      </List.Root>
-    </Box>
-  </ScrollArea>
-);
+export default meta;
+type Story = StoryObj<typeof Splitter.Root>;
+
+// ============================================================
+// Default (horizontal, balanced 50/50, no constraints)
+// ============================================================
 
 export const Default: Story = {
   args: {
     orientation: "horizontal",
-    defaultValue: 50,
+    panes: {
+      nav: { defaultSize: 30 },
+      main: { defaultSize: 70 },
+    },
   },
   render: (args) => (
-    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane isPrimary>
-          <PrimaryPaneContent />
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav" />
         </Splitter.Pane>
-        <Splitter.Separator aria-label="Resize panes" data-testid="splitter" />
-        <Splitter.Pane>
-          <SecondaryPaneContent />
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main" />
         </Splitter.Pane>
       </Splitter.Root>
     </Box>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+    await expect(handle).toBeInTheDocument();
+    await expect(handle).toHaveAttribute("aria-orientation", "horizontal");
+    await expect(handle).toHaveAttribute("aria-valuemin", "0");
+    await expect(handle).toHaveAttribute("aria-valuemax", "100");
+    await expect(handle.getAttribute("aria-valuenow")).toBe("30");
+  },
 };
+
+// ============================================================
+// Vertical orientation
+// ============================================================
 
 export const Vertical: Story = {
   args: {
     orientation: "vertical",
-    defaultValue: 40,
+    panes: {
+      top: { defaultSize: 40 },
+      bottom: { defaultSize: 60 },
+    },
   },
   render: (args) => (
-    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane isPrimary>
-          <PrimaryPaneContent />
+        <Splitter.Pane id="top">
+          <DemoPane bg="teal.3" title="Top" />
         </Splitter.Pane>
-        <Splitter.Separator
-          aria-label="Resize panes vertically"
-          data-testid="splitter"
-        />
-        <Splitter.Pane>
-          <SecondaryPaneContent />
+        <Splitter.Handle />
+        <Splitter.Pane id="bottom">
+          <DemoPane bg="rose.3" title="Bottom" />
         </Splitter.Pane>
       </Splitter.Root>
     </Box>
   ),
-};
-
-export const Controlled: Story = {
-  args: {
-    orientation: "horizontal",
-    value: 30,
-    onValueChange: fn(),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+    await expect(handle).toHaveAttribute("aria-orientation", "vertical");
   },
-  render: (args) => (
-    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
-      <Splitter.Root {...args}>
-        <Splitter.Pane isPrimary>
-          <PrimaryPaneContent />
-        </Splitter.Pane>
-        <Splitter.Separator
-          aria-label="Controlled splitter"
-          data-testid="splitter"
-        />
-        <Splitter.Pane>
-          <SecondaryPaneContent />
-        </Splitter.Pane>
-      </Splitter.Root>
-    </Box>
-  ),
-};
-
-export const WithConstraints: Story = {
-  args: {
-    orientation: "horizontal",
-    defaultValue: 50,
-    minValue: 20,
-    maxValue: 80,
-  },
-  render: (args) => (
-    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
-      <Splitter.Root {...args}>
-        <Splitter.Pane isPrimary>
-          <PrimaryPaneContent />
-        </Splitter.Pane>
-        <Splitter.Separator
-          aria-label="Constrained splitter (20% - 80%)"
-          data-testid="splitter"
-        />
-        <Splitter.Pane>
-          <SecondaryPaneContent />
-        </Splitter.Pane>
-      </Splitter.Root>
-    </Box>
-  ),
-};
-
-export const Disabled: Story = {
-  args: {
-    orientation: "horizontal",
-    defaultValue: 50,
-    isDisabled: true,
-  },
-  render: (args) => (
-    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
-      <Splitter.Root {...args}>
-        <Splitter.Pane isPrimary>
-          <PrimaryPaneContent />
-        </Splitter.Pane>
-        <Splitter.Separator
-          aria-label="Disabled splitter"
-          data-testid="splitter"
-        />
-        <Splitter.Pane>
-          <SecondaryPaneContent />
-        </Splitter.Pane>
-      </Splitter.Root>
-    </Box>
-  ),
 };
 
 // ============================================================
-// INTERACTION TESTS
+// Keyboard interaction (arrows + Home/End)
 // ============================================================
 
-export const KeyboardInteractionHorizontal: Story = {
+export const KeyboardInteraction: Story = {
   args: {
     orientation: "horizontal",
-    defaultValue: 50,
-    step: 10,
-    minValue: 10,
-    maxValue: 90,
+    keyboardStep: 5,
+    panes: {
+      nav: { defaultSize: 30, minSize: 10 },
+      main: { defaultSize: 70, minSize: 20 },
+    },
+    onSizesChange: fn(),
   },
   render: (args) => (
-    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane isPrimary data-testid="primary-pane">
-          <DemoPane bg="indigo.3" title="Primary Pane">
-            <Text>Use keyboard to resize this pane</Text>
-          </DemoPane>
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav" />
         </Splitter.Pane>
-        <Splitter.Separator
-          aria-label="Table of Contents"
-          data-testid="splitter"
-        />
-        <Splitter.Pane data-testid="secondary-pane">
-          <DemoPane bg="amber.3" title="Secondary Pane">
-            <Text>This pane adjusts automatically</Text>
-          </DemoPane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main" />
         </Splitter.Pane>
       </Splitter.Root>
     </Box>
   ),
-  play: async ({ canvasElement, step }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    const splitter = canvas.getByTestId("splitter");
+    const handle = await canvas.findByRole("separator");
+    handle.focus();
+    await expect(handle).toHaveFocus();
 
-    await step("Splitter has correct ARIA attributes", async () => {
-      await expect(splitter).toHaveAttribute("role", "separator");
-      await expect(splitter).toHaveAttribute("aria-orientation", "horizontal");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "50");
-      await expect(splitter).toHaveAttribute("aria-valuemin", "10");
-      await expect(splitter).toHaveAttribute("aria-valuemax", "90");
-      await expect(splitter).toHaveAttribute("aria-label", "Table of Contents");
+    await userEvent.keyboard("{ArrowRight}");
+    await expect(args.onSizesChange).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(35);
     });
 
-    await step("Splitter is focusable", async () => {
-      splitter.focus();
-      await expect(splitter).toHaveFocus();
+    await userEvent.keyboard("{ArrowLeft}");
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
     });
 
-    await step("Right arrow increases value", async () => {
-      await userEvent.keyboard("{ArrowRight}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "60");
+    // Home → previous pane shrinks to its minSize.
+    await userEvent.keyboard("{Home}");
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(10);
     });
 
-    await step("Left arrow decreases value", async () => {
-      await userEvent.keyboard("{ArrowLeft}");
-      await userEvent.keyboard("{ArrowLeft}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "40");
-    });
-
-    await step("Home key sets to minimum value", async () => {
-      await userEvent.keyboard("{Home}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "10");
-    });
-
-    await step("End key sets to maximum value", async () => {
-      await userEvent.keyboard("{End}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "90");
-    });
-
-    await step("Enter key toggles collapse/restore", async () => {
-      // First Enter should collapse to minimum
-      await userEvent.keyboard("{Enter}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "10");
-
-      // Second Enter should restore to default position
-      await userEvent.keyboard("{Enter}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "50");
-    });
-
-    await step("Up/Down arrows don't affect horizontal splitter", async () => {
-      const initialValue = splitter.getAttribute("aria-valuenow");
-      await userEvent.keyboard("{ArrowUp}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", initialValue);
-      await userEvent.keyboard("{ArrowDown}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", initialValue);
+    // End → previous pane grows to (100 - next.minSize).
+    await userEvent.keyboard("{End}");
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(80);
     });
   },
 };
 
-export const KeyboardInteractionVertical: Story = {
-  args: {
-    orientation: "vertical",
-    defaultValue: 40,
-    step: 15,
-    minValue: 0,
-    maxValue: 100,
-  },
-  render: (args) => (
-    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
-      <Splitter.Root {...args}>
-        <Splitter.Pane isPrimary data-testid="primary-pane">
-          <DemoPane bg="indigo.3" title="Primary Pane">
-            <Text>Vertical layout</Text>
-          </DemoPane>
-        </Splitter.Pane>
-        <Splitter.Separator
-          aria-label="Navigation Panel"
-          data-testid="splitter"
-        />
-        <Splitter.Pane data-testid="secondary-pane">
-          <DemoPane bg="amber.3" title="Secondary Pane">
-            <Text>Bottom section</Text>
-          </DemoPane>
-        </Splitter.Pane>
-      </Splitter.Root>
-    </Box>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const splitter = canvas.getByTestId("splitter");
+// ============================================================
+// Per-pane min/max constraints clamp drag and keyboard
+// ============================================================
 
-    await step("Splitter has correct vertical ARIA attributes", async () => {
-      await expect(splitter).toHaveAttribute("role", "separator");
-      await expect(splitter).toHaveAttribute("aria-orientation", "vertical");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "40");
-      await expect(splitter).toHaveAttribute("aria-valuemin", "0");
-      await expect(splitter).toHaveAttribute("aria-valuemax", "100");
-      await expect(splitter).toHaveAttribute("aria-label", "Navigation Panel");
-    });
-
-    await step("Focus splitter", async () => {
-      splitter.focus();
-      await expect(splitter).toHaveFocus();
-    });
-
-    await step("Down arrow increases value", async () => {
-      await userEvent.keyboard("{ArrowDown}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "55");
-    });
-
-    await step("Up arrow decreases value", async () => {
-      await userEvent.keyboard("{ArrowUp}");
-      await userEvent.keyboard("{ArrowUp}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "25");
-    });
-
-    await step("Left/Right arrows don't affect vertical splitter", async () => {
-      const initialValue = splitter.getAttribute("aria-valuenow");
-      await userEvent.keyboard("{ArrowLeft}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", initialValue);
-      await userEvent.keyboard("{ArrowRight}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", initialValue);
-    });
-
-    await step("Home/End keys work for vertical splitter", async () => {
-      await userEvent.keyboard("{Home}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "0");
-
-      await userEvent.keyboard("{End}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "100");
-    });
-  },
-};
-
-export const DisabledKeyboardInteraction: Story = {
+export const PerPaneConstraints: Story = {
   args: {
     orientation: "horizontal",
-    defaultValue: 50,
-    isDisabled: true,
+    keyboardStep: 100,
+    panes: {
+      nav: { defaultSize: 30, minSize: 15, maxSize: 50 },
+      main: { defaultSize: 70, minSize: 25 },
+    },
   },
   render: (args) => (
-    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane isPrimary>
-          <DemoPane bg="indigo.3" title="Primary Pane">
-            <Text>Disabled splitter</Text>
-          </DemoPane>
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav (min 15, max 50)" />
         </Splitter.Pane>
-        <Splitter.Separator
-          aria-label="Disabled splitter"
-          data-testid="splitter"
-        />
-        <Splitter.Pane>
-          <DemoPane bg="amber.3" title="Secondary Pane">
-            <Text>Cannot be resized</Text>
-          </DemoPane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main (min 25)" />
         </Splitter.Pane>
       </Splitter.Root>
     </Box>
   ),
-  play: async ({ canvasElement, step }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const splitter = canvas.getByTestId("splitter");
+    const handle = await canvas.findByRole("separator");
 
-    await step("Disabled splitter is not focusable", async () => {
-      await expect(splitter).toHaveAttribute("tabindex", "-1");
-      await userEvent.tab();
-      await expect(splitter).not.toHaveFocus();
+    // aria-valuemin reflects panes.nav.minSize, aria-valuemax = 100 - panes.main.minSize, capped by panes.nav.maxSize.
+    await expect(handle).toHaveAttribute("aria-valuemin", "15");
+    await expect(handle).toHaveAttribute("aria-valuemax", "50");
+
+    handle.focus();
+    // Large jump right → clamps at nav.maxSize (50).
+    await userEvent.keyboard("{End}");
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(50);
     });
-
-    await step("Keyboard interactions don't work when disabled", async () => {
-      // Try to focus manually (this shouldn't work in real usage but we test the behavior)
-      splitter.focus();
-      const initialValue = splitter.getAttribute("aria-valuenow");
-
-      await userEvent.keyboard("{ArrowRight}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", initialValue);
-
-      await userEvent.keyboard("{Home}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", initialValue);
-
-      await userEvent.keyboard("{Enter}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", initialValue);
+    // Large jump left → clamps at nav.minSize (15).
+    await userEvent.keyboard("{Home}");
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(15);
     });
   },
 };
 
-export const ConstrainedKeyboardInteraction: Story = {
+// ============================================================
+// Disabled state — both panes disabled removes the handle from tab order.
+// ============================================================
+
+export const DisabledBothPanes: Story = {
   args: {
-    orientation: "horizontal",
-    defaultValue: 50,
-    minValue: 30,
-    maxValue: 70,
-    step: 5,
+    panes: {
+      nav: { defaultSize: 30, disabled: true },
+      main: { defaultSize: 70, disabled: true },
+    },
   },
   render: (args) => (
-    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane isPrimary>
-          <DemoPane bg="indigo.3" title="Primary Pane">
-            <Text>Constrained between 30% and 70%</Text>
-          </DemoPane>
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav (disabled)" />
         </Splitter.Pane>
-        <Splitter.Separator
-          aria-label="Constrained splitter"
-          data-testid="splitter"
-        />
-        <Splitter.Pane>
-          <DemoPane bg="amber.3" title="Secondary Pane">
-            <Text>Automatically sized</Text>
-          </DemoPane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main (disabled)" />
         </Splitter.Pane>
       </Splitter.Root>
     </Box>
   ),
-  play: async ({ canvasElement, step }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const splitter = canvas.getByTestId("splitter");
-
-    await step("Splitter respects min/max constraints in ARIA", async () => {
-      await expect(splitter).toHaveAttribute("aria-valuemin", "30");
-      await expect(splitter).toHaveAttribute("aria-valuemax", "70");
-    });
-
-    await step("Focus splitter", async () => {
-      splitter.focus();
-      await expect(splitter).toHaveFocus();
-    });
-
-    await step("Home key respects minimum constraint", async () => {
-      await userEvent.keyboard("{Home}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "30");
-    });
-
-    await step("End key respects maximum constraint", async () => {
-      await userEvent.keyboard("{End}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "70");
-    });
-
-    await step("Arrow keys respect constraints", async () => {
-      // Go to max, then try to go beyond
-      await userEvent.keyboard("{End}");
-      await userEvent.keyboard("{ArrowRight}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "70");
-
-      // Go to min, then try to go beyond
-      await userEvent.keyboard("{Home}");
-      await userEvent.keyboard("{ArrowLeft}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "30");
-    });
+    const handle = await canvas.findByRole("separator");
+    await expect(handle).toHaveAttribute("tabindex", "-1");
+    await expect(handle).toHaveAttribute("aria-disabled", "true");
   },
 };
 
-export const ControlledValueInteraction: Story = {
-  args: {
-    orientation: "horizontal",
-    value: 60,
-    onValueChange: fn(),
-  },
-  render: (args) => (
-    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
-      <Splitter.Root {...args}>
-        <Splitter.Pane isPrimary>
-          <DemoPane bg="indigo.3" title="Primary Pane">
-            <Text>Controlled value</Text>
-          </DemoPane>
-        </Splitter.Pane>
-        <Splitter.Separator
-          aria-label="Controlled splitter"
-          data-testid="splitter"
-        />
-        <Splitter.Pane>
-          <DemoPane bg="amber.3" title="Secondary Pane">
-            <Text>Value changes trigger callback</Text>
-          </DemoPane>
-        </Splitter.Pane>
-      </Splitter.Root>
-    </Box>
-  ),
-  play: async ({ canvasElement, step, args }) => {
-    const canvas = within(canvasElement);
-    const splitter = canvas.getByTestId("splitter");
-
-    await step("Controlled value is reflected in ARIA", async () => {
-      await expect(splitter).toHaveAttribute("aria-valuenow", "60");
-    });
-
-    await step("Focus splitter", async () => {
-      splitter.focus();
-      await expect(splitter).toHaveFocus();
-    });
-
-    await step("Keyboard interactions trigger onValueChange", async () => {
-      await userEvent.keyboard("{ArrowRight}");
-      await expect(args.onValueChange).toHaveBeenCalledWith(65);
-
-      await userEvent.keyboard("{ArrowLeft}");
-      await expect(args.onValueChange).toHaveBeenCalledWith(55);
-
-      await userEvent.keyboard("{Home}");
-      await expect(args.onValueChange).toHaveBeenCalledWith(0);
-
-      await userEvent.keyboard("{End}");
-      await expect(args.onValueChange).toHaveBeenCalledWith(100);
-    });
-  },
-};
+// ============================================================
+// ARIA — aria-controls points at previous Pane's DOM id.
+// ============================================================
 
 export const AriaControlsAttribute: Story = {
   args: {
-    orientation: "horizontal",
-    defaultValue: 50,
+    panes: {
+      nav: { defaultSize: 30 },
+      main: { defaultSize: 70 },
+    },
   },
   render: (args) => (
-    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Box h="400px">
       <Splitter.Root {...args}>
-        <Splitter.Pane isPrimary id="primary-pane-test">
-          <DemoPane bg="indigo.3" title="Primary Pane">
-            <Text>This pane should be referenced by aria-controls</Text>
-          </DemoPane>
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav" />
         </Splitter.Pane>
-        <Splitter.Separator
-          aria-label="Content splitter"
-          data-testid="splitter"
-        />
-        <Splitter.Pane>
-          <DemoPane bg="amber.3" title="Secondary Pane">
-            <Text>Not controlled directly</Text>
-          </DemoPane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main" />
         </Splitter.Pane>
       </Splitter.Root>
     </Box>
   ),
-  play: async ({ canvasElement, step }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const splitter = canvas.getByTestId("splitter");
+    const handle = await canvas.findByRole("separator");
+    const ariaControls = handle.getAttribute("aria-controls");
+    await expect(ariaControls).toBeTruthy();
 
-    await step(
-      "Splitter has aria-controls pointing to primary pane",
-      async () => {
-        // The component should automatically generate and set aria-controls
-        const ariaControls = splitter.getAttribute("aria-controls");
-        await expect(ariaControls).toBeTruthy();
-
-        // Verify the referenced element exists
-        if (ariaControls) {
-          const controlledElement = document.getElementById(ariaControls);
-          await expect(controlledElement).toBeInTheDocument();
-        }
-      }
-    );
+    // aria-controls should point at the *previous* pane (first DOM sibling).
+    const navPane = canvasElement.querySelector(`#${ariaControls!}`);
+    await expect(navPane).toBeTruthy();
+    await expect(navPane!.textContent).toContain("Nav");
   },
 };
 
-export const ComprehensiveW3CCompliance: Story = {
+// ============================================================
+// Double-click toggles collapse on adjacent collapsible pane.
+// ============================================================
+
+export const CollapsibleByDoubleClick: Story = {
   args: {
-    orientation: "horizontal",
-    defaultValue: 50,
-    minValue: 10,
-    maxValue: 90,
-    step: 5,
+    panes: {
+      nav: { defaultSize: 30, minSize: 10, collapsible: true },
+      main: { defaultSize: 70, minSize: 20 },
+    },
+    onCollapse: fn(),
+    onExpand: fn(),
   },
   render: (args) => (
-    <Box height="512px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane isPrimary data-testid="primary-pane">
-          <DemoPane bg="indigo.3" title="Table of Contents">
-            <Text mb="300">This is the primary pane that gets resized.</Text>
-            <Button size="xs">Focusable element in primary pane</Button>
-          </DemoPane>
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav (collapsible)" />
         </Splitter.Pane>
-        <Splitter.Separator
-          aria-label="Table of Contents"
-          data-testid="splitter"
-        />
-        <Splitter.Pane data-testid="secondary-pane">
-          <DemoPane bg="amber.3" title="Content">
-            <Text mb="300">This is the secondary pane.</Text>
-            <Button size="xs">Focusable element in secondary pane</Button>
-          </DemoPane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main" />
         </Splitter.Pane>
       </Splitter.Root>
     </Box>
   ),
-  play: async ({ canvasElement, step }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    const splitter = canvas.getByTestId("splitter");
+    const handle = await canvas.findByRole("separator");
 
-    await step("All required WAI-ARIA attributes are present", async () => {
-      // Role
-      await expect(splitter).toHaveAttribute("role", "separator");
-
-      // Value attributes
-      await expect(splitter).toHaveAttribute("aria-valuenow", "50");
-      await expect(splitter).toHaveAttribute("aria-valuemin", "10");
-      await expect(splitter).toHaveAttribute("aria-valuemax", "90");
-
-      // Orientation
-      await expect(splitter).toHaveAttribute("aria-orientation", "horizontal");
-
-      // Label (matches primary pane name as per W3C spec)
-      await expect(splitter).toHaveAttribute("aria-label", "Table of Contents");
-
-      // Controls relationship
-      const ariaControls = splitter.getAttribute("aria-controls");
-      await expect(ariaControls).toBeTruthy();
-      if (ariaControls) {
-        const controlledElement = document.getElementById(ariaControls);
-        await expect(controlledElement).toBeInTheDocument();
-      }
+    await userEvent.dblClick(handle);
+    await waitFor(() => {
+      expect(args.onCollapse).toHaveBeenCalledWith("nav");
+    });
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(0);
     });
 
-    await step("Splitter is focusable and keyboard accessible", async () => {
-      await expect(splitter).toHaveAttribute("tabindex", "0");
-      splitter.focus();
-      await expect(splitter).toHaveFocus();
+    await userEvent.dblClick(handle);
+    await waitFor(() => {
+      expect(args.onExpand).toHaveBeenCalledWith("nav");
     });
-
-    await step("All keyboard interactions work as per W3C spec", async () => {
-      // Test arrow keys for horizontal splitter
-      await userEvent.keyboard("{ArrowRight}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "55");
-
-      await userEvent.keyboard("{ArrowLeft}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "50");
-
-      // Test Home/End keys
-      await userEvent.keyboard("{Home}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "10");
-
-      await userEvent.keyboard("{End}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "90");
-
-      // Test Enter key for collapse/restore
-      await userEvent.keyboard("{Enter}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "10");
-
-      await userEvent.keyboard("{Enter}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "50");
-
-      // Test that inappropriate arrow keys don't affect horizontal splitter
-      const currentValue = splitter.getAttribute("aria-valuenow");
-      await userEvent.keyboard("{ArrowUp}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", currentValue);
-      await userEvent.keyboard("{ArrowDown}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", currentValue);
-    });
-
-    await step("Value constraints are respected", async () => {
-      // Try to go beyond maximum
-      await userEvent.keyboard("{End}");
-      await userEvent.keyboard("{ArrowRight}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "90");
-
-      // Try to go beyond minimum
-      await userEvent.keyboard("{Home}");
-      await userEvent.keyboard("{ArrowLeft}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "10");
-    });
-
-    await step("Focus management works correctly", async () => {
-      // Splitter should maintain focus during value changes
-      await expect(splitter).toHaveFocus();
-      await userEvent.keyboard("{ArrowRight}");
-      await expect(splitter).toHaveFocus();
-
-      // Tab should move focus away from splitter
-      await userEvent.tab();
-      await expect(splitter).not.toHaveFocus();
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
     });
   },
 };
 
-export const VerticalW3CCompliance: Story = {
+// ============================================================
+// Enter on focused handle toggles collapse.
+// ============================================================
+
+export const CollapsibleByKeyboard: Story = {
   args: {
-    orientation: "vertical",
-    defaultValue: 40,
-    minValue: 0,
-    maxValue: 100,
-    step: 10,
+    panes: {
+      nav: { defaultSize: 30, minSize: 10, collapsible: true },
+      main: { defaultSize: 70, minSize: 20 },
+    },
+    onCollapse: fn(),
+    onExpand: fn(),
   },
   render: (args) => (
-    <Box
-      height="1200px"
-      width="1000px"
-      borderWidth="25"
-      borderColor="neutral.6"
-    >
+    <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane isPrimary data-testid="primary-pane">
-          <DemoPane bg="indigo.3" title="Navigation Panel">
-            <Text>Primary pane in vertical layout</Text>
-          </DemoPane>
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav (collapsible)" />
         </Splitter.Pane>
-        <Splitter.Separator
-          aria-label="Navigation Panel"
-          data-testid="splitter"
-        />
-        <Splitter.Pane data-testid="secondary-pane">
-          <DemoPane bg="amber.3" title="Content Area">
-            <Text>Secondary pane in vertical layout</Text>
-          </DemoPane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main" />
         </Splitter.Pane>
       </Splitter.Root>
     </Box>
   ),
-  play: async ({ canvasElement, step }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    const splitter = canvas.getByTestId("splitter");
+    const handle = await canvas.findByRole("separator");
+    handle.focus();
 
-    await step("Vertical splitter has correct ARIA orientation", async () => {
-      await expect(splitter).toHaveAttribute("aria-orientation", "vertical");
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => {
+      expect(args.onCollapse).toHaveBeenCalledWith("nav");
     });
 
-    await step("Focus splitter", async () => {
-      splitter.focus();
-      await expect(splitter).toHaveFocus();
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => {
+      expect(args.onExpand).toHaveBeenCalledWith("nav");
+    });
+  },
+};
+
+// ============================================================
+// Collapse / Expand callbacks fire with the right ids.
+// ============================================================
+
+export const CollapseExpandCallbacks: Story = {
+  args: {
+    panes: {
+      nav: { defaultSize: 30, collapsible: true },
+      main: { defaultSize: 70 },
+    },
+    onCollapse: fn(),
+    onExpand: fn(),
+  },
+  render: (args) => (
+    <Box h="400px">
+      <Splitter.Root {...args}>
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav" />
+        </Splitter.Pane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main" />
+        </Splitter.Pane>
+      </Splitter.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+
+    await userEvent.dblClick(handle);
+    await waitFor(() => {
+      expect(args.onCollapse).toHaveBeenCalledTimes(1);
+      expect(args.onCollapse).toHaveBeenCalledWith("nav");
+      expect(args.onExpand).not.toHaveBeenCalled();
     });
 
-    await step("Vertical keyboard interactions work correctly", async () => {
-      // Down arrow should increase value (move splitter down)
-      await userEvent.keyboard("{ArrowDown}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "50");
+    await userEvent.dblClick(handle);
+    await waitFor(() => {
+      expect(args.onExpand).toHaveBeenCalledTimes(1);
+      expect(args.onExpand).toHaveBeenCalledWith("nav");
+    });
+  },
+};
 
-      // Up arrow should decrease value (move splitter up)
-      await userEvent.keyboard("{ArrowUp}");
-      await userEvent.keyboard("{ArrowUp}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", "30");
+// ============================================================
+// Persistence — useSplitterLayout with a custom storage adapter.
+// ============================================================
 
-      // Left/Right arrows should not affect vertical splitter
-      const currentValue = splitter.getAttribute("aria-valuenow");
-      await userEvent.keyboard("{ArrowLeft}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", currentValue);
-      await userEvent.keyboard("{ArrowRight}");
-      await expect(splitter).toHaveAttribute("aria-valuenow", currentValue);
+const WithPersistenceHookComponent = ({
+  onLoaded,
+}: {
+  onLoaded?: (sizes: Record<string, number>) => void;
+}) => {
+  // In-memory storage so the story doesn't depend on real localStorage.
+  const storeRef = useRef<Record<string, number> | undefined>({
+    nav: 25,
+    main: 75,
+  });
+  const layout = useSplitterLayout({
+    initialSizes: { nav: 40, main: 60 },
+    storage: {
+      load: () => storeRef.current,
+      save: (sizes) => {
+        storeRef.current = sizes;
+      },
+    },
+  });
+  // Surface the hydrated default to the play function via a side-channel.
+  onLoaded?.(layout.defaultSizes);
+  return (
+    <Box h="400px">
+      <Splitter.Root
+        panes={{ nav: { minSize: 10 }, main: { minSize: 10 } }}
+        defaultSizes={layout.defaultSizes}
+        onSizesChange={layout.onSizesChange}
+        __layoutRef={layout.__layoutRef}
+      >
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav (hydrated 25%)" />
+        </Splitter.Pane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main (hydrated 75%)" />
+        </Splitter.Pane>
+      </Splitter.Root>
+    </Box>
+  );
+};
+
+export const WithPersistenceHook: Story = {
+  render: () => <WithPersistenceHookComponent />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+    // Hydrated from storage (25%), not the initialSizes default (40%).
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(25);
+    });
+  },
+};
+
+// ============================================================
+// Cross-app commands — a button outside the splitter collapses a pane.
+// ============================================================
+
+const CrossAppCommandsComponent = () => {
+  const layout = useSplitterLayout({ initialSizes: { nav: 30, main: 70 } });
+  return (
+    <Stack gap="400" h="500px">
+      <Button onPress={() => layout.collapse("nav")} data-testid="collapse-btn">
+        Collapse nav
+      </Button>
+      <Splitter.Root
+        panes={{
+          nav: { minSize: 10, collapsible: true },
+          main: { minSize: 20 },
+        }}
+        defaultSizes={layout.defaultSizes}
+        onSizesChange={layout.onSizesChange}
+        __layoutRef={layout.__layoutRef}
+      >
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav" />
+        </Splitter.Pane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main" />
+        </Splitter.Pane>
+      </Splitter.Root>
+    </Stack>
+  );
+};
+
+export const CrossAppCommands: Story = {
+  render: () => <CrossAppCommandsComponent />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+    const button = canvas.getByTestId("collapse-btn");
+
+    await userEvent.click(button);
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(0);
+    });
+  },
+};
+
+// ============================================================
+// Nested splitters — 3 regions via nesting.
+// ============================================================
+
+export const NestedSplitters: Story = {
+  render: () => (
+    <Box h="600px">
+      <Splitter.Root
+        panes={{ nav: { defaultSize: 25 }, rest: { defaultSize: 75 } }}
+      >
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav" />
+        </Splitter.Pane>
+        <Splitter.Handle />
+        <Splitter.Pane id="rest">
+          <Splitter.Root
+            panes={{ main: { defaultSize: 65 }, aside: { defaultSize: 35 } }}
+          >
+            <Splitter.Pane id="main">
+              <DemoPane bg="amber.3" title="Main" />
+            </Splitter.Pane>
+            <Splitter.Handle />
+            <Splitter.Pane id="aside">
+              <DemoPane bg="rose.3" title="Aside" />
+            </Splitter.Pane>
+          </Splitter.Root>
+        </Splitter.Pane>
+      </Splitter.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const handles = await canvas.findAllByRole("separator");
+    // Each nested splitter contributes one handle.
+    await expect(handles.length).toBe(2);
+  },
+};
+
+// ============================================================
+// GracefulPersistence — stored layout with unknown id reconciles gracefully.
+// ============================================================
+
+const GracefulPersistenceComponent = () => {
+  const storeRef = useRef<Record<string, number>>({
+    nav: 20,
+    legacyAside: 30, // unknown id from an older release
+  });
+  const layout = useSplitterLayout({
+    initialSizes: { nav: 40, main: 60 },
+    storage: {
+      load: () => storeRef.current,
+      save: (sizes) => {
+        storeRef.current = sizes;
+      },
+    },
+  });
+  return (
+    <Box h="400px">
+      <Splitter.Root
+        panes={{ nav: { minSize: 5 }, main: { minSize: 5 } }}
+        defaultSizes={layout.defaultSizes}
+        onSizesChange={layout.onSizesChange}
+        __layoutRef={layout.__layoutRef}
+      >
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav" />
+        </Splitter.Pane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main" />
+        </Splitter.Pane>
+      </Splitter.Root>
+    </Box>
+  );
+};
+
+export const GracefulPersistence: Story = {
+  render: () => <GracefulPersistenceComponent />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+    // Storage had { nav: 20, legacyAside: 30 } (sum 50, > 1% drift)  →  hook
+    // falls back to initialSizes { nav: 40, main: 60 }.
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(40);
+    });
+  },
+};
+
+// ============================================================
+// disableDoubleClick — handle ignores double-click.
+// ============================================================
+
+export const DisableDoubleClick: Story = {
+  args: {
+    disableDoubleClick: true,
+    panes: {
+      nav: { defaultSize: 30, collapsible: true },
+      main: { defaultSize: 70 },
+    },
+    onCollapse: fn(),
+  },
+  render: (args) => (
+    <Box h="400px">
+      <Splitter.Root {...args}>
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav" />
+        </Splitter.Pane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main" />
+        </Splitter.Pane>
+      </Splitter.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+    await userEvent.dblClick(handle);
+    // Double-click is suppressed; keyboard still works.
+    await expect(args.onCollapse).not.toHaveBeenCalled();
+    handle.focus();
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => {
+      expect(args.onCollapse).toHaveBeenCalledWith("nav");
     });
   },
 };

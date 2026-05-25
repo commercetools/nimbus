@@ -35,12 +35,12 @@ export const SplitterPaneSlot = withContext<
 >("div", "pane");
 
 // ============================================================
-// Separator Slot
+// Handle Slot
 // ============================================================
 
-export type SplitterSeparatorSlotProps = HTMLChakraProps<"div">;
+export type SplitterHandleSlotProps = HTMLChakraProps<"div">;
 
-export const SplitterSeparatorSlot = withContext<
+export const SplitterHandleSlot = withContext<
   HTMLDivElement,
-  SplitterSeparatorSlotProps
->("div", "separator");
+  SplitterHandleSlotProps
+>("div", "handle");
