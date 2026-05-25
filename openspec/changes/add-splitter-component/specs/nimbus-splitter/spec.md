@@ -2,17 +2,23 @@
 
 ## Overview
 
-The Splitter component provides a compound primitive for user-resizable panes.
-A `Splitter.Root` contains N ≥ 2 `Splitter.Pane` children with N − 1
-`Splitter.Handle` children between them. Users drag handles (or use the
-keyboard) to redistribute space between adjacent panes; the component owns
-its sizes state internally. A companion `useSplitterLayout` hook supplies
-persistence and cross-component imperative commands without forcing a
-controlled prop.
+The Splitter component provides a compound primitive for user-resizable
+panes. A `Splitter.Root` contains exactly two `Splitter.Pane` children
+(each with a string `id`) with one `Splitter.Handle` between them. Users
+drag the handle (or use the keyboard) to redistribute space between the
+two panes; the component owns its sizes state internally. A companion
+`useSplitterLayout` hook supplies persistence and cross-component
+imperative commands without forcing a controlled prop.
 
-The Splitter is the primitive for user-driven resize. App-shell layout
-behaviour (responsive collapse to drawers, landmark slot semantics) is not
-part of this component and belongs to a separate pattern component.
+Per-pane configuration (sizes, constraints, collapsibility) lives on
+`Splitter.Root` keyed by pane id. `Splitter.Handle` is anonymous — all
+handle behaviour is configured on `Root`.
+
+Layouts requiring more than two panes are expressed by nesting one
+`Splitter` inside another's `Pane`. The Splitter is the primitive for
+user-driven resize. App-shell layout behaviour (responsive collapse to
+drawers, landmark slot semantics) is not part of this component and
+belongs to a separate pattern component.
 
 **Component:** `Splitter` (compound API: `Root`, `Pane`, `Handle`)
 **Hook:** `useSplitterLayout`
@@ -21,295 +27,348 @@ part of this component and belongs to a separate pattern component.
 
 ## ADDED Requirements
 
-### Requirement: Compound API with N panes and N−1 handles
+### Requirement: Two-pane compound API
 
-The component SHALL accept ≥ 2 `Splitter.Pane` children and exactly one
-`Splitter.Handle` between each adjacent pair of panes.
+The component SHALL accept exactly two `Splitter.Pane` children, each
+with a unique string `id`, and exactly one `Splitter.Handle` between
+them.
 
 #### Scenario: Two-pane layout
 
-- **WHEN** `<Splitter.Root>` contains two `Pane` children with one `Handle`
-  between them
-- **THEN** SHALL render the two panes side by side with a draggable handle
-  on the boundary
+- **WHEN** `<Splitter.Root>` contains two `Pane` children (e.g. ids `nav`
+  and `main`) with one `Handle` between them
+- **THEN** SHALL render the two panes side by side with a draggable
+  handle on the boundary
 
-#### Scenario: Three-pane layout
+#### Scenario: Layouts with more than two panes
 
-- **WHEN** `<Splitter.Root>` contains three `Pane` children with two
-  `Handle` children interleaved (Pane, Handle, Pane, Handle, Pane)
-- **THEN** SHALL render three panes in order with two independently
-  draggable handles, each controlling its own adjacent boundary
+- **WHEN** a consumer requires three or more regions
+- **THEN** SHALL achieve it by nesting one `Splitter.Root` inside the
+  `children` of a `Splitter.Pane`
+- **AND** SHALL NOT support a flat list of three or more `Pane` children
+  on a single `Splitter.Root`
 
-#### Scenario: Mismatched handle count
+#### Scenario: Wrong child count
 
-- **WHEN** the number of `Handle` children is not exactly `(Pane count − 1)`
-- **THEN** SHALL emit a development-time warning and render best-effort
-  (handles index by registration order, extra handles are ignored, missing
-  handles leave that boundary non-draggable)
+- **WHEN** `<Splitter.Root>` contains fewer or more than two `Pane`
+  children, or a number of `Handle` children other than one
+- **THEN** SHALL emit a development-time warning
+- **AND** SHALL render best-effort (skip missing slots; ignore extra
+  panes or handles beyond the expected pair)
+
+#### Scenario: Missing or duplicate pane id
+
+- **WHEN** a `Splitter.Pane` has no `id` prop, or both panes share the
+  same `id`
+- **THEN** SHALL emit a development-time warning
+- **AND** SHALL render best-effort (panes without `id` are excluded
+  from state; duplicate ids use last-write-wins)
 
 ### Requirement: Uncontrolled state model
 
-The component SHALL own its `sizes` state internally and expose it only via
-`defaultSizes` (initial value, read once) and `onSizesChange` (notification).
+The component SHALL own its `sizes` state internally and expose it only
+via `defaultSizes` (initial value, read once) and `onSizesChange`
+(notification).
 
 #### Scenario: Initial sizes from `defaultSizes`
 
-- **WHEN** `<Splitter.Root defaultSizes={[20, 60, 20]}>` is rendered
-- **THEN** SHALL initialize internal sizes to `[20, 60, 20]`
+- **WHEN** `<Splitter.Root defaultSizes={{ nav: 30, main: 70 }}>` is
+  rendered
+- **THEN** SHALL initialize internal sizes to `{ nav: 30, main: 70 }`
 - **AND** SHALL ignore subsequent prop changes to `defaultSizes`
 
-#### Scenario: Initial sizes from per-pane `defaultSize`
+#### Scenario: Initial sizes from per-pane `defaultSize` in `panes`
 
-- **WHEN** `defaultSizes` is omitted but each `Pane` has a `defaultSize`
-  prop
-- **THEN** SHALL initialize sizes from per-pane `defaultSize` values
-- **AND** SHALL normalize the result to sum to 100 (within floating-point
-  tolerance)
+- **WHEN** `defaultSizes` is omitted but `panes[id].defaultSize` is
+  provided for both panes
+- **THEN** SHALL initialize sizes from `panes[id].defaultSize`
+- **AND** SHALL normalize the result to sum to 100 (within
+  floating-point tolerance)
 
 #### Scenario: Initial sizes with no defaults
 
-- **WHEN** neither `defaultSizes` nor any `Pane.defaultSize` is provided
-- **THEN** SHALL distribute 100 equally across panes (100 / N each)
+- **WHEN** neither `defaultSizes` nor `panes[id].defaultSize` is
+  provided for either pane
+- **THEN** SHALL distribute 100 equally across panes (50 / 50)
 
 #### Scenario: `onSizesChange` fires on every size update
 
-- **WHEN** the user drags a handle, presses an arrow key on a focused
-  handle, double-clicks a handle to collapse, or any imperative command
-  mutates sizes
-- **THEN** SHALL call `onSizesChange(newSizes)` with the post-change `sizes`
-  array (summing to 100)
+- **WHEN** the user drags the handle, presses an arrow key on a
+  focused handle, double-clicks the handle to collapse, or any
+  imperative command mutates sizes
+- **THEN** SHALL call `onSizesChange(newSizes)` with the post-change
+  `sizes` record (keys = both pane ids, values summing to 100)
 
-### Requirement: Per-pane size constraints and cascading resize
+### Requirement: Per-pane size constraints with clamping
 
-Each `Pane` SHALL accept `minSize` (default 0) and `maxSize` (default 100).
-Drag operations on a handle SHALL cascade through subsequent panes when an
-adjacent pane reaches its `minSize` or `maxSize`.
+Each entry in the `panes` map on `Root` SHALL accept `minSize`
+(default 0) and `maxSize` (default 100). Drag operations on the handle
+SHALL respect these constraints by clamping Δ at the limit. No cascade
+behaviour applies — with only two panes, there is nowhere to spill
+remainder.
 
 #### Scenario: Drag respects neighbour `minSize`
 
-- **GIVEN** three panes with `minSize={10}` on each, current sizes `[30, 40,
-  30]`
-- **WHEN** the user drags handle 0 to attempt sizes `[35, 35, 30]`
-- **THEN** SHALL apply normally — no boundary hit
-
-#### Scenario: Drag cascades when neighbour reaches `minSize`
-
-- **GIVEN** three panes with `minSize={10}` on each, current sizes `[30, 15,
-  55]`
-- **WHEN** the user drags handle 0 to grow pane 0 by 20 percentage points
-  (target sizes `[50, -5, 55]`)
-- **THEN** SHALL clamp pane 1 to `minSize` (10) and cascade the remaining
-  shrink to pane 2
-- **AND** SHALL produce final sizes `[50, 10, 40]` (sum = 100)
-
-#### Scenario: Drag stops at boundary when cascade exhausted
-
-- **GIVEN** sizes `[30, 10, 10, 50]` with all `minSize` = 10
-- **WHEN** the user attempts to grow pane 0 by 25 (would require shrinking
-  panes 1 and 2 below `minSize` and pane 3 by 5)
-- **THEN** SHALL shrink pane 3 by 5 (its only available room) and clamp the
-  drag so pane 0 grows by only 5
-- **AND** SHALL produce sizes `[35, 10, 10, 45]`
+- **GIVEN** two panes `a`, `b` each with `minSize: 10`, current sizes
+  `{ a: 30, b: 70 }`
+- **WHEN** the user drags the handle to attempt `{ a: 95, b: 5 }`
+- **THEN** SHALL clamp `b` to its `minSize` (10)
+- **AND** SHALL produce sizes `{ a: 90, b: 10 }`
 
 #### Scenario: Drag respects `maxSize`
 
-- **GIVEN** two panes with pane 0 `maxSize={70}`, current sizes `[60, 40]`
-- **WHEN** the user drags handle 0 to attempt sizes `[80, 20]`
-- **THEN** SHALL clamp pane 0 to its `maxSize` (70) and produce sizes
-  `[70, 30]`
+- **GIVEN** two panes `a`, `b` with `panes.a.maxSize: 70`, current
+  sizes `{ a: 60, b: 40 }`
+- **WHEN** the user drags the handle to attempt `{ a: 80, b: 20 }`
+- **THEN** SHALL clamp `a` to its `maxSize` (70)
+- **AND** SHALL produce sizes `{ a: 70, b: 30 }`
 
 ### Requirement: Collapsible panes
 
-A `Pane` with `collapsible` SHALL support being collapsed to its
-`collapsedSize` (default 0) via double-click on an adjacent handle, the
-Enter key on a focused adjacent handle, or the imperative `collapse(index)`
-command from the layout hook.
+A pane configured with `collapsible: true` in the `panes` map SHALL
+support being collapsed to its `collapsedSize` (default 0) via
+double-click on the handle, the Enter key on the focused handle, or the
+imperative `collapse(paneId)` command from the layout hook.
 
 #### Scenario: Double-click collapses adjacent collapsible pane
 
-- **GIVEN** sizes `[20, 60, 20]` with pane 0 `collapsible` and
-  `collapsedSize={0}`
-- **WHEN** the user double-clicks handle 0
-- **THEN** SHALL set pane 0 size to 0
-- **AND** SHALL redistribute the freed 20 to pane 1 (closest neighbour
-  first, cascading further if pane 1 has a `maxSize`)
-- **AND** SHALL fire `onCollapse` on pane 0
+- **GIVEN** sizes `{ nav: 30, main: 70 }` with
+  `panes.nav = { collapsible: true, collapsedSize: 0 }`
+- **WHEN** the user double-clicks the handle
+- **THEN** SHALL set `nav` size to 0
+- **AND** SHALL grow `main` to absorb the freed 30 (capped by
+  `panes.main.maxSize`)
+- **AND** SHALL fire `onCollapse("nav")` on Root
 - **AND** SHALL produce sizes summing to 100
 
-#### Scenario: Double-click on handle with two collapsible neighbours
+#### Scenario: Both panes collapsible
 
-- **GIVEN** both panes adjacent to handle *i* are `collapsible`
-- **WHEN** the user double-clicks handle *i*
-- **THEN** SHALL collapse the smaller of the two adjacent panes
-- **AND** SHALL break ties by preferring the lower-indexed (left/top) pane
+- **GIVEN** both panes are `collapsible`
+- **WHEN** the user double-clicks the handle
+- **THEN** SHALL collapse the smaller of the two panes
+- **AND** SHALL break ties by preferring the left/top pane
 
 #### Scenario: Double-click is disabled
 
-- **WHEN** `<Splitter.Handle disableDoubleClick>` is set
-- **THEN** SHALL NOT collapse on double-click
+- **WHEN** `<Splitter.Root disableDoubleClick>` is set
+- **THEN** SHALL NOT collapse on the handle's double-click
 - **AND** SHALL NOT prevent other handle interactions (drag, keyboard)
 
 #### Scenario: Enter on focused handle toggles collapse
 
-- **GIVEN** sizes `[20, 60, 20]` with pane 0 `collapsible`
-- **WHEN** handle 0 has keyboard focus and Enter is pressed
-- **THEN** SHALL collapse pane 0 if not currently collapsed
-- **OR** SHALL expand pane 0 to its `defaultSize` if currently collapsed
+- **GIVEN** sizes `{ nav: 30, main: 70 }` with
+  `panes.nav.collapsible: true`
+- **WHEN** the handle has keyboard focus and Enter is pressed
+- **THEN** SHALL collapse `nav` if not currently collapsed
+- **OR** SHALL expand `nav` to its `defaultSize` (or
+  `initialSizes.nav`) if currently collapsed
 
 #### Scenario: `onExpand` fires when leaving collapsed state
 
 - **GIVEN** a collapsed pane (size === `collapsedSize`)
-- **WHEN** any operation increases the pane's size above `collapsedSize`
-- **THEN** SHALL fire `onExpand` exactly once for that transition
+- **WHEN** any operation increases the pane's size above
+  `collapsedSize`
+- **THEN** SHALL fire `onExpand(paneId)` on Root exactly once for that
+  transition
 
-### Requirement: Keyboard navigation on handles
+### Requirement: Keyboard navigation on Handle
 
-Each `Handle` SHALL be focusable, have `role="separator"`, and respond to
-arrow keys, Home, End, and Enter according to the W3C window splitter
-pattern, with cascade-aware updates.
+The `Handle` SHALL be focusable, have `role="separator"`, and respond
+to arrow keys, Home, End, and Enter according to the W3C window
+splitter pattern.
 
 #### Scenario: Arrow keys on a horizontal handle
 
-- **GIVEN** `<Splitter.Root orientation="horizontal">` with focused handle
-  and `keyboardStep` default of 5
+- **GIVEN** `<Splitter.Root orientation="horizontal" keyboardStep={5}>`
+  with focused handle
 - **WHEN** the user presses ArrowRight
-- **THEN** SHALL apply Δ = +5 percentage points via the cascade-resize
-  algorithm (growing the left pane, shrinking the right with cascade)
-- **AND** SHALL emit `onSizesChange` with the new sizes
+- **THEN** SHALL grow the previous (left) pane by 5 percentage points
+  and shrink the next (right) pane by 5
+- **AND** SHALL clamp at `minSize` / `maxSize` if either limit is hit
+- **AND** SHALL emit `onSizesChange` with the new sizes record
 - **AND** SHALL prevent default browser scroll
 
 #### Scenario: Arrow keys on a vertical handle
 
 - **GIVEN** `<Splitter.Root orientation="vertical">` with focused handle
 - **WHEN** the user presses ArrowDown
-- **THEN** SHALL apply Δ = +5 to grow the upper pane and shrink the lower
+- **THEN** SHALL apply Δ = +5 to grow the upper pane and shrink the
+  lower
 
 #### Scenario: Home/End jump to bounds
 
-- **GIVEN** a focused handle controlling boundary between pane *i* and pane
-  *i+1*
+- **GIVEN** focused handle between previous pane *a* and next pane *b*
 - **WHEN** the user presses Home
-- **THEN** SHALL shrink pane *i* to its `minSize` (cascading as needed) and
-  grow pane *i+1* accordingly
+- **THEN** SHALL shrink *a* to its `minSize` and grow *b* accordingly
 - **WHEN** the user presses End
-- **THEN** SHALL grow pane *i* to its `maxSize` and shrink pane *i+1*
-  accordingly
+- **THEN** SHALL grow *a* to its `maxSize` and shrink *b* accordingly
 
-#### Scenario: Keyboard interactions are no-ops when handle is disabled
+#### Scenario: Keyboard interactions are no-ops when both panes disabled
 
-- **WHEN** the handle's owning `Splitter.Root` is disabled, or both
-  adjacent panes have `disabled={true}`
+- **WHEN** both panes have `disabled: true` in `panes`
 - **THEN** SHALL ignore keyboard input
-- **AND** SHALL set `tabIndex={-1}` so the handle is not in the tab order
+- **AND** SHALL set `tabIndex={-1}` so the handle is not in the tab
+  order
 
 ### Requirement: ARIA semantics on Handle
 
-Each `Handle` SHALL expose the W3C window-splitter ARIA model in a way
-that's accurate for its position in the splitter.
+The `Handle` SHALL expose the W3C window-splitter ARIA model.
 
 #### Scenario: ARIA attributes reflect handle position
 
-- **GIVEN** handle *i* between pane *i* (size = 20) and pane *i+1* (size =
-  60), with `minSize` 10 on both
+- **GIVEN** the previous pane has id `nav` (size 30) and the next pane
+  has id `main` (size 70), with `panes.nav.minSize: 10` and
+  `panes.main.minSize: 10`
 - **THEN** the handle SHALL emit:
   - `role="separator"`
-  - `aria-valuenow={20}` (size of pane *i*)
-  - `aria-valuemin={10}` (pane *i*'s `minSize`)
-  - `aria-valuemax={80}` (sum of pane *i* and *i+1* sizes minus pane
-    *i+1*'s `minSize`, capped by pane *i*'s `maxSize`)
+  - `aria-valuenow={30}` (size of the previous pane)
+  - `aria-valuemin={10}` (`panes.nav.minSize`)
+  - `aria-valuemax={90}` (100 − `panes.main.minSize`, capped by
+    `panes.nav.maxSize`)
   - `aria-orientation` matching `Splitter.Root.orientation`
-  - `aria-controls={paneI.id}` (pane *i*, the primary pane on the
-    left/top side of the handle)
+  - `aria-controls={navDomId}` (the DOM id of the previous Pane
+    sibling)
 
 #### Scenario: aria-label defaults
 
-- **WHEN** no `aria-label` or `aria-labelledby` is supplied on a `Handle`
-- **THEN** SHALL apply a default `aria-label` localised via i18n (English
-  fallback: `"Resize panes"`)
+- **WHEN** no `aria-label` or `aria-labelledby` is supplied on the
+  `Handle`
+- **THEN** SHALL apply a default `aria-label` localised via i18n
+  (English fallback: `"Resize panes"`)
 
 ### Requirement: Orientation
 
 The `Splitter.Root` SHALL accept `orientation: "horizontal" | "vertical"`
-(default `"horizontal"`) and lay panes/handles accordingly.
+(default `"horizontal"`) and lay panes / handle accordingly.
 
 #### Scenario: Horizontal layout
 
 - **WHEN** `orientation="horizontal"`
 - **THEN** panes SHALL be arranged left-to-right
-- **AND** handles SHALL have `aria-orientation="horizontal"` (per W3C
-  separator semantics, which describe the boundary axis, not the layout
-  axis)
+- **AND** the handle SHALL have `aria-orientation="horizontal"` (per
+  W3C separator semantics, which describe the boundary axis, not the
+  layout axis)
 - **AND** drag SHALL respond to `deltaX`
-- **AND** ArrowLeft/ArrowRight SHALL be the active keys
+- **AND** ArrowLeft / ArrowRight SHALL be the active keys
 
 #### Scenario: Vertical layout
 
 - **WHEN** `orientation="vertical"`
 - **THEN** panes SHALL be arranged top-to-bottom
-- **AND** handles SHALL have `aria-orientation="vertical"`
+- **AND** the handle SHALL have `aria-orientation="vertical"`
 - **AND** drag SHALL respond to `deltaY`
-- **AND** ArrowUp/ArrowDown SHALL be the active keys
+- **AND** ArrowUp / ArrowDown SHALL be the active keys
+
+### Requirement: Anonymous Handle
+
+`Splitter.Handle` SHALL NOT accept an `id` prop or any per-handle
+configuration props. Behaviour is configured on `Splitter.Root`
+(`keyboardStep`, `disableDoubleClick`, default `aria-label`).
+
+#### Scenario: Handle resolves its panes from sibling DOM order
+
+- **GIVEN** a `Splitter.Handle` rendered between the two
+  `Splitter.Pane` children
+- **THEN** SHALL resolve the "previous pane" and "next pane" from its
+  immediately-previous and immediately-next Pane siblings
+- **AND** SHALL derive `aria-controls` from the previous Pane's DOM id
+
+#### Scenario: Per-handle config is rejected at the type level
+
+- **WHEN** consumer attempts `<Splitter.Handle id="…">` or
+  `<Splitter.Handle keyboardStep={…}>`
+- **THEN** TypeScript SHALL emit a compile error (`Handle` props
+  include only standard HTML/style props plus `aria-label` overrides)
+
+### Requirement: Nesting for layouts with more than two regions
+
+A `Splitter` SHALL be nestable inside the `children` of any
+`Splitter.Pane`. The inner Splitter is independent of the outer — its
+own state, persistence, callbacks, and ARIA subtree.
+
+#### Scenario: Three-region layout via nesting
+
+- **GIVEN** a consumer wants a three-region layout `nav | main | aside`
+- **WHEN** they render an outer `<Splitter.Root>` splitting `nav` from
+  a `rest` pane, and an inner `<Splitter.Root>` inside the `rest`
+  pane's children splitting `main` from `aside`
+- **THEN** SHALL render three resizable regions
+- **AND** SHALL expose two independently focusable handles in the tab
+  order
+- **AND** SHALL allow each splitter to be configured / persisted /
+  collapsed independently
+- **AND** SHALL announce each splitter as a self-contained widget to
+  assistive technology
 
 ### Requirement: `useSplitterLayout` hook for persistence and commands
 
 The `useSplitterLayout` hook SHALL provide synchronous initial sizes
 hydration, debounced persistence, and a unified imperative API. The
 component SHALL remain pure — the hook holds no React state for sizes
-during drag.
+during drag. All sizes are `Record<string, number>`; all imperative
+commands take pane ids (strings).
 
 #### Scenario: Hook returns props for the component
 
 - **WHEN** consumer calls
-  `useSplitterLayout({ initialSizes: [20, 60, 20] })`
+  `useSplitterLayout({ initialSizes: { nav: 30, main: 70 } })`
 - **THEN** SHALL return at minimum `{ defaultSizes, onSizesChange }`
   that consumers spread on `Splitter.Root`
-- **AND** SHALL return imperative methods `collapse`, `expand`, `setSizes`,
-  `getSizes`, `isCollapsed` callable from anywhere with access to the
+- **AND** SHALL return imperative methods `collapse(paneId)`,
+  `expand(paneId)`, `setSizes(sizes)`, `getSizes()`,
+  `isCollapsed(paneId)` callable from anywhere with access to the
   layout object
 
 #### Scenario: localStorage persistence by `id`
 
-- **WHEN** `useSplitterLayout({ initialSizes: [20, 60, 20], id: "my-key" })`
-  is called and `localStorage.getItem("my-key")` contains
-  `"[25, 55, 20]"`
-- **THEN** SHALL return `defaultSizes = [25, 55, 20]` on first render
+- **WHEN** `useSplitterLayout({ initialSizes: { nav: 30, main: 70 },
+  id: "my-key" })` is called and `localStorage.getItem("my-key")`
+  contains `'{"nav":25,"main":75}'`
+- **THEN** SHALL return `defaultSizes = { nav: 25, main: 75 }` on
+  first render
 - **AND** subsequent `onSizesChange` invocations SHALL write to
-  `localStorage.setItem("my-key", JSON.stringify(sizes))` debounced by
-  `debounceMs` (default 200)
+  `localStorage.setItem("my-key", JSON.stringify(sizes))` debounced
+  by `debounceMs` (default 200)
 
 #### Scenario: Custom storage adapter
 
-- **WHEN** `useSplitterLayout({ initialSizes, storage })` is called with
-  `storage: { load, save }`
-- **THEN** SHALL call `storage.load()` synchronously on first render and
-  use its return value as `defaultSizes` (falling back to `initialSizes` on
-  any invalid return)
-- **AND** SHALL call `storage.save(sizes)` (debounced) on each size change
-- **AND** SHALL NOT touch `localStorage` even if `id` is also provided
-  (`storage` overrides `id`)
+- **WHEN** `useSplitterLayout({ initialSizes, storage })` is called
+  with `storage: { load, save }`
+- **THEN** SHALL call `storage.load()` synchronously on first render
+  and use its return value as `defaultSizes` (falling back to
+  `initialSizes` on any invalid return)
+- **AND** SHALL call `storage.save(sizes)` (debounced) on each size
+  change
+- **AND** SHALL NOT touch `localStorage` even if `id` is also
+  provided (`storage` overrides `id`)
 
 #### Scenario: SSR safety
 
-- **WHEN** the hook executes during SSR (`typeof window === "undefined"`)
-  and only `id` is provided (no custom `storage`)
-- **THEN** SHALL return `defaultSizes = initialSizes` without touching
-  `localStorage`
-- **AND** the same hook on the client SHALL read the persisted value on
-  first render (no `useEffect` flicker), guarded by the `typeof window`
-  check
+- **WHEN** the hook executes during SSR
+  (`typeof window === "undefined"`) and only `id` is provided (no
+  custom `storage`)
+- **THEN** SHALL return `defaultSizes = initialSizes` without
+  touching `localStorage`
+- **AND** the same hook on the client SHALL read the persisted value
+  on first render (no `useEffect` flicker), guarded by the
+  `typeof window` check
 
-#### Scenario: Stored value rejected on length mismatch
+#### Scenario: Stored value reconciled when ids differ
 
-- **WHEN** stored sizes have a different length than `initialSizes`
-- **THEN** SHALL ignore the stored value and return `initialSizes` as
-  `defaultSizes`
+- **WHEN** stored sizes have ids that don't appear in `initialSizes`,
+  or `initialSizes` has ids not in storage (e.g. a pane was renamed
+  between releases)
+- **THEN** SHALL drop unknown ids from the stored value
+- **AND** SHALL fall back to `initialSizes[id]` for any id missing
+  from storage
+- **AND** SHALL normalize the result to sum to 100
 - **AND** SHALL log a development-only warning
 
 #### Scenario: Stored value normalized on sum drift
 
-- **WHEN** stored sizes sum to within ±1% of 100 (e.g. floating-point
-  drift)
-- **THEN** SHALL scale the array so the sum is exactly 100
+- **WHEN** stored sizes (after id reconciliation) sum to within ±1%
+  of 100 (e.g. floating-point drift)
+- **THEN** SHALL scale the values so the sum is exactly 100
 - **WHEN** stored sizes sum to outside ±1% of 100
 - **THEN** SHALL fall back to `initialSizes`
 
@@ -318,44 +377,53 @@ during drag.
 - **GIVEN** consumer holds the `layout` object returned by
   `useSplitterLayout`
 - **WHEN** code outside the `Splitter` subtree calls
-  `layout.setSizes([0, 70, 30])`
-- **THEN** SHALL update the component's internal sizes to `[0, 70, 30]`
-- **AND** SHALL fire `onSizesChange([0, 70, 30])`
+  `layout.setSizes({ nav: 0, main: 100 })`
+- **THEN** SHALL update the component's internal sizes to that record
+- **AND** SHALL fire `onSizesChange({ nav: 0, main: 100 })`
 - **AND** SHALL NOT cause re-render of components that only read
   imperative methods (no subscription to sizes)
 
 #### Scenario: Imperative `collapse` / `expand`
 
-- **WHEN** consumer calls `layout.collapse(0)` on a collapsible pane
-- **THEN** SHALL set pane 0's size to its `collapsedSize` and redistribute
-  freed space via the cascade-resize algorithm
-- **AND** SHALL fire `onCollapse` on pane 0
-- **WHEN** `layout.expand(0)` is called on a currently collapsed pane
-- **THEN** SHALL restore pane 0 to its `defaultSize` (or `initialSizes[0]`
-  if no per-pane default exists)
-- **AND** SHALL fire `onExpand` on pane 0
+- **WHEN** consumer calls `layout.collapse("nav")` on a collapsible
+  pane
+- **THEN** SHALL set `nav`'s size to its `collapsedSize` and grow the
+  other pane accordingly
+- **AND** SHALL fire `onCollapse("nav")` on Root
+- **WHEN** `layout.expand("nav")` is called on a currently collapsed
+  pane
+- **THEN** SHALL restore `nav` to its `defaultSize` (or
+  `initialSizes.nav` if no per-pane default exists)
+- **AND** SHALL fire `onExpand("nav")` on Root
 
 ### Requirement: Visual presentation via Chakra slot recipe
 
-The component SHALL ship a `splitterSlotRecipe` registered in
-`packages/nimbus/src/theme/slot-recipes/index.ts` with slots `root`,
-`pane`, and `handle`, plus variants matching the existing branch (`size`:
-`sm`/`md`/`lg`, `orientation`: `horizontal`/`vertical`).
+The component SHALL ship a `splitterSlotRecipe` registered as
+`nimbusSplitter` in `packages/nimbus/src/theme/slot-recipes/index.ts`
+with slots `root`, `pane`, and `handle`, plus variants for `size`
+(`sm` / `md` / `lg`) and `orientation` (`horizontal` / `vertical`).
 
 #### Scenario: Handle visibility states
 
-- **WHEN** a handle is hovered or focused
-- **THEN** SHALL apply the corresponding visual state (background colour
-  change, focus ring) defined in the recipe
-- **AND** SHALL use Nimbus design tokens for all colours (no hardcoded
-  hex values)
+- **WHEN** the handle is hovered or focused
+- **THEN** SHALL apply the corresponding visual state (background
+  colour change, focus ring) defined in the recipe
+- **AND** SHALL use Nimbus design tokens for all colours (no
+  hardcoded hex values)
 
 #### Scenario: Disabled handle styling
 
-- **WHEN** a handle is disabled (its `Splitter.Root` is disabled or
-  both adjacent panes are disabled)
-- **THEN** SHALL apply the disabled visual variant (`cursor: not-allowed`,
-  reduced opacity)
+- **WHEN** the handle is disabled (both panes have `disabled: true`
+  in `panes`)
+- **THEN** SHALL apply the disabled visual variant (`cursor:
+  not-allowed`, reduced opacity)
+
+#### Scenario: Focus ring uses `_focusVisible`
+
+- **WHEN** the handle receives keyboard focus
+- **THEN** SHALL render the focus ring via the recipe's
+  `_focusVisible` selector
+- **AND** SHALL NOT render the focus ring on mouse-click focus
 
 ### Requirement: No controlled `sizes` prop
 
@@ -373,17 +441,17 @@ through `useSplitterLayout`'s imperative API.
 The component SHALL meet WCAG 2.1 AA requirements as exercised in
 Storybook play functions.
 
-#### Scenario: All interactions reachable by keyboard
+#### Scenario: Handle reachable by keyboard
 
 - **WHEN** the user navigates with Tab
-- **THEN** SHALL reach every handle in DOM order
-- **AND** SHALL skip disabled handles
+- **THEN** SHALL reach the handle in DOM order
+- **AND** SHALL skip the handle if both panes have `disabled: true`
 
 #### Scenario: Focus indicator is visible
 
-- **WHEN** a handle receives keyboard focus
-- **THEN** SHALL render a visible focus ring (via `_focusVisible` in the
-  recipe) with contrast meeting WCAG AA
+- **WHEN** the handle receives keyboard focus
+- **THEN** SHALL render a visible focus ring (via `_focusVisible` in
+  the recipe) with contrast meeting WCAG AA
 
 #### Scenario: Touch target size
 
