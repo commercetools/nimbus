@@ -2,47 +2,45 @@ import {
   createSlotRecipeContext,
   type HTMLChakraProps,
   type RecipeVariantProps,
-} from "@chakra-ui/react";
-import { windowSplitterSlotRecipe } from "./window-splitter.recipe";
+} from "@chakra-ui/react/styled-system";
+import type { splitterSlotRecipe } from "./splitter.recipe";
 
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: windowSplitterSlotRecipe,
+  key: "nimbusSplitter",
 });
 
 // ============================================================
 // Root Slot
 // ============================================================
 
-export interface WindowSplitterRootSlotProps
-  extends HTMLChakraProps<
-    "div",
-    RecipeVariantProps<typeof windowSplitterSlotRecipe>
-  > {}
+export type SplitterRootSlotProps = HTMLChakraProps<
+  "div",
+  RecipeVariantProps<typeof splitterSlotRecipe>
+>;
 
-export const WindowSplitterRootSlot = withProvider<
+export const SplitterRootSlot = withProvider<
   HTMLDivElement,
-  WindowSplitterRootSlotProps
+  SplitterRootSlotProps
 >("div", "root");
 
 // ============================================================
 // Pane Slot
 // ============================================================
 
-export interface WindowSplitterPaneSlotProps extends HTMLChakraProps<"div"> {}
+export type SplitterPaneSlotProps = HTMLChakraProps<"div">;
 
-export const WindowSplitterPaneSlot = withContext<
+export const SplitterPaneSlot = withContext<
   HTMLDivElement,
-  WindowSplitterPaneSlotProps
+  SplitterPaneSlotProps
 >("div", "pane");
 
 // ============================================================
 // Separator Slot
 // ============================================================
 
-export interface WindowSplitterSeparatorSlotProps
-  extends HTMLChakraProps<"div"> {}
+export type SplitterSeparatorSlotProps = HTMLChakraProps<"div">;
 
-export const WindowSplitterSeparatorSlot = withContext<
+export const SplitterSeparatorSlot = withContext<
   HTMLDivElement,
-  WindowSplitterSeparatorSlotProps
+  SplitterSeparatorSlotProps
 >("div", "separator");

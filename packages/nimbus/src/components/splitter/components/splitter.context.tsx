@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-export interface WindowSplitterContextValue {
+export interface SplitterContextValue {
   /** Current value of the splitter (0-100) */
   value: number;
   /** Callback to update the value */
@@ -21,6 +21,6 @@ export interface WindowSplitterContextValue {
   setPrimaryPaneId: (id: string) => void;
 }
 
-export const WindowSplitterContext = createContext<
-  WindowSplitterContextValue | undefined
->(undefined);
+export const SplitterContext = createContext<SplitterContextValue | undefined>(
+  undefined
+);

@@ -1,15 +1,11 @@
 import { forwardRef, useState, useCallback, useMemo } from "react";
-import { useSlotRecipe } from "@chakra-ui/react";
-import { extractStyleProps } from "@/utils/extractStyleProps";
-import { WindowSplitterRootSlot } from "../window-splitter.slots";
-import { WindowSplitterContext } from "./window-splitter.context";
-import { windowSplitterSlotRecipe } from "../window-splitter.recipe";
-import type { WindowSplitterRootProps } from "../window-splitter.types";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
+import { extractStyleProps } from "@/utils";
+import { SplitterRootSlot } from "../splitter.slots";
+import { SplitterContext } from "./splitter.context";
+import type { SplitterRootProps } from "../splitter.types";
 
-export const WindowSplitterRoot = forwardRef<
-  HTMLDivElement,
-  WindowSplitterRootProps
->(
+export const SplitterRoot = forwardRef<HTMLDivElement, SplitterRootProps>(
   (
     {
       children,
@@ -25,7 +21,7 @@ export const WindowSplitterRoot = forwardRef<
     },
     ref
   ) => {
-    const recipe = useSlotRecipe({ recipe: windowSplitterSlotRecipe });
+    const recipe = useSlotRecipe({ key: "nimbusSplitter" });
     const [recipeProps, restRecipeProps] = recipe.splitVariantProps({
       orientation,
       ...props,
@@ -79,18 +75,18 @@ export const WindowSplitterRoot = forwardRef<
     );
 
     return (
-      <WindowSplitterContext.Provider value={contextValue}>
-        <WindowSplitterRootSlot
+      <SplitterContext.Provider value={contextValue}>
+        <SplitterRootSlot
           ref={ref}
           {...recipeProps}
           {...styleProps}
           {...restProps}
         >
           {children}
-        </WindowSplitterRootSlot>
-      </WindowSplitterContext.Provider>
+        </SplitterRootSlot>
+      </SplitterContext.Provider>
     );
   }
 );
 
-WindowSplitterRoot.displayName = "WindowSplitter.Root";
+SplitterRoot.displayName = "Splitter.Root";
