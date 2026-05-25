@@ -88,12 +88,15 @@
 - [x] 4.2 Implement `isCollapsed(paneId): boolean` in the context
       (returns `sizes[paneId] <= paneConfig(paneId).collapsedSize` for
       collapsible panes).
-- [x] 4.3 Add double-click handler on `SplitterHandle`: toggles collapse
+- [x] 4.3 Add Enter key handler on `SplitterHandle`: toggles collapse
       of the adjacent collapsible pane (when both are collapsible,
-      prefer the smaller; ties → left/top). Gated by Root-level
-      `disableDoubleClick?: boolean`.
-- [x] 4.4 Add Enter key handler on `SplitterHandle`: same behaviour as
-      double-click.
+      prefer the smaller; ties → left/top).
+- [x] 4.4 Add double-click handler on `SplitterHandle`: restores the
+      boundary to the initial sizes derived on mount (from
+      `defaultSizes` or `panes[id].defaultSize`). Gated by Root-level
+      `disableDoubleClick?: boolean`. Decoupled from collapsibility so
+      the gesture is meaningful on every splitter — see Decision 10 in
+      design.md.
 - [x] 4.5 Fire `onExpand(paneId)` on Root when a collapsed pane returns
       to a size strictly greater than `collapsedSize`.
 
@@ -161,10 +164,11 @@
 - [x] 7.2 Add new stories with play functions:
       - **PerPaneConstraints**: per-pane `minSize` / `maxSize` in the
         `panes` map enforce the right boundaries; drag clamps.
-      - **CollapsibleByDoubleClick**: double-click handle toggles
-        collapse.
+      - **DoubleClickRestoresDefaults**: double-click after drag returns
+        the boundary to its initial position; `onSizesChange` fires with
+        the restored sizes.
       - **CollapsibleByKeyboard**: Enter on focused handle toggles
-        collapse.
+        collapse on a collapsible pane.
       - **CollapseExpandCallbacks**: `onCollapse(id)` / `onExpand(id)`
         fire with the right pane ids.
       - **WithPersistenceHook**: `useSplitterLayout({ id })` persists

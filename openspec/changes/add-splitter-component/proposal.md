@@ -177,12 +177,20 @@ and independently announced to assistive tech.
 - `collapsible` + `collapsedSize` set per-pane in Root's `panes` map.
 - Root-level `onCollapse: (paneId: string) => void` and
   `onExpand: (paneId: string) => void` notification callbacks.
-- Double-click on `Handle` toggles collapse of the adjacent collapsible
-  pane. If both panes are collapsible, the smaller is preferred (ties
-  broken by left/top).
-- Keyboard: Enter on the focused `Handle` toggles collapse with the same
-  behaviour as double-click. Replaces the current hardcoded "Enter jumps
-  to minValue then back to 50" behaviour.
+- Keyboard: Enter on the focused `Handle` toggles collapse of the
+  adjacent collapsible pane. If both panes are collapsible, the smaller
+  is preferred (ties broken by left/top). Replaces the current hardcoded
+  "Enter jumps to minValue then back to 50" behaviour.
+- Imperative: `useSplitterLayout`'s `collapse(paneId)` / `expand(paneId)`
+  drive the same transitions from anywhere in the consumer tree.
+
+### Double-click restores defaults (new)
+
+- Double-click on `Handle` restores the boundary to its initial position
+  (sizes resolved on mount from `defaultSizes` or `panes[id].defaultSize`).
+- The gesture is decoupled from collapsibility: it works on every
+  splitter, including those without any `collapsible` panes. Gated by
+  Root-level `disableDoubleClick: boolean`.
 
 ### What stays the same
 

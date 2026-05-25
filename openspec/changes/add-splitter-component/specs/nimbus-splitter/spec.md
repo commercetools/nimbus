@@ -126,42 +126,33 @@ remainder.
 ### Requirement: Collapsible panes
 
 A pane configured with `collapsible: true` in the `panes` map SHALL
-support being collapsed to its `collapsedSize` (default 0) via
-double-click on the handle, the Enter key on the focused handle, or the
-imperative `collapse(paneId)` command from the layout hook.
-
-#### Scenario: Double-click collapses adjacent collapsible pane
-
-- **GIVEN** sizes `{ nav: 30, main: 70 }` with
-  `panes.nav = { collapsible: true, collapsedSize: 0 }`
-- **WHEN** the user double-clicks the handle
-- **THEN** SHALL set `nav` size to 0
-- **AND** SHALL grow `main` to absorb the freed 30 (capped by
-  `panes.main.maxSize`)
-- **AND** SHALL fire `onCollapse("nav")` on Root
-- **AND** SHALL produce sizes summing to 100
-
-#### Scenario: Both panes collapsible
-
-- **GIVEN** both panes are `collapsible`
-- **WHEN** the user double-clicks the handle
-- **THEN** SHALL collapse the smaller of the two panes
-- **AND** SHALL break ties by preferring the left/top pane
-
-#### Scenario: Double-click is disabled
-
-- **WHEN** `<Splitter.Root disableDoubleClick>` is set
-- **THEN** SHALL NOT collapse on the handle's double-click
-- **AND** SHALL NOT prevent other handle interactions (drag, keyboard)
+support being collapsed to its `collapsedSize` (default 0) via the Enter
+key on the focused handle or the imperative `collapse(paneId)` command
+from the layout hook. Double-click on the handle is reserved for
+restoring the boundary to its initial position (see "Double-click
+restores defaults"), not for collapsing — this keeps the mouse gesture
+useful on splitters that are not collapsible.
 
 #### Scenario: Enter on focused handle toggles collapse
 
 - **GIVEN** sizes `{ nav: 30, main: 70 }` with
   `panes.nav.collapsible: true`
 - **WHEN** the handle has keyboard focus and Enter is pressed
-- **THEN** SHALL collapse `nav` if not currently collapsed
-- **OR** SHALL expand `nav` to its `defaultSize` (or
-  `initialSizes.nav`) if currently collapsed
+- **THEN** SHALL collapse `nav` if not currently collapsed (set its size
+  to `collapsedSize`, grow the other pane to absorb the freed space
+  capped by its `maxSize`)
+- **AND** SHALL fire `onCollapse("nav")` on Root
+- **OR** SHALL expand `nav` to its `defaultSize` (or `initialSizes.nav`)
+  if currently collapsed
+- **AND** SHALL fire `onExpand("nav")` on Root for the expand transition
+- **AND** SHALL produce sizes summing to 100
+
+#### Scenario: Both panes collapsible — Enter targets the smaller
+
+- **GIVEN** both panes are `collapsible`
+- **WHEN** the handle has keyboard focus and Enter is pressed
+- **THEN** SHALL toggle collapse on the smaller of the two panes
+- **AND** SHALL break ties by preferring the left/top pane
 
 #### Scenario: `onExpand` fires when leaving collapsed state
 
@@ -170,6 +161,35 @@ imperative `collapse(paneId)` command from the layout hook.
   `collapsedSize`
 - **THEN** SHALL fire `onExpand(paneId)` on Root exactly once for that
   transition
+
+### Requirement: Double-click restores defaults
+
+Double-click on the handle SHALL restore the boundary to its initial
+position — the sizes the component resolved on mount from
+`defaultSizes` (if provided), otherwise from `panes[id].defaultSize`,
+otherwise the 50/50 fallback. The behaviour applies to all splitters,
+not only collapsible ones.
+
+#### Scenario: Double-click restores the initial sizes
+
+- **GIVEN** the splitter was mounted with `defaultSizes = { nav: 30, main: 70 }`
+- **AND** the user has dragged the handle to `{ nav: 60, main: 40 }`
+- **WHEN** the user double-clicks the handle
+- **THEN** SHALL set sizes back to `{ nav: 30, main: 70 }`
+- **AND** SHALL fire `onSizesChange({ nav: 30, main: 70 })`
+
+#### Scenario: Double-click is disabled
+
+- **WHEN** `<Splitter.Root disableDoubleClick>` is set
+- **THEN** SHALL NOT restore defaults on the handle's double-click
+- **AND** SHALL NOT prevent other handle interactions (drag, keyboard)
+
+#### Scenario: Double-click does not collapse
+
+- **GIVEN** `panes.nav = { collapsible: true }`
+- **WHEN** the user double-clicks the handle
+- **THEN** SHALL NOT collapse the `nav` pane
+- **AND** SHALL restore the boundary to its initial position
 
 ### Requirement: Keyboard navigation on Handle
 

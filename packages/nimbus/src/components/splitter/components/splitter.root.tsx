@@ -102,12 +102,18 @@ export const SplitterRoot = ({
   // empty sizes (panes fall back to 0%) — this happens for at most one paint.
   const [sizes, setSizesState] = useState<Record<string, number>>({});
 
+  // Remember the sizes resolved on mount so double-click can restore them.
+  // Per spec, defaults are read once on mount; this ref captures that snapshot.
+  const initialSizesRef = useRef<Record<string, number>>({});
+
   // Re-run initial sizes derivation when the pane set changes (mount).
   const hasInitializedRef = useRef(false);
   useEffect(() => {
     if (paneOrder.length === 2 && !hasInitializedRef.current) {
       hasInitializedRef.current = true;
-      setSizesState(deriveInitialSizes(paneOrder, defaultSizes, panes));
+      const initial = deriveInitialSizes(paneOrder, defaultSizes, panes);
+      initialSizesRef.current = initial;
+      setSizesState(initial);
     }
     // Defaults are read once on mount, per spec — don't react to changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -207,6 +213,13 @@ export const SplitterRoot = ({
     [paneOrder, panes, defaultSizes, setSizes]
   );
 
+  const restoreDefaults = useCallback(() => {
+    if (paneOrder.length !== 2) return;
+    const initial = initialSizesRef.current;
+    if (!initial[paneOrder[0]!] || !initial[paneOrder[1]!]) return;
+    setSizes(initial);
+  }, [paneOrder, setSizes]);
+
   // Expose imperative commands to `useSplitterLayout` via the internal ref.
   useImperativeHandle(
     __layoutRef,
@@ -244,6 +257,7 @@ export const SplitterRoot = ({
       collapsePane,
       expandPane,
       isCollapsed: isCollapsedFn,
+      restoreDefaults,
     }),
     [
       sizes,
@@ -259,6 +273,7 @@ export const SplitterRoot = ({
       collapsePane,
       expandPane,
       isCollapsedFn,
+      restoreDefaults,
     ]
   );
 
