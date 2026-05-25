@@ -230,8 +230,8 @@ Dragging the handle by Δ (in percentage points, after pixel→% conversion):
 1. Attempt to grow the previous pane by Δ, shrink the next pane by Δ.
 2. If the next pane would fall below its `minSize` (or below its
    `collapsedSize` when collapsible and the user is committing the
-   collapse via Enter / double-click), clamp Δ to what fits. The handle
-   stops at the boundary.
+   collapse via Enter), clamp Δ to what fits. The handle stops at the
+   boundary.
 3. Mirror behaviour when Δ is negative (clamp at the previous pane's
    `minSize` / `maxSize` instead).
 
@@ -253,6 +253,39 @@ keyed by pane id. The previous `minValue` / `maxValue` / `step` /
 With ids, this is a clean map; nothing leaks onto `<Splitter.Pane>`.
 
 `keyboardStep` (formerly `step` on `Root`) stays on `Root`.
+
+## Decision 10: Double-click restores defaults; Enter toggles collapse
+
+**Decision.** Double-click on the handle restores the boundary to the
+initial sizes derived on mount. Enter on the focused handle toggles
+collapse of the adjacent collapsible pane. The two gestures bind to
+different actions, not the same action.
+
+**Alternatives considered.**
+
+- **A. Double-click toggles collapse (same as Enter).** Pairs the mouse
+  affordance with the keyboard one, giving the collapse feature two
+  discoverable bindings.
+- **B. Double-click restores defaults; Enter toggles collapse.**
+  (Chosen.) Decouples the gestures so each does something on every
+  splitter — including those that aren't collapsible.
+
+**Why B over A.** Most splitters in real apps aren't collapsible
+(e.g. a code editor's left/right pane split). Under A, double-click is
+a no-op on those splitters — discoverable but useless, exactly the
+case where a user would reach for the gesture to "reset". Under B,
+double-click is meaningful everywhere: a single, intuitive way to undo
+a stray drag. Collapse remains reachable via the keyboard (Enter on the
+focused handle) and the imperative `useSplitterLayout.collapse(paneId)`.
+
+The cost is that consumers who want a single mouse gesture for collapse
+have to surface it themselves (a button, a context menu item). For the
+collapsible case specifically that's a small ask — the consumer
+already designed for collapsibility — and it keeps the primitive's
+double-click contract uniform.
+
+`disableDoubleClick` on Root keeps the same name but now suppresses the
+restore-defaults action.
 
 ## What's out of scope (recap)
 

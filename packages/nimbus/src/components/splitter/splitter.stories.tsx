@@ -294,27 +294,26 @@ export const AriaControlsAttribute: Story = {
 };
 
 // ============================================================
-// Double-click toggles collapse on adjacent collapsible pane.
+// Double-click restores the boundary to its initial position.
 // ============================================================
 
-export const CollapsibleByDoubleClick: Story = {
+export const DoubleClickRestoresDefaults: Story = {
   args: {
     panes: {
-      nav: { defaultSize: 30, minSize: 10, collapsible: true },
-      main: { defaultSize: 70, minSize: 20 },
+      nav: { defaultSize: 30, minSize: 10 },
+      main: { defaultSize: 70, minSize: 10 },
     },
-    onCollapse: fn(),
-    onExpand: fn(),
+    onSizesChange: fn(),
   },
   render: (args) => (
     <Box h="600px">
       <Splitter.Root {...args}>
         <Splitter.Pane id="nav">
-          <DemoPane bg="indigo.3" title="Nav (collapsible)" />
+          <DemoPane bg="indigo.3" title="Nav (default 30)" />
         </Splitter.Pane>
         <Splitter.Handle />
         <Splitter.Pane id="main">
-          <DemoPane bg="amber.3" title="Main" />
+          <DemoPane bg="amber.3" title="Main (default 70)" />
         </Splitter.Pane>
       </Splitter.Root>
     </Box>
@@ -323,21 +322,18 @@ export const CollapsibleByDoubleClick: Story = {
     const canvas = within(canvasElement);
     const handle = await canvas.findByRole("separator");
 
-    await userEvent.dblClick(handle);
+    // Move the boundary via keyboard so the story has a non-default state.
+    handle.focus();
+    await userEvent.keyboard("{End}");
     await waitFor(() => {
-      expect(args.onCollapse).toHaveBeenCalledWith("nav");
-    });
-    await waitFor(() => {
-      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(0);
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBeGreaterThan(30);
     });
 
     await userEvent.dblClick(handle);
     await waitFor(() => {
-      expect(args.onExpand).toHaveBeenCalledWith("nav");
-    });
-    await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
     });
+    expect(args.onSizesChange).toHaveBeenCalled();
   },
 };
 
@@ -413,15 +409,16 @@ export const CollapseExpandCallbacks: Story = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     const handle = await canvas.findByRole("separator");
+    handle.focus();
 
-    await userEvent.dblClick(handle);
+    await userEvent.keyboard("{Enter}");
     await waitFor(() => {
       expect(args.onCollapse).toHaveBeenCalledTimes(1);
       expect(args.onCollapse).toHaveBeenCalledWith("nav");
       expect(args.onExpand).not.toHaveBeenCalled();
     });
 
-    await userEvent.dblClick(handle);
+    await userEvent.keyboard("{Enter}");
     await waitFor(() => {
       expect(args.onExpand).toHaveBeenCalledTimes(1);
       expect(args.onExpand).toHaveBeenCalledWith("nav");
@@ -622,17 +619,18 @@ export const GracefulPersistence: Story = {
 };
 
 // ============================================================
-// disableDoubleClick — handle ignores double-click.
+// disableDoubleClick — handle ignores double-click (restore-defaults
+// suppressed); keyboard interactions unaffected.
 // ============================================================
 
 export const DisableDoubleClick: Story = {
   args: {
     disableDoubleClick: true,
     panes: {
-      nav: { defaultSize: 30, collapsible: true },
-      main: { defaultSize: 70 },
+      nav: { defaultSize: 30, minSize: 10 },
+      main: { defaultSize: 70, minSize: 10 },
     },
-    onCollapse: fn(),
+    onSizesChange: fn(),
   },
   render: (args) => (
     <Box h="400px">
@@ -647,16 +645,28 @@ export const DisableDoubleClick: Story = {
       </Splitter.Root>
     </Box>
   ),
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const handle = await canvas.findByRole("separator");
-    await userEvent.dblClick(handle);
-    // Double-click is suppressed; keyboard still works.
-    await expect(args.onCollapse).not.toHaveBeenCalled();
+
+    // Move the boundary off default.
     handle.focus();
-    await userEvent.keyboard("{Enter}");
+    await userEvent.keyboard("{End}");
     await waitFor(() => {
-      expect(args.onCollapse).toHaveBeenCalledWith("nav");
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBeGreaterThan(30);
+    });
+    const afterDrag = Number(handle.getAttribute("aria-valuenow"));
+
+    // Double-click should be a no-op — sizes don't snap back.
+    await userEvent.dblClick(handle);
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(afterDrag);
+    });
+
+    // Keyboard still works.
+    await userEvent.keyboard("{Home}");
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(10);
     });
   },
 };

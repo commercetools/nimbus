@@ -62,7 +62,9 @@ const pickCollapseTarget = (
  *
  * Pointer:
  * - Drag via `useMove` from react-aria.
- * - Double-click toggles collapse (gated by `Splitter.Root.disableDoubleClick`).
+ * - Double-click restores the boundary to the initial sizes resolved on mount
+ *   (gated by `Splitter.Root.disableDoubleClick`). Decoupled from collapse so
+ *   the gesture is meaningful on every splitter.
  */
 export const SplitterHandle = ({
   "aria-label": ariaLabelProp,
@@ -83,6 +85,7 @@ export const SplitterHandle = ({
     collapsePane,
     expandPane,
     isCollapsed,
+    restoreDefaults,
   } = useSplitterContext();
 
   const msg = useLocalizedStringFormatter(splitterMessagesStrings);
@@ -237,8 +240,8 @@ export const SplitterHandle = ({
 
   const handleDoubleClick = useCallback(() => {
     if (disableDoubleClick) return;
-    toggleCollapse();
-  }, [disableDoubleClick, toggleCollapse]);
+    restoreDefaults();
+  }, [disableDoubleClick, restoreDefaults]);
 
   const ariaControls = prevId ? paneDomIds[prevId] : undefined;
 

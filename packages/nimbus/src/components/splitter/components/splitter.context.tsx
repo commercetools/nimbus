@@ -39,6 +39,8 @@ export type SplitterContextValue = {
   expandPane: (paneId: string) => void;
   /** True if the pane's current size is at or below its `collapsedSize`. */
   isCollapsed: (paneId: string) => boolean;
+  /** Restore the boundary to the sizes derived on mount. */
+  restoreDefaults: () => void;
 };
 
 export const SplitterContext = createContext<SplitterContextValue | undefined>(

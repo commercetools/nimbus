@@ -45,8 +45,9 @@ For three or more regions, **nest** one Splitter inside another's `Pane`.
   its usable content size. Pair `minSize` with content that scrolls inside the
   pane (e.g. wrap content in `ScrollArea`).
 - **Use `collapsible: true` for chrome panes.** A nav or aside that the user
-  may want hidden should be `collapsible` so double-click and Enter on the
-  handle toggle it.
+  may want hidden should be `collapsible` so Enter on the focused handle
+  toggles it. Pair with a button or context-menu item if you want a mouse
+  affordance for collapse — double-click is reserved for restoring defaults.
 - **Persist with `useSplitterLayout`.** Give consumers a stable layout across
   sessions; the hook handles SSR, debouncing, and gracefully reconciles
   stored data that drifts from the current pane set.
@@ -172,10 +173,15 @@ const App = () => (
 ## Collapsible panes
 
 A pane configured with `collapsible: true` toggles between its `defaultSize`
-and `collapsedSize` (default 0) via double-click on the handle or Enter when
-the handle is focused. `onCollapse(paneId)` / `onExpand(paneId)` fire on each
-transition. Use `disableDoubleClick` on Root to disable double-click while
-keeping the keyboard shortcut.
+and `collapsedSize` (default 0) via Enter on the focused handle or the
+imperative `useSplitterLayout.collapse(paneId)` / `.expand(paneId)`.
+`onCollapse(paneId)` / `onExpand(paneId)` fire on each transition.
+
+> [!NOTE]\
+> Double-click is **not** a collapse gesture — it restores the boundary to
+> its initial position (see "Double-click restores defaults" below). If you
+> want a mouse affordance for collapse, surface it yourself (a button, a
+> context menu item) and call `layout.collapse(paneId)`.
 
 ```jsx-live
 const App = () => (
@@ -190,7 +196,7 @@ const App = () => (
     >
       <Splitter.Pane id="nav">
         <Box p="400" bg="indigo.3" h="100%">
-          <Heading size="md">Nav (double-click handle to collapse)</Heading>
+          <Heading size="md">Nav (focus handle, press Enter to collapse)</Heading>
         </Box>
       </Splitter.Pane>
       <Splitter.Handle />
@@ -203,6 +209,14 @@ const App = () => (
   </Box>
 );
 ```
+
+## Double-click restores defaults
+
+Double-click on the handle returns the boundary to the sizes the splitter
+resolved on mount (from `defaultSizes` or `panes[id].defaultSize`). It's a
+quick "undo" for stray drags and works on every splitter, including ones
+without any `collapsible` panes. Set `disableDoubleClick` on Root to
+suppress the gesture.
 
 ## Persistence and cross-app commands
 
