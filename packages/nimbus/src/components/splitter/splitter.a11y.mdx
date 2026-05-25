@@ -1,0 +1,101 @@
+---
+title: Splitter Component
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Standards
+
+The Splitter follows the [W3C ARIA Authoring Practices Guide window splitter
+pattern](https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/) and is
+implemented on top of React Aria's `useSeparator`, `useMove`, and
+`useFocusRing` hooks. The 2-pane shape maps directly onto the W3C example —
+"a separator between two regions" — so the ARIA model is locally complete
+and predictable per splitter, even when splitters are nested.
+
+## ARIA model on `Splitter.Handle`
+
+| Attribute          | Value                                                       |
+| ------------------ | ----------------------------------------------------------- |
+| `role`             | `separator`                                                 |
+| `aria-orientation` | Mirrors `Splitter.Root.orientation` (W3C separator semantics — describes the boundary axis, not the layout axis). |
+| `aria-valuenow`    | Current size of the **previous** pane in percentage points. |
+| `aria-valuemin`    | `panes[prev].minSize`                                       |
+| `aria-valuemax`    | `100 − panes[next].minSize`, capped by `panes[prev].maxSize`. |
+| `aria-controls`    | DOM id of the previous `Splitter.Pane`.                     |
+| `aria-label`       | Defaults to a localised "Resize panes"; consumer-overridable on `Splitter.Handle`. |
+| `aria-disabled`    | `true` when both panes are `disabled` in the `panes` map.   |
+| `tabindex`         | `0` when interactive; `-1` when both panes are disabled.    |
+
+> The handle's underlying ARIA role stays `separator` per the W3C spec —
+> the API-level rename to `Handle` is purely about communicating
+> interactivity in the developer-facing component name.
+
+## Keyboard reference
+
+When `Splitter.Handle` has focus:
+
+| Key                                  | Behaviour                                                          |
+| ------------------------------------ | ------------------------------------------------------------------ |
+| ArrowLeft / ArrowRight (horizontal)  | Move the boundary by `keyboardStep` percentage points.             |
+| ArrowUp / ArrowDown (vertical)       | Same, on the vertical axis.                                        |
+| Home                                 | Shrink the previous pane to its `minSize`.                         |
+| End                                  | Grow the previous pane to its `maxSize` (or `100 − next.minSize`). |
+| Enter                                | Toggle collapse of the adjacent collapsible pane.                  |
+
+All keyboard handlers `preventDefault` on the relevant key so default browser
+scroll never competes with the resize action.
+
+## Focus order
+
+A horizontal splitter with two panes renders three logical focus stops:
+
+1. Anything tabbable inside the **previous** pane (DOM order).
+2. The **handle** (`role="separator"`, `tabIndex={0}`).
+3. Anything tabbable inside the **next** pane.
+
+The pane wrappers themselves are not focusable — only their interactive
+content. When both panes are `disabled`, the handle is skipped in the tab
+order; assistive technology still reports it via the separator role.
+
+## Nested splitters and the AT tree
+
+A nested splitter is its own self-contained widget: an inner
+`Splitter.Root` inside an outer `Splitter.Pane` exposes a second `separator`
+in the tab order, each with its own `aria-controls` pointing into its local
+subtree. Screen-reader users navigate each splitter locally — no
+cross-splitter coupling, no cascading ARIA semantics.
+
+```tsx
+<Splitter.Root panes={{ nav: {…}, rest: {…} }}>
+  <Splitter.Pane id="nav">…</Splitter.Pane>
+  <Splitter.Handle />                        {/* outer handle */}
+  <Splitter.Pane id="rest">
+    <Splitter.Root panes={{ main: {…}, aside: {…} }}>
+      <Splitter.Pane id="main">…</Splitter.Pane>
+      <Splitter.Handle />                    {/* inner handle */}
+      <Splitter.Pane id="aside">…</Splitter.Pane>
+    </Splitter.Root>
+  </Splitter.Pane>
+</Splitter.Root>
+```
+
+## Touch target size
+
+The visible handle track is intentionally thin (`sm` = 4px, `md` = 8px,
+`lg` = 12px), but the hit area is expanded via a `::before`
+pseudo-element so the handle always meets the 24×24 CSS-pixel touch target
+requirement (WCAG 2.5.5).
+
+## Focus indicator
+
+The focus ring is applied via the recipe's `_focusVisible` selector — it
+appears on keyboard focus only, not on mouse-click focus. The ring uses the
+shared Nimbus `focusRing` layer style, so contrast is consistent with every
+other focusable Nimbus component and meets WCAG 2.1 AA.
+
+## Internationalization
+
+The handle's default `aria-label` ("Resize panes") is localised via the
+shared Nimbus i18n pipeline. Consumers can override per handle with the
+standard `aria-label` / `aria-labelledby` props.

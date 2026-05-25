@@ -587,6 +587,10 @@
     "developer_comment": "fallback message when split button has no menu items",
     "string": "No actions available"
   },
+  "Nimbus.Splitter.resizePanes": {
+    "developer_comment": "Default aria-label for the Splitter handle that users drag to redistribute space between the two panes.",
+    "string": "Resize panes"
+  },
   "Nimbus.TagGroup.removeTag": {
     "developer_comment": "aria-label for remove tag button",
     "string": "Remove tag"
