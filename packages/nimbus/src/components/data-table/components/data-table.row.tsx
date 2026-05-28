@@ -208,11 +208,18 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
             e.clientY
           );
           if (caretPos?.offsetNode) {
-            selection.removeAllRanges();
-            selection.collapse(caretPos.offsetNode, caretPos.offset);
-            selection.modify("move", "backward", "word");
-            selection.extend(caretPos.offsetNode, caretPos.offset);
-            selection.modify("extend", "forward", "word");
+            const sel = selection as Selection & {
+              modify(
+                alter: string,
+                direction: string,
+                granularity: string
+              ): void;
+            };
+            sel.removeAllRanges();
+            sel.collapse(caretPos.offsetNode, caretPos.offset);
+            sel.modify("move", "backward", "word");
+            sel.extend(caretPos.offsetNode, caretPos.offset);
+            sel.modify("extend", "forward", "word");
           }
         } else if (
           typeof (document as unknown as Record<string, unknown>)
@@ -225,10 +232,17 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
             }
           ).caretRangeFromPoint(e.clientX, e.clientY);
           if (range) {
-            selection.removeAllRanges();
-            selection.addRange(range);
-            selection.modify("move", "backward", "word");
-            selection.modify("extend", "forward", "word");
+            const sel = selection as Selection & {
+              modify(
+                alter: string,
+                direction: string,
+                granularity: string
+              ): void;
+            };
+            sel.removeAllRanges();
+            sel.addRange(range);
+            sel.modify("move", "backward", "word");
+            sel.modify("extend", "forward", "word");
           }
         }
       }

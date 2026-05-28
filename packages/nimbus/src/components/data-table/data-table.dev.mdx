@@ -712,7 +712,7 @@ DataTable supports row reordering via drag and drop using the shared `useDragAnd
 
 ### Reorderable rows
 
-```tsx
+```jsx live-dev
 import { DataTable, useDragAndDrop, createArrayHandlers } from '@commercetools/nimbus';
 
 const App = () => {
@@ -748,6 +748,10 @@ When `dragAndDropHooks` is provided:
 - A **drop indicator** shows where the row will be placed
 - **Double-click text selection** is preserved via programmatic word selection
 - Drag and drop works alongside **row selection** and **clickable rows**
+
+> **Note:** When combining drag and drop with **row pinning**, pinned rows can
+> be reordered among themselves and non-pinned rows among themselves, but items
+> cannot be dragged between pinned and non-pinned groups.
 
 ### Namespace isolation
 

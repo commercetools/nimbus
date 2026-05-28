@@ -46,7 +46,7 @@ import {
   initialHiddenColumns,
 } from "./data-table.test-data";
 
-import { useDragAndDrop, createArrayHandlers } from "@/hooks/use-drag-and-drop";
+import { useDragAndDrop, createArrayHandlers } from "@commercetools/nimbus";
 import type {
   DataTableRowItem,
   DataTableColumnItem,

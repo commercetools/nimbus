@@ -299,6 +299,9 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       position: "relative",
       borderBottom: "1px solid {colors.neutral.3}",
       focusVisibleRing: "inside",
+      "&[data-dragging='true']": {
+        cursor: "grabbing",
+      },
       "&[draggable='true']": {
         cursor: "grab",
       },

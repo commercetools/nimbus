@@ -8,6 +8,7 @@ import type { DragAndDropItemData } from "./use-drag-and-drop.types";
 
 /**
  * Extracts plain text items from a drop.
+ * Items whose `types` set does not include `type` are silently skipped.
  * @param items - Raw drop items
  * @param type - The text MIME type to extract. @default "text/plain"
  */
@@ -16,10 +17,13 @@ export async function createItemsFromTextDrop(
   type: string = "text/plain"
 ): Promise<DragAndDropItemData[]> {
   return Promise.all(
-    items.filter(isTextDropItem).map(async (item) => ({
-      key: crypto.randomUUID(),
-      label: await item.getText(type),
-    }))
+    items
+      .filter(isTextDropItem)
+      .filter((item) => item.types.has(type))
+      .map(async (item) => ({
+        key: crypto.randomUUID(),
+        label: await item.getText(type),
+      }))
   );
 }
 
@@ -122,6 +126,10 @@ export async function createItemsFromImageDrop(
  * Extracts CSV text items from a drop, parsing into rows.
  * The first row is treated as headers. Each subsequent row becomes one item
  * with `label` set to the first column value.
+ *
+ * **Limitation:** uses naive comma splitting — quoted fields containing commas
+ * (e.g. `"Smith, John"`) are not handled. Use a dedicated CSV parser for
+ * production data that may contain quoted fields.
  */
 export async function createItemsFromCsvDrop(
   items: DropItem[]
