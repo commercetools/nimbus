@@ -9,7 +9,7 @@
   },
   "Nimbus.Avatar.avatarLabelGeneric": {
     "developer_comment": "Generic aria-label for the avatar component, used when no first or last name is available to interpolate (e.g. partial user records).",
-    "string": "Generic user avatar"
+    "string": "Generischer Benutzeravatar"
   },
   "Nimbus.Calendar.nextMonth": {
     "developer_comment": "aria-label for next month navigation button",
@@ -45,11 +45,11 @@
   },
   "Nimbus.ConfirmationDialog.cancel": {
     "developer_comment": "default label for the cancel button in a confirmation dialog",
-    "string": "Cancel"
+    "string": "Abbrechen"
   },
   "Nimbus.ConfirmationDialog.confirm": {
     "developer_comment": "default label for the confirm button in a confirmation dialog",
-    "string": "Confirm"
+    "string": "Bestätigen"
   },
   "Nimbus.DataTable.comfortable": {
     "developer_comment": "title for the comfortable togglebutton in the data table manager layout",
@@ -337,27 +337,27 @@
   },
   "Nimbus.FormActionBar.ariaLabel": {
     "developer_comment": "default aria-label for the form action bar group",
-    "string": "Form actions"
+    "string": "Formular-Aktionen"
   },
   "Nimbus.FormActionBar.cancel": {
     "developer_comment": "default label for the cancel button in a form action bar",
-    "string": "Cancel"
+    "string": "Abbrechen"
   },
   "Nimbus.FormActionBar.delete": {
     "developer_comment": "default label for the delete button in a form action bar",
-    "string": "Delete"
+    "string": "Löschen"
   },
   "Nimbus.FormActionBar.save": {
     "developer_comment": "default label for the save button in a form action bar",
-    "string": "Save"
+    "string": "Speichern"
   },
   "Nimbus.FormDialog.cancel": {
     "developer_comment": "default label for the cancel button in a form dialog",
-    "string": "Cancel"
+    "string": "Abbrechen"
   },
   "Nimbus.FormDialog.save": {
     "developer_comment": "default label for the save button in a form dialog",
-    "string": "Save"
+    "string": "Speichern"
   },
   "Nimbus.LoadingSpinner.default": {
     "developer_comment": "Default loading message for loading spinners",
@@ -453,7 +453,7 @@
   },
   "Nimbus.PublicPageLayout.ariaLabel": {
     "developer_comment": "default aria-label for the public page layout main landmark",
-    "string": "Public page"
+    "string": "Öffentliche Seite"
   },
   "Nimbus.RangeCalendar.nextMonth": {
     "developer_comment": "aria-label for next month navigation button",
