@@ -7,6 +7,7 @@ import type {
   RowProps as RaRowProps,
   CellProps as RaCellProps,
   Selection,
+  DragAndDropHooks,
 } from "react-aria-components";
 import type {
   HTMLChakraProps,
@@ -41,6 +42,11 @@ export type DataTableTableSlotProps = Omit<
 > & {
   translate?: "yes" | "no";
   ref?: React.Ref<HTMLTableElement>;
+  /**
+   * Drag-and-drop hooks returned by `useDragAndDrop`.
+   * When provided, enables drag-and-drop on the table.
+   */
+  dragAndDropHooks?: DragAndDropHooks;
 };
 
 export type DataTableHeaderSlotProps = HTMLChakraProps<"tr">;
