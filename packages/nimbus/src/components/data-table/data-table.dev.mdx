@@ -708,7 +708,7 @@ const App = () => {
 
 ## Drag and drop
 
-DataTable supports row reordering via drag and drop using the shared `useDragAndDrop` hook. Pass `dragAndDropHooks` to `DataTable.Table` to enable it.
+DataTable supports row reordering via drag and drop using the shared `useDragAndDrop` hook. Pass `dragAndDropHooks` to `DataTable` to enable it.
 
 ### Reorderable rows
 
@@ -732,15 +732,11 @@ const App = () => {
   });
 
   return (
-    <DataTable.Root columns={columns} rows={rows}>
-      <DataTable.Table
-        aria-label="Reorderable table"
-        dragAndDropHooks={dragAndDropHooks}
-      >
-        <DataTable.Header />
-        <DataTable.Body />
-      </DataTable.Table>
-    </DataTable.Root>
+    <DataTable
+      columns={columns}
+      rows={rows}
+      dragAndDropHooks={dragAndDropHooks}
+    />
   );
 }
 ```

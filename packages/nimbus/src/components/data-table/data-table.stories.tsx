@@ -4882,20 +4882,13 @@ export const DragAndDropRows: Story = {
 
       return (
         <Stack gap="400">
-          <DataTable.Root
+          <DataTable
             columns={simpleColumns}
             rows={tableRows}
             selectionMode="multiple"
             onRowClick={(row) => setClickedRow(row.id)}
-          >
-            <DataTable.Table
-              aria-label="draggable table"
-              dragAndDropHooks={dragAndDropHooks}
-            >
-              <DataTable.Header />
-              <DataTable.Body />
-            </DataTable.Table>
-          </DataTable.Root>
+            dragAndDropHooks={dragAndDropHooks}
+          />
           <Text data-testid="row-order">
             Order: {tableRows.map((r) => r.name).join(", ")}
           </Text>
@@ -4912,7 +4905,7 @@ export const DragAndDropRows: Story = {
     await step(
       "Verify table renders with drag handles, selection, and row click",
       async () => {
-        const table = canvas.getByRole("grid", { name: /draggable table/i });
+        const table = canvas.getByRole("grid");
         const dataRows = within(table).getAllByRole("row");
         expect(dataRows.length).toBe(4);
         expect(canvas.getByTestId("row-order")).toHaveTextContent(
