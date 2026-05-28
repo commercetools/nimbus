@@ -25,24 +25,27 @@ Returns `{ dragAndDropHooks }` to pass to any supported React Aria collection co
 import { useDragAndDrop, createArrayHandlers } from "@commercetools/nimbus";
 ```
 
-### Basic reorderable list
+### Basic reorderable DataTable
 
 ```tsx
-const [items, setItems] = useState([
-  { key: "1", label: "First" },
-  { key: "2", label: "Second" },
-  { key: "3", label: "Third" },
+import { DataTable, useDragAndDrop, createArrayHandlers } from "@commercetools/nimbus";
+
+const [rows, setRows] = useState([
+  { id: "1", name: "Alice", role: "Admin" },
+  { id: "2", name: "Bob", role: "User" },
+  { id: "3", name: "Carol", role: "Manager" },
 ]);
 
+const columns = [
+  { id: "name", header: "Name", accessor: (row) => row.name },
+  { id: "role", header: "Role", accessor: (row) => row.role },
+];
+
 const { dragAndDropHooks } = useDragAndDrop({
-  ...createArrayHandlers(setItems, (item) => item.key),
+  ...createArrayHandlers(setRows, (row) => row.id),
 });
 
-<DraggableList.Root
-  items={items}
-  onUpdateItems={setItems}
-  aria-label="Reorderable list"
-/>
+<DataTable columns={columns} rows={rows} dragAndDropHooks={dragAndDropHooks} />
 ```
 
 > [!NOTE]
@@ -168,12 +171,10 @@ const { dragAndDropHooks } = useDragAndDrop({
   ...createArrayHandlers(setRows, (row) => row.id),
 });
 
-<DataTable.Root>
-  <DataTable.Table dragAndDropHooks={dragAndDropHooks}>
-    {/* columns and body */}
-  </DataTable.Table>
-</DataTable.Root>
+<DataTable columns={columns} rows={rows} dragAndDropHooks={dragAndDropHooks} />
 ```
+
+The `dragAndDropHooks` prop is also available on `DataTable.Table` for the compound component API.
 
 ## API reference
 

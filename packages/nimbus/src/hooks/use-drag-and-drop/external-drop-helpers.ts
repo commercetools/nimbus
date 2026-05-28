@@ -76,7 +76,12 @@ export async function createItemsFromJsonDrop(
   for (const item of items.filter(isTextDropItem)) {
     if (!item.types.has("application/json")) continue;
     const text = await item.getText("application/json");
-    const data = JSON.parse(text) as Record<string, unknown>;
+    let data: Record<string, unknown>;
+    try {
+      data = JSON.parse(text) as Record<string, unknown>;
+    } catch {
+      continue;
+    }
     const label =
       typeof data.label === "string"
         ? data.label

@@ -23,5 +23,6 @@ arrays respectively.
 `createItemsFromImageDrop`, `createItemsFromCsvDrop` — composable utilities for
 converting external drop items inside `onExternalDrop`.
 
-**DataTable**: Add optional `dragAndDropHooks` prop to `DataTable.Table` for
-consumer-provided drag-and-drop support.
+**DataTable**: Add optional `dragAndDropHooks` prop to both `DataTable` and
+`DataTable.Table` for consumer-provided drag-and-drop support. When provided, a
+drag handle column is automatically added and rows become reorderable.

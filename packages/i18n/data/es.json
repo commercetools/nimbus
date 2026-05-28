@@ -79,6 +79,14 @@
     "developer_comment": "aria-label for the data table header element",
     "string": "Encabezamiento de la tabla de datos"
   },
+  "Nimbus.DataTable.dragRow": {
+    "developer_comment": "aria-label for the drag handle button on each row",
+    "string": "Drag to reorder"
+  },
+  "Nimbus.DataTable.dragRowsColumn": {
+    "developer_comment": "aria-label for the drag rows column header",
+    "string": "Reorder rows"
+  },
   "Nimbus.DataTable.expandRows": {
     "developer_comment": "aria-label for the expand rows column header",
     "string": "Extender filas"

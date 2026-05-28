@@ -24,6 +24,8 @@ import {
   PushPin,
 } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { dataTableMessagesStrings } from "../data-table.messages";
 
 /**
  * DataTable.Row - Individual row component that renders data cells and handles row-level interactions
@@ -196,13 +198,38 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       // draggable="true" suppresses native text selection, so
       // programmatically select the word under the cursor.
       if (e instanceof MouseEvent) {
-        const caretPos = document.caretPositionFromPoint(e.clientX, e.clientY);
-        if (caretPos?.offsetNode) {
-          const selection = window.getSelection();
-          selection?.removeAllRanges();
-          selection?.collapse(caretPos.offsetNode, caretPos.offset);
-          selection?.modify("move", "backward", "word");
-          selection?.modify("extend", "forward", "word");
+        const selection = window.getSelection();
+        if (!selection) return;
+
+        // Firefox / Chrome
+        if (typeof document.caretPositionFromPoint === "function") {
+          const caretPos = document.caretPositionFromPoint(
+            e.clientX,
+            e.clientY
+          );
+          if (caretPos?.offsetNode) {
+            selection.removeAllRanges();
+            selection.collapse(caretPos.offsetNode, caretPos.offset);
+            selection.modify("move", "backward", "word");
+            selection.extend(caretPos.offsetNode, caretPos.offset);
+            selection.modify("extend", "forward", "word");
+          }
+        } else if (
+          typeof (document as unknown as Record<string, unknown>)
+            .caretRangeFromPoint === "function"
+        ) {
+          // Safari fallback
+          const range = (
+            document as unknown as {
+              caretRangeFromPoint(x: number, y: number): Range | null;
+            }
+          ).caretRangeFromPoint(e.clientX, e.clientY);
+          if (range) {
+            selection.removeAllRanges();
+            selection.addRange(range);
+            selection.modify("move", "backward", "word");
+            selection.modify("extend", "forward", "word");
+          }
         }
       }
     }
@@ -290,6 +317,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   const rowRef = mergeRefs(ref, rowNodeRef);
 
   const { selectionBehavior, allowsDragging } = useTableOptions();
+  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
 
   const hasNestedContent =
     nestedKey &&
@@ -338,6 +366,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                 size="2xs"
                 variant="ghost"
                 colorPalette="neutral"
+                aria-label={msg.format("dragRow")}
               >
                 <DragIndicator />
               </IconButton>
@@ -458,6 +487,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               isDisabled={isDisabled}
               colSpan={
                 activeColumns.length +
+                (allowsDragging ? 1 : 0) +
                 (showExpandColumn ? 1 : 0) +
                 (showSelectionColumn ? 1 : 0) +
                 1

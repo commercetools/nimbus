@@ -72,7 +72,15 @@ export function createListDataHandlers<T>(list: ListData<T>): StateHandlers<T> {
  */
 export function createArrayHandlers<T extends Record<string, unknown>>(
   setItems: Dispatch<SetStateAction<T[]>>,
-  getKey: (item: T) => Key = (item) => (item.key as Key) ?? (item.id as Key)
+  getKey: (item: T) => Key = (item) => {
+    const key = (item.key as Key) ?? (item.id as Key);
+    if (key == null) {
+      throw new Error(
+        "createArrayHandlers: item has no `key` or `id` field. Provide a custom `getKey` function."
+      );
+    }
+    return key;
+  }
 ): StateHandlers<T> {
   return {
     onInsertItems(items, target) {

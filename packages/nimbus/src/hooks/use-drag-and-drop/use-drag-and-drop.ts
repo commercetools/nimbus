@@ -1,7 +1,4 @@
-import {
-  useDragAndDrop as useRaDragAndDrop,
-  isTextDropItem,
-} from "react-aria-components";
+import { useDragAndDrop as useRaDragAndDrop } from "react-aria-components";
 import { processDropItems } from "./process-drop-items";
 import type { UseDragAndDropOptions } from "./use-drag-and-drop.types";
 

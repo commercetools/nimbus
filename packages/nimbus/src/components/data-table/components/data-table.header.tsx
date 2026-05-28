@@ -58,9 +58,9 @@ export const DataTableHeader = <
             minWidth={24}
             allowsSorting={false}
             isInternalColumn={true}
-            aria-label={msg.format("dataTableHeader")}
+            aria-label={msg.format("dragRowsColumn")}
           >
-            <VisuallyHidden>{msg.format("dataTableHeader")}</VisuallyHidden>
+            <VisuallyHidden>{msg.format("dragRowsColumn")}</VisuallyHidden>
           </DataTableColumn>
         )}
         {selectionBehavior === "toggle" && (

@@ -1142,8 +1142,10 @@ export const ExternalTextDrop: Story = {
         await waitFor(async () => {
           const targetRows = await within(targetGrid).findAllByRole("row");
           expect(targetRows.length).toBe(2);
-          // The new item should have the text from the source item
           await within(targetGrid).findByText("External Item A");
+
+          const sourceRows = await within(sourceGrid).findAllByRole("row");
+          expect(sourceRows.length).toBe(2);
         });
       }
     );

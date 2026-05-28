@@ -4,7 +4,6 @@ export type {
   DragAndDropItemData,
   UseDragAndDropOptions,
 } from "./use-drag-and-drop.types";
-export { processDropItems } from "./process-drop-items";
 export {
   createItemsFromTextDrop,
   createItemsFromFileDrop,

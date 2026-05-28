@@ -4916,5 +4916,26 @@ export const DragAndDropRows: Story = {
         );
       }
     );
+
+    await step("Drag first row down one position via keyboard", async () => {
+      const table = canvas.getByRole("grid");
+      const rows = within(table).getAllByRole("row");
+      const dragHandle = within(rows[1]).getByRole("button", {
+        name: /drag to reorder/i,
+      });
+
+      dragHandle.focus();
+      await userEvent.keyboard("{Enter}");
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      await userEvent.keyboard("{ArrowDown}");
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("row-order")).toHaveTextContent(
+          "Order: Bob, Alice, Carol"
+        );
+      });
+    });
   },
 };
