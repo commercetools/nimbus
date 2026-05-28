@@ -706,6 +706,66 @@ const App = () => {
 }
 ```
 
+## Drag and drop
+
+DataTable supports row reordering via drag and drop using the shared `useDragAndDrop` hook. Pass `dragAndDropHooks` to `DataTable.Table` to enable it.
+
+### Reorderable rows
+
+```tsx
+import { DataTable, useDragAndDrop, createArrayHandlers } from '@commercetools/nimbus';
+
+const App = () => {
+  const [rows, setRows] = useState([
+    { id: '1', name: 'Alice', role: 'Admin' },
+    { id: '2', name: 'Bob', role: 'User' },
+    { id: '3', name: 'Carol', role: 'Manager' },
+  ]);
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+  ];
+
+  const { dragAndDropHooks } = useDragAndDrop({
+    ...createArrayHandlers(setRows, (row) => row.id),
+  });
+
+  return (
+    <DataTable.Root columns={columns} rows={rows}>
+      <DataTable.Table
+        aria-label="Reorderable table"
+        dragAndDropHooks={dragAndDropHooks}
+      >
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+}
+```
+
+When `dragAndDropHooks` is provided:
+- A **drag handle column** with a grip icon is automatically added as the first column
+- Rows can be dragged using mouse or touch from anywhere on the row
+- **Keyboard accessible**: focus the drag handle, press Enter to start drag, use arrow keys to move, Enter to drop, Escape to cancel
+- A **drop indicator** shows where the row will be placed
+- **Double-click text selection** is preserved via programmatic word selection
+- Drag and drop works alongside **row selection** and **clickable rows**
+
+### Namespace isolation
+
+Use `dragNamespace` to prevent drag between unrelated tables:
+
+```tsx
+const { dragAndDropHooks } = useDragAndDrop({
+  dragNamespace: 'my-table',
+  ...createArrayHandlers(setRows, (row) => row.id),
+});
+```
+
+See the [`useDragAndDrop` hook documentation](/hooks/use-drag-and-drop) for external drop support, outgoing formats, and helper functions.
+
 ## Compound component API
 
 For advanced customization, use the compound component pattern:
