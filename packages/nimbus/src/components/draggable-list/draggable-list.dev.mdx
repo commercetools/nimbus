@@ -323,6 +323,75 @@ const App = () => {
 
 Items can be dragged between Fruits A and Fruits B (same namespace), but the Vegetables list is isolated and will not accept fruit items or vice versa. Omitting `dragNamespace` preserves the default behavior where all lists interoperate.
 
+### Accepting external drops
+
+Use `onExternalDrop` and `acceptExternalTypes` to accept drops from outside Nimbus. Helper functions are provided for common drop types:
+
+```jsx live-dev
+const App = () => {
+  const [items, setItems] = useState([
+    { key: '1', label: 'Existing item' },
+  ]);
+
+  return (
+    <DraggableList.Root
+      items={items}
+      onUpdateItems={setItems}
+      acceptExternalTypes={['text/plain']}
+      onExternalDrop={async (dropItems) => {
+        const results = [];
+        for (const item of dropItems) {
+          if (item.kind === 'text') {
+            const text = await item.getText('text/plain');
+            results.push({ key: crypto.randomUUID(), label: text });
+          }
+        }
+        return results;
+      }}
+      aria-label="Drop text here"
+    />
+  );
+}
+```
+
+For file and directory drops, use the composable helpers:
+
+```tsx
+import {
+  createItemsFromFileDrop,
+  createItemsFromDirectoryDrop,
+} from '@commercetools/nimbus';
+
+<DraggableList.Root
+  items={items}
+  onUpdateItems={setItems}
+  acceptExternalTypes={['image/png', 'application/pdf']}
+  onExternalDrop={async (dropItems) => [
+    ...(await createItemsFromFileDrop(dropItems)),
+    ...(await createItemsFromDirectoryDrop(dropItems)),
+  ]}
+  aria-label="Drop files here"
+/>
+```
+
+See the [`useDragAndDrop` hook documentation](/hooks/use-drag-and-drop) for the full list of helpers and advanced usage.
+
+### Outgoing drag formats
+
+Use `serializeDragItem` to make items droppable into non-Nimbus targets by providing additional format representations:
+
+```tsx
+<DraggableList.Root
+  items={items}
+  onUpdateItems={setItems}
+  serializeDragItem={(item) => ({
+    'text/plain': item.label,
+    'text/html': `<li>${item.label}</li>`,
+  })}
+  aria-label="Drag items out"
+/>
+```
+
 ### TypeScript generics
 
 Use TypeScript generics to ensure type safety with your custom item data:
