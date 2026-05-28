@@ -49,7 +49,7 @@ React Aria's drag-and-drop system provides:
 
 ### Data format
 
-Items being dragged use a custom format (`nimbus-draggable-list-item`) that allows items to be dragged between multiple DraggableList instances while preventing drops from external sources.
+Items being dragged use a custom format (`nimbus-draggable-list-item`) that allows items to be dragged between multiple DraggableList instances while preventing drops from external sources. When the `dragNamespace` prop is set, the format is scoped to that namespace (e.g. `nimbus-draggable-list-item:fruits`), so only lists sharing the same namespace can exchange items.
 
 ### State management
 
@@ -268,6 +268,60 @@ const App = () => {
   );
 }
 ```
+
+### Isolating lists with `dragNamespace`
+
+By default, all DraggableList instances on a page can exchange items. Use the `dragNamespace` prop to isolate groups of lists so that only lists sharing the same namespace accept each other's items:
+
+```jsx live-dev
+const App = () => {
+  const [fruitsA, setFruitsA] = useState([
+    { key: '1', label: 'Apple' },
+    { key: '2', label: 'Banana' },
+  ]);
+  const [fruitsB, setFruitsB] = useState([
+    { key: '3', label: 'Cherry' },
+  ]);
+  const [veggies, setVeggies] = useState([
+    { key: '4', label: 'Carrot' },
+    { key: '5', label: 'Broccoli' },
+  ]);
+
+  return (
+    <Stack direction="row" gap="400">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Fruits A</Text>
+        <DraggableList.Root
+          items={fruitsA}
+          onUpdateItems={setFruitsA}
+          dragNamespace="fruits"
+          aria-label="Fruits list A"
+        />
+      </Stack>
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Fruits B</Text>
+        <DraggableList.Root
+          items={fruitsB}
+          onUpdateItems={setFruitsB}
+          dragNamespace="fruits"
+          aria-label="Fruits list B"
+        />
+      </Stack>
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Vegetables</Text>
+        <DraggableList.Root
+          items={veggies}
+          onUpdateItems={setVeggies}
+          dragNamespace="vegetables"
+          aria-label="Vegetables list"
+        />
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+Items can be dragged between Fruits A and Fruits B (same namespace), but the Vegetables list is isolated and will not accept fruit items or vice versa. Omitting `dragNamespace` preserves the default behavior where all lists interoperate.
 
 ### TypeScript generics
 

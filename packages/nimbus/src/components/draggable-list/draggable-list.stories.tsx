@@ -58,6 +58,37 @@ async function dragItem(
   await userEvent.keyboard("{Enter}");
 }
 
+/**
+ * Helper function to drag an item from one list to another using keyboard navigation.
+ * Uses Tab key to navigate between lists after initiating drag mode.
+ * @param canvas - The testing-library canvas element
+ * @param itemLabel - The label of the item to drag
+ * @param tabCount - Number of Tab presses to reach the target list (default: 1)
+ */
+async function dragItemToList(
+  canvas: ReturnType<typeof within>,
+  itemLabel: string,
+  tabCount: number = 1
+) {
+  const sourceElement = await canvas.findByRole("row", {
+    name: itemLabel,
+  });
+
+  sourceElement.focus();
+
+  await userEvent.keyboard("{ArrowLeft}");
+  await wait();
+  await userEvent.keyboard("{Enter}");
+
+  for (let i = 0; i < tabCount; i++) {
+    await wait();
+    await userEvent.keyboard("{Tab}");
+  }
+
+  await wait();
+  await userEvent.keyboard("{Enter}");
+}
+
 const meta: Meta<typeof DraggableList.Root> = {
   title: "Components/DraggableList",
   tags: ["autodocs"],
@@ -246,41 +277,140 @@ export const CrossListDragAndDrop: Story = {
         name: /target list/i,
       });
 
-      // Get the first item from source list
-      const firstItem = items[0]; // "Item 1"
+      await dragItemToList(canvas, items[0].label as string);
 
-      // Find the item in source list
-      const sourceItemRow = await within(sourceGrid).findByRole("row", {
-        name: firstItem.label as string,
-      });
-      sourceItemRow.focus();
-
-      // Start drag with waits between operations for React Aria's state machine
-      await userEvent.keyboard("{ArrowLeft}");
-      await wait();
-      await userEvent.keyboard("{Enter}");
-      await wait();
-
-      // Navigate to target grid using Tab
-      await userEvent.keyboard("{Tab}");
-      await wait();
-
-      // Drop in target list
-      await userEvent.keyboard("{Enter}");
-
-      // Wait for items to update
       await waitFor(async () => {
         const updatedSourceItems =
           await within(sourceGrid).findAllByRole("row");
         const updatedTargetItems =
           await within(targetGrid).findAllByRole("row");
 
-        // Source should have one less item
         expect(updatedSourceItems.length).toBe(2);
-        // Target should have one more item
         expect(updatedTargetItems.length).toBe(3);
       });
     });
+  },
+};
+
+export const NamespacedIsolation: Story = {
+  render: () => {
+    const NamespacedLists = () => {
+      const [alphaLeft, setAlphaLeft] = useState([
+        { key: "a1", label: "Alpha 1" },
+        { key: "a2", label: "Alpha 2" },
+        { key: "a3", label: "Alpha 3" },
+      ]);
+      const [alphaRight, setAlphaRight] = useState([
+        { key: "a4", label: "Alpha 4" },
+        { key: "a5", label: "Alpha 5" },
+      ]);
+      const [betaList, setBetaList] = useState([
+        { key: "b1", label: "Beta 1" },
+        { key: "b2", label: "Beta 2" },
+      ]);
+
+      return (
+        <Flex gap={800}>
+          <DraggableList.Root
+            aria-label="alpha left"
+            items={alphaLeft}
+            onUpdateItems={setAlphaLeft}
+            dragNamespace="alpha"
+          />
+          <DraggableList.Root
+            aria-label="alpha right"
+            items={alphaRight}
+            onUpdateItems={setAlphaRight}
+            dragNamespace="alpha"
+          />
+          <DraggableList.Root
+            aria-label="beta list"
+            items={betaList}
+            onUpdateItems={setBetaList}
+            dragNamespace="beta"
+          />
+        </Flex>
+      );
+    };
+
+    return <NamespacedLists />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify initial state of all lists", async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      const alphaLeftGrid = await canvas.findByRole("grid", {
+        name: /alpha left/i,
+      });
+      const alphaRightGrid = await canvas.findByRole("grid", {
+        name: /alpha right/i,
+      });
+      const betaGrid = await canvas.findByRole("grid", {
+        name: /beta list/i,
+      });
+
+      expect((await within(alphaLeftGrid).findAllByRole("row")).length).toBe(3);
+      expect((await within(alphaRightGrid).findAllByRole("row")).length).toBe(
+        2
+      );
+      expect((await within(betaGrid).findAllByRole("row")).length).toBe(2);
+    });
+
+    await step(
+      "Drag between same namespace (alpha left → alpha right) succeeds",
+      async () => {
+        const alphaLeftGrid = await canvas.findByRole("grid", {
+          name: /alpha left/i,
+        });
+        const alphaRightGrid = await canvas.findByRole("grid", {
+          name: /alpha right/i,
+        });
+
+        await dragItemToList(canvas, "Alpha 1");
+
+        await waitFor(async () => {
+          expect(
+            (await within(alphaLeftGrid).findAllByRole("row")).length
+          ).toBe(2);
+          expect(
+            (await within(alphaRightGrid).findAllByRole("row")).length
+          ).toBe(3);
+        });
+      }
+    );
+
+    await step(
+      "Drag between different namespaces (alpha left → beta) is rejected",
+      async () => {
+        const alphaLeftGrid = await canvas.findByRole("grid", {
+          name: /alpha left/i,
+        });
+        const betaGrid = await canvas.findByRole("grid", {
+          name: /beta list/i,
+        });
+
+        const leftCountBefore = (
+          await within(alphaLeftGrid).findAllByRole("row")
+        ).length;
+        const betaCountBefore = (await within(betaGrid).findAllByRole("row"))
+          .length;
+
+        // Tab twice: past alpha right to beta list
+        await dragItemToList(canvas, "Alpha 2", 2);
+        await wait();
+        await userEvent.keyboard("{Escape}");
+
+        await waitFor(async () => {
+          expect(
+            (await within(alphaLeftGrid).findAllByRole("row")).length
+          ).toBe(leftCountBefore);
+          expect((await within(betaGrid).findAllByRole("row")).length).toBe(
+            betaCountBefore
+          );
+        });
+      }
+    );
   },
 };
 
