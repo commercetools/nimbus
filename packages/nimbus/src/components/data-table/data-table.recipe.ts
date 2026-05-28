@@ -290,11 +290,18 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         },
       },
     },
-    body: {},
+    body: {
+      "& .react-aria-DropIndicator[data-drop-target]": {
+        outline: "{sizes.50} solid {colors.primary.7}",
+      },
+    },
     row: {
       position: "relative",
       borderBottom: "1px solid {colors.neutral.3}",
       focusVisibleRing: "inside",
+      "&[draggable='true']": {
+        cursor: "grab",
+      },
 
       "&:hover:not([data-nested-row-expanded])": {
         backgroundColor: "{colors.primary.3}",

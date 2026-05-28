@@ -2,6 +2,7 @@ import { useRef, useCallback, useEffect, memo } from "react";
 import {
   Row as RaRow,
   Collection as RaCollection,
+  Cell as RaCell,
   useTableOptions,
 } from "react-aria-components";
 import { mergeRefs } from "@/utils";
@@ -17,6 +18,7 @@ import type {
 import { Box, Checkbox, IconButton } from "@/components";
 import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
 import {
+  DragIndicator,
   KeyboardArrowDown,
   KeyboardArrowRight,
   PushPin,
@@ -41,7 +43,7 @@ function getIsTableRowChildElementInteractive(e: Event) {
   // Cast target to Element since EventTarget doesn't have closest method
   const clickedElement = e.target as Element;
   return clickedElement?.closest(
-    'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"]'
+    'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"], [slot="drag"], [data-slot="drag"]'
   );
 }
 
@@ -145,12 +147,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       if (!onRowClick) return;
       // Prevent row click when clicking on interactive elements to avoid conflicts
       const isInteractiveElement = getIsTableRowChildElementInteractive(e);
-      // Prevent row click when text is selected
-      const hasSelectedText =
-        window.getSelection()?.toString() !== undefined &&
-        window.getSelection()!.toString().length > 0;
-
-      if (!isInteractiveElement && !hasSelectedText) {
+      if (!isInteractiveElement) {
         // Clear any existing timeout to handle rapid clicks
         if (clickTimeoutRef.current) {
           window.clearTimeout(clickTimeoutRef.current);
@@ -195,10 +192,21 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         window.clearTimeout(clickTimeoutRef.current);
         clickTimeoutRef.current = null;
       }
-      // Allow browser's default text selection behavior
-      // No need to prevent default or stop propagation - let the browser handle it
+
+      // draggable="true" suppresses native text selection, so
+      // programmatically select the word under the cursor.
+      if (e instanceof MouseEvent) {
+        const caretPos = document.caretPositionFromPoint(e.clientX, e.clientY);
+        if (caretPos?.offsetNode) {
+          const selection = window.getSelection();
+          selection?.removeAllRanges();
+          selection?.collapse(caretPos.offsetNode, caretPos.offset);
+          selection?.modify("move", "backward", "word");
+          selection?.modify("extend", "forward", "word");
+        }
+      }
     }
-  }, []); // No dependencies needed - this function doesn't use any external variables
+  }, []);
 
   /**
    * Ref to track the callback ref invocation count and store the DOM node reference.
@@ -281,7 +289,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   // This allows parent components to access the row element while maintaining our event listeners
   const rowRef = mergeRefs(ref, rowNodeRef);
 
-  const { selectionBehavior } = useTableOptions();
+  const { selectionBehavior, allowsDragging } = useTableOptions();
 
   const hasNestedContent =
     nestedKey &&
@@ -320,8 +328,21 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           {...restProps}
           dependencies={[isExpanded, search, isTruncated]}
         >
-          {/** Internal/non-data columns like selection and expand
+          {/** Internal/non-data columns like drag, selection, and expand
            * need to be in the same order in the header and row components*/}
+          {allowsDragging && (
+            <RaCell data-slot="drag">
+              <IconButton
+                slot="drag"
+                data-drag-handle=""
+                size="2xs"
+                variant="ghost"
+                colorPalette="neutral"
+              >
+                <DragIndicator />
+              </IconButton>
+            </RaCell>
+          )}
           {/* Selection checkbox cell if selection is enabled */}
           {selectionBehavior === "toggle" && (
             <DataTableCell

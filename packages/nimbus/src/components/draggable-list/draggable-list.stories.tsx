@@ -1059,6 +1059,147 @@ export const FieldWithInfoBox: Story = {
   },
 };
 
+export const ExternalTextDrop: Story = {
+  render: () => {
+    const ExternalDropDemo = () => {
+      const [sourceItems, setSourceItems] = useState([
+        { key: "s1", label: "External Item A" },
+        { key: "s2", label: "External Item B" },
+      ]);
+      const [targetItems, setTargetItems] = useState([
+        { key: "t1", label: "Existing item" },
+      ]);
+
+      return (
+        <Flex gap={800}>
+          <Flex direction="column" gap={200}>
+            <Text fontWeight="500">
+              Source (different namespace, sends text/plain)
+            </Text>
+            <DraggableList.Root
+              aria-label="external source"
+              items={sourceItems}
+              onUpdateItems={setSourceItems}
+              dragNamespace="external-source"
+              serializeDragItem={(item) => ({
+                "text/plain": item.label as string,
+              })}
+            />
+          </Flex>
+          <Flex direction="column" gap={200}>
+            <Text fontWeight="500">Target (accepts text/plain)</Text>
+            <DraggableList.Root
+              aria-label="external target"
+              items={targetItems}
+              onUpdateItems={setTargetItems}
+              dragNamespace="external-target"
+              acceptExternalTypes={["text/plain"]}
+              onExternalDrop={async (dropItems) => {
+                const results: Array<{ key: string; label: string }> = [];
+                for (const item of dropItems) {
+                  if (item.kind === "text") {
+                    const text = await item.getText("text/plain");
+                    results.push({ key: crypto.randomUUID(), label: text });
+                  }
+                }
+                return results;
+              }}
+            />
+          </Flex>
+        </Flex>
+      );
+    };
+
+    return <ExternalDropDemo />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify initial state", async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      const sourceGrid = await canvas.findByRole("grid", {
+        name: /external source/i,
+      });
+      const targetGrid = await canvas.findByRole("grid", {
+        name: /external target/i,
+      });
+      expect((await within(sourceGrid).findAllByRole("row")).length).toBe(2);
+      expect((await within(targetGrid).findAllByRole("row")).length).toBe(1);
+    });
+
+    await step(
+      "Drag from source to target via text/plain (external drop path)",
+      async () => {
+        const sourceGrid = await canvas.findByRole("grid", {
+          name: /external source/i,
+        });
+        const targetGrid = await canvas.findByRole("grid", {
+          name: /external target/i,
+        });
+
+        await dragItemToList(canvas, "External Item A");
+
+        await waitFor(async () => {
+          const targetRows = await within(targetGrid).findAllByRole("row");
+          expect(targetRows.length).toBe(2);
+          // The new item should have the text from the source item
+          await within(targetGrid).findByText("External Item A");
+        });
+      }
+    );
+  },
+};
+
+export const OutgoingFormat: Story = {
+  render: () => {
+    const OutgoingFormatDemo = () => {
+      const [listItems, setListItems] = useState([
+        { key: "1", label: "Drag me as text" },
+        { key: "2", label: "I have HTML too" },
+      ]);
+
+      return (
+        <DraggableList.Root
+          aria-label="outgoing format list"
+          items={listItems}
+          onUpdateItems={setListItems}
+          serializeDragItem={(item) => ({
+            "text/plain": item.label as string,
+          })}
+        />
+      );
+    };
+
+    return <OutgoingFormatDemo />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify list renders with outgoing format prop", async () => {
+      const grid = await canvas.findByRole("grid", {
+        name: /outgoing format list/i,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      const rows = await within(grid).findAllByRole("row");
+      expect(rows.length).toBe(2);
+    });
+
+    await step("Verify drag still works internally", async () => {
+      const grid = await canvas.findByRole("grid", {
+        name: /outgoing format list/i,
+      });
+
+      await dragItem(canvas, "Drag me as text", 1);
+
+      await waitFor(async () => {
+        const rows = await within(grid).findAllByRole("row");
+        expect(rows[0]).toHaveAttribute("data-key", "2");
+        expect(rows[1]).toHaveAttribute("data-key", "1");
+      });
+    });
+  },
+};
+
 /**
  * Showcase Possible Color Palettes
  */

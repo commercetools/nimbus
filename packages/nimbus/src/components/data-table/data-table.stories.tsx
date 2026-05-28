@@ -46,6 +46,7 @@ import {
   initialHiddenColumns,
 } from "./data-table.test-data";
 
+import { useDragAndDrop, createArrayHandlers } from "@/hooks/use-drag-and-drop";
 import type {
   DataTableRowItem,
   DataTableColumnItem,
@@ -4844,6 +4845,82 @@ export const PerfSelectionContextIsolation: Story = {
           canvas.getByTestId("ctx-probe").getAttribute("data-render-count")
         );
         expect(afterCount).toBe(initialCount);
+      }
+    );
+  },
+};
+
+export const DragAndDropRows: Story = {
+  render: () => {
+    const DraggableTable = () => {
+      const simpleColumns: DataTableColumnItem[] = [
+        {
+          id: "name",
+          header: "Name",
+          accessor: (row: Record<string, unknown>) =>
+            row.name as React.ReactNode,
+        },
+        {
+          id: "role",
+          header: "Role",
+          accessor: (row: Record<string, unknown>) =>
+            row.role as React.ReactNode,
+        },
+      ];
+
+      const [tableRows, setTableRows] = useState<DataTableRowItem[]>([
+        { id: "1", name: "Alice", role: "Admin" },
+        { id: "2", name: "Bob", role: "User" },
+        { id: "3", name: "Carol", role: "Manager" },
+      ]);
+
+      const [clickedRow, setClickedRow] = useState<string | null>(null);
+
+      const { dragAndDropHooks } = useDragAndDrop({
+        ...createArrayHandlers(setTableRows, (row) => row.id as string),
+      });
+
+      return (
+        <Stack gap="400">
+          <DataTable.Root
+            columns={simpleColumns}
+            rows={tableRows}
+            selectionMode="multiple"
+            onRowClick={(row) => setClickedRow(row.id)}
+          >
+            <DataTable.Table
+              aria-label="draggable table"
+              dragAndDropHooks={dragAndDropHooks}
+            >
+              <DataTable.Header />
+              <DataTable.Body />
+            </DataTable.Table>
+          </DataTable.Root>
+          <Text data-testid="row-order">
+            Order: {tableRows.map((r) => r.name).join(", ")}
+          </Text>
+          <Text data-testid="clicked-row">Clicked: {clickedRow ?? "none"}</Text>
+        </Stack>
+      );
+    };
+
+    return <DraggableTable />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Verify table renders with drag handles, selection, and row click",
+      async () => {
+        const table = canvas.getByRole("grid", { name: /draggable table/i });
+        const dataRows = within(table).getAllByRole("row");
+        expect(dataRows.length).toBe(4);
+        expect(canvas.getByTestId("row-order")).toHaveTextContent(
+          "Order: Alice, Bob, Carol"
+        );
+        expect(canvas.getByTestId("clicked-row")).toHaveTextContent(
+          "Clicked: none"
+        );
       }
     );
   },

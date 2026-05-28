@@ -31,8 +31,8 @@ export const DataTableHeader = <
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const { activeColumns, allowsSorting, maxHeight, showExpandColumn } =
     useDataTableContext();
-  // This can also be used to see if drag'n'drop is enabled
-  const { selectionBehavior, selectionMode } = useTableOptions();
+  const { selectionBehavior, selectionMode, allowsDragging } =
+    useTableOptions();
   const [styleProps, restProps] = extractStyleProps(props);
 
   // Use provided aria-label or fall back to default
@@ -48,8 +48,21 @@ export const DataTableHeader = <
         columns={activeColumns}
         {...restProps}
       >
-        {/** Internal/non-data columns like selection and expand
+        {/** Internal/non-data columns like selection, drag, and expand
          * need to be in the same order in the header and row components*/}
+        {allowsDragging && (
+          <DataTableColumn
+            id="drag"
+            className="drag-column-header"
+            maxWidth={24}
+            minWidth={24}
+            allowsSorting={false}
+            isInternalColumn={true}
+            aria-label={msg.format("dataTableHeader")}
+          >
+            <VisuallyHidden>{msg.format("dataTableHeader")}</VisuallyHidden>
+          </DataTableColumn>
+        )}
         {selectionBehavior === "toggle" && (
           <DataTableColumn
             id="selection"
