@@ -37,6 +37,7 @@ function makeFileDropItem(
     type,
     name,
     getFile: vi.fn(async () => new File([content], name, { type })),
+    getText: vi.fn(async () => new TextDecoder().decode(content)),
   };
 }
 
@@ -349,6 +350,15 @@ describe("processDropItems", () => {
     const external = makeFileDropItem("f.txt", "text/plain");
     const result = await processDropItems([external], FORMAT);
     expect(result).toEqual([]);
+  });
+
+  it("skips internal items with corrupted JSON", async () => {
+    const corrupted = makeTextDropItem({ [FORMAT]: "not-valid-json" });
+    const valid = makeTextDropItem({
+      [FORMAT]: JSON.stringify({ key: "ok", label: "Valid" }),
+    });
+    const result = await processDropItems([corrupted, valid], FORMAT);
+    expect(result).toEqual([{ key: "ok", label: "Valid" }]);
   });
 });
 

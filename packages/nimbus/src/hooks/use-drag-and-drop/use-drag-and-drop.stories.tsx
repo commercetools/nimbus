@@ -1,7 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 import { useState } from "react";
-import { Box, Flex, Stack, Text, DraggableList } from "@commercetools/nimbus";
+import {
+  Box,
+  DataTable,
+  DraggableList,
+  Flex,
+  Stack,
+  Text,
+  useDragAndDrop,
+  createArrayHandlers,
+} from "@commercetools/nimbus";
+import type { DataTableColumnItem } from "@commercetools/nimbus";
 
 const DRAG_DELAY_MS = 50;
 
@@ -201,7 +211,9 @@ export const NamespaceIsolation: Story = {
       );
     });
 
-    await step("Reorder within alpha list works", async () => {
+    await step("Reorder within alpha list, beta unaffected", async () => {
+      const betaOrderBefore = canvas.getByTestId("beta-order").textContent;
+
       await dragItem(canvas, "Alpha 1", 1);
 
       await waitFor(() => {
@@ -209,11 +221,9 @@ export const NamespaceIsolation: Story = {
           "Alpha 2, Alpha 1"
         );
       });
-    });
 
-    await step("Beta list is unaffected by alpha reorder", async () => {
       expect(canvas.getByTestId("beta-order")).toHaveTextContent(
-        "Beta 1, Beta 2"
+        betaOrderBefore!
       );
     });
   },
@@ -242,6 +252,95 @@ export const CrossListTransfer: Story = {
         );
         expect(canvas.getByTestId("target-order")).toHaveTextContent(
           /Source 1/
+        );
+      });
+    });
+  },
+};
+
+type TableRow = { id: string; name: string; role: string };
+
+const DirectHookWithTableDemo = () => {
+  const tableColumns: DataTableColumnItem[] = [
+    {
+      id: "name",
+      header: "Name",
+      accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+    },
+    {
+      id: "role",
+      header: "Role",
+      accessor: (row: Record<string, unknown>) => row.role as React.ReactNode,
+    },
+  ];
+
+  const [rows, setRows] = useState<TableRow[]>([
+    { id: "1", name: "Alice", role: "Admin" },
+    { id: "2", name: "Bob", role: "User" },
+    { id: "3", name: "Carol", role: "Manager" },
+  ]);
+
+  const { dragAndDropHooks } = useDragAndDrop({
+    ...createArrayHandlers(
+      setRows as React.Dispatch<
+        React.SetStateAction<Record<string, unknown>[]>
+      >,
+      (row) => row.id as string
+    ),
+  });
+
+  return (
+    <Stack gap="400">
+      <DataTable
+        aria-label="draggable table"
+        columns={tableColumns}
+        rows={rows}
+        dragAndDropHooks={dragAndDropHooks}
+      />
+      <Text data-testid="table-order">
+        {rows.map((r) => r.name).join(", ")}
+      </Text>
+    </Stack>
+  );
+};
+
+export const DirectHookWithTable: Story = {
+  render: () => <DirectHookWithTableDemo />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Table renders with drag handles", async () => {
+      const table = canvas.getByRole("grid", { name: /draggable table/i });
+      const dataRows = within(table).getAllByRole("row");
+      expect(dataRows.length).toBe(4);
+
+      const dragHandle = within(dataRows[1]).getByRole("button", {
+        name: /drag to reorder/i,
+      });
+      expect(dragHandle).toBeInTheDocument();
+
+      expect(canvas.getByTestId("table-order")).toHaveTextContent(
+        "Alice, Bob, Carol"
+      );
+    });
+
+    await step("Reorder first row down via keyboard", async () => {
+      const table = canvas.getByRole("grid", { name: /draggable table/i });
+      const rows = within(table).getAllByRole("row");
+      const dragHandle = within(rows[1]).getByRole("button", {
+        name: /drag to reorder/i,
+      });
+
+      dragHandle.focus();
+      await userEvent.keyboard("{Enter}");
+      await wait();
+      await userEvent.keyboard("{ArrowDown}");
+      await wait();
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("table-order")).toHaveTextContent(
+          "Bob, Alice, Carol"
         );
       });
     });

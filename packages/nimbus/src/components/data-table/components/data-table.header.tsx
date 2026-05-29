@@ -52,7 +52,7 @@ export const DataTableHeader = <
          * need to be in the same order in the header and row components*/}
         {allowsDragging && (
           <DataTableColumn
-            id="drag"
+            id="__nimbus-drag__"
             className="drag-column-header"
             maxWidth={24}
             minWidth={24}

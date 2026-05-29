@@ -99,7 +99,14 @@ export function createArrayHandlers<T extends Record<string, unknown>>(
         const movedItems = prev.filter((i) => keys.has(getKey(i)));
         const remaining = prev.filter((i) => !keys.has(getKey(i)));
         const idx = remaining.findIndex((i) => getKey(i) === target.key);
-        if (idx === -1) return [...remaining, ...movedItems];
+        if (idx === -1) {
+          if (process.env.NODE_ENV !== "production") {
+            console.warn(
+              "createArrayHandlers: target key not found in remaining items — appending to end."
+            );
+          }
+          return [...remaining, ...movedItems];
+        }
         const pos = target.dropPosition === "before" ? idx : idx + 1;
         return [
           ...remaining.slice(0, pos),

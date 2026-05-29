@@ -4914,6 +4914,13 @@ export const DragAndDropRows: Story = {
         expect(canvas.getByTestId("clicked-row")).toHaveTextContent(
           "Clicked: none"
         );
+
+        const firstDataRow = dataRows[1];
+        expect(
+          within(firstDataRow).getByRole("button", {
+            name: /drag to reorder/i,
+          })
+        ).toBeInTheDocument();
       }
     );
 

@@ -15,7 +15,11 @@ export async function processDropItems<T extends Record<string, unknown>>(
 
   for (const item of rawItems) {
     if (isTextDropItem(item) && item.types.has(dataFormat)) {
-      internalItems.push(JSON.parse(await item.getText(dataFormat)));
+      try {
+        internalItems.push(JSON.parse(await item.getText(dataFormat)));
+      } catch {
+        // Skip items with invalid JSON (corrupted drag data)
+      }
     } else {
       externalItems.push(item);
     }
