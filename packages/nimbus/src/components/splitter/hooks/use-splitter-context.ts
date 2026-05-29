@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { SplitterContext } from "../components/splitter.context";
+import { SplitterContext } from "../splitter.context";
 
 export const useSplitterContext = () => {
   const context = useContext(SplitterContext);

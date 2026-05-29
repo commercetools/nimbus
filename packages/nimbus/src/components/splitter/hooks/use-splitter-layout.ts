@@ -135,9 +135,8 @@ const readFromStorage = (
  * the consumer's `initialSizes`, debounces saves, and exposes an imperative
  * API the consumer can call from anywhere with access to the returned object.
  *
- * Spread `defaultSizes`, `onSizesChange`, and the internal `__layoutRef` (via
- * the underscore-prefixed `___layoutRef` prop on Root) to wire the component
- * up:
+ * Spread `defaultSizes`, `onSizesChange`, and the internal `__layoutRef` prop
+ * on Root to wire the component up:
  *
  * ```tsx
  * const layout = useSplitterLayout({
@@ -149,7 +148,7 @@ const readFromStorage = (
  *   panes={{ nav: { minSize: 10 }, main: { minSize: 20 } }}
  *   defaultSizes={layout.defaultSizes}
  *   onSizesChange={layout.onSizesChange}
- *   ___layoutRef={layout.__layoutRef}
+ *   __layoutRef={layout.__layoutRef}
  * >
  *   …
  * </Splitter.Root>

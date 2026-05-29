@@ -10,37 +10,11 @@ import { useLocalizedStringFormatter } from "@/hooks";
 import { mergeRefs } from "@/utils";
 import { SplitterHandleSlot } from "../splitter.slots";
 import { useSplitterContext } from "../hooks/use-splitter-context";
-import { clampedResize } from "../utils/clamped-resize";
+import { clampedResize, pickCollapseTarget } from "../utils";
 import { splitterMessagesStrings } from "../splitter.messages";
 import type { SplitterHandleProps } from "../splitter.types";
 
 const COLLAPSE_TOLERANCE = 0.001;
-
-/**
- * Select the pane to toggle on double-click / Enter. When both panes are
- * collapsible, prefer the smaller of the two (ties → previous/left/top).
- */
-const pickCollapseTarget = (
-  paneOrder: string[],
-  sizes: Record<string, number>,
-  getPaneConfig: (id: string) => { collapsible?: boolean }
-): { paneId: string; otherId: string } | null => {
-  if (paneOrder.length !== 2) return null;
-  const [prevId, nextId] = paneOrder as [string, string];
-  const prevCollapsible = !!getPaneConfig(prevId).collapsible;
-  const nextCollapsible = !!getPaneConfig(nextId).collapsible;
-  if (!prevCollapsible && !nextCollapsible) return null;
-  if (prevCollapsible && !nextCollapsible) {
-    return { paneId: prevId, otherId: nextId };
-  }
-  if (!prevCollapsible && nextCollapsible) {
-    return { paneId: nextId, otherId: prevId };
-  }
-  const prevSize = sizes[prevId] ?? 0;
-  const nextSize = sizes[nextId] ?? 0;
-  if (prevSize <= nextSize) return { paneId: prevId, otherId: nextId };
-  return { paneId: nextId, otherId: prevId };
-};
 
 /**
  * Interactive separator between two `Splitter.Pane`s. Carries no per-handle
@@ -65,6 +39,8 @@ const pickCollapseTarget = (
  * - Double-click restores the boundary to the initial sizes resolved on mount
  *   (gated by `Splitter.Root.disableDoubleClick`). Decoupled from collapse so
  *   the gesture is meaningful on every splitter.
+ *
+ * @supportsStyleProps
  */
 export const SplitterHandle = ({
   "aria-label": ariaLabelProp,
