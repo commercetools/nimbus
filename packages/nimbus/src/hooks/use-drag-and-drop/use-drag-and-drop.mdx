@@ -105,11 +105,15 @@ Compose multiple helpers for mixed drop types:
 
 ```tsx
 onExternalDrop={async (items) => [
+  ...(await createItemsFromTextDrop(items)),
   ...(await createItemsFromFileDrop(items)),
-  ...(await createItemsFromImageDrop(items)),
   ...(await createItemsFromDirectoryDrop(items)),
 ]}
 ```
+
+> [!NOTE]
+> Avoid combining `createItemsFromFileDrop` with `createItemsFromImageDrop` — file drop
+> processes all files including images, so image files would appear twice. Use one or the other.
 
 > [!WARNING]
 > `createItemsFromImageDrop` creates object URLs via `URL.createObjectURL()`.

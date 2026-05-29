@@ -10,84 +10,10 @@ import {
 } from "@commercetools/nimbus";
 import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 import { items, fieldItems } from "./utils/draggable-list.test-data";
-
-/**
- * Default delay between keyboard operations in drag tests.
- * This timing is necessary for React Aria's drag-and-drop state machine.
- */
-const DRAG_OPERATION_DELAY_MS = 50;
-
-/**
- * Helper to wait for a specified duration.
- * Used to ensure React Aria's drag-and-drop state machine processes events.
- */
-const wait = (ms: number = DRAG_OPERATION_DELAY_MS) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
-
-/**
- * Helper function to drag an item using keyboard navigation
- * @param canvas - The testing-library canvas element
- * @param itemLabel - The label of the item to drag
- * @param steps - Number of arrow key presses to move (positive = down, negative = up)
- */
-async function dragItem(
-  canvas: ReturnType<typeof within>,
-  itemLabel: string,
-  steps: number
-) {
-  // Find the source item row
-  const sourceElement = await canvas.findByRole("row", {
-    name: itemLabel,
-  });
-
-  // Focus the source item
-  sourceElement.focus();
-
-  // Press left arrow to focus the drag handle, then Enter to enter drag mode
-  await userEvent.keyboard("{ArrowLeft}");
-  await userEvent.keyboard("{Enter}");
-
-  // Navigate using arrow keys
-  const key = steps > 0 ? "{ArrowDown}" : "{ArrowUp}";
-  for (let i = 0; i < Math.abs(steps); i++) {
-    await wait();
-    await userEvent.keyboard(key);
-  }
-
-  // Drop the item with Enter
-  await userEvent.keyboard("{Enter}");
-}
-
-/**
- * Helper function to drag an item from one list to another using keyboard navigation.
- * Uses Tab key to navigate between lists after initiating drag mode.
- * @param canvas - The testing-library canvas element
- * @param itemLabel - The label of the item to drag
- * @param tabCount - Number of Tab presses to reach the target list (default: 1)
- */
-async function dragItemToList(
-  canvas: ReturnType<typeof within>,
-  itemLabel: string,
-  tabCount: number = 1
-) {
-  const sourceElement = await canvas.findByRole("row", {
-    name: itemLabel,
-  });
-
-  sourceElement.focus();
-
-  await userEvent.keyboard("{ArrowLeft}");
-  await wait();
-  await userEvent.keyboard("{Enter}");
-
-  for (let i = 0; i < tabCount; i++) {
-    await wait();
-    await userEvent.keyboard("{Tab}");
-  }
-
-  await wait();
-  await userEvent.keyboard("{Enter}");
-}
+import {
+  dragItem,
+  dragItemToList,
+} from "@/hooks/use-drag-and-drop/use-drag-and-drop.test-utils";
 
 const meta: Meta<typeof DraggableList.Root> = {
   title: "Components/DraggableList",

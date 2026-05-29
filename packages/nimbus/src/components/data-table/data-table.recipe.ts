@@ -49,16 +49,31 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           position: "sticky",
           left: 0,
         },
+        "& [data-slot='drag']": {
+          zIndex: 11,
+        },
         "& [data-slot='selection']": {
           zIndex: 11,
         },
         "& [data-slot='expand']": {
           zIndex: 12,
         },
+        // When drag column is present, offset selection and expand columns
+        "& [data-slot='drag'] ~ [data-slot='selection']": {
+          left: "600",
+        },
+        "& [data-slot='drag'] ~ [data-slot='expand']": {
+          left: "600",
+        },
         // When selection column is present, move expand column to the right
         "& [data-slot='selection'] ~ [data-slot='expand']": {
-          left: "72px", // Width of selection column
+          left: "1800",
         },
+        // When both drag and selection columns are present, offset expand column
+        "& [data-slot='drag'] ~ [data-slot='selection'] ~ [data-slot='expand']":
+          {
+            left: "2400",
+          },
         _hover: {
           backgroundColor: "{colors.primary.3}",
           transition: "background-color 100ms ease",
@@ -68,16 +83,31 @@ export const dataTableSlotRecipe = defineSlotRecipe({
             backgroundColor: "inherit",
             position: "sticky",
           },
+          "& [data-slot='drag']": {
+            zIndex: 11,
+          },
           "& [data-slot='selection']": {
             zIndex: 11,
           },
           "& [data-slot='expand']": {
             zIndex: 12,
           },
+          // When drag column is present, offset selection and expand columns on hover
+          "& [data-slot='drag'] ~ [data-slot='selection']": {
+            left: "600",
+          },
+          "& [data-slot='drag'] ~ [data-slot='expand']": {
+            left: "600",
+          },
           // When selection column is present, move expand column to the right on hover
           "& [data-slot='selection'] ~ [data-slot='expand']": {
-            left: "72px", // Width of selection column
+            left: "1800",
           },
+          // When both drag and selection columns are present, offset expand column on hover
+          "& [data-slot='drag'] ~ [data-slot='selection'] ~ [data-slot='expand']":
+            {
+              left: "2400",
+            },
           "& [data-slot='pin-row-cell']": {
             right: 0,
             zIndex: 10,
@@ -116,7 +146,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         },
         // When selection column is present in pinned rows, move expand column
         "& [data-slot='selection'] ~ [data-slot='expand']": {
-          left: "72px", // Width of selection column
+          left: "1800",
         },
         "& [data-slot='pin-row-cell']": {
           backgroundColor: "bg",
@@ -275,10 +305,22 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         left: 0, // Default position when no selection column
         zIndex: 12,
       },
+      // When drag column is present, offset selection and expand columns
+      "&.drag-column-header + &.selection-column-header": {
+        left: "600",
+      },
+      "&.drag-column-header + &.expand-column-header": {
+        left: "600",
+      },
       // When selection column is present, adjust expand column header position
       "&.selection-column-header + &.expand-column-header": {
-        left: "72px", // Width of selection column
+        left: "1800",
       },
+      // When both drag and selection columns are present, offset expand column
+      "&.drag-column-header + &.selection-column-header + &.expand-column-header":
+        {
+          left: "2400",
+        },
       "&.pin-rows-column-header": {
         cursor: "default",
         py: "100",

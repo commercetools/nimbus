@@ -4927,11 +4927,12 @@ export const DragAndDropRows: Story = {
     await step("Drag first row down one position via keyboard", async () => {
       const table = canvas.getByRole("grid");
       const rows = within(table).getAllByRole("row");
-      const dragHandle = within(rows[1]).getByRole("button", {
-        name: /drag to reorder/i,
-      });
 
-      dragHandle.focus();
+      // Focus the first data row, then navigate to drag handle
+      rows[1].focus();
+      await new Promise((resolve) => setTimeout(resolve, 50));
+      await userEvent.keyboard("{ArrowRight}");
+      await new Promise((resolve) => setTimeout(resolve, 50));
       await userEvent.keyboard("{Enter}");
       await new Promise((resolve) => setTimeout(resolve, 50));
       await userEvent.keyboard("{ArrowDown}");

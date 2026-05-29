@@ -12,51 +12,12 @@ import {
   createArrayHandlers,
 } from "@commercetools/nimbus";
 import type { DataTableColumnItem } from "@commercetools/nimbus";
+import { dragItem, dragItemToList } from "./use-drag-and-drop.test-utils";
 
 const DRAG_DELAY_MS = 50;
 
 const wait = (ms: number = DRAG_DELAY_MS) =>
   new Promise((resolve) => setTimeout(resolve, ms));
-
-async function dragItem(
-  canvas: ReturnType<typeof within>,
-  itemLabel: string,
-  steps: number
-) {
-  const sourceElement = await canvas.findByRole("row", { name: itemLabel });
-  sourceElement.focus();
-
-  await userEvent.keyboard("{ArrowLeft}");
-  await userEvent.keyboard("{Enter}");
-
-  const key = steps > 0 ? "{ArrowDown}" : "{ArrowUp}";
-  for (let i = 0; i < Math.abs(steps); i++) {
-    await wait();
-    await userEvent.keyboard(key);
-  }
-  await userEvent.keyboard("{Enter}");
-}
-
-async function dragItemToList(
-  canvas: ReturnType<typeof within>,
-  itemLabel: string,
-  tabCount: number = 1
-) {
-  const sourceElement = await canvas.findByRole("row", { name: itemLabel });
-  sourceElement.focus();
-
-  await userEvent.keyboard("{ArrowLeft}");
-  await wait();
-  await userEvent.keyboard("{Enter}");
-
-  for (let i = 0; i < tabCount; i++) {
-    await wait();
-    await userEvent.keyboard("{Tab}");
-  }
-
-  await wait();
-  await userEvent.keyboard("{Enter}");
-}
 
 type Item = { key: string; label: string };
 
@@ -280,6 +241,8 @@ const DirectHookWithTableDemo = () => {
     { id: "3", name: "Carol", role: "Manager" },
   ]);
 
+  const [clickedRow, setClickedRow] = useState<string | null>(null);
+
   const { dragAndDropHooks } = useDragAndDrop({
     ...createArrayHandlers(setRows, (row) => row.id),
   });
@@ -287,14 +250,16 @@ const DirectHookWithTableDemo = () => {
   return (
     <Stack gap="400">
       <DataTable
-        aria-label="draggable table"
         columns={tableColumns}
         rows={rows}
+        selectionMode="multiple"
+        onRowClick={(row) => setClickedRow(row.id)}
         dragAndDropHooks={dragAndDropHooks}
       />
       <Text data-testid="table-order">
         {rows.map((r) => r.name).join(", ")}
       </Text>
+      <Text data-testid="clicked-row">Clicked: {clickedRow ?? "none"}</Text>
     </Stack>
   );
 };
@@ -304,29 +269,39 @@ export const DirectHookWithTable: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Table renders with drag handles", async () => {
-      const table = canvas.getByRole("grid", { name: /draggable table/i });
-      const dataRows = within(table).getAllByRole("row");
-      expect(dataRows.length).toBe(4);
+    await step(
+      "Table renders with drag handles, selection, and row click",
+      async () => {
+        const table = await canvas.findByRole("grid", {
+          name: /data table/i,
+        });
+        const dataRows = within(table).getAllByRole("row");
+        expect(dataRows.length).toBe(4);
 
-      const dragHandle = within(dataRows[1]).getByRole("button", {
-        name: /drag to reorder/i,
-      });
-      expect(dragHandle).toBeInTheDocument();
+        expect(
+          within(dataRows[1]).getByRole("button", {
+            name: /drag to reorder/i,
+          })
+        ).toBeInTheDocument();
 
-      expect(canvas.getByTestId("table-order")).toHaveTextContent(
-        "Alice, Bob, Carol"
-      );
-    });
+        expect(canvas.getByTestId("table-order")).toHaveTextContent(
+          "Alice, Bob, Carol"
+        );
+        expect(canvas.getByTestId("clicked-row")).toHaveTextContent(
+          "Clicked: none"
+        );
+      }
+    );
 
     await step("Reorder first row down via keyboard", async () => {
-      const table = canvas.getByRole("grid", { name: /draggable table/i });
+      const table = canvas.getByRole("grid", { name: /data table/i });
       const rows = within(table).getAllByRole("row");
-      const dragHandle = within(rows[1]).getByRole("button", {
-        name: /drag to reorder/i,
-      });
 
-      dragHandle.focus();
+      // Focus the first data row, then navigate to drag handle
+      rows[1].focus();
+      await wait();
+      await userEvent.keyboard("{ArrowRight}");
+      await wait();
       await userEvent.keyboard("{Enter}");
       await wait();
       await userEvent.keyboard("{ArrowDown}");
