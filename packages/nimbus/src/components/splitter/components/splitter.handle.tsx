@@ -18,7 +18,7 @@ const MOVE_TOLERANCE = 0.0001;
 
 /**
  * Interactive separator between two `Splitter.Pane`s. Carries no per-handle
- * configuration — `keyboardStep`, `disableDoubleClick`, `isDisabled`, and the
+ * configuration — `keyboardStep`, `isDoubleClickDisabled`, `isDisabled`, and the
  * default `aria-label` are configured on `Splitter.Root`.
  *
  * ARIA model (W3C window splitter):
@@ -41,7 +41,7 @@ const MOVE_TOLERANCE = 0.0001;
  * - Drag via `useMove` from react-aria (live `onSizesChange`; settled
  *   `onSizesChangeEnd` on drag end).
  * - Double-click restores the boundary to the initial sizes resolved on mount
- *   (gated by `Splitter.Root.disableDoubleClick`). Decoupled from collapse.
+ *   (gated by `Splitter.Root.isDoubleClickDisabled`). Decoupled from collapse.
  *
  * @supportsStyleProps
  */
@@ -58,7 +58,7 @@ export const SplitterHandle = ({
     commitSizes,
     orientation,
     keyboardStep,
-    disableDoubleClick,
+    isDoubleClickDisabled,
     isDisabled,
     getPaneConfig,
     paneOrder,
@@ -229,9 +229,9 @@ export const SplitterHandle = ({
   );
 
   const handleDoubleClick = useCallback(() => {
-    if (isDisabled || disableDoubleClick) return;
+    if (isDisabled || isDoubleClickDisabled) return;
     restoreDefaults();
-  }, [isDisabled, disableDoubleClick, restoreDefaults]);
+  }, [isDisabled, isDoubleClickDisabled, restoreDefaults]);
 
   const ariaControls = prevId ? paneDomIds[prevId] : undefined;
   const roundedValueNow = prevId ? Math.round(prevSize) : undefined;

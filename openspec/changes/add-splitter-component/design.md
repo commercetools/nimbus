@@ -106,7 +106,7 @@ warning when an id is missing or duplicated.
 ## Decision 3: Anonymous handle
 
 **Decision.** `Splitter.Handle` carries no `id` and no per-handle config
-props. Behaviour (`keyboardStep`, `disableDoubleClick`, default
+props. Behaviour (`keyboardStep`, `isDoubleClickDisabled`, default
 `aria-label`) lives on `Root`. The handle infers the two panes it
 controls from its sibling Panes in DOM order.
 
@@ -314,7 +314,7 @@ collapsible case specifically that's a small ask — the consumer
 already designed for collapsibility — and it keeps the primitive's
 double-click contract uniform.
 
-`disableDoubleClick` on Root keeps the same name but now suppresses the
+`isDoubleClickDisabled` on Root keeps the same name but now suppresses the
 restore-defaults action.
 
 ## What's out of scope (recap)

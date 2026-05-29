@@ -39,7 +39,7 @@
       - `panes: Record<string, PaneConfig>` where
         `PaneConfig = { defaultSize?: number; minSize?: number; maxSize?: number; disabled?: boolean; collapsible?: boolean; collapsedSize?: number; }`
       - `keyboardStep?: number` (default 5)
-      - `disableDoubleClick?: boolean`
+      - `isDoubleClickDisabled?: boolean`
       - `onCollapse?: (paneId: string) => void`
       - `onExpand?: (paneId: string) => void`
       Remove `minValue`, `maxValue`, `isDisabled`, `step` from
@@ -59,7 +59,7 @@
       - Handle reads `prevPaneId` / `nextPaneId` from the registered pair
       - Command methods `collapsePane(paneId)`, `expandPane(paneId)`,
         `isCollapsed(paneId): boolean`
-      - `paneConfig(id): PaneConfig`, `keyboardStep`, `disableDoubleClick`
+      - `paneConfig(id): PaneConfig`, `keyboardStep`, `isDoubleClickDisabled`
 - [x] 2.5 In `SplitterRoot`, derive initial `sizes` from `defaultSizes`
       (if provided), otherwise from `panes[id].defaultSize` (with 50/50
       fallback if neither pane has a `defaultSize`). Normalize so sum
@@ -105,7 +105,7 @@
 - [x] 4.4 Add double-click handler on `SplitterHandle`: restores the
       boundary to the initial sizes derived on mount (from
       `defaultSizes` or `panes[id].defaultSize`). Gated by Root-level
-      `disableDoubleClick?: boolean`. Decoupled from collapsibility so
+      `isDoubleClickDisabled?: boolean`. Decoupled from collapsibility so
       the gesture is meaningful on every splitter — see Decision 10 in
       design.md.
 - [x] 4.5 Fire `onExpand(paneId)` on Root when a collapsed pane returns
