@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import type { SplitterImperativeHandle } from "../splitter.types";
 
 const DEFAULT_DEBOUNCE_MS = 200;
-const NORMALIZATION_TOLERANCE = 1; // ±1% sum drift
 
 type StorageAdapter = {
   load(): Record<string, number> | undefined;
@@ -56,55 +55,58 @@ const isValidSizes = (value: unknown): value is Record<string, number> => {
   return true;
 };
 
+/** True when `v` is a finite number within the valid percentage range. */
+const isInRange = (v: number | undefined): v is number =>
+  typeof v === "number" && Number.isFinite(v) && v >= 0 && v <= 100;
+
 /**
- * Reconcile a stored sizes record against the consumer's `initialSizes`:
- *   - Drop ids that aren't in `initialSizes`.
- *   - Fall back to `initialSizes[id]` for any id missing from storage.
- *   - Normalize within ±1% sum drift; bail to `initialSizes` if further out.
- *   - Log a development-only warning when reconciliation alters the stored
- *     record.
+ * Reconcile a stored sizes record against the consumer's two-pane
+ * `initialSizes`. A 2-pane splitter's layout is a single number — the boundary
+ * position — so the second pane is always the complement of the first. We
+ * resolve the first pane's size from the most trustworthy source available and
+ * infer the partner as `100 − first`:
+ *   1. the stored value for the first pane, if valid and in range;
+ *   2. otherwise the complement of the stored value for the second pane
+ *      (salvages a renamed / partial record); else
+ *   3. `initialSizes` (nothing salvageable).
+ * Unknown stored ids are ignored. Logs a development-only warning when the
+ * resolved record differs from what was stored.
  */
 const reconcileStored = (
   stored: Record<string, number> | undefined,
   initialSizes: Record<string, number>
 ): Record<string, number> => {
+  const ids = Object.keys(initialSizes);
+  // Defensive: the Splitter primitive is strictly 2-pane.
+  if (ids.length !== 2) return initialSizes;
+  const [a, b] = ids as [string, string];
+
   if (!stored) return initialSizes;
-  const initialIds = Object.keys(initialSizes);
-  const storedIds = Object.keys(stored);
-  const knownStored: Record<string, number> = {};
-  for (const id of initialIds) {
-    if (typeof stored[id] === "number" && Number.isFinite(stored[id])) {
-      knownStored[id] = stored[id]!;
-    } else {
-      knownStored[id] = initialSizes[id]!;
-    }
+
+  let first: number;
+  if (isInRange(stored[a])) {
+    first = stored[a];
+  } else if (isInRange(stored[b])) {
+    first = 100 - stored[b];
+  } else {
+    first = initialSizes[a]!;
   }
-  const droppedUnknown = storedIds.some((id) => !(id in initialSizes));
-  const missingFilledIn = initialIds.some(
-    (id) => typeof stored[id] !== "number"
-  );
-  const idsDiffer = droppedUnknown || missingFilledIn;
-  const sum = Object.values(knownStored).reduce((a, b) => a + b, 0);
-  if (sum <= 0) return initialSizes;
-  const drift = Math.abs(sum - 100);
-  // When ids differ between storage and initialSizes (renamed/dropped/added
-  // pane between releases), normalize unconditionally — the stored values
-  // are still meaningful relative to each other. When ids match exactly,
-  // only normalize within ±1% drift; larger drift implies the stored value
-  // is corrupted and we should fall back to initialSizes.
-  if (!idsDiffer && drift > NORMALIZATION_TOLERANCE) return initialSizes;
-  // Normalize to exactly 100.
-  const normalized = Object.fromEntries(
-    Object.entries(knownStored).map(([id, v]) => [id, (v / sum) * 100])
-  );
+
+  const resolved = { [a]: first, [b]: 100 - first };
+
   if (process.env.NODE_ENV !== "production") {
-    if (droppedUnknown || missingFilledIn || drift > 0) {
+    const changed =
+      stored[a] !== resolved[a] ||
+      stored[b] !== resolved[b] ||
+      Object.keys(stored).length !== 2;
+    if (changed) {
       console.warn(
-        "[Splitter] Reconciled stored layout against initial sizes (dropped unknown ids, filled defaults, or normalized sum)."
+        "[Splitter] Reconciled stored layout against initial sizes (unknown ids dropped, partner inferred, or fell back to defaults)."
       );
     }
   }
-  return normalized;
+
+  return resolved;
 };
 
 const readFromStorage = (

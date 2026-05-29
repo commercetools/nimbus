@@ -526,6 +526,18 @@ export const CrossAppCommands: Story = {
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(0);
     });
+
+    // Collapsing nav to 0 width makes its ScrollArea content overflow. The
+    // ScrollArea marks an overflowing viewport keyboard-focusable
+    // (tabIndex=0), but that detection runs asynchronously after the abrupt
+    // resize. Wait for it to settle so the a11y afterEach sees the accessible
+    // state rather than the transient scrollable-but-not-focusable region.
+    await waitFor(() => {
+      const navViewport = canvas
+        .getByText("Nav")
+        .closest('[data-part="viewport"]');
+      expect(navViewport).toHaveAttribute("tabindex", "0");
+    });
   },
 };
 
@@ -610,10 +622,11 @@ export const GracefulPersistence: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const handle = await canvas.findByRole("separator");
-    // Storage had { nav: 20, legacyAside: 30 } (sum 50, > 1% drift)  →  hook
-    // falls back to initialSizes { nav: 40, main: 60 }.
+    // Storage had { nav: 20, legacyAside: 30 }. legacyAside is unknown and
+    // dropped; nav (20) is salvaged and main is inferred as its complement
+    // (100 − 20) → { nav: 20, main: 80 }.
     await waitFor(() => {
-      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(40);
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(20);
     });
   },
 };
