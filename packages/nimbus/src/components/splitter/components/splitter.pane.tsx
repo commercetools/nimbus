@@ -11,6 +11,8 @@ import type { SplitterPaneProps } from "../splitter.types";
  * The pane registers with the parent splitter on mount; until both panes are
  * registered, sizes default to 0% (a single paint, then the splitter
  * derives initial sizes).
+ *
+ * @supportsStyleProps
  */
 export const SplitterPane = ({
   id,

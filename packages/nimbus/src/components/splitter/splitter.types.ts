@@ -1,15 +1,10 @@
-import type {
-  HTMLChakraProps,
-  SlotRecipeProps,
-} from "@chakra-ui/react/styled-system";
 import type { ReactNode, Ref, RefObject } from "react";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
-
-// ============================================================
-// RECIPE PROPS
-// ============================================================
-
-type SplitterRecipeProps = SlotRecipeProps<"nimbusSplitter">;
+import type {
+  SplitterRootSlotProps,
+  SplitterPaneSlotProps,
+  SplitterHandleSlotProps,
+} from "./splitter.slots";
 
 // ============================================================
 // SHARED VALUE TYPES
@@ -54,15 +49,47 @@ export type SplitterImperativeHandle = {
   isCollapsed: (paneId: string) => boolean;
 };
 
-// ============================================================
-// SLOT PROPS
-// ============================================================
+/**
+ * Internal context shared between `Splitter.Root`, `Splitter.Pane`, and
+ * `Splitter.Handle`. Carries the id-keyed sizes record, pane registration,
+ * commands, and the configuration the handle needs to compute its keyboard
+ * behavior and ARIA attributes. Produced by `useSplitterState`.
+ *
+ * @internal
+ */
+export type SplitterContextValue = {
+  /** Current sizes record, keyed by pane id, summing to 100. */
+  sizes: Record<string, number>;
+  /** Replace the sizes record (used by drag, keyboard, and imperative API). */
+  setSizes: (sizes: Record<string, number>) => void;
+  /** Splitter orientation. Determines layout axis and active arrow keys. */
+  orientation: "horizontal" | "vertical";
+  /** Keyboard step in percentage points per arrow-key press. */
+  keyboardStep: number;
+  /** When true, the handle ignores double-clicks. */
+  disableDoubleClick: boolean;
 
-export type SplitterRootSlotProps = HTMLChakraProps<"div", SplitterRecipeProps>;
+  /** Look up the configuration for a given pane id. */
+  getPaneConfig: (paneId: string) => SplitterPaneConfig;
 
-export type SplitterPaneSlotProps = HTMLChakraProps<"div">;
+  /** Ordered ids of the two registered panes, in DOM order. */
+  paneOrder: string[];
+  /** Map from pane id to the DOM id rendered on the pane element. */
+  paneDomIds: Record<string, string>;
+  /** Register a pane with the splitter. Returns a stable DOM id. */
+  registerPane: (paneId: string, domId: string) => void;
+  /** Unregister a pane on unmount. */
+  unregisterPane: (paneId: string) => void;
 
-export type SplitterHandleSlotProps = HTMLChakraProps<"div">;
+  /** Collapse a collapsible pane to its `collapsedSize`. */
+  collapsePane: (paneId: string) => void;
+  /** Expand a collapsed pane back to its `defaultSize`. */
+  expandPane: (paneId: string) => void;
+  /** True if the pane's current size is at or below its `collapsedSize`. */
+  isCollapsed: (paneId: string) => boolean;
+  /** Restore the boundary to the sizes derived on mount. */
+  restoreDefaults: () => void;
+};
 
 // ============================================================
 // MAIN PROPS
