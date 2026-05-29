@@ -637,6 +637,14 @@ describe("resolveDropOperation", () => {
     expect(result).toBe("cancel");
   });
 
+  it("returns 'cancel' for items from a different namespace", () => {
+    const types = new Set<string | symbol>(["nimbus-collection-item:other"]);
+    const result = resolveDropOperation(types, ["move", "copy"], FORMAT, {
+      externalDropOperation: "copy",
+    });
+    expect(result).toBe("cancel");
+  });
+
   it("returns 'cancel' when onExternalDrop is set but acceptExternalTypes is empty", () => {
     const types = new Set<string | symbol>(["text/plain"]);
     const result = resolveDropOperation(types, ["copy"], FORMAT, {

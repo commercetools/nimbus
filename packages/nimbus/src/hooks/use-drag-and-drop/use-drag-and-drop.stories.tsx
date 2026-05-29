@@ -36,7 +36,7 @@ const ReorderDemo = () => {
       <DraggableList.Root
         aria-label="reorder list"
         items={items}
-        onUpdateItems={(updated) => setItems(updated as Item[])}
+        onUpdateItems={setItems}
       />
       <Text data-testid="order">
         {items.map((item) => item.label).join(", ")}
@@ -121,7 +121,7 @@ const CrossListTransferDemo = () => {
   );
 };
 
-const meta: Meta = {
+const meta: Meta<typeof DraggableList.Root<Item>> = {
   title: "Hooks/UseDragAndDrop",
   tags: ["!autodocs"],
 };

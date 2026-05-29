@@ -162,6 +162,11 @@ const { dragAndDropHooks } = useDragAndDrop({
 });
 ```
 
+If you need to customize state handling beyond what these factories provide — for example,
+persisting the new list order to an API or combining drag-and-drop with undo/redo — see the
+[React Aria drag and drop documentation](https://react-aria.adobe.com/dnd) for guidance on
+building custom state handlers.
+
 ## Using with DataTable
 
 DataTable accepts `dragAndDropHooks` as an optional passthrough prop:

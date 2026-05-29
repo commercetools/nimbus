@@ -322,7 +322,7 @@ export const NamespacedIsolation: Story = {
         const betaCountBefore = (await within(betaGrid).findAllByRole("row"))
           .length;
 
-        // Tab twice: past alpha right to beta list
+        // Tab twice: alpha-left → alpha-right (1) → beta (2)
         await dragItemToList(canvas, "Alpha 2", 2);
 
         await waitFor(async () => {
