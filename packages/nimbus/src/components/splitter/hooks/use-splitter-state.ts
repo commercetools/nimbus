@@ -17,7 +17,7 @@ type UseSplitterStateOptions = {
   /** Keyboard step in percentage points per arrow-key press. */
   keyboardStep: number;
   /** When true, the handle ignores double-clicks. */
-  disableDoubleClick: boolean;
+  isDoubleClickDisabled: boolean;
   /** When true, the whole splitter is non-interactive. */
   isDisabled: boolean;
   /** Controlled collapsed pane id (or null). When set, collapse is controlled. */
@@ -64,7 +64,7 @@ export const useSplitterState = (
     defaultSizes,
     panes,
     keyboardStep,
-    disableDoubleClick,
+    isDoubleClickDisabled,
     isDisabled,
     collapsedPane: collapsedPaneProp,
     defaultCollapsedPane,
@@ -287,7 +287,7 @@ export const useSplitterState = (
       commitSizes,
       orientation,
       keyboardStep,
-      disableDoubleClick,
+      isDoubleClickDisabled,
       isDisabled,
       getPaneConfig,
       paneOrder,
@@ -304,7 +304,7 @@ export const useSplitterState = (
       commitSizes,
       orientation,
       keyboardStep,
-      disableDoubleClick,
+      isDoubleClickDisabled,
       isDisabled,
       getPaneConfig,
       paneOrder,

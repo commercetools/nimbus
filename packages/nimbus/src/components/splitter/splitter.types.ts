@@ -52,7 +52,7 @@ export type SplitterContextValue = {
   /** Keyboard step in percentage points per arrow-key press. Accepts floats. */
   keyboardStep: number;
   /** When true, the handle ignores double-clicks. */
-  disableDoubleClick: boolean;
+  isDoubleClickDisabled: boolean;
   /** When true, the whole splitter is non-interactive (drag, keyboard, collapse). */
   isDisabled: boolean;
 
@@ -158,7 +158,7 @@ export type SplitterRootProps = OmitInternalProps<SplitterRootSlotProps> & {
    * keyboard remain active.
    * @default false
    */
-  disableDoubleClick?: boolean;
+  isDoubleClickDisabled?: boolean;
 
   /**
    * When true, the splitter is non-interactive: the handle is removed from the
@@ -195,7 +195,7 @@ export type SplitterPaneProps = OmitInternalProps<SplitterPaneSlotProps> & {
  * Props for `<Splitter.Handle>` — the interactive separator between the two
  * panes. The handle is anonymous: it accepts no `id` and no per-handle
  * configuration. Behaviour is configured on `<Splitter.Root>`
- * (`keyboardStep`, `disableDoubleClick`, `isDisabled`, default `aria-label`).
+ * (`keyboardStep`, `isDoubleClickDisabled`, `isDisabled`, default `aria-label`).
  */
 export type SplitterHandleProps = OmitInternalProps<SplitterHandleSlotProps> & {
   /** Accessible label override; defaults to a localized "Resize panes". */

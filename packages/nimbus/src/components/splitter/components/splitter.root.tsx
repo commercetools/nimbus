@@ -29,7 +29,7 @@ export const SplitterRoot = ({
   defaultCollapsedPane,
   onCollapsedPaneChange,
   keyboardStep = 5,
-  disableDoubleClick = false,
+  isDoubleClickDisabled = false,
   isDisabled = false,
   ref,
   ...props
@@ -48,7 +48,7 @@ export const SplitterRoot = ({
     collapsedPane,
     defaultCollapsedPane,
     keyboardStep,
-    disableDoubleClick,
+    isDoubleClickDisabled,
     isDisabled,
     onSizesChange,
     onSizesChangeEnd,

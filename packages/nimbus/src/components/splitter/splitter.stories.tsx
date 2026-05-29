@@ -46,7 +46,7 @@ const meta: Meta<typeof Splitter.Root> = {
     keyboardStep: {
       control: { type: "range", min: 1, max: 20, step: 1 },
     },
-    disableDoubleClick: { control: { type: "boolean" } },
+    isDoubleClickDisabled: { control: { type: "boolean" } },
     isDisabled: { control: { type: "boolean" } },
   },
 };
@@ -627,12 +627,12 @@ export const NestedSplitters: Story = {
 };
 
 // ============================================================
-// disableDoubleClick — handle ignores double-click; keyboard unaffected.
+// isDoubleClickDisabled — handle ignores double-click; keyboard unaffected.
 // ============================================================
 
 export const DisableDoubleClick: Story = {
   args: {
-    disableDoubleClick: true,
+    isDoubleClickDisabled: true,
     defaultSizes: { nav: 30, main: 70 },
     panes: {
       nav: { minSize: 10 },

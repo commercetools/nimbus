@@ -201,7 +201,7 @@ behaviour applies to all splitters, not only collapsible ones.
 
 #### Scenario: Double-click is disabled
 
-- **WHEN** `<Splitter.Root disableDoubleClick>` is set
+- **WHEN** `<Splitter.Root isDoubleClickDisabled>` is set
 - **THEN** SHALL NOT restore defaults on the handle's double-click
 - **AND** SHALL NOT prevent other handle interactions (drag, keyboard)
 
@@ -298,7 +298,7 @@ The `Splitter.Root` SHALL accept `orientation: "horizontal" | "vertical"`
 
 `Splitter.Handle` SHALL NOT accept an `id` prop or any per-handle configuration
 props. Behaviour is configured on `Splitter.Root` (`keyboardStep`,
-`disableDoubleClick`, default `aria-label`).
+`isDoubleClickDisabled`, default `aria-label`).
 
 #### Scenario: Handle resolves its panes from sibling DOM order
 

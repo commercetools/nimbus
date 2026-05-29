@@ -26,7 +26,7 @@ final contract.
 - **`useSplitterLayout` is removed.** Persistence is wired in the consuming app
   with any storage (`defaultSizes` + `onSizesChangeEnd`; collapse via its
   controlled state). There is no imperative ref/hook (`__layoutRef` removed).
-- **Double-click** restores the mount snapshot (unchanged); `disableDoubleClick`
+- **Double-click** restores the mount snapshot (unchanged); `isDoubleClickDisabled`
   unchanged. Float precision preserved end-to-end (only `aria-valuenow` rounds,
   for AT; added `aria-valuetext`).
 
@@ -202,7 +202,7 @@ and independently announced to assistive tech.
   each pane id.
 - Removes `minValue`, `maxValue`, `isDisabled` from `Root`.
 - `keyboardStep` (formerly `step` on `Root`) stays on `Root`.
-- `disableDoubleClick` lives on `Root`.
+- `isDoubleClickDisabled` lives on `Root`.
 
 ### Collapsible panes (new)
 
@@ -222,7 +222,7 @@ and independently announced to assistive tech.
   (sizes resolved on mount from `defaultSizes` or `panes[id].defaultSize`).
 - The gesture is decoupled from collapsibility: it works on every
   splitter, including those without any `collapsible` panes. Gated by
-  Root-level `disableDoubleClick: boolean`.
+  Root-level `isDoubleClickDisabled: boolean`.
 
 ### What stays the same
 
