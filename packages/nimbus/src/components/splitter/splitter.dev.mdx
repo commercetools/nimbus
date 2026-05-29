@@ -9,7 +9,7 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { Splitter, useSplitterLayout } from "@commercetools/nimbus";
+import { Splitter } from "@commercetools/nimbus";
 import type { SplitterRootProps } from "@commercetools/nimbus";
 ```
 
@@ -18,50 +18,52 @@ import type { SplitterRootProps } from "@commercetools/nimbus";
 ```tsx
 <Splitter.Root
   orientation="horizontal"
+  defaultSizes={{ nav: 30, main: 70 }}
   panes={{
-    nav: { defaultSize: 30, minSize: 15 },
-    main: { defaultSize: 70, minSize: 25 },
+    nav: { minSize: 15 },
+    main: { minSize: 25 },
   }}
 >
-  <Splitter.Pane id="nav">
-    {/* nav content */}
-  </Splitter.Pane>
+  <Splitter.Pane id="nav">{/* nav content */}</Splitter.Pane>
   <Splitter.Handle />
-  <Splitter.Pane id="main">
-    {/* main content */}
-  </Splitter.Pane>
+  <Splitter.Pane id="main">{/* main content */}</Splitter.Pane>
 </Splitter.Root>
 ```
 
 ## Design model
 
-### Uncontrolled by design
+### Sizes are uncontrolled; collapse is controllable
 
-The Splitter owns its sizes state internally. The reason is performance:
-drag operations fire at roughly 60Hz; if `sizes` were a controlled prop the
-consumer's `setState` would be called every tick, re-rendering everything
-above the splitter in the tree. For an app shell wrapping a large React
-subtree, that's a meaningful cost for no real benefit — splitter sizes are
-UI ergonomics, not application state.
+Sizes drag at ~60Hz, so threading them through a controlled prop would call the
+consumer's `setState` every tick and re-render everything above the splitter.
+Sizes are therefore **uncontrolled**: `defaultSizes` (read once on mount) plus
+two notification callbacks:
 
-The public surface is `defaultSizes` (read once on mount) plus
-`onSizesChange` (notification only). For everything that controlled state
-would otherwise solve, use the companion `useSplitterLayout` hook.
+- `onSizesChange(sizes)` — fires on every change, including each drag tick. Use
+  it for a live read-out (e.g. a pixel display).
+- `onSizesChangeEnd(sizes)` — fires once when an interaction settles (drag end,
+  each keypress, collapse/expand, double-click restore). **This is the seam to
+  wire persistence to** — no debouncing required.
+
+Collapse, by contrast, is discrete and low-frequency, so it follows the normal
+Nimbus controlled/uncontrolled convention: `collapsedPane` /
+`defaultCollapsedPane` / `onCollapsedPaneChange`. A 2-pane splitter collapses at
+most one pane at a time, so the value is a single id or `null`.
 
 ### Id-keyed configuration
 
-Each `Splitter.Pane` carries only its `id`. All per-pane configuration
-(`minSize`, `maxSize`, `defaultSize`, `disabled`, `collapsible`,
-`collapsedSize`) lives on `Splitter.Root` in the `panes` map keyed by that id:
+Each `Splitter.Pane` carries only its `id`. Per-pane constraints (`minSize`,
+`collapsible`, `collapsedSize`) live on `Splitter.Root` in the `panes` map keyed
+by that id:
 
 ```tsx
 <Splitter.Root
   panes={{
-    nav:  { minSize: 10, collapsible: true },
+    nav: { minSize: 10, collapsible: true },
     main: { minSize: 20 },
   }}
   defaultSizes={{ nav: 30, main: 70 }}
-  onSizesChange={(sizes) => console.log(sizes)}
+  onSizesChangeEnd={(sizes) => console.log(sizes)}
 >
   <Splitter.Pane id="nav">…</Splitter.Pane>
   <Splitter.Handle />
@@ -72,26 +74,39 @@ Each `Splitter.Pane` carries only its `id`. All per-pane configuration
 Id-keyed instead of index-based for four reasons:
 
 1. **Reorder-safe persistence.** Swapping the panes between releases doesn't
-   invalidate stored layouts. Unknown ids in storage are dropped; missing
-   ids fall back to per-pane defaults.
-2. **Readable APIs.** `layout.collapse("nav")` beats `layout.collapse(0)`.
+   invalidate stored layouts — sizes are keyed by id, not position.
+2. **Readable APIs.** `collapsedPane="nav"` beats `collapsedPane={0}`.
 3. **Clean ARIA.** `aria-controls` on the handle is just the DOM id of the
    previous Pane sibling.
-4. **Configuration on Root.** Nothing leaks onto `<Splitter.Pane>`, which
-   matches the project rule and keeps the JSX flat.
+4. **Configuration on Root.** Per-pane constraints stay in one map.
+
+### Single constraint per side
+
+The boundary is a single value (0–100), so the constraint surface is minimal:
+one `minSize` per pane. A pane's upper bound is the complement of its partner's
+`minSize` (`max = 100 − partner.minSize`), which the clamp and the handle's
+`aria-valuemax` both derive. There is intentionally no per-pane `maxSize` —
+it would be a second source of truth for the same boundary edge.
+
+### Float precision
+
+Sizes carry full float precision end-to-end (`defaultSizes` → clamp → drag →
+`onSizesChange(End)` → `width: …%`). Nothing in the size pipeline rounds. The
+only rounding is the handle's `aria-valuenow` (and `aria-valuetext`), which is a
+screen-reader announcement and does not affect layout. This lets consumers hit
+an exact pixel at a known width (`31.25` = 250px in an 800px container).
 
 ### 2-pane primitive, composable via nesting
 
-`Splitter.Root` accepts exactly two `Pane` children with one `Handle`
-between them. For 3+ regions, nest one Splitter inside the children of a
-`Pane`:
+`Splitter.Root` accepts exactly two `Pane` children with one `Handle` between
+them. For 3+ regions, nest one Splitter inside the children of a `Pane`:
 
 ```tsx
-<Splitter.Root panes={{ nav: {…}, rest: {…} }}>
+<Splitter.Root defaultSizes={{ nav: 25, rest: 75 }}>
   <Splitter.Pane id="nav">…</Splitter.Pane>
   <Splitter.Handle />
   <Splitter.Pane id="rest">
-    <Splitter.Root panes={{ main: {…}, aside: {…} }}>
+    <Splitter.Root defaultSizes={{ main: 65, aside: 35 }}>
       <Splitter.Pane id="main">…</Splitter.Pane>
       <Splitter.Handle />
       <Splitter.Pane id="aside">…</Splitter.Pane>
@@ -102,74 +117,43 @@ between them. For 3+ regions, nest one Splitter inside the children of a
 
 The 2-pane shape is what the W3C window splitter ARIA pattern is specified
 against. Nesting gives screen-reader users a tree of self-contained widgets,
-each matching the W3C example exactly. Flat N-pane with a cascading resize
-algorithm would resize panes that `aria-controls` doesn't point at, with no
-clean ARIA expression — and is the bulk of the complexity in libraries like
-`react-resizable-panels` for layouts that nesting already covers cleanly.
+each matching the W3C example exactly.
 
-## The `useSplitterLayout` hook
+## Persistence
 
-`useSplitterLayout` covers the two use cases that drove most requests for a
-controlled prop: persistence and cross-app imperative commands. Internally
-it holds a ref that `Splitter.Root` populates on mount; calls to
-`collapse`/`expand`/`setSizes` go through that ref. The component re-renders
-when sizes change; the hook never holds React state for sizes.
+Persistence lives in the consuming app, not in the component — hydrate
+`defaultSizes` from any storage and write back on `onSizesChangeEnd`. Collapse
+is controlled state, so it persists the same way.
 
 ```tsx
-const layout = useSplitterLayout({
-  initialSizes: { nav: 30, main: 70 },
-  id: "ide-layout",            // → localStorage key
-  // storage: { load, save },  // custom adapter overrides `id`
-  // debounceMs: 200,
-});
+// `useLocalStorage` is any storage hook of your choosing (cookies, query
+// params, server state, sessionStorage, …).
+const [sizes, setSizes] = useLocalStorage("ide", { nav: 30, main: 70 });
+const [collapsed, setCollapsed] = useLocalStorage("ide-collapsed", null);
 
 <Splitter.Root
-  panes={{ nav: {…}, main: {…} }}
-  defaultSizes={layout.defaultSizes}
-  onSizesChange={layout.onSizesChange}
-  __layoutRef={layout.__layoutRef}
+  defaultSizes={sizes}
+  onSizesChangeEnd={setSizes}
+  collapsedPane={collapsed}
+  onCollapsedPaneChange={setCollapsed}
+  panes={{ nav: { minSize: 10, collapsible: true }, main: { minSize: 20 } }}
 >
   …
-</Splitter.Root>
-
-layout.collapse("nav");
-layout.expand("nav");
-layout.setSizes({ nav: 0, main: 100 });
-const current = layout.getSizes();
-const isHidden = layout.isCollapsed("nav");
+</Splitter.Root>;
 ```
 
-### SSR
-
-The hook is SSR-safe: on the server, `defaultSizes` falls back to
-`initialSizes` without touching `localStorage`. On the client, it reads
-storage synchronously during the first render — no `useEffect` flicker
-between the fallback and the hydrated value.
-
-### Reconciliation
-
-When stored sizes differ from `initialSizes` (renamed pane, dropped pane,
-floating-point drift), the hook reconciles:
-
-- Drop ids that aren't in `initialSizes`.
-- Fill in `initialSizes[id]` for any id missing from storage.
-- Normalize within ±1% sum drift; fall back to `initialSizes` if the drift
-  is larger.
-- Log a development-only warning when reconciliation alters the record.
+`defaultSizes` is read once on mount and normalized to sum 100, so a slightly
+drifted stored value self-heals. Unknown ids in storage have no effect (sizes
+are looked up by the current pane ids).
 
 ## Disabled state
 
-A pane configured with `disabled: true` in the `panes` map cannot lose space
-to drag operations. When **both** panes are disabled, the handle is removed
-from the tab order (`tabIndex={-1}`) and gets `aria-disabled="true"`.
+`isDisabled` on Root makes the whole splitter non-interactive: the handle is
+removed from the tab order (`tabIndex={-1}`), gets `aria-disabled="true"`, and
+ignores drag, keyboard, and collapse input.
 
 ```tsx
-<Splitter.Root
-  panes={{
-    nav: { defaultSize: 30, disabled: true },
-    main: { defaultSize: 70, disabled: true },
-  }}
->
+<Splitter.Root isDisabled defaultSizes={{ nav: 30, main: 70 }}>
   …
 </Splitter.Root>
 ```
@@ -181,9 +165,13 @@ Intentionally not supported on this primitive:
 - **3+ panes per splitter** — use nesting.
 - **Cascading resize.** With only two panes there is nowhere to spill
   remainder; drag clamps at the boundary.
-- **Controlled `sizes` prop.** Use `useSplitterLayout` for the same outcomes
-  without the re-render cost.
-- **Multiple size units** (px / rem / vh). Percentages only.
+- **Controlled `sizes` prop.** Sizes stay uncontrolled for drag performance;
+  persist via `onSizesChangeEnd` + any storage.
+- **Imperative command API.** Collapse is controllable state; there is no ref
+  or hook to wire.
+- **Per-pane `maxSize`.** Derived from the partner's `minSize`.
+- **Pixel / rem / vh units.** Percentages only (full float precision). True
+  cross-resize pixel pinning is a possible later addition.
 - **App-shell behaviour** (responsive collapse to drawers, landmark slots).
   That belongs to a separate pattern component (`AppLayout`) which composes
   `Splitter`.

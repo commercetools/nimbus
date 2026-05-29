@@ -22,12 +22,13 @@ describe("clampedResize", () => {
     expect(result).toEqual({ a: 90, b: 10 });
   });
 
-  it("clamps Δ at prev maxSize", () => {
+  it("clamps Δ at prev upper bound derived from next minSize", () => {
+    // prev has no maxSize knob; its upper bound is 100 − next.minSize = 70.
     const result = clampedResize({
       sizes: { a: 60, b: 40 },
       handlePanes: { prev: "a", next: "b" },
       delta: 20,
-      paneConfigs: { a: { maxSize: 70 }, b: {} },
+      paneConfigs: { a: {}, b: { minSize: 30 } },
     });
     expect(result).toEqual({ a: 70, b: 30 });
   });
@@ -62,62 +63,14 @@ describe("clampedResize", () => {
     expect(result.a + result.b).toBeCloseTo(100, 10);
   });
 
-  describe("commit-collapse path", () => {
-    it("snaps the shrinking pane to collapsedSize when collapsible", () => {
-      const result = clampedResize({
-        sizes: { a: 30, b: 70 },
-        handlePanes: { prev: "a", next: "b" },
-        delta: -25, // would push a below minSize 10
-        paneConfigs: {
-          a: { minSize: 10, collapsible: true, collapsedSize: 0 },
-          b: {},
-        },
-        options: { commitCollapse: true },
-      });
-      expect(result.a).toBe(0);
-      expect(result.b).toBe(100);
+  it("preserves full float precision (no rounding)", () => {
+    const result = clampedResize({
+      sizes: { a: 31.25, b: 68.75 },
+      handlePanes: { prev: "a", next: "b" },
+      delta: 1.125,
+      paneConfigs: { a: {}, b: {} },
     });
-
-    it("does not snap when commitCollapse is false (regular drag)", () => {
-      const result = clampedResize({
-        sizes: { a: 30, b: 70 },
-        handlePanes: { prev: "a", next: "b" },
-        delta: -25,
-        paneConfigs: {
-          a: { minSize: 10, collapsible: true, collapsedSize: 0 },
-          b: {},
-        },
-      });
-      expect(result.a).toBe(10);
-      expect(result.b).toBe(90);
-    });
-
-    it("does not snap when pane is not collapsible", () => {
-      const result = clampedResize({
-        sizes: { a: 30, b: 70 },
-        handlePanes: { prev: "a", next: "b" },
-        delta: -50,
-        paneConfigs: { a: { minSize: 10 }, b: {} },
-        options: { commitCollapse: true },
-      });
-      // Stops at minSize since pane is not collapsible.
-      expect(result.a).toBe(10);
-      expect(result.b).toBe(90);
-    });
-
-    it("snaps the next pane on positive Δ", () => {
-      const result = clampedResize({
-        sizes: { a: 30, b: 70 },
-        handlePanes: { prev: "a", next: "b" },
-        delta: 65, // would push b below minSize 10
-        paneConfigs: {
-          a: {},
-          b: { minSize: 10, collapsible: true, collapsedSize: 0 },
-        },
-        options: { commitCollapse: true },
-      });
-      expect(result.b).toBe(0);
-      expect(result.a).toBe(100);
-    });
+    expect(result.a).toBe(32.375);
+    expect(result.b).toBe(67.625);
   });
 });

@@ -14,31 +14,34 @@ import { clampedResize, pickCollapseTarget } from "../utils";
 import { splitterMessagesStrings } from "../splitter.messages";
 import type { SplitterHandleProps } from "../splitter.types";
 
-const COLLAPSE_TOLERANCE = 0.001;
+const MOVE_TOLERANCE = 0.0001;
 
 /**
  * Interactive separator between two `Splitter.Pane`s. Carries no per-handle
- * configuration — `keyboardStep`, `disableDoubleClick`, and the default
- * `aria-label` are configured on `Splitter.Root`.
+ * configuration — `keyboardStep`, `disableDoubleClick`, `isDisabled`, and the
+ * default `aria-label` are configured on `Splitter.Root`.
  *
  * ARIA model (W3C window splitter):
  * - `role="separator"` with `aria-orientation` mirroring `Splitter.Root`.
- * - `aria-valuenow` is the previous pane's size.
+ * - `aria-valuenow` is the previous pane's size (rounded for AT only — the
+ *   underlying size keeps full float precision).
  * - `aria-valuemin` / `aria-valuemax` are derived from per-pane constraints:
  *     `min = panes.prev.minSize`
- *     `max = 100 − panes.next.minSize` (capped by `panes.prev.maxSize`).
+ *     `max = 100 − panes.next.minSize`
+ * - `aria-valuetext` announces the size as a percentage.
  * - `aria-controls` is the DOM id of the previous Pane sibling.
  *
  * Keyboard:
  * - Arrow keys move the boundary by `Splitter.Root.keyboardStep` (orientation-aware).
  * - Home / End jump the boundary to the active min / max.
- * - Enter toggles collapse of the adjacent collapsible pane (if any).
+ * - Enter toggles collapse of the adjacent collapsible pane (drives the
+ *   uncontrolled collapse state, or fires `onCollapsedPaneChange` when controlled).
  *
  * Pointer:
- * - Drag via `useMove` from react-aria.
+ * - Drag via `useMove` from react-aria (live `onSizesChange`; settled
+ *   `onSizesChangeEnd` on drag end).
  * - Double-click restores the boundary to the initial sizes resolved on mount
- *   (gated by `Splitter.Root.disableDoubleClick`). Decoupled from collapse so
- *   the gesture is meaningful on every splitter.
+ *   (gated by `Splitter.Root.disableDoubleClick`). Decoupled from collapse.
  *
  * @supportsStyleProps
  */
@@ -52,15 +55,16 @@ export const SplitterHandle = ({
   const {
     sizes,
     setSizes,
+    commitSizes,
     orientation,
     keyboardStep,
     disableDoubleClick,
+    isDisabled,
     getPaneConfig,
     paneOrder,
     paneDomIds,
-    collapsePane,
-    expandPane,
-    isCollapsed,
+    collapsedPane,
+    setCollapsedPane,
     restoreDefaults,
   } = useSplitterContext();
 
@@ -85,21 +89,20 @@ export const SplitterHandle = ({
     () => (nextId ? getPaneConfig(nextId) : {}),
     [nextId, getPaneConfig]
   );
-  const bothDisabled = !!prevCfg.disabled && !!nextCfg.disabled;
 
-  // ARIA bounds derived from per-pane constraints (not Root-level globals).
+  // ARIA bounds derived from per-pane `minSize` (no separate maxSize — the
+  // upper bound is the complement of the partner's minSize).
   const prevSize = prevId ? (sizes[prevId] ?? 0) : 0;
   const ariaValueMin = prevCfg.minSize ?? 0;
-  const ariaValueMaxRaw = 100 - (nextCfg.minSize ?? 0);
-  const ariaValueMax = Math.min(ariaValueMaxRaw, prevCfg.maxSize ?? 100);
+  const ariaValueMax = 100 - (nextCfg.minSize ?? 0);
 
   // Track cumulative pixel deltas across a single drag so sub-pixel
   // contributions don't round to zero on every event.
   const dragAccumRef = useRef(0);
 
   const applyDelta = useCallback(
-    (delta: number, options?: { commitCollapse?: boolean }) => {
-      if (!hasPair || bothDisabled) return;
+    (delta: number, commit: boolean) => {
+      if (!hasPair || isDisabled) return;
       const next = clampedResize({
         sizes,
         handlePanes: { prev: prevId!, next: nextId! },
@@ -108,11 +111,24 @@ export const SplitterHandle = ({
           [prevId!]: prevCfg,
           [nextId!]: nextCfg,
         },
-        options,
       });
-      setSizes(next);
+      if (commit) {
+        commitSizes(next);
+      } else {
+        setSizes(next);
+      }
     },
-    [hasPair, bothDisabled, sizes, prevId, nextId, prevCfg, nextCfg, setSizes]
+    [
+      hasPair,
+      isDisabled,
+      sizes,
+      prevId,
+      nextId,
+      prevCfg,
+      nextCfg,
+      setSizes,
+      commitSizes,
+    ]
   );
 
   const { separatorProps } = useSeparator({
@@ -126,7 +142,7 @@ export const SplitterHandle = ({
       dragAccumRef.current = 0;
     },
     onMove(e) {
-      if (!hasPair || bothDisabled) return;
+      if (!hasPair || isDisabled) return;
       const parent = handleRef.current?.parentElement;
       if (!parent) return;
       const containerSize =
@@ -135,68 +151,73 @@ export const SplitterHandle = ({
       const deltaPx = orientation === "horizontal" ? e.deltaX : e.deltaY;
       dragAccumRef.current += (deltaPx / containerSize) * 100;
       const wholeDelta = dragAccumRef.current;
-      if (Math.abs(wholeDelta) < COLLAPSE_TOLERANCE) return;
+      if (Math.abs(wholeDelta) < MOVE_TOLERANCE) return;
       dragAccumRef.current = 0;
-      applyDelta(wholeDelta);
+      applyDelta(wholeDelta, false);
+    },
+    onMoveEnd() {
+      if (!hasPair || isDisabled) return;
+      // Settle: fire onSizesChangeEnd with the current sizes (the persistence seam).
+      commitSizes();
     },
   });
 
   const { focusProps, isFocusVisible } = useFocusRing();
 
   const toggleCollapse = useCallback(() => {
-    if (!hasPair) return;
-    const target = pickCollapseTarget(paneOrder, sizes, getPaneConfig);
-    if (!target) return;
-    if (isCollapsed(target.paneId)) {
-      expandPane(target.paneId);
-    } else {
-      collapsePane(target.paneId);
+    if (!hasPair || isDisabled) return;
+    // If anything is collapsed, Enter expands it; otherwise collapse the pick.
+    if (collapsedPane !== null) {
+      setCollapsedPane(null);
+      return;
     }
+    const target = pickCollapseTarget(paneOrder, sizes, getPaneConfig);
+    if (target) setCollapsedPane(target.paneId);
   }, [
     hasPair,
+    isDisabled,
+    collapsedPane,
     paneOrder,
     sizes,
     getPaneConfig,
-    isCollapsed,
-    collapsePane,
-    expandPane,
+    setCollapsedPane,
   ]);
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
-      if (!hasPair || bothDisabled) return;
+      if (!hasPair || isDisabled) return;
       switch (event.key) {
         case "ArrowLeft":
           if (orientation === "horizontal") {
             event.preventDefault();
-            applyDelta(-keyboardStep);
+            applyDelta(-keyboardStep, true);
           }
           return;
         case "ArrowRight":
           if (orientation === "horizontal") {
             event.preventDefault();
-            applyDelta(keyboardStep);
+            applyDelta(keyboardStep, true);
           }
           return;
         case "ArrowUp":
           if (orientation === "vertical") {
             event.preventDefault();
-            applyDelta(-keyboardStep);
+            applyDelta(-keyboardStep, true);
           }
           return;
         case "ArrowDown":
           if (orientation === "vertical") {
             event.preventDefault();
-            applyDelta(keyboardStep);
+            applyDelta(keyboardStep, true);
           }
           return;
         case "Home":
           event.preventDefault();
-          applyDelta(-100);
+          applyDelta(-100, true);
           return;
         case "End":
           event.preventDefault();
-          applyDelta(100);
+          applyDelta(100, true);
           return;
         case "Enter":
           event.preventDefault();
@@ -204,22 +225,16 @@ export const SplitterHandle = ({
           return;
       }
     },
-    [
-      hasPair,
-      bothDisabled,
-      orientation,
-      keyboardStep,
-      applyDelta,
-      toggleCollapse,
-    ]
+    [hasPair, isDisabled, orientation, keyboardStep, applyDelta, toggleCollapse]
   );
 
   const handleDoubleClick = useCallback(() => {
-    if (disableDoubleClick) return;
+    if (isDisabled || disableDoubleClick) return;
     restoreDefaults();
-  }, [disableDoubleClick, restoreDefaults]);
+  }, [isDisabled, disableDoubleClick, restoreDefaults]);
 
   const ariaControls = prevId ? paneDomIds[prevId] : undefined;
+  const roundedValueNow = prevId ? Math.round(prevSize) : undefined;
 
   // Position the absolute-positioned handle on the boundary between the two
   // panes. The recipe's `transform: translate(±50%)` centers the visible
@@ -235,15 +250,17 @@ export const SplitterHandle = ({
     focusProps,
     {
       role: "separator",
-      tabIndex: bothDisabled ? -1 : 0,
-      "aria-valuenow": prevId ? Math.round(prevSize) : undefined,
+      tabIndex: isDisabled ? -1 : 0,
+      "aria-valuenow": roundedValueNow,
       "aria-valuemin": ariaValueMin,
       "aria-valuemax": ariaValueMax,
+      "aria-valuetext":
+        roundedValueNow !== undefined ? `${roundedValueNow}%` : undefined,
       "aria-orientation": orientation,
       "aria-controls": ariaControls,
-      "aria-disabled": bothDisabled || undefined,
+      "aria-disabled": isDisabled || undefined,
       "data-focus-visible": isFocusVisible || undefined,
-      "data-disabled": bothDisabled || undefined,
+      "data-disabled": isDisabled || undefined,
       onKeyDown: handleKeyDown,
       onDoubleClick: handleDoubleClick,
       style: { ...positionStyle, ...style },

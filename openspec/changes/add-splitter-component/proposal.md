@@ -1,5 +1,37 @@
 # Change: Add Splitter component
 
+## Revision — post-review API reshape
+
+A multi-perspective review before release found the original API
+over-parameterized a single-value boundary. Since the component is unreleased
+(no consumers), the API was reshaped for coherence. The sections below are kept
+for history; where they conflict, **this revision wins**. `spec.md` reflects the
+final contract.
+
+**Final public API:**
+
+- **Per-pane config** (`panes` map, keyed by id) carries only `minSize`,
+  `collapsible`, `collapsedSize`. Removed: `defaultSize`, `maxSize`, `disabled`.
+  A pane's upper bound is derived (`100 − partner.minSize`).
+- **Initial sizes:** a single canonical `defaultSizes` on Root (read once,
+  normalized to 100, full float precision). Removed per-pane `defaultSize`.
+- **Sizes** stay uncontrolled: `defaultSizes`, `onSizesChange` (live), and new
+  `onSizesChangeEnd` (settled — the persistence seam, no debounce needed).
+- **Collapse** is controllable state, not imperative: `collapsedPane` /
+  `defaultCollapsedPane` / `onCollapsedPaneChange` (single id or `null`; one
+  pane collapses at a time). Removed `onCollapse`/`onExpand`.
+- **`isDisabled`** on Root (Nimbus convention) replaces per-pane `disabled` /
+  the `bothDisabled` semantics.
+- **`size`** (`sm`/`md`/`lg`) is a documented Root prop.
+- **`useSplitterLayout` is removed.** Persistence is wired in the consuming app
+  with any storage (`defaultSizes` + `onSizesChangeEnd`; collapse via its
+  controlled state). There is no imperative ref/hook (`__layoutRef` removed).
+- **Double-click** restores the mount snapshot (unchanged); `disableDoubleClick`
+  unchanged. Float precision preserved end-to-end (only `aria-valuenow` rounds,
+  for AT; added `aria-valuetext`).
+
+Supersedes design Decisions 4, 5, 6, 9, and 10 below.
+
 ## Why
 
 Nimbus has no primitive for user-resizable panes. The unmerged `window-splitter`

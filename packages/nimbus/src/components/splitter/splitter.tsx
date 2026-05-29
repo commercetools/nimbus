@@ -53,7 +53,8 @@ export const Splitter = {
    *
    * The interactive separator between the two panes. Drag, arrow keys, and
    * Home/End move the boundary; Enter toggles collapse of an adjacent
-   * collapsible pane; double-click restores the boundary to its initial sizes.
+   * collapsible pane (also controllable via `Splitter.Root`'s `collapsedPane`);
+   * double-click restores the boundary to its initial sizes.
    *
    * @example
    * ```tsx
