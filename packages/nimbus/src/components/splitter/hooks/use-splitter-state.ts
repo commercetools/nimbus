@@ -166,8 +166,7 @@ export const useSplitterState = (
   const collapsePane = useCallback(
     (paneId: string) => {
       if (paneOrder.length !== 2) return;
-      const otherId = paneOrder.find((id) => id !== paneId);
-      if (!otherId) return;
+      const otherId = paneOrder[0] === paneId ? paneOrder[1]! : paneOrder[0]!;
       const cfg = panes?.[paneId];
       if (!cfg?.collapsible) return;
       const collapsedSize = cfg.collapsedSize ?? 0;
@@ -186,11 +185,9 @@ export const useSplitterState = (
   const expandPane = useCallback(
     (paneId: string) => {
       if (paneOrder.length !== 2) return;
-      const otherId = paneOrder.find((id) => id !== paneId);
-      if (!otherId) return;
+      const otherId = paneOrder[0] === paneId ? paneOrder[1]! : paneOrder[0]!;
       const cfg = panes?.[paneId];
-      const restoreTo =
-        cfg?.defaultSize ?? defaultSizes?.[paneId] ?? 100 / paneOrder.length;
+      const restoreTo = cfg?.defaultSize ?? defaultSizes?.[paneId] ?? 50;
       setSizes({ [paneId]: restoreTo, [otherId]: 100 - restoreTo });
     },
     [paneOrder, panes, defaultSizes, setSizes]

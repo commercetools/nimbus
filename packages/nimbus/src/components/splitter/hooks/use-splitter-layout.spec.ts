@@ -24,7 +24,7 @@ describe("useSplitterLayout", () => {
     expect(result.current.defaultSizes).toEqual({ nav: 25, main: 75 });
   });
 
-  it("drops unknown ids from the stored value", () => {
+  it("drops unknown ids and infers the partner from the first pane", () => {
     const storage = {
       load: () => ({ nav: 25, main: 70, oldAside: 5 }),
       save: vi.fn(),
@@ -35,15 +35,14 @@ describe("useSplitterLayout", () => {
         storage,
       })
     );
-    // oldAside dropped; remaining sums to 95, normalized within ±1% to 100.
-    const { defaultSizes } = result.current;
-    expect(Object.keys(defaultSizes).sort()).toEqual(["main", "nav"]);
-    expect(defaultSizes.nav! + defaultSizes.main!).toBeCloseTo(100, 6);
+    // oldAside ignored; nav (the first pane) is salvaged at 25, main inferred
+    // as its complement (100 − 25). The stored main (70) is redundant.
+    expect(result.current.defaultSizes).toEqual({ nav: 25, main: 75 });
   });
 
-  it("falls back to initialSizes when stored sum is far from 100", () => {
+  it("keeps the first pane's stored value and infers the complement", () => {
     const storage = {
-      load: () => ({ nav: 10, main: 10 }), // sum 20 — outside ±1%
+      load: () => ({ nav: 10, main: 10 }), // stored main is redundant
       save: vi.fn(),
     };
     const { result } = renderHook(() =>
@@ -52,10 +51,11 @@ describe("useSplitterLayout", () => {
         storage,
       })
     );
-    expect(result.current.defaultSizes).toEqual({ nav: 40, main: 60 });
+    // nav 10 is a valid boundary; main is inferred as 90 (not a fallback).
+    expect(result.current.defaultSizes).toEqual({ nav: 10, main: 90 });
   });
 
-  it("falls back to initialSizes when stored value is malformed", () => {
+  it("falls back to initialSizes when the stored record is malformed", () => {
     const storage = {
       load: () => ({ nav: "thirty" as unknown as number, main: 70 }),
       save: vi.fn(),
@@ -66,11 +66,12 @@ describe("useSplitterLayout", () => {
         storage,
       })
     );
-    // nav was non-numeric → reconciler swapped in initialSizes[nav].
-    expect(result.current.defaultSizes.nav).toBe(40);
+    // The non-numeric value makes the whole record invalid at read time, so
+    // reconciliation never runs and initialSizes is used.
+    expect(result.current.defaultSizes).toEqual({ nav: 40, main: 60 });
   });
 
-  it("fills in missing ids from initialSizes", () => {
+  it("infers the missing partner from the stored first pane", () => {
     const storage = {
       load: () => ({ nav: 30 }) as Record<string, number>, // main missing
       save: vi.fn(),
@@ -81,10 +82,23 @@ describe("useSplitterLayout", () => {
         storage,
       })
     );
-    // main filled in to 60, then normalized to sum 100.
-    const { defaultSizes } = result.current;
-    expect(defaultSizes.nav).toBeCloseTo((30 / 90) * 100, 6);
-    expect(defaultSizes.main).toBeCloseTo((60 / 90) * 100, 6);
+    // nav stays 30 (its saved value); main inferred as the complement.
+    expect(result.current.defaultSizes).toEqual({ nav: 30, main: 70 });
+  });
+
+  it("infers the first pane from the partner when only the partner is stored", () => {
+    const storage = {
+      load: () => ({ main: 70 }) as Record<string, number>, // nav missing
+      save: vi.fn(),
+    };
+    const { result } = renderHook(() =>
+      useSplitterLayout({
+        initialSizes: { nav: 40, main: 60 },
+        storage,
+      })
+    );
+    // nav absent → inferred as the complement of the salvaged main (100 − 70).
+    expect(result.current.defaultSizes).toEqual({ nav: 30, main: 70 });
   });
 
   it("debounces save() on onSizesChange", () => {
