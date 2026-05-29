@@ -46,7 +46,7 @@ export const toolbarRecipe = defineRecipe({
     variant: {
       plain: {},
       outline: {
-        boxShadow: "0 0 0 {sizes.25} {colors.neutral.6}",
+        boxShadow: "inset 0 0 0 {sizes.25} {colors.neutral.6}",
       },
     },
   },
