@@ -98,6 +98,67 @@ const App = () => {
 }
 ```
 
+### Single selection
+
+Use `selectionMode="single"` to allow users to select one item at a time. Clicking a row selects it; clicking another row changes the selection. No checkboxes are rendered — the row itself is the click target:
+
+```jsx live-dev
+const App = () => {
+  const [selected, setSelected] = useState(new Set());
+
+  return (
+    <Stack direction="column" gap="400">
+      <DraggableList.Root
+        items={[
+          { key: '1', label: 'Option A' },
+          { key: '2', label: 'Option B' },
+          { key: '3', label: 'Option C' },
+        ]}
+        selectionMode="single"
+        selectedKeys={selected}
+        onSelectionChange={setSelected}
+        aria-label="Single selection list"
+      />
+      <Text fontSize="sm">
+        Selected: {[...selected].join(', ') || 'none'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Multiple selection
+
+Use `selectionMode="multiple"` to allow users to select any number of items. Each item renders a checkbox for toggling selection independently:
+
+```jsx live-dev
+const App = () => {
+  const [selected, setSelected] = useState(new Set());
+
+  return (
+    <Stack direction="column" gap="400">
+      <DraggableList.Root
+        items={[
+          { key: '1', label: 'Task A' },
+          { key: '2', label: 'Task B' },
+          { key: '3', label: 'Task C' },
+        ]}
+        selectionMode="multiple"
+        selectedKeys={selected}
+        onSelectionChange={setSelected}
+        aria-label="Multiple selection list"
+      />
+      <Text fontSize="sm">
+        Selected: {[...selected].join(', ') || 'none'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+> [!NOTE]
+> Selection props (`selectionMode`, `selectedKeys`, `onSelectionChange`, `defaultSelectedKeys`, `disallowEmptySelection`) are passed through to the underlying React Aria GridList. See the [React Aria GridList docs](https://react-spectrum.adobe.com/react-aria/GridList.html#selection) for the full selection API.
+
 ### Item removal
 
 Enable item removal by setting `removableItems={true}`. When items are removed, the `onUpdateItems` callback receives the updated list:

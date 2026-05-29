@@ -199,49 +199,54 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       // programmatically select the word under the cursor.
       // Only needed when the row is actually draggable.
       const target = e.target as HTMLElement;
-      const row = target?.closest?.("[draggable='true']");
+      const row = target?.closest?.("[draggable='true']") as HTMLElement | null;
       if (row && e instanceof MouseEvent) {
         const selection = window.getSelection();
         if (!selection) return;
 
-        // Firefox / Chrome
+        // Chrome applies user-select:none on draggable rows which causes
+        // caretPositionFromPoint to skip those elements entirely (returning
+        // a caret in a different row) and prevents the selection highlight
+        // from rendering. Temporarily allow text selection so the caret
+        // APIs resolve the correct text node and Chrome shows the highlight.
+        const prevUserSelect = row.style.userSelect;
+        row.style.userSelect = "text";
+
+        const resetUserSelect = () => {
+          row.style.userSelect = prevUserSelect;
+        };
+        document.addEventListener("pointerdown", resetUserSelect, {
+          capture: true,
+          once: true,
+        });
+
+        type SelectionWithModify = Selection & {
+          modify(alter: string, direction: string, granularity: string): void;
+        };
+
         if (typeof document.caretPositionFromPoint === "function") {
           const caretPos = document.caretPositionFromPoint(
             e.clientX,
             e.clientY
           );
           if (caretPos?.offsetNode) {
-            const sel = selection as Selection & {
-              modify(
-                alter: string,
-                direction: string,
-                granularity: string
-              ): void;
-            };
+            const sel = selection as SelectionWithModify;
             sel.removeAllRanges();
             sel.collapse(caretPos.offsetNode, caretPos.offset);
             sel.modify("move", "backward", "word");
-            sel.extend(caretPos.offsetNode, caretPos.offset);
             sel.modify("extend", "forward", "word");
           }
         } else if (
           typeof (document as unknown as Record<string, unknown>)
             .caretRangeFromPoint === "function"
         ) {
-          // Safari fallback
           const range = (
             document as unknown as {
               caretRangeFromPoint(x: number, y: number): Range | null;
             }
           ).caretRangeFromPoint(e.clientX, e.clientY);
           if (range) {
-            const sel = selection as Selection & {
-              modify(
-                alter: string,
-                direction: string,
-                granularity: string
-              ): void;
-            };
+            const sel = selection as SelectionWithModify;
             sel.removeAllRanges();
             sel.addRange(range);
             sel.modify("move", "backward", "word");

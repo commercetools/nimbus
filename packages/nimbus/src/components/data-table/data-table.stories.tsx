@@ -4949,5 +4949,21 @@ export const DragAndDropRows: Story = {
         );
       });
     });
+
+    await step(
+      "Double-click on cell text does not trigger row click",
+      async () => {
+        const table = canvas.getByRole("grid");
+        const carolRow = within(table).getByRole("row", { name: /Carol/i });
+        const carolCell = within(carolRow).getByText("Carol");
+
+        await userEvent.dblClick(carolCell);
+        await wait(400);
+
+        expect(canvas.getByTestId("clicked-row")).toHaveTextContent(
+          "Clicked: none"
+        );
+      }
+    );
   },
 };

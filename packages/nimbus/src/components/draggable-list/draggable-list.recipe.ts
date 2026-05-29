@@ -53,6 +53,9 @@ export const draggableListSlotRecipe = defineSlotRecipe({
           cursor: "grabbing",
         },
       },
+      "&[data-selected]": {
+        background: "colorPalette.5",
+      },
       "&[data-disabled]": {
         layerStyle: "disabled",
       },

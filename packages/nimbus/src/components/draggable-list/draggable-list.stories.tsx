@@ -1126,6 +1126,188 @@ export const OutgoingFormat: Story = {
   },
 };
 
+export const SingleSelection: Story = {
+  render: () => {
+    const SingleSelectionDemo = () => {
+      const [selected, setSelected] = useState<Set<string>>(new Set());
+
+      return (
+        <Flex direction="column" gap={400}>
+          <DraggableList.Root
+            aria-label="single selection list"
+            items={items}
+            selectionMode="single"
+            selectedKeys={selected}
+            onSelectionChange={(keys) => setSelected(keys as Set<string>)}
+          />
+          <Text data-testid="selected">
+            Selected: {[...selected].join(", ") || "none"}
+          </Text>
+        </Flex>
+      );
+    };
+
+    return <SingleSelectionDemo />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders list without checkboxes", async () => {
+      const grid = await canvas.findByRole("grid", {
+        name: /single selection list/i,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      const rows = await within(grid).findAllByRole("row");
+      expect(rows.length).toBe(5);
+
+      const checkboxes = within(grid).queryAllByRole("checkbox");
+      expect(checkboxes.length).toBe(0);
+
+      expect(canvas.getByTestId("selected")).toHaveTextContent(
+        "Selected: none"
+      );
+    });
+
+    await step("Clicking a row selects it", async () => {
+      const grid = canvas.getByRole("grid", {
+        name: /single selection list/i,
+      });
+      const rows = within(grid).getAllByRole("row");
+
+      await userEvent.click(rows[0]);
+
+      await waitFor(() => {
+        expect(rows[0]).toHaveAttribute("data-selected");
+        expect(canvas.getByTestId("selected")).toHaveTextContent("Selected: 1");
+      });
+    });
+
+    await step("Clicking a different row changes selection", async () => {
+      const grid = canvas.getByRole("grid", {
+        name: /single selection list/i,
+      });
+      const rows = within(grid).getAllByRole("row");
+
+      await userEvent.click(rows[2]);
+
+      await waitFor(() => {
+        expect(rows[0]).not.toHaveAttribute("data-selected");
+        expect(rows[2]).toHaveAttribute("data-selected");
+        expect(canvas.getByTestId("selected")).toHaveTextContent("Selected: 3");
+      });
+    });
+
+    await step("Keyboard navigation selects items", async () => {
+      const grid = canvas.getByRole("grid", {
+        name: /single selection list/i,
+      });
+      const rows = within(grid).getAllByRole("row");
+
+      rows[0].focus();
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("selected")).toHaveTextContent("Selected: 2");
+      });
+    });
+  },
+};
+
+export const MultipleSelection: Story = {
+  render: () => {
+    const MultipleSelectionDemo = () => {
+      const [selected, setSelected] = useState<Set<string>>(new Set());
+
+      return (
+        <Flex direction="column" gap={400}>
+          <DraggableList.Root
+            aria-label="multi selection list"
+            items={items}
+            selectionMode="multiple"
+            selectedKeys={selected}
+            onSelectionChange={(keys) => setSelected(keys as Set<string>)}
+          />
+          <Text data-testid="selected">
+            Selected: {[...selected].join(", ") || "none"}
+          </Text>
+        </Flex>
+      );
+    };
+
+    return <MultipleSelectionDemo />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders checkboxes for each item", async () => {
+      const grid = await canvas.findByRole("grid", {
+        name: /multi selection list/i,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      const checkboxes = within(grid).getAllByRole("checkbox");
+      expect(checkboxes.length).toBe(5);
+
+      expect(canvas.getByTestId("selected")).toHaveTextContent(
+        "Selected: none"
+      );
+    });
+
+    await step("Clicking checkboxes selects multiple items", async () => {
+      const grid = canvas.getByRole("grid", {
+        name: /multi selection list/i,
+      });
+      const checkboxes = within(grid).getAllByRole("checkbox");
+
+      await userEvent.click(checkboxes[0]);
+      await userEvent.click(checkboxes[2]);
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("selected")).toHaveTextContent(
+          "Selected: 1, 3"
+        );
+      });
+
+      const rows = within(grid).getAllByRole("row");
+      expect(rows[0]).toHaveAttribute("data-selected");
+      expect(rows[1]).not.toHaveAttribute("data-selected");
+      expect(rows[2]).toHaveAttribute("data-selected");
+    });
+
+    await step("Clicking again deselects", async () => {
+      const grid = canvas.getByRole("grid", {
+        name: /multi selection list/i,
+      });
+      const checkboxes = within(grid).getAllByRole("checkbox");
+
+      await userEvent.click(checkboxes[0]);
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("selected")).toHaveTextContent("Selected: 3");
+      });
+
+      const rows = within(grid).getAllByRole("row");
+      expect(rows[0]).not.toHaveAttribute("data-selected");
+    });
+
+    await step("Keyboard navigation selects via checkbox", async () => {
+      const grid = canvas.getByRole("grid", {
+        name: /multi selection list/i,
+      });
+      const rows = within(grid).getAllByRole("row");
+
+      rows[3].focus();
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("selected")).toHaveTextContent(
+          "Selected: 3, 4"
+        );
+      });
+    });
+  },
+};
+
 /**
  * Showcase Possible Color Palettes
  */
