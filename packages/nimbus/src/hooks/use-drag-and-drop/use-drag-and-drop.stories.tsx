@@ -12,7 +12,7 @@ import {
   createArrayHandlers,
 } from "@commercetools/nimbus";
 import type { DataTableColumnItem } from "@commercetools/nimbus";
-import { dragItem, dragItemToList } from "./use-drag-and-drop.test-utils";
+import { dragItem, dragItemToList } from "./utils/use-drag-and-drop.test-utils";
 
 const DRAG_DELAY_MS = 50;
 

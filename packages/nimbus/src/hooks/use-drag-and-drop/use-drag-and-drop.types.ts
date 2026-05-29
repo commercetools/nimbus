@@ -37,7 +37,8 @@ export type DragAndDropProps<T> = {
   acceptExternalTypes?: Array<string | symbol>;
   /**
    * Drop operation for items from external sources.
-   * Internal reorders always use `"move"`.
+   * Internal reorders always use `"move"`. Returns `"cancel"` when the
+   * source does not include this operation in its `allowedOperations`.
    * @default "copy"
    */
   externalDropOperation?: Exclude<DropOperation, "cancel">;

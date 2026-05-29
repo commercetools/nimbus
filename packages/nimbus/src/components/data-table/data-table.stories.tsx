@@ -47,6 +47,10 @@ import {
 } from "./data-table.test-data";
 
 import { useDragAndDrop, createArrayHandlers } from "@commercetools/nimbus";
+
+const DRAG_DELAY_MS = 50;
+const wait = (ms: number = DRAG_DELAY_MS) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 import type {
   DataTableRowItem,
   DataTableColumnItem,
@@ -4877,7 +4881,7 @@ export const DragAndDropRows: Story = {
       const [clickedRow, setClickedRow] = useState<string | null>(null);
 
       const { dragAndDropHooks } = useDragAndDrop({
-        ...createArrayHandlers(setTableRows, (row) => row.id as string),
+        ...createArrayHandlers(setTableRows, (row) => row.id),
       });
 
       return (
@@ -4930,13 +4934,13 @@ export const DragAndDropRows: Story = {
 
       // Focus the first data row, then navigate to drag handle
       rows[1].focus();
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await wait();
       await userEvent.keyboard("{ArrowRight}");
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await wait();
       await userEvent.keyboard("{Enter}");
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await wait();
       await userEvent.keyboard("{ArrowDown}");
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await wait();
       await userEvent.keyboard("{Enter}");
 
       await waitFor(() => {

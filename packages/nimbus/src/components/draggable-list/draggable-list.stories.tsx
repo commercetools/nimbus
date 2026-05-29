@@ -13,7 +13,7 @@ import { items, fieldItems } from "./utils/draggable-list.test-data";
 import {
   dragItem,
   dragItemToList,
-} from "@/hooks/use-drag-and-drop/use-drag-and-drop.test-utils";
+} from "@/hooks/use-drag-and-drop/utils/use-drag-and-drop.test-utils";
 
 const meta: Meta<typeof DraggableList.Root> = {
   title: "Components/DraggableList",

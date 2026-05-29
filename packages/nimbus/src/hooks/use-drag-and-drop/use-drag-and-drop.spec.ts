@@ -8,6 +8,7 @@ import type {
 } from "react-aria-components";
 import { createArrayHandlers, createListDataHandlers } from "./state-handlers";
 import { processDropItems } from "./process-drop-items";
+import { resolveDropOperation } from "./use-drag-and-drop";
 import {
   createItemsFromTextDrop,
   createItemsFromFileDrop,
@@ -572,5 +573,77 @@ describe("createItemsFromImageDrop", () => {
     const item = makeTextDropItem({ "text/plain": "not an image" });
     const result = await createItemsFromImageDrop([item]);
     expect(result).toHaveLength(0);
+  });
+});
+
+// ============================================================
+// resolveDropOperation
+// ============================================================
+
+describe("resolveDropOperation", () => {
+  const FORMAT = "nimbus-collection-item:ns";
+
+  it("returns 'move' for internal items when allowed", () => {
+    const types = new Set<string | symbol>([FORMAT]);
+    const result = resolveDropOperation(types, ["move", "copy"], FORMAT, {
+      externalDropOperation: "copy",
+    });
+    expect(result).toBe("move");
+  });
+
+  it("returns 'cancel' for internal items when move is not allowed", () => {
+    const types = new Set<string | symbol>([FORMAT]);
+    const result = resolveDropOperation(types, ["copy"], FORMAT, {
+      externalDropOperation: "copy",
+    });
+    expect(result).toBe("cancel");
+  });
+
+  it("returns external operation for accepted external types", () => {
+    const types = new Set<string | symbol>(["text/plain"]);
+    const result = resolveDropOperation(types, ["copy", "move"], FORMAT, {
+      onExternalDrop: () => [],
+      acceptExternalTypes: ["text/plain"],
+      externalDropOperation: "copy",
+    });
+    expect(result).toBe("copy");
+  });
+
+  it("returns 'cancel' when external type is not in acceptExternalTypes", () => {
+    const types = new Set<string | symbol>(["image/png"]);
+    const result = resolveDropOperation(types, ["copy", "move"], FORMAT, {
+      onExternalDrop: () => [],
+      acceptExternalTypes: ["text/plain"],
+      externalDropOperation: "copy",
+    });
+    expect(result).toBe("cancel");
+  });
+
+  it("returns 'cancel' when external operation is not in allowedOperations", () => {
+    const types = new Set<string | symbol>(["text/plain"]);
+    const result = resolveDropOperation(types, ["move"], FORMAT, {
+      onExternalDrop: () => [],
+      acceptExternalTypes: ["text/plain"],
+      externalDropOperation: "copy",
+    });
+    expect(result).toBe("cancel");
+  });
+
+  it("returns 'cancel' when no onExternalDrop and type is not internal", () => {
+    const types = new Set<string | symbol>(["text/plain"]);
+    const result = resolveDropOperation(types, ["copy", "move"], FORMAT, {
+      externalDropOperation: "copy",
+    });
+    expect(result).toBe("cancel");
+  });
+
+  it("returns 'cancel' when onExternalDrop is set but acceptExternalTypes is empty", () => {
+    const types = new Set<string | symbol>(["text/plain"]);
+    const result = resolveDropOperation(types, ["copy"], FORMAT, {
+      onExternalDrop: () => [],
+      acceptExternalTypes: [],
+      externalDropOperation: "copy",
+    });
+    expect(result).toBe("cancel");
   });
 });

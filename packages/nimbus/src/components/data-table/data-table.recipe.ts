@@ -144,10 +144,22 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         "& [data-slot='expand']": {
           clipPath: "inset(2px 0)",
         },
+        // When drag column is present in pinned rows, offset selection and expand columns
+        "& [data-slot='drag'] ~ [data-slot='selection']": {
+          left: "600",
+        },
+        "& [data-slot='drag'] ~ [data-slot='expand']": {
+          left: "600",
+        },
         // When selection column is present in pinned rows, move expand column
         "& [data-slot='selection'] ~ [data-slot='expand']": {
           left: "1800",
         },
+        // When both drag and selection columns are present in pinned rows
+        "& [data-slot='drag'] ~ [data-slot='selection'] ~ [data-slot='expand']":
+          {
+            left: "2400",
+          },
         "& [data-slot='pin-row-cell']": {
           backgroundColor: "bg",
           position: "sticky",
