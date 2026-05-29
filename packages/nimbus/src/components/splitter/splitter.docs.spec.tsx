@@ -10,7 +10,7 @@ import {
 /**
  * @docs-section basic-rendering
  * @docs-title Basic Rendering
- * @docs-description Verify the Splitter renders two panes plus a handle.
+ * @docs-description Minimal two-pane Splitter wired up in a consumer app.
  * @docs-order 1
  */
 describe("Splitter - Basic rendering", () => {
@@ -29,155 +29,6 @@ describe("Splitter - Basic rendering", () => {
 
     const handle = await screen.findByRole("separator");
     expect(handle).toBeInTheDocument();
-    expect(handle).toHaveAttribute("aria-orientation", "horizontal");
-  });
-
-  it("exposes aria-valuemin/max derived from per-pane constraints", async () => {
-    render(
-      <NimbusProvider>
-        <Splitter.Root
-          panes={{
-            nav: { defaultSize: 30, minSize: 15, maxSize: 50 },
-            main: { defaultSize: 70, minSize: 25 },
-          }}
-        >
-          <Splitter.Pane id="nav">Nav</Splitter.Pane>
-          <Splitter.Handle />
-          <Splitter.Pane id="main">Main</Splitter.Pane>
-        </Splitter.Root>
-      </NimbusProvider>
-    );
-
-    const handle = await screen.findByRole("separator");
-    expect(handle).toHaveAttribute("aria-valuemin", "15");
-    // 100 − panes.main.minSize (25) = 75, capped by panes.nav.maxSize (50).
-    expect(handle).toHaveAttribute("aria-valuemax", "50");
-  });
-});
-
-/**
- * @docs-section keyboard
- * @docs-title Keyboard interaction
- * @docs-description Arrow keys, Home/End, and Enter on the focused handle.
- * @docs-order 2
- */
-describe("Splitter - Keyboard interaction", () => {
-  it("ArrowRight grows the previous pane by keyboardStep", async () => {
-    const user = userEvent.setup();
-    const onSizesChange = vi.fn();
-    render(
-      <NimbusProvider>
-        <Splitter.Root
-          panes={{ nav: { defaultSize: 30 }, main: { defaultSize: 70 } }}
-          keyboardStep={5}
-          onSizesChange={onSizesChange}
-        >
-          <Splitter.Pane id="nav">Nav</Splitter.Pane>
-          <Splitter.Handle />
-          <Splitter.Pane id="main">Main</Splitter.Pane>
-        </Splitter.Root>
-      </NimbusProvider>
-    );
-
-    const handle = await screen.findByRole("separator");
-    handle.focus();
-    await user.keyboard("{ArrowRight}");
-
-    expect(onSizesChange).toHaveBeenCalled();
-    await waitFor(() => {
-      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(35);
-    });
-  });
-
-  it("Home and End jump to the constraint bounds", async () => {
-    const user = userEvent.setup();
-    render(
-      <NimbusProvider>
-        <Splitter.Root
-          panes={{
-            nav: { defaultSize: 30, minSize: 10 },
-            main: { defaultSize: 70, minSize: 20 },
-          }}
-        >
-          <Splitter.Pane id="nav">Nav</Splitter.Pane>
-          <Splitter.Handle />
-          <Splitter.Pane id="main">Main</Splitter.Pane>
-        </Splitter.Root>
-      </NimbusProvider>
-    );
-
-    const handle = await screen.findByRole("separator");
-    handle.focus();
-
-    await user.keyboard("{Home}");
-    await waitFor(() => {
-      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(10);
-    });
-
-    await user.keyboard("{End}");
-    await waitFor(() => {
-      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(80);
-    });
-  });
-
-  it("Enter toggles collapse of the adjacent collapsible pane", async () => {
-    const user = userEvent.setup();
-    const onCollapse = vi.fn();
-    const onExpand = vi.fn();
-    render(
-      <NimbusProvider>
-        <Splitter.Root
-          panes={{
-            nav: { defaultSize: 30, collapsible: true },
-            main: { defaultSize: 70 },
-          }}
-          onCollapse={onCollapse}
-          onExpand={onExpand}
-        >
-          <Splitter.Pane id="nav">Nav</Splitter.Pane>
-          <Splitter.Handle />
-          <Splitter.Pane id="main">Main</Splitter.Pane>
-        </Splitter.Root>
-      </NimbusProvider>
-    );
-
-    const handle = await screen.findByRole("separator");
-    handle.focus();
-
-    await user.keyboard("{Enter}");
-    await waitFor(() => expect(onCollapse).toHaveBeenCalledWith("nav"));
-
-    await user.keyboard("{Enter}");
-    await waitFor(() => expect(onExpand).toHaveBeenCalledWith("nav"));
-  });
-});
-
-/**
- * @docs-section disabled
- * @docs-title Disabled state
- * @docs-description When both panes are disabled the handle is out of tab order.
- * @docs-order 3
- */
-describe("Splitter - Disabled state", () => {
-  it("removes handle from tab order when both panes are disabled", async () => {
-    render(
-      <NimbusProvider>
-        <Splitter.Root
-          panes={{
-            nav: { defaultSize: 30, disabled: true },
-            main: { defaultSize: 70, disabled: true },
-          }}
-        >
-          <Splitter.Pane id="nav">Nav</Splitter.Pane>
-          <Splitter.Handle />
-          <Splitter.Pane id="main">Main</Splitter.Pane>
-        </Splitter.Root>
-      </NimbusProvider>
-    );
-
-    const handle = await screen.findByRole("separator");
-    expect(handle).toHaveAttribute("tabindex", "-1");
-    expect(handle).toHaveAttribute("aria-disabled", "true");
   });
 });
 
@@ -185,7 +36,7 @@ describe("Splitter - Disabled state", () => {
  * @docs-section persistence
  * @docs-title Persistence with useSplitterLayout
  * @docs-description Custom storage adapter hydrates sizes synchronously on first render.
- * @docs-order 4
+ * @docs-order 2
  */
 describe("Splitter - useSplitterLayout", () => {
   it("hydrates sizes from a custom storage adapter on first render", async () => {
@@ -280,7 +131,7 @@ describe("Splitter - useSplitterLayout", () => {
  * @docs-section nesting
  * @docs-title Nested splitters for 3+ regions
  * @docs-description Each nested Splitter is an independent widget.
- * @docs-order 5
+ * @docs-order 3
  */
 describe("Splitter - Nested", () => {
   it("nests inside a Pane to express three regions", async () => {

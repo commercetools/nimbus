@@ -16,7 +16,8 @@ consumer tree on every drag tick.
 Implements the W3C window splitter ARIA pattern: handle is `role="separator"`
 with per-pane `aria-valuemin`/`aria-valuemax`, `aria-controls` pointing at the
 previous pane sibling, full keyboard support (arrows, Home/End for bounds, Enter
-to toggle collapse), focus-visible ring, and a touch-target- expanded hit area.
-Collapsible panes toggle via double-click on the handle or Enter;
-`disableDoubleClick` opts out of the click affordance. Layouts with 3+ regions
-are expressed by nesting a Splitter inside a Pane.
+to toggle collapse), focus-visible ring, and a touch-target-expanded hit area.
+Double-click on the handle restores the initial sizes (available on every
+splitter); Enter on a focused handle toggles collapse of the adjacent
+collapsible pane. `disableDoubleClick` opts out of the click affordance. Layouts
+with 3+ regions are expressed by nesting a Splitter inside a Pane.

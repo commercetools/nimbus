@@ -192,10 +192,14 @@ export const SplitterRoot = ({
       const cfg = panes?.[paneId];
       if (!cfg?.collapsible) return;
       const collapsedSize = cfg.collapsedSize ?? 0;
-      const otherCfg = panes?.[otherId];
-      const otherMax = otherCfg?.maxSize ?? 100;
-      const otherSize = Math.min(100 - collapsedSize, otherMax);
-      setSizes({ [paneId]: 100 - otherSize, [otherId]: otherSize });
+      // Collapse semantics dominate the other pane's drag-time maxSize: the
+      // collapsing pane lands on `collapsedSize`, and the other pane absorbs
+      // the freed space. If a consumer configures `otherMax < 100 -
+      // collapsedSize` the other pane will momentarily sit above its
+      // drag-time max — that's strictly better than failing the collapse
+      // outright (which would leave `isCollapsed()` false and skip the
+      // `onCollapse` callback).
+      setSizes({ [paneId]: collapsedSize, [otherId]: 100 - collapsedSize });
     },
     [paneOrder, panes, setSizes]
   );
