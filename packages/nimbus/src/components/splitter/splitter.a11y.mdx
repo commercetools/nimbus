@@ -19,13 +19,14 @@ and predictable per splitter, even when splitters are nested.
 | ------------------ | ----------------------------------------------------------- |
 | `role`             | `separator`                                                 |
 | `aria-orientation` | Mirrors `Splitter.Root.orientation` (W3C separator semantics — describes the boundary axis, not the layout axis). |
-| `aria-valuenow`    | Current size of the **previous** pane in percentage points. |
+| `aria-valuenow`    | Current size of the **previous** pane, rounded for AT (the underlying size keeps full float precision). |
 | `aria-valuemin`    | `panes[prev].minSize`                                       |
-| `aria-valuemax`    | `100 − panes[next].minSize`, capped by `panes[prev].maxSize`. |
+| `aria-valuemax`    | `100 − panes[next].minSize` (the upper bound is the complement of the partner's minimum). |
+| `aria-valuetext`   | The previous pane's size as a percentage (e.g. `"30%"`).    |
 | `aria-controls`    | DOM id of the previous `Splitter.Pane`.                     |
 | `aria-label`       | Defaults to a localised "Resize panes"; consumer-overridable on `Splitter.Handle`. |
-| `aria-disabled`    | `true` when both panes are `disabled` in the `panes` map.   |
-| `tabindex`         | `0` when interactive; `-1` when both panes are disabled.    |
+| `aria-disabled`    | `true` when `Splitter.Root` is `isDisabled`.                |
+| `tabindex`         | `0` when interactive; `-1` when `isDisabled`.               |
 
 > The handle's underlying ARIA role stays `separator` per the W3C spec —
 > the API-level rename to `Handle` is purely about communicating
@@ -40,7 +41,7 @@ When `Splitter.Handle` has focus:
 | ArrowLeft / ArrowRight (horizontal)  | Move the boundary by `keyboardStep` percentage points.             |
 | ArrowUp / ArrowDown (vertical)       | Same, on the vertical axis.                                        |
 | Home                                 | Shrink the previous pane to its `minSize`.                         |
-| End                                  | Grow the previous pane to its `maxSize` (or `100 − next.minSize`). |
+| End                                  | Grow the previous pane to its max (`100 − next.minSize`).          |
 | Enter                                | Toggle collapse of the adjacent collapsible pane.                  |
 
 All keyboard handlers `preventDefault` on the relevant key so default browser
@@ -55,7 +56,7 @@ A horizontal splitter with two panes renders three logical focus stops:
 3. Anything tabbable inside the **next** pane.
 
 The pane wrappers themselves are not focusable — only their interactive
-content. When both panes are `disabled`, the handle is skipped in the tab
+content. When the splitter is `isDisabled`, the handle is skipped in the tab
 order; assistive technology still reports it via the separator role.
 
 ## Nested splitters and the AT tree

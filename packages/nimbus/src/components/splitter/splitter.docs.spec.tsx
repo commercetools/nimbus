@@ -1,11 +1,8 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
+import { useState } from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {
-  NimbusProvider,
-  Splitter,
-  useSplitterLayout,
-} from "@commercetools/nimbus";
+import { NimbusProvider, Splitter } from "@commercetools/nimbus";
 
 /**
  * @docs-section basic-rendering
@@ -17,9 +14,7 @@ describe("Splitter - Basic rendering", () => {
   it("renders two panes and one handle", async () => {
     render(
       <NimbusProvider>
-        <Splitter.Root
-          panes={{ nav: { defaultSize: 30 }, main: { defaultSize: 70 } }}
-        >
+        <Splitter.Root defaultSizes={{ nav: 30, main: 70 }}>
           <Splitter.Pane id="nav">Nav</Splitter.Pane>
           <Splitter.Handle />
           <Splitter.Pane id="main">Main</Splitter.Pane>
@@ -34,29 +29,24 @@ describe("Splitter - Basic rendering", () => {
 
 /**
  * @docs-section persistence
- * @docs-title Persistence with useSplitterLayout
- * @docs-description Custom storage adapter hydrates sizes synchronously on first render.
+ * @docs-title Persistence with any storage
+ * @docs-description Hydrate `defaultSizes` from stored state and persist the
+ * settled value via `onSizesChangeEnd` — no bespoke hook required.
  * @docs-order 2
  */
-describe("Splitter - useSplitterLayout", () => {
-  it("hydrates sizes from a custom storage adapter on first render", async () => {
-    const stored = { nav: 25, main: 75 };
-    const storage = {
-      load: () => stored,
-      save: vi.fn(),
-    };
-
+describe("Splitter - persistence", () => {
+  it("hydrates from stored sizes on first render", async () => {
+    // Stand-in for a `useLocalStorage`-style hook seeded from storage.
     const Demo = () => {
-      const layout = useSplitterLayout({
-        initialSizes: { nav: 40, main: 60 },
-        storage,
+      const [sizes, setSizes] = useState<Record<string, number>>({
+        nav: 25,
+        main: 75,
       });
       return (
         <Splitter.Root
+          defaultSizes={sizes}
+          onSizesChangeEnd={setSizes}
           panes={{ nav: { minSize: 5 }, main: { minSize: 5 } }}
-          defaultSizes={layout.defaultSizes}
-          onSizesChange={layout.onSizesChange}
-          __layoutRef={layout.__layoutRef}
         >
           <Splitter.Pane id="nav">Nav</Splitter.Pane>
           <Splitter.Handle />
@@ -76,33 +66,36 @@ describe("Splitter - useSplitterLayout", () => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(25);
     });
   });
+});
 
-  it("collapse() and expand() drive sizes from outside the splitter subtree", async () => {
+/**
+ * @docs-section controlled-collapse
+ * @docs-title Controlled collapse from anywhere
+ * @docs-description Collapse is plain controlled state, so a button outside
+ * the splitter can toggle it — no imperative API.
+ * @docs-order 3
+ */
+describe("Splitter - controlled collapse", () => {
+  it("collapses a pane from a button outside the subtree", async () => {
     const user = userEvent.setup();
-    let setSizesCalled: Record<string, number> | undefined;
     const Demo = () => {
-      const layout = useSplitterLayout({
-        initialSizes: { nav: 30, main: 70 },
-      });
+      const [collapsed, setCollapsed] = useState<string | null>(null);
       return (
         <>
           <button
             type="button"
-            onClick={() => {
-              layout.collapse("nav");
-              setSizesCalled = layout.getSizes();
-            }}
+            onClick={() => setCollapsed((c) => (c === "nav" ? null : "nav"))}
           >
-            collapse-nav
+            toggle-nav
           </button>
           <Splitter.Root
+            defaultSizes={{ nav: 30, main: 70 }}
             panes={{
               nav: { minSize: 5, collapsible: true },
               main: { minSize: 5 },
             }}
-            defaultSizes={layout.defaultSizes}
-            onSizesChange={layout.onSizesChange}
-            __layoutRef={layout.__layoutRef}
+            collapsedPane={collapsed}
+            onCollapsedPaneChange={setCollapsed}
           >
             <Splitter.Pane id="nav">Nav</Splitter.Pane>
             <Splitter.Handle />
@@ -118,12 +111,11 @@ describe("Splitter - useSplitterLayout", () => {
       </NimbusProvider>
     );
 
-    await user.click(screen.getByText("collapse-nav"));
+    await user.click(screen.getByText("toggle-nav"));
     const handle = await screen.findByRole("separator");
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(0);
     });
-    expect(setSizesCalled).toBeDefined();
   });
 });
 
@@ -131,24 +123,17 @@ describe("Splitter - useSplitterLayout", () => {
  * @docs-section nesting
  * @docs-title Nested splitters for 3+ regions
  * @docs-description Each nested Splitter is an independent widget.
- * @docs-order 3
+ * @docs-order 4
  */
 describe("Splitter - Nested", () => {
   it("nests inside a Pane to express three regions", async () => {
     render(
       <NimbusProvider>
-        <Splitter.Root
-          panes={{ nav: { defaultSize: 25 }, rest: { defaultSize: 75 } }}
-        >
+        <Splitter.Root defaultSizes={{ nav: 25, rest: 75 }}>
           <Splitter.Pane id="nav">Nav</Splitter.Pane>
           <Splitter.Handle />
           <Splitter.Pane id="rest">
-            <Splitter.Root
-              panes={{
-                main: { defaultSize: 65 },
-                aside: { defaultSize: 35 },
-              }}
-            >
+            <Splitter.Root defaultSizes={{ main: 65, aside: 35 }}>
               <Splitter.Pane id="main">Main</Splitter.Pane>
               <Splitter.Handle />
               <Splitter.Pane id="aside">Aside</Splitter.Pane>

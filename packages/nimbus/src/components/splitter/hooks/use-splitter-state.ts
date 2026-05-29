@@ -1,19 +1,11 @@
-import {
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { deriveInitialSizes } from "../utils";
 import type {
   SplitterContextValue,
-  SplitterImperativeHandle,
   SplitterPaneConfig,
 } from "../splitter.types";
 
-const SUM_TOLERANCE = 0.001;
+const COLLAPSE_TOLERANCE = 0.001;
 
 type UseSplitterStateOptions = {
   /** Splitter orientation; determines layout axis and active arrow keys. */
@@ -26,36 +18,43 @@ type UseSplitterStateOptions = {
   keyboardStep: number;
   /** When true, the handle ignores double-clicks. */
   disableDoubleClick: boolean;
-  /** Fired on every size change (drag, keyboard, collapse, imperative). */
+  /** When true, the whole splitter is non-interactive. */
+  isDisabled: boolean;
+  /** Controlled collapsed pane id (or null). When set, collapse is controlled. */
+  collapsedPane?: string | null;
+  /** Uncontrolled initial collapsed pane id. */
+  defaultCollapsedPane?: string | null;
+  /** Fired on every size change, including each drag tick. */
   onSizesChange?: (sizes: Record<string, number>) => void;
-  /** Fired when a collapsible pane transitions to its `collapsedSize`. */
-  onCollapse?: (paneId: string) => void;
-  /** Fired when a collapsed pane transitions back above its `collapsedSize`. */
-  onExpand?: (paneId: string) => void;
-  /** Imperative ref `useSplitterLayout` attaches its command surface to. */
-  layoutRef?: React.RefObject<SplitterImperativeHandle | null>;
+  /** Fired once when a size interaction settles. */
+  onSizesChangeEnd?: (sizes: Record<string, number>) => void;
+  /** Fired whenever the collapsed pane changes. */
+  onCollapsedPaneChange?: (paneId: string | null) => void;
 };
 
+/** True when both ids of a 2-pane order have a finite size in `record`. */
+const bothSized = (
+  record: Record<string, number> | null | undefined,
+  order: string[]
+): record is Record<string, number> =>
+  !!record &&
+  record[order[0]!] !== undefined &&
+  record[order[1]!] !== undefined;
+
 /**
- * Owns the entire sizes state machine for `Splitter.Root`: pane registration,
- * lazy initial-size derivation on mount, collapse/expand transition detection,
- * the imperative command surface consumed by `useSplitterLayout`, and the
- * memoized context value handed to `Splitter.Pane` / `Splitter.Handle`.
+ * Owns the sizes state machine for `Splitter.Root`: pane registration, lazy
+ * initial-size derivation on mount, controlled/uncontrolled collapse with
+ * size reconciliation, and the memoized context value handed to
+ * `Splitter.Pane` / `Splitter.Handle`.
  *
- * Kept separate from the Root component so the component body stays a thin
- * provider; all coordination logic lives here.
+ * Sizes carry full float precision end-to-end — no rounding anywhere in this
+ * pipeline (the only rounding lives on the handle's `aria-valuenow`, which is
+ * an AT announcement and does not affect layout).
  *
- * @param options - Root configuration (orientation, defaults, per-pane config,
- *   keyboard step, collapse callbacks, and the imperative layout ref).
- * @returns The `SplitterContextValue` to provide to the splitter subtree.
- *
- * @example
- * const ctx = useSplitterState({
- *   orientation: "horizontal",
- *   keyboardStep: 5,
- *   disableDoubleClick: false,
- *   panes: { nav: { minSize: 10 }, main: { minSize: 20 } },
- * });
+ * Two change channels: `setSizes` is the live drag channel (fires
+ * `onSizesChange` only); `commitSizes` is the settled channel (fires
+ * `onSizesChangeEnd`, the persistence seam). Collapse is plain
+ * controlled/uncontrolled state — no imperative API.
  */
 export const useSplitterState = (
   options: UseSplitterStateOptions
@@ -66,68 +65,152 @@ export const useSplitterState = (
     panes,
     keyboardStep,
     disableDoubleClick,
+    isDisabled,
+    collapsedPane: collapsedPaneProp,
+    defaultCollapsedPane,
     onSizesChange,
-    onCollapse,
-    onExpand,
-    layoutRef,
+    onSizesChangeEnd,
+    onCollapsedPaneChange,
   } = options;
 
   // Pane registration: pane order in DOM, and the DOM id rendered on each.
   const [paneOrder, setPaneOrder] = useState<string[]>([]);
   const [paneDomIds, setPaneDomIds] = useState<Record<string, string>>({});
 
-  // Sizes state. We initialize lazily once both panes have registered so the
-  // initial-sizes derivation has the right ids; intermediate renders return
-  // empty sizes (panes fall back to 0%) — this happens for at most one paint.
+  // Sizes state. Initialized lazily once both panes have registered; the ref
+  // mirrors state so settled-commit and collapse reconciliation read the
+  // current value synchronously.
   const [sizes, setSizesState] = useState<Record<string, number>>({});
+  const sizesRef = useRef<Record<string, number>>(sizes);
 
-  // Remember the sizes resolved on mount so double-click can restore them.
-  // Per spec, defaults are read once on mount; this ref captures that snapshot.
+  // Mount snapshot for double-click restore; pre-collapse snapshot for expand.
   const initialSizesRef = useRef<Record<string, number>>({});
-
-  // Re-run initial sizes derivation when the pane set changes (mount).
+  const preCollapseSizesRef = useRef<Record<string, number> | null>(null);
   const hasInitializedRef = useRef(false);
+
+  // Collapse: controlled (prop provided) or uncontrolled (internal state).
+  const isCollapseControlled = collapsedPaneProp !== undefined;
+  const [internalCollapsed, setInternalCollapsed] = useState<string | null>(
+    defaultCollapsedPane ?? null
+  );
+  const collapsedPane = isCollapseControlled
+    ? (collapsedPaneProp ?? null)
+    : internalCollapsed;
+  // The collapsed pane whose size effect has already been applied. Lets the
+  // reconciliation effect skip when sizes already reflect the collapse state,
+  // and lets drag-expand clear collapse without the effect fighting it.
+  const appliedCollapseRef = useRef<string | null>(
+    defaultCollapsedPane ?? collapsedPaneProp ?? null
+  );
+
+  const otherId = useCallback(
+    (paneId: string): string | undefined => {
+      if (paneOrder.length !== 2) return undefined;
+      return paneOrder[0] === paneId ? paneOrder[1] : paneOrder[0];
+    },
+    [paneOrder]
+  );
+
+  // Single low-level size writer. `commit` additionally fires onSizesChangeEnd.
+  // Also detects drag-expand: when the collapsed pane grows above its
+  // collapsedSize, collapse state is cleared (no size reconcile — sizes are
+  // already what the interaction set).
+  const writeSizes = useCallback(
+    (next: Record<string, number>, opts: { commit: boolean }) => {
+      sizesRef.current = next;
+      setSizesState(next);
+      onSizesChange?.(next);
+      if (opts.commit) onSizesChangeEnd?.(next);
+
+      const collapsed = appliedCollapseRef.current;
+      if (collapsed) {
+        const collapsedSize = panes?.[collapsed]?.collapsedSize ?? 0;
+        if ((next[collapsed] ?? 0) > collapsedSize + COLLAPSE_TOLERANCE) {
+          appliedCollapseRef.current = null;
+          preCollapseSizesRef.current = null;
+          if (!isCollapseControlled) setInternalCollapsed(null);
+          onCollapsedPaneChange?.(null);
+        }
+      }
+    },
+    [
+      onSizesChange,
+      onSizesChangeEnd,
+      panes,
+      isCollapseControlled,
+      onCollapsedPaneChange,
+    ]
+  );
+
+  const setSizes = useCallback(
+    (next: Record<string, number>) => writeSizes(next, { commit: false }),
+    [writeSizes]
+  );
+
+  const commitSizes = useCallback(
+    (next?: Record<string, number>) => {
+      if (next) {
+        writeSizes(next, { commit: true });
+      } else {
+        onSizesChangeEnd?.(sizesRef.current);
+      }
+    },
+    [writeSizes, onSizesChangeEnd]
+  );
+
+  // Derive initial sizes once both panes register; apply initial collapse.
   useEffect(() => {
     if (paneOrder.length === 2 && !hasInitializedRef.current) {
       hasInitializedRef.current = true;
-      const initial = deriveInitialSizes(paneOrder, defaultSizes, panes);
+      let initial = deriveInitialSizes(paneOrder, defaultSizes);
       initialSizesRef.current = initial;
+
+      const initCollapsed = collapsedPane;
+      if (initCollapsed && paneOrder.includes(initCollapsed)) {
+        const other =
+          paneOrder[0] === initCollapsed ? paneOrder[1]! : paneOrder[0]!;
+        const collapsedSize = panes?.[initCollapsed]?.collapsedSize ?? 0;
+        preCollapseSizesRef.current = initial;
+        initial = {
+          [initCollapsed]: collapsedSize,
+          [other]: 100 - collapsedSize,
+        };
+        appliedCollapseRef.current = initCollapsed;
+      }
+
+      sizesRef.current = initial;
       setSizesState(initial);
+      // Defaults are read once on mount, per spec — no onSizesChange on mount.
     }
-    // Defaults are read once on mount, per spec — don't react to changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paneOrder]);
 
-  // Track collapsed state per pane so onCollapse/onExpand fire on transitions.
-  const collapsedRef = useRef<Record<string, boolean>>({});
+  // Reconcile sizes when the resolved collapsed pane changes (controlled prop
+  // change or internal toggle). Runs after init so the mount case is a no-op.
+  useEffect(() => {
+    if (paneOrder.length !== 2 || !hasInitializedRef.current) return;
+    const cur = collapsedPane;
+    const prev = appliedCollapseRef.current;
+    if (cur === prev) return;
+    appliedCollapseRef.current = cur;
 
-  const setSizes = useCallback(
-    (next: Record<string, number>) => {
-      const prevSizes = sizes;
-      setSizesState(next);
+    if (cur === null) {
+      const restore = preCollapseSizesRef.current;
+      preCollapseSizesRef.current = null;
+      const target = bothSized(restore, paneOrder)
+        ? restore
+        : initialSizesRef.current;
+      if (bothSized(target, paneOrder)) commitSizes(target);
+      return;
+    }
 
-      // Detect collapse/expand transitions and fire callbacks once per change.
-      for (const id of Object.keys(next)) {
-        const cfg = panes?.[id];
-        if (!cfg?.collapsible) continue;
-        const collapsedSize = cfg.collapsedSize ?? 0;
-        const wasCollapsed =
-          collapsedRef.current[id] ??
-          (prevSizes[id] !== undefined &&
-            prevSizes[id]! <= collapsedSize + SUM_TOLERANCE);
-        const isNowCollapsed = next[id]! <= collapsedSize + SUM_TOLERANCE;
-        if (!wasCollapsed && isNowCollapsed) {
-          onCollapse?.(id);
-        } else if (wasCollapsed && !isNowCollapsed) {
-          onExpand?.(id);
-        }
-        collapsedRef.current[id] = isNowCollapsed;
-      }
-
-      onSizesChange?.(next);
-    },
-    [sizes, panes, onSizesChange, onCollapse, onExpand]
-  );
+    const other = otherId(cur);
+    if (!other) return;
+    if (prev === null) preCollapseSizesRef.current = sizesRef.current;
+    const collapsedSize = panes?.[cur]?.collapsedSize ?? 0;
+    commitSizes({ [cur]: collapsedSize, [other]: 100 - collapsedSize });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [collapsedPane, paneOrder]);
 
   const registerPane = useCallback((paneId: string, domId: string) => {
     setPaneOrder((order) =>
@@ -153,97 +236,83 @@ export const useSplitterState = (
     [panes]
   );
 
-  const isCollapsedFn = useCallback(
-    (paneId: string): boolean => {
-      const cfg = panes?.[paneId];
-      if (!cfg?.collapsible) return false;
-      const collapsedSize = cfg.collapsedSize ?? 0;
-      return (sizes[paneId] ?? 0) <= collapsedSize + SUM_TOLERANCE;
+  const setCollapsedPane = useCallback(
+    (next: string | null) => {
+      if (isDisabled) return;
+      if (next === collapsedPane) return;
+      if (next !== null && !paneOrder.includes(next)) return;
+      if (!isCollapseControlled) setInternalCollapsed(next);
+      onCollapsedPaneChange?.(next);
+      // Size reconciliation happens in the collapse effect reacting to the
+      // resolved collapsedPane change (covers controlled + uncontrolled).
     },
-    [panes, sizes]
-  );
-
-  const collapsePane = useCallback(
-    (paneId: string) => {
-      if (paneOrder.length !== 2) return;
-      const otherId = paneOrder[0] === paneId ? paneOrder[1]! : paneOrder[0]!;
-      const cfg = panes?.[paneId];
-      if (!cfg?.collapsible) return;
-      const collapsedSize = cfg.collapsedSize ?? 0;
-      // Collapse semantics dominate the other pane's drag-time maxSize: the
-      // collapsing pane lands on `collapsedSize`, and the other pane absorbs
-      // the freed space. If a consumer configures `otherMax < 100 -
-      // collapsedSize` the other pane will momentarily sit above its
-      // drag-time max — that's strictly better than failing the collapse
-      // outright (which would leave `isCollapsed()` false and skip the
-      // `onCollapse` callback).
-      setSizes({ [paneId]: collapsedSize, [otherId]: 100 - collapsedSize });
-    },
-    [paneOrder, panes, setSizes]
-  );
-
-  const expandPane = useCallback(
-    (paneId: string) => {
-      if (paneOrder.length !== 2) return;
-      const otherId = paneOrder[0] === paneId ? paneOrder[1]! : paneOrder[0]!;
-      const cfg = panes?.[paneId];
-      const restoreTo = cfg?.defaultSize ?? defaultSizes?.[paneId] ?? 50;
-      setSizes({ [paneId]: restoreTo, [otherId]: 100 - restoreTo });
-    },
-    [paneOrder, panes, defaultSizes, setSizes]
+    [
+      isDisabled,
+      collapsedPane,
+      paneOrder,
+      isCollapseControlled,
+      onCollapsedPaneChange,
+    ]
   );
 
   const restoreDefaults = useCallback(() => {
     if (paneOrder.length !== 2) return;
     const initial = initialSizesRef.current;
-    if (!initial[paneOrder[0]!] || !initial[paneOrder[1]!]) return;
-    setSizes(initial);
-  }, [paneOrder, setSizes]);
-
-  // Expose imperative commands to `useSplitterLayout` via the internal ref.
-  useImperativeHandle(
-    layoutRef,
-    (): SplitterImperativeHandle => ({
-      setSizes,
-      getSizes: () => sizes,
-      collapse: collapsePane,
-      expand: expandPane,
-      isCollapsed: isCollapsedFn,
-    }),
-    [setSizes, sizes, collapsePane, expandPane, isCollapsedFn]
-  );
+    // Existence check (not falsy) so a legitimate 0% initial size restores.
+    if (
+      initial[paneOrder[0]!] === undefined ||
+      initial[paneOrder[1]!] === undefined
+    ) {
+      return;
+    }
+    if (collapsedPane !== null) {
+      appliedCollapseRef.current = null;
+      preCollapseSizesRef.current = null;
+      if (!isCollapseControlled) setInternalCollapsed(null);
+      onCollapsedPaneChange?.(null);
+    }
+    commitSizes(initial);
+  }, [
+    paneOrder,
+    collapsedPane,
+    isCollapseControlled,
+    onCollapsedPaneChange,
+    commitSizes,
+  ]);
 
   return useMemo<SplitterContextValue>(
     () => ({
       sizes,
       setSizes,
+      commitSizes,
       orientation,
       keyboardStep,
       disableDoubleClick,
+      isDisabled,
       getPaneConfig,
       paneOrder,
       paneDomIds,
       registerPane,
       unregisterPane,
-      collapsePane,
-      expandPane,
-      isCollapsed: isCollapsedFn,
+      collapsedPane,
+      setCollapsedPane,
       restoreDefaults,
     }),
     [
       sizes,
       setSizes,
+      commitSizes,
       orientation,
       keyboardStep,
       disableDoubleClick,
+      isDisabled,
       getPaneConfig,
       paneOrder,
       paneDomIds,
       registerPane,
       unregisterPane,
-      collapsePane,
-      expandPane,
-      isCollapsedFn,
+      collapsedPane,
+      setCollapsedPane,
       restoreDefaults,
     ]
   );

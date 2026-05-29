@@ -5,6 +5,36 @@ primitive and the reasoning recorded during proposal discussion. Each
 decision is paired with the alternative considered and the trade-off
 accepted.
 
+## Revision — post-review reshape (supersedes Decisions 4, 5, 6, 9, 10)
+
+A pre-release review found the API over-parameterized a single-value boundary.
+The decisions below are kept for history; the following supersede them:
+
+- **Decision 4 (uncontrolled-only):** still uncontrolled for **sizes**, but a
+  settled-change callback `onSizesChangeEnd` is added (fires once per
+  interaction) so persistence needs no debounce. **Collapse** moves to
+  controllable state — `collapsedPane` / `defaultCollapsedPane` /
+  `onCollapsedPaneChange` — because it is discrete and low-frequency, so the
+  60Hz perf argument does not apply to it.
+- **Decision 5 + 6 (hook owns persistence + imperative commands):** the
+  `useSplitterLayout` hook is **removed**. Persistence is wired in the consuming
+  app with any storage (`defaultSizes` + `onSizesChangeEnd`); cross-subtree
+  control is plain controlled state (`collapsedPane`), so there is no imperative
+  ref/hook and no `__layoutRef`.
+- **Decision 9 (per-pane config in `panes`):** the map stays on Root but carries
+  only `minSize`, `collapsible`, `collapsedSize`. `maxSize` is removed (derived
+  as `100 − partner.minSize`); per-pane `defaultSize` is removed (single
+  canonical `defaultSizes` on Root); per-pane `disabled` is replaced by a
+  Root-level `isDisabled` (Nimbus `isDisabled` convention).
+- **Decision 10 (double-click restores defaults):** unchanged, plus the
+  `restoreDefaults` guard is fixed to a key-existence check so a legitimate `0`
+  initial size restores.
+- **Added:** documented `size` Root prop; full float-precision sizes (no
+  rounding in the pipeline; `aria-valuenow` rounds for AT only, with
+  `aria-valuetext`).
+
+`spec.md` reflects the final contract.
+
 ## Decision 1: 2-pane primitive, composable via nesting
 
 **Decision.** `Splitter.Root` accepts exactly two `Pane` children with one

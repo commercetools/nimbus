@@ -1,7 +1,7 @@
 ---
 id: Components-Splitter
 title: Splitter
-description: A 2-pane compound primitive for user-resizable layouts with a draggable handle, per-pane constraints, collapsibility, and persistence.
+description: A 2-pane compound primitive for user-resizable layouts with a draggable handle, per-pane constraints, controllable collapse, and storage-friendly persistence.
 documentState: InitialDraft
 order: 999
 menu:
@@ -23,10 +23,11 @@ collapse / expand, and meets the W3C window splitter ARIA pattern.
 ## Overview
 
 `Splitter.Root` accepts exactly two `Splitter.Pane` children with one
-`Splitter.Handle` between them. Each pane carries a string `id`; all per-pane
-configuration (sizes, constraints, collapsibility) lives on `Root` keyed by
-that id. The component is **uncontrolled** — for cross-component imperative
-commands and persistence, use the companion `useSplitterLayout` hook.
+`Splitter.Handle` between them. Each pane carries a string `id`; per-pane
+constraints (`minSize`, `collapsible`, `collapsedSize`) live on `Root` keyed by
+that id. Sizes are **uncontrolled** for performance (drag fires at ~60Hz);
+collapse is **controllable** plain state. Persistence is wired with any storage
+you like — there is no bespoke hook.
 
 For three or more regions, **nest** one Splitter inside another's `Pane`.
 
@@ -43,14 +44,16 @@ For three or more regions, **nest** one Splitter inside another's `Pane`.
   assistive technology.
 - **Set per-pane `minSize`.** Without a floor, drag can shrink a pane below
   its usable content size. Pair `minSize` with content that scrolls inside the
-  pane (e.g. wrap content in `ScrollArea`).
-- **Use `collapsible: true` for chrome panes.** A nav or aside that the user
-  may want hidden should be `collapsible` so Enter on the focused handle
-  toggles it. Pair with a button or context-menu item if you want a mouse
-  affordance for collapse — double-click is reserved for restoring defaults.
-- **Persist with `useSplitterLayout`.** Give consumers a stable layout across
-  sessions; the hook handles SSR, debouncing, and gracefully reconciles
-  stored data that drifts from the current pane set.
+  pane (e.g. wrap content in `ScrollArea`). A pane's upper bound is the
+  complement of its partner's `minSize` — there is no separate `maxSize`.
+- **Use `collapsible: true` for chrome panes.** A nav or aside the user may
+  want hidden should be `collapsible` so Enter on the focused handle toggles
+  it. For a mouse affordance, drive the controlled `collapsedPane` prop from a
+  button — double-click is reserved for restoring defaults.
+- **Persist with any storage.** Hydrate `defaultSizes` from stored state and
+  write back in `onSizesChangeEnd`; persist collapse via the controlled
+  `collapsedPane` state. No debouncing needed — `onSizesChangeEnd` fires once
+  per settled interaction.
 
 ### Usage
 
@@ -73,16 +76,18 @@ preview side-by-side, file-tree + editor, master / detail.
 
 ## Basic usage
 
-A horizontal splitter with sensible per-pane defaults.
+A horizontal splitter with sensible per-pane defaults. `defaultSizes` sets the
+initial split; `panes` carries per-pane constraints.
 
 ```jsx-live
 const App = () => (
   <Box height="400px" width="100%" borderWidth="25" borderColor="neutral.6">
     <Splitter.Root
       orientation="horizontal"
+      defaultSizes={{ nav: 30, main: 70 }}
       panes={{
-        nav: { defaultSize: 30, minSize: 15 },
-        main: { defaultSize: 70, minSize: 25 },
+        nav: { minSize: 15 },
+        main: { minSize: 25 },
       }}
     >
       <Splitter.Pane id="nav">
@@ -117,13 +122,7 @@ axis, not the layout axis).
 ```jsx-live
 const App = () => (
   <Box height="500px" width="100%" borderWidth="25" borderColor="neutral.6">
-    <Splitter.Root
-      orientation="vertical"
-      panes={{
-        top: { defaultSize: 40 },
-        bottom: { defaultSize: 60 },
-      }}
-    >
+    <Splitter.Root orientation="vertical" defaultSizes={{ top: 40, bottom: 60 }}>
       <Splitter.Pane id="top">
         <Box p="400" bg="teal.3" h="100%">
           <Heading size="md" mb="200">Top</Heading>
@@ -140,23 +139,49 @@ const App = () => (
 );
 ```
 
+## Handle size
+
+`size` (`sm` | `md` | `lg`, default `md`) controls the visual thickness of the
+handle's track. The interactive hit area always meets the 24×24px touch target
+regardless of size.
+
+```jsx-live
+const App = () => (
+  <Box height="300px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root size="lg" defaultSizes={{ left: 50, right: 50 }}>
+      <Splitter.Pane id="left">
+        <Box p="400" bg="indigo.3" h="100%"><Heading size="md">Left</Heading></Box>
+      </Splitter.Pane>
+      <Splitter.Handle />
+      <Splitter.Pane id="right">
+        <Box p="400" bg="amber.3" h="100%"><Heading size="md">Right</Heading></Box>
+      </Splitter.Pane>
+    </Splitter.Root>
+  </Box>
+);
+```
+
 ## Per-pane constraints
 
-`minSize` and `maxSize` clamp the boundary on drag and keyboard. They also
-drive the handle's `aria-valuemin` / `aria-valuemax` announcements.
+`minSize` clamps the boundary on drag and keyboard, and drives the handle's
+`aria-valuemin`. The upper bound (and `aria-valuemax`) is the complement of the
+partner pane's `minSize` — `max = 100 − partner.minSize`. There is no separate
+`maxSize` knob: in a 2-pane splitter, one pane's maximum *is* the other pane's
+minimum, so a single value per side fully describes the boundary.
 
 ```jsx-live
 const App = () => (
   <Box height="400px" width="100%" borderWidth="25" borderColor="neutral.6">
     <Splitter.Root
+      defaultSizes={{ nav: 30, main: 70 }}
       panes={{
-        nav: { defaultSize: 30, minSize: 15, maxSize: 50 },
-        main: { defaultSize: 70, minSize: 25 },
+        nav: { minSize: 15 },
+        main: { minSize: 25 },
       }}
     >
       <Splitter.Pane id="nav">
         <Box p="400" bg="indigo.3" h="100%">
-          <Heading size="md">Nav (min 15 / max 50)</Heading>
+          <Heading size="md">Nav (min 15 → max 75)</Heading>
         </Box>
       </Splitter.Pane>
       <Splitter.Handle />
@@ -170,101 +195,122 @@ const App = () => (
 );
 ```
 
+### Pixel-precise layouts
+
+Sizes are percentages but carry full float precision — nothing in the size
+pipeline is rounded (the handle's `aria-valuenow` is rounded for screen-reader
+announcement only; it does not affect layout). To land on an exact pixel at a
+known container width, pass the computed float: `250px` in an `800px` container
+is `31.25%`. Note the pixel value drifts if the container resizes — for sizes
+that stay pinned to an exact pixel across resizes, percentages are not the right
+tool.
+
 ## Collapsible panes
 
-A pane configured with `collapsible: true` toggles between its `defaultSize`
-and `collapsedSize` (default 0) via Enter on the focused handle or the
-imperative `useSplitterLayout.collapse(paneId)` / `.expand(paneId)`.
-`onCollapse(paneId)` / `onExpand(paneId)` fire on each transition.
+A pane configured with `collapsible: true` toggles between its size and its
+`collapsedSize` (default 0). Collapse is **controllable state**, not an
+imperative call:
+
+- **Keyboard:** Enter on the focused handle toggles collapse of the adjacent
+  collapsible pane (uncontrolled — seeded by `defaultCollapsedPane`).
+- **Anywhere else:** drive the controlled `collapsedPane` prop (string id or
+  `null`) from any state, e.g. a toolbar button.
+
+`onCollapsedPaneChange(paneId | null)` fires on every transition.
 
 > [!NOTE]\
 > Double-click is **not** a collapse gesture — it restores the boundary to
-> its initial position (see "Double-click restores defaults" below). If you
-> want a mouse affordance for collapse, surface it yourself (a button, a
-> context menu item) and call `layout.collapse(paneId)`.
+> its initial position (see "Double-click restores defaults"). For a mouse
+> affordance, drive `collapsedPane` from a button or context-menu item.
 
 ```jsx-live
-const App = () => (
-  <Box height="400px" width="100%" borderWidth="25" borderColor="neutral.6">
-    <Splitter.Root
-      panes={{
-        nav:  { defaultSize: 30, minSize: 10, collapsible: true },
-        main: { defaultSize: 70, minSize: 20 },
-      }}
-      onCollapse={(id) => console.log("collapsed:", id)}
-      onExpand={(id) => console.log("expanded:", id)}
-    >
-      <Splitter.Pane id="nav">
-        <Box p="400" bg="indigo.3" h="100%">
-          <Heading size="md">Nav (focus handle, press Enter to collapse)</Heading>
-        </Box>
-      </Splitter.Pane>
-      <Splitter.Handle />
-      <Splitter.Pane id="main">
-        <Box p="400" bg="amber.3" h="100%">
-          <Heading size="md">Main</Heading>
-        </Box>
-      </Splitter.Pane>
-    </Splitter.Root>
-  </Box>
-);
+const App = () => {
+  const [collapsed, setCollapsed] = React.useState(null);
+  return (
+    <Box height="400px" width="100%" borderWidth="25" borderColor="neutral.6">
+      <Button mb="200" onPress={() => setCollapsed(c => (c === "nav" ? null : "nav"))}>
+        {collapsed === "nav" ? "Show nav" : "Hide nav"}
+      </Button>
+      <Box height="320px">
+        <Splitter.Root
+          defaultSizes={{ nav: 30, main: 70 }}
+          panes={{
+            nav:  { minSize: 10, collapsible: true },
+            main: { minSize: 20 },
+          }}
+          collapsedPane={collapsed}
+          onCollapsedPaneChange={setCollapsed}
+        >
+          <Splitter.Pane id="nav">
+            <Box p="400" bg="indigo.3" h="100%">
+              <Heading size="md">Nav (Enter on handle, or the button above)</Heading>
+            </Box>
+          </Splitter.Pane>
+          <Splitter.Handle />
+          <Splitter.Pane id="main">
+            <Box p="400" bg="amber.3" h="100%">
+              <Heading size="md">Main</Heading>
+            </Box>
+          </Splitter.Pane>
+        </Splitter.Root>
+      </Box>
+    </Box>
+  );
+};
 ```
 
 ## Double-click restores defaults
 
 Double-click on the handle returns the boundary to the sizes the splitter
-resolved on mount (from `defaultSizes` or `panes[id].defaultSize`). It's a
-quick "undo" for stray drags and works on every splitter, including ones
-without any `collapsible` panes. Set `disableDoubleClick` on Root to
-suppress the gesture.
+resolved on mount (from `defaultSizes`). It's a quick "undo" for stray drags
+and works on every splitter, including ones without any `collapsible` panes.
+Set `disableDoubleClick` on Root to suppress the gesture.
 
-## Persistence and cross-app commands
+## Persistence
 
-The Splitter is **uncontrolled** by design: drag fires at ~60Hz, so threading
-state through a controlled prop re-renders the consumer tree on every tick.
-The companion `useSplitterLayout` hook gives you the same outcomes as a
-controlled component (persistence, imperative collapse / expand from anywhere)
-without the re-render cost.
+The Splitter is **uncontrolled** for sizes by design: drag fires at ~60Hz, so
+threading sizes through a controlled prop re-renders the consumer tree on every
+tick. Persist with any storage instead — hydrate `defaultSizes` from stored
+state, and write the settled value back in `onSizesChangeEnd` (fires once per
+interaction, so no debounce). Collapse is controlled state, so it persists like
+any other piece of state.
 
 ```tsx
-import { Splitter, useSplitterLayout } from "@commercetools/nimbus";
+import { Splitter } from "@commercetools/nimbus";
+// `useLocalStorage` here is any storage hook of your choosing.
 
-const layout = useSplitterLayout({
-  initialSizes: { nav: 30, main: 70 },
-  id: "ide-layout", // → localStorage key, with SSR-safe sync hydration
-});
+const [sizes, setSizes] = useLocalStorage("ide-layout", { nav: 30, main: 70 });
+const [collapsed, setCollapsed] = useLocalStorage("ide-collapsed", null);
 
 <Splitter.Root
+  defaultSizes={sizes}
+  onSizesChangeEnd={setSizes}
+  collapsedPane={collapsed}
+  onCollapsedPaneChange={setCollapsed}
   panes={{
     nav:  { minSize: 10, collapsible: true },
     main: { minSize: 20 },
   }}
-  defaultSizes={layout.defaultSizes}
-  onSizesChange={layout.onSizesChange}
-  __layoutRef={layout.__layoutRef}
 >
   <Splitter.Pane id="nav">…</Splitter.Pane>
   <Splitter.Handle />
   <Splitter.Pane id="main">…</Splitter.Pane>
-</Splitter.Root>
-
-// Elsewhere in the app, with access to `layout`:
-layout.collapse("nav");
-layout.expand("nav");
-layout.setSizes({ nav: 0, main: 100 });
+</Splitter.Root>;
 ```
 
-For non-localStorage backends, pass a custom `storage` adapter (cookies,
-sessionStorage, server state):
+`onSizesChange` (live, every tick) is also available if you need a real-time
+read-out (e.g. a pixel display) — but for persistence prefer `onSizesChangeEnd`.
 
-```ts
-useSplitterLayout({
-  initialSizes: { nav: 30, main: 70 },
-  storage: {
-    load: () => readFromCookie(),
-    save: (sizes) => writeToCookie(sizes),
-  },
-});
+## Disabled
+
+`isDisabled` on Root makes the whole splitter non-interactive: the handle is
+removed from the tab order (`tabIndex={-1}`), gets `aria-disabled="true"`, and
+ignores drag, keyboard, and collapse input.
+
+```tsx
+<Splitter.Root isDisabled defaultSizes={{ nav: 30, main: 70 }}>
+  …
+</Splitter.Root>
 ```
 
 ## Three or more regions: nesting
@@ -276,7 +322,7 @@ persisted, collapsed, and announced to AT independently.
 ```jsx-live
 const App = () => (
   <Box height="500px" width="100%" borderWidth="25" borderColor="neutral.6">
-    <Splitter.Root panes={{ nav: { defaultSize: 25 }, rest: { defaultSize: 75 } }}>
+    <Splitter.Root defaultSizes={{ nav: 25, rest: 75 }}>
       <Splitter.Pane id="nav">
         <Box p="400" bg="indigo.3" h="100%">
           <Heading size="md">Nav</Heading>
@@ -284,7 +330,7 @@ const App = () => (
       </Splitter.Pane>
       <Splitter.Handle />
       <Splitter.Pane id="rest">
-        <Splitter.Root panes={{ main: { defaultSize: 65 }, aside: { defaultSize: 35 } }}>
+        <Splitter.Root defaultSizes={{ main: 65, aside: 35 }}>
           <Splitter.Pane id="main">
             <Box p="400" bg="amber.3" h="100%">
               <Heading size="md">Main</Heading>
@@ -312,5 +358,5 @@ When `Splitter.Handle` has focus:
 | ArrowLeft / ArrowRight (horizontal) | Move the boundary by `keyboardStep` percentage points. |
 | ArrowUp / ArrowDown (vertical)      | Same, on the vertical axis.                            |
 | Home            | Shrink the previous pane to its `minSize`.                           |
-| End             | Grow the previous pane to its `maxSize` (or `100 − next.minSize`).   |
+| End             | Grow the previous pane to its max (`100 − next.minSize`).            |
 | Enter           | Toggle collapse of the adjacent collapsible pane.                    |

@@ -1,14 +1,24 @@
 # Specification: Splitter
 
+> **Revision (post-review reshape):** per-pane config carries only `minSize` /
+> `collapsible` / `collapsedSize` (no `maxSize`, `defaultSize`, or `disabled`);
+> initial sizes come from a single `defaultSizes` on Root; collapse is
+> controllable state (`collapsedPane` / `defaultCollapsedPane` /
+> `onCollapsedPaneChange`); `isDisabled` is a Root prop; persistence is wired in
+> the consuming app via `onSizesChangeEnd` + any storage (no `useSplitterLayout`
+> hook, no imperative API); sizes keep full float precision. The requirements
+> below reflect this final contract.
+
 ## Overview
 
 The Splitter component provides a compound primitive for user-resizable panes. A
 `Splitter.Root` contains exactly two `Splitter.Pane` children (each with a
 string `id`) with one `Splitter.Handle` between them. Users drag the handle (or
 use the keyboard) to redistribute space between the two panes; the component
-owns its sizes state internally. A companion `useSplitterLayout` hook supplies
-persistence and cross-component imperative commands without forcing a controlled
-prop.
+owns its sizes state internally. Persistence is wired in the consuming app via
+`defaultSizes` + `onSizesChangeEnd` and any storage; cross-subtree collapse uses
+the controlled `collapsedPane` prop — there is no companion hook or imperative
+API.
 
 Per-pane configuration (sizes, constraints, collapsibility) lives on
 `Splitter.Root` keyed by pane id. `Splitter.Handle` is anonymous — all handle
@@ -20,8 +30,8 @@ App-shell layout behaviour (responsive collapse to drawers, landmark slot
 semantics) is not part of this component and belongs to a separate pattern
 component.
 
-**Component:** `Splitter` (compound API: `Root`, `Pane`, `Handle`) **Hook:**
-`useSplitterLayout` **Package:** `@commercetools/nimbus` **Category:** Layout
+**Component:** `Splitter` (compound API: `Root`, `Pane`, `Handle`)
+**Package:** `@commercetools/nimbus` **Category:** Layout
 
 ## ADDED Requirements
 
@@ -63,7 +73,8 @@ unique string `id`, and exactly one `Splitter.Handle` between them.
 ### Requirement: Uncontrolled state model
 
 The component SHALL own its `sizes` state internally and expose it only via
-`defaultSizes` (initial value, read once) and `onSizesChange` (notification).
+`defaultSizes` (initial value, read once), `onSizesChange` (live notification),
+and `onSizesChangeEnd` (settled notification).
 
 #### Scenario: Initial sizes from `defaultSizes`
 
@@ -71,33 +82,44 @@ The component SHALL own its `sizes` state internally and expose it only via
 - **THEN** SHALL initialize internal sizes to `{ nav: 30, main: 70 }`
 - **AND** SHALL ignore subsequent prop changes to `defaultSizes`
 
-#### Scenario: Initial sizes from per-pane `defaultSize` in `panes`
-
-- **WHEN** `defaultSizes` is omitted but `panes[id].defaultSize` is provided for
-  both panes
-- **THEN** SHALL initialize sizes from `panes[id].defaultSize`
-- **AND** SHALL normalize the result to sum to 100 (within floating-point
-  tolerance)
+- **AND** SHALL normalize `defaultSizes` to sum to 100 while preserving float
+  precision (no rounding)
 
 #### Scenario: Initial sizes with no defaults
 
-- **WHEN** neither `defaultSizes` nor `panes[id].defaultSize` is provided for
-  either pane
+- **WHEN** `defaultSizes` is omitted or missing an id
 - **THEN** SHALL distribute 100 equally across panes (50 / 50)
 
 #### Scenario: `onSizesChange` fires on every size update
 
-- **WHEN** the user drags the handle, presses an arrow key on a focused handle,
-  double-clicks the handle to collapse, or any imperative command mutates sizes
+- **WHEN** the user drags the handle (each tick), presses an arrow key on a
+  focused handle, collapses/expands, or double-clicks to restore
 - **THEN** SHALL call `onSizesChange(newSizes)` with the post-change `sizes`
   record (keys = both pane ids, values summing to 100)
 
+#### Scenario: `onSizesChangeEnd` fires once per settled interaction
+
+- **WHEN** a drag ends, an arrow/Home/End key is pressed, a pane collapses or
+  expands, or double-click restores defaults
+- **THEN** SHALL call `onSizesChangeEnd(sizes)` exactly once for that
+  interaction (the seam consumers wire persistence to — no debounce required)
+
+#### Scenario: Sizes preserve float precision
+
+- **WHEN** `defaultSizes`, drag, or keyboard produce a fractional percentage
+  (e.g. `31.25`)
+- **THEN** SHALL apply and report it unrounded through the size pipeline
+- **AND** the handle's `aria-valuenow` MAY be rounded for assistive technology
+  without affecting the applied layout
+
 ### Requirement: Per-pane size constraints with clamping
 
-Each entry in the `panes` map on `Root` SHALL accept `minSize` (default 0) and
-`maxSize` (default 100). Drag operations on the handle SHALL respect these
-constraints by clamping Δ at the limit. No cascade behaviour applies — with only
-two panes, there is nowhere to spill remainder.
+Each entry in the `panes` map on `Root` SHALL accept `minSize` (default 0).
+Drag and keyboard operations on the handle SHALL clamp Δ so neither pane falls
+below its `minSize`. A pane's upper bound is the complement of its partner's
+`minSize` (`max = 100 − partner.minSize`); there is no separate `maxSize` knob.
+No cascade behaviour applies — with only two panes, there is nowhere to spill
+remainder.
 
 #### Scenario: Drag respects neighbour `minSize`
 
@@ -107,49 +129,60 @@ two panes, there is nowhere to spill remainder.
 - **THEN** SHALL clamp `b` to its `minSize` (10)
 - **AND** SHALL produce sizes `{ a: 90, b: 10 }`
 
-#### Scenario: Drag respects `maxSize`
+#### Scenario: Drag respects the derived upper bound
 
-- **GIVEN** two panes `a`, `b` with `panes.a.maxSize: 70`, current sizes
+- **GIVEN** two panes `a`, `b` with `panes.b.minSize: 30`, current sizes
   `{ a: 60, b: 40 }`
 - **WHEN** the user drags the handle to attempt `{ a: 80, b: 20 }`
-- **THEN** SHALL clamp `a` to its `maxSize` (70)
+- **THEN** SHALL clamp `a` to `100 − b.minSize` (70)
 - **AND** SHALL produce sizes `{ a: 70, b: 30 }`
 
 ### Requirement: Collapsible panes
 
 A pane configured with `collapsible: true` in the `panes` map SHALL support
-being collapsed to its `collapsedSize` (default 0) via the Enter key on the
-focused handle or the imperative `collapse(paneId)` command from the layout
-hook. Double-click on the handle is reserved for restoring the boundary to its
-initial position (see "Double-click restores defaults"), not for collapsing —
-this keeps the mouse gesture useful on splitters that are not collapsible.
+being collapsed to its `collapsedSize` (default 0). Collapse state is
+controllable: `collapsedPane` (controlled), `defaultCollapsedPane`
+(uncontrolled), and `onCollapsedPaneChange(paneId | null)` (notification). A
+2-pane splitter collapses at most one pane at a time, so the value is a single
+id or `null`. Enter on the focused handle toggles collapse. Double-click is
+reserved for restoring the boundary to its initial position (see "Double-click
+restores defaults"), not for collapsing.
 
 #### Scenario: Enter on focused handle toggles collapse
 
 - **GIVEN** sizes `{ nav: 30, main: 70 }` with `panes.nav.collapsible: true`
 - **WHEN** the handle has keyboard focus and Enter is pressed
-- **THEN** SHALL collapse `nav` if not currently collapsed (set its size to
-  `collapsedSize`, grow the other pane to absorb the freed space capped by its
-  `maxSize`)
-- **AND** SHALL fire `onCollapse("nav")` on Root
-- **OR** SHALL expand `nav` to its `defaultSize` (or `initialSizes.nav`) if
-  currently collapsed
-- **AND** SHALL fire `onExpand("nav")` on Root for the expand transition
+- **THEN** SHALL collapse `nav` if nothing is collapsed (set its size to
+  `collapsedSize`, grow the other pane to absorb the freed space)
+- **AND** SHALL fire `onCollapsedPaneChange("nav")` on Root
+- **OR** SHALL expand the collapsed pane (restore the pre-collapse sizes) if a
+  pane is currently collapsed
+- **AND** SHALL fire `onCollapsedPaneChange(null)` for the expand transition
 - **AND** SHALL produce sizes summing to 100
+
+#### Scenario: Controlled `collapsedPane` from anywhere
+
+- **GIVEN** the consumer renders `<Splitter.Root collapsedPane={state} …>`
+- **WHEN** code outside the splitter subtree sets `state` to a collapsible
+  pane id (e.g. a toolbar button)
+- **THEN** SHALL collapse that pane to its `collapsedSize` and grow the other
+- **WHEN** `state` is set back to `null`
+- **THEN** SHALL restore the pre-collapse sizes
 
 #### Scenario: Both panes collapsible — Enter targets the smaller
 
-- **GIVEN** both panes are `collapsible`
+- **GIVEN** both panes are `collapsible` and nothing is collapsed
 - **WHEN** the handle has keyboard focus and Enter is pressed
-- **THEN** SHALL toggle collapse on the smaller of the two panes
+- **THEN** SHALL collapse the smaller of the two panes
 - **AND** SHALL break ties by preferring the left/top pane
 
-#### Scenario: `onExpand` fires when leaving collapsed state
+#### Scenario: `onCollapsedPaneChange(null)` fires when leaving collapsed state
 
 - **GIVEN** a collapsed pane (size === `collapsedSize`)
-- **WHEN** any operation increases the pane's size above `collapsedSize`
-- **THEN** SHALL fire `onExpand(paneId)` on Root exactly once for that
-  transition
+- **WHEN** any operation (drag open, Enter, controlled prop) increases the
+  pane's size above `collapsedSize`
+- **THEN** SHALL fire `onCollapsedPaneChange(null)` on Root exactly once for
+  that transition
 
 ### Requirement: Double-click restores defaults
 
@@ -191,7 +224,7 @@ keys, Home, End, and Enter according to the W3C window splitter pattern.
 - **WHEN** the user presses ArrowRight
 - **THEN** SHALL grow the previous (left) pane by 5 percentage points and shrink
   the next (right) pane by 5
-- **AND** SHALL clamp at `minSize` / `maxSize` if either limit is hit
+- **AND** SHALL clamp at either pane's `minSize` if a limit is hit
 - **AND** SHALL emit `onSizesChange` with the new sizes record
 - **AND** SHALL prevent default browser scroll
 
@@ -207,12 +240,12 @@ keys, Home, End, and Enter according to the W3C window splitter pattern.
 - **WHEN** the user presses Home
 - **THEN** SHALL shrink _a_ to its `minSize` and grow _b_ accordingly
 - **WHEN** the user presses End
-- **THEN** SHALL grow _a_ to its `maxSize` and shrink _b_ accordingly
+- **THEN** SHALL grow _a_ to its max (`100 − b.minSize`) and shrink _b_ accordingly
 
-#### Scenario: Keyboard interactions are no-ops when both panes disabled
+#### Scenario: Keyboard interactions are no-ops when the splitter is disabled
 
-- **WHEN** both panes have `disabled: true` in `panes`
-- **THEN** SHALL ignore keyboard input
+- **WHEN** `<Splitter.Root isDisabled>` is set
+- **THEN** SHALL ignore keyboard input (and drag, and collapse)
 - **AND** SHALL set `tabIndex={-1}` so the handle is not in the tab order
 
 ### Requirement: ARIA semantics on Handle
@@ -225,12 +258,13 @@ The `Handle` SHALL expose the W3C window-splitter ARIA model.
   `main` (size 70), with `panes.nav.minSize: 10` and `panes.main.minSize: 10`
 - **THEN** the handle SHALL emit:
   - `role="separator"`
-  - `aria-valuenow={30}` (size of the previous pane)
+  - `aria-valuenow={30}` (size of the previous pane, rounded for AT)
+  - `aria-valuetext="30%"`
   - `aria-valuemin={10}` (`panes.nav.minSize`)
-  - `aria-valuemax={90}` (100 − `panes.main.minSize`, capped by
-    `panes.nav.maxSize`)
+  - `aria-valuemax={90}` (100 − `panes.main.minSize`)
   - `aria-orientation` matching `Splitter.Root.orientation`
   - `aria-controls={navDomId}` (the DOM id of the previous Pane sibling)
+  - `aria-disabled="true"` only when `Splitter.Root` is `isDisabled`
 
 #### Scenario: aria-label defaults
 
@@ -300,93 +334,40 @@ callbacks, and ARIA subtree.
 - **AND** SHALL announce each splitter as a self-contained widget to assistive
   technology
 
-### Requirement: `useSplitterLayout` hook for persistence and commands
+### Requirement: Persistence via storage-agnostic props
 
-The `useSplitterLayout` hook SHALL provide synchronous initial sizes hydration,
-debounced persistence, and a unified imperative API. The component SHALL remain
-pure — the hook holds no React state for sizes during drag. All sizes are
-`Record<string, number>`; all imperative commands take pane ids (strings).
+The component SHALL be persistable with any storage the consumer chooses, with
+no bespoke hook. Initial sizes are hydrated by passing stored values to
+`defaultSizes`; the settled value is reported via `onSizesChangeEnd` for writing
+back; collapse persists via its controlled `collapsedPane` state.
 
-#### Scenario: Hook returns props for the component
+#### Scenario: Hydrate from stored sizes
 
-- **WHEN** consumer calls
-  `useSplitterLayout({ initialSizes: { nav: 30, main: 70 } })`
-- **THEN** SHALL return at minimum `{ defaultSizes, onSizesChange }` that
-  consumers spread on `Splitter.Root`
-- **AND** SHALL return imperative methods `collapse(paneId)`, `expand(paneId)`,
-  `setSizes(sizes)`, `getSizes()`, `isCollapsed(paneId)` callable from anywhere
-  with access to the layout object
+- **WHEN** the consumer passes `defaultSizes={storedSizes}` (read from any
+  storage during render)
+- **THEN** SHALL initialize the boundary from those values on first render (no
+  flicker), normalized to sum 100 with float precision preserved
 
-#### Scenario: localStorage persistence by `id`
+#### Scenario: Persist on settled change
 
-- **WHEN**
-  `useSplitterLayout({ initialSizes: { nav: 30, main: 70 }, id: "my-key" })` is
-  called and `localStorage.getItem("my-key")` contains `'{"nav":25,"main":75}'`
-- **THEN** SHALL return `defaultSizes = { nav: 25, main: 75 }` on first render
-- **AND** subsequent `onSizesChange` invocations SHALL write to
-  `localStorage.setItem("my-key", JSON.stringify(sizes))` debounced by
-  `debounceMs` (default 200)
+- **WHEN** an interaction settles (drag end, keypress, collapse/expand, restore)
+- **THEN** SHALL call `onSizesChangeEnd(sizes)` once, which the consumer wires
+  to its storage `set` — no debouncing required since it fires per interaction,
+  not per drag tick
 
-#### Scenario: Custom storage adapter
+#### Scenario: Unknown stored ids have no effect
 
-- **WHEN** `useSplitterLayout({ initialSizes, storage })` is called with
-  `storage: { load, save }`
-- **THEN** SHALL call `storage.load()` synchronously on first render and use its
-  return value as `defaultSizes` (falling back to `initialSizes` on any invalid
-  return)
-- **AND** SHALL call `storage.save(sizes)` (debounced) on each size change
-- **AND** SHALL NOT touch `localStorage` even if `id` is also provided
-  (`storage` overrides `id`)
+- **GIVEN** stored sizes contain an id not present in the current panes
+- **WHEN** they are passed as `defaultSizes`
+- **THEN** SHALL look sizes up by the current pane ids and fall back to a 50/50
+  split for any id missing a valid value (the mount-time normalization keeps
+  the boundary well-formed)
 
-#### Scenario: SSR safety
+#### Scenario: No imperative API
 
-- **WHEN** the hook executes during SSR (`typeof window === "undefined"`) and
-  only `id` is provided (no custom `storage`)
-- **THEN** SHALL return `defaultSizes = initialSizes` without touching
-  `localStorage`
-- **AND** the same hook on the client SHALL read the persisted value on first
-  render (no `useEffect` flicker), guarded by the `typeof window` check
-
-#### Scenario: Stored value reconciled for a two-pane layout
-
-A two-pane layout is a single boundary position: the second pane is always the
-complement of the first. Reconciliation resolves the first pane's size from the
-most trustworthy available source and infers the partner, ignoring any unknown
-stored ids.
-
-- **WHEN** the stored value for the first pane is a finite number in `[0, 100]`
-- **THEN** SHALL use it as the first pane's size
-- **WHEN** the first pane's stored value is missing or out of range but the
-  second pane's stored value is a finite number in `[0, 100]` (e.g. the first
-  pane was renamed between releases)
-- **THEN** SHALL infer the first pane's size as `100 −` the second pane's stored
-  value
-- **WHEN** neither pane has a salvageable stored value
-- **THEN** SHALL fall back to `initialSizes`
-- **AND** in all cases SHALL set the second pane to `100 −` the first pane's
-  size, ignore stored ids not in `initialSizes`, and log a development-only
-  warning when the resolved record differs from what was stored
-
-#### Scenario: Imperative `setSizes` from anywhere
-
-- **GIVEN** consumer holds the `layout` object returned by `useSplitterLayout`
-- **WHEN** code outside the `Splitter` subtree calls
-  `layout.setSizes({ nav: 0, main: 100 })`
-- **THEN** SHALL update the component's internal sizes to that record
-- **AND** SHALL fire `onSizesChange({ nav: 0, main: 100 })`
-- **AND** SHALL NOT cause re-render of components that only read imperative
-  methods (no subscription to sizes)
-
-#### Scenario: Imperative `collapse` / `expand`
-
-- **WHEN** consumer calls `layout.collapse("nav")` on a collapsible pane
-- **THEN** SHALL set `nav`'s size to its `collapsedSize` and grow the other pane
-  accordingly
-- **AND** SHALL fire `onCollapse("nav")` on Root
-- **WHEN** `layout.expand("nav")` is called on a currently collapsed pane
-- **THEN** SHALL restore `nav` to its `defaultSize` (or `initialSizes.nav` if no
-  per-pane default exists)
-- **AND** SHALL fire `onExpand("nav")` on Root
+- **WHEN** the consumer needs to collapse a pane from outside the subtree
+- **THEN** SHALL do so via the controlled `collapsedPane` prop (plain state),
+  NOT via an imperative ref or hook command
 
 ### Requirement: Visual presentation via Chakra slot recipe
 
@@ -405,9 +386,9 @@ and `handle`, plus variants for `size` (`sm` / `md` / `lg`) and `orientation`
 
 #### Scenario: Disabled handle styling
 
-- **WHEN** the handle is disabled (both panes have `disabled: true` in `panes`)
-- **THEN** SHALL apply the disabled visual variant (`cursor: not-allowed`,
-  reduced opacity)
+- **WHEN** `Splitter.Root` is `isDisabled`
+- **THEN** SHALL apply the disabled visual variant (reduced opacity, no hover
+  background)
 
 #### Scenario: Focus ring uses `_focusVisible`
 
@@ -417,8 +398,9 @@ and `handle`, plus variants for `size` (`sm` / `md` / `lg`) and `orientation`
 
 ### Requirement: No controlled `sizes` prop
 
-The component SHALL NOT accept a `sizes` prop. External mutation goes through
-`useSplitterLayout`'s imperative API.
+The component SHALL NOT accept a `sizes` prop. Sizes stay uncontrolled (drag
+performance); persistence is via `onSizesChangeEnd` + storage, and cross-subtree
+collapse is via the controlled `collapsedPane` prop.
 
 #### Scenario: Passing `sizes` is rejected at the type level
 
@@ -435,7 +417,7 @@ functions.
 
 - **WHEN** the user navigates with Tab
 - **THEN** SHALL reach the handle in DOM order
-- **AND** SHALL skip the handle if both panes have `disabled: true`
+- **AND** SHALL skip the handle when `Splitter.Root` is `isDisabled`
 
 #### Scenario: Focus indicator is visible
 

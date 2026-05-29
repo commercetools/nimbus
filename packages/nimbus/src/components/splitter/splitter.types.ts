@@ -1,4 +1,4 @@
-import type { ReactNode, Ref, RefObject } from "react";
+import type { ReactNode, Ref } from "react";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   SplitterRootSlotProps,
@@ -13,61 +13,48 @@ import type {
 /**
  * Per-pane configuration on `Splitter.Root`'s `panes` map. All settings are
  * keyed by the pane's `id` (matching the `id` on each `<Splitter.Pane>`).
+ *
+ * A 2-pane splitter has a single boundary, so the only genuinely per-pane
+ * settings are the lower bound and collapsibility. The upper bound is not a
+ * per-pane knob — it is derived from the partner pane's `minSize`
+ * (`max = 100 − partner.minSize`).
  */
 export type SplitterPaneConfig = {
-  /** Initial percentage size for this pane (0–100). Ignored if `defaultSizes` is set on Root. */
-  defaultSize?: number;
-  /** Minimum allowed percentage; drag/keyboard clamps at this boundary. Defaults to 0. */
+  /** Minimum allowed percentage; drag/keyboard clamps at this boundary. Defaults to 0. Accepts floats. */
   minSize?: number;
-  /** Maximum allowed percentage; drag/keyboard clamps at this boundary. Defaults to 100. */
-  maxSize?: number;
-  /** When true, drag interactions on the handle are ignored for this pane. */
-  disabled?: boolean;
-  /** When true, the pane can collapse to `collapsedSize` via double-click, Enter, or imperative API. */
+  /** When true, the pane can collapse to `collapsedSize` via Enter or the controlled `collapsedPane` prop. */
   collapsible?: boolean;
-  /** Percentage size when the pane is collapsed. Defaults to 0. */
+  /** Percentage size when the pane is collapsed. Defaults to 0. Accepts floats. */
   collapsedSize?: number;
 };
 
 /**
- * Imperative command surface exposed via `useSplitterLayout`. The hook
- * populates an internal ref the component mounts to; this is not part of
- * the public component prop surface.
- *
- * @internal
- */
-export type SplitterImperativeHandle = {
-  /** Replace the current sizes record (values must sum to 100). */
-  setSizes: (sizes: Record<string, number>) => void;
-  /** Read the current sizes record. */
-  getSizes: () => Record<string, number>;
-  /** Collapse a collapsible pane to its `collapsedSize`. */
-  collapse: (paneId: string) => void;
-  /** Expand a collapsed pane back to its `defaultSize` (or initial size). */
-  expand: (paneId: string) => void;
-  /** True if the pane is currently at or below its `collapsedSize`. */
-  isCollapsed: (paneId: string) => boolean;
-};
-
-/**
  * Internal context shared between `Splitter.Root`, `Splitter.Pane`, and
- * `Splitter.Handle`. Carries the id-keyed sizes record, pane registration,
- * commands, and the configuration the handle needs to compute its keyboard
- * behavior and ARIA attributes. Produced by `useSplitterState`.
+ * `Splitter.Handle`. Carries the id-keyed sizes record, pane registration, the
+ * collapse setter, and the configuration the handle needs to compute its
+ * keyboard behavior and ARIA attributes. Produced by `useSplitterState`.
  *
  * @internal
  */
 export type SplitterContextValue = {
-  /** Current sizes record, keyed by pane id, summing to 100. */
+  /** Current sizes record, keyed by pane id, summing to 100. Values are full-precision floats. */
   sizes: Record<string, number>;
-  /** Replace the sizes record (used by drag, keyboard, and imperative API). */
+  /** Replace the sizes record live (drag ticks). Fires `onSizesChange` only. */
   setSizes: (sizes: Record<string, number>) => void;
+  /**
+   * Commit a settled size change. With a record (keyboard, collapse, restore)
+   * it writes + fires `onSizesChange` and `onSizesChangeEnd`. With no argument
+   * (drag end) it fires `onSizesChangeEnd` with the current sizes only.
+   */
+  commitSizes: (sizes?: Record<string, number>) => void;
   /** Splitter orientation. Determines layout axis and active arrow keys. */
   orientation: "horizontal" | "vertical";
-  /** Keyboard step in percentage points per arrow-key press. */
+  /** Keyboard step in percentage points per arrow-key press. Accepts floats. */
   keyboardStep: number;
   /** When true, the handle ignores double-clicks. */
   disableDoubleClick: boolean;
+  /** When true, the whole splitter is non-interactive (drag, keyboard, collapse). */
+  isDisabled: boolean;
 
   /** Look up the configuration for a given pane id. */
   getPaneConfig: (paneId: string) => SplitterPaneConfig;
@@ -81,13 +68,11 @@ export type SplitterContextValue = {
   /** Unregister a pane on unmount. */
   unregisterPane: (paneId: string) => void;
 
-  /** Collapse a collapsible pane to its `collapsedSize`. */
-  collapsePane: (paneId: string) => void;
-  /** Expand a collapsed pane back to its `defaultSize`. */
-  expandPane: (paneId: string) => void;
-  /** True if the pane's current size is at or below its `collapsedSize`. */
-  isCollapsed: (paneId: string) => boolean;
-  /** Restore the boundary to the sizes derived on mount. */
+  /** The currently collapsed pane id (resolved controlled/uncontrolled), or null. */
+  collapsedPane: string | null;
+  /** Set the collapsed pane (null = none). Drives controlled/uncontrolled collapse + size reconciliation. */
+  setCollapsedPane: (paneId: string | null) => void;
+  /** Restore the boundary to the sizes derived on mount (double-click). */
   restoreDefaults: () => void;
 };
 
@@ -110,51 +95,78 @@ export type SplitterRootProps = OmitInternalProps<SplitterRootSlotProps> & {
   orientation?: "horizontal" | "vertical";
 
   /**
+   * Visual thickness of the handle's track (seen on hover/focus). Inherited
+   * from the `nimbusSplitter` recipe.
+   * @default "md"
+   */
+  size?: SplitterRootSlotProps["size"];
+
+  /**
    * Initial sizes for each pane, keyed by pane id, summing to 100. Read once
-   * on mount; subsequent prop changes are ignored. When omitted, sizes are
-   * derived from `panes[id].defaultSize`, falling back to a 50/50 split.
+   * on mount; subsequent prop changes are ignored. Normalized to 100 (full
+   * float precision preserved). When omitted, sizes fall back to a 50/50 split.
    */
   defaultSizes?: Record<string, number>;
 
   /**
-   * Notification callback fired on every size change (drag, keyboard, collapse,
-   * imperative). Receives the post-change sizes record (sums to 100).
+   * Notification callback fired on every size change, including each drag tick
+   * (~60Hz). Receives the post-change sizes record (sums to 100). For
+   * persistence, prefer `onSizesChangeEnd`.
    */
   onSizesChange?: (sizes: Record<string, number>) => void;
 
   /**
+   * Notification callback fired once when a size interaction settles (drag end,
+   * each keypress, collapse/expand, double-click restore). This is the seam to
+   * wire persistence to — no debouncing required.
+   */
+  onSizesChangeEnd?: (sizes: Record<string, number>) => void;
+
+  /**
    * Per-pane configuration keyed by the pane's `id`. All per-pane settings
-   * (min/max, collapsible, disabled, defaults) live here — nothing leaks
-   * onto `<Splitter.Pane>`.
+   * (`minSize`, `collapsible`, `collapsedSize`) live here — nothing leaks onto
+   * `<Splitter.Pane>`.
    */
   panes?: Record<string, SplitterPaneConfig>;
 
   /**
+   * Controlled collapsed pane: the id of the pane that is currently collapsed,
+   * or `null` for none. A 2-pane splitter collapses at most one pane at a time.
+   * When provided, the splitter is controlled for collapse state.
+   */
+  collapsedPane?: string | null;
+
+  /**
+   * Uncontrolled initial collapsed pane. Used when `collapsedPane` is not
+   * provided.
+   * @default null
+   */
+  defaultCollapsedPane?: string | null;
+
+  /** Fired whenever the collapsed pane changes (collapse, expand, or toggle). */
+  onCollapsedPaneChange?: (paneId: string | null) => void;
+
+  /**
    * Percentage delta applied per arrow-key press on the focused handle.
-   * Home/End jump the boundary to the relevant `minSize`/`maxSize`.
+   * Home/End jump the boundary to the relevant bounds. Accepts floats.
    * @default 5
    */
   keyboardStep?: number;
 
   /**
-   * When true, double-click on the handle does not toggle collapse. Drag and
+   * When true, double-click on the handle does not restore defaults. Drag and
    * keyboard remain active.
    * @default false
    */
   disableDoubleClick?: boolean;
 
-  /** Fired when a collapsible pane transitions to its `collapsedSize`. */
-  onCollapse?: (paneId: string) => void;
-
-  /** Fired when a collapsed pane transitions back above its `collapsedSize`. */
-  onExpand?: (paneId: string) => void;
-
   /**
-   * Internal ref used by `useSplitterLayout` to attach imperative commands.
-   * Not part of the public surface — consumers go through the hook.
-   * @internal
+   * When true, the splitter is non-interactive: the handle is removed from the
+   * tab order (`tabIndex={-1}`), gets `aria-disabled`, and ignores drag,
+   * keyboard, and collapse input.
+   * @default false
    */
-  __layoutRef?: RefObject<SplitterImperativeHandle | null>;
+  isDisabled?: boolean;
 
   /** Exactly two `Splitter.Pane` children with one `Splitter.Handle` between them. */
   children: ReactNode;
@@ -183,7 +195,7 @@ export type SplitterPaneProps = OmitInternalProps<SplitterPaneSlotProps> & {
  * Props for `<Splitter.Handle>` — the interactive separator between the two
  * panes. The handle is anonymous: it accepts no `id` and no per-handle
  * configuration. Behaviour is configured on `<Splitter.Root>`
- * (`keyboardStep`, `disableDoubleClick`, default `aria-label`).
+ * (`keyboardStep`, `disableDoubleClick`, `isDisabled`, default `aria-label`).
  */
 export type SplitterHandleProps = OmitInternalProps<SplitterHandleSlotProps> & {
   /** Accessible label override; defaults to a localized "Resize panes". */

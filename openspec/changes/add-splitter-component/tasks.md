@@ -1,5 +1,16 @@
 # Tasks: Add Splitter component
 
+> **Revision (post-review reshape):** after the initial implementation, a
+> pre-release review drove an API reshape (see proposal/design "Revision"
+> sections and `spec.md`). Net changes applied across the tasks below: dropped
+> per-pane `maxSize`/`defaultSize`/`disabled`; single `defaultSizes` init path;
+> added `onSizesChangeEnd`; collapse is controllable state (`collapsedPane` /
+> `defaultCollapsedPane` / `onCollapsedPaneChange`) instead of imperative;
+> `isDisabled` on Root; **removed the `useSplitterLayout` hook** (persistence is
+> consumer-wired via `onSizesChangeEnd` + any storage); documented `size`;
+> full float-precision sizes. Tasks referencing the hook / `maxSize` /
+> imperative commands are superseded accordingly.
+
 ## 1. Rename and restructure
 
 - [x] 1.1 Rename directory `packages/nimbus/src/components/window-splitter/` →
