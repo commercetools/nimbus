@@ -43,9 +43,15 @@ export function useDragAndDrop<T extends Record<string, unknown>>(
       ? [dataFormat, ...(acceptExternalTypes ?? [])]
       : [dataFormat],
 
-    getDropOperation: (_, types) => {
-      if (types.has(dataFormat)) return "move";
-      if (onExternalDrop) return externalDropOperation;
+    getDropOperation: (_, types, allowedOperations) => {
+      if (types.has(dataFormat)) {
+        return allowedOperations.includes("move") ? "move" : "cancel";
+      }
+      if (onExternalDrop) {
+        return allowedOperations.includes(externalDropOperation)
+          ? externalDropOperation
+          : "cancel";
+      }
       return "cancel";
     },
 

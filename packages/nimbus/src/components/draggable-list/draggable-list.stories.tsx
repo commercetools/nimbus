@@ -398,8 +398,6 @@ export const NamespacedIsolation: Story = {
 
         // Tab twice: past alpha right to beta list
         await dragItemToList(canvas, "Alpha 2", 2);
-        await wait();
-        await userEvent.keyboard("{Escape}");
 
         await waitFor(async () => {
           expect(
@@ -1074,7 +1072,7 @@ export const ExternalTextDrop: Story = {
         <Flex gap={800}>
           <Flex direction="column" gap={200}>
             <Text fontWeight="500">
-              Source (different namespace, sends text/plain)
+              Source (different namespace, sends text/plain as copy)
             </Text>
             <DraggableList.Root
               aria-label="external source"
@@ -1128,7 +1126,7 @@ export const ExternalTextDrop: Story = {
     });
 
     await step(
-      "Drag from source to target via text/plain (external drop path)",
+      "Copy from source to target via text/plain (external drop, source retains item)",
       async () => {
         const sourceGrid = await canvas.findByRole("grid", {
           name: /external source/i,

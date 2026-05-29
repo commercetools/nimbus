@@ -31,8 +31,6 @@ export async function processDropItems<T extends Record<string, unknown>>(
       : [];
 
   return [...internalItems, ...converted].map((item) =>
-    !item.key && !(item as Record<string, unknown>).id
-      ? { ...item, key: crypto.randomUUID() }
-      : item
+    !item.key && !item.id ? { ...item, key: crypto.randomUUID() } : item
   );
 }

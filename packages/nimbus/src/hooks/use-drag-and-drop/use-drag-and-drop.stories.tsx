@@ -281,12 +281,7 @@ const DirectHookWithTableDemo = () => {
   ]);
 
   const { dragAndDropHooks } = useDragAndDrop({
-    ...createArrayHandlers(
-      setRows as React.Dispatch<
-        React.SetStateAction<Record<string, unknown>[]>
-      >,
-      (row) => row.id as string
-    ),
+    ...createArrayHandlers(setRows, (row) => row.id),
   });
 
   return (

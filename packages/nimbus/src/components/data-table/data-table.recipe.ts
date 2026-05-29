@@ -261,6 +261,13 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         left: 0,
         zIndex: 13,
       },
+      "&.drag-column-header": {
+        cursor: "default",
+        padding: "0",
+        position: "sticky",
+        left: 0,
+        zIndex: 13,
+      },
       "&.expand-column-header": {
         cursor: "default",
         padding: "0",
