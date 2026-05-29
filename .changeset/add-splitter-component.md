@@ -2,25 +2,24 @@
 "@commercetools/nimbus": minor
 ---
 
-feat(splitter): add Splitter component
+`Splitter`: new compound component for user-resizable two-pane layouts.
+`Splitter.Root` holds exactly two `Splitter.Pane`s with a draggable,
+keyboard-operable `Splitter.Handle` between them; per-pane constraints
+(`minSize`, `collapsible`, `collapsedSize`) are set on `Splitter.Root` keyed by
+pane id.
 
-A compound primitive for user-resizable 2-pane layouts. `Splitter.Root` contains
-exactly two `Splitter.Pane` children with one `Splitter.Handle` between them;
-per-pane constraints (`minSize`, `collapsible`, `collapsedSize`) live on
-`Splitter.Root` keyed by pane id.
-
-Sizes are uncontrolled for drag performance — set the initial split with
-`defaultSizes` and react to changes with `onSizesChange` (live) or
-`onSizesChangeEnd` (fires once per settled interaction, ideal for persisting to
-any storage without debouncing). Collapse is plain controllable state
-(`collapsedPane` / `defaultCollapsedPane` / `onCollapsedPaneChange`), so a
-button anywhere in the app can collapse a pane. `isDisabled` makes the whole
-splitter non-interactive. Percentages keep full float precision for
-pixel-precise layouts at a known width.
-
-Implements the W3C window splitter ARIA pattern: handle is `role="separator"`
-with `aria-valuemin`/`aria-valuemax`/`aria-valuetext`, `aria-controls` pointing
-at the previous pane sibling, full keyboard support (arrows, Home/End for
-bounds, Enter to toggle collapse), focus-visible ring, and a touch-target-
-expanded hit area. Double-click on the handle restores the initial sizes.
-Layouts with 3+ regions are expressed by nesting a Splitter inside a Pane.
+- Set the initial split with `defaultSizes`. Sizes are uncontrolled for drag
+  performance — read changes with `onSizesChange` (live) or `onSizesChangeEnd`
+  (fires once per settled interaction; wire persistence here, no debouncing
+  needed).
+- Collapse panes with controllable state (`collapsedPane` /
+  `defaultCollapsedPane` / `onCollapsedPaneChange`), so any control in your app
+  can collapse a pane. Enter on the focused handle toggles collapse;
+  double-click restores the initial split (suppress with
+  `isDoubleClickDisabled`).
+- `isDisabled` makes the whole splitter non-interactive. `orientation` switches
+  between horizontal and vertical, and the `size` variant sets handle thickness.
+- Sizes carry full float precision, so you can hit exact pixel widths at a known
+  container size.
+- The handle is fully keyboard accessible (arrow keys, Home/End); compose three
+  or more regions by nesting a Splitter inside a Pane.
