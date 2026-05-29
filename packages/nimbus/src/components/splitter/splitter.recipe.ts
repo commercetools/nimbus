@@ -70,7 +70,11 @@ export const splitterSlotRecipe = defineSlotRecipe({
         backgroundColor: "neutral.6",
       },
       "&[data-disabled='true']": {
-        layerStyle: "disabled",
+        // The handle track is invisible at rest, so a disabled affordance
+        // (reduced opacity / not-allowed cursor) has nothing to attach to and
+        // would only surface a misleading cursor. Just neutralize the resize
+        // cursor and keep the track from appearing on hover.
+        cursor: "default",
         _hover: { backgroundColor: "transparent" },
       },
     },

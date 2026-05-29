@@ -387,8 +387,11 @@ and `handle`, plus variants for `size` (`sm` / `md` / `lg`) and `orientation`
 #### Scenario: Disabled handle styling
 
 - **WHEN** `Splitter.Root` is `isDisabled`
-- **THEN** SHALL apply the disabled visual variant (reduced opacity, no hover
-  background)
+- **THEN** SHALL not show the resize cursor and SHALL not reveal the handle
+  track on hover
+- **AND** SHALL NOT apply a `not-allowed` cursor or reduced opacity — the
+  handle track is invisible at rest, so such an affordance has nothing to
+  attach to and would only surface a misleading cursor
 
 #### Scenario: Focus ring uses `_focusVisible`
 
