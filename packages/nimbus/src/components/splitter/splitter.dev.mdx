@@ -9,126 +9,162 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { Splitter } from "@commercetools/nimbus";
-import type { SplitterRootProps } from "@commercetools/nimbus";
+import { Splitter, type SplitterRootProps } from "@commercetools/nimbus";
 ```
 
 ### Basic usage
 
-```tsx
-<Splitter.Root
-  orientation="horizontal"
-  defaultSizes={{ nav: 30, main: 70 }}
-  panes={{
-    nav: { minSize: 15 },
-    main: { minSize: 25 },
-  }}
->
-  <Splitter.Pane id="nav">{/* nav content */}</Splitter.Pane>
-  <Splitter.Handle />
-  <Splitter.Pane id="main">{/* main content */}</Splitter.Pane>
-</Splitter.Root>
-```
+`Splitter.Root` wraps exactly two `Splitter.Pane` children with one
+`Splitter.Handle` between them. Each pane carries a string `id`; the initial
+split is set with `defaultSizes` (percentages, keyed by id).
 
-## Design model
-
-### Sizes are uncontrolled; collapse is controllable
-
-Sizes drag at ~60Hz, so threading them through a controlled prop would call the
-consumer's `setState` every tick and re-render everything above the splitter.
-Sizes are therefore **uncontrolled**: `defaultSizes` (read once on mount) plus
-two notification callbacks:
-
-- `onSizesChange(sizes)` — fires on every change, including each drag tick. Use
-  it for a live read-out (e.g. a pixel display).
-- `onSizesChangeEnd(sizes)` — fires once when an interaction settles (drag end,
-  each keypress, collapse/expand, double-click restore). **This is the seam to
-  wire persistence to** — no debouncing required.
-
-Collapse, by contrast, is discrete and low-frequency, so it follows the normal
-Nimbus controlled/uncontrolled convention: `collapsedPane` /
-`defaultCollapsedPane` / `onCollapsedPaneChange`. A 2-pane splitter collapses at
-most one pane at a time, so the value is a single id or `null`.
-
-### Id-keyed configuration
-
-Each `Splitter.Pane` carries only its `id`. Per-pane constraints (`minSize`,
-`collapsible`, `collapsedSize`) live on `Splitter.Root` in the `panes` map keyed
-by that id:
-
-```tsx
-<Splitter.Root
-  panes={{
-    nav: { minSize: 10, collapsible: true },
-    main: { minSize: 20 },
-  }}
-  defaultSizes={{ nav: 30, main: 70 }}
-  onSizesChangeEnd={(sizes) => console.log(sizes)}
->
-  <Splitter.Pane id="nav">…</Splitter.Pane>
-  <Splitter.Handle />
-  <Splitter.Pane id="main">…</Splitter.Pane>
-</Splitter.Root>
-```
-
-Id-keyed instead of index-based for four reasons:
-
-1. **Reorder-safe persistence.** Swapping the panes between releases doesn't
-   invalidate stored layouts — sizes are keyed by id, not position.
-2. **Readable APIs.** `collapsedPane="nav"` beats `collapsedPane={0}`.
-3. **Clean ARIA.** `aria-controls` on the handle is just the DOM id of the
-   previous Pane sibling.
-4. **Configuration on Root.** Per-pane constraints stay in one map.
-
-### Single constraint per side
-
-The boundary is a single value (0–100), so the constraint surface is minimal:
-one `minSize` per pane. A pane's upper bound is the complement of its partner's
-`minSize` (`max = 100 − partner.minSize`), which the clamp and the handle's
-`aria-valuemax` both derive. There is intentionally no per-pane `maxSize` —
-it would be a second source of truth for the same boundary edge.
-
-### Float precision
-
-Sizes carry full float precision end-to-end (`defaultSizes` → clamp → drag →
-`onSizesChange(End)` → `width: …%`). Nothing in the size pipeline rounds. The
-only rounding is the handle's `aria-valuenow` (and `aria-valuetext`), which is a
-screen-reader announcement and does not affect layout. This lets consumers hit
-an exact pixel at a known width (`31.25` = 250px in an 800px container).
-
-### 2-pane primitive, composable via nesting
-
-`Splitter.Root` accepts exactly two `Pane` children with one `Handle` between
-them. For 3+ regions, nest one Splitter inside the children of a `Pane`:
-
-```tsx
-<Splitter.Root defaultSizes={{ nav: 25, rest: 75 }}>
-  <Splitter.Pane id="nav">…</Splitter.Pane>
-  <Splitter.Handle />
-  <Splitter.Pane id="rest">
-    <Splitter.Root defaultSizes={{ main: 65, aside: 35 }}>
-      <Splitter.Pane id="main">…</Splitter.Pane>
+```jsx live-dev
+const App = () => (
+  <Box height="320px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root
+      defaultSizes={{ nav: 30, main: 70 }}
+      panes={{ nav: { minSize: 15 }, main: { minSize: 25 } }}
+    >
+      <Splitter.Pane id="nav">
+        <Box p="400" bg="indigo.3" h="100%">
+          <Text>
+            Drag the handle to resize. Tab to it, then use the arrow keys.
+          </Text>
+        </Box>
+      </Splitter.Pane>
       <Splitter.Handle />
-      <Splitter.Pane id="aside">…</Splitter.Pane>
+      <Splitter.Pane id="main">
+        <Box p="400" bg="amber.3" h="100%">
+          <Text>Main</Text>
+        </Box>
+      </Splitter.Pane>
     </Splitter.Root>
-  </Splitter.Pane>
-</Splitter.Root>
+  </Box>
+);
 ```
 
-The 2-pane shape is what the W3C window splitter ARIA pattern is specified
-against. Nesting gives screen-reader users a tree of self-contained widgets,
-each matching the W3C example exactly.
+## Usage examples
 
-## Persistence
+### Orientation
 
-Persistence lives in the consuming app, not in the component — hydrate
-`defaultSizes` from any storage and write back on `onSizesChangeEnd`. Collapse
-is controlled state, so it persists the same way.
+`orientation="vertical"` stacks the panes and makes ArrowUp / ArrowDown the
+active keys. The handle's `aria-orientation` reflects this (W3C separator
+semantics describe the boundary axis, not the layout axis).
+
+```jsx live-dev
+const App = () => (
+  <Box height="360px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root
+      orientation="vertical"
+      defaultSizes={{ top: 40, bottom: 60 }}
+    >
+      <Splitter.Pane id="top">
+        <Box p="400" bg="teal.3" h="100%">
+          <Text>Top</Text>
+        </Box>
+      </Splitter.Pane>
+      <Splitter.Handle />
+      <Splitter.Pane id="bottom">
+        <Box p="400" bg="rose.3" h="100%">
+          <Text>Bottom</Text>
+        </Box>
+      </Splitter.Pane>
+    </Splitter.Root>
+  </Box>
+);
+```
+
+### Per-pane constraints
+
+Each entry in the `panes` map accepts a `minSize`. A pane's upper bound is the
+complement of its partner's `minSize` (`max = 100 − partner.minSize`), so a
+single value per side fully describes the boundary — there is no separate
+`maxSize`.
+
+```jsx live-dev
+const App = () => (
+  <Box height="320px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root
+      defaultSizes={{ nav: 30, main: 70 }}
+      panes={{ nav: { minSize: 15 }, main: { minSize: 25 } }}
+    >
+      <Splitter.Pane id="nav">
+        <Box p="400" bg="indigo.3" h="100%">
+          <Text>Nav (min 15 → max 75)</Text>
+        </Box>
+      </Splitter.Pane>
+      <Splitter.Handle />
+      <Splitter.Pane id="main">
+        <Box p="400" bg="amber.3" h="100%">
+          <Text>Main (min 25)</Text>
+        </Box>
+      </Splitter.Pane>
+    </Splitter.Root>
+  </Box>
+);
+```
+
+### Collapsible panes
+
+Mark a pane `collapsible` and control which pane is collapsed with
+`collapsedPane` (a single pane id or `null` — only one collapses at a time).
+Because collapse is plain controlled state, any control can drive it; Enter on
+the focused handle toggles it too. `onCollapsedPaneChange` fires on every
+transition.
+
+```jsx live-dev
+const App = () => {
+  const [collapsed, setCollapsed] = useState(null);
+
+  return (
+    <Stack direction="column" gap="300">
+      <Button
+        alignSelf="start"
+        onPress={() => setCollapsed((c) => (c === "nav" ? null : "nav"))}
+      >
+        {collapsed === "nav" ? "Show nav" : "Hide nav"}
+      </Button>
+      <Box height="280px" width="100%" borderWidth="25" borderColor="neutral.6">
+        <Splitter.Root
+          defaultSizes={{ nav: 30, main: 70 }}
+          panes={{
+            nav: { minSize: 10, collapsible: true },
+            main: { minSize: 20 },
+          }}
+          collapsedPane={collapsed}
+          onCollapsedPaneChange={setCollapsed}
+        >
+          <Splitter.Pane id="nav">
+            <Box p="400" bg="indigo.3" h="100%">
+              <Text>Nav</Text>
+            </Box>
+          </Splitter.Pane>
+          <Splitter.Handle />
+          <Splitter.Pane id="main">
+            <Box p="400" bg="amber.3" h="100%">
+              <Text>Main</Text>
+            </Box>
+          </Splitter.Pane>
+        </Splitter.Root>
+      </Box>
+    </Stack>
+  );
+};
+```
+
+Double-click on the handle restores the boundary to the sizes resolved on mount;
+set `disableDoubleClick` to suppress it.
+
+### Persistence
+
+Sizes are uncontrolled for drag performance, so persist them in your app with
+any storage: hydrate `defaultSizes` from stored state and write back in
+`onSizesChangeEnd` (it fires once per settled interaction, so no debouncing is
+needed). Collapse persists through its controlled state.
 
 ```tsx
-// `useLocalStorage` is any storage hook of your choosing (cookies, query
-// params, server state, sessionStorage, …).
-const [sizes, setSizes] = useLocalStorage("ide", { nav: 30, main: 70 });
+// `useLocalStorage` is any storage hook of your choosing.
+const [sizes, setSizes] = useLocalStorage("ide-layout", { nav: 30, main: 70 });
 const [collapsed, setCollapsed] = useLocalStorage("ide-collapsed", null);
 
 <Splitter.Root
@@ -138,42 +174,165 @@ const [collapsed, setCollapsed] = useLocalStorage("ide-collapsed", null);
   onCollapsedPaneChange={setCollapsed}
   panes={{ nav: { minSize: 10, collapsible: true }, main: { minSize: 20 } }}
 >
-  …
+  <Splitter.Pane id="nav">…</Splitter.Pane>
+  <Splitter.Handle />
+  <Splitter.Pane id="main">…</Splitter.Pane>
 </Splitter.Root>;
 ```
 
-`defaultSizes` is read once on mount and normalized to sum 100, so a slightly
-drifted stored value self-heals. Unknown ids in storage have no effect (sizes
-are looked up by the current pane ids).
+`onSizesChange` (live, every drag tick) is also available when you need a
+real-time read-out; prefer `onSizesChangeEnd` for persistence.
 
-## Disabled state
+### Disabled state
 
-`isDisabled` on Root makes the whole splitter non-interactive: the handle is
-removed from the tab order (`tabIndex={-1}`), gets `aria-disabled="true"`, and
-ignores drag, keyboard, and collapse input.
+`isDisabled` makes the whole splitter non-interactive: the handle leaves the tab
+order, gets `aria-disabled`, and ignores drag, keyboard, and collapse input.
 
-```tsx
-<Splitter.Root isDisabled defaultSizes={{ nav: 30, main: 70 }}>
-  …
-</Splitter.Root>
+```jsx live-dev
+const App = () => (
+  <Box height="240px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root isDisabled defaultSizes={{ nav: 30, main: 70 }}>
+      <Splitter.Pane id="nav">
+        <Box p="400" bg="indigo.3" h="100%">
+          <Text>Nav</Text>
+        </Box>
+      </Splitter.Pane>
+      <Splitter.Handle />
+      <Splitter.Pane id="main">
+        <Box p="400" bg="amber.3" h="100%">
+          <Text>Main</Text>
+        </Box>
+      </Splitter.Pane>
+    </Splitter.Root>
+  </Box>
+);
 ```
 
-## Out of scope
+### Pixel-precise sizes
 
-Intentionally not supported on this primitive:
+Percentages carry full float precision end-to-end (nothing in the size pipeline
+is rounded — only the handle's `aria-valuenow` is rounded, for assistive
+technology). To land on an exact pixel at a known container width, pass the
+computed float — `250px` in an `800px` container is `31.25`.
 
-- **3+ panes per splitter** — use nesting.
-- **Cascading resize.** With only two panes there is nowhere to spill
-  remainder; drag clamps at the boundary.
-- **Controlled `sizes` prop.** Sizes stay uncontrolled for drag performance;
-  persist via `onSizesChangeEnd` + any storage.
-- **Imperative command API.** Collapse is controllable state; there is no ref
-  or hook to wire.
-- **Per-pane `maxSize`.** Derived from the partner's `minSize`.
-- **Pixel / rem / vh units.** Percentages only (full float precision). True
-  cross-resize pixel pinning is a possible later addition.
-- **App-shell behaviour** (responsive collapse to drawers, landmark slots).
-  That belongs to a separate pattern component (`AppLayout`) which composes
-  `Splitter`.
-- **Per-handle configuration.** A 2-pane splitter has one handle; behaviour
-  is configured on `Root`.
+```jsx live-dev
+const App = () => (
+  <Box height="240px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root defaultSizes={{ nav: 31.25, main: 68.75 }}>
+      <Splitter.Pane id="nav">
+        <Box p="400" bg="indigo.3" h="100%">
+          <Text>31.25%</Text>
+        </Box>
+      </Splitter.Pane>
+      <Splitter.Handle />
+      <Splitter.Pane id="main">
+        <Box p="400" bg="amber.3" h="100%">
+          <Text>68.75%</Text>
+        </Box>
+      </Splitter.Pane>
+    </Splitter.Root>
+  </Box>
+);
+```
+
+### Three or more regions
+
+The Splitter is two-pane by design. For additional regions, nest a Splitter
+inside a pane's children; each splitter owns its own state independently.
+
+```jsx live-dev
+const App = () => (
+  <Box height="360px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root defaultSizes={{ nav: 25, rest: 75 }}>
+      <Splitter.Pane id="nav">
+        <Box p="400" bg="indigo.3" h="100%">
+          <Text>Nav</Text>
+        </Box>
+      </Splitter.Pane>
+      <Splitter.Handle />
+      <Splitter.Pane id="rest">
+        <Splitter.Root defaultSizes={{ main: 65, aside: 35 }}>
+          <Splitter.Pane id="main">
+            <Box p="400" bg="amber.3" h="100%">
+              <Text>Main</Text>
+            </Box>
+          </Splitter.Pane>
+          <Splitter.Handle />
+          <Splitter.Pane id="aside">
+            <Box p="400" bg="rose.3" h="100%">
+              <Text>Aside</Text>
+            </Box>
+          </Splitter.Pane>
+        </Splitter.Root>
+      </Splitter.Pane>
+    </Splitter.Root>
+  </Box>
+);
+```
+
+## Component requirements
+
+### Structure
+
+- `Splitter.Root` must contain exactly two `Splitter.Pane` children with one
+  `Splitter.Handle` between them; a development-time warning is emitted
+  otherwise.
+- Every `Splitter.Pane` requires a unique `id`. Per-pane configuration
+  (`minSize`, `collapsible`, `collapsedSize`) lives on `Splitter.Root` in the
+  `panes` map keyed by that id — nothing is configured on the pane itself.
+
+## Accessibility
+
+The Splitter handles the W3C window-splitter semantics internally: the handle is
+`role="separator"` with `aria-orientation`, `aria-valuenow` / `aria-valuemin` /
+`aria-valuemax`, `aria-valuetext`, and `aria-controls` pointing at the previous
+pane. It ships a localized default `aria-label` ("Resize panes"); you can
+override it per handle for a more specific label:
+
+```tsx
+<Splitter.Handle aria-label={msg.format("resizeNavigation")} />
+```
+
+If your use case requires tracking and analytics, it is good practice to add a
+**persistent**, **unique** id to the handle:
+
+```tsx
+const PERSISTENT_ID = "ide-layout-splitter-handle";
+
+export const Example = () => (
+  <Splitter.Root defaultSizes={{ nav: 30, main: 70 }}>
+    <Splitter.Pane id="nav">…</Splitter.Pane>
+    <Splitter.Handle id={PERSISTENT_ID} />
+    <Splitter.Pane id="main">…</Splitter.Pane>
+  </Splitter.Root>
+);
+```
+
+#### Keyboard navigation
+
+When the handle has focus:
+
+- `Tab` / `Shift+Tab`: Move focus to/from the handle (in DOM order).
+- `ArrowLeft` / `ArrowRight` (horizontal) or `ArrowUp` / `ArrowDown` (vertical):
+  Move the boundary by `keyboardStep` percentage points.
+- `Home` / `End`: Jump the boundary to the previous pane's minimum / maximum.
+- `Enter`: Toggle collapse of the adjacent collapsible pane.
+
+## API reference
+
+<PropsTable id="Splitter" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Splitter
+in your application. As the component's internal functionality is already tested
+by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+{{docs-tests: splitter.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-splitter--docs)
+- [React Aria useSeparator](https://react-spectrum.adobe.com/react-aria/useSeparator.html)
+- [W3C ARIA window splitter pattern](https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/)
