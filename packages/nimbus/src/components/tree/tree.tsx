@@ -3,7 +3,6 @@ import {
   TreeItem,
   TreeItemContent,
   TreeIndicator,
-  TreeSubTree,
 } from "./components";
 
 /**
@@ -12,11 +11,7 @@ import {
  * A hierarchical list for navigating nested data such as file trees and
  * navigation structures. Wraps React Aria's `Tree` for keyboard navigation,
  * expand/collapse, selection, type-ahead and opt-in drag-and-drop, with
- * WCAG 2.1 AA semantics. React Aria renders the tree as an ARIA `treegrid`
- * (`role="treegrid"` → `row` → `gridcell`, with `aria-level`/`aria-expanded`/
- * `aria-selected`) — its screen-reader-tested pattern for interactive trees.
- *
- * @see {@link https://nimbus-documentation.vercel.app/components/navigation/tree}
+ * WCAG 2.1 AA tree semantics (`role="tree"`/`treeitem"`/`group`).
  *
  * @example
  * ```tsx
@@ -112,27 +107,6 @@ export const Tree = {
    * ```
    */
   Indicator: TreeIndicator,
-
-  /**
-   * # Tree.SubTree
-   *
-   * Renders an item's nested children. Use static `Tree.Item` children, or pass
-   * an `items` array with a render function for dynamic collections — it wraps
-   * React Aria's `Collection` internally so you never import it directly.
-   * Renders nothing when `items` is empty.
-   *
-   * @example
-   * ```tsx
-   * <Tree.Item id="documents" textValue="Documents">
-   *   <Tree.ItemContent>
-   *     <Tree.Indicator />
-   *     Documents
-   *   </Tree.ItemContent>
-   *   <Tree.SubTree items={node.children}>{renderItem}</Tree.SubTree>
-   * </Tree.Item>
-   * ```
-   */
-  SubTree: TreeSubTree,
 };
 
 export {
@@ -140,5 +114,4 @@ export {
   TreeItem as _TreeItem,
   TreeItemContent as _TreeItemContent,
   TreeIndicator as _TreeIndicator,
-  TreeSubTree as _TreeSubTree,
 };

@@ -28,28 +28,20 @@ This implements [FEC-985](https://commercetools.atlassian.net/browse/FEC-985)
   - `Tree.Item` — wraps `TreeItem` (`role="row"` with `aria-level`), one node in
     the tree.
   - `Tree.ItemContent` — wraps `TreeItemContent`, the row's content container;
-    applies level-based indentation, auto-renders a selection checkbox when
-    `selectionMode="multiple"`, and auto-renders a drag handle when the tree
-    allows dragging (consumers never author the handle).
+    applies level-based indentation and auto-renders a selection checkbox when
+    `selectionMode="multiple"`.
   - `Tree.Indicator` — wraps `<Button slot="chevron">`, the expand/collapse
     chevron; only visible for items with children; rotates on expand.
-  - `Tree.SubTree` — renders an item's nested children; wraps React Aria's
-    `Collection` internally so consumers never import it directly.
-- **NEW** `useTree` hook — owns hierarchical state and opt-in drag-and-drop
-  (reorder + re-parent), returning a result that spreads onto `Tree.Root`. Keeps
-  `react-aria-components` / `react-stately` internal; `Key` / `Selection` types
-  are re-exported for controlled state. Consumers build dynamic and draggable
-  trees using only `@commercetools/nimbus` imports.
 - **NEW** `treeSlotRecipe` with slots `root`, `item`, `itemContent`, `indicator`
   and a `size` variant (`sm` | `md`, default `md`), registered as `nimbusTree`.
 - Visual indentation via the `--tree-item-level` CSS custom property React Aria
   sets on each row (driven by the `level` of each item).
 - Keyboard navigation (arrow keys, Home/End, type-ahead), expand/collapse,
   single and multiple selection — all provided by React Aria, styled by Nimbus.
-- Opt-in drag-and-drop: enabled via `useTree({ dragAndDrop: true })` — reorder
-  within a tree, re-parent (drop onto a group), drop indicators (before / after
-  / on), and keyboard DnD. Documented in `tree.dev.mdx`.
-- Ships at `lifecycleState: Beta`.
+- Opt-in drag-and-drop: `Tree.Root` accepts `dragAndDropHooks` from
+  `useDragAndDrop`, supporting reorder within a tree, moving between parents,
+  drop indicators (before / after / on a group), and keyboard DnD. Documented in
+  `tree.dev.mdx`.
 
 No existing component is duplicated: `Accordion` collapses sibling panels but
 has no tree roles, nesting, navigation, selection, or DnD; `DraggableList` is a

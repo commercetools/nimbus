@@ -8,7 +8,8 @@
       `components/tree.indicator.tsx`
 - [x] 1.2 Register `treeSlotRecipe` in `src/theme/slot-recipes/index.ts` as
       `nimbusTree`
-- [x] 1.3 Export `Tree` and its prop types from `src/components/tree/index.ts`
+- [x] 1.3 Export `Tree` and its prop types from
+      `src/components/tree/index.ts`
 - [x] 1.4 Add `export * from "./tree"` to `src/components/index.ts`
 
 ## 2. Failing Tests (TDD)
@@ -17,7 +18,7 @@
       dynamic tree (items + recursive render), expand/collapse via chevron and
       keyboard, arrow-key navigation + Home/End, type-ahead, single selection,
       multiple selection (checkboxes), disabled items, ARIA roles
-      (`treegrid`/`row`/`gridcell`), level-based indentation, and drag-and-drop
+      (`tree`/`treeitem`/`group`), level-based indentation, and drag-and-drop
       reorder
 - [x] 2.2 Verify tests fail initially (component not yet implemented)
 
@@ -37,8 +38,8 @@
       props, forward `dragAndDropHooks` + RA props to `Tree`)
 - [x] 3.5 Implement `components/tree.item.tsx` (wraps `TreeItem`, derives
       `textValue`)
-- [x] 3.6 Implement `components/tree.item-content.tsx` (wraps `TreeItemContent`;
-      render-prop renders selection checkbox when
+- [x] 3.6 Implement `components/tree.item-content.tsx` (wraps
+      `TreeItemContent`; render-prop renders selection checkbox when
       `selectionBehavior === "toggle"` and `selectionMode === "multiple"`)
 - [x] 3.7 Implement `components/tree.indicator.tsx` (wraps
       `<Button slot="chevron">` with default `ChevronRight` icon, override-able)
@@ -66,30 +67,3 @@
 - [ ] 6.1 Design review (no Figma specs exist yet)
 - [ ] 6.2 Use Figma MCP to generate Figma assets
 - [ ] 6.3 Create `.figma.tsx` Code Connect file
-
-## 7. Nimbus-owned dynamic composition + drag-and-drop
-
-- [x] 7.1 Add `Tree.SubTree` part wrapping React Aria's `Collection`
-      (`components/tree.sub-tree.tsx`, `TreeSubTreeProps`, namespace +
-      underscore export)
-- [x] 7.2 Add `useTree` hook composing `useTreeData` + React Aria
-      `useDragAndDrop` (reorder + re-parent), returning a `Tree.Root`-spreadable
-      result plus the imperative controller (`tree/hooks/use-tree.ts`)
-- [x] 7.3 Re-export `Key` / `Selection` types from the tree barrel so consumers
-      never import from `react-aria-components`
-- [x] 7.4 Migrate stories to `Tree.SubTree` + `useTree` (drop direct
-      `Collection` / `useTreeData` / `useDragAndDrop` imports)
-- [x] 7.5 Rewrite the `tree.dev.mdx` drag-and-drop example to be Nimbus-only;
-      verify zero `react-aria-components` / `react-stately` imports in any
-      consumer-facing doc
-- [x] 7.6 Lift `tree.mdx` `lifecycleState` from Experimental to Beta
-- [x] 7.7 Auto-render the drag handle in `Tree.ItemContent` off the
-      `allowsDragging` render prop (mirroring the selection checkbox and
-      `DraggableList.Item`); remove the hand-rolled `slot="drag"` handle from
-      the stories and all consumer docs
-
-## 8. Validation (follow-up changes)
-
-- [ ] 8.1 TypeScript compiles, lint passes, Storybook tests pass against source
-- [ ] 8.2 Build succeeds (`Tree.SubTree` / `useTree` exported with types)
-- [ ] 8.3 Update the changeset to mention `Tree.SubTree` + `useTree`
