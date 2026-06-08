@@ -132,6 +132,14 @@ export const treeSlotRecipe = defineSlotRecipe({
       // the row's edge.
       paddingInlineStart:
         "calc({spacing.400} + (var(--tree-item-level, 1) - 1) * var(--tree-indent-step))",
+
+      // Optical nudge for an optional drag handle (`<Button slot="drag">`) so
+      // its glyph reads as centered between the checkbox and chevron. Applied
+      // as a visual-only transform so it does not reflow the row or disturb the
+      // level indentation / checkbox-to-chevron alignment.
+      "& [slot='drag']": {
+        transform: "translateX(var(--tree-drag-offset, 0px))",
+      },
     },
 
     indicator: {
@@ -167,6 +175,7 @@ export const treeSlotRecipe = defineSlotRecipe({
           "--tree-indent-step": "calc({spacing.400} + {spacing.100})",
           "--tree-indicator-size": "sizes.500",
           "--tree-row-padding-y": "spacing.200",
+          "--tree-drag-offset": "spacing.150",
         },
         item: {
           fontSize: "400",
@@ -179,6 +188,7 @@ export const treeSlotRecipe = defineSlotRecipe({
           "--tree-indent-step": "calc({spacing.400} + {spacing.100})",
           "--tree-indicator-size": "sizes.400",
           "--tree-row-padding-y": "spacing.100",
+          "--tree-drag-offset": "spacing.100",
         },
         item: {
           fontSize: "350",
