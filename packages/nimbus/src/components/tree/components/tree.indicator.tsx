@@ -23,12 +23,7 @@ export const TreeIndicator = ({
 
   return (
     <TreeIndicatorSlot asChild {...styleProps}>
-      <RaButton
-        slot="chevron"
-        data-slot="indicator"
-        ref={ref}
-        {...functionalProps}
-      >
+      <RaButton slot="chevron" ref={ref} {...functionalProps}>
         {children ?? <ChevronRight />}
       </RaButton>
     </TreeIndicatorSlot>
