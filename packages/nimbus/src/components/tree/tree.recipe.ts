@@ -104,15 +104,17 @@ export const treeSlotRecipe = defineSlotRecipe({
         outlineOffset: "-2px",
       },
 
-      // Expand/collapse indicator visibility + rotation, driven by the row's
-      // own data-attributes (the chevron cannot read these itself in CSS).
-      "& [data-slot='indicator']": {
+      // Expand/collapse chevron visibility + rotation, driven by the row's own
+      // data-attributes (the chevron cannot read these itself in CSS). Scoped to
+      // the tree's own indicator slot class so it never affects a selection
+      // checkbox (whose internal indicator also uses `data-slot="indicator"`).
+      "& .nimbus-tree__indicator": {
         visibility: "hidden",
       },
-      "&[data-has-child-items] [data-slot='indicator']": {
+      "&[data-has-child-items] .nimbus-tree__indicator": {
         visibility: "visible",
       },
-      "&[data-expanded] [data-slot='indicator'] svg": {
+      "&[data-expanded] .nimbus-tree__indicator svg": {
         transform: "rotate(90deg)",
       },
     },
@@ -159,7 +161,10 @@ export const treeSlotRecipe = defineSlotRecipe({
       md: {
         root: {
           "--tree-row-min-height": "sizes.1000",
-          "--tree-indent-step": "spacing.600",
+          // One indent level = the leading control column (selection checkbox,
+          // ~spacing.600) + the row gap (spacing.100), so a child's leading
+          // control aligns directly under its parent's chevron.
+          "--tree-indent-step": "calc({spacing.600} + {spacing.100})",
           "--tree-indicator-size": "sizes.500",
           "--tree-row-padding-y": "spacing.200",
         },
@@ -171,7 +176,7 @@ export const treeSlotRecipe = defineSlotRecipe({
       sm: {
         root: {
           "--tree-row-min-height": "sizes.800",
-          "--tree-indent-step": "spacing.400",
+          "--tree-indent-step": "calc({spacing.600} + {spacing.100})",
           "--tree-indicator-size": "sizes.400",
           "--tree-row-padding-y": "spacing.100",
         },
