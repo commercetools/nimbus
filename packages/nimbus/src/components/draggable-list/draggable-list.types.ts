@@ -9,6 +9,7 @@ import type {
   GridListItemProps as RaGridListItemProps,
   Key,
 } from "react-aria-components";
+import type { DragAndDropProps } from "@/hooks/use-drag-and-drop";
 
 // ============================================================
 // RECIPE PROPS
@@ -141,7 +142,7 @@ export type DraggableListRootProps<T extends DraggableListItemData> = Omit<
      * @default "drop items here"
      */
     renderEmptyState?: ReactNode;
-  };
+  } & DragAndDropProps<T>;
 
 /**
  * Props for the DraggableList.Item component

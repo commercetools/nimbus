@@ -706,6 +706,66 @@ const App = () => {
 }
 ```
 
+## Drag and drop
+
+DataTable supports row reordering via drag and drop using the shared `useDragAndDrop` hook. Pass `dragAndDropHooks` to `DataTable` to enable it.
+
+### Reorderable rows
+
+```jsx live-dev
+import { DataTable, useDragAndDrop, createArrayHandlers } from '@commercetools/nimbus';
+
+const App = () => {
+  const [rows, setRows] = useState([
+    { id: '1', name: 'Alice', role: 'Admin' },
+    { id: '2', name: 'Bob', role: 'User' },
+    { id: '3', name: 'Carol', role: 'Manager' },
+  ]);
+
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+  ];
+
+  const { dragAndDropHooks } = useDragAndDrop({
+    ...createArrayHandlers(setRows, (row) => row.id),
+  });
+
+  return (
+    <DataTable
+      columns={columns}
+      rows={rows}
+      dragAndDropHooks={dragAndDropHooks}
+    />
+  );
+}
+```
+
+When `dragAndDropHooks` is provided:
+- A **drag handle column** with a grip icon is automatically added as the first column
+- Rows can be dragged using mouse or touch from anywhere on the row
+- **Keyboard accessible**: focus the drag handle, press Enter to start drag, use arrow keys to move, Enter to drop, Escape to cancel
+- A **drop indicator** shows where the row will be placed
+- **Double-click text selection** is preserved via programmatic word selection
+- Drag and drop works alongside **row selection** and **clickable rows**
+
+> **Note:** When combining drag and drop with **row pinning**, pinned rows can
+> be reordered among themselves and non-pinned rows among themselves, but items
+> cannot be dragged between pinned and non-pinned groups.
+
+### Namespace isolation
+
+Use `dragNamespace` to prevent drag between unrelated tables:
+
+```tsx
+const { dragAndDropHooks } = useDragAndDrop({
+  dragNamespace: 'my-table',
+  ...createArrayHandlers(setRows, (row) => row.id),
+});
+```
+
+See the [`useDragAndDrop` hook documentation](/hooks/use-drag-and-drop) for external drop support, outgoing formats, and helper functions.
+
 ## Compound component API
 
 For advanced customization, use the compound component pattern:
@@ -1123,8 +1183,8 @@ The Manager drawer also supports keyboard navigation:
 - `Arrow keys`: Navigate between tab panels, reorder items in drag-and-drop
   lists
 - `Escape`: Close the Manager drawer
-- Drag-and-drop keyboard operations: `Space` to pick up, arrow keys to move,
-  `Space` to drop
+- Drag-and-drop keyboard operations: `Enter` / `Space` to pick up, arrow keys to move,
+  `Enter` / `Space` to drop
 
 ## API reference
 

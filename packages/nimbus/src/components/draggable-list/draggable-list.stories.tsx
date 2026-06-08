@@ -10,53 +10,10 @@ import {
 } from "@commercetools/nimbus";
 import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 import { items, fieldItems } from "./utils/draggable-list.test-data";
-
-/**
- * Default delay between keyboard operations in drag tests.
- * This timing is necessary for React Aria's drag-and-drop state machine.
- */
-const DRAG_OPERATION_DELAY_MS = 50;
-
-/**
- * Helper to wait for a specified duration.
- * Used to ensure React Aria's drag-and-drop state machine processes events.
- */
-const wait = (ms: number = DRAG_OPERATION_DELAY_MS) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
-
-/**
- * Helper function to drag an item using keyboard navigation
- * @param canvas - The testing-library canvas element
- * @param itemLabel - The label of the item to drag
- * @param steps - Number of arrow key presses to move (positive = down, negative = up)
- */
-async function dragItem(
-  canvas: ReturnType<typeof within>,
-  itemLabel: string,
-  steps: number
-) {
-  // Find the source item row
-  const sourceElement = await canvas.findByRole("row", {
-    name: itemLabel,
-  });
-
-  // Focus the source item
-  sourceElement.focus();
-
-  // Press left arrow to focus the drag handle, then Enter to enter drag mode
-  await userEvent.keyboard("{ArrowLeft}");
-  await userEvent.keyboard("{Enter}");
-
-  // Navigate using arrow keys
-  const key = steps > 0 ? "{ArrowDown}" : "{ArrowUp}";
-  for (let i = 0; i < Math.abs(steps); i++) {
-    await wait();
-    await userEvent.keyboard(key);
-  }
-
-  // Drop the item with Enter
-  await userEvent.keyboard("{Enter}");
-}
+import {
+  dragItem,
+  dragItemToList,
+} from "@/hooks/use-drag-and-drop/utils/use-drag-and-drop.test-utils";
 
 const meta: Meta<typeof DraggableList.Root> = {
   title: "Components/DraggableList",
@@ -246,41 +203,138 @@ export const CrossListDragAndDrop: Story = {
         name: /target list/i,
       });
 
-      // Get the first item from source list
-      const firstItem = items[0]; // "Item 1"
+      await dragItemToList(canvas, items[0].label as string);
 
-      // Find the item in source list
-      const sourceItemRow = await within(sourceGrid).findByRole("row", {
-        name: firstItem.label as string,
-      });
-      sourceItemRow.focus();
-
-      // Start drag with waits between operations for React Aria's state machine
-      await userEvent.keyboard("{ArrowLeft}");
-      await wait();
-      await userEvent.keyboard("{Enter}");
-      await wait();
-
-      // Navigate to target grid using Tab
-      await userEvent.keyboard("{Tab}");
-      await wait();
-
-      // Drop in target list
-      await userEvent.keyboard("{Enter}");
-
-      // Wait for items to update
       await waitFor(async () => {
         const updatedSourceItems =
           await within(sourceGrid).findAllByRole("row");
         const updatedTargetItems =
           await within(targetGrid).findAllByRole("row");
 
-        // Source should have one less item
         expect(updatedSourceItems.length).toBe(2);
-        // Target should have one more item
         expect(updatedTargetItems.length).toBe(3);
       });
     });
+  },
+};
+
+export const NamespacedIsolation: Story = {
+  render: () => {
+    const NamespacedLists = () => {
+      const [alphaLeft, setAlphaLeft] = useState([
+        { key: "a1", label: "Alpha 1" },
+        { key: "a2", label: "Alpha 2" },
+        { key: "a3", label: "Alpha 3" },
+      ]);
+      const [alphaRight, setAlphaRight] = useState([
+        { key: "a4", label: "Alpha 4" },
+        { key: "a5", label: "Alpha 5" },
+      ]);
+      const [betaList, setBetaList] = useState([
+        { key: "b1", label: "Beta 1" },
+        { key: "b2", label: "Beta 2" },
+      ]);
+
+      return (
+        <Flex gap={800}>
+          <DraggableList.Root
+            aria-label="alpha left"
+            items={alphaLeft}
+            onUpdateItems={setAlphaLeft}
+            dragNamespace="alpha"
+          />
+          <DraggableList.Root
+            aria-label="alpha right"
+            items={alphaRight}
+            onUpdateItems={setAlphaRight}
+            dragNamespace="alpha"
+          />
+          <DraggableList.Root
+            aria-label="beta list"
+            items={betaList}
+            onUpdateItems={setBetaList}
+            dragNamespace="beta"
+          />
+        </Flex>
+      );
+    };
+
+    return <NamespacedLists />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify initial state of all lists", async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      const alphaLeftGrid = await canvas.findByRole("grid", {
+        name: /alpha left/i,
+      });
+      const alphaRightGrid = await canvas.findByRole("grid", {
+        name: /alpha right/i,
+      });
+      const betaGrid = await canvas.findByRole("grid", {
+        name: /beta list/i,
+      });
+
+      expect((await within(alphaLeftGrid).findAllByRole("row")).length).toBe(3);
+      expect((await within(alphaRightGrid).findAllByRole("row")).length).toBe(
+        2
+      );
+      expect((await within(betaGrid).findAllByRole("row")).length).toBe(2);
+    });
+
+    await step(
+      "Drag between same namespace (alpha left → alpha right) succeeds",
+      async () => {
+        const alphaLeftGrid = await canvas.findByRole("grid", {
+          name: /alpha left/i,
+        });
+        const alphaRightGrid = await canvas.findByRole("grid", {
+          name: /alpha right/i,
+        });
+
+        await dragItemToList(canvas, "Alpha 1");
+
+        await waitFor(async () => {
+          expect(
+            (await within(alphaLeftGrid).findAllByRole("row")).length
+          ).toBe(2);
+          expect(
+            (await within(alphaRightGrid).findAllByRole("row")).length
+          ).toBe(3);
+        });
+      }
+    );
+
+    await step(
+      "Drag between different namespaces (alpha left → beta) is rejected",
+      async () => {
+        const alphaLeftGrid = await canvas.findByRole("grid", {
+          name: /alpha left/i,
+        });
+        const betaGrid = await canvas.findByRole("grid", {
+          name: /beta list/i,
+        });
+
+        const leftCountBefore = (
+          await within(alphaLeftGrid).findAllByRole("row")
+        ).length;
+        const betaCountBefore = (await within(betaGrid).findAllByRole("row"))
+          .length;
+
+        // Tab twice: alpha-left → alpha-right (1) → beta (2)
+        await dragItemToList(canvas, "Alpha 2", 2);
+
+        await waitFor(async () => {
+          expect(
+            (await within(alphaLeftGrid).findAllByRole("row")).length
+          ).toBe(leftCountBefore);
+          expect((await within(betaGrid).findAllByRole("row")).length).toBe(
+            betaCountBefore
+          );
+        });
+      }
+    );
   },
 };
 
@@ -925,6 +979,331 @@ export const FieldWithInfoBox: Story = {
       await within(document.body).findByText(
         /This is additional information about this field/i
       );
+    });
+  },
+};
+
+export const ExternalTextDrop: Story = {
+  render: () => {
+    const ExternalDropDemo = () => {
+      const [sourceItems, setSourceItems] = useState([
+        { key: "s1", label: "External Item A" },
+        { key: "s2", label: "External Item B" },
+      ]);
+      const [targetItems, setTargetItems] = useState([
+        { key: "t1", label: "Existing item" },
+      ]);
+
+      return (
+        <Flex gap={800}>
+          <Flex direction="column" gap={200}>
+            <Text fontWeight="500">
+              Source (different namespace, sends text/plain as copy)
+            </Text>
+            <DraggableList.Root
+              aria-label="external source"
+              items={sourceItems}
+              onUpdateItems={setSourceItems}
+              dragNamespace="external-source"
+              serializeDragItem={(item) => ({
+                "text/plain": item.label as string,
+              })}
+            />
+          </Flex>
+          <Flex direction="column" gap={200}>
+            <Text fontWeight="500">Target (accepts text/plain)</Text>
+            <DraggableList.Root
+              aria-label="external target"
+              items={targetItems}
+              onUpdateItems={setTargetItems}
+              dragNamespace="external-target"
+              acceptExternalTypes={["text/plain"]}
+              onExternalDrop={async (dropItems) => {
+                const results: Array<{ key: string; label: string }> = [];
+                for (const item of dropItems) {
+                  if (item.kind === "text") {
+                    const text = await item.getText("text/plain");
+                    results.push({ key: crypto.randomUUID(), label: text });
+                  }
+                }
+                return results;
+              }}
+            />
+          </Flex>
+        </Flex>
+      );
+    };
+
+    return <ExternalDropDemo />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify initial state", async () => {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      const sourceGrid = await canvas.findByRole("grid", {
+        name: /external source/i,
+      });
+      const targetGrid = await canvas.findByRole("grid", {
+        name: /external target/i,
+      });
+      expect((await within(sourceGrid).findAllByRole("row")).length).toBe(2);
+      expect((await within(targetGrid).findAllByRole("row")).length).toBe(1);
+    });
+
+    await step(
+      "Copy from source to target via text/plain (external drop, source retains item)",
+      async () => {
+        const sourceGrid = await canvas.findByRole("grid", {
+          name: /external source/i,
+        });
+        const targetGrid = await canvas.findByRole("grid", {
+          name: /external target/i,
+        });
+
+        await dragItemToList(canvas, "External Item A");
+
+        await waitFor(async () => {
+          const targetRows = await within(targetGrid).findAllByRole("row");
+          expect(targetRows.length).toBe(2);
+          await within(targetGrid).findByText("External Item A");
+
+          const sourceRows = await within(sourceGrid).findAllByRole("row");
+          expect(sourceRows.length).toBe(2);
+        });
+      }
+    );
+  },
+};
+
+export const OutgoingFormat: Story = {
+  render: () => {
+    const OutgoingFormatDemo = () => {
+      const [listItems, setListItems] = useState([
+        { key: "1", label: "Drag me as text" },
+        { key: "2", label: "I have HTML too" },
+      ]);
+
+      return (
+        <DraggableList.Root
+          aria-label="outgoing format list"
+          items={listItems}
+          onUpdateItems={setListItems}
+          serializeDragItem={(item) => ({
+            "text/plain": item.label as string,
+          })}
+        />
+      );
+    };
+
+    return <OutgoingFormatDemo />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Verify list renders with outgoing format prop", async () => {
+      const grid = await canvas.findByRole("grid", {
+        name: /outgoing format list/i,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      const rows = await within(grid).findAllByRole("row");
+      expect(rows.length).toBe(2);
+    });
+
+    await step("Verify drag still works internally", async () => {
+      const grid = await canvas.findByRole("grid", {
+        name: /outgoing format list/i,
+      });
+
+      await dragItem(canvas, "Drag me as text", 1);
+
+      await waitFor(async () => {
+        const rows = await within(grid).findAllByRole("row");
+        expect(rows[0]).toHaveAttribute("data-key", "2");
+        expect(rows[1]).toHaveAttribute("data-key", "1");
+      });
+    });
+  },
+};
+
+export const SingleSelection: Story = {
+  render: () => {
+    const SingleSelectionDemo = () => {
+      const [selected, setSelected] = useState<Set<string>>(new Set());
+
+      return (
+        <Flex direction="column" gap={400}>
+          <DraggableList.Root
+            aria-label="single selection list"
+            items={items}
+            selectionMode="single"
+            selectedKeys={selected}
+            onSelectionChange={(keys) => setSelected(keys as Set<string>)}
+          />
+          <Text data-testid="selected">
+            Selected: {[...selected].join(", ") || "none"}
+          </Text>
+        </Flex>
+      );
+    };
+
+    return <SingleSelectionDemo />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders list without checkboxes", async () => {
+      const grid = await canvas.findByRole("grid", {
+        name: /single selection list/i,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      const rows = await within(grid).findAllByRole("row");
+      expect(rows.length).toBe(5);
+
+      const checkboxes = within(grid).queryAllByRole("checkbox");
+      expect(checkboxes.length).toBe(0);
+
+      expect(canvas.getByTestId("selected")).toHaveTextContent(
+        "Selected: none"
+      );
+    });
+
+    await step("Clicking a row selects it", async () => {
+      const grid = canvas.getByRole("grid", {
+        name: /single selection list/i,
+      });
+      const rows = within(grid).getAllByRole("row");
+
+      await userEvent.click(rows[0]);
+
+      await waitFor(() => {
+        expect(rows[0]).toHaveAttribute("data-selected");
+        expect(canvas.getByTestId("selected")).toHaveTextContent("Selected: 1");
+      });
+    });
+
+    await step("Clicking a different row changes selection", async () => {
+      const grid = canvas.getByRole("grid", {
+        name: /single selection list/i,
+      });
+      const rows = within(grid).getAllByRole("row");
+
+      await userEvent.click(rows[2]);
+
+      await waitFor(() => {
+        expect(rows[0]).not.toHaveAttribute("data-selected");
+        expect(rows[2]).toHaveAttribute("data-selected");
+        expect(canvas.getByTestId("selected")).toHaveTextContent("Selected: 3");
+      });
+    });
+
+    await step("Keyboard navigation selects items", async () => {
+      const grid = canvas.getByRole("grid", {
+        name: /single selection list/i,
+      });
+      const rows = within(grid).getAllByRole("row");
+
+      rows[0].focus();
+      await userEvent.keyboard("{ArrowDown}");
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("selected")).toHaveTextContent("Selected: 2");
+      });
+    });
+  },
+};
+
+export const MultipleSelection: Story = {
+  render: () => {
+    const MultipleSelectionDemo = () => {
+      const [selected, setSelected] = useState<Set<string>>(new Set());
+
+      return (
+        <Flex direction="column" gap={400}>
+          <DraggableList.Root
+            aria-label="multi selection list"
+            items={items}
+            selectionMode="multiple"
+            selectedKeys={selected}
+            onSelectionChange={(keys) => setSelected(keys as Set<string>)}
+          />
+          <Text data-testid="selected">
+            Selected: {[...selected].join(", ") || "none"}
+          </Text>
+        </Flex>
+      );
+    };
+
+    return <MultipleSelectionDemo />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders checkboxes for each item", async () => {
+      const grid = await canvas.findByRole("grid", {
+        name: /multi selection list/i,
+      });
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      const checkboxes = within(grid).getAllByRole("checkbox");
+      expect(checkboxes.length).toBe(5);
+
+      expect(canvas.getByTestId("selected")).toHaveTextContent(
+        "Selected: none"
+      );
+    });
+
+    await step("Clicking checkboxes selects multiple items", async () => {
+      const grid = canvas.getByRole("grid", {
+        name: /multi selection list/i,
+      });
+      const checkboxes = within(grid).getAllByRole("checkbox");
+
+      await userEvent.click(checkboxes[0]);
+      await userEvent.click(checkboxes[2]);
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("selected")).toHaveTextContent(
+          "Selected: 1, 3"
+        );
+      });
+
+      const rows = within(grid).getAllByRole("row");
+      expect(rows[0]).toHaveAttribute("data-selected");
+      expect(rows[1]).not.toHaveAttribute("data-selected");
+      expect(rows[2]).toHaveAttribute("data-selected");
+    });
+
+    await step("Clicking again deselects", async () => {
+      const grid = canvas.getByRole("grid", {
+        name: /multi selection list/i,
+      });
+      const checkboxes = within(grid).getAllByRole("checkbox");
+
+      await userEvent.click(checkboxes[0]);
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("selected")).toHaveTextContent("Selected: 3");
+      });
+
+      const rows = within(grid).getAllByRole("row");
+      expect(rows[0]).not.toHaveAttribute("data-selected");
+    });
+
+    await step("Keyboard navigation selects via checkbox", async () => {
+      const grid = canvas.getByRole("grid", {
+        name: /multi selection list/i,
+      });
+      const rows = within(grid).getAllByRole("row");
+
+      rows[3].focus();
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("selected")).toHaveTextContent(
+          "Selected: 3, 4"
+        );
+      });
     });
   },
 };

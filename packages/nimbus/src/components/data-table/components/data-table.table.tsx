@@ -21,6 +21,7 @@ export const DataTableTable = function DataTableTable({
   ref: forwardedRef,
   children,
   "aria-label": ariaLabelProp,
+  dragAndDropHooks,
   ...props
 }: DataTableTableSlotProps) {
   const localRef = useRef<HTMLTableElement>(null);
@@ -74,6 +75,7 @@ export const DataTableTable = function DataTableTable({
         disallowEmptySelection={disallowEmptySelection}
         disabledKeys={disabledKeys}
         disabledBehavior="all"
+        dragAndDropHooks={dragAndDropHooks}
         {...restProps}
       >
         {children}

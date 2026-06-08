@@ -21,6 +21,7 @@ const DataTableBase = function DataTable<
 >({
   ref: forwardedRef,
   footer,
+  dragAndDropHooks,
   ...props
 }: DataTableProps<T> & {
   footer?: React.ReactNode;
@@ -32,7 +33,10 @@ const DataTableBase = function DataTable<
 
   return (
     <DataTableRoot ref={ref} {...props}>
-      <DataTableTable aria-label={msg.format("dataTable")}>
+      <DataTableTable
+        aria-label={msg.format("dataTable")}
+        dragAndDropHooks={dragAndDropHooks}
+      >
         <DataTableHeader aria-label={msg.format("dataTableHeader")} />
         <DataTableBody aria-label={msg.format("dataTableBody")} />
       </DataTableTable>

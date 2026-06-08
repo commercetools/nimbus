@@ -1,15 +1,14 @@
 import { useEffect, useCallback, useRef } from "react";
-import {
-  GridList,
-  isTextDropItem,
-  useDragAndDrop,
-  type Key,
-} from "react-aria-components";
+import { GridList, type Key } from "react-aria-components";
 import { useListData } from "react-stately";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { dequal } from "dequal";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
+import {
+  useDragAndDrop,
+  createListDataHandlers,
+} from "@/hooks/use-drag-and-drop";
 import { draggableListMessagesStrings } from "../draggable-list.messages";
 import {
   DraggableListRootSlot,
@@ -42,6 +41,11 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
   onUpdateItems,
   removableItems,
   renderEmptyState: renderEmptyStateFromProps,
+  dragNamespace,
+  onExternalDrop,
+  acceptExternalTypes,
+  externalDropOperation,
+  serializeDragItem,
   ...restProps
 }: DraggableListRootProps<T>) => {
   const msg = useLocalizedStringFormatter(draggableListMessagesStrings);
@@ -134,58 +138,13 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
   }, [list.items, onUpdateItems]);
 
   const { dragAndDropHooks } = useDragAndDrop<T>({
-    // Provide item data to drag'n'drop handler
-    getItems(_, items) {
-      return items.map((item) => ({
-        [DRAGGABLE_LIST_DATA_FORMAT]: JSON.stringify(item),
-        //TODO: also handle text/plain item type (to allow dropping items into list that are not list items)?
-      }));
-    },
-    // Accept `nimbus-draggable-list-item` drag item type
-    acceptedDragTypes: [DRAGGABLE_LIST_DATA_FORMAT],
-    // Ensure items are always moved rather than copied
-    getDropOperation: () => "move",
-    // Handle dropping items from other lists between list items
-    async onInsert(e) {
-      const processedItems = await Promise.all(
-        e.items
-          .filter(isTextDropItem)
-          .map(async (item) =>
-            JSON.parse(await item.getText(DRAGGABLE_LIST_DATA_FORMAT))
-          )
-      );
-      if (e.target.dropPosition === "before") {
-        list.insertBefore(e.target.key, ...processedItems);
-      } else if (e.target.dropPosition === "after") {
-        list.insertAfter(e.target.key, ...processedItems);
-      }
-    },
-    // Handle drops on list when empty
-    async onRootDrop(e) {
-      const processedItems = await Promise.all(
-        e.items
-          .filter(isTextDropItem)
-          .map(async (item) =>
-            JSON.parse(await item.getText(DRAGGABLE_LIST_DATA_FORMAT))
-          )
-      );
-      list.append(...processedItems);
-    },
-    // Handle reordering within list
-    onReorder(e) {
-      if (e.target.dropPosition === "before") {
-        list.moveBefore(e.target.key, e.keys);
-      } else if (e.target.dropPosition === "after") {
-        list.moveAfter(e.target.key, e.keys);
-      }
-    },
-    // Remove the items from the source list on drop
-    // if they were moved to a different list.
-    async onDragEnd(e) {
-      if (e.dropOperation === "move" && !e.isInternal) {
-        list.remove(...e.keys);
-      }
-    },
+    dataFormatBase: DRAGGABLE_LIST_DATA_FORMAT,
+    dragNamespace,
+    onExternalDrop,
+    acceptExternalTypes,
+    externalDropOperation,
+    serializeDragItem,
+    ...createListDataHandlers(list),
   });
 
   const handleRemoveItem = useCallback(

@@ -2,6 +2,7 @@ import { useRef, useCallback, useEffect, memo } from "react";
 import {
   Row as RaRow,
   Collection as RaCollection,
+  Cell as RaCell,
   useTableOptions,
 } from "react-aria-components";
 import { mergeRefs } from "@/utils";
@@ -17,11 +18,14 @@ import type {
 import { Box, Checkbox, IconButton } from "@/components";
 import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
 import {
+  DragIndicator,
   KeyboardArrowDown,
   KeyboardArrowRight,
   PushPin,
 } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
+import { useLocalizedStringFormatter } from "@/hooks";
+import { dataTableMessagesStrings } from "../data-table.messages";
 
 /**
  * DataTable.Row - Individual row component that renders data cells and handles row-level interactions
@@ -41,7 +45,7 @@ function getIsTableRowChildElementInteractive(e: Event) {
   // Cast target to Element since EventTarget doesn't have closest method
   const clickedElement = e.target as Element;
   return clickedElement?.closest(
-    'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"]'
+    'button, input, [role="button"], [role="checkbox"], [slot="selection"], [data-slot="selection"], [slot="drag"], [data-slot="drag"]'
   );
 }
 
@@ -145,12 +149,12 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       if (!onRowClick) return;
       // Prevent row click when clicking on interactive elements to avoid conflicts
       const isInteractiveElement = getIsTableRowChildElementInteractive(e);
-      // Prevent row click when text is selected
-      const hasSelectedText =
-        window.getSelection()?.toString() !== undefined &&
-        window.getSelection()!.toString().length > 0;
+      if (!isInteractiveElement) {
+        // Prevent row click when user has selected text (e.g. click-drag)
+        const hasSelectedText =
+          (window.getSelection()?.toString().trim().length ?? 0) > 0;
+        if (hasSelectedText) return;
 
-      if (!isInteractiveElement && !hasSelectedText) {
         // Clear any existing timeout to handle rapid clicks
         if (clickTimeoutRef.current) {
           window.clearTimeout(clickTimeoutRef.current);
@@ -195,93 +199,169 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         window.clearTimeout(clickTimeoutRef.current);
         clickTimeoutRef.current = null;
       }
-      // Allow browser's default text selection behavior
-      // No need to prevent default or stop propagation - let the browser handle it
-    }
-  }, []); // No dependencies needed - this function doesn't use any external variables
 
-  /**
-   * Ref to track the callback ref invocation count and store the DOM node reference.
-   * This prevents duplicate event listeners and enables proper cleanup.
-   */
-  const counterRef = useRef<{ count: number; node?: HTMLElement }>({
-    count: 0,
-    node: undefined,
-  });
+      // draggable="true" suppresses native text selection, so
+      // programmatically select the word under the cursor.
+      // Only needed when the row is actually draggable.
+      const target = e.target as HTMLElement;
+      const row = target?.closest?.("[draggable='true']") as HTMLElement | null;
+      if (row && e instanceof MouseEvent) {
+        const selection = window.getSelection();
+        if (!selection) return;
 
-  /**
-   * Callback ref that attaches the click event listener to the row DOM element.
-   * Only attaches the listener once per row instance to prevent memory leaks.
-   *
-   * @param node - The HTMLElement reference from React's ref callback
-   */
-  const rowNodeRef = useCallback(
-    (node: HTMLElement) => {
-      counterRef.current.count += 1;
-      // Only attach event listener on first callback invocation
-      if (counterRef.current.count === 1 && node) {
-        counterRef.current.node = node;
-        // Ensures that selection does not happen on row click, only when the selection cell is clicked
-        node.addEventListener(
-          // Use pointerdown event in order to capture event before it bubbles to react-aria's onPress handler
-          "pointerdown",
-          stopPropagationForNonInteractiveElements,
-          {
-            capture: true,
-          }
-        );
+        // Chrome applies user-select:none on draggable rows which causes
+        // caretPositionFromPoint to skip those elements entirely (returning
+        // a caret in a different row) and prevents the selection highlight
+        // from rendering. Temporarily allow text selection so the caret
+        // APIs resolve the correct text node and Chrome shows the highlight.
+        const prevUserSelect = row.style.userSelect;
+        row.style.userSelect = "text";
 
-        // Use mouseup event to ensure that if the user is selecting text, the entire selection is set in window.selection
-        node.addEventListener("mouseup", handleRowClick, { capture: true });
-
-        // Use dblclick event to enable native browser text selection behavior
-        node.addEventListener("dblclick", handleRowDoubleClick, {
+        const resetUserSelect = () => {
+          row.style.userSelect = prevUserSelect;
+        };
+        document.addEventListener("pointerdown", resetUserSelect, {
           capture: true,
+          once: true,
         });
+
+        type SelectionWithModify = Selection & {
+          modify(alter: string, direction: string, granularity: string): void;
+        };
+
+        if (typeof document.caretPositionFromPoint === "function") {
+          const caretPos = document.caretPositionFromPoint(
+            e.clientX,
+            e.clientY
+          );
+          if (caretPos?.offsetNode) {
+            const sel = selection as SelectionWithModify;
+            sel.removeAllRanges();
+            sel.collapse(caretPos.offsetNode, caretPos.offset);
+            sel.modify("move", "backward", "word");
+            sel.modify("extend", "forward", "word");
+          }
+        } else if (
+          typeof (document as unknown as Record<string, unknown>)
+            .caretRangeFromPoint === "function"
+        ) {
+          const range = (
+            document as unknown as {
+              caretRangeFromPoint(x: number, y: number): Range | null;
+            }
+          ).caretRangeFromPoint(e.clientX, e.clientY);
+          if (range) {
+            const sel = selection as SelectionWithModify;
+            sel.removeAllRanges();
+            sel.addRange(range);
+            sel.modify("move", "backward", "word");
+            sel.modify("extend", "forward", "word");
+          }
+        }
       }
-    },
-    [handleRowClick, handleRowDoubleClick]
+    }
+  }, []);
+
+  // --- Row click handler wiring ---
+  //
+  // Native DOM listeners are used instead of React events because React Aria's
+  // row-level press handling conflicts with custom click behavior (e.g. it
+  // disables row actions when selection is enabled). Three capture-phase
+  // listeners on the row element handle this:
+  //
+  //   pointerdown (capture) — stops propagation for non-interactive targets,
+  //     preventing React Aria from triggering selection on empty row areas.
+  //
+  //   mouseup (capture) — fires handleRowClick with a 300ms delay so that a
+  //     subsequent dblclick can cancel it before it triggers navigation.
+  //
+  //   dblclick (capture) — cancels the pending single-click and, when the row
+  //     is draggable, programmatically selects the word under the cursor
+  //     (draggable="true" suppresses native text selection).
+  //
+  // Stable-identity wrappers delegate through refs so the listeners never need
+  // to be removed and reattached when handler deps change — only the ref value
+  // is updated each render.
+
+  const handleRowClickRef = useRef(handleRowClick);
+  handleRowClickRef.current = handleRowClick;
+  const handleRowDoubleClickRef = useRef(handleRowDoubleClick);
+  handleRowDoubleClickRef.current = handleRowDoubleClick;
+
+  const stableRowClick = useCallback(
+    (e: Event) => handleRowClickRef.current(e),
+    []
+  );
+  const stableRowDblClick = useCallback(
+    (e: Event) => handleRowDoubleClickRef.current(e),
+    []
   );
 
-  /**
-   * Cleanup effect to remove event listeners when the component unmounts.
-   *
-   * This is crucial for preventing memory leaks in dynamic table scenarios where:
-   * - Rows are filtered in/out of view
-   * - Pagination changes remove rows from the DOM
-   * - Table data is refreshed or updated
-   * - Component is unmounted during navigation
-   *
-   * Without proper cleanup, event listeners would remain attached to orphaned
-   * DOM nodes, leading to memory leaks and potential crashes in long-running applications.
-   * The cleanup runs in the effect's return function, ensuring it executes
-   * before the component is fully removed from the React tree.
-   */
+  const rowNodeRef = useRef<HTMLElement | null>(null);
+
+  // Callback ref: attach listeners when the DOM node appears, detach when it
+  // changes or is removed. Runs during commit phase (before effects).
+  const rowCallbackRef = useCallback((node: HTMLElement | null) => {
+    const prev = rowNodeRef.current;
+    if (prev === node) return;
+
+    if (prev) {
+      prev.removeEventListener(
+        "pointerdown",
+        stopPropagationForNonInteractiveElements,
+        { capture: true }
+      );
+      prev.removeEventListener("mouseup", stableRowClick, { capture: true });
+      prev.removeEventListener("dblclick", stableRowDblClick, {
+        capture: true,
+      });
+    }
+
+    rowNodeRef.current = node;
+
+    if (node) {
+      node.addEventListener(
+        "pointerdown",
+        stopPropagationForNonInteractiveElements,
+        { capture: true }
+      );
+      node.addEventListener("mouseup", stableRowClick, { capture: true });
+      node.addEventListener("dblclick", stableRowDblClick, { capture: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Unmount cleanup: the callback ref handles node swaps, but React does not
+  // call it with null on unmount when the ref identity is stable. This effect
+  // ensures listeners are removed when the row leaves the tree.
   useEffect(() => {
-    const counter = counterRef.current;
     return () => {
-      // Clear any pending click timeout to prevent memory leaks and stale callbacks
       if (clickTimeoutRef.current) {
         window.clearTimeout(clickTimeoutRef.current);
         clickTimeoutRef.current = null;
       }
-
-      if (counter.count >= 1 && counter.node) {
-        counter.node.removeEventListener(
+      const node = rowNodeRef.current;
+      if (node) {
+        node.removeEventListener(
           "pointerdown",
-          stopPropagationForNonInteractiveElements
+          stopPropagationForNonInteractiveElements,
+          { capture: true }
         );
-        counter.node.removeEventListener("mouseup", handleRowClick);
-        counter.node.removeEventListener("dblclick", handleRowDoubleClick);
+        node.removeEventListener("mouseup", stableRowClick, {
+          capture: true,
+        });
+        node.removeEventListener("dblclick", stableRowDblClick, {
+          capture: true,
+        });
       }
     };
-  }, [handleRowClick, handleRowDoubleClick]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Combine the forwarded ref with our callback ref for proper DOM access
-  // This allows parent components to access the row element while maintaining our event listeners
-  const rowRef = mergeRefs(ref, rowNodeRef);
+  const rowRef = mergeRefs(ref, rowCallbackRef);
 
-  const { selectionBehavior } = useTableOptions();
+  const { selectionBehavior, allowsDragging } = useTableOptions();
+  const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
 
   const hasNestedContent =
     nestedKey &&
@@ -320,8 +400,22 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           {...restProps}
           dependencies={[isExpanded, search, isTruncated]}
         >
-          {/** Internal/non-data columns like selection and expand
+          {/** Internal/non-data columns like drag, selection, and expand
            * need to be in the same order in the header and row components*/}
+          {allowsDragging && (
+            <RaCell className="data-table-sticky-cell" data-slot="drag">
+              <IconButton
+                slot="drag"
+                data-drag-handle=""
+                size="2xs"
+                variant="ghost"
+                colorPalette="neutral"
+                aria-label={msg.format("dragRow")}
+              >
+                <DragIndicator />
+              </IconButton>
+            </RaCell>
+          )}
           {/* Selection checkbox cell if selection is enabled */}
           {selectionBehavior === "toggle" && (
             <DataTableCell
@@ -437,6 +531,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               isDisabled={isDisabled}
               colSpan={
                 activeColumns.length +
+                (allowsDragging ? 1 : 0) +
                 (showExpandColumn ? 1 : 0) +
                 (showSelectionColumn ? 1 : 0) +
                 1

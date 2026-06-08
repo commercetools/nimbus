@@ -1,0 +1,212 @@
+---
+id: useDragAndDrop
+title: useDragAndDrop
+description: shared drag-and-drop hook for Nimbus collection components
+order: 999
+menu:
+  - Hooks
+  - useDragAndDrop
+tags:
+  - drag
+  - drop
+  - reorder
+  - dnd
+---
+
+# useDragAndDrop
+
+A shared hook that wraps React Aria's drag-and-drop system with namespace isolation,
+external drop support, outgoing format serialization, and state handler factories.
+Returns `{ dragAndDropHooks }` to pass to any supported React Aria collection component.
+
+## Getting started
+
+```tsx
+import { useDragAndDrop, createArrayHandlers } from "@commercetools/nimbus";
+```
+
+### Basic reorderable DataTable
+
+```tsx
+import { DataTable, useDragAndDrop, createArrayHandlers } from "@commercetools/nimbus";
+
+const [rows, setRows] = useState([
+  { id: "1", name: "Alice", role: "Admin" },
+  { id: "2", name: "Bob", role: "User" },
+  { id: "3", name: "Carol", role: "Manager" },
+]);
+
+const columns = [
+  { id: "name", header: "Name", accessor: (row) => row.name },
+  { id: "role", header: "Role", accessor: (row) => row.role },
+];
+
+const { dragAndDropHooks } = useDragAndDrop({
+  ...createArrayHandlers(setRows, (row) => row.id),
+});
+
+<DataTable columns={columns} rows={rows} dragAndDropHooks={dragAndDropHooks} />
+```
+
+> [!NOTE]
+> DraggableList uses `useDragAndDrop` internally — you don't need to call it yourself.
+> Use the hook directly when adding drag-and-drop to other components like DataTable.
+
+## Namespace isolation
+
+Use `dragNamespace` to prevent drag-and-drop between unrelated lists on the same page:
+
+```tsx
+const { dragAndDropHooks: fruitHooks } = useDragAndDrop({
+  dragNamespace: "fruits",
+  ...createArrayHandlers(setFruits),
+});
+
+const { dragAndDropHooks: veggieHooks } = useDragAndDrop({
+  dragNamespace: "vegetables",
+  ...createArrayHandlers(setVeggies),
+});
+```
+
+Lists sharing a namespace can exchange items. Lists with different namespaces (or one
+namespaced and one not) reject each other's drops. Omitting `dragNamespace` preserves
+the default behavior where all lists interoperate.
+
+## External drops
+
+Accept drops from outside Nimbus (plain text, files, directories) using `onExternalDrop`
+and `acceptExternalTypes`:
+
+```tsx
+import { useDragAndDrop, createItemsFromFileDrop } from "@commercetools/nimbus";
+import { DIRECTORY_DRAG_TYPE } from "react-aria-components";
+
+const { dragAndDropHooks } = useDragAndDrop({
+  onExternalDrop: createItemsFromFileDrop,
+  acceptExternalTypes: ["image/png", "image/jpeg", "application/pdf"],
+  ...createArrayHandlers(setItems),
+});
+```
+
+### Helper functions
+
+Six composable helpers for common `onExternalDrop` patterns:
+
+| Helper | Accepts | Returns |
+|--------|---------|---------|
+| `createItemsFromTextDrop(items, type?)` | `TextDropItem` | `{ key, label }` |
+| `createItemsFromFileDrop(items)` | `FileDropItem` | `{ key, label, fileName, fileType, file }` |
+| `createItemsFromDirectoryDrop(items)` | `DirectoryDropItem` | `{ key, label, fileName, fileType, file, directory }` |
+| `createItemsFromJsonDrop(items)` | `TextDropItem` with `application/json` | `{ key, label, data }` |
+| `createItemsFromImageDrop(items)` | `FileDropItem` with `image/*` | `{ key, label, fileName, fileType, file, objectUrl }` |
+| `createItemsFromCsvDrop(items)` | `TextDropItem` with `text/csv` | `{ key, label, row, headers }` |
+
+Compose multiple helpers for mixed drop types:
+
+```tsx
+onExternalDrop={async (items) => [
+  ...(await createItemsFromTextDrop(items)),
+  ...(await createItemsFromFileDrop(items)),
+  ...(await createItemsFromDirectoryDrop(items)),
+]}
+```
+
+> [!NOTE]
+> Avoid combining `createItemsFromFileDrop` with `createItemsFromImageDrop` — file drop
+> processes all files including images, so image files would appear twice. Use one or the other.
+
+> [!WARNING]
+> `createItemsFromImageDrop` creates object URLs via `URL.createObjectURL()`.
+> Consumers must call `URL.revokeObjectURL(item.objectUrl)` when items are removed.
+
+## Outgoing formats
+
+Use `serializeDragItem` to make items droppable into non-Nimbus targets:
+
+```tsx
+const { dragAndDropHooks } = useDragAndDrop({
+  serializeDragItem: (item) => ({
+    "text/plain": item.label,
+    "text/html": `<li>${item.label}</li>`,
+  }),
+  ...createArrayHandlers(setItems),
+});
+```
+
+## State handler factories
+
+Two factories that return all four state mutation callbacks (`onInsertItems`,
+`onAppendItems`, `onReorder`, `onRemoveItems`):
+
+### `createListDataHandlers(list)`
+
+For React Aria's `useListData`:
+
+```tsx
+import { useListData } from "react-stately";
+
+const list = useListData({ initialItems: items, getKey });
+const { dragAndDropHooks } = useDragAndDrop({
+  ...createListDataHandlers(list),
+});
+```
+
+### `createArrayHandlers(setItems, getKey?)`
+
+For plain `useState` arrays:
+
+```tsx
+const [items, setItems] = useState(initialItems);
+const { dragAndDropHooks } = useDragAndDrop({
+  ...createArrayHandlers(setItems, (item) => item.key),
+});
+```
+
+If you need to customize state handling beyond what these factories provide — for example,
+persisting the new list order to an API or combining drag-and-drop with undo/redo — see the
+[React Aria drag and drop documentation](https://react-aria.adobe.com/dnd) for guidance on
+building custom state handlers.
+
+## Using with DataTable
+
+DataTable accepts `dragAndDropHooks` as an optional passthrough prop:
+
+```tsx
+import { DataTable, useDragAndDrop, createArrayHandlers } from "@commercetools/nimbus";
+
+const [rows, setRows] = useState(initialRows);
+const { dragAndDropHooks } = useDragAndDrop({
+  dragNamespace: "my-table",
+  ...createArrayHandlers(setRows, (row) => row.id),
+});
+
+<DataTable columns={columns} rows={rows} dragAndDropHooks={dragAndDropHooks} />
+```
+
+The `dragAndDropHooks` prop is also available on `DataTable.Table` for the compound component API.
+
+## API reference
+
+### `DragAndDropProps<T>`
+
+Consumer-facing props, intended to be intersected into component prop types:
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `dragNamespace` | `string` | — | Isolate DnD to collections sharing the same namespace |
+| `onExternalDrop` | `(items: DropItem[]) => T[] \| Promise<T[]>` | — | Convert external drops into collection items |
+| `acceptExternalTypes` | `Array<string \| symbol>` | — | Drag types to accept from external sources |
+| `externalDropOperation` | `"copy" \| "move" \| "link"` | `"copy"` | Drop operation for external items |
+| `serializeDragItem` | `(item: T) => Record<string, string>` | — | Additional format representations for outgoing drags |
+
+### `UseDragAndDropOptions<T>`
+
+Full hook configuration, extends `DragAndDropProps<T>`:
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `dataFormatBase` | `string` | `"nimbus-collection-item"` | Override the base data format string |
+| `onInsertItems` | `(items: T[], target: ItemDropTarget) => void` | — | Insert items before/after a target |
+| `onAppendItems` | `(items: T[]) => void` | — | Append items (drop on root) |
+| `onReorder` | `(keys: Set<Key>, target: ItemDropTarget) => void` | — | Reorder items within the collection |
+| `onRemoveItems` | `(keys: Set<Key>) => void` | — | Remove items after external move |

@@ -4,4 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default { cancel: `Cancel`, save: `Save` };
+export default { cancel: `Cancelar`, save: `Salvar` };

@@ -46,6 +46,11 @@ import {
   initialHiddenColumns,
 } from "./data-table.test-data";
 
+import { useDragAndDrop, createArrayHandlers } from "@commercetools/nimbus";
+
+const DRAG_DELAY_MS = 50;
+const wait = (ms: number = DRAG_DELAY_MS) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 import type {
   DataTableRowItem,
   DataTableColumnItem,
@@ -4844,6 +4849,120 @@ export const PerfSelectionContextIsolation: Story = {
           canvas.getByTestId("ctx-probe").getAttribute("data-render-count")
         );
         expect(afterCount).toBe(initialCount);
+      }
+    );
+  },
+};
+
+export const DragAndDropRows: Story = {
+  render: () => {
+    const DraggableTable = () => {
+      const simpleColumns: DataTableColumnItem[] = [
+        {
+          id: "name",
+          header: "Name",
+          accessor: (row: Record<string, unknown>) =>
+            row.name as React.ReactNode,
+        },
+        {
+          id: "role",
+          header: "Role",
+          accessor: (row: Record<string, unknown>) =>
+            row.role as React.ReactNode,
+        },
+      ];
+
+      const [tableRows, setTableRows] = useState<DataTableRowItem[]>([
+        { id: "1", name: "Alice", role: "Admin" },
+        { id: "2", name: "Bob", role: "User" },
+        { id: "3", name: "Carol", role: "Manager" },
+      ]);
+
+      const [clickedRow, setClickedRow] = useState<string | null>(null);
+
+      const { dragAndDropHooks } = useDragAndDrop({
+        ...createArrayHandlers(setTableRows, (row) => row.id),
+      });
+
+      return (
+        <Stack gap="400">
+          <DataTable
+            columns={simpleColumns}
+            rows={tableRows}
+            selectionMode="multiple"
+            onRowClick={(row) => setClickedRow(row.id)}
+            dragAndDropHooks={dragAndDropHooks}
+          />
+          <Text data-testid="row-order">
+            Order: {tableRows.map((r) => r.name).join(", ")}
+          </Text>
+          <Text data-testid="clicked-row">Clicked: {clickedRow ?? "none"}</Text>
+        </Stack>
+      );
+    };
+
+    return <DraggableTable />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Verify table renders with drag handles, selection, and row click",
+      async () => {
+        const table = canvas.getByRole("grid");
+        const dataRows = within(table).getAllByRole("row");
+        expect(dataRows.length).toBe(4);
+        expect(canvas.getByTestId("row-order")).toHaveTextContent(
+          "Order: Alice, Bob, Carol"
+        );
+        expect(canvas.getByTestId("clicked-row")).toHaveTextContent(
+          "Clicked: none"
+        );
+
+        const firstDataRow = dataRows[1];
+        expect(
+          within(firstDataRow).getByRole("button", {
+            name: /drag to reorder/i,
+          })
+        ).toBeInTheDocument();
+      }
+    );
+
+    await step("Drag first row down one position via keyboard", async () => {
+      const table = canvas.getByRole("grid");
+      const rows = within(table).getAllByRole("row");
+
+      // Focus the first data row, then navigate to drag handle
+      rows[1].focus();
+      await wait();
+      await userEvent.keyboard("{ArrowRight}");
+      await wait();
+      await userEvent.keyboard("{Enter}");
+      await wait();
+      await userEvent.keyboard("{ArrowDown}");
+      await wait();
+      await userEvent.keyboard("{Enter}");
+
+      await waitFor(() => {
+        expect(canvas.getByTestId("row-order")).toHaveTextContent(
+          "Order: Bob, Alice, Carol"
+        );
+      });
+    });
+
+    await step(
+      "Double-click on cell text does not trigger row click",
+      async () => {
+        const table = canvas.getByRole("grid");
+        const carolRow = within(table).getByRole("row", { name: /Carol/i });
+        const carolCell = within(carolRow).getByText("Carol");
+
+        await userEvent.dblClick(carolCell);
+        await wait(400);
+
+        expect(canvas.getByTestId("clicked-row")).toHaveTextContent(
+          "Clicked: none"
+        );
       }
     );
   },

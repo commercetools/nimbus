@@ -49,7 +49,7 @@ React Aria's drag-and-drop system provides:
 
 ### Data format
 
-Items being dragged use a custom format (`nimbus-draggable-list-item`) that allows items to be dragged between multiple DraggableList instances while preventing drops from external sources.
+Items being dragged use a custom format (`nimbus-draggable-list-item`) that allows items to be dragged between multiple DraggableList instances while preventing drops from external sources. When the `dragNamespace` prop is set, the format is scoped to that namespace (e.g. `nimbus-draggable-list-item:fruits`), so only lists sharing the same namespace can exchange items.
 
 ### State management
 
@@ -97,6 +97,67 @@ const App = () => {
   );
 }
 ```
+
+### Single selection
+
+Use `selectionMode="single"` to allow users to select one item at a time. Clicking a row selects it; clicking another row changes the selection. No checkboxes are rendered — the row itself is the click target:
+
+```jsx live-dev
+const App = () => {
+  const [selected, setSelected] = useState(new Set());
+
+  return (
+    <Stack direction="column" gap="400">
+      <DraggableList.Root
+        items={[
+          { key: '1', label: 'Option A' },
+          { key: '2', label: 'Option B' },
+          { key: '3', label: 'Option C' },
+        ]}
+        selectionMode="single"
+        selectedKeys={selected}
+        onSelectionChange={setSelected}
+        aria-label="Single selection list"
+      />
+      <Text fontSize="sm">
+        Selected: {[...selected].join(', ') || 'none'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+### Multiple selection
+
+Use `selectionMode="multiple"` to allow users to select any number of items. Each item renders a checkbox for toggling selection independently:
+
+```jsx live-dev
+const App = () => {
+  const [selected, setSelected] = useState(new Set());
+
+  return (
+    <Stack direction="column" gap="400">
+      <DraggableList.Root
+        items={[
+          { key: '1', label: 'Task A' },
+          { key: '2', label: 'Task B' },
+          { key: '3', label: 'Task C' },
+        ]}
+        selectionMode="multiple"
+        selectedKeys={selected}
+        onSelectionChange={setSelected}
+        aria-label="Multiple selection list"
+      />
+      <Text fontSize="sm">
+        Selected: {[...selected].join(', ') || 'none'}
+      </Text>
+    </Stack>
+  );
+}
+```
+
+> [!NOTE]
+> Selection props (`selectionMode`, `selectedKeys`, `onSelectionChange`, `defaultSelectedKeys`, `disallowEmptySelection`) are passed through to the underlying React Aria GridList. See the [React Aria GridList docs](https://react-spectrum.adobe.com/react-aria/GridList.html#selection) for the full selection API.
 
 ### Item removal
 
@@ -267,6 +328,129 @@ const App = () => {
     </Stack>
   );
 }
+```
+
+### Isolating lists with `dragNamespace`
+
+By default, all DraggableList instances on a page can exchange items. Use the `dragNamespace` prop to isolate groups of lists so that only lists sharing the same namespace accept each other's items:
+
+```jsx live-dev
+const App = () => {
+  const [fruitsA, setFruitsA] = useState([
+    { key: '1', label: 'Apple' },
+    { key: '2', label: 'Banana' },
+  ]);
+  const [fruitsB, setFruitsB] = useState([
+    { key: '3', label: 'Cherry' },
+  ]);
+  const [veggies, setVeggies] = useState([
+    { key: '4', label: 'Carrot' },
+    { key: '5', label: 'Broccoli' },
+  ]);
+
+  return (
+    <Stack direction="row" gap="400">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Fruits A</Text>
+        <DraggableList.Root
+          items={fruitsA}
+          onUpdateItems={setFruitsA}
+          dragNamespace="fruits"
+          aria-label="Fruits list A"
+        />
+      </Stack>
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Fruits B</Text>
+        <DraggableList.Root
+          items={fruitsB}
+          onUpdateItems={setFruitsB}
+          dragNamespace="fruits"
+          aria-label="Fruits list B"
+        />
+      </Stack>
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Vegetables</Text>
+        <DraggableList.Root
+          items={veggies}
+          onUpdateItems={setVeggies}
+          dragNamespace="vegetables"
+          aria-label="Vegetables list"
+        />
+      </Stack>
+    </Stack>
+  );
+}
+```
+
+Items can be dragged between Fruits A and Fruits B (same namespace), but the Vegetables list is isolated and will not accept fruit items or vice versa. Omitting `dragNamespace` preserves the default behavior where all lists interoperate.
+
+### Accepting external drops
+
+Use `onExternalDrop` and `acceptExternalTypes` to accept drops from outside Nimbus. Helper functions are provided for common drop types:
+
+```jsx live-dev
+const App = () => {
+  const [items, setItems] = useState([
+    { key: '1', label: 'Existing item' },
+  ]);
+
+  return (
+    <DraggableList.Root
+      items={items}
+      onUpdateItems={setItems}
+      acceptExternalTypes={['text/plain']}
+      onExternalDrop={async (dropItems) => {
+        const results = [];
+        for (const item of dropItems) {
+          if (item.kind === 'text') {
+            const text = await item.getText('text/plain');
+            results.push({ key: crypto.randomUUID(), label: text });
+          }
+        }
+        return results;
+      }}
+      aria-label="Drop text here"
+    />
+  );
+}
+```
+
+For file and directory drops, use the composable helpers:
+
+```tsx
+import {
+  createItemsFromFileDrop,
+  createItemsFromDirectoryDrop,
+} from '@commercetools/nimbus';
+
+<DraggableList.Root
+  items={items}
+  onUpdateItems={setItems}
+  acceptExternalTypes={['image/png', 'application/pdf']}
+  onExternalDrop={async (dropItems) => [
+    ...(await createItemsFromFileDrop(dropItems)),
+    ...(await createItemsFromDirectoryDrop(dropItems)),
+  ]}
+  aria-label="Drop files here"
+/>
+```
+
+See the [`useDragAndDrop` hook documentation](/hooks/use-drag-and-drop) for the full list of helpers and advanced usage.
+
+### Outgoing drag formats
+
+Use `serializeDragItem` to make items droppable into non-Nimbus targets by providing additional format representations:
+
+```tsx
+<DraggableList.Root
+  items={items}
+  onUpdateItems={setItems}
+  serializeDragItem={(item) => ({
+    'text/plain': item.label,
+    'text/html': `<li>${item.label}</li>`,
+  })}
+  aria-label="Drag items out"
+/>
 ```
 
 ### TypeScript generics
