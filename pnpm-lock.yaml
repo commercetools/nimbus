@@ -672,8 +672,8 @@ importers:
         specifier: ^0.1.9
         version: 0.1.9
       axe-core:
-        specifier: ^4.11.0
-        version: 4.11.0
+        specifier: ^4.12.0
+        version: 4.12.0
       dompurify:
         specifier: catalog:utils
         version: 3.4.8
@@ -4465,8 +4465,8 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
-  axe-core@4.11.0:
-    resolution: {integrity: sha512-ilYanEU8vxxBexpJd8cWM4ElSQq4QctCLKih0TSfjIfCQTeyH/6zVrmIJfLPrKTKJRbiG+cfnZbQIjAlJmF1jQ==}
+  axe-core@4.12.0:
+    resolution: {integrity: sha512-FTavr/7Ba0IptwGOPxnQvdyW2tAsdLBMTBXz7rKH6xJ2skpyxpBxyHkDdBs4lf69yRqYpkqCdfhnwS8YULGOmg==}
     engines: {node: '>=4'}
 
   babel-plugin-macros@3.1.0:
@@ -11114,7 +11114,7 @@ snapshots:
   '@storybook/addon-a11y@10.4.2(storybook@10.4.2(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.15)(prettier@3.8.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
     dependencies:
       '@storybook/global': 5.0.0
-      axe-core: 4.11.0
+      axe-core: 4.12.0
       storybook: 10.4.2(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.15)(prettier@3.8.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
 
   '@storybook/addon-docs@10.4.2(@types/react-dom@19.2.3(@types/react@19.2.15))(@types/react@19.2.15)(esbuild@0.28.0)(rollup@4.61.1)(storybook@10.4.2(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.15)(prettier@3.8.3)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(vite@8.0.16(@types/node@24.13.0)(esbuild@0.28.0)(terser@5.44.0)(tsx@4.22.4)(yaml@2.8.3))':
@@ -12646,7 +12646,7 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
-  axe-core@4.11.0: {}
+  axe-core@4.12.0: {}
 
   babel-plugin-macros@3.1.0:
     dependencies:
