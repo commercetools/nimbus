@@ -150,6 +150,11 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       // Prevent row click when clicking on interactive elements to avoid conflicts
       const isInteractiveElement = getIsTableRowChildElementInteractive(e);
       if (!isInteractiveElement) {
+        // Prevent row click when user has selected text (e.g. click-drag)
+        const hasSelectedText =
+          (window.getSelection()?.toString().trim().length ?? 0) > 0;
+        if (hasSelectedText) return;
+
         // Clear any existing timeout to handle rapid clicks
         if (clickTimeoutRef.current) {
           window.clearTimeout(clickTimeoutRef.current);
