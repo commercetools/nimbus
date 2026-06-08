@@ -50,7 +50,7 @@ export type SelectOptionGroupSlotProps = HTMLChakraProps<"div">;
 // ============================================================
 
 export type SelectProps = OmitInternalProps<SelectRootSlotProps> &
-  RaSelectProps & {
+  RaSelectProps<object> & {
     /**
      * Whether the select is in a loading state
      * @default false
