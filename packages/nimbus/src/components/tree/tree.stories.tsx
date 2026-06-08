@@ -499,3 +499,39 @@ export const DragAndDrop: Story = {
     });
   },
 };
+
+/**
+ * Reorder-only tree — drag-and-drop without item selection.
+ *
+ * **Use case:** a structural editor whose sole interaction is arranging
+ * hierarchy, e.g. a **navigation-menu builder** or a **content/page outline**.
+ * The user drags items to reorder and re-nest them; there is nothing to
+ * "select", so selection (and its checkboxes) would be noise. `selectionMode`
+ * is left at its default `"none"`, so no checkboxes render — just a drag handle
+ * and the expand/collapse chevron per item.
+ */
+export const ReorderWithoutSelection: Story = {
+  render: () => <FeatureTree aria-label="Navigation" selectionMode="none" />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Drag-and-drop is enabled without any selection UI",
+      async () => {
+        const treegrid = canvas.getByRole("treegrid", { name: "Navigation" });
+        await expect(treegrid).toHaveAttribute("data-allows-dragging", "true");
+        // No selection mode → no checkboxes anywhere in the tree.
+        await expect(canvas.queryByRole("checkbox")).not.toBeInTheDocument();
+        // Drag handles are still present for reordering.
+        await expect(canvas.getByTestId("drag-documents")).toBeInTheDocument();
+      }
+    );
+
+    await step("Rows are not selectable", async () => {
+      const documents = canvas.getByRole("row", { name: /Documents/ });
+      await expect(documents).not.toHaveAttribute("aria-selected");
+      await userEvent.click(documents);
+      await expect(documents).not.toHaveAttribute("aria-selected", "true");
+    });
+  },
+};
