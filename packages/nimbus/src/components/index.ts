@@ -78,3 +78,4 @@ export * from "./steps";
 export * from "./modal-page";
 export * from "./region";
 export * from "./splitter";
+export * from "./tree";
