@@ -162,9 +162,9 @@ export const treeSlotRecipe = defineSlotRecipe({
         root: {
           "--tree-row-min-height": "sizes.1000",
           // One indent level = the leading control column (selection checkbox,
-          // ~spacing.600) + the row gap (spacing.100), so a child's leading
-          // control aligns directly under its parent's chevron.
-          "--tree-indent-step": "calc({spacing.600} + {spacing.100})",
+          // spacing.400 = 16px) + the row gap (spacing.100), so a child's
+          // leading control aligns directly under its parent's chevron.
+          "--tree-indent-step": "calc({spacing.400} + {spacing.100})",
           "--tree-indicator-size": "sizes.500",
           "--tree-row-padding-y": "spacing.200",
         },
@@ -176,7 +176,7 @@ export const treeSlotRecipe = defineSlotRecipe({
       sm: {
         root: {
           "--tree-row-min-height": "sizes.800",
-          "--tree-indent-step": "calc({spacing.600} + {spacing.100})",
+          "--tree-indent-step": "calc({spacing.400} + {spacing.100})",
           "--tree-indicator-size": "sizes.400",
           "--tree-row-padding-y": "spacing.100",
         },
