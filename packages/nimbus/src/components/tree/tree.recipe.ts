@@ -16,7 +16,10 @@ export const treeSlotRecipe = defineSlotRecipe({
       display: "flex",
       flexDirection: "column",
       width: "100%",
-      overflow: "auto",
+      // No forced `overflow` — it would create a scroll container that clips the
+      // drop-target / focus outlines drawn at the rows' edges. Consumers that
+      // need a scrollable tree can set `maxHeight` + `overflow="auto"` on
+      // `Tree.Root` themselves.
       outline: "none",
       color: "fg",
 
