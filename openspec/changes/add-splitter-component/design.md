@@ -1,39 +1,8 @@
 # Design: Splitter
 
 This document captures the architectural decisions behind the Splitter
-primitive and the reasoning recorded during proposal discussion. Each
-decision is paired with the alternative considered and the trade-off
-accepted.
-
-## Revision — post-review reshape (supersedes Decisions 4, 5, 6, 9, 10)
-
-A pre-release review found the API over-parameterized a single-value boundary.
-The decisions below are kept for history; the following supersede them:
-
-- **Decision 4 (uncontrolled-only):** still uncontrolled for **sizes**, but a
-  settled-change callback `onSizesChangeEnd` is added (fires once per
-  interaction) so persistence needs no debounce. **Collapse** moves to
-  controllable state — `collapsedPane` / `defaultCollapsedPane` /
-  `onCollapsedPaneChange` — because it is discrete and low-frequency, so the
-  60Hz perf argument does not apply to it.
-- **Decision 5 + 6 (hook owns persistence + imperative commands):** the
-  `useSplitterLayout` hook is **removed**. Persistence is wired in the consuming
-  app with any storage (`defaultSizes` + `onSizesChangeEnd`); cross-subtree
-  control is plain controlled state (`collapsedPane`), so there is no imperative
-  ref/hook and no `__layoutRef`.
-- **Decision 9 (per-pane config in `panes`):** the map stays on Root but carries
-  only `minSize`, `collapsible`, `collapsedSize`. `maxSize` is removed (derived
-  as `100 − partner.minSize`); per-pane `defaultSize` is removed (single
-  canonical `defaultSizes` on Root); per-pane `disabled` is replaced by a
-  Root-level `isDisabled` (Nimbus `isDisabled` convention).
-- **Decision 10 (double-click restores defaults):** unchanged, plus the
-  `restoreDefaults` guard is fixed to a key-existence check so a legitimate `0`
-  initial size restores.
-- **Added:** documented `size` Root prop; full float-precision sizes (no
-  rounding in the pipeline; `aria-valuenow` rounds for AT only, with
-  `aria-valuetext`).
-
-`spec.md` reflects the final contract.
+primitive. Each decision is paired with the alternative considered and the
+trade-off accepted.
 
 ## Decision 1: 2-pane primitive, composable via nesting
 
@@ -79,10 +48,10 @@ existing consumers.
 
 ## Decision 2: Id-keyed configuration, not index-based
 
-**Decision.** Sizes, per-pane config, and the imperative command surface
-are keyed by pane `id` (a string), not by integer index. `Splitter.Pane`
-carries only `id` and content; per-pane settings live in a `panes:
-Record<string, PaneConfig>` prop on `Splitter.Root`.
+**Decision.** Sizes and per-pane config are keyed by pane `id` (a string),
+not by integer index. `Splitter.Pane` carries only `id` and content; per-pane
+settings live in a `panes: Record<string, PaneConfig>` prop on
+`Splitter.Root`.
 
 **Alternative considered.** Index-based: `defaultSizes: [number, number]`
 on Root, per-pane settings as props on each `<Splitter.Pane>` child.
@@ -94,7 +63,7 @@ on Root, per-pane settings as props on each `<Splitter.Pane>` child.
 2. **Fragile persistence.** Swapping the order of the two panes between
    releases invalidates every persisted layout; with ids, unknown ids
    are dropped and missing ids fall back to defaults.
-3. **Readability.** `layout.collapse("nav")` and `sizes.nav` communicate
+3. **Readability.** `collapsedPane="nav"` and `sizes.nav` communicate
    intent at a glance.
 4. **Forward compatibility with N-pane.** If we ever extend the primitive,
    the API shape doesn't change — only the constraint on how many panes
@@ -121,121 +90,112 @@ the single handle just as well as it would to many.
 and per-handle config emerges as a need, an opt-in `id` + `handles` map
 remains additive.
 
-## Decision 4: Uncontrolled-only
+## Decision 4: Sizes are uncontrolled; collapse is controllable
 
-**Decision.** The component owns its sizes state internally. Public
-props are `defaultSizes` (read once on mount) and `onSizesChange`
-(notification only). No `sizes` prop.
+**Decision.** Two stateful concerns, two idioms chosen by their update
+frequency:
 
-**Alternative considered.** Standard Nimbus controlled/uncontrolled prop
-pair (`sizes` + `onSizesChange` + `defaultSizes`).
+- **Sizes** are uncontrolled. The component owns the sizes state; the
+  public props are `defaultSizes` (read once on mount), `onSizesChange`
+  (live, every drag tick), and `onSizesChangeEnd` (fired once when an
+  interaction settles). No `sizes` prop.
+- **Collapse** is controllable state — `collapsedPane` /
+  `defaultCollapsedPane` / `onCollapsedPaneChange` (a single pane id or
+  `null`) — the standard Nimbus controlled/uncontrolled pair.
 
-**Why rejected.** Drag interactions fire at ~60Hz. A controlled prop
-means every tick goes through consumer `setState` → re-render of the
-consumer's tree. For an app-shell layout wrapping a large React tree,
+**Alternative considered.** A controlled `sizes` prop (full
+controlled/uncontrolled pair, like collapse).
+
+**Why rejected.** Drag interactions fire at ~60Hz. A controlled `sizes`
+prop means every tick goes through consumer `setState` → re-render of the
+consumer's tree. For an app-shell layout wrapping a large React tree
 that's a real performance cost for no semantic win — splitter sizes are
 UI ergonomics, not data the rest of the app needs to react to mid-drag.
+`onSizesChangeEnd` gives a settled value once per interaction, which is
+all persistence needs (no debounce). Collapse, by contrast, is discrete
+and low-frequency, so the 60Hz argument does not apply — it gets the full
+controlled pair so any control in the app can drive it.
 
-**Cost accepted.** Cross-app commands (collapse the nav from a header
-button) can't be done by lifting state up. We solve this with an
-imperative command channel surfaced through the persistence hook — see
-Decision 6.
+**Cost accepted.** Sizes can't be force-set from outside via a prop.
+That is acceptable: the only real cross-subtree need is collapse (a
+toolbar button collapsing the nav), which the controlled `collapsedPane`
+prop covers — see Decision 6.
 
-## Decision 5: Hook owns persistence, not the component
+## Decision 5: Persistence is consumer-wired, not baked in
 
-**Decision.** `useSplitterLayout` handles loading initial sizes from
-storage, saving on change, and debouncing. The component remains a pure
-controllable primitive.
+**Decision.** The component ships no persistence machinery. Consumers
+hydrate `defaultSizes` from whatever storage they choose and write back
+in `onSizesChangeEnd`; collapse persists through its controlled
+`collapsedPane` state. There is no bundled hook and no `autoSaveId`.
 
-**Alternative considered.** RPP's `autoSaveId` pattern — pass a string
-to the component, it writes to `localStorage` automatically.
+**Alternative considered.** An `autoSaveId`-style prop (as in
+`react-resizable-panels`) — pass a string and the component writes to
+`localStorage` automatically; or a bundled persistence hook that owns
+loading, saving, and debouncing.
 
-**Why rejected.** Couples the component to a specific storage backend.
-Cookies (for SSR), query params (for shareable layouts), server-side
-storage (for cross-device persistence), or external state stores all
-become impossible without escape hatches. Also forces the component to
-handle hydration, SSR safety, debouncing, and stored-value validation
-— none of which belong to its core job.
+**Why rejected.** Both couple the component to a storage backend. Cookies
+(for SSR), query params (for shareable layouts), server-side storage (for
+cross-device persistence), or an external state store all become awkward
+without escape hatches. They also pull hydration, SSR safety, debouncing,
+and stored-value validation into the component — none of which belong to
+its core job. Because `defaultSizes` and `onSizesChangeEnd` share the same
+`Record<id, number>` shape, the round-trip is already a one-liner against
+any storage, so a dedicated hook earns its surface area only marginally.
 
-**Hook contract:**
-
-```ts
-function useSplitterLayout(options: {
-  initialSizes: Record<string, number>;
-  id?: string;                                       // → localStorage key
-  storage?: {                                        // custom adapter, overrides `id`
-    load(): Record<string, number> | undefined;
-    save(sizes: Record<string, number>): void;
-  };
-  debounceMs?: number;                                // default 200
-}): SplitterLayout;
-```
-
-The hook reconciles stored values against `initialSizes`:
-
-- **Id mismatch** (stored has ids not in `initialSizes`, or vice versa):
-  drop unknown ids; for missing ids, fall back to `initialSizes[id]`;
-  re-normalize to sum 100.
-- **Sum drift within ±1% of 100** → normalize to exactly 100;
-  **outside ±1%** → fall back to `initialSizes`.
-- **SSR** → first render returns `initialSizes` synchronously when
-  `typeof window === "undefined"`; client read happens on first render
-  guarded by `typeof window !== "undefined"`. No `useEffect` hydration
-  flicker.
-
-## Decision 6: Imperative commands flow through the hook, not a ref
-
-**Decision.** `useSplitterLayout` returns an object containing both the
-props to spread on `Root` (`defaultSizes`, `onSizesChange`) and the
-commands (`collapse`, `expand`, `setSizes`, `getSizes`, `isCollapsed`).
-Internally the hook holds a ref the component populates on mount; the
-public command methods go through that ref. All commands take pane ids
-(strings).
-
-**Alternative considered A.** Expose a `ref` on `Root` and let consumers
-manage it themselves.
-
-**Why rejected.** Forces consumers to handle ref plumbing (lift the ref,
-pass it through context or props) for a common case (toolbar button
-collapses the nav). The hook hides that.
-
-**Alternative considered B.** State-hook-as-prop pattern (react-aria
-style): hook owns state, `<Splitter.Root state={layout}>` reads from it
-via `useSyncExternalStore`.
-
-**Why rejected.** Nimbus' established public API uses
-controlled/uncontrolled prop pairs, not state hooks as props. Grepping
-the codebase, every public hook that returns state objects
-(`useDisclosureState`, `useToggleState`, `useListState`) is consumed
-*internally* by component implementations, not passed in by consumers.
-Following the state-hook pattern would introduce a new convention for a
-single component.
-
-**API shape consumers see:**
+**Shape consumers see:**
 
 ```tsx
-const layout = useSplitterLayout({
-  initialSizes: { nav: 30, main: 70 },
-  id: "ide",
-});
+const [sizes, setSizes] = useStoredValue("ide-layout", { nav: 30, main: 70 });
 
 <Splitter.Root
-  panes={{
-    nav:  { minSize: 10, collapsible: true },
-    main: { minSize: 20 },
-  }}
-  defaultSizes={layout.defaultSizes}
-  onSizesChange={layout.onSizesChange}
+  defaultSizes={sizes}        // hydrate (read once on mount)
+  onSizesChangeEnd={setSizes} // settled value → write back
+  panes={{ nav: { minSize: 10, collapsible: true }, main: { minSize: 20 } }}
 >
-  <Splitter.Pane id="nav">…</Splitter.Pane>
-  <Splitter.Handle />
-  <Splitter.Pane id="main">…</Splitter.Pane>
-</Splitter.Root>
+  …
+</Splitter.Root>;
+```
 
-// Elsewhere, with access to the same `layout`:
-layout.collapse("nav");
-layout.expand("nav");
-layout.setSizes({ nav: 0, main: 100 });
+## Decision 6: Cross-subtree control is plain controlled state, not a ref
+
+**Decision.** Collapsing a pane from outside the splitter subtree (a
+header or toolbar button) is done with the controlled `collapsedPane`
+prop driven by ordinary `useState`. There is no imperative ref or command
+object.
+
+**Alternative considered A.** Expose an imperative `ref` (or a bundled
+hook holding one) on `Root` with `collapse(id)` / `expand(id)` commands.
+
+**Why rejected.** Forces consumers into ref plumbing (lift the ref, thread
+it through context or props) for what is plain state: "which pane is
+collapsed." Controlled state lifts naturally and reads declaratively.
+
+**Alternative considered B.** State-hook-as-prop pattern (React Aria
+style): a hook owns state, `<Splitter.Root state={…}>` reads it via
+`useSyncExternalStore`.
+
+**Why rejected.** Nimbus' established public API uses
+controlled/uncontrolled prop pairs, not state hooks as props. Every public
+hook in the codebase that returns a state object (`useDisclosureState`,
+`useToggleState`, `useListState`) is consumed *internally* by component
+implementations, not passed in by consumers. Following the state-hook
+pattern would introduce a new convention for a single component.
+
+**Shape consumers see:**
+
+```tsx
+const [collapsed, setCollapsed] = useState<string | null>(null);
+
+<Button onPress={() => setCollapsed((c) => (c === "nav" ? null : "nav"))}>
+  Toggle nav
+</Button>
+<Splitter.Root
+  collapsedPane={collapsed}
+  onCollapsedPaneChange={setCollapsed}
+  panes={{ nav: { minSize: 10, collapsible: true }, main: { minSize: 20 } }}
+>
+  …
+</Splitter.Root>;
 ```
 
 ## Decision 7: Naming — `Splitter` / `Pane` / `Handle`
@@ -253,7 +213,7 @@ layout.setSizes({ nav: 0, main: 100 });
   The underlying ARIA role remains `separator` (per W3C spec); the
   rename is purely API-level.
 
-## Decision 8: Drag clamps at min/max (no cascade)
+## Decision 8: Drag clamps at the boundary (no cascade)
 
 Dragging the handle by Δ (in percentage points, after pixel→% conversion):
 
@@ -263,7 +223,7 @@ Dragging the handle by Δ (in percentage points, after pixel→% conversion):
    collapse via Enter), clamp Δ to what fits. The handle stops at the
    boundary.
 3. Mirror behaviour when Δ is negative (clamp at the previous pane's
-   `minSize` / `maxSize` instead).
+   `minSize` instead — which is the next pane's derived upper bound).
 
 No cascade — with only two panes, there is nowhere to spill to. This
 is a meaningful simplification over the N-pane case and removes the
@@ -274,15 +234,20 @@ The algorithm runs synchronously during `useMove` callbacks. The new
 
 ## Decision 9: Per-pane configuration in Root's `panes` map
 
-All per-pane settings — `defaultSize`, `minSize`, `maxSize`, `disabled`,
-`collapsible`, `collapsedSize` — live in `Splitter.Root`'s `panes` prop
-keyed by pane id. The previous `minValue` / `maxValue` / `step` /
-`isDisabled` on `Root` are removed.
+Static per-pane settings — `minSize`, `collapsible`, `collapsedSize` —
+live in `Splitter.Root`'s `panes` prop keyed by pane id. There is no
+`maxSize` (a pane's upper bound is derived as `100 − partner.minSize`, so
+a single value per side fully describes the one boundary) and no per-pane
+`defaultSize` (initial proportions come from the single `defaultSizes`
+prop on Root). Per-pane disabling is not a knob either — `isDisabled` on
+Root disables the whole splitter, per the Nimbus `isDisabled` convention.
 
-**Why.** Project rule: configuration on Root, not on sub-components.
-With ids, this is a clean map; nothing leaks onto `<Splitter.Pane>`.
-
-`keyboardStep` (formerly `step` on `Root`) stays on `Root`.
+**Why.** Project rule: configuration on Root, not on sub-components. With
+ids, this is a clean map; nothing leaks onto `<Splitter.Pane>`. Splitting
+sizing by lifecycle — dynamic proportions in `defaultSizes` (which
+round-trips with the size callbacks), static constraints in `panes` —
+keeps each prop single-purpose. `keyboardStep` and `isDoubleClickDisabled`
+likewise live on Root.
 
 ## Decision 10: Double-click restores defaults; Enter toggles collapse
 
@@ -306,7 +271,7 @@ a no-op on those splitters — discoverable but useless, exactly the
 case where a user would reach for the gesture to "reset". Under B,
 double-click is meaningful everywhere: a single, intuitive way to undo
 a stray drag. Collapse remains reachable via the keyboard (Enter on the
-focused handle) and the imperative `useSplitterLayout.collapse(paneId)`.
+focused handle) and the controlled `collapsedPane` prop.
 
 The cost is that consumers who want a single mouse gesture for collapse
 have to surface it themselves (a button, a context menu item). For the
@@ -323,10 +288,11 @@ restore-defaults action.
 - Cascading resize — see Decision 8; not needed for 2 panes.
 - Controlled `sizes` prop — see Decision 4.
 - Multiple size units (px / rem / vh) — adds a constraint solver for no
-  meaningful gain on top of % + min/max.
-- `autoSaveId` baked into the component — see Decision 5.
+  meaningful gain on top of % + min.
+- Baked-in persistence (`autoSaveId`, bundled hook) — see Decision 5.
 - App-shell behaviour (responsive collapse, landmark slots, drawer
   fallback on narrow viewports) — explicit follow-up as `AppLayout`
   pattern component.
 - Per-handle configuration — see Decision 3.
-- State-hook-as-prop pattern — see Decision 6 alternative B.
+- Imperative ref / state-hook-as-prop for cross-subtree control — see
+  Decision 6.
