@@ -41,6 +41,20 @@ export const treeSlotRecipe = defineSlotRecipe({
         outlineOffset: "-2px",
         borderRadius: "200",
       },
+
+      // Drop indicator line shown between rows during drag-and-drop. React Aria
+      // renders it as a zero-height element with the default `react-aria-*`
+      // class; style it with Nimbus tokens and indent it to the target's level.
+      // Aligns with the row content's leading edge at the same level (matches
+      // the `itemContent` paddingInlineStart so the line sits under the chevron).
+      "& [class*='react-aria-DropIndicator'][data-drop-target]": {
+        outline: "2px solid",
+        outlineColor: "primary.9",
+        borderRadius: "full",
+        marginInlineStart:
+          "calc({spacing.400} + (var(--tree-item-level, 1) - 1) * var(--tree-indent-step))",
+        marginInlineEnd: "200",
+      },
     },
 
     item: {
@@ -58,6 +72,10 @@ export const treeSlotRecipe = defineSlotRecipe({
       // Hover
       "&[data-hovered]": {
         bg: "primary.2",
+      },
+      // Pressed (click / activation feedback)
+      "&[data-pressed]": {
+        bg: "primary.3",
       },
       // Selected (single or multiple)
       "&[data-selected]": {
@@ -102,14 +120,16 @@ export const treeSlotRecipe = defineSlotRecipe({
     itemContent: {
       display: "flex",
       alignItems: "center",
-      gap: "200",
+      gap: "100",
       width: "100%",
-      px: "200",
+      pe: "200",
       py: "var(--tree-row-padding-y)",
       // Visual indentation by nesting level. React Aria sets `--tree-item-level`
       // (1-based depth) on each row; the content is offset proportionally.
+      // The base offset gives the leading control (checkbox/chevron) room from
+      // the row's edge.
       paddingInlineStart:
-        "calc({spacing.200} + (var(--tree-item-level, 1) - 1) * var(--tree-indent-step))",
+        "calc({spacing.400} + (var(--tree-item-level, 1) - 1) * var(--tree-indent-step))",
     },
 
     indicator: {
