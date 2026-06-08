@@ -11,8 +11,9 @@ import type {
 // ============================================================
 
 /**
- * Per-pane configuration on `Splitter.Root`'s `panes` map. All settings are
- * keyed by the pane's `id` (matching the `id` on each `<Splitter.Pane>`).
+ * Static, per-pane configuration on `Splitter.Root`'s `panes` map. All settings
+ * are keyed by the pane's `id` (matching the `id` on each `<Splitter.Pane>`) and
+ * are fixed structural config — the dynamic proportions live in `defaultSizes`.
  *
  * A 2-pane splitter has a single boundary, so the only genuinely per-pane
  * settings are the lower bound and collapsibility. The upper bound is not a
@@ -95,16 +96,25 @@ export type SplitterRootProps = OmitInternalProps<SplitterRootSlotProps> & {
   orientation?: "horizontal" | "vertical";
 
   /**
-   * Visual thickness of the handle's track (seen on hover/focus). Inherited
-   * from the `nimbusSplitter` recipe.
+   * Visual thickness of the handle's track (seen on hover/focus). The standard
+   * recipe `size` dimension (the second axis alongside `variant`). Note this is
+   * the singular `size` — it sizes the handle; the plural `defaultSizes` /
+   * `onSizesChange` carry the pane proportions.
    * @default "md"
    */
   size?: SplitterRootSlotProps["size"];
 
   /**
-   * Initial sizes for each pane, keyed by pane id, summing to 100. Read once
-   * on mount; subsequent prop changes are ignored. Normalized to 100 (full
-   * float precision preserved). When omitted, sizes fall back to a 50/50 split.
+   * Initial pane proportions, keyed by pane id, summing to 100. This is the
+   * *dynamic* seed of the splitter's size state: it is read once on mount, and
+   * its `Record<id, number>` shape is exactly what `onSizesChange` /
+   * `onSizesChangeEnd` emit — so a persisted value round-trips straight back in
+   * here (read in `onSizesChangeEnd`, store, hydrate `defaultSizes`). Subsequent
+   * prop changes are ignored; normalized to 100 with full float precision
+   * preserved. When omitted, falls back to a 50/50 split.
+   *
+   * Static, non-persisted per-pane configuration (`minSize`, `collapsible`,
+   * `collapsedSize`) lives separately in `panes`, keyed by the same ids.
    */
   defaultSizes?: Record<string, number>;
 
@@ -123,9 +133,12 @@ export type SplitterRootProps = OmitInternalProps<SplitterRootSlotProps> & {
   onSizesChangeEnd?: (sizes: Record<string, number>) => void;
 
   /**
-   * Per-pane configuration keyed by the pane's `id`. All per-pane settings
-   * (`minSize`, `collapsible`, `collapsedSize`) live here — nothing leaks onto
-   * `<Splitter.Pane>`.
+   * Static, per-pane configuration keyed by the pane's `id`. Everything here
+   * (`minSize`, `collapsible`, `collapsedSize`) is structural and does not
+   * change at runtime — which is why it is separate from `defaultSizes` (the
+   * dynamic, persisted proportions). `collapsedSize` is a percentage but is
+   * still config, not live state, so it lives here rather than in
+   * `defaultSizes`. Nothing leaks onto `<Splitter.Pane>`.
    */
   panes?: Record<string, SplitterPaneConfig>;
 

@@ -76,6 +76,18 @@ const App = () => (
 
 ### Per-pane constraints
 
+Sizing is split across two props by lifecycle, not by accident:
+
+- **`defaultSizes`** holds the _dynamic_ proportions — the live state that
+  drags, collapses, and persistence change. It shares its `Record<id, number>`
+  shape with `onSizesChange` / `onSizesChangeEnd` so a stored value flows
+  straight back in (see [Persistence](#persistence)).
+- **`panes`** holds the _static_ per-pane configuration — `minSize`,
+  `collapsible`, `collapsedSize` — that never changes at runtime.
+
+Both are keyed by the same pane ids. Keeping the persisted proportions in one
+flat prop is what makes hydration a one-liner.
+
 Each entry in the `panes` map accepts a `minSize`. A pane's upper bound is the
 complement of its partner's `minSize` (`max = 100 − partner.minSize`), so a
 single value per side fully describes the boundary — there is no separate
