@@ -1,55 +1,20 @@
 # Change: Add Splitter component
 
-## Revision — post-review API reshape
-
-A multi-perspective review before release found the original API
-over-parameterized a single-value boundary. Since the component is unreleased
-(no consumers), the API was reshaped for coherence. The sections below are kept
-for history; where they conflict, **this revision wins**. `spec.md` reflects the
-final contract.
-
-**Final public API:**
-
-- **Per-pane config** (`panes` map, keyed by id) carries only `minSize`,
-  `collapsible`, `collapsedSize`. Removed: `defaultSize`, `maxSize`, `disabled`.
-  A pane's upper bound is derived (`100 − partner.minSize`).
-- **Initial sizes:** a single canonical `defaultSizes` on Root (read once,
-  normalized to 100, full float precision). Removed per-pane `defaultSize`.
-- **Sizes** stay uncontrolled: `defaultSizes`, `onSizesChange` (live), and new
-  `onSizesChangeEnd` (settled — the persistence seam, no debounce needed).
-- **Collapse** is controllable state, not imperative: `collapsedPane` /
-  `defaultCollapsedPane` / `onCollapsedPaneChange` (single id or `null`; one
-  pane collapses at a time). Removed `onCollapse`/`onExpand`.
-- **`isDisabled`** on Root (Nimbus convention) replaces per-pane `disabled` /
-  the `bothDisabled` semantics.
-- **`size`** (`sm`/`md`/`lg`) is a documented Root prop.
-- **`useSplitterLayout` is removed.** Persistence is wired in the consuming app
-  with any storage (`defaultSizes` + `onSizesChangeEnd`; collapse via its
-  controlled state). There is no imperative ref/hook (`__layoutRef` removed).
-- **Double-click** restores the mount snapshot (unchanged); `isDoubleClickDisabled`
-  unchanged. Float precision preserved end-to-end (only `aria-valuenow` rounds,
-  for AT; added `aria-valuetext`).
-
-Supersedes design Decisions 4, 5, 6, 9, and 10 below.
-
 ## Why
 
-Nimbus has no primitive for user-resizable panes. The unmerged `window-splitter`
-branch (8 commits, last touched 2025-06) is a 2-pane proof of concept that
-never landed because the API choices were premature: it had no story for
-cross-app commands, persistence, or collapsibility, and the prop names
-(`value` / `defaultValue` / `minValue` / `maxValue` on `Root`) didn't
-generalize beyond a single numeric state.
+Nimbus has no primitive for user-resizable panes. Consumers building IDE-like
+or sidebar-plus-content layouts have to hand-roll the drag math, keyboard
+handling, and the W3C window-splitter ARIA contract — error-prone and rarely
+accessible.
 
-This change reshapes that work into a focused primitive — `Splitter` — that
-solves one job well: **a user dragging the boundary between two panes, with
-clean integration for persistence, collapse, and cross-app commands.**
+`Splitter` fills that gap with one focused job: **a user dragging the boundary
+between two panes**, with clean integration points for persistence and
+collapse. It is intentionally scoped to exactly two panes; layouts with more
+regions are composed by **nesting** a `Splitter` inside a `Pane`.
 
-Layouts requiring more than two panes are expressed by **nesting** a
-`Splitter` inside a `Pane`. App-shell layouts (nav + main + aside,
-responsive collapse to drawers) are explicitly **not** in scope here. Those
-belong in a follow-up pattern component (`AppLayout` or similar) that
-composes `Splitter` and adds breakpoint logic.
+App-shell layouts (nav + main + aside, responsive collapse to drawers) are
+explicitly **not** in scope here. Those belong in a follow-up pattern component
+(`AppLayout` or similar) that composes `Splitter` and adds breakpoint logic.
 
 ## Why 2-pane and not N-pane
 
@@ -104,32 +69,23 @@ consumers.
 **Component:** `Splitter` (compound: `Root` / `Pane` / `Handle`).
 **Shape:** exactly two `Pane` children with one `Handle` between them.
 
-### Renames from the `window-splitter` branch
-
-- `WindowSplitter` → `Splitter` (drops "Window" — accurate to W3C lineage
-  but carries OS-window baggage, and no other React library uses it)
-- `WindowSplitter.Separator` → `Splitter.Handle` (the part is interactive;
-  the existing `Separator` component in Nimbus is decorative, so name
-  collision is avoided and the affordance is clearer)
-- Component directory `window-splitter/` → `splitter/`
-
 ### Identifier-keyed configuration
 
 - Each `Splitter.Pane` carries a string `id` and its content — **nothing
   else**. All per-pane configuration lives on `Splitter.Root` keyed by id
   (project rule: configuration on Root).
-- Root state changes from `value: number` (0–100) to `sizes: Record<string,
-  number>` — a map from pane id to percentage of the splitter, with the
-  two values summing to 100.
-- A `panes` prop on Root holds per-pane settings (`defaultSize`, `minSize`,
-  `maxSize`, `disabled`, `collapsible`, `collapsedSize`):
+- Root owns a `sizes` record — a map from pane id to percentage of the
+  splitter, with the two values summing to 100.
+- A `panes` prop on Root holds the static per-pane settings (`minSize`,
+  `collapsible`, `collapsedSize`):
   ```tsx
   <Splitter.Root
+    defaultSizes={{ nav: 30, main: 70 }}
     panes={{
-      nav:  { defaultSize: 30, minSize: 10, collapsible: true },
-      main: { defaultSize: 70, minSize: 20 },
+      nav:  { minSize: 10, collapsible: true },
+      main: { minSize: 20 },
     }}
-    onSizesChange={(sizes) => {/* Record<string, number> */}}
+    onSizesChangeEnd={(sizes) => {/* Record<string, number> */}}
   >
     <Splitter.Pane id="nav">…</Splitter.Pane>
     <Splitter.Handle />
@@ -141,8 +97,8 @@ consumers.
 
 - **Reorder-safe persistence.** Swapping the two panes between releases
   doesn't invalidate stored layouts. Unknown ids in storage are dropped;
-  missing ids fall back to per-pane defaults.
-- **Readable APIs.** `layout.collapse("nav")` beats `layout.collapse(0)`;
+  missing ids fall back to a 50/50 split.
+- **Readable APIs.** `collapsedPane="nav"` beats `collapsedPane={0}`;
   `sizes.nav` beats `sizes[0]`.
 - **Clean ARIA wiring.** `aria-controls` on the handle is just the DOM id
   of the previous Pane sibling.
@@ -155,11 +111,11 @@ consumers.
 ### Three or more regions via nesting
 
 ```tsx
-<Splitter.Root panes={{ nav: {…}, rest: {…} }}>
+<Splitter.Root defaultSizes={{ nav: 25, rest: 75 }}>
   <Splitter.Pane id="nav">…</Splitter.Pane>
   <Splitter.Handle />
   <Splitter.Pane id="rest">
-    <Splitter.Root panes={{ main: {…}, aside: {…} }}>
+    <Splitter.Root defaultSizes={{ main: 65, aside: 35 }}>
       <Splitter.Pane id="main">…</Splitter.Pane>
       <Splitter.Handle />
       <Splitter.Pane id="aside">…</Splitter.Pane>
@@ -171,110 +127,105 @@ consumers.
 Each splitter is independently persistable, independently collapsible,
 and independently announced to assistive tech.
 
-### Uncontrolled component, hook-driven persistence
+### Sizes are uncontrolled
 
-- The component is **uncontrolled**. Props are `defaultSizes: Record<string,
-  number>` (read once on mount) and `onSizesChange: (sizes: Record<string,
-  number>) => void` (notification callback). There is no `sizes` prop.
-- A new `useSplitterLayout` hook handles persistence and cross-app commands
-  in one object:
-  ```ts
-  const layout = useSplitterLayout({
-    initialSizes: { nav: 30, main: 70 },
-    id?: string,                        // localStorage key
-    storage?: {
-      load(): Record<string, number> | undefined;
-      save(sizes: Record<string, number>): void;
-    },
-    debounceMs?: number,                // default 200
-  });
-  ```
-  Returns: `{ defaultSizes, onSizesChange, collapse, expand, setSizes,
-  getSizes, isCollapsed }` — all id-keyed.
-- Internally the hook holds a ref the component populates on mount;
-  commands go through that ref. State stays inside the component, drag
-  never re-renders the consumer tree.
+- `defaultSizes: Record<string, number>` (read once on mount, normalized to
+  sum 100, full float precision), `onSizesChange` (live, every drag tick),
+  and `onSizesChangeEnd` (fires once when an interaction settles — the
+  persistence seam, no debounce needed). There is no `sizes` prop.
+- Drag fires at ~60Hz; forcing controlled sizes would re-render the
+  consumer's tree on every tick for no semantic gain. `onSizesChangeEnd`
+  delivers the settled value once per interaction, which is all persistence
+  needs.
 
 ### Per-pane configuration on Root
 
-- `panes: Record<string, PaneConfig>` on Root carries `defaultSize`,
-  `minSize`, `maxSize`, `disabled`, `collapsible`, `collapsedSize` for
-  each pane id.
-- Removes `minValue`, `maxValue`, `isDisabled` from `Root`.
-- `keyboardStep` (formerly `step` on `Root`) stays on `Root`.
-- `isDoubleClickDisabled` lives on `Root`.
+- `panes: Record<string, PaneConfig>` on Root carries `minSize`,
+  `collapsible`, and `collapsedSize` for each pane id.
+- A pane's upper bound is derived (`100 − partner.minSize`), so a single
+  `minSize` per side fully describes the one boundary — there is no
+  `maxSize`.
+- `keyboardStep` (arrow-key delta, default 5), `isDoubleClickDisabled`, and
+  `isDisabled` (makes the whole splitter non-interactive, per the Nimbus
+  `isDisabled` convention) live on Root.
 
-### Collapsible panes (new)
+### Collapsible panes
 
 - `collapsible` + `collapsedSize` set per-pane in Root's `panes` map.
-- Root-level `onCollapse: (paneId: string) => void` and
-  `onExpand: (paneId: string) => void` notification callbacks.
-- Keyboard: Enter on the focused `Handle` toggles collapse of the
-  adjacent collapsible pane. If both panes are collapsible, the smaller
-  is preferred (ties broken by left/top). Replaces the current hardcoded
-  "Enter jumps to minValue then back to 50" behaviour.
-- Imperative: `useSplitterLayout`'s `collapse(paneId)` / `expand(paneId)`
-  drive the same transitions from anywhere in the consumer tree.
+- Collapse is controllable state — `collapsedPane` / `defaultCollapsedPane`
+  / `onCollapsedPaneChange` (a single pane id or `null`; one pane collapses
+  at a time). Any control in the app can drive it with plain `useState`.
+- Keyboard: Enter on the focused `Handle` toggles collapse of the adjacent
+  collapsible pane. If both panes are collapsible, the smaller is preferred
+  (ties broken by left/top).
 
-### Double-click restores defaults (new)
+### Double-click restores defaults
 
 - Double-click on `Handle` restores the boundary to its initial position
-  (sizes resolved on mount from `defaultSizes` or `panes[id].defaultSize`).
-- The gesture is decoupled from collapsibility: it works on every
-  splitter, including those without any `collapsible` panes. Gated by
-  Root-level `isDoubleClickDisabled: boolean`.
+  (the sizes resolved on mount from `defaultSizes`, otherwise the 50/50
+  fallback).
+- The gesture is decoupled from collapsibility: it works on every splitter,
+  including those without any `collapsible` panes. Gated by Root-level
+  `isDoubleClickDisabled`.
 
-### What stays the same
+### Persistence
 
-- `orientation: "horizontal" | "vertical"` on `Root`.
-- React Aria integration on `Handle` (`useSeparator`, `useMove`,
-  `useFocusRing`).
-- ARIA model: `Handle` is `role="separator"` with `aria-valuenow`,
-  `aria-valuemin`, `aria-valuemax`, `aria-orientation`, `aria-controls`
-  pointing at the previous Pane sibling.
-- Keyboard model on `Handle`: arrow keys move by Root-level `keyboardStep`
-  (orientation-aware), Home/End jump the boundary to its bounds.
+- Consumer-wired with any storage (localStorage, cookies, query params,
+  server): hydrate `defaultSizes` from stored values, write back in
+  `onSizesChangeEnd`, and persist collapse via its controlled state. No
+  bundled hook and no baked-in `autoSaveId` — the component stays decoupled
+  from any storage backend.
+
+### Visual presentation
+
+- A `size` variant (`sm` / `md` / `lg`) on Root sets the handle track's
+  visual thickness — the standard recipe `size` dimension. Sizes carry full
+  float precision end-to-end; only the handle's `aria-valuenow` is rounded
+  (for AT), alongside `aria-valuetext`.
+
+### ARIA and keyboard model
+
+- `Handle` is `role="separator"` with `aria-valuenow` / `aria-valuemin` /
+  `aria-valuemax` / `aria-valuetext`, `aria-orientation`, and `aria-controls`
+  pointing at the previous Pane sibling. Built on React Aria primitives
+  (`useSeparator`, `useMove`, `useFocusRing`).
+- Arrow keys move the boundary by `keyboardStep` (orientation-aware); Home /
+  End jump to the bounds; Enter toggles collapse.
+- `orientation: "horizontal" | "vertical"` on Root sets the layout axis and
+  the active arrow keys.
 
 ### Explicit non-goals
 
 - **No 3+ panes per splitter.** Use nesting. See "Why 2-pane and not
   N-pane" above.
-- **No cascading resize.** Not needed without N-pane; min/max simply
-  clamp at the boundary.
+- **No cascading resize.** Not needed without N-pane; `minSize` simply
+  clamps at the boundary.
 - **No controlled `sizes` prop.** Drag fires at ~60Hz; forcing controlled
-  state means every tick re-renders the consumer's tree. Uncontrolled +
-  imperative-via-hook covers every real use case without that cost.
+  state means every tick re-renders the consumer's tree. Uncontrolled sizes
+  plus `onSizesChangeEnd` cover every real use case without that cost.
 - **No multi-unit sizes** (px / rem / vh). Percentages only. Mixing units
   requires a constraint solver and matches no pattern in Nimbus.
-- **No baked-in `autoSaveId`.** Persistence lives in `useSplitterLayout`
-  so consumers choose the storage (localStorage, sessionStorage, cookie,
-  server).
+- **No baked-in persistence.** No `autoSaveId`, no bundled persistence hook;
+  consumers choose the storage and wire it through `defaultSizes` +
+  `onSizesChangeEnd`.
 - **No app-shell behaviour.** Responsive collapse, drawer fallbacks on
-  narrow viewports, landmark slots — all deferred to a separate
-  `AppLayout` pattern component that composes `Splitter`.
+  narrow viewports, landmark slots — all deferred to a separate `AppLayout`
+  pattern component that composes `Splitter`.
 - **No per-handle configuration.** A 2-pane splitter has one handle;
   there's nothing to differentiate.
-- **No state-hook-as-prop pattern.** Nimbus' public API consistently uses
-  controlled/uncontrolled prop pairs; the imperative-commands-via-hook
-  approach here keeps that convention while solving the cross-app
-  command case.
-
-## Supersedes
-
-This change supersedes the unmerged `window-splitter` branch. The
-directory structure, recipe scaffolding, react-aria integration patterns,
-and existing stories will be reused, but the public API (component name,
-prop shape, state model) is replaced.
+- **No imperative ref or state-hook-as-prop.** Nimbus' public API
+  consistently uses controlled/uncontrolled prop pairs; cross-subtree
+  collapse is the controlled `collapsedPane` prop, not an imperative
+  command channel.
 
 ## Impact
 
 - **Affected specs:** `nimbus-splitter` (new capability).
 - **Affected code:**
-  - **NEW**: `packages/nimbus/src/components/splitter/` (replaces
-    `window-splitter/`)
+  - **NEW**: `packages/nimbus/src/components/splitter/`
   - **MODIFIED**: `packages/nimbus/src/components/index.ts` (export
-    `./splitter` instead of `./window-splitter`)
+    `./splitter`)
   - **MODIFIED**: `packages/nimbus/src/theme/slot-recipes/index.ts`
     (register `splitterSlotRecipe` as `nimbusSplitter`)
-- **Consumers:** none yet — `window-splitter` never shipped. No breaking
-  changes for downstream code.
+- **Consumers:** none — new component, no breaking changes for downstream
+  code.

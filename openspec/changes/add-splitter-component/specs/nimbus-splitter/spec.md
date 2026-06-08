@@ -1,14 +1,5 @@
 # Specification: Splitter
 
-> **Revision (post-review reshape):** per-pane config carries only `minSize` /
-> `collapsible` / `collapsedSize` (no `maxSize`, `defaultSize`, or `disabled`);
-> initial sizes come from a single `defaultSizes` on Root; collapse is
-> controllable state (`collapsedPane` / `defaultCollapsedPane` /
-> `onCollapsedPaneChange`); `isDisabled` is a Root prop; persistence is wired in
-> the consuming app via `onSizesChangeEnd` + any storage (no `useSplitterLayout`
-> hook, no imperative API); sizes keep full float precision. The requirements
-> below reflect this final contract.
-
 ## Overview
 
 The Splitter component provides a compound primitive for user-resizable panes. A
@@ -188,8 +179,8 @@ restores defaults"), not for collapsing.
 
 Double-click on the handle SHALL restore the boundary to its initial position —
 the sizes the component resolved on mount from `defaultSizes` (if provided),
-otherwise from `panes[id].defaultSize`, otherwise the 50/50 fallback. The
-behaviour applies to all splitters, not only collapsible ones.
+otherwise the 50/50 fallback. The behaviour applies to all splitters, not only
+collapsible ones.
 
 #### Scenario: Double-click restores the initial sizes
 
