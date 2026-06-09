@@ -644,6 +644,70 @@ export const ControlledCollapse: Story = {
 };
 
 // ============================================================
+// Controlled collapse + drag + double-click restore — restore must land on
+// the mount-time sizes (30/70), not the pre-collapse sizes (50/50), even
+// though collapse is controlled. Regression for the controlled-restore path.
+// ============================================================
+
+const ControlledRestoreComponent = () => {
+  const [collapsed, setCollapsed] = useState<string | null>(null);
+  return (
+    <Box h="500px">
+      <Splitter.Root
+        defaultSizes={{ nav: 30, main: 70 }}
+        keyboardStep={5}
+        panes={{
+          nav: { minSize: 10, collapsible: true },
+          main: { minSize: 20 },
+        }}
+        collapsedPane={collapsed}
+        onCollapsedPaneChange={setCollapsed}
+      >
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav" />
+        </Splitter.Pane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main" />
+        </Splitter.Pane>
+      </Splitter.Root>
+    </Box>
+  );
+};
+
+export const ControlledCollapseRestore: Story = {
+  render: () => <ControlledRestoreComponent />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
+    });
+
+    // Drag the boundary off its mount default (30 → 50) via keyboard.
+    handle.focus();
+    await userEvent.keyboard(
+      "{ArrowRight}{ArrowRight}{ArrowRight}{ArrowRight}"
+    );
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(50);
+    });
+
+    // Collapse nav (controlled — Enter drives onCollapsedPaneChange → state).
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(0);
+    });
+
+    // Double-click restores to the mount-time sizes (30), not pre-collapse 50.
+    await userEvent.dblClick(handle);
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
+    });
+  },
+};
+
+// ============================================================
 // Persistence — hydrate from any storage; persist on onSizesChangeEnd.
 // ============================================================
 
