@@ -7,14 +7,9 @@ import { useSplitterState } from "../hooks/use-splitter-state";
 import type { SplitterRootProps } from "../splitter.types";
 
 /**
- * Splitter root container. Owns sizes state for the two child panes (via
- * `useSplitterState`), hosts the per-pane configuration map, and resolves
- * controlled/uncontrolled collapse. Persistence is consumer-wired through
- * `defaultSizes` + `onSizesChangeEnd` and the controlled `collapsedPane` prop.
- *
- * Children MUST consist of exactly two `<Splitter.Pane>` elements with one
- * `<Splitter.Handle>` between them. The component renders best-effort on
- * malformed children and emits a development-time warning.
+ * Splitter root container. Owns the two panes' sizes state and per-pane config,
+ * and resolves controlled/uncontrolled collapse. Wrap exactly two
+ * `Splitter.Pane`s with one `Splitter.Handle` between them.
  *
  * @see https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/
  * @supportsStyleProps
