@@ -407,11 +407,11 @@ and `handle`, plus variants for `size` (`sm` / `md` / `lg`) and `orientation`
 
 ### Requirement: Optional controlled `sizes` prop
 
-The component MAY be controlled for size via an optional `sizes` prop — the
-controlled counterpart to `defaultSizes`, mutually exclusive with it. Control is
-**settle-only**: internal sizes stay authoritative during interaction
-(drag/keyboard update live, with no consumer feedback), and the prop is
-reconciled into state when it changes.
+The component SHALL accept an optional `sizes` prop — the controlled counterpart
+to `defaultSizes`, mutually exclusive with it. When provided, the splitter SHALL
+be controlled for size with **settle-only** semantics: internal sizes stay
+authoritative during interaction (drag/keyboard update live, with no consumer
+feedback), and the prop SHALL be reconciled into state when it changes.
 
 #### Scenario: Controlled `sizes` reflects external changes in place
 
