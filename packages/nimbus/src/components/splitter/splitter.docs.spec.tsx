@@ -69,6 +69,59 @@ describe("Splitter - persistence", () => {
 });
 
 /**
+ * @docs-section controlled-sizes
+ * @docs-title Controlled sizes from anywhere
+ * @docs-description Drive the layout with the `sizes` prop and update it from
+ * outside the splitter — changes apply in place (no remount), so stateful pane
+ * content is preserved. Wire `onSizesChangeEnd` to keep it controlled after a
+ * drag.
+ * @docs-order 2.5
+ */
+describe("Splitter - controlled sizes", () => {
+  it("reflects an external sizes change in place", async () => {
+    const user = userEvent.setup();
+    const Demo = () => {
+      const [sizes, setSizes] = useState<Record<string, number>>({
+        nav: 30,
+        main: 70,
+      });
+      return (
+        <>
+          <button type="button" onClick={() => setSizes({ nav: 60, main: 40 })}>
+            widen-nav
+          </button>
+          <Splitter.Root
+            sizes={sizes}
+            onSizesChangeEnd={setSizes}
+            panes={{ nav: { minSize: 5 }, main: { minSize: 5 } }}
+          >
+            <Splitter.Pane id="nav">Nav</Splitter.Pane>
+            <Splitter.Handle />
+            <Splitter.Pane id="main">Main</Splitter.Pane>
+          </Splitter.Root>
+        </>
+      );
+    };
+
+    render(
+      <NimbusProvider>
+        <Demo />
+      </NimbusProvider>
+    );
+
+    const handle = await screen.findByRole("separator");
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
+    });
+
+    await user.click(screen.getByText("widen-nav"));
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(60);
+    });
+  });
+});
+
+/**
  * @docs-section controlled-collapse
  * @docs-title Controlled collapse from anywhere
  * @docs-description Collapse is plain controlled state, so a button outside

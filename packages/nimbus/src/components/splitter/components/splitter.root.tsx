@@ -23,6 +23,7 @@ export const SplitterRoot = ({
   children,
   orientation = "horizontal",
   defaultSizes,
+  sizes,
   onSizesChange,
   onSizesChangeEnd,
   panes,
@@ -45,6 +46,7 @@ export const SplitterRoot = ({
   const contextValue = useSplitterState({
     orientation,
     defaultSizes,
+    sizes,
     panes,
     collapsedPane,
     defaultCollapsedPane,

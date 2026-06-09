@@ -90,36 +90,48 @@ the single handle just as well as it would to many.
 and per-handle config emerges as a need, an opt-in `id` + `handles` map
 remains additive.
 
-## Decision 4: Sizes are uncontrolled; collapse is controllable
+## Decision 4: Sizes are uncontrolled by default (optional settle-only control); collapse is controllable
 
 **Decision.** Two stateful concerns, two idioms chosen by their update
 frequency:
 
-- **Sizes** are uncontrolled. The component owns the sizes state; the
-  public props are `defaultSizes` (read once on mount), `onSizesChange`
-  (live, every drag tick), and `onSizesChangeEnd` (fired once when an
-  interaction settles). No `sizes` prop.
+- **Sizes** are uncontrolled by default. The component owns the sizes
+  state; the public props are `defaultSizes` (read once on mount),
+  `onSizesChange` (live, every drag tick), and `onSizesChangeEnd` (fired
+  once when an interaction settles). An optional **settle-only** `sizes`
+  prop adds controlled-at-rest behaviour without the 60Hz cost (see
+  below).
 - **Collapse** is controllable state — `collapsedPane` /
   `defaultCollapsedPane` / `onCollapsedPaneChange` (a single pane id or
   `null`) — the standard Nimbus controlled/uncontrolled pair.
 
-**Alternative considered.** A controlled `sizes` prop (full
-controlled/uncontrolled pair, like collapse).
+**Alternative considered.** A *live* controlled `sizes` prop where the
+prop is the render source on every drag tick.
 
-**Why rejected.** Drag interactions fire at ~60Hz. A controlled `sizes`
-prop means every tick goes through consumer `setState` → re-render of the
-consumer's tree. For an app-shell layout wrapping a large React tree
-that's a real performance cost for no semantic win — splitter sizes are
-UI ergonomics, not data the rest of the app needs to react to mid-drag.
-`onSizesChangeEnd` gives a settled value once per interaction, which is
-all persistence needs (no debounce). Collapse, by contrast, is discrete
-and low-frequency, so the 60Hz argument does not apply — it gets the full
-controlled pair so any control in the app can drive it.
+**Why rejected.** Drag fires at ~60Hz. A live-controlled `sizes` prop
+means every tick goes through consumer `setState` → re-render of the
+consumer's tree, because the handle can only move once the prop comes
+back. For an app-shell wrapping a large React tree that's a real cost for
+no semantic win — splitter sizes are UI ergonomics, not data the rest of
+the app reacts to mid-drag.
 
-**Cost accepted.** Sizes can't be force-set from outside via a prop.
-That is acceptable: the only real cross-subtree need is collapse (a
-toolbar button collapsing the nav), which the controlled `collapsedPane`
-prop covers — see Decision 6.
+**What we adopted instead.** An optional **settle-only** controlled
+`sizes` prop. Internal state stays the render source and the authority
+*during* interaction (drag/keyboard need no consumer feedback, so the
+60Hz cost above never applies), and the prop is reconciled into state
+only when it *changes* (the settle seam) — mirroring the `collapsedPane`
+controlled pattern. `onSizesChange`/`onSizesChangeEnd` are unchanged.
+This unlocks in-place, per-breakpoint layout control without remounting
+panes (a `key` swap would tear down pane content), which `defaultSizes` +
+`onSizesChangeEnd` alone cannot do. Collapse remains a separate
+controlled pair (Decision 6).
+
+**Details.** Reconcile is effect-based, so a consumer that sets `sizes`
+but ignores `onSizesChangeEnd` keeps the last interactive value (no
+snap-back) and behaves as uncontrolled thereafter — dev-warned. Inbound
+values are normalized to sum 100 but not `minSize`-clamped (the next
+interaction re-clamps). When both `sizes` and `collapsedPane` are
+controlled and disagree, collapse wins for the collapsed pane.
 
 ## Decision 5: Persistence is consumer-wired, not baked in
 

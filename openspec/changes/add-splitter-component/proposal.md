@@ -127,16 +127,17 @@ consumers.
 Each splitter is independently persistable, independently collapsible,
 and independently announced to assistive tech.
 
-### Sizes are uncontrolled
+### Sizes are uncontrolled by default, optionally controllable
 
 - `defaultSizes: Record<string, number>` (read once on mount, normalized to
   sum 100, full float precision), `onSizesChange` (live, every drag tick),
   and `onSizesChangeEnd` (fires once when an interaction settles — the
-  persistence seam, no debounce needed). There is no `sizes` prop.
-- Drag fires at ~60Hz; forcing controlled sizes would re-render the
-  consumer's tree on every tick for no semantic gain. `onSizesChangeEnd`
-  delivers the settled value once per interaction, which is all persistence
-  needs.
+  persistence seam, no debounce needed).
+- An optional `sizes` prop adds **settle-only** controlled behaviour: internal
+  state drives the layout during interaction (no per-tick consumer feedback, so
+  no ~60Hz re-render), and the prop is reconciled in when it changes. This lets
+  consumers swap proportions per breakpoint in place — no remount, so pane
+  content (scroll, focus) survives, which a `key` swap could not preserve.
 
 ### Per-pane configuration on Root
 
@@ -200,9 +201,6 @@ and independently announced to assistive tech.
   N-pane" above.
 - **No cascading resize.** Not needed without N-pane; `minSize` simply
   clamps at the boundary.
-- **No controlled `sizes` prop.** Drag fires at ~60Hz; forcing controlled
-  state means every tick re-renders the consumer's tree. Uncontrolled sizes
-  plus `onSizesChangeEnd` cover every real use case without that cost.
 - **No multi-unit sizes** (px / rem / vh). Percentages only. Mixing units
   requires a constraint solver and matches no pattern in Nimbus.
 - **No baked-in persistence.** No `autoSaveId`, no bundled persistence hook;

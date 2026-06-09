@@ -708,6 +708,73 @@ export const ControlledCollapseRestore: Story = {
 };
 
 // ============================================================
+// Controlled sizes — a button outside the splitter sets `sizes`; the layout
+// updates in place (no remount), so stateful pane content is preserved. Drag /
+// keyboard stay live internally and settle through onSizesChangeEnd.
+// ============================================================
+
+const ControlledSizesComponent = () => {
+  const [sizes, setSizes] = useState<Record<string, number>>({
+    nav: 30,
+    main: 70,
+  });
+  return (
+    <Stack gap="400" h="500px">
+      <Button
+        onPress={() => setSizes({ nav: 60, main: 40 })}
+        data-testid="set-sizes-btn"
+      >
+        Set nav to 60
+      </Button>
+      <Splitter.Root
+        sizes={sizes}
+        onSizesChangeEnd={setSizes}
+        panes={{ nav: { minSize: 10 }, main: { minSize: 10 } }}
+      >
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav">
+            {/* Uncontrolled input: its value survives only if the pane is not
+                remounted when `sizes` changes in place. */}
+            <input data-testid="nav-input" aria-label="Note" defaultValue="" />
+          </DemoPane>
+        </Splitter.Pane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main" />
+        </Splitter.Pane>
+      </Splitter.Root>
+    </Stack>
+  );
+};
+
+export const ControlledSizes: Story = {
+  render: () => <ControlledSizesComponent />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
+    });
+
+    // Give the pane's input state that a remount would lose.
+    const input = canvas.getByTestId<HTMLInputElement>("nav-input");
+    await userEvent.type(input, "preserve-me");
+    expect(input).toHaveValue("preserve-me");
+
+    // External control sets sizes; the layout reflects it in place.
+    await userEvent.click(canvas.getByTestId("set-sizes-btn"));
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(60);
+    });
+
+    // The input kept its value → the pane was not remounted.
+    expect(canvas.getByTestId<HTMLInputElement>("nav-input")).toHaveValue(
+      "preserve-me"
+    );
+  },
+};
+
+// ============================================================
 // Resize is locked while a pane is collapsed — drag + arrow/Home/End do
 // nothing and the pane stays at collapsedSize. It's reopened via Enter,
 // double-click, or the controlled prop, never by resizing.

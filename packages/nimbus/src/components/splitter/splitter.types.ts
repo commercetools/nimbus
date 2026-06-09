@@ -115,8 +115,26 @@ export type SplitterRootProps = OmitInternalProps<SplitterRootSlotProps> & {
    *
    * Static, non-persisted per-pane configuration (`minSize`, `collapsible`,
    * `collapsedSize`) lives separately in `panes`, keyed by the same ids.
+   *
+   * For the controlled counterpart (drive sizes from outside and reflect
+   * external changes in place), see `sizes`. Provide one or the other, not both.
    */
   defaultSizes?: Record<string, number>;
+
+  /**
+   * Controlled pane proportions, keyed by pane id (normalized to sum 100). When
+   * provided, the splitter is controlled for size: it renders these proportions
+   * and reflects external changes in place (no remount). Control is **settled,
+   * not live** — drag and keyboard update the layout smoothly from internal
+   * state and notify once per interaction via `onSizesChangeEnd`; there is no
+   * per-tick feedback requirement. Wire `onSizesChangeEnd` and feed the value
+   * back to stay controlled — if you don't, the splitter keeps the last
+   * interactive value and behaves as uncontrolled from then on (no snap-back).
+   *
+   * Mutually exclusive with `defaultSizes`. Inbound values are normalized to
+   * sum 100 but not clamped to `minSize` (the next interaction re-clamps).
+   */
+  sizes?: Record<string, number>;
 
   /**
    * Notification callback fired on every size change, including each drag tick

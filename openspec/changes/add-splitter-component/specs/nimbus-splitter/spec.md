@@ -63,9 +63,10 @@ unique string `id`, and exactly one `Splitter.Handle` between them.
 
 ### Requirement: Uncontrolled state model
 
-The component SHALL own its `sizes` state internally and expose it only via
+By default the component SHALL own its `sizes` state internally, exposed via
 `defaultSizes` (initial value, read once), `onSizesChange` (live notification),
-and `onSizesChangeEnd` (settled notification).
+and `onSizesChangeEnd` (settled notification). For the optional controlled
+counterpart, see "Optional controlled `sizes` prop".
 
 #### Scenario: Initial sizes from `defaultSizes`
 
@@ -404,17 +405,43 @@ and `handle`, plus variants for `size` (`sm` / `md` / `lg`) and `orientation`
 - **THEN** SHALL render the focus ring via the recipe's `_focusVisible` selector
 - **AND** SHALL NOT render the focus ring on mouse-click focus
 
-### Requirement: No controlled `sizes` prop
+### Requirement: Optional controlled `sizes` prop
 
-The component SHALL NOT accept a `sizes` prop. Sizes stay uncontrolled (drag
-performance); persistence is via `onSizesChangeEnd` + storage, and cross-subtree
-collapse is via the controlled `collapsedPane` prop.
+The component MAY be controlled for size via an optional `sizes` prop — the
+controlled counterpart to `defaultSizes`, mutually exclusive with it. Control is
+**settle-only**: internal sizes stay authoritative during interaction
+(drag/keyboard update live, with no consumer feedback), and the prop is
+reconciled into state when it changes.
 
-#### Scenario: Passing `sizes` is rejected at the type level
+#### Scenario: Controlled `sizes` reflects external changes in place
 
-- **WHEN** consumer attempts `<Splitter.Root sizes={…}>`
-- **THEN** TypeScript SHALL emit a compile error (no `sizes` prop in
-  `SplitterRootProps`)
+- **GIVEN** the consumer renders `<Splitter.Root sizes={state} …>`
+- **WHEN** code outside the splitter sets `state` to new proportions
+- **THEN** SHALL render at the new proportions WITHOUT remounting the panes
+  (pane content — scroll, focus, inputs — is preserved)
+- **AND** SHALL normalize the incoming value to sum 100 (no `minSize` clamp)
+
+#### Scenario: Settle-only notification
+
+- **WHEN** the user drags or uses the keyboard on a controlled splitter
+- **THEN** SHALL update the layout live from internal state (no per-tick consumer
+  feedback required)
+- **AND** SHALL call `onSizesChangeEnd` once when the interaction settles
+
+#### Scenario: Ignoring `onSizesChangeEnd` falls back to uncontrolled
+
+- **GIVEN** `sizes` is set but `onSizesChangeEnd` is not wired (or not fed back)
+- **WHEN** the user resizes
+- **THEN** SHALL keep the last interactive value (no snap-back) and behave as
+  uncontrolled thereafter
+- **AND** SHALL emit a development-time warning
+
+#### Scenario: Collapse takes precedence over controlled `sizes`
+
+- **GIVEN** both `sizes` and `collapsedPane` are controlled
+- **WHEN** a pane is collapsed
+- **THEN** the collapsed pane SHALL stay at its `collapsedSize`, and the
+  controlled `sizes` SHALL govern the expanded proportions (applied on expand)
 
 ### Requirement: WCAG 2.1 AA compliance
 
