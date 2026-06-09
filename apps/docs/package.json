@@ -18,7 +18,7 @@
     "@emotion/react": "catalog:react",
     "@internationalized/date": "catalog:react",
     "@mdx-js/mdx": "^3.1.1",
-    "@types/mdx": "^2.0.13",
+    "@types/mdx": "^2.0.14",
     "@types/react-syntax-highlighter": "^15.5.13",
     "@types/slug": "^5.0.9",
     "chokidar": "^5.0.0",
