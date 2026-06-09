@@ -42,7 +42,9 @@ const App = () => (
 
 - The handle is keyboard-reachable in DOM order and operable with the arrow
   keys, Home/End, and Enter; it is removed from the tab order only when the
-  splitter is `isDisabled`.
+  splitter is `isDisabled`. While a pane is collapsed, the resize keys (arrows,
+  Home/End) are inactive — Enter still toggles collapse — because a collapsed
+  pane sits below its `minSize` and has no valid in-range position to resize to.
 - The handle exposes `role="separator"` with `aria-orientation`, `aria-valuenow`
   (rounded for assistive technology), `aria-valuemin`, `aria-valuemax`,
   `aria-valuetext` (the size as a percentage), and `aria-controls` referencing
