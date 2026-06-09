@@ -66,6 +66,10 @@ export type FloatingActionButtonProps = Omit<
      */
     "aria-label": string;
     /**
+     * Icon to display inside the button.
+     */
+    children: React.ReactNode;
+    /**
      * Data attributes for testing or custom metadata
      */
     [key: `data-${string}`]: unknown;

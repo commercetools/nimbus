@@ -1,4 +1,5 @@
 import figma from "@figma/code-connect/react";
+import { Chat as ChatIcon } from "@commercetools/nimbus-icons";
 import { FloatingActionButton } from "./floating-action-button";
 
 figma.connect(
@@ -10,7 +11,7 @@ figma.connect(
     },
     example: (props) => (
       <FloatingActionButton aria-label="Action" isDisabled={props.isDisabled}>
-        {/* icon */}
+        <ChatIcon />
       </FloatingActionButton>
     ),
   }
