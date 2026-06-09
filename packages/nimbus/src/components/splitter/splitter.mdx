@@ -122,6 +122,55 @@ const App = () => (
 );
 ```
 
+### Collapse
+
+A pane can be made collapsible so a region — usually a sidebar or aside — can be
+hidden and brought back. Collapsing animates the boundary to the pane's
+collapsed size: fully hidden by default, or a thin rail when a collapsed size is
+set. The freed space goes to the partner pane. Surface a visible control (a
+button) to toggle it; on the handle, Enter toggles collapse and double-click
+restores the default split.
+
+```jsx live
+const App = () => {
+  const [collapsed, setCollapsed] = useState(null);
+
+  return (
+    <Stack direction="column" gap="300">
+      <Button
+        alignSelf="start"
+        onPress={() => setCollapsed((c) => (c === "nav" ? null : "nav"))}
+      >
+        {collapsed === "nav" ? "Show nav" : "Hide nav"}
+      </Button>
+      <Box height="240px" width="100%" borderWidth="25" borderColor="neutral.6">
+        <Splitter.Root
+          defaultSizes={{ nav: 30, main: 70 }}
+          panes={{
+            nav: { minSize: 12, collapsible: true },
+            main: { minSize: 20 },
+          }}
+          collapsedPane={collapsed}
+          onCollapsedPaneChange={setCollapsed}
+        >
+          <Splitter.Pane id="nav">
+            <Box p="400" bg="indigo.3" h="100%">
+              <Text>Nav</Text>
+            </Box>
+          </Splitter.Pane>
+          <Splitter.Handle />
+          <Splitter.Pane id="main">
+            <Box p="400" bg="amber.3" h="100%">
+              <Text>Main</Text>
+            </Box>
+          </Splitter.Pane>
+        </Splitter.Root>
+      </Box>
+    </Stack>
+  );
+};
+```
+
 ## Guidelines
 
 ### Best practices
