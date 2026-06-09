@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { extractStyleProps } from "@/utils";
 import { SplitterRootSlot } from "../splitter.slots";
@@ -55,15 +56,19 @@ export const SplitterRoot = ({
     onCollapsedPaneChange,
   });
 
-  // Dev-time warning: the Splitter primitive is strictly 2-pane.
-  if (process.env.NODE_ENV !== "production") {
-    const paneCount = contextValue.paneOrder.length;
+  // Dev-time warning: the Splitter primitive is strictly 2-pane. Evaluated in
+  // an effect (not during render) so it fires after pane registration settles —
+  // panes register via effects, so a transient 1-pane commit (StrictMode
+  // double-invoke, staggered child mounts) is normal and must not warn.
+  const paneCount = contextValue.paneOrder.length;
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
     if (paneCount > 0 && paneCount !== 2) {
       console.warn(
         `[Splitter] Expected exactly 2 <Splitter.Pane> children, got ${paneCount}. The Splitter primitive is 2-pane; nest a second Splitter inside a Pane for 3+ regions.`
       );
     }
-  }
+  }, [paneCount]);
 
   return (
     <SplitterContext.Provider value={contextValue}>

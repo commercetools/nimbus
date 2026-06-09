@@ -2,7 +2,14 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { Box, Button, Heading, ScrollArea, Stack } from "@commercetools/nimbus";
-import { userEvent, within, expect, fn, waitFor } from "storybook/test";
+import {
+  userEvent,
+  within,
+  expect,
+  fn,
+  waitFor,
+  fireEvent,
+} from "storybook/test";
 import { Splitter } from "./splitter";
 
 /**
@@ -175,6 +182,90 @@ export const KeyboardInteraction: Story = {
     await userEvent.keyboard("{End}");
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(80);
+    });
+  },
+};
+
+// ============================================================
+// Pointer drag (useMove) — dragging the handle resizes the panes and fires
+// the live (onSizesChange) + settled (onSizesChangeEnd) channels. Covers the
+// pointer path that the keyboard / collapse stories don't exercise.
+// ============================================================
+
+export const PointerDragResize: Story = {
+  args: {
+    orientation: "horizontal",
+    defaultSizes: { nav: 30, main: 70 },
+    panes: {
+      nav: { minSize: 10 },
+      main: { minSize: 10 },
+    },
+    onSizesChange: fn(),
+    onSizesChangeEnd: fn(),
+  },
+  render: (args) => (
+    <Box h="600px">
+      <Splitter.Root {...args}>
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav" />
+        </Splitter.Pane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main" />
+        </Splitter.Pane>
+      </Splitter.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
+    });
+
+    const rect = handle.getBoundingClientRect();
+    const startX = rect.x + rect.width / 2;
+    const y = rect.y + rect.height / 2;
+
+    // Press on the handle, drag right in steps, release. react-aria's useMove
+    // matches events by a single pointerId and derives the delta from pageX
+    // (=== clientX at scroll 0), so the sequence shares one pointerId and
+    // carries changing client coords. fireEvent gives that precise control;
+    // userEvent.pointer doesn't supply a stable pageX, so the delta reads 0.
+    const pointer = { pointerId: 1, pointerType: "mouse", button: 0 };
+    fireEvent.pointerDown(handle, { ...pointer, clientX: startX, clientY: y });
+    fireEvent.pointerMove(document, {
+      ...pointer,
+      clientX: startX + 60,
+      clientY: y,
+    });
+    fireEvent.pointerMove(document, {
+      ...pointer,
+      clientX: startX + 120,
+      clientY: y,
+    });
+    fireEvent.pointerUp(document, {
+      ...pointer,
+      clientX: startX + 120,
+      clientY: y,
+    });
+
+    // Live channel fired and the boundary moved right (nav grew past 30%).
+    await waitFor(() => {
+      expect(args.onSizesChange).toHaveBeenCalled();
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBeGreaterThan(30);
+    });
+
+    // Drag stayed within the announced upper bound.
+    const now = Number(handle.getAttribute("aria-valuenow"));
+    expect(now).toBeLessThanOrEqual(
+      Number(handle.getAttribute("aria-valuemax"))
+    );
+
+    // Settled channel fired on pointer release (the persistence seam).
+    await waitFor(() => {
+      expect(args.onSizesChangeEnd).toHaveBeenCalled();
     });
   },
 };
@@ -460,6 +551,17 @@ export const CollapsibleByKeyboard: Story = {
       expect(args.onCollapsedPaneChange).toHaveBeenCalledWith("nav");
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(0);
     });
+
+    // Regression: bounds are collapse-aware, so the collapsed value (0) stays
+    // within [valuemin, valuemax]. nav is collapsible → valuemin = min(10, 0) = 0;
+    // main has minSize 20 and isn't collapsible → valuemax = 100 - 20 = 80.
+    const min = Number(handle.getAttribute("aria-valuemin"));
+    const max = Number(handle.getAttribute("aria-valuemax"));
+    const now = Number(handle.getAttribute("aria-valuenow"));
+    expect(min).toBe(0);
+    expect(max).toBe(80);
+    expect(now).toBeGreaterThanOrEqual(min);
+    expect(now).toBeLessThanOrEqual(max);
 
     await userEvent.keyboard("{Enter}");
     await waitFor(() => {
