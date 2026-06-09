@@ -4,13 +4,9 @@ import { useSplitterContext } from "../hooks/use-splitter-context";
 import type { SplitterPaneProps } from "../splitter.types";
 
 /**
- * A resizable region inside a `Splitter.Root`. Carries only the pane's `id`
- * and content — all per-pane configuration (size, constraints, collapsibility)
- * lives on `Splitter.Root` in the `panes` map keyed by this `id`.
- *
- * The pane registers with the parent splitter on mount; until both panes are
- * registered, sizes default to 0% (a single paint, then the splitter
- * derives initial sizes).
+ * A resizable region inside a `Splitter.Root`. Carries only its `id` and
+ * content — all per-pane configuration lives on `Splitter.Root`'s `panes` map,
+ * keyed by this `id`.
  *
  * @supportsStyleProps
  */

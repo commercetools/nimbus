@@ -20,12 +20,9 @@ import type { SplitterHandleProps } from "../splitter.types";
 
 /**
  * Interactive `role="separator"` between two `Splitter.Pane`s, exposing the W3C
- * window-splitter ARIA value attributes. Takes no per-handle config — that lives
- * on `Splitter.Root`.
- *
- * Thin assembler: resolves the adjacent pane pair, then delegates behaviour to
- * `useHandleResize` (pointer drag), `useHandleKeyboard` (arrow/Home/End/Enter),
- * and `computeAriaBounds` (collapse-aware min/max).
+ * window-splitter ARIA value attributes. Takes no per-handle config (that lives
+ * on `Splitter.Root`); delegates drag, keyboard, and ARIA bounds to focused
+ * hooks/utils.
  *
  * @supportsStyleProps
  */
