@@ -19,45 +19,13 @@ import { splitterMessagesStrings } from "../splitter.messages";
 import type { SplitterHandleProps } from "../splitter.types";
 
 /**
- * Interactive separator between two `Splitter.Pane`s. Carries no per-handle
- * configuration — `keyboardStep`, `isDoubleClickDisabled`, `isDisabled`, and the
- * default `aria-label` are configured on `Splitter.Root`.
+ * Interactive `role="separator"` between two `Splitter.Pane`s, exposing the W3C
+ * window-splitter ARIA value attributes. Takes no per-handle config — that lives
+ * on `Splitter.Root`.
  *
- * This component is the thin assembler: it resolves the two adjacent panes from
- * DOM order, delegates resize and keyboard behaviour to focused hooks, and wires
- * up the ARIA separator attributes. The mechanics live alongside it:
- * - `useHandleResize` — pointer drag (px→%) + the clamped `applyDelta` writer.
- * - `useHandleKeyboard` — arrow / Home / End / Enter handling.
- * - `computeAriaBounds` — the collapse-aware `aria-valuemin` / `aria-valuemax`.
- *
- * ARIA model (W3C window splitter):
- * - `role="separator"` with `aria-orientation` mirroring `Splitter.Root`.
- * - `aria-valuenow` is the previous pane's size (rounded for AT only — the
- *   underlying size keeps full float precision).
- * - `aria-valuemin` / `aria-valuemax` are the lowest / highest position the
- *   boundary can occupy (see `computeAriaBounds`). They stay collapse-aware so
- *   `aria-valuenow` remains in range when a pane is collapsed below `minSize`.
- * - `aria-valuetext` announces the size as a percentage.
- * - `aria-controls` is the DOM id of the previous Pane sibling.
- *
- * Keyboard (see `useHandleKeyboard`):
- * - Arrow keys move the boundary by `Splitter.Root.keyboardStep` (orientation-aware).
- * - Home / End jump the boundary to the active min / max.
- * - Enter toggles collapse of the adjacent collapsible pane.
- *
- * Pointer (see `useHandleResize`):
- * - Drag via `useMove` from react-aria (live `onSizesChange`; settled
- *   `onSizesChangeEnd` on drag end).
- * - Double-click restores the boundary to the initial sizes resolved on mount
- *   (gated by `Splitter.Root.isDoubleClickDisabled`). Decoupled from collapse.
- *
- * Resize lock while collapsed:
- * - When a pane is collapsed the boundary sits at `collapsedSize`, below the
- *   pane's `minSize` — inside the intentionally-invalid `[collapsedSize,
- *   minSize)` range. Any drag or arrow/Home/End keypress could only snap
- *   straight to `minSize`, so resizing is disabled while collapsed. The pane is
- *   reopened via Enter (toggle), double-click (restore), or the controlled
- *   `collapsedPane` prop — never by dragging.
+ * Thin assembler: resolves the adjacent pane pair, then delegates behaviour to
+ * `useHandleResize` (pointer drag), `useHandleKeyboard` (arrow/Home/End/Enter),
+ * and `computeAriaBounds` (collapse-aware min/max).
  *
  * @supportsStyleProps
  */
@@ -103,10 +71,9 @@ export const SplitterHandle = ({
   );
   const panes: HandlePanePair = { prevId, nextId, hasPair, prevCfg, nextCfg };
 
-  // While a pane is collapsed the boundary sits at `collapsedSize` (below
-  // `minSize`), so any resize could only snap to `minSize`. Lock drag + keyboard
-  // resizing while collapsed; reopen via Enter, double-click, or the controlled
-  // prop. See the JSDoc above.
+  // A collapsed pane sits below its `minSize`, so any resize could only snap
+  // back to `minSize` — lock resizing while collapsed (reopen via Enter,
+  // double-click, or the controlled prop).
   const isResizeLocked = collapsedPane !== null;
 
   const { moveProps, applyDelta } = useHandleResize({

@@ -14,16 +14,9 @@ type UseHandleKeyboardOptions = {
 };
 
 /**
- * Owns the handle's keyboard model (W3C window splitter):
- *
- * - Arrow keys move the boundary by `keyboardStep` (orientation-aware:
- *   left/right when horizontal, up/down when vertical).
- * - Home / End jump the boundary to the active min / max.
- * - Enter toggles collapse of the adjacent collapsible pane (drives the
- *   uncontrolled collapse state, or fires `onCollapsedPaneChange` when
- *   controlled).
- *
- * Each keypress commits (settled channel), unlike a live drag tick.
+ * Owns the handle's keyboard model (W3C window splitter): orientation-aware
+ * arrow keys move by `keyboardStep`, Home/End jump to min/max, Enter toggles
+ * collapse. Each keypress commits (settled), unlike a live drag tick.
  */
 export const useHandleKeyboard = ({
   hasPair,
