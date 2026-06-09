@@ -49,6 +49,14 @@ const MOVE_TOLERANCE = 0.0001;
  * - Double-click restores the boundary to the initial sizes resolved on mount
  *   (gated by `Splitter.Root.isDoubleClickDisabled`). Decoupled from collapse.
  *
+ * Resize lock while collapsed:
+ * - When a pane is collapsed the boundary sits at `collapsedSize`, below the
+ *   pane's `minSize` — inside the intentionally-invalid `[collapsedSize,
+ *   minSize)` range. Any drag or arrow/Home/End keypress could only snap
+ *   straight to `minSize`, so resizing is disabled while collapsed. The pane is
+ *   reopened via Enter (toggle), double-click (restore), or the controlled
+ *   `collapsedPane` prop — never by dragging.
+ *
  * @supportsStyleProps
  */
 export const SplitterHandle = ({
@@ -109,13 +117,19 @@ export const SplitterHandle = ({
   const ariaValueMin = collapseFloor(prevCfg);
   const ariaValueMax = 100 - collapseFloor(nextCfg);
 
+  // While a pane is collapsed the boundary sits at `collapsedSize` (below
+  // `minSize`), so any resize could only snap to `minSize`. Lock drag + keyboard
+  // resizing while collapsed; reopen via Enter, double-click, or the controlled
+  // prop. See the ARIA-model JSDoc above.
+  const isResizeLocked = collapsedPane !== null;
+
   // Accumulate per-event deltas across a single drag so movements smaller than
   // MOVE_TOLERANCE aren't dropped — they build up until they clear the gate.
   const dragAccumRef = useRef(0);
 
   const applyDelta = useCallback(
     (delta: number, commit: boolean) => {
-      if (!hasPair || isDisabled) return;
+      if (!hasPair || isDisabled || isResizeLocked) return;
       const next = clampedResize({
         sizes,
         handlePanes: { prev: prevId!, next: nextId! },
@@ -134,6 +148,7 @@ export const SplitterHandle = ({
     [
       hasPair,
       isDisabled,
+      isResizeLocked,
       sizes,
       prevId,
       nextId,
@@ -155,7 +170,7 @@ export const SplitterHandle = ({
       dragAccumRef.current = 0;
     },
     onMove(e) {
-      if (!hasPair || isDisabled) return;
+      if (!hasPair || isDisabled || isResizeLocked) return;
       const parent = handleRef.current?.parentElement;
       if (!parent) return;
       const containerSize =
@@ -169,7 +184,7 @@ export const SplitterHandle = ({
       applyDelta(wholeDelta, false);
     },
     onMoveEnd() {
-      if (!hasPair || isDisabled) return;
+      if (!hasPair || isDisabled || isResizeLocked) return;
       // Settle: fire onSizesChangeEnd with the current sizes (the persistence seam).
       commitSizes();
     },
@@ -274,6 +289,7 @@ export const SplitterHandle = ({
       "aria-disabled": isDisabled || undefined,
       "data-focus-visible": isFocusVisible || undefined,
       "data-disabled": isDisabled || undefined,
+      "data-resize-locked": isResizeLocked || undefined,
       onKeyDown: handleKeyDown,
       onDoubleClick: handleDoubleClick,
       style: { ...positionStyle, ...style },

@@ -98,7 +98,7 @@ export const useSplitterState = (
     : internalCollapsed;
   // The collapsed pane whose size effect has already been applied. Lets the
   // reconciliation effect skip when sizes already reflect the collapse state,
-  // and lets drag-expand clear collapse without the effect fighting it.
+  // and lets an expand-by-resize clear collapse without the effect fighting it.
   const appliedCollapseRef = useRef<string | null>(
     defaultCollapsedPane ?? collapsedPaneProp ?? null
   );
@@ -112,9 +112,11 @@ export const useSplitterState = (
   );
 
   // Single low-level size writer. `commit` additionally fires onSizesChangeEnd.
-  // Also detects drag-expand: when the collapsed pane grows above its
-  // collapsedSize, collapse state is cleared (no size reconcile — sizes are
-  // already what the interaction set).
+  // Also detects expand-by-resize: when the collapsed pane grows above its
+  // collapsedSize (e.g. a controlled double-click restore writes the initial
+  // sizes), collapse state is cleared — no size reconcile, the sizes are already
+  // what the interaction set. (Resizing is locked while collapsed, so this is
+  // reached via restore, not drag.)
   const writeSizes = useCallback(
     (next: Record<string, number>, opts: { commit: boolean }) => {
       sizesRef.current = next;

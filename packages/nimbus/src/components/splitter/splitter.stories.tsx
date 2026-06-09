@@ -708,6 +708,104 @@ export const ControlledCollapseRestore: Story = {
 };
 
 // ============================================================
+// Resize is locked while a pane is collapsed — drag + arrow/Home/End do
+// nothing and the pane stays at collapsedSize. It's reopened via Enter,
+// double-click, or the controlled prop, never by resizing.
+// ============================================================
+
+export const ResizeLockedWhileCollapsed: Story = {
+  args: {
+    defaultSizes: { nav: 30, main: 70 },
+    panes: {
+      nav: { minSize: 15, collapsible: true, collapsedSize: 6 },
+      main: { minSize: 20 },
+    },
+    onSizesChange: fn(),
+    onSizesChangeEnd: fn(),
+    onCollapsedPaneChange: fn(),
+  },
+  render: (args) => (
+    <Box h="600px">
+      <Splitter.Root {...args}>
+        <Splitter.Pane id="nav">
+          <DemoPane bg="indigo.3" title="Nav (collapsible)" />
+        </Splitter.Pane>
+        <Splitter.Handle />
+        <Splitter.Pane id="main">
+          <DemoPane bg="amber.3" title="Main" />
+        </Splitter.Pane>
+      </Splitter.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+
+    // The fn() mocks are typed as the bare callback signatures on args, so cast
+    // to the mock type to read call state.
+    const onSizesChange = args.onSizesChange as unknown as ReturnType<
+      typeof fn
+    >;
+    const onSizesChangeEnd = args.onSizesChangeEnd as unknown as ReturnType<
+      typeof fn
+    >;
+    const onCollapsedPaneChange =
+      args.onCollapsedPaneChange as unknown as ReturnType<typeof fn>;
+
+    // Collapse nav to its rail (collapsedSize 6) via Enter.
+    handle.focus();
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => {
+      expect(onCollapsedPaneChange).toHaveBeenCalledWith("nav");
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(6);
+    });
+
+    const collapsedNow = Number(handle.getAttribute("aria-valuenow"));
+    // The handle advertises the locked state (drives the recipe's cursor reset).
+    expect(handle).toHaveAttribute("data-resize-locked", "true");
+
+    onSizesChange.mockClear();
+    onSizesChangeEnd.mockClear();
+    onCollapsedPaneChange.mockClear();
+
+    // Keyboard resize is locked: arrows / Home / End do nothing while collapsed.
+    await userEvent.keyboard("{ArrowRight}{ArrowRight}{End}{Home}");
+
+    // Pointer drag is locked too (same fireEvent technique as PointerDragResize).
+    const rect = handle.getBoundingClientRect();
+    const startX = rect.x + rect.width / 2;
+    const y = rect.y + rect.height / 2;
+    const pointer = { pointerId: 1, pointerType: "mouse", button: 0 };
+    fireEvent.pointerDown(handle, { ...pointer, clientX: startX, clientY: y });
+    fireEvent.pointerMove(document, {
+      ...pointer,
+      clientX: startX + 120,
+      clientY: y,
+    });
+    fireEvent.pointerUp(document, {
+      ...pointer,
+      clientX: startX + 120,
+      clientY: y,
+    });
+
+    // Nothing moved, nothing fired, and the pane is still collapsed.
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(collapsedNow);
+    });
+    expect(onSizesChange).not.toHaveBeenCalled();
+    expect(onSizesChangeEnd).not.toHaveBeenCalled();
+    expect(onCollapsedPaneChange).not.toHaveBeenCalled();
+
+    // Enter still expands — the lock blocks resizing, not the collapse toggle.
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => {
+      expect(onCollapsedPaneChange).toHaveBeenCalledWith(null);
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBeGreaterThan(6);
+    });
+  },
+};
+
+// ============================================================
 // Persistence — hydrate from any storage; persist on onSizesChangeEnd.
 // ============================================================
 

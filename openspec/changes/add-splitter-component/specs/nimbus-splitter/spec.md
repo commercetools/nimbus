@@ -139,6 +139,13 @@ id or `null`. Enter on the focused handle toggles collapse. Double-click is
 reserved for restoring the boundary to its initial position (see "Double-click
 restores defaults"), not for collapsing.
 
+While a pane is collapsed, resizing the boundary (drag and the arrow / Home /
+End keys) SHALL be disabled. A collapsed pane sits at its `collapsedSize`, below
+its `minSize` — inside the invalid `[collapsedSize, minSize)` range — so a resize
+could only snap straight to `minSize`. The pane is instead reopened via Enter
+(toggle), double-click (restore defaults), or the controlled `collapsedPane`
+prop.
+
 #### Scenario: Enter on focused handle toggles collapse
 
 - **GIVEN** sizes `{ nav: 30, main: 70 }` with `panes.nav.collapsible: true`
@@ -170,10 +177,17 @@ restores defaults"), not for collapsing.
 #### Scenario: `onCollapsedPaneChange(null)` fires when leaving collapsed state
 
 - **GIVEN** a collapsed pane (size === `collapsedSize`)
-- **WHEN** any operation (drag open, Enter, controlled prop) increases the
-  pane's size above `collapsedSize`
+- **WHEN** any operation (Enter toggle, double-click restore, controlled prop)
+  increases the pane's size above `collapsedSize`
 - **THEN** SHALL fire `onCollapsedPaneChange(null)` on Root exactly once for
   that transition
+
+#### Scenario: Resizing is disabled while a pane is collapsed
+
+- **GIVEN** a collapsed pane (size === `collapsedSize`)
+- **WHEN** the user drags the handle or presses an arrow / Home / End key
+- **THEN** SHALL NOT change the sizes
+- **AND** SHALL keep the pane collapsed (no `onCollapsedPaneChange`)
 
 ### Requirement: Double-click restores defaults
 

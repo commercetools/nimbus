@@ -77,6 +77,13 @@ export const splitterSlotRecipe = defineSlotRecipe({
         cursor: "default",
         _hover: { backgroundColor: "transparent" },
       },
+      "&[data-resize-locked='true']": {
+        // While a pane is collapsed the handle can't resize (see
+        // splitter.handle.tsx). Drop the resize cursor so the affordance matches
+        // the behavior; the track still shows on hover/focus so the handle stays
+        // discoverable for Enter (toggle) and double-click (restore).
+        cursor: "default",
+      },
     },
   },
   variants: {
