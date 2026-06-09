@@ -7,15 +7,11 @@ import type { SplitterPaneConfig } from "../splitter.types";
 
 /** The two panes a handle sits between, resolved from sibling DOM order. */
 export type HandlePanePair = {
-  /** Previous (left/top) pane id, if registered. */
   prevId?: string;
-  /** Next (right/bottom) pane id, if registered. */
   nextId?: string;
-  /** True once both `prevId` and `nextId` are present. */
+  /** True once both ids are present. */
   hasPair: boolean;
-  /** Config of the previous pane (empty object until registered). */
   prevCfg: SplitterPaneConfig;
-  /** Config of the next pane (empty object until registered). */
   nextCfg: SplitterPaneConfig;
 };
 
@@ -24,28 +20,17 @@ export type HandlePanePair = {
 const MOVE_TOLERANCE = 0.0001;
 
 type UseHandleResizeOptions = {
-  /** Ref to the handle element, used to measure the container for px→% conversion. */
+  /** Ref to the handle, used to measure the container for px→% conversion. */
   handleRef: RefObject<HTMLDivElement | null>;
-  /** The two panes this handle controls. */
   panes: HandlePanePair;
-  /**
-   * Resizing is locked while a pane is collapsed: the boundary sits below
-   * `minSize`, so any move could only snap back to `minSize`. See the
-   * `SplitterHandle` JSDoc.
-   */
+  /** Locked while a pane is collapsed (resize would only snap to `minSize`). */
   isResizeLocked: boolean;
 };
 
 /**
- * Owns the handle's resize mechanics:
- *
- * - `applyDelta(delta, commit)` clamps a percentage-point delta against both
- *   panes' `minSize` (via `clampedResize`) and writes it live (`setSizes`) or
- *   settled (`commitSizes`). Returned so the keyboard hook reuses the same
- *   clamped writer. No-op while disabled, unpaired, or collapse-locked.
- * - `moveProps` (react-aria `useMove`) handles pointer drag: it converts pixel
- *   deltas to a percentage of the container, accumulates movement below
- *   `MOVE_TOLERANCE` so slow drags aren't lost, and settles on drag end.
+ * Owns the handle's resize mechanics: `applyDelta` (a clamped size writer,
+ * returned so the keyboard hook reuses it) and `moveProps` (pointer drag via
+ * react-aria `useMove`, converting px deltas to container percentages).
  */
 export const useHandleResize = ({
   handleRef,

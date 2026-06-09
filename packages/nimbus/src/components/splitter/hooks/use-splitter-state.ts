@@ -124,11 +124,8 @@ export const useSplitterState = (
   );
 
   // Single low-level size writer. `commit` additionally fires onSizesChangeEnd.
-  // Also detects expand-by-resize: when the collapsed pane grows above its
-  // collapsedSize (e.g. a controlled double-click restore writes the initial
-  // sizes), collapse state is cleared — no size reconcile, the sizes are already
-  // what the interaction set. (Resizing is locked while collapsed, so this is
-  // reached via restore, not drag.)
+  // Also detects expand-by-resize: if the collapsed pane grows past its
+  // collapsedSize (e.g. a double-click restore), collapse state is cleared.
   const writeSizes = useCallback(
     (next: Record<string, number>, opts: { commit: boolean }) => {
       sizesRef.current = next;
@@ -232,13 +229,10 @@ export const useSplitterState = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collapsedPane, paneOrder]);
 
-  // Reconcile a controlled `sizes` prop into internal state at rest. Internal
-  // `sizes` stays the render source and the authority DURING interaction; this
-  // runs only when the PROP changes (the settle seam), never on a drag tick.
-  // Declared after the collapse effect so collapse (owner of appliedCollapseRef
-  // / preCollapseSizesRef) settles first when both change in one commit. The
-  // write is silent (no onSizesChange/End) — the value is the consumer's own,
-  // not a user interaction, mirroring how mount-time sizes don't fire callbacks.
+  // Reconcile a controlled `sizes` prop into internal state at rest — only when
+  // the prop changes, never on a drag tick (internal state stays authoritative
+  // during interaction). Declared after the collapse effect so collapse settles
+  // first. The write is silent (no callbacks): the value is the consumer's own.
   useEffect(() => {
     if (!isSizesControlled) return;
     if (paneOrder.length !== 2 || !hasInitializedRef.current) return;
