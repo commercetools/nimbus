@@ -378,7 +378,7 @@ const App = () => (
 
 ### Persistence
 
-Sizes are uncontrolled for drag performance, so persist them in your app with
+Sizes are uncontrolled by default, so persist them in your app with
 any storage: hydrate `defaultSizes` from stored state and write back in
 `onSizesChangeEnd` (it fires once per settled interaction — drag end, each
 keypress, collapse/expand, double-click restore — so no debouncing is needed).
@@ -404,6 +404,26 @@ const [collapsed, setCollapsed] = useLocalStorage("ide-collapsed", null);
 
 `onSizesChange` (live, every drag tick ~60Hz) is also available when you need a
 real-time read-out; prefer `onSizesChangeEnd` for persistence.
+
+### Controlled sizes
+
+Pass `sizes` instead of `defaultSizes` to drive the layout from outside — useful
+for responsive layouts that swap proportions per breakpoint, since external
+changes apply in place (no remount, so pane content keeps its scroll and focus).
+Control is settled, not live: drag and keyboard stay smooth from internal state
+and report once via `onSizesChangeEnd`. Wire that callback and feed the value
+back, or the splitter keeps the last interactive size and behaves as uncontrolled
+from then on.
+
+```tsx
+const [sizes, setSizes] = useState({ nav: 30, main: 70 });
+
+<Splitter.Root sizes={sizes} onSizesChangeEnd={setSizes}>
+  <Splitter.Pane id="nav">…</Splitter.Pane>
+  <Splitter.Handle />
+  <Splitter.Pane id="main">…</Splitter.Pane>
+</Splitter.Root>;
+```
 
 ### Pixel-precise sizes
 

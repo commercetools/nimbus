@@ -138,3 +138,18 @@
 - [x] 11.5 Lint passes
       (`pnpm lint -- packages/nimbus/src/components/splitter/`).
 - [x] 11.6 Add a changeset (minor bump on `@commercetools/nimbus`).
+
+## 12. Optional controlled `sizes`
+
+- [x] 12.1 Extract `normalizeSizes` + `sizesEqual` into `utils/` (with specs);
+      `deriveInitialSizes` reuses `normalizeSizes`.
+- [x] 12.2 Add `sizes?: Record<string, number>` to `SplitterRootProps`
+      (settle-only JSDoc) and thread it through `Splitter.Root`.
+- [x] 12.3 In `use-splitter-state.ts`, add settle-only controlled reconciliation:
+      controlled init seed, a prop-reconcile effect (after the collapse effect)
+      that writes silently at rest, collapse-precedence, and fire-once dev
+      warnings. `writeSizes`/`setSizes`/`commitSizes` unchanged.
+- [x] 12.4 Add a `ControlledSizes` story (asserts in-place change + pane content
+      survives) and a `controlled-sizes` consumer example in
+      `splitter.docs.spec.tsx`.
+- [x] 12.5 Document controlled sizes in `splitter.dev.mdx`; update the changeset.

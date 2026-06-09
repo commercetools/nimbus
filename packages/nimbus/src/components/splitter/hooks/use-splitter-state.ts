@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { deriveInitialSizes } from "../utils";
+import { deriveInitialSizes, normalizeSizes, sizesEqual } from "../utils";
 import type {
   SplitterContextValue,
   SplitterPaneConfig,
@@ -12,6 +12,8 @@ type UseSplitterStateOptions = {
   orientation: "horizontal" | "vertical";
   /** Explicit id-keyed initial sizes (read once on mount). */
   defaultSizes?: Record<string, number>;
+  /** Controlled id-keyed sizes (settle-only). When set, sizes are controlled. */
+  sizes?: Record<string, number>;
   /** Per-pane configuration map, keyed by pane id. */
   panes?: Record<string, SplitterPaneConfig>;
   /** Keyboard step in percentage points per arrow-key press. */
@@ -62,6 +64,7 @@ export const useSplitterState = (
   const {
     orientation,
     defaultSizes,
+    sizes: sizesProp,
     panes,
     keyboardStep,
     isDoubleClickDisabled,
@@ -82,6 +85,15 @@ export const useSplitterState = (
   // current value synchronously.
   const [sizes, setSizesState] = useState<Record<string, number>>({});
   const sizesRef = useRef<Record<string, number>>(sizes);
+
+  // Sizes: controlled (prop provided) or uncontrolled (internal state). Control
+  // is settle-only — internal `sizes` stays authoritative during interaction;
+  // the prop is reconciled in at rest by the effect below.
+  const isSizesControlled = sizesProp !== undefined;
+  // The controlled value the reconcile effect last acted on. Gates the effect
+  // against the *prop* changing, independent of internal drift.
+  const lastReconciledSizesRef = useRef<Record<string, number> | null>(null);
+  const didWarnControlledSizesRef = useRef(false);
 
   // Mount snapshot for double-click restore; pre-collapse snapshot for expand.
   const initialSizesRef = useRef<Record<string, number>>({});
@@ -164,8 +176,14 @@ export const useSplitterState = (
   useEffect(() => {
     if (paneOrder.length === 2 && !hasInitializedRef.current) {
       hasInitializedRef.current = true;
-      let initial = deriveInitialSizes(paneOrder, defaultSizes);
+      // Controlled `sizes` seeds the initial layout when present + valid; else
+      // the uncontrolled `defaultSizes` path (with its 50/50 fallback).
+      let initial =
+        (isSizesControlled && normalizeSizes(sizesProp, paneOrder)) ||
+        deriveInitialSizes(paneOrder, defaultSizes);
       initialSizesRef.current = initial;
+      // Seed against the raw prop so the reconcile effect's first run is a no-op.
+      lastReconciledSizesRef.current = sizesProp ?? null;
 
       const initCollapsed = collapsedPane;
       if (initCollapsed && paneOrder.includes(initCollapsed)) {
@@ -213,6 +231,57 @@ export const useSplitterState = (
     commitSizes({ [cur]: collapsedSize, [other]: 100 - collapsedSize });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collapsedPane, paneOrder]);
+
+  // Reconcile a controlled `sizes` prop into internal state at rest. Internal
+  // `sizes` stays the render source and the authority DURING interaction; this
+  // runs only when the PROP changes (the settle seam), never on a drag tick.
+  // Declared after the collapse effect so collapse (owner of appliedCollapseRef
+  // / preCollapseSizesRef) settles first when both change in one commit. The
+  // write is silent (no onSizesChange/End) — the value is the consumer's own,
+  // not a user interaction, mirroring how mount-time sizes don't fire callbacks.
+  useEffect(() => {
+    if (!isSizesControlled) return;
+    if (paneOrder.length !== 2 || !hasInitializedRef.current) return;
+    // Prop unchanged since last reconcile → nothing to do. Covers the post-init
+    // no-op and the "consumer never feeds the value back" case (no snap-back).
+    if (sizesEqual(sizesProp, lastReconciledSizesRef.current)) return;
+
+    const normalized = normalizeSizes(sizesProp, paneOrder);
+    if (!normalized) return; // malformed input → ignore, keep internal state
+    lastReconciledSizesRef.current = sizesProp ?? null;
+
+    // Collapse owns the collapsed pane's size. While collapsed, don't overwrite
+    // the collapsed layout — stash the controlled value as the expand target so
+    // a later expand restores it.
+    if (collapsedPane !== null) {
+      preCollapseSizesRef.current = normalized;
+      return;
+    }
+
+    // Internal already matches (e.g. consumer fed back the emitted value) → no
+    // write. `sizes` is not a dep, so a silent write can't re-trigger this.
+    if (sizesEqual(normalized, sizesRef.current)) return;
+    sizesRef.current = normalized;
+    setSizesState(normalized);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sizesProp, paneOrder, collapsedPane]);
+
+  // Dev-time guidance on controlled-`sizes` misuse. Fires at most once.
+  useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    if (didWarnControlledSizesRef.current || !isSizesControlled) return;
+    if (defaultSizes !== undefined) {
+      didWarnControlledSizesRef.current = true;
+      console.warn(
+        "[Splitter] Both `sizes` (controlled) and `defaultSizes` (uncontrolled) were provided. `defaultSizes` is ignored — pass one or the other."
+      );
+    } else if (onSizesChangeEnd === undefined) {
+      didWarnControlledSizesRef.current = true;
+      console.warn(
+        "[Splitter] `sizes` is controlled but `onSizesChangeEnd` is not set. After a drag or keyboard resize the splitter keeps that value and behaves as uncontrolled. Wire `onSizesChangeEnd` and feed the value back to stay controlled."
+      );
+    }
+  }, [isSizesControlled, defaultSizes, onSizesChangeEnd]);
 
   const registerPane = useCallback((paneId: string, domId: string) => {
     setPaneOrder((order) =>

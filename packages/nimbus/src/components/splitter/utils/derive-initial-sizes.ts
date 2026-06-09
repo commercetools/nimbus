@@ -1,3 +1,5 @@
+import { normalizeSizes } from "./normalize-sizes";
+
 /**
  * Build the initial sizes record for a 2-pane splitter from `defaultSizes`.
  * There is a single initialization path:
@@ -23,21 +25,6 @@ export const deriveInitialSizes = (
   if (paneIds.length !== 2) return {};
   const [a, b] = paneIds as [string, string];
 
-  const da = defaultSizes?.[a];
-  const db = defaultSizes?.[b];
-  if (
-    typeof da === "number" &&
-    Number.isFinite(da) &&
-    typeof db === "number" &&
-    Number.isFinite(db)
-  ) {
-    const sum = da + db;
-    if (sum > 0) {
-      // Normalize to exactly 100 without rounding (preserve float precision).
-      return { [a]: (da / sum) * 100, [b]: (db / sum) * 100 };
-    }
-  }
-
-  // Equal split.
-  return { [a]: 50, [b]: 50 };
+  // Explicit defaults (normalized to sum 100) when usable, else an equal split.
+  return normalizeSizes(defaultSizes, paneIds) ?? { [a]: 50, [b]: 50 };
 };
