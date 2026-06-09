@@ -266,9 +266,15 @@ export const useSplitterState = (
       return;
     }
     if (collapsedPane !== null) {
-      appliedCollapseRef.current = null;
-      preCollapseSizesRef.current = null;
-      if (!isCollapseControlled) setInternalCollapsed(null);
+      // Only touch internal collapse bookkeeping when uncontrolled. In
+      // controlled mode the prop is the source of truth — resetting the refs
+      // here would desync them from a prop that hasn't changed yet; instead we
+      // just fire the callback so the consumer can clear `collapsedPane`.
+      if (!isCollapseControlled) {
+        appliedCollapseRef.current = null;
+        preCollapseSizesRef.current = null;
+        setInternalCollapsed(null);
+      }
       onCollapsedPaneChange?.(null);
     }
     commitSizes(initial);

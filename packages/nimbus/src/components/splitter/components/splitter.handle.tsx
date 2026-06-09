@@ -25,9 +25,15 @@ const MOVE_TOLERANCE = 0.0001;
  * - `role="separator"` with `aria-orientation` mirroring `Splitter.Root`.
  * - `aria-valuenow` is the previous pane's size (rounded for AT only — the
  *   underlying size keeps full float precision).
- * - `aria-valuemin` / `aria-valuemax` are derived from per-pane constraints:
- *     `min = panes.prev.minSize`
- *     `max = 100 − panes.next.minSize`
+ * - `aria-valuemin` / `aria-valuemax` are the lowest / highest position the
+ *   boundary can occupy, derived from per-pane constraints. The floor is a
+ *   pane's `minSize`, except for a collapsible pane whose `collapsedSize` is the
+ *   true minimum it can reach (the discrete collapse state, below `minSize`):
+ *     `min = collapseFloor(panes.prev)`
+ *     `max = 100 − collapseFloor(panes.next)`
+ *   where `collapseFloor(p) = p.collapsible ? min(p.minSize, p.collapsedSize) : p.minSize`.
+ *   Keeping the bounds collapse-aware means `aria-valuenow` stays truthful (it
+ *   reports the real collapsed size) without falling outside the range.
  * - `aria-valuetext` announces the size as a percentage.
  * - `aria-controls` is the DOM id of the previous Pane sibling.
  *
@@ -90,14 +96,21 @@ export const SplitterHandle = ({
     [nextId, getPaneConfig]
   );
 
-  // ARIA bounds derived from per-pane `minSize` (no separate maxSize — the
-  // upper bound is the complement of the partner's minSize).
+  // ARIA bounds = the lowest/highest position the boundary can occupy. The
+  // floor is a pane's `minSize`, except a collapsible pane can reach its
+  // `collapsedSize` (the discrete collapse state, below `minSize`) — so the
+  // announced bounds must include it to keep `aria-valuenow` in range when
+  // collapsed. No separate maxSize: the upper bound is the partner's complement.
   const prevSize = prevId ? (sizes[prevId] ?? 0) : 0;
-  const ariaValueMin = prevCfg.minSize ?? 0;
-  const ariaValueMax = 100 - (nextCfg.minSize ?? 0);
+  const collapseFloor = (cfg: typeof prevCfg) =>
+    cfg.collapsible
+      ? Math.min(cfg.minSize ?? 0, cfg.collapsedSize ?? 0)
+      : (cfg.minSize ?? 0);
+  const ariaValueMin = collapseFloor(prevCfg);
+  const ariaValueMax = 100 - collapseFloor(nextCfg);
 
-  // Track cumulative pixel deltas across a single drag so sub-pixel
-  // contributions don't round to zero on every event.
+  // Accumulate per-event deltas across a single drag so movements smaller than
+  // MOVE_TOLERANCE aren't dropped — they build up until they clear the gate.
   const dragAccumRef = useRef(0);
 
   const applyDelta = useCallback(
@@ -249,7 +262,7 @@ export const SplitterHandle = ({
     moveProps,
     focusProps,
     {
-      role: "separator",
+      // `role="separator"` comes from `separatorProps` (useSeparator) above.
       tabIndex: isDisabled ? -1 : 0,
       "aria-valuenow": roundedValueNow,
       "aria-valuemin": ariaValueMin,
