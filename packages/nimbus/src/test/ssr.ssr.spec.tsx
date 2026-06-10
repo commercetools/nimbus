@@ -83,6 +83,7 @@ import {
   ToggleButtonGroup,
   Toolbar,
   Tooltip,
+  RichTextInput,
   VisuallyHidden,
 } from "@/components";
 
@@ -98,6 +99,7 @@ import {
   SearchInputField,
   MultilineTextInputField,
   DateRangePickerField,
+  MoneyInputField,
 } from "@/patterns";
 
 function renderSSR(ui: React.ReactElement): string {
@@ -247,7 +249,7 @@ describe("SSR: typography and display", () => {
   });
 
   it("Avatar", () => {
-    expect(renderSSR(<Avatar name="Test User" />)).toBeTruthy();
+    expect(renderSSR(<Avatar firstName="Test" lastName="User" />)).toBeTruthy();
   });
 
   it("VisuallyHidden", () => {
@@ -265,7 +267,7 @@ describe("SSR: feedback components", () => {
   it("Alert", () => {
     expect(
       renderSSR(
-        <Alert.Root variant="info">
+        <Alert.Root variant="flat">
           <Alert.Description>message</Alert.Description>
         </Alert.Root>
       )
@@ -311,12 +313,8 @@ describe("SSR: buttons", () => {
   it("SplitButton", () => {
     expect(
       renderSSR(
-        <SplitButton>
-          <SplitButton.Action>action</SplitButton.Action>
-          <SplitButton.MenuTrigger aria-label="more" />
-          <SplitButton.Menu>
-            <SplitButton.MenuItem>item</SplitButton.MenuItem>
-          </SplitButton.Menu>
+        <SplitButton onAction={() => {}} aria-label="more actions">
+          <Menu.Item id="action">action</Menu.Item>
         </SplitButton>
       )
     ).toContain("action");
@@ -366,8 +364,9 @@ describe("SSR: form inputs", () => {
       renderSSR(
         <ScopedSearchInput
           aria-label="scoped search"
-          options={[{ id: "all", label: "All" }]}
+          options={[{ value: "all", label: "All" }]}
           value={{ option: "all", text: "" }}
+          onSubmit={() => {}}
         />
       )
     ).toBeTruthy();
@@ -378,10 +377,8 @@ describe("SSR: form inputs", () => {
       renderSSR(
         <MoneyInput
           aria-label="money"
-          currencies={[{ code: "EUR", label: "EUR" }]}
-          selectedCurrency="EUR"
-          onCurrencyChange={() => {}}
-          value={{ amount: "", currency: "EUR" }}
+          currencies={["EUR", "USD"]}
+          value={{ amount: "", currencyCode: "EUR" }}
         />
       )
     ).toBeTruthy();
@@ -562,7 +559,7 @@ describe("SSR: compound and overlay components", () => {
         <ModalPage.Header>
           <ModalPage.Title>Title</ModalPage.Title>
         </ModalPage.Header>
-        <ModalPage.Body>body</ModalPage.Body>
+        <ModalPage.Content>body</ModalPage.Content>
       </ModalPage.Root>
     );
     expect(html).toBeTruthy();
@@ -591,12 +588,7 @@ describe("SSR: navigation", () => {
   it("Pagination", () => {
     expect(
       renderSSR(
-        <Pagination
-          totalItems={100}
-          page={1}
-          onPageChange={() => {}}
-          onPerPageChange={() => {}}
-        />
+        <Pagination totalItems={100} currentPage={1} onPageChange={() => {}} />
       )
     ).toBeTruthy();
   });
@@ -627,26 +619,13 @@ describe("SSR: data display", () => {
   it("DataTable", () => {
     expect(
       renderSSR(
-        <DataTable.Root
+        <DataTable
           aria-label="data table"
-          columns={[{ id: "name", name: "Name", accessor: (row) => row.name }]}
+          columns={[
+            { id: "name", header: "Name", accessor: (row) => row.name },
+          ]}
           rows={[{ id: "1", name: "Alice" }]}
-        >
-          <DataTable.Table>
-            <DataTable.Header>
-              {(column) => (
-                <DataTable.ColumnHeader>{column.name}</DataTable.ColumnHeader>
-              )}
-            </DataTable.Header>
-            <DataTable.Body>
-              {(row) => (
-                <DataTable.Row>
-                  <DataTable.Cell>{row.name}</DataTable.Cell>
-                </DataTable.Row>
-              )}
-            </DataTable.Body>
-          </DataTable.Table>
-        </DataTable.Root>
+        />
       )
     ).toContain("Alice");
   });
@@ -714,6 +693,7 @@ describe("SSR: form structure", () => {
           aria-label="localized"
           defaultLocaleOrCurrency="en"
           valuesByLocaleOrCurrency={{ en: "hello" }}
+          onChange={() => {}}
         />
       )
     ).toBeTruthy();
@@ -797,6 +777,8 @@ describe("SSR: pattern components", () => {
         title="Confirm?"
         isOpen={false}
         onOpenChange={() => {}}
+        onConfirm={() => {}}
+        onCancel={() => {}}
       >
         <Text>Are you sure?</Text>
       </ConfirmationDialog>
@@ -819,7 +801,8 @@ describe("SSR: pattern components", () => {
         title="Edit"
         isOpen={false}
         onOpenChange={() => {}}
-        onSubmit={() => {}}
+        onSave={() => {}}
+        onCancel={() => {}}
       >
         <TextInput aria-label="name" />
       </FormDialog>
@@ -879,5 +862,28 @@ describe("SSR: pattern components", () => {
         <DateRangePickerField label="Date range" aria-label="date range" />
       )
     ).toBeTruthy();
+  });
+
+  it("MoneyInputField", () => {
+    expect(
+      renderSSR(
+        <MoneyInputField
+          label="Price"
+          aria-label="price"
+          currencies={["EUR", "USD"]}
+          value={{ amount: "", currencyCode: "EUR" }}
+        />
+      )
+    ).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Rich text
+// ---------------------------------------------------------------------------
+
+describe("SSR: rich text", () => {
+  it("RichTextInput", () => {
+    expect(renderSSR(<RichTextInput aria-label="rich text" />)).toBeTruthy();
   });
 });

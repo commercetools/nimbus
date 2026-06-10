@@ -8,7 +8,7 @@
 
 ## Overview
 
-Nimbus uses 3 test categories, each serving a distinct purpose and audience.
+Nimbus uses 4 test categories, each serving a distinct purpose and audience.
 
 ## The 4 Test Categories
 

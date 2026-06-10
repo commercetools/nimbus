@@ -43,6 +43,9 @@ jobs:
       - name: Check package shape
         run: pnpm check:package-shape
 
+      - name: Check "use client" directives
+        run: pnpm check:use-client
+
       - name: Clean temp before tests
         run: rm -rf /tmp/* || true
         shell: bash
