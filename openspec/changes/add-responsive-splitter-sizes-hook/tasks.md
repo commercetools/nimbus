@@ -10,9 +10,9 @@
       no percent), `ResponsiveSplitterSizeConfig`
       (`ResponsiveSplitterSizeValue` | a threshold-keyed map of it),
       `SplitterSizesStorage` (Storage-like `getItem`/`setItem`),
-      `UseResponsiveSplitterSizesOptions` (`orientation`, `resolveAgainst`
-      (required), `size`, optional `minSize`/`maxSize`/`collapsedSize`,
-      `persistKey`, `storage?`), and the return type
+      `UseResponsiveSplitterSizesOptions` (`orientation?`, `size`, optional
+      `minSize`/`maxSize`/`collapsedSize`, `persistKey`, `storage?`,
+      `onCollapsedChange?`), and the return type
       `UseResponsiveSplitterSizesResult`
       (`{ rootProps: { size, minSize, maxSize, collapsedSize, onSizeChangeEnd, ref, orientation } }`).
       JSDoc every field; state the `number = px` rule explicitly.
@@ -44,8 +44,7 @@
       arrives.
 - [x] 3.3 Guard width `0`/non-finite; never emit a non-finite size; re-resolve on
       the next positive measurement.
-- [x] 3.4 Make `resolveAgainst` required; accept only `"container"` in this
-      version (reserve `"viewport"` as an additive value — not implemented).
+- [x] 3.4 Always resolve against the container — no resolution-axis option.
 - [x] 3.5 Observe/unobserve cleanup-symmetric and StrictMode-safe (no leaked
       observers, no double-bind).
 

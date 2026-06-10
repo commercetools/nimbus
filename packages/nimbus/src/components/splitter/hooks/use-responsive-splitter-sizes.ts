@@ -47,7 +47,6 @@ const defaultStorage = createLocalStorageAdapter();
  * @example
  * const { rootProps } = useResponsiveSplitterSizes({
  *   orientation: "horizontal",
- *   resolveAgainst: "container",
  *   persistKey: "app:main-splitter",
  *   size: { 0: 320, 768: "30%" }, // 320px below 768px container width, 30% above
  * });

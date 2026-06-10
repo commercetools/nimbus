@@ -409,7 +409,6 @@ Spread its `rootProps` onto `Splitter.Root` and attach the `ref` it returns (the
 ```tsx
 const { rootProps } = useResponsiveSplitterSizes({
   orientation: "horizontal",
-  resolveAgainst: "container",
   persistKey: "app:main-splitter",
   size: 320, // a bare number is PIXELS
   minSize: 160,
@@ -438,7 +437,6 @@ the measured width wins; the smallest entry also applies below it.
 
 ```tsx
 const { rootProps } = useResponsiveSplitterSizes({
-  resolveAgainst: "container",
   size: { 0: 320, 768: "30%" }, // 320px below 768px container width, 30% above
 });
 ```

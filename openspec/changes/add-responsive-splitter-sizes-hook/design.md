@@ -49,8 +49,8 @@ written down; their findings are folded into the Decisions and Risks below.
   `Splitter.Handle`.
 - No live per-tick control — control stays settle-only; `onSizeChange` is not
   used to drive the controlled value.
-- No `resolveAgainst: "viewport"` mode in this version (reserved as an additive
-  seam).
+- No viewport-relative resolution — the hook always measures the splitter's own
+  container. (There is no `resolveAgainst` option.)
 - No pixel code path inside the component.
 - The hook does not fix or mask the component's first-paint `50/50` flash — that
   is a separate component change (see Risks).
@@ -83,20 +83,22 @@ This is accepted deliberately: the hook owns the **full** facade (`size` +
 a raw percentage onto the root, which closes the collision in practice. Docs
 state the rule prominently.
 
-### D3. Container-width threshold keys, with an explicit resolution axis
+### D3. Container-width threshold keys, container-only resolution
 
 Responsive config is an object whose keys are container **min-width** thresholds
 (pixel numbers or size tokens), resolved against the splitter's own width via a
 `ResizeObserver`. The active band is the largest threshold `≤` the measured
-width; the smallest entry also applies below it. `resolveAgainst` is **required**
-and is `"container"` in this version. **Why:** the hook resolves against the
-element, so keying by viewport breakpoint *names* would lie about what is
-measured; explicit pixel/token thresholds say what they mean. Making the axis an
-explicit, required option means a later `"viewport"` mode is additive and the
-same keys never silently reinterpret. *Alternative considered:* borrowing
-Chakra's breakpoint **condition names** (`sm`/`md`/…) as keys — rejected as
-viewport-coded and misleading for container resolution, and it would have
-coupled the hook to `theme/breakpoints.ts`.
+width; the smallest entry also applies below it. Resolution is **always against
+the container** — there is no `resolveAgainst` option. **Why:** the hook resolves
+against the element, so keying by viewport breakpoint *names* would lie about
+what is measured; explicit pixel/token thresholds say what they mean. Viewport
+resolution was considered and dropped: a one-value option is ceremony, and if a
+viewport variant is ever needed it is better introduced as its own explicitly
+named hook than as a mode flag that silently reinterprets the same threshold
+keys. *Alternative considered:* borrowing Chakra's breakpoint **condition
+names** (`sm`/`md`/…) as keys — rejected as viewport-coded and misleading for
+container resolution, and it would have coupled the hook to
+`theme/breakpoints.ts`.
 
 ### D4. Tokens resolve to pixels via a curated union + guard test
 
@@ -220,7 +222,3 @@ can land before, with, or after this hook.
 - Should the hook expose the resolved active band (e.g. a `rootProps` sibling
   like `activeThreshold`) for consumers who want to label the current size band?
   (Deferred unless a concrete need appears.)
-- For the `"viewport"` mode reserved by `resolveAgainst`, do pixel values still
-  measure the container (the only sensible source for px→% conversion) while the
-  *band* is selected by `matchMedia`? (Leaning yes; out of scope here, noted so
-  the seam is designed with it in mind.)

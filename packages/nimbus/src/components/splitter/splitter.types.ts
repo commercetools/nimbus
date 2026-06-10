@@ -325,15 +325,6 @@ export type ResponsiveSplitterSizeConfig =
     >;
 
 /**
- * The axis the active band is resolved against. `"container"` (the only value
- * in this version) observes the splitter's own width via `ResizeObserver`. The
- * option is explicit and required so a future `"viewport"` mode is purely
- * additive and the container-width threshold keys never silently change
- * meaning.
- */
-export type SplitterSizeResolveAgainst = "container";
-
-/**
  * Minimal `localStorage`-like interface the hook persists through. Injectable so
  * persistence can be redirected (tests, app-scoped stores) or disabled.
  */
@@ -354,11 +345,6 @@ export type UseResponsiveSplitterSizesOptions = {
    * @default "horizontal"
    */
   orientation?: "horizontal" | "vertical";
-
-  /**
-   * The resolution axis. Required; `"container"` in this version.
-   */
-  resolveAgainst: SplitterSizeResolveAgainst;
 
   /** Aside size config (pixels/token/percent, single value or per-threshold map). */
   size: ResponsiveSplitterSizeConfig;
