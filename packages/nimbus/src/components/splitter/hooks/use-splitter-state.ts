@@ -78,40 +78,57 @@ export const useSplitterState = (
     Partial<Record<SplitterPaneRole, string>>
   >({});
 
-  // Aside size state. Initialized lazily once both panes have registered; the
-  // ref mirrors state so settled-commit and collapse reconciliation read the
-  // current value synchronously.
-  const [size, setSizeState] = useState<number>(50);
-  const sizeRef = useRef<number>(size);
-
   // Size: controlled (prop provided) or uncontrolled (internal state). Control
   // is settle-only — internal `size` stays authoritative during interaction; the
   // prop is reconciled in at rest by the effect below.
   const isSizeControlled = sizeProp !== undefined;
-  // The controlled value the reconcile effect last acted on. Gates the effect
-  // against the *prop* changing, independent of internal drift.
-  const lastReconciledSizeRef = useRef<number | null>(null);
+  const isCollapseControlled = collapsedProp !== undefined;
+
+  // Initial layout, derived synchronously from props so the FIRST committed
+  // paint is correct — no 50/50 flash before an effect runs. Controlled `size`
+  // seeds the layout when present + valid; else the uncontrolled `defaultSize`
+  // path (with its 50/50 fallback). If the aside starts collapsed it shows
+  // `collapsedSize`, and the uncollapsed value is stashed as the expand target.
+  const initialBase =
+    (isSizeControlled ? normalizeSize(sizeProp) : null) ??
+    deriveInitialSize(defaultSize);
+  const initiallyCollapsed =
+    (collapsedProp ?? defaultCollapsed ?? false) && asideConfig.collapsible;
+  const initialDisplay = initiallyCollapsed
+    ? asideConfig.collapsedSize
+    : initialBase;
+
+  // Aside size state, seeded synchronously (above); the ref mirrors state so
+  // settled-commit and collapse reconciliation read the current value
+  // synchronously.
+  const [size, setSizeState] = useState<number>(initialDisplay);
+  const sizeRef = useRef<number>(initialDisplay);
+
+  // The controlled value the reconcile effect last acted on. Seeded to the raw
+  // prop so the effect's first run is a no-op; gates it against the *prop*
+  // changing, independent of internal drift.
+  const lastReconciledSizeRef = useRef<number | null>(sizeProp ?? null);
   const didWarnControlledSizeRef = useRef(false);
 
-  // Mount snapshot for double-click restore; pre-collapse snapshot for expand.
-  const initialSizeRef = useRef<number>(50);
-  const preCollapseSizeRef = useRef<number | null>(null);
-  const hasInitializedRef = useRef(false);
+  // Mount snapshot for double-click restore; pre-collapse snapshot for expand
+  // (seeded to the uncollapsed value when the aside starts collapsed).
+  const initialSizeRef = useRef<number>(initialBase);
+  const preCollapseSizeRef = useRef<number | null>(
+    initiallyCollapsed ? initialBase : null
+  );
 
   // Collapse: controlled (prop provided) or uncontrolled (internal state).
-  const isCollapseControlled = collapsedProp !== undefined;
   const [internalCollapsed, setInternalCollapsed] = useState<boolean>(
     defaultCollapsed ?? false
   );
   const collapsed = isCollapseControlled
     ? (collapsedProp ?? false)
     : internalCollapsed;
-  // Whether the size state already reflects the collapse state. Lets the
-  // reconciliation effect skip when sizes already match, and lets an
-  // expand-by-resize clear collapse without the effect fighting it.
-  const appliedCollapseRef = useRef<boolean>(
-    defaultCollapsed ?? collapsedProp ?? false
-  );
+  // Whether the size state already reflects the collapse state. Seeded to the
+  // initial collapse so the reconciliation effect's mount run is a no-op; lets
+  // it skip when sizes already match, and lets an expand-by-resize clear
+  // collapse without the effect fighting it.
+  const appliedCollapseRef = useRef<boolean>(initiallyCollapsed);
 
   // Single low-level size writer. `commit` additionally fires onSizeChangeEnd.
   // Also detects expand-by-resize: if the aside grows past its collapsedSize
@@ -158,39 +175,16 @@ export const useSplitterState = (
     [writeSize, onSizeChangeEnd]
   );
 
-  // Derive initial size once both panes register; apply initial collapse.
-  useEffect(() => {
-    if (bothRegistered(paneOrder) && !hasInitializedRef.current) {
-      hasInitializedRef.current = true;
-      // Controlled `size` seeds the initial layout when present + valid; else
-      // the uncontrolled `defaultSize` path (with its 50/50 fallback).
-      const controlledInitial = isSizeControlled
-        ? normalizeSize(sizeProp)
-        : null;
-      let initial = controlledInitial ?? deriveInitialSize(defaultSize);
-      initialSizeRef.current = initial;
-      // Seed against the raw prop so the reconcile effect's first run is a no-op.
-      lastReconciledSizeRef.current = sizeProp ?? null;
-
-      if (collapsed && asideConfig.collapsible) {
-        preCollapseSizeRef.current = initial;
-        initial = asideConfig.collapsedSize;
-        appliedCollapseRef.current = true;
-      } else {
-        appliedCollapseRef.current = false;
-      }
-
-      sizeRef.current = initial;
-      setSizeState(initial);
-      // Defaults are read once on mount, per spec — no onSizeChange on mount.
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paneOrder]);
+  // Initial size + collapse are seeded synchronously above (defaults are read
+  // once on mount, per spec — no onSizeChange on mount), so there is no
+  // registration-gated init effect. The reconcile effects below only wait for
+  // both panes to register before reacting to later prop/state changes.
 
   // Reconcile size when the resolved collapsed state changes (controlled prop
-  // change or internal toggle). Runs after init so the mount case is a no-op.
+  // change or internal toggle). The mount case is a no-op (state already matches
+  // the seeded collapse).
   useEffect(() => {
-    if (!bothRegistered(paneOrder) || !hasInitializedRef.current) return;
+    if (!bothRegistered(paneOrder)) return;
     const cur = collapsed;
     const prev = appliedCollapseRef.current;
     if (cur === prev) return;
@@ -215,7 +209,7 @@ export const useSplitterState = (
   // first. The write is silent (no callbacks): the value is the consumer's own.
   useEffect(() => {
     if (!isSizeControlled) return;
-    if (!bothRegistered(paneOrder) || !hasInitializedRef.current) return;
+    if (!bothRegistered(paneOrder)) return;
     // Prop unchanged since last reconcile → nothing to do. Covers the post-init
     // no-op and the "consumer never feeds the value back" case (no snap-back).
     if (sizeEqual(sizeProp, lastReconciledSizeRef.current)) return;
