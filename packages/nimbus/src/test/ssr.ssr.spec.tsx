@@ -8,6 +8,7 @@
  * Failures here mean a component accesses browser-only globals during render,
  * which would break SSR in Next.js, Remix, or any server-rendering framework.
  */
+import { describe, it, expect } from "vitest";
 import { renderToString } from "react-dom/server";
 
 import {
