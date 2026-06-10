@@ -1177,3 +1177,68 @@ export const ResponsiveByContainerWidth: Story = {
     });
   },
 };
+
+// ============================================================
+// useResponsiveSplitterSizes — INTERACTIVE: a Splitter inside a Splitter.
+// The OUTER handle resizes the inner splitter's CONTAINER, so dragging it (or
+// resizing the window) makes the inner hook re-resolve live. The inner config
+// `{ 0: "40%", 768: 320 }` resolves against the inner container's OWN width:
+// a wide container (≥ 768px) pins the aside to 320px (a small %), a narrow one
+// (< 768px) falls back to the base 40% band. Resolution is container-, not
+// viewport-relative.
+// ============================================================
+
+const NestedResponsiveComponent = () => {
+  const { rootProps } = useResponsiveSplitterSizes({
+    orientation: "horizontal",
+    size: { 0: "40%", 768: 320 },
+  });
+  return (
+    <Box w="100%" minW="1000px" h="600px">
+      <Splitter.Root defaultSize={15} minSize={15} maxSize={70}>
+        <Splitter.Aside>
+          <DemoPane bg="neutral.3" title="Drag the divider →" />
+        </Splitter.Aside>
+        <Splitter.Handle />
+        <Splitter.Main>
+          <Splitter.Root {...rootProps}>
+            <Splitter.Aside>
+              <DemoPane
+                bg="indigo.3"
+                title="Responsive aside (≥768px → 320px · else 40%)"
+              />
+            </Splitter.Aside>
+            <Splitter.Handle />
+            <Splitter.Main>
+              <DemoPane bg="amber.3" title="Main" />
+            </Splitter.Main>
+          </Splitter.Root>
+        </Splitter.Main>
+      </Splitter.Root>
+    </Box>
+  );
+};
+
+export const NestedResponsiveSplitter: Story = {
+  render: () => <NestedResponsiveComponent />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const handles = await canvas.findAllByRole("separator");
+    expect(handles).toHaveLength(2);
+    const [outer, inner] = handles;
+
+    // Wide inner container (≥ 768px) → the aside is pinned to 320px, which is
+    // less than the base 40% band.
+    await waitFor(() => {
+      expect(Number(inner.getAttribute("aria-valuenow"))).toBeLessThan(40);
+    });
+
+    // Drag the outer divider to shrink the inner container below 768px → the
+    // inner config falls back to its base 40% band, live.
+    outer.focus();
+    await userEvent.keyboard("{End}");
+    await waitFor(() => {
+      expect(Number(inner.getAttribute("aria-valuenow"))).toBe(40);
+    });
+  },
+};
