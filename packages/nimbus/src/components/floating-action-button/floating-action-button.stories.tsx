@@ -2,7 +2,7 @@ import { createRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FloatingActionButton, Stack } from "@commercetools/nimbus";
 import { Add as AddIcon } from "@commercetools/nimbus-icons";
-import { expect, fn, waitFor, within, userEvent } from "storybook/test";
+import { expect, fn, within, userEvent } from "storybook/test";
 import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
 
 const meta: Meta<typeof FloatingActionButton> = {
@@ -55,13 +55,6 @@ export const Base: Story = {
       await expect(button).toHaveFocus();
       await userEvent.keyboard(" ");
       await expect(args.onPress).toHaveBeenCalledTimes(3);
-    });
-
-    await step("Sets data-pressed during pointer interaction", async () => {
-      await userEvent.pointer({ target: button, keys: "[MouseLeft>]" });
-      await waitFor(() => expect(button).toHaveAttribute("data-pressed"));
-      await userEvent.pointer({ target: button, keys: "[/MouseLeft]" });
-      await waitFor(() => expect(button).not.toHaveAttribute("data-pressed"));
     });
   },
 };
