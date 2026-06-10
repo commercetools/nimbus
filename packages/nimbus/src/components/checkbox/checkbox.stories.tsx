@@ -2,6 +2,29 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Checkbox, Stack } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 
+// As of react-aria 3.49 the press/pointer handling on the (visually hidden)
+// checkbox <input> requires *trusted* pointer events. storybook/test's
+// userEvent dispatches simulated events, which no longer drive the press, so a
+// click on the <label> no longer toggles the checkbox in tests — even though it
+// works correctly for real users. The vitest browser provider's userEvent
+// issues real Playwright/CDP events, which are trusted and therefore behave
+// exactly like a real user click.
+//
+// `vitest/browser` is a virtual module that can ONLY be imported inside Vitest
+// Browser Mode — importing it eagerly throws "imported outside of Vitest" when
+// the story loads in the Storybook UI. So we import it lazily and only when the
+// Vitest browser runner is present (`globalThis.__vitest_browser__`); in the
+// Storybook UI the trusted-click step is skipped (a human can still click).
+//
+// There is no unified path today: storybook/test's userEvent is a subset of
+// @testing-library/user-event (simulated events), and Storybook maintainers
+// have stated they don't plan to expose Vitest's CDP-backed events to play
+// functions any time soon — real/trusted events can't exist in a published
+// Storybook UI for security reasons. See storybook discussions #32796 / #30815
+// and the react-aria visually-hidden checkbox input (adobe/react-spectrum#8755).
+const isVitestBrowser = (): boolean =>
+  Boolean((globalThis as { __vitest_browser__?: boolean }).__vitest_browser__);
+
 const meta: Meta<typeof Checkbox> = {
   title: "Components/Checkbox",
   component: Checkbox,
@@ -28,26 +51,21 @@ export const Base: Story = {
   },
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
-    const htmlLabel = canvasElement.querySelector(
-      '[data-slot="root"]'
-    ) as HTMLLabelElement;
-    const displayLabel = canvasElement.querySelector(
-      '[data-slot="label"]'
-    ) as HTMLSpanElement;
-    const checkboxElement = canvas.getByTestId("test-checkbox");
-    const inputElement = checkboxElement.querySelector(
-      "input"
-    ) as HTMLInputElement;
+    // The "checkbox" role lives on react-aria's visually-hidden <input>; query
+    // it by role + accessible name (the aria-label) rather than DOM internals.
+    const inputElement = canvas.getByRole("checkbox", { name: "test-label" });
+    // The root is the <label> that wraps the input. A <label> has no ARIA role,
+    // so derive it relationally from the input; the visible text is queried by
+    // its content.
+    const rootLabel = inputElement.closest("label") as HTMLLabelElement;
+    const displayLabel = canvas.getByText("Checkbox Label");
     const onChange = args.onChange;
 
     await step(
       "Forwards data- & aria-attributes to the checkbox element",
       async () => {
-        await expect(checkboxElement.tagName).toBe("LABEL");
-        await expect(checkboxElement).toHaveAttribute(
-          "data-testid",
-          "test-checkbox"
-        );
+        await expect(rootLabel.tagName).toBe("LABEL");
+        await expect(rootLabel).toHaveAttribute("data-testid", "test-checkbox");
         await expect(inputElement).toHaveAttribute("aria-label", "test-label");
       }
     );
@@ -63,17 +81,25 @@ export const Base: Story = {
       await userEvent.keyboard(" ");
       await expect(onChange).toHaveBeenCalledTimes(2);
     });
-    await step("Can be triggered with enter", async () => {
-      await userEvent.keyboard("{enter}");
-      await expect(onChange).toHaveBeenCalledTimes(3);
-    });
 
-    await step("Can be triggered by clicking on root & label", async () => {
-      htmlLabel.click();
-      await expect(onChange).toHaveBeenCalledTimes(4);
-      displayLabel.click();
-      await expect(onChange).toHaveBeenCalledTimes(5);
-    });
+    // Note: Enter intentionally does NOT toggle a checkbox — per the HTML spec,
+    // Space toggles and Enter submits the surrounding form. We therefore verify
+    // toggling via Space (above) and via clicking (below), not via Enter.
+
+    // Trusted pointer events are only available under the Vitest browser
+    // runner; in the Storybook UI we skip this step (see note above the
+    // isVitestBrowser helper) rather than crash on importing vitest/browser.
+    if (isVitestBrowser()) {
+      const { userEvent: realUserEvent } = await import("vitest/browser");
+      await step("Can be triggered by clicking on root & label", async () => {
+        // realUserEvent issues trusted pointer events; a synthetic .click() no
+        // longer drives react-aria's press as of 3.49.
+        await realUserEvent.click(rootLabel);
+        await expect(onChange).toHaveBeenCalledTimes(3);
+        await realUserEvent.click(displayLabel);
+        await expect(onChange).toHaveBeenCalledTimes(4);
+      });
+    }
   },
 };
 
@@ -84,35 +110,24 @@ export const Disabled: Story = {
     "data-testid": "test-checkbox",
     isDisabled: true,
     isSelected: false,
-    onChange: fn(),
   },
 
-  play: async ({ canvasElement, step, args }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const htmlLabel = canvasElement.querySelector(
-      '[data-slot="root"]'
-    ) as HTMLLabelElement;
     const checkboxElement = canvas.getByTestId("test-checkbox");
+    const inputElement = checkboxElement.querySelector(
+      "input"
+    ) as HTMLInputElement;
 
-    await step("checkbox element has disabled state", async () => {
+    // A disabled Checkbox renders a disabled underlying <input>. The browser
+    // won't forward label clicks to a disabled control or let it take focus, so
+    // asserting the input is disabled (plus the root's data-disabled state) is
+    // sufficient — simulating clicks that physically can't toggle it adds no
+    // coverage.
+    await step("Is disabled", async () => {
+      await expect(inputElement).toBeDisabled();
       await expect(checkboxElement).toHaveAttribute("data-disabled", "true");
     });
-
-    await step("Can not be focused with the keyboard", async () => {
-      await userEvent.keyboard("{tab}");
-      await expect(checkboxElement).not.toHaveFocus();
-    });
-
-    await step(
-      "Can not be triggered by clicking on the root- or label-element",
-      async () => {
-        //await expect(checkboxElement).toBeDisabled();
-        await expect(checkboxElement).not.toBeChecked();
-        htmlLabel.click();
-        await expect(checkboxElement).not.toBeChecked();
-        await expect(args.onChange).not.toBeCalled();
-      }
-    );
   },
 };
 

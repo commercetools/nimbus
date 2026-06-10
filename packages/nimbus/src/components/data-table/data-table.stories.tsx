@@ -58,6 +58,14 @@ import type {
   DataTableProps,
 } from "./data-table.types";
 
+// Toggle a checkbox given its root (the data-testid'd <label>). As of
+// react-aria 3.49 the press needs trusted pointer events, so the synthetic
+// userEvent no longer toggles via the <label> — but clicking the <input>
+// still works. Assertions use the root (data-selected lives there); the click
+// targets the input within it.
+const toggleCheckbox = (checkbox: HTMLElement) =>
+  userEvent.click(within(checkbox).getByRole("checkbox"));
+
 type ModalState = {
   isOpen: boolean;
   onClose?: () => void;
@@ -711,7 +719,7 @@ export const ColumnManager: Story = {
       const ageCheckbox = await canvas.getByTestId("column-toggle-age");
 
       // Uncheck the age column
-      await userEvent.click(ageCheckbox);
+      await toggleCheckbox(ageCheckbox);
 
       await waitFor(() => {
         expect(ageCheckbox).not.toHaveAttribute("data-selected");
@@ -730,7 +738,7 @@ export const ColumnManager: Story = {
       const roleCheckbox = canvas.getByTestId("column-toggle-role");
 
       // Check the role column
-      await userEvent.click(roleCheckbox);
+      await toggleCheckbox(roleCheckbox);
 
       await waitFor(() => {
         expect(roleCheckbox).toHaveAttribute("data-selected");
@@ -747,14 +755,14 @@ export const ColumnManager: Story = {
       const customCheckbox = await canvas.getByTestId("column-toggle-custom");
 
       // Show age column again
-      await userEvent.click(ageCheckbox);
+      await toggleCheckbox(ageCheckbox);
 
       await waitFor(() => {
         expect(ageCheckbox).toHaveAttribute("data-selected");
       });
 
       // Show custom column
-      await userEvent.click(customCheckbox);
+      await toggleCheckbox(customCheckbox);
 
       await waitFor(() => {
         expect(customCheckbox).toHaveAttribute("data-selected");
@@ -785,9 +793,9 @@ export const ColumnManager: Story = {
       const roleCheckbox = await canvas.getByTestId("column-toggle-role");
       const customCheckbox = await canvas.getByTestId("column-toggle-custom");
 
-      await userEvent.click(ageCheckbox);
-      await userEvent.click(roleCheckbox);
-      await userEvent.click(customCheckbox);
+      await toggleCheckbox(ageCheckbox);
+      await toggleCheckbox(roleCheckbox);
+      await toggleCheckbox(customCheckbox);
 
       await waitFor(() => {
         expect(ageCheckbox).not.toHaveAttribute("data-selected");
@@ -813,9 +821,9 @@ export const ColumnManager: Story = {
       const roleCheckbox = await canvas.getByTestId("column-toggle-role");
       const customCheckbox = await canvas.getByTestId("column-toggle-custom");
 
-      await userEvent.click(ageCheckbox);
-      await userEvent.click(roleCheckbox);
-      await userEvent.click(customCheckbox);
+      await toggleCheckbox(ageCheckbox);
+      await toggleCheckbox(roleCheckbox);
+      await toggleCheckbox(customCheckbox);
 
       await waitFor(() => {
         expect(ageCheckbox).toHaveAttribute("data-selected");
@@ -1183,7 +1191,7 @@ export const Condensed: Story = {
       const toggle = canvas.getByTestId("condensed-toggle");
 
       // Click to enable condensed mode
-      await userEvent.click(toggle);
+      await toggleCheckbox(toggle);
 
       await waitFor(() => {
         expect(toggle).toHaveAttribute("data-selected");
@@ -1216,7 +1224,7 @@ export const Condensed: Story = {
         const condensedPadding = window.getComputedStyle(firstCell).padding;
 
         // Click to disable condensed mode
-        await userEvent.click(toggle);
+        await toggleCheckbox(toggle);
 
         await waitFor(() => {
           expect(toggle).not.toHaveAttribute("data-selected");
@@ -1247,7 +1255,7 @@ export const Condensed: Story = {
 
         // Ensure we're in condensed mode
         if (!toggle.hasAttribute("data-selected")) {
-          await userEvent.click(toggle);
+          await toggleCheckbox(toggle);
           await waitFor(() => {
             expect(toggle).toHaveAttribute("data-selected");
           });
@@ -1281,7 +1289,7 @@ export const Condensed: Story = {
       // First, ensure we're in default mode
       const toggle = canvas.getByTestId("condensed-toggle");
       if (toggle.hasAttribute("data-selected")) {
-        await userEvent.click(toggle);
+        await toggleCheckbox(toggle);
         await waitFor(() => {
           expect(toggle).not.toHaveAttribute("data-selected");
         });
@@ -1299,7 +1307,7 @@ export const Condensed: Story = {
       };
 
       // Switch to condensed mode
-      await userEvent.click(toggle);
+      await toggleCheckbox(toggle);
       await waitFor(() => {
         expect(toggle).toHaveAttribute("data-selected");
       });
@@ -1388,7 +1396,7 @@ export const StickyHeader: Story = {
       const toggle = canvas.getByTestId("sticky-toggle");
 
       // Click to enable sticky header
-      await userEvent.click(toggle);
+      await toggleCheckbox(toggle);
 
       await waitFor(() => {
         expect(toggle).toHaveAttribute("data-selected");
@@ -1419,7 +1427,7 @@ export const StickyHeader: Story = {
       const toggle = canvas.getByTestId("sticky-toggle");
 
       // Click to disable sticky header
-      await userEvent.click(toggle);
+      await toggleCheckbox(toggle);
 
       await waitFor(() => {
         expect(toggle).not.toHaveAttribute("data-selected");
@@ -1437,7 +1445,7 @@ export const StickyHeader: Story = {
       const toggle = canvas.getByTestId("sticky-toggle");
 
       // Enable sticky header
-      await userEvent.click(toggle);
+      await toggleCheckbox(toggle);
       await waitFor(() => {
         expect(toggle).toHaveAttribute("data-selected");
       });
@@ -1475,7 +1483,7 @@ export const StickyHeader: Story = {
 
         // Ensure sticky header is enabled
         if (!toggle.hasAttribute("data-selected")) {
-          await userEvent.click(toggle);
+          await toggleCheckbox(toggle);
           await waitFor(() => {
             expect(toggle).toHaveAttribute("data-selected");
           });
@@ -2322,7 +2330,7 @@ export const TextTruncation: Story = {
       "Applies truncation styles to cells when truncation is enabled",
       async () => {
         const checkbox = canvas.getByTestId("truncation-checkbox");
-        await userEvent.click(checkbox);
+        await toggleCheckbox(checkbox);
 
         const descriptionCell = canvas.getAllByRole("rowheader", {
           name: /description/i,
@@ -2338,7 +2346,7 @@ export const TextTruncation: Story = {
 
     await step("Disables truncation when checkbox is unchecked", async () => {
       const checkbox = canvas.getByTestId("truncation-checkbox");
-      await userEvent.click(checkbox);
+      await toggleCheckbox(checkbox);
 
       const descriptionCell = canvas.getAllByRole("rowheader", {
         name: /description/i,

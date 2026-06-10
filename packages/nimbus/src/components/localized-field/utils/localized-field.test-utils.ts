@@ -262,11 +262,12 @@ export const toggleFieldContolCheckbox = async (
     await userEvent.click(accordionButton);
   }
 
-  const checkbox = fieldGroup
-    .querySelector(`[aria-label="${control}"]`)
-    ?.closest("label");
-  expect(checkbox).toBeInTheDocument();
-  userEvent.click(checkbox!);
+  // Click the input carrying the "checkbox" role directly. As of react-aria
+  // 3.49 the checkbox's press needs trusted pointer events, so clicking the
+  // wrapping <label> with the synthetic userEvent no longer toggles it — but
+  // clicking the input still works. (getByRole also asserts it exists.)
+  const checkbox = within(fieldGroup).getByRole("checkbox", { name: control });
+  await userEvent.click(checkbox);
 };
 
 export const closeFieldControls = async (
