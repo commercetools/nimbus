@@ -11,43 +11,56 @@ import type {
 // ============================================================
 
 /**
- * Static, per-pane configuration on `Splitter.Root`'s `panes` map. All settings
- * are keyed by the pane's `id` (matching the `id` on each `<Splitter.Pane>`) and
- * are fixed structural config — the dynamic proportions live in `defaultSizes`.
- *
- * A 2-pane splitter has a single boundary, so the only genuinely per-pane
- * settings are the lower bound and collapsibility. The upper bound is not a
- * per-pane knob — it is derived from the partner pane's `minSize`
- * (`max = 100 − partner.minSize`).
+ * The role of a pane within a `Splitter`. A splitter is always one configurable
+ * `Splitter.Aside` (the pane you size) and one `Splitter.Main` (the pane that
+ * takes the remaining space). The role — not an id — designates which pane is
+ * which, so the single `size` number always refers to the aside.
  */
-export type SplitterPaneConfig = {
-  /** Minimum allowed percentage; drag/keyboard clamps at this boundary. Defaults to 0. Accepts floats. */
-  minSize?: number;
-  /** When true, the pane can collapse to `collapsedSize` via Enter or the controlled `collapsedPane` prop. */
-  collapsible?: boolean;
-  /** Percentage size when the pane is collapsed. Defaults to 0. Accepts floats. */
-  collapsedSize?: number;
+export type SplitterPaneRole = "aside" | "main";
+
+/**
+ * Aside configuration with defaults applied, as consumed internally by the
+ * handle (clamping, ARIA bounds) and the state machine (collapse). Built from
+ * the flat `minSize` / `maxSize` / `collapsible` / `collapsedSize` props on
+ * `Splitter.Root`.
+ *
+ * The aside is the only configurable pane: there is one boundary, so the aside's
+ * `[minSize, maxSize]` window fully describes it — the main pane's floor is the
+ * complement (`100 − maxSize`) and needs no separate knob.
+ *
+ * @internal
+ */
+export type ResolvedAsideConfig = {
+  /** Aside lower bound (%). */
+  minSize: number;
+  /** Aside upper bound (%). Caps aside growth; main's floor is `100 − maxSize`. */
+  maxSize: number;
+  /** Whether the aside can collapse to `collapsedSize`. */
+  collapsible: boolean;
+  /** Aside size when collapsed (%). */
+  collapsedSize: number;
 };
 
 /**
- * Internal context shared between `Splitter.Root`, `Splitter.Pane`, and
- * `Splitter.Handle`. Carries the id-keyed sizes record, pane registration, the
- * collapse setter, and the configuration the handle needs to compute its
- * keyboard behavior and ARIA attributes. Produced by `useSplitterState`.
+ * Internal context shared between `Splitter.Root`, the pane components
+ * (`Splitter.Aside` / `Splitter.Main`), and `Splitter.Handle`. Carries the
+ * single aside `size`, role-based pane registration, the collapse setter, and
+ * the configuration the handle needs to compute its keyboard behavior and ARIA
+ * attributes. Produced by `useSplitterState`.
  *
  * @internal
  */
 export type SplitterContextValue = {
-  /** Current sizes record, keyed by pane id, summing to 100. Values are full-precision floats. */
-  sizes: Record<string, number>;
-  /** Replace the sizes record live (drag ticks). Fires `onSizesChange` only. */
-  setSizes: (sizes: Record<string, number>) => void;
+  /** Aside pane size as a percentage (0–100); main is `100 − size`. Full-precision float. */
+  size: number;
+  /** Replace the size live (drag ticks). Fires `onSizeChange` only. */
+  setSize: (size: number) => void;
   /**
-   * Commit a settled size change. With a record (keyboard, collapse, restore)
-   * it writes + fires `onSizesChange` and `onSizesChangeEnd`. With no argument
-   * (drag end) it fires `onSizesChangeEnd` with the current sizes only.
+   * Commit a settled size change. With a number (keyboard, collapse, restore)
+   * it writes + fires `onSizeChange` and `onSizeChangeEnd`. With no argument
+   * (drag end) it fires `onSizeChangeEnd` with the current size only.
    */
-  commitSizes: (sizes?: Record<string, number>) => void;
+  commitSize: (size?: number) => void;
   /** Splitter orientation. Determines layout axis and active arrow keys. */
   orientation: "horizontal" | "vertical";
   /** Keyboard step in percentage points per arrow-key press. Accepts floats. */
@@ -57,23 +70,23 @@ export type SplitterContextValue = {
   /** When true, the whole splitter is non-interactive (drag, keyboard, collapse). */
   isDisabled: boolean;
 
-  /** Look up the configuration for a given pane id. */
-  getPaneConfig: (paneId: string) => SplitterPaneConfig;
+  /** Resolved aside constraints (clamping + ARIA bounds + collapse). */
+  asideConfig: ResolvedAsideConfig;
 
-  /** Ordered ids of the two registered panes, in DOM order. */
-  paneOrder: string[];
-  /** Map from pane id to the DOM id rendered on the pane element. */
-  paneDomIds: Record<string, string>;
-  /** Register a pane with the splitter. Returns a stable DOM id. */
-  registerPane: (paneId: string, domId: string) => void;
+  /** Registered pane roles, in DOM order. */
+  paneOrder: SplitterPaneRole[];
+  /** Map from pane role to the DOM id rendered on that pane element. */
+  paneDomIds: Partial<Record<SplitterPaneRole, string>>;
+  /** Register a pane with the splitter under its role. */
+  registerPane: (role: SplitterPaneRole, domId: string) => void;
   /** Unregister a pane on unmount. */
-  unregisterPane: (paneId: string) => void;
+  unregisterPane: (role: SplitterPaneRole) => void;
 
-  /** The currently collapsed pane id (resolved controlled/uncontrolled), or null. */
-  collapsedPane: string | null;
-  /** Set the collapsed pane (null = none). Drives controlled/uncontrolled collapse + size reconciliation. */
-  setCollapsedPane: (paneId: string | null) => void;
-  /** Restore the boundary to the sizes derived on mount (double-click). */
+  /** Whether the aside is currently collapsed (resolved controlled/uncontrolled). */
+  collapsed: boolean;
+  /** Collapse (`true`) or expand (`false`) the aside. Drives size reconciliation. */
+  setCollapsed: (collapsed: boolean) => void;
+  /** Restore the size derived on mount (double-click). */
   restoreDefaults: () => void;
 };
 
@@ -82,9 +95,9 @@ export type SplitterContextValue = {
 // ============================================================
 
 /**
- * Props for `<Splitter.Root>` — the compound root that owns sizes state for
- * its two child `Splitter.Pane`s. Configuration for each pane lives in the
- * `panes` map keyed by pane id.
+ * Props for `<Splitter.Root>` — the compound root that owns the single size
+ * dimension for its `Splitter.Aside` + `Splitter.Main` children. The aside is
+ * the pane you configure; the main pane always takes the remainder.
  */
 export type SplitterRootProps = OmitInternalProps<SplitterRootSlotProps> & {
   /**
@@ -96,86 +109,84 @@ export type SplitterRootProps = OmitInternalProps<SplitterRootSlotProps> & {
   orientation?: "horizontal" | "vertical";
 
   /**
-   * Visual thickness of the handle's track (seen on hover/focus). The standard
-   * recipe `size` dimension (the second axis alongside `variant`). Note this is
-   * the singular `size` — it sizes the handle; the plural `defaultSizes` /
-   * `onSizesChange` carry the pane proportions.
-   * @default "md"
+   * Initial size of the **aside** pane as a percentage (0–100). The *dynamic*
+   * seed of the splitter's size: read once on mount, and exactly the shape
+   * `onSizeChange` / `onSizeChangeEnd` emit — so a persisted value round-trips
+   * straight back in here. Subsequent prop changes are ignored; an out-of-range
+   * or omitted value falls back to a 50/50 split. The main pane is `100 − size`.
+   *
+   * For the controlled counterpart, see `size`. Provide one or the other, not both.
    */
-  size?: SplitterRootSlotProps["size"];
+  defaultSize?: number;
 
   /**
-   * Initial pane proportions, keyed by pane id, summing to 100. This is the
-   * *dynamic* seed of the splitter's size state: it is read once on mount, and
-   * its `Record<id, number>` shape is exactly what `onSizesChange` /
-   * `onSizesChangeEnd` emit — so a persisted value round-trips straight back in
-   * here (read in `onSizesChangeEnd`, store, hydrate `defaultSizes`). Subsequent
-   * prop changes are ignored; normalized to 100 with full float precision
-   * preserved. When omitted, falls back to a 50/50 split.
-   *
-   * Static, non-persisted per-pane configuration (`minSize`, `collapsible`,
-   * `collapsedSize`) lives separately in `panes`, keyed by the same ids.
-   *
-   * For the controlled counterpart (drive sizes from outside and reflect
-   * external changes in place), see `sizes`. Provide one or the other, not both.
+   * Controlled size of the **aside** pane as a percentage (0–100). When
+   * provided, the splitter is controlled for size: it renders this value and
+   * reflects external changes in place (no remount). Control is **settled, not
+   * live** — drag and keyboard update the layout smoothly from internal state
+   * and notify once per interaction via `onSizeChangeEnd`. Wire `onSizeChangeEnd`
+   * and feed the value back to stay controlled — if you don't, the splitter
+   * keeps the last interactive value and behaves as uncontrolled from then on
+   * (no snap-back). Mutually exclusive with `defaultSize`.
    */
-  defaultSizes?: Record<string, number>;
+  size?: number;
 
   /**
-   * Controlled pane proportions, keyed by pane id (normalized to sum 100). When
-   * provided, the splitter is controlled for size: it renders these proportions
-   * and reflects external changes in place (no remount). Control is **settled,
-   * not live** — drag and keyboard update the layout smoothly from internal
-   * state and notify once per interaction via `onSizesChangeEnd`; there is no
-   * per-tick feedback requirement. Wire `onSizesChangeEnd` and feed the value
-   * back to stay controlled — if you don't, the splitter keeps the last
-   * interactive value and behaves as uncontrolled from then on (no snap-back).
-   *
-   * Mutually exclusive with `defaultSizes`. Inbound values are normalized to
-   * sum 100 but not clamped to `minSize` (the next interaction re-clamps).
+   * Aside lower bound as a percentage. Drag/keyboard clamp at this boundary.
+   * @default 0
    */
-  sizes?: Record<string, number>;
+  minSize?: number;
+
+  /**
+   * Aside upper bound as a percentage — caps how far the aside can grow. The
+   * main pane's floor is the complement (`100 − maxSize`), so this single value
+   * bounds both sides of the one boundary.
+   * @default 100
+   */
+  maxSize?: number;
+
+  /**
+   * When true, the aside can collapse to `collapsedSize` via Enter on the
+   * focused handle or the controlled `collapsed` prop. Only the aside collapses.
+   * @default false
+   */
+  collapsible?: boolean;
+
+  /**
+   * Aside size as a percentage when collapsed.
+   * @default 0
+   */
+  collapsedSize?: number;
 
   /**
    * Notification callback fired on every size change, including each drag tick
-   * (~60Hz). Receives the post-change sizes record (sums to 100). For
-   * persistence, prefer `onSizesChangeEnd`.
+   * (~60Hz). Receives the aside size (0–100). For persistence, prefer
+   * `onSizeChangeEnd`.
    */
-  onSizesChange?: (sizes: Record<string, number>) => void;
+  onSizeChange?: (size: number) => void;
 
   /**
    * Notification callback fired once when a size interaction settles (drag end,
-   * each keypress, collapse/expand, double-click restore). This is the seam to
-   * wire persistence to — no debouncing required.
+   * each keypress, collapse/expand, double-click restore). Receives the aside
+   * size (0–100). This is the seam to wire persistence to — no debouncing.
    */
-  onSizesChangeEnd?: (sizes: Record<string, number>) => void;
+  onSizeChangeEnd?: (size: number) => void;
 
   /**
-   * Static, per-pane configuration keyed by the pane's `id`. Everything here
-   * (`minSize`, `collapsible`, `collapsedSize`) is structural and does not
-   * change at runtime — which is why it is separate from `defaultSizes` (the
-   * dynamic, persisted proportions). `collapsedSize` is a percentage but is
-   * still config, not live state, so it lives here rather than in
-   * `defaultSizes`. Nothing leaks onto `<Splitter.Pane>`.
+   * Controlled collapsed state of the aside. When provided, the splitter is
+   * controlled for collapse.
    */
-  panes?: Record<string, SplitterPaneConfig>;
+  collapsed?: boolean;
 
   /**
-   * Controlled collapsed pane: the id of the pane that is currently collapsed,
-   * or `null` for none. A 2-pane splitter collapses at most one pane at a time.
-   * When provided, the splitter is controlled for collapse state.
+   * Uncontrolled initial collapsed state of the aside. Used when `collapsed` is
+   * not provided.
+   * @default false
    */
-  collapsedPane?: string | null;
+  defaultCollapsed?: boolean;
 
-  /**
-   * Uncontrolled initial collapsed pane. Used when `collapsedPane` is not
-   * provided.
-   * @default null
-   */
-  defaultCollapsedPane?: string | null;
-
-  /** Fired whenever the collapsed pane changes (collapse, expand, or toggle). */
-  onCollapsedPaneChange?: (paneId: string | null) => void;
+  /** Fired whenever the aside collapses (`true`) or expands (`false`). */
+  onCollapsedChange?: (collapsed: boolean) => void;
 
   /**
    * Percentage delta applied per arrow-key press on the focused handle.
@@ -185,8 +196,8 @@ export type SplitterRootProps = OmitInternalProps<SplitterRootSlotProps> & {
   keyboardStep?: number;
 
   /**
-   * When true, double-click on the handle does not restore defaults. Drag and
-   * keyboard remain active.
+   * When true, double-click on the handle does not restore the default size.
+   * Drag and keyboard remain active.
    * @default false
    */
   isDoubleClickDisabled?: boolean;
@@ -199,7 +210,11 @@ export type SplitterRootProps = OmitInternalProps<SplitterRootSlotProps> & {
    */
   isDisabled?: boolean;
 
-  /** Exactly two `Splitter.Pane` children with one `Splitter.Handle` between them. */
+  /**
+   * Exactly one `Splitter.Aside` and one `Splitter.Main` with one
+   * `Splitter.Handle` between them. The aside may be placed before or after the
+   * main pane (leading or trailing) — `size` always refers to the aside.
+   */
   children: ReactNode;
 
   /** Ref to the root element. */
@@ -207,13 +222,14 @@ export type SplitterRootProps = OmitInternalProps<SplitterRootSlotProps> & {
 };
 
 /**
- * Props for `<Splitter.Pane>` — the resizable region. Each pane carries only
- * its `id` and content; all per-pane configuration lives on `<Splitter.Root>`
- * in the `panes` map keyed by this `id`.
+ * Props for `<Splitter.Aside>` — the configurable pane whose size is driven by
+ * `Splitter.Root`'s `size` / `defaultSize`. Carries only its content and an
+ * optional `id` (analytics/testing); all sizing and collapse configuration
+ * lives on `Splitter.Root`.
  */
-export type SplitterPaneProps = OmitInternalProps<SplitterPaneSlotProps> & {
-  /** Unique pane id used to look up size and per-pane configuration on Root. */
-  id: string;
+export type SplitterAsideProps = OmitInternalProps<SplitterPaneSlotProps> & {
+  /** Optional id for the pane element (analytics/testing). Not required. */
+  id?: string;
 
   /** Pane content. */
   children?: ReactNode;
@@ -223,13 +239,29 @@ export type SplitterPaneProps = OmitInternalProps<SplitterPaneSlotProps> & {
 };
 
 /**
- * Props for `<Splitter.Handle>` — the interactive separator between the two
- * panes. The handle takes no per-handle *behaviour* configuration: resize and
- * collapse behaviour is configured on `<Splitter.Root>` (`keyboardStep`,
- * `isDoubleClickDisabled`, `isDisabled`). It still accepts standard DOM and
- * style props via the slot — notably an `id` (e.g. a persistent id for
- * analytics) and `aria-label` / `aria-labelledby` to override the localized
- * default ("Resize panes").
+ * Props for `<Splitter.Main>` — the primary content pane. It always takes the
+ * space the aside does not (`100 − size`) and is never configured directly.
+ * Carries only its content and an optional `id` (analytics/testing).
+ */
+export type SplitterMainProps = OmitInternalProps<SplitterPaneSlotProps> & {
+  /** Optional id for the pane element (analytics/testing). Not required. */
+  id?: string;
+
+  /** Pane content. */
+  children?: ReactNode;
+
+  /** Ref to the pane element. */
+  ref?: Ref<HTMLDivElement>;
+};
+
+/**
+ * Props for `<Splitter.Handle>` — the interactive separator between the aside
+ * and main panes. The handle takes no per-handle *behaviour* configuration:
+ * resize and collapse behaviour is configured on `<Splitter.Root>`
+ * (`keyboardStep`, `isDoubleClickDisabled`, `isDisabled`). It still accepts
+ * standard DOM and style props via the slot — notably an `id` (e.g. a persistent
+ * id for analytics) and `aria-label` / `aria-labelledby` to override the
+ * localized default ("Resize panes").
  */
 export type SplitterHandleProps = OmitInternalProps<SplitterHandleSlotProps> & {
   /** Accessible label override; defaults to a localized "Resize panes". */

@@ -46,13 +46,13 @@ const meta: Meta<typeof Splitter.Root> = {
       control: { type: "radio" },
       options: ["horizontal", "vertical"],
     },
-    size: {
-      control: { type: "radio" },
-      options: ["sm", "md", "lg"],
+    defaultSize: {
+      control: { type: "range", min: 0, max: 100, step: 1 },
     },
     keyboardStep: {
       control: { type: "range", min: 1, max: 20, step: 1 },
     },
+    collapsible: { control: { type: "boolean" } },
     isDoubleClickDisabled: { control: { type: "boolean" } },
     isDisabled: { control: { type: "boolean" } },
   },
@@ -62,24 +62,24 @@ export default meta;
 type Story = StoryObj<typeof Splitter.Root>;
 
 // ============================================================
-// Default (horizontal, 30/70)
+// Default (horizontal, aside 30 / main 70)
 // ============================================================
 
 export const Default: Story = {
   args: {
     orientation: "horizontal",
-    defaultSizes: { nav: 30, main: 70 },
+    defaultSize: 30,
   },
   render: (args) => (
     <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   ),
@@ -102,18 +102,18 @@ export const Default: Story = {
 export const Vertical: Story = {
   args: {
     orientation: "vertical",
-    defaultSizes: { top: 40, bottom: 60 },
+    defaultSize: 40,
   },
   render: (args) => (
     <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane id="top">
+        <Splitter.Aside>
           <DemoPane bg="teal.3" title="Top" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="bottom">
+        <Splitter.Main>
           <DemoPane bg="rose.3" title="Bottom" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   ),
@@ -125,32 +125,77 @@ export const Vertical: Story = {
 };
 
 // ============================================================
+// Aside trailing — the aside can be placed after the main pane (a right/bottom
+// panel). `size` still refers to the aside; the handle's aria value tracks the
+// leading (main) pane.
+// ============================================================
+
+export const AsideTrailing: Story = {
+  args: {
+    orientation: "horizontal",
+    defaultSize: 30,
+    minSize: 10,
+    maxSize: 80,
+  },
+  render: (args) => (
+    <Box h="600px">
+      <Splitter.Root {...args}>
+        <Splitter.Main>
+          <DemoPane bg="amber.3" title="Main" />
+        </Splitter.Main>
+        <Splitter.Handle />
+        <Splitter.Aside>
+          <DemoPane bg="indigo.3" title="Aside" />
+        </Splitter.Aside>
+      </Splitter.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+
+    // Aside is 30% on the right; the leading (main) pane is 70%, which the
+    // handle's aria value tracks.
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(70);
+    });
+
+    // aria-controls points at the leading (main) pane.
+    const ariaControls = handle.getAttribute("aria-controls");
+    const mainPane = canvasElement.querySelector(`#${ariaControls!}`);
+    await expect(mainPane!.textContent).toContain("Main");
+
+    // Bounds map onto the leading pane: aside ∈ [10, 80] → main ∈ [20, 90].
+    await expect(handle).toHaveAttribute("aria-valuemin", "20");
+    await expect(handle).toHaveAttribute("aria-valuemax", "90");
+  },
+};
+
+// ============================================================
 // Keyboard interaction (arrows + Home/End) — also asserts the
-// settled-change channel (onSizesChangeEnd) fires per keypress.
+// settled-change channel (onSizeChangeEnd) fires per keypress.
 // ============================================================
 
 export const KeyboardInteraction: Story = {
   args: {
     orientation: "horizontal",
     keyboardStep: 5,
-    defaultSizes: { nav: 30, main: 70 },
-    panes: {
-      nav: { minSize: 10 },
-      main: { minSize: 20 },
-    },
-    onSizesChange: fn(),
-    onSizesChangeEnd: fn(),
+    defaultSize: 30,
+    minSize: 10,
+    maxSize: 80,
+    onSizeChange: fn(),
+    onSizeChangeEnd: fn(),
   },
   render: (args) => (
     <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   ),
@@ -161,8 +206,8 @@ export const KeyboardInteraction: Story = {
     await expect(handle).toHaveFocus();
 
     await userEvent.keyboard("{ArrowRight}");
-    await expect(args.onSizesChange).toHaveBeenCalled();
-    await expect(args.onSizesChangeEnd).toHaveBeenCalled();
+    await expect(args.onSizeChange).toHaveBeenCalled();
+    await expect(args.onSizeChangeEnd).toHaveBeenCalled();
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(35);
     });
@@ -172,13 +217,13 @@ export const KeyboardInteraction: Story = {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
     });
 
-    // Home → previous pane shrinks to its minSize.
+    // Home → aside shrinks to its minSize.
     await userEvent.keyboard("{Home}");
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(10);
     });
 
-    // End → previous pane grows to (100 - next.minSize).
+    // End → aside grows to its maxSize.
     await userEvent.keyboard("{End}");
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(80);
@@ -188,31 +233,29 @@ export const KeyboardInteraction: Story = {
 
 // ============================================================
 // Pointer drag (useMove) — dragging the handle resizes the panes and fires
-// the live (onSizesChange) + settled (onSizesChangeEnd) channels. Covers the
+// the live (onSizeChange) + settled (onSizeChangeEnd) channels. Covers the
 // pointer path that the keyboard / collapse stories don't exercise.
 // ============================================================
 
 export const PointerDragResize: Story = {
   args: {
     orientation: "horizontal",
-    defaultSizes: { nav: 30, main: 70 },
-    panes: {
-      nav: { minSize: 10 },
-      main: { minSize: 10 },
-    },
-    onSizesChange: fn(),
-    onSizesChangeEnd: fn(),
+    defaultSize: 30,
+    minSize: 10,
+    maxSize: 90,
+    onSizeChange: fn(),
+    onSizeChangeEnd: fn(),
   },
   render: (args) => (
     <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   ),
@@ -251,9 +294,9 @@ export const PointerDragResize: Story = {
       clientY: y,
     });
 
-    // Live channel fired and the boundary moved right (nav grew past 30%).
+    // Live channel fired and the boundary moved right (aside grew past 30%).
     await waitFor(() => {
-      expect(args.onSizesChange).toHaveBeenCalled();
+      expect(args.onSizeChange).toHaveBeenCalled();
       expect(Number(handle.getAttribute("aria-valuenow"))).toBeGreaterThan(30);
     });
 
@@ -265,36 +308,34 @@ export const PointerDragResize: Story = {
 
     // Settled channel fired on pointer release (the persistence seam).
     await waitFor(() => {
-      expect(args.onSizesChangeEnd).toHaveBeenCalled();
+      expect(args.onSizeChangeEnd).toHaveBeenCalled();
     });
   },
 };
 
 // ============================================================
-// Per-pane constraints — minSize on each side bounds the single boundary.
-// The upper bound is the complement of the partner's minSize (no maxSize knob).
+// Size constraints — `minSize` / `maxSize` bound the single aside dimension.
+// `maxSize` also fixes the main pane's floor (`100 − maxSize`).
 // ============================================================
 
-export const PerPaneConstraints: Story = {
+export const SizeConstraints: Story = {
   args: {
     orientation: "horizontal",
     keyboardStep: 100,
-    defaultSizes: { nav: 30, main: 70 },
-    panes: {
-      nav: { minSize: 15 },
-      main: { minSize: 25 },
-    },
+    defaultSize: 30,
+    minSize: 15,
+    maxSize: 75,
   },
   render: (args) => (
     <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav (min 15)" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main (min 25)" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   ),
@@ -302,17 +343,17 @@ export const PerPaneConstraints: Story = {
     const canvas = within(canvasElement);
     const handle = await canvas.findByRole("separator");
 
-    // aria-valuemin = panes.nav.minSize; aria-valuemax = 100 - panes.main.minSize.
+    // aria-valuemin = minSize; aria-valuemax = maxSize.
     await expect(handle).toHaveAttribute("aria-valuemin", "15");
     await expect(handle).toHaveAttribute("aria-valuemax", "75");
 
     handle.focus();
-    // Large jump right → clamps at 100 - main.minSize (75).
+    // Large jump right → clamps at maxSize (75).
     await userEvent.keyboard("{End}");
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(75);
     });
-    // Large jump left → clamps at nav.minSize (15).
+    // Large jump left → clamps at minSize (15).
     await userEvent.keyboard("{Home}");
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(15);
@@ -328,18 +369,18 @@ export const PerPaneConstraints: Story = {
 export const Disabled: Story = {
   args: {
     isDisabled: true,
-    defaultSizes: { nav: 30, main: 70 },
+    defaultSize: 30,
   },
   render: (args) => (
     <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   ),
@@ -352,23 +393,23 @@ export const Disabled: Story = {
 };
 
 // ============================================================
-// ARIA — aria-controls points at previous Pane's DOM id.
+// ARIA — aria-controls points at the leading pane's DOM id.
 // ============================================================
 
 export const AriaControlsAttribute: Story = {
   args: {
-    defaultSizes: { nav: 30, main: 70 },
+    defaultSize: 30,
   },
   render: (args) => (
     <Box h="400px">
       <Splitter.Root {...args}>
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   ),
@@ -378,7 +419,7 @@ export const AriaControlsAttribute: Story = {
     const ariaControls = handle.getAttribute("aria-controls");
     await expect(ariaControls).toBeTruthy();
 
-    // aria-controls should point at the *previous* pane (first DOM sibling).
+    // aria-controls should point at the leading pane (first DOM sibling = aside).
     const navPane = canvasElement.querySelector(`#${ariaControls!}`);
     await expect(navPane).toBeTruthy();
     await expect(navPane!.textContent).toContain("Nav");
@@ -391,23 +432,21 @@ export const AriaControlsAttribute: Story = {
 
 export const DoubleClickRestoresDefaults: Story = {
   args: {
-    defaultSizes: { nav: 30, main: 70 },
-    panes: {
-      nav: { minSize: 10 },
-      main: { minSize: 10 },
-    },
-    onSizesChangeEnd: fn(),
+    defaultSize: 30,
+    minSize: 10,
+    maxSize: 90,
+    onSizeChangeEnd: fn(),
   },
   render: (args) => (
     <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav (default 30)" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main (default 70)" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   ),
@@ -426,33 +465,31 @@ export const DoubleClickRestoresDefaults: Story = {
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
     });
-    expect(args.onSizesChangeEnd).toHaveBeenCalled();
+    expect(args.onSizeChangeEnd).toHaveBeenCalled();
   },
 };
 
 // ============================================================
-// Double-click restores correctly even when an initial size is 0
+// Double-click restores correctly even when the initial size is 0
 // (regression guard for the falsy restore guard).
 // ============================================================
 
 export const RestoreDefaultsWithZeroSize: Story = {
   args: {
-    defaultSizes: { nav: 0, main: 100 },
-    panes: {
-      nav: { minSize: 0 },
-      main: { minSize: 0 },
-    },
+    defaultSize: 0,
+    minSize: 0,
+    maxSize: 100,
   },
   render: (args) => (
     <Box h="400px">
       <Splitter.Root {...args}>
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav (default 0)" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main (default 100)" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   ),
@@ -463,7 +500,7 @@ export const RestoreDefaultsWithZeroSize: Story = {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(0);
     });
 
-    // Grow nav off 0, then double-click to restore back to 0.
+    // Grow the aside off 0, then double-click to restore back to 0.
     handle.focus();
     await userEvent.keyboard("{End}");
     await waitFor(() => {
@@ -483,18 +520,18 @@ export const RestoreDefaultsWithZeroSize: Story = {
 
 export const FloatPrecision: Story = {
   args: {
-    defaultSizes: { nav: 31.25, main: 68.75 },
+    defaultSize: 31.25,
   },
   render: (args) => (
     <Box h="400px">
       <Splitter.Root {...args}>
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav (31.25%)" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main (68.75%)" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   ),
@@ -516,28 +553,27 @@ export const FloatPrecision: Story = {
 };
 
 // ============================================================
-// Enter on focused handle toggles collapse (uncontrolled).
+// Enter on focused handle toggles aside collapse (uncontrolled).
 // ============================================================
 
 export const CollapsibleByKeyboard: Story = {
   args: {
-    defaultSizes: { nav: 30, main: 70 },
-    panes: {
-      nav: { minSize: 10, collapsible: true },
-      main: { minSize: 20 },
-    },
-    onCollapsedPaneChange: fn(),
+    defaultSize: 30,
+    minSize: 10,
+    maxSize: 80,
+    collapsible: true,
+    onCollapsedChange: fn(),
   },
   render: (args) => (
     <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav (collapsible)" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   ),
@@ -548,13 +584,13 @@ export const CollapsibleByKeyboard: Story = {
 
     await userEvent.keyboard("{Enter}");
     await waitFor(() => {
-      expect(args.onCollapsedPaneChange).toHaveBeenCalledWith("nav");
+      expect(args.onCollapsedChange).toHaveBeenCalledWith(true);
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(0);
     });
 
     // Regression: bounds are collapse-aware, so the collapsed value (0) stays
-    // within [valuemin, valuemax]. nav is collapsible → valuemin = min(10, 0) = 0;
-    // main has minSize 20 and isn't collapsible → valuemax = 100 - 20 = 80.
+    // within [valuemin, valuemax]. The aside is collapsible → valuemin =
+    // min(10, 0) = 0; maxSize 80 → valuemax = 80.
     const min = Number(handle.getAttribute("aria-valuemin"));
     const max = Number(handle.getAttribute("aria-valuemax"));
     const now = Number(handle.getAttribute("aria-valuenow"));
@@ -565,27 +601,27 @@ export const CollapsibleByKeyboard: Story = {
 
     await userEvent.keyboard("{Enter}");
     await waitFor(() => {
-      expect(args.onCollapsedPaneChange).toHaveBeenCalledWith(null);
+      expect(args.onCollapsedChange).toHaveBeenCalledWith(false);
       expect(Number(handle.getAttribute("aria-valuenow"))).toBeGreaterThan(0);
     });
   },
 };
 
 // ============================================================
-// Controlled collapse — a button outside the splitter drives collapsedPane.
+// Controlled collapse — a button outside the splitter drives `collapsed`.
 // ============================================================
 
 const ControlledCollapseComponent = ({
   onChange,
 }: {
-  onChange?: (id: string | null) => void;
+  onChange?: (collapsed: boolean) => void;
 }) => {
-  const [collapsed, setCollapsed] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState(false);
   return (
     <Stack gap="400" h="500px">
       <Button
         onPress={() => {
-          const next = collapsed === "nav" ? null : "nav";
+          const next = !collapsed;
           setCollapsed(next);
           onChange?.(next);
         }}
@@ -594,21 +630,20 @@ const ControlledCollapseComponent = ({
         Toggle nav
       </Button>
       <Splitter.Root
-        defaultSizes={{ nav: 30, main: 70 }}
-        panes={{
-          nav: { minSize: 10, collapsible: true },
-          main: { minSize: 20 },
-        }}
-        collapsedPane={collapsed}
-        onCollapsedPaneChange={setCollapsed}
+        defaultSize={30}
+        minSize={10}
+        maxSize={80}
+        collapsible
+        collapsed={collapsed}
+        onCollapsedChange={setCollapsed}
       >
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Stack>
   );
@@ -644,32 +679,31 @@ export const ControlledCollapse: Story = {
 };
 
 // ============================================================
-// Controlled collapse + drag + double-click restore — restore must land on
-// the mount-time sizes (30/70), not the pre-collapse sizes (50/50), even
-// though collapse is controlled. Regression for the controlled-restore path.
+// Controlled collapse + keyboard + double-click restore — restore must land on
+// the mount-time size (30), not the pre-collapse size (50), even though collapse
+// is controlled. Regression for the controlled-restore path.
 // ============================================================
 
 const ControlledRestoreComponent = () => {
-  const [collapsed, setCollapsed] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState(false);
   return (
     <Box h="500px">
       <Splitter.Root
-        defaultSizes={{ nav: 30, main: 70 }}
+        defaultSize={30}
         keyboardStep={5}
-        panes={{
-          nav: { minSize: 10, collapsible: true },
-          main: { minSize: 20 },
-        }}
-        collapsedPane={collapsed}
-        onCollapsedPaneChange={setCollapsed}
+        minSize={10}
+        maxSize={80}
+        collapsible
+        collapsed={collapsed}
+        onCollapsedChange={setCollapsed}
       >
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   );
@@ -684,7 +718,7 @@ export const ControlledCollapseRestore: Story = {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
     });
 
-    // Drag the boundary off its mount default (30 → 50) via keyboard.
+    // Move the boundary off its mount default (30 → 50) via keyboard.
     handle.focus();
     await userEvent.keyboard(
       "{ArrowRight}{ArrowRight}{ArrowRight}{ArrowRight}"
@@ -693,13 +727,13 @@ export const ControlledCollapseRestore: Story = {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(50);
     });
 
-    // Collapse nav (controlled — Enter drives onCollapsedPaneChange → state).
+    // Collapse the aside (controlled — Enter drives onCollapsedChange → state).
     await userEvent.keyboard("{Enter}");
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(0);
     });
 
-    // Double-click restores to the mount-time sizes (30), not pre-collapse 50.
+    // Double-click restores to the mount-time size (30), not pre-collapse 50.
     await userEvent.dblClick(handle);
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
@@ -708,47 +742,42 @@ export const ControlledCollapseRestore: Story = {
 };
 
 // ============================================================
-// Controlled sizes — a button outside the splitter sets `sizes`; the layout
+// Controlled size — a button outside the splitter sets `size`; the layout
 // updates in place (no remount), so stateful pane content is preserved. Drag /
-// keyboard stay live internally and settle through onSizesChangeEnd.
+// keyboard stay live internally and settle through onSizeChangeEnd.
 // ============================================================
 
-const ControlledSizesComponent = () => {
-  const [sizes, setSizes] = useState<Record<string, number>>({
-    nav: 30,
-    main: 70,
-  });
+const ControlledSizeComponent = () => {
+  const [size, setSize] = useState(30);
   return (
     <Stack gap="400" h="500px">
-      <Button
-        onPress={() => setSizes({ nav: 60, main: 40 })}
-        data-testid="set-sizes-btn"
-      >
+      <Button onPress={() => setSize(60)} data-testid="set-size-btn">
         Set nav to 60
       </Button>
       <Splitter.Root
-        sizes={sizes}
-        onSizesChangeEnd={setSizes}
-        panes={{ nav: { minSize: 10 }, main: { minSize: 10 } }}
+        size={size}
+        onSizeChangeEnd={setSize}
+        minSize={10}
+        maxSize={90}
       >
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav">
             {/* Uncontrolled input: its value survives only if the pane is not
-                remounted when `sizes` changes in place. */}
+                remounted when `size` changes in place. */}
             <input data-testid="nav-input" aria-label="Note" defaultValue="" />
           </DemoPane>
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Stack>
   );
 };
 
-export const ControlledSizes: Story = {
-  render: () => <ControlledSizesComponent />,
+export const ControlledSize: Story = {
+  render: () => <ControlledSizeComponent />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const handle = await canvas.findByRole("separator");
@@ -761,8 +790,8 @@ export const ControlledSizes: Story = {
     await userEvent.type(input, "preserve-me");
     expect(input).toHaveValue("preserve-me");
 
-    // External control sets sizes; the layout reflects it in place.
-    await userEvent.click(canvas.getByTestId("set-sizes-btn"));
+    // External control sets the size; the layout reflects it in place.
+    await userEvent.click(canvas.getByTestId("set-size-btn"));
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(60);
     });
@@ -775,32 +804,32 @@ export const ControlledSizes: Story = {
 };
 
 // ============================================================
-// Resize is locked while a pane is collapsed — drag + arrow/Home/End do
-// nothing and the pane stays at collapsedSize. It's reopened via Enter,
+// Resize is locked while the aside is collapsed — drag + arrow/Home/End do
+// nothing and the aside stays at collapsedSize. It's reopened via Enter,
 // double-click, or the controlled prop, never by resizing.
 // ============================================================
 
 export const ResizeLockedWhileCollapsed: Story = {
   args: {
-    defaultSizes: { nav: 30, main: 70 },
-    panes: {
-      nav: { minSize: 15, collapsible: true, collapsedSize: 6 },
-      main: { minSize: 20 },
-    },
-    onSizesChange: fn(),
-    onSizesChangeEnd: fn(),
-    onCollapsedPaneChange: fn(),
+    defaultSize: 30,
+    minSize: 15,
+    maxSize: 80,
+    collapsible: true,
+    collapsedSize: 6,
+    onSizeChange: fn(),
+    onSizeChangeEnd: fn(),
+    onCollapsedChange: fn(),
   },
   render: (args) => (
     <Box h="600px">
       <Splitter.Root {...args}>
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav (collapsible)" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   ),
@@ -810,20 +839,19 @@ export const ResizeLockedWhileCollapsed: Story = {
 
     // The fn() mocks are typed as the bare callback signatures on args, so cast
     // to the mock type to read call state.
-    const onSizesChange = args.onSizesChange as unknown as ReturnType<
+    const onSizeChange = args.onSizeChange as unknown as ReturnType<typeof fn>;
+    const onSizeChangeEnd = args.onSizeChangeEnd as unknown as ReturnType<
       typeof fn
     >;
-    const onSizesChangeEnd = args.onSizesChangeEnd as unknown as ReturnType<
+    const onCollapsedChange = args.onCollapsedChange as unknown as ReturnType<
       typeof fn
     >;
-    const onCollapsedPaneChange =
-      args.onCollapsedPaneChange as unknown as ReturnType<typeof fn>;
 
-    // Collapse nav to its rail (collapsedSize 6) via Enter.
+    // Collapse the aside to its rail (collapsedSize 6) via Enter.
     handle.focus();
     await userEvent.keyboard("{Enter}");
     await waitFor(() => {
-      expect(onCollapsedPaneChange).toHaveBeenCalledWith("nav");
+      expect(onCollapsedChange).toHaveBeenCalledWith(true);
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(6);
     });
 
@@ -831,9 +859,9 @@ export const ResizeLockedWhileCollapsed: Story = {
     // The handle advertises the locked state (drives the recipe's cursor reset).
     expect(handle).toHaveAttribute("data-resize-locked", "true");
 
-    onSizesChange.mockClear();
-    onSizesChangeEnd.mockClear();
-    onCollapsedPaneChange.mockClear();
+    onSizeChange.mockClear();
+    onSizeChangeEnd.mockClear();
+    onCollapsedChange.mockClear();
 
     // Keyboard resize is locked: arrows / Home / End do nothing while collapsed.
     await userEvent.keyboard("{ArrowRight}{ArrowRight}{End}{Home}");
@@ -855,48 +883,46 @@ export const ResizeLockedWhileCollapsed: Story = {
       clientY: y,
     });
 
-    // Nothing moved, nothing fired, and the pane is still collapsed.
+    // Nothing moved, nothing fired, and the aside is still collapsed.
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(collapsedNow);
     });
-    expect(onSizesChange).not.toHaveBeenCalled();
-    expect(onSizesChangeEnd).not.toHaveBeenCalled();
-    expect(onCollapsedPaneChange).not.toHaveBeenCalled();
+    expect(onSizeChange).not.toHaveBeenCalled();
+    expect(onSizeChangeEnd).not.toHaveBeenCalled();
+    expect(onCollapsedChange).not.toHaveBeenCalled();
 
     // Enter still expands — the lock blocks resizing, not the collapse toggle.
     await userEvent.keyboard("{Enter}");
     await waitFor(() => {
-      expect(onCollapsedPaneChange).toHaveBeenCalledWith(null);
+      expect(onCollapsedChange).toHaveBeenCalledWith(false);
       expect(Number(handle.getAttribute("aria-valuenow"))).toBeGreaterThan(6);
     });
   },
 };
 
 // ============================================================
-// Persistence — hydrate from any storage; persist on onSizesChangeEnd.
+// Persistence — hydrate from any storage; persist on onSizeChangeEnd.
 // ============================================================
 
 const PersistenceComponent = () => {
   // Stand-in for a useLocalStorage-style hook: state seeded from "storage".
-  const [sizes, setSizes] = useState<Record<string, number>>({
-    nav: 25,
-    main: 75,
-  });
+  const [size, setSize] = useState(25);
   return (
     <Stack gap="400" h="500px">
-      <Box data-testid="stored-nav">{`stored nav: ${Math.round(sizes.nav!)}`}</Box>
+      <Box data-testid="stored-nav">{`stored nav: ${Math.round(size)}`}</Box>
       <Splitter.Root
-        defaultSizes={sizes}
-        onSizesChangeEnd={setSizes}
-        panes={{ nav: { minSize: 5 }, main: { minSize: 5 } }}
+        defaultSize={size}
+        onSizeChangeEnd={setSize}
+        minSize={5}
+        maxSize={95}
       >
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav (hydrated 25%)" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main (hydrated 75%)" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Stack>
   );
@@ -924,28 +950,29 @@ export const Persistence: Story = {
 };
 
 // ============================================================
-// Nested splitters — 3 regions via nesting.
+// Nested splitters — 3 regions via nesting. The inner splitter places its
+// aside on the trailing side (a right panel).
 // ============================================================
 
 export const NestedSplitters: Story = {
   render: () => (
     <Box h="600px">
-      <Splitter.Root defaultSizes={{ nav: 25, rest: 75 }}>
-        <Splitter.Pane id="nav">
+      <Splitter.Root defaultSize={25}>
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="rest">
-          <Splitter.Root defaultSizes={{ main: 65, aside: 35 }}>
-            <Splitter.Pane id="main">
+        <Splitter.Main>
+          <Splitter.Root defaultSize={35}>
+            <Splitter.Main>
               <DemoPane bg="amber.3" title="Main" />
-            </Splitter.Pane>
+            </Splitter.Main>
             <Splitter.Handle />
-            <Splitter.Pane id="aside">
+            <Splitter.Aside>
               <DemoPane bg="rose.3" title="Aside" />
-            </Splitter.Pane>
+            </Splitter.Aside>
           </Splitter.Root>
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   ),
@@ -964,22 +991,20 @@ export const NestedSplitters: Story = {
 export const DisableDoubleClick: Story = {
   args: {
     isDoubleClickDisabled: true,
-    defaultSizes: { nav: 30, main: 70 },
-    panes: {
-      nav: { minSize: 10 },
-      main: { minSize: 10 },
-    },
+    defaultSize: 30,
+    minSize: 10,
+    maxSize: 90,
   },
   render: (args) => (
     <Box h="400px">
       <Splitter.Root {...args}>
-        <Splitter.Pane id="nav">
+        <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav" />
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="main">
+        <Splitter.Main>
           <DemoPane bg="amber.3" title="Main" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   ),
@@ -995,7 +1020,7 @@ export const DisableDoubleClick: Story = {
     });
     const afterMove = Number(handle.getAttribute("aria-valuenow"));
 
-    // Double-click should be a no-op — sizes don't snap back.
+    // Double-click should be a no-op — the size doesn't snap back.
     await userEvent.dblClick(handle);
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(afterMove);

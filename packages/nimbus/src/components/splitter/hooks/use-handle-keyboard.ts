@@ -1,11 +1,10 @@
 import { useCallback } from "react";
 import type { KeyboardEvent } from "react";
 import { useSplitterContext } from "./use-splitter-context";
-import { pickCollapseTarget } from "../utils";
 
 type UseHandleKeyboardOptions = {
   /** True once both panes are registered. */
-  hasPair: boolean;
+  isReady: boolean;
   /**
    * Clamped size writer from `useHandleResize`. Already a no-op while disabled
    * or collapse-locked, so the arrow / Home / End cases need no extra guard.
@@ -16,45 +15,37 @@ type UseHandleKeyboardOptions = {
 /**
  * Owns the handle's keyboard model (W3C window splitter): orientation-aware
  * arrow keys move by `keyboardStep`, Home/End jump to min/max, Enter toggles
- * collapse. Each keypress commits (settled), unlike a live drag tick.
+ * the aside's collapse. Each keypress commits (settled), unlike a live drag tick.
+ *
+ * Δ is expressed as "grow the leading pane"; `useHandleResize` translates it to
+ * an aside Δ. Collapse is aside-only, so Enter simply toggles the boolean.
  */
 export const useHandleKeyboard = ({
-  hasPair,
+  isReady,
   applyDelta,
 }: UseHandleKeyboardOptions) => {
   const {
     orientation,
     keyboardStep,
     isDisabled,
-    collapsedPane,
-    setCollapsedPane,
-    paneOrder,
-    sizes,
-    getPaneConfig,
+    collapsed,
+    setCollapsed,
+    asideConfig,
   } = useSplitterContext();
 
   const toggleCollapse = useCallback(() => {
-    if (!hasPair || isDisabled) return;
-    // If anything is collapsed, Enter expands it; otherwise collapse the pick.
-    if (collapsedPane !== null) {
-      setCollapsedPane(null);
+    if (!isReady || isDisabled) return;
+    // If collapsed, Enter expands; otherwise collapse the aside (when allowed).
+    if (collapsed) {
+      setCollapsed(false);
       return;
     }
-    const target = pickCollapseTarget(paneOrder, sizes, getPaneConfig);
-    if (target) setCollapsedPane(target.paneId);
-  }, [
-    hasPair,
-    isDisabled,
-    collapsedPane,
-    paneOrder,
-    sizes,
-    getPaneConfig,
-    setCollapsedPane,
-  ]);
+    if (asideConfig.collapsible) setCollapsed(true);
+  }, [isReady, isDisabled, collapsed, asideConfig.collapsible, setCollapsed]);
 
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
-      if (!hasPair || isDisabled) return;
+      if (!isReady || isDisabled) return;
       switch (event.key) {
         case "ArrowLeft":
           if (orientation === "horizontal") {
@@ -94,7 +85,7 @@ export const useHandleKeyboard = ({
           return;
       }
     },
-    [hasPair, isDisabled, orientation, keyboardStep, applyDelta, toggleCollapse]
+    [isReady, isDisabled, orientation, keyboardStep, applyDelta, toggleCollapse]
   );
 
   return { onKeyDown };

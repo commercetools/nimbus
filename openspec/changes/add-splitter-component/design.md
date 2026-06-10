@@ -6,11 +6,11 @@ trade-off accepted.
 
 ## Decision 1: 2-pane primitive, composable via nesting
 
-**Decision.** `Splitter.Root` accepts exactly two `Pane` children with one
-`Handle` between them. Layouts requiring more than two panes are expressed
-by nesting one `Splitter` inside another's `Pane`.
+**Decision.** `Splitter.Root` accepts one `Splitter.Aside` and one
+`Splitter.Main` child with one `Handle` between them. Layouts requiring more
+than two panes are expressed by nesting one `Splitter` inside another's pane.
 
-**Alternative considered.** Flat N-pane: ≥ 2 `Pane` children with N − 1
+**Alternative considered.** Flat N-pane: ≥ 2 pane children with N − 1
 `Handle` children between them, sizes keyed across all of them, with a
 cascading resize algorithm to spill drag remainder through neighbours
 that hit `minSize` / `maxSize`.
@@ -41,43 +41,44 @@ diff viewer, IDE tree | editor | terminal) read more naturally as flat
 JSX than as nested. They still work — one boundary lives one level
 deeper in the tree — but the JSX is less obviously a peer relationship.
 
-**Forward compatibility.** The id-keyed config (Decision 2) already
-matches what an N-pane shape would want. If a real flat-N case lands
-later with consumer demand, we extend the primitive without breaking
-existing consumers.
+## Decision 2: A single aside dimension, designated by component type
 
-## Decision 2: Id-keyed configuration, not index-based
+**Decision.** A 2-pane splitter has one boundary — one degree of freedom — so
+the size is a single number: the **aside**'s percentage (`size` /
+`defaultSize`). The **main** pane always takes the remainder (`100 − size`). The
+two panes are distinct components — `Splitter.Aside` (the configured, sized one)
+and `Splitter.Main` — so the role is designated by the component *type*, not by
+an id or a pointer prop. Sizing/collapse config is flat on `Splitter.Root`. Pane
+`id` is optional (analytics / test hooks).
 
-**Decision.** Sizes and per-pane config are keyed by pane `id` (a string),
-not by integer index. `Splitter.Pane` carries only `id` and content; per-pane
-settings live in a `panes: Record<string, PaneConfig>` prop on
-`Splitter.Root`.
+**Alternatives considered.**
 
-**Alternative considered.** Index-based: `defaultSizes: [number, number]`
-on Root, per-pane settings as props on each `<Splitter.Pane>` child.
+- **A. Id-keyed record.** A generic `Splitter.Pane id="…"`, with
+  `defaultSizes: Record<id, number>` summing to 100 and a `panes` config map
+  keyed by id.
+- **B. Index/position-based.** `defaultSizes: [number, number]`, the first child
+  always primary.
 
-**Why rejected.** Even with only two panes, index-based has issues:
+**Why rejected.** Both over-express the one degree of freedom. The record forces
+consumers to maintain two interdependent numbers that must sum to 100 (and a
+parallel id-keyed config map), when only one number is free. Index/position makes
+"which child is sized" invisible at the call site and fragile under reorder.
+Naming the sized pane by type (`Splitter.Aside`) makes the single `size` number
+unambiguous, removes the record and the config map, and lets the aside sit on
+either side without changing what `size` means.
 
-1. **Configuration drift across the codebase.** Per-pane props on `Pane`
-   contradicts the project rule that configuration lives on Root.
-2. **Fragile persistence.** Swapping the order of the two panes between
-   releases invalidates every persisted layout; with ids, unknown ids
-   are dropped and missing ids fall back to defaults.
-3. **Readability.** `collapsedPane="nav"` and `sizes.nav` communicate
-   intent at a glance.
-4. **Forward compatibility with N-pane.** If we ever extend the primitive,
-   the API shape doesn't change — only the constraint on how many panes
-   are allowed.
-
-**Cost accepted.** Every `Splitter.Pane` requires an `id`. Dev-time
-warning when an id is missing or duplicated.
+**Cost accepted.** A consumer who thinks "the main pane should be at least 40%"
+expresses it as the aside's `maxSize` (`100 − 40 = 60`) rather than a
+main-specific prop — one small mental step, in exchange for keeping all config
+on the single configured pane. Collapse is likewise aside-only (Decision 6).
 
 ## Decision 3: Anonymous handle
 
 **Decision.** `Splitter.Handle` carries no `id` and no per-handle config
 props. Behaviour (`keyboardStep`, `isDoubleClickDisabled`, default
 `aria-label`) lives on `Root`. The handle infers the two panes it
-controls from its sibling Panes in DOM order.
+controls from its sibling panes in DOM order, and its ARIA value tracks the
+leading pane (so it is correct whether the aside leads or trails).
 
 **Alternative considered.** Per-handle config via an `id` + `handles` map
 on Root.
@@ -86,29 +87,26 @@ on Root.
 nothing to differentiate per handle. The config-on-Root rule applies to
 the single handle just as well as it would to many.
 
-**Cost accepted.** None within the 2-pane shape. If N-pane is ever added
-and per-handle config emerges as a need, an opt-in `id` + `handles` map
-remains additive.
+**Cost accepted.** None within the 2-pane shape.
 
-## Decision 4: Sizes are uncontrolled by default (optional settle-only control); collapse is controllable
+## Decision 4: Size is uncontrolled by default (optional settle-only control); collapse is controllable
 
 **Decision.** Two stateful concerns, two idioms chosen by their update
 frequency:
 
-- **Sizes** are uncontrolled by default. The component owns the sizes
-  state; the public props are `defaultSizes` (read once on mount),
-  `onSizesChange` (live, every drag tick), and `onSizesChangeEnd` (fired
-  once when an interaction settles). An optional **settle-only** `sizes`
-  prop adds controlled-at-rest behaviour without the 60Hz cost (see
-  below).
-- **Collapse** is controllable state — `collapsedPane` /
-  `defaultCollapsedPane` / `onCollapsedPaneChange` (a single pane id or
-  `null`) — the standard Nimbus controlled/uncontrolled pair.
+- **Size** is uncontrolled by default. The component owns the aside size; the
+  public props are `defaultSize` (read once on mount), `onSizeChange` (live,
+  every drag tick), and `onSizeChangeEnd` (fired once when an interaction
+  settles). An optional **settle-only** `size` prop adds controlled-at-rest
+  behaviour without the 60Hz cost (see below). All emit/accept a single number.
+- **Collapse** is controllable state — `collapsed` / `defaultCollapsed` /
+  `onCollapsedChange` (a boolean) — the standard Nimbus controlled/uncontrolled
+  pair.
 
-**Alternative considered.** A *live* controlled `sizes` prop where the
+**Alternative considered.** A *live* controlled `size` prop where the
 prop is the render source on every drag tick.
 
-**Why rejected.** Drag fires at ~60Hz. A live-controlled `sizes` prop
+**Why rejected.** Drag fires at ~60Hz. A live-controlled `size` prop
 means every tick goes through consumer `setState` → re-render of the
 consumer's tree, because the handle can only move once the prop comes
 back. For an app-shell wrapping a large React tree that's a real cost for
@@ -116,29 +114,29 @@ no semantic win — splitter sizes are UI ergonomics, not data the rest of
 the app reacts to mid-drag.
 
 **What we adopted instead.** An optional **settle-only** controlled
-`sizes` prop. Internal state stays the render source and the authority
+`size` prop. Internal state stays the render source and the authority
 *during* interaction (drag/keyboard need no consumer feedback, so the
 60Hz cost above never applies), and the prop is reconciled into state
-only when it *changes* (the settle seam) — mirroring the `collapsedPane`
-controlled pattern. `onSizesChange`/`onSizesChangeEnd` are unchanged.
+only when it *changes* (the settle seam) — mirroring the `collapsed`
+controlled pattern. `onSizeChange`/`onSizeChangeEnd` are unchanged.
 This unlocks in-place, per-breakpoint layout control without remounting
-panes (a `key` swap would tear down pane content), which `defaultSizes` +
-`onSizesChangeEnd` alone cannot do. Collapse remains a separate
-controlled pair (Decision 6).
+panes (a `key` swap would tear down pane content), which `defaultSize` +
+`onSizeChangeEnd` alone cannot do.
 
-**Details.** Reconcile is effect-based, so a consumer that sets `sizes`
-but ignores `onSizesChangeEnd` keeps the last interactive value (no
+**Details.** Reconcile is effect-based, so a consumer that sets `size`
+but ignores `onSizeChangeEnd` keeps the last interactive value (no
 snap-back) and behaves as uncontrolled thereafter — dev-warned. Inbound
-values are normalized to sum 100 but not `minSize`-clamped (the next
-interaction re-clamps). When both `sizes` and `collapsedPane` are
-controlled and disagree, collapse wins for the collapsed pane.
+values are clamped into `0–100` but not `minSize`-clamped (the next
+interaction re-clamps). When both `size` and `collapsed` are controlled
+and disagree, collapse wins (the aside stays at `collapsedSize`, and the
+controlled `size` governs the expanded proportion).
 
 ## Decision 5: Persistence is consumer-wired, not baked in
 
 **Decision.** The component ships no persistence machinery. Consumers
-hydrate `defaultSizes` from whatever storage they choose and write back
-in `onSizesChangeEnd`; collapse persists through its controlled
-`collapsedPane` state. There is no bundled hook and no `autoSaveId`.
+hydrate `defaultSize` from whatever storage they choose and write back
+in `onSizeChangeEnd`; collapse persists through its controlled
+`collapsed` boolean. There is no bundled hook and no `autoSaveId`.
 
 **Alternative considered.** An `autoSaveId`-style prop (as in
 `react-resizable-panels`) — pass a string and the component writes to
@@ -148,38 +146,42 @@ loading, saving, and debouncing.
 **Why rejected.** Both couple the component to a storage backend. Cookies
 (for SSR), query params (for shareable layouts), server-side storage (for
 cross-device persistence), or an external state store all become awkward
-without escape hatches. They also pull hydration, SSR safety, debouncing,
-and stored-value validation into the component — none of which belong to
-its core job. Because `defaultSizes` and `onSizesChangeEnd` share the same
-`Record<id, number>` shape, the round-trip is already a one-liner against
-any storage, so a dedicated hook earns its surface area only marginally.
+without escape hatches. Because the size is a single number that
+`onSizeChangeEnd` emits and `defaultSize` accepts, the round-trip is already a
+one-liner against any storage, so a dedicated hook earns its surface area only
+marginally. (A pixel-aware companion hook — converting px intents to the
+percentage the component consumes — is a separate, later effort and is
+explicitly out of scope here.)
 
 **Shape consumers see:**
 
 ```tsx
-const [sizes, setSizes] = useStoredValue("ide-layout", { nav: 30, main: 70 });
+const [size, setSize] = useStoredValue("ide-layout", 30);
 
 <Splitter.Root
-  defaultSizes={sizes}        // hydrate (read once on mount)
-  onSizesChangeEnd={setSizes} // settled value → write back
-  panes={{ nav: { minSize: 10, collapsible: true }, main: { minSize: 20 } }}
+  defaultSize={size} // hydrate (read once on mount)
+  onSizeChangeEnd={setSize} // settled value → write back
+  minSize={10}
+  maxSize={80}
 >
-  …
+  <Splitter.Aside>…</Splitter.Aside>
+  <Splitter.Handle />
+  <Splitter.Main>…</Splitter.Main>
 </Splitter.Root>;
 ```
 
 ## Decision 6: Cross-subtree control is plain controlled state, not a ref
 
-**Decision.** Collapsing a pane from outside the splitter subtree (a
-header or toolbar button) is done with the controlled `collapsedPane`
-prop driven by ordinary `useState`. There is no imperative ref or command
-object.
+**Decision.** Collapsing the aside from outside the splitter subtree (a
+header or toolbar button) is done with the controlled `collapsed` boolean
+driven by ordinary `useState`. Only the aside collapses, so the state is a
+boolean — not an id. There is no imperative ref or command object.
 
 **Alternative considered A.** Expose an imperative `ref` (or a bundled
-hook holding one) on `Root` with `collapse(id)` / `expand(id)` commands.
+hook holding one) on `Root` with `collapse()` / `expand()` commands.
 
 **Why rejected.** Forces consumers into ref plumbing (lift the ref, thread
-it through context or props) for what is plain state: "which pane is
+it through context or props) for what is plain state: "is the aside
 collapsed." Controlled state lifts naturally and reads declaratively.
 
 **Alternative considered B.** State-hook-as-prop pattern (React Aria
@@ -187,38 +189,41 @@ style): a hook owns state, `<Splitter.Root state={…}>` reads it via
 `useSyncExternalStore`.
 
 **Why rejected.** Nimbus' established public API uses
-controlled/uncontrolled prop pairs, not state hooks as props. Every public
-hook in the codebase that returns a state object (`useDisclosureState`,
-`useToggleState`, `useListState`) is consumed *internally* by component
-implementations, not passed in by consumers. Following the state-hook
-pattern would introduce a new convention for a single component.
+controlled/uncontrolled prop pairs, not state hooks as props. Following the
+state-hook pattern would introduce a new convention for a single component.
 
 **Shape consumers see:**
 
 ```tsx
-const [collapsed, setCollapsed] = useState<string | null>(null);
+const [collapsed, setCollapsed] = useState(false);
 
-<Button onPress={() => setCollapsed((c) => (c === "nav" ? null : "nav"))}>
-  Toggle nav
-</Button>
+<Button onPress={() => setCollapsed((c) => !c)}>Toggle nav</Button>
 <Splitter.Root
-  collapsedPane={collapsed}
-  onCollapsedPaneChange={setCollapsed}
-  panes={{ nav: { minSize: 10, collapsible: true }, main: { minSize: 20 } }}
+  collapsible
+  collapsed={collapsed}
+  onCollapsedChange={setCollapsed}
+  minSize={10}
+  maxSize={80}
 >
-  …
+  <Splitter.Aside>…</Splitter.Aside>
+  <Splitter.Handle />
+  <Splitter.Main>…</Splitter.Main>
 </Splitter.Root>;
 ```
 
-## Decision 7: Naming — `Splitter` / `Pane` / `Handle`
+## Decision 7: Naming — `Splitter` / `Aside` / `Main` / `Handle`
 
 - **`Splitter`** over `WindowSplitter` (drops irrelevant "window"
   connotation), `Resizable*` (capability-first reads worse in
   compositions like `AppLayout`), `SplitPane` (singular, not
   compound-friendly).
-- **`Pane`** stays — it's the standard term across the field
-  (`Panel` in RPP is essentially synonymous; `Pane` aligns with
-  `SplitPane`).
+- **`Aside` / `Main`** over a generic `Pane`. The two panes of an app-shell
+  split are not peers — one is the primary content area, the other a
+  supporting rail. Naming them by role makes the single `size` number
+  unambiguous (it is always the aside's), removes the need for ids or a
+  `primaryPane` pointer, and reads as the layout intent at the call site.
+  `Main` carries the `<main>`-adjacent "primary content" connotation; `Aside`
+  the supporting one.
 - **`Handle`** over `Separator` for two reasons: (1) Nimbus already
   has a decorative `Separator` component, and (2) "handle" communicates
   "you grab this" — the part is interactive, not just a visual divider.
@@ -229,44 +234,40 @@ const [collapsed, setCollapsed] = useState<string | null>(null);
 
 Dragging the handle by Δ (in percentage points, after pixel→% conversion):
 
-1. Attempt to grow the previous pane by Δ, shrink the next pane by Δ.
-2. If the next pane would fall below its `minSize` (or below its
-   `collapsedSize` when collapsible and the user is committing the
-   collapse via Enter), clamp Δ to what fits. The handle stops at the
-   boundary.
-3. Mirror behaviour when Δ is negative (clamp at the previous pane's
-   `minSize` instead — which is the next pane's derived upper bound).
+1. Translate the gesture (grow the leading pane by Δ) into an aside Δ: aside
+   leading → `+Δ`, aside trailing → `−Δ`.
+2. Apply the aside Δ, clamped into the aside's `[minSize, maxSize]` window. The
+   handle stops at the boundary; because the main pane is the remainder,
+   `maxSize` is also the main pane's floor (`100 − maxSize`).
 
 No cascade — with only two panes, there is nowhere to spill to. This
 is a meaningful simplification over the N-pane case and removes the
 biggest single chunk of complexity from comparable libraries.
 
-The algorithm runs synchronously during `useMove` callbacks. The new
-`sizes` record always sums to 100 (within floating-point tolerance).
+The algorithm runs synchronously during `useMove` callbacks, preserving full
+float precision (no rounding).
 
-## Decision 9: Per-pane configuration in Root's `panes` map
+## Decision 9: Flat aside configuration on Root
 
-Static per-pane settings — `minSize`, `collapsible`, `collapsedSize` —
-live in `Splitter.Root`'s `panes` prop keyed by pane id. There is no
-`maxSize` (a pane's upper bound is derived as `100 − partner.minSize`, so
-a single value per side fully describes the one boundary) and no per-pane
-`defaultSize` (initial proportions come from the single `defaultSizes`
-prop on Root). Per-pane disabling is not a knob either — `isDisabled` on
-Root disables the whole splitter, per the Nimbus `isDisabled` convention.
+Static sizing settings — `minSize`, `maxSize`, `collapsible`, `collapsedSize` —
+are flat props on `Splitter.Root` and describe the aside. There is no per-pane
+config map (the role-by-type design removes the need to key config by id) and no
+per-pane `defaultSize` (the initial proportion is the single `defaultSize` on
+Root). Per-pane disabling is not a knob either — `isDisabled` on Root disables
+the whole splitter, per the Nimbus `isDisabled` convention.
 
-**Why.** Project rule: configuration on Root, not on sub-components. With
-ids, this is a clean map; nothing leaks onto `<Splitter.Pane>`. Splitting
-sizing by lifecycle — dynamic proportions in `defaultSizes` (which
-round-trips with the size callbacks), static constraints in `panes` —
-keeps each prop single-purpose. `keyboardStep` and `isDoubleClickDisabled`
-likewise live on Root.
+**Why.** Project rule: configuration on Root, not on sub-components. With one
+configured pane (the aside), the config is a flat handful of props rather than a
+keyed map. `maxSize` bounds the main pane's floor as the complement, so the one
+aside window fully describes both sides of the single boundary. `keyboardStep`
+and `isDoubleClickDisabled` likewise live on Root.
 
 ## Decision 10: Double-click restores defaults; Enter toggles collapse
 
 **Decision.** Double-click on the handle restores the boundary to the
-initial sizes derived on mount. Enter on the focused handle toggles
-collapse of the adjacent collapsible pane. The two gestures bind to
-different actions, not the same action.
+initial size derived on mount. Enter on the focused handle toggles the
+aside's collapse (when collapsible). The two gestures bind to different
+actions, not the same action.
 
 **Alternatives considered.**
 
@@ -283,13 +284,7 @@ a no-op on those splitters — discoverable but useless, exactly the
 case where a user would reach for the gesture to "reset". Under B,
 double-click is meaningful everywhere: a single, intuitive way to undo
 a stray drag. Collapse remains reachable via the keyboard (Enter on the
-focused handle) and the controlled `collapsedPane` prop.
-
-The cost is that consumers who want a single mouse gesture for collapse
-have to surface it themselves (a button, a context menu item). For the
-collapsible case specifically that's a small ask — the consumer
-already designed for collapsibility — and it keeps the primitive's
-double-click contract uniform.
+focused handle) and the controlled `collapsed` prop.
 
 `isDoubleClickDisabled` on Root keeps the same name but now suppresses the
 restore-defaults action.
@@ -298,9 +293,9 @@ restore-defaults action.
 
 - 3+ panes per splitter — see Decision 1; use nesting.
 - Cascading resize — see Decision 8; not needed for 2 panes.
-- Controlled `sizes` prop — see Decision 4.
-- Multiple size units (px / rem / vh) — adds a constraint solver for no
-  meaningful gain on top of % + min.
+- Live controlled `size` prop — see Decision 4 (settle-only only).
+- Multiple size units (px / rem / vh) and a pixel-aware companion hook — a
+  separate, later effort; the component consumes percentages only.
 - Baked-in persistence (`autoSaveId`, bundled hook) — see Decision 5.
 - App-shell behaviour (responsive collapse, landmark slots, drawer
   fallback on narrow viewports) — explicit follow-up as `AppLayout`

@@ -18,9 +18,8 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  *
  * Variants:
  * - `orientation`: `horizontal` (default) | `vertical` — flex direction +
- *   axis-specific handle dimensions.
- * - `size`: `sm` | `md` (default) | `lg` — visual thickness of the handle's
- *   track (only seen on hover/focus).
+ *   axis-specific handle dimensions. The handle track has a single fixed
+ *   thickness (no `size` variant); future visual variants can be added here.
  *
  * @see https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/
  */
@@ -93,6 +92,8 @@ export const splitterSlotRecipe = defineSlotRecipe({
         handle: {
           top: 0,
           height: "100%",
+          // Single fixed handle-track thickness (the former `md`).
+          width: "200",
           cursor: "col-resize",
           transform: "translateX(-50%)",
         },
@@ -102,41 +103,15 @@ export const splitterSlotRecipe = defineSlotRecipe({
         handle: {
           left: 0,
           width: "100%",
+          // Single fixed handle-track thickness (the former `md`).
+          height: "200",
           cursor: "row-resize",
           transform: "translateY(-50%)",
         },
       },
     },
-    size: {
-      sm: {},
-      md: {},
-      lg: {},
-    },
   },
-  compoundVariants: [
-    // Horizontal handle thickness per size variant.
-    {
-      orientation: "horizontal",
-      size: "sm",
-      css: { handle: { width: "100" } },
-    },
-    {
-      orientation: "horizontal",
-      size: "md",
-      css: { handle: { width: "200" } },
-    },
-    {
-      orientation: "horizontal",
-      size: "lg",
-      css: { handle: { width: "300" } },
-    },
-    // Vertical handle thickness per size variant.
-    { orientation: "vertical", size: "sm", css: { handle: { height: "100" } } },
-    { orientation: "vertical", size: "md", css: { handle: { height: "200" } } },
-    { orientation: "vertical", size: "lg", css: { handle: { height: "300" } } },
-  ],
   defaultVariants: {
     orientation: "horizontal",
-    size: "md",
   },
 });

@@ -7,17 +7,18 @@ import { NimbusProvider, Splitter } from "@commercetools/nimbus";
 /**
  * @docs-section basic-rendering
  * @docs-title Basic Rendering
- * @docs-description Minimal two-pane Splitter wired up in a consumer app.
+ * @docs-description Minimal Splitter — a configurable aside and a main pane —
+ * wired up in a consumer app.
  * @docs-order 1
  */
 describe("Splitter - Basic rendering", () => {
-  it("renders two panes and one handle", async () => {
+  it("renders an aside, a main pane, and one handle", async () => {
     render(
       <NimbusProvider>
-        <Splitter.Root defaultSizes={{ nav: 30, main: 70 }}>
-          <Splitter.Pane id="nav">Nav</Splitter.Pane>
+        <Splitter.Root defaultSize={30}>
+          <Splitter.Aside>Nav</Splitter.Aside>
           <Splitter.Handle />
-          <Splitter.Pane id="main">Main</Splitter.Pane>
+          <Splitter.Main>Main</Splitter.Main>
         </Splitter.Root>
       </NimbusProvider>
     );
@@ -30,27 +31,25 @@ describe("Splitter - Basic rendering", () => {
 /**
  * @docs-section persistence
  * @docs-title Persistence with any storage
- * @docs-description Hydrate `defaultSizes` from stored state and persist the
- * settled value via `onSizesChangeEnd` — no bespoke hook required.
+ * @docs-description Hydrate `defaultSize` from stored state and persist the
+ * settled value via `onSizeChangeEnd` — a single number, no bespoke hook.
  * @docs-order 2
  */
 describe("Splitter - persistence", () => {
-  it("hydrates from stored sizes on first render", async () => {
+  it("hydrates from the stored size on first render", async () => {
     // Stand-in for a `useLocalStorage`-style hook seeded from storage.
     const Demo = () => {
-      const [sizes, setSizes] = useState<Record<string, number>>({
-        nav: 25,
-        main: 75,
-      });
+      const [size, setSize] = useState(25);
       return (
         <Splitter.Root
-          defaultSizes={sizes}
-          onSizesChangeEnd={setSizes}
-          panes={{ nav: { minSize: 5 }, main: { minSize: 5 } }}
+          defaultSize={size}
+          onSizeChangeEnd={setSize}
+          minSize={5}
+          maxSize={95}
         >
-          <Splitter.Pane id="nav">Nav</Splitter.Pane>
+          <Splitter.Aside>Nav</Splitter.Aside>
           <Splitter.Handle />
-          <Splitter.Pane id="main">Main</Splitter.Pane>
+          <Splitter.Main>Main</Splitter.Main>
         </Splitter.Root>
       );
     };
@@ -69,35 +68,33 @@ describe("Splitter - persistence", () => {
 });
 
 /**
- * @docs-section controlled-sizes
- * @docs-title Controlled sizes from anywhere
- * @docs-description Drive the layout with the `sizes` prop and update it from
+ * @docs-section controlled-size
+ * @docs-title Controlled size from anywhere
+ * @docs-description Drive the layout with the `size` prop and update it from
  * outside the splitter — changes apply in place (no remount), so stateful pane
- * content is preserved. Wire `onSizesChangeEnd` to keep it controlled after a
+ * content is preserved. Wire `onSizeChangeEnd` to keep it controlled after a
  * drag.
  * @docs-order 2.5
  */
-describe("Splitter - controlled sizes", () => {
-  it("reflects an external sizes change in place", async () => {
+describe("Splitter - controlled size", () => {
+  it("reflects an external size change in place", async () => {
     const user = userEvent.setup();
     const Demo = () => {
-      const [sizes, setSizes] = useState<Record<string, number>>({
-        nav: 30,
-        main: 70,
-      });
+      const [size, setSize] = useState(30);
       return (
         <>
-          <button type="button" onClick={() => setSizes({ nav: 60, main: 40 })}>
+          <button type="button" onClick={() => setSize(60)}>
             widen-nav
           </button>
           <Splitter.Root
-            sizes={sizes}
-            onSizesChangeEnd={setSizes}
-            panes={{ nav: { minSize: 5 }, main: { minSize: 5 } }}
+            size={size}
+            onSizeChangeEnd={setSize}
+            minSize={5}
+            maxSize={95}
           >
-            <Splitter.Pane id="nav">Nav</Splitter.Pane>
+            <Splitter.Aside>Nav</Splitter.Aside>
             <Splitter.Handle />
-            <Splitter.Pane id="main">Main</Splitter.Pane>
+            <Splitter.Main>Main</Splitter.Main>
           </Splitter.Root>
         </>
       );
@@ -124,35 +121,31 @@ describe("Splitter - controlled sizes", () => {
 /**
  * @docs-section controlled-collapse
  * @docs-title Controlled collapse from anywhere
- * @docs-description Collapse is plain controlled state, so a button outside
- * the splitter can toggle it — no imperative API.
+ * @docs-description Collapse is plain controlled boolean state, so a button
+ * outside the splitter can toggle the aside — no imperative API.
  * @docs-order 3
  */
 describe("Splitter - controlled collapse", () => {
-  it("collapses a pane from a button outside the subtree", async () => {
+  it("collapses the aside from a button outside the subtree", async () => {
     const user = userEvent.setup();
     const Demo = () => {
-      const [collapsed, setCollapsed] = useState<string | null>(null);
+      const [collapsed, setCollapsed] = useState(false);
       return (
         <>
-          <button
-            type="button"
-            onClick={() => setCollapsed((c) => (c === "nav" ? null : "nav"))}
-          >
+          <button type="button" onClick={() => setCollapsed((c) => !c)}>
             toggle-nav
           </button>
           <Splitter.Root
-            defaultSizes={{ nav: 30, main: 70 }}
-            panes={{
-              nav: { minSize: 5, collapsible: true },
-              main: { minSize: 5 },
-            }}
-            collapsedPane={collapsed}
-            onCollapsedPaneChange={setCollapsed}
+            defaultSize={30}
+            minSize={5}
+            maxSize={95}
+            collapsible
+            collapsed={collapsed}
+            onCollapsedChange={setCollapsed}
           >
-            <Splitter.Pane id="nav">Nav</Splitter.Pane>
+            <Splitter.Aside>Nav</Splitter.Aside>
             <Splitter.Handle />
-            <Splitter.Pane id="main">Main</Splitter.Pane>
+            <Splitter.Main>Main</Splitter.Main>
           </Splitter.Root>
         </>
       );
@@ -179,19 +172,19 @@ describe("Splitter - controlled collapse", () => {
  * @docs-order 4
  */
 describe("Splitter - Nested", () => {
-  it("nests inside a Pane to express three regions", async () => {
+  it("nests inside a pane to express three regions", async () => {
     render(
       <NimbusProvider>
-        <Splitter.Root defaultSizes={{ nav: 25, rest: 75 }}>
-          <Splitter.Pane id="nav">Nav</Splitter.Pane>
+        <Splitter.Root defaultSize={25}>
+          <Splitter.Aside>Nav</Splitter.Aside>
           <Splitter.Handle />
-          <Splitter.Pane id="rest">
-            <Splitter.Root defaultSizes={{ main: 65, aside: 35 }}>
-              <Splitter.Pane id="main">Main</Splitter.Pane>
+          <Splitter.Main>
+            <Splitter.Root defaultSize={35}>
+              <Splitter.Main>Main</Splitter.Main>
               <Splitter.Handle />
-              <Splitter.Pane id="aside">Aside</Splitter.Pane>
+              <Splitter.Aside>Aside</Splitter.Aside>
             </Splitter.Root>
-          </Splitter.Pane>
+          </Splitter.Main>
         </Splitter.Root>
       </NimbusProvider>
     );
