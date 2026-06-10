@@ -45,12 +45,12 @@ catalogs:
     "@testing-library/react": ^16.3.2
     playwright: ^1.60.0
     vitest: ^4.1.8
-    storybook: ^10.4.2
-    eslint-plugin-storybook: ^10.4.2
-    "@storybook/addon-a11y": ^10.4.2
-    "@storybook/addon-docs": ^10.4.2
-    "@storybook/addon-vitest": ^10.4.2
-    "@storybook/react-vite": ^10.4.2
+    storybook: ^10.4.3
+    eslint-plugin-storybook: ^10.4.3
+    "@storybook/addon-a11y": ^10.4.3
+    "@storybook/addon-docs": ^10.4.3
+    "@storybook/addon-vitest": ^10.4.3
+    "@storybook/react-vite": ^10.4.3
     "@vueless/storybook-dark-mode": ^10.0.8
     "@github-ui/storybook-addon-performance-panel": ^1.1.4
     jsdom: 29.0.1 # pinned: 29.0.2+ breaks Chakra/Emotion CSS in JSDOM (style assertions return padding: 0); reconfirmed against 29.1.0 on 2026-04-29
