@@ -4,14 +4,6 @@ import { mergeRefs } from "@/utils";
 import { FloatingActionButtonRoot } from "./floating-action-button.slots.tsx";
 import type { FloatingActionButtonProps } from "./floating-action-button.types.ts";
 
-/**
- * # FloatingActionButton
- *
- * A circular, icon-only button for prominent actions. Designed as an agent
- * panel trigger or similar high-priority single action.
- *
- * @see {@link https://nimbus-documentation.vercel.app/components/inputs/floating-action-button}
- */
 const FloatingActionButtonComponent = (props: FloatingActionButtonProps) => {
   const { ref: forwardedRef, children, ...rest } = props;
 

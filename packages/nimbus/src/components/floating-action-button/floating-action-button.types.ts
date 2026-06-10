@@ -9,6 +9,7 @@ import type { SemanticPalettesOnly } from "@/type-utils";
 // RECIPE PROPS
 // ============================================================
 
+// No size or variant axes — the FAB has a single fixed visual style.
 type FloatingActionButtonRecipeProps = UnstyledProp;
 
 // ============================================================
@@ -39,8 +40,9 @@ type NativePropsWithAriaEquivalents = {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 
   /**
-   * @deprecated Use `isDisabled` instead — it additionally manages
-   * `aria-disabled` for non-native button elements.
+   * @deprecated Use `isDisabled` instead — it integrates with React Aria's
+   * interaction model and suppresses press, hover, and keyboard events
+   * consistently.
    */
   disabled?: boolean;
 
@@ -49,6 +51,24 @@ type NativePropsWithAriaEquivalents = {
    * boolean to remove the button from the tab order.
    */
   tabIndex?: number;
+
+  /**
+   * @deprecated Use `onHoverStart` instead — it works across mouse, touch,
+   * and pointer events uniformly.
+   */
+  onMouseEnter?: React.MouseEventHandler<HTMLButtonElement>;
+
+  /**
+   * @deprecated Use `onHoverEnd` instead — it works across mouse, touch,
+   * and pointer events uniformly.
+   */
+  onMouseLeave?: React.MouseEventHandler<HTMLButtonElement>;
+
+  /**
+   * @deprecated Use `isDisabled` instead — React Aria sets `disabled` on
+   * native `<button>` elements automatically.
+   */
+  "aria-disabled"?: boolean | "true" | "false";
 };
 
 // ============================================================
@@ -74,7 +94,7 @@ export type FloatingActionButtonProps = Omit<
      */
     [key: `data-${string}`]: unknown;
     /**
-     * Slot name for React Aria Components composition
+     * DOM `slot` attribute forwarded directly; not wired to a React Aria context.
      */
     slot?: string | null | undefined;
     /**

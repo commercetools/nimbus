@@ -54,11 +54,13 @@ describe("FloatingActionButton - Panel toggle integration", () => {
     const user = userEvent.setup();
     render(<PanelToggle />);
 
-    const fab = screen.getByTestId("fab");
-    expect(fab).toHaveAttribute("aria-label", "Open panel");
-
-    await user.click(fab);
-    expect(fab).toHaveAttribute("aria-label", "Close panel");
+    expect(
+      screen.getByRole("button", { name: "Open panel" })
+    ).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Open panel" }));
+    expect(
+      screen.getByRole("button", { name: "Close panel" })
+    ).toBeInTheDocument();
   });
 });
 
@@ -144,7 +146,7 @@ describe("FloatingActionButton - Stacking context", () => {
  * @docs-section tracking
  * @docs-title Analytics Tracking Integration
  * @docs-description Use a persistent id for analytics tracking
- * @docs-order 3
+ * @docs-order 4
  */
 describe("FloatingActionButton - Analytics tracking integration", () => {
   it("renders with a persistent id for tracking", () => {
