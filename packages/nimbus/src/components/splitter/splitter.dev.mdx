@@ -75,8 +75,8 @@ const App = () => (
 `minSize` and `maxSize` bound the single aside dimension. `minSize` (default
 `0`) is the aside's floor; `maxSize` (default `100`) caps how far the aside can
 grow — which in turn fixes the main pane's floor at `100 − maxSize`. Because
-there is one boundary, this single `[minSize, maxSize]` window on the aside fully
-describes both sides; there is no main-specific prop.
+there is one boundary, this single `[minSize, maxSize]` window on the aside
+fully describes both sides; there is no main-specific prop.
 
 ```jsx live-dev
 const App = () => (
@@ -318,8 +318,8 @@ const App = () => (
 Size is uncontrolled by default, so persist it in your app with any storage:
 hydrate `defaultSize` from stored state and write the settled value back in
 `onSizeChangeEnd` (it fires once per settled interaction — drag end, each
-keypress, collapse/expand, double-click restore — so no debouncing is needed).
-A single `number` round-trips: the value `onSizeChangeEnd` emits is exactly the
+keypress, collapse/expand, double-click restore — so no debouncing is needed). A
+single `number` round-trips: the value `onSizeChangeEnd` emits is exactly the
 shape `defaultSize` accepts. Collapse persists through its controlled boolean
 state.
 
@@ -353,8 +353,8 @@ for responsive layouts that swap the proportion per breakpoint, since external
 changes apply in place (no remount, so pane content keeps its scroll and focus).
 Control is settled, not live: drag and keyboard stay smooth from internal state
 and report once via `onSizeChangeEnd`. Wire that callback and feed the value
-back, or the splitter keeps the last interactive size and behaves as uncontrolled
-from then on.
+back, or the splitter keeps the last interactive size and behaves as
+uncontrolled from then on.
 
 ```tsx
 const [size, setSize] = useState(30);
@@ -370,8 +370,8 @@ const [size, setSize] = useState(30);
 
 The aside percentage carries full float precision end-to-end (nothing in the
 size pipeline is rounded — only the handle's `aria-valuenow` is rounded, for
-assistive technology). To land on an exact pixel at a known container width, pass
-the computed float — `250px` in an `800px` container is `31.25`.
+assistive technology). To land on an exact pixel at a known container width,
+pass the computed float — `250px` in an `800px` container is `31.25`.
 
 ```jsx live-dev
 const App = () => (
@@ -392,6 +392,62 @@ const App = () => (
   </Box>
 );
 ```
+
+### Responsive pixel & token sizes with `useResponsiveSplitterSizes`
+
+`Splitter.Root` is percentage-native — it has no pixel code path. When you'd
+rather think in pixels (a fixed-width sidebar, an icon rail) or size per device,
+reach for the companion hook `useResponsiveSplitterSizes`. It is a **pixel/token
+→ percentage translator**: it measures the splitter's container, converts your
+config to the percentage the component wants, drives the controlled `size`
+channel, and persists the result — all without the component gaining a pixel
+path.
+
+Spread its `rootProps` onto `Splitter.Root` and attach the `ref` it returns (the
+`ref` is required — the hook measures the container through it):
+
+```tsx
+const { rootProps } = useResponsiveSplitterSizes({
+  orientation: "horizontal",
+  resolveAgainst: "container",
+  persistKey: "app:main-splitter",
+  size: 320, // a bare number is PIXELS
+  minSize: 160,
+  maxSize: "breakpoint-sm", // size tokens resolve to pixels too
+});
+
+<Splitter.Root {...rootProps} collapsible>
+  <Splitter.Aside>…</Splitter.Aside>
+  <Splitter.Handle />
+  <Splitter.Main>…</Splitter.Main>
+</Splitter.Root>;
+```
+
+**Units.** A value is a `number` (pixels), a size token (`3xs`–`8xl` or
+`breakpoint-sm`…`breakpoint-2xl`, resolving to pixels), or a `"N%"` string
+(passed through untranslated). Note the contrast with `Splitter.Root`'s own
+`size` / `minSize` / … props, which are **percentages**: through the hook, a
+bare number means pixels. Because the hook owns the full facade (`size` plus
+`minSize` / `maxSize` / `collapsedSize`), you don't hand-write percentages on
+the root when you use it.
+
+**Responsive by container width.** Any dimension can be a map keyed by container
+**min-width thresholds** (pixels or tokens) — a min-width cascade resolved
+against the splitter's own width, not the viewport. The largest threshold `≤`
+the measured width wins; the smallest entry also applies below it.
+
+```tsx
+const { rootProps } = useResponsiveSplitterSizes({
+  resolveAgainst: "container",
+  size: { 0: 320, 768: "30%" }, // 320px below 768px container width, 30% above
+});
+```
+
+**Persistence.** Pass a `persistKey` (and optionally a `storage` adapter,
+defaulting to `localStorage`) and the hook stores the settled size **in pixels**
+per band, so a dragged `320px` re-pins to `320px` across reloads and container
+resizes. `collapsedSize` is static config and is never persisted; the latest
+expanded size survives collapse and expand.
 
 ### Three or more regions
 
@@ -522,9 +578,9 @@ const App = () => {
   warning is emitted otherwise. The aside may be placed before or after the main
   pane (a leading or trailing panel) — `size` always refers to the aside.
 - All sizing and collapse configuration (`defaultSize` / `size`, `minSize`,
-  `maxSize`, `collapsible`, `collapsedSize`) lives on `Splitter.Root`. Panes take
-  only their content and an optional `id` for analytics/testing — nothing is
-  configured on the pane itself.
+  `maxSize`, `collapsible`, `collapsedSize`) lives on `Splitter.Root`. Panes
+  take only their content and an optional `id` for analytics/testing — nothing
+  is configured on the pane itself.
 
 ## Accessibility
 

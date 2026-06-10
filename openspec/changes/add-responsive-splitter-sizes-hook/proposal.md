@@ -20,7 +20,11 @@ pixel, and persistence concern out of the component.
 - Add `useResponsiveSplitterSizes`, a `Splitter` companion hook that resolves a
   pixel-/token-based, optionally per-container-width size config down to the
   percentage `Splitter.Root` consumes, and returns props to spread onto the
-  root: `{ rootProps: { size, minSize, maxSize, collapsedSize, onSizeChangeEnd, ref, orientation } }`.
+  root: `{ rootProps: { size, minSize, maxSize, collapsedSize, onSizeChangeEnd, onCollapsedChange, ref, orientation } }`.
+  The forwarded `onCollapsedChange` lets the hook observe collapse (it fires
+  before the collapse-driven settle) so it can suppress persistence while
+  collapsed; an optional `onCollapsedChange` option is called through for
+  consumers who also want to observe collapse.
 - **Unit model (`number` is always pixels).** A size value is one of: a `number`
   (pixels), a size **token** string (`3xs`–`8xl` or `breakpoint-sm`…`breakpoint-2xl`,
   resolving to pixels via `themeTokens.size`), or a `` `${number}%` `` string

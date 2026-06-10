@@ -5,6 +5,7 @@ import type {
   SplitterPaneSlotProps,
   SplitterHandleSlotProps,
 } from "./splitter.slots";
+import type { SplitterSizeToken } from "./utils/size-tokens";
 
 // ============================================================
 // SHARED VALUE TYPES
@@ -270,4 +271,145 @@ export type SplitterHandleProps = OmitInternalProps<SplitterHandleSlotProps> & {
   "aria-labelledby"?: string;
   /** Ref to the handle element. */
   ref?: Ref<HTMLDivElement>;
+};
+
+// ============================================================
+// useResponsiveSplitterSizes — companion hook types
+// ============================================================
+
+/**
+ * A single size value for the `useResponsiveSplitterSizes` hook. **A bare
+ * `number` is always pixels** — the hook exists to let consumers think in
+ * pixels and translates to the percentage `Splitter.Root` consumes. The three
+ * forms:
+ *
+ * - `number` — pixels (e.g. `320` → `320px`), converted against the measured
+ *   container.
+ * - {@link SplitterSizeToken} — a size token (`3xs`–`8xl`, `breakpoint-*`)
+ *   resolving to pixels, then converted.
+ * - `` `${number}%` `` — a percentage, passed through to the component
+ *   untranslated (no measurement needed).
+ *
+ * Contrast with `Splitter.Root`'s own `size`/`minSize`/… props, which are
+ * percentages: through the hook a bare number is pixels.
+ */
+export type ResponsiveSplitterSizeValue =
+  | number
+  | SplitterSizeToken
+  | `${number}%`;
+
+/**
+ * A container **min-width threshold** key for a responsive size map. A threshold
+ * is a pixel `number` or a size token (resolving to pixels) — never a
+ * percentage (a percentage threshold of the container against itself is
+ * meaningless).
+ */
+export type ResponsiveSplitterSizeThreshold = number | SplitterSizeToken;
+
+/**
+ * A size configuration for one dimension. Either a single value (applies at
+ * every width) or a map keyed by container min-width thresholds — a min-width
+ * cascade resolved against the splitter's **own** measured width (not the
+ * viewport). The largest threshold `≤` the measured width wins; the smallest
+ * entry also applies below it.
+ *
+ * @example
+ * 320                                  // 320px at every width
+ * "30%"                                // 30% at every width
+ * { 0: 320, 768: "30%", "breakpoint-lg": 400 } // px → %, by container width
+ */
+export type ResponsiveSplitterSizeConfig =
+  | ResponsiveSplitterSizeValue
+  | Partial<
+      Record<ResponsiveSplitterSizeThreshold, ResponsiveSplitterSizeValue>
+    >;
+
+/**
+ * The axis the active band is resolved against. `"container"` (the only value
+ * in this version) observes the splitter's own width via `ResizeObserver`. The
+ * option is explicit and required so a future `"viewport"` mode is purely
+ * additive and the container-width threshold keys never silently change
+ * meaning.
+ */
+export type SplitterSizeResolveAgainst = "container";
+
+/**
+ * Minimal `localStorage`-like interface the hook persists through. Injectable so
+ * persistence can be redirected (tests, app-scoped stores) or disabled.
+ */
+export type SplitterSizesStorage = {
+  /** Read a previously stored payload string, or `null`. May be wrapped to never throw. */
+  getItem: (key: string) => string | null;
+  /** Write a payload string. May be wrapped to never throw. */
+  setItem: (key: string, value: string) => void;
+};
+
+/**
+ * Options for {@link useResponsiveSplitterSizes}.
+ */
+export type UseResponsiveSplitterSizesOptions = {
+  /**
+   * Splitter orientation — selects the measured axis (width for `"horizontal"`,
+   * height for `"vertical"`) and is forwarded to `Splitter.Root`.
+   * @default "horizontal"
+   */
+  orientation?: "horizontal" | "vertical";
+
+  /**
+   * The resolution axis. Required; `"container"` in this version.
+   */
+  resolveAgainst: SplitterSizeResolveAgainst;
+
+  /** Aside size config (pixels/token/percent, single value or per-threshold map). */
+  size: ResponsiveSplitterSizeConfig;
+
+  /** Aside lower bound (pixels/token/percent). Translated to a percentage and forwarded. */
+  minSize?: ResponsiveSplitterSizeConfig;
+  /** Aside upper bound (pixels/token/percent). Translated to a percentage and forwarded. */
+  maxSize?: ResponsiveSplitterSizeConfig;
+  /** Aside collapsed size (pixels/token/percent). Static config — never persisted. */
+  collapsedSize?: ResponsiveSplitterSizeConfig;
+
+  /** Storage key for persistence. When omitted, sizes are not persisted. */
+  persistKey?: string;
+  /** Storage adapter. Defaults to a `localStorage` wrapper that never throws. */
+  storage?: SplitterSizesStorage;
+
+  /**
+   * Optional passthrough for collapse changes. The hook always wires its own
+   * `onCollapsedChange` (to suppress persistence while collapsed); this is
+   * invoked in addition so consumers can observe collapse too.
+   */
+  onCollapsedChange?: (collapsed: boolean) => void;
+};
+
+/**
+ * Props produced by {@link useResponsiveSplitterSizes} to spread onto
+ * `Splitter.Root`. All sizes are percentages (the component's native unit);
+ * `size` may be absent for one frame before the container is first measured
+ * with a pixel/token config.
+ */
+export type ResponsiveSplitterRootProps = {
+  /** Controlled aside size (percentage). Absent until resolvable for px/token configs. */
+  size?: number;
+  /** Aside lower bound (percentage). Present only when `minSize` was configured + resolved. */
+  minSize?: number;
+  /** Aside upper bound (percentage). Present only when `maxSize` was configured + resolved. */
+  maxSize?: number;
+  /** Aside collapsed size (percentage). Present only when `collapsedSize` was configured + resolved. */
+  collapsedSize?: number;
+  /** Settle handler — persists and feeds the value back to keep the loop closed. */
+  onSizeChangeEnd: (size: number) => void;
+  /** Collapse tracker (also calls the optional `onCollapsedChange` option). */
+  onCollapsedChange: (collapsed: boolean) => void;
+  /** Ref that attaches the container `ResizeObserver`. Required for px/token/responsive resolution. */
+  ref: Ref<HTMLDivElement>;
+  /** Forwarded orientation. */
+  orientation: "horizontal" | "vertical";
+};
+
+/** Return value of {@link useResponsiveSplitterSizes}. */
+export type UseResponsiveSplitterSizesResult = {
+  /** Spread onto `Splitter.Root`. */
+  rootProps: ResponsiveSplitterRootProps;
 };
