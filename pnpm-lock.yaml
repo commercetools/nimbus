@@ -384,6 +384,9 @@ importers:
       '@commercetools/nimbus-icons':
         specifier: workspace:^
         version: link:../../packages/nimbus-icons
+      '@commercetools/nimbus-theme-generator':
+        specifier: workspace:^
+        version: link:../../packages/nimbus-theme-generator
       '@emotion/react':
         specifier: catalog:react
         version: 11.14.0(@types/react@19.2.16)(react@19.2.0)
