@@ -19,6 +19,7 @@ import {
   DateRangePicker,
   DefaultPage,
   Dialog,
+  DraggableList,
   Drawer,
   FieldErrors,
   Flex,
@@ -30,12 +31,15 @@ import {
   IconButton,
   IconToggleButton,
   Image,
+  InlineSvg,
   Kbd,
   Link,
   List,
   LoadingSpinner,
+  LocalizedField,
   Menu,
   ModalPage,
+  MoneyInput,
   MultilineTextInput,
   NumberInput,
   PageContent,
@@ -45,11 +49,13 @@ import {
   RadioInput,
   RangeCalendar,
   ScrollArea,
+  ScopedSearchInput,
   SearchInput,
   Select,
   Separator,
   SimpleGrid,
   Spacer,
+  SplitButton,
   Stack,
   Steps,
   Switch,
@@ -134,6 +140,7 @@ export default function Page() {
             width="50px"
             height="50px"
           />
+          <InlineSvg data='<svg><path d="M0 0" /></svg>' />
           <Avatar firstName="Test" lastName="User" />
           <VisuallyHidden>Hidden text</VisuallyHidden>
         </Stack>
@@ -156,6 +163,9 @@ export default function Page() {
           <IconButton aria-label="action" />
           <ToggleButton>Toggle</ToggleButton>
           <IconToggleButton aria-label="toggle" />
+          <SplitButton onAction={() => {}} aria-label="more actions">
+            <Menu.Item id="action">Action</Menu.Item>
+          </SplitButton>
           <ToggleButtonGroup.Root selectionMode="single">
             <ToggleButtonGroup.Button id="a">A</ToggleButtonGroup.Button>
             <ToggleButtonGroup.Button id="b">B</ToggleButtonGroup.Button>
@@ -170,6 +180,17 @@ export default function Page() {
           <PasswordInput aria-label="password" />
           <MultilineTextInput aria-label="multiline" />
           <SearchInput aria-label="search" />
+          <ScopedSearchInput
+            aria-label="scoped search"
+            options={[{ value: "all", label: "All" }]}
+            value={{ option: "all", text: "" }}
+            onSubmit={() => {}}
+          />
+          <MoneyInput
+            aria-label="money"
+            currencies={["EUR", "USD"]}
+            value={{ amount: "", currencyCode: "EUR" }}
+          />
           <Checkbox>Checkbox</Checkbox>
           <Switch>Switch</Switch>
           <RadioInput.Root aria-label="radio">
@@ -321,7 +342,7 @@ export default function Page() {
 
       <Section title="Data Display">
         <Stack gap="400">
-          <DataTable.Root
+          <DataTable
             aria-label="data table"
             columns={[
               { id: "name", header: "Name", accessor: (row) => row.name },
@@ -333,9 +354,7 @@ export default function Page() {
               { id: "2", name: "Bob", role: "Designer", status: "Active" },
               { id: "3", name: "Carol", role: "PM", status: "Away" },
             ]}
-          >
-            <DataTable.Table />
-          </DataTable.Root>
+          />
 
           <TagGroup.Root aria-label="tags">
             <TagGroup.TagList>
@@ -346,6 +365,15 @@ export default function Page() {
           <List.Root>
             <List.Item>List Item</List.Item>
           </List.Root>
+
+          <DraggableList.Root
+            aria-label="draggable"
+            items={[
+              { id: "1", key: "1", label: "Item 1" },
+              { id: "2", key: "2", label: "Item 2" },
+              { id: "3", key: "3", label: "Item 3" },
+            ]}
+          />
         </Stack>
       </Section>
 
@@ -358,6 +386,12 @@ export default function Page() {
             </FormField.Input>
           </FormField.Root>
           <FieldErrors errors={{ required: true }} />
+          <LocalizedField
+            aria-label="localized"
+            defaultLocaleOrCurrency="en"
+            valuesByLocaleOrCurrency={{ en: "hello" }}
+            onChange={() => {}}
+          />
         </Stack>
       </Section>
 
