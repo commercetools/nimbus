@@ -5,8 +5,8 @@
  */
 
 export default {
-  ariaLabel: `Form actions`,
-  cancel: `Cancel`,
-  delete: `Delete`,
-  save: `Save`,
+  ariaLabel: `Actions du formulaire`,
+  cancel: `Annuler`,
+  delete: `Supprimer`,
+  save: `Enregistrer`,
 };

@@ -1,0 +1,359 @@
+---
+id: Home-Theming-1749571200000
+title: Theming
+description:
+  Customize Nimbus with your own brand colors, typography, and design tokens
+order: 3
+menu:
+  - Home
+  - Getting Started
+  - Theming
+tags:
+  - guide
+  - theming
+  - customization
+  - tokens
+  - colors
+icon: Palette
+---
+
+# Theming
+
+Nimbus ships with a default theme that works out of the box, but you can fully
+customize it to match your brand. The `@commercetools/nimbus-theme-generator`
+package lets you generate custom color palettes, remap semantic colors, and
+override design tokens like typography, spacing, and border radii.
+
+## Install the theme generator
+
+```bash
+pnpm add @commercetools/nimbus-theme-generator
+```
+
+## Quick start
+
+Create a custom theme and pass it to `NimbusProvider`. Try changing the
+`baseColor` value below to see how the palette updates:
+
+```jsx live
+import { createNimbusTheme } from "@commercetools/nimbus-theme-generator";
+import { NimbusProvider, Button, Stack } from "@commercetools/nimbus";
+
+const customTheme = createNimbusTheme({
+  baseConfigs: [themeConfig],
+  palettes: {
+    brand: { type: "generated", baseColor: "#D946EF" },
+  },
+  semantic: {
+    primary: "brand",
+  },
+});
+
+function App() {
+  return (
+    <NimbusProvider theme={customTheme}>
+      <Stack direction="row" gap="200">
+        <Button colorPalette="brand" variant="solid">
+          Solid
+        </Button>
+        <Button colorPalette="brand" variant="subtle">
+          Subtle
+        </Button>
+        <Button colorPalette="brand" variant="outline">
+          Outline
+        </Button>
+        <Button colorPalette="brand" variant="ghost">
+          Ghost
+        </Button>
+      </Stack>
+    </NimbusProvider>
+  );
+}
+```
+
+In your application, you'd create the theme in a separate file and import it:
+
+```tsx
+// src/theme.ts
+import { createNimbusTheme } from "@commercetools/nimbus-theme-generator";
+import { themeConfig } from "@commercetools/nimbus";
+
+export const customTheme = createNimbusTheme({
+  baseConfigs: [themeConfig],
+  palettes: {
+    brand: { type: "generated", baseColor: "#D946EF" },
+  },
+  semantic: { primary: "brand" },
+});
+```
+
+```tsx
+// src/App.tsx
+import { NimbusProvider } from "@commercetools/nimbus";
+import { customTheme } from "./theme";
+
+function App() {
+  return (
+    <NimbusProvider theme={customTheme}>
+      {/* All components inside use your brand colors */}
+    </NimbusProvider>
+  );
+}
+```
+
+Every component that uses `colorPalette="primary"` will now use your brand
+color.
+
+## Color palettes
+
+Nimbus uses a 12-step color scale (inspired by Radix UI Colors). Each step
+serves a specific purpose and every palette includes both light and dark mode
+variants.
+
+| Steps | Purpose                  | Example usage               |
+| ----- | ------------------------ | --------------------------- |
+| 1–2   | App/subtle backgrounds   | Page background, card fills |
+| 3–5   | UI element backgrounds   | Hover, active, selected     |
+| 6–8   | Borders and separators   | Input borders, dividers     |
+| 9     | Solid backgrounds        | Button fills, badges        |
+| 10    | Hovered solid background | Button hover state          |
+| 11–12 | Text colors              | Low-contrast and body text  |
+
+Each palette also includes a **contrast** color (black or white, whichever meets
+WCAG AA 4.5:1 against step 9) and a **DEFAULT** alias for step 9.
+
+### Generated palettes
+
+Provide a single hex color and the generator produces the full 12-step scale
+using the OKLCH color space:
+
+```typescript
+createNimbusTheme({
+  baseConfigs: [themeConfig],
+  palettes: {
+    brand: { type: "generated", baseColor: "#D946EF" },
+  },
+});
+```
+
+The base color becomes **step 9** (the solid background shade). All other steps
+are derived automatically with perceptually uniform lightness.
+
+### Manual palettes
+
+For full control, define every step for both light and dark modes:
+
+```typescript
+createNimbusTheme({
+  baseConfigs: [themeConfig],
+  palettes: {
+    brand: {
+      type: "manual",
+      light: {
+        "1": "#fdf4ff",
+        "2": "#fae8ff",
+        "3": "#f5d0fe",
+        "4": "#f0abfc",
+        "5": "#e879f9",
+        "6": "#d946ef",
+        "7": "#c026d3",
+        "8": "#a21caf",
+        "9": "#D946EF",
+        "10": "#c026d3",
+        "11": "#86198f",
+        "12": "#4a044e",
+      },
+      dark: {
+        "1": "#1a0a1e",
+        "2": "#2d1033",
+        "3": "#3b1546",
+        "4": "#4c1d5c",
+        "5": "#5e2572",
+        "6": "#7e33a0",
+        "7": "#9b40c4",
+        "8": "#b54de0",
+        "9": "#D946EF",
+        "10": "#e06cf5",
+        "11": "#e88ff9",
+        "12": "#fdf4ff",
+      },
+    },
+  },
+});
+```
+
+In dark mode, step 1 should be the darkest and step 12 the lightest. The
+contrast color is calculated automatically from step 9, but you can set it
+explicitly by adding a `contrast` key to each mode.
+
+## Semantic color mappings
+
+Nimbus components reference semantic names like `primary`, `critical`, and
+`positive` rather than specific palettes. You can remap any of these to a custom
+palette:
+
+```jsx live
+import { createNimbusTheme } from "@commercetools/nimbus-theme-generator";
+import { NimbusProvider, Button, Stack, Text } from "@commercetools/nimbus";
+
+const multiTheme = createNimbusTheme({
+  baseConfigs: [themeConfig],
+  palettes: {
+    cyber: { type: "generated", baseColor: "#0891B2" },
+    neon: { type: "generated", baseColor: "#D946EF" },
+  },
+  semantic: {
+    primary: "cyber",
+    warning: "neon",
+  },
+});
+
+function App() {
+  return (
+    <NimbusProvider theme={multiTheme}>
+      <Stack gap="200">
+        <Stack direction="row" gap="200">
+          <Button colorPalette="cyber" variant="solid">
+            Cyber
+          </Button>
+          <Button colorPalette="neon" variant="solid">
+            Neon
+          </Button>
+        </Stack>
+        <Text fontSize="sm" color="fg.muted">
+          Custom palettes can be used directly or mapped to semantic names like
+          "primary" and "warning" for use in your app.
+        </Text>
+      </Stack>
+    </NimbusProvider>
+  );
+}
+```
+
+Available semantic names: `primary`, `neutral`, `info`, `critical`, `warning`,
+`positive`.
+
+Any name you don't override keeps its default from the base Nimbus theme.
+
+## Token overrides
+
+Beyond colors, you can override typography, spacing, and other design tokens.
+Overrides are merged with the base theme — you only need to specify what you
+want to change.
+
+```typescript
+createNimbusTheme({
+  baseConfigs: [themeConfig],
+  tokens: {
+    fonts: {
+      body: { value: '"Roboto", sans-serif' },
+      heading: { value: '"Montserrat", sans-serif' },
+    },
+    fontSizes: {
+      md: { value: "1rem" },
+      lg: { value: "1.25rem" },
+    },
+    spacing: {
+      "400": { value: "20px" },
+      "800": { value: "40px" },
+    },
+    radii: {
+      md: { value: "8px" },
+      lg: { value: "12px" },
+    },
+  },
+});
+```
+
+Supported token categories: `fonts`, `fontSizes`, `fontWeights`, `lineHeights`,
+`letterSpacings`, `spacing`, `sizes`, `radii`, `borders`.
+
+> [!NOTE] Token overrides set the CSS value, but they don't load external
+> resources. If you override `fonts`, you still need to load the font files via
+> a `<link>` tag or `@font-face` rule in your application.
+
+## Validating color accessibility
+
+Use `validatePalette()` to check any palette for WCAG AA compliance:
+
+```typescript
+import {
+  generateColorScale,
+  validatePalette,
+} from "@commercetools/nimbus-theme-generator";
+
+const palette = generateColorScale("#D946EF");
+const result = validatePalette(palette);
+
+if (!result.valid) {
+  console.warn("Accessibility issues:", result.warnings);
+}
+```
+
+The validator checks:
+
+- Contrast color meets WCAG AA (4.5:1) against step 9
+- Step 11 (low-contrast text) meets WCAG AA against step 1 (background)
+- Step 12 (high-contrast text) meets WCAG AA against step 1 (background)
+
+## API reference
+
+### `createNimbusTheme(config)`
+
+Creates a Chakra UI system with custom palettes and token overrides.
+
+| Parameter     | Type                                    | Description                               |
+| ------------- | --------------------------------------- | ----------------------------------------- |
+| `palettes`    | `Record<string, PaletteConfig>`         | Custom color palette definitions          |
+| `semantic`    | `Partial<Record<SemanticName, string>>` | Remap semantic colors to palette names    |
+| `tokens`      | `TokenOverrides`                        | Override typography, spacing, radii, etc. |
+| `baseConfigs` | `unknown[]`                             | Base theme configs — use `[themeConfig]`  |
+
+Returns a Chakra UI `SystemContext`. Pass it as the `theme` prop to
+`<NimbusProvider>`.
+
+### `generateColorScale(baseColor)`
+
+Generates a 12-step color scale from a single hex color.
+
+**Parameters:** `baseColor: string` — hex color (e.g. `"#D946EF"`)
+
+**Returns:** `{ light: ColorPalette, dark: ColorPalette }` — each containing
+steps 1–12, `DEFAULT`, and `contrast`.
+
+### `validatePalette(palette)`
+
+Validates a color palette for WCAG AA compliance.
+
+**Parameters:** `palette: ColorPaletteWithModes`
+
+**Returns:**
+`{ valid: boolean, warnings: ValidationWarning[], errors: ValidationError[] }`
+
+## Troubleshooting
+
+### Custom palette not showing up
+
+Ensure you included `baseConfigs: [themeConfig]` in your `createNimbusTheme`
+call. Without the base config, components won't have their recipes and default
+tokens.
+
+### Colors look wrong in dark mode
+
+Check that your manual palette has properly inverted lightness. In dark mode,
+step 1 should be the darkest and step 12 the lightest.
+
+### Components not using custom semantic colors
+
+The palette name in `palettes` must match the value in `semantic` exactly:
+
+```typescript
+palettes: { myBrand: { type: "generated", baseColor: "#D946EF" } },
+semantic: { primary: "myBrand" }, // must match "myBrand"
+```
+
+### Font not loading
+
+Token overrides set the CSS `font-family` value, but you still need to load the
+font files yourself. Add a `<link>` tag or `@font-face` rule in your HTML or
+CSS.
