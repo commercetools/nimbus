@@ -49,121 +49,77 @@ in both orientations.
 const App = () => (
   <Stack direction="horizontal" gap="400">
     <Box height="240px" width="320px" borderWidth="25" borderColor="neutral.6">
-      <Splitter.Root
-        orientation="horizontal"
-        defaultSizes={{ left: 40, right: 60 }}
-      >
-        <Splitter.Pane id="left">
+      <Splitter.Root orientation="horizontal" defaultSize={40}>
+        <Splitter.Aside>
           <Box p="400" bg="indigo.3" h="100%">
             <Text>Left</Text>
           </Box>
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="right">
+        <Splitter.Main>
           <Box p="400" bg="amber.3" h="100%">
             <Text>Right</Text>
           </Box>
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
     <Box height="240px" width="320px" borderWidth="25" borderColor="neutral.6">
-      <Splitter.Root
-        orientation="vertical"
-        defaultSizes={{ top: 40, bottom: 60 }}
-      >
-        <Splitter.Pane id="top">
+      <Splitter.Root orientation="vertical" defaultSize={40}>
+        <Splitter.Aside>
           <Box p="400" bg="teal.3" h="100%">
             <Text>Top</Text>
           </Box>
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="bottom">
+        <Splitter.Main>
           <Box p="400" bg="rose.3" h="100%">
             <Text>Bottom</Text>
           </Box>
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
-  </Stack>
-);
-```
-
-### Handle size
-
-`size` (`sm` / `md` / `lg`) sets the visual thickness of the handle track, which
-appears on hover and keyboard focus. The interactive hit area always meets the
-24×24px touch target regardless of the visual size.
-
-```jsx live
-const App = () => (
-  <Stack direction="horizontal" gap="400">
-    {["sm", "md", "lg"].map((size) => (
-      <Box
-        key={size}
-        height="200px"
-        width="220px"
-        borderWidth="25"
-        borderColor="neutral.6"
-      >
-        <Splitter.Root size={size} defaultSizes={{ a: 50, b: 50 }}>
-          <Splitter.Pane id="a">
-            <Box p="400" bg="indigo.3" h="100%">
-              <Text>{size}</Text>
-            </Box>
-          </Splitter.Pane>
-          <Splitter.Handle />
-          <Splitter.Pane id="b">
-            <Box p="400" bg="amber.3" h="100%" />
-          </Splitter.Pane>
-        </Splitter.Root>
-      </Box>
-    ))}
   </Stack>
 );
 ```
 
 ### Collapse
 
-A pane can be made collapsible so a region — usually a sidebar or aside — can be
-hidden and brought back. Collapsing animates the boundary to the pane's
+The aside can be made collapsible so a region — usually a sidebar or panel — can
+be hidden and brought back. Collapsing animates the boundary to the aside's
 collapsed size: fully hidden by default, or a thin rail when a collapsed size is
-set. The freed space goes to the partner pane. Surface a visible control (a
-button) to toggle it; on the handle, Enter toggles collapse and double-click
-restores the default split.
+set. The freed space goes to the main pane. Surface a visible control (a button)
+to toggle it; on the handle, Enter toggles collapse and double-click restores
+the default split.
 
 ```jsx live
 const App = () => {
-  const [collapsed, setCollapsed] = useState(null);
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <Stack direction="column" gap="300">
-      <Button
-        alignSelf="start"
-        onPress={() => setCollapsed((c) => (c === "nav" ? null : "nav"))}
-      >
-        {collapsed === "nav" ? "Show nav" : "Hide nav"}
+      <Button alignSelf="start" onPress={() => setCollapsed((c) => !c)}>
+        {collapsed ? "Show nav" : "Hide nav"}
       </Button>
       <Box height="240px" width="100%" borderWidth="25" borderColor="neutral.6">
         <Splitter.Root
-          defaultSizes={{ nav: 30, main: 70 }}
-          panes={{
-            nav: { minSize: 12, collapsible: true },
-            main: { minSize: 20 },
-          }}
-          collapsedPane={collapsed}
-          onCollapsedPaneChange={setCollapsed}
+          defaultSize={30}
+          minSize={12}
+          maxSize={80}
+          collapsible
+          collapsed={collapsed}
+          onCollapsedChange={setCollapsed}
         >
-          <Splitter.Pane id="nav">
+          <Splitter.Aside>
             <Box p="400" bg="indigo.3" h="100%">
               <Text>Nav</Text>
             </Box>
-          </Splitter.Pane>
+          </Splitter.Aside>
           <Splitter.Handle />
-          <Splitter.Pane id="main">
+          <Splitter.Main>
             <Box p="400" bg="amber.3" h="100%">
               <Text>Main</Text>
             </Box>
-          </Splitter.Pane>
+          </Splitter.Main>
         </Splitter.Root>
       </Box>
     </Stack>
@@ -178,12 +134,12 @@ const App = () => {
 - **Two panes per Splitter.** Nest splitters for layouts with three or more
   regions; each nested splitter is independently focusable and announced to
   assistive technology as its own widget.
-- **Give panes a minimum size.** Without a floor, dragging can shrink a region
-  below its usable content width. Pair a minimum size with content that scrolls
-  inside the pane.
-- **Use collapsing for chrome.** A navigation or aside the user may want hidden
-  should be collapsible; surface a visible control (a button) for the mouse,
-  since double-click is reserved for restoring the default split.
+- **Bound the aside.** Set `minSize` and `maxSize` so dragging can't shrink the
+  aside — or, via `maxSize`, the main pane — below its usable content width. Pair
+  the bounds with content that scrolls inside the pane.
+- **Use collapsing for chrome.** A navigation or panel the user may want hidden
+  should be the `collapsible` aside; surface a visible control (a button) for the
+  mouse, since double-click is reserved for restoring the default split.
 - **Persist the layout** when the split is part of the user's workflow, so it
   survives across sessions.
 

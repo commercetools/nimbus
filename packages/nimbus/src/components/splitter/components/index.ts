@@ -1,3 +1,4 @@
 export { SplitterRoot } from "./splitter.root";
-export { SplitterPane } from "./splitter.pane";
+export { SplitterAside } from "./splitter.aside";
+export { SplitterMain } from "./splitter.main";
 export { SplitterHandle } from "./splitter.handle";

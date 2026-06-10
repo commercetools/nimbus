@@ -1,5 +1,11 @@
 # Tasks: Add Splitter component
 
+> **API note:** the splitter exposes a single-dimension Aside/Main API — a
+> distinct `Splitter.Aside` (the configurable, sized pane) and `Splitter.Main`
+> (the remainder), a single aside `size` number, flat sizing/collapse config on
+> `Root`, and a boolean `collapsed` (only the aside collapses). The tasks below
+> reflect that shape.
+
 ## 1. Scaffolding and registration
 
 - [x] 1.1 Create the component directory
@@ -9,80 +15,87 @@
 - [x] 1.2 Export the component from
       `packages/nimbus/src/components/index.ts` (`export * from "./splitter"`).
 - [x] 1.3 Add `splitter.recipe.ts` (`splitterSlotRecipe`) with slots `root`,
-      `pane`, `handle` and variants `orientation` (`horizontal` / `vertical`)
-      and `size` (`sm` / `md` / `lg`), and register it as `nimbusSplitter` in
-      `packages/nimbus/src/theme/slot-recipes/index.ts`.
+      `pane`, `handle` and an `orientation` (`horizontal` / `vertical`) variant
+      (single fixed handle thickness — no `size` variant), and register it as
+      `nimbusSplitter` in `packages/nimbus/src/theme/slot-recipes/index.ts`.
 - [x] 1.4 Add `splitter.slots.tsx` deriving the slot prop types from the
       recipe.
 
 ## 2. Types and context
 
 - [x] 2.1 In `splitter.types.ts`, define:
-      - `SplitterRootProps`: `orientation`, `size`, `defaultSizes`,
-        `onSizesChange`, `onSizesChangeEnd`, `panes`, `collapsedPane`,
-        `defaultCollapsedPane`, `onCollapsedPaneChange`, `keyboardStep`
-        (default 5), `isDoubleClickDisabled`, `isDisabled`, `children`, `ref`.
-      - `SplitterPaneConfig`: `{ minSize?: number; collapsible?: boolean;
-        collapsedSize?: number; }` (static per-pane config).
-      - `SplitterPaneProps`: only `id: string`, `children`, `ref`.
+      - `SplitterRootProps`: `orientation`, `defaultSize`, `size`, `minSize`,
+        `maxSize`, `collapsible`, `collapsedSize`, `onSizeChange`,
+        `onSizeChangeEnd`, `collapsed`, `defaultCollapsed`, `onCollapsedChange`,
+        `keyboardStep` (default 5), `isDoubleClickDisabled`, `isDisabled`,
+        `children`, `ref`.
+      - `ResolvedAsideConfig`: `{ minSize; maxSize; collapsible; collapsedSize }`
+        (defaults applied), and `SplitterPaneRole` = `"aside" | "main"`.
+      - `SplitterAsideProps` / `SplitterMainProps`: content + optional `id` +
+        `ref` (no required id, no config).
       - `SplitterHandleProps`: standard HTML/style props plus `aria-label` /
         `aria-labelledby` overrides — no `id`-config or per-handle behaviour
         props.
-- [x] 2.2 Define `SplitterContextValue` and `splitter.context.ts`: id-keyed
-      `sizes`, `setSizes` / `commitSizes`, pane registration
+- [x] 2.2 Define `SplitterContextValue` and `splitter.context.ts`: scalar
+      `size`, `setSize` / `commitSize`, role-based pane registration
       (`registerPane` / `unregisterPane`, `paneOrder`, `paneDomIds`),
-      `getPaneConfig`, collapse state (`collapsedPane` / `setCollapsedPane`),
+      `asideConfig`, collapse state (`collapsed` / `setCollapsed`),
       `restoreDefaults`, plus `orientation`, `keyboardStep`,
       `isDoubleClickDisabled`, `isDisabled`.
 
 ## 3. Sizing utilities (pure, unit-tested)
 
-- [x] 3.1 `utils/derive-initial-sizes.ts`: resolve mount-time sizes from
-      `defaultSizes` (normalized to sum 100, float precision preserved),
-      falling back to a 50/50 split when absent or incomplete.
-- [x] 3.2 `utils/clamped-resize.ts`: apply Δ to the prev/next pane while
-      clamping at each pane's `minSize` (upper bound derived as
-      `100 − partner.minSize`); no cascade; result always sums to 100.
-- [x] 3.3 `utils/pick-collapse-target.ts`: choose which collapsible pane Enter
-      targets (prefer the smaller; ties → left/top).
+- [x] 3.1 `utils/derive-initial-sizes.ts` (`deriveInitialSize`): resolve the
+      mount-time aside size from `defaultSize` (clamped to `0–100`, float
+      precision preserved), falling back to 50 when absent or non-finite.
+- [x] 3.2 `utils/normalize-sizes.ts` (`normalizeSize`): clamp a size into
+      `0–100`, returning `null` for non-finite input.
+- [x] 3.3 `utils/clamped-resize.ts` (`clampedResize`): apply Δ to the aside size
+      clamped into `[minSize, maxSize]` (the main pane's floor is the complement
+      of `maxSize`); no cascade.
+- [x] 3.4 `utils/compute-aria-bounds.ts` + `utils/sizes-equal.ts`: collapse-aware
+      ARIA bounds mapped onto the leading pane, and scalar size equality within
+      epsilon for the controlled reconcile.
 
 ## 4. State hook
 
-- [x] 4.1 `hooks/use-splitter-state.ts` owns the sizes state machine: lazy
-      initial-size derivation once both panes register, the live (`setSizes`
-      → `onSizesChange`) and settled (`commitSizes` → `onSizesChangeEnd`)
-      channels, controlled/uncontrolled collapse with size reconciliation,
-      and the memoized context value.
+- [x] 4.1 `hooks/use-splitter-state.ts` owns the scalar size state machine: lazy
+      initial-size derivation once both panes register (by role), the live
+      (`setSize` → `onSizeChange`) and settled (`commitSize` → `onSizeChangeEnd`)
+      channels, controlled/uncontrolled boolean collapse (aside-only) with size
+      reconciliation, and the memoized context value.
 - [x] 4.2 `hooks/use-splitter-context.ts`: typed context consumer for the
-      Pane and Handle.
+      pane and handle.
 
 ## 5. Components
 
 - [x] 5.1 `components/splitter.root.tsx`: thin root that wires the recipe,
-      extracts style props, calls `useSplitterState`, and provides context.
-      Dev-time warning when the Pane count is not exactly 2.
-- [x] 5.2 `components/splitter.pane.tsx`: registers its `id` + DOM id with
-      context, applies its size via inline style, warns on missing/duplicate
-      `id`.
+      extracts style props, resolves `asideConfig`, calls `useSplitterState`, and
+      provides context. Dev-time warning when the pane count is not exactly 2.
+- [x] 5.2 `components/splitter.pane.tsx` (internal base) + `splitter.aside.tsx`
+      / `splitter.main.tsx`: each registers its role + DOM id with context and
+      applies its size via inline style (aside = `size`%, main = `100 − size`%);
+      optional `id`.
 - [x] 5.3 `components/splitter.handle.tsx`: the interactive separator —
-      resolves prev/next panes from sibling DOM order, runs drag (`useMove`)
-      and keyboard, and renders the W3C separator ARIA model.
+      resolves leading/trailing panes from sibling DOM order, runs drag
+      (`useMove`) and keyboard, and renders the W3C separator ARIA model (value
+      tracks the leading pane).
 - [x] 5.4 `splitter.tsx`: assemble the compound `Splitter` namespace
-      (`Root` / `Pane` / `Handle`).
+      (`Root` / `Aside` / `Main` / `Handle`).
 
 ## 6. Interaction behaviour
 
-- [x] 6.1 Drag: convert pointer delta to percentage points and apply via
-      `clampedResize`; live ticks fire `onSizesChange`, drag end commits via
-      `onSizesChangeEnd`.
+- [x] 6.1 Drag: convert pointer delta to percentage points, translate to an
+      aside Δ by side, and apply via `clampedResize`; live ticks fire
+      `onSizeChange`, drag end commits via `onSizeChangeEnd`.
 - [x] 6.2 Keyboard: arrow keys move the boundary by `keyboardStep`
       (orientation-aware, prevent default scroll); Home / End jump to the
-      bounds; each keypress commits.
-- [x] 6.3 Collapse: Enter on the focused handle toggles collapse of the
-      adjacent collapsible pane; the controlled `collapsedPane` prop (and
-      `defaultCollapsedPane` / `onCollapsedPaneChange`) drives collapse from
-      anywhere, with size reconciliation and pre-collapse restore.
-- [x] 6.4 Double-click restores the mount-time sizes (existence-checked so a
+      aside's bounds; each keypress commits.
+- [x] 6.3 Collapse: Enter on the focused handle toggles the aside's collapse;
+      the controlled `collapsed` boolean (and `defaultCollapsed` /
+      `onCollapsedChange`) drives collapse from anywhere, with size
+      reconciliation and pre-collapse restore.
+- [x] 6.4 Double-click restores the mount-time size (existence-checked so a
       legitimate `0` initial size restores); gated by `isDoubleClickDisabled`.
 - [x] 6.5 `isDisabled` removes the handle from the tab order (`tabIndex={-1}`),
       sets `aria-disabled`, and ignores drag / keyboard / collapse.
@@ -95,35 +108,38 @@
 
 ## 8. Stories
 
-- [x] 8.1 Stories with play functions covering: Default, Vertical, Disabled,
-      keyboard interaction (horizontal and vertical), per-pane constraints
-      (drag clamps at `minSize` and the derived upper bound), ARIA semantics,
-      collapse by keyboard, controlled collapse from an external button,
-      `onCollapsedPaneChange`, double-click restore (including a 0% default),
-      persistence hydration via `defaultSizes` + `onSizesChangeEnd`, nested
-      splitters, and float precision.
+- [x] 8.1 Stories with play functions covering: Default, Vertical, aside
+      trailing (either-side), Disabled, keyboard interaction, pointer drag,
+      size constraints (clamp at `minSize` / `maxSize`), ARIA semantics, collapse
+      by keyboard, controlled collapse from an external button, controlled
+      collapse + restore, controlled size (in-place change), resize-locked while
+      collapsed, double-click restore (including a 0% default), persistence
+      hydration via `defaultSize` + `onSizeChangeEnd`, nested splitters, float
+      precision, and double-click disabled.
 
 ## 9. Documentation
 
-- [x] 9.1 `splitter.mdx` (overview): component shape, `panes` map, id-keyed
-      `defaultSizes`, anonymous `Handle`, handle `size` variant, and the
+- [x] 9.1 `splitter.mdx` (overview): component shape (Aside/Main), the single
+      `defaultSize`, flat `minSize` / `maxSize`, anonymous `Handle`, and the
       nesting pattern for 3+ regions.
-- [x] 9.2 `splitter.dev.mdx` (engineering guide): the uncontrolled-sizes /
-      controllable-collapse model, the `defaultSizes`-vs-`panes` lifecycle
-      split, consumer-wired persistence, and 2-pane + nesting rationale.
+- [x] 9.2 `splitter.dev.mdx` (engineering guide): the uncontrolled-size /
+      controllable-collapse model, flat aside config, consumer-wired
+      single-number persistence, either-side placement, and 2-pane + nesting
+      rationale.
 - [x] 9.3 `splitter.a11y.mdx`: ARIA model, keyboard reference, focus order,
       and what nesting means for the AT tree.
 - [x] 9.4 `splitter.docs.spec.tsx`: consumer-facing examples that compile and
-      run (basic 2-pane, nested 3-region, collapsible, persistence).
+      run (basic, controlled size, controlled collapse, persistence, nested).
 
 ## 10. Unit tests
 
-- [x] 10.1 `utils/derive-initial-sizes.spec.ts`: normalization, float
-      precision, 50/50 fallback, incomplete/unknown ids.
-- [x] 10.2 `utils/clamped-resize.spec.ts`: clamp at `minSize`, derived upper
-      bound, negative Δ, sum-100 invariant.
-- [x] 10.3 `utils/pick-collapse-target.spec.ts`: smaller-pane preference and
-      tie-breaking.
+- [x] 10.1 `utils/derive-initial-sizes.spec.ts`: clamp, float precision, 50
+      fallback, non-finite input.
+- [x] 10.2 `utils/normalize-sizes.spec.ts` + `utils/sizes-equal.spec.ts`: clamp /
+      null handling and scalar equality within epsilon.
+- [x] 10.3 `utils/clamped-resize.spec.ts` + `utils/compute-aria-bounds.spec.ts`:
+      clamp at `minSize` / `maxSize`, collapse-aware bounds, leading/trailing
+      mapping, float precision.
 
 ## 11. Validation
 
@@ -139,17 +155,17 @@
       (`pnpm lint -- packages/nimbus/src/components/splitter/`).
 - [x] 11.6 Add a changeset (minor bump on `@commercetools/nimbus`).
 
-## 12. Optional controlled `sizes`
+## 12. Optional controlled `size`
 
-- [x] 12.1 Extract `normalizeSizes` + `sizesEqual` into `utils/` (with specs);
-      `deriveInitialSizes` reuses `normalizeSizes`.
-- [x] 12.2 Add `sizes?: Record<string, number>` to `SplitterRootProps`
-      (settle-only JSDoc) and thread it through `Splitter.Root`.
+- [x] 12.1 `normalizeSize` + `sizeEqual` in `utils/` (with specs);
+      `deriveInitialSize` reuses `normalizeSize`.
+- [x] 12.2 Add `size?: number` to `SplitterRootProps` (settle-only JSDoc) and
+      thread it through `Splitter.Root`.
 - [x] 12.3 In `use-splitter-state.ts`, add settle-only controlled reconciliation:
       controlled init seed, a prop-reconcile effect (after the collapse effect)
       that writes silently at rest, collapse-precedence, and fire-once dev
-      warnings. `writeSizes`/`setSizes`/`commitSizes` unchanged.
-- [x] 12.4 Add a `ControlledSizes` story (asserts in-place change + pane content
-      survives) and a `controlled-sizes` consumer example in
+      warnings.
+- [x] 12.4 Add a `ControlledSize` story (asserts in-place change + pane content
+      survives) and a `controlled-size` consumer example in
       `splitter.docs.spec.tsx`.
-- [x] 12.5 Document controlled sizes in `splitter.dev.mdx`; update the changeset.
+- [x] 12.5 Document controlled size in `splitter.dev.mdx`; update the changeset.

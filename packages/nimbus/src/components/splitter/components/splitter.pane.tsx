@@ -1,48 +1,45 @@
 import { useEffect, useId } from "react";
 import { SplitterPaneSlot } from "../splitter.slots";
 import { useSplitterContext } from "../hooks/use-splitter-context";
-import type { SplitterPaneProps } from "../splitter.types";
+import type { SplitterAsideProps, SplitterPaneRole } from "../splitter.types";
+
+type SplitterPaneBaseProps = SplitterAsideProps & {
+  /** Which pane this is — drives sizing and handle resolution. */
+  paneRole: SplitterPaneRole;
+};
 
 /**
- * A resizable region inside a `Splitter.Root`. Carries only its `id` and
- * content — all per-pane configuration lives on `Splitter.Root`'s `panes` map,
- * keyed by this `id`.
+ * Internal base shared by `Splitter.Aside` and `Splitter.Main`. Registers its
+ * role + DOM id with the splitter (so the handle can resolve siblings and wire
+ * `aria-controls`) and applies its size from context: the aside renders `size`%,
+ * the main pane renders the remainder (`100 − size`%).
  *
- * @supportsStyleProps
+ * @internal
  */
-export const SplitterPane = ({
+export const SplitterPaneBase = ({
+  paneRole,
   id,
   children,
   style,
   ref,
   ...props
-}: SplitterPaneProps) => {
-  const { sizes, orientation, paneDomIds, registerPane, unregisterPane } =
+}: SplitterPaneBaseProps) => {
+  const { size, orientation, registerPane, unregisterPane } =
     useSplitterContext();
 
-  // Generate a stable DOM id used by the handle's `aria-controls`. Consumers
-  // can override via the standard HTML `id` prop on `<Splitter.Pane>` (not
-  // shown — left out for now since the spec keys aria-controls off the
-  // splitter-rendered DOM id, and overriding it would silently break that).
+  // Stable DOM id used by the handle's `aria-controls`. A consumer-provided `id`
+  // wins so analytics / test hooks resolve to a known element.
   const generatedDomId = useId();
-  const domId = paneDomIds[id] ?? generatedDomId;
+  const domId = id ?? generatedDomId;
 
   useEffect(() => {
-    if (process.env.NODE_ENV !== "production") {
-      if (!id) {
-        console.warn(
-          "[Splitter] <Splitter.Pane> is missing the required `id` prop. Each pane must have a unique id; the pane will be excluded from state."
-        );
-        return;
-      }
-    }
-    registerPane(id, generatedDomId);
-    return () => unregisterPane(id);
-  }, [id, generatedDomId, registerPane, unregisterPane]);
+    registerPane(paneRole, domId);
+    return () => unregisterPane(paneRole);
+  }, [paneRole, domId, registerPane, unregisterPane]);
 
-  const size = sizes[id] ?? 0;
+  const paneSize = paneRole === "aside" ? size : 100 - size;
   const sizeProperty = orientation === "horizontal" ? "width" : "height";
-  const paneStyle = { [sizeProperty]: `${size}%`, ...style };
+  const paneStyle = { [sizeProperty]: `${paneSize}%`, ...style };
 
   return (
     <SplitterPaneSlot ref={ref} id={domId} style={paneStyle} {...props}>
@@ -50,5 +47,3 @@ export const SplitterPane = ({
     </SplitterPaneSlot>
   );
 };
-
-SplitterPane.displayName = "Splitter.Pane";

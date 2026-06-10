@@ -1,40 +1,41 @@
-import type { SplitterPaneConfig } from "../splitter.types";
+import type { ResolvedAsideConfig } from "../splitter.types";
 
 /**
- * The lowest position a pane's edge of the boundary can reach. Normally a
- * pane's `minSize`, but a collapsible pane can sit at its `collapsedSize` (the
- * discrete collapse state, below `minSize`), so the floor must include that —
- * otherwise `aria-valuenow` would fall outside the announced range while the
- * pane is collapsed.
+ * The lowest size the aside can reach. Normally its `minSize`, but a collapsible
+ * aside can sit at its `collapsedSize` (the discrete collapse state, below
+ * `minSize`), so the floor must include that — otherwise `aria-valuenow` would
+ * fall outside the announced range while the aside is collapsed.
  */
-const collapseFloor = (cfg: SplitterPaneConfig): number =>
-  cfg.collapsible
-    ? Math.min(cfg.minSize ?? 0, cfg.collapsedSize ?? 0)
-    : (cfg.minSize ?? 0);
+const asideFloor = (cfg: ResolvedAsideConfig): number =>
+  cfg.collapsible ? Math.min(cfg.minSize, cfg.collapsedSize) : cfg.minSize;
 
 /**
- * Compute the W3C window-splitter ARIA bounds for the boundary between two
- * panes — the lowest / highest position (0–100) the boundary can occupy:
+ * Compute the W3C window-splitter ARIA bounds for the boundary, expressed for
+ * the **leading** pane (the handle's `aria-valuenow` tracks the leading pane's
+ * size). The aside's allowed window is `[asideFloor, maxSize]`; the bounds are
+ * mapped onto whichever pane leads:
  *
- *   min = collapseFloor(prev)
- *   max = 100 − collapseFloor(next)
+ *   - aside leads → `{ min: asideFloor, max: maxSize }`
+ *   - main leads  → `{ min: 100 − maxSize, max: 100 − asideFloor }`
  *
- * There is no separate `maxSize`: a pane's upper bound is simply its partner's
- * complement. Bounds are collapse-aware so `aria-valuenow` stays in range even
- * when a pane is collapsed below its `minSize`.
+ * Bounds are collapse-aware so `aria-valuenow` stays in range even when the
+ * aside is collapsed below its `minSize`.
  *
- * @param prevCfg - Config of the previous (left/top) pane.
- * @param nextCfg - Config of the next (right/bottom) pane.
+ * @param asideConfig - Resolved aside constraints.
+ * @param asideLeads - True when the aside is the leading (prev) sibling.
  * @returns `{ min, max }` for `aria-valuemin` / `aria-valuemax`.
  *
  * @example
- * computeAriaBounds({ minSize: 10 }, { minSize: 20 });
+ * computeAriaBounds({ minSize: 10, maxSize: 80, collapsible: false, collapsedSize: 0 }, true);
  * // → { min: 10, max: 80 }
  */
 export const computeAriaBounds = (
-  prevCfg: SplitterPaneConfig,
-  nextCfg: SplitterPaneConfig
-): { min: number; max: number } => ({
-  min: collapseFloor(prevCfg),
-  max: 100 - collapseFloor(nextCfg),
-});
+  asideConfig: ResolvedAsideConfig,
+  asideLeads: boolean
+): { min: number; max: number } => {
+  const floor = asideFloor(asideConfig);
+  const ceil = asideConfig.maxSize;
+  return asideLeads
+    ? { min: floor, max: ceil }
+    : { min: 100 - ceil, max: 100 - floor };
+};

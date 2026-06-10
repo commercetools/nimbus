@@ -3,17 +3,6 @@ import type { RefObject } from "react";
 import { useMove } from "react-aria";
 import { useSplitterContext } from "./use-splitter-context";
 import { clampedResize } from "../utils";
-import type { SplitterPaneConfig } from "../splitter.types";
-
-/** The two panes a handle sits between, resolved from sibling DOM order. */
-export type HandlePanePair = {
-  prevId?: string;
-  nextId?: string;
-  /** True once both ids are present. */
-  hasPair: boolean;
-  prevCfg: SplitterPaneConfig;
-  nextCfg: SplitterPaneConfig;
-};
 
 // Drag deltas (in percentage points) below this are accumulated rather than
 // dropped, so slow / sub-pixel movement still registers once it adds up.
@@ -22,8 +11,11 @@ const MOVE_TOLERANCE = 0.0001;
 type UseHandleResizeOptions = {
   /** Ref to the handle, used to measure the container for px→% conversion. */
   handleRef: RefObject<HTMLDivElement | null>;
-  panes: HandlePanePair;
-  /** Locked while a pane is collapsed (resize would only snap to `minSize`). */
+  /** True when the aside is the leading (prev) sibling — flips the Δ sign. */
+  asideLeads: boolean;
+  /** True once both panes are registered. */
+  isReady: boolean;
+  /** Locked while the aside is collapsed (resize would only snap to `minSize`). */
   isResizeLocked: boolean;
 };
 
@@ -31,45 +23,46 @@ type UseHandleResizeOptions = {
  * Owns the handle's resize mechanics: `applyDelta` (a clamped size writer,
  * returned so the keyboard hook reuses it) and `moveProps` (pointer drag via
  * react-aria `useMove`, converting px deltas to container percentages).
+ *
+ * The handle's gesture grows the *leading* pane by Δ. This is translated into an
+ * aside Δ before clamping: aside leading → `+Δ`, aside trailing → `−Δ`. The
+ * single aside size is then clamped into `[minSize, maxSize]`.
  */
 export const useHandleResize = ({
   handleRef,
-  panes,
+  asideLeads,
+  isReady,
   isResizeLocked,
 }: UseHandleResizeOptions) => {
-  const { sizes, setSizes, commitSizes, orientation, isDisabled } =
+  const { size, setSize, commitSize, orientation, isDisabled, asideConfig } =
     useSplitterContext();
-  const { prevId, nextId, hasPair, prevCfg, nextCfg } = panes;
 
   const applyDelta = useCallback(
     (delta: number, commit: boolean) => {
-      if (!hasPair || isDisabled || isResizeLocked) return;
+      if (!isReady || isDisabled || isResizeLocked) return;
+      const asideDelta = asideLeads ? delta : -delta;
       const next = clampedResize({
-        sizes,
-        handlePanes: { prev: prevId!, next: nextId! },
-        delta,
-        paneConfigs: {
-          [prevId!]: prevCfg,
-          [nextId!]: nextCfg,
-        },
+        size,
+        delta: asideDelta,
+        minSize: asideConfig.minSize,
+        maxSize: asideConfig.maxSize,
       });
       if (commit) {
-        commitSizes(next);
+        commitSize(next);
       } else {
-        setSizes(next);
+        setSize(next);
       }
     },
     [
-      hasPair,
+      isReady,
       isDisabled,
       isResizeLocked,
-      sizes,
-      prevId,
-      nextId,
-      prevCfg,
-      nextCfg,
-      setSizes,
-      commitSizes,
+      asideLeads,
+      size,
+      asideConfig.minSize,
+      asideConfig.maxSize,
+      setSize,
+      commitSize,
     ]
   );
 
@@ -82,7 +75,7 @@ export const useHandleResize = ({
       dragAccumRef.current = 0;
     },
     onMove(e) {
-      if (!hasPair || isDisabled || isResizeLocked) return;
+      if (!isReady || isDisabled || isResizeLocked) return;
       const parent = handleRef.current?.parentElement;
       if (!parent) return;
       const containerSize =
@@ -96,9 +89,9 @@ export const useHandleResize = ({
       applyDelta(wholeDelta, false);
     },
     onMoveEnd() {
-      if (!hasPair || isDisabled || isResizeLocked) return;
-      // Settle: fire onSizesChangeEnd with the current sizes (the persistence seam).
-      commitSizes();
+      if (!isReady || isDisabled || isResizeLocked) return;
+      // Settle: fire onSizeChangeEnd with the current size (the persistence seam).
+      commitSize();
     },
   });
 

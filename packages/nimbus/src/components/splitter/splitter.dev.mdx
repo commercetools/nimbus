@@ -14,72 +14,35 @@ import { Splitter, type SplitterRootProps } from "@commercetools/nimbus";
 
 ### Basic usage
 
-`Splitter.Root` wraps exactly two `Splitter.Pane` children with one
-`Splitter.Handle` between them. Each pane carries a string `id`; the initial
-split is set with `defaultSizes` (percentages, keyed by id).
+`Splitter.Root` wraps one `Splitter.Aside` and one `Splitter.Main` with a
+`Splitter.Handle` between them. `Splitter.Aside` is the configurable pane you
+size; `Splitter.Main` takes the remaining space. The initial split is set with
+`defaultSize` — a single percentage that always refers to the aside (the main
+pane is `100 − size`).
 
 ```jsx live-dev
 const App = () => (
   <Box height="320px" width="100%" borderWidth="25" borderColor="neutral.6">
-    <Splitter.Root
-      defaultSizes={{ nav: 30, main: 70 }}
-      panes={{ nav: { minSize: 15 }, main: { minSize: 25 } }}
-    >
-      <Splitter.Pane id="nav">
+    <Splitter.Root defaultSize={30} minSize={15} maxSize={75}>
+      <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
           <Text>
             Drag the handle to resize. Tab to it, then use the arrow keys.
           </Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Aside>
       <Splitter.Handle />
-      <Splitter.Pane id="main">
+      <Splitter.Main>
         <Box p="400" bg="amber.3" h="100%">
           <Text>Main</Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Main>
     </Splitter.Root>
   </Box>
 );
 ```
 
 ## Usage examples
-
-### Handle size
-
-`size` (`sm` / `md` / `lg`) sets the visual thickness of the handle track, which
-appears on hover and keyboard focus. Note this is the singular `size` — it sizes
-the handle; the plural `defaultSizes` / `onSizesChange` carry the pane
-proportions. The interactive hit area always meets the 24×24px touch target
-regardless of the visual size.
-
-```jsx live-dev
-const App = () => (
-  <Stack direction="column" gap="400">
-    {["sm", "md", "lg"].map((size) => (
-      <Box
-        key={size}
-        height="120px"
-        width="100%"
-        borderWidth="25"
-        borderColor="neutral.6"
-      >
-        <Splitter.Root size={size} defaultSizes={{ a: 50, b: 50 }}>
-          <Splitter.Pane id="a">
-            <Box p="400" bg="indigo.3" h="100%">
-              <Text>{size}</Text>
-            </Box>
-          </Splitter.Pane>
-          <Splitter.Handle />
-          <Splitter.Pane id="b">
-            <Box p="400" bg="amber.3" h="100%" />
-          </Splitter.Pane>
-        </Splitter.Root>
-      </Box>
-    ))}
-  </Stack>
-);
-```
 
 ### Orientation
 
@@ -90,114 +53,92 @@ semantics describe the boundary axis, not the layout axis).
 ```jsx live-dev
 const App = () => (
   <Box height="360px" width="100%" borderWidth="25" borderColor="neutral.6">
-    <Splitter.Root
-      orientation="vertical"
-      defaultSizes={{ top: 40, bottom: 60 }}
-    >
-      <Splitter.Pane id="top">
+    <Splitter.Root orientation="vertical" defaultSize={40}>
+      <Splitter.Aside>
         <Box p="400" bg="teal.3" h="100%">
           <Text>Top</Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Aside>
       <Splitter.Handle />
-      <Splitter.Pane id="bottom">
+      <Splitter.Main>
         <Box p="400" bg="rose.3" h="100%">
           <Text>Bottom</Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Main>
     </Splitter.Root>
   </Box>
 );
 ```
 
-### Per-pane constraints
+### Aside constraints
 
-Sizing is split across two props by lifecycle, not by accident:
-
-- **`defaultSizes`** holds the _dynamic_ proportions — the live state that
-  drags, collapses, and persistence change. It shares its `Record<id, number>`
-  shape with `onSizesChange` / `onSizesChangeEnd` so a stored value flows
-  straight back in (see [Persistence](#persistence)).
-- **`panes`** holds the _static_ per-pane configuration — `minSize`,
-  `collapsible`, `collapsedSize` — that never changes at runtime.
-
-Both are keyed by the same pane ids. Keeping the persisted proportions in one
-flat prop is what makes hydration a one-liner.
-
-Each entry in the `panes` map accepts a `minSize`. A pane's upper bound is the
-complement of its partner's `minSize` (`max = 100 − partner.minSize`), so a
-single value per side fully describes the boundary — there is no separate
-`maxSize`.
+`minSize` and `maxSize` bound the single aside dimension. `minSize` (default
+`0`) is the aside's floor; `maxSize` (default `100`) caps how far the aside can
+grow — which in turn fixes the main pane's floor at `100 − maxSize`. Because
+there is one boundary, this single `[minSize, maxSize]` window on the aside fully
+describes both sides; there is no main-specific prop.
 
 ```jsx live-dev
 const App = () => (
   <Box height="320px" width="100%" borderWidth="25" borderColor="neutral.6">
-    <Splitter.Root
-      defaultSizes={{ nav: 30, main: 70 }}
-      panes={{ nav: { minSize: 15 }, main: { minSize: 25 } }}
-    >
-      <Splitter.Pane id="nav">
+    <Splitter.Root defaultSize={30} minSize={15} maxSize={75}>
+      <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
-          <Text>Nav (min 15 → max 75)</Text>
+          <Text>Aside (min 15, max 75)</Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Aside>
       <Splitter.Handle />
-      <Splitter.Pane id="main">
+      <Splitter.Main>
         <Box p="400" bg="amber.3" h="100%">
-          <Text>Main (min 25)</Text>
+          <Text>Main (floor 25)</Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Main>
     </Splitter.Root>
   </Box>
 );
 ```
 
-### Collapsible panes
+### Collapsible aside
 
-Mark a pane `collapsible` and control which pane is collapsed with
-`collapsedPane` (a single pane id or `null` — only one collapses at a time).
-Because collapse is plain controlled state, any control can drive it; Enter on
-the focused handle toggles it too. `onCollapsedPaneChange` fires on every
-transition.
+Set `collapsible` to let the aside collapse, and control its collapsed state
+with the boolean `collapsed`. Because collapse is plain controlled state, any
+control can drive it; Enter on the focused handle toggles it too.
+`onCollapsedChange` fires on every transition. Only the aside collapses.
 
-While a pane is collapsed the handle can't be resized (drag and the arrow keys
-are inactive) — a collapsed pane sits below its `minSize`, so a resize could only
-snap. Reopen it with the control, Enter, or a double-click; the collapsed state
-holds until you explicitly leave it.
+While the aside is collapsed the handle can't be resized (drag and the arrow
+keys are inactive) — a collapsed aside sits below its `minSize`, so a resize
+could only snap. Reopen it with the control, Enter, or a double-click; the
+collapsed state holds until you explicitly leave it.
 
 ```jsx live-dev
 const App = () => {
-  const [collapsed, setCollapsed] = useState(null);
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <Stack direction="column" gap="300">
-      <Button
-        alignSelf="start"
-        onPress={() => setCollapsed((c) => (c === "nav" ? null : "nav"))}
-      >
-        {collapsed === "nav" ? "Show nav" : "Hide nav"}
+      <Button alignSelf="start" onPress={() => setCollapsed((c) => !c)}>
+        {collapsed ? "Show nav" : "Hide nav"}
       </Button>
       <Box height="280px" width="100%" borderWidth="25" borderColor="neutral.6">
         <Splitter.Root
-          defaultSizes={{ nav: 30, main: 70 }}
-          panes={{
-            nav: { minSize: 10, collapsible: true },
-            main: { minSize: 20 },
-          }}
-          collapsedPane={collapsed}
-          onCollapsedPaneChange={setCollapsed}
+          defaultSize={30}
+          minSize={10}
+          maxSize={80}
+          collapsible
+          collapsed={collapsed}
+          onCollapsedChange={setCollapsed}
         >
-          <Splitter.Pane id="nav">
+          <Splitter.Aside>
             <Box p="400" bg="indigo.3" h="100%">
               <Text>Nav</Text>
             </Box>
-          </Splitter.Pane>
+          </Splitter.Aside>
           <Splitter.Handle />
-          <Splitter.Pane id="main">
+          <Splitter.Main>
             <Box p="400" bg="amber.3" h="100%">
               <Text>Main</Text>
             </Box>
-          </Splitter.Pane>
+          </Splitter.Main>
         </Splitter.Root>
       </Box>
     </Stack>
@@ -209,42 +150,39 @@ const App = () => {
 
 Collapse is a two-tier model. `minSize` is the floor for _dragging_ and the
 arrow keys; `collapsedSize` is a distinct discrete state that collapse snaps to,
-below `minSize`. It defaults to `0` (the pane hides entirely) — set it to leave
+below `minSize`. It defaults to `0` (the aside hides entirely) — set it to leave
 a thin rail behind, e.g. an icon strip the user can click to expand.
 
 ```jsx live-dev
 const App = () => {
-  const [collapsed, setCollapsed] = useState(null);
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <Stack direction="column" gap="300">
-      <Button
-        alignSelf="start"
-        onPress={() => setCollapsed((c) => (c === "nav" ? null : "nav"))}
-      >
-        {collapsed === "nav" ? "Expand nav" : "Collapse nav to a rail"}
+      <Button alignSelf="start" onPress={() => setCollapsed((c) => !c)}>
+        {collapsed ? "Expand nav" : "Collapse nav to a rail"}
       </Button>
       <Box height="280px" width="100%" borderWidth="25" borderColor="neutral.6">
         <Splitter.Root
-          defaultSizes={{ nav: 30, main: 70 }}
-          panes={{
-            nav: { minSize: 15, collapsible: true, collapsedSize: 6 },
-            main: { minSize: 20 },
-          }}
-          collapsedPane={collapsed}
-          onCollapsedPaneChange={setCollapsed}
+          defaultSize={30}
+          minSize={15}
+          maxSize={80}
+          collapsible
+          collapsedSize={6}
+          collapsed={collapsed}
+          onCollapsedChange={setCollapsed}
         >
-          <Splitter.Pane id="nav">
+          <Splitter.Aside>
             <Box p="400" bg="indigo.3" h="100%">
               <Text>Nav</Text>
             </Box>
-          </Splitter.Pane>
+          </Splitter.Aside>
           <Splitter.Handle />
-          <Splitter.Pane id="main">
+          <Splitter.Main>
             <Box p="400" bg="amber.3" h="100%">
               <Text>Main</Text>
             </Box>
-          </Splitter.Pane>
+          </Splitter.Main>
         </Splitter.Root>
       </Box>
     </Stack>
@@ -255,32 +193,31 @@ const App = () => {
 ### Uncontrolled collapse
 
 When you don't need to drive collapse from outside the splitter, seed the
-initial collapsed pane with `defaultCollapsedPane` and let the splitter own the
-state. Enter on the handle toggles it from there, and double-click restores the
-default split.
+initial collapsed state with `defaultCollapsed` and let the splitter own it.
+Enter on the handle toggles it from there, and double-click restores the default
+split.
 
 ```jsx live-dev
 const App = () => (
   <Box height="240px" width="100%" borderWidth="25" borderColor="neutral.6">
     <Splitter.Root
-      defaultSizes={{ nav: 30, main: 70 }}
-      defaultCollapsedPane="nav"
-      panes={{
-        nav: { minSize: 10, collapsible: true },
-        main: { minSize: 20 },
-      }}
+      defaultSize={30}
+      minSize={10}
+      maxSize={80}
+      collapsible
+      defaultCollapsed
     >
-      <Splitter.Pane id="nav">
+      <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
           <Text>Nav (starts collapsed)</Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Aside>
       <Splitter.Handle />
-      <Splitter.Pane id="main">
+      <Splitter.Main>
         <Box p="400" bg="amber.3" h="100%">
           <Text>Tab to the handle and press Enter to toggle</Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Main>
     </Splitter.Root>
   </Box>
 );
@@ -294,20 +231,20 @@ Home / End jump it to the bounds. Accepts floats for finer control.
 ```jsx live-dev
 const App = () => (
   <Box height="240px" width="100%" borderWidth="25" borderColor="neutral.6">
-    <Splitter.Root defaultSizes={{ nav: 30, main: 70 }} keyboardStep={10}>
-      <Splitter.Pane id="nav">
+    <Splitter.Root defaultSize={30} keyboardStep={10}>
+      <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
           <Text>
             Tab to the handle — each arrow press moves the boundary 10%
           </Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Aside>
       <Splitter.Handle />
-      <Splitter.Pane id="main">
+      <Splitter.Main>
         <Box p="400" bg="amber.3" h="100%">
           <Text>Main</Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Main>
     </Splitter.Root>
   </Box>
 );
@@ -322,29 +259,29 @@ Set `isDoubleClickDisabled` to turn that off; drag and keyboard stay active.
 const App = () => (
   <Stack direction="column" gap="400">
     <Box height="140px" width="100%" borderWidth="25" borderColor="neutral.6">
-      <Splitter.Root defaultSizes={{ a: 50, b: 50 }}>
-        <Splitter.Pane id="a">
+      <Splitter.Root defaultSize={50}>
+        <Splitter.Aside>
           <Box p="400" bg="indigo.3" h="100%">
             <Text>Drag, then double-click the handle to restore</Text>
           </Box>
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="b">
+        <Splitter.Main>
           <Box p="400" bg="amber.3" h="100%" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
     <Box height="140px" width="100%" borderWidth="25" borderColor="neutral.6">
-      <Splitter.Root defaultSizes={{ a: 50, b: 50 }} isDoubleClickDisabled>
-        <Splitter.Pane id="a">
+      <Splitter.Root defaultSize={50} isDoubleClickDisabled>
+        <Splitter.Aside>
           <Box p="400" bg="teal.3" h="100%">
             <Text>Double-click restore disabled</Text>
           </Box>
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="b">
+        <Splitter.Main>
           <Box p="400" bg="rose.3" h="100%" />
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   </Stack>
@@ -359,18 +296,18 @@ order, gets `aria-disabled`, and ignores drag, keyboard, and collapse input.
 ```jsx live-dev
 const App = () => (
   <Box height="240px" width="100%" borderWidth="25" borderColor="neutral.6">
-    <Splitter.Root isDisabled defaultSizes={{ nav: 30, main: 70 }}>
-      <Splitter.Pane id="nav">
+    <Splitter.Root isDisabled defaultSize={30}>
+      <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
           <Text>Nav</Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Aside>
       <Splitter.Handle />
-      <Splitter.Pane id="main">
+      <Splitter.Main>
         <Box p="400" bg="amber.3" h="100%">
           <Text>Main</Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Main>
     </Splitter.Root>
   </Box>
 );
@@ -378,75 +315,79 @@ const App = () => (
 
 ### Persistence
 
-Sizes are uncontrolled by default, so persist them in your app with
-any storage: hydrate `defaultSizes` from stored state and write back in
-`onSizesChangeEnd` (it fires once per settled interaction — drag end, each
+Size is uncontrolled by default, so persist it in your app with any storage:
+hydrate `defaultSize` from stored state and write the settled value back in
+`onSizeChangeEnd` (it fires once per settled interaction — drag end, each
 keypress, collapse/expand, double-click restore — so no debouncing is needed).
-Collapse persists through its controlled state.
+A single `number` round-trips: the value `onSizeChangeEnd` emits is exactly the
+shape `defaultSize` accepts. Collapse persists through its controlled boolean
+state.
 
 ```tsx
 // `useLocalStorage` is any storage hook of your choosing.
-const [sizes, setSizes] = useLocalStorage("ide-layout", { nav: 30, main: 70 });
-const [collapsed, setCollapsed] = useLocalStorage("ide-collapsed", null);
+const [size, setSize] = useLocalStorage("ide-layout", 30);
+const [collapsed, setCollapsed] = useLocalStorage("ide-collapsed", false);
 
 <Splitter.Root
-  defaultSizes={sizes}
-  onSizesChangeEnd={setSizes}
-  collapsedPane={collapsed}
-  onCollapsedPaneChange={setCollapsed}
-  panes={{ nav: { minSize: 10, collapsible: true }, main: { minSize: 20 } }}
+  defaultSize={size}
+  onSizeChangeEnd={setSize}
+  minSize={10}
+  maxSize={80}
+  collapsible
+  collapsed={collapsed}
+  onCollapsedChange={setCollapsed}
 >
-  <Splitter.Pane id="nav">…</Splitter.Pane>
+  <Splitter.Aside>…</Splitter.Aside>
   <Splitter.Handle />
-  <Splitter.Pane id="main">…</Splitter.Pane>
+  <Splitter.Main>…</Splitter.Main>
 </Splitter.Root>;
 ```
 
-`onSizesChange` (live, every drag tick ~60Hz) is also available when you need a
-real-time read-out; prefer `onSizesChangeEnd` for persistence.
+`onSizeChange` (live, every drag tick ~60Hz) is also available when you need a
+real-time read-out; prefer `onSizeChangeEnd` for persistence.
 
-### Controlled sizes
+### Controlled size
 
-Pass `sizes` instead of `defaultSizes` to drive the layout from outside — useful
-for responsive layouts that swap proportions per breakpoint, since external
+Pass `size` instead of `defaultSize` to drive the layout from outside — useful
+for responsive layouts that swap the proportion per breakpoint, since external
 changes apply in place (no remount, so pane content keeps its scroll and focus).
 Control is settled, not live: drag and keyboard stay smooth from internal state
-and report once via `onSizesChangeEnd`. Wire that callback and feed the value
+and report once via `onSizeChangeEnd`. Wire that callback and feed the value
 back, or the splitter keeps the last interactive size and behaves as uncontrolled
 from then on.
 
 ```tsx
-const [sizes, setSizes] = useState({ nav: 30, main: 70 });
+const [size, setSize] = useState(30);
 
-<Splitter.Root sizes={sizes} onSizesChangeEnd={setSizes}>
-  <Splitter.Pane id="nav">…</Splitter.Pane>
+<Splitter.Root size={size} onSizeChangeEnd={setSize}>
+  <Splitter.Aside>…</Splitter.Aside>
   <Splitter.Handle />
-  <Splitter.Pane id="main">…</Splitter.Pane>
+  <Splitter.Main>…</Splitter.Main>
 </Splitter.Root>;
 ```
 
 ### Pixel-precise sizes
 
-Percentages carry full float precision end-to-end (nothing in the size pipeline
-is rounded — only the handle's `aria-valuenow` is rounded, for assistive
-technology). To land on an exact pixel at a known container width, pass the
-computed float — `250px` in an `800px` container is `31.25`.
+The aside percentage carries full float precision end-to-end (nothing in the
+size pipeline is rounded — only the handle's `aria-valuenow` is rounded, for
+assistive technology). To land on an exact pixel at a known container width, pass
+the computed float — `250px` in an `800px` container is `31.25`.
 
 ```jsx live-dev
 const App = () => (
   <Box height="240px" width="100%" borderWidth="25" borderColor="neutral.6">
-    <Splitter.Root defaultSizes={{ nav: 31.25, main: 68.75 }}>
-      <Splitter.Pane id="nav">
+    <Splitter.Root defaultSize={31.25}>
+      <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
           <Text>31.25%</Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Aside>
       <Splitter.Handle />
-      <Splitter.Pane id="main">
+      <Splitter.Main>
         <Box p="400" bg="amber.3" h="100%">
           <Text>68.75%</Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Main>
     </Splitter.Root>
   </Box>
 );
@@ -455,33 +396,35 @@ const App = () => (
 ### Three or more regions
 
 The Splitter is two-pane by design. For additional regions, nest a Splitter
-inside a pane's children; each splitter owns its own state independently.
+inside a pane's children; each splitter owns its own state independently. The
+inner aside can sit on either side of its main pane — here it trails as a right
+panel.
 
 ```jsx live-dev
 const App = () => (
   <Box height="360px" width="100%" borderWidth="25" borderColor="neutral.6">
-    <Splitter.Root defaultSizes={{ nav: 25, rest: 75 }}>
-      <Splitter.Pane id="nav">
+    <Splitter.Root defaultSize={25}>
+      <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
           <Text>Nav</Text>
         </Box>
-      </Splitter.Pane>
+      </Splitter.Aside>
       <Splitter.Handle />
-      <Splitter.Pane id="rest">
-        <Splitter.Root defaultSizes={{ main: 65, aside: 35 }}>
-          <Splitter.Pane id="main">
+      <Splitter.Main>
+        <Splitter.Root defaultSize={35}>
+          <Splitter.Main>
             <Box p="400" bg="amber.3" h="100%">
               <Text>Main</Text>
             </Box>
-          </Splitter.Pane>
+          </Splitter.Main>
           <Splitter.Handle />
-          <Splitter.Pane id="aside">
+          <Splitter.Aside>
             <Box p="400" bg="rose.3" h="100%">
               <Text>Aside</Text>
             </Box>
-          </Splitter.Pane>
+          </Splitter.Aside>
         </Splitter.Root>
-      </Splitter.Pane>
+      </Splitter.Main>
     </Splitter.Root>
   </Box>
 );
@@ -491,46 +434,43 @@ const App = () => (
 
 ### IDE-style layout
 
-The most common real-world composition: a persisted split (`defaultSizes` +
-`onSizesChangeEnd`) with a `collapsible` sidebar that snaps to a rail
-(`collapsedSize`), driven by both a toolbar button and the handle, plus floors
-on both regions and a specific handle label.
+The most common real-world composition: a persisted split (`defaultSize` +
+`onSizeChangeEnd`) with a `collapsible` aside that snaps to a rail
+(`collapsedSize`), driven by both a toolbar button and the handle, plus aside
+bounds and a specific handle label.
 
 ```jsx live-dev
 const App = () => {
-  const [sizes, setSizes] = useState({ nav: 22, main: 78 });
-  const [collapsed, setCollapsed] = useState(null);
+  const [size, setSize] = useState(22);
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <Stack direction="column" gap="300">
-      <Button
-        alignSelf="start"
-        onPress={() => setCollapsed((c) => (c === "nav" ? null : "nav"))}
-      >
-        {collapsed === "nav" ? "Show sidebar" : "Hide sidebar"}
+      <Button alignSelf="start" onPress={() => setCollapsed((c) => !c)}>
+        {collapsed ? "Show sidebar" : "Hide sidebar"}
       </Button>
       <Box height="320px" width="100%" borderWidth="25" borderColor="neutral.6">
         <Splitter.Root
-          defaultSizes={sizes}
-          onSizesChangeEnd={setSizes}
-          collapsedPane={collapsed}
-          onCollapsedPaneChange={setCollapsed}
-          panes={{
-            nav: { minSize: 15, collapsible: true, collapsedSize: 4 },
-            main: { minSize: 30 },
-          }}
+          defaultSize={size}
+          onSizeChangeEnd={setSize}
+          minSize={15}
+          maxSize={70}
+          collapsible
+          collapsedSize={4}
+          collapsed={collapsed}
+          onCollapsedChange={setCollapsed}
         >
-          <Splitter.Pane id="nav">
+          <Splitter.Aside>
             <Box p="400" bg="indigo.3" h="100%">
               <Text>Files</Text>
             </Box>
-          </Splitter.Pane>
+          </Splitter.Aside>
           <Splitter.Handle aria-label="Resize sidebar" />
-          <Splitter.Pane id="main">
+          <Splitter.Main>
             <Box p="400" bg="amber.3" h="100%">
               <Text>Editor</Text>
             </Box>
-          </Splitter.Pane>
+          </Splitter.Main>
         </Splitter.Root>
       </Box>
     </Stack>
@@ -540,32 +480,33 @@ const App = () => {
 
 ### Editor and preview
 
-A vertical split with a persisted boundary and a minimum on each region so
-neither collapses to nothing while dragging.
+A vertical split with a persisted boundary and aside bounds so neither region
+collapses to nothing while dragging.
 
 ```jsx live-dev
 const App = () => {
-  const [sizes, setSizes] = useState({ editor: 60, preview: 40 });
+  const [size, setSize] = useState(60);
 
   return (
     <Box height="360px" width="100%" borderWidth="25" borderColor="neutral.6">
       <Splitter.Root
         orientation="vertical"
-        defaultSizes={sizes}
-        onSizesChangeEnd={setSizes}
-        panes={{ editor: { minSize: 25 }, preview: { minSize: 20 } }}
+        defaultSize={size}
+        onSizeChangeEnd={setSize}
+        minSize={25}
+        maxSize={80}
       >
-        <Splitter.Pane id="editor">
+        <Splitter.Aside>
           <Box p="400" bg="teal.3" h="100%">
             <Text>Editor</Text>
           </Box>
-        </Splitter.Pane>
+        </Splitter.Aside>
         <Splitter.Handle />
-        <Splitter.Pane id="preview">
+        <Splitter.Main>
           <Box p="400" bg="rose.3" h="100%">
             <Text>Preview</Text>
           </Box>
-        </Splitter.Pane>
+        </Splitter.Main>
       </Splitter.Root>
     </Box>
   );
@@ -576,18 +517,20 @@ const App = () => {
 
 ### Structure
 
-- `Splitter.Root` must contain exactly two `Splitter.Pane` children with one
-  `Splitter.Handle` between them; a development-time warning is emitted
-  otherwise.
-- Every `Splitter.Pane` requires a unique `id`. Per-pane configuration
-  (`minSize`, `collapsible`, `collapsedSize`) lives on `Splitter.Root` in the
-  `panes` map keyed by that id — nothing is configured on the pane itself.
+- `Splitter.Root` must contain exactly one `Splitter.Aside` and one
+  `Splitter.Main` with one `Splitter.Handle` between them; a development-time
+  warning is emitted otherwise. The aside may be placed before or after the main
+  pane (a leading or trailing panel) — `size` always refers to the aside.
+- All sizing and collapse configuration (`defaultSize` / `size`, `minSize`,
+  `maxSize`, `collapsible`, `collapsedSize`) lives on `Splitter.Root`. Panes take
+  only their content and an optional `id` for analytics/testing — nothing is
+  configured on the pane itself.
 
 ## Accessibility
 
 The Splitter handles the W3C window-splitter semantics internally: the handle is
 `role="separator"` with `aria-orientation`, `aria-valuenow` / `aria-valuemin` /
-`aria-valuemax`, `aria-valuetext`, and `aria-controls` pointing at the previous
+`aria-valuemax`, `aria-valuetext`, and `aria-controls` pointing at the leading
 pane. For the full conformance details, see the Accessibility tab.
 
 #### Labeling
@@ -608,10 +551,10 @@ If your use case requires tracking and analytics, it is good practice to add a
 const PERSISTENT_ID = "ide-layout-splitter-handle";
 
 export const Example = () => (
-  <Splitter.Root defaultSizes={{ nav: 30, main: 70 }}>
-    <Splitter.Pane id="nav">…</Splitter.Pane>
+  <Splitter.Root defaultSize={30}>
+    <Splitter.Aside>…</Splitter.Aside>
     <Splitter.Handle id={PERSISTENT_ID} />
-    <Splitter.Pane id="main">…</Splitter.Pane>
+    <Splitter.Main>…</Splitter.Main>
   </Splitter.Root>
 );
 ```
@@ -622,11 +565,11 @@ When the handle has focus:
 
 - `Tab` / `Shift+Tab`: Move focus to/from the handle (in DOM order).
 - `ArrowLeft` / `ArrowRight` (horizontal) or `ArrowUp` / `ArrowDown` (vertical):
-  Move the boundary by `keyboardStep` percentage points (inactive while a pane
-  is collapsed).
-- `Home` / `End`: Jump the boundary to the previous pane's minimum / maximum
-  (inactive while a pane is collapsed).
-- `Enter`: Toggle collapse of the adjacent collapsible pane.
+  Move the boundary by `keyboardStep` percentage points (inactive while the
+  aside is collapsed).
+- `Home` / `End`: Jump the boundary to the aside's minimum / maximum (inactive
+  while the aside is collapsed).
+- `Enter`: Toggle collapse of the aside (when `collapsible`).
 
 ## API reference
 

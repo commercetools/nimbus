@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useRef } from "react";
 import {
   mergeProps,
   useFocusRing,
@@ -12,17 +12,17 @@ import {
   useSplitterContext,
   useHandleResize,
   useHandleKeyboard,
-  type HandlePanePair,
 } from "../hooks";
 import { computeAriaBounds } from "../utils";
 import { splitterMessagesStrings } from "../splitter.messages";
 import type { SplitterHandleProps } from "../splitter.types";
 
 /**
- * Interactive `role="separator"` between two `Splitter.Pane`s, exposing the W3C
- * window-splitter ARIA value attributes. Takes no per-handle config (that lives
- * on `Splitter.Root`); delegates drag, keyboard, and ARIA bounds to focused
- * hooks/utils.
+ * Interactive `role="separator"` between `Splitter.Aside` and `Splitter.Main`,
+ * exposing the W3C window-splitter ARIA value attributes. Takes no per-handle
+ * config (that lives on `Splitter.Root`); delegates drag, keyboard, and ARIA
+ * bounds to focused hooks/utils. The aria value tracks the *leading* pane, so it
+ * works whichever side the aside is on.
  *
  * @supportsStyleProps
  */
@@ -34,14 +34,14 @@ export const SplitterHandle = ({
   ...props
 }: SplitterHandleProps) => {
   const {
-    sizes,
+    size,
     orientation,
     isDoubleClickDisabled,
     isDisabled,
-    getPaneConfig,
+    asideConfig,
     paneOrder,
     paneDomIds,
-    collapsedPane,
+    collapsed,
     restoreDefaults,
   } = useSplitterContext();
 
@@ -51,34 +51,26 @@ export const SplitterHandle = ({
   const localRef = useRef<HTMLDivElement>(null);
   const handleRef = useObjectRef(mergeRefs(localRef, forwardedRef));
 
-  // Resolve the two panes this handle controls from sibling DOM order. The
-  // root tracks `paneOrder` as panes register; for a well-formed splitter the
-  // first entry is the "previous" pane (left/top) and the second is the "next".
-  const prevId = paneOrder[0];
-  const nextId = paneOrder[1];
-  const hasPair = !!prevId && !!nextId;
+  // Resolve the two panes this handle controls from registration (DOM) order.
+  // The first registered role is the "leading" (left/top) pane; the aside can be
+  // on either side, so the single `size` maps to the leading pane accordingly.
+  const prevRole = paneOrder[0];
+  const nextRole = paneOrder[1];
+  const isReady = !!prevRole && !!nextRole && prevRole !== nextRole;
+  const asideLeads = prevRole === "aside";
 
-  const prevCfg = useMemo(
-    () => (prevId ? getPaneConfig(prevId) : {}),
-    [prevId, getPaneConfig]
-  );
-  const nextCfg = useMemo(
-    () => (nextId ? getPaneConfig(nextId) : {}),
-    [nextId, getPaneConfig]
-  );
-  const panes: HandlePanePair = { prevId, nextId, hasPair, prevCfg, nextCfg };
-
-  // A collapsed pane sits below its `minSize`, so any resize could only snap
+  // A collapsed aside sits below its `minSize`, so any resize could only snap
   // back to `minSize` — lock resizing while collapsed (reopen via Enter,
   // double-click, or the controlled prop).
-  const isResizeLocked = collapsedPane !== null;
+  const isResizeLocked = collapsed;
 
   const { moveProps, applyDelta } = useHandleResize({
     handleRef,
-    panes,
+    asideLeads,
+    isReady,
     isResizeLocked,
   });
-  const { onKeyDown } = useHandleKeyboard({ hasPair, applyDelta });
+  const { onKeyDown } = useHandleKeyboard({ isReady, applyDelta });
 
   const { separatorProps } = useSeparator({
     orientation,
@@ -93,13 +85,15 @@ export const SplitterHandle = ({
   }, [isDisabled, isDoubleClickDisabled, restoreDefaults]);
 
   const { min: ariaValueMin, max: ariaValueMax } = computeAriaBounds(
-    prevCfg,
-    nextCfg
+    asideConfig,
+    asideLeads
   );
 
-  const prevSize = prevId ? (sizes[prevId] ?? 0) : 0;
-  const ariaControls = prevId ? paneDomIds[prevId] : undefined;
-  const roundedValueNow = prevId ? Math.round(prevSize) : undefined;
+  // The boundary position = the leading pane's size. With the aside leading
+  // that is `size`; with the main pane leading it is the remainder.
+  const prevSize = isReady ? (asideLeads ? size : 100 - size) : 0;
+  const ariaControls = isReady ? paneDomIds[prevRole] : undefined;
+  const roundedValueNow = isReady ? Math.round(prevSize) : undefined;
 
   // Position the absolute-positioned handle on the boundary between the two
   // panes. The recipe's `transform: translate(±50%)` centers the visible

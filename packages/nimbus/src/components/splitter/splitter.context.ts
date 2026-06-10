@@ -2,10 +2,11 @@ import { createContext } from "react";
 import type { SplitterContextValue } from "./splitter.types";
 
 /**
- * Internal context shared between `Splitter.Root`, `Splitter.Pane`, and
- * `Splitter.Handle`. Carries the id-keyed sizes record, pane registration,
- * commands, and the configuration needed by the handle to compute its
- * keyboard behavior and ARIA attributes.
+ * Internal context shared between `Splitter.Root`, the pane components
+ * (`Splitter.Aside` / `Splitter.Main`), and `Splitter.Handle`. Carries the
+ * single aside `size`, role-based pane registration, commands, and the
+ * configuration needed by the handle to compute its keyboard behavior and ARIA
+ * attributes.
  *
  * @internal
  */

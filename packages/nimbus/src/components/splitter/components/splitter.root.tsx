@@ -1,15 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { extractStyleProps } from "@/utils";
 import { SplitterRootSlot } from "../splitter.slots";
 import { SplitterContext } from "../splitter.context";
 import { useSplitterState } from "../hooks/use-splitter-state";
-import type { SplitterRootProps } from "../splitter.types";
+import type { ResolvedAsideConfig, SplitterRootProps } from "../splitter.types";
 
 /**
- * Splitter root container. Owns the two panes' sizes state and per-pane config,
- * and resolves controlled/uncontrolled collapse. Wrap exactly two
- * `Splitter.Pane`s with one `Splitter.Handle` between them.
+ * Splitter root container. Owns the single aside `size` and resolves
+ * controlled/uncontrolled size + collapse. Wrap one `Splitter.Aside` and one
+ * `Splitter.Main` with one `Splitter.Handle` between them (aside on either side).
  *
  * @see https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/
  * @supportsStyleProps
@@ -17,14 +17,17 @@ import type { SplitterRootProps } from "../splitter.types";
 export const SplitterRoot = ({
   children,
   orientation = "horizontal",
-  defaultSizes,
-  sizes,
-  onSizesChange,
-  onSizesChangeEnd,
-  panes,
-  collapsedPane,
-  defaultCollapsedPane,
-  onCollapsedPaneChange,
+  defaultSize,
+  size,
+  minSize,
+  maxSize,
+  collapsible,
+  collapsedSize,
+  onSizeChange,
+  onSizeChangeEnd,
+  collapsed,
+  defaultCollapsed,
+  onCollapsedChange,
   keyboardStep = 5,
   isDoubleClickDisabled = false,
   isDisabled = false,
@@ -38,31 +41,41 @@ export const SplitterRoot = ({
   });
   const [styleProps, restProps] = extractStyleProps(restRecipeProps);
 
+  const asideConfig = useMemo<ResolvedAsideConfig>(
+    () => ({
+      minSize: minSize ?? 0,
+      maxSize: maxSize ?? 100,
+      collapsible: collapsible ?? false,
+      collapsedSize: collapsedSize ?? 0,
+    }),
+    [minSize, maxSize, collapsible, collapsedSize]
+  );
+
   const contextValue = useSplitterState({
     orientation,
-    defaultSizes,
-    sizes,
-    panes,
-    collapsedPane,
-    defaultCollapsedPane,
+    defaultSize,
+    size,
+    asideConfig,
+    collapsed,
+    defaultCollapsed,
     keyboardStep,
     isDoubleClickDisabled,
     isDisabled,
-    onSizesChange,
-    onSizesChangeEnd,
-    onCollapsedPaneChange,
+    onSizeChange,
+    onSizeChangeEnd,
+    onCollapsedChange,
   });
 
-  // Dev-time warning: the Splitter primitive is strictly 2-pane. Evaluated in
-  // an effect (not during render) so it fires after pane registration settles —
-  // panes register via effects, so a transient 1-pane commit (StrictMode
+  // Dev-time warning: the Splitter primitive is strictly aside + main. Evaluated
+  // in an effect (not during render) so it fires after pane registration settles
+  // — panes register via effects, so a transient 1-pane commit (StrictMode
   // double-invoke, staggered child mounts) is normal and must not warn.
   const paneCount = contextValue.paneOrder.length;
   useEffect(() => {
     if (process.env.NODE_ENV === "production") return;
     if (paneCount > 0 && paneCount !== 2) {
       console.warn(
-        `[Splitter] Expected exactly 2 <Splitter.Pane> children, got ${paneCount}. The Splitter primitive is 2-pane; nest a second Splitter inside a Pane for 3+ regions.`
+        `[Splitter] Expected one <Splitter.Aside> and one <Splitter.Main>, got ${paneCount} pane(s). The Splitter primitive is 2-pane; nest a second Splitter inside a pane for 3+ regions.`
       );
     }
   }, [paneCount]);

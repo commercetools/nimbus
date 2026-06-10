@@ -1,19 +1,25 @@
 // Import from the barrel export index for consistent module resolution.
-import { SplitterRoot, SplitterPane, SplitterHandle } from "./components";
+import {
+  SplitterRoot,
+  SplitterAside,
+  SplitterMain,
+  SplitterHandle,
+} from "./components";
 
 /**
  * Splitter
  * ============================================================
- * Compound primitive for a user-resizable 2-pane layout.
+ * Compound primitive for a user-resizable 2-pane layout: a configurable
+ * `Splitter.Aside` and a `Splitter.Main` that fills the remaining space.
  *
  * @see {@link https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/}
  *
  * @example
  * ```tsx
- * <Splitter.Root panes={{ nav: { minSize: 10 }, main: { minSize: 20 } }}>
- *   <Splitter.Pane id="nav">Navigation</Splitter.Pane>
+ * <Splitter.Root defaultSize={30} minSize={15}>
+ *   <Splitter.Aside>Navigation</Splitter.Aside>
  *   <Splitter.Handle />
- *   <Splitter.Pane id="main">Content</Splitter.Pane>
+ *   <Splitter.Main>Content</Splitter.Main>
  * </Splitter.Root>
  * ```
  */
@@ -21,40 +27,54 @@ export const Splitter = {
   /**
    * # Splitter.Root
    *
-   * The root container that owns sizes state for its two child panes and hosts
-   * the per-pane `panes` configuration map. Must wrap exactly two
-   * `Splitter.Pane`s with one `Splitter.Handle` between them.
+   * The root container that owns the single aside `size` and the flat sizing /
+   * collapse configuration. Must wrap one `Splitter.Aside` and one
+   * `Splitter.Main` with one `Splitter.Handle` between them (aside on either
+   * side).
    *
    * @example
    * ```tsx
-   * <Splitter.Root orientation="horizontal">
-   *   <Splitter.Pane id="left">Left</Splitter.Pane>
+   * <Splitter.Root orientation="horizontal" defaultSize={40}>
+   *   <Splitter.Aside>Left</Splitter.Aside>
    *   <Splitter.Handle />
-   *   <Splitter.Pane id="right">Right</Splitter.Pane>
+   *   <Splitter.Main>Right</Splitter.Main>
    * </Splitter.Root>
    * ```
    */
   Root: SplitterRoot,
   /**
-   * # Splitter.Pane
+   * # Splitter.Aside
    *
-   * A resizable region inside `Splitter.Root`. Carries only its `id` and
-   * content — all per-pane configuration (size, constraints, collapsibility)
-   * lives on `Splitter.Root` in the `panes` map keyed by this `id`.
+   * The configurable pane. Its size is driven by `Splitter.Root`'s `size` /
+   * `defaultSize` (and `minSize` / `maxSize` / collapse config); carries only
+   * its content and an optional `id`.
    *
    * @example
    * ```tsx
-   * <Splitter.Pane id="sidebar">Sidebar content</Splitter.Pane>
+   * <Splitter.Aside>Sidebar content</Splitter.Aside>
    * ```
    */
-  Pane: SplitterPane,
+  Aside: SplitterAside,
+  /**
+   * # Splitter.Main
+   *
+   * The primary content pane. Always takes the space the aside does not
+   * (`100 − size`); never configured directly. Carries only its content and an
+   * optional `id`.
+   *
+   * @example
+   * ```tsx
+   * <Splitter.Main>Main content</Splitter.Main>
+   * ```
+   */
+  Main: SplitterMain,
   /**
    * # Splitter.Handle
    *
-   * The interactive separator between the two panes. Drag, arrow keys, and
-   * Home/End move the boundary; Enter toggles collapse of an adjacent
-   * collapsible pane (also controllable via `Splitter.Root`'s `collapsedPane`);
-   * double-click restores the boundary to its initial sizes.
+   * The interactive separator between the aside and main panes. Drag, arrow
+   * keys, and Home/End move the boundary; Enter toggles the aside's collapse
+   * (also controllable via `Splitter.Root`'s `collapsed`); double-click restores
+   * the boundary to its initial size.
    *
    * @example
    * ```tsx
@@ -66,9 +86,11 @@ export const Splitter = {
 
 // Underscore-prefixed re-exports exist solely so the react-docgen-typescript
 // script can extract per-subcomponent prop tables. Consumers should use the
-// namespaced `Splitter.Root` / `Splitter.Pane` / `Splitter.Handle`.
+// namespaced `Splitter.Root` / `Splitter.Aside` / `Splitter.Main` /
+// `Splitter.Handle`.
 export {
   SplitterRoot as _SplitterRoot,
-  SplitterPane as _SplitterPane,
+  SplitterAside as _SplitterAside,
+  SplitterMain as _SplitterMain,
   SplitterHandle as _SplitterHandle,
 };
