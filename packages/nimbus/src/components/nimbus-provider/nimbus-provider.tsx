@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 import { ChakraProvider } from "@chakra-ui/react/styled-system";
 import { RouterProvider } from "react-aria";
 import { NimbusI18nProvider } from "@/components/nimbus-i18n-provider";
-import { system } from "@/theme";
+import { system as defaultSystem } from "@/theme";
 import type { NimbusProviderProps } from "./nimbus-provider.types";
 import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode-provider";
 import { ToastOutlet } from "@/components/toast/components/toast.outlet";
@@ -12,6 +12,9 @@ import { ToastOutlet } from "@/components/toast/components/toast.outlet";
  * Only the outermost provider renders the outlet.
  */
 const ToastOutletMountedContext = createContext(false);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const NimbusThemeContext = createContext<any>(null);
 
 /**
  * Internal component that loads Inter font from Google Fonts.
@@ -48,24 +51,29 @@ export function NimbusProvider({
   locale,
   router,
   loadFonts = true,
+  theme: customTheme,
   ...props
 }: NimbusProviderProps) {
   const hasToastOutlet = useContext(ToastOutletMountedContext);
+  const parentTheme = useContext(NimbusThemeContext);
+  const resolvedTheme = customTheme ?? parentTheme ?? defaultSystem;
 
   // Inner content with all the existing providers
   const content = (
     <>
       {loadFonts && <InterFontLoader />}
-      <ChakraProvider value={system}>
-        <NimbusColorModeProvider enableSystem={false} {...props}>
-          <NimbusI18nProvider locale={locale}>
-            <ToastOutletMountedContext.Provider value={true}>
-              {children}
-              {!hasToastOutlet && <ToastOutlet />}
-            </ToastOutletMountedContext.Provider>
-          </NimbusI18nProvider>
-        </NimbusColorModeProvider>
-      </ChakraProvider>
+      <NimbusThemeContext.Provider value={resolvedTheme}>
+        <ChakraProvider value={resolvedTheme}>
+          <NimbusColorModeProvider enableSystem={false} {...props}>
+            <NimbusI18nProvider locale={locale}>
+              <ToastOutletMountedContext.Provider value={true}>
+                {children}
+                {!hasToastOutlet && <ToastOutlet />}
+              </ToastOutletMountedContext.Provider>
+            </NimbusI18nProvider>
+          </NimbusColorModeProvider>
+        </ChakraProvider>
+      </NimbusThemeContext.Provider>
     </>
   );
 
