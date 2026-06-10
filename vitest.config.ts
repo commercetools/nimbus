@@ -14,6 +14,7 @@ export default defineConfig({
       "./packages/nimbus/vitest.unit-isolated.config.ts",
       "./packages/design-token-ts-plugin/vitest.config.ts",
       "./packages/nimbus-mcp/vitest.config.ts",
+      "./packages/nimbus/vitest.ssr.config.ts",
       "./vitest.scripts.config.ts",
     ],
   },
