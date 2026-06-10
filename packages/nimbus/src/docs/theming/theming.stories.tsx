@@ -119,13 +119,13 @@ export const MultiplePalettes: Story = {
   name: "Multiple Custom Palettes",
   parameters: { nimbusTheme: tealTheme },
   render: () => (
-    <Stack gap="6">
+    <Stack gap="300">
       <Text fontSize="xl" fontWeight="bold">
         Multiple Custom Palettes
       </Text>
       <PaletteSwatches name="ocean" palette={oceanPalette.light} />
       <PaletteSwatches name="sunset" palette={sunsetPalette.light} />
-      <Stack direction="row" gap="3">
+      <Stack direction="row" gap="300">
         <Button colorPalette="primary" variant="solid">
           Primary (ocean)
         </Button>
@@ -160,11 +160,11 @@ export const TokenOverrides: Story = {
   name: "Token Overrides (Radii)",
   parameters: { nimbusTheme: customRadiiTheme },
   render: () => (
-    <Stack gap="6">
+    <Stack gap="300">
       <Text fontSize="xl" fontWeight="bold">
         Token Overrides: Custom Radii + Brand Color
       </Text>
-      <Stack direction="row" gap="3">
+      <Stack direction="row" gap="300">
         <Button colorPalette="primary" variant="solid">
           Custom Radii Button
         </Button>
