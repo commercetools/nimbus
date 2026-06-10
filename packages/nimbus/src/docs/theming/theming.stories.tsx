@@ -8,6 +8,7 @@ import { themeConfig } from "@/theme";
 
 const meta: Meta = {
   title: "Docs/Theming",
+  tags: ["!autodocs"],
   parameters: {
     a11y: { disable: true },
   },
