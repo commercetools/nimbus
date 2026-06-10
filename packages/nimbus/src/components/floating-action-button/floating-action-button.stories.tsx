@@ -1,3 +1,4 @@
+import { createRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FloatingActionButton, Stack } from "@commercetools/nimbus";
 import { Add as AddIcon } from "@commercetools/nimbus-icons";
@@ -54,6 +55,13 @@ export const Base: Story = {
       await expect(button).toHaveFocus();
       await userEvent.keyboard(" ");
       await expect(args.onPress).toHaveBeenCalledTimes(3);
+    });
+
+    await step("Sets data-pressed during pointer interaction", async () => {
+      await userEvent.pointer({ target: button, keys: "[MouseLeft>]" });
+      await expect(button).toHaveAttribute("data-pressed");
+      await userEvent.pointer({ target: button, keys: "[/MouseLeft]" });
+      await expect(button).not.toHaveAttribute("data-pressed");
     });
   },
 };
@@ -122,4 +130,53 @@ export const SmokeTest: Story = {
       ))}
     </Stack>
   ),
+};
+
+const fabRef = createRef<HTMLButtonElement>();
+
+export const WithRef: Story = {
+  render: () => (
+    <FloatingActionButton
+      aria-label="Ref test"
+      ref={fabRef}
+      data-testid="ref-test"
+    >
+      <AddIcon />
+    </FloatingActionButton>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByTestId("ref-test");
+
+    await step("Forwards ref to the underlying button element", async () => {
+      await expect(fabRef.current).toBe(button);
+    });
+  },
+};
+
+export const DOMPropFiltering: Story = {
+  args: {
+    children: <AddIcon />,
+    "aria-label": "DOM prop filtering test",
+    "data-testid": "filter-test",
+    onFocusChange: fn(),
+    onPressStart: fn(),
+    onPressChange: fn(),
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByTestId("filter-test");
+
+    await step("Does not forward onFocusChange to the DOM", async () => {
+      await expect(button).not.toHaveAttribute("onfocuschange");
+    });
+
+    await step("Does not forward onPressStart to the DOM", async () => {
+      await expect(button).not.toHaveAttribute("onpressstart");
+    });
+
+    await step("Does not forward onPressChange to the DOM", async () => {
+      await expect(button).not.toHaveAttribute("onpresschange");
+    });
+  },
 };
