@@ -2,6 +2,9 @@ packages:
   - packages/*
   - apps/*
 
+catalog:
+  '@types/culori': ^4.0.1
+
 catalogMode: strict
 
 # --- pnpm install & supply-chain settings (made explicit) ---

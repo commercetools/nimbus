@@ -5,6 +5,10 @@ settings:
   excludeLinksFromLockfile: false
 
 catalogs:
+  default:
+    '@types/culori':
+      specifier: ^4.0.1
+      version: 4.0.1
   markdown:
     react-markdown:
       specifier: ^10.1.0
@@ -693,6 +697,9 @@ importers:
       '@commercetools/nimbus-icons':
         specifier: workspace:^
         version: link:../nimbus-icons
+      '@commercetools/nimbus-theme-generator':
+        specifier: workspace:*
+        version: link:../nimbus-theme-generator
       '@commercetools/nimbus-tokens':
         specifier: workspace:^
         version: link:../tokens
@@ -900,6 +907,28 @@ importers:
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
+
+  packages/nimbus-theme-generator:
+    dependencies:
+      culori:
+        specifier: ^4.0.1
+        version: 4.0.2
+    devDependencies:
+      '@chakra-ui/react':
+        specifier: catalog:react
+        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@types/culori':
+        specifier: 'catalog:'
+        version: 4.0.1
+      tsup:
+        specifier: catalog:tooling
+        version: 8.5.1(@microsoft/api-extractor@7.53.1(@types/node@24.13.3))(@swc/core@1.15.11(@swc/helpers@0.5.17))(postcss@8.5.14)(tsx@4.23.1)(typescript@5.9.3)(yaml@2.8.3)
+      typescript:
+        specifier: ~5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: catalog:tooling
+        version: 4.1.10(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(jsdom@29.0.1)(vite@8.1.4(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.44.0)(tsx@4.23.1)(yaml@2.8.3))
 
   packages/tokens:
     devDependencies:
@@ -4321,6 +4350,9 @@ packages:
   '@types/cli-table@0.3.4':
     resolution: {integrity: sha512-GsALrTL69mlwbAw/MHF1IPTadSLZQnsxe7a80G8l4inN/iEXCOcVeT/S7aRc6hbhqzL9qZ314kHPDQnQ3ev+HA==}
 
+  '@types/culori@4.0.1':
+    resolution: {integrity: sha512-43M51r/22CjhbOXyGT361GZ9vncSVQ39u62x5eJdBQFviI8zWp2X5jzqg7k4M6PVgDQAClpy2bUe2dtwEgEDVQ==}
+
   '@types/debounce-promise@3.1.9':
     resolution: {integrity: sha512-awNxydYSU+E2vL7EiOAMtiSOfL5gUM5X4YSE2A92qpxDJQ/rXz6oMPYBFDcDywlUmvIDI6zsqgq17cGm5CITQw==}
 
@@ -5579,6 +5611,10 @@ packages:
 
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
+
+  culori@4.0.2:
+    resolution: {integrity: sha512-1+BhOB8ahCn4O0cep0Sh2l9KCOfOdY+BXJnKMHFFzDEouSr/el18QwXEMRlOj9UY5nCeA8UN3a/82rUWRBeyBw==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   dashify@2.0.0:
     resolution: {integrity: sha512-hpA5C/YrPjucXypHPPc0oJ1l9Hf6wWbiOL7Ik42cxnsUOhWiCB/fylKbKqqJalW9FgkNQCw16YO8uW9Hs0Iy1A==}
@@ -14669,6 +14705,8 @@ snapshots:
 
   '@types/cli-table@0.3.4': {}
 
+  '@types/culori@4.0.1': {}
+
   '@types/debounce-promise@3.1.9': {}
 
   '@types/debug@4.1.12':
@@ -16334,6 +16372,8 @@ snapshots:
       css-tree: 2.2.1
 
   csstype@3.2.3: {}
+
+  culori@4.0.2: {}
 
   dashify@2.0.0: {}
 
