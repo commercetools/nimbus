@@ -4,4 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default { cancel: `Cancel`, confirm: `Confirm` };
+export default { cancel: `Abbrechen`, confirm: `Bestätigen` };
