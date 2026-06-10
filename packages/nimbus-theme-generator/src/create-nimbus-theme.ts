@@ -96,7 +96,8 @@ function createSemanticReference(sourcePalette: string): SemanticTokenPalette {
   ];
 
   for (const step of steps) {
-    result[step] = { value: `{colors.${sourcePalette}.${step}}` };
+    const ref = `{colors.${sourcePalette}.${step}}`;
+    result[step] = { value: { _light: ref, _dark: ref } };
   }
 
   return result;

@@ -93,9 +93,18 @@ describe("palettesToSemanticTokens", () => {
     );
 
     expect(result).toHaveProperty("primary");
-    expect(result.primary["1"].value).toBe("{colors.brand.1}");
-    expect(result.primary["9"].value).toBe("{colors.brand.9}");
-    expect(result.primary.contrast.value).toBe("{colors.brand.contrast}");
+    expect(result.primary["1"].value).toEqual({
+      _light: "{colors.brand.1}",
+      _dark: "{colors.brand.1}",
+    });
+    expect(result.primary["9"].value).toEqual({
+      _light: "{colors.brand.9}",
+      _dark: "{colors.brand.9}",
+    });
+    expect(result.primary.contrast.value).toEqual({
+      _light: "{colors.brand.contrast}",
+      _dark: "{colors.brand.contrast}",
+    });
   });
 
   it("handles multiple palettes", () => {
