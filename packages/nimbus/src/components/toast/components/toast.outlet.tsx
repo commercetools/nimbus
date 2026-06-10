@@ -65,7 +65,11 @@ function subscribeToActivation(onStoreChange: () => void) {
  * @internal
  */
 export function ToastOutlet() {
-  const active = useSyncExternalStore(subscribeToActivation, isToastersActive);
+  const active = useSyncExternalStore(
+    subscribeToActivation,
+    isToastersActive,
+    () => false
+  );
 
   // Supplement zag-js hotkeys with numpad support.
   // Zag only matches `Digit*` codes; this listener handles `Numpad*` equivalents.
