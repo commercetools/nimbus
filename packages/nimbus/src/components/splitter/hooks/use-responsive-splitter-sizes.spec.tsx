@@ -139,6 +139,27 @@ describe("useResponsiveSplitterSizes", () => {
     expect(view.result.current.rootProps.size).toBe(20);
   });
 
+  it("supports object (container-width) notation for minSize/maxSize", () => {
+    const view = mountHook({
+      size: "50%",
+      minSize: { 0: 100, 768: 200 }, // px per band
+      maxSize: { 0: "60%", 768: "80%" }, // percent per band
+    });
+    fireResize(1000); // ≥ 768 band
+    expect(view.result.current.rootProps.minSize).toBe(20); // 200px / 1000
+    expect(view.result.current.rootProps.maxSize).toBe(80);
+    fireResize(640); // < 768 band
+    expect(view.result.current.rootProps.minSize).toBeCloseTo(15.625); // 100px / 640
+    expect(view.result.current.rootProps.maxSize).toBe(60);
+  });
+
+  it("measures the height axis for a vertical splitter", () => {
+    const view = mountHook({ orientation: "vertical", size: 300 }); // 300px
+    fireResize(1000, 600); // vertical → uses height 600 → 300/600 = 50%
+    expect(view.result.current.rootProps.size).toBe(50);
+    expect(view.result.current.rootProps.orientation).toBe("vertical");
+  });
+
   it("does not thrash the emitted size on sub-tolerance resize ticks", () => {
     const view = mountHook({ size: 320 });
     fireResize(1000);
