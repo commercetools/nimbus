@@ -3,8 +3,8 @@
 ### Requirement: Resolve a pixel/token/percent size config into root props
 
 The hook SHALL accept a `size` config for the aside expressed as a single value
-or a per-threshold map, plus an explicit `orientation` and `resolveAgainst`, and
-SHALL return a `rootProps` object containing `size`, `minSize`, `maxSize`,
+or a per-threshold map, plus an optional `orientation`, and SHALL return a
+`rootProps` object containing `size`, `minSize`, `maxSize`,
 `collapsedSize`, `onSizeChangeEnd`, `onCollapsedChange`, `ref`, and
 `orientation`, intended to be spread onto `Splitter.Root`. The forwarded
 `onCollapsedChange` lets the hook observe collapse so it can suppress
@@ -67,15 +67,14 @@ Pixel conversion SHALL always measure the splitter's own container. The
 
 ### Requirement: Resolve the active band against the container by min-width threshold
 
-The hook SHALL determine the active band using `resolveAgainst`, which is
-**required** and SHALL be `"container"` in this version. In `"container"` mode
-the hook SHALL observe the referenced `Splitter.Root` element with a
-`ResizeObserver` and select the band whose **min-width threshold** the element's
-measured size satisfies. Thresholds SHALL be expressed as pixel numbers or size
-tokens (never percentages). The active band SHALL be the largest threshold less
-than or equal to the measured size; the smallest configured entry SHALL also
-apply below its threshold. The hook SHALL re-resolve when the active band
-changes.
+The hook SHALL always resolve the active band against the splitter's own
+container (there is no resolution-axis option). It SHALL observe the referenced
+`Splitter.Root` element with a `ResizeObserver` and select the band whose
+**min-width threshold** the element's measured size satisfies. Thresholds SHALL
+be expressed as pixel numbers or size tokens (never percentages). The active
+band SHALL be the largest threshold less than or equal to the measured size; the
+smallest configured entry SHALL also apply below its threshold. The hook SHALL
+re-resolve when the active band changes.
 
 #### Scenario: Container width selects the band
 

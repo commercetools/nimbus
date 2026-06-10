@@ -35,13 +35,9 @@ pixel, and persistence concern out of the component.
   (`size`, and the `minSize` / `maxSize` / `collapsedSize` facade) is either a
   single value (applies at every width) **or** an object whose keys are
   container **min-width thresholds** — a `number` (px) or a size token — forming
-  a min-width cascade resolved against the splitter's **own** measured width
-  (not the viewport). The largest threshold `≤` the measured width wins; the
-  smallest entry also applies below it.
-- **Explicit resolution axis.** `resolveAgainst` is required and is `"container"`
-  in this version (resolved via `ResizeObserver`). The option exists explicitly
-  so a future `"viewport"` mode is purely additive and the container-width keys
-  never silently change meaning.
+  a min-width cascade resolved (via `ResizeObserver`) against the splitter's
+  **own** measured width — never the viewport. The largest threshold `≤` the
+  measured width wins; the smallest entry also applies below it.
 - **Pixel facade over the aside's constraints.** `minSize`, `maxSize`, and
   `collapsedSize` accept the same pixel/token/percent values, are translated to
   percentages the same way, and are forwarded via `rootProps`. The hook clamps
@@ -64,8 +60,8 @@ pixel, and persistence concern out of the component.
   `Splitter.Handle`.
 
 Explicitly **out of scope**: live per-tick (`onSizeChange`) control — control
-stays settle-only; a `resolveAgainst: "viewport"` mode (reserved, not shipped);
-any pixel code path inside the component itself.
+stays settle-only; viewport-relative resolution (the hook always measures the
+splitter's own container); any pixel code path inside the component itself.
 
 **Known dependency, tracked separately:** the component currently seeds its
 first paint at `50%` and derives `size`/`defaultSize` in a mount effect, so the

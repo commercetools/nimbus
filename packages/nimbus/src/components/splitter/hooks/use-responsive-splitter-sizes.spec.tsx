@@ -77,14 +77,12 @@ afterEach(() => {
 
 describe("useResponsiveSplitterSizes", () => {
   it("resolves a single percent value synchronously, before measurement", () => {
-    const view = renderHook(() =>
-      useResponsiveSplitterSizes({ resolveAgainst: "container", size: "30%" })
-    );
+    const view = renderHook(() => useResponsiveSplitterSizes({ size: "30%" }));
     expect(view.result.current.rootProps.size).toBe(30);
   });
 
   it("converts a pixel value to a percentage of the measured container", () => {
-    const view = mountHook({ resolveAgainst: "container", size: 320 });
+    const view = mountHook({ size: 320 });
     // No measurement yet → size omitted (component stays uncontrolled).
     expect(view.result.current.rootProps.size).toBeUndefined();
     fireResize(1000);
@@ -95,7 +93,6 @@ describe("useResponsiveSplitterSizes", () => {
 
   it("selects the active band by container width", () => {
     const view = mountHook({
-      resolveAgainst: "container",
       size: { 0: 320, 768: "30%" },
     });
     fireResize(640); // below 768 → 320px / 640 = 50%
@@ -106,7 +103,6 @@ describe("useResponsiveSplitterSizes", () => {
 
   it("forwards minSize/maxSize/collapsedSize as percentages and clamps size", () => {
     const view = mountHook({
-      resolveAgainst: "container",
       size: 100, // 100px
       minSize: 200, // 200px
       maxSize: 600, // 600px
@@ -121,7 +117,7 @@ describe("useResponsiveSplitterSizes", () => {
   });
 
   it("does not thrash the emitted size on sub-tolerance resize ticks", () => {
-    const view = mountHook({ resolveAgainst: "container", size: 320 });
+    const view = mountHook({ size: 320 });
     fireResize(1000);
     const first = view.result.current.rootProps.size;
     expect(first).toBe(32);
@@ -136,7 +132,6 @@ describe("useResponsiveSplitterSizes", () => {
   it("persists a settled drag in pixels and restores it across a remount + resize", () => {
     const storage = memoryStorage();
     const view = mountHook({
-      resolveAgainst: "container",
       size: 320,
       persistKey: "k",
       storage,
@@ -149,7 +144,6 @@ describe("useResponsiveSplitterSizes", () => {
 
     // Remount into an 800px container — the 280px pin re-converts to 35%.
     const remount = mountHook({
-      resolveAgainst: "container",
       size: 320,
       persistKey: "k",
       storage,
@@ -161,7 +155,6 @@ describe("useResponsiveSplitterSizes", () => {
   it("does not persist a collapse-driven settle", () => {
     const storage = memoryStorage();
     const view = mountHook({
-      resolveAgainst: "container",
       size: 320,
       collapsedSize: 0,
       persistKey: "k",
@@ -182,7 +175,6 @@ describe("useResponsiveSplitterSizes", () => {
   it("calls the optional onCollapsedChange passthrough", () => {
     const onCollapsedChange = vi.fn();
     const view = mountHook({
-      resolveAgainst: "container",
       size: "30%",
       onCollapsedChange,
     });
@@ -192,7 +184,7 @@ describe("useResponsiveSplitterSizes", () => {
 
   it("degrades without ResizeObserver: percent config still resolves", () => {
     globalThis.ResizeObserver = undefined as unknown as typeof ResizeObserver;
-    const view = mountHook({ resolveAgainst: "container", size: "40%" });
+    const view = mountHook({ size: "40%" });
     expect(view.result.current.rootProps.size).toBe(40);
   });
 
@@ -204,7 +196,6 @@ describe("useResponsiveSplitterSizes", () => {
       },
     };
     const view = mountHook({
-      resolveAgainst: "container",
       size: 320,
       persistKey: "k",
       storage,

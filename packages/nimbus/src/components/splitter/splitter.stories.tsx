@@ -1084,7 +1084,6 @@ export const DisableDoubleClick: Story = {
 const ResponsiveSizesHookComponent = () => {
   const { rootProps } = useResponsiveSplitterSizes({
     orientation: "horizontal",
-    resolveAgainst: "container",
     size: 320,
     minSize: 160,
     maxSize: 600,
