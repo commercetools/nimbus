@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ReactNode } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Box, Button, Heading, ScrollArea, Stack } from "@commercetools/nimbus";
 import {
   userEvent,
@@ -1241,4 +1241,88 @@ export const NestedResponsiveSplitter: Story = {
       expect(Number(inner.getAttribute("aria-valuenow"))).toBe(40);
     });
   },
+};
+
+// ============================================================
+// useResponsiveSplitterSizes — PERSISTENCE to real localStorage.
+// Manual demo (no play assertions): pass `persistKey` and the hook writes the
+// user's settled size to localStorage (pixel-first, versioned) via its default
+// adapter. Drag + release, then RELOAD the page — the size is restored. The
+// readout below polls localStorage so you can watch the stored value update
+// live as you drag. Use "Reset stored size" to clear the key and start over.
+// ============================================================
+
+const PERSIST_DEMO_KEY = "nimbus:splitter-persistence-demo";
+
+const PersistedResponsiveComponent = () => {
+  const { rootProps } = useResponsiveSplitterSizes({
+    orientation: "horizontal",
+    persistKey: PERSIST_DEMO_KEY,
+    size: 320, // 320px sidebar until the user drags and a value is persisted
+    minSize: 160,
+    maxSize: 640,
+  });
+
+  // Mirror the persisted value so the reload-and-restore behaviour is visible.
+  const [stored, setStored] = useState<string | null>(() =>
+    typeof window === "undefined"
+      ? null
+      : window.localStorage.getItem(PERSIST_DEMO_KEY)
+  );
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setStored(window.localStorage.getItem(PERSIST_DEMO_KEY));
+    }, 250);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const resetStored = () => {
+    window.localStorage.removeItem(PERSIST_DEMO_KEY);
+    window.location.reload();
+  };
+
+  return (
+    <Stack gap="400" p="400">
+      <Box>
+        <Heading size="sm" mb="100">
+          Persisted to localStorage
+        </Heading>
+        <Box mb="200">
+          Drag the divider and release, then <strong>reload the page</strong> —
+          the size is restored. The settled width is stored in pixels and
+          re-converted to a percentage for whatever width the container has on
+          the next load.
+        </Box>
+        <Box
+          fontFamily="mono"
+          fontSize="350"
+          p="200"
+          mb="200"
+          bg="neutral.2"
+          borderRadius="200"
+          data-testid="stored-value"
+        >
+          localStorage["{PERSIST_DEMO_KEY}"] = {stored ?? "(empty)"}
+        </Box>
+        <Button variant="outline" size="xs" onPress={resetStored}>
+          Reset stored size
+        </Button>
+      </Box>
+      <Box w="100%" h="480px" borderWidth="25" borderColor="neutral.6">
+        <Splitter.Root {...rootProps} collapsible>
+          <Splitter.Aside>
+            <DemoPane bg="indigo.3" title="Sidebar (persisted)" />
+          </Splitter.Aside>
+          <Splitter.Handle />
+          <Splitter.Main>
+            <DemoPane bg="amber.3" title="Main (remainder)" />
+          </Splitter.Main>
+        </Splitter.Root>
+      </Box>
+    </Stack>
+  );
+};
+
+export const PersistedResponsiveSizes: Story = {
+  render: () => <PersistedResponsiveComponent />,
 };
