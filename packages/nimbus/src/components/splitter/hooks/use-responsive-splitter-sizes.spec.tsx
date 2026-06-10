@@ -1,7 +1,22 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { act, renderHook } from "@testing-library/react";
+import { act, render, renderHook } from "@testing-library/react";
 import { useResponsiveSplitterSizes } from "./use-responsive-splitter-sizes";
-import type { SplitterSizesStorage } from "../splitter.types";
+import type {
+  SplitterSizesStorage,
+  UseResponsiveSplitterSizesOptions,
+} from "../splitter.types";
+
+/** Record `rootProps.size` on every render so the FIRST render can be asserted. */
+const recordSizes = (options: UseResponsiveSplitterSizesOptions) => {
+  const sizes: Array<number | undefined> = [];
+  const Probe = () => {
+    const { rootProps } = useResponsiveSplitterSizes(options);
+    sizes.push(rootProps.size);
+    return null;
+  };
+  render(<Probe />);
+  return sizes;
+};
 
 // --- Controllable ResizeObserver -------------------------------------------
 type ROCallback = (entries: Array<{ contentRect: DOMRectReadOnly }>) => void;
@@ -79,6 +94,14 @@ describe("useResponsiveSplitterSizes", () => {
   it("resolves a single percent value synchronously, before measurement", () => {
     const view = renderHook(() => useResponsiveSplitterSizes({ size: "30%" }));
     expect(view.result.current.rootProps.size).toBe(30);
+  });
+
+  it("emits a synchronous percent size on the very first render (no undefined frame)", () => {
+    // A `%` config needs no measurement, so the controlled `size` must be
+    // present on the first render — otherwise the component shows its
+    // uncontrolled default for a frame (the first-paint flash).
+    const sizes = recordSizes({ size: "30%" });
+    expect(sizes[0]).toBe(30);
   });
 
   it("converts a pixel value to a percentage of the measured container", () => {

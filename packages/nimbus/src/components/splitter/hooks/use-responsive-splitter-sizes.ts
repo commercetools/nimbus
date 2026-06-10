@@ -220,6 +220,14 @@ export const useResponsiveSplitterSizes = (
     latestRef.current.onCollapsedChange?.(collapsed);
   }, []);
 
+  // Prefer the gated `emittedSize` (stable across sub-tolerance resize ticks),
+  // but fall back to the freshly-resolved `targetSize` before the gate's effect
+  // first runs. This is what makes a synchronously-resolvable config (e.g. a
+  // `%` value, which needs no measurement) drive the controlled `size` on the
+  // very first render — so the component honors it on first paint with no flash,
+  // rather than briefly showing its uncontrolled default.
+  const resolvedSize = emittedSize ?? targetSize ?? undefined;
+
   const rootProps = useMemo<ResponsiveSplitterRootProps>(() => {
     const props: ResponsiveSplitterRootProps = {
       ref,
@@ -227,7 +235,7 @@ export const useResponsiveSplitterSizes = (
       onSizeChangeEnd: handleSizeChangeEnd,
       onCollapsedChange: handleCollapsedChange,
     };
-    if (emittedSize !== undefined) props.size = emittedSize;
+    if (resolvedSize !== undefined) props.size = resolvedSize;
     if (minPct !== undefined) props.minSize = minPct;
     if (maxPct !== undefined) props.maxSize = maxPct;
     if (collapsedPct !== undefined) props.collapsedSize = collapsedPct;
@@ -237,7 +245,7 @@ export const useResponsiveSplitterSizes = (
     orientation,
     handleSizeChangeEnd,
     handleCollapsedChange,
-    emittedSize,
+    resolvedSize,
     minPct,
     maxPct,
     collapsedPct,
