@@ -11,3 +11,9 @@ Size is uncontrolled by default (`defaultSize`) or controllable in place via the
 `size` prop for responsive, per-breakpoint layouts; a single number round-trips
 to your own storage via `onSizeChangeEnd`. Nest splitters for three or more
 regions. See the docs for the full API.
+
+Also ships `useResponsiveSplitterSizes`, a companion hook for consumers who want
+to express pane sizes in pixels, size tokens, or per-container-width breakpoints
+instead of percentages. It measures the container, translates your config into
+the percentage `Splitter.Root` consumes, clamps to your `minSize` / `maxSize`,
+and can persist the user's settled size across reloads.
