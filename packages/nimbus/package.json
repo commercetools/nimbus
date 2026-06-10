@@ -52,7 +52,10 @@
       "default": "./dist/plugins/stub.cjs"
     }
   },
-  "files": ["dist", "package.json"],
+  "files": [
+    "dist",
+    "package.json"
+  ],
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -61,7 +64,9 @@
     "type": "git",
     "url": "https://github.com/commercetools/nimbus.git"
   },
-  "sideEffects": ["*.css"],
+  "sideEffects": [
+    "*.css"
+  ],
   "typesVersions": {
     "*": {
       "plugins/webpack": ["./dist/plugins/webpack.d.ts"],
@@ -92,6 +97,7 @@
     "@chakra-ui/react": "catalog:react",
     "@commercetools/nimbus-design-token-ts-plugin": "workspace:^",
     "@commercetools/nimbus-icons": "workspace:^",
+    "@commercetools/nimbus-theme-generator": "workspace:*",
     "@commercetools/nimbus-tokens": "workspace:^",
     "@internationalized/date": "catalog:react",
     "@react-aria/optimize-locales-plugin": "catalog:react",
