@@ -18,6 +18,8 @@ export default defineConfig(async () => {
         include: ["src/**/*.spec.{ts,tsx}"],
         exclude: [
           "src/**/*.stories.{ts,tsx}",
+          // SSR tests run in their own project (environment: node, not jsdom)
+          "src/**/*.ssr.spec.{ts,tsx}",
           // Files using vi.mock() must run isolated to avoid polluting
           // the shared module cache (see vitest.unit-isolated.config.ts)
           "src/components/toast/toast.spec.tsx",
