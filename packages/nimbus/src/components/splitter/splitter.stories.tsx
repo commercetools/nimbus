@@ -1127,3 +1127,53 @@ export const ResponsivePixelSizesHook: Story = {
     });
   },
 };
+
+// ============================================================
+// useResponsiveSplitterSizes — responsive by CONTAINER width (object notation).
+// The same config resolves against each splitter's OWN width (not the viewport):
+// a 640px container is below the 768 threshold (40%), a 1000px container is at
+// or above it (320px → 32%). Demonstrates min-width threshold maps.
+// ============================================================
+
+const ResponsiveBandDemo = ({ width }: { width: number }) => {
+  const { rootProps } = useResponsiveSplitterSizes({
+    orientation: "horizontal",
+    size: { 0: "40%", 768: 320 },
+  });
+  return (
+    <Box w={`${width}px`} h="240px" borderWidth="25" borderColor="neutral.6">
+      <Splitter.Root {...rootProps}>
+        <Splitter.Aside>
+          <DemoPane bg="indigo.3" title={`Aside @ ${width}px`} />
+        </Splitter.Aside>
+        <Splitter.Handle />
+        <Splitter.Main>
+          <DemoPane bg="amber.3" title="Main" />
+        </Splitter.Main>
+      </Splitter.Root>
+    </Box>
+  );
+};
+
+export const ResponsiveByContainerWidth: Story = {
+  render: () => (
+    <Stack gap="600">
+      <ResponsiveBandDemo width={640} />
+      <ResponsiveBandDemo width={1000} />
+    </Stack>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const handles = await canvas.findAllByRole("separator");
+    expect(handles).toHaveLength(2);
+
+    // 640px container is below the 768 threshold → the base band, 40%.
+    await waitFor(() => {
+      expect(Number(handles[0].getAttribute("aria-valuenow"))).toBe(40);
+    });
+    // 1000px container is at/above 768 → 320px → 32%.
+    await waitFor(() => {
+      expect(Number(handles[1].getAttribute("aria-valuenow"))).toBe(32);
+    });
+  },
+};
