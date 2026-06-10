@@ -11,6 +11,7 @@ import {
   fireEvent,
 } from "storybook/test";
 import { Splitter } from "./splitter";
+import { useResponsiveSplitterSizes } from "./hooks/use-responsive-splitter-sizes";
 
 /**
  * Pane content wrapped in a ScrollArea so overflow stays inside the pane and
@@ -805,24 +806,47 @@ export const ControlledSize: Story = {
 
 // ============================================================
 // Resize is locked while the aside is collapsed — drag + arrow/Home/End do
-// nothing and the aside stays at collapsedSize. It's reopened via Enter,
-// double-click, or the controlled prop, never by resizing.
+// nothing and the aside stays at collapsedSize. A visible "Collapse / expand
+// nav" button drives the collapse (controlled) so the lock is verifiable by
+// hand; it's reopened via that button, Enter, double-click, or the prop —
+// never by resizing.
 // ============================================================
 
-export const ResizeLockedWhileCollapsed: Story = {
-  args: {
-    defaultSize: 30,
-    minSize: 15,
-    maxSize: 80,
-    collapsible: true,
-    collapsedSize: 6,
-    onSizeChange: fn(),
-    onSizeChangeEnd: fn(),
-    onCollapsedChange: fn(),
-  },
-  render: (args) => (
-    <Box h="600px">
-      <Splitter.Root {...args}>
+const ResizeLockedWhileCollapsedComponent = ({
+  onSizeChange,
+  onSizeChangeEnd,
+  onCollapsedChange,
+}: {
+  onSizeChange?: (size: number) => void;
+  onSizeChangeEnd?: (size: number) => void;
+  onCollapsedChange?: (collapsed: boolean) => void;
+}) => {
+  const [collapsed, setCollapsed] = useState(false);
+  // The button and the splitter's own toggle (Enter / double-click) both route
+  // through here, so the visible control and the keyboard path stay in sync.
+  const updateCollapsed = (next: boolean) => {
+    setCollapsed(next);
+    onCollapsedChange?.(next);
+  };
+  return (
+    <Stack gap="400" h="600px">
+      <Button
+        onPress={() => updateCollapsed(!collapsed)}
+        data-testid="toggle-btn"
+      >
+        {collapsed ? "Expand nav" : "Collapse nav"}
+      </Button>
+      <Splitter.Root
+        defaultSize={30}
+        minSize={15}
+        maxSize={80}
+        collapsible
+        collapsedSize={6}
+        collapsed={collapsed}
+        onCollapsedChange={updateCollapsed}
+        onSizeChange={onSizeChange}
+        onSizeChangeEnd={onSizeChangeEnd}
+      >
         <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Nav (collapsible)" />
         </Splitter.Aside>
@@ -831,11 +855,27 @@ export const ResizeLockedWhileCollapsed: Story = {
           <DemoPane bg="amber.3" title="Main" />
         </Splitter.Main>
       </Splitter.Root>
-    </Box>
+    </Stack>
+  );
+};
+
+export const ResizeLockedWhileCollapsed: Story = {
+  args: {
+    onSizeChange: fn(),
+    onSizeChangeEnd: fn(),
+    onCollapsedChange: fn(),
+  },
+  render: (args) => (
+    <ResizeLockedWhileCollapsedComponent
+      onSizeChange={args.onSizeChange}
+      onSizeChangeEnd={args.onSizeChangeEnd}
+      onCollapsedChange={args.onCollapsedChange}
+    />
   ),
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     const handle = await canvas.findByRole("separator");
+    const toggle = canvas.getByTestId("toggle-btn");
 
     // The fn() mocks are typed as the bare callback signatures on args, so cast
     // to the mock type to read call state.
@@ -847,9 +887,8 @@ export const ResizeLockedWhileCollapsed: Story = {
       typeof fn
     >;
 
-    // Collapse the aside to its rail (collapsedSize 6) via Enter.
-    handle.focus();
-    await userEvent.keyboard("{Enter}");
+    // Collapse the aside to its rail (collapsedSize 6) via the visible button.
+    await userEvent.click(toggle);
     await waitFor(() => {
       expect(onCollapsedChange).toHaveBeenCalledWith(true);
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(6);
@@ -864,6 +903,7 @@ export const ResizeLockedWhileCollapsed: Story = {
     onCollapsedChange.mockClear();
 
     // Keyboard resize is locked: arrows / Home / End do nothing while collapsed.
+    handle.focus();
     await userEvent.keyboard("{ArrowRight}{ArrowRight}{End}{Home}");
 
     // Pointer drag is locked too (same fireEvent technique as PointerDragResize).
@@ -891,8 +931,8 @@ export const ResizeLockedWhileCollapsed: Story = {
     expect(onSizeChangeEnd).not.toHaveBeenCalled();
     expect(onCollapsedChange).not.toHaveBeenCalled();
 
-    // Enter still expands — the lock blocks resizing, not the collapse toggle.
-    await userEvent.keyboard("{Enter}");
+    // The button reopens it — the lock blocks resizing, not the collapse toggle.
+    await userEvent.click(toggle);
     await waitFor(() => {
       expect(onCollapsedChange).toHaveBeenCalledWith(false);
       expect(Number(handle.getAttribute("aria-valuenow"))).toBeGreaterThan(6);
@@ -1030,6 +1070,61 @@ export const DisableDoubleClick: Story = {
     await userEvent.keyboard("{Home}");
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(10);
+    });
+  },
+};
+
+// ============================================================
+// useResponsiveSplitterSizes — pixel/token sizes via the companion hook.
+// The aside is configured as 320px; the hook measures the container and feeds
+// the equivalent percentage to the (percentage-native) component. In a 1000px
+// container that is 32%.
+// ============================================================
+
+const ResponsiveSizesHookComponent = () => {
+  const { rootProps } = useResponsiveSplitterSizes({
+    orientation: "horizontal",
+    resolveAgainst: "container",
+    size: 320,
+    minSize: 160,
+    maxSize: 600,
+  });
+  return (
+    <Box w="1000px" h="600px">
+      <Splitter.Root {...rootProps} collapsible>
+        <Splitter.Aside>
+          <DemoPane bg="indigo.3" title="Sidebar (320px)" />
+        </Splitter.Aside>
+        <Splitter.Handle />
+        <Splitter.Main>
+          <DemoPane bg="amber.3" title="Main (remainder)" />
+        </Splitter.Main>
+      </Splitter.Root>
+    </Box>
+  );
+};
+
+export const ResponsivePixelSizesHook: Story = {
+  render: () => <ResponsiveSizesHookComponent />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+
+    // 320px in a 1000px container → 32%.
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(32);
+    });
+
+    // A keyboard resize settles into the hook's controlled value (no snap-back).
+    handle.focus();
+    await userEvent.keyboard("{ArrowRight}");
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBeGreaterThan(32);
+    });
+    const settled = Number(handle.getAttribute("aria-valuenow"));
+    await userEvent.keyboard("{Tab}");
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(settled);
     });
   },
 };

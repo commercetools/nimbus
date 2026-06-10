@@ -5,8 +5,10 @@
 The hook SHALL accept a `size` config for the aside expressed as a single value
 or a per-threshold map, plus an explicit `orientation` and `resolveAgainst`, and
 SHALL return a `rootProps` object containing `size`, `minSize`, `maxSize`,
-`collapsedSize`, `onSizeChangeEnd`, `ref`, and `orientation`, intended to be
-spread onto `Splitter.Root`. A size value SHALL be one of: a `number`
+`collapsedSize`, `onSizeChangeEnd`, `onCollapsedChange`, `ref`, and
+`orientation`, intended to be spread onto `Splitter.Root`. The forwarded
+`onCollapsedChange` lets the hook observe collapse so it can suppress
+persistence while collapsed. A size value SHALL be one of: a `number`
 (interpreted as **pixels**), a size **token** string (resolving to pixels), or a
 `` `${number}%` `` string (a percentage passed through untranslated). The
 returned `rootProps.size` SHALL always be a valid controlled value: a single
