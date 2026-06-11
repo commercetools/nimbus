@@ -15,12 +15,19 @@ import { useRegion } from "./use-region";
 /**
  * `Region` is a headless, component-agnostic primitive for named regions. Place
  * a target with `<Region name="…" />` to mark where a region renders, then fill
- * it from anywhere with `useRegion(name)`. The scope (`Region.Provider`) is
- * mounted ambiently by `NimbusProvider`, so these stories never wrap one
- * themselves. The target is layout-transparent (`display: contents`), so
- * projected content lays out as a direct child of the target's parent. The last
- * story composes it with a `Splitter` to build a shell-owned, remotely-controlled
- * side panel without the Splitter knowing anything about regions.
+ * it from anywhere with `useRegion(name)`. The target is layout-transparent
+ * (`display: contents`), so projected content lays out as a direct child of the
+ * target's parent. The last story composes it with a `Splitter` to build a
+ * shell-owned, remotely-controlled side panel without the Splitter knowing
+ * anything about regions.
+ *
+ * In a real Nimbus app the scope is mounted ambiently by `NimbusProvider`, so you
+ * never write `Region.Provider`. These stories wrap an explicit `Region.Provider`
+ * instead: under the built-bundle test runner the decorator's `NimbusProvider`
+ * (from the package bundle) and these source-imported components are different
+ * module instances with different context identities, so the stories provide
+ * their own source-side scope. The ambient path is covered by the
+ * `NimbusProvider` unit test.
  */
 const meta: Meta<typeof Region> = {
   title: "Components/Region",
@@ -46,15 +53,17 @@ const Projector = () => {
 
 export const ProjectIntoNamedRegion: Story = {
   render: () => (
-    <Stack direction="row" gap="400">
-      <Box flexGrow="1" p="200" bg="amber.3">
-        <Box mb="200">Content area (authors the projected node)</Box>
-        <Projector />
-      </Box>
-      <Box id="sidebar-host" w="240px" minH="160px" bg="neutral.3" p="200">
-        <Region name="demo-sidebar" />
-      </Box>
-    </Stack>
+    <Region.Provider>
+      <Stack direction="row" gap="400">
+        <Box flexGrow="1" p="200" bg="amber.3">
+          <Box mb="200">Content area (authors the projected node)</Box>
+          <Projector />
+        </Box>
+        <Box id="sidebar-host" w="240px" minH="160px" bg="neutral.3" p="200">
+          <Region name="demo-sidebar" />
+        </Box>
+      </Stack>
+    </Region.Provider>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -89,7 +98,11 @@ const ToggleDemo = () => {
 };
 
 export const NullBeforeTargetMounts: Story = {
-  render: () => <ToggleDemo />,
+  render: () => (
+    <Region.Provider>
+      <ToggleDemo />
+    </Region.Provider>
+  ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     await step("Projection renders nothing before the target mounts", () => {
@@ -171,27 +184,29 @@ const ShellSidePanel = () => {
   );
 
   return (
-    <Box h="360px" width="100%" borderWidth="25" borderColor="neutral.6">
-      <Splitter.Root
-        collapsible
-        collapsed={!open}
-        onCollapsedChange={(c) => setOpen(!c)}
-        defaultSize={30}
-        minSize={20}
-        collapsedSize={0}
-      >
-        <Splitter.Main>
-          <Box p="400" bg="amber.3" h="100%">
-            <Text>Main content</Text>
-            <SidePanelConsumer />
-          </Box>
-        </Splitter.Main>
-        <Splitter.Handle />
-        <Splitter.Aside id="shell-aside">
-          <Region name="app-side-panel" value={controller} />
-        </Splitter.Aside>
-      </Splitter.Root>
-    </Box>
+    <Region.Provider>
+      <Box h="360px" width="100%" borderWidth="25" borderColor="neutral.6">
+        <Splitter.Root
+          collapsible
+          collapsed={!open}
+          onCollapsedChange={(c) => setOpen(!c)}
+          defaultSize={30}
+          minSize={20}
+          collapsedSize={0}
+        >
+          <Splitter.Main>
+            <Box p="400" bg="amber.3" h="100%">
+              <Text>Main content</Text>
+              <SidePanelConsumer />
+            </Box>
+          </Splitter.Main>
+          <Splitter.Handle />
+          <Splitter.Aside id="shell-aside">
+            <Region name="app-side-panel" value={controller} />
+          </Splitter.Aside>
+        </Splitter.Root>
+      </Box>
+    </Region.Provider>
   );
 };
 
