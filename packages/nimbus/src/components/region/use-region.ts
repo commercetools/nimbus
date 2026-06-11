@@ -13,6 +13,10 @@ EmptyRegion.displayName = "Region.Portal(none)";
  * `value` is `null` until a target with that name mounts and publishes one, so
  * it is safe to call before the target exists.
  *
+ * Pass `undefined` (or omit `name`) to get a no-op portal that renders nothing —
+ * useful for conditional projection without violating the rules of hooks:
+ * `useRegion(isEnabled ? "sidebar" : undefined)`.
+ *
  * @example
  * const { Region, value } = useRegion<PanelControls>("my-sidebar");
  * value?.expand();

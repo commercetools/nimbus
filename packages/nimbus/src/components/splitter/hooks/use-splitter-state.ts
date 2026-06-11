@@ -6,6 +6,8 @@ import type {
   SplitterPaneRole,
 } from "../splitter.types";
 
+declare const process: { env: Record<string, string | undefined> } | undefined;
+
 const COLLAPSE_TOLERANCE = 0.001;
 
 type UseSplitterStateOptions = {

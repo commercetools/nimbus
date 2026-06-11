@@ -1,8 +1,11 @@
 import { createContext } from "react";
 import type { RegionRecord, RegionRegistry } from "./region.types";
 
+declare const process: { env: Record<string, string | undefined> } | undefined;
+
 /** Whether to emit single-occupancy collision warnings (dev only). */
-const isDev = process.env.NODE_ENV !== "production";
+const isDev =
+  typeof process !== "undefined" && process.env.NODE_ENV !== "production";
 
 /** Create a fresh, stable {@link RegionRegistry}. */
 export const createRegionRegistry = (): RegionRegistry => {

@@ -120,6 +120,65 @@ export const NullBeforeTargetMounts: Story = {
   },
 };
 
+/** Conditionally projects into a region by toggling the name to `undefined`. */
+const ConditionalDemo = () => {
+  const [enabled, setEnabled] = useState(false);
+  const { Region: Slot } = useRegion(enabled ? "conditional-slot" : undefined);
+  return (
+    <Stack direction="row" gap="400">
+      <Stack gap="200" flexGrow="1">
+        <Button
+          data-testid="toggle-enabled"
+          onPress={() => setEnabled((e) => !e)}
+        >
+          {enabled ? "Disable projection" : "Enable projection"}
+        </Button>
+        <Slot>
+          <Box data-testid="conditional-content" p="200" bg="purple.3">
+            Conditionally projected content.
+          </Box>
+        </Slot>
+      </Stack>
+      <Box id="conditional-host" w="240px" minH="120px" bg="neutral.3" p="200">
+        <Region name="conditional-slot" />
+      </Box>
+    </Stack>
+  );
+};
+
+export const ConditionalProjection: Story = {
+  render: () => (
+    <Region.Provider>
+      <ConditionalDemo />
+    </Region.Provider>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const host = canvasElement.querySelector<HTMLElement>("#conditional-host")!;
+    await step("Content is not projected when name is undefined", () => {
+      expect(host.contains(canvas.queryByTestId("conditional-content"))).toBe(
+        false
+      );
+    });
+    await step("Content projects after enabling", async () => {
+      await userEvent.click(canvas.getByTestId("toggle-enabled"));
+      await waitFor(() => {
+        expect(host.contains(canvas.getByTestId("conditional-content"))).toBe(
+          true
+        );
+      });
+    });
+    await step("Content disappears after disabling", async () => {
+      await userEvent.click(canvas.getByTestId("toggle-enabled"));
+      await waitFor(() => {
+        expect(host.contains(canvas.queryByTestId("conditional-content"))).toBe(
+          false
+        );
+      });
+    });
+  },
+};
+
 // ============================================================
 // Composition: a shell-owned, remotely-controlled side panel
 // (Splitter + Region — the Splitter has no knowledge of regions)
@@ -159,7 +218,13 @@ const SidePanelConsumer = () => {
         {/* ScrollArea contains overflow so a collapsed (0-width) pane isn't a
             bare scrollable region — matches the Splitter's own pane pattern. */}
         <ScrollArea h="100%" w="100%">
-          <Box data-testid="panel-content" p="300" bg="teal.3" minH="100%">
+          <Box
+            data-testid="panel-content"
+            p="300"
+            bg="teal.3"
+            minH="100%"
+            tabIndex={0}
+          >
             <Text>Agent panel — authored in main, painted in the aside.</Text>
           </Box>
         </ScrollArea>

@@ -1,6 +1,8 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { Key, ItemDropTarget } from "react-aria-components";
 
+declare const process: { env: Record<string, string | undefined> } | undefined;
+
 type ListData<T> = {
   insertBefore: (key: Key, ...items: T[]) => void;
   insertAfter: (key: Key, ...items: T[]) => void;

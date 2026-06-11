@@ -187,6 +187,14 @@ targets during server rendering and `createPortal` is client-only. A region
 therefore resolves to nothing on the server and hydrates on the client. Author
 content unconditionally and let the portal render it once the target mounts.
 
+## Nested providers share one namespace
+
+`Region.Provider` reuses an ancestor's registry when nested — it does not create
+an isolated scope. Two targets with the same name collide even if they live under
+different `Region.Provider` wrappers. If you need logical isolation between
+subsystems, use a naming convention (e.g. `"app-shell:sidebar"` vs
+`"admin:sidebar"`).
+
 ## When not to use
 
 - You own both the content and its location and they're co-located — render it
