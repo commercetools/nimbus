@@ -91,7 +91,9 @@ export const Default: Story = {
     await expect(handle).toHaveAttribute("aria-orientation", "horizontal");
     await expect(handle).toHaveAttribute("aria-valuemin", "0");
     await expect(handle).toHaveAttribute("aria-valuemax", "100");
-    await expect(handle.getAttribute("aria-valuenow")).toBe("30");
+    await waitFor(() => {
+      expect(handle).toHaveAttribute("aria-valuenow", "30");
+    });
     await expect(handle).toHaveAttribute("aria-valuetext", "30%");
   },
 };
@@ -541,7 +543,11 @@ export const FloatPrecision: Story = {
     const handle = await canvas.findByRole("separator");
 
     // aria-valuenow rounds for AT, but the applied layout keeps full precision.
-    await expect(handle).toHaveAttribute("aria-valuenow", "31");
+    // waitFor: aria-valuenow depends on pane registration (useEffect), which may
+    // not have run by the time findByRole returns the handle element.
+    await waitFor(() => {
+      expect(handle).toHaveAttribute("aria-valuenow", "31");
+    });
     const ariaControls = handle.getAttribute("aria-controls");
     const asidePane = canvasElement.querySelector<HTMLElement>(
       `#${ariaControls!}`

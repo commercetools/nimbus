@@ -72,8 +72,12 @@ export const SplitterRoot = ({
   // double-invoke, staggered child mounts) is normal and must not warn.
   const paneCount = contextValue.paneOrder.length;
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
-    if (paneCount > 0 && paneCount !== 2) {
+    if (
+      typeof process !== "undefined" &&
+      process.env.NODE_ENV !== "production" &&
+      paneCount > 0 &&
+      paneCount !== 2
+    ) {
       console.warn(
         `[Splitter] Expected one <Splitter.Aside> and one <Splitter.Main>, got ${paneCount} pane(s). The Splitter primitive is 2-pane; nest a second Splitter inside a pane for 3+ regions.`
       );

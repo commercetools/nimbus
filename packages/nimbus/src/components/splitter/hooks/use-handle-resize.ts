@@ -1,5 +1,5 @@
 import { useCallback, useRef } from "react";
-import type { RefObject } from "react";
+import type { HTMLAttributes, RefObject } from "react";
 import { useMove } from "react-aria";
 import { useSplitterContext } from "./use-splitter-context";
 import { clampedResize } from "../utils";
@@ -95,5 +95,8 @@ export const useHandleResize = ({
     },
   });
 
-  return { moveProps, applyDelta };
+  return { moveProps, applyDelta } as {
+    moveProps: HTMLAttributes<HTMLElement>;
+    applyDelta: (delta: number, commit: boolean) => void;
+  };
 };

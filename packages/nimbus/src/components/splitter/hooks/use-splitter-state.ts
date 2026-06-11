@@ -236,7 +236,8 @@ export const useSplitterState = (
 
   // Dev-time guidance on controlled-`size` misuse. Fires at most once.
   useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
+    if (typeof process === "undefined" || process.env.NODE_ENV === "production")
+      return;
     if (didWarnControlledSizeRef.current || !isSizeControlled) return;
     if (defaultSize !== undefined) {
       didWarnControlledSizeRef.current = true;

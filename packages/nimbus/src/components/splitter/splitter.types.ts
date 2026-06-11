@@ -259,10 +259,9 @@ export type SplitterMainProps = OmitInternalProps<SplitterPaneSlotProps> & {
  * Props for `<Splitter.Handle>` — the interactive separator between the aside
  * and main panes. The handle takes no per-handle *behaviour* configuration:
  * resize and collapse behaviour is configured on `<Splitter.Root>`
- * (`keyboardStep`, `isDoubleClickDisabled`, `isDisabled`). It still accepts
- * standard DOM and style props via the slot — notably an `id` (e.g. a persistent
- * id for analytics) and `aria-label` / `aria-labelledby` to override the
- * localized default ("Resize panes").
+ * (`keyboardStep`, `isDoubleClickDisabled`, `isDisabled`). It accepts standard
+ * DOM attributes (`id`, `className`, `data-*`) via the slot, and `aria-label` /
+ * `aria-labelledby` to override the localized default ("Resize panes").
  */
 export type SplitterHandleProps = OmitInternalProps<SplitterHandleSlotProps> & {
   /** Accessible label override; defaults to a localized "Resize panes". */

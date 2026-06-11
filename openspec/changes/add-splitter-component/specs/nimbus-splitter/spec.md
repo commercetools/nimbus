@@ -317,11 +317,12 @@ The `Splitter.Root` SHALL accept `orientation: "horizontal" | "vertical"`
 - **AND** drag SHALL respond to `deltaY`
 - **AND** ArrowUp / ArrowDown SHALL be the active keys
 
-### Requirement: Anonymous Handle
+### Requirement: Behaviour-anonymous Handle
 
-`Splitter.Handle` SHALL NOT accept an `id` prop or any per-handle configuration
-props. Behaviour is configured on `Splitter.Root` (`keyboardStep`,
-`isDoubleClickDisabled`, default `aria-label`).
+`Splitter.Handle` SHALL NOT accept per-handle *behaviour* configuration props
+(e.g. `keyboardStep`, `collapsible`). All behaviour is configured on
+`Splitter.Root`. The handle still accepts standard DOM attributes (`id`,
+`className`, `data-*`, etc.) and `aria-label` / `aria-labelledby` overrides.
 
 #### Scenario: Handle resolves its panes from sibling DOM order
 
@@ -330,12 +331,12 @@ props. Behaviour is configured on `Splitter.Root` (`keyboardStep`,
   order
 - **AND** SHALL derive `aria-controls` from the leading pane's DOM id
 
-#### Scenario: Per-handle config is rejected at the type level
+#### Scenario: Per-handle behavioural config is rejected at the type level
 
-- **WHEN** consumer attempts `<Splitter.Handle id="…">` or
-  `<Splitter.Handle keyboardStep={…}>`
+- **WHEN** consumer attempts `<Splitter.Handle keyboardStep={…}>` or any
+  behavioural prop that belongs on `Splitter.Root`
 - **THEN** TypeScript SHALL emit a compile error (`Handle` props include only
-  standard HTML/style props plus `aria-label` overrides)
+  standard HTML/style/DOM props plus `aria-label` overrides)
 
 ### Requirement: Nesting for layouts with more than two regions
 
