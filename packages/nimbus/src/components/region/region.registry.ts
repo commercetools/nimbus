@@ -1,21 +1,39 @@
 import { createContext } from "react";
-import type { RegionRegistry } from "./region.types";
+import type { RegionRecord, RegionRegistry } from "./region.types";
 
 /** Create a fresh, stable {@link RegionRegistry}. */
 export const createRegionRegistry = (): RegionRegistry => {
-  const nodes = new Map<string, HTMLElement | null>();
+  const records = new Map<string, RegionRecord>();
   const listeners = new Map<string, Set<() => void>>();
 
   const emit = (name: string) =>
     listeners.get(name)?.forEach((listener) => listener());
 
+  // Replace the record with a new object (so `get` snapshots change identity
+  // only on real change) and notify. Drops the entry once both halves are empty.
+  const update = (name: string, patch: Partial<RegionRecord>) => {
+    const existing = records.get(name);
+    const prev = existing ?? { node: null, value: null };
+    const next = { ...prev, ...patch };
+    if (
+      existing &&
+      next.node === existing.node &&
+      next.value === existing.value
+    )
+      return;
+    if (next.node === null && next.value === null) {
+      if (!existing) return;
+      records.delete(name);
+    } else {
+      records.set(name, next);
+    }
+    emit(name);
+  };
+
   return {
-    get: (name) => nodes.get(name) ?? null,
-    set: (name, node) => {
-      if ((nodes.get(name) ?? null) === node) return;
-      nodes.set(name, node);
-      emit(name);
-    },
+    get: (name) => records.get(name) ?? null,
+    setNode: (name, node) => update(name, { node }),
+    setValue: (name, value) => update(name, { value }),
     subscribe: (name, listener) => {
       let set = listeners.get(name);
       if (!set) {

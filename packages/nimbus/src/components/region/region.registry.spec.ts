@@ -12,11 +12,30 @@ describe("createRegionRegistry", () => {
   it("stores and retrieves a node per name", () => {
     const registry = createRegionRegistry();
     const a = el();
-    const b = el();
-    registry.set("a", a);
-    registry.set("b", b);
-    expect(registry.get("a")).toBe(a);
-    expect(registry.get("b")).toBe(b);
+    registry.setNode("a", a);
+    expect(registry.get("a")).toEqual({ node: a, value: null });
+  });
+
+  it("stores a value independently of the node", () => {
+    const registry = createRegionRegistry();
+    const controls = { expand: () => {} };
+    registry.setValue("a", controls);
+    expect(registry.get("a")).toEqual({ node: null, value: controls });
+
+    const node = el();
+    registry.setNode("a", node);
+    expect(registry.get("a")).toEqual({ node, value: controls });
+  });
+
+  it("replaces the record identity on change (stable snapshots)", () => {
+    const registry = createRegionRegistry();
+    registry.setNode("a", el());
+    const first = registry.get("a");
+    const second = registry.get("a");
+    expect(first).toBe(second); // unchanged → same reference
+
+    registry.setValue("a", { v: 1 });
+    expect(registry.get("a")).not.toBe(first); // changed → new reference
   });
 
   it("notifies only the name that changed", () => {
@@ -26,34 +45,48 @@ describe("createRegionRegistry", () => {
     registry.subscribe("a", aListener);
     registry.subscribe("b", bListener);
 
-    registry.set("a", el());
+    registry.setNode("a", el());
 
     expect(aListener).toHaveBeenCalledTimes(1);
     expect(bListener).not.toHaveBeenCalled();
   });
 
-  it("does not notify when the node is unchanged", () => {
+  it("does not notify when a write is reference-equal", () => {
     const registry = createRegionRegistry();
     const node = el();
+    const value = { v: 1 };
     const listener = vi.fn();
     registry.subscribe("a", listener);
 
-    registry.set("a", node);
-    registry.set("a", node); // same reference → no-op
+    registry.setNode("a", node);
+    registry.setValue("a", value);
+    registry.setNode("a", node); // unchanged
+    registry.setValue("a", value); // unchanged
 
-    expect(listener).toHaveBeenCalledTimes(1);
+    expect(listener).toHaveBeenCalledTimes(2);
   });
 
-  it("notifies on clear (node → null)", () => {
+  it("drops the record once node and value are both cleared", () => {
     const registry = createRegionRegistry();
     const listener = vi.fn();
-    registry.set("a", el());
+    registry.setNode("a", el());
     registry.subscribe("a", listener);
 
-    registry.set("a", null);
+    registry.setNode("a", null);
 
     expect(registry.get("a")).toBeNull();
     expect(listener).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps a value after the node is cleared (e.g. outlet remounts)", () => {
+    const registry = createRegionRegistry();
+    const value = { v: 1 };
+    registry.setValue("a", value);
+    registry.setNode("a", el());
+
+    registry.setNode("a", null);
+
+    expect(registry.get("a")).toEqual({ node: null, value });
   });
 
   it("stops notifying after unsubscribe", () => {
@@ -61,9 +94,9 @@ describe("createRegionRegistry", () => {
     const listener = vi.fn();
     const unsubscribe = registry.subscribe("a", listener);
 
-    registry.set("a", el());
+    registry.setNode("a", el());
     unsubscribe();
-    registry.set("a", el());
+    registry.setNode("a", null);
 
     expect(listener).toHaveBeenCalledTimes(1);
   });
@@ -72,9 +105,9 @@ describe("createRegionRegistry", () => {
     const registry = createRegionRegistry();
     const outer = el();
     const inner = el();
-    registry.set("nimbus-splitter:outer:aside", outer);
-    registry.set("nimbus-splitter:inner:aside", inner);
-    expect(registry.get("nimbus-splitter:outer:aside")).toBe(outer);
-    expect(registry.get("nimbus-splitter:inner:aside")).toBe(inner);
+    registry.setNode("app:outer", outer);
+    registry.setNode("app:inner", inner);
+    expect(registry.get("app:outer")?.node).toBe(outer);
+    expect(registry.get("app:inner")?.node).toBe(inner);
   });
 });

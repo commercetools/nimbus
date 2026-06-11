@@ -9,15 +9,16 @@ EmptyRegion.displayName = "Region.Portal(none)";
 
 /**
  * Access a named region: a stable `Region` portal component to project content
- * into it, plus its live outlet `node` for imperative use. Returns
- * `node: null` until an outlet with that name mounts, so it is safe to call
- * before the outlet exists.
+ * into it, the value its outlet published (control callbacks + state), and the
+ * live outlet `node` for imperative use. `node` / `value` are `null` until an
+ * outlet with that name mounts, so it is safe to call before the outlet exists.
  *
  * @example
- * const { Region } = useRegion("my-sidebar");
+ * const { Region, value } = useRegion<PanelControls>("my-sidebar");
+ * value?.expand();
  * return <Region>{content}</Region>; // paints at the outlet, stays in this tree
  */
-export const useRegion = (name?: string): UseRegionResult => {
+export const useRegion = <T = unknown>(name?: string): UseRegionResult<T> => {
   const registry = useContext(RegionRegistryContext);
 
   // Cache one stable portal per name so the projected subtree never remounts.
@@ -41,7 +42,11 @@ export const useRegion = (name?: string): UseRegionResult => {
       ] as const,
     [registry, name]
   );
-  const node = useSyncExternalStore(subscribe, getSnapshot, () => null);
+  const record = useSyncExternalStore(subscribe, getSnapshot, () => null);
 
-  return { node, Region };
+  return {
+    node: record?.node ?? null,
+    value: (record?.value ?? null) as T | null,
+    Region,
+  };
 };

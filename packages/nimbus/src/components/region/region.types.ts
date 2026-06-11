@@ -1,27 +1,39 @@
 import type { ComponentPropsWithoutRef, FC, ReactNode, Ref } from "react";
 
 /**
- * A flat, string-keyed registry of **named regions** — each a live DOM node a
- * `Region.Outlet` exposes for others to render into. It is the mechanism behind
- * "render this content over there": a consumer projects children into a region
- * by name, and they paint at the outlet while staying in their author's React
- * tree (preserving context).
+ * What a region holds: the live outlet DOM `node` (where content paints) and an
+ * optional `value` the outlet's host publishes for consumers — typically
+ * callbacks and reactive state (e.g. a panel's `expand` / `collapse` /
+ * `isCollapsed`). Either half may be absent.
+ */
+export type RegionRecord<T = unknown> = {
+  /** The outlet's DOM node, or `null` until it mounts. */
+  node: HTMLElement | null;
+  /** Arbitrary value published for this region (callbacks, state), or `null`. */
+  value: T | null;
+};
+
+/**
+ * A flat, string-keyed registry of **named regions**. Each name maps to a
+ * {@link RegionRecord} — a render target (`node`) and/or a published `value`. It
+ * is the mechanism behind "render this content over there, and let a consumer
+ * drive it": an outlet publishes a node (and optionally a value) under a name,
+ * and a consumer reads both by that name from anywhere.
  *
- * Deliberately component-agnostic: the `Splitter` is the first consumer (its
- * panes are outlets), but any component can host outlets and any consumer can
- * target them. The namespace is flat — names, not tree position, identify a
- * region — so nesting is irrelevant.
- *
- * It is an external store (not React state) so registering / clearing a node
- * never re-renders the `Region.Provider` (which may wrap a whole app); only the
- * consumers of that specific name re-render, via `useSyncExternalStore`.
+ * Deliberately component-agnostic and **nesting-agnostic** — names, not tree
+ * position, identify a region. It is an external store (not React state) so
+ * publishing a node or value never re-renders the `Region.Provider` (which may
+ * wrap a whole app); only the consumers of that name re-render, via
+ * `useSyncExternalStore`.
  */
 export type RegionRegistry = {
-  /** Current DOM node registered under `name`, or `null` if no outlet is mounted. */
-  get: (name: string) => HTMLElement | null;
-  /** Set (or clear) the node for `name`. No-ops when unchanged. */
-  set: (name: string, node: HTMLElement | null) => void;
-  /** Subscribe to changes for a single `name`. Returns an unsubscribe fn. */
+  /** Current record for `name` (a stable reference until it changes), or `null`. */
+  get: (name: string) => RegionRecord | null;
+  /** Publish (or clear) the outlet node for `name`. No-ops when unchanged. */
+  setNode: (name: string, node: HTMLElement | null) => void;
+  /** Publish (or clear) the value for `name`. No-ops when reference-equal. */
+  setValue: (name: string, value: unknown) => void;
+  /** Subscribe to changes (node or value) for a single `name`. Returns an unsubscribe fn. */
   subscribe: (name: string, listener: () => void) => () => void;
 };
 
@@ -37,6 +49,12 @@ export type RegionPortal = FC<{ children: ReactNode }>;
 export type RegionOutletProps = ComponentPropsWithoutRef<"div"> & {
   /** The region name this outlet fulfills. Consumers target it via `useRegion(name)`. */
   name: string;
+  /**
+   * An optional value to publish for this region (e.g. control callbacks +
+   * state). Memoize it at the call site — its identity changing is what notifies
+   * consumers, so unstable values cause needless re-renders.
+   */
+  value?: unknown;
   /** Ref to the outlet element. */
   ref?: Ref<HTMLDivElement>;
 };
@@ -48,9 +66,11 @@ export type RegionProviderProps = {
 };
 
 /** Return value of {@link useRegion}. */
-export type UseRegionResult = {
+export type UseRegionResult<T = unknown> = {
   /** The outlet's live DOM node for the requested name, or `null`. */
   node: HTMLElement | null;
+  /** The value published for the requested name, or `null`. */
+  value: T | null;
   /** A stable portal component that renders its children into the named region. */
   Region: RegionPortal;
 };

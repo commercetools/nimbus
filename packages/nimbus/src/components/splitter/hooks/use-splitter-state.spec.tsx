@@ -18,7 +18,6 @@ const base = {
   keyboardStep: 5,
   isDoubleClickDisabled: false,
   isDisabled: false,
-  splitterId: "test-splitter",
 };
 
 /**

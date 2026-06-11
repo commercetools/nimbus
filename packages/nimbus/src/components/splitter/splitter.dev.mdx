@@ -484,56 +484,6 @@ const App = () => (
 );
 ```
 
-### Remote control & content projection with `useSplitter`
-
-Sometimes the component that owns the `Splitter.Root` markup is not the
-component that fills a pane or opens the aside — for example a shell mounts the
-splitter once, and a feature deep inside the page wants to show a side panel.
-Give the splitter an `id`, leave the pane you want to fill **without children**
-(it becomes a projection target), and reach it from anywhere with
-`useSplitter(id)`.
-
-`useSplitter(id?)` returns the splitter's collapse controls (`isCollapsed`,
-`expand`, `collapse`, `toggle`) and its `MainRegion` / `AsideRegion` portal
-components. Children of those components render into the corresponding pane
-while staying in your React tree, so routing, intl, data clients, and
-permissions are all preserved. Pass an `id` to target a specific splitter
-regardless of nesting; omit it for the nearest one. It returns `null` until the
-splitter mounts, so it is safe to call before the splitter exists — guard with
-optional chaining.
-
-```tsx
-// Shell: mount the splitter once, leave the aside empty.
-<Splitter.Root
-  id="app-side-panel"
-  collapsible
-  defaultCollapsed
-  collapsedSize={0}
->
-  <Splitter.Main>{children}</Splitter.Main>
-  <Splitter.Handle />
-  <Splitter.Aside />
-</Splitter.Root>;
-
-// Anywhere inside: project content into the aside and open it.
-const SidePanelTrigger = ({ panel }) => {
-  const splitter = useSplitter("app-side-panel");
-
-  useEffect(() => {
-    splitter?.expand();
-    return () => splitter?.collapse();
-  }, [splitter]);
-
-  if (!splitter) return null;
-  const { AsideRegion } = splitter;
-  return <AsideRegion>{panel}</AsideRegion>;
-};
-```
-
-Projection is powered by the headless `Region` primitive (`Region.Provider`,
-`Region.Outlet`, `useRegion`), which the Splitter sets up for you. Reach for
-`Region` directly when you need named content projection outside of a Splitter.
-
 ## Common patterns
 
 ### IDE-style layout

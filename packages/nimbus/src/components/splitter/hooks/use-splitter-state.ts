@@ -33,8 +33,6 @@ type UseSplitterStateOptions = {
   onSizeChangeEnd?: (size: number) => void;
   /** Fired whenever the aside collapses or expands. */
   onCollapsedChange?: (collapsed: boolean) => void;
-  /** Resolved splitter id, surfaced on the context so panes can derive region names. */
-  splitterId: string;
 };
 
 /** True once both the aside and main panes have registered. */
@@ -72,7 +70,6 @@ export const useSplitterState = (
     onSizeChange,
     onSizeChangeEnd,
     onCollapsedChange,
-    splitterId,
   } = options;
 
   // Pane registration: role order in DOM, and the DOM id rendered on each.
@@ -329,7 +326,6 @@ export const useSplitterState = (
       paneDomIds,
       registerPane,
       unregisterPane,
-      splitterId,
       collapsed,
       setCollapsed,
       restoreDefaults,
@@ -347,7 +343,6 @@ export const useSplitterState = (
       paneDomIds,
       registerPane,
       unregisterPane,
-      splitterId,
       collapsed,
       setCollapsed,
       restoreDefaults,

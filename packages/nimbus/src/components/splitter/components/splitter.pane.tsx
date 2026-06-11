@@ -1,8 +1,6 @@
 import { useEffect, useId } from "react";
-import { RegionOutlet } from "../../region/region.outlet";
 import { SplitterPaneSlot } from "../splitter.slots";
 import { useSplitterContext } from "../hooks/use-splitter-context";
-import { splitterRegionName } from "../utils/splitter-region-name";
 import type { SplitterAsideProps, SplitterPaneRole } from "../splitter.types";
 
 type SplitterPaneBaseProps = SplitterAsideProps & {
@@ -16,11 +14,6 @@ type SplitterPaneBaseProps = SplitterAsideProps & {
  * `aria-controls`) and applies its size from context: the aside renders `size`%,
  * the main pane renders the remainder (`100 − size`%).
  *
- * When given no children, the pane renders a named `Region.Outlet` instead, so
- * it becomes a projection target: a consumer elsewhere can fill it via
- * `useSplitter(id)`'s `MainRegion` / `AsideRegion`. Pass children to fill the
- * pane in place and opt out of remote projection.
- *
  * @internal
  */
 export const SplitterPaneBase = ({
@@ -31,7 +24,7 @@ export const SplitterPaneBase = ({
   ref,
   ...props
 }: SplitterPaneBaseProps) => {
-  const { size, orientation, registerPane, unregisterPane, splitterId } =
+  const { size, orientation, registerPane, unregisterPane } =
     useSplitterContext();
 
   // Stable DOM id used by the handle's `aria-controls`. A consumer-provided `id`
@@ -48,17 +41,9 @@ export const SplitterPaneBase = ({
   const sizeProperty = orientation === "horizontal" ? "width" : "height";
   const paneStyle = { [sizeProperty]: `${paneSize}%`, ...style };
 
-  // Childless pane → a named region outlet for remote projection.
-  const content =
-    children == null ? (
-      <RegionOutlet name={splitterRegionName(splitterId, paneRole)} />
-    ) : (
-      children
-    );
-
   return (
     <SplitterPaneSlot ref={ref} id={domId} style={paneStyle} {...props}>
-      {content}
+      {children}
     </SplitterPaneSlot>
   );
 };

@@ -24,7 +24,8 @@ export const createRegionPortal = (name: string): RegionPortal => {
         ] as const,
       [registry]
     );
-    const node = useSyncExternalStore(subscribe, getSnapshot, () => null);
+    const record = useSyncExternalStore(subscribe, getSnapshot, () => null);
+    const node = record?.node ?? null;
     return node ? createPortal(children, node) : null;
   };
   Portal.displayName = `Region.Portal(${name})`;

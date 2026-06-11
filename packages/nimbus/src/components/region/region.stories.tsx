@@ -1,14 +1,18 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box, Stack } from "@commercetools/nimbus";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Box, Stack, Text } from "@commercetools/nimbus";
 import { within, expect, waitFor } from "storybook/test";
+import { Splitter } from "../splitter/splitter";
 import { Region } from "./region";
 import { useRegion } from "./use-region";
 
 /**
  * `Region` is a headless, component-agnostic primitive for named regions: a
  * `Region.Provider` scope, `Region.Outlet`s as named render targets, and
- * `useRegion(name)` to project content into them. The `Splitter` consumes it,
- * but it stands alone — these stories exercise it without any Splitter.
+ * `useRegion(name)` to project content into them (and read a `value` an outlet
+ * publishes — e.g. control callbacks). It is standalone; the last story composes
+ * it with a `Splitter` to build a shell-owned, remotely-controlled side panel
+ * without the Splitter knowing anything about regions.
  */
 const meta: Meta<typeof Region.Provider> = {
   title: "Components/Region",
@@ -99,6 +103,103 @@ export const NullBeforeOutletMounts: Story = {
     const outlet = canvas.getByTestId("slot-outlet");
     await expect(outlet.contains(canvas.getByTestId("toggle-content"))).toBe(
       true
+    );
+  },
+};
+
+// ============================================================
+// Composition: a shell-owned, remotely-controlled side panel
+// (Splitter + Region — the Splitter has no knowledge of regions)
+// ============================================================
+
+/** Control surface a consumer reads from the region's published value. */
+type PanelControls = {
+  isCollapsed: boolean;
+  expand: () => void;
+  collapse: () => void;
+  toggle: () => void;
+};
+
+/**
+ * A consumer that owns no splitter markup. It reads the region's `value` for the
+ * panel controls and projects content into the aside via the region portal —
+ * the shell-owned-sidebar pattern.
+ */
+const SidePanelConsumer = () => {
+  const { Region: Aside, value } = useRegion<PanelControls>("app-side-panel");
+  // Depend on the STABLE callbacks, not the whole value object (which changes
+  // identity on every collapse) — otherwise this effect would ping-pong.
+  const expand = value?.expand;
+  const collapse = value?.collapse;
+  useEffect(() => {
+    expand?.();
+    return () => collapse?.();
+  }, [expand, collapse]);
+
+  return (
+    <Aside>
+      <Box data-testid="panel-content" p="300" bg="teal.3" h="100%">
+        <Text>Agent panel — authored in main, painted in the aside.</Text>
+      </Box>
+    </Aside>
+  );
+};
+
+/** The shell: composes Splitter + Region and publishes the collapse controls. */
+const ShellSidePanel = () => {
+  const [open, setOpen] = useState(false);
+
+  // Stable callbacks (identity never changes), value memoized on the reactive bit.
+  const commands = useRef({
+    expand: () => setOpen(true),
+    collapse: () => setOpen(false),
+    toggle: () => setOpen((o) => !o),
+  }).current;
+  const controller = useMemo<PanelControls>(
+    () => ({ isCollapsed: !open, ...commands }),
+    [open, commands]
+  );
+
+  return (
+    <Region.Provider>
+      <Box h="360px" width="100%" borderWidth="25" borderColor="neutral.6">
+        <Splitter.Root
+          collapsible
+          collapsed={!open}
+          onCollapsedChange={(c) => setOpen(!c)}
+          defaultSize={30}
+          minSize={20}
+          collapsedSize={0}
+        >
+          <Splitter.Main>
+            <Box p="400" bg="amber.3" h="100%">
+              <Text>Main content</Text>
+              <SidePanelConsumer />
+            </Box>
+          </Splitter.Main>
+          <Splitter.Handle />
+          <Splitter.Aside id="shell-aside">
+            <Region.Outlet name="app-side-panel" value={controller} />
+          </Splitter.Aside>
+        </Splitter.Root>
+      </Box>
+    </Region.Provider>
+  );
+};
+
+export const ShellOwnedSidePanel: Story = {
+  render: () => <ShellSidePanel />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const aside = canvasElement.querySelector<HTMLElement>("#shell-aside")!;
+    const content = canvas.getByTestId("panel-content");
+
+    // Projected into the aside even though authored in the main pane.
+    await expect(aside.contains(content)).toBe(true);
+
+    // The consumer expanded the panel on mount via the published `expand()`.
+    await waitFor(() =>
+      expect(parseFloat(aside.style.width)).toBeGreaterThan(0)
     );
   },
 };
