@@ -1,0 +1,108 @@
+---
+id: Components-Region
+title: Region
+exportName: Region
+description:
+  A headless primitive for named content projection — render content into a
+  named region elsewhere in the layout while it stays in your React tree.
+lifecycleState: Beta
+order: 999
+menu:
+  - Components
+  - Utilities
+  - Region
+tags:
+  - component
+  - utility
+  - portal
+  - layout
+  - provider
+---
+
+## Overview
+
+Region is a headless primitive for **named content projection**: render content
+into a slot somewhere else in the layout — an aside, a toolbar, a detail pane —
+from a component that lives somewhere else entirely, even a different package.
+
+It is the structured form of `createPortal`. You **place a target** with
+`<Region name="…" />` to mark where a region renders, and **fill it** from
+anywhere with `useRegion(name)`. Projected content paints at the target but stays
+a child of its author in the React tree, so all ancestor context — routing, intl,
+data clients, permissions — is preserved. A target can also publish a **value**
+(typically control callbacks plus state), so its host can hand consumers a way to
+drive it.
+
+The scope, `Region.Provider`, is mounted **ambiently inside `NimbusProvider`**, so
+in a Nimbus app you place targets and call `useRegion` without ever wrapping a
+provider yourself.
+
+Region renders no visual chrome of its own; it is a coordination primitive, not
+a styled component.
+
+## When to use
+
+- A shell or layout owns a slot (a side panel, a header action area) that a
+  feature elsewhere needs to fill.
+- Content must be **authored** deep in the tree (to keep its context) but
+  **rendered** at a fixed location.
+- A target's host wants to expose controls (open/close, select) to whoever fills
+  it, without prop-drilling.
+
+For a user-resizable two-pane layout, compose Region with
+[Splitter](/components/layout/splitter): mount the splitter, put a
+`<Region name="…" />` in the aside, and let a consumer fill it and toggle it — see
+the implementation tab.
+
+## When not to use
+
+- You own both the content and its location and they're in the same place — just
+  render it directly.
+- You need overlay portalling (modals, tooltips, popovers) — those are handled
+  by the overlay components, not Region.
+
+## Anatomy
+
+- **`<Region name="…" />`** — the **target**: marks where a named region renders
+  and registers its DOM node. It is layout-transparent (`display: contents`), so
+  projected content lays out as a direct child of the target's parent — no extra
+  wrapper box. Backed by a `chakra.div`, so it accepts style props; pass
+  `display="block"` (etc.) if you want it to be a real box. Can publish a `value`.
+- **`useRegion(name)`** — returns a stable `Region` portal component to fill the
+  named region, plus the `value` its target published. Resolves safely (`null`
+  value, portal renders nothing) before a target mounts.
+- **`Region.Provider`** — the scope. Mounted ambiently by `NimbusProvider`;
+  reuses an ancestor's scope when nested, so you rarely write it directly.
+
+Note the two sides share the name `Region`: the top-level `<Region name>` is the
+**target**, while the `Region` you get from `useRegion` is the **filler**. Place
+with the former, fill with the latter.
+
+## Example
+
+```jsx live-dev
+const Sidebar = () => {
+  // fill the region — `Region` here is the filler from the hook
+  const { Region: Filler } = useRegion("docs-sidebar");
+  return (
+    <Filler>
+      <Box p="300" bg="teal.3">
+        Authored over here, painted in the target over there.
+      </Box>
+    </Filler>
+  );
+};
+
+const App = () => (
+  // No Region.Provider needed — NimbusProvider supplies the scope ambiently.
+  <Stack direction="row" gap="400">
+    <Box flexGrow="1" p="300" bg="amber.3">
+      <Text>Content area</Text>
+      <Sidebar />
+    </Box>
+    <Box width="240px" minHeight="120px" bg="neutral.3" p="200">
+      <Region name="docs-sidebar" />
+    </Box>
+  </Stack>
+);
+```

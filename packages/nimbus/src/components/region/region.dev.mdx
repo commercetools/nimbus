@@ -1,0 +1,203 @@
+---
+title: Region Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Region, useRegion, type RegionProps } from "@commercetools/nimbus";
+```
+
+### Mental model
+
+`Region` is the structured form of `createPortal`. Three pieces:
+
+- **`<Region name="…" />`** — the **target**: marks where a named region renders.
+  It registers its DOM node under `name` and can publish a `value` (control
+  callbacks + state) for consumers.
+- **`useRegion(name)`** — returns `{ Region, value }`: a stable `Region` portal
+  component to **fill** the target, and the published `value`.
+- **`Region.Provider`** — the scope. **Mounted ambiently by `NimbusProvider`**, so
+  in a Nimbus app you never write it: place targets and call `useRegion`
+  directly. It is still exported for standalone use (tests, non-Nimbus roots).
+
+Regions are addressed by **name**, not by tree position — a consumer reaches a
+region by name regardless of how deeply nested it is. `useRegion` resolves to a
+`null` value (and a portal that renders nothing) before a target mounts, so it is
+always safe to call.
+
+> **One name, two sides.** The top-level `<Region name>` is the *target*; the
+> `Region` returned by `useRegion` is the *filler*. They can't share a binding in
+> one scope — alias the hook's: `const { Region: Sidebar } = useRegion("x")`.
+
+> **Single occupancy.** A region name is one-to-one on both sides: **exactly one
+> target** and **at most one active filler** at a time. Two targets sharing a name
+> orphan one another (only the last to mount holds the slot); two fillers stack
+> their content into the one target in an undefined order. Both are bugs, so in
+> development each logs a `console.error` naming the region. The fix is always the
+> same — give each its own name. (The registry also releases a target's slot
+> owner-checked, so a stale duplicate unmounting never wipes the live region.)
+
+### Basic usage
+
+Content rendered through the `Region` filler paints at the target but stays a
+child of its author in the React tree, so all ancestor context (router, intl,
+data client, permissions) is preserved.
+
+```jsx live-dev
+const Sidebar = () => {
+  const { Region: Filler } = useRegion("getting-started-sidebar");
+  return (
+    <Filler>
+      <Box p="300" bg="teal.3">
+        Authored here, painted in the target.
+      </Box>
+    </Filler>
+  );
+};
+
+// No Region.Provider — NimbusProvider supplies the scope ambiently.
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Box flexGrow="1" p="300" bg="amber.3">
+      <Text>Content area</Text>
+      <Sidebar />
+    </Box>
+    <Box width="240px" minHeight="120px" bg="neutral.3" p="200">
+      <Region name="getting-started-sidebar" />
+    </Box>
+  </Stack>
+);
+```
+
+## Layout: the target renders no box (`display: contents`)
+
+A portal needs a real DOM node as its container — there is no API to portal "into
+a position." So `<Region name>` must render *an* element. But it renders that
+element with **`display: contents`**, which makes the element generate **no box of
+its own**: its children participate in the layout of the target's *parent*, as if
+the wrapper were not there. Since projected content are DOM children of that
+element, they lay out exactly where the target sits — a flex/grid parent treats
+the projected root as a direct child. You get precise layout with no extra wrapper.
+
+Consequences worth knowing:
+
+- A `display: contents` element can't carry its own visual box — no background,
+  padding, border, `position: relative`, or scroll container. Put those on the
+  **projected content** (or the target's parent) instead.
+- The target is a `chakra.div`, so it accepts style props. To make it a real box
+  again, override the display: `<Region name="x" display="block" p="400" />`.
+
+## Publishing a value
+
+A target can publish a `value` so its host hands consumers a way to drive it —
+typically control callbacks plus reactive state. Consumers read it from
+`useRegion(name).value`.
+
+```tsx
+// host: publish controls on the target
+<Region name="detail" value={{ isOpen, open, close }} />;
+
+// consumer: read them
+const { value } = useRegion<DetailControls>("detail");
+value?.open();
+```
+
+Type the value at the consumer boundary with `useRegion<T>` — the registry treats
+it as opaque, so the generic is where the shape is declared.
+
+## Composition: a shell-owned side panel (with Splitter)
+
+`Region` composes with [Splitter](/components/layout/splitter) to build a
+shell-owned, remotely-controlled side panel — **without the Splitter depending on
+Region**. The shell mounts the splitter, puts a `<Region name>` in the aside that
+publishes the collapse controls, and drives the splitter through its existing
+controlled `collapsed` / `onCollapsedChange`. A consumer anywhere fills the pane
+and opens/closes it via `useRegion`.
+
+```tsx
+const ShellSidePanel = ({ children }) => {
+  const [open, setOpen] = useState(false);
+
+  // Stable callbacks; value memoized on the reactive bit (see Performance below).
+  const commands = useRef({
+    expand: () => setOpen(true),
+    collapse: () => setOpen(false),
+    toggle: () => setOpen((o) => !o),
+  }).current;
+  const controller = useMemo(
+    () => ({ isCollapsed: !open, ...commands }),
+    [open, commands]
+  );
+
+  return (
+    <Splitter.Root collapsible collapsed={!open} onCollapsedChange={(c) => setOpen(!c)}>
+      <Splitter.Main>{children}</Splitter.Main>
+      <Splitter.Handle />
+      <Splitter.Aside>
+        <Region name="app-side-panel" value={controller} />
+      </Splitter.Aside>
+    </Splitter.Root>
+  );
+};
+
+// A consumer that owns no splitter markup:
+const SidePanel = ({ panel }) => {
+  const { Region: Aside, value } = useRegion("app-side-panel");
+  const expand = value?.expand;
+  const collapse = value?.collapse;
+  useEffect(() => {
+    expand?.();
+    return () => collapse?.();
+  }, [expand, collapse]);
+  return <Aside>{panel}</Aside>;
+};
+```
+
+## Performance
+
+`Region.Provider` wraps the entire application (it's inside `NimbusProvider`), so
+filling a region must not re-render the app. That holds because of four things —
+one in the primitive, three at your call site:
+
+1. **External store (primitive).** The registry is read via
+   `useSyncExternalStore`. Publishing a node or value notifies only that name's
+   consumers; `Region.Provider` itself never re-renders.
+2. **Stable `children` (host).** Pass the app through as a `children` prop so the
+   host's own state changes (e.g. a collapse toggle) bail out of the app subtree
+   rather than re-rendering it.
+3. **Stable callbacks + memoized value (host).** Keep published callbacks
+   ref-backed so their identity never changes, and `useMemo` the value object on
+   its reactive field. Registering then only churns when something meaningful
+   changes.
+4. **Depend on the callbacks, not the value object (consumer).** A published
+   value object changes identity when its reactive state changes. In effects,
+   depend on the stable callbacks (`value?.expand`), not the whole `value` —
+   otherwise an expand-on-mount effect re-runs on every state change and can
+   ping-pong.
+
+## SSR
+
+`useRegion` and the `Region` filler use a server snapshot of `null`: there are no
+targets during server rendering and `createPortal` is client-only. A region
+therefore resolves to nothing on the server and hydrates on the client. Author
+content unconditionally and let the portal render it once the target mounts.
+
+## Nested providers share one namespace
+
+`Region.Provider` reuses an ancestor's registry when nested — it does not create
+an isolated scope. Two targets with the same name collide even if they live under
+different `Region.Provider` wrappers. If you need logical isolation between
+subsystems, use a naming convention (e.g. `"app-shell:sidebar"` vs
+`"admin:sidebar"`).
+
+## When not to use
+
+- You own both the content and its location and they're co-located — render it
+  directly.
+- You need overlay portalling (modals, tooltips, popovers) — use the overlay
+  components, not `Region`.

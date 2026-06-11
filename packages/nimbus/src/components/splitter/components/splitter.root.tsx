@@ -6,6 +6,8 @@ import { SplitterContext } from "../splitter.context";
 import { useSplitterState } from "../hooks/use-splitter-state";
 import type { ResolvedAsideConfig, SplitterRootProps } from "../splitter.types";
 
+declare const process: { env: Record<string, string | undefined> } | undefined;
+
 /**
  * Splitter root container. Owns the single aside `size` and resolves
  * controlled/uncontrolled size + collapse. Wrap one `Splitter.Aside` and one

@@ -1,6 +1,8 @@
 import type { Dispatch, SetStateAction } from "react";
 import type { Key, ItemDropTarget } from "react-aria-components";
 
+declare const process: { env: Record<string, string | undefined> } | undefined;
+
 type ListData<T> = {
   insertBefore: (key: Key, ...items: T[]) => void;
   insertAfter: (key: Key, ...items: T[]) => void;
@@ -100,7 +102,10 @@ export function createArrayHandlers<T extends Record<string, unknown>>(
         const remaining = prev.filter((i) => !keys.has(getKey(i)));
         const idx = remaining.findIndex((i) => getKey(i) === target.key);
         if (idx === -1) {
-          if (process.env.NODE_ENV !== "production") {
+          if (
+            typeof process !== "undefined" &&
+            process.env.NODE_ENV !== "production"
+          ) {
             console.warn(
               "createArrayHandlers: target key not found in remaining items — appending to end."
             );
