@@ -24,6 +24,8 @@ export const createRegionPortal = (name: string): RegionPortal => {
         ] as const,
       [registry]
     );
+    // Server snapshot is `null`: no outlets exist during SSR and `createPortal`
+    // is client-only, so the portal renders nothing until hydration.
     const record = useSyncExternalStore(subscribe, getSnapshot, () => null);
     const node = record?.node ?? null;
     return node ? createPortal(children, node) : null;

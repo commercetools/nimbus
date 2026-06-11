@@ -1,0 +1,168 @@
+---
+title: Region Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Region, useRegion, type RegionOutletProps } from "@commercetools/nimbus";
+```
+
+### Mental model
+
+`Region` is the structured form of `createPortal`. Three pieces:
+
+- **`Region.Root`** — establishes a named-region scope. Wrap it around the
+  subtree that should share a set of regions. Nested roots reuse the nearest
+  ancestor's registry, so the namespace is shared.
+- **`Region.Outlet name="…"`** — marks where a named region renders. It registers
+  its DOM node under `name` and can publish a `value` (control callbacks + state)
+  for consumers.
+- **`useRegion(name)`** — returns `{ node, value, Region }`: a stable `Region`
+  portal component to project content into the outlet, the outlet's live DOM
+  `node`, and the published `value`.
+
+Regions are addressed by **name**, not by tree position — a consumer reaches a
+region by name regardless of how deeply nested it is. `useRegion` resolves to
+`null` (node/value) before an outlet mounts or without a `Region.Root` ancestor,
+so it is always safe to call.
+
+### Basic usage
+
+Content rendered through the `Region` portal paints at the outlet but stays a
+child of its author in the React tree, so all ancestor context (router, intl,
+data client, permissions) is preserved.
+
+```jsx live-dev
+const Sidebar = () => {
+  const { Region } = useRegion("getting-started-sidebar");
+  return (
+    <Region>
+      <Box p="300" bg="teal.3">
+        Authored here, painted in the outlet.
+      </Box>
+    </Region>
+  );
+};
+
+const App = () => (
+  <Region.Root>
+    <Stack direction="row" gap="400">
+      <Box flexGrow="1" p="300" bg="amber.3">
+        <Text>Content area</Text>
+        <Sidebar />
+      </Box>
+      <Box width="240px" minHeight="120px" bg="neutral.3" p="200">
+        <Region.Outlet name="getting-started-sidebar" />
+      </Box>
+    </Stack>
+  </Region.Root>
+);
+```
+
+## Publishing a value
+
+An outlet can publish a `value` so the slot's host hands consumers a way to drive
+it — typically control callbacks plus reactive state. Consumers read it from
+`useRegion(name).value`.
+
+```tsx
+// host: publish controls on the outlet
+<Region.Outlet name="detail" value={{ isOpen, open, close }} />;
+
+// consumer: read them
+const { value } = useRegion<DetailControls>("detail");
+value?.open();
+```
+
+Type the value at the consumer boundary with `useRegion<T>` — the registry treats
+it as opaque, so the generic is where the shape is declared.
+
+## Composition: a shell-owned side panel (with Splitter)
+
+`Region` composes with [Splitter](/components/layout/splitter) to build a
+shell-owned, remotely-controlled side panel — **without the Splitter depending on
+Region**. The shell mounts the splitter, puts a `Region.Outlet` in the aside that
+publishes the collapse controls, and drives the splitter through its existing
+controlled `collapsed` / `onCollapsedChange`. A consumer anywhere projects content
+into the pane and opens/closes it via `useRegion`.
+
+```tsx
+const ShellSidePanel = ({ children }) => {
+  const [open, setOpen] = useState(false);
+
+  // Stable callbacks; value memoized on the reactive bit (see Performance below).
+  const commands = useRef({
+    expand: () => setOpen(true),
+    collapse: () => setOpen(false),
+    toggle: () => setOpen((o) => !o),
+  }).current;
+  const controller = useMemo(
+    () => ({ isCollapsed: !open, ...commands }),
+    [open, commands]
+  );
+
+  return (
+    <Region.Root>
+      <Splitter.Root collapsible collapsed={!open} onCollapsedChange={(c) => setOpen(!c)}>
+        <Splitter.Main>{children}</Splitter.Main>
+        <Splitter.Handle />
+        <Splitter.Aside>
+          <Region.Outlet name="app-side-panel" value={controller} />
+        </Splitter.Aside>
+      </Splitter.Root>
+    </Region.Root>
+  );
+};
+
+// A consumer that owns no splitter markup:
+const SidePanel = ({ panel }) => {
+  const { Region: Aside, value } = useRegion("app-side-panel");
+  const { expand, collapse } = value ?? {};
+  useEffect(() => {
+    expand?.();
+    return () => collapse?.();
+  }, [expand, collapse]);
+  return <Aside>{panel}</Aside>;
+};
+```
+
+## Performance
+
+`Region.Root` may wrap an entire application, so publishing into a region must
+not re-render the app. That holds because of four things — one in the primitive,
+three at your call site:
+
+1. **External store (primitive).** The registry is read via
+   `useSyncExternalStore`. Publishing a node or value notifies only that name's
+   consumers; `Region.Root` itself never re-renders.
+2. **Stable `children` (host).** Pass the app through as a `children` prop so the
+   host's own state changes (e.g. a collapse toggle) bail out of the app subtree
+   rather than re-rendering it.
+3. **Stable callbacks + memoized value (host).** Keep published callbacks
+   ref-backed so their identity never changes, and `useMemo` the value object on
+   its reactive field. Registering then only churns when something meaningful
+   changes.
+4. **Depend on the callbacks, not the value object (consumer).** A published
+   value object changes identity when its reactive state changes. In effects,
+   depend on the stable callbacks (`value?.expand`), not the whole `value` —
+   otherwise an expand-on-mount effect re-runs on every state change and can
+   ping-pong.
+
+## SSR
+
+`useRegion` and the `Region` portal use a server snapshot of `null`: there are no
+outlets during server rendering and `createPortal` is client-only. A region
+therefore resolves to nothing on the server and hydrates on the client. Author
+content unconditionally and let the portal render it once the outlet mounts.
+
+## When not to use
+
+- You own both the content and its location and they're co-located — render it
+  directly.
+- You need overlay portalling (modals, tooltips, popovers) — use the overlay
+  components, not `Region`.

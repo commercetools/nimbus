@@ -1,0 +1,97 @@
+---
+id: Components-Region
+title: Region
+exportName: Region
+description:
+  A headless primitive for named content projection — render content into a
+  named outlet elsewhere in the layout while it stays in your React tree.
+lifecycleState: Beta
+order: 999
+menu:
+  - Components
+  - Utilities
+  - Region
+tags:
+  - component
+  - utility
+  - portal
+  - layout
+  - provider
+---
+
+## Overview
+
+Region is a headless primitive for **named content projection**: render content
+into a slot somewhere else in the layout — an aside, a toolbar, a detail pane —
+from a component that lives somewhere else entirely, even a different package.
+
+It is the structured form of `createPortal`. A `Region.Root` establishes a
+scope, `Region.Outlet`s mark named render targets within it, and
+`useRegion(name)` projects content into a target. Projected content paints at
+the outlet but stays a child of its author in the React tree, so all ancestor
+context — routing, intl, data clients, permissions — is preserved. An outlet can
+also publish a **value** (typically control callbacks plus state), so the
+target's host can hand consumers a way to drive it.
+
+Region renders no visual chrome of its own; it is a coordination primitive, not
+a styled component.
+
+## When to use
+
+- A shell or layout owns a slot (a side panel, a header action area) that a
+  feature elsewhere needs to fill.
+- Content must be **authored** deep in the tree (to keep its context) but
+  **rendered** at a fixed location.
+- A target's host wants to expose controls (open/close, select) to whoever fills
+  it, without prop-drilling.
+
+For a user-resizable two-pane layout, compose Region with
+[Splitter](/components/layout/splitter): mount the splitter, put a
+`Region.Outlet` in the aside, and let a consumer project into it and toggle it —
+see the implementation tab.
+
+## When not to use
+
+- You own both the content and its location and they're in the same place — just
+  render it directly.
+- You need overlay portalling (modals, tooltips, popovers) — those are handled
+  by the overlay components, not Region.
+
+## Anatomy
+
+- **`Region.Root`** — establishes a named-region scope. Reuses an ancestor
+  provider's scope when nested, so the namespace is shared.
+- **`Region.Outlet`** — marks where a named region renders; registers its DOM
+  node and can publish a value for that region.
+- **`useRegion(name)`** — returns a stable `Region` portal component for the
+  named region, plus its live `node` and published `value`. Resolves to `null`
+  safely before an outlet mounts.
+
+## Example
+
+```jsx live-dev
+const Sidebar = () => {
+  const { Region } = useRegion("docs-sidebar");
+  return (
+    <Region>
+      <Box p="300" bg="teal.3">
+        Authored over here, painted in the outlet over there.
+      </Box>
+    </Region>
+  );
+};
+
+const App = () => (
+  <Region.Root>
+    <Stack direction="row" gap="400">
+      <Box flexGrow="1" p="300" bg="amber.3">
+        <Text>Content area</Text>
+        <Sidebar />
+      </Box>
+      <Box width="240px" minHeight="120px" bg="neutral.3" p="200">
+        <Region.Outlet name="docs-sidebar" />
+      </Box>
+    </Stack>
+  </Region.Root>
+);
+```

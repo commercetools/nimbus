@@ -50,8 +50,8 @@ export const createRegionRegistry = (): RegionRegistry => {
 };
 
 /**
- * Context carrying the {@link RegionRegistry}. The outermost `Region.Provider`
+ * Context carrying the {@link RegionRegistry}. The outermost `Region.Root`
  * (the first with no provider above it) creates and provides the registry;
- * nested providers reuse it. `null` when no `Region.Provider` is an ancestor.
+ * nested providers reuse it. `null` when no `Region.Root` is an ancestor.
  */
 export const RegionRegistryContext = createContext<RegionRegistry | null>(null);

@@ -1,27 +1,34 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Box, Stack, Text } from "@commercetools/nimbus";
-import { within, expect, waitFor } from "storybook/test";
-import { Splitter } from "../splitter/splitter";
+import {
+  Box,
+  Button,
+  ScrollArea,
+  Splitter,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
+import { userEvent, within, expect, waitFor } from "storybook/test";
 import { Region } from "./region";
 import { useRegion } from "./use-region";
 
 /**
  * `Region` is a headless, component-agnostic primitive for named regions: a
- * `Region.Provider` scope, `Region.Outlet`s as named render targets, and
+ * `Region.Root` scope, `Region.Outlet`s as named render targets, and
  * `useRegion(name)` to project content into them (and read a `value` an outlet
  * publishes — e.g. control callbacks). It is standalone; the last story composes
  * it with a `Splitter` to build a shell-owned, remotely-controlled side panel
  * without the Splitter knowing anything about regions.
  */
-const meta: Meta<typeof Region.Provider> = {
+const meta: Meta<typeof Region.Root> = {
   title: "Components/Region",
-  component: Region.Provider,
+  component: Region.Root,
   parameters: { layout: "padded" },
+  tags: ["autodocs"],
 };
 
 export default meta;
-type Story = StoryObj<typeof Region.Provider>;
+type Story = StoryObj<typeof Region.Root>;
 
 /** A consumer authored far from the outlet that projects into it by name. */
 const Projector = () => {
@@ -37,7 +44,7 @@ const Projector = () => {
 
 export const ProjectIntoNamedOutlet: Story = {
   render: () => (
-    <Region.Provider>
+    <Region.Root>
       <Stack direction="row" gap="400">
         <Box flexGrow="1" p="200" bg="amber.3">
           <Box mb="200">Content area (authors the projected node)</Box>
@@ -47,14 +54,18 @@ export const ProjectIntoNamedOutlet: Story = {
           <Region.Outlet name="demo-sidebar" />
         </Box>
       </Stack>
-    </Region.Provider>
+    </Region.Root>
   ),
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const host = canvasElement.querySelector<HTMLElement>("#sidebar-host")!;
-    const projected = canvas.getByTestId("projected");
-    // Authored under the content area, painted inside the sidebar outlet.
-    await expect(host.contains(projected)).toBe(true);
+    await step(
+      "Content authored in one place paints at the outlet",
+      async () => {
+        const host = canvasElement.querySelector<HTMLElement>("#sidebar-host")!;
+        const projected = canvas.getByTestId("projected");
+        await expect(host.contains(projected)).toBe(true);
+      }
+    );
   },
 };
 
@@ -87,23 +98,26 @@ export const NullBeforeOutletMounts: Story = {
       );
     };
     return (
-      <Region.Provider>
+      <Region.Root>
         <Demo />
-      </Region.Provider>
+      </Region.Root>
     );
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    // Once the outlet mounts, useRegion resolves its node and content paints in.
-    await waitFor(() =>
-      expect(canvas.getByTestId("node-status").textContent).toBe(
-        "outlet-present"
-      )
-    );
-    const outlet = canvas.getByTestId("slot-outlet");
-    await expect(outlet.contains(canvas.getByTestId("toggle-content"))).toBe(
-      true
-    );
+    await step("Region resolves once the outlet mounts", async () => {
+      await waitFor(() =>
+        expect(canvas.getByTestId("node-status").textContent).toBe(
+          "outlet-present"
+        )
+      );
+    });
+    await step("Projected content lands inside the outlet", async () => {
+      const outlet = canvas.getByTestId("slot-outlet");
+      await expect(outlet.contains(canvas.getByTestId("toggle-content"))).toBe(
+        true
+      );
+    });
   },
 };
 
@@ -131,17 +145,27 @@ const SidePanelConsumer = () => {
   // identity on every collapse) — otherwise this effect would ping-pong.
   const expand = value?.expand;
   const collapse = value?.collapse;
+  const toggle = value?.toggle;
   useEffect(() => {
     expand?.();
     return () => collapse?.();
   }, [expand, collapse]);
 
   return (
-    <Aside>
-      <Box data-testid="panel-content" p="300" bg="teal.3" h="100%">
-        <Text>Agent panel — authored in main, painted in the aside.</Text>
-      </Box>
-    </Aside>
+    <Stack gap="200">
+      <Button data-testid="toggle-panel" onPress={() => toggle?.()}>
+        Toggle panel
+      </Button>
+      <Aside>
+        {/* ScrollArea contains overflow so a collapsed (0-width) pane isn't a
+            bare scrollable region — matches the Splitter's own pane pattern. */}
+        <ScrollArea h="100%" w="100%">
+          <Box data-testid="panel-content" p="300" bg="teal.3" minH="100%">
+            <Text>Agent panel — authored in main, painted in the aside.</Text>
+          </Box>
+        </ScrollArea>
+      </Aside>
+    </Stack>
   );
 };
 
@@ -161,7 +185,7 @@ const ShellSidePanel = () => {
   );
 
   return (
-    <Region.Provider>
+    <Region.Root>
       <Box h="360px" width="100%" borderWidth="25" borderColor="neutral.6">
         <Splitter.Root
           collapsible
@@ -183,23 +207,36 @@ const ShellSidePanel = () => {
           </Splitter.Aside>
         </Splitter.Root>
       </Box>
-    </Region.Provider>
+    </Region.Root>
   );
 };
 
 export const ShellOwnedSidePanel: Story = {
   render: () => <ShellSidePanel />,
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const aside = canvasElement.querySelector<HTMLElement>("#shell-aside")!;
-    const content = canvas.getByTestId("panel-content");
+    const asideWidth = () => parseFloat(aside.style.width);
 
-    // Projected into the aside even though authored in the main pane.
-    await expect(aside.contains(content)).toBe(true);
-
-    // The consumer expanded the panel on mount via the published `expand()`.
-    await waitFor(() =>
-      expect(parseFloat(aside.style.width)).toBeGreaterThan(0)
+    await step(
+      "Content projects into the aside from the main pane",
+      async () => {
+        await expect(aside.contains(canvas.getByTestId("panel-content"))).toBe(
+          true
+        );
+      }
     );
+
+    await step(
+      "Consumer opens the panel on mount via published expand()",
+      async () => {
+        await waitFor(() => expect(asideWidth()).toBeGreaterThan(0));
+      }
+    );
+
+    await step("Published toggle() callback collapses the panel", async () => {
+      await userEvent.click(canvas.getByTestId("toggle-panel"));
+      await waitFor(() => expect(asideWidth()).toBe(0));
+    });
   },
 };

@@ -22,7 +22,7 @@ export type RegionRecord<T = unknown> = {
  *
  * Deliberately component-agnostic and **nesting-agnostic** — names, not tree
  * position, identify a region. It is an external store (not React state) so
- * publishing a node or value never re-renders the `Region.Provider` (which may
+ * publishing a node or value never re-renders the `Region.Root` (which may
  * wrap a whole app); only the consumers of that name re-render, via
  * `useSyncExternalStore`.
  */
@@ -52,15 +52,22 @@ export type RegionOutletProps = ComponentPropsWithoutRef<"div"> & {
   /**
    * An optional value to publish for this region (e.g. control callbacks +
    * state). Memoize it at the call site — its identity changing is what notifies
-   * consumers, so unstable values cause needless re-renders.
+   * consumers, so unstable values cause needless re-renders. Keep callbacks
+   * stable (ref-backed) so consumer effects that depend on them don't re-run on
+   * every state change.
+   *
+   * @example
+   * const commands = useRef({ open: () => setOpen(true) }).current; // stable
+   * const value = useMemo(() => ({ isOpen, ...commands }), [isOpen, commands]);
+   * return <Region.Outlet name="panel" value={value} />;
    */
   value?: unknown;
   /** Ref to the outlet element. */
   ref?: Ref<HTMLDivElement>;
 };
 
-/** Props for `<Region.Provider>`. */
-export type RegionProviderProps = {
+/** Props for `<Region.Root>`. */
+export type RegionRootProps = {
   /** The subtree that may host outlets and project into them. */
   children: ReactNode;
 };
@@ -71,6 +78,13 @@ export type UseRegionResult<T = unknown> = {
   node: HTMLElement | null;
   /** The value published for the requested name, or `null`. */
   value: T | null;
-  /** A stable portal component that renders its children into the named region. */
+  /**
+   * A stable portal component that renders its children into the named region.
+   * Rename it at the call site to avoid shadowing the `Region` namespace export.
+   *
+   * @example
+   * const { Region: Sidebar } = useRegion("sidebar");
+   * return <Sidebar>{content}</Sidebar>;
+   */
   Region: RegionPortal;
 };

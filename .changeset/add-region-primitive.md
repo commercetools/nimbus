@@ -8,7 +8,7 @@ slot somewhere else in the layout while it stays in your component's React tree
 optionally let that slot's host publish a `value` (e.g. control callbacks +
 state) for consumers to read.
 
-- `Region.Provider` — establishes a named-region scope; reuses an ancestor scope
+- `Region.Root` — establishes a named-region scope; reuses an ancestor scope
   when nested, so the namespace is shared.
 - `Region.Outlet name="…"` — marks where a named region renders; registers its
   DOM node and can publish a `value` for that region.

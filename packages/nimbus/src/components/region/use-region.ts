@@ -42,6 +42,8 @@ export const useRegion = <T = unknown>(name?: string): UseRegionResult<T> => {
       ] as const,
     [registry, name]
   );
+  // Server snapshot is `null`: there are no outlets during SSR and `createPortal`
+  // is client-only, so a region resolves to nothing until hydration.
   const record = useSyncExternalStore(subscribe, getSnapshot, () => null);
 
   return {
