@@ -72,7 +72,7 @@ export const Default: Story = {
     defaultSize: 30,
   },
   render: (args) => (
-    <Box h="600px">
+    <Box h="xl">
       <Splitter.Root {...args}>
         <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Aside" />
@@ -106,7 +106,7 @@ export const Vertical: Story = {
     defaultSize: 40,
   },
   render: (args) => (
-    <Box h="600px">
+    <Box h="xl">
       <Splitter.Root {...args}>
         <Splitter.Aside>
           <DemoPane bg="teal.3" title="Aside" />
@@ -139,7 +139,7 @@ export const AsideTrailing: Story = {
     maxSize: 80,
   },
   render: (args) => (
-    <Box h="600px">
+    <Box h="xl">
       <Splitter.Root {...args}>
         <Splitter.Main>
           <DemoPane bg="amber.3" title="Main" />
@@ -188,7 +188,7 @@ export const KeyboardInteraction: Story = {
     onSizeChangeEnd: fn(),
   },
   render: (args) => (
-    <Box h="600px">
+    <Box h="xl">
       <Splitter.Root {...args}>
         <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Aside" />
@@ -248,7 +248,7 @@ export const PointerDragResize: Story = {
     onSizeChangeEnd: fn(),
   },
   render: (args) => (
-    <Box h="600px">
+    <Box h="xl">
       <Splitter.Root {...args}>
         <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Aside" />
@@ -328,7 +328,7 @@ export const SizeConstraints: Story = {
     maxSize: 75,
   },
   render: (args) => (
-    <Box h="600px">
+    <Box h="xl">
       <Splitter.Root {...args}>
         <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Aside (min 15)" />
@@ -373,7 +373,7 @@ export const Disabled: Story = {
     defaultSize: 30,
   },
   render: (args) => (
-    <Box h="600px">
+    <Box h="xl">
       <Splitter.Root {...args}>
         <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Aside" />
@@ -402,7 +402,7 @@ export const AriaControlsAttribute: Story = {
     defaultSize: 30,
   },
   render: (args) => (
-    <Box h="400px">
+    <Box h="sm">
       <Splitter.Root {...args}>
         <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Aside" />
@@ -439,7 +439,7 @@ export const DoubleClickRestoresDefaults: Story = {
     onSizeChangeEnd: fn(),
   },
   render: (args) => (
-    <Box h="600px">
+    <Box h="xl">
       <Splitter.Root {...args}>
         <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Aside (default 30)" />
@@ -482,7 +482,7 @@ export const RestoreDefaultsWithZeroSize: Story = {
     maxSize: 100,
   },
   render: (args) => (
-    <Box h="400px">
+    <Box h="sm">
       <Splitter.Root {...args}>
         <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Aside (default 0)" />
@@ -524,7 +524,7 @@ export const FloatPrecision: Story = {
     defaultSize: 31.25,
   },
   render: (args) => (
-    <Box h="400px">
+    <Box h="sm">
       <Splitter.Root {...args}>
         <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Aside (31.25%)" />
@@ -566,7 +566,7 @@ export const CollapsibleByKeyboard: Story = {
     onCollapsedChange: fn(),
   },
   render: (args) => (
-    <Box h="600px">
+    <Box h="xl">
       <Splitter.Root {...args}>
         <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Aside (collapsible)" />
@@ -619,7 +619,7 @@ const ControlledCollapseComponent = ({
 }) => {
   const [collapsed, setCollapsed] = useState(false);
   return (
-    <Stack gap="400" h="500px">
+    <Stack gap="400" h="lg">
       <Button
         onPress={() => {
           const next = !collapsed;
@@ -688,7 +688,7 @@ export const ControlledCollapse: Story = {
 const ControlledRestoreComponent = () => {
   const [collapsed, setCollapsed] = useState(false);
   return (
-    <Box h="500px">
+    <Box h="lg">
       <Splitter.Root
         defaultSize={30}
         keyboardStep={5}
@@ -751,7 +751,7 @@ export const ControlledCollapseRestore: Story = {
 const ControlledSizeComponent = () => {
   const [size, setSize] = useState(30);
   return (
-    <Stack gap="400" h="500px">
+    <Stack gap="400" h="lg">
       <Button onPress={() => setSize(60)} data-testid="set-size-btn">
         Set aside to 60
       </Button>
@@ -829,7 +829,7 @@ const ResizeLockedWhileCollapsedComponent = ({
     onCollapsedChange?.(next);
   };
   return (
-    <Stack gap="400" h="600px">
+    <Stack gap="400" h="xl">
       <Button
         onPress={() => updateCollapsed(!collapsed)}
         data-testid="toggle-btn"
@@ -948,7 +948,7 @@ const PersistenceComponent = () => {
   // Stand-in for a useLocalStorage-style hook: state seeded from "storage".
   const [size, setSize] = useState(25);
   return (
-    <Stack gap="400" h="500px">
+    <Stack gap="400" h="lg">
       <Box data-testid="stored-aside">{`stored aside: ${Math.round(size)}`}</Box>
       <Splitter.Root
         defaultSize={size}
@@ -996,7 +996,7 @@ export const Persistence: Story = {
 
 export const NestedSplitters: Story = {
   render: () => (
-    <Box h="600px">
+    <Box h="xl">
       <Splitter.Root defaultSize={25}>
         <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Aside (outer)" />
@@ -1036,7 +1036,7 @@ export const DisableDoubleClick: Story = {
     maxSize: 90,
   },
   render: (args) => (
-    <Box h="400px">
+    <Box h="sm">
       <Splitter.Root {...args}>
         <Splitter.Aside>
           <DemoPane bg="indigo.3" title="Aside" />
@@ -1075,24 +1075,24 @@ export const DisableDoubleClick: Story = {
 };
 
 // ============================================================
-// useResponsiveSplitterSizes — pixel/token sizes via the companion hook.
-// The aside is configured as 320px; the hook measures the container and feeds
-// the equivalent percentage to the (percentage-native) component. In a 1000px
-// container that is 32%.
+// useResponsiveSplitterSizes — token sizes via the companion hook.
+// The aside is configured as "xs" (320px); the hook measures the container and
+// feeds the equivalent percentage to the component. In a "breakpoint-2xl"
+// (1536px) container that is ~21%.
 // ============================================================
 
 const ResponsiveSizesHookComponent = () => {
   const { rootProps } = useResponsiveSplitterSizes({
     orientation: "horizontal",
-    size: 320,
-    minSize: 160,
-    maxSize: 600,
+    size: "xs",
+    minSize: "3xs",
+    maxSize: "lg",
   });
   return (
-    <Box w="1000px" h="600px">
+    <Box w="breakpoint-2xl" h="xl">
       <Splitter.Root {...rootProps} collapsible>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Aside (320px)" />
+          <DemoPane bg="indigo.3" title="Aside" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -1109,16 +1109,16 @@ export const ResponsivePixelSizesHook: Story = {
     const canvas = within(canvasElement);
     const handle = await canvas.findByRole("separator");
 
-    // 320px in a 1000px container → 32%.
+    // "xs" (320px) in a "breakpoint-2xl" (1536px) container → ~21%.
     await waitFor(() => {
-      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(32);
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(21);
     });
 
     // A keyboard resize settles into the hook's controlled value (no snap-back).
     handle.focus();
     await userEvent.keyboard("{ArrowRight}");
     await waitFor(() => {
-      expect(Number(handle.getAttribute("aria-valuenow"))).toBeGreaterThan(32);
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBeGreaterThan(21);
     });
     const settled = Number(handle.getAttribute("aria-valuenow"));
     await userEvent.keyboard("{Tab}");
@@ -1131,20 +1131,20 @@ export const ResponsivePixelSizesHook: Story = {
 // ============================================================
 // useResponsiveSplitterSizes — responsive by CONTAINER width (object notation).
 // The same config resolves against each splitter's OWN width (not the viewport):
-// a 640px container is below the 768 threshold (40%), a 1000px container is at
-// or above it (320px → 32%). Demonstrates min-width threshold maps.
+// an "xl" (576px) container is below the "breakpoint-md" (768px) threshold (40%),
+// a "5xl" (1024px) container is at/above it ("xs"=320px → ~31%).
 // ============================================================
 
-const ResponsiveBandDemo = ({ width }: { width: number }) => {
+const ResponsiveBandDemo = ({ width }: { width: string }) => {
   const { rootProps } = useResponsiveSplitterSizes({
     orientation: "horizontal",
-    size: { 0: "40%", 768: 320 },
+    size: { 0: "40%", "breakpoint-md": "xs" },
   });
   return (
-    <Box w={`${width}px`} h="240px" borderWidth="25" borderColor="neutral.6">
+    <Box w={width} h="3xs" borderWidth="25" borderColor="neutral.6">
       <Splitter.Root {...rootProps}>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title={`Aside @ ${width}px`} />
+          <DemoPane bg="indigo.3" title={`Aside @ ${width}`} />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -1158,8 +1158,8 @@ const ResponsiveBandDemo = ({ width }: { width: number }) => {
 export const ResponsiveByContainerWidth: Story = {
   render: () => (
     <Stack gap="600">
-      <ResponsiveBandDemo width={640} />
-      <ResponsiveBandDemo width={1000} />
+      <ResponsiveBandDemo width="xl" />
+      <ResponsiveBandDemo width="5xl" />
     </Stack>
   ),
   play: async ({ canvasElement }) => {
@@ -1167,13 +1167,13 @@ export const ResponsiveByContainerWidth: Story = {
     const handles = await canvas.findAllByRole("separator");
     expect(handles).toHaveLength(2);
 
-    // 640px container is below the 768 threshold → the base band, 40%.
+    // "xl" (576px) container is below the "breakpoint-md" threshold → base band, 40%.
     await waitFor(() => {
       expect(Number(handles[0].getAttribute("aria-valuenow"))).toBe(40);
     });
-    // 1000px container is at/above 768 → 320px → 32%.
+    // "5xl" (1024px) container is at/above "breakpoint-md" → "xs" (320px) → ~31%.
     await waitFor(() => {
-      expect(Number(handles[1].getAttribute("aria-valuenow"))).toBe(32);
+      expect(Number(handles[1].getAttribute("aria-valuenow"))).toBe(31);
     });
   },
 };
@@ -1182,19 +1182,18 @@ export const ResponsiveByContainerWidth: Story = {
 // useResponsiveSplitterSizes — INTERACTIVE: a Splitter inside a Splitter.
 // The OUTER handle resizes the inner splitter's CONTAINER, so dragging it (or
 // resizing the window) makes the inner hook re-resolve live. The inner config
-// `{ 0: "40%", 768: 320 }` resolves against the inner container's OWN width:
+// uses "breakpoint-md" as the threshold and "xs" (320px) as the aside size:
 // a wide container (≥ 768px) pins the aside to 320px (a small %), a narrow one
-// (< 768px) falls back to the base 40% band. Resolution is container-, not
-// viewport-relative.
+// falls back to the base 40% band. Resolution is container-, not viewport-relative.
 // ============================================================
 
 const NestedResponsiveComponent = () => {
   const { rootProps } = useResponsiveSplitterSizes({
     orientation: "horizontal",
-    size: { 0: "40%", 768: 320 },
+    size: { 0: "40%", "breakpoint-md": "xs" },
   });
   return (
-    <Box w="100%" minW="1000px" h="600px">
+    <Box w="100%" minW="5xl" h="xl">
       <Splitter.Root defaultSize={15} minSize={15} maxSize={70}>
         <Splitter.Aside>
           <DemoPane bg="neutral.3" title="Aside (outer)" />
@@ -1205,7 +1204,7 @@ const NestedResponsiveComponent = () => {
             <Splitter.Aside>
               <DemoPane
                 bg="indigo.3"
-                title="Aside (responsive: ≥768px → 320px · else 40%)"
+                title="Aside (responsive)"
               />
             </Splitter.Aside>
             <Splitter.Handle />
@@ -1227,14 +1226,14 @@ export const NestedResponsiveSplitter: Story = {
     expect(handles).toHaveLength(2);
     const [outer, inner] = handles;
 
-    // Wide inner container (≥ 768px) → the aside is pinned to 320px, which is
-    // less than the base 40% band.
+    // Wide inner container (≥ "breakpoint-md") → the aside is pinned to "xs"
+    // (320px), which is less than the base 40% band.
     await waitFor(() => {
       expect(Number(inner.getAttribute("aria-valuenow"))).toBeLessThan(40);
     });
 
-    // Drag the outer divider to shrink the inner container below 768px → the
-    // inner config falls back to its base 40% band, live.
+    // Drag the outer divider to shrink the inner container below "breakpoint-md"
+    // → the inner config falls back to its base 40% band, live.
     outer.focus();
     await userEvent.keyboard("{End}");
     await waitFor(() => {
@@ -1258,9 +1257,9 @@ const PersistedResponsiveComponent = () => {
   const { rootProps } = useResponsiveSplitterSizes({
     orientation: "horizontal",
     persistKey: PERSIST_DEMO_KEY,
-    size: 320, // 320px sidebar until the user drags and a value is persisted
-    minSize: 160,
-    maxSize: 640,
+    size: "xs",
+    minSize: "3xs",
+    maxSize: "lg",
   });
 
   // Mirror the persisted value so the reload-and-restore behaviour is visible.
@@ -1308,7 +1307,7 @@ const PersistedResponsiveComponent = () => {
           Reset stored size
         </Button>
       </Box>
-      <Box w="100%" h="480px" borderWidth="25" borderColor="neutral.6">
+      <Box w="100%" h="breakpoint-sm" borderWidth="25" borderColor="neutral.6">
         <Splitter.Root {...rootProps} collapsible>
           <Splitter.Aside>
             <DemoPane bg="indigo.3" title="Aside (persisted)" />

@@ -22,7 +22,7 @@ pane is `100 − size`).
 
 ```jsx live-dev
 const App = () => (
-  <Box height="320px" width="100%" borderWidth="25" borderColor="neutral.6">
+  <Box height="xs" width="100%" borderWidth="25" borderColor="neutral.6">
     <Splitter.Root defaultSize={30} minSize={15} maxSize={75}>
       <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
@@ -52,7 +52,7 @@ semantics describe the boundary axis, not the layout axis).
 
 ```jsx live-dev
 const App = () => (
-  <Box height="360px" width="100%" borderWidth="25" borderColor="neutral.6">
+  <Box height="sm" width="100%" borderWidth="25" borderColor="neutral.6">
     <Splitter.Root orientation="vertical" defaultSize={40}>
       <Splitter.Aside>
         <Box p="400" bg="teal.3" h="100%">
@@ -80,7 +80,7 @@ fully describes both sides; there is no main-specific prop.
 
 ```jsx live-dev
 const App = () => (
-  <Box height="320px" width="100%" borderWidth="25" borderColor="neutral.6">
+  <Box height="xs" width="100%" borderWidth="25" borderColor="neutral.6">
     <Splitter.Root defaultSize={30} minSize={15} maxSize={75}>
       <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
@@ -119,7 +119,7 @@ const App = () => {
       <Button alignSelf="start" onPress={() => setCollapsed((c) => !c)}>
         {collapsed ? "Show aside" : "Hide aside"}
       </Button>
-      <Box height="280px" width="100%" borderWidth="25" borderColor="neutral.6">
+      <Box height="2xs" width="100%" borderWidth="25" borderColor="neutral.6">
         <Splitter.Root
           defaultSize={30}
           minSize={10}
@@ -162,7 +162,7 @@ const App = () => {
       <Button alignSelf="start" onPress={() => setCollapsed((c) => !c)}>
         {collapsed ? "Expand aside" : "Collapse aside to a rail"}
       </Button>
-      <Box height="280px" width="100%" borderWidth="25" borderColor="neutral.6">
+      <Box height="2xs" width="100%" borderWidth="25" borderColor="neutral.6">
         <Splitter.Root
           defaultSize={30}
           minSize={15}
@@ -199,7 +199,7 @@ split.
 
 ```jsx live-dev
 const App = () => (
-  <Box height="240px" width="100%" borderWidth="25" borderColor="neutral.6">
+  <Box height="3xs" width="100%" borderWidth="25" borderColor="neutral.6">
     <Splitter.Root
       defaultSize={30}
       minSize={10}
@@ -230,7 +230,7 @@ Home / End jump it to the bounds. Accepts floats for finer control.
 
 ```jsx live-dev
 const App = () => (
-  <Box height="240px" width="100%" borderWidth="25" borderColor="neutral.6">
+  <Box height="3xs" width="100%" borderWidth="25" borderColor="neutral.6">
     <Splitter.Root defaultSize={30} keyboardStep={10}>
       <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
@@ -258,7 +258,7 @@ Set `isDoubleClickDisabled` to turn that off; drag and keyboard stay active.
 ```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
-    <Box height="140px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Box height="3xs" width="100%" borderWidth="25" borderColor="neutral.6">
       <Splitter.Root defaultSize={50}>
         <Splitter.Aside>
           <Box p="400" bg="indigo.3" h="100%">
@@ -271,7 +271,7 @@ const App = () => (
         </Splitter.Main>
       </Splitter.Root>
     </Box>
-    <Box height="140px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Box height="3xs" width="100%" borderWidth="25" borderColor="neutral.6">
       <Splitter.Root defaultSize={50} isDoubleClickDisabled>
         <Splitter.Aside>
           <Box p="400" bg="teal.3" h="100%">
@@ -295,7 +295,7 @@ order, gets `aria-disabled`, and ignores drag, keyboard, and collapse input.
 
 ```jsx live-dev
 const App = () => (
-  <Box height="240px" width="100%" borderWidth="25" borderColor="neutral.6">
+  <Box height="3xs" width="100%" borderWidth="25" borderColor="neutral.6">
     <Splitter.Root isDisabled defaultSize={30}>
       <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
@@ -375,7 +375,7 @@ pass the computed float — `250px` in an `800px` container is `31.25`.
 
 ```jsx live-dev
 const App = () => (
-  <Box height="240px" width="100%" borderWidth="25" borderColor="neutral.6">
+  <Box height="3xs" width="100%" borderWidth="25" borderColor="neutral.6">
     <Splitter.Root defaultSize={31.25}>
       <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
@@ -410,9 +410,9 @@ Spread its `rootProps` onto `Splitter.Root` and attach the `ref` it returns (the
 const { rootProps } = useResponsiveSplitterSizes({
   orientation: "horizontal",
   persistKey: "app:main-splitter",
-  size: 320, // a bare number is PIXELS
-  minSize: 160,
-  maxSize: "breakpoint-sm", // size tokens resolve to pixels too
+  size: "xs",          // 320px — size tokens resolve to pixels
+  minSize: "3xs",      // 224px
+  maxSize: "lg",       // 512px
 });
 
 <Splitter.Root {...rootProps} collapsible>
@@ -437,7 +437,7 @@ the measured width wins; the smallest entry also applies below it.
 
 ```tsx
 const { rootProps } = useResponsiveSplitterSizes({
-  size: { 0: 320, 768: "30%" }, // 320px below 768px container width, 30% above
+  size: { 0: "xs", "breakpoint-md": "30%" }, // "xs" (320px) below 768px, 30% above
 });
 ```
 
@@ -456,7 +456,7 @@ panel.
 
 ```jsx live-dev
 const App = () => (
-  <Box height="360px" width="100%" borderWidth="25" borderColor="neutral.6">
+  <Box height="sm" width="100%" borderWidth="25" borderColor="neutral.6">
     <Splitter.Root defaultSize={25}>
       <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
@@ -503,7 +503,7 @@ const App = () => {
       <Button alignSelf="start" onPress={() => setCollapsed((c) => !c)}>
         {collapsed ? "Show aside" : "Hide aside"}
       </Button>
-      <Box height="320px" width="100%" borderWidth="25" borderColor="neutral.6">
+      <Box height="xs" width="100%" borderWidth="25" borderColor="neutral.6">
         <Splitter.Root
           defaultSize={size}
           onSizeChangeEnd={setSize}
@@ -542,7 +542,7 @@ const App = () => {
   const [size, setSize] = useState(60);
 
   return (
-    <Box height="360px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Box height="sm" width="100%" borderWidth="25" borderColor="neutral.6">
       <Splitter.Root
         orientation="vertical"
         defaultSize={size}
