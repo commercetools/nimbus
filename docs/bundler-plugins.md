@@ -8,10 +8,10 @@ code lands in the bundle.
 
 ## When to use
 
-Use these plugins in **shared build tooling** (e.g. `mc-scripts`) that produces
-bundles for applications that may or may not depend on Nimbus. Without the
-plugins, any `import … from '@commercetools/nimbus'` in shared code would cause
-a build failure for apps that haven't installed Nimbus.
+Use these plugins in **shared build tooling** that produces bundles for
+applications that may or may not depend on Nimbus. Without the plugins, any
+`import … from '@commercetools/nimbus'` in shared code would cause a build
+failure for apps that haven't installed Nimbus.
 
 ## Entry points
 
