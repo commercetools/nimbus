@@ -76,3 +76,4 @@ export * from "./tabs";
 export * from "./localized-field";
 export * from "./steps";
 export * from "./modal-page";
+export * from "./floating-action-button";
