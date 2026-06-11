@@ -56,13 +56,13 @@ const App = () => (
     <Splitter.Root orientation="vertical" defaultSize={40}>
       <Splitter.Aside>
         <Box p="400" bg="teal.3" h="100%">
-          <Text>Top</Text>
+          <Text>Aside</Text>
         </Box>
       </Splitter.Aside>
       <Splitter.Handle />
       <Splitter.Main>
         <Box p="400" bg="rose.3" h="100%">
-          <Text>Bottom</Text>
+          <Text>Main</Text>
         </Box>
       </Splitter.Main>
     </Splitter.Root>
@@ -117,7 +117,7 @@ const App = () => {
   return (
     <Stack direction="column" gap="300">
       <Button alignSelf="start" onPress={() => setCollapsed((c) => !c)}>
-        {collapsed ? "Show nav" : "Hide nav"}
+        {collapsed ? "Show aside" : "Hide aside"}
       </Button>
       <Box height="280px" width="100%" borderWidth="25" borderColor="neutral.6">
         <Splitter.Root
@@ -130,7 +130,7 @@ const App = () => {
         >
           <Splitter.Aside>
             <Box p="400" bg="indigo.3" h="100%">
-              <Text>Nav</Text>
+              <Text>Aside</Text>
             </Box>
           </Splitter.Aside>
           <Splitter.Handle />
@@ -160,7 +160,7 @@ const App = () => {
   return (
     <Stack direction="column" gap="300">
       <Button alignSelf="start" onPress={() => setCollapsed((c) => !c)}>
-        {collapsed ? "Expand nav" : "Collapse nav to a rail"}
+        {collapsed ? "Expand aside" : "Collapse aside to a rail"}
       </Button>
       <Box height="280px" width="100%" borderWidth="25" borderColor="neutral.6">
         <Splitter.Root
@@ -174,7 +174,7 @@ const App = () => {
         >
           <Splitter.Aside>
             <Box p="400" bg="indigo.3" h="100%">
-              <Text>Nav</Text>
+              <Text>Aside</Text>
             </Box>
           </Splitter.Aside>
           <Splitter.Handle />
@@ -209,7 +209,7 @@ const App = () => (
     >
       <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
-          <Text>Nav (starts collapsed)</Text>
+          <Text>Aside (starts collapsed)</Text>
         </Box>
       </Splitter.Aside>
       <Splitter.Handle />
@@ -299,7 +299,7 @@ const App = () => (
     <Splitter.Root isDisabled defaultSize={30}>
       <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
-          <Text>Nav</Text>
+          <Text>Aside</Text>
         </Box>
       </Splitter.Aside>
       <Splitter.Handle />
@@ -460,7 +460,7 @@ const App = () => (
     <Splitter.Root defaultSize={25}>
       <Splitter.Aside>
         <Box p="400" bg="indigo.3" h="100%">
-          <Text>Nav</Text>
+          <Text>Aside (outer)</Text>
         </Box>
       </Splitter.Aside>
       <Splitter.Handle />
@@ -474,7 +474,7 @@ const App = () => (
           <Splitter.Handle />
           <Splitter.Aside>
             <Box p="400" bg="rose.3" h="100%">
-              <Text>Aside</Text>
+              <Text>Aside (inner)</Text>
             </Box>
           </Splitter.Aside>
         </Splitter.Root>
@@ -501,7 +501,7 @@ const App = () => {
   return (
     <Stack direction="column" gap="300">
       <Button alignSelf="start" onPress={() => setCollapsed((c) => !c)}>
-        {collapsed ? "Show sidebar" : "Hide sidebar"}
+        {collapsed ? "Show aside" : "Hide aside"}
       </Button>
       <Box height="320px" width="100%" borderWidth="25" borderColor="neutral.6">
         <Splitter.Root
@@ -516,13 +516,13 @@ const App = () => {
         >
           <Splitter.Aside>
             <Box p="400" bg="indigo.3" h="100%">
-              <Text>Files</Text>
+              <Text>Aside</Text>
             </Box>
           </Splitter.Aside>
-          <Splitter.Handle aria-label="Resize sidebar" />
+          <Splitter.Handle aria-label="Resize aside" />
           <Splitter.Main>
             <Box p="400" bg="amber.3" h="100%">
-              <Text>Editor</Text>
+              <Text>Aside</Text>
             </Box>
           </Splitter.Main>
         </Splitter.Root>
@@ -532,7 +532,7 @@ const App = () => {
 };
 ```
 
-### Editor and preview
+### Vertical with persistence
 
 A vertical split with a persisted boundary and aside bounds so neither region
 collapses to nothing while dragging.
@@ -552,13 +552,13 @@ const App = () => {
       >
         <Splitter.Aside>
           <Box p="400" bg="teal.3" h="100%">
-            <Text>Editor</Text>
+            <Text>Aside</Text>
           </Box>
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
           <Box p="400" bg="rose.3" h="100%">
-            <Text>Preview</Text>
+            <Text>Main</Text>
           </Box>
         </Splitter.Main>
       </Splitter.Root>
@@ -593,7 +593,7 @@ The handle ships a localized default `aria-label` ("Resize panes"); override it
 per handle with `aria-label` or `aria-labelledby` for a more specific label:
 
 ```tsx
-<Splitter.Handle aria-label={msg.format("resizeNavigation")} />
+<Splitter.Handle aria-label={msg.format("resizeAside")} />
 ```
 
 #### Persistent ID

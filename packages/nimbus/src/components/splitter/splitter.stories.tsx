@@ -75,7 +75,7 @@ export const Default: Story = {
     <Box h="600px">
       <Splitter.Root {...args}>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav" />
+          <DemoPane bg="indigo.3" title="Aside" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -109,11 +109,11 @@ export const Vertical: Story = {
     <Box h="600px">
       <Splitter.Root {...args}>
         <Splitter.Aside>
-          <DemoPane bg="teal.3" title="Top" />
+          <DemoPane bg="teal.3" title="Aside" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
-          <DemoPane bg="rose.3" title="Bottom" />
+          <DemoPane bg="rose.3" title="Main" />
         </Splitter.Main>
       </Splitter.Root>
     </Box>
@@ -191,7 +191,7 @@ export const KeyboardInteraction: Story = {
     <Box h="600px">
       <Splitter.Root {...args}>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav" />
+          <DemoPane bg="indigo.3" title="Aside" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -251,7 +251,7 @@ export const PointerDragResize: Story = {
     <Box h="600px">
       <Splitter.Root {...args}>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav" />
+          <DemoPane bg="indigo.3" title="Aside" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -331,7 +331,7 @@ export const SizeConstraints: Story = {
     <Box h="600px">
       <Splitter.Root {...args}>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav (min 15)" />
+          <DemoPane bg="indigo.3" title="Aside (min 15)" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -376,7 +376,7 @@ export const Disabled: Story = {
     <Box h="600px">
       <Splitter.Root {...args}>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav" />
+          <DemoPane bg="indigo.3" title="Aside" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -405,7 +405,7 @@ export const AriaControlsAttribute: Story = {
     <Box h="400px">
       <Splitter.Root {...args}>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav" />
+          <DemoPane bg="indigo.3" title="Aside" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -421,9 +421,9 @@ export const AriaControlsAttribute: Story = {
     await expect(ariaControls).toBeTruthy();
 
     // aria-controls should point at the leading pane (first DOM sibling = aside).
-    const navPane = canvasElement.querySelector(`#${ariaControls!}`);
-    await expect(navPane).toBeTruthy();
-    await expect(navPane!.textContent).toContain("Nav");
+    const asidePane = canvasElement.querySelector(`#${ariaControls!}`);
+    await expect(asidePane).toBeTruthy();
+    await expect(asidePane!.textContent).toContain("Aside");
   },
 };
 
@@ -442,7 +442,7 @@ export const DoubleClickRestoresDefaults: Story = {
     <Box h="600px">
       <Splitter.Root {...args}>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav (default 30)" />
+          <DemoPane bg="indigo.3" title="Aside (default 30)" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -485,7 +485,7 @@ export const RestoreDefaultsWithZeroSize: Story = {
     <Box h="400px">
       <Splitter.Root {...args}>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav (default 0)" />
+          <DemoPane bg="indigo.3" title="Aside (default 0)" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -527,7 +527,7 @@ export const FloatPrecision: Story = {
     <Box h="400px">
       <Splitter.Root {...args}>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav (31.25%)" />
+          <DemoPane bg="indigo.3" title="Aside (31.25%)" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -543,12 +543,12 @@ export const FloatPrecision: Story = {
     // aria-valuenow rounds for AT, but the applied layout keeps full precision.
     await expect(handle).toHaveAttribute("aria-valuenow", "31");
     const ariaControls = handle.getAttribute("aria-controls");
-    const navPane = canvasElement.querySelector<HTMLElement>(
+    const asidePane = canvasElement.querySelector<HTMLElement>(
       `#${ariaControls!}`
     );
-    await expect(navPane).toBeTruthy();
+    await expect(asidePane).toBeTruthy();
     await waitFor(() => {
-      expect(navPane!.style.width).toBe("31.25%");
+      expect(asidePane!.style.width).toBe("31.25%");
     });
   },
 };
@@ -569,7 +569,7 @@ export const CollapsibleByKeyboard: Story = {
     <Box h="600px">
       <Splitter.Root {...args}>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav (collapsible)" />
+          <DemoPane bg="indigo.3" title="Aside (collapsible)" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -628,7 +628,7 @@ const ControlledCollapseComponent = ({
         }}
         data-testid="toggle-btn"
       >
-        Toggle nav
+        Toggle aside
       </Button>
       <Splitter.Root
         defaultSize={30}
@@ -639,7 +639,7 @@ const ControlledCollapseComponent = ({
         onCollapsedChange={setCollapsed}
       >
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav" />
+          <DemoPane bg="indigo.3" title="Aside" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -667,7 +667,7 @@ export const ControlledCollapse: Story = {
     // a11y afterEach sees the accessible state.
     await waitFor(() => {
       const navViewport = canvas
-        .getByText("Nav")
+        .getByText("Aside")
         .closest('[data-part="viewport"]');
       expect(navViewport).toHaveAttribute("tabindex", "0");
     });
@@ -699,7 +699,7 @@ const ControlledRestoreComponent = () => {
         onCollapsedChange={setCollapsed}
       >
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav" />
+          <DemoPane bg="indigo.3" title="Aside" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -753,7 +753,7 @@ const ControlledSizeComponent = () => {
   return (
     <Stack gap="400" h="500px">
       <Button onPress={() => setSize(60)} data-testid="set-size-btn">
-        Set nav to 60
+        Set aside to 60
       </Button>
       <Splitter.Root
         size={size}
@@ -762,10 +762,10 @@ const ControlledSizeComponent = () => {
         maxSize={90}
       >
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav">
+          <DemoPane bg="indigo.3" title="Aside">
             {/* Uncontrolled input: its value survives only if the pane is not
                 remounted when `size` changes in place. */}
-            <input data-testid="nav-input" aria-label="Note" defaultValue="" />
+            <input data-testid="aside-input" aria-label="Note" defaultValue="" />
           </DemoPane>
         </Splitter.Aside>
         <Splitter.Handle />
@@ -787,7 +787,7 @@ export const ControlledSize: Story = {
     });
 
     // Give the pane's input state that a remount would lose.
-    const input = canvas.getByTestId<HTMLInputElement>("nav-input");
+    const input = canvas.getByTestId<HTMLInputElement>("aside-input");
     await userEvent.type(input, "preserve-me");
     expect(input).toHaveValue("preserve-me");
 
@@ -798,7 +798,7 @@ export const ControlledSize: Story = {
     });
 
     // The input kept its value → the pane was not remounted.
-    expect(canvas.getByTestId<HTMLInputElement>("nav-input")).toHaveValue(
+    expect(canvas.getByTestId<HTMLInputElement>("aside-input")).toHaveValue(
       "preserve-me"
     );
   },
@@ -834,7 +834,7 @@ const ResizeLockedWhileCollapsedComponent = ({
         onPress={() => updateCollapsed(!collapsed)}
         data-testid="toggle-btn"
       >
-        {collapsed ? "Expand nav" : "Collapse nav"}
+        {collapsed ? "Expand aside" : "Collapse aside"}
       </Button>
       <Splitter.Root
         defaultSize={30}
@@ -848,7 +848,7 @@ const ResizeLockedWhileCollapsedComponent = ({
         onSizeChangeEnd={onSizeChangeEnd}
       >
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav (collapsible)" />
+          <DemoPane bg="indigo.3" title="Aside (collapsible)" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -949,7 +949,7 @@ const PersistenceComponent = () => {
   const [size, setSize] = useState(25);
   return (
     <Stack gap="400" h="500px">
-      <Box data-testid="stored-nav">{`stored nav: ${Math.round(size)}`}</Box>
+      <Box data-testid="stored-aside">{`stored aside: ${Math.round(size)}`}</Box>
       <Splitter.Root
         defaultSize={size}
         onSizeChangeEnd={setSize}
@@ -957,7 +957,7 @@ const PersistenceComponent = () => {
         maxSize={95}
       >
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav (hydrated 25%)" />
+          <DemoPane bg="indigo.3" title="Aside (hydrated 25%)" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -982,8 +982,8 @@ export const Persistence: Story = {
     handle.focus();
     await userEvent.keyboard("{ArrowRight}");
     await waitFor(() => {
-      expect(canvas.getByTestId("stored-nav").textContent).not.toBe(
-        "stored nav: 25"
+      expect(canvas.getByTestId("stored-aside").textContent).not.toBe(
+        "stored aside: 25"
       );
     });
   },
@@ -999,7 +999,7 @@ export const NestedSplitters: Story = {
     <Box h="600px">
       <Splitter.Root defaultSize={25}>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav" />
+          <DemoPane bg="indigo.3" title="Aside (outer)" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -1009,7 +1009,7 @@ export const NestedSplitters: Story = {
             </Splitter.Main>
             <Splitter.Handle />
             <Splitter.Aside>
-              <DemoPane bg="rose.3" title="Aside" />
+              <DemoPane bg="rose.3" title="Aside (inner)" />
             </Splitter.Aside>
           </Splitter.Root>
         </Splitter.Main>
@@ -1039,7 +1039,7 @@ export const DisableDoubleClick: Story = {
     <Box h="400px">
       <Splitter.Root {...args}>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Nav" />
+          <DemoPane bg="indigo.3" title="Aside" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -1092,11 +1092,11 @@ const ResponsiveSizesHookComponent = () => {
     <Box w="1000px" h="600px">
       <Splitter.Root {...rootProps} collapsible>
         <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Sidebar (320px)" />
+          <DemoPane bg="indigo.3" title="Aside (320px)" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
-          <DemoPane bg="amber.3" title="Main (remainder)" />
+          <DemoPane bg="amber.3" title="Main" />
         </Splitter.Main>
       </Splitter.Root>
     </Box>
@@ -1197,7 +1197,7 @@ const NestedResponsiveComponent = () => {
     <Box w="100%" minW="1000px" h="600px">
       <Splitter.Root defaultSize={15} minSize={15} maxSize={70}>
         <Splitter.Aside>
-          <DemoPane bg="neutral.3" title="Drag the divider →" />
+          <DemoPane bg="neutral.3" title="Aside (outer)" />
         </Splitter.Aside>
         <Splitter.Handle />
         <Splitter.Main>
@@ -1205,7 +1205,7 @@ const NestedResponsiveComponent = () => {
             <Splitter.Aside>
               <DemoPane
                 bg="indigo.3"
-                title="Responsive aside (≥768px → 320px · else 40%)"
+                title="Aside (responsive: ≥768px → 320px · else 40%)"
               />
             </Splitter.Aside>
             <Splitter.Handle />
@@ -1311,11 +1311,11 @@ const PersistedResponsiveComponent = () => {
       <Box w="100%" h="480px" borderWidth="25" borderColor="neutral.6">
         <Splitter.Root {...rootProps} collapsible>
           <Splitter.Aside>
-            <DemoPane bg="indigo.3" title="Sidebar (persisted)" />
+            <DemoPane bg="indigo.3" title="Aside (persisted)" />
           </Splitter.Aside>
           <Splitter.Handle />
           <Splitter.Main>
-            <DemoPane bg="amber.3" title="Main (remainder)" />
+            <DemoPane bg="amber.3" title="Main" />
           </Splitter.Main>
         </Splitter.Root>
       </Box>

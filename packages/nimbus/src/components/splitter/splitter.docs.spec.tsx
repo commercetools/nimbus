@@ -16,7 +16,7 @@ describe("Splitter - Basic rendering", () => {
     render(
       <NimbusProvider>
         <Splitter.Root defaultSize={30}>
-          <Splitter.Aside>Nav</Splitter.Aside>
+          <Splitter.Aside>Aside</Splitter.Aside>
           <Splitter.Handle />
           <Splitter.Main>Main</Splitter.Main>
         </Splitter.Root>
@@ -47,7 +47,7 @@ describe("Splitter - persistence", () => {
           minSize={5}
           maxSize={95}
         >
-          <Splitter.Aside>Nav</Splitter.Aside>
+          <Splitter.Aside>Aside</Splitter.Aside>
           <Splitter.Handle />
           <Splitter.Main>Main</Splitter.Main>
         </Splitter.Root>
@@ -84,7 +84,7 @@ describe("Splitter - controlled size", () => {
       return (
         <>
           <button type="button" onClick={() => setSize(60)}>
-            widen-nav
+            widen-aside
           </button>
           <Splitter.Root
             size={size}
@@ -92,7 +92,7 @@ describe("Splitter - controlled size", () => {
             minSize={5}
             maxSize={95}
           >
-            <Splitter.Aside>Nav</Splitter.Aside>
+            <Splitter.Aside>Aside</Splitter.Aside>
             <Splitter.Handle />
             <Splitter.Main>Main</Splitter.Main>
           </Splitter.Root>
@@ -111,7 +111,7 @@ describe("Splitter - controlled size", () => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
     });
 
-    await user.click(screen.getByText("widen-nav"));
+    await user.click(screen.getByText("widen-aside"));
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(60);
     });
@@ -133,7 +133,7 @@ describe("Splitter - controlled collapse", () => {
       return (
         <>
           <button type="button" onClick={() => setCollapsed((c) => !c)}>
-            toggle-nav
+            toggle-aside
           </button>
           <Splitter.Root
             defaultSize={30}
@@ -143,7 +143,7 @@ describe("Splitter - controlled collapse", () => {
             collapsed={collapsed}
             onCollapsedChange={setCollapsed}
           >
-            <Splitter.Aside>Nav</Splitter.Aside>
+            <Splitter.Aside>Aside</Splitter.Aside>
             <Splitter.Handle />
             <Splitter.Main>Main</Splitter.Main>
           </Splitter.Root>
@@ -157,7 +157,7 @@ describe("Splitter - controlled collapse", () => {
       </NimbusProvider>
     );
 
-    await user.click(screen.getByText("toggle-nav"));
+    await user.click(screen.getByText("toggle-aside"));
     const handle = await screen.findByRole("separator");
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(0);
@@ -176,7 +176,7 @@ describe("Splitter - Nested", () => {
     render(
       <NimbusProvider>
         <Splitter.Root defaultSize={25}>
-          <Splitter.Aside>Nav</Splitter.Aside>
+          <Splitter.Aside>Aside</Splitter.Aside>
           <Splitter.Handle />
           <Splitter.Main>
             <Splitter.Root defaultSize={35}>
