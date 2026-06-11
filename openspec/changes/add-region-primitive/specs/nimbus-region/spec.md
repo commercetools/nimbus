@@ -3,7 +3,7 @@
 ## Overview
 
 The Region primitive provides headless, component-agnostic **named regions** for
-content projection. A `Region.Root` establishes a scope; `Region.Outlet`s
+content projection. A `Region.Provider` establishes a scope; `Region.Outlet`s
 within it mark named render targets; and `useRegion(name)` projects content into
 a target while reading the target's live DOM node and any value its host
 published.
@@ -32,27 +32,27 @@ shell-owned side panel) without those components depending on it.
 
 ### Requirement: Named-region provider scope
 
-`Region.Root` SHALL establish a named-region scope backed by a registry. When
-a `Region.Root` is already an ancestor, the inner provider SHALL reuse the
+`Region.Provider` SHALL establish a named-region scope backed by a registry. When
+a `Region.Provider` is already an ancestor, the inner provider SHALL reuse the
 ancestor's registry rather than create a new one, so a single namespace is shared
 across nesting.
 
 #### Scenario: Provider establishes a scope
 
-- **WHEN** a subtree is wrapped in `<Region.Root>`
+- **WHEN** a subtree is wrapped in `<Region.Provider>`
 - **THEN** outlets within it SHALL register into that scope's registry
 - **AND** consumers within it SHALL resolve regions from the same registry
 
 #### Scenario: Nested providers share the namespace
 
-- **WHEN** a `Region.Root` is rendered inside another `Region.Root`
+- **WHEN** a `Region.Provider` is rendered inside another `Region.Provider`
 - **THEN** the inner provider SHALL reuse the outer registry
 - **AND** a name registered under either SHALL resolve to the same record from
   anywhere inside the outer provider
 
 #### Scenario: Consuming without a provider
 
-- **WHEN** `useRegion(name)` is called with no `Region.Root` ancestor
+- **WHEN** `useRegion(name)` is called with no `Region.Provider` ancestor
 - **THEN** it SHALL return `node: null` and `value: null`
 - **AND** SHALL NOT throw
 
@@ -143,7 +143,7 @@ be independent of one another.
 
 The registry SHALL be an external store consumed via `useSyncExternalStore`.
 Registering, updating, or clearing a node or value SHALL notify only the
-consumers of that name and SHALL NOT re-render `Region.Root`. A write whose
+consumers of that name and SHALL NOT re-render `Region.Provider`. A write whose
 node or value is reference-equal to the current record SHALL be a no-op (no
 notification), and a record's snapshot identity SHALL change only when its node or
 value actually changes.
@@ -153,7 +153,7 @@ value actually changes.
 - **WHEN** a node or value is published for name `x`
 - **THEN** only consumers of `x` SHALL be notified
 - **AND** consumers of other names SHALL NOT be notified
-- **AND** `Region.Root` SHALL NOT re-render
+- **AND** `Region.Provider` SHALL NOT re-render
 
 #### Scenario: Reference-equal write is a no-op
 

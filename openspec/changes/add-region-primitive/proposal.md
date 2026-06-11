@@ -25,7 +25,7 @@ them by name.
 
 ## What Changes
 
-**Primitive:** `Region` (compound: `Region.Root` / `Region.Outlet`) plus the
+**Primitive:** `Region` (compound: `Region.Provider` / `Region.Outlet`) plus the
 `useRegion` hook. Headless — it renders no visual chrome of its own and owns no
 design tokens.
 
@@ -69,7 +69,7 @@ name regardless of what is between them. Two nested regions are simply two names
 
 ### Provider scope with reuse
 
-`Region.Root` establishes a scope. When a provider is already an ancestor,
+`Region.Provider` establishes a scope. When a provider is already an ancestor,
 its registry is **reused** (the namespace is shared across nesting); otherwise it
 creates and hosts a fresh registry. `useRegion` resolves to `null` (node/value)
 when no provider exists or before an outlet mounts, so it is always safe to call.
@@ -78,7 +78,7 @@ when no provider exists or before an outlet mounts, so it is always safe to call
 
 The registry is an **external store** consumed via `useSyncExternalStore`, not
 React state. Publishing or clearing a node/value notifies only the consumers of
-that name — it never re-renders `Region.Root`. This matters because the
+that name — it never re-renders `Region.Provider`. This matters because the
 provider may wrap an entire application (a shell-owned side panel): projecting
 content or toggling a panel through a published callback must not re-render the
 app. Per-name records are replaced by identity only on real change, so consumer
@@ -88,7 +88,7 @@ snapshots are stable.
 
 `Splitter` keeps its existing controlled `collapsed` / `onCollapsedChange` API
 and gains nothing. The app shell composes the two: wrap the splitter in a
-`Region.Root`, put a `Region.Outlet` in the aside that publishes the collapse
+`Region.Provider`, put a `Region.Outlet` in the aside that publishes the collapse
 controls as its `value`, and let a consumer anywhere project content into the
 pane and open/close it via `useRegion`.
 

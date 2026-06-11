@@ -70,6 +70,29 @@ export const Menu = {
 Note: Every compound component must have a Root component as the first property
 to provide configuration and state management.
 
+#### Headless scope: `.Provider` instead of `.Root`
+
+Name the entry point `.Provider` (not `.Root`) when it mounts **no DOM element
+of its own** — i.e. it is a pure context scope that renders only a context
+provider and/or its `children` (a fragment passthrough). `.Root` is reserved for
+roots that render a real container element (the styled wrapper most compound
+components have). The distinction is the rendered output, not the role: both are
+the first property and establish the component's scope.
+
+```typescript
+// ✅ DOM-mounting root → `.Root`
+export const Menu = { Root: MenuRoot /* renders a <div> wrapper */ };
+
+// ✅ DOM-less context scope → `.Provider`
+export const Region = {
+  Provider: RegionProvider /* renders only children/context */,
+};
+```
+
+`Region.Provider` is the reference example: it returns `<>{children}</>` (or a
+context provider) and never mounts an element. This mirrors standalone providers
+like `NimbusI18nProvider`.
+
 ### 3. Root Accepts Configuration
 
 The Root component receives all theme and component configuration:

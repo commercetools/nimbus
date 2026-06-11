@@ -1,11 +1,11 @@
-import { RegionRoot } from "./region.root";
+import { RegionProvider } from "./region.provider";
 import { RegionOutlet } from "./region.outlet";
 
 /**
  * Region
  * ============================================================
  * A headless, component-agnostic primitive for **named regions** — "render this
- * content over there." A `Region.Root` establishes a scope; `Region.Outlet`s
+ * content over there." A `Region.Provider` establishes a scope; `Region.Outlet`s
  * mark named render targets within it; consumers project content into a target
  * by name with `useRegion(name)`. Projected content paints at the outlet while
  * staying in the author's React tree, so all ancestor context is preserved.
@@ -16,10 +16,10 @@ import { RegionOutlet } from "./region.outlet";
  *
  * @example
  * ```tsx
- * <Region.Root>
+ * <Region.Provider>
  *   <SomeDeeplyNestedThing />
  *   <Region.Outlet name="sidebar" />
- * </Region.Root>
+ * </Region.Provider>
  *
  * // anywhere inside the root:
  * const { Region: Sidebar } = useRegion("sidebar");
@@ -28,12 +28,13 @@ import { RegionOutlet } from "./region.outlet";
  */
 export const Region = {
   /**
-   * # Region.Root
+   * # Region.Provider
    *
-   * Establishes a named-region scope. Reuses an ancestor root's registry if
-   * present, so the namespace is shared across nesting.
+   * Establishes a named-region scope. Reuses an ancestor provider's registry if
+   * present, so the namespace is shared across nesting. Renders no DOM element of
+   * its own — hence `.Provider` rather than `.Root`.
    */
-  Root: RegionRoot,
+  Provider: RegionProvider,
   /**
    * # Region.Outlet
    *
@@ -43,6 +44,6 @@ export const Region = {
 };
 
 // Underscore-prefixed re-exports for react-docgen-typescript prop-table
-// extraction. Consumers should use the namespaced `Region.Root` /
+// extraction. Consumers should use the namespaced `Region.Provider` /
 // `Region.Outlet`.
-export { RegionRoot as _RegionRoot, RegionOutlet as _RegionOutlet };
+export { RegionProvider as _RegionProvider, RegionOutlet as _RegionOutlet };

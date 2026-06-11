@@ -16,7 +16,7 @@ import { Region, useRegion, type RegionOutletProps } from "@commercetools/nimbus
 
 `Region` is the structured form of `createPortal`. Three pieces:
 
-- **`Region.Root`** — establishes a named-region scope. Wrap it around the
+- **`Region.Provider`** — establishes a named-region scope. Wrap it around the
   subtree that should share a set of regions. Nested roots reuse the nearest
   ancestor's registry, so the namespace is shared.
 - **`Region.Outlet name="…"`** — marks where a named region renders. It registers
@@ -28,7 +28,7 @@ import { Region, useRegion, type RegionOutletProps } from "@commercetools/nimbus
 
 Regions are addressed by **name**, not by tree position — a consumer reaches a
 region by name regardless of how deeply nested it is. `useRegion` resolves to
-`null` (node/value) before an outlet mounts or without a `Region.Root` ancestor,
+`null` (node/value) before an outlet mounts or without a `Region.Provider` ancestor,
 so it is always safe to call.
 
 ### Basic usage
@@ -50,7 +50,7 @@ const Sidebar = () => {
 };
 
 const App = () => (
-  <Region.Root>
+  <Region.Provider>
     <Stack direction="row" gap="400">
       <Box flexGrow="1" p="300" bg="amber.3">
         <Text>Content area</Text>
@@ -60,7 +60,7 @@ const App = () => (
         <Region.Outlet name="getting-started-sidebar" />
       </Box>
     </Stack>
-  </Region.Root>
+  </Region.Provider>
 );
 ```
 
@@ -107,7 +107,7 @@ const ShellSidePanel = ({ children }) => {
   );
 
   return (
-    <Region.Root>
+    <Region.Provider>
       <Splitter.Root collapsible collapsed={!open} onCollapsedChange={(c) => setOpen(!c)}>
         <Splitter.Main>{children}</Splitter.Main>
         <Splitter.Handle />
@@ -115,7 +115,7 @@ const ShellSidePanel = ({ children }) => {
           <Region.Outlet name="app-side-panel" value={controller} />
         </Splitter.Aside>
       </Splitter.Root>
-    </Region.Root>
+    </Region.Provider>
   );
 };
 
@@ -133,13 +133,13 @@ const SidePanel = ({ panel }) => {
 
 ## Performance
 
-`Region.Root` may wrap an entire application, so publishing into a region must
+`Region.Provider` may wrap an entire application, so publishing into a region must
 not re-render the app. That holds because of four things — one in the primitive,
 three at your call site:
 
 1. **External store (primitive).** The registry is read via
    `useSyncExternalStore`. Publishing a node or value notifies only that name's
-   consumers; `Region.Root` itself never re-renders.
+   consumers; `Region.Provider` itself never re-renders.
 2. **Stable `children` (host).** Pass the app through as a `children` prop so the
    host's own state changes (e.g. a collapse toggle) bail out of the app subtree
    rather than re-rendering it.

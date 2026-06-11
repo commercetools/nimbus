@@ -1,17 +1,17 @@
 import { useContext, useRef } from "react";
 import { createRegionRegistry, RegionRegistryContext } from "./region.registry";
-import type { RegionRootProps, RegionRegistry } from "./region.types";
+import type { RegionProviderProps, RegionRegistry } from "./region.types";
 
 /**
  * Establishes a named-region scope. Outlets within it register by name; consumers
- * within it project into those outlets. Reuse-or-create: if a `Region.Root` is
+ * within it project into those outlets. Reuse-or-create: if a `Region.Provider` is
  * already above this one, its registry is reused (so the namespace is shared
- * across nesting); otherwise this root creates and hosts the registry.
+ * across nesting); otherwise this provider creates and hosts the registry.
  *
  * Wrap it around any subtree that should share a set of regions — e.g. around a
  * `Splitter` so a consumer can project into a pane.
  */
-export const RegionRoot = ({ children }: RegionRootProps) => {
+export const RegionProvider = ({ children }: RegionProviderProps) => {
   const parent = useContext(RegionRegistryContext);
   const ownRef = useRef<RegionRegistry | null>(null);
   if (!parent && !ownRef.current) ownRef.current = createRegionRegistry();
@@ -26,4 +26,4 @@ export const RegionRoot = ({ children }: RegionRootProps) => {
   );
 };
 
-RegionRoot.displayName = "Region.Root";
+RegionProvider.displayName = "Region.Provider";

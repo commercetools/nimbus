@@ -14,21 +14,21 @@ import { useRegion } from "./use-region";
 
 /**
  * `Region` is a headless, component-agnostic primitive for named regions: a
- * `Region.Root` scope, `Region.Outlet`s as named render targets, and
+ * `Region.Provider` scope, `Region.Outlet`s as named render targets, and
  * `useRegion(name)` to project content into them (and read a `value` an outlet
  * publishes — e.g. control callbacks). It is standalone; the last story composes
  * it with a `Splitter` to build a shell-owned, remotely-controlled side panel
  * without the Splitter knowing anything about regions.
  */
-const meta: Meta<typeof Region.Root> = {
+const meta: Meta<typeof Region.Provider> = {
   title: "Components/Region",
-  component: Region.Root,
+  component: Region.Provider,
   parameters: { layout: "padded" },
   tags: ["autodocs"],
 };
 
 export default meta;
-type Story = StoryObj<typeof Region.Root>;
+type Story = StoryObj<typeof Region.Provider>;
 
 /** A consumer authored far from the outlet that projects into it by name. */
 const Projector = () => {
@@ -44,7 +44,7 @@ const Projector = () => {
 
 export const ProjectIntoNamedOutlet: Story = {
   render: () => (
-    <Region.Root>
+    <Region.Provider>
       <Stack direction="row" gap="400">
         <Box flexGrow="1" p="200" bg="amber.3">
           <Box mb="200">Content area (authors the projected node)</Box>
@@ -54,7 +54,7 @@ export const ProjectIntoNamedOutlet: Story = {
           <Region.Outlet name="demo-sidebar" />
         </Box>
       </Stack>
-    </Region.Root>
+    </Region.Provider>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -98,9 +98,9 @@ export const NullBeforeOutletMounts: Story = {
       );
     };
     return (
-      <Region.Root>
+      <Region.Provider>
         <Demo />
-      </Region.Root>
+      </Region.Provider>
     );
   },
   play: async ({ canvasElement, step }) => {
@@ -185,7 +185,7 @@ const ShellSidePanel = () => {
   );
 
   return (
-    <Region.Root>
+    <Region.Provider>
       <Box h="360px" width="100%" borderWidth="25" borderColor="neutral.6">
         <Splitter.Root
           collapsible
@@ -207,7 +207,7 @@ const ShellSidePanel = () => {
           </Splitter.Aside>
         </Splitter.Root>
       </Box>
-    </Region.Root>
+    </Region.Provider>
   );
 };
 

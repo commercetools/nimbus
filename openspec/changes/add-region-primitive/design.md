@@ -47,7 +47,7 @@ approach makes awkward.
 
 ## Decision 4: External store, not React state (the performance contract)
 
-A `Region.Root` may wrap an entire application. If the registry were React
+A `Region.Provider` may wrap an entire application. If the registry were React
 state, every `setNode` / `setValue` would re-render the provider and therefore
 the whole subtree. So the registry is an **external store** read via
 `useSyncExternalStore`:

@@ -22,7 +22,7 @@ export type RegionRecord<T = unknown> = {
  *
  * Deliberately component-agnostic and **nesting-agnostic** — names, not tree
  * position, identify a region. It is an external store (not React state) so
- * publishing a node or value never re-renders the `Region.Root` (which may
+ * publishing a node or value never re-renders the `Region.Provider` (which may
  * wrap a whole app); only the consumers of that name re-render, via
  * `useSyncExternalStore`.
  */
@@ -66,8 +66,8 @@ export type RegionOutletProps = ComponentPropsWithoutRef<"div"> & {
   ref?: Ref<HTMLDivElement>;
 };
 
-/** Props for `<Region.Root>`. */
-export type RegionRootProps = {
+/** Props for `<Region.Provider>`. */
+export type RegionProviderProps = {
   /** The subtree that may host outlets and project into them. */
   children: ReactNode;
 };

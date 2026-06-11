@@ -18,7 +18,7 @@
 - [x] 2.1 In `region.types.ts`, define `RegionRecord<T>` (`{ node, value }`),
       `RegionRegistry` (`get` / `setNode` / `setValue` / `subscribe`),
       `RegionPortal`, `RegionOutletProps` (`name`, optional `value`, `ref`,
-      standard div props), `RegionRootProps`, and `UseRegionResult<T>`
+      standard div props), `RegionProviderProps`, and `UseRegionResult<T>`
       (`{ node, value, Region }`). Strict typing; `value` is opaque (`unknown`)
       with a generic on the consumer hook.
 
@@ -32,7 +32,7 @@
 
 ## 4. Components and hook
 
-- [x] 4.1 `region.root.tsx` `Region.Root`: reuse-or-create the registry
+- [x] 4.1 `region.provider.tsx` `Region.Provider`: reuse-or-create the registry
       (reuse an ancestor's; otherwise host a new one).
 - [x] 4.2 `region.outlet.tsx` `Region.Outlet`: stable merged ref that
       registers/clears the node under `name`; publishes the optional `value` via

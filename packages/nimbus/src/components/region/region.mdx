@@ -25,7 +25,7 @@ Region is a headless primitive for **named content projection**: render content
 into a slot somewhere else in the layout — an aside, a toolbar, a detail pane —
 from a component that lives somewhere else entirely, even a different package.
 
-It is the structured form of `createPortal`. A `Region.Root` establishes a
+It is the structured form of `createPortal`. A `Region.Provider` establishes a
 scope, `Region.Outlet`s mark named render targets within it, and
 `useRegion(name)` projects content into a target. Projected content paints at
 the outlet but stays a child of its author in the React tree, so all ancestor
@@ -59,7 +59,7 @@ see the implementation tab.
 
 ## Anatomy
 
-- **`Region.Root`** — establishes a named-region scope. Reuses an ancestor
+- **`Region.Provider`** — establishes a named-region scope. Reuses an ancestor
   provider's scope when nested, so the namespace is shared.
 - **`Region.Outlet`** — marks where a named region renders; registers its DOM
   node and can publish a value for that region.
@@ -82,7 +82,7 @@ const Sidebar = () => {
 };
 
 const App = () => (
-  <Region.Root>
+  <Region.Provider>
     <Stack direction="row" gap="400">
       <Box flexGrow="1" p="300" bg="amber.3">
         <Text>Content area</Text>
@@ -92,6 +92,6 @@ const App = () => (
         <Region.Outlet name="docs-sidebar" />
       </Box>
     </Stack>
-  </Region.Root>
+  </Region.Provider>
 );
 ```

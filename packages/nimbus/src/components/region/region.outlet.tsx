@@ -9,7 +9,7 @@ import type { RegionOutletProps } from "./region.types";
  * publishes a `value` (control callbacks + state) for that region. Renders a
  * plain `div` that fills its parent by default; pass `style` / props to adjust.
  *
- * A `Region.Root` must be an ancestor; without one the outlet still renders
+ * A `Region.Provider` must be an ancestor; without one the outlet still renders
  * but registers nowhere (no consumer can target it).
  */
 export const RegionOutlet = ({
