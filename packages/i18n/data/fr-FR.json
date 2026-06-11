@@ -81,11 +81,11 @@
   },
   "Nimbus.DataTable.dragRow": {
     "developer_comment": "aria-label for the drag handle button on each row",
-    "string": "Drag to reorder"
+    "string": "Glisser pour réorganiser"
   },
   "Nimbus.DataTable.dragRowsColumn": {
     "developer_comment": "aria-label for the drag rows column header",
-    "string": "Reorder rows"
+    "string": "Réorganiser les lignes"
   },
   "Nimbus.DataTable.expandRows": {
     "developer_comment": "aria-label for the expand rows column header",
