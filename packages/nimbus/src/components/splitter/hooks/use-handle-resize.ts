@@ -85,7 +85,7 @@ export const useHandleResize = ({
       dragAccumRef.current += (deltaPx / containerSize) * 100;
       const wholeDelta = dragAccumRef.current;
       if (Math.abs(wholeDelta) < MOVE_TOLERANCE) return;
-      dragAccumRef.current = 0;
+      dragAccumRef.current -= wholeDelta;
       applyDelta(wholeDelta, false);
     },
     onMoveEnd() {
