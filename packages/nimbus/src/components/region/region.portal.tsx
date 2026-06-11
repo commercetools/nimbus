@@ -30,7 +30,7 @@ export const createRegionPortal = (name: string): RegionPortal => {
     // Declare this portal as the region's single filler while mounted; a second
     // concurrent filler for the same name warns in development (their content
     // would otherwise stack into the one target in an undefined order).
-    useEffect(() => registry?.claim(name, "filler"), [registry]);
+    useEffect(() => registry?.claim(name, "filler"), [registry, name]);
     const node = record?.node ?? null;
     return node ? createPortal(children, node) : null;
   };

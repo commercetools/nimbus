@@ -53,7 +53,7 @@ export const RegionTarget = ({ name, value, ref, ...props }: RegionProps) => {
   useEffect(() => {
     if (value === undefined) return;
     registry?.setValue(name, value);
-    return () => registry?.setValue(name, null);
+    return () => registry?.clearValue(name, value);
   }, [registry, name, value]);
 
   // `display: contents` — the target generates no box; projected children lay

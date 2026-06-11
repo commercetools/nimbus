@@ -22,6 +22,7 @@ export const useRegion = <T = unknown>(name?: string): UseRegionResult<T> => {
   const registry = useContext(RegionRegistryContext);
 
   // Cache one stable portal per name so the projected subtree never remounts.
+  // Intentionally unbounded — names should be static strings, not dynamic IDs.
   const cacheRef = useRef<Map<string, RegionPortal>>(new Map());
   let Region: RegionPortal = EmptyRegion;
   if (name) {

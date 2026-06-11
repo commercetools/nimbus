@@ -46,6 +46,10 @@ export const createRegionRegistry = (): RegionRegistry => {
       if (records.get(name)?.node === node) update(name, { node: null });
     },
     setValue: (name, value) => update(name, { value }),
+    clearValue: (name, expectedValue) => {
+      if (records.get(name)?.value === expectedValue)
+        update(name, { value: null });
+    },
     claim: (name, role) => {
       let count = claims.get(name);
       if (!count) {

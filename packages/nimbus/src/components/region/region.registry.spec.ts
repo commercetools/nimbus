@@ -150,6 +150,44 @@ describe("createRegionRegistry", () => {
     });
   });
 
+  describe("clearValue (owner-checked release)", () => {
+    it("clears the value when the expected value still matches", () => {
+      const registry = createRegionRegistry();
+      const val = { v: 1 };
+      registry.setValue("a", val);
+
+      registry.clearValue("a", val);
+
+      expect(registry.get("a")).toBeNull();
+    });
+
+    it("is a no-op when a different value has taken the slot", () => {
+      const registry = createRegionRegistry();
+      const stale = { v: 1 };
+      const fresh = { v: 2 };
+      registry.setValue("a", stale);
+      registry.setValue("a", fresh);
+
+      registry.clearValue("a", stale);
+
+      expect(registry.get("a")?.value).toBe(fresh);
+    });
+
+    it("does not notify when the owner-check fails", () => {
+      const registry = createRegionRegistry();
+      const stale = { v: 1 };
+      const fresh = { v: 2 };
+      registry.setValue("a", stale);
+      registry.setValue("a", fresh);
+      const listener = vi.fn();
+      registry.subscribe("a", listener);
+
+      registry.clearValue("a", stale);
+
+      expect(listener).not.toHaveBeenCalled();
+    });
+  });
+
   describe("claim (single-occupancy detection)", () => {
     it("does not warn for a lone target or a lone filler", () => {
       const registry = createRegionRegistry();

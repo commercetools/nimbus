@@ -41,6 +41,11 @@ export type RegionRegistry = {
   clearNode: (name: string, node: HTMLElement | null) => void;
   /** Publish (or clear) the value for `name`. No-ops when reference-equal. */
   setValue: (name: string, value: unknown) => void;
+  /**
+   * Clear `name`'s value **only if** `expectedValue` is the one currently
+   * registered — an owner-checked release mirroring {@link clearNode}.
+   */
+  clearValue: (name: string, expectedValue: unknown) => void;
   /** Subscribe to changes (node or value) for a single `name`. Returns an unsubscribe fn. */
   subscribe: (name: string, listener: () => void) => () => void;
   /**
