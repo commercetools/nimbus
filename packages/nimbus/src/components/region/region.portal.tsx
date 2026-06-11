@@ -5,8 +5,8 @@ import type { RegionPortal } from "./region.types";
 
 /**
  * Build a stable portal component bound to one region `name`. The returned
- * component renders its `children` into that region's outlet node, or `null`
- * until the outlet mounts. It resolves the registry from context at its own
+ * component renders its `children` into that region's target node, or `null`
+ * until the target mounts. It resolves the registry from context at its own
  * render position, so it targets the correct (shared, outermost) registry
  * regardless of where the consumer renders it.
  *
@@ -24,7 +24,7 @@ export const createRegionPortal = (name: string): RegionPortal => {
         ] as const,
       [registry]
     );
-    // Server snapshot is `null`: no outlets exist during SSR and `createPortal`
+    // Server snapshot is `null`: no targets exist during SSR and `createPortal`
     // is client-only, so the portal renders nothing until hydration.
     const record = useSyncExternalStore(subscribe, getSnapshot, () => null);
     const node = record?.node ?? null;

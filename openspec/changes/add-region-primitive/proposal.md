@@ -25,54 +25,68 @@ them by name.
 
 ## What Changes
 
-**Primitive:** `Region` (compound: `Region.Provider` / `Region.Outlet`) plus the
-`useRegion` hook. Headless — it renders no visual chrome of its own and owns no
-design tokens.
+**Primitive:** `Region` — a **target** component `<Region name>` with a
+`Region.Provider` static — plus the `useRegion` hook. Headless: it renders no
+visual chrome of its own and owns no design tokens.
 
 ### Named regions carrying a node and an optional value
 
 A region is identified by a **flat string name** and holds two things:
 
-- a **node** — the outlet's DOM element, where projected content paints;
-- an optional **value** — data the outlet's host publishes for consumers,
+- a **node** — the target's DOM element, where projected content paints (an
+  internal detail; consumers don't read it);
+- an optional **value** — data the target's host publishes for consumers,
   typically control callbacks plus reactive state (e.g. a panel's `expand` /
   `collapse` / `isCollapsed`).
 
 ```tsx
 // where content lands; may also publish a value for consumers
-<Region.Outlet name="app-side-panel" value={controller} />
+<Region name="app-side-panel" value={controller} />
 ```
+
+### Layout-transparent target (`display: contents`)
+
+`createPortal` requires a real DOM node as its container — there is no API to
+portal "into a position." So the target must render an element. It renders that
+element with **`display: contents`**, so the element generates **no box of its
+own**: projected children lay out as direct children of the target's parent (a
+flex/grid parent treats the projected root as a direct child). This gives precise
+layout with no wrapper box. The target is a `chakra.div`, so it accepts style
+props; `display` can be overridden to make it a real box.
 
 ### Projection that preserves the React tree
 
-`useRegion(name)` returns a **stable** portal component (`Region`), plus the
-outlet's live `node` and published `value`:
+`useRegion(name)` returns a **stable** portal component (`Region`) plus the
+target's published `value`:
 
 ```tsx
 const { Region: Aside, value } = useRegion<PanelControls>("app-side-panel");
 value?.expand();
-return <Aside>{panel}</Aside>; // paints at the outlet, stays in THIS React tree
+return <Aside>{panel}</Aside>; // paints at the target, stays in THIS React tree
 ```
 
 Because projection uses `createPortal`, content authored in a deeply nested
 consumer keeps every ancestor context (routing, intl, data client, permissions)
-while painting at the outlet's DOM location. The returned `Region` component has
+while painting at the target's DOM location. The returned `Region` component has
 stable identity, so the projected subtree is never torn down and remounted on
 unrelated re-renders.
 
 ### Flat, nesting-agnostic namespace
 
 Regions are addressed by name, not by tree position. A consumer nested under
-several providers/outlets reaches a specific region (e.g. a shell-level one) by
+several providers/targets reaches a specific region (e.g. a shell-level one) by
 name regardless of what is between them. Two nested regions are simply two names
 — there is no slot-accumulation or context-chain resolution.
 
-### Provider scope with reuse
+### Provider scope with reuse (ambient in NimbusProvider)
 
 `Region.Provider` establishes a scope. When a provider is already an ancestor,
 its registry is **reused** (the namespace is shared across nesting); otherwise it
-creates and hosts a fresh registry. `useRegion` resolves to `null` (node/value)
-when no provider exists or before an outlet mounts, so it is always safe to call.
+creates and hosts a fresh registry. It renders no DOM element of its own — hence
+`.Provider`, not `.Root`. `NimbusProvider` mounts one ambiently, so a Nimbus app
+gets a shared, app-wide region scope without wrapping anything; `useRegion`
+resolves to a `null` value (and a portal that renders nothing) before a target
+mounts, so it is always safe to call.
 
 ### External-store backing (performance)
 
@@ -87,19 +101,19 @@ snapshots are stable.
 ### Composition with Splitter (no Splitter change)
 
 `Splitter` keeps its existing controlled `collapsed` / `onCollapsedChange` API
-and gains nothing. The app shell composes the two: wrap the splitter in a
-`Region.Provider`, put a `Region.Outlet` in the aside that publishes the collapse
-controls as its `value`, and let a consumer anywhere project content into the
-pane and open/close it via `useRegion`.
+and gains nothing. The app shell composes the two: put a `<Region name>` in the
+aside that publishes the collapse controls as its `value`, and let a consumer
+anywhere fill the pane and open/close it via `useRegion` (the scope comes from the
+ambient `NimbusProvider`).
 
 ### Explicit non-goals
 
 - **No visual rendering, recipe, slots, or design tokens.** `Region` is headless;
-  `Region.Outlet` is a plain `div` that fills its parent by default and is
-  otherwise unstyled. There is nothing to theme, so it registers no Chakra recipe.
+  the target is a layout-transparent `chakra.div` (`display: contents`) — it
+  accepts style props but has nothing to theme, so it registers no Chakra recipe.
 - **No i18n.** It renders no human-facing text of its own.
-- **No automatic mounting of outlets.** Hosts place `Region.Outlet` explicitly;
-  the primitive does not inject outlets into other components.
+- **No automatic mounting of targets.** Hosts place `<Region name>` explicitly;
+  the primitive does not inject targets into other components.
 - **No cross-document / cross-window portalling.** Same-document only, like
   `createPortal`.
 - **No replacement for React Aria portal utilities.** `Region` is about
@@ -111,6 +125,9 @@ pane and open/close it via `useRegion`.
 - **Affected code:**
   - **NEW**: `packages/nimbus/src/components/region/`
   - **MODIFIED**: `packages/nimbus/src/components/index.ts` (export `./region`)
+  - **MODIFIED**: `packages/nimbus/src/components/nimbus-provider/nimbus-provider.tsx`
+    (mounts an ambient `Region.Provider`)
 - **No Chakra recipe / slot-recipe registration** (headless — nothing to theme).
 - **Consumers:** none — new primitive, no breaking changes. `Splitter` is
-  unchanged and composes with `Region` in consumer code.
+  unchanged and composes with `Region` in consumer code. `NimbusProvider` gains an
+  ambient region scope (additive; existing apps are unaffected).

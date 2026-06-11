@@ -84,9 +84,10 @@ the first property and establish the component's scope.
 export const Menu = { Root: MenuRoot /* renders a <div> wrapper */ };
 
 // ✅ DOM-less context scope → `.Provider`
-export const Region = {
+// (Region's main export is itself a component, so `.Provider` is a static.)
+export const Region = Object.assign(RegionTarget, {
   Provider: RegionProvider /* renders only children/context */,
-};
+});
 ```
 
 `Region.Provider` is the reference example: it returns `<>{children}</>` (or a

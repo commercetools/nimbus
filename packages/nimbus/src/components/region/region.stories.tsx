@@ -13,53 +13,53 @@ import { Region } from "./region";
 import { useRegion } from "./use-region";
 
 /**
- * `Region` is a headless, component-agnostic primitive for named regions: a
- * `Region.Provider` scope, `Region.Outlet`s as named render targets, and
- * `useRegion(name)` to project content into them (and read a `value` an outlet
- * publishes — e.g. control callbacks). It is standalone; the last story composes
- * it with a `Splitter` to build a shell-owned, remotely-controlled side panel
- * without the Splitter knowing anything about regions.
+ * `Region` is a headless, component-agnostic primitive for named regions. Place
+ * a target with `<Region name="…" />` to mark where a region renders, then fill
+ * it from anywhere with `useRegion(name)`. The scope (`Region.Provider`) is
+ * mounted ambiently by `NimbusProvider`, so these stories never wrap one
+ * themselves. The target is layout-transparent (`display: contents`), so
+ * projected content lays out as a direct child of the target's parent. The last
+ * story composes it with a `Splitter` to build a shell-owned, remotely-controlled
+ * side panel without the Splitter knowing anything about regions.
  */
-const meta: Meta<typeof Region.Provider> = {
+const meta: Meta<typeof Region> = {
   title: "Components/Region",
-  component: Region.Provider,
+  component: Region,
   parameters: { layout: "padded" },
   tags: ["autodocs"],
 };
 
 export default meta;
-type Story = StoryObj<typeof Region.Provider>;
+type Story = StoryObj<typeof Region>;
 
-/** A consumer authored far from the outlet that projects into it by name. */
+/** A consumer authored far from the target that fills it by name. */
 const Projector = () => {
   const { Region: Sidebar } = useRegion("demo-sidebar");
   return (
     <Sidebar>
       <Box data-testid="projected" p="200" bg="teal.3">
-        Projected into the named outlet.
+        Projected into the named region.
       </Box>
     </Sidebar>
   );
 };
 
-export const ProjectIntoNamedOutlet: Story = {
+export const ProjectIntoNamedRegion: Story = {
   render: () => (
-    <Region.Provider>
-      <Stack direction="row" gap="400">
-        <Box flexGrow="1" p="200" bg="amber.3">
-          <Box mb="200">Content area (authors the projected node)</Box>
-          <Projector />
-        </Box>
-        <Box id="sidebar-host" w="240px" minH="160px" bg="neutral.3" p="200">
-          <Region.Outlet name="demo-sidebar" />
-        </Box>
-      </Stack>
-    </Region.Provider>
+    <Stack direction="row" gap="400">
+      <Box flexGrow="1" p="200" bg="amber.3">
+        <Box mb="200">Content area (authors the projected node)</Box>
+        <Projector />
+      </Box>
+      <Box id="sidebar-host" w="240px" minH="160px" bg="neutral.3" p="200">
+        <Region name="demo-sidebar" />
+      </Box>
+    </Stack>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     await step(
-      "Content authored in one place paints at the outlet",
+      "Content authored in one place paints at the target",
       async () => {
         const host = canvasElement.querySelector<HTMLElement>("#sidebar-host")!;
         const projected = canvas.getByTestId("projected");
@@ -69,54 +69,40 @@ export const ProjectIntoNamedOutlet: Story = {
   },
 };
 
-/** Toggling the projected content mounts/unmounts it at the outlet. */
-const ToggleProjector = () => {
+/** Projects unconditionally; the target is mounted on demand. */
+const ToggleDemo = () => {
   const { Region: Slot } = useRegion("toggle-slot");
+  const [mounted, setMounted] = useState(false);
   return (
-    <Stack gap="200">
+    <Stack gap="300">
+      <Button data-testid="mount-target" onPress={() => setMounted(true)}>
+        Mount target
+      </Button>
       <Slot>
         <Box data-testid="toggle-content" p="200" bg="purple.3">
           Now you see me.
         </Box>
       </Slot>
+      {mounted && <Region name="toggle-slot" data-testid="slot-target" />}
     </Stack>
   );
 };
 
-export const NullBeforeOutletMounts: Story = {
-  render: () => {
-    const Demo = () => {
-      const { node } = useRegion("toggle-slot");
-      return (
-        <Stack gap="300">
-          <Box data-testid="node-status">
-            {node ? "outlet-present" : "outlet-absent"}
-          </Box>
-          <ToggleProjector />
-          <Region.Outlet name="toggle-slot" data-testid="slot-outlet" />
-        </Stack>
-      );
-    };
-    return (
-      <Region.Provider>
-        <Demo />
-      </Region.Provider>
-    );
-  },
+export const NullBeforeTargetMounts: Story = {
+  render: () => <ToggleDemo />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    await step("Region resolves once the outlet mounts", async () => {
-      await waitFor(() =>
-        expect(canvas.getByTestId("node-status").textContent).toBe(
-          "outlet-present"
-        )
-      );
+    await step("Projection renders nothing before the target mounts", () => {
+      expect(canvas.queryByTestId("toggle-content")).toBeNull();
     });
-    await step("Projected content lands inside the outlet", async () => {
-      const outlet = canvas.getByTestId("slot-outlet");
-      await expect(outlet.contains(canvas.getByTestId("toggle-content"))).toBe(
-        true
-      );
+    await step("Content lands inside the target once it mounts", async () => {
+      await userEvent.click(canvas.getByTestId("mount-target"));
+      await waitFor(() => {
+        const target = canvas.getByTestId("slot-target");
+        expect(target.contains(canvas.getByTestId("toggle-content"))).toBe(
+          true
+        );
+      });
     });
   },
 };
@@ -136,8 +122,8 @@ type PanelControls = {
 
 /**
  * A consumer that owns no splitter markup. It reads the region's `value` for the
- * panel controls and projects content into the aside via the region portal —
- * the shell-owned-sidebar pattern.
+ * panel controls and fills the aside via the region portal — the
+ * shell-owned-sidebar pattern.
  */
 const SidePanelConsumer = () => {
   const { Region: Aside, value } = useRegion<PanelControls>("app-side-panel");
@@ -185,29 +171,27 @@ const ShellSidePanel = () => {
   );
 
   return (
-    <Region.Provider>
-      <Box h="360px" width="100%" borderWidth="25" borderColor="neutral.6">
-        <Splitter.Root
-          collapsible
-          collapsed={!open}
-          onCollapsedChange={(c) => setOpen(!c)}
-          defaultSize={30}
-          minSize={20}
-          collapsedSize={0}
-        >
-          <Splitter.Main>
-            <Box p="400" bg="amber.3" h="100%">
-              <Text>Main content</Text>
-              <SidePanelConsumer />
-            </Box>
-          </Splitter.Main>
-          <Splitter.Handle />
-          <Splitter.Aside id="shell-aside">
-            <Region.Outlet name="app-side-panel" value={controller} />
-          </Splitter.Aside>
-        </Splitter.Root>
-      </Box>
-    </Region.Provider>
+    <Box h="360px" width="100%" borderWidth="25" borderColor="neutral.6">
+      <Splitter.Root
+        collapsible
+        collapsed={!open}
+        onCollapsedChange={(c) => setOpen(!c)}
+        defaultSize={30}
+        minSize={20}
+        collapsedSize={0}
+      >
+        <Splitter.Main>
+          <Box p="400" bg="amber.3" h="100%">
+            <Text>Main content</Text>
+            <SidePanelConsumer />
+          </Box>
+        </Splitter.Main>
+        <Splitter.Handle />
+        <Splitter.Aside id="shell-aside">
+          <Region name="app-side-panel" value={controller} />
+        </Splitter.Aside>
+      </Splitter.Root>
+    </Box>
   );
 };
 

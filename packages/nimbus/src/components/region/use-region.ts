@@ -9,14 +9,14 @@ EmptyRegion.displayName = "Region.Portal(none)";
 
 /**
  * Access a named region: a stable `Region` portal component to project content
- * into it, the value its outlet published (control callbacks + state), and the
- * live outlet `node` for imperative use. `node` / `value` are `null` until an
- * outlet with that name mounts, so it is safe to call before the outlet exists.
+ * into it, plus the `value` its target published (control callbacks + state).
+ * `value` is `null` until a target with that name mounts and publishes one, so
+ * it is safe to call before the target exists.
  *
  * @example
  * const { Region, value } = useRegion<PanelControls>("my-sidebar");
  * value?.expand();
- * return <Region>{content}</Region>; // paints at the outlet, stays in this tree
+ * return <Region>{content}</Region>; // paints at the target, stays in this tree
  */
 export const useRegion = <T = unknown>(name?: string): UseRegionResult<T> => {
   const registry = useContext(RegionRegistryContext);
@@ -47,8 +47,7 @@ export const useRegion = <T = unknown>(name?: string): UseRegionResult<T> => {
   const record = useSyncExternalStore(subscribe, getSnapshot, () => null);
 
   return {
-    node: record?.node ?? null,
-    value: (record?.value ?? null) as T | null,
     Region,
+    value: (record?.value ?? null) as T | null,
   };
 };

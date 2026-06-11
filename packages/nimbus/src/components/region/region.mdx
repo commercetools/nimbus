@@ -4,7 +4,7 @@ title: Region
 exportName: Region
 description:
   A headless primitive for named content projection — render content into a
-  named outlet elsewhere in the layout while it stays in your React tree.
+  named region elsewhere in the layout while it stays in your React tree.
 lifecycleState: Beta
 order: 999
 menu:
@@ -25,13 +25,17 @@ Region is a headless primitive for **named content projection**: render content
 into a slot somewhere else in the layout — an aside, a toolbar, a detail pane —
 from a component that lives somewhere else entirely, even a different package.
 
-It is the structured form of `createPortal`. A `Region.Provider` establishes a
-scope, `Region.Outlet`s mark named render targets within it, and
-`useRegion(name)` projects content into a target. Projected content paints at
-the outlet but stays a child of its author in the React tree, so all ancestor
-context — routing, intl, data clients, permissions — is preserved. An outlet can
-also publish a **value** (typically control callbacks plus state), so the
-target's host can hand consumers a way to drive it.
+It is the structured form of `createPortal`. You **place a target** with
+`<Region name="…" />` to mark where a region renders, and **fill it** from
+anywhere with `useRegion(name)`. Projected content paints at the target but stays
+a child of its author in the React tree, so all ancestor context — routing, intl,
+data clients, permissions — is preserved. A target can also publish a **value**
+(typically control callbacks plus state), so its host can hand consumers a way to
+drive it.
+
+The scope, `Region.Provider`, is mounted **ambiently inside `NimbusProvider`**, so
+in a Nimbus app you place targets and call `useRegion` without ever wrapping a
+provider yourself.
 
 Region renders no visual chrome of its own; it is a coordination primitive, not
 a styled component.
@@ -47,8 +51,8 @@ a styled component.
 
 For a user-resizable two-pane layout, compose Region with
 [Splitter](/components/layout/splitter): mount the splitter, put a
-`Region.Outlet` in the aside, and let a consumer project into it and toggle it —
-see the implementation tab.
+`<Region name="…" />` in the aside, and let a consumer fill it and toggle it — see
+the implementation tab.
 
 ## When not to use
 
@@ -59,39 +63,46 @@ see the implementation tab.
 
 ## Anatomy
 
-- **`Region.Provider`** — establishes a named-region scope. Reuses an ancestor
-  provider's scope when nested, so the namespace is shared.
-- **`Region.Outlet`** — marks where a named region renders; registers its DOM
-  node and can publish a value for that region.
-- **`useRegion(name)`** — returns a stable `Region` portal component for the
-  named region, plus its live `node` and published `value`. Resolves to `null`
-  safely before an outlet mounts.
+- **`<Region name="…" />`** — the **target**: marks where a named region renders
+  and registers its DOM node. It is layout-transparent (`display: contents`), so
+  projected content lays out as a direct child of the target's parent — no extra
+  wrapper box. Backed by a `chakra.div`, so it accepts style props; pass
+  `display="block"` (etc.) if you want it to be a real box. Can publish a `value`.
+- **`useRegion(name)`** — returns a stable `Region` portal component to fill the
+  named region, plus the `value` its target published. Resolves safely (`null`
+  value, portal renders nothing) before a target mounts.
+- **`Region.Provider`** — the scope. Mounted ambiently by `NimbusProvider`;
+  reuses an ancestor's scope when nested, so you rarely write it directly.
+
+Note the two sides share the name `Region`: the top-level `<Region name>` is the
+**target**, while the `Region` you get from `useRegion` is the **filler**. Place
+with the former, fill with the latter.
 
 ## Example
 
 ```jsx live-dev
 const Sidebar = () => {
-  const { Region } = useRegion("docs-sidebar");
+  // fill the region — `Region` here is the filler from the hook
+  const { Region: Filler } = useRegion("docs-sidebar");
   return (
-    <Region>
+    <Filler>
       <Box p="300" bg="teal.3">
-        Authored over here, painted in the outlet over there.
+        Authored over here, painted in the target over there.
       </Box>
-    </Region>
+    </Filler>
   );
 };
 
 const App = () => (
-  <Region.Provider>
-    <Stack direction="row" gap="400">
-      <Box flexGrow="1" p="300" bg="amber.3">
-        <Text>Content area</Text>
-        <Sidebar />
-      </Box>
-      <Box width="240px" minHeight="120px" bg="neutral.3" p="200">
-        <Region.Outlet name="docs-sidebar" />
-      </Box>
-    </Stack>
-  </Region.Provider>
+  // No Region.Provider needed — NimbusProvider supplies the scope ambiently.
+  <Stack direction="row" gap="400">
+    <Box flexGrow="1" p="300" bg="amber.3">
+      <Text>Content area</Text>
+      <Sidebar />
+    </Box>
+    <Box width="240px" minHeight="120px" bg="neutral.3" p="200">
+      <Region name="docs-sidebar" />
+    </Box>
+  </Stack>
 );
 ```

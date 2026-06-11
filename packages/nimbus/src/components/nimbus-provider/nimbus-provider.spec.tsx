@@ -1,6 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { NimbusProvider } from "./nimbus-provider";
+import { Region, useRegion } from "@/components/region";
 
 describe("NimbusProvider - Font Loading", () => {
   it("should render children with default loadFonts=true", () => {
@@ -38,5 +39,29 @@ describe("NimbusProvider - Font Loading", () => {
 
     expect(getByTextEnabled("With fonts")).toBeInTheDocument();
     expect(getByTextDisabled("Without fonts")).toBeInTheDocument();
+  });
+});
+
+describe("NimbusProvider - Ambient Region scope", () => {
+  it("lets useRegion / <Region> work without an explicit Region.Provider", () => {
+    const Filler = () => {
+      const { Region: Slot } = useRegion("ambient-test");
+      return (
+        <Slot>
+          <span>projected content</span>
+        </Slot>
+      );
+    };
+
+    const { getByText } = render(
+      <NimbusProvider>
+        <Filler />
+        <Region name="ambient-test" data-testid="ambient-target" />
+      </NimbusProvider>
+    );
+
+    // The projected content resolves into the ambient region's target, proving
+    // NimbusProvider supplies the Region scope.
+    expect(getByText("projected content")).toBeInTheDocument();
   });
 });

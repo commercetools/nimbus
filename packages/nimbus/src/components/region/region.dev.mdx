@@ -9,70 +9,90 @@ tab-order: 3
 ### Import
 
 ```tsx
-import { Region, useRegion, type RegionOutletProps } from "@commercetools/nimbus";
+import { Region, useRegion, type RegionProps } from "@commercetools/nimbus";
 ```
 
 ### Mental model
 
 `Region` is the structured form of `createPortal`. Three pieces:
 
-- **`Region.Provider`** — establishes a named-region scope. Wrap it around the
-  subtree that should share a set of regions. Nested roots reuse the nearest
-  ancestor's registry, so the namespace is shared.
-- **`Region.Outlet name="…"`** — marks where a named region renders. It registers
-  its DOM node under `name` and can publish a `value` (control callbacks + state)
-  for consumers.
-- **`useRegion(name)`** — returns `{ node, value, Region }`: a stable `Region`
-  portal component to project content into the outlet, the outlet's live DOM
-  `node`, and the published `value`.
+- **`<Region name="…" />`** — the **target**: marks where a named region renders.
+  It registers its DOM node under `name` and can publish a `value` (control
+  callbacks + state) for consumers.
+- **`useRegion(name)`** — returns `{ Region, value }`: a stable `Region` portal
+  component to **fill** the target, and the published `value`.
+- **`Region.Provider`** — the scope. **Mounted ambiently by `NimbusProvider`**, so
+  in a Nimbus app you never write it: place targets and call `useRegion`
+  directly. It is still exported for standalone use (tests, non-Nimbus roots).
 
 Regions are addressed by **name**, not by tree position — a consumer reaches a
-region by name regardless of how deeply nested it is. `useRegion` resolves to
-`null` (node/value) before an outlet mounts or without a `Region.Provider` ancestor,
-so it is always safe to call.
+region by name regardless of how deeply nested it is. `useRegion` resolves to a
+`null` value (and a portal that renders nothing) before a target mounts, so it is
+always safe to call.
+
+> **One name, two sides.** The top-level `<Region name>` is the *target*; the
+> `Region` returned by `useRegion` is the *filler*. They can't share a binding in
+> one scope — alias the hook's: `const { Region: Sidebar } = useRegion("x")`.
 
 ### Basic usage
 
-Content rendered through the `Region` portal paints at the outlet but stays a
+Content rendered through the `Region` filler paints at the target but stays a
 child of its author in the React tree, so all ancestor context (router, intl,
 data client, permissions) is preserved.
 
 ```jsx live-dev
 const Sidebar = () => {
-  const { Region } = useRegion("getting-started-sidebar");
+  const { Region: Filler } = useRegion("getting-started-sidebar");
   return (
-    <Region>
+    <Filler>
       <Box p="300" bg="teal.3">
-        Authored here, painted in the outlet.
+        Authored here, painted in the target.
       </Box>
-    </Region>
+    </Filler>
   );
 };
 
+// No Region.Provider — NimbusProvider supplies the scope ambiently.
 const App = () => (
-  <Region.Provider>
-    <Stack direction="row" gap="400">
-      <Box flexGrow="1" p="300" bg="amber.3">
-        <Text>Content area</Text>
-        <Sidebar />
-      </Box>
-      <Box width="240px" minHeight="120px" bg="neutral.3" p="200">
-        <Region.Outlet name="getting-started-sidebar" />
-      </Box>
-    </Stack>
-  </Region.Provider>
+  <Stack direction="row" gap="400">
+    <Box flexGrow="1" p="300" bg="amber.3">
+      <Text>Content area</Text>
+      <Sidebar />
+    </Box>
+    <Box width="240px" minHeight="120px" bg="neutral.3" p="200">
+      <Region name="getting-started-sidebar" />
+    </Box>
+  </Stack>
 );
 ```
 
+## Layout: the target renders no box (`display: contents`)
+
+A portal needs a real DOM node as its container — there is no API to portal "into
+a position." So `<Region name>` must render *an* element. But it renders that
+element with **`display: contents`**, which makes the element generate **no box of
+its own**: its children participate in the layout of the target's *parent*, as if
+the wrapper were not there. Since projected content are DOM children of that
+element, they lay out exactly where the target sits — a flex/grid parent treats
+the projected root as a direct child. You get precise layout with no extra wrapper.
+
+Consequences worth knowing:
+
+- A `display: contents` element can't carry its own visual box — no background,
+  padding, border, `position: relative`, or scroll container. Put those on the
+  **projected content** (or the target's parent) instead.
+- The target is a `chakra.div`, so it accepts style props. To make it a real box
+  again, override the display: `<Region name="x" display="block" p="400" />`.
+
 ## Publishing a value
 
-An outlet can publish a `value` so the slot's host hands consumers a way to drive
-it — typically control callbacks plus reactive state. Consumers read it from
+A target can publish a `value` so its host hands consumers a way to drive it —
+typically control callbacks plus reactive state. Consumers read it from
 `useRegion(name).value`.
 
 ```tsx
-// host: publish controls on the outlet
-<Region.Outlet name="detail" value={{ isOpen, open, close }} />;
+// host: publish controls on the target
+<Region name="detail" value={{ isOpen, open, close }} />;
 
 // consumer: read them
 const { value } = useRegion<DetailControls>("detail");
@@ -86,10 +106,10 @@ it as opaque, so the generic is where the shape is declared.
 
 `Region` composes with [Splitter](/components/layout/splitter) to build a
 shell-owned, remotely-controlled side panel — **without the Splitter depending on
-Region**. The shell mounts the splitter, puts a `Region.Outlet` in the aside that
+Region**. The shell mounts the splitter, puts a `<Region name>` in the aside that
 publishes the collapse controls, and drives the splitter through its existing
-controlled `collapsed` / `onCollapsedChange`. A consumer anywhere projects content
-into the pane and opens/closes it via `useRegion`.
+controlled `collapsed` / `onCollapsedChange`. A consumer anywhere fills the pane
+and opens/closes it via `useRegion`.
 
 ```tsx
 const ShellSidePanel = ({ children }) => {
@@ -107,22 +127,21 @@ const ShellSidePanel = ({ children }) => {
   );
 
   return (
-    <Region.Provider>
-      <Splitter.Root collapsible collapsed={!open} onCollapsedChange={(c) => setOpen(!c)}>
-        <Splitter.Main>{children}</Splitter.Main>
-        <Splitter.Handle />
-        <Splitter.Aside>
-          <Region.Outlet name="app-side-panel" value={controller} />
-        </Splitter.Aside>
-      </Splitter.Root>
-    </Region.Provider>
+    <Splitter.Root collapsible collapsed={!open} onCollapsedChange={(c) => setOpen(!c)}>
+      <Splitter.Main>{children}</Splitter.Main>
+      <Splitter.Handle />
+      <Splitter.Aside>
+        <Region name="app-side-panel" value={controller} />
+      </Splitter.Aside>
+    </Splitter.Root>
   );
 };
 
 // A consumer that owns no splitter markup:
 const SidePanel = ({ panel }) => {
   const { Region: Aside, value } = useRegion("app-side-panel");
-  const { expand, collapse } = value ?? {};
+  const expand = value?.expand;
+  const collapse = value?.collapse;
   useEffect(() => {
     expand?.();
     return () => collapse?.();
@@ -133,9 +152,9 @@ const SidePanel = ({ panel }) => {
 
 ## Performance
 
-`Region.Provider` may wrap an entire application, so publishing into a region must
-not re-render the app. That holds because of four things — one in the primitive,
-three at your call site:
+`Region.Provider` wraps the entire application (it's inside `NimbusProvider`), so
+filling a region must not re-render the app. That holds because of four things —
+one in the primitive, three at your call site:
 
 1. **External store (primitive).** The registry is read via
    `useSyncExternalStore`. Publishing a node or value notifies only that name's
@@ -155,10 +174,10 @@ three at your call site:
 
 ## SSR
 
-`useRegion` and the `Region` portal use a server snapshot of `null`: there are no
-outlets during server rendering and `createPortal` is client-only. A region
+`useRegion` and the `Region` filler use a server snapshot of `null`: there are no
+targets during server rendering and `createPortal` is client-only. A region
 therefore resolves to nothing on the server and hydrates on the client. Author
-content unconditionally and let the portal render it once the outlet mounts.
+content unconditionally and let the portal render it once the target mounts.
 
 ## When not to use
 

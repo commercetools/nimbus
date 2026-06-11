@@ -2,6 +2,7 @@ import { createContext, useContext } from "react";
 import { ChakraProvider } from "@chakra-ui/react/styled-system";
 import { RouterProvider } from "react-aria";
 import { NimbusI18nProvider } from "@/components/nimbus-i18n-provider";
+import { RegionProvider } from "@/components/region/region.provider";
 import { system } from "@/theme";
 import type { NimbusProviderProps } from "./nimbus-provider.types";
 import { NimbusColorModeProvider } from "./components/nimbus-provider.color-mode-provider";
@@ -59,10 +60,15 @@ export function NimbusProvider({
       <ChakraProvider value={system}>
         <NimbusColorModeProvider enableSystem={false} {...props}>
           <NimbusI18nProvider locale={locale}>
-            <ToastOutletMountedContext.Provider value={true}>
-              {children}
-              {!hasToastOutlet && <ToastOutlet />}
-            </ToastOutletMountedContext.Provider>
+            {/* Ambient named-region scope so `useRegion` / `<Region>` work
+                anywhere in the app without consumers wrapping a provider.
+                Reuse-or-create: nested NimbusProviders share one registry. */}
+            <RegionProvider>
+              <ToastOutletMountedContext.Provider value={true}>
+                {children}
+                {!hasToastOutlet && <ToastOutlet />}
+              </ToastOutletMountedContext.Provider>
+            </RegionProvider>
           </NimbusI18nProvider>
         </NimbusColorModeProvider>
       </ChakraProvider>
