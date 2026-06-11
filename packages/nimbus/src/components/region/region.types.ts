@@ -33,10 +33,26 @@ export type RegionRegistry = {
   get: (name: string) => RegionRecord | null;
   /** Publish (or clear) the target node for `name`. No-ops when unchanged. */
   setNode: (name: string, node: HTMLElement | null) => void;
+  /**
+   * Clear `name`'s node **only if** `node` is the one currently registered — an
+   * owner-checked release for a target's unmount. A stale target unmounting after
+   * a newer one took the slot is then a no-op, instead of wiping the live region.
+   */
+  clearNode: (name: string, node: HTMLElement | null) => void;
   /** Publish (or clear) the value for `name`. No-ops when reference-equal. */
   setValue: (name: string, value: unknown) => void;
   /** Subscribe to changes (node or value) for a single `name`. Returns an unsubscribe fn. */
   subscribe: (name: string, listener: () => void) => () => void;
+  /**
+   * Register a live participant in `name` for the duration of a mount, declaring
+   * whether it is the region's `"target"` (the `<Region name>` outlet) or a
+   * `"filler"` (a `useRegion` portal projecting into it). Returns a release fn to
+   * call on unmount. A region is single-occupancy on both sides: in development,
+   * a second concurrent target — or a second concurrent filler — for the same
+   * name logs a `console.error`, since competing occupants render in an
+   * undefined, stacked order. No-ops (beyond bookkeeping) in production.
+   */
+  claim: (name: string, role: "target" | "filler") => () => void;
 };
 
 /**

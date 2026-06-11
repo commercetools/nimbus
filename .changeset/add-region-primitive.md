@@ -23,6 +23,12 @@ Backed by an external store, so publishing a node or value never re-renders the
 provider — filling a region (or toggling a panel through a published callback)
 updates only that region's consumers, not the app the provider wraps.
 
+A region name is single-occupancy: exactly one target and at most one filler. In
+development, a second competing target or consumer for the same name logs a
+clear `console.error` (their content would otherwise stack or orphan in an
+undefined order), and a stale duplicate target unmounting never clears a region
+a live target still holds.
+
 This composes with `Splitter` (no Splitter API change needed) to build a
 shell-owned, remotely-controlled side panel: mount the splitter once, put a
 `<Region name>` in the aside that publishes the collapse controls, and let a

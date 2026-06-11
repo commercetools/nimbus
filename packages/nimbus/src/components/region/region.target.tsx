@@ -28,16 +28,25 @@ export const RegionTarget = ({ name, value, ref, ...props }: RegionProps) => {
   // node under `name`. Read the consumer ref from a holder so identity is stable.
   const consumerRef = useRef<Ref<HTMLDivElement> | undefined>(ref);
   consumerRef.current = ref;
+  // The node we last registered, so detach can release the slot owner-checked
+  // (clearing only if we still hold it) rather than clobbering a newer target.
+  const ownNodeRef = useRef<HTMLDivElement | null>(null);
   const setRef = useCallback(
     (node: HTMLDivElement | null) => {
       const r = consumerRef.current;
       if (typeof r === "function") r(node);
       else if (r != null)
         (r as { current: HTMLDivElement | null }).current = node;
-      registry?.setNode(name, node);
+      if (node) registry?.setNode(name, node);
+      else registry?.clearNode(name, ownNodeRef.current);
+      ownNodeRef.current = node;
     },
     [registry, name]
   );
+
+  // Declare this target as the region's single occupant for the mount's lifetime;
+  // a second concurrent target for the same name warns in development.
+  useEffect(() => registry?.claim(name, "target"), [registry, name]);
 
   // Publish the value (when provided). Memoize `value` at the call site — its
   // identity changing is exactly what notifies consumers.

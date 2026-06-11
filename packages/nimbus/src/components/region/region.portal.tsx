@@ -1,4 +1,4 @@
-import { useContext, useMemo, useSyncExternalStore } from "react";
+import { useContext, useEffect, useMemo, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { RegionRegistryContext } from "./region.registry";
 import type { RegionPortal } from "./region.types";
@@ -27,6 +27,10 @@ export const createRegionPortal = (name: string): RegionPortal => {
     // Server snapshot is `null`: no targets exist during SSR and `createPortal`
     // is client-only, so the portal renders nothing until hydration.
     const record = useSyncExternalStore(subscribe, getSnapshot, () => null);
+    // Declare this portal as the region's single filler while mounted; a second
+    // concurrent filler for the same name warns in development (their content
+    // would otherwise stack into the one target in an undefined order).
+    useEffect(() => registry?.claim(name, "filler"), [registry]);
     const node = record?.node ?? null;
     return node ? createPortal(children, node) : null;
   };
