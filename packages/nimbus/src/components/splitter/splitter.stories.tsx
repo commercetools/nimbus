@@ -11,6 +11,7 @@ import {
   fireEvent,
 } from "storybook/test";
 import { Splitter } from "./splitter";
+import { useSplitter } from "./hooks/use-splitter";
 import { useResponsiveSplitterSizes } from "./hooks/use-responsive-splitter-sizes";
 
 /**
@@ -1331,4 +1332,174 @@ const PersistedResponsiveComponent = () => {
 
 export const PersistedResponsiveSizes: Story = {
   render: () => <PersistedResponsiveComponent />,
+};
+
+// ============================================================
+// Remote control via useSplitter (region projection + collapse)
+// ============================================================
+
+/**
+ * A consumer that does not own the Splitter markup. It reaches a named splitter
+ * with `useSplitter(id)`, projects content into the aside via `AsideRegion`, and
+ * toggles the aside open/closed — the shell-owned-sidebar pattern in miniature.
+ */
+const RemoteAgentConsumer = () => {
+  const splitter = useSplitter("demo-shell-panel");
+  // Safe before the splitter mounts / when absent.
+  if (!splitter) return null;
+  const { AsideRegion, expand, collapse, toggle, isCollapsed } = splitter;
+  return (
+    <Stack gap="200">
+      <Heading size="sm">
+        Nested consumer (no Splitter markup of its own)
+      </Heading>
+      <Button data-testid="expand" onPress={() => expand()}>
+        Open panel
+      </Button>
+      <Button data-testid="collapse" onPress={() => collapse()}>
+        Close panel
+      </Button>
+      <Button data-testid="toggle" onPress={() => toggle()}>
+        Toggle ({isCollapsed ? "collapsed" : "expanded"})
+      </Button>
+      <AsideRegion>
+        <DemoPane bg="teal.3" title="Projected agent panel">
+          <Box data-testid="projected-content">
+            Authored in the main pane, painted in the aside.
+          </Box>
+        </DemoPane>
+      </AsideRegion>
+    </Stack>
+  );
+};
+
+export const RemoteControlledAside: Story = {
+  render: () => (
+    <Box w="100%" h="480px" borderWidth="25" borderColor="neutral.6">
+      <Splitter.Root
+        id="demo-shell-panel"
+        defaultSize={30}
+        minSize={20}
+        maxSize={50}
+        collapsible
+        defaultCollapsed
+        collapsedSize={0}
+      >
+        <Splitter.Main>
+          <DemoPane bg="amber.3" title="Main (owns the markup)">
+            <RemoteAgentConsumer />
+          </DemoPane>
+        </Splitter.Main>
+        <Splitter.Handle />
+        {/* Empty aside → becomes a named region outlet that the consumer fills. */}
+        <Splitter.Aside id="demo-aside-pane" />
+      </Splitter.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // The consumer's content is projected into the aside pane even though it is
+    // authored inside the main pane — proof the region portal targets the outlet.
+    const asidePane =
+      canvasElement.querySelector<HTMLElement>("#demo-aside-pane")!;
+    const projected = canvas.getByTestId("projected-content");
+    await expect(asidePane.contains(projected)).toBe(true);
+
+    // Assert against the aside pane's own width (placement-agnostic): the handle's
+    // aria-valuenow tracks the leading pane, which flips for a trailing aside.
+    const asideWidth = () => parseFloat(asidePane.style.width);
+
+    // Starts collapsed.
+    await waitFor(() => expect(asideWidth()).toBe(0));
+
+    // Remote expand opens the aside.
+    await userEvent.click(canvas.getByTestId("expand"));
+    await waitFor(() => expect(asideWidth()).toBeGreaterThan(0));
+
+    // Remote collapse closes it again.
+    await userEvent.click(canvas.getByTestId("collapse"));
+    await waitFor(() => expect(asideWidth()).toBe(0));
+  },
+};
+
+// ============================================================
+// Nested splitters: target the OUTER one by id (flat namespace)
+// ============================================================
+
+/**
+ * A consumer rendered *inside* a nested splitter that targets the OUTER splitter
+ * by id. Because regions live in a flat namespace, `useSplitter("outer-panel")`
+ * resolves to the shell-level splitter regardless of the inner splitter in
+ * between — content lands in the outer aside, not the inner one.
+ */
+const DeepConsumer = () => {
+  const outer = useSplitter("outer-panel");
+  if (!outer) return null;
+  const { AsideRegion, expand } = outer;
+  return (
+    <Stack gap="200">
+      <Button data-testid="open-outer" onPress={() => expand()}>
+        Open outer panel from deep inside
+      </Button>
+      <AsideRegion>
+        <DemoPane bg="purple.3" title="Outer aside">
+          <Box data-testid="deep-projected">Reached the outer aside by id.</Box>
+        </DemoPane>
+      </AsideRegion>
+    </Stack>
+  );
+};
+
+export const NestedSplitterRegionTargeting: Story = {
+  render: () => (
+    <Box w="100%" h="520px" borderWidth="25" borderColor="neutral.6">
+      <Splitter.Root
+        id="outer-panel"
+        defaultSize={30}
+        minSize={20}
+        collapsible
+        defaultCollapsed
+        collapsedSize={0}
+      >
+        <Splitter.Main>
+          <Splitter.Root id="inner-panel" defaultSize={40}>
+            <Splitter.Aside id="inner-aside-pane">
+              <DemoPane bg="neutral.3" title="Inner aside (not targeted)" />
+            </Splitter.Aside>
+            <Splitter.Handle />
+            <Splitter.Main>
+              <DemoPane
+                bg="amber.3"
+                title="Inner main (deep consumer lives here)"
+              >
+                <DeepConsumer />
+              </DemoPane>
+            </Splitter.Main>
+          </Splitter.Root>
+        </Splitter.Main>
+        <Splitter.Handle />
+        <Splitter.Aside id="outer-aside-pane" />
+      </Splitter.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Content resolves to the OUTER aside, not the inner one.
+    const outerAside =
+      canvasElement.querySelector<HTMLElement>("#outer-aside-pane")!;
+    const innerAside =
+      canvasElement.querySelector<HTMLElement>("#inner-aside-pane")!;
+    const projected = canvas.getByTestId("deep-projected");
+    await expect(outerAside.contains(projected)).toBe(true);
+    await expect(innerAside.contains(projected)).toBe(false);
+
+    // The deep consumer can open the OUTER aside. Assert on the outer aside's own
+    // width (trailing aside → handle aria tracks the main pane, not the aside).
+    const outerAsideWidth = () => parseFloat(outerAside.style.width);
+    await waitFor(() => expect(outerAsideWidth()).toBe(0));
+    await userEvent.click(canvas.getByTestId("open-outer"));
+    await waitFor(() => expect(outerAsideWidth()).toBeGreaterThan(0));
+  },
 };

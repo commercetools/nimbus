@@ -1,4 +1,4 @@
-import type { ReactNode, Ref } from "react";
+import type { FC, ReactNode, Ref } from "react";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 import type {
   SplitterRootSlotProps,
@@ -82,6 +82,12 @@ export type SplitterContextValue = {
   registerPane: (role: SplitterPaneRole, domId: string) => void;
   /** Unregister a pane on unmount. */
   unregisterPane: (role: SplitterPaneRole) => void;
+  /**
+   * Resolved id of this splitter (explicit `id` prop, else a generated one).
+   * Panes derive their `Region.Outlet` name from it so a childless pane becomes
+   * a projection target.
+   */
+  splitterId: string;
 
   /** Whether the aside is currently collapsed (resolved controlled/uncontrolled). */
   collapsed: boolean;
@@ -89,6 +95,42 @@ export type SplitterContextValue = {
   setCollapsed: (collapsed: boolean) => void;
   /** Restore the size derived on mount (double-click). */
   restoreDefaults: () => void;
+};
+
+// ============================================================
+// PUBLIC INSTANCE API (useSplitter)
+// ============================================================
+
+/**
+ * A portal component returned by {@link SplitterInstance} (`MainRegion` /
+ * `AsideRegion`). Its `children` render into the corresponding pane of the
+ * splitter the instance came from — wherever the component itself is placed in
+ * the tree — while remaining React children of the caller (so all ancestor
+ * context is preserved). Renders nothing until the target pane has mounted.
+ */
+export type SplitterRegion = FC<{ children: ReactNode }>;
+
+/**
+ * The public handle to a `Splitter.Root`, returned by {@link useSplitter}. It
+ * bundles the aside's collapse controls and the two pane portal components, so a
+ * consumer can both **place content** in a pane and **toggle** the aside without
+ * owning the `Splitter.Root` markup.
+ *
+ * @see useSplitter
+ */
+export type SplitterInstance = {
+  /** Whether the aside is currently collapsed. */
+  isCollapsed: boolean;
+  /** Collapse the aside. */
+  collapse: () => void;
+  /** Expand the aside. */
+  expand: () => void;
+  /** Toggle the aside between collapsed and expanded. */
+  toggle: () => void;
+  /** Portal component: renders its children into this splitter's main pane. */
+  MainRegion: SplitterRegion;
+  /** Portal component: renders its children into this splitter's aside pane. */
+  AsideRegion: SplitterRegion;
 };
 
 // ============================================================
@@ -101,6 +143,15 @@ export type SplitterContextValue = {
  * the pane you configure; the main pane always takes the remainder.
  */
 export type SplitterRootProps = OmitInternalProps<SplitterRootSlotProps> & {
+  /**
+   * Names this splitter instance so it can be reached from anywhere in the tree
+   * via `useSplitter(id)` — typically to project content into a pane
+   * (`AsideRegion` / `MainRegion`) or collapse/expand the aside remotely. Also
+   * applied as the root element's DOM `id`. Omit it for purely local splitters
+   * you drive in place; only named splitters are added to the registry.
+   */
+  id?: string;
+
   /**
    * The orientation of the splitter — drives layout direction and which
    * arrow keys are active on the handle. The handle's `aria-orientation`
