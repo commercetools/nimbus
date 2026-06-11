@@ -44,6 +44,20 @@ const createEntries = async () => {
     "setup-jsdom-polyfills",
     fileURLToPath(new URL("src/test/setup-jsdom-polyfills.ts", import.meta.url))
   );
+  // Bundler plugins for optional-dependency resolution (build-time only,
+  // no Nimbus runtime pulled in).
+  entries.set(
+    "plugins/webpack",
+    fileURLToPath(new URL("src/plugins/webpack.ts", import.meta.url))
+  );
+  entries.set(
+    "plugins/vite",
+    fileURLToPath(new URL("src/plugins/vite.ts", import.meta.url))
+  );
+  entries.set(
+    "plugins/stub",
+    fileURLToPath(new URL("src/plugins/stub.ts", import.meta.url))
+  );
   return Object.fromEntries(entries);
 };
 
@@ -140,6 +154,10 @@ export default defineConfig(async () => {
           const extension = format === "cjs" ? `${format}` : `${format}.js`;
           // Keep main entrypoints at root, put everything else in subfolders
           if (["index", "setup-jsdom-polyfills"].includes(entryName)) {
+            return `${entryName}.${extension}`;
+          }
+          // Plugin entries keep their plugins/ prefix
+          if (entryName.startsWith("plugins/")) {
             return `${entryName}.${extension}`;
           }
           // Put component entries in a components folder

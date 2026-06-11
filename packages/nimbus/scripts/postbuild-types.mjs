@@ -68,7 +68,13 @@ console.log(`[postbuild-types] rewrote imports in ${rewritten} .d.ts file(s)`);
 // ---------------------------------------------------------------------------
 // Step 3: duplicate to .d.cts (after rewriting, so they inherit fixed paths)
 
-const ENTRY_POINTS = ["index", "setup-jsdom-polyfills"];
+const ENTRY_POINTS = [
+  "index",
+  "setup-jsdom-polyfills",
+  "plugins/webpack",
+  "plugins/vite",
+  "plugins/stub",
+];
 
 for (const entry of ENTRY_POINTS) {
   const src = join(DIST, `${entry}.d.ts`);
