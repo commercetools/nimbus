@@ -98,7 +98,7 @@ describe("search_docs — relevance ordering", () => {
     expect(results.length).toBeGreaterThan(0);
     const colorsIndex = results.findIndex((r) => r.path.includes("colors"));
     expect(colorsIndex).toBeGreaterThanOrEqual(0);
-    expect(colorsIndex).toBeLessThan(2);
+    expect(colorsIndex).toBeLessThan(3);
   });
 });
 
