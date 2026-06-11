@@ -765,7 +765,11 @@ const ControlledSizeComponent = () => {
           <DemoPane bg="indigo.3" title="Aside">
             {/* Uncontrolled input: its value survives only if the pane is not
                 remounted when `size` changes in place. */}
-            <input data-testid="aside-input" aria-label="Note" defaultValue="" />
+            <input
+              data-testid="aside-input"
+              aria-label="Note"
+              defaultValue=""
+            />
           </DemoPane>
         </Splitter.Aside>
         <Splitter.Handle />
@@ -1202,10 +1206,7 @@ const NestedResponsiveComponent = () => {
         <Splitter.Main>
           <Splitter.Root {...rootProps}>
             <Splitter.Aside>
-              <DemoPane
-                bg="indigo.3"
-                title="Aside (responsive)"
-              />
+              <DemoPane bg="indigo.3" title="Aside (responsive)" />
             </Splitter.Aside>
             <Splitter.Handle />
             <Splitter.Main>
