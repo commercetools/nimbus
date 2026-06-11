@@ -1,0 +1,163 @@
+---
+id: Components-Splitter
+title: Splitter
+exportName: Splitter
+description:
+  A two-pane compound primitive for user-resizable layouts with a draggable,
+  keyboard-operable handle.
+lifecycleState: Beta
+order: 999
+menu:
+  - Components
+  - Layout
+  - Splitter
+tags:
+  - component
+  - layout
+  - resizable
+figmaLink: >-
+  https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1793-8790&m=dev
+---
+
+## Overview
+
+The Splitter lets people resize two adjacent regions by dragging the handle
+between them — a sidebar next to a content area, a list next to a detail view,
+an editor next to a preview. It is intentionally a **two-pane** primitive: the
+boundary is a single position, which keeps the interaction predictable and the
+accessibility model clean. Layouts with three or more regions are composed by
+**nesting** one Splitter inside another's pane.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+- [Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1793-8790&m=dev)
+- [W3C ARIA window splitter pattern](https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/)
+
+## Variables
+
+Get familiar with the visual options.
+
+### Orientation
+
+`horizontal` (default) places the panes side by side with a vertical handle;
+`vertical` stacks them with a horizontal handle. The handle is keyboard operable
+in both orientations.
+
+```jsx live
+const App = () => (
+  <Stack direction="horizontal" gap="400">
+    <Box height="240px" width="320px" borderWidth="25" borderColor="neutral.6">
+      <Splitter.Root orientation="horizontal" defaultSize={40}>
+        <Splitter.Aside>
+          <Box p="400" bg="indigo.3" h="100%">
+            <Text>Left</Text>
+          </Box>
+        </Splitter.Aside>
+        <Splitter.Handle />
+        <Splitter.Main>
+          <Box p="400" bg="amber.3" h="100%">
+            <Text>Right</Text>
+          </Box>
+        </Splitter.Main>
+      </Splitter.Root>
+    </Box>
+    <Box height="240px" width="320px" borderWidth="25" borderColor="neutral.6">
+      <Splitter.Root orientation="vertical" defaultSize={40}>
+        <Splitter.Aside>
+          <Box p="400" bg="teal.3" h="100%">
+            <Text>Top</Text>
+          </Box>
+        </Splitter.Aside>
+        <Splitter.Handle />
+        <Splitter.Main>
+          <Box p="400" bg="rose.3" h="100%">
+            <Text>Bottom</Text>
+          </Box>
+        </Splitter.Main>
+      </Splitter.Root>
+    </Box>
+  </Stack>
+);
+```
+
+### Collapse
+
+The aside can be made collapsible so a region — usually a sidebar or panel — can
+be hidden and brought back. Collapsing animates the boundary to the aside's
+collapsed size: fully hidden by default, or a thin rail when a collapsed size is
+set. The freed space goes to the main pane. Surface a visible control (a button)
+to toggle it; on the handle, Enter toggles collapse and double-click restores
+the default split.
+
+```jsx live
+const App = () => {
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    <Stack direction="column" gap="300">
+      <Button alignSelf="start" onPress={() => setCollapsed((c) => !c)}>
+        {collapsed ? "Show nav" : "Hide nav"}
+      </Button>
+      <Box height="240px" width="100%" borderWidth="25" borderColor="neutral.6">
+        <Splitter.Root
+          defaultSize={30}
+          minSize={12}
+          maxSize={80}
+          collapsible
+          collapsed={collapsed}
+          onCollapsedChange={setCollapsed}
+        >
+          <Splitter.Aside>
+            <Box p="400" bg="indigo.3" h="100%">
+              <Text>Nav</Text>
+            </Box>
+          </Splitter.Aside>
+          <Splitter.Handle />
+          <Splitter.Main>
+            <Box p="400" bg="amber.3" h="100%">
+              <Text>Main</Text>
+            </Box>
+          </Splitter.Main>
+        </Splitter.Root>
+      </Box>
+    </Stack>
+  );
+};
+```
+
+## Guidelines
+
+### Best practices
+
+- **Two panes per Splitter.** Nest splitters for layouts with three or more
+  regions; each nested splitter is independently focusable and announced to
+  assistive technology as its own widget.
+- **Bound the aside.** Set `minSize` and `maxSize` so dragging can't shrink the
+  aside — or, via `maxSize`, the main pane — below its usable content width. Pair
+  the bounds with content that scrolls inside the pane.
+- **Use collapsing for chrome.** A navigation or panel the user may want hidden
+  should be the `collapsible` aside; surface a visible control (a button) for the
+  mouse, since double-click is reserved for restoring the default split.
+- **Persist the layout** when the split is part of the user's workflow, so it
+  survives across sessions.
+
+### When to use
+
+> [!TIP]\
+> Use when
+
+- Side-by-side content the user benefits from resizing themselves.
+- App shells that pair a flexible navigation with a main content area.
+- Master/detail views where the relative split is part of the workflow.
+
+### When not to use
+
+> [!CAUTION]\
+> When not to use
+
+- Static two-column layouts — use a flex or grid layout directly.
+- Narrow, mobile-first viewports — dragging is awkward; use a Drawer or stack
+  the regions vertically.
+- More than two peer regions in one splitter — nest splitters instead.

@@ -33,6 +33,7 @@ import { scopedSearchInputSlotRecipe } from "@/components/scoped-search-input/sc
 import { searchInputSlotRecipe } from "@/components/search-input/search-input.recipe";
 import { selectSlotRecipe } from "@/components/select/select.recipe";
 import { splitButtonSlotRecipe } from "@/components/split-button/split-button.recipe";
+import { splitterSlotRecipe } from "@/components/splitter/splitter.recipe";
 import { switchSlotRecipe } from "@/components/switch/switch.recipe";
 import { tableSlotRecipe } from "@/components/table/table.recipe";
 import { tabNavSlotRecipe } from "@/components/tab-nav/tab-nav.recipe";
@@ -105,6 +106,7 @@ export const slotRecipes = {
   nimbusSearchInput: searchInputSlotRecipe,
   nimbusSelect: selectSlotRecipe,
   nimbusSplitButton: splitButtonSlotRecipe,
+  nimbusSplitter: splitterSlotRecipe,
   nimbusSwitch: switchSlotRecipe,
   nimbusTable: tableSlotRecipe,
   nimbusTabNav: tabNavSlotRecipe,

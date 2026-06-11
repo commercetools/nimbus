@@ -1,0 +1,645 @@
+---
+title: Splitter Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Splitter, type SplitterRootProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+`Splitter.Root` wraps one `Splitter.Aside` and one `Splitter.Main` with a
+`Splitter.Handle` between them. `Splitter.Aside` is the configurable pane you
+size; `Splitter.Main` takes the remaining space. The initial split is set with
+`defaultSize` — a single percentage that always refers to the aside (the main
+pane is `100 − size`).
+
+```jsx live-dev
+const App = () => (
+  <Box height="xs" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root defaultSize={30} minSize={15} maxSize={75}>
+      <Splitter.Aside>
+        <Box p="400" bg="indigo.3" h="100%">
+          <Text>
+            Drag the handle to resize. Tab to it, then use the arrow keys.
+          </Text>
+        </Box>
+      </Splitter.Aside>
+      <Splitter.Handle />
+      <Splitter.Main>
+        <Box p="400" bg="amber.3" h="100%">
+          <Text>Main</Text>
+        </Box>
+      </Splitter.Main>
+    </Splitter.Root>
+  </Box>
+);
+```
+
+## Usage examples
+
+### Orientation
+
+`orientation="vertical"` stacks the panes and makes ArrowUp / ArrowDown the
+active keys. The handle's `aria-orientation` reflects this (W3C separator
+semantics describe the boundary axis, not the layout axis).
+
+```jsx live-dev
+const App = () => (
+  <Box height="sm" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root orientation="vertical" defaultSize={40}>
+      <Splitter.Aside>
+        <Box p="400" bg="teal.3" h="100%">
+          <Text>Aside</Text>
+        </Box>
+      </Splitter.Aside>
+      <Splitter.Handle />
+      <Splitter.Main>
+        <Box p="400" bg="rose.3" h="100%">
+          <Text>Main</Text>
+        </Box>
+      </Splitter.Main>
+    </Splitter.Root>
+  </Box>
+);
+```
+
+### Aside constraints
+
+`minSize` and `maxSize` bound the single aside dimension. `minSize` (default
+`0`) is the aside's floor; `maxSize` (default `100`) caps how far the aside can
+grow — which in turn fixes the main pane's floor at `100 − maxSize`. Because
+there is one boundary, this single `[minSize, maxSize]` window on the aside
+fully describes both sides; there is no main-specific prop.
+
+```jsx live-dev
+const App = () => (
+  <Box height="xs" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root defaultSize={30} minSize={15} maxSize={75}>
+      <Splitter.Aside>
+        <Box p="400" bg="indigo.3" h="100%">
+          <Text>Aside (min 15, max 75)</Text>
+        </Box>
+      </Splitter.Aside>
+      <Splitter.Handle />
+      <Splitter.Main>
+        <Box p="400" bg="amber.3" h="100%">
+          <Text>Main (floor 25)</Text>
+        </Box>
+      </Splitter.Main>
+    </Splitter.Root>
+  </Box>
+);
+```
+
+### Collapsible aside
+
+Set `collapsible` to let the aside collapse, and control its collapsed state
+with the boolean `collapsed`. Because collapse is plain controlled state, any
+control can drive it; Enter on the focused handle toggles it too.
+`onCollapsedChange` fires on every transition. Only the aside collapses.
+
+While the aside is collapsed the handle can't be resized (drag and the arrow
+keys are inactive) — a collapsed aside sits below its `minSize`, so a resize
+could only snap. Reopen it with the control, Enter, or a double-click; the
+collapsed state holds until you explicitly leave it.
+
+```jsx live-dev
+const App = () => {
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    <Stack direction="column" gap="300">
+      <Button alignSelf="start" onPress={() => setCollapsed((c) => !c)}>
+        {collapsed ? "Show aside" : "Hide aside"}
+      </Button>
+      <Box height="2xs" width="100%" borderWidth="25" borderColor="neutral.6">
+        <Splitter.Root
+          defaultSize={30}
+          minSize={10}
+          maxSize={80}
+          collapsible
+          collapsed={collapsed}
+          onCollapsedChange={setCollapsed}
+        >
+          <Splitter.Aside>
+            <Box p="400" bg="indigo.3" h="100%">
+              <Text>Aside</Text>
+            </Box>
+          </Splitter.Aside>
+          <Splitter.Handle />
+          <Splitter.Main>
+            <Box p="400" bg="amber.3" h="100%">
+              <Text>Main</Text>
+            </Box>
+          </Splitter.Main>
+        </Splitter.Root>
+      </Box>
+    </Stack>
+  );
+};
+```
+
+### Collapsing to a rail
+
+Collapse is a two-tier model. `minSize` is the floor for _dragging_ and the
+arrow keys; `collapsedSize` is a distinct discrete state that collapse snaps to,
+below `minSize`. It defaults to `0` (the aside hides entirely) — set it to leave
+a thin rail behind, e.g. an icon strip the user can click to expand.
+
+```jsx live-dev
+const App = () => {
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    <Stack direction="column" gap="300">
+      <Button alignSelf="start" onPress={() => setCollapsed((c) => !c)}>
+        {collapsed ? "Expand aside" : "Collapse aside to a rail"}
+      </Button>
+      <Box height="2xs" width="100%" borderWidth="25" borderColor="neutral.6">
+        <Splitter.Root
+          defaultSize={30}
+          minSize={15}
+          maxSize={80}
+          collapsible
+          collapsedSize={6}
+          collapsed={collapsed}
+          onCollapsedChange={setCollapsed}
+        >
+          <Splitter.Aside>
+            <Box p="400" bg="indigo.3" h="100%">
+              <Text>Aside</Text>
+            </Box>
+          </Splitter.Aside>
+          <Splitter.Handle />
+          <Splitter.Main>
+            <Box p="400" bg="amber.3" h="100%">
+              <Text>Main</Text>
+            </Box>
+          </Splitter.Main>
+        </Splitter.Root>
+      </Box>
+    </Stack>
+  );
+};
+```
+
+### Uncontrolled collapse
+
+When you don't need to drive collapse from outside the splitter, seed the
+initial collapsed state with `defaultCollapsed` and let the splitter own it.
+Enter on the handle toggles it from there, and double-click restores the default
+split.
+
+```jsx live-dev
+const App = () => (
+  <Box height="3xs" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root
+      defaultSize={30}
+      minSize={10}
+      maxSize={80}
+      collapsible
+      defaultCollapsed
+    >
+      <Splitter.Aside>
+        <Box p="400" bg="indigo.3" h="100%">
+          <Text>Aside (starts collapsed)</Text>
+        </Box>
+      </Splitter.Aside>
+      <Splitter.Handle />
+      <Splitter.Main>
+        <Box p="400" bg="amber.3" h="100%">
+          <Text>Tab to the handle and press Enter to toggle</Text>
+        </Box>
+      </Splitter.Main>
+    </Splitter.Root>
+  </Box>
+);
+```
+
+### Keyboard step
+
+Arrow keys move the boundary by `keyboardStep` percentage points (default `5`);
+Home / End jump it to the bounds. Accepts floats for finer control.
+
+```jsx live-dev
+const App = () => (
+  <Box height="3xs" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root defaultSize={30} keyboardStep={10}>
+      <Splitter.Aside>
+        <Box p="400" bg="indigo.3" h="100%">
+          <Text>
+            Tab to the handle — each arrow press moves the boundary 10%
+          </Text>
+        </Box>
+      </Splitter.Aside>
+      <Splitter.Handle />
+      <Splitter.Main>
+        <Box p="400" bg="amber.3" h="100%">
+          <Text>Main</Text>
+        </Box>
+      </Splitter.Main>
+    </Splitter.Root>
+  </Box>
+);
+```
+
+### Restoring the default split
+
+Double-click the handle to restore the boundary to the sizes resolved on mount.
+Set `isDoubleClickDisabled` to turn that off; drag and keyboard stay active.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Box height="3xs" width="100%" borderWidth="25" borderColor="neutral.6">
+      <Splitter.Root defaultSize={50}>
+        <Splitter.Aside>
+          <Box p="400" bg="indigo.3" h="100%">
+            <Text>Drag, then double-click the handle to restore</Text>
+          </Box>
+        </Splitter.Aside>
+        <Splitter.Handle />
+        <Splitter.Main>
+          <Box p="400" bg="amber.3" h="100%" />
+        </Splitter.Main>
+      </Splitter.Root>
+    </Box>
+    <Box height="3xs" width="100%" borderWidth="25" borderColor="neutral.6">
+      <Splitter.Root defaultSize={50} isDoubleClickDisabled>
+        <Splitter.Aside>
+          <Box p="400" bg="teal.3" h="100%">
+            <Text>Double-click restore disabled</Text>
+          </Box>
+        </Splitter.Aside>
+        <Splitter.Handle />
+        <Splitter.Main>
+          <Box p="400" bg="rose.3" h="100%" />
+        </Splitter.Main>
+      </Splitter.Root>
+    </Box>
+  </Stack>
+);
+```
+
+### Disabled state
+
+`isDisabled` makes the whole splitter non-interactive: the handle leaves the tab
+order, gets `aria-disabled`, and ignores drag, keyboard, and collapse input.
+
+```jsx live-dev
+const App = () => (
+  <Box height="3xs" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root isDisabled defaultSize={30}>
+      <Splitter.Aside>
+        <Box p="400" bg="indigo.3" h="100%">
+          <Text>Aside</Text>
+        </Box>
+      </Splitter.Aside>
+      <Splitter.Handle />
+      <Splitter.Main>
+        <Box p="400" bg="amber.3" h="100%">
+          <Text>Main</Text>
+        </Box>
+      </Splitter.Main>
+    </Splitter.Root>
+  </Box>
+);
+```
+
+### Persistence
+
+Size is uncontrolled by default, so persist it in your app with any storage:
+hydrate `defaultSize` from stored state and write the settled value back in
+`onSizeChangeEnd` (it fires once per settled interaction — drag end, each
+keypress, collapse/expand, double-click restore — so no debouncing is needed). A
+single `number` round-trips: the value `onSizeChangeEnd` emits is exactly the
+shape `defaultSize` accepts. Collapse persists through its controlled boolean
+state.
+
+```tsx
+// `useLocalStorage` is any storage hook of your choosing.
+const [size, setSize] = useLocalStorage("ide-layout", 30);
+const [collapsed, setCollapsed] = useLocalStorage("ide-collapsed", false);
+
+<Splitter.Root
+  defaultSize={size}
+  onSizeChangeEnd={setSize}
+  minSize={10}
+  maxSize={80}
+  collapsible
+  collapsed={collapsed}
+  onCollapsedChange={setCollapsed}
+>
+  <Splitter.Aside>…</Splitter.Aside>
+  <Splitter.Handle />
+  <Splitter.Main>…</Splitter.Main>
+</Splitter.Root>;
+```
+
+`onSizeChange` (live, every drag tick ~60Hz) is also available when you need a
+real-time read-out; prefer `onSizeChangeEnd` for persistence.
+
+### Controlled size
+
+Pass `size` instead of `defaultSize` to drive the layout from outside — useful
+for responsive layouts that swap the proportion per breakpoint, since external
+changes apply in place (no remount, so pane content keeps its scroll and focus).
+Control is settled, not live: drag and keyboard stay smooth from internal state
+and report once via `onSizeChangeEnd`. Wire that callback and feed the value
+back, or the splitter keeps the last interactive size and behaves as
+uncontrolled from then on.
+
+```tsx
+const [size, setSize] = useState(30);
+
+<Splitter.Root size={size} onSizeChangeEnd={setSize}>
+  <Splitter.Aside>…</Splitter.Aside>
+  <Splitter.Handle />
+  <Splitter.Main>…</Splitter.Main>
+</Splitter.Root>;
+```
+
+### Pixel-precise sizes
+
+The aside percentage carries full float precision end-to-end (nothing in the
+size pipeline is rounded — only the handle's `aria-valuenow` is rounded, for
+assistive technology). To land on an exact pixel at a known container width,
+pass the computed float — `250px` in an `800px` container is `31.25`.
+
+```jsx live-dev
+const App = () => (
+  <Box height="3xs" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root defaultSize={31.25}>
+      <Splitter.Aside>
+        <Box p="400" bg="indigo.3" h="100%">
+          <Text>31.25%</Text>
+        </Box>
+      </Splitter.Aside>
+      <Splitter.Handle />
+      <Splitter.Main>
+        <Box p="400" bg="amber.3" h="100%">
+          <Text>68.75%</Text>
+        </Box>
+      </Splitter.Main>
+    </Splitter.Root>
+  </Box>
+);
+```
+
+### Responsive pixel & token sizes with `useResponsiveSplitterSizes`
+
+`Splitter.Root` is percentage-native — it has no pixel code path. When you'd
+rather think in pixels (a fixed-width sidebar, an icon rail) or size per device,
+reach for the companion hook `useResponsiveSplitterSizes`. It is a **pixel/token
+→ percentage translator**: it measures the splitter's container, converts your
+config to the percentage the component wants, drives the controlled `size`
+channel, and persists the result — all without the component gaining a pixel
+path.
+
+Spread its `rootProps` onto `Splitter.Root` and attach the `ref` it returns (the
+`ref` is required — the hook measures the container through it):
+
+```tsx
+const { rootProps } = useResponsiveSplitterSizes({
+  orientation: "horizontal",
+  persistKey: "app:main-splitter",
+  size: "xs",          // 320px — size tokens resolve to pixels
+  minSize: "3xs",      // 224px
+  maxSize: "lg",       // 512px
+});
+
+<Splitter.Root {...rootProps} collapsible>
+  <Splitter.Aside>…</Splitter.Aside>
+  <Splitter.Handle />
+  <Splitter.Main>…</Splitter.Main>
+</Splitter.Root>;
+```
+
+**Units.** A value is a `number` (pixels), a size token (`3xs`–`8xl` or
+`breakpoint-sm`…`breakpoint-2xl`, resolving to pixels), or a `"N%"` string
+(passed through untranslated). Note the contrast with `Splitter.Root`'s own
+`size` / `minSize` / … props, which are **percentages**: through the hook, a
+bare number means pixels. Because the hook owns the full facade (`size` plus
+`minSize` / `maxSize` / `collapsedSize`), you don't hand-write percentages on
+the root when you use it.
+
+**Responsive by container width.** Any dimension can be a map keyed by container
+**min-width thresholds** (pixels or tokens) — a min-width cascade resolved
+against the splitter's own width, not the viewport. The largest threshold `≤`
+the measured width wins; the smallest entry also applies below it.
+
+```tsx
+const { rootProps } = useResponsiveSplitterSizes({
+  size: { 0: "xs", "breakpoint-md": "30%" }, // "xs" (320px) below 768px, 30% above
+});
+```
+
+**Persistence.** Pass a `persistKey` (and optionally a `storage` adapter,
+defaulting to `localStorage`) and the hook stores the settled size **in pixels**
+per band, so a dragged `320px` re-pins to `320px` across reloads and container
+resizes. `collapsedSize` is static config and is never persisted; the latest
+expanded size survives collapse and expand.
+
+### Three or more regions
+
+The Splitter is two-pane by design. For additional regions, nest a Splitter
+inside a pane's children; each splitter owns its own state independently. The
+inner aside can sit on either side of its main pane — here it trails as a right
+panel.
+
+```jsx live-dev
+const App = () => (
+  <Box height="sm" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root defaultSize={25}>
+      <Splitter.Aside>
+        <Box p="400" bg="indigo.3" h="100%">
+          <Text>Aside (outer)</Text>
+        </Box>
+      </Splitter.Aside>
+      <Splitter.Handle />
+      <Splitter.Main>
+        <Splitter.Root defaultSize={35}>
+          <Splitter.Main>
+            <Box p="400" bg="amber.3" h="100%">
+              <Text>Main</Text>
+            </Box>
+          </Splitter.Main>
+          <Splitter.Handle />
+          <Splitter.Aside>
+            <Box p="400" bg="rose.3" h="100%">
+              <Text>Aside (inner)</Text>
+            </Box>
+          </Splitter.Aside>
+        </Splitter.Root>
+      </Splitter.Main>
+    </Splitter.Root>
+  </Box>
+);
+```
+
+## Common patterns
+
+### IDE-style layout
+
+The most common real-world composition: a persisted split (`defaultSize` +
+`onSizeChangeEnd`) with a `collapsible` aside that snaps to a rail
+(`collapsedSize`), driven by both a toolbar button and the handle, plus aside
+bounds and a specific handle label.
+
+```jsx live-dev
+const App = () => {
+  const [size, setSize] = useState(22);
+  const [collapsed, setCollapsed] = useState(false);
+
+  return (
+    <Stack direction="column" gap="300">
+      <Button alignSelf="start" onPress={() => setCollapsed((c) => !c)}>
+        {collapsed ? "Show aside" : "Hide aside"}
+      </Button>
+      <Box height="xs" width="100%" borderWidth="25" borderColor="neutral.6">
+        <Splitter.Root
+          defaultSize={size}
+          onSizeChangeEnd={setSize}
+          minSize={15}
+          maxSize={70}
+          collapsible
+          collapsedSize={4}
+          collapsed={collapsed}
+          onCollapsedChange={setCollapsed}
+        >
+          <Splitter.Aside>
+            <Box p="400" bg="indigo.3" h="100%">
+              <Text>Aside</Text>
+            </Box>
+          </Splitter.Aside>
+          <Splitter.Handle aria-label="Resize aside" />
+          <Splitter.Main>
+            <Box p="400" bg="amber.3" h="100%">
+              <Text>Aside</Text>
+            </Box>
+          </Splitter.Main>
+        </Splitter.Root>
+      </Box>
+    </Stack>
+  );
+};
+```
+
+### Vertical with persistence
+
+A vertical split with a persisted boundary and aside bounds so neither region
+collapses to nothing while dragging.
+
+```jsx live-dev
+const App = () => {
+  const [size, setSize] = useState(60);
+
+  return (
+    <Box height="sm" width="100%" borderWidth="25" borderColor="neutral.6">
+      <Splitter.Root
+        orientation="vertical"
+        defaultSize={size}
+        onSizeChangeEnd={setSize}
+        minSize={25}
+        maxSize={80}
+      >
+        <Splitter.Aside>
+          <Box p="400" bg="teal.3" h="100%">
+            <Text>Aside</Text>
+          </Box>
+        </Splitter.Aside>
+        <Splitter.Handle />
+        <Splitter.Main>
+          <Box p="400" bg="rose.3" h="100%">
+            <Text>Main</Text>
+          </Box>
+        </Splitter.Main>
+      </Splitter.Root>
+    </Box>
+  );
+};
+```
+
+## Component requirements
+
+### Structure
+
+- `Splitter.Root` must contain exactly one `Splitter.Aside` and one
+  `Splitter.Main` with one `Splitter.Handle` between them; a development-time
+  warning is emitted otherwise. The aside may be placed before or after the main
+  pane (a leading or trailing panel) — `size` always refers to the aside.
+- All sizing and collapse configuration (`defaultSize` / `size`, `minSize`,
+  `maxSize`, `collapsible`, `collapsedSize`) lives on `Splitter.Root`. Panes
+  take only their content and an optional `id` for analytics/testing — nothing
+  is configured on the pane itself.
+
+## Accessibility
+
+The Splitter handles the W3C window-splitter semantics internally: the handle is
+`role="separator"` with `aria-orientation`, `aria-valuenow` / `aria-valuemin` /
+`aria-valuemax`, `aria-valuetext`, and `aria-controls` pointing at the leading
+pane. For the full conformance details, see the Accessibility tab.
+
+#### Labeling
+
+The handle ships a localized default `aria-label` ("Resize panes"); override it
+per handle with `aria-label` or `aria-labelledby` for a more specific label:
+
+```tsx
+<Splitter.Handle aria-label={msg.format("resizeAside")} />
+```
+
+#### Persistent ID
+
+If your use case requires tracking and analytics, it is good practice to add a
+**persistent**, **unique** id to the handle:
+
+```tsx
+const PERSISTENT_ID = "ide-layout-splitter-handle";
+
+export const Example = () => (
+  <Splitter.Root defaultSize={30}>
+    <Splitter.Aside>…</Splitter.Aside>
+    <Splitter.Handle id={PERSISTENT_ID} />
+    <Splitter.Main>…</Splitter.Main>
+  </Splitter.Root>
+);
+```
+
+#### Keyboard navigation
+
+When the handle has focus:
+
+- `Tab` / `Shift+Tab`: Move focus to/from the handle (in DOM order).
+- `ArrowLeft` / `ArrowRight` (horizontal) or `ArrowUp` / `ArrowDown` (vertical):
+  Move the boundary by `keyboardStep` percentage points (inactive while the
+  aside is collapsed).
+- `Home` / `End`: Jump the boundary to the aside's minimum / maximum (inactive
+  while the aside is collapsed).
+- `Enter`: Toggle collapse of the aside (when `collapsible`).
+
+## API reference
+
+<PropsTable id="Splitter" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Splitter
+in your application. As the component's internal functionality is already tested
+by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+{{docs-tests: splitter.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-splitter--docs)
+- [React Aria useSeparator](https://react-spectrum.adobe.com/react-aria/useSeparator.html)
+- [W3C ARIA window splitter pattern](https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/)

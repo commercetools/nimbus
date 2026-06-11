@@ -1,0 +1,67 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+The Splitter implements the
+[W3C window splitter](https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/)
+pattern on top of React Aria's `useSeparator`, `useMove`, and `useFocusRing`.
+The handle is a `role="separator"` whose value reports the leading pane's size,
+so screen-reader users can perceive and adjust the boundary with the keyboard.
+
+```jsx live
+const App = () => (
+  <Box height="240px" width="100%" borderWidth="25" borderColor="neutral.6">
+    <Splitter.Root defaultSize={30} minSize={10} maxSize={80}>
+      <Splitter.Aside>
+        <Box p="400" bg="indigo.3" h="100%">
+          <Text>Tab to the handle, then use the arrow keys</Text>
+        </Box>
+      </Splitter.Aside>
+      <Splitter.Handle />
+      <Splitter.Main>
+        <Box p="400" bg="amber.3" h="100%">
+          <Text>Main</Text>
+        </Box>
+      </Splitter.Main>
+    </Splitter.Root>
+  </Box>
+);
+```
+
+### Accessibility standards
+
+- The handle is keyboard-reachable in DOM order and operable with the arrow
+  keys, Home/End, and Enter; it is removed from the tab order only when the
+  splitter is `isDisabled`. While the aside is collapsed, the resize keys
+  (arrows, Home/End) are inactive — Enter still toggles collapse — because a
+  collapsed aside sits below its `minSize` and has no valid in-range position to
+  resize to.
+- The handle exposes `role="separator"` with `aria-orientation`, `aria-valuenow`
+  (rounded for assistive technology), `aria-valuemin`, `aria-valuemax`,
+  `aria-valuetext` (the size as a percentage), and `aria-controls` referencing
+  the leading pane.
+- Provide a meaningful label: the handle ships a localized default ("Resize
+  panes"); override it per handle with `aria-label` or `aria-labelledby` when a
+  more specific label helps.
+- A visible focus ring appears on keyboard focus only (via `_focusVisible`),
+  with contrast meeting WCAG 2.1 AA.
+- The interactive hit area is at least 24×24 CSS pixels (WCAG 2.5.5), even when
+  the visible handle track is thinner.
+- Resizing has a keyboard alternative to dragging (arrow keys, Home/End), so the
+  component does not rely on a dragging movement (WCAG 2.5.7).
+- Nested splitters are each announced as a self-contained separator widget with
+  their own `aria-controls`, so assistive-technology users reason about each
+  boundary locally.
+
+### Resources
+
+- [W3C ARIA Authoring Practices Guide (APG) - Window Splitter Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/windowsplitter/)
+- [React Aria useSeparator](https://react-spectrum.adobe.com/react-aria/useSeparator.html)
+- [React Aria useMove](https://react-spectrum.adobe.com/react-aria/useMove.html)
