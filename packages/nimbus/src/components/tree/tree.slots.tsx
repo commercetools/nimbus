@@ -16,7 +16,7 @@ export const TreeRootSlot: SlotComponent<HTMLDivElement, TreeRootSlotProps> =
   withProvider<HTMLDivElement, TreeRootSlotProps>("div", "root");
 
 /**
- * Item slot — the focusable tree row (`role="treeitem"`).
+ * Item slot — the focusable tree row (`role="row"`).
  */
 export const TreeItemSlot = withContext<HTMLDivElement, HTMLChakraProps<"div">>(
   "div",

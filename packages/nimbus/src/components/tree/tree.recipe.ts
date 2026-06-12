@@ -60,9 +60,11 @@ export const treeSlotRecipe = defineSlotRecipe({
 
       // Drop indicator line shown between rows during drag-and-drop. React Aria
       // renders it as a zero-height element with the default `react-aria-*`
-      // class; style it with Nimbus tokens and indent it to the target's level.
-      // Aligns with the row content's leading edge at the same level (matches
-      // the `itemContent` paddingInlineStart so the line sits under the chevron).
+      // class; style it with Nimbus tokens and indent it to the target's level
+      // using the same per-level `--tree-indent-step` as `itemContent`. The base
+      // `{spacing.400}` offset (larger than `itemContent`'s `{spacing.200}`)
+      // pushes the line into the leading-control column so it sits under the
+      // chevron rather than at the row's outer edge.
       "& [class*='react-aria-DropIndicator'][data-drop-target]": {
         outline: "2px solid",
         outlineColor: "primary.9",

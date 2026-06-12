@@ -46,8 +46,8 @@ math.
 
 | Nimbus part        | React Aria        | Slot          | Element                  |
 | ------------------ | ----------------- | ------------- | ------------------------ |
-| `Tree.Root`        | `Tree`            | `root`        | `div[role=tree]`         |
-| `Tree.Item`        | `TreeItem`        | `item`        | `div[role=treeitem]`     |
+| `Tree.Root`        | `Tree`            | `root`        | `div[role=treegrid]`     |
+| `Tree.Item`        | `TreeItem`        | `item`        | `div[role=row]`          |
 | `Tree.ItemContent` | `TreeItemContent` | `itemContent` | `div` (flex content row) |
 | `Tree.Indicator`   | `Button slot=…`   | `indicator`   | `button[slot=chevron]`   |
 
