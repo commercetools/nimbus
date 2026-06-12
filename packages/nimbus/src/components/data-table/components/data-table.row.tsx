@@ -68,6 +68,7 @@ function stopPropagationForNonInteractiveElements(e: Event) {
 
 type DataTableRowPerRowProps = {
   isExpanded: boolean;
+  isDetailsExpanded: boolean;
   isPinned: boolean;
   isFirstPinned: boolean;
   isLastPinned: boolean;
@@ -78,6 +79,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   row,
   ref,
   isExpanded,
+  isDetailsExpanded,
   isPinned,
   isFirstPinned,
   isLastPinned,
@@ -97,6 +99,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     onRowAction,
     togglePin,
     selectRowLabel,
+    allowsPinning,
+    renderDetails,
+    toggleDetails,
   } = useStableDataTableContext<T>();
 
   const [styleProps, restProps] = extractStyleProps(props);
@@ -109,6 +114,11 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     return disabledKeys.has(rowId);
   };
   const isDisabled = getIsDisabled(row.id);
+
+  const hasNestedContent =
+    nestedKey &&
+    row[nestedKey] &&
+    (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
 
   /**
    * Custom row click handling implementation to work around React Aria limitations.
@@ -145,8 +155,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
    */
   const handleRowClick = useCallback(
     (e: Event) => {
-      // Don't do anything if onRowClick is undefined
-      if (!onRowClick) return;
+      const hasHandler =
+        onRowClick || renderDetails || (hasNestedContent && !showExpandColumn);
+      if (!hasHandler) return;
       // Prevent row click when clicking on interactive elements to avoid conflicts
       const isInteractiveElement = getIsTableRowChildElementInteractive(e);
       if (!isInteractiveElement) {
@@ -164,10 +175,16 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         // Standard double-click timeout is typically 300-500ms
         clickTimeoutRef.current = window.setTimeout(() => {
           if (!isDisabled) {
-            onRowClick(row);
+            if (renderDetails) {
+              toggleDetails(row.id);
+            }
+            if (hasNestedContent && !showExpandColumn) {
+              toggleExpand(row.id);
+            }
+            if (onRowClick) {
+              onRowClick(row);
+            }
           } else {
-            // Handle disabled row clicks differently - allows for special disabled row actions
-            // TODO: Clarify business requirement - why allow clicks on disabled rows?
             if (onRowAction) {
               onRowAction(row, "click");
             }
@@ -176,7 +193,17 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         }, 300);
       }
     },
-    [onRowClick, onRowAction, row, isDisabled]
+    [
+      onRowClick,
+      onRowAction,
+      row,
+      isDisabled,
+      renderDetails,
+      toggleDetails,
+      hasNestedContent,
+      showExpandColumn,
+      toggleExpand,
+    ]
   );
 
   /**
@@ -363,11 +390,6 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   const { selectionBehavior, allowsDragging } = useTableOptions();
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
 
-  const hasNestedContent =
-    nestedKey &&
-    row[nestedKey] &&
-    (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
-
   // Generate pinned row CSS classes
   const getPinnedRowClasses = () => {
     if (!isPinned) return "";
@@ -395,7 +417,14 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           columns={activeColumns}
           ref={rowRef}
           id={row.id}
-          data-clickable={!!onRowClick && !isDisabled}
+          data-clickable={
+            !isDisabled &&
+            !!(
+              onRowClick ||
+              renderDetails ||
+              (hasNestedContent && !showExpandColumn)
+            )
+          }
           className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
           {...restProps}
           dependencies={[isExpanded, search, isTruncated]}
@@ -492,32 +521,34 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               );
             }}
           </RaCollection>
-          <DataTableCell
-            className={"data-table-sticky-cell"}
-            data-slot="pin-row-cell"
-            isDisabled={isDisabled}
-          >
-            <Box
-              data-slot={
-                isPinned
-                  ? "nimbus-table-cell-pin-button-pinned"
-                  : "nimbus-table-cell-pin-button"
-              }
-              title={isPinned ? "Unpin row" : "Pin row"}
+          {allowsPinning && (
+            <DataTableCell
+              className={"data-table-sticky-cell"}
+              data-slot="pin-row-cell"
+              isDisabled={isDisabled}
             >
-              <IconToggleButton
-                key="pin-btn"
-                size="2xs"
-                variant="ghost"
-                aria-label={isPinned ? "Unpin row" : "Pin row"}
-                colorPalette="primary"
-                isSelected={isPinned}
-                onChange={() => togglePin(row.id)}
+              <Box
+                data-slot={
+                  isPinned
+                    ? "nimbus-table-cell-pin-button-pinned"
+                    : "nimbus-table-cell-pin-button"
+                }
+                title={isPinned ? "Unpin row" : "Pin row"}
               >
-                <PushPin />
-              </IconToggleButton>
-            </Box>
-          </DataTableCell>
+                <IconToggleButton
+                  key="pin-btn"
+                  size="2xs"
+                  variant="ghost"
+                  aria-label={isPinned ? "Unpin row" : "Pin row"}
+                  colorPalette="primary"
+                  isSelected={isPinned}
+                  onChange={() => togglePin(row.id)}
+                >
+                  <PushPin />
+                </IconToggleButton>
+              </Box>
+            </DataTableCell>
+          )}
         </RaRow>
       </DataTableRowSlot>
 
@@ -534,7 +565,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                 (allowsDragging ? 1 : 0) +
                 (showExpandColumn ? 1 : 0) +
                 (showSelectionColumn ? 1 : 0) +
-                1
+                (allowsPinning ? 1 : 0)
               }
               data-nested-cell
             >
@@ -543,6 +574,24 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                   ? `${(row[nestedKey] as unknown[]).length} nested items`
                   : nestedKey && (row[nestedKey] as React.ReactNode)
                 : null}
+            </DataTableCell>
+          </RaRow>
+        </DataTableRowSlot>
+      )}
+
+      {renderDetails && isDetailsExpanded && (
+        <DataTableRowSlot {...styleProps} asChild>
+          <RaRow data-details-row="true" dependencies={[isDetailsExpanded]}>
+            <DataTableCell
+              colSpan={
+                activeColumns.length +
+                (allowsDragging ? 1 : 0) +
+                (showExpandColumn ? 1 : 0) +
+                (showSelectionColumn ? 1 : 0) +
+                (allowsPinning ? 1 : 0)
+              }
+            >
+              {renderDetails(row)}
             </DataTableCell>
           </RaRow>
         </DataTableRowSlot>

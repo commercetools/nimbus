@@ -14,6 +14,7 @@ type InteractionContextValue<T extends object = Record<string, unknown>> = {
   expanded: Set<string>;
   pinnedRows: Set<string>;
   pinnedRowIds: string[];
+  detailsExpandedRows: Set<string>;
 };
 
 export const DataTableContext = createContext<DataTableContextValue<

@@ -49,6 +49,9 @@ export const DataTableRoot = function DataTableRoot<
     nestedKey,
     onRowClick,
     onDetailsClick,
+    renderDetails,
+    allowsPinning = true,
+    allowsExpandColumn = true,
     disabledKeys,
     onRowAction,
     isResizable,
@@ -121,10 +124,28 @@ export const DataTableRoot = function DataTableRoot<
   );
 
   const showExpandColumn = useMemo(
-    () => hasExpandableRows(filteredRows, nestedKey),
-    [filteredRows, nestedKey]
+    () => allowsExpandColumn && hasExpandableRows(filteredRows, nestedKey),
+    [filteredRows, nestedKey, allowsExpandColumn]
   );
   const showSelectionColumn = selectionMode !== "none";
+
+  const [detailsExpandedRows, setDetailsExpandedRows] = useState<Set<string>>(
+    () => new Set()
+  );
+
+  const toggleDetails = useCallback((id: string) => {
+    startTransition(() => {
+      setDetailsExpandedRows((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) {
+          next.delete(id);
+        } else {
+          next.add(id);
+        }
+        return next;
+      });
+    });
+  }, []);
 
   const expandedRef = useRef(expanded);
   expandedRef.current = expanded;
@@ -191,6 +212,7 @@ export const DataTableRoot = function DataTableRoot<
       expanded,
       pinnedRows,
       pinnedRowIds,
+      detailsExpandedRows,
     }),
     [
       sortedRows,
@@ -199,6 +221,7 @@ export const DataTableRoot = function DataTableRoot<
       expanded,
       pinnedRows,
       pinnedRowIds,
+      detailsExpandedRows,
     ]
   );
 
@@ -230,6 +253,10 @@ export const DataTableRoot = function DataTableRoot<
       togglePin,
       onColumnsChange,
       onSettingsChange,
+      allowsPinning,
+      allowsExpandColumn,
+      renderDetails,
+      toggleDetails,
     }),
     [
       columns,
@@ -258,6 +285,10 @@ export const DataTableRoot = function DataTableRoot<
       togglePin,
       onColumnsChange,
       onSettingsChange,
+      allowsPinning,
+      allowsExpandColumn,
+      renderDetails,
+      toggleDetails,
     ]
   );
 
