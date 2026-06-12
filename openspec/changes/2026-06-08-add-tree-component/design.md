@@ -83,15 +83,30 @@ row has child items (`&[data-has-child-items]`) — and the icon rotates 90° on
 `&[data-expanded]`. React Aria provides the expand/collapse behavior and a
 localized accessible name for the button, so no custom i18n is required.
 
+### Decision: `Tree.ItemContent` auto-renders the drag handle
+
+When drag-and-drop is enabled, the drag handle is part of the component, not the
+consumer's render function. `TreeItemContent`'s render props expose
+`allowsDragging` (from React Aria's `ItemRenderProps`), so `Tree.ItemContent`
+renders a `<IconButton slot="drag">` with the `DragIndicator` icon whenever the
+row allows dragging — the same render-prop mechanism it already uses for the
+selection checkbox, and byte-for-byte the same handle markup as
+`DraggableList.Item` (`ghost`/`2xs`/`neutral`). React Aria wires the
+`slot="drag"` button and localizes its accessible name (`"Drag <item>"`), so no
+new i18n message or per-item `aria-label` is needed. This guarantees every
+draggable tree across every team gets an identical, accessible drag affordance
+with zero consumer markup. No escape hatch is exposed in this iteration
+(matching `DraggableList`); one can be added later without a breaking change.
+
 ### Decision: `Tree.SubTree` wraps `Collection`
 
-Dynamic, nested children in React Aria require a `<Collection>` per level. Rather
-than leak `react-aria-components` into consumer code, `Tree.SubTree` wraps
-`Collection` internally — the same pattern as `ComboBox.Section`, `Menu.Section`,
-and `Select.OptionGroup`. It takes `items` + a render function (dynamic) or plain
-children (static), and renders nothing for empty/absent `items` (no
-`children?.length` guard needed). A spike confirmed React Aria's collection
-builder recognizes the wrapped `Collection`.
+Dynamic, nested children in React Aria require a `<Collection>` per level.
+Rather than leak `react-aria-components` into consumer code, `Tree.SubTree`
+wraps `Collection` internally — the same pattern as `ComboBox.Section`,
+`Menu.Section`, and `Select.OptionGroup`. It takes `items` + a render function
+(dynamic) or plain children (static), and renders nothing for empty/absent
+`items` (no `children?.length` guard needed). A spike confirmed React Aria's
+collection builder recognizes the wrapped `Collection`.
 
 ### Decision: `useTree` owns state + drag-and-drop, spreadable onto `Tree.Root`
 
@@ -101,9 +116,9 @@ composes `useTreeData` (hierarchy state) and React Aria's `useDragAndDrop`
 (internal — **not** the flat-list Nimbus `useDragAndDrop` wrapper, which can't
 re-parent) with default reorder + re-parent handlers. Its return is spreadable
 onto `Tree.Root` (`items`, `dragAndDropHooks`, forwarded selection/expansion
-config) and also carries the imperative controller. This keeps the consumer story
-to one hook + a spread; `react-aria-components`/`react-stately` stay internal.
-`Key`/`Selection` types are re-exported for controlled state.
+config) and also carries the imperative controller. This keeps the consumer
+story to one hook + a spread; `react-aria-components`/`react-stately` stay
+internal. `Key`/`Selection` types are re-exported for controlled state.
 
 ## Risks / Trade-offs
 

@@ -61,10 +61,11 @@ const App = () => (
   visible row, and typing performs type-ahead.
 - **Expand/collapse control:** the `Tree.Indicator` chevron is given a localized
   accessible name by React Aria and is hidden for leaf rows.
-- **Drag and drop:** when drag-and-drop is enabled, include a
-  `Button slot="drag"` per row so reordering is operable by keyboard and screen
-  reader (pick up with `Enter`, move with arrow keys, drop with `Enter`), not
-  pointer-only.
+- **Drag and drop:** when drag-and-drop is enabled, `Tree.ItemContent`
+  automatically renders a `Button slot="drag"` per row so reordering is operable
+  by keyboard and screen reader (pick up with `Enter`, move with arrow keys,
+  drop with `Enter`), not pointer-only. React Aria gives it a localized
+  accessible name; consumers don't author it.
 - **Focus visible:** rows and the tree container provide a clear focus ring for
   keyboard users.
 - **Color contrast:** maintain sufficient contrast for row text and selection

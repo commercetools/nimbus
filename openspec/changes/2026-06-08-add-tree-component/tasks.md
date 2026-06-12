@@ -8,8 +8,7 @@
       `components/tree.indicator.tsx`
 - [x] 1.2 Register `treeSlotRecipe` in `src/theme/slot-recipes/index.ts` as
       `nimbusTree`
-- [x] 1.3 Export `Tree` and its prop types from
-      `src/components/tree/index.ts`
+- [x] 1.3 Export `Tree` and its prop types from `src/components/tree/index.ts`
 - [x] 1.4 Add `export * from "./tree"` to `src/components/index.ts`
 
 ## 2. Failing Tests (TDD)
@@ -38,8 +37,8 @@
       props, forward `dragAndDropHooks` + RA props to `Tree`)
 - [x] 3.5 Implement `components/tree.item.tsx` (wraps `TreeItem`, derives
       `textValue`)
-- [x] 3.6 Implement `components/tree.item-content.tsx` (wraps
-      `TreeItemContent`; render-prop renders selection checkbox when
+- [x] 3.6 Implement `components/tree.item-content.tsx` (wraps `TreeItemContent`;
+      render-prop renders selection checkbox when
       `selectionBehavior === "toggle"` and `selectionMode === "multiple"`)
 - [x] 3.7 Implement `components/tree.indicator.tsx` (wraps
       `<Button slot="chevron">` with default `ChevronRight` icon, override-able)
@@ -84,6 +83,10 @@
       verify zero `react-aria-components` / `react-stately` imports in any
       consumer-facing doc
 - [x] 7.6 Lift `tree.mdx` `lifecycleState` from Experimental to Beta
+- [x] 7.7 Auto-render the drag handle in `Tree.ItemContent` off the
+      `allowsDragging` render prop (mirroring the selection checkbox and
+      `DraggableList.Item`); remove the hand-rolled `slot="drag"` handle from
+      the stories and all consumer docs
 
 ## 8. Validation (follow-up changes)
 
