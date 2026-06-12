@@ -1,0 +1,222 @@
+---
+id: Home-SSR
+title: Server-Side Rendering
+description:
+  How to use Nimbus in SSR and React Server Component environments like Next.js
+  App Router and Remix.
+order: 3
+menu:
+  - Home
+  - Getting Started
+  - Server-Side Rendering
+tags:
+  - guide
+  - ssr
+  - rsc
+  - nextjs
+  - remix
+icon: Cloud
+---
+
+# Server-Side Rendering
+
+Nimbus is compatible with server-side rendering (SSR) and React Server
+Components (RSC). All published entry points include a `"use client"` directive,
+so bundlers like Next.js App Router automatically treat Nimbus imports as client
+boundaries.
+
+## How it works
+
+Every Nimbus component is a client component — it uses React hooks, event
+handlers, and browser APIs that require a client environment. The `"use client"`
+directive is prepended to every entry-point file at build time, so you do not
+need to add it yourself.
+
+Nimbus components rely on the Chakra UI context provided by `NimbusProvider`. In
+Next.js App Router, the recommended pattern is to use Nimbus components inside
+Client Components (files with `"use client"`). The `"use client"` directive on
+Nimbus entry points ensures the bundler treats them correctly — they are still
+server-rendered as HTML during the initial request, but they hydrate on the
+client and require the provider context.
+
+```tsx
+// app/dashboard/page.tsx
+"use client";
+
+import { Button, Text } from "@commercetools/nimbus";
+
+export default function Dashboard() {
+  return (
+    <main>
+      <Text>This text is server-rendered, then hydrates on the client.</Text>
+      <Button onPress={() => alert("Hello!")}>Click me</Button>
+    </main>
+  );
+}
+```
+
+> [!NOTE] Even though the file has `"use client"`, Next.js still server-renders
+> the component as HTML on the initial request — the directive controls where
+> hydration happens, not whether SSR occurs.
+
+## Setup with Next.js App Router
+
+### 1. Install Nimbus
+
+Follow the standard [Installation](/home/getting-started/installation) guide.
+
+### 2. Create a client provider
+
+`NimbusProvider` uses React context and must run on the client. Create a
+dedicated provider component:
+
+```tsx
+// app/providers.tsx
+"use client";
+
+import { NimbusProvider } from "@commercetools/nimbus";
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return <NimbusProvider loadFonts={false}>{children}</NimbusProvider>;
+}
+```
+
+> [!NOTE] Set `loadFonts={false}` if you load Inter via `next/font` or another
+> mechanism. See the [Installation guide](/home/getting-started/installation)
+> for details.
+
+### 3. Wrap your root layout
+
+```tsx
+// app/layout.tsx
+import { Providers } from "./providers";
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  );
+}
+```
+
+### 4. Use components in any page
+
+Mark pages that use Nimbus components with `"use client"`. The components are
+still server-rendered as HTML — the directive tells Next.js to hydrate them on
+the client, which is required for interactivity and Chakra context.
+
+```tsx
+// app/dashboard/page.tsx
+"use client";
+
+import { Card, Heading, Text } from "@commercetools/nimbus";
+
+export default function Dashboard() {
+  return (
+    <Card.Root>
+      <Card.Header>
+        <Heading as="h2">Dashboard</Heading>
+      </Card.Header>
+      <Card.Body>
+        <Text>Welcome back.</Text>
+      </Card.Body>
+    </Card.Root>
+  );
+}
+```
+
+## Setup with Remix
+
+Remix renders components on the server by default. Nimbus works out of the box
+because the `"use client"` directive is only meaningful to RSC-aware bundlers —
+Remix ignores it.
+
+```tsx
+// app/root.tsx
+import { NimbusProvider } from "@commercetools/nimbus";
+
+export default function App() {
+  return (
+    <html lang="en">
+      <body>
+        <NimbusProvider>
+          <Outlet />
+        </NimbusProvider>
+      </body>
+    </html>
+  );
+}
+```
+
+## What renders on the server
+
+During SSR, React calls `renderToString` (or its streaming equivalents) to
+produce HTML. Components render their markup, but:
+
+- **`useEffect` does not run** — effects are skipped during server rendering and
+  only fire after hydration on the client.
+- **Overlay components render their triggers only** — components like `Dialog`,
+  `Drawer`, `Menu`, and `Tooltip` render the trigger button on the server. The
+  overlay content appears after hydration when the user interacts with the
+  trigger.
+- **`ToastOutlet` renders nothing** — the toast system activates on the client
+  when a toast is triggered.
+
+This is standard React SSR behavior. After hydration completes, all components
+become fully interactive.
+
+## Caveats
+
+### Emotion style injection
+
+Nimbus uses Emotion for CSS-in-JS. During SSR, Emotion inlines `<style>` tags
+into the HTML stream. If you see a flash of unstyled content (FOUC), ensure
+Emotion's SSR setup is configured. For Next.js App Router, this is handled
+automatically. For custom SSR setups, see the
+[Emotion SSR documentation](https://emotion.sh/docs/ssr).
+
+### FormField labels during SSR
+
+`FormField.Label` stores its text via `useEffect` and renders `null` during the
+server pass. The label text appears after hydration. If your application
+requires the label to be present in the initial server-rendered HTML (e.g., for
+accessibility scanners that evaluate the raw SSR output), add a `VisuallyHidden`
+label with the appropriate `aria-label` on the input:
+
+```tsx
+<FormField.Root>
+  <FormField.Label>Email</FormField.Label>
+  <FormField.Input>
+    <TextInput aria-label="Email" />
+  </FormField.Input>
+</FormField.Root>
+```
+
+The `aria-label` ensures the input is accessible before hydration, and
+`FormField.Label` takes over after effects run on the client.
+
+### Hydration mismatches
+
+Nimbus components are designed to produce consistent output between server and
+client renders. If you encounter a hydration mismatch warning, check that:
+
+- You are not conditionally rendering Nimbus components based on
+  `typeof window !== "undefined"` or similar browser-only checks.
+- Your `NimbusProvider` locale prop matches between server and client.
+
+## Verifying SSR compatibility
+
+The Nimbus test suite includes dedicated SSR tests that render every component
+with `renderToString` in a pure Node.js environment (no JSDOM). These tests run
+in CI to prevent regressions.
+
+If you are contributing a new component, add an SSR smoke test to
+`packages/nimbus/src/test/ssr.ssr.spec.tsx` to ensure it renders without
+crashing on the server.

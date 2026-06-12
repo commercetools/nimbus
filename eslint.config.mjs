@@ -43,7 +43,12 @@ export default tseslint.config(
    * Global ignores for common build and dependency directories
    */
   {
-    ignores: ["**/node_modules/**", "**/dist/**", "**/storybook-static/**"],
+    ignores: [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/storybook-static/**",
+      "**/next-env.d.ts",
+    ],
   },
   /**
    * Base ESLint recommended rules
