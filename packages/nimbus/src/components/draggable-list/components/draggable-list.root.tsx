@@ -22,6 +22,8 @@ import { DraggableListItem } from "./draggable-list.item";
 
 const DRAGGABLE_LIST_DATA_FORMAT = "nimbus-draggable-list-item";
 
+let hasWarned = false;
+
 const defaultGetKey = <T extends DraggableListItemData>(item: T): Key =>
   (item.key as Key) ?? item.id;
 
@@ -48,6 +50,19 @@ export const DraggableListRoot = <T extends DraggableListItemData>({
   serializeDragItem,
   ...restProps
 }: DraggableListRootProps<T>) => {
+  if (
+    !hasWarned &&
+    typeof console !== "undefined" &&
+    process.env.NODE_ENV !== "production"
+  ) {
+    hasWarned = true;
+    console.warn(
+      "[Nimbus] DraggableList is deprecated and will be removed in a future major version. " +
+        "Use GridList with dragAndDropHooks instead. " +
+        "See: https://nimbus-documentation.vercel.app/components/grid-list#drag-and-drop"
+    );
+  }
+
   const msg = useLocalizedStringFormatter(draggableListMessagesStrings);
   const renderEmptyState =
     renderEmptyStateFromProps ?? msg.format("emptyMessage");
