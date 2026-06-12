@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useState } from "react";
 import { Tree, Stack, Text, IconButton } from "@commercetools/nimbus";
-import { Collection } from "react-aria-components";
+import { Collection, type Key } from "react-aria-components";
 import { useTreeData } from "react-stately";
 import { useDragAndDrop } from "react-aria-components";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
@@ -300,6 +301,57 @@ export const MultipleSelection: Story = {
 };
 
 /**
+ * Controlled expansion — the parent owns `expandedKeys` and is notified of
+ * changes via `onExpandedChange`. Use this to sync expansion with external
+ * state, the URL, or analytics.
+ */
+export const Controlled: Story = {
+  render: () => {
+    const ControlledTree = () => {
+      const [expandedKeys, setExpandedKeys] = useState<Set<Key>>(
+        new Set(["documents"])
+      );
+      return (
+        <Stack gap="200">
+          <Text>Expanded: {Array.from(expandedKeys).join(", ") || "none"}</Text>
+          <Tree.Root
+            aria-label="Files"
+            items={fileTree}
+            expandedKeys={expandedKeys}
+            onExpandedChange={setExpandedKeys}
+          >
+            {renderNode}
+          </Tree.Root>
+        </Stack>
+      );
+    };
+    return <ControlledTree />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const documents = canvas.getByRole("row", { name: /Documents/ });
+
+    await step("Parent state reflects the initial expansion", async () => {
+      await expect(documents).toHaveAttribute("aria-expanded", "true");
+      await expect(canvas.getByText(/^Expanded:/)).toHaveTextContent(
+        "documents"
+      );
+    });
+
+    await step("Collapsing a row updates the controlled state", async () => {
+      const chevron = within(documents).getByRole("button");
+      await userEvent.click(chevron);
+      await waitFor(() =>
+        expect(documents).toHaveAttribute("aria-expanded", "false")
+      );
+      await waitFor(() =>
+        expect(canvas.getByText(/^Expanded:/)).toHaveTextContent("none")
+      );
+    });
+  },
+};
+
+/**
  * Disabled items cannot be selected or actioned.
  */
 export const DisabledItems: Story = {
@@ -380,7 +432,6 @@ const FeatureTree = ({
           slot="drag"
           size="2xs"
           variant="ghost"
-          data-testid={`drag-${item.key}`}
           aria-label={`Reorder ${item.value.title}`}
         >
           <DragIndicator />
@@ -475,15 +526,21 @@ export const DragAndDrop: Story = {
         // A `<Button slot="drag">` handle is present per item so the reorder is
         // operable by keyboard and screen reader (not pointer-only). The drop /
         // reorder mechanics themselves are provided and tested by React Aria.
-        await expect(canvas.getByTestId("drag-documents")).toBeInTheDocument();
-        await expect(canvas.getByTestId("drag-photos")).toBeInTheDocument();
+        await expect(
+          canvas.getByRole("button", { name: /Reorder Documents/ })
+        ).toBeInTheDocument();
+        await expect(
+          canvas.getByRole("button", { name: /Reorder Photos/ })
+        ).toBeInTheDocument();
       }
     );
 
     await step("Keyboard drag can be picked up from the handle", async () => {
       // Focus the drag handle and confirm focus — React Aria's keyboard drag
       // dispatches from document.activeElement.
-      const dragHandle = canvas.getByTestId("drag-documents");
+      const dragHandle = canvas.getByRole("button", {
+        name: /Reorder Documents/,
+      });
       dragHandle.focus();
       await waitFor(() => expect(dragHandle).toHaveFocus());
 
@@ -523,7 +580,9 @@ export const ReorderWithoutSelection: Story = {
         // No selection mode → no checkboxes anywhere in the tree.
         await expect(canvas.queryByRole("checkbox")).not.toBeInTheDocument();
         // Drag handles are still present for reordering.
-        await expect(canvas.getByTestId("drag-documents")).toBeInTheDocument();
+        await expect(
+          canvas.getByRole("button", { name: /Reorder Documents/ })
+        ).toBeInTheDocument();
       }
     );
 
