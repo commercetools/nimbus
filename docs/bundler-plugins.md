@@ -164,3 +164,51 @@ return <button onClick={onClick}>{label}</button>;
 The key principle: **the plugins make the build pass, your code makes the app
 work.** Any path that touches a Nimbus import must handle the possibility that
 it resolved to `undefined`.
+
+## Development
+
+### Source files
+
+Plugin source lives in `packages/nimbus/src/plugins/`. The plugins are built as
+separate entry points (`plugins/webpack`, `plugins/vite`, `plugins/stub`) and
+must not import anything from the Nimbus runtime.
+
+### Unit tests
+
+```bash
+pnpm test:dev packages/nimbus/src/plugins/
+```
+
+Unit tests cover the plugin logic (regex matching, resolveId/load hooks,
+isNimbusResolvable, no-op vs active behavior) with mocked dependencies.
+
+### Integration tests
+
+`apps/plugin-test/` contains end-to-end verification scripts that build real
+Vite and webpack bundles with the plugins active, then assert on the output:
+
+```bash
+pnpm --filter plugin-test test
+```
+
+This builds with both bundlers and runs `verify-vite.mjs` and
+`verify-webpack.mjs`, which check that no residual `@commercetools/nimbus`
+imports remain and that named exports resolve through the CJS stub interop.
+
+Run these locally after changes to:
+
+- Plugin source (`packages/nimbus/src/plugins/`)
+- Build config (`packages/nimbus/vite.config.ts`)
+- Postbuild script (`packages/nimbus/scripts/postbuild-types.mjs`)
+
+`apps/blank-app/` also has a `build:webpack` script that tests the no-op path
+(plugin with Nimbus installed).
+
+### Package shape
+
+```bash
+pnpm check:package-shape
+```
+
+Validates that all three plugin export paths resolve correctly across node10,
+node16 (CJS + ESM), and bundler resolution modes.

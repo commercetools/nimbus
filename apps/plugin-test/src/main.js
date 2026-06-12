@@ -1,3 +1,4 @@
+/* eslint-disable no-undef -- Node script, not browser code */
 // These imports simulate shared code that references nimbus.
 // The plugin stubs them so the build succeeds even when nimbus is absent.
 import { Button } from "@commercetools/nimbus";

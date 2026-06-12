@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-undef -- Node script */
 /**
  * Verifies the Webpack plugin stubbing mechanism produced correct output.
  *

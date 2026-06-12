@@ -1,3 +1,4 @@
+/* eslint-disable no-undef -- Node script, not browser code */
 // Minimal entry point for the webpack build.
 // Proves the UNSAFE_nimbusOptionalDependency plugin is a no-op when nimbus IS
 // installed — the build succeeds and real nimbus exports are preserved.

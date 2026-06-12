@@ -104,8 +104,7 @@ for (const entry of ENTRY_POINTS) {
 
 const STUB_CJS = "module.exports = {};\n";
 writeFileSync(join(DIST, "plugins", "stub.cjs"), STUB_CJS);
-writeFileSync(join(DIST, "plugins", "stub.es.js"), STUB_CJS);
-console.log(`[postbuild-types] wrote CJS stub content to plugins/stub.{cjs,es.js}`);
+console.log(`[postbuild-types] wrote CJS stub content to plugins/stub.cjs`);
 
 // ---------------------------------------------------------------------------
 // Step 5: fix CJS chunk extensions
@@ -117,8 +116,8 @@ console.log(`[postbuild-types] wrote CJS stub content to plugins/stub.{cjs,es.js
 
 const CHUNKS_DIR = join(DIST, "chunks");
 if (existsSync(CHUNKS_DIR)) {
-  const cjsChunks = readdirSync(CHUNKS_DIR).filter(
-    (f) => f.endsWith(".cjs.js")
+  const cjsChunks = readdirSync(CHUNKS_DIR).filter((f) =>
+    f.endsWith(".cjs.js")
   );
   const renames = new Map();
 

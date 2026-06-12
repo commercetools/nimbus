@@ -1,3 +1,4 @@
+import type { Plugin } from "vite";
 import { isNimbusResolvable } from "./is-nimbus-resolvable";
 import { NIMBUS_RUNTIME_RE } from "./nimbus-runtime-re";
 export { NIMBUS_RUNTIME_RE };
@@ -14,12 +15,7 @@ const STUB_ID = "\0nimbus-stub.cjs";
  * Nimbus components or functions must guard against `undefined` or it will
  * crash. The build succeeds either way — only runtime behavior differs.
  */
-export function UNSAFE_nimbusOptionalDependency(): {
-  name: string;
-  enforce?: "pre";
-  resolveId?: (source: string) => string | undefined;
-  load?: (id: string) => string | undefined;
-} {
+export function UNSAFE_nimbusOptionalDependency(): Plugin {
   if (isNimbusResolvable()) {
     return { name: "nimbus-optional-dependency" };
   }

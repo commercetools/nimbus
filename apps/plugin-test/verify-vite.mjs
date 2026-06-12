@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-undef -- Node script */
 /**
  * Verifies the Vite plugin stubbing mechanism produced correct output.
  *
