@@ -1,5 +1,215 @@
 # @commercetools/nimbus
 
+## 3.1.0
+
+### Minor Changes
+
+- [#1599](https://github.com/commercetools/nimbus/pull/1599)
+  [`1a1e6ae`](https://github.com/commercetools/nimbus/commit/1a1e6aeeeea12684b9bcea6ee4ab1f5c3ae36ec1)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - New bundler plugins for
+  optional-dependency resolution. Webpack
+  (`UNSAFE_NimbusOptionalDependencyPlugin`) and Vite
+  (`UNSAFE_nimbusOptionalDependency`) plugins detect whether Nimbus is installed
+  at build time and stub out imports when absent, allowing shared build tooling
+  to support applications that may or may not depend on Nimbus.
+
+  Available at `@commercetools/nimbus/plugins/webpack` and
+  `@commercetools/nimbus/plugins/vite`.
+
+- [#1454](https://github.com/commercetools/nimbus/pull/1454)
+  [`61178f8`](https://github.com/commercetools/nimbus/commit/61178f8e3893ef5358ae5a759cc4ec9167b3446d)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `ConfirmationDialog`: new
+  pattern for confirm/cancel flows. Pass `title`, `children`, `onConfirm`, and
+  `onCancel` to render a dialog with localized Confirm and Cancel buttons;
+  cancel, Escape, overlay click, and the close button all route through
+  `onCancel`.
+  - `intent="destructive"` styles the confirm button for delete / discard /
+    publish flows.
+  - `isConfirmLoading` shows a spinner on the confirm button and locks the
+    dialog while the handler is in flight, so async confirm handlers can't race
+    with cancel.
+  - Default button labels are localized via Nimbus i18n; override per-instance
+    with `confirmLabel` / `cancelLabel`.
+
+  See the docs for the full API.
+
+- [#1556](https://github.com/commercetools/nimbus/pull/1556)
+  [`75d8ec6`](https://github.com/commercetools/nimbus/commit/75d8ec63455aa880265efe9d9ef15ceccfe032eb)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - **DraggableList**: Add
+  `dragNamespace` prop to isolate drag-and-drop between lists. When set, only
+  lists sharing the same namespace can exchange items. Omitting preserves the
+  default behavior where all lists interoperate.
+
+  **DraggableList**: Add `onExternalDrop`, `acceptExternalTypes`,
+  `externalDropOperation`, and `serializeDragItem` props for accepting external
+  drops (text, files, directories) and providing outgoing drag formats.
+
+  **New hook**: `useDragAndDrop` — shared drag-and-drop hook for any React Aria
+  collection component. Provides namespace isolation, external drop support,
+  outgoing format serialization, and auto-keying.
+
+  **New helpers**: `createListDataHandlers` and `createArrayHandlers` — factory
+  functions that return state mutation callbacks for `useListData` and
+  `useState` arrays respectively.
+
+  **New helpers**: `createItemsFromTextDrop`, `createItemsFromFileDrop`,
+  `createItemsFromDirectoryDrop`, `createItemsFromJsonDrop`,
+  `createItemsFromImageDrop`, `createItemsFromCsvDrop` — composable utilities
+  for converting external drop items inside `onExternalDrop`.
+
+  **DataTable**: Add optional `dragAndDropHooks` prop to both `DataTable` and
+  `DataTable.Table` for consumer-provided drag-and-drop support. When provided,
+  a drag handle column is automatically added and rows become reorderable.
+
+- [#1470](https://github.com/commercetools/nimbus/pull/1470)
+  [`63b709d`](https://github.com/commercetools/nimbus/commit/63b709d5fe08096b803977a11eba2bcdf048cbc5)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - feat(form-dialog): add
+  FormDialog pattern (FEC-436)
+
+  A pre-composed save/cancel dialog for hosting an editable form in a modal.
+  Flat API (`title`, `children`, `onSave`, `onCancel`, plus optional `isOpen` /
+  `defaultOpen` / `onOpenChange`, `saveLabel` / `cancelLabel`, `isSaveDisabled`
+  / `isSaveLoading`, `aria-label`) with localized default "Save" and "Cancel"
+  labels, single unified `onCancel` across the cancel button and ambient dismiss
+  affordances (Escape, overlay, X), Promise-aware `onSave` (the dialog stays
+  open while the returned promise is pending and closes on fulfillment; rejected
+  promises leave it open so the consumer can surface validation errors), and an
+  `isSaveLoading` lockout that disables both buttons and suppresses Escape /
+  overlay / X for the duration to prevent in-flight data loss. Replaces Merchant
+  Center Application Kit's `FormDialog`.
+
+- [#1596](https://github.com/commercetools/nimbus/pull/1596)
+  [`06aad28`](https://github.com/commercetools/nimbus/commit/06aad2811bb673338c6c97fd90932c5ec7a42a8a)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Region`: new headless
+  primitive for **named regions** — render content into a slot somewhere else in
+  the layout while it stays in your component's React tree (so context like
+  routing, intl, data clients, and permissions is preserved), and optionally let
+  that slot's host publish a `value` (e.g. control callbacks + state) for
+  consumers to read.
+  - `<Region name="…" />` — the **target**: marks where a named region renders.
+    It's layout-transparent (`display: contents`), so projected content lays out
+    as a direct child of the target's parent — no extra wrapper box. Backed by a
+    `chakra.div`, so it accepts style props. Can publish a `value`.
+  - `useRegion(name)` — returns a stable `Region` portal component to **fill**
+    the target, plus the published `value`. Addressed by name (not tree
+    position), so it works across any nesting and resolves safely before a
+    target mounts.
+  - `Region.Provider` — the scope. **Mounted ambiently inside
+    `NimbusProvider`**, so in a Nimbus app you place targets and call
+    `useRegion` without wrapping anything yourself.
+
+  Backed by an external store, so publishing a node or value never re-renders
+  the provider — filling a region (or toggling a panel through a published
+  callback) updates only that region's consumers, not the app the provider
+  wraps.
+
+  A region name is single-occupancy: exactly one target and at most one filler.
+  In development, a second competing target or consumer for the same name logs a
+  clear `console.error` (their content would otherwise stack or orphan in an
+  undefined order), and a stale duplicate target unmounting never clears a
+  region a live target still holds.
+
+  This composes with `Splitter` (no Splitter API change needed) to build a
+  shell-owned, remotely-controlled side panel: mount the splitter once, put a
+  `<Region name>` in the aside that publishes the collapse controls, and let a
+  consumer anywhere fill the pane and open/close it via `useRegion`.
+
+- [#1560](https://github.com/commercetools/nimbus/pull/1560)
+  [`12f8dfc`](https://github.com/commercetools/nimbus/commit/12f8dfc428fe3759055d73d8485d221736189911)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Splitter`: new compound
+  component for user-resizable two-pane layouts. A draggable, keyboard-operable
+  handle sits between a configurable `Splitter.Aside` and a `Splitter.Main` that
+  fills the remaining space (the aside can sit on either side, horizontal or
+  vertical). You configure a single dimension — the aside's `size` — plus
+  optional `minSize` / `maxSize` and a collapsible aside. Size is uncontrolled
+  by default (`defaultSize`) or controllable in place via the `size` prop for
+  responsive, per-breakpoint layouts; a single number round-trips to your own
+  storage via `onSizeChangeEnd`. Nest splitters for three or more regions. See
+  the docs for the full API.
+
+  Also ships `useResponsiveSplitterSizes`, a companion hook for consumers who
+  want to express pane sizes in pixels, size tokens, or per-container-width
+  breakpoints instead of percentages. It measures the container, translates your
+  config into the percentage `Splitter.Root` consumes, clamps to your `minSize`
+  / `maxSize`, and can persist the user's settled size across reloads.
+
+- [#1498](https://github.com/commercetools/nimbus/pull/1498)
+  [`01a0142`](https://github.com/commercetools/nimbus/commit/01a0142e37496c0b37c4ff2394d82e40eace8fba)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Package-shape correctness
+  fixes for strict TypeScript and native Node ESM consumers. Bundler-based
+  consumers (Vite, Webpack, Next.js) see no change.
+
+  ### `@commercetools/nimbus`
+  - `./setup-jsdom-polyfills` now ships type declarations. Consumers using the
+    documented `setupFiles: ['@commercetools/nimbus/setup-jsdom-polyfills']`
+    config in Jest or Vitest get autocomplete and signature checking.
+  - CJS consumers via `require()` (Jest in JSDOM, classic Next.js pages dir)
+    receive correctly-typed declarations. Previously the same `.d.ts` was served
+    for both ESM and CJS paths, producing subtle type mismatches.
+  - Type-checking under `moduleResolution: "nodenext"` or `"node16"` no longer
+    fails on internal Nimbus imports.
+
+  ### `@commercetools/nimbus-icons`
+  - Now importable from native Node ESM (e.g., Node 22+ with `"type": "module"`,
+    certain SSR setups that externalize `node_modules`). Previously the ESM
+    build failed at parse time outside a bundler.
+
+- [#1502](https://github.com/commercetools/nimbus/pull/1502)
+  [`c46bfe2`](https://github.com/commercetools/nimbus/commit/c46bfe2cf533f4dffca57ec22a963d0ccc700251)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - `PublicPageLayout`: New
+  pattern for public-facing pages (login, registration, password reset).
+  Provides a centered, full-viewport-height layout with optional slots for brand
+  logo, welcome heading, content area, and legal footer. Style props are
+  forwarded to the outer `<main>` wrapper.
+
+  `Icon`: The `size` prop is now correctly exposed in TypeScript. Previously,
+  the recipe's `size` variant was accidentally stripped from the type.
+
+### Patch Changes
+
+- [#1604](https://github.com/commercetools/nimbus/pull/1604)
+  [`90a7f4b`](https://github.com/commercetools/nimbus/commit/90a7f4ba8319796fa8d655507e0cdd2776e19a2d)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Fix `Checkbox` checked
+  and indeterminate icons being hard to see. The indicator icon now renders with
+  a stroke matching the indicator's contrast color, making the checkmark and
+  dash render with a bolder, more visible weight.
+
+- [#1545](https://github.com/commercetools/nimbus/pull/1545)
+  [`cbb604f`](https://github.com/commercetools/nimbus/commit/cbb604f5c2ee2ed1e89013eeb26a130dc49f92a5)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Fix `Toolbar` outline
+  variant so its border-style `box-shadow` no longer renders outside the
+  toolbar's bounding box where it can be overlapped by sibling elements. The
+  shadow is now drawn with `inset`, matching the pattern used by other Nimbus
+  components (e.g. `TextInput`, `DateInput`, `Combobox`).
+
+- [#1567](https://github.com/commercetools/nimbus/pull/1567)
+  [`7018252`](https://github.com/commercetools/nimbus/commit/7018252e9384059088f67bcd4eea44d1f2261739)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Update the bundled
+  `dompurify` dependency (used for SVG sanitization in `InlineSvg`) from 3.4.5
+  to 3.4.8, picking up upstream patch fixes.
+
+- [#1568](https://github.com/commercetools/nimbus/pull/1568)
+  [`5011600`](https://github.com/commercetools/nimbus/commit/50116003a1460d069b679558910045aeae6ed415)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Update the bundled React
+  Aria dependencies to the 3.49 release train (`react-aria` 3.49,
+  `react-aria-components` 1.18, `react-stately` 3.47, and the related
+  `@react-aria/*` / `@internationalized/*` packages).
+
+  Behavior change to note: in line with native HTML semantics, `Checkbox` now
+  toggles on **Space** (and on click), not on **Enter** — Enter submits the
+  surrounding form. Mouse, keyboard (Space), and pointer interactions are
+  otherwise unchanged.
+
+- [#1451](https://github.com/commercetools/nimbus/pull/1451)
+  [`6b98eeb`](https://github.com/commercetools/nimbus/commit/6b98eebb7a119448efa712bceb3f902c8ef42258)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Internal build toolchain
+  upgraded to Vite 8. Published JavaScript is 6% smaller gzipped (−4.4% raw /
+  −6.2% gzipped), with no API or behavior changes.
+- Updated dependencies
+  [[`01a0142`](https://github.com/commercetools/nimbus/commit/01a0142e37496c0b37c4ff2394d82e40eace8fba)]:
+  - @commercetools/nimbus-icons@3.1.0
+  - @commercetools/nimbus-tokens@3.1.0
+
 ## 3.0.0
 
 ### Major Changes
