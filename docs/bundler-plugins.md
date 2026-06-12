@@ -201,8 +201,10 @@ Run these locally after changes to:
 - Build config (`packages/nimbus/vite.config.ts`)
 - Postbuild script (`packages/nimbus/scripts/postbuild-types.mjs`)
 
-`apps/blank-app/` also has a `build:webpack` script that tests the no-op path
-(plugin with Nimbus installed).
+`apps/blank-app/` tests the no-op path — it has Nimbus installed, so both the
+Vite and webpack builds should succeed with the real exports intact. There is no
+verify script; the build succeeding is the assertion. If the plugins incorrectly
+stubbed imports, the build would fail on missing Nimbus exports.
 
 ### Package shape
 
