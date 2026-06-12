@@ -1,9 +1,8 @@
+import type { isNimbusResolvable } from "./is-nimbus-resolvable";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-// vi.hoisted runs before vi.mock, making mockIsNimbusResolvable available
-// to the mock factory. This avoids vi.resetModules + dynamic imports.
 const { mockIsNimbusResolvable } = vi.hoisted(() => ({
-  mockIsNimbusResolvable: vi.fn<() => boolean>(),
+  mockIsNimbusResolvable: vi.fn<typeof isNimbusResolvable>(),
 }));
 
 vi.mock("./is-nimbus-resolvable", () => ({

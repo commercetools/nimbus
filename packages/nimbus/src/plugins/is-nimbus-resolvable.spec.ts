@@ -1,7 +1,10 @@
+import type { createRequire as createRequireFn } from "node:module";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
+type Resolve = ReturnType<typeof createRequireFn>["resolve"];
+
 const { mockResolve } = vi.hoisted(() => ({
-  mockResolve: vi.fn(),
+  mockResolve: vi.fn<Resolve>(),
 }));
 
 vi.mock("node:module", () => ({

@@ -1,9 +1,8 @@
+import type { isNimbusResolvable } from "./is-nimbus-resolvable";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-// vi.hoisted runs before vi.mock, making mockIsNimbusResolvable available
-// to the mock factory. This avoids vi.resetModules + dynamic imports.
 const { mockIsNimbusResolvable } = vi.hoisted(() => ({
-  mockIsNimbusResolvable: vi.fn<() => boolean>(),
+  mockIsNimbusResolvable: vi.fn<typeof isNimbusResolvable>(),
 }));
 
 vi.mock("./is-nimbus-resolvable", () => ({
@@ -12,13 +11,17 @@ vi.mock("./is-nimbus-resolvable", () => ({
 
 import { NimbusOptionalDependencyPlugin } from "./webpack";
 
+// Mirrors the constructor type in webpack.ts `apply(compiler:)` param.
+type NMRPConstructor = new (
+  regex: RegExp,
+  replacement: string
+) => { apply: (compiler: unknown) => void };
+
 function createMockCompiler() {
   const mockReplacementPluginApply = vi.fn();
-  // Regular function is required because NormalModuleReplacementPlugin is
-  // instantiated with `new` — arrow functions cannot be constructors.
-  const MockNormalModuleReplacementPlugin = vi.fn(function () {
+  const MockNormalModuleReplacementPlugin = vi.fn<NMRPConstructor>(function () {
     return { apply: mockReplacementPluginApply };
-  });
+  } as unknown as NMRPConstructor);
 
   return {
     compiler: {
