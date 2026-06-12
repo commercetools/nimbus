@@ -105,6 +105,11 @@ require.resolve("@commercetools/nimbus", { paths: [process.cwd()] });
 plugin's own `node_modules`. This matters in monorepos where the build tool may
 have Nimbus while the app being built does not.
 
+Both plugins accept a `{ cwd }` option to override detection, and
+`{ UNSAFE_forceStub: true }` to bypass detection entirely — useful when
+dependency hoisting causes Nimbus to resolve from a parent `node_modules` even
+though the app never declared it.
+
 ## What gets stubbed
 
 | Import                                        | Stubbed? |
@@ -125,8 +130,11 @@ replacement.
 ## Writing safe shared code
 
 When stubbing is active, every named import from `@commercetools/nimbus`
-(`Button`, `NimbusProvider`, etc.) is `undefined`. Code that uses these values
-without a guard will crash at runtime. The build will not warn you — from the
+(`Button`, `NimbusProvider`, etc.) is `undefined`. Default and namespace imports
+(`import Nimbus from …` or `import * as Nimbus from …`) resolve to the truthy
+`{}` stub object — guard with individual named imports, not `if (!Nimbus)`.
+
+Code that uses these values without a guard will crash at runtime. The build will not warn you — from the
 bundler's perspective, the import succeeded.
 
 ### Guard with a runtime check

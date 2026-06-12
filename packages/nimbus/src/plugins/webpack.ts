@@ -10,7 +10,7 @@ import { NIMBUS_RUNTIME_RE } from "./nimbus-runtime-re";
  *   build runs from the repo root rather than the application directory.
  *
  * @param options.UNSAFE_forceStub - Forces the plugin to always stub Nimbus
- *    imports regardless whether it's installed. This is useful for monorepos
+ *    imports regardless of whether it's installed. This is useful for monorepos
  *    in which nimbus is installed in the repo root but a subpackage needs to
  *    stub nimbus at build-time, or for use in integration tests.
  *

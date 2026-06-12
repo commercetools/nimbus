@@ -36,6 +36,16 @@ describe("UNSAFE_nimbusOptionalDependency (vite)", () => {
       expect(plugin.name).toBe("nimbus-optional-dependency");
       expect(plugin).not.toHaveProperty("resolveId");
     });
+
+    it("activates stubbing when UNSAFE_forceStub is true", () => {
+      const plugin = UNSAFE_nimbusOptionalDependency({
+        UNSAFE_forceStub: true,
+      });
+
+      expect(plugin.enforce).toBe("pre");
+      expect(plugin).toHaveProperty("resolveId");
+      expect(plugin).toHaveProperty("load");
+    });
   });
 
   describe("when Nimbus is not resolvable", () => {

@@ -65,6 +65,25 @@ describe("UNSAFE_NimbusOptionalDependencyPlugin (webpack)", () => {
 
       expect(MockNormalModuleReplacementPlugin).not.toHaveBeenCalled();
     });
+
+    it("activates stubbing when UNSAFE_forceStub is true", () => {
+      const {
+        compiler,
+        MockNormalModuleReplacementPlugin,
+        mockReplacementPluginApply,
+      } = createMockCompiler();
+
+      const plugin = new UNSAFE_NimbusOptionalDependencyPlugin({
+        UNSAFE_forceStub: true,
+      });
+      plugin.apply(compiler);
+
+      expect(MockNormalModuleReplacementPlugin).toHaveBeenCalledWith(
+        expect.any(RegExp),
+        "@commercetools/nimbus/plugins/stub"
+      );
+      expect(mockReplacementPluginApply).toHaveBeenCalledWith(compiler);
+    });
   });
 
   describe("when Nimbus is not resolvable", () => {

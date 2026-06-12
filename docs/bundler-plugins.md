@@ -89,9 +89,15 @@ have Nimbus while the app being built does not.
 **Monorepo CI caveat:** Detection runs once when the plugin is called (Vite) or
 when `apply()` is invoked (webpack). If `process.cwd()` differs from the target
 application's root (e.g., turborepo running all builds from the monorepo root),
-the detection may produce a false positive. In that case, ensure `process.cwd()`
-reflects the app being built, or configure the CI pipeline to `cd` into each
+the detection may produce a false positive. In that case, pass `{ cwd }` to
+point at the app being built, or configure the CI pipeline to `cd` into each
 app's directory before building.
+
+**Dependency hoisting caveat:** In npm/yarn workspaces or pnpm with
+`shamefully-hoist`, a sibling package that depends on Nimbus can cause it to be
+hoisted to a parent `node_modules`. Apps that never declared Nimbus as a
+dependency will then resolve it, causing the plugin to no-op. If your app should
+not depend on Nimbus, use `UNSAFE_forceStub: true` to bypass detection entirely.
 
 ## What gets stubbed
 
@@ -118,6 +124,10 @@ When stubbing is active, every named import from `@commercetools/nimbus`
 (`Button`, `NimbusProvider`, etc.) is `undefined`. Code that uses these values
 without a guard will crash at runtime. The build will not warn you — from the
 bundler's perspective, the import succeeded.
+
+> **Note:** Default and namespace imports (`import Nimbus from …` or
+> `import * as Nimbus from …`) resolve to the truthy `{}` stub object, not
+> `undefined`. Guard with individual named imports, not `if (!Nimbus)`.
 
 ### Guard with a runtime check
 
