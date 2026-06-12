@@ -1,9 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import { Tree, Stack, Text, IconButton } from "@commercetools/nimbus";
-import { Collection, type Key } from "react-aria-components";
-import { useTreeData } from "react-stately";
-import { useDragAndDrop } from "react-aria-components";
+import {
+  Tree,
+  Stack,
+  Text,
+  IconButton,
+  useTree,
+  type Key,
+} from "@commercetools/nimbus";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { DragIndicator } from "@commercetools/nimbus-icons";
 import { fileTree, type TreeNode } from "./utils/tree.test-data";
@@ -24,9 +28,7 @@ const renderNode = (node: TreeNode) => (
       <Tree.Indicator />
       {node.title}
     </Tree.ItemContent>
-    {node.children && node.children.length > 0 && (
-      <Collection items={node.children}>{renderNode}</Collection>
-    )}
+    <Tree.SubTree items={node.children}>{renderNode}</Tree.SubTree>
   </Tree.Item>
 );
 
@@ -383,9 +385,9 @@ export const DisabledItems: Story = {
 
 /**
  * A tree wired with the full feature set — multiple selection (checkboxes),
- * expand/collapse indicators, and opt-in drag-and-drop with `<Button slot="drag">`
- * handles. `useTreeData` owns the hierarchical state; `useDragAndDrop` provides
- * the hooks.
+ * expand/collapse indicators, and opt-in drag-and-drop with `slot="drag"`
+ * handles. A single `useTree` hook owns the hierarchical state and the
+ * drag-and-drop wiring; its result is spread straight onto `Tree.Root`.
  */
 const FeatureTree = ({
   size,
@@ -396,33 +398,13 @@ const FeatureTree = ({
   selectionMode?: "none" | "single" | "multiple";
   "aria-label": string;
 }) => {
-  const tree = useTreeData<TreeNode>({
+  const tree = useTree<TreeNode>({
     initialItems: fileTree,
     getKey: (item) => item.id,
     getChildren: (item) => item.children ?? [],
-  });
-
-  const { dragAndDropHooks } = useDragAndDrop({
-    getItems: (keys) =>
-      [...keys].map((key) => ({
-        "text/plain": tree.getItem(key)?.value.title ?? "",
-      })),
-    onMove(e) {
-      if (e.target.dropPosition === "before") {
-        tree.moveBefore(e.target.key, e.keys);
-      } else if (e.target.dropPosition === "after") {
-        tree.moveAfter(e.target.key, e.keys);
-      } else if (e.target.dropPosition === "on") {
-        // Re-parent: move the dragged items into the target group.
-        const targetNode = tree.getItem(e.target.key);
-        const targetIndex = targetNode?.children
-          ? targetNode.children.length
-          : 0;
-        [...e.keys].forEach((key, i) => {
-          tree.move(key, e.target.key, targetIndex + i);
-        });
-      }
-    },
+    selectionMode,
+    defaultExpandedKeys: ["documents", "project", "photos"],
+    dragAndDrop: true,
   });
 
   const renderDndNode = (item: (typeof tree.items)[number]) => (
@@ -439,21 +421,14 @@ const FeatureTree = ({
         <Tree.Indicator />
         {item.value.title}
       </Tree.ItemContent>
-      {item.children && item.children.length > 0 && (
-        <Collection items={item.children}>{renderDndNode}</Collection>
-      )}
+      <Tree.SubTree items={item.children ?? undefined}>
+        {renderDndNode}
+      </Tree.SubTree>
     </Tree.Item>
   );
 
   return (
-    <Tree.Root
-      aria-label={ariaLabel}
-      size={size}
-      selectionMode={selectionMode}
-      items={tree.items}
-      dragAndDropHooks={dragAndDropHooks}
-      defaultExpandedKeys={["documents", "project", "photos"]}
-    >
+    <Tree.Root aria-label={ariaLabel} size={size} {...tree}>
       {renderDndNode}
     </Tree.Root>
   );

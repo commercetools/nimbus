@@ -3,6 +3,7 @@ import {
   TreeItem,
   TreeItemContent,
   TreeIndicator,
+  TreeSubTree,
 } from "./components";
 
 /**
@@ -111,6 +112,27 @@ export const Tree = {
    * ```
    */
   Indicator: TreeIndicator,
+
+  /**
+   * # Tree.SubTree
+   *
+   * Renders an item's nested children. Use static `Tree.Item` children, or pass
+   * an `items` array with a render function for dynamic collections — it wraps
+   * React Aria's `Collection` internally so you never import it directly.
+   * Renders nothing when `items` is empty.
+   *
+   * @example
+   * ```tsx
+   * <Tree.Item id="documents" textValue="Documents">
+   *   <Tree.ItemContent>
+   *     <Tree.Indicator />
+   *     Documents
+   *   </Tree.ItemContent>
+   *   <Tree.SubTree items={node.children}>{renderItem}</Tree.SubTree>
+   * </Tree.Item>
+   * ```
+   */
+  SubTree: TreeSubTree,
 };
 
 export {
@@ -118,4 +140,5 @@ export {
   TreeItem as _TreeItem,
   TreeItemContent as _TreeItemContent,
   TreeIndicator as _TreeIndicator,
+  TreeSubTree as _TreeSubTree,
 };
