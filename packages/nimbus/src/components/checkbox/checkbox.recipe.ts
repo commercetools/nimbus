@@ -16,10 +16,7 @@ export const checkboxSlotRecipe = defineSlotRecipe({
       gap: "200",
       alignItems: "center",
       verticalAlign: "top",
-      // No fixed min-width: the root sizes to its content. With a label it is
-      // naturally wider than the 24px touch target; without one it hugs the
-      // indicator instead of reserving trailing space for an absent label. The
-      // 24px interaction target is preserved by the indicator's `_after` pseudo.
+      minWidth: "600",
       minHeight: "600",
 
       ["&[data-disabled='true']"]: {
