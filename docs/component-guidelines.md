@@ -106,10 +106,14 @@ These documents provide standards that apply across all component types:
 9. **[Add Documentation Tests](../engineering-docs-validation.md)** - Create
    `.docs.spec.tsx` with consumer test examples (optional but recommended)
 10. **[Export](./file-type-guidelines/barrel-exports.md)** - Set up public API
+11. **[SSR Smoke Test](./file-type-guidelines/testing-strategy.md#ssr-smoke-tests-srctestssrssrspectsx)** -
+    Add a test case to `src/test/ssr.ssr.spec.tsx` and render the component in
+    `apps/ssr-test/app/page.tsx`
 
 **Note**: All component behavior is tested in Storybook stories with play
 functions. Documentation tests (`.docs.spec.tsx`) provide consumer-facing
-examples.
+examples. SSR smoke tests ensure the component renders without crashing on the
+server.
 
 ### 🎨 Adding Styling to Components
 
