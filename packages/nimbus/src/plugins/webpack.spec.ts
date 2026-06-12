@@ -9,7 +9,7 @@ vi.mock("./is-nimbus-resolvable", () => ({
   isNimbusResolvable: mockIsNimbusResolvable,
 }));
 
-import { NimbusOptionalDependencyPlugin } from "./webpack";
+import { UNSAFE_NimbusOptionalDependencyPlugin } from "./webpack";
 
 // Mirrors the constructor type in webpack.ts `apply(compiler:)` param.
 type NMRPConstructor = new (
@@ -34,7 +34,7 @@ function createMockCompiler() {
   };
 }
 
-describe("NimbusOptionalDependencyPlugin (webpack)", () => {
+describe("UNSAFE_NimbusOptionalDependencyPlugin (webpack)", () => {
   describe("when Nimbus is resolvable", () => {
     beforeAll(() => {
       mockIsNimbusResolvable.mockReturnValue(true);
@@ -48,7 +48,7 @@ describe("NimbusOptionalDependencyPlugin (webpack)", () => {
       const { compiler, MockNormalModuleReplacementPlugin } =
         createMockCompiler();
 
-      const plugin = new NimbusOptionalDependencyPlugin();
+      const plugin = new UNSAFE_NimbusOptionalDependencyPlugin();
       plugin.apply(compiler);
 
       expect(MockNormalModuleReplacementPlugin).not.toHaveBeenCalled();
@@ -71,7 +71,7 @@ describe("NimbusOptionalDependencyPlugin (webpack)", () => {
         mockReplacementPluginApply,
       } = createMockCompiler();
 
-      const plugin = new NimbusOptionalDependencyPlugin();
+      const plugin = new UNSAFE_NimbusOptionalDependencyPlugin();
       plugin.apply(compiler);
 
       expect(MockNormalModuleReplacementPlugin).toHaveBeenCalledWith(
@@ -85,7 +85,7 @@ describe("NimbusOptionalDependencyPlugin (webpack)", () => {
       const { compiler, MockNormalModuleReplacementPlugin } =
         createMockCompiler();
 
-      const plugin = new NimbusOptionalDependencyPlugin();
+      const plugin = new UNSAFE_NimbusOptionalDependencyPlugin();
       plugin.apply(compiler);
 
       const regex = MockNormalModuleReplacementPlugin.mock
@@ -102,7 +102,7 @@ describe("NimbusOptionalDependencyPlugin (webpack)", () => {
       const { compiler, MockNormalModuleReplacementPlugin } =
         createMockCompiler();
 
-      const plugin = new NimbusOptionalDependencyPlugin();
+      const plugin = new UNSAFE_NimbusOptionalDependencyPlugin();
       plugin.apply(compiler);
 
       const regex = MockNormalModuleReplacementPlugin.mock
@@ -115,7 +115,7 @@ describe("NimbusOptionalDependencyPlugin (webpack)", () => {
       const { compiler, MockNormalModuleReplacementPlugin } =
         createMockCompiler();
 
-      const plugin = new NimbusOptionalDependencyPlugin();
+      const plugin = new UNSAFE_NimbusOptionalDependencyPlugin();
       plugin.apply(compiler);
 
       const regex = MockNormalModuleReplacementPlugin.mock
@@ -130,7 +130,7 @@ describe("NimbusOptionalDependencyPlugin (webpack)", () => {
       const { compiler, MockNormalModuleReplacementPlugin } =
         createMockCompiler();
 
-      const plugin = new NimbusOptionalDependencyPlugin();
+      const plugin = new UNSAFE_NimbusOptionalDependencyPlugin();
       plugin.apply(compiler);
 
       const regex = MockNormalModuleReplacementPlugin.mock
@@ -143,7 +143,7 @@ describe("NimbusOptionalDependencyPlugin (webpack)", () => {
       const { compiler, MockNormalModuleReplacementPlugin } =
         createMockCompiler();
 
-      const plugin = new NimbusOptionalDependencyPlugin();
+      const plugin = new UNSAFE_NimbusOptionalDependencyPlugin();
       plugin.apply(compiler);
 
       const regex = MockNormalModuleReplacementPlugin.mock

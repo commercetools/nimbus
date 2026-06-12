@@ -7,25 +7,14 @@ export { NIMBUS_RUNTIME_RE };
 const STUB_ID = "\0nimbus-stub.cjs";
 
 /**
- * Vite plugin that stubs `@commercetools/nimbus` imports when the package
- * is not resolvable from the consuming application. When Nimbus IS installed,
- * the plugin is a no-op.
+ * Vite plugin that stubs `@commercetools/nimbus` imports when the package is
+ * not installed. No-op when Nimbus is present.
  *
- * Uses Vite's `resolveId` and `load` hooks to redirect matching imports to a
- * virtual CJS stub module — an empty `module.exports` that does not pull in
- * the Nimbus runtime. Named imports resolve to `undefined` at runtime.
- *
- * @example
- * ```ts
- * // vite.config.ts
- * import { nimbusOptionalDependency } from '@commercetools/nimbus/plugins/vite';
- *
- * export default defineConfig({
- *   plugins: [nimbusOptionalDependency()],
- * });
- * ```
+ * UNSAFE: stubbed imports resolve to `undefined` at runtime. Code that uses
+ * Nimbus components or functions must guard against `undefined` or it will
+ * crash. The build succeeds either way — only runtime behavior differs.
  */
-export function nimbusOptionalDependency(): {
+export function UNSAFE_nimbusOptionalDependency(): {
   name: string;
   enforce?: "pre";
   resolveId?: (source: string) => string | undefined;

@@ -1,6 +1,6 @@
 const path = require("path");
 const {
-  NimbusOptionalDependencyPlugin,
+  UNSAFE_NimbusOptionalDependencyPlugin,
 } = require("@commercetools/nimbus/plugins/webpack");
 
 module.exports = {
@@ -9,5 +9,5 @@ module.exports = {
     path: path.resolve(__dirname, "dist-webpack"),
     filename: "bundle.js",
   },
-  plugins: [new NimbusOptionalDependencyPlugin()],
+  plugins: [new UNSAFE_NimbusOptionalDependencyPlugin()],
 };

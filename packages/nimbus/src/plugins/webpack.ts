@@ -4,24 +4,13 @@ export { NIMBUS_RUNTIME_RE };
 
 /**
  * Webpack plugin that stubs `@commercetools/nimbus` imports when the package
- * is not resolvable from the consuming application. When Nimbus IS installed,
- * the plugin is a no-op.
+ * is not installed. No-op when Nimbus is present.
  *
- * Uses webpack's built-in `NormalModuleReplacementPlugin` to redirect matching
- * imports to `@commercetools/nimbus/plugins/stub` — an empty module that ships
- * alongside this plugin and does not pull in the Nimbus runtime.
- *
- * @example
- * ```js
- * // webpack.config.js
- * const { NimbusOptionalDependencyPlugin } = require('@commercetools/nimbus/plugins/webpack');
- *
- * module.exports = {
- *   plugins: [new NimbusOptionalDependencyPlugin()],
- * };
- * ```
+ * UNSAFE: stubbed imports resolve to `undefined` at runtime. Code that uses
+ * Nimbus components or functions must guard against `undefined` or it will
+ * crash. The build succeeds either way — only runtime behavior differs.
  */
-export class NimbusOptionalDependencyPlugin {
+export class UNSAFE_NimbusOptionalDependencyPlugin {
   apply(compiler: {
     webpack: {
       NormalModuleReplacementPlugin: new (

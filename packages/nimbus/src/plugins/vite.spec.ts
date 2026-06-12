@@ -9,9 +9,9 @@ vi.mock("./is-nimbus-resolvable", () => ({
   isNimbusResolvable: mockIsNimbusResolvable,
 }));
 
-import { nimbusOptionalDependency } from "./vite";
+import { UNSAFE_nimbusOptionalDependency } from "./vite";
 
-describe("nimbusOptionalDependency (vite)", () => {
+describe("UNSAFE_nimbusOptionalDependency (vite)", () => {
   describe("when Nimbus is resolvable", () => {
     beforeAll(() => {
       mockIsNimbusResolvable.mockReturnValue(true);
@@ -22,7 +22,7 @@ describe("nimbusOptionalDependency (vite)", () => {
     });
 
     it("returns a no-op plugin", () => {
-      const plugin = nimbusOptionalDependency();
+      const plugin = UNSAFE_nimbusOptionalDependency();
 
       expect(plugin.name).toBe("nimbus-optional-dependency");
       expect(plugin).not.toHaveProperty("enforce");
@@ -41,7 +41,7 @@ describe("nimbusOptionalDependency (vite)", () => {
     });
 
     it("returns a plugin with resolveId and load hooks", () => {
-      const plugin = nimbusOptionalDependency();
+      const plugin = UNSAFE_nimbusOptionalDependency();
 
       expect(plugin.name).toBe("nimbus-optional-dependency");
       expect(plugin.enforce).toBe("pre");
@@ -51,7 +51,7 @@ describe("nimbusOptionalDependency (vite)", () => {
 
     describe("resolveId", () => {
       const resolveId = () => {
-        const plugin = nimbusOptionalDependency();
+        const plugin = UNSAFE_nimbusOptionalDependency();
         return plugin.resolveId as (source: string) => string | undefined;
       };
 
@@ -96,7 +96,7 @@ describe("nimbusOptionalDependency (vite)", () => {
 
     describe("load", () => {
       const getLoad = () => {
-        const plugin = nimbusOptionalDependency();
+        const plugin = UNSAFE_nimbusOptionalDependency();
         return plugin.load as (id: string) => string | undefined;
       };
 

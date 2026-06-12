@@ -4,7 +4,7 @@ const {
   NIMBUS_RUNTIME_RE,
 } = require("@commercetools/nimbus/plugins/webpack");
 
-// Always-active version of NimbusOptionalDependencyPlugin that bypasses
+// Always-active version of UNSAFE_NimbusOptionalDependencyPlugin that bypasses
 // detection, so we can verify the stubbing path inside the monorepo where
 // nimbus IS installed.
 module.exports = {
