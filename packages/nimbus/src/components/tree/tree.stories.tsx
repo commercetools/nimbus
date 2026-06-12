@@ -535,3 +535,103 @@ export const ReorderWithoutSelection: Story = {
     });
   },
 };
+
+const SELECTION_MODES = ["none", "single", "multiple"] as const;
+const SIZES = ["sm", "md"] as const;
+
+/**
+ * Smoke test — every visual permutation in one view: both sizes (`sm`, `md`),
+ * all three selection modes (`none`, `single`, `multiple`), each rendered both
+ * without drag-and-drop (the default roomy, equal-column layout) and with it
+ * (the tighter layout whose drag handle separates the checkbox from the
+ * chevron). Use it to eyeball control spacing and nested-row alignment across
+ * the matrix at a glance.
+ */
+const SmokeTestView = () => {
+  return (
+    <Stack gap="600" alignItems="flex-start">
+      {SIZES.map((size) => (
+        <Stack key={size} gap="400">
+          <Text fontWeight="700">size = {size}</Text>
+          {(
+            [
+              ["no drag", false],
+              ["drag & drop", true],
+            ] as const
+          ).map(([layoutLabel, withDnd]) => (
+            <Stack
+              key={layoutLabel}
+              direction="row"
+              gap="800"
+              alignItems="flex-start"
+            >
+              {SELECTION_MODES.map((mode) => {
+                const label = `${size} · ${layoutLabel} · ${mode}`;
+                return (
+                  <Stack key={mode} gap="200" minWidth="220px">
+                    <Text fontWeight="600" fontSize="350" color="neutral.11">
+                      {layoutLabel} · {mode}
+                    </Text>
+                    {withDnd ? (
+                      <FeatureTree
+                        size={size}
+                        selectionMode={mode}
+                        aria-label={label}
+                      />
+                    ) : (
+                      <Tree.Root
+                        aria-label={label}
+                        size={size}
+                        selectionMode={mode}
+                        items={fileTree}
+                        defaultExpandedKeys={["documents", "photos"]}
+                      >
+                        {renderNode}
+                      </Tree.Root>
+                    )}
+                  </Stack>
+                );
+              })}
+            </Stack>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  );
+};
+
+export const SmokeTest: Story = {
+  render: () => <SmokeTestView />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Every permutation renders", async () => {
+      // 2 sizes × 2 layouts × 3 selection modes = 12 trees.
+      await expect(canvas.getAllByRole("treegrid")).toHaveLength(12);
+    });
+
+    await step(
+      "Only drag-and-drop trees advertise dragging; selection checkboxes appear only in multiple mode",
+      async () => {
+        for (const size of SIZES) {
+          for (const mode of SELECTION_MODES) {
+            const plain = canvas.getByRole("treegrid", {
+              name: `${size} · no drag · ${mode}`,
+            });
+            const dnd = canvas.getByRole("treegrid", {
+              name: `${size} · drag & drop · ${mode}`,
+            });
+            await expect(plain).not.toHaveAttribute("data-allows-dragging");
+            await expect(dnd).toHaveAttribute("data-allows-dragging", "true");
+
+            // React Aria only wires selection checkboxes in `multiple` mode.
+            const expectCheckboxes = mode === "multiple";
+            await expect(
+              within(plain).queryAllByRole("checkbox").length > 0
+            ).toBe(expectCheckboxes);
+          }
+        }
+      }
+    );
+  },
+};
