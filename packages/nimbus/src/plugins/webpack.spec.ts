@@ -53,6 +53,18 @@ describe("UNSAFE_NimbusOptionalDependencyPlugin (webpack)", () => {
 
       expect(MockNormalModuleReplacementPlugin).not.toHaveBeenCalled();
     });
+
+    it("is a no-op with custom cwd", () => {
+      const { compiler, MockNormalModuleReplacementPlugin } =
+        createMockCompiler();
+
+      const plugin = new UNSAFE_NimbusOptionalDependencyPlugin({
+        cwd: "/custom/path",
+      });
+      plugin.apply(compiler);
+
+      expect(MockNormalModuleReplacementPlugin).not.toHaveBeenCalled();
+    });
   });
 
   describe("when Nimbus is not resolvable", () => {
@@ -152,6 +164,14 @@ describe("UNSAFE_NimbusOptionalDependencyPlugin (webpack)", () => {
       expect(regex.test("@commercetools/nimbus-icons")).toBe(false);
       expect(regex.test("@commercetools/nimbus-tokens")).toBe(false);
       expect(regex.test("react")).toBe(false);
+    });
+
+    it("throws a clear error when compiler.webpack is missing (webpack 4)", () => {
+      const plugin = new UNSAFE_NimbusOptionalDependencyPlugin();
+
+      expect(() => plugin.apply({} as never)).toThrow(
+        "UNSAFE_NimbusOptionalDependencyPlugin requires webpack 5+"
+      );
     });
   });
 });

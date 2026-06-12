@@ -35,6 +35,14 @@ describe("isNimbusResolvable", () => {
         paths: [process.cwd()],
       });
     });
+
+    it("uses a custom cwd when provided", () => {
+      isNimbusResolvable("/custom/app/root");
+
+      expect(mockResolve).toHaveBeenCalledWith("@commercetools/nimbus", {
+        paths: ["/custom/app/root"],
+      });
+    });
   });
 
   describe("when @commercetools/nimbus is not resolvable", () => {

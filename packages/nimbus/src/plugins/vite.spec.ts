@@ -29,6 +29,13 @@ describe("UNSAFE_nimbusOptionalDependency (vite)", () => {
       expect(plugin).not.toHaveProperty("resolveId");
       expect(plugin).not.toHaveProperty("load");
     });
+
+    it("returns a no-op plugin with custom cwd", () => {
+      const plugin = UNSAFE_nimbusOptionalDependency({ cwd: "/custom/path" });
+
+      expect(plugin.name).toBe("nimbus-optional-dependency");
+      expect(plugin).not.toHaveProperty("resolveId");
+    });
   });
 
   describe("when Nimbus is not resolvable", () => {

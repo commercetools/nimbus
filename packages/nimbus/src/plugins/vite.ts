@@ -11,12 +11,18 @@ const STUB_ID = "\0nimbus-stub.cjs";
  * Vite plugin that stubs `@commercetools/nimbus` imports when the package is
  * not installed. No-op when Nimbus is present.
  *
+ * @param options.cwd - Directory to resolve Nimbus from. Defaults to
+ *   `process.cwd()`. Pass an explicit path in monorepo CI setups where the
+ *   build runs from the repo root rather than the application directory.
+ *
  * UNSAFE: stubbed imports resolve to `undefined` at runtime. Code that uses
  * Nimbus components or functions must guard against `undefined` or it will
  * crash. The build succeeds either way — only runtime behavior differs.
  */
-export function UNSAFE_nimbusOptionalDependency(): Plugin {
-  if (isNimbusResolvable()) {
+export function UNSAFE_nimbusOptionalDependency(options?: {
+  cwd?: string;
+}): Plugin {
+  if (isNimbusResolvable(options?.cwd)) {
     return { name: "nimbus-optional-dependency" };
   }
 
