@@ -1,0 +1,287 @@
+---
+title: Tree Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+The `Tree` is a compound component for displaying hierarchical data such as file
+trees and nested navigation structures. It wraps React Aria's `Tree` for
+keyboard navigation, expand/collapse, selection, type-ahead and opt-in
+drag-and-drop.
+
+### Import
+
+Import the Tree compound component and its TypeScript types:
+
+```tsx
+import { Tree, type TreeRootProps } from "@commercetools/nimbus";
+```
+
+### Anatomy
+
+```tsx
+<Tree.Root>
+  <Tree.Item>
+    <Tree.ItemContent>
+      <Tree.Indicator />
+      {/* label */}
+    </Tree.ItemContent>
+    {/* nested <Tree.Item>s or a <Collection> */}
+  </Tree.Item>
+</Tree.Root>
+```
+
+- **`Tree.Root`** — the tree container. Owns size variant, selection mode,
+  expanded keys and (optional) drag-and-drop. Requires an accessible name via
+  `aria-label` or `aria-labelledby`.
+- **`Tree.Item`** — a single node. Contains a `Tree.ItemContent` and,
+  optionally, nested `Tree.Item`s.
+- **`Tree.ItemContent`** — the node's content row. Renders the indicator, an
+  optional selection checkbox (in multiple-selection mode) and the label, and
+  applies level-based indentation.
+- **`Tree.Indicator`** — the expand/collapse chevron. Visible only for items
+  with children.
+
+### Basic usage
+
+Compose nested `Tree.Item` elements directly. Use `defaultExpandedKeys` to
+control which branches start open.
+
+```jsx live-dev
+const App = () => {
+  return (
+    <Tree.Root
+      aria-label="Files"
+      defaultExpandedKeys={["documents", "project"]}
+    >
+      <Tree.Item id="documents" textValue="Documents">
+        <Tree.ItemContent>
+          <Tree.Indicator />
+          Documents
+        </Tree.ItemContent>
+        <Tree.Item id="project" textValue="Project">
+          <Tree.ItemContent>
+            <Tree.Indicator />
+            Project
+          </Tree.ItemContent>
+          <Tree.Item id="report" textValue="Weekly Report">
+            <Tree.ItemContent>
+              <Tree.Indicator />
+              Weekly Report
+            </Tree.ItemContent>
+          </Tree.Item>
+        </Tree.Item>
+      </Tree.Item>
+      <Tree.Item id="photos" textValue="Photos">
+        <Tree.ItemContent>
+          <Tree.Indicator />
+          Photos
+        </Tree.ItemContent>
+      </Tree.Item>
+    </Tree.Root>
+  );
+};
+```
+
+### Dynamic collections
+
+For data-driven trees, pass an `items` array and a recursive render function,
+using React Aria's `Collection` to render each node's children.
+
+```jsx live-dev
+const items = [
+  {
+    id: "documents",
+    title: "Documents",
+    children: [
+      { id: "report", title: "Weekly Report" },
+      { id: "budget", title: "Budget" },
+    ],
+  },
+  {
+    id: "photos",
+    title: "Photos",
+    children: [{ id: "image-1", title: "Image 1" }],
+  },
+];
+
+const App = () => {
+  const renderNode = (node) => (
+    <Tree.Item key={node.id} id={node.id} textValue={node.title}>
+      <Tree.ItemContent>
+        <Tree.Indicator />
+        {node.title}
+      </Tree.ItemContent>
+      {node.children && (
+        <Collection items={node.children}>{renderNode}</Collection>
+      )}
+    </Tree.Item>
+  );
+
+  return (
+    <Tree.Root
+      aria-label="Files"
+      items={items}
+      defaultExpandedKeys={["documents"]}
+    >
+      {renderNode}
+    </Tree.Root>
+  );
+};
+```
+
+### Selection
+
+Set `selectionMode` to `"single"` or `"multiple"`. In multiple-selection mode,
+`Tree.ItemContent` renders a selection checkbox automatically.
+
+```jsx live-dev
+const App = () => {
+  return (
+    <Tree.Root
+      aria-label="Files"
+      selectionMode="multiple"
+      defaultExpandedKeys={["documents"]}
+    >
+      <Tree.Item id="documents" textValue="Documents">
+        <Tree.ItemContent>
+          <Tree.Indicator />
+          Documents
+        </Tree.ItemContent>
+        <Tree.Item id="report" textValue="Weekly Report">
+          <Tree.ItemContent>
+            <Tree.Indicator />
+            Weekly Report
+          </Tree.ItemContent>
+        </Tree.Item>
+      </Tree.Item>
+    </Tree.Root>
+  );
+};
+```
+
+### Sizes
+
+`Tree.Root` accepts a `size` prop (`"sm"` or `"md"`, default `"md"`) that scales
+row height, font size, chevron size and indentation step.
+
+```jsx live-dev
+const App = () => {
+  return (
+    <Tree.Root aria-label="Files" size="sm" defaultExpandedKeys={["documents"]}>
+      <Tree.Item id="documents" textValue="Documents">
+        <Tree.ItemContent>
+          <Tree.Indicator />
+          Documents
+        </Tree.ItemContent>
+        <Tree.Item id="report" textValue="Weekly Report">
+          <Tree.ItemContent>
+            <Tree.Indicator />
+            Weekly Report
+          </Tree.ItemContent>
+        </Tree.Item>
+      </Tree.Item>
+    </Tree.Root>
+  );
+};
+```
+
+## Drag and drop
+
+Drag-and-drop is opt-in. Create hooks with `useDragAndDrop` and pass them to
+`Tree.Root` via `dragAndDropHooks`. State is owned by the consumer —
+`useTreeData` from `react-stately` is the recommended way to manage a mutable
+hierarchy.
+
+The handlers map drop positions to tree operations:
+
+- `before` / `after` → reorder siblings (`moveBefore` / `moveAfter`)
+- `on` → move an item _into_ a group (re-parenting via `move`)
+
+Add a `<Button slot="drag">` inside `Tree.ItemContent` so keyboard and screen
+reader users can pick items up (`Enter` to grab, arrow keys to move, `Enter` to
+drop). React Aria provides drop indicators for valid positions automatically.
+
+```tsx
+import { Tree } from "@commercetools/nimbus";
+import { DragIndicator } from "@commercetools/nimbus-icons";
+import { Button, Collection, useDragAndDrop } from "react-aria-components";
+import { useTreeData } from "react-stately";
+
+function DraggableTree() {
+  const tree = useTreeData({
+    initialItems: [
+      {
+        id: "documents",
+        title: "Documents",
+        children: [{ id: "report", title: "Weekly Report" }],
+      },
+      { id: "photos", title: "Photos", children: [] },
+    ],
+    getKey: (item) => item.id,
+    getChildren: (item) => item.children ?? [],
+  });
+
+  const { dragAndDropHooks } = useDragAndDrop({
+    getItems: (keys) =>
+      [...keys].map((key) => ({
+        "text/plain": tree.getItem(key)?.value.title ?? "",
+      })),
+    onMove(e) {
+      if (e.target.dropPosition === "before") {
+        tree.moveBefore(e.target.key, e.keys);
+      } else if (e.target.dropPosition === "after") {
+        tree.moveAfter(e.target.key, e.keys);
+      } else if (e.target.dropPosition === "on") {
+        // Re-parent: move dragged items into the target group.
+        const targetNode = tree.getItem(e.target.key);
+        const targetIndex = targetNode?.children?.length ?? 0;
+        [...e.keys].forEach((key, i) => {
+          tree.move(key, e.target.key, targetIndex + i);
+        });
+      }
+    },
+  });
+
+  const renderNode = (item) => (
+    <Tree.Item id={item.key} textValue={item.value.title}>
+      <Tree.ItemContent>
+        <Button slot="drag" aria-label={`Reorder ${item.value.title}`}>
+          <DragIndicator />
+        </Button>
+        <Tree.Indicator />
+        {item.value.title}
+      </Tree.ItemContent>
+      {item.children?.length ? (
+        <Collection items={item.children}>{renderNode}</Collection>
+      ) : null}
+    </Tree.Item>
+  );
+
+  return (
+    <Tree.Root
+      aria-label="Files"
+      items={tree.items}
+      dragAndDropHooks={dragAndDropHooks}
+    >
+      {renderNode}
+    </Tree.Root>
+  );
+}
+```
+
+## Accessibility
+
+- React Aria implements the tree as an ARIA `treegrid` — a screen-reader-tested
+  pattern for interactive trees that support selection and per-row actions. Rows
+  expose `aria-level`, `aria-expanded` and `aria-selected`.
+- Always provide an accessible name on `Tree.Root` via `aria-label` or
+  `aria-labelledby`.
+- Provide a meaningful `textValue` on each `Tree.Item` (used for type-ahead)
+  when the label is not a plain string.
+- Keyboard: Up/Down move between rows, Right/Left expand/collapse (or move to
+  child/parent), Home/End jump to first/last, and typing performs type-ahead.
+- When drag-and-drop is enabled, include a `<Button slot="drag">` per item so
+  the reorder is operable by keyboard and screen reader, not just pointer.

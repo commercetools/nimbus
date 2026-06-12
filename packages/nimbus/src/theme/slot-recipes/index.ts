@@ -18,6 +18,8 @@ import { drawerSlotRecipe } from "@/components/drawer/drawer.recipe";
 import { fieldErrorsRecipe } from "@/components/field-errors/field-errors.recipe";
 import { formFieldRecipe } from "@/components/form-field/form-field.recipe";
 import { listSlotRecipe } from "@/components/list/list.recipe";
+import { gridListSlotRecipe } from "@/components/grid-list/grid-list.recipe";
+import { listBoxSlotRecipe } from "@/components/list-box/list-box.recipe";
 import { localizedFieldSlotRecipe } from "@/components/localized-field/localized-field.recipe";
 import { menuSlotRecipe } from "@/components/menu/menu.recipe";
 import { modalPageSlotRecipe } from "@/components/modal-page/modal-page.recipe";
@@ -41,6 +43,7 @@ import { tabsSlotRecipe } from "@/components/tabs/tabs.recipe";
 import { tagGroupSlotRecipe } from "@/components/tag-group/tag-group.recipe";
 import { textInputSlotRecipe } from "@/components/text-input/text-input.recipe";
 import { timeInputRecipe } from "@/components/time-input/time-input.recipe";
+import { treeSlotRecipe } from "@/components/tree/tree.recipe";
 import { toastRecipe } from "@/components/toast/toast.recipe";
 import { buttonGroupRecipe } from "@/components/toggle-button-group/toggle-button-group.recipe";
 
@@ -90,7 +93,9 @@ export const slotRecipes = {
   nimbusDrawer: drawerSlotRecipe,
   nimbusFieldErrors: fieldErrorsRecipe,
   nimbusFormField: formFieldRecipe,
+  nimbusGridList: gridListSlotRecipe,
   nimbusList: listSlotRecipe,
+  nimbusListBox: listBoxSlotRecipe,
   nimbusLocalizedField: localizedFieldSlotRecipe,
   nimbusMenu: menuSlotRecipe,
   nimbusModalPage: modalPageSlotRecipe,
@@ -114,6 +119,7 @@ export const slotRecipes = {
   nimbusTagGroup: tagGroupSlotRecipe,
   nimbusTextInput: textInputSlotRecipe,
   nimbusTimeInput: timeInputRecipe,
+  nimbusTree: treeSlotRecipe,
   nimbusToggleButtonGroup: buttonGroupRecipe,
   nimbusSteps: stepsSlotRecipe,
   // NOTE: the following recipes are intentionally NOT prefixed with "nimbus"
