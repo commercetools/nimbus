@@ -48,6 +48,13 @@ export const checkboxSlotRecipe = defineSlotRecipe({
       _icon: {
         w: "350",
         h: "350",
+        // Stroke the indicator glyph so the checkmark / indeterminate dash
+        // reads as clearly checked. `stroke` and `stroke-width` are inherited
+        // SVG properties, so setting them on the <svg> applies to its path.
+        // `strokeWidth` has no token scale in Chakra, so reference the token
+        // explicitly — a bare "50" would compile to a literal `50px` stroke.
+        stroke: "colorPalette.contrast",
+        strokeWidth: "{sizes.50}",
       },
 
       "&:hover": {
