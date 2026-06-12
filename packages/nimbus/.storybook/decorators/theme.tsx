@@ -55,8 +55,10 @@ export const ThemeDecorator = ({
     document.documentElement.classList.add(theme);
   }, [theme]);
 
+  const customTheme = context.parameters?.nimbusTheme;
+
   return (
-    <NimbusProvider locale={locale} defaultTheme={theme}>
+    <NimbusProvider locale={locale} defaultTheme={theme} theme={customTheme}>
       {children}
     </NimbusProvider>
   );
