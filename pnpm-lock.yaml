@@ -507,7 +507,7 @@ importers:
     dependencies:
       '@chakra-ui/react':
         specifier: catalog:react
-        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.16)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.16)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@commercetools/nimbus':
         specifier: workspace:*
         version: link:../../packages/nimbus
@@ -862,7 +862,7 @@ importers:
     devDependencies:
       '@chakra-ui/react':
         specifier: catalog:react
-        version: 3.35.0(@emotion/react@11.14.0(@types/react@19.2.16)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.16)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@types/culori':
         specifier: 'catalog:'
         version: 4.0.1
