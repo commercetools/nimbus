@@ -5,6 +5,7 @@ export * from "./scroll-area";
 export * from "./toast";
 
 export * from "./activity-indicator";
+export * from "./autocomplete";
 export * from "./avatar";
 export * from "./box";
 export * from "./button";
@@ -85,3 +86,6 @@ export * from "./region";
 export * from "./splitter";
 export * from "./tree";
 export * from "./drop-zone";
+export * from "./grid-list";
+export * from "./list-box";
+export * from "./virtualizer";
