@@ -48,6 +48,8 @@ export const checkboxSlotRecipe = defineSlotRecipe({
       _icon: {
         w: "350",
         h: "350",
+        stroke: "colorPalette.contrast",
+        strokeWidth: "50",
       },
 
       "&:hover": {
