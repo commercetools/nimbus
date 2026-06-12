@@ -395,7 +395,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       paddingBottom: "400",
       paddingLeft: "600",
       paddingRight: "600",
-      color: "neutral.11",
+      color: "fg",
       focusVisibleRing: "inside",
       hyphens: "auto",
       // td height:auto is not "definite" per CSS spec, so child height:100%

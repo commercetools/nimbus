@@ -29,8 +29,13 @@ export const DataTableHeader = <
   ...props
 }: DataTableHeaderProps<T>) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
-  const { activeColumns, allowsSorting, maxHeight, showExpandColumn } =
-    useDataTableContext();
+  const {
+    activeColumns,
+    allowsSorting,
+    maxHeight,
+    showExpandColumn,
+    allowsPinning,
+  } = useDataTableContext();
   const { selectionBehavior, selectionMode, allowsDragging } =
     useTableOptions();
   const [styleProps, restProps] = extractStyleProps(props);
@@ -115,17 +120,19 @@ export const DataTableHeader = <
             );
           }}
         </RaCollection>
-        <DataTableColumn
-          className="pin-rows-column-header"
-          id="pin-rows"
-          maxWidth={72}
-          minWidth={72}
-          allowsSorting={false}
-          isInternalColumn={true}
-          aria-label={msg.format("pinRows")}
-        >
-          <VisuallyHidden>{msg.format("pinRows")}</VisuallyHidden>
-        </DataTableColumn>
+        {allowsPinning && (
+          <DataTableColumn
+            className="pin-rows-column-header"
+            id="pin-rows"
+            maxWidth={72}
+            minWidth={72}
+            allowsSorting={false}
+            isInternalColumn={true}
+            aria-label={msg.format("pinRows")}
+          >
+            <VisuallyHidden>{msg.format("pinRows")}</VisuallyHidden>
+          </DataTableColumn>
+        )}
       </RaTableHeader>
     </DataTableHeaderSlot>
   );
