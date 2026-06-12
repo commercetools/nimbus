@@ -83,15 +83,27 @@ row has child items (`&[data-has-child-items]`) — and the icon rotates 90° on
 `&[data-expanded]`. React Aria provides the expand/collapse behavior and a
 localized accessible name for the button, so no custom i18n is required.
 
-### Decision: Drag-and-drop is opt-in and consumer-owned
+### Decision: `Tree.SubTree` wraps `Collection`
 
-`Tree.Root` forwards a `dragAndDropHooks` prop straight to React Aria's `Tree`.
-Consumers create the hooks with `useDragAndDrop` and typically manage data with
-`useTreeData`, using `onReorder` (between items) and `onMove` (between items and
-onto groups, allowing re-parenting). The recipe styles `[data-drop-target]` and
-the default `DropIndicator`. This mirrors `DraggableList` but stays unopinionated
-about data ownership, which is necessary for arbitrary hierarchies. The pattern
-is documented with a complete example in `tree.dev.mdx`.
+Dynamic, nested children in React Aria require a `<Collection>` per level. Rather
+than leak `react-aria-components` into consumer code, `Tree.SubTree` wraps
+`Collection` internally — the same pattern as `ComboBox.Section`, `Menu.Section`,
+and `Select.OptionGroup`. It takes `items` + a render function (dynamic) or plain
+children (static), and renders nothing for empty/absent `items` (no
+`children?.length` guard needed). A spike confirmed React Aria's collection
+builder recognizes the wrapped `Collection`.
+
+### Decision: `useTree` owns state + drag-and-drop, spreadable onto `Tree.Root`
+
+`Tree.Root` still forwards `dragAndDropHooks` to React Aria's `Tree`, but
+consumers never wire React Aria/React Stately themselves. The `useTree` hook
+composes `useTreeData` (hierarchy state) and React Aria's `useDragAndDrop`
+(internal — **not** the flat-list Nimbus `useDragAndDrop` wrapper, which can't
+re-parent) with default reorder + re-parent handlers. Its return is spreadable
+onto `Tree.Root` (`items`, `dragAndDropHooks`, forwarded selection/expansion
+config) and also carries the imperative controller. This keeps the consumer story
+to one hook + a spread; `react-aria-components`/`react-stately` stay internal.
+`Key`/`Selection` types are re-exported for controlled state.
 
 ## Risks / Trade-offs
 

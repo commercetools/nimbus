@@ -136,3 +136,25 @@ export type TreeIndicatorProps = Omit<
      */
     ref?: Ref<HTMLButtonElement>;
   };
+
+/**
+ * Props for the `Tree.SubTree` component.
+ *
+ * Renders an item's nested children. Wraps React Aria's `Collection` so
+ * consumers don't import it directly. Use static `Tree.Item` children, or pass
+ * an `items` array with a render function for dynamic collections.
+ *
+ * @template T - The item object type when using dynamic collections.
+ */
+export type TreeSubTreeProps<T extends object = object> = {
+  /**
+   * The nested data to render. When provided, `children` must be a render
+   * function that returns a `Tree.Item` for each item.
+   */
+  items?: Iterable<T>;
+  /**
+   * Either nested `Tree.Item` elements (static) or a render function mapping
+   * each item to a `Tree.Item` (dynamic, used with `items`).
+   */
+  children?: ReactNode | ((item: T) => ReactNode);
+};

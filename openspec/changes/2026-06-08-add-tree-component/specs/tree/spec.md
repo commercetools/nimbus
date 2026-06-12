@@ -11,6 +11,7 @@ The component SHALL export as a compound component namespace.
 - **AND** SHALL provide `Tree.Item` for individual tree nodes
 - **AND** SHALL provide `Tree.ItemContent` for a node's content row
 - **AND** SHALL provide `Tree.Indicator` for the expand/collapse chevron
+- **AND** SHALL provide `Tree.SubTree` for an item's nested children
 - **AND** `Root` SHALL be the first property in the namespace
 
 #### Scenario: Static composition
@@ -21,9 +22,11 @@ The component SHALL export as a compound component namespace.
 
 #### Scenario: Dynamic composition
 
-- **WHEN** a consumer passes an `items` array and a recursive render function
-  using React Aria's `Collection` for children
+- **WHEN** a consumer passes an `items` array and a recursive render function,
+  using `Tree.SubTree` to render each node's children
 - **THEN** SHALL render the full hierarchy from data
+- **AND** `Tree.SubTree` SHALL wrap React Aria's `Collection` internally so the
+  consumer never imports it from `react-aria-components`
 
 ### Requirement: Tree Semantics
 
@@ -138,11 +141,13 @@ The component SHALL provide a size variant.
 
 The component SHALL support opt-in drag-and-drop via React Aria.
 
-#### Scenario: Opt-in hooks
+#### Scenario: Opt-in via useTree
 
-- **WHEN** `dragAndDropHooks` (from `useDragAndDrop`) is passed to `Tree.Root`
-- **THEN** items SHALL be draggable and the tree SHALL accept drops
-- **WHEN** `dragAndDropHooks` is omitted
+- **WHEN** a consumer calls Nimbus's `useTree` hook with `dragAndDrop` enabled
+  and spreads its result onto `Tree.Root`
+- **THEN** items SHALL be draggable and the tree SHALL accept drops, with reorder
+  and re-parent handlers wired by the hook
+- **WHEN** `dragAndDrop` is omitted (or `dragAndDropHooks` is not provided)
 - **THEN** the tree SHALL render without drag-and-drop affordances
 
 #### Scenario: Reordering and re-parenting
@@ -164,6 +169,34 @@ The component SHALL support opt-in drag-and-drop via React Aria.
 
 - **WHEN** the user initiates drag-and-drop via keyboard
 - **THEN** React Aria's keyboard DnD SHALL move items without a pointer
+
+### Requirement: Hierarchical State via useTree
+
+The component SHALL provide a `useTree` hook that owns hierarchical state and
+opt-in drag-and-drop.
+
+#### Scenario: Managed state and DnD
+
+- **WHEN** a consumer calls `useTree` with `initialItems`, `getKey`, and
+  `getChildren`
+- **THEN** it SHALL return the current `items` plus imperative operations
+  (`insert`, `remove`, `move`, `moveBefore`, `moveAfter`, `update`, `getItem`)
+- **AND** WHEN `dragAndDrop` is enabled it SHALL also return `dragAndDropHooks`
+  wired for reorder and re-parent
+- **AND** the returned value SHALL be spreadable onto `Tree.Root`, forwarding any
+  passed selection/expansion configuration
+
+### Requirement: Self-Contained Public API
+
+Consumers SHALL be able to build static, dynamic, and drag-and-drop trees using
+only `@commercetools/nimbus` exports.
+
+#### Scenario: No React Aria imports
+
+- **WHEN** a consumer composes a dynamic and/or draggable tree
+- **THEN** they SHALL NOT need to import from `react-aria-components` or
+  `react-stately` — `Tree.SubTree`, `useTree`, and re-exported types (`Key`,
+  `Selection`) cover the collection, state, and drag-and-drop needs
 
 ### Requirement: Style Props and Recipe Registration
 

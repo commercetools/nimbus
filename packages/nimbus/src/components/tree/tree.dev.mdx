@@ -145,28 +145,23 @@ const App = () => {
 
 ## Drag and drop
 
-Drag-and-drop is opt-in. Create hooks with `useDragAndDrop` and pass them to
-`Tree.Root` via `dragAndDropHooks`. State is owned by the consumer —
-`useTreeData` from `react-stately` is the recommended way to manage a mutable
-hierarchy, and React Aria's `Collection` renders each node's children.
+Drag-and-drop is opt-in and driven entirely through Nimbus — no
+`react-aria-components` or `react-stately` imports required. The `useTree` hook
+owns the hierarchical state and wires drag-and-drop for you: reorder between
+siblings, and re-parent by dropping an item _onto_ a group. Spread its result
+onto `Tree.Root`.
 
-The handlers map drop positions to tree operations:
-
-- `before` / `after` → reorder siblings (`moveBefore` / `moveAfter`)
-- `on` → move an item _into_ a group (re-parenting via `move`)
-
-Add a `<Button slot="drag">` inside `Tree.ItemContent` so keyboard and screen
-reader users can pick items up (`Enter` to grab, arrow keys to move, `Enter` to
-drop). React Aria provides drop indicators for valid positions automatically.
+Add an `IconButton` (or `Button`) with `slot="drag"` inside `Tree.ItemContent`
+so keyboard and screen reader users can pick items up (`Enter` to grab, arrow
+keys to move, `Enter` to drop). Drop indicators for valid positions are provided
+automatically.
 
 ```tsx
-import { Tree } from "@commercetools/nimbus";
+import { Tree, useTree, IconButton } from "@commercetools/nimbus";
 import { DragIndicator } from "@commercetools/nimbus-icons";
-import { Button, Collection, useDragAndDrop } from "react-aria-components";
-import { useTreeData } from "react-stately";
 
 function DraggableTree() {
-  const tree = useTreeData({
+  const tree = useTree({
     initialItems: [
       {
         id: "documents",
@@ -177,55 +172,39 @@ function DraggableTree() {
     ],
     getKey: (item) => item.id,
     getChildren: (item) => item.children ?? [],
+    dragAndDrop: true,
   });
 
-  const { dragAndDropHooks } = useDragAndDrop({
-    getItems: (keys) =>
-      [...keys].map((key) => ({
-        "text/plain": tree.getItem(key)?.value.title ?? "",
-      })),
-    onMove(e) {
-      if (e.target.dropPosition === "before") {
-        tree.moveBefore(e.target.key, e.keys);
-      } else if (e.target.dropPosition === "after") {
-        tree.moveAfter(e.target.key, e.keys);
-      } else if (e.target.dropPosition === "on") {
-        // Re-parent: move dragged items into the target group.
-        const targetNode = tree.getItem(e.target.key);
-        const targetIndex = targetNode?.children?.length ?? 0;
-        [...e.keys].forEach((key, i) => {
-          tree.move(key, e.target.key, targetIndex + i);
-        });
-      }
-    },
-  });
-
-  const renderNode = (item) => (
-    <Tree.Item id={item.key} textValue={item.value.title}>
+  const renderItem = (node) => (
+    <Tree.Item id={node.key} textValue={node.value.title}>
       <Tree.ItemContent>
-        <Button slot="drag" aria-label={`Reorder ${item.value.title}`}>
+        <IconButton
+          slot="drag"
+          variant="ghost"
+          size="2xs"
+          aria-label={`Reorder ${node.value.title}`}
+        >
           <DragIndicator />
-        </Button>
+        </IconButton>
         <Tree.Indicator />
-        {item.value.title}
+        {node.value.title}
       </Tree.ItemContent>
-      {item.children?.length ? (
-        <Collection items={item.children}>{renderNode}</Collection>
-      ) : null}
+      <Tree.SubTree items={node.children}>{renderItem}</Tree.SubTree>
     </Tree.Item>
   );
 
   return (
-    <Tree.Root
-      aria-label="Files"
-      items={tree.items}
-      dragAndDropHooks={dragAndDropHooks}
-    >
-      {renderNode}
+    <Tree.Root aria-label="Files" {...tree}>
+      {renderItem}
     </Tree.Root>
   );
 }
 ```
+
+For custom drag data or accepted external drag types, pass an options object
+instead of `true`: `dragAndDrop={{ getItems, acceptedDragTypes }}`. For
+programmatic edits, the same `tree` object exposes `insert`, `remove`, `move`,
+`update`, and more.
 
 ## Accessibility
 
