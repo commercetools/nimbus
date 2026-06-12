@@ -15,6 +15,8 @@ import {
  * (`role="treegrid"` → `row` → `gridcell`, with `aria-level`/`aria-expanded`/
  * `aria-selected`) — its screen-reader-tested pattern for interactive trees.
  *
+ * @see {@link https://nimbus-documentation.vercel.app/components/navigation/tree}
+ *
  * @example
  * ```tsx
  * <Tree.Root aria-label="Files" selectionMode="multiple">
