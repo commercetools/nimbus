@@ -48,6 +48,12 @@ export const checkboxSlotRecipe = defineSlotRecipe({
       _icon: {
         w: "350",
         h: "350",
+      },
+
+      // Stroke the checkmark / indeterminate-dash glyph itself (the svg path)
+      // so the indicator reads as clearly checked. `_icon` targets the <svg>
+      // wrapper, not the rendered glyph, so the path is selected directly.
+      "& :where(svg path)": {
         stroke: "colorPalette.contrast",
         strokeWidth: "50",
       },
