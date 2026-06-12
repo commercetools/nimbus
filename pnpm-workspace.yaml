@@ -6,7 +6,7 @@ catalogMode: strict
 
 catalogs:
   tooling:
-    "@figma/code-connect": ^1.4.7
+    "@figma/code-connect": ^1.4.8
     "@fission-ai/openspec": ^1.4.1
     eslint-plugin-react-hooks: ^7.1.1
     globals: ^17.6.0
