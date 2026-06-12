@@ -1,15 +1,15 @@
 import type { SystemConfig } from "@chakra-ui/react/styled-system";
 import { createSystem, defineConfig } from "@chakra-ui/react/styled-system";
 import { defaultBaseConfig } from "@chakra-ui/react/preset-base";
-import { generateColorScale } from "./generate-color-scale.ts";
-import { calculateContrastColor } from "./contrast.ts";
+import { generateColorScale } from "./generate-color-scale";
+import { calculateContrastColor } from "./contrast";
 import type {
   ThemeConfig,
   PaletteConfig,
   SemanticName,
   TokenOverrides,
   ColorPaletteWithModes,
-} from "./types.ts";
+} from "./types";
 
 type SemanticTokenValue =
   | { value: { _light: string; _dark: string } }

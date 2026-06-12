@@ -121,10 +121,10 @@ export type NimbusProviderProps = ColorModeProviderProps & {
   loadFonts?: boolean;
   /**
    * Custom Chakra UI theme system to use instead of the default Nimbus theme.
-   * Create one with `createNimbusTheme()` from `@commercetools/nimbus-theme-generator`.
+   * Create one with `createNimbusTheme()` from `@commercetools/nimbus/theme-generator`.
    *
    * @example
-   * import { createNimbusTheme } from '@commercetools/nimbus-theme-generator';
+   * import { createNimbusTheme } from '@commercetools/nimbus/theme-generator';
    * import { themeConfig } from '@commercetools/nimbus';
    *
    * const customTheme = createNimbusTheme({

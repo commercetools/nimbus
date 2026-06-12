@@ -3,7 +3,7 @@ import {
   palettesToSemanticTokens,
   buildTokenOverrides,
   createNimbusTheme,
-} from "./create-nimbus-theme.ts";
+} from "./create-nimbus-theme";
 
 describe("palettesToSemanticTokens", () => {
   it("converts a generated palette config into Chakra semantic token format", () => {

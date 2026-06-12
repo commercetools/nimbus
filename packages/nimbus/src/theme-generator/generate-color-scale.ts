@@ -1,6 +1,6 @@
 import { parse, oklch, formatHex, clampChroma } from "culori";
-import { calculateContrastColor } from "./contrast.ts";
-import type { ColorPalette, ColorPaletteWithModes } from "./types.ts";
+import { calculateContrastColor } from "./contrast";
+import type { ColorPalette, ColorPaletteWithModes } from "./types";
 
 const LIGHT_LIGHTNESS_TARGETS = [
   0.99, // step 1: app background

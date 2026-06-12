@@ -79,6 +79,11 @@ const createEntries = async () => {
     "plugins/stub",
     fileURLToPath(new URL("src/plugins/stub.ts", import.meta.url))
   );
+  // Theme generator — separate entrypoint so culori is only bundled when used.
+  entries.set(
+    "theme-generator",
+    fileURLToPath(new URL("src/theme-generator/index.ts", import.meta.url))
+  );
   return Object.fromEntries(entries);
 };
 
@@ -178,7 +183,11 @@ export default defineConfig(async () => {
           // otherwise you get an error when you `require` them
           const extension = format === "cjs" ? `${format}` : `${format}.js`;
           // Keep main entrypoints at root, put everything else in subfolders
-          if (["index", "setup-jsdom-polyfills"].includes(entryName)) {
+          if (
+            ["index", "setup-jsdom-polyfills", "theme-generator"].includes(
+              entryName
+            )
+          ) {
             return `${entryName}.${extension}`;
           }
           // Plugin entries keep their plugins/ prefix
