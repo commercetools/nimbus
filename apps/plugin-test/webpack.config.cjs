@@ -1,13 +1,12 @@
 const path = require("path");
 const webpack = require("webpack");
+const {
+  NIMBUS_RUNTIME_RE,
+} = require("@commercetools/nimbus/plugins/webpack");
 
-// Uses the same regex and NormalModuleReplacementPlugin mechanism as the real
-// NimbusOptionalDependencyPlugin, but always activates (bypasses detection)
-// so we can verify the stubbing path works inside the monorepo where nimbus
-// IS installed.
-const NIMBUS_RUNTIME_RE =
-  /^@commercetools\/nimbus(?:$|\/(?!plugins(?:\/|$)))/;
-
+// Always-active version of NimbusOptionalDependencyPlugin that bypasses
+// detection, so we can verify the stubbing path inside the monorepo where
+// nimbus IS installed.
 module.exports = {
   entry: "./src/main.js",
   output: {

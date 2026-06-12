@@ -1,8 +1,6 @@
 import { isNimbusResolvable } from "./is-nimbus-resolvable";
-
-// Matches `@commercetools/nimbus` and any subpath EXCEPT `/plugins` and `/plugins/*`,
-// which must remain resolvable to avoid circular stubbing.
-const NIMBUS_RUNTIME_RE = /^@commercetools\/nimbus(?:$|\/(?!plugins(?:\/|$)))/;
+import { NIMBUS_RUNTIME_RE } from "./nimbus-runtime-re";
+export { NIMBUS_RUNTIME_RE };
 // The `.cjs` extension is load-bearing: it tells Rolldown to treat the virtual
 // module as CJS, which allows any named import to resolve to `undefined` via
 // CJS-to-ESM interop instead of failing with MISSING_EXPORT.

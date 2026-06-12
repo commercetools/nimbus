@@ -1,10 +1,8 @@
 import { defineConfig } from "vite";
+import { NIMBUS_RUNTIME_RE } from "@commercetools/nimbus/plugins/vite";
 
-// Uses the same regex and virtual-CJS-module mechanism as the real
-// nimbusOptionalDependency plugin, but always activates (bypasses detection)
-// so we can verify the stubbing path works inside the monorepo where nimbus
-// IS installed.
-const NIMBUS_RUNTIME_RE = /^@commercetools\/nimbus(?:$|\/(?!plugins(?:\/|$)))/;
+// Always-active version of nimbusOptionalDependency that bypasses detection,
+// so we can verify the stubbing path inside the monorepo where nimbus IS installed.
 const STUB_ID = "\0nimbus-stub.cjs";
 
 function nimbusStubPlugin() {
