@@ -58,6 +58,17 @@ export default defineConfig(async () => {
     baseConfig,
     defineConfig({
       cacheDir: ".vitest-cache-dev",
+      // Polyfill `process.env` for browser-based tests. Some React Aria
+      // internals (e.g. react-stately's Virtualizer) reference
+      // `process.env.NODE_ENV` / `process.env.VIRT_ON` directly, which
+      // crashes in a real browser context where `process` is not defined.
+      // Setting VIRT_ON enables actual virtualization in test mode; without it
+      // react-stately renders all items regardless of viewport, defeating the
+      // purpose of the Virtualizer stories.
+      define: {
+        "process.env.NODE_ENV": JSON.stringify("development"),
+        "process.env.VIRT_ON": JSON.stringify("true"),
+      },
       optimizeDeps: {
         include: [
           "@chakra-ui/react",
