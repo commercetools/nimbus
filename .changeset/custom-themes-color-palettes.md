@@ -1,6 +1,5 @@
 ---
 "@commercetools/nimbus": minor
-"@commercetools/nimbus-theme-generator": minor
 ---
 
 Add user-defined theme support with color palette generation.
