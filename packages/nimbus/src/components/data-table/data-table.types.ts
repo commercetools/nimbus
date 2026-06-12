@@ -148,6 +148,10 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     togglePin: (id: string) => void;
     onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
     onVisibilityChange?: (visibleColumnIds: string[]) => void;
+    allowsPinning: boolean;
+    allowsExpandColumn: boolean;
+    renderDetails?: (row: DataTableRowItem<T>) => ReactNode;
+    toggleDetails: (id: string) => void;
   };
 
 export type TableSelectionContextValue = {
@@ -203,6 +207,10 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   onRowClick?: (row: DataTableRowItem<T>) => void;
   onDetailsClick?: (row: DataTableRowItem<T>) => void;
   renderDetails?: (row: DataTableRowItem<T>) => ReactNode;
+  /** Whether to show the pin column. @default true */
+  allowsPinning?: boolean;
+  /** Whether to show the expand chevron column. When false, rows with nested content can still be expanded via row click. @default true */
+  allowsExpandColumn?: boolean;
   children?: ReactNode;
   density?: DataTableDensity;
   isTruncated?: boolean;
