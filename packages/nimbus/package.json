@@ -26,6 +26,30 @@
         "types": "./dist/setup-jsdom-polyfills.d.cts",
         "default": "./dist/setup-jsdom-polyfills.cjs"
       }
+    },
+    "./plugins/webpack": {
+      "import": {
+        "types": "./dist/plugins/webpack.d.ts",
+        "default": "./dist/plugins/webpack.es.js"
+      },
+      "require": {
+        "types": "./dist/plugins/webpack.d.cts",
+        "default": "./dist/plugins/webpack.cjs"
+      }
+    },
+    "./plugins/vite": {
+      "import": {
+        "types": "./dist/plugins/vite.d.ts",
+        "default": "./dist/plugins/vite.es.js"
+      },
+      "require": {
+        "types": "./dist/plugins/vite.d.cts",
+        "default": "./dist/plugins/vite.cjs"
+      }
+    },
+    "./plugins/stub": {
+      "types": "./dist/plugins/stub.d.cts",
+      "default": "./dist/plugins/stub.cjs"
     }
   },
   "files": ["dist", "package.json"],
@@ -40,6 +64,9 @@
   "sideEffects": ["*.css"],
   "typesVersions": {
     "*": {
+      "plugins/webpack": ["./dist/plugins/webpack.d.ts"],
+      "plugins/vite": ["./dist/plugins/vite.d.ts"],
+      "plugins/stub": ["./dist/plugins/stub.d.ts"],
       "*": ["./dist/index.d.ts"]
     }
   },

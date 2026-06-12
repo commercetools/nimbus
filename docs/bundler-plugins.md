@@ -1,0 +1,226 @@
+# Bundler Plugins — Optional Dependency Resolution
+
+Nimbus ships Vite and webpack plugins that let build tools treat
+`@commercetools/nimbus` as an optional dependency. When Nimbus **is** installed,
+the plugins are no-ops. When it **is not** installed, they stub every Nimbus
+import so the build succeeds and zero Nimbus code lands in the bundle.
+
+**The plugins solve build errors, not runtime errors.** Stubbed imports resolve
+to `undefined` — any code that renders a Nimbus component or calls a Nimbus
+function will fail at runtime unless it is guarded. See
+[Writing safe shared code](#writing-safe-shared-code) for patterns.
+
+## When to use
+
+Use these plugins in **shared build tooling** that produces bundles for
+applications that may or may not depend on Nimbus. Without the plugins, any
+`import … from '@commercetools/nimbus'` in shared code causes a build failure
+for apps that haven't installed Nimbus.
+
+The typical scenario: a shared package imports Nimbus components but is consumed
+by both Nimbus-enabled apps and non-Nimbus apps. The plugins let the shared
+package compile in both environments. The shared code itself is responsible for
+checking whether Nimbus is available before rendering anything from it.
+
+## Entry points
+
+| Entry point                             | Format    | Export                                  |
+| --------------------------------------- | --------- | --------------------------------------- |
+| `@commercetools/nimbus/plugins/vite`    | CJS + ESM | `UNSAFE_nimbusOptionalDependency`       |
+| `@commercetools/nimbus/plugins/webpack` | CJS + ESM | `UNSAFE_NimbusOptionalDependencyPlugin` |
+| `@commercetools/nimbus/plugins/stub`    | CJS       | _(empty CJS module)_                    |
+
+All entry points are standalone — they do **not** import the Nimbus runtime.
+
+## Vite
+
+```ts
+// vite.config.ts
+import { UNSAFE_nimbusOptionalDependency } from "@commercetools/nimbus/plugins/vite";
+
+export default defineConfig({
+  plugins: [UNSAFE_nimbusOptionalDependency()],
+});
+```
+
+The plugin runs with `enforce: "pre"` so its `resolveId` hook fires before
+Vite's default resolver (required in monorepos where Vite would otherwise follow
+the workspace symlink). Matching imports are redirected via `resolveId` + `load`
+to a virtual CJS module (`module.exports = {}`). The `.cjs` extension on the
+virtual ID triggers Rolldown's CJS-to-ESM interop, allowing named imports to
+resolve to `undefined` at runtime instead of failing with `MISSING_EXPORT`. No
+physical file is written to disk.
+
+## Webpack
+
+```js
+// webpack.config.js
+const {
+  UNSAFE_NimbusOptionalDependencyPlugin,
+} = require("@commercetools/nimbus/plugins/webpack");
+
+module.exports = {
+  plugins: [new UNSAFE_NimbusOptionalDependencyPlugin()],
+};
+```
+
+The plugin accesses webpack's built-in `NormalModuleReplacementPlugin` via
+`compiler.webpack` (webpack 5+). It redirects matching imports to the physical
+`@commercetools/nimbus/plugins/stub` entry point (`module.exports = {}`).
+Webpack's CJS-to-ESM interop is natively lenient — unmatched named imports
+resolve to `undefined` at runtime without a build error.
+
+## How detection works
+
+At build startup, the plugin calls:
+
+```js
+require.resolve("@commercetools/nimbus", { paths: [process.cwd()] });
+```
+
+- **Resolves** → Nimbus is installed. The plugin becomes a **no-op**.
+- **Throws** → Nimbus is not installed. The plugin activates and stubs all
+  matching imports.
+
+`{ paths: [process.cwd()] }` checks from the **application root**, not the
+plugin's own `node_modules`. This matters in monorepos where the build tool may
+have Nimbus while the app being built does not.
+
+**Monorepo CI caveat:** Detection runs once when the plugin is called (Vite) or
+when `apply()` is invoked (webpack). If `process.cwd()` differs from the target
+application's root (e.g., turborepo running all builds from the monorepo root),
+the detection may produce a false positive. In that case, pass `{ cwd }` to
+point at the app being built, or configure the CI pipeline to `cd` into each
+app's directory before building.
+
+**Dependency hoisting caveat:** In npm/yarn workspaces or pnpm with
+`shamefully-hoist`, a sibling package that depends on Nimbus can cause it to be
+hoisted to a parent `node_modules`. Apps that never declared Nimbus as a
+dependency will then resolve it, causing the plugin to no-op. If your app should
+not depend on Nimbus, use `UNSAFE_forceStub: true` to bypass detection entirely.
+
+## What gets stubbed
+
+The regex `/^@commercetools\/nimbus(?:$|\/(?!plugins(?:\/|$)))/` matches:
+
+| Import                                        | Stubbed? |
+| --------------------------------------------- | -------- |
+| `@commercetools/nimbus`                       | Yes      |
+| `@commercetools/nimbus/components/Button`     | Yes      |
+| `@commercetools/nimbus/setup-jsdom-polyfills` | Yes      |
+| `@commercetools/nimbus/plugins/webpack`       | **No**   |
+| `@commercetools/nimbus/plugins/vite`          | **No**   |
+| `@commercetools/nimbus/plugins/stub`          | **No**   |
+| `@commercetools/nimbus/plugins`               | **No**   |
+| `@commercetools/nimbus-icons`                 | **No**   |
+| `@commercetools/nimbus-tokens`                | **No**   |
+
+The `/plugins` and `/plugins/*` subpaths are excluded to avoid circular
+replacement.
+
+## Writing safe shared code
+
+When stubbing is active, every named import from `@commercetools/nimbus`
+(`Button`, `NimbusProvider`, etc.) is `undefined`. Code that uses these values
+without a guard will crash at runtime. The build will not warn you — from the
+bundler's perspective, the import succeeded.
+
+> **Note:** Default and namespace imports (`import Nimbus from …` or
+> `import * as Nimbus from …`) resolve to the truthy `{}` stub object, not
+> `undefined`. Guard with individual named imports, not `if (!Nimbus)`.
+
+### Guard with a runtime check
+
+```tsx
+import { Button } from "@commercetools/nimbus";
+
+function MyAction({ label, onClick }) {
+  // Button is undefined when Nimbus is stubbed out
+  if (!Button) {
+    return <button onClick={onClick}>{label}</button>;
+  }
+  return <Button onPress={onClick}>{label}</Button>;
+}
+```
+
+### Guard with lazy imports
+
+```tsx
+const NimbusButton = lazy(() =>
+  import("@commercetools/nimbus").then((m) => ({ default: m.Button }))
+);
+
+function MyAction({ label, onClick }) {
+  return (
+    <Suspense fallback={<button onClick={onClick}>{label}</button>}>
+      <NimbusButton onPress={onClick}>{label}</NimbusButton>
+    </Suspense>
+  );
+}
+```
+
+### Feature flags
+
+If your app already has a feature-flag system, gate the entire Nimbus code path
+behind a flag rather than checking individual imports:
+
+```tsx
+if (flags.nimbusEnabled) {
+  return <NimbusButton onPress={onClick}>{label}</NimbusButton>;
+}
+return <button onClick={onClick}>{label}</button>;
+```
+
+The key principle: **the plugins make the build pass, your code makes the app
+work.** Any path that touches a Nimbus import must handle the possibility that
+it resolved to `undefined`.
+
+## Development
+
+### Source files
+
+Plugin source lives in `packages/nimbus/src/plugins/`. The plugins are built as
+separate entry points (`plugins/webpack`, `plugins/vite`, `plugins/stub`) and
+must not import anything from the Nimbus runtime.
+
+### Unit tests
+
+```bash
+pnpm test:dev packages/nimbus/src/plugins/
+```
+
+Unit tests cover the plugin logic (regex matching, resolveId/load hooks,
+isNimbusResolvable, no-op vs active behavior) with mocked dependencies.
+
+### Integration tests
+
+`apps/plugin-test/` contains end-to-end verification scripts that build real
+Vite and webpack bundles with the plugins active, then assert on the output:
+
+```bash
+pnpm --filter plugin-test test
+```
+
+This builds with both bundlers and runs `verify-vite.mjs` and
+`verify-webpack.mjs`, which check that no residual `@commercetools/nimbus`
+imports remain and that named exports resolve through the CJS stub interop.
+
+Run these locally after changes to:
+
+- Plugin source (`packages/nimbus/src/plugins/`)
+- Build config (`packages/nimbus/vite.config.ts`)
+- Postbuild script (`packages/nimbus/scripts/postbuild-types.mjs`)
+
+`apps/blank-app/` tests the no-op path — it has Nimbus installed, so both the
+Vite and webpack builds should succeed with the real exports intact. There is no
+verify script; the build succeeding is the assertion. If the plugins incorrectly
+stubbed imports, the build would fail on missing Nimbus exports.
+
+### Package shape
+
+```bash
+pnpm check:package-shape
+```
+
+Validates that all three plugin export paths resolve correctly across node10,
+node16 (CJS + ESM), and bundler resolution modes.

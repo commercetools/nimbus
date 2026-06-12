@@ -1,0 +1,184 @@
+---
+id: Home-BundlerPlugins-1749667200000
+title: Bundler Plugins
+description: Webpack and Vite plugins for optional Nimbus dependency resolution
+order: 7
+menu:
+  - Home
+  - Getting Started
+  - Bundler Plugins
+tags:
+  - guide
+  - plugins
+  - webpack
+  - vite
+  - build
+  - optional-dependency
+icon: Extension
+---
+
+# Bundler Plugins
+
+Nimbus ships Vite and webpack plugins that let build tools treat
+`@commercetools/nimbus` as an **optional dependency**. When Nimbus is installed,
+the plugins are no-ops. When it is not installed, they stub every Nimbus import
+so the build succeeds and zero Nimbus code lands in the bundle.
+
+**The plugins solve build errors, not runtime errors.** Stubbed imports resolve
+to `undefined` — any code that renders a Nimbus component or calls a Nimbus
+function will fail at runtime unless it is guarded. See
+[Writing safe shared code](#writing-safe-shared-code) for patterns.
+
+## When to use
+
+Use these plugins in **shared build tooling** that produces bundles for
+applications that may or may not depend on Nimbus. Without the plugins, any
+`import … from '@commercetools/nimbus'` in shared code causes a build failure
+for apps that haven't installed Nimbus.
+
+The typical scenario: a shared package imports Nimbus components but is consumed
+by both Nimbus-enabled apps and non-Nimbus apps. The plugins let the shared
+package compile in both environments. The shared code itself is responsible for
+checking whether Nimbus is available before rendering anything from it.
+
+## Entry points
+
+| Entry point                             | Export                           |
+| --------------------------------------- | -------------------------------- |
+| `@commercetools/nimbus/plugins/vite`    | `UNSAFE_nimbusOptionalDependency`       |
+| `@commercetools/nimbus/plugins/webpack` | `UNSAFE_NimbusOptionalDependencyPlugin` |
+| `@commercetools/nimbus/plugins/stub`    | _(empty CJS module)_             |
+
+All entry points are standalone — they do **not** import the Nimbus runtime.
+
+## Vite
+
+```ts
+// vite.config.ts
+import { UNSAFE_nimbusOptionalDependency } from "@commercetools/nimbus/plugins/vite";
+
+export default defineConfig({
+  plugins: [UNSAFE_nimbusOptionalDependency()],
+});
+```
+
+The plugin runs with `enforce: "pre"` so its `resolveId` hook fires before
+Vite's default resolver (required in monorepos where Vite would otherwise follow
+the workspace symlink). Matching imports are redirected via `resolveId` + `load`
+to a virtual CJS module (`module.exports = {}`). The `.cjs` extension on the
+virtual ID triggers Rolldown's CJS-to-ESM interop, allowing named imports to
+resolve to `undefined` at runtime instead of failing with `MISSING_EXPORT`. No
+physical file is written to disk.
+
+## Webpack
+
+```js
+// webpack.config.js
+const {
+  UNSAFE_NimbusOptionalDependencyPlugin,
+} = require("@commercetools/nimbus/plugins/webpack");
+
+module.exports = {
+  plugins: [new UNSAFE_NimbusOptionalDependencyPlugin()],
+};
+```
+
+The plugin accesses webpack's built-in `NormalModuleReplacementPlugin` via
+`compiler.webpack` (webpack 5+). It redirects matching imports to the physical
+`@commercetools/nimbus/plugins/stub` entry point (`module.exports = {}`).
+Webpack's CJS-to-ESM interop is natively lenient — unmatched named imports
+resolve to `undefined` at runtime without a build error.
+
+## How detection works
+
+At build startup, the plugin calls:
+
+```js
+require.resolve("@commercetools/nimbus", { paths: [process.cwd()] });
+```
+
+- **Resolves** → Nimbus is installed. The plugin becomes a **no-op**.
+- **Throws** → Nimbus is not installed. The plugin activates and stubs all
+  matching imports.
+
+`{ paths: [process.cwd()] }` checks from the **application root**, not the
+plugin's own `node_modules`. This matters in monorepos where the build tool may
+have Nimbus while the app being built does not.
+
+Both plugins accept a `{ cwd }` option to override detection, and
+`{ UNSAFE_forceStub: true }` to bypass detection entirely — useful when
+dependency hoisting causes Nimbus to resolve from a parent `node_modules` even
+though the app never declared it.
+
+## What gets stubbed
+
+| Import                                        | Stubbed? |
+| --------------------------------------------- | -------- |
+| `@commercetools/nimbus`                       | Yes      |
+| `@commercetools/nimbus/components/Button`     | Yes      |
+| `@commercetools/nimbus/setup-jsdom-polyfills` | Yes      |
+| `@commercetools/nimbus/plugins/webpack`       | No       |
+| `@commercetools/nimbus/plugins/vite`          | No       |
+| `@commercetools/nimbus/plugins/stub`          | No       |
+| `@commercetools/nimbus/plugins`               | No       |
+| `@commercetools/nimbus-icons`                 | No       |
+| `@commercetools/nimbus-tokens`                | No       |
+
+The `/plugins` and `/plugins/*` subpaths are excluded to avoid circular
+replacement.
+
+## Writing safe shared code
+
+When stubbing is active, every named import from `@commercetools/nimbus`
+(`Button`, `NimbusProvider`, etc.) is `undefined`. Default and namespace imports
+(`import Nimbus from …` or `import * as Nimbus from …`) resolve to the truthy
+`{}` stub object — guard with individual named imports, not `if (!Nimbus)`.
+
+Code that uses these values without a guard will crash at runtime. The build will not warn you — from the
+bundler's perspective, the import succeeded.
+
+### Guard with a runtime check
+
+```tsx
+import { Button } from "@commercetools/nimbus";
+
+function MyAction({ label, onClick }) {
+  // Button is undefined when Nimbus is stubbed out
+  if (!Button) {
+    return <button onClick={onClick}>{label}</button>;
+  }
+  return <Button onPress={onClick}>{label}</Button>;
+}
+```
+
+### Guard with lazy imports
+
+```tsx
+const NimbusButton = lazy(() =>
+  import("@commercetools/nimbus").then((m) => ({ default: m.Button }))
+);
+
+function MyAction({ label, onClick }) {
+  return (
+    <Suspense fallback={<button onClick={onClick}>{label}</button>}>
+      <NimbusButton onPress={onClick}>{label}</NimbusButton>
+    </Suspense>
+  );
+}
+```
+
+### Feature flags
+
+If your app already has a feature-flag system, gate the entire Nimbus code path
+behind a flag rather than checking individual imports:
+
+```tsx
+if (flags.nimbusEnabled) {
+  return <NimbusButton onPress={onClick}>{label}</NimbusButton>;
+}
+return <button onClick={onClick}>{label}</button>;
+```
+
+The key principle: **the plugins make the build pass, your code makes the app
+work.** Any path that touches a Nimbus import must handle the possibility that
+it resolved to `undefined`.
