@@ -18,7 +18,7 @@
       dynamic tree (items + recursive render), expand/collapse via chevron and
       keyboard, arrow-key navigation + Home/End, type-ahead, single selection,
       multiple selection (checkboxes), disabled items, ARIA roles
-      (`tree`/`treeitem`/`group`), level-based indentation, and drag-and-drop
+      (`treegrid`/`row`/`gridcell`), level-based indentation, and drag-and-drop
       reorder
 - [x] 2.2 Verify tests fail initially (component not yet implemented)
 

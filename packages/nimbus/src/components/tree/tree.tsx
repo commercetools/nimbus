@@ -11,7 +11,9 @@ import {
  * A hierarchical list for navigating nested data such as file trees and
  * navigation structures. Wraps React Aria's `Tree` for keyboard navigation,
  * expand/collapse, selection, type-ahead and opt-in drag-and-drop, with
- * WCAG 2.1 AA tree semantics (`role="tree"`/`treeitem"`/`group`).
+ * WCAG 2.1 AA semantics. React Aria renders the tree as an ARIA `treegrid`
+ * (`role="treegrid"` → `row` → `gridcell`, with `aria-level`/`aria-expanded`/
+ * `aria-selected`) — its screen-reader-tested pattern for interactive trees.
  *
  * @example
  * ```tsx

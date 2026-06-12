@@ -6,7 +6,7 @@ import type { TreeItemProps } from "../tree.types";
 /**
  * Tree.Item
  *
- * A single node in the tree (`role="treeitem"`). Contains a `Tree.ItemContent`
+ * A single node in the tree (`role="row"`). Contains a `Tree.ItemContent`
  * and, optionally, nested `Tree.Item` elements (or a React Aria `Collection`
  * for dynamic children).
  *
