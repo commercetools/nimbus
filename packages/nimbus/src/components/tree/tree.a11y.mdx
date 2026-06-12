@@ -1,0 +1,71 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+Tree is rendered as an ARIA `treegrid` — React Aria's screen-reader-tested
+pattern for interactive trees that support selection and per-row actions.
+
+```jsx live
+const App = () => (
+  <Tree.Root
+    aria-label="Files"
+    selectionMode="multiple"
+    defaultExpandedKeys={["documents"]}
+  >
+    <Tree.Item id="documents" textValue="Documents">
+      <Tree.ItemContent>
+        <Tree.Indicator />
+        Documents
+      </Tree.ItemContent>
+      <Tree.Item id="report" textValue="Weekly Report">
+        <Tree.ItemContent>
+          <Tree.Indicator />
+          Weekly Report
+        </Tree.ItemContent>
+      </Tree.Item>
+    </Tree.Item>
+    <Tree.Item id="photos" textValue="Photos">
+      <Tree.ItemContent>
+        <Tree.Indicator />
+        Photos
+      </Tree.ItemContent>
+    </Tree.Item>
+  </Tree.Root>
+);
+```
+
+### Accessibility standards
+
+- **Roles:** the tree exposes `role="treegrid"`, each item is a `role="row"`
+  containing a `role="gridcell"`. This pattern is announced reliably by screen
+  readers for interactive, selectable trees.
+- **aria-level:** every row exposes `aria-level` reflecting its 1-based depth so
+  assistive technology can communicate the hierarchy.
+- **aria-expanded:** rows with children expose `aria-expanded`, updated as the
+  item expands and collapses.
+- **aria-selected:** when selection is enabled, selectable rows expose
+  `aria-selected`.
+- **Accessible name:** always provide an accessible name on `Tree.Root` via
+  `aria-label` or `aria-labelledby`.
+- **Item text:** provide a meaningful `textValue` per `Tree.Item`. It supplies
+  the type-ahead target and accessible name when the label is not plain text.
+- **Keyboard navigation:** Up/Down move between visible rows, Right/Left
+  expand/collapse (or move to a child/parent), Home/End jump to the first/last
+  visible row, and typing performs type-ahead.
+- **Expand/collapse control:** the `Tree.Indicator` chevron is given a localized
+  accessible name by React Aria and is hidden for leaf rows.
+- **Drag and drop:** when drag-and-drop is enabled, include a
+  `Button slot="drag"` per row so reordering is operable by keyboard and screen
+  reader (pick up with `Enter`, move with arrow keys, drop with `Enter`), not
+  pointer-only.
+- **Focus visible:** rows and the tree container provide a clear focus ring for
+  keyboard users.
+- **Color contrast:** maintain sufficient contrast for row text and selection
+  states against their background colors.

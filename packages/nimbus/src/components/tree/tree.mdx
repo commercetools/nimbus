@@ -1,0 +1,168 @@
+---
+id: Components-Tree
+title: Tree
+exportName: Tree
+description:
+  A hierarchical list for navigating and managing nested data such as file
+  trees, category hierarchies, and nested navigation structures.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Navigation
+  - Tree
+tags:
+  - component
+  - tree
+  - treegrid
+  - hierarchy
+  - navigation
+  - nested
+---
+
+## Overview
+
+Tree presents hierarchical data as an expandable, keyboard-navigable list. It is
+built on React Aria's accessible `treegrid` pattern, so arrow-key navigation,
+type-ahead, expand/collapse, single and multiple selection, and opt-in
+drag-and-drop all work out of the box.
+
+Compose it from four parts: `Tree.Root`, `Tree.Item`, `Tree.ItemContent`, and
+`Tree.Indicator`.
+
+> [!NOTE]\
+> Tree is **experimental**. There are no Figma specs yet — its visual styling is
+> derived from existing list and accordion tokens and is pending design review.
+> The component API is stable; spacing and visual details may still change.
+
+### Key features
+
+- **Accessible by default:** ARIA `treegrid` semantics (`aria-level`,
+  `aria-expanded`, `aria-selected`) with WCAG 2.1 AA keyboard and screen-reader
+  support provided by React Aria.
+- **Static or dynamic data:** nest `Tree.Item`s by hand, or render from an
+  `items` array with a recursive render function.
+- **Selection:** `single` or `multiple` — multiple-selection mode renders a
+  selection checkbox per row automatically.
+- **Expand / collapse:** a chevron indicator that appears only for items with
+  children and rotates on expand.
+- **Opt-in drag-and-drop:** reorder, re-parent, and move items by pointer or
+  keyboard.
+- **Two sizes:** `sm` and `md` (default), scaling row height, font size, chevron
+  size, and indentation.
+
+### Resources
+
+Deep dive into the underlying accessibility pattern.
+
+[React Aria Tree](https://react-spectrum.adobe.com/react-aria/Tree.html)
+[ARIA treegrid Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treegrid/)
+
+## Variables
+
+Get familiar with the features.
+
+### Basic
+
+A tree of nested `Tree.Item` elements. `defaultExpandedKeys` controls which
+branches start open.
+
+```jsx live
+const App = () => (
+  <Tree.Root aria-label="Files" defaultExpandedKeys={["documents", "project"]}>
+    <Tree.Item id="documents" textValue="Documents">
+      <Tree.ItemContent>
+        <Tree.Indicator />
+        Documents
+      </Tree.ItemContent>
+      <Tree.Item id="project" textValue="Project">
+        <Tree.ItemContent>
+          <Tree.Indicator />
+          Project
+        </Tree.ItemContent>
+        <Tree.Item id="report" textValue="Weekly Report">
+          <Tree.ItemContent>
+            <Tree.Indicator />
+            Weekly Report
+          </Tree.ItemContent>
+        </Tree.Item>
+      </Tree.Item>
+    </Tree.Item>
+    <Tree.Item id="photos" textValue="Photos">
+      <Tree.ItemContent>
+        <Tree.Indicator />
+        Photos
+      </Tree.ItemContent>
+    </Tree.Item>
+  </Tree.Root>
+);
+```
+
+### Selection
+
+Set `selectionMode` to `single` or `multiple`. In multiple-selection mode,
+`Tree.ItemContent` renders a selection checkbox per row automatically.
+
+```jsx live
+const App = () => (
+  <Tree.Root
+    aria-label="Files"
+    selectionMode="multiple"
+    defaultExpandedKeys={["documents"]}
+  >
+    <Tree.Item id="documents" textValue="Documents">
+      <Tree.ItemContent>
+        <Tree.Indicator />
+        Documents
+      </Tree.ItemContent>
+      <Tree.Item id="report" textValue="Weekly Report">
+        <Tree.ItemContent>
+          <Tree.Indicator />
+          Weekly Report
+        </Tree.ItemContent>
+      </Tree.Item>
+      <Tree.Item id="budget" textValue="Budget">
+        <Tree.ItemContent>
+          <Tree.Indicator />
+          Budget
+        </Tree.ItemContent>
+      </Tree.Item>
+    </Tree.Item>
+  </Tree.Root>
+);
+```
+
+### Size
+
+`Tree.Root` accepts a `size` prop (`sm` or `md`, default `md`) that scales row
+height, font size, chevron size, and indentation step.
+
+```jsx live
+const App = () => (
+  <Stack direction="horizontal" gap="800" alignItems="flex-start">
+    {["sm", "md"].map((size) => (
+      <Stack key={size} gap="200">
+        <Text fontWeight="700">{size}</Text>
+        <Tree.Root
+          aria-label={`Files ${size}`}
+          size={size}
+          defaultExpandedKeys={["documents"]}
+        >
+          <Tree.Item id="documents" textValue="Documents">
+            <Tree.ItemContent>
+              <Tree.Indicator />
+              Documents
+            </Tree.ItemContent>
+            <Tree.Item id="report" textValue="Weekly Report">
+              <Tree.ItemContent>
+                <Tree.Indicator />
+                Weekly Report
+              </Tree.ItemContent>
+            </Tree.Item>
+          </Tree.Item>
+        </Tree.Root>
+      </Stack>
+    ))}
+  </Stack>
+);
+```

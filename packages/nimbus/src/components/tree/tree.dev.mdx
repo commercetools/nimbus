@@ -28,7 +28,7 @@ import { Tree, type TreeRootProps } from "@commercetools/nimbus";
       <Tree.Indicator />
       {/* label */}
     </Tree.ItemContent>
-    {/* nested <Tree.Item>s or a <Collection> */}
+    {/* nested <Tree.Item>s */}
   </Tree.Item>
 </Tree.Root>
 ```
@@ -85,52 +85,7 @@ const App = () => {
 };
 ```
 
-### Dynamic collections
-
-For data-driven trees, pass an `items` array and a recursive render function,
-using React Aria's `Collection` to render each node's children.
-
-```jsx live-dev
-const items = [
-  {
-    id: "documents",
-    title: "Documents",
-    children: [
-      { id: "report", title: "Weekly Report" },
-      { id: "budget", title: "Budget" },
-    ],
-  },
-  {
-    id: "photos",
-    title: "Photos",
-    children: [{ id: "image-1", title: "Image 1" }],
-  },
-];
-
-const App = () => {
-  const renderNode = (node) => (
-    <Tree.Item key={node.id} id={node.id} textValue={node.title}>
-      <Tree.ItemContent>
-        <Tree.Indicator />
-        {node.title}
-      </Tree.ItemContent>
-      {node.children && (
-        <Collection items={node.children}>{renderNode}</Collection>
-      )}
-    </Tree.Item>
-  );
-
-  return (
-    <Tree.Root
-      aria-label="Files"
-      items={items}
-      defaultExpandedKeys={["documents"]}
-    >
-      {renderNode}
-    </Tree.Root>
-  );
-};
-```
+## Usage examples
 
 ### Selection
 
@@ -193,7 +148,7 @@ const App = () => {
 Drag-and-drop is opt-in. Create hooks with `useDragAndDrop` and pass them to
 `Tree.Root` via `dragAndDropHooks`. State is owned by the consumer —
 `useTreeData` from `react-stately` is the recommended way to manage a mutable
-hierarchy.
+hierarchy, and React Aria's `Collection` renders each node's children.
 
 The handlers map drop positions to tree operations:
 
@@ -274,14 +229,48 @@ function DraggableTree() {
 
 ## Accessibility
 
-- React Aria implements the tree as an ARIA `treegrid` — a screen-reader-tested
-  pattern for interactive trees that support selection and per-row actions. Rows
-  expose `aria-level`, `aria-expanded` and `aria-selected`.
+The Tree component is built with React Aria and follows the WAI-ARIA `treegrid`
+pattern. It provides:
+
+**Roles:**
+
+- The root exposes `role="treegrid"`; each item is a `role="row"` containing a
+  `role="gridcell"`.
+
+**Labeling:**
+
+- Each row exposes `aria-level` reflecting its depth, `aria-expanded` when it has
+  children, and `aria-selected` when selection is enabled.
 - Always provide an accessible name on `Tree.Root` via `aria-label` or
   `aria-labelledby`.
-- Provide a meaningful `textValue` on each `Tree.Item` (used for type-ahead)
-  when the label is not a plain string.
-- Keyboard: Up/Down move between rows, Right/Left expand/collapse (or move to
-  child/parent), Home/End jump to first/last, and typing performs type-ahead.
-- When drag-and-drop is enabled, include a `<Button slot="drag">` per item so
-  the reorder is operable by keyboard and screen reader, not just pointer.
+- Provide a meaningful `textValue` on each `Tree.Item` (used for type-ahead) when
+  the label is not a plain string.
+
+**Keyboard navigation:**
+
+- `Up` / `Down` — move between visible rows
+- `Right` / `Left` — expand/collapse, or move to a child/parent
+- `Home` / `End` — move to the first/last visible row
+- _type characters_ — type-ahead to the next matching row
+
+When drag-and-drop is enabled, include a `<Button slot="drag">` per item so the
+reorder is operable by keyboard and screen reader, not just pointer.
+
+## API reference
+
+<PropsTable id="Tree" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Tree
+within your application. As the component's internal functionality is already
+tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+{{docs-tests: tree.docs.spec.tsx}}
+
+## Resources
+
+- [Tree Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-tree--docs)
+- [React Aria Tree Documentation](https://react-spectrum.adobe.com/react-aria/Tree.html)
+- [WAI-ARIA treegrid Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treegrid/)
