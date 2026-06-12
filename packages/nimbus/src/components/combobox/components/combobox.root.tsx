@@ -1400,6 +1400,7 @@ const ComboBoxRootInner = <T extends object>(
       ref: listBoxRef,
       renderEmptyState,
       shouldFocusWrap,
+      shouldUseVirtualFocus: true,
       "aria-label": msg.format("options"),
     }),
     [items, listboxId, listBoxRef, renderEmptyState, shouldFocusWrap, msg]
