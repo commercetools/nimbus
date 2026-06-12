@@ -97,6 +97,10 @@ const createEntries = async () => {
 const requireRewriteExternals = [/^react(-dom)?(\/.+)?$/];
 
 const external = [
+  // Node built-ins — the plugin entries use `node:module` (createRequire) and
+  // must not be browser-externalized by Vite, otherwise the built output
+  // replaces them with an empty shim and `isNimbusResolvable` always fails.
+  /^node:/,
   // UI frameworks & styling.
   new RegExp("@chakra-ui/react?[^.].*$"),
   // Slate dependencies for RichTextInput

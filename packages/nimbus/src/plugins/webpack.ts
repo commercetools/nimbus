@@ -1,6 +1,8 @@
 import { isNimbusResolvable } from "./is-nimbus-resolvable";
 
-const NIMBUS_RUNTIME_RE = /^@commercetools\/nimbus(?:$|\/(?!plugins\/))/;
+// Matches `@commercetools/nimbus` and any subpath EXCEPT `/plugins` and `/plugins/*`,
+// which must remain resolvable to avoid circular stubbing.
+const NIMBUS_RUNTIME_RE = /^@commercetools\/nimbus(?:$|\/(?!plugins(?:\/|$)))/;
 
 /**
  * Webpack plugin that stubs `@commercetools/nimbus` imports when the package
@@ -32,6 +34,8 @@ export class NimbusOptionalDependencyPlugin {
   }): void {
     if (isNimbusResolvable()) return;
 
+    // Access via `compiler.webpack` instead of importing webpack directly,
+    // so this plugin has zero dependencies and works with any webpack 5+ version.
     const { NormalModuleReplacementPlugin } = compiler.webpack;
 
     new NormalModuleReplacementPlugin(

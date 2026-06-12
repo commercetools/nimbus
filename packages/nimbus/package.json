@@ -48,14 +48,8 @@
       }
     },
     "./plugins/stub": {
-      "import": {
-        "types": "./dist/plugins/stub.d.ts",
-        "default": "./dist/plugins/stub.es.js"
-      },
-      "require": {
-        "types": "./dist/plugins/stub.d.cts",
-        "default": "./dist/plugins/stub.cjs"
-      }
+      "types": "./dist/plugins/stub.d.cts",
+      "default": "./dist/plugins/stub.cjs"
     }
   },
   "files": ["dist", "package.json"],

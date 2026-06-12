@@ -1,126 +1,115 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-vi.mock("./is-nimbus-resolvable", () => ({
-  isNimbusResolvable: vi.fn(),
+// vi.hoisted runs before vi.mock, making mockIsNimbusResolvable available
+// to the mock factory. This avoids vi.resetModules + dynamic imports.
+const { mockIsNimbusResolvable } = vi.hoisted(() => ({
+  mockIsNimbusResolvable: vi.fn<() => boolean>(),
 }));
 
-import { isNimbusResolvable } from "./is-nimbus-resolvable";
+vi.mock("./is-nimbus-resolvable", () => ({
+  isNimbusResolvable: mockIsNimbusResolvable,
+}));
 
-const mockIsNimbusResolvable = vi.mocked(isNimbusResolvable);
+import { nimbusOptionalDependency } from "./vite";
 
 describe("nimbusOptionalDependency (vite)", () => {
-  let nimbusOptionalDependency: typeof import("./vite").nimbusOptionalDependency;
-
-  beforeEach(async () => {
-    vi.resetModules();
-    const vitePluginModule = await import("./vite");
-    nimbusOptionalDependency = vitePluginModule.nimbusOptionalDependency;
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it("returns a no-op plugin when Nimbus is resolvable", () => {
-    mockIsNimbusResolvable.mockReturnValue(true);
-
-    const optionalDependencyPlugin = nimbusOptionalDependency();
-
-    expect(optionalDependencyPlugin.name).toBe("nimbus-optional-dependency");
-    expect(optionalDependencyPlugin).not.toHaveProperty("resolveId");
-    expect(optionalDependencyPlugin).not.toHaveProperty("load");
-  });
-
-  it("returns a plugin with resolveId and load hooks when Nimbus is not resolvable", () => {
-    mockIsNimbusResolvable.mockReturnValue(false);
-
-    const optionalDependencyPlugin = nimbusOptionalDependency();
-
-    expect(optionalDependencyPlugin.name).toBe("nimbus-optional-dependency");
-    expect(optionalDependencyPlugin).toHaveProperty("resolveId");
-    expect(optionalDependencyPlugin).toHaveProperty("load");
-  });
-
-  describe("resolveId", () => {
-    it("returns stub ID for @commercetools/nimbus bare import", () => {
-      mockIsNimbusResolvable.mockReturnValue(false);
-
-      const optionalDependencyPlugin = nimbusOptionalDependency();
-      const resolveId = optionalDependencyPlugin.resolveId as (
-        source: string
-      ) => string | undefined;
-
-      expect(resolveId("@commercetools/nimbus")).toBe("\0nimbus-stub");
+  describe("when Nimbus is resolvable", () => {
+    beforeAll(() => {
+      mockIsNimbusResolvable.mockReturnValue(true);
     });
 
-    it("returns stub ID for @commercetools/nimbus subpath imports", () => {
-      mockIsNimbusResolvable.mockReturnValue(false);
-
-      const optionalDependencyPlugin = nimbusOptionalDependency();
-      const resolveId = optionalDependencyPlugin.resolveId as (
-        source: string
-      ) => string | undefined;
-
-      expect(resolveId("@commercetools/nimbus/components/Button")).toBe(
-        "\0nimbus-stub"
-      );
-      expect(resolveId("@commercetools/nimbus/setup-jsdom-polyfills")).toBe(
-        "\0nimbus-stub"
-      );
+    afterAll(() => {
+      mockIsNimbusResolvable.mockReset();
     });
 
-    it("returns undefined for plugin subpath imports", () => {
-      mockIsNimbusResolvable.mockReturnValue(false);
+    it("returns a no-op plugin", () => {
+      const plugin = nimbusOptionalDependency();
 
-      const optionalDependencyPlugin = nimbusOptionalDependency();
-      const resolveId = optionalDependencyPlugin.resolveId as (
-        source: string
-      ) => string | undefined;
-
-      expect(
-        resolveId("@commercetools/nimbus/plugins/webpack")
-      ).toBeUndefined();
-      expect(resolveId("@commercetools/nimbus/plugins/vite")).toBeUndefined();
-      expect(resolveId("@commercetools/nimbus/plugins/stub")).toBeUndefined();
-    });
-
-    it("returns undefined for unrelated modules", () => {
-      mockIsNimbusResolvable.mockReturnValue(false);
-
-      const optionalDependencyPlugin = nimbusOptionalDependency();
-      const resolveId = optionalDependencyPlugin.resolveId as (
-        source: string
-      ) => string | undefined;
-
-      expect(resolveId("@commercetools/nimbus-icons")).toBeUndefined();
-      expect(resolveId("@commercetools/nimbus-tokens")).toBeUndefined();
-      expect(resolveId("react")).toBeUndefined();
+      expect(plugin.name).toBe("nimbus-optional-dependency");
+      expect(plugin).not.toHaveProperty("enforce");
+      expect(plugin).not.toHaveProperty("resolveId");
+      expect(plugin).not.toHaveProperty("load");
     });
   });
 
-  describe("load", () => {
-    it("returns stub content for the stub ID", () => {
+  describe("when Nimbus is not resolvable", () => {
+    beforeAll(() => {
       mockIsNimbusResolvable.mockReturnValue(false);
-
-      const optionalDependencyPlugin = nimbusOptionalDependency();
-      const load = optionalDependencyPlugin.load as (
-        id: string
-      ) => string | undefined;
-
-      const stubContent = load("\0nimbus-stub");
-      expect(stubContent).toBe("export default {};");
     });
 
-    it("returns undefined for non-stub IDs", () => {
-      mockIsNimbusResolvable.mockReturnValue(false);
+    afterAll(() => {
+      mockIsNimbusResolvable.mockReset();
+    });
 
-      const optionalDependencyPlugin = nimbusOptionalDependency();
-      const load = optionalDependencyPlugin.load as (
-        id: string
-      ) => string | undefined;
+    it("returns a plugin with resolveId and load hooks", () => {
+      const plugin = nimbusOptionalDependency();
 
-      expect(load("some-other-module")).toBeUndefined();
-      expect(load("@commercetools/nimbus")).toBeUndefined();
+      expect(plugin.name).toBe("nimbus-optional-dependency");
+      expect(plugin.enforce).toBe("pre");
+      expect(plugin).toHaveProperty("resolveId");
+      expect(plugin).toHaveProperty("load");
+    });
+
+    describe("resolveId", () => {
+      const resolveId = () => {
+        const plugin = nimbusOptionalDependency();
+        return plugin.resolveId as (source: string) => string | undefined;
+      };
+
+      it("returns stub ID for @commercetools/nimbus bare import", () => {
+        expect(resolveId()("@commercetools/nimbus")).toBe("\0nimbus-stub.cjs");
+      });
+
+      it("returns stub ID for @commercetools/nimbus subpath imports", () => {
+        const resolve = resolveId();
+        expect(resolve("@commercetools/nimbus/components/Button")).toBe(
+          "\0nimbus-stub.cjs"
+        );
+        expect(resolve("@commercetools/nimbus/setup-jsdom-polyfills")).toBe(
+          "\0nimbus-stub.cjs"
+        );
+      });
+
+      it("returns stub ID for trailing-slash import", () => {
+        expect(resolveId()("@commercetools/nimbus/")).toBe("\0nimbus-stub.cjs");
+      });
+
+      it("returns undefined for plugin subpath imports", () => {
+        const resolve = resolveId();
+        expect(
+          resolve("@commercetools/nimbus/plugins/webpack")
+        ).toBeUndefined();
+        expect(resolve("@commercetools/nimbus/plugins/vite")).toBeUndefined();
+        expect(resolve("@commercetools/nimbus/plugins/stub")).toBeUndefined();
+      });
+
+      it("returns undefined for bare @commercetools/nimbus/plugins path", () => {
+        expect(resolveId()("@commercetools/nimbus/plugins")).toBeUndefined();
+      });
+
+      it("returns undefined for unrelated modules", () => {
+        const resolve = resolveId();
+        expect(resolve("@commercetools/nimbus-icons")).toBeUndefined();
+        expect(resolve("@commercetools/nimbus-tokens")).toBeUndefined();
+        expect(resolve("react")).toBeUndefined();
+      });
+    });
+
+    describe("load", () => {
+      const getLoad = () => {
+        const plugin = nimbusOptionalDependency();
+        return plugin.load as (id: string) => string | undefined;
+      };
+
+      it("returns stub content for the stub ID", () => {
+        expect(getLoad()("\0nimbus-stub.cjs")).toBe("module.exports = {};");
+      });
+
+      it("returns undefined for non-stub IDs", () => {
+        const load = getLoad();
+        expect(load("some-other-module")).toBeUndefined();
+        expect(load("@commercetools/nimbus")).toBeUndefined();
+      });
     });
   });
 });

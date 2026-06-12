@@ -1,0 +1,18 @@
+{
+  "name": "plugin-test",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build:vite": "vite build",
+    "build:webpack": "webpack --mode production",
+    "verify:vite": "node verify-vite.mjs",
+    "verify:webpack": "node verify-webpack.mjs",
+    "test": "pnpm build:vite && pnpm verify:vite && pnpm build:webpack && pnpm verify:webpack"
+  },
+  "devDependencies": {
+    "vite": "catalog:tooling",
+    "webpack": "catalog:tooling",
+    "webpack-cli": "catalog:tooling"
+  }
+}

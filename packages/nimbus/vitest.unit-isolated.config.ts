@@ -20,7 +20,10 @@ export default defineConfig(async () => {
       test: {
         name: "unit-isolated",
         environment: "jsdom",
-        include: ["src/components/toast/toast.spec.tsx"],
+        include: [
+          "src/components/toast/toast.spec.tsx",
+          "src/plugins/*.spec.ts",
+        ],
         globals: true,
         setupFiles: ["./src/test/unit-test-setup.ts"],
       },

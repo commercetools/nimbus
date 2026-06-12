@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:webpack": "webpack --mode production",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -25,6 +26,8 @@
     "globals": "catalog:tooling",
     "typescript": "catalog:tooling",
     "typescript-eslint": "catalog:tooling",
-    "vite": "catalog:tooling"
+    "vite": "catalog:tooling",
+    "webpack": "catalog:tooling",
+    "webpack-cli": "catalog:tooling"
   }
 }

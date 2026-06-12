@@ -1,29 +1,45 @@
 # Bundler Plugins — Optional Dependency Resolution
 
-Nimbus ships webpack and Vite plugins that let build tools treat
+Nimbus ships Vite and webpack plugins that let build tools treat
 `@commercetools/nimbus` as an optional dependency. When Nimbus **is** installed,
-the plugins are no-ops. When it **is not** installed, they replace every Nimbus
-import with an empty stub so the build completes without errors and zero Nimbus
-code lands in the bundle.
+the plugins are no-ops. When it **is not** installed, they stub every Nimbus
+import so the build succeeds and zero Nimbus code lands in the bundle.
 
 ## When to use
 
 Use these plugins in **shared build tooling** that produces bundles for
 applications that may or may not depend on Nimbus. Without the plugins, any
-`import … from '@commercetools/nimbus'` in shared code would cause a build
-failure for apps that haven't installed Nimbus.
+`import … from '@commercetools/nimbus'` in shared code causes a build failure
+for apps that haven't installed Nimbus.
 
 ## Entry points
 
 | Entry point                             | Format    | Export                           |
 | --------------------------------------- | --------- | -------------------------------- |
-| `@commercetools/nimbus/plugins/webpack` | CJS + ESM | `NimbusOptionalDependencyPlugin` |
 | `@commercetools/nimbus/plugins/vite`    | CJS + ESM | `nimbusOptionalDependency`       |
-| `@commercetools/nimbus/plugins/stub`    | CJS + ESM | _(empty module)_                 |
+| `@commercetools/nimbus/plugins/webpack` | CJS + ESM | `NimbusOptionalDependencyPlugin` |
+| `@commercetools/nimbus/plugins/stub`    | CJS       | _(empty CJS module)_             |
 
-All entry points are standalone — they do **not** import the Nimbus runtime and
-can be loaded without triggering React, Chakra UI, or any other Nimbus
-dependency.
+All entry points are standalone — they do **not** import the Nimbus runtime.
+
+## Vite
+
+```ts
+// vite.config.ts
+import { nimbusOptionalDependency } from "@commercetools/nimbus/plugins/vite";
+
+export default defineConfig({
+  plugins: [nimbusOptionalDependency()],
+});
+```
+
+The plugin runs with `enforce: "pre"` so its `resolveId` hook fires before
+Vite's default resolver (required in monorepos where Vite would otherwise follow
+the workspace symlink). Matching imports are redirected via `resolveId` + `load`
+to a virtual CJS module (`module.exports = {}`). The `.cjs` extension on the
+virtual ID triggers Rolldown's CJS-to-ESM interop, allowing named imports to
+resolve to `undefined` at runtime instead of failing with `MISSING_EXPORT`. No
+physical file is written to disk.
 
 ## Webpack
 
@@ -38,47 +54,38 @@ module.exports = {
 };
 ```
 
-Under the hood the plugin accesses webpack's built-in
-`NormalModuleReplacementPlugin` via `compiler.webpack` (webpack 5+). It replaces
-any import matching `@commercetools/nimbus` or its subpaths (except
-`/plugins/*`) with `@commercetools/nimbus/plugins/stub`.
-
-## Vite
-
-```ts
-// vite.config.ts
-import { nimbusOptionalDependency } from "@commercetools/nimbus/plugins/vite";
-
-export default defineConfig({
-  plugins: [nimbusOptionalDependency()],
-});
-```
-
-The Vite plugin uses `resolveId` and `load` hooks to redirect matching imports
-to a virtual stub module (`export default {}`). No physical file is written to
-disk.
+The plugin accesses webpack's built-in `NormalModuleReplacementPlugin` via
+`compiler.webpack` (webpack 5+). It redirects matching imports to the physical
+`@commercetools/nimbus/plugins/stub` entry point (`module.exports = {}`).
+Webpack's CJS-to-ESM interop is natively lenient — unmatched named imports
+resolve to `undefined` at runtime without a build error.
 
 ## How detection works
 
-At plugin initialization (build startup), the plugin calls:
+At build startup, the plugin calls:
 
 ```js
 require.resolve("@commercetools/nimbus", { paths: [process.cwd()] });
 ```
 
-- **Resolves** → Nimbus is installed from the perspective of the consuming app.
-  The plugin becomes a **no-op**.
+- **Resolves** → Nimbus is installed. The plugin becomes a **no-op**.
 - **Throws** → Nimbus is not installed. The plugin activates and stubs all
   matching imports.
 
-The `{ paths: [process.cwd()] }` option ensures the check runs from the
-**application root**, not from the plugin's own `node_modules` location. This is
-important in monorepo setups where the build tool may have Nimbus as a
-dependency while the application being built does not.
+`{ paths: [process.cwd()] }` checks from the **application root**, not the
+plugin's own `node_modules`. This matters in monorepos where the build tool may
+have Nimbus while the app being built does not.
+
+**Monorepo CI caveat:** Detection runs once when the plugin is called (Vite) or
+when `apply()` is invoked (webpack). If `process.cwd()` differs from the target
+application's root (e.g., turborepo running all builds from the monorepo root),
+the detection may produce a false positive. In that case, ensure `process.cwd()`
+reflects the app being built, or configure the CI pipeline to `cd` into each
+app's directory before building.
 
 ## What gets stubbed
 
-The regex `/^@commercetools\/nimbus(?:$|\/(?!plugins\/))/` matches:
+The regex `/^@commercetools\/nimbus(?:$|\/(?!plugins(?:\/|$)))/` matches:
 
 | Import                                        | Stubbed? |
 | --------------------------------------------- | -------- |
@@ -88,14 +95,17 @@ The regex `/^@commercetools\/nimbus(?:$|\/(?!plugins\/))/` matches:
 | `@commercetools/nimbus/plugins/webpack`       | **No**   |
 | `@commercetools/nimbus/plugins/vite`          | **No**   |
 | `@commercetools/nimbus/plugins/stub`          | **No**   |
+| `@commercetools/nimbus/plugins`               | **No**   |
 | `@commercetools/nimbus-icons`                 | **No**   |
 | `@commercetools/nimbus-tokens`                | **No**   |
 
-The `/plugins/*` subpaths are excluded so the plugins and stub can resolve
-themselves without circular replacement.
+The `/plugins` and `/plugins/*` subpaths are excluded to avoid circular
+replacement.
 
-## Extending the pattern
+## Runtime behavior of stubbed imports
 
-The mechanism is reusable for any optional dependency. To adapt it for a
-different package, change the regex and the `require.resolve` target in
-`is-nimbus-resolvable.ts`.
+When stubbing is active, all Nimbus imports resolve to an empty
+`module.exports = {}`. Named imports (`Button`, `NimbusProvider`, etc.) will be
+`undefined` at runtime. The plugins prevent **build** errors only — they do not
+provide runtime fallbacks. Guard stubbed code with feature flags or conditional
+imports if it may execute at runtime.

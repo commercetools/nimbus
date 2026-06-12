@@ -1,12 +1,16 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
-vi.mock("./is-nimbus-resolvable", () => ({
-  isNimbusResolvable: vi.fn(),
+// vi.hoisted runs before vi.mock, making mockIsNimbusResolvable available
+// to the mock factory. This avoids vi.resetModules + dynamic imports.
+const { mockIsNimbusResolvable } = vi.hoisted(() => ({
+  mockIsNimbusResolvable: vi.fn<() => boolean>(),
 }));
 
-import { isNimbusResolvable } from "./is-nimbus-resolvable";
+vi.mock("./is-nimbus-resolvable", () => ({
+  isNimbusResolvable: mockIsNimbusResolvable,
+}));
 
-const mockIsNimbusResolvable = vi.mocked(isNimbusResolvable);
+import { NimbusOptionalDependencyPlugin } from "./webpack";
 
 function createMockCompiler() {
   const mockReplacementPluginApply = vi.fn();
@@ -28,114 +32,123 @@ function createMockCompiler() {
 }
 
 describe("NimbusOptionalDependencyPlugin (webpack)", () => {
-  let NimbusOptionalDependencyPlugin: typeof import("./webpack").NimbusOptionalDependencyPlugin;
+  describe("when Nimbus is resolvable", () => {
+    beforeAll(() => {
+      mockIsNimbusResolvable.mockReturnValue(true);
+    });
 
-  beforeEach(async () => {
-    vi.resetModules();
-    const webpackPluginModule = await import("./webpack");
-    NimbusOptionalDependencyPlugin =
-      webpackPluginModule.NimbusOptionalDependencyPlugin;
+    afterAll(() => {
+      mockIsNimbusResolvable.mockReset();
+    });
+
+    it("is a no-op", () => {
+      const { compiler, MockNormalModuleReplacementPlugin } =
+        createMockCompiler();
+
+      const plugin = new NimbusOptionalDependencyPlugin();
+      plugin.apply(compiler);
+
+      expect(MockNormalModuleReplacementPlugin).not.toHaveBeenCalled();
+    });
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
+  describe("when Nimbus is not resolvable", () => {
+    beforeAll(() => {
+      mockIsNimbusResolvable.mockReturnValue(false);
+    });
 
-  it("is a no-op when Nimbus is resolvable", () => {
-    mockIsNimbusResolvable.mockReturnValue(true);
+    afterAll(() => {
+      mockIsNimbusResolvable.mockReset();
+    });
 
-    const { compiler, MockNormalModuleReplacementPlugin } =
-      createMockCompiler();
+    it("applies NormalModuleReplacementPlugin", () => {
+      const {
+        compiler,
+        MockNormalModuleReplacementPlugin,
+        mockReplacementPluginApply,
+      } = createMockCompiler();
 
-    const plugin = new NimbusOptionalDependencyPlugin();
-    plugin.apply(compiler);
+      const plugin = new NimbusOptionalDependencyPlugin();
+      plugin.apply(compiler);
 
-    expect(MockNormalModuleReplacementPlugin).not.toHaveBeenCalled();
-  });
+      expect(MockNormalModuleReplacementPlugin).toHaveBeenCalledWith(
+        expect.any(RegExp),
+        "@commercetools/nimbus/plugins/stub"
+      );
+      expect(mockReplacementPluginApply).toHaveBeenCalledWith(compiler);
+    });
 
-  it("applies NormalModuleReplacementPlugin when Nimbus is not resolvable", () => {
-    mockIsNimbusResolvable.mockReturnValue(false);
+    it("replacement regex matches @commercetools/nimbus runtime imports", () => {
+      const { compiler, MockNormalModuleReplacementPlugin } =
+        createMockCompiler();
 
-    const {
-      compiler,
-      MockNormalModuleReplacementPlugin,
-      mockReplacementPluginApply,
-    } = createMockCompiler();
+      const plugin = new NimbusOptionalDependencyPlugin();
+      plugin.apply(compiler);
 
-    const plugin = new NimbusOptionalDependencyPlugin();
-    plugin.apply(compiler);
+      const regex = MockNormalModuleReplacementPlugin.mock
+        .calls[0][0] as RegExp;
 
-    expect(MockNormalModuleReplacementPlugin).toHaveBeenCalledWith(
-      expect.any(RegExp),
-      "@commercetools/nimbus/plugins/stub"
-    );
-    expect(mockReplacementPluginApply).toHaveBeenCalledWith(compiler);
-  });
+      expect(regex.test("@commercetools/nimbus")).toBe(true);
+      expect(regex.test("@commercetools/nimbus/components/Button")).toBe(true);
+      expect(regex.test("@commercetools/nimbus/setup-jsdom-polyfills")).toBe(
+        true
+      );
+    });
 
-  it("replacement regex matches @commercetools/nimbus runtime imports", () => {
-    mockIsNimbusResolvable.mockReturnValue(false);
+    it("replacement regex matches trailing-slash import", () => {
+      const { compiler, MockNormalModuleReplacementPlugin } =
+        createMockCompiler();
 
-    const { compiler, MockNormalModuleReplacementPlugin } =
-      createMockCompiler();
+      const plugin = new NimbusOptionalDependencyPlugin();
+      plugin.apply(compiler);
 
-    const plugin = new NimbusOptionalDependencyPlugin();
-    plugin.apply(compiler);
+      const regex = MockNormalModuleReplacementPlugin.mock
+        .calls[0][0] as RegExp;
 
-    const nimbusRuntimeImportRegex = MockNormalModuleReplacementPlugin.mock
-      .calls[0][0] as RegExp;
+      expect(regex.test("@commercetools/nimbus/")).toBe(true);
+    });
 
-    expect(nimbusRuntimeImportRegex.test("@commercetools/nimbus")).toBe(true);
-    expect(
-      nimbusRuntimeImportRegex.test("@commercetools/nimbus/components/Button")
-    ).toBe(true);
-    expect(
-      nimbusRuntimeImportRegex.test(
-        "@commercetools/nimbus/setup-jsdom-polyfills"
-      )
-    ).toBe(true);
-  });
+    it("replacement regex excludes plugin subpaths", () => {
+      const { compiler, MockNormalModuleReplacementPlugin } =
+        createMockCompiler();
 
-  it("replacement regex excludes plugin subpaths", () => {
-    mockIsNimbusResolvable.mockReturnValue(false);
+      const plugin = new NimbusOptionalDependencyPlugin();
+      plugin.apply(compiler);
 
-    const { compiler, MockNormalModuleReplacementPlugin } =
-      createMockCompiler();
+      const regex = MockNormalModuleReplacementPlugin.mock
+        .calls[0][0] as RegExp;
 
-    const plugin = new NimbusOptionalDependencyPlugin();
-    plugin.apply(compiler);
+      expect(regex.test("@commercetools/nimbus/plugins/webpack")).toBe(false);
+      expect(regex.test("@commercetools/nimbus/plugins/vite")).toBe(false);
+      expect(regex.test("@commercetools/nimbus/plugins/stub")).toBe(false);
+    });
 
-    const nimbusRuntimeImportRegex = MockNormalModuleReplacementPlugin.mock
-      .calls[0][0] as RegExp;
+    it("replacement regex excludes bare @commercetools/nimbus/plugins path", () => {
+      const { compiler, MockNormalModuleReplacementPlugin } =
+        createMockCompiler();
 
-    expect(
-      nimbusRuntimeImportRegex.test("@commercetools/nimbus/plugins/webpack")
-    ).toBe(false);
-    expect(
-      nimbusRuntimeImportRegex.test("@commercetools/nimbus/plugins/vite")
-    ).toBe(false);
-    expect(
-      nimbusRuntimeImportRegex.test("@commercetools/nimbus/plugins/stub")
-    ).toBe(false);
-  });
+      const plugin = new NimbusOptionalDependencyPlugin();
+      plugin.apply(compiler);
 
-  it("replacement regex does not match other @commercetools packages", () => {
-    mockIsNimbusResolvable.mockReturnValue(false);
+      const regex = MockNormalModuleReplacementPlugin.mock
+        .calls[0][0] as RegExp;
 
-    const { compiler, MockNormalModuleReplacementPlugin } =
-      createMockCompiler();
+      expect(regex.test("@commercetools/nimbus/plugins")).toBe(false);
+    });
 
-    const plugin = new NimbusOptionalDependencyPlugin();
-    plugin.apply(compiler);
+    it("replacement regex does not match other @commercetools packages", () => {
+      const { compiler, MockNormalModuleReplacementPlugin } =
+        createMockCompiler();
 
-    const nimbusRuntimeImportRegex = MockNormalModuleReplacementPlugin.mock
-      .calls[0][0] as RegExp;
+      const plugin = new NimbusOptionalDependencyPlugin();
+      plugin.apply(compiler);
 
-    expect(nimbusRuntimeImportRegex.test("@commercetools/nimbus-icons")).toBe(
-      false
-    );
-    expect(nimbusRuntimeImportRegex.test("@commercetools/nimbus-tokens")).toBe(
-      false
-    );
-    expect(nimbusRuntimeImportRegex.test("react")).toBe(false);
+      const regex = MockNormalModuleReplacementPlugin.mock
+        .calls[0][0] as RegExp;
+
+      expect(regex.test("@commercetools/nimbus-icons")).toBe(false);
+      expect(regex.test("@commercetools/nimbus-tokens")).toBe(false);
+      expect(regex.test("react")).toBe(false);
+    });
   });
 });
