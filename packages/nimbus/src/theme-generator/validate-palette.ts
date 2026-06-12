@@ -1,9 +1,9 @@
-import { getContrastRatio } from "./contrast.ts";
+import { getContrastRatio } from "./contrast";
 import type {
   ColorPaletteWithModes,
   ValidationResult,
   ValidationWarning,
-} from "./types.ts";
+} from "./types";
 
 const WCAG_AA_NORMAL = 4.5;
 

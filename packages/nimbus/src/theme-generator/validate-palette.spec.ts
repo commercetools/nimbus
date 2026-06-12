@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { validatePalette } from "./validate-palette.ts";
-import { generateColorScale } from "./generate-color-scale.ts";
-import type { ColorPaletteWithModes } from "./types.ts";
+import { validatePalette } from "./validate-palette";
+import { generateColorScale } from "./generate-color-scale";
+import type { ColorPaletteWithModes } from "./types";
 
 describe("validatePalette", () => {
   it("returns valid for a well-generated palette", () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { generateColorScale } from "./generate-color-scale.ts";
-import { getContrastRatio } from "./contrast.ts";
+import { generateColorScale } from "./generate-color-scale";
+import { getContrastRatio } from "./contrast";
 import { parse, oklch } from "culori";
 
 const STEPS = [

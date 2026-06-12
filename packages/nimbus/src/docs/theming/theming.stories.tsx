@@ -1,9 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box, Button, Stack, Text } from "@commercetools/nimbus";
-import {
-  createNimbusTheme,
-  generateColorScale,
-} from "@commercetools/nimbus-theme-generator";
+import { createNimbusTheme, generateColorScale } from "@/theme-generator";
 import { themeConfig } from "@/theme";
 
 const meta: Meta = {

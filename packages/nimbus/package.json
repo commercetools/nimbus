@@ -50,6 +50,16 @@
     "./plugins/stub": {
       "types": "./dist/plugins/stub.d.cts",
       "default": "./dist/plugins/stub.cjs"
+    },
+    "./theme-generator": {
+      "import": {
+        "types": "./dist/theme-generator.d.ts",
+        "default": "./dist/theme-generator.es.js"
+      },
+      "require": {
+        "types": "./dist/theme-generator.d.cts",
+        "default": "./dist/theme-generator.cjs"
+      }
     }
   },
   "files": [
@@ -72,6 +82,7 @@
       "plugins/webpack": ["./dist/plugins/webpack.d.ts"],
       "plugins/vite": ["./dist/plugins/vite.d.ts"],
       "plugins/stub": ["./dist/plugins/stub.d.ts"],
+      "theme-generator": ["./dist/theme-generator.d.ts"],
       "*": ["./dist/index.d.ts"]
     }
   },
@@ -90,6 +101,7 @@
     "react-aria-components": "catalog:react",
     "react-hotkeys-hook": "^5.3.2",
     "react-stately": "catalog:react",
+    "culori": "^4.0.1",
     "react-use": "^17.6.1",
     "use-debounce": "^10.1.0"
   },
@@ -97,7 +109,7 @@
     "@chakra-ui/react": "catalog:react",
     "@commercetools/nimbus-design-token-ts-plugin": "workspace:^",
     "@commercetools/nimbus-icons": "workspace:^",
-    "@commercetools/nimbus-theme-generator": "workspace:*",
+    "@types/culori": "catalog:",
     "@commercetools/nimbus-tokens": "workspace:^",
     "@internationalized/date": "catalog:react",
     "@react-aria/optimize-locales-plugin": "catalog:react",

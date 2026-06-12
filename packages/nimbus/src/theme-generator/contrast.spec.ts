@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { getContrastRatio, calculateContrastColor } from "./contrast.ts";
+import { getContrastRatio, calculateContrastColor } from "./contrast";
 
 describe("getContrastRatio", () => {
   it("returns 21 for black on white", () => {

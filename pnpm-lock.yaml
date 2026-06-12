@@ -384,9 +384,6 @@ importers:
       '@commercetools/nimbus-icons':
         specifier: workspace:^
         version: link:../../packages/nimbus-icons
-      '@commercetools/nimbus-theme-generator':
-        specifier: workspace:^
-        version: link:../../packages/nimbus-theme-generator
       '@emotion/react':
         specifier: catalog:react
         version: 11.14.0(@types/react@19.2.16)(react@19.2.0)
@@ -633,6 +630,9 @@ importers:
       '@react-aria/utils':
         specifier: catalog:react
         version: 3.34.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      culori:
+        specifier: ^4.0.1
+        version: 4.0.2
       dequal:
         specifier: catalog:utils
         version: 2.0.3
@@ -673,9 +673,6 @@ importers:
       '@commercetools/nimbus-icons':
         specifier: workspace:^
         version: link:../nimbus-icons
-      '@commercetools/nimbus-theme-generator':
-        specifier: workspace:*
-        version: link:../nimbus-theme-generator
       '@commercetools/nimbus-tokens':
         specifier: workspace:^
         version: link:../tokens
@@ -709,6 +706,9 @@ importers:
       '@testing-library/user-event':
         specifier: catalog:tooling
         version: 14.6.1(@testing-library/dom@10.4.1)
+      '@types/culori':
+        specifier: 'catalog:'
+        version: 4.0.1
       '@types/escape-html':
         specifier: ^1.0.4
         version: 1.0.4
@@ -877,28 +877,6 @@ importers:
       typescript:
         specifier: ~5.9.3
         version: 5.9.3
-
-  packages/nimbus-theme-generator:
-    dependencies:
-      culori:
-        specifier: ^4.0.1
-        version: 4.0.2
-    devDependencies:
-      '@chakra-ui/react':
-        specifier: catalog:react
-        version: 3.36.0(@emotion/react@11.14.0(@types/react@19.2.16)(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      '@types/culori':
-        specifier: 'catalog:'
-        version: 4.0.1
-      tsup:
-        specifier: catalog:tooling
-        version: 8.5.1(@microsoft/api-extractor@7.53.1(@types/node@24.13.0))(@swc/core@1.15.11(@swc/helpers@0.5.17))(postcss@8.5.14)(tsx@4.22.4)(typescript@5.9.3)(yaml@2.8.3)
-      typescript:
-        specifier: ~5.9.3
-        version: 5.9.3
-      vitest:
-        specifier: catalog:tooling
-        version: 4.1.8(@types/node@24.13.0)(@vitest/browser-playwright@4.1.8)(@vitest/coverage-v8@4.1.8)(jsdom@29.0.1)(vite@8.0.16(@types/node@24.13.0)(esbuild@0.28.0)(terser@5.44.0)(tsx@4.22.4)(yaml@2.8.3))
 
   packages/tokens:
     devDependencies:
