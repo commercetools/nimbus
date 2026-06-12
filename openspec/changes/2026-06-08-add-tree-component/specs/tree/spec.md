@@ -145,8 +145,8 @@ The component SHALL support opt-in drag-and-drop via React Aria.
 
 - **WHEN** a consumer calls Nimbus's `useTree` hook with `dragAndDrop` enabled
   and spreads its result onto `Tree.Root`
-- **THEN** items SHALL be draggable and the tree SHALL accept drops, with reorder
-  and re-parent handlers wired by the hook
+- **THEN** items SHALL be draggable and the tree SHALL accept drops, with
+  reorder and re-parent handlers wired by the hook
 - **WHEN** `dragAndDrop` is omitted (or `dragAndDropHooks` is not provided)
 - **THEN** the tree SHALL render without drag-and-drop affordances
 
@@ -158,6 +158,16 @@ The component SHALL support opt-in drag-and-drop via React Aria.
 - **WHEN** an item is dropped onto a group
 - **THEN** the `onMove` handler SHALL receive an `on` drop position enabling
   re-parenting
+
+#### Scenario: Auto-rendered drag handle
+
+- **WHEN** the tree allows dragging (drag-and-drop is enabled via `useTree`)
+- **THEN** `Tree.ItemContent` SHALL render a `Button slot="drag"` handle per row
+  automatically — the consumer SHALL NOT author it
+- **AND** the handle SHALL be keyboard- and screen-reader-operable with a
+  React-Aria-localized accessible name
+- **AND** the handle SHALL be visually consistent with `DraggableList`'s handle
+  (same icon, size, and variant)
 
 #### Scenario: Drop indicators
 
@@ -183,8 +193,8 @@ opt-in drag-and-drop.
   (`insert`, `remove`, `move`, `moveBefore`, `moveAfter`, `update`, `getItem`)
 - **AND** WHEN `dragAndDrop` is enabled it SHALL also return `dragAndDropHooks`
   wired for reorder and re-parent
-- **AND** the returned value SHALL be spreadable onto `Tree.Root`, forwarding any
-  passed selection/expansion configuration
+- **AND** the returned value SHALL be spreadable onto `Tree.Root`, forwarding
+  any passed selection/expansion configuration
 
 ### Requirement: Self-Contained Public API
 

@@ -21,7 +21,8 @@ ensure hierarchical data stays consistent, usable, and accessible.
 - **Keep depth manageable:** deeply nested trees are hard to scan and navigate.
   Prefer shallow hierarchies and meaningful grouping.
 - **Match selection to intent:** use `selectionMode` when users pick items, and
-  a `Button slot="drag"` when they reorder. A reorder-only tree should leave
+  enable drag-and-drop via `useTree({ dragAndDrop: true })` when they reorder —
+  the drag handle is rendered for you. A reorder-only tree should leave
   `selectionMode` at its default `none` so no checkboxes render.
 
 ### Usage
@@ -88,10 +89,7 @@ const App = () => (
 
 ```jsx live
 const App = () => (
-  <Tree.Root
-    aria-label="Catalog"
-    defaultExpandedKeys={["a", "b", "c", "d"]}
-  >
+  <Tree.Root aria-label="Catalog" defaultExpandedKeys={["a", "b", "c", "d"]}>
     <Tree.Item id="a" textValue="Level 1">
       <Tree.ItemContent>
         <Tree.Indicator />
@@ -169,5 +167,5 @@ const App = () => (
 > [!CAUTION]\
 > **Don't**
 >
-> - Don't enable selection on a tree whose only purpose is structural
->   reordering — the checkboxes add noise. Leave `selectionMode` at `none`.
+> - Don't enable selection on a tree whose only purpose is structural reordering
+>   — the checkboxes add noise. Leave `selectionMode` at `none`.

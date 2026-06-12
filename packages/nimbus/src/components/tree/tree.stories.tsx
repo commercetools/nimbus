@@ -1,15 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
-import {
-  Tree,
-  Stack,
-  Text,
-  IconButton,
-  useTree,
-  type Key,
-} from "@commercetools/nimbus";
+import { Tree, Stack, Text, useTree, type Key } from "@commercetools/nimbus";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
-import { DragIndicator } from "@commercetools/nimbus-icons";
 import { fileTree, type TreeNode } from "./utils/tree.test-data";
 
 const meta: Meta<typeof Tree.Root> = {
@@ -385,9 +377,11 @@ export const DisabledItems: Story = {
 
 /**
  * A tree wired with the full feature set — multiple selection (checkboxes),
- * expand/collapse indicators, and opt-in drag-and-drop with `slot="drag"`
- * handles. A single `useTree` hook owns the hierarchical state and the
- * drag-and-drop wiring; its result is spread straight onto `Tree.Root`.
+ * expand/collapse indicators, and opt-in drag-and-drop. A single `useTree` hook
+ * owns the hierarchical state and the drag-and-drop wiring; its result is spread
+ * straight onto `Tree.Root`. The drag handle is rendered automatically by
+ * `Tree.ItemContent` whenever the tree allows dragging — consumers never author
+ * it, so every draggable tree gets the same affordance.
  */
 const FeatureTree = ({
   size,
@@ -410,14 +404,6 @@ const FeatureTree = ({
   const renderDndNode = (item: (typeof tree.items)[number]) => (
     <Tree.Item id={String(item.key)} textValue={item.value.title}>
       <Tree.ItemContent>
-        <IconButton
-          slot="drag"
-          size="2xs"
-          variant="ghost"
-          aria-label={`Reorder ${item.value.title}`}
-        >
-          <DragIndicator />
-        </IconButton>
         <Tree.Indicator />
         {item.value.title}
       </Tree.ItemContent>
@@ -467,7 +453,7 @@ export const Sizes: Story = {
           within(treegrid).getAllByRole("checkbox").length
         ).toBeGreaterThan(0);
         await expect(
-          within(treegrid).getAllByRole("button", { name: /Reorder/ }).length
+          within(treegrid).getAllByRole("button", { name: /Drag/ }).length
         ).toBeGreaterThan(0);
       }
     });
@@ -498,14 +484,16 @@ export const DragAndDrop: Story = {
         await expect(documents).toHaveAttribute("data-allows-dragging", "true");
         await expect(photos).toHaveAttribute("data-allows-dragging", "true");
 
-        // A `<Button slot="drag">` handle is present per item so the reorder is
-        // operable by keyboard and screen reader (not pointer-only). The drop /
-        // reorder mechanics themselves are provided and tested by React Aria.
+        // `Tree.ItemContent` auto-renders a `<Button slot="drag">` handle per
+        // item (no consumer markup) so the reorder is operable by keyboard and
+        // screen reader (not pointer-only). React Aria localizes its accessible
+        // name as "Drag <item>". The drop / reorder mechanics themselves are
+        // provided and tested by React Aria.
         await expect(
-          canvas.getByRole("button", { name: /Reorder Documents/ })
+          canvas.getByRole("button", { name: /Drag Documents/ })
         ).toBeInTheDocument();
         await expect(
-          canvas.getByRole("button", { name: /Reorder Photos/ })
+          canvas.getByRole("button", { name: /Drag Photos/ })
         ).toBeInTheDocument();
       }
     );
@@ -514,7 +502,7 @@ export const DragAndDrop: Story = {
       // Focus the drag handle and confirm focus — React Aria's keyboard drag
       // dispatches from document.activeElement.
       const dragHandle = canvas.getByRole("button", {
-        name: /Reorder Documents/,
+        name: /Drag Documents/,
       });
       dragHandle.focus();
       await waitFor(() => expect(dragHandle).toHaveFocus());
@@ -556,7 +544,7 @@ export const ReorderWithoutSelection: Story = {
         await expect(canvas.queryByRole("checkbox")).not.toBeInTheDocument();
         // Drag handles are still present for reordering.
         await expect(
-          canvas.getByRole("button", { name: /Reorder Documents/ })
+          canvas.getByRole("button", { name: /Drag Documents/ })
         ).toBeInTheDocument();
       }
     );

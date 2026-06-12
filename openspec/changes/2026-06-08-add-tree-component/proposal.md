@@ -28,8 +28,9 @@ This implements [FEC-985](https://commercetools.atlassian.net/browse/FEC-985)
   - `Tree.Item` — wraps `TreeItem` (`role="row"` with `aria-level`), one node in
     the tree.
   - `Tree.ItemContent` — wraps `TreeItemContent`, the row's content container;
-    applies level-based indentation and auto-renders a selection checkbox when
-    `selectionMode="multiple"`.
+    applies level-based indentation, auto-renders a selection checkbox when
+    `selectionMode="multiple"`, and auto-renders a drag handle when the tree
+    allows dragging (consumers never author the handle).
   - `Tree.Indicator` — wraps `<Button slot="chevron">`, the expand/collapse
     chevron; only visible for items with children; rotates on expand.
   - `Tree.SubTree` — renders an item's nested children; wraps React Aria's
@@ -46,8 +47,8 @@ This implements [FEC-985](https://commercetools.atlassian.net/browse/FEC-985)
 - Keyboard navigation (arrow keys, Home/End, type-ahead), expand/collapse,
   single and multiple selection — all provided by React Aria, styled by Nimbus.
 - Opt-in drag-and-drop: enabled via `useTree({ dragAndDrop: true })` — reorder
-  within a tree, re-parent (drop onto a group), drop indicators (before / after /
-  on), and keyboard DnD. Documented in `tree.dev.mdx`.
+  within a tree, re-parent (drop onto a group), drop indicators (before / after
+  / on), and keyboard DnD. Documented in `tree.dev.mdx`.
 - Ships at `lifecycleState: Beta`.
 
 No existing component is duplicated: `Accordion` collapses sibling panels but

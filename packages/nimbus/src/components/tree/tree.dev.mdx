@@ -151,14 +151,15 @@ owns the hierarchical state and wires drag-and-drop for you: reorder between
 siblings, and re-parent by dropping an item _onto_ a group. Spread its result
 onto `Tree.Root`.
 
-Add an `IconButton` (or `Button`) with `slot="drag"` inside `Tree.ItemContent`
-so keyboard and screen reader users can pick items up (`Enter` to grab, arrow
-keys to move, `Enter` to drop). Drop indicators for valid positions are provided
-automatically.
+You don't author the drag handle. When the tree allows dragging,
+`Tree.ItemContent` renders a keyboard- and screen-reader-operable drag handle
+automatically (`Enter` to grab, arrow keys to move, `Enter` to drop), with a
+consistent icon and a localized accessible name. Drop indicators for valid
+positions are provided automatically. Your render function is identical to a
+non-draggable tree — enabling drag-and-drop is the only change.
 
 ```tsx
-import { Tree, useTree, IconButton } from "@commercetools/nimbus";
-import { DragIndicator } from "@commercetools/nimbus-icons";
+import { Tree, useTree } from "@commercetools/nimbus";
 
 function DraggableTree() {
   const tree = useTree({
@@ -178,14 +179,6 @@ function DraggableTree() {
   const renderItem = (node) => (
     <Tree.Item id={node.key} textValue={node.value.title}>
       <Tree.ItemContent>
-        <IconButton
-          slot="drag"
-          variant="ghost"
-          size="2xs"
-          aria-label={`Reorder ${node.value.title}`}
-        >
-          <DragIndicator />
-        </IconButton>
         <Tree.Indicator />
         {node.value.title}
       </Tree.ItemContent>
@@ -218,12 +211,12 @@ pattern. It provides:
 
 **Labeling:**
 
-- Each row exposes `aria-level` reflecting its depth, `aria-expanded` when it has
-  children, and `aria-selected` when selection is enabled.
+- Each row exposes `aria-level` reflecting its depth, `aria-expanded` when it
+  has children, and `aria-selected` when selection is enabled.
 - Always provide an accessible name on `Tree.Root` via `aria-label` or
   `aria-labelledby`.
-- Provide a meaningful `textValue` on each `Tree.Item` (used for type-ahead) when
-  the label is not a plain string.
+- Provide a meaningful `textValue` on each `Tree.Item` (used for type-ahead)
+  when the label is not a plain string.
 
 **Keyboard navigation:**
 
@@ -232,8 +225,9 @@ pattern. It provides:
 - `Home` / `End` — move to the first/last visible row
 - _type characters_ — type-ahead to the next matching row
 
-When drag-and-drop is enabled, include a `<Button slot="drag">` per item so the
-reorder is operable by keyboard and screen reader, not just pointer.
+When drag-and-drop is enabled, `Tree.ItemContent` automatically renders a drag
+handle per item so the reorder is operable by keyboard and screen reader, not
+just pointer — you don't need to add one.
 
 ## API reference
 
