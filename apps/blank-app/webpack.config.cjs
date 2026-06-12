@@ -1,3 +1,4 @@
+/* eslint-disable no-undef, @typescript-eslint/no-require-imports -- CJS config */
 const path = require("path");
 const {
   UNSAFE_NimbusOptionalDependencyPlugin,
