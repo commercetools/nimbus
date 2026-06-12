@@ -1,71 +1,71 @@
 ## 1. Foundation — ListBox
 
-- [ ] 1.1 Create `components/list-box/` directory with types, recipe, slots,
+- [x] 1.1 Create `components/list-box/` directory with types, recipe, slots,
       barrel export. Types: `ListBoxRootProps<T>`, `ListBoxItemProps<T>`,
       `ListBoxSectionProps`. Recipe: `nimbusListBox` slot recipe with size
       variants (sm, md, lg). Register recipe in theme config.
-- [ ] 1.2 Implement `ListBox.Root` wrapping RAC `ListBox` with Nimbus slot
+- [x] 1.2 Implement `ListBox.Root` wrapping RAC `ListBox` with Nimbus slot
       styling. Support `items`, `selectionMode`, `selectedKeys`,
       `onSelectionChange`, `disabledKeys`, `dragAndDropHooks`,
       `renderEmptyState`, `layout`, `orientation`.
-- [ ] 1.3 Implement `ListBox.Item` wrapping RAC `ListBoxItem` with slot styling.
+- [x] 1.3 Implement `ListBox.Item` wrapping RAC `ListBoxItem` with slot styling.
       Support `textValue`, `id`, children.
-- [ ] 1.4 Implement `ListBox.Section` wrapping RAC `ListBoxSection`/`Header`
+- [x] 1.4 Implement `ListBox.Section` wrapping RAC `ListBoxSection`/`Header`
       with slot styling. Support `title`, children.
-- [ ] 1.5 Export ListBox from package public API
+- [x] 1.5 Export ListBox from package public API
       (`packages/nimbus/src/index.ts`).
-- [ ] 1.6 Add Storybook stories: default, sizes, single/multi-select, sections,
+- [x] 1.6 Add Storybook stories: default, sizes, single/multi-select, sections,
       disabled items, empty state, controlled, dynamic items. Play functions for
       keyboard nav and selection.
-- [ ] 1.7 Add ListBox D&D stories: reorder, cross-list transfer (two ListBox
+- [x] 1.7 Add ListBox D&D stories: reorder, cross-list transfer (two ListBox
       instances).
-- [ ] 1.8 Add `list-box.docs.spec.tsx` consumer examples.
+- [x] 1.8 Add `list-box.docs.spec.tsx` consumer examples.
 
 ## 2. Foundation — GridList
 
-- [ ] 2.1 Create `components/grid-list/` directory with types, recipe, slots,
+- [x] 2.1 Create `components/grid-list/` directory with types, recipe, slots,
       barrel export. Types: `GridListRootProps<T>`, `GridListItemProps<T>`.
       Recipe: `nimbusGridList` slot recipe with size variants. Register recipe
       in theme config.
-- [ ] 2.2 Implement `GridList.Root` wrapping RAC `GridList` with Nimbus slot
+- [x] 2.2 Implement `GridList.Root` wrapping RAC `GridList` with Nimbus slot
       styling. Support `items`, `selectionMode`, `dragAndDropHooks`, `layout`,
       `renderEmptyState`.
-- [ ] 2.3 Implement `GridList.Item` wrapping RAC `GridListItem` with slot
+- [x] 2.3 Implement `GridList.Item` wrapping RAC `GridListItem` with slot
       styling.
-- [ ] 2.4 Export GridList from package public API.
-- [ ] 2.5 Add Storybook stories: default, list mode, grid mode, selection, empty
+- [x] 2.4 Export GridList from package public API.
+- [x] 2.5 Add Storybook stories: default, list mode, grid mode, selection, empty
       state, dynamic items. Play functions.
-- [ ] 2.6 Add GridList D&D stories: reorder (DraggableList replacement pattern),
+- [x] 2.6 Add GridList D&D stories: reorder (DraggableList replacement pattern),
       cross-collection transfer.
-- [ ] 2.7 Add `grid-list.docs.spec.tsx` consumer examples.
+- [x] 2.7 Add `grid-list.docs.spec.tsx` consumer examples.
 
 ## 3. Foundation — Autocomplete
 
-- [ ] 3.1 Create `components/autocomplete/` directory with types, barrel export.
+- [x] 3.1 Create `components/autocomplete/` directory with types, barrel export.
       Autocomplete has no recipe (no visual output). Types:
       `AutocompleteProps`.
-- [ ] 3.2 Implement `Autocomplete` wrapping RAC `Autocomplete`. Support
+- [x] 3.2 Implement `Autocomplete` wrapping RAC `Autocomplete`. Support
       `filter`, `inputValue`, `onInputChange`, `defaultInputValue`,
       `disableVirtualFocus`.
-- [ ] 3.3 Export Autocomplete from package public API. Re-export `useFilter`
+- [x] 3.3 Export Autocomplete from package public API. Re-export `useFilter`
       from React Aria for consumer convenience.
-- [ ] 3.4 Add Storybook stories: Autocomplete + ListBox, Autocomplete + Menu
+- [x] 3.4 Add Storybook stories: Autocomplete + ListBox, Autocomplete + Menu
       (command palette), Autocomplete + GridList, Autocomplete + TagGroup,
       async loading. Play functions for filtering and virtual focus.
-- [ ] 3.5 Add `autocomplete.docs.spec.tsx` consumer examples.
+- [x] 3.5 Add `autocomplete.docs.spec.tsx` consumer examples.
 
 ## 4. Foundation — Virtualizer
 
-- [ ] 4.1 Create `components/virtualizer/` directory with types, barrel export.
+- [x] 4.1 Create `components/virtualizer/` directory with types, barrel export.
       Virtualizer has no recipe. Types: re-export RAC's Virtualizer props.
-- [ ] 4.2 Implement `Virtualizer` wrapping/re-exporting RAC `Virtualizer`.
+- [x] 4.2 Implement `Virtualizer` wrapping/re-exporting RAC `Virtualizer`.
       Re-export `ListLayout`, `GridLayout`, `WaterfallLayout`, `TableLayout`.
-- [ ] 4.3 Export Virtualizer and all layouts from package public API.
-- [ ] 4.4 Add Storybook stories: Virtualizer + ListBox (vertical, horizontal),
+- [x] 4.3 Export Virtualizer and all layouts from package public API.
+- [x] 4.4 Add Storybook stories: Virtualizer + ListBox (vertical, horizontal),
       Virtualizer + GridList (grid layout, waterfall layout),
       Virtualizer + DataTable (table layout), Virtualizer + Tree (list layout).
       Play functions verifying keyboard nav works across virtualized items.
-- [ ] 4.5 Add `virtualizer.docs.spec.tsx` consumer examples.
+- [x] 4.5 Add `virtualizer.docs.spec.tsx` consumer examples.
 
 ## 5. Composition stories — cross-primitive
 
@@ -82,15 +82,13 @@
 
 ## 6. ComboBox rewrite
 
-- [ ] 6.1 Integrate Autocomplete into ComboBox.Root. Wrap children in
-      `<Autocomplete>` connecting the trigger input to the popover collection.
-      Remove the custom filtering engine (~650 lines of useListState, filtering,
-      virtual focus, handleInputKeyDown).
-- [ ] 6.2 Make `ComboBox.ListBox` and `ComboBox.Option` aliases for
-      `ListBox.Root` and `ListBox.Item` with ComboBox-specific context wiring
-      (selection display, id/textValue injection).
-- [ ] 6.3 Verify all existing ComboBox story tests pass against the rewritten
-      implementation. Fix any regressions.
+- [ ] 6.1 **DEFERRED (Phase 2):** Integrate Autocomplete into ComboBox.Root.
+      The internal rewrite requires careful migration of ~1587 lines including
+      async debouncing, custom option creation, selection sync, and collection
+      population detection. Deferred to avoid breaking all existing consumers.
+- [ ] 6.2 **DEFERRED (Phase 2):** Make `ComboBox.ListBox` and `ComboBox.Option`
+      aliases for `ListBox.Root` and `ListBox.Item`.
+- [ ] 6.3 **DEFERRED (Phase 2):** Verify all existing ComboBox story tests pass.
 - [ ] 6.4 Add ComboBox + Tree story: hierarchical suggestions in popover.
 - [ ] 6.5 Add ComboBox + GridList story: grid-based suggestions in popover.
 - [ ] 6.6 Add ComboBox + Virtualizer + ListBox story: virtualized dropdown with
@@ -100,8 +98,8 @@
 
 ## 7. Select rewrite
 
-- [ ] 7.1 Refactor `Select.Options` to compose the standalone ListBox
-      internally. `Select.Option` delegates to `ListBox.Item`.
+- [ ] 7.1 **DEFERRED (Phase 2):** Refactor `Select.Options` to compose the
+      standalone ListBox internally.
 - [ ] 7.2 Verify all existing Select story tests pass. Fix any regressions.
 - [ ] 7.3 Add Searchable Select story: Autocomplete + SearchField inside
       Select.Popover wrapping Select.Options.
@@ -119,10 +117,10 @@
 
 ## 9. DraggableList deprecation
 
-- [ ] 9.1 Add runtime deprecation warning to DraggableList.Root (console.warn
+- [x] 9.1 Add runtime deprecation warning to DraggableList.Root (console.warn
       on first render, pointing to GridList + dragAndDropHooks).
-- [ ] 9.2 Add `@deprecated` JSDoc to all DraggableList types and components.
-- [ ] 9.3 Write migration guide documenting the DraggableList → GridList
+- [x] 9.2 Add `@deprecated` JSDoc to all DraggableList types and components.
+- [x] 9.3 Write migration guide documenting the DraggableList → GridList
       transition with before/after code examples.
 
 ## 10. Documentation
@@ -151,45 +149,45 @@
 
 ## 12. Branch setup — nimbus-4.0
 
-- [ ] 12.1 Create `nimbus-4.0` branch from `main`.
-- [ ] 12.2 Merge SSR branch (`origin/bw/ssr-goal-experiment`) into nimbus-4.0.
-- [ ] 12.3 Merge theming branch (`origin/bw/themeing-goal-experiment`) into
+- [x] 12.1 Create `nimbus-4.0` branch from `main`.
+- [x] 12.2 Merge SSR branch (`origin/bw/ssr-goal-experiment`) into nimbus-4.0.
+- [x] 12.3 Merge theming branch (`origin/bw/themeing-goal-experiment`) into
       nimbus-4.0.
-- [ ] 12.4 Merge Tree branch (`origin/FEC-985-create-tree-component`) into
+- [x] 12.4 Merge Tree branch (`origin/FEC-985-create-tree-component`) into
       nimbus-4.0.
-- [ ] 12.5 Resolve any merge conflicts. Verify `pnpm build` succeeds.
+- [x] 12.5 Resolve any merge conflicts. Verify `pnpm build` succeeds.
 
 ## 13. Categories app — scaffold
 
-- [ ] 13.1 Create `apps/categories-app/` with Vite + React + TypeScript.
+- [x] 13.1 Create `apps/categories-app/` with Vite + React + TypeScript.
       Add to pnpm workspace. Add nimbus, nimbus-tokens, nimbus-icons as
       workspace deps.
-- [ ] 13.2 Set up commercetools GraphQL client (Apollo or urql). Configure
+- [x] 13.2 Set up commercetools GraphQL client (Apollo or urql). Configure
       auth (API client credentials via env vars). Add ct GraphQL codegen
       for typed queries.
-- [ ] 13.3 Create app shell: NimbusProvider, theme toggle (theming branch),
+- [x] 13.3 Create app shell: NimbusProvider, theme toggle (theming branch),
       top bar with search, router (react-router).
 
 ## 14. Categories app — category tree sidebar
 
-- [ ] 14.1 Query ct Categories API (GraphQL) — fetch full category tree with
+- [x] 14.1 Query ct Categories API (GraphQL) — fetch full category tree with
       parent/child relationships, names, slugs.
-- [ ] 14.2 Build category tree data → Tree component items. Render in
+- [x] 14.2 Build category tree data → Tree component items. Render in
       Splitter.Aside with Autocomplete + SearchField for filtering.
-- [ ] 14.3 Virtualize the tree with Virtualizer(ListLayout) for large catalogs.
-- [ ] 14.4 Add dragAndDropHooks for category reordering (updates orderHint
+- [x] 14.3 Virtualize the tree with Virtualizer(ListLayout) for large catalogs.
+- [x] 14.4 Add dragAndDropHooks for category reordering (updates orderHint
       via ct Change OrderHint update action).
-- [ ] 14.5 Wire tree selection → detail Region in Splitter.Main.
+- [x] 14.5 Wire tree selection → detail Region in Splitter.Main.
 
 ## 15. Categories app — detail pane
 
-- [ ] 15.1 Render selected category detail in Region inside Splitter.Main.
+- [x] 15.1 Render selected category detail in Region inside Splitter.Main.
       Show name, slug, description, externalId, parent, metaTitle,
       metaDescription.
-- [ ] 15.2 Inline editing: click field to edit. Name, slug, description are
+- [x] 15.2 Inline editing: click field to edit. Name, slug, description are
       text fields. Parent uses Tree ComboBox with hierarchical autosuggest
       (session-weighted ordering, toggle to hide suggestions).
-- [ ] 15.3 Save edits via ct Update Category mutations (Change Name, Change
+- [x] 15.3 Save edits via ct Update Category mutations (Change Name, Change
       Slug, Set Description, Change Parent).
 
 ## 16. Categories app — product assignment
