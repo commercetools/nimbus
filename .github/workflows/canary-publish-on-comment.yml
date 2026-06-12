@@ -13,7 +13,7 @@ jobs:
   canary:
     if: >
       github.event.issue.pull_request &&
-      contains(github.event.comment.body, '/canary')
+      contains(github.event.comment.body, '/deploy_canary')
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
