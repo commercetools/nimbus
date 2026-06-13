@@ -219,4 +219,15 @@ export const keyframes = {
       backgroundPosition: "-200% 0",
     },
   },
+  "skeleton-wave": {
+    "0%": {
+      transform: "translateX(-100%)",
+    },
+    "60%": {
+      transform: "translateX(100%)",
+    },
+    "100%": {
+      transform: "translateX(100%)",
+    },
+  },
 };
