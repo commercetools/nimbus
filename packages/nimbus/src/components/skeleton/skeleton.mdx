@@ -1,0 +1,174 @@
+---
+id: Components-Skeleton
+title: Skeleton
+exportName: Skeleton
+description: A loading placeholder that holds space for content while it loads, reducing perceived layout shift.
+lifecycleState: Stable
+order: 999
+menu:
+  - Components
+  - Feedback
+  - Skeleton
+tags:
+  - component
+  - skeleton
+  - loading
+  - placeholder
+  - feedback
+---
+
+## Overview
+
+Skeleton placeholders hold space for content that is loading. They reduce layout
+shift and communicate that the interface is active — giving users confidence the
+page hasn't frozen. Unlike a spinner, skeletons mirror the shape of the content
+that will appear, so the transition from loading to loaded feels smooth and
+intentional.
+
+Three components are available for different content shapes:
+
+- **Skeleton** — a single, sizeable block placeholder for images, headings,
+  buttons, or any custom shape
+- **SkeletonText** — a stack of narrowing lines that approximates a paragraph of
+  text
+- **SkeletonCircle** — a circular placeholder sized by a single `size` prop,
+  useful for avatars and icons
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system)
+
+## Variables
+
+Get familiar with the features.
+
+### Animation
+
+Three animation variants are available. Choose the one that best matches the
+surrounding interface style.
+
+#### Pulse (default)
+
+A gentle opacity oscillation. Use this for most loading states — it draws
+minimal attention while still signaling activity.
+
+```jsx live
+const App = () => (
+  <Skeleton width="300px" height="40px" animation="pulse" />
+)
+```
+
+#### Wave
+
+A gradient shimmer sweep across the element. Use this when you want a more
+energetic loading feel, such as in data-heavy dashboards.
+
+```jsx live
+const App = () => (
+  <Skeleton width="300px" height="40px" animation="wave" />
+)
+```
+
+#### None
+
+No animation. Use this when motion would distract from other activity on the
+page, or when you prefer a purely static placeholder.
+
+```jsx live
+const App = () => (
+  <Skeleton width="300px" height="40px" animation="none" />
+)
+```
+
+### Shape
+
+#### Rectangle (default)
+
+The default shape with a small border radius. Use for text lines, images, cards,
+buttons, and any rectangular content area.
+
+```jsx live
+const App = () => (
+  <Skeleton width="200px" height="48px" shape="rectangle" />
+)
+```
+
+#### Circle
+
+Fully-rounded with a forced 1:1 aspect ratio. Use for avatars, user icons, and
+circular thumbnails.
+
+```jsx live
+const App = () => (
+  <Skeleton width="60px" height="60px" shape="circle" />
+)
+```
+
+### Multi-line text
+
+`SkeletonText` renders a configurable number of placeholder lines. The last line
+is narrower by default to mimic a natural paragraph ending.
+
+```jsx live
+const App = () => (
+  <SkeletonText lines={3} width="300px" />
+)
+```
+
+### Circle convenience
+
+`SkeletonCircle` is a single-prop shorthand for circular placeholders. Pass
+`size` to set equal width and height without needing `shape="circle"`.
+
+```jsx live
+const App = () => (
+  <SkeletonCircle size="64px" />
+)
+```
+
+### Composing layouts
+
+Combine components to match the shape of the real content as closely as
+possible.
+
+```jsx live
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="flex-start">
+    <SkeletonCircle size="48px" />
+    <Stack gap="200">
+      <Skeleton width="180px" height="1rem" />
+      <SkeletonText lines={2} width="240px" />
+    </Stack>
+  </Stack>
+)
+```
+
+## Guidelines
+
+### Best practices
+
+- Mirror the real content's shape as closely as possible. The closer the
+  skeleton matches the loaded layout, the smoother the transition feels.
+- Use `SkeletonText` for paragraphs and `Skeleton` for individual lines,
+  headings, or images — don't mix them arbitrarily.
+- Keep skeletons on screen only while loading. Swap them for real content as
+  soon as data is available.
+
+### When to use
+
+> [!TIP]\
+> Use Skeleton when:
+- Content takes more than ~300 ms to load and has a predictable shape
+- You want to reduce perceived layout shift during initial page load or lazy
+  loading
+- The loading region contains multiple elements (cards, lists, detail panels)
+
+> [!CAUTION]\
+> When NOT to use Skeleton:
+- For operations with a known duration — use a `LoadingSpinner` with a progress
+  indicator instead
+- For very short loading times (under ~300 ms) — a flash of skeleton can be
+  more jarring than no placeholder at all
+- For content whose shape is unknown — an indeterminate spinner is a better fit
