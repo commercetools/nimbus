@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useIsSSR } from "react-aria";
 import { canUseDOM } from "@/utils";
 
 /**
@@ -16,6 +17,13 @@ import { canUseDOM } from "@/utils";
  * @returns The current color scheme value as a string ('light', 'dark')
  */
 export function useColorScheme() {
+  // `useIsSSR()` is true during the server render and the initial client
+  // (hydration) render, then flips to false. We return the "light" default
+  // until it flips so the server and hydration output match — `getCurrentColorScheme`
+  // reads the real value into state, but on the client that read happens during
+  // hydration (when `canUseDOM()` is already true), which would otherwise mismatch
+  // a server-rendered "light" for non-light themes.
+  const isSSR = useIsSSR();
   const [colorScheme, setColorScheme] = useState(getCurrentColorScheme());
 
   // Helper function to get the current color-scheme from the <html> tag.
@@ -49,5 +57,5 @@ export function useColorScheme() {
     return () => observer.disconnect();
   }, []);
 
-  return colorScheme;
+  return isSSR ? "light" : colorScheme;
 }
