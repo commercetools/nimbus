@@ -5,6 +5,7 @@ import {
   type Descendant,
   type Node as SlateNode,
 } from "slate";
+import { canUseDOM } from "@/utils";
 import { BLOCK_TAGS, MARK_TAGS } from "../constants";
 import type { CustomElement, CustomText } from "./types";
 import { validSlateStateAdapter } from "./slate-helpers";
@@ -129,6 +130,12 @@ export const fromHTML = (html: string): Descendant[] => {
       html.includes("<ul>") ||
       html.includes("<ol>")
     ) {
+      // DOMParser is browser-only. During SSR (no DOM) fall back to an empty
+      // value — the real parse happens after mount, where the DOM exists. See
+      // RichTextInput's post-mount initialization effect.
+      if (!canUseDOM()) {
+        return createEmptyValue();
+      }
       const document = new DOMParser().parseFromString(html, "text/html");
       const body = document.body;
 

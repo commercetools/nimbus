@@ -103,6 +103,8 @@ import {
   MoneyInputField,
 } from "@/patterns";
 
+import { useColorScheme } from "@/hooks";
+
 function renderSSR(ui: React.ReactElement): string {
   return renderToString(
     <NimbusProvider locale="en-US" loadFonts={false}>
@@ -886,5 +888,33 @@ describe("SSR: pattern components", () => {
 describe("SSR: rich text", () => {
   it("RichTextInput", () => {
     expect(renderSSR(<RichTextInput aria-label="rich text" />)).toBeTruthy();
+  });
+
+  it("RichTextInput with an HTML defaultValue (exercises the DOMParser path)", () => {
+    // The browser-only DOMParser must not be reached during SSR: HTML parsing is
+    // deferred to a post-mount effect, so the server render starts empty.
+    expect(
+      renderSSR(
+        <RichTextInput
+          aria-label="rich text"
+          defaultValue="<p>hello <strong>world</strong></p>"
+        />
+      )
+    ).toBeTruthy();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// Hooks
+// ---------------------------------------------------------------------------
+
+describe("SSR: hooks", () => {
+  it("useColorScheme returns the default without touching the DOM", () => {
+    function ColorSchemeProbe() {
+      const scheme = useColorScheme();
+      return <span>{scheme}</span>;
+    }
+
+    expect(renderSSRRaw(<ColorSchemeProbe />)).toContain("light");
   });
 });

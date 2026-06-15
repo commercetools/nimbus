@@ -61,17 +61,13 @@ export const RichTextInput = (props: RichTextInputProps) => {
     return withLinks(withHistory(withReact(baseEditor)));
   }, []);
 
-  // Compute initial value once for the Slate component's initialValue prop
-  const initialSlateValue = useMemo(() => {
-    const initialHtml = value ?? defaultValue ?? "";
-    try {
-      return initialHtml ? fromHTML(initialHtml) : createEmptyValue();
-    } catch (error) {
-      console.warn("Failed to parse initial HTML, using empty value:", error);
-      return createEmptyValue();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty deps - only compute once on mount
+  // The first render (server + client hydration) always starts from an empty
+  // editor so the server-rendered output matches the client's initial render.
+  // The actual `value`/`defaultValue` HTML is parsed and injected once after
+  // mount (see effect below): HTML parsing relies on the browser-only DOMParser,
+  // which is unavailable during SSR. Deferring it keeps SSR safe and avoids
+  // hydration mismatches.
+  const initialSlateValue = useMemo(() => createEmptyValue(), []);
 
   // Track the current serialized value for change detection
   const [serializedValue, setSerializedValue] = useState(() => {
@@ -80,6 +76,10 @@ export const RichTextInput = (props: RichTextInputProps) => {
 
   // Track if we're in the middle of an internal change to avoid loops
   const isInternalChangeRef = useRef(false);
+
+  // Set while the deferred initial population triggers a synthetic onChange, so
+  // that change is not surfaced to the consumer's onChange callback.
+  const suppressNextOnChangeRef = useRef(false);
 
   const editorRef = useRef<RichTextEditorRef>(null);
 
@@ -121,20 +121,60 @@ export const RichTextInput = (props: RichTextInputProps) => {
     editor.onChange();
   }, [value, serializedValue, editor]);
 
+  // Populate the editor from the initial `value`/`defaultValue` after mount.
+  // The initial render starts empty (see `initialSlateValue` above) so SSR and
+  // the first client render agree; the real content is parsed and injected here
+  // once the DOM is available, immediately after hydration.
+  useEffect(() => {
+    const initialHtml = value ?? defaultValue ?? "";
+    if (!initialHtml) {
+      return;
+    }
+
+    const validatedValue = validSlateStateAdapter(fromHTML(initialHtml));
+
+    // Replace editor content directly (Slate pattern, mirrors the controlled
+    // value effect above).
+    editor.children = validatedValue;
+    editor.selection = null;
+    if (editor.history) {
+      editor.history.undos = [];
+      editor.history.redos = [];
+    }
+
+    // The onChange this triggers is initial population, not user input — keep
+    // the flag set only for the duration of the synchronous onChange call.
+    suppressNextOnChangeRef.current = true;
+    editor.onChange();
+    suppressNextOnChangeRef.current = false;
+    // Run once on mount; the initial value is captured intentionally.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleChange = useCallback(
     (slateValue: ReturnType<typeof createEmptyValue>) => {
       const newHtml = toHTML(slateValue);
       const hasSerializedValueChanged = newHtml !== serializedValue;
 
-      // Mark this as an internal change to prevent useEffect from overwriting
-      if (hasSerializedValueChanged) {
-        isInternalChangeRef.current = true;
-        setSerializedValue(newHtml);
+      if (!hasSerializedValueChanged) {
+        return;
+      }
 
-        // Call onChange if the serialized HTML actually changed
-        if (onChange) {
-          onChange(newHtml);
-        }
+      // Deferred initial population triggers a synthetic onChange: keep our
+      // tracked value in sync, but don't surface it to the consumer and don't
+      // flag it as an internal edit (so a later controlled update isn't skipped).
+      if (suppressNextOnChangeRef.current) {
+        setSerializedValue(newHtml);
+        return;
+      }
+
+      // Mark this as an internal change to prevent useEffect from overwriting
+      isInternalChangeRef.current = true;
+      setSerializedValue(newHtml);
+
+      // Call onChange if the serialized HTML actually changed
+      if (onChange) {
+        onChange(newHtml);
       }
     },
     [serializedValue, onChange]

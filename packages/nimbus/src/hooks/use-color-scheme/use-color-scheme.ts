@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { canUseDOM } from "@/utils";
 
 /**
  * Hook that provides access to the current color scheme value.
@@ -17,8 +18,13 @@ import { useEffect, useState } from "react";
 export function useColorScheme() {
   const [colorScheme, setColorScheme] = useState(getCurrentColorScheme());
 
-  // Helper function to get the current color-scheme from the <html> tag
+  // Helper function to get the current color-scheme from the <html> tag.
+  // Returns the "light" default during SSR (no DOM): `document`/`localStorage`
+  // are browser-only. The effect below reads the real value after mount.
   function getCurrentColorScheme() {
+    if (!canUseDOM()) {
+      return "light";
+    }
     return (
       document.documentElement.style.getPropertyValue("color-scheme") ||
       localStorage.getItem("theme") ||

@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { sanitizeSvg, canUseDOM } from "../utils";
+import { canUseDOM } from "@/utils";
+import { sanitizeSvg } from "../utils";
 
 /**
  * Hook for processing and sanitizing SVG data
