@@ -10,6 +10,7 @@
   "dependencies": {
     "@commercetools/nimbus": "workspace:*",
     "@commercetools/nimbus-icons": "workspace:*",
+    "@emotion/cache": "catalog:react",
     "@emotion/react": "catalog:react",
     "@chakra-ui/react": "catalog:react",
     "next": "^15.3.4",

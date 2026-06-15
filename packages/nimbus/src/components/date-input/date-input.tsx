@@ -40,11 +40,32 @@ export const DateInput = (props: DateInputProps) => {
           )}
           <DateInputSegmentGroupSlot asChild>
             <DateInputField>
-              {(segment) => (
-                <DateInputSegmentSlot asChild>
-                  <DateSegment segment={segment} />
-                </DateInputSegmentSlot>
-              )}
+              {(segment) =>
+                segment.type === "literal" ? (
+                  // Literal segments (date separators, the space before AM/PM)
+                  // are produced by Intl/ICU, whose whitespace can differ
+                  // between the SSR runtime and the browser (e.g. U+202F vs
+                  // U+0020), causing a text hydration mismatch. They are
+                  // non-interactive, so render them directly with
+                  // suppressHydrationWarning and let React ignore the harmless
+                  // whitespace difference. React Aria's DateSegment strips
+                  // suppressHydrationWarning via filterDOMProps, so it cannot be
+                  // used for this.
+                  <DateInputSegmentSlot asChild>
+                    <span
+                      data-type="literal"
+                      aria-hidden={true}
+                      suppressHydrationWarning
+                    >
+                      {segment.text}
+                    </span>
+                  </DateInputSegmentSlot>
+                ) : (
+                  <DateInputSegmentSlot asChild>
+                    <DateSegment segment={segment} />
+                  </DateInputSegmentSlot>
+                )
+              }
             </DateInputField>
           </DateInputSegmentGroupSlot>
           {trailingElement && (

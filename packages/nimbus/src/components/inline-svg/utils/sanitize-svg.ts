@@ -1,4 +1,5 @@
 import DOMPurify from "dompurify";
+import { canUseDOM } from "@/utils";
 import { DEFAULT_FORBIDDEN_TAGS } from "../constants";
 
 /**
@@ -57,15 +58,4 @@ export function sanitizeSvg(
     FORBID_TAGS: allForbiddenTags,
     FORBID_ATTR: allForbiddenAttributes,
   });
-}
-
-/**
- * Checks if we're in a browser environment
- */
-export function canUseDOM(): boolean {
-  return !!(
-    typeof window !== "undefined" &&
-    window.document &&
-    window.document.createElement
-  );
 }

@@ -18,15 +18,10 @@ export const TabsTab = ({
   routerOptions,
   ...props
 }: TabProps) => {
+  const linkProps = href ? { href, target, rel, routerOptions } : {};
   return (
     <TabsTabSlot asChild {...props}>
-      <RATab
-        isDisabled={isDisabled}
-        href={href}
-        target={target}
-        rel={rel}
-        routerOptions={routerOptions}
-      >
+      <RATab isDisabled={isDisabled} {...linkProps}>
         {children}
       </RATab>
     </TabsTabSlot>

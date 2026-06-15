@@ -541,6 +541,86 @@ export default function RootLayout({ children }) {
 }
 ```
 
+**Emotion style registry (Next.js App Router):**
+
+Nimbus is built on Chakra UI, which uses Emotion for styling. Some styles are
+inserted by Emotion at runtime. Under the App Router these insertions are emitted
+as inline `<style>` tags during SSR but applied via the CSSOM on the client,
+which causes hydration mismatches (e.g. a `<style>` on the server where the
+client expects an element). To avoid this, add an Emotion cache registry that
+flushes the server-inserted styles through Next's `useServerInsertedHTML`, and
+wrap your app with it **above** `NimbusProvider`.
+
+This requires the `@emotion/cache` package:
+
+```bash
+pnpm add @emotion/cache
+```
+
+```tsx
+// app/emotion-registry.tsx
+'use client';
+
+import { useState } from 'react';
+import { useServerInsertedHTML } from 'next/navigation';
+import createCache from '@emotion/cache';
+import { CacheProvider } from '@emotion/react';
+
+export function EmotionRegistry({ children }: { children: React.ReactNode }) {
+  const [{ cache, flush }] = useState(() => {
+    // Key must match the one Chakra/Emotion use (the default "css").
+    const cache = createCache({ key: 'css' });
+    cache.compat = true;
+    const prevInsert = cache.insert;
+    let inserted: string[] = [];
+    cache.insert = (...args) => {
+      const serialized = args[1];
+      if (cache.inserted[serialized.name] === undefined) {
+        inserted.push(serialized.name);
+      }
+      return prevInsert(...args);
+    };
+    const flush = () => {
+      const prev = inserted;
+      inserted = [];
+      return prev;
+    };
+    return { cache, flush };
+  });
+
+  useServerInsertedHTML(() => {
+    const names = flush();
+    if (names.length === 0) return null;
+    let styles = '';
+    for (const name of names) styles += cache.inserted[name];
+    return (
+      <style
+        data-emotion={`${cache.key} ${names.join(' ')}`}
+        dangerouslySetInnerHTML={{ __html: styles }}
+      />
+    );
+  });
+
+  return <CacheProvider value={cache}>{children}</CacheProvider>;
+}
+```
+
+```tsx
+// app/providers.tsx
+'use client';
+
+import { NimbusProvider } from '@commercetools/nimbus';
+import { EmotionRegistry } from './emotion-registry';
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <EmotionRegistry>
+      <NimbusProvider>{children}</NimbusProvider>
+    </EmotionRegistry>
+  );
+}
+```
+
 ### Accessing provider context
 
 Components can access the router context provided by NimbusProvider through React Aria's `RouterProvider`:

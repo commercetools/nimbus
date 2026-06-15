@@ -72,7 +72,7 @@ import {
   Tooltip,
   VisuallyHidden,
 } from "@commercetools/nimbus";
-import { Star } from "@commercetools/nimbus-icons";
+import { Add, Bookmark, Check, Save, Star } from "@commercetools/nimbus-icons";
 
 function Section({
   title,
@@ -160,10 +160,18 @@ export default function Page() {
       <Section title="Buttons">
         <Group gap="200">
           <Button>Button</Button>
-          <IconButton aria-label="action" />
+          <IconButton aria-label="action">
+            <Add />
+          </IconButton>
           <ToggleButton>Toggle</ToggleButton>
-          <IconToggleButton aria-label="toggle" />
-          <SplitButton onAction={() => {}} aria-label="more actions">
+          <IconToggleButton aria-label="toggle">
+            <Bookmark />
+          </IconToggleButton>
+          <SplitButton
+            onAction={() => {}}
+            aria-label="more actions"
+            icon={<Save />}
+          >
             <Menu.Item id="action">Action</Menu.Item>
           </SplitButton>
           <ToggleButtonGroup.Root selectionMode="single">
@@ -270,7 +278,7 @@ export default function Page() {
 
           <Box width="fit-content">
             <Menu.Root>
-              <Menu.Trigger>
+              <Menu.Trigger asChild>
                 <Button>Open Menu</Button>
               </Menu.Trigger>
               <Menu.Content>
@@ -288,25 +296,45 @@ export default function Page() {
             <Steps.List>
               <Steps.Item index={0}>
                 <Steps.Trigger>
-                  <Steps.Indicator />
+                  <Steps.Indicator>
+                    <Steps.Status
+                      complete={<Check />}
+                      incomplete={<Steps.Number />}
+                    />
+                  </Steps.Indicator>
                   Account
                 </Steps.Trigger>
               </Steps.Item>
               <Steps.Item index={1}>
                 <Steps.Trigger>
-                  <Steps.Indicator />
+                  <Steps.Indicator>
+                    <Steps.Status
+                      complete={<Check />}
+                      incomplete={<Steps.Number />}
+                    />
+                  </Steps.Indicator>
                   Profile
                 </Steps.Trigger>
               </Steps.Item>
               <Steps.Item index={2}>
                 <Steps.Trigger>
-                  <Steps.Indicator />
+                  <Steps.Indicator>
+                    <Steps.Status
+                      complete={<Check />}
+                      incomplete={<Steps.Number />}
+                    />
+                  </Steps.Indicator>
                   Review
                 </Steps.Trigger>
               </Steps.Item>
               <Steps.Item index={3}>
                 <Steps.Trigger>
-                  <Steps.Indicator />
+                  <Steps.Indicator>
+                    <Steps.Status
+                      complete={<Check />}
+                      incomplete={<Steps.Number />}
+                    />
+                  </Steps.Indicator>
                   Complete
                 </Steps.Trigger>
               </Steps.Item>

@@ -46,6 +46,9 @@ jobs:
       - name: Check "use client" directives
         run: pnpm check:use-client
 
+      - name: Build SSR test app (Next.js App Router / RSC check)
+        run: pnpm --filter ssr-test build
+
       - name: Clean temp before tests
         run: rm -rf /tmp/* || true
         shell: bash
