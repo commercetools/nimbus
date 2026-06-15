@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { mergeRefs } from "@/utils";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef } from "react-aria";
@@ -35,6 +35,7 @@ export const SearchInput = (props: SearchInputProps) => {
   const recipe = useSlotRecipe({ recipe: searchInputSlotRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(restProps);
 
+  const rootRef = useRef<HTMLDivElement>(null);
   const localRef = useRef<HTMLInputElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
@@ -45,10 +46,41 @@ export const SearchInput = (props: SearchInputProps) => {
     "data-invalid": props.isInvalid ? "true" : "false",
   };
 
+  // Clicking anywhere on the visible field (the search icon, the inner padding,
+  // or empty space) should focus the input — not just the input element itself.
+  // The listener is attached natively to the root element via its ref rather
+  // than as an `onMouseDown` prop, so it never clashes with a consumer-forwarded
+  // handler. `mousedown` (not `click`) lets us preventDefault before focus moves,
+  // avoiding a focus/selection flicker.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const handleMouseDown = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target || !localRef.current) return;
+      // Ignore the input itself and interactive children (e.g. the clear
+      // button), which handle their own pointer interactions.
+      if (target === localRef.current || target.closest("button")) return;
+      event.preventDefault();
+      localRef.current.focus();
+    };
+
+    root.addEventListener("mousedown", handleMouseDown);
+    return () => {
+      root.removeEventListener("mousedown", handleMouseDown);
+    };
+  }, []);
+
   return (
     <RaSearchField {...functionalProps}>
       {({ state }) => (
-        <SearchInputRootSlot {...recipeProps} {...styleProps} {...stateProps}>
+        <SearchInputRootSlot
+          ref={rootRef}
+          {...recipeProps}
+          {...styleProps}
+          {...stateProps}
+        >
           <SearchInputLeadingElementSlot>
             <Search />
           </SearchInputLeadingElementSlot>

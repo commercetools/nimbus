@@ -44,6 +44,21 @@ export const Base: Story = {
       await expect(input).toHaveFocus();
     });
 
+    await step(
+      "Clicking the field (icon / padding, not just the input) focuses the input",
+      async () => {
+        input.blur();
+        await expect(input).not.toHaveFocus();
+        // The root wraps the icon + padding; clicking it should focus the input.
+        const root = canvasElement.querySelector<HTMLElement>(
+          ".nimbus-search-input__root"
+        );
+        await expect(root).not.toBeNull();
+        await userEvent.click(root!);
+        await expect(input).toHaveFocus();
+      }
+    );
+
     await step("Can type text", async () => {
       await userEvent.type(input, "Search query");
       await expect(input).toHaveValue("Search query");
