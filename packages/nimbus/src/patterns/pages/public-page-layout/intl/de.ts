@@ -4,4 +4,4 @@
  * DO NOT EDIT MANUALLY
  */
 
-export default { ariaLabel: `Public page` };
+export default { ariaLabel: `Öffentliche Seite` };
