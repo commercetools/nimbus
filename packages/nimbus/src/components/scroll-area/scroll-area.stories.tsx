@@ -13,7 +13,7 @@ const meta: Meta<typeof ScrollArea> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ScrollArea>;
 
 const OverflowingContent = () =>
   Array.from({ length: 30 }, (_, i) => (
