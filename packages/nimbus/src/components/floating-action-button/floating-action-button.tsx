@@ -1,26 +1,18 @@
-import { useRef } from "react";
-import { useButton, useObjectRef } from "react-aria";
-import { mergeRefs } from "@/utils";
-import { FloatingActionButtonRoot } from "./floating-action-button.slots.tsx";
+import { IconButton } from "@/components";
 import type { FloatingActionButtonProps } from "./floating-action-button.types.ts";
 
 const FloatingActionButtonComponent = (props: FloatingActionButtonProps) => {
-  const { ref: forwardedRef, children, ...rest } = props;
-
-  const localRef = useRef<HTMLButtonElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
-
-  const { buttonProps, isPressed } = useButton(rest, ref);
-
   return (
-    <FloatingActionButtonRoot
-      ref={ref}
-      {...rest}
-      {...buttonProps}
-      data-pressed={isPressed || undefined}
-    >
-      {children}
-    </FloatingActionButtonRoot>
+    <IconButton
+      variant="solid"
+      colorPalette="primary"
+      borderRadius="full"
+      boxShadow="3"
+      width="1200"
+      height="1200"
+      zIndex="fab"
+      {...props}
+    />
   );
 };
 
@@ -29,8 +21,13 @@ FloatingActionButtonComponent.displayName = "FloatingActionButton";
 /**
  * ### FloatingActionButton
  *
- * A circular, icon-only button for prominent actions. Designed as an agent
- * panel trigger or similar high-priority single action.
+ * A circular, elevated icon button for a single, prominent action — designed as
+ * an agent panel trigger or similar high-priority action. It is a thin wrapper
+ * around {@link IconButton}, so it inherits all button behavior, accessibility,
+ * and props (including IconButton's accessible-label requirement).
+ *
+ * Placement is the consumer's responsibility via standard style props
+ * (`position="fixed"`, `insetBlockEnd`, `insetInlineEnd`, …).
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/floating-action-button}
  */
