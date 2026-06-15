@@ -6,10 +6,9 @@ const FloatingActionButtonComponent = (props: FloatingActionButtonProps) => {
     <IconButton
       variant="solid"
       colorPalette="primary"
+      size="xl"
       borderRadius="full"
       boxShadow="3"
-      width="1200"
-      height="1200"
       zIndex="fab"
       {...props}
     />
