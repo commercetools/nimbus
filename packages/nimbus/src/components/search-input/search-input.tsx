@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { mergeRefs } from "@/utils";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef } from "react-aria";
@@ -9,7 +9,10 @@ import {
 import { Search, Close } from "@commercetools/nimbus-icons";
 import { IconButton } from "@/components";
 import { extractStyleProps } from "@/utils";
-import { useLocalizedStringFormatter } from "@/hooks";
+import {
+  useLocalizedStringFormatter,
+  useFocusInputOnFieldClick,
+} from "@/hooks";
 import { searchInputSlotRecipe } from "./search-input.recipe";
 import {
   SearchInputRootSlot,
@@ -46,31 +49,8 @@ export const SearchInput = (props: SearchInputProps) => {
     "data-invalid": props.isInvalid ? "true" : "false",
   };
 
-  // Clicking anywhere on the visible field (the search icon, the inner padding,
-  // or empty space) should focus the input — not just the input element itself.
-  // The listener is attached natively to the root element via its ref rather
-  // than as an `onMouseDown` prop, so it never clashes with a consumer-forwarded
-  // handler. `mousedown` (not `click`) lets us preventDefault before focus moves,
-  // avoiding a focus/selection flicker.
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-
-    const handleMouseDown = (event: MouseEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (!target || !localRef.current) return;
-      // Ignore the input itself and interactive children (e.g. the clear
-      // button), which handle their own pointer interactions.
-      if (target === localRef.current || target.closest("button")) return;
-      event.preventDefault();
-      localRef.current.focus();
-    };
-
-    root.addEventListener("mousedown", handleMouseDown);
-    return () => {
-      root.removeEventListener("mousedown", handleMouseDown);
-    };
-  }, []);
+  // Clicking the field chrome (search icon, padding, empty space) focuses the input.
+  useFocusInputOnFieldClick(rootRef, localRef);
 
   return (
     <RaSearchField {...functionalProps}>

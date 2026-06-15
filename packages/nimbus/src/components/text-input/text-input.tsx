@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useRef, type Context } from "react";
+import { useMemo, useRef, type Context } from "react";
 import { mergeRefs } from "@/utils";
+import { useFocusInputOnFieldClick } from "@/hooks";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import {
   useObjectRef,
@@ -94,26 +95,8 @@ const TextInputComponent = (props: TextInputProps) => {
     "data-invalid": inputProps["aria-invalid"] ? "true" : "false",
   };
 
-  // Using a useEffect instead of "onClick" on the element, to preserve
-  // the `onClick` prop for consumers.
-  useEffect(() => {
-    const handleRootClick = (event: MouseEvent) => {
-      // Only focus if the click is inside the root element,
-      // not on the input itself, and not on an interactive element
-      if (
-        rootRef.current &&
-        rootRef.current.contains(event.target as Node) &&
-        localRef.current &&
-        event.target !== localRef.current
-      ) {
-        localRef.current.focus();
-      }
-    };
-    document.addEventListener("click", handleRootClick);
-    return () => {
-      document.removeEventListener("click", handleRootClick);
-    };
-  }, []);
+  // Clicking the field chrome (leading/trailing elements, padding) focuses the input.
+  useFocusInputOnFieldClick(rootRef, localRef);
 
   return (
     <InputContext.Provider value={null}>
