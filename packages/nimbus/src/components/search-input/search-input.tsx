@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { mergeRefs } from "@/utils";
-import { useSlotRecipe } from "@chakra-ui/react/styled-system";
+import { chakra, useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef } from "react-aria";
 import {
   SearchField as RaSearchField,
@@ -53,36 +53,42 @@ export const SearchInput = (props: SearchInputProps) => {
   useFocusInputOnFieldClick(rootRef, localRef);
 
   return (
-    <RaSearchField {...functionalProps}>
-      {({ state }) => (
-        <SearchInputRootSlot
-          ref={rootRef}
-          {...recipeProps}
-          {...styleProps}
-          {...stateProps}
-        >
-          <SearchInputLeadingElementSlot>
-            <Search />
-          </SearchInputLeadingElementSlot>
-          <SearchInputInputSlot asChild>
-            <RaInput ref={ref} />
-          </SearchInputInputSlot>
-          <IconButton
-            slot="null"
-            size="2xs"
-            variant="ghost"
-            colorPalette="primary"
-            aria-label={msg.format("clearInput")}
-            onPress={() => state.setValue("")}
-            opacity={state.value ? 1 : 0}
-            pointerEvents={state.value ? "auto" : "none"}
-            isDisabled={props.isDisabled || props.isReadOnly}
+    // The React Aria <SearchField> renders a block-level wrapper around the
+    // styled root. Collapse it with `display: contents` so the inline-flex root
+    // becomes the layout box directly — sizing to content by default and
+    // stretching inside a Stack like the other inputs.
+    <chakra.div display="contents" asChild>
+      <RaSearchField {...functionalProps}>
+        {({ state }) => (
+          <SearchInputRootSlot
+            ref={rootRef}
+            {...recipeProps}
+            {...styleProps}
+            {...stateProps}
           >
-            <Close />
-          </IconButton>
-        </SearchInputRootSlot>
-      )}
-    </RaSearchField>
+            <SearchInputLeadingElementSlot>
+              <Search />
+            </SearchInputLeadingElementSlot>
+            <SearchInputInputSlot asChild>
+              <RaInput ref={ref} />
+            </SearchInputInputSlot>
+            <IconButton
+              slot="null"
+              size="2xs"
+              variant="ghost"
+              colorPalette="primary"
+              aria-label={msg.format("clearInput")}
+              onPress={() => state.setValue("")}
+              opacity={state.value ? 1 : 0}
+              pointerEvents={state.value ? "auto" : "none"}
+              isDisabled={props.isDisabled || props.isReadOnly}
+            >
+              <Close />
+            </IconButton>
+          </SearchInputRootSlot>
+        )}
+      </RaSearchField>
+    </chakra.div>
   );
 };
 

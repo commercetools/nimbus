@@ -13,10 +13,6 @@ export const searchInputSlotRecipe = defineSlotRecipe({
   base: {
     root: {
       display: "inline-flex",
-      // The styled root is nested inside the React Aria <SearchField> wrapper
-      // (not a direct flex child), so it needs an explicit width to stretch to
-      // the container like the other form inputs.
-      width: "full",
       position: "relative",
       cursor: "text",
       borderRadius: "200",
