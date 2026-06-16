@@ -5,9 +5,10 @@
 **SearchInput** / **ScopedSearchInput** / **TextInput**: fix layout and
 click-to-focus behavior so these inputs behave consistently.
 
-- SearchInput now stretches to fill its container (e.g. in a `Stack` or any
-  full-width form layout) instead of rendering at a narrow intrinsic width. This
-  also fixes the search field inside `ScopedSearchInput`.
+- SearchInput now sizes like the other inputs: it stretches to fill a stretching
+  container (such as a `Stack` or `FormField`) instead of staying at a narrow
+  fixed width, while still sizing to its content when used standalone. This also
+  fixes the search field inside `ScopedSearchInput`.
 - Clicking anywhere on the visible SearchInput field — the search icon, the
   inner padding, or empty space — now focuses the input, not only a direct click
   on the text area.

@@ -53,10 +53,8 @@ export const SearchInput = (props: SearchInputProps) => {
   useFocusInputOnFieldClick(rootRef, localRef);
 
   return (
-    // The React Aria <SearchField> renders a block-level wrapper around the
-    // styled root. Collapse it with `display: contents` so the inline-flex root
-    // becomes the layout box directly — sizing to content by default and
-    // stretching inside a Stack like the other inputs.
+    // Collapse the React Aria <SearchField> wrapper so the inline-flex root is
+    // the layout box, sizing like the other inputs.
     <chakra.div display="contents" asChild>
       <RaSearchField {...functionalProps}>
         {({ state }) => (
