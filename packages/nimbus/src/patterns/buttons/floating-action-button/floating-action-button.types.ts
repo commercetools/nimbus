@@ -1,4 +1,4 @@
-import type { IconButtonProps } from "../icon-button/icon-button.types";
+import type { IconButtonProps } from "../../../components/icon-button/icon-button.types";
 
 // ============================================================
 // MAIN PROPS
