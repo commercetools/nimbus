@@ -139,7 +139,7 @@ height, font size, chevron size, and indentation step.
 
 ```jsx live
 const App = () => (
-  <Stack direction="horizontal" gap="800" alignItems="flex-start">
+  <Stack direction="row" gap="800" alignItems="flex-start">
     {["sm", "md"].map((size) => (
       <Stack key={size} gap="200">
         <Text fontWeight="700">{size}</Text>
