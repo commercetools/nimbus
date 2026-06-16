@@ -154,12 +154,14 @@ export const Disabled: Story = {
     });
 
     await step("Clear button is disabled when input is disabled", async () => {
-      // Get the parent container of the input to scope the button query
-      const searchFieldContainer = input.closest(".react-aria-SearchField");
+      // Scope the button query to this input's root slot (its parent), which
+      // also contains the clear button. The story renders multiple variants,
+      // so an unscoped query would be ambiguous.
+      const searchFieldContainer = input.parentElement;
       if (!searchFieldContainer)
         throw new Error("Could not find SearchField container");
 
-      const containerScope = within(searchFieldContainer as HTMLElement);
+      const containerScope = within(searchFieldContainer);
       const clearButton = containerScope.getByRole("button", { hidden: true });
       await expect(clearButton).toBeDisabled();
     });
