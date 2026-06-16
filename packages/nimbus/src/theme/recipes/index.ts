@@ -1,5 +1,4 @@
 import { avatarRecipe } from "@/components/avatar/avatar.recipe";
-import { floatingActionButtonRecipe } from "@/components/floating-action-button/floating-action-button.recipe";
 import { badgeRecipe } from "@/components/badge/badge.recipe";
 import { buttonRecipe } from "@/components/button/button.recipe";
 import { codeRecipe } from "@/components/code/code.recipe";
@@ -35,7 +34,6 @@ import { tooltipRecipe } from "@/components/tooltip/tooltip.recipe";
  */
 export const recipes = {
   nimbusAvatar: avatarRecipe,
-  nimbusFloatingActionButton: floatingActionButtonRecipe,
   nimbusBadge: badgeRecipe,
   nimbusButton: buttonRecipe,
   nimbusCode: codeRecipe,

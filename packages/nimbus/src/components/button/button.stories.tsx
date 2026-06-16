@@ -16,7 +16,7 @@ type Story = StoryObj<typeof Button>;
 
 const sizes: ButtonProps["size"][] = [
   //"2xl",
-  //"xl",
+  "xl",
   //"lg",
   "md",
   "sm",
