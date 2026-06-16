@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { mergeRefs } from "@/utils";
-import { useSlotRecipe } from "@chakra-ui/react/styled-system";
+import { chakra, useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef } from "react-aria";
 import {
   SearchField as RaSearchField,
@@ -9,7 +9,10 @@ import {
 import { Search, Close } from "@commercetools/nimbus-icons";
 import { IconButton } from "@/components";
 import { extractStyleProps } from "@/utils";
-import { useLocalizedStringFormatter } from "@/hooks";
+import {
+  useLocalizedStringFormatter,
+  useFocusInputOnFieldClick,
+} from "@/hooks";
 import { searchInputSlotRecipe } from "./search-input.recipe";
 import {
   SearchInputRootSlot,
@@ -35,6 +38,7 @@ export const SearchInput = (props: SearchInputProps) => {
   const recipe = useSlotRecipe({ recipe: searchInputSlotRecipe });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(restProps);
 
+  const rootRef = useRef<HTMLDivElement>(null);
   const localRef = useRef<HTMLInputElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
@@ -45,32 +49,44 @@ export const SearchInput = (props: SearchInputProps) => {
     "data-invalid": props.isInvalid ? "true" : "false",
   };
 
+  // Clicking the field chrome (search icon, padding, empty space) focuses the input.
+  useFocusInputOnFieldClick(rootRef, localRef);
+
   return (
-    <RaSearchField {...functionalProps}>
-      {({ state }) => (
-        <SearchInputRootSlot {...recipeProps} {...styleProps} {...stateProps}>
-          <SearchInputLeadingElementSlot>
-            <Search />
-          </SearchInputLeadingElementSlot>
-          <SearchInputInputSlot asChild>
-            <RaInput ref={ref} />
-          </SearchInputInputSlot>
-          <IconButton
-            slot="null"
-            size="2xs"
-            variant="ghost"
-            colorPalette="primary"
-            aria-label={msg.format("clearInput")}
-            onPress={() => state.setValue("")}
-            opacity={state.value ? 1 : 0}
-            pointerEvents={state.value ? "auto" : "none"}
-            isDisabled={props.isDisabled || props.isReadOnly}
+    // Collapse the React Aria <SearchField> wrapper so the inline-flex root is
+    // the layout box, sizing like the other inputs.
+    <chakra.div display="contents" asChild>
+      <RaSearchField {...functionalProps}>
+        {({ state }) => (
+          <SearchInputRootSlot
+            ref={rootRef}
+            {...recipeProps}
+            {...styleProps}
+            {...stateProps}
           >
-            <Close />
-          </IconButton>
-        </SearchInputRootSlot>
-      )}
-    </RaSearchField>
+            <SearchInputLeadingElementSlot>
+              <Search />
+            </SearchInputLeadingElementSlot>
+            <SearchInputInputSlot asChild>
+              <RaInput ref={ref} />
+            </SearchInputInputSlot>
+            <IconButton
+              slot="null"
+              size="2xs"
+              variant="ghost"
+              colorPalette="primary"
+              aria-label={msg.format("clearInput")}
+              onPress={() => state.setValue("")}
+              opacity={state.value ? 1 : 0}
+              pointerEvents={state.value ? "auto" : "none"}
+              isDisabled={props.isDisabled || props.isReadOnly}
+            >
+              <Close />
+            </IconButton>
+          </SearchInputRootSlot>
+        )}
+      </RaSearchField>
+    </chakra.div>
   );
 };
 

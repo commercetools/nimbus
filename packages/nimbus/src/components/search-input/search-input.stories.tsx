@@ -44,6 +44,21 @@ export const Base: Story = {
       await expect(input).toHaveFocus();
     });
 
+    await step(
+      "Clicking the field (icon / padding, not just the input) focuses the input",
+      async () => {
+        input.blur();
+        await expect(input).not.toHaveFocus();
+        // The root wraps the icon + padding; clicking it should focus the input.
+        const root = canvasElement.querySelector<HTMLElement>(
+          ".nimbus-search-input__root"
+        );
+        await expect(root).not.toBeNull();
+        await userEvent.click(root!);
+        await expect(input).toHaveFocus();
+      }
+    );
+
     await step("Can type text", async () => {
       await userEvent.type(input, "Search query");
       await expect(input).toHaveValue("Search query");
@@ -139,12 +154,14 @@ export const Disabled: Story = {
     });
 
     await step("Clear button is disabled when input is disabled", async () => {
-      // Get the parent container of the input to scope the button query
-      const searchFieldContainer = input.closest(".react-aria-SearchField");
+      // Scope the button query to this input's root slot (its parent), which
+      // also contains the clear button. The story renders multiple variants,
+      // so an unscoped query would be ambiguous.
+      const searchFieldContainer = input.parentElement;
       if (!searchFieldContainer)
         throw new Error("Could not find SearchField container");
 
-      const containerScope = within(searchFieldContainer as HTMLElement);
+      const containerScope = within(searchFieldContainer);
       const clearButton = containerScope.getByRole("button", { hidden: true });
       await expect(clearButton).toBeDisabled();
     });
