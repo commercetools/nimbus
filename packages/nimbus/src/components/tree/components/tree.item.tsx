@@ -20,13 +20,9 @@ export const TreeItem = <T extends object>({
 }: TreeItemProps<T>) => {
   const [styleProps, functionalProps] = extractStyleProps(props);
 
-  // Derive a textValue for type-ahead from string content when not provided.
-  const derivedTextValue =
-    textValue ?? (typeof children === "string" ? children : "");
-
   return (
     <TreeItemSlot ref={ref} {...styleProps} asChild>
-      <RaTreeItem textValue={derivedTextValue} {...functionalProps}>
+      <RaTreeItem textValue={textValue} {...functionalProps}>
         {children}
       </RaTreeItem>
     </TreeItemSlot>

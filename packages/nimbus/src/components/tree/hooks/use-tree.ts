@@ -124,10 +124,12 @@ export function useTree<T extends object>(
       } else if (e.target.dropPosition === "after") {
         tree.moveAfter(e.target.key, e.keys);
       } else if (e.target.dropPosition === "on") {
-        // Re-parent: append the dragged items into the target group.
-        const targetIndex = tree.getItem(e.target.key)?.children?.length ?? 0;
-        [...e.keys].forEach((key, i) => {
-          tree.move(key, e.target.key, targetIndex + i);
+        // Re-parent: append the dragged items, in order, into the target group.
+        // Recompute the insertion point per key so multi-key drops can't drift
+        // off a stale pre-move child count.
+        [...e.keys].forEach((key) => {
+          const targetIndex = tree.getItem(e.target.key)?.children?.length ?? 0;
+          tree.move(key, e.target.key, targetIndex);
         });
       }
     },

@@ -81,9 +81,10 @@ export type TreeItemProps<T extends object = object> = Omit<
   OmitInternalProps<TreeItemSlotProps, "children" | "slot" | "id"> & {
     /**
      * A string representation of the item's contents, used for type-ahead.
-     * Falls back to string children when omitted.
+     * Required: React Aria needs it to support type-ahead navigation, since the
+     * row's children are arbitrary elements rather than plain text.
      */
-    textValue?: string;
+    textValue: string;
     /**
      * The item's content (`Tree.ItemContent`) and any nested `Tree.Item`s.
      */
