@@ -18,9 +18,9 @@ catalogs:
     "@arethetypeswrong/cli": ^0.18.3
     publint: ^0.3.21
     "@modelcontextprotocol/inspector": ^0.21.2
-    "@babel/core": ^7.29.6
-    "@babel/runtime": ^7.29.7
-    "@babel/preset-typescript": ^7.29.7
+    "@babel/core": ^8.0.0
+    "@babel/runtime": ^8.0.0
+    "@babel/preset-typescript": ^8.0.0
     "@eslint/js": ^10.0.1
     "@react-types/shared": ^3.35.0
     eslint: ^10.5.0
