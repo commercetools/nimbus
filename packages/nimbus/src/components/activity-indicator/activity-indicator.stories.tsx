@@ -140,8 +140,8 @@ export const Sizes: Story = {
 
 /**
  * Placed inside a `TextInput` as a leading (prefix) or trailing (suffix) icon.
- * The fixed `size` reserves a square icon-box footprint, so the indicator drops
- * into the input's icon slot like any other icon while an agent is working.
+ * The default `size="inherit"` lets the dots scale with the input's text size,
+ * so the indicator sits naturally in the icon slot while an agent is working.
  */
 export const InsideInput: Story = {
   render: () => (
@@ -150,13 +150,13 @@ export const InsideInput: Story = {
         aria-label="Agent response, generating (leading indicator)"
         defaultValue="Generating a response"
         isReadOnly
-        leadingElement={<ActivityIndicator size="sm" />}
+        leadingElement={<ActivityIndicator />}
       />
       <TextInput
         aria-label="Agent response, generating (trailing indicator)"
         defaultValue="Generating a response"
         isReadOnly
-        trailingElement={<ActivityIndicator size="sm" />}
+        trailingElement={<ActivityIndicator />}
       />
     </Stack>
   ),
