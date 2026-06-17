@@ -1,0 +1,59 @@
+---
+title: ActivityIndicator
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+Activity indicator guidelines aim to communicate that an agent or system is
+actively working — composing, thinking, or processing — in a way that feels
+lightweight and conversational, without implying that the user must wait for a
+blocking operation to finish.
+
+### Best practices
+
+- **Pair with a status label:** Place the indicator inline next to a short,
+  human-readable message ("Thinking…", "Processing request"). The default size
+  scales with the surrounding text, so it aligns naturally.
+- **Use the right tool for the job:** Use the activity indicator for agent or
+  conversational activity. For indeterminate loading where the user must wait,
+  use the [Loading spinner](/components/feedback/loadingspinner) instead.
+- **Keep it decorative when text is present:** When a visible label already
+  conveys the state, leave the indicator unlabeled — it is `aria-hidden` so
+  screen readers announce the text, not the animation.
+- **Label it when standalone:** If the indicator appears without adjacent text,
+  give it an `aria-label` so it announces politely.
+- **Respect motion preferences:** The indicator automatically swaps its bounce
+  for a gentle pulse under `prefers-reduced-motion`. Do not reintroduce large
+  motion on top of it.
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+- **Agent is composing or thinking:** A chat or AI surface is generating a
+  response.
+- **Short, non-blocking activity:** A brief background step where the user can
+  keep reading or interacting.
+- **Inline with a status message:** Alongside text such as "Thinking…" or
+  "Processing request".
+
+> [!CAUTION]\
+> When not to use
+
+- **Indeterminate loading the user must wait for:** Use the
+  [Loading spinner](/components/feedback/loadingspinner).
+- **Determinate progress:** Use a progress bar so the user can see how far along
+  the operation is.
+- **Persistent, page-level busy states:** Prefer a clearly labeled loading state
+  with context.
+
+### Accessibility
+
+- The indicator is decorative by default and must rely on adjacent visible text
+  to convey meaning to assistive technology.
+- When used standalone, provide an `aria-label`; the indicator then exposes
+  `role="status"` and `aria-live="polite"`.
+- It is not a progress indicator and never uses `role="progressbar"`.

@@ -1,0 +1,92 @@
+---
+id: Components-ActivityIndicator
+title: Activity indicator
+exportName: ActivityIndicator
+description:
+  An animated three-dot indicator that signals ongoing agent or system activity,
+  such as "thinking", "processing", or "typing" in chat and AI surfaces.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Feedback
+  - Activity indicator
+tags:
+  - component
+  - activity
+  - typing
+  - dots
+  - chat
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=10603-16574&m=dev
+---
+
+## Overview
+
+The activity indicator communicates that an agent or system is actively working
+— for example composing a reply, thinking, or processing a request. It is most
+commonly placed inline next to a short status message ("Thinking…", "Processing
+request") in chat and AI surfaces.
+
+Unlike the [Loading spinner](/components/feedback/loadingspinner), which
+represents indeterminate progress and signals "please wait", the activity
+indicator is a lightweight, presentational hint. Reach for the loading spinner
+when something is loading and for the activity indicator when an agent is
+active.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=10603-16574&m=dev)
+
+## Variables
+
+Get familiar with the features.
+
+### Visuals
+
+#### Inline with text
+
+By default the indicator scales with the surrounding `font-size`, so it sits
+naturally beside a status label.
+
+```jsx live
+const App = () => (
+  <Text fontSize="md">
+    Thinking <ActivityIndicator />
+  </Text>
+);
+```
+
+#### On dark background
+
+Use the `white` color palette on dark or colored surfaces.
+
+```jsx live
+const App = () => (
+  <Stack backgroundColor="neutral.8" padding="400">
+    <Text color="white">
+      Thinking <ActivityIndicator colorPalette="white" />
+    </Text>
+  </Stack>
+);
+```
+
+### Size
+
+The default `inherit` size tracks the surrounding text. Fixed sizes (`2xs`–`lg`)
+reserve a square icon-box footprint so the indicator can sit in input icon slots
+alongside other icons.
+
+```jsx live
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <ActivityIndicator size="lg" />
+    <ActivityIndicator size="md" />
+    <ActivityIndicator size="sm" />
+    <ActivityIndicator size="xs" />
+    <ActivityIndicator size="2xs" />
+  </Stack>
+);
+```

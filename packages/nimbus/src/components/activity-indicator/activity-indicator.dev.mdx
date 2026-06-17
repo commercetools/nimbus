@@ -1,0 +1,123 @@
+---
+title: Activity indicator component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import {
+  ActivityIndicator,
+  type ActivityIndicatorProps,
+} from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+The ActivityIndicator signals that an agent or system is actively working. By
+default it is decorative and scales with the surrounding `font-size`, so it can
+sit inline next to a visible status label.
+
+```jsx live-dev
+const App = () => (
+  <Text>
+    Thinking <ActivityIndicator />
+  </Text>
+);
+```
+
+## Usage examples
+
+### Size options
+
+The `size` prop defaults to `inherit`, which makes the dots em-relative so they
+scale with the surrounding text. The fixed sizes (`2xs`, `xs`, `sm`, `md`, `lg`)
+reserve a square icon-box footprint — matching the icon dimensions used by input
+start/end icon slots — while the dots overflow that box horizontally without
+affecting layout.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <ActivityIndicator size="2xs" />
+    <ActivityIndicator size="xs" />
+    <ActivityIndicator size="sm" />
+    <ActivityIndicator size="md" />
+    <ActivityIndicator size="lg" />
+  </Stack>
+);
+```
+
+### Visual variants
+
+The `colorPalette` prop renders a high-contrast indicator on light and dark
+backgrounds.
+
+- `primary`: The default color, suitable for light backgrounds.
+- `white`: Suitable for dark backgrounds or colored surfaces.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <ActivityIndicator colorPalette="primary" margin="400" />
+    <ActivityIndicator colorPalette="white" margin="400" bgColor="black" />
+  </Stack>
+);
+```
+
+## Accessibility
+
+The ActivityIndicator is **decorative by default**. When you render visible text
+that already conveys the state (for example "Thinking…"), leave the indicator
+unlabeled — it is marked `aria-hidden` so assistive technology hears the text,
+not the animation.
+
+```tsx
+// Visible text conveys the state; the indicator is decorative.
+<Text>
+  Thinking <ActivityIndicator />
+</Text>
+```
+
+When the indicator is used **standalone** (no adjacent visible text), provide an
+`aria-label`. This upgrades it to a polite live region (`role="status"`,
+`aria-live="polite"`) so screen readers announce the activity without
+interrupting.
+
+```tsx
+// Standalone: announce the activity politely.
+<ActivityIndicator aria-label="Agent is typing" />
+```
+
+Passing an empty string (`aria-label=""`) opts into the live region using the
+component's localized default label.
+
+This component is **not** a progress indicator and does not use
+`role="progressbar"`. For indeterminate progress ("please wait"), use
+[LoadingSpinner](/components/feedback/loadingspinner) instead.
+
+## Reduced motion
+
+When the user has `prefers-reduced-motion: reduce` enabled, the vertical bounce
+is replaced by a gentle opacity pulse, so the "working" state remains
+perceivable without large motion.
+
+## API reference
+
+<PropsTable id="ActivityIndicator" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using
+ActivityIndicator within your application. As the component's internal
+functionality is already tested by Nimbus, these patterns help you verify your
+integration and application-specific logic.
+
+{{docs-tests: activity-indicator.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-activityindicator--docs)
