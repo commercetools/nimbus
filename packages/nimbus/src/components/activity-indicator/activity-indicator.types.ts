@@ -3,6 +3,7 @@ import type {
   RecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react/styled-system";
+import type { NimbusColorPalette } from "@/type-utils";
 
 // ============================================================
 // RECIPE PROPS
@@ -27,20 +28,13 @@ type ActivityIndicatorRecipeProps = {
 // SLOT PROPS
 // ============================================================
 
+// The slot keeps Chakra's native (broad) `colorPalette` so the component can
+// pass remapped palette tokens (e.g. `ctvioletAlpha`); the public prop below
+// narrows the consumer-facing surface.
 export type ActivityIndicatorRootSlotProps = Omit<
   HTMLChakraProps<"span", ActivityIndicatorRecipeProps>,
-  "as" | "asChild" | "css" | "colorPalette"
-> & {
-  /**
-   * Color palette for the dots.
-   *
-   * - `"primary"` for light surfaces.
-   * - `"white"` for dark surfaces.
-   *
-   * @default "primary"
-   */
-  colorPalette?: "primary" | "white";
-};
+  "as" | "asChild" | "css"
+>;
 
 // ============================================================
 // HELPER TYPES
@@ -54,7 +48,23 @@ type ActivityIndicatorVariantProps = ActivityIndicatorRootSlotProps & {
 // MAIN PROPS
 // ============================================================
 
-export type ActivityIndicatorProps = ActivityIndicatorVariantProps & {
+export type ActivityIndicatorProps = Omit<
+  ActivityIndicatorVariantProps,
+  "colorPalette"
+> & {
+  /**
+   * Color palette for the dots. Accepts any Nimbus color palette, plus two
+   * semantic aliases tuned for overlaying surfaces:
+   *
+   * - `"primary"` (default) → `ctvioletAlpha`, for light surfaces.
+   * - `"white"` → `whiteAlpha`, for dark surfaces.
+   *
+   * Any other palette (e.g. `"positive"`, `"info"`, `"grass"`) colors the dots
+   * with that palette's `11` shade.
+   *
+   * @default "primary"
+   */
+  colorPalette?: NimbusColorPalette | "white";
   /**
    * Accessible label.
    *

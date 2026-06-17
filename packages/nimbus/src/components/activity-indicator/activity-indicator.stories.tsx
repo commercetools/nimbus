@@ -11,6 +11,7 @@ import {
   TextInput,
 } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
+import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 
 const sizes: ActivityIndicatorProps["size"][] = [
   "inherit",
@@ -19,11 +20,6 @@ const sizes: ActivityIndicatorProps["size"][] = [
   "sm",
   "md",
   "lg",
-];
-
-const colorPalettes: ActivityIndicatorProps["colorPalette"][] = [
-  "primary",
-  "white",
 ];
 
 const meta: Meta<typeof ActivityIndicator> = {
@@ -248,21 +244,17 @@ export const SizeCalibration: Story = {
 };
 
 /**
- * One color palette for a light background and one for a dark background.
+ * The indicator across every Nimbus color palette (semantic, brand, and system
+ * groups), rendered at a fixed `md` size. The dots fill with the palette's
+ * `colorPalette.11` shade. The `primary` and `white` aliases remap to their
+ * alpha palettes for overlaying colored surfaces.
  */
 export const ColorPalettes: Story = {
-  render: (args) => (
-    <Box backgroundColor="blackAlpha.5">
-      <Stack direction="row" gap="400" alignItems="center">
-        {colorPalettes.map((colorPalette) => (
-          <ActivityIndicator
-            key={colorPalette as string}
-            {...args}
-            colorPalette={colorPalette}
-          />
-        ))}
-      </Stack>
-    </Box>
+  render: () => (
+    <DisplayColorPalettes>
+      {(palette) => (
+        <ActivityIndicator key={palette} size="md" colorPalette={palette} />
+      )}
+    </DisplayColorPalettes>
   ),
-  args: {},
 };

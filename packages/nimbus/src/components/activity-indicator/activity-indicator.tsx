@@ -15,7 +15,23 @@ import { activityIndicatorMessagesStrings } from "./activity-indicator.messages"
  */
 export const ActivityIndicator = (props: ActivityIndicatorProps) => {
   const msg = useLocalizedStringFormatter(activityIndicatorMessagesStrings);
-  const { ref, "aria-label": ariaLabelProp, ...restProps } = props;
+  const {
+    ref,
+    "aria-label": ariaLabelProp,
+    colorPalette = "primary",
+    ...restProps
+  } = props;
+
+  // `colorPalette` flows to the root as a native Chakra prop so any Nimbus
+  // palette colors the dots (base fill is `colorPalette.11`). The two semantic
+  // aliases remap to their alpha palettes so the dots read well overlaid on
+  // colored surfaces.
+  const resolvedColorPalette =
+    colorPalette === "primary"
+      ? "ctvioletAlpha"
+      : colorPalette === "white"
+        ? "whiteAlpha"
+        : colorPalette;
 
   // Presence of `aria-label` is the accessibility switch: labeled → polite
   // live region; omitted → decorative. An empty string opts into the live
@@ -34,7 +50,12 @@ export const ActivityIndicator = (props: ActivityIndicatorProps) => {
     : { "aria-hidden": true };
 
   return (
-    <ActivityIndicatorRoot ref={ref} {...a11yProps} {...restProps}>
+    <ActivityIndicatorRoot
+      ref={ref}
+      colorPalette={resolvedColorPalette}
+      {...a11yProps}
+      {...restProps}
+    >
       <svg
         viewBox="0 0 24 24"
         fill="none"

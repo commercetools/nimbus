@@ -64,19 +64,9 @@ export const activityIndicatorRecipe = defineRecipe({
       md: { width: "800", height: "800" },
       lg: { width: "1000", height: "1000" },
     },
-
-    colorPalette: {
-      primary: {
-        colorPalette: "ctvioletAlpha",
-      },
-      white: {
-        colorPalette: "whiteAlpha",
-      },
-    },
   },
 
   defaultVariants: {
     size: "inherit",
-    colorPalette: "primary",
   },
 });

@@ -53,11 +53,15 @@ const App = () => (
 
 ### Visual variants
 
-The `colorPalette` prop renders a high-contrast indicator on light and dark
-backgrounds.
+The `colorPalette` prop accepts any Nimbus color palette, plus two semantic
+aliases tuned for overlaying surfaces.
 
-- `primary`: The default color, suitable for light backgrounds.
-- `white`: Suitable for dark backgrounds or colored surfaces.
+- `primary`: The default color (maps to `ctvioletAlpha`), suitable for light
+  backgrounds.
+- `white`: Maps to `whiteAlpha`, suitable for dark backgrounds or colored
+  surfaces.
+- Any other palette (e.g. `positive`, `info`, `grass`) colors the dots with that
+  palette's shade.
 
 ```jsx live-dev
 const App = () => (
