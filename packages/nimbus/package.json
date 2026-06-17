@@ -122,7 +122,7 @@
     "react-dom": "catalog:react",
     "slate": "^0.123.0",
     "slate-history": "^0.115.0",
-    "slate-hyperscript": "^0.115.0",
+    "slate-hyperscript": "^0.125.0",
     "slate-react": "^0.123.0",
     "storybook": "catalog:tooling",
     "vite": "catalog:tooling",
@@ -136,7 +136,7 @@
     "react": "19.x",
     "slate": "^0.123.0",
     "slate-history": "^0.115.0",
-    "slate-hyperscript": "^0.115.0",
+    "slate-hyperscript": "^0.125.0",
     "slate-react": "^0.123.0"
   },
   "scripts": {
