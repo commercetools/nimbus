@@ -1,4 +1,8 @@
 {
+  "Nimbus.ActivityIndicator.default": {
+    "developer_comment": "Default accessible label for the activity indicator when it is used as a standalone live region (no adjacent visible text).",
+    "string": "Agent is typing"
+  },
   "Nimbus.Alert.dismiss": {
     "developer_comment": "aria-label for the dismiss button in an alert",
     "string": "Dispensar"
