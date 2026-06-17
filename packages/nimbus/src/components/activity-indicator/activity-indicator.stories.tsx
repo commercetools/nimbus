@@ -1,8 +1,11 @@
+import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   ActivityIndicator,
   type ActivityIndicatorProps,
   Box,
+  Button,
+  LoadingSpinner,
   Stack,
   Text,
   TextInput,
@@ -33,8 +36,8 @@ export default meta;
 type Story = StoryObj<typeof ActivityIndicator>;
 
 /**
- * Default: decorative (no `aria-label`), em-relative sizing. Renders three
- * dot spans inside a span root.
+ * Default: decorative (no `aria-label`), `size="inherit"`. Renders a single
+ * `<svg>` with three `<circle>` dots inside a `<span>` root.
  */
 export const Base: Story = {
   args: {
@@ -48,10 +51,11 @@ export const Base: Story = {
       await expect(indicator.tagName).toBe("SPAN");
     });
 
-    await step("Renders exactly three dot spans", async () => {
+    await step("Renders a single <svg> with three <circle> dots", async () => {
+      await expect(indicator.querySelectorAll("svg").length).toBe(1);
       const dots = indicator.querySelectorAll("[data-dot]");
       await expect(dots.length).toBe(3);
-      dots.forEach((dot) => expect(dot.tagName).toBe("SPAN"));
+      dots.forEach((dot) => expect(dot.tagName.toLowerCase()).toBe("circle"));
     });
 
     await step("Is decorative by default (aria-hidden, no role)", async () => {
@@ -140,24 +144,105 @@ export const Sizes: Story = {
 
 /**
  * Placed inside a `TextInput` as a leading (prefix) or trailing (suffix) icon.
- * The default `size="inherit"` lets the dots scale with the input's text size,
- * so the indicator sits naturally in the icon slot while an agent is working.
+ * A fixed `size` reserves the same square icon-box footprint a LoadingSpinner
+ * uses at that size, so toggling between the two does not shift the layout.
+ *
+ * Use the button to toggle between the ActivityIndicator and a LoadingSpinner in
+ * both slots, to compare how each reads inside an input.
  */
 export const InsideInput: Story = {
+  render: () => {
+    const [showSpinner, setShowSpinner] = useState(false);
+
+    const indicator = showSpinner ? (
+      <LoadingSpinner size="xs" aria-label="Generating a response" />
+    ) : (
+      <ActivityIndicator size="xs" />
+    );
+
+    return (
+      <Stack direction="column" gap="400" alignItems="flex-start" width="320px">
+        <Button
+          variant="outline"
+          size="xs"
+          onPress={() => setShowSpinner((prev) => !prev)}
+        >
+          {showSpinner ? "Show activity indicator" : "Show loading spinner"}
+        </Button>
+        <TextInput
+          aria-label="Agent response, generating (leading indicator)"
+          defaultValue="Generating a response"
+          isReadOnly
+          leadingElement={indicator}
+        />
+        <TextInput
+          aria-label="Agent response, generating (trailing indicator)"
+          defaultValue="Generating a response"
+          isReadOnly
+          trailingElement={indicator}
+        />
+      </Stack>
+    );
+  },
+};
+
+const fixedSizes = ["2xs", "xs", "sm", "md", "lg"] as const;
+
+// Box footprint token per fixed size (matches LoadingSpinner's scale points).
+const sizeToBox: Record<(typeof fixedSizes)[number], string> = {
+  "2xs": "350",
+  xs: "500",
+  sm: "600",
+  md: "800",
+  lg: "1000",
+};
+
+/**
+ * Calibration aid. Per fixed size, from left to right:
+ * the LoadingSpinner (box outlined green), the ActivityIndicator (box outlined
+ * red), and the two overlaid (dots on top of the spinner) — both boxes are the
+ * same square footprint, so the outlines should coincide.
+ */
+export const SizeCalibration: Story = {
   render: () => (
-    <Stack direction="column" gap="400" alignItems="flex-start" width="320px">
-      <TextInput
-        aria-label="Agent response, generating (leading indicator)"
-        defaultValue="Generating a response"
-        isReadOnly
-        leadingElement={<ActivityIndicator />}
-      />
-      <TextInput
-        aria-label="Agent response, generating (trailing indicator)"
-        defaultValue="Generating a response"
-        isReadOnly
-        trailingElement={<ActivityIndicator />}
-      />
+    <Stack direction="column" gap="600" alignItems="flex-start">
+      {fixedSizes.map((size) => (
+        <Stack key={size} direction="row" gap="800" alignItems="center">
+          <Text width="800" fontWeight="600">
+            {size}
+          </Text>
+          <LoadingSpinner
+            size={size}
+            aria-label={`Spinner ${size}`}
+            outline="1px solid"
+            outlineColor="positive.9"
+          />
+          <ActivityIndicator
+            size={size}
+            outline="1px solid"
+            outlineColor="critical.9"
+          />
+          {/* Fixed-size container; both children absolutely positioned and
+              filling it, so the boxes coincide exactly. */}
+          <Box position="relative" boxSize={sizeToBox[size]}>
+            <LoadingSpinner
+              size={size}
+              aria-label={`Spinner overlay ${size}`}
+              position="absolute"
+              inset="0"
+              outline="1px solid"
+              outlineColor="positive.9"
+            />
+            <ActivityIndicator
+              size={size}
+              position="absolute"
+              inset="0"
+              outline="1px solid"
+              outlineColor="critical.9"
+            />
+          </Box>
+        </Stack>
+      ))}
     </Stack>
   ),
 };

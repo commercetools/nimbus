@@ -15,12 +15,7 @@ import { activityIndicatorMessagesStrings } from "./activity-indicator.messages"
  */
 export const ActivityIndicator = (props: ActivityIndicatorProps) => {
   const msg = useLocalizedStringFormatter(activityIndicatorMessagesStrings);
-  const {
-    ref,
-    size = "inherit",
-    "aria-label": ariaLabelProp,
-    ...restProps
-  } = props;
+  const { ref, "aria-label": ariaLabelProp, ...restProps } = props;
 
   // Presence of `aria-label` is the accessibility switch: labeled → polite
   // live region; omitted → decorative. An empty string opts into the live
@@ -38,21 +33,19 @@ export const ActivityIndicator = (props: ActivityIndicatorProps) => {
       }
     : { "aria-hidden": true };
 
-  const isFixedSize = size !== "inherit";
-
   return (
-    <ActivityIndicatorRoot
-      ref={ref}
-      size={size}
-      data-fixed-size={isFixedSize ? "" : undefined}
-      {...a11yProps}
-      {...restProps}
-    >
-      <span data-dots-row="">
-        <span data-dot="0" />
-        <span data-dot="1" />
-        <span data-dot="2" />
-      </span>
+    <ActivityIndicatorRoot ref={ref} {...a11yProps} {...restProps}>
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+        focusable="false"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <circle data-dot="0" cx="5" cy="12" r="3" />
+        <circle data-dot="1" cx="12" cy="12" r="3" />
+        <circle data-dot="2" cx="19" cy="12" r="3" />
+      </svg>
     </ActivityIndicatorRoot>
   );
 };

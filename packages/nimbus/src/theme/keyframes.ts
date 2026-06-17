@@ -28,16 +28,17 @@ export const keyframes = {
       animationTimingFunction: "cubic-bezier(0,0,0.2,1)",
     },
   },
-  // Lively typing-indicator bounce: each dot lifts ~one diameter and brightens
-  // at the peak, then rests. Distances are in em so the motion scales with the
-  // dot size. Used by ActivityIndicator.
+  // Lively typing-indicator bounce: each dot lifts ~0.8× its own height and
+  // brightens at the peak, then rests. The translate is a percentage of the
+  // dot's own box (transform-box: fill-box), so the motion scales with the
+  // SVG size. Used by ActivityIndicator.
   "activity-bounce": {
     "0%, 70%, 100%": {
       transform: "translateY(0)",
       opacity: "0.35",
     },
     "35%": {
-      transform: "translateY(-0.45em)",
+      transform: "translateY(-80%)",
       opacity: "1",
     },
   },
