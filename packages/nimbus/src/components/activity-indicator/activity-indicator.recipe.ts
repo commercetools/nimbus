@@ -35,8 +35,8 @@ export const activityIndicatorRecipe = defineRecipe({
       height: "0.375em",
       borderRadius: "full",
       backgroundColor: "colorPalette.11",
-      animationName: "bounce",
-      animationDuration: "1.4s",
+      animationName: "activity-bounce",
+      animationDuration: "0.9s",
       animationIterationCount: "infinite",
       animationTimingFunction: "ease-in-out",
     },
@@ -44,10 +44,12 @@ export const activityIndicatorRecipe = defineRecipe({
       marginInlineStart: "0.25em",
     },
 
-    // Staggered opacities + animation delays so the dots bounce in sequence.
+    // Staggered delays produce the sequential "wave". The animation drives
+    // opacity while playing; the static opacities below are the resting look
+    // (used under reduced motion, where the bounce is replaced by a pulse).
     "& [data-dot='0']": { opacity: "0.4", animationDelay: "0s" },
-    "& [data-dot='1']": { opacity: "0.6", animationDelay: "0.16s" },
-    "& [data-dot='2']": { opacity: "0.8", animationDelay: "0.32s" },
+    "& [data-dot='1']": { opacity: "0.6", animationDelay: "0.15s" },
+    "& [data-dot='2']": { opacity: "0.8", animationDelay: "0.3s" },
 
     // Fixed sizes set the root to a relative square; the dots row is absolutely
     // centered over it so its width never participates in layout.

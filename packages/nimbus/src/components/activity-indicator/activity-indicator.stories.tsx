@@ -5,6 +5,7 @@ import {
   Box,
   Stack,
   Text,
+  TextInput,
 } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
 
@@ -135,6 +136,30 @@ export const Sizes: Story = {
       );
     });
   },
+};
+
+/**
+ * Placed inside a `TextInput` as a leading (prefix) or trailing (suffix) icon.
+ * The fixed `size` reserves a square icon-box footprint, so the indicator drops
+ * into the input's icon slot like any other icon while an agent is working.
+ */
+export const InsideInput: Story = {
+  render: () => (
+    <Stack direction="column" gap="400" alignItems="flex-start" width="320px">
+      <TextInput
+        aria-label="Agent response, generating (leading indicator)"
+        defaultValue="Generating a response"
+        isReadOnly
+        leadingElement={<ActivityIndicator size="sm" />}
+      />
+      <TextInput
+        aria-label="Agent response, generating (trailing indicator)"
+        defaultValue="Generating a response"
+        isReadOnly
+        trailingElement={<ActivityIndicator size="sm" />}
+      />
+    </Stack>
+  ),
 };
 
 /**

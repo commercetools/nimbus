@@ -28,6 +28,19 @@ export const keyframes = {
       animationTimingFunction: "cubic-bezier(0,0,0.2,1)",
     },
   },
+  // Lively typing-indicator bounce: each dot lifts ~one diameter and brightens
+  // at the peak, then rests. Distances are in em so the motion scales with the
+  // dot size. Used by ActivityIndicator.
+  "activity-bounce": {
+    "0%, 70%, 100%": {
+      transform: "translateY(0)",
+      opacity: "0.35",
+    },
+    "35%": {
+      transform: "translateY(-0.45em)",
+      opacity: "1",
+    },
+  },
 
   "fade-in": {
     from: {
