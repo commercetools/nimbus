@@ -11,6 +11,7 @@ import {
   Text,
   TextInput,
 } from "@commercetools/nimbus";
+import { Bathtub } from "@commercetools/nimbus-icons";
 import { within, expect } from "storybook/test";
 import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 
@@ -94,15 +95,31 @@ export const Labeled: Story = {
 /**
  * The default `inherit` size flows inline with text and scales with the
  * surrounding `font-size`. Fixed sizes reserve a square icon-box footprint.
+ *
+ * Use the button to toggle between the ActivityIndicator and a static icon in
+ * the same inline position, to compare how each reads next to a status label.
  */
 export const InlineWithText: Story = {
-  render: (args) => (
-    <Card.Root variant="outlined" size="md">
-      <Text fontSize="xl">
-        <ActivityIndicator {...args} /> Thinking
-      </Text>
-    </Card.Root>
-  ),
+  render: (args) => {
+    const [showIcon, setShowIcon] = useState(false);
+
+    const indicator = showIcon ? <Bathtub /> : <ActivityIndicator {...args} />;
+
+    return (
+      <Stack direction="column" gap="400" alignItems="flex-start">
+        <Button
+          variant="outline"
+          size="xs"
+          onPress={() => setShowIcon((prev) => !prev)}
+        >
+          {showIcon ? "Show activity indicator" : "Show icon"}
+        </Button>
+        <Card.Root variant="outlined" size="md">
+          <Text fontSize="xl">{indicator} Thinking</Text>
+        </Card.Root>
+      </Stack>
+    );
+  },
   args: {},
 };
 

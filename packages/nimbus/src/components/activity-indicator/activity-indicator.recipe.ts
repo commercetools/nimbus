@@ -17,15 +17,7 @@ export const activityIndicatorRecipe = defineRecipe({
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    verticalAlign: "middle",
     flexShrink: "0",
-
-    "& svg": {
-      width: "100%",
-      height: "100%",
-      // Let the bounce lift dots past the viewBox without clipping.
-      overflow: "visible",
-    },
 
     "& circle": {
       // `fill` is set per `variant` below (plain vs contrast).
