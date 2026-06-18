@@ -63,9 +63,19 @@ export const ActivityIndicator = (props: ActivityIndicatorProps) => {
         focusable="false"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <circle data-dot="0" cx="5" cy="12" r="3" />
+        {/*
+          Dot geometry is a hybrid of two competing constraints on the 24×24
+          icon grid. Dots stay at the clean integer r=3 (⌀6); spacing is the
+          variable. The icon family reserves outer "safe space", but the Figma
+          spec wants wider gaps between dots — and its literal three-dots width
+          (26px) overflows the 24px canvas, while strict icon padding squeezes
+          the dots together in small sizes. cx 4/12/20 splits the difference:
+          ~1px outer padding (honors the icon safe space, so it isn't an
+          outlier next to other icons) with 2px gaps (honors the Figma spacing).
+        */}
+        <circle data-dot="0" cx="4" cy="12" r="3" />
         <circle data-dot="1" cx="12" cy="12" r="3" />
-        <circle data-dot="2" cx="19" cy="12" r="3" />
+        <circle data-dot="2" cx="20" cy="12" r="3" />
       </svg>
     </ActivityIndicatorRoot>
   );
