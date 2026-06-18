@@ -62,17 +62,32 @@ The ActivityIndicator SHALL be decorative by default: when no `aria-label` is pr
 
 ### Requirement: Color palette theming
 
-The ActivityIndicator SHALL support a `colorPalette` prop accepting any Nimbus color palette (plus the `white` alias), defaulting to `primary`. The dots SHALL be filled from the active palette's `11` shade. The two semantic aliases SHALL remap to alpha palettes for overlaying colored surfaces: `primary` → `ctvioletAlpha`, `white` → `whiteAlpha`.
+The ActivityIndicator SHALL support a `colorPalette` prop accepting any Nimbus color palette, defaulting to `primary`, with no `LoadingSpinner`-style restriction and no per-palette remap. By default the dots SHALL be filled from the active palette's `11` shade.
 
-#### Scenario: Default and alias palettes render
+#### Scenario: Default palette renders
 
-- **WHEN** an ActivityIndicator is rendered with `colorPalette="primary"` and again with `colorPalette="white"`
-- **THEN** the dots are colored from the corresponding alpha palette in each case
+- **WHEN** an ActivityIndicator is rendered with default props
+- **THEN** the dots are filled from the `primary` palette's `11` shade
 
 #### Scenario: Any Nimbus palette renders
 
-- **WHEN** an ActivityIndicator is rendered with an arbitrary palette (e.g. `colorPalette="positive"`)
+- **WHEN** an ActivityIndicator is rendered with an arbitrary palette (e.g. `colorPalette="positive"` or `colorPalette="ctyellow"`)
 - **THEN** the dots are filled from that palette's `11` shade
+
+### Requirement: Contrast variant for solid surfaces
+
+The ActivityIndicator SHALL support a `variant` prop with values `plain` (default) and `contrast`. `plain` SHALL fill the dots from `colorPalette.11`. `contrast` SHALL fill the dots from `colorPalette.contrast` — the palette's auto black/white step — so the dots remain legible when placed on a solid `colorPalette.9`-style colored surface.
+
+#### Scenario: Plain variant uses the colored step
+
+- **WHEN** an ActivityIndicator is rendered with the default `variant` (or `variant="plain"`)
+- **THEN** the dots are filled from `colorPalette.11`
+
+#### Scenario: Contrast variant uses the contrast step
+
+- **WHEN** an ActivityIndicator is rendered with `variant="contrast"` on a solid colored surface
+- **THEN** the dots are filled from `colorPalette.contrast`
+- **AND** that step resolves to black or white per palette (e.g. a light palette yields black dots, a dark palette yields white dots)
 
 ### Requirement: Reduced-motion support
 

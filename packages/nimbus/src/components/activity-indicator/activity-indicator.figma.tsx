@@ -13,10 +13,12 @@ figma.connect(
         xs: "xs",
         "2xs": "2xs",
       }),
-      colorPalette: figma.enum("Color", { primary: "primary", white: "white" }),
+      // Figma's "white" color (dots on a solid surface) maps to the `contrast`
+      // variant; "primary" is the default and needs no prop.
+      variant: figma.enum("Color", { white: "contrast" }),
     },
     example: (props) => (
-      <ActivityIndicator size={props.size} colorPalette={props.colorPalette} />
+      <ActivityIndicator size={props.size} variant={props.variant} />
     ),
   }
 );

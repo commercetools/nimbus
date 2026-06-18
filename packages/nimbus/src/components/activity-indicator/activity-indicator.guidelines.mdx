@@ -19,6 +19,10 @@ blocking operation to finish.
 - **Use the right tool for the job:** Use the activity indicator for agent or
   conversational activity. For indeterminate loading where the user must wait,
   use the [Loading spinner](/components/feedback/loadingspinner) instead.
+- **Match the surface:** On neutral or page backgrounds, keep the default
+  (`plain`) treatment. When the dots sit on a solid colored fill — such as an
+  agent bubble — use `variant="contrast"` so they take the palette's contrast
+  color (black or white) and stay legible.
 - **Keep it decorative when text is present:** When a visible label already
   conveys the state, leave the indicator unlabeled — it is `aria-hidden` so
   screen readers announce the text, not the animation.

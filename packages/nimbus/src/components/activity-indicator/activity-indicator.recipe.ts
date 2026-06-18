@@ -28,7 +28,7 @@ export const activityIndicatorRecipe = defineRecipe({
     },
 
     "& circle": {
-      fill: "colorPalette.11",
+      // `fill` is set per `variant` below (plain vs contrast).
       // Percentage translate in the bounce resolves against the dot's own box.
       transformBox: "fill-box",
       animationName: "activity-bounce",
@@ -64,9 +64,18 @@ export const activityIndicatorRecipe = defineRecipe({
       md: { width: "800", height: "800" },
       lg: { width: "1000", height: "1000" },
     },
+
+    // Selects which step of the active `colorPalette` fills the dots:
+    // `plain` for neutral/page backgrounds, `contrast` for sitting on a solid
+    // `colorPalette.9`-style fill (auto black/white per palette).
+    variant: {
+      plain: { "& circle": { fill: "colorPalette.11" } },
+      contrast: { "& circle": { fill: "colorPalette.contrast" } },
+    },
   },
 
   defaultVariants: {
     size: "inherit",
+    variant: "plain",
   },
 });

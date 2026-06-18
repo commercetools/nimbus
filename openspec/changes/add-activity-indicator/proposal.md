@@ -8,14 +8,15 @@ Chat and AI surfaces (the `nimbus-chat` initiative) need an inline "agent is wor
 - Default `size="inherit"` makes the dots **em-based**, scaling with the surrounding `font-size` for inline use next to text (zero-config common case).
 - Fixed sizes (`2xs`–`lg`) reserve a **square icon-box footprint** (reusing `LoadingSpinner`'s scale points), drawn as a single square `viewBox="0 0 24 24"` SVG with the three dots composed inside the grid, so the indicator drops into input start/end icon slots interchangeably with a spinner.
 - Accessibility is **decorative by default** (`aria-hidden`), upgrading to `role="status"` + `aria-live="polite"` only when the consumer provides an `aria-label`.
-- `colorPalette` accepts **any Nimbus palette** (default `primary`); the `primary` and `white` aliases remap to their alpha palettes (`ctvioletAlpha` / `whiteAlpha`) for overlaying colored surfaces.
+- `colorPalette` accepts **any Nimbus palette** (default `primary`); the dots are filled from the palette's `11` shade.
+- `variant` selects the dot color treatment: **`plain`** (default → `colorPalette.11`) for neutral backgrounds, and **`contrast`** (→ `colorPalette.contrast`) for placing the dots on a solid colored surface (auto black/white per palette).
 - `LoadingSpinner` is **not** modified — no breaking change. FEC-981's variant approach is superseded (deviation documented in FEC-981 comment #1103879).
 
 ## Capabilities
 
 ### New Capabilities
 
-- `activity-indicator`: An animated, presentational three-dot indicator signalling ongoing agent/system activity in chat and AI surfaces, with em-relative default sizing, optional fixed icon-slot sizing, a conditional decorative/live-region accessibility contract, color-palette theming, and reduced-motion support.
+- `activity-indicator`: An animated, presentational three-dot indicator signalling ongoing agent/system activity in chat and AI surfaces, with em-relative default sizing, optional fixed icon-slot sizing, a conditional decorative/live-region accessibility contract, full color-palette theming with a `plain`/`contrast` variant for solid surfaces, and reduced-motion support.
 
 ### Modified Capabilities
 

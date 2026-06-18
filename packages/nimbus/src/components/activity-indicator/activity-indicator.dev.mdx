@@ -51,23 +51,37 @@ const App = () => (
 );
 ```
 
-### Visual variants
+### Color palette
 
-The `colorPalette` prop accepts any Nimbus color palette, plus two semantic
-aliases tuned for overlaying surfaces.
-
-- `primary`: The default color (maps to `ctvioletAlpha`), suitable for light
-  backgrounds.
-- `white`: Maps to `whiteAlpha`, suitable for dark backgrounds or colored
-  surfaces.
-- Any other palette (e.g. `positive`, `info`, `grass`) colors the dots with that
-  palette's shade.
+The `colorPalette` prop accepts any Nimbus color palette (default `primary`). The
+dots are filled from the palette's `11` shade.
 
 ```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400">
-    <ActivityIndicator colorPalette="primary" margin="400" />
-    <ActivityIndicator colorPalette="white" margin="400" bgColor="black" />
+    <ActivityIndicator colorPalette="primary" />
+    <ActivityIndicator colorPalette="positive" />
+    <ActivityIndicator colorPalette="info" />
+  </Stack>
+);
+```
+
+### On a solid colored surface
+
+When the dots sit on a solid colored fill (e.g. an agent bubble), use
+`variant="contrast"`. This fills the dots from the palette's `contrast` step,
+which resolves to black or white automatically per palette so the dots stay
+legible on the surface.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Box colorPalette="primary" bg="colorPalette.9" padding="400" borderRadius="200">
+      <ActivityIndicator colorPalette="primary" variant="contrast" />
+    </Box>
+    <Box colorPalette="ctyellow" bg="colorPalette.9" padding="400" borderRadius="200">
+      <ActivityIndicator colorPalette="ctyellow" variant="contrast" />
+    </Box>
   </Stack>
 );
 ```

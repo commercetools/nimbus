@@ -43,9 +43,21 @@ No `aria-label` → `aria-hidden="true"`, no role (decorative; adjacent visible 
 - *Why no React Aria:* there is no interaction and it is not a progressbar; a plain styled `<span>` with conditional `role`/`aria-live` is correct and lighter. `useProgressBar` would impose the wrong semantics.
 - *Alternative considered:* always `role="status"` with an i18n default label. Rejected — risks double-announcement when paired with visible text, and surfaces a possibly-misleading default.
 
-### `<span>`-based markup
+### `<span>`-based root markup
 
-Root and dots are all `<span>` so the indicator can live inside a line of text without injecting block-level boxes. Slot uses `withContext<HTMLSpanElement, …>("span")`; `ref` is `React.Ref<HTMLSpanElement>`.
+The root is a `<span>` (wrapping the square `<svg>` of `<circle>` dots) so the indicator can live inside a line of text without injecting block-level boxes. Slot uses `withContext<HTMLSpanElement, …>("span")`; `ref` is `React.Ref<HTMLSpanElement>`.
+
+### Color palette: full palette set, with a `variant` for solid surfaces
+
+`colorPalette` accepts the full `NimbusColorPalette` set (default `primary`); there is no `LoadingSpinner`-style restriction and no per-palette remap. The dots fill from the active palette's step, selected by a recipe `variant`:
+
+- `plain` (default) → `colorPalette.11`, the colored treatment for neutral / page backgrounds.
+- `contrast` → `colorPalette.contrast`, the auto black/white step for placing the dots on a solid `colorPalette.9`-style colored surface (e.g. an agent bubble).
+
+This reuses Nimbus's established convention — `colorPalette.contrast` is exactly the foreground-on-solid-fill token `Button`'s `solid` variant uses. `variant` is the conventional home for "which palette step does fg use", so the colored vs contrast choice belongs there rather than on a bespoke prop.
+
+- *Why drop the earlier `primary→ctvioletAlpha` / `white→whiteAlpha` aliases:* `white` is not a real palette and is wrong on light surfaces (a solid `ctyellow.9` needs black, not white). The per-dot opacity (0.4/0.6/0.8) already softens the dots, so the alpha palettes were redundant; using `.11` for every palette is uniform and predictable.
+- *Why value names `plain`/`contrast` rather than `subtle`/`solid`:* the indicator is foreground-only (no background fill of its own), so Button's background-implying `solid`/`subtle` would mislead. `plain`/`contrast` name the dots' own treatment.
 
 ### i18n default label only when labeled
 
@@ -55,7 +67,7 @@ A `Nimbus.ActivityIndicator.*` default (e.g. "Agent is typing") is applied only 
 
 - **The upward bounce relies on `overflow: visible` on the SVG** → Mitigation: the square footprint itself never changes, so siblings are unaffected; `overflow` is never set to `auto`/`scroll`, so the component renders no scrollbars.
 - **Consumers may reach for ActivityIndicator as a generic spinner replacement** → Mitigation: docs/guidelines clearly scope it to chat/agent activity and point progress use cases to `LoadingSpinner`.
-- **Two indicators with similar `size`/`colorPalette` APIs could drift** → Mitigation: deliberately reuse LoadingSpinner's `size` scale points; note the shared conventions in the dev docs. (`colorPalette` is broader here — any Nimbus palette — since the dots are pure decoration with no progressbar contract.)
+- **Two indicators with similar `size`/`colorPalette` APIs could drift** → Mitigation: deliberately reuse LoadingSpinner's `size` scale points; note the shared conventions in the dev docs. `colorPalette` is intentionally broader here (any Nimbus palette, no `primary`/`white` remap), and the colored-vs-contrast choice lives on a `variant` (`plain`/`contrast`) — the dots are pure decoration with no progressbar contract.
 - **Reduced-motion pulse must remain visible but unobtrusive** → Mitigation: opacity-only pulse, validated in a dedicated story.
 
 ## Migration Plan

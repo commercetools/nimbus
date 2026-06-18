@@ -243,15 +243,31 @@ export const SizeCalibration: Story = {
 
 /**
  * The indicator across every Nimbus color palette (semantic, brand, and system
- * groups), rendered at a fixed `md` size. The dots fill with the palette's
- * `colorPalette.11` shade. The `primary` and `white` aliases remap to their
- * alpha palettes for overlaying colored surfaces.
+ * groups), rendered at a fixed `md` size. Top of each pair: the default `plain`
+ * variant, filling the dots from the palette's `colorPalette.11` shade. Bottom:
+ * the `contrast` variant on the palette's solid `colorPalette.9` swatch — it
+ * uses `colorPalette.contrast`, flipping black/white per palette so the dots
+ * read on a solid colored surface.
  */
 export const ColorPalettes: Story = {
   render: () => (
     <DisplayColorPalettes>
       {(palette) => (
-        <ActivityIndicator key={palette} size="md" colorPalette={palette} />
+        <Stack key={palette} direction="column" gap="200" alignItems="center">
+          <ActivityIndicator size="md" colorPalette={palette} />
+          <Box
+            colorPalette={palette}
+            bg="colorPalette.9"
+            padding="200"
+            borderRadius="200"
+          >
+            <ActivityIndicator
+              size="md"
+              colorPalette={palette}
+              variant="contrast"
+            />
+          </Box>
+        </Stack>
       )}
     </DisplayColorPalettes>
   ),

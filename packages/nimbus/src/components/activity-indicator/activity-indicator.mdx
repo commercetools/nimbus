@@ -59,15 +59,22 @@ const App = () => (
 );
 ```
 
-#### On dark background
+#### On a solid colored surface
 
-Use the `white` color palette on dark or colored surfaces.
+When the indicator sits on a solid colored fill, use `variant="contrast"`. The
+dots take the palette's `contrast` step (black or white, chosen automatically per
+palette) so they stay legible on the surface.
 
 ```jsx live
 const App = () => (
-  <Stack backgroundColor="neutral.8" padding="400">
-    <Text color="white">
-      Thinking <ActivityIndicator colorPalette="white" />
+  <Stack
+    colorPalette="primary"
+    backgroundColor="colorPalette.9"
+    padding="400"
+  >
+    <Text color="colorPalette.contrast">
+      Thinking{" "}
+      <ActivityIndicator colorPalette="primary" variant="contrast" />
     </Text>
   </Stack>
 );
