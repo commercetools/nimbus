@@ -105,12 +105,21 @@ counterpart, see "Optional controlled `size` prop".
 - **THEN** SHALL call `onSizeChange(size)` with the post-change aside size
   (`0–100`)
 
-#### Scenario: `onSizeChangeEnd` fires once per settled interaction
+#### Scenario: `onSizeChangeEnd` fires once per settled resize
 
-- **WHEN** a drag ends, an arrow/Home/End key is pressed, the aside collapses or
-  expands, or double-click restores defaults
+- **WHEN** a drag ends, an arrow/Home/End key is pressed, or double-click
+  restores defaults
 - **THEN** SHALL call `onSizeChangeEnd(size)` exactly once for that interaction
   (the seam consumers wire persistence to — no debounce required)
+
+#### Scenario: collapse/expand do not fire `onSizeChangeEnd`
+
+- **WHEN** the aside collapses or expands (via Enter on the focused handle or the
+  controlled `collapsed` prop)
+- **THEN** SHALL NOT call `onSizeChangeEnd` — collapse/expand are signalled by
+  `onCollapsedChange`, not the resize-settle channel, so a consumer feeding the
+  settled value back into a controlled `size` never persists or restores the
+  collapsed size
 
 #### Scenario: Size preserves float precision
 
