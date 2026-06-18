@@ -1,5 +1,7 @@
 # @commercetools/nimbus-mcp
 
+## 3.2.0
+
 ## 3.1.0
 
 ## 3.0.0
