@@ -98,10 +98,10 @@ counterpart, see "Optional controlled `size` prop".
 - **WHEN** `defaultSize` is omitted or non-finite
 - **THEN** SHALL fall back to a 50/50 split
 
-#### Scenario: `onSizeChange` fires on every size update
+#### Scenario: `onSizeChange` fires on every resize update
 
 - **WHEN** the user drags the handle (each tick), presses an arrow key on a
-  focused handle, collapses/expands, or double-clicks to restore
+  focused handle, or double-clicks to restore
 - **THEN** SHALL call `onSizeChange(size)` with the post-change aside size
   (`0–100`)
 
@@ -112,14 +112,14 @@ counterpart, see "Optional controlled `size` prop".
 - **THEN** SHALL call `onSizeChangeEnd(size)` exactly once for that interaction
   (the seam consumers wire persistence to — no debounce required)
 
-#### Scenario: collapse/expand do not fire `onSizeChangeEnd`
+#### Scenario: collapse/expand do not fire `onSizeChange` or `onSizeChangeEnd`
 
 - **WHEN** the aside collapses or expands (via Enter on the focused handle or the
   controlled `collapsed` prop)
-- **THEN** SHALL NOT call `onSizeChangeEnd` — collapse/expand are signalled by
-  `onCollapsedChange`, not the resize-settle channel, so a consumer feeding the
-  settled value back into a controlled `size` never persists or restores the
-  collapsed size
+- **THEN** SHALL NOT call `onSizeChange` or `onSizeChangeEnd` — collapse/expand
+  change only the aside's layout and are signalled by `onCollapsedChange`, so a
+  consumer feeding the settled value back into a controlled `size` never persists
+  or restores the collapsed size
 
 #### Scenario: Size preserves float precision
 
@@ -381,10 +381,12 @@ for writing back; collapse persists via its controlled `collapsed` boolean.
 
 #### Scenario: Persist on settled change
 
-- **WHEN** an interaction settles (drag end, keypress, collapse/expand, restore)
+- **WHEN** a resize interaction settles (drag end, keypress, double-click
+  restore)
 - **THEN** SHALL call `onSizeChangeEnd(size)` once, which the consumer wires to
   its storage `set` — no debouncing required since it fires per interaction, not
-  per drag tick
+  per drag tick (collapse/expand do not fire it; collapse state is persisted via
+  `onCollapsedChange`)
 
 #### Scenario: No imperative API
 

@@ -194,19 +194,23 @@ export const useSplitterState = (
     if (cur && !asideConfig.collapsible) return;
     appliedCollapseRef.current = cur;
 
-    // Collapse/expand only changes the aside's layout and is signalled via
-    // `onCollapsedChange` — it is not a resize settle. Use `setSize` (fires
-    // `onSizeChange` but NOT `onSizeChangeEnd`) so a controlled-size consumer
-    // feeding `onSizeChangeEnd` back doesn't persist/restore the collapsed size.
-    // `onSizeChangeEnd` stays the user-resize seam (drag, keyboard, double-click,
+    // Collapse/expand only change the aside's layout and are signalled via
+    // `onCollapsedChange` — they are not size changes a consumer should react to.
+    // Write the size silently (no `onSizeChange`, no `onSizeChangeEnd`), the same
+    // way the controlled-`size` reconcile below writes the consumer's own value,
+    // so a controlled-size consumer never sees the collapsed size on either
+    // channel. Both stay the resize channels (drag, keyboard, double-click,
     // drag-to-expand).
     if (cur) {
       if (!prev) preCollapseSizeRef.current = sizeRef.current;
-      setSize(asideConfig.collapsedSize);
+      sizeRef.current = asideConfig.collapsedSize;
+      setSizeState(asideConfig.collapsedSize);
     } else {
       const restore = preCollapseSizeRef.current;
       preCollapseSizeRef.current = null;
-      setSize(restore ?? initialSizeRef.current);
+      const next = restore ?? initialSizeRef.current;
+      sizeRef.current = next;
+      setSizeState(next);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collapsed, paneOrder]);

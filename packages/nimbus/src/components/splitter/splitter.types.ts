@@ -160,9 +160,10 @@ export type SplitterRootProps = OmitInternalProps<SplitterRootSlotProps> & {
   collapsedSize?: number;
 
   /**
-   * Notification callback fired on every size change, including each drag tick
-   * (~60Hz). Receives the aside size (0–100). For persistence, prefer
-   * `onSizeChangeEnd`.
+   * Notification callback fired on every **resize** update, including each drag
+   * tick (~60Hz). Receives the aside size (0–100). For persistence, prefer
+   * `onSizeChangeEnd`. Collapse and expand do **not** fire this — they only
+   * change the aside's layout and are signalled by `onCollapsedChange`.
    */
   onSizeChange?: (size: number) => void;
 
