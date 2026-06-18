@@ -1,14 +1,16 @@
 ---
-"@commercetools/nimbus": patch
+"@commercetools/nimbus": minor
 ---
 
-**Splitter**: collapsing or expanding the aside no longer fires `onSizeChange` or
-`onSizeChangeEnd`.
+`Splitter`: collapsing or expanding the aside is no longer reported on the size
+callbacks (`onSizeChange` / `onSizeChangeEnd`) — only on `onCollapsedChange`.
 
-Collapse/expand change only the aside's layout (main takes the remainder) and are
-signalled by `onCollapsedChange` — they are not size *changes* a consumer should
-react to on the size channels. The size channels stay resize-only (drag,
-keyboard, double-click restore). This fixes controlled-size consumers that feed
-the settled value back into `size`: a programmatic collapse previously fed the
-collapsed size back, so the aside reopened at the collapsed width (e.g. 0) instead
-of its real width.
+- Fixed: a controlled splitter (you drive `size` and feed `onSizeChangeEnd` back)
+  no longer breaks on a programmatic collapse. Previously, collapsing fed the
+  collapsed size back into `size`, so expanding reopened the aside at the
+  collapsed width (e.g. `0`) instead of its previous width. Collapse/expand now
+  preserve the size to restore, with no special wiring on your part.
+- Behavior change: `onSizeChange` and `onSizeChangeEnd` now fire only for genuine
+  resizes (drag, keyboard, double-click restore). They no longer fire on
+  collapse/expand. If you need to react to the aside collapsing or expanding, use
+  `onCollapsedChange`.
