@@ -160,16 +160,20 @@ export type SplitterRootProps = OmitInternalProps<SplitterRootSlotProps> & {
   collapsedSize?: number;
 
   /**
-   * Notification callback fired on every size change, including each drag tick
-   * (~60Hz). Receives the aside size (0–100). For persistence, prefer
-   * `onSizeChangeEnd`.
+   * Notification callback fired on every **resize** update, including each drag
+   * tick (~60Hz). Receives the aside size (0–100). For persistence, prefer
+   * `onSizeChangeEnd`. Collapse and expand do **not** fire this — they only
+   * change the aside's layout and are signalled by `onCollapsedChange`.
    */
   onSizeChange?: (size: number) => void;
 
   /**
-   * Notification callback fired once when a size interaction settles (drag end,
-   * each keypress, collapse/expand, double-click restore). Receives the aside
-   * size (0–100). This is the seam to wire persistence to — no debouncing.
+   * Notification callback fired once when a **resize** interaction settles (drag
+   * end, each keypress, double-click restore). Receives the aside size (0–100).
+   * This is the seam to wire persistence to — no debouncing. Collapse and expand
+   * do **not** fire this (they are signalled by `onCollapsedChange`); only a
+   * genuine resize does, so feeding the value back into a controlled `size`
+   * never restores the collapsed size.
    */
   onSizeChangeEnd?: (size: number) => void;
 
