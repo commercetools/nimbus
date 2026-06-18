@@ -5,6 +5,7 @@ import {
   type ActivityIndicatorProps,
   Box,
   Button,
+  Card,
   LoadingSpinner,
   Stack,
   Text,
@@ -96,14 +97,11 @@ export const Labeled: Story = {
  */
 export const InlineWithText: Story = {
   render: (args) => (
-    <Stack direction="column" gap="400" alignItems="flex-start">
-      <Text fontSize="sm">
-        Thinking <ActivityIndicator {...args} />
-      </Text>
+    <Card.Root variant="outlined" size="md">
       <Text fontSize="xl">
-        Thinking <ActivityIndicator {...args} />
+        <ActivityIndicator {...args} /> Thinking
       </Text>
-    </Stack>
+    </Card.Root>
   ),
   args: {},
 };
