@@ -72,10 +72,14 @@ export const ActivityIndicator = (props: ActivityIndicatorProps) => {
           the dots together in small sizes. cx 4/12/20 splits the difference:
           ~1px outer padding (honors the icon safe space, so it isn't an
           outlier next to other icons) with 2px gaps (honors the Figma spacing).
+
+          cy=13 rests the dots 1px below center: the bounce only travels upward,
+          so nudging the resting row down balances the motion around the grid's
+          vertical midpoint instead of leaving it top-heavy.
         */}
-        <circle data-dot="0" cx="4" cy="12" r="3" />
-        <circle data-dot="1" cx="12" cy="12" r="3" />
-        <circle data-dot="2" cx="20" cy="12" r="3" />
+        <circle data-dot="0" cx="4" cy="13" r="3" />
+        <circle data-dot="1" cx="12" cy="13" r="3" />
+        <circle data-dot="2" cx="20" cy="13" r="3" />
       </svg>
     </ActivityIndicatorRoot>
   );
