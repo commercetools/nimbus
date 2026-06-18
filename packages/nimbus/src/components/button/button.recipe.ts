@@ -93,17 +93,17 @@ export const buttonRecipe = defineRecipe({
           height: "500",
         },
       }, */
-      /*  xl: {
+      xl: {
         h: "1200",
         minW: "1200",
         textStyle: "md",
         px: "500",
         gap: "250",
         _icon: {
-          width: "500",
-          height: "500",
+          width: "700",
+          height: "700",
         },
-      }, */
+      },
       /* "2xl": {
         h: "1600",
         minW: "1600",

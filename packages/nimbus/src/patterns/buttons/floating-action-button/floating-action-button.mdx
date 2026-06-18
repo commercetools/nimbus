@@ -1,0 +1,82 @@
+---
+id: Components-FloatingActionButton
+title: Floating action button
+exportName: FloatingActionButton
+description: A circular, icon-only floating button for prominent single actions, such as opening a chat panel or triggering a primary workflow.
+lifecycleState: Stable
+order: 999
+menu:
+  - Components
+  - Buttons
+  - Floating action button
+tags:
+  - component
+  - buttons
+  - actions
+  - floating
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=11090-7295
+---
+
+## Overview
+
+The floating action button (FAB) is a 48px circular button used for a single,
+prominent action on the screen — such as opening an agent chat panel. It uses
+the primary color palette and includes a drop shadow to float above page
+content.
+
+Positioning is the consumer's responsibility via style props. The Figma spec
+suggests 32px from both the right and bottom edges as a starting point.
+
+### Resources
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=11090-7295)
+
+## Usage
+
+```jsx live
+const App = () => {
+  return (
+    <FloatingActionButton aria-label="Open assistant">
+      <Icons.Chat />
+    </FloatingActionButton>
+  );
+};
+```
+
+## States
+
+### Default
+
+```jsx live
+const App = () => (
+  <FloatingActionButton aria-label="Open assistant">
+    <Icons.Chat />
+  </FloatingActionButton>
+);
+```
+
+### Disabled
+
+```jsx live
+const App = () => (
+  <FloatingActionButton aria-label="Open assistant" isDisabled>
+    <Icons.Chat />
+  </FloatingActionButton>
+);
+```
+
+## Color palette
+
+```jsx live
+const App = () => (
+  <Stack direction="row" gap="400">
+    <FloatingActionButton aria-label="Primary" colorPalette="primary">
+      <Icons.Chat />
+    </FloatingActionButton>
+    <FloatingActionButton aria-label="Critical" colorPalette="critical">
+      <Icons.Chat />
+    </FloatingActionButton>
+  </Stack>
+);
+```
