@@ -33,11 +33,11 @@ const App = () => (
 
 ### Size options
 
-The `size` prop defaults to `inherit`, which makes the dots em-relative so they
-scale with the surrounding text. The fixed sizes (`2xs`, `xs`, `sm`, `md`, `lg`)
-reserve a square icon-box footprint — matching the icon dimensions used by input
-start/end icon slots — while the dots overflow that box horizontally without
-affecting layout.
+The `size` prop defaults to `inherit`, which ties the indicator's box to the
+surrounding `font-size` (`1em`) so it scales with the text. The fixed sizes
+(`2xs`, `xs`, `sm`, `md`, `lg`) reserve a square icon-box footprint — the same
+scale points `LoadingSpinner` uses — so the indicator drops into input start/end
+icon slots interchangeably with a spinner.
 
 ```jsx live-dev
 const App = () => (

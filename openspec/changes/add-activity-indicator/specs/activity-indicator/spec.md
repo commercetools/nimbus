@@ -2,13 +2,13 @@
 
 ### Requirement: Animated three-dot rendering
 
-The ActivityIndicator SHALL render exactly three dot elements as `<span>` tags inside a `<span>` root element, never using `<div>`. The three dots SHALL display staggered base opacities (0.4, 0.6, 0.8) and animate with a vertical bounce using staggered animation delays so the dots bounce in sequence.
+The ActivityIndicator SHALL render a `<span>` root element (never `<div>`) containing a single square `<svg>` (`viewBox="0 0 24 24"`, `aria-hidden`) with exactly three `<circle>` dots. The three dots SHALL display staggered base opacities (0.4, 0.6, 0.8) and animate with a vertical bounce using staggered animation delays so the dots bounce in sequence.
 
-#### Scenario: Renders three span dots
+#### Scenario: Renders three circle dots inside an svg
 
 - **WHEN** an ActivityIndicator is rendered with default props
 - **THEN** the root element is a `<span>`
-- **AND** it contains exactly three `<span>` dot elements
+- **AND** it contains exactly one `<svg>` with three `<circle>` dot elements
 
 #### Scenario: Dots animate in a staggered sequence
 
@@ -18,17 +18,17 @@ The ActivityIndicator SHALL render exactly three dot elements as `<span>` tags i
 
 ### Requirement: Em-relative default sizing
 
-The ActivityIndicator SHALL default to `size="inherit"`, where the root is laid out as `display: inline-flex` with `font-size: inherit` and the dot geometry is expressed in em units (dot diameter ≈ 0.375em, gap ≈ 0.25em). In this mode the indicator SHALL flow inline in normal document flow and its footprint SHALL be the intrinsic width of the dots, scaling proportionally with the surrounding `font-size`.
+The ActivityIndicator SHALL default to `size="inherit"`, where the root is laid out as `display: inline-flex` with a `1em` square box and the SVG scales to fill it (`width`/`height: 100%`). In this mode the indicator SHALL flow inline (`vertical-align: middle`) and scale proportionally with the surrounding `font-size`.
 
 #### Scenario: Default size scales with surrounding font-size
 
 - **WHEN** an ActivityIndicator with the default size is placed inside text with a larger `font-size`
-- **THEN** the dots render proportionally larger
-- **AND** the indicator flows inline within the text without reserving a fixed square box
+- **THEN** the indicator renders proportionally larger
+- **AND** the indicator flows inline within the text
 
 ### Requirement: Fixed icon-box sizing for slot placement
 
-The ActivityIndicator SHALL accept fixed `size` values `2xs`, `xs`, `sm`, `md`, and `lg`. For a fixed size the root SHALL reserve a square icon-box footprint whose `width` and `height` match the corresponding LoadingSpinner scale point (2xs=350, xs=500, sm=600, md=800, lg=1000) so the indicator can be placed in input start/end icon slots like any other icon. The dots SHALL be rendered in an absolutely-positioned layer centered over the square box so that the wider-than-square dots overflow the box horizontally as decoration WITHOUT expanding the box content size or shifting sibling layout.
+The ActivityIndicator SHALL accept fixed `size` values `2xs`, `xs`, `sm`, `md`, and `lg`. For a fixed size the root SHALL reserve a square icon-box footprint whose `width` and `height` match the corresponding LoadingSpinner scale point (2xs=350, xs=500, sm=600, md=800, lg=1000) so the indicator can be placed in input start/end icon slots like any other icon. The square `<svg>` SHALL scale to fill that box, with the three dots composed inside its `viewBox` grid so the footprint stays square and does not expand the box content size or shift sibling layout.
 
 #### Scenario: Fixed size reserves a square footprint
 
@@ -36,11 +36,11 @@ The ActivityIndicator SHALL accept fixed `size` values `2xs`, `xs`, `sm`, `md`, 
 - **THEN** the root reserves a square footprint matching the `md` icon scale point
 - **AND** the dots are visually centered within that square
 
-#### Scenario: Dots overflow without affecting layout
+#### Scenario: Square footprint does not affect layout
 
 - **WHEN** an ActivityIndicator with a fixed size is placed next to sibling content
-- **THEN** the dots may extend horizontally beyond the square box edges
-- **AND** the sibling content is not shifted by the overflowing dots
+- **THEN** its footprint is the square icon box, matching a LoadingSpinner at the same size
+- **AND** the sibling content is not shifted
 - **AND** no scrollbars are introduced by the indicator
 
 ### Requirement: Decorative-by-default accessibility contract
@@ -62,12 +62,17 @@ The ActivityIndicator SHALL be decorative by default: when no `aria-label` is pr
 
 ### Requirement: Color palette theming
 
-The ActivityIndicator SHALL support a `colorPalette` prop with values `primary` and `white`, defaulting to `primary`, mirroring LoadingSpinner (`primary` maps to `ctvioletAlpha`, `white` maps to `whiteAlpha`). The dots SHALL be colored from the active color palette token.
+The ActivityIndicator SHALL support a `colorPalette` prop accepting any Nimbus color palette (plus the `white` alias), defaulting to `primary`. The dots SHALL be filled from the active palette's `11` shade. The two semantic aliases SHALL remap to alpha palettes for overlaying colored surfaces: `primary` → `ctvioletAlpha`, `white` → `whiteAlpha`.
 
-#### Scenario: Both palettes render
+#### Scenario: Default and alias palettes render
 
 - **WHEN** an ActivityIndicator is rendered with `colorPalette="primary"` and again with `colorPalette="white"`
-- **THEN** the dots are colored from the corresponding palette in each case
+- **THEN** the dots are colored from the corresponding alpha palette in each case
+
+#### Scenario: Any Nimbus palette renders
+
+- **WHEN** an ActivityIndicator is rendered with an arbitrary palette (e.g. `colorPalette="positive"`)
+- **THEN** the dots are filled from that palette's `11` shade
 
 ### Requirement: Reduced-motion support
 

@@ -1,17 +1,17 @@
 ## Context
 
-FEC-981 requested a "bouncing dots" indicator for chat/agent surfaces ("Thinking…", "Processing request", "Agent is typing"), originally scoped as a `variant="dots"` on `LoadingSpinner`. Review surfaced a structural mismatch: `LoadingSpinner` sizes via square icon tokens (its SVG scales to fit a square box), while three dots are a wide-short shape; and a spinner's `role="progressbar"` ("indeterminate progress, wait") is the wrong accessibility contract for a polite "activity" status. The decision (documented in FEC-981 comment #1103879) is to build a dedicated, presentational `ActivityIndicator` and leave `LoadingSpinner` untouched.
+FEC-981 requested a "bouncing dots" indicator for chat/agent surfaces ("Thinking…", "Processing request", "Agent is typing"), originally scoped as a `variant="dots"` on `LoadingSpinner`. Review surfaced a semantics mismatch: `LoadingSpinner` is *always* a `role="progressbar"` ("indeterminate progress, wait for completion", always announced via React Aria's `useProgressBar`), which is the wrong accessibility contract for a polite, decorative-by-default "activity" status. Folding the dots into a spinner variant would let a styling prop silently flip the ARIA role and default announcement. The decision (documented in FEC-981 comment #1103879) is to build a dedicated, presentational `ActivityIndicator` and leave `LoadingSpinner` untouched. The indicator still reuses `LoadingSpinner`'s square `size` scale points so the two are interchangeable in icon slots.
 
-This is a Tier 1 (simple, single-component, recipe-based) component. The closest existing precedents are `kbd` (em-based inline sizing with `display: inline-flex`) and `loading-spinner` (the `colorPalette` and i18n patterns, and the square `size` token scale points).
+This is a Tier 1 (simple, single-component, recipe-based) component. The closest existing precedents are `kbd` (em-based inline sizing with `display: inline-flex`) and `loading-spinner` (the i18n pattern and the square `size` token scale points).
 
 ## Goals / Non-Goals
 
 **Goals:**
 
-- A presentational three-dot indicator that scales inline with surrounding text by default (em-based, zero-config).
-- Optional fixed sizes that reserve a square icon-box footprint so the indicator drops into input start/end icon slots, while the dots overflow that box horizontally without perturbing layout.
+- A presentational three-dot indicator that scales inline with surrounding text by default (em-based box, zero-config).
+- Optional fixed sizes that reserve a square icon-box footprint (reusing `LoadingSpinner`'s scale points) so the indicator drops into input start/end icon slots interchangeably with a spinner.
 - A decorative-by-default accessibility contract that upgrades to a polite live region only when labeled.
-- Reuse `LoadingSpinner`'s `colorPalette` and i18n conventions for consistency.
+- Reuse `LoadingSpinner`'s `size` scale points and i18n conventions for consistency, while supporting the full Nimbus color-palette set.
 - No change to `LoadingSpinner` (no breaking change).
 
 **Non-Goals:**
@@ -23,18 +23,18 @@ This is a Tier 1 (simple, single-component, recipe-based) component. The closest
 
 ## Decisions
 
-### Single em-based dot geometry, `font-size`-driven sizing
+### Single square SVG, box-driven sizing
 
-Dot diameter (≈0.375em) and gap (≈0.25em) are defined once in em. The `size` variant only sets `font-size` (and, for fixed sizes, the square box dimensions). This yields one geometry definition for every size and is the mechanism that lets the default track surrounding text.
+The three dots are `<circle>`s inside one square `<svg>` (`viewBox="0 0 24 24"`), exactly like an icon / `LoadingSpinner`. Dot geometry is fixed in the viewBox (`r=3`, `cy=13`, `cx` at 4/12/20) and defined once; the `size` variant sizes only the root box (`width`/`height`) and the SVG scales to fit (`width`/`height: 100%`). This keeps a single geometry definition for every size and makes the indicator size-identical to a spinner.
 
-- *Alternative considered:* per-size pixel/token dot dimensions. Rejected — duplicates geometry across five sizes and reintroduces the non-square fight that motivated splitting from `LoadingSpinner`.
+- *Alternative considered:* per-size pixel/token dot dimensions, or em-based dot geometry sized via `font-size`. Rejected — both duplicate or complicate geometry across sizes; a single square SVG that scales to its box is simpler and matches the icon/spinner sizing model directly.
 
 ### `size="inherit"` default vs. fixed sizes
 
-`inherit` keeps the dots in normal flow (`inline-flex`, intrinsic width) so the indicator behaves like inline text. Fixed sizes (`2xs`–`lg`, reusing LoadingSpinner scale points 350/500/600/800/1000) additionally set `width`/`height` to a square box and place the dots in an absolutely-positioned, centered layer (`position: relative` on the box; `position: absolute` + `top/left: 50%` + `translate(-50%, -50%)` on the dots row).
+`inherit` sets the box to `1em` (`inline-flex`, `vertical-align: middle`) so the indicator scales with the surrounding `font-size` and behaves like inline text. Fixed sizes (`2xs`–`lg`, reusing LoadingSpinner scale points 350/500/600/800/1000) set `width`/`height` to the corresponding square box; the same SVG scales to fill it. The dots are composed *inside* the square grid, so the footprint is square like any other icon — nothing overflows horizontally.
 
-- *Why absolute positioning for fixed sizes:* the dots are taken out of flow, so their wider-than-square footprint cannot expand the box content size or shift siblings in an icon slot. `overflow` is left `visible` (never `auto`/`scroll`), so the component itself never renders scrollbars.
-- *Alternative considered:* in-flow dots with `overflow: visible`. Rejected — in-flow overflow still contributes to the box content size and can nudge sibling layout / press against ancestor scroll containers.
+- *Why a square SVG rather than overflowing dots:* drawing the dots inside the 24×24 grid means the footprint is genuinely square, so it can never expand the box content size or shift siblings in an icon slot, with no absolute positioning needed. `overflow` on the SVG is left `visible` (never `auto`/`scroll`) solely so the upward bounce isn't clipped.
+- *Dot-spacing trade-off:* `cx` 4/12/20 is a hybrid of the icon family's outer "safe space" (~1px padding) and Figma's wider inter-dot gap. The literal Figma three-dots width (26px) would overflow the 24px canvas; strict icon padding would crowd the dots in small sizes. `cy=13` rests the dots 1px below center so the upward-only bounce balances around the vertical midpoint.
 
 ### Accessibility: presence of `aria-label` is the switch
 
@@ -53,9 +53,9 @@ A `Nimbus.ActivityIndicator.*` default (e.g. "Agent is typing") is applied only 
 
 ## Risks / Trade-offs
 
-- **Absolutely-positioned dots can still contribute to an ancestor scroll container's overflow** → Mitigation: dots no longer affect in-flow sibling layout, the horizontal bleed is small and symmetric, and `overflow` is never set to `auto`/`scroll`; acceptable for icon-slot usage.
+- **The upward bounce relies on `overflow: visible` on the SVG** → Mitigation: the square footprint itself never changes, so siblings are unaffected; `overflow` is never set to `auto`/`scroll`, so the component renders no scrollbars.
 - **Consumers may reach for ActivityIndicator as a generic spinner replacement** → Mitigation: docs/guidelines clearly scope it to chat/agent activity and point progress use cases to `LoadingSpinner`.
-- **Two indicators with similar `size`/`colorPalette` APIs could drift** → Mitigation: deliberately mirror LoadingSpinner's `colorPalette` values and scale points; note the shared conventions in the dev docs.
+- **Two indicators with similar `size`/`colorPalette` APIs could drift** → Mitigation: deliberately reuse LoadingSpinner's `size` scale points; note the shared conventions in the dev docs. (`colorPalette` is broader here — any Nimbus palette — since the dots are pure decoration with no progressbar contract.)
 - **Reduced-motion pulse must remain visible but unobtrusive** → Mitigation: opacity-only pulse, validated in a dedicated story.
 
 ## Migration Plan

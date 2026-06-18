@@ -15,9 +15,10 @@ type ActivityIndicatorRecipeProps = {
    *
    * - `"inherit"` (default) makes the dots em-relative so they scale with the
    *   surrounding `font-size` and flow inline with text.
-   * - Fixed sizes (`"2xs"`–`"lg"`) reserve a square icon-box footprint so the
-   *   indicator can be dropped into input start/end icon slots; the dots
-   *   overflow that box horizontally without affecting layout.
+   * - Fixed sizes (`"2xs"`–`"lg"`) reserve a square icon-box footprint (the
+   *   same scale points as `LoadingSpinner`) so the indicator can be dropped
+   *   into input start/end icon slots; the dots are composed inside the square
+   *   `viewBox="0 0 24 24"` SVG grid.
    *
    * @default "inherit"
    */
