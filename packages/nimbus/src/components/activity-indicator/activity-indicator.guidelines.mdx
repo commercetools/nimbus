@@ -23,11 +23,15 @@ blocking operation to finish.
   (`plain`) treatment. When the dots sit on a solid colored fill — such as an
   agent bubble — use `variant="contrast"` so they take the palette's contrast
   color (black or white) and stay legible.
-- **Keep it decorative when text is present:** When a visible label already
-  conveys the state, leave the indicator unlabeled — it is `aria-hidden` so
-  screen readers announce the text, not the animation.
-- **Label it when standalone:** If the indicator appears without adjacent text,
-  give it an `aria-label` so it announces politely.
+- **Always pair it with visible text:** The indicator is purely decorative
+  (`aria-hidden`), so screen readers rely on the adjacent text ("Thinking…") to
+  convey the state. Never use it as the sole indication of activity.
+- **Announce from the container, not the indicator:** If you need to announce
+  activity without adjacent visible text, drive a persistent live region owned
+  by the surrounding chat/turn container (e.g. `@react-aria/live-announcer`).
+  The indicator itself does not own a live region — it is usually mounted only
+  while active, and a live region mounted with its content does not announce
+  reliably.
 - **Respect motion preferences:** The indicator automatically swaps its bounce
   for a gentle pulse under `prefers-reduced-motion`. Do not reintroduce large
   motion on top of it.
@@ -56,8 +60,9 @@ blocking operation to finish.
 
 ### Accessibility
 
-- The indicator is decorative by default and must rely on adjacent visible text
-  to convey meaning to assistive technology.
-- When used standalone, provide an `aria-label`; the indicator then exposes
-  `role="status"` and `aria-live="polite"`.
+- The indicator is purely decorative (`aria-hidden`) and relies on adjacent
+  visible text to convey meaning to assistive technology.
+- It does not own a live region. Announce activity from a persistent live region
+  in the surrounding container (e.g. `@react-aria/live-announcer`) when no
+  adjacent visible text is present.
 - It is not a progress indicator and never uses `role="progressbar"`.

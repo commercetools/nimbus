@@ -75,16 +75,6 @@ export type ActivityIndicatorProps = Omit<
    */
   colorPalette?: NimbusColorPalette;
   /**
-   * Accessible label.
-   *
-   * When omitted, the indicator is decorative (`aria-hidden`) — use this when
-   * adjacent visible text already conveys the state. When provided, the
-   * indicator becomes a polite live region (`role="status"`,
-   * `aria-live="polite"`) announcing this label. Passing an empty string opts
-   * into the live region using the localized default label.
-   */
-  "aria-label"?: string;
-  /**
    * Ref forwarding to the root element
    */
   ref?: React.Ref<HTMLSpanElement>;

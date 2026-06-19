@@ -34,7 +34,7 @@ export default meta;
 type Story = StoryObj<typeof ActivityIndicator>;
 
 /**
- * Default: decorative (no `aria-label`), `size="inherit"`. Renders a single
+ * Default: decorative (`aria-hidden`), `size="inherit"`. Renders a single
  * `<svg>` with three `<circle>` dots inside a `<span>` root.
  */
 export const Base: Story = {
@@ -56,38 +56,9 @@ export const Base: Story = {
       dots.forEach((dot) => expect(dot.tagName.toLowerCase()).toBe("circle"));
     });
 
-    await step("Is decorative by default (aria-hidden, no role)", async () => {
+    await step("Is decorative (aria-hidden, no role) — always", async () => {
       await expect(indicator).toHaveAttribute("aria-hidden", "true");
       await expect(indicator).not.toHaveAttribute("role");
-    });
-  },
-};
-
-/**
- * When an `aria-label` is provided the indicator becomes a polite live region.
- */
-export const Labeled: Story = {
-  args: {
-    "data-testid": "activity-test",
-    "aria-label": "Agent is thinking",
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const indicator = canvas.getByTestId("activity-test");
-
-    await step("Exposes role=status and aria-live=polite", async () => {
-      await expect(indicator).toHaveAttribute("role", "status");
-      await expect(indicator).toHaveAttribute("aria-live", "polite");
-    });
-
-    await step("Is not aria-hidden when labeled", async () => {
-      await expect(indicator).not.toHaveAttribute("aria-hidden");
-    });
-
-    await step("Accessible name matches the label", async () => {
-      await expect(
-        canvas.getByRole("status", { name: "Agent is thinking" })
-      ).toBeInTheDocument();
     });
   },
 };

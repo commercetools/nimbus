@@ -1,7 +1,5 @@
 import { ActivityIndicatorRoot } from "./activity-indicator.slots";
 import type { ActivityIndicatorProps } from "./activity-indicator.types";
-import { useLocalizedStringFormatter } from "@/hooks";
-import { activityIndicatorMessagesStrings } from "./activity-indicator.messages";
 
 /**
  * # ActivityIndicator
@@ -11,39 +9,29 @@ import { activityIndicatorMessagesStrings } from "./activity-indicator.messages"
  * surfaces. It is presentational, not a progress indicator — use
  * {@link LoadingSpinner} for indeterminate progress.
  *
+ * The indicator is purely decorative: it is always `aria-hidden`. Announcing
+ * the activity to assistive technology is the consumer's responsibility —
+ * either through adjacent visible text (e.g. "Thinking…") or a live region
+ * owned by the surrounding chat/turn container. A component-owned live region
+ * would not announce reliably: this indicator is typically mounted only while
+ * activity is in progress, and a live region mounted together with its content
+ * is not announced consistently across screen readers (the region must already
+ * exist in the DOM before its content changes).
+ *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/activityindicator}
  */
 export const ActivityIndicator = (props: ActivityIndicatorProps) => {
-  const msg = useLocalizedStringFormatter(activityIndicatorMessagesStrings);
-  const {
-    ref,
-    "aria-label": ariaLabelProp,
-    colorPalette = "primary",
-    ...restProps
-  } = props;
-
-  // Presence of `aria-label` is the accessibility switch: labeled → polite
-  // live region; omitted → decorative. An empty string opts into the live
-  // region using the localized default label.
-  const isLabeled = ariaLabelProp !== undefined;
-  const ariaLabel = isLabeled
-    ? ariaLabelProp || msg.format("default")
-    : undefined;
-
-  const a11yProps = isLabeled
-    ? {
-        role: "status",
-        "aria-live": "polite" as const,
-        "aria-label": ariaLabel,
-      }
-    : { "aria-hidden": true };
+  const { ref, colorPalette = "primary", ...restProps } = props;
 
   return (
     <ActivityIndicatorRoot
       ref={ref}
       colorPalette={colorPalette}
-      {...a11yProps}
       {...restProps}
+      // Spread last so the decorative contract is authoritative: the indicator
+      // is always hidden from assistive technology and a consumer cannot
+      // accidentally un-hide it (announcements are the consumer's concern).
+      aria-hidden={true}
     >
       <svg
         viewBox="0 0 24 24"

@@ -22,18 +22,6 @@ describe("ActivityIndicator - Basic rendering", () => {
     expect(indicator).not.toHaveAttribute("role");
   });
 
-  it("becomes a polite live region when given an aria-label", () => {
-    render(
-      <NimbusProvider>
-        <ActivityIndicator aria-label="Agent is typing" />
-      </NimbusProvider>
-    );
-
-    const status = screen.getByRole("status", { name: "Agent is typing" });
-    expect(status).toBeInTheDocument();
-    expect(status).toHaveAttribute("aria-live", "polite");
-  });
-
   it("renders three dot elements", () => {
     render(
       <NimbusProvider>

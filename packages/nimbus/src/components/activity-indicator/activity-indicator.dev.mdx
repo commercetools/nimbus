@@ -88,10 +88,10 @@ const App = () => (
 
 ## Accessibility
 
-The ActivityIndicator is **decorative by default**. When you render visible text
-that already conveys the state (for example "Thinking…"), leave the indicator
-unlabeled — it is marked `aria-hidden` so assistive technology hears the text,
-not the animation.
+The ActivityIndicator is **purely decorative** — it is always marked
+`aria-hidden`, so assistive technology never announces the animation itself.
+Always pair it with visible text that conveys the state (for example
+"Thinking…"), so screen-reader users get the same information sighted users do.
 
 ```tsx
 // Visible text conveys the state; the indicator is decorative.
@@ -100,18 +100,15 @@ not the animation.
 </Text>
 ```
 
-When the indicator is used **standalone** (no adjacent visible text), provide an
-`aria-label`. This upgrades it to a polite live region (`role="status"`,
-`aria-live="polite"`) so screen readers announce the activity without
-interrupting.
-
-```tsx
-// Standalone: announce the activity politely.
-<ActivityIndicator aria-label="Agent is typing" />
-```
-
-Passing an empty string (`aria-label=""`) opts into the live region using the
-component's localized default label.
+**Announcing the activity to assistive technology is the consumer's
+responsibility**, not the component's. The indicator does not own a live region,
+because it is typically rendered only while activity is in progress — and a live
+region mounted together with its content is not announced reliably across screen
+readers (the region must already exist in the DOM before its content changes).
+If you need to announce the activity without adjacent visible text, drive a
+**persistent** live region owned by the surrounding chat/turn container (for
+example via React Aria's [`@react-aria/live-announcer`](https://react-spectrum.adobe.com/react-aria/announce.html)),
+and keep the indicator decorative.
 
 This component is **not** a progress indicator and does not use
 `role="progressbar"`. For indeterminate progress ("please wait"), use

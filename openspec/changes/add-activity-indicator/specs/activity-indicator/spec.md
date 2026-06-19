@@ -18,7 +18,7 @@ The ActivityIndicator SHALL render a `<span>` root element (never `<div>`) conta
 
 ### Requirement: Em-relative default sizing
 
-The ActivityIndicator SHALL default to `size="inherit"`, where the root is laid out as `display: inline-flex` with a `1em` square box and the SVG scales to fill it (`width`/`height: 100%`). In this mode the indicator SHALL flow inline (`vertical-align: middle`) and scale proportionally with the surrounding `font-size`.
+The ActivityIndicator SHALL default to `size="inherit"`, where the root is laid out as `display: inline-flex` (with the dots centered) and sized as a `1em` square box, so the SVG fills it. In this mode the indicator SHALL flow inline with — and scale proportionally to — the surrounding `font-size`.
 
 #### Scenario: Default size scales with surrounding font-size
 
@@ -43,22 +43,24 @@ The ActivityIndicator SHALL accept fixed `size` values `2xs`, `xs`, `sm`, `md`, 
 - **AND** the sibling content is not shifted
 - **AND** no scrollbars are introduced by the indicator
 
-### Requirement: Decorative-by-default accessibility contract
+### Requirement: Purely decorative accessibility contract
 
-The ActivityIndicator SHALL be decorative by default: when no `aria-label` is provided, the root SHALL have `aria-hidden="true"` and no ARIA role, on the assumption that adjacent visible text conveys the state. When an `aria-label` is provided, the root SHALL instead expose `role="status"` and `aria-live="polite"` with that accessible name, for standalone use. The component SHALL NOT use React Aria and SHALL NOT expose `role="progressbar"`, because it is non-interactive and is not a progress indicator.
+The ActivityIndicator SHALL be purely decorative: the root SHALL always have `aria-hidden="true"` and no ARIA role, and the component SHALL NOT accept an `aria-label` prop. Conveying the activity state to assistive technology is the consumer's responsibility — through adjacent visible text (e.g. "Thinking…") or a live region owned by the surrounding chat/turn container.
 
-#### Scenario: Decorative when unlabeled
+The component SHALL NOT own a live region. Because the indicator is typically mounted only while activity is in progress, a component-owned `role="status"`/`aria-live` region would mount together with its content and would not be announced reliably across screen readers (a live region must already exist in the DOM before its content changes; an `aria-label` on a region with no text content is likewise not reliably announced as a live update). The component SHALL NOT use React Aria and SHALL NOT expose `role="progressbar"`, because it is non-interactive and is not a progress indicator.
 
-- **WHEN** an ActivityIndicator is rendered without an `aria-label`
+#### Scenario: Decorative regardless of props
+
+- **WHEN** an ActivityIndicator is rendered with any combination of props
 - **THEN** the root has `aria-hidden="true"`
 - **AND** the root has no `role` attribute
+- **AND** the root has no live-region attributes (`aria-live`, `role="status"`)
 
-#### Scenario: Live status when labeled
+#### Scenario: No aria-label prop
 
-- **WHEN** an ActivityIndicator is rendered with an `aria-label`
-- **THEN** the root has `role="status"` and `aria-live="polite"`
-- **AND** the accessible name matches the provided label
-- **AND** the root is not `aria-hidden`
+- **WHEN** a consumer uses the ActivityIndicator
+- **THEN** the public type does not expose an `aria-label` prop
+- **AND** activity is announced (if needed) by a consumer-owned persistent live region, not by the component
 
 ### Requirement: Color palette theming
 
@@ -98,17 +100,3 @@ The ActivityIndicator SHALL respect `prefers-reduced-motion: reduce` by replacin
 - **WHEN** the user agent reports `prefers-reduced-motion: reduce`
 - **THEN** the dots do not perform the vertical bounce animation
 - **AND** the dots convey activity via a gentle opacity pulse instead
-
-### Requirement: Internationalized default label
-
-The ActivityIndicator SHALL provide an internationalized default activity label (e.g. "Agent is typing") under the `Nimbus.ActivityIndicator.*` key namespace. This default label SHALL only be applied when the consumer opts into a labeled (live-region) presentation; it SHALL NOT be announced when the indicator is decorative, so that a misleading default is never surfaced to assistive technology.
-
-#### Scenario: Default label used only when labeled
-
-- **WHEN** an ActivityIndicator is rendered as a live region without an explicit label string
-- **THEN** the internationalized default activity label is used as its accessible name
-
-#### Scenario: No label announced when decorative
-
-- **WHEN** an ActivityIndicator is rendered decoratively (no `aria-label`)
-- **THEN** no default label is exposed to assistive technology
