@@ -36,7 +36,7 @@
     "react-live": "^4.1.8",
     "react-stately": "catalog:react",
     "react-router": "^8.0.0",
-    "react-router-dom": "^7.17.0",
+    "react-router-dom": "^7.18.0",
     "react-syntax-highlighter": "^16.1.1",
     "remark-flexible-toc": "^1.2.5",
     "remark-gfm": "^4.0.1",
