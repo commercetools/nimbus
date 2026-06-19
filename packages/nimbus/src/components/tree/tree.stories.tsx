@@ -517,6 +517,57 @@ export const DragAndDrop: Story = {
         canvas.getByRole("row", { name: /Documents/ })
       ).toBeInTheDocument();
     });
+
+    await step(
+      "Dropping a multi-selection onto a group keeps tree order",
+      async () => {
+        const rowIndex = (name: RegExp) => {
+          const rows = canvas.getAllByRole("row");
+          return rows.findIndex((row) => name.test(row.textContent ?? ""));
+        };
+
+        // Select bottom-to-top so the dragged keys arrive in selection order,
+        // not tree order — the case a click-order re-parent would reverse.
+        const report = canvas.getByRole("row", { name: /Weekly Report/ });
+        const budget = canvas.getByRole("row", { name: /Budget/ });
+        await userEvent.click(within(budget).getByRole("checkbox"));
+        await userEvent.click(within(report).getByRole("checkbox"));
+        await waitFor(async () => {
+          await expect(report).toHaveAttribute("aria-selected", "true");
+          await expect(budget).toHaveAttribute("aria-selected", "true");
+        });
+
+        // Selected handles are relabeled "Drag 2 selected items", so grab from
+        // within the row.
+        const dragHandle = within(report).getByRole("button", { name: /Drag/ });
+        dragHandle.focus();
+        await userEvent.keyboard("{Enter}");
+        await wait(150);
+
+        // Step through drop targets until Photos is the "on" target, then drop.
+        const photos = canvas.getByRole("row", { name: /^Photos/ });
+        for (
+          let i = 0;
+          i < 12 && photos.getAttribute("data-drop-target") !== "true";
+          i++
+        ) {
+          await userEvent.keyboard("{ArrowDown}");
+          await wait();
+        }
+        await expect(photos).toHaveAttribute("data-drop-target", "true");
+        await userEvent.keyboard("{Enter}");
+        await wait(150);
+
+        // Re-parented under Photos (after Image 2) in tree order, not reversed.
+        await waitFor(async () => {
+          const image2Idx = rowIndex(/Image 2/);
+          const reportIdx = rowIndex(/Weekly Report/);
+          const budgetIdx = rowIndex(/Budget/);
+          await expect(reportIdx).toBeGreaterThan(image2Idx);
+          await expect(budgetIdx).toBeGreaterThan(reportIdx);
+        });
+      }
+    );
   },
 };
 

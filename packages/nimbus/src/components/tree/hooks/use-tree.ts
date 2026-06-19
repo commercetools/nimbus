@@ -3,6 +3,25 @@ import { useTreeData, type TreeOptions, type TreeData } from "react-stately";
 import type { TreeRootProps } from "../tree.types";
 
 /**
+ * Order a drag's keys by tree position. React Aria delivers `e.keys` in
+ * selection order, not document order.
+ */
+function keysInTreeOrder<T extends object>(
+  items: TreeData<T>["items"],
+  keys: Set<Key>
+): Key[] {
+  const ordered: Key[] = [];
+  const walk = (nodes: TreeData<T>["items"]) => {
+    for (const node of nodes) {
+      if (keys.has(node.key)) ordered.push(node.key);
+      if (node.children) walk(node.children);
+    }
+  };
+  walk(items);
+  return ordered;
+}
+
+/**
  * Tree.Root configuration that `useTree` accepts and echoes back so the whole
  * result can be spread onto `Tree.Root`.
  */
@@ -124,12 +143,12 @@ export function useTree<T extends object>(
       } else if (e.target.dropPosition === "after") {
         tree.moveAfter(e.target.key, e.keys);
       } else if (e.target.dropPosition === "on") {
-        // Re-parent: append the dragged items, in order, into the target group.
-        // Recompute the insertion point per key so multi-key drops can't drift
-        // off a stale pre-move child count.
-        [...e.keys].forEach((key) => {
-          const targetIndex = tree.getItem(e.target.key)?.children?.length ?? 0;
-          tree.move(key, e.target.key, targetIndex);
+        // Re-parent: append into the target group. `tree` is a render snapshot
+        // whose child count doesn't update mid-loop, so offset by `i` rather
+        // than re-reading the length per key.
+        const targetIndex = tree.getItem(e.target.key)?.children?.length ?? 0;
+        keysInTreeOrder(tree.items, e.keys).forEach((key, i) => {
+          tree.move(key, e.target.key, targetIndex + i);
         });
       }
     },
