@@ -28,8 +28,8 @@ catalogs:
       specifier: ^3.4.1
       version: 3.4.1
     '@react-aria/optimize-locales-plugin':
-      specifier: 1.2.1
-      version: 1.2.1
+      specifier: 2.0.0
+      version: 2.0.0
     '@react-aria/utils':
       specifier: 3.34.1
       version: 3.34.1
@@ -74,8 +74,8 @@ catalogs:
       specifier: ^2.8.13
       version: 2.8.13
     '@react-types/shared':
-      specifier: ^3.35.0
-      version: 3.35.0
+      specifier: ^3.36.0
+      version: 3.36.0
     '@storybook/addon-a11y':
       specifier: ^10.4.6
       version: 10.4.6
@@ -206,9 +206,9 @@ overrides:
   '@babel/runtime': ^7.29.7
   prismjs: ^1.30.0
   typescript: ~5.9.3
-  react-aria: 3.49.0
-  react-aria-components: 1.18.0
-  react-stately: 3.47.0
+  react-aria: 3.50.0
+  react-aria-components: 1.19.0
+  react-stately: 3.48.0
   '@react-aria/interactions': 3.28.1
   brace-expansion@<2: ^2.0.3
   brace-expansion@2: ~2.0.3
@@ -423,11 +423,11 @@ importers:
         specifier: catalog:react
         version: 19.2.0
       react-aria:
-        specifier: 3.49.0
-        version: 3.49.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 3.50.0
+        version: 3.50.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-aria-components:
-        specifier: 1.18.0
-        version: 1.18.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 1.19.0
+        version: 1.19.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-docgen-typescript:
         specifier: ^2.4.0
         version: 2.4.0(typescript@5.9.3)
@@ -444,8 +444,8 @@ importers:
         specifier: ^7.17.0
         version: 7.17.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-stately:
-        specifier: 3.47.0
-        version: 3.47.0(react@19.2.0)
+        specifier: 3.48.0
+        version: 3.48.0(react@19.2.0)
       react-syntax-highlighter:
         specifier: ^16.1.1
         version: 16.1.1(react@19.2.0)
@@ -605,17 +605,17 @@ importers:
         specifier: catalog:react
         version: 0.4.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-aria:
-        specifier: 3.49.0
-        version: 3.49.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 3.50.0
+        version: 3.50.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-aria-components:
-        specifier: 1.18.0
-        version: 1.18.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 1.19.0
+        version: 1.19.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-hotkeys-hook:
         specifier: ^5.3.2
         version: 5.3.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-stately:
-        specifier: 3.47.0
-        version: 3.47.0(react@19.2.0)
+        specifier: 3.48.0
+        version: 3.48.0(react@19.2.0)
       react-use:
         specifier: ^17.6.1
         version: 17.6.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -640,10 +640,10 @@ importers:
         version: 3.12.2
       '@react-aria/optimize-locales-plugin':
         specifier: catalog:react
-        version: 1.2.1
+        version: 2.0.0
       '@react-types/shared':
         specifier: catalog:tooling
-        version: 3.35.0(react@19.2.0)
+        version: 3.36.0(react@19.2.0)
       '@storybook/addon-a11y':
         specifier: catalog:tooling
         version: 10.4.6(storybook@10.4.6(@emnapi/core@1.9.2)(@emnapi/runtime@1.9.2)(@testing-library/dom@10.4.1)(@types/react@19.2.17)(prettier@3.8.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
@@ -2699,8 +2699,8 @@ packages:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
-  '@react-aria/optimize-locales-plugin@1.2.1':
-    resolution: {integrity: sha512-cozjylSJNotHobYx1D4qZLLhcO00HZxI+XO1+MXP4Hv7y8gKzcH1QTJ4iqgzxywJcKkQLV6B21cBFHP6faWd0A==}
+  '@react-aria/optimize-locales-plugin@2.0.0':
+    resolution: {integrity: sha512-tXQiC+ud+EDzJfwlbTY6J33pU51V+PMB4PcxYN6PYHGlRpq938zq6IKhquPJkVGqKLTnOeMtSjns/yvRR5wfww==}
 
   '@react-aria/utils@3.34.1':
     resolution: {integrity: sha512-H6+rGZL+0f58bBNaUMfctEnT+NogqwAk+nHiB8sR3K+YlQ37GTuCijy2U/pPvQtFMS5mURrjZeBH5JNNXsx14A==}
@@ -2708,8 +2708,8 @@ packages:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
-  '@react-types/shared@3.35.0':
-    resolution: {integrity: sha512-iNWvuzEwANttpQpdlu8nPBtdHb0mcCMj1ZTH//iRB5E/14IAnyRlR25rxH7pNLyzHINsPGEKnWvpwDMCT6vziQ==}
+  '@react-types/shared@3.36.0':
+    resolution: {integrity: sha512-DkP/H0C2YjjS7gZWKNqOmU8a16qHPjQNdzMwmTq9SzplM6Iw0kVMTZ0OIoe6FOgGqa+FwMsE2QbPjh/n3g/jXQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
@@ -6622,14 +6622,14 @@ packages:
     resolution: {integrity: sha512-K5zQjDllxWkf7Z5xJdV0/B0WTNqx6vxG70zJE4N0kBs4LovmEYWJzQGxC9bS9RAKu3bgM40lrd5zoLJ12MQ5BA==}
     engines: {node: '>= 0.10'}
 
-  react-aria-components@1.18.0:
-    resolution: {integrity: sha512-FhRQjuDkH4WhgFv+O2sYTzK3JzdZTGpBeaqfRlfTo+DcSZzD8elJEkytHe7SDpcexVKeire8NVd7OruZHfCVoA==}
+  react-aria-components@1.19.0:
+    resolution: {integrity: sha512-2smSS5nqJ8cGYMQezuUXveZm7eMyHCqTN6mDpylQBYLYbdF5dxCCuW1DHn1VKLe1DybSfPvX/cZtJlDmvFfn8A==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
-  react-aria@3.49.0:
-    resolution: {integrity: sha512-4+oK9FwJQWYhyA5zLfj/feOGY0zZbkE1muoF4gyxMroHVypjcYaRSTlJwvxph2zIlxt757KX6xIK2wJ5Aw1Kog==}
+  react-aria@3.50.0:
+    resolution: {integrity: sha512-S0Os6QZk33fzUAKu1QLT9afoUaCBt1ZNdoiq0n2YMVgKIdNIQS8zxiZ8O9hYE6QyDkHKjD6q39LQZ+qaSAIgjw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
@@ -6725,8 +6725,8 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
-  react-stately@3.47.0:
-    resolution: {integrity: sha512-H3ar+SOWP920EbVg7qWfP3fZjZiwhlEJAEJQqjt+w8oKijCwFgr0+R4941PIHscOXRNRvEOjvWilitImC0DdBg==}
+  react-stately@3.48.0:
+    resolution: {integrity: sha512-ImicSAG+lTotAe5izcs1fz49Zk48w7pDusqYg04WaPhCoej8BJ24soMu3iLXIrsi273s4P1gZrYGrqReMfgEEA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
@@ -7661,10 +7661,6 @@ packages:
         optional: true
       webpack:
         optional: true
-
-  unplugin@1.16.1:
-    resolution: {integrity: sha512-4/u/j4FrCKdi17jaxuJA0jClGxB1AvU2hw/IuayPc4ay1XGaJs/rbb4v5WKwAjNifjmXK9PIFyuPiaK8azyR9w==}
-    engines: {node: '>=14.0.0'}
 
   unplugin@2.3.11:
     resolution: {integrity: sha512-5uKD0nqiYVzlmCRs01Fhs2BdkEgBS3SAVP6ndrBsuK42iC2+JHyxM05Rm9G8+5mkmRtzMZGY8Ct5+mliZxU/Ww==}
@@ -10312,25 +10308,25 @@ snapshots:
 
   '@react-aria/interactions@3.28.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
-      '@react-types/shared': 3.35.0(react@19.2.0)
+      '@react-types/shared': 3.36.0(react@19.2.0)
       '@swc/helpers': 0.5.17
       react: 19.2.0
-      react-aria: 3.49.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-aria: 3.50.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-dom: 19.2.0(react@19.2.0)
 
-  '@react-aria/optimize-locales-plugin@1.2.1':
+  '@react-aria/optimize-locales-plugin@2.0.0':
     dependencies:
-      unplugin: 1.16.1
+      unplugin: 2.3.11
 
   '@react-aria/utils@3.34.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@swc/helpers': 0.5.17
       react: 19.2.0
-      react-aria: 3.49.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-aria: 3.50.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-dom: 19.2.0(react@19.2.0)
-      react-stately: 3.47.0(react@19.2.0)
+      react-stately: 3.48.0(react@19.2.0)
 
-  '@react-types/shared@3.35.0(react@19.2.0)':
+  '@react-types/shared@3.36.0(react@19.2.0)':
     dependencies:
       react: 19.2.0
 
@@ -14885,29 +14881,29 @@ snapshots:
       iconv-lite: 0.7.0
       unpipe: 1.0.0
 
-  react-aria-components@1.18.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  react-aria-components@1.19.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@internationalized/date': 3.12.2
-      '@react-types/shared': 3.35.0(react@19.2.0)
+      '@react-types/shared': 3.36.0(react@19.2.0)
       '@swc/helpers': 0.5.17
       client-only: 0.0.1
       react: 19.2.0
-      react-aria: 3.49.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      react-aria: 3.50.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-dom: 19.2.0(react@19.2.0)
-      react-stately: 3.47.0(react@19.2.0)
+      react-stately: 3.48.0(react@19.2.0)
 
-  react-aria@3.49.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  react-aria@3.50.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       '@internationalized/date': 3.12.2
       '@internationalized/number': 3.6.7
       '@internationalized/string': 3.2.9
-      '@react-types/shared': 3.35.0(react@19.2.0)
+      '@react-types/shared': 3.36.0(react@19.2.0)
       '@swc/helpers': 0.5.17
       aria-hidden: 1.2.6
       clsx: 2.1.1
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
-      react-stately: 3.47.0(react@19.2.0)
+      react-stately: 3.48.0(react@19.2.0)
       use-sync-external-store: 1.6.0(react@19.2.0)
 
   react-docgen-typescript@2.4.0(typescript@5.9.3):
@@ -15002,12 +14998,12 @@ snapshots:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  react-stately@3.47.0(react@19.2.0):
+  react-stately@3.48.0(react@19.2.0):
     dependencies:
       '@internationalized/date': 3.12.2
       '@internationalized/number': 3.6.7
       '@internationalized/string': 3.2.9
-      '@react-types/shared': 3.35.0(react@19.2.0)
+      '@react-types/shared': 3.36.0(react@19.2.0)
       '@swc/helpers': 0.5.17
       react: 19.2.0
       use-sync-external-store: 1.6.0(react@19.2.0)
@@ -16100,11 +16096,6 @@ snapshots:
       webpack: 5.107.2(esbuild@0.28.1)
     transitivePeerDependencies:
       - supports-color
-
-  unplugin@1.16.1:
-    dependencies:
-      acorn: 8.16.0
-      webpack-virtual-modules: 0.6.2
 
   unplugin@2.3.11:
     dependencies:
