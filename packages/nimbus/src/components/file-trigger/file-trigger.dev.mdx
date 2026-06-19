@@ -124,6 +124,10 @@ const App = () => (
 - **No native form (`name`) integration.** `FileTrigger` does not submit a file
   via a native `<form>`. Lift the selection into state via `onSelect` and submit
   it yourself.
+- **Combining `acceptDirectory` and `allowsMultiple`.** How these interact is
+  defined by the browser, not by `FileTrigger` — some browsers honor only the
+  directory selection and ignore `allowsMultiple`. Don't rely on a consistent
+  result across browsers.
 
 ## API reference
 

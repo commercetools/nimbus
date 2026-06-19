@@ -18,13 +18,18 @@ import { type FileTriggerProps as RaFileTriggerProps } from "react-aria-componen
  */
 export type FileTriggerProps = Omit<
   RaFileTriggerProps,
-  "children" | "onSelect"
+  | "children"
+  | "onSelect"
+  | "acceptedFileTypes"
+  | "allowsMultiple"
+  | "acceptDirectory"
+  | "defaultCamera"
 > & {
   /**
    * The pressable element that opens the file picker when activated, typically a
    * Nimbus `Button` or `IconButton`. Any React Aria pressable component works.
    */
-  children?: ReactNode;
+  children: ReactNode;
   /**
    * Handler called when the user finishes selecting files. Receives the native
    * `FileList` (or `null` if the selection was cleared). The React Aria

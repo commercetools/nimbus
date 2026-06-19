@@ -8,7 +8,7 @@ import {
 } from "@commercetools/nimbus";
 import { AttachFile } from "@commercetools/nimbus-icons";
 import { userEvent, within, expect, fn } from "storybook/test";
-import { useState } from "react";
+import { createRef, useState } from "react";
 
 const meta: Meta<typeof FileTrigger> = {
   title: "Components/FileTrigger",
@@ -280,6 +280,29 @@ export const KeyboardAccessible: Story = {
     await step("Accessible name is derived from the child button", async () => {
       const button = canvas.getByRole("button", { name: /upload file/i });
       await expect(button).toHaveAccessibleName("Upload file");
+    });
+  },
+};
+
+/**
+ * `ref` is forwarded to the underlying hidden `<input type="file">`, part of the
+ * documented public API.
+ */
+const forwardedRef = createRef<HTMLInputElement>();
+export const ForwardsRef: Story = {
+  args: {
+    onSelect: fn(),
+  },
+  render: (args) => (
+    <FileTrigger {...args} ref={forwardedRef}>
+      <Button aria-label="Upload file">Upload file</Button>
+    </FileTrigger>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const input = getFileInput(canvasElement);
+
+    await step("Ref lands on the hidden file input", async () => {
+      await expect(forwardedRef.current).toBe(input);
     });
   },
 };
