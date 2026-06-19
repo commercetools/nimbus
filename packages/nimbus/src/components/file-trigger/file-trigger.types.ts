@@ -16,10 +16,10 @@ import { type FileTriggerProps as RaFileTriggerProps } from "react-aria-componen
  *
  * The React Aria API is forwarded faithfully; props are not normalized.
  */
-export interface FileTriggerProps extends Omit<
+export type FileTriggerProps = Omit<
   RaFileTriggerProps,
   "children" | "onSelect"
-> {
+> & {
   /**
    * The pressable element that opens the file picker when activated, typically a
    * Nimbus `Button` or `IconButton`. Any React Aria pressable component works.
@@ -39,11 +39,15 @@ export interface FileTriggerProps extends Omit<
   /**
    * Whether more than one file can be selected at a time. Maps to the hidden
    * input's `multiple` attribute.
+   *
+   * @default false
    */
   allowsMultiple?: boolean;
   /**
    * Enables selecting a directory instead of individual files. Maps to the
    * hidden input's directory-selection attributes (e.g. `webkitdirectory`).
+   *
+   * @default false
    */
   acceptDirectory?: boolean;
   /**
@@ -52,8 +56,7 @@ export interface FileTriggerProps extends Omit<
    */
   defaultCamera?: "user" | "environment";
   /**
-   * Ref forwarded to the underlying visually-hidden `<input type="file">`
-   * element.
+   * Ref forwarded to the underlying hidden `<input type="file">` element.
    */
   ref?: Ref<HTMLInputElement>;
-}
+};

@@ -124,3 +124,21 @@ const App = () => (
 - **No native form (`name`) integration.** `FileTrigger` does not submit a file
   via a native `<form>`. Lift the selection into state via `onSelect` and submit
   it yourself.
+
+## API reference
+
+<PropsTable id="FileTrigger" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using
+`FileTrigger` within your application. As the component's internal functionality
+is already tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+{{docs-tests: file-trigger.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-filetrigger--docs)
+- [React Aria FileTrigger](https://react-aria.adobe.com/FileTrigger)

@@ -9,7 +9,7 @@ import type { FileTriggerProps } from "./file-trigger.types";
  * opening the native file picker when the child is activated. It renders no
  * visual styling of its own — the child provides the visual treatment.
  *
- * @see {@link https://react-aria.adobe.com/FileTrigger}
+ * @see {@link https://nimbus-documentation.vercel.app/components/inputs/filetrigger}
  */
 export const FileTrigger = (props: FileTriggerProps) => {
   const { ref, ...restProps } = props;
