@@ -23,6 +23,18 @@ type ActivityIndicatorRecipeProps = {
    * @default "inherit"
    */
   size?: RecipeProps<"nimbusActivityIndicator">["size"];
+  /**
+   * Selects which step of the active `colorPalette` fills the dots.
+   *
+   * - `"plain"` (default) fills from the palette's `11` shade — for neutral or
+   *   page backgrounds.
+   * - `"contrast"` fills from the palette's `contrast` step (auto black/white
+   *   per palette) — for placing the dots on a solid `colorPalette.9`-style
+   *   colored surface.
+   *
+   * @default "plain"
+   */
+  variant?: RecipeProps<"nimbusActivityIndicator">["variant"];
 } & UnstyledProp;
 
 // ============================================================
