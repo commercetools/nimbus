@@ -2,9 +2,8 @@
 "@commercetools/nimbus": minor
 ---
 
-**FileTrigger**: new component — connects a pressable child (such as a `Button`
-or `IconButton`) to the native file picker, opening it when the child is
-activated.
+`FileTrigger`: new component — connects a pressable child (such as a `Button` or
+`IconButton`) to the native file picker, opening it when the child is activated.
 
 - Behavior-only: it renders no styling of its own, so the trigger looks exactly
   like the child you provide.
