@@ -104,10 +104,11 @@ when the child is disabled, activation MUST NOT open the file picker.
 ### Requirement: Accessibility and WCAG 2.1 AA compliance
 
 The `FileTrigger` component SHALL meet WCAG 2.1 AA requirements by deferring
-interaction semantics to React Aria Components: the file input is rendered
-visually hidden but remains keyboard- and screen-reader-accessible (not
-`display:none`), and the trigger's accessible name is derived entirely from the
-pressable child.
+interaction semantics to React Aria Components: the visible, focusable pressable
+child is the sole interactive element, and the trigger's accessible name is
+derived entirely from that child. The underlying file input is hidden
+(`display:none`) and is activated programmatically when the child is pressed, so
+it does not need to be independently keyboard-reachable.
 
 #### Scenario: Accessible name comes from the child
 
@@ -115,9 +116,8 @@ pressable child.
 - **THEN** the trigger is announced to assistive technology as "Upload file"
   and `FileTrigger` contributes no additional conflicting ARIA markup
 
-#### Scenario: Hidden input remains keyboard reachable
+#### Scenario: Keyboard interaction goes through the child
 
-- **WHEN** the component renders
-- **THEN** the hidden file input is hidden using a visually-hidden technique
-  rather than `display:none` or `visibility:hidden`, preserving keyboard and
-  assistive-technology access
+- **WHEN** the user tabs to the trigger
+- **THEN** focus lands on the visible pressable child (a real `button`), which
+  is operable via Enter/Space; the hidden file input is not a separate tab stop
