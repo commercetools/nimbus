@@ -1,5 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { FileTrigger, Button, Stack, Text } from "@commercetools/nimbus";
+import {
+  FileTrigger,
+  Button,
+  IconButton,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
+import { AttachFile } from "@commercetools/nimbus-icons";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { useState } from "react";
 
@@ -155,7 +162,12 @@ export const AcceptDirectory: Story = {
 };
 
 /**
- * `defaultCamera` hints which camera mobile devices should use.
+ * `defaultCamera` hints which camera mobile devices should use, mapping to the
+ * input's `capture` attribute.
+ *
+ * NOTE: `capture` is only honored by mobile browsers with a camera. On desktop
+ * it is ignored entirely and the normal file dialog opens — so this story
+ * asserts the rendered `capture` attribute rather than that a camera launches.
  */
 export const CameraCapture: Story = {
   args: {
@@ -173,6 +185,42 @@ export const CameraCapture: Story = {
 
     await step("capture attribute reflects the camera hint", async () => {
       await expect(input).toHaveAttribute("capture", "environment");
+    });
+  },
+};
+
+/**
+ * Any pressable Nimbus component works as the child — here an `IconButton` for a
+ * compact "attach" affordance. The accessible name comes from the child's
+ * `aria-label`.
+ */
+export const IconButtonTrigger: Story = {
+  args: {
+    onSelect: fn(),
+  },
+  render: (args) => (
+    <FileTrigger {...args}>
+      <IconButton aria-label="Attach file" variant="ghost">
+        <AttachFile />
+      </IconButton>
+    </FileTrigger>
+  ),
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const input = getFileInput(canvasElement);
+
+    await step("IconButton acts as the trigger", async () => {
+      const button = canvas.getByRole("button", { name: /attach file/i });
+      await expect(button.tagName).toBe("BUTTON");
+      await expect(button).toHaveAccessibleName("Attach file");
+    });
+
+    await step("Selecting a file fires onSelect", async () => {
+      await userEvent.upload(input, makeFile("photo.png", "image/png"));
+      await expect(args.onSelect).toHaveBeenCalledTimes(1);
+      const files = (args.onSelect as ReturnType<typeof fn>).mock
+        .calls[0][0] as FileList;
+      await expect(files[0].name).toBe("photo.png");
     });
   },
 };
