@@ -1,0 +1,240 @@
+---
+title: CodeBlock Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { CodeBlock, type CodeBlockProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+The CodeBlock component renders a read-only, syntax-highlighted code snippet
+inside an accessible region landmark. At minimum, pass the `code` string and an
+optional `language` identifier:
+
+```jsx live-dev
+const App = () => (
+  <CodeBlock
+    code={`const greeting = (name) => \`Hello, \${name}!\`;`}
+    language="js"
+  />
+)
+```
+
+## Usage examples
+
+### Size options
+
+Use `size` to control typography and padding density. The default is `md`:
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <CodeBlock
+      size="sm"
+      language="js"
+      code={`// size="sm"\nconst x = 1;`}
+    />
+    <CodeBlock
+      size="md"
+      language="js"
+      code={`// size="md"\nconst x = 1;`}
+    />
+  </Stack>
+)
+```
+
+### Syntax highlighting
+
+Pass a Prism language identifier via the `language` prop. If the language is
+not recognized, the component falls back to plain text without throwing:
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <CodeBlock
+      language="tsx"
+      code={`import { Button } from "@commercetools/nimbus";\n\nexport const Demo = () => (\n  <Button variant="primary">Click me</Button>\n);`}
+    />
+    <CodeBlock
+      language="json"
+      code={`{\n  "name": "nimbus",\n  "version": "3.0.0"\n}`}
+    />
+  </Stack>
+)
+```
+
+### Line numbers
+
+Enable the line number gutter with `showLineNumbers`. Line numbers are rendered
+with `user-select: none` and excluded from the copied text — copying always
+uses the raw `code` prop, never DOM text:
+
+```jsx live-dev
+const App = () => (
+  <CodeBlock
+    language="tsx"
+    showLineNumbers
+    code={`import { Button } from "@commercetools/nimbus";\n\nexport const Demo = () => (\n  <Button variant="primary">\n    Click me\n  </Button>\n);`}
+  />
+)
+```
+
+### Header and copy button
+
+The header shows the language label and copy-to-clipboard button by default.
+Use `showHeader={false}` to hide the entire header, or `showCopyButton={false}`
+to keep the language label but remove the button:
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <CodeBlock
+      language="js"
+      code={`const x = 1; // default: header + copy`}
+    />
+    <CodeBlock
+      language="js"
+      showCopyButton={false}
+      code={`const x = 2; // showCopyButton={false}`}
+    />
+    <CodeBlock
+      language="js"
+      showHeader={false}
+      code={`const x = 3; // showHeader={false}`}
+    />
+  </Stack>
+)
+```
+
+### Responding to copy events
+
+The `onCopy` callback fires exactly once per successful clipboard write. Use it
+to show application-level feedback (e.g., a toast notification):
+
+```jsx live-dev
+const App = () => {
+  const [copyCount, setCopyCount] = useState(0);
+
+  return (
+    <Stack direction="column" gap="400">
+      <CodeBlock
+        language="js"
+        code={`const x = 1;`}
+        onCopy={() => setCopyCount((n) => n + 1)}
+      />
+      <Text>Copied {copyCount} time(s)</Text>
+    </Stack>
+  );
+}
+```
+
+### Width control
+
+CodeBlock defaults to `width="fit-content"`. Override with any Chakra style
+prop to fill a container:
+
+```jsx live-dev
+const App = () => (
+  <CodeBlock
+    language="js"
+    width="full"
+    code={`const x = 1;`}
+  />
+)
+```
+
+### Custom accessible name
+
+The root element is a `role="region"` landmark. Its default accessible name is
+the localized "Code block" string. Override it when you have multiple code
+blocks on a page or need a more descriptive label:
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <CodeBlock
+      language="tsx"
+      aria-label="Installation command"
+      code={`npm install @commercetools/nimbus`}
+    />
+    <CodeBlock
+      language="tsx"
+      aria-label="TypeScript configuration"
+      code={`{\n  "compilerOptions": { "strict": true }\n}`}
+    />
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+The CodeBlock component satisfies the following accessibility requirements
+internally:
+
+- **Landmark**: The root element renders as `<section role="region">` with an
+  accessible name (`aria-label`). This allows screen reader users to navigate
+  directly to code regions.
+- **Language label**: The language indicator carries `aria-hidden="true"` — it
+  is decorative because the region's accessible name already identifies the
+  content.
+- **Copy button**: The copy icon button has a localized `aria-label` ("Copy
+  code") and announces success via an `aria-live="polite"` region ("Copied") for
+  two seconds.
+- **Keyboard scrollable content**: The `<pre>` element has `tabIndex={0}`,
+  enabling keyboard users to scroll overflowing code per WCAG 2.1 Success
+  Criterion 2.1.1.
+
+When you place multiple CodeBlock instances on a page, provide distinct
+`aria-label` values so each region can be uniquely identified:
+
+```tsx
+<CodeBlock aria-label="Installation command" code="npm install ..." />
+<CodeBlock aria-label="Configuration file" code="{ ... }" />
+```
+
+If your use case requires tracking and analytics for this component, it is good
+practice to add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "code-block-install-example";
+
+export const Example = () => (
+  <CodeBlock id={PERSISTENT_ID} code="npm install @commercetools/nimbus" />
+);
+```
+
+#### Keyboard navigation
+
+| Key               | Action                                                     |
+| ----------------- | ---------------------------------------------------------- |
+| `Tab`             | Moves focus to the `<pre>` element and to the copy button  |
+| `Space` / `Enter` | Activates the copy button when focused                     |
+| `Arrow keys`      | Scrolls overflowing code when `<pre>` has focus            |
+
+## API reference
+
+<PropsTable id="CodeBlock" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using CodeBlock
+within your application. As the component's internal functionality is already
+tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+{{docs-tests: code-block.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-codeblock--docs)
+- [ARIA Authoring Practices – Code blocks](https://www.w3.org/WAI/ARIA/apg/)
+- [WCAG 2.1.1 Keyboard](https://www.w3.org/TR/WCAG21/#keyboard)

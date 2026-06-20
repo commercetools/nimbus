@@ -1,0 +1,182 @@
+---
+id: Components-CodeBlock
+title: CodeBlock
+exportName: CodeBlock
+description: A read-only, syntax-highlighted, accessible block-level code renderer with optional line numbers, header, and copy-to-clipboard functionality.
+order: 999
+menu:
+  - Components
+  - Data Display
+  - CodeBlock
+tags:
+  - component
+  - code
+  - syntax-highlighting
+  - copy
+---
+
+## Overview
+
+CodeBlock displays source code in a visually distinct, read-only container with
+automatic syntax highlighting, an optional language label, and a one-click
+copy-to-clipboard button. It is suited for documentation pages, onboarding
+flows, API reference sections, and any context where developers need to read or
+copy code.
+
+Token colors adapt automatically to light and dark mode through CSS custom
+properties — no configuration required.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[React ARIA documentation](https://react-spectrum.adobe.com/react-aria/)
+
+## Variables
+
+Get familiar with the features.
+
+### Size
+
+#### Medium (default)
+
+The standard size for most documentation and informational contexts.
+
+```jsx live
+const App = () => (
+  <CodeBlock
+    size="md"
+    language="js"
+    code={`const greeting = (name) => \`Hello, \${name}!\`;`}
+  />
+)
+```
+
+#### Small
+
+Use when vertical space is constrained or the code block appears inside a
+compact UI surface such as a sidebar or inline panel.
+
+```jsx live
+const App = () => (
+  <CodeBlock
+    size="sm"
+    language="js"
+    code={`const greeting = (name) => \`Hello, \${name}!\`;`}
+  />
+)
+```
+
+### Header
+
+The header bar shows the language identifier on the left and the copy button on
+the right. Both are optional.
+
+#### With header (default)
+
+```jsx live
+const App = () => (
+  <CodeBlock
+    language="tsx"
+    code={`import { Button } from "@commercetools/nimbus";\n\nexport const Demo = () => (\n  <Button variant="primary">Click me</Button>\n);`}
+  />
+)
+```
+
+#### Without copy button
+
+Use when the code is reference material that users are unlikely to copy, or when
+clipboard access is unavailable.
+
+```jsx live
+const App = () => (
+  <CodeBlock
+    language="tsx"
+    showCopyButton={false}
+    code={`import { Button } from "@commercetools/nimbus";\n\nexport const Demo = () => (\n  <Button variant="primary">Click me</Button>\n);`}
+  />
+)
+```
+
+#### Without header
+
+Omit the header entirely when the language label and copy functionality are not
+needed — for example, short inline snippets used as visual callouts.
+
+```jsx live
+const App = () => (
+  <CodeBlock
+    showHeader={false}
+    code={`npm install @commercetools/nimbus`}
+  />
+)
+```
+
+### Line numbers
+
+Enable the line number gutter when helping users reference specific lines — for
+example, in tutorials, code reviews, or error messages that cite line numbers.
+
+```jsx live
+const App = () => (
+  <CodeBlock
+    language="tsx"
+    showLineNumbers
+    code={`import { Button } from "@commercetools/nimbus";\n\nexport const Demo = () => (\n  <Button variant="primary">\n    Click me\n  </Button>\n);`}
+  />
+)
+```
+
+## Guidelines
+
+### Best practices
+
+- **Match the language**: Always set `language` to the actual programming
+  language of the snippet. This ensures syntax highlighting is accurate and the
+  label is meaningful.
+- **Use line numbers for long or referenced code**: Enable `showLineNumbers`
+  when the snippet is long or when documentation refers to specific lines.
+- **Keep snippets focused**: Show only the code relevant to the context. Avoid
+  embedding entire files — prefer curated excerpts.
+- **Prefer the default size**: Use `size="md"` unless the surrounding layout
+  clearly benefits from a smaller footprint.
+
+### When to use
+
+> [!TIP]\
+> When to use
+
+- **Code documentation**: Displaying API usage examples, configuration snippets,
+  or installation commands.
+- **Tutorials and guides**: Step-by-step instructions where users read and
+  follow code.
+- **Error messages with line context**: Showing the relevant code surrounding
+  an error alongside a line reference.
+- **Onboarding flows**: Helping new users get started with copy-paste commands.
+
+> [!CAUTION]\
+> When not to use
+
+- **Editable code**: CodeBlock is read-only. Use a code editor component if
+  users need to modify content.
+- **Inline code within prose**: For a single variable name or short keyword
+  inside a sentence, use the `Code` (inline) component instead.
+- **Large multi-file codebases**: Avoid embedding hundreds of lines. Link to an
+  external source or use a code sandbox instead.
+
+## Accessibility
+
+CodeBlock is built to meet WCAG 2.1 AA guidelines. The entire block is exposed
+as a named `region` landmark, enabling screen reader users to jump directly to
+it. The copy button has a localized accessible label and announces success
+("Copied") via a live region — no visual-only feedback. The scrollable code
+area is keyboard-reachable so users who rely on the keyboard can scroll
+overflowing content.
+
+### Keyboard navigation
+
+| Key               | Action                                               |
+| ----------------- | ---------------------------------------------------- |
+| `Tab`             | Moves focus to the scrollable code area, then to the copy button |
+| `Space` / `Enter` | Activates the copy button when focused               |
+| `Arrow keys`      | Scrolls overflowing code when the code area is focused |

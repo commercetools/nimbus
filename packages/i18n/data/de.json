@@ -35,6 +35,18 @@
     "developer_comment": "aria-label for the control that jumps to the newest message in a chat transcript",
     "string": "Zur neuesten Nachricht scrollen"
   },
+  "Nimbus.CodeBlock.copied": {
+    "developer_comment": "Screen reader announcement after code is successfully copied to the clipboard",
+    "string": "Copied"
+  },
+  "Nimbus.CodeBlock.copyCode": {
+    "developer_comment": "Accessible name for the copy-to-clipboard button in the CodeBlock header",
+    "string": "Copy code"
+  },
+  "Nimbus.CodeBlock.regionLabel": {
+    "developer_comment": "Default accessible name for the CodeBlock region landmark, used when no aria-label prop is provided",
+    "string": "Code block"
+  },
   "Nimbus.ComboBox.clearSelection": {
     "developer_comment": "aria-label for clear selection button in ComboBox",
     "string": "Auswahl löschen"
