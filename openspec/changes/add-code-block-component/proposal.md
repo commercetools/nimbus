@@ -23,7 +23,9 @@ syntax highlighting, light/dark support, and copy-to-clipboard.
   screen-reader success announcement, and opt-in line numbers. The line-number
   gutter starts at `1` by default but accepts a `startLineNumber` offset, so a
   consumer can render an excerpt of a file with its real source line numbers
-  (e.g. a five-line snippet numbered 42–46). A `size` variant
+  (e.g. a five-line snippet numbered 42–46). Specific lines can be emphasized
+  with a background band via `highlightedLines` (keyed to the displayed line
+  numbers). A `size` variant
   (`sm`/`md`) scales typography + padding.
 - Syntax highlighting via **`prism-react-renderer`** (added as a bundled
   `dependency`). It renders through React elements (no `dangerouslySetInnerHTML`
@@ -53,7 +55,8 @@ No breaking changes — this is purely additive.
   block-level code renderer with an optional header (language label), an optional
   copy-to-clipboard button with screen-reader announcement, optional line
   numbers (with an optional `startLineNumber` offset for displaying excerpts at
-  their real source line numbers), light/dark theming, and constrained-width
+  their real source line numbers), optional line highlighting via
+  `highlightedLines`, light/dark theming, and constrained-width
   horizontal-scroll behavior.
 
 ### Modified Capabilities

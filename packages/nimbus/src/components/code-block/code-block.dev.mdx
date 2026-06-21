@@ -105,6 +105,25 @@ const App = () => (
 )
 ```
 
+#### Highlighting lines
+
+Pass `highlightedLines` to draw a background band on specific lines — useful for
+drawing attention to a particular statement. The numbers refer to the displayed
+line numbers, so they honor `startLineNumber` and work whether or not the gutter
+is shown. The highlight is decorative and is excluded from the copied text:
+
+```jsx live-dev
+const App = () => (
+  <CodeBlock
+    language="js"
+    showLineNumbers
+    startLineNumber={42}
+    highlightedLines={[43, 44]}
+    code={`function greet(name) {\n  const message = "Hello, " + name;\n  console.log(message);\n  return message;\n}`}
+  />
+)
+```
+
 ### Header and copy button
 
 The header shows the language label and copy-to-clipboard button by default.

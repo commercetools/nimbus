@@ -95,6 +95,15 @@ export const codeBlockSlotRecipe = defineSlotRecipe({
     },
     line: {
       display: "block",
+      // width:max-content + min-width:100% lets the highlight band span the
+      // full scrollable width (not just the viewport) when code overflows.
+      width: "max-content",
+      minWidth: "100%",
+      "&[data-highlighted]": {
+        // amber.3 carries its own light/dark values, so the band adapts to
+        // color mode with no _dark override and no branching in component logic.
+        backgroundColor: "amber.3",
+      },
     },
     lineNumber: {
       display: "inline-block",
@@ -111,6 +120,19 @@ export const codeBlockSlotRecipe = defineSlotRecipe({
       sm: {
         languageLabel: {
           textStyle: "xs",
+        },
+        // IconButton's smallest size prop is "xs" (h 800 / 32px); the compact
+        // sm code block scales the nested copy button below that floor via a
+        // descendant override so it stays proportional to the smaller chrome.
+        copyButton: {
+          "& button": {
+            h: "600",
+            minW: "600",
+            "& svg": {
+              width: "400",
+              height: "400",
+            },
+          },
         },
         pre: {
           paddingX: "300",

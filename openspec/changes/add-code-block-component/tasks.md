@@ -72,3 +72,18 @@
 - [x] 13.4 Docs: add a "real source line numbers" example to `code-block.dev.mdx` / `code-block.docs.spec.tsx`; ensure `<PropsTable>` picks up the new prop.
 - [x] 13.5 Gates: `pnpm typecheck:strict`, `pnpm lint`, `pnpm test:storybook` for `code-block.stories.tsx` — all green.
 - [x] 13.6 Changeset — folded the `startLineNumber` capability into the existing unreleased `add-code-block-component.md` changeset (component not yet published).
+
+## 14. `highlightedLines` line highlighting (proposal extension)
+
+- [x] 14.1 `code-block.types.ts`: add optional `highlightedLines?: number[]` to `CodeBlockProps`, JSDoc'd `@default []`, keyed to displayed line numbers, independent of `showLineNumbers`, excluded from copy.
+- [x] 14.2 `code-block.tsx`: destructure `highlightedLines = []`; compute `lineNumber = lineIndex + startLineNumber` once and set `data-highlighted={highlightedLines.includes(lineNumber) || undefined}` on the line slot.
+- [x] 14.3 `code-block.recipe.ts`: style `line` `&[data-highlighted]` with a token-driven `backgroundColor` (`amber.3`, mode-adaptive); add `width:max-content` + `minWidth:100%` to the `line` slot so the band spans the full scrollable width.
+- [x] 14.4 `code-block.stories.tsx`: add play coverage — specified lines highlighted, offset honored, highlight without gutter.
+- [x] 14.5 Docs: add a "highlighting lines" example to `code-block.dev.mdx` + `code-block.docs.spec.tsx`; `<PropsTable>` picks up the new prop.
+- [x] 14.6 Gates: `pnpm typecheck:strict`, `pnpm lint`, `pnpm test:storybook` — all green.
+- [x] 14.7 Changeset — fold the `highlightedLines` capability into the unreleased changeset.
+
+## 15. Smaller copy button in the `sm` size (fix)
+
+- [x] 15.1 `code-block.recipe.ts`: in the `sm` variant, scale the nested copy button below IconButton's `xs` floor via a `copyButton` descendant override (button box + icon).
+- [x] 15.2 `code-block.stories.tsx`: assert in `SizeSmall` that the sm copy button is shorter than the md copy button.

@@ -44,6 +44,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
     language = "plaintext",
     showLineNumbers = false,
     startLineNumber = 1,
+    highlightedLines = [],
     showHeader = true,
     showCopyButton = true,
     onCopy = noop,
@@ -141,16 +142,23 @@ export const CodeBlock = (props: CodeBlockProps) => {
             {({ tokens, getLineProps, getTokenProps }) =>
               tokens.map((line, lineIndex) => {
                 const lineProps = getLineProps({ line });
+                // Highlighting is keyed to the displayed line number (the same
+                // numbering as the gutter), so a startLineNumber offset applies
+                // and highlighting works whether or not numbers are shown.
+                const lineNumber = lineIndex + startLineNumber;
+                const isHighlighted = highlightedLines.includes(lineNumber);
                 return (
                   <CodeBlockLineSlot
                     key={lineIndex}
                     // className/style from getLineProps drive Prism-generated classes
                     className={lineProps.className}
                     style={lineProps.style}
+                    // Decorative highlight band; absent (not `false`) when off
+                    data-highlighted={isHighlighted || undefined}
                   >
                     {showLineNumbers && (
                       <CodeBlockLineNumberSlot>
-                        {lineIndex + startLineNumber}
+                        {lineNumber}
                       </CodeBlockLineNumberSlot>
                     )}
                     {line.map((token, tokenIndex) => {

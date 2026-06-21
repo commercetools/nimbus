@@ -26,7 +26,8 @@ package-shape gate apply when `package.json`/exports change.
 - A read-only, accessible, token-themed block code renderer with syntax
   highlighting for the common language set.
 - Single props-driven API: `<CodeBlock code language showLineNumbers
-  startLineNumber showHeader showCopyButton size aria-label onCopy />`.
+  startLineNumber highlightedLines showHeader showCopyButton size aria-label
+  onCopy />`.
 - Copy-to-clipboard with a screen-reader success announcement.
 - Light/dark and full brand-redesign decoupling — only tokens + recipe change,
   never component logic.
@@ -41,6 +42,8 @@ package-shape gate apply when `package.json`/exports change.
 - Non-contiguous or per-line custom line numbering (diff hunks with gaps,
   arbitrary number arrays). The `startLineNumber` offset covers contiguous
   excerpts only.
+- Line-highlight ranges and semantic (non-visual) highlight conveyance.
+  `highlightedLines` is a flat list of line numbers with a decorative band.
 - Auto language detection (explicit `language` prop only).
 - A compound `.Root` public API (content is data, not composable JSX).
 
@@ -160,6 +163,44 @@ a contiguous excerpt of a file (lines 42–46). Non-contiguous numbering (diff
 hunks with gaps, skipped rows, a `…` gutter) would need a richer API
 (`lineNumbers={[...]}` or a render callback) and is deliberately deferred until
 there is a concrete use case, keeping v1 minimal and additive.
+
+### Decision 8: Line highlighting via `highlightedLines`
+
+A line is highlighted when its **displayed** line number (`index +
+startLineNumber`) appears in the `highlightedLines` array. The component sets a
+`data-highlighted` attribute on the matching `line` slot (absent — not `false` —
+when off), and the recipe styles `&[data-highlighted]` with a `backgroundColor`
+token.
+
+**Keyed to displayed numbers, not array index**: highlighting shares the gutter's
+numbering, so `startLineNumber={42} highlightedLines={[43]}` highlights the line
+labeled `43`. This is the intuitive model ("highlight line 43") and composes
+cleanly with the excerpt feature. Highlighting is independent of
+`showLineNumbers` so a consumer can emphasize a line without showing a gutter.
+
+**Token-driven, mode-adaptive**: the band uses `amber.3`, which carries its own
+`_light`/`_dark` values, so the highlight adapts to color mode with no `_dark`
+override and no branching in component logic — consistent with the theming
+decoupling requirement. No new CSS custom property is needed because the value is
+applied directly in the recipe (unlike the syntax `--code-token-*` vars, which
+exist only so the static `PrismTheme` JS object can reference them).
+
+**Full-width under horizontal scroll**: a `display: block` line's background only
+covers the viewport, so a highlighted long line would show a clipped band when
+scrolled. The `line` slot therefore uses `width: max-content` + `min-width: 100%`
+so every line is at least as wide as the scrollable content and the band spans
+the full width.
+
+**Accessibility (v1 = visual only)**: the highlight is a decorative emphasis. A
+semantic conveyance was considered and deferred — `aria-current` is defined for a
+single "current" item and reads awkwardly across multiple highlighted lines, and
+injecting per-line visually-hidden text is noisy for screen-reader users moving
+through code. This matches prevailing practice (Shiki, Prism line-highlight,
+GitHub blob view all highlight visually only). Consumers needing semantic
+emphasis can describe it through the region's `aria-label`.
+
+**Scope**: a flat `number[]` of discrete lines. Ranges (`[[43, 45]]`) are
+deferred until there is a concrete use case; the `line` slot reserves the seam.
 
 ## Risks / Trade-offs
 

@@ -61,6 +61,11 @@ const meta: Meta<typeof CodeBlock> = {
       description:
         "Number assigned to the first line of the gutter (default 1). Use to display an excerpt at its real source line numbers.",
     },
+    highlightedLines: {
+      control: { type: "object" },
+      description:
+        "Displayed line numbers to highlight with a background band (e.g. [4, 5]). Honors the startLineNumber offset and works without the gutter.",
+    },
     showHeader: {
       control: { type: "boolean" },
       description: "Whether to render the header bar.",
@@ -320,6 +325,98 @@ export const LineNumbersOffsetIgnoredWhenHidden: Story = {
 };
 
 // ---------------------------------------------------------------------------
+// HighlightedLines
+// ---------------------------------------------------------------------------
+
+/**
+ * Highlights specific lines with a background band via `highlightedLines`. The
+ * numbers refer to the displayed line numbers shown in the gutter.
+ */
+export const HighlightedLines: Story = {
+  args: {
+    code: jsxSample,
+    language: "jsx",
+    showLineNumbers: true,
+    highlightedLines: [4, 5],
+  },
+  play: async ({ canvasElement, step }) => {
+    await step(
+      "Exactly the specified lines carry data-highlighted",
+      async () => {
+        const highlighted = canvasElement.querySelectorAll(
+          ".nimbus-code-block__line[data-highlighted]"
+        );
+        await expect(highlighted.length).toBe(2);
+        // The highlighted lines are the ones whose gutter reads 4 and 5.
+        const gutterValues = Array.from(highlighted).map(
+          (line) =>
+            line.querySelector(".nimbus-code-block__lineNumber")?.textContent
+        );
+        await expect(gutterValues).toEqual(["4", "5"]);
+      }
+    );
+  },
+};
+
+// ---------------------------------------------------------------------------
+// HighlightedExcerpt
+// ---------------------------------------------------------------------------
+
+/**
+ * Highlighting is keyed to the displayed line numbers, so a `startLineNumber`
+ * offset applies: `highlightedLines={[43]}` highlights the line labeled 43.
+ */
+export const HighlightedExcerpt: Story = {
+  args: {
+    code: excerptSample,
+    language: "js",
+    showLineNumbers: true,
+    startLineNumber: 42,
+    highlightedLines: [43],
+  },
+  play: async ({ canvasElement, step }) => {
+    await step("The offset line number is the one highlighted", async () => {
+      const highlighted = canvasElement.querySelectorAll(
+        ".nimbus-code-block__line[data-highlighted]"
+      );
+      await expect(highlighted.length).toBe(1);
+      await expect(
+        highlighted[0].querySelector(".nimbus-code-block__lineNumber")
+      ).toHaveTextContent("43");
+    });
+  },
+};
+
+// ---------------------------------------------------------------------------
+// HighlightWithoutLineNumbers
+// ---------------------------------------------------------------------------
+
+/**
+ * Highlighting works independently of the gutter — lines can be highlighted
+ * with `showLineNumbers` off.
+ */
+export const HighlightWithoutLineNumbers: Story = {
+  args: {
+    code: jsxSample,
+    language: "jsx",
+    showLineNumbers: false,
+    highlightedLines: [1],
+  },
+  play: async ({ canvasElement, step }) => {
+    await step("Line is highlighted even with no gutter", async () => {
+      const gutter = canvasElement.querySelectorAll(
+        ".nimbus-code-block__lineNumber"
+      );
+      await expect(gutter.length).toBe(0);
+      const highlighted = canvasElement.querySelectorAll(
+        ".nimbus-code-block__line[data-highlighted]"
+      );
+      await expect(highlighted.length).toBe(1);
+    });
+  },
+};
+
+// ---------------------------------------------------------------------------
 // NoHeader
 // ---------------------------------------------------------------------------
 
@@ -468,6 +565,26 @@ export const SizeSmall: Story = {
 
       await expect(smFontSize).toBeLessThan(mdFontSize);
     });
+
+    await step(
+      "sm copy button is smaller than the md copy button",
+      async () => {
+        const smButton = canvasElement
+          .querySelector("[data-testid='size-sm']")
+          ?.querySelector("button");
+        const mdButton = canvasElement
+          .querySelector("[data-testid='size-md']")
+          ?.querySelector("button");
+
+        await expect(smButton).toBeInTheDocument();
+        await expect(mdButton).toBeInTheDocument();
+
+        const smHeight = smButton!.getBoundingClientRect().height;
+        const mdHeight = mdButton!.getBoundingClientRect().height;
+
+        await expect(smHeight).toBeLessThan(mdHeight);
+      }
+    );
   },
 };
 

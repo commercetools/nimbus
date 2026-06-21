@@ -83,6 +83,17 @@ export type CodeBlockProps = OmitInternalProps<CodeBlockRootSlotProps> & {
   startLineNumber?: number;
 
   /**
+   * Line numbers to visually highlight with a background band, keyed to the
+   * displayed line numbers (the same numbering as the gutter, so a
+   * `startLineNumber` offset applies — e.g. `highlightedLines={[43]}` with
+   * `startLineNumber={42}` highlights the second rendered line). Highlighting
+   * works whether or not `showLineNumbers` is enabled. The highlight is
+   * decorative and is excluded from copied text.
+   * @default []
+   */
+  highlightedLines?: number[];
+
+  /**
    * Whether to render the header bar containing the language label and copy button.
    * When false, the copy button is also hidden.
    * @default true

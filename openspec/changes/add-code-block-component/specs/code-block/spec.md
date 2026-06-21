@@ -200,6 +200,45 @@ or per-line custom numbering is out of scope for v1.
 - **THEN** the clipboard contents equal the original `code` string with no line
   numbers inserted.
 
+### Requirement: Optional line highlighting
+
+The component SHALL render a background highlight band on each line whose
+displayed line number appears in the `highlightedLines` array (default `[]`).
+The displayed line number is `index + startLineNumber`, so highlighting uses the
+same numbering as the gutter and honors a `startLineNumber` offset. Highlighting
+SHALL be independent of `showLineNumbers` (a line can be highlighted with the
+gutter hidden). The highlight SHALL be a decorative visual treatment expressed
+through design tokens, MUST adapt to light/dark mode without component logic
+branching, and MUST NOT alter the copied text. The highlight band SHALL span the
+full scrollable width of the line, including the portion revealed by horizontal
+scrolling. Ranges and non-contiguous custom numbering beyond a flat list of line
+numbers are out of scope for v1.
+
+#### Scenario: Specified lines are highlighted
+
+- **WHEN** `highlightedLines={[4, 5]}` is set on multi-line code with
+  `showLineNumbers`
+- **THEN** exactly the lines whose gutter reads `4` and `5` carry the highlight
+  band and no other line does.
+
+#### Scenario: Highlighting honors the startLineNumber offset
+
+- **WHEN** `startLineNumber={42}` and `highlightedLines={[43]}` are set
+- **THEN** the single highlighted line is the one whose gutter reads `43` (the
+  second rendered line), not the line at index 43.
+
+#### Scenario: Highlighting works without the gutter
+
+- **WHEN** `highlightedLines={[1]}` is set while `showLineNumbers` is `false`
+- **THEN** the first rendered line carries the highlight band and no gutter is
+  rendered.
+
+#### Scenario: Highlight is excluded from copied text
+
+- **WHEN** the user copies code while one or more lines are highlighted
+- **THEN** the clipboard contents equal the original `code` string, unaffected by
+  the highlight.
+
 ### Requirement: Token-driven theming and light/dark support
 
 The component SHALL express all visual treatment (surface, border, radius,

@@ -221,6 +221,47 @@ describe("CodeBlock - Excerpt with real line numbers", () => {
 });
 
 /**
+ * @docs-section highlight-lines
+ * @docs-title Highlighting Lines of Interest
+ * @docs-description
+ *   Pass `highlightedLines` to draw attention to specific lines — for example,
+ *   the line a search result landed on. The numbers refer to the displayed line
+ *   numbers, so they honor a `startLineNumber` offset.
+ * @docs-order 6
+ */
+describe("CodeBlock - Highlighting lines", () => {
+  it("highlights the line matching the displayed line number", () => {
+    const excerpt = [
+      "function greet(name) {",
+      '  const message = "Hello, " + name;',
+      "  console.log(message);",
+      "  return message;",
+      "}",
+    ].join("\n");
+
+    renderWithProvider(
+      <CodeBlock
+        code={excerpt}
+        language="js"
+        showLineNumbers
+        startLineNumber={42}
+        highlightedLines={[43]}
+        aria-label="Highlight example"
+      />
+    );
+
+    const highlighted = document.querySelectorAll(
+      ".nimbus-code-block__line[data-highlighted]"
+    );
+    expect(highlighted).toHaveLength(1);
+    expect(
+      highlighted[0].querySelector(".nimbus-code-block__lineNumber")
+        ?.textContent
+    ).toBe("43");
+  });
+});
+
+/**
  * @docs-section size-variants
  * @docs-title Using Size Variants
  * @docs-description
@@ -268,7 +309,7 @@ describe("CodeBlock - Size variants", () => {
  *   A common pattern is to render several CodeBlocks on a documentation page,
  *   each with a distinct accessible label. This ensures screen reader users
  *   can distinguish between them.
- * @docs-order 6
+ * @docs-order 7
  */
 describe("CodeBlock - Multiple snippets on one page", () => {
   it("renders multiple labelled code regions that can each be queried independently", () => {
