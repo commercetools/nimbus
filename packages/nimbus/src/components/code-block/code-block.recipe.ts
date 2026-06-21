@@ -59,18 +59,6 @@ export const codeBlockSlotRecipe = defineSlotRecipe({
       "--code-token-attr": "colors.cyan.11",
       "--code-token-punctuation": "colors.neutral.11",
       "--code-token-operator": "colors.teal.11",
-      _dark: {
-        "--code-token-plain": "colors.neutral.12",
-        "--code-token-keyword": "colors.purple.11",
-        "--code-token-string": "colors.green.11",
-        "--code-token-comment": "colors.neutral.10",
-        "--code-token-number": "colors.orange.11",
-        "--code-token-function": "colors.blue.11",
-        "--code-token-tag": "colors.red.11",
-        "--code-token-attr": "colors.cyan.11",
-        "--code-token-punctuation": "colors.neutral.12",
-        "--code-token-operator": "colors.teal.11",
-      },
     },
     header: {
       display: "flex",
@@ -113,8 +101,6 @@ export const codeBlockSlotRecipe = defineSlotRecipe({
       // Non-selectable so line numbers are not copied to clipboard
       userSelect: "none",
       textAlign: "right",
-      // neutral.11 (~#636363) meets APCA 60Lc on the neutral.2 background;
-      // neutral.8 (~#bababa) only achieves ~34Lc and must not be used here.
       color: "neutral.11",
       paddingRight: "400",
     },

@@ -25,8 +25,8 @@ package-shape gate apply when `package.json`/exports change.
 
 - A read-only, accessible, token-themed block code renderer with syntax
   highlighting for the common language set.
-- Single props-driven API: `<CodeBlock code language showLineNumbers showHeader
-  showCopyButton size aria-label onCopy />`.
+- Single props-driven API: `<CodeBlock code language showLineNumbers
+  startLineNumber showHeader showCopyButton size aria-label onCopy />`.
 - Copy-to-clipboard with a screen-reader success announcement.
 - Light/dark and full brand-redesign decoupling — only tokens + recipe change,
   never component logic.
@@ -38,6 +38,9 @@ package-shape gate apply when `package.json`/exports change.
 - Editing / code input (that is a different component — a code editor).
 - Collapsible/expandable, word-wrap toggle, and filename/title chrome (designed
   for via slots, but not implemented in v1).
+- Non-contiguous or per-line custom line numbering (diff hunks with gaps,
+  arbitrary number arrays). The `startLineNumber` offset covers contiguous
+  excerpts only.
 - Auto language detection (explicit `language` prop only).
 - A compound `.Root` public API (content is data, not composable JSX).
 
@@ -134,6 +137,29 @@ grammar as a single plain token stream, so unsupported/omitted languages degrade
 gracefully with no crash. The common set (js, jsx, ts, tsx, json, css,
 html/markup, graphql, sql, yaml, markdown, python, rust, go, bash/shell, …) is
 covered by the prism core that ships with prism-react-renderer.
+
+### Decision 7: Line-number gutter offset via `startLineNumber`
+
+The line-number gutter renders `lineIndex + startLineNumber` rather than a
+hard-coded `lineIndex + 1`. `startLineNumber` is an optional positive integer
+defaulting to `1`, so existing behavior is unchanged when it is omitted.
+
+**Naming**: `startLineNumber` — qualifier-first noun, matching the established
+Nimbus/React Aria numeric-prop convention (`minValue`, `maxValue`,
+`defaultValue`, `minSize`, `maxSize`); a noun-first `lineNumberStart` would be
+the equivalent of `valueMin`, which appears nowhere in the codebase. `start`
+(over `first`) is React Aria's positional vocabulary (`start`/`end`).
+
+**Orthogonality**: `startLineNumber` is purely the gutter's starting value;
+`showLineNumbers` remains the sole on/off switch. The offset has no effect when
+the gutter is hidden, and it never participates in copy (copy uses the `code`
+prop, so numbers — decorative — are never included regardless of the offset).
+
+**Scope (contiguous only)**: a single numeric offset covers the real use case —
+a contiguous excerpt of a file (lines 42–46). Non-contiguous numbering (diff
+hunks with gaps, skipped rows, a `…` gutter) would need a richer API
+(`lineNumbers={[...]}` or a render callback) and is deliberately deferred until
+there is a concrete use case, keeping v1 minimal and additive.
 
 ## Risks / Trade-offs
 

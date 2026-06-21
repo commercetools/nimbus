@@ -56,6 +56,11 @@ const meta: Meta<typeof CodeBlock> = {
       control: { type: "boolean" },
       description: "Whether to show per-line number gutter.",
     },
+    startLineNumber: {
+      control: { type: "number" },
+      description:
+        "Number assigned to the first line of the gutter (default 1). Use to display an excerpt at its real source line numbers.",
+    },
     showHeader: {
       control: { type: "boolean" },
       description: "Whether to render the header bar.",
@@ -235,6 +240,82 @@ export const LineNumbers: Story = {
         await expect(copyButton).toBeInTheDocument();
       }
     );
+  },
+};
+
+// ---------------------------------------------------------------------------
+// LineNumbersWithOffset
+// ---------------------------------------------------------------------------
+
+// A contiguous five-line excerpt with no digit characters, so any digits that
+// appear in the rendered output must come from the line-number gutter.
+const excerptSample = `function greet(name) {
+  const message = "Hello, " + name;
+  console.log(message);
+  return message;
+}`;
+
+/**
+ * Displays a contiguous excerpt of a file at its real source line numbers via
+ * `startLineNumber`. A five-line excerpt starting at line 42 is numbered 42–46.
+ */
+export const LineNumbersWithOffset: Story = {
+  args: {
+    code: excerptSample,
+    language: "js",
+    showLineNumbers: true,
+    startLineNumber: 42,
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Gutter starts at the offset and increments", async () => {
+      const lineNumbers = canvasElement.querySelectorAll(
+        ".nimbus-code-block__lineNumber"
+      );
+      await expect(lineNumbers.length).toBe(5);
+      const rendered = Array.from(lineNumbers).map((el) => el.textContent);
+      await expect(rendered).toEqual(["42", "43", "44", "45", "46"]);
+    });
+
+    await step(
+      "Copy is unaffected by the offset (copy uses the code prop)",
+      async () => {
+        // The excerpt has no digits, so the gutter numbers are decorative
+        // additions only — the copy path reads the `code` prop, never DOM text,
+        // so the offset can never leak line numbers into the clipboard.
+        const copyButton = canvas.getByRole("button", { name: /copy code/i });
+        await userEvent.click(copyButton);
+        await waitFor(() => {
+          expect(args.onCopy).toHaveBeenCalledTimes(1);
+        });
+      }
+    );
+  },
+};
+
+// ---------------------------------------------------------------------------
+// LineNumbersOffsetIgnoredWhenHidden
+// ---------------------------------------------------------------------------
+
+/**
+ * `startLineNumber` is orthogonal to visibility: it has no effect when
+ * `showLineNumbers` is `false`.
+ */
+export const LineNumbersOffsetIgnoredWhenHidden: Story = {
+  args: {
+    code: excerptSample,
+    language: "js",
+    showLineNumbers: false,
+    startLineNumber: 42,
+  },
+  play: async ({ canvasElement, step }) => {
+    await step("No gutter is rendered despite the offset", async () => {
+      const lineNumbers = canvasElement.querySelectorAll(
+        ".nimbus-code-block__lineNumber"
+      );
+      await expect(lineNumbers.length).toBe(0);
+    });
   },
 };
 

@@ -63,3 +63,12 @@
 
 - [x] 12.1 `pnpm changeset` — consumer-framed, minor bump (new feature).
 - [x] 12.2 Mark all tasks complete; create a conventional commit.
+
+## 13. `startLineNumber` gutter offset (proposal extension)
+
+- [x] 13.1 `code-block.types.ts`: add optional `startLineNumber?: number` to `CodeBlockProps`, JSDoc'd with `@default 1` and a note that it only takes effect when `showLineNumbers` is true and is excluded from copy.
+- [x] 13.2 `code-block.tsx`: destructure `startLineNumber = 1`; render the gutter as `lineIndex + startLineNumber` instead of `lineIndex + 1`. No other behavior change.
+- [x] 13.3 `code-block.stories.tsx`: add play-function coverage for the new scenarios — default starts at 1, `startLineNumber={42}` numbers an excerpt 42–46, offset ignored when `showLineNumbers` is false, copied text excludes numbers with an offset set.
+- [x] 13.4 Docs: add a "real source line numbers" example to `code-block.dev.mdx` / `code-block.docs.spec.tsx`; ensure `<PropsTable>` picks up the new prop.
+- [x] 13.5 Gates: `pnpm typecheck:strict`, `pnpm lint`, `pnpm test:storybook` for `code-block.stories.tsx` — all green.
+- [x] 13.6 Changeset — folded the `startLineNumber` capability into the existing unreleased `add-code-block-component.md` changeset (component not yet published).

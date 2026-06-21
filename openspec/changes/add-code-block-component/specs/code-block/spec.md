@@ -156,6 +156,15 @@ aligned one number per rendered line, and SHALL render no gutter when the prop i
 `false` (the default). Line numbers SHALL be non-selectable decoration and MUST
 NOT be part of the copied text.
 
+The gutter SHALL begin at the `startLineNumber` value (a positive integer,
+default `1`) and increment by one per rendered line, so a consumer can display a
+contiguous excerpt of a file with its real source line numbers (e.g.
+`startLineNumber={42}` numbers a five-line excerpt 42–46). `startLineNumber`
+SHALL be orthogonal to visibility: it has no effect when `showLineNumbers` is
+`false`, and it never changes the copied text (which always equals the `code`
+prop). The offset applies to a single contiguous run of lines; non-contiguous
+or per-line custom numbering is out of scope for v1.
+
 #### Scenario: Line numbers shown when enabled
 
 - **WHEN** `showLineNumbers={true}` is set on multi-line code
@@ -166,9 +175,28 @@ NOT be part of the copied text.
 - **WHEN** `showLineNumbers` is omitted or `false`
 - **THEN** no line-number gutter is rendered.
 
+#### Scenario: Gutter defaults to starting at 1
+
+- **WHEN** `showLineNumbers={true}` is set with no `startLineNumber`
+- **THEN** the first rendered line is numbered `1` and each subsequent line
+  increments by one.
+
+#### Scenario: Excerpt displays real source line numbers
+
+- **WHEN** a five-line excerpt is rendered with
+  `showLineNumbers startLineNumber={42}`
+- **THEN** the gutter shows `42, 43, 44, 45, 46`, one per line.
+
+#### Scenario: startLineNumber is ignored when line numbers are hidden
+
+- **WHEN** `startLineNumber={42}` is set while `showLineNumbers` is omitted or
+  `false`
+- **THEN** no gutter is rendered and the offset has no visible effect.
+
 #### Scenario: Line numbers are excluded from copied text
 
-- **WHEN** the user copies code while line numbers are shown
+- **WHEN** the user copies code while line numbers are shown (with any
+  `startLineNumber`)
 - **THEN** the clipboard contents equal the original `code` string with no line
   numbers inserted.
 

@@ -43,6 +43,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
     code,
     language = "plaintext",
     showLineNumbers = false,
+    startLineNumber = 1,
     showHeader = true,
     showCopyButton = true,
     onCopy = noop,
@@ -149,7 +150,7 @@ export const CodeBlock = (props: CodeBlockProps) => {
                   >
                     {showLineNumbers && (
                       <CodeBlockLineNumberSlot>
-                        {lineIndex + 1}
+                        {lineIndex + startLineNumber}
                       </CodeBlockLineNumberSlot>
                     )}
                     {line.map((token, tokenIndex) => {

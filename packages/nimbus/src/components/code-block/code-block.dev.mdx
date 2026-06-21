@@ -86,6 +86,25 @@ const App = () => (
 )
 ```
 
+#### Real source line numbers
+
+To display a contiguous excerpt of a file at its real line numbers, pass
+`startLineNumber` (default `1`). The gutter starts at that value and increments
+per line — here a five-line excerpt is numbered 42–46. The offset only affects
+the gutter; it has no effect when `showLineNumbers` is `false` and never changes
+the copied text:
+
+```jsx live-dev
+const App = () => (
+  <CodeBlock
+    language="js"
+    showLineNumbers
+    startLineNumber={42}
+    code={`function greet(name) {\n  const message = "Hello, " + name;\n  console.log(message);\n  return message;\n}`}
+  />
+)
+```
+
 ### Header and copy button
 
 The header shows the language label and copy-to-clipboard button by default.

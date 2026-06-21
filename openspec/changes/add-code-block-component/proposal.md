@@ -20,7 +20,10 @@ syntax highlighting, light/dark support, and copy-to-clipboard.
   not composable JSX).
 - v1 capabilities: syntax highlighting for the common language set, an opt-out
   header bar showing the language label, a copy-to-clipboard button with a
-  screen-reader success announcement, and opt-in line numbers. A `size` variant
+  screen-reader success announcement, and opt-in line numbers. The line-number
+  gutter starts at `1` by default but accepts a `startLineNumber` offset, so a
+  consumer can render an excerpt of a file with its real source line numbers
+  (e.g. a five-line snippet numbered 42–46). A `size` variant
   (`sm`/`md`) scales typography + padding.
 - Syntax highlighting via **`prism-react-renderer`** (added as a bundled
   `dependency`). It renders through React elements (no `dangerouslySetInnerHTML`
@@ -49,7 +52,9 @@ No breaking changes — this is purely additive.
 - `code-block`: A read-only, syntax-highlighted, accessible, token-themed
   block-level code renderer with an optional header (language label), an optional
   copy-to-clipboard button with screen-reader announcement, optional line
-  numbers, light/dark theming, and constrained-width horizontal-scroll behavior.
+  numbers (with an optional `startLineNumber` offset for displaying excerpts at
+  their real source line numbers), light/dark theming, and constrained-width
+  horizontal-scroll behavior.
 
 ### Modified Capabilities
 

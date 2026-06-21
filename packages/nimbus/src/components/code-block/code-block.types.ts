@@ -72,6 +72,17 @@ export type CodeBlockProps = OmitInternalProps<CodeBlockRootSlotProps> & {
   showLineNumbers?: boolean;
 
   /**
+   * The number assigned to the first rendered line of the gutter; each
+   * subsequent line increments by one. Use this to display a contiguous
+   * excerpt of a file with its real source line numbers (e.g.
+   * `startLineNumber={42}` numbers a five-line excerpt 42–46). Only takes
+   * effect when `showLineNumbers` is `true`, and never affects the copied
+   * text (line numbers remain decorative).
+   * @default 1
+   */
+  startLineNumber?: number;
+
+  /**
    * Whether to render the header bar containing the language label and copy button.
    * When false, the copy button is also hidden.
    * @default true

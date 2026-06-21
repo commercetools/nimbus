@@ -183,6 +183,44 @@ describe("CodeBlock - Display option toggling", () => {
 });
 
 /**
+ * @docs-section excerpt-line-numbers
+ * @docs-title Displaying an Excerpt at Real Line Numbers
+ * @docs-description
+ *   When you show only a slice of a larger file, use `startLineNumber` so the
+ *   gutter reflects the excerpt's real position in the source instead of
+ *   restarting at 1. Pass the contiguous excerpt as `code` and the line number
+ *   of its first line as `startLineNumber`.
+ * @docs-order 5
+ */
+describe("CodeBlock - Excerpt with real line numbers", () => {
+  it("numbers a five-line excerpt at its real source line numbers", () => {
+    const excerpt = [
+      "function greet(name) {",
+      '  const message = "Hello, " + name;',
+      "  console.log(message);",
+      "  return message;",
+      "}",
+    ].join("\n");
+
+    renderWithProvider(
+      <CodeBlock
+        code={excerpt}
+        language="js"
+        showLineNumbers
+        startLineNumber={42}
+        aria-label="Excerpt example"
+      />
+    );
+
+    // The gutter starts at the offset and increments per line.
+    const gutter = Array.from(
+      document.querySelectorAll(".nimbus-code-block__lineNumber")
+    ).map((el) => el.textContent);
+    expect(gutter).toEqual(["42", "43", "44", "45", "46"]);
+  });
+});
+
+/**
  * @docs-section size-variants
  * @docs-title Using Size Variants
  * @docs-description
@@ -230,7 +268,7 @@ describe("CodeBlock - Size variants", () => {
  *   A common pattern is to render several CodeBlocks on a documentation page,
  *   each with a distinct accessible label. This ensures screen reader users
  *   can distinguish between them.
- * @docs-order 5
+ * @docs-order 6
  */
 describe("CodeBlock - Multiple snippets on one page", () => {
   it("renders multiple labelled code regions that can each be queried independently", () => {
