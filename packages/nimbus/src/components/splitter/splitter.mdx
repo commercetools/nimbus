@@ -87,9 +87,19 @@ const App = () => (
 The aside can be made collapsible so a region — usually a sidebar or panel — can
 be hidden and brought back. Collapsing animates the boundary to the aside's
 collapsed size: fully hidden by default, or a thin rail when a collapsed size is
-set. The freed space goes to the main pane. Surface a visible control (a button)
-to toggle it; on the handle, Enter toggles collapse and double-click restores
-the default split.
+set. The freed space goes to the main pane.
+
+While **expanded**, the handle resizes (drag, arrows, Home/End), Enter collapses,
+and double-click restores the default split. While **collapsed**, the handle is a
+**keyboard-only toggle**: Enter expands it again. It advertises no mouse-resize
+affordances — there is no hover track and double-click does nothing — because
+resizing is locked until the aside is reopened.
+
+Because `collapsedSize` defaults to `0` (the aside fully disappears, pinning the
+handle to the container edge), a collapsed aside has **no visible mouse target to
+reopen it**. Always surface your own visible control — a button outside the
+splitter that drives the `collapsed` prop (as below), or a trigger near the
+collapsed aside — so mouse users can expand it.
 
 ```jsx live
 const App = () => {

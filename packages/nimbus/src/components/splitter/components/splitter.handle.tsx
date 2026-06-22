@@ -79,10 +79,15 @@ export const SplitterHandle = ({
   });
   const { focusProps, isFocusVisible } = useFocusRing();
 
+  // While collapsed the handle is a keyboard-only toggle target (Enter expands):
+  // resize is locked and no mouse-resize affordances are advertised, so
+  // double-click is a no-op too. `restoreDefaults` keeps its expanded behavior
+  // (reset-to-default-size); its collapsed/expand branch is just unreachable
+  // from the handle.
   const handleDoubleClick = useCallback(() => {
-    if (isDisabled || isDoubleClickDisabled) return;
+    if (isDisabled || isDoubleClickDisabled || collapsed) return;
     restoreDefaults();
-  }, [isDisabled, isDoubleClickDisabled, restoreDefaults]);
+  }, [isDisabled, isDoubleClickDisabled, collapsed, restoreDefaults]);
 
   const { min: ariaValueMin, max: ariaValueMax } = computeAriaBounds(
     asideConfig,

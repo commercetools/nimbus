@@ -107,8 +107,13 @@ control can drive it; Enter on the focused handle toggles it too.
 
 While the aside is collapsed the handle can't be resized (drag and the arrow
 keys are inactive) — a collapsed aside sits below its `minSize`, so a resize
-could only snap. Reopen it with the control, Enter, or a double-click; the
-collapsed state holds until you explicitly leave it.
+could only snap. The collapsed handle is **keyboard-only**: it advertises no
+mouse-resize affordances (no hover track, and double-click does nothing), but
+**Enter** still expands it. Reopen it with Enter or your own control; the
+collapsed state holds until you explicitly leave it. Since `collapsedSize`
+defaults to `0` (the aside fully disappears), provide a visible control — a
+button driving `collapsed`, or a trigger near the collapsed aside — so mouse
+users have a way to reopen it.
 
 ```jsx live-dev
 const App = () => {
@@ -194,8 +199,9 @@ const App = () => {
 
 When you don't need to drive collapse from outside the splitter, seed the
 initial collapsed state with `defaultCollapsed` and let the splitter own it.
-Enter on the handle toggles it from there, and double-click restores the default
-split.
+Enter on the handle toggles it from there. While expanded, double-click restores
+the default split; while collapsed, the handle is keyboard-only (Enter to
+expand) and double-click does nothing.
 
 ```jsx live-dev
 const App = () => (
