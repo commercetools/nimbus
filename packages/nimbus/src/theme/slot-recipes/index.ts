@@ -41,6 +41,7 @@ import { tabsSlotRecipe } from "@/components/tabs/tabs.recipe";
 import { tagGroupSlotRecipe } from "@/components/tag-group/tag-group.recipe";
 import { textInputSlotRecipe } from "@/components/text-input/text-input.recipe";
 import { timeInputRecipe } from "@/components/time-input/time-input.recipe";
+import { treeSlotRecipe } from "@/components/tree/tree.recipe";
 import { toastRecipe } from "@/components/toast/toast.recipe";
 import { buttonGroupRecipe } from "@/components/toggle-button-group/toggle-button-group.recipe";
 
@@ -114,6 +115,7 @@ export const slotRecipes = {
   nimbusTagGroup: tagGroupSlotRecipe,
   nimbusTextInput: textInputSlotRecipe,
   nimbusTimeInput: timeInputRecipe,
+  nimbusTree: treeSlotRecipe,
   nimbusToggleButtonGroup: buttonGroupRecipe,
   nimbusSteps: stepsSlotRecipe,
   // NOTE: the following recipes are intentionally NOT prefixed with "nimbus"
