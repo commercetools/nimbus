@@ -27,6 +27,12 @@ export const TreeItemContent = ({
 }: TreeItemContentProps) => {
   const [styleProps, restProps] = extractStyleProps(props);
 
+  // Can't use `asChild`/`as` like the other slots: `RaTreeItemContent` needs a
+  // render-prop child and emits no DOM element to merge styles onto. So this
+  // slot renders its own div inside React Aria's `role="gridcell"`. The gridcell
+  // is `display: contents`, so it collapses out of layout and this div becomes
+  // the row's actual box — meaning `itemContent` styles target this div, not the
+  // gridcell.
   return (
     <RaTreeItemContent>
       {({
