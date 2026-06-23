@@ -66,9 +66,9 @@ catalogs:
     "@chakra-ui/cli": ^3.36.0
     "@chakra-ui/react": ^3.36.0
     next-themes: ^0.4.6
-    react-aria: 3.49.0
-    react-aria-components: 1.18.0
-    react-stately: 3.47.0
+    react-aria: 3.50.0
+    react-aria-components: 1.19.0
+    react-stately: 3.48.0
     "@react-aria/interactions": 3.28.1
     "@react-aria/utils": 3.34.1
     "@react-aria/optimize-locales-plugin": 1.2.1

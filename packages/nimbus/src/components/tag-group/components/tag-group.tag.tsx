@@ -30,6 +30,7 @@ export const TagGroupTag: TagGroupTagComponent = ({
                 size="2xs"
                 variant={isSelected ? "solid" : "ghost"}
                 slot="remove"
+                excludeFromTabOrder
                 colorPalette={isSelected ? undefined : "neutral"}
                 aria-label={msg.format("removeTag")}
               >

@@ -1,8 +1,5 @@
-import type { ReactNode } from "react";
-import type {
-  MenuTriggerProps as RaMenuTriggerProps,
-  MenuProps as RaMenuProps,
-} from "react-aria-components";
+import type { Key, ReactNode } from "react";
+import type { MenuTriggerProps as RaMenuTriggerProps } from "react-aria-components";
 import type { ButtonProps } from "../button/button.types";
 import type {
   HTMLChakraProps,
@@ -35,8 +32,12 @@ export type SplitButtonTriggerSlotProps = HTMLChakraProps<"button">;
 // ============================================================
 export type SplitButtonProps = SplitButtonRecipeProps &
   Pick<ButtonProps, "size" | "colorPalette" | "variant" | "isDisabled"> &
-  Omit<RaMenuTriggerProps, "trigger" | "children"> &
-  Required<Pick<RaMenuProps<object>, "onAction">> & {
+  Omit<RaMenuTriggerProps, "trigger" | "children"> & {
+    /**
+     * Handler called when the primary action button is pressed or a dropdown
+     * menu item is selected. Receives the action's key.
+     */
+    onAction: (key: Key) => void;
     /**
      * Accessibility label for the dropdown trigger
      */
