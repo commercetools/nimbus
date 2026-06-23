@@ -3,9 +3,16 @@ module.exports = {
   jsx: {
     babelConfig: {
       plugins: [
-        // For an example, this plugin will remove "id" attribute from "svg" tag
+        // Resolve to an absolute path so Babel loads the plugin regardless of
+        // how pnpm hoists it. A bare module name is resolved by @babel/core
+        // relative to its resolution base, which is not reliable under pnpm's
+        // strict node_modules layout (e.g. a clean CI install) and caused
+        // "Cannot find module '@svgr/babel-plugin-add-jsx-attribute'" on Vercel.
+        // The plugin is declared as a direct devDependency of this package so
+        // require.resolve always finds it here.
         [
-          "@svgr/babel-plugin-add-jsx-attribute",
+          // eslint-disable-next-line no-undef
+          require.resolve("@svgr/babel-plugin-add-jsx-attribute"),
           {
             elements: ["svg"],
             attributes: [
