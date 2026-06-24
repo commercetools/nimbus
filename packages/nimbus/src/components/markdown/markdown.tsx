@@ -4,15 +4,16 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import { useLocalizedStringFormatter } from "@/hooks";
+import { Box } from "@/components/box/box";
 import { VisuallyHidden } from "@/components/visually-hidden/visually-hidden";
-import { MarkdownRootSlot } from "./markdown.slots";
-import { createNimbusComponents } from "./markdown.components";
-import { DEFAULT_ALLOWED_ELEMENTS } from "./markdown.constants";
-import { getHeadingLevels, findHeadingLevelSkips } from "./markdown.utils";
+import { createNimbusComponents, StreamingContent } from "./components";
+import { DEFAULT_ALLOWED_ELEMENTS } from "./constants";
+import { getHeadingLevels, findHeadingLevelSkips } from "./utils";
 import { markdownMessagesStrings } from "./markdown.messages";
-import type { MarkdownProps } from "./markdown.types";
-import type { ReactMarkdownRenderOptions } from "./markdown.shared";
-import { StreamingContent } from "./markdown.streaming";
+import type {
+  MarkdownProps,
+  ReactMarkdownRenderOptions,
+} from "./markdown.types";
 
 /**
  * Emit a development-mode warning when author markdown skips a heading level
@@ -122,7 +123,7 @@ export const Markdown = (props: MarkdownProps) => {
     if (allowedElements) return allowedElements;
     if (disallowedElements) return undefined;
     if (rawHtmlEnabled) return undefined;
-    return DEFAULT_ALLOWED_ELEMENTS;
+    return DEFAULT_ALLOWED_ELEMENTS as string[];
   }, [allowedElements, disallowedElements, rawHtmlEnabled]);
 
   const renderOptions = React.useMemo<ReactMarkdownRenderOptions>(
@@ -146,9 +147,21 @@ export const Markdown = (props: MarkdownProps) => {
   );
 
   return (
-    <MarkdownRootSlot
+    <Box
       ref={ref}
+      className="nimbus-markdown"
+      color="neutral.12"
+      fontFamily="body"
+      fontSize="400"
+      lineHeight="600"
+      fontWeight="400"
       aria-busy={isStreaming || undefined}
+      css={{
+        // Vertical rhythm between top-level blocks; tighter above content that
+        // follows a heading.
+        "& > * + *": { marginTop: "400" },
+        "& > :where(h1, h2, h3, h4, h5, h6) + *": { marginTop: "300" },
+      }}
       {...styleProps}
     >
       {isStreaming ? (
@@ -161,7 +174,7 @@ export const Markdown = (props: MarkdownProps) => {
           {announcement}
         </VisuallyHidden>
       )}
-    </MarkdownRootSlot>
+    </Box>
   );
 };
 
