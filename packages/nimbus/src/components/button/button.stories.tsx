@@ -141,7 +141,7 @@ export const DisabledAsLink: Story = {
  * attribute) while its activation is suppressed. This is what makes it possible
  * to attach a Tooltip explaining *why* the action is unavailable.
  */
-export const FocusableDisabled: Story = {
+export const DisabledButFocusable: Story = {
   args: {
     children: "Disabled (focusable)",
     isDisabled: true,
@@ -188,7 +188,7 @@ const submitSpy = fn();
  * A soft-disabled submit button must not submit its form, even though it is
  * focusable and a real `type="submit"` button.
  */
-export const FocusableDisabledDoesNotSubmit: Story = {
+export const DisabledButFocusableDoesNotSubmit: Story = {
   args: {
     children: "Submit",
     type: "submit",

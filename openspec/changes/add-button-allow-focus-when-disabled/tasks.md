@@ -26,13 +26,13 @@
 
 ## 3. Stories (behavior is tested here)
 
-- [x] 3.1 `FocusableDisabled` story: soft-disabled button is focusable via Tab,
-      exposes `aria-disabled="true"`, has no native `disabled` attribute, and
-      `onPress`/`onClick` do not fire on click or `Enter`/`Space`.
-- [x] 3.2 `FocusableDisabledFormSubmit` story: a `type="submit"` soft-disabled
-      button inside a `<form>` does not submit.
+- [x] 3.1 `DisabledButFocusable` story: soft-disabled button is focusable via
+      Tab, exposes `aria-disabled="true"`, has no native `disabled` attribute,
+      and `onPress`/`onClick` do not fire on click or `Enter`/`Space`.
+- [x] 3.2 `DisabledButFocusableDoesNotSubmit` story: a `type="submit"`
+      soft-disabled button inside a `<form>` does not submit.
 - [x] 3.3 `DisabledWithTooltip` story: pairing with `Tooltip`, the tooltip opens
-      on hover and on keyboard focus of the soft-disabled button.
+      on keyboard focus of the soft-disabled button (and is hoverable).
 - [x] 3.4 Regression: default disabled button (no `allowFocusWhenDisabled`)
       keeps the native `disabled` attribute, is not focusable, and a tooltip
       does not open.
