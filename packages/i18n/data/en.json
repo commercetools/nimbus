@@ -395,6 +395,14 @@
     "developer_comment": "Label for showing all language inputs when toggle button is pressed",
     "string": "Show all languages"
   },
+  "Nimbus.Markdown.opensInNewTab": {
+    "developer_comment": "Visually-hidden suffix appended to external links that open in a new browser tab",
+    "string": "(opens in new tab)"
+  },
+  "Nimbus.Markdown.streamingComplete": {
+    "developer_comment": "Polite live-region announcement made once when streamed markdown content finishes rendering",
+    "string": "Response complete"
+  },
   "Nimbus.ModalPage.backButton": {
     "developer_comment": "aria-label for the back navigation button in ModalPage.TopBar",
     "string": "Go back to {previousPathLabel}"
