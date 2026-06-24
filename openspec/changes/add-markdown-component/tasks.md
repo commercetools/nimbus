@@ -2,8 +2,9 @@
 
 > **API note:** `Markdown` is a single entry point — `<Markdown>{md}</Markdown>`
 > — plus a default renderer map. It is not a `.Root` compound component. Default
-> renderers reuse existing Nimbus primitives (`Heading`, `Link`, `Code`, `Text`,
-> `Separator`); recipe-styled slots cover the rest. Engine: `react-markdown` +
+> renderers reuse existing Nimbus components (`Heading`, `Link`, `Code`, `Text`);
+> styled `chakra.*` primitives with design-token style props cover the rest (no
+> component-specific slot recipe). Engine: `react-markdown` +
 > `remark-gfm` + `remend` (streaming). Security piggybacks on Merchant Center
 > conventions — react-markdown safe defaults (`skipHtml`) + `allowedElements`
 > allowlist + `rel=noopener` external links; image-host security is the app
@@ -19,21 +20,21 @@
       `pnpm check:bundle-size` baseline note.
 - [x] 1.2 Create `packages/nimbus/src/components/markdown/` following the Nimbus
       file-type layout, with shell files exporting empty/stub symbols:
-      `markdown.tsx`, `markdown.types.ts`, `markdown.recipe.ts`,
-      `markdown.slots.tsx`, `markdown.stories.tsx`, and `index.ts` (barrel).
+      `markdown.tsx`, `markdown.types.ts`, `markdown.stories.tsx`, and `index.ts`
+      (barrel), plus the `utils/`, `constants/`, and `components/` directories.
 - [x] 1.3 Export the component from
       `packages/nimbus/src/components/index.ts` (`export * from "./markdown"`).
-- [x] 1.4 Add `markdown.recipe.ts` (`markdownSlotRecipe`) with slots for
-      `root`, `heading`, `paragraph`, `link`, `inlineCode`, `codeBlock`,
-      `list`, `listItem`, `blockquote`, `table`, `tableHeaderCell`,
-      `tableCell`, `image`, `separator`. Register it as `nimbusMarkdown` in
-      `packages/nimbus/src/theme/slot-recipes/index.ts`.
-- [x] 1.5 Add `markdown.slots.tsx` deriving slot prop types from the recipe.
-- [x] 1.6 Add i18n messages (`markdown.i18n.ts`) for the external-link
+- [x] 1.4 Style the root and all renderers with **design-token style props** (no
+      component-specific slot recipe): the root is a `Box` carrying the document
+      typography + vertical rhythm; the renderer map applies the Figma
+      `Markdown/*` scale as style props. Do **not** register a `nimbusMarkdown`
+      slot recipe.
+- [x] 1.5 Add i18n messages (`markdown.i18n.ts`) for the external-link
       "(opens in new tab)" label; wire through the Nimbus i18n pipeline.
 
       **Acceptance:** component dir builds; `Markdown` is importable from the
-      package barrel; recipe registered; no Tailwind in the dependency tree.
+      package barrel; no slot recipe registered; no Tailwind in the dependency
+      tree.
 
 ## 2. Types (four-layer)
 
@@ -83,17 +84,21 @@
 
 ## 4. Implementation (dependency order)
 
-- [x] 4.1 Implement `markdown.recipe.ts` — map the Figma `Markdown/*` scale to
-      existing primitive tokens (sizes 14/16/18/20/24, line-heights 20/22/24/28,
-      weights 400/600/700, Body Emphasis `fontStyle: italic`, system
-      `fontFamily.mono` for code). No new tokens.
-- [x] 4.2 Implement `markdown.slots.tsx` slot components.
-- [x] 4.3 Implement the default renderer map: reuse `Heading` (h1–h4, fold
-      h5/h6), `Text` (p/em/strong/del), `Link` (a, with external detection +
-      `rel`/`target` + i18n, non-color indicator), `Code` (inline), recipe slots
-      for code blocks (plain `pre`/`code`, visually-hidden language label —
-      no copy/highlighting), lists (task-list checkbox read-only + named from
-      item text), blockquote, table (`th[scope]`), image (`loading="lazy"` +
+- [x] 4.1 Apply the Figma `Markdown/*` scale as **style props** (no recipe) on
+      the renderers and the root `Box` — existing primitive tokens (sizes
+      14/16/18/20/24, line-heights 20/22/24/28, weights 400/600/700, italic
+      emphasis, system `fontFamily.mono` for code) plus the inter-block vertical
+      rhythm on the root. No new tokens.
+- [x] 4.2 Organize component-scoped code into the canonical directories: pure
+      helpers in `utils/` (split by family, each with a sibling `.spec.ts` + a
+      barrel), shared values in `constants/`, and sub-component renderers
+      (default map + streaming) in `components/`.
+- [x] 4.3 Implement the default renderer map: reuse `Heading` (h1–h6 via `as`,
+      fold h5/h6), `Text` (p), `Link` (a, with external detection +
+      `rel`/`target` + i18n, non-color indicator), `Code` (inline), and styled
+      `chakra.*` primitives for code blocks (plain `pre`/`code`, no
+      copy/highlighting), lists (task-list checkbox read-only + named from item
+      text), blockquote, table (`th[scope]`), image (`loading="lazy"` +
       `referrerpolicy="no-referrer"`, dev-warn on missing alt), hr. **Every
       renderer destructures out `node` before spreading onto the DOM.**
 - [x] 4.4 Implement `headingOffset` (render markdown level L as

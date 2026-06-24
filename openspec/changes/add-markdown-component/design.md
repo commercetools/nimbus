@@ -17,8 +17,8 @@ stand-in components on React 19 with zero Tailwind.
 **Engine: `react-markdown@10`** (remark/rehype/unified). Rationale:
 
 - **Headless** — emits React elements, ships no CSS. Styling is 100% ours via
-  the `components` map + Chakra recipe. The only widely-adopted renderer with
-  this property.
+  the `components` map + Chakra style props. The only widely-adopted renderer
+  with this property.
 - **Safe by default** — no `dangerouslySetInnerHTML`; raw HTML escaped/ignored;
   built-in `urlTransform` neutralizes dangerous protocols. GitHub Advisory DB
   has no advisories against the package itself; reported XSS is always
@@ -77,24 +77,24 @@ markstream-react (own CSS). See proposal for detail.
 
 ### Default renderer map
 
-Reuse existing Nimbus primitives where they exist; recipe-styled slots
-otherwise. Each default renderer destructures out `node` before spreading
-(spike surfaced `node="[object Object]"` leaking to the DOM otherwise).
+Reuse existing Nimbus components where they exist; styled `chakra.*` primitives
+(design-token style props) otherwise — no component-specific slot recipe. Each
+default renderer destructures out `node` before spreading (spike surfaced
+`node="[object Object]"` leaking to the DOM otherwise).
 
 | Element | Default renderer |
 | --- | --- |
-| `h1`–`h4` | `Heading` at the Figma `Markdown/*` heading sizes |
-| `h5`,`h6` | smallest heading style (folded) |
+| `h1`–`h6` | `Heading` (via `as`) at the Figma `Markdown/*` heading sizes set as style props; `h5`/`h6` fold to the smallest |
 | `p` | `Text` (Markdown/Body) |
 | `a` | `Link` — external-link detection adds `target="_blank" rel="noopener noreferrer"` + visible indicator + i18n label |
 | `code` (inline) | `Code` (Markdown/Code, system mono) |
-| `pre`/code block | recipe-styled block (system mono); v1 has **no** copy button / highlighting (override seam only); visually-hidden language label for SR parity |
-| `strong`/`em`/`del` | Body Strong / Body Emphasis (italic) / strikethrough |
-| `ul`/`ol`/`li` | recipe-styled lists; GFM task-list `input` rendered read-only |
-| `blockquote` | recipe-styled slot |
-| `table`/`thead`/`tr`/`th`/`td` | recipe-styled, semantic table markup with `th[scope]` |
-| `img` | recipe-styled; preserves `alt`; missing-alt behaviour per a11y reqs |
-| `hr`/`br` | `Separator` / line break |
+| `pre`/code block | styled `chakra.pre` (system mono); v1 has **no** copy button / highlighting (override seam only) |
+| `strong`/`em`/`del` | native elements styled by the root body font (bold / italic / strikethrough) |
+| `ul`/`ol`/`li` | styled `chakra.ul`/`ol`/`li` (style props); GFM task-list `input` rendered read-only |
+| `blockquote` | styled `chakra.blockquote` |
+| `table`/`thead`/`tr`/`th`/`td` | styled `chakra.*`, semantic table markup with `th[scope]` |
+| `img` | styled `chakra.img`; preserves `alt`; missing-alt behaviour per a11y reqs |
+| `hr` | styled `chakra.hr`; `br` is a native line break |
 
 ### Override merge
 
@@ -122,17 +122,21 @@ emits **one coalesced completion announcement** (not per-token) when streaming
 ends. This gives SR users a "loading → done" model (WCAG 4.1.3) and pairs with
 block memoization (only the tail mutates). The exact announcement string is i18n.
 
-### Four-layer types
+### Types
 
-1. **Recipe props** — `markdown.recipe.ts` slot variants.
-2. **Slot props** — derived in `markdown.slots.tsx`.
-3. **Helper types** — `MarkdownComponents` (the override map type, re-exporting
-   react-markdown's `Components`) and `MarkdownTrust`.
-4. **Main props** — `MarkdownProps` (public, JSDoc'd): `children` (markdown
-   string), `trust`, `allowRawHtml`, `sanitizeSchema`, `components`,
-   `remarkPlugins`, `rehypePlugins`, `allowedElements`, `disallowedElements`,
-   `isStreaming`, `headingOffset`, `ref`, and Nimbus **style props (forwarded to
-   the outer root container)**.
+All in `markdown.types.ts` (no recipe/slot type layers, since there is no slot
+recipe):
+
+1. **Helper types** — `MarkdownComponents` (the override map type, re-exporting
+   react-markdown's `Components`), `MarkdownTrust`, `MarkdownPluginList`,
+   `MarkdownSanitizeSchema`.
+2. **`ReactMarkdownRenderOptions`** — the resolved render-options bag shared by
+   the non-streaming and streaming (memoized per-block) render paths.
+3. **Main props** — `MarkdownProps` (public, JSDoc'd), extending `BoxProps` for
+   the root: `children` (markdown string), `trust`, `allowRawHtml`,
+   `sanitizeSchema`, `components`, `remarkPlugins`, `rehypePlugins`,
+   `allowedElements`, `disallowedElements`, `isStreaming`, `headingOffset`,
+   `ref`, and Nimbus **style props (forwarded to the outer root container)**.
 
 ## Accessibility (WCAG 2.1 AA)
 
@@ -171,8 +175,8 @@ overrides).
 
 ## Token mapping (compose existing primitives)
 
-Figma `Markdown/*` → existing tokens, set directly in the recipe (no new
-tokens, system mono):
+Figma `Markdown/*` → existing tokens, applied as style props on the renderers
+and the root `Box` (no new tokens, no recipe, system mono):
 
 | Style | Family | Weight | Size | Line height |
 | --- | --- | --- | --- | --- |
@@ -200,8 +204,8 @@ tokens, system mono):
 - **Simple-case layout** → style props forward to the outer root container
   (standard Nimbus pattern); no bespoke `maxW`/`lineClamp`/`variant` props.
 - **Canonical input** → `children` (string), matching react-markdown.
-- **Tokens** → compose primitives in recipe; system mono (no new tokens, no
-  Roboto Mono webfont).
+- **Tokens** → compose primitives via style props on the renderers/root; system
+  mono (no new tokens, no recipe, no Roboto Mono webfont).
 - **Math** → `remarkPlugins` passthrough; not bundled.
 
 ## Remaining decisions for implementation
