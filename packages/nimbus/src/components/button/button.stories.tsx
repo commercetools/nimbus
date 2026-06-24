@@ -1,6 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Box, Button, type ButtonProps, Stack } from "@commercetools/nimbus";
-import { userEvent, within, expect, fn } from "storybook/test";
+import {
+  Box,
+  Button,
+  type ButtonProps,
+  Stack,
+  Tooltip,
+} from "@commercetools/nimbus";
+import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import { ArrowRight as DemoIcon } from "@commercetools/nimbus-icons";
 import { createRef, useState } from "react";
 import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
@@ -126,6 +132,143 @@ export const DisabledAsLink: Story = {
         await expect(button).not.toHaveAttribute("disabled");
       }
     );
+  },
+};
+
+/**
+ * With `allowFocusWhenDisabled`, a disabled Button stays focusable and
+ * hoverable (rendering `aria-disabled` instead of the native `disabled`
+ * attribute) while its activation is suppressed. This is what makes it possible
+ * to attach a Tooltip explaining *why* the action is unavailable.
+ */
+export const FocusableDisabled: Story = {
+  args: {
+    children: "Disabled (focusable)",
+    isDisabled: true,
+    allowFocusWhenDisabled: true,
+    onPress: fn(),
+    onClick: fn(),
+    ["data-testid"]: "test",
+  },
+  play: async ({ canvasElement, step, args }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByTestId("test");
+
+    await step(
+      "Exposes aria-disabled and no native disabled attribute",
+      async () => {
+        await expect(button).toHaveAttribute("aria-disabled", "true");
+        await expect(button).not.toBeDisabled();
+      }
+    );
+
+    await step("Remains focusable with the <tab> key", async () => {
+      await userEvent.tab();
+      await expect(button).toHaveFocus();
+    });
+
+    await step("Does not fire onPress/onClick when clicked", async () => {
+      await userEvent.click(button);
+      await expect(args.onPress).toHaveBeenCalledTimes(0);
+      await expect(args.onClick).toHaveBeenCalledTimes(0);
+    });
+
+    await step("Does not fire onPress on Enter or Space", async () => {
+      button.focus();
+      await userEvent.keyboard("{enter}");
+      await userEvent.keyboard(" ");
+      await expect(args.onPress).toHaveBeenCalledTimes(0);
+    });
+  },
+};
+
+const submitSpy = fn();
+
+/**
+ * A soft-disabled submit button must not submit its form, even though it is
+ * focusable and a real `type="submit"` button.
+ */
+export const FocusableDisabledDoesNotSubmit: Story = {
+  args: {
+    children: "Submit",
+    type: "submit",
+    isDisabled: true,
+    allowFocusWhenDisabled: true,
+    ["data-testid"]: "test",
+  },
+  render: (args) => (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        submitSpy();
+      }}
+    >
+      <Button {...args} />
+    </form>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByTestId("test");
+
+    await step(
+      "Soft-disabled submit button does not submit its form",
+      async () => {
+        submitSpy.mockClear();
+        await userEvent.click(button);
+        button.focus();
+        await userEvent.keyboard("{enter}");
+        await expect(submitSpy).toHaveBeenCalledTimes(0);
+      }
+    );
+  },
+};
+
+/**
+ * The motivating use case: a Tooltip on a disabled Button explaining why the
+ * action is unavailable. Because the button stays focusable and hoverable
+ * (not natively disabled), the tooltip can open on focus and hover — here we
+ * assert the keyboard path, mirroring the Tooltip component's own stories.
+ */
+export const DisabledWithTooltip: Story = {
+  render: () => (
+    <Tooltip.Root delay={0} closeDelay={0}>
+      <Button isDisabled allowFocusWhenDisabled data-testid="test">
+        Publish
+      </Button>
+      <Tooltip.Content>
+        Complete all required fields to publish.
+      </Tooltip.Content>
+    </Tooltip.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    // The tooltip renders in a portal, so scope queries to the parent node.
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+    const button = canvas.getByTestId("test");
+
+    await step(
+      "Disabled button is reachable and hoverable (not natively disabled)",
+      async () => {
+        await expect(button).toHaveAttribute("aria-disabled", "true");
+        await expect(button).not.toBeDisabled();
+      }
+    );
+
+    await step("Tooltip opens on keyboard focus", async () => {
+      await userEvent.tab();
+      await expect(button).toHaveFocus();
+      await expect(await canvas.findByRole("tooltip")).toHaveTextContent(
+        /required fields/i
+      );
+    });
+
+    await step("Tooltip closes on blur", async () => {
+      button.blur();
+      await waitFor(() =>
+        expect(canvas.queryByRole("tooltip")).not.toBeInTheDocument()
+      );
+    });
   },
 };
 

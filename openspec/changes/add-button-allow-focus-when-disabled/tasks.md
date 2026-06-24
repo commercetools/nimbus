@@ -2,7 +2,7 @@
 
 ## 1. Types
 
-- [ ] 1.1 Add `allowFocusWhenDisabled?: boolean` to the public `ButtonProps` in
+- [x] 1.1 Add `allowFocusWhenDisabled?: boolean` to the public `ButtonProps` in
       `button.types.ts` with JSDoc explaining: pairs with `isDisabled`, keeps
       the button focusable + hoverable + in the tab order, renders
       `aria-disabled` instead of native `disabled`, suppresses activation, and
@@ -10,49 +10,49 @@
 
 ## 2. Implementation
 
-- [ ] 2.1 In `button.tsx`, derive `isDisabled` (from `isDisabled` ?? `disabled`)
+- [x] 2.1 In `button.tsx`, derive `isDisabled` (from `isDisabled` ?? `disabled`)
       and `softDisabled = Boolean(isDisabled && allowFocusWhenDisabled)`.
-- [ ] 2.2 When `softDisabled`, call `useButton` with `isDisabled: false` and the
+- [x] 2.2 When `softDisabled`, call `useButton` with `isDisabled: false` and the
       activation handlers withheld (`onPress`, `onPressStart`, `onPressEnd`,
       `onPressUp`, `onPressChange`, `onClick`) so no native `disabled` attribute
       is emitted and nothing fires. Keep the default path untouched otherwise.
-- [ ] 2.3 When `softDisabled`, set `aria-disabled={true}` on the rendered
+- [x] 2.3 When `softDisabled`, set `aria-disabled={true}` on the rendered
       element and add an `onClick` guard that calls `preventDefault()` +
       `stopPropagation()` to suppress activation, form submit/reset, and link
       navigation. Ensure `excludeFromTabOrder` still composes (do not force
       `tabIndex`).
-- [ ] 2.4 Strip `allowFocusWhenDisabled` from the props forwarded to the DOM /
+- [x] 2.4 Strip `allowFocusWhenDisabled` from the props forwarded to the DOM /
       slot so it never reaches the underlying element.
 
 ## 3. Stories (behavior is tested here)
 
-- [ ] 3.1 `FocusableDisabled` story: soft-disabled button is focusable via Tab,
+- [x] 3.1 `FocusableDisabled` story: soft-disabled button is focusable via Tab,
       exposes `aria-disabled="true"`, has no native `disabled` attribute, and
       `onPress`/`onClick` do not fire on click or `Enter`/`Space`.
-- [ ] 3.2 `FocusableDisabledFormSubmit` story: a `type="submit"` soft-disabled
+- [x] 3.2 `FocusableDisabledFormSubmit` story: a `type="submit"` soft-disabled
       button inside a `<form>` does not submit.
-- [ ] 3.3 `DisabledWithTooltip` story: pairing with `Tooltip`, the tooltip opens
+- [x] 3.3 `DisabledWithTooltip` story: pairing with `Tooltip`, the tooltip opens
       on hover and on keyboard focus of the soft-disabled button.
-- [ ] 3.4 Regression: default disabled button (no `allowFocusWhenDisabled`)
+- [x] 3.4 Regression: default disabled button (no `allowFocusWhenDisabled`)
       keeps the native `disabled` attribute, is not focusable, and a tooltip
       does not open.
 
 ## 4. Documentation
 
-- [ ] 4.1 Add a "Tooltip on a disabled Button" section to `tooltip.dev.mdx` (and
+- [x] 4.1 Add a "Tooltip on a disabled Button" section to `tooltip.dev.mdx` (and
       reference from `button.dev.mdx` as appropriate) showing the `isDisabled` +
       `allowFocusWhenDisabled` pattern and explaining the accessibility
       rationale (`aria-disabled`, explain _why_ it's disabled).
-- [ ] 4.2 Add a consumer example to `button.docs.spec.tsx` (a disabled button
+- [x] 4.2 Add a consumer example to `button.docs.spec.tsx` (a disabled button
       with a tooltip explaining why) so it ships as copyable docs.
 
 ## 5. Validation
 
-- [ ] 5.1 TypeScript compiles cleanly
+- [x] 5.1 TypeScript compiles cleanly
       (`pnpm --filter @commercetools/nimbus typecheck`).
-- [ ] 5.2 Storybook tests pass against source
+- [x] 5.2 Storybook tests pass against source
       (`pnpm test:storybook:dev packages/nimbus/src/components/button/button.stories.tsx`).
-- [ ] 5.3 Lint passes (`pnpm lint -- packages/nimbus/src/components/button/`).
-- [ ] 5.4 Add a changeset (minor bump on `@commercetools/nimbus`) describing the
+- [x] 5.3 Lint passes (`pnpm lint -- packages/nimbus/src/components/button/`).
+- [x] 5.4 Add a changeset (minor bump on `@commercetools/nimbus`) describing the
       new `allowFocusWhenDisabled` prop and the tooltip-on-disabled use case
       from the consumer's perspective.

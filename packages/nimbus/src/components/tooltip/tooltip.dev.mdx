@@ -202,6 +202,37 @@ const App = () => (
 )
 ```
 
+### With disabled buttons
+
+A natively disabled button cannot host a tooltip: the `disabled` attribute
+removes it from the tab order and stops it firing hover/focus events, so the
+tooltip has nothing to open from. This is unfortunate precisely when a tooltip
+is most useful — explaining _why_ an action is unavailable.
+
+Pass `allowFocusWhenDisabled` together with `isDisabled` on the `Button`. The
+button stays focusable and hoverable and is announced as disabled via
+`aria-disabled` (instead of the native `disabled` attribute), while its action
+stays fully suppressed. The tooltip then opens on hover and keyboard focus like
+any other trigger.
+
+```jsx live-dev
+const App = () => (
+  <Tooltip.Root>
+    <Button isDisabled allowFocusWhenDisabled>
+      Publish
+    </Button>
+    <Tooltip.Content>
+      Complete all required fields before publishing.
+    </Tooltip.Content>
+  </Tooltip.Root>
+)
+```
+
+Prefer this to wrapping a disabled button in `MakeElementFocusable`: the
+`allowFocusWhenDisabled` path keeps the disabled semantics on the button itself
+(`aria-disabled`) and suppresses activation, whereas a focusable wrapper only
+adds focus and describes the wrong element.
+
 ## Component requirements
 
 ## Accessibility
