@@ -1,0 +1,78 @@
+---
+id: Components-Markdown
+title: Markdown
+exportName: Markdown
+description:
+  Renders a Markdown string into Nimbus-styled, accessible React elements with
+  per-element overrides, custom renderers, and safe streaming for AI output.
+lifecycleState: Beta
+order: 999
+menu:
+  - Components
+  - Content
+  - Markdown
+tags:
+  - component
+  - markdown
+  - content
+  - streaming
+  - ai
+  - llm
+---
+
+## Overview
+
+Markdown turns a Markdown source string into Nimbus-styled, accessible React
+elements. It is built on the headless [`react-markdown`](https://github.com/remarkjs/react-markdown)
+engine (remark/rehype/unified), so all styling is owned by Nimbus — there is no
+foreign CSS. GitHub Flavored Markdown (tables, task lists, strikethrough,
+autolinks) is on by default.
+
+Its primary use case is rendering **agentic / LLM streaming output** in chat and
+assistant UIs; it also renders authored content like release notes and
+descriptions.
+
+> [!NOTE]\
+> Markdown is in **beta**. Code blocks render as semantic, token-styled
+> `pre`/`code` without syntax highlighting or a copy button in v1 — a richer
+> `CodeBlock` is a planned fast-follow.
+
+### Key features
+
+- **Default Nimbus renderers** for every standard element, composed from
+  existing design tokens (the Figma `Markdown/*` typography scale).
+- **Per-element overrides** — pass `components={{ a: MyLink }}` to replace any
+  element's renderer; all other defaults stay intact.
+- **Custom renderers** for non-standard nodes via `remarkPlugins` /
+  `rehypePlugins` mapped through the same `components` prop.
+- **Safe by default** — untrusted content skips raw HTML, restricts rendering to
+  a safe element allowlist, and neutralizes dangerous URLs.
+- **Streaming-aware** — `isStreaming` completes half-written tokens, memoizes
+  settled blocks, and manages an accessible busy/announcement model.
+
+## Basic usage
+
+```jsx live
+<Markdown>{`# Hello
+
+This is **Markdown** rendered with _Nimbus_ styling and a [link](https://commercetools.com).
+
+- Task lists
+- Tables
+- Code: \`const x = 1\``}</Markdown>
+```
+
+## Trust model
+
+`trust="untrusted"` (the default) is correct for AI- and user-generated content:
+raw HTML is skipped and only a safe element allowlist is rendered. Image-host
+security is delegated to the application's Content-Security-Policy, matching the
+Merchant Center convention. Use `trust="trusted"` with `allowRawHtml` only for
+authored/internal content — raw HTML is then sanitized via `rehype-sanitize`.
+
+## Streaming
+
+For LLM output, set `isStreaming` while tokens arrive. Unterminated bold,
+italic, inline code, and links are completed on the fly so the output never
+flashes literal `**` or `[` characters, and only the final block re-parses per
+token.

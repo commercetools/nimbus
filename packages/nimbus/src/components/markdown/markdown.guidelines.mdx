@@ -1,0 +1,44 @@
+---
+title: Markdown
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+Markdown guidelines ensure rendered rich text stays consistent, readable, and
+accessible across the product — whether the source is authored content or live
+AI output.
+
+### Best practices
+
+- **Pick the right trust level:** use the default `untrusted` posture for any
+  AI- or user-generated content. Reserve `trusted` + `allowRawHtml` for content
+  your team authors.
+- **Preserve the page outline:** when embedding Markdown inside a page that
+  already has headings, set `headingOffset` so the rendered headings nest
+  beneath the host heading rather than competing with it.
+- **Constrain measure for readability:** forward a `maxW` (e.g. `60ch`) so long
+  paragraphs wrap at a comfortable line length.
+- **Stream for AI:** set `isStreaming` while a model response is arriving so
+  partial tokens render cleanly and screen-reader users get a coherent
+  loading → done model.
+- **Provide alt text:** author images with meaningful `alt`. Decorative-only
+  images should still be intentional — a missing alt warns in development.
+
+### Usage
+
+- **Do** override individual element renderers when you need product-specific
+  behavior (e.g. routing links through your app router).
+- **Do** keep code output simple in v1 — a plain styled code block is rendered;
+  rich code chrome is a fast-follow.
+- **Don't** enable raw HTML for untrusted content.
+- **Don't** reimplement image-host allowlisting in the component — that is the
+  application Content-Security-Policy's job.
+
+### Content
+
+- Keep headings hierarchical; don't skip levels (a skip warns in development).
+- Use tables for tabular data only; GFM cannot express complex multi-header
+  tables.
+- Prefer descriptive link text over "click here".
