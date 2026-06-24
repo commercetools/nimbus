@@ -231,7 +231,7 @@ overrides:
   ajv@>=8.0.0 <8.18.0: '>=8.18.0'
   minimatch@>=10.0.0 <10.2.3: '>=10.2.3'
   flatted: '>=3.4.2'
-  undici: '>=7.24.0'
+  undici: '>=7.28.0 <8'
   picomatch@<2.3.2: '>=2.3.2'
   picomatch@>=4.0.0 <4.0.4: '>=4.0.4'
   yaml@1: 1.10.3
@@ -7651,8 +7651,8 @@ packages:
   undici-types@7.18.2:
     resolution: {integrity: sha512-AsuCzffGHJybSaRrmr5eHr81mwJU3kjw6M+uprWvCXiNeN9SOGwQ3Jn8jb8m3Z6izVgknn1R0FTCEAP2QrLY/w==}
 
-  undici@7.24.4:
-    resolution: {integrity: sha512-BM/JzwwaRXxrLdElV2Uo6cTLEjhSb3WXboncJamZ15NgUURmvlXvxa6xkwIOILIjPNo9i8ku136ZvWV0Uly8+w==}
+  undici@7.28.0:
+    resolution: {integrity: sha512-cRZYrTDwWznlnRiPjggAGxZXanty6M8RV1ff8Wm4LWXBp7/IG8v5DnOm74DtUBp9OONpK75YlPnIjQqX0dBDtA==}
     engines: {node: '>=20.18.1'}
 
   unicode-emoji-modifier-base@1.0.0:
@@ -8977,7 +8977,7 @@ snapshots:
       strip-ansi: 6.0.1
       ts-morph: 27.0.2
       typescript: 5.9.3
-      undici: 7.24.4
+      undici: 7.28.0
       zod: 3.25.58
       zod-validation-error: 3.5.4(zod@3.25.58)
     transitivePeerDependencies:
@@ -13787,7 +13787,7 @@ snapshots:
       saxes: 6.0.0
       symbol-tree: 3.2.4
       tough-cookie: 6.0.1
-      undici: 7.24.4
+      undici: 7.28.0
       w3c-xmlserializer: 5.0.0
       webidl-conversions: 8.0.1
       whatwg-mimetype: 5.0.0
@@ -16159,7 +16159,7 @@ snapshots:
 
   undici-types@7.18.2: {}
 
-  undici@7.24.4: {}
+  undici@7.28.0: {}
 
   unicode-emoji-modifier-base@1.0.0: {}
 
