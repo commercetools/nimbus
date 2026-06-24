@@ -102,6 +102,31 @@ pairs with `isDisabled` reads clearly at the call site:
 </Tooltip>
 ```
 
+## Why suppress activation, rather than visual-only `aria-disabled`
+
+A simpler model was considered: just let consumers set `aria-disabled` (which
+`Button` already accepts), show the disabled styling, and stop there — no
+focusability handling, no activation suppression. In fact that path **already
+works today**: `<Button aria-disabled>` renders the disabled look (the recipe's
+`_disabled` matches `[aria-disabled=true]`), stays a normal enabled button
+underneath, and so is focusable + hoverable and can host a tooltip.
+
+The reason that is not enough — and why suppression is the substance of this
+feature, not an add-on — is that `aria-disabled="true"` is a promise to
+assistive tech and keyboard users that the control is *non-operable*. Without
+suppression, the button still fires `onPress`, and a `type="submit"` button
+still **submits its form on click/Enter even with no handler wired**. That
+produces a control that is announced as disabled but still acts (and looks
+disabled but still submits) — a worse defect than the original limitation, and
+precisely the case consumers ship, because the dangerous path (form submit /
+Enter) needs no handler at all, so "just don't wire `onPress`" does not cover
+it. Doing it correctly means guarding press, click, keydown, submit, and link
+navigation together — identical for every consumer, so it belongs in the
+component. The component's job is to keep the announced disabled state and the
+actual behavior in agreement by default. The visual-only behavior remains
+available as the deprecated `aria-disabled` escape hatch for consumers who
+deliberately want to own activation themselves.
+
 ## Why explicit opt-in, not automatic when wrapped in a Tooltip
 
 Auto-switching disabled semantics based on whether a `Tooltip` ancestor exists
