@@ -1,0 +1,231 @@
+# Specification: Markdown
+
+## Overview
+
+The Markdown component renders a Markdown source string into Nimbus-styled,
+accessible React elements. It provides default renderers for every standard
+markdown element, lets consumers override any element renderer, supports custom
+renderers for non-standard nodes (via remark/rehype plugins), and safely renders
+incrementally streamed (LLM) output.
+
+It is built on `react-markdown` (headless, no `dangerouslySetInnerHTML`), with
+GFM enabled by default and optional streaming completion via `remend`. Security
+follows the established Merchant Center convention — react-markdown's built-in
+safety (`skipHtml`, `urlTransform`), a safe element allowlist, and
+`rel="noopener noreferrer"` external links — with image-host security delegated
+to the application Content-Security-Policy (no `harden-react-markdown`). Styling
+is owned entirely by Nimbus through the default component map and a Chakra v3
+slot recipe composed from existing design tokens.
+
+**Component:** `Markdown` **Package:** `@commercetools/nimbus`
+**Category:** Content / Typography
+
+## ADDED Requirements
+
+### Requirement: Default Nimbus-styled rendering
+
+The component SHALL render a Markdown string into Nimbus-styled React elements
+using default renderers for all standard markdown elements, with GitHub Flavored
+Markdown (tables, task lists, strikethrough, autolinks) enabled by default.
+
+#### Scenario: Render standard markdown
+
+- **WHEN** a Markdown string containing headings, paragraphs, emphasis, links,
+  inline code, code blocks, lists, blockquotes, and images is provided
+- **THEN** SHALL render each as the corresponding Nimbus-styled element using
+  design tokens from the Figma Typography Markdown Map
+- **AND** SHALL produce semantic HTML (`<h1>`–`<h6>`, `<p>`, `<a>`, `<code>`,
+  `<pre>`, `<ul>`/`<ol>`/`<li>`, `<blockquote>`, `<img>`)
+
+#### Scenario: GitHub Flavored Markdown
+
+- **WHEN** the source contains GFM constructs (tables, task lists,
+  `~~strikethrough~~`, autolinks)
+- **THEN** SHALL render them correctly with `remark-gfm` enabled by default
+- **AND** SHALL render task-list checkboxes as disabled inputs reflecting their
+  checked state
+
+#### Scenario: Heading typography mapping
+
+- **WHEN** headings `#` through `####` are rendered
+- **THEN** SHALL apply the `Markdown/*` heading scale (H1 24/28, H2 20/24,
+  H3 18/24, H4 16/20, all Inter 600) composed from existing tokens
+- **AND** SHALL fold `#####`/`######` to the smallest heading style
+
+### Requirement: Per-element renderer overrides
+
+The component SHALL accept a `components` prop mapping HTML element names to
+React components or string tags, shallow-merged per element key over the Nimbus
+defaults.
+
+#### Scenario: Override a single element
+
+- **WHEN** `components={{ a: CustomLink }}` is provided
+- **THEN** SHALL render all anchors with `CustomLink`
+- **AND** SHALL leave every other element's default renderer unchanged
+
+#### Scenario: Renderer receives the source node
+
+- **WHEN** any renderer (default or override) is invoked
+- **THEN** SHALL pass the original hast `node` element to it
+- **AND** the default renderers SHALL NOT leak the `node` prop onto the rendered
+  DOM element
+
+### Requirement: Custom renderers for non-standard nodes
+
+The component SHALL support rendering non-standard nodes by accepting
+`remarkPlugins` and `rehypePlugins` that emit the nodes, mapped through the same
+`components` prop.
+
+#### Scenario: Plugin-emitted custom construct
+
+- **WHEN** a consumer supplies a remark/rehype plugin that emits a custom node
+  and a matching `components` entry
+- **THEN** SHALL render that node with the supplied component
+- **AND** SHALL append the consumer plugins to the Nimbus defaults rather than
+  replacing them
+
+### Requirement: Safe by default rendering of untrusted content
+
+The component SHALL default to a security posture safe for untrusted and
+AI-generated content.
+
+#### Scenario: Untrusted default blocks raw HTML
+
+- **WHEN** `trust` is not specified (defaults to `"untrusted"`) and the source
+  contains raw HTML (e.g. `<script>`, `<iframe>`, an `onerror` attribute)
+- **THEN** SHALL NOT render the raw HTML as live markup
+- **AND** SHALL NOT use `dangerouslySetInnerHTML`
+
+#### Scenario: Dangerous URLs neutralized
+
+- **WHEN** a link or image uses a dangerous protocol (`javascript:`,
+  `vbscript:`, `file:`)
+- **THEN** SHALL neutralize the URL (via react-markdown's built-in
+  `urlTransform`) so it cannot execute
+
+#### Scenario: Element allowlist and CSP-delegated image security
+
+- **WHEN** rendering with `trust="untrusted"`
+- **THEN** SHALL render only elements in a safe `allowedElements` allowlist and
+  skip raw HTML (`skipHtml`), matching the Merchant Center convention
+- **AND** SHALL NOT re-implement image-host allowlisting in the component —
+  image-host security is delegated to the application Content-Security-Policy
+  (`img-src`); rendered images SHALL carry `loading="lazy"` and
+  `referrerpolicy="no-referrer"`
+- **AND** SHALL allow the rendered element set to be tuned via `allowedElements`
+  / `disallowedElements`
+
+#### Scenario: Appended plugins cannot reintroduce raw HTML under untrusted
+
+- **WHEN** `trust="untrusted"` and a consumer supplies a `rehypePlugins` entry
+  that emits raw HTML nodes (e.g. `rehype-raw`)
+- **THEN** SHALL NOT render live raw HTML, because `skipHtml` + the
+  `allowedElements` allowlist filter the output regardless of plugin order
+
+#### Scenario: Trusted content may opt into raw HTML
+
+- **WHEN** `trust="trusted"` and `allowRawHtml` is set
+- **THEN** SHALL render raw HTML via `rehype-raw` **paired with**
+  `rehype-sanitize` (sanitize applied after raw), optionally extended by
+  `sanitizeSchema`
+- **AND** SHALL NOT enable raw HTML when `trust="untrusted"`, regardless of
+  `allowRawHtml`
+
+### Requirement: Incremental (streaming) rendering
+
+The component SHALL safely render incrementally streamed Markdown when
+`isStreaming` is set.
+
+#### Scenario: Unterminated inline constructs render cleanly
+
+- **WHEN** `isStreaming` is set and the current value ends mid-construct (e.g.
+  `**bold`, `` `code ``, `[text](`)
+- **THEN** SHALL complete the construct via `remend` so it renders as formatted
+  content rather than literal markup characters
+- **AND** SHALL render an in-progress link's text as plain text until its URL
+  completes (`linkMode: "text-only"`)
+
+#### Scenario: Complete input is unaffected by streaming mode
+
+- **WHEN** `isStreaming` is set and the value is already syntactically complete
+- **THEN** SHALL render output identical to rendering with `isStreaming` unset
+  (the completion pass is a no-op on complete input)
+
+#### Scenario: Settled content is not re-parsed
+
+- **WHEN** a new token extends a streamed value
+- **THEN** SHALL only re-parse/re-render the final affected block, memoizing
+  already-settled blocks
+- **AND** SHALL keep stable keys so settled blocks do not remount
+
+#### Scenario: Streaming does not burden non-streaming consumers
+
+- **WHEN** `isStreaming` is not set
+- **THEN** SHALL NOT execute the streaming code path (`remend`, block
+  memoization, live region), and that code SHALL be tree-shakeable
+
+### Requirement: Accessibility (WCAG 2.1 AA)
+
+The default renderers SHALL meet WCAG 2.1 AA for rendered markdown content, and
+the component SHALL manage required ARIA internally (consumers do not pass ARIA).
+
+#### Scenario: Heading level offset preserves outline
+
+- **WHEN** `headingOffset` is set to N
+- **THEN** SHALL render markdown heading level L as HTML heading level
+  `min(L + N, 6)` so embedded content does not break the host page outline
+
+#### Scenario: Author heading-level skip warns in development
+
+- **WHEN** author markdown skips a heading level (e.g. `#` then `###`)
+- **THEN** SHALL render the levels faithfully (not silently rewrite them)
+- **AND** SHALL emit a development-mode warning
+
+#### Scenario: Streaming announced without per-token spam
+
+- **WHEN** `isStreaming` is set
+- **THEN** SHALL set `aria-busy="true"` on the root while content is changing and
+  `aria-busy="false"` when it settles
+- **AND** SHALL emit a single coalesced (not per-token) completion announcement
+  via a polite live region, driven by the component (no consumer ARIA required)
+
+#### Scenario: External link semantics
+
+- **WHEN** a link points to an external origin
+- **THEN** SHALL render it with `rel="noopener noreferrer"`, an accessible
+  (i18n) "opens in new tab" label, and a visible indicator that is not conveyed
+  by color alone and meets ≥3:1 non-text contrast
+
+#### Scenario: Accessible tables, images, and task lists
+
+- **WHEN** a table, image, or GFM task-list item is rendered
+- **THEN** tables SHALL use `<thead>` and `<th scope>` semantics
+- **AND** images SHALL preserve author `alt` (rendering `alt=""` plus a dev-mode
+  warning when none is provided) and carry `loading="lazy"` +
+  `referrerpolicy="no-referrer"`
+- **AND** task-list checkboxes SHALL be read-only with an accessible name
+  derived from the item text
+
+### Requirement: Component registration and theming
+
+The component SHALL follow Nimbus structure, recipe, and export conventions.
+
+#### Scenario: Slot recipe registered
+
+- **WHEN** the component is themed
+- **THEN** SHALL define a `nimbusMarkdown` slot recipe composed from existing
+  design tokens (no new `Markdown/*` tokens; existing system `fontFamily.mono`
+  for code)
+- **AND** SHALL register it in the theme slot-recipes index
+
+#### Scenario: Style props forward to the outer container
+
+- **WHEN** a consumer passes style props (e.g. `maxW`, `lineClamp`, spacing)
+- **THEN** SHALL forward them to the component's outer root container, per the
+  standard Nimbus pattern (no bespoke layout props)
+
+#### Scenario: Barrel export
+
+- **WHEN** consumers import from `@commercetools/nimbus`
+- **THEN** SHALL export `Markdown` and its public types from the package barrel
