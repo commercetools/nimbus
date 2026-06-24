@@ -1,49 +1,7 @@
 /**
- * Pure helpers for the Markdown component. Kept dependency-free and free of
- * React so they can be unit-tested in isolation (see `markdown.spec.ts`).
+ * Split a Markdown source string into top-level blocks for streaming
+ * memoization. Pure and React-free so it can be unit-tested in isolation.
  */
-
-/** Minimal structural type for the hast nodes react-markdown passes as `node`. */
-type HastNodeLike = {
-  type?: string;
-  value?: string;
-  tagName?: string;
-  properties?: Record<string, unknown>;
-  children?: HastNodeLike[];
-};
-
-/**
- * Return a shallow copy of a renderer's props with the hast `node` removed, so
- * it is never spread onto a DOM element (which would leak
- * `node="[object Object]"`). Avoids an unused destructured binding.
- */
-export function withoutNode<T extends { node?: unknown }>(
-  props: T
-): Omit<T, "node"> {
-  const rest = { ...props };
-  delete (rest as { node?: unknown }).node;
-  return rest as Omit<T, "node">;
-}
-
-/**
- * Recursively extract the visible text of a hast node — used to derive an
- * accessible name for GFM task-list checkboxes from their item text.
- */
-export function getNodeText(node: HastNodeLike | undefined | null): string {
-  if (!node) return "";
-  if (node.type === "text") return node.value ?? "";
-  if (!node.children) return "";
-  return node.children.map(getNodeText).join("").trim();
-}
-
-/**
- * Whether an href points to an external origin (absolute http/https or a
- * protocol-relative URL). Relative and in-page (`#…`) links are internal.
- */
-export function isExternalUrl(href: string | undefined | null): boolean {
-  if (!href) return false;
-  return /^(https?:)?\/\//i.test(href.trim());
-}
 
 const FENCE_RE = /^\s*(```+|~~~+)/;
 const ATX_HEADING_RE = /^\s{0,3}#{1,6}(\s|$)/;
@@ -174,50 +132,4 @@ export function splitMarkdownIntoBlocks(source: string): string[] {
 
   flush();
   return blocks;
-}
-
-/**
- * Return the ATX heading levels, in document order, found in a Markdown source.
- * Lines inside fenced code blocks are ignored. Used to detect author
- * heading-level skips for a development-mode warning.
- */
-export function getHeadingLevels(source: string): number[] {
-  const levels: number[] = [];
-  let inFence = false;
-  let marker = "";
-  for (const line of source.split("\n")) {
-    const fence = line.match(FENCE_RE);
-    if (fence) {
-      const m = fence[1][0];
-      if (!inFence) {
-        inFence = true;
-        marker = m;
-      } else if (m === marker) {
-        inFence = false;
-      }
-      continue;
-    }
-    if (inFence) continue;
-    const m = line.match(/^\s{0,3}(#{1,6})(\s|$)/);
-    if (m) levels.push(m[1].length);
-  }
-  return levels;
-}
-
-/**
- * Given the heading levels in document order, return the skips (a heading whose
- * level is more than one greater than the previous heading's level).
- */
-export function findHeadingLevelSkips(
-  levels: number[]
-): { from: number; to: number }[] {
-  const skips: { from: number; to: number }[] = [];
-  let prev = 0;
-  for (const level of levels) {
-    if (prev !== 0 && level > prev + 1) {
-      skips.push({ from: prev, to: level });
-    }
-    prev = level;
-  }
-  return skips;
 }

@@ -1,6 +1,6 @@
 import type { Components, Options } from "react-markdown";
 import type { Options as SanitizeSchema } from "rehype-sanitize";
-import type { MarkdownRootSlotProps } from "./markdown.slots";
+import type { BoxProps } from "@/components/box/box";
 
 /**
  * Trust posture for the rendered source.
@@ -33,13 +33,28 @@ export type MarkdownPluginList = NonNullable<Options["remarkPlugins"]>;
 export type MarkdownSanitizeSchema = SanitizeSchema;
 
 /**
+ * The resolved set of `react-markdown` options shared between the non-streaming
+ * render path (a single instance) and the streaming path (one memoized instance
+ * per block). These are computed once in the main component and passed down as
+ * stable references so memoized blocks compare equal.
+ */
+export type ReactMarkdownRenderOptions = {
+  components: Components;
+  skipHtml: boolean;
+  allowedElements?: Options["allowedElements"];
+  disallowedElements?: Options["disallowedElements"];
+  remarkPlugins: NonNullable<Options["remarkPlugins"]>;
+  rehypePlugins: NonNullable<Options["rehypePlugins"]>;
+};
+
+/**
  * Props for the {@link Markdown} component.
  *
  * Style props are forwarded to the component's outer root container (the
  * standard Nimbus pattern), so consumers control width/measure, clamping and
  * spacing with the usual style props rather than bespoke layout props.
  */
-export type MarkdownProps = Omit<MarkdownRootSlotProps, "children"> & {
+export type MarkdownProps = Omit<BoxProps, "children"> & {
   /**
    * The Markdown source string to render (canonical input, matching
    * `react-markdown`). GitHub Flavored Markdown — tables, task lists,

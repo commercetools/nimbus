@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useEffect, useState } from "react";
+import type { CSSProperties } from "react";
+import { Profiler, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Markdown } from "@commercetools/nimbus";
 import type { MarkdownComponents } from "./markdown.types";
-import { withoutNode } from "./markdown.utils";
+import { splitMarkdownIntoBlocks, withoutNode } from "./utils";
 import { expect, waitFor, within } from "storybook/test";
 import rehypeRaw from "rehype-raw";
 
@@ -189,9 +190,7 @@ export const SecurityUntrusted: Story = {
     const canvas = within(canvasElement);
     // Scope element queries to the rendered markdown root so they don't match
     // framework-injected nodes elsewhere in the story canvas.
-    const root = canvasElement.querySelector(
-      ".nimbus-markdown__root"
-    ) as HTMLElement;
+    const root = canvasElement.querySelector(".nimbus-markdown") as HTMLElement;
 
     // Safe content still renders.
     expect(root.querySelector("strong")).toHaveTextContent("text");
@@ -228,9 +227,7 @@ export const TrustedRawHtml: Story = {
     </Markdown>
   ),
   play: async ({ canvasElement }) => {
-    const root = canvasElement.querySelector(
-      ".nimbus-markdown__root"
-    ) as HTMLElement;
+    const root = canvasElement.querySelector(".nimbus-markdown") as HTMLElement;
     // Safe raw HTML renders.
     expect(root.querySelector("b")).toHaveTextContent("bold html");
     // Dangerous raw HTML stripped by rehype-sanitize (runs after rehype-raw).
@@ -252,7 +249,7 @@ export const StreamingPartialConstruct: Story = {
       )
     );
     // The root advertises a busy state while streaming.
-    const root = canvasElement.querySelector(".nimbus-markdown__root");
+    const root = canvasElement.querySelector(".nimbus-markdown");
     expect(root).toHaveAttribute("aria-busy", "true");
   },
 };
@@ -291,7 +288,7 @@ export const StreamingLifecycle: Story = {
     );
     // Once settled, aria-busy clears and a polite completion is announced.
     await waitFor(() => {
-      const root = canvasElement.querySelector(".nimbus-markdown__root");
+      const root = canvasElement.querySelector(".nimbus-markdown");
       expect(root).not.toHaveAttribute("aria-busy", "true");
     });
     await waitFor(() => {
@@ -342,7 +339,7 @@ export const StylePropsForwarded: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const root = canvas.getByTestId("md-root");
-    expect(root).toHaveClass("nimbus-markdown__root");
+    expect(root).toHaveClass("nimbus-markdown");
     // The style prop landed on the outer container, not an inner element.
     // (The browser resolves `40ch` to a px value, so assert a width constraint
     // was applied rather than the literal token.)
@@ -350,4 +347,250 @@ export const StylePropsForwarded: Story = {
     expect(maxWidth).not.toBe("none");
     expect(maxWidth).toMatch(/px$/);
   },
+};
+// ---------------------------------------------------------------------------
+// Interactive performance monitor (manual use only — NOT run in CI)
+// ---------------------------------------------------------------------------
+//
+// This harness is intentionally built from plain DOM elements + inline styles
+// (rather than Nimbus layout components) to keep its TypeScript instantiation
+// footprint small — the component under test is `Markdown` itself.
+
+/**
+ * A rich markdown corpus streamed word-by-word, looped endlessly. Exercises
+ * every renderer (headings, formatting, links, lists, task lists, a table, a
+ * code block, a blockquote) so the stream is representative of real output.
+ */
+const PERF_CORPUS = `## Section heading
+
+This paragraph mixes **bold**, _italic_, \`inline code\`, and an
+[external link](https://commercetools.com) so every inline renderer is exercised
+while the stream grows.
+
+- A bullet item
+- Another item with \`code\`
+- [x] A completed task
+- [ ] A pending task
+
+| Metric | Value |
+| --- | --- |
+| Throughput | high |
+| Latency | low |
+
+> A blockquote to round out the block-level renderers.
+
+\`\`\`ts
+function stream(token) {
+  buffer += token;
+  return render(buffer);
+}
+\`\`\`
+`;
+
+// Word-ish chunks that preserve newlines — mimics token-by-token LLM output.
+const PERF_TOKENS = PERF_CORPUS.match(/\s*\S+/g) ?? [];
+
+const SPEEDS: Array<[string, number]> = [
+  ["Fast", 8],
+  ["Normal", 24],
+  ["Slow", 80],
+];
+
+const panelStyle: CSSProperties = {
+  display: "flex",
+  flexWrap: "wrap",
+  gap: 16,
+  alignItems: "center",
+  padding: 12,
+  border: "1px solid #d4d4d4",
+  borderRadius: 8,
+  fontFamily: "system-ui, sans-serif",
+};
+
+const btnStyle = (active: boolean): CSSProperties => ({
+  padding: "4px 10px",
+  borderRadius: 6,
+  border: "1px solid #d4d4d4",
+  background: active ? "#1a1a1a" : "#fff",
+  color: active ? "#fff" : "#1a1a1a",
+  cursor: "pointer",
+  font: "inherit",
+  fontSize: 13,
+});
+
+const StreamingPerfMonitor = () => {
+  const [text, setText] = useState("");
+  const [running, setRunning] = useState(true);
+  const [intervalMs, setIntervalMs] = useState(24);
+  const [, forceTick] = useState(0);
+
+  // Mutable counters updated outside React state to avoid re-render storms.
+  const tokenIndex = useRef(0);
+  const loops = useRef(0);
+  const tokenCount = useRef(0);
+  const startTime = useRef(performance.now());
+  const lastRenderMs = useRef(0);
+  const maxRenderMs = useRef(0);
+  const frames = useRef<number[]>([]);
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Stream loop: append the next token on an interval while running.
+  useEffect(() => {
+    if (!running) return;
+    let timer: ReturnType<typeof setTimeout>;
+    const tick = () => {
+      const idx = tokenIndex.current;
+      let chunk = PERF_TOKENS[idx] ?? "";
+      tokenIndex.current = idx + 1;
+      // Endless: when the corpus is exhausted, start a fresh numbered section.
+      if (tokenIndex.current >= PERF_TOKENS.length) {
+        tokenIndex.current = 0;
+        loops.current += 1;
+        chunk += `\n\n---\n\n# Cycle ${loops.current + 1}\n`;
+      }
+      tokenCount.current += 1;
+      setText((prev) => prev + chunk);
+      timer = setTimeout(tick, intervalMs);
+    };
+    timer = setTimeout(tick, intervalMs);
+    return () => clearTimeout(timer);
+  }, [running, intervalMs]);
+
+  // FPS sampler via requestAnimationFrame.
+  useEffect(() => {
+    let raf: number;
+    const loop = (now: number) => {
+      const f = frames.current;
+      f.push(now);
+      while (f.length > 0 && now - f[0] > 1000) f.shift();
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  // Re-render the dashboard a few times a second so the numbers update,
+  // decoupled from the token rate.
+  useEffect(() => {
+    const id = setInterval(() => forceTick((n) => n + 1), 250);
+    return () => clearInterval(id);
+  }, []);
+
+  // Keep the latest content in view, like a chat transcript.
+  useLayoutEffect(() => {
+    const el = scrollRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [text]);
+
+  const reset = () => {
+    tokenIndex.current = 0;
+    loops.current = 0;
+    tokenCount.current = 0;
+    startTime.current = performance.now();
+    lastRenderMs.current = 0;
+    maxRenderMs.current = 0;
+    setText("");
+  };
+
+  const elapsedMs = performance.now() - startTime.current;
+  const tokensPerSec =
+    elapsedMs > 0 ? (tokenCount.current / elapsedMs) * 1000 : 0;
+  const blocks = splitMarkdownIntoBlocks(text).length;
+
+  const stat = (label: string, value: string) => (
+    <div key={label} style={{ minWidth: 90 }}>
+      <div style={{ fontWeight: 700, fontSize: 14 }}>{value}</div>
+      <div style={{ fontSize: 12, color: "#737373" }}>{label}</div>
+    </div>
+  );
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+        maxWidth: "80ch",
+      }}
+    >
+      <div style={panelStyle}>
+        <button style={btnStyle(false)} onClick={() => setRunning((r) => !r)}>
+          {running ? "Pause" : "Resume"}
+        </button>
+        <button style={btnStyle(false)} onClick={reset}>
+          Reset
+        </button>
+        <span style={{ fontSize: 12, color: "#737373" }}>Speed:</span>
+        {SPEEDS.map(([label, ms]) => (
+          <button
+            key={label}
+            style={btnStyle(intervalMs === ms)}
+            onClick={() => setIntervalMs(ms)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ ...panelStyle, background: "#fafafa" }}>
+        {stat("tokens", String(tokenCount.current))}
+        {stat("tokens/s", tokensPerSec.toFixed(0))}
+        {stat("characters", text.length.toLocaleString())}
+        {stat("blocks", String(blocks))}
+        {stat("render (last)", `${lastRenderMs.current.toFixed(1)}ms`)}
+        {stat("render (max)", `${maxRenderMs.current.toFixed(1)}ms`)}
+        {stat("FPS", String(frames.current.length))}
+        {stat("elapsed", `${(elapsedMs / 1000).toFixed(0)}s`)}
+      </div>
+
+      <div
+        ref={scrollRef}
+        style={{
+          maxHeight: 420,
+          overflowY: "auto",
+          padding: 16,
+          border: "1px solid #d4d4d4",
+          borderRadius: 8,
+        }}
+      >
+        <Profiler
+          id="markdown-stream"
+          onRender={(_id, _phase, actualDuration) => {
+            lastRenderMs.current = actualDuration;
+            if (actualDuration > maxRenderMs.current) {
+              maxRenderMs.current = actualDuration;
+            }
+          }}
+        >
+          <Markdown isStreaming={running}>
+            {text || "_Waiting for the first token…_"}
+          </Markdown>
+        </Profiler>
+      </div>
+    </div>
+  );
+};
+
+/**
+ * **Manual performance monitor — not run in CI.**
+ *
+ * Streams a rich markdown corpus word-by-word, endlessly, so you can watch the
+ * component under sustained streaming load in the browser
+ * (`pnpm start:storybook` → Components / Markdown / Streaming Performance).
+ *
+ * What to watch:
+ * - **render (last/max)** — per-commit React render time via `<Profiler>`. Block
+ *   memoization should keep this low and roughly flat as the document grows,
+ *   because only the final block re-parses per token.
+ * - **FPS** — should stay near your display's refresh rate while streaming.
+ * - **blocks / characters** — grow without bound; hit **Reset** to clear. Note
+ *   the streaming pre-pass (`remend` + block split) runs over the full string
+ *   each token, so very long transcripts will show that cost climb — a useful
+ *   thing to see before relying on truly unbounded streams.
+ */
+export const StreamingPerformance: Story = {
+  // No play function, and excluded from the test runner: this story streams
+  // forever and is meant for manual observation only.
+  tags: ["!test", "!a11y-test"],
+  render: () => <StreamingPerfMonitor />,
 };
