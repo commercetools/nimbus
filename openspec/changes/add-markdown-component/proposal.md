@@ -53,8 +53,9 @@ Out of the box, every standard markdown element maps to a Nimbus-styled
 renderer. Default renderers **reuse existing Nimbus primitives** where they
 exist — `Heading` (h1–h4 → the Figma `Markdown/*` heading scale; h5/h6 fold to
 the smallest), `Link` (a), `Code` (inline code), `Text` (p, emphasis) — and
-recipe-styled slots for the rest (code blocks, blockquote, lists, tables, hr,
-images). Typography follows the Figma **Typography Markdown Map** (node
+styled `chakra.*` primitives with design-token style props for the rest (code
+blocks, blockquote, lists, tables, hr, images), with no component-specific slot
+recipe. Typography follows the Figma **Typography Markdown Map** (node
 `10798-21557`), composed from **existing tokens** (see Token strategy below).
 
 ### 2. Per-element overrides
@@ -124,12 +125,12 @@ allowlisting is the application CSP's job, exactly as MC does it today.
 ### Token strategy
 
 The Figma `Markdown/*` scale is reproduced by **composing existing primitive
-tokens inside the Markdown recipe** — no new `Markdown/*` composite tokens, and
-**system mono** (existing `fontFamily.mono`) for code rather than adding a
-Roboto Mono webfont. Rationale: every value (font sizes 14/16/18/20/24, line
-heights 20/22/24/28, weights 400/600/700) already exists as a primitive; the
-only deltas vs existing composites are tighter line-heights, which the recipe
-sets directly.
+tokens as style props on the renderers and root** (no recipe) — no new
+`Markdown/*` composite tokens, and **system mono** (existing `fontFamily.mono`)
+for code rather than adding a Roboto Mono webfont. Rationale: every value (font
+sizes 14/16/18/20/24, line heights 20/22/24/28, weights 400/600/700) already
+exists as a primitive; the only deltas vs existing composites are tighter
+line-heights, which the renderers set directly via style props.
 
 ## Out of scope (v1)
 

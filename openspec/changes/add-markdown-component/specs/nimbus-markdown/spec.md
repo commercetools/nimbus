@@ -14,8 +14,10 @@ follows the established Merchant Center convention — react-markdown's built-in
 safety (`skipHtml`, `urlTransform`), a safe element allowlist, and
 `rel="noopener noreferrer"` external links — with image-host security delegated
 to the application Content-Security-Policy (no `harden-react-markdown`). Styling
-is owned entirely by Nimbus through the default component map and a Chakra v3
-slot recipe composed from existing design tokens.
+is owned entirely by Nimbus through the default component map: standard elements
+render through existing Nimbus components (`Heading`, `Text`, `Code`, `Link`)
+and the rest through `chakra.*` primitives carrying design-token style props, so
+there is no component-specific slot recipe.
 
 **Component:** `Markdown` **Package:** `@commercetools/nimbus`
 **Category:** Content / Typography
@@ -209,15 +211,16 @@ the component SHALL manage required ARIA internally (consumers do not pass ARIA)
 
 ### Requirement: Component registration and theming
 
-The component SHALL follow Nimbus structure, recipe, and export conventions.
+The component SHALL follow Nimbus structure, styling, and export conventions.
 
-#### Scenario: Slot recipe registered
+#### Scenario: Styling via design tokens (no recipe)
 
 - **WHEN** the component is themed
-- **THEN** SHALL define a `nimbusMarkdown` slot recipe composed from existing
-  design tokens (no new `Markdown/*` tokens; existing system `fontFamily.mono`
-  for code)
-- **AND** SHALL register it in the theme slot-recipes index
+- **THEN** SHALL style rendered elements using existing Nimbus components
+  (`Heading`, `Text`, `Code`, `Link`) and design-token style props on `chakra.*`
+  primitives, composed from existing tokens (no new `Markdown/*` tokens; existing
+  system `fontFamily.mono` for code)
+- **AND** SHALL NOT register a component-specific slot recipe
 
 #### Scenario: Style props forward to the outer container
 
