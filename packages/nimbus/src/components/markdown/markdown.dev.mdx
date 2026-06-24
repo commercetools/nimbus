@@ -1,0 +1,104 @@
+---
+title: Markdown Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+`Markdown` renders a Markdown source string into Nimbus-styled, accessible React
+elements. It is a single entry point (not a compound component) plus a default
+renderer map, built on the headless `react-markdown` engine with `remark-gfm`
+enabled by default.
+
+### Import
+
+```tsx
+import { Markdown, type MarkdownProps } from "@commercetools/nimbus";
+```
+
+### Anatomy
+
+```tsx
+<Markdown
+  trust="untrusted"
+  components={{ a: MyLink }}
+  isStreaming={false}
+  headingOffset={0}
+>
+  {markdownString}
+</Markdown>
+```
+
+- **`children`** — the Markdown source string (canonical input).
+- **`components`** — per-element renderer overrides, shallow-merged over the
+  Nimbus defaults.
+- **`trust` / `allowRawHtml` / `sanitizeSchema`** — the security posture.
+- **`remarkPlugins` / `rehypePlugins`** — appended to the Nimbus defaults.
+- **`isStreaming`** — enables safe incremental rendering of streamed output.
+- **`headingOffset`** — shifts rendered heading levels to preserve the page
+  outline.
+- **Style props** — forwarded to the outer root container (set `maxW`, spacing,
+  `lineClamp`, etc.).
+
+## Default renderers
+
+Out of the box every standard element maps to a Nimbus-styled renderer using the
+Figma `Markdown/*` typography scale. Headings `#`–`####` map to the heading
+scale; `#####`/`######` fold to the smallest. External links automatically get
+`target="_blank"`, `rel="noopener noreferrer"`, an "(opens in new tab)" label,
+and a visible icon indicator. Images render with `loading="lazy"` and
+`referrerpolicy="no-referrer"`.
+
+## Overriding an element
+
+Pass a `components` entry keyed by HTML element name. Overriding one element
+leaves every other default intact. Every renderer also receives the original
+hast `node` — destructure it out before spreading onto a DOM element.
+
+```tsx
+<Markdown
+  components={{
+    a: ({ children, href }) => <Link href={href}>{children}</Link>,
+  }}
+>
+  {content}
+</Markdown>
+```
+
+## Custom nodes
+
+Render non-standard nodes by supplying a remark/rehype plugin that emits the
+node and a matching `components` entry. Extend `allowedElements` so the new tag
+survives the untrusted allowlist.
+
+## Trust model
+
+```tsx
+// Untrusted (default): safe for AI / user content.
+<Markdown>{aiResponse}</Markdown>
+
+// Trusted authored content opting into sanitized raw HTML.
+<Markdown trust="trusted" allowRawHtml>{authoredHtml}</Markdown>
+```
+
+Under `trust="untrusted"`, raw HTML is skipped, rendering is restricted to a safe
+allowlist, and dangerous URLs (`javascript:`, `vbscript:`, `file:`) are
+neutralized. Appended `rehypePlugins` cannot reintroduce dangerous raw HTML —
+the allowlist filters the output regardless of plugin order. Image-host security
+is the application CSP's responsibility (`img-src`).
+
+## Streaming
+
+```tsx
+<Markdown isStreaming={isResponding}>{partialResponse}</Markdown>
+```
+
+While streaming, unterminated constructs are completed via `remend`, content is
+split into memoized blocks (only the final block re-parses per token), the root
+sets `aria-busy`, and a single coalesced completion announcement is made when
+the stream settles. Consumers never manage ARIA.
+
+## Examples
+
+{{docs-tests: markdown.docs.spec.tsx}}
