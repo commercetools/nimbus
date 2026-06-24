@@ -163,7 +163,7 @@ export const Basic: Story = {
       // Focus is already on copy item from previous step
       // Press Enter to select
       await userEvent.keyboard("{Enter}");
-      await expect(args.onAction).toHaveBeenCalledWith("copy");
+      await expect(args.onAction).toHaveBeenCalledWith("copy", undefined);
       await waitFor(() => {
         expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
       });
@@ -1108,7 +1108,7 @@ export const MixedSelection: Story = {
         await userEvent.click(copyItem);
 
         // Should trigger action and close menu
-        await expect(args.onAction).toHaveBeenCalledWith("copy");
+        await expect(args.onAction).toHaveBeenCalledWith("copy", undefined);
 
         // First menu should be closed
         await waitFor(() => {
@@ -1994,9 +1994,9 @@ export const CollectionPatternDemo: Story = {
           </Text>
 
           <Menu.Root
-            onAction={(key) => {
+            onAction={(key, value) => {
               setLastAction(key as string);
-              args.onAction?.(key);
+              args.onAction?.(key, value);
             }}
             onOpenChange={args.onOpenChange}
           >
@@ -2066,7 +2066,7 @@ export const CollectionPatternDemo: Story = {
       const newFileItem = canvas.getByRole("menuitem", { name: /New File/ });
       await userEvent.click(newFileItem);
 
-      await expect(args.onAction).toHaveBeenCalledWith("new");
+      await expect(args.onAction).toHaveBeenCalledWith("new", undefined);
       await waitFor(() => {
         expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
       });
@@ -2084,7 +2084,7 @@ export const CollectionPatternDemo: Story = {
       const deleteItem = canvas.getByRole("menuitem", { name: /Delete/ });
       await userEvent.click(deleteItem);
 
-      await expect(args.onAction).toHaveBeenCalledWith("delete");
+      await expect(args.onAction).toHaveBeenCalledWith("delete", undefined);
       await waitFor(() => {
         expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
       });

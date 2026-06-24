@@ -102,7 +102,7 @@ describe("Menu - Interactions", () => {
 
     await user.click(screen.getByRole("menuitem", { name: "Edit" }));
 
-    expect(handleAction).toHaveBeenCalledWith("edit");
+    expect(handleAction).toHaveBeenCalledWith("edit", undefined);
     await waitFor(() => {
       expect(screen.queryByRole("menu")).not.toBeInTheDocument();
     });
@@ -166,7 +166,7 @@ describe("Menu - Action callback", () => {
 
     await user.click(screen.getByRole("menuitem", { name: "Copy" }));
 
-    expect(handleAction).toHaveBeenCalledWith("copy");
+    expect(handleAction).toHaveBeenCalledWith("copy", undefined);
   });
 
   it("calls onAction with Enter key", async () => {
@@ -197,7 +197,7 @@ describe("Menu - Action callback", () => {
 
     await user.keyboard("{Enter}");
 
-    expect(handleAction).toHaveBeenCalledWith("save");
+    expect(handleAction).toHaveBeenCalledWith("save", undefined);
   });
 });
 
