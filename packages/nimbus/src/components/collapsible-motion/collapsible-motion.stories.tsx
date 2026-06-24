@@ -18,7 +18,7 @@ const meta: Meta<typeof CollapsibleMotion.Root> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof CollapsibleMotion.Root>;
 
 /**
  * Basic uncontrolled example with compound component pattern

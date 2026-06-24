@@ -56,7 +56,7 @@ const meta: Meta<typeof Drawer.Root> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Drawer.Root>;
 
 /**
  * The default drawer configuration with medium size and center placement.

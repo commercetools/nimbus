@@ -11,7 +11,7 @@ const meta: Meta<typeof Tree.Root> = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Tree.Root>;
 
 /** Recursive render function for a dynamic collection of `TreeNode`s. */
 const renderNode = (node: TreeNode) => (

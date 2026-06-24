@@ -30,7 +30,7 @@ const meta: Meta<typeof InlineSvg> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof InlineSvg>;
 
 // Simple SVG data for testing
 const simpleSvg = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

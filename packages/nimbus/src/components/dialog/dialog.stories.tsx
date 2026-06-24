@@ -58,7 +58,7 @@ const meta: Meta<typeof Dialog.Root> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Dialog.Root>;
 
 /**
  * The default dialog configuration with medium size and center placement.

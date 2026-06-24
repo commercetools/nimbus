@@ -10,7 +10,7 @@ const meta: Meta<typeof InfoDialog> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof InfoDialog>;
 
 /**
  * Basic controlled usage with a string title. The pattern has no trigger

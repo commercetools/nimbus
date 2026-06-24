@@ -43,7 +43,7 @@ const meta: Meta<typeof ComponentName> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ComponentName>;
 
 /**
  * Default story - simplest usage

@@ -18,7 +18,7 @@ const meta: Meta<typeof FormDialog> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof FormDialog>;
 
 /**
  * Basic controlled usage with a string title and a single form field.
