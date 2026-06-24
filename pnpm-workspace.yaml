@@ -22,7 +22,7 @@ catalogs:
     "@babel/runtime": ^7.29.7
     "@babel/preset-typescript": ^7.29.7
     "@eslint/js": ^10.0.1
-    "@react-types/shared": ^3.35.0
+    "@react-types/shared": ^3.36.0
     eslint: ^10.5.0
     eslint-config-prettier: ^10.1.8
     eslint-plugin-prettier: ^5.5.6
@@ -66,12 +66,12 @@ catalogs:
     "@chakra-ui/cli": ^3.36.0
     "@chakra-ui/react": ^3.36.0
     next-themes: ^0.4.6
-    react-aria: 3.49.0
-    react-aria-components: 1.18.0
-    react-stately: 3.47.0
+    react-aria: 3.50.0
+    react-aria-components: 1.19.0
+    react-stately: 3.48.0
     "@react-aria/interactions": 3.28.1
     "@react-aria/utils": 3.34.1
-    "@react-aria/optimize-locales-plugin": 1.2.1
+    "@react-aria/optimize-locales-plugin": 2.0.0
     "@internationalized/date": ^3.12.2
     "@internationalized/string": ^3.2.9
     "@internationalized/string-compiler": ^3.4.1
