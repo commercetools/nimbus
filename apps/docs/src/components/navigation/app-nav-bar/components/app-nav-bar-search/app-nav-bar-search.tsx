@@ -231,12 +231,7 @@ export const AppNavBarSearch = () => {
                         setSelectedCategory(key as SearchCategoryKey)
                       }
                     >
-                      <Tabs.List
-                        pl="200"
-                        pt="200"
-                        minWidth="14rem"
-                        borderRadius="0"
-                      >
+                      <Tabs.List p="200" minWidth="14rem" borderRadius="0">
                         {visibleCategories.map((key) => (
                           <Tabs.Tab key={key} id={key}>
                             <Box flexGrow="1" textAlign="left">
