@@ -62,7 +62,7 @@ const meta: Meta<typeof Menu.Root> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Menu.Root>;
 
 export const Basic: Story = {
   render: (args) => (

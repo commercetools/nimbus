@@ -65,7 +65,7 @@ const meta = {
 } satisfies Meta<typeof RichTextInput>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof RichTextInput>;
 
 // =============================================================================
 // Basic States

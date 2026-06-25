@@ -152,11 +152,17 @@ export const useResponsiveSplitterSizes = (
         );
       };
 
+      // Synchronous one-shot measurement on attach. The ref callback runs during
+      // the commit phase, before the browser paints, so reading the box here lets
+      // a pixel/token config resolve to its percentage before the first paint —
+      // no 50/50 flash. `read` ignores non-positive sizes, so a detached/zero-box
+      // node is a safe no-op. %-only configs resolve synchronously regardless.
+      const rect = node.getBoundingClientRect();
+      read(rect.width, rect.height);
+
       if (typeof ResizeObserver === "undefined") {
-        // No observer (SSR/older runtimes): best-effort one-shot measurement so
-        // px/token configs can still resolve once; %-only config is unaffected.
-        const rect = node.getBoundingClientRect();
-        read(rect.width, rect.height);
+        // No observer (SSR/older runtimes): the one-shot read above is the only
+        // measurement we get; subsequent container resizes won't be tracked.
         return;
       }
 

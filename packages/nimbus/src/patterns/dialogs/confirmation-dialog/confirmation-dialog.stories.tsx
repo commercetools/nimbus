@@ -10,7 +10,7 @@ const meta: Meta<typeof ConfirmationDialog> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ConfirmationDialog>;
 
 /**
  * Basic controlled usage with the default intent. Cancel and Confirm

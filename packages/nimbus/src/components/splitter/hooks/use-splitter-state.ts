@@ -215,6 +215,25 @@ export const useSplitterState = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [collapsed, paneOrder]);
 
+  // Re-apply `collapsedSize` when it changes while the aside is already
+  // collapsed. The collapse-reconcile effect above only fires on a collapse
+  // *transition* (`cur === prev` guard), so a `collapsedSize` that resolves
+  // after the first render — e.g. `useResponsiveSplitterSizes` converting a
+  // pixel/token value once the container is measured — would otherwise leave a
+  // collapsed-on-mount aside stuck at the initial (often 0%) size. Guard on
+  // `appliedCollapseRef` so a `collapsedSize` change while expanded is ignored,
+  // and skip when the size already matches. Write silently (no size callbacks):
+  // collapse is signalled via `onCollapsedChange`, not the size channels. An
+  // expand-by-resize clears `appliedCollapseRef` in `writeSize`, so this never
+  // fights a drag-to-expand.
+  useEffect(() => {
+    if (!bothRegistered(paneOrder)) return;
+    if (!appliedCollapseRef.current) return;
+    if (sizeEqual(asideConfig.collapsedSize, sizeRef.current)) return;
+    sizeRef.current = asideConfig.collapsedSize;
+    setSizeState(asideConfig.collapsedSize);
+  }, [asideConfig.collapsedSize, paneOrder]);
+
   // Reconcile a controlled `size` prop into internal state at rest — only when
   // the prop changes, never on a drag tick (internal state stays authoritative
   // during interaction). Declared after the collapse effect so collapse settles

@@ -4,6 +4,7 @@
 export * from "./scroll-area";
 export * from "./toast";
 
+export * from "./activity-indicator";
 export * from "./avatar";
 export * from "./box";
 export * from "./button";

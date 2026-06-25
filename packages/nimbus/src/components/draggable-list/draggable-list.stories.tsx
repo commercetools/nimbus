@@ -22,7 +22,7 @@ const meta: Meta<typeof DraggableList.Root> = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof DraggableList.Root>;
 
 export const Base: Story = {
   render: () => {

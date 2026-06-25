@@ -25,7 +25,7 @@ const meta: Meta<typeof ScopedSearchInput> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ScopedSearchInput>;
 
 const defaultOptions = [
   { label: "All Fields", value: "all" },
