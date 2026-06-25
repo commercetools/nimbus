@@ -14,7 +14,7 @@ const meta: Meta<typeof SplitButton> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof SplitButton>;
 
 export const Basic: Story = {
   render: () => (

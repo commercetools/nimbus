@@ -84,7 +84,7 @@ const meta: Meta<typeof ComponentName> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ComponentName>;
 
 // Stories follow below...
 ```
@@ -552,7 +552,8 @@ You MUST validate against these requirements:
 - [ ] Imports from `@storybook/react-vite` and `storybook/test`
 - [ ] Meta configuration with title, component, tags
 - [ ] Default export of meta
-- [ ] Story type from `StoryObj<typeof meta>`
+- [ ] Story type from `StoryObj<typeof ComponentName>` (the component, not
+      `typeof meta` — see note in `docs/file-type-guidelines/stories.md`)
 
 #### Required Stories
 

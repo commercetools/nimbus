@@ -1,5 +1,50 @@
 # @commercetools/nimbus
 
+## 3.2.0
+
+### Minor Changes
+
+- [#1638](https://github.com/commercetools/nimbus/pull/1638)
+  [`ed861f5`](https://github.com/commercetools/nimbus/commit/ed861f5e825ffc2bdd2a7b69fb35c4fa551ac1bb)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Splitter`: collapsing or
+  expanding the aside is no longer reported on the size callbacks
+  (`onSizeChange` / `onSizeChangeEnd`) — only on `onCollapsedChange`.
+
+  - Fixed: a controlled splitter (you drive `size` and feed `onSizeChangeEnd`
+    back) no longer breaks on a programmatic collapse. Previously, collapsing
+    fed the collapsed size back into `size`, so expanding reopened the aside at
+    the collapsed width (e.g. `0`) instead of its previous width.
+    Collapse/expand now preserve the size to restore, with no special wiring on
+    your part.
+  - Behavior change: `onSizeChange` and `onSizeChangeEnd` now fire only for
+    genuine resizes (drag, keyboard, double-click restore). They no longer fire
+    on collapse/expand. If you need to react to the aside collapsing or
+    expanding, use `onCollapsedChange`.
+
+### Patch Changes
+
+- [#1618](https://github.com/commercetools/nimbus/pull/1618)
+  [`9bc6bc8`](https://github.com/commercetools/nimbus/commit/9bc6bc885b7dcd67152591bee4fb3b7a49903690)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - **SearchInput** /
+  **ScopedSearchInput** / **TextInput**: fix layout and click-to-focus behavior
+  so these inputs behave consistently.
+
+  - SearchInput now sizes like the other inputs: it stretches to fill a
+    stretching container (such as a `Stack` or `FormField`) instead of staying
+    at a narrow fixed width, while still sizing to its content when used
+    standalone. This also fixes the search field inside `ScopedSearchInput`.
+  - Clicking anywhere on the visible SearchInput field — the search icon, the
+    inner padding, or empty space — now focuses the input, not only a direct
+    click on the text area.
+  - TextInput's click-to-focus is now more reliable: clicking the field's
+    padding or its leading/trailing elements focuses the input without a brief
+    focus flicker, and clicking an interactive trailing element (such as a
+    button) no longer pulls focus onto the input.
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@3.2.0
+  - @commercetools/nimbus-icons@3.2.0
+
 ## 3.1.0
 
 ### Minor Changes

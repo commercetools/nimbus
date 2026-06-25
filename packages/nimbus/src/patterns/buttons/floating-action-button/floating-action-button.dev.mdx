@@ -1,0 +1,165 @@
+---
+title: Floating action button component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import {
+  FloatingActionButton,
+  type FloatingActionButtonProps,
+} from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+FloatingActionButton is a 48px circular icon-only button. `aria-label` is
+required since there is no visible text:
+
+```jsx live-dev
+const App = () => (
+  <FloatingActionButton aria-label="Open assistant">
+    <Icons.Chat />
+  </FloatingActionButton>
+)
+```
+
+## Usage examples
+
+### Disabled state
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <FloatingActionButton aria-label="Enabled">
+      <Icons.Chat />
+    </FloatingActionButton>
+    <FloatingActionButton aria-label="Disabled" isDisabled>
+      <Icons.Chat />
+    </FloatingActionButton>
+  </Stack>
+)
+```
+
+### Color palettes
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <FloatingActionButton aria-label="Primary action" colorPalette="primary">
+      <Icons.Chat />
+    </FloatingActionButton>
+    <FloatingActionButton aria-label="Critical action" colorPalette="critical">
+      <Icons.Chat />
+    </FloatingActionButton>
+  </Stack>
+)
+```
+
+### Press handling
+
+```jsx live-dev
+const App = () => {
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      <FloatingActionButton
+        aria-label={open ? 'Close panel' : 'Open panel'}
+        onPress={() => setOpen(!open)}
+      >
+        <Icons.Chat />
+      </FloatingActionButton>
+      <Text fontSize="sm">{open ? 'Panel open' : 'Panel closed'}</Text>
+    </Stack>
+  );
+}
+```
+
+### Fixed positioning
+
+Positioning is the consumer's responsibility. The FAB accepts Chakra UI style
+props directly, so `position`, `bottom`, and `right` can be passed as props
+rather than via the `style` attribute. The FAB has a default `z-index` of
+`banner` (1200), which keeps it floating above standard page content and sticky
+elements without displacing them:
+
+```jsx live-dev
+const App = () => (
+  <FloatingActionButton
+    aria-label="Open assistant"
+    position="fixed"
+    bottom="800"
+    right="800"
+  >
+    <Icons.Chat />
+  </FloatingActionButton>
+)
+```
+
+### Overriding z-index
+
+If your app uses a custom stacking context, pass `zIndex` directly as a prop:
+
+```jsx live-dev
+const App = () => (
+  <FloatingActionButton
+    aria-label="Open assistant"
+    zIndex={50}
+  >
+    <Icons.Chat />
+  </FloatingActionButton>
+)
+```
+
+## Accessibility
+
+`aria-label` is a **required** prop since the button contains only an icon.
+The label should clearly describe the action.
+
+```tsx
+<FloatingActionButton aria-label="Open AI assistant">
+  <Icons.Chat />
+</FloatingActionButton>
+```
+
+If your use case requires tracking and analytics for this component, it is good
+practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "example-floating-action-button";
+
+export const Example = () => (
+  <FloatingActionButton id={PERSISTENT_ID} aria-label="Open assistant">
+    <Icons.Chat />
+  </FloatingActionButton>
+);
+```
+
+#### Keyboard navigation
+
+- `Tab` / `Shift+Tab`: Move focus to/from the button
+- `Enter` / `Space`: Activate the button
+
+## API reference
+
+<PropsTable id="FloatingActionButton" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using
+FloatingActionButton within your application. As the component's internal
+functionality is already tested by Nimbus, these patterns help you verify your
+integration and application-specific logic.
+
+{{docs-tests: floating-action-button.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-buttons-floatingactionbutton--docs)
+- [React Aria Button](https://react-spectrum.adobe.com/react-aria/Button.html)
+- [ARIA Button Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/button/)

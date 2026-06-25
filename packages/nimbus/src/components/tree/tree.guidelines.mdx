@@ -1,0 +1,171 @@
+---
+title: Tree
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+Tree guidelines offer a set of standardized rules and recommendations that
+ensure hierarchical data stays consistent, usable, and accessible.
+
+### Best practices
+
+- **Always label the tree:** provide an `aria-label` or `aria-labelledby` on
+  `Tree.Root` so assistive technology can announce its purpose.
+- **Give every item a `textValue`:** it powers type-ahead and the accessible
+  name, especially when the label is not a plain string.
+- **Include the indicator on every row:** place a `Tree.Indicator` in each
+  `Tree.ItemContent`. It hides itself for leaf rows automatically, which keeps
+  labels aligned across the column.
+- **Keep depth manageable:** deeply nested trees are hard to scan and navigate.
+  Prefer shallow hierarchies and meaningful grouping.
+- **Match selection to intent:** use `selectionMode` when users pick items, and
+  enable drag-and-drop via `useTree({ dragAndDrop: true })` when they reorder —
+  the drag handle is rendered for you. A reorder-only tree should leave
+  `selectionMode` at its default `none` so no checkboxes render.
+
+### Usage
+
+Tree is best for data whose structure the user needs to see and traverse.
+
+> [!TIP]\
+> When to use
+
+- **Hierarchical data:** file trees, category trees, nested settings, or
+  organizational structures.
+- **Nested navigation:** a sidebar or panel that drills into nested sections.
+- **Reorderable hierarchies:** a navigation-menu builder or content outline,
+  using opt-in drag-and-drop.
+
+> [!CAUTION]\
+> When not to use
+
+- **A single level of collapsible sections:** use `Accordion` instead.
+- **A flat, single-level reorderable list:** use `DraggableList` instead.
+- **Tabular data with columns:** use `DataTable` instead.
+
+### Depth
+
+Keep the hierarchy shallow and well organized so users can predict where
+information lives.
+
+> [!TIP]\
+> **Do**
+>
+> - Group related items under clear, descriptive parent labels.
+> - Expand the branches that matter on load with `defaultExpandedKeys`.
+
+```jsx live
+const App = () => (
+  <Tree.Root aria-label="Catalog" defaultExpandedKeys={["clothing"]}>
+    <Tree.Item id="clothing" textValue="Clothing">
+      <Tree.ItemContent>
+        <Tree.Indicator />
+        Clothing
+      </Tree.ItemContent>
+      <Tree.Item id="tops" textValue="Tops">
+        <Tree.ItemContent>
+          <Tree.Indicator />
+          Tops
+        </Tree.ItemContent>
+      </Tree.Item>
+      <Tree.Item id="shoes" textValue="Shoes">
+        <Tree.ItemContent>
+          <Tree.Indicator />
+          Shoes
+        </Tree.ItemContent>
+      </Tree.Item>
+    </Tree.Item>
+  </Tree.Root>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't nest more levels than users need to complete their task; deep trees
+>   hide information and are hard to navigate.
+
+```jsx live
+const App = () => (
+  <Tree.Root aria-label="Catalog" defaultExpandedKeys={["a", "b", "c", "d"]}>
+    <Tree.Item id="a" textValue="Level 1">
+      <Tree.ItemContent>
+        <Tree.Indicator />
+        Level 1
+      </Tree.ItemContent>
+      <Tree.Item id="b" textValue="Level 2">
+        <Tree.ItemContent>
+          <Tree.Indicator />
+          Level 2
+        </Tree.ItemContent>
+        <Tree.Item id="c" textValue="Level 3">
+          <Tree.ItemContent>
+            <Tree.Indicator />
+            Level 3
+          </Tree.ItemContent>
+          <Tree.Item id="d" textValue="Level 4">
+            <Tree.ItemContent>
+              <Tree.Indicator />
+              Level 4
+            </Tree.ItemContent>
+            <Tree.Item id="e" textValue="Level 5">
+              <Tree.ItemContent>
+                <Tree.Indicator />
+                Level 5
+              </Tree.ItemContent>
+            </Tree.Item>
+          </Tree.Item>
+        </Tree.Item>
+      </Tree.Item>
+    </Tree.Item>
+  </Tree.Root>
+);
+```
+
+### Selection and reordering
+
+Make it obvious what each interaction does, and don't mix affordances that serve
+different goals.
+
+> [!TIP]\
+> **Do**
+>
+> - Use multiple-selection mode when users act on several items at once — the
+>   selection checkboxes make the interaction discoverable.
+
+```jsx live
+const App = () => (
+  <Tree.Root
+    aria-label="Files"
+    selectionMode="multiple"
+    defaultExpandedKeys={["documents"]}
+  >
+    <Tree.Item id="documents" textValue="Documents">
+      <Tree.ItemContent>
+        <Tree.Indicator />
+        Documents
+      </Tree.ItemContent>
+      <Tree.Item id="report" textValue="Weekly Report">
+        <Tree.ItemContent>
+          <Tree.Indicator />
+          Weekly Report
+        </Tree.ItemContent>
+      </Tree.Item>
+      <Tree.Item id="budget" textValue="Budget">
+        <Tree.ItemContent>
+          <Tree.Indicator />
+          Budget
+        </Tree.ItemContent>
+      </Tree.Item>
+    </Tree.Item>
+  </Tree.Root>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't enable selection on a tree whose only purpose is structural reordering
+>   — the checkboxes add noise. Leave `selectionMode` at `none`.

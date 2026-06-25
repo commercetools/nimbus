@@ -6967,6 +6967,9 @@ export default {
     sticky: {
       value: 1100,
     },
+    fab: {
+      value: 1150,
+    },
     banner: {
       value: 1200,
     },

@@ -128,7 +128,7 @@ const meta: Meta<typeof DraggableList.Root<Item>> = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof DraggableList.Root>;
 
 export const Reorder: Story = {
   render: () => <ReorderDemo />,

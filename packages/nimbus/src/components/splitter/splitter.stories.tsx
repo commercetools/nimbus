@@ -815,6 +815,70 @@ export const ControlledSize: Story = {
 };
 
 // ============================================================
+// Controlled size + controlled collapse (NO hook) — regression for collapse
+// emitting a resize settle. The consumer follows the contract (feed
+// onSizeChangeEnd back into `size`). A programmatic collapse must NOT feed the
+// collapsed size back, so expanding restores the real width (30), not 0.
+// Collapse/expand are silent on onSizeChangeEnd; they are signalled by
+// onCollapsedChange only.
+// ============================================================
+
+const ControlledSizeCollapseReproComponent = () => {
+  const [size, setSize] = useState(30);
+  const [open, setOpen] = useState(true);
+  return (
+    <Stack gap="400" h="lg">
+      <Button onPress={() => setOpen((o) => !o)} data-testid="toggle-btn">
+        {open ? "Collapse aside" : "Expand aside"}
+      </Button>
+      <Splitter.Root
+        size={size}
+        minSize={10}
+        maxSize={80}
+        onSizeChangeEnd={setSize}
+        collapsible
+        collapsedSize={0}
+        collapsed={!open}
+        onCollapsedChange={(c) => setOpen(!c)}
+      >
+        <Splitter.Aside>
+          <DemoPane bg="indigo.3" title="Aside" />
+        </Splitter.Aside>
+        <Splitter.Handle />
+        <Splitter.Main>
+          <DemoPane bg="amber.3" title="Main" />
+        </Splitter.Main>
+      </Splitter.Root>
+    </Stack>
+  );
+};
+
+export const ControlledSizeCollapseRepro: Story = {
+  render: () => <ControlledSizeCollapseReproComponent />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+    const button = canvas.getByTestId("toggle-btn");
+
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
+    });
+
+    await userEvent.click(button); // programmatic collapse
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(0);
+    });
+
+    await userEvent.click(button); // expand
+    await canvas.findByRole("button", { name: "Collapse aside" });
+
+    // The collapse did not feed 0 back into the controlled size, so expand
+    // restores the real width — not the collapsed 0.
+    expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
+  },
+};
+
+// ============================================================
 // Resize is locked while the aside is collapsed — drag + arrow/Home/End do
 // nothing and the aside stays at collapsedSize. A visible "Collapse / expand
 // nav" button drives the collapse (controlled) so the lock is verifiable by

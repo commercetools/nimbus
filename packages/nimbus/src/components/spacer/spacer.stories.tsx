@@ -11,7 +11,7 @@ const meta: Meta<typeof Spacer> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Spacer>;
 
 /**
  * Basic usage of Spacer to push elements apart in a horizontal layout.

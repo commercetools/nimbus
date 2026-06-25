@@ -33,7 +33,7 @@ export default meta;
  * Story type for TypeScript support
  * StoryObj provides type checking for our story configurations
  */
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof TabNav.Root>;
 
 /**
  * The default TabNav usage with three navigation items.

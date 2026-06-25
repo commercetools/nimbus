@@ -317,8 +317,9 @@ const App = () => (
 
 Size is uncontrolled by default, so persist it in your app with any storage:
 hydrate `defaultSize` from stored state and write the settled value back in
-`onSizeChangeEnd` (it fires once per settled interaction — drag end, each
-keypress, collapse/expand, double-click restore — so no debouncing is needed). A
+`onSizeChangeEnd` (it fires once per settled **resize** — drag end, each
+keypress, double-click restore — so no debouncing is needed; collapse/expand are
+signalled by `onCollapsedChange`, not here). A
 single `number` round-trips: the value `onSizeChangeEnd` emits is exactly the
 shape `defaultSize` accepts. Collapse persists through its controlled boolean
 state.
