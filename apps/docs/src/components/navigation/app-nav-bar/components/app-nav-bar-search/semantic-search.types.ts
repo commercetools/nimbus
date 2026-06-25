@@ -7,10 +7,22 @@
  * imports transformers.
  */
 
-/** The embedding model and quantization used by the worker. */
-export const SEMANTIC_MODEL_ID = "Xenova/paraphrase-MiniLM-L3-v2";
+/**
+ * The embedding model and quantization used by the worker.
+ *
+ * `all-MiniLM-L6-v2` is the field-default general-purpose sentence embedder. We
+ * previously used the smaller `paraphrase-MiniLM-L3-v2` (3 layers), but a
+ * labeled benchmark over this docs corpus showed L6 is clearly better at
+ * ranking the concrete component above broad category/overview pages
+ * (hit@1 95% vs 75%, MRR 0.97 vs 0.84) — see the PR description for the table.
+ * The only cost is a larger one-time, cached download (~16.6 MB → ~21.9 MB).
+ *
+ * q8 is the smallest variant that ships for this model; both are 384-dim, so
+ * the index/cache layout is unchanged.
+ */
+export const SEMANTIC_MODEL_ID = "Xenova/all-MiniLM-L6-v2";
 export const SEMANTIC_MODEL_DTYPE = "q8";
-/** MiniLM-L3 hidden size — the length of each embedding vector. */
+/** MiniLM hidden size — the length of each embedding vector. */
 export const EMBEDDING_DIMS = 384;
 
 /**
