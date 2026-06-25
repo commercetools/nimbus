@@ -7,15 +7,18 @@ import {
   TextInput,
   Text,
   Kbd,
+  Switch,
 } from "@commercetools/nimbus";
 
 import { ComboBox, Input, ListBox, ListBoxItem } from "react-aria-components";
 
 import { Key } from "react";
+import { useSetAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 import { useSearch } from "./hooks/use-search";
 import { SearchResultItem } from "./components/search-result-item";
 import { SearchableDocItem } from "@/atoms/searchable-docs";
+import { semanticEnabledAtom } from "@/atoms/semantic-search";
 
 export type SearchResultItemProps = {
   item: SearchableDocItem;
@@ -23,7 +26,29 @@ export type SearchResultItemProps = {
 
 export const AppNavBarSearch = () => {
   const navigate = useNavigate();
-  const { query, setQuery, results, open, setOpen } = useSearch();
+  const {
+    query,
+    setQuery,
+    results,
+    open,
+    setOpen,
+    semanticEnabled,
+    semanticStatus,
+    semanticDownloadPercent,
+  } = useSearch();
+  const setSemanticEnabled = useSetAtom(semanticEnabledAtom);
+
+  // Human-readable status shown next to the toggle while semantic search loads.
+  const semanticStatusLabel =
+    !semanticEnabled || semanticStatus === "ready"
+      ? null
+      : semanticStatus === "loading-model"
+        ? `Downloading model… ${Math.round(semanticDownloadPercent)}%`
+        : semanticStatus === "indexing"
+          ? "Indexing documentation…"
+          : semanticStatus === "error"
+            ? "Semantic search unavailable — using fuzzy search."
+            : null;
 
   useHotkeys(
     "mod+k",
@@ -66,7 +91,23 @@ export const AppNavBarSearch = () => {
         </Dialog.Trigger>
         <Dialog.Content width="3xl">
           <Dialog.Header>
-            <Dialog.Title>Search the Documentation</Dialog.Title>
+            <Flex direction="column" gap="100" grow="1">
+              <Dialog.Title>Search the Documentation</Dialog.Title>
+              <Flex alignItems="center" gap="300" minHeight="600">
+                <Switch
+                  size="sm"
+                  isSelected={semanticEnabled}
+                  onChange={setSemanticEnabled}
+                >
+                  Semantic search (beta)
+                </Switch>
+                {semanticStatusLabel && (
+                  <Text textStyle="xs" color="neutral.11">
+                    {semanticStatusLabel}
+                  </Text>
+                )}
+              </Flex>
+            </Flex>
             <Dialog.CloseTrigger />
           </Dialog.Header>
           <Separator />

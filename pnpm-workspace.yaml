@@ -2,6 +2,9 @@ packages:
   - packages/*
   - apps/*
 
+catalog:
+  '@huggingface/transformers': ^3.8.1
+
 catalogMode: strict
 
 # --- pnpm install & supply-chain settings (made explicit) ---
