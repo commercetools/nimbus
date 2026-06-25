@@ -123,15 +123,31 @@ export function buildCacheKey(texts: string[]): string {
 }
 
 /**
+ * Cosine-similarity score below which a result carries no detectable relevance,
+ * so it's dropped rather than padding the list. Empirically derived: embedding
+ * the real docs corpus and probing with deliberately out-of-domain queries
+ * (weather, recipes, animals, gibberish) showed their best match never exceeds
+ * ~0.33 — that's the noise ceiling, the score an unrelated query achieves by
+ * chance. Genuine matches sit well above it (#1 hits 0.55–0.86; real secondary
+ * hits like a related component or category page ~0.40+). 0.35 sits just above
+ * the noise ceiling and below the relevant floor, so it trims the long noisy
+ * tail (most queries only have 3–5 results that clear it) without dropping real
+ * matches. Tune up toward 0.40 for a stricter top-results-only feel.
+ */
+export const MIN_RELEVANCE_SCORE = 0.35;
+
+/**
  * Rank documents by cosine similarity to a query vector. Embeddings are
  * L2-normalized, so cosine similarity reduces to a dot product. Returns the
- * top-K document ids in descending similarity order.
+ * top-K document ids in descending similarity order, dropping any whose score
+ * is below `minScore` (results indistinguishable from an unrelated query).
  */
 export function rankBySimilarity(
   matrix: Float32Array,
   ids: string[],
   queryVec: Float32Array,
-  topK: number
+  topK: number,
+  minScore: number = MIN_RELEVANCE_SCORE
 ): string[] {
   if (ids.length === 0) return [];
 
@@ -146,5 +162,8 @@ export function rankBySimilarity(
   }
 
   scores.sort((a, b) => b.score - a.score);
-  return scores.slice(0, topK).map((s) => ids[s.index]);
+  return scores
+    .filter((s) => s.score >= minScore)
+    .slice(0, topK)
+    .map((s) => ids[s.index]);
 }
