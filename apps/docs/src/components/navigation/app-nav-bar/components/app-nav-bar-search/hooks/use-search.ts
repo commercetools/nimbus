@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAtom, useAtomValue } from "jotai";
 import { useDebounce } from "use-debounce";
 import {
@@ -9,6 +9,11 @@ import {
 import { semanticEnabledAtom } from "@/atoms/semantic-search";
 import Fuse from "fuse.js";
 import { useSemanticSearch, type SemanticStatus } from "./use-semantic-search";
+import {
+  categorize,
+  getItemCategory,
+  type SearchCategoryKey,
+} from "../search-categories";
 
 /** Debounce applied to the query before it reaches the embedding worker. */
 const SEMANTIC_DEBOUNCE_MS = 180;
@@ -25,6 +30,8 @@ export const useSearch = () => {
   const searchableDocs = useAtomValue(searchableDocItemsAtom);
   const semanticEnabled = useAtomValue(semanticEnabledAtom);
   const [open, setOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] =
+    useState<SearchCategoryKey>("all");
 
   const fuse = useMemo(() => {
     const fuseOptions = {
@@ -70,11 +77,38 @@ export const useSearch = () => {
 
   // Fall back to Fuse whenever semantic search is off or has errored.
   const useFuse = !semanticEnabled || semantic.status === "error";
-  const results = useFuse
+  const allResults = useFuse
     ? fuseResults
     : semantic.status === "ready" && query.trim()
       ? semantic.results
       : EMPTY_RESULTS;
+
+  // Tally the full ranked result set by category to drive the tab bar (counts +
+  // which tabs are visible). Empty categories don't get a tab.
+  const { counts: categoryCounts, visible: visibleCategories } = useMemo(
+    () => categorize(allResults),
+    [allResults]
+  );
+
+  // Keep the selected tab valid: if it went empty after a keystroke (or results
+  // cleared entirely), fall back to "all".
+  useEffect(() => {
+    if (!visibleCategories.includes(selectedCategory)) {
+      setSelectedCategory("all");
+    }
+  }, [visibleCategories, selectedCategory]);
+
+  // The displayed results are scoped to the selected tab. Keyboard navigation
+  // and rendering downstream operate on this filtered list.
+  const results = useMemo(
+    () =>
+      selectedCategory === "all"
+        ? allResults
+        : allResults.filter(
+            (item) => getItemCategory(item) === selectedCategory
+          ),
+    [allResults, selectedCategory]
+  );
 
   return {
     results,
@@ -82,6 +116,11 @@ export const useSearch = () => {
     setOpen,
     query,
     setQuery,
+    // Category-tab state.
+    selectedCategory,
+    setSelectedCategory,
+    categoryCounts,
+    visibleCategories,
     // Semantic-search status surfaced for the dialog's progress/error UI.
     semanticEnabled,
     semanticStatus: semantic.status as SemanticStatus,
