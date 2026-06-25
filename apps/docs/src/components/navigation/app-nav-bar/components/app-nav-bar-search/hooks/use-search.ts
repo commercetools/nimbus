@@ -56,11 +56,34 @@ export const useSearch = () => {
     return new Fuse(searchableDocs || [], fuseOptions);
   }, [searchableDocs]);
 
-  // Perform fuzzy search with Fuse.js. This runs even when semantic search is
-  // active because the hybrid path below merges these lexical matches with the
-  // semantic ones — the Fuse pass is cheap and synchronous, and it's the only
-  // thing that catches prefix typing (e.g. "But" → "Button"), which embeddings
-  // can't (they read "But" as the conjunction, not a prefix of "Button").
+  // A second, deliberately strict Fuse used only for the hybrid lexical rescue
+  // (see `lexicalRescue` below). It searches *names only* (exportName + title),
+  // location-anchored with a low threshold, so it returns genuine name matches —
+  // exact, prefix, and small typos ("Bu" → "Button", "calender" → "Calendar") —
+  // but NOT loose content/description fuzz. That fuzz (e.g. "divider" matching
+  // "Nimbus provider", or "divides" buried in Separator's body) is exactly the
+  // noise the lenient config scores as a perfect 0; matching meaning there is
+  // semantic search's job, not the lexical pass's.
+  const nameFuse = useMemo(
+    () =>
+      new Fuse(searchableDocs || [], {
+        isCaseSensitive: false,
+        ignoreLocation: false,
+        shouldSort: true,
+        ignoreFieldNorm: true,
+        includeScore: true,
+        minMatchCharLength: 2,
+        threshold: 0.3,
+        keys: [
+          { name: "exportName", weight: 2 },
+          { name: "title", weight: 1 },
+        ],
+      }),
+    [searchableDocs]
+  );
+
+  // Pure fuzzy search (lenient, all fields). This is the result list used when
+  // semantic search is off or has errored — the unchanged default behavior.
   const fuseResults = useMemo(() => {
     if (!query.trim()) {
       return EMPTY_RESULTS;
@@ -68,6 +91,17 @@ export const useSearch = () => {
 
     return fuse.search(query).map((result) => result.item);
   }, [query, fuse]);
+
+  // Lexical rescue for the hybrid path: strict name matches that semantic search
+  // fundamentally can't produce (it reads "Bu" as a word, not a prefix of
+  // "Button"). Intentionally narrow — only these lead the hybrid list.
+  const lexicalRescue = useMemo(() => {
+    if (!query.trim()) {
+      return EMPTY_RESULTS;
+    }
+
+    return nameFuse.search(query).map((result) => result.item);
+  }, [query, nameFuse]);
 
   // Semantic path: only the debounced query reaches the worker.
   const [debouncedQuery] = useDebounce(query, SEMANTIC_DEBOUNCE_MS);
@@ -77,20 +111,23 @@ export const useSearch = () => {
     debouncedQuery
   );
 
-  // Hybrid merge: lexical-first rank fusion of Fuse and semantic results.
+  // Hybrid merge: strict name matches first, then semantic results.
   //
   // The two rankers produce incomparable scores — Fuse returns a distance in
   // [0,1] (lower is better), semantic returns cosine similarity (higher is
   // better) — so we don't blend raw scores. Instead we fuse by rank with a
-  // domain rule: in a component-doc search an exact/prefix lexical hit should
-  // always win, so Fuse results come first (in Fuse's order), then any semantic
-  // results not already present (in similarity order), deduped by id. Until the
-  // index is ready `semantic.results` is empty, so this naturally degrades to
-  // lexical-only while the model downloads/indexes, then becomes hybrid.
+  // domain rule: a genuine *name* match should always win (it's what semantic
+  // can't do), so the strict `lexicalRescue` matches lead, then any semantic
+  // results not already present (in similarity order), deduped by id. Crucially
+  // the lead list is the strict name search, NOT the lenient `fuseResults` —
+  // the lenient pass fuzzes against body text and would drag noise (e.g.
+  // "divider" → "Nimbus provider") above strong semantic hits. Until the index
+  // is ready `semantic.results` is empty, so this degrades to name-only while
+  // the model downloads/indexes, then becomes hybrid.
   const mergedResults = useMemo(() => {
     const seen = new Set<string>();
     const merged: SearchableDocItem[] = [];
-    for (const item of fuseResults) {
+    for (const item of lexicalRescue) {
       if (seen.has(item.id)) continue;
       seen.add(item.id);
       merged.push(item);
@@ -102,7 +139,7 @@ export const useSearch = () => {
     }
     // Preserve the stable empty-array reference (see EMPTY_RESULTS above).
     return merged.length === 0 ? EMPTY_RESULTS : merged;
-  }, [fuseResults, semantic.results]);
+  }, [lexicalRescue, semantic.results]);
 
   // Fall back to pure Fuse whenever semantic search is off or has errored;
   // otherwise serve the hybrid merge.
