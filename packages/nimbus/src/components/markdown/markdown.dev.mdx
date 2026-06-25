@@ -33,8 +33,8 @@ import { Markdown, type MarkdownProps } from "@commercetools/nimbus";
 - **`children`** — the Markdown source string (canonical input).
 - **`components`** — per-element renderer overrides, shallow-merged over the
   Nimbus defaults.
-- **`trust` / `allowRawHtml` / `sanitizeSchema`** — the security posture.
-- **`remarkPlugins` / `rehypePlugins`** — appended to the Nimbus defaults.
+- **`trust` / `allowRawHtml`** — the security posture.
+- **`allowedElements` / `disallowedElements`** — tune the rendered element set.
 - **`isStreaming`** — enables safe incremental rendering of streamed output.
 - **`headingOffset`** — shifts rendered heading levels to preserve the page
   outline.
@@ -66,12 +66,6 @@ hast `node` — destructure it out before spreading onto a DOM element.
 </Markdown>
 ```
 
-## Custom nodes
-
-Render non-standard nodes by supplying a remark/rehype plugin that emits the
-node and a matching `components` entry. Extend `allowedElements` so the new tag
-survives the untrusted allowlist.
-
 ## Trust model
 
 ```tsx
@@ -84,9 +78,8 @@ survives the untrusted allowlist.
 
 Under `trust="untrusted"`, raw HTML is skipped, rendering is restricted to a safe
 allowlist, and dangerous URLs (`javascript:`, `vbscript:`, `file:`) are
-neutralized. Appended `rehypePlugins` cannot reintroduce dangerous raw HTML —
-the allowlist filters the output regardless of plugin order. Image-host security
-is the application CSP's responsibility (`img-src`).
+neutralized. Image-host security is the application CSP's responsibility
+(`img-src`).
 
 ## Streaming
 

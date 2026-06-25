@@ -12,8 +12,8 @@ error-prone, and a security footgun (XSS via raw HTML / unsafe URLs).
 
 `Markdown` fills that gap with one focused job: **turn a markdown string into
 Nimbus-styled, accessible React elements**, with first-class support for
-(1) sensible default renderers, (2) per-element overrides, (3) custom renderers
-for non-standard nodes, and (4) safe incremental rendering of streamed output.
+(1) sensible default renderers, (2) per-element overrides, and (3) safe
+incremental rendering of streamed output.
 
 This proposal is backed by completed deep research and a working spike
 (`react-markdown@10` + `remend@1.3` on React 19, rendering streamed partial
@@ -31,7 +31,7 @@ default renderer map; default renderers reuse existing Nimbus primitives).
 ```tsx
 <Markdown
   trust="untrusted"            // "untrusted" (default, safe) | "trusted"
-  components={{ a: MyLink }}   // override / custom renderers (shallow-merged over Nimbus defaults)
+  components={{ a: MyLink }}   // per-element overrides (shallow-merged over Nimbus defaults)
   isStreaming                  // enable remend completion + block memoization + a11y streaming state
   headingOffset={0}            // shift rendered heading levels to preserve page outline
   maxW="60ch"                  // style props forward to the outer container (standard Nimbus pattern)
@@ -66,16 +66,7 @@ A single `components` prop maps an HTML element name (`h1`–`h6`, `a`, `code`,
 string tag. Consumer entries are **shallow-merged per element key** over the
 Nimbus defaults — overriding `a` leaves every other default intact.
 
-### 3. Custom renderers for non-standard nodes
-
-Every renderer (default or override) additionally receives the original hast
-`node`, enabling advanced/custom rendering. Truly non-standard tags are
-supported by passing a remark/rehype plugin that emits the node, then mapping it
-through the same `components` prop — the documented extension path. The
-component exposes `remarkPlugins` / `rehypePlugins` passthrough (appended to the
-defaults) for this.
-
-### 4. Safe incremental (streaming) rendering — in v1
+### 3. Safe incremental (streaming) rendering — in v1
 
 `isStreaming` runs each frame through **`remend`** (zero-dependency string→string
 pre-processor) which completes unterminated bold/italic/inline-code/links/
@@ -110,17 +101,15 @@ re-implemented in the component.
   for AI / user-generated content.
 - **`trust="trusted"`:** for authored/internal content. Permits opting into raw
   HTML via `allowRawHtml`, which wires `rehype-raw` **paired with
-  `rehype-sanitize`** — never raw alone. An optional `sanitizeSchema` extends the
-  allowlist (e.g. to let a custom-node tag survive).
+  `rehype-sanitize`** (using its built-in `defaultSchema`) — never raw alone.
 - `allowedElements` / `disallowedElements` (react-markdown native) are exposed
   for tuning the rendered element set.
 
 `react-markdown` is **safe by default** (no `dangerouslySetInnerHTML`; raw HTML
 skipped; built-in `urlTransform` neutralizes `javascript:`/`vbscript:`/`file:`).
-Because the default path skips raw HTML and renders only allowlisted elements,
-appended consumer `rehypePlugins` cannot reintroduce live raw HTML under
-`trust="untrusted"`. **No `harden-react-markdown` dependency** — image-host
-allowlisting is the application CSP's job, exactly as MC does it today.
+The default path skips raw HTML and renders only allowlisted elements. **No
+`harden-react-markdown` dependency** — image-host allowlisting is the
+application CSP's job, exactly as MC does it today.
 
 ### Token strategy
 
@@ -140,7 +129,11 @@ line-heights, which the renderers set directly via style props.
   so code-block UX is deferred. The `components.pre`/`code` override seam remains
   available; a richer `CodeBlock` (copy + language label + `react-shiki`
   highlighting) is a documented fast-follow.
-- **Math (KaTeX)** — supported via `remarkPlugins` passthrough, not bundled.
+- **Math (KaTeX), emoji shortcodes, custom directives** — not supported in v1.
+  These require markdown-engine plugins, and v1 deliberately does not expose a
+  `remarkPlugins` / `rehypePlugins` passthrough (it would leak the engine into
+  the public API). If a concrete consumer need arises, it becomes an owned,
+  first-class feature rather than a passthrough.
 - **A markdown editor / input** — that is `RichTextInput`'s domain.
 - **Mermaid diagrams.**
 

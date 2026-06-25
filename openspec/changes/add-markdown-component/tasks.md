@@ -43,10 +43,9 @@
       react-markdown's `Components`).
 - [x] 2.2 Define the public `MarkdownProps` with JSDoc on every prop:
       `children` (markdown string, canonical input), `trust` (default
-      `"untrusted"`), `allowRawHtml`, `sanitizeSchema`, `components`,
-      `remarkPlugins`, `rehypePlugins`, `allowedElements`, `disallowedElements`,
-      `isStreaming`, `headingOffset` (default 0), `ref`, and Nimbus style props
-      (forwarded to the outer root container).
+      `"untrusted"`), `allowRawHtml`, `components`, `allowedElements`,
+      `disallowedElements`, `isStreaming`, `headingOffset` (default 0), `ref`,
+      and Nimbus style props (forwarded to the outer root container).
 
       **Acceptance:** `pnpm --filter @commercetools/nimbus typecheck:strict`
       passes for the types; no `any`.
@@ -62,15 +61,12 @@
         state), strikethrough, autolink.
       - **Overrides:** `components={{ a: CustomLink }}` replaces anchors only;
         other defaults intact; `node` not leaked to DOM.
-      - **Custom node:** a rehype plugin + `components` entry (+ `allowedElements`
-        extension) renders a custom construct under the untrusted default.
       - **Security (untrusted default):** `<script>`/`<iframe>`/`onerror`
-        not rendered live; `javascript:` link neutralized; an appended
-        `rehype-raw` plugin still cannot inject live HTML (skipHtml +
-        allowedElements); image renders with `loading="lazy"` +
+        not rendered live (skipHtml + allowedElements); `javascript:` link
+        neutralized; image renders with `loading="lazy"` +
         `referrerpolicy="no-referrer"`.
       - **Trusted + allowRawHtml:** safe raw HTML renders; dangerous tags still
-        stripped (sanitize after raw); `sanitizeSchema` extends the allowlist.
+        stripped (sanitize after raw, using `rehype-sanitize`'s `defaultSchema`).
       - **Streaming:** partial `**bold`, `` `code ``, `[text](` render as
         formatted/text via `remend`; complete input identical with/without
         `isStreaming`; `aria-busy` toggles and a single completion announcement
@@ -107,22 +103,22 @@
       default `trust="untrusted"` → `skipHtml` + safe `allowedElements`
       allowlist (tunable via `allowedElements`/`disallowedElements`); rely on
       react-markdown's built-in `urlTransform`; `trust="trusted"` + `allowRawHtml`
-      wires `rehype-raw` + `rehype-sanitize` (sanitize last, extended by
-      `sanitizeSchema`). Image-host security is delegated to the app CSP — do not
+      wires `rehype-raw` + `rehype-sanitize` (sanitize last, using its built-in
+      `defaultSchema`). Image-host security is delegated to the app CSP — do not
       re-implement host allowlists.
 - [x] 4.6 Implement streaming (tree-shakeable, behind `isStreaming`): pre-process
       with `remend(value, { linkMode: "text-only" })`; split into top-level
       blocks with stable keys and memoize each block (`React.memo`) so only the
       final block re-parses on new tokens; manage `aria-busy` + a coalesced
       polite completion announcement (i18n) internally — no consumer ARIA.
-- [x] 4.7 Implement `markdown.tsx`: compose plugins
-      (`[remarkGfm, ...remarkPlugins]`), merge `components`
-      (`{ ...nimbusDefaults, ...props.components }`), forward `ref` and style
-      props to the outer root container.
+- [x] 4.7 Implement `markdown.tsx`: wire the default plugins (`[remarkGfm]`;
+      `rehype-raw` + `rehype-sanitize` only when `allowRawHtml`), merge
+      `components` (`{ ...nimbusDefaults, ...props.components }`), forward `ref`
+      and style props to the outer root container.
 - [x] 4.8 Create developer documentation with the
       `/writing-developer-documentation` skill (`markdown.dev.mdx` +
-      `markdown.docs.spec.tsx`) — overrides, custom nodes, streaming, trust
-      model, security guidance.
+      `markdown.docs.spec.tsx`) — overrides, streaming, trust model, security
+      guidance.
 - [x] 4.9 Create designer documentation with the
       `/writing-designer-documentation` skill (`markdown.guidelines.mdx`,
       `markdown.a11y.mdx`).

@@ -9,8 +9,6 @@ autolinks) is on by default.
 
 - **Per-element overrides:** pass `components={{ a: MyLink }}` to replace any
   element's renderer; all other defaults stay intact.
-- **Custom renderers:** supply `remarkPlugins` / `rehypePlugins` that emit
-  non-standard nodes and map them through the same `components` prop.
 - **Safe by default:** `trust="untrusted"` (the default) skips raw HTML,
   restricts rendering to a safe element allowlist, and neutralizes dangerous
   URLs. Opt into sanitized raw HTML for authored content with `trust="trusted"`

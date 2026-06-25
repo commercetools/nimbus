@@ -5,7 +5,6 @@ import { Markdown } from "@commercetools/nimbus";
 import type { MarkdownComponents } from "./markdown.types";
 import { splitMarkdownIntoBlocks, withoutNode } from "./utils";
 import { expect, waitFor, within } from "storybook/test";
-import rehypeRaw from "rehype-raw";
 
 const meta: Meta<typeof Markdown> = {
   title: "Components/Markdown",
@@ -137,39 +136,6 @@ export const PerElementOverride: Story = {
   },
 };
 
-/** A rehype plugin emits a non-standard node rendered via `components`. */
-export const CustomNodeRenderer: Story = {
-  render: () => {
-    const rehypeAppendBadge = () => (tree: { children: unknown[] }) => {
-      tree.children.push({
-        type: "element",
-        tagName: "mark",
-        properties: {},
-        children: [{ type: "text", value: "BADGE" }],
-      });
-    };
-    const components: MarkdownComponents = {
-      mark: (props) => (
-        <span data-testid="custom-node" {...withoutNode(props)} />
-      ),
-    };
-    return (
-      <Markdown
-        rehypePlugins={[rehypeAppendBadge]}
-        allowedElements={["p", "mark"]}
-        components={components}
-      >
-        {`Some text.`}
-      </Markdown>
-    );
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const badge = canvas.getByTestId("custom-node");
-    expect(badge).toHaveTextContent("BADGE");
-  },
-};
-
 const untrustedSource = `Normal **text** survives.
 
 <script>window.__pwned = true;</script>
@@ -183,9 +149,7 @@ const untrustedSource = `Normal **text** survives.
 
 /** Untrusted (default) posture blocks raw HTML and neutralizes dangerous URLs. */
 export const SecurityUntrusted: Story = {
-  render: () => (
-    <Markdown rehypePlugins={[rehypeRaw]}>{untrustedSource}</Markdown>
-  ),
+  render: () => <Markdown>{untrustedSource}</Markdown>,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     // Scope element queries to the rendered markdown root so they don't match
@@ -195,8 +159,8 @@ export const SecurityUntrusted: Story = {
     // Safe content still renders.
     expect(root.querySelector("strong")).toHaveTextContent("text");
 
-    // Raw HTML is not rendered live — even with rehype-raw appended, the
-    // allowlist strips dangerous elements.
+    // Raw HTML is not rendered live — `skipHtml` plus the element allowlist
+    // strip dangerous elements under the untrusted default.
     expect(root.querySelector("script")).toBeNull();
     expect(root.querySelector("iframe")).toBeNull();
     // The injection did not execute.

@@ -4,9 +4,8 @@
 
 The Markdown component renders a Markdown source string into Nimbus-styled,
 accessible React elements. It provides default renderers for every standard
-markdown element, lets consumers override any element renderer, supports custom
-renderers for non-standard nodes (via remark/rehype plugins), and safely renders
-incrementally streamed (LLM) output.
+markdown element, lets consumers override any element renderer, and safely
+renders incrementally streamed (LLM) output.
 
 It is built on `react-markdown` (headless, no `dangerouslySetInnerHTML`), with
 GFM enabled by default and optional streaming completion via `remend`. Security
@@ -73,20 +72,6 @@ defaults.
 - **AND** the default renderers SHALL NOT leak the `node` prop onto the rendered
   DOM element
 
-### Requirement: Custom renderers for non-standard nodes
-
-The component SHALL support rendering non-standard nodes by accepting
-`remarkPlugins` and `rehypePlugins` that emit the nodes, mapped through the same
-`components` prop.
-
-#### Scenario: Plugin-emitted custom construct
-
-- **WHEN** a consumer supplies a remark/rehype plugin that emits a custom node
-  and a matching `components` entry
-- **THEN** SHALL render that node with the supplied component
-- **AND** SHALL append the consumer plugins to the Nimbus defaults rather than
-  replacing them
-
 ### Requirement: Safe by default rendering of untrusted content
 
 The component SHALL default to a security posture safe for untrusted and
@@ -118,19 +103,12 @@ AI-generated content.
 - **AND** SHALL allow the rendered element set to be tuned via `allowedElements`
   / `disallowedElements`
 
-#### Scenario: Appended plugins cannot reintroduce raw HTML under untrusted
-
-- **WHEN** `trust="untrusted"` and a consumer supplies a `rehypePlugins` entry
-  that emits raw HTML nodes (e.g. `rehype-raw`)
-- **THEN** SHALL NOT render live raw HTML, because `skipHtml` + the
-  `allowedElements` allowlist filter the output regardless of plugin order
-
 #### Scenario: Trusted content may opt into raw HTML
 
 - **WHEN** `trust="trusted"` and `allowRawHtml` is set
 - **THEN** SHALL render raw HTML via `rehype-raw` **paired with**
-  `rehype-sanitize` (sanitize applied after raw), optionally extended by
-  `sanitizeSchema`
+  `rehype-sanitize` (sanitize applied after raw) using its built-in
+  `defaultSchema`
 - **AND** SHALL NOT enable raw HTML when `trust="untrusted"`, regardless of
   `allowRawHtml`
 

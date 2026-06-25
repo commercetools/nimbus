@@ -38,9 +38,8 @@ function useHeadingSkipWarning(source: string) {
  * # Markdown
  *
  * Renders a Markdown string into Nimbus-styled, accessible React elements with
- * default renderers for every standard element, per-element overrides, custom
- * renderers for non-standard nodes, and safe incremental rendering of streamed
- * (LLM) output.
+ * default renderers for every standard element, per-element overrides, and safe
+ * incremental rendering of streamed (LLM) output.
  *
  * Safe by default (`trust="untrusted"`): raw HTML is skipped and rendering is
  * restricted to a safe element allowlist; image-host security is delegated to
@@ -55,10 +54,7 @@ export const Markdown = (props: MarkdownProps) => {
     children,
     trust = "untrusted",
     allowRawHtml = false,
-    sanitizeSchema,
     components: componentsOverride,
-    remarkPlugins: extraRemarkPlugins,
-    rehypePlugins: extraRehypePlugins,
     allowedElements,
     disallowedElements,
     isStreaming = false,
@@ -100,20 +96,18 @@ export const Markdown = (props: MarkdownProps) => {
   // Raw HTML is only ever live for trusted content that explicitly opts in.
   const rawHtmlEnabled = trust === "trusted" && allowRawHtml;
 
-  const remarkPlugins = React.useMemo(
-    () => [remarkGfm, ...(extraRemarkPlugins ?? [])],
-    [extraRemarkPlugins]
-  );
+  const remarkPlugins = React.useMemo(() => [remarkGfm], []);
 
-  const rehypePlugins = React.useMemo(() => {
-    const base: NonNullable<ReactMarkdownRenderOptions["rehypePlugins"]> = [];
+  const rehypePlugins = React.useMemo<
+    NonNullable<ReactMarkdownRenderOptions["rehypePlugins"]>
+  >(() => {
+    // Raw HTML is reconstructed by rehype-raw and then gated by rehype-sanitize
+    // (which MUST run after it) using its built-in default allowlist.
     if (rawHtmlEnabled) {
-      // rehype-raw reconstructs raw HTML; rehype-sanitize MUST run after it.
-      base.push(rehypeRaw);
-      base.push([rehypeSanitize, sanitizeSchema ?? defaultSchema]);
+      return [rehypeRaw, [rehypeSanitize, defaultSchema]];
     }
-    return [...base, ...(extraRehypePlugins ?? [])];
-  }, [rawHtmlEnabled, sanitizeSchema, extraRehypePlugins]);
+    return [];
+  }, [rawHtmlEnabled]);
 
   // Resolve the element allowlist. react-markdown forbids passing both
   // allowedElements and disallowedElements, so honor a consumer's explicit

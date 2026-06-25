@@ -67,7 +67,7 @@ describe("Markdown - Untrusted content", () => {
       </NimbusProvider>
     );
 
-    const root = container.querySelector(".nimbus-markdown__root");
+    const root = container.querySelector(".nimbus-markdown");
     expect(root?.querySelector("script")).toBeNull();
     expect(screen.getByText(/Hello/)).toBeInTheDocument();
   });
