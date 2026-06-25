@@ -49,14 +49,16 @@ export const useSearch = () => {
     return new Fuse(searchableDocs || [], fuseOptions);
   }, [searchableDocs]);
 
-  // Perform fuzzy search with Fuse.js (the default path).
+  // Perform fuzzy search with Fuse.js (the default path). Skip the work entirely
+  // when semantic search is active — otherwise Fuse would run on every keystroke
+  // for results that are never shown.
   const fuseResults = useMemo(() => {
-    if (!query.trim()) {
-      return [];
+    if (semanticEnabled || !query.trim()) {
+      return EMPTY_RESULTS;
     }
 
     return fuse.search(query).map((result) => result.item);
-  }, [query, fuse]);
+  }, [query, fuse, semanticEnabled]);
 
   // Semantic path: only the debounced query reaches the worker.
   const [debouncedQuery] = useDebounce(query, SEMANTIC_DEBOUNCE_MS);
