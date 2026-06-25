@@ -26,7 +26,7 @@ export type SemanticSearchState = {
  * across category tabs still leaves each category with enough representation —
  * a low cap would starve and hide otherwise-relevant tabs.
  */
-const TOP_K = 50;
+const TOP_K = 500;
 
 /**
  * Owns the semantic-search Web Worker lifecycle. The worker (and the heavy ML
