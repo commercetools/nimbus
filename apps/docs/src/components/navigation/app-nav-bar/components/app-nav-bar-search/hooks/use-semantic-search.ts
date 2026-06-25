@@ -20,8 +20,13 @@ export type SemanticSearchState = {
   results: SearchableDocItem[];
 };
 
-/** How many results to request from the worker per query. */
-const TOP_K = 20;
+/**
+ * How many results to request from the worker per query. Kept generous (the
+ * corpus is small and ranking is a cheap dot product) so that splitting results
+ * across category tabs still leaves each category with enough representation —
+ * a low cap would starve and hide otherwise-relevant tabs.
+ */
+const TOP_K = 50;
 
 /**
  * Owns the semantic-search Web Worker lifecycle. The worker (and the heavy ML
