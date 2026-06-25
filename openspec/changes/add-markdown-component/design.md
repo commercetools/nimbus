@@ -5,8 +5,8 @@
 Primary use case is rendering **agentic / LLM streaming output** in chat and
 assistant UIs; the secondary case is rendering authored markdown (release notes,
 docs snippets, descriptions). The component must be flexible (every element
-overridable, custom nodes supported), safe by default (untrusted input), and
-visually owned by Nimbus (token-driven, no foreign CSS).
+overridable), safe by default (untrusted input), and visually owned by Nimbus
+(token-driven, no foreign CSS).
 
 This design is grounded in a completed research pass and a working spike
 (`scratchpad/md-spike/`) that rendered streamed partial markdown through Nimbus
@@ -23,10 +23,8 @@ stand-in components on React 19 with zero Tailwind.
   built-in `urlTransform` neutralizes dangerous protocols. GitHub Advisory DB
   has no advisories against the package itself; reported XSS is always
   misconfiguration (`rehype-raw` without sanitize).
-- **The `components` prop is exactly requirements 1–3** — map element name →
-  component; every renderer also receives the original hast `node` for custom
-  rendering; new constructs from remark/rehype plugins flow through the same
-  prop.
+- **The `components` prop covers the override requirement** — map element name →
+  component over the Nimbus defaults (shallow-merged per key).
 - **React 19 compatible** (peer `react >=18`), verified in the spike.
 
 **Streaming: `remend@1.3`** — zero-dependency, framework-agnostic string→string
@@ -64,8 +62,8 @@ markstream-react (own CSS). See proposal for detail.
                                    │
         react-markdown  ── skipHtml (raw HTML off) unless trust="trusted" && allowRawHtml
                             allowedElements (safe allowlist) / disallowedElements
-                            remarkPlugins:[remarkGfm, ...user]
-                            rehypePlugins:[...(raw+sanitize if allowRawHtml), ...user]
+                            remarkPlugins:[remarkGfm]
+                            rehypePlugins:[raw + sanitize(defaultSchema)] if allowRawHtml else []
                             urlTransform (built-in: neutralizes javascript:/vbscript:/file:)
                             components: { ...nimbusDefaults, ...userComponents }
                                    │
@@ -128,15 +126,16 @@ All in `markdown.types.ts` (no recipe/slot type layers, since there is no slot
 recipe):
 
 1. **Helper types** — `MarkdownComponents` (the override map type, re-exporting
-   react-markdown's `Components`), `MarkdownTrust`, `MarkdownPluginList`,
-   `MarkdownSanitizeSchema`.
+   react-markdown's `Components`), `MarkdownTrust`.
 2. **`ReactMarkdownRenderOptions`** — the resolved render-options bag shared by
-   the non-streaming and streaming (memoized per-block) render paths.
+   the non-streaming and streaming (memoized per-block) render paths. Internal;
+   the `remarkPlugins` / `rehypePlugins` it carries are always Nimbus defaults,
+   never consumer-supplied.
 3. **Main props** — `MarkdownProps` (public, JSDoc'd), extending `BoxProps` for
    the root: `children` (markdown string), `trust`, `allowRawHtml`,
-   `sanitizeSchema`, `components`, `remarkPlugins`, `rehypePlugins`,
-   `allowedElements`, `disallowedElements`, `isStreaming`, `headingOffset`,
-   `ref`, and Nimbus **style props (forwarded to the outer root container)**.
+   `components`, `allowedElements`, `disallowedElements`, `isStreaming`,
+   `headingOffset`, `ref`, and Nimbus **style props (forwarded to the outer root
+   container)**.
 
 ## Accessibility (WCAG 2.1 AA)
 
@@ -206,7 +205,10 @@ and the root `Box` (no new tokens, no recipe, system mono):
 - **Canonical input** → `children` (string), matching react-markdown.
 - **Tokens** → compose primitives via style props on the renderers/root; system
   mono (no new tokens, no recipe, no Roboto Mono webfont).
-- **Math** → `remarkPlugins` passthrough; not bundled.
+- **Engine plugins (Math/KaTeX, emoji, directives)** → no consumer
+  `remarkPlugins` / `rehypePlugins` passthrough in v1 (avoids leaking the engine
+  into the public API); not supported until a concrete need makes one an owned
+  feature.
 
 ## Remaining decisions for implementation
 

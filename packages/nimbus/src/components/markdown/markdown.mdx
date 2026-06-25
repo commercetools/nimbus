@@ -43,8 +43,6 @@ descriptions.
   existing design tokens (the Figma `Markdown/*` typography scale).
 - **Per-element overrides** — pass `components={{ a: MyLink }}` to replace any
   element's renderer; all other defaults stay intact.
-- **Custom renderers** for non-standard nodes via `remarkPlugins` /
-  `rehypePlugins` mapped through the same `components` prop.
 - **Safe by default** — untrusted content skips raw HTML, restricts rendering to
   a safe element allowlist, and neutralizes dangerous URLs.
 - **Streaming-aware** — `isStreaming` completes half-written tokens, memoizes

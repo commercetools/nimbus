@@ -1,5 +1,4 @@
 import type { Components, Options } from "react-markdown";
-import type { Options as SanitizeSchema } from "rehype-sanitize";
 import type { BoxProps } from "@/components/box/box";
 
 /**
@@ -18,19 +17,6 @@ export type MarkdownTrust = "untrusted" | "trusted";
  * per-element override / custom-renderer surface.
  */
 export type MarkdownComponents = Components;
-
-/**
- * A list of remark/rehype plugins, as accepted by `react-markdown`. Derived
- * from `react-markdown`'s own option type so it stays in lockstep with the
- * engine version.
- */
-export type MarkdownPluginList = NonNullable<Options["remarkPlugins"]>;
-
-/**
- * Sanitization schema (from `rehype-sanitize` / `hast-util-sanitize`) used to
- * extend the allowlist when raw HTML is permitted under `trust="trusted"`.
- */
-export type MarkdownSanitizeSchema = SanitizeSchema;
 
 /**
  * The resolved set of `react-markdown` options shared between the non-streaming
@@ -77,28 +63,11 @@ export type MarkdownProps = Omit<BoxProps, "children"> & {
    */
   allowRawHtml?: boolean;
   /**
-   * Optional `rehype-sanitize` schema used to extend the sanitization allowlist
-   * when `allowRawHtml` is enabled (e.g. to let a custom-node tag survive).
-   */
-  sanitizeSchema?: MarkdownSanitizeSchema;
-  /**
    * Per-element renderer overrides, shallow-merged per element key over the
    * Nimbus defaults. Overriding one element (e.g. `{ a: MyLink }`) leaves every
-   * other default renderer intact. Each renderer also receives the original
-   * hast `node`, enabling custom rendering of plugin-emitted nodes.
+   * other default renderer intact.
    */
   components?: MarkdownComponents;
-  /**
-   * Additional remark plugins, appended to the Nimbus defaults
-   * (`[remark-gfm]`).
-   */
-  remarkPlugins?: MarkdownPluginList;
-  /**
-   * Additional rehype plugins, appended to the Nimbus defaults. Under
-   * `trust="untrusted"` these cannot reintroduce live raw HTML — `skipHtml` and
-   * the element allowlist filter the output regardless of plugin order.
-   */
-  rehypePlugins?: MarkdownPluginList;
   /**
    * Restrict rendering to this set of element names. Defaults to a safe
    * allowlist covering all Nimbus default renderers. Mutually exclusive with
