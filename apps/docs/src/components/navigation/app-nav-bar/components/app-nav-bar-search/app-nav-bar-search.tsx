@@ -10,6 +10,7 @@ import {
   Text,
   Kbd,
   Switch,
+  toast,
 } from "@commercetools/nimbus";
 import {
   Autocomplete,
@@ -21,13 +22,16 @@ import {
   ListLayout,
   type Key,
 } from "react-aria-components";
-import { memo, useCallback, useMemo } from "react";
-import { useSetAtom } from "jotai";
+import { memo, useCallback, useEffect, useMemo } from "react";
+import { useAtom, useSetAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 import { useSearch } from "./hooks/use-search";
 import { SearchResultItem } from "./components/search-result-item";
 import { SearchableDocItem } from "@/atoms/searchable-docs";
-import { semanticEnabledAtom } from "@/atoms/semantic-search";
+import {
+  semanticEnabledAtom,
+  semanticReadyNotifiedAtom,
+} from "@/atoms/semantic-search";
 import { CATEGORY_LABELS, type SearchCategoryKey } from "./search-categories";
 
 export type SearchResultItemProps = {
@@ -101,6 +105,7 @@ export const AppNavBarSearch = () => {
     semanticDownloadPercent,
   } = useSearch();
   const setSemanticEnabled = useSetAtom(semanticEnabledAtom);
+  const [readyNotified, setReadyNotified] = useAtom(semanticReadyNotifiedAtom);
 
   // Human-readable status shown next to the toggle while semantic search loads.
   const semanticStatusLabel =
@@ -124,6 +129,22 @@ export const AppNavBarSearch = () => {
     semanticStatus === "error";
   const showNoResults =
     query.trim().length > 0 && results.length === 0 && searchSettled;
+
+  // Notify when the in-browser semantic index finishes loading/indexing. The
+  // model download + embedding can take a while, so a toast tells the user the
+  // moment their concept-based results go live (the worker keeps running even
+  // if they've closed the dialog meanwhile). Guarded by a localStorage-backed
+  // atom so it fires at most once per browser — re-announcing on every reload
+  // would be noise once the user knows the feature exists.
+  useEffect(() => {
+    if (semanticStatus === "ready" && !readyNotified) {
+      setReadyNotified(true);
+      toast.success({
+        title: "Semantic search ready",
+        description: "Results now include concept-based matches.",
+      });
+    }
+  }, [semanticStatus, readyNotified, setReadyNotified]);
 
   useHotkeys(
     "mod+k",
@@ -178,23 +199,7 @@ export const AppNavBarSearch = () => {
         </Dialog.Trigger>
         <Dialog.Content width="5xl">
           <Dialog.Header>
-            <Flex direction="column" gap="100" grow="1">
-              <Dialog.Title>Search the Documentation</Dialog.Title>
-              <Flex alignItems="center" gap="300" minHeight="600">
-                <Switch
-                  isSelected={semanticEnabled}
-                  onChange={setSemanticEnabled}
-                  size="sm"
-                >
-                  Semantic search (beta)
-                </Switch>
-                {semanticStatusLabel && (
-                  <Text textStyle="xs" color="neutral.11">
-                    {semanticStatusLabel}
-                  </Text>
-                )}
-              </Flex>
-            </Flex>
+            <Dialog.Title>Search the Documentation</Dialog.Title>
             <Dialog.CloseTrigger />
           </Dialog.Header>
           <Separator />
@@ -334,10 +339,31 @@ export const AppNavBarSearch = () => {
                   </>
                 )}
               </Box>
-              <Text textStyle="xs" color={"neutral.11"} pt="600">
-                Use the <strong>Arrow</strong>-keys to navigate and{" "}
-                <strong>Enter</strong> to confirm selection.
-              </Text>
+              <Flex alignItems="center" gap="400" pt="600" minHeight="600">
+                <Text textStyle="xs" color="neutral.11">
+                  Use the <strong>Arrow</strong>-keys to navigate and{" "}
+                  <strong>Enter</strong> to confirm selection.
+                </Text>
+                <Flex
+                  alignItems="center"
+                  gap="300"
+                  marginInlineStart="auto"
+                  justifyContent="flex-end"
+                >
+                  {semanticStatusLabel && (
+                    <Text textStyle="xs" color="neutral.11">
+                      {semanticStatusLabel}
+                    </Text>
+                  )}
+                  <Switch
+                    isSelected={semanticEnabled}
+                    onChange={setSemanticEnabled}
+                    size="sm"
+                  >
+                    Semantic search (beta)
+                  </Switch>
+                </Flex>
+              </Flex>
             </Autocomplete>
           </Dialog.Body>
         </Dialog.Content>

@@ -56,16 +56,18 @@ export const useSearch = () => {
     return new Fuse(searchableDocs || [], fuseOptions);
   }, [searchableDocs]);
 
-  // Perform fuzzy search with Fuse.js (the default path). Skip the work entirely
-  // when semantic search is active — otherwise Fuse would run on every keystroke
-  // for results that are never shown.
+  // Perform fuzzy search with Fuse.js. This runs even when semantic search is
+  // active because the hybrid path below merges these lexical matches with the
+  // semantic ones — the Fuse pass is cheap and synchronous, and it's the only
+  // thing that catches prefix typing (e.g. "But" → "Button"), which embeddings
+  // can't (they read "But" as the conjunction, not a prefix of "Button").
   const fuseResults = useMemo(() => {
-    if (semanticEnabled || !query.trim()) {
+    if (!query.trim()) {
       return EMPTY_RESULTS;
     }
 
     return fuse.search(query).map((result) => result.item);
-  }, [query, fuse, semanticEnabled]);
+  }, [query, fuse]);
 
   // Semantic path: only the debounced query reaches the worker.
   const [debouncedQuery] = useDebounce(query, SEMANTIC_DEBOUNCE_MS);
@@ -75,13 +77,37 @@ export const useSearch = () => {
     debouncedQuery
   );
 
-  // Fall back to Fuse whenever semantic search is off or has errored.
+  // Hybrid merge: lexical-first rank fusion of Fuse and semantic results.
+  //
+  // The two rankers produce incomparable scores — Fuse returns a distance in
+  // [0,1] (lower is better), semantic returns cosine similarity (higher is
+  // better) — so we don't blend raw scores. Instead we fuse by rank with a
+  // domain rule: in a component-doc search an exact/prefix lexical hit should
+  // always win, so Fuse results come first (in Fuse's order), then any semantic
+  // results not already present (in similarity order), deduped by id. Until the
+  // index is ready `semantic.results` is empty, so this naturally degrades to
+  // lexical-only while the model downloads/indexes, then becomes hybrid.
+  const mergedResults = useMemo(() => {
+    const seen = new Set<string>();
+    const merged: SearchableDocItem[] = [];
+    for (const item of fuseResults) {
+      if (seen.has(item.id)) continue;
+      seen.add(item.id);
+      merged.push(item);
+    }
+    for (const item of semantic.results) {
+      if (seen.has(item.id)) continue;
+      seen.add(item.id);
+      merged.push(item);
+    }
+    // Preserve the stable empty-array reference (see EMPTY_RESULTS above).
+    return merged.length === 0 ? EMPTY_RESULTS : merged;
+  }, [fuseResults, semantic.results]);
+
+  // Fall back to pure Fuse whenever semantic search is off or has errored;
+  // otherwise serve the hybrid merge.
   const useFuse = !semanticEnabled || semantic.status === "error";
-  const allResults = useFuse
-    ? fuseResults
-    : semantic.status === "ready" && query.trim()
-      ? semantic.results
-      : EMPTY_RESULTS;
+  const allResults = useFuse ? fuseResults : mergedResults;
 
   // Tally the full ranked result set by category to drive the tab bar (counts +
   // which tabs are visible). Empty categories don't get a tab.

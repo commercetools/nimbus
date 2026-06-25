@@ -47,8 +47,25 @@ export function loadExtractor(
   if (extractorPromise) return extractorPromise;
 
   // The progress_callback fires once per file (config, tokenizer, weights, …),
-  // so aggregate loaded/total across files into a single percentage.
+  // so aggregate loaded/total across the files that have reported so far into a
+  // single percentage.
+  //
+  // Two guards keep that aggregate from lying early. The pipeline pulls several
+  // tiny metadata files (config/tokenizer, KB-sized) alongside the ~23MB weights
+  // file, and with the browser cache on some can resolve near-instantly. Without
+  // guards there's a window where the only file that has reported is a small,
+  // already-complete one — so loaded/total reads 100% — and then the weights
+  // file registers its size, the denominator jumps, and the bar collapses back
+  // to ~0 ("100% then count up from 0"). So:
+  //   1. Withhold any reading until the known total is big enough to actually be
+  //      the weights download — larger than the combined metadata files, well
+  //      under the weights size — so a metadata file finishing first can't read
+  //      as near-complete.
+  //   2. Never let the reported percentage move backwards, in case a later file
+  //      still nudges the denominator up after we've started reporting.
+  const MIN_MEANINGFUL_TOTAL_BYTES = 1_000_000;
   const fileProgress = new Map<string, { loaded: number; total: number }>();
+  let lastPercent = 0;
   const handleProgress = (info: ProgressInfo) => {
     if (info.status !== "progress" || !onProgress) return;
     fileProgress.set(info.file, { loaded: info.loaded, total: info.total });
@@ -58,7 +75,11 @@ export function loadExtractor(
       loaded += f.loaded;
       total += f.total;
     }
-    onProgress(total > 0 ? Math.min(100, (loaded / total) * 100) : 0);
+    if (total < MIN_MEANINGFUL_TOTAL_BYTES) return;
+    const percent = Math.min(100, (loaded / total) * 100);
+    if (percent <= lastPercent) return;
+    lastPercent = percent;
+    onProgress(percent);
   };
 
   // `pipeline`'s generic overload resolves to the full `AllTasks` union, which
