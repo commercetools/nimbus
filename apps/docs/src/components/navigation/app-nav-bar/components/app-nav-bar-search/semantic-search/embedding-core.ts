@@ -25,6 +25,13 @@ import {
 env.allowLocalModels = false;
 env.useBrowserCache = true;
 
+/**
+ * How many characters of doc `content` to include in the embed text. Embedding
+ * cost grows with sequence length, so capping this keeps cold-index time low.
+ * Set to 0 to embed title + description + tags only.
+ */
+const CONTENT_EMBED_CHARS = 0;
+
 /** Called with an aggregated 0–100 download percentage while weights load. */
 export type DownloadProgressCallback = (percent: number) => void;
 
@@ -89,7 +96,11 @@ export async function embedTexts(texts: string[]): Promise<Float32Array> {
  */
 export function buildEmbedText(doc: EmbeddableDoc): string {
   const tags = doc.tags?.join(" ") ?? "";
-  return `${doc.title} ${doc.description ?? ""} ${tags} ${doc.content ?? ""}`;
+  // Cap content: embedding cost scales with sequence length, and title +
+  // description + tags carry most of the signal. A short content slice keeps
+  // cold-index time low while still capturing the doc's gist.
+  const content = (doc.content ?? "").slice(0, CONTENT_EMBED_CHARS);
+  return `${doc.title} ${doc.description ?? ""} ${tags} ${content}`;
 }
 
 /** Cheap, dependency-free, deterministic string hash (FNV-1a, 32-bit). */
