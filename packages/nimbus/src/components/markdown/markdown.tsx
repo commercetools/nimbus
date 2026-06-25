@@ -1,14 +1,17 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
-import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import type { Components } from "react-markdown";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { Box } from "@/components/box/box";
 import { VisuallyHidden } from "@/components/visually-hidden/visually-hidden";
 import { createNimbusComponents, StreamingContent } from "./components";
 import { DEFAULT_ALLOWED_ELEMENTS } from "./constants";
-import { getHeadingLevels, findHeadingLevelSkips } from "./utils";
+import {
+  getHeadingLevels,
+  findHeadingLevelSkips,
+  remarkCustomComponentTags,
+} from "./utils";
 import { markdownMessagesStrings } from "./markdown.messages";
 import type {
   MarkdownProps,
@@ -38,12 +41,13 @@ function useHeadingSkipWarning(source: string) {
  * # Markdown
  *
  * Renders a Markdown string into Nimbus-styled, accessible React elements with
- * default renderers for every standard element, per-element overrides, and safe
- * incremental rendering of streamed (LLM) output.
+ * default renderers for every standard element, per-element overrides, embedded
+ * custom component tags, and safe incremental rendering of streamed (LLM)
+ * output.
  *
- * Safe by default (`trust="untrusted"`): raw HTML is skipped and rendering is
- * restricted to a safe element allowlist; image-host security is delegated to
- * the application Content-Security-Policy.
+ * Safe by default: raw HTML is never rendered and rendering is restricted to a
+ * safe element allowlist; image-host security is delegated to the application
+ * Content-Security-Policy.
  *
  * @supportsStyleProps
  *
@@ -52,8 +56,6 @@ function useHeadingSkipWarning(source: string) {
 export const Markdown = (props: MarkdownProps) => {
   const {
     children,
-    trust = "untrusted",
-    allowRawHtml = false,
     components: componentsOverride,
     allowedElements,
     disallowedElements,
@@ -90,55 +92,76 @@ export const Markdown = (props: MarkdownProps) => {
       headingOffset,
       opensInNewTabLabel,
     });
-    return { ...nimbusComponents, ...componentsOverride };
+    return { ...nimbusComponents, ...componentsOverride } as Components;
   }, [headingOffset, opensInNewTabLabel, componentsOverride]);
 
-  // Raw HTML is only ever live for trusted content that explicitly opts in.
-  const rawHtmlEnabled = trust === "trusted" && allowRawHtml;
+  // Custom component tags = consumer `components` keys that are not standard
+  // markdown/GFM element names. Their presence (a) registers them with the
+  // custom-tag remark plugin so the matching tags are materialized, and (b) is
+  // unioned into the element allowlist so react-markdown does not strip them.
+  const customTagNames = React.useMemo(() => {
+    const standard = new Set(DEFAULT_ALLOWED_ELEMENTS);
+    return new Set(
+      Object.keys(componentsOverride ?? {}).filter(
+        (name) => !standard.has(name)
+      )
+    );
+  }, [componentsOverride]);
 
-  const remarkPlugins = React.useMemo(() => [remarkGfm], []);
+  const remarkPlugins = React.useMemo<
+    NonNullable<ReactMarkdownRenderOptions["remarkPlugins"]>
+  >(
+    () =>
+      customTagNames.size > 0
+        ? [
+            remarkGfm,
+            remarkCustomComponentTags({ registeredNames: customTagNames }),
+          ]
+        : [remarkGfm],
+    [customTagNames]
+  );
 
+  // Raw HTML is never rendered: Markdown is safe by default. Custom components
+  // are materialized by the Nimbus-owned remark plugin above, not rehype-raw.
   const rehypePlugins = React.useMemo<
     NonNullable<ReactMarkdownRenderOptions["rehypePlugins"]>
-  >(() => {
-    // Raw HTML is reconstructed by rehype-raw and then gated by rehype-sanitize
-    // (which MUST run after it) using its built-in default allowlist.
-    if (rawHtmlEnabled) {
-      return [rehypeRaw, [rehypeSanitize, defaultSchema]];
-    }
-    return [];
-  }, [rawHtmlEnabled]);
+  >(() => [], []);
 
   // Resolve the element allowlist. react-markdown forbids passing both
   // allowedElements and disallowedElements, so honor a consumer's explicit
-  // choice first; otherwise apply the safe default allowlist (unless raw HTML
-  // is enabled, where rehype-sanitize is the gate).
+  // choice first; otherwise apply the safe default allowlist. Registered custom
+  // tag names are unioned in so they survive the allowlist filter.
   const resolvedAllowedElements = React.useMemo(() => {
-    if (allowedElements) return allowedElements;
+    if (allowedElements) return [...allowedElements, ...customTagNames];
     if (disallowedElements) return undefined;
-    if (rawHtmlEnabled) return undefined;
-    return DEFAULT_ALLOWED_ELEMENTS as string[];
-  }, [allowedElements, disallowedElements, rawHtmlEnabled]);
+    return [...DEFAULT_ALLOWED_ELEMENTS, ...customTagNames];
+  }, [allowedElements, disallowedElements, customTagNames]);
 
   const renderOptions = React.useMemo<ReactMarkdownRenderOptions>(
     () => ({
       components,
-      skipHtml: !rawHtmlEnabled,
+      skipHtml: true,
       allowedElements: resolvedAllowedElements,
       disallowedElements: allowedElements ? undefined : disallowedElements,
       remarkPlugins,
       rehypePlugins,
+      customTagNames,
     }),
     [
       components,
-      rawHtmlEnabled,
       resolvedAllowedElements,
       allowedElements,
       disallowedElements,
       remarkPlugins,
       rehypePlugins,
+      customTagNames,
     ]
   );
+
+  // The non-streaming path renders react-markdown directly, so drop the
+  // internal-only `customTagNames` field before spreading.
+  const reactMarkdownOptions = { ...renderOptions };
+  delete reactMarkdownOptions.customTagNames;
 
   return (
     <Box
@@ -161,7 +184,9 @@ export const Markdown = (props: MarkdownProps) => {
       {isStreaming ? (
         <StreamingContent source={children} {...renderOptions} />
       ) : (
-        <ReactMarkdown {...renderOptions}>{children}</ReactMarkdown>
+        // `customTagNames` is internal (streaming splitter only) — keep it off
+        // the react-markdown instance.
+        <ReactMarkdown {...reactMarkdownOptions}>{children}</ReactMarkdown>
       )}
       {everStreamed.current && (
         <VisuallyHidden as="div" role="status" aria-live="polite">

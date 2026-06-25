@@ -41,6 +41,7 @@ export type StreamingContentProps = ReactMarkdownRenderOptions & {
 
 export function StreamingContent({
   source,
+  customTagNames,
   ...options
 }: StreamingContentProps) {
   // Complete unterminated inline constructs so partial tokens render as
@@ -51,9 +52,12 @@ export function StreamingContent({
     [source]
   );
 
+  // `customTagNames` keeps a paired `<Name>…</Name>` region in one block so the
+  // custom-tag remark plugin can pair it; it is deliberately NOT spread onto
+  // MemoBlock/react-markdown.
   const blocks = React.useMemo(
-    () => splitMarkdownIntoBlocks(completed),
-    [completed]
+    () => splitMarkdownIntoBlocks(completed, customTagNames),
+    [completed, customTagNames]
   );
 
   return (

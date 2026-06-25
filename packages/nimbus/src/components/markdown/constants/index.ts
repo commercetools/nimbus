@@ -1,5 +1,5 @@
 /**
- * Default safe element allowlist for `trust="untrusted"`.
+ * Default safe element allowlist (Markdown is safe by default).
  *
  * Seeded from the Merchant Center markdown viewer's list
  * (`h1,h2,p,a,br,strong,i,code,ul,ol,li`) and extended to cover every element

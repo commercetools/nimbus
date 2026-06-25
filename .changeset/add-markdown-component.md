@@ -9,10 +9,15 @@ autolinks) is on by default.
 
 - **Per-element overrides:** pass `components={{ a: MyLink }}` to replace any
   element's renderer; all other defaults stay intact.
-- **Safe by default:** `trust="untrusted"` (the default) skips raw HTML,
-  restricts rendering to a safe element allowlist, and neutralizes dangerous
-  URLs. Opt into sanitized raw HTML for authored content with `trust="trusted"`
-  - `allowRawHtml`.
+- **Custom component tags:** register a non-standard key
+  (`components={{ SearchQueryResultCard: Card }}`) and embed that tag in the
+  source — `<SearchQueryResultCard id="foo" />` (self-closing) or
+  `<SearchQueryResultCard>…</SearchQueryResultCard>` (with markdown children).
+  The tag's string attributes arrive as props and any casing is preserved. Safe
+  by default: only registered tags render; unregistered tags stay inert.
+- **Safe by default:** raw HTML is never rendered as live markup, rendering is
+  restricted to a safe element allowlist, and dangerous URLs are neutralized.
+  Embed your own components via custom component tags rather than raw HTML.
 - **Streaming:** set `isStreaming` to render live LLM output — half-written
   bold/italic/code/links are completed on the fly (no flash of literal `**` or
   `[`), and the component manages an accessible busy state with a single
