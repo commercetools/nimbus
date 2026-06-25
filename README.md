@@ -85,10 +85,13 @@ All commands should be run from the repository root.
    pnpm nimbus:init
    ```
 
-> [!TIP] It is advisable to run the `nimbus:init` command after every
-> branch-switch. The command gets rid of all `node_modules`- & `dist`-folders,
-> reinstalls dependencies and rebuilds all packages (including generated i18n
-> files).
+> [!TIP] After switching branches you may hit phantom TypeScript errors from
+> stale caches or orphaned generated i18n files left behind by the other branch.
+> Run `pnpm nimbus:clean` for a fast, surgical fix — it clears caches (`.turbo`,
+> `.swc`, `*.tsbuildinfo`, …) and orphaned i18n without removing `node_modules`,
+> so the tree typechecks again immediately. For a guaranteed clean slate
+> (removes `node_modules` + all generated artifacts, then reinstalls and
+> rebuilds), run `pnpm nimbus:init`.
 
 > [!IMPORTANT] **Generated i18n files are not tracked in git.** After cloning or
 > switching branches, you must run `pnpm nimbus:init` or `pnpm build` to
@@ -305,7 +308,12 @@ To initialize or reset the entire project:
 # Full initialization (reset, install dependencies, build)
 pnpm nimbus:init
 
-# Reset only (remove node_modules and dist folders)
+# Surgical clean: remove caches + orphaned generated i18n, keep node_modules
+# (fast fix for phantom cross-branch TypeScript errors; no reinstall needed)
+pnpm nimbus:clean
+
+# Full reset: everything nimbus:clean does, plus all generated artifacts, every
+# dist/, and node_modules (requires a reinstall + rebuild afterward)
 pnpm nimbus:reset
 ```
 
@@ -418,12 +426,13 @@ Please follow our coding standards and commit message conventions.
 
 ## ❓ Troubleshooting
 
-| Problem                                       | Solution                                                                             |
-| --------------------------------------------- | ------------------------------------------------------------------------------------ |
-| Missing module errors / Storybook won't start | Generated i18n files are not tracked in git. Run `pnpm build` or `pnpm extract-intl` |
-| Component styles not updating                 | Make sure you've rebuilt the tokens with `pnpm build:tokens`                         |
-| Documentation site not showing latest changes | Restart the development server with `pnpm start`                                     |
-| Build errors after pulling latest changes     | Try running `pnpm nimbus:init` to reset, reinstall, and rebuild                      |
+| Problem                                            | Solution                                                                                      |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Missing module errors / Storybook won't start      | Generated i18n files are not tracked in git. Run `pnpm build` or `pnpm extract-intl`          |
+| Component styles not updating                      | Make sure you've rebuilt the tokens with `pnpm build:tokens`                                  |
+| Documentation site not showing latest changes      | Restart the development server with `pnpm start`                                              |
+| Phantom TypeScript errors after switching branches | Stale caches or orphaned generated i18n. Run `pnpm nimbus:clean` (fast, keeps `node_modules`) |
+| Build errors after pulling latest changes          | Try running `pnpm nimbus:init` to reset, reinstall, and rebuild                               |
 
 For additional help, please contact the Nimbus team or submit an issue in our
 repository.

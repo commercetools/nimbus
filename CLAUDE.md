@@ -179,10 +179,22 @@ pnpm exec prettier --write .
 ### Setup and Installation
 
 ```bash
-# Full initialization (clean install + build + playwright setup)
+# Full initialization (full reset + clean install + build + playwright setup)
 pnpm nimbus:init
 
-# Reset project (remove node_modules and dist folders)
+# Surgical clean: remove caches (.turbo, .swc, .cache, *.tsbuildinfo, coverage,
+# storybook-static) and ORPHANED generated i18n (component dirs left with only
+# intl/ + *.messages.ts after a branch switch — a common source of phantom
+# cross-branch TypeScript errors). Keeps node_modules and live generated files,
+# so the tree still typechecks immediately after. Run this first when a branch
+# shows TS errors that don't match its source.
+pnpm nimbus:clean
+
+# Full reset: everything `nimbus:clean` does, plus ALL generated artifacts
+# (generated i18n, material-icons, docs src/data, mcp data), every dist/, and
+# node_modules. Requires a reinstall + rebuild afterward (that's what
+# `nimbus:init` chains). Never touches the committed packages/tokens/src/generated
+# tree or local config (.env*, .vscode/, .idea/). See scripts/clean.mjs.
 pnpm nimbus:reset
 
 # Install dependencies only
