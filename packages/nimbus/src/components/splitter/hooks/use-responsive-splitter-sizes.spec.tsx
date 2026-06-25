@@ -114,6 +114,26 @@ describe("useResponsiveSplitterSizes", () => {
     expect(view.result.current.rootProps.size).toBe(40);
   });
 
+  it("resolves a pixel size synchronously on ref attach, before any observer tick", () => {
+    // Regression for #1649: a pixel/token `size` must resolve to its percentage
+    // before the first paint so the splitter never flashes its 50/50 fallback.
+    // The ref callback runs during commit, so a synchronous getBoundingClientRect
+    // there resolves the size without waiting for the async ResizeObserver.
+    const view = renderHook(() => useResponsiveSplitterSizes({ size: 320 }));
+    const node = document.createElement("div");
+    vi.spyOn(node, "getBoundingClientRect").mockReturnValue({
+      width: 1000,
+      height: 600,
+    } as DOMRect);
+    act(() => {
+      (view.result.current.rootProps.ref as (n: HTMLDivElement | null) => void)(
+        node
+      );
+    });
+    // Resolved from the synchronous attach measurement — no fireResize needed.
+    expect(view.result.current.rootProps.size).toBe(32);
+  });
+
   it("selects the active band by container width", () => {
     const view = mountHook({
       size: { 0: 320, 768: "30%" },

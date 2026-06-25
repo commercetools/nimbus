@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { renderHook } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
+import { act, renderHook } from "@testing-library/react";
 import { useSplitterState } from "./use-splitter-state";
 import type { ResolvedAsideConfig } from "../splitter.types";
 
@@ -79,5 +79,72 @@ describe("useSplitterState — synchronous first-render size", () => {
     );
     // Not collapsible → the collapse is ignored, the configured size shows.
     expect(result.current.size).toBe(30);
+  });
+});
+
+/**
+ * Regression for #1648: a collapsed-on-mount aside must follow a `collapsedSize`
+ * that resolves *after* the first render (e.g. `useResponsiveSplitterSizes`
+ * converting a pixel/token value once the container is measured). The collapse
+ * effect only reconciles on a collapse transition, so a late `collapsedSize`
+ * change while already collapsed needs its own reconcile.
+ */
+describe("useSplitterState — late collapsedSize while already collapsed", () => {
+  it("follows a collapsedSize that resolves after the first render", () => {
+    const onSizeChange = vi.fn();
+    const onSizeChangeEnd = vi.fn();
+    const { result, rerender } = renderHook(
+      (collapsedSize: number) =>
+        useSplitterState({
+          ...base,
+          defaultSize: 30,
+          defaultCollapsed: true,
+          asideConfig: config({ collapsible: true, collapsedSize }),
+          onSizeChange,
+          onSizeChangeEnd,
+        }),
+      { initialProps: 0 }
+    );
+
+    // Collapsed on mount with an unresolved (0%) collapsedSize.
+    expect(result.current.size).toBe(0);
+    expect(result.current.collapsed).toBe(true);
+
+    // Both panes register (the reconcile effect waits for this).
+    act(() => {
+      result.current.registerPane("aside", "aside-id");
+      result.current.registerPane("main", "main-id");
+    });
+
+    // collapsedSize resolves to 23% — the aside must follow it.
+    rerender(23);
+    expect(result.current.size).toBe(23);
+    expect(result.current.collapsed).toBe(true);
+
+    // Collapse is signalled via onCollapsedChange, not the size channels.
+    expect(onSizeChange).not.toHaveBeenCalled();
+    expect(onSizeChangeEnd).not.toHaveBeenCalled();
+  });
+
+  it("ignores a collapsedSize change while the aside is expanded", () => {
+    const { result, rerender } = renderHook(
+      (collapsedSize: number) =>
+        useSplitterState({
+          ...base,
+          defaultSize: 30,
+          asideConfig: config({ collapsible: true, collapsedSize }),
+        }),
+      { initialProps: 0 }
+    );
+
+    act(() => {
+      result.current.registerPane("aside", "aside-id");
+      result.current.registerPane("main", "main-id");
+    });
+
+    // Not collapsed → a collapsedSize change must not touch the live size.
+    rerender(23);
+    expect(result.current.size).toBe(30);
+    expect(result.current.collapsed).toBe(false);
   });
 });

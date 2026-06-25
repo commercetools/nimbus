@@ -615,6 +615,67 @@ export const CollapsibleByKeyboard: Story = {
 };
 
 // ============================================================
+// Collapsed handle is keyboard-only: no mouse-resize affordances.
+// Double-click is a no-op while collapsed; Enter still expands.
+// ============================================================
+
+export const CollapsedHandleIgnoresDoubleClick: Story = {
+  args: {
+    defaultSize: 30,
+    minSize: 10,
+    maxSize: 80,
+    collapsible: true,
+    collapsedSize: 6,
+    onCollapsedChange: fn(),
+    onSizeChangeEnd: fn(),
+  },
+  render: (args) => (
+    <Box h="xl">
+      <Splitter.Root {...args}>
+        <Splitter.Aside>
+          <DemoPane bg="indigo.3" title="Aside (collapsible)" />
+        </Splitter.Aside>
+        <Splitter.Handle />
+        <Splitter.Main>
+          <DemoPane bg="amber.3" title="Main" />
+        </Splitter.Main>
+      </Splitter.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+
+    // Collapse via keyboard (the only mouse-free path to the collapsed state).
+    handle.focus();
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => {
+      expect(args.onCollapsedChange).toHaveBeenCalledWith(true);
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(6);
+    });
+    // The handle advertises the resize lock so the recipe can drop its
+    // mouse-resize affordances (cursor + hover track).
+    expect(handle.getAttribute("data-resize-locked")).toBe("true");
+
+    // Double-click while collapsed is a no-op: it must NOT expand or restore.
+    await userEvent.dblClick(handle);
+    await waitFor(() => {
+      // Still collapsed at the collapsed size.
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(6);
+    });
+    expect(args.onCollapsedChange).not.toHaveBeenCalledWith(false);
+    expect(args.onSizeChangeEnd).not.toHaveBeenCalled();
+
+    // Enter still expands — the single intentional keyboard toggle.
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => {
+      expect(args.onCollapsedChange).toHaveBeenCalledWith(false);
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
+    });
+  },
+};
+
+// ============================================================
 // Controlled collapse — a button outside the splitter drives `collapsed`.
 // ============================================================
 
@@ -686,9 +747,11 @@ export const ControlledCollapse: Story = {
 };
 
 // ============================================================
-// Controlled collapse + keyboard + double-click restore — restore must land on
-// the mount-time size (30), not the pre-collapse size (50), even though collapse
-// is controlled. Regression for the controlled-restore path.
+// Controlled collapse + keyboard expand + double-click restore — once expanded,
+// double-click restore must land on the mount-time size (30), not the
+// pre-collapse size (50), even though collapse is controlled. Regression for the
+// controlled-restore path. (Double-click while collapsed is a no-op — see
+// CollapsedHandleIgnoresDoubleClick — so the restore is exercised post-expand.)
 // ============================================================
 
 const ControlledRestoreComponent = () => {
@@ -740,7 +803,14 @@ export const ControlledCollapseRestore: Story = {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(0);
     });
 
-    // Double-click restores to the mount-time size (30), not pre-collapse 50.
+    // Expand again via Enter — restores the pre-collapse size (50).
+    await userEvent.keyboard("{Enter}");
+    await waitFor(() => {
+      expect(Number(handle.getAttribute("aria-valuenow"))).toBe(50);
+    });
+
+    // Now expanded, double-click restores to the mount-time size (30), not the
+    // pre-collapse 50.
     await userEvent.dblClick(handle);
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(30);
