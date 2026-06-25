@@ -114,6 +114,17 @@ export const AppNavBarSearch = () => {
             ? "Semantic search unavailable — using fuzzy search."
             : null;
 
+  // Whether the search has settled enough to trust an empty result set: fuzzy
+  // is synchronous, semantic settles at "ready" (or falls back to fuzzy on
+  // "error"). Guards the "No results" message so it never flashes while the
+  // model is still downloading/indexing.
+  const searchSettled =
+    !semanticEnabled ||
+    semanticStatus === "ready" ||
+    semanticStatus === "error";
+  const showNoResults =
+    query.trim().length > 0 && results.length === 0 && searchSettled;
+
   useHotkeys(
     "mod+k",
     () => {
@@ -295,6 +306,16 @@ export const AppNavBarSearch = () => {
                       </Tabs.Panels>
                     </Tabs.Root>
                     {/* Divider between the results content and the footer hint. */}
+                    <Separator />
+                  </>
+                )}
+                {showNoResults && (
+                  <>
+                    <Box py="800" px="600" textAlign="center">
+                      <Text textStyle="md" color="neutral.11">
+                        No results for “{query.trim()}”
+                      </Text>
+                    </Box>
                     <Separator />
                   </>
                 )}
