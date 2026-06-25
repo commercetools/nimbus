@@ -3,7 +3,9 @@ import {
   Box,
   useHotkeys,
   Dialog,
+  ScrollArea,
   Separator,
+  Tabs,
   TextInput,
   Text,
   Kbd,
@@ -25,6 +27,7 @@ import { useSearch } from "./hooks/use-search";
 import { SearchResultItem } from "./components/search-result-item";
 import { SearchableDocItem } from "@/atoms/searchable-docs";
 import { semanticEnabledAtom } from "@/atoms/semantic-search";
+import { CATEGORY_LABELS, type SearchCategoryKey } from "./search-categories";
 
 export type SearchResultItemProps = {
   item: SearchableDocItem;
@@ -86,6 +89,10 @@ export const AppNavBarSearch = () => {
     results,
     open,
     setOpen,
+    selectedCategory,
+    setSelectedCategory,
+    categoryCounts,
+    visibleCategories,
     semanticEnabled,
     semanticStatus,
     semanticDownloadPercent,
@@ -118,6 +125,7 @@ export const AppNavBarSearch = () => {
   // the input keeps real DOM focus (so typing/deleting always works), while the
   // arrow keys move a highlighted option tracked via aria-activedescendant.
   const listRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const listboxId = useId();
   const optionDomId = useCallback(
     (id: string) => `${listboxId}-option-${id}`,
@@ -194,15 +202,15 @@ export const AppNavBarSearch = () => {
             />
           </Box>
         </Dialog.Trigger>
-        <Dialog.Content width="3xl">
+        <Dialog.Content width="5xl">
           <Dialog.Header>
             <Flex direction="column" gap="100" grow="1">
               <Dialog.Title>Search the Documentation</Dialog.Title>
               <Flex alignItems="center" gap="300" minHeight="600">
                 <Switch
-                  size="sm"
                   isSelected={semanticEnabled}
                   onChange={setSemanticEnabled}
+                  size="sm"
                 >
                   Semantic search (beta)
                 </Switch>
@@ -235,6 +243,7 @@ export const AppNavBarSearch = () => {
               >
                 {/** TODO: TextInput should actually work here, try again once it's fixed*/}
                 <input
+                  ref={inputRef}
                   autoFocus
                   type="search"
                   role="combobox"
@@ -254,23 +263,78 @@ export const AppNavBarSearch = () => {
             </Flex>
             <Box mx="-600">
               <Separator />
-              <Box
-                ref={listRef}
-                id={listboxId}
-                role="listbox"
-                aria-label="Search results"
-              >
-                {results.map((item) => (
-                  <SearchResultRow
-                    key={item.id}
-                    item={item}
-                    domId={optionDomId(item.id)}
-                    isActive={item.id === activeId}
-                    onSelect={navigateToItem}
-                    onActivate={setActiveId}
-                  />
-                ))}
-              </Box>
+              {/* Category filter tabs. Controlled, click-driven — the search
+                  input keeps DOM focus (virtual-focus combobox), so we restore
+                  focus to it after a tab selection to keep typing seamless. The
+                  single panel's id always tracks the selected tab, so React Aria
+                  renders exactly one panel and we keep ONE listbox instance,
+                  preserving the aria-controls / aria-activedescendant wiring. */}
+              {visibleCategories.length > 0 && (
+                <>
+                  <Tabs.Root
+                    variant="pills"
+                    orientation="vertical"
+                    size="md"
+                    selectedKey={selectedCategory}
+                    onSelectionChange={(key) => {
+                      setSelectedCategory(key as SearchCategoryKey);
+                      // Defer past React Aria's own focus management — clicking
+                      // a tab focuses that tab after this handler runs, so we
+                      // move focus back to the input on the next frame to keep
+                      // typing seamless (virtual-focus combobox).
+                      requestAnimationFrame(() => inputRef.current?.focus());
+                    }}
+                  >
+                    {/* Left rail. The vertical `line` recipe draws the divider
+                        between rail and content; the rail stretches to the row
+                        height so that divider spans the full result list. */}
+                    <Tabs.List
+                      pl="200"
+                      pt="200"
+                      minWidth="14rem"
+                      borderRadius="0"
+                    >
+                      {visibleCategories.map((key) => (
+                        <Tabs.Tab key={key} id={key}>
+                          <Box flexGrow="1" textAlign="left">
+                            {CATEGORY_LABELS[key]}
+                          </Box>
+                          <Text as="span" color="neutral.11" fontSize="inherit">
+                            {categoryCounts[key]}
+                          </Text>
+                        </Tabs.Tab>
+                      ))}
+                    </Tabs.List>
+                    <Tabs.Panels>
+                      <Tabs.Panel id={selectedCategory}>
+                        {/* ScrollArea bounds the results so they scroll on their
+                            own, keeping the search input and tab rail pinned. */}
+                        <ScrollArea orientation="vertical" maxHeight="60vh">
+                          <Box
+                            ref={listRef}
+                            id={listboxId}
+                            role="listbox"
+                            aria-label="Search results"
+                          >
+                            {results.map((item) => (
+                              <SearchResultRow
+                                key={item.id}
+                                item={item}
+                                domId={optionDomId(item.id)}
+                                isActive={item.id === activeId}
+                                onSelect={navigateToItem}
+                                onActivate={setActiveId}
+                              />
+                            ))}
+                          </Box>
+                        </ScrollArea>
+                      </Tabs.Panel>
+                    </Tabs.Panels>
+                  </Tabs.Root>
+                  {/* Divider between the results content and the footer hint. */}
+                  <Separator />
+                </>
+              )}
             </Box>
             <Text textStyle="xs" color={"neutral.11"} pt="600">
               Use the <strong>Arrow</strong>-keys to navigate and{" "}
