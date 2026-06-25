@@ -3,6 +3,7 @@ import {
   Box,
   useHotkeys,
   Dialog,
+  ScrollArea,
   Separator,
   Tabs,
   TextInput,
@@ -62,6 +63,12 @@ const SearchResultOption = memo(function SearchResultOption({
       borderBottom="1px solid"
       borderBottomColor="neutral.6"
       css={{
+        // Mouse hover — a subtle cue, distinct from the strong keyboard-focus
+        // highlight below so the two don't compete when both are present.
+        "&[data-hovered]": {
+          backgroundColor: "primary.3",
+        },
+        // Keyboard virtual focus (arrow keys move aria-activedescendant here).
         "&[data-focused]": {
           backgroundColor: "primary.9",
           color: "primary.contrast",
@@ -249,32 +256,41 @@ export const AppNavBarSearch = () => {
                       </Tabs.List>
                       <Tabs.Panels>
                         <Tabs.Panel id={selectedCategory}>
-                          {/* Virtualizer renders only the visible rows (plus a
-                              small buffer) instead of the full result set — at
-                              up to 150 ranked results, mounting every rich row
-                              per keystroke was wasteful. The ListBox is itself
-                              the bounded scroll container (maxHeight), so the
-                              input and tab rail stay pinned and React Aria
-                              scrolls the virtually-focused row into view. */}
-                          <Virtualizer
-                            layout={ListLayout}
-                            layoutOptions={RESULT_LIST_LAYOUT_OPTIONS}
-                          >
-                            <ListBox
-                              aria-label="Search results"
-                              items={results}
-                              selectionMode="none"
-                              onAction={handleAction}
-                              style={{
-                                maxHeight: "60vh",
-                                overflow: "auto",
-                                display: "block",
-                                padding: 0,
-                              }}
+                          {/* Nimbus ScrollArea owns the scroll (its Ark viewport
+                              is the scroll container, giving the custom overlay
+                              scrollbar) while the Virtualizer still renders only
+                              the visible rows. This works because React Aria's
+                              Virtualizer runs in allowsWindowScrolling mode — a
+                              document-level capturing scroll listener tracks the
+                              viewport's scroll, and selection-manager
+                              scrollIntoView walks to the nearest scrollable
+                              ancestor (the viewport) to keep the focused row in
+                              view. The ListBox is left unbounded (overflow
+                              visible, no max-height) so it grows to the full
+                              virtual height inside the viewport; the
+                              virtualizer's full-height spacer makes the
+                              viewport's scrollHeight correct, so the overlay
+                              scrollbar is sized right. */}
+                          <ScrollArea orientation="vertical" maxHeight="60vh">
+                            <Virtualizer
+                              layout={ListLayout}
+                              layoutOptions={RESULT_LIST_LAYOUT_OPTIONS}
                             >
-                              {(item) => <SearchResultOption item={item} />}
-                            </ListBox>
-                          </Virtualizer>
+                              <ListBox
+                                aria-label="Search results"
+                                items={results}
+                                selectionMode="none"
+                                onAction={handleAction}
+                                style={{
+                                  overflow: "visible",
+                                  display: "block",
+                                  padding: 0,
+                                }}
+                              >
+                                {(item) => <SearchResultOption item={item} />}
+                              </ListBox>
+                            </Virtualizer>
+                          </ScrollArea>
                         </Tabs.Panel>
                       </Tabs.Panels>
                     </Tabs.Root>
