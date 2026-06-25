@@ -28,8 +28,8 @@ catalogs:
       specifier: ^3.4.1
       version: 3.4.1
     '@react-aria/optimize-locales-plugin':
-      specifier: 1.2.1
-      version: 1.2.1
+      specifier: 2.0.0
+      version: 2.0.0
     '@react-aria/utils':
       specifier: 3.34.1
       version: 3.34.1
@@ -640,7 +640,7 @@ importers:
         version: 3.12.2
       '@react-aria/optimize-locales-plugin':
         specifier: catalog:react
-        version: 1.2.1
+        version: 2.0.0
       '@react-types/shared':
         specifier: catalog:tooling
         version: 3.36.0(react@19.2.0)
@@ -2702,8 +2702,8 @@ packages:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
       react-dom: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0 || ^19.0.0-rc.1
 
-  '@react-aria/optimize-locales-plugin@1.2.1':
-    resolution: {integrity: sha512-cozjylSJNotHobYx1D4qZLLhcO00HZxI+XO1+MXP4Hv7y8gKzcH1QTJ4iqgzxywJcKkQLV6B21cBFHP6faWd0A==}
+  '@react-aria/optimize-locales-plugin@2.0.0':
+    resolution: {integrity: sha512-tXQiC+ud+EDzJfwlbTY6J33pU51V+PMB4PcxYN6PYHGlRpq938zq6IKhquPJkVGqKLTnOeMtSjns/yvRR5wfww==}
 
   '@react-aria/utils@3.34.1':
     resolution: {integrity: sha512-H6+rGZL+0f58bBNaUMfctEnT+NogqwAk+nHiB8sR3K+YlQ37GTuCijy2U/pPvQtFMS5mURrjZeBH5JNNXsx14A==}
@@ -7732,10 +7732,6 @@ packages:
       webpack:
         optional: true
 
-  unplugin@1.16.1:
-    resolution: {integrity: sha512-4/u/j4FrCKdi17jaxuJA0jClGxB1AvU2hw/IuayPc4ay1XGaJs/rbb4v5WKwAjNifjmXK9PIFyuPiaK8azyR9w==}
-    engines: {node: '>=14.0.0'}
-
   unplugin@2.3.11:
     resolution: {integrity: sha512-5uKD0nqiYVzlmCRs01Fhs2BdkEgBS3SAVP6ndrBsuK42iC2+JHyxM05Rm9G8+5mkmRtzMZGY8Ct5+mliZxU/Ww==}
     engines: {node: '>=18.12.0'}
@@ -10388,9 +10384,9 @@ snapshots:
       react-aria: 3.50.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-dom: 19.2.0(react@19.2.0)
 
-  '@react-aria/optimize-locales-plugin@1.2.1':
+  '@react-aria/optimize-locales-plugin@2.0.0':
     dependencies:
-      unplugin: 1.16.1
+      unplugin: 2.3.11
 
   '@react-aria/utils@3.34.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
@@ -16239,11 +16235,6 @@ snapshots:
       webpack: 5.107.2(esbuild@0.28.1)
     transitivePeerDependencies:
       - supports-color
-
-  unplugin@1.16.1:
-    dependencies:
-      acorn: 8.16.0
-      webpack-virtual-modules: 0.6.2
 
   unplugin@2.3.11:
     dependencies:
