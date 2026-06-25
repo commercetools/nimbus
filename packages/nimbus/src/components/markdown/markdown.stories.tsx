@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import { Profiler, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Markdown } from "@commercetools/nimbus";
 import type { MarkdownComponents } from "./markdown.types";
@@ -147,7 +147,7 @@ const untrustedSource = `Normal **text** survives.
 ![a cat](https://cdn.example.com/cat.png)
 `;
 
-/** Untrusted (default) posture blocks raw HTML and neutralizes dangerous URLs. */
+/** Safe by default: raw HTML is never rendered and dangerous URLs are neutralized. */
 export const SecurityUntrusted: Story = {
   render: () => <Markdown>{untrustedSource}</Markdown>,
   play: async ({ canvasElement }) => {
@@ -160,7 +160,7 @@ export const SecurityUntrusted: Story = {
     expect(root.querySelector("strong")).toHaveTextContent("text");
 
     // Raw HTML is not rendered live — `skipHtml` plus the element allowlist
-    // strip dangerous elements under the untrusted default.
+    // strip dangerous elements.
     expect(root.querySelector("script")).toBeNull();
     expect(root.querySelector("iframe")).toBeNull();
     // The injection did not execute.
@@ -181,24 +181,155 @@ export const SecurityUntrusted: Story = {
   },
 };
 
-/** Trusted content may opt into raw HTML; dangerous tags are still sanitized. */
-export const TrustedRawHtml: Story = {
-  render: () => (
-    <Markdown trust="trusted" allowRawHtml>
-      {`Inline <b>bold html</b> and <em>emphasis</em>.
+/**
+ * A self-closing custom tag in the source is rendered by the registered
+ * component, with its string attributes delivered as props. Tag names match by
+ * exact case, so any casing is preserved.
+ */
+export const CustomComponentTag: Story = {
+  render: () => {
+    const components: MarkdownComponents = {
+      SearchQueryResultCard: (props: {
+        id?: string;
+        title?: string;
+        node?: unknown;
+      }) => {
+        const { id, title } = withoutNode(props);
+        return (
+          <div data-testid="sqr-card" data-id={id} data-title={title}>
+            Card {id}
+          </div>
+        );
+      },
+    };
+    return (
+      <Markdown components={components}>
+        {`Results below:
 
-<script>window.__trustedPwned = true;</script>`}
-    </Markdown>
-  ),
+<SearchQueryResultCard id="foo" title="Bar" />
+
+Done.`}
+      </Markdown>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const card = canvas.getByTestId("sqr-card");
+    // String attributes are passed through as props.
+    expect(card).toHaveAttribute("data-id", "foo");
+    expect(card).toHaveAttribute("data-title", "Bar");
+    // The hast `node` is not leaked to the DOM.
+    expect(card).not.toHaveAttribute("node");
+    // Surrounding markdown still renders.
+    expect(canvasElement.querySelector("p")).toHaveTextContent(
+      "Results below:"
+    );
+  },
+};
+
+/**
+ * A paired custom tag wraps markdown children; the registered component
+ * receives both the attribute props and the rendered children.
+ */
+export const CustomComponentPaired: Story = {
+  render: () => {
+    const components: MarkdownComponents = {
+      Callout: (props: {
+        tone?: string;
+        children?: ReactNode;
+        node?: unknown;
+      }) => {
+        const { tone, children } = withoutNode(props);
+        return (
+          <aside data-testid="callout" data-tone={tone}>
+            {children}
+          </aside>
+        );
+      },
+    };
+    return (
+      <Markdown components={components}>
+        {`<Callout tone="info">
+
+Some **bold** content inside.
+
+</Callout>`}
+      </Markdown>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const callout = canvas.getByTestId("callout");
+    expect(callout).toHaveAttribute("data-tone", "info");
+    // Markdown children are parsed and rendered inside the custom component.
+    expect(callout.querySelector("strong")).toHaveTextContent("bold");
+  },
+};
+
+/** An unregistered custom tag is inert — it renders nothing and never executes. */
+export const UnregisteredTagInert: Story = {
+  render: () => <Markdown>{`Before <UnknownWidget id="x" /> after.`}</Markdown>,
   play: async ({ canvasElement }) => {
     const root = canvasElement.querySelector(".nimbus-markdown") as HTMLElement;
-    // Safe raw HTML renders.
-    expect(root.querySelector("b")).toHaveTextContent("bold html");
-    // Dangerous raw HTML stripped by rehype-sanitize (runs after rehype-raw).
-    expect(root.querySelector("script")).toBeNull();
-    expect(
-      (window as unknown as { __trustedPwned?: boolean }).__trustedPwned
-    ).toBeUndefined();
+    // No element materialized for the unregistered tag.
+    expect(root.querySelector("unknownwidget")).toBeNull();
+    expect(root.querySelector("UnknownWidget")).toBeNull();
+    // Surrounding prose still renders.
+    expect(root).toHaveTextContent("Before");
+    expect(root).toHaveTextContent("after.");
+  },
+};
+
+/** A custom tag inside a code fence stays literal — it is never materialized. */
+export const CustomTagInCodeFence: Story = {
+  render: () => {
+    const components: MarkdownComponents = {
+      SearchQueryResultCard: () => <div data-testid="sqr-card" />,
+    };
+    return (
+      <Markdown components={components}>
+        {'```\n<SearchQueryResultCard id="x" />\n```'}
+      </Markdown>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // The tag is shown as literal code, not rendered as the component.
+    expect(canvasElement.querySelector("pre code")).toHaveTextContent(
+      '<SearchQueryResultCard id="x" />'
+    );
+    expect(canvas.queryByTestId("sqr-card")).toBeNull();
+  },
+};
+
+/**
+ * While streaming, an unclosed paired tag stays inert until its closing tag
+ * arrives — the partial open is never materialized mid-stream.
+ */
+export const StreamingCustomTagPartial: Story = {
+  render: () => {
+    const components: MarkdownComponents = {
+      Callout: (props: { children?: ReactNode; node?: unknown }) => {
+        const { children } = withoutNode(props);
+        return <aside data-testid="callout">{children}</aside>;
+      },
+    };
+    return (
+      <Markdown isStreaming components={components}>
+        {`<Callout tone="info">
+
+Streaming **inside** a callout.`}
+      </Markdown>
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // The bold content renders as normal markdown…
+    await waitFor(() =>
+      expect(canvasElement.querySelector("strong")).toHaveTextContent("inside")
+    );
+    // …but the unclosed Callout is not yet materialized.
+    expect(canvas.queryByTestId("callout")).toBeNull();
   },
 };
 

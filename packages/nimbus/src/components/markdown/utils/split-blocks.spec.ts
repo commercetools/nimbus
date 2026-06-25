@@ -36,4 +36,55 @@ describe("markdown utils — splitMarkdownIntoBlocks", () => {
     expect(b.slice(0, 2)).toEqual(a.slice(0, 2));
     expect(b[2]).not.toEqual(a[2]);
   });
+
+  describe("custom component tag regions", () => {
+    const names = new Set(["Callout", "Card"]);
+
+    it("keeps a paired block-level region in one block", () => {
+      const src = '<Callout tone="info">\n\nInner **text**.\n\n</Callout>';
+      const blocks = splitMarkdownIntoBlocks(src, names);
+      expect(blocks).toHaveLength(1);
+      expect(blocks[0]).toContain("<Callout");
+      expect(blocks[0]).toContain("</Callout>");
+    });
+
+    it("keeps nested same-name regions together (depth counting)", () => {
+      const src = "<Card>\n\n<Card>\n\ninner\n\n</Card>\n\n</Card>";
+      const blocks = splitMarkdownIntoBlocks(src, names);
+      expect(blocks).toHaveLength(1);
+    });
+
+    it("keeps an unclosed region's tail in one growing block (mid-stream)", () => {
+      const src = '<Callout tone="info">\n\nStreaming **in**';
+      const blocks = splitMarkdownIntoBlocks(src, names);
+      expect(blocks).toHaveLength(1);
+      expect(blocks[0]).toContain("Streaming");
+    });
+
+    it("does not treat self-closing tags as a region", () => {
+      const src = '<Card id="x" />\n\nAfter.';
+      const blocks = splitMarkdownIntoBlocks(src, names);
+      expect(blocks).toEqual(['<Card id="x" />', "After."]);
+    });
+
+    it("does not start a region for an unregistered tag", () => {
+      const src = "<Unknown>\n\ntext\n\n</Unknown>";
+      const blocks = splitMarkdownIntoBlocks(src, names);
+      expect(blocks.length).toBeGreaterThan(1);
+    });
+
+    it("keeps a custom tag inside a fenced code block literal (fence wins)", () => {
+      const src = "```\n<Callout>\n</Callout>\n```";
+      const blocks = splitMarkdownIntoBlocks(src, names);
+      expect(blocks).toHaveLength(1);
+      expect(blocks[0].startsWith("```")).toBe(true);
+    });
+
+    it("behaves exactly as before when no names are passed", () => {
+      const src = "<Callout>\n\ntext\n\n</Callout>";
+      expect(splitMarkdownIntoBlocks(src)).toEqual(
+        splitMarkdownIntoBlocks(src, new Set())
+      );
+    });
+  });
 });

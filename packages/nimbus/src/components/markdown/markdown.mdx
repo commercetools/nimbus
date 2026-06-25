@@ -43,8 +43,12 @@ descriptions.
   existing design tokens (the Figma `Markdown/*` typography scale).
 - **Per-element overrides** — pass `components={{ a: MyLink }}` to replace any
   element's renderer; all other defaults stay intact.
-- **Safe by default** — untrusted content skips raw HTML, restricts rendering to
-  a safe element allowlist, and neutralizes dangerous URLs.
+- **Custom component tags** — register a non-standard key
+  (`components={{ SearchQueryResultCard: Card }}`) and embed that tag in the
+  source; its attributes arrive as props. Self-closing and paired-with-children
+  are both supported, any casing preserved.
+- **Safe by default** — raw HTML is never rendered, rendering is restricted to a
+  safe element allowlist, and dangerous URLs are neutralized.
 - **Streaming-aware** — `isStreaming` completes half-written tokens, memoizes
   settled blocks, and manages an accessible busy/announcement model.
 
@@ -60,13 +64,27 @@ This is **Markdown** rendered with _Nimbus_ styling and a [link](https://commerc
 - Code: \`const x = 1\``}</Markdown>
 ```
 
-## Trust model
+## Custom component tags
 
-`trust="untrusted"` (the default) is correct for AI- and user-generated content:
-raw HTML is skipped and only a safe element allowlist is rendered. Image-host
-security is delegated to the application's Content-Security-Policy, matching the
-Merchant Center convention. Use `trust="trusted"` with `allowRawHtml` only for
-authored/internal content — raw HTML is then sanitized via `rehype-sanitize`.
+To render your own components inside Markdown, register them in `components`
+under the tag name you want to use, then embed that tag in the source:
+
+```jsx
+<Markdown components={{ SearchQueryResultCard: Card }}>
+  {`Here is what I found:\n\n<SearchQueryResultCard id="sku-42" />`}
+</Markdown>
+```
+
+The tag's string attributes are passed as props. Only registered tags are
+rendered — unregistered tags stay inert — so this stays safe by default.
+
+## Safe by default
+
+Markdown has a single, safe security posture: raw HTML is never rendered, only a
+safe element allowlist is rendered, and dangerous URLs (`javascript:`,
+`vbscript:`, `file:`) are neutralized. Image-host security is delegated to the
+application's Content-Security-Policy, matching the Merchant Center convention.
+Embed application components via custom component tags rather than raw HTML.
 
 ## Streaming
 

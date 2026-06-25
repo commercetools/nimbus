@@ -57,7 +57,8 @@ Markdown (tables, task lists, strikethrough, autolinks) enabled by default.
 
 The component SHALL accept a `components` prop mapping HTML element names to
 React components or string tags, shallow-merged per element key over the Nimbus
-defaults.
+defaults. The same prop additionally registers custom component tags by
+non-standard key (see "Custom component tags").
 
 #### Scenario: Override a single element
 
@@ -72,16 +73,55 @@ defaults.
 - **AND** the default renderers SHALL NOT leak the `node` prop onto the rendered
   DOM element
 
-### Requirement: Safe by default rendering of untrusted content
+### Requirement: Custom component tags
 
-The component SHALL default to a security posture safe for untrusted and
-AI-generated content.
+The component SHALL allow consumers to embed custom component tags in the source
+and render them via components registered under non-standard (e.g. PascalCase)
+keys of the `components` prop. Tags are materialized by a Nimbus-owned remark
+plugin (not `rehype-raw`), so this does not relax the raw-HTML stance.
 
-#### Scenario: Untrusted default blocks raw HTML
+#### Scenario: Registered custom tag renders with props
 
-- **WHEN** `trust` is not specified (defaults to `"untrusted"`) and the source
-  contains raw HTML (e.g. `<script>`, `<iframe>`, an `onerror` attribute)
-- **THEN** SHALL NOT render the raw HTML as live markup
+- **WHEN** `components={{ SearchQueryResultCard: Card }}` is provided and the
+  source contains `<SearchQueryResultCard id="foo" />`
+- **THEN** SHALL render `Card` with the tag's string attributes as props
+  (`{ id: "foo" }`)
+
+#### Scenario: Any casing preserved
+
+- **WHEN** a registered tag uses arbitrary casing matching its `components` key
+- **THEN** SHALL match by exact case and render the registered component (the
+  tag name SHALL NOT be lowercased)
+
+#### Scenario: Unregistered tag stays inert
+
+- **WHEN** the source contains a custom tag with no matching `components` key
+- **THEN** SHALL NOT render it as a live element (safe by default)
+
+#### Scenario: Self-closing and paired tags
+
+- **WHEN** a registered tag is self-closing (`<Tag ... />`)
+- **THEN** SHALL render it with its attributes as props and no children
+- **AND WHEN** a registered tag is paired (`<Tag ...>…</Tag>`)
+- **THEN** SHALL render it with the enclosed markdown parsed as its children
+
+#### Scenario: Custom tags stay coherent while streaming
+
+- **WHEN** `isStreaming` is set and a paired custom tag is split across the
+  streamed source
+- **THEN** SHALL keep the tag's region in a single block so it is paired once
+  complete, leaving an unclosed opening tag inert until its closing tag arrives
+
+### Requirement: Safe by default rendering
+
+The component SHALL render with a single security posture safe for untrusted and
+AI-generated content. Raw HTML is never rendered as live markup.
+
+#### Scenario: Raw HTML is not rendered
+
+- **WHEN** the source contains raw HTML (e.g. `<script>`, `<iframe>`, an
+  `onerror` attribute)
+- **THEN** SHALL NOT render the raw HTML as live markup (`skipHtml`)
 - **AND** SHALL NOT use `dangerouslySetInnerHTML`
 
 #### Scenario: Dangerous URLs neutralized
@@ -93,24 +133,16 @@ AI-generated content.
 
 #### Scenario: Element allowlist and CSP-delegated image security
 
-- **WHEN** rendering with `trust="untrusted"`
-- **THEN** SHALL render only elements in a safe `allowedElements` allowlist and
-  skip raw HTML (`skipHtml`), matching the Merchant Center convention
+- **WHEN** rendering any source
+- **THEN** SHALL render only elements in a safe `allowedElements` allowlist
+  (extended with any registered custom component tag names), matching the
+  Merchant Center convention
 - **AND** SHALL NOT re-implement image-host allowlisting in the component —
   image-host security is delegated to the application Content-Security-Policy
   (`img-src`); rendered images SHALL carry `loading="lazy"` and
   `referrerpolicy="no-referrer"`
 - **AND** SHALL allow the rendered element set to be tuned via `allowedElements`
   / `disallowedElements`
-
-#### Scenario: Trusted content may opt into raw HTML
-
-- **WHEN** `trust="trusted"` and `allowRawHtml` is set
-- **THEN** SHALL render raw HTML via `rehype-raw` **paired with**
-  `rehype-sanitize` (sanitize applied after raw) using its built-in
-  `defaultSchema`
-- **AND** SHALL NOT enable raw HTML when `trust="untrusted"`, regardless of
-  `allowRawHtml`
 
 ### Requirement: Incremental (streaming) rendering
 

@@ -87,8 +87,6 @@
     "react-markdown": "catalog:markdown",
     "react-stately": "catalog:react",
     "react-use": "^17.6.1",
-    "rehype-raw": "catalog:markdown",
-    "rehype-sanitize": "catalog:markdown",
     "remark-gfm": "catalog:markdown",
     "remend": "catalog:markdown",
     "use-debounce": "^10.1.0"

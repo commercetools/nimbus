@@ -54,13 +54,54 @@ describe("Markdown - Per-element override", () => {
 });
 
 /**
- * @docs-section safe-by-default
- * @docs-title Safe by default for untrusted content
- * @docs-description Raw HTML in untrusted (default) content is not rendered as live markup
+ * @docs-section custom-components
+ * @docs-title Embedding custom component tags
+ * @docs-description Register a tag in `components`, then embed it in the source; its attributes arrive as props
  * @docs-order 3
  */
-describe("Markdown - Untrusted content", () => {
-  it("does not render raw HTML from untrusted sources", () => {
+describe("Markdown - Custom component tags", () => {
+  it("renders a registered custom tag with its attributes as props", () => {
+    const components: MarkdownComponents = {
+      SearchQueryResultCard: (props: { id?: string; node?: unknown }) => (
+        <div data-testid="result-card" data-id={props.id} />
+      ),
+    };
+
+    render(
+      <NimbusProvider>
+        <Markdown components={components}>
+          {`Top result:\n\n<SearchQueryResultCard id="sku-42" />`}
+        </Markdown>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByTestId("result-card")).toHaveAttribute(
+      "data-id",
+      "sku-42"
+    );
+  });
+
+  it("leaves an unregistered tag inert", () => {
+    const { container } = render(
+      <NimbusProvider>
+        <Markdown>{`Before <UnknownWidget /> after.`}</Markdown>
+      </NimbusProvider>
+    );
+
+    const root = container.querySelector(".nimbus-markdown");
+    expect(root?.querySelector("unknownwidget")).toBeNull();
+    expect(screen.getByText(/Before/)).toBeInTheDocument();
+  });
+});
+
+/**
+ * @docs-section safe-by-default
+ * @docs-title Safe by default
+ * @docs-description Raw HTML is never rendered as live markup, and dangerous URLs are neutralized
+ * @docs-order 4
+ */
+describe("Markdown - Safe by default", () => {
+  it("does not render raw HTML", () => {
     const { container } = render(
       <NimbusProvider>
         <Markdown>{`Hello <script>alert(1)</script> world.`}</Markdown>
@@ -77,7 +118,7 @@ describe("Markdown - Untrusted content", () => {
  * @docs-section streaming
  * @docs-title Rendering streamed (LLM) output
  * @docs-description Set `isStreaming` so partial tokens render cleanly while a response streams in
- * @docs-order 4
+ * @docs-order 5
  */
 describe("Markdown - Streaming", () => {
   it("completes an unterminated construct so it renders as formatted content", () => {

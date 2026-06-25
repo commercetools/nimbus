@@ -1,22 +1,34 @@
-import type { Components, Options } from "react-markdown";
+import type { Components, ExtraProps, Options } from "react-markdown";
+import type { ComponentType } from "react";
 import type { BoxProps } from "@/components/box/box";
 
 /**
- * Trust posture for the rendered source.
- *
- * - `"untrusted"` (default) — safe for AI / user-generated content: raw HTML is
- *   skipped and rendering is restricted to a safe element allowlist.
- * - `"trusted"` — for authored/internal content; may opt into raw HTML via
- *   `allowRawHtml`.
+ * Renderer for a custom component tag embedded in the source (e.g.
+ * `<SearchQueryResultCard id="foo" />`). Receives the tag's parsed string
+ * attributes as props, plus `react-markdown`'s `node` / {@link ExtraProps}.
  */
-export type MarkdownTrust = "untrusted" | "trusted";
+export type MarkdownCustomComponent = ComponentType<
+  Record<string, string | boolean | undefined> & ExtraProps
+>;
 
 /**
- * Map of HTML element names to the React components (or string tags) used to
- * render them. Re-export of `react-markdown`'s `Components` type — this is the
- * per-element override / custom-renderer surface.
+ * Map of tag names to the React components (or string tags) used to render
+ * them.
+ *
+ * Standard HTML/GFM element keys (e.g. `a`, `h1`, `code`) are per-element
+ * overrides typed precisely by `react-markdown`'s `Components`. Any *additional*
+ * key (conventionally PascalCase, e.g. `SearchQueryResultCard`) registers a
+ * **custom component tag**: the matching tag is parsed out of the source and
+ * rendered by the supplied component, with its string attributes passed as
+ * props.
+ *
+ * Note: the open index signature means a typo in a standard element key is no
+ * longer flagged as an excess property — the accepted tradeoff for an open
+ * renderer map.
  */
-export type MarkdownComponents = Components;
+export type MarkdownComponents = Components & {
+  [tagName: string]: Components[keyof Components] | MarkdownCustomComponent;
+};
 
 /**
  * The resolved set of `react-markdown` options shared between the non-streaming
@@ -31,6 +43,12 @@ export type ReactMarkdownRenderOptions = {
   disallowedElements?: Options["disallowedElements"];
   remarkPlugins: NonNullable<Options["remarkPlugins"]>;
   rehypePlugins: NonNullable<Options["rehypePlugins"]>;
+  /**
+   * Registered custom-component tag names. Internal-only — consumed by the
+   * streaming block splitter so a paired `<Name>…</Name>` region stays in one
+   * block; never forwarded to `react-markdown`.
+   */
+  customTagNames?: ReadonlySet<string>;
 };
 
 /**
@@ -48,24 +66,16 @@ export type MarkdownProps = Omit<BoxProps, "children"> & {
    */
   children: string;
   /**
-   * Trust posture for the source. Defaults to `"untrusted"` (safe for AI /
-   * user-generated content).
+   * Renderer map, shallow-merged per key over the Nimbus defaults. Two uses:
    *
-   * @default "untrusted"
-   */
-  trust?: MarkdownTrust;
-  /**
-   * When `trust="trusted"`, permits rendering raw HTML embedded in the source
-   * by wiring `rehype-raw` paired with `rehype-sanitize` (sanitize applied
-   * last). Ignored when `trust="untrusted"`.
-   *
-   * @default false
-   */
-  allowRawHtml?: boolean;
-  /**
-   * Per-element renderer overrides, shallow-merged per element key over the
-   * Nimbus defaults. Overriding one element (e.g. `{ a: MyLink }`) leaves every
-   * other default renderer intact.
+   * - **Per-element override** — a standard element key (e.g. `{ a: MyLink }`)
+   *   replaces that one default renderer; all others stay intact.
+   * - **Custom component tag** — a non-standard key (e.g.
+   *   `{ SearchQueryResultCard: Card }`) registers a tag that can be embedded in
+   *   the source (`<SearchQueryResultCard id="foo" />`); its string attributes
+   *   are passed to the component as props. Tag names match by exact case, so
+   *   any casing is preserved. Safe by default: a custom tag renders only if a
+   *   component is registered for it — unregistered tags stay inert.
    */
   components?: MarkdownComponents;
   /**
