@@ -10,9 +10,9 @@ import {
   Switch,
 } from "@commercetools/nimbus";
 
-import { ComboBox, Input, ListBox, ListBoxItem } from "react-aria-components";
+import { ListBox, ListBoxItem } from "react-aria-components";
 
-import { Key } from "react";
+import { type Key, type KeyboardEvent, useRef } from "react";
 import { useSetAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 import { useSearch } from "./hooks/use-search";
@@ -58,14 +58,25 @@ export const AppNavBarSearch = () => {
     [open]
   );
 
-  const handleSelectionChange = (key: Key | null) => {
-    if (key === null) return;
+  // The results list is a standalone ListBox (not a ComboBox collection) so it
+  // updates reliably when results arrive asynchronously (semantic search).
+  const listBoxRef = useRef<HTMLDivElement>(null);
 
+  const handleAction = (key: Key) => {
     const selectedItem = results.find((item) => item.id === key);
     if (selectedItem) {
       setOpen(false);
       navigate(`/${selectedItem.route}`);
       setQuery("");
+    }
+  };
+
+  // ArrowDown from the input moves focus into the results list; React Aria then
+  // focuses the first option and handles arrow navigation from there.
+  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "ArrowDown" && results.length > 0) {
+      e.preventDefault();
+      listBoxRef.current?.focus();
     }
   };
 
@@ -112,69 +123,71 @@ export const AppNavBarSearch = () => {
           </Dialog.Header>
           <Separator />
           <Dialog.Body>
-            <ComboBox
-              aria-label="Search the documentation"
-              inputValue={query}
-              onInputChange={setQuery}
-              onSelectionChange={handleSelectionChange}
-              defaultFilter={() => true} // Disable built-in filtering to allow custom filtering mostly for the Fuse.js search
-              allowsCustomValue
-            >
-              <Flex alignItems="center" width="100%" py="400" pb="600">
-                <Box
-                  border="1px solid"
-                  borderColor="neutral.6"
-                  focusRing="outside"
-                  height="1000"
-                  textStyle="md"
-                  _placeholder={{
-                    opacity: 0.5,
-                    color: "currentColor",
-                  }}
-                  px="400"
-                  borderRadius="200"
-                  width="full"
-                  asChild
-                >
-                  {/** TODO: TextInput should actually work here, try again once it's fixed*/}
-                  <Input autoFocus placeholder="Type to search..." />
-                </Box>
-              </Flex>
-              <Box mx="-600">
-                <Separator />
-                <ListBox
-                  aria-label="Search results"
-                  items={results}
-                  selectionMode="single"
-                >
-                  {(item) => (
-                    <Flex
-                      css={{
-                        "&[data-focused]": {
-                          backgroundColor: "primary.9",
-                          color: "primary.contrast",
-                        },
-                      }}
-                      direction="column"
-                      gap="1"
-                      py="100"
-                      px="600"
-                      asChild
-                      borderBottom="1px solid"
-                      borderBottomColor="neutral.6"
-                    >
-                      <ListBoxItem id={item.id} textValue={item.title}>
-                        <SearchResultItem item={item} />
-                      </ListBoxItem>
-                    </Flex>
-                  )}
-                </ListBox>
+            <Flex alignItems="center" width="100%" py="400" pb="600">
+              <Box
+                border="1px solid"
+                borderColor="neutral.6"
+                focusRing="outside"
+                height="1000"
+                textStyle="md"
+                _placeholder={{
+                  opacity: 0.5,
+                  color: "currentColor",
+                }}
+                px="400"
+                borderRadius="200"
+                width="full"
+                asChild
+              >
+                {/** TODO: TextInput should actually work here, try again once it's fixed*/}
+                <input
+                  autoFocus
+                  type="search"
+                  aria-label="Search the documentation"
+                  placeholder="Type to search..."
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  onKeyDown={handleInputKeyDown}
+                />
               </Box>
-              <Text textStyle="xs" color={"neutral.11"} pt="600">
-                Use the <strong>Arrow</strong>-keys to navigate and{" "}
-                <strong>Enter</strong> to confirm selection.
-              </Text>
-            </ComboBox>
+            </Flex>
+            <Box mx="-600">
+              <Separator />
+              <ListBox
+                ref={listBoxRef}
+                aria-label="Search results"
+                items={results}
+                selectionMode="none"
+                onAction={handleAction}
+                shouldFocusWrap
+              >
+                {(item) => (
+                  <Flex
+                    css={{
+                      "&[data-focused]": {
+                        backgroundColor: "primary.9",
+                        color: "primary.contrast",
+                      },
+                    }}
+                    direction="column"
+                    gap="1"
+                    py="100"
+                    px="600"
+                    asChild
+                    borderBottom="1px solid"
+                    borderBottomColor="neutral.6"
+                  >
+                    <ListBoxItem id={item.id} textValue={item.title}>
+                      <SearchResultItem item={item} />
+                    </ListBoxItem>
+                  </Flex>
+                )}
+              </ListBox>
+            </Box>
+            <Text textStyle="xs" color={"neutral.11"} pt="600">
+              Use the <strong>Arrow</strong>-keys to navigate and{" "}
+              <strong>Enter</strong> to confirm selection.
+            </Text>
           </Dialog.Body>
         </Dialog.Content>
       </Dialog.Root>
