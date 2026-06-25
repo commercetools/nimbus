@@ -1,0 +1,138 @@
+---
+title: Activity indicator component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import {
+  ActivityIndicator,
+  type ActivityIndicatorProps,
+} from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+The ActivityIndicator signals that an agent or system is actively working. By
+default it is decorative and scales with the surrounding `font-size`, so it can
+sit inline next to a visible status label.
+
+```jsx live-dev
+const App = () => (
+  <Text>
+    Thinking <ActivityIndicator />
+  </Text>
+);
+```
+
+## Usage examples
+
+### Size options
+
+The `size` prop defaults to `inherit`, which ties the indicator's box to the
+surrounding `font-size` (`1em`) so it scales with the text. The fixed sizes
+(`2xs`, `xs`, `sm`, `md`, `lg`) reserve a square icon-box footprint — the same
+scale points `LoadingSpinner` uses — so the indicator drops into input start/end
+icon slots interchangeably with a spinner.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <ActivityIndicator size="2xs" />
+    <ActivityIndicator size="xs" />
+    <ActivityIndicator size="sm" />
+    <ActivityIndicator size="md" />
+    <ActivityIndicator size="lg" />
+  </Stack>
+);
+```
+
+### Color palette
+
+The `colorPalette` prop accepts any Nimbus color palette (default `primary`). The
+dots are filled from the palette's `11` shade.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <ActivityIndicator colorPalette="primary" />
+    <ActivityIndicator colorPalette="positive" />
+    <ActivityIndicator colorPalette="info" />
+  </Stack>
+);
+```
+
+### On a solid colored surface
+
+When the dots sit on a solid colored fill (e.g. an agent bubble), use
+`variant="contrast"`. This fills the dots from the palette's `contrast` step,
+which resolves to black or white automatically per palette so the dots stay
+legible on the surface.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400">
+    <Box colorPalette="primary" bg="colorPalette.9" padding="400" borderRadius="200">
+      <ActivityIndicator colorPalette="primary" variant="contrast" />
+    </Box>
+    <Box colorPalette="ctyellow" bg="colorPalette.9" padding="400" borderRadius="200">
+      <ActivityIndicator colorPalette="ctyellow" variant="contrast" />
+    </Box>
+  </Stack>
+);
+```
+
+## Accessibility
+
+The ActivityIndicator is **purely decorative** — it is always marked
+`aria-hidden`, so assistive technology never announces the animation itself.
+Always pair it with visible text that conveys the state (for example
+"Thinking…"), so screen-reader users get the same information sighted users do.
+
+```tsx
+// Visible text conveys the state; the indicator is decorative.
+<Text>
+  Thinking <ActivityIndicator />
+</Text>
+```
+
+**Announcing the activity to assistive technology is the consumer's
+responsibility**, not the component's. The indicator does not own a live region,
+because it is typically rendered only while activity is in progress — and a live
+region mounted together with its content is not announced reliably across screen
+readers (the region must already exist in the DOM before its content changes).
+If you need to announce the activity without adjacent visible text, drive a
+**persistent** live region owned by the surrounding chat/turn container (for
+example via React Aria's [`@react-aria/live-announcer`](https://react-spectrum.adobe.com/react-aria/announce.html)),
+and keep the indicator decorative.
+
+This component is **not** a progress indicator and does not use
+`role="progressbar"`. For indeterminate progress ("please wait"), use
+[LoadingSpinner](/components/feedback/loadingspinner) instead.
+
+## Reduced motion
+
+When the user has `prefers-reduced-motion: reduce` enabled, the vertical bounce
+is replaced by a gentle opacity pulse, so the "working" state remains
+perceivable without large motion.
+
+## API reference
+
+<PropsTable id="ActivityIndicator" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using
+ActivityIndicator within your application. As the component's internal
+functionality is already tested by Nimbus, these patterns help you verify your
+integration and application-specific logic.
+
+{{docs-tests: activity-indicator.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-activityindicator--docs)
