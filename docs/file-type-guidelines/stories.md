@@ -195,10 +195,25 @@ const meta: Meta<typeof ComponentName> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ComponentName>;
 
 // Stories follow...
 ```
+
+> **Use `StoryObj<typeof ComponentName>`, not `StoryObj<typeof meta>`.** Both
+> typecheck, but `StoryObj<typeof meta>` routes TypeScript through the expensive
+> branch of `StoryObj` (`Simplify<ComponentProps<C> & ArgsFromMeta<…>>` plus
+> `AddMocks`/`SetOptional`), which fully flattens the component's prop object
+> and is re-instantiated for every `Story` reference in the file. For components
+> with large prop types (Chakra style-prop spreads via `HTMLChakraProps`,
+> polymorphic `as`, big recipe-variant unions) this is dramatic: in practice
+> these files took **2–5 seconds each** to typecheck versus **10–150ms** with
+> `StoryObj<typeof ComponentName>` — a ~5× reduction in total `tsc` time across
+> the package. The cost tracks the component's prop complexity, not the number
+> of stories. Use the component (or `ComponentName.Root` for compound
+> components). The only exception is a story file with no `component` (e.g. a
+> `const meta: Meta = {…}` hosting render-only examples), where `typeof meta`
+> resolves to a loose `Args` type and is already cheap.
 
 ## Story Organization
 

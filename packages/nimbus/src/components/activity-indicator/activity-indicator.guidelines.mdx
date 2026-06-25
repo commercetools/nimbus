@@ -1,0 +1,68 @@
+---
+title: ActivityIndicator
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+Activity indicator guidelines aim to communicate that an agent or system is
+actively working — composing, thinking, or processing — in a way that feels
+lightweight and conversational, without implying that the user must wait for a
+blocking operation to finish.
+
+### Best practices
+
+- **Pair with a status label:** Place the indicator inline next to a short,
+  human-readable message ("Thinking…", "Processing request"). The default size
+  scales with the surrounding text, so it aligns naturally.
+- **Use the right tool for the job:** Use the activity indicator for agent or
+  conversational activity. For indeterminate loading where the user must wait,
+  use the [Loading spinner](/components/feedback/loadingspinner) instead.
+- **Match the surface:** On neutral or page backgrounds, keep the default
+  (`plain`) treatment. When the dots sit on a solid colored fill — such as an
+  agent bubble — use `variant="contrast"` so they take the palette's contrast
+  color (black or white) and stay legible.
+- **Always pair it with visible text:** The indicator is purely decorative
+  (`aria-hidden`), so screen readers rely on the adjacent text ("Thinking…") to
+  convey the state. Never use it as the sole indication of activity.
+- **Announce from the container, not the indicator:** If you need to announce
+  activity without adjacent visible text, drive a persistent live region owned
+  by the surrounding chat/turn container (e.g. `@react-aria/live-announcer`).
+  The indicator itself does not own a live region — it is usually mounted only
+  while active, and a live region mounted with its content does not announce
+  reliably.
+- **Respect motion preferences:** The indicator automatically swaps its bounce
+  for a gentle pulse under `prefers-reduced-motion`. Do not reintroduce large
+  motion on top of it.
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+- **Agent is composing or thinking:** A chat or AI surface is generating a
+  response.
+- **Short, non-blocking activity:** A brief background step where the user can
+  keep reading or interacting.
+- **Inline with a status message:** Alongside text such as "Thinking…" or
+  "Processing request".
+
+> [!CAUTION]\
+> When not to use
+
+- **Indeterminate loading the user must wait for:** Use the
+  [Loading spinner](/components/feedback/loadingspinner).
+- **Determinate progress:** Use a progress bar so the user can see how far along
+  the operation is.
+- **Persistent, page-level busy states:** Prefer a clearly labeled loading state
+  with context.
+
+### Accessibility
+
+- The indicator is purely decorative (`aria-hidden`) and relies on adjacent
+  visible text to convey meaning to assistive technology.
+- It does not own a live region. Announce activity from a persistent live region
+  in the surrounding container (e.g. `@react-aria/live-announcer`) when no
+  adjacent visible text is present.
+- It is not a progress indicator and never uses `role="progressbar"`.

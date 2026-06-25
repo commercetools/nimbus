@@ -4,6 +4,7 @@
 export * from "./scroll-area";
 export * from "./toast";
 
+export * from "./activity-indicator";
 export * from "./avatar";
 export * from "./box";
 export * from "./button";
@@ -78,3 +79,4 @@ export * from "./steps";
 export * from "./modal-page";
 export * from "./region";
 export * from "./splitter";
+export * from "./tree";

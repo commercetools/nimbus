@@ -48,7 +48,7 @@ const meta: Meta<typeof ComponentName.Root> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ComponentName.Root>;
 
 /**
  * Default story - simplest usage

@@ -55,7 +55,7 @@ const meta: Meta<typeof NimbusI18nProvider> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof NimbusI18nProvider>;
 
 /**
  * Default NimbusI18nProvider with US English locale.

@@ -1,3 +1,4 @@
+import { activityIndicatorRecipe } from "@/components/activity-indicator/activity-indicator.recipe";
 import { avatarRecipe } from "@/components/avatar/avatar.recipe";
 import { badgeRecipe } from "@/components/badge/badge.recipe";
 import { buttonRecipe } from "@/components/button/button.recipe";
@@ -33,6 +34,7 @@ import { tooltipRecipe } from "@/components/tooltip/tooltip.recipe";
  * button: buttonRecipe  // ❌ Collides with Chakra's button
  */
 export const recipes = {
+  nimbusActivityIndicator: activityIndicatorRecipe,
   nimbusAvatar: avatarRecipe,
   nimbusBadge: badgeRecipe,
   nimbusButton: buttonRecipe,

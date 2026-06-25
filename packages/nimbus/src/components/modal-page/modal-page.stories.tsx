@@ -34,7 +34,7 @@ const meta: Meta<typeof ModalPage.Root> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof ModalPage.Root>;
 
 /**
  * Basic info page — tests open/close lifecycle via trigger and back button.
