@@ -113,6 +113,7 @@ export const AppNavBarSearch = () => {
           <Separator />
           <Dialog.Body>
             <ComboBox
+              aria-label="Search the documentation"
               inputValue={query}
               onInputChange={setQuery}
               onSelectionChange={handleSelectionChange}
@@ -141,7 +142,11 @@ export const AppNavBarSearch = () => {
               </Flex>
               <Box mx="-600">
                 <Separator />
-                <ListBox items={results} selectionMode="single">
+                <ListBox
+                  aria-label="Search results"
+                  items={results}
+                  selectionMode="single"
+                >
                   {(item) => (
                     <Flex
                       css={{
