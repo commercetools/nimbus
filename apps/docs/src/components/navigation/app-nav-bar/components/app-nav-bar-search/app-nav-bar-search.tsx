@@ -282,7 +282,21 @@ export const AppNavBarSearch = () => {
                               virtualizer's full-height spacer makes the
                               viewport's scrollHeight correct, so the overlay
                               scrollbar is sized right. */}
-                          <ScrollArea orientation="vertical" maxHeight="60vh">
+                          <ScrollArea
+                            orientation="vertical"
+                            maxHeight="60vh"
+                            // The rail/results divider is the Tabs.List surround
+                            // boxShadow, which sits at the panel's left edge —
+                            // so a full-bleed row highlight paints right over it.
+                            // Give the results container its own left border:
+                            // it's clipped to the content box, so row
+                            // backgrounds can't cover it, and it lands on the
+                            // same pixel/color as the rail's shadow, reading as
+                            // one crisp always-visible line.
+                            borderInlineStartWidth="1px"
+                            borderInlineStartStyle="solid"
+                            borderInlineStartColor="neutral.6"
+                          >
                             <Virtualizer
                               layout={ListLayout}
                               layoutOptions={RESULT_LIST_LAYOUT_OPTIONS}
