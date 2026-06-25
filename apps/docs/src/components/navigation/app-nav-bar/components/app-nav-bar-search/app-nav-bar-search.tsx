@@ -11,16 +11,15 @@ import {
   Kbd,
   Switch,
 } from "@commercetools/nimbus";
-
 import {
-  type KeyboardEvent,
-  memo,
-  useCallback,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-} from "react";
+  Autocomplete,
+  ListBox,
+  ListBoxItem,
+  SearchField,
+  Input,
+  type Key,
+} from "react-aria-components";
+import { memo, useCallback, useMemo } from "react";
 import { useSetAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 import { useSearch } from "./hooks/use-search";
@@ -33,51 +32,38 @@ export type SearchResultItemProps = {
   item: SearchableDocItem;
 };
 
-type SearchResultRowProps = {
-  item: SearchableDocItem;
-  domId: string;
-  isActive: boolean;
-  onSelect: (item: SearchableDocItem) => void;
-  onActivate: (id: string) => void;
-};
-
 /**
- * A single result row. Memoized so that typing only re-renders rows whose item
- * or active state actually changed — re-styling all ~20 rich rows on every
- * keystroke was the source of per-keystroke jank. Relies on stable `item`
- * references (search index entries) and stable `onSelect`/`onActivate`.
+ * A single result option in the React Aria `ListBox`. The list runs under an
+ * `Autocomplete`, so virtual focus (driven by the search input's arrow keys)
+ * lands on the matching `ListBoxItem` and marks it `data-focused` — that's what
+ * the highlight styling keys off. Memoized so typing only re-renders rows whose
+ * item actually changed; re-styling all ~20 rich rows per keystroke was the
+ * source of per-keystroke jank.
  */
-const SearchResultRow = memo(function SearchResultRow({
+const SearchResultOption = memo(function SearchResultOption({
   item,
-  domId,
-  isActive,
-  onSelect,
-  onActivate,
-}: SearchResultRowProps) {
+}: SearchResultItemProps) {
   return (
-    <Flex
-      id={domId}
-      role="option"
-      aria-selected={isActive}
-      data-active={isActive ? "" : undefined}
-      onClick={() => onSelect(item)}
-      onPointerMove={() => onActivate(item.id)}
+    <Box
+      asChild
+      display="block"
+      cursor="pointer"
+      outline="none"
+      borderBottom="1px solid"
+      borderBottomColor="neutral.6"
       css={{
-        "&[data-active]": {
+        "&[data-focused]": {
           backgroundColor: "primary.9",
           color: "primary.contrast",
         },
       }}
-      direction="column"
-      gap="1"
-      py="100"
-      px="600"
-      cursor="pointer"
-      borderBottom="1px solid"
-      borderBottomColor="neutral.6"
     >
-      <SearchResultItem item={item} />
-    </Flex>
+      <ListBoxItem id={item.id} textValue={item.title}>
+        <Box px="600">
+          <SearchResultItem item={item} />
+        </Box>
+      </ListBoxItem>
+    </Box>
   );
 });
 
@@ -119,37 +105,6 @@ export const AppNavBarSearch = () => {
     [open]
   );
 
-  // The results render as a plain list (not a React Aria ComboBox collection) so
-  // it updates reliably when results arrive asynchronously (semantic search).
-  // Keyboard navigation follows the ARIA combobox pattern with *virtual* focus:
-  // the input keeps real DOM focus (so typing/deleting always works), while the
-  // arrow keys move a highlighted option tracked via aria-activedescendant.
-  const listRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const listboxId = useId();
-  const optionDomId = useCallback(
-    (id: string) => `${listboxId}-option-${id}`,
-    [listboxId]
-  );
-
-  // Id of the highlighted result, or null. Tracked by id (not index) so the
-  // memoized rows survive result reordering between keystrokes.
-  const [activeId, setActiveId] = useState<string | null>(null);
-
-  // Reset the highlight whenever the result set changes (e.g. on each keystroke).
-  useEffect(() => {
-    setActiveId(null);
-  }, [results]);
-
-  // Keep the highlighted option scrolled into view.
-  useEffect(() => {
-    if (!activeId || !listRef.current) return;
-    const el = listRef.current.querySelector(
-      `#${CSS.escape(optionDomId(activeId))}`
-    );
-    el?.scrollIntoView({ block: "nearest" });
-  }, [activeId, optionDomId]);
-
   const navigateToItem = useCallback(
     (item: SearchableDocItem) => {
       setOpen(false);
@@ -159,28 +114,19 @@ export const AppNavBarSearch = () => {
     [navigate, setOpen, setQuery]
   );
 
-  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (results.length === 0) return;
-    const current = activeId ? results.findIndex((r) => r.id === activeId) : -1;
-    switch (e.key) {
-      case "ArrowDown":
-        e.preventDefault();
-        setActiveId(results[(current + 1) % results.length].id);
-        break;
-      case "ArrowUp":
-        e.preventDefault();
-        setActiveId(
-          results[current <= 0 ? results.length - 1 : current - 1].id
-        );
-        break;
-      case "Enter":
-        if (current >= 0) {
-          e.preventDefault();
-          navigateToItem(results[current]);
-        }
-        break;
-    }
-  };
+  // `ListBox.onAction` hands back the activated item's key (its id). Resolve it
+  // against the currently-rendered results to navigate.
+  const resultsById = useMemo(
+    () => new Map(results.map((item) => [item.id, item])),
+    [results]
+  );
+  const handleAction = useCallback(
+    (key: Key) => {
+      const item = resultsById.get(String(key));
+      if (item) navigateToItem(item);
+    },
+    [resultsById, navigateToItem]
+  );
 
   return (
     <Flex grow="1">
@@ -225,121 +171,106 @@ export const AppNavBarSearch = () => {
           </Dialog.Header>
           <Separator />
           <Dialog.Body>
-            <Flex alignItems="center" width="100%" py="400" pb="600">
-              <Box
-                border="1px solid"
-                borderColor="neutral.6"
-                focusRing="outside"
-                height="1000"
-                textStyle="md"
-                _placeholder={{
-                  opacity: 0.5,
-                  color: "currentColor",
-                }}
-                px="400"
-                borderRadius="200"
-                width="full"
-                asChild
-              >
-                {/** TODO: TextInput should actually work here, try again once it's fixed*/}
-                <input
-                  ref={inputRef}
+            {/* React Aria Autocomplete wires the search input to the results
+                ListBox: the input keeps DOM focus while arrow keys move a
+                *virtual* focus through the list (aria-activedescendant), and
+                Enter activates the focused row. It renders no DOM of its own,
+                so the dialog layout is unaffected. We pass no `filter` — the
+                results are already ranked/filtered upstream (fuzzy or semantic,
+                then scoped to the selected category), so Autocomplete must not
+                re-filter them. */}
+            <Autocomplete inputValue={query} onInputChange={setQuery}>
+              <Flex alignItems="center" width="100%" py="400" pb="600">
+                <SearchField
                   autoFocus
-                  type="search"
-                  role="combobox"
                   aria-label="Search the documentation"
-                  aria-controls={listboxId}
-                  aria-expanded={results.length > 0}
-                  aria-autocomplete="list"
-                  aria-activedescendant={
-                    activeId ? optionDomId(activeId) : undefined
-                  }
-                  placeholder="Type to search..."
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  onKeyDown={handleInputKeyDown}
-                />
-              </Box>
-            </Flex>
-            <Box mx="-600">
-              <Separator />
-              {/* Category filter tabs. Controlled, click-driven — the search
-                  input keeps DOM focus (virtual-focus combobox), so we restore
-                  focus to it after a tab selection to keep typing seamless. The
-                  single panel's id always tracks the selected tab, so React Aria
-                  renders exactly one panel and we keep ONE listbox instance,
-                  preserving the aria-controls / aria-activedescendant wiring. */}
-              {visibleCategories.length > 0 && (
-                <>
-                  <Tabs.Root
-                    variant="pills"
-                    orientation="vertical"
-                    size="md"
-                    selectedKey={selectedCategory}
-                    onSelectionChange={(key) => {
-                      setSelectedCategory(key as SearchCategoryKey);
-                      // Defer past React Aria's own focus management — clicking
-                      // a tab focuses that tab after this handler runs, so we
-                      // move focus back to the input on the next frame to keep
-                      // typing seamless (virtual-focus combobox).
-                      requestAnimationFrame(() => inputRef.current?.focus());
-                    }}
+                  style={{ width: "100%" }}
+                >
+                  <Box
+                    asChild
+                    border="1px solid"
+                    borderColor="neutral.6"
+                    focusRing="outside"
+                    height="1000"
+                    textStyle="md"
+                    px="400"
+                    borderRadius="200"
+                    width="full"
+                    _placeholder={{ opacity: 0.5, color: "currentColor" }}
                   >
-                    {/* Left rail. The vertical `line` recipe draws the divider
-                        between rail and content; the rail stretches to the row
-                        height so that divider spans the full result list. */}
-                    <Tabs.List
-                      pl="200"
-                      pt="200"
-                      minWidth="14rem"
-                      borderRadius="0"
+                    <Input placeholder="Type to search..." />
+                  </Box>
+                </SearchField>
+              </Flex>
+              <Box mx="-600">
+                <Separator />
+                {/* Category filter tabs form a second focus zone: Tab from the
+                    input moves here, where the arrow keys switch category
+                    (React Aria Tabs roving focus); Shift+Tab returns to the
+                    input. The single panel's id always tracks the selected tab,
+                    so exactly one panel — and one ListBox — is mounted, which
+                    keeps the Autocomplete wiring stable. */}
+                {visibleCategories.length > 0 && (
+                  <>
+                    <Tabs.Root
+                      variant="pills"
+                      orientation="vertical"
+                      size="md"
+                      selectedKey={selectedCategory}
+                      onSelectionChange={(key) =>
+                        setSelectedCategory(key as SearchCategoryKey)
+                      }
                     >
-                      {visibleCategories.map((key) => (
-                        <Tabs.Tab key={key} id={key}>
-                          <Box flexGrow="1" textAlign="left">
-                            {CATEGORY_LABELS[key]}
-                          </Box>
-                          <Text as="span" color="neutral.11" fontSize="inherit">
-                            {categoryCounts[key]}
-                          </Text>
-                        </Tabs.Tab>
-                      ))}
-                    </Tabs.List>
-                    <Tabs.Panels>
-                      <Tabs.Panel id={selectedCategory}>
-                        {/* ScrollArea bounds the results so they scroll on their
-                            own, keeping the search input and tab rail pinned. */}
-                        <ScrollArea orientation="vertical" maxHeight="60vh">
-                          <Box
-                            ref={listRef}
-                            id={listboxId}
-                            role="listbox"
-                            aria-label="Search results"
-                          >
-                            {results.map((item) => (
-                              <SearchResultRow
-                                key={item.id}
-                                item={item}
-                                domId={optionDomId(item.id)}
-                                isActive={item.id === activeId}
-                                onSelect={navigateToItem}
-                                onActivate={setActiveId}
-                              />
-                            ))}
-                          </Box>
-                        </ScrollArea>
-                      </Tabs.Panel>
-                    </Tabs.Panels>
-                  </Tabs.Root>
-                  {/* Divider between the results content and the footer hint. */}
-                  <Separator />
-                </>
-              )}
-            </Box>
-            <Text textStyle="xs" color={"neutral.11"} pt="600">
-              Use the <strong>Arrow</strong>-keys to navigate and{" "}
-              <strong>Enter</strong> to confirm selection.
-            </Text>
+                      <Tabs.List
+                        pl="200"
+                        pt="200"
+                        minWidth="14rem"
+                        borderRadius="0"
+                      >
+                        {visibleCategories.map((key) => (
+                          <Tabs.Tab key={key} id={key}>
+                            <Box flexGrow="1" textAlign="left">
+                              {CATEGORY_LABELS[key]}
+                            </Box>
+                            <Text
+                              as="span"
+                              color="neutral.11"
+                              fontSize="inherit"
+                            >
+                              {categoryCounts[key]}
+                            </Text>
+                          </Tabs.Tab>
+                        ))}
+                      </Tabs.List>
+                      <Tabs.Panels>
+                        <Tabs.Panel id={selectedCategory}>
+                          {/* ScrollArea bounds the results so they scroll on
+                              their own, keeping the input and tab rail pinned.
+                              React Aria scrolls the focused row into this
+                              viewport as you arrow through the list. */}
+                          <ScrollArea orientation="vertical" maxHeight="60vh">
+                            <ListBox
+                              aria-label="Search results"
+                              items={results}
+                              selectionMode="none"
+                              onAction={handleAction}
+                            >
+                              {(item) => <SearchResultOption item={item} />}
+                            </ListBox>
+                          </ScrollArea>
+                        </Tabs.Panel>
+                      </Tabs.Panels>
+                    </Tabs.Root>
+                    {/* Divider between the results content and the footer hint. */}
+                    <Separator />
+                  </>
+                )}
+              </Box>
+              <Text textStyle="xs" color={"neutral.11"} pt="600">
+                Use the <strong>Arrow</strong>-keys to navigate and{" "}
+                <strong>Enter</strong> to confirm selection.
+              </Text>
+            </Autocomplete>
           </Dialog.Body>
         </Dialog.Content>
       </Dialog.Root>
