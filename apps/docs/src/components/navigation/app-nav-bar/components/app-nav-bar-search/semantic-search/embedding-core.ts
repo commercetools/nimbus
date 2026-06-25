@@ -123,18 +123,16 @@ export function buildCacheKey(texts: string[]): string {
 }
 
 /**
- * Cosine-similarity score below which a result carries no detectable relevance,
- * so it's dropped rather than padding the list. Empirically derived: embedding
- * the real docs corpus and probing with deliberately out-of-domain queries
- * (weather, recipes, animals, gibberish) showed their best match never exceeds
- * ~0.33 — that's the noise ceiling, the score an unrelated query achieves by
- * chance. Genuine matches sit well above it (#1 hits 0.55–0.86; real secondary
- * hits like a related component or category page ~0.40+). 0.35 sits just above
- * the noise ceiling and below the relevant floor, so it trims the long noisy
- * tail (most queries only have 3–5 results that clear it) without dropping real
- * matches. Tune up toward 0.40 for a stricter top-results-only feel.
+ * Cosine-similarity score below which a result is dropped rather than padding
+ * the list. Empirically, out-of-domain queries (weather, recipes, gibberish)
+ * peak around ~0.33 — the noise ceiling — while genuine matches run higher (#1
+ * hits 0.55–0.86; real secondary hits like a related component or category page
+ * ~0.40+). 0.2 is a conservative floor: it sits below the noise ceiling, so it
+ * only trims the very bottom of the distribution and keeps weaker/borderline
+ * matches, favoring recall. Raise toward 0.35–0.40 to sit above the noise
+ * ceiling for a stricter, precision-first cut.
  */
-export const MIN_RELEVANCE_SCORE = 0.35;
+export const MIN_RELEVANCE_SCORE = 0.2;
 
 /**
  * Rank documents by cosine similarity to a query vector. Embeddings are
