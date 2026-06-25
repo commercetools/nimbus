@@ -10,9 +10,15 @@ import {
   Switch,
 } from "@commercetools/nimbus";
 
-import { ListBox, ListBoxItem } from "react-aria-components";
-
-import { type Key, type KeyboardEvent, useRef } from "react";
+import {
+  type KeyboardEvent,
+  memo,
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from "react";
 import { useSetAtom } from "jotai";
 import { useNavigate } from "react-router-dom";
 import { useSearch } from "./hooks/use-search";
@@ -23,6 +29,54 @@ import { semanticEnabledAtom } from "@/atoms/semantic-search";
 export type SearchResultItemProps = {
   item: SearchableDocItem;
 };
+
+type SearchResultRowProps = {
+  item: SearchableDocItem;
+  domId: string;
+  isActive: boolean;
+  onSelect: (item: SearchableDocItem) => void;
+  onActivate: (id: string) => void;
+};
+
+/**
+ * A single result row. Memoized so that typing only re-renders rows whose item
+ * or active state actually changed — re-styling all ~20 rich rows on every
+ * keystroke was the source of per-keystroke jank. Relies on stable `item`
+ * references (search index entries) and stable `onSelect`/`onActivate`.
+ */
+const SearchResultRow = memo(function SearchResultRow({
+  item,
+  domId,
+  isActive,
+  onSelect,
+  onActivate,
+}: SearchResultRowProps) {
+  return (
+    <Flex
+      id={domId}
+      role="option"
+      aria-selected={isActive}
+      data-active={isActive ? "" : undefined}
+      onClick={() => onSelect(item)}
+      onPointerMove={() => onActivate(item.id)}
+      css={{
+        "&[data-active]": {
+          backgroundColor: "primary.9",
+          color: "primary.contrast",
+        },
+      }}
+      direction="column"
+      gap="1"
+      py="100"
+      px="600"
+      cursor="pointer"
+      borderBottom="1px solid"
+      borderBottomColor="neutral.6"
+    >
+      <SearchResultItem item={item} />
+    </Flex>
+  );
+});
 
 export const AppNavBarSearch = () => {
   const navigate = useNavigate();
@@ -58,25 +112,65 @@ export const AppNavBarSearch = () => {
     [open]
   );
 
-  // The results list is a standalone ListBox (not a ComboBox collection) so it
-  // updates reliably when results arrive asynchronously (semantic search).
-  const listBoxRef = useRef<HTMLDivElement>(null);
+  // The results render as a plain list (not a React Aria ComboBox collection) so
+  // it updates reliably when results arrive asynchronously (semantic search).
+  // Keyboard navigation follows the ARIA combobox pattern with *virtual* focus:
+  // the input keeps real DOM focus (so typing/deleting always works), while the
+  // arrow keys move a highlighted option tracked via aria-activedescendant.
+  const listRef = useRef<HTMLDivElement>(null);
+  const listboxId = useId();
+  const optionDomId = useCallback(
+    (id: string) => `${listboxId}-option-${id}`,
+    [listboxId]
+  );
 
-  const handleAction = (key: Key) => {
-    const selectedItem = results.find((item) => item.id === key);
-    if (selectedItem) {
+  // Id of the highlighted result, or null. Tracked by id (not index) so the
+  // memoized rows survive result reordering between keystrokes.
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  // Reset the highlight whenever the result set changes (e.g. on each keystroke).
+  useEffect(() => {
+    setActiveId(null);
+  }, [results]);
+
+  // Keep the highlighted option scrolled into view.
+  useEffect(() => {
+    if (!activeId || !listRef.current) return;
+    const el = listRef.current.querySelector(
+      `#${CSS.escape(optionDomId(activeId))}`
+    );
+    el?.scrollIntoView({ block: "nearest" });
+  }, [activeId, optionDomId]);
+
+  const navigateToItem = useCallback(
+    (item: SearchableDocItem) => {
       setOpen(false);
-      navigate(`/${selectedItem.route}`);
+      navigate(`/${item.route}`);
       setQuery("");
-    }
-  };
+    },
+    [navigate, setOpen, setQuery]
+  );
 
-  // ArrowDown from the input moves focus into the results list; React Aria then
-  // focuses the first option and handles arrow navigation from there.
   const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "ArrowDown" && results.length > 0) {
-      e.preventDefault();
-      listBoxRef.current?.focus();
+    if (results.length === 0) return;
+    const current = activeId ? results.findIndex((r) => r.id === activeId) : -1;
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        setActiveId(results[(current + 1) % results.length].id);
+        break;
+      case "ArrowUp":
+        e.preventDefault();
+        setActiveId(
+          results[current <= 0 ? results.length - 1 : current - 1].id
+        );
+        break;
+      case "Enter":
+        if (current >= 0) {
+          e.preventDefault();
+          navigateToItem(results[current]);
+        }
+        break;
     }
   };
 
@@ -143,7 +237,14 @@ export const AppNavBarSearch = () => {
                 <input
                   autoFocus
                   type="search"
+                  role="combobox"
                   aria-label="Search the documentation"
+                  aria-controls={listboxId}
+                  aria-expanded={results.length > 0}
+                  aria-autocomplete="list"
+                  aria-activedescendant={
+                    activeId ? optionDomId(activeId) : undefined
+                  }
                   placeholder="Type to search..."
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
@@ -153,36 +254,23 @@ export const AppNavBarSearch = () => {
             </Flex>
             <Box mx="-600">
               <Separator />
-              <ListBox
-                ref={listBoxRef}
+              <Box
+                ref={listRef}
+                id={listboxId}
+                role="listbox"
                 aria-label="Search results"
-                items={results}
-                selectionMode="none"
-                onAction={handleAction}
-                shouldFocusWrap
               >
-                {(item) => (
-                  <Flex
-                    css={{
-                      "&[data-focused]": {
-                        backgroundColor: "primary.9",
-                        color: "primary.contrast",
-                      },
-                    }}
-                    direction="column"
-                    gap="1"
-                    py="100"
-                    px="600"
-                    asChild
-                    borderBottom="1px solid"
-                    borderBottomColor="neutral.6"
-                  >
-                    <ListBoxItem id={item.id} textValue={item.title}>
-                      <SearchResultItem item={item} />
-                    </ListBoxItem>
-                  </Flex>
-                )}
-              </ListBox>
+                {results.map((item) => (
+                  <SearchResultRow
+                    key={item.id}
+                    item={item}
+                    domId={optionDomId(item.id)}
+                    isActive={item.id === activeId}
+                    onSelect={navigateToItem}
+                    onActivate={setActiveId}
+                  />
+                ))}
+              </Box>
             </Box>
             <Text textStyle="xs" color={"neutral.11"} pt="600">
               Use the <strong>Arrow</strong>-keys to navigate and{" "}
