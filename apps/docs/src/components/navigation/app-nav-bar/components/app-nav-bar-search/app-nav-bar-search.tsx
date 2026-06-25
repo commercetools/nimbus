@@ -3,7 +3,6 @@ import {
   Box,
   useHotkeys,
   Dialog,
-  ScrollArea,
   Separator,
   Tabs,
   TextInput,
@@ -17,6 +16,8 @@ import {
   ListBoxItem,
   SearchField,
   Input,
+  Virtualizer,
+  ListLayout,
   type Key,
 } from "react-aria-components";
 import { memo, useCallback, useMemo } from "react";
@@ -31,6 +32,15 @@ import { CATEGORY_LABELS, type SearchCategoryKey } from "./search-categories";
 export type SearchResultItemProps = {
   item: SearchableDocItem;
 };
+
+/**
+ * Result rows are uniform height — the description and breadcrumb are truncated
+ * to a single line each — so the virtualized list uses a fixed row size (px,
+ * measured) rather than estimated/variable heights. Keep in sync with the
+ * SearchResultItem layout if its padding/line count changes.
+ */
+const RESULT_ROW_HEIGHT = 101;
+const RESULT_LIST_LAYOUT_OPTIONS = { rowSize: RESULT_ROW_HEIGHT };
 
 /**
  * A single result option in the React Aria `ListBox`. The list runs under an
@@ -244,20 +254,32 @@ export const AppNavBarSearch = () => {
                       </Tabs.List>
                       <Tabs.Panels>
                         <Tabs.Panel id={selectedCategory}>
-                          {/* ScrollArea bounds the results so they scroll on
-                              their own, keeping the input and tab rail pinned.
-                              React Aria scrolls the focused row into this
-                              viewport as you arrow through the list. */}
-                          <ScrollArea orientation="vertical" maxHeight="60vh">
+                          {/* Virtualizer renders only the visible rows (plus a
+                              small buffer) instead of the full result set — at
+                              up to 150 ranked results, mounting every rich row
+                              per keystroke was wasteful. The ListBox is itself
+                              the bounded scroll container (maxHeight), so the
+                              input and tab rail stay pinned and React Aria
+                              scrolls the virtually-focused row into view. */}
+                          <Virtualizer
+                            layout={ListLayout}
+                            layoutOptions={RESULT_LIST_LAYOUT_OPTIONS}
+                          >
                             <ListBox
                               aria-label="Search results"
                               items={results}
                               selectionMode="none"
                               onAction={handleAction}
+                              style={{
+                                maxHeight: "60vh",
+                                overflow: "auto",
+                                display: "block",
+                                padding: 0,
+                              }}
                             >
                               {(item) => <SearchResultOption item={item} />}
                             </ListBox>
-                          </ScrollArea>
+                          </Virtualizer>
                         </Tabs.Panel>
                       </Tabs.Panels>
                     </Tabs.Root>
