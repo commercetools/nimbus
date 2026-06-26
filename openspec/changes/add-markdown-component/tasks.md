@@ -5,23 +5,25 @@
 > renderers reuse existing Nimbus components (`Heading`, `Link`, `Code`,
 > `Text`); styled `chakra.*` primitives with design-token style props cover the
 > rest (no component-specific slot recipe). Engine: `react-markdown` +
-> `remark-gfm` + `remend` (streaming). Security piggybacks on Merchant Center
-> conventions — react-markdown safe defaults (`skipHtml`) + `allowedElements`
-> allowlist + `rel=noopener` external links; image-host security is the app
-> CSP's job. **No `harden-react-markdown`.** Style props forward to the outer
-> root container.
+> `remark-gfm` + `remend` (streaming).
 >
-> **Amendment (§6):** the `trust` / `allowRawHtml` props and the `rehype-raw` /
-> `rehype-sanitize` raw-HTML path were removed in favor of a single
-> safe-by-default posture; application components are embedded via **custom
-> component tags** registered through the `components` prop. Tasks in §§1–4 that
-> reference `trust` / `allowRawHtml` are superseded by §6.
+> **Security is a single safe-by-default posture** — react-markdown safe
+> defaults (`skipHtml` always on, built-in `urlTransform`) + `allowedElements`
+> allowlist + `rel=noopener` external links; image-host security is the app
+> CSP's job. **No `harden-react-markdown`, no `rehype-raw`, no
+> `rehype-sanitize`.** Applications embed their own components via **custom
+> component tags** registered through the `components` prop (§6), not raw HTML.
+> Style props forward to the outer root container.
+>
+> _(History: an earlier iteration exposed a `trust` / `allowRawHtml` model
+> backed by `rehype-raw` + `rehype-sanitize`. It was dropped pre-merge in favor
+> of the single posture above; these tasks describe the final shipped state. See
+> the proposal's "Changed since the initial review" for rationale.)_
 
 ## 1. Dependencies and scaffolding
 
 - [x] 1.1 Add runtime deps to `packages/nimbus`: `react-markdown`, `remark-gfm`,
-      `remend`. Add `rehype-raw` + `rehype-sanitize` (loaded only on
-      `trust="trusted"` + `allowRawHtml`). Do **not** add
+      `remend`. Do **not** add `rehype-raw`, `rehype-sanitize`, or
       `harden-react-markdown`. Verify no Tailwind/CSS is pulled in; run
       `pnpm check:bundle-size` baseline note.
 - [x] 1.2 Create `packages/nimbus/src/components/markdown/` following the Nimbus
@@ -37,7 +39,8 @@
       `Markdown/*` scale as style props. Do **not** register a `nimbusMarkdown`
       slot recipe.
 - [x] 1.5 Add i18n messages (`markdown.i18n.ts`) for the external-link "(opens
-      in new tab)" label; wire through the Nimbus i18n pipeline.
+      in new tab)" label and the streaming completion announcement; wire through
+      the Nimbus i18n pipeline.
 
       **Acceptance:** component dir builds; `Markdown` is importable from the
       package barrel; no slot recipe registered; no Tailwind in the dependency
@@ -45,12 +48,13 @@
 
 ## 2. Types (four-layer)
 
-- [x] 2.1 In `markdown.types.ts` define helper types: `MarkdownTrust`
-      (`"untrusted" | "trusted"`) and `MarkdownComponents` (re-export of
-      react-markdown's `Components`).
+- [x] 2.1 In `markdown.types.ts` define the renderer-map types: `MarkdownComponents`
+      (react-markdown's `Components` ∩ an open index signature) and
+      `MarkdownCustomComponent` (a renderer for a custom component tag receiving
+      string/boolean attrs as props). No trust-related types.
 - [x] 2.2 Define the public `MarkdownProps` with JSDoc on every prop: `children`
-      (markdown string, canonical input), `trust` (default `"untrusted"`),
-      `allowRawHtml`, `components`, `allowedElements`, `disallowedElements`,
+      (markdown string, canonical input), `components` (per-element overrides +
+      custom component tags), `allowedElements`, `disallowedElements`,
       `isStreaming`, `headingOffset` (default 0), `ref`, and Nimbus style props
       (forwarded to the outer root container).
 
@@ -67,19 +71,18 @@
       list (read-only checkbox with name from item text + state), strikethrough,
       autolink. - **Overrides:** `components={{ a: CustomLink }}` replaces
       anchors only; other defaults intact; `node` not leaked to DOM. -
-      **Security (untrusted default):** `<script>`/`<iframe>`/`onerror` not
-      rendered live (skipHtml + allowedElements); `javascript:` link
-      neutralized; image renders with `loading="lazy"` +
-      `referrerpolicy="no-referrer"`. - **Trusted + allowRawHtml:** safe raw
-      HTML renders; dangerous tags still stripped (sanitize after raw, using
-      `rehype-sanitize`'s `defaultSchema`). - **Streaming:** partial `**bold`,
+      **Safe by default:** `<script>`/`<iframe>`/`onerror` not rendered live
+      (skipHtml + allowedElements); `javascript:` link neutralized; image
+      renders with `loading="lazy"` + `referrerpolicy="no-referrer"`;
+      unregistered custom tags stay inert. - **Streaming:** partial `**bold`,
       `` `code ``, `[text](` render as formatted/text via `remend`; complete
-      input identical with/without `isStreaming`; `aria-busy` toggles and a
-      single completion announcement fires on settle. - **A11y:**
-      `headingOffset` shifts levels; heading-skip + missing-alt emit dev
-      warnings; external link has `rel="noopener noreferrer"` + labelled,
-      non-color indicator; table uses `th[scope]`. - **Layout:** style props
-      (e.g. `maxW`) forward to the outer container.
+      input identical with/without `isStreaming`; `aria-busy` is set while
+      `isStreaming` and a single completion announcement fires when the consumer
+      ends the stream. - **A11y:** `headingOffset` shifts levels (and clamps at
+      h6); heading-skip + missing-alt emit dev warnings; external link has
+      `rel="noopener noreferrer"` + labelled, non-color indicator; table uses
+      `th[scope]`. - **Layout:** style props (e.g. `maxW`) forward to the outer
+      container.
 
       **Acceptance:** all new play functions exist and fail against the stubs.
 
@@ -105,27 +108,31 @@
 - [x] 4.4 Implement `headingOffset` (render markdown level L as
       `min(L + offset, 6)`) and a dev-mode warning on author heading-level
       skips.
-- [x] 4.5 Implement the MC-aligned security layer (no `harden-react-markdown`):
-      default `trust="untrusted"` → `skipHtml` + safe `allowedElements`
-      allowlist (tunable via `allowedElements`/`disallowedElements`); rely on
-      react-markdown's built-in `urlTransform`; `trust="trusted"` +
-      `allowRawHtml` wires `rehype-raw` + `rehype-sanitize` (sanitize last,
-      using its built-in `defaultSchema`). Image-host security is delegated to
-      the app CSP — do not re-implement host allowlists.
+- [x] 4.5 Implement the MC-aligned safe-by-default security layer (no
+      `harden-react-markdown`, no raw-HTML path): `skipHtml` always on +
+      a safe `allowedElements` allowlist (tunable via
+      `allowedElements`/`disallowedElements`, registered custom tag names unioned
+      in); rely on react-markdown's built-in `urlTransform` for dangerous URLs.
+      Image-host security is delegated to the app CSP — do not re-implement host
+      allowlists. Dev-warn when `allowedElements` and `disallowedElements` are
+      both passed (react-markdown throws on that combination; we normalize to
+      `allowedElements`).
 - [x] 4.6 Implement streaming (tree-shakeable, behind `isStreaming`):
       pre-process with `remend(value, { linkMode: "text-only" })`; split into
       top-level blocks with stable keys and memoize each block (`React.memo`) so
       only the final block re-parses on new tokens; manage `aria-busy` + a
       coalesced polite completion announcement (i18n) internally — no consumer
-      ARIA.
-- [x] 4.7 Implement `markdown.tsx`: wire the default plugins (`[remarkGfm]`;
-      `rehype-raw` + `rehype-sanitize` only when `allowRawHtml`), merge
-      `components` (`{ ...nimbusDefaults, ...props.components }`), forward `ref`
-      and style props to the outer root container.
+      ARIA. The live region is latched on via state and mounted for the whole
+      stream; settling is consumer-driven (the `isStreaming` true→false
+      transition).
+- [x] 4.7 Implement `markdown.tsx`: wire `remarkGfm` (plus the custom-tag plugin
+      when registered, §6); `rehypePlugins` is always `[]`; merge `components`
+      (`{ ...nimbusDefaults, ...props.components }`), forward `ref` and style
+      props to the outer root container.
 - [x] 4.8 Create developer documentation with the
       `/writing-developer-documentation` skill (`markdown.dev.mdx` +
-      `markdown.docs.spec.tsx`) — overrides, streaming, trust model, security
-      guidance.
+      `markdown.docs.spec.tsx`) — overrides, custom component tags, streaming,
+      and security guidance.
 - [x] 4.9 Create designer documentation with the
       `/writing-designer-documentation` skill (`markdown.guidelines.mdx`,
       `markdown.a11y.mdx`).
@@ -141,18 +148,22 @@
 - [x] 5.4 `pnpm check:bundle-size` — record the component's footprint; confirm
       no Tailwind/CSS framework entered the bundle.
 - [x] 5.5 Confirm `Markdown` + public types are exported from the
-      `@commercetools/nimbus` barrel and resolve for consumers.
+      `@commercetools/nimbus` barrel and resolve for consumers (internal-only
+      coordination types stay out of the published surface).
 - [x] 5.6 Add a changeset with the `/writing-changeset` skill (consumer-facing:
       new `Markdown` component, streaming + override/custom-renderer API, safe-
-      by-default trust model).
+      by-default posture).
 - [x] 5.7 Verify the OpenSpec change:
-      `openspec validate add-markdown-component     --strict`.
+      `openspec validate add-markdown-component --strict`.
 
-## 6. Custom component tags + safe-by-default (amendment)
+## 6. Custom component tags (safe-by-default embedding)
 
-- [x] 6.1 Remove the `trust` / `allowRawHtml` props and `MarkdownTrust` type;
-      drop `rehype-raw` + `rehype-sanitize` from `package.json` and the
-      `markdown` catalog. `skipHtml` is always on; `rehypePlugins` is `[]`.
+Custom component tags are how applications embed their own components — the
+sanctioned alternative to raw HTML.
+
+- [x] 6.1 Confirm the safe-by-default posture is the only one: `skipHtml` always
+      on; `rehypePlugins` is `[]`; no `trust` / `allowRawHtml` props or
+      `MarkdownTrust` type; `rehype-raw` / `rehype-sanitize` are not dependencies.
 - [x] 6.2 Widen `MarkdownComponents` (react-markdown `Components` ∩ an open
       index signature) and add `MarkdownCustomComponent` so non-standard
       PascalCase keys typecheck without breaking per-element overrides.
@@ -168,12 +179,12 @@
       names into the resolved `allowedElements`.
 - [x] 6.6 Extend `utils/split-blocks.ts` with an optional `customTagNames` param
       that keeps a paired region in one streaming block (depth-counted; unclosed
-      tail kept whole); thread it through `ReactMarkdownRenderOptions` and
-      `StreamingContent` without leaking it to react-markdown + `.spec.ts`.
+      tail kept whole); pass it to `StreamingContent` as an explicit prop
+      without leaking it to react-markdown + `.spec.ts`.
 - [x] 6.7 Add stories (custom self-closing tag with props, paired with children,
       unregistered inert, code-fence literal, streaming partial) and a
-      `custom-components` `@docs-section`; update dev/main/guidelines/a11y docs
-      to drop the trust model and document custom component tags.
+      `custom-components` `@docs-section`; ensure dev/main/guidelines/a11y docs
+      document custom component tags (no trust model).
 - [x] 6.8 Re-validate: `typecheck:strict`, markdown unit + storybook tests,
-      `check:bundle-size` (confirms two deps removed), `lint`, and
+      `check:bundle-size`, `lint`, and
       `openspec validate add-markdown-component --strict`.

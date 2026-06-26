@@ -53,6 +53,26 @@ Markdown (tables, task lists, strikethrough, autolinks) enabled by default.
   H3 18/24, H4 16/20, all Inter 600) composed from existing tokens
 - **AND** SHALL fold `#####`/`######` to the smallest heading style
 
+### Requirement: Robust to empty and malformed input
+
+The component SHALL render without throwing for empty, whitespace-only, or
+syntactically malformed Markdown — the common case for streamed LLM output,
+where every partial frame is briefly incomplete.
+
+#### Scenario: Empty or whitespace-only source
+
+- **WHEN** `children` is an empty string or contains only whitespace
+- **THEN** SHALL render no markdown content and SHALL NOT throw
+
+#### Scenario: Malformed or partial markup
+
+- **WHEN** the source contains malformed or incomplete constructs (e.g.
+  unbalanced emphasis, an unterminated code fence, a partial table, or a stray
+  `<`)
+- **THEN** SHALL render without throwing, treating unparseable markup as text
+- **AND WHEN** `isStreaming` is set, SHALL additionally complete recoverable
+  inline constructs per the streaming requirement
+
 ### Requirement: Per-element renderer overrides
 
 The component SHALL accept a `components` prop mapping HTML element names to
@@ -196,11 +216,14 @@ the component SHALL manage required ARIA internally (consumers do not pass ARIA)
 
 #### Scenario: Streaming announced without per-token spam
 
-- **WHEN** `isStreaming` is set
-- **THEN** SHALL set `aria-busy="true"` on the root while content is changing and
-  `aria-busy="false"` when it settles
-- **AND** SHALL emit a single coalesced (not per-token) completion announcement
-  via a polite live region, driven by the component (no consumer ARIA required)
+- **WHEN** `isStreaming` is `true`
+- **THEN** SHALL set `aria-busy="true"` on the root for the duration of streaming
+- **AND WHEN** the consumer sets `isStreaming` back to `false` — settling is
+  driven by this prop transition, not inferred from content changes
+- **THEN** SHALL clear the busy state and emit a single coalesced (not per-token)
+  completion announcement via a polite live region — mounted for the duration of
+  streaming so assistive tech reliably observes the change — driven by the
+  component with no consumer ARIA required
 
 #### Scenario: External link semantics
 

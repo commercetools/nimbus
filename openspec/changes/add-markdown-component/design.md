@@ -118,12 +118,13 @@ don't pay for it.
 
 ### Accessible streaming (behind Nimbus conventions)
 
-Consumers do not manage ARIA. Off `isStreaming`, the root gets
-`aria-busy="true"` while content is changing, flipping to `false` on settle; a
-polite live region emits **one coalesced completion announcement** (not
-per-token) when streaming ends. This gives SR users a "loading → done" model
-(WCAG 4.1.3) and pairs with block memoization (only the tail mutates). The exact
-announcement string is i18n.
+Consumers do not manage ARIA. While `isStreaming` is `true` the root carries
+`aria-busy="true"`; settling is **consumer-driven** — when the consumer sets
+`isStreaming` back to `false`, the busy state clears and a polite live region
+(mounted for the whole stream so the change is reliably observed) emits **one
+coalesced completion announcement** (not per-token). This gives SR users a
+"loading → done" model (WCAG 4.1.3) and pairs with block memoization (only the
+tail mutates). The exact announcement string is i18n.
 
 ### Types
 

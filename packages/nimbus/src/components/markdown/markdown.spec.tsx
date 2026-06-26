@@ -2,6 +2,46 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import { render } from "@testing-library/react";
 import { NimbusProvider, Markdown } from "@commercetools/nimbus";
 
+describe("Markdown — robust to empty and malformed input", () => {
+  it("renders empty and whitespace-only sources without throwing", () => {
+    expect(() =>
+      render(
+        <NimbusProvider>
+          <Markdown>{""}</Markdown>
+        </NimbusProvider>
+      )
+    ).not.toThrow();
+    expect(() =>
+      render(
+        <NimbusProvider>
+          <Markdown>{"   \n\n  "}</Markdown>
+        </NimbusProvider>
+      )
+    ).not.toThrow();
+  });
+
+  it("renders malformed/partial markup without throwing", () => {
+    const malformed = "**bold without close\n\n| a | b\n| - \n\n```ts\nlet x =";
+    expect(() =>
+      render(
+        <NimbusProvider>
+          <Markdown>{malformed}</Markdown>
+        </NimbusProvider>
+      )
+    ).not.toThrow();
+  });
+
+  it("renders a malformed partial frame without throwing while streaming", () => {
+    expect(() =>
+      render(
+        <NimbusProvider>
+          <Markdown isStreaming>{"Here is a [link](http"}</Markdown>
+        </NimbusProvider>
+      )
+    ).not.toThrow();
+  });
+});
+
 describe("Markdown — development-mode warnings", () => {
   afterEach(() => {
     vi.restoreAllMocks();
