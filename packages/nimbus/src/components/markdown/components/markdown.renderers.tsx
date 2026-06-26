@@ -259,12 +259,11 @@ export function createNimbusComponents({
         return (
           <chakra.blockquote
             colorPalette={colorPalette}
-            borderInlineStartWidth="4px"
+            borderInlineStartWidth="calc({sizes.50} + {sizes.25})"
             borderInlineStartStyle="solid"
             borderColor="colorPalette.9"
             bg="colorPalette.2"
             color="colorPalette.11"
-            borderRadius="200"
             paddingBlock="300"
             paddingInline="400"
             display="flex"
@@ -282,6 +281,8 @@ export function createNimbusComponents({
               fontSize="500"
               lineHeight="600"
               aria-hidden="true"
+              position="relative"
+              top="50"
               asChild
             >
               <Icon />
@@ -298,7 +299,7 @@ export function createNimbusComponents({
       }
       return (
         <chakra.blockquote
-          borderInlineStartWidth="2px"
+          borderInlineStartWidth="calc({sizes.50} + {sizes.25})"
           borderInlineStartStyle="solid"
           borderColor="neutral.6"
           paddingInlineStart="400"
