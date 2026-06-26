@@ -2,7 +2,7 @@ import React from "react";
 import ReactMarkdown from "react-markdown";
 import remend from "remend";
 import { splitMarkdownIntoBlocks } from "../utils";
-import type { ReactMarkdownRenderOptions } from "../markdown.types";
+import type { ReactMarkdownRenderOptions } from "../markdown.internal-types";
 
 /**
  * Streaming-only rendering code (remend completion, block splitting +

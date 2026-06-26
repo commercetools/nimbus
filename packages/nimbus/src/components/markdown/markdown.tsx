@@ -13,10 +13,8 @@ import {
   remarkCustomComponentTags,
 } from "./utils";
 import { markdownMessagesStrings } from "./markdown.messages";
-import type {
-  MarkdownProps,
-  ReactMarkdownRenderOptions,
-} from "./markdown.types";
+import type { MarkdownProps } from "./markdown.types";
+import type { ReactMarkdownRenderOptions } from "./markdown.internal-types";
 
 /**
  * Emit a development-mode warning when author markdown skips a heading level

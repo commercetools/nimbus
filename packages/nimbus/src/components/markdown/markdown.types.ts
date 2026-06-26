@@ -31,27 +31,6 @@ export type MarkdownComponents = Components & {
 };
 
 /**
- * The resolved set of `react-markdown` options shared between the non-streaming
- * render path (a single instance) and the streaming path (one memoized instance
- * per block). These are computed once in the main component and passed down as
- * stable references so memoized blocks compare equal.
- */
-export type ReactMarkdownRenderOptions = {
-  components: Components;
-  skipHtml: boolean;
-  allowedElements?: Options["allowedElements"];
-  disallowedElements?: Options["disallowedElements"];
-  remarkPlugins: NonNullable<Options["remarkPlugins"]>;
-  rehypePlugins: NonNullable<Options["rehypePlugins"]>;
-  /**
-   * Registered custom-component tag names. Internal-only — consumed by the
-   * streaming block splitter so a paired `<Name>…</Name>` region stays in one
-   * block; never forwarded to `react-markdown`.
-   */
-  customTagNames?: ReadonlySet<string>;
-};
-
-/**
  * Props for the {@link Markdown} component.
  *
  * Style props are forwarded to the component's outer root container (the
