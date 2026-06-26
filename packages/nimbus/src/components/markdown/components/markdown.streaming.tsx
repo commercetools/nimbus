@@ -37,6 +37,12 @@ const MemoBlock = React.memo(
 export type StreamingContentProps = ReactMarkdownRenderOptions & {
   /** Raw (still-streaming) markdown source. */
   source: string;
+  /**
+   * Registered custom-component tag names. Streaming-only — keeps a paired
+   * `<Name>…</Name>` region in one block so the custom-tag remark plugin can
+   * pair it; deliberately NOT forwarded to `react-markdown`.
+   */
+  customTagNames?: ReadonlySet<string>;
 };
 
 export function StreamingContent({
