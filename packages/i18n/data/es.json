@@ -395,6 +395,26 @@
     "developer_comment": "Label for showing all language inputs when toggle button is pressed",
     "string": "Mostrar todos los idiomas"
   },
+  "Nimbus.Markdown.alertCaution": {
+    "developer_comment": "Visually-hidden label naming a GitHub-style caution alert/callout for assistive technology",
+    "string": "Caution"
+  },
+  "Nimbus.Markdown.alertImportant": {
+    "developer_comment": "Visually-hidden label naming a GitHub-style important alert/callout for assistive technology",
+    "string": "Important"
+  },
+  "Nimbus.Markdown.alertNote": {
+    "developer_comment": "Visually-hidden label naming a GitHub-style note alert/callout for assistive technology",
+    "string": "Note"
+  },
+  "Nimbus.Markdown.alertTip": {
+    "developer_comment": "Visually-hidden label naming a GitHub-style tip alert/callout for assistive technology",
+    "string": "Tip"
+  },
+  "Nimbus.Markdown.alertWarning": {
+    "developer_comment": "Visually-hidden label naming a GitHub-style warning alert/callout for assistive technology",
+    "string": "Warning"
+  },
   "Nimbus.Markdown.footnoteBackLabel": {
     "developer_comment": "Accessible label for the link that jumps from a footnote definition back to its reference; {index} is the footnote number",
     "string": "Back to reference {index}"

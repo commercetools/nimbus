@@ -15,6 +15,9 @@ autolinks, footnotes) is on by default.
   `<SearchQueryResultCard>…</SearchQueryResultCard>` (with markdown children).
   The tag's string attributes arrive as props and any casing is preserved. Safe
   by default: only registered tags render; unregistered tags stay inert.
+- **GitHub alerts:** blockquotes starting with `[!NOTE]`, `[!TIP]`,
+  `[!IMPORTANT]`, `[!WARNING]`, or `[!CAUTION]` render as accessible, localized
+  callouts with a color palette and icon.
 - **Safe by default:** raw HTML is never rendered as live markup, rendering is
   restricted to a safe element allowlist, and dangerous URLs are neutralized.
   Embed your own components via custom component tags rather than raw HTML.

@@ -1,7 +1,14 @@
 import React from "react";
 import type { Components, ExtraProps } from "react-markdown";
 import { chakra } from "@chakra-ui/react/styled-system";
-import { OpenInNew } from "@commercetools/nimbus-icons";
+import {
+  OpenInNew,
+  Description,
+  Lightbulb,
+  Star,
+  Warning,
+  Error as ErrorIcon,
+} from "@commercetools/nimbus-icons";
 import { Box } from "@/components/box/box";
 import { Heading } from "@/components/heading/heading";
 import { Text } from "@/components/text/text";
@@ -9,7 +16,25 @@ import { Code } from "@/components/code/code";
 import { Link } from "@/components/link/link";
 import { VisuallyHidden } from "@/components/visually-hidden/visually-hidden";
 import { MAX_HEADING_LEVEL } from "../constants";
-import { getNodeText, isExternalUrl, withoutNode } from "../utils";
+import { ALERT_TYPES, getNodeText, isExternalUrl, withoutNode } from "../utils";
+
+type AlertType = (typeof ALERT_TYPES)[number];
+
+/**
+ * Per-type presentation for GitHub-style alerts, matching the documentation
+ * site's callout look: a semantic color palette, an icon, and the i18n message
+ * key for the visually-hidden type label.
+ */
+const ALERT_CONFIG: Record<
+  AlertType,
+  { colorPalette: string; Icon: React.ElementType }
+> = {
+  note: { colorPalette: "info", Icon: Description },
+  tip: { colorPalette: "positive", Icon: Lightbulb },
+  important: { colorPalette: "primary", Icon: Star },
+  warning: { colorPalette: "warning", Icon: Warning },
+  caution: { colorPalette: "critical", Icon: ErrorIcon },
+};
 
 type HeadingRendererProps = React.ComponentPropsWithoutRef<"h1"> & ExtraProps;
 
@@ -55,6 +80,8 @@ export type CreateNimbusComponentsOptions = {
   headingOffset: number;
   /** i18n "(opens in new tab)" label appended to external links. */
   opensInNewTabLabel: string;
+  /** i18n visually-hidden type labels for GitHub alerts, keyed by alert type. */
+  alertLabels: Record<AlertType, string>;
 };
 
 /**
@@ -69,6 +96,7 @@ export type CreateNimbusComponentsOptions = {
 export function createNimbusComponents({
   headingOffset,
   opensInNewTabLabel,
+  alertLabels,
 }: CreateNimbusComponentsOptions): Components {
   return {
     h1: makeHeadingRenderer(1, headingOffset),
@@ -202,17 +230,70 @@ export function createNimbusComponents({
       );
     },
 
-    blockquote: (props) => (
-      <chakra.blockquote
-        borderInlineStartWidth="2px"
-        borderInlineStartStyle="solid"
-        borderColor="neutral.6"
-        paddingInlineStart="400"
-        color="neutral.11"
-        fontStyle="italic"
-        {...withoutNode(props)}
-      />
-    ),
+    blockquote: ({ children, ...props }) => {
+      // GitHub-style alert: the remark plugin tagged this blockquote with
+      // `data-alert="<type>"` and stripped the `[!TYPE]` marker. Render the
+      // documentation-site callout look (color palette + icon) with a
+      // visually-hidden, localized type label so the alert type is conveyed to
+      // assistive tech (not by color alone).
+      const alertType = (props as Record<string, unknown>)["data-alert"];
+      const config =
+        typeof alertType === "string"
+          ? ALERT_CONFIG[alertType as AlertType]
+          : undefined;
+      if (config) {
+        const { colorPalette, Icon } = config;
+        return (
+          <chakra.blockquote
+            colorPalette={colorPalette}
+            borderInlineStartWidth="4px"
+            borderInlineStartStyle="solid"
+            borderColor="colorPalette.9"
+            bg="colorPalette.2"
+            color="colorPalette.11"
+            borderRadius="200"
+            paddingBlock="300"
+            paddingInline="400"
+            display="flex"
+            gap="200"
+            {...withoutNode(props)}
+          >
+            <chakra.span
+              flexShrink="0"
+              fontSize="500"
+              lineHeight="600"
+              aria-hidden="true"
+              asChild
+            >
+              <Icon />
+            </chakra.span>
+            <chakra.div
+              minWidth="0"
+              flex="1"
+              css={{ "& > * + *": { marginTop: "300" } }}
+            >
+              <VisuallyHidden>
+                {alertLabels[alertType as AlertType]}
+              </VisuallyHidden>
+              {children}
+            </chakra.div>
+          </chakra.blockquote>
+        );
+      }
+      return (
+        <chakra.blockquote
+          borderInlineStartWidth="2px"
+          borderInlineStartStyle="solid"
+          borderColor="neutral.6"
+          paddingInlineStart="400"
+          color="neutral.11"
+          fontStyle="italic"
+          {...withoutNode(props)}
+        >
+          {children}
+        </chakra.blockquote>
+      );
+    },
 
     table: (props) => (
       <chakra.table
