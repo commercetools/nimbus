@@ -23,8 +23,13 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
+    // Editor default: resolve the @commercetools/nimbus barrel to live source
+    // instead of the built dist/index.d.ts, so stories/specs type-check against
+    // the code you're editing (no rebuild needed). The CLI/CI typecheck uses
+    // tsconfig.prod.json, which drops this alias to verify the built surface.
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@commercetools/nimbus": ["./src/index.ts"]
     },
 
     // Custom

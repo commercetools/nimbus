@@ -65,3 +65,18 @@ Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 | `pnpm test:unit`                | Run only unit tests (JSDOM, fast)                      |
 | `pnpm test:storybook`           | Run only Storybook tests (browser, slower)             |
 | `pnpm test:storybook:dev`       | Run Storybook tests against source files               |
+
+## Type-check Commands
+
+Type checking mirrors the test split: a **development** flavor against live
+source (no build) and a **production** flavor against the built `dist`.
+
+| Command                                             | Resolves to | Purpose                                            |
+| --------------------------------------------------- | ----------- | -------------------------------------------------- |
+| `pnpm --filter @commercetools/nimbus typecheck:dev` | source      | Dev loop — no build required; matches your editor  |
+| `pnpm typecheck`                                    | built dist  | All packages, non-blocking scan                    |
+| `pnpm typecheck:strict`                             | built dist  | All packages, fails on error — the CI gate         |
+| `pnpm --filter @commercetools/nimbus typecheck`     | built dist  | Nimbus only, the published surface (needs a build) |
+
+`typecheck:strict` is the same built-surface check as `typecheck`, just set to
+fail the run instead of acting as a non-blocking scan.
