@@ -82,18 +82,20 @@ export function splitMarkdownIntoBlocks(
       continue;
     }
 
-    // Fenced code block: consume through the closing fence (or EOF).
+    // Fenced code block: consume through the closing fence (or EOF). Per
+    // CommonMark, the closing fence must use the same marker and be at least as
+    // long as the opening fence, so a longer opening fence (e.g. `````) can
+    // embed shorter fence-like lines (```) without closing early.
     const fenceMatch = line.match(FENCE_RE);
     if (fenceMatch) {
       flush();
-      const marker = fenceMatch[1][0]; // ` or ~
+      const fence = fenceMatch[1]; // the opening run, e.g. ``` or `````
+      const closeRe = new RegExp(`^\\s*${fence[0]}{${fence.length},}\\s*$`);
       current.push(line);
       i += 1;
       while (i < lines.length) {
         current.push(lines[i]);
-        const closed = new RegExp(
-          `^\\s*${marker === "`" ? "`" : "~"}{3,}\\s*$`
-        ).test(lines[i]);
+        const closed = closeRe.test(lines[i]);
         i += 1;
         if (closed) break;
       }
@@ -144,7 +146,13 @@ export function splitMarkdownIntoBlocks(
         if (
           startsListOrQuote(next) ||
           INDENTED_RE.test(next) ||
-          (!isBlank(next) && current.length > 0)
+          // A non-indented heading or fence starts a distinct top-level block,
+          // so it ends the list region rather than being lazily absorbed into
+          // it (mirrors the paragraph loop's interrupts below).
+          (!isBlank(next) &&
+            !ATX_HEADING_RE.test(next) &&
+            !FENCE_RE.test(next) &&
+            current.length > 0)
         ) {
           current.push(next);
           i += 1;
