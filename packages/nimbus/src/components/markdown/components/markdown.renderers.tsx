@@ -173,18 +173,31 @@ export function createNimbusComponents({
       />
     ),
 
-    ul: (props) => (
-      <chakra.ul
-        paddingInlineStart="600"
-        css={{
-          "& > li + li": { marginTop: "200" },
-          "& :where(ul, ol)": { marginTop: "200" },
-        }}
-        {...withoutNode(props)}
-      />
-    ),
+    // Markers are re-enabled explicitly because the global CSS reset sets
+    // `list-style: none`. GFM task lists (`contains-task-list`) keep no marker
+    // and no indent, so the checkbox aligns to the content edge.
+    ul: ({ className, ...props }) => {
+      const isTaskList =
+        typeof className === "string" &&
+        className.includes("contains-task-list");
+      return (
+        <chakra.ul
+          className={className}
+          listStyleType={isTaskList ? "none" : "disc"}
+          listStylePosition="outside"
+          paddingInlineStart={isTaskList ? "0" : "600"}
+          css={{
+            "& > li + li": { marginTop: "200" },
+            "& :where(ul, ol)": { marginTop: "200" },
+          }}
+          {...withoutNode(props)}
+        />
+      );
+    },
     ol: (props) => (
       <chakra.ol
+        listStyleType="decimal"
+        listStylePosition="outside"
         paddingInlineStart="600"
         css={{
           "& > li + li": { marginTop: "200" },
@@ -255,9 +268,15 @@ export function createNimbusComponents({
             paddingBlock="300"
             paddingInline="400"
             display="flex"
+            alignItems="flex-start"
             gap="200"
             {...withoutNode(props)}
           >
+            {/* Read first by assistive tech; absolutely positioned, so it does
+                not affect the icon/content alignment. */}
+            <VisuallyHidden>
+              {alertLabels[alertType as AlertType]}
+            </VisuallyHidden>
             <chakra.span
               flexShrink="0"
               fontSize="500"
@@ -272,9 +291,6 @@ export function createNimbusComponents({
               flex="1"
               css={{ "& > * + *": { marginTop: "300" } }}
             >
-              <VisuallyHidden>
-                {alertLabels[alertType as AlertType]}
-              </VisuallyHidden>
               {children}
             </chakra.div>
           </chakra.blockquote>
