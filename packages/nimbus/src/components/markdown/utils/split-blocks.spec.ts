@@ -30,6 +30,27 @@ describe("markdown utils — splitMarkdownIntoBlocks", () => {
     expect(blocks[0]).toContain("- three");
   });
 
+  it("splits a heading that immediately follows a list into its own block", () => {
+    const blocks = splitMarkdownIntoBlocks("- one\n- two\n## Heading");
+    expect(blocks).toEqual(["- one\n- two", "## Heading"]);
+  });
+
+  it("splits a fence that immediately follows a list into its own block", () => {
+    const blocks = splitMarkdownIntoBlocks("- one\n```\ncode\n```");
+    expect(blocks).toHaveLength(2);
+    expect(blocks[0]).toBe("- one");
+    expect(blocks[1]).toContain("code");
+  });
+
+  it("does not close a longer opening fence on a shorter fence line", () => {
+    const src = "`````\n```\nnested\n```\n`````\n\nAfter";
+    const blocks = splitMarkdownIntoBlocks(src);
+    expect(blocks).toHaveLength(2);
+    expect(blocks[0].startsWith("`````")).toBe(true);
+    expect(blocks[0]).toContain("nested");
+    expect(blocks[1]).toBe("After");
+  });
+
   it("reparses only the final block as a stream grows (prefix is stable)", () => {
     const a = splitMarkdownIntoBlocks("# Title\n\nDone para.\n\nGrow");
     const b = splitMarkdownIntoBlocks("# Title\n\nDone para.\n\nGrowing more");
