@@ -31,6 +31,20 @@ describe("Markdown — development-mode warnings", () => {
     );
   });
 
+  it("warns when allowedElements and disallowedElements are both passed", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    render(
+      <NimbusProvider>
+        <Markdown allowedElements={["p"]} disallowedElements={["a"]}>
+          {"Some text."}
+        </Markdown>
+      </NimbusProvider>
+    );
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining("mutually exclusive")
+    );
+  });
+
   it("does not warn for a well-formed document", () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     render(
