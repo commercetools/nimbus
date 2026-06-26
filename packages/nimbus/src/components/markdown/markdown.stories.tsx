@@ -108,6 +108,48 @@ export const GitHubFlavoredMarkdown: Story = {
   },
 };
 
+const footnotesSource = `Here is a statement with a footnote.[^1]
+
+And a second claim.[^note]
+
+[^1]: The first footnote definition.
+
+[^note]: A named footnote definition.
+`;
+
+/**
+ * GFM footnotes: a reference marker links to a definitions block at the end.
+ * The auto-generated "Footnotes" label is localized and visually hidden, and
+ * each definition gets a localized back-reference link.
+ */
+export const Footnotes: Story = {
+  render: () => <Markdown>{footnotesSource}</Markdown>,
+  play: async ({ canvasElement }) => {
+    // Reference marker: a <sup> wrapping a link to the definition.
+    const reference = canvasElement.querySelector("sup a");
+    expect(reference).toHaveAttribute("href", "#user-content-fn-1");
+
+    // Definitions block with one <li> per footnote.
+    const section = canvasElement.querySelector<HTMLElement>(
+      "section[data-footnotes]"
+    );
+    expect(section).toBeTruthy();
+    expect(
+      within(section!).getAllByRole("listitem").length
+    ).toBeGreaterThanOrEqual(2);
+
+    // The auto-generated label is in the DOM for assistive tech but visually
+    // hidden (no redundant visible heading).
+    const label = section!.querySelector<HTMLElement>("#footnote-label");
+    expect(label).toHaveTextContent("Footnotes");
+    expect(getComputedStyle(label!).position).toBe("absolute");
+
+    // Localized, indexed back-reference link.
+    const backref = section!.querySelector("a[data-footnote-backref]");
+    expect(backref).toHaveAttribute("aria-label", "Back to reference 1");
+  },
+};
+
 /** A single override replaces one element; all other defaults stay intact. */
 export const PerElementOverride: Story = {
   render: () => {

@@ -46,6 +46,17 @@ Markdown (tables, task lists, strikethrough, autolinks) enabled by default.
 - **AND** SHALL render task-list checkboxes as disabled inputs reflecting their
   checked state
 
+#### Scenario: Footnotes
+
+- **WHEN** the source contains GFM footnotes (a `[^id]` reference and its
+  `[^id]: …` definition)
+- **THEN** SHALL render the reference as a superscript marker linking to a
+  footnotes definitions section at the end of the content
+- **AND** SHALL visually hide the auto-generated section label while keeping it
+  available to assistive technology
+- **AND** SHALL localize both the section label and the per-definition
+  back-reference link text
+
 #### Scenario: Heading typography mapping
 
 - **WHEN** headings `#` through `####` are rendered

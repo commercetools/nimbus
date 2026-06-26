@@ -67,6 +67,22 @@ export const Markdown = (props: MarkdownProps) => {
   const opensInNewTabLabel = stringFormatter.format("opensInNewTab");
   const completeLabel = stringFormatter.format("streamingComplete");
 
+  // Localized GFM footnote strings, forwarded to remark-rehype. Memoized on the
+  // (per-locale stable) formatter so the object identity holds across renders
+  // and streamed footnote blocks don't remount.
+  const remarkRehypeOptions = React.useMemo<
+    ReactMarkdownRenderOptions["remarkRehypeOptions"]
+  >(
+    () => ({
+      footnoteLabel: stringFormatter.format("footnoteLabel"),
+      footnoteBackLabel: (referenceIndex: number) =>
+        stringFormatter.format("footnoteBackLabel", {
+          index: referenceIndex + 1,
+        }),
+    }),
+    [stringFormatter]
+  );
+
   useHeadingSkipWarning(children);
 
   // Accessible streaming state, owned by the always-mounted root so it survives
@@ -175,6 +191,7 @@ export const Markdown = (props: MarkdownProps) => {
       disallowedElements: allowedElements ? undefined : disallowedElements,
       remarkPlugins,
       rehypePlugins,
+      remarkRehypeOptions,
     }),
     [
       components,
@@ -183,6 +200,7 @@ export const Markdown = (props: MarkdownProps) => {
       disallowedElements,
       remarkPlugins,
       rehypePlugins,
+      remarkRehypeOptions,
     ]
   );
 

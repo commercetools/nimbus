@@ -21,4 +21,10 @@ export type ReactMarkdownRenderOptions = {
   disallowedElements?: Options["disallowedElements"];
   remarkPlugins: NonNullable<Options["remarkPlugins"]>;
   rehypePlugins: NonNullable<Options["rehypePlugins"]>;
+  /**
+   * Forwarded to remark-rehype — carries the localized GFM footnote label and
+   * back-reference strings. A stable memoized reference so streaming blocks
+   * still compare equal.
+   */
+  remarkRehypeOptions?: Options["remarkRehypeOptions"];
 };

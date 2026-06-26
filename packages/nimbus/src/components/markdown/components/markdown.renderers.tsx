@@ -271,5 +271,42 @@ export function createNimbusComponents({
     hr: (props) => (
       <chakra.hr borderColor="neutral.6" {...withoutNode(props)} />
     ),
+
+    // GFM footnote reference marker (wraps the `[^n]` link).
+    sup: (props) => (
+      <chakra.sup fontSize="0.75em" lineHeight="0" {...withoutNode(props)} />
+    ),
+
+    // GFM footnotes definitions block. `<section>` is only emitted for
+    // footnotes, so this styles that block: a top divider plus muted, smaller
+    // text. The auto-generated "Footnotes" label (an `h2#footnote-label`) is
+    // visually hidden — its default `sr-only` class is a no-op in Nimbus — so it
+    // stays available to assistive tech without rendering a redundant heading.
+    // The gap above the divider comes from the root's inter-block rhythm.
+    section: (props) => (
+      <chakra.section
+        paddingTop="400"
+        borderTopWidth="1px"
+        borderTopStyle="solid"
+        borderTopColor="neutral.6"
+        fontSize="350"
+        lineHeight="500"
+        color="neutral.11"
+        css={{
+          "& [id='footnote-label']": {
+            position: "absolute",
+            width: "1px",
+            height: "1px",
+            padding: "0",
+            margin: "-1px",
+            overflow: "hidden",
+            clip: "rect(0, 0, 0, 0)",
+            whiteSpace: "nowrap",
+            borderWidth: "0",
+          },
+        }}
+        {...withoutNode(props)}
+      />
+    ),
   };
 }

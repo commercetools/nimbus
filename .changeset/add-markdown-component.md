@@ -5,7 +5,7 @@
 `Markdown`: new component that renders a Markdown string into Nimbus-styled,
 accessible React elements — built for AI chat/assistant output as well as
 authored content. GitHub Flavored Markdown (tables, task lists, strikethrough,
-autolinks) is on by default.
+autolinks, footnotes) is on by default.
 
 - **Per-element overrides:** pass `components={{ a: MyLink }}` to replace any
   element's renderer; all other defaults stay intact.

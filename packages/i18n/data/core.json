@@ -395,6 +395,14 @@
     "developer_comment": "Label for showing all language inputs when toggle button is pressed",
     "string": "Show all languages"
   },
+  "Nimbus.Markdown.footnoteBackLabel": {
+    "developer_comment": "Accessible label for the link that jumps from a footnote definition back to its reference; {index} is the footnote number",
+    "string": "Back to reference {index}"
+  },
+  "Nimbus.Markdown.footnoteLabel": {
+    "developer_comment": "Visually-hidden heading that labels the GFM footnotes section at the end of the content",
+    "string": "Footnotes"
+  },
   "Nimbus.Markdown.opensInNewTab": {
     "developer_comment": "Visually-hidden suffix appended to external links that open in a new browser tab",
     "string": "(opens in new tab)"
