@@ -142,6 +142,9 @@ export const Markdown = (props: MarkdownProps) => {
     return [...DEFAULT_ALLOWED_ELEMENTS, ...customTagNames];
   }, [allowedElements, disallowedElements, customTagNames]);
 
+  // Exactly the react-markdown props, so the whole object spreads onto
+  // <ReactMarkdown> (and each streaming MemoBlock) directly. The internal-only
+  // `customTagNames` is kept out and passed separately to the streaming path.
   const renderOptions = React.useMemo<ReactMarkdownRenderOptions>(
     () => ({
       components,
@@ -150,7 +153,6 @@ export const Markdown = (props: MarkdownProps) => {
       disallowedElements: allowedElements ? undefined : disallowedElements,
       remarkPlugins,
       rehypePlugins,
-      customTagNames,
     }),
     [
       components,
@@ -159,14 +161,8 @@ export const Markdown = (props: MarkdownProps) => {
       disallowedElements,
       remarkPlugins,
       rehypePlugins,
-      customTagNames,
     ]
   );
-
-  // The non-streaming path renders react-markdown directly, so drop the
-  // internal-only `customTagNames` field before spreading.
-  const reactMarkdownOptions = { ...renderOptions };
-  delete reactMarkdownOptions.customTagNames;
 
   return (
     <Box
@@ -187,11 +183,13 @@ export const Markdown = (props: MarkdownProps) => {
       {...styleProps}
     >
       {isStreaming ? (
-        <StreamingContent source={children} {...renderOptions} />
+        <StreamingContent
+          source={children}
+          customTagNames={customTagNames}
+          {...renderOptions}
+        />
       ) : (
-        // `customTagNames` is internal (streaming splitter only) — keep it off
-        // the react-markdown instance.
-        <ReactMarkdown {...reactMarkdownOptions}>{children}</ReactMarkdown>
+        <ReactMarkdown {...renderOptions}>{children}</ReactMarkdown>
       )}
       {everStreamed && (
         <VisuallyHidden as="div" role="status" aria-live="polite">
