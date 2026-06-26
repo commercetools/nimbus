@@ -73,11 +73,18 @@ export const Markdown = (props: MarkdownProps) => {
   // the moment `isStreaming` flips to false. The live region is mounted (empty)
   // for the duration of streaming, then receives a single coalesced completion
   // announcement on settle — so screen readers announce it reliably.
-  const everStreamed = React.useRef(false);
-  if (isStreaming) everStreamed.current = true;
+  //
+  // `everStreamed` is state (not a ref) and is latched from an effect rather
+  // than during render: this both keeps render pure (no ref mutation that a
+  // discarded concurrent render could leave dangling) and guarantees the empty
+  // live region mounts in its own commit *before* any announcement text is
+  // injected — assistive tech only reliably announces a content change in a
+  // pre-existing live region. `setEverStreamed(true)` is a no-op once latched.
+  const [everStreamed, setEverStreamed] = React.useState(false);
   const [announcement, setAnnouncement] = React.useState("");
   const wasStreaming = React.useRef(isStreaming);
   React.useEffect(() => {
+    if (isStreaming) setEverStreamed(true);
     if (wasStreaming.current && !isStreaming) {
       setAnnouncement(completeLabel);
     }
@@ -186,7 +193,7 @@ export const Markdown = (props: MarkdownProps) => {
         // the react-markdown instance.
         <ReactMarkdown {...reactMarkdownOptions}>{children}</ReactMarkdown>
       )}
-      {everStreamed.current && (
+      {everStreamed && (
         <VisuallyHidden as="div" role="status" aria-live="polite">
           {announcement}
         </VisuallyHidden>
