@@ -11,4 +11,16 @@ export const messages = {
       "Polite live-region announcement made once when streamed markdown content finishes rendering",
     defaultMessage: "Response complete",
   },
+  footnoteLabel: {
+    id: "Nimbus.Markdown.footnoteLabel",
+    description:
+      "Visually-hidden heading that labels the GFM footnotes section at the end of the content",
+    defaultMessage: "Footnotes",
+  },
+  footnoteBackLabel: {
+    id: "Nimbus.Markdown.footnoteBackLabel",
+    description:
+      "Accessible label for the link that jumps from a footnote definition back to its reference; {index} is the footnote number",
+    defaultMessage: "Back to reference {index}",
+  },
 };

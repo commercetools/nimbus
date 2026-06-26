@@ -5,7 +5,7 @@
  * (`h1,h2,p,a,br,strong,i,code,ul,ol,li`) and extended to cover every element
  * the Nimbus default renderers produce — all heading levels, emphasis, code
  * blocks, blockquotes, images, horizontal rules, and the GFM
- * table/strikethrough/task-list elements.
+ * table/strikethrough/task-list/footnote elements.
  */
 export const DEFAULT_ALLOWED_ELEMENTS: readonly string[] = [
   // headings
@@ -26,10 +26,12 @@ export const DEFAULT_ALLOWED_ELEMENTS: readonly string[] = [
   "del",
   "code",
   "span",
+  "sup", // GFM footnote reference marker
   // blocks
   "pre",
   "blockquote",
   "hr",
+  "section", // GFM footnotes definitions container
   // lists
   "ul",
   "ol",

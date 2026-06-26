@@ -31,7 +31,8 @@ const MemoBlock = React.memo(
     prev.allowedElements === next.allowedElements &&
     prev.disallowedElements === next.disallowedElements &&
     prev.remarkPlugins === next.remarkPlugins &&
-    prev.rehypePlugins === next.rehypePlugins
+    prev.rehypePlugins === next.rehypePlugins &&
+    prev.remarkRehypeOptions === next.remarkRehypeOptions
 );
 
 export type StreamingContentProps = ReactMarkdownRenderOptions & {
