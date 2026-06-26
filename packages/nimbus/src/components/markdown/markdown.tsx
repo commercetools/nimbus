@@ -92,6 +92,13 @@ export const Markdown = (props: MarkdownProps) => {
   }, [isStreaming, completeLabel]);
 
   // Default renderer map, merged with consumer overrides (shallow per key).
+  // The cast to `Components` is required and safe: `MarkdownComponents` has an
+  // open index signature so a custom-tag renderer (a `MarkdownCustomComponent`,
+  // keyed by its PascalCase tag name) is not structurally assignable to
+  // react-markdown's closed `Components` type — yet keying custom renderers by
+  // tag name is exactly how react-markdown resolves them at runtime (the remark
+  // plugin emits a matching `hName`). See `MarkdownComponents` in
+  // markdown.types.ts for the open-renderer-map tradeoff.
   const components = React.useMemo(() => {
     const nimbusComponents = createNimbusComponents({
       headingOffset,
