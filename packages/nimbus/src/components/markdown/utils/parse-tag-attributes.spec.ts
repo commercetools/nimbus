@@ -39,4 +39,17 @@ describe("markdown utils — parseTagAttributes", () => {
   it("keeps `>` inside a quoted value", () => {
     expect(parseTagAttributes(` label="a > b" `)).toEqual({ label: "a > b" });
   });
+
+  it("accepts attribute names with a leading underscore", () => {
+    expect(parseTagAttributes(` _private="x" `)).toEqual({ _private: "x" });
+  });
+
+  it("parses a mix of valueless and valued attributes", () => {
+    expect(parseTagAttributes(` open id="a" disabled count=2 `)).toEqual({
+      open: true,
+      id: "a",
+      disabled: true,
+      count: "2",
+    });
+  });
 });

@@ -407,6 +407,17 @@ export const HeadingOffset: Story = {
   },
 };
 
+/** `headingOffset` is clamped so a shifted level never exceeds h6. */
+export const HeadingOffsetCap: Story = {
+  render: () => <Markdown headingOffset={6}>{`## Heading`}</Markdown>,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // markdown level 2 + offset 6 => 8, clamped to the maximum h6
+    const heading = canvas.getByRole("heading", { level: 6, name: "Heading" });
+    expect(heading.tagName).toBe("H6");
+  },
+};
+
 /** External links get rel/target, an i18n label, and a non-color indicator. */
 export const ExternalLinkSemantics: Story = {
   render: () => (
