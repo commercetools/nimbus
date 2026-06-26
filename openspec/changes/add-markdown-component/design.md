@@ -56,24 +56,18 @@ markstream-react (own CSS). See proposal for detail.
 
 ## Architecture
 
-```
-                         children (markdown string)
-                                   │
-                  isStreaming ?  remend(text, {linkMode:'text-only'})
-                                   │           └─ aria-busy + coalesced completion announce
-              split into blocks (stable block keys) ── memoized per block
-                                   │
-        react-markdown  ── skipHtml (raw HTML always off — safe by default)
-                            allowedElements (safe allowlist + registered custom tags) / disallowedElements
-                            remarkPlugins:[remarkGfm, customComponentTags(registeredNames)?]
-                            rehypePlugins:[]
-                            urlTransform (built-in: neutralizes javascript:/vbscript:/file:)
-                            components: { ...nimbusDefaults, ...userComponents }
-                                   │
-                       Nimbus-styled React elements
-              (style props → outer root container; images lazy + no-referrer)
-                                   │
-                     image-host security ← application CSP (img-src)
+```mermaid
+flowchart TD
+    A["children (markdown string)"] --> B{"isStreaming?"}
+    B -->|yes| C["remend(text, {linkMode: 'text-only'})"]
+    C --> D["split into blocks (stable block keys)<br/>— memoized per block"]
+    B -->|no| RM["react-markdown"]
+    D --> RM
+    C -.->|streaming a11y| AB["aria-busy + coalesced completion announce"]
+    RM --> E["Nimbus-styled React elements<br/>(style props → outer root container;<br/>images lazy + no-referrer)"]
+    E --> F["image-host security ← application CSP (img-src)"]
+
+    RM -.- CFG["skipHtml — raw HTML always off, safe by default<br/>allowedElements (safe allowlist + registered custom tags) / disallowedElements<br/>remarkPlugins: [remarkGfm, customComponentTags(registeredNames)?]<br/>rehypePlugins: []<br/>urlTransform — neutralizes javascript:/vbscript:/file:<br/>components: { ...nimbusDefaults, ...userComponents }"]
 ```
 
 ### Default renderer map
