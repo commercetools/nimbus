@@ -181,14 +181,15 @@ export const GitHubFlavoredMarkdown: Story = {
     const headerCell = canvasElement.querySelector("th");
     expect(headerCell).toHaveAttribute("scope", "col");
 
-    // Task-list checkboxes are read-only with a name derived from item text.
+    // Task-list checkboxes are non-interactive (disabled, emitted by remark-gfm)
+    // with a name derived from item text.
     const checkboxes = canvasElement.querySelectorAll<HTMLInputElement>(
       "input[type='checkbox']"
     );
     expect(checkboxes).toHaveLength(2);
     expect(checkboxes[0].checked).toBe(true);
     expect(checkboxes[0]).toHaveAttribute("aria-label", "Completed task");
-    expect(checkboxes[0].readOnly).toBe(true);
+    expect(checkboxes[0].disabled).toBe(true);
 
     // Strikethrough + autolink.
     expect(canvasElement.querySelector("del")).toHaveTextContent(

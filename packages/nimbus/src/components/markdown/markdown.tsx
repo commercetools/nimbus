@@ -114,11 +114,20 @@ export const Markdown = (props: MarkdownProps) => {
   // live region mounts in its own commit *before* any announcement text is
   // injected — assistive tech only reliably announces a content change in a
   // pre-existing live region. `setEverStreamed(true)` is a no-op once latched.
+  //
+  // The announcement is re-emptied each time streaming (re)starts so a reused
+  // instance (e.g. a chat "regenerate" that streams a second response into the
+  // same node) keeps the live region empty while busy and produces a real
+  // text change (`"" → completeLabel`) on the next settle — otherwise setting
+  // the identical string is a no-op and the second completion never announces.
   const [everStreamed, setEverStreamed] = React.useState(false);
   const [announcement, setAnnouncement] = React.useState("");
   const wasStreaming = React.useRef(isStreaming);
   React.useEffect(() => {
-    if (isStreaming) setEverStreamed(true);
+    if (isStreaming) {
+      setEverStreamed(true);
+      setAnnouncement("");
+    }
     if (wasStreaming.current && !isStreaming) {
       setAnnouncement(completeLabel);
     }
@@ -252,7 +261,7 @@ export const Markdown = (props: MarkdownProps) => {
         <ReactMarkdown {...renderOptions}>{children}</ReactMarkdown>
       )}
       {everStreamed && (
-        <VisuallyHidden as="div" role="status" aria-live="polite">
+        <VisuallyHidden as="div" role="status">
           {announcement}
         </VisuallyHidden>
       )}

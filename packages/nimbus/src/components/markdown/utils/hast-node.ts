@@ -27,11 +27,18 @@ export function withoutNode<T extends { node?: unknown }>(
 
 /**
  * Recursively extract the visible text of a hast node — used to derive an
- * accessible name for GFM task-list checkboxes from their item text.
+ * accessible name for GFM task-list checkboxes from their item text. Inline
+ * formatting (bold/italic/link text) is still captured, but nested sub-lists
+ * (`ul`/`ol`) are skipped so a parent task item's label does not absorb its
+ * sub-items' text.
  */
 export function getNodeText(node: HastNodeLike | undefined | null): string {
   if (!node) return "";
   if (node.type === "text") return node.value ?? "";
   if (!node.children) return "";
-  return node.children.map(getNodeText).join("").trim();
+  return node.children
+    .filter((child) => child.tagName !== "ul" && child.tagName !== "ol")
+    .map(getNodeText)
+    .join("")
+    .trim();
 }

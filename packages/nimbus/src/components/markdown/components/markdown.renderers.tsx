@@ -220,13 +220,16 @@ export function createNimbusComponents({
         const label = getNodeText(
           node as unknown as Parameters<typeof getNodeText>[0]
         );
+        // Only add the accessible name; the checkbox is already non-interactive
+        // because remark-gfm (via mdast-util-to-hast) emits `disabled` on it.
+        // `readOnly` would be a no-op here — browsers ignore it on checkboxes.
         const enhanced = React.Children.map(children, (child) =>
           React.isValidElement(child) && child.type === "input"
             ? React.cloneElement(
                 child as React.ReactElement<
                   React.InputHTMLAttributes<HTMLInputElement>
                 >,
-                { "aria-label": label, readOnly: true }
+                { "aria-label": label }
               )
             : child
         );

@@ -53,6 +53,47 @@ describe("markdown utils — getNodeText", () => {
     };
     expect(getNodeText(node)).toBe("abc");
   });
+
+  it("excludes nested sub-list text from a task item's label", () => {
+    // A task item whose paragraph carries inline formatting and which also
+    // contains a nested sub-list: the label should be the parent item's text
+    // only, not the sub-items' text.
+    const node = {
+      type: "element",
+      tagName: "li",
+      children: [
+        {
+          type: "element",
+          tagName: "p",
+          children: [
+            { type: "text", value: "Buy " },
+            {
+              type: "element",
+              tagName: "strong",
+              children: [{ type: "text", value: "groceries" }],
+            },
+          ],
+        },
+        {
+          type: "element",
+          tagName: "ul",
+          children: [
+            {
+              type: "element",
+              tagName: "li",
+              children: [{ type: "text", value: "milk" }],
+            },
+            {
+              type: "element",
+              tagName: "li",
+              children: [{ type: "text", value: "eggs" }],
+            },
+          ],
+        },
+      ],
+    };
+    expect(getNodeText(node)).toBe("Buy groceries");
+  });
 });
 
 describe("markdown utils — withoutNode", () => {
