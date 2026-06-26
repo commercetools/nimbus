@@ -139,6 +139,21 @@ export const Markdown = (props: MarkdownProps) => {
     NonNullable<ReactMarkdownRenderOptions["rehypePlugins"]>
   >(() => [], []);
 
+  // react-markdown throws when both allowedElements and disallowedElements are
+  // passed; we normalize to allowedElements instead (below) so the component
+  // never crashes, but warn in development so the silently-ignored
+  // disallowedElements does not go unnoticed.
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === "production") return;
+    if (allowedElements && disallowedElements) {
+      console.warn(
+        "[Nimbus Markdown] `allowedElements` and `disallowedElements` are " +
+          "mutually exclusive. `allowedElements` takes precedence; " +
+          "`disallowedElements` is ignored."
+      );
+    }
+  }, [allowedElements, disallowedElements]);
+
   // Resolve the element allowlist. react-markdown forbids passing both
   // allowedElements and disallowedElements, so honor a consumer's explicit
   // choice first; otherwise apply the safe default allowlist. Registered custom
