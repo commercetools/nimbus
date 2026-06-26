@@ -64,6 +64,27 @@ Markdown (tables, task lists, strikethrough, autolinks) enabled by default.
   H3 18/24, H4 16/20, all Inter 600) composed from existing tokens
 - **AND** SHALL fold `#####`/`######` to the smallest heading style
 
+### Requirement: GitHub alerts
+
+The component SHALL render GitHub-style alerts (a.k.a. admonitions) — a
+blockquote whose first line is `[!NOTE]`, `[!TIP]`, `[!IMPORTANT]`,
+`[!WARNING]`, or `[!CAUTION]` — as Nimbus-styled callouts.
+
+#### Scenario: Recognized alert marker
+
+- **WHEN** a blockquote begins with a recognized alert marker alone on its first
+  line (case-insensitive)
+- **THEN** SHALL render it as a callout with a per-type color palette and icon,
+  removing the marker text from the rendered content
+- **AND** SHALL convey the alert type to assistive technology with a
+  visually-hidden, localized label (not by color alone)
+
+#### Scenario: Unrecognized or markerless blockquote
+
+- **WHEN** a blockquote has no recognized marker, an unknown marker, or text
+  after the marker on the same line
+- **THEN** SHALL render it as an ordinary blockquote
+
 ### Requirement: Robust to empty and malformed input
 
 The component SHALL render without throwing for empty, whitespace-only, or

@@ -65,6 +65,99 @@ export const Defaults: Story = {
   },
 };
 
+const allElementsSource = `# Heading level 1
+## Heading level 2
+### Heading level 3
+#### Heading level 4
+##### Heading level 5
+###### Heading level 6
+
+Intro paragraph with **bold**, _italic_, ~~strikethrough~~, \`inline code\`, and
+a [regular link](https://example.com).
+
+- Unordered first
+- Unordered second
+  - Nested item A
+  - Nested item B
+
+1. Ordered first
+2. Ordered second
+
+- [x] Completed task
+- [ ] Pending task
+
+> A plain blockquote.
+
+> [!TIP]
+> A GitHub-style alert.
+
+| Column A | Column B |
+| --- | --- |
+| Cell 1 | Cell 2 |
+
+\`\`\`ts
+const answer = 42;
+\`\`\`
+
+![A descriptive alt](https://cdn.example.com/image.png)
+
+---
+
+A claim that needs a citation.[^src]
+
+[^src]: The footnote definition.
+`;
+
+/**
+ * Kitchen-sink showcase exercising every default renderer: all heading levels,
+ * inline formatting, ordered/unordered/nested/task lists, links, images, rules,
+ * blockquotes, GitHub alerts, tables, code blocks, and footnotes.
+ */
+export const AllElements: Story = {
+  render: () => <Markdown>{allElementsSource}</Markdown>,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // All six heading levels render (default headingOffset maps 1:1).
+    for (let level = 1; level <= 6; level++) {
+      expect(
+        canvas.getByRole("heading", { level, name: `Heading level ${level}` })
+      );
+    }
+
+    // Inline formatting.
+    expect(canvasElement.querySelector("strong")).toHaveTextContent("bold");
+    expect(canvasElement.querySelector("em")).toHaveTextContent("italic");
+    expect(canvasElement.querySelector("del")).toHaveTextContent(
+      "strikethrough"
+    );
+    expect(canvas.getByRole("link", { name: /regular link/ })).toHaveAttribute(
+      "href",
+      "https://example.com"
+    );
+
+    // Unordered, ordered, and nested lists.
+    expect(canvasElement.querySelector("ul")).toBeTruthy();
+    expect(canvasElement.querySelector("ol")).toBeTruthy();
+    expect(canvasElement.querySelector("ul ul")).toBeTruthy();
+
+    // Image (alt becomes the accessible name) and horizontal rule.
+    expect(canvas.getByRole("img", { name: "A descriptive alt" }));
+    expect(canvasElement.querySelector("hr")).toBeTruthy();
+
+    // Blockquote + alert + table + code block + footnotes.
+    expect(canvasElement.querySelector("blockquote:not([data-alert])"));
+    expect(
+      canvasElement.querySelector("blockquote[data-alert='tip']")
+    ).toBeTruthy();
+    expect(canvas.getByRole("table"));
+    expect(canvasElement.querySelector("pre code")).toHaveTextContent(
+      "const answer = 42;"
+    );
+    expect(canvasElement.querySelector("section[data-footnotes]")).toBeTruthy();
+  },
+};
+
 const gfmSource = `| Feature | Status |
 | --- | --- |
 | Tables | Done |
@@ -105,6 +198,54 @@ export const GitHubFlavoredMarkdown: Story = {
       "href",
       "https://example.com"
     );
+  },
+};
+
+const alertsSource = `> [!NOTE]
+> Useful information users should know.
+
+> [!TIP]
+> A helpful suggestion.
+
+> [!IMPORTANT]
+> Key information users need.
+
+> [!WARNING]
+> Urgent info needing attention.
+
+> [!CAUTION]
+> Advises about risks or negative outcomes.
+
+> A plain quote stays a plain quote.
+`;
+
+/**
+ * GitHub-style alerts (`> [!NOTE]` … `[!CAUTION]`) render as Nimbus callouts:
+ * a colored left border, tinted background, and a type icon. The type is also
+ * exposed to assistive tech via a visually-hidden label. A blockquote without a
+ * recognized marker renders as an ordinary quote.
+ */
+export const Alerts: Story = {
+  render: () => <Markdown>{alertsSource}</Markdown>,
+  play: async ({ canvasElement }) => {
+    // Each recognized marker tags its blockquote with data-alert and strips the
+    // marker text from the rendered content.
+    for (const type of ["note", "tip", "important", "warning", "caution"]) {
+      const alert = canvasElement.querySelector(
+        `blockquote[data-alert='${type}']`
+      );
+      expect(alert).toBeTruthy();
+      expect(alert).not.toHaveTextContent(`[!${type.toUpperCase()}]`);
+    }
+
+    // The type is conveyed to assistive tech (not by color alone).
+    const note = canvasElement.querySelector("blockquote[data-alert='note']");
+    expect(note).toHaveTextContent("Note");
+    expect(note).toHaveTextContent("Useful information users should know.");
+
+    // A markerless blockquote is left as a plain quote.
+    const plain = canvasElement.querySelector("blockquote:not([data-alert])");
+    expect(plain).toHaveTextContent("A plain quote stays a plain quote.");
   },
 };
 

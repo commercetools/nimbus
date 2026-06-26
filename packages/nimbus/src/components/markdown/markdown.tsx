@@ -11,6 +11,8 @@ import {
   getHeadingLevels,
   findHeadingLevelSkips,
   remarkCustomComponentTags,
+  remarkGithubAlerts,
+  ALERT_TYPES,
 } from "./utils";
 import { markdownMessagesStrings } from "./markdown.messages";
 import type { MarkdownProps } from "./markdown.types";
@@ -83,6 +85,22 @@ export const Markdown = (props: MarkdownProps) => {
     [stringFormatter]
   );
 
+  // Localized, visually-hidden type labels for GitHub alerts (note/tip/…), keyed
+  // by alert type. Memoized on the (per-locale stable) formatter so the renderer
+  // map memo stays stable.
+  const alertLabels = React.useMemo(
+    () =>
+      Object.fromEntries(
+        ALERT_TYPES.map((type) => [
+          type,
+          stringFormatter.format(
+            `alert${type[0].toUpperCase()}${type.slice(1)}`
+          ),
+        ])
+      ) as Record<(typeof ALERT_TYPES)[number], string>,
+    [stringFormatter]
+  );
+
   useHeadingSkipWarning(children);
 
   // Accessible streaming state, owned by the always-mounted root so it survives
@@ -119,9 +137,10 @@ export const Markdown = (props: MarkdownProps) => {
     const nimbusComponents = createNimbusComponents({
       headingOffset,
       opensInNewTabLabel,
+      alertLabels,
     });
     return { ...nimbusComponents, ...componentsOverride } as Components;
-  }, [headingOffset, opensInNewTabLabel, componentsOverride]);
+  }, [headingOffset, opensInNewTabLabel, alertLabels, componentsOverride]);
 
   // Custom component tags = consumer `components` keys that are not standard
   // markdown/GFM element names. Their presence (a) registers them with the
@@ -143,9 +162,10 @@ export const Markdown = (props: MarkdownProps) => {
       customTagNames.size > 0
         ? [
             remarkGfm,
+            remarkGithubAlerts,
             remarkCustomComponentTags({ registeredNames: customTagNames }),
           ]
-        : [remarkGfm],
+        : [remarkGfm, remarkGithubAlerts],
     [customTagNames]
   );
 

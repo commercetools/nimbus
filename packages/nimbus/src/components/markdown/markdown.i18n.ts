@@ -23,4 +23,34 @@ export const messages = {
       "Accessible label for the link that jumps from a footnote definition back to its reference; {index} is the footnote number",
     defaultMessage: "Back to reference {index}",
   },
+  alertNote: {
+    id: "Nimbus.Markdown.alertNote",
+    description:
+      "Visually-hidden label naming a GitHub-style note alert/callout for assistive technology",
+    defaultMessage: "Note",
+  },
+  alertTip: {
+    id: "Nimbus.Markdown.alertTip",
+    description:
+      "Visually-hidden label naming a GitHub-style tip alert/callout for assistive technology",
+    defaultMessage: "Tip",
+  },
+  alertImportant: {
+    id: "Nimbus.Markdown.alertImportant",
+    description:
+      "Visually-hidden label naming a GitHub-style important alert/callout for assistive technology",
+    defaultMessage: "Important",
+  },
+  alertWarning: {
+    id: "Nimbus.Markdown.alertWarning",
+    description:
+      "Visually-hidden label naming a GitHub-style warning alert/callout for assistive technology",
+    defaultMessage: "Warning",
+  },
+  alertCaution: {
+    id: "Nimbus.Markdown.alertCaution",
+    description:
+      "Visually-hidden label naming a GitHub-style caution alert/callout for assistive technology",
+    defaultMessage: "Caution",
+  },
 };
