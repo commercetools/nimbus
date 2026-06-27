@@ -362,6 +362,18 @@ watcher
     });
 
     printStartupSummary(documentation.size, typeCount);
+
+    // Signal readiness to the root dev orchestrator (scripts/start-dev.mjs), if
+    // it launched us. Gated on the env var so standalone `pnpm start:docs` is
+    // unaffected. Written last so Storybook only boots after our output settles.
+    const readyMarker = process.env.NIMBUS_DEV_READY_MARKER;
+    if (readyMarker) {
+      try {
+        await fs.writeFile(readyMarker, String(Date.now()));
+      } catch (error) {
+        console.error("Failed to write dev-ready marker:", error);
+      }
+    }
   })
   .on("error", (error: unknown) =>
     console.error("Error watching files:", error)
