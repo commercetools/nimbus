@@ -1,140 +1,80 @@
 /**
- * No Sidebar Layout Component
+ * No Sidebar Body
  *
- * A simplified full-width layout without left navigation or right aside (TOC).
- * Only includes the top bar and breadcrumb navigation.
- * Does not use AppFrame grid to allow true full-width content.
+ * The full-width, scrollable body of the no-sidebar layout (no left navigation
+ * or right aside). The breadcrumb bar and top bar live in the persistent shell
+ * (`dynamic-layout.tsx`); this component is the part that swaps in/out when the
+ * active document switches between the `app-frame` and `no-sidebar` layouts.
  */
 
 import { Suspense, useRef } from "react";
-import { Outlet, useLocation } from "react-router-dom";
-import { LoadingSpinner, Box, Flex, ScrollArea } from "@commercetools/nimbus";
-import { AppNavBar } from "@/components/navigation/app-nav-bar";
-import { BreadcrumbNav } from "@/components/navigation/breadcrumb";
+import { Outlet } from "react-router-dom";
+import { LoadingSpinner, Box, ScrollArea } from "@commercetools/nimbus";
 import {
   ScrollContainerProvider,
   useMainViewport,
 } from "@/contexts/scroll-container-context";
 import { useScrollRestoration } from "@/hooks/use-scroll-restoration";
+import { useRouteInfo } from "@/hooks/use-route-info";
 
-function NoSidebarLayoutInner() {
+function NoSidebarBodyInner() {
   const mainViewportRef = useMainViewport();
 
   // Enable scroll restoration on navigation
   useScrollRestoration();
 
-  // Get current location to trigger content animation on route changes
-  const location = useLocation();
+  // Key the content on the resolved base route (not the full pathname) so a
+  // page that owns a sub-route space — like Icons (`/icons/:name`,
+  // `/icons/category/:slug`) — is NOT remounted as you navigate within it. A
+  // remount would re-suspend (flashing the spinner), drop the page's state, and
+  // re-run its data loads even though everything is already loaded. This
+  // matches the app-frame layout's behavior.
+  const { baseRoute } = useRouteInfo();
 
   return (
-    <Flex direction="column" height="100vh" width="100vw" overflow="hidden">
-      {/* Breadcrumb Bar - At the very top */}
-      <Box
-        id="app-frame-breadcrumb-bar"
-        position="sticky"
-        top={0}
-        zIndex={1000}
-        bg="bg"
-        borderBottom="solid-25"
-        borderColor="neutral.3"
-        width="full"
-        px="400"
-        py="200"
-        css={{
-          animation: `${location.pathname === "/" || location.pathname === "/home" ? "slideUp" : "slideDown"} 0.3s ease-out forwards`,
-          "@keyframes slideUp": {
-            from: {
-              transform: "translateY(0)",
-              opacity: 1,
-            },
-            to: {
-              transform: "translateY(-100%)",
-              opacity: 0,
-              height: 0,
-              minHeight: 0,
-              padding: 0,
-              margin: 0,
-              border: "none",
-            },
+    <ScrollArea
+      as="main"
+      viewportRef={mainViewportRef}
+      flex={1}
+      bg="bg"
+      width="full"
+      size="sm"
+      css={{
+        animation: "fadeInSlideDown 0.4s ease-out forwards",
+        "@keyframes fadeInSlideDown": {
+          from: {
+            opacity: 0,
+            transform: "translateY(-16px)",
           },
-          "@keyframes slideDown": {
-            from: {
-              transform: "translateY(-100%)",
-              opacity: 0,
-            },
-            to: {
-              transform: "translateY(0)",
-              opacity: 1,
-            },
+          to: {
+            opacity: 1,
+            transform: "translateY(0)",
           },
-        }}
-      >
-        <Suspense fallback={<Box />}>
-          <BreadcrumbNav />
-        </Suspense>
-      </Box>
-
-      {/* Top Bar */}
-      <Box
-        id="app-frame-top-bar"
-        position="sticky"
-        top={0}
-        zIndex={999}
-        bg="bg"
-        borderBottom="solid-25"
-        borderColor="neutral.3"
-        width="full"
-      >
+        },
+      }}
+    >
+      <Box p="800">
         <Suspense fallback={<LoadingSpinner />}>
-          <AppNavBar />
+          <Box
+            key={baseRoute}
+            animationName="fade-in"
+            animationDuration="slow"
+            width="full"
+          >
+            <Outlet />
+          </Box>
         </Suspense>
       </Box>
-
-      {/* Main Content - Full width, scrollable */}
-      <ScrollArea
-        as="main"
-        viewportRef={mainViewportRef}
-        flex={1}
-        bg="bg"
-        width="full"
-        size="sm"
-        css={{
-          animation: "fadeInSlideDown 0.4s ease-out forwards",
-          "@keyframes fadeInSlideDown": {
-            from: {
-              opacity: 0,
-              transform: "translateY(-16px)",
-            },
-            to: {
-              opacity: 1,
-              transform: "translateY(0)",
-            },
-          },
-        }}
-      >
-        <Box p="800">
-          <Suspense fallback={<LoadingSpinner />}>
-            <Box
-              key={location.pathname}
-              animationName="fade-in"
-              animationDuration="slow"
-              width="full"
-            >
-              <Outlet />
-            </Box>
-          </Suspense>
-        </Box>
-      </ScrollArea>
-    </Flex>
+    </ScrollArea>
   );
 }
 
-export function NoSidebarLayout() {
+export function NoSidebarBody() {
   const mainViewportRef = useRef<HTMLDivElement>(null);
 
   return (
     <ScrollContainerProvider mainViewportRef={mainViewportRef}>
-      <NoSidebarLayoutInner />
+      <NoSidebarBodyInner />
     </ScrollContainerProvider>
   );
 }

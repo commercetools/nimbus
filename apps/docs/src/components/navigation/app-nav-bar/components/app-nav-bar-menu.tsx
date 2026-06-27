@@ -1,12 +1,16 @@
 import { useAtom } from "jotai";
 import { Suspense } from "react";
-import { Stack, Link, Text, Box } from "@commercetools/nimbus";
+import { TabNav } from "@commercetools/nimbus";
 import { menuAtom } from "@/atoms/menu";
 import { useRouteInfo } from "@/hooks/use-route-info";
 
 /**
  * AppNavBarMenu - Displays first-level menu items in tab-like navigation
  * Shows items like Home, Design Tokens, Components, etc.
+ *
+ * Uses the Nimbus `TabNav` component for route-based navigation. `TabNav.Item`
+ * renders React Aria `<a>` links, which are intercepted by the app's
+ * `NimbusProvider router={{ navigate }}` for client-side routing.
  */
 export const AppNavBarMenu = () => {
   const [menu] = useAtom(menuAtom);
@@ -18,7 +22,7 @@ export const AppNavBarMenu = () => {
   }
 
   return (
-    <Stack direction="row" gap="200" alignItems="stretch">
+    <TabNav.Root aria-label="Main navigation" width="auto">
       {menu.map((item) => {
         // Check if this item or any of its children is active
         const isActive =
@@ -26,36 +30,16 @@ export const AppNavBarMenu = () => {
           activeRoute.startsWith(item.route + "/");
 
         return (
-          <Box key={item.id} colorPalette={isActive ? "primary" : "neutral"}>
-            <Link
-              href={`/${item.route}`}
-              display="block"
-              focusVisibleRing="outside"
-              textDecoration="none"
-            >
-              <Text
-                borderRadius="200"
-                color={isActive ? "colorPalette.11!" : "colorPalette.10!"}
-                bg={isActive ? "colorPalette.3" : undefined}
-                fontWeight="500"
-                fontSize="350"
-                px="350"
-                py="150"
-                transition="colors"
-                transitionDuration="fast"
-                _hover={{
-                  colorPalette: "primary",
-                  color: "colorPalette.11",
-                  bg: isActive ? "colorPalette.3" : "colorPalette.2",
-                }}
-              >
-                {item.label}
-              </Text>
-            </Link>
-          </Box>
+          <TabNav.Item
+            key={item.id}
+            href={`/${item.route}`}
+            isCurrent={isActive}
+          >
+            {item.label}
+          </TabNav.Item>
         );
       })}
-    </Stack>
+    </TabNav.Root>
   );
 };
 
