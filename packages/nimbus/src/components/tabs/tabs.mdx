@@ -190,3 +190,35 @@ const App = () => (
   </Stack>
 )
 ```
+
+### Animated indicator
+
+Set `animated` to slide a single active marker between tabs as the selection
+changes, rather than snapping it. The indicator adapts to the variant,
+orientation, and placement — a thin bar on the active tab's edge for the `line`
+variant, or a filled highlight for `pills`. It is decorative and does not affect
+selection, focus, or keyboard behavior, and it automatically respects the user's
+reduced-motion preference (snapping instead of sliding).
+
+```jsx live
+const App = () => {
+  const tabs = [
+    { id: 'home', tabLabel: 'Home', panelContent: 'Home content' },
+    { id: 'about', tabLabel: 'About', panelContent: 'About content' },
+    { id: 'contact', tabLabel: 'Contact', panelContent: 'Contact content' },
+  ];
+
+  return (
+    <Stack direction="column" gap="800">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="bold">Line</Text>
+        <Tabs.Root variant="line" animated tabs={tabs} />
+      </Stack>
+      <Stack direction="column" gap="200">
+        <Text fontWeight="bold">Pills</Text>
+        <Tabs.Root variant="pills" animated tabs={tabs} />
+      </Stack>
+    </Stack>
+  )
+}
+```

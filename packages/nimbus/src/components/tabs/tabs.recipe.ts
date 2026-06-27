@@ -72,12 +72,34 @@ export const tabsSlotRecipe = defineSlotRecipe({
 
   variants: {
     variant: {
-      line: {},
+      line: {
+        tab: {
+          // Animated: keep the label above the indicator, and let the sliding
+          // bar own the active marker (suppress the static underline, all
+          // orientations).
+          '[data-animated="true"] &': {
+            position: "relative",
+            zIndex: "1",
+          },
+          '[data-animated="true"] &[data-selected]': {
+            boxShadow: "none",
+          },
+        },
+      },
       pills: {
         tab: {
           borderRadius: "full",
           _selected: {
             backgroundColor: "primary.3",
+          },
+          // Animated: keep the label above the indicator, and let the sliding
+          // filled highlight own the background.
+          '[data-animated="true"] &': {
+            position: "relative",
+            zIndex: "1",
+          },
+          '[data-animated="true"] &[data-selected]': {
+            backgroundColor: "transparent",
           },
         },
       },

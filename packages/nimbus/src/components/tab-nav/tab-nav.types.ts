@@ -40,6 +40,18 @@ export type TabNavItemSlotProps = HTMLChakraProps<"a", TabNavRecipeProps>;
  */
 export type TabNavProps = OmitInternalProps<TabNavRootSlotProps> & {
   /**
+   * When `true`, renders a single active-highlight indicator that smoothly
+   * slides between items as the active item changes, instead of the static
+   * per-item highlight. The indicator adapts to the variant: a sliding
+   * underline bar for `tabs`, and a sliding filled highlight for `filled` /
+   * `pill`.
+   *
+   * The motion is automatically disabled when the user requests
+   * `prefers-reduced-motion: reduce` — the highlight snaps into place.
+   * @default false
+   */
+  animated?: boolean;
+  /**
    * A ref to the root `<nav>` element.
    */
   ref?: React.Ref<HTMLElement>;

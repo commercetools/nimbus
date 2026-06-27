@@ -136,6 +136,43 @@ const App = () => {
 };
 ```
 
+### Animated indicator
+
+Pass `animated` to slide a single active marker between tabs as the selection
+changes, instead of snapping. The indicator adapts to the resolved variant,
+orientation, and placement: a thin bar on the active tab's bottom edge
+(horizontal `line`), its right or left edge (vertical `line`, per `placement`),
+or a filled, fully-rounded highlight (`pills`).
+
+The indicator is decorative (`aria-hidden`, non-focusable), so `aria-selected`,
+focus rings, and keyboard navigation are unchanged. The slide is automatically
+disabled under `prefers-reduced-motion: reduce` — the marker snaps into place.
+`animated` defaults to `false`.
+
+```jsx live-dev
+const App = () => {
+  const tabs = [
+    { id: '1', tabLabel: 'Dashboard', panelContent: 'Dashboard view' },
+    { id: '2', tabLabel: 'Analytics', panelContent: 'Analytics view' },
+    { id: '3', tabLabel: 'Reports', panelContent: 'Reports view' },
+  ];
+
+  return (
+    <Stack direction="column" gap="600">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Line variant, animated</Text>
+        <Tabs.Root variant="line" animated tabs={tabs} />
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Pills variant, animated</Text>
+        <Tabs.Root variant="pills" animated tabs={tabs} />
+      </Stack>
+    </Stack>
+  );
+};
+```
+
 ### Orientation
 
 Tabs can be displayed horizontally or vertically using the `orientation` prop.

@@ -60,6 +60,74 @@ const App = () => (
 )
 ```
 
+### Variants
+
+`TabNav` ships with three visual variants:
+
+- **`tabs`** (default) — an underline strip beneath the active item.
+- **`filled`** — a soft rounded-rect highlight behind the active item.
+- **`pill`** — a fully-rounded capsule highlight behind the active item.
+
+The `filled` and `pill` variants drop the underline baseline and add a small gap
+between items. Their active highlight is themeable via `colorPalette` (it
+defaults to `primary`).
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="600">
+    {["tabs", "filled", "pill"].map((variant) => (
+      <Stack key={variant} direction="column" gap="300">
+        <Text fontWeight="600">{variant}</Text>
+        <TabNav.Root aria-label={`Order navigation (${variant})`} variant={variant}>
+          <TabNav.Item href="/orders/123/general" isCurrent>
+            General
+          </TabNav.Item>
+          <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+          <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
+        </TabNav.Root>
+      </Stack>
+    ))}
+  </Stack>
+)
+```
+
+### Animated highlight
+
+Add `animated` to render a single active-highlight indicator that smoothly slides
+between items as the active item changes, instead of the static per-item
+highlight. The indicator adapts to the variant — a sliding underline bar for
+`tabs`, and a sliding filled highlight for `filled`/`pill`. The motion
+automatically respects `prefers-reduced-motion: reduce`: when reduced motion is
+requested, the highlight snaps into place instead of sliding.
+
+```jsx live
+const App = () => {
+  const items = [
+    { href: "/orders/123/general", label: "General" },
+    { href: "/orders/123/items", label: "Items" },
+    { href: "/orders/123/shipping", label: "Shipping" },
+  ];
+  const [activePath, setActivePath] = React.useState(items[0].href);
+  return (
+    <TabNav.Root aria-label="Order navigation" variant="filled" animated>
+      {items.map((item) => (
+        <TabNav.Item
+          key={item.href}
+          href={item.href}
+          isCurrent={activePath === item.href}
+          onClick={(e) => {
+            e.preventDefault();
+            setActivePath(item.href);
+          }}
+        >
+          {item.label}
+        </TabNav.Item>
+      ))}
+    </TabNav.Root>
+  );
+}
+```
+
 ### Active item
 
 Mark the currently viewed page with `isCurrent`. This renders `aria-current="page"`

@@ -6,3 +6,4 @@ export * from "./use-color-mode-value";
 export * from "./use-localized-string-formatter";
 export * from "./use-drag-and-drop";
 export * from "./use-focus-input-on-field-click";
+export * from "./use-sliding-indicator";
