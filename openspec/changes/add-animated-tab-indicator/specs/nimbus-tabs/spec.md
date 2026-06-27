@@ -1,41 +1,54 @@
 ## ADDED Requirements
 
-### Requirement: Animated active-tab indicator
+### Requirement: Unified variants with a sliding active indicator
 
-`Tabs.Root` SHALL accept an opt-in `animated` boolean prop. When `true`, `Tabs`
-SHALL render a single decorative indicator that slides between tabs as the
-selected tab changes, instead of the static per-tab marker. `animated` SHALL
-default to `false`, leaving the default appearance and behavior unchanged. The
-indicator SHALL be `aria-hidden` and non-focusable, and SHALL NOT affect
-`aria-selected`, focus rings, or keyboard navigation.
+`Tabs` and `TabNav` SHALL expose the same three variants — `underline` (the
+default), `rounded`, and `pill` — and SHALL render the active marker as a single
+indicator that slides between items/tabs as the selection changes, rather than a
+static per-item marker. The indicator SHALL be decorative (`aria-hidden`,
+non-focusable) and SHALL NOT affect the selected state, focus, or keyboard
+navigation. The motion SHALL be disabled under `prefers-reduced-motion: reduce`
+(the indicator snaps). There SHALL be no per-instance prop to toggle the
+animation. The recipe's static marker SHALL remain as the no-JS / pre-hydration
+fallback.
 
-#### Scenario: Animated indicator follows the selected tab
+#### Scenario: Active marker slides on selection change
 
-- **WHEN** `Tabs.Root` has `animated` and the selected tab changes
-- **THEN** the indicator slides from the previously selected tab to the newly
-  selected tab
+- **WHEN** the selected item/tab changes
+- **THEN** the indicator slides from the previous selection to the new one
 
-#### Scenario: Indicator adapts to variant, orientation, and placement
+#### Scenario: Indicator adapts to the variant
 
-- **WHEN** `animated` is set
-- **THEN** for the `line` variant the indicator is a thin bar on the active tab's
-  bottom edge when horizontal, its right edge when vertical with
-  `placement="start"`, and its left edge when vertical with `placement="end"`;
-  and for the `pills` variant the indicator is a filled, fully-rounded highlight
-  behind the active tab
-
-#### Scenario: Static marker is suppressed while animated
-
-- **WHEN** `animated` is set
-- **THEN** the static selected marker (the `line` underline / `pills` background)
-  is not rendered, so only the sliding indicator shows
+- **WHEN** the variant is `underline`
+- **THEN** the indicator is a thin bar on the active item's marker edge (bottom
+  for horizontal; the inner side for vertical `Tabs`, per `placement`)
+- **WHEN** the variant is `rounded` or `pill`
+- **THEN** the indicator is a filled highlight behind the active item (subtly
+  rounded for `rounded`, a full capsule for `pill`), themeable via `colorPalette`
 
 #### Scenario: Reduced motion snaps the indicator
 
 - **WHEN** the user requests `prefers-reduced-motion: reduce`
 - **THEN** the indicator repositions without a slide transition
 
-#### Scenario: Default is unchanged
+#### Scenario: No-JS fallback
 
-- **WHEN** `animated` is not set
-- **THEN** `Tabs` renders the static selected marker and no indicator element
+- **WHEN** JavaScript has not yet run (SSR / pre-hydration)
+- **THEN** the recipe's static marker is shown; once the hook activates it is
+  replaced by the sliding indicator before paint
+
+### Requirement: Deprecated variant aliases
+
+The components SHALL accept the previous variant names as deprecated aliases,
+resolved to the new names at runtime, so existing consumers keep working:
+`Tabs` `line` → `underline` and `pills` → `pill`; `TabNav` `tabs` → `underline`.
+
+#### Scenario: Legacy Tabs variant names still render
+
+- **WHEN** `Tabs.Root` is given `variant="line"` or `variant="pills"`
+- **THEN** it renders as `underline` / `pill` respectively
+
+#### Scenario: Legacy TabNav variant name still renders
+
+- **WHEN** `TabNav.Root` is given `variant="tabs"`
+- **THEN** it renders as `underline`

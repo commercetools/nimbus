@@ -89,6 +89,13 @@ export function useSlidingIndicator({
     const container = indicator?.parentElement;
     if (!indicator || !container) return;
 
+    // Mark the container as JS-enhanced so the recipe suppresses its static
+    // marker and lets the sliding indicator own the highlight. Setting this on
+    // mount (not in server markup) keeps the static marker as the SSR /
+    // pre-hydration / no-JS fallback; the swap happens before paint, so there
+    // is no flash.
+    container.setAttribute("data-animated", "true");
+
     const update = () => {
       const active = container.querySelector<HTMLElement>(activeSelector);
       if (!active) {
@@ -133,6 +140,7 @@ export function useSlidingIndicator({
     return () => {
       mutationObserver.disconnect();
       resizeObserver.disconnect();
+      container.removeAttribute("data-animated");
     };
     // `getGeometry` is intentionally excluded — callers pass an inline closure;
     // `deps` is the explicit re-run signal for geometry-affecting inputs.

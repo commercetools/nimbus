@@ -41,3 +41,10 @@ parent element.
 - **WHEN** the hook is called with `enabled: false`
 - **THEN** it does not measure, observe, or mutate the indicator, and registers
   no observers
+
+#### Scenario: Marks the container as JS-enhanced
+
+- **WHEN** the hook activates (on mount, enabled)
+- **THEN** it sets `data-animated="true"` on the container and removes it on
+  cleanup, so the recipe can suppress the static marker only once the sliding
+  indicator is live (keeping the static marker as the no-JS fallback)

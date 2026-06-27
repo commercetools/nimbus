@@ -7,11 +7,41 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * ⚠️  VISUAL TWIN — KEEP IN SYNC WITH `tab-nav.recipe.ts`
  * Tabs and TabNav are intentionally separate components with separate recipes
  * (different semantics: content-panel widget vs. navigation links). They do NOT
- * share a recipe. However, the `line` horizontal variant of Tabs is designed to
- * be visually identical to the `tabs` variant of TabNav. If you change colors,
- * spacing, typography, transitions, or focus styles in one, apply the equivalent
- * change to the other.
+ * share a recipe. However, they expose the SAME three variants — `underline`,
+ * `rounded`, and `pill` — designed to look identical between the two. If you
+ * change colors, spacing, typography, transitions, or focus styles for any of
+ * these variants in one, apply the equivalent change to the other. (Tabs
+ * additionally layers `orientation`/`placement` onto `underline`.)
  */
+
+/**
+ * Shared `tab`-slot styles for the `rounded` and `pill` variants — the mirror of
+ * `highlightItemBase` in `tab-nav.recipe.ts`. A neutral resting state, a hover
+ * color shift, and a themeable active highlight driven by `colorPalette`
+ * (defaulting to `primary` via the root slot). `position: relative` + `zIndex`
+ * keep the label above the sliding indicator; once the indicator is active
+ * (`[data-animated="true"]`, set by the hook on mount) it owns the highlight, so
+ * the static selected background is suppressed to avoid a double highlight.
+ */
+const highlightTabBase = {
+  color: "neutral.11",
+  borderRadius: "200",
+  _hover: {
+    color: "colorPalette.11",
+  },
+  _selected: {
+    color: "colorPalette.11",
+    background: "colorPalette.3",
+  },
+  '[data-animated="true"] &': {
+    position: "relative",
+    zIndex: "1",
+  },
+  '[data-animated="true"] &[data-selected]': {
+    background: "transparent",
+  },
+} as const;
+
 export const tabsSlotRecipe = defineSlotRecipe({
   slots: ["root", "list", "tab", "panels", "panel", "trigger"],
 
@@ -21,6 +51,8 @@ export const tabsSlotRecipe = defineSlotRecipe({
     root: {
       display: "flex",
       width: "100%",
+      // Anchors the absolutely-positioned sliding indicator (all variants).
+      position: "relative",
     },
     list: {
       display: "flex",
@@ -72,7 +104,9 @@ export const tabsSlotRecipe = defineSlotRecipe({
 
   variants: {
     variant: {
-      line: {
+      // Underline strip beneath the active tab. The per-orientation/placement
+      // marker edges live in `compoundVariants` below.
+      underline: {
         tab: {
           // Animated: keep the label above the indicator, and let the sliding
           // bar own the active marker (suppress the static underline, all
@@ -86,21 +120,31 @@ export const tabsSlotRecipe = defineSlotRecipe({
           },
         },
       },
-      pills: {
+      // Soft rounded-rect highlight behind the active tab. No baseline; small
+      // gap between tabs.
+      rounded: {
+        root: {
+          colorPalette: "primary",
+        },
+        list: {
+          gap: "100",
+        },
+        tab: highlightTabBase,
+      },
+      // Same idea as `rounded`, but a fully-rounded capsule highlight and a touch
+      // more horizontal padding so it reads as a pill.
+      pill: {
+        root: {
+          colorPalette: "primary",
+        },
+        list: {
+          gap: "100",
+        },
         tab: {
+          ...highlightTabBase,
           borderRadius: "full",
-          _selected: {
-            backgroundColor: "primary.3",
-          },
-          // Animated: keep the label above the indicator, and let the sliding
-          // filled highlight own the background.
-          '[data-animated="true"] &': {
-            position: "relative",
-            zIndex: "1",
-          },
-          '[data-animated="true"] &[data-selected]': {
-            backgroundColor: "transparent",
-          },
+          paddingLeft: "calc(var(--tabs-padding-left) + {spacing.100})",
+          paddingRight: "calc(var(--tabs-padding-right) + {spacing.100})",
         },
       },
     },
@@ -159,10 +203,10 @@ export const tabsSlotRecipe = defineSlotRecipe({
 
   // Compound variants for different variant/orientation/placement combinations
   compoundVariants: [
-    // ==================== LINE VARIANT ====================
-    // Line + Horizontal
+    // ==================== UNDERLINE VARIANT ====================
+    // Underline + Horizontal
     {
-      variant: "line",
+      variant: "underline",
       orientation: "horizontal",
       css: {
         list: {
@@ -176,9 +220,9 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
       },
     },
-    // Line + Vertical + Start (tabs on left, border on right between tabs and content)
+    // Underline + Vertical + Start (tabs on left, border on right between tabs and content)
     {
-      variant: "line",
+      variant: "underline",
       orientation: "vertical",
       placement: "start",
       css: {
@@ -193,9 +237,9 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
       },
     },
-    // Line + Vertical + End (tabs on right, border on left between tabs and content)
+    // Underline + Vertical + End (tabs on right, border on left between tabs and content)
     {
-      variant: "line",
+      variant: "underline",
       orientation: "vertical",
       placement: "end",
       css: {
@@ -212,7 +256,7 @@ export const tabsSlotRecipe = defineSlotRecipe({
     },
 
     // ==================== PLACEMENT-ONLY VARIANTS ====================
-    // Vertical + End (applies to all variants including pills)
+    // Vertical + End (applies to all variants)
     {
       orientation: "vertical",
       placement: "end",
@@ -242,38 +286,10 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
       },
     },
-
-    // ==================== PILLS VARIANT ====================
-    // Pills + Horizontal
-    {
-      variant: "pills",
-      orientation: "horizontal",
-      css: {
-        list: {
-          gap: "200",
-          boxShadow: "0 0 0 {sizes.25} {colors.neutral.6}",
-          borderRadius: "full",
-          padding: "100",
-        },
-      },
-    },
-    // Pills + Vertical
-    {
-      variant: "pills",
-      orientation: "vertical",
-      css: {
-        list: {
-          gap: "200",
-          boxShadow: "0 0 0 {sizes.25} {colors.neutral.6}",
-          borderRadius: "400",
-          padding: "100",
-        },
-      },
-    },
   ],
 
   defaultVariants: {
-    variant: "line",
+    variant: "underline",
     orientation: "horizontal",
     placement: "start",
     size: "md",

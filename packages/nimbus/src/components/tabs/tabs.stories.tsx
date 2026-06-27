@@ -24,7 +24,7 @@ const meta: Meta<typeof Tabs.Root> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["line", "pills"],
+      options: ["underline", "rounded", "pill"],
       description: "Visual style variant of the tabs",
     },
     orientation: {
@@ -42,11 +42,6 @@ const meta: Meta<typeof Tabs.Root> = {
       control: "select",
       options: ["sm", "md", "lg"],
       description: "Size of the tabs affecting padding and font size",
-    },
-    animated: {
-      control: "boolean",
-      description:
-        "Slide a single indicator between tabs as the selection changes (adapts to variant/orientation/placement). Respects prefers-reduced-motion.",
     },
   },
 };
@@ -441,7 +436,7 @@ export const VerticalPlacement: Story = {
             <Tabs.Root
               orientation="vertical"
               placement="end"
-              variant="pills"
+              variant="pill"
               tabs={placementTabs}
             />
           </Box>
@@ -807,27 +802,27 @@ export const Variants: Story = {
 
     return (
       <Stack direction="column" gap="600">
-        {/* Line Variant */}
+        {/* Underline Variant */}
         <Stack direction="column" gap="300">
           <Heading as="h3" fontSize="500">
-            Line Variant (Default)
+            Underline Variant (Default)
           </Heading>
           <Text color="neutral.11" mb="400">
             Tabs with an underline indicator showing the selected tab.
           </Text>
           <Stack direction="column" gap="400">
-            <Box data-testid="line-variant-horizontal">
+            <Box data-testid="underline-variant-horizontal">
               <Heading as="h4" fontSize="350" mb="200">
                 Horizontal
               </Heading>
-              <Tabs.Root variant="line" tabs={variantTabs} />
+              <Tabs.Root variant="underline" tabs={variantTabs} />
             </Box>
-            <Box data-testid="line-variant-vertical">
+            <Box data-testid="underline-variant-vertical">
               <Heading as="h4" fontSize="350" mb="200">
                 Vertical
               </Heading>
               <Tabs.Root
-                variant="line"
+                variant="underline"
                 orientation="vertical"
                 tabs={variantTabs}
               />
@@ -835,27 +830,55 @@ export const Variants: Story = {
           </Stack>
         </Stack>
 
-        {/* Pills Variant */}
+        {/* Rounded Variant */}
         <Stack direction="column" gap="300">
           <Heading as="h3" fontSize="500">
-            Pills Variant
+            Rounded Variant
           </Heading>
           <Text color="neutral.11" mb="400">
-            Tabs with rounded pill-like appearance and background highlighting.
+            A soft rounded-rect highlight behind the selected tab.
           </Text>
           <Stack direction="column" gap="400">
-            <Box data-testid="pills-variant-horizontal">
+            <Box data-testid="rounded-variant-horizontal">
               <Heading as="h4" fontSize="350" mb="200">
                 Horizontal
               </Heading>
-              <Tabs.Root variant="pills" tabs={variantTabs} />
+              <Tabs.Root variant="rounded" tabs={variantTabs} />
             </Box>
-            <Box data-testid="pills-variant-vertical">
+            <Box data-testid="rounded-variant-vertical">
               <Heading as="h4" fontSize="350" mb="200">
                 Vertical
               </Heading>
               <Tabs.Root
-                variant="pills"
+                variant="rounded"
+                orientation="vertical"
+                tabs={variantTabs}
+              />
+            </Box>
+          </Stack>
+        </Stack>
+
+        {/* Pill Variant */}
+        <Stack direction="column" gap="300">
+          <Heading as="h3" fontSize="500">
+            Pill Variant
+          </Heading>
+          <Text color="neutral.11" mb="400">
+            A fully-rounded capsule highlight behind the selected tab.
+          </Text>
+          <Stack direction="column" gap="400">
+            <Box data-testid="pill-variant-horizontal">
+              <Heading as="h4" fontSize="350" mb="200">
+                Horizontal
+              </Heading>
+              <Tabs.Root variant="pill" tabs={variantTabs} />
+            </Box>
+            <Box data-testid="pill-variant-vertical">
+              <Heading as="h4" fontSize="350" mb="200">
+                Vertical
+              </Heading>
+              <Tabs.Root
+                variant="pill"
                 orientation="vertical"
                 tabs={variantTabs}
               />
@@ -1292,9 +1315,9 @@ const getIndicator = (canvasElement: HTMLElement) =>
   canvasElement.querySelector<HTMLElement>('[aria-hidden="true"]');
 
 /**
- * With `animated`, the active marker becomes a single indicator that slides
- * between tabs as the selection changes instead of snapping. For the `line`
- * variant (horizontal) it is a thin bar on the active tab's bottom edge.
+ * The active marker is a single indicator that slides between tabs as the
+ * selection changes instead of snapping. For the `underline` variant
+ * (horizontal) it is a thin bar on the active tab's bottom edge.
  *
  * The slide is disabled under `prefers-reduced-motion: reduce`, and the
  * indicator is `aria-hidden` / non-focusable so `aria-selected`, focus, and
@@ -1302,8 +1325,7 @@ const getIndicator = (canvasElement: HTMLElement) =>
  */
 export const Animated: Story = {
   args: {
-    variant: "line",
-    animated: true,
+    variant: "underline",
     tabs: animatedTabs,
     tabListAriaLabel: "Animated tabs",
   },
@@ -1351,16 +1373,15 @@ export const Animated: Story = {
 };
 
 /**
- * The animated indicator adapts to a vertical `line` layout: the bar is pinned
- * to the active tab's inner edge (right edge for `placement="start"`) and slides
+ * The indicator adapts to a vertical `underline` layout: the bar is pinned to
+ * the active tab's inner edge (right edge for `placement="start"`) and slides
  * vertically between tabs.
  */
 export const AnimatedVertical: Story = {
   args: {
-    variant: "line",
+    variant: "underline",
     orientation: "vertical",
     placement: "start",
-    animated: true,
     tabs: animatedTabs,
     tabListAriaLabel: "Animated vertical tabs",
   },
@@ -1391,15 +1412,14 @@ export const AnimatedVertical: Story = {
 };
 
 /**
- * For the `pills` variant, the animated indicator is a filled, fully-rounded
- * highlight that slides behind the active tab.
+ * For the `pill` variant, the indicator is a filled, fully-rounded highlight
+ * that slides behind the active tab.
  */
-export const AnimatedPills: Story = {
+export const AnimatedPill: Story = {
   args: {
-    variant: "pills",
-    animated: true,
+    variant: "pill",
     tabs: animatedTabs,
-    tabListAriaLabel: "Animated pills tabs",
+    tabListAriaLabel: "Animated pill tabs",
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -1426,6 +1446,28 @@ export const AnimatedPills: Story = {
           initialTransform
         )
       );
+    });
+  },
+};
+
+/**
+ * The legacy `line` and `pills` variant names are still accepted as deprecated
+ * aliases for `underline` and `pill`, so existing code keeps working without
+ * changes.
+ */
+export const DeprecatedVariantAliases: Story = {
+  args: {
+    variant: "pills",
+    tabs: animatedTabs,
+    tabListAriaLabel: "Deprecated alias tabs",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Deprecated `pills` alias still renders tabs", async () => {
+      const tabs = canvas.getAllByRole("tab");
+      await expect(tabs).toHaveLength(3);
+      await expect(tabs[0]).toHaveAttribute("aria-selected", "true");
     });
   },
 };

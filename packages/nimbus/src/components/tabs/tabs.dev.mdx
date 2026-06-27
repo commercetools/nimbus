@@ -108,9 +108,12 @@ const App = () => {
 
 ### Visual variants
 
-The Tabs component offers two visual styles:
-- **line** (default) - Tabs with an underline indicator
-- **pills** - Tabs with a pill-shaped background when active
+The Tabs component offers three visual styles (the same set as `TabNav`):
+- **underline** (default) - an underline strip beneath the active tab
+- **rounded** - a soft rounded-rect highlight behind the active tab
+- **pill** - a fully-rounded capsule highlight behind the active tab
+
+The `rounded` and `pill` highlights are themeable via `colorPalette` (defaulting to `primary`). The legacy `line` (→ `underline`) and `pills` (→ `pill`) names are accepted as deprecated aliases.
 
 ```jsx live-dev
 const App = () => {
@@ -123,13 +126,18 @@ const App = () => {
   return (
     <Stack direction="column" gap="600">
       <Stack direction="column" gap="200">
-        <Text fontWeight="500">Line variant (default)</Text>
-        <Tabs.Root variant="line" tabs={tabs} />
+        <Text fontWeight="500">Underline variant (default)</Text>
+        <Tabs.Root variant="underline" tabs={tabs} />
       </Stack>
 
       <Stack direction="column" gap="200">
-        <Text fontWeight="500">Pills variant</Text>
-        <Tabs.Root variant="pills" tabs={tabs} />
+        <Text fontWeight="500">Rounded variant</Text>
+        <Tabs.Root variant="rounded" tabs={tabs} />
+      </Stack>
+
+      <Stack direction="column" gap="200">
+        <Text fontWeight="500">Pill variant</Text>
+        <Tabs.Root variant="pill" tabs={tabs} />
       </Stack>
     </Stack>
   );
@@ -138,40 +146,17 @@ const App = () => {
 
 ### Animated indicator
 
-Pass `animated` to slide a single active marker between tabs as the selection
-changes, instead of snapping. The indicator adapts to the resolved variant,
+The active marker always slides between tabs as the selection changes, instead
+of snapping — no prop required. The indicator adapts to the resolved variant,
 orientation, and placement: a thin bar on the active tab's bottom edge
-(horizontal `line`), its right or left edge (vertical `line`, per `placement`),
-or a filled, fully-rounded highlight (`pills`).
+(horizontal `underline`), its right or left edge (vertical `underline`, per
+`placement`), or a filled highlight (`rounded` / `pill`).
 
 The indicator is decorative (`aria-hidden`, non-focusable), so `aria-selected`,
 focus rings, and keyboard navigation are unchanged. The slide is automatically
 disabled under `prefers-reduced-motion: reduce` — the marker snaps into place.
-`animated` defaults to `false`.
-
-```jsx live-dev
-const App = () => {
-  const tabs = [
-    { id: '1', tabLabel: 'Dashboard', panelContent: 'Dashboard view' },
-    { id: '2', tabLabel: 'Analytics', panelContent: 'Analytics view' },
-    { id: '3', tabLabel: 'Reports', panelContent: 'Reports view' },
-  ];
-
-  return (
-    <Stack direction="column" gap="600">
-      <Stack direction="column" gap="200">
-        <Text fontWeight="500">Line variant, animated</Text>
-        <Tabs.Root variant="line" animated tabs={tabs} />
-      </Stack>
-
-      <Stack direction="column" gap="200">
-        <Text fontWeight="500">Pills variant, animated</Text>
-        <Tabs.Root variant="pills" animated tabs={tabs} />
-      </Stack>
-    </Stack>
-  );
-};
-```
+(There is no per-instance opt-out; disabling is a global, OS-level
+reduced-motion concern.)
 
 ### Orientation
 
@@ -393,7 +378,7 @@ Use the compound API for more control over tab and panel rendering, including cu
 ```jsx live-dev
 const App = () => {
   return (
-    <Tabs.Root variant="pills">
+    <Tabs.Root variant="pill">
       <Tabs.List>
         <Tabs.Tab id="overview">
           <Icons.Home />
@@ -681,7 +666,7 @@ Combine icons with text labels for more expressive tabs.
 ```jsx live-dev
 const App = () => {
   return (
-    <Tabs.Root variant="pills" size="lg">
+    <Tabs.Root variant="pill" size="lg">
       <Tabs.List>
         <Tabs.Tab id="dashboard">
           <Icons.Dashboard />
