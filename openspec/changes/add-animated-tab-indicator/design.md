@@ -1,3 +1,14 @@
+## Update (final scope)
+
+This change grew from "opt-in animated Tabs indicator" to: (a) the sliding
+indicator is the **default** for both components (no `animated` prop; the hook
+sets `data-animated` on mount so the static marker stays the no-JS fallback);
+(b) `Tabs` and `TabNav` share **one variant set** — `underline`/`rounded`/`pill`
+— with `Tabs`' flawed `pills` reimplemented on `TabNav`'s themeable highlight;
+(c) deprecated aliases (`line`/`tabs`→`underline`, `pills`→`pill`) are resolved
+in the component. The decisions below about indicator placement, geometry
+callback, static-marker suppression, and reduced motion still hold.
+
 ## Context
 
 `Tabs` is built on React Aria Components (`Tabs` / `TabList` / `Tab` / `TabPanel`).

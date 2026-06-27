@@ -16,18 +16,13 @@ const meta: Meta<typeof TabNav.Root> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["tabs", "filled", "pill"],
+      options: ["underline", "rounded", "pill"],
       description: "Visual style variant of the tab navigation",
     },
     size: {
       control: "select",
       options: ["sm", "md", "lg"],
       description: "Size of the tab navigation items",
-    },
-    animated: {
-      control: "boolean",
-      description:
-        "Slide a single highlight between items (filled/pill only). Respects prefers-reduced-motion.",
     },
   },
 };
@@ -124,21 +119,21 @@ export const Sizes: Story = {
  *
  * - `tabs` (default) — an underline strip; visually twinned with the `Tabs`
  *   `line` variant.
- * - `filled` — a soft rounded-rect highlight on the active item.
+ * - `rounded` — a soft rounded-rect highlight on the active item.
  * - `pill` — a fully-rounded capsule highlight on the active item.
  *
- * The `filled` and `pill` variants drop the baseline and add a small gap
+ * The `rounded` and `pill` variants drop the baseline and add a small gap
  * between items. Their active highlight is themeable via `colorPalette`
  * (defaulting to `primary`).
  */
 export const Variants: Story = {
   render: () => (
     <Stack direction="column" gap="600">
-      {(["tabs", "filled", "pill"] as const).map((variant) => (
+      {(["underline", "rounded", "pill"] as const).map((variant) => (
         <Stack key={variant} direction="column" gap="300">
           <Text fontWeight="600">
             {variant}
-            {variant === "tabs" ? " (default)" : ""}
+            {variant === "underline" ? " (default)" : ""}
           </Text>
           <TabNav.Root
             aria-label={`Order navigation (${variant})`}
@@ -173,15 +168,15 @@ export const Variants: Story = {
 };
 
 /**
- * The `filled` variant renders a soft rounded-rect highlight behind the active
+ * The `rounded` variant renders a soft rounded-rect highlight behind the active
  * item — the look the docs navbar uses. Inactive items rest in a neutral color
- * and gain a subtle background on hover; the active highlight is driven by the
- * `colorPalette` (defaulting to `primary`), so it themes with the surrounding
- * palette.
+ * and brighten to the active palette on hover; the active highlight is driven by
+ * the `colorPalette` (defaulting to `primary`), so it themes with the
+ * surrounding palette.
  */
-export const Filled: Story = {
+export const Rounded: Story = {
   render: () => (
-    <TabNav.Root aria-label="Order navigation" variant="filled">
+    <TabNav.Root aria-label="Order navigation" variant="rounded">
       <TabNav.Item href="/orders/123/general" isCurrent>
         General
       </TabNav.Item>
@@ -214,7 +209,7 @@ export const Filled: Story = {
 };
 
 /**
- * The `pill` variant is the `filled` look with a fully-rounded capsule
+ * The `pill` variant is the `rounded` look with a fully-rounded capsule
  * highlight and a little extra horizontal padding, so the active item reads as
  * a pill.
  */
@@ -244,10 +239,10 @@ export const Pill: Story = {
 };
 
 /**
- * With `animated`, the `filled` and `pill` variants render a single highlight
- * that slides between items as the active item changes — instead of the static
- * per-item background. The indicator is `aria-hidden` and non-focusable, so
- * `aria-current`, focus rings, and keyboard order are unaffected.
+ * The active highlight always slides between items as the active item changes —
+ * a single indicator instead of a static per-item background. The indicator is
+ * `aria-hidden` and non-focusable, so `aria-current`, focus rings, and keyboard
+ * order are unaffected.
  *
  * The motion is automatically disabled when the user requests
  * `prefers-reduced-motion: reduce` (the highlight snaps into place).
@@ -266,7 +261,7 @@ export const AnimatedHighlight: Story = {
     const [activePath, setActivePath] = useState<string>(items[0].href);
 
     return (
-      <TabNav.Root aria-label="Order navigation" variant="filled" animated>
+      <TabNav.Root aria-label="Order navigation" variant="rounded">
         {items.map((item) => (
           <TabNav.Item
             key={item.href}
@@ -585,9 +580,9 @@ export const WithViewSwitching: Story = {
 };
 
 /**
- * `animated` also applies to the default `tabs` variant: the underline becomes
- * a thin bar that slides between items as the active item changes, instead of
- * snapping. As with the filled/pill highlight, the slide is disabled under
+ * The default `underline` variant animates too: the underline is a thin bar
+ * that slides between items as the active item changes, instead of snapping. As
+ * with the rounded/pill highlight, the slide is disabled under
  * `prefers-reduced-motion: reduce`, and `aria-current`/focus/keyboard order are
  * unaffected.
  */
@@ -602,7 +597,7 @@ export const AnimatedUnderline: Story = {
     const [activePath, setActivePath] = useState<string>(items[0].href);
 
     return (
-      <TabNav.Root aria-label="Order navigation" variant="tabs" animated>
+      <TabNav.Root aria-label="Order navigation" variant="underline">
         {items.map((item) => (
           <TabNav.Item
             key={item.href}
@@ -646,6 +641,32 @@ export const AnimatedUnderline: Story = {
         expect(next).not.toBe("");
         expect(next).not.toBe(initialTransform);
       });
+    });
+  },
+};
+
+/**
+ * The legacy `tabs` variant name is still accepted as a deprecated alias for
+ * `underline`, so existing code keeps working without changes.
+ */
+export const DeprecatedVariantAlias: Story = {
+  render: () => (
+    <TabNav.Root aria-label="Order navigation" variant="tabs">
+      <TabNav.Item href="/orders/123/general" isCurrent>
+        General
+      </TabNav.Item>
+      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+      <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
+    </TabNav.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Deprecated `tabs` alias still renders the nav", async () => {
+      await expect(canvas.getByRole("navigation")).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("link", { name: "General" })
+      ).toHaveAttribute("aria-current", "page");
     });
   },
 };

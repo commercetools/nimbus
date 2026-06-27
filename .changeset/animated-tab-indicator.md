@@ -2,14 +2,24 @@
 "@commercetools/nimbus": minor
 ---
 
-**Tabs & TabNav**: add an opt-in `animated` prop that slides a single active
-marker between items as the selection changes, instead of snapping it. The
-indicator adapts to the variant, orientation, and placement — an underline bar
-for the `line`/`tabs` look, a side bar for vertical `Tabs`, and a filled
-highlight for `pills` (`Tabs`) and `filled`/`pill` (`TabNav`). It is decorative
-(`aria-hidden`, non-focusable), so selection, focus, and keyboard navigation are
-unaffected, and the slide automatically respects `prefers-reduced-motion`.
-`animated` defaults to `false`, so existing usage is unchanged.
+**Tabs & TabNav**: unified variants and a sliding active indicator.
 
-`TabNav` also gains `filled` and `pill` variants (soft rounded-rect and capsule
-active highlights) alongside the default `tabs` underline.
+- Both components now expose the **same three variants**: `underline` (default),
+  `rounded` (soft rounded-rect highlight), and `pill` (capsule highlight). The
+  `rounded`/`pill` highlights are themeable via `colorPalette`.
+- The active marker now **slides** between items/tabs as the selection changes
+  (an underline bar for `underline`, a filled highlight for `rounded`/`pill`),
+  instead of snapping. The motion automatically respects
+  `prefers-reduced-motion: reduce`, and the indicator is decorative
+  (`aria-hidden`) — selection, focus, and keyboard behavior are unchanged. The
+  animation is always on; there is no per-instance toggle.
+- `Tabs`' `pills` variant has been reimplemented to match `TabNav` (themeable
+  `colorPalette` highlight, no outline-box container).
+
+**Deprecations (non-breaking — old names still work):**
+
+- `Tabs`: `variant="line"` → `variant="underline"`; `variant="pills"` →
+  `variant="pill"`.
+- `TabNav`: `variant="tabs"` → `variant="underline"`.
+
+Update at your convenience; the deprecated names are accepted as aliases.

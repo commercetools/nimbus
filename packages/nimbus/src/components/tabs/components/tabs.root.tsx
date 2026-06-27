@@ -13,19 +13,33 @@ import { extractStyleProps } from "@/utils";
 import { useSlidingIndicator } from "@/hooks";
 import type { SlidingIndicatorRects } from "@/hooks";
 
-/** Thickness of the sliding underline bar for the `line` variant. */
+/** Thickness of the sliding underline bar for the `underline` variant. */
 const INDICATOR_BAR_PX = 2;
+
+/** Deprecated variant aliases → their replacement. */
+const VARIANT_ALIASES: Record<string, string> = {
+  line: "underline",
+  pills: "pill",
+};
+
+/** Resolve a deprecated string variant alias to its replacement (else pass through). */
+function resolveVariantAlias<T>(variant: T): T {
+  return typeof variant === "string" && VARIANT_ALIASES[variant]
+    ? (VARIANT_ALIASES[variant] as T)
+    : variant;
+}
 
 /**
  * # Tabs
  *
  * A tabs component built on React Aria Components that allows users to switch between different views.
  *
- * When `animated` is set, a single decorative indicator slides between tabs as
- * the selected tab changes (see `tabs.types.ts`). It is `aria-hidden` and
- * non-focusable, rendered inside the root and positioned with
- * `useSlidingIndicator`; the static selected marker is suppressed by the recipe
- * while animated, and the slide respects `prefers-reduced-motion`.
+ * The active marker is a single indicator that slides between tabs as the
+ * selection changes — an underline bar for `underline`, a filled highlight for
+ * `rounded`/`pill`. It is `aria-hidden` and non-focusable, rendered inside the
+ * root and positioned with `useSlidingIndicator`; the static selected marker is
+ * the SSR/no-JS fallback (suppressed by the recipe once the hook activates), and
+ * the slide respects `prefers-reduced-motion`.
  *
  * @supportsStyleProps
  */
@@ -33,13 +47,17 @@ export const TabsRoot = ({
   children,
   tabs,
   tabListAriaLabel,
-  animated,
   ...props
 }: TabsProps) => {
   const sysCtx = useChakraContext();
-  // Standard pattern: Split recipe variants
+  // Standard pattern: Split recipe variants. Resolve deprecated variant aliases
+  // (`line` → `underline`, `pills` → `pill`) up front so the recipe only ever
+  // sees real variant keys.
   const recipe = useSlotRecipe({ key: "nimbusTabs" });
-  const [recipeProps, restRecipeProps] = recipe.splitVariantProps(props);
+  const [recipeProps, restRecipeProps] = recipe.splitVariantProps({
+    ...props,
+    variant: resolveVariantAlias(props.variant),
+  } as Parameters<typeof recipe.splitVariantProps>[0]);
 
   // Standard pattern: Extract style props
   const [styleProps, functionalProps] = extractStyleProps(restRecipeProps);
@@ -50,19 +68,19 @@ export const TabsRoot = ({
   // `useBreakpointValue` to ensure a concrete value is passed.
   const normalizedOrientation = sysCtx.normalizeValue(recipeProps.orientation);
 
-  // The animated indicator's geometry depends on the *resolved* variant,
-  // orientation, and placement (responsive values are normalized the same way).
-  const variant = sysCtx.normalizeValue(recipeProps.variant) ?? "line";
+  // The indicator geometry depends on the *resolved* variant, orientation, and
+  // placement (responsive values are normalized the same way).
+  const variant = sysCtx.normalizeValue(recipeProps.variant) ?? "underline";
   const orientation = normalizedOrientation ?? "horizontal";
   const placement = sysCtx.normalizeValue(recipeProps.placement) ?? "start";
 
-  const showIndicator = animated === true;
-  const isFill = variant === "pills";
+  const isUnderline = variant === "underline";
+  const isPill = variant === "pill";
 
   const indicatorRef = useRef<HTMLDivElement>(null);
 
   useSlidingIndicator({
-    enabled: showIndicator,
+    enabled: true,
     indicatorRef,
     activeSelector: '[role="tab"][aria-selected="true"]',
     watchAttributes: ["aria-selected", "data-selected"],
@@ -71,11 +89,11 @@ export const TabsRoot = ({
     getGeometry: ({ container, active }: SlidingIndicatorRects) => {
       const x = active.left - container.left;
       const y = active.top - container.top;
-      // `pills` → full-box filled highlight.
-      if (isFill) {
+      // `rounded` / `pill` → full-box filled highlight.
+      if (!isUnderline) {
         return { x, y, width: active.width, height: active.height };
       }
-      // `line` → a thin bar pinned to the active tab's marker edge.
+      // `underline` → a thin bar pinned to the active tab's marker edge.
       if (orientation === "vertical") {
         return placement === "end"
           ? // tabs on the right; marker on their left edge
@@ -99,34 +117,26 @@ export const TabsRoot = ({
   });
 
   return (
-    <TabsRootSlot
-      asChild
-      {...recipeProps}
-      {...styleProps}
-      position={showIndicator ? "relative" : undefined}
-      data-animated={showIndicator ? "true" : undefined}
-    >
+    <TabsRootSlot asChild {...recipeProps} {...styleProps}>
       <RATabs {...functionalProps} orientation={normalizedOrientation}>
-        {showIndicator && (
-          <Box
-            ref={indicatorRef}
-            aria-hidden="true"
-            position="absolute"
-            top="0"
-            left="0"
-            zIndex={0}
-            opacity={0}
-            pointerEvents="none"
-            background={isFill ? "primary.3" : "primary.9"}
-            borderRadius={isFill ? "full" : "0"}
-            transition="transform 180ms ease, width 180ms ease, height 180ms ease, opacity 120ms ease"
-            css={{
-              "@media (prefers-reduced-motion: reduce)": {
-                transition: "none",
-              },
-            }}
-          />
-        )}
+        <Box
+          ref={indicatorRef}
+          aria-hidden="true"
+          position="absolute"
+          top="0"
+          left="0"
+          zIndex={0}
+          opacity={0}
+          pointerEvents="none"
+          background={isUnderline ? "primary.9" : "colorPalette.3"}
+          borderRadius={isUnderline ? "0" : isPill ? "full" : "200"}
+          transition="transform 180ms ease, width 180ms ease, height 180ms ease, opacity 120ms ease"
+          css={{
+            "@media (prefers-reduced-motion: reduce)": {
+              transition: "none",
+            },
+          }}
+        />
         {children || (
           <>
             <TabsList tabs={tabs} aria-label={tabListAriaLabel} />

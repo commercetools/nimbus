@@ -64,18 +64,23 @@ const App = () => (
 
 `TabNav` ships with three visual variants:
 
-- **`tabs`** (default) — an underline strip beneath the active item.
-- **`filled`** — a soft rounded-rect highlight behind the active item.
+- **`underline`** (default) — an underline strip beneath the active item.
+- **`rounded`** — a soft rounded-rect highlight behind the active item.
 - **`pill`** — a fully-rounded capsule highlight behind the active item.
 
-The `filled` and `pill` variants drop the underline baseline and add a small gap
+The `rounded` and `pill` variants drop the underline baseline and add a small gap
 between items. Their active highlight is themeable via `colorPalette` (it
 defaults to `primary`).
+
+The active highlight always slides smoothly between items as the active item
+changes — a single sliding indicator rather than a static per-item highlight.
+The motion automatically respects `prefers-reduced-motion: reduce`: when reduced
+motion is requested, the highlight snaps into place instead of sliding.
 
 ```jsx live
 const App = () => (
   <Stack direction="column" gap="600">
-    {["tabs", "filled", "pill"].map((variant) => (
+    {["underline", "rounded", "pill"].map((variant) => (
       <Stack key={variant} direction="column" gap="300">
         <Text fontWeight="600">{variant}</Text>
         <TabNav.Root aria-label={`Order navigation (${variant})`} variant={variant}>
@@ -93,12 +98,10 @@ const App = () => (
 
 ### Animated highlight
 
-Add `animated` to render a single active-highlight indicator that smoothly slides
-between items as the active item changes, instead of the static per-item
-highlight. The indicator adapts to the variant — a sliding underline bar for
-`tabs`, and a sliding filled highlight for `filled`/`pill`. The motion
-automatically respects `prefers-reduced-motion: reduce`: when reduced motion is
-requested, the highlight snaps into place instead of sliding.
+The active highlight slides between items whenever the active item changes (an
+underline bar for `underline`, a filled highlight for `rounded`/`pill`) — no prop
+required. The slide respects `prefers-reduced-motion: reduce` (the highlight
+snaps into place), and `aria-current`, focus, and keyboard order are unaffected.
 
 ```jsx live
 const App = () => {
@@ -109,7 +112,7 @@ const App = () => {
   ];
   const [activePath, setActivePath] = React.useState(items[0].href);
   return (
-    <TabNav.Root aria-label="Order navigation" variant="filled" animated>
+    <TabNav.Root aria-label="Order navigation" variant="rounded">
       {items.map((item) => (
         <TabNav.Item
           key={item.href}

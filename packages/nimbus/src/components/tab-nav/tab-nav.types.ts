@@ -11,10 +11,22 @@ import type {
 
 type TabNavRecipeProps = {
   /**
-   * Visual style variant of the tab navigation
-   * @default "tabs"
+   * Visual style variant of the tab navigation.
+   *
+   * - `underline` — an underline strip beneath the active item (default).
+   * - `rounded` — a soft rounded-rect highlight behind the active item.
+   * - `pill` — a fully-rounded capsule highlight behind the active item.
+   *
+   * The active highlight slides between items as the active item changes; the
+   * motion is disabled under `prefers-reduced-motion: reduce`.
+   *
+   * `"tabs"` is accepted as a deprecated alias for `"underline"`.
+   * @default "underline"
    */
-  variant?: SlotRecipeProps<"nimbusTabNav">["variant"];
+  variant?:
+    | SlotRecipeProps<"nimbusTabNav">["variant"]
+    /** @deprecated Use `"underline"` instead. */
+    | "tabs";
   /**
    * Size of the tab navigation items
    * @default "md"
@@ -39,18 +51,6 @@ export type TabNavItemSlotProps = HTMLChakraProps<"a", TabNavRecipeProps>;
  * Renders a `<nav>` landmark containing tab-styled navigation links.
  */
 export type TabNavProps = OmitInternalProps<TabNavRootSlotProps> & {
-  /**
-   * When `true`, renders a single active-highlight indicator that smoothly
-   * slides between items as the active item changes, instead of the static
-   * per-item highlight. The indicator adapts to the variant: a sliding
-   * underline bar for `tabs`, and a sliding filled highlight for `filled` /
-   * `pill`.
-   *
-   * The motion is automatically disabled when the user requests
-   * `prefers-reduced-motion: reduce` — the highlight snaps into place.
-   * @default false
-   */
-  animated?: boolean;
   /**
    * A ref to the root `<nav>` element.
    */

@@ -33,7 +33,7 @@ export const TabNav = {
    *
    * @example
    * ```tsx
-   * <TabNav.Root variant="tabs">
+   * <TabNav.Root variant="underline">
    *   <TabNav.Item href="/general" isCurrent>General</TabNav.Item>
    *   <TabNav.Item href="/items">Items</TabNav.Item>
    * </TabNav.Root>

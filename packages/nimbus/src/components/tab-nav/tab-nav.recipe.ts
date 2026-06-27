@@ -10,30 +10,29 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * ⚠️  VISUAL TWIN — KEEP IN SYNC WITH `tabs.recipe.ts`
  * TabNav and Tabs are intentionally separate components with separate recipes
  * (different semantics: navigation links vs. content-panel widget). They do NOT
- * share a recipe. However, the `tabs` variant of TabNav is designed to be
- * visually identical to the `line` horizontal variant of Tabs. If you change
- * colors, spacing, typography, transitions, or focus styles in one, apply the
- * equivalent change to the other.
- *
- * NOTE: the twin rule above applies ONLY to the `tabs` variant. The `filled`
- * and `pill` variants are TabNav-only and have no counterpart in Tabs.
+ * share a recipe. However, they expose the SAME three variants — `underline`,
+ * `rounded`, and `pill` — which are designed to look identical between the two.
+ * If you change colors, spacing, typography, transitions, or focus styles for
+ * any of these variants in one, apply the equivalent change to the other.
+ * (Tabs additionally layers `orientation`/`placement` onto `underline`.)
  */
 
 /**
- * Shared item styles for the `filled` and `pill` variants.
+ * Shared item styles for the `rounded` and `pill` variants.
  *
- * Both reproduce the "soft highlight on the active item" look (vs. the `tabs`
- * underline strip): a neutral resting state, a subtle hover wash, and a
+ * Both reproduce the "soft highlight on the active item" look (vs. the
+ * `underline` strip): a neutral resting state, a subtle hover wash, and a
  * themeable highlight on the active item driven by `colorPalette` (defaulting
  * to `primary` via the root slot). Padding and font-size are inherited from the
  * shared `--tab-nav-*` size CSS vars so all three sizes keep working.
  *
  * `position: relative` + `zIndex` keep the item's label painted ABOVE the
- * absolutely-positioned animated indicator (see `tab-nav.root.tsx`). When the
- * indicator is active (`[data-animated="true"]`), it owns the highlight, so the
- * static per-item background is suppressed to avoid a double highlight.
+ * absolutely-positioned sliding indicator (see `tab-nav.root.tsx`). Once the
+ * indicator is active (`[data-animated="true"]`, set by the hook on mount), it
+ * owns the highlight, so the static per-item background is suppressed to avoid a
+ * double highlight.
  */
-const filledItemBase = {
+const highlightItemBase = {
   color: "neutral.11",
   cursor: "pointer",
   fontWeight: "500",
@@ -70,6 +69,8 @@ export const tabNavSlotRecipe = defineSlotRecipe({
       display: "flex",
       flexDirection: "row",
       width: "100%",
+      // Anchors the absolutely-positioned sliding indicator (all variants).
+      position: "relative",
     },
     item: {
       display: "flex",
@@ -86,7 +87,7 @@ export const tabNavSlotRecipe = defineSlotRecipe({
 
   variants: {
     variant: {
-      tabs: {
+      underline: {
         root: {
           boxShadow: "0 1px 0 0 {colors.neutral.6}",
         },
@@ -115,26 +116,24 @@ export const tabNavSlotRecipe = defineSlotRecipe({
           },
         },
       },
-      // Soft rounded-rect highlight on the active item (reproduces the previous
-      // docs-navbar look). No baseline; small gap between items.
-      filled: {
+      // Soft rounded-rect highlight on the active item. No baseline; small gap
+      // between items.
+      rounded: {
         root: {
           colorPalette: "primary",
           gap: "100",
-          position: "relative",
         },
-        item: filledItemBase,
+        item: highlightItemBase,
       },
-      // Same idea as `filled`, but a fully-rounded capsule highlight and a touch
+      // Same idea as `rounded`, but a fully-rounded capsule highlight and a touch
       // more horizontal padding so it reads as a pill.
       pill: {
         root: {
           colorPalette: "primary",
           gap: "100",
-          position: "relative",
         },
         item: {
-          ...filledItemBase,
+          ...highlightItemBase,
           borderRadius: "full",
           paddingLeft: "calc(var(--tab-nav-padding-left) + {spacing.100})",
           paddingRight: "calc(var(--tab-nav-padding-right) + {spacing.100})",
@@ -173,7 +172,7 @@ export const tabNavSlotRecipe = defineSlotRecipe({
   },
 
   defaultVariants: {
-    variant: "tabs",
+    variant: "underline",
     size: "md",
   },
 });

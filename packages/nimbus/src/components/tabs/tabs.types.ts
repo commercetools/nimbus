@@ -11,10 +11,25 @@ import type { RouterOptions } from "../nimbus-provider/nimbus-provider.types";
 
 type TabsRecipeProps = {
   /**
-   * Visual style variant of the tabs
-   * @default "line"
+   * Visual style variant of the tabs.
+   *
+   * - `underline` — an underline strip beneath the active tab (default).
+   * - `rounded` — a soft rounded-rect highlight behind the active tab.
+   * - `pill` — a fully-rounded capsule highlight behind the active tab.
+   *
+   * The active highlight slides between tabs as the selection changes; the
+   * motion is disabled under `prefers-reduced-motion: reduce`.
+   *
+   * `"line"` (→ `"underline"`) and `"pills"` (→ `"pill"`) are accepted as
+   * deprecated aliases.
+   * @default "underline"
    */
-  variant?: SlotRecipeProps<"nimbusTabs">["variant"];
+  variant?:
+    | SlotRecipeProps<"nimbusTabs">["variant"]
+    /** @deprecated Use `"underline"` instead. */
+    | "line"
+    /** @deprecated Use `"pill"` instead. */
+    | "pills";
   /**
    * Layout orientation of the tabs
    * @default "horizontal"
@@ -104,21 +119,6 @@ export type TabsProps = OmitInternalProps<TabsRootSlotProps> & {
    * Required for accessibility when not using children-based composition.
    */
   tabListAriaLabel?: string;
-  /**
-   * When `true`, renders a single decorative indicator that smoothly slides
-   * between tabs as the selected tab changes, instead of the static per-tab
-   * marker. The indicator adapts to the resolved `variant` / `orientation` /
-   * `placement`: a thin bar on the active tab's bottom edge (horizontal),
-   * right edge (vertical + `placement="start"`), or left edge (vertical +
-   * `placement="end"`); and a filled, fully-rounded highlight for the `pills`
-   * variant.
-   *
-   * The slide is automatically disabled under `prefers-reduced-motion: reduce`
-   * (the highlight snaps), and `aria-selected`, focus, and keyboard navigation
-   * are unaffected.
-   * @default false
-   */
-  animated?: boolean;
   /**
    * The currently selected tab key (controlled).
    */
