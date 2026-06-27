@@ -7,11 +7,11 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * ⚠️  VISUAL TWIN — KEEP IN SYNC WITH `tab-nav.recipe.ts`
  * Tabs and TabNav are intentionally separate components with separate recipes
  * (different semantics: content-panel widget vs. navigation links). They do NOT
- * share a recipe. However, they expose the SAME three variants — `underline`,
+ * share a recipe. However, they expose the SAME three variants — `line`,
  * `rounded`, and `pill` — designed to look identical between the two. If you
  * change colors, spacing, typography, transitions, or focus styles for any of
  * these variants in one, apply the equivalent change to the other. (Tabs
- * additionally layers `orientation`/`placement` onto `underline`.)
+ * additionally layers `orientation`/`placement` onto `line`.)
  */
 
 /**
@@ -104,12 +104,13 @@ export const tabsSlotRecipe = defineSlotRecipe({
 
   variants: {
     variant: {
-      // Underline strip beneath the active tab. The per-orientation/placement
-      // marker edges live in `compoundVariants` below.
-      underline: {
+      // A thin bar marking the active tab — an underline when horizontal, an
+      // inner side bar when vertical. The per-orientation/placement marker edges
+      // live in `compoundVariants` below.
+      line: {
         tab: {
           // Animated: keep the label above the indicator, and let the sliding
-          // bar own the active marker (suppress the static underline, all
+          // bar own the active marker (suppress the static bar, all
           // orientations).
           '[data-animated="true"] &': {
             position: "relative",
@@ -203,10 +204,10 @@ export const tabsSlotRecipe = defineSlotRecipe({
 
   // Compound variants for different variant/orientation/placement combinations
   compoundVariants: [
-    // ==================== UNDERLINE VARIANT ====================
-    // Underline + Horizontal
+    // ==================== LINE VARIANT ====================
+    // Line + Horizontal (bar on the bottom edge)
     {
-      variant: "underline",
+      variant: "line",
       orientation: "horizontal",
       css: {
         list: {
@@ -220,9 +221,9 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
       },
     },
-    // Underline + Vertical + Start (tabs on left, border on right between tabs and content)
+    // Line + Vertical + Start (tabs on left, border on right between tabs and content)
     {
-      variant: "underline",
+      variant: "line",
       orientation: "vertical",
       placement: "start",
       css: {
@@ -237,9 +238,9 @@ export const tabsSlotRecipe = defineSlotRecipe({
         },
       },
     },
-    // Underline + Vertical + End (tabs on right, border on left between tabs and content)
+    // Line + Vertical + End (tabs on right, border on left between tabs and content)
     {
-      variant: "underline",
+      variant: "line",
       orientation: "vertical",
       placement: "end",
       css: {
@@ -289,7 +290,7 @@ export const tabsSlotRecipe = defineSlotRecipe({
   ],
 
   defaultVariants: {
-    variant: "underline",
+    variant: "line",
     orientation: "horizontal",
     placement: "start",
     size: "md",

@@ -16,7 +16,7 @@ const meta: Meta<typeof TabNav.Root> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["underline", "rounded", "pill"],
+      options: ["line", "rounded", "pill"],
       description: "Visual style variant of the tab navigation",
     },
     size: {
@@ -98,12 +98,12 @@ const InteractiveTabNav = ({
  * The default TabNav usage with three navigation items.
  *
  * The active highlight is a single indicator that slides between items as the
- * active item changes (a thin underline bar for the default `underline`
- * variant). The indicator is `aria-hidden` and non-focusable, so
- * `aria-current`, focus rings, and keyboard order are unaffected, and it snaps
- * (no slide) under `prefers-reduced-motion: reduce`.
+ * active item changes (a thin bar for the default `line` variant). The
+ * indicator is `aria-hidden` and non-focusable, so `aria-current`, focus rings,
+ * and keyboard order are unaffected, and it snaps (no slide) under
+ * `prefers-reduced-motion: reduce`.
  *
- * Click between the items to see the underline slide.
+ * Click between the items to see the bar slide.
  */
 export const Base: Story = {
   render: () => <InteractiveTabNav aria-label="Order navigation" />,
@@ -202,8 +202,8 @@ export const Sizes: Story = {
 /**
  * TabNav ships with three visual variants:
  *
- * - `underline` (default) — an underline strip; visually twinned with the
- *   `Tabs` `underline` variant.
+ * - `line` (default) — a bar marking the active item; visually twinned with the
+ *   `Tabs` `line` variant.
  * - `rounded` — a soft rounded-rect highlight on the active item.
  * - `pill` — a fully-rounded capsule highlight on the active item.
  *
@@ -215,11 +215,11 @@ export const Sizes: Story = {
 export const Variants: Story = {
   render: () => (
     <Stack direction="column" gap="600">
-      {(["underline", "rounded", "pill"] as const).map((variant) => (
+      {(["line", "rounded", "pill"] as const).map((variant) => (
         <Stack key={variant} direction="column" gap="300">
           <Text fontWeight="600">
             {variant}
-            {variant === "underline" ? " (default)" : ""}
+            {variant === "line" ? " (default)" : ""}
           </Text>
           <InteractiveTabNav
             aria-label={`Order navigation (${variant})`}
@@ -563,7 +563,7 @@ export const WithViewSwitching: Story = {
 
 /**
  * The legacy `tabs` variant name is still accepted as a deprecated alias for
- * `underline`, so existing code keeps working without changes.
+ * `line`, so existing code keeps working without changes.
  */
 export const DeprecatedVariantAlias: Story = {
   render: () => (

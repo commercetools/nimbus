@@ -24,7 +24,7 @@ const meta: Meta<typeof Tabs.Root> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["underline", "rounded", "pill"],
+      options: ["line", "rounded", "pill"],
       description: "Visual style variant of the tabs",
     },
     orientation: {
@@ -812,27 +812,28 @@ export const Variants: Story = {
 
     return (
       <Stack direction="column" gap="600">
-        {/* Underline Variant */}
+        {/* Line Variant */}
         <Stack direction="column" gap="300">
           <Heading as="h3" fontSize="500">
-            Underline Variant (Default)
+            Line Variant (Default)
           </Heading>
           <Text color="neutral.11" mb="400">
-            Tabs with an underline indicator showing the selected tab.
+            Tabs with a bar indicator marking the selected tab — an underline
+            when horizontal, an inner side bar when vertical.
           </Text>
           <Stack direction="column" gap="400">
-            <Box data-testid="underline-variant-horizontal">
+            <Box data-testid="line-variant-horizontal">
               <Heading as="h4" fontSize="350" mb="200">
                 Horizontal
               </Heading>
-              <Tabs.Root variant="underline" tabs={variantTabs} />
+              <Tabs.Root variant="line" tabs={variantTabs} />
             </Box>
-            <Box data-testid="underline-variant-vertical">
+            <Box data-testid="line-variant-vertical">
               <Heading as="h4" fontSize="350" mb="200">
                 Vertical
               </Heading>
               <Tabs.Root
-                variant="underline"
+                variant="line"
                 orientation="vertical"
                 tabs={variantTabs}
               />
@@ -1299,9 +1300,8 @@ export const LinkTabs: Story = {
 };
 
 /**
- * The legacy `line` and `pills` variant names are still accepted as deprecated
- * aliases for `underline` and `pill`, so existing code keeps working without
- * changes.
+ * The legacy `pills` variant name is still accepted as a deprecated alias for
+ * `pill`, so existing code keeps working without changes.
  */
 export const DeprecatedVariantAliases: Story = {
   args: {
