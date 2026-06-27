@@ -68,7 +68,9 @@ export interface SlidingIndicatorOptions {
  * (`ResizeObserver`), and hides the indicator (opacity 0) when there is no
  * active item. The caller owns the indicator's appearance and transition; this
  * hook only writes `opacity`, `width`/`height` (per `getGeometry`), and
- * `transform`.
+ * `transform`. The very first placement is applied with the transition
+ * momentarily suppressed so the indicator snaps to the active item instead of
+ * sliding in from the container corner on initial render.
  *
  * Used to drive the animated active-highlight on `Tabs` (and, in a follow-up,
  * `TabNav`), where `getGeometry` encodes whether the indicator is an underline
@@ -96,6 +98,15 @@ export function useSlidingIndicator({
     // is no flash.
     container.setAttribute("data-animated", "true");
 
+    // The indicator is authored at the container's top-left (`top/left: 0`, no
+    // transform). The *first* placement must jump straight to the active item:
+    // without this, the caller's `transition` would animate the indicator in
+    // from the corner (translate(0,0) → target) on initial render. Subsequent
+    // updates slide normally. Because this lives in the effect closure, a
+    // re-run (e.g. a variant/orientation change via `deps`) also snaps rather
+    // than sliding from a now-stale position.
+    let hasPositioned = false;
+
     const update = () => {
       const active = container.querySelector<HTMLElement>(activeSelector);
       if (!active) {
@@ -109,12 +120,26 @@ export function useSlidingIndicator({
         container: containerRect,
         active: activeRect,
       });
+
+      // Suppress the transition for the initial jump, restoring whatever inline
+      // transition was set (normally none — the caller's transition is a class).
+      const prevTransition = indicator.style.transition;
+      if (!hasPositioned) indicator.style.transition = "none";
+
       indicator.style.opacity = "1";
       if (geometry.width != null) indicator.style.width = `${geometry.width}px`;
       if (geometry.height != null) {
         indicator.style.height = `${geometry.height}px`;
       }
       indicator.style.transform = `translate(${geometry.x}px, ${geometry.y}px)`;
+
+      if (!hasPositioned) {
+        // Force a synchronous reflow to commit the jump, then re-enable the
+        // transition so the next selection change slides.
+        void indicator.offsetWidth;
+        indicator.style.transition = prevTransition;
+        hasPositioned = true;
+      }
     };
 
     // Measure synchronously before paint so the highlight appears in place.

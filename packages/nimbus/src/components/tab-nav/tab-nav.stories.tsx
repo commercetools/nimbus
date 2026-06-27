@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Box, Stack, TabNav, Text } from "@commercetools/nimbus";
@@ -35,23 +35,82 @@ export default meta;
  */
 type Story = StoryObj<typeof TabNav.Root>;
 
+type NavItem = {
+  href: string;
+  label: string;
+  isDisabled?: boolean;
+  target?: string;
+  rel?: string;
+};
+
+const ORDER_ITEMS: NavItem[] = [
+  { href: "/orders/123/general", label: "General" },
+  { href: "/orders/123/items", label: "Items" },
+  { href: "/orders/123/shipping", label: "Shipping" },
+];
+
+/**
+ * A `TabNav` whose active item is tracked in local state. Clicking any item
+ * moves `aria-current="page"` — and therefore the sliding highlight — exactly
+ * like a router does in a real app.
+ *
+ * In production, `isCurrent` is derived from the route (e.g. `useMatch`). In an
+ * isolated story there is no router, so without this wrapper `isCurrent` would
+ * be frozen on a single item and the highlight could never slide. Routing this
+ * through one helper keeps every story interactive instead of needing a
+ * separate "animated" demo story.
+ */
+const InteractiveTabNav = ({
+  items = ORDER_ITEMS,
+  ...props
+}: Omit<ComponentProps<typeof TabNav.Root>, "children"> & {
+  items?: NavItem[];
+}) => {
+  const [activePath, setActivePath] = useState(items[0].href);
+
+  return (
+    <TabNav.Root aria-label="Order navigation" {...props}>
+      {items.map((item) => (
+        <TabNav.Item
+          key={item.href}
+          href={item.href}
+          target={item.target}
+          rel={item.rel}
+          isDisabled={item.isDisabled}
+          isCurrent={activePath === item.href}
+          onClick={(e) => {
+            // Let external (`target="_blank"`) links navigate normally;
+            // intercept same-page navigation so the Storybook iframe doesn't
+            // reload and the active item can move instead.
+            if (item.target) return;
+            e.preventDefault();
+            if (!item.isDisabled) setActivePath(item.href);
+          }}
+        >
+          {item.label}
+        </TabNav.Item>
+      ))}
+    </TabNav.Root>
+  );
+};
+
 /**
  * The default TabNav usage with three navigation items.
- * Demonstrates the tab-styled navigation pattern for route-based navigation.
- * The first item is marked as current with `aria-current="page"`.
+ *
+ * The active highlight is a single indicator that slides between items as the
+ * active item changes (a thin underline bar for the default `underline`
+ * variant). The indicator is `aria-hidden` and non-focusable, so
+ * `aria-current`, focus rings, and keyboard order are unaffected, and it snaps
+ * (no slide) under `prefers-reduced-motion: reduce`.
+ *
+ * Click between the items to see the underline slide.
  */
 export const Base: Story = {
-  render: () => (
-    <TabNav.Root aria-label="Order navigation">
-      <TabNav.Item href="/orders/123/general" isCurrent>
-        General
-      </TabNav.Item>
-      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-      <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
-    </TabNav.Root>
-  ),
+  render: () => <InteractiveTabNav aria-label="Order navigation" />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    const getIndicator = () =>
+      canvasElement.querySelector<HTMLElement>('nav [aria-hidden="true"]');
 
     await step("Renders a nav landmark", async () => {
       const nav = canvas.getByRole("navigation");
@@ -80,6 +139,35 @@ export const Base: Story = {
         await expect(inactiveItem2).not.toHaveAttribute("aria-current");
       }
     );
+
+    await step(
+      "Clicking an item moves aria-current and slides the highlight",
+      async () => {
+        const indicator = getIndicator();
+        await expect(indicator).toBeInTheDocument();
+
+        let initialTransform = "";
+        await waitFor(() => {
+          initialTransform = indicator!.style.transform;
+          expect(initialTransform).not.toBe("");
+        });
+
+        const itemsLink = canvas.getByRole("link", { name: "Items" });
+        await userEvent.click(itemsLink);
+        await expect(itemsLink).toHaveAttribute("aria-current", "page");
+
+        // The previously-active item is no longer current...
+        const generalLink = canvas.getByRole("link", { name: "General" });
+        await expect(generalLink).not.toHaveAttribute("aria-current");
+
+        // ...and the single indicator re-measures to the new position.
+        await waitFor(() => {
+          const next = indicator!.style.transform;
+          expect(next).not.toBe("");
+          expect(next).not.toBe(initialTransform);
+        });
+      }
+    );
   },
 };
 
@@ -93,13 +181,10 @@ export const Sizes: Story = {
       {(["sm", "md", "lg"] as const).map((size) => (
         <Stack key={size} direction="column" gap="300">
           <Text fontWeight="600">{size}</Text>
-          <TabNav.Root aria-label={`Order navigation (${size})`} size={size}>
-            <TabNav.Item href="/orders/123/general" isCurrent>
-              General
-            </TabNav.Item>
-            <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-            <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
-          </TabNav.Root>
+          <InteractiveTabNav
+            aria-label={`Order navigation (${size})`}
+            size={size}
+          />
         </Stack>
       ))}
     </Stack>
@@ -117,14 +202,15 @@ export const Sizes: Story = {
 /**
  * TabNav ships with three visual variants:
  *
- * - `tabs` (default) — an underline strip; visually twinned with the `Tabs`
- *   `line` variant.
+ * - `underline` (default) — an underline strip; visually twinned with the
+ *   `Tabs` `underline` variant.
  * - `rounded` — a soft rounded-rect highlight on the active item.
  * - `pill` — a fully-rounded capsule highlight on the active item.
  *
  * The `rounded` and `pill` variants drop the baseline and add a small gap
  * between items. Their active highlight is themeable via `colorPalette`
- * (defaulting to `primary`).
+ * (defaulting to `primary`). Click between items in any variant to see the
+ * highlight slide.
  */
 export const Variants: Story = {
   render: () => (
@@ -135,16 +221,10 @@ export const Variants: Story = {
             {variant}
             {variant === "underline" ? " (default)" : ""}
           </Text>
-          <TabNav.Root
+          <InteractiveTabNav
             aria-label={`Order navigation (${variant})`}
             variant={variant}
-          >
-            <TabNav.Item href="/orders/123/general" isCurrent>
-              General
-            </TabNav.Item>
-            <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-            <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
-          </TabNav.Root>
+          />
         </Stack>
       ))}
     </Stack>
@@ -176,15 +256,15 @@ export const Variants: Story = {
  */
 export const Rounded: Story = {
   render: () => (
-    <TabNav.Root aria-label="Order navigation" variant="rounded">
-      <TabNav.Item href="/orders/123/general" isCurrent>
-        General
-      </TabNav.Item>
-      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-      <TabNav.Item href="/orders/123/shipping" isDisabled>
-        Shipping
-      </TabNav.Item>
-    </TabNav.Root>
+    <InteractiveTabNav
+      aria-label="Order navigation"
+      variant="rounded"
+      items={[
+        { href: "/orders/123/general", label: "General" },
+        { href: "/orders/123/items", label: "Items" },
+        { href: "/orders/123/shipping", label: "Shipping", isDisabled: true },
+      ]}
+    />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -215,13 +295,7 @@ export const Rounded: Story = {
  */
 export const Pill: Story = {
   render: () => (
-    <TabNav.Root aria-label="Order navigation" variant="pill">
-      <TabNav.Item href="/orders/123/general" isCurrent>
-        General
-      </TabNav.Item>
-      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-      <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
-    </TabNav.Root>
+    <InteractiveTabNav aria-label="Order navigation" variant="pill" />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -239,89 +313,6 @@ export const Pill: Story = {
 };
 
 /**
- * The active highlight always slides between items as the active item changes —
- * a single indicator instead of a static per-item background. The indicator is
- * `aria-hidden` and non-focusable, so `aria-current`, focus rings, and keyboard
- * order are unaffected.
- *
- * The motion is automatically disabled when the user requests
- * `prefers-reduced-motion: reduce` (the highlight snaps into place).
- *
- * This story drives the active item with local state to demonstrate the slide,
- * and asserts that the highlight follows clicks.
- */
-export const AnimatedHighlight: Story = {
-  render: () => {
-    const items = [
-      { href: "/orders/123/general", label: "General" },
-      { href: "/orders/123/items", label: "Items" },
-      { href: "/orders/123/shipping", label: "Shipping" },
-    ] as const;
-
-    const [activePath, setActivePath] = useState<string>(items[0].href);
-
-    return (
-      <TabNav.Root aria-label="Order navigation" variant="rounded">
-        {items.map((item) => (
-          <TabNav.Item
-            key={item.href}
-            href={item.href}
-            isCurrent={activePath === item.href}
-            onClick={(e) => {
-              e.preventDefault();
-              setActivePath(item.href);
-            }}
-          >
-            {item.label}
-          </TabNav.Item>
-        ))}
-      </TabNav.Root>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const getIndicator = () =>
-      canvasElement.querySelector<HTMLElement>('nav [aria-hidden="true"]');
-
-    await step("Renders a single hidden highlight indicator", async () => {
-      await waitFor(() => expect(getIndicator()).toBeInTheDocument());
-      // The indicator must not be exposed to assistive tech or focusable.
-      const indicator = getIndicator()!;
-      await expect(indicator).toHaveAttribute("aria-hidden", "true");
-      await expect(indicator.tagName).not.toBe("A");
-    });
-
-    let initialTransform = "";
-    await step("Highlight is positioned over the active item", async () => {
-      await waitFor(() => {
-        initialTransform = getIndicator()!.style.transform;
-        expect(initialTransform).not.toBe("");
-      });
-    });
-
-    await step("Clicking another item slides the highlight", async () => {
-      const itemsLink = canvas.getByRole("link", { name: "Items" });
-      await userEvent.click(itemsLink);
-
-      // aria-current moves to the clicked item...
-      await expect(itemsLink).toHaveAttribute("aria-current", "page");
-
-      // ...and the indicator re-measures to a new position.
-      await waitFor(() => {
-        const next = getIndicator()!.style.transform;
-        expect(next).not.toBe("");
-        expect(next).not.toBe(initialTransform);
-      });
-    });
-
-    await step("Previous item is no longer current", async () => {
-      const generalLink = canvas.getByRole("link", { name: "General" });
-      await expect(generalLink).not.toHaveAttribute("aria-current");
-    });
-  },
-};
-
-/**
  * Demonstrates that TabNav uses standard sequential Tab key navigation —
  * NOT roving tabindex with arrow key cycling.
  *
@@ -332,15 +323,7 @@ export const AnimatedHighlight: Story = {
  * Arrow key presses should NOT change focus in TabNav.
  */
 export const KeyboardNavigation: Story = {
-  render: () => (
-    <TabNav.Root aria-label="Order navigation">
-      <TabNav.Item href="/orders/123/general" isCurrent>
-        General
-      </TabNav.Item>
-      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-      <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
-    </TabNav.Root>
-  ),
+  render: () => <InteractiveTabNav aria-label="Order navigation" />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -408,15 +391,14 @@ export const KeyboardNavigation: Story = {
  */
 export const WithDisabledItem: Story = {
   render: () => (
-    <TabNav.Root aria-label="Order navigation">
-      <TabNav.Item href="/orders/123/general" isCurrent>
-        General
-      </TabNav.Item>
-      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-      <TabNav.Item href="/orders/123/shipping" isDisabled>
-        Shipping
-      </TabNav.Item>
-    </TabNav.Root>
+    <InteractiveTabNav
+      aria-label="Order navigation"
+      items={[
+        { href: "/orders/123/general", label: "General" },
+        { href: "/orders/123/items", label: "Items" },
+        { href: "/orders/123/shipping", label: "Shipping", isDisabled: true },
+      ]}
+    />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -466,19 +448,19 @@ export const WithDisabledItem: Story = {
  */
 export const WithExternalLink: Story = {
   render: () => (
-    <TabNav.Root aria-label="Order navigation">
-      <TabNav.Item href="/orders/123/general" isCurrent>
-        General
-      </TabNav.Item>
-      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-      <TabNav.Item
-        href="https://example.com/docs"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Docs ↗
-      </TabNav.Item>
-    </TabNav.Root>
+    <InteractiveTabNav
+      aria-label="Order navigation"
+      items={[
+        { href: "/orders/123/general", label: "General" },
+        { href: "/orders/123/items", label: "Items" },
+        {
+          href: "https://example.com/docs",
+          label: "Docs ↗",
+          target: "_blank",
+          rel: "noopener noreferrer",
+        },
+      ]}
+    />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -580,84 +562,12 @@ export const WithViewSwitching: Story = {
 };
 
 /**
- * The default `underline` variant animates too: the underline is a thin bar
- * that slides between items as the active item changes, instead of snapping. As
- * with the rounded/pill highlight, the slide is disabled under
- * `prefers-reduced-motion: reduce`, and `aria-current`/focus/keyboard order are
- * unaffected.
- */
-export const AnimatedUnderline: Story = {
-  render: () => {
-    const items = [
-      { href: "/orders/123/general", label: "General" },
-      { href: "/orders/123/items", label: "Items" },
-      { href: "/orders/123/shipping", label: "Shipping" },
-    ] as const;
-
-    const [activePath, setActivePath] = useState<string>(items[0].href);
-
-    return (
-      <TabNav.Root aria-label="Order navigation" variant="underline">
-        {items.map((item) => (
-          <TabNav.Item
-            key={item.href}
-            href={item.href}
-            isCurrent={activePath === item.href}
-            onClick={(e) => {
-              e.preventDefault();
-              setActivePath(item.href);
-            }}
-          >
-            {item.label}
-          </TabNav.Item>
-        ))}
-      </TabNav.Root>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const getIndicator = () =>
-      canvasElement.querySelector<HTMLElement>('nav [aria-hidden="true"]');
-
-    await step("Renders a single hidden underline indicator", async () => {
-      await waitFor(() => expect(getIndicator()).toBeInTheDocument());
-      await expect(getIndicator()!).toHaveAttribute("aria-hidden", "true");
-    });
-
-    let initialTransform = "";
-    await step("Underline is positioned over the active item", async () => {
-      await waitFor(() => {
-        initialTransform = getIndicator()!.style.transform;
-        expect(initialTransform).not.toBe("");
-      });
-    });
-
-    await step("Clicking another item slides the underline", async () => {
-      const itemsLink = canvas.getByRole("link", { name: "Items" });
-      await userEvent.click(itemsLink);
-      await expect(itemsLink).toHaveAttribute("aria-current", "page");
-      await waitFor(() => {
-        const next = getIndicator()!.style.transform;
-        expect(next).not.toBe("");
-        expect(next).not.toBe(initialTransform);
-      });
-    });
-  },
-};
-
-/**
  * The legacy `tabs` variant name is still accepted as a deprecated alias for
  * `underline`, so existing code keeps working without changes.
  */
 export const DeprecatedVariantAlias: Story = {
   render: () => (
-    <TabNav.Root aria-label="Order navigation" variant="tabs">
-      <TabNav.Item href="/orders/123/general" isCurrent>
-        General
-      </TabNav.Item>
-      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-      <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
-    </TabNav.Root>
+    <InteractiveTabNav aria-label="Order navigation" variant="tabs" />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -677,14 +587,15 @@ export const DeprecatedVariantAlias: Story = {
  */
 export const SmokeTest: Story = {
   render: () => (
-    <TabNav.Root aria-label="Page navigation">
-      <TabNav.Item href="/page/overview" isCurrent>
-        Overview
-      </TabNav.Item>
-      <TabNav.Item href="/page/details">Details</TabNav.Item>
-      <TabNav.Item href="/page/history">History</TabNav.Item>
-      <TabNav.Item href="/page/settings">Settings</TabNav.Item>
-    </TabNav.Root>
+    <InteractiveTabNav
+      aria-label="Page navigation"
+      items={[
+        { href: "/page/overview", label: "Overview" },
+        { href: "/page/details", label: "Details" },
+        { href: "/page/history", label: "History" },
+        { href: "/page/settings", label: "Settings" },
+      ]}
+    />
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);

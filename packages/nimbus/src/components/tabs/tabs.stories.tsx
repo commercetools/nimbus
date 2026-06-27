@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import { expect, fn, userEvent, within } from "storybook/test";
 import {
   Box,
   Button,
@@ -151,6 +151,13 @@ export const Base: Story = {
         name: "Monarchy and Republic",
       });
 
+      // The decorative sliding indicator sits over the active tab; switching
+      // tabs must reposition it (the slide is the default, no opt-in prop).
+      const indicator = canvasElement.querySelector<HTMLElement>(
+        '[aria-hidden="true"]'
+      );
+      const beforeTransform = indicator?.style.transform ?? "";
+
       await userEvent.click(secondTab);
 
       await expect(secondTab).toHaveAttribute("aria-selected", "true");
@@ -160,6 +167,9 @@ export const Base: Story = {
       await expect(activePanel).toHaveTextContent(
         "Senatus Populusque Romanus."
       );
+
+      await expect(indicator).not.toBeNull();
+      await expect(indicator!.style.transform).not.toBe(beforeTransform);
     });
 
     await step("Supports keyboard navigation", async () => {
@@ -1288,168 +1298,6 @@ export const LinkTabs: Story = {
   },
 };
 
-// ============================================================
-// ANIMATED INDICATOR
-// ============================================================
-
-const animatedTabs = [
-  {
-    id: "overview",
-    tabLabel: "Overview",
-    panelContent: <Content tabLabel="Overview" body="The overview panel." />,
-  },
-  {
-    id: "details",
-    tabLabel: "Details",
-    panelContent: <Content tabLabel="Details" body="The details panel." />,
-  },
-  {
-    id: "history",
-    tabLabel: "History",
-    panelContent: <Content tabLabel="History" body="The history panel." />,
-  },
-];
-
-/** Returns the decorative sliding indicator rendered inside an animated Tabs. */
-const getIndicator = (canvasElement: HTMLElement) =>
-  canvasElement.querySelector<HTMLElement>('[aria-hidden="true"]');
-
-/**
- * The active marker is a single indicator that slides between tabs as the
- * selection changes instead of snapping. For the `underline` variant
- * (horizontal) it is a thin bar on the active tab's bottom edge.
- *
- * The slide is disabled under `prefers-reduced-motion: reduce`, and the
- * indicator is `aria-hidden` / non-focusable so `aria-selected`, focus, and
- * keyboard navigation are unaffected.
- */
-export const Animated: Story = {
-  args: {
-    variant: "underline",
-    tabs: animatedTabs,
-    tabListAriaLabel: "Animated tabs",
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Renders a single aria-hidden indicator", async () => {
-      await waitFor(() =>
-        expect(getIndicator(canvasElement)).toBeInTheDocument()
-      );
-      await expect(getIndicator(canvasElement)!).toHaveAttribute(
-        "aria-hidden",
-        "true"
-      );
-    });
-
-    let initialTransform = "";
-    await step("Indicator is positioned over the selected tab", async () => {
-      await waitFor(() => {
-        initialTransform = getIndicator(canvasElement)!.style.transform;
-        expect(initialTransform).not.toBe("");
-      });
-    });
-
-    await step("Selecting another tab slides the indicator", async () => {
-      const detailsTab = canvas.getByRole("tab", { name: "Details" });
-      await userEvent.click(detailsTab);
-      await expect(detailsTab).toHaveAttribute("aria-selected", "true");
-      await waitFor(() => {
-        const next = getIndicator(canvasElement)!.style.transform;
-        expect(next).not.toBe("");
-        expect(next).not.toBe(initialTransform);
-      });
-    });
-
-    await step(
-      "Indicator does not appear in the accessibility tree",
-      async () => {
-        // Only real tabs are exposed; the indicator is decorative.
-        const tabs = canvas.getAllByRole("tab");
-        await expect(tabs).toHaveLength(3);
-      }
-    );
-  },
-};
-
-/**
- * The indicator adapts to a vertical `underline` layout: the bar is pinned to
- * the active tab's inner edge (right edge for `placement="start"`) and slides
- * vertically between tabs.
- */
-export const AnimatedVertical: Story = {
-  args: {
-    variant: "underline",
-    orientation: "vertical",
-    placement: "start",
-    tabs: animatedTabs,
-    tabListAriaLabel: "Animated vertical tabs",
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    let initialTransform = "";
-    await step("Indicator is positioned over the selected tab", async () => {
-      await waitFor(() => {
-        const indicator = getIndicator(canvasElement);
-        expect(indicator).toBeInTheDocument();
-        initialTransform = indicator!.style.transform;
-        expect(initialTransform).not.toBe("");
-      });
-    });
-
-    await step("Selecting another tab slides the indicator", async () => {
-      const historyTab = canvas.getByRole("tab", { name: "History" });
-      await userEvent.click(historyTab);
-      await expect(historyTab).toHaveAttribute("aria-selected", "true");
-      await waitFor(() =>
-        expect(getIndicator(canvasElement)!.style.transform).not.toBe(
-          initialTransform
-        )
-      );
-    });
-  },
-};
-
-/**
- * For the `pill` variant, the indicator is a filled, fully-rounded highlight
- * that slides behind the active tab.
- */
-export const AnimatedPill: Story = {
-  args: {
-    variant: "pill",
-    tabs: animatedTabs,
-    tabListAriaLabel: "Animated pill tabs",
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    let initialTransform = "";
-    await step(
-      "Filled indicator is positioned over the selected tab",
-      async () => {
-        await waitFor(() => {
-          const indicator = getIndicator(canvasElement);
-          expect(indicator).toBeInTheDocument();
-          initialTransform = indicator!.style.transform;
-          expect(initialTransform).not.toBe("");
-        });
-      }
-    );
-
-    await step("Selecting another tab slides the highlight", async () => {
-      const detailsTab = canvas.getByRole("tab", { name: "Details" });
-      await userEvent.click(detailsTab);
-      await expect(detailsTab).toHaveAttribute("aria-selected", "true");
-      await waitFor(() =>
-        expect(getIndicator(canvasElement)!.style.transform).not.toBe(
-          initialTransform
-        )
-      );
-    });
-  },
-};
-
 /**
  * The legacy `line` and `pills` variant names are still accepted as deprecated
  * aliases for `underline` and `pill`, so existing code keeps working without
@@ -1458,7 +1306,7 @@ export const AnimatedPill: Story = {
 export const DeprecatedVariantAliases: Story = {
   args: {
     variant: "pills",
-    tabs: animatedTabs,
+    tabs: simpleTabs,
     tabListAriaLabel: "Deprecated alias tabs",
   },
   play: async ({ canvasElement, step }) => {
