@@ -9,6 +9,9 @@ import {
   Tooltip,
   MakeElementFocusable,
   toast,
+  ScrollArea,
+  Splitter,
+  useResponsiveSplitterSizes,
 } from "@commercetools/nimbus";
 import { useEffect, useMemo, useState } from "react";
 import Fuse from "fuse.js";
@@ -45,6 +48,17 @@ export const IconSearch = () => {
   const [, copyToClipboard] = useCopyToClipboard();
   const [q, setQ] = useState<string>("");
   const [category, setCategory] = useState<string>(ALL_CATEGORIES);
+
+  // Persist the category-rail width (in pixels) across reloads. The hook
+  // measures the container, translates the pixel config to the percentage the
+  // splitter consumes, drives its controlled `size`, and writes the settled
+  // width back under `persistKey` on every resize.
+  const { rootProps } = useResponsiveSplitterSizes({
+    persistKey: "docs:icon-search-rail",
+    size: 240,
+    minSize: 180,
+    maxSize: 400,
+  });
 
   // The metadata is ~900KB, so load it lazily (a separate chunk) only when this
   // component mounts — it stays out of the main docs bundle. Until it resolves,
@@ -139,85 +153,95 @@ export const IconSearch = () => {
   };
 
   return (
-    <Flex
-      mt="800"
-      mb="1600"
-      gap="800"
-      alignItems="flex-start"
-      direction={{ base: "column", md: "row" }}
+    <Box
+      position="absolute"
+      inset="0"
+      outline="1px solid tomato"
+      overflow="hidden"
     >
-      {/* Category filter rail */}
-      <Stack
-        as="nav"
-        aria-label="Filter icons by category"
-        flexShrink="0"
-        width={{ base: "100%", md: "3600" }}
-        gap="0"
-        position={{ base: "static", md: "sticky" }}
-        top="800"
-      >
-        <Text textStyle="sm" fontWeight="600" color="neutral.11" mb="200">
-          Categories
-        </Text>
-        <CategoryItem
-          label="All"
-          count={entries.length}
-          active={category === ALL_CATEGORIES}
-          onSelect={() => setCategory(ALL_CATEGORIES)}
-        />
-        {categories.map(({ name, count }) => (
-          <CategoryItem
-            key={name}
-            label={titleCase(name)}
-            count={count}
-            active={category === name}
-            onSelect={() => setCategory(name)}
-          />
-        ))}
-      </Stack>
+      <Splitter.Root {...rootProps}>
+        {/* Category filter rail */}
+        <Splitter.Aside>
+          <ScrollArea height="100%">
+            <Stack
+              as="nav"
+              aria-label="Filter icons by category"
+              gap="0"
+              p="400"
+            >
+              <Text textStyle="sm" fontWeight="600" color="neutral.11" mb="200">
+                Categories
+              </Text>
+              <CategoryItem
+                label="All"
+                count={entries.length}
+                active={category === ALL_CATEGORIES}
+                onSelect={() => setCategory(ALL_CATEGORIES)}
+              />
+              {categories.map(({ name, count }) => (
+                <CategoryItem
+                  key={name}
+                  label={titleCase(name)}
+                  count={count}
+                  active={category === name}
+                  onSelect={() => setCategory(name)}
+                />
+              ))}
+            </Stack>
+          </ScrollArea>
+        </Splitter.Aside>
 
-      {/* Search + results */}
-      <Stack flex="1" minW="0" gap="600">
-        <TextInput
-          placeholder={`Search through ${
-            category === ALL_CATEGORIES ? ALL_ICON_NAMES.length : scoped.length
-          } icons ...`}
-          value={q}
-          onChange={(value) => setQ(value)}
-        />
-        {results.length === 0 ? (
-          <Text color="neutral.11">No icons match “{q}”.</Text>
-        ) : (
-          <SimpleGrid columns={[4, 5, 5, 6, 8]}>
-            {results.map((iconId) => {
-              const Component = icons[iconId as keyof typeof icons];
-              return (
-                <Tooltip.Root key={iconId}>
-                  <MakeElementFocusable>
-                    <Flex
-                      p="400"
-                      border="solid-25"
-                      borderColor="neutral.5"
-                      ml="-1px"
-                      mb="-1px"
-                      aspectRatio={1}
-                      cursor="pointer"
-                      _hover={{ bg: "neutral.2" }}
-                      onClick={() => onCopyRequest(iconId)}
-                    >
-                      <Text m="auto" textStyle="3xl" color="neutral.12">
-                        <Component />
-                      </Text>
-                    </Flex>
-                  </MakeElementFocusable>
-                  <Tooltip.Content>{iconId}</Tooltip.Content>
-                </Tooltip.Root>
-              );
-            })}
-          </SimpleGrid>
-        )}
-      </Stack>
-    </Flex>
+        <Splitter.Handle />
+
+        {/* Search + results */}
+        <Splitter.Main>
+          <ScrollArea height="100%">
+            <Stack minW="0" gap="600" p="400">
+              <TextInput
+                placeholder={`Search through ${
+                  category === ALL_CATEGORIES
+                    ? ALL_ICON_NAMES.length
+                    : scoped.length
+                } icons ...`}
+                value={q}
+                onChange={(value) => setQ(value)}
+              />
+              {results.length === 0 ? (
+                <Text color="neutral.11">No icons match “{q}”.</Text>
+              ) : (
+                <SimpleGrid columns={[4, 5, 5, 6, 8]}>
+                  {results.map((iconId) => {
+                    const Component = icons[iconId as keyof typeof icons];
+                    return (
+                      <Tooltip.Root key={iconId}>
+                        <MakeElementFocusable>
+                          <Flex
+                            p="400"
+                            border="solid-25"
+                            borderColor="neutral.5"
+                            ml="-1px"
+                            mb="-1px"
+                            aspectRatio={1}
+                            cursor="pointer"
+                            _hover={{ bg: "neutral.2" }}
+                            onClick={() => onCopyRequest(iconId)}
+                          >
+                            <Text m="auto" textStyle="3xl" color="neutral.12">
+                              <Component />
+                            </Text>
+                          </Flex>
+                        </MakeElementFocusable>
+                        <Tooltip.Content>{iconId}</Tooltip.Content>
+                      </Tooltip.Root>
+                    );
+                  })}
+                </SimpleGrid>
+              )}
+            </Stack>
+          </ScrollArea>
+        </Splitter.Main>
+      </Splitter.Root>
+    </Box>
   );
 };
 
