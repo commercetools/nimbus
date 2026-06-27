@@ -4,6 +4,10 @@ const clr = "\x1b[33m%s\x1b[0m";
 console.log(clr, `###################################################`);
 console.log(clr, `############    @NIMBUS DEV-SERVER    ############`);
 console.log(clr, `###################################################`);
+// Dim subtitle, spaced from the banner, in the same vocabulary as the
+// watcher's startup summary. Printed here (parent process) so its placement
+// is deterministic rather than racing the child processes' output.
+console.log("\x1b[2m%s\x1b[0m", `\n  Vite dev server + MDX route watcher\n`);
 
 const viteProcess = spawn(
   "pnpm",
