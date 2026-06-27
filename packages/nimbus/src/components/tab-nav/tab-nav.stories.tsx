@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Box, Stack, TabNav, Text } from "@commercetools/nimbus";
 
 /**
@@ -16,13 +16,18 @@ const meta: Meta<typeof TabNav.Root> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["tabs"],
+      options: ["tabs", "filled", "pill"],
       description: "Visual style variant of the tab navigation",
     },
     size: {
       control: "select",
       options: ["sm", "md", "lg"],
       description: "Size of the tab navigation items",
+    },
+    animated: {
+      control: "boolean",
+      description:
+        "Slide a single highlight between items (filled/pill only). Respects prefers-reduced-motion.",
     },
   },
 };
@@ -115,28 +120,208 @@ export const Sizes: Story = {
 };
 
 /**
- * Demonstrates the `tabs` visual variant applied to the navigation.
- * TabNav currently ships with a single `tabs` variant — the default style.
+ * TabNav ships with three visual variants:
+ *
+ * - `tabs` (default) — an underline strip; visually twinned with the `Tabs`
+ *   `line` variant.
+ * - `filled` — a soft rounded-rect highlight on the active item.
+ * - `pill` — a fully-rounded capsule highlight on the active item.
+ *
+ * The `filled` and `pill` variants drop the baseline and add a small gap
+ * between items. Their active highlight is themeable via `colorPalette`
+ * (defaulting to `primary`).
  */
 export const Variants: Story = {
   render: () => (
-    <Stack direction="column" gap="300">
-      <Text fontWeight="600">tabs (default)</Text>
-      <TabNav.Root aria-label="Order navigation" variant="tabs">
-        <TabNav.Item href="/orders/123/general" isCurrent>
-          General
-        </TabNav.Item>
-        <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
-        <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
-      </TabNav.Root>
+    <Stack direction="column" gap="600">
+      {(["tabs", "filled", "pill"] as const).map((variant) => (
+        <Stack key={variant} direction="column" gap="300">
+          <Text fontWeight="600">
+            {variant}
+            {variant === "tabs" ? " (default)" : ""}
+          </Text>
+          <TabNav.Root
+            aria-label={`Order navigation (${variant})`}
+            variant={variant}
+          >
+            <TabNav.Item href="/orders/123/general" isCurrent>
+              General
+            </TabNav.Item>
+            <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+            <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
+          </TabNav.Root>
+        </Stack>
+      ))}
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Renders nav landmark with tabs variant", async () => {
+    await step("Renders all three variant nav landmarks", async () => {
+      const navs = canvas.getAllByRole("navigation");
+      await expect(navs).toHaveLength(3);
+    });
+
+    await step("Active item carries aria-current in each variant", async () => {
+      const activeLinks = canvas.getAllByRole("link", { name: "General" });
+      await expect(activeLinks).toHaveLength(3);
+      for (const link of activeLinks) {
+        await expect(link).toHaveAttribute("aria-current", "page");
+      }
+    });
+  },
+};
+
+/**
+ * The `filled` variant renders a soft rounded-rect highlight behind the active
+ * item — the look the docs navbar uses. Inactive items rest in a neutral color
+ * and gain a subtle background on hover; the active highlight is driven by the
+ * `colorPalette` (defaulting to `primary`), so it themes with the surrounding
+ * palette.
+ */
+export const Filled: Story = {
+  render: () => (
+    <TabNav.Root aria-label="Order navigation" variant="filled">
+      <TabNav.Item href="/orders/123/general" isCurrent>
+        General
+      </TabNav.Item>
+      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+      <TabNav.Item href="/orders/123/shipping" isDisabled>
+        Shipping
+      </TabNav.Item>
+    </TabNav.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Active item has aria-current='page'", async () => {
+      const generalLink = canvas.getByRole("link", { name: "General" });
+      await expect(generalLink).toHaveAttribute("aria-current", "page");
+    });
+
+    await step("Hovering an inactive item is non-destructive", async () => {
+      const itemsLink = canvas.getByRole("link", { name: "Items" });
+      await userEvent.hover(itemsLink);
+      await expect(itemsLink).not.toHaveAttribute("aria-current");
+    });
+
+    await step("Disabled item is dimmed and not focusable", async () => {
+      const disabledLink = canvas.getByRole("link", { name: "Shipping" });
+      await expect(disabledLink).toHaveAttribute("aria-disabled", "true");
+      await expect(disabledLink).not.toHaveAttribute("href");
+    });
+  },
+};
+
+/**
+ * The `pill` variant is the `filled` look with a fully-rounded capsule
+ * highlight and a little extra horizontal padding, so the active item reads as
+ * a pill.
+ */
+export const Pill: Story = {
+  render: () => (
+    <TabNav.Root aria-label="Order navigation" variant="pill">
+      <TabNav.Item href="/orders/123/general" isCurrent>
+        General
+      </TabNav.Item>
+      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+      <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
+    </TabNav.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Renders nav landmark with pill variant", async () => {
       const nav = canvas.getByRole("navigation");
       await expect(nav).toBeInTheDocument();
+    });
+
+    await step("Active item has aria-current='page'", async () => {
+      const generalLink = canvas.getByRole("link", { name: "General" });
+      await expect(generalLink).toHaveAttribute("aria-current", "page");
+    });
+  },
+};
+
+/**
+ * With `animated`, the `filled` and `pill` variants render a single highlight
+ * that slides between items as the active item changes — instead of the static
+ * per-item background. The indicator is `aria-hidden` and non-focusable, so
+ * `aria-current`, focus rings, and keyboard order are unaffected.
+ *
+ * The motion is automatically disabled when the user requests
+ * `prefers-reduced-motion: reduce` (the highlight snaps into place).
+ *
+ * This story drives the active item with local state to demonstrate the slide,
+ * and asserts that the highlight follows clicks.
+ */
+export const AnimatedHighlight: Story = {
+  render: () => {
+    const items = [
+      { href: "/orders/123/general", label: "General" },
+      { href: "/orders/123/items", label: "Items" },
+      { href: "/orders/123/shipping", label: "Shipping" },
+    ] as const;
+
+    const [activePath, setActivePath] = useState<string>(items[0].href);
+
+    return (
+      <TabNav.Root aria-label="Order navigation" variant="filled" animated>
+        {items.map((item) => (
+          <TabNav.Item
+            key={item.href}
+            href={item.href}
+            isCurrent={activePath === item.href}
+            onClick={(e) => {
+              e.preventDefault();
+              setActivePath(item.href);
+            }}
+          >
+            {item.label}
+          </TabNav.Item>
+        ))}
+      </TabNav.Root>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const getIndicator = () =>
+      canvasElement.querySelector<HTMLElement>('nav [aria-hidden="true"]');
+
+    await step("Renders a single hidden highlight indicator", async () => {
+      await waitFor(() => expect(getIndicator()).toBeInTheDocument());
+      // The indicator must not be exposed to assistive tech or focusable.
+      const indicator = getIndicator()!;
+      await expect(indicator).toHaveAttribute("aria-hidden", "true");
+      await expect(indicator.tagName).not.toBe("A");
+    });
+
+    let initialTransform = "";
+    await step("Highlight is positioned over the active item", async () => {
+      await waitFor(() => {
+        initialTransform = getIndicator()!.style.transform;
+        expect(initialTransform).not.toBe("");
+      });
+    });
+
+    await step("Clicking another item slides the highlight", async () => {
+      const itemsLink = canvas.getByRole("link", { name: "Items" });
+      await userEvent.click(itemsLink);
+
+      // aria-current moves to the clicked item...
+      await expect(itemsLink).toHaveAttribute("aria-current", "page");
+
+      // ...and the indicator re-measures to a new position.
+      await waitFor(() => {
+        const next = getIndicator()!.style.transform;
+        expect(next).not.toBe("");
+        expect(next).not.toBe(initialTransform);
+      });
+    });
+
+    await step("Previous item is no longer current", async () => {
+      const generalLink = canvas.getByRole("link", { name: "General" });
+      await expect(generalLink).not.toHaveAttribute("aria-current");
     });
   },
 };
@@ -395,6 +580,72 @@ export const WithViewSwitching: Story = {
       const shippingLink = canvas.getByRole("link", { name: "Shipping" });
       await userEvent.click(shippingLink);
       await expect(shippingLink).toHaveAttribute("aria-current", "page");
+    });
+  },
+};
+
+/**
+ * `animated` also applies to the default `tabs` variant: the underline becomes
+ * a thin bar that slides between items as the active item changes, instead of
+ * snapping. As with the filled/pill highlight, the slide is disabled under
+ * `prefers-reduced-motion: reduce`, and `aria-current`/focus/keyboard order are
+ * unaffected.
+ */
+export const AnimatedUnderline: Story = {
+  render: () => {
+    const items = [
+      { href: "/orders/123/general", label: "General" },
+      { href: "/orders/123/items", label: "Items" },
+      { href: "/orders/123/shipping", label: "Shipping" },
+    ] as const;
+
+    const [activePath, setActivePath] = useState<string>(items[0].href);
+
+    return (
+      <TabNav.Root aria-label="Order navigation" variant="tabs" animated>
+        {items.map((item) => (
+          <TabNav.Item
+            key={item.href}
+            href={item.href}
+            isCurrent={activePath === item.href}
+            onClick={(e) => {
+              e.preventDefault();
+              setActivePath(item.href);
+            }}
+          >
+            {item.label}
+          </TabNav.Item>
+        ))}
+      </TabNav.Root>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const getIndicator = () =>
+      canvasElement.querySelector<HTMLElement>('nav [aria-hidden="true"]');
+
+    await step("Renders a single hidden underline indicator", async () => {
+      await waitFor(() => expect(getIndicator()).toBeInTheDocument());
+      await expect(getIndicator()!).toHaveAttribute("aria-hidden", "true");
+    });
+
+    let initialTransform = "";
+    await step("Underline is positioned over the active item", async () => {
+      await waitFor(() => {
+        initialTransform = getIndicator()!.style.transform;
+        expect(initialTransform).not.toBe("");
+      });
+    });
+
+    await step("Clicking another item slides the underline", async () => {
+      const itemsLink = canvas.getByRole("link", { name: "Items" });
+      await userEvent.click(itemsLink);
+      await expect(itemsLink).toHaveAttribute("aria-current", "page");
+      await waitFor(() => {
+        const next = getIndicator()!.style.transform;
+        expect(next).not.toBe("");
+        expect(next).not.toBe(initialTransform);
+      });
     });
   },
 };

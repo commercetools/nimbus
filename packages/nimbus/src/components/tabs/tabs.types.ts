@@ -105,6 +105,21 @@ export type TabsProps = OmitInternalProps<TabsRootSlotProps> & {
    */
   tabListAriaLabel?: string;
   /**
+   * When `true`, renders a single decorative indicator that smoothly slides
+   * between tabs as the selected tab changes, instead of the static per-tab
+   * marker. The indicator adapts to the resolved `variant` / `orientation` /
+   * `placement`: a thin bar on the active tab's bottom edge (horizontal),
+   * right edge (vertical + `placement="start"`), or left edge (vertical +
+   * `placement="end"`); and a filled, fully-rounded highlight for the `pills`
+   * variant.
+   *
+   * The slide is automatically disabled under `prefers-reduced-motion: reduce`
+   * (the highlight snaps), and `aria-selected`, focus, and keyboard navigation
+   * are unaffected.
+   * @default false
+   */
+  animated?: boolean;
+  /**
    * The currently selected tab key (controlled).
    */
   selectedKey?: string | number;

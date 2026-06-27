@@ -14,7 +14,52 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * visually identical to the `line` horizontal variant of Tabs. If you change
  * colors, spacing, typography, transitions, or focus styles in one, apply the
  * equivalent change to the other.
+ *
+ * NOTE: the twin rule above applies ONLY to the `tabs` variant. The `filled`
+ * and `pill` variants are TabNav-only and have no counterpart in Tabs.
  */
+
+/**
+ * Shared item styles for the `filled` and `pill` variants.
+ *
+ * Both reproduce the "soft highlight on the active item" look (vs. the `tabs`
+ * underline strip): a neutral resting state, a subtle hover wash, and a
+ * themeable highlight on the active item driven by `colorPalette` (defaulting
+ * to `primary` via the root slot). Padding and font-size are inherited from the
+ * shared `--tab-nav-*` size CSS vars so all three sizes keep working.
+ *
+ * `position: relative` + `zIndex` keep the item's label painted ABOVE the
+ * absolutely-positioned animated indicator (see `tab-nav.root.tsx`). When the
+ * indicator is active (`[data-animated="true"]`), it owns the highlight, so the
+ * static per-item background is suppressed to avoid a double highlight.
+ */
+const filledItemBase = {
+  color: "neutral.11",
+  cursor: "pointer",
+  fontWeight: "500",
+  textDecoration: "none",
+  borderRadius: "200",
+  position: "relative",
+  zIndex: 1,
+  transition: "color 150ms ease, background 150ms ease",
+  focusVisibleRing: "outside",
+  // No hover background — just shift the text to the (themed) active palette so
+  // hover never paints over the active item's highlight or the sliding indicator.
+  _hover: {
+    color: "colorPalette.11",
+  },
+  '&[aria-current="page"]': {
+    color: "colorPalette.11",
+    background: "colorPalette.3",
+  },
+  '[data-animated="true"] &[aria-current="page"]': {
+    background: "transparent",
+  },
+  _disabled: {
+    layerStyle: "disabled",
+  },
+} as const;
+
 export const tabNavSlotRecipe = defineSlotRecipe({
   slots: ["root", "item"],
 
@@ -57,12 +102,42 @@ export const tabNavSlotRecipe = defineSlotRecipe({
             color: "primary.11",
           },
           '&[aria-current="page"]': {
-            color: "primary.9",
+            color: "primary.11",
             boxShadow: "0 2px 0 0 {colors.primary.9}",
+          },
+          // When the animated indicator is active, the sliding underline bar
+          // owns the highlight, so suppress the static underline.
+          '[data-animated="true"] &[aria-current="page"]': {
+            boxShadow: "0 2px 0 0 transparent",
           },
           _disabled: {
             layerStyle: "disabled",
           },
+        },
+      },
+      // Soft rounded-rect highlight on the active item (reproduces the previous
+      // docs-navbar look). No baseline; small gap between items.
+      filled: {
+        root: {
+          colorPalette: "primary",
+          gap: "100",
+          position: "relative",
+        },
+        item: filledItemBase,
+      },
+      // Same idea as `filled`, but a fully-rounded capsule highlight and a touch
+      // more horizontal padding so it reads as a pill.
+      pill: {
+        root: {
+          colorPalette: "primary",
+          gap: "100",
+          position: "relative",
+        },
+        item: {
+          ...filledItemBase,
+          borderRadius: "full",
+          paddingLeft: "calc(var(--tab-nav-padding-left) + {spacing.100})",
+          paddingRight: "calc(var(--tab-nav-padding-right) + {spacing.100})",
         },
       },
     },
