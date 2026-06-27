@@ -13,8 +13,10 @@
   and the indicator is decorative (`aria-hidden`) — selection, focus, and
   keyboard behavior are unchanged. The animation is always on; there is no
   per-instance toggle.
-- `Tabs`' `pills` variant has been reimplemented to match `TabNav` (themeable
-  `colorPalette` highlight, no outline-box container).
+- The `pill` variant now looks the same on `Tabs` and `TabNav`: a themeable
+  capsule highlight that follows `colorPalette`. If you use `Tabs`
+  `variant="pills"` today, expect a refreshed look (and it now themes with the
+  surrounding palette instead of a fixed color).
 
 **Deprecations (non-breaking — old names still work):**
 
