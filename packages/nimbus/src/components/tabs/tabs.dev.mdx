@@ -109,11 +109,11 @@ const App = () => {
 ### Visual variants
 
 The Tabs component offers three visual styles (the same set as `TabNav`):
-- **underline** (default) - an underline strip beneath the active tab
+- **line** (default) - a bar marking the active tab (an underline when horizontal, an inner side bar when vertical)
 - **rounded** - a soft rounded-rect highlight behind the active tab
 - **pill** - a fully-rounded capsule highlight behind the active tab
 
-The `rounded` and `pill` highlights are themeable via `colorPalette` (defaulting to `primary`). The legacy `line` (→ `underline`) and `pills` (→ `pill`) names are accepted as deprecated aliases.
+The `rounded` and `pill` highlights are themeable via `colorPalette` (defaulting to `primary`). The legacy `pills` (→ `pill`) name is accepted as a deprecated alias.
 
 ```jsx live-dev
 const App = () => {
@@ -126,8 +126,8 @@ const App = () => {
   return (
     <Stack direction="column" gap="600">
       <Stack direction="column" gap="200">
-        <Text fontWeight="500">Underline variant (default)</Text>
-        <Tabs.Root variant="underline" tabs={tabs} />
+        <Text fontWeight="500">Line variant (default)</Text>
+        <Tabs.Root variant="line" tabs={tabs} />
       </Stack>
 
       <Stack direction="column" gap="200">
@@ -149,8 +149,8 @@ const App = () => {
 The active marker always slides between tabs as the selection changes, instead
 of snapping — no prop required. The indicator adapts to the resolved variant,
 orientation, and placement: a thin bar on the active tab's bottom edge
-(horizontal `underline`), its right or left edge (vertical `underline`, per
-`placement`), or a filled highlight (`rounded` / `pill`).
+(horizontal `line`), its inner side edge (vertical `line`, per `placement`), or a
+filled highlight (`rounded` / `pill`).
 
 The indicator is decorative (`aria-hidden`, non-focusable), so `aria-selected`,
 focus rings, and keyboard navigation are unchanged. The slide is automatically

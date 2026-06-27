@@ -72,9 +72,9 @@ export interface SlidingIndicatorOptions {
  * momentarily suppressed so the indicator snaps to the active item instead of
  * sliding in from the container corner on initial render.
  *
- * Used to drive the animated active-highlight on `Tabs` (and, in a follow-up,
- * `TabNav`), where `getGeometry` encodes whether the indicator is an underline
- * bar, a side bar, or a filled highlight.
+ * Used to drive the animated active-highlight on `Tabs` and `TabNav`, where
+ * `getGeometry` encodes whether the indicator is an edge bar (bottom or inner
+ * side) or a filled highlight.
  */
 export function useSlidingIndicator({
   enabled,

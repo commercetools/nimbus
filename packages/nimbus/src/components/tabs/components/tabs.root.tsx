@@ -13,12 +13,11 @@ import { extractStyleProps } from "@/utils";
 import { useSlidingIndicator } from "@/hooks";
 import type { SlidingIndicatorRects } from "@/hooks";
 
-/** Thickness of the sliding underline bar for the `underline` variant. */
+/** Thickness of the sliding bar for the `line` variant. */
 const INDICATOR_BAR_PX = 2;
 
 /** Deprecated variant aliases → their replacement. */
 const VARIANT_ALIASES: Record<string, string> = {
-  line: "underline",
   pills: "pill",
 };
 
@@ -35,7 +34,7 @@ function resolveVariantAlias<T>(variant: T): T {
  * A tabs component built on React Aria Components that allows users to switch between different views.
  *
  * The active marker is a single indicator that slides between tabs as the
- * selection changes — an underline bar for `underline`, a filled highlight for
+ * selection changes — a bar for `line`, a filled highlight for
  * `rounded`/`pill`. It is `aria-hidden` and non-focusable, rendered inside the
  * root and positioned with `useSlidingIndicator`; the static selected marker is
  * the SSR/no-JS fallback (suppressed by the recipe once the hook activates), and
@@ -51,8 +50,7 @@ export const TabsRoot = ({
 }: TabsProps) => {
   const sysCtx = useChakraContext();
   // Standard pattern: Split recipe variants. Resolve deprecated variant aliases
-  // (`line` → `underline`, `pills` → `pill`) up front so the recipe only ever
-  // sees real variant keys.
+  // (`pills` → `pill`) up front so the recipe only ever sees real variant keys.
   const recipe = useSlotRecipe({ key: "nimbusTabs" });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps({
     ...props,
@@ -70,11 +68,11 @@ export const TabsRoot = ({
 
   // The indicator geometry depends on the *resolved* variant, orientation, and
   // placement (responsive values are normalized the same way).
-  const variant = sysCtx.normalizeValue(recipeProps.variant) ?? "underline";
+  const variant = sysCtx.normalizeValue(recipeProps.variant) ?? "line";
   const orientation = normalizedOrientation ?? "horizontal";
   const placement = sysCtx.normalizeValue(recipeProps.placement) ?? "start";
 
-  const isUnderline = variant === "underline";
+  const isLine = variant === "line";
   const isPill = variant === "pill";
 
   const indicatorRef = useRef<HTMLDivElement>(null);
@@ -90,10 +88,10 @@ export const TabsRoot = ({
       const x = active.left - container.left;
       const y = active.top - container.top;
       // `rounded` / `pill` → full-box filled highlight.
-      if (!isUnderline) {
+      if (!isLine) {
         return { x, y, width: active.width, height: active.height };
       }
-      // `underline` → a thin bar pinned to the active tab's marker edge.
+      // `line` → a thin bar pinned to the active tab's marker edge.
       if (orientation === "vertical") {
         return placement === "end"
           ? // tabs on the right; marker on their left edge
@@ -128,8 +126,8 @@ export const TabsRoot = ({
           zIndex={0}
           opacity={0}
           pointerEvents="none"
-          background={isUnderline ? "primary.9" : "colorPalette.3"}
-          borderRadius={isUnderline ? "0" : isPill ? "full" : "200"}
+          background={isLine ? "primary.9" : "colorPalette.3"}
+          borderRadius={isLine ? "0" : isPill ? "full" : "200"}
           transition="transform 180ms ease, width 180ms ease, height 180ms ease, opacity 120ms ease"
           css={{
             "@media (prefers-reduced-motion: reduce)": {

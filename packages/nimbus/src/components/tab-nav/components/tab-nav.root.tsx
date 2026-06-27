@@ -5,12 +5,12 @@ import type { SlidingIndicatorRects } from "@/hooks";
 import { TabNavRootSlot } from "../tab-nav.slots";
 import type { TabNavProps } from "../tab-nav.types";
 
-/** Thickness of the sliding underline bar used by the `underline` variant. */
-const UNDERLINE_THICKNESS_PX = 2;
+/** Thickness of the sliding bar used by the `line` variant. */
+const LINE_BAR_PX = 2;
 
 /** Deprecated variant aliases → their replacement. */
-const VARIANT_ALIASES: Record<string, "underline" | "rounded" | "pill"> = {
-  tabs: "underline",
+const VARIANT_ALIASES: Record<string, "line" | "rounded" | "pill"> = {
+  tabs: "line",
 };
 
 /**
@@ -27,7 +27,7 @@ const VARIANT_ALIASES: Record<string, "underline" | "rounded" | "pill"> = {
  * The active highlight is a single indicator that slides between items as the
  * active item changes. It adapts to the variant:
  *
- * - `underline` — a thin bar pinned to the active item's bottom edge.
+ * - `line` — a thin bar pinned to the active item's bottom edge.
  * - `rounded` / `pill` — a full-height highlight painted behind the item label.
  *
  * The indicator is an `aria-hidden`, non-focusable element driven by the shared
@@ -41,7 +41,7 @@ const VARIANT_ALIASES: Record<string, "underline" | "rounded" | "pill"> = {
 export const TabNavRoot = (props: TabNavProps) => {
   const { variant: variantProp, children, ref, ...rest } = props;
 
-  // Resolve deprecated aliases (e.g. `tabs` → `underline`) to the real variant.
+  // Resolve deprecated aliases (e.g. `tabs` → `line`) to the real variant.
   const variant =
     typeof variantProp === "string"
       ? (VARIANT_ALIASES[variantProp] ?? variantProp)
@@ -49,8 +49,8 @@ export const TabNavRoot = (props: TabNavProps) => {
 
   // Stable string used for indicator geometry/styling and effect deps. A
   // responsive `variant` object falls back to the default look for the slider.
-  const variantName = typeof variant === "string" ? variant : "underline";
-  const isUnderline = variantName === "underline";
+  const variantName = typeof variant === "string" ? variant : "line";
+  const isLine = variantName === "line";
   const isPill = variantName === "pill";
 
   const indicatorRef = useRef<HTMLDivElement>(null);
@@ -65,13 +65,13 @@ export const TabNavRoot = (props: TabNavProps) => {
     getGeometry: ({ container, active }: SlidingIndicatorRects) => {
       const x = active.left - container.left;
       const y = active.top - container.top;
-      if (isUnderline) {
+      if (isLine) {
         // Pin a thin bar to the active item's bottom edge.
         return {
           x,
-          y: y + active.height - UNDERLINE_THICKNESS_PX,
+          y: y + active.height - LINE_BAR_PX,
           width: active.width,
-          height: UNDERLINE_THICKNESS_PX,
+          height: LINE_BAR_PX,
         };
       }
       // Full-height highlight behind the label.
@@ -90,8 +90,8 @@ export const TabNavRoot = (props: TabNavProps) => {
         zIndex={0}
         opacity={0}
         pointerEvents="none"
-        background={isUnderline ? "primary.9" : "colorPalette.3"}
-        borderRadius={isUnderline ? "0" : isPill ? "full" : "200"}
+        background={isLine ? "primary.9" : "colorPalette.3"}
+        borderRadius={isLine ? "0" : isPill ? "full" : "200"}
         transition="transform 180ms ease, width 180ms ease, height 180ms ease, opacity 120ms ease"
         css={{
           "@media (prefers-reduced-motion: reduce)": {

@@ -2,7 +2,7 @@
 
 ### Requirement: Unified variants with a sliding active indicator
 
-`Tabs` and `TabNav` SHALL expose the same three variants — `underline` (the
+`Tabs` and `TabNav` SHALL expose the same three variants — `line` (the
 default), `rounded`, and `pill` — and SHALL render the active marker as a single
 indicator that slides between items/tabs as the selection changes, rather than a
 static per-item marker. The indicator SHALL be decorative (`aria-hidden`,
@@ -19,7 +19,7 @@ fallback.
 
 #### Scenario: Indicator adapts to the variant
 
-- **WHEN** the variant is `underline`
+- **WHEN** the variant is `line`
 - **THEN** the indicator is a thin bar on the active item's marker edge (bottom
   for horizontal; the inner side for vertical `Tabs`, per `placement`)
 - **WHEN** the variant is `rounded` or `pill`
@@ -41,14 +41,14 @@ fallback.
 
 The components SHALL accept the previous variant names as deprecated aliases,
 resolved to the new names at runtime, so existing consumers keep working:
-`Tabs` `line` → `underline` and `pills` → `pill`; `TabNav` `tabs` → `underline`.
+`Tabs` `pills` → `pill`; `TabNav` `tabs` → `line`.
 
-#### Scenario: Legacy Tabs variant names still render
+#### Scenario: Legacy Tabs variant name still renders
 
-- **WHEN** `Tabs.Root` is given `variant="line"` or `variant="pills"`
-- **THEN** it renders as `underline` / `pill` respectively
+- **WHEN** `Tabs.Root` is given `variant="pills"`
+- **THEN** it renders as `pill`
 
 #### Scenario: Legacy TabNav variant name still renders
 
 - **WHEN** `TabNav.Root` is given `variant="tabs"`
-- **THEN** it renders as `underline`
+- **THEN** it renders as `line`

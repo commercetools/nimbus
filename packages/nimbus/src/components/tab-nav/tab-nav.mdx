@@ -64,11 +64,11 @@ const App = () => (
 
 `TabNav` ships with three visual variants:
 
-- **`underline`** (default) — an underline strip beneath the active item.
+- **`line`** (default) — an underline strip beneath the active item.
 - **`rounded`** — a soft rounded-rect highlight behind the active item.
 - **`pill`** — a fully-rounded capsule highlight behind the active item.
 
-The `rounded` and `pill` variants drop the underline baseline and add a small gap
+The `rounded` and `pill` variants drop the baseline and add a small gap
 between items. Their active highlight is themeable via `colorPalette` (it
 defaults to `primary`).
 
@@ -80,7 +80,7 @@ motion is requested, the highlight snaps into place instead of sliding.
 ```jsx live
 const App = () => (
   <Stack direction="column" gap="600">
-    {["underline", "rounded", "pill"].map((variant) => (
+    {["line", "rounded", "pill"].map((variant) => (
       <Stack key={variant} direction="column" gap="300">
         <Text fontWeight="600">{variant}</Text>
         <TabNav.Root aria-label={`Order navigation (${variant})`} variant={variant}>
@@ -99,7 +99,7 @@ const App = () => (
 ### Animated highlight
 
 The active highlight slides between items whenever the active item changes (an
-underline bar for `underline`, a filled highlight for `rounded`/`pill`) — no prop
+underline bar for `line`, a filled highlight for `rounded`/`pill`) — no prop
 required. The slide respects `prefers-reduced-motion: reduce` (the highlight
 snaps into place), and `aria-current`, focus, and keyboard order are unaffected.
 

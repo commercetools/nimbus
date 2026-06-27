@@ -1,99 +1,108 @@
-## Update (final scope)
-
-This change grew from "opt-in animated Tabs indicator" to: (a) the sliding
-indicator is the **default** for both components (no `animated` prop; the hook
-sets `data-animated` on mount so the static marker stays the no-JS fallback);
-(b) `Tabs` and `TabNav` share **one variant set** — `underline`/`rounded`/`pill`
-— with `Tabs`' flawed `pills` reimplemented on `TabNav`'s themeable highlight;
-(c) deprecated aliases (`line`/`tabs`→`underline`, `pills`→`pill`) are resolved
-in the component. The decisions below about indicator placement, geometry
-callback, static-marker suppression, and reduced motion still hold.
-
 ## Context
 
-`Tabs` is built on React Aria Components (`Tabs` / `TabList` / `Tab` / `TabPanel`).
-`Tabs.Root` renders `<TabsRootSlot asChild><RATabs>…</RATabs></TabsRootSlot>`, and
-already normalizes the responsive `orientation` prop to a concrete value via
-`sysCtx.normalizeValue` because RAC cannot consume responsive values.
+`Tabs` is built on React Aria Components (`Tabs` / `TabList` / `Tab` /
+`TabPanel`). `Tabs.Root` renders `<TabsRootSlot asChild><RATabs>…</RATabs>` and
+normalizes the responsive `variant` / `orientation` / `placement` props to
+concrete values via `sysCtx.normalizeValue`, because RAC cannot consume
+responsive values.
 
-The active marker today is static, defined in the recipe:
+`TabNav` renders a `<nav>` landmark containing `<a>` items (`TabNav.Item`), with
+the active item marked `aria-current="page"`.
 
-- `line` markers are `boxShadow` declarations in `compoundVariants`, one per
-  `orientation`/`placement` combination (bottom / right / left edge).
-- `pills` selected state is `backgroundColor: primary.3` in the `pills` variant.
-
-## Goals / Non-Goals
-
-- Goal: an opt-in, variant-aware sliding indicator for `Tabs` that reuses one
-  shared implementation with `TabNav`.
-- Goal: correctness across `orientation` × `placement` × `variant`, including
-  runtime-resolved (responsive) `orientation`.
-- Non-Goal: changing the static (non-animated) appearance or any a11y/keyboard
-  behavior.
-- Non-Goal: refactoring `TabNav` onto the hook in this change (follow-up).
+Both recipes mark the active item with a **static** marker — an underline
+`boxShadow` for `line`, a filled `backgroundColor` for `rounded`/`pill`. The
+sliding indicator replaces that marker at runtime.
 
 ## Decisions
 
-### Indicator lives in the root, not the list
+### The indicator lives in the positioned root, not the item list
 
-The indicator is rendered as the first child of `RATabs` (the root element, made
-`position: relative` when animated) rather than inside `TabList`. Two reasons:
+Both components render the indicator as the first child of a `position: relative`
+root — `RATabs` for `Tabs`, the `<nav>` slot for `TabNav`. For `Tabs` this is
+required: RAC's `TabList` renders a **collection** and rejects arbitrary
+non-`Tab` children, whereas the root has no such restriction. Measuring
+`activeRect − rootRect` against the root is also correct for **every** layout —
+in vertical / `placement="end"` the root is a flex `row` / `row-reverse` holding
+list + panels.
 
-1. React Aria's `TabList` renders a **collection**; injecting an arbitrary
-   non-`Tab` child is unsupported. The root element has no such restriction.
-2. Absolute positioning against the root works for **every** layout — in
-   vertical / `placement="end"` the root is a flex `row` / `row-reverse` holding
-   list + panels, and measuring `activeTabRect − rootRect` is correct regardless.
+The active element is found with a CSS selector
+(`[role="tab"][aria-selected="true"]` for `Tabs`, `[aria-current="page"]` for
+`TabNav`); the container is the indicator's positioned parent
+(`indicator.parentElement`), so no extra root ref is required.
 
-The active tab is found with `[role="tab"][aria-selected="true"]`; the container
-is the indicator's positioned parent (`indicator.parentElement`), so no extra
-root ref is required.
+### Shared hook with a geometry callback, not flags
+
+`useSlidingIndicator` is generic: callers pass `indicatorRef`, `activeSelector`,
+`watchAttributes`, and `getGeometry({ container, active }) => { x, y, width?,
+height? }`. The hook measures with `getBoundingClientRect` in `useLayoutEffect`
+and re-measures on active-item changes (a `MutationObserver` on
+`watchAttributes`) and layout changes (a `ResizeObserver`). Each component
+supplies geometry for its own variants (`T` = 2px bar thickness):
+
+- `rounded` / `pill` → full-box fill `{ x, y, width: active.w, height: active.h }`.
+- `line` horizontal → bottom bar `{ x, y: y + h − T, width: active.w, height: T }`.
+- `line` vertical `start` → inner (right) bar `{ x: x + w − T, y, width: T, height: h }`.
+- `line` vertical `end` → inner (left) bar `{ x, y, width: T, height: h }`.
+
+This keeps the hook agnostic so both components share one implementation.
+
+### `data-animated` marks the JS-enhanced state; the static marker is the fallback
+
+The hook sets `data-animated="true"` on the container on mount (removed on
+cleanup). The recipe's static marker renders server-side / pre-hydration; once
+the hook activates, recipe rules under `[data-animated="true"]` suppress the
+static marker and the measured indicator takes over before paint.
+
+Suppression rules live **inside the same variant slot objects** that define the
+static markers, so they share base specificity and win simply by adding the
+`[data-animated="true"]` ancestor — no `!important`:
+
+```ts
+'[data-animated="true"] &[data-selected]': { boxShadow: "… transparent" }       // line
+'[data-animated="true"] &[data-selected]': { backgroundColor: "transparent" }   // rounded / pill
+```
+
+(Co-location is also required by the type system: arbitrary selectors are
+accepted in `variants.*` slot objects but not in `base.*` or
+`compoundVariants[].css`.)
+
+### Snap on first paint, slide thereafter
+
+The indicator is authored at the container's top-left (`top/left: 0`, no
+transform) and carries a `transition`. The **first** placement is applied with
+the transition momentarily suppressed — the jump is committed with a synchronous
+reflow, then the transition is restored — so the indicator appears over the
+active item on initial render instead of animating in from the corner.
+Subsequent selection changes slide. Re-running the effect (e.g. a
+variant/orientation change) also snaps rather than sliding from a stale position.
 
 ### Paint order
 
 An absolutely-positioned element paints above static siblings. To keep the
-indicator **behind** tab labels (needed for the `pills` fill), the recipe gives
-tabs `position: relative; zIndex: 1` while `[data-animated="true"]`, and the
-indicator uses `zIndex: 0`. The indicator is geometrically over the tab strip
-only, never the panels, and is `pointer-events: none`.
-
-### Geometry callback, not flags
-
-`useSlidingIndicator` is generic: the caller passes `getGeometry({ container,
-active }) => { x, y, width?, height? }`. `Tabs` computes geometry from the
-**normalized** `variant` / `orientation` / `placement`:
-
-- `pills` → `{ x, y, width: active.w, height: active.h }` (full box, radius full).
-- `line` horizontal → bottom bar `{ x, y: y + h − T, width: active.w, height: T }`.
-- `line` vertical `start` → right bar `{ x: x + w − T, y, width: T, height: h }`.
-- `line` vertical `end` → left bar `{ x, y, width: T, height: h }`.
-
-where `T` is the 2px bar thickness. This keeps the hook agnostic and lets
-`TabNav` pass its own geometry later.
-
-### Suppressing the static marker
-
-Suppression rules are added **inside the same recipe blocks** that define the
-static markers (the `line` `compoundVariants` and the `pills` variant), so they
-inherit the same base specificity and only add a `[data-animated="true"]`
-ancestor — guaranteeing they win without `!important`:
-
-```ts
-'[data-animated="true"] &[data-selected]': { boxShadow: "… transparent" } // line
-'[data-animated="true"] &[data-selected]': { backgroundColor: "transparent" } // pills
-```
+filled highlight **behind** item labels, the recipe gives items `position:
+relative; zIndex: 1` under `[data-animated="true"]`, and the indicator uses
+`zIndex: 0`. The indicator covers the item strip only (never the panels) and is
+`pointer-events: none`.
 
 ### Reduced motion
 
-The indicator element carries the transform/size transition, disabled via
-`@media (prefers-reduced-motion: reduce)` — the highlight snaps into place.
+The indicator's transform/size transition is disabled under `@media
+(prefers-reduced-motion: reduce)` — the highlight snaps. This is the only motion
+control; there is no per-instance prop.
+
+### Deprecated variant aliases
+
+The components accept the previous variant names and resolve them to the current
+ones before the recipe sees them — `Tabs` `pills` → `pill`; `TabNav` `tabs` →
+`line` — typed `@deprecated`. The recipes define only `line` / `rounded` /
+`pill`.
 
 ## Risks / Trade-offs
 
-- **Responsive orientation:** mitigated by reusing `sysCtx.normalizeValue` (the
-  same mechanism `Tabs.Root` already uses for RAC) and re-running the effect when
-  the normalized values change.
-- **Extra DOM node** (the indicator) only renders when `animated` is set, and is
-  `aria-hidden` + non-focusable, so the a11y tree is unchanged.
-- **Specificity of suppression:** addressed by co-locating suppression with the
+- **Responsive `orientation` / `variant`:** reuse `sysCtx.normalizeValue` (the
+  same mechanism `Tabs.Root` already uses for RAC) and re-run the effect when
+  the normalized values change (via `deps`).
+- **Extra DOM node:** the indicator is `aria-hidden` + non-focusable, so the
+  a11y tree is unchanged.
+- **Suppression specificity:** addressed by co-locating suppression with the
   static markers (see above).

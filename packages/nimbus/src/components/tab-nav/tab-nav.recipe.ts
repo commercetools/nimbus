@@ -5,23 +5,23 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  *
  * Renders navigation semantics (`<nav>` + `<a>`) with visual styling that
- * matches the Tabs `line` (horizontal underline) variant.
+ * matches the Tabs `line` variant.
  *
  * ⚠️  VISUAL TWIN — KEEP IN SYNC WITH `tabs.recipe.ts`
  * TabNav and Tabs are intentionally separate components with separate recipes
  * (different semantics: navigation links vs. content-panel widget). They do NOT
- * share a recipe. However, they expose the SAME three variants — `underline`,
+ * share a recipe. However, they expose the SAME three variants — `line`,
  * `rounded`, and `pill` — which are designed to look identical between the two.
  * If you change colors, spacing, typography, transitions, or focus styles for
  * any of these variants in one, apply the equivalent change to the other.
- * (Tabs additionally layers `orientation`/`placement` onto `underline`.)
+ * (Tabs additionally layers `orientation`/`placement` onto `line`.)
  */
 
 /**
  * Shared item styles for the `rounded` and `pill` variants.
  *
  * Both reproduce the "soft highlight on the active item" look (vs. the
- * `underline` strip): a neutral resting state, a subtle hover wash, and a
+ * `line` bar): a neutral resting state, a subtle hover wash, and a
  * themeable highlight on the active item driven by `colorPalette` (defaulting
  * to `primary` via the root slot). Padding and font-size are inherited from the
  * shared `--tab-nav-*` size CSS vars so all three sizes keep working.
@@ -87,7 +87,7 @@ export const tabNavSlotRecipe = defineSlotRecipe({
 
   variants: {
     variant: {
-      underline: {
+      line: {
         root: {
           boxShadow: "0 1px 0 0 {colors.neutral.6}",
         },
@@ -106,8 +106,8 @@ export const tabNavSlotRecipe = defineSlotRecipe({
             color: "primary.11",
             boxShadow: "0 2px 0 0 {colors.primary.9}",
           },
-          // When the animated indicator is active, the sliding underline bar
-          // owns the highlight, so suppress the static underline.
+          // When the animated indicator is active, the sliding bar owns the
+          // highlight, so suppress the static bar.
           '[data-animated="true"] &[aria-current="page"]': {
             boxShadow: "0 2px 0 0 transparent",
           },
@@ -172,7 +172,7 @@ export const tabNavSlotRecipe = defineSlotRecipe({
   },
 
   defaultVariants: {
-    variant: "underline",
+    variant: "line",
     size: "md",
   },
 });
