@@ -4,7 +4,7 @@ import { Profiler, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Markdown } from "@commercetools/nimbus";
 import type { MarkdownComponents } from "./markdown.types";
 import { splitMarkdownIntoBlocks, withoutNode } from "./utils";
-import { expect, waitFor, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 
 const meta: Meta<typeof Markdown> = {
   title: "Components/Markdown",
@@ -577,6 +577,57 @@ export const StreamingLifecycle: Story = {
   },
 };
 
+/**
+ * A reused instance that streams twice (a "regenerate" turn) must re-announce
+ * completion each time. Regression test for the announcement reset in
+ * markdown.tsx — without the mid-stream `setAnnouncement("")`, React's
+ * identical-value setState bail-out would silence the second "Response
+ * complete" (same string, no DOM change). Transitions are driven by clicks
+ * rather than timers so the transient mid-stream empty state is deterministic.
+ */
+export const RegenerateAnnouncement: Story = {
+  render: () => {
+    const RegenerateDemo = () => {
+      const [streaming, setStreaming] = useState(true);
+      return (
+        <>
+          <button onClick={() => setStreaming(true)}>regenerate</button>
+          <button onClick={() => setStreaming(false)}>stop</button>
+          <Markdown isStreaming={streaming}>{STREAM_CHUNKS.join("")}</Markdown>
+        </>
+      );
+    };
+    return <RegenerateDemo />;
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const stop = canvas.getByRole("button", { name: /stop/i });
+    const regenerate = canvas.getByRole("button", { name: /regenerate/i });
+
+    // First stream settles → completion announced.
+    await userEvent.click(stop);
+    await waitFor(() => {
+      const status = canvasElement.querySelector("[role='status']");
+      expect(status).toHaveTextContent("Response complete");
+    });
+
+    // Regenerate: the live region must clear while busy. This reset is what
+    // makes the next settle a genuine "" → completeLabel DOM change.
+    await userEvent.click(regenerate);
+    await waitFor(() => {
+      const status = canvasElement.querySelector("[role='status']");
+      expect(status?.textContent).toBe("");
+    });
+
+    // Second settle on the same instance → completion re-announced.
+    await userEvent.click(stop);
+    await waitFor(() => {
+      const status = canvasElement.querySelector("[role='status']");
+      expect(status).toHaveTextContent("Response complete");
+    });
+  },
+};
+
 /** `headingOffset` shifts the rendered heading level to preserve page outline. */
 export const HeadingOffset: Story = {
   render: () => <Markdown headingOffset={2}>{`# Top level`}</Markdown>,
@@ -649,7 +700,8 @@ export const StylePropsForwarded: Story = {
 /**
  * A rich markdown corpus streamed word-by-word, looped endlessly. Exercises
  * every renderer (headings, formatting, links, lists, task lists, a table, a
- * code block, a blockquote) so the stream is representative of real output.
+ * code block, a blockquote, GitHub alerts) so the stream is representative of
+ * real output.
  */
 const PERF_CORPUS = `## Section heading
 
@@ -668,6 +720,12 @@ while the stream grows.
 | Latency | low |
 
 > A blockquote to round out the block-level renderers.
+
+> [!NOTE]
+> Streaming exercises the GitHub-alert renderer too.
+
+> [!WARNING]
+> Per-commit render time should stay flat as alerts accumulate.
 
 \`\`\`ts
 function stream(token) {
