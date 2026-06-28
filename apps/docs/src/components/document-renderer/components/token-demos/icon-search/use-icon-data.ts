@@ -14,10 +14,6 @@ export const ALL_ICON_NAMES = Object.keys(icons);
 
 /** Sentinel for the "no category filter" state (also the `/icons` root slug). */
 export const ALL_CATEGORIES = "all";
-/** Most-popular-first cap for the browse (empty-query) view. */
-export const MAX_BROWSE = 256;
-/** Cap on rendered matches for a non-empty query. */
-export const MAX_RESULTS = 128;
 
 /** "common actions" -> "Common Actions" */
 export const titleCase = (s: string) =>

@@ -4,14 +4,14 @@ import {
   Text,
   TextInput,
   SimpleGrid,
+  Pagination,
   useCopyToClipboard,
-  Tooltip,
-  MakeElementFocusable,
   IconButton,
   LoadingSpinner,
   toast,
 } from "@commercetools/nimbus";
-import { memo, useCallback, useMemo, useState } from "react";
+import { GridList, GridListItem } from "react-aria-components";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import Fuse from "fuse.js";
 
 import * as icons from "@commercetools/nimbus-icons";
@@ -20,11 +20,12 @@ import { ContentCopy } from "@commercetools/nimbus-icons";
 import {
   ALL_CATEGORIES,
   ALL_ICON_NAMES,
-  MAX_BROWSE,
-  MAX_RESULTS,
   slugifyCategory,
   type IconEntry,
 } from "./use-icon-data";
+
+/** Icons per page. Divisible by every column count (4/5/6/8) so rows stay full. */
+const PAGE_SIZE = 120;
 
 /**
  * One icon cell. Memoized so typing in the search box (which re-renders the
@@ -36,21 +37,22 @@ import {
 const IconTile = memo(function IconTile({
   iconId,
   onCopy,
-  onOpen,
 }: {
   iconId: string;
   onCopy: (iconId: string) => void;
-  onOpen: (iconId: string) => void;
 }) {
   const [active, setActive] = useState(false);
   const Component = icons[iconId as keyof typeof icons];
 
-  // The grid cell owns hover state, the border, and the negative margins that
-  // collapse adjacent borders. Hover is tracked here (not on the inner trigger)
-  // so moving the pointer onto the copy button — a sibling that overlaps the
-  // cell — doesn't toggle `active` and flicker the button.
+  // The cell IS the focusable React Aria GridListItem: arrow keys move between
+  // cells, Enter/click fires the GridList's `onAction` (opens the detail). The
+  // icon name is shown via the native `title` (no React Aria Tooltip — those
+  // can't wrap a collection item, and a focusable child inside one re-triggers
+  // the warm-open anchoring bug). The copy button mounts lazily on hover; it's
+  // a child of the cell, so hovering it keeps the cell hovered (no flicker).
   return (
     <Box
+      asChild
       position="relative"
       border="solid-25"
       borderColor="neutral.5"
@@ -58,45 +60,41 @@ const IconTile = memo(function IconTile({
       mb="-1px"
       aspectRatio={1}
       cursor="pointer"
+      outline="none"
       _hover={{ bg: "neutral.2" }}
+      css={{ "&[data-focus-visible]": { layerStyle: "focusRing" } }}
       onMouseEnter={() => setActive(true)}
       onMouseLeave={() => setActive(false)}
     >
-      {/* Tooltip trigger = the icon surface only. The copy button is kept OUT
-          of the trigger subtree: a focusable descendant makes React Aria
-          anchor the tooltip to the button (not the cell) on its warm-open
-          path, so the tooltip would jump to the button's top-right corner. */}
-      <Tooltip.Root>
-        <MakeElementFocusable>
-          <Flex
-            position="absolute"
-            inset="0"
-            alignItems="center"
-            justifyContent="center"
-            onClick={() => onOpen(iconId)}
-            onFocus={() => setActive(true)}
-            onBlur={() => setActive(false)}
-          >
-            <Text textStyle="3xl" color="neutral.12">
-              <Component />
-            </Text>
-          </Flex>
-        </MakeElementFocusable>
-        <Tooltip.Content>{iconId}</Tooltip.Content>
-      </Tooltip.Root>
+      <GridListItem id={iconId} textValue={iconId}>
+        <Flex
+          position="absolute"
+          inset="0"
+          alignItems="center"
+          justifyContent="center"
+          title={iconId}
+        >
+          <Text textStyle="3xl" color="neutral.12">
+            <Component />
+          </Text>
+        </Flex>
 
-      {active && (
-        <Box position="absolute" top="50" right="50">
-          <IconButton
-            aria-label={`Copy import for ${iconId}`}
-            size="xs"
-            variant="ghost"
-            onClick={() => onCopy(iconId)}
-          >
-            <ContentCopy />
-          </IconButton>
-        </Box>
-      )}
+        {active && (
+          <Box position="absolute" top="50" right="50">
+            <IconButton
+              aria-label={`Copy import for ${iconId}`}
+              size="xs"
+              variant="ghost"
+              onClick={(e) => {
+                e.stopPropagation();
+                onCopy(iconId);
+              }}
+            >
+              <ContentCopy />
+            </IconButton>
+          </Box>
+        )}
+      </GridListItem>
     </Box>
   );
 });
@@ -119,10 +117,9 @@ export const IconBrowse = ({
   onSelectIcon: (iconId: string) => void;
   /**
    * True until the icon metadata chunk resolves. Until then every entry has
-   * `popularity: 0`, so the empty-query browse would render the first
-   * `MAX_BROWSE` icons in export order and then visibly re-sort to the
-   * most-popular set once metadata lands. We render a spinner instead to avoid
-   * that flash.
+   * `popularity: 0`, so the empty-query browse would render the first page in
+   * export order and then visibly re-sort to the most-popular set once metadata
+   * lands. We render a spinner instead to avoid that flash.
    */
   loading: boolean;
 }) => {
@@ -159,18 +156,28 @@ export const IconBrowse = ({
     [scoped]
   );
 
-  const results = useMemo<string[]>(() => {
+  // The full ranked result set (no cap) — browse is popularity-sorted, a query
+  // is Fuse-ranked. Pagination then slices this into pages.
+  const full = useMemo<string[]>(() => {
     if (!q.trim()) {
       return [...scoped]
         .sort((a, b) => b.popularity - a.popularity)
-        .slice(0, MAX_BROWSE)
         .map((e) => e.name);
     }
-    return fuse
-      .search(q)
-      .slice(0, MAX_RESULTS)
-      .map((r) => r.item.name);
+    return fuse.search(q).map((r) => r.item.name);
   }, [q, scoped, fuse]);
+
+  // 1-based current page. Reset to the first page whenever the result set
+  // changes (new query or category) so you're never stranded on an empty page.
+  const [page, setPage] = useState(1);
+  useEffect(() => {
+    setPage(1);
+  }, [q, categorySlug]);
+
+  const pageItems = useMemo(
+    () => full.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [full, page]
+  );
 
   /** Copies the import statement for an icon and confirms via a toast. */
   const onCopyRequest = useCallback(
@@ -216,21 +223,50 @@ export const IconBrowse = ({
           <Flex justify="center" py="800">
             <LoadingSpinner />
           </Flex>
-        ) : results.length === 0 ? (
+        ) : full.length === 0 ? (
           <Text color="neutral.11">No icons match “{q}”.</Text>
         ) : (
-          <SimpleGrid columns={[4, 5, 5, 6, 8]}>
-            {results.map((iconId) => (
-              <IconTile
-                key={iconId}
-                iconId={iconId}
-                onCopy={onCopyRequest}
-                onOpen={onSelectIcon}
-              />
-            ))}
+          // SimpleGrid (asChild) supplies the responsive `display:grid` +
+          // columns; GridList reads that geometry for 2D arrow-key navigation
+          // and fires `onAction` (click or Enter) with the focused icon's id.
+          <SimpleGrid asChild columns={[4, 5, 5, 6, 8]}>
+            <GridList
+              aria-label="Icons"
+              layout="grid"
+              selectionMode="none"
+              onAction={(key) => onSelectIcon(String(key))}
+            >
+              {pageItems.map((iconId) => (
+                <IconTile key={iconId} iconId={iconId} onCopy={onCopyRequest} />
+              ))}
+            </GridList>
           </SimpleGrid>
         )}
       </Box>
+
+      {/* Sticky paginator, mirroring the frosted header. Hidden when everything
+          fits on one page. */}
+      {!loading && full.length > PAGE_SIZE && (
+        <Flex
+          position="sticky"
+          bottom="0"
+          zIndex={1}
+          justify="center"
+          px="400"
+          py="300"
+          bg="bg/75"
+          backdropFilter="blur(8px)"
+        >
+          <Pagination
+            totalItems={full.length}
+            pageSize={PAGE_SIZE}
+            currentPage={page}
+            onPageChange={setPage}
+            enablePageSizeSelector={false}
+            aria-label="Icon pages"
+          />
+        </Flex>
+      )}
     </Box>
   );
 };
