@@ -244,29 +244,47 @@ export const Markdown = (props: MarkdownProps) => {
       // streaming chat layout) it escapes the overflow clip and stretches the
       // page/document scrollbar as the transcript grows.
       position="relative"
+      // Own the whitespace mode rather than inheriting it. react-markdown emits
+      // literal "\n" text nodes between block elements (e.g. between <li>s);
+      // under an ancestor `white-space: pre`/`pre-wrap` those render as real
+      // blank lines and inflate the spacing between blocks. `normal` collapses
+      // them as intended. Code blocks are unaffected — the <pre> renderer sets
+      // its own `white-space: pre`.
+      whiteSpace="normal"
       color="neutral.12"
       fontFamily="body"
       fontSize="400"
       lineHeight="600"
       fontWeight="400"
       aria-busy={isStreaming || undefined}
-      css={{
-        // Vertical rhythm between top-level blocks; tighter above content that
-        // follows a heading.
-        "& > * + *": { marginTop: "400" },
-        "& > :where(h1, h2, h3, h4, h5, h6) + *": { marginTop: "300" },
-      }}
       {...styleProps}
     >
-      {isStreaming ? (
-        <StreamingContent
-          source={children}
-          customTagNames={customTagNames}
-          {...renderOptions}
-        />
-      ) : (
-        <ReactMarkdown {...renderOptions}>{children}</ReactMarkdown>
-      )}
+      {/* Inner content wrapper: a plain, full-width block box. It keeps the
+          rendered markdown in normal block flow even if a consumer turns the
+          root into a flex/grid container via a style prop (e.g.
+          `display="flex"`) — the content stays one full-width child rather than
+          collapsing to its intrinsic width or laying its blocks out in a row.
+          The vertical rhythm lives here because these blocks are its direct
+          children. */}
+      <Box
+        width="100%"
+        css={{
+          // Vertical rhythm between top-level blocks; tighter above content that
+          // follows a heading.
+          "& > * + *": { marginTop: "400" },
+          "& > :where(h1, h2, h3, h4, h5, h6) + *": { marginTop: "300" },
+        }}
+      >
+        {isStreaming ? (
+          <StreamingContent
+            source={children}
+            customTagNames={customTagNames}
+            {...renderOptions}
+          />
+        ) : (
+          <ReactMarkdown {...renderOptions}>{children}</ReactMarkdown>
+        )}
+      </Box>
       {everStreamed && (
         <VisuallyHidden as="div" role="status">
           {announcement}
