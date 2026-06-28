@@ -66,19 +66,26 @@ data-table.tsx
 
 All component-related files follow predictable patterns:
 
-| File Type           | Pattern                     | Example                |
-| ------------------- | --------------------------- | ---------------------- |
-| Main component      | `{component}.tsx`           | `button.tsx`           |
-| Types               | `{component}.types.ts`      | `button.types.ts`      |
-| Recipe              | `{component}.recipe.ts`     | `button.recipe.ts`     |
-| Slots               | `{component}.slots.tsx`     | `button.slots.tsx`     |
-| Stories             | `{component}.stories.tsx`   | `button.stories.tsx`   |
-| i18n                | `{component}.i18n.ts`       | `button.i18n.ts`       |
-| Developer docs      | `{component}.dev.mdx`       | `button.dev.mdx`       |
-| Documentation tests | `{component}.docs.spec.tsx` | `button.docs.spec.tsx` |
-| Designer docs       | `{component}.mdx`           | `button.mdx`           |
-| Unit tests          | `{utility}.spec.ts`         | `format-date.spec.ts`  |
-| Barrel export       | `index.ts`                  | `index.ts`             |
+| File Type           | Pattern                      | Example                 |
+| ------------------- | ---------------------------- | ----------------------- |
+| Main component      | `{component}.tsx`            | `button.tsx`            |
+| Types               | `{component}.types.ts`       | `button.types.ts`       |
+| Recipe              | `{component}.recipe.ts`      | `button.recipe.ts`      |
+| Slots               | `{component}.slots.tsx`      | `button.slots.tsx`      |
+| Stories             | `{component}.stories.tsx`    | `button.stories.tsx`    |
+| i18n                | `{component}.i18n.ts`        | `button.i18n.ts`        |
+| Developer docs      | `{component}.dev.mdx`        | `button.dev.mdx`        |
+| Documentation tests | `{component}.docs.spec.tsx`  | `button.docs.spec.tsx`  |
+| Designer docs       | `{component}.mdx`            | `button.mdx`            |
+| Designer guidelines | `{component}.guidelines.mdx` | `button.guidelines.mdx` |
+| Accessibility docs  | `{component}.a11y.mdx`       | `button.a11y.mdx`       |
+| Figma Code Connect  | `{component}.figma.tsx`      | `button.figma.tsx`      |
+| Unit tests          | `{utility}.spec.ts`          | `format-date.spec.ts`   |
+| Barrel export       | `index.ts`                   | `index.ts`              |
+
+> **`.ts` vs `.tsx` for types:** use `{component}.types.ts`. Choose `.types.tsx`
+> only if the types file literally contains JSX (rare). A few older components
+> ship `.types.tsx` without JSX — that is legacy, not the pattern to copy.
 
 ### Directory Structure
 
@@ -117,15 +124,21 @@ components/
 
 Recipe props type follows `{Component}RecipeProps`:
 
+The recipe key MUST be the **`nimbus`-prefixed** theme key (`"nimbusButton"`),
+matching theme registration — see
+[Recipes → Registration](./file-type-guidelines/recipes.md#recipe-registration-is-required).
+Standard recipes use `RecipeProps`; slot recipes use `SlotRecipeProps`.
+
 ```typescript
-// ✅ CORRECT
+// ✅ CORRECT — standard recipe
 type ButtonRecipeProps = {
-  size?: RecipeProps<"button">["size"];
-  variant?: RecipeProps<"button">["variant"];
+  size?: RecipeProps<"nimbusButton">["size"];
+  variant?: RecipeProps<"nimbusButton">["variant"];
 } & UnstyledProp;
 
+// ✅ CORRECT — slot recipe (note SlotRecipeProps + nimbus-prefixed key)
 type MenuRecipeProps = {
-  size?: RecipeProps<"menu">["size"];
+  size?: SlotRecipeProps<"nimbusMenu">["size"];
 } & UnstyledProp;
 ```
 
@@ -133,17 +146,18 @@ type MenuRecipeProps = {
 
 Slot props follow a two-part pattern:
 
-**Single-Slot Components:**
+**Single-Slot Components:** the component export drops the `Slot` suffix, but
+the type keeps it (`...RootSlotProps`), matching the codebase (e.g. `button`).
 
-| Pattern   | Example                    |
-| --------- | -------------------------- |
-| Component | `{ComponentName}Root`      |
-| Type      | `{ComponentName}RootProps` |
+| Pattern   | Example                        |
+| --------- | ------------------------------ |
+| Component | `{ComponentName}Root`          |
+| Type      | `{ComponentName}RootSlotProps` |
 
 ```typescript
 // ✅ CORRECT
-export type ButtonRootProps = HTMLChakraProps<"button", ButtonRecipeProps>;
-export const ButtonRoot: SlotComponent<HTMLButtonElement, ButtonRootProps> = ...
+export type ButtonRootSlotProps = HTMLChakraProps<"button", ButtonRecipeProps>;
+export const ButtonRoot: SlotComponent<HTMLButtonElement, ButtonRootSlotProps> = ...
 ```
 
 **Multi-Slot Components:**
@@ -264,6 +278,47 @@ export const ButtonIcon = withContext("span", "iconElement"); // Should be "icon
 - Match across recipe and slots files
 
 ---
+
+## Public API Prop Naming (Consumer Contract)
+
+These rules govern the **props consumers write**. They are part of the public
+API surface — changing them is a breaking change (see
+[API Evolution](./api-evolution.md)). They are distinct from the internal
+`handleX` _variable_ names in [Variable Naming](#variable-naming) below: a
+public prop can be `onPress` even though the handler variable bound to it is
+`handlePress`.
+
+### Inherit React Aria prop names — don't rename them
+
+Nimbus components are built on React Aria, and their public props are surfaced
+by spreading the React Aria prop types (e.g. `ButtonProps` includes
+`AriaButtonProps`; `SwitchProps extends AriaCheckboxProps`;
+`TextInputProps extends RaTextFieldProps`). **Keep the React Aria prop name** so
+consumers get one consistent vocabulary and accurate types:
+
+- **Booleans** use the `is`-prefixed form: `isDisabled`, `isSelected`,
+  `isInvalid`, `isRequired`, `isReadOnly` — not bare `disabled`/`required`.
+- **Handlers** keep their React Aria names: `onPress`, `onChange`,
+  `onSelectionChange`, `onOpenChange`. (These are the public props; only the
+  internal variable wired to them is `handleX`.)
+- **Controlled/uncontrolled** state uses the React Aria triad: `value` +
+  `defaultValue` + `on…Change`.
+
+### When you add a friendlier prop, deprecate — don't replace
+
+A component may add a more ergonomic prop on top of the inherited one (e.g.
+`MoneyInput` adds `onValueChange`/`onAmountChange`/`onCurrencyChange`). When you
+do, **keep the inherited prop working and mark it `@deprecated`** pointing at
+the new one — see
+[Deprecating a prop](./api-evolution.md#deprecating-a-prop-or-component). Never
+silently rename or drop an inherited prop; that breaks consumers.
+
+### Don't promote DOM attributes as the API
+
+Native DOM props (`disabled`, `onClick`, `tabIndex`) may stay _accepted_ for
+compatibility, but mark them `@deprecated` toward the React Aria equivalent
+(`isDisabled`, `onPress`, `excludeFromTabOrder`) — as `Button` does
+(`button.types.ts`). The `is*` / `on*Change` form is the documented API.
 
 ## Variable Naming
 

@@ -157,6 +157,56 @@ for (const f of walk(ftgDir).filter((f) => f.endsWith(".md"))) {
   }
 }
 
+// Cross-link + anchor validation across the canonical docs. Relative/absolute
+// Markdown links and #section anchors must resolve. Catches broken section links
+// that the docs/-path check above misses (it ignores anchors and relative paths).
+// GitHub-style heading slug: lowercase, delete punctuation (keep word chars,
+// whitespace, hyphen), then replace each whitespace with a hyphen WITHOUT
+// collapsing (so "a — b" → "a--b" and "aren't" → "arent", matching GitHub).
+const slugNorm = (s) =>
+  s
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s/g, "-");
+const headingCache = new Map();
+function headingSlugs(absFile) {
+  if (headingCache.has(absFile)) return headingCache.get(absFile);
+  const set = new Set();
+  if (existsSync(absFile)) {
+    for (const line of readFileSync(absFile, "utf8").split("\n")) {
+      const h = /^#{1,6}\s+(.+?)\s*$/.exec(line);
+      if (h) set.add(slugNorm(h[1]));
+    }
+  }
+  headingCache.set(absFile, set);
+  return set;
+}
+const linkRe = /\]\(([^)\s]+)\)/g;
+for (const file of walk(join(ROOT, "docs")).filter((f) => f.endsWith(".md"))) {
+  const text = readFileSync(file, "utf8");
+  const rel = relative(ROOT, file);
+  const dir = join(file, "..");
+  for (const m of text.matchAll(linkRe)) {
+    const target = m[1];
+    if (/^(https?:|mailto:|tel:|#?\$)/.test(target)) continue;
+    if (/[{}$<>]/.test(target)) continue; // template placeholder
+    const [path, anchor] = target.split("#");
+    if (path !== "" && !/\.mdx?$/.test(path)) continue; // only validate doc links
+    const absTarget =
+      path === "" ? file : join(path.startsWith("/") ? ROOT : dir, path);
+    if (path !== "" && !existsSync(absTarget)) {
+      errors.push(`${rel}: broken link to "${path}"`);
+      continue;
+    }
+    if (anchor && !headingSlugs(absTarget).has(slugNorm(anchor))) {
+      errors.push(
+        `${rel}: broken anchor "#${anchor}" → ${relative(ROOT, absTarget)}`
+      );
+    }
+  }
+}
+
 for (const w of warnings) console.warn(`⚠️  ${w}`);
 for (const e of errors) console.error(`❌ ${e}`);
 
