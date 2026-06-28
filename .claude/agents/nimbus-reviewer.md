@@ -1,6 +1,6 @@
 ---
 name: nimbus-reviewer
-description: Use this agent when you need to review code that has been written for the Nimbus design system, particularly after the nimbus-coder agent has created or modified component files. This agent should be called proactively after logical chunks of code are written to ensure compliance with Nimbus standards. Examples: <example>Context: The user is creating a code-review agent that should be called after a logical chunk of code is written. user: "I've just finished implementing the Button component with all its files" assistant: "Now let me use the nimbus-reviewer agent to review the implementation" <commentary>Since code has been written, use the nimbus-reviewer agent to validate it against Nimbus standards.</commentary></example> <example>Context: User has completed work on component files and wants validation. user: "Please review the Menu component I just created" assistant: "I'll use the nimbus-reviewer agent to thoroughly review your Menu component implementation" <commentary>The user is requesting a review, so use the nimbus-reviewer agent to check compliance with Nimbus guidelines.</commentary></example>
+description: Use this agent when you need to review code that has been written for the Nimbus design system, particularly after the nimbus-coder agent has created or modified component files. This agent should be called proactively after logical chunks of code are written to ensure compliance with Nimbus standards. Examples: <example>Context: The user is creating a nimbus-reviewer agent that should be called after a logical chunk of code is written. user: "I've just finished implementing the Button component with all its files" assistant: "Now let me use the nimbus-reviewer agent to review the implementation" <commentary>Since code has been written, use the nimbus-reviewer agent to validate it against Nimbus standards.</commentary></example> <example>Context: User has completed work on component files and wants validation. user: "Please review the Menu component I just created" assistant: "I'll use the nimbus-reviewer agent to thoroughly review your Menu component implementation" <commentary>The user is requesting a review, so use the nimbus-reviewer agent to check compliance with Nimbus guidelines.</commentary></example>
 model: sonnet
 ---
 
@@ -17,7 +17,7 @@ established guidelines and maintain code quality.
 When reviewing code, you MUST follow the File Review Protocol:
 
 1. **Identify File Type**: Determine the file type by extension and location
-   (_.mdx, _.stories.tsx, _.recipe.tsx, _.slots.tsx, \*.types.ts, etc.)
+   (_.mdx, _.stories.tsx, _.recipe.ts, _.slots.tsx, \*.types.ts, etc.)
 
 2. **Load Guidelines**: Reference the appropriate guidelines document from
    /docs/file-type-guidelines/ based on the file type
@@ -55,7 +55,16 @@ guideline:
 | `*-context.tsx` / context files | `docs/file-type-guidelines/context-files.md`  |
 | `*.tsx` (main component)        | `docs/file-type-guidelines/main-component.md` |
 
-### Review Process (UPDATED)
+### Whole-Component Gate (component reviews)
+
+For a full-component review, after the per-file checks, work through
+`docs/component-checklist.md` — the well-shaped-component go/no-go gate (same
+gate `/review` uses). Pay special attention to its **Evolution safety** section
+and `docs/api-evolution.md`: flag any change to an existing component that
+breaks consumers without a major version bump + migration note, or that replaces
+a prop instead of deprecating it.
+
+### Review Process
 
 **Step 1: File Discovery**
 

@@ -56,7 +56,7 @@ may invoke `/brainstorm` when a request is underspecified.
 | `/design-guidelines-jira-ticket`                                    | Jira ticket for a component's design guidelines | —                                                          | `docs/file-type-guidelines/documentation.md`                                          |
 | `/housekeeping`                                                     | Update workspace deps with smart ordering       | —                                                          | (automation; no doc dependency)                                                       |
 | `/healthcheck`                                                      | Verify repo setup                               | —                                                          | `README.md` (versions)                                                                |
-| `/opsx:propose` · `/opsx:apply` · `/opsx:archive` · `/opsx:explore` | OpenSpec change lifecycle                       | openspec-\* skills                                         | `openspec/`                                                                           |
+| `/opsx:propose` · `/opsx:apply` · `/opsx:archive` · `/opsx:explore` | OpenSpec change lifecycle                       | self-contained (drive the `openspec` CLI directly)         | `openspec/`                                                                           |
 | `/github:fix-security-alerts`                                       | Triage/fix Dependabot alerts                    | —                                                          | (automation)                                                                          |
 
 > The OpenSpec namespace is **`opsx:`** with verb **`propose`** (the legacy
@@ -76,21 +76,20 @@ Each `writing-*` skill owns one file type and **reads its canonical guideline at
 runtime**. When updating a skill, change the guideline (canonical) first; the
 skill should point at it rather than embedding a second copy.
 
-| Skill                                        | Produces / validates            | Canonical doc it reads                                                                                                 |
-| -------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `writing-types`                              | `*.types.ts(x)`                 | `docs/file-type-guidelines/types.md`, `docs/types-architecture.md`, `docs/jsdoc-standards.md`                          |
-| `writing-recipes`                            | `*.recipe.ts`                   | `docs/file-type-guidelines/recipes.md` (incl. **Recipe Registration**)                                                 |
-| `writing-slots`                              | `*.slots.tsx`                   | `docs/file-type-guidelines/slots.md`                                                                                   |
-| `writing-main-component`                     | `*.tsx`                         | `docs/file-type-guidelines/main-component.md` (+ compound, architecture-decisions)                                     |
-| `writing-stories`                            | `*.stories.tsx`                 | `docs/file-type-guidelines/stories.md`, `docs/file-type-guidelines/testing-strategy.md`                                |
-| `writing-i18n`                               | `*.i18n.ts`                     | `docs/file-type-guidelines/i18n.md`                                                                                    |
-| `writing-utils-and-constants`                | utils/constants                 | `docs/file-type-guidelines/utils-and-constants.md`                                                                     |
-| `writing-developer-documentation`            | `*.dev.mdx` + `*.docs.spec.tsx` | `docs/engineering-docs-template.mdx`, `docs/engineering-docs-template-guide.md`, `docs/engineering-docs-validation.md` |
-| `writing-designer-documentation`             | `*.mdx`                         | `docs/file-type-guidelines/documentation.md`                                                                           |
-| `brainstorm`                                 | design exploration              | —                                                                                                                      |
-| `openspec-*` (propose/apply/archive/explore) | OpenSpec lifecycle              | `openspec/`                                                                                                            |
-| `nimbus-code-connect`                        | `*.figma.tsx`                   | Figma API + `code-connect-constants.ts`                                                                                |
-| `update-uikit-mapping`                       | MCP migration data              | `packages/nimbus-mcp/src/data/uikit-migration.ts`                                                                      |
+| Skill                             | Produces / validates            | Canonical doc it reads                                                                                                 |
+| --------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `writing-types`                   | `*.types.ts(x)`                 | `docs/file-type-guidelines/types.md`, `docs/types-architecture.md`, `docs/jsdoc-standards.md`                          |
+| `writing-recipes`                 | `*.recipe.ts`                   | `docs/file-type-guidelines/recipes.md` (incl. **Recipe Registration**)                                                 |
+| `writing-slots`                   | `*.slots.tsx`                   | `docs/file-type-guidelines/slots.md`                                                                                   |
+| `writing-main-component`          | `*.tsx`                         | `docs/file-type-guidelines/main-component.md` (+ compound, architecture-decisions)                                     |
+| `writing-stories`                 | `*.stories.tsx`                 | `docs/file-type-guidelines/stories.md`, `docs/file-type-guidelines/testing-strategy.md`                                |
+| `writing-i18n`                    | `*.i18n.ts`                     | `docs/file-type-guidelines/i18n.md`                                                                                    |
+| `writing-utils-and-constants`     | utils/constants                 | `docs/file-type-guidelines/utils-and-constants.md`                                                                     |
+| `writing-developer-documentation` | `*.dev.mdx` + `*.docs.spec.tsx` | `docs/engineering-docs-template.mdx`, `docs/engineering-docs-template-guide.md`, `docs/engineering-docs-validation.md` |
+| `writing-designer-documentation`  | `*.mdx`                         | `docs/file-type-guidelines/documentation.md`                                                                           |
+| `brainstorm`                      | design exploration              | —                                                                                                                      |
+| `nimbus-code-connect`             | `*.figma.tsx`                   | Figma API + `code-connect-constants.ts`                                                                                |
+| `update-uikit-mapping`            | MCP migration data              | `packages/nimbus-mcp/src/data/uikit-migration.ts`                                                                      |
 
 ## Load-bearing conventions that ALL component tooling depends on
 

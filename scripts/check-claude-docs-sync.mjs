@@ -71,6 +71,19 @@ const RETIRED = [
     pattern: /(?<!type-)utils\/slot-types/g,
     hint: "`SlotComponent` lives in `type-utils` — import from `@/type-utils`.",
   },
+  {
+    // The react-aria-docs MCP tools are prefixed `..._react_aria_page(s)`; the
+    // bare list_pages / get_page / get_page_info names do not exist and silently
+    // no-op when an agent tries to call them.
+    pattern: /mcp__react-aria-docs__(list_pages|get_page_info|get_page)\b/g,
+    hint: "use the real react-aria-docs MCP tool names: `list_react_aria_pages`, `get_react_aria_page_info`, `get_react_aria_page`.",
+  },
+  {
+    // The createRecipeContext/createSlotRecipeContext APIs take a string `key`
+    // (the nimbus-prefixed registered recipe key), NOT a `recipe` object.
+    pattern: /create(?:Slot)?RecipeContext\(\{\s*recipe\b/g,
+    hint: "createRecipeContext/createSlotRecipeContext resolve the recipe by its registered `nimbus`-prefixed key — pass `{ key: \"nimbusX\" }`, not `{ recipe }`.",
+  },
 ];
 
 // Collect all docs/ references and validate them.
@@ -154,6 +167,23 @@ for (const f of walk(ftgDir).filter((f) => f.endsWith(".md"))) {
   if (name.endsWith("index.md")) continue;
   if (!joined.includes(name)) {
     warnings.push(`docs/${name} is not referenced by any .claude/ tooling (orphaned)`);
+  }
+}
+
+// Skill integrity: every directory under .claude/skills/ must contain a
+// SKILL.md. An empty/husk dir (e.g. left behind by a rename) is invisible to
+// the model and a silent dead end.
+const skillsRoot = join(ROOT, ".claude", "skills");
+if (existsSync(skillsRoot)) {
+  for (const entry of readdirSync(skillsRoot)) {
+    if (entry === "worktrees" || entry === "node_modules") continue;
+    const dir = join(skillsRoot, entry);
+    if (!statSync(dir).isDirectory()) continue;
+    if (!existsSync(join(dir, "SKILL.md"))) {
+      errors.push(
+        `.claude/skills/${entry}/ has no SKILL.md (empty or broken skill directory)`
+      );
+    }
   }
 }
 

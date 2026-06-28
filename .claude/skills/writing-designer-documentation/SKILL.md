@@ -54,11 +54,24 @@ Additionally:
 
 ## File Structure
 
-### Location
+### Location & file set
+
+Designer docs are authored as a **tabbed set** of MDX files in the component
+folder, not a single file:
 
 ```
-packages/nimbus/src/components/{component}/{component}.mdx
+packages/nimbus/src/components/{component}/
+├── {component}.mdx             # Overview tab (full frontmatter below)
+├── {component}.guidelines.mdx  # Guidelines tab — frontmatter: tab-title: Guidelines, tab-order: 2
+└── {component}.a11y.mdx        # Accessibility tab — frontmatter: tab-title: Accessibility, tab-order: 4
 ```
+
+The `## Guidelines` and `## Accessibility` content sections described below live
+in their **own** tab files (`.guidelines.mdx` / `.a11y.mdx`), each with a minimal
+`tab-title` + `tab-order` frontmatter — they are NOT all placed in
+`{component}.mdx`. The `.dev.mdx` engineering tab is owned by the
+`writing-developer-documentation` skill. Check a recent component (e.g.
+`badge/`, `accordion/`) for the current layout.
 
 ### Required Frontmatter
 

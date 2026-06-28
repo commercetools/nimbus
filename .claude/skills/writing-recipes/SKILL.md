@@ -176,19 +176,19 @@ export type {ComponentName}Props = {ComponentName}RecipeProps & {
 
 ### Slots File (Slot Recipes Only)
 
-You MUST create a slots file for slot recipes:
+A `defineSlotRecipe` component also needs a `{component}.slots.tsx` file, but
+**that file is owned by the `writing-slots` skill — do not author it here.** One
+fact to keep consistent: the slots file resolves the recipe by its registered
+`nimbus`-prefixed **key**, it does NOT import the recipe object:
 
 ```typescript
-import { createSlotRecipeContext } from '@chakra-ui/react/styled-system'
-import { {componentName}Recipe } from './{component}.recipe'
-
+// in {component}.slots.tsx — see the writing-slots skill / slots.md
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: {componentName}Recipe,
-})
-
-export const {ComponentName}SlotProvider = withProvider(/* implementation */)
-export const use{ComponentName}Styles = withContext
+  key: "nimbus{ComponentName}",
+});
 ```
+
+Canonical source: `docs/file-type-guidelines/slots.md`.
 
 ### Registration (CRITICAL)
 

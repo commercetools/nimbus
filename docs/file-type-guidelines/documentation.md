@@ -29,6 +29,15 @@ Required documentation for designers that:
   navigation, screen reader support, WCAG compliance)
 - Links to design resources (Figma, ARIA patterns when applicable)
 
+**File set (tabbed):** Designer docs are authored as a set of tab files in the
+component folder, not one monolithic `.mdx`. The overview lives in
+`{component}.mdx`; the **Guidelines** and **Accessibility** sections described
+below are split into their own `{component}.guidelines.mdx`
+(`tab-title: Guidelines`, `tab-order: 2`) and `{component}.a11y.mdx`
+(`tab-title: Accessibility`, `tab-order: 4`) files, each with a minimal
+`tab-title` + `tab-order` frontmatter. See a recent component (`badge/`,
+`accordion/`) for the current layout.
+
 **Note**: Internal utility components or non-exported components don't require
 MDX documentation.
 
