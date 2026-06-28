@@ -59,6 +59,8 @@ export type TabsPanelsSlotProps = HTMLChakraProps<"div", TabsRecipeProps>;
 
 export type TabsPanelSlotProps = HTMLChakraProps<"div", TabsRecipeProps>;
 
+export type TabsIndicatorSlotProps = HTMLChakraProps<"div", TabsRecipeProps>;
+
 // ============================================================
 // HELPER TYPES
 // ============================================================

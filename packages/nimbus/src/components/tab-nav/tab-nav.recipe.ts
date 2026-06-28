@@ -60,7 +60,7 @@ const highlightItemBase = {
 } as const;
 
 export const tabNavSlotRecipe = defineSlotRecipe({
-  slots: ["root", "item"],
+  slots: ["root", "item", "indicator"],
 
   className: "nimbus-tab-nav",
 
@@ -71,6 +71,23 @@ export const tabNavSlotRecipe = defineSlotRecipe({
       width: "100%",
       // Anchors the absolutely-positioned sliding indicator (all variants).
       position: "relative",
+    },
+    // The sliding active marker. The hook (`useSlidingIndicator`) owns the
+    // dynamic geometry — it writes `opacity`, `width`, `height`, and `transform`
+    // inline — so the recipe only defines the static frame and the slide
+    // transition. `background`/`borderRadius` are variant-driven (see below).
+    indicator: {
+      position: "absolute",
+      top: "0",
+      left: "0",
+      zIndex: "0",
+      opacity: "0",
+      pointerEvents: "none",
+      transition:
+        "transform 180ms ease, width 180ms ease, height 180ms ease, opacity 120ms ease",
+      "@media (prefers-reduced-motion: reduce)": {
+        transition: "none",
+      },
     },
     item: {
       display: "flex",
@@ -90,6 +107,11 @@ export const tabNavSlotRecipe = defineSlotRecipe({
       line: {
         root: {
           boxShadow: "0 1px 0 0 {colors.neutral.6}",
+        },
+        // A thin bar pinned to the active item's bottom edge.
+        indicator: {
+          background: "primary.9",
+          borderRadius: "0",
         },
         item: {
           color: "neutral.12",
@@ -123,6 +145,11 @@ export const tabNavSlotRecipe = defineSlotRecipe({
           colorPalette: "primary",
           gap: "100",
         },
+        // Full-height highlight behind the active item's label.
+        indicator: {
+          background: "colorPalette.3",
+          borderRadius: "200",
+        },
         item: highlightItemBase,
       },
       // Same idea as `rounded`, but a fully-rounded capsule highlight and a touch
@@ -131,6 +158,11 @@ export const tabNavSlotRecipe = defineSlotRecipe({
         root: {
           colorPalette: "primary",
           gap: "100",
+        },
+        // Fully-rounded capsule highlight behind the active item's label.
+        indicator: {
+          background: "colorPalette.3",
+          borderRadius: "full",
         },
         item: {
           ...highlightItemBase,

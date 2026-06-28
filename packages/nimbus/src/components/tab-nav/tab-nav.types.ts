@@ -43,6 +43,11 @@ export type TabNavRootSlotProps = HTMLChakraProps<"nav", TabNavRecipeProps>;
 
 export type TabNavItemSlotProps = HTMLChakraProps<"a", TabNavRecipeProps>;
 
+export type TabNavIndicatorSlotProps = HTMLChakraProps<
+  "div",
+  TabNavRecipeProps
+>;
+
 // ============================================================
 // MAIN PROPS
 // ============================================================

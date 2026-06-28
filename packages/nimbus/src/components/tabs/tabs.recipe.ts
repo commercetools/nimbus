@@ -43,7 +43,7 @@ const highlightTabBase = {
 } as const;
 
 export const tabsSlotRecipe = defineSlotRecipe({
-  slots: ["root", "list", "tab", "panels", "panel", "trigger"],
+  slots: ["root", "list", "tab", "panels", "panel", "indicator"],
 
   className: "nimbus-tabs",
 
@@ -53,6 +53,23 @@ export const tabsSlotRecipe = defineSlotRecipe({
       width: "100%",
       // Anchors the absolutely-positioned sliding indicator (all variants).
       position: "relative",
+    },
+    // The sliding active marker. The hook (`useSlidingIndicator`) owns the
+    // dynamic geometry — it writes `opacity`, `width`, `height`, and `transform`
+    // inline — so the recipe only defines the static frame and the slide
+    // transition. `background`/`borderRadius` are variant-driven (see below).
+    indicator: {
+      position: "absolute",
+      top: "0",
+      left: "0",
+      zIndex: "0",
+      opacity: "0",
+      pointerEvents: "none",
+      transition:
+        "transform 180ms ease, width 180ms ease, height 180ms ease, opacity 120ms ease",
+      "@media (prefers-reduced-motion: reduce)": {
+        transition: "none",
+      },
     },
     list: {
       display: "flex",
@@ -108,6 +125,11 @@ export const tabsSlotRecipe = defineSlotRecipe({
       // inner side bar when vertical. The per-orientation/placement marker edges
       // live in `compoundVariants` below.
       line: {
+        // A thin bar pinned to the active tab's marker edge.
+        indicator: {
+          background: "primary.9",
+          borderRadius: "0",
+        },
         tab: {
           // Animated: keep the label above the indicator, and let the sliding
           // bar own the active marker (suppress the static bar, all
@@ -127,6 +149,11 @@ export const tabsSlotRecipe = defineSlotRecipe({
         root: {
           colorPalette: "primary",
         },
+        // Full-box filled highlight behind the active tab.
+        indicator: {
+          background: "colorPalette.3",
+          borderRadius: "200",
+        },
         list: {
           gap: "100",
         },
@@ -137,6 +164,11 @@ export const tabsSlotRecipe = defineSlotRecipe({
       pill: {
         root: {
           colorPalette: "primary",
+        },
+        // Fully-rounded capsule highlight behind the active tab.
+        indicator: {
+          background: "colorPalette.3",
+          borderRadius: "full",
         },
         list: {
           gap: "100",
