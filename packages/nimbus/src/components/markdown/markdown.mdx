@@ -55,13 +55,17 @@ descriptions.
 ## Basic usage
 
 ```jsx live
-<Markdown>{`# Hello
+const App = () => (
+  <Markdown>
+    {`# Hello
 
 This is **Markdown** rendered with _Nimbus_ styling and a [link](https://commercetools.com).
 
 - Task lists
 - Tables
-- Code: \`const x = 1\``}</Markdown>
+- Code: \`const x = 1\``}
+  </Markdown>
+);
 ```
 
 ## Custom component tags
@@ -69,10 +73,22 @@ This is **Markdown** rendered with _Nimbus_ styling and a [link](https://commerc
 To render your own components inside Markdown, register them in `components`
 under the tag name you want to use, then embed that tag in the source:
 
-```jsx
-<Markdown components={{ SearchQueryResultCard: Card }}>
-  {`Here is what I found:\n\n<SearchQueryResultCard id="sku-42" />`}
-</Markdown>
+```jsx live
+const App = () => (
+  <Markdown
+    components={{
+      SearchQueryResultCard: ({ id }) => (
+        <Box border="solid-25" borderColor="primary.6" borderRadius="200" p="400">
+          <Text fontWeight="600">Result for SKU {id}</Text>
+        </Box>
+      ),
+    }}
+  >
+    {`Here is what I found:
+
+<SearchQueryResultCard id="sku-42" />`}
+  </Markdown>
+);
 ```
 
 The tag's string attributes are passed as props. Only registered tags are

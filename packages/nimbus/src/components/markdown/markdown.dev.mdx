@@ -17,28 +17,156 @@ enabled by default.
 import { Markdown, type MarkdownProps } from "@commercetools/nimbus";
 ```
 
-### Anatomy
+### Basic usage
 
-```tsx
-<Markdown
-  components={{ a: MyLink, SearchQueryResultCard: Card }}
-  isStreaming={false}
-  headingOffset={0}
->
-  {markdownString}
-</Markdown>
+Pass the Markdown source as the single string child. GitHub Flavored Markdown —
+tables, task lists, strikethrough, autolinks — is on by default.
+
+```jsx live-dev
+const App = () => (
+  <Markdown maxW="60ch">
+    {`# Release notes
+
+We shipped **streaming** support and [GFM tables](https://github.github.com/gfm/).
+
+- A task list item
+- Inline code: \`const x = 1\`
+
+| Feature   | Status |
+| --------- | ------ |
+| Streaming | Beta   |
+`}
+  </Markdown>
+);
 ```
 
-- **`children`** — the Markdown source string (canonical input).
-- **`components`** — renderer map, shallow-merged over the Nimbus defaults.
-  Standard element keys override that element; non-standard keys register
-  embeddable custom component tags (see below).
-- **`allowedElements` / `disallowedElements`** — tune the rendered element set.
-- **`isStreaming`** — enables safe incremental rendering of streamed output.
-- **`headingOffset`** — shifts rendered heading levels to preserve the page
-  outline.
-- **Style props** — forwarded to the outer root container (set `maxW`, spacing,
-  `lineClamp`, etc.).
+## Usage examples
+
+### Overriding an element renderer
+
+Pass a `components` entry keyed by HTML element name to replace that one
+renderer; every other default stays intact. Every renderer also receives the
+original hast `node` — destructure it out before spreading onto a DOM element.
+
+```jsx live-dev
+const App = () => (
+  <Markdown
+    components={{
+      a: ({ children, href }) => (
+        <Link href={href} fontColor="primary">
+          {children}
+        </Link>
+      ),
+    }}
+  >
+    {`Route links through the app router, e.g. the [Nimbus docs](https://nimbus-documentation.vercel.app).`}
+  </Markdown>
+);
+```
+
+### Custom component tags
+
+Register a non-standard key in `components` and you can embed that tag directly
+in the Markdown source. The tag's string attributes are passed to the component
+as props, and tag names match by exact case (PascalCase preserved). Both
+self-closing (`<Tag />`) and paired (`<Tag>…</Tag>`) forms are supported; keep
+blank lines around a block-level paired tag so its content parses as markdown.
+
+```jsx live-dev
+const App = () => (
+  <Markdown
+    components={{
+      SearchResultCard: ({ id }) => (
+        <Box border="solid-25" borderColor="primary.6" borderRadius="200" p="400">
+          <Text fontWeight="600">Result for SKU {id}</Text>
+        </Box>
+      ),
+    }}
+  >
+    {`Here is what I found:
+
+<SearchResultCard id="sku-42" />`}
+  </Markdown>
+);
+```
+
+### Preserving the page outline
+
+When embedding Markdown beneath host-page headings, set `headingOffset` so the
+rendered headings nest rather than compete. Markdown heading level `L` renders as
+`min(L + headingOffset, 6)`.
+
+```jsx live-dev
+const App = () => (
+  <Markdown headingOffset={1}>
+    {`# Looks like an h1 in source
+
+Renders as an h2, so it nests beneath a host page's h1.`}
+  </Markdown>
+);
+```
+
+### Constraining the measure with style props
+
+Style props forward to the outer root container, so you can set `maxW`, color,
+spacing, `lineClamp`, etc.
+
+```jsx live-dev
+const App = () => (
+  <Markdown maxW="48ch" color="neutral.11">
+    {`Forwarding a \`maxW\` keeps long paragraphs at a comfortable line length. This paragraph wraps at roughly 48 characters so the measure stays readable instead of stretching the full container width.`}
+  </Markdown>
+);
+```
+
+### Restricting the element set
+
+Pass `allowedElements` to render only an explicit set of elements (mutually
+exclusive with `disallowedElements`). Filtered elements are dropped while their
+text content is preserved.
+
+```jsx live-dev
+const App = () => (
+  <Markdown allowedElements={["p", "strong", "em"]}>
+    {`# This heading is filtered out
+
+Only **paragraphs** and _inline emphasis_ survive the allowlist.`}
+  </Markdown>
+);
+```
+
+### Rendering streamed (LLM) output
+
+Set `isStreaming` while tokens arrive. Unterminated constructs are completed via
+`remend`, content is split into memoized blocks (only the final block re-parses
+per token), the root sets `aria-busy`, and a single coalesced completion
+announcement is made when the stream settles. Consumers never manage ARIA.
+
+```jsx live-dev
+const FULL = `# Streaming demo
+
+This text is revealed **token by token**, and half-written constructs never flash raw markup.`;
+
+const App = () => {
+  const [n, setN] = useState(0);
+  const streaming = n < FULL.length;
+
+  useEffect(() => {
+    if (!streaming) return;
+    const id = setTimeout(() => setN((v) => Math.min(v + 3, FULL.length)), 40);
+    return () => clearTimeout(id);
+  }, [n, streaming]);
+
+  return (
+    <Stack direction="column" gap="400">
+      <Button size="xs" alignSelf="start" onPress={() => setN(0)}>
+        Replay
+      </Button>
+      <Markdown isStreaming={streaming}>{FULL.slice(0, n)}</Markdown>
+    </Stack>
+  );
+};
+```
 
 ## Default renderers
 
@@ -49,44 +177,6 @@ scale; `#####`/`######` fold to the smallest. External links automatically get
 and a visible icon indicator. Images render with `loading="lazy"` and
 `referrerpolicy="no-referrer"`.
 
-## Overriding an element
-
-Pass a `components` entry keyed by HTML element name. Overriding one element
-leaves every other default intact. Every renderer also receives the original
-hast `node` — destructure it out before spreading onto a DOM element.
-
-```tsx
-<Markdown
-  components={{
-    a: ({ children, href }) => <Link href={href}>{children}</Link>,
-  }}
->
-  {content}
-</Markdown>
-```
-
-## Custom component tags
-
-Register a non-standard key in `components` and you can embed that tag directly
-in the Markdown source. The tag's string attributes are passed to the component
-as props, and tag names match by exact case (PascalCase preserved).
-
-```tsx
-<Markdown components={{ SearchQueryResultCard: Card }}>
-  {`Here is what I found:\n\n<SearchQueryResultCard id="sku-42" />`}
-</Markdown>
-// → renders <Card id="sku-42" />
-```
-
-- **Self-closing** (`<Tag ... />`) and **paired** (`<Tag ...>…</Tag>`, with
-  markdown children) are both supported. For a block-level paired tag, keep
-  blank lines around the tags so the content between them is parsed as markdown.
-- **Safe by default** — a custom tag is materialized only if a component is
-  registered for it; unregistered tags stay inert. Like every other renderer,
-  custom components receive the hast `node` — destructure it out before
-  spreading onto a DOM element.
-- Custom components own their own accessibility, exactly like element overrides.
-
 ## Safe by default
 
 Raw HTML is never rendered as live markup: it is skipped, rendering is restricted
@@ -95,17 +185,46 @@ to a safe element allowlist, and dangerous URLs (`javascript:`, `vbscript:`,
 responsibility (`img-src`). To render application components, register them as
 custom component tags (above) rather than embedding raw HTML.
 
-## Streaming
+```jsx live-dev
+const App = () => (
+  <Markdown>
+    {`Raw HTML is skipped: <script>alert(1)</script> renders nothing.
 
-```tsx
-<Markdown isStreaming={isResponding}>{partialResponse}</Markdown>
+A [dangerous link](javascript:alert(1)) is neutralized.`}
+  </Markdown>
+);
 ```
 
-While streaming, unterminated constructs are completed via `remend`, content is
-split into memoized blocks (only the final block re-parses per token), the root
-sets `aria-busy`, and a single coalesced completion announcement is made when
-the stream settles. Consumers never manage ARIA.
+## Accessibility
 
-## Examples
+The default renderers enforce WCAG 2.1 AA and the component owns its own ARIA —
+including the streaming busy state and completion announcement, so no ARIA wiring
+is required from you. The two consumer-actionable items are:
+
+- **Preserve the outline** — set `headingOffset` when embedding beneath host
+  headings so rendered headings nest correctly.
+- **Author meaningful `alt`** — a missing image alt renders `alt=""` and warns in
+  development.
+
+A consumer override or custom component tag owns the accessibility of whatever it
+renders. See the **Accessibility** tab for the full per-element breakdown.
+
+## API reference
+
+<PropsTable id="Markdown" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Markdown in
+your application. As the component's internal functionality is already tested by
+Nimbus, these patterns help you verify your integration and application-specific
+logic.
 
 {{docs-tests: markdown.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-content-markdown--docs)
+- [react-markdown](https://github.com/remarkjs/react-markdown)
+- [remark-gfm (GitHub Flavored Markdown)](https://github.com/remarkjs/remark-gfm)
+- [GitHub alerts syntax](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts)
