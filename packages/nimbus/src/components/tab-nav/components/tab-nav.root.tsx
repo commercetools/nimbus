@@ -1,8 +1,7 @@
 import { useRef } from "react";
-import { Box } from "@chakra-ui/react/box";
 import { useSlidingIndicator } from "@/hooks";
 import type { SlidingIndicatorRects } from "@/hooks";
-import { TabNavRootSlot } from "../tab-nav.slots";
+import { TabNavRootSlot, TabNavIndicatorSlot } from "../tab-nav.slots";
 import type { TabNavProps } from "../tab-nav.types";
 
 /** Thickness of the sliding bar used by the `line` variant. */
@@ -22,20 +21,6 @@ const VARIANT_ALIASES: Record<string, "line" | "rounded" | "pill"> = {
  * Use this with `TabNav.Item` to build tab-styled navigation for route-based
  * navigation (not content-switching panels).
  *
- * ## Animated highlight
- *
- * The active highlight is a single indicator that slides between items as the
- * active item changes. It adapts to the variant:
- *
- * - `line` — a thin bar pinned to the active item's bottom edge.
- * - `rounded` / `pill` — a full-height highlight painted behind the item label.
- *
- * The indicator is an `aria-hidden`, non-focusable element driven by the shared
- * `useSlidingIndicator` hook (DOM-measured, kept in sync on active-item and
- * layout changes), so keyboard order, focus rings, and `aria-current` are
- * unaffected. The slide is disabled under `prefers-reduced-motion: reduce` (the
- * highlight snaps), and the recipe's static marker is the SSR / no-JS fallback.
- *
  * @supportsStyleProps
  */
 export const TabNavRoot = (props: TabNavProps) => {
@@ -51,10 +36,14 @@ export const TabNavRoot = (props: TabNavProps) => {
   // responsive `variant` object falls back to the default look for the slider.
   const variantName = typeof variant === "string" ? variant : "line";
   const isLine = variantName === "line";
-  const isPill = variantName === "pill";
 
   const indicatorRef = useRef<HTMLDivElement>(null);
 
+  // Drive the sliding active-item marker: an `aria-hidden`, non-focusable
+  // element rendered inside the root and DOM-positioned over the current item (a
+  // bar for `line`, a full-height highlight for `rounded`/`pill`). The recipe's
+  // static marker is the SSR/no-JS fallback, suppressed via `data-animated` once
+  // this hook activates; the slide respects `prefers-reduced-motion`.
   useSlidingIndicator({
     enabled: true,
     indicatorRef,
@@ -81,24 +70,7 @@ export const TabNavRoot = (props: TabNavProps) => {
 
   return (
     <TabNavRootSlot ref={ref} variant={variant} {...rest}>
-      <Box
-        ref={indicatorRef}
-        aria-hidden="true"
-        position="absolute"
-        top="0"
-        left="0"
-        zIndex={0}
-        opacity={0}
-        pointerEvents="none"
-        background={isLine ? "primary.9" : "colorPalette.3"}
-        borderRadius={isLine ? "0" : isPill ? "full" : "200"}
-        transition="transform 180ms ease, width 180ms ease, height 180ms ease, opacity 120ms ease"
-        css={{
-          "@media (prefers-reduced-motion: reduce)": {
-            transition: "none",
-          },
-        }}
-      />
+      <TabNavIndicatorSlot ref={indicatorRef} aria-hidden="true" />
       {children}
     </TabNavRootSlot>
   );

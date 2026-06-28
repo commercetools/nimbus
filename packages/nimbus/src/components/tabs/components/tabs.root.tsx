@@ -3,9 +3,8 @@ import {
   useChakraContext,
   useSlotRecipe,
 } from "@chakra-ui/react/styled-system";
-import { Box } from "@chakra-ui/react/box";
 import { Tabs as RATabs } from "react-aria-components";
-import { TabsRootSlot } from "../tabs.slots";
+import { TabsRootSlot, TabsIndicatorSlot } from "../tabs.slots";
 import type { TabsProps } from "../tabs.types";
 import { TabsList } from "./tabs.list";
 import { TabsPanels } from "./tabs.panels";
@@ -31,14 +30,8 @@ function resolveVariantAlias<T>(variant: T): T {
 /**
  * # Tabs
  *
- * A tabs component built on React Aria Components that allows users to switch between different views.
- *
- * The active marker is a single indicator that slides between tabs as the
- * selection changes — a bar for `line`, a filled highlight for
- * `rounded`/`pill`. It is `aria-hidden` and non-focusable, rendered inside the
- * root and positioned with `useSlidingIndicator`; the static selected marker is
- * the SSR/no-JS fallback (suppressed by the recipe once the hook activates), and
- * the slide respects `prefers-reduced-motion`.
+ * A tabs component built on React Aria Components that allows users to switch
+ * between different views.
  *
  * @supportsStyleProps
  */
@@ -73,10 +66,14 @@ export const TabsRoot = ({
   const placement = sysCtx.normalizeValue(recipeProps.placement) ?? "start";
 
   const isLine = variant === "line";
-  const isPill = variant === "pill";
 
   const indicatorRef = useRef<HTMLDivElement>(null);
 
+  // Drive the sliding active-tab marker: an `aria-hidden`, non-focusable element
+  // rendered inside the root and DOM-positioned over the selected tab (a bar for
+  // `line`, a filled highlight for `rounded`/`pill`). The recipe's static
+  // selected marker is the SSR/no-JS fallback, suppressed via `data-animated`
+  // once this hook activates; the slide respects `prefers-reduced-motion`.
   useSlidingIndicator({
     enabled: true,
     indicatorRef,
@@ -117,24 +114,7 @@ export const TabsRoot = ({
   return (
     <TabsRootSlot asChild {...recipeProps} {...styleProps}>
       <RATabs {...functionalProps} orientation={normalizedOrientation}>
-        <Box
-          ref={indicatorRef}
-          aria-hidden="true"
-          position="absolute"
-          top="0"
-          left="0"
-          zIndex={0}
-          opacity={0}
-          pointerEvents="none"
-          background={isLine ? "primary.9" : "colorPalette.3"}
-          borderRadius={isLine ? "0" : isPill ? "full" : "200"}
-          transition="transform 180ms ease, width 180ms ease, height 180ms ease, opacity 120ms ease"
-          css={{
-            "@media (prefers-reduced-motion: reduce)": {
-              transition: "none",
-            },
-          }}
-        />
+        <TabsIndicatorSlot ref={indicatorRef} aria-hidden="true" />
         {children || (
           <>
             <TabsList tabs={tabs} aria-label={tabListAriaLabel} />
