@@ -122,6 +122,7 @@ export const IconDetailDialog = ({
   return (
     <Dialog.Root
       isOpen={name != null}
+      scrollBehavior="inside"
       onOpenChange={(open) => {
         if (!open) onClose();
       }}
