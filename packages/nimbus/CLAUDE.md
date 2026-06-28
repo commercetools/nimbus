@@ -303,23 +303,44 @@ This package depends on:
 When adding a new component:
 
 1. Create component directory in `src/components/`
-2. Implement all required files (see component templates)
-3. Register recipe in `src/theme/recipes/index.ts`
+2. Implement all required files (see `./docs/component-guidelines.md`)
+3. Register recipe in the correct registry under a `nimbus`-prefixed key:
+   standard → `src/theme/recipes/index.ts`, slot →
+   `src/theme/slot-recipes/index.ts`
 4. Export component from `src/index.ts`
 5. Add Storybook stories with play functions
 6. Document in `.mdx` file
 
 ### Recipe Registration
 
-All components using Chakra UI styling must register their recipes:
+All components using Chakra UI styling must register their recipes. **Canonical
+source:** `./docs/file-type-guidelines/recipes.md` → "Recipe Registration is
+REQUIRED" (read it — the rules below are a summary).
+
+Two rules are load-bearing:
+
+1. **Pick the right registry.** Standard recipes (`defineRecipe`) go in
+   `src/theme/recipes/index.ts`; slot recipes (`defineSlotRecipe`, e.g. Switch,
+   Slider) go in `src/theme/slot-recipes/index.ts`. There is no
+   `theme/recipes.ts` file.
+2. **The key MUST be `nimbus`-prefixed.** A bare key collides with Chakra's
+   built-in recipes and makes `build-theme-typings` fail silently.
 
 ```typescript
-// src/theme/recipes/index.ts
-import { buttonRecipe } from "../components/button/button.recipe";
+// src/theme/recipes/index.ts  (standard recipes)
+import { buttonRecipe } from "@/components/button/button.recipe";
 
 export const recipes = {
-  button: buttonRecipe,
-  // Add new component recipes here
+  nimbusButton: buttonRecipe, // ✅ nimbus-prefixed — NOT `button: buttonRecipe`
+};
+```
+
+```typescript
+// src/theme/slot-recipes/index.ts  (slot recipes)
+import { switchSlotRecipe } from "@/components/switch/switch.recipe";
+
+export const slotRecipes = {
+  nimbusSwitch: switchSlotRecipe, // ✅ nimbus-prefixed
 };
 ```
 

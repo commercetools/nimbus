@@ -342,12 +342,16 @@ export const dialogSlotRecipe = defineSlotRecipe({
 When registering in theme, use the same name:
 
 ```typescript
-// In theme/recipes.ts
+// Standard recipes → theme/recipes/index.ts; slot recipes → theme/slot-recipes/index.ts.
+// Keys MUST be `nimbus`-prefixed (a bare key fails build-theme-typings silently).
+// See docs/file-type-guidelines/recipes.md → "Recipe Registration".
 export const recipes = {
-  button: buttonRecipe,
-  badge: badgeRecipe,
-  menu: menuSlotRecipe,
-  dialog: dialogSlotRecipe,
+  nimbusButton: buttonRecipe,
+  nimbusBadge: badgeRecipe,
+};
+export const slotRecipes = {
+  nimbusMenu: menuSlotRecipe,
+  nimbusDialog: dialogSlotRecipe,
 };
 ```
 

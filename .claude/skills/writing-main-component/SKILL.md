@@ -336,8 +336,10 @@ guideline references.
       `{component}.stories.tsx`
 - [ ] **Play functions**: Stories include play functions for interactive
       components
-- [ ] **Recipe registered**: If component has styling, recipe registered in
-      theme: `packages/nimbus/src/theme/recipes.ts`
+- [ ] **Recipe registered**: If component has styling, recipe registered in the
+      correct registry — standard recipes in `theme/recipes/index.ts`, slot
+      recipes in `theme/slot-recipes/index.ts` — under a `nimbus`-prefixed key.
+      See `docs/file-type-guidelines/recipes.md` "Recipe Registration".
 - [ ] **i18n defined**: If component has user-facing text, i18n messages defined
 - [ ] **Build succeeds**: Component builds without errors:
       `pnpm --filter @commercetools/nimbus build`

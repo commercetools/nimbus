@@ -85,19 +85,29 @@ flowchart LR
 
 ## Step 3: Create OpenSpec Proposal
 
-**Action**: Invoke `/openspec:proposal` with the validated design
+**Action**: Invoke `/opsx:propose` with the validated design
 
 **Required Proposal Structure**:
 
 The task list MUST include these file creation steps in this order:
 
-1. **Scaffold component structure** - You MUST create shell files:
+1. **Scaffold component structure** - You MUST create shell files. Match the
+   real file set of an existing component (e.g. `switch/`, `progress-bar/`); see
+   `docs/component-guidelines.md` "Component File Structure Reference" for the
+   canonical list. Core code files:
    - `component.tsx` (empty, with exports)
    - `component.types.ts` (prop/slot type definitions)
-   - `component.recipe.ts` (Chakra UI v3 recipe)
-   - `component.slots.ts` (slot definitions, if applicable)
+   - `component.recipe.ts` (Chakra UI v3 recipe; flat file, not a `recipes/`
+     dir)
+   - `component.slots.tsx` (slot components — note `.tsx`, not `.ts`)
    - `component.stories.tsx` (story file with play functions)
    - `index.ts` (barrel export)
+
+   Documentation/test files every shipped component also includes:
+   - `component.mdx` (designer docs) and `component.dev.mdx` (engineering docs)
+   - `component.guidelines.mdx` and `component.a11y.mdx`
+   - `component.docs.spec.tsx` (consumer test examples) and
+     `component.figma.tsx` (Figma Code Connect)
 
 2. **Create failing Storybook tests** - You MUST write play functions that test:
    - Core functionality
@@ -109,7 +119,7 @@ The task list MUST include these file creation steps in this order:
 3. **Implementation steps** - You MUST execute in dependency order:
    - Implement component types in `component.types.ts`
    - Implement recipe in `component.recipe.ts`
-   - Implement slots in `component.slots.ts` (if applicable)
+   - Implement slots in `component.slots.tsx` (if applicable)
    - Implement component logic in `component.tsx`
    - Create/update documentation using the `/writing-developer-documentation`
      skill
@@ -177,7 +187,7 @@ Example:
 ```
 ✅ Component proposal created: Button variant component
 
-Proposal path: ./openspec/proposals/YYYY-MM-DD-button-variant.md
+Proposal path: ./openspec/changes/{change-name}/proposal.md
 
 Validation Results:
 - ✅ Architecture aligns with Nimbus standards

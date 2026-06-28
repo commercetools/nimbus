@@ -73,8 +73,7 @@ For complete component creation with OpenSpec integration, use
 
 - You have a validated design/plan document
 - User can choose their next step:
-  - Create an OpenSpec proposal via `/openspec:proposal` for formal
-    specification
+  - Create an OpenSpec proposal via `/opsx:propose` for formal specification
   - Use the plan for implementation planning
   - Continue refining the design if needed
   - Save the plan for later reference

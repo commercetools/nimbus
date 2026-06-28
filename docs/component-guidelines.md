@@ -205,7 +205,10 @@ component-name/
 ├── component-name.stories.tsx     # Storybook stories (required)
 ├── component-name.mdx            # Designer documentation (required)
 ├── component-name.dev.mdx        # Engineering documentation (required)
+├── component-name.guidelines.mdx # Designer usage guidelines (required)
+├── component-name.a11y.mdx       # Accessibility documentation (required)
 ├── component-name.docs.spec.tsx  # Documentation tests (optional, recommended)
+├── component-name.figma.tsx      # Figma Code Connect mapping (when designed in Figma)
 ├── components/                    # Compound parts (if compound)
 │   ├── component-name.root.tsx
 │   ├── component-name.part.tsx
@@ -233,7 +236,10 @@ component-name/
 2. **Hooks belong in `hooks/` folder** for organization
 3. **Slot files export both components AND their TypeScript types**
 4. **Interactive components include play functions** in stories
-5. **Recipe registration is needed** in theme configuration
+5. **Recipe registration is needed** under a `nimbus`-prefixed key in the
+   correct registry — standard recipes in `theme/recipes/index.ts`, slot recipes
+   in `theme/slot-recipes/index.ts`. See
+   [Recipes → Registration](./file-type-guidelines/recipes.md#recipe-registration-is-required)
 
 ### Naming Conventions
 
@@ -357,4 +363,4 @@ pnpm --filter @commercetools/nimbus typecheck
 
 ---
 
-Last updated: January 2025
+Last updated: June 2026

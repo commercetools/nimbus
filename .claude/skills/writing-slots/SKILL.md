@@ -147,7 +147,7 @@ export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
 **ALL slot component exports MUST include explicit return type annotation:**
 
 ```typescript
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/type-utils";
 
 export const ComponentSlot: SlotComponent<TElement, TProps> = withContext<
   TElement,
@@ -168,7 +168,7 @@ export const ComponentSlot: SlotComponent<TElement, TProps> = withContext<
 ### Type Definition
 
 ```typescript
-// packages/nimbus/src/components/utils/slot-types.ts
+// packages/nimbus/src/type-utils/slot-types.ts (import via the `@/type-utils` barrel)
 export type SlotComponent<
   TElement = Element,
   TProps = Record<string, unknown>,
@@ -190,7 +190,7 @@ import {
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
 import { buttonRecipe } from "./button.recipe";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/type-utils";
 
 const { withContext } = createRecipeContext({
   recipe: buttonRecipe,
@@ -213,7 +213,7 @@ import {
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
 import { menuSlotRecipe } from "./menu.recipe";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/type-utils";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   recipe: menuSlotRecipe,
@@ -415,7 +415,7 @@ import {
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
 import { componentRecipe } from "./component.recipe"; // Import recipe
-import type { SlotComponent } from "../utils/slot-types"; // MUST import
+import type { SlotComponent } from "@/type-utils"; // MUST import
 ```
 
 ### Step 3: Create Context
@@ -498,7 +498,7 @@ You MUST validate against these requirements:
 #### File Structure
 
 - [ ] Slots file exists with `.tsx` extension
-- [ ] `SlotComponent` utility type imported from `../utils/slot-types`
+- [ ] `SlotComponent` utility type imported from `@/type-utils`
 - [ ] Recipe imported from recipe file
 - [ ] Context created with appropriate function
 

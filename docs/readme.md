@@ -14,6 +14,13 @@ component development.
 - **[Component Templates](./component-templates/)** - Ready-to-use boilerplate
   code for new components
 
+### AI / Claude Code Tooling
+
+- **[Claude Tooling Map](./claude-tooling.md)** - Source of truth for the
+  `.claude/` commands, agents, and skills: what each does, the invocation graph,
+  and which doc each one reads. These docs are the canonical reference; the
+  tooling references them rather than duplicating them.
+
 ## 🚀 Quick Start
 
 ### Creating a New Component
