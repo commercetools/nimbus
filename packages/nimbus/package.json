@@ -84,8 +84,11 @@
     "react-aria": "catalog:react",
     "react-aria-components": "catalog:react",
     "react-hotkeys-hook": "^5.3.2",
+    "react-markdown": "catalog:markdown",
     "react-stately": "catalog:react",
     "react-use": "^17.6.1",
+    "remark-gfm": "catalog:markdown",
+    "remend": "catalog:markdown",
     "use-debounce": "^10.1.0"
   },
   "devDependencies": {
