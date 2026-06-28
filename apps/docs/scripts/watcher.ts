@@ -1,5 +1,6 @@
 import chokidar from "chokidar";
 import fs from "fs/promises";
+import { readdirSync } from "fs";
 import path from "path";
 import debounce from "lodash/debounce";
 import {
@@ -27,6 +28,88 @@ const documentation: Map<string, MdxDocument> = new Map();
 // Map size monitoring configuration
 const MAX_EXPECTED_DOCS = 1000; // Adjust based on project size
 
+// Initial-scan state. With `ignoreInitial: false`, chokidar emits an `add`
+// event for every existing file on startup. Rather than log one line per
+// route (hundreds of lines), we collapse the initial scan into a single
+// updating progress counter and a final summary once chokidar is `ready`.
+let isReady = false;
+const initialRoutes = new Set<string>();
+const totalMdxFiles = countMdxFiles(PACKAGES_DIR);
+
+/**
+ * Count main `.mdx` files (excluding view files like `button.dev.mdx`, which
+ * re-parse their main file rather than producing their own route) so the
+ * startup progress counter has a stable denominator.
+ */
+function countMdxFiles(dir: string): number {
+  let entries;
+  try {
+    entries = readdirSync(dir, { withFileTypes: true });
+  } catch {
+    return 0;
+  }
+  let count = 0;
+  for (const entry of entries) {
+    if (entry.name === "node_modules") continue;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      count += countMdxFiles(full);
+    } else if (entry.name.endsWith(".mdx")) {
+      // Main files only — basename without `.mdx` has no further dot.
+      if (!entry.name.slice(0, -".mdx".length).includes(".")) count += 1;
+    }
+  }
+  return count;
+}
+
+// ANSI helpers
+const green = (s: string) => `\x1b[32m${s}\x1b[0m`;
+const dim = (s: string) => `\x1b[2m${s}\x1b[0m`;
+
+/**
+ * Render an in-place progress bar for the initial scan. `\r` returns to the
+ * start of the line and `\x1b[2K` clears it, so each call overwrites the last.
+ */
+function renderProgressBar(current: number, total: number): void {
+  const width = 28;
+  const ratio = total > 0 ? Math.min(current / total, 1) : 0;
+  const filled = Math.round(ratio * width);
+  const bar = "█".repeat(filled) + "░".repeat(width - filled);
+  const pct = String(Math.round(ratio * 100)).padStart(3);
+  process.stdout.write(
+    `\r\x1b[2K${green(`  ➜ Building routes  ${bar}  ${pct}%  (${current}/${total})`)}`
+  );
+}
+
+/**
+ * Run `fn` with `console.log` muted so the build package's progress chatter
+ * (manifest/search index "Generated …" lines) doesn't break up our own
+ * formatted startup output. Restored unconditionally afterwards.
+ */
+async function withSilencedLogs(fn: () => Promise<void>): Promise<void> {
+  const original = console.log;
+  console.log = () => {};
+  try {
+    await fn();
+  } finally {
+    console.log = original;
+  }
+}
+
+/**
+ * Print the tidy, ordered summary shown once the initial scan settles.
+ */
+function printStartupSummary(routeCount: number, typeCount: number): void {
+  process.stdout.write(
+    "\n" +
+      green(`  ✓ ${routeCount} routes built\n`) +
+      green(`  ✓ manifest + search index generated\n`) +
+      green(`  ✓ ${typeCount} component types parsed\n`) +
+      "\n" +
+      `  ${dim("Watching")} ${green("packages/")} ${dim("for changes…")}\n\n`
+  );
+}
+
 /**
  * Write individual route JSON file
  */
@@ -38,7 +121,11 @@ async function writeRouteFile(doc: MdxDocument): Promise<void> {
   await fs.mkdir(ROUTES_DIR, { recursive: true });
 
   await fs.writeFile(filePath, JSON.stringify(doc, null, 2));
-  flog(`[MDX] Updated route: ${chunkName}.json`);
+  // During the initial scan, the per-route line is suppressed in favor of the
+  // progress counter (see handleMdxChange / the `ready` handler).
+  if (isReady) {
+    flog(`[MDX] Updated route: ${chunkName}.json`);
+  }
 }
 
 /**
@@ -69,9 +156,9 @@ function checkMapHealth(): void {
 }
 
 /**
- * Debounced function to write manifest and search index
+ * Regenerate the route manifest and search index from the in-memory docs.
  */
-const writeManifestAndSearch = debounce(async () => {
+async function regenerateManifestAndSearch(): Promise<void> {
   // Ensure output directory exists
   await fs.mkdir(path.dirname(MANIFEST_PATH), { recursive: true });
 
@@ -83,7 +170,12 @@ const writeManifestAndSearch = debounce(async () => {
 
   // Monitor Map size after operations
   checkMapHealth();
-}, 500);
+}
+
+/**
+ * Debounced wrapper used for live edits (after the initial scan).
+ */
+const writeManifestAndSearch = debounce(regenerateManifestAndSearch, 500);
 
 /**
  * Handle MDX file changes
@@ -102,7 +194,11 @@ async function handleMdxChange(filePath: string): Promise<void> {
       nameWithoutMdx.lastIndexOf(".")
     );
     targetPath = path.join(path.dirname(filePath), `${mainBasename}.mdx`);
-    flog(`[MDX] View file changed, re-parsing main file: ${mainBasename}.mdx`);
+    if (isReady) {
+      flog(
+        `[MDX] View file changed, re-parsing main file: ${mainBasename}.mdx`
+      );
+    }
   }
 
   try {
@@ -120,7 +216,17 @@ async function handleMdxChange(filePath: string): Promise<void> {
       // Write individual route file
       await writeRouteFile(doc);
 
-      // Trigger manifest and search index update
+      // During the initial scan, only advance the progress bar. The manifest,
+      // search index, and types are generated once in the `ready` handler —
+      // regenerating them per-file here would interleave their logs with the
+      // bar and waste work on partial results.
+      if (!isReady) {
+        initialRoutes.add(doc.meta.route);
+        renderProgressBar(initialRoutes.size, totalMdxFiles);
+        return;
+      }
+
+      // Live edit: regenerate dependent artifacts and log per file.
       await writeManifestAndSearch();
 
       const viewCount = doc.meta.tabs.length;
@@ -203,7 +309,9 @@ async function handleFileChange(
       await handleMdxChange(filePath);
     }
   } else if (ext === ".ts" || ext === ".tsx") {
-    await handleTypeChange();
+    // During the initial scan, skip per-event type parsing; types are parsed
+    // once in the `ready` handler. Only react to live edits.
+    if (isReady) await handleTypeChange();
   }
 }
 
@@ -236,6 +344,37 @@ watcher
   .on("add", (filePath: string) => handleFileChange(filePath, "add"))
   .on("change", (filePath: string) => handleFileChange(filePath, "change"))
   .on("unlink", (filePath: string) => handleFileChange(filePath, "unlink"))
+  .on("ready", async () => {
+    isReady = true;
+
+    // Finalize the progress bar at 100%, then drop to a fresh line.
+    renderProgressBar(totalMdxFiles, totalMdxFiles);
+    process.stdout.write("\n");
+
+    // Generate dependent artifacts once, silently, so their internal logs
+    // don't break up the formatted summary. From here on, live edits log
+    // individually (verbose, see handleMdxChange / handleTypeChange).
+    let typeCount = 0;
+    await withSilencedLogs(async () => {
+      await regenerateManifestAndSearch();
+      const manifest = await parseTypesToFiles(COMPONENT_INDEX_PATH, TYPES_DIR);
+      typeCount = Object.keys(manifest).length;
+    });
+
+    printStartupSummary(documentation.size, typeCount);
+
+    // Signal readiness to the root dev orchestrator (scripts/start-dev.mjs), if
+    // it launched us. Gated on the env var so standalone `pnpm start:docs` is
+    // unaffected. Written last so Storybook only boots after our output settles.
+    const readyMarker = process.env.NIMBUS_DEV_READY_MARKER;
+    if (readyMarker) {
+      try {
+        await fs.writeFile(readyMarker, String(Date.now()));
+      } catch (error) {
+        console.error("Failed to write dev-ready marker:", error);
+      }
+    }
+  })
   .on("error", (error: unknown) =>
     console.error("Error watching files:", error)
   );
@@ -250,8 +389,6 @@ function shutdown() {
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
 
-// Log watcher status
-const clr = "\x1b[33m%s\x1b[0m";
-console.log(clr, "\n----------------------------------------------------");
-console.log(clr, "\n  Watching for file changes in packages directory.");
-console.log(clr, "\n----------------------------------------------------\n");
+// The initial scan begins as soon as chokidar emits events above; the progress
+// bar (renderProgressBar) and final summary (printStartupSummary) are the only
+// startup output — no separate banner needed.

@@ -1,88 +1,86 @@
 import {
-  Flex,
-  Text,
-  TextInput,
-  Stack,
-  SimpleGrid,
-  useCopyToClipboard,
-  Tooltip,
-  MakeElementFocusable,
+  Box,
+  ScrollArea,
+  Splitter,
+  useResponsiveSplitterSizes,
 } from "@commercetools/nimbus";
-import { useEffect, useState } from "react";
-import take from "lodash/take";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
-import * as icons from "@commercetools/nimbus-icons";
+import { ALL_CATEGORIES, useIconData } from "./use-icon-data";
+import { CategoryRail } from "./category-rail";
+import { IconBrowse } from "./icon-browse";
+import { IconDetailDialog } from "./icon-detail";
 
 /**
- * IconSearch component allows users to search and copy icon import statements.
+ * IconSearch is the entry point rendered by the Icons doc (`<IconSearch />` in
+ * the MDX). Because `use-route-info` resolves any `/icons/*` path to the Icons
+ * doc (longest-prefix match), this single component owns the `/icons` URL space:
+ *
+ *   /icons                      -> browse, no filter
+ *   /icons/category/:slug       -> browse, filtered to :slug
+ *
+ * Individual icons don't get their own route — clicking a tile opens the icon's
+ * detail in a Dialog (local state), which is plenty for a quick look without the
+ * overhead of a route per icon. The Splitter shell stays mounted across
+ * category navigation, so the rail never remounts.
  */
 export const IconSearch = () => {
-  const [, copyToClipboard] = useCopyToClipboard();
-  const [q, setQ] = useState<string>("");
+  const { pathname } = useLocation();
+  const { entries, categories, metadata } = useIconData();
+  const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
 
-  // State to hold filtered icons
-  const [filteredIcons, setFilteredIcons] = useState<string[] | null>(null);
+  // Persist the category-rail width (in pixels) across reloads. The hook
+  // measures the container, translates the pixel config to the percentage the
+  // splitter consumes, drives its controlled `size`, and writes the settled
+  // width back under `persistKey` on every resize.
+  const { rootProps } = useResponsiveSplitterSizes({
+    persistKey: "docs:icon-search-rail",
+    size: 240,
+    minSize: 180,
+    maxSize: 400,
+  });
 
-  useEffect(() => {
-    // Initial effect, can be used for setup if needed
-  }, []);
-
-  useEffect(() => {
-    if (!icons) return;
-
-    // Filter icons based on the search query
-    const filtered = Object.keys(icons).filter((v) => {
-      return v.toLowerCase().includes(q.toLowerCase());
-    });
-
-    setFilteredIcons(filtered);
-  }, [q]);
-
-  /**
-   * Handles the copy request for an icon import statement.
-   * @param {string} iconId - The ID of the icon to copy.
-   */
-  const onCopyRequest = (iconId: string) => {
-    copyToClipboard(`import { ${iconId} } from '@commercetools/nimbus-icons';`);
-
-    alert("Copied the import statement to the clipboard");
-  };
+  // The only sub-route is the category filter; everything else is the root.
+  const sub = pathname.replace(/^\/icons\/?/, "").replace(/\/+$/, "");
+  const segments = sub ? sub.split("/") : [];
+  const categorySlug =
+    segments[0] === "category"
+      ? (segments[1] ?? ALL_CATEGORIES)
+      : ALL_CATEGORIES;
 
   return (
-    <Stack mt="800" mb="1600" gap="800">
-      <TextInput
-        placeholder={`Search through ${Object.keys(icons).length} icons ...`}
-        value={q}
-        onChange={(value) => setQ(value)}
+    <Box position="absolute" inset="0" overflow="hidden">
+      <Splitter.Root {...rootProps}>
+        <Splitter.Aside>
+          <ScrollArea height="100%">
+            <CategoryRail
+              categories={categories}
+              totalCount={entries.length}
+              activeSlug={categorySlug}
+            />
+          </ScrollArea>
+        </Splitter.Aside>
+
+        <Splitter.Handle />
+
+        <Splitter.Main>
+          <ScrollArea height="100%">
+            <IconBrowse
+              entries={entries}
+              categorySlug={categorySlug}
+              onSelectIcon={setSelectedIcon}
+              loading={metadata === null}
+            />
+          </ScrollArea>
+        </Splitter.Main>
+      </Splitter.Root>
+
+      <IconDetailDialog
+        name={selectedIcon}
+        metadata={metadata}
+        onClose={() => setSelectedIcon(null)}
       />
-      <SimpleGrid columns={[5, 6, 6, 6, 10]}>
-        {take(filteredIcons ?? [], q.length ? 128 : 256).map((iconId) => {
-          const Component = icons[iconId as keyof typeof icons];
-          return (
-            <Tooltip.Root>
-              <MakeElementFocusable>
-                <Flex
-                  p="400"
-                  border="solid-25"
-                  borderColor="neutral.5"
-                  ml="-1px"
-                  mb="-1px"
-                  aspectRatio={1}
-                  cursor={"pointer"}
-                  _hover={{ bg: "neutral.2" }}
-                  onClick={() => onCopyRequest(iconId)}
-                  key={iconId}
-                >
-                  <Text m="auto" textStyle="3xl" color="neutral.12">
-                    <Component />
-                  </Text>
-                </Flex>
-              </MakeElementFocusable>
-              <Tooltip.Content>{iconId}</Tooltip.Content>
-            </Tooltip.Root>
-          );
-        })}
-      </SimpleGrid>
-    </Stack>
+    </Box>
   );
 };

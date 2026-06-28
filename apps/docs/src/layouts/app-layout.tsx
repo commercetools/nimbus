@@ -1,17 +1,18 @@
 /**
- * App Layout Component
+ * App Frame Body
  *
- * Main layout shell using the new Holy Grail AppFrame
+ * The 3-column body (left nav · main · right aside) of the app-frame layout.
+ * The breadcrumb bar and top bar live in the persistent shell
+ * (`dynamic-layout.tsx`); this component is the part that swaps in/out when the
+ * active document switches between the `app-frame` and `no-sidebar` layouts.
  */
 
 import { Suspense, useRef } from "react";
 import { Outlet } from "react-router-dom";
 import { Stack, LoadingSpinner, Box } from "@commercetools/nimbus";
 import { AppFrame } from "@/components/app-frame";
-import { AppNavBar } from "@/components/navigation/app-nav-bar";
 import { Menu } from "@/components/navigation/menu";
 import { Toc } from "@/components/navigation/toc";
-import { BreadcrumbNav } from "@/components/navigation/breadcrumb";
 import {
   ScrollContainerProvider,
   useMainViewport,
@@ -23,7 +24,7 @@ import { useSidebarScrollRestoration } from "@/hooks/use-sidebar-scroll-restorat
 import { useHashNavigation } from "@/hooks/use-hash-navigation";
 import { useRouteInfo } from "@/hooks/use-route-info";
 
-function AppLayoutInner() {
+function AppFrameBodyInner() {
   const mainViewportRef = useMainViewport();
   const sidebarViewportRef = useSidebarViewport();
 
@@ -40,20 +41,6 @@ function AppLayoutInner() {
 
   return (
     <AppFrame.Root>
-      {/* Top Bar */}
-      <AppFrame.TopBar>
-        <Suspense fallback={<LoadingSpinner />}>
-          <AppNavBar />
-        </Suspense>
-      </AppFrame.TopBar>
-
-      {/* Breadcrumb Bar - At the very top */}
-      <AppFrame.BreadcrumbBar>
-        <Suspense fallback={<Box />}>
-          <BreadcrumbNav />
-        </Suspense>
-      </AppFrame.BreadcrumbBar>
-
       {/* Left Navigation */}
       <AppFrame.LeftNav viewportRef={sidebarViewportRef}>
         <Suspense fallback={<LoadingSpinner />}>
@@ -83,7 +70,7 @@ function AppLayoutInner() {
   );
 }
 
-export function AppLayout() {
+export function AppFrameBody() {
   const mainViewportRef = useRef<HTMLDivElement>(null);
   const sidebarViewportRef = useRef<HTMLDivElement>(null);
 
@@ -92,7 +79,7 @@ export function AppLayout() {
       mainViewportRef={mainViewportRef}
       sidebarViewportRef={sidebarViewportRef}
     >
-      <AppLayoutInner />
+      <AppFrameBodyInner />
     </ScrollContainerProvider>
   );
 }

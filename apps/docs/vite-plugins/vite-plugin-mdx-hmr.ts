@@ -24,7 +24,8 @@ export function mdxHmrPlugin(): Plugin {
     apply: "serve",
 
     async configureServer(server) {
-      console.log("📝 MDX Hot Reload enabled - watching for content changes");
+      // Startup is announced by the dev script's header (see scripts/dev.ts);
+      // avoid a second, style-clashing line here. Live edits still log below.
 
       // Watch for MDX file changes
       server.watcher.add(path.join(REPO_ROOT, MDX_GLOB));
