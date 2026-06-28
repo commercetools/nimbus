@@ -70,6 +70,7 @@ export const IconSearch = () => {
               entries={entries}
               categorySlug={categorySlug}
               onSelectIcon={setSelectedIcon}
+              loading={metadata === null}
             />
           </ScrollArea>
         </Splitter.Main>
