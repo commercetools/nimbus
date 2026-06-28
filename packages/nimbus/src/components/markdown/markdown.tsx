@@ -8,34 +8,14 @@ import { VisuallyHidden } from "@/components/visually-hidden/visually-hidden";
 import { createNimbusComponents, StreamingContent } from "./components";
 import { DEFAULT_ALLOWED_ELEMENTS } from "./constants";
 import {
-  getHeadingLevels,
-  findHeadingLevelSkips,
   remarkCustomComponentTags,
   remarkGithubAlerts,
   ALERT_TYPES,
 } from "./utils";
+import { useHeadingSkipWarning } from "./hooks/use-heading-skip-warning";
 import { markdownMessagesStrings } from "./markdown.messages";
 import type { MarkdownProps } from "./markdown.types";
 import type { ReactMarkdownRenderOptions } from "./markdown.internal-types";
-
-/**
- * Emit a development-mode warning when author markdown skips a heading level
- * (e.g. `#` then `###`). The content is still rendered faithfully — Nimbus does
- * not silently rewrite author structure.
- */
-function useHeadingSkipWarning(source: string) {
-  React.useEffect(() => {
-    if (process.env.NODE_ENV === "production") return;
-    const skips = findHeadingLevelSkips(getHeadingLevels(source));
-    for (const { from, to } of skips) {
-      console.warn(
-        `[Nimbus Markdown] Heading level skip detected (h${from} → h${to}). ` +
-          `Skipping levels can break the document outline for assistive technology. ` +
-          `Consider adjusting the source or using \`headingOffset\`.`
-      );
-    }
-  }, [source]);
-}
 
 /**
  * # Markdown
