@@ -115,6 +115,10 @@ wrong breaks the build silently:
 1. Update the canonical `docs/` file first (it is the source of truth).
 2. Make the `.claude/` command/skill/agent **reference** it (don't copy).
 3. Update the relevant row in this map.
-4. Run `pnpm check:claude-docs` — it fails if any `.claude/` reference to a
-   `/command`, skill, or `docs/` path doesn't resolve, or if a
-   `docs/file-type-guidelines/*.md` is orphaned (referenced by no tooling).
+4. Run `pnpm check:claude-docs` — it fails if any reference in the tooling or
+   the canonical guideline docs doesn't resolve: a missing `docs/…md` link, a
+   retired command/path, or a **concrete source path** (`packages/nimbus/src/…`)
+   that no longer exists (the most common drift — a file that moved or changed
+   extension). It also warns when a `docs/file-type-guidelines/*.md` is orphaned
+   (referenced by no tooling). Use `{placeholder}` form for illustrative
+   (non-real) paths so the check skips them.

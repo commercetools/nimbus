@@ -44,7 +44,7 @@ Before implementation, you MUST research in parallel:
    ```bash
    ls packages/nimbus/src/components/*/*.recipe.ts
    cat packages/nimbus/src/components/button/button.recipe.ts  # Standard
-   cat packages/nimbus/src/components/menu/menu.recipe.ts      # Slot
+   cat packages/nimbus/src/components/switch/switch.recipe.ts  # Slot
    ```
 
 4. **Query** Chakra UI v3 docs via context7 for recipe mechanics:
@@ -374,7 +374,7 @@ You SHOULD reference these recipes:
 
 - **Standard**: `packages/nimbus/src/components/button/button.recipe.ts`
 - **Slot**: `packages/nimbus/src/components/switch/switch.recipe.ts`
-- **Slot (compound)**: `packages/nimbus/src/components/select/select.recipe.ts`
+- **Slot (compound)**: `packages/nimbus/src/components/accordion/accordion.recipe.ts`
 
 ## RFC 2119 Key Words
 

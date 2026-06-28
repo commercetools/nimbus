@@ -75,6 +75,30 @@ const RETIRED = [
 
 // Collect all docs/ references and validate them.
 const docsRefRe = /@?docs\/[A-Za-z0-9._/-]+\.mdx?/g;
+
+// Concrete source paths referenced in prose/examples must exist. This is the
+// drift class the friction logs flagged most ("the skills predate a refactor"):
+// hard-coded file paths that go stale when files move or change extension.
+const codePathRe =
+  /\b(?:packages\/nimbus\/src|src\/theme|src\/components|src\/type-utils|src\/utils)\/[A-Za-z0-9._/-]+\.(?:tsx?|mjs|json)\b/g;
+// Generated/templated artifacts that legitimately may be absent on a clean tree.
+const isExcludedPath = (p) =>
+  /[{}*]/.test(p) || // template placeholder or glob
+  p.includes("styled-system/") ||
+  p.includes("/intl/") ||
+  p.endsWith(".messages.ts");
+
+function checkCodePaths(text, rel) {
+  for (const m of text.matchAll(codePathRe)) {
+    const p = m[0];
+    if (isExcludedPath(p)) continue;
+    const full = p.startsWith("packages/") ? p : join("packages", "nimbus", p);
+    if (!existsSync(join(ROOT, full))) {
+      errors.push(`${rel}: references missing source path "${p}"`);
+    }
+  }
+}
+
 const corpus = [];
 
 for (const file of scanFiles) {
@@ -98,6 +122,8 @@ for (const file of scanFiles) {
       errors.push(`${rel}: contains retired reference matching ${pattern} — ${hint}`);
     }
   }
+
+  checkCodePaths(text, rel);
 }
 
 // Canonical guideline docs: must be free of stale paths/commands and must not
@@ -117,6 +143,7 @@ for (const file of docsGuidelines) {
       errors.push(`${rel}: contains retired reference matching ${pattern} — ${hint}`);
     }
   }
+  checkCodePaths(text, rel);
 }
 
 // Orphan check: every file-type guideline should be wired into the tooling.

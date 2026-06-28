@@ -21,6 +21,11 @@ flowchart LR
 
 ## Step 1: Brainstorm Component Design
 
+**Pre-check**: First confirm this should be a **component** at all, not a layout
+pattern or composition of existing components — see
+[`docs/file-type-guidelines/component-vs-pattern.md`](../../docs/file-type-guidelines/component-vs-pattern.md).
+If it's a pattern, stop here and document it instead.
+
 **Action**: Invoke `/brainstorm` with the component request: "$ARGUMENTS"
 
 **Outcome**: Obtain a detailed design document covering:

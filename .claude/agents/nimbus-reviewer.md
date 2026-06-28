@@ -46,6 +46,15 @@ compliance checks.
 | `*.dev.mdx` + `*.docs.spec.tsx` | **writing-developer-documentation** | `writing-developer-documentation validate ComponentName` |
 | `*.mdx` (designer)              | **writing-designer-documentation**  | `writing-designer-documentation validate ComponentName`  |
 
+**File types without a dedicated skill** — review directly against the
+guideline:
+
+| File type / location            | Guideline document                            |
+| ------------------------------- | --------------------------------------------- |
+| `index.ts` (barrel export)      | `docs/file-type-guidelines/barrel-exports.md` |
+| `*-context.tsx` / context files | `docs/file-type-guidelines/context-files.md`  |
+| `*.tsx` (main component)        | `docs/file-type-guidelines/main-component.md` |
+
 ### Review Process (UPDATED)
 
 **Step 1: File Discovery**

@@ -736,7 +736,7 @@ pnpm test
 pnpm test --project unit
 
 # Run specific test file
-pnpm test button.spec.tsx
+pnpm test vite.spec.ts
 
 # Run tests in watch mode
 pnpm test --watch
@@ -752,7 +752,7 @@ pnpm test --coverage
 pnpm test --testNamePattern="Button.*disabled"
 
 # Run tests in specific file
-pnpm test src/components/button/button.spec.tsx
+pnpm test packages/nimbus/src/plugins/vite.spec.ts
 ```
 
 ## Coverage
