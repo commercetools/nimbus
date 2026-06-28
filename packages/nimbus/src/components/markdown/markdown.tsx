@@ -237,6 +237,13 @@ export const Markdown = (props: MarkdownProps) => {
     <Box
       ref={ref}
       className="nimbus-markdown"
+      // Establish a containing block for the absolutely-positioned
+      // VisuallyHidden live region (below). Without it, that 1×1px element
+      // anchors to the nearest positioned ancestor (often the viewport) at the
+      // full, unclipped content height — so in a scroll container (the typical
+      // streaming chat layout) it escapes the overflow clip and stretches the
+      // page/document scrollbar as the transcript grows.
+      position="relative"
       color="neutral.12"
       fontFamily="body"
       fontSize="400"
