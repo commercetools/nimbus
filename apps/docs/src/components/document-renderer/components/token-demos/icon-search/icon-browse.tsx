@@ -9,6 +9,7 @@ import {
   Tooltip,
   MakeElementFocusable,
   IconButton,
+  LoadingSpinner,
   toast,
 } from "@commercetools/nimbus";
 import { memo, useCallback, useMemo, useState } from "react";
@@ -100,10 +101,19 @@ export const IconBrowse = ({
   entries,
   categorySlug,
   onSelectIcon,
+  loading,
 }: {
   entries: IconEntry[];
   categorySlug: string;
   onSelectIcon: (iconId: string) => void;
+  /**
+   * True until the icon metadata chunk resolves. Until then every entry has
+   * `popularity: 0`, so the empty-query browse would render the first
+   * `MAX_BROWSE` icons in export order and then visibly re-sort to the
+   * most-popular set once metadata lands. We render a spinner instead to avoid
+   * that flash.
+   */
+  loading: boolean;
 }) => {
   const [, copyToClipboard] = useCopyToClipboard();
   const [q, setQ] = useState<string>("");
@@ -177,7 +187,11 @@ export const IconBrowse = ({
         value={q}
         onChange={(value) => setQ(value)}
       />
-      {results.length === 0 ? (
+      {loading ? (
+        <Flex justify="center" py="800">
+          <LoadingSpinner />
+        </Flex>
+      ) : results.length === 0 ? (
         <Text color="neutral.11">No icons match “{q}”.</Text>
       ) : (
         <SimpleGrid columns={[4, 5, 5, 6, 8]}>
