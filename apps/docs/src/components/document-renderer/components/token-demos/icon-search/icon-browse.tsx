@@ -3,7 +3,6 @@ import {
   Flex,
   Text,
   TextInput,
-  Stack,
   SimpleGrid,
   useCopyToClipboard,
   Tooltip,
@@ -46,47 +45,59 @@ const IconTile = memo(function IconTile({
   const [active, setActive] = useState(false);
   const Component = icons[iconId as keyof typeof icons];
 
+  // The grid cell owns hover state, the border, and the negative margins that
+  // collapse adjacent borders. Hover is tracked here (not on the inner trigger)
+  // so moving the pointer onto the copy button — a sibling that overlaps the
+  // cell — doesn't toggle `active` and flicker the button.
   return (
-    <Tooltip.Root>
-      <MakeElementFocusable>
-        <Flex
-          position="relative"
-          p="400"
-          border="solid-25"
-          borderColor="neutral.5"
-          ml="-1px"
-          mb="-1px"
-          aspectRatio={1}
-          cursor="pointer"
-          _hover={{ bg: "neutral.2" }}
-          onClick={() => onOpen(iconId)}
-          onMouseEnter={() => setActive(true)}
-          onMouseLeave={() => setActive(false)}
-          onFocus={() => setActive(true)}
-          onBlur={() => setActive(false)}
-        >
-          <Text m="auto" textStyle="3xl" color="neutral.12">
-            <Component />
-          </Text>
-          {active && (
-            <Box position="absolute" top="50" right="50">
-              <IconButton
-                aria-label={`Copy import for ${iconId}`}
-                size="xs"
-                variant="ghost"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onCopy(iconId);
-                }}
-              >
-                <ContentCopy />
-              </IconButton>
-            </Box>
-          )}
-        </Flex>
-      </MakeElementFocusable>
-      <Tooltip.Content>{iconId}</Tooltip.Content>
-    </Tooltip.Root>
+    <Box
+      position="relative"
+      border="solid-25"
+      borderColor="neutral.5"
+      ml="-1px"
+      mb="-1px"
+      aspectRatio={1}
+      cursor="pointer"
+      _hover={{ bg: "neutral.2" }}
+      onMouseEnter={() => setActive(true)}
+      onMouseLeave={() => setActive(false)}
+    >
+      {/* Tooltip trigger = the icon surface only. The copy button is kept OUT
+          of the trigger subtree: a focusable descendant makes React Aria
+          anchor the tooltip to the button (not the cell) on its warm-open
+          path, so the tooltip would jump to the button's top-right corner. */}
+      <Tooltip.Root>
+        <MakeElementFocusable>
+          <Flex
+            position="absolute"
+            inset="0"
+            alignItems="center"
+            justifyContent="center"
+            onClick={() => onOpen(iconId)}
+            onFocus={() => setActive(true)}
+            onBlur={() => setActive(false)}
+          >
+            <Text textStyle="3xl" color="neutral.12">
+              <Component />
+            </Text>
+          </Flex>
+        </MakeElementFocusable>
+        <Tooltip.Content>{iconId}</Tooltip.Content>
+      </Tooltip.Root>
+
+      {active && (
+        <Box position="absolute" top="50" right="50">
+          <IconButton
+            aria-label={`Copy import for ${iconId}`}
+            size="xs"
+            variant="ghost"
+            onClick={() => onCopy(iconId)}
+          >
+            <ContentCopy />
+          </IconButton>
+        </Box>
+      )}
+    </Box>
   );
 });
 
@@ -176,35 +187,50 @@ export const IconBrowse = ({
   );
 
   return (
-    <Stack minW="0" gap="600" p="400">
-      <TextInput
-        aria-label="Search icons"
-        placeholder={`Search through ${
-          categorySlug === ALL_CATEGORIES
-            ? ALL_ICON_NAMES.length
-            : scoped.length
-        } icons ...`}
-        value={q}
-        onChange={(value) => setQ(value)}
-      />
-      {loading ? (
-        <Flex justify="center" py="800">
-          <LoadingSpinner />
-        </Flex>
-      ) : results.length === 0 ? (
-        <Text color="neutral.11">No icons match “{q}”.</Text>
-      ) : (
-        <SimpleGrid columns={[4, 5, 5, 6, 8]}>
-          {results.map((iconId) => (
-            <IconTile
-              key={iconId}
-              iconId={iconId}
-              onCopy={onCopyRequest}
-              onOpen={onSelectIcon}
-            />
-          ))}
-        </SimpleGrid>
-      )}
-    </Stack>
+    <Box minW="0">
+      {/* Sticky search header. The translucent background + backdrop blur let
+          the grid stay visible-but-frosted as it scrolls underneath. */}
+      <Box
+        position="sticky"
+        top="0"
+        zIndex={1}
+        px="400"
+        py="400"
+        bg="bg/75"
+        backdropFilter="blur(8px)"
+      >
+        <TextInput
+          width="full"
+          aria-label="Search icons"
+          placeholder={`Search through ${
+            categorySlug === ALL_CATEGORIES
+              ? ALL_ICON_NAMES.length
+              : scoped.length
+          } icons ...`}
+          value={q}
+          onChange={(value) => setQ(value)}
+        />
+      </Box>
+      <Box px="400" pb="400">
+        {loading ? (
+          <Flex justify="center" py="800">
+            <LoadingSpinner />
+          </Flex>
+        ) : results.length === 0 ? (
+          <Text color="neutral.11">No icons match “{q}”.</Text>
+        ) : (
+          <SimpleGrid columns={[4, 5, 5, 6, 8]}>
+            {results.map((iconId) => (
+              <IconTile
+                key={iconId}
+                iconId={iconId}
+                onCopy={onCopyRequest}
+                onOpen={onSelectIcon}
+              />
+            ))}
+          </SimpleGrid>
+        )}
+      </Box>
+    </Box>
   );
 };
