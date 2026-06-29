@@ -86,6 +86,6 @@ not the source of truth. Use it in `/review` and before opening a PR.
       ([bump-type](./changeset-conventions.md#bump-type)).
 - [ ] If anything changed on an existing component, it was done **additively**;
       any replaced prop is kept + `@deprecated`, not removed
-      ([API Evolution](./api-evolution.md#additive-first-the-default-that-keeps-you-fast)).
+      ([API Evolution](./api-evolution.md#additive-first-the-default)).
 - [ ] Any genuine breaking change is a `major` with a migration note
-      ([breaking changes](./api-evolution.md#breaking-changes-major--the-last-resort)).
+      ([breaking changes](./api-evolution.md#breaking-changes-major)).
