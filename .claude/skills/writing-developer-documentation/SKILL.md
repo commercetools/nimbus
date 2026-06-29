@@ -108,6 +108,8 @@ Before implementation, you MUST research in parallel:
    - `@docs/engineering-docs-template.mdx` for base template structure
    - `@docs/engineering-docs-template-guide.md` for detailed usage instructions
    - `@docs/engineering-docs-validation.md` for validation criteria
+   - `@docs/writing-style.md` for the house writing style — the universal core
+     plus the **consumer-developer `.dev.mdx`** overlay that governs this prose
 
 ## File Structure
 

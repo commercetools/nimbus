@@ -36,7 +36,11 @@ Before implementation, you SHOULD research these areas in parallel:
 
    ```bash
    cat docs/file-type-guidelines/documentation.md
+   cat docs/writing-style.md
    ```
+
+   Apply the house writing style's universal core plus the **designer `.mdx`**
+   overlay (softer register, but normative keywords still carry the rule).
 
 2. **Review** component implementation for design decisions
 

@@ -84,10 +84,20 @@ docs.
 - [bundle-size-monitoring.md](./bundle-size-monitoring.md)
 - [bundler-plugins.md](./bundler-plugins.md)
 
+### Migration guides (`migrations/`)
+
+- [migrations/README.md](./migrations/README.md) — index of cross-major
+  migration guides
+- [migrations/1-to-2.md](./migrations/1-to-2.md) — Nimbus 1.x → 2.x
+- [migrations/2-to-3.md](./migrations/2-to-3.md) — Nimbus 2.x → 3.x
+
 ### Documentation authoring
 
 - [writing-style.md](./writing-style.md) — the house writing style for all prose
   (universal core + per-audience overlays), applied in review
+- [maintaining-docs.md](./maintaining-docs.md) — conventions for authoring the
+  `docs/` folder itself (diagrams = Mermaid, single-source-of-truth, the
+  index/guardrail workflow)
 - [engineering-docs-template.mdx](./engineering-docs-template.mdx)
 - [engineering-docs-template-guide.md](./engineering-docs-template-guide.md)
 - [engineering-docs-validation.md](./engineering-docs-validation.md)

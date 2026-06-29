@@ -39,6 +39,9 @@ following knowledge-base files:
 - @docs/api-evolution.md (versioning, deprecation, and breaking-change policy —
   flag any change to an existing component that breaks consumers without a
   major)
+- @docs/writing-style.md (the house writing style — apply it to any prose under
+  review: internal docs `.md`, designer `.mdx`/`.guidelines.mdx`/`.a11y.mdx`,
+  and consumer-developer `.dev.mdx`)
 
 ## **Execution Flow**
 

@@ -24,22 +24,37 @@ drift** (e.g. a skill hard-coding a file path that later moves). Rule of thumb:
 
 ## The pipeline: Command → Agent → Skill
 
-```
-Commands (your interface)         Agents (multi-step phases)      Skills (single file-type/task)
-─────────────────────────         ──────────────────────────      ──────────────────────────────
-/propose-component  ──► /brainstorm
-                    └─► /opsx:propose ──► /opsx:apply ──► nimbus-coder ──► writing-types
-                                                          (implements)     writing-recipes
-                                                                           writing-slots
-                                                                           writing-main-component
-                                                                           writing-stories
-                                                                           writing-i18n
-                                                                           writing-developer-documentation
-                                                                           writing-designer-documentation
-                                          nimbus-reviewer ─► (same writing-* skills in "validate" mode)
-/create-eng-docs    ──► writing-developer-documentation
-/review             ──► writing-* skills (validate mode)
-/opsx:archive       ──► (openspec sync)
+```mermaid
+flowchart LR
+    subgraph Commands["Commands (your interface)"]
+        propose["/propose-component"]
+        createEng["/create-eng-docs"]
+        review["/review"]
+        opsxArchive["/opsx:archive"]
+        brainstorm["/brainstorm"]
+        opsxPropose["/opsx:propose"]
+        opsxApply["/opsx:apply"]
+    end
+
+    subgraph Agents["Agents (multi-step phases)"]
+        coder["nimbus-coder<br/>(implements)"]
+        reviewer["nimbus-reviewer"]
+    end
+
+    subgraph Skills["Skills (single file-type / task)"]
+        writingSkills["writing-types<br/>writing-recipes<br/>writing-slots<br/>writing-main-component<br/>writing-stories<br/>writing-i18n<br/>writing-developer-documentation<br/>writing-designer-documentation"]
+        openspecSync["(openspec sync)"]
+    end
+
+    propose --> brainstorm
+    propose --> opsxPropose
+    opsxPropose --> opsxApply
+    opsxApply --> coder
+    coder --> writingSkills
+    reviewer -. "validate mode" .-> writingSkills
+    createEng --> writingSkills
+    review -. "validate mode" .-> writingSkills
+    opsxArchive --> openspecSync
 ```
 
 `nimbus-researcher` supports the research phase (React Aria / Chakra docs) and
