@@ -62,8 +62,8 @@ catalogs:
       specifier: ^1.4.8
       version: 1.4.8
     '@fission-ai/openspec':
-      specifier: ^1.4.1
-      version: 1.4.1
+      specifier: ^1.5.0
+      version: 1.5.0
     '@github-ui/storybook-addon-performance-panel':
       specifier: ^1.1.4
       version: 1.1.4
@@ -267,7 +267,7 @@ importers:
         version: 1.4.8
       '@fission-ai/openspec':
         specifier: catalog:tooling
-        version: 1.4.1(@types/node@24.13.2)
+        version: 1.5.0(@types/node@24.13.2)
       '@preconstruct/cli':
         specifier: catalog:tooling
         version: 2.8.13
@@ -1465,8 +1465,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@fission-ai/openspec@1.4.1':
-    resolution: {integrity: sha512-C/NQsybgjqtSr29QAv4NbO1bZTgozu8GAUSiONthenZ5W4TQ2bvyj8LVmr76qb90iGeTLEFkcdnI+iYYaFLKyA==}
+  '@fission-ai/openspec@1.5.0':
+    resolution: {integrity: sha512-SLZkyF51gFYkISufZKaka0X04z4y/WCjPOcCB+EC7tALd0TC+7V76BOIzWOSIOhdhBWwh5EMIBhrgLnugIh1DA==}
     engines: {node: '>=20.19.0'}
     hasBin: true
 
@@ -8997,7 +8997,7 @@ snapshots:
       - '@noble/hashes'
       - canvas
 
-  '@fission-ai/openspec@1.4.1(@types/node@24.13.2)':
+  '@fission-ai/openspec@1.5.0(@types/node@24.13.2)':
     dependencies:
       '@inquirer/core': 10.3.2(@types/node@24.13.2)
       '@inquirer/prompts': 7.10.1(@types/node@24.13.2)
