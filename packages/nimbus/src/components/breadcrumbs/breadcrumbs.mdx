@@ -1,0 +1,75 @@
+---
+id: Components-Breadcrumbs
+title: Breadcrumbs
+exportName: Breadcrumbs
+description: Breadcrumbs show the path to the current page and let users navigate back up the hierarchy.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Navigation
+  - Breadcrumbs
+tags:
+  - component
+  - breadcrumbs
+  - navigation
+  - hierarchy
+---
+
+## Overview
+
+Breadcrumbs display a hierarchy of links to the current page or resource,
+helping users understand where they are within an application and quickly
+navigate back to a higher level. The last item represents the current page and
+is rendered as static, non-interactive text.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-breadcrumbs--docs)
+
+## Variables
+
+Get familiar with the features.
+
+### Visual options
+
+#### Size
+
+Breadcrumbs come in `sm` and `md` sizes. `md` is the default; use `sm` for
+denser layouts such as toolbars or table headers.
+
+```jsx live
+const App = () => (
+  <Stack direction="column" gap="400" alignItems="flex-start">
+    <Breadcrumbs.Root size="sm" aria-label="Small breadcrumbs">
+      <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+      <Breadcrumbs.Item href="/reports">Reports</Breadcrumbs.Item>
+      <Breadcrumbs.Item>Q3 Summary</Breadcrumbs.Item>
+    </Breadcrumbs.Root>
+
+    <Breadcrumbs.Root size="md" aria-label="Medium breadcrumbs">
+      <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+      <Breadcrumbs.Item href="/reports">Reports</Breadcrumbs.Item>
+      <Breadcrumbs.Item>Q3 Summary</Breadcrumbs.Item>
+    </Breadcrumbs.Root>
+  </Stack>
+);
+```
+
+## Guidelines
+
+- Always place breadcrumbs in a navigation landmark by setting `aria-label` on
+  `Breadcrumbs.Root`.
+- The final item is the current page — omit its `href` so it renders as static
+  text with `aria-current="page"`.
+- Keep labels short and reflective of the page titles they link to.
+- Breadcrumbs supplement primary navigation; they should not be the only way to
+  move between sections.
+
+## Properties
+
+`Breadcrumbs.Root` accepts the React Aria `Breadcrumbs` collection props plus a
+`size` style variant. `Breadcrumbs.Item` accepts React Aria `Breadcrumb` and
+`Link` props (`href`, `onPress`, routing props, `id` for `onAction`).

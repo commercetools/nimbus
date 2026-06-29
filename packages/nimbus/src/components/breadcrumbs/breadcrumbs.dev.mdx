@@ -1,0 +1,102 @@
+---
+title: Breadcrumbs component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Breadcrumbs } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+`Breadcrumbs` is a compound component built on React Aria's `Breadcrumbs`
+collection. It has two parts: `Breadcrumbs.Root` (the ordered list) and
+`Breadcrumbs.Item` (each entry). Provide an `href` on every item except the
+last; the last item, with no `href`, becomes the current page.
+
+```jsx live-dev
+const App = () => (
+  <Breadcrumbs.Root aria-label="Breadcrumbs">
+    <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+    <Breadcrumbs.Item href="/reports">Reports</Breadcrumbs.Item>
+    <Breadcrumbs.Item>Q3 Summary</Breadcrumbs.Item>
+  </Breadcrumbs.Root>
+);
+```
+
+## Usage examples
+
+### Sizes
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400" alignItems="flex-start">
+    <Breadcrumbs.Root size="sm" aria-label="Small breadcrumbs">
+      <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+      <Breadcrumbs.Item href="/library">Library</Breadcrumbs.Item>
+      <Breadcrumbs.Item>Data</Breadcrumbs.Item>
+    </Breadcrumbs.Root>
+
+    <Breadcrumbs.Root size="md" aria-label="Medium breadcrumbs">
+      <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+      <Breadcrumbs.Item href="/library">Library</Breadcrumbs.Item>
+      <Breadcrumbs.Item>Data</Breadcrumbs.Item>
+    </Breadcrumbs.Root>
+  </Stack>
+);
+```
+
+### Dynamic collections
+
+Pass an array to the `items` prop with a render function. Use `onAction` to
+react to presses by the item's `id` — useful for client-side routing.
+
+```jsx live-dev
+const App = () => {
+  const items = [
+    { id: "home", label: "Home", href: "/" },
+    { id: "reports", label: "Reports", href: "/reports" },
+    { id: "q3", label: "Q3 Summary" },
+  ];
+
+  return (
+    <Breadcrumbs.Root
+      aria-label="Breadcrumbs"
+      items={items}
+      onAction={(key) => console.log("navigate", key)}
+    >
+      {(item) => (
+        <Breadcrumbs.Item href={item.href}>{item.label}</Breadcrumbs.Item>
+      )}
+    </Breadcrumbs.Root>
+  );
+};
+```
+
+## Accessibility
+
+- `Breadcrumbs.Root` should be placed in a navigation landmark by supplying an
+  `aria-label`. The component renders an ordered list (`<ol>`) of list items.
+- The current page is marked with `aria-current="page"` automatically when its
+  item omits `href`.
+- Separators are decorative (`aria-hidden`); hierarchy is conveyed by the list
+  structure, not the visual divider.
+- Links are keyboard focusable and activate with Enter.
+
+## Props
+
+### Breadcrumbs.Root
+
+Accepts the React Aria `Breadcrumbs` collection props (`items`, `onAction`,
+`isDisabled`, `aria-label`, …) plus a `size` variant (`"sm" | "md"`, default
+`"md"`) and Nimbus style props.
+
+### Breadcrumbs.Item
+
+Accepts React Aria `Breadcrumb` props (`id`) and `Link` props (`href`,
+`target`, `onPress`, routing props, `isDisabled`) plus Nimbus style props.

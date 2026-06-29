@@ -42,6 +42,7 @@ export * from "./spacer";
 export * from "./accordion";
 export * from "./alert";
 export * from "./badge";
+export * from "./breadcrumbs";
 export * from "./card";
 export * from "./form-field";
 export * from "./icon";
