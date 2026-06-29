@@ -78,6 +78,10 @@ const config: StorybookConfig = {
     const isTest =
       !!process.env.VITEST_WORKER_ID || process.env.VITEST === "true";
     const isDevelopment = configType === "DEVELOPMENT" && !isTest;
+    // vitest runs Storybook with configType "PRODUCTION" too, so !isDevelopment
+    // alone isn't enough — the !isTest term is what keeps the dist alias out of
+    // the test run (where it would split compound components from their context).
+    const isProductionBuild = !isDevelopment && !isTest;
 
     // Type safety: validate configType
     if (configType !== "DEVELOPMENT" && configType !== "PRODUCTION") {
@@ -101,13 +105,15 @@ const config: StorybookConfig = {
           ? {
               "@commercetools/nimbus": resolve(__dirname, "../src"),
             }
-          : // Vite 8 tree-shakes re-exported compound roots out of the source @/components barrel when it leaks into the prod build via component source; alias the bare barrel to dist so source never enters (deep @/components/x paths still resolve to source).
-            [
-              {
-                find: /^@\/components$/,
-                replacement: resolve(__dirname, "../dist/index.es.js"),
-              },
-            ],
+          : isProductionBuild
+            ? // Vite 8 tree-shakes re-exported compound roots out of the source @/components barrel when it leaks into the prod build via component source; alias the bare barrel to dist so source never enters (deep @/components/x paths still resolve to source). Build-only: in vitest this split would break compound-component context.
+              [
+                {
+                  find: /^@\/components$/,
+                  replacement: resolve(__dirname, "../dist/index.es.js"),
+                },
+              ]
+            : {},
       },
     });
   },
