@@ -86,6 +86,8 @@ docs.
 
 ### Documentation authoring
 
+- [writing-style.md](./writing-style.md) — the house writing style for all prose
+  (universal core + per-audience overlays), applied in review
 - [engineering-docs-template.mdx](./engineering-docs-template.mdx)
 - [engineering-docs-template-guide.md](./engineering-docs-template-guide.md)
 - [engineering-docs-validation.md](./engineering-docs-validation.md)
