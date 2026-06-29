@@ -95,6 +95,35 @@ export default tseslint.config(
       "react-hooks/exhaustive-deps": "warn",
     },
   },
+  /**
+   * Stories and bundled utils must not import the `@/components` source
+   * barrel. The `@/` alias resolves to source even in production Storybook
+   * builds, so it drags the raw source barrel into the bundle alongside
+   * `dist`, where Rollup tree-shakes away re-exported compound roots
+   * (CodeRoot, DefaultPageRoot, ...) and leaves dangling references that
+   * throw at runtime. Import from `@commercetools/nimbus` (resolves to dist)
+   * instead. Deep paths like `@/components/x/x.types` stay allowed.
+   */
+  {
+    files: [
+      "packages/nimbus/src/**/*.stories.tsx",
+      "packages/nimbus/src/utils/**/*.{ts,tsx}",
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "@/components",
+              message:
+                "Import components from '@commercetools/nimbus' instead of the '@/components' source barrel, which leaks source into the production Storybook build.",
+            },
+          ],
+        },
+      ],
+    },
+  },
   // Spread storybook configurations if available
   ...storybookConfigs
 );

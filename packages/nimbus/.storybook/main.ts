@@ -101,7 +101,13 @@ const config: StorybookConfig = {
           ? {
               "@commercetools/nimbus": resolve(__dirname, "../src"),
             }
-          : {},
+          : // Vite 8 tree-shakes re-exported compound roots out of the source @/components barrel when it leaks into the prod build via component source; alias the bare barrel to dist so source never enters (deep @/components/x paths still resolve to source).
+            [
+              {
+                find: /^@\/components$/,
+                replacement: resolve(__dirname, "../dist/index.es.js"),
+              },
+            ],
       },
     });
   },
