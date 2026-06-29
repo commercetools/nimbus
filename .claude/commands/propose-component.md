@@ -126,10 +126,9 @@ The task list MUST include these file creation steps in this order:
    - Implement recipe in `component.recipe.ts`
    - Implement slots in `component.slots.tsx` (if applicable)
    - Implement component logic in `component.tsx`
-   - Create/update documentation using the `/writing-developer-documentation`
-     skill
-   - Create/update design guidelines using the `/writing-designer-documentation`
-     skill
+   - Create/update all docs-site tabs using the
+     `/writing-consumer-documentation` skill (Overview, Guidelines,
+     Implementation, Accessibility)
    - Ensure Storybook tests pass
    - Run linting and TypeScript checks (violations block shipping)
    - Run the full test suite
@@ -158,8 +157,8 @@ done and prevent ambiguous task definitions.
       component, index)
 - [ ] MUST follow the order specified in Step 3
 - [ ] MUST include play functions for all component behaviors in story file
-- [ ] SHOULD use appropriate skills (developer-documentation,
-      designer-documentation) for documentation tasks
+- [ ] SHOULD use the `writing-consumer-documentation` skill for documentation
+      tasks (all docs-site tabs)
 - [ ] MUST explicitly check standards compliance in validation steps
 
 **Design-to-Proposal Alignment**:
@@ -200,5 +199,5 @@ Validation Results:
 - ✅ Tests defined and acceptance criteria clear
 - ✅ Documentation strategy included
 
-Next steps: Review proposal and begin implementation using `/writing-developer-documentation`, `/writing-designer-documentation`, `/writing-stories`, and `/review` skills.
+Next steps: Review proposal and begin implementation using `/writing-consumer-documentation`, `/writing-stories`, and `/review` skills.
 ```

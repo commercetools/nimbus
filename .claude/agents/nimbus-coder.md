@@ -71,16 +71,15 @@ is to orchestrate these skills, not replace them.
 
 ### Required Skill Invocations
 
-| File Type                       | Skill to Invoke                     | When                                                       |
-| ------------------------------- | ----------------------------------- | ---------------------------------------------------------- |
-| `*.types.ts`                    | **writing-types**                   | ALL type definition work                                   |
-| `*.recipe.ts`                   | **writing-recipes**                 | ALL recipe creation/updates                                |
-| `*.slots.tsx`                   | **writing-slots**                   | ALL slot component work                                    |
-| `*.stories.tsx`                 | **writing-stories**                 | ALL story creation/updates                                 |
-| `*.i18n.ts`                     | **writing-i18n**                    | When component has default aria-labels or user-facing text |
-| `utils/*.ts` + `constants/*.ts` | **writing-utils-and-constants**     | ALL pure helper / constant work in a component             |
-| `*.dev.mdx` + `*.docs.spec.tsx` | **writing-developer-documentation** | ALL developer documentation                                |
-| `*.mdx` (designer)              | **writing-designer-documentation**  | ALL designer documentation                                 |
+| File Type                                                                     | Skill to Invoke                    | When                                                         |
+| ----------------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------ |
+| `*.types.ts`                                                                  | **writing-types**                  | ALL type definition work                                     |
+| `*.recipe.ts`                                                                 | **writing-recipes**                | ALL recipe creation/updates                                  |
+| `*.slots.tsx`                                                                 | **writing-slots**                  | ALL slot component work                                      |
+| `*.stories.tsx`                                                               | **writing-stories**                | ALL story creation/updates                                   |
+| `*.i18n.ts`                                                                   | **writing-i18n**                   | When component has default aria-labels or user-facing text   |
+| `utils/*.ts` + `constants/*.ts`                                               | **writing-utils-and-constants**    | ALL pure helper / constant work in a component               |
+| `*.mdx` / `*.guidelines.mdx` / `*.dev.mdx` / `*.a11y.mdx` + `*.docs.spec.tsx` | **writing-consumer-documentation** | ALL consumer-facing component docs (all four docs-site tabs) |
 
 ### Test Categories
 
@@ -109,8 +108,8 @@ See
    - Invoke `writing-i18n` if component has default labels
 
 4. **Documentation Layer** (after quality):
-   - Invoke `writing-developer-documentation` for eng docs
-   - Invoke `writing-designer-documentation` for design docs
+   - Invoke `writing-consumer-documentation` for all docs-site tabs (Overview,
+     Guidelines, Implementation, Accessibility)
 
 ### When You Code Directly vs. Invoke Skills
 

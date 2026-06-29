@@ -41,7 +41,7 @@ following knowledge-base files:
   major)
 - @docs/writing-style.md (the house writing style — apply it to any prose under
   review: internal docs `.md`, designer `.mdx`/`.guidelines.mdx`/`.a11y.mdx`,
-  and consumer-developer `.dev.mdx`)
+  and engineering `.dev.mdx`)
 
 ## **Execution Flow**
 

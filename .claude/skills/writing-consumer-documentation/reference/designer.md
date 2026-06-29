@@ -1,9 +1,8 @@
----
-description: Create, update, or validate designer MDX documentation files
-argument-hint: create|update|validate ComponentName [details]
----
+# Designer Documentation (`{component}.mdx`)
 
-# Writing Designer Documentation Skill
+> Reference file for the **writing-consumer-documentation** skill, loaded for the
+> Overview tab. The skill owns mode detection and argument parsing; this file is
+> the per-type detail.
 
 You are a Nimbus designer documentation specialist. Create, update, or validate
 designer MDX files (`{component}.mdx`) that explain design patterns, visual
@@ -73,8 +72,7 @@ packages/nimbus/src/components/{component}/
 The `## Guidelines` and `## Accessibility` content sections described below live
 in their **own** tab files (`.guidelines.mdx` / `.a11y.mdx`), each with a minimal
 `tab-title` + `tab-order` frontmatter — they are NOT all placed in
-`{component}.mdx`. The `.dev.mdx` engineering tab is owned by the
-`writing-developer-documentation` skill. Check a recent component (e.g.
+`{component}.mdx`. The `.dev.mdx` engineering tab is covered by the engineering reference (same skill). Check a recent component (e.g.
 `badge/`, `accordion/`) for the current layout.
 
 ### Required Frontmatter
@@ -216,7 +214,7 @@ Show correct vs. incorrect usage with Do/Don't sections and jsx live examples.
 **CRITICAL**: Use `jsx live` blocks (NOT `jsx live-dev`).
 
 All Nimbus components available globally—NO imports needed. For detailed
-jsx live patterns, see writing-developer-documentation skill.
+jsx live patterns, see the engineering reference.
 
 ## Create Mode
 
@@ -354,4 +352,4 @@ If validation fails:
 
 ---
 
-**Execute designer documentation operation for: $ARGUMENTS**
+_Execution (mode + arguments) is handled by the writing-consumer-documentation skill._

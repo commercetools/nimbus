@@ -109,8 +109,8 @@ expand what the library accepts as valid input.
 - `writing-stories` - Storybook stories with play functions
 - `writing-recipes` - Chakra UI styling recipes
 - `writing-slots` - Slot component wrappers
-- `writing-developer-documentation` - Engineering docs
-- `writing-designer-documentation` - Designer docs
+- `writing-consumer-documentation` - Consumer-facing component docs (Overview,
+  Guidelines, Implementation, and Accessibility tabs)
 - `writing-i18n` - Internationalization files
 - `writing-changesets` - Release-note changesets for consumers
 - `brainstorm` - Design exploration

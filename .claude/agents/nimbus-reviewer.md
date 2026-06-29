@@ -35,16 +35,15 @@ compliance checks.
 
 ### File Type → Skill Mapping
 
-| File Extension/Type             | Skill to Invoke                     | Command                                                  |
-| ------------------------------- | ----------------------------------- | -------------------------------------------------------- |
-| `*.types.ts`                    | **writing-types**                   | `writing-types validate ComponentName`                   |
-| `*.recipe.ts`                   | **writing-recipes**                 | `writing-recipes validate ComponentName`                 |
-| `*.slots.tsx`                   | **writing-slots**                   | `writing-slots validate ComponentName`                   |
-| `*.stories.tsx`                 | **writing-stories**                 | `writing-stories validate ComponentName`                 |
-| `*.i18n.ts`                     | **writing-i18n**                    | `writing-i18n validate ComponentName`                    |
-| `utils/*.ts` + `constants/*.ts` | **writing-utils-and-constants**     | `writing-utils-and-constants validate ComponentName`     |
-| `*.dev.mdx` + `*.docs.spec.tsx` | **writing-developer-documentation** | `writing-developer-documentation validate ComponentName` |
-| `*.mdx` (designer)              | **writing-designer-documentation**  | `writing-designer-documentation validate ComponentName`  |
+| File Extension/Type                                                           | Skill to Invoke                    | Command                                                        |
+| ----------------------------------------------------------------------------- | ---------------------------------- | -------------------------------------------------------------- |
+| `*.types.ts`                                                                  | **writing-types**                  | `writing-types validate ComponentName`                         |
+| `*.recipe.ts`                                                                 | **writing-recipes**                | `writing-recipes validate ComponentName`                       |
+| `*.slots.tsx`                                                                 | **writing-slots**                  | `writing-slots validate ComponentName`                         |
+| `*.stories.tsx`                                                               | **writing-stories**                | `writing-stories validate ComponentName`                       |
+| `*.i18n.ts`                                                                   | **writing-i18n**                   | `writing-i18n validate ComponentName`                          |
+| `utils/*.ts` + `constants/*.ts`                                               | **writing-utils-and-constants**    | `writing-utils-and-constants validate ComponentName`           |
+| `*.mdx` / `*.guidelines.mdx` / `*.dev.mdx` / `*.a11y.mdx` + `*.docs.spec.tsx` | **writing-consumer-documentation** | `writing-consumer-documentation validate ComponentName [type]` |
 
 **File types without a dedicated skill** — review directly against the
 guideline:
@@ -89,8 +88,8 @@ review:
 - Slots: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-slots skill report
 - Stories: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-stories skill report
 - i18n: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-i18n skill report
-- Dev Docs: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-developer-documentation
-  skill report
+- Docs: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-consumer-documentation skill
+  report (Overview, Guidelines, Implementation, Accessibility)
 
 ### Critical Violations (MUST FIX)
 
