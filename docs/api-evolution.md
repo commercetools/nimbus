@@ -1,9 +1,8 @@
 # API Evolution: Versioning, Deprecation & Breaking Changes
 
-Nimbus is consumed by other teams. The whole job of this document is the hard
-part: **moving fast without breaking consumers.** It defines what the public API
-is, how it's versioned, how to change it additively, and — when you truly must
-break something — how to do it safely.
+Nimbus is consumed by other teams. This document defines the public API surface,
+how it is versioned, how to change it additively, and how to make a breaking
+change safely when one is unavoidable.
 
 [← Back to Component Guidelines](./component-guidelines.md)
 
@@ -43,7 +42,7 @@ reachable from a package entry point.
 - **Every consumer-affecting PR needs a changeset.** No changeset ⇒ no release
   note ⇒ silent change. See [Changeset Conventions](./changeset-conventions.md).
 
-## Additive-first: the default that keeps you fast
+## Additive-first (the default)
 
 Most evolution should never reach a consumer as a break. Prefer, in order:
 
@@ -54,13 +53,14 @@ Most evolution should never reach a consumer as a break. Prefer, in order:
 3. **Deprecate** the old shape while keeping it working (minor) — see below.
 4. **Remove** the deprecated shape — breaking, major only — see below.
 
-If you can express the change as steps 1–3, you do not need a major. Reserve
-breaking changes for when carrying the old behavior is genuinely untenable.
+A change expressible as steps 1–3 does not require a major. Reserve breaking
+changes for when the old behavior cannot be carried forward.
 
 ## Deprecating a prop or component
 
-This is how you change direction without breaking anyone. The established
-pattern in this codebase (`button.types.ts`, `money-input.types.ts`):
+Deprecation changes direction while keeping existing code working. The
+established pattern in this codebase (`button.types.ts`,
+`money-input.types.ts`):
 
 1. **Keep the old prop working** — leave it in the props type (often grouped,
    e.g. `NativePropsWithAriaEquivalents`) so existing code still compiles and
@@ -87,7 +87,7 @@ Notes:
 - The same applies to a whole component: mark it `@deprecated` with the
   successor, keep it exported until the next major.
 
-## Breaking changes (major) — the last resort
+## Breaking changes (major)
 
 A change is breaking if a consumer must edit working code to upgrade (removed or
 renamed export/prop, narrowed type, newly-required prop, changed default that
