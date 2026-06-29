@@ -41,6 +41,13 @@ and examples.
 - **[context-files.md](./context-files.md)** - React context patterns
 - **[architecture-decisions.md](./architecture-decisions.md)** - Component
   architecture matrix
+- **[component-vs-pattern.md](./component-vs-pattern.md)** - When to build a
+  component vs a pattern
+
+### Design Integration
+
+- **[figma-code-connect.md](./figma-code-connect.md)** - `{component}.figma.tsx`
+  Code Connect mappings (generated, not hand-written)
 
 ## Quick Decision Tree
 

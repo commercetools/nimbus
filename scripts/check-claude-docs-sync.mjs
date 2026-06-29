@@ -13,6 +13,12 @@
 //               `/openspec:*` namespace; use `/opsx:*`).
 //   3. WARN   — a docs/file-type-guidelines/*.md guideline referenced by no
 //               .claude/ file (orphaned from tooling).
+//   4. ERROR  — a docs/**/*.md(x) file that is not linked from docs/readme.md
+//               (the canonical index). Catches docs added but never indexed.
+//
+// The set of docs validated for self-consistency (checks 1-2) and indexed
+// (check 4) is DERIVED by walking docs/, never hardcoded — so docs can be added,
+// renamed, or reorganized without editing this script.
 //
 // Usage: node scripts/check-claude-docs-sync.mjs   (alias: pnpm check:claude-docs)
 
@@ -46,14 +52,14 @@ const scanFiles = existsSync(toolingMap)
   ? [...claudeFiles, toolingMap]
   : claudeFiles;
 
-// The canonical guideline docs are the source of truth the tooling defers to,
-// so they must be self-consistent (no stale paths/commands) as well.
-const docsGuidelines = [
-  ...walk(join(ROOT, "docs", "file-type-guidelines")).filter((f) => f.endsWith(".md")),
-  join(ROOT, "docs", "naming-conventions.md"),
-  join(ROOT, "docs", "component-guidelines.md"),
-  join(ROOT, "docs", "types-architecture.md"),
-].filter((f) => existsSync(f));
+// The canonical docs are the source of truth the tooling defers to, so they
+// must be self-consistent (no stale paths/commands) too. This is DERIVED by
+// walking docs/ — deliberately NOT a hardcoded list — so reorganizing, renaming,
+// or adding docs needs no edit here and new docs are content-validated
+// automatically. (claude-tooling.md is already in scanFiles above; skip it to
+// avoid double-processing.)
+const docsGuidelines = walk(join(ROOT, "docs"), ["node_modules"])
+  .filter((f) => f.endsWith(".md") && f !== toolingMap);
 
 // Retired references that must never reappear (renamed/removed tooling).
 const RETIRED = [
@@ -232,6 +238,39 @@ for (const file of walk(join(ROOT, "docs")).filter((f) => f.endsWith(".md"))) {
     if (anchor && !headingSlugs(absTarget).has(slugNorm(anchor))) {
       errors.push(
         `${rel}: broken anchor "#${anchor}" → ${relative(ROOT, absTarget)}`
+      );
+    }
+  }
+}
+
+// Completeness — docs/readme.md is the canonical index a human reads to
+// understand how the repo is organized, so every doc must be reachable from it.
+// We require a direct link for top-level docs and file-type-guidelines; the
+// component-templates/ subtree is represented by its own index (which is itself
+// linked from readme). This catches a doc being ADDED but never indexed — the
+// failure mode the reference-resolution checks above are blind to, and the one
+// that let docs/readme.md's old directory tree silently rot.
+{
+  const readmeFile = join(ROOT, "docs", "readme.md");
+  const linked = new Set();
+  if (existsSync(readmeFile)) {
+    const text = readFileSync(readmeFile, "utf8");
+    const dir = join(readmeFile, "..");
+    for (const m of text.matchAll(linkRe)) {
+      const path = m[1].split("#")[0];
+      if (!path || !/\.mdx?$/.test(path)) continue;
+      linked.add(relative(ROOT, join(path.startsWith("/") ? ROOT : dir, path)));
+    }
+  }
+  for (const file of walk(join(ROOT, "docs"), ["node_modules"]).filter((f) =>
+    /\.mdx?$/.test(f)
+  )) {
+    const rel = relative(ROOT, file);
+    if (rel === "docs/readme.md") continue;
+    if (rel.startsWith("docs/component-templates/")) continue; // covered by its own index
+    if (!linked.has(rel)) {
+      errors.push(
+        `${rel} is not linked from docs/readme.md (the canonical index). Add it there so humans and tooling can discover it.`
       );
     }
   }

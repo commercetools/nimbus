@@ -37,41 +37,90 @@ component development.
 1. Check specific file type guidelines for patterns
 2. Use validation checklists to ensure compliance
 
-## 📁 Directory Contents
+## 📁 Documentation Index
 
-```
-docs/
-├── readme.md                    # This file
-├── component-guidelines.md      # Main navigation hub
-├── file-type-guidelines/       # Detailed file-specific guides
-│   ├── index.md
-│   ├── architecture-decisions.md
-│   ├── barrel-exports.md
-│   ├── main-component.md
-│   ├── types.md
-│   ├── stories.md
-│   ├── documentation.md
-│   ├── i18n.md
-│   ├── recipes.md
-│   ├── slots.md
-│   ├── compound-components.md
-│   ├── hooks.md
-│   ├── utils-and-constants.md
-│   └── context-files.md
-└── component-templates/        # Boilerplate templates
-    ├── index.md
-    ├── single-component.md
-    ├── single-component.types.md
-    ├── single-component.recipe.md
-    ├── single-component.slots.md
-    ├── single-component.stories.md
-    ├── compound-component.md
-    ├── compound-component.root.md
-    ├── compound-component.slots.md
-    ├── compound-component.stories.md
-    ├── compound-component.types.md
-    └── compound-component.recipe.md
-```
+This is the canonical index of everything under `docs/` — the single hub a human
+reads to understand how the repo is organized, and the entry point the tooling
+points back to.
+
+**Adding, renaming, or moving a doc?** The process is:
+
+1. Create/move the `.md(x)` file anywhere under `docs/`.
+2. Add (or update) its link in the appropriate section below.
+3. Run `pnpm check:claude-docs`.
+
+There is **no generated manifest and no list to update in any script** — the
+guardrail discovers docs by walking `docs/`, so a new doc is picked up
+automatically. It will **fail the build until it is linked here** (and if any
+`.claude/` command/skill or doc points at it, that reference must resolve too).
+In other words: this index is kept complete by enforcement, not by memory. See
+[claude-tooling.md](./claude-tooling.md) for how the tooling consumes these
+docs.
+
+### Hubs & navigation
+
+- [component-guidelines.md](./component-guidelines.md) — main navigation hub for
+  component development
+- [file-type-guidelines/index.md](./file-type-guidelines/index.md) — index of
+  per-file-type guides
+- [component-templates/index.md](./component-templates/index.md) — index of
+  boilerplate templates
+
+### Conventions & standards
+
+- [naming-conventions.md](./naming-conventions.md)
+- [types-architecture.md](./types-architecture.md)
+- [jsdoc-standards.md](./jsdoc-standards.md)
+- [git-conventions.md](./git-conventions.md)
+- [changeset-conventions.md](./changeset-conventions.md)
+
+### API & release
+
+- [api-evolution.md](./api-evolution.md) — versioning, deprecation,
+  breaking-change policy
+- [component-checklist.md](./component-checklist.md) — well-shaped-component
+  go/no-go gate
+- [package-shape-verification.md](./package-shape-verification.md)
+- [bundle-size-monitoring.md](./bundle-size-monitoring.md)
+- [bundler-plugins.md](./bundler-plugins.md)
+
+### Documentation authoring
+
+- [engineering-docs-template.mdx](./engineering-docs-template.mdx)
+- [engineering-docs-template-guide.md](./engineering-docs-template-guide.md)
+- [engineering-docs-validation.md](./engineering-docs-validation.md)
+- [file-review-protocol.md](./file-review-protocol.md)
+
+### AI / Claude Code tooling
+
+- [claude-tooling.md](./claude-tooling.md) — source of truth for `.claude/`
+  commands, agents, and skills
+
+### File-type guidelines (`file-type-guidelines/`)
+
+- [architecture-decisions.md](./file-type-guidelines/architecture-decisions.md)
+- [component-vs-pattern.md](./file-type-guidelines/component-vs-pattern.md)
+- [barrel-exports.md](./file-type-guidelines/barrel-exports.md)
+- [main-component.md](./file-type-guidelines/main-component.md)
+- [types.md](./file-type-guidelines/types.md)
+- [recipes.md](./file-type-guidelines/recipes.md)
+- [slots.md](./file-type-guidelines/slots.md)
+- [stories.md](./file-type-guidelines/stories.md)
+- [documentation.md](./file-type-guidelines/documentation.md)
+- [i18n.md](./file-type-guidelines/i18n.md)
+- [compound-components.md](./file-type-guidelines/compound-components.md)
+- [hooks.md](./file-type-guidelines/hooks.md)
+- [utils-and-constants.md](./file-type-guidelines/utils-and-constants.md)
+- [context-files.md](./file-type-guidelines/context-files.md)
+- [figma-code-connect.md](./file-type-guidelines/figma-code-connect.md)
+- [testing-strategy.md](./file-type-guidelines/testing-strategy.md)
+- [unit-testing.md](./file-type-guidelines/unit-testing.md)
+
+### Component templates (`component-templates/`)
+
+Boilerplate for new components — see
+[component-templates/index.md](./component-templates/index.md) for the single-
+vs compound-component template sets.
 
 ## 🔑 Key Principles
 

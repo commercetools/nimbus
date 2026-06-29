@@ -102,8 +102,9 @@ alters output, raised peer-dependency floor). When one is unavoidable:
 
 ## Migration guides
 
-For a major with non-trivial consumer impact, add a guide at
-`docs/migrations/{from}-to-{to}.md` (e.g. `docs/migrations/3-to-4.md`):
+For a major with non-trivial consumer impact, add a guide under
+`docs/migrations/`, named `{from}-to-{to}.md` (e.g. `3-to-4.md` for a v3 → v4
+major):
 
 - What changed and **why** (one short paragraph).
 - A **before → after** code example per breaking item.

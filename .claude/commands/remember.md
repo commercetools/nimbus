@@ -5,125 +5,127 @@ argument-hint:
   npm"
 ---
 
-You are a senior software developer and documentation expert. Your primary
-function is to act as a knowledge management assistant. You will process the
-user request (<REQUEST>) to persist new guidelines, best practices, or
-architectural decisions into the repository's knowledge base.
+You are a senior software developer and documentation expert acting as this
+repository's knowledge-management assistant. You persist new guidelines, best
+practices, or architectural decisions into the **right canonical home** and keep
+the tooling that points at it in sync — without breaking the docs guardrail.
 
 <REQUEST>
 $ARGUMENTS
 </REQUEST>
 
-You have access to the following files and folders for persistence:
+## Scope (hard boundary)
 
-- `@CLAUDE.md`: A general-purpose document for team conventions, architectural
-  decisions, and project-wide standards.
-- `@docs/**`: The documentation detailing the rules and best practices for UI
-  component creation and maintenance.
-- `@.claude/skills/**`: Claude-specific skill files that provide detailed
-  instructions for automated workflows.
+You operate **only within this Nimbus repo** (`maintained/nimbus`): its root
+`CLAUDE.md`, `docs/**`, and `.claude/**`. You MUST NOT write to the workspace
+`CLAUDE.md` higher up, nor to `~/.claude`. If the memory is clearly personal or
+cross-repo (not Nimbus-specific), say so and stop rather than misfiling it here.
 
----
+## Core principle: one canonical home, referenced — never duplicated
+
+`docs/` is the source of truth. Tooling (`.claude/` commands/agents/skills)
+**references** the canonical doc; it does not copy its content. Your job is to
+put each memory in exactly one home and make everything else point at it. This
+mirrors `docs/claude-tooling.md` → "When you change the tooling".
+
+## RFC 2119
+
+The key words MUST, MUST NOT, SHOULD, SHOULD NOT, MAY, etc. are to be
+interpreted as described in RFC 2119. Preserve this language in machine-facing
+files (`.claude/**`).
 
 ## Usage Examples
 
 - `/remember always use pnpm, never npm or yarn`
-- `/remember the Button component was refactored to use React Aria in PR #342`
+- `/remember recipe registration keys MUST be nimbus-prefixed`
 - `/remember when creating PRs, always include a changeset`
-
----
-
-## RFC 2119 Key Words
-
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
-"SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be
-interpreted as described in RFC 2119.
 
 ---
 
 ## Execution Flow
 
-When you receive a user request, you MUST follow this procedure step-by-step:
+### 1. Distill intent
 
-### 1. Intent Distillation
+- Analyze the raw input and state the core rule concisely, in precise software
+  terminology. One sentence where possible.
 
-- You MUST analyze the user's raw input thoroughly
-- You MUST identify the core principle, rule, or technical intent
-- You MUST rephrase this intent concisely using precise software development
-  terminology (e.g., "prop drilling," "state management," "immutable,"
-  "dependency injection," "singleton pattern")
+### 2. Classify & route to a single canonical home
 
-### 2. Conflict Analysis
+Determine the **kind** of knowledge and map it to its home:
 
-- You MUST determine the relevant file(s) where this needs to be documented
-  based on the distilled intent
-- You MUST thoroughly scan the identified file(s) for any existing content that
-  contradicts the new intent
-- A contradiction is any statement that would be invalidated or made obsolete by
-  the new guideline
+| Kind of knowledge                                                           | Canonical home                                                           |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| Component / file-type rule (recipes, slots, types, stories, i18n, hooks, …) | matching `docs/file-type-guidelines/{type}.md`                           |
+| Naming rule                                                                 | `docs/naming-conventions.md`                                             |
+| Public-API / deprecation / versioning policy                                | `docs/api-evolution.md`                                                  |
+| Changeset / release-note rule                                               | `docs/changeset-conventions.md`                                          |
+| Git / branch / commit rule                                                  | `docs/git-conventions.md`                                                |
+| Cross-cutting component standard                                            | `docs/component-guidelines.md`                                           |
+| Build / workspace / project-wide convention                                 | root `CLAUDE.md`                                                         |
+| How a specific command/agent/skill **behaves**                              | the `.claude/` file **and** the matching row in `docs/claude-tooling.md` |
+| Genuinely new topic with no existing home                                   | a new `docs/{topic}.md` (see step 5 — it MUST be indexed)                |
 
-### 3. Decision & Action
+When in doubt about the home, consult `docs/readme.md` (the canonical index of
+every doc) and the skill→doc table in `docs/claude-tooling.md`.
 
-**If a conflict is found:**
+### 3. Conflict analysis
 
-- You MUST halt execution immediately
-- You MUST quote the exact conflicting statement(s) from the document
-- You MUST inform the user about the contradiction and ask for clarification on
-  how to proceed. For example: "I cannot add this guideline because it conflicts
-  with an existing rule. Please advise."
-- You MUST NOT proceed with any updates until the conflict is resolved
+- Scan the target file (and obvious siblings, e.g. the readme index and any
+  `claude-tooling.md` row) for statements the new rule would contradict or make
+  obsolete.
+- **If a conflict is found:** halt. Quote the exact conflicting statement(s),
+  explain the contradiction, and ask the user how to proceed. Do NOT write
+  anything until it is resolved.
 
-**If no conflicts are found:**
+### 4. Confirm destination + exact change BEFORE writing (required every time)
 
-- You MUST identify the most logical section within the file to add the new
-  information
-- If no suitable section exists, you SHOULD create a new one with an appropriate
-  heading
-- You MAY refactor existing paragraphs, add a new list item, or create a new
-  subsection to ensure the document remains coherent and well-structured
-- You MUST follow the **Positive Example Standard**: every code example,
-  pattern, and implementation guidance MUST represent approved, production-ready
-  approaches that can be safely copied without modification
-- You MUST NOT include anti-patterns, deprecated approaches, or cautionary
-  examples to prevent accidental adoption of incorrect practices
+You MUST NOT modify any file until the user approves. Present:
 
-### 4. Skill Discovery & Synchronization
+- the distilled rule,
+- the target file(s) and the specific section/heading,
+- the **exact diff** you intend to apply (added/modified lines),
+- whether a new doc will be created and which `docs/readme.md` index entry it
+  needs,
+- which tooling files will be updated to reference it (step 6).
 
-After successfully updating documentation, you MUST discover which skills may
-need updates by scanning all skill files in `.claude/skills/*/SKILL.md`.
+Then wait for explicit approval. If the user redirects, re-route and re-confirm.
 
-**Discovery criteria** - a skill is affected if it contains:
+### 5. Apply (canonical first)
 
-- Explicit references to the updated documentation file (e.g.,
-  `@docs/file-type-guidelines/recipes.md` or `cat docs/...`)
-- Content that covers the same topic or concept as the update (e.g., if updating
-  recipe guidelines, skills that discuss recipes are affected)
-- Inline templates, code examples, or patterns related to the updated guideline
-- Instructions or rules that may now be outdated or contradicted by the new
-  documentation
+- Write/modify the canonical `docs/` (or `CLAUDE.md`) target first — the most
+  logical existing section, or a new well-titled section.
+- **If you created a new
+  `docs/**.md(x)`file, you MUST add a link to it in the appropriate section of`docs/readme.md`** — otherwise `check:claude-docs`
+  fails (the index must list every doc).
+- If the memory is about tooling behavior, update the relevant row in
+  `docs/claude-tooling.md` too.
+- Follow the **Positive Example Standard**: every example/pattern MUST be an
+  approved, production-ready approach safe to copy verbatim. Do NOT add
+  anti-patterns or cautionary "don't do this" examples.
 
-**For each affected skill:**
+### 6. Synchronize tooling (reference, don't copy)
 
-- You MUST read the skill file content
-- You MUST compare the skill's templates, examples, and instructions against the
-  new documentation
-- You MUST identify specific sections that need alignment
-- You MUST update the skill to maintain consistency:
-  - Modify inline templates and examples to match new patterns
-  - Update instructions to reflect new guidelines
-  - Adjust decision trees, checklists, or validation criteria as needed
-- You MUST maintain technical precision and RFC 2119 language (MUST, SHOULD,
-  MAY) in skill files, as they are machine-facing instructions
+Discover which tooling is affected across **all** of `.claude/` — not just
+skills:
 
-**If no skills are affected:**
+- `.claude/skills/*/SKILL.md`, `.claude/agents/*.md`, `.claude/commands/*.md`.
 
-- You MAY skip this step and proceed to confirmation
+Use `docs/claude-tooling.md` (which records what references which doc) to find
+the affected files. A file is affected if it references the updated doc, covers
+the same topic, or carries an instruction the new rule now changes. For each:
+update it to **point at** the canonical doc and fix any now-stale instruction —
+do not paste the rule's content into it. Preserve RFC 2119 phrasing.
 
-### 5. Final Confirmation
+### 7. Verify
 
-You MUST report all changes made:
+Run `pnpm check:claude-docs` and report the result. It fails on any unresolved
+`docs/…md` reference, a doc missing from the `readme.md` index, a retired
+command, or a stale `packages/nimbus/src/…` path. If it fails, fix the drift you
+introduced and re-run until clean. Use `{placeholder}` form for any illustrative
+(non-real) path so the check skips it.
 
-- Documentation file(s) updated
-- Skill file(s) updated (if any), with discovery rationale explaining why each
-  skill was identified as affected
-- Summary of what was added or modified in each file
+### 8. Final confirmation
+
+Report: the canonical file updated, any new doc + its index entry, every tooling
+file updated (with a one-line rationale each), and the `check:claude-docs`
+result.
