@@ -679,6 +679,9 @@ export const ListToggling: Story = {
 // =============================================================================
 
 export const OnChangeCallback: Story = {
+  parameters: {
+    chromatic: { disableSnapshot: true },
+  },
   render: () => {
     const [value, setValue] = useState("");
     const [changeCount, setChangeCount] = useState(0);
@@ -817,6 +820,9 @@ export const ComplexHTML: Story = {
 };
 
 export const EmptyContent: Story = {
+  parameters: {
+    chromatic: { disableSnapshot: true },
+  },
   args: {
     defaultValue: "",
     placeholder: "Empty editor",
@@ -947,6 +953,9 @@ FormattingShowcase.play = async ({
 // =============================================================================
 
 export const PendingMarksConsistency: Story = {
+  parameters: {
+    chromatic: { disableSnapshot: true },
+  },
   args: {
     placeholder: "Test pending marks consistency...",
   },

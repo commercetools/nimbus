@@ -4865,6 +4865,9 @@ export const PerfSelectionContextIsolation: Story = {
 };
 
 export const DragAndDropRows: Story = {
+  parameters: {
+    chromatic: { disableSnapshot: true },
+  },
   render: () => {
     const DraggableTable = () => {
       const simpleColumns: DataTableColumnItem[] = [

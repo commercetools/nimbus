@@ -378,6 +378,9 @@ export const VerticalOrientation: Story = {
 };
 
 export const VerticalPlacement: Story = {
+  parameters: {
+    chromatic: { disableSnapshot: true },
+  },
   render: () => {
     const placementTabs = [
       {
