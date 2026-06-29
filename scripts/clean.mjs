@@ -48,12 +48,17 @@
  * pattern matches what you expect and nothing more.
  */
 
-import { readdirSync, rmSync, existsSync, statSync } from "node:fs";
+import {
+  readdirSync,
+  rmSync,
+  existsSync,
+  statSync,
+  globSync,
+} from "node:fs";
 import { execSync } from "node:child_process";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { styleText } from "node:util";
-import { globSync } from "glob";
 
 const ROOT = join(fileURLToPath(new URL(".", import.meta.url)), "..");
 
@@ -101,7 +106,40 @@ const PROTECTED = [
 const COMPONENTS_DIR = join(ROOT, "packages/nimbus/src/components");
 
 /**
+ * Whether {@link relPath} matches any of the given ignore patterns.
+ *
+ * Only the three shapes actually used in PROTECTED are handled:
+ *   - `** /segment/ **` → any path containing that segment
+ *   - `prefix/ **`      → any path under that prefix
+ *
+ * @param {string} relPath - Forward-slash-separated path relative to ROOT.
+ * @param {string[]} ignorePatterns
+ * @returns {boolean}
+ */
+function matchesIgnore(relPath, ignorePatterns) {
+  const segments = relPath.split("/");
+  for (const pattern of ignorePatterns) {
+    // **/node_modules/** or **/.git/** → contains segment
+    const inner = pattern.match(/^\*\*\/([^*/]+)\/\*\*$/);
+    if (inner) {
+      if (segments.includes(inner[1])) return true;
+      continue;
+    }
+    // packages/tokens/src/generated/** → starts with prefix
+    if (pattern.endsWith("/**")) {
+      const prefix = pattern.slice(0, -3);
+      if (relPath === prefix || relPath.startsWith(prefix + "/")) return true;
+      continue;
+    }
+  }
+  return false;
+}
+
+/**
  * Glob one or more patterns under {@link ROOT}, matching dot-files.
+ *
+ * Uses Node's built-in {@link globSync} (no external `glob` dependency) so the
+ * script works before `pnpm install`.
  *
  * @param {string | string[]} patterns - Glob pattern(s), relative to ROOT.
  * @param {object} [options]
@@ -109,7 +147,9 @@ const COMPONENTS_DIR = join(ROOT, "packages/nimbus/src/components");
  * @returns {string[]} Matched paths, relative to ROOT.
  */
 function find(patterns, { ignore = PROTECTED } = {}) {
-  return globSync(patterns, { cwd: ROOT, dot: true, ignore });
+  return globSync(patterns, { cwd: ROOT }).filter(
+    (p) => !matchesIgnore(p, ignore)
+  );
 }
 
 // Git-tracked guard. Some i18n files (e.g. toast/, combobox/intl/de.ts) are
