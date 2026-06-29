@@ -1,5 +1,9 @@
 import { useMemo, useState, useCallback, useRef, useEffect } from "react";
-import { IconButton, Drawer, Tabs, Tooltip, Box } from "@/components";
+import { Box } from "@/components/box";
+import { Drawer } from "@/components/drawer";
+import { IconButton } from "@/components/icon-button";
+import { Tabs } from "@/components/tabs";
+import { Tooltip } from "@/components/tooltip";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { Settings, ViewWeek, ViewDay } from "@commercetools/nimbus-icons";
 import { VisibleColumnsPanel } from "./data-table.visible-columns-panel";

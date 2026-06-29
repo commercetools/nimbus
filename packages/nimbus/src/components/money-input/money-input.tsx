@@ -2,13 +2,10 @@ import { useCallback, useMemo } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useId, useLocale as useAriaLocale } from "react-aria";
 import { designTokens } from "@commercetools/nimbus-tokens";
-import {
-  NumberInput,
-  Select,
-  Tooltip,
-  Box,
-  MakeElementFocusable,
-} from "@/components";
+import { Box } from "@/components/box";
+import { NumberInput } from "@/components/number-input";
+import { Select } from "@/components/select";
+import { Tooltip, MakeElementFocusable } from "@/components/tooltip";
 import { HighPrecision } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";

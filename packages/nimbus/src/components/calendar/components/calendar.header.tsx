@@ -3,14 +3,12 @@ import {
   Heading,
   useSlottedContext,
 } from "react-aria-components";
-import {
-  Box,
-  Flex,
-  IconButton,
-  Stack,
-  Text,
-  VisuallyHidden,
-} from "@/components";
+import { Box } from "@/components/box";
+import { Flex } from "@/components/flex";
+import { IconButton } from "@/components/icon-button";
+import { Stack } from "@/components/stack";
+import { Text } from "@/components/text";
+import { VisuallyHidden } from "@/components/visually-hidden";
 import {
   KeyboardArrowLeft,
   KeyboardArrowRight,

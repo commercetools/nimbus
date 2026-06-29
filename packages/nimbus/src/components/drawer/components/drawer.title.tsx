@@ -1,6 +1,6 @@
 import { DrawerTitleSlot } from "../drawer.slots";
 import type { DrawerTitleProps } from "../drawer.types";
-import { Heading } from "@/components";
+import { Heading } from "@/components/heading";
 
 /**
  * Drawer.Title - The accessible title element for the drawer

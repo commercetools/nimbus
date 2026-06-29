@@ -1,6 +1,7 @@
 import { PasswordInput } from "@/components/password-input/password-input";
 import type { PasswordInputFieldProps } from "./password-input-field.types";
-import { FormField, FieldErrors } from "@/components";
+import { FieldErrors } from "@/components/field-errors";
+import { FormField } from "@/components/form-field";
 
 /**
  * # PasswordInputField

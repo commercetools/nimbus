@@ -96,19 +96,13 @@ export default tseslint.config(
     },
   },
   /**
-   * Stories and bundled utils must not import the `@/components` source
-   * barrel. The `@/` alias resolves to source even in production Storybook
-   * builds, so it drags the raw source barrel into the bundle alongside
-   * `dist`, where Rollup tree-shakes away re-exported compound roots
-   * (CodeRoot, DefaultPageRoot, ...) and leaves dangling references that
-   * throw at runtime. Import from `@commercetools/nimbus` (resolves to dist)
-   * instead. Deep paths like `@/components/x/x.types` stay allowed.
+   * Ban the `@/components` source barrel everywhere. Use deep imports
+   * (`@/components/<name>`) instead. The barrel causes Vite 8 to
+   * tree-shake re-exported compound roots (CodeRoot, DefaultPageRoot, ...)
+   * out of production Storybook builds, leaving dangling references.
    */
   {
-    files: [
-      "packages/nimbus/src/**/*.stories.tsx",
-      "packages/nimbus/src/utils/**/*.{ts,tsx}",
-    ],
+    files: ["packages/nimbus/src/**/*.{ts,tsx}"],
     rules: {
       "no-restricted-imports": [
         "error",
@@ -117,7 +111,7 @@ export default tseslint.config(
             {
               name: "@/components",
               message:
-                "Import components from '@commercetools/nimbus' instead of the '@/components' source barrel, which leaks source into the production Storybook build.",
+                "Use deep imports (e.g. '@/components/button') instead of the '@/components' barrel to avoid circular chunk dependencies and production build breakage.",
             },
           ],
         },

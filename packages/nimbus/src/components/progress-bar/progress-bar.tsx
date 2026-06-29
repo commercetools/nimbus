@@ -6,7 +6,8 @@ import {
 import { useObjectRef } from "react-aria";
 import { extractStyleProps, mergeRefs } from "@/utils";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
-import { Flex, Box } from "@/components";
+import { Box } from "@/components/box";
+import { Flex } from "@/components/flex";
 import {
   ProgressBarRootSlot,
   ProgressBarTrackSlot,

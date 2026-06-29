@@ -1,15 +1,13 @@
 import { useCallback, useState, useMemo } from "react";
 import type { Key } from "react-aria-components";
-import {
-  Button,
-  SimpleGrid,
-  Stack,
-  Box,
-  Text,
-  DraggableList,
-  SearchInput,
-  Separator,
-} from "@/components";
+import { Box } from "@/components/box";
+import { Button } from "@/components/button";
+import { DraggableList } from "@/components/draggable-list";
+import { SearchInput } from "@/components/search-input";
+import { Separator } from "@/components/separator";
+import { SimpleGrid } from "@/components/simple-grid";
+import { Stack } from "@/components/stack";
+import { Text } from "@/components/text";
 import { useLocalizedStringFormatter } from "@/hooks";
 import {
   Refresh,

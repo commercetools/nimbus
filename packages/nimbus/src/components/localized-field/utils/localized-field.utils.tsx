@@ -1,11 +1,11 @@
+import { FormField } from "@/components/form-field";
+import type { FieldErrorsData } from "@/components/field-errors";
 import {
-  FormField,
+  MoneyInput,
   type CurrencyCode,
   type MoneyInputValue,
   type MoneyValue,
-  type FieldErrorsData,
-  MoneyInput,
-} from "@/components";
+} from "@/components/money-input";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { localizedFieldMessagesStrings } from "../localized-field.messages";
 import type { LocalizedString } from "../localized-field.types";

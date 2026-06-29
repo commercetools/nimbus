@@ -19,9 +19,6 @@ import {
   Text,
   TextInput,
 } from "@commercetools/nimbus";
-// DataTable resolves to source (deep path, not the aliased bare `@/components`
-// barrel) so DataTable.Root shares the same context module instance as the
-// useStableDataTableContext hook this story consumes directly.
 import { DataTable } from "@/components/data-table";
 import { UPDATE_ACTIONS } from "./constants";
 import { useStableDataTableContext } from "./components/data-table.context";

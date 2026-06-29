@@ -1,5 +1,9 @@
 import { useSlate } from "slate-react";
-import { Menu, IconButton, Text, Box, Tooltip } from "@/components";
+import { Box } from "@/components/box";
+import { IconButton } from "@/components/icon-button";
+import { Menu } from "@/components/menu";
+import { Text } from "@/components/text";
+import { Tooltip } from "@/components/tooltip";
 import {
   MoreHoriz,
   FormatStrikethrough,

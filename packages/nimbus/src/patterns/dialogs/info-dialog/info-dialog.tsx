@@ -1,4 +1,4 @@
-import { Dialog } from "@/components";
+import { Dialog } from "@/components/dialog";
 import type { InfoDialogProps } from "./info-dialog.types";
 
 /**

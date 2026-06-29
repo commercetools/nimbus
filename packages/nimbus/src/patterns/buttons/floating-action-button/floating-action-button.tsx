@@ -1,4 +1,4 @@
-import { IconButton } from "@/components";
+import { IconButton } from "@/components/icon-button";
 import type { FloatingActionButtonProps } from "./floating-action-button.types.ts";
 
 const FloatingActionButtonComponent = (props: FloatingActionButtonProps) => {

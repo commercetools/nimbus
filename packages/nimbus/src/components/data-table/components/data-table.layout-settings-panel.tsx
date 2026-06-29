@@ -1,4 +1,7 @@
-import { ToggleButtonGroup, Text, SimpleGrid, Toolbar } from "@/components";
+import { SimpleGrid } from "@/components/simple-grid";
+import { Text } from "@/components/text";
+import { ToggleButtonGroup } from "@/components/toggle-button-group";
+import { Toolbar } from "@/components/toolbar";
 import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { UPDATE_ACTIONS } from "../constants";

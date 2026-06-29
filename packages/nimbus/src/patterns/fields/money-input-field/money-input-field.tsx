@@ -1,5 +1,6 @@
 import { MoneyInput } from "@/components/money-input/money-input";
-import { FormField, FieldErrors } from "@/components";
+import { FieldErrors } from "@/components/field-errors";
+import { FormField } from "@/components/form-field";
 import type { MoneyInputFieldProps } from "./money-input-field.types";
 
 /**

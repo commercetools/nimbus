@@ -4,7 +4,8 @@ import {
   Collection as RaCollection,
   useTableOptions,
 } from "react-aria-components";
-import { Box, Checkbox } from "@/components";
+import { Box } from "@/components/box";
+import { Checkbox } from "@/components/checkbox";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import type {
