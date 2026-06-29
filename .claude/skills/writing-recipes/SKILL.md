@@ -228,8 +228,13 @@ export const slotRecipes = {
 You MUST run these commands after creation:
 
 ```bash
-pnpm --filter @commercetools/nimbus typecheck
+# build-theme-typings MUST run before typecheck. A newly registered recipe's
+# variants don't exist in the generated theme typings yet, so a typecheck-first
+# run reports a cascade of FALSE errors that look like real component bugs (e.g.
+# SlotRecipeProps<"nimbusX"> resolving to nothing). Generate the types first,
+# THEN typecheck against them. Do not reorder these.
 pnpm --filter @commercetools/nimbus build-theme-typings
+pnpm --filter @commercetools/nimbus typecheck
 pnpm --filter @commercetools/nimbus build
 ```
 

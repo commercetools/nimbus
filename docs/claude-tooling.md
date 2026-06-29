@@ -87,6 +87,7 @@ skill should point at it rather than embedding a second copy.
 | `writing-utils-and-constants`     | utils/constants                 | `docs/file-type-guidelines/utils-and-constants.md`                                                                     |
 | `writing-developer-documentation` | `*.dev.mdx` + `*.docs.spec.tsx` | `docs/engineering-docs-template.mdx`, `docs/engineering-docs-template-guide.md`, `docs/engineering-docs-validation.md` |
 | `writing-designer-documentation`  | `*.mdx`                         | `docs/file-type-guidelines/documentation.md`                                                                           |
+| `writing-changesets`              | `.changeset/*.md`               | `docs/changeset-conventions.md`                                                                                        |
 | `brainstorm`                      | design exploration              | —                                                                                                                      |
 | `nimbus-code-connect`             | `*.figma.tsx`                   | Figma API + `code-connect-constants.ts`                                                                                |
 | `update-uikit-mapping`            | MCP migration data              | `packages/nimbus-mcp/src/data/uikit-migration.ts`                                                                      |

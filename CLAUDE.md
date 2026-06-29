@@ -112,6 +112,7 @@ expand what the library accepts as valid input.
 - `writing-developer-documentation` - Engineering docs
 - `writing-designer-documentation` - Designer docs
 - `writing-i18n` - Internationalization files
+- `writing-changesets` - Release-note changesets for consumers
 - `brainstorm` - Design exploration
 
 **When to invoke directly:**

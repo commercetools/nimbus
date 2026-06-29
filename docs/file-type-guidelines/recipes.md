@@ -438,6 +438,13 @@ This prefixed key is also what you pass to `SlotRecipeProps<"nimbusSlider">` in
 your types file and to `useSlotRecipe({ key: "nimbusSlider" })` in your
 component, so it must match exactly across all three places.
 
+> **Run `build-theme-typings` before `typecheck` after registering a new
+> recipe.** The new recipe's variants don't exist in the generated theme typings
+> until `build-theme-typings` runs, so a typecheck-first run reports a cascade
+> of false errors (e.g. `SlotRecipeProps<"nimbusX">` resolving to nothing) that
+> look like real component bugs. Generate the types first, then typecheck
+> against them.
+
 #### Standard Recipes
 
 ```typescript
