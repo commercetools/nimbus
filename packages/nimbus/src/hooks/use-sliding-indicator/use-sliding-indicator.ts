@@ -72,6 +72,12 @@ export interface SlidingIndicatorOptions {
  * momentarily suppressed so the indicator snaps to the active item instead of
  * sliding in from the container corner on initial render.
  *
+ * Note: scroll is **not** tracked. Geometry is computed in container
+ * coordinates, so if the container is itself scrollable the indicator only
+ * re-aligns on the next selection change or resize, not on scroll. Today's
+ * callers (`Tabs`/`TabNav`) don't scroll their item strip, so this is a
+ * non-issue; a future scrollable caller would need to observe scroll itself.
+ *
  * Used to drive the animated active-highlight on `Tabs` and `TabNav`, where
  * `getGeometry` encodes whether the indicator is an edge bar (bottom or inner
  * side) or a filled highlight.

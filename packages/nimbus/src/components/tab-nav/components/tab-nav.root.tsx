@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { useSlidingIndicator } from "@/hooks";
 import type { SlidingIndicatorRects } from "@/hooks";
+import { resolveVariantAlias } from "@/utils";
 import { TabNavRootSlot, TabNavIndicatorSlot } from "../tab-nav.slots";
 import type { TabNavProps } from "../tab-nav.types";
 
@@ -27,10 +28,7 @@ export const TabNavRoot = (props: TabNavProps) => {
   const { variant: variantProp, children, ref, ...rest } = props;
 
   // Resolve deprecated aliases (e.g. `tabs` → `line`) to the real variant.
-  const variant =
-    typeof variantProp === "string"
-      ? (VARIANT_ALIASES[variantProp] ?? variantProp)
-      : variantProp;
+  const variant = resolveVariantAlias(variantProp, VARIANT_ALIASES);
 
   // Stable string used for indicator geometry/styling and effect deps. A
   // responsive `variant` object falls back to the default look for the slider.
@@ -45,6 +43,9 @@ export const TabNavRoot = (props: TabNavProps) => {
   // static marker is the SSR/no-JS fallback, suppressed via `data-animated` once
   // this hook activates; the slide respects `prefers-reduced-motion`.
   useSlidingIndicator({
+    // Always on: the slide is a fixed design decision with no per-instance
+    // toggle. `enabled` exists for the generic hook (so a future caller could
+    // opt out), not as a TabNav prop — don't go looking for a switch here.
     enabled: true,
     indicatorRef,
     activeSelector: '[aria-current="page"]',
