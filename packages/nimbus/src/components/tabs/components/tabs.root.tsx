@@ -8,7 +8,7 @@ import { TabsRootSlot, TabsIndicatorSlot } from "../tabs.slots";
 import type { TabsProps } from "../tabs.types";
 import { TabsList } from "./tabs.list";
 import { TabsPanels } from "./tabs.panels";
-import { extractStyleProps } from "@/utils";
+import { extractStyleProps, resolveVariantAlias } from "@/utils";
 import { useSlidingIndicator } from "@/hooks";
 import type { SlidingIndicatorRects } from "@/hooks";
 
@@ -19,13 +19,6 @@ const INDICATOR_BAR_PX = 2;
 const VARIANT_ALIASES: Record<string, string> = {
   pills: "pill",
 };
-
-/** Resolve a deprecated string variant alias to its replacement (else pass through). */
-function resolveVariantAlias<T>(variant: T): T {
-  return typeof variant === "string" && VARIANT_ALIASES[variant]
-    ? (VARIANT_ALIASES[variant] as T)
-    : variant;
-}
 
 /**
  * # Tabs
@@ -47,7 +40,7 @@ export const TabsRoot = ({
   const recipe = useSlotRecipe({ key: "nimbusTabs" });
   const [recipeProps, restRecipeProps] = recipe.splitVariantProps({
     ...props,
-    variant: resolveVariantAlias(props.variant),
+    variant: resolveVariantAlias(props.variant, VARIANT_ALIASES),
   } as Parameters<typeof recipe.splitVariantProps>[0]);
 
   // Standard pattern: Extract style props
@@ -75,6 +68,9 @@ export const TabsRoot = ({
   // selected marker is the SSR/no-JS fallback, suppressed via `data-animated`
   // once this hook activates; the slide respects `prefers-reduced-motion`.
   useSlidingIndicator({
+    // Always on: the slide is a fixed design decision with no per-instance
+    // toggle. `enabled` exists for the generic hook (so a future caller could
+    // opt out), not as a Tabs prop — don't go looking for a switch here.
     enabled: true,
     indicatorRef,
     activeSelector: '[role="tab"][aria-selected="true"]',

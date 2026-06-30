@@ -4,3 +4,4 @@ export { extractPaddingProps } from "./extract-padding-props";
 export { extractStyleProps } from "./extract-style-props";
 export { mergeRefs } from "./merge-refs";
 export { noop } from "./no-op";
+export { resolveVariantAlias } from "./resolve-variant-alias";
