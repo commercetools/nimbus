@@ -1,4 +1,5 @@
 import { CodeRoot } from "./code.slots";
+import type { CodeProps } from "./code.types";
 
 /**
  * # Code
@@ -9,4 +10,6 @@ import { CodeRoot } from "./code.slots";
  *
  * @experimental This component is experimental and may change or be removed in future versions.
  */
-export const Code: typeof CodeRoot = CodeRoot;
+export const Code = ({ ref, ...props }: CodeProps) => {
+  return <CodeRoot ref={ref} {...props} />;
+};

@@ -3,7 +3,4 @@ import type { CodeRootSlotProps } from "./code.types";
 
 const { withContext } = createRecipeContext({ key: "nimbusCode" });
 
-export const CodeRoot: React.FC<CodeRootSlotProps> = withContext<
-  HTMLElement,
-  CodeRootSlotProps
->("code");
+export const CodeRoot = withContext<HTMLElement, CodeRootSlotProps>("code");
