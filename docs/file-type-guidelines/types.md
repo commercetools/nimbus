@@ -268,12 +268,12 @@ type ButtonRecipeProps = {
    * Size variant of the button
    * @default "md"
    */
-  size?: RecipeProps<"button">["size"];
+  size?: RecipeProps<"nimbusButton">["size"];
   /**
    * Visual style variant of the button
    * @default "solid"
    */
-  variant?: RecipeProps<"button">["variant"];
+  variant?: RecipeProps<"nimbusButton">["variant"];
 } & UnstyledProp;
 
 // ============================================================
@@ -317,7 +317,7 @@ import type {
 // RECIPE PROPS
 // ============================================================
 
-type MenuRecipeProps = SlotRecipeProps<"menu">;
+type MenuRecipeProps = SlotRecipeProps<"nimbusMenu">;
 
 // ============================================================
 // SLOT PROPS
@@ -567,7 +567,7 @@ needing explicit declarations.
 import { type ButtonSlotProps } from "./button.slots";
 
 // ✅ Good - extends slot props (which automatically include recipe variants)
-// ButtonSlotProps extends RecipeProps<"button">, so ButtonProps inherits
+// ButtonSlotProps extends RecipeProps<"nimbusButton">, so ButtonProps inherits
 // all recipe variants like variant, size, colorPalette, etc.
 export type ButtonProps = ButtonSlotProps & {
   // Component-specific props only

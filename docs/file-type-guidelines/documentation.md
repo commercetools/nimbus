@@ -5,601 +5,276 @@
 
 ## Purpose
 
-There are two types of MDX documentation files for components:
+A component is documented on the docs site by **up to four MDX files**, each
+rendered as a tab. They share one component page but serve different audiences:
 
-1. **Designer documentation** (`{component-name}.mdx`) - For designers on the
-   documentation site, explaining the component's design purpose, visual usage,
-   and best practices
-2. **Engineering documentation** (`{component-name}.dev.mdx`) - For developers,
-   with technical implementation details and internal API documentation
+| File                         | Tab            | `tab-order` | Audience                           | Focus                                            |
+| ---------------------------- | -------------- | ----------- | ---------------------------------- | ------------------------------------------------ |
+| `{component}.mdx`            | Overview       | 1           | Designers                          | Design purpose, visual variants, when to use it  |
+| `{component}.guidelines.mdx` | Guidelines     | 2           | Designers, product teams           | Do/Don't, best practices, when **not** to use it |
+| `{component}.dev.mdx`        | Implementation | 3           | Consumers (integrating developers) | API, code examples, integration, testing         |
+| `{component}.a11y.mdx`       | Accessibility  | 4           | All roles                          | WCAG conformance, keyboard, screen reader, ARIA  |
 
-## When to Use
+> **Terminology:** the `.dev.mdx` audience is **consumers** — developers
+> integrating Nimbus into their apps — not Nimbus's own contributors. Avoid the
+> ambiguous word "developer" in prose; the [writing style](../writing-style.md)
+> terminology table is the source of truth. The `.dev.mdx` extension and `dev`
+> tab key themselves stay — they are a build-system contract (see
+> [The tabbed model](#the-tabbed-model)).
 
-**Always required** - Every public-facing component in the Nimbus design system
-must have both MDX documentation files.
+> **Prose style:** this guide covers the **structure and format** of the MDX
+> files. For the **writing** itself — voice, mood, normative keywords,
+> terminology — follow the house [writing style](../writing-style.md): its
+> universal core plus the matching overlay. The **designer overlay** governs
+> `.mdx`, `.guidelines.mdx`, and `.a11y.mdx`; the **engineering overlay**
+> governs `.dev.mdx`.
 
-### Designer Documentation (`{component-name}.mdx`)
+## The tabbed model
 
-Required documentation for designers that:
+The four files are **not** independent pages and they are **not** one monolithic
+file. The main `{component}.mdx` is the canonical page and carries all metadata;
+the other three are **view files** that contribute additional tabs to it.
 
-- Explains the component's design purpose and when to use it
-- Shows visual usage examples with live code (using `jsx live` blocks)
-- Documents design variants and visual options (using `<PropsTable>` component)
-- Provides accessibility information from a user perspective (keyboard
-  navigation, screen reader support, WCAG compliance)
-- Links to design resources (Figma, ARIA patterns when applicable)
+- The docs build (`@commercetools/nimbus-docs-build`, `parse-mdx.ts`) reads the
+  main `.mdx`, then discovers sibling view files matching
+  `{component}.{key}.mdx` (keys: `guidelines`, `dev`, `a11y`).
+- Each view file declares only `tab-title` + `tab-order`; everything else (id,
+  title, menu, tags, …) is inherited from the main file.
+- Tabs always render in `tab-order`, so a component shows the same tab sequence
+  regardless of which view files exist.
 
-**Note**: Internal utility components or non-exported components don't require
-MDX documentation.
-
-### Engineering Documentation (`{component-name}.dev.mdx`)
-
-Required for every public component. This file is consumed by the engineering
-documentation validation system and should contain:
-
-- **Implementation overview** - Key design decisions and architectural notes
-- **Props documentation** - Technical details about each prop with examples
-- **Advanced usage examples** - Complex patterns and edge cases for developers
-- **TypeScript types** - Complete type definitions and their relationships
-- **Integration patterns** - How to use with React Aria, hooks, context, etc.
-- **Testing notes** - Guidance on testing strategies and edge cases
-- **Styling system details** - How recipes and slots work for this component
-- **Accessibility details** - ARIA implementation specifics
-
-The `.dev.mdx` file serves as the source of truth for component API
-documentation and is automatically validated against actual TypeScript
-definitions.
-
-## File Structure
-
-### Required Frontmatter
-
-Based on analysis of existing component MDX files, all files must include these
-frontmatter fields:
-
-```yaml
----
-id: Components-ComponentName # Required: Unique identifier (Components-{ComponentName})
-title: Component Name # Required: Display name
-exportName: ComponentName # Required: PascalCased name as exported from @commercetools/nimbus
-description: Brief description of the component # Required: One-line component description
-order: 999 # Required: Menu display order (use 999 as default)
-menu: # Required: Menu hierarchy array
-  - Components
-  - Category Name # Data Display, Navigation, Inputs, Feedback, etc.
-  - Component Name
-tags: # Required: Search tags array (always include 'component')
-  - component
-  - relevant-keywords
----
+```mermaid
+flowchart TD
+    Main["{component}.mdx<br/>Overview · full frontmatter"]
+    Main -->|tab-order 2| G["{component}.guidelines.mdx"]
+    Main -->|tab-order 3| D["{component}.dev.mdx"]
+    Main -->|tab-order 4| A["{component}.a11y.mdx"]
 ```
 
-### Optional Frontmatter Fields
+### Which files are required
 
-These fields appear in some components but are not required:
+Every public-facing component **must** have `{component}.mdx` and
+`{component}.dev.mdx`. The `guidelines` and `a11y` tabs are **strongly
+recommended** and present on most components, but **may** be omitted where they
+add nothing:
+
+- **No Guidelines** — layout/utility primitives (`Box`, `Flex`, `Stack`,
+  `Grid`), providers (`NimbusProvider`), and internal-only components.
+- **No Accessibility** — components with no interaction or a11y surface of their
+  own (simple presentational primitives).
+
+Internal utility components and non-exported components don't require MDX at
+all.
+
+## Frontmatter
+
+### Main file (`{component}.mdx`) — full metadata
 
 ```yaml
 ---
-# Lifecycle indicators (when applicable)
-lifecycleState: Experimental|Alpha|Beta|Stable|Deprecated|EOL
-
-# Design resources (when available)
-figmaLink: >-
+id: Components-ComponentName # Required: unique, "Components-{ComponentName}"
+title: Component Name # Required: display name
+exportName: ComponentName # Required: PascalCased name as exported from @commercetools/nimbus
+description: Brief one-line description # Required
+order: 999 # Required: menu order (999 = default)
+menu: # Required: menu hierarchy
+  - Components
+  - Category Name # Inputs, Data Display, Navigation, Feedback, Overlay, Layout, Typography
+  - Component Name
+tags: # Required: search tags (always include 'component')
+  - component
+  - relevant-keywords
+lifecycleState: Stable # Optional: Experimental|Alpha|Beta|Stable|Deprecated|EOL
+figmaLink: >- # Optional: design resource
   https://www.figma.com/design/...
 ---
 ```
 
-### Standard Content Structure
+### View files (`.guidelines.mdx`, `.dev.mdx`, `.a11y.mdx`) — minimal
 
-Based on analysis of existing component MDX files, follow this structure:
-
-The component title and description are rendered automatically from the
-frontmatter `title` and `description` fields. Do not duplicate them in the body
-content.
-
-```markdown
-## Overview
-
-Detailed explanation of the component's purpose, behavior, and primary use
-cases.
-
-### Key Features (Optional)
-
-- **Feature 1**: Description
-- **Feature 2**: Description
-- **Feature 3**: Description
-
-### Resources
-
-Deep dive into implementation details and access the Nimbus design library.
-
-[Figma library](figmaLink) [React ARIA Docs](reactAriaLink) # If applicable
-[ARIA Pattern](ariaPatternLink) # If applicable
-
-## Variables (or Examples)
-
-Get familiar with the features.
-
-### Basic Usage
-
-\`\`\`jsx live const App = () => ( <ComponentName> Basic example
-</ComponentName> ) \`\`\`
-
-### Size Variants (If applicable)
-
-Demonstrate all sizes in a single code block for easy comparison:
-
-\`\`\`jsx live const App = () => (
-<Stack direction="row" gap="400" alignItems="center">
-<ComponentName size="sm">Small</ComponentName>
-<ComponentName size="md">Medium</ComponentName>
-<ComponentName size="lg">Large</ComponentName> </Stack> ) \`\`\`
-
-### Visual Variants (If applicable)
-
-Demonstrate all visual variants in a single code block for easy comparison:
-
-\`\`\`jsx live const App = () => (
-<Stack direction="row" gap="400" alignItems="center">
-<ComponentName variant="solid">Solid</ComponentName>
-<ComponentName variant="outline">Outline</ComponentName>
-<ComponentName variant="ghost">Ghost</ComponentName> </Stack> ) \`\`\`
-
-## Guidelines (Optional but recommended)
-
-Use this component strategically to enhance user workflow.
-
-### Best practices
-
-- **Keyboard Navigation:** Ensure full keyboard accessibility
-- **Error Handling:** Provide clear error messages
-- **Visual Hierarchy:** Maintain proper visual relationships
-
-### When to use (Optional)
-
-> [!TIP]\
-> When to use
-
-- **Use case 1:** Description
-- **Use case 2:** Description
-
-> [!CAUTION]\
-> When not to use
-
-- **Avoid case 1:** Description
-- **Avoid case 2:** Description
-
-## Specs (or API Reference)
-
-<PropsTable id="ComponentName" />
-
-## Accessibility
-
-This component follows WCAG 2.1 AA guidelines.
-
-### Keyboard Navigation
-
-| Key      | Action       |
-| -------- | ------------ |
-| `Tab`    | Move focus   |
-| `Enter`  | Activate     |
-| `Escape` | Close/Cancel |
-
-### Screen Reader Support
-
-- Announces role and state
-- Provides clear labels
-- Updates on state changes
-
-### WCAG Compliance (For complex components)
-
-#### 1. Perceivable
-
-- **1.3.1 Info and Relationships**: Proper semantic structure
-- **1.4.3 Contrast**: Text meets contrast requirements
-
-#### 2. Operable
-
-- **2.1.1 Keyboard**: Full keyboard navigation
-- **2.4.7 Focus Visible**: Clear focus indicators
-
-#### 3. Understandable
-
-- **3.2.1 On Focus**: No unexpected context changes
-- **3.3.2 Labels**: Clear labeling and instructions
-
-#### 4. Robust
-
-- **4.1.2 Name, Role, Value**: Proper semantic markup
-```
-
-## Code Examples
-
-### jsx live Block Requirements
-
-**CRITICAL**: All interactive examples must use `jsx live` blocks. These blocks
-render live, interactive React components in the documentation site.
-
-```markdown
-\`\`\`jsx live const App = () => ( <Button variant="solid">Click me</Button> )
-\`\`\`
-```
-
-**Key points**:
-
-- All Nimbus components (Button, Stack, Icons, etc.) are available globally - no
-  imports needed
-- Each jsx live block should define an `App` component
-- The code executes in the browser and renders as a live component
-- Use regular markdown code blocks (with language tags like `jsx` or `tsx`) only
-  for non-interactive code examples
-
-**Note**: MDX files are for documentation. Use `.stories.tsx` files for
-Storybook content.
-
-### Code Example Patterns
-
-#### Simple Component Example
-
-```markdown
-\`\`\`jsx live const App = () => ( <Badge colorPalette="primary" size="md">
-<Icons.SentimentSatisfied /> Badge <Icons.SentimentSatisfied /> </Badge> )
-\`\`\`
-```
-
-#### Interactive State Example
-
-```markdown
-\`\`\`jsx live const App = () => { const [count, setCount] = useState(0);
-
-return ( <Stack direction="column" gap="400"> <Text>Count: {count}</Text>
-<Button onClick={() => setCount(count + 1)}> Increment </Button> </Stack> ); }
-\`\`\`
-```
-
-#### Compound Component Example
-
-```markdown
-\`\`\`jsx live const App = () => ( <Menu.Root> <Menu.Trigger> Actions
-<Icons.KeyboardArrowDown /> </Menu.Trigger> <Menu.Content> <Menu.Item
-id="copy">Copy</Menu.Item> <Menu.Item id="paste">Paste</Menu.Item> <Menu.Item
-id="delete">Delete</Menu.Item> </Menu.Content> </Menu.Root> ) \`\`\`
-```
-
-### Code Formatting Standards
-
-- **Proper indentation**: Use 2-space indentation consistently
-- **Readable structure**: Format JSX for clarity
-- **Realistic examples**: Show actual usage patterns
-- **Props demonstration**: Include relevant props for each example
-- **State management**: Use React hooks when interaction is needed
-
-## Guidelines Section Patterns
-
-### Standard Markdown Lists
-
-```markdown
-## Guidelines
-
-Text input guidelines focus on creating clear, accessible, and user-friendly
-fields.
-
-### Best practices
-
-- **Keyboard Navigation:** Ensure full keyboard accessibility
-- **Error Handling:** Provide clear error messages close to the input
-- **Placeholder text:** Avoid relying solely on placeholder text
-```
-
-### GitHub-style Alerts (When Available)
-
-Some components use GitHub-style alert blocks:
-
-```markdown
-> [!TIP]\
-> When to use
->
-> - **Use for concise information:** Keep badge text short for readability
-> - **Indicate status:** Signal state or classification clearly
-
-> [!CAUTION]\
-> When not to use
->
-> - **Don't overuse badges:** Reserve for important highlights
-> - **Don't use as headers:** Use proper typography instead
-```
-
-### Section Organization
-
-- **Guidelines**: High-level usage guidance
-- **Best practices**: Specific implementation advice
-- **When to use/When not to use**: Clear do's and don'ts
-- **Accessibility considerations**: WCAG compliance guidance
-
-## Props Documentation
-
-### Using PropsTable
-
-The PropsTable component automatically extracts props from your TypeScript
-definitions and displays them in a formatted table:
-
-```markdown
-## Specs
-
-<PropsTable id="ComponentName" />
-```
-
-**The `id` parameter**:
-
-- For simple components: Use the component's export name (e.g., `"Button"`)
-- For compound components: Use the base namespace name (e.g., `"Menu"` not
-  `"Menu.Root"`)
-- The ID is case-sensitive and must match exactly
-- If the component isn't found, PropsTable will display an error message in the
-  docs
-
-**Requirements**:
-
-- Component must have a TypeScript interface exported in the types file
-- Props interface should follow naming convention: `{ComponentName}Props`
-
-### Manual Props Tables (if needed)
-
-```markdown
-## Props
-
-| Prop         | Type                              | Default   | Description    |
-| ------------ | --------------------------------- | --------- | -------------- |
-| `variant`    | `"solid" \| "outline" \| "ghost"` | `"solid"` | Visual variant |
-| `size`       | `"sm" \| "md" \| "lg"`            | `"md"`    | Component size |
-| `isDisabled` | `boolean`                         | `false`   | Disabled state |
-```
-
-## Accessibility Documentation
-
-### Required Sections
-
-```markdown
-## Accessibility
-
-This component is built with React Aria and follows WCAG 2.1 AA guidelines.
-
-### Keyboard Navigation
-
-| Key          | Action                       |
-| ------------ | ---------------------------- |
-| `Tab`        | Move focus to/from component |
-| `Space`      | Activate when focused        |
-| `Enter`      | Submit/Activate              |
-| `Arrow Keys` | Navigate options             |
-| `Escape`     | Close/Cancel operation       |
-
-### Screen Reader Support
-
-- Properly announces component role
-- Provides state announcements
-- Includes descriptive labels
-- Supports live regions for updates
-
-### ARIA Attributes
-
-- `role="button"` - Identifies interactive element
-- `aria-pressed` - Indicates toggle state
-- `aria-disabled` - Announces disabled state
-- `aria-label` - Provides accessible name
-```
-
-## Common Patterns from Nimbus Components
-
-### Frontmatter Variations
-
-#### Simple Component (Badge)
+View files carry only the tab metadata. Do **not** repeat `id`, `menu`, `tags`,
+etc. — they are inherited from the main file.
 
 ```yaml
 ---
-id: Components-Badge
-title: Badge
-description:
-  Briefly highlights or categorizes associated UI elements with concise visual
-  cues for status or metadata.
-order: 999
-menu:
-  - Components
-  - Data Display
-  - Badge
-tags:
-  - component
+tab-title: Guidelines # "Guidelines" | "Implementation" | "Accessibility"
+tab-order: 2 # Guidelines=2, Implementation=3, Accessibility=4
 ---
 ```
 
-#### Complex Component (Dialog)
+The body of every file starts with `## ` content — the `# Title` is rendered
+from the main file's frontmatter, so never add a top-level `# Component Name`
+heading.
 
-```yaml
----
-id: Components-Dialog
-title: Dialog
-description:
-  A foundational dialog component for overlays that require user attention and
-  interaction.
-lifecycleState: Stable
-order: 999
-menu:
-  - Components
-  - Feedback
-  - Dialog
-tags:
-  - component
-  - overlay
-  - dialog
-  - interactive
-figmaLink: >-
-  https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?node-id=1695-45519&m
----
+## Per-file guidance
+
+### Overview (`{component}.mdx`)
+
+The designer-facing landing tab. Sections:
+
+- **Overview** — design purpose, primary use cases, key visual characteristics.
+- **Resources** (recommended) — Figma library, React Aria / ARIA pattern links.
+- **Variables** (or **Examples**) — visual variants demonstrated with `jsx live`
+  blocks. Show all values of one axis (sizes, variants, colors) in a **single**
+  block for easy comparison.
+- **Specs** (optional) — `<PropsTable id="ComponentName" />` when a props
+  summary belongs on the overview.
+
+Use `jsx live` blocks (not `jsx live-dev`). Keep it design-focused, not
+implementation detail. Real examples: `badge/badge.mdx`, `button/button.mdx`,
+`text-input/text-input.mdx`.
+
+### Guidelines (`{component}.guidelines.mdx`)
+
+Design-decision guidance: how a designer or product owner should reason about
+using the component.
+
+- **Best practices** — concrete do's (content length, visual hierarchy,
+  localization, error handling).
+- **When to use / When not to use** — GitHub-style alert blocks (`> [!TIP]` /
+  `> [!CAUTION]`), each with a short bulleted list and, where useful, a
+  `jsx live` comparison.
+- **Component-specific guidance** — e.g. button labels and icon placement, input
+  label-vs-placeholder, select width rules.
+
+Real examples: `button/button.guidelines.mdx`, `select/select.guidelines.mdx`,
+`text/text.guidelines.mdx`.
+
+### Implementation (`{component}.dev.mdx`)
+
+The source of truth for the component's API, consumed by the engineering-docs
+validation system and validated against the actual TypeScript types. Audience:
+**consumers** integrating the component.
+
+- **Getting started** — import + basic usage.
+- **Usage examples** — sizes, variants, colors, icons, states, controlled vs.
+  uncontrolled, composition. Prefer `jsx live-dev` blocks here.
+- **API reference** — `<PropsTable id="ComponentName" />` (base namespace for
+  compound components, e.g. `id="Menu"`, not `"Menu.Root"`).
+- **Integration patterns** — React Aria, hooks, context, forms.
+- **Testing** — copy-paste consumer tests via the
+  `{{docs-tests: {component}.docs.spec.tsx}}` build token (see
+  [testing-strategy.md](./testing-strategy.md)).
+- **Accessibility (implementation)** — ARIA wiring specifics a consumer must
+  preserve. User-facing a11y belongs in the `.a11y.mdx` tab.
+
+Real examples: `text/text.dev.mdx`, `button/button.dev.mdx`,
+`accordion/accordion.dev.mdx`.
+
+### Accessibility (`{component}.a11y.mdx`)
+
+WCAG 2.1 AA conformance and assistive-technology behavior, written for all
+roles.
+
+- **Accessibility standards** — the WCAG criteria met (contrast ratios, semantic
+  structure, focus management, no unexpected context changes).
+- **Keyboard navigation** — a key/action table for interactive components.
+- **Screen reader support** — role, state, and live-region announcements.
+- **ARIA attributes** — roles/attributes used and why (for custom
+  implementations).
+
+Use `jsx live` for any examples. Real examples: `button/button.a11y.mdx`,
+`select/select.a11y.mdx`, `text/text.a11y.mdx`.
+
+## Shared authoring rules
+
+### `jsx live` blocks
+
+Interactive examples render live in the docs site.
+
+- `jsx live` — overview, guidelines, and a11y tabs.
+- `jsx live-dev` — the implementation tab (`.dev.mdx`).
+- Every block defines an `App` component.
+- All Nimbus components (`Button`, `Stack`, `Icons`, …) and `useState` are
+  available globally — **no imports**.
+- Use plain ` ```jsx ` / ` ```tsx ` (no `live`) for non-interactive snippets.
+
+```jsx live
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Badge size="sm">Small</Badge>
+    <Badge size="md">Medium</Badge>
+    <Badge size="lg">Large</Badge>
+  </Stack>
+);
 ```
 
-#### Component with Multiple States (Text Input)
+MDX files are documentation. Storybook content belongs in `.stories.tsx` (see
+[Stories](./stories.md)); consumer test examples belong in `.docs.spec.tsx` (see
+[Testing Strategy](./testing-strategy.md)).
 
-```yaml
----
-id: Components-TextInput
-title: TextInput
-description: An input component that takes in a text as input
-order: 999
-menu:
-  - Components
-  - Inputs
-  - TextInput
-tags:
-  - component
----
-```
+### PropsTable
 
-### Content Structure Patterns
+`<PropsTable id="ComponentName" />` auto-generates a props table from the
+component's TypeScript interface.
 
-#### Variables Section (Common Pattern)
+- `id` is case-sensitive and must match the export name; for compound components
+  use the base namespace (`"Menu"`, not `"Menu.Root"`).
+- Requires an exported `{ComponentName}Props` interface (see
+  [Types](./types.md)).
 
-This section demonstrates component variants and options. Example structure:
+### Available MDX features
 
-```markdown
-## Variables
+- **Globals without imports** — `<PropsTable />`, all Nimbus components,
+  `useState`.
+- **GitHub-style alerts** — `> [!TIP]`, `> [!CAUTION]`, `> [!WARNING]`,
+  `> [!NOTE]`; end a line with `\` for a line break inside an alert.
+- **Markdown tables** — keyboard maps, specs, comparisons.
+- **Frontmatter** — YAML; use `>-` for long single-line values such as Figma
+  URLs.
 
-Get familiar with the features.
+## Validation checklist
 
-### Size
+### Files & tabs
 
-#### Medium
+- [ ] `{component}.mdx` exists with **full** frontmatter (id, title, exportName,
+      description, order, menu, tags).
+- [ ] `{component}.dev.mdx` exists.
+- [ ] `{component}.guidelines.mdx` present (or intentionally omitted per
+      [Which files are required](#which-files-are-required)).
+- [ ] `{component}.a11y.mdx` present (or intentionally omitted).
+- [ ] View files carry only `tab-title` + `tab-order`; orders are Guidelines=2,
+      Implementation=3, Accessibility=4.
+- [ ] No top-level `# Title` heading in any body (comes from frontmatter).
 
-This is the default size for text inputs.
+### Overview (`.mdx`)
 
-[jsx live code block here showing medium size]
+- [ ] Overview section explaining design purpose.
+- [ ] Variables/Examples with `jsx live` blocks; sizes and variants each shown
+      in a **single** block.
+- [ ] Resources links where applicable (Figma, React Aria, ARIA pattern).
 
-#### Small
+### Guidelines (`.guidelines.mdx`)
 
-Available for the times a more condensed text input is needed.
+- [ ] Best practices and when-to-use / when-not-to-use guidance.
+- [ ] Design-focused, not implementation detail.
 
-[jsx live code block here showing small size]
-```
+### Implementation (`.dev.mdx`)
 
-See actual MDX files in the codebase (e.g., `text-input.mdx`, `button.mdx`) for
-complete working examples.
+- [ ] Getting-started import + basic usage.
+- [ ] `<PropsTable id="ComponentName" />` API reference.
+- [ ] `jsx live-dev` examples for key patterns and states.
+- [ ] Integration and testing guidance where applicable.
 
-#### API Documentation Section
+### Accessibility (`.a11y.mdx`)
 
-```markdown
-## API
+- [ ] WCAG conformance statement.
+- [ ] Keyboard navigation table (interactive components).
+- [ ] Screen reader / ARIA notes.
 
-The Dialog component is structured as a compound component with multiple parts
-that work together:
+### Quality
 
-### Dialog.Root
-
-The root component that provides context and state management for the dialog.
-
-**Props:**
-
-- `isOpen?: boolean` - Controls the open state (controlled mode)
-- `onOpenChange?: (isOpen: boolean) => void` - Callback when dialog state
-  changes
-```
-
-## Available MDX Features
-
-### Components Available Without Imports
-
-These components work automatically in MDX files without import statements:
-
-- `<PropsTable id="ComponentName" />` - Auto-generated props table from
-  TypeScript definitions
-- All Nimbus components (Button, Stack, Icons, etc.) - Available globally
-- Standard markdown formatting - Links, lists, tables, bold, italic, code
-- Markdown tables - For keyboard navigation, specs, and data presentation
-
-### Code Blocks
-
-- `jsx live` - **Required for all interactive examples** - Renders live React
-  components in the browser
-- Standard code blocks - For non-interactive code examples with syntax
-  highlighting
-
-### GitHub-Style Features
-
-Supported in the Nimbus documentation site:
-
-- Alert blocks: `> [!TIP]`, `> [!CAUTION]`, `> [!WARNING]`, `> [!NOTE]`
-- Task lists: `- [ ]` and `- [x]`
-- Line breaks in alerts: Use `\` at end of line
-
-### Markdown Extensions
-
-- **Frontmatter**: YAML metadata at the top of files
-- **Line breaks**: Use `\` for explicit line breaks in alerts
-- **Multi-line strings**: Use `>-` in frontmatter for long URLs
+- [ ] All `jsx live`/`jsx live-dev` blocks define `App` and run as written.
+- [ ] No imports in live blocks; no Storybook-only constructs.
+- [ ] Prose follows the [writing style](../writing-style.md) (correct overlay).
 
 ## Related Guidelines
 
-- [Stories](./stories.md) - Storybook stories for testing
-- [Types](./types.md) - Props definitions for PropsTable
-- [Main Component](./main-component.md) - Component being documented
-
-## Validation Checklist
-
-### Required Files
-
-- [ ] **Designer documentation** (`{component-name}.mdx`) exists
-- [ ] **Engineering documentation** (`{component-name}.dev.mdx`) exists
-
-### Required Elements
-
-- [ ] MDX files exist with `.mdx` extension
-- [ ] **Required frontmatter fields**: id, title, exportName, description,
-      order, menu, tags
-- [ ] Unique `id` field following `Components-{ComponentName}` pattern
-- [ ] Proper `menu` hierarchy with category placement
-- [ ] Tags array including `component` and relevant keywords
-- [ ] No duplicate `# Title` heading in body (title comes from frontmatter)
-- [ ] Overview section explaining component purpose
-
-### Content Requirements
-
-- [ ] **Interactive examples using `jsx live` blocks only**
-- [ ] **NO Storybook-specific imports**
-- [ ] Resources section with relevant external links
-- [ ] Variables/Examples section showing component variations
-- [ ] **Sizes demonstrated in a single code block** (not separate blocks per
-      size)
-- [ ] **Variants demonstrated in a single code block** (not separate blocks per
-      variant)
-- [ ] Code examples with proper formatting and indentation
-- [ ] Realistic, production-ready code examples
-
-### Documentation Standards
-
-- [ ] Props documentation using `<PropsTable id="ComponentName" />`
-- [ ] Guidelines section (optional but recommended)
-- [ ] Accessibility section with WCAG compliance details
-- [ ] Keyboard navigation table when applicable
-- [ ] Screen reader support information
-- [ ] External resource links (Figma, React Aria, ARIA patterns)
-
-### Engineering Documentation (`.dev.mdx`) Requirements
-
-- [ ] File exists with `.dev.mdx` extension
-- [ ] **Implementation overview** section with design decisions
-- [ ] **Complete props documentation** with type information and examples
-- [ ] **Advanced usage examples** for complex patterns
-- [ ] **TypeScript types** documented with descriptions
-- [ ] **Integration patterns** showing React Aria, hooks, or context usage
-- [ ] **Testing guidance** for component behavior
-- [ ] **Styling details** explaining recipes and slots
-- [ ] **Accessibility implementation notes** with ARIA specifics
-
-### Quality Checks
-
-- [ ] All code examples are functional and realistic
-- [ ] Proper component hierarchy demonstrated
-- [ ] Accessibility features properly documented
-- [ ] Consistent formatting throughout file
-- [ ] No references to non-existent components or patterns
+- [Stories](./stories.md) — Storybook stories for testing
+- [Testing Strategy](./testing-strategy.md) — `.docs.spec.tsx` consumer tests
+- [Types](./types.md) — props definitions for PropsTable
+- [Writing Style](../writing-style.md) — prose voice and per-audience overlays
+- [Main Component](./main-component.md) — the component being documented
 
 ---
 

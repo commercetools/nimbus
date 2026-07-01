@@ -44,7 +44,7 @@ Before implementation, you MUST research in parallel:
    ```bash
    ls packages/nimbus/src/components/*/*.recipe.ts
    cat packages/nimbus/src/components/button/button.recipe.ts  # Standard
-   cat packages/nimbus/src/components/menu/menu.recipe.ts      # Slot
+   cat packages/nimbus/src/components/switch/switch.recipe.ts  # Slot
    ```
 
 4. **Query** Chakra UI v3 docs via context7 for recipe mechanics:
@@ -79,8 +79,7 @@ You MUST create files in this structure:
 
 ```
 packages/nimbus/src/components/{component}/
-├── recipes/
-│   └── {component}.recipe.ts          # REQUIRED
+├── {component}.recipe.ts              # REQUIRED (flat file — NOT a recipes/ subfolder)
 ├── {component}.types.ts               # MUST update with recipe types
 └── {component}.slots.tsx              # REQUIRED for slot recipes
 ```
@@ -160,7 +159,7 @@ You MUST update the component's types file:
 
 ```typescript
 import { type RecipeVariantProps } from '@chakra-ui/react/styled-system'
-import { type {componentName}Recipe } from './recipes/{component}.recipe'
+import { type {componentName}Recipe } from './{component}.recipe'
 
 /**
  * Recipe variant props for {ComponentName}.
@@ -177,44 +176,51 @@ export type {ComponentName}Props = {ComponentName}RecipeProps & {
 
 ### Slots File (Slot Recipes Only)
 
-You MUST create a slots file for slot recipes:
+A `defineSlotRecipe` component also needs a `{component}.slots.tsx` file, but
+**that file is owned by the `writing-slots` skill — do not author it here.** One
+fact to keep consistent: the slots file resolves the recipe by its registered
+`nimbus`-prefixed **key**, it does NOT import the recipe object:
 
 ```typescript
-import { createSlotRecipeContext } from '@chakra-ui/react/styled-system'
-import { {componentName}Recipe } from './recipes/{component}.recipe'
-
+// in {component}.slots.tsx — see the writing-slots skill / slots.md
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: {componentName}Recipe,
-})
-
-export const {ComponentName}SlotProvider = withProvider(/* implementation */)
-export const use{ComponentName}Styles = withContext
+  key: "nimbus{ComponentName}",
+});
 ```
+
+Canonical source: `docs/file-type-guidelines/slots.md`.
 
 ### Registration (CRITICAL)
 
-You MUST register the recipe in `packages/nimbus/src/theme/recipes.ts`:
+**Canonical source:** `docs/file-type-guidelines/recipes.md` → "Recipe
+Registration is REQUIRED". Read it before registering — the rules below are a
+summary and that doc is authoritative.
 
-**For standard recipes:**
+There are **two separate registries** (there is no single combined `theme/recipes`
+module), and the registration **key MUST be `nimbus`-prefixed** (`nimbusButton`,
+`nimbusSlider`). A bare or non-identifier key makes `build-theme-typings` fail
+silently.
+
+**For standard recipes (`defineRecipe`):**
 
 ```typescript
-export { {componentName}Recipe } from '../components/{component}/recipes/{component}.recipe'
+// packages/nimbus/src/theme/recipes/index.ts
+import { {componentName}Recipe } from '@/components/{component}/{component}.recipe';
 
-// Add to recipes object:
-recipes: {
-  '{component-name}': {componentName}Recipe,
-}
+export const recipes = {
+  nimbus{ComponentName}: {componentName}Recipe, // ✅ nimbus-prefixed key
+};
 ```
 
-**For slot recipes:**
+**For slot recipes (`defineSlotRecipe`):**
 
 ```typescript
-export { {componentName}Recipe } from '../components/{component}/recipes/{component}.recipe'
+// packages/nimbus/src/theme/slot-recipes/index.ts
+import { {componentName}SlotRecipe } from '@/components/{component}/{component}.recipe';
 
-// Add to slotRecipes object:
-slotRecipes: {
-  '{component-name}': {componentName}Recipe,
-}
+export const slotRecipes = {
+  nimbus{ComponentName}: {componentName}SlotRecipe, // ✅ nimbus-prefixed key
+};
 ```
 
 ### Verification
@@ -222,8 +228,13 @@ slotRecipes: {
 You MUST run these commands after creation:
 
 ```bash
-pnpm --filter @commercetools/nimbus typecheck
+# build-theme-typings MUST run before typecheck. A newly registered recipe's
+# variants don't exist in the generated theme typings yet, so a typecheck-first
+# run reports a cascade of FALSE errors that look like real component bugs (e.g.
+# SlotRecipeProps<"nimbusX"> resolving to nothing). Generate the types first,
+# THEN typecheck against them. Do not reorder these.
 pnpm --filter @commercetools/nimbus build-theme-typings
+pnpm --filter @commercetools/nimbus typecheck
 pnpm --filter @commercetools/nimbus build
 ```
 
@@ -267,8 +278,9 @@ You MUST validate against these requirements:
 
 #### File Structure
 
-- [ ] Recipe file location MUST be:
-      `packages/nimbus/src/components/{component}/recipes/{component}.recipe.ts`
+- [ ] Recipe file location MUST be the flat path
+      `packages/nimbus/src/components/{component}/{component}.recipe.ts`
+      (NOT a `recipes/` subfolder)
 - [ ] Import MUST be from `@chakra-ui/react/styled-system` (never the barrel `@chakra-ui/react`)
 - [ ] Export name MUST follow pattern: `{componentName}Recipe`
 
@@ -296,8 +308,10 @@ You MUST validate against these requirements:
 
 #### Registration (CRITICAL)
 
-- [ ] Recipe MUST be exported from `packages/nimbus/src/theme/recipes.ts`
-- [ ] Recipe MUST be in theme's `recipes` or `slotRecipes` object
+- [ ] Recipe MUST be registered in the correct registry: standard recipes in
+      `theme/recipes/index.ts` (`recipes` object), slot recipes in
+      `theme/slot-recipes/index.ts` (`slotRecipes` object)
+- [ ] Registration key MUST be `nimbus`-prefixed (e.g. `nimbusButton`)
 - [ ] Generated types MUST exist in `styled-system/recipes/`
 
 #### Type Integration
@@ -363,9 +377,9 @@ If verification fails:
 
 You SHOULD reference these recipes:
 
-- **Standard**: `packages/nimbus/src/components/button/recipes/button.recipe.ts`
-- **Slot**: `packages/nimbus/src/components/input/recipes/input.recipe.ts`
-- **Complex**: `packages/nimbus/src/components/badge/recipes/badge.recipe.ts`
+- **Standard**: `packages/nimbus/src/components/button/button.recipe.ts`
+- **Slot**: `packages/nimbus/src/components/switch/switch.recipe.ts`
+- **Slot (compound)**: `packages/nimbus/src/components/accordion/accordion.recipe.ts`
 
 ## RFC 2119 Key Words
 

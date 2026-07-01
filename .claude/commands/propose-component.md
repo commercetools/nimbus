@@ -21,6 +21,11 @@ flowchart LR
 
 ## Step 1: Brainstorm Component Design
 
+**Pre-check**: First confirm this should be a **component** at all, not a layout
+pattern or composition of existing components — see
+[`docs/file-type-guidelines/component-vs-pattern.md`](../../docs/file-type-guidelines/component-vs-pattern.md).
+If it's a pattern, stop here and document it instead.
+
 **Action**: Invoke `/brainstorm` with the component request: "$ARGUMENTS"
 
 **Outcome**: Obtain a detailed design document covering:
@@ -85,19 +90,29 @@ flowchart LR
 
 ## Step 3: Create OpenSpec Proposal
 
-**Action**: Invoke `/openspec:proposal` with the validated design
+**Action**: Invoke `/opsx:propose` with the validated design
 
 **Required Proposal Structure**:
 
 The task list MUST include these file creation steps in this order:
 
-1. **Scaffold component structure** - You MUST create shell files:
+1. **Scaffold component structure** - You MUST create shell files. Match the
+   real file set of an existing component (e.g. `switch/`, `progress-bar/`); see
+   `docs/component-guidelines.md` "Component File Structure Reference" for the
+   canonical list. Core code files:
    - `component.tsx` (empty, with exports)
    - `component.types.ts` (prop/slot type definitions)
-   - `component.recipe.ts` (Chakra UI v3 recipe)
-   - `component.slots.ts` (slot definitions, if applicable)
+   - `component.recipe.ts` (Chakra UI v3 recipe; flat file, not a `recipes/`
+     dir)
+   - `component.slots.tsx` (slot components — note `.tsx`, not `.ts`)
    - `component.stories.tsx` (story file with play functions)
    - `index.ts` (barrel export)
+
+   Documentation/test files every shipped component also includes:
+   - `component.mdx` (designer docs) and `component.dev.mdx` (engineering docs)
+   - `component.guidelines.mdx` and `component.a11y.mdx`
+   - `component.docs.spec.tsx` (consumer test examples) and
+     `component.figma.tsx` (Figma Code Connect)
 
 2. **Create failing Storybook tests** - You MUST write play functions that test:
    - Core functionality
@@ -109,12 +124,11 @@ The task list MUST include these file creation steps in this order:
 3. **Implementation steps** - You MUST execute in dependency order:
    - Implement component types in `component.types.ts`
    - Implement recipe in `component.recipe.ts`
-   - Implement slots in `component.slots.ts` (if applicable)
+   - Implement slots in `component.slots.tsx` (if applicable)
    - Implement component logic in `component.tsx`
-   - Create/update documentation using the `/writing-developer-documentation`
-     skill
-   - Create/update design guidelines using the `/writing-designer-documentation`
-     skill
+   - Create/update all docs-site tabs using the
+     `/writing-consumer-documentation` skill (Overview, Guidelines,
+     Implementation, Accessibility)
    - Ensure Storybook tests pass
    - Run linting and TypeScript checks (violations block shipping)
    - Run the full test suite
@@ -143,8 +157,8 @@ done and prevent ambiguous task definitions.
       component, index)
 - [ ] MUST follow the order specified in Step 3
 - [ ] MUST include play functions for all component behaviors in story file
-- [ ] SHOULD use appropriate skills (developer-documentation,
-      designer-documentation) for documentation tasks
+- [ ] SHOULD use the `writing-consumer-documentation` skill for documentation
+      tasks (all docs-site tabs)
 - [ ] MUST explicitly check standards compliance in validation steps
 
 **Design-to-Proposal Alignment**:
@@ -177,7 +191,7 @@ Example:
 ```
 ✅ Component proposal created: Button variant component
 
-Proposal path: ./openspec/proposals/YYYY-MM-DD-button-variant.md
+Proposal path: ./openspec/changes/{change-name}/proposal.md
 
 Validation Results:
 - ✅ Architecture aligns with Nimbus standards
@@ -185,5 +199,5 @@ Validation Results:
 - ✅ Tests defined and acceptance criteria clear
 - ✅ Documentation strategy included
 
-Next steps: Review proposal and begin implementation using `/writing-developer-documentation`, `/writing-designer-documentation`, `/writing-stories`, and `/review` skills.
+Next steps: Review proposal and begin implementation using `/writing-consumer-documentation`, `/writing-stories`, and `/review` skills.
 ```

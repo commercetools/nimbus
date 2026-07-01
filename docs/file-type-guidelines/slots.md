@@ -51,7 +51,7 @@ types that reference peer dependency internals.
 **The type name MUST equal the component name plus "Props" suffix:**
 
 ```typescript
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/type-utils";
 
 // ✅ CORRECT - Multi-slot component
 export type MenuTriggerSlotProps = HTMLChakraProps<"button">;
@@ -87,7 +87,7 @@ annotations for slot components created with Chakra UI's `withProvider` and
 **Type Definition:**
 
 ```typescript
-// packages/nimbus/src/components/utils/slot-types.ts
+// packages/nimbus/src/type-utils/slot-types.ts (import via the `@/type-utils` barrel)
 export type SlotComponent<
   TElement = Element,
   TProps = Record<string, unknown>,
@@ -110,7 +110,7 @@ import {
   createRecipeContext,
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/type-utils";
 
 const { withContext } = createRecipeContext({
   key: "button",
@@ -132,7 +132,7 @@ import {
   createSlotRecipeContext,
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/type-utils";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "nimbusMenu",
@@ -171,7 +171,7 @@ export const MenuItemSlot: SlotComponent<HTMLDivElement, MenuItemSlotProps> =
 - **`withContext`**: Used for child slots, consumes recipe context
 
 ```typescript
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/type-utils";
 
 // Root provides context
 export const ComponentRootSlot: SlotComponent<HTMLDivElement, RootProps> =
@@ -306,7 +306,7 @@ import {
   createRecipeContext,
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/type-utils";
 
 const { withContext } = createRecipeContext({
   key: "button",
@@ -327,7 +327,7 @@ export const ButtonRoot: SlotComponent<HTMLButtonElement, ButtonRootProps> =
 ## Validation Checklist
 
 - [ ] Slot file exists with `.tsx` extension
-- [ ] **`SlotComponent` utility type imported** from `../utils/slot-types`
+- [ ] **`SlotComponent` utility type imported** from `@/type-utils`
 - [ ] **All slot component exports have explicit return type annotations** using
       `SlotComponent<TElement, TProps>`
 - [ ] **Slot components exported** (types can be in slots file or types file)

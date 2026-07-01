@@ -86,7 +86,7 @@ graph TD
 **Pattern:**
 
 ```typescript
-const { withContext } = createRecipeContext({ recipe });
+const { withContext } = createRecipeContext({ key: "nimbusComponent" });
 export const ComponentRoot = withContext("element", "root");
 ```
 
@@ -103,7 +103,9 @@ export const ComponentRoot = withContext("element", "root");
 **Pattern:**
 
 ```typescript
-const { withProvider, withContext } = createSlotRecipeContext({ recipe });
+const { withProvider, withContext } = createSlotRecipeContext({
+  key: "nimbusComponent",
+});
 export const ComponentRootSlot = withProvider("element", "root");
 export const ComponentPartSlot = withContext("element", "part");
 ```
@@ -147,7 +149,7 @@ export const ButtonRoot = withContext<HTMLButtonElement, ButtonRootProps>(
 **ALL slot component exports MUST include explicit return type annotation:**
 
 ```typescript
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/type-utils";
 
 export const ComponentSlot: SlotComponent<TElement, TProps> = withContext<
   TElement,
@@ -168,7 +170,7 @@ export const ComponentSlot: SlotComponent<TElement, TProps> = withContext<
 ### Type Definition
 
 ```typescript
-// packages/nimbus/src/components/utils/slot-types.ts
+// packages/nimbus/src/type-utils/slot-types.ts (import via the `@/type-utils` barrel)
 export type SlotComponent<
   TElement = Element,
   TProps = Record<string, unknown>,
@@ -189,11 +191,12 @@ import {
   createRecipeContext,
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
-import { buttonRecipe } from "./button.recipe";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/type-utils";
 
+// The recipe is resolved by its registered `nimbus`-prefixed theme key
+// (from theme/recipes/index.ts). Do NOT import the recipe object.
 const { withContext } = createRecipeContext({
-  recipe: buttonRecipe,
+  key: "nimbusButton",
 });
 
 // Export both type and component with explicit return type annotation
@@ -212,11 +215,12 @@ import {
   createSlotRecipeContext,
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
-import { menuSlotRecipe } from "./menu.recipe";
-import type { SlotComponent } from "../utils/slot-types";
+import type { SlotComponent } from "@/type-utils";
 
+// Resolved by the registered `nimbus`-prefixed slot-recipe key
+// (from theme/slot-recipes/index.ts). Do NOT import the recipe object.
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: menuSlotRecipe,
+  key: "nimbusMenu",
 });
 
 // Root slot - provides context
@@ -414,8 +418,9 @@ import {
   createRecipeContext, // or createSlotRecipeContext
   type HTMLChakraProps,
 } from "@chakra-ui/react/styled-system";
-import { componentRecipe } from "./component.recipe"; // Import recipe
-import type { SlotComponent } from "../utils/slot-types"; // MUST import
+import type { SlotComponent } from "@/type-utils"; // MUST import
+// NOTE: do NOT import the recipe object — the context resolves it by the
+// `nimbus`-prefixed key under which the recipe is registered in the theme.
 ```
 
 ### Step 3: Create Context
@@ -424,7 +429,7 @@ import type { SlotComponent } from "../utils/slot-types"; // MUST import
 
 ```typescript
 const { withContext } = createRecipeContext({
-  recipe: componentRecipe,
+  key: "nimbusComponent",
 });
 ```
 
@@ -432,7 +437,7 @@ const { withContext } = createRecipeContext({
 
 ```typescript
 const { withProvider, withContext } = createSlotRecipeContext({
-  recipe: componentSlotRecipe,
+  key: "nimbusComponent",
 });
 ```
 
@@ -498,8 +503,8 @@ You MUST validate against these requirements:
 #### File Structure
 
 - [ ] Slots file exists with `.tsx` extension
-- [ ] `SlotComponent` utility type imported from `../utils/slot-types`
-- [ ] Recipe imported from recipe file
+- [ ] `SlotComponent` utility type imported from `@/type-utils`
+- [ ] Recipe resolved by its registered `nimbus`-prefixed key (NOT imported)
 - [ ] Context created with appropriate function
 
 #### Exports (CRITICAL)
@@ -532,7 +537,7 @@ You MUST validate against these requirements:
 
 #### Integration
 
-- [ ] Recipe imported correctly
+- [ ] Recipe key matches the registered `nimbus`-prefixed theme key
 - [ ] Slot names match recipe slots array
 - [ ] Types compatible with component usage
 - [ ] asChild pattern supported where needed

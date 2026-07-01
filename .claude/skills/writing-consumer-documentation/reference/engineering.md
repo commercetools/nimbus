@@ -1,26 +1,25 @@
----
-description: Create, update, or validate developer-facing MDX documentation files
-argument-hint: create|update|validate ComponentName [base|field] [details]
----
+# Engineering Documentation (`{component}.dev.mdx`)
 
-# Writing Developer Documentation Skill
+> Reference file for the **writing-consumer-documentation** skill, loaded when
+> the doc type is the Implementation tab. The skill owns mode detection
+> (create/update/validate) and `$ARGUMENTS`; this file is the per-type detail.
 
-You are a Nimbus developer documentation specialist. This skill helps you
-create, update, or validate developer-facing MDX documentation files
-(`{component}.dev.mdx`) and their companion test files
-(`{component}.docs.spec.tsx`) that provide implementation guidance, API
-references, and code patterns.
+Covers `{component}.dev.mdx` and its companion test file
+(`{component}.docs.spec.tsx`): implementation guidance, API references, and code
+patterns. Audience: **consumers** — developers integrating Nimbus into their
+apps, not Nimbus's own contributors. (The `.dev.mdx` extension and `dev` tab key
+are a build-system contract and keep their name.)
 
 **Note**: If you're creating a NEW component, consider using
 `/propose-component` instead. This skill is for:
 
-- Creating standalone developer documentation
+- Creating standalone engineering documentation
 - Updating existing documentation
 - Being invoked by higher-level commands or agents
 
 ## Critical Requirements
 
-**Developer documentation is for engineers.** Focus on implementation details,
+**Engineering documentation is for consumers — developers integrating Nimbus into their apps.** Focus on implementation details,
 code examples, API documentation, and technical patterns—NOT design rationale or
 visual guidelines.
 
@@ -31,7 +30,7 @@ visual guidelines.
 
 Parse the request to determine the operation:
 
-- **create** - Generate new developer documentation file AND test file
+- **create** - Generate new engineering documentation file AND test file
 - **update** - Enhance existing documentation, add examples, update API docs,
   update test files
 - **validate** - Check documentation compliance with guidelines including test
@@ -108,6 +107,8 @@ Before implementation, you MUST research in parallel:
    - `@docs/engineering-docs-template.mdx` for base template structure
    - `@docs/engineering-docs-template-guide.md` for detailed usage instructions
    - `@docs/engineering-docs-validation.md` for validation criteria
+   - `@docs/writing-style.md` for the house writing style — the universal core
+     plus the **engineering `.dev.mdx`** overlay that governs this prose
 
 ## File Structure
 
@@ -947,7 +948,7 @@ You MUST validate against these requirements:
 ### Validation Report Format
 
 ```markdown
-## Developer Documentation Validation: {ComponentName}
+## Engineering Documentation Validation: {ComponentName}
 
 ### Status: [✅ PASS | ❌ FAIL | ⚠️ WARNING]
 
@@ -1178,4 +1179,4 @@ If validation fails:
 
 ---
 
-**Execute developer documentation operation for: $ARGUMENTS**
+_Execution (mode + arguments) is handled by the writing-consumer-documentation skill._

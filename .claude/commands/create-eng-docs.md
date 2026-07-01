@@ -4,4 +4,6 @@ argument-hint:
   ComponentName [base|field] (e.g., DateRangePicker base, TextInputField field)
 ---
 
-Invoke the `writing-developer-documentation` skill with $ARGUMENTS
+Invoke the `writing-consumer-documentation` skill with `dev $ARGUMENTS` — the
+Implementation tab (`{component}.dev.mdx`) and its companion
+`{component}.docs.spec.tsx`.

@@ -1,5 +1,5 @@
 ---
-name: brainstorming
+name: brainstorm
 description:
   "You MUST use this before any creative work - creating features, building
   components, adding functionality, or modifying behavior. Explores user intent,
@@ -73,8 +73,7 @@ For complete component creation with OpenSpec integration, use
 
 - You have a validated design/plan document
 - User can choose their next step:
-  - Create an OpenSpec proposal via `/openspec:proposal` for formal
-    specification
+  - Create an OpenSpec proposal via `/opsx:propose` for formal specification
   - Use the plan for implementation planning
   - Continue refining the design if needed
   - Save the plan for later reference
@@ -98,5 +97,5 @@ For complete component creation with OpenSpec integration, use
   expected, not a failure.
 
 - **Focus on patterns**: You MUST ensure designs align with established Nimbus
-  patterns and standards (see ./openspec/AGENTS.md for project architecture).
+  patterns and standards (see ./AGENTS.md for project architecture).
   Consistency reduces learning curve for implementers.

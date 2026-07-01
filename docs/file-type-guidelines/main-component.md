@@ -823,8 +823,8 @@ export const Base: Story = {
 - **React Aria Documentation**: https://react-spectrum.adobe.com/react-aria/
 - **WCAG 2.1 Guidelines**: https://www.w3.org/WAI/WCAG21/quickref/
 - **ARIA Authoring Practices**: https://www.w3.org/WAI/ARIA/apg/
-- **Nimbus Accessibility Guide**: See `docs/accessibility-guide.md` (if
-  available)
+- **Nimbus Accessibility**: see the "Accessibility Requirements" section above,
+  and each component's `{component}.a11y.mdx` for component-specific guidance
 
 ## Cross-Component Imports (CRITICAL)
 

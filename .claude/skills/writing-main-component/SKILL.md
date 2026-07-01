@@ -336,8 +336,10 @@ guideline references.
       `{component}.stories.tsx`
 - [ ] **Play functions**: Stories include play functions for interactive
       components
-- [ ] **Recipe registered**: If component has styling, recipe registered in
-      theme: `packages/nimbus/src/theme/recipes.ts`
+- [ ] **Recipe registered**: If component has styling, recipe registered in the
+      correct registry — standard recipes in `theme/recipes/index.ts`, slot
+      recipes in `theme/slot-recipes/index.ts` — under a `nimbus`-prefixed key.
+      See `docs/file-type-guidelines/recipes.md` "Recipe Registration".
 - [ ] **i18n defined**: If component has user-facing text, i18n messages defined
 - [ ] **Build succeeds**: Component builds without errors:
       `pnpm --filter @commercetools/nimbus build`
@@ -728,11 +730,11 @@ export const Component = (props: ComponentProps) => {
 // Step 1: Create component.i18n.ts
 export const messages = {
   closeLabel: {
-    id: 'nimbus.component.closeLabel',
+    id: 'Nimbus.Component.closeLabel',
     defaultMessage: 'Close',
     description: 'Accessibility label for close button',
   },
-});
+};
 
 // Step 2: Update component
 import { useLocalizedStringFormatter } from '@/hooks';
@@ -1472,77 +1474,16 @@ Use this matrix to find the right example component for specific patterns:
 
 ## RFC 2119 Key Words
 
-For clarity in these guidelines, key words have specific meanings per
-[RFC 2119](https://www.ietf.org/rfc/rfc2119.txt):
+Key words follow [RFC 2119](https://www.ietf.org/rfc/rfc2119.txt) and map
+directly to validation severity:
 
-### Requirement Levels
-
-**MUST / REQUIRED / SHALL**
-
-- Indicates an absolute requirement
-- Validation FAILS if not followed
-- Example: "Component MUST forward refs using mergeRefs pattern"
-- Impact: ❌ Blocking issue
-
-**MUST NOT / SHALL NOT**
-
-- Indicates an absolute prohibition
-- Validation FAILS if violated
-- Example: "Component MUST NOT use barrel exports for cross-component imports"
-- Impact: ❌ Blocking issue
-
-**SHOULD / RECOMMENDED**
-
-- Indicates recommended practice
-- Valid reasons may exist not to follow
-- Validation shows ⚠️ WARNING if not followed
-- Example: "DisplayName SHOULD match component name"
-- Impact: ⚠️ Warning (should fix)
-
-**SHOULD NOT / NOT RECOMMENDED**
-
-- Indicates practice should be avoided
-- Valid reasons may exist to do it anyway
-- Validation shows ⚠️ WARNING if violated
-- Example: "Components SHOULD NOT use inline styles"
-- Impact: ⚠️ Warning (should fix)
-
-**MAY / OPTIONAL**
-
-- Indicates truly optional choice
-- No validation impact
-- Example: "Component MAY use context for state management"
-- Impact: No validation impact
-
-### Examples in Context
-
-**MUST Examples:**
-
-- "Component MUST forward refs" → Validation fails if missing
-- "Compound Root MUST be first property" → Validation fails if violated
-- "JSDoc MUST include @see link" → Validation fails if missing
-
-**SHOULD Examples:**
-
-- "DisplayName SHOULD match file name" → Warning if incorrect
-- "Props SHOULD be destructured at entry" → Warning if not followed
-- "i18n messages SHOULD be extracted to separate file" → Warning if inline
-
-**MAY Examples:**
-
-- "Component MAY use context for state" → Optional, no validation
-- "Component MAY implement custom focus management" → Optional choice
-- "Slots MAY be organized in subdirectories" → Optional organization
-
-### Validation Impact
-
-| Keyword    | Validation Impact | Fix Priority    |
-| ---------- | ----------------- | --------------- |
-| MUST       | ❌ FAIL           | P0 - Must fix   |
-| MUST NOT   | ❌ FAIL           | P0 - Must fix   |
-| SHOULD     | ⚠️ WARNING        | P1 - Should fix |
-| SHOULD NOT | ⚠️ WARNING        | P1 - Should fix |
-| MAY        | ✅ No impact      | P2 - Optional   |
+| Keyword                 | Meaning              | Validation | Fix Priority    |
+| ----------------------- | -------------------- | ---------- | --------------- |
+| MUST / REQUIRED / SHALL | Absolute requirement | ❌ FAIL    | P0 - Must fix   |
+| MUST NOT / SHALL NOT    | Absolute prohibition | ❌ FAIL    | P0 - Must fix   |
+| SHOULD / RECOMMENDED    | Recommended          | ⚠️ WARNING | P1 - Should fix |
+| SHOULD NOT              | Discouraged          | ⚠️ WARNING | P1 - Should fix |
+| MAY / OPTIONAL          | Truly optional       | ✅ none    | P2 - Optional   |
 
 ---
 

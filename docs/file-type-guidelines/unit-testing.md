@@ -736,7 +736,7 @@ pnpm test
 pnpm test --project unit
 
 # Run specific test file
-pnpm test button.spec.tsx
+pnpm test merge-refs.spec.ts
 
 # Run tests in watch mode
 pnpm test --watch
@@ -749,10 +749,10 @@ pnpm test --coverage
 
 ```bash
 # Run tests matching pattern
-pnpm test --testNamePattern="Button.*disabled"
+pnpm test --testNamePattern="mergeRefs.*callback"
 
 # Run tests in specific file
-pnpm test src/components/button/button.spec.tsx
+pnpm test packages/nimbus/src/utils/merge-refs.spec.ts
 ```
 
 ## Coverage

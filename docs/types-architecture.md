@@ -205,8 +205,8 @@ export type ComponentProps = Omit<
  */
 
 type ButtonRecipeProps = {
-  size?: RecipeProps<"button">["size"];
-  variant?: RecipeProps<"button">["variant"];
+  size?: RecipeProps<"nimbusButton">["size"];
+  variant?: RecipeProps<"nimbusButton">["variant"];
 } & UnstyledProp;
 
 export type ButtonRootSlotProps = HTMLChakraProps<"button", ButtonRecipeProps>;
@@ -225,7 +225,7 @@ export type ButtonProps = ButtonRootSlotProps & {
  * Component tier: 3 (Compound)
  */
 
-type MenuRecipeProps = SlotRecipeProps<"menu">;
+type MenuRecipeProps = SlotRecipeProps<"nimbusMenu">;
 
 export type MenuRootSlotProps = HTMLChakraProps<"div", MenuRecipeProps>;
 export type MenuTriggerSlotProps = HTMLChakraProps<"button">;

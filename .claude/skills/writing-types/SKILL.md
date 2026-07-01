@@ -79,8 +79,8 @@ Every Nimbus component type follows this layered architecture:
 ```typescript
 // Layer 1: Recipe Props (Styling Variants)
 type ComponentRecipeProps = {
-  size?: RecipeProps<"component">["size"];
-  variant?: RecipeProps<"component">["variant"];
+  size?: RecipeProps<"nimbusComponent">["size"];
+  variant?: RecipeProps<"nimbusComponent">["variant"];
 } & UnstyledProp;
 
 // Layer 2: Slot Props (Chakra Foundation)
@@ -136,12 +136,12 @@ type ButtonRecipeProps = {
    * Size variant of the button
    * @default "md"
    */
-  size?: RecipeProps<"button">["size"];
+  size?: RecipeProps<"nimbusButton">["size"];
   /**
    * Visual style variant of the button
    * @default "solid"
    */
-  variant?: RecipeProps<"button">["variant"];
+  variant?: RecipeProps<"nimbusButton">["variant"];
 } & UnstyledProp;
 
 // ============================================================
@@ -200,7 +200,7 @@ import type {
 // RECIPE PROPS
 // ============================================================
 
-type TextInputRecipeProps = SlotRecipeProps<"textInput">;
+type TextInputRecipeProps = SlotRecipeProps<"nimbusTextInput">;
 
 // ============================================================
 // SLOT PROPS
@@ -274,7 +274,7 @@ import type {
 // RECIPE PROPS
 // ============================================================
 
-type MenuRecipeProps = SlotRecipeProps<"menu">;
+type MenuRecipeProps = SlotRecipeProps<"nimbusMenu">;
 
 // ============================================================
 // SLOT PROPS
@@ -381,12 +381,12 @@ type DataTableRecipeProps = {
    * Density variant controlling row height and padding
    * @default "default"
    */
-  density?: SlotRecipeProps<"dataTable">["density"];
+  density?: SlotRecipeProps<"nimbusDataTable">["density"];
   /**
    * Whether to truncate cell content with ellipsis
    * @default false
    */
-  truncated?: SlotRecipeProps<"dataTable">["truncated"];
+  truncated?: SlotRecipeProps<"nimbusDataTable">["truncated"];
 } & UnstyledProp;
 
 // ============================================================
@@ -686,12 +686,12 @@ type ComponentRecipeProps = {
    * Size variant
    * @default "md"
    */
-  size?: RecipeProps<"component">["size"];
+  size?: RecipeProps<"nimbusComponent">["size"];
   /**
    * Visual style variant
    * @default "solid"
    */
-  variant?: RecipeProps<"component">["variant"];
+  variant?: RecipeProps<"nimbusComponent">["variant"];
 } & UnstyledProp;
 ```
 

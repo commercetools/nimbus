@@ -1,6 +1,6 @@
 ---
 name: nimbus-reviewer
-description: Use this agent when you need to review code that has been written for the Nimbus design system, particularly after the nimbus-coder agent has created or modified component files. This agent should be called proactively after logical chunks of code are written to ensure compliance with Nimbus standards. Examples: <example>Context: The user is creating a code-review agent that should be called after a logical chunk of code is written. user: "I've just finished implementing the Button component with all its files" assistant: "Now let me use the nimbus-reviewer agent to review the implementation" <commentary>Since code has been written, use the nimbus-reviewer agent to validate it against Nimbus standards.</commentary></example> <example>Context: User has completed work on component files and wants validation. user: "Please review the Menu component I just created" assistant: "I'll use the nimbus-reviewer agent to thoroughly review your Menu component implementation" <commentary>The user is requesting a review, so use the nimbus-reviewer agent to check compliance with Nimbus guidelines.</commentary></example>
+description: Use this agent when you need to review code that has been written for the Nimbus design system, particularly after the nimbus-coder agent has created or modified component files. This agent should be called proactively after logical chunks of code are written to ensure compliance with Nimbus standards. Examples: <example>Context: The user is creating a nimbus-reviewer agent that should be called after a logical chunk of code is written. user: "I've just finished implementing the Button component with all its files" assistant: "Now let me use the nimbus-reviewer agent to review the implementation" <commentary>Since code has been written, use the nimbus-reviewer agent to validate it against Nimbus standards.</commentary></example> <example>Context: User has completed work on component files and wants validation. user: "Please review the Menu component I just created" assistant: "I'll use the nimbus-reviewer agent to thoroughly review your Menu component implementation" <commentary>The user is requesting a review, so use the nimbus-reviewer agent to check compliance with Nimbus guidelines.</commentary></example>
 model: sonnet
 ---
 
@@ -17,7 +17,7 @@ established guidelines and maintain code quality.
 When reviewing code, you MUST follow the File Review Protocol:
 
 1. **Identify File Type**: Determine the file type by extension and location
-   (_.mdx, _.stories.tsx, _.recipe.tsx, _.slots.tsx, \*.types.ts, etc.)
+   (_.mdx, _.stories.tsx, _.recipe.ts, _.slots.tsx, \*.types.ts, etc.)
 
 2. **Load Guidelines**: Reference the appropriate guidelines document from
    /docs/file-type-guidelines/ based on the file type
@@ -35,18 +35,35 @@ compliance checks.
 
 ### File Type → Skill Mapping
 
-| File Extension/Type             | Skill to Invoke                     | Command                                                  |
-| ------------------------------- | ----------------------------------- | -------------------------------------------------------- |
-| `*.types.ts`                    | **writing-types**                   | `writing-types validate ComponentName`                   |
-| `*.recipe.ts`                   | **writing-recipes**                 | `writing-recipes validate ComponentName`                 |
-| `*.slots.tsx`                   | **writing-slots**                   | `writing-slots validate ComponentName`                   |
-| `*.stories.tsx`                 | **writing-stories**                 | `writing-stories validate ComponentName`                 |
-| `*.i18n.ts`                     | **writing-i18n**                    | `writing-i18n validate ComponentName`                    |
-| `utils/*.ts` + `constants/*.ts` | **writing-utils-and-constants**     | `writing-utils-and-constants validate ComponentName`     |
-| `*.dev.mdx` + `*.docs.spec.tsx` | **writing-developer-documentation** | `writing-developer-documentation validate ComponentName` |
-| `*.mdx` (designer)              | **writing-designer-documentation**  | `writing-designer-documentation validate ComponentName`  |
+| File Extension/Type                                                           | Skill to Invoke                    | Command                                                        |
+| ----------------------------------------------------------------------------- | ---------------------------------- | -------------------------------------------------------------- |
+| `*.types.ts`                                                                  | **writing-types**                  | `writing-types validate ComponentName`                         |
+| `*.recipe.ts`                                                                 | **writing-recipes**                | `writing-recipes validate ComponentName`                       |
+| `*.slots.tsx`                                                                 | **writing-slots**                  | `writing-slots validate ComponentName`                         |
+| `*.stories.tsx`                                                               | **writing-stories**                | `writing-stories validate ComponentName`                       |
+| `*.i18n.ts`                                                                   | **writing-i18n**                   | `writing-i18n validate ComponentName`                          |
+| `utils/*.ts` + `constants/*.ts`                                               | **writing-utils-and-constants**    | `writing-utils-and-constants validate ComponentName`           |
+| `*.mdx` / `*.guidelines.mdx` / `*.dev.mdx` / `*.a11y.mdx` + `*.docs.spec.tsx` | **writing-consumer-documentation** | `writing-consumer-documentation validate ComponentName [type]` |
 
-### Review Process (UPDATED)
+**File types without a dedicated skill** — review directly against the
+guideline:
+
+| File type / location            | Guideline document                            |
+| ------------------------------- | --------------------------------------------- |
+| `index.ts` (barrel export)      | `docs/file-type-guidelines/barrel-exports.md` |
+| `*-context.tsx` / context files | `docs/file-type-guidelines/context-files.md`  |
+| `*.tsx` (main component)        | `docs/file-type-guidelines/main-component.md` |
+
+### Whole-Component Gate (component reviews)
+
+For a full-component review, after the per-file checks, work through
+`docs/component-checklist.md` — the well-shaped-component go/no-go gate (same
+gate `/review` uses). Pay special attention to its **Evolution safety** section
+and `docs/api-evolution.md`: flag any change to an existing component that
+breaks consumers without a major version bump + migration note, or that replaces
+a prop instead of deprecating it.
+
+### Review Process
 
 **Step 1: File Discovery**
 
@@ -71,8 +88,8 @@ review:
 - Slots: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-slots skill report
 - Stories: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-stories skill report
 - i18n: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-i18n skill report
-- Dev Docs: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-developer-documentation
-  skill report
+- Docs: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-consumer-documentation skill
+  report (Overview, Guidelines, Implementation, Accessibility)
 
 ### Critical Violations (MUST FIX)
 

@@ -18,11 +18,11 @@ First, determine what needs to be reviewed based on the user's request:
    "Dialog"), locate and review all related files:
    - Main component file (`packages/nimbus/src/components/{ComponentName}/`)
    - Stories (`*.stories.tsx`)
-   - Recipes (`*.recipe.tsx`)
+   - Recipes (`*.recipe.ts`)
    - Slots (`*.slots.tsx`)
    - Types (`*.types.ts`)
    - Utilities and hooks
-   - Documentation (`*.mdx`)
+   - Documentation (`*.mdx`, `*.dev.mdx`, `*.a11y.mdx`, `*.guidelines.mdx`)
 5. **Changed Files**: If user mentions "changed files", use `git status` to
    identify and review modified files
 6. **Custom Diff**: If user specifies branches/commits (e.g., "diff between
@@ -34,6 +34,14 @@ following knowledge-base files:
 - @CLAUDE.md (for project-wide conventions and architectural principles)
 - @docs/component-guidelines.md (for component development best practices)
 - @docs/file-type-guidelines/ (for file-type-specific standards)
+- @docs/component-checklist.md (the well-shaped component go/no-go gate — work
+  through it for component reviews)
+- @docs/api-evolution.md (versioning, deprecation, and breaking-change policy —
+  flag any change to an existing component that breaks consumers without a
+  major)
+- @docs/writing-style.md (the house writing style — apply it to any prose under
+  review: internal docs `.md`, designer `.mdx`/`.guidelines.mdx`/`.a11y.mdx`,
+  and engineering `.dev.mdx`)
 
 ## **Execution Flow**
 

@@ -1,6 +1,6 @@
 ---
 name: nimbus-coder
-description: Use this agent when you need to implement a new feature request, add functionality to existing components, or build new components from scratch. Examples: <example>Context: User has requested a new component or feature to be added to the codebase. user: "I need to add a new Toast notification component with variants for success, error, and warning states" assistant: "I'll use the feature-implementer agent to create this new Toast component with the required variants and functionality" <commentary>Since the user is requesting a new feature (Toast component), use the feature-implementer agent to handle the complete implementation including component files, types, stories, documentation, and proper integration with the design system.</commentary></example> <example>Context: User wants to add new functionality to an existing component. user: "Can you add keyboard navigation support to the existing Menu component?" assistant: "I'll use the feature-implementer agent to add keyboard navigation functionality to the Menu component" <commentary>Since the user is requesting new functionality to be added to an existing component, use the feature-implementer agent to implement the keyboard navigation feature while maintaining existing functionality.</commentary></example>
+description: Use this agent when you need to implement a new feature request, add functionality to existing components, or build new components from scratch. Examples: <example>Context: User has requested a new component or feature to be added to the codebase. user: "I need to add a new Toast notification component with variants for success, error, and warning states" assistant: "I'll use the nimbus-coder agent to create this new Toast component with the required variants and functionality" <commentary>Since the user is requesting a new feature (Toast component), use the nimbus-coder agent to handle the complete implementation including component files, types, stories, documentation, and proper integration with the design system.</commentary></example> <example>Context: User wants to add new functionality to an existing component. user: "Can you add keyboard navigation support to the existing Menu component?" assistant: "I'll use the nimbus-coder agent to add keyboard navigation functionality to the Menu component" <commentary>Since the user is requesting new functionality to be added to an existing component, use the nimbus-coder agent to implement the keyboard navigation feature while maintaining existing functionality.</commentary></example>
 model: sonnet
 ---
 
@@ -71,16 +71,15 @@ is to orchestrate these skills, not replace them.
 
 ### Required Skill Invocations
 
-| File Type                       | Skill to Invoke                     | When                                                       |
-| ------------------------------- | ----------------------------------- | ---------------------------------------------------------- |
-| `*.types.ts`                    | **writing-types**                   | ALL type definition work                                   |
-| `*.recipe.ts`                   | **writing-recipes**                 | ALL recipe creation/updates                                |
-| `*.slots.tsx`                   | **writing-slots**                   | ALL slot component work                                    |
-| `*.stories.tsx`                 | **writing-stories**                 | ALL story creation/updates                                 |
-| `*.i18n.ts`                     | **writing-i18n**                    | When component has default aria-labels or user-facing text |
-| `utils/*.ts` + `constants/*.ts` | **writing-utils-and-constants**     | ALL pure helper / constant work in a component             |
-| `*.dev.mdx` + `*.docs.spec.tsx` | **writing-developer-documentation** | ALL developer documentation                                |
-| `*.mdx` (designer)              | **writing-designer-documentation**  | ALL designer documentation                                 |
+| File Type                                                                     | Skill to Invoke                    | When                                                         |
+| ----------------------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------------ |
+| `*.types.ts`                                                                  | **writing-types**                  | ALL type definition work                                     |
+| `*.recipe.ts`                                                                 | **writing-recipes**                | ALL recipe creation/updates                                  |
+| `*.slots.tsx`                                                                 | **writing-slots**                  | ALL slot component work                                      |
+| `*.stories.tsx`                                                               | **writing-stories**                | ALL story creation/updates                                   |
+| `*.i18n.ts`                                                                   | **writing-i18n**                   | When component has default aria-labels or user-facing text   |
+| `utils/*.ts` + `constants/*.ts`                                               | **writing-utils-and-constants**    | ALL pure helper / constant work in a component               |
+| `*.mdx` / `*.guidelines.mdx` / `*.dev.mdx` / `*.a11y.mdx` + `*.docs.spec.tsx` | **writing-consumer-documentation** | ALL consumer-facing component docs (all four docs-site tabs) |
 
 ### Test Categories
 
@@ -109,8 +108,8 @@ See
    - Invoke `writing-i18n` if component has default labels
 
 4. **Documentation Layer** (after quality):
-   - Invoke `writing-developer-documentation` for eng docs
-   - Invoke `writing-designer-documentation` for design docs
+   - Invoke `writing-consumer-documentation` for all docs-site tabs (Overview,
+     Guidelines, Implementation, Accessibility)
 
 ### When You Code Directly vs. Invoke Skills
 
@@ -151,12 +150,19 @@ If a skill reports validation failures:
 
 - NEVER create files without following the established guidelines in
   /docs/file-type-guidelines/
-- ALWAYS register recipes in theme configuration when creating new styling
+- ALWAYS register a new recipe in the correct registry under a
+  **`nimbus`-prefixed key** — standard recipes in `theme/recipes/index.ts`, slot
+  recipes in `theme/slot-recipes/index.ts`. A bare (non-prefixed) key fails
+  `build-theme-typings` **silently**. See
+  `docs/file-type-guidelines/recipes.md#recipe-registration-is-required`.
 - ALWAYS include play functions for interactive components in stories
 - ALWAYS use jsx live blocks in MDX documentation (never Storybook imports)
 - ALWAYS follow the compound component pattern with .Root as first property when
   applicable
 - ALWAYS validate implementations against the File Review Protocol
+- BEFORE declaring a component done, self-check it against
+  `docs/component-checklist.md` (the well-shaped-component gate) — especially
+  its **Evolution safety** section if you touched an existing component
 
 You approach each feature request systematically, ensuring the implementation is
 not just functional but exemplifies the quality standards and architectural

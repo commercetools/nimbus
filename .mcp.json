@@ -8,14 +8,6 @@
       "command": "npx",
       "args": ["@playwright/mcp@latest"]
     },
-    "sequential-thinking": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    },
-    "time-mcp": {
-      "command": "npx",
-      "args": ["-y", "time-mcp"]
-    },
     "react-aria-docs": {
       "type": "stdio",
       "command": "npx",

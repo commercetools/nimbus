@@ -82,6 +82,13 @@ These documents provide standards that apply across all component types:
   variable naming patterns
 - **[Accessibility Requirements](./file-type-guidelines/main-component.md#accessibility-requirements)** -
   WCAG 2.1 AA compliance guidelines and React Aria integration
+- **[Public API Naming](./naming-conventions.md#public-api-prop-naming-consumer-contract)** -
+  Consumer-facing prop naming contract (`is*` booleans, React Aria handler
+  names)
+- **[API Evolution](./api-evolution.md)** - Versioning, deprecation, and
+  breaking-change policy (move fast without breaking consumers)
+- **[Well-Shaped Component Checklist](./component-checklist.md)** - Single
+  go/no-go verification gate before opening a PR
 
 ## Navigation by Task
 
@@ -103,7 +110,7 @@ These documents provide standards that apply across all component types:
    stories with play functions for testing
 8. **[Document](./file-type-guidelines/documentation.md)** - Create designer
    documentation (`.mdx`) and engineering documentation (`.dev.mdx`)
-9. **[Add Documentation Tests](../engineering-docs-validation.md)** - Create
+9. **[Add Documentation Tests](./engineering-docs-validation.md)** - Create
    `.docs.spec.tsx` with consumer test examples (optional but recommended)
 10. **[Export](./file-type-guidelines/barrel-exports.md)** - Set up public API
 
@@ -205,7 +212,10 @@ component-name/
 ├── component-name.stories.tsx     # Storybook stories (required)
 ├── component-name.mdx            # Designer documentation (required)
 ├── component-name.dev.mdx        # Engineering documentation (required)
+├── component-name.guidelines.mdx # Designer usage guidelines (required)
+├── component-name.a11y.mdx       # Accessibility documentation (required)
 ├── component-name.docs.spec.tsx  # Documentation tests (optional, recommended)
+├── component-name.figma.tsx      # Figma Code Connect mapping (when designed in Figma)
 ├── components/                    # Compound parts (if compound)
 │   ├── component-name.root.tsx
 │   ├── component-name.part.tsx
@@ -233,7 +243,10 @@ component-name/
 2. **Hooks belong in `hooks/` folder** for organization
 3. **Slot files export both components AND their TypeScript types**
 4. **Interactive components include play functions** in stories
-5. **Recipe registration is needed** in theme configuration
+5. **Recipe registration is needed** under a `nimbus`-prefixed key in the
+   correct registry — standard recipes in `theme/recipes/index.ts`, slot recipes
+   in `theme/slot-recipes/index.ts`. See
+   [Recipes → Registration](./file-type-guidelines/recipes.md#recipe-registration-is-required)
 
 ### Naming Conventions
 
@@ -357,4 +370,4 @@ pnpm --filter @commercetools/nimbus typecheck
 
 ---
 
-Last updated: January 2025
+Last updated: June 2026

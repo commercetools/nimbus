@@ -41,7 +41,7 @@ export * from "./badge.types";
 ### Compound Component
 
 ```typescript
-// packages/nimbus/src/components/menu/index.ts
+// packages/nimbus/src/components/menu/index.tsx
 export * from "./menu";
 export * from "./menu.types";
 ```

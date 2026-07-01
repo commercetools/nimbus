@@ -109,9 +109,10 @@ expand what the library accepts as valid input.
 - `writing-stories` - Storybook stories with play functions
 - `writing-recipes` - Chakra UI styling recipes
 - `writing-slots` - Slot component wrappers
-- `writing-developer-documentation` - Engineering docs
-- `writing-designer-documentation` - Designer docs
+- `writing-consumer-documentation` - Consumer-facing component docs (Overview,
+  Guidelines, Implementation, and Accessibility tabs)
 - `writing-i18n` - Internationalization files
+- `writing-changesets` - Release-note changesets for consumers
 - `brainstorm` - Design exploration
 
 **When to invoke directly:**
@@ -145,6 +146,11 @@ expand what the library accepts as valid input.
 Every change needs a reason. If the change is not a fix (bug fix, typo, config
 tweak, docs for existing behavior, or test for existing behavior), it SHOULD
 have an OpenSpec proposal via `/opsx:propose` before implementation.
+
+The `/opsx:*` skills are the interface you should use. They drive the raw
+OpenSpec CLI under the hood, which is also exposed directly as `pnpm openspec`
+(e.g. `pnpm openspec list`) for ad-hoc inspection — prefer the skills for normal
+work.
 
 ## Project Overview
 
@@ -220,20 +226,32 @@ pnpm start:storybook
 ### Build Commands
 
 ```bash
-# Full build (tokens -> packages -> docs)
+# Full build (tokens -> packages -> mcp -> docs)
 pnpm build
 
 # Build packages only
 pnpm build:packages
 
-# Build documentation site only
+# Build the published MCP server (packages/nimbus-mcp); chained into `pnpm build`
+pnpm build:mcp
+
+# Build documentation site only (full Vite app build)
 pnpm build:docs
+
+# Generate ONLY the docs data (route manifest, search index, type metadata) —
+# the data layer apps/docs and packages/nimbus-mcp consume, without the Vite
+# app build. Faster than build:docs when you only need fresh data.
+pnpm build:docs-data
 
 # Build/Generate design tokens
 pnpm build:tokens
 # or
 pnpm generate:tokens
 ```
+
+> The icons package has its own multi-step build (SVGR Material-icon
+> regeneration + ESM/CJS bundles, `build:icons` / `build:esm` / `build:cjs`).
+> See `packages/nimbus-icons/CLAUDE.md` for that pipeline.
 
 ### Internationalization (i18n)
 
@@ -312,6 +330,9 @@ vs the npm spec). Run it locally before pushing changes to a bundler config,
 See [Package Shape Verification](./docs/package-shape-verification.md) for
 details. For bundle sizes, see
 [Bundle Size Monitoring](./docs/bundle-size-monitoring.md).
+`pnpm bundle-sizes:trend` reports how published bundle sizes have drifted across
+recently merged PRs (it reads the size blocks CI embeds in PR comments) — useful
+for spotting gradual regressions.
 
 ### Workspace-Specific Development
 
@@ -359,14 +380,37 @@ perspective, not implementation details.
 
 ### Package Structure
 
+Published component/design packages:
+
 - **packages/nimbus**: Core UI component library with React Aria Components
 - **packages/tokens**: Design tokens (colors, spacing, typography, animations)
 - **packages/nimbus-icons**: SVG icons wrapped as React components (Material
   Icons + custom)
 - **packages/color-tokens**: Brand-specific color definitions
 - **packages/i18n**: Translation messages and internationalization support
+
+Published tooling packages (ship alongside the design system):
+
+- **packages/nimbus-mcp** (`@commercetools/nimbus-mcp`): An MCP server that
+  exposes Nimbus components, tokens, and icons as tools for AI assistants. Built
+  by `pnpm build:mcp` (chained into `pnpm build`); inspect it with
+  `pnpm start:mcp-inspector`. This is a server Nimbus _publishes_, distinct from
+  the external MCP servers Nimbus _consumes_ (see "MCP Server Tools" below).
+- **packages/nimbus-docs-build** (`@commercetools/nimbus-docs-build`): The
+  documentation build system — MDX parsing, TypeScript type extraction, and
+  docs-data generation consumed by both `apps/docs` and `packages/nimbus-mcp`.
+- **packages/design-token-ts-plugin**
+  (`@commercetools/nimbus-design-token-ts-plugin`): A TypeScript
+  language-service plugin that surfaces design-token CSS values in editor
+  autocomplete.
+
+Apps (not published):
+
 - **apps/docs**: Documentation SPA with interactive examples and auto-generated
   content
+- **apps/blank-app**: Minimal consumer app for trying components in isolation
+- **apps/plugin-test**: Verifies the bundler/token plugins resolve correctly
+  under both Vite and Webpack (`verify:vite` / `verify:webpack`)
 
 ### Chakra UI Imports (CRITICAL)
 
@@ -399,6 +443,12 @@ For comprehensive component development guidance, see:
 This project includes integrated MCP (Model Context Protocol) tooling that
 provides automated development workflows. Leverage these tools for automated
 tasks:
+
+> **Consumes vs. ships:** The servers listed below are external MCP servers this
+> repo _consumes_ during development. Nimbus also _publishes_ its own MCP
+> server, `packages/nimbus-mcp` (`@commercetools/nimbus-mcp`), which exposes
+> Nimbus components/tokens/icons to downstream AI assistants — see
+> [Package Structure](#package-structure). Don't confuse the two.
 
 ### Available MCP Servers
 

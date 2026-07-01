@@ -9,6 +9,10 @@ Generates `.figma.tsx` Code Connect files by fetching Figma component data,
 classifying properties using codified rules, and writing files with string
 templates. No LLM classification involved — output is 100% deterministic.
 
+For the file-type conventions these files follow (anatomy, the `// NOTE:`
+comments, why they must not be hand-edited), see
+[docs/file-type-guidelines/figma-code-connect.md](../../../docs/file-type-guidelines/figma-code-connect.md).
+
 ## Workflow
 
 ### Step 1: Collect Figma data

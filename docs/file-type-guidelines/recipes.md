@@ -413,24 +413,60 @@ base: {
 
 ### Recipe Registration is REQUIRED
 
-Recipes must be registered in the theme configuration or they won't work:
+Recipes must be registered in the theme configuration or they won't work. There
+are **two separate registries** — pick the one that matches your recipe type:
+
+| Recipe type               | Registry file                                     | Object        |
+| ------------------------- | ------------------------------------------------- | ------------- |
+| Standard (`defineRecipe`) | `packages/nimbus/src/theme/recipes/index.ts`      | `recipes`     |
+| Slot (`defineSlotRecipe`) | `packages/nimbus/src/theme/slot-recipes/index.ts` | `slotRecipes` |
+
+> There is **no** single combined recipes module. Registration is an entry in
+> the exported object inside the correct directory's `index.ts`.
+
+#### The `nimbus` key prefix is LOAD-BEARING
+
+The registration **key** MUST be the component name in camelCase with a
+**`nimbus` prefix** (`nimbusButton`, `nimbusSlider`, …). This is not cosmetic:
+
+- It prevents collisions with Chakra's built-in recipe keys, which would
+  otherwise corrupt generated variant types in consumer apps.
+- A bare key (`button:`) or a non-identifier key makes `build-theme-typings`
+  fail **silently** — the recipe compiles but no styles/types are generated.
+
+This prefixed key is also what you pass to `SlotRecipeProps<"nimbusSlider">` in
+your types file and to `useSlotRecipe({ key: "nimbusSlider" })` in your
+component, so it must match exactly across all three places.
+
+> **Run `build-theme-typings` before `typecheck` after registering a new
+> recipe.** The new recipe's variants don't exist in the generated theme typings
+> until `build-theme-typings` runs, so a typecheck-first run reports a cascade
+> of false errors (e.g. `SlotRecipeProps<"nimbusX">` resolving to nothing) that
+> look like real component bugs. Generate the types first, then typecheck
+> against them.
 
 #### Standard Recipes
 
 ```typescript
 // packages/nimbus/src/theme/recipes/index.ts
-export { buttonRecipe } from "@/components/button/button.recipe";
-export { badgeRecipe } from "@/components/badge/badge.recipe";
-// ... other standard recipes
+import { buttonRecipe } from "@/components/button/button.recipe";
+
+export const recipes = {
+  nimbusButton: buttonRecipe, // ✅ nimbus-prefixed key
+  // ... other standard recipes
+};
 ```
 
 #### Slot Recipes
 
 ```typescript
 // packages/nimbus/src/theme/slot-recipes/index.ts
-export { menuSlotRecipe } from "@/components/menu/menu.recipe";
-export { selectSlotRecipe } from "@/components/select/select.recipe";
-// ... other slot recipes
+import { menuSlotRecipe } from "@/components/menu/menu.recipe";
+
+export const slotRecipes = {
+  nimbusMenu: menuSlotRecipe, // ✅ nimbus-prefixed key
+  // ... other slot recipes
+};
 ```
 
 ### Chakra Compound Component Overrides
