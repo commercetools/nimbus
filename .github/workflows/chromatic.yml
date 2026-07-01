@@ -1,0 +1,72 @@
+name: Chromatic
+
+on:
+  # Manual button. Forces a full run, bypassing the gate (seed baseline, override TurboSnap).
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+# Cancel an in-progress run when a newer push lands on the same ref; the latest wins.
+concurrency:
+  group: chromatic-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  chromatic:
+    runs-on: ubuntu-latest
+    # Skip draft PRs; always allow push and manual runs.
+    if: github.event.pull_request.draft == false || github.event_name != 'pull_request'
+    permissions:
+      contents: read
+    steps:
+      # Full history: Chromatic needs it to find the baseline build to diff against.
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # BASELINE / TURBOSNAP WARM-UP: the changed-files gate is temporarily disabled
+      # so every push builds and snapshots. This accumulates the ~10 builds TurboSnap
+      # needs and seeds a complete baseline, with no push silently skipped.
+      # TODO: once we've hit ~10 builds and TurboSnap is active, uncomment the gate
+      # below AND restore the two `if:` lines on the steps that follow.
+      #
+      # - name: Get changed files
+      #   id: changed-files
+      #   uses: tj-actions/changed-files@v46
+      #   with:
+      #     since_last_remote_commit: true
+      #     # Files that affect rendered output.
+      #     files: |
+      #       packages/nimbus/**
+      #       packages/tokens/**
+      #       packages/nimbus-icons/**
+      #     # Plumbing within those that doesn't change how components look.
+      #     files_ignore: |
+      #       packages/nimbus/chromatic.config.json
+      #       packages/nimbus/.storybook/main.ts
+      #       # Deliberate blind spot: runtime-dep bumps land here, so dispatch a manual run after updating deps.
+      #       packages/nimbus/package.json
+      #
+      # - name: No UI changes detected
+      #   if: steps.changed-files.outputs.any_changed != 'true' && github.event_name != 'workflow_dispatch'
+      #   run: echo "::notice::No UI-affecting changes detected in this push. Skipping the Chromatic visual regression build."
+
+      - name: Installing dependencies and building packages
+        # TODO: restore with the gate - if: steps.changed-files.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
+        uses: ./.github/actions/ci
+
+      - name: Run Chromatic
+        # TODO: restore with the gate - if: steps.changed-files.outputs.any_changed == 'true' || github.event_name == 'workflow_dispatch'
+        uses: chromaui/action@v17
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          storybookBaseDir: packages/nimbus
+          buildScriptName: build-storybook
+          zip: true
+          # Stay green on visual diffs while building/triaging the baseline; diffs still show in the dashboard.
+          # TODO: remove once UI Review gate is active (post-stabilization), so unreviewed diffs block merge.
+          exitZeroOnChanges: true

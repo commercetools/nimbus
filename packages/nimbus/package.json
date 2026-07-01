@@ -114,6 +114,7 @@
     "@vueless/storybook-dark-mode": "catalog:tooling",
     "apca-w3": "^0.1.9",
     "axe-core": "^4.11.0",
+    "chromatic": "catalog:tooling",
     "dompurify": "catalog:utils",
     "glob": "catalog:tooling",
     "jsdom": "catalog:tooling",
@@ -150,6 +151,7 @@
     "postinstall": "test -f ./dist/index.es.js && chakra typegen ./dist/index.es.js || true",
     "bundles:analyze": "ANALYZE_BUNDLE=true vite build",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "chromatic": "chromatic --exit-zero-on-changes"
   }
 }

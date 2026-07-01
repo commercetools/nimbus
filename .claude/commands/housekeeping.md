@@ -294,6 +294,22 @@ For each dependency group (or the specified target group):
      deps, only list that one)
    - Include the changeset in the final commit before pushing
 
+7. **Trigger a Chromatic visual check (when rendering deps changed):**
+
+   The Chromatic CI gate ignores `packages/nimbus/package.json`, so a
+   dependency-only PR will NOT auto-trigger a visual regression build. If any
+   updated package can affect rendered output (`@chakra-ui/*`, `react-aria*`,
+   `react-stately`, `@react-aria/*`, `next-themes`), dispatch the Chromatic
+   workflow against the branch. Easiest: GitHub → Actions → "Chromatic" → "Run
+   workflow" → pick the branch. Or from the CLI:
+
+   ```bash
+   gh workflow run chromatic.yml --ref <current-branch-name>
+   ```
+
+   Note in the PR body that a Chromatic run was dispatched so reviewers know the
+   visual diff was checked.
+
 ---
 
 ## **Safety Features & Error Handling**
