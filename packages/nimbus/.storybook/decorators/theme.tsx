@@ -1,7 +1,7 @@
 import React from "react";
 import { type StoryContext } from "@storybook/react-vite";
 import { DARK_MODE_EVENT_NAME } from "@vueless/storybook-dark-mode";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { addons } from "storybook/preview-api";
 import { NimbusProvider, useColorMode } from "@commercetools/nimbus";
 
@@ -32,10 +32,17 @@ const readInitialDark = () => {
  */
 const ColorModeSync = ({ isDark }: { isDark: boolean }) => {
   const { setColorMode } = useColorMode();
+  // next-themes' setTheme gets a fresh identity on every theme change, so it
+  // must NOT be an effect dependency: doing so re-syncs on every color-mode
+  // change and would clobber a story's own toggleColorMode() call. We only
+  // want to (re)sync when the toolbar toggle (isDark) changes, so hold the
+  // setter in a ref and depend on isDark alone. See PR #1684.
+  const setColorModeRef = useRef(setColorMode);
+  setColorModeRef.current = setColorMode;
   useEffect(() => {
-    setColorMode(isDark ? "dark" : "light");
+    setColorModeRef.current(isDark ? "dark" : "light");
     document.body.classList.remove("light", "dark");
-  }, [isDark, setColorMode]);
+  }, [isDark]);
   return null;
 };
 
