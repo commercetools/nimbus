@@ -283,6 +283,10 @@
     "developer_comment": "aria-label for the default close trigger button",
     "string": "Schublade schließen"
   },
+  "Nimbus.DropZone.defaultLabel": {
+    "developer_comment": "Default accessible label for the drop zone when the consumer provides no aria-label, aria-labelledby, or label content",
+    "string": "Drag and drop files here"
+  },
   "Nimbus.FieldErrors.duplicateValue": {
     "developer_comment": "Error message for duplicate value validation",
     "string": "Dieser Wert wird bereits verwendet. Er muss eindeutig sein."
