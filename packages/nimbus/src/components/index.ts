@@ -13,6 +13,7 @@ export * from "./combobox";
 export * from "./default-page";
 export * from "./dialog";
 export * from "./field-errors";
+export * from "./file-trigger";
 export * from "./flex";
 export * from "./group";
 export * from "./heading";

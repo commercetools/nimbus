@@ -1,0 +1,116 @@
+---
+id: Components-FileTrigger
+title: File trigger
+exportName: FileTrigger
+description:
+  Connects a pressable element such as a button to the native file picker,
+  letting users select files without any custom styling of its own.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Inputs
+  - File trigger
+tags:
+  - component
+  - inputs
+  - file
+  - upload
+  - chat
+---
+
+## Overview
+
+`FileTrigger` is a behavior-only building block: it wraps a pressable child —
+usually a `Button` — and opens the operating system's file picker when that
+child is activated. It contributes no visual styling, so the appearance is
+entirely determined by the child you provide. This keeps file selection
+consistent with the rest of the system while leaving the trigger's look up to
+you.
+
+It is the foundational piece for file-selection flows (for example, attaching
+files in chat) and pairs with richer surfaces such as drop zones.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[React Aria FileTrigger](https://react-aria.adobe.com/FileTrigger)
+
+## Basic usage
+
+Wrap any pressable Nimbus component. The button below opens the file picker; the
+selection is reported to your `onSelect` handler.
+
+```jsx live
+const App = () => {
+  const [name, setName] = React.useState("");
+  return (
+    <Stack direction="row" gap="400" alignItems="center">
+      <FileTrigger
+        onSelect={(files) => {
+          const list = files ? Array.from(files) : [];
+          setName(list[0]?.name ?? "");
+        }}
+      >
+        <Button>Upload file</Button>
+      </FileTrigger>
+      <Text>{name || "No file selected"}</Text>
+    </Stack>
+  );
+};
+```
+
+## Variables
+
+Get familiar with the features.
+
+### Accepted file types
+
+Limit selectable files by MIME type or extension.
+
+```jsx live
+const App = () => (
+  <FileTrigger acceptedFileTypes={["image/png", "image/jpeg", ".pdf"]}>
+    <Button>Upload image or PDF</Button>
+  </FileTrigger>
+);
+```
+
+### Multiple files
+
+Allow selecting more than one file at a time.
+
+```jsx live
+const App = () => (
+  <FileTrigger allowsMultiple>
+    <Button>Upload files</Button>
+  </FileTrigger>
+);
+```
+
+### Choose with any trigger
+
+Because the child defines the look, you can use any pressable component — for
+example an `IconButton`.
+
+```jsx live
+const App = () => (
+  <FileTrigger>
+    <IconButton aria-label="Attach file" variant="ghost">
+      <Icons.AttachFile />
+    </IconButton>
+  </FileTrigger>
+);
+```
+
+## Guidelines
+
+- Always give the child a clear, descriptive label — the trigger's accessible
+  name comes entirely from the child.
+- Use a concrete verb such as "Upload" or "Attach" rather than a generic
+  "Choose".
+- When you only need an icon, pair an `IconButton` with an `aria-label` (or a
+  tooltip) so the action stays understandable.
+- Communicate accepted file types and size limits near the trigger so users know
+  what to expect before opening the picker.
