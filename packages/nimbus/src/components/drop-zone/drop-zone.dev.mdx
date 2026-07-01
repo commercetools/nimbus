@@ -1,0 +1,354 @@
+---
+title: DropZone component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { DropZone, type DropZoneProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+`DropZone` wraps React Aria's `DropZone`. With no children, it renders a
+default upload icon and localized instruction label, so `<DropZone />` alone
+is never an empty box. Passing any children replaces that default content
+entirely — compose a `FileTrigger` inside the children for a click/keyboard
+upload path (see
+[Composing a click-to-upload path](#composing-a-click-to-upload-path)).
+
+```jsx live-dev
+const App = () => (
+  <DropZone onDrop={(event) => console.log(event.items)}>
+    <FileTrigger>
+      <Button variant="ghost">Browse files</Button>
+    </FileTrigger>
+  </DropZone>
+);
+```
+
+## Usage examples
+
+### Handling dropped files
+
+`onDrop` receives a React Aria `DropEvent` whose `items` are `DragItem`
+objects, not `File` objects. For files dragged from the OS, each item has
+`kind === "file"` and exposes `getFile()`, which resolves to the native
+`File`. Filter for file items and resolve them before using the result:
+
+```jsx live-dev
+const App = () => {
+  const [fileNames, setFileNames] = React.useState([]);
+
+  const handleFiles = (files) => {
+    setFileNames(files.map((file) => file.name));
+  };
+
+  const handleDrop = async (event) => {
+    const files = await Promise.all(
+      event.items
+        .filter((item) => item.kind === "file")
+        .map((item) => item.getFile())
+    );
+    handleFiles(files);
+  };
+
+  return (
+    <Stack direction="column" gap="400" alignItems="stretch">
+      <DropZone onDrop={handleDrop}>
+        <FileTrigger>
+          <Button variant="ghost">Browse files</Button>
+        </FileTrigger>
+      </DropZone>
+      {fileNames.length > 0 && (
+        <Text>Dropped: {fileNames.join(", ")}</Text>
+      )}
+    </Stack>
+  );
+};
+```
+
+### Composing a click-to-upload path
+
+Passing children replaces DropZone's default icon and label entirely. Compose
+the existing `FileTrigger` (wrapping a `Button`) to add a click/keyboard
+upload path alongside dragging. Share a single `handleFiles(files: File[])`
+helper between `onDrop` and the
+`FileTrigger`'s `onSelect` so the file-handling logic exists in one place —
+`FileTrigger`'s `onSelect` hands you a `FileList`, so convert it with
+`Array.from` before passing it to the same helper:
+
+```jsx live-dev
+const App = () => {
+  const [fileNames, setFileNames] = React.useState([]);
+
+  // Shared by both onDrop and the composed FileTrigger's onSelect, so the
+  // file-handling logic is not duplicated between the drag and click paths.
+  const handleFiles = (files) => {
+    setFileNames(files.map((file) => file.name));
+  };
+
+  const handleDrop = async (event) => {
+    const files = await Promise.all(
+      event.items
+        .filter((item) => item.kind === "file")
+        .map((item) => item.getFile())
+    );
+    handleFiles(files);
+  };
+
+  const handleSelect = (fileList) => {
+    handleFiles(fileList ? Array.from(fileList) : []);
+  };
+
+  return (
+    <Stack direction="column" gap="400" alignItems="stretch">
+      <DropZone onDrop={handleDrop}>
+        <FileTrigger allowsMultiple onSelect={handleSelect}>
+          <Button variant="ghost">Browse files</Button>
+        </FileTrigger>
+      </DropZone>
+      {fileNames.length > 0 && (
+        <Text>Selected: {fileNames.join(", ")}</Text>
+      )}
+    </Stack>
+  );
+};
+```
+
+### Restricting accepted drops
+
+Pass `getDropOperation` as a type guard that inspects the dragged types and
+returns `"cancel"` for anything the zone doesn't accept. A rejected drag never
+sets the drag-over highlight, so consumers don't need a separate invalid
+state:
+
+```jsx live-dev
+const App = () => {
+  const acceptedType = "image/png";
+
+  const getDropOperation = (types) =>
+    types.has(acceptedType) ? "copy" : "cancel";
+
+  return (
+    <DropZone
+      getDropOperation={getDropOperation}
+      onDrop={(event) => console.log(event.items)}
+    >
+      <FileTrigger>
+        <Button variant="ghost">Browse files</Button>
+      </FileTrigger>
+    </DropZone>
+  );
+};
+```
+
+### Disabling the zone and its composed trigger
+
+`isDisabled` disables the drop target itself and rejects drops. It has no
+effect on descendants — set `isDisabled` explicitly on the composed
+`FileTrigger`'s `Button` as well (`FileTrigger` has no `isDisabled` prop of
+its own — disabling is always done on the pressable child):
+
+```jsx live-dev
+const App = () => {
+  const [disabled, setDisabled] = React.useState(true);
+
+  return (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      <DropZone isDisabled={disabled}>
+        <FileTrigger>
+          <Button variant="ghost" isDisabled={disabled}>
+            Browse files
+          </Button>
+        </FileTrigger>
+      </DropZone>
+      <Button onClick={() => setDisabled((prev) => !prev)}>
+        {disabled ? "Enable" : "Disable"}
+      </Button>
+    </Stack>
+  );
+};
+```
+
+### Accessible name
+
+With no children and no explicit label, DropZone's default content supplies
+its own accessible name automatically — no setup required. An explicit
+`aria-label` or `aria-labelledby` replaces the default content entirely (not
+just its text) and is forwarded straight to React Aria's `DropZone`, which
+applies it to the focusable element. For a visible label instead, render a
+`<Text slot="label">` child — React Aria wires the label association
+automatically through the `slot` prop, and the presence of this child (like
+any child) replaces the default content:
+
+```jsx live-dev
+const App = () => (
+  <DropZone aria-label="Upload files">
+    <FileTrigger>
+      <Button variant="ghost">Browse files</Button>
+    </FileTrigger>
+  </DropZone>
+);
+```
+
+### Filled state
+
+DropZone has no controlled `isFilled` prop — express the filled state by
+swapping the children you render once files exist, the same mechanism that
+replaces the default icon and label as soon as you pass any children at all.
+This example replaces the `FileTrigger` with a file list after files are
+dropped or selected:
+
+```jsx live-dev
+const App = () => {
+  const [files, setFiles] = React.useState([]);
+
+  const handleFiles = (newFiles) => {
+    setFiles((prev) => [...prev, ...newFiles]);
+  };
+
+  const handleDrop = async (event) => {
+    const dropped = await Promise.all(
+      event.items
+        .filter((item) => item.kind === "file")
+        .map((item) => item.getFile())
+    );
+    handleFiles(dropped);
+  };
+
+  const handleSelect = (fileList) => {
+    handleFiles(fileList ? Array.from(fileList) : []);
+  };
+
+  if (files.length > 0) {
+    return (
+      <DropZone onDrop={handleDrop}>
+        <Stack direction="column" gap="200" alignItems="stretch">
+          {files.map((file, index) => (
+            <Text key={`${file.name}-${index}`}>{file.name}</Text>
+          ))}
+        </Stack>
+        <FileTrigger allowsMultiple onSelect={handleSelect}>
+          <Button variant="ghost">Add more files</Button>
+        </FileTrigger>
+      </DropZone>
+    );
+  }
+
+  return (
+    <DropZone onDrop={handleDrop}>
+      <FileTrigger allowsMultiple onSelect={handleSelect}>
+        <Button variant="ghost">Browse files</Button>
+      </FileTrigger>
+    </DropZone>
+  );
+};
+```
+
+### Multiple files
+
+Nothing in DropZone limits a drop to one file — `event.items` already
+contains every dropped item. Pair it with `allowsMultiple` on the composed
+`FileTrigger` so the click path also accepts more than one file at a time, as
+shown in the examples above. To cap the count, check `files.length` inside
+`handleFiles` and ignore or reject the excess before updating state.
+
+## Working with React Aria drag-and-drop types
+
+DropZone re-exports `DropEvent`, `DropOperation`, and `DragTypes` from
+`@commercetools/nimbus` so `onDrop` and `getDropOperation` handlers can be
+typed without a direct dependency on `react-aria-components`:
+
+```tsx
+import type {
+  DropEvent,
+  DropOperation,
+  DragTypes,
+} from "@commercetools/nimbus";
+
+const handleDrop = async (event: DropEvent) => {
+  const files = await Promise.all(
+    event.items
+      .filter((item) => item.kind === "file")
+      .map((item) => item.getFile())
+  );
+  // ...
+};
+
+const getDropOperation = (types: DragTypes): DropOperation =>
+  types.has("image/png") ? "copy" : "cancel";
+```
+
+## Component requirements
+
+### Accessibility
+
+DropZone handles most accessibility requirements internally via React Aria.
+
+- **Labeling**: with no children and no explicit label, DropZone has a default
+  accessible name out of the box. An explicit `aria-label` / `aria-labelledby`
+  replaces the default entirely and is forwarded to React Aria's `DropZone`,
+  which applies it to its focusable element. For a visible label instead,
+  render a `<Text slot="label">` child.
+- **Role**: The rendered element is React Aria's `DropZone`, which behaves as
+  a focusable, keyboard-operable drop target with built-in drag-and-drop
+  semantics — see the Accessibility tab for the full keyboard model.
+- **Focus management**: Focus and the drag-over highlight are managed by React
+  Aria; don't override the `data-drop-target` or `data-focus-visible`
+  attributes it sets.
+
+If your use case requires tracking and analytics for this component, it is
+good practice to add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "asset-manager-drop-zone";
+
+export const Example = () => (
+  <DropZone id={PERSISTENT_ID}>
+    <FileTrigger>
+      <Button variant="ghost">Browse files</Button>
+    </FileTrigger>
+  </DropZone>
+);
+```
+
+#### Keyboard navigation
+
+The drop target supports full keyboard interaction — see the Accessibility
+tab for the complete key/action table and its limits for OS file uploads.
+
+## API reference
+
+<PropsTable id="DropZone" />
+
+## Notes and limitations
+
+- **All-or-nothing default content.** With no children, DropZone renders a
+  default upload icon and localized instruction label as its accessible name.
+  Passing any children — or an explicit `aria-label` / `aria-labelledby` —
+  replaces that default entirely; there's no way to keep the default icon
+  while overriding only the label, or vice versa. Compose a `FileTrigger` (and
+  any supporting copy) as children for a click-to-upload path.
+- **No file-selection props.** DropZone does not expose `acceptedFileTypes`,
+  `allowsMultiple`, or any other file-picker configuration — that surface
+  belongs to the composed `FileTrigger`.
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using
+`DropZone` within your application. As the component's internal functionality
+is already tested by Nimbus, these patterns help you verify your integration
+and application-specific logic.
+
+{{docs-tests: drop-zone.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-dropzone--docs)
+- [React Aria DropZone](https://react-spectrum.adobe.com/react-aria/DropZone.html)
+- [FileTrigger](/components/inputs/filetrigger)
