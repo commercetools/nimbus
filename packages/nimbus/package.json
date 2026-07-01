@@ -123,7 +123,7 @@
     "slate": "^0.123.0",
     "slate-history": "^0.115.0",
     "slate-hyperscript": "^0.115.0",
-    "slate-react": "^0.123.0",
+    "slate-react": "^0.125.1",
     "storybook": "catalog:tooling",
     "vite": "catalog:tooling",
     "vite-plugin-dts": "catalog:tooling",
@@ -137,7 +137,7 @@
     "slate": "^0.123.0",
     "slate-history": "^0.115.0",
     "slate-hyperscript": "^0.115.0",
-    "slate-react": "^0.123.0"
+    "slate-react": "^0.125.1"
   },
   "scripts": {
     "build": "pnpm run build-theme-typings && pnpm run build:lib && pnpm run build:postbuild-types",
