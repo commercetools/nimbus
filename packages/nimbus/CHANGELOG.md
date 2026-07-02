@@ -1,5 +1,129 @@
 # @commercetools/nimbus
 
+## 3.3.0
+
+### Minor Changes
+
+- [#1632](https://github.com/commercetools/nimbus/pull/1632)
+  [`544b735`](https://github.com/commercetools/nimbus/commit/544b73532afa030faefb314dbff18f03126134c6)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - **ActivityIndicator**:
+  new component — an animated three-dot indicator that signals ongoing agent or
+  system activity ("thinking", "processing", "typing") in chat and AI surfaces.
+
+  - Scales with the surrounding `font-size` by default (`size="inherit"`), so it
+    sits inline next to a status label. Fixed sizes (`2xs`–`lg`) reserve a
+    square icon-box footprint — the same scale points as `LoadingSpinner` — for
+    placement in input start/end icon slots.
+  - `colorPalette` accepts any Nimbus color palette (default `primary`); the
+    dots are filled from the palette's `11` shade.
+  - `variant` switches the dot color treatment: `plain` (default) for neutral
+    backgrounds, and `contrast` for sitting on a solid colored surface (the dots
+    take the palette's contrast color — black or white — automatically).
+  - Purely decorative (`aria-hidden`): pair it with visible text (e.g.
+    "Thinking…") that conveys the state. The indicator does not own a live
+    region — announce activity from your own persistent live region (e.g. your
+    chat container) when there is no adjacent visible text.
+  - Respects `prefers-reduced-motion` by replacing the bounce with a gentle
+    pulse.
+
+  For indeterminate progress where the user must wait, use `LoadingSpinner`
+  instead.
+
+- [#1645](https://github.com/commercetools/nimbus/pull/1645)
+  [`6a629b7`](https://github.com/commercetools/nimbus/commit/6a629b78e6ac17c98848ea978183809bf918ebdb)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `FileTrigger`: new
+  component. Wraps a pressable child (such as a `Button` or `IconButton`) and
+  opens the native file picker when it's activated; it renders no styling of its
+  own, so the trigger looks like the child you provide.
+
+  `onSelect` reports the selection as a native `FileList` (or `null`) — use
+  `Array.from(files)` to iterate. Configure the picker with `acceptedFileTypes`,
+  `allowsMultiple`, `acceptDirectory`, and `defaultCamera`.
+
+- [#1574](https://github.com/commercetools/nimbus/pull/1574)
+  [`f5ead80`](https://github.com/commercetools/nimbus/commit/f5ead806e37a95fb8093cfce6c1524570cd7a989)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Tree`: new compound
+  component for hierarchical data such as file trees and nested navigation —
+  compose `Tree.Root`, `Tree.Item`, `Tree.ItemContent`, `Tree.Indicator`, and
+  `Tree.SubTree`.
+
+  - Keyboard navigation, expand/collapse, type-ahead, and single or multiple
+    selection (multiple-selection mode renders a checkbox per row).
+  - Static children or dynamic data via `Tree.SubTree`; a `size` prop (`"sm"` |
+    `"md"`, default `"md"`) scales the rows.
+  - `useTree` hook manages hierarchy state and opt-in drag-and-drop (reorder +
+    re-parent) — spread its result onto `Tree.Root`. Dynamic and draggable trees
+    need no `react-aria-components` / `react-stately` imports.
+  - Drag-and-drop trees get a keyboard-accessible drag handle automatically — no
+    handle markup to author, so every tree reorders the same way.
+  - Accessible `treegrid` with WCAG 2.1 AA keyboard and screen-reader support.
+
+- [#1671](https://github.com/commercetools/nimbus/pull/1671)
+  [`55a9353`](https://github.com/commercetools/nimbus/commit/55a9353db2e553a60ab1c9376bd69c106e0d5758)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Button`: add
+  `allowFocusWhenDisabled` to support tooltips on disabled buttons.
+
+  A disabled button normally can't host a `Tooltip` because the native
+  `disabled` attribute removes it from the tab order and stops hover/focus
+  events — exactly when a tooltip explaining _why_ the action is unavailable is
+  most useful. Pass `allowFocusWhenDisabled` alongside `isDisabled` to keep the
+  button focusable and hoverable: it is announced as disabled via
+  `aria-disabled` (not the native `disabled` attribute), stays in the tab order,
+  and its action stays fully suppressed (press, click, `Enter`/`Space`, form
+  submit/reset, and link navigation).
+
+  ```tsx
+  <Tooltip.Root>
+    <Button isDisabled allowFocusWhenDisabled>
+      Publish
+    </Button>
+    <Tooltip.Content>Complete all required fields to publish.</Tooltip.Content>
+  </Tooltip.Root>
+  ```
+
+  Default disabled behavior is unchanged — omit the prop and `isDisabled` works
+  exactly as before.
+
+- [#1655](https://github.com/commercetools/nimbus/pull/1655)
+  [`33101a2`](https://github.com/commercetools/nimbus/commit/33101a24bd9023a9afb079faa00ee9ff2af30985)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Splitter`: fixes to
+  collapsed-handle interaction and responsive sizing.
+
+  - The collapsed handle is now **keyboard-only**: while an aside is collapsed
+    it no longer shows a hover track, and double-clicking it does nothing.
+    `Enter` still expands it. Because `collapsedSize` defaults to `0` (the aside
+    fully disappears), provide your own visible control — a button driving the
+    `collapsed` prop, or a trigger near the collapsed aside — so mouse users can
+    reopen it.
+  - `useResponsiveSplitterSizes`: a pixel/token `size` no longer flashes a 50/50
+    split for one frame on load — it resolves to the configured size before the
+    first paint.
+  - `useResponsiveSplitterSizes`: an aside collapsed on mount with a pixel/token
+    `collapsedSize` now renders at that collapsed size instead of staying at 0%
+    (invisible).
+
+### Patch Changes
+
+- [#1662](https://github.com/commercetools/nimbus/pull/1662)
+  [`a89db76`](https://github.com/commercetools/nimbus/commit/a89db76b85432ace645ab72e9b479197cd645a7e)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - Update React Aria
+  dependencies to their latest minor versions (`react-aria` 3.50.0,
+  `react-aria-components` 1.19.0, `react-stately` 3.48.0).
+
+  - `Menu`'s `onAction` callback now receives the selected item's value as a
+    second argument (`onAction(key, value)`), following React Aria's updated
+    signature. Existing handlers that only read the key continue to work
+    unchanged.
+  - Fixed keyboard navigation for removable tags in `ComboBox` (multi-select)
+    and `TagGroup`: the tag's remove button is no longer a separate tab stop,
+    which restores the single-Tab-stop entry into the tag list and arrow-key
+    navigation between tags. Tags are still removed with Delete/Backspace once
+    focused.
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@3.3.0
+  - @commercetools/nimbus-icons@3.3.0
+
 ## 3.2.0
 
 ### Minor Changes
