@@ -333,7 +333,11 @@ export const SaveDisabled: Story = {
         );
 
         const save = canvas.getByRole("button", { name: "Save" });
-        expect(save).toBeDisabled();
+        // The dialog mounts a tick before the isSaveDisabled lockout applies to
+        // the Save button; wait for it (the production Storybook bundle settles
+        // slower than the dev-transform test env and would otherwise read it
+        // still enabled).
+        await waitFor(() => expect(save).toBeDisabled());
 
         await userEvent.click(save);
         expect(onSave).not.toHaveBeenCalled();
@@ -342,9 +346,14 @@ export const SaveDisabled: Story = {
       }
     );
 
-    await step("Cancel button remains enabled while save is disabled", () => {
-      expect(canvas.getByRole("button", { name: "Cancel" })).toBeEnabled();
-    });
+    await step(
+      "Cancel button remains enabled while save is disabled",
+      async () => {
+        await waitFor(() =>
+          expect(canvas.getByRole("button", { name: "Cancel" })).toBeEnabled()
+        );
+      }
+    );
   },
 };
 
@@ -396,8 +405,14 @@ export const LoadingLockout: Story = {
       await waitFor(() =>
         expect(canvas.getByRole("dialog")).toBeInTheDocument()
       );
-      expect(canvas.getByRole("button", { name: "Save" })).toBeDisabled();
-      expect(canvas.getByRole("button", { name: "Cancel" })).toBeDisabled();
+      // The dialog mounts a tick before the isSaveLoading lockout disables the
+      // footer buttons; wait for it (the production Storybook bundle settles
+      // slower than the dev-transform test env and would otherwise read them
+      // still enabled).
+      await waitFor(() => {
+        expect(canvas.getByRole("button", { name: "Save" })).toBeDisabled();
+        expect(canvas.getByRole("button", { name: "Cancel" })).toBeDisabled();
+      });
     });
 
     await step(
@@ -447,7 +462,7 @@ export const LoadingLockout: Story = {
         const closeButton = canvas.getByRole("button", {
           name: "Close dialog",
         });
-        expect(closeButton).toBeDisabled();
+        await waitFor(() => expect(closeButton).toBeDisabled());
 
         await userEvent.click(closeButton);
 
@@ -512,7 +527,9 @@ export const AsyncSave: Story = {
       await waitFor(() =>
         expect(canvas.getByRole("dialog")).toBeInTheDocument()
       );
-      expect(canvas.getByRole("button", { name: "Save" })).toBeEnabled();
+      await waitFor(() =>
+        expect(canvas.getByRole("button", { name: "Save" })).toBeEnabled()
+      );
     });
 
     await step(
@@ -520,11 +537,11 @@ export const AsyncSave: Story = {
       async () => {
         await userEvent.click(canvas.getByRole("button", { name: "Save" }));
 
-        await waitFor(() =>
-          expect(canvas.getByRole("button", { name: "Save" })).toBeDisabled()
-        );
+        await waitFor(() => {
+          expect(canvas.getByRole("button", { name: "Save" })).toBeDisabled();
+          expect(canvas.getByRole("button", { name: "Cancel" })).toBeDisabled();
+        });
         expect(canvas.getByRole("dialog")).toBeInTheDocument();
-        expect(canvas.getByRole("button", { name: "Cancel" })).toBeDisabled();
       }
     );
 
