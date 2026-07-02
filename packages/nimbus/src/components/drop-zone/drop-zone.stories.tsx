@@ -181,7 +181,9 @@ export const WithFileTriggerComposition: Story = {
     <DropZone {...args}>
       <Text slot="label">Drop files, or browse to choose them</Text>
       <FileTrigger onSelect={fn()}>
-        <Button>Browse files</Button>
+        <Button variant="solid" colorPalette="primary">
+          Browse files
+        </Button>
       </FileTrigger>
     </DropZone>
   ),
