@@ -81,14 +81,17 @@ SHALL NOT expose a `size` variant — sizing is done with Nimbus style props
 
 DropZone SHALL style only the interaction states React Aria's `DropZone` exposes
 out of the box, via their data attributes: **idle** (dashed border, neutral
-background), **hover** (`data-hovered`), **dragOver** (border and background
-highlight, driven by `data-drop-target`), **focus** (`data-focus-visible`, a
-visible focus ring), and **disabled** (`data-disabled`). It SHALL NOT introduce
-custom error, loading, or invalid states — a drag rejected by `getDropOperation`
-does not set `data-drop-target` and therefore does not highlight. State changes
-SHALL NOT be conveyed by color alone. The dashed border and highlight SHALL meet
-WCAG 1.4.11 non-text contrast (≥3:1) and SHALL remain visible in forced-colors
-mode; drag-over transitions SHALL respect `prefers-reduced-motion`.
+background), **dragOver** (border and background highlight, driven by
+`data-drop-target`), **focus** (`data-focus-visible`, a visible focus ring), and
+**disabled** (`data-disabled`). It SHALL NOT style plain mouse hover
+(`data-hovered`): the zone is not click-to-upload (default cursor, no press
+action), so a hover affordance would falsely imply it is clickable. It SHALL NOT
+introduce custom error, loading, or invalid states — a drag rejected by
+`getDropOperation` does not set `data-drop-target` and therefore does not
+highlight. State changes SHALL NOT be conveyed by color alone. The dashed border
+and highlight SHALL meet WCAG 1.4.11 non-text contrast (≥3:1) and SHALL remain
+visible in forced-colors mode; drag-over transitions SHALL respect
+`prefers-reduced-motion`.
 
 Text selection SHALL be disabled within the drop target (`user-select: none`) so
 that dragging content over the zone does not accidentally select its text. The
@@ -125,6 +128,12 @@ belongs to the composed control.
   control
 - **THEN** the cursor is the default arrow, not a pointer/hand (the zone itself
   does not open the file picker on click)
+
+#### Scenario: Plain mouse hover is not styled
+
+- **WHEN** a pointer hovers the drop target and no drag is in progress
+- **THEN** the zone keeps its idle treatment (border and background do not
+  change), since the zone is not clickable
 
 ### Requirement: Accessibility (WCAG 2.1 AA)
 
