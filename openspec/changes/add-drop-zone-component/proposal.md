@@ -20,10 +20,12 @@ and any upload affordance are the consumer's to provide.
 
 - Styled via a standard Chakra recipe (`nimbusDropZone`) that styles only the
   interaction states React Aria exposes out of the box on the single container:
-  **idle** (dashed border), **hover** (`data-hovered`), **dragOver**
-  (`data-drop-target` highlight), **focus** (`data-focus-visible` ring), and
-  **disabled** (`data-disabled`). No custom error/loading/invalid states — a drag
-  rejected by `getDropOperation` simply does not highlight (RAC default).
+  **idle** (dashed border), **dragOver** (`data-drop-target` highlight),
+  **focus** (`data-focus-visible` ring), and **disabled** (`data-disabled`). No
+  custom error/loading/invalid states — a drag rejected by `getDropOperation`
+  simply does not highlight (RAC default). Plain mouse hover is intentionally
+  left unstyled: the zone is not click-to-upload (default cursor, no press
+  action), so a hover affordance would falsely imply it is clickable.
 - Renders a minimal **default state** when given no children — a centered upload
   icon + one localized instruction line ("Drag and drop files here") — so a bare
   `<DropZone />` communicates its purpose. Passing children replaces the default
@@ -53,7 +55,7 @@ No breaking changes — this is purely additive.
 
 - `drop-zone`: An accessible, styled drop target for file/data drag-and-drop —
   a thin React Aria `DropZone` wrapper that adds design-system styling for the
-  idle/hover/dragOver/focus/disabled states, forwards the RAC drop handlers, and
+  idle/dragOver/focus/disabled states, forwards the RAC drop handlers, and
   renders consumer-provided children. Full keyboard + screen-reader support; the
   file-upload path is added by composing `FileTrigger`.
 

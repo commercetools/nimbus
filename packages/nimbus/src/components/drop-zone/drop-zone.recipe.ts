@@ -39,11 +39,6 @@ export const dropZoneRecipe = defineRecipe({
     // Sizes the default icon; consumer-supplied children are unaffected.
     "--drop-zone-icon-size": "{sizes.800}",
 
-    "&[data-hovered='true']": {
-      borderColor: "colorPalette.8",
-      backgroundColor: "colorPalette.3",
-    },
-
     "&[data-drop-target='true']": {
       colorPalette: "primary",
       borderStyle: "solid",
