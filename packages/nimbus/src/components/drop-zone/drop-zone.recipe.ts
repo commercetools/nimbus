@@ -8,7 +8,6 @@ export const dropZoneRecipe = defineRecipe({
   className: "nimbus-drop-zone",
 
   base: {
-    colorPalette: "neutral",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
