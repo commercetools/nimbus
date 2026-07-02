@@ -1,6 +1,10 @@
 import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import type { SlotComponent } from "@/type-utils";
-import type { TabNavRootSlotProps, TabNavItemSlotProps } from "./tab-nav.types";
+import type {
+  TabNavRootSlotProps,
+  TabNavItemSlotProps,
+  TabNavIndicatorSlotProps,
+} from "./tab-nav.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "nimbusTabNav",
@@ -23,3 +27,13 @@ export const TabNavItemSlot: SlotComponent<
   HTMLAnchorElement,
   TabNavItemSlotProps
 > = withContext<HTMLAnchorElement, TabNavItemSlotProps>("a", "item");
+
+/**
+ * Internal slot for the sliding active-item marker. Rendered automatically by
+ * `TabNav.Root` and positioned by `useSlidingIndicator` — not part of the public
+ * compound API.
+ */
+export const TabNavIndicatorSlot: SlotComponent<
+  HTMLDivElement,
+  TabNavIndicatorSlotProps
+> = withContext<HTMLDivElement, TabNavIndicatorSlotProps>("div", "indicator");

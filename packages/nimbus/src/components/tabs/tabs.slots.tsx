@@ -6,6 +6,7 @@ import type {
   TabsTabSlotProps,
   TabsPanelsSlotProps,
   TabsPanelSlotProps,
+  TabsIndicatorSlotProps,
 } from "./tabs.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
@@ -32,3 +33,13 @@ export const TabsPanelsSlot: SlotComponent<
 
 export const TabsPanelSlot: SlotComponent<HTMLDivElement, TabsPanelSlotProps> =
   withContext<HTMLDivElement, TabsPanelSlotProps>("div", "panel");
+
+/**
+ * Internal slot for the sliding active-tab marker. Rendered automatically by
+ * `Tabs.Root` and positioned by `useSlidingIndicator` — not part of the public
+ * compound API.
+ */
+export const TabsIndicatorSlot: SlotComponent<
+  HTMLDivElement,
+  TabsIndicatorSlotProps
+> = withContext<HTMLDivElement, TabsIndicatorSlotProps>("div", "indicator");

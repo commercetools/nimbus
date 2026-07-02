@@ -24,7 +24,7 @@ const meta: Meta<typeof Tabs.Root> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["line", "pills"],
+      options: ["line", "rounded", "pill"],
       description: "Visual style variant of the tabs",
     },
     orientation: {
@@ -151,6 +151,13 @@ export const Base: Story = {
         name: "Monarchy and Republic",
       });
 
+      // The decorative sliding indicator sits over the active tab; switching
+      // tabs must reposition it (the slide is the default, no opt-in prop).
+      const indicator = canvasElement.querySelector<HTMLElement>(
+        '[aria-hidden="true"]'
+      );
+      const beforeTransform = indicator?.style.transform ?? "";
+
       await userEvent.click(secondTab);
 
       await expect(secondTab).toHaveAttribute("aria-selected", "true");
@@ -160,6 +167,9 @@ export const Base: Story = {
       await expect(activePanel).toHaveTextContent(
         "Senatus Populusque Romanus."
       );
+
+      await expect(indicator).not.toBeNull();
+      await expect(indicator!.style.transform).not.toBe(beforeTransform);
     });
 
     await step("Supports keyboard navigation", async () => {
@@ -436,7 +446,7 @@ export const VerticalPlacement: Story = {
             <Tabs.Root
               orientation="vertical"
               placement="end"
-              variant="pills"
+              variant="pill"
               tabs={placementTabs}
             />
           </Box>
@@ -808,7 +818,8 @@ export const Variants: Story = {
             Line Variant (Default)
           </Heading>
           <Text color="neutral.11" mb="400">
-            Tabs with an underline indicator showing the selected tab.
+            Tabs with a bar indicator marking the selected tab — an underline
+            when horizontal, an inner side bar when vertical.
           </Text>
           <Stack direction="column" gap="400">
             <Box data-testid="line-variant-horizontal">
@@ -830,27 +841,55 @@ export const Variants: Story = {
           </Stack>
         </Stack>
 
-        {/* Pills Variant */}
+        {/* Rounded Variant */}
         <Stack direction="column" gap="300">
           <Heading as="h3" fontSize="500">
-            Pills Variant
+            Rounded Variant
           </Heading>
           <Text color="neutral.11" mb="400">
-            Tabs with rounded pill-like appearance and background highlighting.
+            A soft rounded-rect highlight behind the selected tab.
           </Text>
           <Stack direction="column" gap="400">
-            <Box data-testid="pills-variant-horizontal">
+            <Box data-testid="rounded-variant-horizontal">
               <Heading as="h4" fontSize="350" mb="200">
                 Horizontal
               </Heading>
-              <Tabs.Root variant="pills" tabs={variantTabs} />
+              <Tabs.Root variant="rounded" tabs={variantTabs} />
             </Box>
-            <Box data-testid="pills-variant-vertical">
+            <Box data-testid="rounded-variant-vertical">
               <Heading as="h4" fontSize="350" mb="200">
                 Vertical
               </Heading>
               <Tabs.Root
-                variant="pills"
+                variant="rounded"
+                orientation="vertical"
+                tabs={variantTabs}
+              />
+            </Box>
+          </Stack>
+        </Stack>
+
+        {/* Pill Variant */}
+        <Stack direction="column" gap="300">
+          <Heading as="h3" fontSize="500">
+            Pill Variant
+          </Heading>
+          <Text color="neutral.11" mb="400">
+            A fully-rounded capsule highlight behind the selected tab.
+          </Text>
+          <Stack direction="column" gap="400">
+            <Box data-testid="pill-variant-horizontal">
+              <Heading as="h4" fontSize="350" mb="200">
+                Horizontal
+              </Heading>
+              <Tabs.Root variant="pill" tabs={variantTabs} />
+            </Box>
+            <Box data-testid="pill-variant-vertical">
+              <Heading as="h4" fontSize="350" mb="200">
+                Vertical
+              </Heading>
+              <Tabs.Root
+                variant="pill"
                 orientation="vertical"
                 tabs={variantTabs}
               />
@@ -1256,6 +1295,27 @@ export const LinkTabs: Story = {
       await userEvent.keyboard("{ArrowRight}");
       const apiTab = canvas.getByRole("tab", { name: "API Reference" });
       await expect(apiTab).toHaveFocus();
+    });
+  },
+};
+
+/**
+ * The legacy `pills` variant name is still accepted as a deprecated alias for
+ * `pill`, so existing code keeps working without changes.
+ */
+export const DeprecatedVariantAliases: Story = {
+  args: {
+    variant: "pills",
+    tabs: simpleTabs,
+    tabListAriaLabel: "Deprecated alias tabs",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Deprecated `pills` alias still renders tabs", async () => {
+      const tabs = canvas.getAllByRole("tab");
+      await expect(tabs).toHaveLength(3);
+      await expect(tabs[0]).toHaveAttribute("aria-selected", "true");
     });
   },
 };

@@ -11,10 +11,23 @@ import type { RouterOptions } from "../nimbus-provider/nimbus-provider.types";
 
 type TabsRecipeProps = {
   /**
-   * Visual style variant of the tabs
+   * Visual style variant of the tabs.
+   *
+   * - `line` — a bar marking the active tab: an underline when horizontal, an
+   *   inner side bar when vertical (default).
+   * - `rounded` — a soft rounded-rect highlight behind the active tab.
+   * - `pill` — a fully-rounded capsule highlight behind the active tab.
+   *
+   * The active highlight slides between tabs as the selection changes; the
+   * motion is disabled under `prefers-reduced-motion: reduce`.
+   *
+   * `"pills"` (→ `"pill"`) is accepted as a deprecated alias.
    * @default "line"
    */
-  variant?: SlotRecipeProps<"nimbusTabs">["variant"];
+  variant?:
+    | SlotRecipeProps<"nimbusTabs">["variant"]
+    /** @deprecated Use `"pill"` instead. */
+    | "pills";
   /**
    * Layout orientation of the tabs
    * @default "horizontal"
@@ -45,6 +58,8 @@ export type TabsTabSlotProps = HTMLChakraProps<"button", TabsRecipeProps>;
 export type TabsPanelsSlotProps = HTMLChakraProps<"div", TabsRecipeProps>;
 
 export type TabsPanelSlotProps = HTMLChakraProps<"div", TabsRecipeProps>;
+
+export type TabsIndicatorSlotProps = HTMLChakraProps<"div", TabsRecipeProps>;
 
 // ============================================================
 // HELPER TYPES

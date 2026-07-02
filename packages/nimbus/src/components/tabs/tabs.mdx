@@ -190,3 +190,40 @@ const App = () => (
   </Stack>
 )
 ```
+
+### Variants
+
+Tabs ships with three visual variants (the same set as `TabNav`): `line`
+(default), `rounded`, and `pill`. The active marker always slides between tabs as
+the selection changes, rather than snapping — a thin bar on the active tab's edge
+for `line` (an underline when horizontal, an inner side bar when vertical), or a
+filled highlight for `rounded`/`pill`. The slide is decorative (it does not
+affect selection, focus, or keyboard behavior) and automatically respects the
+user's reduced-motion preference (snapping instead of sliding).
+
+```jsx live
+const App = () => {
+  const tabs = [
+    { id: 'home', tabLabel: 'Home', panelContent: 'Home content' },
+    { id: 'about', tabLabel: 'About', panelContent: 'About content' },
+    { id: 'contact', tabLabel: 'Contact', panelContent: 'Contact content' },
+  ];
+
+  return (
+    <Stack direction="column" gap="800">
+      <Stack direction="column" gap="200">
+        <Text fontWeight="bold">Line</Text>
+        <Tabs.Root variant="line" tabs={tabs} />
+      </Stack>
+      <Stack direction="column" gap="200">
+        <Text fontWeight="bold">Rounded</Text>
+        <Tabs.Root variant="rounded" tabs={tabs} />
+      </Stack>
+      <Stack direction="column" gap="200">
+        <Text fontWeight="bold">Pill</Text>
+        <Tabs.Root variant="pill" tabs={tabs} />
+      </Stack>
+    </Stack>
+  )
+}
+```
