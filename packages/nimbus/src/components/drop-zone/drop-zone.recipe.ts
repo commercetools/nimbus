@@ -27,7 +27,11 @@ export const dropZoneRecipe = defineRecipe({
     borderRadius: "300",
     backgroundColor: "colorPalette.2",
     color: "colorPalette.11",
-    cursor: "pointer",
+    // The zone itself is not a click-to-upload target (that role belongs to a
+    // composed `FileTrigger`), so it uses the default cursor rather than a
+    // pointer. Disable text selection so dragging content over the zone does
+    // not accidentally select its text.
+    userSelect: "none",
     transitionProperty: "background-color, border-color",
     transitionDuration: "0.15s",
     transitionTimingFunction: "ease-in-smooth",
