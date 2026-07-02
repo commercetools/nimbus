@@ -1,0 +1,14 @@
+{
+  // Production typecheck config (used by the `typecheck` script and CI).
+  // Inherits everything from tsconfig.json but redefines `paths` to drop the
+  // "@commercetools/nimbus" -> ./src/index.ts alias. TypeScript replaces the
+  // whole `paths` object on override (it does not deep-merge), so the barrel
+  // resolves via package.json `exports` to dist/index.d.ts — i.e. the published
+  // type surface a real consumer gets.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}

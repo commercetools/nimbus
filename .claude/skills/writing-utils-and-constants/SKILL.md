@@ -342,7 +342,7 @@ export const { CONSTANT_NAME } = { value } as const;
 5. Delete the now-redundant `{component}.spec.tsx` (or trim it down to
    anything component-level that legitimately needs JSDOM).
 6. Run `pnpm test:dev packages/nimbus/src/components/{component}/` to verify.
-7. Run `pnpm --filter @commercetools/nimbus typecheck` to verify.
+7. Run `pnpm --filter @commercetools/nimbus typecheck:dev` to verify.
 
 #### Scenario 2: Add a new helper to an existing utils folder
 
