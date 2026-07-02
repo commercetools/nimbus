@@ -61,6 +61,13 @@ export const Base: Story = {
         await expect(target).toHaveAccessibleName("Drag and drop files here");
       }
     );
+
+    await step(
+      "Text selection is disabled on the drop target so dragging does not select its text",
+      async () => {
+        await expect(getComputedStyle(root).userSelect).toBe("none");
+      }
+    );
   },
 };
 

@@ -79,3 +79,18 @@
       in the idle/default state (`borderWidth: "{sizes.50}"`), with the default
       icon + label. Border-width regression (bare `"25"` → invalid CSS) fixed.
 - [x] 4.6 Changeset (`.changeset/add-drop-zone.md`) describes the MVP.
+
+## 5. Post-review refinements
+
+- [x] 5.1 `drop-zone.recipe.ts`: remove the misleading `cursor: pointer` from the
+      zone base (the zone is not itself a click-to-upload target — that is the
+      composed `FileTrigger`'s role) and disable text selection on the drop
+      target (`userSelect: "none"`) so dragging content over the zone does not
+      select its text.
+- [x] 5.2 Add a play-function assertion covering `user-select: none` on the drop
+      target.
+- [x] 5.3 Correct the docs lifecycle badge: `drop-zone.mdx` `lifecycleState`
+      Experimental → Beta.
+- [x] 5.4 Rewrite `.changeset/add-drop-zone.md` to be short and consumer-focused
+      per `docs/changeset-conventions.md` (drop the RAC-internals play-by-play).
+- [x] 5.5 Re-run typecheck, eslint, and the DropZone story tests.
