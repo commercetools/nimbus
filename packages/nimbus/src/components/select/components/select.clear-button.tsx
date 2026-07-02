@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { Close as CloseIcon } from "@commercetools/nimbus-icons";
-import { IconButton } from "@/components";
+import { IconButton } from "@/components/icon-button";
 import { SelectStateContext } from "react-aria-components";
 import { ClearPressResponder } from "@react-aria/interactions";
 import { useLocalizedStringFormatter } from "@/hooks";

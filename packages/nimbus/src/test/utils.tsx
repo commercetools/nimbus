@@ -4,7 +4,7 @@ import {
   type RenderOptions,
   type RenderResult,
 } from "@testing-library/react";
-import { NimbusProvider } from "@/components";
+import { NimbusProvider } from "@/components/nimbus-provider";
 import { userEvent as baseUserEvent } from "@testing-library/user-event";
 
 /**

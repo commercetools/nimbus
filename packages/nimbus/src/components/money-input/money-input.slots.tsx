@@ -1,5 +1,5 @@
 import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
-import { Group } from "@/components";
+import { Group } from "@/components/group";
 import type {
   MoneyInputRootSlotProps,
   MoneyInputContainerSlotProps,

@@ -1,5 +1,6 @@
 import { NumberInput } from "@/components/number-input/number-input";
-import { FormField, FieldErrors } from "@/components";
+import { FieldErrors } from "@/components/field-errors";
+import { FormField } from "@/components/form-field";
 import type { NumberInputFieldProps } from "./number-input-field.types";
 
 /**

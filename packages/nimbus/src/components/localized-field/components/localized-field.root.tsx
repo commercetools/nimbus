@@ -12,15 +12,13 @@ import {
   Payments,
   WarningAmber,
 } from "@commercetools/nimbus-icons";
-import {
-  Box,
-  Button,
-  FieldErrors,
-  Icon,
-  IconButton,
-  Stack,
-  type CurrencyCode,
-} from "@/components";
+import { Box } from "@/components/box";
+import { Button } from "@/components/button";
+import { FieldErrors } from "@/components/field-errors";
+import { Icon } from "@/components/icon";
+import { IconButton } from "@/components/icon-button";
+import { Stack } from "@/components/stack";
+import type { CurrencyCode } from "@/components/money-input";
 import { Popover } from "../../popover";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { localizedFieldMessagesStrings } from "../localized-field.messages";

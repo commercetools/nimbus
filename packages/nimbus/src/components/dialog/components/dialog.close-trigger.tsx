@@ -1,7 +1,7 @@
 import { Close } from "@commercetools/nimbus-icons";
 import { DialogCloseTriggerSlot } from "../dialog.slots";
 import type { DialogCloseTriggerProps } from "../dialog.types";
-import { IconButton } from "@/components";
+import { IconButton } from "@/components/icon-button";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dialogMessagesStrings } from "../dialog.messages";
 

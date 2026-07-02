@@ -1,4 +1,4 @@
-import type { CurrencyCode } from "@/components";
+import type { CurrencyCode } from "@/components/money-input";
 import type {
   LocalizedString,
   LocalizedCurrency,

@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
 import type { IconButtonProps } from "./icon-button.types";
-import { Button } from "@/components";
+import { Button } from "@/components/button";
 
 declare const process: { env: Record<string, string | undefined> } | undefined;
 

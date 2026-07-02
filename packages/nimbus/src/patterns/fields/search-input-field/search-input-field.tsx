@@ -1,6 +1,7 @@
 import { SearchInput } from "@/components/search-input/search-input";
 import type { SearchInputFieldProps } from "./search-input-field.types";
-import { FormField, FieldErrors } from "@/components";
+import { FieldErrors } from "@/components/field-errors";
+import { FormField } from "@/components/form-field";
 
 /**
  * # SearchInputField

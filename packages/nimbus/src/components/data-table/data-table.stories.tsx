@@ -18,8 +18,8 @@ import {
   Stack,
   Text,
   TextInput,
-  DataTable,
-} from "@/components";
+} from "@commercetools/nimbus";
+import { DataTable } from "@/components/data-table";
 import { UPDATE_ACTIONS } from "./constants";
 import { useStableDataTableContext } from "./components/data-table.context";
 import { Palette } from "@commercetools/nimbus-icons";

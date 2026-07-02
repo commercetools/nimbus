@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { NumberInputField } from "./number-input-field";
 import { userEvent, within, expect, fn } from "storybook/test";
-import { Stack, Text } from "@/components";
+import { Stack, Text } from "@commercetools/nimbus";
 
 const meta: Meta<typeof NumberInputField> = {
   title: "patterns/fields/NumberInputField",

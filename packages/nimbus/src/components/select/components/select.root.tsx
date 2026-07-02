@@ -8,7 +8,8 @@ import {
   Loop as SpinnerIcon,
 } from "@commercetools/nimbus-icons";
 
-import { Flex, Box } from "@/components";
+import { Box } from "@/components/box";
+import { Flex } from "@/components/flex";
 import {
   Button as RaButton,
   Popover as RaPopover,

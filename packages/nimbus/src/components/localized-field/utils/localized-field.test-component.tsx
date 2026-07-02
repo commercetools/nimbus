@@ -7,14 +7,12 @@ import type {
   LocalizedString,
   LocalizedCurrency,
 } from "../localized-field.types";
-import {
-  Accordion,
-  Checkbox,
-  Group,
-  Text,
-  Stack,
-  Separator,
-} from "@/components";
+import { Accordion } from "@/components/accordion";
+import { Checkbox } from "@/components/checkbox";
+import { Group } from "@/components/group";
+import { Separator } from "@/components/separator";
+import { Stack } from "@/components/stack";
+import { Text } from "@/components/text";
 
 export type LocalizedFieldTypes = "text" | "multiLine" | "richText" | "money";
 

@@ -1,15 +1,15 @@
 import { useCallback } from "react";
+import { FormField } from "@/components/form-field";
+import { Icon } from "@/components/icon";
 import {
-  FormField,
-  Icon,
-  TextInput,
   MoneyInput,
-  type CustomEvent,
-  MultilineTextInput,
-  RichTextInput,
-  type MoneyInputValue,
   type CurrencyCode,
-} from "@/components";
+  type CustomEvent,
+  type MoneyInputValue,
+} from "@/components/money-input";
+import { MultilineTextInput } from "@/components/multiline-text-input";
+import { RichTextInput } from "@/components/rich-text-input";
+import { TextInput } from "@/components/text-input";
 import { WarningAmber } from "@commercetools/nimbus-icons";
 import {
   LocalizedFieldLocaleFieldRootSlot,

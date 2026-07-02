@@ -1,6 +1,6 @@
 import { DialogTitleSlot } from "../dialog.slots";
 import type { DialogTitleProps } from "../dialog.types";
-import { Heading } from "@/components";
+import { Heading } from "@/components/heading";
 
 /**
  * Dialog.Title - The accessible title element

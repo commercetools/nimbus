@@ -12,7 +12,7 @@ import {
   useLocale,
 } from "react-aria-components";
 
-import { Box } from "@/components";
+import { Box } from "@/components/box";
 
 import {
   CalendarCellSlot,
