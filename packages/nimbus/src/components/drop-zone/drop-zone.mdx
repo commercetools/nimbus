@@ -1,0 +1,94 @@
+---
+id: Components-DropZone
+title: Drop zone
+exportName: DropZone
+description: An accessible drop target for drag-and-drop file and data uploads, with a built-in click-to-upload fallback via FileTrigger.
+lifecycleState: Beta
+order: 999
+menu:
+  - Components
+  - Inputs
+  - Drop zone
+tags:
+  - component
+  - dropzone
+  - upload
+  - drag-and-drop
+---
+
+## Overview
+
+A drop zone is a dedicated area users drag files or other data onto to upload
+them. It renders a dashed-border area that highlights when a valid drag is
+held over it. DropZone is built for upload flows such as asset managers, CSV
+importers, and avatar pickers, where a visible, on-brand drop target improves
+on a bare button.
+
+Dragging is not the only way in: DropZone pairs with `FileTrigger` to add a
+click-to-upload button inside the zone, so a mouse, keyboard, or screen-reader
+user can all reach the same upload flow.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[React Aria DropZone](https://react-spectrum.adobe.com/react-aria/DropZone.html)
+
+## Variables
+
+Get familiar with the features.
+
+### States
+
+Idle, drag-over, and disabled are the states DropZone styles. Drag a file over
+the first zone to see the highlight; the second zone shows the disabled
+treatment.
+
+```jsx live
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="flex-start">
+    <DropZone>
+      <FileTrigger>
+        <Button variant="ghost">Browse files</Button>
+      </FileTrigger>
+    </DropZone>
+    <DropZone isDisabled>
+      <FileTrigger>
+        <Button variant="ghost" isDisabled>
+          Browse files
+        </Button>
+      </FileTrigger>
+    </DropZone>
+  </Stack>
+);
+```
+
+### Default content
+
+With no children, DropZone shows a default upload icon and instruction label,
+so it never appears as an empty box.
+
+```jsx live
+const App = () => <DropZone />;
+```
+
+### Composing a click-to-upload button
+
+Children, when provided, replace the default content entirely. Compose
+`FileTrigger` and `Button` inside DropZone to add a click-to-upload path
+alongside dragging.
+
+```jsx live
+const App = () => (
+  <DropZone>
+    <FileTrigger allowsMultiple>
+      <Button variant="ghost">Browse files</Button>
+    </FileTrigger>
+  </DropZone>
+);
+```
+
+## Guidelines
+
+See the Guidelines tab for best practices, and the Accessibility tab for
+keyboard and screen-reader behavior.

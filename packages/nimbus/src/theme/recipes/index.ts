@@ -3,6 +3,7 @@ import { avatarRecipe } from "@/components/avatar/avatar.recipe";
 import { badgeRecipe } from "@/components/badge/badge.recipe";
 import { buttonRecipe } from "@/components/button/button.recipe";
 import { codeRecipe } from "@/components/code/code.recipe";
+import { dropZoneRecipe } from "@/components/drop-zone/drop-zone.recipe";
 import { groupRecipe } from "@/components/group/group.recipe";
 import { headingRecipe } from "@/components/heading/heading.recipe";
 import { iconRecipe } from "@/components/icon/icon.recipe";
@@ -39,6 +40,7 @@ export const recipes = {
   nimbusBadge: badgeRecipe,
   nimbusButton: buttonRecipe,
   nimbusCode: codeRecipe,
+  nimbusDropZone: dropZoneRecipe,
   nimbusGroup: groupRecipe,
   nimbusHeading: headingRecipe,
   nimbusIcon: iconRecipe,

@@ -1,0 +1,77 @@
+---
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+DropZone gives users a visible, on-brand target for dragging in files. It
+works best as one part of an upload flow, not the whole flow — pair it with a
+click-to-upload trigger and let the consumer's application own what happens
+once files arrive.
+
+### Best practices
+
+- **Always pair dragging with a click-to-upload button.** Not every user can
+  drag: compose a `FileTrigger` and `Button` inside the drop zone so keyboard
+  and screen-reader users have an equally direct path to the file picker.
+- **State what the zone accepts.** If the drop zone only takes certain file
+  types or a size limit, say so in nearby text — don't make users find out by
+  trying and failing.
+- **Reserve space for the filled state.** Once files are dropped or selected,
+  swap the zone's content to show what was added (a file list, a thumbnail).
+  Don't leave the empty-state copy showing alongside the result.
+- **Replace the default label when you add your own content.** DropZone has a
+  default icon and accessible name out of the box, but composing children
+  (such as a `FileTrigger`) replaces that default entirely. Once you add
+  children, include a heading, instructional text, or an `aria-label` of your
+  own so the zone keeps a clear accessible name.
+
+### When to use
+
+> [!TIP]\
+> **Do** — use a drop zone when uploading a file is a primary action on the
+> page, and dragging is a plausible way users will get there.
+
+- A dedicated upload step, such as an asset manager or CSV importer.
+- An avatar or logo picker where the target area is large enough to make
+  dragging comfortable.
+- Any flow where a click-to-upload button alone would leave power users
+  without a faster drag-and-drop option.
+
+> [!CAUTION]\
+> **Don't** — reach for `FileTrigger` alone instead when a drop target adds
+> more visual weight than the flow needs.
+
+- A single inline "Attach file" action next to a text field or in a toolbar.
+- A space-constrained layout where a full drop zone would crowd other
+  content.
+- A flow where files are the only content — DropZone doesn't add upload
+  progress, retries, or a file list; you still build that part yourself.
+
+### Common mistakes
+
+> [!CAUTION]\
+> **Don't** show a drop zone with no way to reach it by keyboard.
+
+```jsx live
+const App = () => (
+  // Drag-only: this zone has a default icon and accessible name, but no
+  // click-to-upload path. A keyboard or screen-reader user can't reach the
+  // operating system's file picker from it.
+  <DropZone />
+);
+```
+
+> [!TIP]\
+> **Do** compose a `FileTrigger` so every user has a path to the same picker.
+
+```jsx live
+const App = () => (
+  <DropZone>
+    <FileTrigger>
+      <Button variant="ghost">Browse files</Button>
+    </FileTrigger>
+  </DropZone>
+);
+```

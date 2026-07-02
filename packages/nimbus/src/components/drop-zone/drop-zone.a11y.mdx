@@ -1,0 +1,90 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+DropZone is keyboard- and screen-reader-accessible by default through React
+Aria, without any extra setup. It reaches WCAG 2.1 AA for contrast, focus
+visibility, and non-color state changes.
+
+```jsx live
+const App = () => (
+  <DropZone>
+    <FileTrigger>
+      <Button variant="ghost">Browse files</Button>
+    </FileTrigger>
+  </DropZone>
+);
+```
+
+### Accessibility standards
+
+- **Accessible name:** with no children and no explicit label, DropZone
+  supplies a default, localized accessible name automatically — no setup
+  required. An explicit `aria-label` or `aria-labelledby` replaces the default
+  entirely and is forwarded straight to React Aria's `DropZone`, which applies
+  it to its focusable element. For a visible label instead, render a
+  `<Text slot="label">` child — see the Implementation tab.
+- **Not color-only:** The drag-over state changes the border from dashed to
+  solid and switches to a heavier, tinted background — it does not rely on a
+  color shift alone. The dashed idle border and the drag-over highlight both
+  meet WCAG 1.4.11 non-text contrast (at least 3:1 against the surrounding
+  page).
+- **Forced-colors mode:** The border and drag-over outline remain visible when
+  the operating system's forced-colors (high-contrast) mode is active.
+- **Reduced motion:** Drag-over transitions respect `prefers-reduced-motion`
+  and are removed for users who request less motion.
+- **Focus indication:** A keyboard-focused drop target shows a visible focus
+  ring that meets contrast requirements.
+- **Disabled state:** `isDisabled` is conveyed both visually (a lower-emphasis
+  treatment) and to assistive technology, and rejects drops. It has no effect
+  on descendants — set `isDisabled` explicitly on a composed
+  `FileTrigger`/`Button` as well, so both controls stay in sync (see the
+  Implementation tab).
+
+### Keyboard navigation
+
+| Key      | Action                                                          |
+| -------- | ---------------------------------------------------------------- |
+| `Tab`    | Move focus to or from the drop target                           |
+| `Enter`  | While focused, enter drag-and-drop mode; while in that mode on a valid target, drop |
+| `Tab` (in drag mode) | Move between available drop targets                  |
+| `Escape` | Cancel drag-and-drop mode without dropping                       |
+
+This keyboard drag-and-drop model is built into React Aria's `DropZone` and
+requires no extra wiring. It only operates **within the browser window** — it
+cannot reach the operating system's file system, so a keyboard or
+screen-reader user cannot use it alone to upload a file from disk.
+
+> [!NOTE]\
+> Because keyboard drag-and-drop can't reach OS files, compose a `FileTrigger`
+> inside the drop zone whenever the zone is meant for file uploads. The
+> `FileTrigger`'s button gives keyboard and screen-reader users a direct path
+> to the native file picker, equivalent to what a mouse user gets by dragging
+> a file in from their desktop.
+
+### Screen reader support
+
+- The drop target is announced as a focusable, interactive element with its
+  accessible name (the default instruction label, or an explicit label when
+  one is provided).
+- Entering and exiting drag-and-drop mode, moving between drop targets, and
+  completing or canceling a drop are all announced by React Aria as the user
+  progresses through the keyboard flow.
+- A composed `FileTrigger`'s button is announced independently, using its own
+  accessible name — give it a clear label such as "Browse files" or "Upload
+  file" rather than a generic "Choose".
+
+### ARIA attributes
+
+- **`aria-label` / `aria-labelledby`** — forwarded as-is to React Aria's
+  `DropZone`. DropZone has a default accessible name out of the box; provide
+  one of these, or a `<Text slot="label">` child, to replace it with your own.
+- **`data-drop-target`** — present while a valid drag is held over the zone;
+  drives the drag-over visual treatment described above.
+- **`data-focus-visible`** — present when the zone has keyboard focus; drives
+  the visible focus ring.
+- **`data-disabled`** — present when `isDisabled` is set; drives the disabled
+  visual treatment and is not paired with any active drop or focus state.
