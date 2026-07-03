@@ -46,7 +46,11 @@ export const Defaults: Story = {
 
     // Paragraph with inline formatting.
     expect(canvasElement.querySelector("strong")).toHaveTextContent("bold");
-    expect(canvasElement.querySelector("em")).toHaveTextContent("italic");
+    const em = canvasElement.querySelector("em");
+    expect(em).toHaveTextContent("italic");
+    // Chakra's preflight resets the UA italic on <em>; the renderer must
+    // restore it, so assert the computed style rather than just the tag.
+    expect(getComputedStyle(em!).fontStyle).toBe("italic");
 
     // Inline code renders as <code>, code block as <pre><code>.
     expect(canvasElement.querySelector("pre code")).toHaveTextContent(

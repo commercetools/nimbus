@@ -108,6 +108,11 @@ export function createNimbusComponents({
 
     p: (props) => <Text as="p" {...withoutNode(props)} />,
 
+    // Chakra's preflight resets `* { font: inherit }`, which strips the UA
+    // default `em { font-style: italic }` (unlike `b, strong`, whose bold weight
+    // preflight re-adds). Restore it so `*emphasis*` renders italic.
+    em: (props) => <chakra.em fontStyle="italic" {...withoutNode(props)} />,
+
     a: ({ href, children, ...props }) => {
       const external = isExternalUrl(href);
       return (
