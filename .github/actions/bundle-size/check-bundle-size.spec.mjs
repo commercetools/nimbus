@@ -25,8 +25,15 @@ function run(script, env = {}) {
   }
 }
 
+// These fixtures track the *actual* current built size of each package: the
+// "passes within budget" cases below run the real check script against the
+// real dist and assert it stays under the +5% relative threshold. When a
+// change intentionally grows a bundle (and is signed off via the
+// `bundle-size-approved` label on the PR), bump the corresponding baseline
+// here to the new measured size. The nimbus baseline was raised when the
+// Markdown component bundled react-markdown/remark-gfm/remend (~+14.6%).
 const VALID_BASELINE = JSON.stringify({
-  "@commercetools/nimbus": { dist: 16909814 },
+  "@commercetools/nimbus": { dist: 19619225 },
   "@commercetools/nimbus-icons": { dist: 4889696 },
   "@commercetools/nimbus-tokens": { dist: 417934 },
 });
@@ -135,7 +142,7 @@ describe("per-package size policies", () => {
   describe("absolute policy passes when relative would fail", () => {
     it("tokens pass under absolute budget even with >5% relative increase", () => {
       const baseline = {
-        "@commercetools/nimbus": { dist: 16909814 },
+        "@commercetools/nimbus": { dist: 19619225 },
         "@commercetools/nimbus-icons": { dist: 4889696 },
         "@commercetools/nimbus-tokens": { dist: 380000 },
       };
