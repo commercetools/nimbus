@@ -39,7 +39,7 @@
     "react-router-dom": "^7.17.0",
     "react-syntax-highlighter": "^16.1.1",
     "remark-flexible-toc": "^1.2.5",
-    "remark-gfm": "^4.0.1",
+    "remark-gfm": "catalog:markdown",
     "remark-mark-highlight": "^0.1.1",
     "slug": "^11.0.1",
     "use-debounce": "^10.1.1",
