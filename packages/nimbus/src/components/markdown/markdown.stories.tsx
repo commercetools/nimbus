@@ -195,10 +195,12 @@ export const GitHubFlavoredMarkdown: Story = {
     expect(checkboxes[0]).toHaveAttribute("aria-label", "Completed task");
     expect(checkboxes[0].disabled).toBe(true);
 
-    // Strikethrough + autolink.
-    expect(canvasElement.querySelector("del")).toHaveTextContent(
-      "struck through"
-    );
+    // Strikethrough + autolink. Assert the computed line-through (not just the
+    // tag): the UA default lives in `text-decoration`, which the preflight
+    // `font: inherit` reset must not strip.
+    const del = canvasElement.querySelector("del");
+    expect(del).toHaveTextContent("struck through");
+    expect(getComputedStyle(del!).textDecorationLine).toBe("line-through");
     expect(canvas.getByRole("link", { name: /example\.com/ })).toHaveAttribute(
       "href",
       "https://example.com"
