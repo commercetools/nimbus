@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { deriveInitialSize, normalizeSize, sizeEqual } from "../utils";
 import type {
   ResolvedAsideConfig,
@@ -185,7 +192,7 @@ export const useSplitterState = (
   // Reconcile size when the resolved collapsed state changes (controlled prop
   // change or internal toggle). The mount case is a no-op (state already matches
   // the seeded collapse).
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!bothRegistered(paneOrder)) return;
     const cur = collapsed;
     const prev = appliedCollapseRef.current;
@@ -226,7 +233,7 @@ export const useSplitterState = (
   // collapse is signalled via `onCollapsedChange`, not the size channels. An
   // expand-by-resize clears `appliedCollapseRef` in `writeSize`, so this never
   // fights a drag-to-expand.
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!bothRegistered(paneOrder)) return;
     if (!appliedCollapseRef.current) return;
     if (sizeEqual(asideConfig.collapsedSize, sizeRef.current)) return;
@@ -238,7 +245,9 @@ export const useSplitterState = (
   // the prop changes, never on a drag tick (internal state stays authoritative
   // during interaction). Declared after the collapse effect so collapse settles
   // first. The write is silent (no callbacks): the value is the consumer's own.
-  useEffect(() => {
+  // A layout effect so a controlled `size` resolving post-mount is adopted before
+  // paint, not a frame later (which would flash the 50/50 seed).
+  useLayoutEffect(() => {
     if (!isSizeControlled) return;
     if (!bothRegistered(paneOrder)) return;
     // Prop unchanged since last reconcile → nothing to do. Covers the post-init

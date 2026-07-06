@@ -38,6 +38,13 @@ export const splitterSlotRecipe = defineSlotRecipe({
       overflow: "auto",
       minWidth: 0,
       minHeight: 0,
+      // Confine each pane's content to its own stacking context so positioned /
+      // sticky descendants (with their own z-index) can't escape into the root
+      // stacking context and paint over the absolutely-positioned handle (a
+      // sibling at z-index 1). With this, the handle always overlays pane
+      // content — without it, e.g. a sticky header/footer at z-index 1 in a pane
+      // that follows the handle in DOM order would tie and win.
+      isolation: "isolate",
     },
     handle: {
       position: "absolute",

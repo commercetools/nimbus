@@ -1,4 +1,4 @@
-import { useEffect, useId } from "react";
+import { useId, useLayoutEffect } from "react";
 import { SplitterPaneSlot } from "../splitter.slots";
 import { useSplitterContext } from "../hooks/use-splitter-context";
 import type { SplitterAsideProps, SplitterPaneRole } from "../splitter.types";
@@ -32,7 +32,9 @@ export const SplitterPaneBase = ({
   const generatedDomId = useId();
   const domId = id ?? generatedDomId;
 
-  useEffect(() => {
+  // Register before paint so the root's size/collapse reconciliation (gated on
+  // both panes registering) settles in the same commit — see useSplitterState.
+  useLayoutEffect(() => {
     registerPane(paneRole, domId);
     return () => unregisterPane(paneRole);
   }, [paneRole, domId, registerPane, unregisterPane]);
