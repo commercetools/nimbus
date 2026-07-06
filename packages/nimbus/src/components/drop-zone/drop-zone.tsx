@@ -26,8 +26,10 @@ import type { DropZoneProps } from "./drop-zone.types";
  *   default (for example a composed `FileTrigger` + `Button`, or a
  *   dropped-file list)
  * - Forwards `aria-label` / `aria-labelledby` straight to React Aria's
- *   `DropZone`, which applies them to its focusable element and takes
- *   precedence over the default label
+ *   `DropZone`, which applies them to its focusable element. An explicit
+ *   label overrides only the accessible name — the default icon and visible
+ *   instruction still render — because the default's visible text is opted
+ *   out of the name via `slot={null}` and so never conflicts with it
  * - Supports Nimbus style props
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/inputs/dropzone}
@@ -70,7 +72,7 @@ export const DropZone = (props: DropZoneProps) => {
         aria-label={hasExplicitLabel ? undefined : defaultLabel}
         {...elementProps}
       >
-        {hasChildren || hasExplicitLabel ? (
+        {hasChildren ? (
           children
         ) : (
           <>

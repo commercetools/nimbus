@@ -118,6 +118,10 @@ describe("DropZone - onDrop file extraction", () => {
  * @docs-order 3
  */
 describe("DropZone - getDropOperation guard", () => {
+  // This case exercises a standalone `getDropOperation` guard to illustrate the
+  // accept/reject shape a consumer would write — it does not drive `DropZone`
+  // itself, so it documents the pattern rather than asserting component
+  // behavior. The following case renders `DropZone` with the guard supplied.
   it("rejects types the zone does not accept", () => {
     const acceptedType = "image/png";
     const getDropOperation = (types: DragTypes): DropOperation =>

@@ -179,9 +179,13 @@ const App = () => {
 
 With no children and no explicit label, DropZone's default content supplies
 its own accessible name automatically — no setup required. An explicit
-`aria-label` or `aria-labelledby` replaces the default content entirely (not
-just its text) and is forwarded straight to React Aria's `DropZone`, which
-applies it to the focusable element. For a visible label instead, render a
+`aria-label` or `aria-labelledby` overrides only the accessible name: it is
+forwarded straight to React Aria's `DropZone` and applied to the focusable
+element, while the default icon and instruction still render (the default's
+visible text is opted out of the name, so it never conflicts with your
+label). Passing children, on the other hand, replaces the default content
+entirely — so you can combine the two: keep the default visual and give it a
+more descriptive accessible name. For a visible label of your own, render a
 `<Text slot="label">` child — React Aria wires the label association
 automatically through the `slot` prop, and the presence of this child (like
 any child) replaces the default content:
@@ -292,9 +296,10 @@ DropZone handles most accessibility requirements internally via React Aria.
 
 - **Labeling**: with no children and no explicit label, DropZone has a default
   accessible name out of the box. An explicit `aria-label` / `aria-labelledby`
-  replaces the default entirely and is forwarded to React Aria's `DropZone`,
-  which applies it to its focusable element. For a visible label instead,
-  render a `<Text slot="label">` child.
+  overrides only the accessible name — it is forwarded to React Aria's
+  `DropZone` and applied to its focusable element, while the default icon and
+  instruction still render. Passing children replaces the default visual; for
+  a visible label of your own, render a `<Text slot="label">` child.
 - **Role**: The rendered element is React Aria's `DropZone`, which behaves as
   a focusable, keyboard-operable drop target with built-in drag-and-drop
   semantics — see the Accessibility tab for the full keyboard model.
@@ -328,12 +333,14 @@ tab for the complete key/action table and its limits for OS file uploads.
 
 ## Notes and limitations
 
-- **All-or-nothing default content.** With no children, DropZone renders a
-  default upload icon and localized instruction label as its accessible name.
-  Passing any children — or an explicit `aria-label` / `aria-labelledby` —
-  replaces that default entirely; there's no way to keep the default icon
-  while overriding only the label, or vice versa. Compose a `FileTrigger` (and
-  any supporting copy) as children for a click-to-upload path.
+- **Default content vs. accessible name.** With no children, DropZone renders a
+  default upload icon and localized instruction label, which also serves as its
+  accessible name. Passing any children replaces that default visual entirely.
+  An explicit `aria-label` / `aria-labelledby` is independent: it overrides only
+  the accessible name and leaves the default icon and instruction in place — so
+  you can keep the default visual while giving it a more descriptive name.
+  Compose a `FileTrigger` (and any supporting copy) as children for a
+  click-to-upload path.
 - **No file-selection props.** DropZone does not expose `acceptedFileTypes`,
   `allowsMultiple`, or any other file-picker configuration — that surface
   belongs to the composed `FileTrigger`.

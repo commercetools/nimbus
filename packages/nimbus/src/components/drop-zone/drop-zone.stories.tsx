@@ -81,16 +81,23 @@ export const AccessibleName: Story = {
     "aria-label": "Upload files",
   } as never,
   play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
     await step(
-      "An explicit aria-label takes precedence over the default label",
+      "An explicit aria-label overrides only the accessible name",
       async () => {
-        const canvas = within(canvasElement);
         const target = canvas.getByLabelText("Upload files");
         await expect(target).toBeInTheDocument();
         await expect(target).toHaveAccessibleName("Upload files");
+      }
+    );
+
+    await step(
+      "The default icon and instruction still render — the explicit label replaces the name, not the visible content",
+      async () => {
         await expect(
-          canvas.queryByText(/drag and drop files here/i)
-        ).not.toBeInTheDocument();
+          canvas.getByText(/drag and drop files here/i)
+        ).toBeInTheDocument();
       }
     );
   },
