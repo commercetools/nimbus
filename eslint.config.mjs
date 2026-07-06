@@ -48,6 +48,11 @@ export default tseslint.config(
       "**/dist/**",
       "**/dist-*/**",
       "**/storybook-static/**",
+      // Nested git worktrees (created by worktree tooling) each carry a full
+      // copy of the repo, including their own tsconfig. Without this ignore,
+      // typescript-eslint sees multiple candidate TSConfigRootDirs under the
+      // repo root and fails to parse every file. Not part of this project.
+      "**/.claude/worktrees/**",
     ],
   },
   /**
