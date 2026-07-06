@@ -1,0 +1,249 @@
+# Design: Markdown component
+
+## Context
+
+Primary use case is rendering **agentic / LLM streaming output** in chat and
+assistant UIs; the secondary case is rendering authored markdown (release notes,
+docs snippets, descriptions). The component must be flexible (every element
+overridable), safe by default (untrusted input), and visually owned by Nimbus
+(token-driven, no foreign CSS).
+
+This design is grounded in a completed research pass and a working spike
+(`scratchpad/md-spike/`) that rendered streamed partial markdown through Nimbus
+stand-in components on React 19 with zero Tailwind.
+
+## Library decision
+
+**Engine: `react-markdown@10`** (remark/rehype/unified). Rationale:
+
+- **Headless** — emits React elements, ships no CSS. Styling is 100% ours via
+  the `components` map + Chakra style props. The only widely-adopted renderer
+  with this property.
+- **Safe by default** — no `dangerouslySetInnerHTML`; raw HTML escaped/ignored;
+  built-in `urlTransform` neutralizes dangerous protocols. GitHub Advisory DB
+  has no advisories against the package itself; reported XSS is always
+  misconfiguration (`rehype-raw` without sanitize).
+- **The `components` prop covers the override requirement** — map element name →
+  component over the Nimbus defaults (shallow-merged per key). Non-standard keys
+  additionally register custom component tags (materialized by a Nimbus-owned
+  remark plugin; see "Custom component tags" below).
+- **React 19 compatible** (peer `react >=18`), verified in the spike.
+
+**Streaming: `remend@1.3`** — zero-dependency, framework-agnostic string→string
+pre-processor (`remend(text, options) => string`). Completes unterminated
+bold/italic/inline-code/links/images/strikethrough/math. **No-op on complete
+input** (spike-verified byte-identical), so safe to run unconditionally per
+frame. This is the exact streaming engine inside Streamdown, extracted without
+the Tailwind styling.
+
+**Security: piggyback on Merchant Center conventions — no extra library.** The
+MC framework already governs image/host security at the **application CSP**
+(`img-src`), and its existing `react-markdown` viewer
+(`merchant-center-frontend/.../connect/markdown-viewer.tsx`) relies on
+react-markdown's built-in safety: `skipHtml` (no raw HTML), an `allowedElements`
+allowlist, and a custom `a` with `rel="noopener noreferrer"`. We adopt the same
+posture rather than adding `harden-react-markdown`. Benefits: no per-frame
+third-party code on untrusted input (supply-chain), one fewer dependency
+(bundle), and internal relative/CDN/`data:` images "just work" because the CSP
+gates them — exactly as MC works today.
+
+**GFM: `remark-gfm`** — tables, task lists, strikethrough, autolinks.
+Default-on.
+
+Rejected: Streamdown (Tailwind), markdown-to-jsx (XSS history + non-remark),
+marked/markdown-it (`dangerouslySetInnerHTML`), MDX (executes code),
+markstream-react (own CSS). See proposal for detail.
+
+## Architecture
+
+```mermaid
+flowchart TD
+    A["children (markdown string)"] --> B{"isStreaming?"}
+    B -->|yes| C["remend(text, {linkMode: 'text-only'})"]
+    C --> D["split into blocks (stable block keys)<br/>— memoized per block"]
+    B -->|no| RM["react-markdown"]
+    D --> RM
+    C -.->|streaming a11y| AB["aria-busy + coalesced completion announce"]
+    RM --> E["Nimbus-styled React elements<br/>(style props → outer root container;<br/>images lazy + no-referrer)"]
+    E --> F["image-host security ← application CSP (img-src)"]
+
+    RM -.- CFG["skipHtml — raw HTML always off, safe by default<br/>allowedElements (safe allowlist + registered custom tags) / disallowedElements<br/>remarkPlugins: [remarkGfm, customComponentTags(registeredNames)?]<br/>rehypePlugins: []<br/>urlTransform — neutralizes javascript:/vbscript:/file:<br/>components: { ...nimbusDefaults, ...userComponents }"]
+```
+
+### Default renderer map
+
+Reuse existing Nimbus components where they exist; styled `chakra.*` primitives
+(design-token style props) otherwise — no component-specific slot recipe. Each
+default renderer destructures out `node` before spreading (spike surfaced
+`node="[object Object]"` leaking to the DOM otherwise).
+
+| Element                        | Default renderer                                                                                                   |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `h1`–`h6`                      | `Heading` (via `as`) at the Figma `Markdown/*` heading sizes set as style props; `h5`/`h6` fold to the smallest    |
+| `p`                            | `Text` (Markdown/Body)                                                                                             |
+| `a`                            | `Link` — external-link detection adds `target="_blank" rel="noopener noreferrer"` + visible indicator + i18n label |
+| `code` (inline)                | `Code` (Markdown/Code, system mono)                                                                                |
+| `pre`/code block               | styled `chakra.pre` (system mono); v1 has **no** copy button / highlighting (override seam only)                   |
+| `strong`/`em`/`del`            | native elements styled by the root body font (bold / italic / strikethrough)                                       |
+| `ul`/`ol`/`li`                 | styled `chakra.ul`/`ol`/`li` (style props); GFM task-list `input` rendered read-only                               |
+| `blockquote`                   | styled `chakra.blockquote`                                                                                         |
+| `table`/`thead`/`tr`/`th`/`td` | styled `chakra.*`, semantic table markup with `th[scope]`                                                          |
+| `img`                          | styled `chakra.img`; preserves `alt`; missing-alt behaviour per a11y reqs                                          |
+| `hr`                           | styled `chakra.hr`; `br` is a native line break                                                                    |
+
+### Override merge
+
+`const components = { ...nimbusDefaults, ...props.components }` — shallow per
+element key. Overriding one element never disturbs the others.
+
+### Streaming & performance
+
+`react-markdown` re-parses the whole AST every render. For streaming we split
+content into top-level blocks and wrap each in `React.memo`, so appending a
+token only re-parses the last block. Block splitting must produce **stable
+keys** so settled blocks don't remount (and lose focus/scroll). `remend` runs on
+the full string before splitting (it needs trailing context to close
+constructs).
+
+The streaming-only code (`remend`, the block splitter/memoization, and the live
+region) lives behind the `isStreaming` flag and is structured to be
+**tree-shakeable**, so non-streaming consumers (e.g. MC rendering a description)
+don't pay for it.
+
+### Accessible streaming (behind Nimbus conventions)
+
+Consumers do not manage ARIA. While `isStreaming` is `true` the root carries
+`aria-busy="true"`; settling is **consumer-driven** — when the consumer sets
+`isStreaming` back to `false`, the busy state clears and a polite live region
+(mounted for the whole stream so the change is reliably observed) emits **one
+coalesced completion announcement** (not per-token). This gives SR users a
+"loading → done" model (WCAG 4.1.3) and pairs with block memoization (only the
+tail mutates). The exact announcement string is i18n.
+
+### Types
+
+All in `markdown.types.ts` (no recipe/slot type layers, since there is no slot
+recipe):
+
+1. **Helper types** — `MarkdownComponents` (react-markdown's `Components`
+   intersected with an open index signature so non-standard PascalCase keys
+   typecheck) and `MarkdownCustomComponent` (the renderer type for a custom
+   component tag).
+2. **`ReactMarkdownRenderOptions`** — the resolved render-options bag shared by
+   the non-streaming and streaming (memoized per-block) render paths. Internal;
+   the `remarkPlugins` / `rehypePlugins` it carries are always Nimbus defaults,
+   never consumer-supplied. Also carries the internal-only `customTagNames` set
+   (consumed by the streaming block splitter, never forwarded to
+   react-markdown).
+3. **Main props** — `MarkdownProps` (public, JSDoc'd), extending `BoxProps` for
+   the root: `children` (markdown string), `components`, `allowedElements`,
+   `disallowedElements`, `isStreaming`, `headingOffset`, `ref`, and Nimbus
+   **style props (forwarded to the outer root container)**.
+
+### Custom component tags
+
+A Nimbus-owned remark plugin (`remarkCustomComponentTags`, added to
+`remarkPlugins` only when non-standard `components` keys are present) walks the
+mdast and replaces matched registered tags with a synthetic `nimbusCustomTag`
+node carrying `data.hName` (the original-cased tag name) and `data.hProperties`
+(parsed string attributes). `mdast-util-to-hast`'s `defaultUnknownHandler`
+honors these — `applyData` copies `hName` verbatim into the hast element
+`tagName` and assigns `hProperties` — so react-markdown's exact
+`components[tagName]` lookup resolves the registered component with its props.
+Self-closing tags get empty children; paired tags wrap the enclosed mdast as
+children (stack-based sibling pairing, nesting-aware; unbalanced/partial tags
+left inert). The registered names are also unioned into `allowedElements` so the
+elements survive react-markdown's allowlist. For streaming, the block splitter
+keeps a paired region in one block (depth-counted) so it pairs once complete.
+
+## Accessibility (WCAG 2.1 AA)
+
+- **Heading hierarchy (1.3.1, 2.4.6):** `headingOffset` shifts rendered heading
+  levels (e.g. offset 1 → markdown `#` renders `<h2>`) so embedded content does
+  not break the host page outline. Default renderers never skip levels on their
+  own.
+- **Heading skips within content (1.3.1, 2.4.6):** the renderer never _adds_ a
+  skip, but it faithfully renders author skips (`#` then `###`). Mitigation: a
+  **dev-mode `console.warn`** on detected level skips + documented author
+  guidance (we don't silently rewrite author structure).
+- **Streaming announcements (4.1.3):** `aria-busy` + a single coalesced polite
+  completion announcement (see _Accessible streaming_ above) — built in, no
+  consumer ARIA.
+- **Links (2.4.4, 1.4.1, 1.4.11):** external links get
+  `rel="noopener noreferrer"`, an i18n "(opens in new tab)" label, and a visible
+  indicator that is a **shape/icon (not color alone)** meeting ≥3:1 non-text
+  contrast.
+- **Images (1.1.1):** `alt` preserved; rendered with `loading="lazy"` +
+  `referrerpolicy="no-referrer"`. No alt → `alt=""` (decorative) **plus a
+  dev-mode warning**, since for untrusted/AI images a missing alt is more likely
+  a meaningful image being hidden; consumers handling untrusted images are
+  directed to override `img`.
+- **Tables (1.3.1):** real `<table>`/`<thead>`/`<th scope>` semantics. (GFM
+  cannot express complex multi-header tables — documented limitation.)
+- **Code/lists:** semantic `<pre><code>` and real `<ul>`/`<ol>`; fenced-block
+  language surfaced via a visually-hidden label. Task-list checkboxes are
+  read-only with an **accessible name derived from the item text** (not a bare
+  unlabeled disabled input).
+- **Color/contrast & reduced motion:** all default styles use AA-compliant
+  tokens; no streaming reveal animation is introduced (if ever added, it must
+  honour `prefers-reduced-motion`).
+
+These are enforced by the **default renderers**; a consumer override owns its
+own a11y (documented, with a checklist for the common `a`/`img`/`code`
+overrides).
+
+## Token mapping (compose existing primitives)
+
+Figma `Markdown/*` → existing tokens, applied as style props on the renderers
+and the root `Box` (no new tokens, no recipe, system mono):
+
+| Style         | Family         | Weight | Size | Line height |
+| ------------- | -------------- | ------ | ---- | ----------- |
+| H1            | Inter          | 600    | 24   | 28          |
+| H2            | Inter          | 600    | 20   | 24          |
+| H3            | Inter          | 600    | 18   | 24          |
+| H4            | Inter          | 600    | 16   | 20          |
+| Body          | Inter          | 400    | 16   | 24          |
+| Body Strong   | Inter          | 700    | 16   | 24          |
+| Body Emphasis | Inter (italic) | 400    | 16   | 24          |
+| Small         | Inter          | 400    | 14   | 20          |
+| Code          | mono (system)  | 400    | 14   | 22          |
+
+## Open questions (resolved)
+
+- **Trust model** → dropped. Markdown has a single safe-by-default posture; raw
+  HTML is never rendered. (Superseded the earlier `trust` / `allowRawHtml` props
+  and the `rehype-raw` / `rehype-sanitize` path — application components are
+  embedded via custom component tags instead.)
+- **Custom component tags** → supported via the `components` prop (non-standard
+  keys), materialized by a Nimbus-owned remark plugin. Self-closing and paired
+  (with markdown children) both supported; safe by default (only registered tags
+  render).
+- **Security model** → piggyback on MC conventions: react-markdown safe defaults
+  (`skipHtml`) + `allowedElements` allowlist + `rel=noopener` external links;
+  image-host security delegated to the app CSP. **No `harden-react-markdown`.**
+- **Streaming in v1** → yes (remend + block memoization), with built-in
+  `aria-busy` + coalesced completion announcement.
+- **Code blocks in v1** → semantic styled `pre`/`code` only; no copy button / no
+  syntax highlighting (override seam + fast-follow `CodeBlock`).
+- **Override merge** → shallow per element key.
+- **Simple-case layout** → style props forward to the outer root container
+  (standard Nimbus pattern); no bespoke `maxW`/`lineClamp`/`variant` props.
+- **Canonical input** → `children` (string), matching react-markdown.
+- **Tokens** → compose primitives via style props on the renderers/root; system
+  mono (no new tokens, no recipe, no Roboto Mono webfont).
+- **Engine plugins (Math/KaTeX, emoji, directives)** → no consumer
+  `remarkPlugins` / `rehypePlugins` passthrough in v1 (avoids leaking the engine
+  into the public API); not supported until a concrete need makes one an owned
+  feature.
+
+## Remaining decisions for implementation
+
+- Exact block-splitting strategy for stable keys (candidate: `marked.lexer` raw
+  tokens, or a lightweight top-level splitter to avoid a `marked` dependency).
+- `h5`/`h6` exact fold target.
+- Default `allowedElements` set (start from the MC viewer's list —
+  `h1`,`h2`,`p`, `a`,`br`,`strong`,`i`,`code`,`ul`,`ol`,`li` — extended for the
+  Nimbus default renderer coverage: headings `h1`–`h6`, `em`, `pre`,
+  `blockquote`, `img`, `hr`, GFM
+  `table`/`thead`/`tbody`/`tr`/`th`/`td`/`del`/`input`).

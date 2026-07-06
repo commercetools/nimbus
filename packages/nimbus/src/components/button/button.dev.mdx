@@ -132,6 +132,29 @@ const App = () => (
 )
 ```
 
+#### Keeping a disabled button focusable (for tooltips)
+
+A natively disabled button cannot receive focus or hover, so it cannot host a
+`Tooltip` — exactly when you'd want one to explain why the action is
+unavailable. Add `allowFocusWhenDisabled` alongside `isDisabled` to keep the
+button focusable and hoverable while it stays disabled: it renders
+`aria-disabled` instead of the native `disabled` attribute, stays in the tab
+order, and suppresses activation (press, click, `Enter`/`Space`, form submit,
+and link navigation).
+
+```jsx live-dev
+const App = () => (
+  <Tooltip.Root>
+    <Button isDisabled allowFocusWhenDisabled>
+      Publish
+    </Button>
+    <Tooltip.Content>
+      Complete all required fields before publishing.
+    </Tooltip.Content>
+  </Tooltip.Root>
+)
+```
+
 ### Event handling
 
 Use `onPress` instead of `onClick` for consistent behavior across mouse, touch, and keyboard interactions.

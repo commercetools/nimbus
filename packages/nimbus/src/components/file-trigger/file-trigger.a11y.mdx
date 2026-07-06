@@ -1,0 +1,42 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+`FileTrigger` delegates all interaction semantics to React Aria. The visible,
+focusable child you provide is the only interactive element: it receives focus,
+is operable with mouse, touch, and keyboard (Enter / Space), and is announced to
+assistive technology. The underlying `<input type="file">` is hidden with
+`display: none` and is clicked programmatically when the child is pressed, so it
+is not a separate tab stop and never competes with the child for focus.
+
+```jsx live
+const App = () => (
+  <FileTrigger onSelect={(files) => alert(`${files?.length ?? 0} file(s)`)}>
+    <Button>Upload file</Button>
+  </FileTrigger>
+);
+```
+
+### Accessibility standards
+
+- **Accessible name comes from the child:** `FileTrigger` adds no label of its
+  own. Provide visible text, an `aria-label`, or a tooltip on the child so the
+  action is clearly announced (e.g. "Upload file", "Attach image").
+- **Keyboard operability:** The trigger must be reachable with the Tab key and
+  activatable with Enter or Space. Using a Nimbus `Button` or `IconButton` as
+  the child satisfies this automatically.
+- **Focus indicator:** Ensure the child shows a clear focus ring; Nimbus
+  buttons provide this by default.
+- **Icon-only triggers:** When the child is an `IconButton`, always supply an
+  `aria-label` or a tooltip so the purpose is conveyed to screen reader users.
+- **Disabled state:** Disable the child (not `FileTrigger`) to prevent
+  activation; the disabled state is then communicated to assistive technology by
+  the child.
+- **Set expectations:** Communicate accepted file types, count, and size limits
+  in nearby visible text, not only through the picker, so users understand
+  constraints before opening the dialog.
+- **Target size:** Keep the trigger large enough to activate comfortably; follow
+  the minimum target-size guidance for the chosen button size.
