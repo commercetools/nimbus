@@ -21,7 +21,10 @@ const preview: Preview = {
   parameters: {
     addons: [addonPerformancePanel()],
     darkMode: {
-      stylePreview: true,
+      // ThemeDecorator owns the preview's color mode via next-themes.
+      // stylePreview: false stops the addon from also theming the preview iframe
+      // and fighting it; classTarget applies to the Storybook chrome. See PR #1684.
+      stylePreview: false,
       classTarget: "html",
     },
     backgrounds: {

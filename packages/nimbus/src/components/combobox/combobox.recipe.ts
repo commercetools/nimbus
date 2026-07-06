@@ -251,7 +251,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     variant: {
       solid: {
         root: {
-          bg: "primary.1",
+          bg: "neutral.1",
           "&:hover:not([data-disabled='true'])": {
             bg: "primary.2",
           },
