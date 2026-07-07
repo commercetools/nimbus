@@ -45,6 +45,7 @@ export * from "./accordion";
 export * from "./alert";
 export * from "./badge";
 export * from "./card";
+export * from "./chat-bubble";
 export * from "./form-field";
 export * from "./icon";
 export * from "./inline-svg";

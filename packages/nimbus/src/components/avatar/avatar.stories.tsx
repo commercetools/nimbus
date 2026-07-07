@@ -6,6 +6,7 @@ import {
   Stack,
   Tooltip,
 } from "@commercetools/nimbus";
+import { AutoAwesome } from "@commercetools/nimbus-icons";
 import { within, expect, waitFor } from "storybook/test";
 import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 
@@ -366,6 +367,30 @@ export const ImageErrorWithMissingNames: Story = {
       const img = avatar.querySelector("img");
       await expect(img).not.toBeNull();
       await expect(img).toHaveStyle("display: none");
+    });
+  },
+};
+
+/**
+ * Custom content
+ * A custom icon passed via `children` overrides the default rendering
+ * (initials / Person fallback / image).
+ */
+export const CustomContent: Story = {
+  args: {
+    ["aria-label"]: "avatar",
+    children: <AutoAwesome />,
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const avatar = canvas.getByLabelText("avatar");
+
+    await step("Renders the custom child content (an svg icon)", async () => {
+      await expect(avatar.querySelector("svg")).not.toBeNull();
+    });
+
+    await step("Renders no initials text", async () => {
+      await expect(avatar.textContent?.trim() ?? "").toBe("");
     });
   },
 };
