@@ -28,11 +28,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      # BASELINE / TURBOSNAP WARM-UP: the changed-files gate is temporarily disabled
-      # so every push builds and snapshots. This accumulates the ~10 builds TurboSnap
-      # needs and seeds a complete baseline, with no push silently skipped.
-      # TODO: once we've hit ~10 builds and TurboSnap is active, uncomment the gate
-      # below AND restore the two `if:` lines on the steps that follow.
+      # TURBOSNAP WARM-UP: TurboSnap is enabled (onlyChanged, below) but needs ~10
+      # accumulated builds before it can reliably diff against a baseline; until then
+      # it snapshots everything. The changed-files gate stays disabled so every push
+      # runs and counts toward that threshold - gating pushes now would starve the
+      # warm-up.
+      # TODO: once TurboSnap has taken hold (~10 builds), uncomment the gate below
+      # AND restore the two `if:` lines on the steps that follow.
       #
       # - name: Get changed files
       #   id: changed-files
@@ -67,6 +69,11 @@ jobs:
           storybookBaseDir: packages/nimbus
           buildScriptName: build-storybook
           zip: true
+          # TurboSnap: snapshot only stories affected by the diff. Warms up over ~10
+          # builds; until then Chromatic falls back to snapshotting everything.
+          # A manual workflow_dispatch run turns it off to force a full snapshot
+          # (re-seed a baseline, or cover TurboSnap blind spots like dep bumps).
+          onlyChanged: ${{ github.event_name != 'workflow_dispatch' }}
           # Stay green on visual diffs while building/triaging the baseline; diffs still show in the dashboard.
           # TODO: remove once UI Review gate is active (post-stabilization), so unreviewed diffs block merge.
           exitZeroOnChanges: true
