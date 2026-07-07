@@ -70,6 +70,7 @@
     "tsx": "catalog:tooling",
     "typescript": "catalog:tooling",
     "typescript-eslint": "catalog:tooling",
+    "vite": "catalog:tooling",
     "vite-bundle-analyzer": "catalog:tooling",
     "vitest": "catalog:tooling"
   },
