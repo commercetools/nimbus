@@ -31,7 +31,9 @@ const sizes: AvatarProps["size"][] = ["md", "xs", "2xs"];
 
 const variants: AvatarProps["variant"][] = ["subtle", "solid"];
 
-const avatarImg = "https://thispersondoesnotexist.com/ ";
+// Served locally from Storybook's staticDirs (`public/`) for consistent Chromatic runs.
+// Photo from Unsplash (License: free commercial use, no attribution required).
+const avatarImg = "/avatar-demo.jpg";
 
 export const Base: Story = {
   args: {
