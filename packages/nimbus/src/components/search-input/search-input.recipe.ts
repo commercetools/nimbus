@@ -102,7 +102,7 @@ export const searchInputSlotRecipe = defineSlotRecipe({
         root: {
           "--border-width": "sizes.25",
           "--border-color": "colors.neutral.7",
-          backgroundColor: "primary.1",
+          backgroundColor: "neutral.1",
         },
       },
       ghost: {},

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { Button, NimbusProvider } from "@commercetools/nimbus";
+import { Button, NimbusProvider, Tooltip } from "@commercetools/nimbus";
 
 /**
  * @docs-section basic-rendering
@@ -179,6 +179,52 @@ describe("Button - States", () => {
     await user.tab();
 
     expect(button).not.toHaveFocus();
+  });
+});
+
+/**
+ * @docs-section disabled-with-tooltip
+ * @docs-title Tooltip on a disabled Button
+ * @docs-description Pair `isDisabled` with `allowFocusWhenDisabled` to keep a
+ * disabled button focusable and hoverable so a Tooltip can explain why the
+ * action is unavailable. The button is announced as disabled (`aria-disabled`)
+ * and its action stays suppressed.
+ * @docs-order 5
+ */
+describe("Button - Disabled with a Tooltip", () => {
+  it("stays focusable so a Tooltip can explain why it is disabled", async () => {
+    const user = userEvent.setup();
+    const handlePress = vi.fn();
+
+    render(
+      <NimbusProvider>
+        <Tooltip.Root delay={0} closeDelay={0}>
+          <Button isDisabled allowFocusWhenDisabled onPress={handlePress}>
+            Publish
+          </Button>
+          <Tooltip.Content>
+            Complete all required fields to publish.
+          </Tooltip.Content>
+        </Tooltip.Root>
+      </NimbusProvider>
+    );
+
+    const button = screen.getByRole("button", { name: /publish/i });
+
+    // Announced as disabled, but still reachable (no native `disabled`).
+    expect(button).toHaveAttribute("aria-disabled", "true");
+    expect(button).not.toBeDisabled();
+
+    // Keyboard users can focus it and the tooltip reveals the explanation.
+    await user.tab();
+    expect(button).toHaveFocus();
+    expect(await screen.findByRole("tooltip")).toHaveTextContent(
+      /required fields/i
+    );
+
+    // ...yet the action remains suppressed.
+    await user.click(button);
+    expect(handlePress).not.toHaveBeenCalled();
   });
 });
 

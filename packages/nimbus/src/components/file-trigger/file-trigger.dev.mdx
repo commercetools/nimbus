@@ -1,0 +1,148 @@
+---
+title: FileTrigger component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { FileTrigger, type FileTriggerProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+`FileTrigger` wraps a pressable child (typically a `Button`) and opens the
+native file picker when the child is activated. It renders no styling of its own
+— the child provides the visual treatment. The `onSelect` handler receives the
+native `FileList` (or `null`).
+
+```jsx live-dev
+const App = () => {
+  const [name, setName] = React.useState("");
+  return (
+    <Stack direction="row" gap="400" alignItems="center">
+      <FileTrigger
+        onSelect={(files) => {
+          const list = files ? Array.from(files) : [];
+          setName(list[0]?.name ?? "");
+        }}
+      >
+        <Button>Upload file</Button>
+      </FileTrigger>
+      <Text>{name || "No file selected"}</Text>
+    </Stack>
+  );
+};
+```
+
+## Usage examples
+
+### Restrict accepted file types
+
+Pass `acceptedFileTypes` (MIME types or extensions) to limit what the picker
+offers. It maps to the input's `accept` attribute.
+
+```jsx live-dev
+const App = () => (
+  <FileTrigger acceptedFileTypes={["image/png", "image/jpeg", ".pdf"]}>
+    <Button>Upload image or PDF</Button>
+  </FileTrigger>
+);
+```
+
+### Select multiple files
+
+Set `allowsMultiple` to let the user pick more than one file at a time.
+
+```jsx live-dev
+const App = () => {
+  const [count, setCount] = React.useState(0);
+  return (
+    <Stack direction="row" gap="400" alignItems="center">
+      <FileTrigger
+        allowsMultiple
+        onSelect={(files) => setCount(files ? files.length : 0)}
+      >
+        <Button>Upload files</Button>
+      </FileTrigger>
+      <Text>{count} file(s) selected</Text>
+    </Stack>
+  );
+};
+```
+
+### Select a directory
+
+Set `acceptDirectory` to let the user choose a whole folder instead of
+individual files.
+
+```jsx live-dev
+const App = () => (
+  <FileTrigger acceptDirectory>
+    <Button>Select folder</Button>
+  </FileTrigger>
+);
+```
+
+### Capture from the camera (mobile)
+
+`defaultCamera` hints which camera a mobile device should use (`"user"` or
+`"environment"`). It maps to the `capture` attribute and is ignored on desktop.
+
+```jsx live-dev
+const App = () => (
+  <FileTrigger defaultCamera="environment" acceptedFileTypes={["image/*"]}>
+    <Button>Take photo</Button>
+  </FileTrigger>
+);
+```
+
+### Disabling the trigger
+
+`FileTrigger` has no `isDisabled` prop of its own — disable the child instead. A
+disabled child cannot open the picker.
+
+```jsx live-dev
+const App = () => (
+  <FileTrigger>
+    <Button isDisabled>Upload file</Button>
+  </FileTrigger>
+);
+```
+
+## Notes and limitations
+
+- **`onSelect` receives a `FileList`, not an array.** Use `Array.from(files)` to
+  map over the selection. `files` is `null` if the selection was cleared.
+- **Re-selecting the same file.** Browsers do not fire a change event when the
+  user picks the identical file again. `FileTrigger` does not expose a reset
+  API; if you need to allow re-selecting the same file, remount the component
+  with a changing `key` prop after handling a selection.
+- **No native form (`name`) integration.** `FileTrigger` does not submit a file
+  via a native `<form>`. Lift the selection into state via `onSelect` and submit
+  it yourself.
+- **Combining `acceptDirectory` and `allowsMultiple`.** How these interact is
+  defined by the browser, not by `FileTrigger` — some browsers honor only the
+  directory selection and ignore `allowsMultiple`. Don't rely on a consistent
+  result across browsers.
+
+## API reference
+
+<PropsTable id="FileTrigger" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using
+`FileTrigger` within your application. As the component's internal functionality
+is already tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+{{docs-tests: file-trigger.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-filetrigger--docs)
+- [React Aria FileTrigger](https://react-aria.adobe.com/FileTrigger)

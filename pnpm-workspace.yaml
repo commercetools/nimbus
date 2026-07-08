@@ -7,7 +7,7 @@ catalogMode: strict
 catalogs:
   tooling:
     "@figma/code-connect": ^1.4.8
-    "@fission-ai/openspec": ^1.4.1
+    "@fission-ai/openspec": ^1.5.0
     eslint-plugin-react-hooks: ^7.1.1
     globals: ^17.7.0
     glob: ^13.0.6
@@ -32,15 +32,15 @@ catalogs:
     "@preconstruct/cli": ^2.8.13
     "@vitejs/plugin-react": ^6.0.3
     "@vitejs/plugin-react-swc": ^4.3.1
-    vite: ^8.1.0
-    webpack: ^5.108.0
-    webpack-cli: ^7.0.3
+    vite: ^8.1.3
+    webpack: ^5.108.3
+    webpack-cli: ^7.1.0
     vite-bundle-analyzer: ^1.3.8
     vite-plugin-dts: ^5.0.3
     rollup: ^4.62.2
-    "@vitest/browser": ^4.1.9
-    "@vitest/browser-playwright": ^4.1.9
-    "@vitest/coverage-v8": ^4.1.9
+    "@vitest/browser": ^4.1.10
+    "@vitest/browser-playwright": ^4.1.10
+    "@vitest/coverage-v8": ^4.1.10
     "@testing-library/dom": 10.4.1
     "@testing-library/jest-dom": ^6.9.1
     "@testing-library/user-event": ^14.6.1
@@ -83,3 +83,13 @@ catalogs:
     "@types/lodash": ^4.17.24
     "@types/node": ^24.13.2
     zod: ^4.4.3
+  # Markdown rendering stack for the Markdown component (react-markdown +
+  # remark plugins). Grouped here so the whole pipeline is versioned together.
+  # Markdown is safe by default (no raw HTML), so no rehype-raw/rehype-sanitize;
+  # custom component tags are materialized by a Nimbus-owned remark plugin.
+  # Note: these are bundled into @commercetools/nimbus, not externalized —
+  # see packages/nimbus/vite.config.ts.
+  markdown:
+    react-markdown: ^10.1.0
+    remark-gfm: ^4.0.1
+    remend: ^1.3.0

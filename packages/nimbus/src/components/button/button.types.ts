@@ -95,6 +95,22 @@ export type ButtonProps = Omit<
   RaButtonProps &
   NativePropsWithAriaEquivalents & {
     /**
+     * When `true` together with `isDisabled`, the button stays **focusable and
+     * hoverable** while disabled instead of being removed from interaction.
+     *
+     * It renders `aria-disabled="true"` (not the native `disabled` attribute),
+     * keeps the button in the natural tab order, and suppresses activation
+     * (press, click, `Enter`/`Space`, form submit/reset, and link navigation do
+     * not fire). The disabled styling is unchanged.
+     *
+     * Use this to attach a `Tooltip` (or other hover/focus affordance) to a
+     * disabled button — for example to explain *why* the action is unavailable.
+     * Has no effect unless the button is also disabled.
+     *
+     * @default false
+     */
+    allowFocusWhenDisabled?: boolean;
+    /**
      * Data attributes for testing or custom metadata
      */
     [key: `data-${string}`]: unknown;
