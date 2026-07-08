@@ -1,2 +1,2 @@
-export * from "./date-input";
-export * from "./date-input.types";
+export { DateInput } from "./date-input";
+export type * from "./date-input.types";

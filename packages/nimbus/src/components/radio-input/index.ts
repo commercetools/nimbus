@@ -1,2 +1,2 @@
-export * from "./radio-input";
-export * from "./radio-input.types";
+export { RadioInput } from "./radio-input";
+export type * from "./radio-input.types";

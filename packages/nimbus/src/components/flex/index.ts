@@ -1,2 +1,2 @@
-export * from "./flex";
-export * from "./flex.types";
+export { Flex } from "./flex";
+export type * from "./flex.types";

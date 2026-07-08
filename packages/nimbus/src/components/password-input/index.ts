@@ -1,2 +1,2 @@
-export * from "./password-input";
-export * from "./password-input.types";
+export { PasswordInput } from "./password-input";
+export type * from "./password-input.types";

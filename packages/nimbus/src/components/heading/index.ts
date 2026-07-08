@@ -1,1 +1,2 @@
-export * from "./heading";
+export { Heading } from "./heading";
+export type * from "./heading";

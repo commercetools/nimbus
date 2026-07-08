@@ -1,2 +1,10 @@
-export * from "./chat-message";
-export * from "./chat-message.types";
+export {
+  ChatMessage,
+  _ChatMessageRoot,
+  _ChatMessageAvatar,
+  _ChatMessageBody,
+  _ChatMessageActions,
+  _ChatMessageMeta,
+  _ChatMessageTyping,
+} from "./chat-message";
+export type * from "./chat-message.types";

@@ -1,2 +1,2 @@
-export * from "./tag-group";
-export * from "./tag-group.types";
+export { TagGroup } from "./tag-group";
+export type * from "./tag-group.types";

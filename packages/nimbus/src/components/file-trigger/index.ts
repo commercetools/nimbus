@@ -1,2 +1,2 @@
-export * from "./file-trigger";
-export * from "./file-trigger.types";
+export { FileTrigger } from "./file-trigger";
+export type * from "./file-trigger.types";

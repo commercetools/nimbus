@@ -1,2 +1,2 @@
-export * from "./drop-zone";
-export * from "./drop-zone.types";
+export { DropZone } from "./drop-zone";
+export type * from "./drop-zone.types";

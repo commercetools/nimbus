@@ -1,2 +1,6 @@
-export * from "./page-content";
-export * from "./page-content.types";
+export {
+  PageContent,
+  _PageContentRoot,
+  _PageContentColumn,
+} from "./page-content";
+export type * from "./page-content.types";

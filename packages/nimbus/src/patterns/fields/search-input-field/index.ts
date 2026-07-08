@@ -1,2 +1,2 @@
-export * from "./search-input-field";
-export * from "./search-input-field.types";
+export { SearchInputField } from "./search-input-field";
+export type * from "./search-input-field.types";

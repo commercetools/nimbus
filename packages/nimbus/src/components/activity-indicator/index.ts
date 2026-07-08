@@ -1,2 +1,2 @@
-export * from "./activity-indicator";
-export * from "./activity-indicator.types";
+export { ActivityIndicator } from "./activity-indicator";
+export type * from "./activity-indicator.types";

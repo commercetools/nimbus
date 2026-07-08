@@ -1,2 +1,2 @@
-export * from "./confirmation-dialog";
-export * from "./confirmation-dialog.types";
+export { ConfirmationDialog } from "./confirmation-dialog";
+export type * from "./confirmation-dialog.types";

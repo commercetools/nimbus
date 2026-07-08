@@ -1,2 +1,3 @@
-export * from "./tab-nav";
-export * from "./tab-nav.types";
+export { TabNav, _TabNavRoot, _TabNavItem } from "./tab-nav";
+export type * from "./tab-nav";
+export type * from "./tab-nav.types";

@@ -1,2 +1,2 @@
-export * from "./text-input";
-export * from "./text-input.types";
+export { TextInput } from "./text-input";
+export type * from "./text-input.types";

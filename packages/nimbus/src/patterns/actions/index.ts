@@ -1,1 +1,2 @@
-export * from "./form-action-bar";
+export { FormActionBar } from "./form-action-bar";
+export type * from "./form-action-bar";

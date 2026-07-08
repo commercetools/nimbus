@@ -1,4 +1,14 @@
-export * from "./drawer";
+export {
+  Drawer,
+  _DrawerRoot,
+  _DrawerTrigger,
+  _DrawerContent,
+  _DrawerHeader,
+  _DrawerBody,
+  _DrawerFooter,
+  _DrawerTitle,
+  _DrawerCloseTrigger,
+} from "./drawer";
 
 // Re-export types for external usage
 export type * from "./drawer.types";

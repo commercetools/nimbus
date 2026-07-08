@@ -1,2 +1,2 @@
-export * from "./search-input";
-export * from "./search-input.types";
+export { SearchInput } from "./search-input";
+export type * from "./search-input.types";

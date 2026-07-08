@@ -1,2 +1,2 @@
-export * from "./loading-spinner";
-export * from "./loading-spinner.types";
+export { LoadingSpinner } from "./loading-spinner";
+export type * from "./loading-spinner.types";

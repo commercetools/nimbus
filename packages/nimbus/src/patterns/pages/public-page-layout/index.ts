@@ -1,2 +1,2 @@
-export * from "./public-page-layout";
-export * from "./public-page-layout.types";
+export { PublicPageLayout } from "./public-page-layout";
+export type * from "./public-page-layout.types";

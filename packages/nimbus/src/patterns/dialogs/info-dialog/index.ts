@@ -1,2 +1,2 @@
-export * from "./info-dialog";
-export * from "./info-dialog.types";
+export { InfoDialog } from "./info-dialog";
+export type * from "./info-dialog.types";

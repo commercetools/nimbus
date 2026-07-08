@@ -1,2 +1,2 @@
-export * from "./pagination";
+export { Pagination } from "./pagination";
 export type * from "./pagination.types";

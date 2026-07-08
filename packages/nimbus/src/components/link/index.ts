@@ -1,2 +1,2 @@
-export * from "./link";
-export * from "./link.types";
+export { Link } from "./link";
+export type * from "./link.types";

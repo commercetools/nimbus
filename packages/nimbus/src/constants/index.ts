@@ -1,1 +1,6 @@
-export * from "./color-palettes";
+export {
+  SEMANTIC_COLOR_PALETTES,
+  BRAND_COLOR_PALETTES,
+  SYSTEM_COLOR_PALETTES,
+  ALL_COLOR_PALETTES,
+} from "./color-palettes";

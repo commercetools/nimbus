@@ -1,2 +1,2 @@
-export * from "./localized-field";
-export * from "./localized-field.types";
+export { LocalizedField } from "./localized-field";
+export type * from "./localized-field.types";

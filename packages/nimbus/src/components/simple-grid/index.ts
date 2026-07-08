@@ -1,1 +1,2 @@
-export * from "./simple-grid";
+export { SimpleGrid } from "./simple-grid";
+export type * from "./simple-grid";

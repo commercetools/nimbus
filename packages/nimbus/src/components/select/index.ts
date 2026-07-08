@@ -1,2 +1,2 @@
-export * from "./select";
-export * from "./select.types";
+export { Select } from "./select";
+export type * from "./select.types";

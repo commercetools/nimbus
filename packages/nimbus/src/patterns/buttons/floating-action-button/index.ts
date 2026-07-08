@@ -1,2 +1,2 @@
-export * from "./floating-action-button";
-export * from "./floating-action-button.types";
+export { FloatingActionButton } from "./floating-action-button";
+export type * from "./floating-action-button.types";

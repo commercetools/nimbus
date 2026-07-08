@@ -1,2 +1,2 @@
-export * from "./icon-button";
-export * from "./icon-button.types";
+export { IconButton } from "./icon-button";
+export type * from "./icon-button.types";

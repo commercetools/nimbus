@@ -1,2 +1,2 @@
-export * from "./toolbar";
-export * from "./toolbar.types";
+export { Toolbar } from "./toolbar";
+export type * from "./toolbar.types";

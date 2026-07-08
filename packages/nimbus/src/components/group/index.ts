@@ -1,2 +1,2 @@
-export * from "./group";
-export * from "./group.types";
+export { Group } from "./group";
+export type * from "./group.types";

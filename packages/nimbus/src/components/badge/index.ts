@@ -1,2 +1,2 @@
-export * from "./badge";
-export * from "./badge.types";
+export { Badge } from "./badge";
+export type * from "./badge.types";

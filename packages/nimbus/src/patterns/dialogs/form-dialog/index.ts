@@ -1,2 +1,2 @@
-export * from "./form-dialog";
-export * from "./form-dialog.types";
+export { FormDialog } from "./form-dialog";
+export type * from "./form-dialog.types";

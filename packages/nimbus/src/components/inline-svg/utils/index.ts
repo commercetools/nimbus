@@ -1,1 +1,1 @@
-export * from "./sanitize-svg";
+export { sanitizeSvg, canUseDOM } from "./sanitize-svg";

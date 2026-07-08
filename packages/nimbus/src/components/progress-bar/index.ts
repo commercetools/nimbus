@@ -1,2 +1,2 @@
-export * from "./progress-bar";
-export * from "./progress-bar.types";
+export { ProgressBar } from "./progress-bar";
+export type * from "./progress-bar.types";

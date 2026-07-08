@@ -1,2 +1,2 @@
-export * from "./markdown";
-export * from "./markdown.types";
+export { Markdown } from "./markdown";
+export type * from "./markdown.types";

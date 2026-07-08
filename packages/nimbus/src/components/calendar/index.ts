@@ -1,2 +1,2 @@
-export * from "./calendar";
-export * from "./calendar.types";
+export { Calendar } from "./calendar";
+export type * from "./calendar.types";

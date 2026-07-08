@@ -1,2 +1,2 @@
-export * from "./avatar";
-export * from "./avatar.types";
+export { Avatar } from "./avatar";
+export type * from "./avatar.types";

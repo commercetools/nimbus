@@ -1,3 +1,3 @@
-export * from "./omit-props";
-export * from "./shared-types";
-export * from "./slot-types";
+export type * from "./omit-props";
+export type * from "./shared-types";
+export type * from "./slot-types";

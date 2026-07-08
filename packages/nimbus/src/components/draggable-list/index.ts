@@ -1,2 +1,7 @@
-export * from "./draggable-list";
-export * from "./draggable-list.types";
+export {
+  DraggableList,
+  _DraggableListRoot,
+  _DraggableListItem,
+  _DraggableListField,
+} from "./draggable-list";
+export type * from "./draggable-list.types";
