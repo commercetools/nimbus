@@ -944,7 +944,11 @@ const StreamingPerfMonitor = () => {
  */
 export const StreamingPerformance: Story = {
   // No play function, and excluded from the test runner: this story streams
-  // forever and is meant for manual observation only.
+  // forever and is meant for manual observation only. Chromatic doesn't honor
+  // the "!test" tag, so it must be opted out of snapshots explicitly.
   tags: ["!test", "!a11y-test"],
+  parameters: {
+    chromatic: { disableSnapshot: true },
+  },
   render: () => <StreamingPerfMonitor />,
 };
