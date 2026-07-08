@@ -265,9 +265,6 @@ const DirectHookWithTableDemo = () => {
 };
 
 export const DirectHookWithTable: Story = {
-  parameters: {
-    chromatic: { disableSnapshot: true },
-  },
   render: () => <DirectHookWithTableDemo />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
