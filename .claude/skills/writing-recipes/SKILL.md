@@ -222,7 +222,7 @@ slotRecipes: {
 You MUST run these commands after creation:
 
 ```bash
-pnpm --filter @commercetools/nimbus typecheck
+pnpm --filter @commercetools/nimbus typecheck:dev
 pnpm --filter @commercetools/nimbus build-theme-typings
 pnpm --filter @commercetools/nimbus build
 ```
@@ -255,7 +255,7 @@ ls packages/nimbus/styled-system/recipes/{component-name}.*
 You MUST verify the changes:
 
 ```bash
-pnpm --filter @commercetools/nimbus typecheck
+pnpm --filter @commercetools/nimbus typecheck:dev
 pnpm --filter @commercetools/nimbus build
 ```
 

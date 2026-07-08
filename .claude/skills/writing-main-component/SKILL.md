@@ -634,8 +634,8 @@ export {
 After creating the component:
 
 ```bash
-# 1. Type check
-pnpm --filter @commercetools/nimbus typecheck
+# 1. Type check against source (no build required; matches the editor)
+pnpm --filter @commercetools/nimbus typecheck:dev
 
 # 2. Build
 pnpm --filter @commercetools/nimbus build
@@ -670,7 +670,7 @@ When updating an existing main component:
    - Update tests/stories
 
 4. **Verify changes**:
-   - Type check: `pnpm --filter @commercetools/nimbus typecheck`
+   - Type check (source, no build): `pnpm --filter @commercetools/nimbus typecheck:dev`
    - Build: `pnpm --filter @commercetools/nimbus build`
    - Validate: `/writing-main-component validate ComponentName`
 
@@ -815,8 +815,8 @@ change. Manual conversion is error-prone.
 After any update, you MUST verify:
 
 ```bash
-# 1. Type check
-pnpm --filter @commercetools/nimbus typecheck
+# 1. Type check against source (no build required; matches the editor)
+pnpm --filter @commercetools/nimbus typecheck:dev
 
 # 2. Run tests against source (no build required)
 pnpm test:dev packages/nimbus/src/components/{component}/{component}.stories.tsx

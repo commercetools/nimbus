@@ -101,7 +101,23 @@ const config: StorybookConfig = {
           ? {
               "@commercetools/nimbus": resolve(__dirname, "../src"),
             }
-          : {},
+          : process.env.VITEST_USE_SOURCE === "true"
+            ? // Dev test (test:storybook:dev): the dev Vitest config pins the
+              // barrel to source itself, so leave resolution untouched here.
+              {}
+            : // Production build & production test (test:storybook): pin the
+              // barrel to the built bundle. Required because the editor-only
+              // "@commercetools/nimbus" -> ./src/index.ts alias in tsconfig.json
+              // leaks in via Vite's resolve.tsconfigPaths and would otherwise
+              // silently redirect the production Storybook to source (defeating
+              // the point of testing the built bundle). Exact-match regex so
+              // subpath imports still resolve via the package's exports map.
+              [
+                {
+                  find: /^@commercetools\/nimbus$/,
+                  replacement: resolve(__dirname, "../dist/index.es.js"),
+                },
+              ],
       },
     });
   },
