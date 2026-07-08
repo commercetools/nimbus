@@ -22,11 +22,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
  * Recommended over `output.preserveModules` —
  * https://rollupjs.org/configuration-options/#input
  *
- * **Important:** because each component's index becomes its own chunk,
- * cross-component imports inside Nimbus must target implementation files
- * (`button.tsx`), not barrel exports (`index.ts`), to avoid circular
- * chunk dependencies. See `docs/component-guidelines.md` →
- * "Cross-Chunk Import Pattern".
+ * **Note:** each component's index becomes its own chunk. Cross-component
+ * imports inside Nimbus use the `@/` alias — barrel (`@/components/button`)
+ * or deep (`@/components/button/button`), both are safe now that value
+ * `export *` is banned repo-wide, which keeps every re-export a static,
+ * tree-shakeable named binding (no lazy-barrel mis-shaking). See
+ * `docs/file-type-guidelines/barrel-exports.md` → "The Rule (Locked)".
  */
 const createEntries = async () => {
   const entries = new Map<string, string>();
