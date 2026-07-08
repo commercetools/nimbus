@@ -1,5 +1,7 @@
 <script>
-  // Freeze the clock for Chromatic captures only, before the Storybook bundle loads, so date snapshots don't drift (today() baked into story args at module load + React Aria's live "today" cell).
+  // Chromatic-only clock anchor (set before the bundle loads) so date snapshots don't drift: today() is baked into story args at module load + React Aria reads a live "today" cell.
+  // OFFSET, don't freeze — today() reads Date.now(), but so do use-debounce, timers, and `id: Date.now()`; a constant Date.now() hangs async loads and collides creation IDs.
+  // Advancing from the anchor keeps the date on May 15 while relative time still flows.
   (function () {
     if (
       !/Chromatic/.test(navigator.userAgent) &&
@@ -7,10 +9,16 @@
     )
       return;
     var RealDate = Date;
-    var FROZEN = RealDate.UTC(2026, 4, 15, 12, 0, 0);
+    var realNow = RealDate.now.bind(RealDate);
+    var start = realNow();
+    var ANCHOR = RealDate.UTC(2026, 4, 15, 12, 0, 0);
+    function anchoredNow() {
+      return ANCHOR + (realNow() - start);
+    }
     function FakeDate() {
-      if (!(this instanceof FakeDate)) return new RealDate(FROZEN).toString();
-      if (arguments.length === 0) return new RealDate(FROZEN);
+      if (!(this instanceof FakeDate))
+        return new RealDate(anchoredNow()).toString();
+      if (arguments.length === 0) return new RealDate(anchoredNow());
       return new (Function.prototype.bind.apply(
         RealDate,
         [null].concat([].slice.call(arguments))
@@ -19,9 +27,7 @@
     FakeDate.prototype = RealDate.prototype;
     FakeDate.UTC = RealDate.UTC;
     FakeDate.parse = RealDate.parse;
-    FakeDate.now = function () {
-      return FROZEN;
-    };
+    FakeDate.now = anchoredNow;
     window.Date = FakeDate;
   })();
 </script>
