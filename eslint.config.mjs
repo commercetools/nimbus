@@ -166,7 +166,12 @@ export default tseslint.config(
         {
           patterns: [
             {
-              group: ["@/components", "@/components/*", "@/patterns", "@/patterns/*"],
+              group: [
+                "@/components",
+                "@/components/*",
+                "@/patterns",
+                "@/patterns/*",
+              ],
               message:
                 "Consumer files (stories/tests/docs) import Nimbus components from `@commercetools/nimbus`, not `@/`. Non-component helpers via `@/` are fine.",
             },
