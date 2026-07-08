@@ -121,6 +121,7 @@
     "dompurify": "catalog:utils",
     "glob": "catalog:tooling",
     "jsdom": "catalog:tooling",
+    "mockdate": "catalog:tooling",
     "playwright": "catalog:tooling",
     "react": "catalog:react",
     "react-dom": "catalog:react",

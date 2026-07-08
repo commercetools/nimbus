@@ -1,3 +1,5 @@
+// Must run before any story module evaluates today() - see freeze-clock.ts.
+import "./freeze-clock";
 import type { Preview } from "@storybook/react-vite";
 import addonPerformancePanel, {
   withPerformanceMonitor,
