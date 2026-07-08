@@ -97,6 +97,8 @@ export const Default: Story = {
 
     // Test basic typing
     await userEvent.click(editor);
+    // Capture browsers don't place a caret in an empty Slate editor on click, so input is dropped without an explicit selection.
+    window.getSelection()?.collapse(editor, 0);
     await userEvent.type(editor, "Hello world");
     await waitFor(
       () => {
@@ -125,6 +127,8 @@ export const WithPlaceholder: Story = {
 
     // Test placeholder disappears on input
     await userEvent.click(editor);
+    // Capture browsers don't place a caret in an empty Slate editor on click, so input is dropped without an explicit selection.
+    window.getSelection()?.collapse(editor, 0);
     await userEvent.type(editor, "Test");
     await waitFor(() => {
       // Placeholder should be gone when content is present
@@ -706,14 +710,9 @@ export const OnChangeCallback: Story = {
     const canvas = within(canvasElement);
     const editor = canvas.getByRole("textbox");
 
-    // Focus the editor and wait for it to be ready before typing.
-    // Tiptap emits an editor transaction on focus which triggers onChange,
-    // so we wait for the count to increment before typing.
     await userEvent.click(editor);
-    await waitFor(() => {
-      expect(canvas.getByText(/Change count: [1-9]/)).toBeInTheDocument();
-    });
-
+    // Capture browsers don't place a caret in an empty Slate editor on click, so input is dropped without an explicit selection.
+    window.getSelection()?.collapse(editor, 0);
     await userEvent.type(editor, "Test");
 
     await waitFor(() => {
@@ -722,8 +721,8 @@ export const OnChangeCallback: Story = {
       // lifecycle events.
       const changeCountElement = canvas.getByText(/Change count: \d+/);
       const count = Number(changeCountElement.textContent?.match(/\d+/)?.[0]);
-      expect(count).toBeGreaterThanOrEqual(5);
-      // Guard against runaway onChange loops (a known ProseMirror failure mode)
+      expect(count).toBeGreaterThanOrEqual(4);
+      // Guard against runaway onChange loops (a known Slate failure mode)
       expect(count).toBeLessThan(50);
     });
 
@@ -835,6 +834,8 @@ export const EmptyContent: Story = {
 
     // Test that typing works from empty state
     await userEvent.click(editor);
+    // Capture browsers don't place a caret in an empty Slate editor on click, so input is dropped without an explicit selection.
+    window.getSelection()?.collapse(editor, 0);
     await userEvent.type(editor, "New content");
 
     await waitFor(() => {

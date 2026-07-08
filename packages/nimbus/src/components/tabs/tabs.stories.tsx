@@ -471,7 +471,7 @@ export const VerticalPlacement: Story = {
     await step("Tab interaction works in all placements", async () => {
       // Test placement="start"
       const startContainer = canvas.getByTestId("vertical-placement-start");
-      const startTab = within(startContainer).getByRole("tab", {
+      const startTab = await within(startContainer).findByRole("tab", {
         name: "Details",
       });
       await userEvent.click(startTab);
@@ -479,7 +479,7 @@ export const VerticalPlacement: Story = {
 
       // Test placement="end"
       const endContainer = canvas.getByTestId("vertical-placement-end");
-      const endTab = within(endContainer).getByRole("tab", {
+      const endTab = await within(endContainer).findByRole("tab", {
         name: "Settings",
       });
       await userEvent.click(endTab);
@@ -487,7 +487,7 @@ export const VerticalPlacement: Story = {
 
       // Test pills variant with placement="end"
       const pillsContainer = canvas.getByTestId("vertical-pills-placement-end");
-      const pillsTab = within(pillsContainer).getByRole("tab", {
+      const pillsTab = await within(pillsContainer).findByRole("tab", {
         name: "Details",
       });
       await userEvent.click(pillsTab);

@@ -20,12 +20,6 @@ const apca = APCACheck("custom", (fontSize: string) => {
 const preview: Preview = {
   parameters: {
     addons: [addonPerformancePanel()],
-    chromatic: {
-      // Give incidental post-interaction focus rings time to clear before
-      // capture. Delay only waits (never blurs), so intentional focus stories
-      // keep their ring.
-      delay: 300,
-    },
     darkMode: {
       // ThemeDecorator owns the preview's color mode via next-themes.
       // stylePreview: false stops the addon from also theming the preview iframe
