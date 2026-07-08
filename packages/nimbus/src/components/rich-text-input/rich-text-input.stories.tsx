@@ -67,15 +67,39 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof RichTextInput>;
 
-// A synthetic click doesn't reliably settle a caret in a capture browser (Chromatic); driving the DOM Selection lets Slate's selectionchange sync it.
-const focusEditorSelection = (
-  editor: HTMLElement,
-  { selectAll = false }: { selectAll?: boolean } = {}
-) => {
+const selectEditorContents = (editor: HTMLElement) => {
   editor.focus();
-  const selection = editor.ownerDocument.getSelection();
-  selection?.selectAllChildren(editor);
-  if (!selectAll) selection?.collapseToStart();
+  editor.ownerDocument.getSelection()?.selectAllChildren(editor);
+};
+
+// On an empty editor a click can land the caret on the placeholder node (which Slate
+// can't map), and Slate adopts the real caret only on its next frame. At full speed
+// userEvent.type outruns that and the keystrokes are silently dropped (it passes when
+// you step the debugger, but fails on a straight run and in Chromatic). Put the caret
+// in the real leaf (not the placeholder) and retry until the text actually lands.
+const typeIntoEditor = async (editor: HTMLElement, text: string) => {
+  const landed = () => editor.textContent?.includes(text) ?? false;
+  for (let attempt = 0; attempt < 5 && !landed(); attempt++) {
+    const leaf =
+      editor.querySelector("[data-slate-string], [data-slate-zero-width]") ??
+      editor;
+    editor.focus();
+    const selection = editor.ownerDocument.getSelection();
+    const range = editor.ownerDocument.createRange();
+    range.setStart(leaf.firstChild ?? leaf, 0);
+    range.collapse(true);
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+    await userEvent.type(editor, text);
+    // Poll silently (no expect) so a dropped-keystroke retry doesn't log a red
+    // interaction step; the real assertion is the single waitFor below.
+    for (let i = 0; i < 10 && !landed(); i++) {
+      await new Promise((resolve) => {
+        setTimeout(resolve, 50);
+      });
+    }
+  }
+  await waitFor(() => expect(editor).toHaveTextContent(text));
 };
 
 // =============================================================================
@@ -108,14 +132,7 @@ export const Default: Story = {
 
     // Test basic typing
     await userEvent.click(editor);
-    focusEditorSelection(editor);
-    await userEvent.type(editor, "Hello world");
-    await waitFor(
-      () => {
-        expect(editor).toHaveTextContent("Hello world");
-      },
-      { timeout: 3000 }
-    );
+    await typeIntoEditor(editor, "Hello world");
   },
 };
 
@@ -137,14 +154,7 @@ export const WithPlaceholder: Story = {
 
     // Test placeholder disappears on input
     await userEvent.click(editor);
-    focusEditorSelection(editor);
-    await userEvent.type(editor, "Test");
-    await waitFor(() => {
-      // Placeholder should be gone when content is present
-      const hasContent =
-        editor.textContent && editor.textContent.trim().length > 0;
-      expect(hasContent).toBeTruthy();
-    });
+    await typeIntoEditor(editor, "Test");
   },
 };
 
@@ -720,8 +730,7 @@ export const OnChangeCallback: Story = {
     const editor = canvas.getByRole("textbox");
 
     await userEvent.click(editor);
-    focusEditorSelection(editor);
-    await userEvent.type(editor, "Test");
+    await typeIntoEditor(editor, "Test");
 
     await waitFor(() => {
       // onChange fires at least once per keystroke; assert minimum rather
@@ -842,13 +851,8 @@ export const EmptyContent: Story = {
 
     // Test that typing works from empty state
     await userEvent.click(editor);
-    focusEditorSelection(editor);
-    await userEvent.type(editor, "New content");
-
-    await waitFor(() => {
-      expect(editor).toHaveTextContent("New content");
-      expect(editor.querySelector("p")).toBeInTheDocument();
-    });
+    await typeIntoEditor(editor, "New content");
+    expect(editor.querySelector("p")).toBeInTheDocument();
   },
 };
 
@@ -968,7 +972,7 @@ export const PendingMarksConsistency: Story = {
     const editor = canvas.getByRole("textbox");
 
     // Select the seeded text so marks apply to a real selection, not fragile pending marks that clear across menu interactions.
-    focusEditorSelection(editor, { selectAll: true });
+    selectEditorContents(editor);
     await waitFor(() => {
       expect(editor.ownerDocument.getSelection()?.toString()).toBe("Test text");
     });
