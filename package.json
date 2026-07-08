@@ -1,9 +1,14 @@
 {
   "name": "nimbus",
   "private": true,
-  "workspaces": ["packages/*", "apps/*"],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "preconstruct": {
-    "packages": ["packages/tokens"]
+    "packages": [
+      "packages/tokens"
+    ]
   },
   "scripts": {
     "build": "pnpm build:tokens && pnpm run build:packages && pnpm run build:docs && pnpm run build:mcp",
@@ -39,56 +44,7 @@
     "check:package-shape": "node scripts/check-package-shape.mjs",
     "bundle-sizes:trend": "node scripts/bundle-sizes-trend.mjs"
   },
-  "packageManager": "pnpm@10.12.3+sha512.467df2c586056165580ad6dfb54ceaad94c5a30f80893ebdec5a44c5aa73c205ae4a5bb9d5ed6bb84ea7c249ece786642bbb49d06a307df218d03da41c317417",
-  "pnpm": {
-    "overrides": {
-      "rollup": "catalog:tooling",
-      "@babel/runtime": "catalog:tooling",
-      "prismjs": "^1.30.0",
-      "typescript": "catalog:tooling",
-      "react-aria": "catalog:react",
-      "react-aria-components": "catalog:react",
-      "react-stately": "catalog:react",
-      "@react-aria/interactions": "catalog:react",
-      "brace-expansion@<2": "^2.0.3",
-      "brace-expansion@2": "~2.0.3",
-      "brace-expansion@>=4.0.0 <5.0.6": ">=5.0.6",
-      "mdast-util-to-hast": "^13.2.1",
-      "js-yaml": "^3.14.2",
-      "qs": ">=6.15.2",
-      "minimatch@>=3.0.0 <3.1.4": "3.1.4",
-      "svgo": ">=3.3.3",
-      "hono": ">=4.12.21",
-      "esbuild": ">=0.28.1",
-      "shell-quote": ">=1.8.4",
-      "@babel/core": "catalog:tooling",
-      "@hono/node-server": ">=1.19.13",
-      "fast-uri": ">=3.1.2",
-      "ip-address": ">=10.1.1",
-      "postcss": ">=8.5.10",
-      "lodash@<4.18.0": ">=4.18.0",
-      "lodash-es@<4.18.0": ">=4.18.0",
-      "ajv@>=8.0.0 <8.18.0": ">=8.18.0",
-      "minimatch@>=10.0.0 <10.2.3": ">=10.2.3",
-      "flatted": ">=3.4.2",
-      "undici": ">=7.28.0 <8",
-      "picomatch@<2.3.2": ">=2.3.2",
-      "picomatch@>=4.0.0 <4.0.4": ">=4.0.4",
-      "yaml@1": "1.10.3",
-      "yaml@2": ">=2.8.3",
-      "path-to-regexp@>=8.0.0 <8.4.0": ">=8.4.0",
-      "happy-dom@<20.8.9": ">=20.8.9",
-      "jsdom": "catalog:tooling"
-    },
-    "onlyBuiltDependencies": [
-      "@bundled-es-modules/glob",
-      "@swc/core",
-      "es5-ext",
-      "esbuild",
-      "msw",
-      "style-dictionary"
-    ]
-  },
+  "packageManager": "pnpm@11.10.0+sha512.0b7f8b98060031904c017e3a41eb187a16d40eeb829b95c4f8cb03681761fc4ab53dd219115b9b447f4dce1a05a214764461e7d3703392a9f32f9511ce8c86c8",
   "devDependencies": {
     "@arethetypeswrong/cli": "catalog:tooling",
     "@babel/core": "catalog:tooling",
