@@ -120,6 +120,61 @@ export default tseslint.config(
       ],
     },
   },
+  /**
+   * Lane: IMPLEMENTATION files build the library — they import via `@/`,
+   * never from the public package (which would self-reference / drag the
+   * built barrel back in).
+   */
+  {
+    files: ["packages/nimbus/src/**/*.{ts,tsx}"],
+    ignores: [
+      "packages/nimbus/src/**/*.stories.tsx",
+      "packages/nimbus/src/**/*.spec.{ts,tsx}",
+      "packages/nimbus/src/**/*.docs.spec.tsx",
+      "packages/nimbus/src/**/*.test-*.{ts,tsx}",
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "@commercetools/nimbus",
+              message:
+                "Implementation files import Nimbus via the `@/` alias, not the public package. (Package imports are for stories/tests/docs.)",
+            },
+          ],
+        },
+      ],
+    },
+  },
+  /**
+   * Lane: CONSUMER files (stories/tests/docs) use the library — they import
+   * Nimbus components/hooks from the package so prod test:storybook exercises
+   * the built dist. `@/` stays fine for non-component helpers/fixtures/utils.
+   */
+  {
+    files: [
+      "packages/nimbus/src/**/*.stories.tsx",
+      "packages/nimbus/src/**/*.spec.{ts,tsx}",
+      "packages/nimbus/src/**/*.docs.spec.tsx",
+      "packages/nimbus/src/**/*.test-*.{ts,tsx}",
+    ],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["@/components", "@/components/*", "@/patterns", "@/patterns/*"],
+              message:
+                "Consumer files (stories/tests/docs) import Nimbus components from `@commercetools/nimbus`, not `@/`. Non-component helpers via `@/` are fine.",
+            },
+          ],
+        },
+      ],
+    },
+  },
   // Spread storybook configurations if available
   ...storybookConfigs
 );
