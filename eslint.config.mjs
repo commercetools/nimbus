@@ -100,6 +100,26 @@ export default tseslint.config(
       "react-hooks/exhaustive-deps": "warn",
     },
   },
+  /**
+   * Ban value `export *` (re-export stars). They defeat static tree-shaking
+   * analysis and, with vite/rolldown lazyBarrel, mis-shake split-module
+   * compound components into runtime ReferenceErrors (see
+   * docs/superpowers/specs/2026-07-08-decouple-import-notation-from-build-target.md).
+   * `export type *` is erased at build and stays allowed.
+   */
+  {
+    files: ["packages/nimbus/src/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "ExportAllDeclaration[exportKind!='type']",
+          message:
+            "No value `export *`. Use explicit named re-exports (`export { X } from ...`); for type-only modules use `export type *`.",
+        },
+      ],
+    },
+  },
   // Spread storybook configurations if available
   ...storybookConfigs
 );
