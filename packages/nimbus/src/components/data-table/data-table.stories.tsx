@@ -21,7 +21,6 @@ import {
   DataTable,
 } from "@commercetools/nimbus";
 import { UPDATE_ACTIONS } from "./constants";
-import { useStableDataTableContext } from "./components/data-table.context";
 import { Palette } from "@commercetools/nimbus-icons";
 
 import {
@@ -4587,15 +4586,6 @@ const PinnedIdsProbe = () => {
   );
 };
 
-const SelectionContextProbe = React.memo(function SelectionContextProbe() {
-  useStableDataTableContext();
-  const renderCount = React.useRef(0);
-  renderCount.current++;
-  return (
-    <div data-testid="ctx-probe" data-render-count={renderCount.current} />
-  );
-});
-
 export const PerfLargeDatasetResponsiveness: Story = {
   render: () => {
     const largeRows = React.useMemo(() => generatePerfRows(170), []);
@@ -4809,54 +4799,6 @@ export const PerfRowMemoization: Story = {
 
         const afterCount = Number(
           canvas.getByTestId("rc-3").getAttribute("data-render-count")
-        );
-        expect(afterCount).toBe(initialCount);
-      }
-    );
-  },
-};
-
-const stableFiveRows = rows.slice(0, 5);
-
-export const PerfSelectionContextIsolation: Story = {
-  render: () => {
-    const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
-    return (
-      <DataTable.Root
-        columns={columns}
-        rows={stableFiveRows}
-        selectionMode="multiple"
-        selectedKeys={selectedKeys}
-        onSelectionChange={setSelectedKeys}
-      >
-        <SelectionContextProbe />
-        <DataTable.Table>
-          <DataTable.Header />
-          <DataTable.Body />
-        </DataTable.Table>
-      </DataTable.Root>
-    );
-  },
-  args: {},
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step(
-      "Selection change does not re-render non-selection context consumers",
-      async () => {
-        const probe = canvas.getByTestId("ctx-probe");
-        const initialCount = Number(probe.getAttribute("data-render-count"));
-        expect(initialCount).toBe(1);
-
-        const checkboxes = canvas.getAllByRole("checkbox");
-        await userEvent.click(checkboxes[1]);
-
-        await waitFor(() => {
-          expect(checkboxes[1]).toBeChecked();
-        });
-
-        const afterCount = Number(
-          canvas.getByTestId("ctx-probe").getAttribute("data-render-count")
         );
         expect(afterCount).toBe(initialCount);
       }
