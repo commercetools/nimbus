@@ -155,9 +155,6 @@ catalogs:
     globals:
       specifier: ^17.7.0
       version: 17.7.0
-    mockdate:
-      specifier: ^3.0.5
-      version: 3.0.5
     playwright:
       specifier: ^1.61.1
       version: 1.61.1
@@ -749,9 +746,6 @@ importers:
       jsdom:
         specifier: 29.0.1
         version: 29.0.1
-      mockdate:
-        specifier: catalog:tooling
-        version: 3.0.5
       playwright:
         specifier: catalog:tooling
         version: 1.61.1
@@ -6901,6 +6895,7 @@ packages:
   mlly@1.8.0:
     resolution: {integrity: sha512-l8D9ODSRWLe2KHJSifWGwBqpTZXIXTeo8mlKjY+E2HAakaTeNpqAyBZ8GSqLzHgw4XmHmC8whvpjJNMbFZN7/g==}
 
+<<<<<<< HEAD
   mockdate@3.0.5:
     resolution: {integrity: sha512-iniQP4rj1FhBdBYS/+eQv7j1tadJ9lJtdzgOpvsOHng/GbcDh2Fhdeq+ZRldrPYdXvCyfFUmFeEwEGXZB5I/AQ==}
 
@@ -6910,6 +6905,8 @@ packages:
   moment@2.30.1:
     resolution: {integrity: sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==}
 
+=======
+>>>>>>> cc8e83e4f (chore(chromatic): remove mockdate and add script)
   mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
     engines: {node: '>=4'}
@@ -17560,6 +17557,7 @@ snapshots:
       pkg-types: 1.3.1
       ufo: 1.6.1
 
+<<<<<<< HEAD
   mockdate@3.0.5: {}
 
   moment-timezone@0.6.2:
@@ -17568,6 +17566,8 @@ snapshots:
 
   moment@2.30.1: {}
 
+=======
+>>>>>>> cc8e83e4f (chore(chromatic): remove mockdate and add script)
   mri@1.2.0: {}
 
   mrmime@2.0.1: {}

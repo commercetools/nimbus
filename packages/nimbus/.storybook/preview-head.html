@@ -1,0 +1,27 @@
+<script>
+  // Freeze the clock for Chromatic captures only, before the Storybook bundle loads, so date snapshots don't drift (today() baked into story args at module load + React Aria's live "today" cell).
+  (function () {
+    if (
+      !/Chromatic/.test(navigator.userAgent) &&
+      !/chromatic=true/.test(location.href)
+    )
+      return;
+    var RealDate = Date;
+    var FROZEN = RealDate.UTC(2026, 4, 15, 12, 0, 0);
+    function FakeDate() {
+      if (!(this instanceof FakeDate)) return new RealDate(FROZEN).toString();
+      if (arguments.length === 0) return new RealDate(FROZEN);
+      return new (Function.prototype.bind.apply(
+        RealDate,
+        [null].concat([].slice.call(arguments))
+      ))();
+    }
+    FakeDate.prototype = RealDate.prototype;
+    FakeDate.UTC = RealDate.UTC;
+    FakeDate.parse = RealDate.parse;
+    FakeDate.now = function () {
+      return FROZEN;
+    };
+    window.Date = FakeDate;
+  })();
+</script>
