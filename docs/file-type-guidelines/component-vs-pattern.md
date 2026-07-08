@@ -81,6 +81,14 @@ The directory determines how the docs site categorizes the export:
 - `src/components/` → appears under **Components** on the docs site
 - `src/patterns/` → appears under **Patterns** on the docs site
 
+### Import convention
+
+Whether you're building a component or a pattern, internal imports follow
+Nimbus's [two-lane import rule](./barrel-exports.md#the-rule-locked):
+implementation files import other Nimbus code via the `@/` alias (barrel or deep
+path — both are safe), while stories, tests, and doc examples import from the
+published package `@commercetools/nimbus`.
+
 ### File structure
 
 **Component** — full infrastructure with recipe, slots, and documentation:

@@ -139,12 +139,13 @@ For complete development rules, patterns, and requirements, see:
   `./docs/file-type-guidelines/compound-components.md`
 - **Type Safety Guidelines**: `./docs/file-type-guidelines/types.md`
 - **Internationalization**: `./docs/file-type-guidelines/i18n.md`
-- **Cross-Chunk Imports (CRITICAL)**: When importing components or types across
-  different component directories, import directly from implementation files
-  (e.g., `button.tsx`, `button.types.ts`) rather than barrel exports
-  (`index.ts`) to avoid circular chunk dependencies. See
-  `./docs/file-type-guidelines/main-component.md` "Cross-Component Imports" for
-  details.
+- **Import Convention**: Nimbus uses a two-lane import rule — implementation
+  files import other Nimbus code via the `@/` alias (barrel or deep path, either
+  is safe); stories/tests/docs import Nimbus components from the published
+  package `@commercetools/nimbus`. Value `export *` is banned repo-wide
+  (lint-enforced) — that's what makes barrel-vs-deep a non-issue inside
+  implementation code. See `./docs/file-type-guidelines/barrel-exports.md` for
+  the canonical rule.
 
 **IMPORTANT: All file reviews MUST follow the File Review Protocol. Never
 provide feedback without first validating against the appropriate guidelines.**

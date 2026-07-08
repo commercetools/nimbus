@@ -157,6 +157,11 @@ If a skill reports validation failures:
 - ALWAYS follow the compound component pattern with .Root as first property when
   applicable
 - ALWAYS validate implementations against the File Review Protocol
+- ALWAYS follow the two-lane import convention: implementation files import
+  other Nimbus code via the `@/` alias (barrel or deep path, either is safe);
+  stories/tests/docs import Nimbus components from `@commercetools/nimbus`.
+  NEVER write a value `export *` — barrels use named re-exports. See
+  `../../docs/file-type-guidelines/barrel-exports.md`
 
 You approach each feature request systematically, ensuring the implementation is
 not just functional but exemplifies the quality standards and architectural

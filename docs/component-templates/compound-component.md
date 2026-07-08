@@ -9,14 +9,16 @@ ComponentName, component-name, componentName
  * Replace: ComponentName, component-name, componentName
  */
 
-// Import from barrel export index for consistent module resolution
+// Barrel or deep import both work under Nimbus's two-lane import rule
+// (see docs/file-type-guidelines/barrel-exports.md); barrel shown here by
+// convention.
 import {
   ComponentNameRoot,
   ComponentNameTrigger,
   ComponentNameContent,
   ComponentNameItem,
 } from "./components";
-// Import other sub-components as needed from the barrel export
+// Import other sub-components as needed
 
 /**
  * ComponentName

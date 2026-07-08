@@ -68,11 +68,17 @@ Before any operation, you MUST research in parallel:
    - File: `docs/naming-conventions.md`
    - Purpose: File naming, component naming, and import patterns
 
-6. **Analyze** component type (single vs compound):
+6. **Read** barrel exports guidelines:
+   - File: `docs/file-type-guidelines/barrel-exports.md`
+   - Purpose: The two-lane import rule (canonical source) — implementation
+     files use `@/`, stories/tests/docs use `@commercetools/nimbus`, no value
+     `export *`
+
+7. **Analyze** component type (single vs compound):
    - Single: Implementation in main file
    - Compound: Exports only, implementation in `components/` subfolder
 
-7. **Review** related component files:
+8. **Review** related component files:
    - Types file:
      `packages/nimbus/src/components/{component}/{component}.types.ts`
    - Slots file:
@@ -84,7 +90,7 @@ Before any operation, you MUST research in parallel:
    - i18n file: `packages/nimbus/src/components/{component}/{component}.i18n.ts`
      (if exists)
 
-8. **Study** similar component patterns:
+9. **Study** similar component patterns:
    - Simple single: `packages/nimbus/src/components/button/button.tsx`
    - Complex single:
      `packages/nimbus/src/components/split-button/split-button.tsx`
@@ -154,8 +160,9 @@ guideline references.
 - [ ] **Imports**: File imports only required dependencies (no unused imports)
 - [ ] **Compound exports**: For compound components, main file contains EXPORTS
       ONLY (NO implementation logic)
-- [ ] **Compound imports**: For compound components, imports from barrel export
-      `./components/index.ts`, NOT individual files
+- [ ] **Compound imports**: For compound components, sub-parts are imported
+      from `./components` (barrel or deep path — both are safe under the
+      two-lane import rule; barrel is the documented convention)
 - [ ] **Single implementation**: For single components, implementation is
       present in main file
 - [ ] **DisplayName**: Component has `displayName` set correctly:
@@ -301,15 +308,20 @@ guideline references.
   - `./component.slots`
   - `./component.types`
   - `./component.i18n`
-- [ ] **Cross-component imports**: Cross-component imports use DIRECT file
-      paths:
-  - ✅ Correct: `@/components/icon/icon` or `../button/button`
-  - ❌ Wrong: `@/components/icon` or `../button`
-- [ ] **Type-only imports**: Type-only imports use direct file paths:
+- [ ] **Cross-component imports**: Cross-component imports (this is an
+      implementation file, so it's in the "Building Nimbus" lane) use the `@/`
+      alias — barrel or deep path, either is safe:
+  - ✅ Correct: `@/components/icon` or `@/components/icon/icon`
+  - ✅ Correct: `../button/button` or `../button` (relative, same tree)
+  - ❌ Wrong: `@commercetools/nimbus` (implementation files never import the
+    published package)
+- [ ] **Type-only imports**: Type-only imports use the same `@/` alias, barrel
+      or deep, either is safe:
+  - ✅ Correct: `import type { ButtonProps } from '@/components/button'`
   - ✅ Correct: `import type { ButtonProps } from '../button/button.types'`
-  - ❌ Wrong: `import type { ButtonProps } from '../button'`
-- [ ] **No barrel exports**: NO barrel exports for cross-component imports
-      (causes circular dependencies)
+- [ ] **No value `export *`**: Barrels never use value `export *` (lint-error);
+      values are named re-exports (`export { X } from "./x"`). `export type *`
+      is allowed
 - [ ] **Utils barrel OK**: Utils/hooks CAN use barrel exports: `@/utils`,
       `@/hooks` (these are safe)
 - [ ] **Import organization**: Imports organized logically (React, third-party,
@@ -932,35 +944,41 @@ import { Button } from "react-aria-components"; // Conflicts with Nimbus Button!
 
 ---
 
-### Error 4: Cross-Component Import Cycles
+### Error 4: Importing the Published Package from Implementation Code
 
-**Problem**: "Circular dependency" warnings during build, or components fail to
-import
+**Problem**: Component behaves differently in dev vs. the built bundle, or a
+lint error fires on an implementation file's import.
 
-**Root Cause**: Using barrel exports (`index.ts`) for cross-component imports
-creates circular dependencies
+**Root Cause**: Implementation files belong to the "Building Nimbus" lane and
+must import other Nimbus code via the `@/` alias, never the published package
+(`@commercetools/nimbus`). `@/` always resolves to source; the package
+specifier flips src↔dist depending on the command, which implementation code
+must never depend on.
 
 **Solutions**:
 
 ```typescript
-// ✅ CORRECT - Direct file imports
+// ✅ CORRECT - implementation files use the `@/` alias (barrel or deep, either is fine)
+import { IconButton } from "@/components/icon-button";
 import { IconButton } from "@/components/icon-button/icon-button";
-import type { ButtonProps } from "../button/button.types";
+import type { ButtonProps } from "@/components/button";
 
-// ❌ WRONG - Barrel exports create circular dependencies
-import { IconButton } from "@/components/icon-button"; // Uses index.ts
-import type { ButtonProps } from "../button"; // Uses index.ts
+// ❌ WRONG - implementation file importing the published package
+import { IconButton } from "@commercetools/nimbus";
 
 // ✅ CORRECT - Internal imports (same directory) use relative paths
 import { ButtonSlot } from "./button.slots";
 import type { ButtonProps } from "./button.types";
 ```
 
-**Detection**: Import cycle issues manifest as:
+**Detection**: Lane violations manifest as:
 
-- Build warnings about circular dependencies
-- Components imported as `undefined`
-- Webpack/build chunking errors
+- `no-restricted-imports` lint errors on implementation files
+- Unexpected src/dist drift between dev and prod behavior
+
+See
+[Barrel Exports: The Rule](../../docs/file-type-guidelines/barrel-exports.md#the-rule-locked)
+for the full two-lane convention.
 
 ---
 
@@ -1237,27 +1255,34 @@ flowchart TD
     Q1 -->|Yes| Relative[Use Relative Path<br/>━━━━━━━━━━━━━━━━<br/>./component.slots<br/>./component.types<br/>./component.i18n<br/><br/>Rationale: Internal files]
     Q1 -->|No| Q2{Different<br/>component<br/>directory?}
 
-    Q2 -->|Yes| Direct[Use DIRECT File Import<br/>━━━━━━━━━━━━━━━━<br/>✅ @/components/icon/icon<br/>✅ ../button/button.types<br/>❌ @/components/icon<br/>❌ ../button<br/><br/>Rationale: Avoid circular dependencies]
+    Q2 -->|Yes| Alias[Use the `@/` Alias<br/>━━━━━━━━━━━━━━━━<br/>✅ @/components/icon<br/>✅ @/components/icon/icon<br/>✅ ../button/button.types<br/>❌ @commercetools/nimbus<br/><br/>Rationale: Building Nimbus lane — barrel or deep, either is safe]
     Q2 -->|No| Q3{Utils or hooks<br/>package?}
 
-    Q3 -->|Yes| Barrel[Use Barrel Export<br/>━━━━━━━━━━━━━━━━<br/>@/utils<br/>@/hooks<br/>@/theme<br/><br/>Rationale: No circular dependency risk]
+    Q3 -->|Yes| Barrel[Use Barrel Export<br/>━━━━━━━━━━━━━━━━<br/>@/utils<br/>@/hooks<br/>@/theme<br/><br/>Rationale: Always safe via barrel]
     Q3 -->|No| Q4{React Aria<br/>import?}
 
     Q4 -->|Yes| RaPrefix[Import with Ra Prefix<br/>━━━━━━━━━━━━━━━━<br/>import  Button as RaButton  from react-aria-components<br/>import type  ButtonProps as RaButtonProps  from react-aria-components<br/><br/>Rationale: Avoid naming conflicts]
     Q4 -->|No| Standard[Standard Import<br/>━━━━━━━━━━━━━━━━<br/>Follow TypeScript conventions]
 
     Relative --> Example1[Example:<br/>import  ButtonSlot  from ./button.slots<br/>import type  ButtonProps  from ./button.types]
-    Direct --> Example2[Example:<br/>import  Icon  from @/components/icon/icon<br/>import type  ButtonProps  from ../button/button.types]
+    Alias --> Example2[Example:<br/>import  Icon  from @/components/icon<br/>import type  ButtonProps  from @/components/button]
     Barrel --> Example3[Example:<br/>import  extractStyleProps  from @/utils<br/>import  useDisclosure  from @/hooks]
     RaPrefix --> Example4[Example:<br/>import  Button as RaButton  from react-aria-components<br/>const props = useButton...]
     Standard --> Example5[Example:<br/>import React from react<br/>import plain message objects]
 ```
 
-**Import Strategy Summary:** | Location | Pattern | Reason |
-|----------|---------|--------| | Same directory | Relative (`./file`) |
-Internal files | | Other component | Direct file (`@/components/name/name`) |
-Avoid circular deps | | Utils/hooks | Barrel (`@/utils`) | Safe for barrel
-exports | | React Aria | Ra prefix (`as RaButton`) | Avoid name conflicts |
+**Import Strategy Summary:**
+
+| Location                              | Pattern                                                                                       | Reason                                                                                                                   |
+| ------------------------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| Same directory                        | Relative (`./file`)                                                                           | Internal files                                                                                                           |
+| Other component (implementation code) | `@/` alias — barrel or deep, either is fine (`@/components/name` or `@/components/name/name`) | Two-lane import rule — see [Barrel Exports: The Rule](../../docs/file-type-guidelines/barrel-exports.md#the-rule-locked) |
+| Utils/hooks                           | Barrel (`@/utils`)                                                                            | Always safe via barrel                                                                                                   |
+| React Aria                            | Ra prefix (`as RaButton`)                                                                     | Avoid name conflicts                                                                                                     |
+
+Never import `@commercetools/nimbus` (the published package) from
+implementation code — that's reserved for the "Using Nimbus" lane
+(stories/tests/docs).
 
 ---
 
@@ -1488,7 +1513,7 @@ For clarity in these guidelines, key words have specific meanings per
 
 - Indicates an absolute prohibition
 - Validation FAILS if violated
-- Example: "Component MUST NOT use barrel exports for cross-component imports"
+- Example: "Component MUST NOT use a value `export *` in a barrel file"
 - Impact: ❌ Blocking issue
 
 **SHOULD / RECOMMENDED**

@@ -57,7 +57,8 @@ Button.displayName = 'Button';
 
 ````typescript
 // menu.tsx - EXPORTS ONLY, NO IMPLEMENTATION
-// Import from barrel export index to ensure consistent module resolution
+// Barrel or deep import both work here (see the two-lane import rule);
+// the barrel is shown by convention.
 import { MenuRoot, MenuTrigger, MenuItem } from "./components";
 
 /**
@@ -826,127 +827,34 @@ export const Base: Story = {
 - **Nimbus Accessibility Guide**: See `docs/accessibility-guide.md` (if
   available)
 
-## Cross-Component Imports (CRITICAL)
+## Cross-Component Imports
 
-### The Problem: Circular Chunk Dependencies
-
-Nimbus uses Vite to create **separate chunks for each component** via their
-`index.ts` barrel exports. This enables tree-shaking for consumers but creates a
-critical constraint for internal development:
-
-**When Component A imports from Component B's barrel export (`index.ts`), it
-creates a dependency on Component B's entire chunk, which can cause:**
-
-1. **Circular chunk dependencies** - Rollup warnings during build
-2. **Increased bundle size** - Loading entire component chunks unnecessarily
-3. **Build failures** - Circular dependencies can prevent builds
-
-### The Solution: Direct File Imports
-
-**Rule:** When importing components or types from a DIFFERENT component
-directory, import directly from the implementation file, NOT the barrel export.
-
-#### Type Imports Across Components
+See [Barrel Exports: The Rule](./barrel-exports.md#the-rule-locked) for Nimbus's
+two-lane import convention (canonical source). Implementation files — like this
+one — are in the **Building Nimbus** lane: import other Nimbus components/types
+via the `@/` alias. Barrel or deep path — **it does not matter**, both are safe
+(value `export *` is banned repo-wide, which is what makes this true).
 
 ```typescript
-// ❌ WRONG - Imports from barrel export
-import type { ToggleButtonProps } from "../toggle-button";
-
-// ✅ CORRECT - Imports from implementation file
-import type { ToggleButtonProps } from "../toggle-button/toggle-button.types";
-```
-
-**Real example:** `icon-toggle-button.types.ts` needs to extend
-`ToggleButtonProps`:
-
-```typescript
-// icon-toggle-button.types.ts
-// ✅ CORRECT
-import type { ToggleButtonProps } from "../toggle-button/toggle-button.types";
-
-export type IconToggleButtonProps = ToggleButtonProps & {
-  // Additional props...
-};
-```
-
-#### Component Imports Across Components
-
-```typescript
-// ❌ WRONG - Imports from barrel export
-import { IconToggleButton } from "@/components/icon-toggle-button";
-import { Button } from "@/components";
-
-// ✅ CORRECT - Imports from implementation file
-import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
-import { Button } from "@/components/button/button";
-```
-
-**Real example:** `rich-text-toolbar.tsx` needs `IconToggleButton`:
-
-```typescript
-// rich-text-toolbar.tsx
-// ✅ CORRECT - Direct import from implementation file
-import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
-import { Button } from "@/components/button/button";
-
-// Other Nimbus components imported from main barrel export are fine
-// because rich-text-toolbar doesn't have its own barrel export (it's internal)
-import { ToggleButtonGroup, IconButton, Text, Separator } from "@/components";
-```
-
-### When to Use Direct Imports
-
-✅ **USE direct file imports when:**
-
-- Importing components from a DIFFERENT component directory
-- Type-only imports across components
-- Compound component parts accessing other components
-- Any import that could create a chunk-to-chunk dependency
-
-❌ **DON'T use direct imports when:**
-
-- Importing within the SAME component directory (use relative paths:
-  `./button.slots`, `./button.types`)
-- Importing from utilities, hooks, or other non-component modules (they don't
-  have separate chunks)
-- Your component doesn't have its own `index.ts` barrel export (internal
-  components like `rich-text-toolbar.tsx` can import from `@/components`)
-
-### Import Pattern Reference
-
-```typescript
-// WITHIN same component directory - use relative paths
-import { ButtonSlot } from "./button.slots";
-import type { ButtonProps } from "./button.types";
-import { useButtonState } from "./hooks/use-button-state";
-
-// ACROSS component directories - use direct file imports
+// ✅ Both are correct — barrel-vs-deep no longer matters
+import { Icon } from "@/components/icon";
 import { Icon } from "@/components/icon/icon";
-import type { IconProps } from "@/components/icon/icon.types";
-import { Badge } from "@/components/badge/badge";
 
-// Non-component modules - use barrel exports (no chunking issues)
-import { extractStyleProps } from "@/utils";
-import { useBreakpoint } from "@/hooks";
+import type { ToggleButtonProps } from "@/components/toggle-button";
+import type { ToggleButtonProps } from "@/components/toggle-button/toggle-button.types";
 ```
 
-### Why Consumer Imports Still Work
+Within the same component directory, keep using relative paths
+(`./button.slots`, `./button.types`). Utils and hooks (`@/utils`, `@/hooks`) are
+always safe via barrel.
 
-**Consumers of Nimbus still use barrel exports normally:**
+Stories, tests, and doc examples are in the **Using Nimbus** lane and import
+components from the published package instead:
 
 ```typescript
-// Consumer code - this is fine!
+// Consumer code (and story/test/doc files) - this is fine!
 import { Button, Badge, Icon } from "@commercetools/nimbus";
 ```
-
-This works because:
-
-1. Consumers import from the **main package entry point** (`dist/index.es.js`),
-   not individual component chunks
-2. The package build resolves all internal dependencies
-3. Consumers' bundlers handle tree-shaking based on what they import
-
-**The direct import pattern is ONLY for internal Nimbus development.**
 
 ## Internationalization (i18n)
 
@@ -1132,8 +1040,9 @@ export const CustomButton = (props: CustomButtonProps) => {
 
 - [ ] Main component file exists
 - [ ] For compound: exports only, no implementation
-- [ ] **For compound: sub-components imported from barrel export
-      (`./components/index.ts`)**
+- [ ] **For compound: sub-components imported from `./components`** (barrel or
+      deep path — both safe, see
+      [barrel-exports.md](./barrel-exports.md#the-rule-locked))
 - [ ] For compound: `.Root` is FIRST property
 - [ ] For single: implementation present
 - [ ] DisplayName set for all exported components

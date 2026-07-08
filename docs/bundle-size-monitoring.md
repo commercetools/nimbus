@@ -104,7 +104,10 @@ timestamp so reviewers can see when the data was last refreshed.
    policy.
 2. If the increase is **unintentional**, investigate. Common causes:
    - A new dependency pulled in extra code.
-   - An import changed from a deep path to a barrel export.
+   - An import switched to a wider module (e.g. the top-level `src/components`
+     mega-barrel) that pulls in more than the bundler can shake away — not
+     barrel-vs-deep in general, which no longer matters for correctness (see
+     [Barrel Exports: The Rule](./file-type-guidelines/barrel-exports.md#the-rule-locked)).
    - Tree-shaking broke due to side effects.
 3. If the increase is **intentional** (a new feature that legitimately adds
    code), approve it by adding the `bundle-size-approved` label to the PR and

@@ -113,6 +113,10 @@ See
 - Barrel exports and module structure
 - Build/test execution results
 - Cross-component dependencies
+- Import-lane compliance: implementation files import via `@/` (barrel or deep,
+  either is fine); stories/tests/docs import Nimbus components from
+  `@commercetools/nimbus`; no value `export *` anywhere. See
+  [Barrel Exports: The Rule](../../docs/file-type-guidelines/barrel-exports.md#the-rule-locked)
 
 **INVOKE skills:**
 

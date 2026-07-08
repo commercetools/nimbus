@@ -55,6 +55,11 @@ flowchart LR
 - [ ] You MUST follow the existing component file structure (reason:
       maintainability and consistency):
       `/packages/nimbus/src/components/{component-name}/`
+- [ ] You MUST follow the two-lane import convention (implementation files
+      import via the `@/` alias; stories/tests/docs import Nimbus components
+      from `@commercetools/nimbus`) and never use a value `export *` (reason:
+      lint-enforced, prevents build regressions) — see
+      [Barrel Exports: The Rule](../../docs/file-type-guidelines/barrel-exports.md#the-rule-locked)
 
 **SHOULD-Level Best Practices (strongly recommended):**
 

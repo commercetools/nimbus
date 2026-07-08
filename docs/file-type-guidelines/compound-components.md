@@ -34,7 +34,8 @@ For compound components, the main file (`component-name.tsx`) must contain
 
 ```typescript
 // ✅ CORRECT - menu.tsx contains only exports
-// Import from barrel export index for consistent module resolution
+// Barrel or deep import both work here (see the two-lane import rule);
+// the barrel is shown by convention.
 import { MenuRoot, MenuTrigger, MenuContent } from "./components";
 
 export const Menu = {
@@ -47,8 +48,10 @@ export const Menu = {
 
 **IMPORTANT**:
 
-- Sub-components must be imported from the barrel export index
-  (`./components/index.ts`), not from individual files
+- Sub-components can be imported from the barrel export index
+  (`./components/index.ts`) or directly from individual files — both are safe
+  under the [two-lane import rule](./barrel-exports.md#the-rule-locked); the
+  examples in this doc use the barrel by convention
 - Each part must have JSDoc documentation in the main file. See
   [Main Component Guidelines - Documenting Compound Component Parts](./main-component.md#documenting-compound-component-parts)
   for detailed documentation requirements.
@@ -501,7 +504,8 @@ For comprehensive type patterns and examples for compound components, see:
 
 - [ ] `components/` directory exists
 - [ ] Main file contains exports only
-- [ ] **Sub-components imported from barrel export (`./components/index.ts`)**
+- [ ] **Sub-components imported from `./components`** (barrel or deep path —
+      both safe, see [barrel-exports.md](./barrel-exports.md#the-rule-locked))
 - [ ] **`.Root` component exists and is first property**
 - [ ] Root component in `components/component-name.root.tsx`
 - [ ] All sub-components in separate files following pattern:
