@@ -1,3 +1,4 @@
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { glob } from "glob";
 import optimizeLocales from "@react-aria/optimize-locales-plugin";
@@ -7,6 +8,10 @@ import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
 import { analyzer } from "vite-bundle-analyzer";
 import { LOCALE_BCP47_CODES } from "../i18n/scripts/locales";
+
+// ESM compatibility: define __dirname since CJS constants are not available
+// (mirrors the same pattern in .storybook/main.ts).
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Builds the entry map for the library build.
@@ -217,7 +222,14 @@ export default defineConfig(async () => {
     },
     target: "esnext",
     assetsInclude: ["/sb-preview/runtime.js"],
-    resolve: { tsconfigPaths: true },
+    resolve: {
+      alias: {
+        // `@/…` is invariantly source. `@commercetools/nimbus` is deliberately
+        // NOT aliased here — its src↔dist flip is command-keyed in
+        // .storybook/main.ts (dev) and defaults to node_modules/dist elsewhere.
+        "@": resolve(__dirname, "src"),
+      },
+    },
   };
 
   if (!isWatchMode) {
