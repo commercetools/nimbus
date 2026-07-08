@@ -27,7 +27,6 @@ export {
   act,
   buildQueries,
   cleanup,
-  computeHeadingLevel,
   configure,
   createEvent,
   findAllByAltText,
