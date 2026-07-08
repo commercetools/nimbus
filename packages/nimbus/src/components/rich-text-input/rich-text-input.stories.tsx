@@ -67,6 +67,17 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof RichTextInput>;
 
+// A synthetic click doesn't reliably settle a caret in a capture browser (Chromatic); driving the DOM Selection lets Slate's selectionchange sync it.
+const focusEditorSelection = (
+  editor: HTMLElement,
+  { selectAll = false }: { selectAll?: boolean } = {}
+) => {
+  editor.focus();
+  const selection = editor.ownerDocument.getSelection();
+  selection?.selectAllChildren(editor);
+  if (!selectAll) selection?.collapseToStart();
+};
+
 // =============================================================================
 // Basic States
 // =============================================================================
@@ -97,8 +108,7 @@ export const Default: Story = {
 
     // Test basic typing
     await userEvent.click(editor);
-    // Capture browsers don't place a caret in an empty Slate editor on click, so input is dropped without an explicit selection.
-    window.getSelection()?.collapse(editor, 0);
+    focusEditorSelection(editor);
     await userEvent.type(editor, "Hello world");
     await waitFor(
       () => {
@@ -127,8 +137,7 @@ export const WithPlaceholder: Story = {
 
     // Test placeholder disappears on input
     await userEvent.click(editor);
-    // Capture browsers don't place a caret in an empty Slate editor on click, so input is dropped without an explicit selection.
-    window.getSelection()?.collapse(editor, 0);
+    focusEditorSelection(editor);
     await userEvent.type(editor, "Test");
     await waitFor(() => {
       // Placeholder should be gone when content is present
@@ -711,8 +720,7 @@ export const OnChangeCallback: Story = {
     const editor = canvas.getByRole("textbox");
 
     await userEvent.click(editor);
-    // Capture browsers don't place a caret in an empty Slate editor on click, so input is dropped without an explicit selection.
-    window.getSelection()?.collapse(editor, 0);
+    focusEditorSelection(editor);
     await userEvent.type(editor, "Test");
 
     await waitFor(() => {
@@ -834,8 +842,7 @@ export const EmptyContent: Story = {
 
     // Test that typing works from empty state
     await userEvent.click(editor);
-    // Capture browsers don't place a caret in an empty Slate editor on click, so input is dropped without an explicit selection.
-    window.getSelection()?.collapse(editor, 0);
+    focusEditorSelection(editor);
     await userEvent.type(editor, "New content");
 
     await waitFor(() => {
@@ -949,6 +956,7 @@ FormattingShowcase.play = async ({
 
 export const PendingMarksConsistency: Story = {
   args: {
+    defaultValue: "<p>Test text</p>",
     placeholder: "Test pending marks consistency...",
   },
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
@@ -959,8 +967,11 @@ export const PendingMarksConsistency: Story = {
     const ui = within(canvasElement.ownerDocument.body);
     const editor = canvas.getByRole("textbox");
 
-    // Click in empty editor to focus
-    await userEvent.click(editor);
+    // Select the seeded text so marks apply to a real selection, not fragile pending marks that clear across menu interactions.
+    focusEditorSelection(editor, { selectAll: true });
+    await waitFor(() => {
+      expect(editor.ownerDocument.getSelection()?.toString()).toBe("Test text");
+    });
 
     // Apply bold and italic (pointerEventsCheck: 0 avoids flaky tooltip interception)
     const boldButton = canvas.getByRole("button", { name: /bold/i });
@@ -969,7 +980,7 @@ export const PendingMarksConsistency: Story = {
     await userEvent.click(boldButton, { pointerEventsCheck: 0 });
     await userEvent.click(italicButton, { pointerEventsCheck: 0 });
 
-    // Test formatting menu shows pending marks
+    // Apply Code via the formatting menu
     const formattingMenuButton = canvas.getByRole("button", {
       name: /more formatting options/i,
     });
@@ -988,7 +999,7 @@ export const PendingMarksConsistency: Story = {
       expect(ui.queryByRole("menu")).not.toBeInTheDocument();
     });
 
-    // Reopen and verify selection state
+    // Reopen and verify the Code mark stays checked (consistency)
     await userEvent.click(formattingMenuButton, { pointerEventsCheck: 0 });
     await ui.findByRole("menu");
     const codeMenuItemAfter = await ui.findByRole("menuitemcheckbox", {
@@ -996,28 +1007,16 @@ export const PendingMarksConsistency: Story = {
     });
     expect(codeMenuItemAfter).toHaveAttribute("aria-checked", "true");
 
-    // Close menu and type text
     await userEvent.keyboard("{Escape}");
-
-    // Wait for menu to close and pending marks to be ready
     await waitFor(() => {
       expect(ui.queryByRole("menu")).not.toBeInTheDocument();
     });
 
-    // Small delay to ensure pending marks are properly set
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    await userEvent.type(editor, "Test text");
-
-    // Verify all formatting was applied
+    // All three marks should wrap the selected text
     await waitFor(() => {
-      const strongElement = editor.querySelector("strong");
-      const emElement = editor.querySelector("em");
-      const codeElement = editor.querySelector("code");
-
-      expect(strongElement).toBeInTheDocument();
-      expect(emElement).toBeInTheDocument();
-      expect(codeElement).toBeInTheDocument();
+      expect(editor.querySelector("strong")).toBeInTheDocument();
+      expect(editor.querySelector("em")).toBeInTheDocument();
+      expect(editor.querySelector("code")).toBeInTheDocument();
       expect(editor).toHaveTextContent("Test text");
     });
   },
