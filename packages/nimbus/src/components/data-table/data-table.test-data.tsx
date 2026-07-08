@@ -10,7 +10,7 @@ import {
   RadioInput,
   Badge,
   ProgressBar,
-} from "@/components";
+} from "@commercetools/nimbus";
 import { Info } from "@commercetools/nimbus-icons";
 import { DataTable } from "./data-table";
 

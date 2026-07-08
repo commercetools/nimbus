@@ -1,7 +1,7 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import { NimbusProvider } from "./nimbus-provider";
-import { Region, useRegion } from "@/components/region";
+import { Region, useRegion } from "@commercetools/nimbus";
 
 describe("NimbusProvider - Font Loading", () => {
   it("should render children with default loadFonts=true", () => {

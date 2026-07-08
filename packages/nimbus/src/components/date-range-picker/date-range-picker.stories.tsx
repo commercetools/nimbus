@@ -15,7 +15,7 @@ import {
   CalendarDateTime,
   ZonedDateTime,
 } from "@internationalized/date";
-import type { RangeValue } from "@/components/range-calendar/range-calendar.types";
+import type { RangeValue } from "@commercetools/nimbus";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 
 /**

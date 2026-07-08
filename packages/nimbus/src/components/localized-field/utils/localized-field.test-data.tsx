@@ -1,4 +1,4 @@
-import type { CurrencyCode } from "@/components";
+import type { CurrencyCode } from "@commercetools/nimbus";
 import type {
   LocalizedString,
   LocalizedCurrency,

@@ -14,7 +14,7 @@ import {
   Text,
   Stack,
   Separator,
-} from "@/components";
+} from "@commercetools/nimbus";
 
 export type LocalizedFieldTypes = "text" | "multiLine" | "richText" | "money";
 

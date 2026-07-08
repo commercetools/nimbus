@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { SearchInputField } from "./search-input-field";
 import { userEvent, within, expect, fn } from "storybook/test";
-import { Stack, Text } from "@/components";
+import { Stack, Text } from "@commercetools/nimbus";
 
 const meta: Meta<typeof SearchInputField> = {
   title: "patterns/fields/SearchInputField",

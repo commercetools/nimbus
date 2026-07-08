@@ -19,7 +19,7 @@ import {
   Text,
   TextInput,
   DataTable,
-} from "@/components";
+} from "@commercetools/nimbus";
 import { UPDATE_ACTIONS } from "./constants";
 import { useStableDataTableContext } from "./components/data-table.context";
 import { Palette } from "@commercetools/nimbus-icons";
