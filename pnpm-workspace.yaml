@@ -52,6 +52,12 @@ allowBuilds:
   "@fission-ai/openspec": false
   "@modelcontextprotocol/ext-apps": false
   core-js-pure: true
+  # Transitive deps of @huggingface/transformers (docs browser semantic search).
+  # The search runs entirely in a Web Worker on onnxruntime-web, so these native
+  # Node build scripts are never needed at runtime — deny per least-privilege.
+  onnxruntime-node: false
+  protobufjs: false
+  sharp: false
 
 overrides:
   rollup: "catalog:tooling"
