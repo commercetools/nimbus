@@ -5,18 +5,62 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * Defines the styling variants and base styles using Chakra UI's recipe system.
  *
  * Renders navigation semantics (`<nav>` + `<a>`) with visual styling that
- * matches the Tabs `line` (horizontal underline) variant.
+ * matches the Tabs `line` variant.
  *
  * ⚠️  VISUAL TWIN — KEEP IN SYNC WITH `tabs.recipe.ts`
  * TabNav and Tabs are intentionally separate components with separate recipes
  * (different semantics: navigation links vs. content-panel widget). They do NOT
- * share a recipe. However, the `tabs` variant of TabNav is designed to be
- * visually identical to the `line` horizontal variant of Tabs. If you change
- * colors, spacing, typography, transitions, or focus styles in one, apply the
- * equivalent change to the other.
+ * share a recipe. However, they expose the SAME three variants — `line`,
+ * `rounded`, and `pill` — which are designed to look identical between the two.
+ * If you change colors, spacing, typography, transitions, or focus styles for
+ * any of these variants in one, apply the equivalent change to the other.
+ * (Tabs additionally layers `orientation`/`placement` onto `line`.)
  */
+
+/**
+ * Shared item styles for the `rounded` and `pill` variants.
+ *
+ * Both reproduce the "soft highlight on the active item" look (vs. the
+ * `line` bar): a neutral resting state, a subtle hover wash, and a
+ * themeable highlight on the active item driven by `colorPalette` (defaulting
+ * to `primary` via the root slot). Padding and font-size are inherited from the
+ * shared `--tab-nav-*` size CSS vars so all three sizes keep working.
+ *
+ * `position: relative` + `zIndex` keep the item's label painted ABOVE the
+ * absolutely-positioned sliding indicator (see `tab-nav.root.tsx`). Once the
+ * indicator is active (`[data-animated="true"]`, set by the hook on mount), it
+ * owns the highlight, so the static per-item background is suppressed to avoid a
+ * double highlight.
+ */
+const highlightItemBase = {
+  color: "neutral.11",
+  cursor: "pointer",
+  fontWeight: "500",
+  textDecoration: "none",
+  borderRadius: "200",
+  position: "relative",
+  zIndex: 1,
+  transition: "color 150ms ease, background 150ms ease",
+  focusVisibleRing: "outside",
+  // No hover background — just shift the text to the (themed) active palette so
+  // hover never paints over the active item's highlight or the sliding indicator.
+  _hover: {
+    color: "colorPalette.11",
+  },
+  '&[aria-current="page"]': {
+    color: "colorPalette.11",
+    background: "colorPalette.3",
+  },
+  '[data-animated="true"] &[aria-current="page"]': {
+    background: "transparent",
+  },
+  _disabled: {
+    layerStyle: "disabled",
+  },
+} as const;
+
 export const tabNavSlotRecipe = defineSlotRecipe({
-  slots: ["root", "item"],
+  slots: ["root", "item", "indicator"],
 
   className: "nimbus-tab-nav",
 
@@ -25,6 +69,25 @@ export const tabNavSlotRecipe = defineSlotRecipe({
       display: "flex",
       flexDirection: "row",
       width: "100%",
+      // Anchors the absolutely-positioned sliding indicator (all variants).
+      position: "relative",
+    },
+    // The sliding active marker. The hook (`useSlidingIndicator`) owns the
+    // dynamic geometry — it writes `opacity`, `width`, `height`, and `transform`
+    // inline — so the recipe only defines the static frame and the slide
+    // transition. `background`/`borderRadius` are variant-driven (see below).
+    indicator: {
+      position: "absolute",
+      top: "0",
+      left: "0",
+      zIndex: "0",
+      opacity: "0",
+      pointerEvents: "none",
+      transition:
+        "transform 180ms ease, width 180ms ease, height 180ms ease, opacity 120ms ease",
+      "@media (prefers-reduced-motion: reduce)": {
+        transition: "none",
+      },
     },
     item: {
       display: "flex",
@@ -41,9 +104,14 @@ export const tabNavSlotRecipe = defineSlotRecipe({
 
   variants: {
     variant: {
-      tabs: {
+      line: {
         root: {
           boxShadow: "0 1px 0 0 {colors.neutral.6}",
+        },
+        // A thin bar pinned to the active item's bottom edge.
+        indicator: {
+          background: "primary.9",
+          borderRadius: "0",
         },
         item: {
           color: "neutral.12",
@@ -57,12 +125,50 @@ export const tabNavSlotRecipe = defineSlotRecipe({
             color: "primary.11",
           },
           '&[aria-current="page"]': {
-            color: "primary.9",
+            color: "primary.11",
             boxShadow: "0 2px 0 0 {colors.primary.9}",
+          },
+          // When the animated indicator is active, the sliding bar owns the
+          // highlight, so suppress the static bar.
+          '[data-animated="true"] &[aria-current="page"]': {
+            boxShadow: "0 2px 0 0 transparent",
           },
           _disabled: {
             layerStyle: "disabled",
           },
+        },
+      },
+      // Soft rounded-rect highlight on the active item. No baseline; small gap
+      // between items.
+      rounded: {
+        root: {
+          colorPalette: "primary",
+          gap: "100",
+        },
+        // Full-height highlight behind the active item's label.
+        indicator: {
+          background: "colorPalette.3",
+          borderRadius: "200",
+        },
+        item: highlightItemBase,
+      },
+      // Same idea as `rounded`, but a fully-rounded capsule highlight and a touch
+      // more horizontal padding so it reads as a pill.
+      pill: {
+        root: {
+          colorPalette: "primary",
+          gap: "100",
+        },
+        // Fully-rounded capsule highlight behind the active item's label.
+        indicator: {
+          background: "colorPalette.3",
+          borderRadius: "full",
+        },
+        item: {
+          ...highlightItemBase,
+          borderRadius: "full",
+          paddingLeft: "calc(var(--tab-nav-padding-left) + {spacing.100})",
+          paddingRight: "calc(var(--tab-nav-padding-right) + {spacing.100})",
         },
       },
     },
@@ -98,7 +204,7 @@ export const tabNavSlotRecipe = defineSlotRecipe({
   },
 
   defaultVariants: {
-    variant: "tabs",
+    variant: "line",
     size: "md",
   },
 });

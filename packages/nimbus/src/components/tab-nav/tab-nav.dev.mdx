@@ -85,6 +85,70 @@ const App = () => {
 };
 ```
 
+### Variants
+
+The `variant` prop controls the visual style. Available variants: `line` (default), `rounded`, `pill`. (`Tabs` exposes the same three variants.)
+
+- **`line`** — an underline strip beneath the active item (visually twinned with the `Tabs` `line` variant).
+- **`rounded`** — a soft rounded-rect highlight behind the active item.
+- **`pill`** — a fully-rounded capsule highlight behind the active item.
+
+The `rounded` and `pill` variants drop the baseline, add a small gap between items, and drive their active highlight off `colorPalette` (defaulting to `primary`), so they theme with the surrounding palette.
+
+The legacy `tabs` variant name is accepted as a deprecated alias for `line`.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    {['line', 'rounded', 'pill'].map((variant) => (
+      <Stack key={variant} direction="column" gap="300">
+        <Text fontWeight="500">{variant}</Text>
+        <TabNav.Root aria-label={`Navigation (${variant})`} variant={variant}>
+          <TabNav.Item href="/general" isCurrent>General</TabNav.Item>
+          <TabNav.Item href="/items">Items</TabNav.Item>
+          <TabNav.Item href="/shipping">Shipping</TabNav.Item>
+        </TabNav.Root>
+      </Stack>
+    ))}
+  </Stack>
+);
+```
+
+### Animated highlight
+
+The active highlight always slides between items as the active item changes — a single indicator instead of a static per-item highlight. It adapts to the variant: a sliding underline bar for `line`, and a sliding filled highlight for `rounded`/`pill`. No prop is required.
+
+The indicator is an `aria-hidden`, non-focusable element, so `aria-current`, focus rings, and keyboard order are unaffected. Its position is measured from the live DOM (`aria-current="page"`) and kept in sync as the active item changes or the layout resizes. The recipe's static marker is the SSR / no-JS fallback.
+
+The slide transition is automatically disabled under `prefers-reduced-motion: reduce` — the highlight snaps into place. (To disable the motion, the user sets the OS-level reduced-motion preference; there is no per-instance prop.)
+
+```jsx live-dev
+const items = [
+  { href: '/orders/123/general', label: 'General' },
+  { href: '/orders/123/items', label: 'Items' },
+  { href: '/orders/123/shipping', label: 'Shipping' },
+];
+
+const App = () => {
+  const [activePath, setActivePath] = React.useState(items[0].href);
+
+  return (
+    <TabNav.Root aria-label="Order navigation" variant="rounded">
+      {items.map((item) => (
+        <TabNav.Item
+          key={item.href}
+          href={item.href}
+          isCurrent={activePath === item.href}
+          onClick={(e) => { e.preventDefault(); setActivePath(item.href); }}
+        >
+          {item.label}
+        </TabNav.Item>
+      ))}
+    </TabNav.Root>
+  );
+};
+```
+
 ### Active item
 
 Mark the currently viewed page with `isCurrent`. This sets `aria-current="page"` on the anchor element, which screen readers announce as "current page".

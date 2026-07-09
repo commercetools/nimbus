@@ -29,11 +29,11 @@ export const TabNav = {
    * # TabNav.Root
    *
    * The root container for the tab navigation. Renders a `<nav>` landmark
-   * with the tab strip underline styling.
+   * with the tab strip styling.
    *
    * @example
    * ```tsx
-   * <TabNav.Root variant="tabs">
+   * <TabNav.Root variant="line">
    *   <TabNav.Item href="/general" isCurrent>General</TabNav.Item>
    *   <TabNav.Item href="/items">Items</TabNav.Item>
    * </TabNav.Root>

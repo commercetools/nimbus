@@ -4,6 +4,7 @@ import { DARK_MODE_EVENT_NAME } from "@vueless/storybook-dark-mode";
 import { useEffect, useRef, useState } from "react";
 import { addons } from "storybook/preview-api";
 import { NimbusProvider, useColorMode } from "@commercetools/nimbus";
+import type { NimbusRouterConfig } from "@commercetools/nimbus";
 
 // get channel to listen to event emitter
 const channel = addons.getChannel();
@@ -47,6 +48,15 @@ const ColorModeSync = ({ isDark }: { isDark: boolean }) => {
 };
 
 /**
+ * A no-op router so React Aria link components (e.g. `Tabs` link tabs and
+ * `TabNav` items, which render `<a>` elements) are intercepted by the router
+ * instead of performing a real browser navigation inside the Storybook iframe.
+ * Without it, clicking a link tab navigates the iframe (the "URL error") and
+ * stateful click handlers never get to switch the active item.
+ */
+const noopRouter: NimbusRouterConfig = { navigate: () => {} };
+
+/**
  * Theme decorator that synchronizes the Storybook UI theme with the
  * dark-mode toggle and provides locale context from Storybook globals.
  * This ensures that all component stories are rendered within the correct
@@ -80,7 +90,7 @@ export const ThemeDecorator = ({
   }, []);
 
   return (
-    <NimbusProvider locale={locale} defaultTheme={theme}>
+    <NimbusProvider locale={locale} defaultTheme={theme} router={noopRouter}>
       <ColorModeSync isDark={isDark} />
       {children}
     </NimbusProvider>
