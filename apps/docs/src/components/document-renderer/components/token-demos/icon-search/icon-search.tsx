@@ -52,7 +52,7 @@ export const IconSearch = () => {
   return (
     <Box position="absolute" inset="0" overflow="hidden">
       <Splitter.Root {...rootProps}>
-        <Splitter.Aside>
+        <Splitter.Aside borderRight="solid-25" borderColor="neutral.3">
           <ScrollArea height="100%">
             <CategoryRail
               categories={categories}
