@@ -168,9 +168,11 @@ pnpm check:bundle-size
 ```
 
 When `BUNDLE_SIZE_BASELINE` is not set (the normal local case), the script
-automatically fetches the baseline from the comment chain via `gh`. The output
-shows a table with current size, baseline, delta, and status for each tracked
-package. All sizes are displayed in KB.
+automatically fetches the baseline from the comment chain via `gh`. Run it from
+within the repo — the `GITHUB_REPOSITORY` variable that Actions provides in CI
+is absent locally, so the fetch derives the repo from your checkout via
+`gh repo view`. The output shows a table with current size, baseline, delta, and
+status for each tracked package. All sizes are displayed in KB.
 
 ## Viewing the Trend
 
