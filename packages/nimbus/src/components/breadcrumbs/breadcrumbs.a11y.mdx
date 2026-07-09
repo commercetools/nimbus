@@ -15,9 +15,9 @@ const App = () => (
     <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
     <Breadcrumbs.Item href="/products">Products</Breadcrumbs.Item>
     <Breadcrumbs.Item href="/products/apparel">Apparel</Breadcrumbs.Item>
-    <Breadcrumbs.Item isCurrent>Shoes</Breadcrumbs.Item>
+    <Breadcrumbs.Item>Shoes</Breadcrumbs.Item>
   </Breadcrumbs.Root>
-)
+);
 ```
 
 ### Accessibility standards
@@ -27,14 +27,16 @@ const App = () => (
   to identify the landmark, especially when a page contains multiple `<nav>`
   elements.
 - **List semantics:** Items are rendered inside an ordered list (`<ol>` with
-  `<li>` children), which communicates the hierarchical, sequential nature of
-  the trail to assistive technologies.
-- **Link semantics:** Each interactive item renders an `<a>` element with the
+  `<li>` children) carrying an explicit `role="list"`, which communicates the
+  hierarchical, sequential nature of the trail to assistive technologies — and
+  keeps list semantics under `list-style: none`, which WebKit (Safari +
+  VoiceOver) otherwise strips.
+- **Link semantics:** Each navigable item renders an `<a>` element with the
   implicit `link` role.
-- **Current page indication:** The current (last) item uses
-  `aria-current="page"` — **not** `aria-selected`. Screen readers announce this
-  as "current page". The current item renders as non-interactive text and is
-  removed from the tab sequence.
+- **Current page indication:** The current (last) item is derived automatically
+  (no `isCurrent` prop). It uses `aria-current="page"` — **not** `aria-selected`
+  — which screen readers announce as "current page". It renders as a
+  non-focusable `<span role="link">` and is removed from the tab sequence.
 - **Decorative separators:** Separators between items are decorative and carry
   `aria-hidden="true"`, so they are not announced by screen readers.
 - **Keyboard navigation:** Breadcrumbs use standard sequential keyboard

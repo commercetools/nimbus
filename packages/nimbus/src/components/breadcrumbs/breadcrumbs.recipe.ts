@@ -50,7 +50,8 @@ export const breadcrumbsSlotRecipe = defineSlotRecipe({
         color: "primary.11",
         textDecoration: "underline",
       },
-      // React Aria sets data-current on the current (last) breadcrumb's link.
+      // React Aria's Breadcrumb sets data-current on the current (last) item's
+      // link automatically.
       "&[data-current]": {
         color: "neutral.12",
         fontWeight: "500",
@@ -58,7 +59,10 @@ export const breadcrumbsSlotRecipe = defineSlotRecipe({
         cursor: "default",
         pointerEvents: "none",
       },
-      _disabled: {
+      // React Aria marks the current item as disabled too (it sets
+      // `data-disabled` on it), so scope the dimmed disabled styling to
+      // genuinely disabled, non-current items only.
+      "&[data-disabled]:not([data-current])": {
         layerStyle: "disabled",
       },
     },

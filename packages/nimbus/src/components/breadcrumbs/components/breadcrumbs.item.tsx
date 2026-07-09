@@ -1,4 +1,7 @@
-import { Link as RALink } from "react-aria-components";
+import {
+  Breadcrumb as RaBreadcrumb,
+  Link as RaLink,
+} from "react-aria-components";
 import { extractStyleProps } from "@/utils";
 import {
   BreadcrumbsItemSlot,
@@ -6,66 +9,70 @@ import {
   BreadcrumbsSeparatorSlot,
 } from "../breadcrumbs.slots";
 import type { BreadcrumbsItemProps } from "../breadcrumbs.types";
-import { useBreadcrumbsContext } from "./breadcrumbs.context";
+import { useBreadcrumbsSeparator } from "./breadcrumbs.context";
 
 /**
  * # Breadcrumbs.Item
  *
- * An individual breadcrumb. Renders an `<li>` containing a navigation link
- * (`<a>`). The decorative separator inherited from `Breadcrumbs.Root` is
- * rendered before every item except the first.
+ * An individual breadcrumb. Renders an `<li>` (via React Aria's `Breadcrumb`)
+ * containing a navigation link (via React Aria's `Link`). The decorative
+ * separator configured on `Breadcrumbs.Root` is rendered before every item
+ * except the first.
  *
- * When `isCurrent` is true the item represents the current page: it renders as
- * non-interactive text (not a link) with `aria-current="page"`, and is removed
- * from the tab sequence.
+ * When this is the last item in a `Breadcrumbs.Root`, React Aria marks it as the
+ * current page automatically: it becomes non-interactive text with
+ * `aria-current="page"` and is removed from the tab sequence. There is no
+ * `isCurrent` prop — currentness is derived from position.
  *
  * @supportsStyleProps
  */
 export const BreadcrumbsItem = ({
   children,
+  id,
   href,
-  isCurrent,
   isDisabled,
   target,
   rel,
+  routerOptions,
   ref,
   ...rest
 }: BreadcrumbsItemProps) => {
-  const { separator } = useBreadcrumbsContext();
+  const separator = useBreadcrumbsSeparator();
   const [styleProps, restProps] = extractStyleProps(rest);
 
   return (
-    <BreadcrumbsItemSlot>
-      <BreadcrumbsSeparatorSlot aria-hidden="true">
-        {separator}
-      </BreadcrumbsSeparatorSlot>
-      {isCurrent ? (
-        // The current page is non-interactive text — not a link — so it is not
-        // in the tab order. React Aria's Link would remain focusable, so we
-        // render the styled slot element directly instead.
-        <BreadcrumbsLinkSlot
-          ref={ref as React.Ref<HTMLAnchorElement>}
-          aria-current="page"
-          data-current="true"
-          {...styleProps}
-          {...restProps}
-        >
-          {children}
-        </BreadcrumbsLinkSlot>
-      ) : (
-        <BreadcrumbsLinkSlot asChild {...styleProps}>
-          <RALink
-            ref={ref}
-            href={isDisabled ? undefined : href}
-            isDisabled={isDisabled}
-            target={target}
-            rel={rel}
-            {...restProps}
-          >
-            {children}
-          </RALink>
-        </BreadcrumbsLinkSlot>
-      )}
+    <BreadcrumbsItemSlot asChild>
+      <RaBreadcrumb id={id}>
+        <BreadcrumbsSeparatorSlot aria-hidden="true">
+          {separator}
+        </BreadcrumbsSeparatorSlot>
+        {isDisabled ? (
+          // React Aria's Breadcrumb overrides the nested Link's `isDisabled`
+          // via context (it only disables the current item), so per-item
+          // disabling is handled here: render non-interactive, unfocusable text.
+          <BreadcrumbsLinkSlot asChild {...styleProps}>
+            <span aria-disabled="true" data-disabled="true">
+              {children}
+            </span>
+          </BreadcrumbsLinkSlot>
+        ) : (
+          <BreadcrumbsLinkSlot asChild {...styleProps}>
+            {/* React Aria's Breadcrumb passes `isDisabled`/`aria-current` to
+                this Link via context for the current (last) item, so it renders
+                as a non-focusable `<span role="link">` automatically. */}
+            <RaLink
+              ref={ref}
+              href={href}
+              target={target}
+              rel={rel}
+              routerOptions={routerOptions}
+              {...restProps}
+            >
+              {children}
+            </RaLink>
+          </BreadcrumbsLinkSlot>
+        )}
+      </RaBreadcrumb>
     </BreadcrumbsItemSlot>
   );
 };

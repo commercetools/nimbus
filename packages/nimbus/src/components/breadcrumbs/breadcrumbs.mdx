@@ -17,11 +17,11 @@ tags:
 
 ## Overview
 
-Breadcrumbs display the hierarchical path to the current page as an ordered
-list of links. They render a `<nav>` landmark containing an `<ol>` of `<a>`
-elements. Each item except the last navigates to an ancestor page; the last
-item represents the current page and is rendered as non-interactive text with
-`aria-current="page"`.
+Breadcrumbs display the hierarchical path to the current page as an ordered list
+of links. They render a `<nav>` landmark containing an `<ol>` of `<a>` elements.
+Each item except the last navigates to an ancestor page; the last item is
+treated as the current page automatically and is rendered as non-interactive
+text with `aria-current="page"`.
 
 Use breadcrumbs in pages that sit several levels deep in a hierarchy (e.g.
 `/products/apparel/shoes`) to help users understand where they are and to move
@@ -32,6 +32,23 @@ back up the tree.
 Deep dive into implementation details and access the Nimbus design library.
 
 [React Aria Breadcrumbs](https://react-spectrum.adobe.com/react-aria/Breadcrumbs.html)
+
+## Guidelines
+
+> [!TIP]\
+> **When to use**
+>
+> - The page sits **three or more levels deep** in a clear hierarchy.
+> - Every level in the trail is a real, navigable page.
+> - Users benefit from seeing where they are and stepping back up the tree.
+
+> [!CAUTION]\
+> **When not to use**
+>
+> - As a substitute for a **back button** or the browser's history.
+> - On flat or two-level sites where the hierarchy adds no value.
+> - To represent a **multi-step flow or wizard** — use progress steps instead.
+> - Keep labels short and match them to the destination page titles.
 
 ## Variables
 
@@ -51,27 +68,46 @@ const App = () => (
         <Breadcrumbs.Root aria-label={`Breadcrumb (${size})`} size={size}>
           <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
           <Breadcrumbs.Item href="/orders">Orders</Breadcrumbs.Item>
-          <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+          <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
         </Breadcrumbs.Root>
       </Stack>
     ))}
   </Stack>
-)
+);
 ```
 
 ### Current page
 
-Mark the last item with `isCurrent`. This renders it as non-interactive text
-with `aria-current="page"`, which screen readers announce as "current page".
+The **last** item is the current page automatically — there is no `isCurrent`
+prop. It renders as non-interactive text with `aria-current="page"`, which
+screen readers announce as "current page".
 
 ```jsx live
 const App = () => (
   <Breadcrumbs.Root aria-label="Breadcrumb">
     <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
     <Breadcrumbs.Item href="/orders">Orders</Breadcrumbs.Item>
-    <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+    <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
   </Breadcrumbs.Root>
-)
+);
+```
+
+### Data-driven trail
+
+Pass an `items` array to render a trail from data. The last entry is the current
+page.
+
+```jsx live
+const App = () => (
+  <Breadcrumbs.Root
+    aria-label="Breadcrumb"
+    items={[
+      { id: "home", label: "Home", href: "/" },
+      { id: "catalog", label: "Catalog", href: "/catalog" },
+      { id: "shoes", label: "Shoes" },
+    ]}
+  />
+);
 ```
 
 ### Custom separator
@@ -81,12 +117,12 @@ separator is decorative and hidden from assistive technologies.
 
 ```jsx live
 const App = () => (
-  <Breadcrumbs.Root aria-label="Breadcrumb" separator="›">
+  <Breadcrumbs.Root aria-label="Breadcrumb" separator="/">
     <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
     <Breadcrumbs.Item href="/catalog">Catalog</Breadcrumbs.Item>
-    <Breadcrumbs.Item isCurrent>Shoes</Breadcrumbs.Item>
+    <Breadcrumbs.Item>Shoes</Breadcrumbs.Item>
   </Breadcrumbs.Root>
-)
+);
 ```
 
 ### Disabled item
@@ -102,7 +138,7 @@ const App = () => (
     <Breadcrumbs.Item href="/orders" isDisabled>
       Orders
     </Breadcrumbs.Item>
-    <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+    <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
   </Breadcrumbs.Root>
-)
+);
 ```
