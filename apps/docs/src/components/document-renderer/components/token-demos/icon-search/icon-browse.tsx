@@ -11,7 +11,14 @@ import {
   toast,
 } from "@commercetools/nimbus";
 import { GridList, GridListItem } from "react-aria-components";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import Fuse from "fuse.js";
 
 import * as icons from "@commercetools/nimbus-icons";
@@ -125,6 +132,14 @@ export const IconBrowse = ({
 }) => {
   const [, copyToClipboard] = useCopyToClipboard();
   const [q, setQ] = useState<string>("");
+  // The input updates `q` on every keystroke (so typing stays snappy), but the
+  // expensive Fuse search + grid render read this deferred copy. React keeps the
+  // previous results painted and does the heavy work at a lower, interruptible
+  // priority, so the field never stutters mid-type. Better than a fixed debounce:
+  // no artificial latency, and fast typers still get one search at the end.
+  const deferredQ = useDeferredValue(q);
+  // True while the grid is still reflecting an older query than what's typed.
+  const isStale = q !== deferredQ;
 
   // Icons in the active category (or all of them). Compared by slug so a
   // category whose name contains spaces ("common actions") still matches.
@@ -159,20 +174,20 @@ export const IconBrowse = ({
   // The full ranked result set (no cap) — browse is popularity-sorted, a query
   // is Fuse-ranked. Pagination then slices this into pages.
   const full = useMemo<string[]>(() => {
-    if (!q.trim()) {
+    if (!deferredQ.trim()) {
       return [...scoped]
         .sort((a, b) => b.popularity - a.popularity)
         .map((e) => e.name);
     }
-    return fuse.search(q).map((r) => r.item.name);
-  }, [q, scoped, fuse]);
+    return fuse.search(deferredQ).map((r) => r.item.name);
+  }, [deferredQ, scoped, fuse]);
 
   // 1-based current page. Reset to the first page whenever the result set
   // changes (new query or category) so you're never stranded on an empty page.
   const [page, setPage] = useState(1);
   useEffect(() => {
     setPage(1);
-  }, [q, categorySlug]);
+  }, [deferredQ, categorySlug]);
 
   const pageItems = useMemo(
     () => full.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
@@ -218,7 +233,14 @@ export const IconBrowse = ({
           onChange={(value) => setQ(value)}
         />
       </Box>
-      <Box px="400" pb="400">
+      <Box
+        px="400"
+        pb="400"
+        // Dim the results while a newer query is still being applied, so the
+        // stale grid reads as "updating" rather than as the final result.
+        opacity={isStale ? 0.6 : 1}
+        transition="opacity 120ms ease"
+      >
         {loading ? (
           <Flex justify="center" py="800">
             <LoadingSpinner />
