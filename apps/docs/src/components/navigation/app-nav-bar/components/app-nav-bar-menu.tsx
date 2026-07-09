@@ -22,7 +22,7 @@ export const AppNavBarMenu = () => {
   }
 
   return (
-    <TabNav.Root aria-label="Main navigation" width="auto">
+    <TabNav.Root aria-label="Main navigation" variant="rounded" width="auto">
       {menu.map((item) => {
         // Check if this item or any of its children is active
         const isActive =
