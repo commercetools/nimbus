@@ -1,0 +1,152 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+`ChatBubble` renders a **single message**. It intentionally does not own the
+surrounding feed's container semantics or its live region — those are the
+consumer's to compose. This page documents both halves: what the component does
+for you, and what you're responsible for wiring up around it.
+
+```jsx live
+const App = () => (
+  <ChatBubble.Root sender="user" aria-label="Message from Ada Lovelace">
+    <ChatBubble.Avatar firstName="Ada" lastName="Lovelace" />
+    <ChatBubble.Bubble>
+      <Text>Can you summarise last week's orders?</Text>
+    </ChatBubble.Bubble>
+  </ChatBubble.Root>
+);
+```
+
+### Naming a message
+
+`ChatBubble.Root` renders a semantic `<article>` by default (a feed item, per
+the ARIA APG), so each message is a discrete node in the accessibility tree. An
+`<article>` needs its own accessible name — give it one explicitly with
+`aria-label` or `aria-labelledby`. Don't rely on the avatar to convey who sent
+the message: it is decorative by default (see below), and even when named, a
+repeated "Avatar" node is a worse accessible name for the message than a label
+on the message itself.
+
+### The avatar is decorative by default
+
+`ChatBubble.Avatar` sets `aria-hidden` unless you pass `firstName`/`lastName` or
+an explicit `aria-label`. This is deliberate: an unnamed avatar would otherwise
+announce a generic, unhelpful label (or leak initials/an icon with no context),
+and the sender is already better conveyed by the message's own accessible name
+and position. Because the avatar is not the accessible-name carrier, it must
+never be the _only_ place sender identity is expressed — pair it with a named
+`Root`, not instead of one.
+
+### Composing the transcript: `log` vs. `feed`
+
+Two ARIA container roles fit a message transcript, and they are not
+interchangeable:
+
+- **`role="log"` with `aria-live="polite"`** (recommended) — a live region that
+  announces appended content, including streamed replies, without re-announcing
+  the whole history on every token. It has no constraint on child roles, so a
+  log can validly contain `<article>` messages, dividers, date separators, or
+  anything else you need.
+- **`role="feed"`** — the ARIA APG's dedicated pattern for scrollable article
+  collections, with built-in "read next/previous article" keyboard support. Its
+  trade-off: `feed` has an `aria-required-children` constraint — **every** child
+  must have role `article`. Nesting a `log`, a plain `div` with non-article
+  content, or a date separator inside a `feed` is an accessibility violation,
+  not just a lint warning.
+
+Unless you're building the feed's article-to-article keyboard navigation,
+`role="log"` is the simpler, safer default:
+
+```jsx live
+const App = () => (
+  <Box
+    role="log"
+    aria-live="polite"
+    aria-label="Conversation with the assistant"
+    display="flex"
+    flexDirection="column"
+    gap="600"
+  >
+    <ChatBubble.Root sender="user" aria-label="Message from Ada Lovelace">
+      <ChatBubble.Avatar firstName="Ada" lastName="Lovelace" />
+      <ChatBubble.Bubble>
+        <Text>Can you summarise last week's orders?</Text>
+      </ChatBubble.Bubble>
+    </ChatBubble.Root>
+
+    <ChatBubble.Root sender="agent" aria-label="Message from the assistant">
+      <ChatBubble.Avatar aria-label="Assistant">
+        <Icons.AutoAwesome />
+      </ChatBubble.Avatar>
+      <ChatBubble.Bubble>
+        <Text>Revenue is up 12% week-over-week.</Text>
+      </ChatBubble.Bubble>
+    </ChatBubble.Root>
+  </Box>
+);
+```
+
+If you do reach for `role="feed"`, keep every direct child an `<article>` —
+`ChatBubble.Root`'s default element already satisfies that — and don't mix in
+non-article children.
+
+### Streaming state
+
+`isStreaming` on `ChatBubble.Root` sets `aria-busy="true"`, flagging the
+message's content as still in flux. It intentionally does **not** create its own
+live region: a live region mounted at the same time as its content is not
+announced reliably by every screen reader (the region must already exist before
+its content changes). Keep the live region on your transcript container
+(`role="log"` `aria-live="polite"`, as above) so it persists across messages,
+and use `ChatBubble.Typing`'s `children` for a visible "Assistant is typing…"
+affordance while streaming.
+
+### Conveying the sender
+
+Sender is visually encoded by bubble color and column position (leading vs.
+trailing vs. centered) — neither of which reaches assistive technology on its
+own. Per **WCAG 1.4.1 (Use of Color)** and **WCAG 1.3.1 (Info and
+Relationships)**, that information must also be available through another
+channel: the message's accessible name (`aria-label`/`aria-labelledby`) is that
+channel. Always name messages rather than depending on their look.
+
+### Reading order
+
+The root's layout is CSS Grid with explicit per-slot placement, and the `sender`
+variant swaps which grid column the avatar and bubble occupy — for
+`sender="user"` the bubble is visually first and the avatar trails, independent
+of DOM order. Because grid placement doesn't reorder the underlying DOM,
+screen-reader reading order follows DOM order, not visual order. Keeping the
+avatar non-interactive (no focusable content, decorative by default) means this
+divergence never affects keyboard tab order or gets in the way of reading the
+message content; it's only a concern if you make the avatar interactive, which
+isn't a supported pattern.
+
+### Accessibility standards
+
+- **Name, role, value:** `ChatBubble.Root` is an `<article>` by default; always
+  give it an accessible name via `aria-label` or `aria-labelledby`.
+- **Info and relationships:** Sender and status information conveyed visually
+  (bubble color, column position) must also be exposed through the message's
+  accessible name, not color/position alone.
+- **Use of color:** `tone="error"` is a visual cue only — pair it with visible
+  text describing the failure (as in the error-tone example), not color alone.
+- **Non-text content:** The avatar is decorative (`aria-hidden`) unless named;
+  when named, its label should identify the sender, not restate "avatar".
+- **Status messages:** Compose the transcript with `role="log"`
+  `aria-live="polite"` (or a fully-`article`-only `role="feed"`) so new and
+  streamed messages are announced without the consumer building custom
+  live-region logic.
+- **Focus order / no keyboard trap:** The avatar carries no focusable content,
+  so the sender-dependent column swap never disrupts tab order.
+
+### Resources
+
+- [ARIA APG: Feed Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/feed/)
+- [WAI-ARIA: `log` role](https://www.w3.org/TR/wai-aria-1.2/#log)
+- [WCAG 2.1: Use of Color (1.4.1)](https://www.w3.org/WAI/WCAG21/Understanding/use-of-color.html)
+- [WCAG 2.1: Info and Relationships (1.3.1)](https://www.w3.org/WAI/WCAG21/Understanding/info-and-relationships.html)

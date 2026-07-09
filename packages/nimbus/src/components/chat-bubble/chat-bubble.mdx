@@ -1,0 +1,194 @@
+---
+id: Components-ChatBubble
+title: Chat bubble
+exportName: ChatBubble
+description:
+  A single message bubble for AI chat interfaces, pairing a sender avatar with a
+  message card and optional actions, footer, and typing indicator.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Feedback
+  - Chat bubble
+tags:
+  - component
+  - chat
+  - bubble
+  - message
+  - ai
+  - conversation
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=10601-14469
+---
+
+## Overview
+
+Chat bubble renders **one message** in an AI chat conversation — an avatar
+paired with a message card, plus optional actions, a footer, and a typing
+indicator for streaming replies. It does not compose the surrounding feed:
+stacking messages, scrolling, and the live region that announces new content are
+all up to the consumer.
+
+The `sender` prop drives who the message is from and controls both the layout
+direction and the bubble/avatar styling:
+
+- `user` — the human; avatar trails the bubble.
+- `agent` (default) — the assistant; avatar leads the bubble.
+- `system` — a centered, subdued, typically avatar-less notice.
+- `tool` — agent-side tool/function output on a subdued neutral surface.
+
+`tone="error"` is independent of `sender` — it tints the bubble to flag a failed
+generation, since an agent message can still fail.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=10601-14469)
+
+## Variables
+
+Get familiar with the features.
+
+### Senders
+
+Each sender has its own layout direction and surface. `user` and `agent` place
+the bubble beside the avatar; `system` centers a notice without sides.
+
+```jsx live
+const App = () => (
+  <Stack gap="600">
+    <ChatBubble.Root sender="user">
+      <ChatBubble.Avatar firstName="Ada" lastName="Lovelace" />
+      <ChatBubble.Bubble>
+        <Text>Can you summarise last week's orders?</Text>
+      </ChatBubble.Bubble>
+    </ChatBubble.Root>
+    <ChatBubble.Root sender="agent">
+      <ChatBubble.Avatar>
+        <Icons.AutoAwesome />
+      </ChatBubble.Avatar>
+      <ChatBubble.Bubble>
+        <Text>Revenue is up 12% week-over-week.</Text>
+      </ChatBubble.Bubble>
+    </ChatBubble.Root>
+    <ChatBubble.Root sender="tool">
+      <ChatBubble.Avatar>
+        <Icons.AutoAwesome />
+      </ChatBubble.Avatar>
+      <ChatBubble.Bubble>
+        <Text>Tool output</Text>
+      </ChatBubble.Bubble>
+    </ChatBubble.Root>
+    <ChatBubble.Root sender="system">
+      <ChatBubble.Bubble>
+        <Text>Conversation history was cleared.</Text>
+      </ChatBubble.Bubble>
+    </ChatBubble.Root>
+  </Stack>
+);
+```
+
+### Tone
+
+`tone="error"` tints the bubble with the critical palette to flag a failed
+generation, on top of whatever `sender` styling already applies.
+
+```jsx live
+const App = () => (
+  <ChatBubble.Root sender="agent" tone="error">
+    <ChatBubble.Avatar>
+      <Icons.AutoAwesome />
+    </ChatBubble.Avatar>
+    <ChatBubble.Bubble>
+      <Text>Something went wrong generating this response.</Text>
+      <ChatBubble.Actions>
+        <Button variant="outline" colorPalette="primary">
+          Retry
+        </Button>
+      </ChatBubble.Actions>
+    </ChatBubble.Bubble>
+  </ChatBubble.Root>
+);
+```
+
+### Actions
+
+`ChatBubble.Actions` is a right-aligned row of buttons rendered inside the
+bubble. Place it last so the actions pin to the bottom of the card.
+
+```jsx live
+const App = () => (
+  <ChatBubble.Root sender="agent">
+    <ChatBubble.Avatar>
+      <Icons.AutoAwesome />
+    </ChatBubble.Avatar>
+    <ChatBubble.Bubble>
+      <Text>I drafted the date range for your report. Approve to apply.</Text>
+      <ChatBubble.Actions>
+        <Button variant="outline" colorPalette="primary">
+          Save as draft
+        </Button>
+        <Button variant="solid" colorPalette="primary">
+          Approve
+        </Button>
+      </ChatBubble.Actions>
+    </ChatBubble.Bubble>
+  </ChatBubble.Root>
+);
+```
+
+### Footer
+
+`ChatBubble.Footer` is a `space-between` row rendered below the bubble, for a
+timestamp, a trust/provenance link, or reaction icons.
+
+```jsx live
+const App = () => (
+  <ChatBubble.Root sender="agent">
+    <ChatBubble.Avatar>
+      <Icons.AutoAwesome />
+    </ChatBubble.Avatar>
+    <ChatBubble.Bubble>
+      <Text>Here is the summary you asked for.</Text>
+    </ChatBubble.Bubble>
+    <ChatBubble.Footer>
+      <Link href="#">How was this generated?</Link>
+      <Stack direction="row" alignItems="center" gap="100">
+        <Text color="neutral.11">Apr 13, 11:56pm</Text>
+        <IconButton aria-label="Good response" variant="ghost" size="xs">
+          <Icons.ThumbUp />
+        </IconButton>
+        <IconButton aria-label="Bad response" variant="ghost" size="xs">
+          <Icons.ThumbDown />
+        </IconButton>
+        <IconButton aria-label="Copy" variant="ghost" size="xs">
+          <Icons.ContentCopy />
+        </IconButton>
+      </Stack>
+    </ChatBubble.Footer>
+  </ChatBubble.Root>
+);
+```
+
+### Typing / streaming
+
+`ChatBubble.Typing` shows an animated "generating…" indicator as the bubble's
+payload while a reply streams. Pair it with `isStreaming` on the root, which
+sets `aria-busy`.
+
+```jsx live
+const App = () => (
+  <ChatBubble.Root sender="agent" isStreaming>
+    <ChatBubble.Avatar>
+      <Icons.AutoAwesome />
+    </ChatBubble.Avatar>
+    <ChatBubble.Bubble>
+      <ChatBubble.Typing>
+        <Text color="neutral.11">Assistant is typing…</Text>
+      </ChatBubble.Typing>
+    </ChatBubble.Bubble>
+  </ChatBubble.Root>
+);
+```

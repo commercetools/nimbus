@@ -1,0 +1,310 @@
+---
+title: Chat bubble component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { ChatBubble, type ChatBubbleProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+`ChatBubble` is a compound component: wrap `ChatBubble.Avatar` and
+`ChatBubble.Bubble` in `ChatBubble.Root`. `sender` defaults to `"agent"`.
+
+```jsx live-dev
+const App = () => (
+  <ChatBubble.Root sender="agent">
+    <ChatBubble.Avatar>
+      <Icons.AutoAwesome />
+    </ChatBubble.Avatar>
+    <ChatBubble.Bubble>
+      <Text>Here is the summary you asked for.</Text>
+    </ChatBubble.Bubble>
+  </ChatBubble.Root>
+);
+```
+
+## Usage examples
+
+### User and agent messages
+
+`sender="user"` trails the avatar and uses the `iris.3` surface;
+`sender="agent"` (the default) leads with the avatar. Name a message with
+`aria-label` (or `aria-labelledby`) — the avatar itself stays decorative unless
+you give it `firstName`/`lastName` or its own `aria-label`.
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="600">
+    <ChatBubble.Root sender="user" aria-label="Message from Ada Lovelace">
+      <ChatBubble.Avatar firstName="Ada" lastName="Lovelace" />
+      <ChatBubble.Bubble>
+        <Text>Can you summarise last week's orders for me?</Text>
+      </ChatBubble.Bubble>
+    </ChatBubble.Root>
+    <ChatBubble.Root sender="agent" aria-label="Message from the assistant">
+      <ChatBubble.Avatar aria-label="Assistant">
+        <Icons.AutoAwesome />
+      </ChatBubble.Avatar>
+      <ChatBubble.Bubble>
+        <Text>Revenue is up 12% week-over-week.</Text>
+      </ChatBubble.Bubble>
+    </ChatBubble.Root>
+  </Stack>
+);
+```
+
+### System notices
+
+`sender="system"` centers a subdued notice and is typically rendered without an
+avatar.
+
+```jsx live-dev
+const App = () => (
+  <ChatBubble.Root sender="system">
+    <ChatBubble.Bubble>
+      <Text>Conversation history was cleared.</Text>
+    </ChatBubble.Bubble>
+  </ChatBubble.Root>
+);
+```
+
+### Tool output
+
+`sender="tool"` keeps the agent-side layout (avatar leading) but uses a subdued
+neutral surface to distinguish machine output from the assistant's own voice.
+
+````jsx live-dev
+const App = () => (
+  <ChatBubble.Root sender="tool">
+    <ChatBubble.Avatar>
+      <Icons.AutoAwesome />
+    </ChatBubble.Avatar>
+    <ChatBubble.Bubble>
+      <Markdown>
+        {["```json", '{ "orders": 42, "revenue": 12890 }', "```"].join("\n")}
+      </Markdown>
+    </ChatBubble.Bubble>
+  </ChatBubble.Root>
+);
+````
+
+### Error tone
+
+`tone="error"` is orthogonal to `sender` — it tints the bubble to flag a failed
+generation, so an `agent` message can be both `sender="agent"` and
+`tone="error"`.
+
+```jsx live-dev
+const App = () => (
+  <ChatBubble.Root sender="agent" tone="error">
+    <ChatBubble.Avatar>
+      <Icons.AutoAwesome />
+    </ChatBubble.Avatar>
+    <ChatBubble.Bubble>
+      <Text>Something went wrong generating this response.</Text>
+      <ChatBubble.Actions>
+        <Button variant="outline" colorPalette="primary">
+          Retry
+        </Button>
+      </ChatBubble.Actions>
+    </ChatBubble.Bubble>
+  </ChatBubble.Root>
+);
+```
+
+### Actions
+
+`ChatBubble.Actions` renders a right-aligned button row inside the bubble. Place
+it as the last child of `ChatBubble.Bubble` so it pins to the bottom of the
+card.
+
+```jsx live-dev
+const App = () => (
+  <ChatBubble.Root sender="agent">
+    <ChatBubble.Avatar>
+      <Icons.AutoAwesome />
+    </ChatBubble.Avatar>
+    <ChatBubble.Bubble>
+      <Text>I drafted the date range for your report. Approve to apply.</Text>
+      <ChatBubble.Actions>
+        <Button variant="outline" colorPalette="primary">
+          Save as draft
+        </Button>
+        <Button variant="solid" colorPalette="primary">
+          Approve
+        </Button>
+      </ChatBubble.Actions>
+    </ChatBubble.Bubble>
+  </ChatBubble.Root>
+);
+```
+
+### Footer: timestamp and reactions
+
+`ChatBubble.Footer` renders a `space-between` row below the bubble — a trust
+link on the start side, a timestamp and reaction `IconButton`s on the end side.
+With a single child, `space-between` leaves it at the start of the row.
+
+```jsx live-dev
+const App = () => (
+  <ChatBubble.Root sender="agent">
+    <ChatBubble.Avatar>
+      <Icons.AutoAwesome />
+    </ChatBubble.Avatar>
+    <ChatBubble.Bubble>
+      <Text>Here is the summary you asked for.</Text>
+    </ChatBubble.Bubble>
+    <ChatBubble.Footer>
+      <Link href="#">How was this generated?</Link>
+      <Stack direction="row" alignItems="center" gap="100">
+        <Text color="neutral.11">Apr 13, 11:56pm</Text>
+        <IconButton aria-label="Good response" variant="ghost" size="xs">
+          <Icons.ThumbUp />
+        </IconButton>
+        <IconButton aria-label="Bad response" variant="ghost" size="xs">
+          <Icons.ThumbDown />
+        </IconButton>
+        <IconButton aria-label="Copy" variant="ghost" size="xs">
+          <Icons.ContentCopy />
+        </IconButton>
+      </Stack>
+    </ChatBubble.Footer>
+  </ChatBubble.Root>
+);
+```
+
+### Markdown payload
+
+The bubble's payload is arbitrary content — render a `Markdown` string for
+formatted replies (lists, links, inline code, code blocks).
+
+```jsx live-dev
+const App = () => (
+  <ChatBubble.Root sender="agent">
+    <ChatBubble.Avatar>
+      <Icons.AutoAwesome />
+    </ChatBubble.Avatar>
+    <ChatBubble.Bubble>
+      <Markdown>
+        {[
+          "Here's what I found:",
+          "",
+          "- **Revenue** is up 12% week-over-week",
+          "- Top SKU: `ABC-123`",
+          "",
+          "See the [full report](#) for details.",
+        ].join("\n")}
+      </Markdown>
+      <ChatBubble.Actions>
+        <Button variant="solid" colorPalette="primary">
+          Approve
+        </Button>
+      </ChatBubble.Actions>
+    </ChatBubble.Bubble>
+  </ChatBubble.Root>
+);
+```
+
+### Streaming replies
+
+While a reply generates, render `ChatBubble.Typing` as the bubble's payload and
+set `isStreaming` on `ChatBubble.Root` (which sets `aria-busy`). Swap in the
+real content once the stream settles.
+
+```jsx live-dev
+const App = () => (
+  <ChatBubble.Root sender="agent" isStreaming>
+    <ChatBubble.Avatar>
+      <Icons.AutoAwesome />
+    </ChatBubble.Avatar>
+    <ChatBubble.Bubble>
+      <ChatBubble.Typing>
+        <Text color="neutral.11">Assistant is typing…</Text>
+      </ChatBubble.Typing>
+    </ChatBubble.Bubble>
+  </ChatBubble.Root>
+);
+```
+
+### Accessible transcript (recommended composition)
+
+`ChatBubble` renders one message; you compose the transcript. Wrap the messages
+in a `role="log"` `aria-live="polite"` container so streamed replies are
+announced without per-token spam, and name each message for assistive tech. See
+the Accessibility tab for the full rationale, including why `role="feed"` is not
+a drop-in replacement here.
+
+```jsx live-dev
+const App = () => (
+  <Box
+    role="log"
+    aria-live="polite"
+    aria-label="Conversation with the assistant"
+    display="flex"
+    flexDirection="column"
+    gap="600"
+  >
+    <ChatBubble.Root sender="user" aria-label="Message from Ada Lovelace">
+      <ChatBubble.Avatar firstName="Ada" lastName="Lovelace" />
+      <ChatBubble.Bubble>
+        <Text>Can you summarise last week's orders?</Text>
+      </ChatBubble.Bubble>
+    </ChatBubble.Root>
+
+    <ChatBubble.Root sender="agent" aria-label="Message from the assistant">
+      <ChatBubble.Avatar aria-label="Assistant">
+        <Icons.AutoAwesome />
+      </ChatBubble.Avatar>
+      <ChatBubble.Bubble>
+        <Text>Revenue is up 12% week-over-week.</Text>
+      </ChatBubble.Bubble>
+    </ChatBubble.Root>
+  </Box>
+);
+```
+
+## Component requirements
+
+- Render `ChatBubble.Avatar` and `ChatBubble.Bubble` as direct children of
+  `ChatBubble.Root`; add `ChatBubble.Footer` as a sibling after the bubble for a
+  below-bubble row.
+- Nest `ChatBubble.Actions` inside `ChatBubble.Bubble`, as the last child, so it
+  pins to the bottom of the card.
+- `sender="system"` conventionally omits `ChatBubble.Avatar` — the bubble spans
+  and centers whether or not an avatar is supplied.
+- `ChatBubble.Root` renders a semantic `<article>` by default; override the
+  element with `as` (for example `as="li"` inside a list) when composing a
+  transcript that needs a different tag.
+
+## Accessibility
+
+`ChatBubble` is a single-message primitive — it does not own the surrounding
+feed's container semantics or live region. In brief: name each message with
+`aria-label`/`aria-labelledby`, keep the avatar decorative unless you give it a
+real name, and set `isStreaming` for streamed replies (it sets `aria-busy`). See
+the **Accessibility tab** for the full guidance on composing an accessible
+transcript.
+
+## API reference
+
+<PropsTable id="ChatBubble" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using ChatBubble
+within your application. As the component's internal functionality is already
+tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+{{docs-tests: chat-bubble.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-chatbubble--docs)

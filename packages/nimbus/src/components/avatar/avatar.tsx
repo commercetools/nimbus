@@ -49,8 +49,15 @@ export const Avatar = (props: AvatarProps) => {
     ? msg.format("avatarLabel", { fullName })
     : msg.format("avatarLabelGeneric");
 
+  // A decorative avatar (e.g. a sender glyph hidden with `aria-hidden`) should
+  // not inject the generic "avatar" label — the label would be both redundant
+  // (the node is already removed from the a11y tree) and, for a nameless
+  // avatar, misleading. Omit it when hidden; `rest` still wins for everything.
+  const isHidden =
+    rest["aria-hidden"] === true || rest["aria-hidden"] === "true";
+
   const sharedProps = {
-    "aria-label": avatarLabel,
+    ...(isHidden ? {} : { "aria-label": avatarLabel }),
     ref,
     ...rest,
   };

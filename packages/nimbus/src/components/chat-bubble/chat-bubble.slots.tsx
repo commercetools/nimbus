@@ -5,7 +5,8 @@ import type {
   ChatBubbleAvatarSlotProps,
   ChatBubbleBubbleSlotProps,
   ChatBubbleActionsSlotProps,
-  ChatBubbleFeedbackSlotProps,
+  ChatBubbleFooterSlotProps,
+  ChatBubbleTypingSlotProps,
 } from "./chat-bubble.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
@@ -13,12 +14,14 @@ const { withProvider, withContext } = createSlotRecipeContext({
 });
 
 /**
- * Root slot — establishes the recipe context and owns the grid layout.
+ * Root slot — establishes the recipe context and owns the grid layout. The
+ * component defaults its rendered element to `<article>` (a feed item, per the
+ * ARIA APG); consumers can override via `as`.
  */
 export const ChatBubbleRootSlot: SlotComponent<
   HTMLDivElement,
   ChatBubbleRootSlotProps
-> = withProvider<HTMLDivElement, ChatBubbleRootSlotProps>("div", "root");
+> = withProvider<HTMLDivElement, ChatBubbleRootSlotProps>("article", "root");
 
 /**
  * Avatar slot — a layout wrapper for the interior Nimbus `Avatar`. The nested
@@ -46,9 +49,18 @@ export const ChatBubbleActionsSlot: SlotComponent<
 > = withContext<HTMLDivElement, ChatBubbleActionsSlotProps>("div", "actions");
 
 /**
- * Feedback slot — layout-only row rendered below the bubble.
+ * Footer slot — layout-only row rendered below the bubble.
  */
-export const ChatBubbleFeedbackSlot: SlotComponent<
+export const ChatBubbleFooterSlot: SlotComponent<
   HTMLDivElement,
-  ChatBubbleFeedbackSlotProps
-> = withContext<HTMLDivElement, ChatBubbleFeedbackSlotProps>("div", "feedback");
+  ChatBubbleFooterSlotProps
+> = withContext<HTMLDivElement, ChatBubbleFooterSlotProps>("div", "footer");
+
+/**
+ * Typing slot — layout wrapper for the animated typing indicator (and an
+ * optional visible label), rendered inside the bubble while a reply streams.
+ */
+export const ChatBubbleTypingSlot: SlotComponent<
+  HTMLDivElement,
+  ChatBubbleTypingSlotProps
+> = withContext<HTMLDivElement, ChatBubbleTypingSlotProps>("div", "typing");

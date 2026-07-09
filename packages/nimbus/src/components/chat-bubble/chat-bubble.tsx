@@ -3,17 +3,24 @@ import {
   ChatBubbleAvatar,
   ChatBubbleBubble,
   ChatBubbleActions,
-  ChatBubbleFeedback,
+  ChatBubbleFooter,
+  ChatBubbleTyping,
 } from "./components";
 
 /**
  * ChatBubble
  * ============================================================
  * A compound component representing a single message in an AI chat feed.
- * It provides a bubble container, an avatar, and two layout-only slots
- * (actions inside the bubble, feedback below it) that consumers fill with
- * their own content. The `sender` prop drives the layout direction and the
- * sender-specific visual styling.
+ * It provides a bubble container, an avatar, and layout-only slots that
+ * consumers fill with their own content: actions inside the bubble, a footer
+ * below it, and a typing indicator for streaming replies. The `sender` prop
+ * drives the layout direction and sender-specific styling, and `tone` flags a
+ * failed generation.
+ *
+ * ChatBubble renders a single message; composing the surrounding feed and any
+ * live region is the consumer's job — see the accessibility documentation.
+ *
+ * @see {@link https://nimbus-documentation.vercel.app/components/feedback/chat-bubble}
  *
  * @example
  * ```tsx
@@ -28,10 +35,10 @@ import {
  *       <Button variant="solid">Approve</Button>
  *     </ChatBubble.Actions>
  *   </ChatBubble.Bubble>
- *   <ChatBubble.Feedback>
+ *   <ChatBubble.Footer>
  *     <Link>How was this generated?</Link>
  *     <Text>Apr 13, 11:56pm</Text>
- *   </ChatBubble.Feedback>
+ *   </ChatBubble.Footer>
  * </ChatBubble.Root>
  * ```
  */
@@ -40,13 +47,15 @@ export const ChatBubble = {
    * # ChatBubble.Root
    *
    * The grid container for a single message. Establishes the styling context
-   * and lays out the avatar, bubble and optional feedback row. Accepts the
-   * `sender` prop (`"user" | "agent"`) which controls layout direction and
-   * sender-specific styling.
+   * and lays out the avatar, bubble and optional footer row. Accepts `sender`
+   * (`"user" | "agent" | "system" | "tool"`) which controls layout direction
+   * and styling, `tone` (`"neutral" | "error"`) to flag a failed generation,
+   * and `isStreaming` to mark the message as still generating (sets
+   * `aria-busy`). Renders a semantic `<article>` by default; override with `as`.
    *
    * @example
    * ```tsx
-   * <ChatBubble.Root sender="user">
+   * <ChatBubble.Root sender="user" aria-label="Message from Ada Lovelace">
    *   <ChatBubble.Avatar firstName="Ada" lastName="Lovelace" />
    *   <ChatBubble.Bubble>
    *     <Text>Can you summarise this order?</Text>
@@ -60,7 +69,8 @@ export const ChatBubble = {
    *
    * The sender's avatar. Wraps the Nimbus `Avatar` (defaulting to `size="2xs"`)
    * and is styled per `sender`. Provide the content via `firstName`/`lastName`
-   * (initials), `src` (image), or `children` (a custom icon).
+   * (initials), `src` (image), or `children` (a custom icon). Decorative by
+   * default (`aria-hidden`) unless named.
    *
    * @example
    * ```tsx
@@ -75,6 +85,7 @@ export const ChatBubble = {
    *
    * The rounded card that holds the message payload. Stacks its children
    * vertically; place `ChatBubble.Actions` last to pin actions to the bottom.
+   * Long, unbreakable content wraps inside the card.
    *
    * @example
    * ```tsx
@@ -100,20 +111,40 @@ export const ChatBubble = {
    */
   Actions: ChatBubbleActions,
   /**
-   * # ChatBubble.Feedback
+   * # ChatBubble.Footer
    *
    * A layout-only `space-between` row rendered below the bubble. Consumers
    * provide the content (timestamp, trust affordances, reaction icons, links).
    *
    * @example
    * ```tsx
-   * <ChatBubble.Feedback>
+   * <ChatBubble.Footer>
    *   <Link>How was this generated?</Link>
    *   <Text>Apr 13, 11:56pm</Text>
-   * </ChatBubble.Feedback>
+   * </ChatBubble.Footer>
    * ```
    */
-  Feedback: ChatBubbleFeedback,
+  Footer: ChatBubbleFooter,
+  /**
+   * # ChatBubble.Typing
+   *
+   * An animated "generating…" indicator (Nimbus `ActivityIndicator`) for a
+   * streaming reply. Render it as the bubble's payload while the response
+   * streams; pass a visible label as `children` for a per-message affordance.
+   *
+   * @example
+   * ```tsx
+   * <ChatBubble.Root sender="agent" isStreaming>
+   *   <ChatBubble.Avatar>
+   *     <AutoAwesome />
+   *   </ChatBubble.Avatar>
+   *   <ChatBubble.Bubble>
+   *     <ChatBubble.Typing>Assistant is typing…</ChatBubble.Typing>
+   *   </ChatBubble.Bubble>
+   * </ChatBubble.Root>
+   * ```
+   */
+  Typing: ChatBubbleTyping,
 };
 
 export {
@@ -121,5 +152,6 @@ export {
   ChatBubbleAvatar as _ChatBubbleAvatar,
   ChatBubbleBubble as _ChatBubbleBubble,
   ChatBubbleActions as _ChatBubbleActions,
-  ChatBubbleFeedback as _ChatBubbleFeedback,
+  ChatBubbleFooter as _ChatBubbleFooter,
+  ChatBubbleTyping as _ChatBubbleTyping,
 };
