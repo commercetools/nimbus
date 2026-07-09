@@ -19,38 +19,46 @@ import {
 ### Basic usage
 
 `Breadcrumbs` is a compound component for **hierarchical page navigation**. It
-renders a `<nav>` landmark containing an ordered list of `<a>` elements. Mark
-the last item with `isCurrent` to represent the current page.
+renders a `<nav>` landmark containing an ordered list of `<a>` elements. The
+last item is treated as the current page automatically — there is no `isCurrent`
+prop.
 
 ```jsx live-dev
 const App = () => (
   <Breadcrumbs.Root aria-label="Breadcrumb">
     <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
     <Breadcrumbs.Item href="/orders">Orders</Breadcrumbs.Item>
-    <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+    <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
   </Breadcrumbs.Root>
 );
 ```
+
+> [!NOTE]\
+> Breadcrumbs is built on React Aria Components' `Breadcrumbs`/`Breadcrumb`
+> primitives. React Aria owns the collection semantics: it derives the current
+> page (the last item), applies `aria-current="page"`, and removes that item
+> from the tab order automatically. This is why there is no `isCurrent` prop and
+> why the API mirrors other React-Aria-backed Nimbus components.
 
 ## Usage examples
 
 ### Current page
 
-Mark the final item with `isCurrent`. This strips the `href`, renders the item
-as non-interactive text, and sets `aria-current="page"`.
+The final item is the current page automatically. React Aria strips its `href`,
+renders it as non-interactive text, and sets `aria-current="page"`.
 
 ```jsx live-dev
 const App = () => (
   <Breadcrumbs.Root aria-label="Breadcrumb">
     <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
     <Breadcrumbs.Item href="/catalog">Catalog</Breadcrumbs.Item>
-    <Breadcrumbs.Item isCurrent>Shoes</Breadcrumbs.Item>
+    <Breadcrumbs.Item>Shoes</Breadcrumbs.Item>
   </Breadcrumbs.Root>
 );
 ```
 
 When using a client-side router, derive the trail from the current route and
-render the deepest segment with `isCurrent`:
+render the deepest segment last — it becomes current automatically:
 
 ```tsx
 import { useLocation } from "react-router-dom";
@@ -62,24 +70,44 @@ const ProductBreadcrumbs = ({ category }: { category: string }) => {
     <Breadcrumbs.Root aria-label="Breadcrumb">
       <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
       <Breadcrumbs.Item href="/products">Products</Breadcrumbs.Item>
-      <Breadcrumbs.Item isCurrent>{category}</Breadcrumbs.Item>
+      <Breadcrumbs.Item>{category}</Breadcrumbs.Item>
     </Breadcrumbs.Root>
   );
 };
 ```
 
+### Data-driven trail (`items`)
+
+For trails built from data, pass an `items` array instead of compound children.
+The last entry is the current page, and `onAction` receives the activated
+entry's `id`.
+
+```jsx live-dev
+const App = () => (
+  <Breadcrumbs.Root
+    aria-label="Breadcrumb"
+    items={[
+      { id: "home", label: "Home", href: "/" },
+      { id: "products", label: "Products", href: "/products" },
+      { id: "apparel", label: "Apparel", href: "/products/apparel" },
+      { id: "shoes", label: "Shoes" },
+    ]}
+  />
+);
+```
+
 ### Custom separator
 
-The default separator is `/`. Pass any React node (string or icon) via the
+The default separator is `›`. Pass any React node (string or icon) via the
 `separator` prop on `Breadcrumbs.Root`. Separators are decorative and hidden
 from assistive technologies.
 
 ```jsx live-dev
 const App = () => (
-  <Breadcrumbs.Root aria-label="Breadcrumb" separator="›">
+  <Breadcrumbs.Root aria-label="Breadcrumb" separator="/">
     <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
     <Breadcrumbs.Item href="/products">Products</Breadcrumbs.Item>
-    <Breadcrumbs.Item isCurrent>Apparel</Breadcrumbs.Item>
+    <Breadcrumbs.Item>Apparel</Breadcrumbs.Item>
   </Breadcrumbs.Root>
 );
 ```
@@ -97,7 +125,7 @@ const App = () => (
       <Breadcrumbs.Root aria-label="Breadcrumb (sm)" size="sm">
         <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
         <Breadcrumbs.Item href="/orders">Orders</Breadcrumbs.Item>
-        <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+        <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
       </Breadcrumbs.Root>
     </Stack>
     <Stack direction="column" gap="200">
@@ -105,7 +133,7 @@ const App = () => (
       <Breadcrumbs.Root aria-label="Breadcrumb (md)" size="md">
         <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
         <Breadcrumbs.Item href="/orders">Orders</Breadcrumbs.Item>
-        <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+        <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
       </Breadcrumbs.Root>
     </Stack>
   </Stack>
@@ -116,7 +144,7 @@ const App = () => (
 
 Use `isDisabled` to render an ancestor item that exists in the trail but cannot
 currently be navigated to. Disabled items are visually dimmed, removed from the
-tab sequence, and their `href` is stripped.
+tab sequence, and non-interactive.
 
 ```jsx live-dev
 const App = () => (
@@ -125,7 +153,7 @@ const App = () => (
     <Breadcrumbs.Item href="/orders" isDisabled>
       Orders
     </Breadcrumbs.Item>
-    <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+    <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
   </Breadcrumbs.Root>
 );
 ```
@@ -138,10 +166,14 @@ Use `target` and `rel` to open a breadcrumb in a new browser tab. Always pair
 ```jsx live-dev
 const App = () => (
   <Breadcrumbs.Root aria-label="Breadcrumb">
-    <Breadcrumbs.Item href="https://docs.example.com" target="_blank" rel="noopener noreferrer">
+    <Breadcrumbs.Item
+      href="https://docs.example.com"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
       Docs ↗
     </Breadcrumbs.Item>
-    <Breadcrumbs.Item isCurrent>Current page</Breadcrumbs.Item>
+    <Breadcrumbs.Item>Current page</Breadcrumbs.Item>
   </Breadcrumbs.Root>
 );
 ```
@@ -151,22 +183,25 @@ const App = () => (
 ### Accessibility
 
 The Breadcrumbs component uses semantic HTML for navigation. Accessibility is
-handled natively by the browser's `<nav>` landmark, ordered-list structure, and
-`<a>` anchor semantics, combined with React Aria's `Link` for consistent
-interaction handling.
+handled by the browser's `<nav>` landmark and ordered-list structure, combined
+with React Aria's `Breadcrumbs`/`Breadcrumb`/`Link` primitives for current-page
+and interaction handling.
 
 #### Role
 
-- `Breadcrumbs.Root` renders a `<nav>` HTML element — a navigation landmark
-- Items are rendered inside an `<ol>`/`<li>` structure
-- Each interactive item renders an `<a>` HTML element with the implicit `link`
-  role
-- The current item uses `aria-current="page"` — **not** `aria-selected`
+- `Breadcrumbs.Root` renders a `<nav>` HTML element — a navigation landmark —
+  wrapping an `<ol>` (with an explicit `role="list"`, which keeps list semantics
+  under `list-style: none` in Safari/VoiceOver).
+- Items are rendered inside an `<ol>`/`<li>` structure.
+- Each navigable item renders an `<a>` element with the implicit `link` role.
+- The current (last) item renders as a non-focusable `<span role="link">` with
+  `aria-current="page"` — **not** `aria-selected`.
 
 #### Labeling
 
 Always provide an `aria-label` on `Breadcrumbs.Root` (commonly `"Breadcrumb"`)
-to describe the navigation region.
+to describe the navigation region. A development-time warning is logged if it is
+omitted. In localized apps, translate the label.
 
 ```tsx
 <Breadcrumbs.Root aria-label="Breadcrumb">...</Breadcrumbs.Root>
@@ -174,8 +209,8 @@ to describe the navigation region.
 
 #### Keyboard navigation
 
-Breadcrumbs use standard sequential keyboard navigation — no roving tabindex,
-no arrow key cycling.
+Breadcrumbs use standard sequential keyboard navigation — no roving tabindex, no
+arrow key cycling.
 
 | Key           | Action                          |
 | ------------- | ------------------------------- |
@@ -183,7 +218,8 @@ no arrow key cycling.
 | `Shift + Tab` | Move focus to the previous link |
 | `Enter`       | Activate the focused link       |
 
-The current (last) item is non-interactive and is skipped in the tab sequence.
+The current (last) item and any disabled items are non-interactive and skipped
+in the tab sequence.
 
 ## API reference
 
@@ -193,30 +229,31 @@ The current (last) item is non-interactive and is skipped in the tab sequence.
 
 ### Building a trail from data
 
-Render breadcrumbs from an array, marking the last entry as current.
+Prefer the declarative `items` API — it owns the last-is-current logic for you,
+so there is no index bookkeeping:
 
 ```tsx
 const trail = [
-  { href: "/", label: "Home" },
-  { href: "/products", label: "Products" },
-  { href: "/products/apparel", label: "Apparel" },
-  { label: "Shoes" }, // current page — no href
+  { id: "home", label: "Home", href: "/" },
+  { id: "products", label: "Products", href: "/products" },
+  { id: "apparel", label: "Apparel", href: "/products/apparel" },
+  { id: "shoes", label: "Shoes" }, // last entry is the current page
 ];
 
 const ProductTrail = () => (
-  <Breadcrumbs.Root aria-label="Breadcrumb">
-    {trail.map((entry, index) => (
-      <Breadcrumbs.Item
-        key={entry.href ?? entry.label}
-        href={entry.href}
-        isCurrent={index === trail.length - 1}
-      >
-        {entry.label}
-      </Breadcrumbs.Item>
-    ))}
-  </Breadcrumbs.Root>
+  <Breadcrumbs.Root aria-label="Breadcrumb" items={trail} />
 );
 ```
+
+## Out of scope
+
+The following are intentionally **not** handled by this component today:
+
+- **Overflow / collapsing** long trails (e.g. `Home / … / Current`). Keep trails
+  short, or truncate labels in your own layout.
+- **RTL separator glyphs.** The layout mirrors in RTL, but a directional glyph
+  such as `›` does not flip — supply a direction-neutral separator (e.g. `/`)
+  for RTL locales.
 
 ## Testing your implementation
 

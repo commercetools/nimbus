@@ -1,24 +1,17 @@
 import { createContext, useContext } from "react";
 
-export interface BreadcrumbsContextValue {
-  /**
-   * The separator node rendered before each item except the first.
-   */
-  separator: React.ReactNode;
-}
-
-export const BreadcrumbsContext = createContext<
-  BreadcrumbsContextValue | undefined
->(undefined);
+/**
+ * Carries the decorative separator node configured on `Breadcrumbs.Root` down
+ * to each `Breadcrumbs.Item`, so the same separator is shared by both the
+ * compound (`Breadcrumbs.Item` children) and declarative (`items`) APIs.
+ *
+ * Defaults to `›` when an item is rendered without a surrounding
+ * `Breadcrumbs.Root` provider.
+ */
+export const BreadcrumbsSeparatorContext = createContext<React.ReactNode>("›");
 
 /**
- * Returns the breadcrumbs context provided by `Breadcrumbs.Root`.
- * Throws if a `Breadcrumbs.Item` is rendered outside of a `Breadcrumbs.Root`.
+ * Returns the decorative separator node provided by `Breadcrumbs.Root`.
  */
-export const useBreadcrumbsContext = (): BreadcrumbsContextValue => {
-  const context = useContext(BreadcrumbsContext);
-  if (!context) {
-    throw new Error("Breadcrumbs.Item must be used within Breadcrumbs.Root");
-  }
-  return context;
-};
+export const useBreadcrumbsSeparator = (): React.ReactNode =>
+  useContext(BreadcrumbsSeparatorContext);

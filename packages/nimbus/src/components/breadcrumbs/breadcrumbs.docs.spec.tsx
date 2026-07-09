@@ -16,7 +16,7 @@ describe("Breadcrumbs - Basic rendering", () => {
         <Breadcrumbs.Root aria-label="Breadcrumb">
           <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
           <Breadcrumbs.Item href="/orders">Orders</Breadcrumbs.Item>
-          <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+          <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
         </Breadcrumbs.Root>
       </NimbusProvider>
     );
@@ -34,6 +34,7 @@ describe("Breadcrumbs - Basic rendering", () => {
         <Breadcrumbs.Root aria-label="Breadcrumb">
           <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
           <Breadcrumbs.Item href="/orders">Orders</Breadcrumbs.Item>
+          <Breadcrumbs.Item>Current</Breadcrumbs.Item>
         </Breadcrumbs.Root>
       </NimbusProvider>
     );
@@ -47,21 +48,46 @@ describe("Breadcrumbs - Basic rendering", () => {
       "/orders"
     );
   });
+
+  it("builds a trail from a data array via the items prop", () => {
+    render(
+      <NimbusProvider>
+        <Breadcrumbs.Root
+          aria-label="Breadcrumb"
+          items={[
+            { id: "home", label: "Home", href: "/" },
+            { id: "orders", label: "Orders", href: "/orders" },
+            { id: "detail", label: "Order #123" },
+          ]}
+        />
+      </NimbusProvider>
+    );
+
+    expect(screen.getAllByRole("listitem")).toHaveLength(3);
+    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute(
+      "href",
+      "/"
+    );
+    expect(screen.getByText("Order #123")).toHaveAttribute(
+      "aria-current",
+      "page"
+    );
+  });
 });
 
 /**
  * @docs-section current-page
  * @docs-title Current Page Tests
- * @docs-description Verify aria-current="page" is applied to the current (last) item and not to ancestors
+ * @docs-description Verify aria-current="page" is applied to the last item automatically and not to ancestors
  * @docs-order 2
  */
 describe("Breadcrumbs - Current page", () => {
-  it("sets aria-current='page' on the current item", () => {
+  it("sets aria-current='page' on the last item automatically", () => {
     render(
       <NimbusProvider>
         <Breadcrumbs.Root aria-label="Breadcrumb">
           <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
-          <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+          <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
         </Breadcrumbs.Root>
       </NimbusProvider>
     );
@@ -72,22 +98,21 @@ describe("Breadcrumbs - Current page", () => {
     );
   });
 
-  it("renders the current item as non-interactive text, not a link", () => {
+  it("renders the current item as non-navigable (no href)", () => {
     render(
       <NimbusProvider>
         <Breadcrumbs.Root aria-label="Breadcrumb">
           <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
-          <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+          <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
         </Breadcrumbs.Root>
       </NimbusProvider>
     );
 
-    // An <a> without href exposes no `link` role, so the current page is
-    // non-interactive and absent from the list of links.
-    expect(
-      screen.queryByRole("link", { name: "Order #123" })
-    ).not.toBeInTheDocument();
-    expect(screen.getByText("Order #123")).not.toHaveAttribute("href");
+    // React Aria renders the current item as a <span> (not an anchor) with no
+    // href, so it is not a navigable link.
+    const current = screen.getByText("Order #123");
+    expect(current).not.toHaveAttribute("href");
+    expect(current.tagName).toBe("SPAN");
   });
 
   it("does not set aria-current on ancestor items", () => {
@@ -96,7 +121,7 @@ describe("Breadcrumbs - Current page", () => {
         <Breadcrumbs.Root aria-label="Breadcrumb">
           <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
           <Breadcrumbs.Item href="/orders">Orders</Breadcrumbs.Item>
-          <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+          <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
         </Breadcrumbs.Root>
       </NimbusProvider>
     );
@@ -125,12 +150,12 @@ describe("Breadcrumbs - Disabled items", () => {
           <Breadcrumbs.Item href="/orders" isDisabled>
             Orders
           </Breadcrumbs.Item>
-          <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+          <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
         </Breadcrumbs.Root>
       </NimbusProvider>
     );
 
-    const disabled = screen.getByRole("link", { name: "Orders" });
+    const disabled = screen.getByText("Orders");
     expect(disabled).toHaveAttribute("aria-disabled", "true");
     expect(disabled).not.toHaveAttribute("href");
   });
@@ -154,7 +179,7 @@ describe("Breadcrumbs - External links", () => {
           >
             Docs ↗
           </Breadcrumbs.Item>
-          <Breadcrumbs.Item isCurrent>Current page</Breadcrumbs.Item>
+          <Breadcrumbs.Item>Current page</Breadcrumbs.Item>
         </Breadcrumbs.Root>
       </NimbusProvider>
     );
@@ -168,27 +193,30 @@ describe("Breadcrumbs - External links", () => {
 /**
  * @docs-section interactions
  * @docs-title Interaction Tests
- * @docs-description Verify click handling and keyboard focus
+ * @docs-description Verify onAction fires with the activated breadcrumb's id
  * @docs-order 5
  */
 describe("Breadcrumbs - Interactions", () => {
-  it("calls onClick when a link is clicked", async () => {
+  it("calls onAction with the item id when a breadcrumb is activated", async () => {
     const user = userEvent.setup();
-    const handleClick = vi.fn();
+    const handleAction = vi.fn();
 
     render(
       <NimbusProvider>
-        <Breadcrumbs.Root aria-label="Breadcrumb">
-          <Breadcrumbs.Item href="/" onClick={handleClick}>
+        <Breadcrumbs.Root aria-label="Breadcrumb" onAction={handleAction}>
+          <Breadcrumbs.Item id="home" href="/">
             Home
           </Breadcrumbs.Item>
-          <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+          <Breadcrumbs.Item id="orders" href="/orders">
+            Orders
+          </Breadcrumbs.Item>
+          <Breadcrumbs.Item id="detail">Order #123</Breadcrumbs.Item>
         </Breadcrumbs.Root>
       </NimbusProvider>
     );
 
-    await user.click(screen.getByRole("link", { name: "Home" }));
-    expect(handleClick).toHaveBeenCalled();
+    await user.click(screen.getByRole("link", { name: "Orders" }));
+    expect(handleAction).toHaveBeenCalledWith("orders");
   });
 
   it("focuses link items with the Tab key", async () => {
@@ -198,7 +226,7 @@ describe("Breadcrumbs - Interactions", () => {
       <NimbusProvider>
         <Breadcrumbs.Root aria-label="Breadcrumb">
           <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
-          <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+          <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
         </Breadcrumbs.Root>
       </NimbusProvider>
     );
@@ -220,6 +248,7 @@ describe("Breadcrumbs - Accessibility", () => {
       <NimbusProvider>
         <Breadcrumbs.Root aria-label="Breadcrumb">
           <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+          <Breadcrumbs.Item>Current</Breadcrumbs.Item>
         </Breadcrumbs.Root>
       </NimbusProvider>
     );
@@ -233,7 +262,8 @@ describe("Breadcrumbs - Accessibility", () => {
     render(
       <NimbusProvider>
         <Breadcrumbs.Root aria-label="Breadcrumb">
-          <Breadcrumbs.Item isCurrent>Order #123</Breadcrumbs.Item>
+          <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+          <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
         </Breadcrumbs.Root>
       </NimbusProvider>
     );
