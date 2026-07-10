@@ -6,7 +6,7 @@ import {
   Stack,
   Tooltip,
 } from "@commercetools/nimbus";
-import { userEvent, within, expect, fn, waitFor } from "storybook/test";
+import { userEvent, within, expect, fn } from "storybook/test";
 import { ArrowRight as DemoIcon } from "@commercetools/nimbus-icons";
 import { createRef, useState } from "react";
 import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
