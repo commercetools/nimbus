@@ -26,7 +26,6 @@ const items = [
 const sizes = ["sm", "md"] as const;
 
 export const Basic: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => (
     <Accordion.Root>
       <Accordion.Item>

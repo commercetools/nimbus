@@ -53,7 +53,6 @@ export default meta;
 type Story = StoryObj<typeof Toolbar>;
 
 export const Default: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     orientation: "horizontal",
   },
@@ -106,7 +105,6 @@ export const Default: Story = {
 };
 
 export const Vertical: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     orientation: "vertical",
   },
@@ -428,7 +426,6 @@ export const Variants: Story = {
 };
 
 export const RichTextEditor: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     orientation: "horizontal",
   },

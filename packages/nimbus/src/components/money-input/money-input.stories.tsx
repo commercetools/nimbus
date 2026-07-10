@@ -126,7 +126,6 @@ const MoneyInputExample = ({
 };
 
 export const BasicExample: Story = {
-  tags: ["preserve-focus-ring"],
   render: (args) => <MoneyInputExample {...args} />,
   args: {
     isDisabled: false,
@@ -536,7 +535,6 @@ export const EULocaleFormattingExample: Story = {
 
 // Static Methods Testing Story
 export const CurrencyFormattingTest: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => (
     <Stack direction="column" gap="600">
       <Box>
@@ -764,7 +762,6 @@ export const FormFieldBasic: Story = {
  * Shows MoneyInput with validation states, error messages, and required field behavior
  */
 export const FormFieldValidation: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [value, setValue] = useState<MoneyInputValue>({
       amount: "",

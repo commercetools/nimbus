@@ -36,7 +36,6 @@ type Story = StoryObj<typeof Pagination>;
  * Shows 2,560 total items with 20 items per page.
  */
 export const Default: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     totalItems: 2560,
     currentPage: 1,
@@ -203,7 +202,6 @@ export const Controlled: Story = {
  * Shows behavior when total items is less than page size.
  */
 export const FewItems: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     totalItems: 15,
     currentPage: 1,
@@ -327,7 +325,6 @@ export const LastPage: Story = {
  * Shows behavior when there are no items.
  */
 export const Empty: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     totalItems: 0,
     currentPage: 1,
@@ -418,7 +415,6 @@ export const Empty: Story = {
  * Different set of available page sizes.
  */
 export const CustomPageSizes: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     totalItems: 10000,
     currentPage: 1,
@@ -565,7 +561,6 @@ export const LargeDataset: Story = {
  * Useful for simplified navigation or mobile interfaces.
  */
 export const WithoutPageInput: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     totalItems: 2560,
     currentPage: 5,
@@ -641,7 +636,6 @@ export const WithoutPageInput: Story = {
  * Useful when page size should be fixed or controlled elsewhere.
  */
 export const WithoutPageSizeSelector: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     totalItems: 2560,
     currentPage: 1,

@@ -53,7 +53,6 @@ export const Base: Story = {
  * Tests for accessibility criteria
  */
 export const Accessibility: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     children: "Accessible Switch",
     // @ts-expect-error: data-testid is not a valid prop
@@ -207,7 +206,6 @@ export const WithRef: Story = {
  * Verifies that Switch can trigger a Tooltip when wrapped in Tooltip.Root
  */
 export const WithTooltip: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     children: "Switch with Tooltip",
     onChange: fn(),

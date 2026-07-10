@@ -1718,7 +1718,6 @@ export const TimeSupport: Story = {
 };
 
 export const HourCycle: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     ["aria-label"]: "Select a date and time date range",
   },
@@ -3147,7 +3146,6 @@ export const InFormFieldContext: Story = {
 };
 
 export const PopoverBehavior: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     ["aria-label"]: "Select a date range",
   },

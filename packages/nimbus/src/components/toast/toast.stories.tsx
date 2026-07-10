@@ -1034,7 +1034,6 @@ export const MultiPlacement: Story = {
  * Tests Tab navigation and per-placement hotkeys within toast.
  */
 export const KeyboardNavigation: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const showKeyboardToast = () => {
       toast({

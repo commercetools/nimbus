@@ -33,9 +33,10 @@
 </script>
 
 <!-- Chromatic: bump canvas padding so focus-ring outlines aren't clipped at the edge.
-     Storybook's default 'padded' layout gives 1rem which isn't enough for outline + offset. -->
+     Targeting #storybook-root (ID selector) beats Storybook's own body.sb-main-padded rule
+     without needing !important. 3rem gives enough room for any outline + offset combination. -->
 <style>
-  body.sb-main-padded {
-    padding: 2rem;
+  body.sb-main-padded #storybook-root {
+    padding: 3rem;
   }
 </style>

@@ -47,7 +47,6 @@ type Story = StoryObj<typeof IconButton>;
  * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     children: <DemoIcon />,
     onPress: fn(),

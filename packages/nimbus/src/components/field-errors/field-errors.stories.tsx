@@ -539,7 +539,6 @@ This demonstrates the practical usage patterns found in merchant center applicat
  * Tests form state integration and visibility handling
  */
 export const FormFieldIntegration: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [formData, setFormData] = React.useState({
       email: "",

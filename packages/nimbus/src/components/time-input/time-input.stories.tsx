@@ -50,7 +50,6 @@ type Story = StoryObj<typeof TimeInput>;
  * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     ["aria-label"]: "Enter a time",
     onBlur: fn(),
@@ -268,7 +267,6 @@ export const IsDisabled: Story = {
  * Showcase IsReadOnly
  */
 export const IsReadOnly: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     defaultValue: inventionOfTheInternet,
     isReadOnly: true,
@@ -506,7 +504,6 @@ export const LeadingAndTrailingElements: Story = {
  * Showcase Hour Cycle
  */
 export const HourCycle: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     defaultValue: inventionOfTheInternet,
     hideTimeZone: true,
@@ -768,7 +765,6 @@ export const ShouldForceLeadingZeros: Story = {
  * It rather controls the default values of each segment when the user first interacts with them
  */
 export const PlaceholderValue: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     placeholderValue: new Time(10, 0),
     hideTimeZone: true,
@@ -853,7 +849,6 @@ export const PlaceholderValue: Story = {
  * Showcase Min property
  */
 export const MinValue: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     minValue: new Time(9, 0), // 9:00 AM
     "aria-label": "Min value time input",
@@ -947,7 +942,6 @@ export const MinValue: Story = {
  * Showcase Max property
  */
 export const MaxValue: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     maxValue: new Time(17, 0), // 5:00 PM
     "aria-label": "Max value time input",
@@ -1084,7 +1078,6 @@ export const DifferentLocales: Story = {
  * Demonstrates the use of TimeInput as Input within a FormField context
  */
 export const WithFormField: Story = {
-  tags: ["preserve-focus-ring"],
   render: (args) => {
     const [time, setTime] = useState<TimeValue | null>(new Time(10, 30));
     const [isInvalid, setIsInvalid] = useState(false);

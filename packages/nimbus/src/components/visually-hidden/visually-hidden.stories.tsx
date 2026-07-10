@@ -36,7 +36,6 @@ type Story = StoryObj<typeof VisuallyHidden>;
  * You should not see anything here, that's the whole purpose of this component.
  */
 export const Base: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <VisuallyHidden data-testid="container">
@@ -97,7 +96,6 @@ export const SpanAsContainer: Story = {
  * is set to true, it will become visible when focused
  */
 export const VisibleWhenFocused: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <VisuallyHidden data-testid="container" isFocusable>

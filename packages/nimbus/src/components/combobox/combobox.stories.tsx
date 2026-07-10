@@ -127,7 +127,6 @@ export const Base: Story = {
  * - Custom options work alongside static options
  */
 export const MultiSelectCustomOptions: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([1]);
     const [createdOptions, setCreatedOptions] = useState<string[]>([]);
@@ -496,7 +495,6 @@ export const AsyncLoadingWithError: Story = {
  * 3. Re-searching for selected items shows them as selected
  */
 export const AsyncMultiSelectPersistence: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const getPokemonValue = useCallback((pokemon: Pokemon) => pokemon.name, []);
 
@@ -1543,7 +1541,6 @@ export const FocusClickTriggerArea: Story = {
  * Tests that tabbing to the component focuses the input field
  */
 export const FocusTabKey: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <Stack direction="column" gap="400">
@@ -1942,7 +1939,6 @@ export const KeyboardEscapeCloses: Story = {
  * Tests that Backspace removes the last tag in multi-select mode when input is empty
  */
 export const KeyboardBackspaceRemovesTag: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
       1, 2, 3,
@@ -2009,7 +2005,6 @@ export const KeyboardBackspaceRemovesTag: Story = {
  * tags, and Delete/Backspace to remove a focused tag with focus restoration.
  */
 export const KeyboardTagGroupNavigation: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
       1, 2, 3, 4,
@@ -2387,7 +2382,6 @@ export const MenuOpensOnTyping: Story = {
  * Tests that menu opens when input receives focus (menuTrigger="focus")
  */
 export const MenuOpensOnFocus: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <ComposedComboBox
@@ -2418,7 +2412,6 @@ export const MenuOpensOnFocus: Story = {
  * Tests that menu only opens via toggle button when menuTrigger="manual"
  */
 export const MenuOpensManual: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <ComposedComboBox
@@ -2504,7 +2497,6 @@ export const MenuToggleButton: Story = {
  * Tests that menu closes automatically after selecting an option in single-select mode
  */
 export const MenuClosesAfterSelectionSingle: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -2556,7 +2548,6 @@ export const MenuClosesAfterSelectionSingle: Story = {
  * Tests that menu stays open after selecting an option in multi-select mode
  */
 export const MenuStaysOpenAfterSelectionMulti: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -2798,7 +2789,6 @@ export const OptionHoverFeedback: Story = {
  * Tests that selected options have visual distinction (aria-selected, styling)
  */
 export const OptionSelectedVisuallyDistinguished: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
       1, 3,
@@ -2852,7 +2842,6 @@ export const OptionSelectedVisuallyDistinguished: Story = {
  * Tests that Enter key selects the focused option
  */
 export const OptionKeyboardSelection: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -3062,7 +3051,6 @@ export const ClearRemovesAllSelectionsMulti: Story = {
  * Tests that clear button doesn't close the menu (allows continued browsing)
  */
 export const ClearDoesNotCloseMenu: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -3141,7 +3129,6 @@ export const ClearDoesNotCloseMenu: Story = {
  * Tests that clear button doesn't close the menu in single-select mode
  */
 export const ClearDoesNotCloseMenuSingleSelect: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -3220,7 +3207,6 @@ export const ClearDoesNotCloseMenuSingleSelect: Story = {
  * Tests that selections can be cleared via keyboard using Backspace
  */
 export const ClearAccessibleViaKeyboard: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
       1, 2,
@@ -3282,7 +3268,6 @@ export const ClearAccessibleViaKeyboard: Story = {
  * Tests that only one option can be selected at a time in single-select mode
  */
 export const SingleSelectOneAtATime: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -3383,7 +3368,6 @@ export const SingleSelectReplacesPrevious: Story = {
  * Tests that selected option text syncs to the input field
  */
 export const SingleSelectTextInInput: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -3463,7 +3447,6 @@ export const SingleSelectClearRemoves: Story = {
  * Tests that menu closes automatically after selecting an option
  */
 export const SingleSelectMenuCloses: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -3715,7 +3698,6 @@ export const MultiSelectTagRemoveDeselects: Story = {
  * Tests that Backspace key removes the last selected tag
  */
 export const MultiSelectBackspaceRemoves: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -3767,7 +3749,6 @@ export const MultiSelectBackspaceRemoves: Story = {
  * Tests that menu remains open after each selection
  */
 export const MultiSelectMenuStaysOpen: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -3874,7 +3855,6 @@ export const MultiSelectClearRemovesAll: Story = {
  * Tests that selected items remain selected even when filter text changes
  */
 export const PersistenceItemsPersistWhenFilteringChanges: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -3934,7 +3914,6 @@ export const PersistenceItemsPersistWhenFilteringChanges: Story = {
  * Tests that selected items always visible as tags regardless of current filter
  */
 export const PersistenceItemsRemainVisibleAsTags: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -3991,7 +3970,6 @@ export const PersistenceItemsRemainVisibleAsTags: Story = {
  * Tests that typing in the input filters the available options
  */
 export const FilteringTypingFiltersOptions: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <ComposedComboBox
@@ -4053,7 +4031,6 @@ export const FilteringTypingFiltersOptions: Story = {
  * Tests that filtering is case-insensitive
  */
 export const FilteringCaseInsensitive: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
@@ -4100,7 +4077,6 @@ export const FilteringCaseInsensitive: Story = {
  * Tests that partial text matches are included in results
  */
 export const FilteringPartialMatches: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
@@ -4140,7 +4116,6 @@ export const FilteringPartialMatches: Story = {
  * Tests that clearing the input shows all options again
  */
 export const FilteringClearingShowsAll: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
@@ -4177,7 +4152,6 @@ export const FilteringClearingShowsAll: Story = {
  * Tests that filter state resets when menu closes and reopens
  */
 export const FilteringResetsOnMenuClose: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
@@ -4228,7 +4202,6 @@ export const FilteringResetsOnMenuClose: Story = {
  * Tests that filtering with no matches shows empty state
  */
 export const FilteringNoResultsState: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <ComposedComboBox
@@ -4286,7 +4259,6 @@ export const FilteringNoResultsState: Story = {
  * Tests section-aware filtering behavior with grouped options
  */
 export const FilteringWithSections: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const sectionsData = [
       {
@@ -4580,7 +4552,6 @@ export const CustomFilterWordBoundary: Story = {
  * Tests filterByFuzzy - matches characters in order but not necessarily adjacent
  */
 export const CustomFilterFuzzy: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <ComposedComboBox
@@ -4623,7 +4594,6 @@ export const CustomFilterFuzzy: Story = {
  * Tests createMultiPropertyFilter - searches across multiple object properties
  */
 export const CustomFilterMultiProperty: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     type Product = { id: number; name: string; category: string };
     const products: Product[] = [
@@ -4688,7 +4658,6 @@ export const CustomFilterMultiProperty: Story = {
  * Tests createRankedFilter - custom scoring logic for ranking results
  */
 export const CustomFilterRanked: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     // Rank by: exact match > starts with > contains
     const rankedFilter = ComboBox.filters.createRankedFilter<SimpleOption>(
@@ -4774,7 +4743,6 @@ export const CustomFilterRanked: Story = {
  * Tests createMultiTermFilter - OR logic for multiple search terms
  */
 export const CustomFilterMultiTerm: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const multiTermFilter = ComboBox.filters.createMultiTermFilter(
       ComboBox.filters.filterByText
@@ -4868,7 +4836,6 @@ export const EmptyStateMenuClosesDefault: Story = {
  * Tests that custom empty state message renders correctly
  */
 export const EmptyStateCustomMessage: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <ComposedComboBox
@@ -4919,7 +4886,6 @@ export const EmptyStateCustomMessage: Story = {
  * Tests that clearing search after no results restores the options
  */
 export const EmptyStateRecoverByClearingSearch: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <ComposedComboBox
@@ -4970,7 +4936,6 @@ export const EmptyStateRecoverByClearingSearch: Story = {
  * Tests that users can create new options when allowsCustomOptions=true
  */
 export const CreationUserCanCreateOptions: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -5021,7 +4986,6 @@ export const CreationUserCanCreateOptions: Story = {
  * Tests that Enter key creates option when text doesn't match any existing option
  */
 export const CreationEnterOnNonMatchingText: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -5078,7 +5042,6 @@ export const CreationEnterOnNonMatchingText: Story = {
  * Tests that whitespace-only or empty input doesn't create options
  */
 export const CreationEmptyInputDoesNotCreate: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -5131,7 +5094,6 @@ export const CreationEmptyInputDoesNotCreate: Story = {
  * Tests that duplicate options cannot be created (case-insensitive check)
  */
 export const CreationDuplicatesPrevented: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -5196,7 +5158,6 @@ export const CreationDuplicatesPrevented: Story = {
  * Tests that isValidNewOption validation is respected
  */
 export const CreationCustomValidationRespected: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -5270,7 +5231,6 @@ export const CreationCustomValidationRespected: Story = {
  * Tests that new option is automatically selected in single-select mode
  */
 export const SingleSelectCreationAutoSelected: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -5310,7 +5270,6 @@ export const SingleSelectCreationAutoSelected: Story = {
  * Tests that input displays the created option's text
  */
 export const SingleSelectCreationInputUpdates: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -5362,7 +5321,6 @@ export const SingleSelectCreationInputUpdates: Story = {
  * Tests that menu closes automatically after creating option in single-select
  */
 export const SingleSelectCreationMenuCloses: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -5423,7 +5381,6 @@ export const SingleSelectCreationMenuCloses: Story = {
  * Tests complete workflow using only keyboard (no mouse)
  */
 export const AccessibilityKeyboardAllFunctionalityAvailable: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -5481,7 +5438,6 @@ export const AccessibilityKeyboardAllFunctionalityAvailable: Story = {
  * Tests that user can Tab out of component
  */
 export const AccessibilityKeyboardNoTraps: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <Stack direction="column" gap="400">
@@ -5646,7 +5602,6 @@ export const AccessibilityKeyboardShortcuts: Story = {
  * Tests that focus indicators are visible during keyboard navigation
  */
 export const AccessibilityKeyboardFocusIndicators: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
@@ -5685,7 +5640,6 @@ export const AccessibilityKeyboardFocusIndicators: Story = {
  * Tests aria-controls relationship between input and listbox
  */
 export const AccessibilityAriaInputListboxRelationship: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
@@ -5719,7 +5673,6 @@ export const AccessibilityAriaInputListboxRelationship: Story = {
  * Tests aria-activedescendant identifies currently focused option
  */
 export const AccessibilityAriaFocusedOptionIdentified: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />

@@ -209,7 +209,6 @@ export const ControlledState: Story = {
  * @see https://react-spectrum.adobe.com/react-aria/Select.html#asynchronous-loading
  */
 export const AsyncLoading: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     const list = useAsyncList<{ id: number; name: string }>({
       load: async () => {
@@ -487,7 +486,6 @@ export const DisabledClearButton: Story = {
 };
 
 export const DisabledOptions: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <Select.Root
@@ -665,7 +663,6 @@ export const OptionGroupsDynamic: Story = {
  * - test for textValue existance, otherwise typeahead won't work
  */
 export const WithDescriptions: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <Select.Root aria-label="Select some fruit(s)" data-testid="select">

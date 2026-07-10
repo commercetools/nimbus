@@ -1488,7 +1488,6 @@ export const TimeSupport: Story = {
  * Demonstrates 12-hour vs 24-hour time formats
  */
 export const HourCycle: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     ["aria-label"]: "Select a date and time",
   },
@@ -3019,7 +3018,6 @@ export const InFormFieldContext: Story = {
  * Demonstrates different popover opening and closing behaviors
  */
 export const PopoverBehavior: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     ["aria-label"]: "Select a date",
   },

@@ -180,7 +180,6 @@ export const AsideTrailing: Story = {
 // ============================================================
 
 export const KeyboardInteraction: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     orientation: "horizontal",
     keyboardStep: 5,
@@ -323,7 +322,6 @@ export const PointerDragResize: Story = {
 // ============================================================
 
 export const SizeConstraints: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     orientation: "horizontal",
     keyboardStep: 100,
@@ -575,7 +573,6 @@ export const FloatPrecision: Story = {
 // ============================================================
 
 export const CollapsibleByKeyboard: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     defaultSize: 30,
     minSize: 10,
@@ -632,7 +629,6 @@ export const CollapsibleByKeyboard: Story = {
 // ============================================================
 
 export const CollapsedHandleIgnoresDoubleClick: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     defaultSize: 30,
     minSize: 10,
@@ -1126,7 +1122,6 @@ const PersistenceComponent = () => {
 };
 
 export const Persistence: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => <PersistenceComponent />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -1187,7 +1182,6 @@ export const NestedSplitters: Story = {
 // ============================================================
 
 export const DisableDoubleClick: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     isDoubleClickDisabled: true,
     defaultSize: 30,
@@ -1263,7 +1257,6 @@ const ResponsiveSizesHookComponent = () => {
 };
 
 export const ResponsivePixelSizesHook: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => <ResponsiveSizesHookComponent />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -1376,7 +1369,6 @@ const NestedResponsiveComponent = () => {
 };
 
 export const NestedResponsiveSplitter: Story = {
-  tags: ["preserve-focus-ring"],
   render: () => <NestedResponsiveComponent />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

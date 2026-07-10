@@ -28,7 +28,6 @@ type Story = StoryObj<typeof Link>;
  * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
-  tags: ["preserve-focus-ring"],
   args: {
     children: "Demo Link",
     onClick: fn(),
@@ -105,7 +104,6 @@ export const FontColors: Story = {
  * Showcase asChild
  */
 export const AsChild: Story = {
-  tags: ["preserve-focus-ring"],
   render: (args) => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
