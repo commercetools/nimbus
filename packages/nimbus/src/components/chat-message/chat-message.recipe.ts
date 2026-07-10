@@ -46,6 +46,7 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
       rowGap: "200",
     },
     avatar: {
+      colorPalette: "primary",
       display: "flex",
       flexShrink: 0,
       gridRow: 1,
@@ -68,9 +69,8 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
       border: "solid-25",
       borderColor: "neutral.6",
       borderRadius: "300",
-      // Horizontal padding is shared across senders; vertical padding differs
-      // per sender (see variants below).
       px: "600",
+      py: "500",
     },
     actions: {
       display: "flex",
@@ -110,18 +110,10 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
           gridColumn: 1,
           justifySelf: "end",
           maxWidth: "480px",
-          py: "400",
           backgroundColor: "iris.3",
         },
         avatar: {
           gridColumn: 2,
-          // The Avatar renders with `variant="solid"`, which resolves the
-          // palette below to an accessible bg (`colorPalette.9`) + text
-          // (`colorPalette.contrast`) — the same tokens a same-palette solid
-          // Button uses — so we only need to select the palette here.
-          "& .nimbus-avatar": {
-            colorPalette: "positive",
-          },
         },
         meta: {
           gridColumn: 1,
@@ -136,16 +128,11 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
           gridColumn: 2,
           justifySelf: "start",
           maxWidth: "632px",
-          py: "500",
           // Neutral surface: white in light mode, neutral.1 in dark.
           backgroundColor: "bg",
         },
         avatar: {
           gridColumn: 1,
-          // Solid variant, primary palette — see the `user` sender above.
-          "& .nimbus-avatar": {
-            colorPalette: "primary",
-          },
         },
         meta: {
           gridColumn: 2,
