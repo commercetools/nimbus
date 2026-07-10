@@ -5,7 +5,8 @@ import type { ChatBubbleAvatarProps } from "../chat-bubble.types";
 /**
  * ChatBubble.Avatar - The sender's avatar.
  *
- * Wraps the Nimbus `Avatar` (defaulting to `size="2xs"`). The background and
+ * Wraps the Nimbus `Avatar` (defaulting to `size="xs"`, a 32px box per the
+ * Figma spec). The background and
  * icon color are applied automatically per `sender` by the ChatBubble recipe,
  * so consumers only supply the avatar content (initials via `firstName`/
  * `lastName`, an image `src`, or a custom icon via `children`).
@@ -23,7 +24,7 @@ import type { ChatBubbleAvatarProps } from "../chat-bubble.types";
  */
 export const ChatBubbleAvatar = ({
   ref,
-  size = "2xs",
+  size = "xs",
   ...props
 }: ChatBubbleAvatarProps) => {
   const isNamed =

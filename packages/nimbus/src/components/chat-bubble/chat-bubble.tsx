@@ -67,7 +67,7 @@ export const ChatBubble = {
   /**
    * # ChatBubble.Avatar
    *
-   * The sender's avatar. Wraps the Nimbus `Avatar` (defaulting to `size="2xs"`)
+   * The sender's avatar. Wraps the Nimbus `Avatar` (defaulting to `size="xs"`)
    * and is styled per `sender`. Provide the content via `firstName`/`lastName`
    * (initials), `src` (image), or `children` (a custom icon). Decorative by
    * default (`aria-hidden`) unless named.

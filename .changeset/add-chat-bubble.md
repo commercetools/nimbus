@@ -16,7 +16,7 @@ own content: `ChatBubble.Actions` (inside the bubble), `ChatBubble.Footer`
 - `isStreaming` marks a message as still generating (sets `aria-busy`); render
   `ChatBubble.Typing` as the bubble payload for the animated "typing…" dots
   (with an optional visible label) while it streams.
-- `ChatBubble.Avatar` wraps the Nimbus `Avatar` at `size="2xs"` and is colored
+- `ChatBubble.Avatar` wraps the Nimbus `Avatar` at `size="xs"` and is colored
   automatically per sender; provide the content via `firstName`/`lastName`,
   `src`, or a custom icon as `children`. It is decorative by default and opts
   into the accessibility tree with a real name when you pass `firstName`/

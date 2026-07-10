@@ -80,7 +80,7 @@ export type ChatBubbleProps = OmitInternalProps<ChatBubbleRootSlotProps> & {
  * Wraps the Nimbus {@link AvatarProps | Avatar}; the background and icon color
  * are set automatically per `sender` by the recipe, so consumers only provide
  * the avatar content (initials, `src`, or an icon via `children`). Defaults to
- * `size="2xs"`.
+ * `size="xs"` (a 32px box per the Figma spec).
  *
  * The avatar is **decorative by default** (`aria-hidden`) — the sender is better
  * conveyed by the message's accessible name and position than by a repeated

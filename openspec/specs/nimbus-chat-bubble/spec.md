@@ -73,7 +73,7 @@ the per-sender surface styling.
 
 ### Requirement: Avatar
 
-`ChatBubble.Avatar` SHALL wrap the Nimbus `Avatar` at `size="2xs"`, colored
+`ChatBubble.Avatar` SHALL wrap the Nimbus `Avatar` at `size="xs"`, colored
 automatically per `sender`, with content provided via `firstName`/`lastName`,
 `src`, or a custom icon as `children`.
 

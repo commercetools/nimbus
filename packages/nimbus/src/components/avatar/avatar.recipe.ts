@@ -19,13 +19,16 @@ export const avatarRecipe = defineRecipe({
     "button&": {
       cursor: "button",
     },
-    // Person-icon fallback sized relative to the avatar slot. The icon
-    // ships with width/height "1em", which would inherit the recipe's
-    // small text font-size. We override to ~70% of the slot so the icon
-    // visually balances initials text across all sizes.
+    // SVG content (the Person fallback or a custom icon) sized relative to the
+    // avatar slot. The icon ships with width/height "1em", which would inherit
+    // the recipe's small text font-size. We override to 75% of the slot so the
+    // icon visually balances initials text — and, because every avatar size is
+    // a multiple of 4px, ¾ of it always lands on a whole, even pixel value
+    // (md 40→30, xs 32→24, 2xs 24→18). That keeps the icon crisp (a fractional
+    // size such as 70%→16.8px anti-aliases across half-pixels) and matches the
+    // Figma chat-bubble spec of a 24px icon in the 32px (`xs`) avatar.
     "& > svg": {
-      width: "70%",
-      height: "70%",
+      fontSize: "1.5em",
     },
   },
   variants: {
