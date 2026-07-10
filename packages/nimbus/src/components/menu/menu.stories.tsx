@@ -1240,6 +1240,7 @@ export const MixedSelection: Story = {
 };
 
 export const ComplexExample: Story = {
+  tags: ["preserve-focus-ring"],
   parameters: {
     a11y: {
       // Disable only the "scrollable-region-focusable" a11y rule for this story

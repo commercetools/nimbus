@@ -424,6 +424,7 @@ export const RemovableItems: Story = {
 };
 
 export const DisabledItems: Story = {
+  tags: ["preserve-focus-ring"],
   render: () => {
     const itemsWithDisabled = [
       { key: "1", label: "Enabled Item 1" },
@@ -911,6 +912,7 @@ export const FieldWithError: Story = {
 };
 
 export const FieldDisabled: Story = {
+  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <DraggableList.Field
@@ -959,6 +961,7 @@ export const FieldDisabled: Story = {
 };
 
 export const FieldWithInfoBox: Story = {
+  tags: ["preserve-focus-ring"],
   render: () => {
     return (
       <DraggableList.Field
@@ -1127,6 +1130,7 @@ export const OutgoingFormat: Story = {
 };
 
 export const SingleSelection: Story = {
+  tags: ["preserve-focus-ring"],
   render: () => {
     const SingleSelectionDemo = () => {
       const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -1215,6 +1219,7 @@ export const SingleSelection: Story = {
 };
 
 export const MultipleSelection: Story = {
+  tags: ["preserve-focus-ring"],
   render: () => {
     const MultipleSelectionDemo = () => {
       const [selected, setSelected] = useState<Set<string>>(new Set());

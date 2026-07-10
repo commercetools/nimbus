@@ -418,6 +418,7 @@ type Story = StoryObj<DataTableProps>;
  * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
+  tags: ["preserve-focus-ring"],
   render: (args) => (
     <DataTableWithModals
       {...args}

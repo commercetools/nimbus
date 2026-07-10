@@ -255,6 +255,7 @@ export const SmokeTest: Story = {
 const mockOnChangeRequest = fn();
 
 export const Controlled: Story = {
+  tags: ["preserve-focus-ring"],
   render: () => {
     const [value, setValue] = useState("");
     const onChangeRequest = (e: string) => {

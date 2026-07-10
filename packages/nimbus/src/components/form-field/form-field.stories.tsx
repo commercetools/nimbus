@@ -417,6 +417,7 @@ export const UsingASelectInput: Story = {
 };
 
 export const Controlled: Story = {
+  tags: ["preserve-focus-ring"],
   render: () => {
     const [value, setValue] = useState("");
     const handleChange = fn((newValue: string) => {

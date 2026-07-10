@@ -53,6 +53,7 @@ type Story = StoryObj<typeof Tooltip.Content>;
  * Demonstrates the most basic implementation
  */
 export const Base: Story = {
+  tags: ["preserve-focus-ring"],
   args: {
     children: "Demo Tooltip",
   },
@@ -77,6 +78,7 @@ export const Base: Story = {
  * Shows all possible placements
  */
 export const Placement: Story = {
+  tags: ["preserve-focus-ring"],
   args: {},
   render: () => {
     return (

@@ -156,6 +156,7 @@ export const Dynamic: Story = {
  * Expanding and collapsing items via the chevron and the keyboard.
  */
 export const ExpandCollapse: Story = {
+  tags: ["preserve-focus-ring"],
   render: () => (
     <Tree.Root aria-label="Files" items={fileTree}>
       {renderNode}
@@ -203,6 +204,7 @@ export const ExpandCollapse: Story = {
  * Arrow-key navigation, Home/End and type-ahead.
  */
 export const KeyboardNavigation: Story = {
+  tags: ["preserve-focus-ring"],
   render: () => (
     <Tree.Root
       aria-label="Files"

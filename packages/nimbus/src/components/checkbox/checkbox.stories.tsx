@@ -42,6 +42,7 @@ type Story = StoryObj<typeof Checkbox>;
  * Base Story showcasing the default Checkbox state
  */
 export const Base: Story = {
+  tags: ["preserve-focus-ring"],
   args: {
     children: "Checkbox Label",
     onChange: fn(),

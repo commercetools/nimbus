@@ -12,6 +12,7 @@ export default {
 type Story = StoryObj<typeof PasswordInput>;
 
 export const Base: Story = {
+  tags: ["preserve-focus-ring"],
   args: {
     ["aria-label"]: "Enter your password",
     placeholder: "Password",

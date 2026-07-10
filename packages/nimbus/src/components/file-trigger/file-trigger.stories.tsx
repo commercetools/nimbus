@@ -260,6 +260,7 @@ export const DisabledChild: Story = {
  * delegated to the child via React Aria.
  */
 export const KeyboardAccessible: Story = {
+  tags: ["preserve-focus-ring"],
   args: {
     onSelect: fn(),
   },

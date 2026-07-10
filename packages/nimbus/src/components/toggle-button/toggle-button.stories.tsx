@@ -20,6 +20,7 @@ const variants = ["outline", "ghost"] as const;
 const colorPalettes = ["primary", "neutral", "critical", "info"] as const;
 
 export const Base: Story = {
+  tags: ["preserve-focus-ring"],
   args: {
     children: "Toggle Me",
     onChange: fn(),

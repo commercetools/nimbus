@@ -323,7 +323,16 @@ export const Pill: Story = {
  * Arrow key presses should NOT change focus in TabNav.
  */
 export const KeyboardNavigation: Story = {
-  render: () => <InteractiveTabNav aria-label="Order navigation" />,
+  tags: ["preserve-focus-ring"],
+  render: () => (
+    <TabNav.Root aria-label="Order navigation">
+      <TabNav.Item href="/orders/123/general" isCurrent>
+        General
+      </TabNav.Item>
+      <TabNav.Item href="/orders/123/items">Items</TabNav.Item>
+      <TabNav.Item href="/orders/123/shipping">Shipping</TabNav.Item>
+    </TabNav.Root>
+  ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -390,6 +399,7 @@ export const KeyboardNavigation: Story = {
  * React Aria's `useLink` handles the disabled behaviour.
  */
 export const WithDisabledItem: Story = {
+  tags: ["preserve-focus-ring"],
   render: () => (
     <InteractiveTabNav
       aria-label="Order navigation"

@@ -109,6 +109,7 @@ const simpleTabs = [
 ];
 
 export const Base: Story = {
+  tags: ["preserve-focus-ring"],
   args: {
     orientation: "horizontal",
     size: "md",
@@ -1195,6 +1196,7 @@ const mockRouter: NimbusRouterConfig = {
 };
 
 export const LinkTabs: Story = {
+  tags: ["preserve-focus-ring"],
   beforeEach: () => {
     mockNavigate.mockClear();
   },

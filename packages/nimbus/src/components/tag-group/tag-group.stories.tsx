@@ -46,6 +46,7 @@ const sizes: TagGroupProps["size"][] = ["lg", "md", "sm"];
  * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
+  tags: ["preserve-focus-ring"],
   args: {},
   render: () => (
     <TagGroup.Root aria-label="animals">

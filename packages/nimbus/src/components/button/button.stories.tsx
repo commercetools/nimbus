@@ -39,6 +39,7 @@ const variants: ButtonProps["variant"][] = [
 ];
 
 export const Base: Story = {
+  tags: ["preserve-focus-ring"],
   args: {
     children: "Button",
     onPress: fn(),
@@ -142,6 +143,7 @@ export const DisabledAsLink: Story = {
  * to attach a Tooltip explaining *why* the action is unavailable.
  */
 export const DisabledButFocusable: Story = {
+  tags: ["preserve-focus-ring"],
   args: {
     children: "Disabled (focusable)",
     isDisabled: true,
@@ -523,6 +525,7 @@ export const SmokeTest: Story = {
  * both the original and React Aria-processed handlers.
  */
 export const EventHandlersFireOnce: Story = {
+  tags: ["preserve-focus-ring"],
   args: {
     onClick: fn(),
     onPress: fn(),

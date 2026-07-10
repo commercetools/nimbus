@@ -388,6 +388,7 @@ export const ContentFillsViewport: Story = {
 // Keyboard focus ring: Tab focuses viewport, ring appears on root
 // ============================================================
 export const KeyboardFocusRing: Story = {
+  tags: ["preserve-focus-ring"],
   render: () => (
     <Box>
       <Text>Press Tab to focus the scroll area below:</Text>
