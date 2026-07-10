@@ -1313,7 +1313,7 @@ export const DeprecatedVariantAliases: Story = {
     const canvas = within(canvasElement);
 
     await step("Deprecated `pills` alias still renders tabs", async () => {
-      const tabs = canvas.getAllByRole("tab");
+      const tabs = await canvas.findAllByRole("tab");
       await expect(tabs).toHaveLength(3);
       await expect(tabs[0]).toHaveAttribute("aria-selected", "true");
     });

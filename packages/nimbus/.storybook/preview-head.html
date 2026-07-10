@@ -31,12 +31,3 @@
     window.Date = FakeDate;
   })();
 </script>
-
-<!-- Chromatic: bump canvas padding so focus-ring outlines aren't clipped at the edge.
-     Targeting #storybook-root (ID selector) beats Storybook's own body.sb-main-padded rule
-     without needing !important. 3rem gives enough room for any outline + offset combination. -->
-<style>
-  body.sb-main-padded #storybook-root {
-    padding: 3rem;
-  }
-</style>
