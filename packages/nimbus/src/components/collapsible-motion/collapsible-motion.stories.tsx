@@ -359,6 +359,9 @@ export const NonButtonTrigger: Story = {
  * Accessibility test - demonstrates proper ARIA attributes and focus management
  */
 export const AccessibilityTest: Story = {
+  parameters: {
+    preserveFocusRing: true,
+  },
   render: () => (
     <div>
       <CollapsibleMotion.Root defaultExpanded={false}>
@@ -392,8 +395,10 @@ export const AccessibilityTest: Story = {
     expect(button).toHaveAttribute("aria-expanded", "false");
     expect(button).toHaveAttribute("aria-controls");
 
-    // Expand and test again
-    await userEvent.click(button);
+    // Tab to button (activates :focus-visible) then toggle with keyboard
+    await userEvent.tab();
+    expect(button).toHaveFocus();
+    await userEvent.keyboard(" ");
     expect(button).toHaveAttribute("aria-expanded", "true");
 
     // Wait for animation

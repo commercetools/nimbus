@@ -31,3 +31,11 @@
     window.Date = FakeDate;
   })();
 </script>
+
+<!-- Chromatic: bump canvas padding so focus-ring outlines aren't clipped at the edge.
+     Storybook's default 'padded' layout gives 1rem which isn't enough for outline + offset. -->
+<style>
+  body.sb-main-padded {
+    padding: 2rem;
+  }
+</style>

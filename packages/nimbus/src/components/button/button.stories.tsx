@@ -189,6 +189,9 @@ const submitSpy = fn();
  * focusable and a real `type="submit"` button.
  */
 export const DisabledButFocusableDoesNotSubmit: Story = {
+  parameters: {
+    preserveFocusRing: true,
+  },
   args: {
     children: "Submit",
     type: "submit",
