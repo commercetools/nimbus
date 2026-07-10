@@ -10,53 +10,55 @@ import type { AvatarProps } from "../avatar/avatar.types";
 // RECIPE PROPS
 // ============================================================
 
-type ChatBubbleRecipeProps = {
+type ChatMessageRecipeProps = {
   /**
-   * Who/what sent the message. Controls layout direction (avatar side) and the
-   * sender-specific bubble/avatar styling:
+   * Which participant sent the message. Controls layout direction (avatar side)
+   * and the sender-specific bubble/avatar styling:
    *
    * - `"agent"` (default) — assistant voice, avatar leading.
    * - `"user"` — the human, avatar trailing, `iris.3` surface.
-   * - `"system"` — centered, subdued, avatar-less notice.
-   * - `"tool"` — agent-side tool/function output on a subdued neutral surface.
+   *
+   * `sender` denotes only *who* sent the message. System notices and dividers
+   * are the separate `ChatNotice` component; tool/function output is content
+   * inside an `agent` message — neither is a `sender` value.
    *
    * @default "agent"
    */
-  sender?: SlotRecipeProps<"nimbusChatBubble">["sender"];
+  sender?: SlotRecipeProps<"nimbusChatMessage">["sender"];
   /**
    * Status overlay, orthogonal to `sender`. `"error"` tints the bubble with the
    * critical palette to flag a failed generation — an *agent* message can fail,
    * so error is a tone rather than a sender.
    * @default "neutral"
    */
-  tone?: SlotRecipeProps<"nimbusChatBubble">["tone"];
+  tone?: SlotRecipeProps<"nimbusChatMessage">["tone"];
 } & UnstyledProp;
 
 // ============================================================
 // SLOT PROPS
 // ============================================================
 
-export type ChatBubbleRootSlotProps = HTMLChakraProps<
+export type ChatMessageRootSlotProps = HTMLChakraProps<
   "div",
-  ChatBubbleRecipeProps
+  ChatMessageRecipeProps
 >;
 
-export type ChatBubbleAvatarSlotProps = HTMLChakraProps<"div">;
+export type ChatMessageAvatarSlotProps = HTMLChakraProps<"div">;
 
-export type ChatBubbleBubbleSlotProps = HTMLChakraProps<"div">;
+export type ChatMessageBubbleSlotProps = HTMLChakraProps<"div">;
 
-export type ChatBubbleActionsSlotProps = HTMLChakraProps<"div">;
+export type ChatMessageActionsSlotProps = HTMLChakraProps<"div">;
 
-export type ChatBubbleFooterSlotProps = HTMLChakraProps<"div">;
+export type ChatMessageMetaSlotProps = HTMLChakraProps<"div">;
 
-export type ChatBubbleTypingSlotProps = HTMLChakraProps<"div">;
+export type ChatMessageTypingSlotProps = HTMLChakraProps<"div">;
 
 // ============================================================
 // MAIN PROPS
 // ============================================================
 
-/** Props for the ChatBubble.Root component. */
-export type ChatBubbleProps = OmitInternalProps<ChatBubbleRootSlotProps> & {
+/** Props for the ChatMessage.Root component. */
+export type ChatMessageProps = OmitInternalProps<ChatMessageRootSlotProps> & {
   children?: React.ReactNode;
   /**
    * Override the rendered element. Defaults to `"article"` (a feed item, per
@@ -75,7 +77,7 @@ export type ChatBubbleProps = OmitInternalProps<ChatBubbleRootSlotProps> & {
 };
 
 /**
- * Props for the ChatBubble.Avatar component.
+ * Props for the ChatMessage.Avatar component.
  *
  * Wraps the Nimbus {@link AvatarProps | Avatar} with `variant="solid"`; the
  * color palette is set automatically per `sender` by the recipe (the `solid`
@@ -88,35 +90,35 @@ export type ChatBubbleProps = OmitInternalProps<ChatBubbleRootSlotProps> & {
  * "avatar" node. Provide `firstName`/`lastName` or an explicit `aria-label` to
  * opt the avatar back into the accessibility tree with a meaningful name.
  */
-export type ChatBubbleAvatarProps = AvatarProps;
+export type ChatMessageAvatarProps = AvatarProps;
 
-/** Props for the ChatBubble.Bubble component. */
-export type ChatBubbleBubbleProps =
-  OmitInternalProps<ChatBubbleBubbleSlotProps> & {
+/** Props for the ChatMessage.Bubble component. */
+export type ChatMessageBubbleProps =
+  OmitInternalProps<ChatMessageBubbleSlotProps> & {
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
     [key: `data-${string}`]: unknown;
   };
 
-/** Props for the ChatBubble.Actions component. */
-export type ChatBubbleActionsProps =
-  OmitInternalProps<ChatBubbleActionsSlotProps> & {
+/** Props for the ChatMessage.Actions component. */
+export type ChatMessageActionsProps =
+  OmitInternalProps<ChatMessageActionsSlotProps> & {
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
     [key: `data-${string}`]: unknown;
   };
 
-/** Props for the ChatBubble.Footer component. */
-export type ChatBubbleFooterProps =
-  OmitInternalProps<ChatBubbleFooterSlotProps> & {
+/** Props for the ChatMessage.Meta component. */
+export type ChatMessageMetaProps =
+  OmitInternalProps<ChatMessageMetaSlotProps> & {
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
     [key: `data-${string}`]: unknown;
   };
 
-/** Props for the ChatBubble.Typing component. */
-export type ChatBubbleTypingProps =
-  OmitInternalProps<ChatBubbleTypingSlotProps> & {
+/** Props for the ChatMessage.Typing component. */
+export type ChatMessageTypingProps =
+  OmitInternalProps<ChatMessageTypingSlotProps> & {
     /**
      * Optional visible label rendered beside the animated dots (e.g.
      * "Assistant is typing…"). The dots themselves are decorative

@@ -5,25 +5,25 @@ tab-order: 4
 
 ## Accessibility
 
-`ChatBubble` renders a **single message**. It intentionally does not own the
+`ChatMessage` renders a **single message**. It intentionally does not own the
 surrounding feed's container semantics or its live region — those are the
 consumer's to compose. This page documents both halves: what the component does
 for you, and what you're responsible for wiring up around it.
 
 ```jsx live
 const App = () => (
-  <ChatBubble.Root sender="user" aria-label="Message from Ada Lovelace">
-    <ChatBubble.Avatar firstName="Ada" lastName="Lovelace" />
-    <ChatBubble.Bubble>
+  <ChatMessage.Root sender="user" aria-label="Message from Ada Lovelace">
+    <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
+    <ChatMessage.Bubble>
       <Text>Can you summarise last week's orders?</Text>
-    </ChatBubble.Bubble>
-  </ChatBubble.Root>
+    </ChatMessage.Bubble>
+  </ChatMessage.Root>
 );
 ```
 
 ### Naming a message
 
-`ChatBubble.Root` renders a semantic `<article>` by default (a feed item, per
+`ChatMessage.Root` renders a semantic `<article>` by default (a feed item, per
 the ARIA APG), so each message is a discrete node in the accessibility tree. An
 `<article>` needs its own accessible name — give it one explicitly with
 `aria-label` or `aria-labelledby`. Don't rely on the avatar to convey who sent
@@ -33,7 +33,7 @@ on the message itself.
 
 ### The avatar is decorative by default
 
-`ChatBubble.Avatar` sets `aria-hidden` unless you pass `firstName`/`lastName` or
+`ChatMessage.Avatar` sets `aria-hidden` unless you pass `firstName`/`lastName` or
 an explicit `aria-label`. This is deliberate: an unnamed avatar would otherwise
 announce a generic, unhelpful label (or leak initials/an icon with no context),
 and the sender is already better conveyed by the message's own accessible name
@@ -71,38 +71,38 @@ const App = () => (
     flexDirection="column"
     gap="600"
   >
-    <ChatBubble.Root sender="user" aria-label="Message from Ada Lovelace">
-      <ChatBubble.Avatar firstName="Ada" lastName="Lovelace" />
-      <ChatBubble.Bubble>
+    <ChatMessage.Root sender="user" aria-label="Message from Ada Lovelace">
+      <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
+      <ChatMessage.Bubble>
         <Text>Can you summarise last week's orders?</Text>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
+      </ChatMessage.Bubble>
+    </ChatMessage.Root>
 
-    <ChatBubble.Root sender="agent" aria-label="Message from the assistant">
-      <ChatBubble.Avatar aria-label="Assistant">
+    <ChatMessage.Root sender="agent" aria-label="Message from the assistant">
+      <ChatMessage.Avatar aria-label="Assistant">
         <Icons.AutoAwesome />
-      </ChatBubble.Avatar>
-      <ChatBubble.Bubble>
+      </ChatMessage.Avatar>
+      <ChatMessage.Bubble>
         <Text>Revenue is up 12% week-over-week.</Text>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
+      </ChatMessage.Bubble>
+    </ChatMessage.Root>
   </Box>
 );
 ```
 
 If you do reach for `role="feed"`, keep every direct child an `<article>` —
-`ChatBubble.Root`'s default element already satisfies that — and don't mix in
+`ChatMessage.Root`'s default element already satisfies that — and don't mix in
 non-article children.
 
 ### Streaming state
 
-`isStreaming` on `ChatBubble.Root` sets `aria-busy="true"`, flagging the
+`isStreaming` on `ChatMessage.Root` sets `aria-busy="true"`, flagging the
 message's content as still in flux. It intentionally does **not** create its own
 live region: a live region mounted at the same time as its content is not
 announced reliably by every screen reader (the region must already exist before
 its content changes). Keep the live region on your transcript container
 (`role="log"` `aria-live="polite"`, as above) so it persists across messages,
-and use `ChatBubble.Typing`'s `children` for a visible "Assistant is typing…"
+and use `ChatMessage.Typing`'s `children` for a visible "Assistant is typing…"
 affordance while streaming.
 
 ### Conveying the sender
@@ -128,7 +128,7 @@ isn't a supported pattern.
 
 ### Accessibility standards
 
-- **Name, role, value:** `ChatBubble.Root` is an `<article>` by default; always
+- **Name, role, value:** `ChatMessage.Root` is an `<article>` by default; always
   give it an accessible name via `aria-label` or `aria-labelledby`.
 - **Info and relationships:** Sender and status information conveyed visually
   (bubble color, column position) must also be exposed through the message's

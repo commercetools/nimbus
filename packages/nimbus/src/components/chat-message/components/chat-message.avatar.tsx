@@ -1,13 +1,13 @@
 import { Avatar } from "@/components/avatar/avatar";
-import { ChatBubbleAvatarSlot } from "../chat-bubble.slots";
-import type { ChatBubbleAvatarProps } from "../chat-bubble.types";
+import { ChatMessageAvatarSlot } from "../chat-message.slots";
+import type { ChatMessageAvatarProps } from "../chat-message.types";
 
 /**
- * ChatBubble.Avatar - The sender's avatar.
+ * ChatMessage.Avatar - The sender's avatar.
  *
  * Wraps the Nimbus `Avatar` (defaulting to `size="xs"`, a 32px box per the
  * Figma spec, and to the `solid` variant). The color *palette* is applied per
- * `sender` by the ChatBubble recipe and the `solid` variant resolves it to an
+ * `sender` by the ChatMessage recipe and the `solid` variant resolves it to an
  * accessible bg (`colorPalette.9`) + text (`colorPalette.contrast`), so
  * consumers only supply the avatar content (initials via `firstName`/
  * `lastName`, an image `src`, or a custom icon via `children`).
@@ -23,19 +23,19 @@ import type { ChatBubbleAvatarProps } from "../chat-bubble.types";
  *
  * @supportsStyleProps
  */
-export const ChatBubbleAvatar = ({
+export const ChatMessageAvatar = ({
   ref,
   size = "xs",
   variant = "solid",
   ...props
-}: ChatBubbleAvatarProps) => {
+}: ChatMessageAvatarProps) => {
   const isNamed =
     props.firstName != null ||
     props.lastName != null ||
     props["aria-label"] != null;
 
   return (
-    <ChatBubbleAvatarSlot>
+    <ChatMessageAvatarSlot>
       <Avatar
         ref={ref}
         size={size}
@@ -45,8 +45,8 @@ export const ChatBubbleAvatar = ({
         aria-hidden={isNamed ? undefined : true}
         {...props}
       />
-    </ChatBubbleAvatarSlot>
+    </ChatMessageAvatarSlot>
   );
 };
 
-ChatBubbleAvatar.displayName = "ChatBubble.Avatar";
+ChatMessageAvatar.displayName = "ChatMessage.Avatar";

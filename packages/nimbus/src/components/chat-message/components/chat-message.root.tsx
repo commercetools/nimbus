@@ -1,13 +1,13 @@
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { extractStyleProps } from "@/utils";
-import { ChatBubbleRootSlot } from "../chat-bubble.slots";
-import type { ChatBubbleProps } from "../chat-bubble.types";
+import { ChatMessageRootSlot } from "../chat-message.slots";
+import type { ChatMessageProps } from "../chat-message.types";
 
 /**
- * ChatBubble.Root - The grid container for a single chat message.
+ * ChatMessage.Root - The grid container for a single chat message.
  *
  * Establishes the styling context and lays out the avatar, bubble and optional
- * footer row. The `sender` prop selects the layout direction (avatar leading
+ * meta row. The `sender` prop selects the layout direction (avatar leading
  * for `"agent"`/`"tool"`, trailing for `"user"`, centered for `"system"`) and
  * the sender-specific styling; `tone="error"` tints the bubble for a failed
  * generation.
@@ -21,16 +21,16 @@ import type { ChatBubbleProps } from "../chat-bubble.types";
  *
  * @supportsStyleProps
  */
-export const ChatBubbleRoot = (props: ChatBubbleProps) => {
+export const ChatMessageRoot = (props: ChatMessageProps) => {
   const { ref, children, isStreaming, ...restProps } = props;
 
-  const recipe = useSlotRecipe({ key: "nimbusChatBubble" });
+  const recipe = useSlotRecipe({ key: "nimbusChatMessage" });
   const [recipeProps, remainingProps] = recipe.splitVariantProps(restProps);
   const [styleProps, functionalProps] = extractStyleProps(remainingProps);
 
   return (
-    <ChatBubbleRootSlot
-      // The slot renders `<article>` by default (see chat-bubble.slots.tsx);
+    <ChatMessageRootSlot
+      // The slot renders `<article>` by default (see chat-message.slots.tsx);
       // `functionalProps` is spread last so a consumer-supplied `as` / `role` /
       // `aria-*` always wins.
       aria-busy={isStreaming || undefined}
@@ -40,8 +40,8 @@ export const ChatBubbleRoot = (props: ChatBubbleProps) => {
       {...functionalProps}
     >
       {children}
-    </ChatBubbleRootSlot>
+    </ChatMessageRootSlot>
   );
 };
 
-ChatBubbleRoot.displayName = "ChatBubble.Root";
+ChatMessageRoot.displayName = "ChatMessage.Root";

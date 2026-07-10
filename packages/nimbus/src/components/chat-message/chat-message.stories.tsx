@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
-  ChatBubble,
-  type ChatBubbleProps,
+  ChatMessage,
+  ChatNotice,
+  type ChatMessageProps,
   Text,
   Button,
   Link,
@@ -22,14 +23,14 @@ const SAMPLE_MESSAGE =
   "Lorem ipsum dolor sit amet consectetur adipiscing elit. Ut et massa mi. " +
   "Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla.";
 
-const meta: Meta<typeof ChatBubble.Root> = {
-  title: "Components/ChatBubble",
-  component: ChatBubble.Root,
+const meta: Meta<typeof ChatMessage.Root> = {
+  title: "Components/ChatMessage",
+  component: ChatMessage.Root,
 };
 
 export default meta;
 
-type Story = StoryObj<typeof ChatBubble.Root>;
+type Story = StoryObj<typeof ChatMessage.Root>;
 
 /**
  * Base
@@ -38,21 +39,21 @@ type Story = StoryObj<typeof ChatBubble.Root>;
 export const Base: Story = {
   args: {
     sender: "agent",
-    "data-testid": "chat-bubble",
+    "data-testid": "chat-message",
   },
-  render: (args: ChatBubbleProps) => (
-    <ChatBubble.Root {...args}>
-      <ChatBubble.Avatar>
+  render: (args: ChatMessageProps) => (
+    <ChatMessage.Root {...args}>
+      <ChatMessage.Avatar>
         <AutoAwesome />
-      </ChatBubble.Avatar>
-      <ChatBubble.Bubble>
+      </ChatMessage.Avatar>
+      <ChatMessage.Bubble>
         <Text>{SAMPLE_MESSAGE}</Text>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
+      </ChatMessage.Bubble>
+    </ChatMessage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const root = canvas.getByTestId("chat-bubble");
+    const root = canvas.getByTestId("chat-message");
 
     await step("Renders the message content", async () => {
       await expect(root).toHaveTextContent(SAMPLE_MESSAGE);
@@ -82,16 +83,16 @@ export const Base: Story = {
  */
 export const UserText: Story = {
   render: () => (
-    <ChatBubble.Root
+    <ChatMessage.Root
       sender="user"
       data-testid="user-bubble"
       aria-label="Message from Ada Lovelace"
     >
-      <ChatBubble.Avatar firstName="Ada" lastName="Lovelace" />
-      <ChatBubble.Bubble>
+      <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
+      <ChatMessage.Bubble>
         <Text>Can you summarise last week's orders for me?</Text>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
+      </ChatMessage.Bubble>
+    </ChatMessage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -122,14 +123,14 @@ export const UserText: Story = {
  */
 export const AgentText: Story = {
   render: () => (
-    <ChatBubble.Root sender="agent" data-testid="agent-bubble">
-      <ChatBubble.Avatar>
+    <ChatMessage.Root sender="agent" data-testid="agent-bubble">
+      <ChatMessage.Avatar>
         <AutoAwesome />
-      </ChatBubble.Avatar>
-      <ChatBubble.Bubble>
+      </ChatMessage.Avatar>
+      <ChatMessage.Bubble>
         <Text>{SAMPLE_MESSAGE}</Text>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
+      </ChatMessage.Bubble>
+    </ChatMessage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -148,22 +149,22 @@ export const AgentText: Story = {
  */
 export const AgentWithActions: Story = {
   render: () => (
-    <ChatBubble.Root sender="agent" data-testid="agent-actions">
-      <ChatBubble.Avatar>
+    <ChatMessage.Root sender="agent" data-testid="agent-actions">
+      <ChatMessage.Avatar>
         <AutoAwesome />
-      </ChatBubble.Avatar>
-      <ChatBubble.Bubble>
+      </ChatMessage.Avatar>
+      <ChatMessage.Bubble>
         <Text>I drafted the date range for your report. Approve to apply.</Text>
-        <ChatBubble.Actions>
+        <ChatMessage.Actions>
           <Button variant="outline" colorPalette="primary">
             Save as draft
           </Button>
           <Button variant="solid" colorPalette="primary">
             Approve
           </Button>
-        </ChatBubble.Actions>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
+        </ChatMessage.Actions>
+      </ChatMessage.Bubble>
+    </ChatMessage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -180,20 +181,20 @@ export const AgentWithActions: Story = {
 };
 
 /**
- * With footer
- * A footer row is rendered below the bubble: a trust link on the left,
+ * With meta
+ * A meta row is rendered below the bubble: a trust link on the left,
  * timestamp and reaction icons on the right.
  */
-export const AgentWithFooter: Story = {
+export const AgentWithMeta: Story = {
   render: () => (
-    <ChatBubble.Root sender="agent" data-testid="agent-footer">
-      <ChatBubble.Avatar>
+    <ChatMessage.Root sender="agent" data-testid="agent-meta">
+      <ChatMessage.Avatar>
         <AutoAwesome />
-      </ChatBubble.Avatar>
-      <ChatBubble.Bubble>
+      </ChatMessage.Avatar>
+      <ChatMessage.Bubble>
         <Text>{SAMPLE_MESSAGE}</Text>
-      </ChatBubble.Bubble>
-      <ChatBubble.Footer>
+      </ChatMessage.Bubble>
+      <ChatMessage.Meta>
         <Link href="#">How was this generated?</Link>
         <Stack direction="row" alignItems="center" gap="100">
           <Text color="neutral.11">Apr 13, 11:56pm</Text>
@@ -207,13 +208,13 @@ export const AgentWithFooter: Story = {
             <ContentCopy />
           </IconButton>
         </Stack>
-      </ChatBubble.Footer>
-    </ChatBubble.Root>
+      </ChatMessage.Meta>
+    </ChatMessage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Renders the footer affordances", async () => {
+    await step("Renders the meta affordances", async () => {
       await expect(
         canvas.getByRole("link", { name: "How was this generated?" })
       ).toBeInTheDocument();
@@ -228,15 +229,15 @@ export const AgentWithFooter: Story = {
 /**
  * With Markdown content
  * The bubble payload is arbitrary content — here a `Markdown` string rendered
- * into Nimbus-styled elements, plus actions and footer.
+ * into Nimbus-styled elements, plus actions and meta.
  */
 export const AgentWithMarkdown: Story = {
   render: () => (
-    <ChatBubble.Root sender="agent" data-testid="agent-markdown">
-      <ChatBubble.Avatar>
+    <ChatMessage.Root sender="agent" data-testid="agent-markdown">
+      <ChatMessage.Avatar>
         <AutoAwesome />
-      </ChatBubble.Avatar>
-      <ChatBubble.Bubble>
+      </ChatMessage.Avatar>
+      <ChatMessage.Bubble>
         <Markdown>
           {[
             "Here's what I found:",
@@ -247,17 +248,17 @@ export const AgentWithMarkdown: Story = {
             "See the [full report](#) for details.",
           ].join("\n")}
         </Markdown>
-        <ChatBubble.Actions>
+        <ChatMessage.Actions>
           <Button variant="solid" colorPalette="primary">
             Approve
           </Button>
-        </ChatBubble.Actions>
-      </ChatBubble.Bubble>
-      <ChatBubble.Footer>
+        </ChatMessage.Actions>
+      </ChatMessage.Bubble>
+      <ChatMessage.Meta>
         <Link href="#">How was this generated?</Link>
         <Text color="neutral.11">Apr 13, 11:56pm</Text>
-      </ChatBubble.Footer>
-    </ChatBubble.Root>
+      </ChatMessage.Meta>
+    </ChatMessage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -278,17 +279,17 @@ export const AgentWithMarkdown: Story = {
  */
 export const Overflow: Story = {
   render: () => (
-    <ChatBubble.Root sender="agent">
-      <ChatBubble.Avatar>
+    <ChatMessage.Root sender="agent">
+      <ChatMessage.Avatar>
         <AutoAwesome />
-      </ChatBubble.Avatar>
-      <ChatBubble.Bubble data-testid="overflow-bubble">
+      </ChatMessage.Avatar>
+      <ChatMessage.Bubble data-testid="overflow-bubble">
         <Text>
           Reference:
           https://example.com/very/long/path/that/should/wrap?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.aVeryLongUnbrokenIdentifierWithNoSpacesAtAll
         </Text>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
+      </ChatMessage.Bubble>
+    </ChatMessage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -304,22 +305,22 @@ export const Overflow: Story = {
 };
 
 /**
- * System message
- * A centered, subdued, avatar-less notice.
+ * System notice
+ * A centered, subdued, avatar-less interjection. `ChatNotice` is a peer of
+ * `ChatMessage`, not a sender variant — its presentation is the opposite of a
+ * message.
  */
-export const SystemMessage: Story = {
+export const SystemNotice: Story = {
   render: () => (
-    <ChatBubble.Root sender="system" data-testid="system-bubble">
-      <ChatBubble.Bubble>
-        <Text>Conversation history was cleared.</Text>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
+    <ChatNotice data-testid="system-notice">
+      Conversation history was cleared.
+    </ChatNotice>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders the system notice", async () => {
-      await expect(canvas.getByTestId("system-bubble")).toHaveTextContent(
+      await expect(canvas.getByTestId("system-notice")).toHaveTextContent(
         "Conversation history was cleared."
       );
     });
@@ -327,27 +328,28 @@ export const SystemMessage: Story = {
 };
 
 /**
- * Tool message
- * Tool / function-call output on a subdued neutral surface, agent-side.
+ * Tool output as agent content
+ * Tool / function-call output is content *inside* an `agent` message (here a
+ * JSON code block via `Markdown`) — not a distinct sender.
  */
-export const ToolMessage: Story = {
+export const ToolOutput: Story = {
   render: () => (
-    <ChatBubble.Root sender="tool" data-testid="tool-bubble">
-      <ChatBubble.Avatar>
+    <ChatMessage.Root sender="agent" data-testid="tool-output">
+      <ChatMessage.Avatar>
         <AutoAwesome />
-      </ChatBubble.Avatar>
-      <ChatBubble.Bubble>
+      </ChatMessage.Avatar>
+      <ChatMessage.Bubble>
         <Markdown>
           {["```json", '{ "orders": 42, "revenue": 12890 }', "```"].join("\n")}
         </Markdown>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
+      </ChatMessage.Bubble>
+    </ChatMessage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders the tool output", async () => {
-      await expect(canvas.getByTestId("tool-bubble")).toHaveTextContent(
+      await expect(canvas.getByTestId("tool-output")).toHaveTextContent(
         "revenue"
       );
     });
@@ -361,17 +363,17 @@ export const ToolMessage: Story = {
  */
 export const ErrorTone: Story = {
   render: () => (
-    <ChatBubble.Root sender="agent" tone="error" data-testid="error-bubble">
-      <ChatBubble.Avatar>
+    <ChatMessage.Root sender="agent" tone="error" data-testid="error-bubble">
+      <ChatMessage.Avatar>
         <AutoAwesome />
-      </ChatBubble.Avatar>
-      <ChatBubble.Bubble>
+      </ChatMessage.Avatar>
+      <ChatMessage.Bubble>
         <Text>Something went wrong generating this response.</Text>
-        <ChatBubble.Actions colorPalette="critical">
+        <ChatMessage.Actions colorPalette="critical">
           <Button variant="solid">Retry</Button>
-        </ChatBubble.Actions>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
+        </ChatMessage.Actions>
+      </ChatMessage.Bubble>
+    </ChatMessage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -389,21 +391,21 @@ export const ErrorTone: Story = {
 
 /**
  * Streaming
- * While a reply generates, render `ChatBubble.Typing` as the payload and set
+ * While a reply generates, render `ChatMessage.Typing` as the payload and set
  * `isStreaming` on the root (which sets `aria-busy`).
  */
 export const Streaming: Story = {
   render: () => (
-    <ChatBubble.Root sender="agent" isStreaming data-testid="streaming-bubble">
-      <ChatBubble.Avatar>
+    <ChatMessage.Root sender="agent" isStreaming data-testid="streaming-bubble">
+      <ChatMessage.Avatar>
         <AutoAwesome />
-      </ChatBubble.Avatar>
-      <ChatBubble.Bubble>
-        <ChatBubble.Typing>
+      </ChatMessage.Avatar>
+      <ChatMessage.Bubble>
+        <ChatMessage.Typing>
           <Text color="neutral.11">Assistant is typing…</Text>
-        </ChatBubble.Typing>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
+        </ChatMessage.Typing>
+      </ChatMessage.Bubble>
+    </ChatMessage.Root>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -423,45 +425,34 @@ export const Streaming: Story = {
 
 /**
  * Senders side by side
- * Compares the layout directions and sender styling.
+ * Compares the two sender layout directions, with a `ChatNotice` interjection
+ * between turns.
  */
 export const Senders: Story = {
   render: () => (
     <Stack gap="600">
-      <ChatBubble.Root sender="user">
-        <ChatBubble.Avatar firstName="Ada" lastName="Lovelace" />
-        <ChatBubble.Bubble>
+      <ChatMessage.Root sender="user">
+        <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
+        <ChatMessage.Bubble>
           <Text>Can you summarise last week's orders?</Text>
-        </ChatBubble.Bubble>
-      </ChatBubble.Root>
-      <ChatBubble.Root sender="agent">
-        <ChatBubble.Avatar>
+        </ChatMessage.Bubble>
+      </ChatMessage.Root>
+      <ChatNotice>Conversation history was cleared.</ChatNotice>
+      <ChatMessage.Root sender="agent">
+        <ChatMessage.Avatar>
           <AutoAwesome />
-        </ChatBubble.Avatar>
-        <ChatBubble.Bubble>
+        </ChatMessage.Avatar>
+        <ChatMessage.Bubble>
           <Text>{SAMPLE_MESSAGE}</Text>
-        </ChatBubble.Bubble>
-      </ChatBubble.Root>
-      <ChatBubble.Root sender="tool">
-        <ChatBubble.Avatar>
-          <AutoAwesome />
-        </ChatBubble.Avatar>
-        <ChatBubble.Bubble>
-          <Text>Tool output</Text>
-        </ChatBubble.Bubble>
-      </ChatBubble.Root>
-      <ChatBubble.Root sender="system">
-        <ChatBubble.Bubble>
-          <Text>System notice</Text>
-        </ChatBubble.Bubble>
-      </ChatBubble.Root>
+        </ChatMessage.Bubble>
+      </ChatMessage.Root>
     </Stack>
   ),
 };
 
 /**
  * Accessible message log (recommended composition)
- * ChatBubble renders one message; the consumer composes the transcript. A
+ * ChatMessage renders one message; the consumer composes the transcript. A
  * `role="log"` `aria-live="polite"` container of `<article>` messages — each
  * named for assistive tech — is the recommended pattern for an assistant chat:
  * it is a live region (so streamed replies are announced without per-token
@@ -478,21 +469,21 @@ export const AccessibleFeed: Story = {
       gap="600"
       data-testid="feed"
     >
-      <ChatBubble.Root sender="user" aria-label="Message from Ada Lovelace">
-        <ChatBubble.Avatar firstName="Ada" lastName="Lovelace" />
-        <ChatBubble.Bubble>
+      <ChatMessage.Root sender="user" aria-label="Message from Ada Lovelace">
+        <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
+        <ChatMessage.Bubble>
           <Text>Can you summarise last week's orders?</Text>
-        </ChatBubble.Bubble>
-      </ChatBubble.Root>
+        </ChatMessage.Bubble>
+      </ChatMessage.Root>
 
-      <ChatBubble.Root sender="agent" aria-label="Message from the assistant">
-        <ChatBubble.Avatar aria-label="Assistant">
+      <ChatMessage.Root sender="agent" aria-label="Message from the assistant">
+        <ChatMessage.Avatar aria-label="Assistant">
           <AutoAwesome />
-        </ChatBubble.Avatar>
-        <ChatBubble.Bubble>
+        </ChatMessage.Avatar>
+        <ChatMessage.Bubble>
           <Text>Revenue is up 12% week-over-week.</Text>
-        </ChatBubble.Bubble>
-      </ChatBubble.Root>
+        </ChatMessage.Bubble>
+      </ChatMessage.Root>
     </Box>
   ),
   play: async ({ canvasElement, step }) => {

@@ -1,14 +1,14 @@
 import figma from "@figma/code-connect/react";
-import { ChatBubble } from "./chat-bubble";
+import { ChatMessage } from "./chat-message";
 
-// --- chat-bubble-container → ChatBubble.Root ---
+// --- chat-message-container → ChatMessage.Root ---
 //
 // The Figma component exposes a `Sender` property (User | Agent) that maps onto
 // the `sender` variant. The payload, actions and feedback are authored by the
-// consumer, so the snippet forwards the Figma children into ChatBubble.Bubble
+// consumer, so the snippet forwards the Figma children into ChatMessage.Bubble
 // and leaves the avatar/actions/feedback composition to the developer.
 figma.connect(
-  ChatBubble.Root,
+  ChatMessage.Root,
   "https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=10601-14469",
   {
     props: {
@@ -19,10 +19,10 @@ figma.connect(
       }),
     },
     example: (props) => (
-      <ChatBubble.Root sender={props.sender}>
-        <ChatBubble.Avatar />
-        <ChatBubble.Bubble>{props.children}</ChatBubble.Bubble>
-      </ChatBubble.Root>
+      <ChatMessage.Root sender={props.sender}>
+        <ChatMessage.Avatar />
+        <ChatMessage.Bubble>{props.children}</ChatMessage.Bubble>
+      </ChatMessage.Root>
     ),
   }
 );

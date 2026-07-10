@@ -2,6 +2,7 @@ import { activityIndicatorRecipe } from "@/components/activity-indicator/activit
 import { avatarRecipe } from "@/components/avatar/avatar.recipe";
 import { badgeRecipe } from "@/components/badge/badge.recipe";
 import { buttonRecipe } from "@/components/button/button.recipe";
+import { chatNoticeRecipe } from "@/components/chat-notice/chat-notice.recipe";
 import { codeRecipe } from "@/components/code/code.recipe";
 import { dropZoneRecipe } from "@/components/drop-zone/drop-zone.recipe";
 import { groupRecipe } from "@/components/group/group.recipe";
@@ -39,6 +40,7 @@ export const recipes = {
   nimbusAvatar: avatarRecipe,
   nimbusBadge: badgeRecipe,
   nimbusButton: buttonRecipe,
+  nimbusChatNotice: chatNoticeRecipe,
   nimbusCode: codeRecipe,
   nimbusDropZone: dropZoneRecipe,
   nimbusGroup: groupRecipe,

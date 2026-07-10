@@ -1,9 +1,9 @@
 import { ActivityIndicator } from "@/components/activity-indicator/activity-indicator";
-import { ChatBubbleTypingSlot } from "../chat-bubble.slots";
-import type { ChatBubbleTypingProps } from "../chat-bubble.types";
+import { ChatMessageTypingSlot } from "../chat-message.slots";
+import type { ChatMessageTypingProps } from "../chat-message.types";
 
 /**
- * ChatBubble.Typing - Animated "generating…" indicator for a streaming reply.
+ * ChatMessage.Typing - Animated "generating…" indicator for a streaming reply.
  *
  * Renders the Nimbus `ActivityIndicator` (three bouncing dots) inside the
  * bubble while a response streams. Place it as the bubble's payload and swap it
@@ -12,22 +12,22 @@ import type { ChatBubbleTypingProps } from "../chat-bubble.types";
  * Accessibility: the dots are decorative (`ActivityIndicator` is always
  * `aria-hidden`). Pass a visible label as `children` (e.g. "Assistant is
  * typing…") for a per-message affordance, and/or set `isStreaming` on
- * `ChatBubble.Root` (which sets `aria-busy`) — the coalesced live-region
+ * `ChatMessage.Root` (which sets `aria-busy`) — the coalesced live-region
  * announcement stays with the consumer's feed/turn container.
  *
  * @supportsStyleProps
  */
-export const ChatBubbleTyping = ({
+export const ChatMessageTyping = ({
   ref,
   children,
   ...props
-}: ChatBubbleTypingProps) => {
+}: ChatMessageTypingProps) => {
   return (
-    <ChatBubbleTypingSlot ref={ref} {...props}>
+    <ChatMessageTypingSlot ref={ref} {...props}>
       <ActivityIndicator />
       {children}
-    </ChatBubbleTypingSlot>
+    </ChatMessageTypingSlot>
   );
 };
 
-ChatBubbleTyping.displayName = "ChatBubble.Typing";
+ChatMessageTyping.displayName = "ChatMessage.Typing";

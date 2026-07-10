@@ -1,21 +1,21 @@
 ---
-id: Components-ChatBubble
-title: Chat bubble
-exportName: ChatBubble
+id: Components-ChatMessage
+title: Chat message
+exportName: ChatMessage
 description:
-  A single message bubble for AI chat interfaces, pairing a sender avatar with a
-  message card and optional actions, footer, and typing indicator.
+  A single message in an AI chat conversation, pairing a sender avatar with a
+  message bubble and optional actions, meta, and typing indicator.
 lifecycleState: Experimental
 order: 999
 menu:
   - Components
   - Feedback
-  - Chat bubble
+  - Chat message
 tags:
   - component
   - chat
-  - bubble
   - message
+  - bubble
   - ai
   - conversation
 figmaLink: >-
@@ -24,19 +24,21 @@ figmaLink: >-
 
 ## Overview
 
-Chat bubble renders **one message** in an AI chat conversation — an avatar
-paired with a message card, plus optional actions, a footer, and a typing
+`ChatMessage` renders **one message** in an AI chat conversation — an avatar
+paired with a message bubble, plus optional actions, a meta row, and a typing
 indicator for streaming replies. It does not compose the surrounding feed:
 stacking messages, scrolling, and the live region that announces new content are
-all up to the consumer.
+the transcript's job (see `ChatMessageList`).
 
-The `sender` prop drives who the message is from and controls both the layout
-direction and the bubble/avatar styling:
+The `sender` prop drives which participant the message is from and controls both
+the layout direction and the bubble/avatar styling:
 
 - `user` — the human; avatar trails the bubble.
 - `agent` (default) — the assistant; avatar leads the bubble.
-- `system` — a centered, subdued, typically avatar-less notice.
-- `tool` — agent-side tool/function output on a subdued neutral surface.
+
+`sender` denotes only _who_ sent the message. Non-message interjections (system
+notices, dividers) are the separate `ChatNotice` component, and tool/function
+output is content _inside_ an `agent` message — neither is a `sender` value.
 
 `tone="error"` is independent of `sender` — it tints the bubble to flag a failed
 generation, since an agent message can still fail.
@@ -53,39 +55,28 @@ Get familiar with the features.
 
 ### Senders
 
-Each sender has its own layout direction and surface. `user` and `agent` place
-the bubble beside the avatar; `system` centers a notice without sides.
+Each sender has its own layout direction and surface: `user` places the bubble
+before the avatar, `agent` places the avatar before the bubble. A `ChatNotice`
+(a peer, not a sender) can sit between turns as a centered interjection.
 
 ```jsx live
 const App = () => (
   <Stack gap="600">
-    <ChatBubble.Root sender="user">
-      <ChatBubble.Avatar firstName="Ada" lastName="Lovelace" />
-      <ChatBubble.Bubble>
+    <ChatMessage.Root sender="user">
+      <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
+      <ChatMessage.Bubble>
         <Text>Can you summarise last week's orders?</Text>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
-    <ChatBubble.Root sender="agent">
-      <ChatBubble.Avatar>
+      </ChatMessage.Bubble>
+    </ChatMessage.Root>
+    <ChatNotice>Conversation history was cleared.</ChatNotice>
+    <ChatMessage.Root sender="agent">
+      <ChatMessage.Avatar>
         <Icons.AutoAwesome />
-      </ChatBubble.Avatar>
-      <ChatBubble.Bubble>
+      </ChatMessage.Avatar>
+      <ChatMessage.Bubble>
         <Text>Revenue is up 12% week-over-week.</Text>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
-    <ChatBubble.Root sender="tool">
-      <ChatBubble.Avatar>
-        <Icons.AutoAwesome />
-      </ChatBubble.Avatar>
-      <ChatBubble.Bubble>
-        <Text>Tool output</Text>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
-    <ChatBubble.Root sender="system">
-      <ChatBubble.Bubble>
-        <Text>Conversation history was cleared.</Text>
-      </ChatBubble.Bubble>
-    </ChatBubble.Root>
+      </ChatMessage.Bubble>
+    </ChatMessage.Root>
   </Stack>
 );
 ```
@@ -97,63 +88,63 @@ generation, on top of whatever `sender` styling already applies.
 
 ```jsx live
 const App = () => (
-  <ChatBubble.Root sender="agent" tone="error">
-    <ChatBubble.Avatar>
+  <ChatMessage.Root sender="agent" tone="error">
+    <ChatMessage.Avatar>
       <Icons.AutoAwesome />
-    </ChatBubble.Avatar>
-    <ChatBubble.Bubble>
+    </ChatMessage.Avatar>
+    <ChatMessage.Bubble>
       <Text>Something went wrong generating this response.</Text>
-      <ChatBubble.Actions>
+      <ChatMessage.Actions>
         <Button variant="outline" colorPalette="primary">
           Retry
         </Button>
-      </ChatBubble.Actions>
-    </ChatBubble.Bubble>
-  </ChatBubble.Root>
+      </ChatMessage.Actions>
+    </ChatMessage.Bubble>
+  </ChatMessage.Root>
 );
 ```
 
 ### Actions
 
-`ChatBubble.Actions` is a right-aligned row of buttons rendered inside the
+`ChatMessage.Actions` is a right-aligned row of buttons rendered inside the
 bubble. Place it last so the actions pin to the bottom of the card.
 
 ```jsx live
 const App = () => (
-  <ChatBubble.Root sender="agent">
-    <ChatBubble.Avatar>
+  <ChatMessage.Root sender="agent">
+    <ChatMessage.Avatar>
       <Icons.AutoAwesome />
-    </ChatBubble.Avatar>
-    <ChatBubble.Bubble>
+    </ChatMessage.Avatar>
+    <ChatMessage.Bubble>
       <Text>I drafted the date range for your report. Approve to apply.</Text>
-      <ChatBubble.Actions>
+      <ChatMessage.Actions>
         <Button variant="outline" colorPalette="primary">
           Save as draft
         </Button>
         <Button variant="solid" colorPalette="primary">
           Approve
         </Button>
-      </ChatBubble.Actions>
-    </ChatBubble.Bubble>
-  </ChatBubble.Root>
+      </ChatMessage.Actions>
+    </ChatMessage.Bubble>
+  </ChatMessage.Root>
 );
 ```
 
-### Footer
+### Meta
 
-`ChatBubble.Footer` is a `space-between` row rendered below the bubble, for a
+`ChatMessage.Meta` is a `space-between` row rendered below the bubble, for a
 timestamp, a trust/provenance link, or reaction icons.
 
 ```jsx live
 const App = () => (
-  <ChatBubble.Root sender="agent">
-    <ChatBubble.Avatar>
+  <ChatMessage.Root sender="agent">
+    <ChatMessage.Avatar>
       <Icons.AutoAwesome />
-    </ChatBubble.Avatar>
-    <ChatBubble.Bubble>
+    </ChatMessage.Avatar>
+    <ChatMessage.Bubble>
       <Text>Here is the summary you asked for.</Text>
-    </ChatBubble.Bubble>
-    <ChatBubble.Footer>
+    </ChatMessage.Bubble>
+    <ChatMessage.Meta>
       <Link href="#">How was this generated?</Link>
       <Stack direction="row" alignItems="center" gap="100">
         <Text color="neutral.11">Apr 13, 11:56pm</Text>
@@ -167,28 +158,28 @@ const App = () => (
           <Icons.ContentCopy />
         </IconButton>
       </Stack>
-    </ChatBubble.Footer>
-  </ChatBubble.Root>
+    </ChatMessage.Meta>
+  </ChatMessage.Root>
 );
 ```
 
 ### Typing / streaming
 
-`ChatBubble.Typing` shows an animated "generating…" indicator as the bubble's
+`ChatMessage.Typing` shows an animated "generating…" indicator as the bubble's
 payload while a reply streams. Pair it with `isStreaming` on the root, which
 sets `aria-busy`.
 
 ```jsx live
 const App = () => (
-  <ChatBubble.Root sender="agent" isStreaming>
-    <ChatBubble.Avatar>
+  <ChatMessage.Root sender="agent" isStreaming>
+    <ChatMessage.Avatar>
       <Icons.AutoAwesome />
-    </ChatBubble.Avatar>
-    <ChatBubble.Bubble>
-      <ChatBubble.Typing>
+    </ChatMessage.Avatar>
+    <ChatMessage.Bubble>
+      <ChatMessage.Typing>
         <Text color="neutral.11">Assistant is typing…</Text>
-      </ChatBubble.Typing>
-    </ChatBubble.Bubble>
-  </ChatBubble.Root>
+      </ChatMessage.Typing>
+    </ChatMessage.Bubble>
+  </ChatMessage.Root>
 );
 ```

@@ -1,8 +1,8 @@
-import { ChatBubbleFooterSlot } from "../chat-bubble.slots";
-import type { ChatBubbleFooterProps } from "../chat-bubble.types";
+import { ChatMessageMetaSlot } from "../chat-message.slots";
+import type { ChatMessageMetaProps } from "../chat-message.types";
 
 /**
- * ChatBubble.Footer - Layout-only row rendered below the bubble.
+ * ChatMessage.Meta - Layout-only row rendered below the bubble.
  *
  * Renders a `space-between` flex row aligned with the bubble. Consumers provide
  * the content (timestamp, provenance/trust links, reaction icons). With a
@@ -11,16 +11,16 @@ import type { ChatBubbleFooterProps } from "../chat-bubble.types";
  *
  * @supportsStyleProps
  */
-export const ChatBubbleFooter = ({
+export const ChatMessageMeta = ({
   ref,
   children,
   ...props
-}: ChatBubbleFooterProps) => {
+}: ChatMessageMetaProps) => {
   return (
-    <ChatBubbleFooterSlot ref={ref} {...props}>
+    <ChatMessageMetaSlot ref={ref} {...props}>
       {children}
-    </ChatBubbleFooterSlot>
+    </ChatMessageMetaSlot>
   );
 };
 
-ChatBubbleFooter.displayName = "ChatBubble.Footer";
+ChatMessageMeta.displayName = "ChatMessage.Meta";
