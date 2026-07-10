@@ -1,0 +1,181 @@
+---
+title: Chat message list
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import {
+  ChatMessageList,
+  type ChatMessageListHandle,
+} from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+`ChatMessageList` is a compound component: wrap each turn in a
+`ChatMessageList.Item` inside `ChatMessageList.Root`. Give `Root` a bounded
+height (directly, or by placing it in a flex/grid parent) so it scrolls
+internally instead of growing the page.
+
+```jsx live-dev
+const App = () => (
+  <ChatMessageList.Root aria-label="Conversation" height="320px">
+    <ChatMessageList.Item>
+      <ChatMessage.Root sender="user">
+        <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
+        <ChatMessage.Bubble>
+          <Text>Can you summarise last week's orders?</Text>
+        </ChatMessage.Bubble>
+      </ChatMessage.Root>
+    </ChatMessageList.Item>
+    <ChatMessageList.Item>
+      <ChatMessage.Root sender="agent">
+        <ChatMessage.Avatar>
+          <Icons.AutoAwesome />
+        </ChatMessage.Avatar>
+        <ChatMessage.Bubble>
+          <Text>Revenue is up 12% week-over-week.</Text>
+        </ChatMessage.Bubble>
+      </ChatMessage.Root>
+    </ChatMessageList.Item>
+  </ChatMessageList.Root>
+);
+```
+
+## Usage examples
+
+### Items are content-agnostic
+
+A `ChatMessageList.Item` is the list-membership socket; it does not care what
+plugs into it. The same `Item` holds a `ChatMessage` or a `ChatNotice`, so a
+system notice is a peer of a message rather than a `sender` variant.
+
+```jsx live-dev
+const App = () => (
+  <ChatMessageList.Root aria-label="Conversation" height="260px">
+    <ChatMessageList.Item>
+      <ChatNotice>Today</ChatNotice>
+    </ChatMessageList.Item>
+    <ChatMessageList.Item>
+      <ChatMessage.Root sender="agent">
+        <ChatMessage.Avatar>
+          <Icons.AutoAwesome />
+        </ChatMessage.Avatar>
+        <ChatMessage.Bubble>
+          <Text>How can I help you today?</Text>
+        </ChatMessage.Bubble>
+      </ChatMessage.Root>
+    </ChatMessageList.Item>
+  </ChatMessageList.Root>
+);
+```
+
+### Empty state
+
+When the list has no items, `Root` renders the `emptyState` node.
+
+```jsx live-dev
+const App = () => (
+  <ChatMessageList.Root
+    aria-label="Conversation"
+    height="220px"
+    emptyState={<Text>No messages yet.</Text>}
+  />
+);
+```
+
+### Autoscroll and streaming
+
+`autoScroll` (default `true`) keeps the view pinned to the newest message while
+the user is at the bottom, including while a reply streams and grows. The
+message being streamed sets `isStreaming` on its `ChatMessage.Root` (which sets
+`aria-busy`) and renders its text with `<Markdown isStreaming>`; the list owns
+the announcement, the message owns the busy flag. Scrolling up releases the pin
+and reveals a "jump to latest" control.
+
+```jsx live-dev
+const App = () => (
+  <ChatMessageList.Root aria-label="Conversation" height="300px">
+    <ChatMessageList.Item>
+      <ChatMessage.Root sender="user">
+        <ChatMessage.Bubble>
+          <Text>Tell me about last week's revenue.</Text>
+        </ChatMessage.Bubble>
+      </ChatMessage.Root>
+    </ChatMessageList.Item>
+    <ChatMessageList.Item>
+      <ChatMessage.Root sender="agent" isStreaming>
+        <ChatMessage.Avatar>
+          <Icons.AutoAwesome />
+        </ChatMessage.Avatar>
+        <ChatMessage.Bubble>
+          <Markdown isStreaming>
+            {"Revenue is up **12%** week-over-week, driven by"}
+          </Markdown>
+        </ChatMessage.Bubble>
+      </ChatMessage.Root>
+    </ChatMessageList.Item>
+  </ChatMessageList.Root>
+);
+```
+
+### Imperative scroll control
+
+`Root` exposes a `scrollToBottom()` handle on its `ref` — useful after
+prepending history, or to jump to the newest message from a keyboard shortcut.
+It re-engages stick-to-bottom and honors `prefers-reduced-motion`.
+
+```tsx
+const ref = useRef<ChatMessageListHandle>(null);
+
+// later, e.g. after loading older messages:
+ref.current?.scrollToBottom("smooth");
+
+return (
+  <ChatMessageList.Root ref={ref} aria-label="Conversation">
+    {/* items */}
+  </ChatMessageList.Root>
+);
+```
+
+## Component requirements
+
+- Give `ChatMessageList.Root` a bounded height (directly or via a flex/grid
+  parent) so it scrolls internally.
+- Wrap every transcript member — a `ChatMessage` or a `ChatNotice` — in its own
+  `ChatMessageList.Item`.
+- Name the transcript with `aria-label` (or `aria-labelledby`); `Root` provides
+  a localized default if you omit both, but a specific name is better.
+- v1 renders items directly (no windowing); very long transcripts render every
+  item. Virtualization is a planned fast-follow.
+
+## Accessibility
+
+`ChatMessageList.Root` is the transcript's single, persistent `role="log"`
+`aria-live="polite"` region — appended and streamed messages are announced
+without per-token spam, and mixed children (message `article`s plus notices) are
+valid because `log` imposes no `aria-required-children` constraint. See the
+**Accessibility tab** for the full `log`-vs-`feed` rationale and how streaming
+announcement ownership is split between the list and the message.
+
+## API reference
+
+<PropsTable id="ChatMessageList" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using
+ChatMessageList within your application. As the component's internal
+functionality is already tested by Nimbus, these patterns help you verify your
+integration and application-specific logic.
+
+{{docs-tests: chat-message-list.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-chatmessagelist--docs)
