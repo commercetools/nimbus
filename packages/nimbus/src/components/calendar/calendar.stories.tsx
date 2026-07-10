@@ -54,9 +54,7 @@ export const Controlled: Story = {
 
 /**  focus the calendar when it mounts. */
 export const Autofocus: Story = {
-  parameters: {
-    preserveFocusRing: true,
-  },
+  tags: ["preserve-focus-ring"],
   args: {
     autoFocus: true,
   },

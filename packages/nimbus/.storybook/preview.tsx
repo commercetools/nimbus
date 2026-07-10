@@ -65,9 +65,9 @@ const preview: Preview = {
   },
   // Chromatic snapshots at the end of the play function, so a focus-visible ring
   // left on the last-interacted element bleeds into the diff. Blur it unless the
-  // story opts in via parameters.preserveFocusRing (i.e. it is testing focus).
+  // story opts in via the 'preserve-focus-ring' tag (i.e. it is testing focus).
   async afterEach(context) {
-    if (context.parameters.preserveFocusRing) return;
+    if (context.tags?.includes("preserve-focus-ring")) return;
     const active = context.canvasElement.ownerDocument.activeElement;
     if (active instanceof HTMLElement) active.blur();
   },

@@ -454,9 +454,7 @@ export const WithFormField: StoryObj = {
  * Verifies that RadioInput.Option can trigger a Tooltip when wrapped in Tooltip.Root
  */
 export const WithTooltip: Story = {
-  parameters: {
-    preserveFocusRing: true,
-  },
+  tags: ["preserve-focus-ring"],
   render: () => (
     <Stack gap="1000">
       <RadioInput.Root
