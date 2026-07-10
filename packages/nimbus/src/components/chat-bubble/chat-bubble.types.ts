@@ -77,8 +77,9 @@ export type ChatBubbleProps = OmitInternalProps<ChatBubbleRootSlotProps> & {
 /**
  * Props for the ChatBubble.Avatar component.
  *
- * Wraps the Nimbus {@link AvatarProps | Avatar}; the background and icon color
- * are set automatically per `sender` by the recipe, so consumers only provide
+ * Wraps the Nimbus {@link AvatarProps | Avatar} with `variant="solid"`; the
+ * color palette is set automatically per `sender` by the recipe (the `solid`
+ * variant resolves it to an accessible bg + text), so consumers only provide
  * the avatar content (initials, `src`, or an icon via `children`). Defaults to
  * `size="xs"` (a 32px box per the Figma spec).
  *

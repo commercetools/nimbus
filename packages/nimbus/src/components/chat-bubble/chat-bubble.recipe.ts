@@ -110,14 +110,11 @@ export const chatBubbleSlotRecipe = defineSlotRecipe({
         },
         avatar: {
           gridColumn: 2,
-          // `primary.9` (the accessible solid-surface color) rather than the
-          // design's lighter `primary.8`: white avatar content — icon OR
-          // initials — must clear APCA contrast, which `primary.8` fails for
-          // small text.
-          "& .nimbus-avatar": {
-            backgroundColor: "primary.9",
-            color: "primary.contrast",
-          },
+          // The Avatar renders with `variant="solid"`, which resolves the
+          // palette below to an accessible bg (`colorPalette.9`) + text
+          // (`colorPalette.contrast`) — the same tokens a same-palette solid
+          // Button uses — so we only need to select the palette here.
+          colorPalette: "positive",
         },
         footer: {
           gridColumn: 1,
@@ -138,11 +135,9 @@ export const chatBubbleSlotRecipe = defineSlotRecipe({
         },
         avatar: {
           gridColumn: 1,
-          // `primary.11` matches `primary.9`'s rationale: a solid surface that
-          // keeps white avatar content above APCA contrast for small text.
+          // Solid variant, primary palette — see the `user` sender above.
           "& .nimbus-avatar": {
-            backgroundColor: "primary.11",
-            color: "primary.contrast",
+            colorPalette: "primary",
           },
         },
         footer: {
@@ -167,9 +162,10 @@ export const chatBubbleSlotRecipe = defineSlotRecipe({
         },
         avatar: {
           gridColumn: 1,
+          // Solid variant on the neutral palette — subdued vs. the primary
+          // agent/user avatars.
           "& .nimbus-avatar": {
-            backgroundColor: "neutral.9",
-            color: "neutral.contrast",
+            colorPalette: "neutral",
           },
         },
         footer: {
@@ -192,9 +188,9 @@ export const chatBubbleSlotRecipe = defineSlotRecipe({
         },
         avatar: {
           gridColumn: 1,
+          // Solid variant, neutral palette — see the `system` sender above.
           "& .nimbus-avatar": {
-            backgroundColor: "neutral.11",
-            color: "neutral.contrast",
+            colorPalette: "neutral",
           },
         },
         footer: {

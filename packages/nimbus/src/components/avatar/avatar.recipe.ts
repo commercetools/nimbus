@@ -12,7 +12,6 @@ export const avatarRecipe = defineRecipe({
     borderRadius: "full",
     flexShrink: 0,
     fontWeight: "600",
-    colorPalette: "primary",
     focusVisibleRing: "outside",
     "button&": {
       cursor: "button",

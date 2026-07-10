@@ -6,9 +6,10 @@ import type { ChatBubbleAvatarProps } from "../chat-bubble.types";
  * ChatBubble.Avatar - The sender's avatar.
  *
  * Wraps the Nimbus `Avatar` (defaulting to `size="xs"`, a 32px box per the
- * Figma spec). The background and
- * icon color are applied automatically per `sender` by the ChatBubble recipe,
- * so consumers only supply the avatar content (initials via `firstName`/
+ * Figma spec, and to the `solid` variant). The color *palette* is applied per
+ * `sender` by the ChatBubble recipe and the `solid` variant resolves it to an
+ * accessible bg (`colorPalette.9`) + text (`colorPalette.contrast`), so
+ * consumers only supply the avatar content (initials via `firstName`/
  * `lastName`, an image `src`, or a custom icon via `children`).
  *
  * Props flow to the **inner `Avatar`**, not to the grid-cell wrapper — the
@@ -25,6 +26,7 @@ import type { ChatBubbleAvatarProps } from "../chat-bubble.types";
 export const ChatBubbleAvatar = ({
   ref,
   size = "xs",
+  variant = "solid",
   ...props
 }: ChatBubbleAvatarProps) => {
   const isNamed =
@@ -37,6 +39,7 @@ export const ChatBubbleAvatar = ({
       <Avatar
         ref={ref}
         size={size}
+        variant={variant}
         // Decorative unless the consumer named it; `props` is spread last so an
         // explicit `aria-hidden` from the consumer still wins.
         aria-hidden={isNamed ? undefined : true}

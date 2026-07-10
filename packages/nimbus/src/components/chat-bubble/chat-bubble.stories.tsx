@@ -367,10 +367,8 @@ export const ErrorTone: Story = {
       </ChatBubble.Avatar>
       <ChatBubble.Bubble>
         <Text>Something went wrong generating this response.</Text>
-        <ChatBubble.Actions>
-          <Button variant="outline" colorPalette="primary">
-            Retry
-          </Button>
+        <ChatBubble.Actions colorPalette="critical">
+          <Button variant="solid">Retry</Button>
         </ChatBubble.Actions>
       </ChatBubble.Bubble>
     </ChatBubble.Root>
