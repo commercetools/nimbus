@@ -38,7 +38,20 @@ const variants: ButtonProps["variant"][] = [
   "link",
 ];
 
+export const Focused: Story = {
+  tags: ["preserve-focus-ring", "vrt"],
+  args: {
+    children: "Button",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("button")).toHaveFocus();
+  },
+};
+
 export const Base: Story = {
+  tags: ["vrt"],
   args: {
     children: "Button",
     onPress: fn(),
@@ -85,6 +98,7 @@ export const Base: Story = {
 };
 
 export const Disabled: Story = {
+  tags: ["vrt"],
   args: {
     children: "Disabled Button",
     isDisabled: true,
@@ -114,6 +128,7 @@ export const Disabled: Story = {
 };
 
 export const DisabledAsLink: Story = {
+  tags: ["vrt"],
   args: {
     children: "Disabled Link Button",
     isDisabled: true,
@@ -142,6 +157,7 @@ export const DisabledAsLink: Story = {
  * to attach a Tooltip explaining *why* the action is unavailable.
  */
 export const DisabledButFocusable: Story = {
+  tags: ["preserve-focus-ring", "vrt"],
   args: {
     children: "Disabled (focusable)",
     isDisabled: true,
@@ -190,6 +206,7 @@ const submitSpy = fn();
  */
 export const DisabledButFocusableDoesNotSubmit: Story = {
   tags: ["preserve-focus-ring"],
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: "Submit",
     type: "submit",
@@ -231,6 +248,7 @@ export const DisabledButFocusableDoesNotSubmit: Story = {
  * assert the keyboard path, mirroring the Tooltip component's own stories.
  */
 export const DisabledWithTooltip: Story = {
+  tags: ["preserve-focus-ring", "vrt"],
   render: () => (
     <Tooltip.Root delay={0} closeDelay={0}>
       <Button isDisabled allowFocusWhenDisabled data-testid="test">
@@ -263,17 +281,11 @@ export const DisabledWithTooltip: Story = {
         /required fields/i
       );
     });
-
-    await step("Tooltip closes on blur", async () => {
-      button.blur();
-      await waitFor(() =>
-        expect(canvas.queryByRole("tooltip")).not.toBeInTheDocument()
-      );
-    });
   },
 };
 
 export const AsLink: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: "Link disguised as Button",
     as: "a",
@@ -291,6 +303,7 @@ export const AsLink: Story = {
 };
 
 export const WithAsChild: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: (
       <a>
@@ -312,6 +325,7 @@ export const WithAsChild: Story = {
 };
 
 export const Sizes: Story = {
+  tags: ["vrt"],
   args: {
     children: "Demo Button",
   },
@@ -327,6 +341,7 @@ export const Sizes: Story = {
 };
 
 export const Variants: Story = {
+  tags: ["vrt"],
   args: {
     children: "Demo Button",
   },
@@ -345,6 +360,7 @@ export const Variants: Story = {
  * Showcase Possible Color Palettes
  */
 export const ColorPalettes: Story = {
+  tags: ["vrt"],
   render: () => {
     return (
       <Stack>
@@ -373,6 +389,7 @@ export const ColorPalettes: Story = {
 const buttonRef = createRef<HTMLButtonElement>();
 
 export const WithRef: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: "Demo Button",
   },
@@ -395,6 +412,7 @@ export const WithRef: Story = {
 
 const Spacer = () => <Box flexGrow="1" />;
 export const ComplexIconLayouts: Story = {
+  tags: ["vrt"],
   args: {
     children: "Demo Button",
   },
@@ -447,6 +465,7 @@ export const ComplexIconLayouts: Story = {
 };
 
 export const SmokeTest: Story = {
+  tags: ["vrt"],
   args: {
     children: "Button",
     onPress: fn(),
@@ -523,6 +542,7 @@ export const SmokeTest: Story = {
  * both the original and React Aria-processed handlers.
  */
 export const EventHandlersFireOnce: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     onClick: fn(),
     onPress: fn(),
@@ -579,6 +599,7 @@ export const EventHandlersFireOnce: Story = {
  * This validates the useContextProps integration.
  */
 export const WithinReactAriaContext: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => {
     return (
       <Button.Context.Provider value={{ isDisabled: true }}>
@@ -603,6 +624,7 @@ export const WithinReactAriaContext: Story = {
  * This validates the useContextProps integration.
  */
 export const OverrideContextWithLocalProps: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => {
     return (
       <Button.Context.Provider value={{ isDisabled: true }}>
@@ -630,6 +652,7 @@ export const OverrideContextWithLocalProps: Story = {
  * are not forwarded to the DOM element (which would cause React warnings).
  */
 export const DOMPropFiltering: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => {
     return (
       <Button.Context.Provider

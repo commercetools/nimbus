@@ -365,6 +365,10 @@ For each dependency group (or the specified target group):
    Note in the PR body that a Chromatic run was dispatched so reviewers know the
    visual diff was checked.
 
+   For why this is needed and how the dispatch behaves (full snapshot,
+   baselines), see
+   [Chromatic Visual Testing](../../docs/chromatic-visual-testing.md).
+
 ---
 
 ## **Safety Features & Error Handling**
