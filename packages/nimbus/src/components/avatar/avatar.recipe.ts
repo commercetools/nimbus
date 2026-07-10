@@ -12,9 +12,7 @@ export const avatarRecipe = defineRecipe({
     borderRadius: "full",
     flexShrink: 0,
     fontWeight: "600",
-    backgroundColor: "colorPalette.3",
     colorPalette: "primary",
-    color: "colorPalette.11",
     focusVisibleRing: "outside",
     "button&": {
       cursor: "button",
@@ -41,8 +39,22 @@ export const avatarRecipe = defineRecipe({
         _icon: { boxSize: "400" },
       },
     },
+    variant: {
+      // `subtle` is the historical avatar look and stays the default; `solid`
+      // mirrors Button's solid tokens so an avatar reads as consistent with a
+      // same-palette button.
+      subtle: {
+        backgroundColor: "colorPalette.3",
+        color: "colorPalette.11",
+      },
+      solid: {
+        backgroundColor: "colorPalette.9",
+        color: "colorPalette.contrast",
+      },
+    },
   },
   defaultVariants: {
     size: "md",
+    variant: "subtle",
   },
 });

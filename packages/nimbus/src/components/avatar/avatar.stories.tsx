@@ -29,6 +29,8 @@ type Story = StoryObj<typeof Avatar>;
 
 const sizes: AvatarProps["size"][] = ["md", "xs", "2xs"];
 
+const variants: AvatarProps["variant"][] = ["subtle", "solid"];
+
 const avatarImg = "https://thispersondoesnotexist.com/ ";
 
 export const Base: Story = {
@@ -131,6 +133,48 @@ export const Sizes: Story = {
       });
       await expect(new Set(widths).size).toBe(sizes.length);
     });
+  },
+};
+
+export const Variants: Story = {
+  args: {
+    firstName: "John",
+    lastName: "Doe",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="row" gap="400" alignItems="center">
+        {variants.map((variant) => (
+          <Avatar
+            key={variant as string}
+            {...args}
+            variant={variant}
+            aria-label={`${variant as string} avatar`}
+          />
+        ))}
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Each variant renders the initials", async () => {
+      for (const variant of variants) {
+        const avatar = canvas.getByLabelText(`${variant as string} avatar`);
+        await expect(avatar).toHaveTextContent("JD");
+      }
+    });
+
+    await step(
+      "subtle and solid render visibly different backgrounds",
+      async () => {
+        const subtle = canvas.getByLabelText("subtle avatar");
+        const solid = canvas.getByLabelText("solid avatar");
+        await expect(getComputedStyle(subtle).backgroundColor).not.toBe(
+          getComputedStyle(solid).backgroundColor
+        );
+      }
+    );
   },
 };
 

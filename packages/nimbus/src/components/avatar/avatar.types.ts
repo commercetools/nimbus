@@ -16,6 +16,11 @@ type AvatarRecipeProps = {
    * @default "md"
    */
   size?: RecipeProps<"nimbusAvatar">["size"];
+  /**
+   * Visual style variant of the avatar
+   * @default "subtle"
+   */
+  variant?: RecipeProps<"nimbusAvatar">["variant"];
 } & UnstyledProp;
 
 // ============================================================
