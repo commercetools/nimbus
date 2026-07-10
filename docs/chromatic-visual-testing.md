@@ -92,6 +92,15 @@ by the git diff, instead of every story. It traces the dependency graph from
 changed files to the stories that render them. This keeps normal PR runs fast
 and cheap.
 
+**Storybook config files force a full build:** TurboSnap traces the JavaScript
+module graph (`import` chains) to determine which stories are affected by a
+change. Files like `preview-head.html`, `preview.tsx`, and other `.storybook/`
+globals are injected at the document level - they are not imported by any story
+file, so Chromatic cannot link them to specific stories. Any change to these
+files disables TurboSnap for that build, snapshotting all stories instead. Avoid
+editing `.storybook/` files unnecessarily mid-PR; batch those changes into a
+single commit so only one full build is triggered.
+
 **The dep-bump blind spot:** because `packages/nimbus/package.json` is ignored
 by the changed-files gate, a runtime dependency bump (a new React Aria or Chakra
 version that shifts pixels) will **not** trigger a normal run, and TurboSnap

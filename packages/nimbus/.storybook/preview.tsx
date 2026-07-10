@@ -27,6 +27,7 @@ const preview: Preview = {
       stylePreview: false,
       classTarget: "html",
     },
+    chromatic: { disableSnapshot: true },
     backgrounds: {
       disable: true,
     },

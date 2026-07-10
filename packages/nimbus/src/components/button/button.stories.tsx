@@ -40,6 +40,7 @@ const variants: ButtonProps["variant"][] = [
 
 export const Focused: Story = {
   tags: ["preserve-focus-ring", "vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Button",
   },
@@ -52,6 +53,7 @@ export const Focused: Story = {
 
 export const Base: Story = {
   tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Button",
     onPress: fn(),
@@ -99,6 +101,7 @@ export const Base: Story = {
 
 export const Disabled: Story = {
   tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Disabled Button",
     isDisabled: true,
@@ -129,6 +132,7 @@ export const Disabled: Story = {
 
 export const DisabledAsLink: Story = {
   tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Disabled Link Button",
     isDisabled: true,
@@ -158,6 +162,7 @@ export const DisabledAsLink: Story = {
  */
 export const DisabledButFocusable: Story = {
   tags: ["preserve-focus-ring", "vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Disabled (focusable)",
     isDisabled: true,
@@ -249,6 +254,7 @@ export const DisabledButFocusableDoesNotSubmit: Story = {
  */
 export const DisabledWithTooltip: Story = {
   tags: ["preserve-focus-ring", "vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Tooltip.Root delay={0} closeDelay={0}>
       <Button isDisabled allowFocusWhenDisabled data-testid="test">
@@ -260,10 +266,9 @@ export const DisabledWithTooltip: Story = {
     </Tooltip.Root>
   ),
   play: async ({ canvasElement, step }) => {
-    // The tooltip renders in a portal, so scope queries to the parent node.
-    const canvas = within(
-      (canvasElement.parentNode as HTMLElement) ?? canvasElement
-    );
+    const canvas = within(canvasElement);
+    // Tooltip portals to document.body; scope a separate query to the document.
+    const doc = within(canvasElement.ownerDocument.body);
     const button = canvas.getByTestId("test");
 
     await step(
@@ -277,7 +282,7 @@ export const DisabledWithTooltip: Story = {
     await step("Tooltip opens on keyboard focus", async () => {
       await userEvent.tab();
       await expect(button).toHaveFocus();
-      await expect(await canvas.findByRole("tooltip")).toHaveTextContent(
+      await expect(await doc.findByRole("tooltip")).toHaveTextContent(
         /required fields/i
       );
     });
@@ -326,6 +331,7 @@ export const WithAsChild: Story = {
 
 export const Sizes: Story = {
   tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Demo Button",
   },
@@ -342,6 +348,7 @@ export const Sizes: Story = {
 
 export const Variants: Story = {
   tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Demo Button",
   },
@@ -361,6 +368,7 @@ export const Variants: Story = {
  */
 export const ColorPalettes: Story = {
   tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <Stack>
@@ -413,6 +421,7 @@ export const WithRef: Story = {
 const Spacer = () => <Box flexGrow="1" />;
 export const ComplexIconLayouts: Story = {
   tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Demo Button",
   },
@@ -466,6 +475,7 @@ export const ComplexIconLayouts: Story = {
 
 export const SmokeTest: Story = {
   tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Button",
     onPress: fn(),
