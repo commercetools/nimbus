@@ -52,13 +52,40 @@ export const Base: Story = {
         await userEvent.keyboard("{ArrowRight}");
         await expect(thumb).toHaveValue("31");
         await expect(tip).toHaveTextContent("31");
-        await expect(args.onChange).toHaveBeenCalled();
+        // `SliderBase` accepts `number | number[]` internally so the same
+        // implementation can serve RangeSlider too — the `props as
+        // SliderBaseProps` cast in `slider.tsx` erases the compiler's check
+        // that a plain `Slider`'s `onChange` only ever receives a bare
+        // `number` (never an array). Assert the real runtime shape.
+        await expect(args.onChange).toHaveBeenCalledWith(31);
       }
     );
 
     await step("jumps to max with End", async () => {
       await userEvent.keyboard("{End}");
       await expect(thumb).toHaveValue("100");
+    });
+
+    await step("jumps to min with Home", async () => {
+      await userEvent.keyboard("{Home}");
+      await expect(thumb).toHaveValue("0");
+    });
+
+    await step(
+      "PageUp increases by React Aria's larger page step",
+      async () => {
+        // React Aria's default page step is
+        // max(round((maxValue - minValue) / 10, step), step) — with
+        // minValue=0, maxValue=100, step=1 (the default), that's 10, a
+        // bigger jump than the single `step` used by ArrowRight/ArrowLeft.
+        await userEvent.keyboard("{PageUp}");
+        await expect(thumb).toHaveValue("10");
+      }
+    );
+
+    await step("PageDown decreases by the same page step", async () => {
+      await userEvent.keyboard("{PageDown}");
+      await expect(thumb).toHaveValue("0");
     });
   },
 };
@@ -92,6 +119,45 @@ export const Vertical: Story = {
       await userEvent.keyboard("{ArrowUp}");
       await expect(thumb).toHaveValue("41");
     });
+  },
+};
+
+/**
+ * Vertical orientation with tick marks. Regression guard for
+ * orientation-aware tick positioning: before the fix, every tick anchored
+ * with the recipe's static horizontal `top: 50%` and the inline `left: X%`
+ * physical offset, so on a vertical track they rendered stacked at the same
+ * height instead of distributed along the track.
+ */
+export const VerticalWithTicks: Story = {
+  args: {
+    "aria-label": "Level",
+    defaultValue: 50,
+    minValue: 0,
+    maxValue: 100,
+    step: 25,
+    orientation: "vertical",
+    showTicks: true,
+  },
+  play: async ({ canvasElement, step }) => {
+    await step(
+      "renders one tick per step, distributed along the vertical track",
+      async () => {
+        const ticks = Array.from(
+          canvasElement.querySelectorAll<HTMLElement>('[data-slot="tick"]')
+        );
+        // 0, 25, 50, 75, 100 -> 5 ticks
+        await expect(ticks).toHaveLength(5);
+
+        // Each tick's resolved `bottom` offset must be distinct — if they
+        // were still stacked at a shared cross-axis anchor (the pre-fix
+        // `top: 50%` bug), every offset would collapse to the same value.
+        const bottomOffsets = ticks.map(
+          (tick) => getComputedStyle(tick).bottom
+        );
+        await expect(new Set(bottomOffsets).size).toBe(ticks.length);
+      }
+    );
   },
 };
 
@@ -132,6 +198,70 @@ export const WithTicks: Story = {
       // 0, 25, 50, 75, 100 -> 5 ticks
       await expect(ticks).toHaveLength(5);
     });
+  },
+};
+
+/** Disabled slider does not respond to keyboard input. */
+export const Disabled: Story = {
+  args: {
+    "aria-label": "Volume",
+    defaultValue: 30,
+    minValue: 0,
+    maxValue: 100,
+    isDisabled: true,
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const thumb = canvas.getByRole("slider");
+    const root = canvasElement.querySelector('[data-slot="root"]');
+
+    await step("marks the root disabled", async () => {
+      await expect(root).toHaveAttribute("data-disabled", "true");
+    });
+
+    await step("does not move on keyboard input", async () => {
+      thumb.focus();
+      await userEvent.keyboard("{ArrowRight}");
+      // React Aria's SliderThumb renders a native <input type="range">; its
+      // accessible value comes from the `value` DOM property (implicit ARIA
+      // mapping), not an explicit `aria-valuenow` attribute.
+      await expect(thumb).toHaveValue("30");
+    });
+  },
+};
+
+/**
+ * `formatOptions` formats the value shown in the thumb's tooltip without
+ * changing the underlying numeric value.
+ */
+export const FormattedValue: Story = {
+  args: {
+    "aria-label": "Discount",
+    defaultValue: 0.2,
+    minValue: 0,
+    maxValue: 1,
+    step: 0.01,
+    formatOptions: { style: "percent" },
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+    const thumb = canvas.getByRole("slider");
+
+    await step(
+      "shows the formatted value in the tooltip, proving formatOptions reaches getThumbValueLabel",
+      async () => {
+        // The raw numeric value stays untouched...
+        await expect(thumb).toHaveValue("0.2");
+
+        // ...but the tooltip (fed by `state.getThumbValueLabel`, see
+        // slider-base.tsx) shows the formatted percentage instead.
+        await userEvent.hover(thumb);
+        const tip = await body.findByRole("tooltip");
+        await expect(tip).toHaveTextContent("%");
+        await userEvent.unhover(thumb);
+      }
+    );
   },
 };
 
