@@ -4,38 +4,25 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * Recipe for Slider / RangeSlider components.
  * Slots map onto React Aria Slider anatomy. Sizes and orientation are
  * variants; fill length/position is applied by React Aria's SliderFill,
- * so the recipe only styles appearance, not fill geometry.
+ * so the recipe only styles appearance, not fill geometry. No visible
+ * label or static value output — the current value is shown in a
+ * per-thumb tooltip instead, so the root is a flex track container.
  */
 export const sliderSlotRecipe = defineSlotRecipe({
   className: "nimbus-slider",
-  slots: [
-    "root",
-    "label",
-    "output",
-    "track",
-    "fill",
-    "thumb",
-    "tick",
-    "tickLabel",
-  ],
+  slots: ["root", "track", "fill", "thumb", "tick", "tickLabel"],
   base: {
     root: {
       colorPalette: "primary",
-      display: "grid",
-      gridTemplateAreas: `"label output" "track track"`,
-      gridTemplateColumns: "1fr auto",
+      display: "flex",
       alignItems: "center",
-      columnGap: "200",
       width: "100%",
       userSelect: "none",
       touchAction: "none",
 
       '&[data-orientation="vertical"]': {
-        gridTemplateAreas: `"output" "track"`,
-        gridTemplateColumns: "auto",
         width: "auto",
         height: "var(--slider-vertical-length, 200px)",
-        justifyItems: "center",
       },
 
       "&[data-disabled='true']": {
@@ -43,21 +30,7 @@ export const sliderSlotRecipe = defineSlotRecipe({
         pointerEvents: "none",
       },
     },
-    label: {
-      gridArea: "label",
-      fontSize: "350",
-      color: "neutral.11",
-      userSelect: "none",
-    },
-    output: {
-      gridArea: "output",
-      justifySelf: "end",
-      fontSize: "350",
-      color: "neutral.11",
-      fontVariantNumeric: "tabular-nums",
-    },
     track: {
-      gridArea: "track",
       position: "relative",
       display: "flex",
       alignItems: "center",

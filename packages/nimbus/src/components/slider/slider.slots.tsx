@@ -1,8 +1,6 @@
 import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import type {
   SliderRootSlotProps,
-  SliderLabelSlotProps,
-  SliderOutputSlotProps,
   SliderTrackSlotProps,
   SliderFillSlotProps,
   SliderThumbSlotProps,
@@ -19,16 +17,6 @@ export const SliderRootSlot = withProvider<HTMLDivElement, SliderRootSlotProps>(
   "div",
   "root"
 );
-
-export const SliderLabelSlot = withContext<
-  HTMLSpanElement,
-  SliderLabelSlotProps
->("span", "label");
-
-export const SliderOutputSlot = withContext<
-  HTMLDivElement,
-  SliderOutputSlotProps
->("div", "output");
 
 export const SliderTrackSlot = withContext<
   HTMLDivElement,
