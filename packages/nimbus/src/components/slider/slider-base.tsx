@@ -62,12 +62,10 @@ const SliderValueThumb = ({
  * each thumb showing its current value in a tooltip.
  */
 export const SliderBase = (props: SliderBaseProps) => {
-  // FormField.Input clones us with inputProps that may use the DOM attribute
-  // name `disabled` instead of React Aria's `isDisabled`. Pulled off `props`
-  // directly (rather than after extractStyleProps) because extractStyleProps's
+  // minValue/maxValue/step/isDisabled are pulled off `props` directly (rather
+  // than off `extractStyleProps`'s second return value below) because that
   // "rest" tuple member is typed `Omit<T, string>`, which collapses to `{}`
-  // for any plain object — reading a named field off it would not type-check,
-  // so we resolve it here while it's still typed.
+  // for any plain object — reading a named field off it would not type-check.
   //
   // Note: React Aria's Slider has no `isInvalid`/validation-state concept
   // (unlike text-style inputs), so there is nothing to normalize for that.
@@ -80,10 +78,9 @@ export const SliderBase = (props: SliderBaseProps) => {
     minValue = 0,
     maxValue = 100,
     step,
-    isDisabled: isDisabledProp,
-    disabled,
+    isDisabled,
     ...restProps
-  } = props as SliderBaseProps & { disabled?: boolean };
+  } = props;
 
   const recipe = useSlotRecipe({ recipe: sliderSlotRecipe });
   const [recipeProps, recipeLessProps] = recipe.splitVariantProps({
@@ -94,8 +91,6 @@ export const SliderBase = (props: SliderBaseProps) => {
 
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
-
-  const isDisabled = isDisabledProp ?? disabled ?? undefined;
 
   const resolvedTickStep = tickStep ?? step ?? 1;
   const ticks =
