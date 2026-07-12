@@ -1,0 +1,106 @@
+---
+title: Slider
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+Slider guidelines focus on picking a scale users can reason about, keeping the
+value visible while it's being changed, and always giving the control an
+accessible name, even though it draws no visible label of its own.
+
+### Best practices
+
+- **Always provide an accessible name.** A slider renders no visible label —
+  place it inside `FormField.Root` with `FormField.Label`, or pass an
+  `aria-label` (or `aria-labelledby`) when there's no surrounding form field.
+- **Choose a scale people can reason about.** Sliders work best when the exact
+  number matters less than its position relative to the whole range — pick
+  `minValue`, `maxValue`, and `step` so most handle positions feel meaningful.
+- **Show ticks only when the steps matter.** Turn on `showTicks` for scales
+  with a handful of meaningful stops (star ratings, quality levels); leave it
+  off for continuous-feeling values like volume or opacity, where ticks would
+  just add visual noise.
+- **Rely on the value tooltip, not extra UI.** The current value already
+  appears above the handle on hover, focus, or drag — there's no need to add a
+  separate number readout next to the slider.
+- **Use `RangeSlider` for bounded ranges.** Its two handles can't cross, so it
+  guarantees the lower value never exceeds the upper one — useful for filters
+  like price or distance ranges.
+- **Disable, don't hide.** When a slider's value is temporarily not
+  applicable, disable it with `isDisabled` rather than removing it from the
+  layout, so surrounding controls don't shift.
+
+### Usage
+
+A slider lets users choose a value — or, with `RangeSlider`, a range — by
+dragging a handle along a track, best for values that are set by feel rather
+than typed precisely.
+
+> [!TIP]\
+> When to use
+>
+> - Selecting a value from a continuous or stepped numeric scale by feel, such
+>   as volume, zoom, opacity, or brightness.
+> - Filtering by a numeric range, such as price, distance, or rating.
+> - The exact number matters less than its position relative to the minimum
+>   and maximum.
+
+> [!CAUTION]\
+> When not to use
+>
+> - The value must be typed precisely, or falls outside a small, well-known
+>   range — use `NumberInput` instead.
+> - The input isn't really a position on a scale (e.g. a multi-step wizard or
+>   a list of unrelated options) — a slider implies a continuum, not a
+>   sequence of unrelated choices.
+> - Users need to see the min/max bounds labeled directly on the track — that
+>   isn't supported yet; consider pairing the slider with your own labels.
+
+### Keeping interactions simple
+
+Simple, predictable interactions matter because a slider is operated by feel —
+unexpected jumps or hidden values erode trust in the control.
+
+> [!TIP]\
+> **Do**
+>
+> - Give the slider a clear accessible name via `FormField.Label` or
+>   `aria-label`.
+> - Set `minValue`, `maxValue`, and a `step` that make sense for the data.
+> - Use `showTicks` when the discrete stops themselves are meaningful.
+> - Use `RangeSlider` when both a lower and upper bound need to be set
+>   together.
+> - Let the disabled state show when the value can't currently be changed.
+
+```jsx live
+const App = () => (
+  <Stack gap="200" alignItems="start">
+    <FormField.Root>
+      <FormField.Label>Opacity</FormField.Label>
+      <FormField.Input>
+        <Slider defaultValue={80} minValue={0} maxValue={100} />
+      </FormField.Input>
+      <FormField.Description>
+        Adjust how transparent the layer appears.
+      </FormField.Description>
+    </FormField.Root>
+  </Stack>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Leave the slider without any accessible name — a bare `<Slider />` with no
+>   `aria-label` and no `FormField.Label` is unusable with a screen reader.
+> - Add a separate "current value" label next to the track — the value
+>   tooltip already covers that on hover, focus, and drag.
+> - Use a slider for values that require exact, typed precision.
+
+```tsx
+// Missing an accessible name — screen reader users have no way to know
+// what this control is for.
+<Slider defaultValue={30} minValue={0} maxValue={100} />
+```
