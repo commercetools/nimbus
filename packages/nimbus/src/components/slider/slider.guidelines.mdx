@@ -22,9 +22,12 @@ accessible name, even though it draws no visible label of its own.
   with a handful of meaningful stops (star ratings, quality levels); leave it
   off for continuous-feeling values like volume or opacity, where ticks would
   just add visual noise.
-- **Rely on the value tooltip, not extra UI.** The current value already
-  appears above the handle on hover, focus, or drag — there's no need to add a
-  separate number readout next to the slider.
+- **Rely on the value tooltip at the track, not a duplicate readout.** The
+  current value already appears above the handle on hover, focus, or drag —
+  don't add a second number readout right next to the slider that just
+  repeats it. A `FormField.Description` summarizing the selection elsewhere
+  in the form (e.g. a range's bounds) is a separate, permanent piece of
+  context and is fine to keep.
 - **Use `RangeSlider` for bounded ranges.** Its two handles can't cross, so it
   guarantees the lower value never exceeds the upper one — useful for filters
   like price or distance ranges.
@@ -95,8 +98,12 @@ const App = () => (
 >
 > - Leave the slider without any accessible name — a bare `<Slider />` with no
 >   `aria-label` and no `FormField.Label` is unusable with a screen reader.
-> - Add a separate "current value" label next to the track — the value
->   tooltip already covers that on hover, focus, and drag.
+> - Duplicate the tooltip's job by placing a bare numeric readout directly
+>   beside the track — the tooltip already covers that on hover, focus, and
+>   drag. A `FormField.Description` that summarizes the selection for context
+>   (e.g. a price range below the control) is a different thing: it's a
+>   permanent summary for users who aren't actively interacting with the
+>   slider, not a redundant echo of the tooltip.
 > - Use a slider for values that require exact, typed precision.
 
 ```tsx

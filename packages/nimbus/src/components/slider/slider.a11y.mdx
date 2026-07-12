@@ -38,6 +38,12 @@ const App = () => (
   state (default, hover, focus, dragging, disabled, invalid).
 - Communicate the invalid state with both a visual cue and a
   `FormField.Error` message — never color alone.
+- The invalid visual cue comes from `data-invalid` on the root element, not
+  from `aria-invalid` on the underlying range input — React Aria's `Slider`
+  has no validation-state concept of its own (unlike text-style inputs).
+  Assistive technology instead picks up the invalid state through the
+  associated `FormField.Error` text, which the slider's group references via
+  `aria-describedby`.
 - Clearly indicate the focused handle with a visible focus ring.
 
 ### Resources
