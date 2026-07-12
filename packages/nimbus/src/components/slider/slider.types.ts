@@ -45,7 +45,16 @@ type SliderCommonProps = {
   ref?: Ref<HTMLDivElement>;
 };
 
-type SliderSharedProps = OmitInternalProps<SliderRootSlotProps, "onChange"> &
+// React's generic `HTMLAttributes<T>` declares `defaultValue` (typed for
+// string-ish form controls) on every element, `<div>` included. Left
+// un-excluded, that generic field intersects with the number/tuple
+// `defaultValue` below and produces an unsatisfiable type for the range
+// tuple (it only survives for the single-number Slider by accidental union
+// overlap) — exclude it here so each component's own declaration wins.
+type SliderSharedProps = OmitInternalProps<
+  SliderRootSlotProps,
+  "onChange" | "defaultValue"
+> &
   Omit<RaSliderProps, ExcludedRaSliderProps> &
   SliderCommonProps;
 
