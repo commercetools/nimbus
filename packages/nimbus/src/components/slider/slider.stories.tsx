@@ -62,3 +62,56 @@ export const Base: Story = {
     });
   },
 };
+
+/** Vertical orientation. */
+export const Vertical: Story = {
+  args: {
+    "aria-label": "Zoom",
+    defaultValue: 40,
+    minValue: 0,
+    maxValue: 100,
+    orientation: "vertical",
+    onChange: fn(),
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const thumb = canvas.getByRole("slider");
+    const root = canvasElement.querySelector('[data-slot="root"]');
+
+    await step("root and thumb are marked vertical", async () => {
+      // React Aria's Slider group sets `data-orientation` on the root div;
+      // SliderThumb's underlying <input type="range"> gets a literal
+      // `aria-orientation` attribute (unlike `aria-valuenow`, which is never
+      // set — see the Base story comment above).
+      await expect(root).toHaveAttribute("data-orientation", "vertical");
+      await expect(thumb).toHaveAttribute("aria-orientation", "vertical");
+    });
+
+    await step("ArrowUp increases value", async () => {
+      thumb.focus();
+      await userEvent.keyboard("{ArrowUp}");
+      await expect(thumb).toHaveValue("41");
+    });
+  },
+};
+
+/** Small and medium sizes render side by side. */
+export const Sizes: Story = {
+  render: () => (
+    <>
+      <Slider aria-label="Small" size="sm" defaultValue={30} data-testid="sm" />
+      <Slider
+        aria-label="Medium"
+        size="md"
+        defaultValue={30}
+        data-testid="md"
+      />
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("both sizes render a slider thumb", async () => {
+      await expect(canvas.getAllByRole("slider")).toHaveLength(2);
+    });
+  },
+};
