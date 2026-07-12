@@ -17,12 +17,15 @@ export const sliderSlotRecipe = defineSlotRecipe({
       display: "flex",
       alignItems: "center",
       width: "100%",
+      minHeight: "var(--slider-thumb-size)",
       userSelect: "none",
       touchAction: "none",
 
       '&[data-orientation="vertical"]': {
         width: "auto",
         height: "var(--slider-vertical-length, 200px)",
+        flexDirection: "column",
+        justifyContent: "center",
       },
 
       "&[data-disabled='true']": {
