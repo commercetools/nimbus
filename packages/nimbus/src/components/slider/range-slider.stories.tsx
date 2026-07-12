@@ -18,7 +18,6 @@ export const Base: Story = {
     defaultValue: [20, 60],
     minValue: 0,
     maxValue: 100,
-    thumbLabels: ["Minimum", "Maximum"],
     onChange: fn(),
   },
   play: async ({ canvasElement, args, step }) => {
@@ -34,10 +33,13 @@ export const Base: Story = {
       await expect(thumbs[1]).toHaveValue("60");
     });
 
-    await step("labels each thumb", async () => {
-      await expect(thumbs[0]).toHaveAttribute("aria-label", "Minimum");
-      await expect(thumbs[1]).toHaveAttribute("aria-label", "Maximum");
-    });
+    await step(
+      "labels each thumb with localized defaults (no thumbLabels arg given)",
+      async () => {
+        await expect(thumbs[0]).toHaveAttribute("aria-label", "Minimum");
+        await expect(thumbs[1]).toHaveAttribute("aria-label", "Maximum");
+      }
+    );
 
     await step("emits an array on change", async () => {
       thumbs[0].focus();

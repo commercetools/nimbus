@@ -9,6 +9,7 @@ import {
 } from "react-aria-components";
 import { mergeRefs, extractStyleProps } from "@/utils";
 import { Tooltip } from "@/components/tooltip/tooltip";
+import { useLocalizedStringFormatter } from "@/hooks";
 import {
   SliderRootSlot,
   SliderTrackSlot,
@@ -17,6 +18,7 @@ import {
   SliderTickSlot,
 } from "./slider.slots";
 import { sliderSlotRecipe } from "./slider.recipe";
+import { sliderMessagesStrings } from "./slider.messages";
 import type { SliderBaseProps } from "./slider.types";
 
 /**
@@ -27,6 +29,18 @@ import type { SliderBaseProps } from "./slider.types";
 type SliderValueThumbProps = {
   index: number;
   thumbLabel?: string;
+  /**
+   * Fallback `aria-labelledby` for a thumb that has no `thumbLabel` of its
+   * own (the sole thumb of a single-value Slider). React Aria always
+   * composes the thumb's default `aria-labelledby` from the slider group's
+   * own id, which only resolves to a name when the group itself carries a
+   * literal `aria-label` — per the WAI-ARIA accname algorithm, a referenced
+   * node's *own* `aria-labelledby` is not followed recursively, so when the
+   * group is named indirectly (e.g. FormField's `<label>`), that chain
+   * resolves to nothing. Forwarding the same id(s) here gives the thumb a
+   * direct, one-hop reference to the real label element.
+   */
+  thumbAriaLabelledBy?: string;
   valueLabel: string;
   isDragging: boolean;
 };
@@ -34,6 +48,7 @@ type SliderValueThumbProps = {
 const SliderValueThumb = ({
   index,
   thumbLabel,
+  thumbAriaLabelledBy,
   valueLabel,
   isDragging,
 }: SliderValueThumbProps) => {
@@ -47,6 +62,7 @@ const SliderValueThumb = ({
         <RaSliderThumb
           index={index}
           aria-label={thumbLabel}
+          aria-labelledby={thumbAriaLabelledBy}
           onHoverChange={setIsHovered}
           onFocusChange={setIsFocused}
         />
@@ -62,13 +78,16 @@ const SliderValueThumb = ({
  * each thumb showing its current value in a tooltip.
  */
 export const SliderBase = (props: SliderBaseProps) => {
-  // minValue/maxValue/step/isDisabled are pulled off `props` directly (rather
-  // than off `extractStyleProps`'s second return value below) because that
-  // "rest" tuple member is typed `Omit<T, string>`, which collapses to `{}`
-  // for any plain object — reading a named field off it would not type-check.
+  // minValue/maxValue/step/isDisabled/isInvalid are pulled off `props`
+  // directly (rather than off `extractStyleProps`'s second return value
+  // below) because that "rest" tuple member is typed `Omit<T, string>`,
+  // which collapses to `{}` for any plain object — reading a named field
+  // off it would not type-check.
   //
   // Note: React Aria's Slider has no `isInvalid`/validation-state concept
-  // (unlike text-style inputs), so there is nothing to normalize for that.
+  // (unlike text-style inputs), so `isInvalid` is a Nimbus-only prop (see
+  // slider.types.ts) that is deliberately excluded from `restProps` below —
+  // it must never reach `RaSlider`, only the `data-invalid` seam.
   const {
     ref: forwardedRef,
     thumbLabels,
@@ -79,6 +98,7 @@ export const SliderBase = (props: SliderBaseProps) => {
     maxValue = 100,
     step,
     isDisabled,
+    isInvalid,
     ...restProps
   } = props;
 
@@ -92,6 +112,23 @@ export const SliderBase = (props: SliderBaseProps) => {
   const localRef = useRef<HTMLDivElement>(null);
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
 
+  const msg = useLocalizedStringFormatter(sliderMessagesStrings);
+  const defaultThumbLabels = [
+    msg.format("minimumThumb"),
+    msg.format("maximumThumb"),
+  ];
+  // Single sliders are named by their own aria-label/FormField label, so
+  // only RangeSlider's two thumbs (total > 1) get localized defaults.
+  const resolveThumbLabel = (index: number, total: number) =>
+    thumbLabels?.[index] ?? (total > 1 ? defaultThumbLabels[index] : undefined);
+
+  // Fallback accessible-name reference for a thumb with no `thumbLabel` of
+  // its own — see the `thumbAriaLabelledBy` doc on SliderValueThumb below.
+  // `aria-label` isn't forwarded here because the group's own literal
+  // `aria-label` already resolves in one hop through the thumb's default
+  // group-id reference; only the `aria-labelledby` chain is non-transitive.
+  const groupAriaLabelledBy = props["aria-labelledby"];
+
   const resolvedTickStep = tickStep ?? step ?? 1;
   const ticks =
     showTicks && resolvedTickStep > 0
@@ -103,6 +140,7 @@ export const SliderBase = (props: SliderBaseProps) => {
 
   const stateProps = {
     "data-disabled": isDisabled || undefined,
+    "data-invalid": isInvalid || undefined,
   };
 
   return (
@@ -128,15 +166,23 @@ export const SliderBase = (props: SliderBaseProps) => {
                 <SliderFillSlot asChild data-slot="fill">
                   <RaSliderFill />
                 </SliderFillSlot>
-                {state.values.map((_, i) => (
-                  <SliderValueThumb
-                    key={i}
-                    index={i}
-                    thumbLabel={thumbLabels?.[i]}
-                    valueLabel={state.getThumbValueLabel(i)}
-                    isDragging={state.isThumbDragging(i)}
-                  />
-                ))}
+                {state.values.map((_, i) => {
+                  const thumbLabel = resolveThumbLabel(i, state.values.length);
+                  return (
+                    <SliderValueThumb
+                      key={i}
+                      index={i}
+                      thumbLabel={thumbLabel}
+                      thumbAriaLabelledBy={
+                        thumbLabel === undefined
+                          ? groupAriaLabelledBy
+                          : undefined
+                      }
+                      valueLabel={state.getThumbValueLabel(i)}
+                      isDragging={state.isThumbDragging(i)}
+                    />
+                  );
+                })}
                 {ticks.map((tickValue) => {
                   const percent =
                     ((tickValue - minValue) / (maxValue - minValue)) * 100;
