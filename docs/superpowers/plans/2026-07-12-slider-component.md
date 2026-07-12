@@ -1164,8 +1164,918 @@ default thumb labels ("Minimum"/"Maximum") when `thumbLabels` isn't supplied.
 
 **Files:**
 
-- Modify: `packages/nimbus/src/components/slider/slider-base.tsx` (add localized
-  default thumb labels; injected-prop normalization already added in Task 2)
+- Modify: `packages/nimbus/src/components/slider/slider-base.tsx` (add
+  `isInvalid`→`data-invalid` seam + localized default thumb labels)
+- Modify: `packages/nimbus/src/components/slider/slider.recipe.ts` (add
+  `data-invalid` thumb style)
+- Create: `packages/nimbus/src/components/slider/slider.i18n.ts`
+- Create (generated):
+  `packages/nimbus/src/components/slider/slider.messages.ts` + `intl/*` (via the
+  i18n skill / `pnpm extract-intl`)
+- Modify: `packages/nimbus/src/components/slider/slider.stories.tsx` (add
+  `WithFormField` story)
+
+**Interfaces:**
+
+- Consumes: `FormFieldContext.inputProps` shape — verify by reading
+  `packages/nimbus/src/components/form-field/components/form-field.input.tsx`
+  (it does `cloneElement(child, inputProps)`) and `form-field.context.tsx` for
+  what `inputProps` contains (expect some of: `id`, `aria-labelledby`,
+  `aria-describedby`, `aria-invalid`, `isDisabled`/`disabled`,
+  `isRequired`/`required`).
+- Produces: `sliderMessagesStrings` (compiled), consumed via
+  `useLocalizedStringFormatter`.
+
+- [ ] **Step 1: Author the i18n source**
+
+Create `slider.i18n.ts` (same shape as `number-input.i18n.ts`):
+
+```ts
+export const messages = {
+  minimumThumb: {
+    id: "Nimbus.Slider.minimumThumb",
+    description:
+      "Default aria-label for the lower (minimum) thumb of a range slider",
+    defaultMessage: "Minimum",
+  },
+  maximumThumb: {
+    id: "Nimbus.Slider.maximumThumb",
+    description:
+      "Default aria-label for the upper (maximum) thumb of a range slider",
+    defaultMessage: "Maximum",
+  },
+};
+```
+
+- [ ] **Step 2: Compile messages via the Nimbus i18n skill**
+
+Invoke the `writing-i18n` skill for the `slider` component (it generates
+`slider.messages.ts`, `intl/en`, `intl/de`, `intl/es`, `intl/fr-FR`,
+`intl/pt-BR`, and the `SliderMessageKey` type from `slider.i18n.ts`). If running
+manually instead:
+
+Run: `pnpm extract-intl` Expected: `slider.messages.ts` and `intl/*` created;
+`sliderMessagesStrings` exported (mirrors `numberInputMessagesStrings`).
+
+- [ ] **Step 3: Write the failing FormField test**
+
+Append to `slider.stories.tsx` (add `FormField` to the import):
+
+```tsx
+// update the top import to:
+// import { Slider, RangeSlider, FormField } from "@commercetools/nimbus";
+
+/** Slider wired through FormField for label + description + invalid state. */
+export const WithFormField: Story = {
+  render: () => (
+    <FormField.Root isInvalid>
+      <FormField.Label>Opacity</FormField.Label>
+      <FormField.Input>
+        <Slider defaultValue={50} minValue={0} maxValue={100} />
+      </FormField.Input>
+      <FormField.Description>Adjust layer opacity</FormField.Description>
+      <FormField.Error>Value is out of range</FormField.Error>
+    </FormField.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const thumb = canvas.getByRole("slider");
+    const root = canvasElement.querySelector('[data-slot="root"]');
+
+    await step("associates the FormField label", async () => {
+      // React Aria's slider group is labelled by the FormField label
+      const group = canvasElement.querySelector('[role="group"]') ?? root;
+      await expect(group).toHaveAttribute("aria-labelledby");
+    });
+
+    await step("reflects the invalid state", async () => {
+      await expect(root).toHaveAttribute("data-invalid", "true");
+    });
+
+    await step("remains operable", async () => {
+      thumb.focus();
+      await userEvent.keyboard("{ArrowRight}");
+      await expect(thumb).toHaveAttribute("aria-valuenow", "51");
+    });
+  },
+};
+```
+
+- [ ] **Step 4: Run the FormField test (expect a partial failure)**
+
+Run:
+`pnpm test:storybook:dev packages/nimbus/src/components/slider/slider.stories.tsx`
+Expected: `WithFormField` FAILS on the `data-invalid` assertion. `SliderBase`
+currently sets only `data-disabled` — Task 2 removed invalid handling because
+React Aria's `Slider` has **no `isInvalid` prop**. The label-association
+assertion (`aria-labelledby`) should already PASS, because `FormField.Input`
+injects React-Aria-named props (`isDisabled`/`isInvalid` + `aria-labelledby`,
+confirmed in `form-field.root.tsx`) and they flow through `{...raProps}` to
+`RaSlider`. Step 5 adds the invalid seam so the whole story passes. If the
+label assertion also fails, read `form-field.context.tsx` to confirm the
+injected keys.
+
+- [ ] **Step 5: Add the invalid-state seam + localized default thumb labels to `SliderBase`**
+
+Because React Aria's `Slider` has no `isInvalid` prop, the slider surfaces the
+invalid state on its own root for styling (it must NOT be passed to `RaSlider`).
+Edit `slider-base.tsx`:
+
+**(a) Invalid → `data-invalid` on the root.** Derive it from props and add it to
+`stateProps` (keep the existing `data-disabled`):
+
+```tsx
+  const isInvalid = functionalProps.isInvalid || undefined;
+
+  const stateProps = {
+    "data-disabled": isDisabled || undefined,
+    "data-invalid": isInvalid,
+  };
+```
+
+Do NOT add `isInvalid` to the `<RaSlider>` props.
+
+**(b) Localized default thumb labels.** Add imports:
+
+```tsx
+import { useLocalizedStringFormatter } from "@/hooks";
+import { sliderMessagesStrings } from "./slider.messages";
+```
+
+Inside `SliderBase`, alongside the other derived values:
+
+```tsx
+  const msg = useLocalizedStringFormatter(sliderMessagesStrings);
+  const defaultThumbLabels = [
+    msg.format("minimumThumb"),
+    msg.format("maximumThumb"),
+  ];
+  const resolveThumbLabel = (index: number, total: number) =>
+    thumbLabels?.[index] ?? (total > 1 ? defaultThumbLabels[index] : undefined);
+```
+
+Change the thumb map to pass the resolved label to `SliderValueThumb`:
+
+```tsx
+                {state.values.map((_, i) => (
+                  <SliderValueThumb
+                    key={i}
+                    index={i}
+                    thumbLabel={resolveThumbLabel(i, state.values.length)}
+                    valueLabel={state.getThumbValueLabel(i)}
+                    isDragging={state.isThumbDragging(i)}
+                  />
+                ))}
+```
+
+**(c) Invalid visual in the recipe.** In `slider.recipe.ts`, on the `thumb`
+slot, add an ancestor-scoped selector so the thumb reacts to the root's
+`data-invalid` (the attribute lives on root, thumb is a descendant):
+
+```tsx
+      "[data-invalid='true'] &": {
+        borderColor: "critical.9",
+      },
+```
+
+> Use the nearest existing error/critical border token (verify via
+> `typecheck:dev` / `build-theme-typings`; if `critical.9` isn't a token, pick
+> the codebase's standard invalid color, e.g. what `text-input`/`number-input`
+> use for their invalid state). Single sliders (`total === 1`) get no default
+> thumb label — the slider's own `aria-label` / `FormField` label names it; only
+> `RangeSlider` (two thumbs) receives "Minimum"/"Maximum".
+
+- [ ] **Step 6: Verify types + theme typings compile (recipe/slots/types only)**
+
+The recipe, slots, and types don't depend on the wrappers. Verify them in
+isolation:
+
+Run: `pnpm --filter @commercetools/nimbus build-theme-typings` Expected:
+completes without error; `nimbusSlider` variant types are generated (no silent
+failure — if slot-recipe types vanish, the recipe key isn't a valid JS
+identifier).
+
+Run:
+`pnpm --filter @commercetools/nimbus exec tsc --noEmit -p tsconfig.json 2>&1 | grep -E "slider\.(recipe|types|slots)" || echo "no errors in recipe/types/slots"`
+Expected: `no errors in recipe/types/slots`
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add packages/nimbus/src/components/slider packages/nimbus/src/theme/slot-recipes/index.ts
+git commit -m "feat(slider): add recipe, slots, types, and registration"
+```
+
+---
+
+### Task 2: Slider (single value) core + value tooltip + story
+
+Reconciles the committed foundation with the design revision (removes the
+`label`/`output` slots), then implements the shared internal `SliderBase` with a
+per-thumb value tooltip, the public `Slider` wrapper, the first Storybook
+play-function test, and wires the barrel export.
+
+**Files:**
+
+- Modify: `packages/nimbus/src/components/slider/slider.recipe.ts` (remove
+  `label`/`output` slots + grid; root becomes a flex track container)
+- Modify: `packages/nimbus/src/components/slider/slider.slots.tsx` (remove
+  `SliderLabelSlot`, `SliderOutputSlot`)
+- Modify: `packages/nimbus/src/components/slider/slider.types.ts` (remove
+  `SliderLabelSlotProps`, `SliderOutputSlotProps`, and the `label` prop)
+- Create: `packages/nimbus/src/components/slider/slider-base.tsx`
+- Create: `packages/nimbus/src/components/slider/slider.tsx`
+- Create: `packages/nimbus/src/components/slider/slider.stories.tsx`
+- Modify: `packages/nimbus/src/components/index.ts` (add
+  `export * from "./slider";`)
+
+**Interfaces:**
+
+- Consumes: `SliderBaseProps`, `SliderProps` (Task 1, minus the removed `label`
+  prop); slot components
+  `SliderRootSlot`/`SliderTrackSlot`/`SliderFillSlot`/`SliderThumbSlot`/`SliderTickSlot`
+  (Task 1); `sliderSlotRecipe`; Nimbus `Tooltip` from
+  `@/components/tooltip/tooltip`.
+- Produces: `SliderBase` (internal), `Slider` (public). `SliderBase` renders the
+  full anatomy for any thumb count, each thumb wrapped in a controlled value
+  `Tooltip`.
+
+- [ ] **Step 0: Reconcile the committed foundation with the design revision**
+
+The `label` and `output` slots are gone. Make these edits to the three committed
+files:
+
+**`slider.recipe.ts`** — set `slots` to
+`["root", "track", "fill", "thumb", "tickLabel", "tick"]` (drop `label`,
+`output`), delete the `label:` and `output:` base blocks, and replace the `root`
+base block so it is a flex container for the track (no grid areas). Also remove
+`gridArea: "track"` from the `track` block. New `root` block:
+
+```ts
+    root: {
+      colorPalette: "primary",
+      display: "flex",
+      alignItems: "center",
+      width: "100%",
+      minHeight: "var(--slider-thumb-size)",
+      userSelect: "none",
+      touchAction: "none",
+
+      '&[data-orientation="vertical"]': {
+        flexDirection: "column",
+        width: "auto",
+        height: "var(--slider-vertical-length, 200px)",
+        justifyContent: "center",
+      },
+
+      "&[data-disabled='true']": {
+        layerStyle: "disabled",
+        pointerEvents: "none",
+      },
+    },
+```
+
+In the `track` block delete the line `gridArea: "track",` (keep everything
+else). Leave `fill`, `thumb`, `tick`, `tickLabel`, the `size` variants, and
+`defaultVariants` unchanged.
+
+**`slider.slots.tsx`** — delete the `SliderLabelSlot` and `SliderOutputSlot`
+exports and remove `SliderLabelSlotProps`, `SliderOutputSlotProps` from the type
+import. Keep `SliderRootSlot`, `SliderTrackSlot`, `SliderFillSlot`,
+`SliderThumbSlot`, `SliderTickSlot`, `SliderTickLabelSlot`.
+
+**`slider.types.ts`** — delete `export type SliderLabelSlotProps = ...;` and
+`export type SliderOutputSlotProps = ...;`. In `SliderCommonProps`, delete the
+`label?: ReactNode;` line (accessible name comes from `aria-label`, already
+available via the React Aria props). Remove the now-unused `ReactNode` import if
+nothing else uses it.
+
+- [ ] **Step 1: Write the failing test**
+
+Create `slider.stories.tsx`:
+
+```tsx
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { Slider } from "@commercetools/nimbus";
+import { within, expect, userEvent, fn } from "storybook/test";
+
+const meta: Meta<typeof Slider> = {
+  title: "Components/Slider",
+  component: Slider,
+  tags: ["autodocs"],
+};
+
+export default meta;
+type Story = StoryObj<typeof Slider>;
+
+/** Uncontrolled single-value slider. No visible label or output; value shows in a tooltip. */
+export const Base: Story = {
+  args: {
+    "aria-label": "Volume",
+    defaultValue: 30,
+    minValue: 0,
+    maxValue: 100,
+    onChange: fn(),
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+    const thumb = canvas.getByRole("slider");
+
+    await step(
+      "renders the initial value and no visible label/output",
+      async () => {
+        await expect(thumb).toHaveAttribute("aria-valuenow", "30");
+        await expect(canvas.queryByText("Volume")).not.toBeInTheDocument();
+      }
+    );
+
+    await step("shows a value tooltip on hover", async () => {
+      await userEvent.hover(thumb);
+      const tip = await body.findByRole("tooltip");
+      await expect(tip).toHaveTextContent("30");
+      await userEvent.unhover(thumb);
+    });
+
+    await step(
+      "increments with ArrowRight and the focused tooltip updates",
+      async () => {
+        await userEvent.tab();
+        await expect(thumb).toHaveFocus();
+        const tip = await body.findByRole("tooltip");
+        await userEvent.keyboard("{ArrowRight}");
+        await expect(thumb).toHaveAttribute("aria-valuenow", "31");
+        await expect(tip).toHaveTextContent("31");
+        await expect(args.onChange).toHaveBeenCalled();
+      }
+    );
+
+    await step("jumps to max with End", async () => {
+      await userEvent.keyboard("{End}");
+      await expect(thumb).toHaveAttribute("aria-valuenow", "100");
+    });
+  },
+};
+```
+
+> The Nimbus `Tooltip` renders its content in a portal on `document.body`, so
+> query it with `within(document.body)`, not the canvas. The tooltip is
+> controlled, so it appears immediately when the thumb is
+> hovered/focused/dragged (no hover delay). If React Aria's actual DOM differs
+> (e.g. how the `slider` role element is named), adjust the assertions to match
+> real behavior — never weaken them to pass.
+
+- [ ] **Step 2: Run the test to verify it fails**
+
+Run:
+`pnpm test:storybook:dev packages/nimbus/src/components/slider/slider.stories.tsx`
+Expected: FAIL — `Slider` is not exported from `@commercetools/nimbus` / no
+element with role `slider`.
+
+- [ ] **Step 3: Implement `SliderBase`**
+
+Create `slider-base.tsx`:
+
+```tsx
+import { useState, useRef } from "react";
+import { useObjectRef } from "react-aria";
+import { useSlotRecipe } from "@chakra-ui/react/styled-system";
+import {
+  Slider as RaSlider,
+  SliderTrack as RaSliderTrack,
+  SliderThumb as RaSliderThumb,
+  SliderFill as RaSliderFill,
+} from "react-aria-components";
+import { mergeRefs, extractStyleProps } from "@/utils";
+import { Tooltip } from "@/components/tooltip/tooltip";
+import {
+  SliderRootSlot,
+  SliderTrackSlot,
+  SliderFillSlot,
+  SliderThumbSlot,
+  SliderTickSlot,
+} from "./slider.slots";
+import { sliderSlotRecipe } from "./slider.recipe";
+import type { SliderBaseProps } from "./slider.types";
+
+/**
+ * A single slider thumb wrapped in a value tooltip that is open while the thumb
+ * is hovered, keyboard-focused, or being dragged. Each thumb owns its own
+ * hover/focus state so RangeSlider's two thumbs are independent.
+ */
+type SliderValueThumbProps = {
+  index: number;
+  thumbLabel?: string;
+  valueLabel: string;
+  isDragging: boolean;
+};
+
+const SliderValueThumb = ({
+  index,
+  thumbLabel,
+  valueLabel,
+  isDragging,
+}: SliderValueThumbProps) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const isOpen = isHovered || isFocused || isDragging;
+
+  return (
+    <Tooltip.Root isOpen={isOpen} onOpenChange={() => {}}>
+      <SliderThumbSlot asChild data-slot="thumb">
+        <RaSliderThumb
+          index={index}
+          aria-label={thumbLabel}
+          onHoverChange={setIsHovered}
+          onFocusChange={setIsFocused}
+        />
+      </SliderThumbSlot>
+      <Tooltip.Content>{valueLabel}</Tooltip.Content>
+    </Tooltip.Root>
+  );
+};
+
+/**
+ * Shared internal implementation for Slider and RangeSlider. Renders the full
+ * React Aria Slider anatomy for any number of thumbs (driven by state.values),
+ * each thumb showing its current value in a tooltip.
+ */
+export const SliderBase = (props: SliderBaseProps) => {
+  const {
+    ref: forwardedRef,
+    thumbLabels,
+    showTicks = false,
+    tickStep,
+    size,
+    ...restProps
+  } = props;
+
+  const recipe = useSlotRecipe({ recipe: sliderSlotRecipe });
+  const [recipeProps, recipeLessProps] = recipe.splitVariantProps({
+    size,
+    ...restProps,
+  });
+  const [styleProps, functionalProps] = extractStyleProps(recipeLessProps);
+
+  const localRef = useRef<HTMLDivElement>(null);
+  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
+
+  // FormField.Input clones us with inputProps that may use DOM attribute names.
+  // React Aria's Slider expects isDisabled/isInvalid, so normalize + strip DOM ones.
+  const {
+    disabled,
+    "aria-invalid": ariaInvalid,
+    ...raProps
+  } = functionalProps as typeof functionalProps & {
+    disabled?: boolean;
+    "aria-invalid"?: boolean | "true" | "false";
+  };
+  const isDisabled = raProps.isDisabled ?? disabled ?? undefined;
+  const isInvalid =
+    raProps.isInvalid ??
+    (ariaInvalid === true || ariaInvalid === "true"
+      ? true
+      : ariaInvalid === false || ariaInvalid === "false"
+        ? false
+        : undefined);
+
+  const minValue = raProps.minValue ?? 0;
+  const maxValue = raProps.maxValue ?? 100;
+  const resolvedTickStep = tickStep ?? raProps.step ?? 1;
+  const ticks =
+    showTicks && resolvedTickStep > 0
+      ? Array.from(
+          { length: Math.floor((maxValue - minValue) / resolvedTickStep) + 1 },
+          (_, i) => minValue + i * resolvedTickStep
+        )
+      : [];
+
+  const stateProps = {
+    "data-invalid": isInvalid || undefined,
+    "data-disabled": isDisabled || undefined,
+  };
+
+  return (
+    <SliderRootSlot
+      asChild
+      data-slot="root"
+      {...recipeProps}
+      {...styleProps}
+      {...stateProps}
+    >
+      <RaSlider
+        ref={ref}
+        {...raProps}
+        isDisabled={isDisabled}
+        isInvalid={isInvalid}
+      >
+        <SliderTrackSlot asChild data-slot="track">
+          <RaSliderTrack>
+            {({ state }) => (
+              <>
+                <SliderFillSlot asChild data-slot="fill">
+                  <RaSliderFill />
+                </SliderFillSlot>
+                {state.values.map((_, i) => (
+                  <SliderValueThumb
+                    key={i}
+                    index={i}
+                    thumbLabel={thumbLabels?.[i]}
+                    valueLabel={state.getThumbValueLabel(i)}
+                    isDragging={state.isThumbDragging(i)}
+                  />
+                ))}
+                {ticks.map((tickValue) => {
+                  const percent =
+                    ((tickValue - minValue) / (maxValue - minValue)) * 100;
+                  return (
+                    <SliderTickSlot
+                      key={tickValue}
+                      data-slot="tick"
+                      style={{ left: `${percent}%` }}
+                    />
+                  );
+                })}
+              </>
+            )}
+          </RaSliderTrack>
+        </SliderTrackSlot>
+      </RaSlider>
+    </SliderRootSlot>
+  );
+};
+
+SliderBase.displayName = "SliderBase";
+```
+
+> `RaSliderFill` sets its own inline fill geometry — `SliderBase` must not set
+> fill length/position. `state.getThumbValueLabel(i)` and
+> `state.isThumbDragging(i)` are React Aria `SliderState` methods (verified
+> present). The controlled `Tooltip` (`isOpen` + no-op `onOpenChange`) bypasses
+> React Aria's hover delay, so the value appears the instant the thumb is
+> hovered/focused/dragged. Import `Tooltip` from the implementation file
+> (`@/components/tooltip/tooltip`), not a barrel, per the repo's
+> cross-component-import rule.
+
+- [ ] **Step 4: Implement the `Slider` wrapper**
+
+Create `slider.tsx`:
+
+```tsx
+import { SliderBase } from "./slider-base";
+import type { SliderProps } from "./slider.types";
+
+/**
+ * # Slider
+ *
+ * A single-thumb slider for selecting one numeric value within a range. Wraps
+ * React Aria's Slider with Nimbus styling; the current value is shown in a
+ * tooltip on the handle while hovering, focusing, or dragging. Provide an
+ * `aria-label` (or use inside `FormField`) for the accessible name.
+ */
+export const Slider = (props: SliderProps) => {
+  return <SliderBase {...props} />;
+};
+
+Slider.displayName = "Slider";
+```
+
+- [ ] **Step 5: Wire the barrel export**
+
+In `packages/nimbus/src/components/index.ts`, add (keep grouping consistent with
+neighbors):
+
+```ts
+export * from "./slider";
+```
+
+- [ ] **Step 6: Run the test to verify it passes**
+
+Run:
+`pnpm test:storybook:dev packages/nimbus/src/components/slider/slider.stories.tsx`
+Expected: PASS (all steps green, output pristine).
+
+- [ ] **Step 7: Dev typecheck**
+
+Run: `pnpm --filter @commercetools/nimbus typecheck:dev` Expected: no errors. A
+leftover "cannot find module './range-slider'" is expected until Task 3.
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add packages/nimbus/src/components/slider packages/nimbus/src/components/index.ts
+git commit -m "feat(slider): implement single-value Slider with per-thumb value tooltip"
+```
+
+---
+
+### Task 3: RangeSlider (two thumbs) core + story
+
+Adds the `RangeSlider` wrapper (two-thumb `[number, number]`) — no new
+`SliderBase` logic (it already renders one thumb per `state.values` entry), plus
+a story proving two thumbs, range output, and thumbs that cannot cross.
+
+**Files:**
+
+- Create: `packages/nimbus/src/components/slider/range-slider.tsx`
+- Create: `packages/nimbus/src/components/slider/range-slider.stories.tsx`
+
+**Interfaces:**
+
+- Consumes: `SliderBase` (Task 2), `RangeSliderProps` (Task 1).
+- Produces: `RangeSlider` (public), already re-exported by `slider/index.ts`
+  (Task 1, Step 5).
+
+- [ ] **Step 1: Write the failing test**
+
+Create `range-slider.stories.tsx`:
+
+```tsx
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { RangeSlider } from "@commercetools/nimbus";
+import { within, expect, userEvent, fn } from "storybook/test";
+
+const meta: Meta<typeof RangeSlider> = {
+  title: "Components/RangeSlider",
+  component: RangeSlider,
+  tags: ["autodocs"],
+};
+
+export default meta;
+type Story = StoryObj<typeof RangeSlider>;
+
+/** Uncontrolled two-thumb range slider. */
+export const Base: Story = {
+  args: {
+    "aria-label": "Price range",
+    defaultValue: [20, 60],
+    minValue: 0,
+    maxValue: 100,
+    thumbLabels: ["Minimum", "Maximum"],
+    onChange: fn(),
+  },
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const thumbs = canvas.getAllByRole("slider");
+
+    await step("renders two thumbs with the initial values", async () => {
+      await expect(thumbs).toHaveLength(2);
+      await expect(thumbs[0]).toHaveAttribute("aria-valuenow", "20");
+      await expect(thumbs[1]).toHaveAttribute("aria-valuenow", "60");
+    });
+
+    await step("labels each thumb", async () => {
+      await expect(thumbs[0]).toHaveAttribute("aria-label", "Minimum");
+      await expect(thumbs[1]).toHaveAttribute("aria-label", "Maximum");
+    });
+
+    await step("emits an array on change", async () => {
+      thumbs[0].focus();
+      await userEvent.keyboard("{ArrowRight}");
+      await expect(args.onChange).toHaveBeenCalledWith([21, 60]);
+    });
+
+    await step("lower thumb cannot cross the upper thumb", async () => {
+      thumbs[0].focus();
+      await userEvent.keyboard("{End}");
+      // clamped at the upper thumb's value, never above it
+      const lower = Number(thumbs[0].getAttribute("aria-valuenow"));
+      const upper = Number(thumbs[1].getAttribute("aria-valuenow"));
+      await expect(lower).toBeLessThanOrEqual(upper);
+    });
+  },
+};
+```
+
+- [ ] **Step 2: Run the test to verify it fails**
+
+Run:
+`pnpm test:storybook:dev packages/nimbus/src/components/slider/range-slider.stories.tsx`
+Expected: FAIL — `RangeSlider` not exported from `@commercetools/nimbus`.
+
+- [ ] **Step 3: Implement the `RangeSlider` wrapper**
+
+Create `range-slider.tsx`:
+
+```tsx
+import { SliderBase } from "./slider-base";
+import type { RangeSliderProps } from "./slider.types";
+
+/**
+ * # RangeSlider
+ *
+ * A two-thumb slider for selecting a `[min, max]` numeric range within bounds.
+ * Wraps React Aria's Slider with two thumbs; the thumbs cannot cross.
+ */
+export const RangeSlider = (props: RangeSliderProps) => {
+  return <SliderBase {...props} />;
+};
+
+RangeSlider.displayName = "RangeSlider";
+```
+
+- [ ] **Step 4: Run the test to verify it passes**
+
+Run:
+`pnpm test:storybook:dev packages/nimbus/src/components/slider/range-slider.stories.tsx`
+Expected: PASS.
+
+- [ ] **Step 5: Dev typecheck**
+
+Run: `pnpm --filter @commercetools/nimbus typecheck:dev` Expected: no errors.
+(Confirms `RangeSlider`'s `[number, number]` value type is accepted by
+`SliderBase`'s union.)
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add packages/nimbus/src/components/slider/range-slider.tsx packages/nimbus/src/components/slider/range-slider.stories.tsx
+git commit -m "feat(slider): add two-thumb RangeSlider"
+```
+
+---
+
+### Task 4: Vertical orientation + sizes
+
+Verifies the `orientation` prop (recipe already branches on
+`[data-orientation="vertical"]`) and the `sm`/`md` size variants with stories.
+No new implementation is expected — this task proves the recipe variants render
+correctly; if an assertion fails, fix the recipe.
+
+**Files:**
+
+- Modify: `packages/nimbus/src/components/slider/slider.stories.tsx` (add
+  `Vertical`, `Sizes` stories)
+
+**Interfaces:**
+
+- Consumes: `Slider` (Task 2). React Aria sets `data-orientation` on the Slider
+  root and `aria-orientation` on the thumb; in a vertical slider ArrowUp
+  increases the value.
+
+- [ ] **Step 1: Write the failing tests**
+
+Append to `slider.stories.tsx`:
+
+```tsx
+/** Vertical orientation. */
+export const Vertical: Story = {
+  args: {
+    "aria-label": "Zoom",
+    defaultValue: 40,
+    minValue: 0,
+    maxValue: 100,
+    orientation: "vertical",
+    onChange: fn(),
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const thumb = canvas.getByRole("slider");
+    const root = canvasElement.querySelector('[data-slot="root"]');
+
+    await step("root is marked vertical", async () => {
+      await expect(root).toHaveAttribute("data-orientation", "vertical");
+      await expect(thumb).toHaveAttribute("aria-orientation", "vertical");
+    });
+
+    await step("ArrowUp increases the value", async () => {
+      thumb.focus();
+      await userEvent.keyboard("{ArrowUp}");
+      await expect(thumb).toHaveAttribute("aria-valuenow", "41");
+    });
+  },
+};
+
+/** Small and medium sizes render side by side. */
+export const Sizes: Story = {
+  render: () => (
+    <>
+      <Slider aria-label="Small" size="sm" defaultValue={30} data-testid="sm" />
+      <Slider
+        aria-label="Medium"
+        size="md"
+        defaultValue={30}
+        data-testid="md"
+      />
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("both sizes render a slider thumb", async () => {
+      await expect(canvas.getAllByRole("slider")).toHaveLength(2);
+    });
+  },
+};
+```
+
+> `Sizes` uses a custom `render`, so `size="sm"` / `size="md"` must be valid
+> props. The visual difference (track thickness, thumb diameter) is verified
+> visually in Storybook / Chromatic; the play function only smoke-tests that
+> both render. Add `import { Slider } from "@commercetools/nimbus";` is already
+> present at the top of the file — no new import needed.
+
+- [ ] **Step 2: Run the tests to verify status**
+
+Run:
+`pnpm test:storybook:dev packages/nimbus/src/components/slider/slider.stories.tsx`
+Expected: `Vertical` and `Sizes` PASS if the recipe variants are correct. If
+`Vertical` fails on `data-orientation`, confirm `SliderBase` spreads
+`orientation` through `functionalProps` to `RaSlider` (it does via
+`{...functionalProps}`). If layout is broken, fix the
+`'&[data-orientation="vertical"]'` blocks in `slider.recipe.ts`.
+
+- [ ] **Step 3: Visually verify (manual, one-time)**
+
+Run: `pnpm --filter @commercetools/nimbus storybook` Open **Components/Slider →
+Vertical** and **→ Sizes**; confirm the vertical track is tall and the `sm`
+thumb/track are visibly smaller than `md`. Close Storybook.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add packages/nimbus/src/components/slider/slider.stories.tsx
+git commit -m "test(slider): cover vertical orientation and size variants"
+```
+
+---
+
+### Task 5: Tick marks
+
+Verifies opt-in tick rendering (`showTicks` / `tickStep`) implemented in
+`SliderBase` (Task 2). Adds a story asserting the correct number of tick
+elements. If ticks don't render, fix `SliderBase`.
+
+**Files:**
+
+- Modify: `packages/nimbus/src/components/slider/slider.stories.tsx` (add
+  `WithTicks` story)
+
+**Interfaces:**
+
+- Consumes: `Slider` with `showTicks`/`tickStep` (Task 1 types, Task 2 impl).
+  Tick elements carry `data-slot="tick"`.
+
+- [ ] **Step 1: Write the failing test**
+
+Append to `slider.stories.tsx`:
+
+```tsx
+/** Slider with visible tick marks every 25 units (0, 25, 50, 75, 100). */
+export const WithTicks: Story = {
+  args: {
+    "aria-label": "Rating",
+    defaultValue: 50,
+    minValue: 0,
+    maxValue: 100,
+    step: 25,
+    showTicks: true,
+  },
+  play: async ({ canvasElement, step }) => {
+    await step("renders one tick per step from min to max", async () => {
+      const ticks = canvasElement.querySelectorAll('[data-slot="tick"]');
+      // 0, 25, 50, 75, 100 => 5 ticks
+      await expect(ticks).toHaveLength(5);
+    });
+  },
+};
+```
+
+- [ ] **Step 2: Run the test**
+
+Run:
+`pnpm test:storybook:dev packages/nimbus/src/components/slider/slider.stories.tsx`
+Expected: `WithTicks` PASS (5 ticks). If it renders 0 ticks, confirm
+`showTicks`/`tickStep` are destructured in `SliderBase` and the `ticks` array
+math uses `resolvedTickStep`.
+
+- [ ] **Step 3: Visually verify (manual, one-time)**
+
+Run: `pnpm --filter @commercetools/nimbus storybook` Open **Components/Slider →
+WithTicks**; confirm 5 evenly spaced ticks aligned under the track. Close
+Storybook.
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add packages/nimbus/src/components/slider/slider.stories.tsx
+git commit -m "test(slider): cover opt-in tick marks"
+```
+
+---
+
+### Task 6: FormField integration + i18n thumb labels + a11y story
+
+Makes the slider work inside `FormField.Root` (which clones the control and
+injects `inputProps` — label association via `aria-labelledby`, plus
+`aria-describedby`, disabled/invalid state) and gives `RangeSlider` localized
+default thumb labels ("Minimum"/"Maximum") when `thumbLabels` isn't supplied.
+
+**Files:**
+
+- Modify: `packages/nimbus/src/components/slider/slider-base.tsx` (add
+  `isInvalid`→`data-invalid` seam + localized default thumb labels)
+- Modify: `packages/nimbus/src/components/slider/slider.recipe.ts` (add
+  `data-invalid` thumb style)
 - Create: `packages/nimbus/src/components/slider/slider.i18n.ts`
 - Create (generated):
   `packages/nimbus/src/components/slider/slider.messages.ts` + `intl/*` (via the
