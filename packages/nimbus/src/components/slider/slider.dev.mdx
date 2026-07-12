@@ -103,6 +103,10 @@ const App = () => (
   `showTicks` is set and `tickStep` is omitted.
 - Ticks are purely visual — they don't constrain which values the handle can
   land on. Use `step` for that.
+- Ticks are spaced evenly starting from `minValue`. When
+  `(maxValue - minValue)` isn't evenly divisible by the tick step, the last
+  tick lands on the final full step short of `maxValue`, not on `maxValue`
+  itself.
 
 ### Value formatting
 
@@ -150,7 +154,12 @@ const App = () => (
 ### Uncontrolled mode
 
 For simpler use cases, use uncontrolled mode with `defaultValue` and
-`onChange`:
+`onChange`. The `Text` element below is a stand-in for **your own**
+application code reacting to the live value (e.g. updating a preview
+elsewhere on the page) — it's a demo of what `onChange` gives you, not a
+recommended "value readout beside the track" pattern; the slider's own
+tooltip already shows the value on hover, focus, and drag (see the
+Guidelines tab).
 
 ```jsx live-dev
 const App = () => {
@@ -165,7 +174,7 @@ const App = () => {
         maxValue={100}
         onChange={setValue}
       />
-      <Text fontSize="sm">Current value: {value}</Text>
+      <Text fontSize="sm">Current value (for demo purposes): {value}</Text>
     </Stack>
   );
 };
@@ -205,7 +214,9 @@ const App = () => {
 ### Controlled RangeSlider
 
 `RangeSlider`'s controlled value is a `[number, number]` tuple; `onChange`
-receives the updated tuple.
+receives the updated tuple. As above, the `Text` element is a stand-in for
+your own logic consuming the live range — not a suggested UI pattern to
+place next to the track.
 
 ```jsx live-dev
 const App = () => {
@@ -222,7 +233,7 @@ const App = () => {
         maxValue={100}
       />
       <Text fontSize="sm">
-        Range: {range[0]} – {range[1]}
+        Range (for demo purposes): {range[0]} – {range[1]}
       </Text>
     </Stack>
   );
@@ -312,8 +323,12 @@ and `[lowerValue, maxValue]` for the upper handle.
 
 ### Price range filter
 
-A typical use of `RangeSlider` alongside a formatted readout of the current
-selection.
+A typical use of `RangeSlider` alongside a `FormField.Description` that
+summarizes the current selection. Unlike a bare value readout placed
+directly beside the track (see Guidelines), this description is a permanent
+part of the form field's own text stack, below the control — useful context
+for anyone who isn't actively hovering or focusing a handle, rather than a
+duplicate of the tooltip.
 
 ```jsx live-dev
 const App = () => {
