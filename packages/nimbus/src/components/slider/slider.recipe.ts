@@ -85,6 +85,13 @@ export const sliderSlotRecipe = defineSlotRecipe({
         backgroundColor: "colorPalette.3",
         transform: "scale(1.1)",
       },
+      // `data-invalid` lives on the root (React Aria's Slider has no
+      // validation state of its own — see slider-base.tsx), so the thumb
+      // reacts to its ancestor via this scoped selector rather than its own
+      // attribute.
+      "[data-invalid='true'] &": {
+        borderColor: "critical.7",
+      },
     },
     tick: {
       position: "absolute",

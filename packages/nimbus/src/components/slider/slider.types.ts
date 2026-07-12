@@ -41,6 +41,15 @@ type SliderCommonProps = {
   showTicks?: boolean;
   /** Interval between ticks; defaults to `step` when `showTicks` is set. */
   tickStep?: number;
+  /**
+   * Marks the slider as invalid for styling purposes (surfaced as
+   * `data-invalid` on the root element). React Aria's `Slider` has no
+   * native validation state, so this is a Nimbus-only prop that is
+   * intentionally never forwarded to the underlying `RaSlider` — it
+   * exists so `FormField.Input` can clone its React-Aria-named
+   * `isInvalid` prop onto the control (see `form-field.root.tsx`).
+   */
+  isInvalid?: boolean;
   /** Forwarded to the root element. */
   ref?: Ref<HTMLDivElement>;
 };
