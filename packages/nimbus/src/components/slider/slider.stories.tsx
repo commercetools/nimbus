@@ -115,3 +115,22 @@ export const Sizes: Story = {
     });
   },
 };
+
+/** Slider with visible tick marks every 25 units (0, 25, 50, 75, 100). */
+export const WithTicks: Story = {
+  args: {
+    "aria-label": "Rating",
+    defaultValue: 50,
+    minValue: 0,
+    maxValue: 100,
+    step: 25,
+    showTicks: true,
+  },
+  play: async ({ canvasElement, step }) => {
+    await step("renders one tick per step from min to max", async () => {
+      const ticks = canvasElement.querySelectorAll('[data-slot="tick"]');
+      // 0, 25, 50, 75, 100 -> 5 ticks
+      await expect(ticks).toHaveLength(5);
+    });
+  },
+};
