@@ -99,6 +99,7 @@ export const SliderBase = (props: SliderBaseProps) => {
     step,
     isDisabled,
     isInvalid,
+    orientation = "horizontal",
     ...restProps
   } = props;
 
@@ -158,6 +159,7 @@ export const SliderBase = (props: SliderBaseProps) => {
         maxValue={maxValue}
         step={step}
         isDisabled={isDisabled}
+        orientation={orientation}
       >
         <SliderTrackSlot asChild data-slot="track">
           <RaSliderTrack>
@@ -186,11 +188,21 @@ export const SliderBase = (props: SliderBaseProps) => {
                 {ticks.map((tickValue) => {
                   const percent =
                     ((tickValue - minValue) / (maxValue - minValue)) * 100;
+                  // Mirrors how React Aria's own `SliderFill` positions
+                  // itself (see react-aria-components' `Slider.mjs`):
+                  // horizontal uses the logical `insetInlineStart` so it
+                  // flips correctly under RTL, vertical anchors from
+                  // `bottom` so the minimum sits at the bottom of the track
+                  // and the maximum at the top.
+                  const tickPositionStyle =
+                    orientation === "vertical"
+                      ? { bottom: `${percent}%` }
+                      : { insetInlineStart: `${percent}%` };
                   return (
                     <SliderTickSlot
                       key={tickValue}
                       data-slot="tick"
-                      style={{ left: `${percent}%` }}
+                      style={tickPositionStyle}
                     />
                   );
                 })}

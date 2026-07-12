@@ -101,6 +101,22 @@ export const sliderSlotRecipe = defineSlotRecipe({
       backgroundColor: "neutral.8",
       transform: "translate(-50%, -50%)",
       pointerEvents: "none",
+
+      // The tick is a plain div we render ourselves (not a React Aria
+      // element), so it never receives `data-orientation` on itself — only
+      // ancestors like `root`/`track`/`fill` do (see how those slots above
+      // use the self selector `&[data-orientation="vertical"]`). Ancestor-
+      // scope this override instead. `slider-base.tsx` positions the tick's
+      // main axis via inline `bottom` (not `top`) when vertical, so `top`
+      // must be cleared to `auto` here or the static `top: 50%` above would
+      // win the over-constrained top/bottom/height conflict.
+      '[data-orientation="vertical"] &': {
+        top: "auto",
+        insetInlineStart: "50%",
+        width: "var(--slider-tick-length)",
+        height: "2px",
+        transform: "translate(-50%, 50%)",
+      },
     },
     tickLabel: {
       position: "absolute",
