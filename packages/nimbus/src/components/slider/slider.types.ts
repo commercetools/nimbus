@@ -1,4 +1,4 @@
-import type { ReactNode, Ref } from "react";
+import type { Ref } from "react";
 import type {
   HTMLChakraProps,
   SlotRecipeProps,
@@ -15,8 +15,6 @@ type SliderRecipeProps = SlotRecipeProps<"nimbusSlider">;
 // SLOT PROPS
 // ============================================================
 export type SliderRootSlotProps = HTMLChakraProps<"div", SliderRecipeProps>;
-export type SliderLabelSlotProps = HTMLChakraProps<"span">;
-export type SliderOutputSlotProps = HTMLChakraProps<"div">;
 export type SliderTrackSlotProps = HTMLChakraProps<"div">;
 export type SliderFillSlotProps = HTMLChakraProps<"div">;
 export type SliderThumbSlotProps = HTMLChakraProps<"div">;
@@ -37,8 +35,6 @@ type ExcludedRaSliderProps =
   | "className";
 
 type SliderCommonProps = {
-  /** Visible label rendered in the label grid area (standalone use). */
-  label?: ReactNode;
   /** aria-labels for each thumb, indexed by thumb position. */
   thumbLabels?: string[];
   /** Render tick marks along the track. */
