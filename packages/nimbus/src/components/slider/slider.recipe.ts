@@ -106,16 +106,26 @@ export const sliderSlotRecipe = defineSlotRecipe({
     },
   },
   variants: {
+    // CSS custom properties only cascade from ancestor to descendant, so
+    // --slider-track-thickness/--slider-thumb-size are declared on `root`
+    // (an ancestor of track/thumb/fill) rather than on the slots that
+    // consume them — that also lets root's own `minHeight` above resolve
+    // the thumb size, instead of resolving to nothing because thumb (a
+    // descendant) can't push a value up to its ancestor.
     size: {
       sm: {
-        track: { "--slider-track-thickness": "sizes.100" },
-        thumb: { "--slider-thumb-size": "sizes.400" },
-        root: { "--slider-tick-length": "sizes.150" },
+        root: {
+          "--slider-track-thickness": "sizes.100",
+          "--slider-thumb-size": "sizes.400",
+          "--slider-tick-length": "sizes.150",
+        },
       },
       md: {
-        track: { "--slider-track-thickness": "sizes.150" },
-        thumb: { "--slider-thumb-size": "sizes.500" },
-        root: { "--slider-tick-length": "sizes.200" },
+        root: {
+          "--slider-track-thickness": "sizes.150",
+          "--slider-thumb-size": "sizes.500",
+          "--slider-tick-length": "sizes.200",
+        },
       },
     },
   },
