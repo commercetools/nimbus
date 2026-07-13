@@ -460,6 +460,47 @@ export const WithFormField: Story = {
 };
 
 /**
+ * The `enclosed` thumb must stay inside the bar at both extremes. React Aria
+ * centers the thumb on its value point, so without the recipe's per-value
+ * margin correction half the thumb would hang off the rounded ends. Regression
+ * guard: at min and max the thumb's box stays within the track's box.
+ */
+export const EnclosedThumbContainment: Story = {
+  render: () => (
+    <>
+      <div data-testid="min">
+        <Slider aria-label="Min" variant="enclosed" defaultValue={0} />
+      </div>
+      <div data-testid="max">
+        <Slider aria-label="Max" variant="enclosed" defaultValue={100} />
+      </div>
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const rect = (id: string, slot: string) =>
+      canvasElement
+        .querySelector(`[data-testid="${id}"] [data-slot="${slot}"]`)!
+        .getBoundingClientRect();
+
+    // Half-pixel tolerance absorbs sub-pixel layout rounding; the pre-fix bug
+    // overhangs by a full thumb radius (several px), far outside this.
+    await step("at min value the thumb stays within the track", async () => {
+      const track = rect("min", "track");
+      const thumb = rect("min", "thumb");
+      await expect(thumb.left).toBeGreaterThanOrEqual(track.left - 0.5);
+      await expect(thumb.right).toBeLessThanOrEqual(track.right + 0.5);
+    });
+
+    await step("at max value the thumb stays within the track", async () => {
+      const track = rect("max", "track");
+      const thumb = rect("max", "thumb");
+      await expect(thumb.left).toBeGreaterThanOrEqual(track.left - 0.5);
+      await expect(thumb.right).toBeLessThanOrEqual(track.right + 0.5);
+    });
+  },
+};
+
+/**
  * Keyboard focus paints the Nimbus focus ring on the thumb. Regression guard
  * for a bug where no thumb showed a ring: the thumb must use
  * `focusVisibleRing` (its selector matches React Aria's `data-focus-visible`),

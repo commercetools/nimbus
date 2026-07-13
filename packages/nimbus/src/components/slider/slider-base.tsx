@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, type CSSProperties } from "react";
 import { useObjectRef } from "react-aria";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import {
@@ -6,6 +6,7 @@ import {
   SliderTrack as RaSliderTrack,
   SliderThumb as RaSliderThumb,
   SliderFill as RaSliderFill,
+  useLocale,
 } from "react-aria-components";
 import { mergeRefs, extractStyleProps } from "@/utils";
 import { Tooltip } from "@/components/tooltip/tooltip";
@@ -43,6 +44,15 @@ type SliderValueThumbProps = {
   thumbAriaLabelledBy?: string;
   valueLabel: string;
   isDragging: boolean;
+  /**
+   * The thumb's physical position along the track, 0–1, already flipped for
+   * vertical/RTL the same way React Aria flips it (see `useSliderThumb`). It
+   * is published as the `--slider-thumb-position` custom property so recipe
+   * variants can adjust the thumb's placement relative to its value — the
+   * `enclosed` variant uses it to keep the thumb contained inside the bar at
+   * the extremes.
+   */
+  positionFraction: number;
 };
 
 const SliderValueThumb = ({
@@ -51,6 +61,7 @@ const SliderValueThumb = ({
   thumbAriaLabelledBy,
   valueLabel,
   isDragging,
+  positionFraction,
 }: SliderValueThumbProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -65,6 +76,12 @@ const SliderValueThumb = ({
           aria-labelledby={thumbAriaLabelledBy}
           onHoverChange={setIsHovered}
           onFocusChange={setIsFocused}
+          // Merge alongside React Aria's own inline positioning (it sets
+          // `left`/`top` + `transform`, not custom properties, so there is no
+          // clash). Recipe variants read this to offset the thumb per value.
+          style={
+            { "--slider-thumb-position": positionFraction } as CSSProperties
+          }
         />
       </SliderThumbSlot>
       <Tooltip.Content>{valueLabel}</Tooltip.Content>
@@ -102,6 +119,12 @@ export const SliderBase = (props: SliderBaseProps) => {
     orientation = "horizontal",
     ...restProps
   } = props;
+
+  // Text direction is needed to reproduce React Aria's physical position
+  // fraction for each thumb (RA flips the fraction for RTL and vertical — see
+  // `useSliderThumb` — so the recipe's per-value offset stays a physical-axis
+  // correction).
+  const { direction } = useLocale();
 
   const recipe = useSlotRecipe({ recipe: sliderSlotRecipe });
   const [recipeProps, recipeLessProps] = recipe.splitVariantProps({
@@ -170,6 +193,15 @@ export const SliderBase = (props: SliderBaseProps) => {
                 </SliderFillSlot>
                 {state.values.map((_, i) => {
                   const thumbLabel = resolveThumbLabel(i, state.values.length);
+                  // Reproduce React Aria's physical position fraction: raw
+                  // value percent, flipped for vertical/RTL exactly as
+                  // `useSliderThumb` does, so recipe offsets act on the same
+                  // physical axis React Aria positions with.
+                  const rawPercent = state.getThumbPercent(i);
+                  const positionFraction =
+                    orientation === "vertical" || direction === "rtl"
+                      ? 1 - rawPercent
+                      : rawPercent;
                   return (
                     <SliderValueThumb
                       key={i}
@@ -182,6 +214,7 @@ export const SliderBase = (props: SliderBaseProps) => {
                       }
                       valueLabel={state.getThumbValueLabel(i)}
                       isDragging={state.isThumbDragging(i)}
+                      positionFraction={positionFraction}
                     />
                   );
                 })}
