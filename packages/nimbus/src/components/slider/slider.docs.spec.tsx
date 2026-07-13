@@ -288,7 +288,7 @@ describe("Slider - FormField integration", () => {
  * @docs-order 6
  */
 describe("Slider - Visual variants", () => {
-  it.each(["solid", "outline", "minimal", "enclosed"] as const)(
+  it.each(["plain", "enclosed"] as const)(
     "renders an operable %s variant slider",
     (variant) => {
       render(

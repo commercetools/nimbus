@@ -2,7 +2,9 @@
 id: Components-Slider
 title: Slider
 exportName: Slider
-description: A slider lets users select a numeric value, or a numeric range, by dragging a handle along a track.
+description:
+  A slider lets users select a numeric value, or a numeric range, by dragging a
+  handle along a track.
 lifecycleState: Stable
 order: 999
 menu:
@@ -30,16 +32,16 @@ lower and an upper bound) using two handles that can't cross each other. Both
 share the same track, handle, and tick styling, so a page that mixes single and
 range sliders still looks consistent.
 
-Neither component draws its own label or a static "current value" readout.
-The current value appears in a small tooltip above the handle while it's
-hovered, focused, or being dragged — the track stays visually quiet the rest of
-the time. The label comes from the surrounding `FormField`, or from an
-`aria-label` when the slider is used on its own.
+Neither component draws its own label or a static "current value" readout. The
+current value appears in a small tooltip above the handle while it's hovered,
+focused, or being dragged — the track stays visually quiet the rest of the time.
+The label comes from the surrounding `FormField`, or from an `aria-label` when
+the slider is used on its own.
 
 ### Key features
 
-- **Tooltip value display:** the current value shows above the handle on
-  hover, focus, or drag — there's no permanent number next to the track.
+- **Tooltip value display:** the current value shows above the handle on hover,
+  focus, or drag — there's no permanent number next to the track.
 - **Range selection:** `RangeSlider` uses two handles that can't be dragged past
   each other, so the lower value never exceeds the upper one.
 - **Tick marks:** an optional row of marks along the track for scales where the
@@ -68,27 +70,19 @@ const App = () => (
 
 ### Variants
 
-`solid` is the default. Three additional variants are available for contexts
-that call for a different visual weight:
+`plain` is the default. One additional variant is available for contexts that
+call for a different visual weight:
 
-- **Solid** (default) — a standard filled track with a colored progress bar.
-  The safest choice for most forms and settings panels.
-- **Outline** — a transparent, bordered track with a hollow (bordered, not
-  filled) progress indicator. Reads lighter than `solid`, useful on busy or
-  colorful backgrounds where a filled track would compete for attention.
-- **Minimal** — an ultra-thin hairline track with a small solid dot for the
-  handle. Best for dense layouts or secondary controls where the slider
-  should recede rather than draw focus.
-- **Enclosed** — a thick, contained bar with the handle inset inside it
-  (an iOS-style control). Good for touch-first contexts or standalone
-  controls that benefit from a larger, more tactile target.
+- **Plain** (default) — a standard filled track with a colored progress bar. The
+  safest choice for most forms and settings panels.
+- **Enclosed** — a thick, contained bar with the handle inset inside it (an
+  iOS-style control). Good for touch-first contexts or standalone controls that
+  benefit from a larger, more tactile target.
 
 ```jsx live
 const App = () => (
   <Stack direction="horizontal" gap="600" alignItems="center">
-    <Slider aria-label="Solid (default)" variant="solid" defaultValue={60} />
-    <Slider aria-label="Outline" variant="outline" defaultValue={45} />
-    <Slider aria-label="Minimal" variant="minimal" defaultValue={80} />
+    <Slider aria-label="Plain (default)" variant="plain" defaultValue={60} />
     <Slider aria-label="Enclosed" variant="enclosed" defaultValue={75} />
   </Stack>
 );

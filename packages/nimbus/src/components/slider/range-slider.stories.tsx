@@ -4,8 +4,8 @@ import { Grid, RangeSlider, Stack, Text } from "@commercetools/nimbus";
 import { within, expect, userEvent, fn } from "storybook/test";
 
 // Visual smoke-test axes. The full matrix is every combination of these, for
-// both orientations — 2 × 4 × 2 × 2 = 32 cells, two thumbs each.
-const SMOKE_VARIANTS = ["solid", "outline", "minimal", "enclosed"] as const;
+// both orientations — 2 × 2 × 2 × 2 = 16 cells, two thumbs each.
+const SMOKE_VARIANTS = ["plain", "enclosed"] as const;
 const SMOKE_SIZES = ["sm", "md"] as const;
 const SMOKE_DISABLED = [false, true] as const;
 const SMOKE_ORIENTATIONS = ["horizontal", "vertical"] as const;
@@ -79,10 +79,10 @@ export const Base: Story = {
 export const Variants: Story = {
   render: () => (
     <>
-      <div data-testid="rs-outline">
+      <div data-testid="rs-plain">
         <RangeSlider
-          aria-label="Outline range"
-          variant="outline"
+          aria-label="Plain range"
+          variant="plain"
           defaultValue={[20, 60]}
         />
       </div>
@@ -112,24 +112,13 @@ export const Variants: Story = {
     });
 
     await step(
-      "outline variant applies to RangeSlider (transparent track)",
-      async () => {
-        await expect(
-          getComputedStyle(track("rs-outline")).backgroundColor
-        ).toBe("rgba(0, 0, 0, 0)");
-      }
-    );
-
-    await step(
-      "enclosed variant applies to RangeSlider (thick bar)",
+      "enclosed variant applies to RangeSlider (thick bar, thicker than plain)",
       async () => {
         const enclosedH = parseFloat(
           getComputedStyle(track("rs-enclosed")).height
         );
-        const outlineH = parseFloat(
-          getComputedStyle(track("rs-outline")).height
-        );
-        await expect(enclosedH).toBeGreaterThan(outlineH);
+        const plainH = parseFloat(getComputedStyle(track("rs-plain")).height);
+        await expect(enclosedH).toBeGreaterThan(plainH);
       }
     );
   },
@@ -293,10 +282,10 @@ export const SmokeTest: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     await step("every combination in the matrix renders", async () => {
-      // 2 orientations × 4 variants × 2 sizes × 2 disabled-states = 32 cells,
-      // two thumbs each = 64 thumbs. A short count means some combination
+      // 2 orientations × 2 variants × 2 sizes × 2 disabled-states = 16 cells,
+      // two thumbs each = 32 thumbs. A short count means some combination
       // failed to mount.
-      await expect(canvas.getAllByRole("slider")).toHaveLength(64);
+      await expect(canvas.getAllByRole("slider")).toHaveLength(32);
     });
   },
 };
