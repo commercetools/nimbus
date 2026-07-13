@@ -103,10 +103,6 @@ export const SliderBase = (props: SliderBaseProps) => {
     ...restProps
   } = props;
 
-  // The `enclosed` variant needs the fill widened to cup each thumb (see the
-  // render-prop below); every other variant uses React Aria's default fill.
-  const isEnclosed = props.variant === "enclosed";
-
   const recipe = useSlotRecipe({ recipe: sliderSlotRecipe });
   const [recipeProps, recipeLessProps] = recipe.splitVariantProps({
     size,
@@ -168,25 +164,9 @@ export const SliderBase = (props: SliderBaseProps) => {
         <SliderTrackSlot asChild data-slot="track">
           <RaSliderTrack>
             {({ state }) => {
-              // `enclosed` fill: reach each thumb's OUTER edge, not the value
-              // point, so the fill sits behind the whole knob — that is what
-              // paints the thin primary ring through the thumb's transparent
-              // border, and at value 0 keeps a visible sliver instead of a bare
-              // knob. The interactive track is already inset by the thumb
-              // radius (see the recipe), so React Aria positions the thumbs
-              // natively-contained; the fill only needs a fixed radius of cup
-              // on each thumb-bearing end. In this inset track's own units
-              // (100% = the inset width) that is: start half a diameter before
-              // the low thumb, span the thumb gap plus one full diameter. A
-              // single slider's low end is the track start, so lowFrac is 0 and
-              // the cup there simply reaches the bar's rounded cap. Must be
-              // inline: React Aria sets the fill's main-axis size inline, which
-              // beats a recipe class. Uses logical `insetInlineStart` (RTL-safe)
-              // for horizontal and physical `bottom` for vertical, as React
-              // Aria's own SliderFill does.
               // The filled region as track fractions (0–1): from the lowest
               // thumb (or the track start, for a single thumb) to the highest.
-              // Drives two things — the enclosed fill cup below, and per-tick
+              // Drives two things — the fill cup below, and per-tick
               // `data-filled` so a tick sitting on the fill can flip to a
               // color that contrasts with the primary fill (see the recipe).
               const thumbPercents = state.values.map((_, i) =>
@@ -196,16 +176,28 @@ export const SliderBase = (props: SliderBaseProps) => {
                 thumbPercents.length > 1 ? Math.min(...thumbPercents) : 0;
               const highFrac = Math.max(...thumbPercents);
 
-              let fillStyle: CSSProperties | undefined;
-              if (isEnclosed) {
-                const r = "var(--slider-thumb-size) / 2";
-                const start = `calc(${lowFrac} * 100% - ${r})`;
-                const span = `calc(${highFrac - lowFrac} * 100% + var(--slider-thumb-size))`;
-                fillStyle =
-                  orientation === "vertical"
-                    ? { bottom: start, height: span }
-                    : { insetInlineStart: start, width: span };
-              }
+              // The fill reaches each thumb's OUTER edge, not the value point,
+              // so it sits behind the whole knob — that paints the thin primary
+              // ring through the thumb border and, at value 0, keeps a visible
+              // sliver instead of a bare knob. Both variants share one inset
+              // geometry (the interactive track is inset by the thumb radius —
+              // see the recipe), so React Aria positions the thumbs
+              // natively-contained and the fill only needs a fixed thumb-radius
+              // cup on each thumb-bearing end. In the inset track's own units
+              // (100% = the inset width): start half a diameter before the low
+              // thumb, span the thumb gap plus one full diameter. A single
+              // slider's low end is the track start (lowFrac 0), so the cup
+              // there reaches the bar's rounded cap. Must be inline — React Aria
+              // sets the fill's main-axis size inline, which beats a recipe
+              // class. Logical `insetInlineStart` (RTL-safe) for horizontal,
+              // physical `bottom` for vertical, as React Aria's own SliderFill.
+              const r = "var(--slider-thumb-size) / 2";
+              const start = `calc(${lowFrac} * 100% - ${r})`;
+              const span = `calc(${highFrac - lowFrac} * 100% + var(--slider-thumb-size))`;
+              const fillStyle: CSSProperties =
+                orientation === "vertical"
+                  ? { bottom: start, height: span }
+                  : { insetInlineStart: start, width: span };
               return (
                 <>
                   <SliderFillSlot asChild data-slot="fill">
