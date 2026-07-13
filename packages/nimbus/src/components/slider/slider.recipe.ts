@@ -105,7 +105,11 @@ export const sliderSlotRecipe = defineSlotRecipe({
       // validation state of its own — see slider-base.tsx), so the thumb
       // reacts to its ancestor via this scoped selector rather than its own
       // attribute.
+      // Re-assert the border width too (not just color): the `minimal` and
+      // `enclosed` variants drop the thumb border, and borderColor alone would
+      // be invisible without a width to paint.
       "[data-invalid='true'] &": {
+        border: "solid-50",
         borderColor: "critical.7",
       },
     },
@@ -167,8 +171,73 @@ export const sliderSlotRecipe = defineSlotRecipe({
         },
       },
     },
+
+    variant: {
+      // Base look — no overrides. Declared so `solid` is a valid, default value.
+      solid: {},
+
+      // Transparent, bordered track and hollow (bordered) progress; thumb keeps
+      // the base white-with-colored-border treatment.
+      outline: {
+        track: {
+          backgroundColor: "transparent",
+          border: "solid-25",
+          borderColor: "colorPalette.7",
+        },
+        fill: {
+          backgroundColor: "transparent",
+          border: "solid-25",
+          borderColor: "colorPalette.9",
+        },
+      },
+
+      // Ultra-thin hairline track with a small solid colored thumb dot.
+      // Track/fill thickness is set directly on the slot (not via the shared
+      // size var) so it does not race with the `size` variant group.
+      minimal: {
+        track: {
+          height: "2px",
+          '&[data-orientation="vertical"]': { width: "2px", height: "100%" },
+        },
+        fill: {
+          height: "2px",
+          '&[data-orientation="vertical"]': { width: "2px", height: "auto" },
+        },
+        thumb: {
+          boxSize: "calc(var(--slider-thumb-size) * 0.6)",
+          backgroundColor: "colorPalette.9",
+          border: "none",
+        },
+      },
+
+      // Thick, contained "bar" (iOS-style): track as tall as the thumb, and a
+      // shadowed white thumb inset so it sits inside the bar. Sizing keys off
+      // the existing --slider-thumb-size var so it still scales with `size`.
+      enclosed: {
+        track: {
+          height: "var(--slider-thumb-size)",
+          '&[data-orientation="vertical"]': {
+            width: "var(--slider-thumb-size)",
+            height: "100%",
+          },
+        },
+        fill: {
+          height: "var(--slider-thumb-size)",
+          '&[data-orientation="vertical"]': {
+            width: "var(--slider-thumb-size)",
+            height: "auto",
+          },
+        },
+        thumb: {
+          boxSize: "calc(var(--slider-thumb-size) - {spacing.100})",
+          border: "none",
+          shadow: "1",
+        },
+      },
+    },
   },
   defaultVariants: {
     size: "md",
+    variant: "solid",
   },
 });
