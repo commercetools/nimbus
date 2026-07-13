@@ -126,13 +126,12 @@ export const sliderSlotRecipe = defineSlotRecipe({
       top: "50%",
       width: "2px",
       height: "var(--slider-tick-length)",
-      // Default (unfilled) ticks sit on the `neutral.6` track — a strong
-      // neutral keeps them legible in both themes. Ticks that land on the
-      // fill get `data-filled` from slider-base and flip to
+      // Default (unfilled) ticks sit on the `neutral.6` track. Ticks that
+      // land on the fill get `data-filled` from slider-base and flip to
       // `colorPalette.contrast`, the token designed to read against the
-      // `colorPalette.9` fill (a mid neutral washes out on the saturated
-      // fill, worst in dark mode).
-      backgroundColor: "neutral.11",
+      // `colorPalette.9` fill — this same mid neutral washes out on the
+      // saturated fill, worst in dark mode.
+      backgroundColor: "neutral.9",
       transform: "translate(-50%, -50%)",
       pointerEvents: "none",
 
