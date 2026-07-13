@@ -135,7 +135,9 @@ export const Base: Story = {
 export const Orientation: Story = {
   render: () => (
     <Stack direction="row" gap="800" alignItems="center">
-      <div data-testid="h">
+      {/* The slider root is `width: 100%`; give the horizontal wrapper a real
+          width so it doesn't collapse to the thumb inside the flex row. */}
+      <div data-testid="h" style={{ width: 300 }}>
         <Slider aria-label="Horizontal" defaultValue={50} />
       </div>
       <div data-testid="v" style={{ height: 200 }}>
