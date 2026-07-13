@@ -674,6 +674,57 @@ export const EnclosedClickHitsTick: Story = {
 };
 
 /**
+ * A click in the bar's end-cap — the rounded region beyond the first/last tick,
+ * which extends past the inset interactive track — still moves the thumb. The
+ * full-width `::before` bar keeps pointer events, so a click there hit-tests to
+ * the track (a pseudo-element's clicks target its host) and React Aria clamps
+ * the out-of-range position to the max. Guards against the cap being a dead
+ * zone (it was while the bar was `pointer-events: none`).
+ */
+export const EnclosedClickPastLastTick: Story = {
+  render: () => (
+    <div data-testid="cap">
+      <Slider
+        aria-label="Click the cap"
+        variant="enclosed"
+        defaultValue={0}
+        minValue={0}
+        maxValue={100}
+        showTicks
+        tickStep={25}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const scope = '[data-testid="cap"]';
+    const bar = canvasElement
+      .querySelector(`${scope} [data-slot="root"]`)!
+      .getBoundingClientRect();
+    const thumbInput = () =>
+      canvasElement.querySelector(
+        `${scope} [data-slot="thumb"] input`
+      ) as HTMLInputElement;
+
+    await step("a click in the trailing cap snaps to the max", async () => {
+      // A point inside the rounded cap, past the last tick (which sits at the
+      // inset track's right edge, a thumb radius in from the bar edge).
+      const capX = bar.right - 2;
+      const capY = (bar.top + bar.bottom) / 2;
+      // Real hit-test: pre-fix this resolved to a non-interactive node and the
+      // click did nothing; now it resolves into the slider (the bar's host).
+      const hit = document.elementFromPoint(capX, capY) as HTMLElement;
+      await expect(canvasElement.contains(hit)).toBe(true);
+      await userEvent.pointer({
+        target: hit,
+        keys: "[MouseLeft]",
+        coords: { clientX: capX, clientY: capY },
+      });
+      await expect(thumbInput().value).toBe("100");
+    });
+  },
+};
+
+/**
  * Keyboard focus paints the Nimbus focus ring on the thumb. Regression guard
  * for a bug where no thumb showed a ring: the thumb must use
  * `focusVisibleRing` (its selector matches React Aria's `data-focus-visible`),

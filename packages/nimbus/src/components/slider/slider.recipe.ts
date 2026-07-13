@@ -240,6 +240,11 @@ export const sliderSlotRecipe = defineSlotRecipe({
           backgroundColor: "transparent",
           overflow: "visible",
 
+          // The bar spans the full width, reaching S/2 past the inset track on
+          // each end. It keeps pointer events (a click on a pseudo-element
+          // targets its host — the track), so clicking a cap beyond the first/
+          // last tick still reaches React Aria, which clamps the out-of-range
+          // position to min/max instead of doing nothing.
           "&::before": {
             content: '""',
             position: "absolute",
@@ -247,8 +252,6 @@ export const sliderSlotRecipe = defineSlotRecipe({
             insetInline: "calc(var(--slider-thumb-size) / -2)",
             borderRadius: "full",
             backgroundColor: "neutral.6",
-            // Decorative: the interactive area is the track box itself.
-            pointerEvents: "none",
           },
 
           '&[data-orientation="vertical"]': {
