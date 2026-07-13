@@ -501,6 +501,71 @@ export const EnclosedThumbContainment: Story = {
 };
 
 /**
+ * The `enclosed` fill must cup the thumb at *every* value, not just 50%. The
+ * thumb is shifted inward to stay contained, so a value-point fill (React
+ * Aria's default) would trail the knob everywhere except center. This guards
+ * the slider-base fill sizing: the fill's leading (max-side) edge lands on the
+ * thumb's outer edge, and its transparent border shows the primary fill through
+ * as a ring — including at value 0, where the fill still spans the whole knob
+ * rather than collapsing to zero.
+ */
+export const EnclosedFillCupsThumb: Story = {
+  render: () => (
+    <>
+      {[0, 50, 75, 100].map((v) => (
+        <div key={v} data-testid={`v${v}`}>
+          <Slider
+            aria-label={`Value ${v}`}
+            variant="enclosed"
+            defaultValue={v}
+          />
+        </div>
+      ))}
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const el = (id: string, slot: string) =>
+      canvasElement.querySelector(
+        `[data-testid="${id}"] [data-slot="${slot}"]`
+      ) as HTMLElement;
+    const rect = (id: string, slot: string) =>
+      el(id, slot).getBoundingClientRect();
+
+    await step(
+      "the fill's leading edge lands on the thumb's outer edge at every value",
+      async () => {
+        // Horizontal LTR: both the fill and the contained thumb end at their
+        // right edge. Pre-fix, the value-point fill trailed the shifted thumb
+        // by up to a thumb radius everywhere but 50% — well outside 1.5px.
+        for (const v of [0, 50, 75, 100]) {
+          const fill = rect(`v${v}`, "fill");
+          const thumb = rect(`v${v}`, "thumb");
+          await expect(Math.abs(fill.right - thumb.right)).toBeLessThanOrEqual(
+            1.5
+          );
+        }
+      }
+    );
+
+    await step("at value 0 the fill still spans the whole knob", async () => {
+      const fill = rect("v0", "fill");
+      const thumb = rect("v0", "thumb");
+      // Primary is visible around the knob: the fill covers the thumb box
+      // rather than collapsing to a zero-width sliver behind it.
+      await expect(fill.width).toBeGreaterThanOrEqual(thumb.width - 1.5);
+    });
+
+    await step("the thumb's gap comes from a transparent border", async () => {
+      const style = getComputedStyle(el("v50", "thumb"));
+      await expect(style.borderTopStyle).toBe("solid");
+      await expect(parseFloat(style.borderTopWidth)).toBeGreaterThan(0);
+      // fully transparent → the primary fill shows through as the ring
+      await expect(style.borderTopColor).toBe("rgba(0, 0, 0, 0)");
+    });
+  },
+};
+
+/**
  * Keyboard focus paints the Nimbus focus ring on the thumb. Regression guard
  * for a bug where no thumb showed a ring: the thumb must use
  * `focusVisibleRing` (its selector matches React Aria's `data-focus-visible`),

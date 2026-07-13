@@ -237,8 +237,19 @@ export const sliderSlotRecipe = defineSlotRecipe({
           },
         },
         thumb: {
-          boxSize: "calc(var(--slider-thumb-size) - {spacing.100})",
-          border: "none",
+          // Full bar-thickness box with a transparent border: the border is
+          // the visible gap ("halo") between the white knob and the bar edges,
+          // uniform on every side. `backgroundClip: padding-box` keeps the
+          // white fill inside the border so the border stays truly transparent
+          // — the enclosed fill (sized in slider-base.tsx to reach the thumb's
+          // outer edge) shows through it as a thin primary ring around the
+          // knob, including at value 0. A full-thickness box also makes the
+          // containment radius below simply half the thumb size.
+          boxSize: "var(--slider-thumb-size)",
+          borderWidth: "{spacing.50}",
+          borderStyle: "solid",
+          borderColor: "transparent",
+          backgroundClip: "padding-box",
           shadow: "1",
 
           // Keep the thumb contained inside the bar. React Aria centers the
@@ -247,18 +258,19 @@ export const sliderSlotRecipe = defineSlotRecipe({
           // thumb would hang past the rounded ends. Shift it back inward by
           // its own radius at the ends, scaling linearly with the thumb's
           // physical position: offset = radius * (1 - 2 * position), where
-          // radius is half the thumb's box size. `margin` is used because
-          // React Aria owns the inline `transform`, which CSS cannot override;
-          // margin shifts the post-translate center one-for-one. The position
-          // var is set per thumb in slider-base.tsx (already flipped for
-          // vertical/RTL), so this stays a physical-axis correction; the 0.5
-          // fallback yields no shift if the var is ever absent.
+          // radius is half the thumb box (now the full thumb size). `margin`
+          // is used because React Aria owns the inline `transform`, which CSS
+          // cannot override; margin shifts the post-translate center
+          // one-for-one. The position var is set per thumb in slider-base.tsx
+          // (already flipped for vertical/RTL), so this stays a physical-axis
+          // correction; the 0.5 fallback yields no shift if the var is absent.
+          // The matching fill cup in slider-base.tsx reserves the same radius.
           marginLeft:
-            "calc((var(--slider-thumb-size) - {spacing.100}) / 2 * (1 - 2 * var(--slider-thumb-position, 0.5)))",
+            "calc(var(--slider-thumb-size) / 2 * (1 - 2 * var(--slider-thumb-position, 0.5)))",
           '[data-orientation="vertical"] &': {
             marginLeft: "0",
             marginTop:
-              "calc((var(--slider-thumb-size) - {spacing.100}) / 2 * (1 - 2 * var(--slider-thumb-position, 0.5)))",
+              "calc(var(--slider-thumb-size) / 2 * (1 - 2 * var(--slider-thumb-position, 0.5)))",
           },
         },
       },
