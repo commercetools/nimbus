@@ -4,8 +4,8 @@ import { FormField, Grid, Slider, Stack, Text } from "@commercetools/nimbus";
 import { within, expect, userEvent, fn } from "storybook/test";
 
 // Visual smoke-test axes. The full matrix is every combination of these, for
-// both orientations — 2 × 4 × 2 × 2 = 32 cells.
-const SMOKE_VARIANTS = ["solid", "outline", "minimal", "enclosed"] as const;
+// both orientations — 2 × 2 × 2 × 2 = 16 cells.
+const SMOKE_VARIANTS = ["plain", "enclosed"] as const;
 const SMOKE_SIZES = ["sm", "md"] as const;
 const SMOKE_DISABLED = [false, true] as const;
 const SMOKE_ORIENTATIONS = ["horizontal", "vertical"] as const;
@@ -181,18 +181,12 @@ export const ThumbCentering: Story = {
   },
 };
 
-/** All four visual variants. Assertions lock each variant's distinguishing treatment. */
+/** Both visual variants. Assertions lock each variant's distinguishing treatment. */
 export const Variants: Story = {
   render: () => (
     <>
-      <div data-testid="solid">
-        <Slider aria-label="Solid" variant="solid" defaultValue={60} />
-      </div>
-      <div data-testid="outline">
-        <Slider aria-label="Outline" variant="outline" defaultValue={45} />
-      </div>
-      <div data-testid="minimal">
-        <Slider aria-label="Minimal" variant="minimal" defaultValue={80} />
+      <div data-testid="plain">
+        <Slider aria-label="Plain" variant="plain" defaultValue={60} />
       </div>
       <div data-testid="enclosed">
         <Slider aria-label="Enclosed" variant="enclosed" defaultValue={75} />
@@ -222,26 +216,13 @@ export const Variants: Story = {
       // "slider" role is implicit ARIA semantics, not a literal `role`
       // attribute in the DOM (confirmed via direct DOM inspection). Query by
       // computed accessible role instead, as the `Sizes` story above does.
-      await expect(canvas.getAllByRole("slider")).toHaveLength(5);
+      await expect(canvas.getAllByRole("slider")).toHaveLength(3);
     });
 
     await step(
-      "outline track is transparent (bordered, not filled)",
+      "enclosed track is a thick bar, thicker than plain",
       async () => {
-        await expect(getComputedStyle(track("outline")).backgroundColor).toBe(
-          "rgba(0, 0, 0, 0)"
-        );
-      }
-    );
-
-    await step("minimal track is a hairline, thinner than solid", async () => {
-      await expect(trackH("minimal")).toBeLessThan(trackH("solid"));
-    });
-
-    await step(
-      "enclosed track is a thick bar, thicker than solid",
-      async () => {
-        await expect(trackH("enclosed")).toBeGreaterThan(trackH("solid"));
+        await expect(trackH("enclosed")).toBeGreaterThan(trackH("plain"));
       }
     );
 
@@ -250,9 +231,9 @@ export const Variants: Story = {
       async () => {
         // Regression guard: the recipe's `"[data-invalid='true'] &"` thumb
         // selector re-asserts a border WIDTH (not just color) precisely
-        // because `minimal`/`enclosed` set `border: "none"` on the thumb —
-        // a color with no width would be invisible. A zero width here would
-        // mean the invalid state is silently lost on those variants.
+        // because `enclosed` sets `border: "none"` on the thumb — a color
+        // with no width would be invisible. A zero width here would mean the
+        // invalid state is silently lost on that variant.
         const thumb = canvasElement.querySelector(
           '[data-testid="enclosed-invalid"] [data-slot="thumb"]'
         ) as HTMLElement;
@@ -763,7 +744,7 @@ export const FocusRing: Story = {
  * Visual smoke test: every combination of orientation × variant × size ×
  * disabled-state rendered in one grid, so the whole visual surface can be
  * eyeballed at once and any combination that fails to mount is caught. The
- * play function only asserts that all 32 cells rendered (nothing threw).
+ * play function only asserts that all 16 cells rendered (nothing threw).
  */
 export const SmokeTest: Story = {
   render: () => (
@@ -825,9 +806,9 @@ export const SmokeTest: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     await step("every combination in the matrix renders", async () => {
-      // 2 orientations × 4 variants × 2 sizes × 2 disabled-states = 32 cells,
+      // 2 orientations × 2 variants × 2 sizes × 2 disabled-states = 16 cells,
       // one thumb each. A missing count means some combination failed to mount.
-      await expect(canvas.getAllByRole("slider")).toHaveLength(32);
+      await expect(canvas.getAllByRole("slider")).toHaveLength(16);
     });
   },
 };
