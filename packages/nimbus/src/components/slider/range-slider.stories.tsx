@@ -75,7 +75,14 @@ export const Base: Story = {
   },
 };
 
-/** shared slot recipe means the visual variant applies to RangeSlider too. */
+/**
+ * The shared slot recipe means the visual variants apply to RangeSlider too:
+ * `plain` (thin track) and `enclosed` (thick bar). The play function also locks
+ * in the two-thumb geometry — both enclosed thumbs stay contained at the
+ * extremes, and the enclosed fill cups *both* thumbs' outer edges (unlike the
+ * single slider, whose lower end is the uncupped track start, a range fill is
+ * bounded by two contained thumbs, so both edges must track a thumb).
+ */
 export const Variants: Story = {
   render: () => (
     <>
@@ -86,11 +93,18 @@ export const Variants: Story = {
           defaultValue={[20, 60]}
         />
       </div>
-      <div data-testid="rs-enclosed">
+      <div data-testid="rs-mid">
         <RangeSlider
-          aria-label="Enclosed range"
+          aria-label="Enclosed mid range"
           variant="enclosed"
-          defaultValue={[30, 70]}
+          defaultValue={[25, 75]}
+        />
+      </div>
+      <div data-testid="rs-full">
+        <RangeSlider
+          aria-label="Enclosed full range"
+          variant="enclosed"
+          defaultValue={[0, 100]}
         />
       </div>
     </>
@@ -101,108 +115,59 @@ export const Variants: Story = {
       canvasElement.querySelector(
         `[data-testid="${id}"] [data-slot="track"]`
       ) as HTMLElement;
-
-    await step("each range slider still renders two thumbs", async () => {
-      // `[role="slider"]` (a literal-attribute CSS selector) never matches:
-      // React Aria's SliderThumb renders a native <input type="range">, whose
-      // "slider" role is implicit ARIA semantics, not a literal `role`
-      // attribute in the DOM. Query by computed accessible role instead, as
-      // the `Variants` story on `Slider` does.
-      await expect(canvas.getAllByRole("slider")).toHaveLength(4);
-    });
-
-    await step(
-      "enclosed variant applies to RangeSlider (thick bar, thicker than plain)",
-      async () => {
-        const enclosedH = parseFloat(
-          getComputedStyle(track("rs-enclosed")).height
-        );
-        const plainH = parseFloat(getComputedStyle(track("rs-plain")).height);
-        await expect(enclosedH).toBeGreaterThan(plainH);
-      }
-    );
-  },
-};
-
-/**
- * Both `enclosed` thumbs stay inside the bar at the extremes. With the range
- * spanning the full track, the lower thumb sits at the left end and the upper
- * thumb at the right end. React Aria centers them at the ends of the inset
- * interactive track, and the visible bar reaches back over that inset, so each
- * thumb's box stays within the bar (the root box).
- */
-export const EnclosedThumbContainment: Story = {
-  render: () => (
-    <div data-testid="rs">
-      <RangeSlider
-        aria-label="Full range"
-        variant="enclosed"
-        defaultValue={[0, 100]}
-      />
-    </div>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const bar = canvasElement
-      .querySelector('[data-testid="rs"] [data-slot="root"]')!
-      .getBoundingClientRect();
-    const thumbs = Array.from(
-      canvasElement.querySelectorAll('[data-testid="rs"] [data-slot="thumb"]')
-    ).map((el) => el.getBoundingClientRect());
-
-    await step("both thumbs stay within the bar", async () => {
-      await expect(thumbs).toHaveLength(2);
-      // Half-pixel tolerance for sub-pixel rounding.
-      for (const thumb of thumbs) {
-        await expect(thumb.left).toBeGreaterThanOrEqual(bar.left - 0.5);
-        await expect(thumb.right).toBeLessThanOrEqual(bar.right + 0.5);
-      }
-    });
-  },
-};
-
-/**
- * The `enclosed` fill must cup *both* thumbs. Unlike the single slider (whose
- * lower end is the uncupped track start), a range fill is bounded by two
- * contained thumbs, so both its edges must land on a thumb's outer edge — the
- * lower thumb's min-side edge and the upper thumb's max-side edge — at every
- * value. Guards the slider-base fill sizing for the two-thumb case.
- */
-export const EnclosedFillCupsThumbs: Story = {
-  render: () => (
-    <>
-      <div data-testid="mid">
-        <RangeSlider
-          aria-label="Mid range"
-          variant="enclosed"
-          defaultValue={[25, 75]}
-        />
-      </div>
-      <div data-testid="full">
-        <RangeSlider
-          aria-label="Full range"
-          variant="enclosed"
-          defaultValue={[0, 100]}
-        />
-      </div>
-    </>
-  ),
-  play: async ({ canvasElement, step }) => {
     const geom = (id: string) => {
       const scope = `[data-testid="${id}"]`;
+      const bar = canvasElement
+        .querySelector(`${scope} [data-slot="root"]`)!
+        .getBoundingClientRect();
       const fill = canvasElement
         .querySelector(`${scope} [data-slot="fill"]`)!
         .getBoundingClientRect();
       const thumbs = Array.from(
         canvasElement.querySelectorAll(`${scope} [data-slot="thumb"]`)
       ).map((t) => t.getBoundingClientRect());
-      return { fill, thumbs };
+      return { bar, fill, thumbs };
     };
 
-    await step("the fill cups both thumbs' outer edges", async () => {
-      // Horizontal LTR: fill spans from the lower thumb's left edge to the
+    await step("each range slider renders two thumbs", async () => {
+      // `[role="slider"]` (a literal-attribute CSS selector) never matches:
+      // React Aria's SliderThumb renders a native <input type="range">, whose
+      // "slider" role is implicit ARIA semantics, not a literal `role`
+      // attribute in the DOM. Query by computed accessible role instead, as
+      // the `Variants` story on `Slider` does. Three sliders → 6 thumbs.
+      await expect(canvas.getAllByRole("slider")).toHaveLength(6);
+    });
+
+    await step(
+      "the enclosed variant is a thick bar, thicker than plain",
+      async () => {
+        const enclosedH = parseFloat(getComputedStyle(track("rs-mid")).height);
+        const plainH = parseFloat(getComputedStyle(track("rs-plain")).height);
+        await expect(enclosedH).toBeGreaterThan(plainH);
+      }
+    );
+
+    await step(
+      "both enclosed thumbs stay within the bar at the extremes",
+      async () => {
+        // Full range: the lower thumb sits at the left end, the upper at the
+        // right. React Aria centers them at the ends of the inset interactive
+        // track and the visible bar reaches back over that inset, so each
+        // thumb's box stays within the bar. Half-pixel tolerance for rounding.
+        const { bar, thumbs } = geom("rs-full");
+        await expect(thumbs).toHaveLength(2);
+        for (const thumb of thumbs) {
+          await expect(thumb.left).toBeGreaterThanOrEqual(bar.left - 0.5);
+          await expect(thumb.right).toBeLessThanOrEqual(bar.right + 0.5);
+        }
+      }
+    );
+
+    await step("the enclosed fill cups both thumbs' outer edges", async () => {
+      // Horizontal LTR: the fill spans from the lower thumb's left edge to the
       // upper thumb's right edge. Both bounds must track their thumb, not the
       // value point, at both a mid range and the full extremes.
-      for (const id of ["mid", "full"]) {
+      for (const id of ["rs-mid", "rs-full"]) {
         const { fill, thumbs } = geom(id);
         await expect(thumbs).toHaveLength(2);
         await expect(Math.abs(fill.left - thumbs[0].left)).toBeLessThanOrEqual(
