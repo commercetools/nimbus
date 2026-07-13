@@ -271,6 +271,27 @@ export const sliderSlotRecipe = defineSlotRecipe({
       },
     },
   },
+  compoundVariants: [
+    // The enclosed variant is dimensionally a Switch: a track as tall as the
+    // thumb, with the thumb filling that height (see switch.recipe.ts). Adopt
+    // the Switch's size tokens so an enclosed slider and a switch of the same
+    // size read as one control family — sm `sizes.400` (16px), md `sizes.600`
+    // (24px). sm already matches via the `size` scale above; only md needs to
+    // move off the shared `sizes.500` (20px) up to `sizes.600`. `--slider-thumb-
+    // size` drives both the enclosed bar height and the thumb (and, via calc,
+    // the inset interactive track + fill cup), so overriding it here rescales
+    // the whole enclosed anatomy coherently. Scoped to `variant: enclosed` so
+    // the plain variant keeps its current size until we align it separately.
+    {
+      variant: "enclosed",
+      size: "md",
+      css: {
+        root: {
+          "--slider-thumb-size": "sizes.600",
+        },
+      },
+    },
+  ],
   defaultVariants: {
     size: "md",
     variant: "plain",
