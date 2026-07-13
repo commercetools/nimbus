@@ -24,7 +24,7 @@ const SAMPLE_MESSAGE =
   "Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla.";
 
 const meta: Meta<typeof ChatMessage.Root> = {
-  title: "Components/ChatMessage",
+  title: "Components/Chat/ChatMessage",
   component: ChatMessage.Root,
 };
 

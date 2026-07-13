@@ -23,7 +23,7 @@ const distanceFromBottom = (el: HTMLElement) =>
   el.scrollHeight - el.scrollTop - el.clientHeight;
 
 const meta: Meta<typeof ChatMessageList.Root> = {
-  title: "Components/ChatMessageList",
+  title: "Components/Chat/ChatMessageList",
   component: ChatMessageList.Root,
 };
 

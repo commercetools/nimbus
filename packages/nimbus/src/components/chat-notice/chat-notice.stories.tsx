@@ -3,7 +3,7 @@ import { ChatNotice, Stack } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
 
 const meta: Meta<typeof ChatNotice> = {
-  title: "Components/ChatNotice",
+  title: "Components/Chat/ChatNotice",
   component: ChatNotice,
 };
 
