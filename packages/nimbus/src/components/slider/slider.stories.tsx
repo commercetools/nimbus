@@ -1,6 +1,21 @@
+import type { CSSProperties } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { FormField, Slider } from "@commercetools/nimbus";
+import { FormField, Grid, Slider, Stack, Text } from "@commercetools/nimbus";
 import { within, expect, userEvent, fn } from "storybook/test";
+
+// Visual smoke-test axes. The full matrix is every combination of these, for
+// both orientations — 2 × 4 × 2 × 2 = 32 cells.
+const SMOKE_VARIANTS = ["solid", "outline", "minimal", "enclosed"] as const;
+const SMOKE_SIZES = ["sm", "md"] as const;
+const SMOKE_DISABLED = [false, true] as const;
+const SMOKE_ORIENTATIONS = ["horizontal", "vertical"] as const;
+
+// Set once on an ancestor; vertical slider roots read this custom property for
+// their length (`var(--slider-vertical-length, 200px)` in slider.recipe.ts),
+// and it cascades to every vertical cell. Horizontal sliders ignore it.
+const smokeVerticalLength = {
+  "--slider-vertical-length": "140px",
+} as CSSProperties;
 
 const meta: Meta<typeof Slider> = {
   title: "Components/Slider",
@@ -440,6 +455,77 @@ export const WithFormField: Story = {
       // accessible value comes from the `value` DOM property (implicit ARIA
       // mapping), not an explicit `aria-valuenow` attribute.
       await expect(thumb).toHaveValue("51");
+    });
+  },
+};
+
+/**
+ * Visual smoke test: every combination of orientation × variant × size ×
+ * disabled-state rendered in one grid, so the whole visual surface can be
+ * eyeballed at once and any combination that fails to mount is caught. The
+ * play function only asserts that all 32 cells rendered (nothing threw).
+ */
+export const SmokeTest: Story = {
+  render: () => (
+    // Custom property set on a plain ancestor so it cascades to every vertical
+    // slider root below (CSS custom properties inherit).
+    <div style={smokeVerticalLength}>
+      <Stack direction="column" gap="800">
+        {SMOKE_ORIENTATIONS.map((orientation) => (
+          <Stack key={orientation} direction="column" gap="500">
+            <Text fontWeight="700" textTransform="capitalize">
+              {orientation}
+            </Text>
+            {SMOKE_VARIANTS.map((variant) => (
+              <Stack key={variant} direction="column" gap="200">
+                <Text fontWeight="600" color="neutral.11">
+                  {variant}
+                </Text>
+                <Grid
+                  templateColumns={
+                    orientation === "vertical"
+                      ? "repeat(4, max-content)"
+                      : "repeat(2, minmax(0, 1fr))"
+                  }
+                  gap="600"
+                  alignItems="start"
+                >
+                  {SMOKE_SIZES.flatMap((size) =>
+                    SMOKE_DISABLED.map((isDisabled) => {
+                      const label = `${size} · ${
+                        isDisabled ? "disabled" : "enabled"
+                      }`;
+                      return (
+                        <Stack key={label} direction="column" gap="100">
+                          <Text fontSize="300" color="neutral.11">
+                            {label}
+                          </Text>
+                          <Slider
+                            aria-label={`${orientation} ${variant} ${label}`}
+                            variant={variant}
+                            size={size}
+                            orientation={orientation}
+                            isDisabled={isDisabled}
+                            defaultValue={60}
+                          />
+                        </Stack>
+                      );
+                    })
+                  )}
+                </Grid>
+              </Stack>
+            ))}
+          </Stack>
+        ))}
+      </Stack>
+    </div>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("every combination in the matrix renders", async () => {
+      // 2 orientations × 4 variants × 2 sizes × 2 disabled-states = 32 cells,
+      // one thumb each. A missing count means some combination failed to mount.
+      await expect(canvas.getAllByRole("slider")).toHaveLength(32);
     });
   },
 };
