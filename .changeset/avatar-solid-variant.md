@@ -2,14 +2,12 @@
 "@commercetools/nimbus": minor
 ---
 
-`Avatar`: add a `variant` prop with `subtle` (default) and `solid`.
+`Avatar`: new `variant` prop — `subtle` (default, the existing look) and
+`solid`, which fills the avatar with the palette's solid color and contrast text
+to match a same-palette `Button`. Avatars that don't set `variant` are
+unchanged.
 
-- `subtle` (default) is the existing soft tinted look — no change for avatars
-  that don't set `variant`.
-- `solid` fills the avatar with the palette's solid color and contrast text,
-  matching the equivalent `Button` variant, so an avatar reads as consistent
-  with a same-palette button.
-
-The fallback icon also renders crisper: it now sizes on the same scale as a
-`Button` icon of the equivalent footprint (16/20/24px for `2xs`/`xs`/`md`),
-producing whole, even pixel sizes instead of the previous fractional value.
+- Custom `children` are now rendered — an icon or other node shows in place of
+  the initials / image / Person fallback (the documented prop was previously
+  ignored).
+- The fallback icon renders crisper, sized on the same scale as a `Button` icon.
