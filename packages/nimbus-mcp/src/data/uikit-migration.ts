@@ -7,7 +7,7 @@
  * Source: migration-mapping.csv cross-referenced with Nimbus docs.
  */
 
-import type { UiKitMigrationEntry, PropMapping } from "../types.js";
+import type { UiKitMigrationEntry } from "../types.js";
 
 // ---------------------------------------------------------------------------
 // Migration data
@@ -1569,7 +1569,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         uiKitProp: "children",
         nimbusProp: null,
         changeType: "structural",
-        notes: "Replace with Menu.Root > Menu.Trigger + Menu.Content > Menu.Item composition.",
+        notes: "Compose Menu.Root > Menu.Trigger + Menu.Content > Menu.Item.",
       },
     ],
   },
