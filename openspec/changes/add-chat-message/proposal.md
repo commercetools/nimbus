@@ -1,55 +1,46 @@
-# Change: Reshape ChatBubble into ChatMessage
+# Change: Add the ChatMessage component
 
 ## Why
 
-`ChatBubble` shipped (change `2026-07-09-add-chat-bubble`, lifecycle
-**Experimental**) as the *only* chat primitive in Nimbus. Deep research across
-mature chat/message components (Vercel AI Elements, agent-ui, Ant Design X,
-MUI X Chat, LlamaIndex chat-ui, Stream Chat, shadcn Bubble) surfaced three
-consistent patterns that the current component either fights or misses:
+Nimbus's chat story is being built out proactively as a coherent **`Chat*`**
+component family (no single blocking consumer; scope is driven by design-system
+completeness). `ChatMessage` is the first member: the primitive that renders
+**one participant's turn** in a conversation.
 
-1. **The single-message component is paired with a list container.** ChatBubble
-   punts the entire transcript (scroll, autoscroll, live region) to the consumer
-   with only a doc note. (Addressed by the sibling `add-chat-message-list`
-   change.)
+Deep research across mature chat/message components (Vercel AI Elements,
+agent-ui, Ant Design X, MUI X Chat, LlamaIndex chat-ui, Stream Chat, shadcn)
+surfaced three patterns that shape the design:
+
+1. **A single-message component is paired with a list container.** The
+   transcript concerns (scroll, autoscroll, live region) belong to a sibling
+   list, not to the message. (Delivered by the `add-chat-message-list` change.)
 2. **Tool output is content, and system notices are a separate thing** — not
-   sender values. ChatBubble's `sender` axis absorbed `system` and `tool`, which
-   don't belong there: a single agent turn that interleaves prose and a tool
-   call cannot be expressed on a one-sender-per-message axis, and a centered,
+   sender values. A single agent turn can interleave prose and a tool call, so
+   it cannot be expressed on a one-sender-per-message axis; and a centered,
    avatar-less system notice is the *opposite* of a message, not a variant of
    one.
 3. **Streaming rendering is a solved, owned concern** — Nimbus's own `Markdown`
    component already does safe incremental rendering of streamed LLM output
    (`isStreaming`: `remend` completion + block memoization + coalesced
-   completion announcement). ChatBubble instead reinvented a weaker path (dots +
-   `aria-busy`) and does not delegate to `Markdown`.
+   completion announcement). `ChatMessage` delegates to it rather than
+   reinventing a weaker path.
 
-Separately, **"bubble" is a visual metaphor that breaks down** for the very
-cases the component must serve (a system notice is not a bubble; tool output is
-not a distinct bubble). The field overwhelmingly names the unit a **message**,
-and "bubble" is only ever a shape word — so the metaphor is dropped from the API
-entirely: the card slot is named **`.Body`**, a role-based, style-agnostic name,
-so a future non-rounded (flat, brutalist) treatment does not make the name lie.
-
-This change reshapes `ChatBubble` → `ChatMessage` as the first member of a
-coherent **`Chat*`** component family, narrowing the message's responsibility to
-its single honest job — *render one participant's turn* — and moving the
-displaced responsibilities to where they belong. Because `ChatBubble` is
-**Experimental** and only days old, this is a clean rename/reshape rather than a
-deprecation cycle.
+The unit is named a **message** (the field's overwhelming convention), and the
+card slot is named **`.Body`** — a role-based, style-agnostic name — so a future
+non-rounded (flat, brutalist) treatment never makes the name lie.
 
 ## What Changes
 
-**Component:** `ChatBubble` → **`ChatMessage`** (Tier 3 compound).
+**Component:** `ChatMessage` (Tier 3 compound).
 **Package:** `@commercetools/nimbus`.
 **Category:** Chat.
 
-### 1. Rename to `ChatMessage`; the card slot becomes `.Body`
+### 1. Compound anatomy; the card slot is `.Body`
 
-The compound root and its parts rename, and `.Footer` becomes `.Meta` (names the
-meaning — message metadata — not the position). Likewise the card slot becomes
-`.Body` — a role-based name — dropping the "bubble" shape metaphor from the API
-so the name stays honest under any future visual treatment:
+`ChatMessage.Root` publishes the `sender` context that `.Avatar`, `.Body`,
+`.Actions`, and `.Meta` read to place and color themselves — the shared context
+is what earns the compound (dot-notation) form. `.Meta` names message metadata
+(the meaning, not a position), and `.Body` is the role-based card slot:
 
 ```tsx
 <ChatMessage.Root sender="agent">
@@ -62,15 +53,11 @@ so the name stays honest under any future visual treatment:
 </ChatMessage.Root>
 ```
 
-`ChatMessage.Root` publishes the `sender` context that `.Avatar`, `.Body`,
-`.Actions`, and `.Meta` read to place and color themselves — the shared context
-is what earns the compound (dot-notation) form.
+### 2. `sender` is `user | agent`
 
-### 2. `sender` narrows to `user | agent`
-
-`sender` now means only "which participant," which is all it should ever have
-meant — `user | agent` names the two participants (the human and the AI agent).
-`system` and `tool` are removed from the axis:
+`sender` means only "which participant," which is all it should ever mean —
+`user | agent` names the two participants (the human and the AI agent). It
+deliberately does **not** carry `system` or `tool`:
 
 - **`system` → out of scope**: a system notice (e.g. "Conversation history was
   cleared", a date divider) isn't a message — its presentation is the opposite
@@ -92,17 +79,18 @@ Streaming has three responsibilities with three owners, no overlap:
   streaming-specific itself.
 - **Announcing** to assistive tech → the transcript's single persistent live
   region (owned by `ChatMessageList`, the sibling change; until then, the
-  consumer's container, as today).
+  consumer's container).
 - **Flagging busy** + an optional pre-first-token typing affordance
   (`ChatMessage.Typing`) → `ChatMessage.Root` sets `aria-busy` via
   `isStreaming`.
 
-### 4. Unchanged
+### 4. Status tone and accessibility
 
-`tone="neutral" | "error"` (orthogonal status overlay) stays. The accessibility
-model stays: `<article>` by default, overridable via `as`/`role`; message named
-via `aria-label`/`aria-labelledby`; avatar decorative unless named; sender never
-conveyed by color/position alone.
+`tone="neutral" | "error"` is an orthogonal status overlay (an agent message can
+still fail, so error is a tone, not a sender). The accessibility model:
+`<article>` by default, overridable via `as`/`role`; the message is named via
+`aria-label`/`aria-labelledby`; the avatar is decorative unless named; the sender
+is never conveyed by color/position alone.
 
 ## Out of scope
 
@@ -117,28 +105,21 @@ conveyed by color/position alone.
 
 ## Rejected alternatives
 
-- **Keep `sender="tool"|"system"`** — rejected: conflates content and container
-  concerns with participant identity; cannot express a mixed prose+tool
-  agent turn; makes the message responsible for "sometimes I am not a
-  message."
-- **A back-compat `ChatBubble` alias** — rejected: the capability is
-  Experimental and days old; a hard rename is cheaper than carrying two names.
+- **`sender="tool" | "system"`** — rejected: conflates content and container
+  concerns with participant identity; cannot express a mixed prose+tool agent
+  turn; makes the message responsible for "sometimes I am not a message."
 - **A message-owned streaming renderer** — rejected: duplicates `Markdown`,
   which already solves incomplete-markdown streaming (`remend`) that this
   component would otherwise get wrong.
 
 ## Impact
 
-- **Supersedes capability `nimbus-chat-bubble`** → **new capability
-  `nimbus-chat-message`** (this change ADDs `nimbus-chat-message` and REMOVEs
-  `nimbus-chat-bubble`).
-- **Rename** `packages/nimbus/src/components/chat-bubble/` →
-  `chat-message/`; component parts, types, recipe, slots, stories, docs, and
-  Figma Code Connect all rename.
-- **Recipe key** `nimbusChatBubble` → `nimbusChatMessage`; `sender` variant
-  drops `system`/`tool`; theme registration updated.
-- **Barrel exports** update: `ChatMessage` and public types; `ChatBubble`
-  removed.
-- **Breaking rename** — acceptable under Experimental lifecycle; called out in
-  the changeset.
+- **New capability `nimbus-chat-message`.** This supersedes the Experimental
+  `nimbus-chat-bubble` capability, which is removed by this change.
+- **New component** `packages/nimbus/src/components/chat-message/` — parts,
+  types, recipe, slots, stories, docs, and Figma Code Connect.
+- **Recipe** registered as `nimbusChatMessage` in the theme; `sender`
+  (`user`/`agent`) and `tone` (`neutral`/`error`) variants.
+- **Barrel export** `ChatMessage` and its public types.
+- Lifecycle **Experimental**; noted in the changeset.
 - No tokens-package changes.

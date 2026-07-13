@@ -1,4 +1,4 @@
-# Design: ChatMessage (reshape of ChatBubble)
+# Design: ChatMessage
 
 ## Context
 
@@ -75,7 +75,7 @@ kinds of relationship, so the code reads as what it is:
 live region (a region mounted with its content is not reliably announced) — this
 is why announcement lives on the always-present transcript container.
 
-## Accessibility (unchanged from ChatBubble, restated)
+## Accessibility
 
 - `<article>` by default; consumer overrides element via `as` and role/name via
   `role`/`aria-label`/`aria-labelledby` (consumer value wins).
@@ -85,14 +85,12 @@ is why announcement lives on the always-present transcript container.
   message's accessible name.
 - `tone="error"` is a visual cue only; pair with visible text.
 
-## Migration notes
+## Usage notes
 
-- `ChatBubble.Root` → `ChatMessage.Root`; `.Avatar`/`.Actions` unchanged in
-  role; `.Bubble` → `.Body`; `.Footer` → `.Meta`; `.Typing` retained.
-- `sender="system"` usage → out of scope: render your own notice content (e.g.
+- **System notices** are out of scope: render your own notice content (e.g.
   inside a `ChatMessageList.Item`, which is content-agnostic); a system notice is
   not a message and is not a standardized component in this release.
-- `sender="tool"` usage → an `agent` message whose body content is the tool
-  output (code block / custom-tag / composed brick).
-- Streaming usage → place `<Markdown isStreaming>` as body content; keep
-  `isStreaming` on `ChatMessage.Root` for the busy flag.
+- **Tool output** is an `agent` message whose body content is the tool output (a
+  code block / custom-tag / composed brick), not a distinct sender.
+- **Streaming** places `<Markdown isStreaming>` as body content; `isStreaming`
+  on `ChatMessage.Root` only sets the busy flag.
