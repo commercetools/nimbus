@@ -91,6 +91,10 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
       gap: "400",
       gridRow: 2,
       width: "100%",
+      // Metadata (timestamps, trust links) is secondary to the message body, so
+      // it defaults to the small text scale. Inheriting children pick this up
+      // unless they set their own size.
+      textStyle: "sm",
     },
     typing: {
       display: "flex",

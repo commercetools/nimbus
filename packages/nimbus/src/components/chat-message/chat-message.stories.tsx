@@ -197,13 +197,13 @@ export const AgentWithMeta: Story = {
         <Link href="#">How was this generated?</Link>
         <Stack direction="row" alignItems="center" gap="100">
           <Text color="neutral.11">Apr 13, 11:56pm</Text>
-          <IconButton aria-label="Good response" variant="ghost" size="xs">
+          <IconButton aria-label="Good response" variant="ghost" size="2xs">
             <ThumbUp />
           </IconButton>
-          <IconButton aria-label="Bad response" variant="ghost" size="xs">
+          <IconButton aria-label="Bad response" variant="ghost" size="2xs">
             <ThumbDown />
           </IconButton>
-          <IconButton aria-label="Copy" variant="ghost" size="xs">
+          <IconButton aria-label="Copy" variant="ghost" size="2xs">
             <ContentCopy />
           </IconButton>
         </Stack>
@@ -418,6 +418,74 @@ export const Senders: Story = {
       </ChatMessage.Root>
     </Stack>
   ),
+};
+
+/**
+ * Avatar variant defaults per sender
+ * Unless `variant` is set explicitly on `ChatMessage.Avatar`, it defaults to
+ * `solid` for the agent and `subtle` for the user. An unconfigured avatar also
+ * falls back to a sender-appropriate glyph: the AI sparkle for the agent, the
+ * person icon for the user. An explicit `variant` always wins.
+ */
+export const AvatarVariantBySender: Story = {
+  render: () => (
+    <Stack gap="600" alignItems="start">
+      {/* Unconfigured avatars → sender-appropriate glyph in the per-sender default. */}
+      <ChatMessage.Root sender="user">
+        <ChatMessage.Avatar data-testid="user-default" />
+        <ChatMessage.Body>
+          <Text>User — default variant (subtle)</Text>
+        </ChatMessage.Body>
+      </ChatMessage.Root>
+      <ChatMessage.Root sender="agent">
+        <ChatMessage.Avatar data-testid="agent-default" />
+        <ChatMessage.Body>
+          <Text>Agent — default variant (solid)</Text>
+        </ChatMessage.Body>
+      </ChatMessage.Root>
+      {/* Explicit variant overrides the per-sender default. */}
+      <ChatMessage.Root sender="user">
+        <ChatMessage.Avatar data-testid="user-solid" variant="solid" />
+        <ChatMessage.Body>
+          <Text>User — variant="solid" override</Text>
+        </ChatMessage.Body>
+      </ChatMessage.Root>
+      <ChatMessage.Root sender="agent">
+        <ChatMessage.Avatar data-testid="agent-subtle" variant="subtle" />
+        <ChatMessage.Body>
+          <Text>Agent — variant="subtle" override</Text>
+        </ChatMessage.Body>
+      </ChatMessage.Root>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const bg = (testId: string) =>
+      window.getComputedStyle(canvas.getByTestId(testId)).backgroundColor;
+
+    await step("Default variant differs by sender", async () => {
+      // `subtle` (user) resolves to a lighter primary surface than `solid`
+      // (agent), so an unconfigured avatar reads differently per sender.
+      await expect(bg("user-default")).not.toBe(bg("agent-default"));
+    });
+
+    await step("Unconfigured glyph differs by sender", async () => {
+      // Agent falls back to the AI sparkle, user to the person icon.
+      const glyph = (testId: string) =>
+        canvas.getByTestId(testId).querySelector("svg")?.innerHTML ?? "";
+      await expect(glyph("agent-default")).not.toBe(glyph("user-default"));
+    });
+
+    await step(
+      "Explicit variant overrides the per-sender default",
+      async () => {
+        // user + solid matches the agent's solid default…
+        await expect(bg("user-solid")).toBe(bg("agent-default"));
+        // …and agent + subtle matches the user's subtle default.
+        await expect(bg("agent-subtle")).toBe(bg("user-default"));
+      }
+    );
+  },
 };
 
 /**

@@ -1,16 +1,17 @@
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { extractStyleProps } from "@/utils";
 import { ChatMessageRootSlot } from "../chat-message.slots";
+import { ChatMessageContext } from "../chat-message.context";
+import type { ChatMessageSender } from "../chat-message.context";
 import type { ChatMessageProps } from "../chat-message.types";
 
 /**
  * ChatMessage.Root - The grid container for a single chat message.
  *
  * Establishes the styling context and lays out the avatar, body and optional
- * meta row. The `sender` prop selects the layout direction (avatar leading
- * for `"agent"`/`"tool"`, trailing for `"user"`, centered for `"system"`) and
- * the sender-specific styling; `tone="error"` tints the body for a failed
- * generation.
+ * meta row. The `sender` prop selects the layout direction (avatar leading for
+ * `"agent"`, trailing for `"user"`) and the sender-specific styling;
+ * `tone="error"` tints the body for a failed generation.
  *
  * Renders a semantic `<article>` by default (a feed item, per the ARIA APG) so
  * a message is a discrete node in the accessibility tree. This is a *default*,
@@ -28,6 +29,12 @@ export const ChatMessageRoot = (props: ChatMessageProps) => {
   const [recipeProps, remainingProps] = recipe.splitVariantProps(restProps);
   const [styleProps, functionalProps] = extractStyleProps(remainingProps);
 
+  // Publish the resolved `sender` to the parts so they can derive
+  // `sender`-dependent defaults that CSS can't (e.g. the avatar's `variant`).
+  // Read from `props` (it still flows to the slot via `restProps`); anything but
+  // an explicit "user" resolves to the recipe's default of "agent".
+  const sender: ChatMessageSender = props.sender === "user" ? "user" : "agent";
+
   return (
     <ChatMessageRootSlot
       // The slot renders `<article>` by default (see chat-message.slots.tsx);
@@ -39,7 +46,9 @@ export const ChatMessageRoot = (props: ChatMessageProps) => {
       {...styleProps}
       {...functionalProps}
     >
-      {children}
+      <ChatMessageContext.Provider value={{ sender }}>
+        {children}
+      </ChatMessageContext.Provider>
     </ChatMessageRootSlot>
   );
 };

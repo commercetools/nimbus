@@ -81,11 +81,12 @@ export type ChatMessageProps = OmitInternalProps<ChatMessageRootSlotProps> & {
 /**
  * Props for the ChatMessage.Avatar component.
  *
- * Wraps the Nimbus {@link AvatarProps | Avatar} with `variant="solid"`; the
- * color palette is set automatically per `sender` by the recipe (the `solid`
- * variant resolves it to an accessible bg + text), so consumers only provide
- * the avatar content (initials, `src`, or an icon via `children`). Defaults to
- * `size="xs"` (a 32px box per the Figma spec).
+ * Wraps the Nimbus {@link AvatarProps | Avatar}. Unless `variant` is set
+ * explicitly, it defaults per `sender` — `solid` for the `agent`, `subtle` for
+ * the `user`. The color palette comes from the recipe (`primary`), so consumers
+ * only provide the avatar content (initials, `src`, or an icon via `children`);
+ * an unconfigured avatar shows a generic person icon. Defaults to `size="xs"`
+ * (a 32px box per the Figma spec).
  *
  * The avatar is **decorative by default** (`aria-hidden`) — the sender is better
  * conveyed by the message's accessible name and position than by a repeated
