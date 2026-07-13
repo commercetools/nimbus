@@ -240,6 +240,26 @@ export const sliderSlotRecipe = defineSlotRecipe({
           boxSize: "calc(var(--slider-thumb-size) - {spacing.100})",
           border: "none",
           shadow: "1",
+
+          // Keep the thumb contained inside the bar. React Aria centers the
+          // thumb exactly on its value point (main-axis `left`/`top` + inline
+          // `transform: translate(-50%, -50%)`), so at the extremes half the
+          // thumb would hang past the rounded ends. Shift it back inward by
+          // its own radius at the ends, scaling linearly with the thumb's
+          // physical position: offset = radius * (1 - 2 * position), where
+          // radius is half the thumb's box size. `margin` is used because
+          // React Aria owns the inline `transform`, which CSS cannot override;
+          // margin shifts the post-translate center one-for-one. The position
+          // var is set per thumb in slider-base.tsx (already flipped for
+          // vertical/RTL), so this stays a physical-axis correction; the 0.5
+          // fallback yields no shift if the var is ever absent.
+          marginLeft:
+            "calc((var(--slider-thumb-size) - {spacing.100}) / 2 * (1 - 2 * var(--slider-thumb-position, 0.5)))",
+          '[data-orientation="vertical"] &': {
+            marginLeft: "0",
+            marginTop:
+              "calc((var(--slider-thumb-size) - {spacing.100}) / 2 * (1 - 2 * var(--slider-thumb-position, 0.5)))",
+          },
         },
       },
     },

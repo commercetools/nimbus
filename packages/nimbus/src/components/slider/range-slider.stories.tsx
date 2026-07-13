@@ -136,6 +136,42 @@ export const Variants: Story = {
 };
 
 /**
+ * Both `enclosed` thumbs stay inside the bar at the extremes. With the range
+ * spanning the full track, the lower thumb sits at the left end and the upper
+ * thumb at the right end; the per-value margin correction (shared recipe +
+ * slider-base) must keep each thumb's box within the track's box.
+ */
+export const EnclosedThumbContainment: Story = {
+  render: () => (
+    <div data-testid="rs">
+      <RangeSlider
+        aria-label="Full range"
+        variant="enclosed"
+        defaultValue={[0, 100]}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const track = canvasElement
+      .querySelector('[data-testid="rs"] [data-slot="track"]')!
+      .getBoundingClientRect();
+    const thumbs = Array.from(
+      canvasElement.querySelectorAll('[data-testid="rs"] [data-slot="thumb"]')
+    ).map((el) => el.getBoundingClientRect());
+
+    await step("both thumbs stay within the track", async () => {
+      await expect(thumbs).toHaveLength(2);
+      // Half-pixel tolerance for sub-pixel rounding; pre-fix overhang is a
+      // whole thumb radius.
+      for (const thumb of thumbs) {
+        await expect(thumb.left).toBeGreaterThanOrEqual(track.left - 0.5);
+        await expect(thumb.right).toBeLessThanOrEqual(track.right + 0.5);
+      }
+    });
+  },
+};
+
+/**
  * Visual smoke test: every combination of orientation × variant × size ×
  * disabled-state rendered in one grid, so the whole visual surface can be
  * eyeballed at once and any combination that fails to mount is caught. The
