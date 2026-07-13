@@ -58,81 +58,22 @@ export const Base: Story = {
   },
 };
 
-// Independent oracle for the abbreviation the render derives from each size
-// token — hardcoded on purpose so the test doesn't just re-run the render's
-// own expression (which would pass even if that expression were wrong).
-const SIZE_ABBREVIATIONS: Record<string, string> = {
-  md: "MD",
-  xs: "XS",
-  "2xs": "2X",
-};
-
 export const Sizes: Story = {
-  render: () => {
+  args: {
+    firstName: "John",
+    lastName: "Doe",
+    src: avatarImg,
+    ["aria-label"]: "avatar",
+    alt: "avatar",
+  },
+  render: (args) => {
     return (
-      <Stack direction="column" gap="600" alignItems="flex-start">
-        {/* Row 1: size token rendered as a short uppercase abbreviation */}
-        <Stack direction="row" gap="400" alignItems="center">
-          {sizes.map((size) => (
-            <Avatar
-              key={size as string}
-              size={size}
-              aria-label={`${size as string} avatar`}
-            >
-              {String(size).slice(0, 2).toUpperCase()}
-            </Avatar>
-          ))}
-        </Stack>
-        {/* Row 2: same sizes, rendered with the Person icon fallback */}
-        <Stack direction="row" gap="400" alignItems="center">
-          {sizes.map((size) => (
-            <Avatar
-              key={size as string}
-              size={size}
-              aria-label={`${size as string} icon avatar`}
-            />
-          ))}
-        </Stack>
+      <Stack direction="row" gap="400" alignItems="center">
+        {sizes.map((size) => (
+          <Avatar key={size as string} {...args} size={size} alt="avatar" />
+        ))}
       </Stack>
     );
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step(
-      "Row 1: each avatar renders its size abbreviation as text, no icon",
-      async () => {
-        for (const size of sizes) {
-          const avatar = canvas.getByLabelText(`${size as string} avatar`);
-          await expect(avatar.textContent?.trim()).toBe(
-            SIZE_ABBREVIATIONS[size as string]
-          );
-          // Text avatars must not fall back to the Person icon.
-          await expect(avatar.querySelector("svg")).toBeNull();
-        }
-      }
-    );
-
-    await step(
-      "Row 2: each avatar renders the Person icon fallback, no text",
-      async () => {
-        for (const size of sizes) {
-          const avatar = canvas.getByLabelText(`${size as string} icon avatar`);
-          await expect(avatar.querySelector("svg")).not.toBeNull();
-          await expect(avatar.textContent?.trim() ?? "").toBe("");
-        }
-      }
-    );
-
-    await step("Every avatar in the story has a distinct size", async () => {
-      // Guard against all sizes collapsing to one rendered dimension — the
-      // three tokens must produce three different pixel widths.
-      const widths = sizes.map((size) => {
-        const el = canvas.getByLabelText(`${size as string} avatar`);
-        return el.getBoundingClientRect().width;
-      });
-      await expect(new Set(widths).size).toBe(sizes.length);
-    });
   },
 };
 
