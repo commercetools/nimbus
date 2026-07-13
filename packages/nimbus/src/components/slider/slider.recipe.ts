@@ -124,7 +124,7 @@ export const sliderSlotRecipe = defineSlotRecipe({
     tick: {
       position: "absolute",
       top: "50%",
-      width: "2px",
+      width: "50",
       height: "var(--slider-tick-length)",
       // Default (unfilled) ticks sit on the `neutral.6` track. Ticks that
       // land on the fill get `data-filled` from slider-base and flip to
@@ -139,6 +139,17 @@ export const sliderSlotRecipe = defineSlotRecipe({
         backgroundColor: "colorPalette.contrast",
       },
 
+      // A tick directly under the thumb is drawn over the white knob (ticks
+      // paint above the thumbs), where the fill-tuned `colorPalette.contrast`
+      // can vanish — white-on-white in light mode. Use a knob-aware neutral:
+      // `neutral.11` is dark on the light knob and light on the dark knob. This
+      // rule follows the `data-filled` one on purpose — the on-thumb tick is
+      // both on the fill and under the thumb, and at equal specificity source
+      // order makes on-thumb win.
+      "&[data-on-thumb='true']": {
+        backgroundColor: "neutral.11",
+      },
+
       // The tick is a plain div we render ourselves (not a React Aria
       // element), so it never receives `data-orientation` on itself — only
       // ancestors like `root`/`track`/`fill` do (see how those slots above
@@ -151,7 +162,7 @@ export const sliderSlotRecipe = defineSlotRecipe({
         top: "auto",
         insetInlineStart: "50%",
         width: "var(--slider-tick-length)",
-        height: "2px",
+        height: "50",
         transform: "translate(-50%, 50%)",
       },
     },

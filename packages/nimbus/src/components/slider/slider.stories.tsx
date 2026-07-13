@@ -372,6 +372,54 @@ export const TicksContrastOverFill: Story = {
   },
 };
 
+/**
+ * The tick that sits directly under the thumb is painted over the white knob,
+ * not the fill (ticks render above the thumbs), so it uses a knob-aware neutral
+ * instead of `colorPalette.contrast` (which is tuned for the fill and can go
+ * white-on-white on the knob in light mode). Guards that the on-thumb tick is
+ * flagged and renders a color distinct from both an on-fill and an on-track
+ * tick.
+ */
+export const TickUnderThumbIsKnobAware: Story = {
+  args: {
+    "aria-label": "Rating",
+    defaultValue: 50,
+    minValue: 0,
+    maxValue: 100,
+    step: 25,
+    showTicks: true,
+  },
+  play: async ({ canvasElement, step }) => {
+    const ticks = Array.from(
+      canvasElement.querySelectorAll<HTMLElement>('[data-slot="tick"]')
+    );
+
+    await step(
+      "only the tick under the thumb is flagged on-thumb",
+      async () => {
+        // ticks at 0/25/50/75/100 → the thumb at 50 sits on index 2.
+        await expect(ticks).toHaveLength(5);
+        await expect(ticks[2]).toHaveAttribute("data-on-thumb", "true");
+        // an on-fill tick (25) and an on-track tick (100) are not on-thumb.
+        await expect(ticks[1]).not.toHaveAttribute("data-on-thumb");
+        await expect(ticks[4]).not.toHaveAttribute("data-on-thumb");
+      }
+    );
+
+    await step(
+      "the on-thumb tick differs from both on-fill and on-track ticks",
+      async () => {
+        const onThumb = getComputedStyle(ticks[2]).backgroundColor; // knob-aware
+        const onFill = getComputedStyle(ticks[1]).backgroundColor; // contrast
+        const onTrack = getComputedStyle(ticks[4]).backgroundColor; // neutral.9
+        await expect(onThumb).not.toBe(onFill);
+        await expect(onThumb).not.toBe(onTrack);
+        await expect(onThumb).not.toBe("rgba(0, 0, 0, 0)");
+      }
+    );
+  },
+};
+
 /** Disabled slider does not respond to keyboard input. */
 export const Disabled: Story = {
   args: {
