@@ -78,6 +78,22 @@ export const sliderSlotRecipe = defineSlotRecipe({
       transition: "background-color 0.15s, transform 0.15s",
       focusRing: "outside",
 
+      // React Aria positions the thumb on the main axis only (inline `left`
+      // for horizontal, `top` for vertical) and defers cross-axis centering to
+      // CSS. Supply it here; React Aria's inline main-axis value wins over
+      // this via inline-style specificity, so this only fills the cross axis
+      // and stays RTL-safe.
+      //
+      // Unlike root/track/fill, React Aria's SliderThumb does not put
+      // `data-orientation` on itself (only `data-hovered`/`data-dragging`/
+      // `data-focused`/`data-focus-visible`/`data-disabled` — see
+      // react-aria-components' `SliderThumb`), so the vertical override below
+      // must ancestor-scope off `root`/`track`, the same way `tick` does.
+      top: "50%",
+      '[data-orientation="vertical"] &': {
+        insetInlineStart: "50%",
+      },
+
       "&[data-hovered='true']": {
         backgroundColor: "colorPalette.2",
       },
