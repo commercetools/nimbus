@@ -43,7 +43,11 @@ const App = () => (
   navigation. The `Tab` key moves focus to the next link and `Shift + Tab` moves
   to the previous link. Arrow keys do **not** cycle focus between items.
 - **Disabled items:** Disabled items carry `aria-disabled="true"` and are
-  excluded from the tab sequence, so keyboard users skip them naturally.
+  excluded from the tab sequence, so keyboard users skip them naturally. Avoid
+  disabling the **last** item: it is already the non-interactive current page,
+  and because a disabled item renders as a plain `<span>` outside React Aria's
+  collection context, a disabled final item will not receive
+  `aria-current="page"`.
 - **Contrast:** Ensure sufficient contrast between link text and the background
   in all states (default, hover, current, focused, disabled). The focus
   indicator must be clearly visible.

@@ -51,7 +51,7 @@ export const BreadcrumbsItem = ({
           // via context (it only disables the current item), so per-item
           // disabling is handled here: render non-interactive, unfocusable text.
           <BreadcrumbsLinkSlot asChild {...styleProps}>
-            <span aria-disabled="true" data-disabled="true">
+            <span aria-disabled="true" data-disabled="true" {...restProps}>
               {children}
             </span>
           </BreadcrumbsLinkSlot>
@@ -62,7 +62,7 @@ export const BreadcrumbsItem = ({
                 as a non-focusable `<span role="link">` automatically. */}
             <RaLink
               ref={ref}
-              href={href}
+              {...(href ? { href } : {})}
               target={target}
               rel={rel}
               routerOptions={routerOptions}
