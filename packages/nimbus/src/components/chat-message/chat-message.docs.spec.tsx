@@ -213,8 +213,11 @@ describe("ChatMessage - Accessible transcript", () => {
       </NimbusProvider>
     );
 
-    // The transcript is a polite live region.
-    const log = screen.getByRole("log");
+    // The transcript is a polite live region. Scope by accessible name: under
+    // the unit project's shared JSDOM (isolate:false), React Aria's global
+    // LiveAnnouncer leaves nameless role="log" nodes on document.body that an
+    // unscoped query would also match.
+    const log = screen.getByRole("log", { name: "Conversation" });
     expect(log).toHaveAttribute("aria-live", "polite");
 
     // Each message is a named article.

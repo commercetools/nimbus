@@ -82,7 +82,12 @@ describe("ChatMessageList - Accessible live region", () => {
       </NimbusProvider>
     );
 
-    const log = screen.getByRole("log");
+    // Scope by name: under the unit project's shared JSDOM (isolate:false),
+    // React Aria's global LiveAnnouncer leaves nameless role="log" nodes on
+    // document.body that an unscoped query would also match.
+    const log = screen.getByRole("log", {
+      name: "Conversation with the assistant",
+    });
     expect(log).toHaveAttribute("aria-live", "polite");
     expect(log).toHaveAccessibleName("Conversation with the assistant");
   });
@@ -102,7 +107,10 @@ describe("ChatMessageList - Accessible live region", () => {
       </NimbusProvider>
     );
 
-    expect(screen.getByRole("log")).toHaveAccessibleName("Conversation");
+    // Scope by name (see note above) to exclude LiveAnnouncer's nameless logs.
+    expect(
+      screen.getByRole("log", { name: "Conversation" })
+    ).toHaveAccessibleName("Conversation");
   });
 });
 
