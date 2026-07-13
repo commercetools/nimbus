@@ -421,39 +421,27 @@ export const TickUnderThumbIsKnobAware: Story = {
 };
 
 /**
- * The enclosed variant is dimensionally a Switch — a track as tall as the thumb
- * — so its size tokens are aligned to the Switch: sm 16px, md 24px. The plain
- * variant keeps its own sizing for now. Guards the compound-variant size
- * override (md moves off the shared `sizes.500`/20px up to `sizes.600`/24px for
- * enclosed only).
+ * Both slider variants share the Switch's control-size grid: the thumb is
+ * `sizes.400` (16px) at sm and `sizes.600` (24px) at md, regardless of variant.
+ * In the enclosed variant the bar is as tall as the thumb (Switch-like); the
+ * plain variant keeps its thin track but the same knob. Guards the shared thumb
+ * sizing and the enclosed bar height.
  */
-export const EnclosedSizesMatchSwitch: Story = {
+export const SizesMatchSwitch: Story = {
   render: () => (
     <>
-      <div data-testid="enc-sm">
-        <Slider
-          aria-label="Enclosed sm"
-          variant="enclosed"
-          size="sm"
-          defaultValue={50}
-        />
-      </div>
-      <div data-testid="enc-md">
-        <Slider
-          aria-label="Enclosed md"
-          variant="enclosed"
-          size="md"
-          defaultValue={50}
-        />
-      </div>
-      <div data-testid="plain-md">
-        <Slider
-          aria-label="Plain md"
-          variant="plain"
-          size="md"
-          defaultValue={50}
-        />
-      </div>
+      {(["plain", "enclosed"] as const).flatMap((variant) =>
+        (["sm", "md"] as const).map((size) => (
+          <div key={`${variant}-${size}`} data-testid={`${variant}-${size}`}>
+            <Slider
+              aria-label={`${variant} ${size}`}
+              variant={variant}
+              size={size}
+              defaultValue={50}
+            />
+          </div>
+        ))
+      )}
     </>
   ),
   play: async ({ canvasElement, step }) => {
@@ -463,19 +451,70 @@ export const EnclosedSizesMatchSwitch: Story = {
         .getBoundingClientRect();
 
     await step(
-      "enclosed adopts the Switch size tokens (sm 16px, md 24px)",
+      "the thumb follows the Switch grid in both variants (sm 16px, md 24px)",
       async () => {
-        await expect(box("enc-sm", "thumb").height).toBeCloseTo(16, 0);
-        await expect(box("enc-md", "thumb").height).toBeCloseTo(24, 0);
+        for (const variant of ["plain", "enclosed"]) {
+          await expect(box(`${variant}-sm`, "thumb").height).toBeCloseTo(16, 0);
+          await expect(box(`${variant}-md`, "thumb").height).toBeCloseTo(24, 0);
+        }
       }
     );
 
     await step("the enclosed bar is as tall as its thumb", async () => {
-      await expect(box("enc-md", "track").height).toBeCloseTo(24, 0);
+      await expect(box("enclosed-sm", "track").height).toBeCloseTo(16, 0);
+      await expect(box("enclosed-md", "track").height).toBeCloseTo(24, 0);
     });
 
-    await step("plain md is left untouched (still 20px)", async () => {
-      await expect(box("plain-md", "thumb").height).toBeCloseTo(20, 0);
+    await step(
+      "the plain track is thinner than its knob (a line, not a bar)",
+      async () => {
+        // plain keeps a thin track; the enclosed bar is as tall as the thumb.
+        await expect(box("plain-md", "track").height).toBeLessThan(
+          box("plain-md", "thumb").height
+        );
+        await expect(box("plain-md", "track").height).toBeLessThan(
+          box("enclosed-md", "track").height
+        );
+      }
+    );
+  },
+};
+
+/**
+ * With the unified geometry, the plain thumb is contained within the bar at the
+ * extremes too — no half-off overhang at 0/100. The interactive track is inset
+ * by the thumb radius and the `::before` bar reaches back over the inset, so
+ * the thumb's box stays inside the visible bar (the root box) at min and max.
+ */
+export const PlainThumbContainment: Story = {
+  render: () => (
+    <>
+      <div data-testid="min">
+        <Slider aria-label="Min" variant="plain" defaultValue={0} />
+      </div>
+      <div data-testid="max">
+        <Slider aria-label="Max" variant="plain" defaultValue={100} />
+      </div>
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const rect = (id: string, slot: string) =>
+      canvasElement
+        .querySelector(`[data-testid="${id}"] [data-slot="${slot}"]`)!
+        .getBoundingClientRect();
+
+    await step("at min the thumb stays within the bar", async () => {
+      const bar = rect("min", "root");
+      const thumb = rect("min", "thumb");
+      await expect(thumb.left).toBeGreaterThanOrEqual(bar.left - 0.5);
+      await expect(thumb.right).toBeLessThanOrEqual(bar.right + 0.5);
+    });
+
+    await step("at max the thumb stays within the bar", async () => {
+      const bar = rect("max", "root");
+      const thumb = rect("max", "thumb");
+      await expect(thumb.left).toBeGreaterThanOrEqual(bar.left - 0.5);
+      await expect(thumb.right).toBeLessThanOrEqual(bar.right + 0.5);
     });
   },
 };

@@ -34,19 +34,49 @@ export const sliderSlotRecipe = defineSlotRecipe({
       },
     },
     track: {
+      // One geometry for both variants. The *interactive* track is inset by the
+      // thumb radius on each end, and the visible bar is painted full-width by
+      // `::before`. React Aria measures this element's rect to map a pointer to
+      // a value AND to position the thumbs (react-aria's `useSlider` /
+      // `useSliderThumb`), so insetting it makes RA's own math produce a
+      // contained layout: clicks, drags, ticks and the rendered thumb all share
+      // one coordinate system, thumbs never overhang the ends, and clicking a
+      // tick lands the thumb on it — no JS compensation. The `::before` bar
+      // reaches S/2 back over the inset on each side, so the rounded caps sit
+      // beyond every tick (ticks never square them off), and it keeps pointer
+      // events (a click on a pseudo-element targets its host — the track), so a
+      // click on a cap past the first/last tick still reaches RA, which clamps
+      // to min/max. Track height is the thin `--slider-track-thickness`; the
+      // enclosed variant cranks it to the thumb size for the iOS-style bar.
       position: "relative",
       display: "flex",
       alignItems: "center",
-      borderRadius: "full",
-      backgroundColor: "neutral.6",
-      width: "100%",
       height: "var(--slider-track-thickness)",
+      width: "calc(100% - var(--slider-thumb-size))",
+      marginInline: "calc(var(--slider-thumb-size) / 2)",
+      backgroundColor: "transparent",
+      overflow: "visible",
       cursor: "pointer",
+
+      "&::before": {
+        content: '""',
+        position: "absolute",
+        insetBlock: "0",
+        insetInline: "calc(var(--slider-thumb-size) / -2)",
+        borderRadius: "full",
+        backgroundColor: "neutral.6",
+      },
 
       '&[data-orientation="vertical"]': {
         flexDirection: "column",
         width: "var(--slider-track-thickness)",
-        height: "100%",
+        height: "calc(100% - var(--slider-thumb-size))",
+        marginInline: "0",
+        marginBlock: "calc(var(--slider-thumb-size) / 2)",
+        "&::before": {
+          insetInline: "0",
+          insetBlock: "calc(var(--slider-thumb-size) / -2)",
+        },
       },
 
       "&[data-disabled='true']": {
@@ -186,15 +216,19 @@ export const sliderSlotRecipe = defineSlotRecipe({
     size: {
       sm: {
         root: {
-          "--slider-track-thickness": "sizes.100",
+          "--slider-track-thickness": "sizes.200",
           "--slider-thumb-size": "sizes.400",
-          "--slider-tick-length": "sizes.150",
+          "--slider-tick-length": "sizes.100",
         },
       },
       md: {
         root: {
-          "--slider-track-thickness": "sizes.150",
-          "--slider-thumb-size": "sizes.500",
+          "--slider-track-thickness": "sizes.400",
+          // Thumb (and, in enclosed, the whole bar) is sized like the Switch:
+          // sm sizes.400 (16px) / md sizes.600 (24px), so both slider variants
+          // and the Switch share one control-size grid. The thin plain track
+          // keeps its own thickness above — only the knob follows the Switch.
+          "--slider-thumb-size": "sizes.600",
           "--slider-tick-length": "sizes.200",
         },
       },
@@ -204,51 +238,23 @@ export const sliderSlotRecipe = defineSlotRecipe({
       // Base look — no overrides. Declared so `plain` is a valid, default value.
       plain: {},
 
-      // Thick, contained "bar" (iOS-style): track as tall as the thumb with a
-      // shadowed white thumb inside it. Sizing keys off the existing
-      // --slider-thumb-size var so it still scales with `size`.
+      // Thick, contained "bar" (iOS-style). Same geometry as the base (inset
+      // interactive track + full-width `::before` bar + cupped fill); the only
+      // dimensional difference is the bar is as tall as the thumb, so the knob
+      // sits *inside* it. Crank the track + fill height (and the vertical
+      // cross-axis width) to the thumb size; the inset, `::before` and fill cup
+      // are all inherited from base.
       enclosed: {
         track: {
-          // Inset the *interactive* track by the thumb radius on each end.
-          // React Aria measures this element's rect to map a pointer to a value
-          // AND to position the thumbs (see react-aria's `useSlider` /
-          // `useSliderThumb`), so insetting it makes React Aria's own math
-          // produce the contained layout: clicks, drags, ticks and the rendered
-          // thumb all share one coordinate system, and clicking a tick lands the
-          // thumb on it. No JS compensation needed. The visible bar is painted
-          // full-width by `::before`, reaching back over the inset so the thumb
-          // stays contained at the extremes. The `neutral.6` background moves to
-          // that pseudo-element; the track itself is transparent and lets its
-          // fill/thumb overflow into the caps.
           height: "var(--slider-thumb-size)",
-          width: "calc(100% - var(--slider-thumb-size))",
-          marginInline: "calc(var(--slider-thumb-size) / 2)",
-          backgroundColor: "transparent",
-          overflow: "visible",
-
-          // The bar spans the full width, reaching S/2 past the inset track on
-          // each end. It keeps pointer events (a click on a pseudo-element
-          // targets its host — the track), so clicking a cap beyond the first/
-          // last tick still reaches React Aria, which clamps the out-of-range
-          // position to min/max instead of doing nothing.
-          "&::before": {
-            content: '""',
-            position: "absolute",
-            insetBlock: "0",
-            insetInline: "calc(var(--slider-thumb-size) / -2)",
-            borderRadius: "full",
-            backgroundColor: "neutral.6",
-          },
-
           '&[data-orientation="vertical"]': {
             width: "var(--slider-thumb-size)",
-            height: "calc(100% - var(--slider-thumb-size))",
-            marginInline: "0",
-            marginBlock: "calc(var(--slider-thumb-size) / 2)",
-            "&::before": {
-              insetInline: "0",
-              insetBlock: "calc(var(--slider-thumb-size) / -2)",
-            },
+          },
+        },
+        fill: {
+          height: "var(--slider-thumb-size)",
+          '&[data-orientation="vertical"]': {
+            width: "var(--slider-thumb-size)",
           },
         },
         thumb: {
@@ -271,27 +277,6 @@ export const sliderSlotRecipe = defineSlotRecipe({
       },
     },
   },
-  compoundVariants: [
-    // The enclosed variant is dimensionally a Switch: a track as tall as the
-    // thumb, with the thumb filling that height (see switch.recipe.ts). Adopt
-    // the Switch's size tokens so an enclosed slider and a switch of the same
-    // size read as one control family — sm `sizes.400` (16px), md `sizes.600`
-    // (24px). sm already matches via the `size` scale above; only md needs to
-    // move off the shared `sizes.500` (20px) up to `sizes.600`. `--slider-thumb-
-    // size` drives both the enclosed bar height and the thumb (and, via calc,
-    // the inset interactive track + fill cup), so overriding it here rescales
-    // the whole enclosed anatomy coherently. Scoped to `variant: enclosed` so
-    // the plain variant keeps its current size until we align it separately.
-    {
-      variant: "enclosed",
-      size: "md",
-      css: {
-        root: {
-          "--slider-thumb-size": "sizes.600",
-        },
-      },
-    },
-  ],
   defaultVariants: {
     size: "md",
     variant: "plain",
