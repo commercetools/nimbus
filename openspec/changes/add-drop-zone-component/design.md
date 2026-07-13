@@ -55,8 +55,10 @@ mechanics on top of RAC. Content and upload affordance are the consumer's.
 there is nothing a slot recipe would buy — a single container is correct.
 
 - **base**: `borderStyle: dashed`, neutral border/background, `focusRing` on
-  `&[data-focus-visible]`, hover via `&[data-hovered]`, `layerStyle: disabled` +
-  `pointerEvents: none` on `&[data-disabled]`.
+  `&[data-focus-visible]`, `layerStyle: disabled` + `pointerEvents: none` on
+  `&[data-disabled]`. Plain mouse hover is intentionally left unstyled — the
+  zone is not click-to-upload, so a hover affordance would falsely imply it is
+  clickable.
 - **dragOver**: `&[data-drop-target='true']` switches to a solid/heavier border
   and a tinted `colorPalette` background — not color-only (border weight/style +
   outline change too).
@@ -72,16 +74,19 @@ It is all-or-nothing — there is no slot inspection, fragment flattening, or
 per-slot override. Consumers who want a Browse button, custom copy, or a
 filled-state file list pass their own children (which replace the default).
 
-### Accessible name: RAC-native
+### Accessible name: localized `aria-label` + `slot={null}`
 
-The default instruction line is rendered as React Aria's `<Text slot="label">`,
-so RAC applies it as the drop zone's accessible name automatically — a bare
-`<DropZone />` is labelled for free. An explicit `aria-label`/`aria-labelledby`
-is forwarded to `RaDropZone` and takes precedence. There is no custom
-`aria-labelledby` wiring, `useLayoutEffect` DOM workaround, or accessible-name
-warning — RAC's native labelling covers it. When a consumer replaces the
-children and provides neither a `<Text slot="label">` nor an `aria-label`, the
-zone is unnamed (documented; RAC's own dev warnings apply).
+When no children are provided and no explicit `aria-label`/`aria-labelledby`
+is set, DropZone injects a localized `aria-label` on the underlying RAC
+`DropZone` element using the `Nimbus.DropZone.defaultLabel` i18n message. The
+matching visible instruction line is rendered with `slot={null}` — React Aria's
+documented opt-out from the parent's label slot — so it does not get
+auto-wired into the accessible name (which would cause concatenation with
+RAC's internal fallback string). An explicit `aria-label`/`aria-labelledby`
+takes precedence and suppresses the injected default. When a consumer replaces
+the children and provides neither their own label slot nor an `aria-label`,
+the zone falls back to RAC's built-in accessible name (documented; RAC's own
+dev warnings apply).
 
 ### Click-to-upload via composition (not built in)
 
@@ -130,9 +135,10 @@ no file-selection props.
   simply does not trigger the drop-target highlight (RAC default); consumers own
   any error/loading/filled UI via children.
 - **Accessible name when children are supplied**: the default state is labelled
-  via `<Text slot="label">`, but a consumer who replaces the children and
-  provides neither a `<Text slot="label">` nor an `aria-label` gets an unnamed
-  zone. Documented in the Accessibility tab; RAC's dev-time warnings apply.
+  via an injected `aria-label`, but a consumer who replaces the children and
+  provides neither their own label mechanism nor an `aria-label` falls back to
+  RAC's built-in accessible name. Documented in the Accessibility tab; RAC's
+  dev-time warnings apply.
 
 ## Migration Plan
 

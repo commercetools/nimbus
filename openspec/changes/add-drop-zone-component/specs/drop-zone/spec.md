@@ -50,9 +50,11 @@ demonstrate this composition as the recommended non-drag fallback.
 ### Requirement: Default state and content
 
 When given no children, DropZone SHALL render a default state — a centered upload
-icon and one localized instruction line (`Nimbus.DropZone.defaultLabel`), the
-label rendered as a React Aria `<Text slot="label">` so it also serves as the
-accessible name. When given children, DropZone SHALL render them as-is and the
+icon and one localized instruction line (`Nimbus.DropZone.defaultLabel`). The
+visible line is rendered with `slot={null}` (React Aria's documented opt-out
+from the parent's label slot) so it does not get auto-wired into the accessible
+name; instead, a localized `aria-label` is injected on the underlying RAC
+element. When given children, DropZone SHALL render them as-is and the
 default state SHALL NOT appear (all-or-nothing; no per-slot overrides). DropZone
 SHALL NOT expose a `size` variant — sizing is done with Nimbus style props
 (`minH`, `w`, `p`, …).
@@ -139,18 +141,19 @@ belongs to the composed control.
 
 DropZone SHALL meet WCAG 2.1 AA. The drop target is keyboard focusable and
 operable via React Aria's built-in keyboard drag-and-drop by default (Enter to
-enter drag mode, Tab between targets, Enter to drop, Escape to cancel). The
-accessible name is provided by React Aria's native labelling: DropZone SHALL
-forward `aria-label`/`aria-labelledby` to the underlying RAC element, and
-consumers MAY instead label it with a `<Text slot="label">` child. Because
+enter drag mode, Tab between targets, Enter to drop, Escape to cancel). When no
+children are provided and no explicit `aria-label`/`aria-labelledby` is set,
+DropZone SHALL inject a localized `aria-label` from `Nimbus.DropZone.defaultLabel`.
+An explicit `aria-label`/`aria-labelledby` SHALL be forwarded to the underlying
+RAC element and takes precedence over the injected default. Because
 keyboard drag-and-drop cannot cover uploads from the OS, the docs SHALL present a
 composed `FileTrigger` as the recommended alternative for file uploads. Focus
 indication SHALL be visible and meet contrast requirements.
 
 #### Scenario: Keyboard focus and accessible name
 
-- **WHEN** a keyboard user tabs to the drop target and an `aria-label` (or
-  `<Text slot="label">`) is provided
+- **WHEN** a keyboard user tabs to the drop target and an `aria-label` is
+  provided (or the default localized label is injected)
 - **THEN** the drop target receives a visible focus ring and exposes that
   accessible name
 

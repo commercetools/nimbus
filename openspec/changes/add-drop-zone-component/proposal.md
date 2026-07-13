@@ -34,9 +34,12 @@ and any upload affordance are the consumer's to provide.
 - Forwards React Aria drop handlers faithfully (`onDrop`, `getDropOperation`,
   `onDropEnter/Exit/Move/Activate`, `isDisabled`) and re-exports the `DropEvent`,
   `DropOperation`, and `DragTypes` types.
-- Accessible name comes from React Aria's native labelling: the default
-  instruction renders as a `<Text slot="label">`, so a bare `<DropZone />` is
-  labelled for free; an explicit `aria-label`/`aria-labelledby` takes precedence.
+- Accessible name: when no children are provided and no explicit
+  `aria-label`/`aria-labelledby` is set, a localized `aria-label` is injected
+  from `Nimbus.DropZone.defaultLabel`. The visible instruction line uses
+  `slot={null}` to opt out of RAC's label slot, avoiding concatenation with
+  RAC's internal fallback. An explicit `aria-label`/`aria-labelledby` takes
+  precedence.
   The zone is keyboard- and screen-reader-accessible by default (RAC).
 - Adds one i18n message for the default label (`Nimbus.DropZone.defaultLabel`).
 - Does **not** re-implement click-to-upload. For the file-upload path (which
