@@ -256,18 +256,28 @@ export const SliderBase = (props: SliderBaseProps) => {
                     );
                   })}
                   {ticks.map((tickValue) => {
-                    const percent =
-                      ((tickValue - minValue) / (maxValue - minValue)) * 100;
-                    // Mirrors how React Aria's own `SliderFill` positions
-                    // itself (see react-aria-components' `Slider.mjs`):
-                    // horizontal uses the logical `insetInlineStart` so it
-                    // flips correctly under RTL, vertical anchors from
-                    // `bottom` so the minimum sits at the bottom of the track
-                    // and the maximum at the top.
+                    const frac = (tickValue - minValue) / (maxValue - minValue);
+                    // Position (a tick is centered on this point via its
+                    // translate in the recipe). Mirrors how React Aria's own
+                    // `SliderFill` anchors: horizontal uses the logical
+                    // `insetInlineStart` so it flips under RTL, vertical
+                    // anchors from `bottom` so the minimum sits at the bottom.
+                    //
+                    // In the `enclosed` variant the thumb travel is inset by
+                    // its own radius on each end (same containment as the thumb
+                    // margin + fill cup), so a raw-percent tick would drift
+                    // from the thumb it marks — most visibly at the extremes.
+                    // Remap onto the identical contained centerline:
+                    // center = frac * (track - thumb) + thumb/2. Other variants
+                    // keep the plain percent (the thumb sits on the value
+                    // point).
+                    const pos = isEnclosed
+                      ? `calc(${frac} * (100% - var(--slider-thumb-size)) + var(--slider-thumb-size) / 2)`
+                      : `${frac * 100}%`;
                     const tickPositionStyle =
                       orientation === "vertical"
-                        ? { bottom: `${percent}%` }
-                        : { insetInlineStart: `${percent}%` };
+                        ? { bottom: pos }
+                        : { insetInlineStart: pos };
                     return (
                       <SliderTickSlot
                         key={tickValue}
