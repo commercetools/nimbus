@@ -678,16 +678,18 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
     notes:
-      "Rename to Badge. Both use a tone prop, but the tone values differ. " +
+      "Rename to Badge. UI Kit used a tone prop; Nimbus uses colorPalette instead. " +
       "UI Kit tones: 'critical'|'warning'|'positive'|'information'|'primary'|'secondary'. " +
-      "Nimbus tones: 'danger'|'warning'|'success'|'info'.",
+      "Nimbus colorPalette values: 'critical'|'warning'|'positive'|'info'|'primary'|'neutral'.",
     breakingChanges: [
       "Rename to Badge",
-      "tone value 'critical' → 'danger'",
-      "tone value 'positive' → 'success'",
-      "tone value 'information' → 'info'",
-      "tone values 'primary' and 'secondary' have no direct equivalent; use 'neutral' or default",
-      "isCondensed prop replaced by size='sm'",
+      "tone prop replaced by colorPalette",
+      "tone value 'positive' stays 'positive' (use colorPalette='positive')",
+      "tone value 'critical' stays 'critical' (use colorPalette='critical')",
+      "tone value 'warning' stays 'warning' (use colorPalette='warning')",
+      "tone value 'information' → colorPalette='info'",
+      "tone values 'primary' and 'secondary' → colorPalette='primary' or 'neutral'",
+      "isCondensed prop replaced by size='xs'",
     ],
   },
   {
@@ -897,9 +899,9 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
     notes:
-      "Direct replacement. Composable with Card.Root, Card.Header, Card.Content.",
+      "Direct replacement. Composable with Card.Root, Card.Header, Card.Body, Card.Footer.",
     breakingChanges: [
-      "Adopt compositional slot API (Card.Root, Card.Header, Card.Content)",
+      "Adopt compositional slot API (Card.Root, Card.Header, Card.Body, Card.Footer)",
     ],
   },
   {
