@@ -420,6 +420,66 @@ export const TickUnderThumbIsKnobAware: Story = {
   },
 };
 
+/**
+ * The enclosed variant is dimensionally a Switch — a track as tall as the thumb
+ * — so its size tokens are aligned to the Switch: sm 16px, md 24px. The plain
+ * variant keeps its own sizing for now. Guards the compound-variant size
+ * override (md moves off the shared `sizes.500`/20px up to `sizes.600`/24px for
+ * enclosed only).
+ */
+export const EnclosedSizesMatchSwitch: Story = {
+  render: () => (
+    <>
+      <div data-testid="enc-sm">
+        <Slider
+          aria-label="Enclosed sm"
+          variant="enclosed"
+          size="sm"
+          defaultValue={50}
+        />
+      </div>
+      <div data-testid="enc-md">
+        <Slider
+          aria-label="Enclosed md"
+          variant="enclosed"
+          size="md"
+          defaultValue={50}
+        />
+      </div>
+      <div data-testid="plain-md">
+        <Slider
+          aria-label="Plain md"
+          variant="plain"
+          size="md"
+          defaultValue={50}
+        />
+      </div>
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const box = (id: string, slot: string) =>
+      canvasElement
+        .querySelector(`[data-testid="${id}"] [data-slot="${slot}"]`)!
+        .getBoundingClientRect();
+
+    await step(
+      "enclosed adopts the Switch size tokens (sm 16px, md 24px)",
+      async () => {
+        await expect(box("enc-sm", "thumb").height).toBeCloseTo(16, 0);
+        await expect(box("enc-md", "thumb").height).toBeCloseTo(24, 0);
+      }
+    );
+
+    await step("the enclosed bar is as tall as its thumb", async () => {
+      await expect(box("enc-md", "track").height).toBeCloseTo(24, 0);
+    });
+
+    await step("plain md is left untouched (still 20px)", async () => {
+      await expect(box("plain-md", "thumb").height).toBeCloseTo(20, 0);
+    });
+  },
+};
+
 /** Disabled slider does not respond to keyboard input. */
 export const Disabled: Story = {
   args: {
