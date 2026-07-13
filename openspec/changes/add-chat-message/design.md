@@ -7,15 +7,18 @@ Nimbus's chat story proactively (no single blocking consumer; scope driven by
 design-system completeness). The family is designed in **two tiers that stop at
 the same responsibility line**:
 
-```
-┌─ NIMBUS ────────────────────────────────────────────────┐
-│  Layer 1 · Presentation      layout · styling · a11y      │
-│  Layer 2 · Local UI behavior  self-contained, no data     │
-│  ── the line ───────────────────────────────────────────  │
-├─ THE CONSUMER'S APP ─────────────────────────────────────┤
-│  Layer 3 · Runtime / data     message store · AI transport│
-│                               · streaming orchestration    │
-└───────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    subgraph nimbus["NIMBUS"]
+        direction TB
+        l1["Layer 1 · Presentation<br/>layout · styling · a11y"]
+        l2["Layer 2 · Local UI behavior<br/>self-contained, no data"]
+        l1 --- l2
+    end
+    subgraph app["THE CONSUMER'S APP"]
+        l3["Layer 3 · Runtime / data<br/>message store · AI transport · streaming orchestration"]
+    end
+    nimbus ---|"── the line ──"| app
 ```
 
 - **Primitives** (composable): `ChatMessage` (this change), `ChatMessageList`
