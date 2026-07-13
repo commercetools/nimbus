@@ -28,19 +28,19 @@ const App = () => (
     <ChatMessageList.Item>
       <ChatMessage.Root sender="user">
         <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
-        <ChatMessage.Bubble>
+        <ChatMessage.Body>
           <Text>Can you summarise last week's orders?</Text>
-        </ChatMessage.Bubble>
+        </ChatMessage.Body>
       </ChatMessage.Root>
     </ChatMessageList.Item>
     <ChatMessageList.Item>
-      <ChatMessage.Root sender="agent">
+      <ChatMessage.Root sender="assistant">
         <ChatMessage.Avatar>
           <Icons.AutoAwesome />
         </ChatMessage.Avatar>
-        <ChatMessage.Bubble>
+        <ChatMessage.Body>
           <Text>Revenue is up 12% week-over-week.</Text>
-        </ChatMessage.Bubble>
+        </ChatMessage.Body>
       </ChatMessage.Root>
     </ChatMessageList.Item>
   </ChatMessageList.Root>
@@ -62,13 +62,13 @@ const App = () => (
       <ChatNotice>Today</ChatNotice>
     </ChatMessageList.Item>
     <ChatMessageList.Item>
-      <ChatMessage.Root sender="agent">
+      <ChatMessage.Root sender="assistant">
         <ChatMessage.Avatar>
           <Icons.AutoAwesome />
         </ChatMessage.Avatar>
-        <ChatMessage.Bubble>
+        <ChatMessage.Body>
           <Text>How can I help you today?</Text>
-        </ChatMessage.Bubble>
+        </ChatMessage.Body>
       </ChatMessage.Root>
     </ChatMessageList.Item>
   </ChatMessageList.Root>
@@ -103,21 +103,21 @@ const App = () => (
   <ChatMessageList.Root aria-label="Conversation" height="300px">
     <ChatMessageList.Item>
       <ChatMessage.Root sender="user">
-        <ChatMessage.Bubble>
+        <ChatMessage.Body>
           <Text>Tell me about last week's revenue.</Text>
-        </ChatMessage.Bubble>
+        </ChatMessage.Body>
       </ChatMessage.Root>
     </ChatMessageList.Item>
     <ChatMessageList.Item>
-      <ChatMessage.Root sender="agent" isStreaming>
+      <ChatMessage.Root sender="assistant" isStreaming>
         <ChatMessage.Avatar>
           <Icons.AutoAwesome />
         </ChatMessage.Avatar>
-        <ChatMessage.Bubble>
+        <ChatMessage.Body>
           <Markdown isStreaming>
             {"Revenue is up **12%** week-over-week, driven by"}
           </Markdown>
-        </ChatMessage.Bubble>
+        </ChatMessage.Body>
       </ChatMessage.Root>
     </ChatMessageList.Item>
   </ChatMessageList.Root>

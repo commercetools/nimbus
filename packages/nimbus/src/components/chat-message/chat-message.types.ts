@@ -13,21 +13,21 @@ import type { AvatarProps } from "../avatar/avatar.types";
 type ChatMessageRecipeProps = {
   /**
    * Which participant sent the message. Controls layout direction (avatar side)
-   * and the sender-specific bubble/avatar styling:
+   * and the sender-specific body/avatar styling:
    *
-   * - `"agent"` (default) — assistant voice, avatar leading.
+   * - `"assistant"` (default) — assistant voice, avatar leading.
    * - `"user"` — the human, avatar trailing, `iris.3` surface.
    *
    * `sender` denotes only *who* sent the message. System notices and dividers
    * are the separate `ChatNotice` component; tool/function output is content
-   * inside an `agent` message — neither is a `sender` value.
+   * inside an `assistant` message — neither is a `sender` value.
    *
-   * @default "agent"
+   * @default "assistant"
    */
   sender?: SlotRecipeProps<"nimbusChatMessage">["sender"];
   /**
-   * Status overlay, orthogonal to `sender`. `"error"` tints the bubble with the
-   * critical palette to flag a failed generation — an *agent* message can fail,
+   * Status overlay, orthogonal to `sender`. `"error"` tints the body with the
+   * critical palette to flag a failed generation — an *assistant* message can fail,
    * so error is a tone rather than a sender.
    * @default "neutral"
    */
@@ -45,7 +45,7 @@ export type ChatMessageRootSlotProps = HTMLChakraProps<
 
 export type ChatMessageAvatarSlotProps = HTMLChakraProps<"div">;
 
-export type ChatMessageBubbleSlotProps = HTMLChakraProps<"div">;
+export type ChatMessageBodySlotProps = HTMLChakraProps<"div">;
 
 export type ChatMessageActionsSlotProps = HTMLChakraProps<"div">;
 
@@ -92,9 +92,9 @@ export type ChatMessageProps = OmitInternalProps<ChatMessageRootSlotProps> & {
  */
 export type ChatMessageAvatarProps = AvatarProps;
 
-/** Props for the ChatMessage.Bubble component. */
-export type ChatMessageBubbleProps =
-  OmitInternalProps<ChatMessageBubbleSlotProps> & {
+/** Props for the ChatMessage.Body component. */
+export type ChatMessageBodyProps =
+  OmitInternalProps<ChatMessageBodySlotProps> & {
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
     [key: `data-${string}`]: unknown;

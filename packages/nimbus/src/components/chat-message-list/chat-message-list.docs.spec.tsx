@@ -21,16 +21,16 @@ describe("ChatMessageList - Rendering a transcript", () => {
         <ChatMessageList.Root aria-label="Conversation">
           <ChatMessageList.Item>
             <ChatMessage.Root sender="user">
-              <ChatMessage.Bubble>
+              <ChatMessage.Body>
                 <Text>Summarise last week's orders?</Text>
-              </ChatMessage.Bubble>
+              </ChatMessage.Body>
             </ChatMessage.Root>
           </ChatMessageList.Item>
           <ChatMessageList.Item>
-            <ChatMessage.Root sender="agent">
-              <ChatMessage.Bubble>
+            <ChatMessage.Root sender="assistant">
+              <ChatMessage.Body>
                 <Text>Revenue is up 12%.</Text>
-              </ChatMessage.Bubble>
+              </ChatMessage.Body>
             </ChatMessage.Root>
           </ChatMessageList.Item>
         </ChatMessageList.Root>
@@ -72,10 +72,10 @@ describe("ChatMessageList - Accessible live region", () => {
       <NimbusProvider>
         <ChatMessageList.Root aria-label="Conversation with the assistant">
           <ChatMessageList.Item>
-            <ChatMessage.Root sender="agent">
-              <ChatMessage.Bubble>
+            <ChatMessage.Root sender="assistant">
+              <ChatMessage.Body>
                 <Text>Hello!</Text>
-              </ChatMessage.Bubble>
+              </ChatMessage.Body>
             </ChatMessage.Root>
           </ChatMessageList.Item>
         </ChatMessageList.Root>
@@ -92,10 +92,10 @@ describe("ChatMessageList - Accessible live region", () => {
       <NimbusProvider>
         <ChatMessageList.Root>
           <ChatMessageList.Item>
-            <ChatMessage.Root sender="agent">
-              <ChatMessage.Bubble>
+            <ChatMessage.Root sender="assistant">
+              <ChatMessage.Body>
                 <Text>Hello!</Text>
-              </ChatMessage.Bubble>
+              </ChatMessage.Body>
             </ChatMessage.Root>
           </ChatMessageList.Item>
         </ChatMessageList.Root>

@@ -14,7 +14,7 @@ consistent patterns that the current component either fights or misses:
    change.)
 2. **Tool output is content, and system notices are a separate thing** — not
    sender values. ChatBubble's `sender` axis absorbed `system` and `tool`, which
-   don't belong there: a single agent turn that interleaves prose and a tool
+   don't belong there: a single assistant turn that interleaves prose and a tool
    call cannot be expressed on a one-sender-per-message axis, and a centered,
    avatar-less system notice is the *opposite* of a message, not a variant of
    one.
@@ -26,8 +26,10 @@ consistent patterns that the current component either fights or misses:
 
 Separately, **"bubble" is a visual metaphor that breaks down** for the very
 cases the component must serve (a system notice is not a bubble; tool output is
-not a distinct bubble). The field overwhelmingly names the unit a **message**
-and reserves **"bubble"** for the rounded card specifically.
+not a distinct bubble). The field overwhelmingly names the unit a **message**,
+and "bubble" is only ever a shape word — so the metaphor is dropped from the API
+entirely: the card slot is named **`.Body`**, a role-based, style-agnostic name,
+so a future non-rounded (flat, brutalist) treatment does not make the name lie.
 
 This change reshapes `ChatBubble` → `ChatMessage` as the first member of a
 coherent **`Chat*`** component family, narrowing the message's responsibility to
@@ -42,31 +44,33 @@ deprecation cycle.
 leaf **`ChatNotice`**. **Package:** `@commercetools/nimbus`.
 **Category:** Feedback / Chat.
 
-### 1. Rename to `ChatMessage`; keep "bubble" for the card
+### 1. Rename to `ChatMessage`; the card slot becomes `.Body`
 
 The compound root and its parts rename, and `.Footer` becomes `.Meta` (names the
-meaning — message metadata — not the position). "Bubble" survives as the card
-slot it literally describes:
+meaning — message metadata — not the position). Likewise the card slot becomes
+`.Body` — a role-based name — dropping the "bubble" shape metaphor from the API
+so the name stays honest under any future visual treatment:
 
 ```tsx
-<ChatMessage.Root sender="agent">
+<ChatMessage.Root sender="assistant">
   <ChatMessage.Avatar><AutoAwesome /></ChatMessage.Avatar>
-  <ChatMessage.Bubble>
+  <ChatMessage.Body>
     <Markdown isStreaming={streaming}>{reply}</Markdown>
-  </ChatMessage.Bubble>
+  </ChatMessage.Body>
   <ChatMessage.Actions>{/* copy · regenerate */}</ChatMessage.Actions>
   <ChatMessage.Meta>Apr 13, 11:56pm</ChatMessage.Meta>
 </ChatMessage.Root>
 ```
 
-`ChatMessage.Root` publishes the `sender` context that `.Avatar`, `.Bubble`,
+`ChatMessage.Root` publishes the `sender` context that `.Avatar`, `.Body`,
 `.Actions`, and `.Meta` read to place and color themselves — the shared context
 is what earns the compound (dot-notation) form.
 
-### 2. `sender` narrows to `user | agent`
+### 2. `sender` narrows to `user | assistant`
 
 `sender` now means only "which participant," which is all it should ever have
-meant. `system` and `tool` are removed from the axis:
+meant — and `user | assistant` mirrors the standard LLM message-role vocabulary.
+`system` and `tool` are removed from the axis:
 
 - **`system` → `ChatNotice`** (new leaf): a centered, subdued, avatar-less
   interjection (e.g. "Conversation history was cleared", a date divider). It is
@@ -74,16 +78,17 @@ meant. `system` and `tool` are removed from the axis:
   slot. Its presentation is the opposite of a message (no sender, no avatar, no
   actions), so folding it into `ChatMessage` would corrupt the message's single
   responsibility.
-- **`tool` → content**: tool/function output is *what an agent turn contains* —
-  a code block, a `Markdown` custom-component tag, or a composed brick placed in
-  `ChatMessage.Bubble` — not a participant with its own avatar column.
+- **`tool` → content**: tool/function output is *what an assistant turn
+  contains* — a code block, a `Markdown` custom-component tag, or a composed
+  brick placed in `ChatMessage.Body` — not a participant with its own avatar
+  column.
 
 ### 3. Streaming delegates to `Markdown`; the message only flags busy
 
 Streaming has three responsibilities with three owners, no overlap:
 
 - **Rendering** streamed text safely → the existing **`Markdown`** component
-  (`isStreaming`), placed as bubble content. `ChatMessage` renders nothing
+  (`isStreaming`), placed as body content. `ChatMessage` renders nothing
   streaming-specific itself.
 - **Announcing** to assistive tech → the transcript's single persistent live
   region (owned by `ChatMessageList`, the sibling change; until then, the
@@ -113,8 +118,9 @@ conveyed by color/position alone.
 ## Rejected alternatives
 
 - **Keep `sender="tool"|"system"`** — rejected: conflates content and container
-  concerns with participant identity; cannot express a mixed prose+tool agent
-  turn; makes the message responsible for "sometimes I am not a message."
+  concerns with participant identity; cannot express a mixed prose+tool
+  assistant turn; makes the message responsible for "sometimes I am not a
+  message."
 - **A back-compat `ChatBubble` alias** — rejected: the capability is
   Experimental and days old; a hard rename is cheaper than carrying two names.
 - **A message-owned streaming renderer** — rejected: duplicates `Markdown`,

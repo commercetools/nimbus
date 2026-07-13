@@ -58,18 +58,18 @@ const App = () => (
     <ChatMessageList.Item>
       <ChatMessage.Root sender="user">
         <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
-        <ChatMessage.Bubble>
+        <ChatMessage.Body>
           <Text>Can you summarise last week's orders?</Text>
-        </ChatMessage.Bubble>
+        </ChatMessage.Body>
       </ChatMessage.Root>
     </ChatMessageList.Item>
 
     <ChatMessageList.Item>
-      <ChatMessage.Root sender="agent">
+      <ChatMessage.Root sender="assistant">
         <ChatMessage.Avatar>
           <Icons.AutoAwesome />
         </ChatMessage.Avatar>
-        <ChatMessage.Bubble>
+        <ChatMessage.Body>
           <Markdown>
             {[
               "Here's what I found:",
@@ -78,7 +78,7 @@ const App = () => (
               "- Top SKU: `ABC-123`",
             ].join("\n")}
           </Markdown>
-        </ChatMessage.Bubble>
+        </ChatMessage.Body>
       </ChatMessage.Root>
     </ChatMessageList.Item>
 

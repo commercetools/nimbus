@@ -16,19 +16,19 @@ const App = () => (
     <ChatMessageList.Item>
       <ChatMessage.Root sender="user" aria-label="Message from Ada Lovelace">
         <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
-        <ChatMessage.Bubble>
+        <ChatMessage.Body>
           <Text>Can you summarise last week's orders?</Text>
-        </ChatMessage.Bubble>
+        </ChatMessage.Body>
       </ChatMessage.Root>
     </ChatMessageList.Item>
     <ChatMessageList.Item>
-      <ChatMessage.Root sender="agent" aria-label="Message from the assistant">
+      <ChatMessage.Root sender="assistant" aria-label="Message from the assistant">
         <ChatMessage.Avatar aria-label="Assistant">
           <Icons.AutoAwesome />
         </ChatMessage.Avatar>
-        <ChatMessage.Bubble>
+        <ChatMessage.Body>
           <Text>Revenue is up 12% week-over-week.</Text>
-        </ChatMessage.Bubble>
+        </ChatMessage.Body>
       </ChatMessage.Root>
     </ChatMessageList.Item>
   </ChatMessageList.Root>

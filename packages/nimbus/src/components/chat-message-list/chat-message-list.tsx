@@ -25,7 +25,7 @@ import { ChatMessageListRoot, ChatMessageListItem } from "./components";
  * <ChatMessageList.Root aria-label="Conversation with the assistant">
  *   <ChatMessageList.Item>
  *     <ChatMessage.Root sender="user">
- *       <ChatMessage.Bubble><Text>Summarise last week's orders?</Text></ChatMessage.Bubble>
+ *       <ChatMessage.Body><Text>Summarise last week's orders?</Text></ChatMessage.Body>
  *     </ChatMessage.Root>
  *   </ChatMessageList.Item>
  *   <ChatMessageList.Item>
@@ -63,7 +63,7 @@ export const ChatMessageList = {
    * @example
    * ```tsx
    * <ChatMessageList.Item>
-   *   <ChatMessage.Root sender="agent">…</ChatMessage.Root>
+   *   <ChatMessage.Root sender="assistant">…</ChatMessage.Root>
    * </ChatMessageList.Item>
    * ```
    */

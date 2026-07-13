@@ -1,10 +1,10 @@
 # Tasks: Reshape ChatBubble into ChatMessage
 
 > **API note:** `ChatMessage` is a Tier 3 compound — `ChatMessage.Root` (always
-> first, publishes `sender` context) + `.Avatar`, `.Bubble`, `.Actions`,
+> first, publishes `sender` context) + `.Avatar`, `.Body`, `.Actions`,
 > `.Meta`, `.Typing`. `ChatNotice` is a single leaf component (no `.Root`).
 > Streaming *rendering* is delegated to the existing `Markdown` component placed
-> as bubble content; `ChatMessage` only sets `aria-busy`. This supersedes the
+> as body content; `ChatMessage` only sets `aria-busy`. This supersedes the
 > Experimental `ChatBubble`; no back-compat alias.
 
 ## 1. Rename component and capability
@@ -14,12 +14,13 @@
       the `components/` parts (`chat-bubble.root.tsx` → `chat-message.root.tsx`,
       etc.).
 - [x] 1.2 Rename the compound namespace object and parts: `ChatBubble` →
-      `ChatMessage`; `.Root`, `.Avatar`, `.Bubble`, `.Actions`, `.Typing`
-      retained; `.Footer` → `.Meta` (rename slot, component, types, and recipe
-      slot `footer` → `meta`).
+      `ChatMessage`; `.Root`, `.Avatar`, `.Actions`, `.Typing` retained;
+      `.Bubble` → `.Body` and `.Footer` → `.Meta` (rename slot, component,
+      types, and recipe slots `bubble` → `body` and `footer` → `meta`).
 - [x] 1.3 Rename all public types (`ChatBubbleProps` → `ChatMessageProps`,
-      `ChatBubble*SlotProps` → `ChatMessage*SlotProps`, `ChatBubbleFooterProps` →
-      `ChatMessageMetaProps`, etc.) with JSDoc updated.
+      `ChatBubble*SlotProps` → `ChatMessage*SlotProps`, `ChatBubbleBubbleProps` →
+      `ChatMessageBodyProps`, `ChatBubbleFooterProps` → `ChatMessageMetaProps`,
+      etc.) with JSDoc updated.
 - [x] 1.4 Update the barrel export in
       `packages/nimbus/src/components/index.ts`: export `ChatMessage` (remove
       `ChatBubble`).
@@ -27,13 +28,13 @@
 ## 2. Narrow the `sender` axis
 
 - [x] 2.1 In `chat-message.recipe.ts`, remove the `system` and `tool` values
-      from the `sender` variant, leaving `user` and `agent` (default `agent`).
-      Remove their per-sender styling blocks.
+      from the `sender` variant, leaving `user` and `assistant` (default
+      `assistant`). Remove their per-sender styling blocks.
 - [x] 2.2 Update `chat-message.types.ts` so `sender` is typed `"user" |
-      "agent"`.
+      "assistant"`.
 - [x] 2.3 Rename the recipe key `nimbusChatBubble` → `nimbusChatMessage` and
-      update the slot list (`footer` → `meta`); update the theme registration in
-      `src/theme/recipes/index.ts`.
+      update the slot list (`bubble` → `body`, `footer` → `meta`); update the
+      theme registration in `src/theme/recipes/index.ts`.
 
 ## 3. Add `ChatNotice` (replaces `sender="system"`)
 
@@ -50,7 +51,7 @@
 
 - [x] 4.1 Keep `isStreaming` on `ChatMessage.Root` setting `aria-busy` only.
       Remove any streaming-specific rendering from `ChatMessage`; document that
-      streamed text is rendered by placing `<Markdown isStreaming>` as bubble
+      streamed text is rendered by placing `<Markdown isStreaming>` as body
       content.
 - [x] 4.2 Keep `ChatMessage.Typing` (the `ActivityIndicator` dots +
       optional label) as the pre-first-token affordance.
@@ -60,25 +61,25 @@
 ## 5. Figma Code Connect
 
 - [x] 5.1 Rename `chat-message.figma.tsx`; map the Figma `Sender` property
-      (`User`/`Agent`) onto the `sender` variant; forward children into
-      `ChatMessage.Bubble`.
+      (`User`/`Agent`, whose `Agent` value maps to `sender="assistant"`) onto
+      the `sender` variant; forward children into `ChatMessage.Body`.
 
 ## 6. Stories & tests (Storybook play functions)
 
-- [x] 6.1 Update stories to `ChatMessage`: base, user, agent, actions, meta,
+- [x] 6.1 Update stories to `ChatMessage`: base, user, assistant, actions, meta,
       markdown payload, overflow/wrapping, error tone, streaming (via
       `<Markdown isStreaming>` + `isStreaming` busy flag).
 - [x] 6.2 Add a `ChatNotice` story (centered notice / divider) replacing the old
       `SystemMessage` story.
-- [x] 6.3 Replace the old `ToolMessage` story with an `agent` message whose
-      bubble content is tool output (code block via `Markdown`).
+- [x] 6.3 Replace the old `ToolMessage` story with an `assistant` message whose
+      body content is tool output (code block via `Markdown`).
 - [x] 6.4 Keep/extend a11y assertions: article-by-default, named message,
       decorative-vs-named avatar, `aria-busy` while streaming.
 
 ## 7. Documentation
 
 - [x] 7.1 Update `chat-message.mdx`, `.dev.mdx`, `.a11y.mdx`, `.docs.spec.tsx`:
-      new name, `sender` (user/agent), `ChatNotice`, tool-output-as-content,
+      new name, `sender` (user/assistant), `ChatNotice`, tool-output-as-content,
       streaming-via-Markdown. Cross-link the transcript composition to
       `ChatMessageList` (sibling change).
 - [x] 7.2 Update the lifecycle/description front-matter (still Experimental).

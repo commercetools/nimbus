@@ -1,7 +1,7 @@
 import {
   ChatMessageRoot,
   ChatMessageAvatar,
-  ChatMessageBubble,
+  ChatMessageBody,
   ChatMessageActions,
   ChatMessageMeta,
   ChatMessageTyping,
@@ -11,8 +11,8 @@ import {
  * ChatMessage
  * ============================================================
  * A compound component representing a single message in an AI chat feed.
- * It provides a bubble container, an avatar, and layout-only slots that
- * consumers fill with their own content: actions inside the bubble, a meta
+ * It provides a body container, an avatar, and layout-only slots that
+ * consumers fill with their own content: actions inside the body, a meta
  * below it, and a typing indicator for streaming replies. The `sender` prop
  * drives the layout direction and sender-specific styling, and `tone` flags a
  * failed generation.
@@ -24,17 +24,17 @@ import {
  *
  * @example
  * ```tsx
- * <ChatMessage.Root sender="agent">
+ * <ChatMessage.Root sender="assistant">
  *   <ChatMessage.Avatar>
  *     <AutoAwesome />
  *   </ChatMessage.Avatar>
- *   <ChatMessage.Bubble>
+ *   <ChatMessage.Body>
  *     <Text>Here is the summary you asked for.</Text>
  *     <ChatMessage.Actions>
  *       <Button variant="outline">Save as draft</Button>
  *       <Button variant="solid">Approve</Button>
  *     </ChatMessage.Actions>
- *   </ChatMessage.Bubble>
+ *   </ChatMessage.Body>
  *   <ChatMessage.Meta>
  *     <Link>How was this generated?</Link>
  *     <Text>Apr 13, 11:56pm</Text>
@@ -47,8 +47,8 @@ export const ChatMessage = {
    * # ChatMessage.Root
    *
    * The grid container for a single message. Establishes the styling context
-   * and lays out the avatar, bubble and optional meta row. Accepts `sender`
-   * (`"user" | "agent"`) which controls layout direction
+   * and lays out the avatar, body and optional meta row. Accepts `sender`
+   * (`"user" | "assistant"`) which controls layout direction
    * and styling, `tone` (`"neutral" | "error"`) to flag a failed generation,
    * and `isStreaming` to mark the message as still generating (sets
    * `aria-busy`). Renders a semantic `<article>` by default; override with `as`.
@@ -57,9 +57,9 @@ export const ChatMessage = {
    * ```tsx
    * <ChatMessage.Root sender="user" aria-label="Message from Ada Lovelace">
    *   <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
-   *   <ChatMessage.Bubble>
+   *   <ChatMessage.Body>
    *     <Text>Can you summarise this order?</Text>
-   *   </ChatMessage.Bubble>
+   *   </ChatMessage.Body>
    * </ChatMessage.Root>
    * ```
    */
@@ -81,7 +81,7 @@ export const ChatMessage = {
    */
   Avatar: ChatMessageAvatar,
   /**
-   * # ChatMessage.Bubble
+   * # ChatMessage.Body
    *
    * The rounded card that holds the message payload. Stacks its children
    * vertically; place `ChatMessage.Actions` last to pin actions to the bottom.
@@ -89,17 +89,17 @@ export const ChatMessage = {
    *
    * @example
    * ```tsx
-   * <ChatMessage.Bubble>
+   * <ChatMessage.Body>
    *   <Text>Message content</Text>
-   * </ChatMessage.Bubble>
+   * </ChatMessage.Body>
    * ```
    */
-  Bubble: ChatMessageBubble,
+  Body: ChatMessageBody,
   /**
    * # ChatMessage.Actions
    *
    * A layout-only, right-aligned row for action buttons, rendered inside the
-   * bubble. Consumers provide the buttons.
+   * body. Consumers provide the buttons.
    *
    * @example
    * ```tsx
@@ -113,7 +113,7 @@ export const ChatMessage = {
   /**
    * # ChatMessage.Meta
    *
-   * A layout-only `space-between` row rendered below the bubble. Consumers
+   * A layout-only `space-between` row rendered below the body. Consumers
    * provide the content (timestamp, trust affordances, reaction icons, links).
    *
    * @example
@@ -129,18 +129,18 @@ export const ChatMessage = {
    * # ChatMessage.Typing
    *
    * An animated "generating…" indicator (Nimbus `ActivityIndicator`) for a
-   * streaming reply. Render it as the bubble's payload while the response
+   * streaming reply. Render it as the body's payload while the response
    * streams; pass a visible label as `children` for a per-message affordance.
    *
    * @example
    * ```tsx
-   * <ChatMessage.Root sender="agent" isStreaming>
+   * <ChatMessage.Root sender="assistant" isStreaming>
    *   <ChatMessage.Avatar>
    *     <AutoAwesome />
    *   </ChatMessage.Avatar>
-   *   <ChatMessage.Bubble>
+   *   <ChatMessage.Body>
    *     <ChatMessage.Typing>Assistant is typing…</ChatMessage.Typing>
-   *   </ChatMessage.Bubble>
+   *   </ChatMessage.Body>
    * </ChatMessage.Root>
    * ```
    */
@@ -150,7 +150,7 @@ export const ChatMessage = {
 export {
   ChatMessageRoot as _ChatMessageRoot,
   ChatMessageAvatar as _ChatMessageAvatar,
-  ChatMessageBubble as _ChatMessageBubble,
+  ChatMessageBody as _ChatMessageBody,
   ChatMessageActions as _ChatMessageActions,
   ChatMessageMeta as _ChatMessageMeta,
   ChatMessageTyping as _ChatMessageTyping,

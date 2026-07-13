@@ -6,10 +6,10 @@ import type { ChatMessageProps } from "../chat-message.types";
 /**
  * ChatMessage.Root - The grid container for a single chat message.
  *
- * Establishes the styling context and lays out the avatar, bubble and optional
+ * Establishes the styling context and lays out the avatar, body and optional
  * meta row. The `sender` prop selects the layout direction (avatar leading
- * for `"agent"`/`"tool"`, trailing for `"user"`, centered for `"system"`) and
- * the sender-specific styling; `tone="error"` tints the bubble for a failed
+ * for `"assistant"`/`"tool"`, trailing for `"user"`, centered for `"system"`) and
+ * the sender-specific styling; `tone="error"` tints the body for a failed
  * generation.
  *
  * Renders a semantic `<article>` by default (a feed item, per the ARIA APG) so

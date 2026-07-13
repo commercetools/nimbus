@@ -61,7 +61,7 @@
 
 ## 8. Stories & tests (Storybook play functions)
 
-- [x] 8.1 Mixed transcript (user + agent messages + a `ChatNotice`).
+- [x] 8.1 Mixed transcript (user + assistant messages + a `ChatNotice`).
 - [x] 8.2 Autoscroll pins to newest on append (including a simulated streaming
       grow).
 - [x] 8.3 Scrolling up releases the pin and reveals the scroll-to-bottom

@@ -15,43 +15,43 @@ import { AutoAwesome } from "@commercetools/nimbus-icons";
 /**
  * @docs-section basic-rendering
  * @docs-title Basic rendering
- * @docs-description Compose a single agent message from the ChatMessage parts.
+ * @docs-description Compose a single assistant message from the ChatMessage parts.
  * @docs-order 1
  */
 describe("ChatMessage - Basic rendering", () => {
-  it("renders an agent message as a semantic article", () => {
+  it("renders an assistant message as a semantic article", () => {
     render(
       <NimbusProvider>
-        <ChatMessage.Root sender="agent" data-testid="bubble">
+        <ChatMessage.Root sender="assistant" data-testid="body">
           <ChatMessage.Avatar>
             <AutoAwesome />
           </ChatMessage.Avatar>
-          <ChatMessage.Bubble>
+          <ChatMessage.Body>
             <Text>Here is the summary you asked for.</Text>
-          </ChatMessage.Bubble>
+          </ChatMessage.Body>
         </ChatMessage.Root>
       </NimbusProvider>
     );
 
-    const bubble = screen.getByTestId("bubble");
-    expect(bubble.tagName.toLowerCase()).toBe("article");
-    expect(bubble).toHaveTextContent("Here is the summary you asked for.");
+    const body = screen.getByTestId("body");
+    expect(body.tagName.toLowerCase()).toBe("article");
+    expect(body).toHaveTextContent("Here is the summary you asked for.");
   });
 
   it("can override the rendered element via `as`", () => {
     render(
       <NimbusProvider>
         <Box as="ul">
-          <ChatMessage.Root as="li" data-testid="bubble">
-            <ChatMessage.Bubble>
+          <ChatMessage.Root as="li" data-testid="body">
+            <ChatMessage.Body>
               <Text>Item</Text>
-            </ChatMessage.Bubble>
+            </ChatMessage.Body>
           </ChatMessage.Root>
         </Box>
       </NimbusProvider>
     );
 
-    expect(screen.getByTestId("bubble").tagName.toLowerCase()).toBe("li");
+    expect(screen.getByTestId("body").tagName.toLowerCase()).toBe("li");
   });
 });
 
@@ -62,35 +62,35 @@ describe("ChatMessage - Basic rendering", () => {
  * @docs-order 2
  */
 describe("ChatMessage - Senders and tone", () => {
-  it.each(["user", "agent"] as const)("renders the %s sender", (sender) => {
+  it.each(["user", "assistant"] as const)("renders the %s sender", (sender) => {
     render(
       <NimbusProvider>
-        <ChatMessage.Root sender={sender} data-testid="bubble">
-          <ChatMessage.Bubble>
+        <ChatMessage.Root sender={sender} data-testid="body">
+          <ChatMessage.Body>
             <Text>{sender} message</Text>
-          </ChatMessage.Bubble>
+          </ChatMessage.Body>
         </ChatMessage.Root>
       </NimbusProvider>
     );
 
-    expect(screen.getByTestId("bubble")).toHaveTextContent(`${sender} message`);
+    expect(screen.getByTestId("body")).toHaveTextContent(`${sender} message`);
   });
 
-  it("renders an error-toned agent message with a retry action", () => {
+  it("renders an error-toned assistant message with a retry action", () => {
     render(
       <NimbusProvider>
-        <ChatMessage.Root sender="agent" tone="error" data-testid="bubble">
-          <ChatMessage.Bubble>
+        <ChatMessage.Root sender="assistant" tone="error" data-testid="body">
+          <ChatMessage.Body>
             <Text>Something went wrong.</Text>
             <ChatMessage.Actions>
               <Button variant="outline">Retry</Button>
             </ChatMessage.Actions>
-          </ChatMessage.Bubble>
+          </ChatMessage.Body>
         </ChatMessage.Root>
       </NimbusProvider>
     );
 
-    expect(screen.getByTestId("bubble")).toHaveTextContent(
+    expect(screen.getByTestId("body")).toHaveTextContent(
       "Something went wrong."
     );
     expect(screen.getByRole("button", { name: "Retry" })).toBeInTheDocument();
@@ -100,7 +100,7 @@ describe("ChatMessage - Senders and tone", () => {
 /**
  * @docs-section actions-and-meta
  * @docs-title Actions and meta
- * @docs-description Actions sit inside the bubble; the meta sits below it.
+ * @docs-description Actions sit inside the body; the meta sits below it.
  * @docs-order 3
  */
 describe("ChatMessage - Actions and meta", () => {
@@ -110,15 +110,15 @@ describe("ChatMessage - Actions and meta", () => {
 
     render(
       <NimbusProvider>
-        <ChatMessage.Root sender="agent">
-          <ChatMessage.Bubble>
+        <ChatMessage.Root sender="assistant">
+          <ChatMessage.Body>
             <Text>Approve to apply.</Text>
             <ChatMessage.Actions>
               <Button variant="solid" onPress={onApprove}>
                 Approve
               </Button>
             </ChatMessage.Actions>
-          </ChatMessage.Bubble>
+          </ChatMessage.Body>
         </ChatMessage.Root>
       </NimbusProvider>
     );
@@ -127,13 +127,13 @@ describe("ChatMessage - Actions and meta", () => {
     expect(onApprove).toHaveBeenCalledTimes(1);
   });
 
-  it("renders meta content below the bubble", () => {
+  it("renders meta content below the body", () => {
     render(
       <NimbusProvider>
-        <ChatMessage.Root sender="agent">
-          <ChatMessage.Bubble>
+        <ChatMessage.Root sender="assistant">
+          <ChatMessage.Body>
             <Text>Done.</Text>
-          </ChatMessage.Bubble>
+          </ChatMessage.Body>
           <ChatMessage.Meta>
             <Link href="#">How was this generated?</Link>
             <Text>Apr 13, 11:56pm</Text>
@@ -159,20 +159,20 @@ describe("ChatMessage - Streaming", () => {
   it("sets aria-busy and shows a typing affordance", () => {
     render(
       <NimbusProvider>
-        <ChatMessage.Root sender="agent" isStreaming data-testid="bubble">
+        <ChatMessage.Root sender="assistant" isStreaming data-testid="body">
           <ChatMessage.Avatar>
             <AutoAwesome />
           </ChatMessage.Avatar>
-          <ChatMessage.Bubble>
+          <ChatMessage.Body>
             <ChatMessage.Typing>
               <Text>Assistant is typing…</Text>
             </ChatMessage.Typing>
-          </ChatMessage.Bubble>
+          </ChatMessage.Body>
         </ChatMessage.Root>
       </NimbusProvider>
     );
 
-    expect(screen.getByTestId("bubble")).toHaveAttribute("aria-busy", "true");
+    expect(screen.getByTestId("body")).toHaveAttribute("aria-busy", "true");
     expect(screen.getByText("Assistant is typing…")).toBeInTheDocument();
   });
 });
@@ -193,21 +193,21 @@ describe("ChatMessage - Accessible transcript", () => {
             aria-label="Message from Ada Lovelace"
           >
             <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
-            <ChatMessage.Bubble>
+            <ChatMessage.Body>
               <Text>Summarise last week's orders?</Text>
-            </ChatMessage.Bubble>
+            </ChatMessage.Body>
           </ChatMessage.Root>
 
           <ChatMessage.Root
-            sender="agent"
+            sender="assistant"
             aria-label="Message from the assistant"
           >
             <ChatMessage.Avatar>
               <AutoAwesome />
             </ChatMessage.Avatar>
-            <ChatMessage.Bubble>
+            <ChatMessage.Body>
               <Text>Revenue is up 12%.</Text>
-            </ChatMessage.Bubble>
+            </ChatMessage.Body>
           </ChatMessage.Root>
         </Box>
       </NimbusProvider>
@@ -221,13 +221,13 @@ describe("ChatMessage - Accessible transcript", () => {
     expect(
       screen.getByRole("article", { name: "Message from Ada Lovelace" })
     ).toBeInTheDocument();
-    const agent = screen.getByRole("article", {
+    const assistant = screen.getByRole("article", {
       name: "Message from the assistant",
     });
-    expect(agent).toBeInTheDocument();
+    expect(assistant).toBeInTheDocument();
 
-    // The decorative agent avatar is not exposed with a misleading label.
-    expect(within(agent).queryByLabelText(/avatar/i)).not.toBeInTheDocument();
+    // The decorative assistant avatar is not exposed with a misleading label.
+    expect(within(assistant).queryByLabelText(/avatar/i)).not.toBeInTheDocument();
   });
 
   it("renders a system notice as a ChatNotice (a peer, not a sender)", () => {

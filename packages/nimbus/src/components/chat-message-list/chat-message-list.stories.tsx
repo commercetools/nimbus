@@ -33,7 +33,7 @@ type Story = StoryObj<typeof ChatMessageList.Root>;
 
 /**
  * Mixed transcript
- * A `ChatMessageList` arranges `Item`s that hold user and agent `ChatMessage`s
+ * A `ChatMessageList` arranges `Item`s that hold user and assistant `ChatMessage`s
  * and a `ChatNotice` into a scrollable, live transcript. The members do not know
  * they are inside a list.
  */
@@ -47,23 +47,23 @@ export const MixedTranscript: Story = {
       <ChatMessageList.Item>
         <ChatMessage.Root sender="user" aria-label="Message from Ada">
           <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
-          <ChatMessage.Bubble>
+          <ChatMessage.Body>
             <Text>Can you summarise last week's orders?</Text>
-          </ChatMessage.Bubble>
+          </ChatMessage.Body>
         </ChatMessage.Root>
       </ChatMessageList.Item>
 
       <ChatMessageList.Item>
         <ChatMessage.Root
-          sender="agent"
+          sender="assistant"
           aria-label="Message from the assistant"
         >
           <ChatMessage.Avatar>
             <AutoAwesome />
           </ChatMessage.Avatar>
-          <ChatMessage.Bubble>
+          <ChatMessage.Body>
             <Text>Revenue is up 12% week-over-week.</Text>
-          </ChatMessage.Bubble>
+          </ChatMessage.Body>
         </ChatMessage.Root>
       </ChatMessageList.Item>
 
@@ -112,12 +112,12 @@ const AppendableList = ({ autoScroll = true }: { autoScroll?: boolean }) => {
       >
         {Array.from({ length: count }).map((_, i) => (
           <ChatMessageList.Item key={i}>
-            <ChatMessage.Root sender={i % 2 === 0 ? "user" : "agent"}>
-              <ChatMessage.Bubble>
+            <ChatMessage.Root sender={i % 2 === 0 ? "user" : "assistant"}>
+              <ChatMessage.Body>
                 <Text>
                   Message {i + 1}. {SAMPLE}
                 </Text>
-              </ChatMessage.Bubble>
+              </ChatMessage.Body>
             </ChatMessage.Root>
           </ChatMessageList.Item>
         ))}
@@ -224,16 +224,16 @@ const StreamingList = () => {
       >
         <ChatMessageList.Item>
           <ChatMessage.Root sender="user">
-            <ChatMessage.Bubble>
+            <ChatMessage.Body>
               <Text>Tell me a long story.</Text>
-            </ChatMessage.Bubble>
+            </ChatMessage.Body>
           </ChatMessage.Root>
         </ChatMessageList.Item>
         <ChatMessageList.Item>
-          <ChatMessage.Root sender="agent" isStreaming>
-            <ChatMessage.Bubble>
+          <ChatMessage.Root sender="assistant" isStreaming>
+            <ChatMessage.Body>
               <Text>{streamed}</Text>
-            </ChatMessage.Bubble>
+            </ChatMessage.Body>
           </ChatMessage.Root>
         </ChatMessageList.Item>
       </ChatMessageList.Root>

@@ -6,7 +6,7 @@ import type { ChatMessageTypingProps } from "../chat-message.types";
  * ChatMessage.Typing - Animated "generating…" indicator for a streaming reply.
  *
  * Renders the Nimbus `ActivityIndicator` (three bouncing dots) inside the
- * bubble while a response streams. Place it as the bubble's payload and swap it
+ * body while a response streams. Place it as the body's payload and swap it
  * for the real content once the stream settles.
  *
  * Accessibility: the dots are decorative (`ActivityIndicator` is always

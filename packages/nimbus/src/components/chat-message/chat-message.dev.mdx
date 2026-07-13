@@ -15,27 +15,27 @@ import { ChatMessage, type ChatMessageProps } from "@commercetools/nimbus";
 ### Basic usage
 
 `ChatMessage` is a compound component: wrap `ChatMessage.Avatar` and
-`ChatMessage.Bubble` in `ChatMessage.Root`. `sender` defaults to `"agent"`.
+`ChatMessage.Body` in `ChatMessage.Root`. `sender` defaults to `"assistant"`.
 
 ```jsx live-dev
 const App = () => (
-  <ChatMessage.Root sender="agent">
+  <ChatMessage.Root sender="assistant">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
-    <ChatMessage.Bubble>
+    <ChatMessage.Body>
       <Text>Here is the summary you asked for.</Text>
-    </ChatMessage.Bubble>
+    </ChatMessage.Body>
   </ChatMessage.Root>
 );
 ```
 
 ## Usage examples
 
-### User and agent messages
+### User and assistant messages
 
 `sender="user"` trails the avatar and uses the `iris.3` surface;
-`sender="agent"` (the default) leads with the avatar. Name a message with
+`sender="assistant"` (the default) leads with the avatar. Name a message with
 `aria-label` (or `aria-labelledby`) — the avatar itself stays decorative unless
 you give it `firstName`/`lastName` or its own `aria-label`.
 
@@ -44,17 +44,17 @@ const App = () => (
   <Stack gap="600">
     <ChatMessage.Root sender="user" aria-label="Message from Ada Lovelace">
       <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
-      <ChatMessage.Bubble>
+      <ChatMessage.Body>
         <Text>Can you summarise last week's orders for me?</Text>
-      </ChatMessage.Bubble>
+      </ChatMessage.Body>
     </ChatMessage.Root>
-    <ChatMessage.Root sender="agent" aria-label="Message from the assistant">
+    <ChatMessage.Root sender="assistant" aria-label="Message from the assistant">
       <ChatMessage.Avatar aria-label="Assistant">
         <Icons.AutoAwesome />
       </ChatMessage.Avatar>
-      <ChatMessage.Bubble>
+      <ChatMessage.Body>
         <Text>Revenue is up 12% week-over-week.</Text>
-      </ChatMessage.Bubble>
+      </ChatMessage.Body>
     </ChatMessage.Root>
   </Stack>
 );
@@ -72,61 +72,61 @@ const App = () => <ChatNotice>Conversation history was cleared.</ChatNotice>;
 
 ### Tool output
 
-Tool / function-call output is content _inside_ an `agent` message (there is no
+Tool / function-call output is content _inside_ an `assistant` message (there is no
 `sender="tool"`) — for example a JSON code block rendered by `Markdown`.
 
 ````jsx live-dev
 const App = () => (
-  <ChatMessage.Root sender="agent">
+  <ChatMessage.Root sender="assistant">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
-    <ChatMessage.Bubble>
+    <ChatMessage.Body>
       <Markdown>
         {["```json", '{ "orders": 42, "revenue": 12890 }', "```"].join("\n")}
       </Markdown>
-    </ChatMessage.Bubble>
+    </ChatMessage.Body>
   </ChatMessage.Root>
 );
 ````
 
 ### Error tone
 
-`tone="error"` is orthogonal to `sender` — it tints the bubble to flag a failed
-generation, so an `agent` message can be both `sender="agent"` and
+`tone="error"` is orthogonal to `sender` — it tints the body to flag a failed
+generation, so an `assistant` message can be both `sender="assistant"` and
 `tone="error"`.
 
 ```jsx live-dev
 const App = () => (
-  <ChatMessage.Root sender="agent" tone="error">
+  <ChatMessage.Root sender="assistant" tone="error">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
-    <ChatMessage.Bubble>
+    <ChatMessage.Body>
       <Text>Something went wrong generating this response.</Text>
       <ChatMessage.Actions>
         <Button variant="outline" colorPalette="primary">
           Retry
         </Button>
       </ChatMessage.Actions>
-    </ChatMessage.Bubble>
+    </ChatMessage.Body>
   </ChatMessage.Root>
 );
 ```
 
 ### Actions
 
-`ChatMessage.Actions` renders a right-aligned button row inside the bubble.
-Place it as the last child of `ChatMessage.Bubble` so it pins to the bottom of
+`ChatMessage.Actions` renders a right-aligned button row inside the body.
+Place it as the last child of `ChatMessage.Body` so it pins to the bottom of
 the card.
 
 ```jsx live-dev
 const App = () => (
-  <ChatMessage.Root sender="agent">
+  <ChatMessage.Root sender="assistant">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
-    <ChatMessage.Bubble>
+    <ChatMessage.Body>
       <Text>I drafted the date range for your report. Approve to apply.</Text>
       <ChatMessage.Actions>
         <Button variant="outline" colorPalette="primary">
@@ -136,26 +136,26 @@ const App = () => (
           Approve
         </Button>
       </ChatMessage.Actions>
-    </ChatMessage.Bubble>
+    </ChatMessage.Body>
   </ChatMessage.Root>
 );
 ```
 
 ### Meta: timestamp and reactions
 
-`ChatMessage.Meta` renders a `space-between` row below the bubble — a trust link
+`ChatMessage.Meta` renders a `space-between` row below the body — a trust link
 on the start side, a timestamp and reaction `IconButton`s on the end side. With
 a single child, `space-between` leaves it at the start of the row.
 
 ```jsx live-dev
 const App = () => (
-  <ChatMessage.Root sender="agent">
+  <ChatMessage.Root sender="assistant">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
-    <ChatMessage.Bubble>
+    <ChatMessage.Body>
       <Text>Here is the summary you asked for.</Text>
-    </ChatMessage.Bubble>
+    </ChatMessage.Body>
     <ChatMessage.Meta>
       <Link href="#">How was this generated?</Link>
       <Stack direction="row" alignItems="center" gap="100">
@@ -177,16 +177,16 @@ const App = () => (
 
 ### Markdown payload
 
-The bubble's payload is arbitrary content — render a `Markdown` string for
+The body's payload is arbitrary content — render a `Markdown` string for
 formatted replies (lists, links, inline code, code blocks).
 
 ```jsx live-dev
 const App = () => (
-  <ChatMessage.Root sender="agent">
+  <ChatMessage.Root sender="assistant">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
-    <ChatMessage.Bubble>
+    <ChatMessage.Body>
       <Markdown>
         {[
           "Here's what I found:",
@@ -202,7 +202,7 @@ const App = () => (
           Approve
         </Button>
       </ChatMessage.Actions>
-    </ChatMessage.Bubble>
+    </ChatMessage.Body>
   </ChatMessage.Root>
 );
 ```
@@ -211,22 +211,22 @@ const App = () => (
 
 While a reply generates, set `isStreaming` on `ChatMessage.Root` (which sets
 `aria-busy`). Before the first token, render `ChatMessage.Typing` as the
-bubble's payload; once text starts streaming, render it with
+body's payload; once text starts streaming, render it with
 `<Markdown isStreaming>` — the `Markdown` component owns safe incremental
 rendering (completing unterminated markdown, re-parsing only the final block per
 token), so `ChatMessage` never re-implements streamed-text rendering itself.
 
 ```jsx live-dev
 const App = () => (
-  <ChatMessage.Root sender="agent" isStreaming>
+  <ChatMessage.Root sender="assistant" isStreaming>
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
-    <ChatMessage.Bubble>
+    <ChatMessage.Body>
       <ChatMessage.Typing>
         <Text color="neutral.11">Assistant is typing…</Text>
       </ChatMessage.Typing>
-    </ChatMessage.Bubble>
+    </ChatMessage.Body>
   </ChatMessage.Root>
 );
 ```
@@ -251,18 +251,18 @@ const App = () => (
   >
     <ChatMessage.Root sender="user" aria-label="Message from Ada Lovelace">
       <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
-      <ChatMessage.Bubble>
+      <ChatMessage.Body>
         <Text>Can you summarise last week's orders?</Text>
-      </ChatMessage.Bubble>
+      </ChatMessage.Body>
     </ChatMessage.Root>
 
-    <ChatMessage.Root sender="agent" aria-label="Message from the assistant">
+    <ChatMessage.Root sender="assistant" aria-label="Message from the assistant">
       <ChatMessage.Avatar aria-label="Assistant">
         <Icons.AutoAwesome />
       </ChatMessage.Avatar>
-      <ChatMessage.Bubble>
+      <ChatMessage.Body>
         <Text>Revenue is up 12% week-over-week.</Text>
-      </ChatMessage.Bubble>
+      </ChatMessage.Body>
     </ChatMessage.Root>
   </Box>
 );
@@ -270,10 +270,10 @@ const App = () => (
 
 ## Component requirements
 
-- Render `ChatMessage.Avatar` and `ChatMessage.Bubble` as direct children of
-  `ChatMessage.Root`; add `ChatMessage.Meta` as a sibling after the bubble for a
-  below-bubble row.
-- Nest `ChatMessage.Actions` inside `ChatMessage.Bubble`, as the last child, so
+- Render `ChatMessage.Avatar` and `ChatMessage.Body` as direct children of
+  `ChatMessage.Root`; add `ChatMessage.Meta` as a sibling after the body for a
+  below-body row.
+- Nest `ChatMessage.Actions` inside `ChatMessage.Body`, as the last child, so
   it pins to the bottom of the card.
 - For non-message interjections (system notices, dividers) use `ChatNotice`, a
   peer of `ChatMessage` — not a `sender` variant.

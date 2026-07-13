@@ -35,8 +35,8 @@ into it.
   </ChatMessageList.Item>
 
   <ChatMessageList.Item>
-    <ChatMessage.Root sender="agent">
-      <ChatMessage.Bubble><Markdown isStreaming>{reply}</Markdown></ChatMessage.Bubble>
+    <ChatMessage.Root sender="assistant">
+      <ChatMessage.Body><Markdown isStreaming>{reply}</Markdown></ChatMessage.Body>
     </ChatMessage.Root>
   </ChatMessageList.Item>
 

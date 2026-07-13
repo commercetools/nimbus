@@ -5,7 +5,7 @@ import { ChatMessage } from "./chat-message";
 //
 // The Figma component exposes a `Sender` property (User | Agent) that maps onto
 // the `sender` variant. The payload, actions and feedback are authored by the
-// consumer, so the snippet forwards the Figma children into ChatMessage.Bubble
+// consumer, so the snippet forwards the Figma children into ChatMessage.Body
 // and leaves the avatar/actions/feedback composition to the developer.
 figma.connect(
   ChatMessage.Root,
@@ -15,13 +15,15 @@ figma.connect(
       children: figma.children("*"),
       sender: figma.enum("Sender", {
         User: "user",
-        Agent: "agent",
+        // Figma's property value is literally "Agent"; it maps onto our
+        // `sender="assistant"` variant (the code-side rename of that role).
+        Agent: "assistant",
       }),
     },
     example: (props) => (
       <ChatMessage.Root sender={props.sender}>
         <ChatMessage.Avatar />
-        <ChatMessage.Bubble>{props.children}</ChatMessage.Bubble>
+        <ChatMessage.Body>{props.children}</ChatMessage.Body>
       </ChatMessage.Root>
     ),
   }

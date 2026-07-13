@@ -3,7 +3,7 @@ import type { SlotComponent } from "../../type-utils/slot-types";
 import type {
   ChatMessageRootSlotProps,
   ChatMessageAvatarSlotProps,
-  ChatMessageBubbleSlotProps,
+  ChatMessageBodySlotProps,
   ChatMessageActionsSlotProps,
   ChatMessageMetaSlotProps,
   ChatMessageTypingSlotProps,
@@ -33,15 +33,15 @@ export const ChatMessageAvatarSlot: SlotComponent<
 > = withContext<HTMLDivElement, ChatMessageAvatarSlotProps>("div", "avatar");
 
 /**
- * Bubble slot — the rounded card that holds the message payload.
+ * Body slot — the rounded card that holds the message payload.
  */
-export const ChatMessageBubbleSlot: SlotComponent<
+export const ChatMessageBodySlot: SlotComponent<
   HTMLDivElement,
-  ChatMessageBubbleSlotProps
-> = withContext<HTMLDivElement, ChatMessageBubbleSlotProps>("div", "bubble");
+  ChatMessageBodySlotProps
+> = withContext<HTMLDivElement, ChatMessageBodySlotProps>("div", "body");
 
 /**
- * Actions slot — layout-only row for buttons, rendered inside the bubble.
+ * Actions slot — layout-only row for buttons, rendered inside the body.
  */
 export const ChatMessageActionsSlot: SlotComponent<
   HTMLDivElement,
@@ -49,7 +49,7 @@ export const ChatMessageActionsSlot: SlotComponent<
 > = withContext<HTMLDivElement, ChatMessageActionsSlotProps>("div", "actions");
 
 /**
- * Meta slot — layout-only row rendered below the bubble.
+ * Meta slot — layout-only row rendered below the body.
  */
 export const ChatMessageMetaSlot: SlotComponent<
   HTMLDivElement,
@@ -58,7 +58,7 @@ export const ChatMessageMetaSlot: SlotComponent<
 
 /**
  * Typing slot — layout wrapper for the animated typing indicator (and an
- * optional visible label), rendered inside the bubble while a reply streams.
+ * optional visible label), rendered inside the body while a reply streams.
  */
 export const ChatMessageTypingSlot: SlotComponent<
   HTMLDivElement,

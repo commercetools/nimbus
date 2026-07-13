@@ -2,7 +2,7 @@ import { ChatMessageActionsSlot } from "../chat-message.slots";
 import type { ChatMessageActionsProps } from "../chat-message.types";
 
 /**
- * ChatMessage.Actions - Layout-only row for action buttons inside the bubble.
+ * ChatMessage.Actions - Layout-only row for action buttons inside the body.
  *
  * Renders a right-aligned, wrapping flex row. Consumers provide the buttons.
  *

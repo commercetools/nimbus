@@ -14,9 +14,9 @@ for you, and what you're responsible for wiring up around it.
 const App = () => (
   <ChatMessage.Root sender="user" aria-label="Message from Ada Lovelace">
     <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
-    <ChatMessage.Bubble>
+    <ChatMessage.Body>
       <Text>Can you summarise last week's orders?</Text>
-    </ChatMessage.Bubble>
+    </ChatMessage.Body>
   </ChatMessage.Root>
 );
 ```
@@ -73,18 +73,18 @@ const App = () => (
   >
     <ChatMessage.Root sender="user" aria-label="Message from Ada Lovelace">
       <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
-      <ChatMessage.Bubble>
+      <ChatMessage.Body>
         <Text>Can you summarise last week's orders?</Text>
-      </ChatMessage.Bubble>
+      </ChatMessage.Body>
     </ChatMessage.Root>
 
-    <ChatMessage.Root sender="agent" aria-label="Message from the assistant">
+    <ChatMessage.Root sender="assistant" aria-label="Message from the assistant">
       <ChatMessage.Avatar aria-label="Assistant">
         <Icons.AutoAwesome />
       </ChatMessage.Avatar>
-      <ChatMessage.Bubble>
+      <ChatMessage.Body>
         <Text>Revenue is up 12% week-over-week.</Text>
-      </ChatMessage.Bubble>
+      </ChatMessage.Body>
     </ChatMessage.Root>
   </Box>
 );
@@ -107,7 +107,7 @@ affordance while streaming.
 
 ### Conveying the sender
 
-Sender is visually encoded by bubble color and column position (leading vs.
+Sender is visually encoded by body color and column position (leading vs.
 trailing vs. centered) — neither of which reaches assistive technology on its
 own. Per **WCAG 1.4.1 (Use of Color)** and **WCAG 1.3.1 (Info and
 Relationships)**, that information must also be available through another
@@ -117,8 +117,8 @@ channel. Always name messages rather than depending on their look.
 ### Reading order
 
 The root's layout is CSS Grid with explicit per-slot placement, and the `sender`
-variant swaps which grid column the avatar and bubble occupy — for
-`sender="user"` the bubble is visually first and the avatar trails, independent
+variant swaps which grid column the avatar and body occupy — for
+`sender="user"` the body is visually first and the avatar trails, independent
 of DOM order. Because grid placement doesn't reorder the underlying DOM,
 screen-reader reading order follows DOM order, not visual order. Keeping the
 avatar non-interactive (no focusable content, decorative by default) means this
@@ -131,7 +131,7 @@ isn't a supported pattern.
 - **Name, role, value:** `ChatMessage.Root` is an `<article>` by default; always
   give it an accessible name via `aria-label` or `aria-labelledby`.
 - **Info and relationships:** Sender and status information conveyed visually
-  (bubble color, column position) must also be exposed through the message's
+  (body color, column position) must also be exposed through the message's
   accessible name, not color/position alone.
 - **Use of color:** `tone="error"` is a visual cue only — pair it with visible
   text describing the failure (as in the error-tone example), not color alone.

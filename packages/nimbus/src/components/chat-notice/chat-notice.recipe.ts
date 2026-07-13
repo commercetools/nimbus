@@ -7,7 +7,7 @@ import { defineRecipe } from "@chakra-ui/react/styled-system";
  * rendered centered, subdued, and avatar-less — the visual opposite of a
  * ChatMessage, which is why it is a separate component rather than a
  * ChatMessage `sender` variant. Uses the neutral surface/text tokens the
- * former `sender="system"` bubble used.
+ * former `sender="system"` message card used.
  */
 export const chatNoticeRecipe = defineRecipe({
   className: "nimbus-chat-notice",
