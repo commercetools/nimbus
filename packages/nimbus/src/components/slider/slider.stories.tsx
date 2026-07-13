@@ -123,6 +123,50 @@ export const Vertical: Story = {
 };
 
 /**
+ * Regression guard for thumb cross-axis centering. React Aria positions the
+ * thumb on the MAIN axis only (`left` for horizontal, `top` for vertical) plus
+ * a `translate(-50%, -50%)`, and leaves the CROSS axis to CSS. Before the fix
+ * the recipe never set the cross axis, so the translate pulled the thumb half a
+ * thumb off-center (up on horizontal, inline-start on vertical).
+ */
+export const ThumbCentering: Story = {
+  render: () => (
+    <>
+      <div data-testid="h">
+        <Slider aria-label="Horizontal" defaultValue={50} />
+      </div>
+      <div data-testid="v" style={{ height: 200 }}>
+        <Slider
+          aria-label="Vertical"
+          defaultValue={50}
+          orientation="vertical"
+        />
+      </div>
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const center = (el: Element) => {
+      const r = el.getBoundingClientRect();
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    };
+    const trackOf = (id: string) =>
+      canvasElement.querySelector(`[data-testid="${id}"] [data-slot="track"]`)!;
+    const thumbOf = (id: string) =>
+      canvasElement.querySelector(`[data-testid="${id}"] [data-slot="thumb"]`)!;
+
+    await step("horizontal thumb centers vertically on the track", async () => {
+      const dy = Math.abs(center(thumbOf("h")).y - center(trackOf("h")).y);
+      await expect(dy).toBeLessThanOrEqual(1.5);
+    });
+
+    await step("vertical thumb centers horizontally on the track", async () => {
+      const dx = Math.abs(center(thumbOf("v")).x - center(trackOf("v")).x);
+      await expect(dx).toBeLessThanOrEqual(1.5);
+    });
+  },
+};
+
+/**
  * Vertical orientation with tick marks. Regression guard for
  * orientation-aware tick positioning: before the fix, every tick anchored
  * with the recipe's static horizontal `top: 50%` and the inline `left: X%`
