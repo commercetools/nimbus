@@ -68,8 +68,8 @@
 
 ## 7. Spec housekeeping
 
-- [x] 7.1 On archive, this change ADDs capability `nimbus-chat-message` and
-      REMOVEs `nimbus-chat-bubble` (see the change's `specs/` deltas).
+- [x] 7.1 On archive, this change ADDs capability `nimbus-chat-message` (see the
+      change's `specs/` deltas).
 
 ## 8. Verification
 

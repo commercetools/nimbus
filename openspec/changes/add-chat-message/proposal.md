@@ -114,8 +114,7 @@ is never conveyed by color/position alone.
 
 ## Impact
 
-- **New capability `nimbus-chat-message`.** This supersedes the Experimental
-  `nimbus-chat-bubble` capability, which is removed by this change.
+- **New capability `nimbus-chat-message`.**
 - **New component** `packages/nimbus/src/components/chat-message/` — parts,
   types, recipe, slots, stories, docs, and Figma Code Connect.
 - **Recipe** registered as `nimbusChatMessage` in the theme; `sender`

@@ -14,8 +14,6 @@ an orthogonal status overlay.
 content — including streamed text (via `Markdown`) and tool output — is provided
 by the consumer as `children`.
 
-This capability supersedes `nimbus-chat-bubble`.
-
 **Component:** `ChatMessage` **Package:** `@commercetools/nimbus`
 **Category:** Chat
 
@@ -191,7 +189,6 @@ The component SHALL follow Nimbus structure, styling, and export conventions.
 - **WHEN** consumers import from `@commercetools/nimbus`
 - **THEN** SHALL export `ChatMessage` and its public types from the package
   barrel
-- **AND** SHALL NOT export `ChatBubble`
 
 #### Scenario: Figma Code Connect
 
