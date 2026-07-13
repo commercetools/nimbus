@@ -15,11 +15,11 @@ import { ChatMessage, type ChatMessageProps } from "@commercetools/nimbus";
 ### Basic usage
 
 `ChatMessage` is a compound component: wrap `ChatMessage.Avatar` and
-`ChatMessage.Body` in `ChatMessage.Root`. `sender` defaults to `"assistant"`.
+`ChatMessage.Body` in `ChatMessage.Root`. `sender` defaults to `"agent"`.
 
 ```jsx live-dev
 const App = () => (
-  <ChatMessage.Root sender="assistant">
+  <ChatMessage.Root sender="agent">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
@@ -32,10 +32,10 @@ const App = () => (
 
 ## Usage examples
 
-### User and assistant messages
+### User and agent messages
 
 `sender="user"` trails the avatar and uses the `primary.3` surface;
-`sender="assistant"` (the default) leads with the avatar. Name a message with
+`sender="agent"` (the default) leads with the avatar. Name a message with
 `aria-label` (or `aria-labelledby`) — the avatar itself stays decorative unless
 you give it `firstName`/`lastName` or its own `aria-label`.
 
@@ -48,8 +48,8 @@ const App = () => (
         <Text>Can you summarise last week's orders for me?</Text>
       </ChatMessage.Body>
     </ChatMessage.Root>
-    <ChatMessage.Root sender="assistant" aria-label="Message from the assistant">
-      <ChatMessage.Avatar aria-label="Assistant">
+    <ChatMessage.Root sender="agent" aria-label="Message from the agent">
+      <ChatMessage.Avatar aria-label="Agent">
         <Icons.AutoAwesome />
       </ChatMessage.Avatar>
       <ChatMessage.Body>
@@ -77,12 +77,12 @@ const App = () => (
 
 ### Tool output
 
-Tool / function-call output is content _inside_ an `assistant` message (there is no
+Tool / function-call output is content _inside_ an `agent` message (there is no
 `sender="tool"`) — for example a JSON code block rendered by `Markdown`.
 
 ````jsx live-dev
 const App = () => (
-  <ChatMessage.Root sender="assistant">
+  <ChatMessage.Root sender="agent">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
@@ -98,12 +98,12 @@ const App = () => (
 ### Error tone
 
 `tone="error"` is orthogonal to `sender` — it tints the body to flag a failed
-generation, so an `assistant` message can be both `sender="assistant"` and
+generation, so an `agent` message can be both `sender="agent"` and
 `tone="error"`.
 
 ```jsx live-dev
 const App = () => (
-  <ChatMessage.Root sender="assistant" tone="error">
+  <ChatMessage.Root sender="agent" tone="error">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
@@ -127,7 +127,7 @@ the card.
 
 ```jsx live-dev
 const App = () => (
-  <ChatMessage.Root sender="assistant">
+  <ChatMessage.Root sender="agent">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
@@ -154,7 +154,7 @@ a single child, `space-between` leaves it at the start of the row.
 
 ```jsx live-dev
 const App = () => (
-  <ChatMessage.Root sender="assistant">
+  <ChatMessage.Root sender="agent">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
@@ -187,7 +187,7 @@ formatted replies (lists, links, inline code, code blocks).
 
 ```jsx live-dev
 const App = () => (
-  <ChatMessage.Root sender="assistant">
+  <ChatMessage.Root sender="agent">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
@@ -223,13 +223,13 @@ token), so `ChatMessage` never re-implements streamed-text rendering itself.
 
 ```jsx live-dev
 const App = () => (
-  <ChatMessage.Root sender="assistant" isStreaming>
+  <ChatMessage.Root sender="agent" isStreaming>
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
     <ChatMessage.Body>
       <ChatMessage.Typing>
-        <Text color="neutral.11">Assistant is typing…</Text>
+        <Text color="neutral.11">Agent is typing…</Text>
       </ChatMessage.Typing>
     </ChatMessage.Body>
   </ChatMessage.Root>
@@ -249,7 +249,7 @@ const App = () => (
   <Box
     role="log"
     aria-live="polite"
-    aria-label="Conversation with the assistant"
+    aria-label="Conversation with the agent"
     display="flex"
     flexDirection="column"
     gap="600"
@@ -261,8 +261,8 @@ const App = () => (
       </ChatMessage.Body>
     </ChatMessage.Root>
 
-    <ChatMessage.Root sender="assistant" aria-label="Message from the assistant">
-      <ChatMessage.Avatar aria-label="Assistant">
+    <ChatMessage.Root sender="agent" aria-label="Message from the agent">
+      <ChatMessage.Avatar aria-label="Agent">
         <Icons.AutoAwesome />
       </ChatMessage.Avatar>
       <ChatMessage.Body>

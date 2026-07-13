@@ -55,7 +55,7 @@ centered, subdued content.
 
 ```jsx live
 const App = () => (
-  <ChatMessageList.Root aria-label="Conversation with the assistant" height="360px">
+  <ChatMessageList.Root aria-label="Conversation with the agent" height="360px">
     <ChatMessageList.Item>
       <ChatMessage.Root sender="user">
         <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
@@ -66,7 +66,7 @@ const App = () => (
     </ChatMessageList.Item>
 
     <ChatMessageList.Item>
-      <ChatMessage.Root sender="assistant">
+      <ChatMessage.Root sender="agent">
         <ChatMessage.Avatar>
           <Icons.AutoAwesome />
         </ChatMessage.Avatar>
@@ -103,7 +103,7 @@ const App = () => (
     aria-label="Conversation"
     height="220px"
     emptyState={
-      <Text>No messages yet — ask the assistant anything to get started.</Text>
+      <Text>No messages yet — ask the agent anything to get started.</Text>
     }
   />
 );

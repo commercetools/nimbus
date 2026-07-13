@@ -33,11 +33,11 @@ type Story = StoryObj<typeof ChatMessage.Root>;
 
 /**
  * Base
- * The default (assistant) body with a single text payload.
+ * The default (agent) body with a single text payload.
  */
 export const Base: Story = {
   args: {
-    sender: "assistant",
+    sender: "agent",
     "data-testid": "chat-message",
   },
   render: (args: ChatMessageProps) => (
@@ -67,7 +67,7 @@ export const Base: Story = {
       await expect(canvas.getByRole("article")).toBe(root);
     });
 
-    await step("Decorative assistant avatar is hidden from AT", async () => {
+    await step("Decorative agent avatar is hidden from AT", async () => {
       // The AutoAwesome sender glyph must not leak a misleading generic
       // "avatar" label into the accessibility tree.
       await expect(canvas.queryByLabelText(/avatar/i)).not.toBeInTheDocument();
@@ -117,12 +117,12 @@ export const UserText: Story = {
 };
 
 /**
- * Assistant message
- * An assistant body with a single text payload.
+ * Agent message
+ * An agent body with a single text payload.
  */
 export const AgentText: Story = {
   render: () => (
-    <ChatMessage.Root sender="assistant" data-testid="assistant-body">
+    <ChatMessage.Root sender="agent" data-testid="agent-body">
       <ChatMessage.Avatar>
         <AutoAwesome />
       </ChatMessage.Avatar>
@@ -134,8 +134,8 @@ export const AgentText: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Renders the assistant's message", async () => {
-      await expect(canvas.getByTestId("assistant-body")).toHaveTextContent(
+    await step("Renders the agent's message", async () => {
+      await expect(canvas.getByTestId("agent-body")).toHaveTextContent(
         "Lorem ipsum"
       );
     });
@@ -148,7 +148,7 @@ export const AgentText: Story = {
  */
 export const AgentWithActions: Story = {
   render: () => (
-    <ChatMessage.Root sender="assistant" data-testid="assistant-actions">
+    <ChatMessage.Root sender="agent" data-testid="agent-actions">
       <ChatMessage.Avatar>
         <AutoAwesome />
       </ChatMessage.Avatar>
@@ -186,7 +186,7 @@ export const AgentWithActions: Story = {
  */
 export const AgentWithMeta: Story = {
   render: () => (
-    <ChatMessage.Root sender="assistant" data-testid="assistant-meta">
+    <ChatMessage.Root sender="agent" data-testid="agent-meta">
       <ChatMessage.Avatar>
         <AutoAwesome />
       </ChatMessage.Avatar>
@@ -232,7 +232,7 @@ export const AgentWithMeta: Story = {
  */
 export const AgentWithMarkdown: Story = {
   render: () => (
-    <ChatMessage.Root sender="assistant" data-testid="assistant-markdown">
+    <ChatMessage.Root sender="agent" data-testid="agent-markdown">
       <ChatMessage.Avatar>
         <AutoAwesome />
       </ChatMessage.Avatar>
@@ -278,7 +278,7 @@ export const AgentWithMarkdown: Story = {
  */
 export const Overflow: Story = {
   render: () => (
-    <ChatMessage.Root sender="assistant">
+    <ChatMessage.Root sender="agent">
       <ChatMessage.Avatar>
         <AutoAwesome />
       </ChatMessage.Avatar>
@@ -302,13 +302,13 @@ export const Overflow: Story = {
 };
 
 /**
- * Tool output as assistant content
- * Tool / function-call output is content *inside* an `assistant` message (here a
+ * Tool output as agent content
+ * Tool / function-call output is content *inside* an `agent` message (here a
  * JSON code block via `Markdown`) — not a distinct sender.
  */
 export const ToolOutput: Story = {
   render: () => (
-    <ChatMessage.Root sender="assistant" data-testid="tool-output">
+    <ChatMessage.Root sender="agent" data-testid="tool-output">
       <ChatMessage.Avatar>
         <AutoAwesome />
       </ChatMessage.Avatar>
@@ -333,11 +333,11 @@ export const ToolOutput: Story = {
 /**
  * Error tone
  * `tone="error"` tints the body to flag a failed generation, on top of any
- * sender (here an assistant message).
+ * sender (here an agent message).
  */
 export const ErrorTone: Story = {
   render: () => (
-    <ChatMessage.Root sender="assistant" tone="error" data-testid="error-body">
+    <ChatMessage.Root sender="agent" tone="error" data-testid="error-body">
       <ChatMessage.Avatar>
         <AutoAwesome />
       </ChatMessage.Avatar>
@@ -370,17 +370,13 @@ export const ErrorTone: Story = {
  */
 export const Streaming: Story = {
   render: () => (
-    <ChatMessage.Root
-      sender="assistant"
-      isStreaming
-      data-testid="streaming-body"
-    >
+    <ChatMessage.Root sender="agent" isStreaming data-testid="streaming-body">
       <ChatMessage.Avatar>
         <AutoAwesome />
       </ChatMessage.Avatar>
       <ChatMessage.Body>
         <ChatMessage.Typing>
-          <Text color="neutral.11">Assistant is typing…</Text>
+          <Text color="neutral.11">Agent is typing…</Text>
         </ChatMessage.Typing>
       </ChatMessage.Body>
     </ChatMessage.Root>
@@ -394,9 +390,7 @@ export const Streaming: Story = {
     });
 
     await step("Shows a visible typing affordance", async () => {
-      await expect(
-        canvas.getByText("Assistant is typing…")
-      ).toBeInTheDocument();
+      await expect(canvas.getByText("Agent is typing…")).toBeInTheDocument();
     });
   },
 };
@@ -414,7 +408,7 @@ export const Senders: Story = {
           <Text>Can you summarise last week's orders?</Text>
         </ChatMessage.Body>
       </ChatMessage.Root>
-      <ChatMessage.Root sender="assistant">
+      <ChatMessage.Root sender="agent">
         <ChatMessage.Avatar>
           <AutoAwesome />
         </ChatMessage.Avatar>
@@ -430,7 +424,7 @@ export const Senders: Story = {
  * Accessible message log (recommended composition)
  * ChatMessage renders one message; the consumer composes the transcript. A
  * `role="log"` `aria-live="polite"` container of `<article>` messages — each
- * named for assistive tech — is the recommended pattern for an assistant chat:
+ * named for assistive tech — is the recommended pattern for an agent chat:
  * it is a live region (so streamed replies are announced without per-token
  * spam) and, unlike `role="feed"`, it validly contains non-article children.
  */
@@ -439,7 +433,7 @@ export const AccessibleFeed: Story = {
     <Box
       role="log"
       aria-live="polite"
-      aria-label="Conversation with the assistant"
+      aria-label="Conversation with the agent"
       display="flex"
       flexDirection="column"
       gap="600"
@@ -452,11 +446,8 @@ export const AccessibleFeed: Story = {
         </ChatMessage.Body>
       </ChatMessage.Root>
 
-      <ChatMessage.Root
-        sender="assistant"
-        aria-label="Message from the assistant"
-      >
-        <ChatMessage.Avatar aria-label="Assistant">
+      <ChatMessage.Root sender="agent" aria-label="Message from the agent">
+        <ChatMessage.Avatar aria-label="Agent">
           <AutoAwesome />
         </ChatMessage.Avatar>
         <ChatMessage.Body>
@@ -478,7 +469,7 @@ export const AccessibleFeed: Story = {
         canvas.getByRole("article", { name: "Message from Ada Lovelace" })
       ).toBeInTheDocument();
       await expect(
-        canvas.getByRole("article", { name: "Message from the assistant" })
+        canvas.getByRole("article", { name: "Message from the agent" })
       ).toBeInTheDocument();
     });
   },

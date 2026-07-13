@@ -10,7 +10,7 @@ import type { ChatMessageTypingProps } from "../chat-message.types";
  * for the real content once the stream settles.
  *
  * Accessibility: the dots are decorative (`ActivityIndicator` is always
- * `aria-hidden`). Pass a visible label as `children` (e.g. "Assistant is
+ * `aria-hidden`). Pass a visible label as `children` (e.g. "Agent is
  * typing…") for a per-message affordance, and/or set `isStreaming` on
  * `ChatMessage.Root` (which sets `aria-busy`) — the coalesced live-region
  * announcement stays with the consumer's feed/turn container.

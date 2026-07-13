@@ -5,7 +5,7 @@
 `ChatMessage` renders a **single participant's turn** in a chat conversation. It
 is a Tier 3 compound: `ChatMessage.Root` (establishes the styling context and
 grid layout) plus `.Avatar`, `.Body`, `.Actions`, and `.Meta`, with an
-optional `.Typing` affordance. The `sender` variant (`user | assistant`) drives
+optional `.Typing` affordance. The `sender` variant (`user | agent`) drives
 layout direction and per-sender surface styling; `tone` (`neutral | error`) is
 an orthogonal status overlay.
 
@@ -17,7 +17,7 @@ by the consumer as `children`.
 This capability supersedes `nimbus-chat-bubble`.
 
 **Component:** `ChatMessage` **Package:** `@commercetools/nimbus`
-**Category:** Feedback / Chat
+**Category:** Chat
 
 ## ADDED Requirements
 
@@ -59,27 +59,27 @@ body with the meta row aligned under the body column.
 - **THEN** SHALL wrap the content inside the body so it does not overflow the
   card or introduce horizontal scrolling
 
-### Requirement: Sender variants (user and assistant)
+### Requirement: Sender variants (user and agent)
 
-`ChatMessage.Root` SHALL accept a `sender` variant of `"user"` or `"assistant"`
-(default `"assistant"`) that controls layout direction and per-sender surface
+`ChatMessage.Root` SHALL accept a `sender` variant of `"user"` or `"agent"`
+(default `"agent"`) that controls layout direction and per-sender surface
 styling. `sender` SHALL denote only which participant sent the message; it SHALL
 NOT encode content type (e.g. tool output) or non-message interjections (e.g.
 system notices).
 
-#### Scenario: User vs assistant direction
+#### Scenario: User vs agent direction
 
 - **WHEN** `sender="user"`
 - **THEN** SHALL place the body leading and the avatar trailing on the user
   surface token with a bounded max-width
-- **AND WHEN** `sender="assistant"`
+- **AND WHEN** `sender="agent"`
 - **THEN** SHALL place the avatar leading and the body trailing on the neutral
   surface token with a bounded max-width
 
-#### Scenario: Tool output is assistant content, not a sender
+#### Scenario: Tool output is agent content, not a sender
 
 - **WHEN** a turn contains tool/function output
-- **THEN** it SHALL be rendered as content inside an `assistant` message's `Body`
+- **THEN** it SHALL be rendered as content inside an `agent` message's `Body`
   (a code block, a `Markdown` custom-component tag, or a composed brick)
 - **AND** there SHALL be no `sender="tool"` value
 
@@ -138,7 +138,7 @@ as body content.
 
 #### Scenario: Streamed text rendering
 
-- **WHEN** an assistant reply streams token-by-token
+- **WHEN** an agent reply streams token-by-token
 - **THEN** the recommended pattern SHALL be to render the text with `<Markdown
   isStreaming>` as body content, so unterminated markdown is completed safely
   and only the final block re-parses per token
@@ -184,7 +184,7 @@ The component SHALL follow Nimbus structure, styling, and export conventions.
 - **WHEN** the theme is assembled
 - **THEN** SHALL register the slot recipe as `nimbusChatMessage` with slots
   `root`, `avatar`, `body`, `actions`, `meta`, `typing` and variants `sender`
-  (`user`/`assistant`) and `tone` (`neutral`/`error`)
+  (`user`/`agent`) and `tone` (`neutral`/`error`)
 
 #### Scenario: Barrel export
 
@@ -197,5 +197,5 @@ The component SHALL follow Nimbus structure, styling, and export conventions.
 
 - **WHEN** the component is mapped in Figma
 - **THEN** SHALL provide a Code Connect mapping that maps the Figma `Sender`
-  property (`User`/`Agent`, whose `Agent` value maps to `sender="assistant"`)
+  property (`User`/`Agent`, whose `Agent` value maps to `sender="agent"`)
   onto the `sender` variant and forwards children into `ChatMessage.Body`

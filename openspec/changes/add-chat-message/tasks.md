@@ -28,13 +28,13 @@
 ## 2. Narrow the `sender` axis
 
 - [x] 2.1 In `chat-message.recipe.ts`, remove the `system` and `tool` values
-      from the `sender` variant, leaving `user` and `assistant` (default
-      `assistant`). Remove their per-sender styling blocks.
+      from the `sender` variant, leaving `user` and `agent` (default
+      `agent`). Remove their per-sender styling blocks.
 - [x] 2.2 Update `chat-message.types.ts` so `sender` is typed `"user" |
-      "assistant"`.
+      "agent"`.
 - [x] 2.3 Rename the recipe key `nimbusChatBubble` → `nimbusChatMessage` and
       update the slot list (`bubble` → `body`, `footer` → `meta`); update the
-      theme registration in `src/theme/recipes/index.ts`.
+      theme registration in `src/theme/slot-recipes/index.ts`.
 
 ## 3. Streaming delegation
 
@@ -50,15 +50,15 @@
 ## 4. Figma Code Connect
 
 - [x] 4.1 Rename `chat-message.figma.tsx`; map the Figma `Sender` property
-      (`User`/`Agent`, whose `Agent` value maps to `sender="assistant"`) onto
+      (`User`/`Agent`, whose `Agent` value maps to `sender="agent"`) onto
       the `sender` variant; forward children into `ChatMessage.Body`.
 
 ## 5. Stories & tests (Storybook play functions)
 
-- [x] 5.1 Update stories to `ChatMessage`: base, user, assistant, actions, meta,
+- [x] 5.1 Update stories to `ChatMessage`: base, user, agent, actions, meta,
       markdown payload, overflow/wrapping, error tone, streaming (via
       `<Markdown isStreaming>` + `isStreaming` busy flag).
-- [x] 5.2 Replace the old `ToolMessage` story with an `assistant` message whose
+- [x] 5.2 Replace the old `ToolMessage` story with an `agent` message whose
       body content is tool output (code block via `Markdown`).
 - [x] 5.3 Keep/extend a11y assertions: article-by-default, named message,
       decorative-vs-named avatar, `aria-busy` while streaming.
@@ -66,7 +66,7 @@
 ## 6. Documentation
 
 - [x] 6.1 Update `chat-message.mdx`, `.dev.mdx`, `.a11y.mdx`, `.docs.spec.tsx`:
-      new name, `sender` (user/assistant), tool-output-as-content,
+      new name, `sender` (user/agent), tool-output-as-content,
       streaming-via-Markdown. Cross-link the transcript composition to
       `ChatMessageList` (sibling change).
 - [x] 6.2 Update the lifecycle/description front-matter (still Experimental).

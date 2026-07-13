@@ -12,7 +12,7 @@ for you and the small amount you are responsible for.
 
 ```jsx live
 const App = () => (
-  <ChatMessageList.Root aria-label="Conversation with the assistant" height="260px">
+  <ChatMessageList.Root aria-label="Conversation with the agent" height="260px">
     <ChatMessageList.Item>
       <ChatMessage.Root sender="user" aria-label="Message from Ada Lovelace">
         <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
@@ -22,8 +22,8 @@ const App = () => (
       </ChatMessage.Root>
     </ChatMessageList.Item>
     <ChatMessageList.Item>
-      <ChatMessage.Root sender="assistant" aria-label="Message from the assistant">
-        <ChatMessage.Avatar aria-label="Assistant">
+      <ChatMessage.Root sender="agent" aria-label="Message from the agent">
+        <ChatMessage.Avatar aria-label="Agent">
           <Icons.AutoAwesome />
         </ChatMessage.Avatar>
         <ChatMessage.Body>

@@ -22,7 +22,7 @@ import { ChatMessageListRoot, ChatMessageListItem } from "./components";
  *
  * @example
  * ```tsx
- * <ChatMessageList.Root aria-label="Conversation with the assistant">
+ * <ChatMessageList.Root aria-label="Conversation with the agent">
  *   <ChatMessageList.Item>
  *     <ChatMessage.Root sender="user">
  *       <ChatMessage.Body><Text>Summarise last week's orders?</Text></ChatMessage.Body>
@@ -65,7 +65,7 @@ export const ChatMessageList = {
    * @example
    * ```tsx
    * <ChatMessageList.Item>
-   *   <ChatMessage.Root sender="assistant">…</ChatMessage.Root>
+   *   <ChatMessage.Root sender="agent">…</ChatMessage.Root>
    * </ChatMessageList.Item>
    * ```
    */

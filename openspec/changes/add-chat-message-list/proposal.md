@@ -6,7 +6,7 @@ A single message is not a conversation. Every mature chat component pairs the
 single-message primitive with a **list container** that owns the transcript's
 behavior — scroll, autoscroll / stick-to-bottom, the live region that announces
 new and streamed replies, and list membership (Ant Design X `Bubble.List`, MUI X
-`ChatMessageList`, assistant-ui `Thread`). Nimbus currently ships only the
+`ChatMessageList`, agent-ui `Thread`). Nimbus currently ships only the
 message and punts the entire transcript to consumers with a documentation note
 ("wrap it in `role=log`"), which means every consumer re-implements autoscroll
 and the live region — differently, and often wrongly (a live region mounted with
@@ -26,16 +26,16 @@ into it.
 ## What Changes
 
 **Component:** `ChatMessageList` (Tier 3 compound). **Package:**
-`@commercetools/nimbus`. **Category:** Feedback / Chat.
+`@commercetools/nimbus`. **Category:** Chat.
 
 ```tsx
-<ChatMessageList.Root aria-label="Conversation with the assistant">
+<ChatMessageList.Root aria-label="Conversation with the agent">
   <ChatMessageList.Item>
     <ChatMessage.Root sender="user">…</ChatMessage.Root>
   </ChatMessageList.Item>
 
   <ChatMessageList.Item>
-    <ChatMessage.Root sender="assistant">
+    <ChatMessage.Root sender="agent">
       <ChatMessage.Body><Markdown isStreaming>{reply}</Markdown></ChatMessage.Body>
     </ChatMessage.Root>
   </ChatMessageList.Item>

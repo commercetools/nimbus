@@ -15,21 +15,21 @@ type ChatMessageRecipeProps = {
    * Which participant sent the message. Controls layout direction (avatar side)
    * and the sender-specific body/avatar styling:
    *
-   * - `"assistant"` (default) — assistant voice, avatar leading.
+   * - `"agent"` (default) — agent voice, avatar leading.
    * - `"user"` — the human, avatar trailing, `primary.3` surface.
    *
    * `sender` denotes only *who* sent the message. System notices are out of
    * scope — a system notice isn't a message, and it isn't a standardized
    * component either; consumers render their own content (e.g. inside a
    * `ChatMessageList.Item`). Tool/function output is content inside an
-   * `assistant` message. Neither is a `sender` value.
+   * `agent` message. Neither is a `sender` value.
    *
-   * @default "assistant"
+   * @default "agent"
    */
   sender?: SlotRecipeProps<"nimbusChatMessage">["sender"];
   /**
    * Status overlay, orthogonal to `sender`. `"error"` tints the body with the
-   * critical palette to flag a failed generation — an *assistant* message can fail,
+   * critical palette to flag a failed generation — an *agent* message can fail,
    * so error is a tone rather than a sender.
    * @default "neutral"
    */
@@ -123,7 +123,7 @@ export type ChatMessageTypingProps =
   OmitInternalProps<ChatMessageTypingSlotProps> & {
     /**
      * Optional visible label rendered beside the animated dots (e.g.
-     * "Assistant is typing…"). The dots themselves are decorative
+     * "Agent is typing…"). The dots themselves are decorative
      * (`aria-hidden`); any text you pass here is the accessible affordance.
      */
     children?: React.ReactNode;

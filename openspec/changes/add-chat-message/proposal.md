@@ -4,7 +4,7 @@
 
 `ChatBubble` shipped (change `2026-07-09-add-chat-bubble`, lifecycle
 **Experimental**) as the *only* chat primitive in Nimbus. Deep research across
-mature chat/message components (Vercel AI Elements, assistant-ui, Ant Design X,
+mature chat/message components (Vercel AI Elements, agent-ui, Ant Design X,
 MUI X Chat, LlamaIndex chat-ui, Stream Chat, shadcn Bubble) surfaced three
 consistent patterns that the current component either fights or misses:
 
@@ -14,7 +14,7 @@ consistent patterns that the current component either fights or misses:
    change.)
 2. **Tool output is content, and system notices are a separate thing** — not
    sender values. ChatBubble's `sender` axis absorbed `system` and `tool`, which
-   don't belong there: a single assistant turn that interleaves prose and a tool
+   don't belong there: a single agent turn that interleaves prose and a tool
    call cannot be expressed on a one-sender-per-message axis, and a centered,
    avatar-less system notice is the *opposite* of a message, not a variant of
    one.
@@ -42,7 +42,7 @@ deprecation cycle.
 
 **Component:** `ChatBubble` → **`ChatMessage`** (Tier 3 compound).
 **Package:** `@commercetools/nimbus`.
-**Category:** Feedback / Chat.
+**Category:** Chat.
 
 ### 1. Rename to `ChatMessage`; the card slot becomes `.Body`
 
@@ -52,7 +52,7 @@ meaning — message metadata — not the position). Likewise the card slot becom
 so the name stays honest under any future visual treatment:
 
 ```tsx
-<ChatMessage.Root sender="assistant">
+<ChatMessage.Root sender="agent">
   <ChatMessage.Avatar><AutoAwesome /></ChatMessage.Avatar>
   <ChatMessage.Body>
     <Markdown isStreaming={streaming}>{reply}</Markdown>
@@ -66,10 +66,10 @@ so the name stays honest under any future visual treatment:
 `.Actions`, and `.Meta` read to place and color themselves — the shared context
 is what earns the compound (dot-notation) form.
 
-### 2. `sender` narrows to `user | assistant`
+### 2. `sender` narrows to `user | agent`
 
 `sender` now means only "which participant," which is all it should ever have
-meant — and `user | assistant` mirrors the standard LLM message-role vocabulary.
+meant — `user | agent` names the two participants (the human and the AI agent).
 `system` and `tool` are removed from the axis:
 
 - **`system` → out of scope**: a system notice (e.g. "Conversation history was
@@ -78,7 +78,7 @@ meant — and `user | assistant` mirrors the standard LLM message-role vocabular
   `ChatMessage` would corrupt the message's single responsibility. It also isn't
   a standardized component in this release: a consumer renders their own content
   (e.g. inside a `ChatMessageList.Item`, which is content-agnostic).
-- **`tool` → content**: tool/function output is *what an assistant turn
+- **`tool` → content**: tool/function output is *what an agent turn
   contains* — a code block, a `Markdown` custom-component tag, or a composed
   brick placed in `ChatMessage.Body` — not a participant with its own avatar
   column.
@@ -119,7 +119,7 @@ conveyed by color/position alone.
 
 - **Keep `sender="tool"|"system"`** — rejected: conflates content and container
   concerns with participant identity; cannot express a mixed prose+tool
-  assistant turn; makes the message responsible for "sometimes I am not a
+  agent turn; makes the message responsible for "sometimes I am not a
   message."
 - **A back-compat `ChatBubble` alias** — rejected: the capability is
   Experimental and days old; a hard rename is cheaper than carrying two names.

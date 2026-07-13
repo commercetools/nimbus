@@ -26,7 +26,7 @@ describe("ChatMessageList - Rendering a transcript", () => {
             </ChatMessage.Root>
           </ChatMessageList.Item>
           <ChatMessageList.Item>
-            <ChatMessage.Root sender="assistant">
+            <ChatMessage.Root sender="agent">
               <ChatMessage.Body>
                 <Text>Revenue is up 12%.</Text>
               </ChatMessage.Body>
@@ -71,9 +71,9 @@ describe("ChatMessageList - Accessible live region", () => {
   it("exposes a polite log region named by aria-label", () => {
     render(
       <NimbusProvider>
-        <ChatMessageList.Root aria-label="Conversation with the assistant">
+        <ChatMessageList.Root aria-label="Conversation with the agent">
           <ChatMessageList.Item>
-            <ChatMessage.Root sender="assistant">
+            <ChatMessage.Root sender="agent">
               <ChatMessage.Body>
                 <Text>Hello!</Text>
               </ChatMessage.Body>
@@ -87,10 +87,10 @@ describe("ChatMessageList - Accessible live region", () => {
     // React Aria's global LiveAnnouncer leaves nameless role="log" nodes on
     // document.body that an unscoped query would also match.
     const log = screen.getByRole("log", {
-      name: "Conversation with the assistant",
+      name: "Conversation with the agent",
     });
     expect(log).toHaveAttribute("aria-live", "polite");
-    expect(log).toHaveAccessibleName("Conversation with the assistant");
+    expect(log).toHaveAccessibleName("Conversation with the agent");
   });
 
   it("falls back to a localized name when none is provided", () => {
@@ -98,7 +98,7 @@ describe("ChatMessageList - Accessible live region", () => {
       <NimbusProvider>
         <ChatMessageList.Root>
           <ChatMessageList.Item>
-            <ChatMessage.Root sender="assistant">
+            <ChatMessage.Root sender="agent">
               <ChatMessage.Body>
                 <Text>Hello!</Text>
               </ChatMessage.Body>

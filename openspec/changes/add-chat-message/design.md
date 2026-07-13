@@ -46,7 +46,7 @@ kinds of relationship, so the code reads as what it is:
 
 ### `ChatMessage` — one participant's turn (compound)
 
-- **Owns:** the `sender` context (`user | assistant`) → alignment, palette,
+- **Owns:** the `sender` context (`user | agent`) → alignment, palette,
   avatar side; the grid layout of avatar + body + meta + actions; `<article>`
   semantics and accessible name; the busy flag while streaming.
 - **Refuses to own:** the content (crosses the seam as `children` into
@@ -89,7 +89,7 @@ is why announcement lives on the always-present transcript container.
 - `sender="system"` usage → out of scope: render your own notice content (e.g.
   inside a `ChatMessageList.Item`, which is content-agnostic); a system notice is
   not a message and is not a standardized component in this release.
-- `sender="tool"` usage → an `assistant` message whose body content is the tool
+- `sender="tool"` usage → an `agent` message whose body content is the tool
   output (code block / custom-tag / composed brick).
 - Streaming usage → place `<Markdown isStreaming>` as body content; keep
   `isStreaming` on `ChatMessage.Root` for the busy flag.

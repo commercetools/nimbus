@@ -33,7 +33,7 @@ type Story = StoryObj<typeof ChatMessageList.Root>;
 
 /**
  * Mixed transcript
- * A `ChatMessageList` arranges `Item`s that hold user and assistant
+ * A `ChatMessageList` arranges `Item`s that hold user and agent
  * `ChatMessage`s — and any other content — into a scrollable, live transcript.
  * The list is content-agnostic: an `Item` can hold a `ChatMessage` or, as the
  * last item shows, a consumer-rendered notice (a plain centered box). The
@@ -42,7 +42,7 @@ type Story = StoryObj<typeof ChatMessageList.Root>;
 export const MixedTranscript: Story = {
   render: () => (
     <ChatMessageList.Root
-      aria-label="Conversation with the assistant"
+      aria-label="Conversation with the agent"
       height="360px"
       data-testid="list"
     >
@@ -56,10 +56,7 @@ export const MixedTranscript: Story = {
       </ChatMessageList.Item>
 
       <ChatMessageList.Item>
-        <ChatMessage.Root
-          sender="assistant"
-          aria-label="Message from the assistant"
-        >
+        <ChatMessage.Root sender="agent" aria-label="Message from the agent">
           <ChatMessage.Avatar>
             <AutoAwesome />
           </ChatMessage.Avatar>
@@ -96,7 +93,7 @@ export const MixedTranscript: Story = {
     await step("Exposes a named log live region", async () => {
       const log = canvas.getByRole("log");
       await expect(log).toHaveAttribute("aria-live", "polite");
-      await expect(log).toHaveAccessibleName("Conversation with the assistant");
+      await expect(log).toHaveAccessibleName("Conversation with the agent");
     });
   },
 };
@@ -118,7 +115,7 @@ const AppendableList = ({ autoScroll = true }: { autoScroll?: boolean }) => {
       >
         {Array.from({ length: count }).map((_, i) => (
           <ChatMessageList.Item key={i}>
-            <ChatMessage.Root sender={i % 2 === 0 ? "user" : "assistant"}>
+            <ChatMessage.Root sender={i % 2 === 0 ? "user" : "agent"}>
               <ChatMessage.Body>
                 <Text>
                   Message {i + 1}. {SAMPLE}
@@ -236,7 +233,7 @@ const StreamingList = () => {
           </ChatMessage.Root>
         </ChatMessageList.Item>
         <ChatMessageList.Item>
-          <ChatMessage.Root sender="assistant" isStreaming>
+          <ChatMessage.Root sender="agent" isStreaming>
             <ChatMessage.Body>
               <Text>{streamed}</Text>
             </ChatMessage.Body>
@@ -286,7 +283,7 @@ export const EmptyState: Story = {
       data-testid="list"
       emptyState={
         <Text data-testid="empty">
-          No messages yet — ask the assistant anything to get started.
+          No messages yet — ask the agent anything to get started.
         </Text>
       }
     />

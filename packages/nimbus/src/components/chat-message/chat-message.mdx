@@ -34,16 +34,16 @@ The `sender` prop drives which participant the message is from and controls both
 the layout direction and the body/avatar styling:
 
 - `user` — the human; avatar trails the body.
-- `assistant` (default) — the assistant; avatar leads the body.
+- `agent` (default) — the agent; avatar leads the body.
 
 `sender` denotes only _who_ sent the message. System notices are out of scope
 here — a system notice isn't a message, and it isn't a standardized component
 either; consumers render their own content (for example inside a
-`ChatMessageList.Item`). Tool/function output is content _inside_ an `assistant`
+`ChatMessageList.Item`). Tool/function output is content _inside_ an `agent`
 message. Neither is a `sender` value.
 
 `tone="error"` is independent of `sender` — it tints the body to flag a failed
-generation, since an assistant message can still fail.
+generation, since an agent message can still fail.
 
 ### Resources
 
@@ -58,7 +58,7 @@ Get familiar with the features.
 ### Senders
 
 Each sender has its own layout direction and surface: `user` places the body
-before the avatar, `assistant` places the avatar before the body. A system
+before the avatar, `agent` places the avatar before the body. A system
 notice (not standardized in this release, so a consumer renders their own
 centered, subdued content) can sit between turns as an interjection.
 
@@ -74,7 +74,7 @@ const App = () => (
     <Box mx="auto" textAlign="center" color="neutral.11" textStyle="sm">
       Conversation history was cleared.
     </Box>
-    <ChatMessage.Root sender="assistant">
+    <ChatMessage.Root sender="agent">
       <ChatMessage.Avatar>
         <Icons.AutoAwesome />
       </ChatMessage.Avatar>
@@ -93,7 +93,7 @@ generation, on top of whatever `sender` styling already applies.
 
 ```jsx live
 const App = () => (
-  <ChatMessage.Root sender="assistant" tone="error">
+  <ChatMessage.Root sender="agent" tone="error">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
@@ -116,7 +116,7 @@ body. Place it last so the actions pin to the bottom of the card.
 
 ```jsx live
 const App = () => (
-  <ChatMessage.Root sender="assistant">
+  <ChatMessage.Root sender="agent">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
@@ -142,7 +142,7 @@ timestamp, a trust/provenance link, or reaction icons.
 
 ```jsx live
 const App = () => (
-  <ChatMessage.Root sender="assistant">
+  <ChatMessage.Root sender="agent">
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
@@ -176,13 +176,13 @@ sets `aria-busy`.
 
 ```jsx live
 const App = () => (
-  <ChatMessage.Root sender="assistant" isStreaming>
+  <ChatMessage.Root sender="agent" isStreaming>
     <ChatMessage.Avatar>
       <Icons.AutoAwesome />
     </ChatMessage.Avatar>
     <ChatMessage.Body>
       <ChatMessage.Typing>
-        <Text color="neutral.11">Assistant is typing…</Text>
+        <Text color="neutral.11">Agent is typing…</Text>
       </ChatMessage.Typing>
     </ChatMessage.Body>
   </ChatMessage.Root>

@@ -2,38 +2,22 @@
 "@commercetools/nimbus": minor
 ---
 
-`ChatMessage`: new compound component for a single message in an AI chat
-conversation. Pairs a sender avatar with a message body and layout-only slots
-you fill with your own content.
+`ChatMessage`: new compound component for a single turn in an AI chat — compose
+`ChatMessage.Root` with `.Avatar`, `.Body`, `.Actions`, and `.Meta`.
 
-- `sender` (`"user" | "assistant"`, default `"assistant"`) sets the layout
-  direction and per-sender body/avatar styling — avatar leading for `assistant`,
-  trailing for `user`.
-- `tone` (`"neutral" | "error"`, default `"neutral"`) tints the body to flag a
-  failed generation, independent of the sender.
-- `isStreaming` marks a message as still generating (sets `aria-busy`); render
-  `ChatMessage.Typing` for the animated "generating…" indicator while it
-  streams.
-- `ChatMessage.Avatar` wraps the Nimbus `Avatar` (`size="xs"`), colored per
-  sender; provide content via `firstName`/`lastName`, `src`, or an icon as
-  `children`. It is decorative by default; name it to add it to the
-  accessibility tree.
-- `ChatMessage.Body` holds the payload (text, a `Markdown` block, or any
-  content); nest `ChatMessage.Actions` as its last child, and add
-  `ChatMessage.Meta` after the body for a timestamp or status row.
-- `ChatMessage.Root` renders a semantic `<article>` by default (override with
-  `as`); name each message with `aria-label`/`aria-labelledby`.
+- `sender` (`"user" | "agent"`, default `"agent"`) sets the layout direction and
+  per-sender styling; `tone="error"` tints the body to flag a failed reply.
+- `isStreaming` marks a message as still generating; render `ChatMessage.Typing`
+  for the animated "generating…" indicator.
+- Renders a semantic `<article>` you name with `aria-label`; the body accepts
+  any content, including a `Markdown` block for streamed output.
 
-`ChatMessageList`: new compound component that arranges chat messages into a
-scrollable transcript.
+`ChatMessageList`: new compound component that arranges messages into a
+scrollable, accessible transcript — compose `ChatMessageList.Root` with `.Item`.
 
-- `ChatMessageList.Root` is the scroll container and the transcript's
-  `role="log" aria-live="polite"` region, so appended and streamed replies are
-  announced. It owns autoscroll / stick-to-bottom and a "jump to latest"
-  control.
-- `autoScroll` (default `true`) keeps the newest message in view while you are
-  at the bottom, `emptyState` renders when there are no items, and the `ref`
-  exposes `scrollToBottom()` for imperative control.
-- `ChatMessageList.Item` is content-agnostic — it holds a `ChatMessage` or any
-  other content, so you can render your own centered system notices or dividers
-  as list members.
+- A `role="log" aria-live="polite"` region, so appended and streamed replies are
+  announced to assistive tech.
+- `autoScroll` (default `true`) keeps the newest message in view, `emptyState`
+  renders when there are no items, and the `ref` exposes `scrollToBottom()`.
+- `ChatMessageList.Item` holds a `ChatMessage` or any other content, so you can
+  render your own system notices or dividers.

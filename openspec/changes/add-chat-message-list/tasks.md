@@ -52,7 +52,7 @@
 
 - [x] 6.1 Define the slot recipe `nimbusChatMessageList` (slots: `root`,
       `viewport`, `item`, `scrollToBottom`, `empty`) using design tokens;
-      register it in `src/theme/recipes/index.ts`.
+      register it in `src/theme/slot-recipes/index.ts`.
 
 ## 7. i18n
 
@@ -61,7 +61,7 @@
 
 ## 8. Stories & tests (Storybook play functions)
 
-- [x] 8.1 Mixed transcript (user + assistant messages + a consumer-rendered
+- [x] 8.1 Mixed transcript (user + agent messages + a consumer-rendered
       notice inside an `Item`).
 - [x] 8.2 Autoscroll pins to newest on append (including a simulated streaming
       grow).

@@ -14,14 +14,14 @@ import { AutoAwesome } from "@commercetools/nimbus-icons";
 /**
  * @docs-section basic-rendering
  * @docs-title Basic rendering
- * @docs-description Compose a single assistant message from the ChatMessage parts.
+ * @docs-description Compose a single agent message from the ChatMessage parts.
  * @docs-order 1
  */
 describe("ChatMessage - Basic rendering", () => {
-  it("renders an assistant message as a semantic article", () => {
+  it("renders an agent message as a semantic article", () => {
     render(
       <NimbusProvider>
-        <ChatMessage.Root sender="assistant" data-testid="body">
+        <ChatMessage.Root sender="agent" data-testid="body">
           <ChatMessage.Avatar>
             <AutoAwesome />
           </ChatMessage.Avatar>
@@ -61,7 +61,7 @@ describe("ChatMessage - Basic rendering", () => {
  * @docs-order 2
  */
 describe("ChatMessage - Senders and tone", () => {
-  it.each(["user", "assistant"] as const)("renders the %s sender", (sender) => {
+  it.each(["user", "agent"] as const)("renders the %s sender", (sender) => {
     render(
       <NimbusProvider>
         <ChatMessage.Root sender={sender} data-testid="body">
@@ -75,10 +75,10 @@ describe("ChatMessage - Senders and tone", () => {
     expect(screen.getByTestId("body")).toHaveTextContent(`${sender} message`);
   });
 
-  it("renders an error-toned assistant message with a retry action", () => {
+  it("renders an error-toned agent message with a retry action", () => {
     render(
       <NimbusProvider>
-        <ChatMessage.Root sender="assistant" tone="error" data-testid="body">
+        <ChatMessage.Root sender="agent" tone="error" data-testid="body">
           <ChatMessage.Body>
             <Text>Something went wrong.</Text>
             <ChatMessage.Actions>
@@ -109,7 +109,7 @@ describe("ChatMessage - Actions and meta", () => {
 
     render(
       <NimbusProvider>
-        <ChatMessage.Root sender="assistant">
+        <ChatMessage.Root sender="agent">
           <ChatMessage.Body>
             <Text>Approve to apply.</Text>
             <ChatMessage.Actions>
@@ -129,7 +129,7 @@ describe("ChatMessage - Actions and meta", () => {
   it("renders meta content below the body", () => {
     render(
       <NimbusProvider>
-        <ChatMessage.Root sender="assistant">
+        <ChatMessage.Root sender="agent">
           <ChatMessage.Body>
             <Text>Done.</Text>
           </ChatMessage.Body>
@@ -158,13 +158,13 @@ describe("ChatMessage - Streaming", () => {
   it("sets aria-busy and shows a typing affordance", () => {
     render(
       <NimbusProvider>
-        <ChatMessage.Root sender="assistant" isStreaming data-testid="body">
+        <ChatMessage.Root sender="agent" isStreaming data-testid="body">
           <ChatMessage.Avatar>
             <AutoAwesome />
           </ChatMessage.Avatar>
           <ChatMessage.Body>
             <ChatMessage.Typing>
-              <Text>Assistant is typing…</Text>
+              <Text>Agent is typing…</Text>
             </ChatMessage.Typing>
           </ChatMessage.Body>
         </ChatMessage.Root>
@@ -172,7 +172,7 @@ describe("ChatMessage - Streaming", () => {
     );
 
     expect(screen.getByTestId("body")).toHaveAttribute("aria-busy", "true");
-    expect(screen.getByText("Assistant is typing…")).toBeInTheDocument();
+    expect(screen.getByText("Agent is typing…")).toBeInTheDocument();
   });
 });
 
@@ -197,10 +197,7 @@ describe("ChatMessage - Accessible transcript", () => {
             </ChatMessage.Body>
           </ChatMessage.Root>
 
-          <ChatMessage.Root
-            sender="assistant"
-            aria-label="Message from the assistant"
-          >
+          <ChatMessage.Root sender="agent" aria-label="Message from the agent">
             <ChatMessage.Avatar>
               <AutoAwesome />
             </ChatMessage.Avatar>
@@ -223,14 +220,12 @@ describe("ChatMessage - Accessible transcript", () => {
     expect(
       screen.getByRole("article", { name: "Message from Ada Lovelace" })
     ).toBeInTheDocument();
-    const assistant = screen.getByRole("article", {
-      name: "Message from the assistant",
+    const agent = screen.getByRole("article", {
+      name: "Message from the agent",
     });
-    expect(assistant).toBeInTheDocument();
+    expect(agent).toBeInTheDocument();
 
-    // The decorative assistant avatar is not exposed with a misleading label.
-    expect(
-      within(assistant).queryByLabelText(/avatar/i)
-    ).not.toBeInTheDocument();
+    // The decorative agent avatar is not exposed with a misleading label.
+    expect(within(agent).queryByLabelText(/avatar/i)).not.toBeInTheDocument();
   });
 });

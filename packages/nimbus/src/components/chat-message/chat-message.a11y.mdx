@@ -66,7 +66,7 @@ const App = () => (
   <Box
     role="log"
     aria-live="polite"
-    aria-label="Conversation with the assistant"
+    aria-label="Conversation with the agent"
     display="flex"
     flexDirection="column"
     gap="600"
@@ -78,8 +78,8 @@ const App = () => (
       </ChatMessage.Body>
     </ChatMessage.Root>
 
-    <ChatMessage.Root sender="assistant" aria-label="Message from the assistant">
-      <ChatMessage.Avatar aria-label="Assistant">
+    <ChatMessage.Root sender="agent" aria-label="Message from the agent">
+      <ChatMessage.Avatar aria-label="Agent">
         <Icons.AutoAwesome />
       </ChatMessage.Avatar>
       <ChatMessage.Body>
@@ -102,7 +102,7 @@ live region: a live region mounted at the same time as its content is not
 announced reliably by every screen reader (the region must already exist before
 its content changes). Keep the live region on your transcript container
 (`role="log"` `aria-live="polite"`, as above) so it persists across messages,
-and use `ChatMessage.Typing`'s `children` for a visible "Assistant is typing…"
+and use `ChatMessage.Typing`'s `children` for a visible "Agent is typing…"
 affordance while streaming.
 
 ### Conveying the sender

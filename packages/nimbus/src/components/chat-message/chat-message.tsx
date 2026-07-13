@@ -24,7 +24,7 @@ import {
  *
  * @example
  * ```tsx
- * <ChatMessage.Root sender="assistant">
+ * <ChatMessage.Root sender="agent">
  *   <ChatMessage.Avatar>
  *     <AutoAwesome />
  *   </ChatMessage.Avatar>
@@ -48,7 +48,7 @@ export const ChatMessage = {
    *
    * The grid container for a single message. Establishes the styling context
    * and lays out the avatar, body and optional meta row. Accepts `sender`
-   * (`"user" | "assistant"`) which controls layout direction
+   * (`"user" | "agent"`) which controls layout direction
    * and styling, `tone` (`"neutral" | "error"`) to flag a failed generation,
    * and `isStreaming` to mark the message as still generating (sets
    * `aria-busy`). Renders a semantic `<article>` by default; override with `as`.
@@ -134,12 +134,12 @@ export const ChatMessage = {
    *
    * @example
    * ```tsx
-   * <ChatMessage.Root sender="assistant" isStreaming>
+   * <ChatMessage.Root sender="agent" isStreaming>
    *   <ChatMessage.Avatar>
    *     <AutoAwesome />
    *   </ChatMessage.Avatar>
    *   <ChatMessage.Body>
-   *     <ChatMessage.Typing>Assistant is typing…</ChatMessage.Typing>
+   *     <ChatMessage.Typing>Agent is typing…</ChatMessage.Typing>
    *   </ChatMessage.Body>
    * </ChatMessage.Root>
    * ```

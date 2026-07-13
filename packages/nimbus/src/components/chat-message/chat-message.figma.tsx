@@ -15,9 +15,8 @@ figma.connect(
       children: figma.children("*"),
       sender: figma.enum("Sender", {
         User: "user",
-        // Figma's property value is literally "Agent"; it maps onto our
-        // `sender="assistant"` variant (the code-side rename of that role).
-        Agent: "assistant",
+        // Figma's property value "Agent" maps onto our `sender="agent"` variant.
+        Agent: "agent",
       }),
     },
     example: (props) => (

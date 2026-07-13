@@ -14,7 +14,7 @@ fetching, or AI-runtime orchestration. Its items hold `ChatMessage` (or any
 other content) and it does not inspect them.
 
 **Component:** `ChatMessageList` **Package:** `@commercetools/nimbus`
-**Category:** Feedback / Chat
+**Category:** Chat
 
 ## ADDED Requirements
 
@@ -28,7 +28,7 @@ reach into the member's internals.
 
 #### Scenario: Render a mixed transcript
 
-- **WHEN** a `ChatMessageList.Root` contains `Item`s holding user and assistant
+- **WHEN** a `ChatMessageList.Root` contains `Item`s holding user and agent
   `ChatMessage`s and a consumer-rendered notice
 - **THEN** SHALL render them as a vertical, scrollable sequence with consistent
   inter-item spacing
@@ -44,7 +44,7 @@ reach into the member's internals.
 
 `ChatMessageList.Root` SHALL keep the viewport pinned to the newest item while
 the user is at (or within a small threshold of) the bottom, including while an
-assistant reply streams and grows, and SHALL release the pin when the user scrolls
+agent reply streams and grows, and SHALL release the pin when the user scrolls
 up beyond the threshold.
 
 #### Scenario: Pin to newest on append
@@ -101,7 +101,7 @@ region so appended and streamed messages are announced without per-token spam.
 
 #### Scenario: Single announcer during streaming
 
-- **WHEN** an assistant message streams inside the list (its content rendered by
+- **WHEN** an agent message streams inside the list (its content rendered by
   `Markdown isStreaming`, its `ChatMessage.Root` marked `aria-busy`)
 - **THEN** the list's `log` region SHALL own message-level announcement
 - **AND** the message SHALL NOT create its own live region (no double

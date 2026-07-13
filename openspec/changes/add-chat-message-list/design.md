@@ -25,7 +25,7 @@ redundant wrappers:
 
 - `Item` is the **socket**: "you are the Nth member of this list — here are your
   list semantics, spacing, and entry presentation." A *list* concern.
-- `ChatMessage.Root` is the **plug**: "I am an assistant turn with an avatar and
+- `ChatMessage.Root` is the **plug**: "I am an agent turn with an avatar and
   a body." A *message* concern.
 
 Because the socket does not care what plugs into it, the same `Item` holds a
@@ -58,7 +58,7 @@ makes system-notice-as-peer honest (rather than a message variant).
 
 - **Stick-to-bottom:** when the viewport is at (or within a small threshold of)
   the bottom, new content keeps the view pinned to the newest item — including
-  while an assistant reply streams and grows. Implemented against `ScrollArea`'s
+  while an agent reply streams and grows. Implemented against `ScrollArea`'s
   viewport node (its `viewportRef`), observing size/scroll changes.
 - **Release on scroll-up:** once the user scrolls up beyond the threshold,
   pinning stops so reading history is not interrupted by incoming content.

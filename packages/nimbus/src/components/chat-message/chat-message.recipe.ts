@@ -12,9 +12,9 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * The `sender` variant swaps the columns (avatar leading vs. trailing), which
  * is what "layout direction" resolves to for this component.
  *
- * `sender` and `tone` are orthogonal: `sender` (`user`/`assistant`) owns the
+ * `sender` and `tone` are orthogonal: `sender` (`user`/`agent`) owns the
  * participant, layout direction and surface; `tone` (`neutral`/`error`) is a
- * status overlay applied on top of whatever `sender` selected — an *assistant*
+ * status overlay applied on top of whatever `sender` selected — an *agent*
  * message can still *fail*, so error is a tone, not a sender. `tone` is
  * declared after `sender` so its body bg/border win the merge.
  *
@@ -22,7 +22,7 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * are out of scope here — a system notice isn't a message, and it isn't a
  * standardized component either; consumers render their own content (e.g. inside
  * a `ChatMessageList.Item`). Tool/function output is content inside an
- * `assistant` message. Neither is a `sender` value.
+ * `agent` message. Neither is a `sender` value.
  *
  * Token parity: the Figma variables (`spacing/600`, `border-radius/300`, …) map
  * 1:1 onto the Nimbus design tokens (`spacing.600`, `radii.300`, …), so the
@@ -120,7 +120,7 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
           gridColumn: 1,
         },
       },
-      assistant: {
+      agent: {
         root: {
           justifyContent: "start",
         },
@@ -155,7 +155,7 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
   },
 
   defaultVariants: {
-    sender: "assistant",
+    sender: "agent",
     tone: "neutral",
   },
 });
