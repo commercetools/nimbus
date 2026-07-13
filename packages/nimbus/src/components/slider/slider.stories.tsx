@@ -166,6 +166,64 @@ export const ThumbCentering: Story = {
   },
 };
 
+/** All four visual variants. Assertions lock each variant's distinguishing treatment. */
+export const Variants: Story = {
+  render: () => (
+    <>
+      <div data-testid="solid">
+        <Slider aria-label="Solid" variant="solid" defaultValue={60} />
+      </div>
+      <div data-testid="outline">
+        <Slider aria-label="Outline" variant="outline" defaultValue={45} />
+      </div>
+      <div data-testid="minimal">
+        <Slider aria-label="Minimal" variant="minimal" defaultValue={80} />
+      </div>
+      <div data-testid="enclosed">
+        <Slider aria-label="Enclosed" variant="enclosed" defaultValue={75} />
+      </div>
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const track = (id: string) =>
+      canvasElement.querySelector(
+        `[data-testid="${id}"] [data-slot="track"]`
+      ) as HTMLElement;
+    const trackH = (id: string) =>
+      parseFloat(getComputedStyle(track(id)).height);
+
+    await step("renders one slider per variant", async () => {
+      // `[role="slider"]` (a literal-attribute CSS selector) never matches:
+      // React Aria's SliderThumb renders a native <input type="range">, whose
+      // "slider" role is implicit ARIA semantics, not a literal `role`
+      // attribute in the DOM (confirmed via direct DOM inspection). Query by
+      // computed accessible role instead, as the `Sizes` story above does.
+      await expect(canvas.getAllByRole("slider")).toHaveLength(4);
+    });
+
+    await step(
+      "outline track is transparent (bordered, not filled)",
+      async () => {
+        await expect(getComputedStyle(track("outline")).backgroundColor).toBe(
+          "rgba(0, 0, 0, 0)"
+        );
+      }
+    );
+
+    await step("minimal track is a hairline, thinner than solid", async () => {
+      await expect(trackH("minimal")).toBeLessThan(trackH("solid"));
+    });
+
+    await step(
+      "enclosed track is a thick bar, thicker than solid",
+      async () => {
+        await expect(trackH("enclosed")).toBeGreaterThan(trackH("solid"));
+      }
+    );
+  },
+};
+
 /**
  * Vertical orientation with tick marks. Regression guard for
  * orientation-aware tick positioning: before the fix, every tick anchored
