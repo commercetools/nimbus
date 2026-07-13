@@ -461,9 +461,11 @@ export const WithFormField: Story = {
 
 /**
  * The `enclosed` thumb must stay inside the bar at both extremes. React Aria
- * centers the thumb on its value point, so without the recipe's per-value
- * margin correction half the thumb would hang off the rounded ends. Regression
- * guard: at min and max the thumb's box stays within the track's box.
+ * centers the thumb on its value point at the ends of its (inset) interactive
+ * track, and the visible bar reaches back over that inset by a thumb radius, so
+ * the thumb sits flush inside the bar. Regression guard: at min and max the
+ * thumb's box stays within the visible bar (the root box, which the `::before`
+ * bar spans).
  */
 export const EnclosedThumbContainment: Story = {
   render: () => (
@@ -482,20 +484,20 @@ export const EnclosedThumbContainment: Story = {
         .querySelector(`[data-testid="${id}"] [data-slot="${slot}"]`)!
         .getBoundingClientRect();
 
-    // Half-pixel tolerance absorbs sub-pixel layout rounding; the pre-fix bug
-    // overhangs by a full thumb radius (several px), far outside this.
-    await step("at min value the thumb stays within the track", async () => {
-      const track = rect("min", "track");
+    // Half-pixel tolerance absorbs sub-pixel layout rounding. The bar spans the
+    // root box; the interactive track is inset by a thumb radius within it.
+    await step("at min value the thumb stays within the bar", async () => {
+      const bar = rect("min", "root");
       const thumb = rect("min", "thumb");
-      await expect(thumb.left).toBeGreaterThanOrEqual(track.left - 0.5);
-      await expect(thumb.right).toBeLessThanOrEqual(track.right + 0.5);
+      await expect(thumb.left).toBeGreaterThanOrEqual(bar.left - 0.5);
+      await expect(thumb.right).toBeLessThanOrEqual(bar.right + 0.5);
     });
 
-    await step("at max value the thumb stays within the track", async () => {
-      const track = rect("max", "track");
+    await step("at max value the thumb stays within the bar", async () => {
+      const bar = rect("max", "root");
       const thumb = rect("max", "thumb");
-      await expect(thumb.left).toBeGreaterThanOrEqual(track.left - 0.5);
-      await expect(thumb.right).toBeLessThanOrEqual(track.right + 0.5);
+      await expect(thumb.left).toBeGreaterThanOrEqual(bar.left - 0.5);
+      await expect(thumb.right).toBeLessThanOrEqual(bar.right + 0.5);
     });
   },
 };
@@ -616,6 +618,58 @@ export const EnclosedTicksAlignThumb: Story = {
         await expect(drift("t100", 4)).toBeLessThanOrEqual(1.5);
       }
     );
+  },
+};
+
+/**
+ * Clicking a tick lands the thumb on that value. This is the whole point of the
+ * inset interactive track in the `enclosed` variant: because React Aria maps a
+ * pointer to a value using the *same* track box it renders the thumb into, the
+ * pixel a consumer clicks (the tick) maps back to exactly that tick's value —
+ * no drift. Before the inset, the visual remap desynced click→value and the
+ * thumb landed off the tick.
+ */
+export const EnclosedClickHitsTick: Story = {
+  args: { onChange: fn() },
+  render: (args) => (
+    <div data-testid="c">
+      <Slider
+        aria-label="Click a tick"
+        variant="enclosed"
+        defaultValue={0}
+        minValue={0}
+        maxValue={100}
+        showTicks
+        tickStep={25}
+        onChange={args.onChange}
+      />
+    </div>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const scope = '[data-testid="c"]';
+    const track = canvasElement.querySelector(
+      `${scope} [data-slot="track"]`
+    ) as HTMLElement;
+    const ticks = canvasElement.querySelectorAll(`${scope} [data-slot="tick"]`);
+    const thumbInput = () =>
+      canvasElement.querySelector(
+        `${scope} [data-slot="thumb"] input`
+      ) as HTMLInputElement;
+
+    await step("clicking the 75% tick sets the value to 75", async () => {
+      // Ticks at 0/25/50/75/100 in ascending order → index 3 is value 75. Click
+      // the track at that tick's on-screen center, where a consumer would aim.
+      const t = ticks[3].getBoundingClientRect();
+      await userEvent.pointer({
+        target: track,
+        keys: "[MouseLeft]",
+        coords: {
+          clientX: (t.left + t.right) / 2,
+          clientY: (t.top + t.bottom) / 2,
+        },
+      });
+      await expect(thumbInput().value).toBe("75");
+    });
   },
 };
 

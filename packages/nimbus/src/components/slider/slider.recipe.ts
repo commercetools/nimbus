@@ -218,60 +218,66 @@ export const sliderSlotRecipe = defineSlotRecipe({
         },
       },
 
-      // Thick, contained "bar" (iOS-style): track as tall as the thumb, and a
-      // shadowed white thumb inset so it sits inside the bar. Sizing keys off
-      // the existing --slider-thumb-size var so it still scales with `size`.
+      // Thick, contained "bar" (iOS-style): track as tall as the thumb with a
+      // shadowed white thumb inside it. Sizing keys off the existing
+      // --slider-thumb-size var so it still scales with `size`.
       enclosed: {
         track: {
+          // Inset the *interactive* track by the thumb radius on each end.
+          // React Aria measures this element's rect to map a pointer to a value
+          // AND to position the thumbs (see react-aria's `useSlider` /
+          // `useSliderThumb`), so insetting it makes React Aria's own math
+          // produce the contained layout: clicks, drags, ticks and the rendered
+          // thumb all share one coordinate system, and clicking a tick lands the
+          // thumb on it. No JS compensation needed. The visible bar is painted
+          // full-width by `::before`, reaching back over the inset so the thumb
+          // stays contained at the extremes. The `neutral.6` background moves to
+          // that pseudo-element; the track itself is transparent and lets its
+          // fill/thumb overflow into the caps.
           height: "var(--slider-thumb-size)",
-          '&[data-orientation="vertical"]': {
-            width: "var(--slider-thumb-size)",
-            height: "100%",
+          width: "calc(100% - var(--slider-thumb-size))",
+          marginInline: "calc(var(--slider-thumb-size) / 2)",
+          backgroundColor: "transparent",
+          overflow: "visible",
+
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            insetBlock: "0",
+            insetInline: "calc(var(--slider-thumb-size) / -2)",
+            borderRadius: "full",
+            backgroundColor: "neutral.6",
+            // Decorative: the interactive area is the track box itself.
+            pointerEvents: "none",
           },
-        },
-        fill: {
-          height: "var(--slider-thumb-size)",
+
           '&[data-orientation="vertical"]': {
             width: "var(--slider-thumb-size)",
-            height: "auto",
+            height: "calc(100% - var(--slider-thumb-size))",
+            marginInline: "0",
+            marginBlock: "calc(var(--slider-thumb-size) / 2)",
+            "&::before": {
+              insetInline: "0",
+              insetBlock: "calc(var(--slider-thumb-size) / -2)",
+            },
           },
         },
         thumb: {
-          // Full bar-thickness box with a transparent border: the border is
-          // the visible gap ("halo") between the white knob and the bar edges,
-          // uniform on every side. `backgroundClip: padding-box` keeps the
-          // white fill inside the border so the border stays truly transparent
-          // — the enclosed fill (sized in slider-base.tsx to reach the thumb's
-          // outer edge) shows through it as a thin primary ring around the
-          // knob, including at value 0. A full-thickness box also makes the
-          // containment radius below simply half the thumb size.
+          // Full bar-thickness box with a transparent border: the border is the
+          // visible gap ("halo") between the white knob and the bar edges,
+          // uniform on every side. `backgroundClip: padding-box` keeps the white
+          // fill inside the border so the border stays truly transparent — the
+          // enclosed fill (sized in slider-base.tsx to reach the thumb's outer
+          // edge) shows through it as a thin primary ring around the knob,
+          // including at value 0. Containment is handled by the inset track
+          // above, so React Aria's native centering already keeps the thumb
+          // inside the bar — no margin correction here.
           boxSize: "var(--slider-thumb-size)",
           borderWidth: "{spacing.50}",
           borderStyle: "solid",
           borderColor: "transparent",
           backgroundClip: "padding-box",
           shadow: "1",
-
-          // Keep the thumb contained inside the bar. React Aria centers the
-          // thumb exactly on its value point (main-axis `left`/`top` + inline
-          // `transform: translate(-50%, -50%)`), so at the extremes half the
-          // thumb would hang past the rounded ends. Shift it back inward by
-          // its own radius at the ends, scaling linearly with the thumb's
-          // physical position: offset = radius * (1 - 2 * position), where
-          // radius is half the thumb box (now the full thumb size). `margin`
-          // is used because React Aria owns the inline `transform`, which CSS
-          // cannot override; margin shifts the post-translate center
-          // one-for-one. The position var is set per thumb in slider-base.tsx
-          // (already flipped for vertical/RTL), so this stays a physical-axis
-          // correction; the 0.5 fallback yields no shift if the var is absent.
-          // The matching fill cup in slider-base.tsx reserves the same radius.
-          marginLeft:
-            "calc(var(--slider-thumb-size) / 2 * (1 - 2 * var(--slider-thumb-position, 0.5)))",
-          '[data-orientation="vertical"] &': {
-            marginLeft: "0",
-            marginTop:
-              "calc(var(--slider-thumb-size) / 2 * (1 - 2 * var(--slider-thumb-position, 0.5)))",
-          },
         },
       },
     },

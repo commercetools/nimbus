@@ -138,8 +138,9 @@ export const Variants: Story = {
 /**
  * Both `enclosed` thumbs stay inside the bar at the extremes. With the range
  * spanning the full track, the lower thumb sits at the left end and the upper
- * thumb at the right end; the per-value margin correction (shared recipe +
- * slider-base) must keep each thumb's box within the track's box.
+ * thumb at the right end. React Aria centers them at the ends of the inset
+ * interactive track, and the visible bar reaches back over that inset, so each
+ * thumb's box stays within the bar (the root box).
  */
 export const EnclosedThumbContainment: Story = {
   render: () => (
@@ -152,20 +153,19 @@ export const EnclosedThumbContainment: Story = {
     </div>
   ),
   play: async ({ canvasElement, step }) => {
-    const track = canvasElement
-      .querySelector('[data-testid="rs"] [data-slot="track"]')!
+    const bar = canvasElement
+      .querySelector('[data-testid="rs"] [data-slot="root"]')!
       .getBoundingClientRect();
     const thumbs = Array.from(
       canvasElement.querySelectorAll('[data-testid="rs"] [data-slot="thumb"]')
     ).map((el) => el.getBoundingClientRect());
 
-    await step("both thumbs stay within the track", async () => {
+    await step("both thumbs stay within the bar", async () => {
       await expect(thumbs).toHaveLength(2);
-      // Half-pixel tolerance for sub-pixel rounding; pre-fix overhang is a
-      // whole thumb radius.
+      // Half-pixel tolerance for sub-pixel rounding.
       for (const thumb of thumbs) {
-        await expect(thumb.left).toBeGreaterThanOrEqual(track.left - 0.5);
-        await expect(thumb.right).toBeLessThanOrEqual(track.right + 0.5);
+        await expect(thumb.left).toBeGreaterThanOrEqual(bar.left - 0.5);
+        await expect(thumb.right).toBeLessThanOrEqual(bar.right + 0.5);
       }
     });
   },

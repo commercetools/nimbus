@@ -6,7 +6,6 @@ import {
   SliderTrack as RaSliderTrack,
   SliderThumb as RaSliderThumb,
   SliderFill as RaSliderFill,
-  useLocale,
 } from "react-aria-components";
 import { mergeRefs, extractStyleProps } from "@/utils";
 import { Tooltip } from "@/components/tooltip/tooltip";
@@ -44,15 +43,6 @@ type SliderValueThumbProps = {
   thumbAriaLabelledBy?: string;
   valueLabel: string;
   isDragging: boolean;
-  /**
-   * The thumb's physical position along the track, 0–1, already flipped for
-   * vertical/RTL the same way React Aria flips it (see `useSliderThumb`). It
-   * is published as the `--slider-thumb-position` custom property so recipe
-   * variants can adjust the thumb's placement relative to its value — the
-   * `enclosed` variant uses it to keep the thumb contained inside the bar at
-   * the extremes.
-   */
-  positionFraction: number;
 };
 
 const SliderValueThumb = ({
@@ -61,7 +51,6 @@ const SliderValueThumb = ({
   thumbAriaLabelledBy,
   valueLabel,
   isDragging,
-  positionFraction,
 }: SliderValueThumbProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
@@ -76,12 +65,6 @@ const SliderValueThumb = ({
           aria-labelledby={thumbAriaLabelledBy}
           onHoverChange={setIsHovered}
           onFocusChange={setIsFocused}
-          // Merge alongside React Aria's own inline positioning (it sets
-          // `left`/`top` + `transform`, not custom properties, so there is no
-          // clash). Recipe variants read this to offset the thumb per value.
-          style={
-            { "--slider-thumb-position": positionFraction } as CSSProperties
-          }
         />
       </SliderThumbSlot>
       <Tooltip.Content>{valueLabel}</Tooltip.Content>
@@ -119,12 +102,6 @@ export const SliderBase = (props: SliderBaseProps) => {
     orientation = "horizontal",
     ...restProps
   } = props;
-
-  // Text direction is needed to reproduce React Aria's physical position
-  // fraction for each thumb (RA flips the fraction for RTL and vertical — see
-  // `useSliderThumb` — so the recipe's per-value offset stays a physical-axis
-  // correction).
-  const { direction } = useLocale();
 
   // The `enclosed` variant needs the fill widened to cup each thumb (see the
   // render-prop below); every other variant uses React Aria's default fill.
@@ -192,18 +169,20 @@ export const SliderBase = (props: SliderBaseProps) => {
           <RaSliderTrack>
             {({ state }) => {
               // `enclosed` fill: reach each thumb's OUTER edge, not the value
-              // point. The thumb is shifted inward to stay contained (recipe
-              // margin) and its transparent border reveals whatever is behind
-              // it, so the fill must sit behind the whole knob — that is what
-              // paints the thin primary ring around it, and at value 0 keeps a
-              // visible sliver instead of a bare knob. Reserve one thumb
-              // diameter across the travel (matching the thumb's containment)
-              // and add one diameter of length so both cupped ends land on the
-              // outer edge. A single slider's lower end is the track start (no
-              // thumb there), so it is left uncupped. Must be inline: React
-              // Aria sets the fill's main-axis size inline, which beats a
-              // recipe class. Uses logical `insetInlineStart` (RTL-safe) for
-              // horizontal and physical `bottom` for vertical, exactly as React
+              // point, so the fill sits behind the whole knob — that is what
+              // paints the thin primary ring through the thumb's transparent
+              // border, and at value 0 keeps a visible sliver instead of a bare
+              // knob. The interactive track is already inset by the thumb
+              // radius (see the recipe), so React Aria positions the thumbs
+              // natively-contained; the fill only needs a fixed radius of cup
+              // on each thumb-bearing end. In this inset track's own units
+              // (100% = the inset width) that is: start half a diameter before
+              // the low thumb, span the thumb gap plus one full diameter. A
+              // single slider's low end is the track start, so lowFrac is 0 and
+              // the cup there simply reaches the bar's rounded cap. Must be
+              // inline: React Aria sets the fill's main-axis size inline, which
+              // beats a recipe class. Uses logical `insetInlineStart` (RTL-safe)
+              // for horizontal and physical `bottom` for vertical, as React
               // Aria's own SliderFill does.
               let fillStyle: CSSProperties | undefined;
               if (isEnclosed) {
@@ -212,9 +191,9 @@ export const SliderBase = (props: SliderBaseProps) => {
                 );
                 const lowFrac = percents.length > 1 ? Math.min(...percents) : 0;
                 const highFrac = Math.max(...percents);
-                const size = "var(--slider-thumb-size)";
-                const start = `calc(${lowFrac} * (100% - ${size}))`;
-                const span = `calc(${highFrac - lowFrac} * (100% - ${size}) + ${size})`;
+                const r = "var(--slider-thumb-size) / 2";
+                const start = `calc(${lowFrac} * 100% - ${r})`;
+                const span = `calc(${highFrac - lowFrac} * 100% + var(--slider-thumb-size))`;
                 fillStyle =
                   orientation === "vertical"
                     ? { bottom: start, height: span }
@@ -230,15 +209,6 @@ export const SliderBase = (props: SliderBaseProps) => {
                       i,
                       state.values.length
                     );
-                    // Reproduce React Aria's physical position fraction: raw
-                    // value percent, flipped for vertical/RTL exactly as
-                    // `useSliderThumb` does, so recipe offsets act on the same
-                    // physical axis React Aria positions with.
-                    const rawPercent = state.getThumbPercent(i);
-                    const positionFraction =
-                      orientation === "vertical" || direction === "rtl"
-                        ? 1 - rawPercent
-                        : rawPercent;
                     return (
                       <SliderValueThumb
                         key={i}
@@ -251,29 +221,21 @@ export const SliderBase = (props: SliderBaseProps) => {
                         }
                         valueLabel={state.getThumbValueLabel(i)}
                         isDragging={state.isThumbDragging(i)}
-                        positionFraction={positionFraction}
                       />
                     );
                   })}
                   {ticks.map((tickValue) => {
                     const frac = (tickValue - minValue) / (maxValue - minValue);
-                    // Position (a tick is centered on this point via its
-                    // translate in the recipe). Mirrors how React Aria's own
-                    // `SliderFill` anchors: horizontal uses the logical
-                    // `insetInlineStart` so it flips under RTL, vertical
-                    // anchors from `bottom` so the minimum sits at the bottom.
-                    //
-                    // In the `enclosed` variant the thumb travel is inset by
-                    // its own radius on each end (same containment as the thumb
-                    // margin + fill cup), so a raw-percent tick would drift
-                    // from the thumb it marks — most visibly at the extremes.
-                    // Remap onto the identical contained centerline:
-                    // center = frac * (track - thumb) + thumb/2. Other variants
-                    // keep the plain percent (the thumb sits on the value
-                    // point).
-                    const pos = isEnclosed
-                      ? `calc(${frac} * (100% - var(--slider-thumb-size)) + var(--slider-thumb-size) / 2)`
-                      : `${frac * 100}%`;
+                    // A tick is centered on this point via its translate in the
+                    // recipe. Mirrors how React Aria's own `SliderFill` anchors:
+                    // horizontal uses the logical `insetInlineStart` so it flips
+                    // under RTL, vertical anchors from `bottom` so the minimum
+                    // sits at the bottom. Plain percent for every variant — in
+                    // `enclosed` the interactive track is inset by the thumb
+                    // radius (recipe), so `frac%` of that track already lands on
+                    // the contained thumb centerline and a click there maps back
+                    // to the same value.
+                    const pos = `${frac * 100}%`;
                     const tickPositionStyle =
                       orientation === "vertical"
                         ? { bottom: pos }
