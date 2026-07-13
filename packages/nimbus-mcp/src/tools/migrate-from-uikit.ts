@@ -249,6 +249,8 @@ function buildComponentResult(
     breakingChanges: entry.breakingChanges,
   };
 
+  if (entry.propMappings) result.propMappings = entry.propMappings;
+
   const hint = deriveToolHint(
     uiKitName,
     entry.nimbusEquivalent,

@@ -4,13 +4,14 @@ All scripts are TypeScript and run via `tsx`.
 
 ## Files
 
-| File                    | Description                                                                 |
-| ----------------------- | --------------------------------------------------------------------------- |
-| `prebuild.ts`           | Orchestrator that runs all prebuild steps in sequence before `tsup` bundles |
-| `copy-docs-data.ts`     | Copies generated docs data from `apps/docs/src/data` into `data/docs`       |
-| `build-icon-catalog.ts` | Scans nimbus-icons and builds a searchable catalog at `data/icons.json`     |
-| `build-token-data.ts`   | Flattens design tokens into `data/tokens.json` for runtime lookup           |
-| `build-search-index.ts` | Augments search index with pre-lowered fields for faster runtime matching   |
+| File                         | Description                                                                 |
+| ---------------------------- | --------------------------------------------------------------------------- |
+| `prebuild.ts`                | Orchestrator that runs all prebuild steps in sequence before `tsup` bundles |
+| `copy-docs-data.ts`          | Copies generated docs data from `apps/docs/src/data` into `data/docs`       |
+| `build-icon-catalog.ts`      | Scans nimbus-icons and builds a searchable catalog at `data/icons.json`     |
+| `build-token-data.ts`        | Flattens design tokens into `data/tokens.json` for runtime lookup           |
+| `build-search-index.ts`      | Augments search index with pre-lowered fields for faster runtime matching   |
+| `validate-migration-data.ts` | Validates `propMappings` in migration data against live Nimbus type data    |
 
 ## Running
 

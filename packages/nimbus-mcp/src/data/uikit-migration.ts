@@ -7,7 +7,7 @@
  * Source: migration-mapping.csv cross-referenced with Nimbus docs.
  */
 
-import type { UiKitMigrationEntry } from "../types.js";
+import type { UiKitMigrationEntry, PropMapping } from "../types.js";
 
 // ---------------------------------------------------------------------------
 // Migration data
@@ -44,6 +44,36 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "tone prop replaced by variant/colorPalette",
       "iconPosition prop removed; pass icon as a child of <Button>",
     ],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: "variant",
+        changeType: "value-mapping",
+        fixedValue: "ghost",
+      },
+      {
+        uiKitProp: "label",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Use children instead.",
+      },
+      {
+        uiKitProp: "tone",
+        nimbusProp: "colorPalette",
+        changeType: "value-mapping",
+        valueMapping: [
+          { from: "primary", to: "primary" },
+          { from: "secondary", to: "neutral" },
+          { from: "critical", to: "critical" },
+        ],
+      },
+      {
+        uiKitProp: "iconPosition",
+        nimbusProp: null,
+        changeType: "removed",
+        notes: "Pass icon as a child.",
+      },
+    ],
   },
   {
     uiKitName: "LinkButton",
@@ -75,6 +105,42 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "iconLeft/iconRight props removed; pass icon as a child of <Button>",
       "tone prop ('urgent'|'primary'|'critical') replaced by colorPalette",
     ],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: "variant",
+        changeType: "value-mapping",
+        fixedValue: "solid",
+      },
+      {
+        uiKitProp: "label",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Use children instead.",
+      },
+      {
+        uiKitProp: "tone",
+        nimbusProp: "colorPalette",
+        changeType: "value-mapping",
+        valueMapping: [
+          { from: "primary", to: "primary" },
+          { from: "urgent", to: "critical" },
+          { from: "critical", to: "critical" },
+        ],
+      },
+      {
+        uiKitProp: "iconLeft",
+        nimbusProp: null,
+        changeType: "removed",
+        notes: "Pass icon as a child.",
+      },
+      {
+        uiKitProp: "iconRight",
+        nimbusProp: null,
+        changeType: "removed",
+        notes: "Pass icon as a child.",
+      },
+    ],
   },
   {
     uiKitName: "SecondaryButton",
@@ -90,6 +156,41 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "iconLeft/iconRight props removed; pass icon as a child of <Button>",
       "theme prop ('default'|'info') replaced by colorPalette",
     ],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: "variant",
+        changeType: "value-mapping",
+        fixedValue: "outline",
+      },
+      {
+        uiKitProp: "label",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Use children instead.",
+      },
+      {
+        uiKitProp: "theme",
+        nimbusProp: "colorPalette",
+        changeType: "value-mapping",
+        valueMapping: [
+          { from: "default", to: "primary" },
+          { from: "info", to: "info" },
+        ],
+      },
+      {
+        uiKitProp: "iconLeft",
+        nimbusProp: null,
+        changeType: "removed",
+        notes: "Pass icon as a child.",
+      },
+      {
+        uiKitProp: "iconRight",
+        nimbusProp: null,
+        changeType: "removed",
+        notes: "Pass icon as a child.",
+      },
+    ],
   },
   {
     uiKitName: "IconButton",
@@ -103,6 +204,21 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "label prop replaced by aria-label",
       "icon prop replaced by icon as children",
       "theme prop replaced by variant/colorPalette",
+    ],
+    propMappings: [
+      { uiKitProp: "label", nimbusProp: "aria-label", changeType: "rename" },
+      {
+        uiKitProp: "icon",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Pass icon as children.",
+      },
+      {
+        uiKitProp: "theme",
+        nimbusProp: "variant",
+        changeType: "value-mapping",
+        notes: "UIKit theme maps to Nimbus variant + colorPalette.",
+      },
     ],
   },
   {
@@ -151,6 +267,27 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "hasWarning prop removed",
       "isAutofocussed replaced by autoFocus",
       "isCondensed prop replaced by size='sm'",
+    ],
+    propMappings: [
+      { uiKitProp: "hasError", nimbusProp: "isInvalid", changeType: "rename" },
+      { uiKitProp: "hasWarning", nimbusProp: null, changeType: "removed" },
+      {
+        uiKitProp: "isAutofocussed",
+        nimbusProp: "autoFocus",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "isCondensed",
+        nimbusProp: "size",
+        changeType: "value-mapping",
+        valueMapping: [{ from: "true", to: "sm" }],
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives string value instead of ChangeEvent.",
+      },
     ],
   },
   {
@@ -290,6 +427,30 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "onChange received TCustomEvent (target.value); now receives selected key directly",
       "isMulti support changed; check Nimbus Select API for multi-select",
       "appearance prop ('default'|'quiet'|'filter') replaced by variant",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "appearance",
+        nimbusProp: "variant",
+        changeType: "value-mapping",
+        valueMapping: [
+          { from: "default", to: "outline" },
+          { from: "quiet", to: "ghost" },
+        ],
+        notes: "appearance='filter' has no direct equivalent.",
+      },
+      {
+        uiKitProp: "options",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Replace with Select.Option children inside Select.Options.",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives selected key instead of TCustomEvent.",
+      },
     ],
   },
   {
@@ -479,6 +640,19 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "isChecked prop renamed to isSelected",
       "onChange received ChangeEvent<HTMLInputElement>; now receives boolean isSelected directly",
     ],
+    propMappings: [
+      {
+        uiKitProp: "isChecked",
+        nimbusProp: "isSelected",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives boolean isSelected instead of ChangeEvent.",
+      },
+    ],
   },
   {
     uiKitName: "RadioInput",
@@ -502,6 +676,28 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "isChecked prop renamed to isSelected",
       "onChange received ChangeEvent (target.checked); now receives boolean isSelected directly",
       "size prop ('small'|'big') replaced by Nimbus size tokens",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "isChecked",
+        nimbusProp: "isSelected",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives boolean isSelected instead of ChangeEvent.",
+      },
+      {
+        uiKitProp: "size",
+        nimbusProp: "size",
+        changeType: "value-mapping",
+        valueMapping: [
+          { from: "small", to: "sm" },
+          { from: "big", to: "md" },
+        ],
+      },
     ],
   },
 
@@ -690,6 +886,28 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "tone value 'information' → colorPalette='info'",
       "tone values 'primary' and 'secondary' → colorPalette='primary' or 'neutral'",
       "isCondensed prop replaced by size='xs'",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "tone",
+        nimbusProp: "colorPalette",
+        changeType: "value-mapping",
+        valueMapping: [
+          { from: "critical", to: "critical" },
+          { from: "warning", to: "warning" },
+          { from: "positive", to: "positive" },
+          { from: "information", to: "info" },
+          { from: "primary", to: "primary" },
+          { from: "secondary", to: "neutral" },
+        ],
+      },
+      {
+        uiKitProp: "isCondensed",
+        nimbusProp: "size",
+        changeType: "value-mapping",
+        valueMapping: [{ from: "true", to: "xs" }],
+        notes: "Default size is 'md'.",
+      },
     ],
   },
   {
@@ -902,6 +1120,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Direct replacement. Composable with Card.Root, Card.Header, Card.Body, Card.Footer.",
     breakingChanges: [
       "Adopt compositional slot API (Card.Root, Card.Header, Card.Body, Card.Footer)",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "children",
+        nimbusProp: null,
+        changeType: "structural",
+        notes:
+          "Restructure into Card.Root > Card.Header + Card.Body + Card.Footer slots.",
+      },
     ],
   },
   {
