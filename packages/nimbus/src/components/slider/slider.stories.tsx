@@ -460,6 +460,41 @@ export const WithFormField: Story = {
 };
 
 /**
+ * Keyboard focus paints the Nimbus focus ring on the thumb. Regression guard
+ * for a bug where no thumb showed a ring: the thumb must use
+ * `focusVisibleRing` (its selector matches React Aria's `data-focus-visible`),
+ * not `focusRing` (whose `:focus`/`[data-focus]` selector never matches — focus
+ * lives on the visually-hidden inner <input>, and React Aria marks the styled
+ * div with `data-focus-visible`, not `data-focus`).
+ */
+export const FocusRing: Story = {
+  args: {
+    "aria-label": "Volume",
+    defaultValue: 30,
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const thumb = canvas.getByRole("slider");
+    const thumbEl = canvasElement.querySelector(
+      '[data-slot="thumb"]'
+    ) as HTMLElement;
+
+    await step(
+      "keyboard focus paints a visible outline on the thumb",
+      async () => {
+        await userEvent.tab();
+        await expect(thumb).toHaveFocus();
+        // React Aria marks the styled thumb div with data-focus-visible under
+        // keyboard modality; the recipe's focusVisibleRing keys off it.
+        await expect(thumbEl).toHaveAttribute("data-focus-visible", "true");
+        const outlineWidth = parseFloat(getComputedStyle(thumbEl).outlineWidth);
+        await expect(outlineWidth).toBeGreaterThan(0);
+      }
+    );
+  },
+};
+
+/**
  * Visual smoke test: every combination of orientation × variant × size ×
  * disabled-state rendered in one grid, so the whole visual surface can be
  * eyeballed at once and any combination that fails to mount is caught. The
