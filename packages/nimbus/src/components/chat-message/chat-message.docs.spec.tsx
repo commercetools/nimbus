@@ -227,7 +227,9 @@ describe("ChatMessage - Accessible transcript", () => {
     expect(assistant).toBeInTheDocument();
 
     // The decorative assistant avatar is not exposed with a misleading label.
-    expect(within(assistant).queryByLabelText(/avatar/i)).not.toBeInTheDocument();
+    expect(
+      within(assistant).queryByLabelText(/avatar/i)
+    ).not.toBeInTheDocument();
   });
 
   it("renders a system notice as a ChatNotice (a peer, not a sender)", () => {

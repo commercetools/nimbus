@@ -297,9 +297,7 @@ export const Overflow: Story = {
 
     await step("Content wraps inside the body (no overflow)", async () => {
       // If the long token overflowed, scrollWidth would exceed clientWidth.
-      await expect(body.scrollWidth).toBeLessThanOrEqual(
-        body.clientWidth + 1
-      );
+      await expect(body.scrollWidth).toBeLessThanOrEqual(body.clientWidth + 1);
     });
   },
 };
@@ -396,7 +394,11 @@ export const ErrorTone: Story = {
  */
 export const Streaming: Story = {
   render: () => (
-    <ChatMessage.Root sender="assistant" isStreaming data-testid="streaming-body">
+    <ChatMessage.Root
+      sender="assistant"
+      isStreaming
+      data-testid="streaming-body"
+    >
       <ChatMessage.Avatar>
         <AutoAwesome />
       </ChatMessage.Avatar>
@@ -476,7 +478,10 @@ export const AccessibleFeed: Story = {
         </ChatMessage.Body>
       </ChatMessage.Root>
 
-      <ChatMessage.Root sender="assistant" aria-label="Message from the assistant">
+      <ChatMessage.Root
+        sender="assistant"
+        aria-label="Message from the assistant"
+      >
         <ChatMessage.Avatar aria-label="Assistant">
           <AutoAwesome />
         </ChatMessage.Avatar>
