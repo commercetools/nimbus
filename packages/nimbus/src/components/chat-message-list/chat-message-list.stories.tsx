@@ -116,6 +116,7 @@ const AppendableList = ({ autoScroll = true }: { autoScroll?: boolean }) => {
         {Array.from({ length: count }).map((_, i) => (
           <ChatMessageList.Item key={i}>
             <ChatMessage.Root sender={i % 2 === 0 ? "user" : "agent"}>
+              <ChatMessage.Avatar />
               <ChatMessage.Body>
                 <Text>
                   Message {i + 1}. {SAMPLE}
@@ -227,6 +228,7 @@ const StreamingList = () => {
       >
         <ChatMessageList.Item>
           <ChatMessage.Root sender="user">
+            <ChatMessage.Avatar />
             <ChatMessage.Body>
               <Text>Tell me a long story.</Text>
             </ChatMessage.Body>
@@ -234,6 +236,7 @@ const StreamingList = () => {
         </ChatMessageList.Item>
         <ChatMessageList.Item>
           <ChatMessage.Root sender="agent" isStreaming>
+            <ChatMessage.Avatar />
             <ChatMessage.Body>
               <Text>{streamed}</Text>
             </ChatMessage.Body>

@@ -35,6 +35,10 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
 
   base: {
     root: {
+      // Palette for the whole message (user surface tint + avatar). Defaults to
+      // `primary` and cascades to every slot; a consumer can retint the message
+      // by passing `colorPalette` to `ChatMessage.Root`.
+      colorPalette: "primary",
       display: "grid",
       // Two auto tracks: one hugs the avatar, the other holds the body +
       // meta stack (bounded by the body's per-sender max-width).
@@ -47,7 +51,7 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
       rowGap: "200",
     },
     avatar: {
-      colorPalette: "primary",
+      // Palette inherited from `root` (overridable via the `colorPalette` prop).
       display: "flex",
       flexShrink: 0,
       gridRow: 1,
@@ -115,7 +119,7 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
           gridColumn: 1,
           justifySelf: "end",
           maxWidth: "480px",
-          backgroundColor: "primary.3",
+          backgroundColor: "colorPalette.2",
         },
         avatar: {
           gridColumn: 2,

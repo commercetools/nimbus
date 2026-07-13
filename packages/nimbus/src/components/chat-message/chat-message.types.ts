@@ -16,7 +16,8 @@ type ChatMessageRecipeProps = {
    * and the sender-specific body/avatar styling:
    *
    * - `"agent"` (default) — agent voice, avatar leading.
-   * - `"user"` — the human, avatar trailing, `primary.3` surface.
+   * - `"user"` — the human, avatar trailing, `colorPalette.2` surface
+   *   (`primary` by default).
    *
    * `sender` denotes only *who* sent the message. System notices are out of
    * scope — a system notice isn't a message, and it isn't a standardized

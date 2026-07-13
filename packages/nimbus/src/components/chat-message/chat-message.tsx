@@ -51,7 +51,9 @@ export const ChatMessage = {
    * (`"user" | "agent"`) which controls layout direction
    * and styling, `tone` (`"neutral" | "error"`) to flag a failed generation,
    * and `isStreaming` to mark the message as still generating (sets
-   * `aria-busy`). Renders a semantic `<article>` by default; override with `as`.
+   * `aria-busy`). The palette (user surface tint + avatar) defaults to
+   * `primary`; pass `colorPalette` to retint the whole message. Renders a
+   * semantic `<article>` by default; override with `as`.
    *
    * @example
    * ```tsx

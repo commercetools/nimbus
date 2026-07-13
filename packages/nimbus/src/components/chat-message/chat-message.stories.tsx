@@ -77,7 +77,7 @@ export const Base: Story = {
 
 /**
  * User message
- * A user body: avatar trails the body, `primary.3` background. Naming the
+ * A user body: avatar trails the body, `colorPalette.2` background. Naming the
  * message with `aria-label` opts the avatar back into the a11y tree.
  */
 export const UserText: Story = {
@@ -485,6 +485,41 @@ export const AvatarVariantBySender: Story = {
         await expect(bg("agent-subtle")).toBe(bg("user-default"));
       }
     );
+  },
+};
+
+/**
+ * Custom palette
+ * The message palette (user surface + avatar) defaults to `primary`; pass
+ * `colorPalette` to `ChatMessage.Root` to retint the whole message.
+ */
+export const ThemedPalette: Story = {
+  render: () => (
+    <Stack gap="600" alignItems="start">
+      <ChatMessage.Root sender="user">
+        <ChatMessage.Avatar />
+        <ChatMessage.Body data-testid="palette-default">
+          <Text>Default palette (primary)</Text>
+        </ChatMessage.Body>
+      </ChatMessage.Root>
+      <ChatMessage.Root sender="user" colorPalette="neutral">
+        <ChatMessage.Avatar />
+        <ChatMessage.Body data-testid="palette-neutral">
+          <Text>Retinted with colorPalette="neutral"</Text>
+        </ChatMessage.Body>
+      </ChatMessage.Root>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const bg = (testId: string) =>
+      window.getComputedStyle(canvas.getByTestId(testId)).backgroundColor;
+
+    await step("colorPalette prop retints the user surface", async () => {
+      // The user body uses `colorPalette.2`; overriding `colorPalette` on Root
+      // resolves that token against the new palette, so the surface changes.
+      await expect(bg("palette-default")).not.toBe(bg("palette-neutral"));
+    });
   },
 };
 
