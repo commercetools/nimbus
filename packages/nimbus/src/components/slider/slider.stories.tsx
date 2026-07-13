@@ -323,6 +323,55 @@ export const WithTicks: Story = {
   },
 };
 
+/**
+ * Ticks stay legible over both the track and the fill by flipping color per
+ * region. A tick that lands on the fill gets `data-filled` (set in slider-base)
+ * and paints in `colorPalette.contrast` — the token that reads against the
+ * primary fill; ticks on the bare track keep a strong neutral. Guards that the
+ * correct ticks are flagged and the two regions render visibly different colors
+ * (a single mid-neutral washed out on the fill, worst in dark mode).
+ */
+export const TicksContrastOverFill: Story = {
+  args: {
+    "aria-label": "Rating",
+    defaultValue: 60,
+    minValue: 0,
+    maxValue: 100,
+    step: 25,
+    showTicks: true,
+  },
+  play: async ({ canvasElement, step }) => {
+    const ticks = Array.from(
+      canvasElement.querySelectorAll<HTMLElement>('[data-slot="tick"]')
+    );
+
+    await step(
+      "ticks on the fill are flagged, ticks on the bare track are not",
+      async () => {
+        // value 60 → ticks at 0/25/50 sit on the fill, 75/100 on the track.
+        await expect(ticks).toHaveLength(5);
+        for (const i of [0, 1, 2]) {
+          await expect(ticks[i]).toHaveAttribute("data-filled", "true");
+        }
+        for (const i of [3, 4]) {
+          await expect(ticks[i]).not.toHaveAttribute("data-filled");
+        }
+      }
+    );
+
+    await step("filled and unfilled ticks paint different colors", async () => {
+      const filled = getComputedStyle(ticks[0]).backgroundColor;
+      const unfilled = getComputedStyle(ticks[4]).backgroundColor;
+      await expect(filled).not.toBe(unfilled);
+      // Both must be opaque paints — a `colorPalette.contrast` that failed to
+      // resolve would fall back to transparent, still "differ" from the
+      // neutral, yet render an invisible tick on the fill.
+      await expect(filled).not.toBe("rgba(0, 0, 0, 0)");
+      await expect(unfilled).not.toBe("rgba(0, 0, 0, 0)");
+    });
+  },
+};
+
 /** Disabled slider does not respond to keyboard input. */
 export const Disabled: Story = {
   args: {

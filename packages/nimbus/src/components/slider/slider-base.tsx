@@ -184,13 +184,20 @@ export const SliderBase = (props: SliderBaseProps) => {
               // beats a recipe class. Uses logical `insetInlineStart` (RTL-safe)
               // for horizontal and physical `bottom` for vertical, as React
               // Aria's own SliderFill does.
+              // The filled region as track fractions (0–1): from the lowest
+              // thumb (or the track start, for a single thumb) to the highest.
+              // Drives two things — the enclosed fill cup below, and per-tick
+              // `data-filled` so a tick sitting on the fill can flip to a
+              // color that contrasts with the primary fill (see the recipe).
+              const thumbPercents = state.values.map((_, i) =>
+                state.getThumbPercent(i)
+              );
+              const lowFrac =
+                thumbPercents.length > 1 ? Math.min(...thumbPercents) : 0;
+              const highFrac = Math.max(...thumbPercents);
+
               let fillStyle: CSSProperties | undefined;
               if (isEnclosed) {
-                const percents = state.values.map((_, i) =>
-                  state.getThumbPercent(i)
-                );
-                const lowFrac = percents.length > 1 ? Math.min(...percents) : 0;
-                const highFrac = Math.max(...percents);
                 const r = "var(--slider-thumb-size) / 2";
                 const start = `calc(${lowFrac} * 100% - ${r})`;
                 const span = `calc(${highFrac - lowFrac} * 100% + var(--slider-thumb-size))`;
@@ -236,6 +243,13 @@ export const SliderBase = (props: SliderBaseProps) => {
                     // the contained thumb centerline and a click there maps back
                     // to the same value.
                     const pos = `${frac * 100}%`;
+                    // Mark ticks that land on the fill so the recipe can flip
+                    // them to a fill-contrasting color. The epsilon absorbs
+                    // floating-point drift at the boundary (a tick exactly under
+                    // a thumb), where `frac` and the thumb percent share the same
+                    // formula but may round differently.
+                    const isFilled =
+                      frac >= lowFrac - 1e-9 && frac <= highFrac + 1e-9;
                     const tickPositionStyle =
                       orientation === "vertical"
                         ? { bottom: pos }
@@ -244,6 +258,7 @@ export const SliderBase = (props: SliderBaseProps) => {
                       <SliderTickSlot
                         key={tickValue}
                         data-slot="tick"
+                        data-filled={isFilled || undefined}
                         style={tickPositionStyle}
                       />
                     );
