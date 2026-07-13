@@ -6,11 +6,21 @@ import {
   getUiKitCompoundMigrations,
   getAllUiKitMigrations,
 } from "../data/uikit-migration.js";
+import { getRouteManifest } from "../data-loader.js";
 import type {
   MigrateComponentResult,
   MigrateCompoundResult,
   MigrateFileResult,
+  MigrateSuggestionResult,
+  UnmappedComponent,
+  UnmappedSuggestion,
+  LoweredRelevanceFields,
+  RouteManifestEntry,
 } from "../types.js";
+import {
+  filterAndRankPreLowered,
+  fuzzyScorePreLowered,
+} from "../utils/relevance.js";
 
 // ---------------------------------------------------------------------------
 // Import extraction
@@ -249,6 +259,134 @@ function buildComponentResult(
 }
 
 // ---------------------------------------------------------------------------
+// Nimbus catalog suggestion for unmapped components
+// ---------------------------------------------------------------------------
+
+const GENERIC_UI_WORDS = new Set([
+  "input",
+  "field",
+  "text",
+  "button",
+  "component",
+  "panel",
+  "container",
+  "label",
+  "control",
+  "item",
+  "group",
+  "list",
+  "wrapper",
+  "provider",
+  "manager",
+]);
+
+function splitPascalCase(name: string): string[] {
+  return name.replace(/([a-z])([A-Z])/g, "$1 $2").split(/\s+/);
+}
+
+function toLowered(r: RouteManifestEntry): LoweredRelevanceFields {
+  const title = r.title.toLowerCase();
+  const description = r.description.toLowerCase();
+  const tags = [...r.tags, r.exportName ?? ""].join(" ").toLowerCase();
+  return {
+    title,
+    description,
+    tags,
+    content: "",
+    combined: title + " " + description + " " + tags,
+  };
+}
+
+function pickClosestByWordOverlap(
+  candidates: RouteManifestEntry[],
+  uiKitWords: string[]
+): RouteManifestEntry {
+  if (candidates.length === 1) return candidates[0];
+
+  const wordSet = new Set(uiKitWords);
+  let best = candidates[0];
+  let bestRatio = -1;
+
+  for (const c of candidates) {
+    const exportWords = splitPascalCase(c.exportName ?? c.title).map((w) =>
+      w.toLowerCase()
+    );
+    const overlap = exportWords.filter((w) => wordSet.has(w)).length;
+    const ratio = overlap / exportWords.length;
+    if (ratio > bestRatio) {
+      bestRatio = ratio;
+      best = c;
+    }
+  }
+
+  return best;
+}
+
+async function findNimbusSuggestion(
+  uiKitName: string
+): Promise<UnmappedSuggestion | null> {
+  const manifest = await getRouteManifest();
+  const routes = manifest.routes.filter(
+    (r) => r.category === "Components" && r.menu.length === 3
+  );
+
+  const allWords = splitPascalCase(uiKitName).map((w) => w.toLowerCase());
+  if (allWords.length === 0) return null;
+
+  const distinctive = allWords.filter((w) => !GENERIC_UI_WORDS.has(w));
+  const tokens = distinctive.length > 0 ? distinctive : allWords;
+
+  const loweredMap = new Map<RouteManifestEntry, LoweredRelevanceFields>();
+  for (const r of routes) {
+    loweredMap.set(r, toLowered(r));
+  }
+
+  const exactMatches = filterAndRankPreLowered(
+    routes,
+    tokens,
+    (r) => loweredMap.get(r)!
+  );
+
+  if (exactMatches.length > 0) {
+    const best = pickClosestByWordOverlap(exactMatches, allWords);
+    return {
+      name: best.exportName ?? best.title,
+      confidence: "high",
+    };
+  }
+
+  const fuzzyScored: Array<{ route: RouteManifestEntry; score: number }> = [];
+  for (const r of routes) {
+    const score = fuzzyScorePreLowered(loweredMap.get(r)!, tokens);
+    if (score > 0) {
+      fuzzyScored.push({ route: r, score });
+    }
+  }
+  fuzzyScored.sort((a, b) => b.score - a.score);
+
+  if (fuzzyScored.length > 0) {
+    const best = fuzzyScored[0];
+    if (best.score >= tokens.length * 4) {
+      return {
+        name: best.route.exportName ?? best.route.title,
+        confidence: "medium",
+      };
+    }
+  }
+
+  return null;
+}
+
+async function buildUnmappedComponent(
+  name: string
+): Promise<UnmappedComponent> {
+  const suggestion = await findNimbusSuggestion(name);
+  const result: UnmappedComponent = { name };
+  if (suggestion) result.suggestion = suggestion;
+  return result;
+}
+
+// ---------------------------------------------------------------------------
 // Tool registration
 // ---------------------------------------------------------------------------
 
@@ -345,6 +483,24 @@ export function registerMigrateFromUiKit(server: McpServer): void {
           };
         }
 
+        // Try suggesting a Nimbus component from the catalog
+        const suggestion = await findNimbusSuggestion(componentName);
+        if (suggestion) {
+          const response: MigrateSuggestionResult = {
+            uiKitName: componentName,
+            suggestion,
+          };
+          response.hint = `Use the get_component tool to see full API docs (e.g. get_component(name: "${suggestion.name}"))`;
+          return {
+            content: [
+              {
+                type: "text" as const,
+                text: JSON.stringify(response),
+              },
+            ],
+          };
+        }
+
         return {
           content: [
             {
@@ -391,7 +547,7 @@ export function registerMigrateFromUiKit(server: McpServer): void {
       }
 
       const mappings: MigrateComponentResult[] = [];
-      const unmapped: string[] = [];
+      const unmappedNames: string[] = [];
 
       for (const name of componentNames) {
         const result = buildComponentResult(name);
@@ -415,8 +571,12 @@ export function registerMigrateFromUiKit(server: McpServer): void {
           }
           continue;
         }
-        unmapped.push(name);
+        unmappedNames.push(name);
       }
+
+      const unmapped: UnmappedComponent[] = await Promise.all(
+        unmappedNames.map(buildUnmappedComponent)
+      );
 
       const response: MigrateFileResult = {
         filePath: filePath!,

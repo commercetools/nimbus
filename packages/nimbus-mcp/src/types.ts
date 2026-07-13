@@ -417,12 +417,31 @@ export interface MigrateComponentResult {
   hint?: string;
 }
 
+/** A suggested Nimbus component for an unmapped UI Kit component. */
+export interface UnmappedSuggestion {
+  name: string;
+  confidence: "high" | "medium";
+}
+
+/** An unmapped UI Kit component, optionally with a suggested Nimbus equivalent. */
+export interface UnmappedComponent {
+  name: string;
+  suggestion?: UnmappedSuggestion;
+}
+
+/** Result for a componentName lookup that has no migration rule but a catalog suggestion. */
+export interface MigrateSuggestionResult {
+  uiKitName: string;
+  suggestion: UnmappedSuggestion;
+  hint?: string;
+}
+
 /** File-level migration result returned by migrate_from_uikit in filePath mode. */
 export interface MigrateFileResult {
   filePath: string;
   mappings: MigrateComponentResult[];
-  /** Component names found in imports but not in the migration database. */
-  unmapped: string[];
+  /** Components found in imports but not in the migration database. */
+  unmapped: UnmappedComponent[];
 }
 
 /** Response for compound root lookups (e.g. "Spacings" → all Spacings.* sub-components). */
