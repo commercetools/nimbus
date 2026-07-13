@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/react";
 import {
   ChatMessageList,
   ChatMessage,
-  ChatNotice,
   NimbusProvider,
   Text,
 } from "@commercetools/nimbus";
@@ -43,12 +42,14 @@ describe("ChatMessageList - Rendering a transcript", () => {
     expect(screen.getByText("Revenue is up 12%.")).toBeInTheDocument();
   });
 
-  it("holds a ChatNotice as a peer member, not a message variant", () => {
+  it("holds arbitrary content as a member, not just messages", () => {
     render(
       <NimbusProvider>
         <ChatMessageList.Root aria-label="Conversation">
           <ChatMessageList.Item>
-            <ChatNotice>Conversation history was cleared.</ChatNotice>
+            {/* The list is content-agnostic — an Item can hold any content,
+                e.g. a consumer-rendered notice. */}
+            <Text>Conversation history was cleared.</Text>
           </ChatMessageList.Item>
         </ChatMessageList.Root>
       </NimbusProvider>

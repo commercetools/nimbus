@@ -20,7 +20,7 @@ depends on.
 
 Crucially, **a list is defined by its items**: `ChatMessageList` is a compound of
 a `Root` and its `Item`s, not a box that happens to contain children. The `Item`
-is the list-membership socket; a `ChatMessage` (or `ChatNotice`) is what plugs
+is the list-membership socket; a `ChatMessage` (or any other content) is what plugs
 into it.
 
 ## What Changes
@@ -41,7 +41,9 @@ into it.
   </ChatMessageList.Item>
 
   <ChatMessageList.Item>
-    <ChatNotice>Conversation history was cleared.</ChatNotice>
+    <Box mx="auto" textAlign="center" color="neutral.11" textStyle="sm">
+      Conversation history was cleared.
+    </Box>
   </ChatMessageList.Item>
 </ChatMessageList.Root>
 ```
@@ -65,10 +67,9 @@ into it.
 
 - The list-membership socket: owns inter-item spacing, keying, and the entry
   presentation of a newly appended item.
-- **Child-agnostic:** holds a `ChatMessage` *or* a `ChatNotice` (or a future
-  member) — the list arranges blocks in a scroll flow and does not reach into
-  them. This is what lets system notices be peers of messages rather than a
-  message variant.
+- **Child-agnostic:** holds a `ChatMessage` (or any other content) — the list
+  arranges blocks in a scroll flow and does not reach into them. This is what
+  lets system notices be peers of messages rather than a message variant.
 
 ## Out of scope
 
@@ -80,13 +81,14 @@ into it.
   cap).
 - **Same-author consecutive-message grouping** (e.g. collapsing repeated
   avatars) — deferred; `Item` is where it would live.
-- **Date dividers as a dedicated component** — v1 uses `ChatNotice` for
-  dividers; a dedicated divider is a future addition if needed.
+- **Date dividers as a dedicated component** — v1 has consumers render their own
+  divider content inside an `Item` (the `Item` is content-agnostic); a dedicated
+  divider is a future addition if needed.
 
 ## Dependencies
 
 - **Depends on `add-chat-message`** — `ChatMessageList.Item` composes
-  `ChatMessage` / `ChatNotice`, and the list's live region is the counterpart to
+  `ChatMessage`, and the list's live region is the counterpart to
   `ChatMessage`'s streaming busy flag. This change SHOULD land after (or with)
   `add-chat-message`.
 

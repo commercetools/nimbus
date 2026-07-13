@@ -6,7 +6,7 @@ import type { ChatMessageListItemProps } from "../chat-message-list.types";
  *
  * The list-membership socket: it owns inter-item placement and the entry
  * presentation of a newly appended member, and is content-agnostic — it holds a
- * `ChatMessage`, a `ChatNotice`, or another member without reaching into it.
+ * `ChatMessage` or any other content without reaching into it.
  * That child-agnosticism is what lets a system notice be a peer of a message
  * rather than a message variant.
  *

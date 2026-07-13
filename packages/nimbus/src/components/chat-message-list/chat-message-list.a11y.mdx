@@ -50,12 +50,12 @@ interchangeable:
 - **`role="log"` with `aria-live="polite"`** (the default here) — a live region
   that announces appended content, including streamed replies, without
   re-announcing the whole history on every token. It has **no constraint on
-  child roles**, so it validly contains `<article>` messages, `ChatNotice`s,
+  child roles**, so it validly contains `<article>` messages, centered notices,
   date separators, or anything else the transcript needs.
 - **`role="feed"`** — the ARIA APG's dedicated pattern for scrollable article
   collections, with built-in "read next/previous article" keyboard support. Its
   trade-off: `feed` has an `aria-required-children` constraint — **every** child
-  must have role `article`. A `ChatNotice` or a divider inside a `feed` is an
+  must have role `article`. A centered notice or a divider inside a `feed` is an
   accessibility violation, not just a lint warning.
 
 Because a real transcript mixes messages with notices and dividers,

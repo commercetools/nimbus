@@ -36,8 +36,8 @@ and its `Item`s — not a box that happens to contain children:
   view pinned to the newest message while you are at the bottom, and is the
   transcript's `role="log"` live region.
 - `ChatMessageList.Item` — one list member. It is content-agnostic: it holds a
-  `ChatMessage` or a `ChatNotice`, which is what lets a system notice be a peer
-  of a message rather than a message variant.
+  `ChatMessage` or any other content, which is what lets a system notice be a
+  peer of a message rather than a message variant.
 
 ### Resources
 
@@ -49,8 +49,9 @@ Get familiar with the features.
 
 ### A conversation transcript
 
-Wrap each turn in a `ChatMessageList.Item`. A `ChatNotice` is just another
-member — the list does not treat it specially.
+Wrap each turn in a `ChatMessageList.Item`. A system notice is just another
+member — the list does not treat it specially, so a consumer renders their own
+centered, subdued content.
 
 ```jsx live
 const App = () => (
@@ -83,7 +84,9 @@ const App = () => (
     </ChatMessageList.Item>
 
     <ChatMessageList.Item>
-      <ChatNotice>Conversation history was cleared.</ChatNotice>
+      <Box mx="auto" textAlign="center" color="neutral.11" textStyle="sm">
+        Conversation history was cleared.
+      </Box>
     </ChatMessageList.Item>
   </ChatMessageList.Root>
 );

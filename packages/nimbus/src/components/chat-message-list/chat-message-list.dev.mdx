@@ -52,14 +52,16 @@ const App = () => (
 ### Items are content-agnostic
 
 A `ChatMessageList.Item` is the list-membership socket; it does not care what
-plugs into it. The same `Item` holds a `ChatMessage` or a `ChatNotice`, so a
+plugs into it. The same `Item` holds a `ChatMessage` or any other content, so a
 system notice is a peer of a message rather than a `sender` variant.
 
 ```jsx live-dev
 const App = () => (
   <ChatMessageList.Root aria-label="Conversation" height="260px">
     <ChatMessageList.Item>
-      <ChatNotice>Today</ChatNotice>
+      <Box mx="auto" textAlign="center" color="neutral.11" textStyle="sm">
+        Today
+      </Box>
     </ChatMessageList.Item>
     <ChatMessageList.Item>
       <ChatMessage.Root sender="assistant">
@@ -147,8 +149,8 @@ return (
 
 - Give `ChatMessageList.Root` a bounded height (directly or via a flex/grid
   parent) so it scrolls internally.
-- Wrap every transcript member — a `ChatMessage` or a `ChatNotice` — in its own
-  `ChatMessageList.Item`.
+- Wrap every transcript member — a `ChatMessage` or any other content — in its
+  own `ChatMessageList.Item`.
 - Name the transcript with `aria-label` (or `aria-labelledby`); `Root` provides
   a localized default if you omit both, but a specific name is better.
 - v1 renders items directly (no windowing); very long transcripts render every

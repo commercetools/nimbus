@@ -10,8 +10,8 @@ viewport and provides the single persistent `aria-live` region that
 `ChatMessage`'s streaming busy flag depends on.
 
 The list is scoped to the transcript: it does not own the message array, data
-fetching, or AI-runtime orchestration. Its items hold `ChatMessage` or
-`ChatNotice` and it does not inspect them.
+fetching, or AI-runtime orchestration. Its items hold `ChatMessage` (or any
+other content) and it does not inspect them.
 
 **Component:** `ChatMessageList` **Package:** `@commercetools/nimbus`
 **Category:** Feedback / Chat
@@ -23,13 +23,13 @@ fetching, or AI-runtime orchestration. Its items hold `ChatMessage` or
 The component SHALL expose a compound API — `ChatMessageList.Root` and
 `ChatMessageList.Item`. `Root` SHALL establish the scroll container and styling
 context; `Item` SHALL represent one member of the list. `Item` SHALL be
-content-agnostic, holding a `ChatMessage`, a `ChatNotice`, or another member,
-and SHALL NOT reach into the member's internals.
+content-agnostic, holding a `ChatMessage` or any other content, and SHALL NOT
+reach into the member's internals.
 
 #### Scenario: Render a mixed transcript
 
 - **WHEN** a `ChatMessageList.Root` contains `Item`s holding user and assistant
-  `ChatMessage`s and a `ChatNotice`
+  `ChatMessage`s and a consumer-rendered notice
 - **THEN** SHALL render them as a vertical, scrollable sequence with consistent
   inter-item spacing
 - **AND** SHALL not require the members to know they are inside a list

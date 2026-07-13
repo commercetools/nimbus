@@ -18,8 +18,8 @@ the same responsibility line**:
 └───────────────────────────────────────────────────────────┘
 ```
 
-- **Primitives** (composable): `ChatMessage`, `ChatNotice` (this change),
-  `ChatMessageList` (sibling change), `ChatComposer` (future).
+- **Primitives** (composable): `ChatMessage` (this change), `ChatMessageList`
+  (sibling change), `ChatComposer` (future).
 - **Pattern component** (`Chat`, future): a composition of the primitives with a
   controlled, flat prop API (`messages`, `onSendMessage`, `renderMessage`).
 
@@ -38,9 +38,9 @@ kinds of relationship, so the code reads as what it is:
   change — the parts are the fixed anatomy of a message and are meaningless
   outside it.
 - **Peers in a name family (shared `Chat` prefix)** = *independent components a
-  layout composes.* `ChatMessage`, `ChatNotice`, `ChatMessageList` are peers,
-  not one compound; they must not be dot-notated under a single root, which
-  would falsely imply shared context.
+  layout composes.* `ChatMessage` and `ChatMessageList` are peers, not one
+  compound; they must not be dot-notated under a single root, which would falsely
+  imply shared context.
 
 ## Responsibilities & seams
 
@@ -59,14 +59,6 @@ kinds of relationship, so the code reads as what it is:
   - *to content* — `.Body` takes children and never inspects them
     ("presentational message surface"). This is the "I don't care what consumers
     put in the body" contract, made honest by a content-blind frame.
-
-### `ChatNotice` — a non-message interjection (leaf)
-
-- **Owns:** centered, subdued, avatar-less presentation of a transcript
-  interjection.
-- **Why separate:** its responsibilities are the inverse of a message. Kept a
-  leaf (no `Root`) because it establishes no context; it fills a transcript slot
-  the way a message does.
 
 ## Streaming: three owners
 
@@ -94,7 +86,9 @@ is why announcement lives on the always-present transcript container.
 
 - `ChatBubble.Root` → `ChatMessage.Root`; `.Avatar`/`.Actions` unchanged in
   role; `.Bubble` → `.Body`; `.Footer` → `.Meta`; `.Typing` retained.
-- `sender="system"` usage → `ChatNotice`.
+- `sender="system"` usage → out of scope: render your own notice content (e.g.
+  inside a `ChatMessageList.Item`, which is content-agnostic); a system notice is
+  not a message and is not a standardized component in this release.
 - `sender="tool"` usage → an `assistant` message whose body content is the tool
   output (code block / custom-tag / composed brick).
 - Streaming usage → place `<Markdown isStreaming>` as body content; keep

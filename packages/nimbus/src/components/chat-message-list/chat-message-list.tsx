@@ -10,8 +10,8 @@ import { ChatMessageListRoot, ChatMessageListItem } from "./components";
  *
  * A list is defined by its items, so `ChatMessageList` is a compound of a
  * `Root` and its `Item`s — not a box that happens to contain children. The
- * `Item` is the list-membership socket; a `ChatMessage` (or `ChatNotice`) is
- * what plugs into it.
+ * `Item` is the list-membership socket; a `ChatMessage` (or any other content)
+ * is what plugs into it.
  *
  * `Root` wraps the Nimbus `ScrollArea`, owns autoscroll / stick-to-bottom and
  * the "jump to latest" affordance, and is the single persistent
@@ -29,7 +29,9 @@ import { ChatMessageListRoot, ChatMessageListItem } from "./components";
  *     </ChatMessage.Root>
  *   </ChatMessageList.Item>
  *   <ChatMessageList.Item>
- *     <ChatNotice>Conversation history was cleared.</ChatNotice>
+ *     <Box mx="auto" textAlign="center" color="neutral.11" textStyle="sm">
+ *       Conversation history was cleared.
+ *     </Box>
  *   </ChatMessageList.Item>
  * </ChatMessageList.Root>
  * ```
@@ -56,8 +58,8 @@ export const ChatMessageList = {
    * # ChatMessageList.Item
    *
    * One member of the transcript — the socket that owns inter-item placement
-   * and entry presentation. Content-agnostic: it holds a `ChatMessage` or a
-   * `ChatNotice`. Does not assert `role="listitem"` (which would conflict with
+   * and entry presentation. Content-agnostic: it holds a `ChatMessage` or any
+   * other content. Does not assert `role="listitem"` (which would conflict with
    * the `log` container).
    *
    * @example

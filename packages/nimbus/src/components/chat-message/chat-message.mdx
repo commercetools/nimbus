@@ -36,9 +36,11 @@ the layout direction and the body/avatar styling:
 - `user` — the human; avatar trails the body.
 - `assistant` (default) — the assistant; avatar leads the body.
 
-`sender` denotes only _who_ sent the message. Non-message interjections (system
-notices, dividers) are the separate `ChatNotice` component, and tool/function
-output is content _inside_ an `assistant` message — neither is a `sender` value.
+`sender` denotes only _who_ sent the message. System notices are out of scope
+here — a system notice isn't a message, and it isn't a standardized component
+either; consumers render their own content (for example inside a
+`ChatMessageList.Item`). Tool/function output is content _inside_ an `assistant`
+message. Neither is a `sender` value.
 
 `tone="error"` is independent of `sender` — it tints the body to flag a failed
 generation, since an assistant message can still fail.
@@ -56,8 +58,9 @@ Get familiar with the features.
 ### Senders
 
 Each sender has its own layout direction and surface: `user` places the body
-before the avatar, `assistant` places the avatar before the body. A `ChatNotice`
-(a peer, not a sender) can sit between turns as a centered interjection.
+before the avatar, `assistant` places the avatar before the body. A system
+notice (not standardized in this release, so a consumer renders their own
+centered, subdued content) can sit between turns as an interjection.
 
 ```jsx live
 const App = () => (
@@ -68,7 +71,9 @@ const App = () => (
         <Text>Can you summarise last week's orders?</Text>
       </ChatMessage.Body>
     </ChatMessage.Root>
-    <ChatNotice>Conversation history was cleared.</ChatNotice>
+    <Box mx="auto" textAlign="center" color="neutral.11" textStyle="sm">
+      Conversation history was cleared.
+    </Box>
     <ChatMessage.Root sender="assistant">
       <ChatMessage.Avatar>
         <Icons.AutoAwesome />

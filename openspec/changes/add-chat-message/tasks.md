@@ -2,10 +2,10 @@
 
 > **API note:** `ChatMessage` is a Tier 3 compound — `ChatMessage.Root` (always
 > first, publishes `sender` context) + `.Avatar`, `.Body`, `.Actions`,
-> `.Meta`, `.Typing`. `ChatNotice` is a single leaf component (no `.Root`).
-> Streaming *rendering* is delegated to the existing `Markdown` component placed
-> as body content; `ChatMessage` only sets `aria-busy`. This supersedes the
-> Experimental `ChatBubble`; no back-compat alias.
+> `.Meta`, `.Typing`. Streaming *rendering* is delegated to the existing
+> `Markdown` component placed as body content; `ChatMessage` only sets
+> `aria-busy`. This supersedes the Experimental `ChatBubble`; no back-compat
+> alias.
 
 ## 1. Rename component and capability
 
@@ -36,63 +36,50 @@
       update the slot list (`bubble` → `body`, `footer` → `meta`); update the
       theme registration in `src/theme/recipes/index.ts`.
 
-## 3. Add `ChatNotice` (replaces `sender="system"`)
+## 3. Streaming delegation
 
-- [x] 3.1 Create `ChatNotice` following the Nimbus file layout (a single-slot
-      component, not a compound): recipe/slot for a centered, subdued,
-      avatar-less notice using the same neutral tokens the old `system` sender
-      used (`neutral.2` surface, `neutral.11` text).
-- [x] 3.2 Type `ChatNoticeProps` (children + style props + `data-*`); set
-      `displayName`.
-- [x] 3.3 Export `ChatNotice` and its types from the package barrel.
-- [x] 3.4 Register the `ChatNotice` recipe in theme config.
-
-## 4. Streaming delegation
-
-- [x] 4.1 Keep `isStreaming` on `ChatMessage.Root` setting `aria-busy` only.
+- [x] 3.1 Keep `isStreaming` on `ChatMessage.Root` setting `aria-busy` only.
       Remove any streaming-specific rendering from `ChatMessage`; document that
       streamed text is rendered by placing `<Markdown isStreaming>` as body
       content.
-- [x] 4.2 Keep `ChatMessage.Typing` (the `ActivityIndicator` dots +
+- [x] 3.2 Keep `ChatMessage.Typing` (the `ActivityIndicator` dots +
       optional label) as the pre-first-token affordance.
-- [x] 4.3 Ensure `ChatMessage.Root` does **not** create its own `aria-live`
+- [x] 3.3 Ensure `ChatMessage.Root` does **not** create its own `aria-live`
       region (announcement is the transcript/consumer container's job).
 
-## 5. Figma Code Connect
+## 4. Figma Code Connect
 
-- [x] 5.1 Rename `chat-message.figma.tsx`; map the Figma `Sender` property
+- [x] 4.1 Rename `chat-message.figma.tsx`; map the Figma `Sender` property
       (`User`/`Agent`, whose `Agent` value maps to `sender="assistant"`) onto
       the `sender` variant; forward children into `ChatMessage.Body`.
 
-## 6. Stories & tests (Storybook play functions)
+## 5. Stories & tests (Storybook play functions)
 
-- [x] 6.1 Update stories to `ChatMessage`: base, user, assistant, actions, meta,
+- [x] 5.1 Update stories to `ChatMessage`: base, user, assistant, actions, meta,
       markdown payload, overflow/wrapping, error tone, streaming (via
       `<Markdown isStreaming>` + `isStreaming` busy flag).
-- [x] 6.2 Add a `ChatNotice` story (centered notice / divider) replacing the old
-      `SystemMessage` story.
-- [x] 6.3 Replace the old `ToolMessage` story with an `assistant` message whose
+- [x] 5.2 Replace the old `ToolMessage` story with an `assistant` message whose
       body content is tool output (code block via `Markdown`).
-- [x] 6.4 Keep/extend a11y assertions: article-by-default, named message,
+- [x] 5.3 Keep/extend a11y assertions: article-by-default, named message,
       decorative-vs-named avatar, `aria-busy` while streaming.
 
-## 7. Documentation
+## 6. Documentation
 
-- [x] 7.1 Update `chat-message.mdx`, `.dev.mdx`, `.a11y.mdx`, `.docs.spec.tsx`:
-      new name, `sender` (user/assistant), `ChatNotice`, tool-output-as-content,
+- [x] 6.1 Update `chat-message.mdx`, `.dev.mdx`, `.a11y.mdx`, `.docs.spec.tsx`:
+      new name, `sender` (user/assistant), tool-output-as-content,
       streaming-via-Markdown. Cross-link the transcript composition to
       `ChatMessageList` (sibling change).
-- [x] 7.2 Update the lifecycle/description front-matter (still Experimental).
+- [x] 6.2 Update the lifecycle/description front-matter (still Experimental).
 
-## 8. Spec housekeeping
+## 7. Spec housekeeping
 
-- [x] 8.1 On archive, this change ADDs capability `nimbus-chat-message` and
+- [x] 7.1 On archive, this change ADDs capability `nimbus-chat-message` and
       REMOVEs `nimbus-chat-bubble` (see the change's `specs/` deltas).
 
-## 9. Verification
+## 8. Verification
 
-- [x] 9.1 `pnpm --filter @commercetools/nimbus typecheck:dev` clean.
-- [x] 9.2 `pnpm test:dev packages/nimbus/src/components/chat-message/…` green
+- [x] 8.1 `pnpm --filter @commercetools/nimbus typecheck:dev` clean.
+- [x] 8.2 `pnpm test:dev packages/nimbus/src/components/chat-message/…` green
       (stories + play functions).
-- [x] 9.3 `pnpm lint` clean; grep the repo for stale `ChatBubble` /
+- [x] 8.3 `pnpm lint` clean; grep the repo for stale `ChatBubble` /
       `nimbusChatBubble` references.

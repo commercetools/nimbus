@@ -47,7 +47,6 @@ export * from "./badge";
 export * from "./card";
 export * from "./chat-message";
 export * from "./chat-message-list";
-export * from "./chat-notice";
 export * from "./form-field";
 export * from "./icon";
 export * from "./inline-svg";

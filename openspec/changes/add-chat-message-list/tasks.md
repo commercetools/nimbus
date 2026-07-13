@@ -3,8 +3,8 @@
 > **API note:** `ChatMessageList` is a Tier 3 compound —
 > `ChatMessageList.Root` (always first, wraps `ScrollArea`, owns scroll +
 > autoscroll + live region + empty state) and `ChatMessageList.Item` (the
-> list-membership socket that holds a `ChatMessage` or `ChatNotice`). Depends on
-> `add-chat-message`.
+> list-membership socket that holds a `ChatMessage` or any other content).
+> Depends on `add-chat-message`.
 
 ## 1. Scaffolding
 
@@ -44,7 +44,7 @@
 
 - [x] 5.1 Implement `ChatMessageList.Item` owning inter-item spacing, keying,
       and the entry presentation of a newly appended item; content-agnostic
-      (holds `ChatMessage` or `ChatNotice`).
+      (holds `ChatMessage` or any other content).
 - [x] 5.2 Do not assert `role="listitem"` (would conflict with the `log`
       container); provide DOM order + structural hooks only.
 
@@ -61,7 +61,8 @@
 
 ## 8. Stories & tests (Storybook play functions)
 
-- [x] 8.1 Mixed transcript (user + assistant messages + a `ChatNotice`).
+- [x] 8.1 Mixed transcript (user + assistant messages + a consumer-rendered
+      notice inside an `Item`).
 - [x] 8.2 Autoscroll pins to newest on append (including a simulated streaming
       grow).
 - [x] 8.3 Scrolling up releases the pin and reveals the scroll-to-bottom
@@ -73,7 +74,7 @@
 
 - [x] 9.1 Author `.mdx` (designer), `.dev.mdx` (engineering), `.a11y.mdx`
       (log-vs-feed rationale, streaming announcement ownership), `.docs.spec.tsx`
-      (consumer test examples). Cross-link `ChatMessage` / `ChatNotice`.
+      (consumer test examples). Cross-link `ChatMessage`.
 
 ## 10. Verification
 

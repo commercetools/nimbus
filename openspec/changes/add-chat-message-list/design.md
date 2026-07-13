@@ -29,8 +29,8 @@ redundant wrappers:
   a body." A *message* concern.
 
 Because the socket does not care what plugs into it, the same `Item` holds a
-`ChatMessage` or a `ChatNotice`. That child-agnosticism is exactly what makes
-system-notice-as-peer honest (rather than a message variant).
+`ChatMessage` (or any other content). That child-agnosticism is exactly what
+makes system-notice-as-peer honest (rather than a message variant).
 
 ## Responsibilities & seams
 
@@ -51,7 +51,7 @@ system-notice-as-peer honest (rather than a message variant).
 
 - **Owns:** list-membership semantics, inter-item spacing, keying, and the entry
   presentation of a newly appended item.
-- **Seam:** holds exactly one member (`ChatMessage` / `ChatNotice`); it is
+- **Seam:** holds exactly one member (`ChatMessage` or any other content); it is
   content-agnostic.
 
 ## Scroll behavior
@@ -74,7 +74,8 @@ scroll viewport:
 
 - `log` has **no `aria-required-children` constraint**, so a mixed transcript of
   message `article`s, notices, and dividers is valid — unlike `role="feed"`,
-  which requires every child to be an `article` and would forbid `ChatNotice`.
+  which requires every child to be an `article` and would forbid non-`article`
+  members like notices and dividers.
 - The region is **always mounted** and persists across messages, so appended and
   streamed content is announced reliably (a live region created at the same time
   as its content is not). This is the counterpart to `ChatMessage`'s

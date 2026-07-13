@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   ChatMessage,
-  ChatNotice,
   type ChatMessageProps,
   Text,
   Button,
@@ -303,29 +302,6 @@ export const Overflow: Story = {
 };
 
 /**
- * System notice
- * A centered, subdued, avatar-less interjection. `ChatNotice` is a peer of
- * `ChatMessage`, not a sender variant — its presentation is the opposite of a
- * message.
- */
-export const SystemNotice: Story = {
-  render: () => (
-    <ChatNotice data-testid="system-notice">
-      Conversation history was cleared.
-    </ChatNotice>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Renders the system notice", async () => {
-      await expect(canvas.getByTestId("system-notice")).toHaveTextContent(
-        "Conversation history was cleared."
-      );
-    });
-  },
-};
-
-/**
  * Tool output as assistant content
  * Tool / function-call output is content *inside* an `assistant` message (here a
  * JSON code block via `Markdown`) — not a distinct sender.
@@ -427,8 +403,7 @@ export const Streaming: Story = {
 
 /**
  * Senders side by side
- * Compares the two sender layout directions, with a `ChatNotice` interjection
- * between turns.
+ * Compares the two sender layout directions.
  */
 export const Senders: Story = {
   render: () => (
@@ -439,7 +414,6 @@ export const Senders: Story = {
           <Text>Can you summarise last week's orders?</Text>
         </ChatMessage.Body>
       </ChatMessage.Root>
-      <ChatNotice>Conversation history was cleared.</ChatNotice>
       <ChatMessage.Root sender="assistant">
         <ChatMessage.Avatar>
           <AutoAwesome />

@@ -84,13 +84,13 @@ export type ChatMessageListRootProps =
  *
  * `Item` is the list-membership socket: it owns inter-item placement and the
  * entry presentation of a newly appended member, and is content-agnostic — it
- * holds a `ChatMessage`, a `ChatNotice`, or another member without reaching into
+ * holds a `ChatMessage` or any other content without reaching into
  * it. It deliberately does not assert `role="listitem"`, which would conflict
  * with the `log` container's live-region semantics.
  */
 export type ChatMessageListItemProps =
   OmitInternalProps<ChatMessageListItemSlotProps> & {
-    /** Exactly one transcript member (a `ChatMessage` or `ChatNotice`). */
+    /** Exactly one transcript member (a `ChatMessage` or any other content). */
     children?: React.ReactNode;
     /** Ref forwarding to the item element. */
     ref?: React.Ref<HTMLDivElement>;

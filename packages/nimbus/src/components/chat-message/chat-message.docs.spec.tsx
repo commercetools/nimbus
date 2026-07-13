@@ -3,7 +3,6 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   ChatMessage,
-  ChatNotice,
   NimbusProvider,
   Text,
   Button,
@@ -233,17 +232,5 @@ describe("ChatMessage - Accessible transcript", () => {
     expect(
       within(assistant).queryByLabelText(/avatar/i)
     ).not.toBeInTheDocument();
-  });
-
-  it("renders a system notice as a ChatNotice (a peer, not a sender)", () => {
-    render(
-      <NimbusProvider>
-        <ChatNotice>Conversation history was cleared.</ChatNotice>
-      </NimbusProvider>
-    );
-
-    expect(
-      screen.getByText("Conversation history was cleared.")
-    ).toBeInTheDocument();
   });
 });

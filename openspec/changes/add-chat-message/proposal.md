@@ -40,8 +40,8 @@ deprecation cycle.
 
 ## What Changes
 
-**Component:** `ChatBubble` → **`ChatMessage`** (Tier 3 compound). Plus a new
-leaf **`ChatNotice`**. **Package:** `@commercetools/nimbus`.
+**Component:** `ChatBubble` → **`ChatMessage`** (Tier 3 compound).
+**Package:** `@commercetools/nimbus`.
 **Category:** Feedback / Chat.
 
 ### 1. Rename to `ChatMessage`; the card slot becomes `.Body`
@@ -72,12 +72,12 @@ is what earns the compound (dot-notation) form.
 meant — and `user | assistant` mirrors the standard LLM message-role vocabulary.
 `system` and `tool` are removed from the axis:
 
-- **`system` → `ChatNotice`** (new leaf): a centered, subdued, avatar-less
-  interjection (e.g. "Conversation history was cleared", a date divider). It is
-  not a message with a variant; it is a different thing that fills a transcript
-  slot. Its presentation is the opposite of a message (no sender, no avatar, no
-  actions), so folding it into `ChatMessage` would corrupt the message's single
-  responsibility.
+- **`system` → out of scope**: a system notice (e.g. "Conversation history was
+  cleared", a date divider) isn't a message — its presentation is the opposite
+  of a message (no sender, no avatar, no actions), so folding it into
+  `ChatMessage` would corrupt the message's single responsibility. It also isn't
+  a standardized component in this release: a consumer renders their own content
+  (e.g. inside a `ChatMessageList.Item`, which is content-agnostic).
 - **`tool` → content**: tool/function output is *what an assistant turn
   contains* — a code block, a `Markdown` custom-component tag, or a composed
   brick placed in `ChatMessage.Body` — not a participant with its own avatar
@@ -137,10 +137,8 @@ conveyed by color/position alone.
   Figma Code Connect all rename.
 - **Recipe key** `nimbusChatBubble` → `nimbusChatMessage`; `sender` variant
   drops `system`/`tool`; theme registration updated.
-- **New component** `ChatNotice` (`chat-notice/` or co-located under
-  `chat-message/`), exported from the package barrel.
-- **Barrel exports** update: `ChatMessage`, `ChatNotice`, and public types;
-  `ChatBubble` removed.
+- **Barrel exports** update: `ChatMessage` and public types; `ChatBubble`
+  removed.
 - **Breaking rename** — acceptable under Experimental lifecycle; called out in
   the changeset.
 - No tokens-package changes.

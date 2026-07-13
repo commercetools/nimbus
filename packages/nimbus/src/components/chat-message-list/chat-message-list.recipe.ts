@@ -12,8 +12,8 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * - `viewport` — the vertical flow that holds the items. It owns the transcript
  *   rhythm (the inter-item gap) and horizontal padding; it is rendered *inside*
  *   the `ScrollArea`, so it is the content that scrolls.
- * - `item` — one list member (the socket that holds a `ChatMessage` or a
- *   `ChatNotice`).
+ * - `item` — one list member (the socket that holds a `ChatMessage` or any
+ *   other content).
  * - `scrollToBottom` — the absolutely-positioned control shown while the
  *   stick-to-bottom pin is released.
  * - `empty` — the centered empty-state shown when there are no items.

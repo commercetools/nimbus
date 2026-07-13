@@ -18,9 +18,11 @@ type ChatMessageRecipeProps = {
    * - `"assistant"` (default) — assistant voice, avatar leading.
    * - `"user"` — the human, avatar trailing, `primary.3` surface.
    *
-   * `sender` denotes only *who* sent the message. System notices and dividers
-   * are the separate `ChatNotice` component; tool/function output is content
-   * inside an `assistant` message — neither is a `sender` value.
+   * `sender` denotes only *who* sent the message. System notices are out of
+   * scope — a system notice isn't a message, and it isn't a standardized
+   * component either; consumers render their own content (e.g. inside a
+   * `ChatMessageList.Item`). Tool/function output is content inside an
+   * `assistant` message. Neither is a `sender` value.
    *
    * @default "assistant"
    */

@@ -62,12 +62,17 @@ const App = () => (
 
 ### System notices
 
-System notices and dividers are the separate `ChatNotice` component — a peer of
-`ChatMessage`, not a `sender` variant. It renders a centered, subdued,
-avatar-less line.
+System notices and dividers aren't standardized in this release. There's no
+dedicated Nimbus component for them — because `ChatMessageList` is
+content-agnostic, a consumer renders their own centered, subdued content inside a
+`ChatMessageList.Item`.
 
 ```jsx live-dev
-const App = () => <ChatNotice>Conversation history was cleared.</ChatNotice>;
+const App = () => (
+  <Box mx="auto" textAlign="center" color="neutral.11" textStyle="sm">
+    Conversation history was cleared.
+  </Box>
+);
 ```
 
 ### Tool output
@@ -275,8 +280,9 @@ const App = () => (
   below-body row.
 - Nest `ChatMessage.Actions` inside `ChatMessage.Body`, as the last child, so
   it pins to the bottom of the card.
-- For non-message interjections (system notices, dividers) use `ChatNotice`, a
-  peer of `ChatMessage` — not a `sender` variant.
+- Non-message interjections (system notices, dividers) aren't standardized in
+  this release — render your own centered, subdued content inside a
+  `ChatMessageList.Item`; it is not a `sender` variant.
 - `ChatMessage.Root` renders a semantic `<article>` by default; override the
   element with `as` (for example `as="li"` inside a list) when composing a
   transcript that needs a different tag.

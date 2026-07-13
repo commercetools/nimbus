@@ -18,10 +18,11 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * message can still *fail*, so error is a tone, not a sender. `tone` is
  * declared after `sender` so its body bg/border win the merge.
  *
- * `sender` denotes only *which participant* sent the message. Non-message
- * interjections (system notices, dividers) are the separate `ChatNotice` leaf,
- * and tool/function output is content inside an `assistant` message — neither is a
- * `sender` value.
+ * `sender` denotes only *which participant* sent the message. System notices
+ * are out of scope here — a system notice isn't a message, and it isn't a
+ * standardized component either; consumers render their own content (e.g. inside
+ * a `ChatMessageList.Item`). Tool/function output is content inside an
+ * `assistant` message. Neither is a `sender` value.
  *
  * Token parity: the Figma variables (`spacing/600`, `border-radius/300`, …) map
  * 1:1 onto the Nimbus design tokens (`spacing.600`, `radii.300`, …), so the

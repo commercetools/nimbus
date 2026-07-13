@@ -3,10 +3,10 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   ChatMessageList,
   ChatMessage,
-  ChatNotice,
   Text,
   Button,
   Stack,
+  Box,
 } from "@commercetools/nimbus";
 import { AutoAwesome } from "@commercetools/nimbus-icons";
 import { within, expect, waitFor, userEvent } from "storybook/test";
@@ -33,9 +33,11 @@ type Story = StoryObj<typeof ChatMessageList.Root>;
 
 /**
  * Mixed transcript
- * A `ChatMessageList` arranges `Item`s that hold user and assistant `ChatMessage`s
- * and a `ChatNotice` into a scrollable, live transcript. The members do not know
- * they are inside a list.
+ * A `ChatMessageList` arranges `Item`s that hold user and assistant
+ * `ChatMessage`s — and any other content — into a scrollable, live transcript.
+ * The list is content-agnostic: an `Item` can hold a `ChatMessage` or, as the
+ * last item shows, a consumer-rendered notice (a plain centered box). The
+ * members do not know they are inside a list.
  */
 export const MixedTranscript: Story = {
   render: () => (
@@ -68,7 +70,11 @@ export const MixedTranscript: Story = {
       </ChatMessageList.Item>
 
       <ChatMessageList.Item>
-        <ChatNotice>Conversation history was cleared.</ChatNotice>
+        {/* No dedicated notice component — a consumer renders their own
+            centered, subdued content inside an Item. */}
+        <Box mx="auto" textAlign="center" color="neutral.11" textStyle="sm">
+          Conversation history was cleared.
+        </Box>
       </ChatMessageList.Item>
     </ChatMessageList.Root>
   ),

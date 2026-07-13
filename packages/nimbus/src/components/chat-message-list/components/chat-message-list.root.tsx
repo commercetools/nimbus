@@ -24,8 +24,8 @@ import type { ChatMessageListRootProps } from "../chat-message-list.types";
  * `role="log"` `aria-live="polite"` region that announces appended and streamed
  * messages. When there are no items it renders `emptyState`.
  *
- * The list is content-agnostic: its `Item`s hold a `ChatMessage` or a
- * `ChatNotice` and it never reaches into them. It renders one message's
+ * The list is content-agnostic: its `Item`s hold a `ChatMessage` or any other
+ * content and it never reaches into them. It renders one message's
  * announcement at the transcript level; the message itself only flags
  * `aria-busy` while streaming (see `ChatMessage`).
  *

@@ -4,8 +4,9 @@ This change supersedes the `nimbus-chat-bubble` capability. `ChatBubble` is
 renamed and reshaped into `ChatMessage` (see the `nimbus-chat-message`
 capability added by this same change): the compound namespace becomes
 `ChatMessage`, `.Footer` becomes `.Meta`, the `sender` axis narrows to
-`user | agent` (with `system` moving to the new `ChatNotice` leaf and `tool`
-output becoming agent content), and streamed-text rendering is delegated to the
+`user | agent` (with `system` removed — not replaced by a standardized component
+(out of scope; consumer-rendered) — and `tool` output becoming agent content),
+and streamed-text rendering is delegated to the
 `Markdown` component. All `nimbus-chat-bubble` requirements are removed and
 re-expressed under `nimbus-chat-message`.
 
@@ -19,8 +20,9 @@ re-expressed under `nimbus-chat-message`.
 ### Requirement: Sender variants
 
 **Reason:** `sender` narrowed to `user | agent`; re-expressed under
-`nimbus-chat-message` → "Sender variants (user and agent)". `system` moves to
-`ChatNotice`; `tool` becomes agent content.
+`nimbus-chat-message` → "Sender variants (user and agent)". `system` is removed
+and not replaced by a standardized component (out of scope; consumer-rendered);
+`tool` becomes agent content.
 
 ### Requirement: Status tone
 

@@ -12,12 +12,11 @@ an orthogonal status overlay.
 `ChatMessage` renders one message and nothing more: the surrounding transcript
 (scroll, list semantics, live region) is `ChatMessageList`'s job, and message
 content — including streamed text (via `Markdown`) and tool output — is provided
-by the consumer as `children`. `ChatNotice` is a sibling leaf for non-message
-interjections (system notices, dividers).
+by the consumer as `children`.
 
 This capability supersedes `nimbus-chat-bubble`.
 
-**Component:** `ChatMessage`, `ChatNotice` **Package:** `@commercetools/nimbus`
+**Component:** `ChatMessage` **Package:** `@commercetools/nimbus`
 **Category:** Feedback / Chat
 
 ## ADDED Requirements
@@ -176,20 +175,6 @@ than color and position.
   `aria-label`
 - **THEN** SHALL expose the avatar with that meaningful name
 
-### Requirement: System notices via ChatNotice
-
-The system SHALL provide a `ChatNotice` component for non-message interjections
-in a transcript (system notices, date dividers). `ChatNotice` SHALL be a single
-leaf component (no `.Root`), rendered centered, subdued, and avatar-less. There
-SHALL be no `sender="system"` value on `ChatMessage`.
-
-#### Scenario: Render a system notice
-
-- **WHEN** a `ChatNotice` is rendered with text content
-- **THEN** SHALL render a centered, subdued, avatar-less line using the neutral
-  surface/text tokens
-- **AND** SHALL be composable as a peer of `ChatMessage` within a transcript
-
 ### Requirement: Component registration and theming
 
 The component SHALL follow Nimbus structure, styling, and export conventions.
@@ -200,13 +185,12 @@ The component SHALL follow Nimbus structure, styling, and export conventions.
 - **THEN** SHALL register the slot recipe as `nimbusChatMessage` with slots
   `root`, `avatar`, `body`, `actions`, `meta`, `typing` and variants `sender`
   (`user`/`assistant`) and `tone` (`neutral`/`error`)
-- **AND** SHALL register the `ChatNotice` recipe
 
 #### Scenario: Barrel export
 
 - **WHEN** consumers import from `@commercetools/nimbus`
-- **THEN** SHALL export `ChatMessage`, `ChatNotice`, and their public types from
-  the package barrel
+- **THEN** SHALL export `ChatMessage` and its public types from the package
+  barrel
 - **AND** SHALL NOT export `ChatBubble`
 
 #### Scenario: Figma Code Connect
