@@ -182,6 +182,14 @@ export const Variants: Story = {
       <div data-testid="enclosed">
         <Slider aria-label="Enclosed" variant="enclosed" defaultValue={75} />
       </div>
+      <div data-testid="enclosed-invalid">
+        <Slider
+          aria-label="Enclosed invalid"
+          variant="enclosed"
+          isInvalid
+          defaultValue={75}
+        />
+      </div>
     </>
   ),
   play: async ({ canvasElement, step }) => {
@@ -199,7 +207,7 @@ export const Variants: Story = {
       // "slider" role is implicit ARIA semantics, not a literal `role`
       // attribute in the DOM (confirmed via direct DOM inspection). Query by
       // computed accessible role instead, as the `Sizes` story above does.
-      await expect(canvas.getAllByRole("slider")).toHaveLength(4);
+      await expect(canvas.getAllByRole("slider")).toHaveLength(5);
     });
 
     await step(
@@ -219,6 +227,22 @@ export const Variants: Story = {
       "enclosed track is a thick bar, thicker than solid",
       async () => {
         await expect(trackH("enclosed")).toBeGreaterThan(trackH("solid"));
+      }
+    );
+
+    await step(
+      "invalid state reasserts a visible border even though `enclosed` sets the thumb's base border to none",
+      async () => {
+        // Regression guard: the recipe's `"[data-invalid='true'] &"` thumb
+        // selector re-asserts a border WIDTH (not just color) precisely
+        // because `minimal`/`enclosed` set `border: "none"` on the thumb —
+        // a color with no width would be invisible. A zero width here would
+        // mean the invalid state is silently lost on those variants.
+        const thumb = canvasElement.querySelector(
+          '[data-testid="enclosed-invalid"] [data-slot="thumb"]'
+        ) as HTMLElement;
+        const borderWidth = parseFloat(getComputedStyle(thumb).borderTopWidth);
+        await expect(borderWidth).toBeGreaterThan(0);
       }
     );
   },
