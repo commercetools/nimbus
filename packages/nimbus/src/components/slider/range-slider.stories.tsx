@@ -172,6 +172,62 @@ export const EnclosedThumbContainment: Story = {
 };
 
 /**
+ * The `enclosed` fill must cup *both* thumbs. Unlike the single slider (whose
+ * lower end is the uncupped track start), a range fill is bounded by two
+ * contained thumbs, so both its edges must land on a thumb's outer edge — the
+ * lower thumb's min-side edge and the upper thumb's max-side edge — at every
+ * value. Guards the slider-base fill sizing for the two-thumb case.
+ */
+export const EnclosedFillCupsThumbs: Story = {
+  render: () => (
+    <>
+      <div data-testid="mid">
+        <RangeSlider
+          aria-label="Mid range"
+          variant="enclosed"
+          defaultValue={[25, 75]}
+        />
+      </div>
+      <div data-testid="full">
+        <RangeSlider
+          aria-label="Full range"
+          variant="enclosed"
+          defaultValue={[0, 100]}
+        />
+      </div>
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const geom = (id: string) => {
+      const scope = `[data-testid="${id}"]`;
+      const fill = canvasElement
+        .querySelector(`${scope} [data-slot="fill"]`)!
+        .getBoundingClientRect();
+      const thumbs = Array.from(
+        canvasElement.querySelectorAll(`${scope} [data-slot="thumb"]`)
+      ).map((t) => t.getBoundingClientRect());
+      return { fill, thumbs };
+    };
+
+    await step("the fill cups both thumbs' outer edges", async () => {
+      // Horizontal LTR: fill spans from the lower thumb's left edge to the
+      // upper thumb's right edge. Both bounds must track their thumb, not the
+      // value point, at both a mid range and the full extremes.
+      for (const id of ["mid", "full"]) {
+        const { fill, thumbs } = geom(id);
+        await expect(thumbs).toHaveLength(2);
+        await expect(Math.abs(fill.left - thumbs[0].left)).toBeLessThanOrEqual(
+          1.5
+        );
+        await expect(
+          Math.abs(fill.right - thumbs[1].right)
+        ).toBeLessThanOrEqual(1.5);
+      }
+    });
+  },
+};
+
+/**
  * Visual smoke test: every combination of orientation × variant × size ×
  * disabled-state rendered in one grid, so the whole visual surface can be
  * eyeballed at once and any combination that fails to mount is caught. The

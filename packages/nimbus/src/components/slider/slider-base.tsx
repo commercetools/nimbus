@@ -126,6 +126,10 @@ export const SliderBase = (props: SliderBaseProps) => {
   // correction).
   const { direction } = useLocale();
 
+  // The `enclosed` variant needs the fill widened to cup each thumb (see the
+  // render-prop below); every other variant uses React Aria's default fill.
+  const isEnclosed = props.variant === "enclosed";
+
   const recipe = useSlotRecipe({ recipe: sliderSlotRecipe });
   const [recipeProps, recipeLessProps] = recipe.splitVariantProps({
     size,
@@ -186,61 +190,95 @@ export const SliderBase = (props: SliderBaseProps) => {
       >
         <SliderTrackSlot asChild data-slot="track">
           <RaSliderTrack>
-            {({ state }) => (
-              <>
-                <SliderFillSlot asChild data-slot="fill">
-                  <RaSliderFill />
-                </SliderFillSlot>
-                {state.values.map((_, i) => {
-                  const thumbLabel = resolveThumbLabel(i, state.values.length);
-                  // Reproduce React Aria's physical position fraction: raw
-                  // value percent, flipped for vertical/RTL exactly as
-                  // `useSliderThumb` does, so recipe offsets act on the same
-                  // physical axis React Aria positions with.
-                  const rawPercent = state.getThumbPercent(i);
-                  const positionFraction =
-                    orientation === "vertical" || direction === "rtl"
-                      ? 1 - rawPercent
-                      : rawPercent;
-                  return (
-                    <SliderValueThumb
-                      key={i}
-                      index={i}
-                      thumbLabel={thumbLabel}
-                      thumbAriaLabelledBy={
-                        thumbLabel === undefined
-                          ? groupAriaLabelledBy
-                          : undefined
-                      }
-                      valueLabel={state.getThumbValueLabel(i)}
-                      isDragging={state.isThumbDragging(i)}
-                      positionFraction={positionFraction}
-                    />
-                  );
-                })}
-                {ticks.map((tickValue) => {
-                  const percent =
-                    ((tickValue - minValue) / (maxValue - minValue)) * 100;
-                  // Mirrors how React Aria's own `SliderFill` positions
-                  // itself (see react-aria-components' `Slider.mjs`):
-                  // horizontal uses the logical `insetInlineStart` so it
-                  // flips correctly under RTL, vertical anchors from
-                  // `bottom` so the minimum sits at the bottom of the track
-                  // and the maximum at the top.
-                  const tickPositionStyle =
-                    orientation === "vertical"
-                      ? { bottom: `${percent}%` }
-                      : { insetInlineStart: `${percent}%` };
-                  return (
-                    <SliderTickSlot
-                      key={tickValue}
-                      data-slot="tick"
-                      style={tickPositionStyle}
-                    />
-                  );
-                })}
-              </>
-            )}
+            {({ state }) => {
+              // `enclosed` fill: reach each thumb's OUTER edge, not the value
+              // point. The thumb is shifted inward to stay contained (recipe
+              // margin) and its transparent border reveals whatever is behind
+              // it, so the fill must sit behind the whole knob — that is what
+              // paints the thin primary ring around it, and at value 0 keeps a
+              // visible sliver instead of a bare knob. Reserve one thumb
+              // diameter across the travel (matching the thumb's containment)
+              // and add one diameter of length so both cupped ends land on the
+              // outer edge. A single slider's lower end is the track start (no
+              // thumb there), so it is left uncupped. Must be inline: React
+              // Aria sets the fill's main-axis size inline, which beats a
+              // recipe class. Uses logical `insetInlineStart` (RTL-safe) for
+              // horizontal and physical `bottom` for vertical, exactly as React
+              // Aria's own SliderFill does.
+              let fillStyle: CSSProperties | undefined;
+              if (isEnclosed) {
+                const percents = state.values.map((_, i) =>
+                  state.getThumbPercent(i)
+                );
+                const lowFrac = percents.length > 1 ? Math.min(...percents) : 0;
+                const highFrac = Math.max(...percents);
+                const size = "var(--slider-thumb-size)";
+                const start = `calc(${lowFrac} * (100% - ${size}))`;
+                const span = `calc(${highFrac - lowFrac} * (100% - ${size}) + ${size})`;
+                fillStyle =
+                  orientation === "vertical"
+                    ? { bottom: start, height: span }
+                    : { insetInlineStart: start, width: span };
+              }
+              return (
+                <>
+                  <SliderFillSlot asChild data-slot="fill">
+                    <RaSliderFill style={fillStyle} />
+                  </SliderFillSlot>
+                  {state.values.map((_, i) => {
+                    const thumbLabel = resolveThumbLabel(
+                      i,
+                      state.values.length
+                    );
+                    // Reproduce React Aria's physical position fraction: raw
+                    // value percent, flipped for vertical/RTL exactly as
+                    // `useSliderThumb` does, so recipe offsets act on the same
+                    // physical axis React Aria positions with.
+                    const rawPercent = state.getThumbPercent(i);
+                    const positionFraction =
+                      orientation === "vertical" || direction === "rtl"
+                        ? 1 - rawPercent
+                        : rawPercent;
+                    return (
+                      <SliderValueThumb
+                        key={i}
+                        index={i}
+                        thumbLabel={thumbLabel}
+                        thumbAriaLabelledBy={
+                          thumbLabel === undefined
+                            ? groupAriaLabelledBy
+                            : undefined
+                        }
+                        valueLabel={state.getThumbValueLabel(i)}
+                        isDragging={state.isThumbDragging(i)}
+                        positionFraction={positionFraction}
+                      />
+                    );
+                  })}
+                  {ticks.map((tickValue) => {
+                    const percent =
+                      ((tickValue - minValue) / (maxValue - minValue)) * 100;
+                    // Mirrors how React Aria's own `SliderFill` positions
+                    // itself (see react-aria-components' `Slider.mjs`):
+                    // horizontal uses the logical `insetInlineStart` so it
+                    // flips correctly under RTL, vertical anchors from
+                    // `bottom` so the minimum sits at the bottom of the track
+                    // and the maximum at the top.
+                    const tickPositionStyle =
+                      orientation === "vertical"
+                        ? { bottom: `${percent}%` }
+                        : { insetInlineStart: `${percent}%` };
+                    return (
+                      <SliderTickSlot
+                        key={tickValue}
+                        data-slot="tick"
+                        style={tickPositionStyle}
+                      />
+                    );
+                  })}
+                </>
+              );
+            }}
           </RaSliderTrack>
         </SliderTrackSlot>
       </RaSlider>
