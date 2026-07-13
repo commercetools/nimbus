@@ -76,7 +76,15 @@ export const sliderSlotRecipe = defineSlotRecipe({
       border: "solid-50",
       borderColor: "colorPalette.9",
       transition: "background-color 0.15s, transform 0.15s",
-      focusRing: "outside",
+      // Use `focusVisibleRing`, not `focusRing`: React Aria focus lives on the
+      // visually-hidden inner <input>, so the styled thumb div never matches
+      // native `:focus`. React Aria instead marks the div with
+      // `data-focus-visible` (same convention as the `data-hovered`/
+      // `data-dragging` selectors below). `focusVisibleRing` keys off
+      // `&:is(:focus-visible, [data-focus-visible])`, which that attribute
+      // satisfies; plain `focusRing` keys off `&:is(:focus, [data-focus])`,
+      // which nothing here ever carries — so the ring never showed.
+      focusVisibleRing: "outside",
 
       // React Aria positions the thumb on the main axis only (inline `left`
       // for horizontal, `top` for vertical) and defers cross-axis centering to
