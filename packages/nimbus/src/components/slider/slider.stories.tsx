@@ -566,6 +566,60 @@ export const EnclosedFillCupsThumb: Story = {
 };
 
 /**
+ * `enclosed` ticks ride the same contained centerline as the thumb. Because the
+ * thumb travel is inset by its radius, a raw-percent tick would drift from the
+ * thumb it marks — worst at the extremes. Guards that the tick for a value lands
+ * on the thumb's center when the thumb is at that value.
+ */
+export const EnclosedTicksAlignThumb: Story = {
+  render: () => (
+    <>
+      <div data-testid="t25">
+        <Slider
+          aria-label="Ticks at 25"
+          variant="enclosed"
+          defaultValue={25}
+          showTicks
+          tickStep={25}
+        />
+      </div>
+      <div data-testid="t100">
+        <Slider
+          aria-label="Ticks at 100"
+          variant="enclosed"
+          defaultValue={100}
+          showTicks
+          tickStep={25}
+        />
+      </div>
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const centerX = (r: DOMRect) => (r.left + r.right) / 2;
+    const drift = (id: string, tickIndex: number) => {
+      const scope = `[data-testid="${id}"]`;
+      const tick = canvasElement
+        .querySelectorAll(`${scope} [data-slot="tick"]`)
+        [tickIndex].getBoundingClientRect();
+      const thumb = canvasElement
+        .querySelector(`${scope} [data-slot="thumb"]`)!
+        .getBoundingClientRect();
+      return Math.abs(centerX(tick) - centerX(thumb));
+    };
+
+    await step(
+      "the tick for the thumb's value sits under the thumb center",
+      async () => {
+        // tickStep 25 → ticks at 0,25,50,75,100 in ascending DOM order.
+        await expect(drift("t25", 1)).toBeLessThanOrEqual(1.5); // value 25
+        // value 100 is where a raw-percent tick drifts a full thumb radius.
+        await expect(drift("t100", 4)).toBeLessThanOrEqual(1.5);
+      }
+    );
+  },
+};
+
+/**
  * Keyboard focus paints the Nimbus focus ring on the thumb. Regression guard
  * for a bug where no thumb showed a ring: the thumb must use
  * `focusVisibleRing` (its selector matches React Aria's `data-focus-visible`),
