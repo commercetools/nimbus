@@ -66,6 +66,34 @@ const App = () => (
 );
 ```
 
+### Variants
+
+`solid` is the default. Three additional variants are available for contexts
+that call for a different visual weight:
+
+- **Solid** (default) — a standard filled track with a colored progress bar.
+  The safest choice for most forms and settings panels.
+- **Outline** — a transparent, bordered track with a hollow (bordered, not
+  filled) progress indicator. Reads lighter than `solid`, useful on busy or
+  colorful backgrounds where a filled track would compete for attention.
+- **Minimal** — an ultra-thin hairline track with a small solid dot for the
+  handle. Best for dense layouts or secondary controls where the slider
+  should recede rather than draw focus.
+- **Enclosed** — a thick, contained bar with the handle inset inside it
+  (an iOS-style control). Good for touch-first contexts or standalone
+  controls that benefit from a larger, more tactile target.
+
+```jsx live
+const App = () => (
+  <Stack direction="horizontal" gap="600" alignItems="center">
+    <Slider aria-label="Solid (default)" variant="solid" defaultValue={60} />
+    <Slider aria-label="Outline" variant="outline" defaultValue={45} />
+    <Slider aria-label="Minimal" variant="minimal" defaultValue={80} />
+    <Slider aria-label="Enclosed" variant="enclosed" defaultValue={75} />
+  </Stack>
+);
+```
+
 ### Orientation
 
 `horizontal` is the default. `vertical` is useful for fader-style controls or
