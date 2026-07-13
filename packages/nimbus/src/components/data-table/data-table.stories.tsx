@@ -44,6 +44,8 @@ import {
   initialVisibleColumns,
   managerRows,
   initialHiddenColumns,
+  alignDemoColumns,
+  alignDemoRows,
 } from "./data-table.test-data";
 
 import { useDragAndDrop, createArrayHandlers } from "@commercetools/nimbus";
@@ -4973,5 +4975,119 @@ export const DragAndDropRows: Story = {
         );
       }
     );
+  },
+};
+
+export const ColumnAlignment: Story = {
+  render: () => {
+    return <DataTable columns={alignDemoColumns} rows={alignDemoRows} />;
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Table renders with aligned columns", async () => {
+      const table = await canvas.findByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      expect(canvas.getByText("Widget A")).toBeInTheDocument();
+      expect(canvas.getByText("$12.99")).toBeInTheDocument();
+    });
+
+    await step(
+      "Right-aligned numeric cells have text-align: end on the cell",
+      async () => {
+        const priceCell = canvas.getByText("$12.99");
+        const cell = priceCell.closest("td") as HTMLElement;
+        const style = window.getComputedStyle(cell);
+        expect(style.textAlign).toBe("end");
+      }
+    );
+
+    await step(
+      "Center-aligned cells have text-align: center on the cell",
+      async () => {
+        const statusCells = canvas.getAllByText("Active");
+        const cell = statusCells[0].closest("td") as HTMLElement;
+        const style = window.getComputedStyle(cell);
+        expect(style.textAlign).toBe("center");
+      }
+    );
+
+    await step(
+      "Stretch-aligned cells have display: block and width: 100%",
+      async () => {
+        const progressBars = canvasElement.querySelectorAll("[data-truncated]");
+        const stretchWrapper = Array.from(progressBars).find((el) => {
+          const style = window.getComputedStyle(el as HTMLElement);
+          return style.display === "block";
+        }) as HTMLElement;
+        expect(stretchWrapper).toBeTruthy();
+        const style = window.getComputedStyle(stretchWrapper);
+        expect(style.width).not.toBe("0px");
+      }
+    );
+  },
+};
+
+export const StickyColumnBackground: Story = {
+  render: () => {
+    const stickyColumns: DataTableColumnItem[] = [
+      {
+        id: "name",
+        header: "Full Name",
+        accessor: (row) => row.name as React.ReactNode,
+        minWidth: 150,
+      },
+      ...Array.from({ length: 8 }, (_, i) => ({
+        id: `col-${i}`,
+        header: `Column ${i + 1}`,
+        accessor: (row: Record<string, unknown>) =>
+          (row[`col${i}`] || `Value ${i + 1}`) as React.ReactNode,
+        minWidth: 180,
+      })),
+    ];
+
+    const stickyRows: DataTableRowItem[] = Array.from(
+      { length: 15 },
+      (_, i) => ({
+        id: `${i + 1}`,
+        name: `Employee ${i + 1}`,
+        ...Object.fromEntries(
+          Array.from({ length: 8 }, (_, j) => [
+            `col${j}`,
+            `Data R${i + 1}C${j + 1}`,
+          ])
+        ),
+      })
+    );
+
+    return (
+      <Box maxW="600px">
+        <DataTable
+          columns={stickyColumns}
+          rows={stickyRows}
+          maxHeight="300px"
+          selectionMode="multiple"
+          selectionBehavior="toggle"
+        />
+      </Box>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Table renders with sticky elements", async () => {
+      const table = await canvas.findByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      expect(canvas.getByText("Employee 1")).toBeInTheDocument();
+    });
+
+    await step("Sticky cells have opaque background", async () => {
+      const stickyCells = canvasElement.querySelectorAll(
+        ".data-table-sticky-cell"
+      );
+      expect(stickyCells.length).toBeGreaterThan(0);
+    });
   },
 };

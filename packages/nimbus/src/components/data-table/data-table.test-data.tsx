@@ -9,6 +9,7 @@ import {
   Box,
   RadioInput,
   Badge,
+  ProgressBar,
 } from "@/components";
 import { Info } from "@commercetools/nimbus-icons";
 import { DataTable } from "./data-table";
@@ -1313,5 +1314,90 @@ export const managerRows: DataTableRowItem[] = [
     size: "S",
     color: "Sunset Orange",
     supplier: "Cotton Mills USA",
+  },
+];
+
+export const alignDemoColumns: DataTableColumnItem[] = [
+  {
+    id: "product",
+    header: "Product",
+    accessor: (row) => row.product as React.ReactNode,
+  },
+  {
+    id: "quantity",
+    header: "Quantity",
+    accessor: (row) => row.quantity as React.ReactNode,
+    align: "end",
+  },
+  {
+    id: "price",
+    header: "Unit Price",
+    accessor: (row) => row.price as React.ReactNode,
+    align: "end",
+  },
+  {
+    id: "total",
+    header: "Total",
+    accessor: (row) => row.total as React.ReactNode,
+    align: "end",
+  },
+  {
+    id: "status",
+    header: "Status",
+    accessor: (row) => row.status as React.ReactNode,
+    align: "center",
+  },
+  {
+    id: "progress",
+    header: "Progress",
+    accessor: () => null,
+    align: "stretch",
+    render: ({ row }) => (
+      <ProgressBar
+        value={row.percent as number}
+        size="2xs"
+        aria-label="Progress"
+        isDynamic={false}
+      />
+    ),
+  },
+];
+
+export const alignDemoRows: DataTableRowItem[] = [
+  {
+    id: "1",
+    product: "Widget A",
+    quantity: 150,
+    price: "$12.99",
+    total: "$1,948.50",
+    status: "Active",
+    percent: 75,
+  },
+  {
+    id: "2",
+    product: "Widget B",
+    quantity: 42,
+    price: "$29.99",
+    total: "$1,259.58",
+    status: "Pending",
+    percent: 30,
+  },
+  {
+    id: "3",
+    product: "Widget C",
+    quantity: 300,
+    price: "$5.49",
+    total: "$1,647.00",
+    status: "Active",
+    percent: 100,
+  },
+  {
+    id: "4",
+    product: "Widget D",
+    quantity: 88,
+    price: "$45.00",
+    total: "$3,960.00",
+    status: "Inactive",
+    percent: 0,
   },
 ];

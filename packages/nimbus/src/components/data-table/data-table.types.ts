@@ -81,6 +81,7 @@ export type DataTableColumnItem<T extends object = Record<string, unknown>> = {
   minWidth?: number | null;
   maxWidth?: number | null;
   sticky?: boolean;
+  align?: "start" | "center" | "end" | "stretch";
   isSortable?: boolean;
   isRowHeader?: boolean;
   headerIcon?: ReactNode;

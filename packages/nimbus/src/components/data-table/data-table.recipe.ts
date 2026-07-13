@@ -38,6 +38,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           position: "sticky",
           right: 0,
           zIndex: 3,
+          backgroundColor: "bg",
           "& [data-slot='nimbus-table-cell-pin-button']": {
             opacity: 0,
           },
@@ -48,6 +49,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         "& .data-table-sticky-cell": {
           position: "sticky",
           left: 0,
+          backgroundColor: "bg",
         },
         "& [data-slot='drag']": {
           zIndex: 11,
@@ -302,6 +304,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         position: "sticky",
         left: 0,
         zIndex: 13,
+        background: "colorPalette.2",
       },
       "&.drag-column-header": {
         cursor: "default",
@@ -309,6 +312,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         position: "sticky",
         left: 0,
         zIndex: 13,
+        background: "colorPalette.2",
       },
       "&.expand-column-header": {
         cursor: "default",
@@ -316,6 +320,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         position: "sticky",
         left: 0, // Default position when no selection column
         zIndex: 12,
+        background: "colorPalette.2",
       },
       // When drag column is present, offset selection and expand columns
       "&.drag-column-header + &.selection-column-header": {
@@ -340,6 +345,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         position: "sticky",
         right: 0,
         zIndex: 11,
+        background: "colorPalette.2",
       },
       "&[aria-sort]": {
         fontWeight: 600,
@@ -395,7 +401,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       paddingBottom: "400",
       paddingLeft: "600",
       paddingRight: "600",
-      color: "neutral.11",
+      color: "neutral.12",
       focusVisibleRing: "inside",
       hyphens: "auto",
       // td height:auto is not "definite" per CSS spec, so child height:100%
