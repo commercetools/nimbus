@@ -280,3 +280,28 @@ describe("Slider - FormField integration", () => {
     expect(root).toHaveAttribute("data-invalid", "true");
   });
 });
+
+/**
+ * @docs-section visual-variants
+ * @docs-title Visual Variants Tests
+ * @docs-description Each visual variant renders an operable slider.
+ * @docs-order 6
+ */
+describe("Slider - Visual variants", () => {
+  it.each(["solid", "outline", "minimal", "enclosed"] as const)(
+    "renders an operable %s variant slider",
+    (variant) => {
+      render(
+        <NimbusProvider>
+          <Slider
+            aria-label={`${variant} slider`}
+            variant={variant}
+            defaultValue={50}
+          />
+        </NimbusProvider>
+      );
+
+      expect(screen.getByRole("slider")).toHaveValue("50");
+    }
+  );
+});

@@ -59,3 +59,63 @@ export const Base: Story = {
     });
   },
 };
+
+/** shared slot recipe means the visual variant applies to RangeSlider too. */
+export const Variants: Story = {
+  render: () => (
+    <>
+      <div data-testid="rs-outline">
+        <RangeSlider
+          aria-label="Outline range"
+          variant="outline"
+          defaultValue={[20, 60]}
+        />
+      </div>
+      <div data-testid="rs-enclosed">
+        <RangeSlider
+          aria-label="Enclosed range"
+          variant="enclosed"
+          defaultValue={[30, 70]}
+        />
+      </div>
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const track = (id: string) =>
+      canvasElement.querySelector(
+        `[data-testid="${id}"] [data-slot="track"]`
+      ) as HTMLElement;
+
+    await step("each range slider still renders two thumbs", async () => {
+      // `[role="slider"]` (a literal-attribute CSS selector) never matches:
+      // React Aria's SliderThumb renders a native <input type="range">, whose
+      // "slider" role is implicit ARIA semantics, not a literal `role`
+      // attribute in the DOM. Query by computed accessible role instead, as
+      // the `Variants` story on `Slider` does.
+      await expect(canvas.getAllByRole("slider")).toHaveLength(4);
+    });
+
+    await step(
+      "outline variant applies to RangeSlider (transparent track)",
+      async () => {
+        await expect(
+          getComputedStyle(track("rs-outline")).backgroundColor
+        ).toBe("rgba(0, 0, 0, 0)");
+      }
+    );
+
+    await step(
+      "enclosed variant applies to RangeSlider (thick bar)",
+      async () => {
+        const enclosedH = parseFloat(
+          getComputedStyle(track("rs-enclosed")).height
+        );
+        const outlineH = parseFloat(
+          getComputedStyle(track("rs-outline")).height
+        );
+        await expect(enclosedH).toBeGreaterThan(outlineH);
+      }
+    );
+  },
+};

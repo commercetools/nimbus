@@ -64,6 +64,25 @@ const App = () => (
 );
 ```
 
+### Visual variants
+
+`variant` changes the track/progress/thumb treatment. `solid` (the default) is
+the standard filled track; `outline` uses a transparent, bordered track;
+`minimal` is an ultra-thin hairline track with a small dot thumb; `enclosed` is
+a thick, contained bar with the thumb inset inside it. Applies to both
+`Slider` and `RangeSlider` since they share the same recipe.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <Slider aria-label="Solid" variant="solid" defaultValue={60} />
+    <Slider aria-label="Outline" variant="outline" defaultValue={45} />
+    <Slider aria-label="Minimal" variant="minimal" defaultValue={80} />
+    <Slider aria-label="Enclosed" variant="enclosed" defaultValue={75} />
+  </Stack>
+);
+```
+
 ### Orientation
 
 Set `orientation="vertical"` for a vertical track. The vertical track has a
