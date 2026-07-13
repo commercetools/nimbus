@@ -250,6 +250,16 @@ export const SliderBase = (props: SliderBaseProps) => {
                     // formula but may round differently.
                     const isFilled =
                       frac >= lowFrac - 1e-9 && frac <= highFrac + 1e-9;
+                    // A tick sitting exactly on a thumb's value is painted over
+                    // the white knob, not the fill (ticks render above the
+                    // thumbs), so `colorPalette.contrast` — tuned for the fill —
+                    // can vanish (white-on-white in light mode). Flag it so the
+                    // recipe can give it a knob-aware color instead. Compared in
+                    // value space (exact, no pixel guesswork); the recipe's
+                    // on-thumb rule overrides the on-fill one via source order.
+                    const isOnThumb = state.values.some(
+                      (v) => Math.abs(v - tickValue) <= 1e-9
+                    );
                     const tickPositionStyle =
                       orientation === "vertical"
                         ? { bottom: pos }
@@ -259,6 +269,7 @@ export const SliderBase = (props: SliderBaseProps) => {
                         key={tickValue}
                         data-slot="tick"
                         data-filled={isFilled || undefined}
+                        data-on-thumb={isOnThumb || undefined}
                         style={tickPositionStyle}
                       />
                     );
