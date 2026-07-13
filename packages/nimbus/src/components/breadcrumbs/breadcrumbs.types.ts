@@ -81,6 +81,11 @@ export type BreadcrumbItem = {
   /**
    * Whether this breadcrumb is disabled (non-interactive, dimmed, skipped in
    * the tab sequence).
+   *
+   * Note: disabling the *last* item is not recommended. The last item is
+   * already treated as the current page (non-interactive), and a disabled item
+   * renders as a plain `<span>` that bypasses React Aria's collection context —
+   * so a disabled final item will not carry `aria-current="page"`.
    */
   isDisabled?: boolean;
   /**
