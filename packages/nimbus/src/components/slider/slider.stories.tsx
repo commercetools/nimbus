@@ -26,7 +26,11 @@ const meta: Meta<typeof Slider> = {
 export default meta;
 type Story = StoryObj<typeof Slider>;
 
-/** Uncontrolled single-value slider. No visible label or output; value shows in a tooltip. */
+/**
+ * Uncontrolled single-value slider. No visible label or output; the value shows
+ * in a per-thumb tooltip. Covers the keyboard model (arrows, Home/End, the
+ * larger Page step), the hover/focus tooltip, and the keyboard focus ring.
+ */
 export const Base: Story = {
   args: {
     "aria-label": "Volume",
@@ -39,6 +43,9 @@ export const Base: Story = {
     const canvas = within(canvasElement);
     const body = within(document.body);
     const thumb = canvas.getByRole("slider");
+    const thumbEl = canvasElement.querySelector(
+      '[data-slot="thumb"]'
+    ) as HTMLElement;
 
     await step(
       "renders the initial value and no visible label/output",
@@ -76,6 +83,18 @@ export const Base: Story = {
       }
     );
 
+    await step("paints a focus ring under keyboard focus", async () => {
+      // Regression guard for a bug where no thumb showed a ring: the thumb must
+      // use `focusVisibleRing` (its selector matches React Aria's
+      // `data-focus-visible`), not `focusRing` (whose `:focus`/`[data-focus]`
+      // selector never matches — focus lives on the visually-hidden inner
+      // <input>, and React Aria marks the styled div with `data-focus-visible`,
+      // not `data-focus`). Focus is already on the thumb from the step above.
+      await expect(thumbEl).toHaveAttribute("data-focus-visible", "true");
+      const outlineWidth = parseFloat(getComputedStyle(thumbEl).outlineWidth);
+      await expect(outlineWidth).toBeGreaterThan(0);
+    });
+
     await step("jumps to max with End", async () => {
       await userEvent.keyboard("{End}");
       await expect(thumb).toHaveValue("100");
@@ -105,59 +124,28 @@ export const Base: Story = {
   },
 };
 
-/** Vertical orientation. */
-export const Vertical: Story = {
-  args: {
-    "aria-label": "Zoom",
-    defaultValue: 40,
-    minValue: 0,
-    maxValue: 100,
-    orientation: "vertical",
-    onChange: fn(),
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const thumb = canvas.getByRole("slider");
-    const root = canvasElement.querySelector('[data-slot="root"]');
-
-    await step("root and thumb are marked vertical", async () => {
-      // React Aria's Slider group sets `data-orientation` on the root div;
-      // SliderThumb's underlying <input type="range"> gets a literal
-      // `aria-orientation` attribute (unlike `aria-valuenow`, which is never
-      // set — see the Base story comment above).
-      await expect(root).toHaveAttribute("data-orientation", "vertical");
-      await expect(thumb).toHaveAttribute("aria-orientation", "vertical");
-    });
-
-    await step("ArrowUp increases value", async () => {
-      thumb.focus();
-      await userEvent.keyboard("{ArrowUp}");
-      await expect(thumb).toHaveValue("41");
-    });
-  },
-};
-
 /**
- * Regression guard for thumb cross-axis centering. React Aria positions the
- * thumb on the MAIN axis only (`left` for horizontal, `top` for vertical) plus
- * a `translate(-50%, -50%)`, and leaves the CROSS axis to CSS. Before the fix
- * the recipe never set the cross axis, so the translate pulled the thumb half a
+ * Horizontal and vertical orientation. Beyond the vertical keyboard/ARIA
+ * wiring, this guards thumb cross-axis centering: React Aria positions the thumb
+ * on the MAIN axis only (`left` for horizontal, `top` for vertical) plus a
+ * `translate(-50%, -50%)`, leaving the CROSS axis to CSS. Before the fix the
+ * recipe never set the cross axis, so the translate pulled the thumb half a
  * thumb off-center (up on horizontal, inline-start on vertical).
  */
-export const ThumbCentering: Story = {
+export const Orientation: Story = {
   render: () => (
-    <>
+    <Stack direction="row" gap="800" alignItems="center">
       <div data-testid="h">
         <Slider aria-label="Horizontal" defaultValue={50} />
       </div>
       <div data-testid="v" style={{ height: 200 }}>
         <Slider
           aria-label="Vertical"
-          defaultValue={50}
+          defaultValue={40}
           orientation="vertical"
         />
       </div>
-    </>
+    </Stack>
   ),
   play: async ({ canvasElement, step }) => {
     const center = (el: Element) => {
@@ -168,253 +156,41 @@ export const ThumbCentering: Story = {
       canvasElement.querySelector(`[data-testid="${id}"] [data-slot="track"]`)!;
     const thumbOf = (id: string) =>
       canvasElement.querySelector(`[data-testid="${id}"] [data-slot="thumb"]`)!;
+    const vRoot = canvasElement.querySelector(
+      '[data-testid="v"] [data-slot="root"]'
+    );
+    const vThumb = canvasElement.querySelector(
+      '[data-testid="v"] input'
+    ) as HTMLInputElement;
 
-    await step("horizontal thumb centers vertically on the track", async () => {
-      const dy = Math.abs(center(thumbOf("h")).y - center(trackOf("h")).y);
-      await expect(dy).toBeLessThanOrEqual(1.5);
+    await step("the vertical root and thumb are marked vertical", async () => {
+      // React Aria's Slider group sets `data-orientation` on the root div;
+      // SliderThumb's underlying <input type="range"> gets a literal
+      // `aria-orientation` attribute (unlike `aria-valuenow`, which is never
+      // set — see the Base story comment above).
+      await expect(vRoot).toHaveAttribute("data-orientation", "vertical");
+      await expect(vThumb).toHaveAttribute("aria-orientation", "vertical");
     });
 
-    await step("vertical thumb centers horizontally on the track", async () => {
-      const dx = Math.abs(center(thumbOf("v")).x - center(trackOf("v")).x);
-      await expect(dx).toBeLessThanOrEqual(1.5);
-    });
-  },
-};
-
-/** Both visual variants. Assertions lock each variant's distinguishing treatment. */
-export const Variants: Story = {
-  render: () => (
-    <>
-      <div data-testid="plain">
-        <Slider aria-label="Plain" variant="plain" defaultValue={60} />
-      </div>
-      <div data-testid="enclosed">
-        <Slider aria-label="Enclosed" variant="enclosed" defaultValue={75} />
-      </div>
-      <div data-testid="enclosed-invalid">
-        <Slider
-          aria-label="Enclosed invalid"
-          variant="enclosed"
-          isInvalid
-          defaultValue={75}
-        />
-      </div>
-    </>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const track = (id: string) =>
-      canvasElement.querySelector(
-        `[data-testid="${id}"] [data-slot="track"]`
-      ) as HTMLElement;
-    const trackH = (id: string) =>
-      parseFloat(getComputedStyle(track(id)).height);
-
-    await step("renders one slider per variant", async () => {
-      // `[role="slider"]` (a literal-attribute CSS selector) never matches:
-      // React Aria's SliderThumb renders a native <input type="range">, whose
-      // "slider" role is implicit ARIA semantics, not a literal `role`
-      // attribute in the DOM (confirmed via direct DOM inspection). Query by
-      // computed accessible role instead, as the `Sizes` story above does.
-      await expect(canvas.getAllByRole("slider")).toHaveLength(3);
+    await step("ArrowUp increases the vertical value", async () => {
+      vThumb.focus();
+      await userEvent.keyboard("{ArrowUp}");
+      await expect(vThumb).toHaveValue("41");
     });
 
     await step(
-      "enclosed track is a thick bar, thicker than plain",
+      "the horizontal thumb centers vertically on its track",
       async () => {
-        await expect(trackH("enclosed")).toBeGreaterThan(trackH("plain"));
+        const dy = Math.abs(center(thumbOf("h")).y - center(trackOf("h")).y);
+        await expect(dy).toBeLessThanOrEqual(1.5);
       }
     );
 
     await step(
-      "invalid state reasserts a visible border even though `enclosed` sets the thumb's base border to none",
+      "the vertical thumb centers horizontally on its track",
       async () => {
-        // Regression guard: the recipe's `"[data-invalid='true'] &"` thumb
-        // selector re-asserts a border WIDTH (not just color) precisely
-        // because `enclosed` sets `border: "none"` on the thumb — a color
-        // with no width would be invisible. A zero width here would mean the
-        // invalid state is silently lost on that variant.
-        const thumb = canvasElement.querySelector(
-          '[data-testid="enclosed-invalid"] [data-slot="thumb"]'
-        ) as HTMLElement;
-        const borderWidth = parseFloat(getComputedStyle(thumb).borderTopWidth);
-        await expect(borderWidth).toBeGreaterThan(0);
-      }
-    );
-  },
-};
-
-/**
- * Vertical orientation with tick marks. Regression guard for
- * orientation-aware tick positioning: before the fix, every tick anchored
- * with the recipe's static horizontal `top: 50%` and the inline `left: X%`
- * physical offset, so on a vertical track they rendered stacked at the same
- * height instead of distributed along the track.
- */
-export const VerticalWithTicks: Story = {
-  args: {
-    "aria-label": "Level",
-    defaultValue: 50,
-    minValue: 0,
-    maxValue: 100,
-    step: 25,
-    orientation: "vertical",
-    showTicks: true,
-  },
-  play: async ({ canvasElement, step }) => {
-    await step(
-      "renders one tick per step, distributed along the vertical track",
-      async () => {
-        const ticks = Array.from(
-          canvasElement.querySelectorAll<HTMLElement>('[data-slot="tick"]')
-        );
-        // 0, 25, 50, 75, 100 -> 5 ticks
-        await expect(ticks).toHaveLength(5);
-
-        // Each tick's resolved `bottom` offset must be distinct — if they
-        // were still stacked at a shared cross-axis anchor (the pre-fix
-        // `top: 50%` bug), every offset would collapse to the same value.
-        const bottomOffsets = ticks.map(
-          (tick) => getComputedStyle(tick).bottom
-        );
-        await expect(new Set(bottomOffsets).size).toBe(ticks.length);
-      }
-    );
-  },
-};
-
-/** Small and medium sizes render side by side. */
-export const Sizes: Story = {
-  render: () => (
-    <>
-      <Slider aria-label="Small" size="sm" defaultValue={30} data-testid="sm" />
-      <Slider
-        aria-label="Medium"
-        size="md"
-        defaultValue={30}
-        data-testid="md"
-      />
-    </>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    await step("both sizes render a slider thumb", async () => {
-      await expect(canvas.getAllByRole("slider")).toHaveLength(2);
-    });
-  },
-};
-
-/** Slider with visible tick marks every 25 units (0, 25, 50, 75, 100). */
-export const WithTicks: Story = {
-  args: {
-    "aria-label": "Rating",
-    defaultValue: 50,
-    minValue: 0,
-    maxValue: 100,
-    step: 25,
-    showTicks: true,
-  },
-  play: async ({ canvasElement, step }) => {
-    await step("renders one tick per step from min to max", async () => {
-      const ticks = canvasElement.querySelectorAll('[data-slot="tick"]');
-      // 0, 25, 50, 75, 100 -> 5 ticks
-      await expect(ticks).toHaveLength(5);
-    });
-  },
-};
-
-/**
- * Ticks stay legible over both the track and the fill by flipping color per
- * region. A tick that lands on the fill gets `data-filled` (set in slider-base)
- * and paints in `colorPalette.contrast` — the token that reads against the
- * primary fill; ticks on the bare track keep a strong neutral. Guards that the
- * correct ticks are flagged and the two regions render visibly different colors
- * (a single mid-neutral washed out on the fill, worst in dark mode).
- */
-export const TicksContrastOverFill: Story = {
-  args: {
-    "aria-label": "Rating",
-    defaultValue: 60,
-    minValue: 0,
-    maxValue: 100,
-    step: 25,
-    showTicks: true,
-  },
-  play: async ({ canvasElement, step }) => {
-    const ticks = Array.from(
-      canvasElement.querySelectorAll<HTMLElement>('[data-slot="tick"]')
-    );
-
-    await step(
-      "ticks on the fill are flagged, ticks on the bare track are not",
-      async () => {
-        // value 60 → ticks at 0/25/50 sit on the fill, 75/100 on the track.
-        await expect(ticks).toHaveLength(5);
-        for (const i of [0, 1, 2]) {
-          await expect(ticks[i]).toHaveAttribute("data-filled", "true");
-        }
-        for (const i of [3, 4]) {
-          await expect(ticks[i]).not.toHaveAttribute("data-filled");
-        }
-      }
-    );
-
-    await step("filled and unfilled ticks paint different colors", async () => {
-      const filled = getComputedStyle(ticks[0]).backgroundColor;
-      const unfilled = getComputedStyle(ticks[4]).backgroundColor;
-      await expect(filled).not.toBe(unfilled);
-      // Both must be opaque paints — a `colorPalette.contrast` that failed to
-      // resolve would fall back to transparent, still "differ" from the
-      // neutral, yet render an invisible tick on the fill.
-      await expect(filled).not.toBe("rgba(0, 0, 0, 0)");
-      await expect(unfilled).not.toBe("rgba(0, 0, 0, 0)");
-    });
-  },
-};
-
-/**
- * The tick that sits directly under the thumb is painted over the white knob,
- * not the fill (ticks render above the thumbs), so it uses a knob-aware neutral
- * instead of `colorPalette.contrast` (which is tuned for the fill and can go
- * white-on-white on the knob in light mode). Guards that the on-thumb tick is
- * flagged and renders a color distinct from both an on-fill and an on-track
- * tick.
- */
-export const TickUnderThumbIsKnobAware: Story = {
-  args: {
-    "aria-label": "Rating",
-    defaultValue: 50,
-    minValue: 0,
-    maxValue: 100,
-    step: 25,
-    showTicks: true,
-  },
-  play: async ({ canvasElement, step }) => {
-    const ticks = Array.from(
-      canvasElement.querySelectorAll<HTMLElement>('[data-slot="tick"]')
-    );
-
-    await step(
-      "only the tick under the thumb is flagged on-thumb",
-      async () => {
-        // ticks at 0/25/50/75/100 → the thumb at 50 sits on index 2.
-        await expect(ticks).toHaveLength(5);
-        await expect(ticks[2]).toHaveAttribute("data-on-thumb", "true");
-        // an on-fill tick (25) and an on-track tick (100) are not on-thumb.
-        await expect(ticks[1]).not.toHaveAttribute("data-on-thumb");
-        await expect(ticks[4]).not.toHaveAttribute("data-on-thumb");
-      }
-    );
-
-    await step(
-      "the on-thumb tick differs from both on-fill and on-track ticks",
-      async () => {
-        const onThumb = getComputedStyle(ticks[2]).backgroundColor; // knob-aware
-        const onFill = getComputedStyle(ticks[1]).backgroundColor; // contrast
-        const onTrack = getComputedStyle(ticks[4]).backgroundColor; // neutral.9
-        await expect(onThumb).not.toBe(onFill);
-        await expect(onThumb).not.toBe(onTrack);
-        await expect(onThumb).not.toBe("rgba(0, 0, 0, 0)");
+        const dx = Math.abs(center(thumbOf("v")).x - center(trackOf("v")).x);
+        await expect(dx).toBeLessThanOrEqual(1.5);
       }
     );
   },
@@ -424,10 +200,10 @@ export const TickUnderThumbIsKnobAware: Story = {
  * Both slider variants share the Switch's control-size grid: the thumb is
  * `sizes.400` (16px) at sm and `sizes.600` (24px) at md, regardless of variant.
  * In the enclosed variant the bar is as tall as the thumb (Switch-like); the
- * plain variant keeps its thin track but the same knob. Guards the shared thumb
- * sizing and the enclosed bar height.
+ * plain variant keeps its thin track but the same knob. Doubles as the sizes
+ * showcase, and guards the shared thumb sizing and the enclosed bar height.
  */
-export const SizesMatchSwitch: Story = {
+export const Sizes: Story = {
   render: () => (
     <>
       {(["plain", "enclosed"] as const).flatMap((variant) =>
@@ -481,41 +257,341 @@ export const SizesMatchSwitch: Story = {
 };
 
 /**
- * With the unified geometry, the plain thumb is contained within the bar at the
- * extremes too — no half-off overhang at 0/100. The interactive track is inset
- * by the thumb radius and the `::before` bar reaches back over the inset, so
- * the thumb's box stays inside the visible bar (the root box) at min and max.
+ * The two visual variants — `plain` (thin track) and `enclosed` (iOS-style bar
+ * with the knob inside it) — across the value range, plus an invalid enclosed.
+ * Both share one inset geometry, and the play function locks in what that
+ * geometry buys: the enclosed bar reads as a thick bar, thumbs stay contained at
+ * the extremes in both variants, the enclosed fill cups the thumb at every
+ * value (its transparent border showing the primary fill through as a ring), and
+ * the invalid state still paints a visible thumb border even though `enclosed`
+ * drops the base border.
  */
-export const PlainThumbContainment: Story = {
+export const Variants: Story = {
   render: () => (
-    <>
-      <div data-testid="min">
-        <Slider aria-label="Min" variant="plain" defaultValue={0} />
+    <Stack direction="column" gap="400">
+      {(["plain", "enclosed"] as const).map((variant) => (
+        <Stack key={variant} direction="column" gap="200">
+          {(variant === "plain" ? [0, 50, 100] : [0, 50, 75, 100]).map((v) => (
+            <div key={v} data-testid={`${variant}-${v}`}>
+              <Slider
+                aria-label={`${variant} ${v}`}
+                variant={variant}
+                defaultValue={v}
+              />
+            </div>
+          ))}
+        </Stack>
+      ))}
+      <div data-testid="enclosed-invalid">
+        <Slider
+          aria-label="Enclosed invalid"
+          variant="enclosed"
+          isInvalid
+          defaultValue={50}
+        />
       </div>
-      <div data-testid="max">
-        <Slider aria-label="Max" variant="plain" defaultValue={100} />
-      </div>
-    </>
+    </Stack>
   ),
   play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const el = (id: string, slot: string) =>
+      canvasElement.querySelector(
+        `[data-testid="${id}"] [data-slot="${slot}"]`
+      ) as HTMLElement;
     const rect = (id: string, slot: string) =>
-      canvasElement
-        .querySelector(`[data-testid="${id}"] [data-slot="${slot}"]`)!
-        .getBoundingClientRect();
+      el(id, slot).getBoundingClientRect();
 
-    await step("at min the thumb stays within the bar", async () => {
-      const bar = rect("min", "root");
-      const thumb = rect("min", "thumb");
-      await expect(thumb.left).toBeGreaterThanOrEqual(bar.left - 0.5);
-      await expect(thumb.right).toBeLessThanOrEqual(bar.right + 0.5);
+    await step("renders both variants across the value range", async () => {
+      // `[role="slider"]` (a literal-attribute CSS selector) never matches:
+      // React Aria's SliderThumb renders a native <input type="range">, whose
+      // "slider" role is implicit ARIA semantics, not a literal `role`
+      // attribute in the DOM. Query by computed accessible role instead.
+      // plain [0,50,100] + enclosed [0,50,75,100] + invalid = 8.
+      await expect(canvas.getAllByRole("slider")).toHaveLength(8);
     });
 
-    await step("at max the thumb stays within the bar", async () => {
-      const bar = rect("max", "root");
-      const thumb = rect("max", "thumb");
-      await expect(thumb.left).toBeGreaterThanOrEqual(bar.left - 0.5);
-      await expect(thumb.right).toBeLessThanOrEqual(bar.right + 0.5);
+    await step(
+      "the enclosed track is a thick bar, thicker than plain",
+      async () => {
+        const enclosedH = rect("enclosed-50", "track").height;
+        const plainH = rect("plain-50", "track").height;
+        await expect(enclosedH).toBeGreaterThan(plainH);
+      }
+    );
+
+    await step(
+      "the thumb stays within the bar at min and max in both variants",
+      async () => {
+        // Unified geometry: the interactive track is inset by a thumb radius
+        // and the `::before` bar reaches back over it, so React Aria positions
+        // the thumb natively-contained and its box stays inside the visible bar
+        // (the root box) at 0/100 — no half-off overhang. Half-pixel tolerance
+        // absorbs sub-pixel layout rounding.
+        for (const variant of ["plain", "enclosed"]) {
+          for (const value of [0, 100]) {
+            const bar = rect(`${variant}-${value}`, "root");
+            const thumb = rect(`${variant}-${value}`, "thumb");
+            await expect(thumb.left).toBeGreaterThanOrEqual(bar.left - 0.5);
+            await expect(thumb.right).toBeLessThanOrEqual(bar.right + 0.5);
+          }
+        }
+      }
+    );
+
+    await step(
+      "the enclosed fill cups the thumb's outer edge at every value",
+      async () => {
+        // The thumb is shifted inward to stay contained, so a value-point fill
+        // (React Aria's default) would trail the knob everywhere but center.
+        // slider-base sizes the fill so its leading (max-side) edge lands on the
+        // thumb's outer edge instead. Horizontal LTR: both end at their right
+        // edge. Pre-fix, the value-point fill trailed the shifted thumb by up to
+        // a thumb radius everywhere but 50% — well outside 1.5px.
+        for (const v of [0, 50, 75, 100]) {
+          const fill = rect(`enclosed-${v}`, "fill");
+          const thumb = rect(`enclosed-${v}`, "thumb");
+          await expect(Math.abs(fill.right - thumb.right)).toBeLessThanOrEqual(
+            1.5
+          );
+        }
+      }
+    );
+
+    await step(
+      "at value 0 the enclosed fill still spans the whole knob",
+      async () => {
+        const fill = rect("enclosed-0", "fill");
+        const thumb = rect("enclosed-0", "thumb");
+        // Primary is visible around the knob: the fill covers the thumb box
+        // rather than collapsing to a zero-width sliver behind it.
+        await expect(fill.width).toBeGreaterThanOrEqual(thumb.width - 1.5);
+      }
+    );
+
+    await step(
+      "the enclosed thumb's gap comes from a transparent border",
+      async () => {
+        const style = getComputedStyle(el("enclosed-50", "thumb"));
+        await expect(style.borderTopStyle).toBe("solid");
+        await expect(parseFloat(style.borderTopWidth)).toBeGreaterThan(0);
+        // fully transparent → the primary fill shows through as the ring
+        await expect(style.borderTopColor).toBe("rgba(0, 0, 0, 0)");
+      }
+    );
+
+    await step(
+      "the invalid state reasserts a visible thumb border even though `enclosed` drops the base border",
+      async () => {
+        // Regression guard: the recipe's `"[data-invalid='true'] &"` thumb
+        // selector re-asserts a border WIDTH (not just color) precisely because
+        // `enclosed` gives the thumb a transparent border — a color with no
+        // width would be invisible. A zero width here would mean the invalid
+        // state is silently lost on that variant.
+        const borderWidth = parseFloat(
+          getComputedStyle(el("enclosed-invalid", "thumb")).borderTopWidth
+        );
+        await expect(borderWidth).toBeGreaterThan(0);
+      }
+    );
+  },
+};
+
+/**
+ * Tick marks along the track. Covers tick generation (one per step, in both
+ * orientations), region-aware tick contrast, tick-to-thumb alignment on the
+ * inset track, and pointer-to-value mapping (clicking a tick, and clicking the
+ * rounded end-cap past the last tick).
+ */
+export const Ticks: Story = {
+  args: { onChange: fn() },
+  render: (args) => (
+    <Stack direction="column" gap="400">
+      <div data-testid="h">
+        <Slider aria-label="Rating" defaultValue={50} step={25} showTicks />
+      </div>
+      <div data-testid="v" style={{ height: 200 }}>
+        <Slider
+          aria-label="Level"
+          defaultValue={50}
+          step={25}
+          showTicks
+          orientation="vertical"
+        />
+      </div>
+      <div data-testid="align-25">
+        <Slider
+          aria-label="Aligned at 25"
+          variant="enclosed"
+          defaultValue={25}
+          showTicks
+          tickStep={25}
+        />
+      </div>
+      <div data-testid="align-100">
+        <Slider
+          aria-label="Aligned at 100"
+          variant="enclosed"
+          defaultValue={100}
+          showTicks
+          tickStep={25}
+        />
+      </div>
+      <div data-testid="click">
+        <Slider
+          aria-label="Click a tick"
+          variant="enclosed"
+          defaultValue={0}
+          minValue={0}
+          maxValue={100}
+          showTicks
+          tickStep={25}
+          onChange={args.onChange}
+        />
+      </div>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const ticksOf = (id: string) =>
+      Array.from(
+        canvasElement.querySelectorAll<HTMLElement>(
+          `[data-testid="${id}"] [data-slot="tick"]`
+        )
+      );
+
+    await step("renders one tick per step from min to max", async () => {
+      // 0, 25, 50, 75, 100 -> 5 ticks
+      await expect(ticksOf("h")).toHaveLength(5);
     });
+
+    await step(
+      "vertical ticks distribute along the track, not stacked",
+      async () => {
+        const ticks = ticksOf("v");
+        await expect(ticks).toHaveLength(5);
+        // Each tick's resolved `bottom` offset must be distinct — if they were
+        // still stacked at a shared cross-axis anchor (the pre-fix `top: 50%`
+        // bug), every offset would collapse to the same value.
+        const bottomOffsets = ticks.map((t) => getComputedStyle(t).bottom);
+        await expect(new Set(bottomOffsets).size).toBe(ticks.length);
+      }
+    );
+
+    await step(
+      "each tick is flagged for the region it lands in (track / fill / thumb)",
+      async () => {
+        // Horizontal slider at value 50: ticks at 0/25 sit on the fill, 50 under
+        // the thumb, 75/100 on the bare track. A tick on the fill gets
+        // `data-filled` (set in slider-base); a tick under the thumb also gets
+        // `data-on-thumb`.
+        const ticks = ticksOf("h");
+        for (const i of [0, 1, 2]) {
+          await expect(ticks[i]).toHaveAttribute("data-filled", "true");
+        }
+        for (const i of [3, 4]) {
+          await expect(ticks[i]).not.toHaveAttribute("data-filled");
+        }
+        await expect(ticks[2]).toHaveAttribute("data-on-thumb", "true");
+        await expect(ticks[0]).not.toHaveAttribute("data-on-thumb");
+        await expect(ticks[4]).not.toHaveAttribute("data-on-thumb");
+      }
+    );
+
+    await step(
+      "on-fill, on-track and on-thumb ticks paint distinct opaque colors",
+      async () => {
+        // The fill-tuned `colorPalette.contrast` reads against the primary fill
+        // but can go white-on-white on the light knob, so an on-thumb tick uses
+        // a knob-aware neutral instead; an on-track tick keeps a strong neutral.
+        const ticks = ticksOf("h");
+        const onFill = getComputedStyle(ticks[0]).backgroundColor; // contrast
+        const onThumb = getComputedStyle(ticks[2]).backgroundColor; // knob-aware
+        const onTrack = getComputedStyle(ticks[4]).backgroundColor; // neutral.9
+        await expect(onFill).not.toBe(onTrack);
+        await expect(onThumb).not.toBe(onFill);
+        await expect(onThumb).not.toBe(onTrack);
+        // All must be opaque — a `colorPalette.contrast` that failed to resolve
+        // would fall back to transparent, still "differ", yet render invisible.
+        for (const color of [onFill, onThumb, onTrack]) {
+          await expect(color).not.toBe("rgba(0, 0, 0, 0)");
+        }
+      }
+    );
+
+    await step(
+      "the tick for the thumb's value sits under the thumb center",
+      async () => {
+        // Because the thumb travel is inset by its radius, a raw-percent tick
+        // would drift from the thumb it marks — worst at the extremes. tickStep
+        // 25 → ticks at 0,25,50,75,100 in ascending DOM order.
+        const centerX = (r: DOMRect) => (r.left + r.right) / 2;
+        const drift = (id: string, tickIndex: number) => {
+          const scope = `[data-testid="${id}"]`;
+          const tick = canvasElement
+            .querySelectorAll(`${scope} [data-slot="tick"]`)
+            [tickIndex].getBoundingClientRect();
+          const thumb = canvasElement
+            .querySelector(`${scope} [data-slot="thumb"]`)!
+            .getBoundingClientRect();
+          return Math.abs(centerX(tick) - centerX(thumb));
+        };
+        await expect(drift("align-25", 1)).toBeLessThanOrEqual(1.5); // value 25
+        // value 100 is where a raw-percent tick drifts a full thumb radius.
+        await expect(drift("align-100", 4)).toBeLessThanOrEqual(1.5);
+      }
+    );
+
+    await step(
+      "clicking a tick lands on it, and a cap click snaps to the max",
+      async () => {
+        // React Aria maps a pointer to a value using the *same* inset track box
+        // it renders the thumb into, so the pixel a consumer clicks (the tick)
+        // maps back to exactly that tick's value — no drift. And the full-width
+        // `::before` bar keeps pointer events (a pseudo-element's clicks target
+        // its host), so a click in the rounded end-cap past the last tick still
+        // reaches React Aria, which clamps the out-of-range position to the max.
+        const scope = '[data-testid="click"]';
+        const track = canvasElement.querySelector(
+          `${scope} [data-slot="track"]`
+        ) as HTMLElement;
+        const ticks = canvasElement.querySelectorAll(
+          `${scope} [data-slot="tick"]`
+        );
+        const thumbInput = () =>
+          canvasElement.querySelector(
+            `${scope} [data-slot="thumb"] input`
+          ) as HTMLInputElement;
+
+        // Ticks at 0/25/50/75/100 in ascending order → index 3 is value 75.
+        const t = ticks[3].getBoundingClientRect();
+        await userEvent.pointer({
+          target: track,
+          keys: "[MouseLeft]",
+          coords: {
+            clientX: (t.left + t.right) / 2,
+            clientY: (t.top + t.bottom) / 2,
+          },
+        });
+        await expect(thumbInput().value).toBe("75");
+
+        const bar = canvasElement
+          .querySelector(`${scope} [data-slot="root"]`)!
+          .getBoundingClientRect();
+        // A point inside the rounded cap, past the last tick (which sits at the
+        // inset track's right edge, a thumb radius in from the bar edge).
+        const capX = bar.right - 2;
+        const capY = (bar.top + bar.bottom) / 2;
+        // Real hit-test: pre-fix this resolved to a non-interactive node and the
+        // click did nothing; now it resolves into the slider (the bar's host).
+        const hit = document.elementFromPoint(capX, capY) as HTMLElement;
+        await expect(canvasElement.contains(hit)).toBe(true);
+        await userEvent.pointer({
+          target: hit,
+          keys: "[MouseLeft]",
+          coords: { clientX: capX, clientY: capY },
+        });
+        await expect(thumbInput().value).toBe("100");
+      }
+    );
   },
 };
 
@@ -633,306 +709,6 @@ export const WithFormField: Story = {
       // mapping), not an explicit `aria-valuenow` attribute.
       await expect(thumb).toHaveValue("51");
     });
-  },
-};
-
-/**
- * The `enclosed` thumb must stay inside the bar at both extremes. React Aria
- * centers the thumb on its value point at the ends of its (inset) interactive
- * track, and the visible bar reaches back over that inset by a thumb radius, so
- * the thumb sits flush inside the bar. Regression guard: at min and max the
- * thumb's box stays within the visible bar (the root box, which the `::before`
- * bar spans).
- */
-export const EnclosedThumbContainment: Story = {
-  render: () => (
-    <>
-      <div data-testid="min">
-        <Slider aria-label="Min" variant="enclosed" defaultValue={0} />
-      </div>
-      <div data-testid="max">
-        <Slider aria-label="Max" variant="enclosed" defaultValue={100} />
-      </div>
-    </>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const rect = (id: string, slot: string) =>
-      canvasElement
-        .querySelector(`[data-testid="${id}"] [data-slot="${slot}"]`)!
-        .getBoundingClientRect();
-
-    // Half-pixel tolerance absorbs sub-pixel layout rounding. The bar spans the
-    // root box; the interactive track is inset by a thumb radius within it.
-    await step("at min value the thumb stays within the bar", async () => {
-      const bar = rect("min", "root");
-      const thumb = rect("min", "thumb");
-      await expect(thumb.left).toBeGreaterThanOrEqual(bar.left - 0.5);
-      await expect(thumb.right).toBeLessThanOrEqual(bar.right + 0.5);
-    });
-
-    await step("at max value the thumb stays within the bar", async () => {
-      const bar = rect("max", "root");
-      const thumb = rect("max", "thumb");
-      await expect(thumb.left).toBeGreaterThanOrEqual(bar.left - 0.5);
-      await expect(thumb.right).toBeLessThanOrEqual(bar.right + 0.5);
-    });
-  },
-};
-
-/**
- * The `enclosed` fill must cup the thumb at *every* value, not just 50%. The
- * thumb is shifted inward to stay contained, so a value-point fill (React
- * Aria's default) would trail the knob everywhere except center. This guards
- * the slider-base fill sizing: the fill's leading (max-side) edge lands on the
- * thumb's outer edge, and its transparent border shows the primary fill through
- * as a ring — including at value 0, where the fill still spans the whole knob
- * rather than collapsing to zero.
- */
-export const EnclosedFillCupsThumb: Story = {
-  render: () => (
-    <>
-      {[0, 50, 75, 100].map((v) => (
-        <div key={v} data-testid={`v${v}`}>
-          <Slider
-            aria-label={`Value ${v}`}
-            variant="enclosed"
-            defaultValue={v}
-          />
-        </div>
-      ))}
-    </>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const el = (id: string, slot: string) =>
-      canvasElement.querySelector(
-        `[data-testid="${id}"] [data-slot="${slot}"]`
-      ) as HTMLElement;
-    const rect = (id: string, slot: string) =>
-      el(id, slot).getBoundingClientRect();
-
-    await step(
-      "the fill's leading edge lands on the thumb's outer edge at every value",
-      async () => {
-        // Horizontal LTR: both the fill and the contained thumb end at their
-        // right edge. Pre-fix, the value-point fill trailed the shifted thumb
-        // by up to a thumb radius everywhere but 50% — well outside 1.5px.
-        for (const v of [0, 50, 75, 100]) {
-          const fill = rect(`v${v}`, "fill");
-          const thumb = rect(`v${v}`, "thumb");
-          await expect(Math.abs(fill.right - thumb.right)).toBeLessThanOrEqual(
-            1.5
-          );
-        }
-      }
-    );
-
-    await step("at value 0 the fill still spans the whole knob", async () => {
-      const fill = rect("v0", "fill");
-      const thumb = rect("v0", "thumb");
-      // Primary is visible around the knob: the fill covers the thumb box
-      // rather than collapsing to a zero-width sliver behind it.
-      await expect(fill.width).toBeGreaterThanOrEqual(thumb.width - 1.5);
-    });
-
-    await step("the thumb's gap comes from a transparent border", async () => {
-      const style = getComputedStyle(el("v50", "thumb"));
-      await expect(style.borderTopStyle).toBe("solid");
-      await expect(parseFloat(style.borderTopWidth)).toBeGreaterThan(0);
-      // fully transparent → the primary fill shows through as the ring
-      await expect(style.borderTopColor).toBe("rgba(0, 0, 0, 0)");
-    });
-  },
-};
-
-/**
- * `enclosed` ticks ride the same contained centerline as the thumb. Because the
- * thumb travel is inset by its radius, a raw-percent tick would drift from the
- * thumb it marks — worst at the extremes. Guards that the tick for a value lands
- * on the thumb's center when the thumb is at that value.
- */
-export const EnclosedTicksAlignThumb: Story = {
-  render: () => (
-    <>
-      <div data-testid="t25">
-        <Slider
-          aria-label="Ticks at 25"
-          variant="enclosed"
-          defaultValue={25}
-          showTicks
-          tickStep={25}
-        />
-      </div>
-      <div data-testid="t100">
-        <Slider
-          aria-label="Ticks at 100"
-          variant="enclosed"
-          defaultValue={100}
-          showTicks
-          tickStep={25}
-        />
-      </div>
-    </>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const centerX = (r: DOMRect) => (r.left + r.right) / 2;
-    const drift = (id: string, tickIndex: number) => {
-      const scope = `[data-testid="${id}"]`;
-      const tick = canvasElement
-        .querySelectorAll(`${scope} [data-slot="tick"]`)
-        [tickIndex].getBoundingClientRect();
-      const thumb = canvasElement
-        .querySelector(`${scope} [data-slot="thumb"]`)!
-        .getBoundingClientRect();
-      return Math.abs(centerX(tick) - centerX(thumb));
-    };
-
-    await step(
-      "the tick for the thumb's value sits under the thumb center",
-      async () => {
-        // tickStep 25 → ticks at 0,25,50,75,100 in ascending DOM order.
-        await expect(drift("t25", 1)).toBeLessThanOrEqual(1.5); // value 25
-        // value 100 is where a raw-percent tick drifts a full thumb radius.
-        await expect(drift("t100", 4)).toBeLessThanOrEqual(1.5);
-      }
-    );
-  },
-};
-
-/**
- * Clicking a tick lands the thumb on that value. This is the whole point of the
- * inset interactive track in the `enclosed` variant: because React Aria maps a
- * pointer to a value using the *same* track box it renders the thumb into, the
- * pixel a consumer clicks (the tick) maps back to exactly that tick's value —
- * no drift. Before the inset, the visual remap desynced click→value and the
- * thumb landed off the tick.
- */
-export const EnclosedClickHitsTick: Story = {
-  args: { onChange: fn() },
-  render: (args) => (
-    <div data-testid="c">
-      <Slider
-        aria-label="Click a tick"
-        variant="enclosed"
-        defaultValue={0}
-        minValue={0}
-        maxValue={100}
-        showTicks
-        tickStep={25}
-        onChange={args.onChange}
-      />
-    </div>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const scope = '[data-testid="c"]';
-    const track = canvasElement.querySelector(
-      `${scope} [data-slot="track"]`
-    ) as HTMLElement;
-    const ticks = canvasElement.querySelectorAll(`${scope} [data-slot="tick"]`);
-    const thumbInput = () =>
-      canvasElement.querySelector(
-        `${scope} [data-slot="thumb"] input`
-      ) as HTMLInputElement;
-
-    await step("clicking the 75% tick sets the value to 75", async () => {
-      // Ticks at 0/25/50/75/100 in ascending order → index 3 is value 75. Click
-      // the track at that tick's on-screen center, where a consumer would aim.
-      const t = ticks[3].getBoundingClientRect();
-      await userEvent.pointer({
-        target: track,
-        keys: "[MouseLeft]",
-        coords: {
-          clientX: (t.left + t.right) / 2,
-          clientY: (t.top + t.bottom) / 2,
-        },
-      });
-      await expect(thumbInput().value).toBe("75");
-    });
-  },
-};
-
-/**
- * A click in the bar's end-cap — the rounded region beyond the first/last tick,
- * which extends past the inset interactive track — still moves the thumb. The
- * full-width `::before` bar keeps pointer events, so a click there hit-tests to
- * the track (a pseudo-element's clicks target its host) and React Aria clamps
- * the out-of-range position to the max. Guards against the cap being a dead
- * zone (it was while the bar was `pointer-events: none`).
- */
-export const EnclosedClickPastLastTick: Story = {
-  render: () => (
-    <div data-testid="cap">
-      <Slider
-        aria-label="Click the cap"
-        variant="enclosed"
-        defaultValue={0}
-        minValue={0}
-        maxValue={100}
-        showTicks
-        tickStep={25}
-      />
-    </div>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const scope = '[data-testid="cap"]';
-    const bar = canvasElement
-      .querySelector(`${scope} [data-slot="root"]`)!
-      .getBoundingClientRect();
-    const thumbInput = () =>
-      canvasElement.querySelector(
-        `${scope} [data-slot="thumb"] input`
-      ) as HTMLInputElement;
-
-    await step("a click in the trailing cap snaps to the max", async () => {
-      // A point inside the rounded cap, past the last tick (which sits at the
-      // inset track's right edge, a thumb radius in from the bar edge).
-      const capX = bar.right - 2;
-      const capY = (bar.top + bar.bottom) / 2;
-      // Real hit-test: pre-fix this resolved to a non-interactive node and the
-      // click did nothing; now it resolves into the slider (the bar's host).
-      const hit = document.elementFromPoint(capX, capY) as HTMLElement;
-      await expect(canvasElement.contains(hit)).toBe(true);
-      await userEvent.pointer({
-        target: hit,
-        keys: "[MouseLeft]",
-        coords: { clientX: capX, clientY: capY },
-      });
-      await expect(thumbInput().value).toBe("100");
-    });
-  },
-};
-
-/**
- * Keyboard focus paints the Nimbus focus ring on the thumb. Regression guard
- * for a bug where no thumb showed a ring: the thumb must use
- * `focusVisibleRing` (its selector matches React Aria's `data-focus-visible`),
- * not `focusRing` (whose `:focus`/`[data-focus]` selector never matches — focus
- * lives on the visually-hidden inner <input>, and React Aria marks the styled
- * div with `data-focus-visible`, not `data-focus`).
- */
-export const FocusRing: Story = {
-  args: {
-    "aria-label": "Volume",
-    defaultValue: 30,
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const thumb = canvas.getByRole("slider");
-    const thumbEl = canvasElement.querySelector(
-      '[data-slot="thumb"]'
-    ) as HTMLElement;
-
-    await step(
-      "keyboard focus paints a visible outline on the thumb",
-      async () => {
-        await userEvent.tab();
-        await expect(thumb).toHaveFocus();
-        // React Aria marks the styled thumb div with data-focus-visible under
-        // keyboard modality; the recipe's focusVisibleRing keys off it.
-        await expect(thumbEl).toHaveAttribute("data-focus-visible", "true");
-        const outlineWidth = parseFloat(getComputedStyle(thumbEl).outlineWidth);
-        await expect(outlineWidth).toBeGreaterThan(0);
-      }
-    );
   },
 };
 
