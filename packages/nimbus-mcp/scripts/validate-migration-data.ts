@@ -2,6 +2,8 @@ import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
+import ts from "typescript";
 import { getAllUiKitMigrations } from "../src/data/uikit-migration.js";
 import type { PropMapping } from "../src/types.js";
 
@@ -145,10 +147,103 @@ function validatePropMapping(
   return errors;
 }
 
+function buildUiKitPropsMap(): Map<string, Set<string>> {
+  const require = createRequire(
+    new URL("file://" + resolve(__dirname, "../package.json"))
+  );
+
+  let barrelPath: string;
+  try {
+    barrelPath = require.resolve("@commercetools-frontend/ui-kit");
+  } catch {
+    return new Map();
+  }
+
+  const typesPath = barrelPath.replace(".cjs.js", ".cjs.d.ts");
+  if (!existsSync(typesPath)) return new Map();
+
+  const program = ts.createProgram([typesPath], {
+    target: ts.ScriptTarget.ES2020,
+    module: ts.ModuleKind.CommonJS,
+    moduleResolution: ts.ModuleResolutionKind.Node10,
+    declaration: true,
+    baseUrl: dirname(barrelPath),
+  });
+
+  const checker = program.getTypeChecker();
+  const sf = program.getSourceFile(typesPath);
+  if (!sf) return new Map();
+
+  const sym = checker.getSymbolAtLocation(sf);
+  if (!sym) return new Map();
+
+  const allExports = checker.getExportsOfModule(sym);
+  const result = new Map<string, Set<string>>();
+
+  for (const exp of allExports) {
+    const name = exp.getName();
+    if (name.startsWith("_") || name[0] !== name[0].toUpperCase()) continue;
+
+    const type = checker.getTypeOfSymbol(exp);
+    const callSigs = type.getCallSignatures();
+    if (callSigs.length > 0) {
+      const params = callSigs[0].getParameters();
+      if (params.length > 0) {
+        const paramType = checker.getTypeOfSymbol(params[0]);
+        const props = new Set(
+          paramType.getProperties().map((p) => p.getName())
+        );
+        if (props.size > 0) result.set(name, props);
+      }
+    }
+  }
+
+  return result;
+}
+
+function validateUiKitProps(
+  migrations: ReturnType<typeof getAllUiKitMigrations>
+): ValidationError[] {
+  const propsMap = buildUiKitPropsMap();
+  if (propsMap.size === 0) {
+    console.log(
+      "[validate] ⚠ @commercetools-frontend/ui-kit not installed or types not found, skipping UIKit prop validation"
+    );
+    return [];
+  }
+
+  const errors: ValidationError[] = [];
+  let validated = 0;
+
+  for (const entry of migrations) {
+    if (!entry.propMappings || entry.propMappings.length === 0) continue;
+
+    const uikitProps = propsMap.get(entry.uiKitName);
+    if (!uikitProps) continue;
+
+    validated++;
+    for (const mapping of entry.propMappings) {
+      if (mapping.uiKitProp === "_component") continue;
+      if (mapping.uiKitProp === "children") continue;
+      if (!uikitProps.has(mapping.uiKitProp)) {
+        errors.push({
+          entry: entry.uiKitName,
+          prop: mapping.uiKitProp,
+          message: `uiKitProp "${mapping.uiKitProp}" does not exist on ${entry.uiKitName}`,
+        });
+      }
+    }
+  }
+
+  console.log(`[validate] ✓ ${validated} UIKit components validated`);
+  return errors;
+}
+
 export async function validateMigrationData(): Promise<void> {
   const migrations = getAllUiKitMigrations();
   const allErrors: ValidationError[] = [];
 
+  // --- Nimbus-side validation ---
   for (const entry of migrations) {
     if (!entry.propMappings || entry.propMappings.length === 0) continue;
 
@@ -173,6 +268,17 @@ export async function validateMigrationData(): Promise<void> {
     }
   }
 
+  const entriesWithMappings = migrations.filter(
+    (e) => e.propMappings && e.propMappings.length > 0
+  ).length;
+  console.log(
+    `[validate] ✓ ${entriesWithMappings} Nimbus entries with propMappings validated`
+  );
+
+  // --- UIKit-side validation ---
+  const uikitErrors = validateUiKitProps(migrations);
+  allErrors.push(...uikitErrors);
+
   if (allErrors.length > 0) {
     console.error(
       `[validate] ❌ ${allErrors.length} migration data error(s):\n`
@@ -184,13 +290,6 @@ export async function validateMigrationData(): Promise<void> {
       `Migration data validation failed with ${allErrors.length} error(s)`
     );
   }
-
-  const entriesWithMappings = migrations.filter(
-    (e) => e.propMappings && e.propMappings.length > 0
-  ).length;
-  console.log(
-    `[validate] ✓ ${entriesWithMappings} entries with propMappings validated`
-  );
 }
 
 if (process.argv[1]?.includes("validate-migration-data")) {
