@@ -542,6 +542,8 @@ export const SmokeTest: Story = {
                             orientation={orientation}
                             isDisabled={isDisabled}
                             defaultValue={60}
+                            showTicks
+                            tickStep={25}
                           />
                         </Stack>
                       );
