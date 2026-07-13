@@ -110,7 +110,7 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
           gridColumn: 1,
           justifySelf: "end",
           maxWidth: "480px",
-          backgroundColor: "iris.3",
+          backgroundColor: "primary.3",
         },
         avatar: {
           gridColumn: 2,

@@ -16,7 +16,7 @@ type ChatMessageRecipeProps = {
    * and the sender-specific body/avatar styling:
    *
    * - `"assistant"` (default) — assistant voice, avatar leading.
-   * - `"user"` — the human, avatar trailing, `iris.3` surface.
+   * - `"user"` — the human, avatar trailing, `primary.3` surface.
    *
    * `sender` denotes only *who* sent the message. System notices and dividers
    * are the separate `ChatNotice` component; tool/function output is content

@@ -78,7 +78,7 @@ export const Base: Story = {
 
 /**
  * User message
- * A user body: avatar trails the body, `iris.3` background. Naming the
+ * A user body: avatar trails the body, `primary.3` background. Naming the
  * message with `aria-label` opts the avatar back into the a11y tree.
  */
 export const UserText: Story = {
