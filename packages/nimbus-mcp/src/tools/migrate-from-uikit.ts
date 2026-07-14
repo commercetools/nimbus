@@ -20,6 +20,8 @@ import type {
 import {
   filterAndRankPreLowered,
   fuzzyScorePreLowered,
+  toLoweredRouteFields,
+  WEIGHTS,
 } from "../utils/relevance.js";
 
 // ---------------------------------------------------------------------------
@@ -284,28 +286,41 @@ function splitPascalCase(name: string): string[] {
   return name.replace(/([a-z])([A-Z])/g, "$1 $2").split(/\s+/);
 }
 
-function toLowered(r: RouteManifestEntry): LoweredRelevanceFields {
-  const title = r.title.toLowerCase();
-  const description = r.description.toLowerCase();
-  const tags = [...r.tags, r.exportName ?? ""].join(" ").toLowerCase();
-  return {
-    title,
-    description,
-    tags,
-    content: "",
-    combined: title + " " + description + " " + tags,
-  };
+// Module-level cache for the component catalog and pre-lowered fields.
+let _componentRoutes: RouteManifestEntry[] | undefined;
+let _componentLowered:
+  | Map<RouteManifestEntry, LoweredRelevanceFields>
+  | undefined;
+
+async function getComponentCatalog(): Promise<{
+  routes: RouteManifestEntry[];
+  lowered: Map<RouteManifestEntry, LoweredRelevanceFields>;
+}> {
+  if (!_componentRoutes || !_componentLowered) {
+    const manifest = await getRouteManifest();
+    _componentRoutes = manifest.routes.filter(
+      (r) => r.category === "Components" && r.menu.length === 3
+    );
+    _componentLowered = new Map();
+    for (const r of _componentRoutes) {
+      _componentLowered.set(r, toLoweredRouteFields(r));
+    }
+  }
+  return { routes: _componentRoutes, lowered: _componentLowered };
 }
 
+/**
+ * Returns the candidate with the highest word-overlap ratio against the
+ * query words, or null if no candidate has any overlap (prevents confidently
+ * wrong matches when only generic UI words are in play).
+ */
 function pickClosestByWordOverlap(
   candidates: RouteManifestEntry[],
   uiKitWords: string[]
-): RouteManifestEntry {
-  if (candidates.length === 1) return candidates[0];
-
+): RouteManifestEntry | null {
   const wordSet = new Set(uiKitWords);
-  let best = candidates[0];
-  let bestRatio = -1;
+  let best: RouteManifestEntry | null = null;
+  let bestRatio = 0;
 
   for (const c of candidates) {
     const exportWords = splitPascalCase(c.exportName ?? c.title).map((w) =>
@@ -325,39 +340,34 @@ function pickClosestByWordOverlap(
 async function findNimbusSuggestion(
   uiKitName: string
 ): Promise<UnmappedSuggestion | null> {
-  const manifest = await getRouteManifest();
-  const routes = manifest.routes.filter(
-    (r) => r.category === "Components" && r.menu.length === 3
-  );
+  const { routes, lowered } = await getComponentCatalog();
 
   const allWords = splitPascalCase(uiKitName).map((w) => w.toLowerCase());
   if (allWords.length === 0) return null;
 
   const distinctive = allWords.filter((w) => !GENERIC_UI_WORDS.has(w));
-  const tokens = distinctive.length > 0 ? distinctive : allWords;
-
-  const loweredMap = new Map<RouteManifestEntry, LoweredRelevanceFields>();
-  for (const r of routes) {
-    loweredMap.set(r, toLowered(r));
-  }
+  const usingGenericFallback = distinctive.length === 0;
+  const tokens = usingGenericFallback ? allWords : distinctive;
 
   const exactMatches = filterAndRankPreLowered(
     routes,
     tokens,
-    (r) => loweredMap.get(r)!
+    (r) => lowered.get(r)!
   );
 
   if (exactMatches.length > 0) {
     const best = pickClosestByWordOverlap(exactMatches, allWords);
+    if (!best) return null;
     return {
       name: best.exportName ?? best.title,
-      confidence: "high",
+      confidence: usingGenericFallback ? "medium" : "high",
     };
   }
 
+  const minFuzzyScore = tokens.length * (WEIGHTS.title / 2);
   const fuzzyScored: Array<{ route: RouteManifestEntry; score: number }> = [];
   for (const r of routes) {
-    const score = fuzzyScorePreLowered(loweredMap.get(r)!, tokens);
+    const score = fuzzyScorePreLowered(lowered.get(r)!, tokens);
     if (score > 0) {
       fuzzyScored.push({ route: r, score });
     }
@@ -366,7 +376,7 @@ async function findNimbusSuggestion(
 
   if (fuzzyScored.length > 0) {
     const best = fuzzyScored[0];
-    if (best.score >= tokens.length * 4) {
+    if (best.score >= minFuzzyScore) {
       return {
         name: best.route.exportName ?? best.route.title,
         confidence: "medium",

@@ -142,7 +142,7 @@ describe("migrate_from_uikit — componentName mode", () => {
     expect(getText(result)).toContain("NonExistentComponent");
   });
 
-  it("includes a suggestion when unknown component has a close Nimbus match", async () => {
+  it("includes a high-confidence suggestion when unknown component has a close Nimbus match", async () => {
     const result = await callMigrate({
       componentName: "SearchTextInput",
     });
@@ -152,8 +152,36 @@ describe("migrate_from_uikit — componentName mode", () => {
     expect(data.uiKitName).toBe("SearchTextInput");
     expect(data.suggestion).toBeDefined();
     expect(data.suggestion.name).toBe("SearchInput");
-    expect(data.suggestion.confidence).toMatch(/^(high|medium)$/);
+    expect(data.suggestion.confidence).toBe("high");
     expect(data.hint).toContain("get_component");
+  });
+
+  it("includes a medium-confidence suggestion via fuzzy match", async () => {
+    // "Acordion" is a typo of "Accordion" — no exact substring match,
+    // but within Levenshtein distance 1 of the Nimbus component name.
+    const result = await callMigrate({
+      componentName: "Acordion",
+    });
+    const data = JSON.parse(getText(result));
+
+    expect(result.isError).toBeUndefined();
+    expect(data.uiKitName).toBe("Acordion");
+    expect(data.suggestion).toBeDefined();
+    expect(data.suggestion.name).toBe("Accordion");
+    expect(data.suggestion.confidence).toBe("medium");
+  });
+
+  it("does not return high-confidence suggestions for all-generic-word names", async () => {
+    // "TextButton" is composed entirely of generic UI words — any match
+    // should be medium confidence at best, not high.
+    const result = await callMigrate({
+      componentName: "TextButton",
+    });
+
+    if (!result.isError) {
+      const data = JSON.parse(getText(result));
+      expect(data.suggestion?.confidence).not.toBe("high");
+    }
   });
 
   it("returns error with no suggestion for truly unknown component", async () => {
@@ -358,7 +386,7 @@ export const MyComponent = () => <div />;
     expect(data.unmapped[0].name).toBe("SearchTextInput");
     expect(data.unmapped[0].suggestion).toBeDefined();
     expect(data.unmapped[0].suggestion.name).toBe("SearchInput");
-    expect(data.unmapped[0].suggestion.confidence).toMatch(/^(high|medium)$/);
+    expect(data.unmapped[0].suggestion.confidence).toBe("high");
   });
 
   it("returns error for non-existent file", async () => {

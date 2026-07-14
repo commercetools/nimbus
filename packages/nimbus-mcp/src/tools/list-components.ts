@@ -9,6 +9,7 @@ import type {
 import {
   filterAndRankPreLowered,
   fuzzyScorePreLowered,
+  toLoweredRouteFields,
 } from "../utils/relevance.js";
 
 /** Normalises a route entry into a sparse ComponentSummary. */
@@ -28,20 +29,6 @@ function toSummary(route: RouteManifestEntry): ComponentSummary {
   if (route.tags.length > 0) summary.tags = route.tags;
 
   return summary;
-}
-
-/** Build pre-lowered fields for a route entry. */
-function toLowered(r: RouteManifestEntry): LoweredRelevanceFields {
-  const title = r.title.toLowerCase();
-  const description = r.description.toLowerCase();
-  const tags = [...r.tags, r.exportName ?? ""].join(" ").toLowerCase();
-  return {
-    title,
-    description,
-    tags,
-    content: "",
-    combined: title + " " + description + " " + tags,
-  };
 }
 
 /**
@@ -99,7 +86,7 @@ export function registerListComponents(server: McpServer): void {
             LoweredRelevanceFields
           >();
           for (const r of routes) {
-            loweredMap.set(r, toLowered(r));
+            loweredMap.set(r, toLoweredRouteFields(r));
           }
 
           // Pass 1: exact substring match, ranked by field-weighted relevance.
