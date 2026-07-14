@@ -9,7 +9,7 @@ import {
 } from "react-aria";
 import { extractStyleProps, mergeRefs } from "@/utils";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
-import { VisuallyHidden } from "@/components";
+import { VisuallyHidden } from "@/components/visually-hidden";
 import type { SwitchProps } from "./switch.types";
 import {
   SwitchRootSlot,

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Person } from "@commercetools/nimbus-icons";
-import { Image } from "@/components";
+import { Image } from "@/components/image";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { type AvatarProps } from "./avatar.types";
 import { AvatarRoot } from "./avatar.slots";

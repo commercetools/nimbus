@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { IconButton, Tooltip } from "@/components";
+import { IconButton } from "@/components/icon-button";
+import { Tooltip } from "@/components/tooltip";
 import { TextInput } from "@/components/text-input/text-input";
 import { Visibility, VisibilityOff } from "@commercetools/nimbus-icons";
 import type { PasswordInputProps } from "./password-input.types";

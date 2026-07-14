@@ -4,7 +4,7 @@ import {
   AccordionTitleSlot,
   AccordionHeaderRightContentSlot,
 } from "../accordion.slots";
-import { Flex } from "@/components";
+import { Flex } from "@/components/flex";
 import { KeyboardArrowRight } from "@commercetools/nimbus-icons";
 import { Button as RaButton } from "react-aria-components";
 import type { AccordionHeaderProps } from "../accordion.types";

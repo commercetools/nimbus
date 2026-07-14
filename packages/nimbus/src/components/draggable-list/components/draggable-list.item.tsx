@@ -1,6 +1,7 @@
 import { GridListItem } from "react-aria-components";
 import { Close, DragIndicator } from "@commercetools/nimbus-icons";
-import { Checkbox, IconButton } from "@/components";
+import { Checkbox } from "@/components/checkbox";
+import { IconButton } from "@/components/icon-button";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { draggableListMessagesStrings } from "../draggable-list.messages";

@@ -1,17 +1,15 @@
 import { useSlate } from "slate-react";
-import {
-  Toolbar,
-  Menu,
-  VisuallyHidden,
-  Separator,
-  ToggleButtonGroup,
-  IconButton,
-  Text,
-  Box,
-  Tooltip,
-} from "@/components";
-import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
-import { Group } from "@/components/group/group";
+import { Box } from "@/components/box";
+import { IconButton } from "@/components/icon-button";
+import { Menu } from "@/components/menu";
+import { Separator } from "@/components/separator";
+import { Text } from "@/components/text";
+import { ToggleButtonGroup } from "@/components/toggle-button-group";
+import { Toolbar } from "@/components/toolbar";
+import { Tooltip } from "@/components/tooltip";
+import { VisuallyHidden } from "@/components/visually-hidden";
+import { IconToggleButton } from "@/components/icon-toggle-button";
+import { Group } from "@/components/group";
 import {
   FormatBold,
   FormatItalic,

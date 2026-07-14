@@ -1,15 +1,13 @@
 import React from "react";
-import {
-  Stack,
-  IconButton,
-  Button,
-  Heading,
-  Text,
-  Select,
-  Box,
-  RadioInput,
-  Badge,
-} from "@/components";
+import { Badge } from "@/components/badge";
+import { Box } from "@/components/box";
+import { Button } from "@/components/button";
+import { Heading } from "@/components/heading";
+import { IconButton } from "@/components/icon-button";
+import { RadioInput } from "@/components/radio-input";
+import { Select } from "@/components/select";
+import { Stack } from "@/components/stack";
+import { Text } from "@/components/text";
 import { Info } from "@commercetools/nimbus-icons";
 import { DataTable } from "./data-table";
 

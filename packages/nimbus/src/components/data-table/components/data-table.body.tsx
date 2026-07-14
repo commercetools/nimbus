@@ -1,5 +1,5 @@
 import { TableBody as RaTableBody } from "react-aria-components";
-import { Box } from "@/components";
+import { Box } from "@/components/box";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import type { DataTableBodyProps, DataTableRowItem } from "../data-table.types";

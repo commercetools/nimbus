@@ -3,7 +3,7 @@ import type {
   HTMLChakraProps,
   SlotRecipeProps,
 } from "@chakra-ui/react/styled-system";
-import type { FormFieldProps } from "@/components";
+import type { FormFieldProps } from "@/components/form-field";
 import type {
   GridListProps as RaGridListProps,
   GridListItemProps as RaGridListItemProps,

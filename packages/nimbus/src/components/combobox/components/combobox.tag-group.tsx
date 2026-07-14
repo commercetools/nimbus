@@ -4,7 +4,7 @@ import {
   type ContextValue,
   type TagGroupProps,
 } from "react-aria-components";
-import { TagGroup } from "@/components";
+import { TagGroup } from "@/components/tag-group";
 import { useComboBoxRootContext } from "./combobox.root-context";
 import { ComboBoxTagGroupSlot } from "../combobox.slots";
 import type { ComboBoxTagGroupProps } from "../combobox.types";

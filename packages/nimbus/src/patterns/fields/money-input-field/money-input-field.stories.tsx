@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { MoneyInputField } from "./money-input-field";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
-import { Stack, Text } from "@/components";
+import { Stack, Text } from "@commercetools/nimbus";
 import type { MoneyInputValue } from "@/components/money-input/money-input.types";
 
 const meta: Meta<typeof MoneyInputField> = {

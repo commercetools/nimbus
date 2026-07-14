@@ -15,7 +15,9 @@ import type {
   DataTableColumnItem,
   DataTableRowProps,
 } from "../data-table.types";
-import { Box, Checkbox, IconButton } from "@/components";
+import { Box } from "@/components/box";
+import { Checkbox } from "@/components/checkbox";
+import { IconButton } from "@/components/icon-button";
 import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
 import {
   DragIndicator,

@@ -7,7 +7,7 @@ import {
   Input as RaInput,
 } from "react-aria-components";
 import { Search, Close } from "@commercetools/nimbus-icons";
-import { IconButton } from "@/components";
+import { IconButton } from "@/components/icon-button";
 import { extractStyleProps } from "@/utils";
 import {
   useLocalizedStringFormatter,

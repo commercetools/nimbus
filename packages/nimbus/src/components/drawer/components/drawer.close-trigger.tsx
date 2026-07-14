@@ -1,7 +1,7 @@
 import { Close } from "@commercetools/nimbus-icons";
 import { DrawerCloseTriggerSlot } from "../drawer.slots";
 import type { DrawerCloseTriggerProps } from "../drawer.types";
-import { IconButton } from "@/components";
+import { IconButton } from "@/components/icon-button";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { drawerMessagesStrings } from "../drawer.messages";
 

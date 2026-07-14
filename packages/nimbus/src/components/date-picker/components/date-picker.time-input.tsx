@@ -1,4 +1,6 @@
-import { Flex, Text, TimeInput } from "@/components";
+import { Flex } from "@/components/flex";
+import { Text } from "@/components/text";
+import { TimeInput } from "@/components/time-input";
 import { useContext, useRef, useEffect } from "react";
 import { DatePickerStateContext } from "react-aria-components";
 import type { DatePickerTimeInputProps } from "../date-picker.types";

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { NumberInputProps } from "@/components/number-input/number-input.types";
-import type { FieldErrorsData } from "@/components";
+import type { FieldErrorsData } from "@/components/field-errors";
 import type { FormFieldProps } from "@/components/form-field";
 
 /**

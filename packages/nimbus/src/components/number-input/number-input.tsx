@@ -3,7 +3,7 @@ import { mergeRefs } from "@/utils";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { useObjectRef, useNumberField, useLocale } from "react-aria";
 import { useNumberFieldState } from "react-stately";
-import { Box } from "@/components";
+import { Box } from "@/components/box";
 import {
   KeyboardArrowUp,
   KeyboardArrowDown,

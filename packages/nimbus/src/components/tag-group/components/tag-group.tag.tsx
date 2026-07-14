@@ -4,7 +4,7 @@ import { useLocalizedStringFormatter } from "@/hooks";
 import { tagGroupMessagesStrings } from "../tag-group.messages";
 
 import type { TagGroupTagComponent } from "../tag-group.types";
-import { IconButton } from "@/components";
+import { IconButton } from "@/components/icon-button";
 
 /**
  * TagGroup.Tag - Individual tag component that can be selected, removed, or used for display

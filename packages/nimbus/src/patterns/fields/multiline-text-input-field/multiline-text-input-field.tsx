@@ -1,6 +1,7 @@
 import { MultilineTextInput } from "@/components/multiline-text-input/multiline-text-input";
 import type { MultilineTextInputFieldProps } from "./multiline-text-input-field.types";
-import { FormField, FieldErrors } from "@/components";
+import { FieldErrors } from "@/components/field-errors";
+import { FormField } from "@/components/form-field";
 
 /**
  * # MultilineTextInputField

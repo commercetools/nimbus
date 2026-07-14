@@ -100,6 +100,29 @@ export default tseslint.config(
       "react-hooks/exhaustive-deps": "warn",
     },
   },
+  /**
+   * Ban the `@/components` source barrel everywhere. Use deep imports
+   * (`@/components/<name>`) instead. The barrel causes Vite 8 to
+   * tree-shake re-exported compound roots (CodeRoot, DefaultPageRoot, ...)
+   * out of production Storybook builds, leaving dangling references.
+   */
+  {
+    files: ["packages/nimbus/src/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "@/components",
+              message:
+                "Use deep imports (e.g. '@/components/button') instead of the '@/components' barrel to avoid circular chunk dependencies and production build breakage.",
+            },
+          ],
+        },
+      ],
+    },
+  },
   // Spread storybook configurations if available
   ...storybookConfigs
 );
