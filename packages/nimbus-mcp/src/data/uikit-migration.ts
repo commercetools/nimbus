@@ -74,6 +74,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
           { from: "secondary", to: "neutral" },
           { from: "critical", to: "critical" },
         ],
+        notes: "'inverted' has no direct equivalent; use variant/colorPalette.",
       },
       {
         uiKitProp: "iconPosition",
@@ -251,8 +252,8 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       {
         uiKitProp: "theme",
         nimbusProp: "variant",
-        changeType: "value-mapping",
-        notes: "UIKit theme maps to Nimbus variant + colorPalette.",
+        changeType: "structural",
+        notes: "UIKit theme maps to both variant and colorPalette in Nimbus.",
       },
     ],
   },
@@ -802,7 +803,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Rename to NumberInputField",
       "title prop renamed to label",
       "hint prop renamed to description",
-      "errors (Record) replaced by passing <FieldErrors> to the errorMessage prop",
+      "errors prop accepts FieldErrorsData; convert UIKit Record<string, boolean> via <FieldErrors>",
     ],
     propMappings: [
       { uiKitProp: "title", nimbusProp: "label", changeType: "rename" },
@@ -813,10 +814,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       },
       {
         uiKitProp: "errors",
-        nimbusProp: "errorMessage",
+        nimbusProp: "errors",
         changeType: "structural",
         notes:
-          "Pass <FieldErrors> to the errorMessage prop instead of a Record<string, boolean>.",
+          "Convert UIKit Record<string, boolean> to FieldErrorsData and pass to the errors prop.",
       },
     ],
   },

@@ -27,9 +27,13 @@
 Migration entries in `src/data/uikit-migration.ts` can include a `propMappings`
 array with structured prop-level translations (UIKit prop → Nimbus prop, value
 mappings). These are validated at build time by
-`scripts/validate-migration-data.ts` against the live Nimbus type data in
-`data/docs/types/`. The build fails if a `nimbusProp` doesn't exist on the
-target component or a mapped value is invalid for the prop's type union.
+`scripts/validate-migration-data.ts` against both the live Nimbus type data in
+`data/docs/types/` and the UIKit type declarations from
+`@commercetools-frontend/ui-kit` (devDependency). The build fails if a
+`nimbusProp` doesn't exist on the target component, a mapped value is invalid
+for the prop's type union, or a `uiKitProp` doesn't exist on the source UIKit
+component. UIKit validation covers function and class components; dotted
+sub-components (e.g. `Text.Body`) are skipped.
 
 When adding or editing migration entries, add `propMappings` for any prop-level
 changes. Use `_component` as the `uiKitProp` for fixed values injected by the

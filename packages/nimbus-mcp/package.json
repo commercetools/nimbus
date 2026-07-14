@@ -35,7 +35,7 @@
     "zod": "catalog:utils"
   },
   "devDependencies": {
-    "@commercetools-frontend/ui-kit": "catalog:",
+    "@commercetools-frontend/ui-kit": "catalog:tooling",
     "@commercetools/nimbus": "workspace:^",
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",

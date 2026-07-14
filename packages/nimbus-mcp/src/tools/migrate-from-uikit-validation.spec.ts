@@ -1,9 +1,15 @@
 import { describe, it, expect } from "vitest";
 import { existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
-import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { getAllUiKitMigrations } from "../data/uikit-migration.js";
+import {
+  STYLE_PROPS,
+  extractNimbusComponentName,
+  extractValidValues,
+  loadTypeData,
+  resolveTypeFile,
+} from "../../scripts/validation-helpers.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -18,81 +24,6 @@ function findPackageRoot(): string {
 
 const TYPES_DIR = resolve(findPackageRoot(), "data/docs/types");
 
-const STYLE_PROPS = new Set(["colorPalette"]);
-
-const KNOWN_TYPE_ALIASES: Record<string, string[]> = {
-  SemanticPalettesOnly: [
-    "primary",
-    "neutral",
-    "info",
-    "positive",
-    "warning",
-    "critical",
-  ],
-};
-
-function resolveTypeFile(componentName: string): string | null {
-  const direct = resolve(TYPES_DIR, `${componentName}.json`);
-  if (existsSync(direct)) return direct;
-  const root = resolve(TYPES_DIR, `${componentName}Root.json`);
-  if (existsSync(root)) return root;
-  return null;
-}
-
-async function loadTypeProps(
-  componentName: string
-): Promise<Record<
-  string,
-  { name: string; value?: Array<{ value: string }> }
-> | null> {
-  const filePath = resolveTypeFile(componentName);
-  if (!filePath) return null;
-  const raw = await readFile(filePath, "utf-8");
-  const data = JSON.parse(raw);
-  const result: Record<
-    string,
-    { name: string; value?: Array<{ value: string }> }
-  > = {};
-  for (const [key, val] of Object.entries(data.props ?? {})) {
-    result[key] = (val as { type: { name: string } }).type;
-  }
-  return Object.keys(result).length > 0 ? result : null;
-}
-
-function extractValidValues(propType: {
-  name: string;
-  value?: Array<{ value: string }>;
-}): string[] | null {
-  const { name } = propType;
-  if (name in KNOWN_TYPE_ALIASES) return KNOWN_TYPE_ALIASES[name];
-  const cvMatch = name.match(/^ConditionalValue<(.+)>$/);
-  if (cvMatch) {
-    const values: string[] = [];
-    const re = /"([^"]+)"/g;
-    let m: RegExpExecArray | null;
-    while ((m = re.exec(cvMatch[1])) !== null) values.push(m[1]);
-    return values.length > 0 ? values : null;
-  }
-  if (name === "enum" && propType.value) {
-    return propType.value.map((v) => v.value.replace(/^"|"$/g, ""));
-  }
-  return null;
-}
-
-function extractNimbusComponentName(
-  nimbusEquivalent: string | null
-): string | null {
-  if (!nimbusEquivalent) return null;
-  const name = nimbusEquivalent.split(/[+,]/)[0].trim().replace(/^<|>$/g, "");
-  if (
-    name === "Design tokens" ||
-    name === "Material Icon Library" ||
-    name === "Text + FormField"
-  )
-    return null;
-  return name;
-}
-
 describe("migrate_from_uikit — type validation", () => {
   const migrations = getAllUiKitMigrations();
 
@@ -101,7 +32,7 @@ describe("migrate_from_uikit — type validation", () => {
     for (const entry of migrations) {
       const componentName = extractNimbusComponentName(entry.nimbusEquivalent);
       if (!componentName) continue;
-      if (!resolveTypeFile(componentName)) {
+      if (!resolveTypeFile(TYPES_DIR, componentName)) {
         missing.push(
           `${entry.uiKitName} → ${componentName} (from "${entry.nimbusEquivalent}")`
         );
@@ -116,8 +47,8 @@ describe("migrate_from_uikit — type validation", () => {
       if (!entry.propMappings) continue;
       const componentName = extractNimbusComponentName(entry.nimbusEquivalent);
       if (!componentName) continue;
-      const props = await loadTypeProps(componentName);
-      if (!props) continue;
+      const props = await loadTypeData(TYPES_DIR, componentName);
+      if (Object.keys(props).length === 0) continue;
 
       for (const mapping of entry.propMappings) {
         if (!mapping.nimbusProp) continue;
@@ -138,8 +69,8 @@ describe("migrate_from_uikit — type validation", () => {
       if (!entry.propMappings) continue;
       const componentName = extractNimbusComponentName(entry.nimbusEquivalent);
       if (!componentName) continue;
-      const props = await loadTypeProps(componentName);
-      if (!props) continue;
+      const props = await loadTypeData(TYPES_DIR, componentName);
+      if (Object.keys(props).length === 0) continue;
 
       for (const mapping of entry.propMappings) {
         if (!mapping.nimbusProp || !props[mapping.nimbusProp]) continue;
@@ -160,6 +91,25 @@ describe("migrate_from_uikit — type validation", () => {
               );
             }
           }
+        }
+      }
+    }
+    expect(errors).toEqual([]);
+  });
+
+  it("value-mapping changeType always has valueMapping or fixedValue", () => {
+    const errors: string[] = [];
+    for (const entry of migrations) {
+      if (!entry.propMappings) continue;
+      for (const mapping of entry.propMappings) {
+        if (
+          mapping.changeType === "value-mapping" &&
+          !mapping.valueMapping &&
+          !mapping.fixedValue
+        ) {
+          errors.push(
+            `${entry.uiKitName}: ${mapping.uiKitProp} → ${mapping.nimbusProp} has changeType "value-mapping" but no valueMapping or fixedValue`
+          );
         }
       }
     }
