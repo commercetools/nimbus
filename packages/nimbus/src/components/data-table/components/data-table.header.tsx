@@ -90,6 +90,7 @@ export const DataTableHeader = <
         )}
         <RaCollection items={activeColumns}>
           {(column) => {
+            const align = column.align ?? "start";
             return (
               <DataTableColumn
                 allowsSorting={
@@ -104,6 +105,13 @@ export const DataTableHeader = <
                 minWidth={column.minWidth ?? 150}
                 maxWidth={column.maxWidth}
                 column={column}
+                textAlign={
+                  align === "center"
+                    ? "center"
+                    : align === "end" || align === "stretch"
+                      ? "end"
+                      : undefined
+                }
               >
                 <span data-multiline-header>{column.header}</span>
                 {column.headerIcon && (

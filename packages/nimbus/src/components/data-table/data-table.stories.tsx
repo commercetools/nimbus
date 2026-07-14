@@ -5004,11 +5004,31 @@ export const ColumnAlignment: Story = {
     );
 
     await step(
+      "Right-aligned column headers also have text-align: end",
+      async () => {
+        const priceHeader = canvas.getByText("Unit Price");
+        const th = priceHeader.closest("th") as HTMLElement;
+        const style = window.getComputedStyle(th);
+        expect(style.textAlign).toBe("end");
+      }
+    );
+
+    await step(
       "Center-aligned cells have text-align: center on the cell",
       async () => {
         const statusCells = canvas.getAllByText("Active");
         const cell = statusCells[0].closest("td") as HTMLElement;
         const style = window.getComputedStyle(cell);
+        expect(style.textAlign).toBe("center");
+      }
+    );
+
+    await step(
+      "Center-aligned column header also has text-align: center",
+      async () => {
+        const statusHeader = canvas.getByText("Status");
+        const th = statusHeader.closest("th") as HTMLElement;
+        const style = window.getComputedStyle(th);
         expect(style.textAlign).toBe("center");
       }
     );
@@ -5026,6 +5046,19 @@ export const ColumnAlignment: Story = {
         expect(style.width).not.toBe("0px");
       }
     );
+
+    await step("Stretch cells still support truncation class", async () => {
+      const stretchCells = canvasElement.querySelectorAll("[data-truncated]");
+      const stretchBlock = Array.from(stretchCells).find((el) => {
+        const s = window.getComputedStyle(el as HTMLElement);
+        return s.display === "block";
+      }) as HTMLElement;
+      expect(stretchBlock).toBeTruthy();
+      expect(
+        stretchBlock.style.overflow ||
+          window.getComputedStyle(stretchBlock).overflow
+      ).not.toBe("visible");
+    });
   },
 };
 
@@ -5088,6 +5121,35 @@ export const StickyColumnBackground: Story = {
         ".data-table-sticky-cell"
       );
       expect(stickyCells.length).toBeGreaterThan(0);
+
+      const stickyCell = stickyCells[0] as HTMLElement;
+      const bg = window.getComputedStyle(stickyCell).backgroundColor;
+      expect(bg).not.toBe("transparent");
+      expect(bg).not.toBe("rgba(0, 0, 0, 0)");
     });
+
+    await step(
+      "Selected row sticky cells still show selection highlight",
+      async () => {
+        const rows = canvasElement.querySelectorAll("tbody tr");
+        const firstDataRow = rows[0] as HTMLElement;
+        const checkbox = within(firstDataRow).getByRole("checkbox");
+        await userEvent.click(checkbox);
+
+        const selectedRow = canvasElement.querySelector(
+          "tr[aria-selected='true']"
+        );
+        expect(selectedRow).toBeInTheDocument();
+
+        const stickyInSelected = selectedRow?.querySelector(
+          ".data-table-sticky-cell"
+        ) as HTMLElement | null;
+        if (stickyInSelected) {
+          const bg = window.getComputedStyle(stickyInSelected).backgroundColor;
+          expect(bg).not.toBe("transparent");
+          expect(bg).not.toBe("rgba(0, 0, 0, 0)");
+        }
+      }
+    );
   },
 };
