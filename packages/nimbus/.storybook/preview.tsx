@@ -75,12 +75,21 @@ const preview: Preview = {
   tags: ["autodocs", "a11y-test"],
   decorators: [
     (Story, context) => {
+      // Outline doesn't affect layout, so Chromatic's #storybook-root crop clips it;
+      // This wrapper adds space inside that boundary where body/padded-layout padding can't reach.
+      const needsSnapshotPadding = context.tags?.includes(
+        "preserve-focus-ring"
+      );
       return (
         <ThemeDecorator context={context}>
-          {/* outline doesn't affect layout so Chromatic's crop clips it without this padding */}
-          <div style={{ padding: "1rem", width: "fit-content" }}>
+          {needsSnapshotPadding ? (
+            <div style={{ padding: "1rem", width: "fit-content" }}>
+              {/* room for outline in Chromatic crop */}
+              <Story />
+            </div>
+          ) : (
             <Story />
-          </div>
+          )}
         </ThemeDecorator>
       );
     },
