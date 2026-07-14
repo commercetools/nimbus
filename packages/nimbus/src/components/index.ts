@@ -82,3 +82,4 @@ export * from "./modal-page";
 export * from "./region";
 export * from "./splitter";
 export * from "./tree";
+export * from "./drop-zone";
