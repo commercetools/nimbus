@@ -232,6 +232,16 @@ call out disabling for interaction-focused / behavior tests to "prevent false
 positives" - which validates leaving `WithRef` (and Button's context /
 DOM-filtering stories) un-snapshotted.
 
+**Crop padding is applied to every story, globally.** Chromatic crops each
+snapshot to the story's rendered content, so an outline/selection/focus ring
+(painted outside layout as a box-shadow or CSS outline) clips at the crop edge
+when content sits flush against it - body or `layout: "padded"` padding sits
+outside the crop and can't reach in. A `preview.tsx` decorator therefore wraps
+every non-`fullscreen` story in `1rem` of padding, giving rings room in the crop
+and keeping the canvas from jumping as you browse. It's independent of
+`preserveFocusRing` and `disableSnapshot` - not something you opt into per
+story. `fullscreen` stories are exempt because they're meant to touch the edges.
+
 **Cost is controlled by TurboSnap and matrix-packing, not by dropping visual
 states.** TurboSnap bills unchanged snapshots at 1/5 cost, and packing a whole
 `colorPalette × size × variant × state` grid into one `SmokeTest` render keeps
@@ -287,6 +297,13 @@ but neither is currently captured, and it's an infra limitation, not a choice:
   palette/size/variant, so a `Disabled`/`DisabledGroup` story captures it once
   instead of the matrix re-rendering every cell at half opacity for no new
   coverage.
+- **Not every component needs a `SmokeTest` matrix.** A matrix earns its place
+  only when the axes _interact_. When they're independent (Avatar's `size` /
+  `colorPalette` / content mode don't combine into novel visuals), skip the
+  matrix and opt the existing showcase stories into snapshots directly; fold a
+  family of near-identical or purely behavioral stories into one labeled
+  snapshot (Avatar's `AllFallbacks`) when it aids review without losing
+  coverage.
 - **Use `play` for functional testing alongside visual** - the two aren't in
   tension; a story can both assert behavior and be snapshotted.
 - **Pause JS-driven animations manually** - Chromatic auto-pauses CSS
@@ -295,6 +312,12 @@ but neither is currently captured, and it's an infra limitation, not a choice:
 - **Fonts/async loading can shift tooltips/menus** - relevant to IconButton's
   `ColorPalettes` story (it wraps each button in a `Tooltip`). Preload fonts or
   add a delay if those snapshots turn out flaky.
+- **Images need care.** Chromatic waits for images to load before capturing, but
+  not for state your component _derives_ from that load (Avatar hides its
+  `<img>` until `onLoad`, and swaps to a fallback on error). Serve images
+  locally (`staticDirs`) to avoid a flaky network dependency, and wait in the
+  play function for any post-load / post-error state you mean to snapshot. See
+  [stories.md](./file-type-guidelines/stories.md) for the pattern.
 - **`preview.js` barrel imports trigger full rebuilds under TurboSnap** - not
   our concern in the stories, but a caution for the shared `preview.tsx`.
 

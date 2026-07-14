@@ -76,22 +76,18 @@ const preview: Preview = {
   tags: ["autodocs", "a11y-test"],
   decorators: [
     (Story, context) => {
-      // Chromatic crops to #storybook-root; outline/selection/focus rings are
-      // box-shadows or outlines that render outside layout and get clipped at
-      // the crop edge. Pad every snapshot uniformly so the crop has room;
-      // body/padded-layout padding can't reach inside that boundary. No width
-      // constraint — `fit-content` would collapse relative widths like `width="1/3"`.
-      const isSnapshot =
-        context.parameters?.chromatic?.disableSnapshot === false;
+      // Pad every story so Chromatic's crop doesn't clip focus/selection rings at
+      // the edge, and so browsing doesn't jump. Skip `fullscreen`, which is meant
+      // to touch the edges.
+      const isFullscreen = context.parameters?.layout === "fullscreen";
       return (
         <ThemeDecorator context={context}>
-          {isSnapshot ? (
+          {isFullscreen ? (
+            <Story />
+          ) : (
             <div style={{ padding: "1rem" }}>
-              {/* room for rings in Chromatic crop */}
               <Story />
             </div>
-          ) : (
-            <Story />
           )}
         </ThemeDecorator>
       );

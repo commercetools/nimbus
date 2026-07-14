@@ -180,6 +180,19 @@ separate snapshotted story for each state the matrix can't show in one static
 render, e.g. `Focused` (focus ring), a disabled-but-focusable state, an open
 tooltip/popover, or a layout the grid doesn't exercise.
 
+**Not every component needs a `SmokeTest` matrix.** A matrix earns its place
+only when the axes _interact_ — when `colorPalette × size × variant` produces
+cells you couldn't predict from each axis in isolation, which is where recipe
+regressions hide. When a component's axes are independent (Avatar's `size`,
+`colorPalette`, and content mode don't combine into novel visuals), skip the
+matrix and just opt the existing showcase stories into snapshots directly
+(`SizesWithImages`, `ColorPalettes`). You can also fold a family of
+near-identical or purely behavioral stories into one labeled snapshot when it
+aids review without losing coverage: Avatar's `AllFallbacks` renders every
+fallback path (missing / empty / whitespace names, broken image with and without
+names) in a single image, while the per-path stories stay snapshot-off but keep
+their behavioral assertions.
+
 **Fold an axis into the matrix only if it interacts** — i.e. its combination
 with the other axes produces a distinct visual. An axis that applies a
 **uniform, axis-independent transform** does not: `disabled`, for example,
@@ -268,11 +281,50 @@ export const Focused: Story = {
 **The `preserveFocusRing` parameter suppresses the post-play blur.**
 `preview.tsx` blurs whatever element is focused after every play function, so a
 stray focus ring doesn't bleed into an unrelated snapshot; it skips that blur
-only for stories setting `preserveFocusRing: true` (and adds crop padding so a
-preserved ring isn't clipped). It's a parameter, not a tag, because it's a
-behavior flag rather than a selection label. Use it in two cases: a `Focused`
-story deliberately snapshotting a focus state, and any story whose final state
-legitimately keeps focus (e.g. an open combobox) where blurring would be wrong.
+only for stories setting `preserveFocusRing: true`. It's a parameter, not a tag,
+because it's a behavior flag rather than a selection label. Use it in two cases:
+a `Focused` story deliberately snapshotting a focus state, and any story whose
+final state legitimately keeps focus (e.g. an open combobox) where blurring
+would be wrong.
+
+**Crop padding is applied globally, not per story.** A separate `preview.tsx`
+decorator wraps every non-`fullscreen` story in `1rem` of padding. Chromatic
+crops each snapshot to the rendered content, so an outline/selection/focus ring
+(a box-shadow or CSS outline painted outside layout) would clip at the crop edge
+when content sits flush against it — body or `layout: "padded"` padding sits
+outside the crop and can't reach in. Padding the story from the inside gives the
+ring room, and padding _every_ story (snapshotted or not) also keeps the canvas
+from jumping as you browse Storybook. `fullscreen` stories are exempt because
+they're meant to touch the edges. This is independent of both
+`preserveFocusRing` and `disableSnapshot` — you don't opt into it.
+
+**Prefer local images, and wait for image-driven state to settle.** Serve images
+from `public/` via Storybook's `staticDirs` rather than a remote URL. A remote
+image is a network dependency: it makes the snapshot flaky and, if it's slow or
+unreachable in CI, fails the play function before Chromatic captures. (Avatar's
+demo photo is local for this reason; its broken-image fallback cells still hit a
+remote 404, which is the one place to watch for flake.) Chromatic waits for
+images to load before it captures, but it does **not** wait for state your
+component _derives_ from that load — Avatar hides its `<img>` (`display: none`)
+until `onLoad`, and swaps to the initials/icon fallback on error. So a story
+that snapshots a post-load or post-error state must wait for it in the play
+function. `AllFallbacks` does this by waiting for its broken images to reach
+`display: none` before the snapshot:
+
+```typescript
+play: async ({ canvasElement }) => {
+  await waitFor(
+    () => {
+      const imgs = [...canvasElement.querySelectorAll("img")];
+      expect(imgs.length).toBe(2);
+      imgs.forEach((img) =>
+        expect(getComputedStyle(img).display).toBe("none")
+      );
+    },
+    { timeout: 3000 }
+  );
+},
+```
 
 For CI triggers, baselines, TurboSnap, and the full best-practices rationale,
 see [Chromatic Visual Testing](../chromatic-visual-testing.md).
