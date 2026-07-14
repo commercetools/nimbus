@@ -94,12 +94,13 @@ type Story = StoryObj<typeof ComponentName>;
 Stories MUST be exported in this order:
 
 1. **Base/Default** - Simplest usage, first story
-2. **Sizes** - Size variants (if applicable)
-3. **Variants** - Visual variants (if applicable)
-4. **States** - Disabled, Invalid, Required, etc.
-5. **Controlled** - Controlled state example
-6. **Complex** - Advanced scenarios, edge cases
-7. **SmokeTest** - Comprehensive matrix (last story)
+2. **Focused** - Keyboard-focus snapshot (visual components)
+3. **Sizes** - Size variants (if applicable)
+4. **Variants** - Visual variants (if applicable)
+5. **States** - Disabled, Invalid, Required, etc.
+6. **Controlled** - Controlled state example
+7. **Complex** - Advanced scenarios, edge cases
+8. **SmokeTest** - Comprehensive matrix (last story)
 
 ## Create Mode
 
@@ -246,8 +247,22 @@ export const Controlled: Story = {
 
 #### SmokeTest Story (REQUIRED)
 
+The matrix must be **exhaustive over the axes that interact**: iterate all
+`sizes`, `variants`, `colorPalettes`, and selected/unselected for toggles -
+every combination that produces a distinct visual. Content edge cases that
+change layout (long labels, icon + text) go here too.
+
+Do **not** fold in an axis that applies a uniform, axis-independent transform.
+`disabled` is the canonical example: it's a single shared `layerStyle`
+(`opacity: 0.5` + `cursor: not-allowed`) identical across every
+palette/size/variant, so it belongs in a dedicated `Disabled` story (see below),
+not multiplied through the grid. (`:hover` and `:active`/pressed are not
+statically renderable - see the note under "What Gets Captured".)
+
 ```typescript
 export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Demo",
     ["data-testid"]: "test",
@@ -272,6 +287,89 @@ export const SmokeTest: Story = {
   },
 };
 ```
+
+#### Focused Story (visual components)
+
+Captures the keyboard-focus state, which no other story renders:
+
+```typescript
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    preserveFocusRing: true,
+    chromatic: { disableSnapshot: false },
+  },
+  args: {
+    /* minimal render */
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("button")).toHaveFocus();
+  },
+};
+```
+
+### Chromatic Snapshots: What Gets Captured
+
+Snapshots are **opt-in**. `.storybook/preview.tsx` sets
+`chromatic: { disableSnapshot: true }` as the project default, so a story is
+captured by Chromatic only when it explicitly sets `disableSnapshot: false`.
+
+**Capture every visual state of the component.** Chromatic's guidance is to
+cover all states and variations; we do that economically by packing the
+**interacting** prop-driven states into `SmokeTest` (one snapshot, every
+size/variant/palette/selected combination) plus a dedicated story for each state
+the matrix can't or shouldn't contain: `Focused` (focus ring), `Disabled` (the
+uniform opacity layer - see the SmokeTest note), an open tooltip/popover, and
+so on. Cost is controlled by TurboSnap (unchanged snapshots bill at 1/5) and by
+matrix-packing - **not** by omitting visual states.
+
+Leave snapshots **off** only for stories that add no new visual state:
+behavior-only tests (`WithRef`, context/DOM-prop assertions) and showcase
+stories whose appearance is already captured by an on-snapshot — the `SmokeTest`
+matrix, or a dedicated story like `Disabled` for the uniform states the matrix
+omits (often `Base`, `Sizes`, `Variants`, `ColorPalettes`). Those are redundant
+baselines, not missing coverage — but only when the capturing snapshot really
+holds every state the showcase renders (e.g. a `ColorPalettes` story that
+includes a disabled column needs `Disabled` to cover that column). Verify per
+component; don't assume.
+
+**Known gap - hover/pressed.** Neither is captured today, and it's an infra
+limit, not a choice. A play function **cannot** land hover in the snapshot
+browser: `userEvent.hover` yields neither a real CSS `:hover` nor React Aria's
+`data-hovered` (verified via spike), and a synthetic `pointerenter` doesn't set
+it either - so don't try to fake it per-component. Covering hover needs a
+foundation change: `storybook-addon-pseudo-states` to force the state **plus**
+recipe normalization, since our recipes split between Chakra `_hover`
+(→ `:hover, [data-hover]`) and RAC `[data-hovered]` and the addon forces only
+one convention. Pressed needs nothing: no button-family recipe styles `:active`.
+
+**Prefer one matrix over many individual snapshots.** A single `SmokeTest`
+render of the size/variant/palette/state grid is **one** billable snapshot (vs
+one per combination), and a reviewer spots cross-axis regressions in a single
+image since every state sits beside its neighbors. Tradeoff: a diff in any cell
+flags the whole snapshot, and editing the matrix re-snapshots the entire grid
+(Chromatic can't sub-diff within one image). Reserve standalone snapshots for
+states needing distinct setup or isolated review (`Focused`, `DisabledGroup`, an
+open menu), not for states that are straight recipe output.
+
+A tag and a parameter are involved, and they are not the same kind of thing:
+
+- **`vrt`** (tag) is **mostly for filtering/identification**, not for Chromatic.
+  Chromatic captures based on `disableSnapshot` alone and never reads `vrt`; the
+  tag is our own label marking a story as a visual-regression case so it can be
+  spotted and selected by tooling. `disableSnapshot: false` is what actually
+  takes the picture.
+- **`preserveFocusRing`** (parameter) is **functional**: `preview.tsx` blurs the
+  active element after each play function (so a stray focus ring doesn't leak
+  into an unrelated snapshot) and skips the blur only for stories setting
+  `preserveFocusRing: true`. It's a parameter, not a tag, because it's a behavior
+  flag rather than a selection label. Use it on a `Focused` story snapshotting a
+  focus state, or on any story whose final state legitimately keeps focus (e.g.
+  an open combobox) where blurring would be wrong.
+
+See docs/chromatic-visual-testing.md for the full rationale and CI details.
 
 ### Step 3: Portal Content Handling
 
@@ -558,11 +656,27 @@ You MUST validate against these requirements:
 #### Required Stories
 
 - [ ] Base/Default story exists (MUST be first)
+- [ ] Focused story (visual components; `preserveFocusRing: true` param + `vrt` tag)
 - [ ] Sizes story (if component has sizes)
 - [ ] Variants story (if component has variants)
 - [ ] Disabled story (for interactive components)
 - [ ] Controlled story (for stateful components)
 - [ ] SmokeTest story (MUST be last)
+
+#### Chromatic Snapshots
+
+- [ ] `SmokeTest` matrix is **exhaustive** over the interacting axes (every
+      size x variant x palette, plus selected/unselected for toggles) - every
+      distinct combined look appears in the one snapshot
+- [ ] Uniform, axis-independent states are captured in a **dedicated** story,
+      not folded into the matrix (`disabled` = a flat `opacity: 0.5` layer → its
+      own `Disabled`/`DisabledGroup` snapshot, not a grid dimension)
+- [ ] `Focused` story captures the focus ring (`preserveFocusRing: true` + `vrt`)
+- [ ] Visual-state stories opt in via `disableSnapshot: false` + `tags: ["vrt"]`
+- [ ] Only behavior-only stories and stories whose look is already in `SmokeTest`
+      left snapshot-off (project default) - never drop a visual state to save cost
+- [ ] `preserveFocusRing: true` param used on focus-snapshot stories and stories
+      whose final state legitimately keeps focus (not as a tag)
 
 #### Play Functions (CRITICAL)
 

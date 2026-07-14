@@ -39,8 +39,11 @@ const variants: ButtonProps["variant"][] = [
 ];
 
 export const Focused: Story = {
-  tags: ["preserve-focus-ring", "vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
+  tags: ["vrt"],
+  parameters: {
+    preserveFocusRing: true,
+    chromatic: { disableSnapshot: false },
+  },
   args: {
     children: "Button",
   },
@@ -52,8 +55,7 @@ export const Focused: Story = {
 };
 
 export const Base: Story = {
-  tags: ["vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: "Button",
     onPress: fn(),
@@ -131,8 +133,7 @@ export const Disabled: Story = {
 };
 
 export const DisabledAsLink: Story = {
-  tags: ["vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: "Disabled Link Button",
     isDisabled: true,
@@ -161,8 +162,11 @@ export const DisabledAsLink: Story = {
  * to attach a Tooltip explaining *why* the action is unavailable.
  */
 export const DisabledButFocusable: Story = {
-  tags: ["preserve-focus-ring", "vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
+  tags: ["vrt"],
+  parameters: {
+    preserveFocusRing: true,
+    chromatic: { disableSnapshot: false },
+  },
   args: {
     children: "Disabled (focusable)",
     isDisabled: true,
@@ -210,8 +214,7 @@ const submitSpy = fn();
  * focusable and a real `type="submit"` button.
  */
 export const DisabledButFocusableDoesNotSubmit: Story = {
-  tags: ["preserve-focus-ring"],
-  parameters: { chromatic: { disableSnapshot: true } },
+  parameters: { preserveFocusRing: true, chromatic: { disableSnapshot: true } },
   args: {
     children: "Submit",
     type: "submit",
@@ -253,8 +256,11 @@ export const DisabledButFocusableDoesNotSubmit: Story = {
  * assert the keyboard path, mirroring the Tooltip component's own stories.
  */
 export const DisabledWithTooltip: Story = {
-  tags: ["preserve-focus-ring", "vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
+  tags: ["vrt"],
+  parameters: {
+    preserveFocusRing: true,
+    chromatic: { disableSnapshot: false },
+  },
   render: () => (
     <Tooltip.Root delay={0} closeDelay={0}>
       <Button isDisabled allowFocusWhenDisabled data-testid="test">
@@ -330,8 +336,7 @@ export const WithAsChild: Story = {
 };
 
 export const Sizes: Story = {
-  tags: ["vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: "Demo Button",
   },
@@ -347,8 +352,7 @@ export const Sizes: Story = {
 };
 
 export const Variants: Story = {
-  tags: ["vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: "Demo Button",
   },
@@ -367,8 +371,7 @@ export const Variants: Story = {
  * Showcase Possible Color Palettes
  */
 export const ColorPalettes: Story = {
-  tags: ["vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => {
     return (
       <Stack>

@@ -37,6 +37,30 @@ const colorPalettes: ToggleButtonGroupColorPalette[] = [
 ];
 
 /**
+ * Captures the focus ring on a button within the group.
+ */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    preserveFocusRing: true,
+    chromatic: { disableSnapshot: false },
+  },
+  args: {
+    children: defaultChildren,
+    "aria-label": "Focused Test Group",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    const group = canvas.getByRole("radiogroup", {
+      name: /Focused Test Group/i,
+    });
+    const [leftButton] = within(group).getAllByRole("radio");
+    await expect(leftButton).toHaveFocus();
+  },
+};
+
+/**
  * Base story
  *
  * Demonstrates the most basic implementation with interaction tests.
@@ -144,6 +168,8 @@ export const Base: Story = {
  * Tests behavior when the entire group is disabled, with one button visually selected.
  */
 export const DisabledGroup: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     ...Base.args, // Reuse args from Base
     isDisabled: true,
@@ -323,4 +349,33 @@ export const ColorPalettes: Story = {
       ).toBeGreaterThan(0);
     });
   },
+};
+
+/**
+ * Comprehensive visual matrix: every colorPalette x size, each group with
+ * `center` pre-selected so a single snapshot shows selected and unselected
+ * buttons side by side.
+ */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="800">
+      {colorPalettes.map((colorPalette) => (
+        <Stack key={colorPalette} direction="column" gap="400">
+          {sizes.map((size) => (
+            <ToggleButtonGroup.Root
+              key={size}
+              size={size}
+              colorPalette={colorPalette}
+              defaultSelectedKeys={["center"]}
+              aria-label={`${colorPalette} ${size} group`}
+            >
+              {defaultChildren}
+            </ToggleButtonGroup.Root>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  ),
 };

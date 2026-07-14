@@ -66,9 +66,10 @@ const preview: Preview = {
   },
   // Chromatic snapshots at the end of the play function, so a focus-visible ring
   // left on the last-interacted element bleeds into the diff. Blur it unless the
-  // story opts in via the 'preserve-focus-ring' tag (i.e. it is testing focus).
+  // story opts in via the `preserveFocusRing` parameter (i.e. it is testing focus
+  // or its final state legitimately keeps focus).
   async afterEach(context) {
-    if (context.tags?.includes("preserve-focus-ring")) return;
+    if (context.parameters?.preserveFocusRing) return;
     const active = context.canvasElement.ownerDocument.activeElement;
     if (active instanceof HTMLElement) active.blur();
   },
@@ -77,9 +78,7 @@ const preview: Preview = {
     (Story, context) => {
       // Outline doesn't affect layout, so Chromatic's #storybook-root crop clips it;
       // This wrapper adds space inside that boundary where body/padded-layout padding can't reach.
-      const needsSnapshotPadding = context.tags?.includes(
-        "preserve-focus-ring"
-      );
+      const needsSnapshotPadding = context.parameters?.preserveFocusRing;
       return (
         <ThemeDecorator context={context}>
           {needsSnapshotPadding ? (

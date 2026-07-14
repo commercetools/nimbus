@@ -165,6 +165,118 @@ graph TD
     Q3 -->|No| SimpleStories[Simple Component Stories:<br/>Base, Sizes, Variants,<br/>Disabled if applicable,<br/>SmokeTest]
 ```
 
+## Chromatic Visual Regression Snapshots
+
+Stories are also Chromatic's visual-regression test cases, but **not every story
+is snapshotted**. Snapshots are **opt-in**: `.storybook/preview.tsx` sets
+`chromatic: { disableSnapshot: true }` as the project default, so a story is
+captured only when it explicitly turns snapshots back on.
+
+**What gets snapshotted:** the goal is to cover **every** prop-driven visual
+state the component can render. That coverage comes from an exhaustive
+`SmokeTest` matrix over the axes that **interact**
+(`colorPalette × size × variant`, plus selected/unselected for toggles) plus a
+separate snapshotted story for each state the matrix can't show in one static
+render, e.g. `Focused` (focus ring), a disabled-but-focusable state, an open
+tooltip/popover, or a layout the grid doesn't exercise.
+
+**Fold an axis into the matrix only if it interacts** — i.e. its combination
+with the other axes produces a distinct visual. An axis that applies a
+**uniform, axis-independent transform** does not: `disabled`, for example,
+resolves to a single shared `layerStyle` (`opacity: 0.5` +
+`cursor: not-allowed`) that looks the same across every palette/size/variant, so
+multiplying it through the grid just re-renders every cell at half opacity for
+no new coverage. Capture states like that **once, in a dedicated story**
+(`Disabled`, `DisabledGroup`) rather than as a matrix dimension.
+
+The individual per-axis showcase stories (`Base`, `Variants`, `Sizes`,
+`ColorPalettes`) stay as Storybook stories but are left **snapshot-off** — not
+to save cost, but because every state they render is already captured by an
+on-snapshot (the matrix, or a dedicated story like `Disabled` for the uniform
+states the matrix omits). Turning them off drops no coverage those snapshots
+don't already hold — provided the dedicated stories actually cover those uniform
+states, which the per-component audit verifies. (A showcase story usually varies
+one axis with the others at defaults, though some vary two, e.g. a palette ×
+variant grid.) Only the matrix captures the cross-axis cells (e.g.
+`size="2xs" variant="ghost" colorPalette="critical"`), which is exactly where
+recipe regressions hide, so the matrix is the coverage engine, not the
+individual stories. Purely _behavioral_ stories (`WithRef`, context/DOM-prop
+tests) never snapshot. **Cost is controlled by TurboSnap and by packing
+interacting states into one matrix render, never by dropping a visual state.** A
+story opts in with:
+
+```typescript
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  // ...
+};
+```
+
+**The `vrt` tag is mostly for filtering/identification, not for Chromatic.**
+Chromatic decides whether to capture a story from `disableSnapshot` alone; it
+does not read `vrt`. The tag is our own label so a story that participates in
+visual regression can be spotted at a glance and selected by tooling. Keep the
+two together on snapshotted stories, but remember it's `disableSnapshot: false`
+that actually takes the picture.
+
+**Why one matrix instead of many individual snapshots.** Folding the routine
+size/variant/palette/state combinations into a single `SmokeTest` render keeps
+them to **one** billable snapshot instead of one per combination, and lets a
+reviewer catch cross-axis regressions in a single image because every state sits
+next to its neighbors. A `render`-only matrix also has no play interaction to go
+flaky. The tradeoff: a diff in any one cell flags the whole snapshot (no
+per-cell granularity), and any edit to the matrix re-snapshots the entire grid,
+because Chromatic can't sub-diff within a single image. So reserve separate
+snapshots for states that need distinct setup or deserve isolated review
+(`Focused`, `DisabledGroup`, an open menu) rather than states that are straight
+recipe output.
+
+**Known gap — hover and pressed are not yet captured.** Hover is a real visual
+state, but it can't be landed from a play function in the snapshot browser:
+`userEvent.hover` produces neither a real CSS `:hover` nor React Aria's
+`data-hovered` attribute (verified via spike), and a synthetic `pointerenter`
+doesn't set it either. Capturing hover needs foundation work — the
+`storybook-addon-pseudo-states` addon to force the state, plus normalizing the
+recipes so their hover styling responds to whatever the addon forces (some use
+Chakra `_hover` → `:hover, [data-hover]`, others use React Aria's
+`[data-hovered]`). Pressed is a non-issue: no button-family recipe styles
+`:active`/pressed, so there is no visual state to capture. Track hover as a
+cross-cutting foundation task, not per-component work.
+
+**The `Focused` story** captures the keyboard-focus state, which no other story
+renders. It tabs to the component and asserts focus:
+
+```typescript
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    preserveFocusRing: true,
+    chromatic: { disableSnapshot: false },
+  },
+  args: {
+    /* minimal render */
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("button")).toHaveFocus();
+  },
+};
+```
+
+**The `preserveFocusRing` parameter suppresses the post-play blur.**
+`preview.tsx` blurs whatever element is focused after every play function, so a
+stray focus ring doesn't bleed into an unrelated snapshot; it skips that blur
+only for stories setting `preserveFocusRing: true` (and adds crop padding so a
+preserved ring isn't clipped). It's a parameter, not a tag, because it's a
+behavior flag rather than a selection label. Use it in two cases: a `Focused`
+story deliberately snapshotting a focus state, and any story whose final state
+legitimately keeps focus (e.g. an open combobox) where blurring would be wrong.
+
+For CI triggers, baselines, TurboSnap, and the full best-practices rationale,
+see [Chromatic Visual Testing](../chromatic-visual-testing.md).
+
 ## File Structure
 
 ### Basic Story Setup

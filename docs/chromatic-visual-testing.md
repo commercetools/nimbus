@@ -204,3 +204,112 @@ Making Chromatic block merges is **two switches, not one**:
    Chromatic finishes.
 
 Flipping only step 1 does nothing on its own, because the check isn't required.
+
+## Writing stories for Chromatic (best practices from Chromatic's docs)
+
+What Chromatic's docs say, and how it maps to how we author Nimbus stories.
+
+### Directly relevant to our setup
+
+**Snapshot is taken only at the end of the play function.** "Chromatic waits for
+the entire play function to execute and captures a snapshot only at the end."
+Two consequences for us:
+
+- IconButton's `Base`, with its six `step()`s, produces exactly one snapshot -
+  the final resting state (button focused after the space-bar step). That's
+  precisely why the `afterEach` blur (in `preview.tsx`) matters: the end state
+  is what gets captured.
+- If you want a snapshot of an intermediate state, the docs say to break it into
+  multiple stories rather than expect mid-play captures. So splitting `Base`
+  would only be worth it if you wanted to snapshot a state that isn't its final
+  one - which we don't.
+
+**Disabling snapshots is a first-class, recommended mechanism.**
+`chromatic.disableSnapshot` is settable "at story, component, and project
+levels." That's exactly our layering: project default `disableSnapshot: true` in
+`preview.tsx`, overridden to `false` on the VRT stories. The docs explicitly
+call out disabling for interaction-focused / behavior tests to "prevent false
+positives" - which validates leaving `WithRef` (and Button's context /
+DOM-filtering stories) un-snapshotted.
+
+**Cost is controlled by TurboSnap and matrix-packing, not by dropping visual
+states.** TurboSnap bills unchanged snapshots at 1/5 cost, and packing a whole
+`colorPalette × size × variant × state` grid into one `SmokeTest` render keeps
+combinatorial coverage down to a single billable snapshot. Those are the levers.
+The `vrt` selection is therefore not "snapshot fewer states" - every visual
+state must still be covered - it's "don't re-snapshot a state an on-snapshot
+already covers." Turning an individual per-axis story's snapshot off loses no
+coverage _when_ its states are already captured elsewhere - by the matrix, or by
+a dedicated story like `Disabled` for the uniform states the matrix omits; the
+per-component audit is what confirms that. Dropping a state no snapshot covers
+does lose coverage. Never trade a visual state away to save cost.
+
+**One matrix beats many individual snapshots for the routine combinations.**
+Folding the size/variant/palette/state grid into a single `SmokeTest` render
+keeps it to one billable snapshot rather than one per combination, and a
+reviewer catches cross-axis regressions in a single image because every state
+sits next to its neighbors. The tradeoff is granularity: a diff in any one cell
+flags the whole snapshot, and editing the matrix re-snapshots the entire grid
+(Chromatic can't sub-diff within one image). So reserve standalone snapshots for
+states that need distinct setup or deserve isolated review (`Focused`,
+`DisabledGroup`, an open menu), not for states that are straight recipe output.
+
+**Hover and pressed are a known coverage gap.** They are genuine visual states,
+but neither is currently captured, and it's an infra limitation, not a choice:
+
+- **Hover** can't be landed from a play function in the snapshot browser. A
+  spike confirmed `userEvent.hover` produces neither a real CSS `:hover` nor
+  React Aria's `data-hovered`, and a synthetic `pointerenter` doesn't set it
+  either. Capturing it needs the `storybook-addon-pseudo-states` addon to force
+  the state **plus** recipe normalization, because our button-family recipes are
+  split between Chakra `_hover` (compiles to `:hover, [data-hover]`) and React
+  Aria's `[data-hovered]` attribute - an addon forces one convention, so the
+  recipes have to converge on it. Track this as a cross-cutting foundation task,
+  not per-component work.
+- **Pressed** needs nothing: no button-family recipe styles `:active`/pressed,
+  so there is no visual state to capture.
+
+### Broader best practices
+
+- **Cover every visual state/variation** - "the more things we have in
+  Storybook, the more coverage we get." This is the governing rule: the
+  `SmokeTest` matrix must be **exhaustive** over the axes that _interact_
+  (`colorPalette × size × variant`, plus selected/unselected for toggles), and
+  any state the matrix can't render in one static image (focus ring,
+  disabled-but-focusable, open tooltip/popover, special layouts) gets its own
+  snapshotted story. Coverage is the target; the matrix is just the most
+  efficient container for the interacting axes.
+- **Fold an axis into the matrix only if it interacts.** An axis whose
+  combination with the others yields a distinct visual belongs in the grid; one
+  that applies a **uniform, axis-independent transform** does not. `disabled` is
+  the canonical example: it resolves to a single shared `layerStyle`
+  (`opacity: 0.5` + `cursor: not-allowed`) identical across every
+  palette/size/variant, so a `Disabled`/`DisabledGroup` story captures it once
+  instead of the matrix re-rendering every cell at half opacity for no new
+  coverage.
+- **Use `play` for functional testing alongside visual** - the two aren't in
+  tension; a story can both assert behavior and be snapshotted.
+- **Pause JS-driven animations manually** - Chromatic auto-pauses CSS
+  animations/transitions, videos, GIFs, but not JS animations. Worth remembering
+  if any button state animates via JS.
+- **Fonts/async loading can shift tooltips/menus** - relevant to IconButton's
+  `ColorPalettes` story (it wraps each button in a `Tooltip`). Preload fonts or
+  add a delay if those snapshots turn out flaky.
+- **`preview.js` barrel imports trigger full rebuilds under TurboSnap** - not
+  our concern in the stories, but a caution for the shared `preview.tsx`.
+
+### Net for the `Base` question
+
+Our instinct is aligned with the docs: keep `Base` as one multi-step play
+function (one end-state snapshot), don't split it just for VRT, and rely on
+`disableSnapshot` + the `afterEach` blur to control what the single snapshot
+captures. Splitting would only make sense to capture a different intermediate
+state as its own baseline.
+
+### Sources
+
+- [Visual tests](https://www.chromatic.com/docs/visual/)
+- [Snapshots](https://www.chromatic.com/docs/snapshots/)
+- [Interaction tests](https://www.chromatic.com/docs/interactions/)
+- [Disable snapshots](https://www.chromatic.com/docs/disable-snapshots/)
+- [TurboSnap](https://www.chromatic.com/docs/turbosnap/)

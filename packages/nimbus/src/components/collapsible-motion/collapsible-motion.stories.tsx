@@ -359,7 +359,7 @@ export const NonButtonTrigger: Story = {
  * Accessibility test - demonstrates proper ARIA attributes and focus management
  */
 export const AccessibilityTest: Story = {
-  tags: ["preserve-focus-ring"],
+  parameters: { preserveFocusRing: true },
   render: () => (
     <div>
       <CollapsibleMotion.Root defaultExpanded={false}>
