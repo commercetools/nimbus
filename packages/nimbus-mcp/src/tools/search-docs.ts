@@ -17,6 +17,7 @@ import {
   scorePreLowered,
 } from "../utils/relevance.js";
 import { stripMarkdown } from "../utils/markdown.js";
+import { routePathToSlug as routeToSlug } from "../utils/route.js";
 
 const MAX_RESULTS = 10;
 
@@ -115,11 +116,6 @@ function extractSnippet(content: string, tokens: string[]): string {
   if (end < content.length) snippet = snippet + "…";
 
   return snippet;
-}
-
-/** Convert a route slug to the file name format (route slashes → dashes). */
-function routeToSlug(route: string): string {
-  return route.replace(/\//g, "-");
 }
 
 const viewContentCache = new WeakMap<object, CachedViewContent>();
@@ -351,7 +347,7 @@ export function registerSearchDocs(server: McpServer): void {
       description:
         "Search all Nimbus docs (components, patterns, hooks, icons, tokens) including guidelines and accessibility views. " +
         "Returns matching pages with content snippets. Props are not searchable here — use get_component with section='props' for prop details. " +
-        "Results include a toolHint field indicating which tool to call for deeper info (e.g. get_component, get_tokens, search_icons).",
+        "Results include a toolHint field indicating which tool to call for deeper info (e.g. get_component, get_tokens, search_icons, get_docs_page).",
       inputSchema: {
         query: z
           .string()

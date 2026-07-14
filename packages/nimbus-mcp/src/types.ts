@@ -45,7 +45,7 @@ export interface DocSearchResult {
   /** Content snippet highlighting the match. */
   snippet: string;
   /** Suggested tool to call for deeper info on this result. */
-  toolHint?: string;
+  toolHint: string;
 }
 
 /** Result returned by MCP tool handlers. */

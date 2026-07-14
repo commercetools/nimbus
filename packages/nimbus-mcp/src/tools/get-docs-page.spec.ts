@@ -91,6 +91,35 @@ describe("get_docs_page — tabbed page", () => {
   });
 });
 
+describe("get_docs_page — path normalization", () => {
+  it("handles leading slash in path", async () => {
+    const { result } = await callGetDocsPage({
+      path: "/home/getting-started/installation",
+    });
+    expect(result).toBeDefined();
+    expect(result!.title).toBe("Installation");
+  });
+
+  it("handles trailing slash in path", async () => {
+    const { result } = await callGetDocsPage({
+      path: "home/getting-started/installation/",
+    });
+    expect(result).toBeDefined();
+    expect(result!.title).toBe("Installation");
+  });
+});
+
+describe("get_docs_page — case-insensitive sections", () => {
+  it("matches section regardless of case", async () => {
+    const { result } = await callGetDocsPage({
+      path: "components/buttons/button",
+      section: "Overview",
+    });
+    expect(result).toBeDefined();
+    expect(result!.content.length).toBeGreaterThan(0);
+  });
+});
+
 describe("get_docs_page — error handling", () => {
   it("returns helpful error for unknown route", async () => {
     const { error, isError } = await callGetDocsPage({

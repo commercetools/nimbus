@@ -3,6 +3,18 @@ import { z } from "zod";
 import { getRouteData } from "../data-loader.js";
 import type { DocsPageResult } from "../types.js";
 import { stripMarkdown } from "../utils/markdown.js";
+import { routePathToSlug } from "../utils/route.js";
+
+const viewContentCache = new WeakMap<object, string>();
+
+function getCachedStripped(viewObj: { mdx: string }): string {
+  let cached = viewContentCache.get(viewObj);
+  if (!cached) {
+    cached = stripMarkdown(viewObj.mdx);
+    viewContentCache.set(viewObj, cached);
+  }
+  return cached;
+}
 
 export function registerGetDocsPage(server: McpServer): void {
   server.registerTool(
@@ -28,40 +40,63 @@ export function registerGetDocsPage(server: McpServer): void {
       },
     },
     async ({ path, section }) => {
-      const slug = path.replace(/\//g, "-");
-
-      let routeData;
       try {
-        routeData = await getRouteData(slug);
-      } catch {
-        return {
-          content: [
-            {
-              type: "text" as const,
-              text: `Page not found for path "${path}". Use search_docs to find valid page paths.`,
-            },
-          ],
-          isError: true,
-        };
-      }
+        const slug = routePathToSlug(path);
 
-      const { meta } = routeData;
-      const availableSections = routeData.views
-        ? Object.keys(routeData.views)
-        : [];
-
-      if (section) {
-        const view = routeData.views?.[section];
-        if (!view) {
+        let routeData;
+        try {
+          routeData = await getRouteData(slug);
+        } catch {
           return {
             content: [
               {
                 type: "text" as const,
-                text: `Section "${section}" not found for "${meta.title}". Available sections: ${availableSections.join(", ") || "none (single-page content)"}`,
+                text: `Page not found for path "${path}". Use search_docs to find valid page paths.`,
               },
             ],
             isError: true,
           };
+        }
+
+        const { meta } = routeData;
+        const availableSections = Object.keys(routeData.views ?? {});
+
+        const normalizedSection = section?.toLowerCase();
+        if (normalizedSection) {
+          const view = routeData.views?.[normalizedSection];
+          if (!view) {
+            return {
+              content: [
+                {
+                  type: "text" as const,
+                  text: `Section "${section}" not found for "${meta.title}". Available sections: ${availableSections.join(", ") || "none (single-page content)"}`,
+                },
+              ],
+              isError: true,
+            };
+          }
+
+          const result: DocsPageResult = {
+            title: meta.title,
+            description: meta.description,
+            path: meta.route,
+            sections: availableSections,
+            content: getCachedStripped(view),
+          };
+          return {
+            content: [{ type: "text" as const, text: JSON.stringify(result) }],
+          };
+        }
+
+        let content: string;
+        if (availableSections.length > 0 && routeData.views) {
+          content = Object.entries(routeData.views)
+            .map(([key, view]) => `--- ${key} ---\n${getCachedStripped(view)}`)
+            .join("\n\n");
+        } else if (routeData.mdx) {
+          content = stripMarkdown(routeData.mdx);
+        } else {
+          content = meta.description;
         }
 
         const result: DocsPageResult = {
@@ -69,34 +104,22 @@ export function registerGetDocsPage(server: McpServer): void {
           description: meta.description,
           path: meta.route,
           sections: availableSections,
-          content: stripMarkdown(view.mdx),
+          content,
         };
         return {
           content: [{ type: "text" as const, text: JSON.stringify(result) }],
         };
+      } catch {
+        return {
+          content: [
+            {
+              type: "text" as const,
+              text: "Docs data is not available in this environment.",
+            },
+          ],
+          isError: true,
+        };
       }
-
-      let content: string;
-      if (routeData.views) {
-        content = Object.entries(routeData.views)
-          .map(([key, view]) => `--- ${key} ---\n${stripMarkdown(view.mdx)}`)
-          .join("\n\n");
-      } else if (routeData.mdx) {
-        content = stripMarkdown(routeData.mdx);
-      } else {
-        content = meta.description;
-      }
-
-      const result: DocsPageResult = {
-        title: meta.title,
-        description: meta.description,
-        path: meta.route,
-        sections: availableSections,
-        content,
-      };
-      return {
-        content: [{ type: "text" as const, text: JSON.stringify(result) }],
-      };
     }
   );
 }
