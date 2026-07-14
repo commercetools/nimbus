@@ -173,13 +173,22 @@ export const SliderBase = (props: SliderBaseProps) => {
   const groupAriaLabelledBy = props["aria-labelledby"];
 
   const resolvedTickStep = tickStep ?? step ?? 1;
-  const ticks =
+  const baseTicks =
     showTicks && resolvedTickStep > 0
       ? Array.from(
           { length: Math.floor((maxValue - minValue) / resolvedTickStep) + 1 },
           (_, i) => minValue + i * resolvedTickStep
         )
       : [];
+  // The thumb can always travel to maxValue, so it carries a tick even when the
+  // range isn't an exact multiple of tickStep — the final interval before
+  // maxValue is then shorter than tickStep. Skip when maxValue already lands on
+  // the last multiple (epsilon absorbs float drift, e.g. 0.1 steps).
+  const ticks =
+    baseTicks.length > 0 &&
+    maxValue - baseTicks[baseTicks.length - 1] > resolvedTickStep * 1e-9
+      ? [...baseTicks, maxValue]
+      : baseTicks;
 
   const stateProps = {
     "data-disabled": isDisabled || undefined,
