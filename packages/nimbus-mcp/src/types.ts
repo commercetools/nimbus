@@ -475,3 +475,16 @@ export interface MigrateCompoundResult {
   note: string;
   mappings: MigrateComponentResult[];
 }
+
+// ---------------------------------------------------------------------------
+// Docs page tool types (used by tools/get-docs-page)
+// ---------------------------------------------------------------------------
+
+/** Response from the get_docs_page tool. */
+export interface DocsPageResult {
+  title: string;
+  description: string;
+  path: string;
+  sections: string[];
+  content: string;
+}

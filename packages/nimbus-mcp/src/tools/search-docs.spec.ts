@@ -102,6 +102,26 @@ describe("search_docs — relevance ordering", () => {
   });
 });
 
+describe("search_docs — toolHint coverage", () => {
+  it("every result includes a toolHint", async () => {
+    const results = await callSearchDocs({ query: "installation" });
+    expect(results.length).toBeGreaterThan(0);
+    for (const r of results) {
+      expect(r.toolHint).toBeDefined();
+      expect(typeof r.toolHint).toBe("string");
+    }
+  });
+
+  it("returns get_docs_page hint for non-component/token/icon pages", async () => {
+    const results = await callSearchDocs({ query: "installation" });
+    const installPage = results.find((r) =>
+      r.path.includes("getting-started/installation")
+    );
+    expect(installPage).toBeDefined();
+    expect(installPage!.toolHint).toBe("get_docs_page");
+  });
+});
+
 describe("search_docs — deep content search (phase 2)", () => {
   it("finds content from dev views (import paths, props)", async () => {
     const results = await callSearchDocs({ query: "ButtonProps" });

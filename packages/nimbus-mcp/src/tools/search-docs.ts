@@ -20,13 +20,13 @@ import { stripMarkdown } from "../utils/markdown.js";
 
 const MAX_RESULTS = 10;
 
-/** Maps a route to the most useful follow-up tool, if any. */
-function deriveToolHint(route: string): string | undefined {
+/** Maps a route to the most useful follow-up tool. */
+function deriveToolHint(route: string): string {
   if (route.includes("design-tokens")) return "get_tokens";
   if (route.startsWith("components/") || route.startsWith("patterns/"))
     return "get_component";
   if (route.startsWith("icons")) return "search_icons";
-  return undefined;
+  return "get_docs_page";
 }
 const SNIPPET_LENGTH = 200;
 /** Characters of context shown before the matched token in a snippet. */
@@ -437,7 +437,7 @@ export function registerSearchDocs(server: McpServer): void {
               snippet: viewMatch
                 ? extractSnippet(viewMatch.content, tokens)
                 : extractSnippet(stripMarkdown(entry.content), tokens),
-              ...(toolHint ? { toolHint } : {}),
+              toolHint,
             };
           });
 
