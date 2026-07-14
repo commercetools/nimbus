@@ -48,6 +48,7 @@ allowBuilds:
   style-dictionary: true
   "@fission-ai/openspec": false
   "@modelcontextprotocol/ext-apps": false
+  core-js-pure: true
 
 overrides:
   rollup: "catalog:tooling"
@@ -101,6 +102,7 @@ catalogs:
     tsx: ^4.22.4
     "@arethetypeswrong/cli": ^0.18.4
     publint: ^0.3.21
+    "@commercetools-frontend/ui-kit": ^20.6.4
     "@modelcontextprotocol/inspector": ^0.21.2
     "@babel/core": ^7.29.6
     "@babel/runtime": ^7.29.7

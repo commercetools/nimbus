@@ -2,12 +2,14 @@ import { copyDocsData } from "./copy-docs-data.js";
 import { buildTokenData } from "./build-token-data.js";
 import { buildIconCatalog } from "./build-icon-catalog.js";
 import { buildSearchIndex } from "./build-search-index.js";
+import { validateMigrationData } from "./validate-migration-data.js";
 
 const steps = [
   { name: "Copy docs data", fn: copyDocsData },
   { name: "Build token data", fn: buildTokenData },
   { name: "Build icon catalog", fn: buildIconCatalog },
   { name: "Build search index", fn: buildSearchIndex },
+  { name: "Validate migration data", fn: validateMigrationData },
 ];
 
 for (const step of steps) {

@@ -403,3 +403,41 @@ describe("migrate_from_uikit — validation", () => {
     expect(result.isError).toBe(true);
   });
 });
+
+describe("migrate_from_uikit — propMappings", () => {
+  it("includes propMappings in the result for entries that have them", async () => {
+    const result = await callMigrate({ componentName: "PrimaryButton" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.propMappings).toBeInstanceOf(Array);
+    expect(data.propMappings.length).toBeGreaterThan(0);
+
+    const labelMapping = data.propMappings.find(
+      (m: { uiKitProp: string }) => m.uiKitProp === "label"
+    );
+    expect(labelMapping).toBeDefined();
+    expect(labelMapping.nimbusProp).toBeNull();
+    expect(labelMapping.changeType).toBe("structural");
+  });
+
+  it("omits propMappings for entries without them", async () => {
+    const result = await callMigrate({ componentName: "Avatar" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.propMappings).toBeUndefined();
+  });
+
+  it("includes propMappings with value mappings for Stamp → Badge", async () => {
+    const result = await callMigrate({ componentName: "Stamp" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.propMappings).toBeInstanceOf(Array);
+    const toneMapping = data.propMappings.find(
+      (m: { uiKitProp: string }) => m.uiKitProp === "tone"
+    );
+    expect(toneMapping.nimbusProp).toBe("colorPalette");
+    expect(toneMapping.changeType).toBe("value-mapping");
+    expect(toneMapping.valueMapping).toBeInstanceOf(Array);
+    expect(toneMapping.valueMapping.length).toBeGreaterThan(0);
+  });
+});

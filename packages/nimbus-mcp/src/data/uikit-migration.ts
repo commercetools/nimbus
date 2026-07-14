@@ -29,6 +29,14 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Remove AccessibleButton wrapper, use <Button> directly",
       "label prop replaced by children",
     ],
+    propMappings: [
+      {
+        uiKitProp: "label",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Use children instead.",
+      },
+    ],
   },
   {
     uiKitName: "FlatButton",
@@ -43,6 +51,37 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "label prop replaced by children",
       "tone prop replaced by variant/colorPalette",
       "iconPosition prop removed; pass icon as a child of <Button>",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: "variant",
+        changeType: "value-mapping",
+        fixedValue: "ghost",
+      },
+      {
+        uiKitProp: "label",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Use children instead.",
+      },
+      {
+        uiKitProp: "tone",
+        nimbusProp: "colorPalette",
+        changeType: "value-mapping",
+        valueMapping: [
+          { from: "primary", to: "primary" },
+          { from: "secondary", to: "neutral" },
+          { from: "critical", to: "critical" },
+        ],
+        notes: "'inverted' has no direct equivalent; use variant/colorPalette.",
+      },
+      {
+        uiKitProp: "iconPosition",
+        nimbusProp: null,
+        changeType: "removed",
+        notes: "Pass icon as a child.",
+      },
     ],
   },
   {
@@ -60,6 +99,33 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "isExternal prop replaced by target='_blank' rel='noopener noreferrer'",
       "iconLeft prop removed; pass icon as a child of <Button>",
     ],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: "variant",
+        changeType: "value-mapping",
+        fixedValue: "link",
+      },
+      {
+        uiKitProp: "label",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Use children instead.",
+      },
+      { uiKitProp: "to", nimbusProp: "href", changeType: "rename" },
+      {
+        uiKitProp: "isExternal",
+        nimbusProp: null,
+        changeType: "removed",
+        notes: "Use target='_blank' rel='noopener noreferrer' instead.",
+      },
+      {
+        uiKitProp: "iconLeft",
+        nimbusProp: null,
+        changeType: "removed",
+        notes: "Pass icon as a child.",
+      },
+    ],
   },
   {
     uiKitName: "PrimaryButton",
@@ -74,6 +140,42 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "label prop replaced by children",
       "iconLeft/iconRight props removed; pass icon as a child of <Button>",
       "tone prop ('urgent'|'primary'|'critical') replaced by colorPalette",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: "variant",
+        changeType: "value-mapping",
+        fixedValue: "solid",
+      },
+      {
+        uiKitProp: "label",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Use children instead.",
+      },
+      {
+        uiKitProp: "tone",
+        nimbusProp: "colorPalette",
+        changeType: "value-mapping",
+        valueMapping: [
+          { from: "primary", to: "primary" },
+          { from: "urgent", to: "critical" },
+          { from: "critical", to: "critical" },
+        ],
+      },
+      {
+        uiKitProp: "iconLeft",
+        nimbusProp: null,
+        changeType: "removed",
+        notes: "Pass icon as a child.",
+      },
+      {
+        uiKitProp: "iconRight",
+        nimbusProp: null,
+        changeType: "removed",
+        notes: "Pass icon as a child.",
+      },
     ],
   },
   {
@@ -90,6 +192,41 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "iconLeft/iconRight props removed; pass icon as a child of <Button>",
       "theme prop ('default'|'info') replaced by colorPalette",
     ],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: "variant",
+        changeType: "value-mapping",
+        fixedValue: "outline",
+      },
+      {
+        uiKitProp: "label",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Use children instead.",
+      },
+      {
+        uiKitProp: "theme",
+        nimbusProp: "colorPalette",
+        changeType: "value-mapping",
+        valueMapping: [
+          { from: "default", to: "primary" },
+          { from: "info", to: "info" },
+        ],
+      },
+      {
+        uiKitProp: "iconLeft",
+        nimbusProp: null,
+        changeType: "removed",
+        notes: "Pass icon as a child.",
+      },
+      {
+        uiKitProp: "iconRight",
+        nimbusProp: null,
+        changeType: "removed",
+        notes: "Pass icon as a child.",
+      },
+    ],
   },
   {
     uiKitName: "IconButton",
@@ -103,6 +240,21 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "label prop replaced by aria-label",
       "icon prop replaced by icon as children",
       "theme prop replaced by variant/colorPalette",
+    ],
+    propMappings: [
+      { uiKitProp: "label", nimbusProp: "aria-label", changeType: "rename" },
+      {
+        uiKitProp: "icon",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Pass icon as children.",
+      },
+      {
+        uiKitProp: "theme",
+        nimbusProp: "variant",
+        changeType: "structural",
+        notes: "UIKit theme maps to both variant and colorPalette in Nimbus.",
+      },
     ],
   },
   {
@@ -118,6 +270,28 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "color prop ('solid'|'primary'|'info') replaced by variant/colorPalette",
       "icon prop replaced by icon as children",
       "label prop replaced by aria-label",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "color",
+        nimbusProp: "variant",
+        changeType: "value-mapping",
+        valueMapping: [
+          { from: "solid", to: "solid" },
+          { from: "primary", to: "outline" },
+          { from: "info", to: "outline" },
+        ],
+        notes:
+          "Defaults to variant='outline' when no color prop is specified. " +
+          "'primary'/'info' also imply a colorPalette; set colorPalette separately.",
+      },
+      {
+        uiKitProp: "icon",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Pass icon as children.",
+      },
+      { uiKitProp: "label", nimbusProp: "aria-label", changeType: "rename" },
     ],
   },
   {
@@ -152,6 +326,27 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "isAutofocussed replaced by autoFocus",
       "isCondensed prop replaced by size='sm'",
     ],
+    propMappings: [
+      { uiKitProp: "hasError", nimbusProp: "isInvalid", changeType: "rename" },
+      { uiKitProp: "hasWarning", nimbusProp: null, changeType: "removed" },
+      {
+        uiKitProp: "isAutofocussed",
+        nimbusProp: "autoFocus",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "isCondensed",
+        nimbusProp: "size",
+        changeType: "value-mapping",
+        valueMapping: [{ from: "true", to: "sm" }],
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives string value instead of ChangeEvent.",
+      },
+    ],
   },
   {
     uiKitName: "TextField",
@@ -170,6 +365,29 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "touched prop removed",
       "onChange now receives a string value instead of ChangeEvent<HTMLInputElement>",
     ],
+    propMappings: [
+      { uiKitProp: "title", nimbusProp: "label", changeType: "rename" },
+      {
+        uiKitProp: "hint",
+        nimbusProp: "description",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "errors",
+        nimbusProp: "errors",
+        changeType: "structural",
+        notes:
+          "Now expects FieldErrorsData (from FieldErrors) instead of a Record<string, boolean>.",
+      },
+      { uiKitProp: "warnings", nimbusProp: null, changeType: "removed" },
+      { uiKitProp: "touched", nimbusProp: null, changeType: "removed" },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives string value instead of ChangeEvent.",
+      },
+    ],
   },
   {
     uiKitName: "MultilineTextInput",
@@ -184,6 +402,21 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "hasError prop replaced by isInvalid",
       "hasWarning prop removed",
       "isAutofocussed replaced by autoFocus",
+    ],
+    propMappings: [
+      { uiKitProp: "hasError", nimbusProp: "isInvalid", changeType: "rename" },
+      { uiKitProp: "hasWarning", nimbusProp: null, changeType: "removed" },
+      {
+        uiKitProp: "isAutofocussed",
+        nimbusProp: "autoFocus",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives string value instead of ChangeEvent.",
+      },
     ],
   },
   {
@@ -202,6 +435,28 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "warnings prop removed",
       "onChange now receives a string value instead of ChangeEvent<HTMLTextAreaElement>",
     ],
+    propMappings: [
+      { uiKitProp: "title", nimbusProp: "label", changeType: "rename" },
+      {
+        uiKitProp: "hint",
+        nimbusProp: "description",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "errors",
+        nimbusProp: "errors",
+        changeType: "structural",
+        notes:
+          "Now expects FieldErrorsData (from FieldErrors) instead of a Record<string, boolean>.",
+      },
+      { uiKitProp: "warnings", nimbusProp: null, changeType: "removed" },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives string value instead of ChangeEvent.",
+      },
+    ],
   },
   {
     uiKitName: "PasswordInput",
@@ -216,6 +471,20 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "hasError prop replaced by isInvalid",
       "isAutofocussed replaced by autoFocus",
     ],
+    propMappings: [
+      { uiKitProp: "hasError", nimbusProp: "isInvalid", changeType: "rename" },
+      {
+        uiKitProp: "isAutofocussed",
+        nimbusProp: "autoFocus",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives string value instead of ChangeEvent.",
+      },
+    ],
   },
   {
     uiKitName: "PasswordField",
@@ -228,6 +497,21 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "title prop renamed to label",
       "hint prop renamed to description",
       "errors (Record) replaced by passing <FieldErrors> to the errorMessage prop",
+    ],
+    propMappings: [
+      { uiKitProp: "title", nimbusProp: "label", changeType: "rename" },
+      {
+        uiKitProp: "hint",
+        nimbusProp: "description",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "errors",
+        nimbusProp: "errors",
+        changeType: "structural",
+        notes:
+          "Now expects FieldErrorsData (from FieldErrors) instead of a Record<string, boolean>.",
+      },
     ],
   },
   {
@@ -242,6 +526,21 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Rename to ComboBox",
       "options array replaced by items prop with ComboBox.Item render function",
       "onChange received TCustomEvent; now receives selected key directly",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "loadOptions",
+        nimbusProp: null,
+        changeType: "structural",
+        notes:
+          "Replace loadOptions callback with items prop + ComboBox.Item render function.",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onSelectionChange",
+        changeType: "structural",
+        notes: "Receives the selected key directly instead of a TCustomEvent.",
+      },
     ],
   },
   {
@@ -258,6 +557,26 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "hint prop replaced by FormField description",
       "errors (Record) replaced by passing <FieldErrors> as a child of FormField.Error",
     ],
+    propMappings: [
+      {
+        uiKitProp: "title",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Use the FormField label prop instead.",
+      },
+      {
+        uiKitProp: "hint",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Use the FormField description prop instead.",
+      },
+      {
+        uiKitProp: "errors",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Pass <FieldErrors> as a child of FormField.Error.",
+      },
+    ],
   },
   {
     uiKitName: "SelectableSearchInput",
@@ -269,6 +588,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     breakingChanges: [
       "Rename to ScopedSearchInput",
       "scope options now use items prop with ScopedSearchInput.Item children",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "options",
+        nimbusProp: "options",
+        changeType: "structural",
+        notes:
+          "Shape changed to ScopedSearchInputOption[] | ScopedSearchInputOptionGroup[].",
+      },
     ],
   },
 
@@ -291,6 +619,30 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "isMulti support changed; check Nimbus Select API for multi-select",
       "appearance prop ('default'|'quiet'|'filter') replaced by variant",
     ],
+    propMappings: [
+      {
+        uiKitProp: "appearance",
+        nimbusProp: "variant",
+        changeType: "value-mapping",
+        valueMapping: [
+          { from: "default", to: "outline" },
+          { from: "quiet", to: "ghost" },
+        ],
+        notes: "appearance='filter' has no direct equivalent.",
+      },
+      {
+        uiKitProp: "options",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Replace with Select.Option children inside Select.Options.",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives selected key instead of TCustomEvent.",
+      },
+    ],
   },
   {
     uiKitName: "CreatableSelectInput",
@@ -305,6 +657,28 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "options array replaced by items prop with ComboBox.Item render function",
       "onCreateOption replaced by allowsCustomOptions + custom onInputChange logic",
       "onChange received TCustomEvent; now receives selected key directly",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "options",
+        nimbusProp: "items",
+        changeType: "structural",
+        notes:
+          "Options array replaced by items collection with a ComboBox.Item render function.",
+      },
+      {
+        uiKitProp: "onCreateOption",
+        nimbusProp: null,
+        changeType: "removed",
+        notes:
+          "Use allowsCustomOptions plus custom onInputChange logic instead.",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onSelectionChange",
+        changeType: "structural",
+        notes: "Receives the selected key directly instead of a TCustomEvent.",
+      },
     ],
   },
   {
@@ -321,6 +695,28 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "onCreateOption replaced by allowsCustomOptions + custom logic",
       "onChange received TCustomEvent; now receives selected key directly",
     ],
+    propMappings: [
+      {
+        uiKitProp: "loadOptions",
+        nimbusProp: null,
+        changeType: "removed",
+        notes:
+          "Use onInputChange plus an external async fetch that updates the items state.",
+      },
+      {
+        uiKitProp: "onCreateOption",
+        nimbusProp: null,
+        changeType: "removed",
+        notes:
+          "Use allowsCustomOptions plus custom onInputChange logic instead.",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onSelectionChange",
+        changeType: "structural",
+        notes: "Receives the selected key directly instead of a TCustomEvent.",
+      },
+    ],
   },
   {
     uiKitName: "AsyncSelectInput",
@@ -334,6 +730,21 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Rename to ComboBox",
       "loadOptions callback replaced by onInputChange + external async fetch + items state",
       "onChange received TCustomEvent; now receives selected key directly",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "loadOptions",
+        nimbusProp: null,
+        changeType: "removed",
+        notes:
+          "Use onInputChange plus an external async fetch that updates the items state.",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onSelectionChange",
+        changeType: "structural",
+        notes: "Receives the selected key directly instead of a TCustomEvent.",
+      },
     ],
   },
 
@@ -354,6 +765,26 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "hasError prop replaced by isInvalid",
       "isAutofocussed replaced by autoFocus",
     ],
+    propMappings: [
+      { uiKitProp: "hasError", nimbusProp: "isInvalid", changeType: "rename" },
+      {
+        uiKitProp: "isAutofocussed",
+        nimbusProp: "autoFocus",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives a number instead of ChangeEvent.",
+      },
+      {
+        uiKitProp: "value",
+        nimbusProp: "value",
+        changeType: "structural",
+        notes: "Was string|number; now must be a number.",
+      },
+    ],
   },
   {
     uiKitName: "NumberField",
@@ -367,7 +798,22 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Rename to NumberInputField",
       "title prop renamed to label",
       "hint prop renamed to description",
-      "errors (Record) replaced by passing <FieldErrors> to the errorMessage prop",
+      "errors prop accepts FieldErrorsData; convert UIKit Record<string, boolean> via <FieldErrors>",
+    ],
+    propMappings: [
+      { uiKitProp: "title", nimbusProp: "label", changeType: "rename" },
+      {
+        uiKitProp: "hint",
+        nimbusProp: "description",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "errors",
+        nimbusProp: "errors",
+        changeType: "structural",
+        notes:
+          "Convert UIKit Record<string, boolean> to FieldErrorsData and pass to the errors prop.",
+      },
     ],
   },
   {
@@ -384,6 +830,16 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "currencies prop for available currency options unchanged",
       "hasError prop replaced by isInvalid",
     ],
+    propMappings: [
+      { uiKitProp: "hasError", nimbusProp: "isInvalid", changeType: "rename" },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes:
+          "Receives { amount, currencyCode } directly instead of a TCustomEvent.",
+      },
+    ],
   },
   {
     uiKitName: "MoneyField",
@@ -398,6 +854,21 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "title prop renamed to label",
       "hint prop renamed to description",
       "errors (Record) replaced by passing <FieldErrors> to the errorMessage prop",
+    ],
+    propMappings: [
+      { uiKitProp: "title", nimbusProp: "label", changeType: "rename" },
+      {
+        uiKitProp: "hint",
+        nimbusProp: "description",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "errors",
+        nimbusProp: "errors",
+        changeType: "structural",
+        notes:
+          "Now expects FieldErrorsData (from FieldErrors) instead of a Record<string, boolean>.",
+      },
     ],
   },
 
@@ -419,6 +890,22 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "onChange received TCustomEvent with string; now receives CalendarDate directly",
       "minValue/maxValue changed from strings to CalendarDate objects",
     ],
+    propMappings: [
+      {
+        uiKitProp: "value",
+        nimbusProp: "value",
+        changeType: "structural",
+        notes:
+          "Changed from a 'YYYY-MM-DD' string to a CalendarDate from @internationalized/date.",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes:
+          "Receives a CalendarDate directly instead of a TCustomEvent with a string.",
+      },
+    ],
   },
   {
     uiKitName: "DateTimeInput",
@@ -432,6 +919,22 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "value must be a ZonedDateTime or CalendarDateTime",
       "Use granularity prop to enable time fields",
     ],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: "granularity",
+        changeType: "value-mapping",
+        fixedValue: "minute",
+        notes: "Use 'second' instead if second-level precision is required.",
+      },
+      {
+        uiKitProp: "value",
+        nimbusProp: "value",
+        changeType: "structural",
+        notes:
+          "Must be a ZonedDateTime or CalendarDateTime from @internationalized/date.",
+      },
+    ],
   },
   {
     uiKitName: "DateRangeInput",
@@ -443,6 +946,20 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     breakingChanges: [
       "Rename to DateRangePicker",
       "value shape changed to { start, end } using CalendarDate",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "value",
+        nimbusProp: "value",
+        changeType: "structural",
+        notes: "Shape changed to { start, end } using CalendarDate.",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives the { start, end } CalendarDate range directly.",
+      },
     ],
   },
   {
@@ -461,6 +978,14 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     notes:
       "Direct replacement. value must be a Time object from @internationalized/date.",
     breakingChanges: ["value must be a Time from @internationalized/date"],
+    propMappings: [
+      {
+        uiKitProp: "value",
+        nimbusProp: "value",
+        changeType: "structural",
+        notes: "Must be a Time object from @internationalized/date.",
+      },
+    ],
   },
 
   // -------------------------------------------------------------------------
@@ -478,6 +1003,19 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Rename to Checkbox",
       "isChecked prop renamed to isSelected",
       "onChange received ChangeEvent<HTMLInputElement>; now receives boolean isSelected directly",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "isChecked",
+        nimbusProp: "isSelected",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives boolean isSelected instead of ChangeEvent.",
+      },
     ],
   },
   {
@@ -503,6 +1041,28 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "onChange received ChangeEvent (target.checked); now receives boolean isSelected directly",
       "size prop ('small'|'big') replaced by Nimbus size tokens",
     ],
+    propMappings: [
+      {
+        uiKitProp: "isChecked",
+        nimbusProp: "isSelected",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives boolean isSelected instead of ChangeEvent.",
+      },
+      {
+        uiKitProp: "size",
+        nimbusProp: "size",
+        changeType: "value-mapping",
+        valueMapping: [
+          { from: "small", to: "sm" },
+          { from: "big", to: "md" },
+        ],
+      },
+    ],
   },
 
   // -------------------------------------------------------------------------
@@ -522,6 +1082,32 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "value per locale replaced by valuesByLocaleOrCurrency object",
       "onChange receives a LocalizedFieldChangeEvent with target.locale",
     ],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: "type",
+        changeType: "value-mapping",
+        fixedValue: "text",
+      },
+      {
+        uiKitProp: "selectedLanguage",
+        nimbusProp: "defaultLocaleOrCurrency",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "value",
+        nimbusProp: "valuesByLocaleOrCurrency",
+        changeType: "structural",
+        notes:
+          "Per-locale value replaced by a single valuesByLocaleOrCurrency object.",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives a LocalizedFieldChangeEvent with target.locale.",
+      },
+    ],
   },
   {
     uiKitName: "LocalizedTextField",
@@ -538,6 +1124,20 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "errors (Record) replaced by errorsByLocaleOrCurrency",
       "onChange receives a LocalizedFieldChangeEvent with target.locale",
     ],
+    propMappings: [
+      { uiKitProp: "title", nimbusProp: "label", changeType: "rename" },
+      {
+        uiKitProp: "hint",
+        nimbusProp: "description",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "errors",
+        nimbusProp: "errorsByLocaleOrCurrency",
+        changeType: "structural",
+        notes: "Record<string, boolean> replaced by errorsByLocaleOrCurrency.",
+      },
+    ],
   },
   {
     uiKitName: "LocalizedMultilineTextInput",
@@ -552,6 +1152,32 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "selectedLanguage prop replaced by defaultLocaleOrCurrency",
       "value per locale replaced by valuesByLocaleOrCurrency object",
       "onChange receives a LocalizedFieldChangeEvent with target.locale",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: "type",
+        changeType: "value-mapping",
+        fixedValue: "multiLine",
+      },
+      {
+        uiKitProp: "selectedLanguage",
+        nimbusProp: "defaultLocaleOrCurrency",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "value",
+        nimbusProp: "valuesByLocaleOrCurrency",
+        changeType: "structural",
+        notes:
+          "Per-locale value replaced by a single valuesByLocaleOrCurrency object.",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives a LocalizedFieldChangeEvent with target.locale.",
+      },
     ],
   },
   {
@@ -569,6 +1195,20 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "errors (Record) replaced by errorsByLocaleOrCurrency",
       "onChange receives a LocalizedFieldChangeEvent with target.locale",
     ],
+    propMappings: [
+      { uiKitProp: "title", nimbusProp: "label", changeType: "rename" },
+      {
+        uiKitProp: "hint",
+        nimbusProp: "description",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "errors",
+        nimbusProp: "errorsByLocaleOrCurrency",
+        changeType: "structural",
+        notes: "Record<string, boolean> replaced by errorsByLocaleOrCurrency.",
+      },
+    ],
   },
   {
     uiKitName: "LocalizedMoneyInput",
@@ -584,6 +1224,33 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "value per currency replaced by valuesByLocaleOrCurrency object",
       "onChange receives a LocalizedFieldChangeEvent with target.currency",
     ],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: "type",
+        changeType: "value-mapping",
+        fixedValue: "money",
+      },
+      {
+        uiKitProp: "selectedCurrency",
+        nimbusProp: "defaultLocaleOrCurrency",
+        changeType: "rename",
+        notes: "Represents the default currency code for LocalizedMoneyInput.",
+      },
+      {
+        uiKitProp: "value",
+        nimbusProp: "valuesByLocaleOrCurrency",
+        changeType: "structural",
+        notes:
+          "Per-currency value replaced by a single valuesByLocaleOrCurrency object.",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives a LocalizedFieldChangeEvent with target.currency.",
+      },
+    ],
   },
   {
     uiKitName: "LocalizedRichTextInput",
@@ -598,6 +1265,32 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "selectedLanguage prop replaced by defaultLocaleOrCurrency",
       "value per locale replaced by valuesByLocaleOrCurrency object",
       "onChange receives a LocalizedFieldChangeEvent with target.locale",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: "type",
+        changeType: "value-mapping",
+        fixedValue: "richText",
+      },
+      {
+        uiKitProp: "selectedLanguage",
+        nimbusProp: "defaultLocaleOrCurrency",
+        changeType: "rename",
+      },
+      {
+        uiKitProp: "value",
+        nimbusProp: "valuesByLocaleOrCurrency",
+        changeType: "structural",
+        notes:
+          "Per-locale value replaced by a single valuesByLocaleOrCurrency object.",
+      },
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives a LocalizedFieldChangeEvent with target.locale.",
+      },
     ],
   },
 
@@ -623,6 +1316,14 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     breakingChanges: [
       "Replace AdditionalInfoMessage with FormField description prop or Text component",
     ],
+    propMappings: [
+      {
+        uiKitProp: "children",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Use as the FormField description prop, or as Text children.",
+      },
+    ],
   },
   {
     uiKitName: "ErrorMessage",
@@ -634,6 +1335,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     breakingChanges: [
       "Replace ErrorMessage with <FieldErrors> inside a Field errorMessage prop or FormField.Error",
     ],
+    propMappings: [
+      {
+        uiKitProp: "children",
+        nimbusProp: null,
+        changeType: "structural",
+        notes:
+          "Use <FieldErrors> as a child of FormField.Error, or pass to a Field's errorMessage/errors prop.",
+      },
+    ],
   },
   {
     uiKitName: "WarningMessage",
@@ -644,6 +1354,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Use <Text color='warning.500'> or a FormField description for warnings.",
     breakingChanges: [
       "Replace WarningMessage with Text + appropriate color token",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "children",
+        nimbusProp: null,
+        changeType: "removed",
+        notes:
+          "Use <Text color='warning.500'> with the message as children instead.",
+      },
     ],
   },
 
@@ -678,16 +1397,40 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
     notes:
-      "Rename to Badge. Both use a tone prop, but the tone values differ. " +
+      "Rename to Badge. UI Kit used a tone prop; Nimbus uses colorPalette instead. " +
       "UI Kit tones: 'critical'|'warning'|'positive'|'information'|'primary'|'secondary'. " +
-      "Nimbus tones: 'danger'|'warning'|'success'|'info'.",
+      "Nimbus colorPalette values: 'critical'|'warning'|'positive'|'info'|'primary'|'neutral'.",
     breakingChanges: [
       "Rename to Badge",
-      "tone value 'critical' → 'danger'",
-      "tone value 'positive' → 'success'",
-      "tone value 'information' → 'info'",
-      "tone values 'primary' and 'secondary' have no direct equivalent; use 'neutral' or default",
-      "isCondensed prop replaced by size='sm'",
+      "tone prop replaced by colorPalette",
+      "tone value 'positive' stays 'positive' (use colorPalette='positive')",
+      "tone value 'critical' stays 'critical' (use colorPalette='critical')",
+      "tone value 'warning' stays 'warning' (use colorPalette='warning')",
+      "tone value 'information' → colorPalette='info'",
+      "tone values 'primary' and 'secondary' → colorPalette='primary' or 'neutral'",
+      "isCondensed prop replaced by size='xs'",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "tone",
+        nimbusProp: "colorPalette",
+        changeType: "value-mapping",
+        valueMapping: [
+          { from: "critical", to: "critical" },
+          { from: "warning", to: "warning" },
+          { from: "positive", to: "positive" },
+          { from: "information", to: "info" },
+          { from: "primary", to: "primary" },
+          { from: "secondary", to: "neutral" },
+        ],
+      },
+      {
+        uiKitProp: "isCondensed",
+        nimbusProp: "size",
+        changeType: "value-mapping",
+        valueMapping: [{ from: "true", to: "xs" }],
+        notes: "Default size is 'md'.",
+      },
     ],
   },
   {
@@ -701,6 +1444,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Wrap single Tag in <TagGroup.Root><TagGroup.TagList><TagGroup.Tag>...</TagGroup.Tag></TagGroup.TagList></TagGroup.Root>",
       "onRemove now receives a key-based Set",
     ],
+    propMappings: [
+      {
+        uiKitProp: "children",
+        nimbusProp: null,
+        changeType: "structural",
+        notes:
+          "Restructure into TagGroup.Root > TagGroup.TagList > TagGroup.Tag.",
+      },
+    ],
   },
   {
     uiKitName: "TagList",
@@ -712,6 +1464,14 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     breakingChanges: [
       "Rename to TagGroup (use TagGroup.Root, TagGroup.TagList, TagGroup.Tag)",
       "items array replaced by TagGroup.Tag children inside TagGroup.TagList",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "children",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Replace with TagGroup.Tag children inside TagGroup.TagList.",
+      },
     ],
   },
   {
@@ -741,6 +1501,21 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "columns prop shape changed to use accessor and header fields",
       "Row selection API updated to use onSelectionChange with a Set of keys",
     ],
+    propMappings: [
+      {
+        uiKitProp: "columns",
+        nimbusProp: "columns",
+        changeType: "structural",
+        notes: "Shape changed to use accessor and header fields.",
+      },
+      {
+        uiKitProp: "onRowClick",
+        nimbusProp: "onSelectionChange",
+        changeType: "structural",
+        notes:
+          "Row interaction via onRowClick replaced by onSelectionChange with a Set of keys.",
+      },
+    ],
   },
   {
     uiKitName: "DataTableManager",
@@ -764,6 +1539,14 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     breakingChanges: [
       "isExternal prop renamed to target='_blank' + rel='noopener'",
     ],
+    propMappings: [
+      {
+        uiKitProp: "isExternal",
+        nimbusProp: null,
+        changeType: "removed",
+        notes: "Use target='_blank' rel='noopener' instead.",
+      },
+    ],
   },
   {
     uiKitName: "DropdownMenu",
@@ -777,6 +1560,14 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "options array replaced by Menu.Item children inside Menu.Content",
       "onSelect replaced by onAction on Menu.Item or Menu",
     ],
+    propMappings: [
+      {
+        uiKitProp: "children",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Compose Menu.Root > Menu.Trigger + Menu.Content > Menu.Item.",
+      },
+    ],
   },
   {
     uiKitName: "Pagination",
@@ -785,6 +1576,14 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "direct",
     notes: "Direct replacement. page/totalPages prop names are unchanged.",
     breakingChanges: ["onPageChange receives a page number directly"],
+    propMappings: [
+      {
+        uiKitProp: "onPageChange",
+        nimbusProp: "onPageChange",
+        changeType: "structural",
+        notes: "Receives the page number directly.",
+      },
+    ],
   },
 
   // -------------------------------------------------------------------------
@@ -800,6 +1599,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     breakingChanges: [
       "Compositional API: replace single prop with Tooltip.Root + Tooltip.Content",
     ],
+    propMappings: [
+      {
+        uiKitProp: "children",
+        nimbusProp: null,
+        changeType: "structural",
+        notes:
+          "Restructure into Tooltip.Root (wrapping the trigger) + Tooltip.Content.",
+      },
+    ],
   },
 
   // -------------------------------------------------------------------------
@@ -810,10 +1618,24 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     nimbusEquivalent: "Alert",
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
-    notes: "Rename to Alert. tone prop replaces type prop for semantic intent.",
+    notes:
+      "Rename to Alert. colorPalette prop replaces type prop for semantic intent.",
     breakingChanges: [
       "Rename to Alert",
-      "type prop replaced by tone ('info', 'success', 'warning', 'danger')",
+      "type prop replaced by colorPalette ('info', 'positive', 'warning', 'critical')",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "type",
+        nimbusProp: "colorPalette",
+        changeType: "value-mapping",
+        valueMapping: [
+          { from: "info", to: "info" },
+          { from: "success", to: "positive" },
+          { from: "warning", to: "warning" },
+          { from: "danger", to: "critical" },
+        ],
+      },
     ],
   },
 
@@ -897,9 +1719,18 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
     notes:
-      "Direct replacement. Composable with Card.Root, Card.Header, Card.Content.",
+      "Direct replacement. Composable with Card.Root, Card.Header, Card.Body, Card.Footer.",
     breakingChanges: [
-      "Adopt compositional slot API (Card.Root, Card.Header, Card.Content)",
+      "Adopt compositional slot API (Card.Root, Card.Header, Card.Body, Card.Footer)",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "children",
+        nimbusProp: null,
+        changeType: "structural",
+        notes:
+          "Restructure into Card.Root > Card.Header + Card.Body + Card.Footer slots.",
+      },
     ],
   },
   {
@@ -918,6 +1749,23 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "condensed prop removed",
       "tone prop ('urgent'|'primary') replaced by Nimbus design tokens",
     ],
+    propMappings: [
+      {
+        uiKitProp: "isClosed",
+        nimbusProp: null,
+        changeType: "structural",
+        notes:
+          "Use Accordion.Root's expandedKeys/defaultExpandedKeys + onExpandedChange (React Aria controlled/uncontrolled pattern).",
+      },
+      {
+        uiKitProp: "header",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Use an Accordion.Header child instead of a prop.",
+      },
+      { uiKitProp: "condensed", nimbusProp: null, changeType: "removed" },
+      { uiKitProp: "tone", nimbusProp: null, changeType: "removed" },
+    ],
   },
   {
     uiKitName: "CollapsibleMotion",
@@ -931,6 +1779,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Adopt compositional API (CollapsibleMotion.Root, CollapsibleMotion.Trigger, CollapsibleMotion.Content)",
       "Render prop pattern replaced by compound component children",
     ],
+    propMappings: [
+      {
+        uiKitProp: "children",
+        nimbusProp: null,
+        changeType: "structural",
+        notes:
+          "Render prop (isClosed/toggle) replaced by CollapsibleMotion.Root/Trigger/Content composition.",
+      },
+    ],
   },
 
   // -------------------------------------------------------------------------
@@ -943,6 +1800,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "variant",
     notes: 'Use <Text size="md"> (default size).',
     breakingChanges: ["Replace Text.Body with <Text> (default size is body)"],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: null,
+        changeType: "value-mapping",
+        fixedValue: "md",
+        notes: "size='md' is Text's default, so it can usually be omitted.",
+      },
+    ],
   },
   {
     uiKitName: "Text.Caption",
@@ -951,6 +1817,14 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "variant",
     notes: 'Use <Text size="xs"> for caption-sized text.',
     breakingChanges: ["Replace Text.Caption with <Text size='xs'>"],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: null,
+        changeType: "value-mapping",
+        fixedValue: "xs",
+      },
+    ],
   },
   {
     uiKitName: "Text.Detail",
@@ -959,6 +1833,14 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "variant",
     notes: 'Use <Text size="sm"> for detail/small text.',
     breakingChanges: ["Replace Text.Detail with <Text size='sm'>"],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: null,
+        changeType: "value-mapping",
+        fixedValue: "sm",
+      },
+    ],
   },
   {
     uiKitName: "Text.Headline",
@@ -969,6 +1851,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     breakingChanges: [
       "Replace Text.Headline with <Text size='2xl' fontWeight='bold'> or <Heading>",
     ],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: null,
+        changeType: "value-mapping",
+        fixedValue: "2xl",
+        notes: "Also set fontWeight='bold', or use <Heading> instead.",
+      },
+    ],
   },
   {
     uiKitName: "Text.Subheadline",
@@ -977,6 +1868,14 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "variant",
     notes: 'Use <Text size="xl">.',
     breakingChanges: ["Replace Text.Subheadline with <Text size='xl'>"],
+    propMappings: [
+      {
+        uiKitProp: "_component",
+        nimbusProp: null,
+        changeType: "value-mapping",
+        fixedValue: "xl",
+      },
+    ],
   },
   {
     uiKitName: "Text.Wrap",
@@ -1014,6 +1913,14 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Replace CustomIcon with <Icon> or <InlineSvg>",
       "SVG must be passed as a child or via as prop",
     ],
+    propMappings: [
+      {
+        uiKitProp: "children",
+        nimbusProp: "children",
+        changeType: "structural",
+        notes: "Pass the SVG as a child of <Icon>, or use the as prop.",
+      },
+    ],
   },
   {
     uiKitName: "LeadingIcon",
@@ -1026,6 +1933,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Remove LeadingIcon wrapper",
       "Pass icon directly to the parent component's icon slot",
     ],
+    propMappings: [
+      {
+        uiKitProp: "children",
+        nimbusProp: null,
+        changeType: "structural",
+        notes:
+          "Remove the LeadingIcon wrapper and pass the icon directly as a child of the parent component.",
+      },
+    ],
   },
   {
     uiKitName: "InlineSvg",
@@ -1037,7 +1953,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
   },
   {
     uiKitName: "Icon Library",
-    nimbusEquivalent: "Material Icon Library",
+    nimbusEquivalent: "Nimbus Icon Library",
     importPath: "@commercetools/nimbus-icons",
     mappingType: "pattern",
     notes:
@@ -1083,6 +1999,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     breakingChanges: [
       "Rename to NimbusProvider",
       "theme prop configuration has changed; see NimbusProvider docs",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "theme",
+        nimbusProp: null,
+        changeType: "structural",
+        notes:
+          "Theme configuration shape changed; see NimbusProvider's themes/forcedTheme/defaultTheme props.",
+      },
     ],
   },
 ];
