@@ -1,7 +1,14 @@
 import type { CSSProperties } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { FormField, Grid, Slider, Stack, Text } from "@commercetools/nimbus";
-import { within, expect, userEvent, fn } from "storybook/test";
+import {
+  Dialog,
+  FormField,
+  Grid,
+  Slider,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
+import { within, expect, userEvent, fn, waitFor } from "storybook/test";
 
 // Visual smoke-test axes. The full matrix is every combination of these, for
 // both orientations — 2 × 2 × 2 × 2 = 16 cells.
@@ -783,6 +790,153 @@ export const SmokeTest: Story = {
       // 2 orientations × 2 variants × 2 sizes × 2 disabled-states = 16 cells,
       // one thumb each. A missing count means some combination failed to mount.
       await expect(canvas.getAllByRole("slider")).toHaveLength(16);
+    });
+  },
+};
+
+/**
+ * WCAG 2.1 SC 1.4.13 (Content on Hover or Focus): the value tooltip is
+ * dismissible with Escape without moving the pointer or focus. React Aria's
+ * TooltipTrigger installs a document-level Escape listener while the tooltip is
+ * open; because `SliderBase` drives the tooltip's open state itself, it must
+ * honor that close request (see the `isDismissed` handling in
+ * `slider-base.tsx`). After dismissal the thumb keeps focus and stays dismissed
+ * for the rest of that focus "session"; a fresh hover re-arms and reopens it.
+ */
+export const EscapeDismissesTooltip: Story = {
+  args: {
+    "aria-label": "Volume",
+    defaultValue: 30,
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+    const thumb = canvas.getByRole("slider");
+
+    await step(
+      "Escape dismisses the focused tooltip without moving focus",
+      async () => {
+        await userEvent.tab();
+        await expect(thumb).toHaveFocus();
+        await expect(await body.findByRole("tooltip")).toHaveTextContent("30");
+
+        await userEvent.keyboard("{Escape}");
+        await waitFor(() =>
+          expect(body.queryByRole("tooltip")).not.toBeInTheDocument()
+        );
+        // The whole point of 1.4.13: dismissed in place. Focus never left the
+        // thumb, so a keyboard user has not lost their position.
+        await expect(thumb).toHaveFocus();
+      }
+    );
+
+    await step("it stays dismissed while the thumb keeps focus", async () => {
+      // ArrowRight keeps focus on the thumb, so the tooltip must not reappear —
+      // dismissal holds until the focus/hover session ends and re-arms it.
+      await userEvent.keyboard("{ArrowRight}");
+      await expect(thumb).toHaveValue("31");
+      await expect(body.queryByRole("tooltip")).not.toBeInTheDocument();
+    });
+
+    await step("a fresh hover re-arms and reopens the tooltip", async () => {
+      // Tab away to end the focus session (re-arms the dismissal), then hover.
+      await userEvent.tab();
+      await waitFor(() => expect(thumb).not.toHaveFocus());
+      await userEvent.hover(thumb);
+      await expect(await body.findByRole("tooltip")).toHaveTextContent("31");
+      await userEvent.unhover(thumb);
+    });
+  },
+};
+
+/**
+ * Regression: a Slider nested in a Dialog must not trap Escape, and one Escape
+ * must not close both the tooltip and the Dialog. While a thumb is focused its
+ * value tooltip is open; the slider owns Escape for the visible tooltip
+ * (dismiss it, and `stopPropagation` so an enclosing overlay is untouched),
+ * then a second Escape reaches the Dialog — the conventional
+ * inner-overlay-first layering.
+ *
+ * NOTE: the trickiest variant of this bug — pressing an arrow key first, which
+ * desyncs React Aria's internal tooltip state from our controlled `isOpen` —
+ * only reproduces under real browser key events, not Storybook's synthetic
+ * `userEvent` (which doesn't trigger React Aria's value-change close). This
+ * story exercises the arrow-then-Escape sequence for documentation, but the
+ * desync path itself was verified manually in a real browser; `userEvent` can't
+ * regression-guard it.
+ */
+export const SliderInDialog: Story = {
+  render: () => (
+    <Dialog.Root>
+      <Dialog.Trigger>Open settings</Dialog.Trigger>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>Settings</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.Body>
+          <Slider aria-label="Volume" defaultValue={30} />
+        </Dialog.Body>
+      </Dialog.Content>
+    </Dialog.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+
+    await step("open the dialog", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: /open settings/i })
+      );
+      await waitFor(() => expect(body.getByRole("dialog")).toBeInTheDocument());
+    });
+
+    const thumb = body.getByRole("slider");
+
+    await step(
+      "keyboard-focus the slider thumb so its value tooltip opens",
+      async () => {
+        // Tab from the dialog's initial focus onto the thumb; keyboard modality
+        // and the focus event open the tooltip (its document Escape listener is
+        // now armed).
+        for (let i = 0; i < 6 && document.activeElement !== thumb; i++) {
+          await userEvent.tab();
+        }
+        await expect(thumb).toHaveFocus();
+        await expect(await body.findByRole("tooltip")).toHaveTextContent("30");
+      }
+    );
+
+    await step(
+      "change the value first (the real-browser desync trigger)",
+      async () => {
+        // Under real key events this is what desyncs React Aria's internal
+        // tooltip state from our controlled open state (see the story doc). It
+        // is a no-op for the desync under synthetic `userEvent`, but keeps the
+        // sequence faithful and guards that a value change doesn't break the
+        // layering that IS reproducible here.
+        await userEvent.keyboard("{ArrowRight}");
+        await expect(thumb).toHaveValue("31");
+        await expect(await body.findByRole("tooltip")).toHaveTextContent("31");
+      }
+    );
+
+    await step(
+      "first Escape dismisses the tooltip only — the dialog stays open",
+      async () => {
+        await userEvent.keyboard("{Escape}");
+        await waitFor(() =>
+          expect(body.queryByRole("tooltip")).not.toBeInTheDocument()
+        );
+        await expect(body.getByRole("dialog")).toBeInTheDocument();
+        await expect(thumb).toHaveFocus();
+      }
+    );
+
+    await step("second Escape closes the dialog", async () => {
+      await userEvent.keyboard("{Escape}");
+      await waitFor(() =>
+        expect(body.queryByRole("dialog")).not.toBeInTheDocument()
+      );
     });
   },
 };
