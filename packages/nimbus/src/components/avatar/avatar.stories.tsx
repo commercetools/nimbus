@@ -506,7 +506,7 @@ export const AllFallbacks: Story = {
   play: async ({ canvasElement }) => {
     await waitFor(
       () => {
-        const imgs = [...canvasElement.querySelectorAll("img")];
+        const imgs = Array.from(canvasElement.querySelectorAll("img"));
         expect(imgs.length).toBe(2);
         imgs.forEach((img) =>
           expect(getComputedStyle(img).display).toBe("none")

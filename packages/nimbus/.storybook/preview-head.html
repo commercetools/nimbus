@@ -1,7 +1,9 @@
 <script>
-  // Chromatic-only clock anchor (set before the bundle loads) so date snapshots don't drift: today() is baked into story args at module load + React Aria reads a live "today" cell.
-  // OFFSET, don't freeze — today() reads Date.now(), but so do use-debounce, timers, and `id: Date.now()`; a constant Date.now() hangs async loads and collides creation IDs.
-  // Advancing from the anchor keeps the date on May 15 while relative time still flows.
+  // Chromatic-only: override window.Date so date-dependent snapshots don't drift.
+  // OFFSET from a fixed anchor, don't freeze: today() stays May 15 while Date.now()
+  // keeps advancing, so timers/debounces/async loads resolve and Date.now() IDs stay
+  // unique. Runs here (pre-bundle) because today() is read at module load.
+  // Full rationale: docs/chromatic-visual-testing.md "Deterministic dates in snapshots".
   (function () {
     if (
       !/Chromatic/.test(navigator.userAgent) &&

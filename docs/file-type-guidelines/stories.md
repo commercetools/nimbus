@@ -167,56 +167,10 @@ graph TD
 
 ## Chromatic Visual Regression Snapshots
 
-Stories are also Chromatic's visual-regression test cases, but **not every story
-is snapshotted**. Snapshots are **opt-in**: `.storybook/preview.tsx` sets
-`chromatic: { disableSnapshot: true }` as the project default, so a story is
-captured only when it explicitly turns snapshots back on.
-
-**What gets snapshotted:** the goal is to cover **every** prop-driven visual
-state the component can render. That coverage comes from an exhaustive
-`SmokeTest` matrix over the axes that **interact**
-(`colorPalette × size × variant`, plus selected/unselected for toggles) plus a
-separate snapshotted story for each state the matrix can't show in one static
-render, e.g. `Focused` (focus ring), a disabled-but-focusable state, an open
-tooltip/popover, or a layout the grid doesn't exercise.
-
-**Not every component needs a `SmokeTest` matrix.** A matrix earns its place
-only when the axes _interact_ — when `colorPalette × size × variant` produces
-cells you couldn't predict from each axis in isolation, which is where recipe
-regressions hide. When a component's axes are independent (Avatar's `size`,
-`colorPalette`, and content mode don't combine into novel visuals), skip the
-matrix and just opt the existing showcase stories into snapshots directly
-(`SizesWithImages`, `ColorPalettes`). You can also fold a family of
-near-identical or purely behavioral stories into one labeled snapshot when it
-aids review without losing coverage: Avatar's `AllFallbacks` renders every
-fallback path (missing / empty / whitespace names, broken image with and without
-names) in a single image, while the per-path stories stay snapshot-off but keep
-their behavioral assertions.
-
-**Fold an axis into the matrix only if it interacts** — i.e. its combination
-with the other axes produces a distinct visual. An axis that applies a
-**uniform, axis-independent transform** does not: `disabled`, for example,
-resolves to a single shared `layerStyle` (`opacity: 0.5` +
-`cursor: not-allowed`) that looks the same across every palette/size/variant, so
-multiplying it through the grid just re-renders every cell at half opacity for
-no new coverage. Capture states like that **once, in a dedicated story**
-(`Disabled`, `DisabledGroup`) rather than as a matrix dimension.
-
-The individual per-axis showcase stories (`Base`, `Variants`, `Sizes`,
-`ColorPalettes`) stay as Storybook stories but are left **snapshot-off** — not
-to save cost, but because every state they render is already captured by an
-on-snapshot (the matrix, or a dedicated story like `Disabled` for the uniform
-states the matrix omits). Turning them off drops no coverage those snapshots
-don't already hold — provided the dedicated stories actually cover those uniform
-states, which the per-component audit verifies. (A showcase story usually varies
-one axis with the others at defaults, though some vary two, e.g. a palette ×
-variant grid.) Only the matrix captures the cross-axis cells (e.g.
-`size="2xs" variant="ghost" colorPalette="critical"`), which is exactly where
-recipe regressions hide, so the matrix is the coverage engine, not the
-individual stories. Purely _behavioral_ stories (`WithRef`, context/DOM-prop
-tests) never snapshot. **Cost is controlled by TurboSnap and by packing
-interacting states into one matrix render, never by dropping a visual state.** A
-story opts in with:
+Stories double as Chromatic's visual-regression cases, but snapshots are
+**opt-in**: `.storybook/preview.tsx` sets `chromatic: { disableSnapshot: true }`
+as the project default, so a story is captured only when it turns snapshots back
+on:
 
 ```typescript
 export const SmokeTest: Story = {
@@ -226,39 +180,25 @@ export const SmokeTest: Story = {
 };
 ```
 
-**The `vrt` tag is mostly for filtering/identification, not for Chromatic.**
-Chromatic decides whether to capture a story from `disableSnapshot` alone; it
-does not read `vrt`. The tag is our own label so a story that participates in
-visual regression can be spotted at a glance and selected by tooling. Keep the
-two together on snapshotted stories, but remember it's `disableSnapshot: false`
-that actually takes the picture.
+`disableSnapshot: false` is what takes the picture; Chromatic never reads the
+`vrt` tag. `vrt` is our own label for spotting and selecting snapshotted
+stories, so keep the two together.
 
-**Why one matrix instead of many individual snapshots.** Folding the routine
-size/variant/palette/state combinations into a single `SmokeTest` render keeps
-them to **one** billable snapshot instead of one per combination, and lets a
-reviewer catch cross-axis regressions in a single image because every state sits
-next to its neighbors. A `render`-only matrix also has no play interaction to go
-flaky. The tradeoff: a diff in any one cell flags the whole snapshot (no
-per-cell granularity), and any edit to the matrix re-snapshots the entire grid,
-because Chromatic can't sub-diff within a single image. So reserve separate
-snapshots for states that need distinct setup or deserve isolated review
-(`Focused`, `DisabledGroup`, an open menu) rather than states that are straight
-recipe output.
+**What to snapshot:** cover every prop-driven visual state. Put the axes that
+_interact_ (`colorPalette × size × variant`, plus selected/unselected for
+toggles) in one exhaustive `SmokeTest` matrix, and give any state the matrix
+can't render in one static image its own snapshotted story (`Focused`,
+disabled-but-focusable, an open tooltip/popover). Skip the matrix when the axes
+don't interact (Avatar's `size`, `colorPalette`, and content mode) and snapshot
+the existing showcase stories directly instead. Showcase stories that only
+re-render a state a snapshot already covers stay snapshot-off. Never drop a
+visual state to save cost; cost is controlled by TurboSnap and by packing
+interacting states into one matrix render.
 
-**Known gap — hover and pressed are not yet captured.** Hover is a real visual
-state, but it can't be landed from a play function in the snapshot browser:
-`userEvent.hover` produces neither a real CSS `:hover` nor React Aria's
-`data-hovered` attribute (verified via spike), and a synthetic `pointerenter`
-doesn't set it either. Capturing hover needs foundation work — the
-`storybook-addon-pseudo-states` addon to force the state, plus normalizing the
-recipes so their hover styling responds to whatever the addon forces (some use
-Chakra `_hover` → `:hover, [data-hover]`, others use React Aria's
-`[data-hovered]`). Pressed is a non-issue: no button-family recipe styles
-`:active`/pressed, so there is no visual state to capture. Track hover as a
-cross-cutting foundation task, not per-component work.
-
-**The `Focused` story** captures the keyboard-focus state, which no other story
-renders. It tabs to the component and asserts focus:
+**`Focused` needs `preserveFocusRing`.** `preview.tsx` blurs the focused element
+after every play function so a stray ring doesn't bleed into a snapshot;
+`preserveFocusRing: true` skips that blur. Use it on a `Focused` story, or any
+story whose final state legitimately keeps focus (e.g. an open combobox):
 
 ```typescript
 export const Focused: Story = {
@@ -278,38 +218,16 @@ export const Focused: Story = {
 };
 ```
 
-**The `preserveFocusRing` parameter suppresses the post-play blur.**
-`preview.tsx` blurs whatever element is focused after every play function, so a
-stray focus ring doesn't bleed into an unrelated snapshot; it skips that blur
-only for stories setting `preserveFocusRing: true`. It's a parameter, not a tag,
-because it's a behavior flag rather than a selection label. Use it in two cases:
-a `Focused` story deliberately snapshotting a focus state, and any story whose
-final state legitimately keeps focus (e.g. an open combobox) where blurring
-would be wrong.
+**Crop padding is global.** A `preview.tsx` decorator wraps every
+non-`fullscreen` story in `1rem` so focus and selection rings don't clip at
+Chromatic's content crop. You don't opt into it.
 
-**Crop padding is applied globally, not per story.** A separate `preview.tsx`
-decorator wraps every non-`fullscreen` story in `1rem` of padding. Chromatic
-crops each snapshot to the rendered content, so an outline/selection/focus ring
-(a box-shadow or CSS outline painted outside layout) would clip at the crop edge
-when content sits flush against it — body or `layout: "padded"` padding sits
-outside the crop and can't reach in. Padding the story from the inside gives the
-ring room, and padding _every_ story (snapshotted or not) also keeps the canvas
-from jumping as you browse Storybook. `fullscreen` stories are exempt because
-they're meant to touch the edges. This is independent of both
-`preserveFocusRing` and `disableSnapshot` — you don't opt into it.
-
-**Prefer local images, and wait for image-driven state to settle.** Serve images
-from `public/` via Storybook's `staticDirs` rather than a remote URL. A remote
-image is a network dependency: it makes the snapshot flaky and, if it's slow or
-unreachable in CI, fails the play function before Chromatic captures. (Avatar's
-demo photo is local for this reason; its broken-image fallback cells still hit a
-remote 404, which is the one place to watch for flake.) Chromatic waits for
-images to load before it captures, but it does **not** wait for state your
-component _derives_ from that load — Avatar hides its `<img>` (`display: none`)
-until `onLoad`, and swaps to the initials/icon fallback on error. So a story
-that snapshots a post-load or post-error state must wait for it in the play
-function. `AllFallbacks` does this by waiting for its broken images to reach
-`display: none` before the snapshot:
+**Prefer local images, and wait for image-driven state.** Serve images from
+`public/` via `staticDirs`, not a remote URL (a remote image is a flaky network
+dependency that can fail the play function before capture). Chromatic waits for
+images to load but not for state your component _derives_ from that load (Avatar
+hides its `<img>` until `onLoad` and swaps to a fallback on error), so a story
+snapshotting a post-load or post-error state must wait for it:
 
 ```typescript
 play: async ({ canvasElement }) => {
@@ -326,8 +244,9 @@ play: async ({ canvasElement }) => {
 },
 ```
 
-For CI triggers, baselines, TurboSnap, and the full best-practices rationale,
-see [Chromatic Visual Testing](../chromatic-visual-testing.md).
+For the matrix-vs-individual tradeoff, the fold-an-axis rule, the hover/pressed
+coverage gap, CI triggers, baselines, and TurboSnap, see
+[Chromatic Visual Testing](../chromatic-visual-testing.md).
 
 ## File Structure
 

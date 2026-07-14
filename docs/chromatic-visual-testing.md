@@ -205,6 +205,49 @@ Making Chromatic block merges is **two switches, not one**:
 
 Flipping only step 1 does nothing on its own, because the check isn't required.
 
+## Deterministic dates in snapshots (the `Date` shim)
+
+`.storybook/preview-head.html` overrides `window.Date` in the Chromatic browser
+so date-dependent components snapshot the same image every day. Without it,
+anything that renders "today" or a relative time drifts the baseline and shows a
+spurious diff on every run. Two things read the clock: React Aria date
+components read a live "today" at render (Calendar's highlighted cell), and
+story args compute `today()` at module load and bake it into the output.
+
+**Why offset instead of freeze.** The obvious fix, freezing `Date.now()` to a
+constant, stabilizes the date but breaks every component that depends on time
+_elapsing_, because they compute duration as `Date.now() - startTime`:
+
+- Async loads, debounces (`use-debounce`), and `setTimeout` logic see
+  `now - start === 0` forever, so they never resolve; the play function hangs
+  and the snapshot captures a stuck loading state.
+- Code that mints IDs from `Date.now()` returns the same value on every call,
+  producing duplicate React keys / colliding IDs.
+
+So the shim **anchors** now to a fixed instant (May 15, 2026, 12:00 UTC) and
+lets real time flow forward from it:
+
+```
+anchoredNow() = ANCHOR + (realNow() - start)
+```
+
+A snapshot run lasts seconds, so `ANCHOR + a few seconds` is still May 15 (the
+date is deterministic), while `Date.now()` keeps increasing, so timers resolve,
+async loads finish, and `Date.now()` IDs stay unique. Freeze gives a
+deterministic date but frozen time; offset gives a deterministic date _and_
+elapsing time.
+
+**Two implementation details:**
+
+- It runs in `preview-head.html`, not a decorator, because `today()` is read at
+  module-load time. `window.Date` must be replaced before any story module
+  evaluates, and the `<head>` script is the only hook that runs before the
+  bundle; a decorator or `beforeEach` runs too late.
+- It's gated to Chromatic (`navigator.userAgent` / `chromatic=true`) and only
+  overrides the no-arg path. `new Date("2020-01-01")` passes straight through,
+  so explicit dates are untouched and normal interactive Storybook keeps the
+  real clock.
+
 ## Writing stories for Chromatic (best practices from Chromatic's docs)
 
 What Chromatic's docs say, and how it maps to how we author Nimbus stories.
