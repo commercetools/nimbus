@@ -34,14 +34,13 @@ export function extractNimbusComponentName(
   nimbusEquivalent: string | null
 ): string | null {
   if (!nimbusEquivalent) return null;
-  const name = nimbusEquivalent.split(/[+,]/)[0].trim().replace(/^<|>$/g, "");
   if (
-    name === "Design tokens" ||
-    name === "Material Icon Library" ||
-    name === "Text + FormField"
+    nimbusEquivalent === "Design tokens" ||
+    nimbusEquivalent === "Material Icon Library" ||
+    /[+,]/.test(nimbusEquivalent)
   )
     return null;
-  return name;
+  return nimbusEquivalent.trim().replace(/^<|>$/g, "");
 }
 
 export function extractValidValues(propType: {

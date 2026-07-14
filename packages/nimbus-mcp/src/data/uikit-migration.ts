@@ -273,12 +273,6 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     ],
     propMappings: [
       {
-        uiKitProp: "_component",
-        nimbusProp: "variant",
-        changeType: "value-mapping",
-        fixedValue: "outline",
-      },
-      {
         uiKitProp: "color",
         nimbusProp: "variant",
         changeType: "value-mapping",
@@ -288,6 +282,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
           { from: "info", to: "outline" },
         ],
         notes:
+          "Defaults to variant='outline' when no color prop is specified. " +
           "'primary'/'info' also imply a colorPalette; set colorPalette separately.",
       },
       {
