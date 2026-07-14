@@ -141,6 +141,55 @@ describe("migrate_from_uikit — componentName mode", () => {
     expect(result.isError).toBe(true);
     expect(getText(result)).toContain("NonExistentComponent");
   });
+
+  it("includes a high-confidence suggestion when unknown component has a close Nimbus match", async () => {
+    const result = await callMigrate({
+      componentName: "SearchTextInput",
+    });
+    const data = JSON.parse(getText(result));
+
+    expect(result.isError).toBeUndefined();
+    expect(data.uiKitName).toBe("SearchTextInput");
+    expect(data.suggestion).toBeDefined();
+    expect(data.suggestion.name).toBe("SearchInput");
+    expect(data.suggestion.confidence).toBe("high");
+    expect(data.hint).toContain("get_component");
+  });
+
+  it("includes a medium-confidence suggestion via fuzzy match", async () => {
+    // "Acordion" is a typo of "Accordion" — no exact substring match,
+    // but within Levenshtein distance 1 of the Nimbus component name.
+    const result = await callMigrate({
+      componentName: "Acordion",
+    });
+    const data = JSON.parse(getText(result));
+
+    expect(result.isError).toBeUndefined();
+    expect(data.uiKitName).toBe("Acordion");
+    expect(data.suggestion).toBeDefined();
+    expect(data.suggestion.name).toBe("Accordion");
+    expect(data.suggestion.confidence).toBe("medium");
+  });
+
+  it("does not return high-confidence suggestions for all-generic-word names", async () => {
+    // "TextButton" is composed entirely of generic UI words — any match
+    // should be medium confidence at best, not high.
+    const result = await callMigrate({
+      componentName: "TextButton",
+    });
+
+    if (!result.isError) {
+      const data = JSON.parse(getText(result));
+      expect(data.suggestion?.confidence).not.toBe("high");
+    }
+  });
+
+  it("returns error with no suggestion for truly unknown component", async () => {
+    const result = await callMigrate({
+      componentName: "ZzzNonExistentWidget",
+    });
+    expect(result.isError).toBe(true);
+  });
 });
 
 describe("migrate_from_uikit — filePath mode", () => {
@@ -216,8 +265,9 @@ export const MyComponent = () => (
     expect(names).toContain("Text.Body");
     expect(names).not.toContain("Text.Headline");
     // The root names themselves should not appear as unmapped
-    expect(data.unmapped).not.toContain("Spacings");
-    expect(data.unmapped).not.toContain("Text");
+    const unmappedNames = data.unmapped.map((u: { name: string }) => u.name);
+    expect(unmappedNames).not.toContain("Spacings");
+    expect(unmappedNames).not.toContain("Text");
   });
 
   it("returns all sub-components when none are explicitly used in the file", async () => {
@@ -304,8 +354,39 @@ export const MyComponent = () => <div />;
     expect(names).toContain("FieldErrors");
     expect(names).toContain("CollapsiblePanel");
     // Type-only named imports should not appear
-    expect(data.unmapped).not.toContain("TFieldErrors");
-    expect(data.unmapped).not.toContain("TFieldErrorsProps");
+    const unmappedNames = data.unmapped.map((u: { name: string }) => u.name);
+    expect(unmappedNames).not.toContain("TFieldErrors");
+    expect(unmappedNames).not.toContain("TFieldErrorsProps");
+  });
+
+  it("returns unmapped components as objects with suggestions when available", async () => {
+    const suggestionFile = join(tmpDir, "suggestion-test.tsx");
+    await writeFile(
+      suggestionFile,
+      `
+import SearchTextInput from '@commercetools-uikit/search-text-input';
+import { PrimaryButton } from '@commercetools-uikit/buttons';
+
+export const MyComponent = () => <div />;
+`
+    );
+
+    const result = await callMigrate({ filePath: suggestionFile });
+    const data = JSON.parse(getText(result));
+
+    // PrimaryButton should be in mappings (it has a migration rule)
+    const mappedNames = data.mappings.map(
+      (m: { uiKitName: string }) => m.uiKitName
+    );
+    expect(mappedNames).toContain("PrimaryButton");
+
+    // SearchTextInput should be unmapped with a suggestion
+    expect(data.unmapped).toBeInstanceOf(Array);
+    expect(data.unmapped.length).toBe(1);
+    expect(data.unmapped[0].name).toBe("SearchTextInput");
+    expect(data.unmapped[0].suggestion).toBeDefined();
+    expect(data.unmapped[0].suggestion.name).toBe("SearchInput");
+    expect(data.unmapped[0].suggestion.confidence).toBe("high");
   });
 
   it("returns error for non-existent file", async () => {
