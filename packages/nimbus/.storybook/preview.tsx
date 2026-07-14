@@ -78,15 +78,16 @@ const preview: Preview = {
     (Story, context) => {
       // Chromatic crops to #storybook-root; outline/selection/focus rings are
       // box-shadows or outlines that render outside layout and get clipped at
-      // the crop edge. Pad exactly the stories Chromatic photographs so the crop
-      // has room; body/padded-layout padding can't reach inside that boundary.
+      // the crop edge. Pad every snapshot uniformly so the crop has room;
+      // body/padded-layout padding can't reach inside that boundary. No width
+      // constraint — `fit-content` would collapse relative widths like `width="1/3"`.
       const isSnapshot =
         context.parameters?.chromatic?.disableSnapshot === false;
       return (
         <ThemeDecorator context={context}>
           {isSnapshot ? (
-            <div style={{ padding: "1rem", width: "fit-content" }}>
-              {/* room for outline in Chromatic crop */}
+            <div style={{ padding: "1rem" }}>
+              {/* room for rings in Chromatic crop */}
               <Story />
             </div>
           ) : (
