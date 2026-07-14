@@ -11,10 +11,23 @@ import type {
 
 type TabNavRecipeProps = {
   /**
-   * Visual style variant of the tab navigation
-   * @default "tabs"
+   * Visual style variant of the tab navigation.
+   *
+   * - `line` — a bar marking the active item: an underline when horizontal, an
+   *   inner side bar when vertical (default).
+   * - `rounded` — a soft rounded-rect highlight behind the active item.
+   * - `pill` — a fully-rounded capsule highlight behind the active item.
+   *
+   * The active highlight slides between items as the active item changes; the
+   * motion is disabled under `prefers-reduced-motion: reduce`.
+   *
+   * `"tabs"` is accepted as a deprecated alias for `"line"`.
+   * @default "line"
    */
-  variant?: SlotRecipeProps<"nimbusTabNav">["variant"];
+  variant?:
+    | SlotRecipeProps<"nimbusTabNav">["variant"]
+    /** @deprecated Use `"line"` instead. */
+    | "tabs";
   /**
    * Size of the tab navigation items
    * @default "md"
@@ -29,6 +42,11 @@ type TabNavRecipeProps = {
 export type TabNavRootSlotProps = HTMLChakraProps<"nav", TabNavRecipeProps>;
 
 export type TabNavItemSlotProps = HTMLChakraProps<"a", TabNavRecipeProps>;
+
+export type TabNavIndicatorSlotProps = HTMLChakraProps<
+  "div",
+  TabNavRecipeProps
+>;
 
 // ============================================================
 // MAIN PROPS

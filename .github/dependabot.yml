@@ -9,6 +9,18 @@ updates:
       timezone: "Europe/Berlin" # Optional: Specify timezone for the schedule time
     labels:
       - "dependencies"
+    # Delay opening update PRs until the new version has aged. This aligns
+    # Dependabot with the repo's pnpm `minimumReleaseAge: 1440` (24h) supply-chain
+    # gate in pnpm-workspace.yaml: without a cooldown, Dependabot opens PRs within
+    # hours of a release and every `pnpm install --frozen-lockfile` (CI/Vercel)
+    # then fails ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION until the package
+    # organically passes 24h. Every value is >= 2 days so the pinned version has
+    # cleared the 24h gate (with margin) by the time the PR's lockfile is built.
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+      semver-minor-days: 3
+      semver-patch-days: 2
     groups:
       # React ecosystem: react, react-dom, emotion, chakra-ui, next-themes
       react:

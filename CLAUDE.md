@@ -286,11 +286,16 @@ pnpm test --coverage
 # Lint all files
 pnpm lint
 
-# TypeScript type checking
-pnpm typecheck
+# TypeScript type checking — DEVELOPMENT (resolves @commercetools/nimbus to
+# SOURCE; no build required; matches what your editor reports). Use this while
+# iterating on a component.
+pnpm --filter @commercetools/nimbus typecheck:dev
 
-# Strict type checking (fails on errors)
-pnpm typecheck:strict
+# TypeScript type checking — PRODUCTION (resolves @commercetools/nimbus to the
+# built dist; requires a prior `build`). This is the surface CI checks.
+pnpm typecheck            # all packages, never fails (quick scan)
+pnpm typecheck:strict     # all packages, fails on error (the CI gate)
+pnpm --filter @commercetools/nimbus typecheck   # nimbus only, built surface
 
 # Validate published package shape (attw + publint against packed tarballs)
 pnpm check:package-shape
@@ -299,10 +304,44 @@ pnpm check:package-shape
 pnpm check:bundle-size
 
 # Package-specific commands
-pnpm --filter @commercetools/nimbus typecheck
 pnpm --filter @commercetools/nimbus build
 pnpm --filter @commercetools/nimbus-tokens build
 ```
+
+#### Which typecheck do I run? (source vs. built)
+
+Like the `test` / `test:dev` split, type checking comes in a **development**
+flavor (against live source) and a **production** flavor (against the built
+`dist`). The difference is purely how `@commercetools/nimbus` — the package
+barrel that stories/specs import — is resolved:
+
+- **`typecheck:dev`** → `tsconfig.json` → `./src/index.ts`. No rebuild needed,
+  so it reflects the code you're editing right now. **Your editor uses this same
+  config**, so the CLI and the editor agree. Use it during development.
+- **`typecheck` / `typecheck:strict`** → `tsconfig.prod.json` →
+  `dist/index.d.ts` (via the package `exports`). Requires a prior `build`;
+  validates the exact type surface consumers receive. This is what CI runs
+  (`typecheck:strict`).
+
+`typecheck:strict` is **not** a third mode — it is the same built-surface check
+as the root `typecheck`, just configured to fail the run on error instead of
+being a non-blocking scan.
+
+```mermaid
+flowchart TD
+    A{Type checking — what for?} -->|Iterating on a component<br/>no rebuild wanted| DEV["pnpm --filter @commercetools/nimbus typecheck:dev<br/>(tsconfig.json → src)"]
+    A -->|Confirming it will pass CI<br/>after a build| PROD["pnpm typecheck:strict<br/>(tsconfig.prod.json → dist)"]
+    DEV --> EDIT["Matches your editor · fast feedback · no build"]
+    PROD --> CI["Validates the published dist surface · CI gate"]
+
+    style DEV fill:#4CAF50,color:#fff
+    style PROD fill:#1565C0,color:#fff
+```
+
+> The `tsconfig.json` → source alias is also why the editor no longer shows
+> stale `dist` errors. The production Storybook test (`test:storybook`) pins the
+> barrel back to `dist` in `.storybook/main.ts` so CI still verifies the built
+> bundle.
 
 `pnpm check:package-shape` packs each publishable package the same way npm would
 and validates the result with `@arethetypeswrong/cli` (types resolve across

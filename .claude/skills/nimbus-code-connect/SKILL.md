@@ -54,7 +54,7 @@ there is nothing new to validate.
 Run typecheck and lint to ensure all generated files are correct:
 
 ```bash
-pnpm --filter @commercetools/nimbus typecheck
+pnpm --filter @commercetools/nimbus typecheck:dev
 pnpm lint
 ```
 

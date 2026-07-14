@@ -17,7 +17,8 @@
  * comment chain must be established first — see docs/bundle-size-monitoring.md.
  *
  * Environment variables:
- *   GITHUB_REPOSITORY   owner/repo (set by Actions)
+ *   GITHUB_REPOSITORY   owner/repo (set by Actions; falls back to the current
+ *                       checkout via `gh repo view` when unset locally)
  *   GH_TOKEN            GitHub token for API access
  *   GITHUB_OUTPUT       Path to the output file (set by Actions)
  */
@@ -25,7 +26,6 @@
 import { execSync } from "node:child_process";
 import { appendFileSync } from "node:fs";
 
-const REPO = process.env.GITHUB_REPOSITORY;
 const OUTPUT_FILE = process.env.GITHUB_OUTPUT;
 
 function gh(args) {
@@ -34,6 +34,29 @@ function gh(args) {
     stdio: ["pipe", "pipe", "pipe"],
   }).trim();
 }
+
+// GITHUB_REPOSITORY is injected by Actions but absent locally, so derive the
+// slug from the checkout when it's unset. This catch only runs locally (CI
+// always sets the env var), so a hard exit here can't affect the workflow —
+// and an empty slug would only produce a misleading downstream error.
+function resolveRepo() {
+  if (process.env.GITHUB_REPOSITORY) return process.env.GITHUB_REPOSITORY;
+  try {
+    return gh("repo view --json nameWithOwner --jq .nameWithOwner");
+  } catch {
+    console.error(
+      [
+        "Error: could not determine the repository via the GitHub CLI.",
+        "Running check:bundle-size locally needs `gh` installed and",
+        "authenticated: install it (https://cli.github.com), run",
+        "`gh auth login`, and run the command from inside the repo directory.",
+      ].join("\n")
+    );
+    process.exit(1);
+  }
+}
+
+const REPO = resolveRepo();
 
 function writeOutput(key, value) {
   if (!OUTPUT_FILE) {
