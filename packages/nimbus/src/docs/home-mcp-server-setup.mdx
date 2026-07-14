@@ -74,9 +74,17 @@ Each AI assistant reads MCP server configuration from a JSON file. Add the
 
 ### Claude Code
 
-Add to your project's `.mcp.json` so every team member on the repo gets the
-server automatically, or to `~/.claude/mcp.json` to enable it across all your
-projects:
+The recommended way to add the server for all your projects is via the CLI:
+
+```bash
+claude mcp add -s user nimbus-mcp npx -- -y @commercetools/nimbus-mcp
+```
+
+This writes the server config to `~/.claude.json` and makes it available in all
+sessions.
+
+Alternatively, add a `nimbus` entry to your project's `.mcp.json` so every team
+member on the repo gets the server automatically:
 
 ```json
 {
