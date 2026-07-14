@@ -1,4 +1,4 @@
-import { useState, useRef, type CSSProperties } from "react";
+import { useState, useRef, useEffect, type CSSProperties } from "react";
 import { useObjectRef } from "react-aria";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import {
@@ -54,7 +54,49 @@ const SliderValueThumb = ({
 }: SliderValueThumbProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const isOpen = isHovered || isFocused || isDragging;
+  // WCAG 2.1 SC 1.4.13 (Content on Hover or Focus): the value tooltip must be
+  // dismissible with Escape without moving the pointer or focus. We can't lean
+  // on React Aria's built-in tooltip Escape handling because we drive the
+  // tooltip's open state ourselves (the tooltip must stay visible during a
+  // pointer drag, which React Aria would otherwise close on press). React
+  // Aria's internal tooltip state — and the document-level Escape listener it
+  // uses to shield ancestors — desyncs from our controlled `isOpen` the moment
+  // the value changes (an arrow key makes React Aria close its own state while
+  // we keep the tooltip shown), so its shield can't be relied on. We therefore
+  // own the tooltip's Escape entirely (effect below): `isDismissed` records the
+  // press and suppresses the tooltip for the rest of this hover/focus/drag
+  // "session"; once the thumb goes idle it re-arms (first effect) so a later
+  // hover or focus reopens it.
+  const [isDismissed, setIsDismissed] = useState(false);
+  const wantsOpen = isHovered || isFocused || isDragging;
+  const isOpen = wantsOpen && !isDismissed;
+
+  useEffect(() => {
+    // Re-arm once the thumb is neither hovered, focused, nor dragging, so a
+    // fresh interaction shows the tooltip again.
+    if (!wantsOpen && isDismissed) setIsDismissed(false);
+  }, [wantsOpen, isDismissed]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    // Register on `document` in the capture phase — the same way React Aria
+    // does — and only while the tooltip is actually visible (`isOpen`), so this
+    // fires exactly when there is a tooltip to dismiss. `stopPropagation()`
+    // makes a first Escape dismiss only the tooltip, not an enclosing overlay
+    // (e.g. a Dialog); once dismissed the tooltip closes, this listener
+    // detaches, and the next Escape is free to reach the Dialog. Inferring the
+    // dismissal from `onOpenChange` instead is unreliable — React Aria also
+    // fires it on hover cooldown and value change, which would misread as
+    // dismissals.
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        setIsDismissed(true);
+      }
+    };
+    document.addEventListener("keydown", onKeyDown, true);
+    return () => document.removeEventListener("keydown", onKeyDown, true);
+  }, [isOpen]);
 
   return (
     <Tooltip.Root isOpen={isOpen} onOpenChange={() => {}}>
