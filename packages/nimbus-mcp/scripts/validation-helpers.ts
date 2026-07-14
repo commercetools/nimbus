@@ -36,7 +36,7 @@ export function extractNimbusComponentName(
   if (!nimbusEquivalent) return null;
   if (
     nimbusEquivalent === "Design tokens" ||
-    nimbusEquivalent === "Material Icon Library" ||
+    nimbusEquivalent === "Nimbus Icon Library" ||
     /[+,]/.test(nimbusEquivalent)
   )
     return null;

@@ -1953,7 +1953,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
   },
   {
     uiKitName: "Icon Library",
-    nimbusEquivalent: "Material Icon Library",
+    nimbusEquivalent: "Nimbus Icon Library",
     importPath: "@commercetools/nimbus-icons",
     mappingType: "pattern",
     notes:
