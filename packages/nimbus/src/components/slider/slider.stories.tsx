@@ -457,6 +457,16 @@ export const Ticks: Story = {
           onChange={args.onChange}
         />
       </div>
+      <div data-testid="uneven">
+        <Slider
+          aria-label="Uneven tick step"
+          defaultValue={0}
+          minValue={0}
+          maxValue={100}
+          showTicks
+          tickStep={30}
+        />
+      </div>
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
@@ -471,6 +481,28 @@ export const Ticks: Story = {
       // 0, 25, 50, 75, 100 -> 5 ticks
       await expect(ticksOf("h")).toHaveLength(5);
     });
+
+    await step(
+      "appends a maxValue tick when tickStep doesn't divide the range",
+      async () => {
+        // tickStep 30 over 0..100 → base multiples 0/30/60/90; the thumb still
+        // travels to 100, so a maxValue tick is appended (5 ticks total). The
+        // final interval (90→100) is shorter than a full tickStep (60→90).
+        const ticks = ticksOf("uneven");
+        await expect(ticks).toHaveLength(5);
+        const centerX = (t: HTMLElement) => {
+          const r = t.getBoundingClientRect();
+          return (r.left + r.right) / 2;
+        };
+        const xs = ticks.map(centerX);
+        for (let i = 1; i < xs.length; i++) {
+          await expect(xs[i]).toBeGreaterThan(xs[i - 1]);
+        }
+        const fullGap = xs[3] - xs[2]; // 60 → 90
+        const finalGap = xs[4] - xs[3]; // 90 → 100 (appended)
+        await expect(finalGap).toBeLessThan(fullGap);
+      }
+    );
 
     await step(
       "vertical ticks distribute along the track, not stacked",

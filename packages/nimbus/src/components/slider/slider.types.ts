@@ -39,7 +39,12 @@ type SliderCommonProps = {
   thumbLabels?: string[];
   /** Render tick marks along the track. */
   showTicks?: boolean;
-  /** Interval between ticks; defaults to `step` when `showTicks` is set. */
+  /**
+   * Interval between ticks; defaults to `step` when `showTicks` is set. A tick
+   * is always placed at `maxValue`, so when `tickStep` does not divide the
+   * range evenly the final interval before `maxValue` is shorter than
+   * `tickStep`.
+   */
   tickStep?: number;
   /**
    * Marks the slider as invalid for styling purposes (surfaced as
