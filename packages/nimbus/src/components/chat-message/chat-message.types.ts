@@ -5,6 +5,7 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react/styled-system";
 import type { AvatarProps } from "../avatar/avatar.types";
+import type { ChatMessageSender } from "./chat-message.context";
 
 // ============================================================
 // RECIPE PROPS
@@ -61,8 +62,19 @@ export type ChatMessageTypingSlotProps = HTMLChakraProps<"div">;
 // ============================================================
 
 /** Props for the ChatMessage.Root component. */
-export type ChatMessageProps = OmitInternalProps<ChatMessageRootSlotProps> & {
+export type ChatMessageProps = Omit<
+  OmitInternalProps<ChatMessageRootSlotProps>,
+  "sender"
+> & {
   children?: React.ReactNode;
+  /**
+   * Which participant sent the message — drives the layout direction and the
+   * per-sender styling. A single value only: a message's sender is fixed, so
+   * responsive/conditional values are intentionally not accepted (they would
+   * style the body per breakpoint while the avatar defaults could not follow).
+   * @default "agent"
+   */
+  sender?: ChatMessageSender;
   /**
    * Override the rendered element. Defaults to `"article"` (a feed item, per
    * the ARIA APG); set e.g. `as="li"` when composing the message into a list.

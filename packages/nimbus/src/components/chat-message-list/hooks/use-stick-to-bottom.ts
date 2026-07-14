@@ -84,6 +84,10 @@ export const useStickToBottom = ({
   // A smooth/animated programmatic scroll is in flight: keep the pin engaged
   // (don't flicker the jump control) until we actually reach the bottom.
   const programmaticScrollRef = useRef(false);
+  // The last distance-from-bottom observed during a programmatic scroll. The
+  // animation only ever moves toward the bottom (distance shrinks), so a growth
+  // means the user grabbed the scroll mid-animation.
+  const lastProgrammaticDistanceRef = useRef(Number.POSITIVE_INFINITY);
 
   const setPinned = useCallback((next: boolean) => {
     pinnedRef.current = next;
@@ -119,6 +123,7 @@ export const useStickToBottom = ({
       // A smooth scroll animates over several frames; suppress pin-release for
       // its duration so the jump-to-latest control doesn't flicker back in.
       programmaticScrollRef.current = true;
+      lastProgrammaticDistanceRef.current = Number.POSITIVE_INFINITY;
       el.scrollTo({ top: el.scrollHeight, behavior: effective });
       setPinned(true);
     },
@@ -139,7 +144,14 @@ export const useStickToBottom = ({
       // the pin engaged (so the jump control doesn't flicker back) until we
       // arrive; then release the guard and resume normal position tracking.
       if (programmaticScrollRef.current) {
-        if (!atBottom) return;
+        // The animation only moves toward the bottom, so a distance increase
+        // means the user scrolled up mid-animation — honor that gesture by
+        // releasing the guard immediately (a wheel/touch scroll also cancels
+        // the browser's smooth scroll), letting the jump control reappear.
+        const userScrolledUp =
+          distanceFromBottom > lastProgrammaticDistanceRef.current + 4;
+        lastProgrammaticDistanceRef.current = distanceFromBottom;
+        if (!atBottom && !userScrolledUp) return;
         programmaticScrollRef.current = false;
       }
 
