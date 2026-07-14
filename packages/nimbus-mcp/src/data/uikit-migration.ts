@@ -1622,15 +1622,16 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     nimbusEquivalent: "Alert",
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
-    notes: "Rename to Alert. tone prop replaces type prop for semantic intent.",
+    notes:
+      "Rename to Alert. colorPalette prop replaces type prop for semantic intent.",
     breakingChanges: [
       "Rename to Alert",
-      "type prop replaced by tone ('info', 'success', 'warning', 'danger')",
+      "type prop replaced by colorPalette ('info', 'positive', 'warning', 'critical')",
     ],
     propMappings: [
       {
         uiKitProp: "type",
-        nimbusProp: "tone",
+        nimbusProp: "colorPalette",
         changeType: "value-mapping",
         valueMapping: [
           { from: "info", to: "info" },

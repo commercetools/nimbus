@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -31,10 +31,14 @@ interface ValidationError {
 }
 
 function resolveTypeFile(componentName: string): string | null {
-  const direct = resolve(TYPES_DIR, `${componentName}.json`);
+  const fileName = componentName.replace(/\./g, "");
+  const direct = resolve(TYPES_DIR, `${fileName}.json`);
+  const root = resolve(TYPES_DIR, `${fileName}Root.json`);
+  if (existsSync(root)) {
+    const rootData = JSON.parse(readFileSync(root, "utf-8"));
+    if (Object.keys(rootData.props ?? {}).length > 0) return root;
+  }
   if (existsSync(direct)) return direct;
-  const root = resolve(TYPES_DIR, `${componentName}Root.json`);
-  if (existsSync(root)) return root;
   return null;
 }
 
