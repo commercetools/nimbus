@@ -80,6 +80,9 @@ export const useStickToBottom = ({
 
   // Coalescing + programmatic-scroll bookkeeping.
   const stickScheduledRef = useRef(false);
+  // Guards against a late observer callback: a `ResizeObserver` may deliver one
+  // final queued notification after `disconnect()` (spec-allowed), which would
+  // otherwise run our microtask stick against a torn-down list.
   const disposedRef = useRef(false);
   // A smooth/animated programmatic scroll is in flight: keep the pin engaged
   // (don't flicker the jump control) until we actually reach the bottom.

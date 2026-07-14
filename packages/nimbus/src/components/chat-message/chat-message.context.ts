@@ -11,8 +11,9 @@ export interface ChatMessageContextValue {
 /**
  * Carries the message's `sender` from `ChatMessage.Root` to its parts, so a part
  * can derive a `sender`-dependent default that CSS alone can't express (e.g. the
- * avatar's `variant`). Defaults to `"agent"` to match the recipe when a part is
- * rendered without a `Root` (it never should be in practice).
+ * avatar's `variant`). The `"agent"` default is a safety net: a sender-aware part
+ * accidentally rendered outside a `Root` falls back to agent styling rather than
+ * throwing (it should always be composed under a `Root` in practice).
  */
 export const ChatMessageContext = createContext<ChatMessageContextValue>({
   sender: "agent",
