@@ -78,7 +78,7 @@ const preview: Preview = {
       return (
         <ThemeDecorator context={context}>
           {/* outline doesn't affect layout so Chromatic's crop clips it without this padding */}
-          <div style={{ padding: "1rem" }}>
+          <div style={{ padding: "1rem", width: "fit-content" }}>
             <Story />
           </div>
         </ThemeDecorator>
