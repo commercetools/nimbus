@@ -47,7 +47,10 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
       width: "fit-content",
       maxWidth: "100%",
       alignItems: "start",
-      columnGap: "200",
+      // The avatar↔body gutter lives on the avatar slot (per sender), not here as
+      // a `columnGap`: a `columnGap` applies to the empty avatar track even when
+      // no `ChatMessage.Avatar` is composed, indenting an avatar-less body. With
+      // the gap on the avatar itself, an avatar-less message sits flush.
       rowGap: "200",
     },
     avatar: {
@@ -123,6 +126,8 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
         },
         avatar: {
           gridColumn: 2,
+          // Gutter to the body on its leading side (avatar trails the body).
+          marginInlineStart: "200",
         },
         meta: {
           gridColumn: 1,
@@ -142,6 +147,8 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
         },
         avatar: {
           gridColumn: 1,
+          // Gutter to the body on its trailing side (avatar leads the body).
+          marginInlineEnd: "200",
         },
         meta: {
           gridColumn: 2,

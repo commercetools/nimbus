@@ -90,6 +90,13 @@ export type ChatMessageListRootProps =
  */
 export type ChatMessageListItemProps =
   OmitInternalProps<ChatMessageListItemSlotProps> & {
+    /**
+     * Override the rendered element. Defaults to a `div`. Note: `Item`
+     * deliberately does not assert `role="listitem"` (it would conflict with the
+     * `log` container). `as="li"` only yields real list semantics inside an
+     * actual `list`/`role="list"` ancestor, which the transcript is not.
+     */
+    as?: React.ElementType;
     /** Exactly one transcript member (a `ChatMessage` or any other content). */
     children?: React.ReactNode;
     /** Ref forwarding to the item element. */

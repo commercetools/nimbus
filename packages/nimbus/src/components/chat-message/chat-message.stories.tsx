@@ -402,22 +402,112 @@ export const Streaming: Story = {
 export const Senders: Story = {
   render: () => (
     <Stack gap="600">
-      <ChatMessage.Root sender="user">
-        <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
-        <ChatMessage.Body>
+      <ChatMessage.Root sender="user" data-testid="user-msg">
+        <ChatMessage.Avatar
+          data-testid="user-avatar"
+          firstName="Ada"
+          lastName="Lovelace"
+        />
+        <ChatMessage.Body data-testid="user-body">
           <Text>Can you summarise last week's orders?</Text>
         </ChatMessage.Body>
       </ChatMessage.Root>
-      <ChatMessage.Root sender="agent">
-        <ChatMessage.Avatar>
+      <ChatMessage.Root sender="agent" data-testid="agent-msg">
+        <ChatMessage.Avatar data-testid="agent-avatar">
           <AutoAwesome />
         </ChatMessage.Avatar>
-        <ChatMessage.Body>
+        <ChatMessage.Body data-testid="agent-body">
           <Text>{SAMPLE_MESSAGE}</Text>
         </ChatMessage.Body>
       </ChatMessage.Root>
     </Stack>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const left = (testId: string) =>
+      canvas.getByTestId(testId).getBoundingClientRect().left;
+
+    await step("Agent avatar leads the body", async () => {
+      // agent: avatar in grid column 1, body in column 2 → avatar is left of body.
+      await expect(left("agent-avatar")).toBeLessThan(left("agent-body"));
+    });
+
+    await step("User avatar trails the body", async () => {
+      // user: body in column 1, avatar in column 2 → avatar is right of body.
+      await expect(left("user-avatar")).toBeGreaterThan(left("user-body"));
+    });
+  },
+};
+
+/**
+ * Avatar-less message
+ * Omitting `ChatMessage.Avatar` reclaims the avatar column cleanly: the body
+ * sits flush against the message's leading edge with no phantom gutter.
+ */
+export const AvatarLess: Story = {
+  render: () => (
+    <ChatMessage.Root sender="agent" data-testid="msg">
+      <ChatMessage.Body data-testid="body">
+        <Text>An agent message with no avatar.</Text>
+      </ChatMessage.Body>
+    </ChatMessage.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("Body is flush with the message start (no gutter)", async () => {
+      const rootLeft = canvas.getByTestId("msg").getBoundingClientRect().left;
+      const bodyLeft = canvas.getByTestId("body").getBoundingClientRect().left;
+      // With the gutter on the (absent) avatar slot rather than a column-gap,
+      // the empty avatar track collapses and the body starts at the edge.
+      await expect(Math.abs(bodyLeft - rootLeft)).toBeLessThan(2);
+    });
+  },
+};
+
+/**
+ * Avatar named via `aria-labelledby`
+ * An avatar named by `aria-labelledby` (not just `aria-label`) opts back into
+ * the accessibility tree — it must not be force-hidden.
+ */
+export const AvatarLabelledBy: Story = {
+  render: () => (
+    <Box>
+      <span
+        id="cm-sender-name"
+        style={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          overflow: "hidden",
+          clip: "rect(0 0 0 0)",
+        }}
+      >
+        Agent Assistant
+      </span>
+      <ChatMessage.Root sender="agent">
+        <ChatMessage.Avatar
+          data-testid="labelled-avatar"
+          aria-labelledby="cm-sender-name"
+        >
+          <AutoAwesome />
+        </ChatMessage.Avatar>
+        <ChatMessage.Body>
+          <Text>Hello.</Text>
+        </ChatMessage.Body>
+      </ChatMessage.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const avatar = canvas.getByTestId("labelled-avatar");
+    await step(
+      "aria-labelledby keeps the avatar in the a11y tree",
+      async () => {
+        await expect(avatar).not.toHaveAttribute("aria-hidden", "true");
+        await expect(avatar).toHaveAccessibleName("Agent Assistant");
+      }
+    );
+  },
 };
 
 /**

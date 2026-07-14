@@ -96,15 +96,24 @@ system notices).
 
 ### Requirement: Avatar
 
-`ChatMessage.Avatar` SHALL wrap the Nimbus `Avatar` (default `size="xs"`,
-`variant="solid"`), colored automatically per `sender`, with content provided
-via `firstName`/`lastName`, `src`, or a custom icon as `children`.
+`ChatMessage.Avatar` SHALL wrap the Nimbus `Avatar` (default `size="xs"`),
+colored and shaped automatically per `sender`, with content provided via
+`firstName`/`lastName`, `src`, or a custom icon as `children`. The default
+`variant` is resolved per `sender` — `"solid"` for `agent`, `"subtle"` for
+`user` — and an explicit `variant` always overrides it.
 
-#### Scenario: Per-sender avatar color
+#### Scenario: Per-sender avatar color and variant
 
-- **WHEN** an avatar is rendered for a given `sender`
-- **THEN** SHALL apply the sender's avatar palette from the recipe (consumers
+- **WHEN** an avatar is rendered for a given `sender` without an explicit
+  `variant`
+- **THEN** SHALL apply the sender's avatar palette from the recipe and default
+  the `variant` to `"solid"` for `agent` and `"subtle"` for `user` (consumers
   supply only the content)
+
+#### Scenario: Explicit variant override
+
+- **WHEN** a `variant` is passed to `ChatMessage.Avatar`
+- **THEN** SHALL use that `variant` regardless of `sender`
 
 #### Scenario: Custom icon content
 

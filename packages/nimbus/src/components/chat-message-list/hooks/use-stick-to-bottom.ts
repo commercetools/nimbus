@@ -20,12 +20,18 @@ export type UseStickToBottomReturn = {
   /** Attach to the scroll viewport (the `ScrollArea`'s `viewportRef`). */
   viewportRef: React.RefObject<HTMLDivElement | null>;
   /**
-   * Attach to the growing content flow *inside* the viewport (the element that
-   * holds the items). This is what a `ResizeObserver` must watch — the
+   * Callback ref for the growing content flow *inside* the viewport (the element
+   * that holds the items). This is what a `ResizeObserver` must watch — the
    * `ScrollArea` locks its own content wrapper to the viewport height, so only
    * this inner flow actually grows as messages are appended or streamed.
+   *
+   * It is a callback ref (not a `RefObject`) on purpose: the content flow is only
+   * mounted once the list has items, so an empty transcript that receives its
+   * first message attaches this element *after* mount. A callback ref lets the
+   * observer bind the moment the node appears (and unbind when it goes away),
+   * which a mount-once effect reading a `RefObject` would miss.
    */
-  contentRef: React.RefObject<HTMLDivElement | null>;
+  contentRef: React.RefCallback<HTMLDivElement>;
   /** Whether the viewport is currently pinned at (or near) the bottom. */
   isPinned: boolean;
   /** Scroll to the bottom and re-engage the pin; honors reduced-motion. */
@@ -49,13 +55,15 @@ const prefersReducedMotion = () =>
  *
  * Content growth is observed with a `ResizeObserver` (streaming text growing the
  * last item) and a `MutationObserver` (new items appended), so a pinned view
- * follows both without the caller wiring anything up.
+ * follows both without the caller wiring anything up. All growth-driven scrolling
+ * is coalesced into a single `requestAnimationFrame` write per frame, so a burst
+ * of streamed tokens does at most one layout read + one scroll write per frame
+ * rather than one per mutation.
  */
 export const useStickToBottom = ({
   enabled,
 }: UseStickToBottomOptions): UseStickToBottomReturn => {
   const viewportRef = useRef<HTMLDivElement | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null);
   const [isPinned, setIsPinned] = useState(true);
 
   // Mirror reactive values into refs so the observer callbacks (registered
@@ -64,9 +72,43 @@ export const useStickToBottom = ({
   const enabledRef = useRef(enabled);
   enabledRef.current = enabled;
 
+  // The content flow node and the live ResizeObserver, tracked in refs so the
+  // callback ref can (un)observe regardless of when the node mounts relative to
+  // the observer-setup effect.
+  const contentNodeRef = useRef<HTMLDivElement | null>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
+
+  // Coalescing + programmatic-scroll bookkeeping.
+  const stickScheduledRef = useRef(false);
+  const disposedRef = useRef(false);
+  // A smooth/animated programmatic scroll is in flight: keep the pin engaged
+  // (don't flicker the jump control) until we actually reach the bottom.
+  const programmaticScrollRef = useRef(false);
+
   const setPinned = useCallback((next: boolean) => {
     pinnedRef.current = next;
     setIsPinned(next);
+  }, []);
+
+  // Follow content growth while pinned. Coalesced onto a microtask so a stream
+  // burst that fires the Resize/Mutation observers many times performs a single
+  // layout read + scrollTop write — while still running promptly and reliably
+  // (unlike requestAnimationFrame, a microtask is not throttled when the tab is
+  // hidden, which a background chat transcript still needs to follow).
+  const scheduleStick = useCallback(() => {
+    if (stickScheduledRef.current) return;
+    stickScheduledRef.current = true;
+    queueMicrotask(() => {
+      stickScheduledRef.current = false;
+      if (disposedRef.current) return;
+      const el = viewportRef.current;
+      if (!el) return;
+      if (enabledRef.current && pinnedRef.current) {
+        // Stick to the newest content. The resulting scroll event re-derives the
+        // pin as `true` (we are at the bottom), so no feedback loop.
+        el.scrollTop = el.scrollHeight;
+      }
+    });
   }, []);
 
   const scrollToBottom = useCallback(
@@ -74,6 +116,9 @@ export const useStickToBottom = ({
       const el = viewportRef.current;
       if (!el) return;
       const effective = prefersReducedMotion() ? "auto" : behavior;
+      // A smooth scroll animates over several frames; suppress pin-release for
+      // its duration so the jump-to-latest control doesn't flicker back in.
+      programmaticScrollRef.current = true;
       el.scrollTo({ top: el.scrollHeight, behavior: effective });
       setPinned(true);
     },
@@ -88,7 +133,17 @@ export const useStickToBottom = ({
     const update = () => {
       const distanceFromBottom =
         el.scrollHeight - el.scrollTop - el.clientHeight;
-      setPinned(distanceFromBottom <= BOTTOM_THRESHOLD_PX);
+      const atBottom = distanceFromBottom <= BOTTOM_THRESHOLD_PX;
+
+      // While an intentional programmatic scroll animates toward the bottom, hold
+      // the pin engaged (so the jump control doesn't flicker back) until we
+      // arrive; then release the guard and resume normal position tracking.
+      if (programmaticScrollRef.current) {
+        if (!atBottom) return;
+        programmaticScrollRef.current = false;
+      }
+
+      setPinned(atBottom);
     };
 
     el.addEventListener("scroll", update, { passive: true });
@@ -97,17 +152,14 @@ export const useStickToBottom = ({
     return () => el.removeEventListener("scroll", update);
   }, [setPinned]);
 
-  // Follow content growth while pinned: streaming (last item grows) and
-  // appends (new items) both keep the newest content in view.
+  // Set up the growth observers once. The ResizeObserver watches the viewport
+  // and (via the callback ref) the inner content flow; the MutationObserver
+  // catches appended items / streamed text between frames. Both route through
+  // `scheduleStick` so scrolling is coalesced.
   useEffect(() => {
     const el = viewportRef.current;
     if (!el) return;
-
-    const stickIfPinned = () => {
-      if (enabledRef.current && pinnedRef.current) {
-        el.scrollTop = el.scrollHeight;
-      }
-    };
+    disposedRef.current = false;
 
     // Start at the newest message. This effect runs after the scroll-tracking
     // effect (which may have derived `pinned=false` from the initial
@@ -117,16 +169,14 @@ export const useStickToBottom = ({
       setPinned(true);
     }
 
-    const resizeObserver = new ResizeObserver(stickIfPinned);
+    const resizeObserver = new ResizeObserver(scheduleStick);
+    resizeObserverRef.current = resizeObserver;
     resizeObserver.observe(el);
-    // Observe the inner content flow, not the viewport (whose size is fixed) —
-    // this is the element that grows as messages stream or are appended.
-    const content = contentRef.current;
-    if (content) resizeObserver.observe(content);
+    // Observe the inner content flow if it is already mounted (list started with
+    // items). If the list started empty, the callback ref attaches it later.
+    if (contentNodeRef.current) resizeObserver.observe(contentNodeRef.current);
 
-    // Catch mutations the ResizeObserver might miss between frames: appended
-    // items (`childList`) and streamed text updates (`characterData`).
-    const mutationObserver = new MutationObserver(stickIfPinned);
+    const mutationObserver = new MutationObserver(scheduleStick);
     mutationObserver.observe(el, {
       childList: true,
       subtree: true,
@@ -134,10 +184,22 @@ export const useStickToBottom = ({
     });
 
     return () => {
+      disposedRef.current = true;
       resizeObserver.disconnect();
+      resizeObserverRef.current = null;
       mutationObserver.disconnect();
     };
-  }, [setPinned]);
+  }, [scheduleStick, setPinned]);
+
+  // Attach/detach the content flow to the ResizeObserver as it mounts/unmounts.
+  // This is what makes an empty → first-item transition observe correctly: the
+  // viewport slot (and thus this node) only exists once the list has items.
+  const contentRef = useCallback<React.RefCallback<HTMLDivElement>>((node) => {
+    const ro = resizeObserverRef.current;
+    if (contentNodeRef.current && ro) ro.unobserve(contentNodeRef.current);
+    contentNodeRef.current = node;
+    if (node && ro) ro.observe(node);
+  }, []);
 
   return { viewportRef, contentRef, isPinned, scrollToBottom };
 };

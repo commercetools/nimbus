@@ -95,7 +95,18 @@ export const ChatMessageListRoot = (props: ChatMessageListRootProps) => {
             variant="solid"
             colorPalette="primary"
             size="xs"
-            onPress={() => scrollToBottom("smooth")}
+            onPress={() => {
+              scrollToBottom("smooth");
+              // Pinning re-engages and unmounts this button, which would drop
+              // keyboard focus to <body>. Move focus to the scroll viewport (a
+              // tab stop while the transcript overflows) so a keyboard/SR user
+              // keeps their place. Deferred so it runs after the unmount;
+              // `preventScroll` so focusing doesn't cancel the smooth scroll.
+              setTimeout(
+                () => viewportRef.current?.focus({ preventScroll: true }),
+                0
+              );
+            }}
           >
             <KeyboardArrowDown />
           </IconButton>

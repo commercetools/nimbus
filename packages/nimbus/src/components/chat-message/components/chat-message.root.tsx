@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useSlotRecipe } from "@chakra-ui/react/styled-system";
 import { extractStyleProps } from "@/utils";
 import { ChatMessageRootSlot } from "../chat-message.slots";
@@ -35,6 +36,10 @@ export const ChatMessageRoot = (props: ChatMessageProps) => {
   // an explicit "user" resolves to the recipe's default of "agent".
   const sender: ChatMessageSender = props.sender === "user" ? "user" : "agent";
 
+  // Stable context identity so the parts (Avatar/Body/Meta) don't re-render on
+  // every Root render — only when `sender` actually changes.
+  const contextValue = useMemo(() => ({ sender }), [sender]);
+
   return (
     <ChatMessageRootSlot
       // The slot renders `<article>` by default (see chat-message.slots.tsx);
@@ -46,7 +51,7 @@ export const ChatMessageRoot = (props: ChatMessageProps) => {
       {...styleProps}
       {...functionalProps}
     >
-      <ChatMessageContext.Provider value={{ sender }}>
+      <ChatMessageContext.Provider value={contextValue}>
         {children}
       </ChatMessageContext.Provider>
     </ChatMessageRootSlot>

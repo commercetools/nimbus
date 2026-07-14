@@ -99,6 +99,8 @@ export type ChatMessageAvatarProps = AvatarProps;
 /** Props for the ChatMessage.Body component. */
 export type ChatMessageBodyProps =
   OmitInternalProps<ChatMessageBodySlotProps> & {
+    /** Override the rendered element (e.g. `as="section"`). Defaults to a `div`. */
+    as?: React.ElementType;
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
     [key: `data-${string}`]: unknown;
@@ -107,6 +109,8 @@ export type ChatMessageBodyProps =
 /** Props for the ChatMessage.Actions component. */
 export type ChatMessageActionsProps =
   OmitInternalProps<ChatMessageActionsSlotProps> & {
+    /** Override the rendered element. Defaults to a `div`. */
+    as?: React.ElementType;
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
     [key: `data-${string}`]: unknown;
@@ -115,6 +119,8 @@ export type ChatMessageActionsProps =
 /** Props for the ChatMessage.Meta component. */
 export type ChatMessageMetaProps =
   OmitInternalProps<ChatMessageMetaSlotProps> & {
+    /** Override the rendered element (e.g. `as="footer"`). Defaults to a `div`. */
+    as?: React.ElementType;
     children?: React.ReactNode;
     ref?: React.Ref<HTMLDivElement>;
     [key: `data-${string}`]: unknown;
@@ -123,6 +129,8 @@ export type ChatMessageMetaProps =
 /** Props for the ChatMessage.Typing component. */
 export type ChatMessageTypingProps =
   OmitInternalProps<ChatMessageTypingSlotProps> & {
+    /** Override the rendered element. Defaults to a `div`. */
+    as?: React.ElementType;
     /**
      * Optional visible label rendered beside the animated dots (e.g.
      * "Agent is typing…"). The dots themselves are decorative

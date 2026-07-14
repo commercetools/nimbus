@@ -70,9 +70,17 @@ message-level changes (a message appended, a reply arriving). The streamed
 message itself only sets `aria-busy` via `isStreaming` on its
 `ChatMessage.Root`; it does **not** create its own live region — a region
 mounted at the same moment as its content is not reliably announced, and two
-overlapping live regions would double-announce. The `Markdown` rendering the
-streamed text coalesces its own completion announcement, so tokens do not spam
-assistive technology.
+overlapping live regions would double-announce.
+
+How much of the streamed text is announced depends on how you render it.
+`aria-busy="true"` asks assistive technology to defer announcing changes inside
+the message until the stream settles and the flag clears — which keeps a
+compliant screen reader from reading every token — but support for that deferral
+varies between screen readers. The recommended path is to render the body with
+`<Markdown isStreaming>`: it owns a single, coalesced completion announcement
+instead of emitting text token by token. If you stream raw growing text into the
+`log` with neither `aria-busy` nor a component that coalesces its own
+announcement, expect some screen readers to announce intermediate updates.
 
 ### The list is always mounted
 

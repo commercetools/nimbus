@@ -299,3 +299,255 @@ export const EmptyState: Story = {
     });
   },
 };
+
+/**
+ * A list that starts empty and, on demand, mounts filler items plus a last item
+ * whose height is grown via an inline-`style` change (an attribute mutation the
+ * `MutationObserver` does not watch — only the content `ResizeObserver` catches
+ * it). This isolates the empty→first-item observer-attachment path.
+ */
+const EmptyThenResizeList = () => {
+  const [started, setStarted] = useState(false);
+  const [tall, setTall] = useState(false);
+  return (
+    <Stack gap="400" alignItems="start">
+      <Button data-testid="start" onPress={() => setStarted(true)}>
+        Start conversation
+      </Button>
+      <Button data-testid="grow" onPress={() => setTall(true)}>
+        Grow last item
+      </Button>
+      <ChatMessageList.Root
+        aria-label="Conversation"
+        height="200px"
+        width="480px"
+        data-testid="list"
+        emptyState={<Text data-testid="empty">No messages yet.</Text>}
+      >
+        {started &&
+          Array.from({ length: 4 }).map((_, i) => (
+            <ChatMessageList.Item key={i}>
+              <ChatMessage.Root sender="user">
+                <ChatMessage.Avatar />
+                <ChatMessage.Body>
+                  <Text>
+                    Message {i + 1}. {SAMPLE}
+                  </Text>
+                </ChatMessage.Body>
+              </ChatMessage.Root>
+            </ChatMessageList.Item>
+          ))}
+        {started && (
+          <ChatMessageList.Item>
+            {/* Raw div grown via inline style: a `style` attribute mutation,
+                which the MutationObserver (childList/characterData) ignores —
+                so only the content ResizeObserver can keep the view pinned. */}
+            <div data-testid="grower" style={{ height: tall ? 400 : 40 }} />
+          </ChatMessageList.Item>
+        )}
+      </ChatMessageList.Root>
+    </Stack>
+  );
+};
+
+/**
+ * Empty start then growth
+ * A transcript that opens empty must still follow content that grows after the
+ * first items mount — the stick-to-bottom observer has to bind when the content
+ * flow appears, not only at mount. Growth here is a style-only resize, so the
+ * ResizeObserver on the content flow is the only thing that can catch it.
+ */
+export const EmptyStartFollowsGrowth: Story = {
+  render: () => <EmptyThenResizeList />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Starts on the empty state", async () => {
+      await expect(canvas.getByTestId("empty")).toBeInTheDocument();
+    });
+
+    await step("Pins once the first items mount", async () => {
+      await userEvent.click(canvas.getByTestId("start"));
+      const viewport = getViewport(canvas.getByTestId("list"));
+      await waitFor(() =>
+        expect(distanceFromBottom(viewport)).toBeLessThanOrEqual(33)
+      );
+    });
+
+    await step("Follows a style-only growth of the last item", async () => {
+      const viewport = getViewport(canvas.getByTestId("list"));
+      await userEvent.click(canvas.getByTestId("grow"));
+      await waitFor(() =>
+        expect(distanceFromBottom(viewport)).toBeLessThanOrEqual(33)
+      );
+    });
+  },
+};
+
+/**
+ * Keyboard: activating jump keeps focus in the transcript
+ * Activating the jump-to-latest control unmounts it (the pin re-engages). Focus
+ * must move to the scroll viewport, not fall to `<body>`, and the control must
+ * not flicker back while the smooth scroll settles.
+ */
+export const KeyboardJumpKeepsFocus: Story = {
+  render: () => <AppendableList />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const list = canvas.getByTestId("list");
+    const viewport = getViewport(list);
+
+    await step("Scroll up to reveal the jump control", async () => {
+      viewport.scrollTop = 0;
+      viewport.dispatchEvent(new Event("scroll"));
+      await waitFor(() =>
+        expect(
+          canvas.getByRole("button", { name: "Scroll to latest message" })
+        ).toBeInTheDocument()
+      );
+    });
+
+    await step("Keyboard-activate it", async () => {
+      const btn = canvas.getByRole("button", {
+        name: "Scroll to latest message",
+      });
+      btn.focus();
+      await userEvent.keyboard("{Enter}");
+    });
+
+    await step("Focus lands on the viewport, not <body>", async () => {
+      await waitFor(() => expect(viewport).toHaveFocus());
+      await expect(document.body).not.toHaveFocus();
+    });
+
+    await step("Control does not flicker back after settling", async () => {
+      await waitFor(() =>
+        expect(distanceFromBottom(viewport)).toBeLessThanOrEqual(33)
+      );
+      await expect(
+        canvas.queryByRole("button", { name: "Scroll to latest message" })
+      ).not.toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Reduced motion downgrades the jump animation
+ * With `prefers-reduced-motion: reduce`, activating jump-to-latest scrolls
+ * instantly (`behavior: "auto"`) instead of smoothly.
+ */
+export const ReducedMotionJump: Story = {
+  render: () => <AppendableList />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const list = canvas.getByTestId("list");
+    const viewport = getViewport(list);
+
+    // Force reduced-motion and capture the scroll behavior the hook chooses.
+    const originalMatchMedia = window.matchMedia;
+    const originalScrollTo = viewport.scrollTo.bind(viewport);
+    const behaviors: (ScrollBehavior | undefined)[] = [];
+    window.matchMedia = ((query: string) =>
+      ({
+        matches: query.includes("prefers-reduced-motion"),
+        media: query,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        addListener: () => {},
+        removeListener: () => {},
+        onchange: null,
+        dispatchEvent: () => false,
+      }) as unknown as MediaQueryList) as typeof window.matchMedia;
+    viewport.scrollTo = ((arg: ScrollToOptions) => {
+      behaviors.push(typeof arg === "object" ? arg.behavior : undefined);
+      return originalScrollTo(arg as ScrollToOptions);
+    }) as typeof viewport.scrollTo;
+
+    try {
+      await step("Reveal the jump control", async () => {
+        viewport.scrollTop = 0;
+        viewport.dispatchEvent(new Event("scroll"));
+        await waitFor(() =>
+          expect(
+            canvas.getByRole("button", { name: "Scroll to latest message" })
+          ).toBeInTheDocument()
+        );
+      });
+
+      await step("Jump scrolls instantly under reduced motion", async () => {
+        await userEvent.click(
+          canvas.getByRole("button", { name: "Scroll to latest message" })
+        );
+        await waitFor(() => expect(behaviors.length).toBeGreaterThan(0));
+        await expect(behaviors.every((b) => b === "auto")).toBe(true);
+      });
+    } finally {
+      window.matchMedia = originalMatchMedia;
+      viewport.scrollTo = originalScrollTo;
+    }
+  },
+};
+
+/**
+ * Manual scroll (autoScroll disabled)
+ * With `autoScroll={false}` the list never auto-pins and never shows the
+ * jump-to-latest control — scroll position is entirely the consumer's.
+ */
+export const ManualScroll: Story = {
+  render: () => <AppendableList autoScroll={false} />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const list = canvas.getByTestId("list");
+    const viewport = getViewport(list);
+
+    await step("Does not pin on mount", async () => {
+      // Nothing auto-scrolled it to the bottom.
+      await expect(distanceFromBottom(viewport)).toBeGreaterThan(33);
+    });
+
+    await step("Appending does not auto-scroll, no jump control", async () => {
+      await userEvent.click(canvas.getByTestId("send"));
+      await userEvent.click(canvas.getByTestId("send"));
+      await expect(distanceFromBottom(viewport)).toBeGreaterThan(33);
+      await expect(
+        canvas.queryByRole("button", { name: "Scroll to latest message" })
+      ).not.toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * Near-bottom stays pinned
+ * A user scrolled slightly up (within the ~32px threshold) still counts as
+ * pinned: no jump control appears and appended content keeps following.
+ */
+export const NearBottomStaysPinned: Story = {
+  render: () => <AppendableList />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const list = canvas.getByTestId("list");
+    const viewport = getViewport(list);
+
+    await step("Start pinned", async () => {
+      await waitFor(() =>
+        expect(distanceFromBottom(viewport)).toBeLessThanOrEqual(33)
+      );
+    });
+
+    await step("A small scroll-up (<32px) keeps the pin engaged", async () => {
+      viewport.scrollTop = viewport.scrollHeight - viewport.clientHeight - 15;
+      viewport.dispatchEvent(new Event("scroll"));
+      // Within threshold ⇒ still pinned ⇒ no jump control.
+      await expect(
+        canvas.queryByRole("button", { name: "Scroll to latest message" })
+      ).not.toBeInTheDocument();
+    });
+
+    await step("Still follows appended content", async () => {
+      await userEvent.click(canvas.getByTestId("send"));
+      await waitFor(() =>
+        expect(distanceFromBottom(viewport)).toBeLessThanOrEqual(33)
+      );
+    });
+  },
+};

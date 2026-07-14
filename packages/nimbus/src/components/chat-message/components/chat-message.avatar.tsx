@@ -44,7 +44,8 @@ export const ChatMessageAvatar = ({
   const isNamed =
     props.firstName != null ||
     props.lastName != null ||
-    props["aria-label"] != null;
+    props["aria-label"] != null ||
+    props["aria-labelledby"] != null;
 
   // When the consumer supplies no content, give the agent an AI glyph instead
   // of the person fallback. The user keeps `Avatar`'s built-in person icon
