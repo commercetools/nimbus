@@ -17,7 +17,18 @@ claude mcp add -s user nimbus-mcp npx -- -y @commercetools/nimbus-mcp
 
 This writes the server config to `~/.claude.json` and makes it available in all
 sessions. Alternatively, add a `nimbus` entry to your project's `.mcp.json` so
-every team member on the repo gets the server automatically.
+every team member on the repo gets the server automatically:
+
+```json
+{
+  "mcpServers": {
+    "nimbus": {
+      "command": "npx",
+      "args": ["-y", "@commercetools/nimbus-mcp"]
+    }
+  }
+}
+```
 
 ### With Claude Desktop
 
