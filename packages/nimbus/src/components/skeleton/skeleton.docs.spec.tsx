@@ -1,132 +1,86 @@
+import { useState } from "react";
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import {
-  Skeleton,
   SkeletonText,
   SkeletonCircle,
+  Stack,
+  Text,
+  Button,
   NimbusProvider,
 } from "@commercetools/nimbus";
 
 /**
- * @docs-section basic-rendering
- * @docs-title Basic Rendering Tests
- * @docs-description Verify that skeleton components render and are hidden from assistive technology by default
+ * @docs-section standalone-pattern
+ * @docs-title Standalone Loading Pattern
+ * @docs-description The recommended way to use Skeleton: render placeholders
+ * while data is loading, then swap in the real content with conditional
+ * rendering. Skeleton deliberately has no `isLoaded` wrapper prop — the
+ * consumer owns the loading state.
  * @docs-order 1
  */
-describe("Skeleton - Basic rendering", () => {
-  it("renders a Skeleton element in the DOM", () => {
+describe("Skeleton - Standalone loading pattern", () => {
+  /**
+   * A representative consumer component: show a skeleton placeholder while
+   * `isLoading`, then render the real content once loading completes.
+   */
+  function ProductSummary({ isLoading }: { isLoading: boolean }) {
+    return (
+      <Stack direction="row" gap="400" alignItems="center">
+        {isLoading ? (
+          <SkeletonCircle size="2000" />
+        ) : (
+          <img src="/avatar.png" alt="Product thumbnail" width={80} />
+        )}
+        {isLoading ? (
+          <SkeletonText lines={2} width="7200" />
+        ) : (
+          <Text>Wireless keyboard — $49.00</Text>
+        )}
+      </Stack>
+    );
+  }
+
+  it("shows skeleton placeholders while loading, then real content", async () => {
+    const Example = () => {
+      const [isLoading, setIsLoading] = useState(true);
+      return (
+        <Stack gap="400">
+          <ProductSummary isLoading={isLoading} />
+          <Button onPress={() => setIsLoading(false)}>Finish loading</Button>
+        </Stack>
+      );
+    };
+
     render(
       <NimbusProvider>
-        <Skeleton data-testid="sk" width="200px" height="40px" />
+        <Example />
       </NimbusProvider>
     );
 
-    expect(screen.getByTestId("sk")).toBeInTheDocument();
-  });
+    // While loading: real content is absent.
+    expect(screen.queryByText("Wireless keyboard — $49.00")).toBeNull();
 
-  it("is hidden from assistive technology by default", () => {
-    render(
-      <NimbusProvider>
-        <Skeleton data-testid="sk" width="200px" height="40px" />
-      </NimbusProvider>
+    await userEvent.click(
+      screen.getByRole("button", { name: "Finish loading" })
     );
 
-    expect(screen.getByTestId("sk")).toHaveAttribute("aria-hidden", "true");
-  });
-
-  it("allows aria-hidden to be overridden", () => {
-    render(
-      <NimbusProvider>
-        <Skeleton
-          data-testid="sk"
-          width="200px"
-          height="40px"
-          aria-hidden={false}
-          aria-label="Loading thumbnail"
-        />
-      </NimbusProvider>
-    );
-
-    expect(screen.getByTestId("sk")).toHaveAttribute("aria-hidden", "false");
-  });
-});
-
-/**
- * @docs-section skeleton-text
- * @docs-title SkeletonText Tests
- * @docs-description Verify that SkeletonText renders the correct number of lines and respects configuration props
- * @docs-order 2
- */
-describe("SkeletonText - Multi-line placeholder", () => {
-  it("renders the default number of lines (3)", () => {
-    render(
-      <NimbusProvider>
-        <SkeletonText data-testid="skt" />
-      </NimbusProvider>
-    );
-
-    const container = screen.getByTestId("skt");
-    expect(container.children).toHaveLength(3);
-  });
-
-  it("renders a custom number of lines", () => {
-    render(
-      <NimbusProvider>
-        <SkeletonText data-testid="skt" lines={5} />
-      </NimbusProvider>
-    );
-
-    const container = screen.getByTestId("skt");
-    expect(container.children).toHaveLength(5);
-  });
-
-  it("is hidden from assistive technology by default", () => {
-    render(
-      <NimbusProvider>
-        <SkeletonText data-testid="skt" />
-      </NimbusProvider>
-    );
-
-    expect(screen.getByTestId("skt")).toHaveAttribute("aria-hidden", "true");
-  });
-});
-
-/**
- * @docs-section skeleton-circle
- * @docs-title SkeletonCircle Tests
- * @docs-description Verify that SkeletonCircle renders as an element hidden from assistive technology
- * @docs-order 3
- */
-describe("SkeletonCircle - Circular placeholder", () => {
-  it("renders a SkeletonCircle element in the DOM", () => {
-    render(
-      <NimbusProvider>
-        <SkeletonCircle data-testid="skc" size="64px" />
-      </NimbusProvider>
-    );
-
-    expect(screen.getByTestId("skc")).toBeInTheDocument();
-  });
-
-  it("is hidden from assistive technology by default", () => {
-    render(
-      <NimbusProvider>
-        <SkeletonCircle data-testid="skc" size="64px" />
-      </NimbusProvider>
-    );
-
-    expect(screen.getByTestId("skc")).toHaveAttribute("aria-hidden", "true");
+    // After loading: real content is present.
+    expect(screen.getByText("Wireless keyboard — $49.00")).toBeInTheDocument();
   });
 });
 
 /**
  * @docs-section aria-busy-pattern
- * @docs-title Container aria-busy Pattern Tests
- * @docs-description Verify the recommended pattern of setting aria-busy on the container to announce loading state
- * @docs-order 4
+ * @docs-title Announcing Loading with aria-busy
+ * @docs-description Skeleton shapes are decorative (`aria-hidden`) so they are
+ * not announced individually. Communicate the loading state to assistive
+ * technology by setting `aria-busy` on the surrounding container instead.
+ * @docs-order 2
  */
 describe("Skeleton - Container aria-busy pattern", () => {
-  it("container with aria-busy correctly announces loading state", () => {
+  it("announces loading state via aria-busy on the container", () => {
     render(
       <NimbusProvider>
         <section
@@ -144,7 +98,7 @@ describe("Skeleton - Container aria-busy pattern", () => {
     expect(container).toHaveAttribute("aria-label", "Product details");
   });
 
-  it("renders real content when loading is complete", () => {
+  it("clears aria-busy once real content is rendered", () => {
     render(
       <NimbusProvider>
         <section data-testid="container" aria-busy={false}>

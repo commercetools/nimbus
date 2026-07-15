@@ -79,6 +79,25 @@ narrower (`lastLineWidth`) to approximate a paragraph of text.
 - **WHEN** `SkeletonText` is rendered with more than one line
 - **THEN** the last line is rendered narrower than the preceding lines
 
+### Requirement: Text skeleton matches a text style
+
+`SkeletonText` SHALL accept a `textStyle` prop (default `body`) that sizes the
+placeholder line height and inter-line spacing to match the corresponding Nimbus
+text style, so the placeholder occupies a vertical rhythm comparable to real
+text of that style. Explicit `lineHeight` (bar height) and `spacing` (gap) props
+SHALL override the derived values.
+
+#### Scenario: Default body sizing
+
+- **WHEN** `SkeletonText` is rendered with no `textStyle`
+- **THEN** the line pitch matches the `body` text style's line-height
+
+#### Scenario: Sizing scales with the chosen text style
+
+- **WHEN** `SkeletonText` is rendered with `textStyle="3xl"`
+- **THEN** the bar height and line pitch scale to the `3xl` text style's
+  font-size and line-height
+
 ### Requirement: Circle skeleton convenience
 
 `SkeletonCircle` SHALL render a circular placeholder sized by a single `size`

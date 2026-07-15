@@ -106,6 +106,29 @@ const App = () => (
 )
 ```
 
+### Matching text size with `textStyle`
+
+`SkeletonText` accepts a `textStyle` prop (default `"body"`) that makes the
+placeholder lines occupy the same vertical rhythm as real text of that style. It
+sets the container's `font-size` and `line-height`, so each bar's height (`1em`)
+and the inter-line gap (`calc(1lh - 1em)`, the style's leading) scale
+automatically — a `body` skeleton uses a 26 px pitch, a `3xl` heading skeleton a
+36 px pitch. Pass any Nimbus text style to match the content you are standing in
+for.
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="600" width="300px">
+    <SkeletonText textStyle="caption" />
+    <SkeletonText textStyle="body" />
+    <SkeletonText textStyle="3xl" lines={2} />
+  </Stack>
+)
+```
+
+You can still override the derived sizing with the `lineHeight` (bar height) and
+`spacing` (gap) props when you need a bespoke layout.
+
 ### Circle skeleton
 
 `SkeletonCircle` is a convenience wrapper over `Skeleton shape="circle"`. Pass a single `size` prop to set equal width and height.
@@ -151,11 +174,11 @@ To communicate loading state to assistive technology, set `aria-busy="true"` on 
 </section>
 ```
 
-You can override `aria-hidden` on any component if you need a skeleton to be visible to assistive technology in a custom context:
-
-```tsx
-<Skeleton width="200px" height="40px" aria-hidden={false} aria-label="Loading thumbnail" />
-```
+Prefer the container `aria-busy` pattern above over labelling individual
+skeletons. A skeleton is a role-less `<div>`, so adding `aria-label` to it while
+un-hiding it (`aria-hidden={false}`) is an invalid ARIA combination that
+accessibility linters (axe) flag as `aria-prohibited-attr`. Announce the loading
+region on the wrapping container instead.
 
 ### Reduced motion
 

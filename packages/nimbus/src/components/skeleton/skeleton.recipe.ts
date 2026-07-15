@@ -54,8 +54,12 @@ export const skeletonRecipe = defineRecipe({
         animation: "pulse 2s ease-in-out infinite",
       },
       wave: {
-        // Define the shimmer highlight color as a CSS custom property
-        // so it can be overridden for dark mode
+        // Define the shimmer highlight color as a CSS custom property so it can
+        // be overridden for dark mode. These raw rgba() literals are an
+        // intentional exception to the "tokens only" rule: the shimmer is a
+        // translucent white overlay sweeping across the base color, and there is
+        // no semantic white-alpha token scale to express it (mirrors the raw
+        // rgba `--ring-color` in theme/global-css.ts).
         "--skeleton-shimmer-color": "rgba(255, 255, 255, 0.6)",
         _dark: {
           "--skeleton-shimmer-color": "rgba(255, 255, 255, 0.13)",
