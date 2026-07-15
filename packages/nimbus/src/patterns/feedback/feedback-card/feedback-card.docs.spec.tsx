@@ -4,6 +4,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   FeedbackCard,
+  Heading,
   Text,
   Button,
   Stack,
@@ -28,10 +29,15 @@ describe("FeedbackCard - Undo drives external state", () => {
       }
 
       return (
-        <FeedbackCard.Root bg="positive.2" borderRadius="200" p="400">
+        <FeedbackCard.Root
+          colorPalette="positive"
+          bg="colorPalette.2"
+          borderRadius="200"
+          p="400"
+        >
           <FeedbackCard.Content>
-            <Text fontWeight="700">Suggestion approved</Text>
-            <Text color="neutral.11">Applied the recommended discount.</Text>
+            <Heading size="sm">Suggestion approved</Heading>
+            <Text>Applied the recommended discount.</Text>
           </FeedbackCard.Content>
           <FeedbackCard.Action>
             <Button variant="outline" onPress={() => setStatus("reverted")}>
@@ -76,7 +82,12 @@ describe("FeedbackCard - Feed dismissal workflow", () => {
       return (
         <Stack gap="200">
           {items.map((item) => (
-            <FeedbackCard.Root key={item.id} bg="neutral.2" p="400">
+            <FeedbackCard.Root
+              key={item.id}
+              colorPalette="neutral"
+              bg="colorPalette.2"
+              p="400"
+            >
               <FeedbackCard.Content>
                 <Text>{item.label}</Text>
               </FeedbackCard.Content>

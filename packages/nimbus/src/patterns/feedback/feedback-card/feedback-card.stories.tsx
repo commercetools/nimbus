@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn } from "storybook/test";
-import { FeedbackCard, Text, Button } from "@commercetools/nimbus";
+import { FeedbackCard, Heading, Text, Button } from "@commercetools/nimbus";
 
 const meta: Meta<typeof FeedbackCard.Root> = {
   title: "patterns/feedback/FeedbackCard",
@@ -32,12 +32,8 @@ export const ApproveContext: Story = {
       p="400"
     >
       <FeedbackCard.Content>
-        <Text fontWeight="700" color="colorPalette.11">
-          Suggestion approved
-        </Text>
-        <Text color="colorPalette.11">
-          Applied the recommended discount to 3 products.
-        </Text>
+        <Heading size="sm">Suggestion approved</Heading>
+        <Text>Applied the recommended discount to 3 products.</Text>
       </FeedbackCard.Content>
       <FeedbackCard.Action>
         {/* The Button needs no colorPalette — it inherits "positive" from Root. */}
@@ -89,10 +85,8 @@ export const RejectedContext: Story = {
       p="400"
     >
       <FeedbackCard.Content>
-        <Text fontWeight="700" color="colorPalette.11">
-          Suggestion rejected
-        </Text>
-        <Text color="colorPalette.11">No changes were applied.</Text>
+        <Heading size="sm">Suggestion rejected</Heading>
+        <Text>No changes were applied.</Text>
       </FeedbackCard.Content>
       <FeedbackCard.Action>
         {/* No colorPalette on the Button — it inherits "critical" from Root. */}
