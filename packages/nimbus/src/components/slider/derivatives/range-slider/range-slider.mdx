@@ -1,0 +1,161 @@
+---
+id: Components-RangeSlider
+title: Range Slider
+exportName: RangeSlider
+description:
+  A range slider lets users select a numeric range — a lower and an upper
+  bound — by dragging two handles along a shared track.
+lifecycleState: Stable
+order: 999
+menu:
+  - Components
+  - Inputs
+  - Range Slider
+tags:
+  - component
+  - range slider
+  - slider
+  - input
+  - numeric
+  - range
+---
+
+## Overview
+
+A range slider lets people choose a range — a lower and an upper bound — by
+dragging two handles along a shared track, instead of typing two numbers. It's a
+good fit whenever the exact numbers matter less than their position relative to
+the whole scale, such as a price, distance, or rating filter.
+
+`RangeSlider` selects a `[min, max]` pair with two handles that can't cross each
+other, so the lower value never exceeds the upper one. For selecting a single
+value, use [`Slider`](/components/inputs/slider) instead — the two share the
+same track, handle, and tick styling, so a page that mixes single and range
+sliders still looks consistent.
+
+Like `Slider`, `RangeSlider` draws no label or static "current value" readout of
+its own. Each handle's value appears in a small tooltip above it while it's
+hovered, focused, or being dragged — the track stays visually quiet the rest of
+the time. The control's label comes from the surrounding `FormField`, or from an
+`aria-label` when it's used on its own, and each handle takes its own name from
+`thumbLabels`.
+
+### Key features
+
+- **Two non-crossing handles:** the lower handle can't be dragged past the upper
+  one, so the selection is always a valid `[min, max]` range.
+- **Tooltip value display:** each handle's value shows above it on hover, focus,
+  or drag — there's no permanent number next to the track.
+- **Per-handle names:** `thumbLabels` gives each handle its own accessible name;
+  when omitted, the handles fall back to localized "Minimum" / "Maximum" labels.
+- **Shared styling with Slider:** the same size, variant, orientation, and tick
+  options apply, so range and single sliders stay visually consistent.
+
+### Resources
+
+- [Slider](/components/inputs/slider) — the single-value counterpart
+- [W3C ARIA Authoring Practices: Slider (Multi-Thumb) pattern](https://www.w3.org/WAI/ARIA/apg/patterns/slider-multithumb/)
+
+## Variables
+
+### Thumb labels
+
+`RangeSlider` uses two handles, so each one needs its own accessible name. Pass
+`thumbLabels` as a `[lower, upper]` pair (for example
+`["Minimum price", "Maximum price"]`); when omitted, the handles fall back to
+localized "Minimum" / "Maximum" labels rather than being left anonymous.
+
+```jsx live
+const App = () => (
+  <RangeSlider
+    aria-label="Price range"
+    thumbLabels={["Minimum price", "Maximum price"]}
+    defaultValue={[20, 60]}
+    minValue={0}
+    maxValue={100}
+  />
+);
+```
+
+### Size
+
+`md` is the default size. `sm` is available for denser layouts.
+
+```jsx live
+const App = () => (
+  <Stack direction="horizontal" gap="600" alignItems="center">
+    <RangeSlider aria-label="Small" size="sm" defaultValue={[20, 60]} />
+    <RangeSlider
+      aria-label="Medium (default)"
+      size="md"
+      defaultValue={[20, 60]}
+    />
+  </Stack>
+);
+```
+
+### Variants
+
+`plain` is the default. One additional variant is available for contexts that
+call for a different visual weight:
+
+- **Plain** (default) — a standard filled track with a colored progress bar
+  between the two handles. The safest choice for most forms and filters.
+- **Enclosed** — a thick, contained bar with the handles inset inside it (an
+  iOS-style control). Good for touch-first contexts or standalone controls that
+  benefit from larger, more tactile targets.
+
+```jsx live
+const App = () => (
+  <Stack direction="horizontal" gap="600" alignItems="center">
+    <RangeSlider
+      aria-label="Plain (default)"
+      variant="plain"
+      defaultValue={[20, 60]}
+    />
+    <RangeSlider
+      aria-label="Enclosed"
+      variant="enclosed"
+      defaultValue={[25, 75]}
+    />
+  </Stack>
+);
+```
+
+### Orientation
+
+`horizontal` is the default. `vertical` is useful when horizontal space is
+limited. The vertical track has a built-in default length, so no explicit
+`height` is required.
+
+```jsx live
+const App = () => (
+  <Stack direction="horizontal" gap="600" alignItems="flex-start">
+    <RangeSlider aria-label="Horizontal" defaultValue={[20, 60]} />
+    <RangeSlider
+      aria-label="Vertical"
+      defaultValue={[20, 60]}
+      orientation="vertical"
+    />
+  </Stack>
+);
+```
+
+### Ticks
+
+Turn on `showTicks` to mark discrete steps along the track. `tickStep` (or
+`step`, if `tickStep` is omitted) controls how far apart the ticks are. Ticks
+are purely visual — they don't constrain where the handles can land.
+
+```jsx live
+const App = () => (
+  <RangeSlider
+    aria-label="Rating range"
+    defaultValue={[25, 75]}
+    minValue={0}
+    maxValue={100}
+    step={25}
+    showTicks
+  />
+);
+```

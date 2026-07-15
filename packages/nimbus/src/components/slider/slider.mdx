@@ -22,17 +22,17 @@ tags:
 
 ## Overview
 
-A slider lets people choose a value — or, with `RangeSlider`, a min–max range —
-by dragging a handle along a track, instead of typing a number. It's a good fit
-whenever the exact number matters less than its position relative to the whole
-scale, such as volume, zoom, opacity, or a price range filter.
+A slider lets people choose a value by dragging a handle along a track, instead
+of typing a number. It's a good fit whenever the exact number matters less than
+its position relative to the whole scale, such as volume, zoom, opacity, or
+brightness.
 
-`Slider` selects a single value. `RangeSlider` selects two values at once (a
-lower and an upper bound) using two handles that can't cross each other. Both
-share the same track, handle, and tick styling, so a page that mixes single and
-range sliders still looks consistent.
+`Slider` selects a single value. To select a range — a lower and an upper bound
+at once — use the [Range Slider](/components/inputs/range-slider), which shares
+the same track, handle, and tick styling, so a page that mixes single and range
+sliders still looks consistent.
 
-Neither component draws its own label or a static "current value" readout. The
+The slider draws no label or static "current value" readout of its own. The
 current value appears in a small tooltip above the handle while it's hovered,
 focused, or being dragged — the track stays visually quiet the rest of the time.
 The label comes from the surrounding `FormField`, or from an `aria-label` when
@@ -42,8 +42,9 @@ the slider is used on its own.
 
 - **Tooltip value display:** the current value shows above the handle on hover,
   focus, or drag — there's no permanent number next to the track.
-- **Range selection:** `RangeSlider` uses two handles that can't be dragged past
-  each other, so the lower value never exceeds the upper one.
+- **Range selection:** the [Range Slider](/components/inputs/range-slider) uses
+  two handles that can't be dragged past each other, for choosing a min–max
+  range.
 - **Tick marks:** an optional row of marks along the track for scales where the
   discrete steps matter (e.g. star ratings, quality levels).
 - **Horizontal and vertical:** either orientation is available for layouts where
@@ -122,19 +123,6 @@ const App = () => (
 
 ### Range
 
-`RangeSlider` selects a `[min, max]` pair with two independent handles. Pass
-`thumbLabels` to give each handle its own accessible name (for example
-`["Minimum price", "Maximum price"]`); when omitted, the handles fall back to
-localized "Minimum" / "Maximum" labels.
-
-```jsx live
-const App = () => (
-  <RangeSlider
-    aria-label="Price range"
-    thumbLabels={["Minimum", "Maximum"]}
-    defaultValue={[20, 60]}
-    minValue={0}
-    maxValue={100}
-  />
-);
-```
+To select a range — a lower and an upper bound — with two handles, use the
+[Range Slider](/components/inputs/range-slider). It shares the same size,
+variant, orientation, and tick options shown above.

@@ -1,5 +1,6 @@
-import { SliderBase } from "./slider-base";
-import type { SliderBaseProps, RangeSliderProps } from "./slider.types";
+import { SliderBase } from "../../slider-base";
+import type { SliderBaseProps } from "../../slider.types";
+import type { RangeSliderProps } from "./range-slider.types";
 
 /**
  * # RangeSlider

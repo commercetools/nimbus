@@ -9,10 +9,9 @@ Accessibility ensures that digital content and functionality are usable by
 everyone, including people with disabilities, by addressing visual, auditory,
 cognitive, and physical limitations.
 
-`Slider` and `RangeSlider` render no visible label of their own, so an
-accessible name must always come from somewhere — either `FormField.Label`
-when composed inside a form field, or an `aria-label` / `aria-labelledby` when
-used standalone.
+`Slider` renders no visible label of its own, so an accessible name must always
+come from somewhere — either `FormField.Label` when composed inside a form
+field, or an `aria-label` / `aria-labelledby` when used standalone.
 
 ```jsx live
 const App = () => (
@@ -26,9 +25,9 @@ const App = () => (
   `aria-labelledby`) standalone, or `FormField.Label` when composed inside
   `FormField.Root`. A slider with no accessible name is unusable with a screen
   reader.
-- For `RangeSlider`, give each handle its own name via `thumbLabels` (e.g.
-  `["Minimum price", "Maximum price"]`); when omitted, the handles fall back
-  to localized "Minimum" / "Maximum" labels so they're never anonymous.
+- For selecting a range with two handles, see the
+  [Range Slider](/components/inputs/range-slider), which has its own per-handle
+  labeling requirements (`thumbLabels`).
 - The current value is exposed to assistive technology through the handle's
   native value, not just the visual tooltip — screen readers announce it
   without needing the tooltip to be open.

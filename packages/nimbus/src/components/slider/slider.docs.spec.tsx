@@ -1,12 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {
-  Slider,
-  RangeSlider,
-  FormField,
-  NimbusProvider,
-} from "@commercetools/nimbus";
+import { Slider, FormField, NimbusProvider } from "@commercetools/nimbus";
 
 /**
  * @docs-section basic-rendering
@@ -105,100 +100,10 @@ describe("Slider - Interactions", () => {
 });
 
 /**
- * @docs-section range-selection
- * @docs-title Range Selection Tests
- * @docs-description Verify RangeSlider's two-handle range behavior
- * @docs-order 3
- */
-describe("RangeSlider - Range selection", () => {
-  it("renders two handles with localized default labels when thumbLabels is omitted", () => {
-    render(
-      <NimbusProvider>
-        <RangeSlider
-          aria-label="Price range"
-          defaultValue={[20, 60]}
-          minValue={0}
-          maxValue={100}
-        />
-      </NimbusProvider>
-    );
-
-    const thumbs = screen.getAllByRole("slider");
-    expect(thumbs).toHaveLength(2);
-    expect(thumbs[0]).toHaveValue("20");
-    expect(thumbs[1]).toHaveValue("60");
-    expect(thumbs[0]).toHaveAttribute("aria-label", "Minimum");
-    expect(thumbs[1]).toHaveAttribute("aria-label", "Maximum");
-  });
-
-  it("uses custom thumbLabels when provided", () => {
-    render(
-      <NimbusProvider>
-        <RangeSlider
-          aria-label="Price range"
-          thumbLabels={["Minimum price", "Maximum price"]}
-          defaultValue={[20, 60]}
-          minValue={0}
-          maxValue={100}
-        />
-      </NimbusProvider>
-    );
-
-    const thumbs = screen.getAllByRole("slider");
-    expect(thumbs[0]).toHaveAttribute("aria-label", "Minimum price");
-    expect(thumbs[1]).toHaveAttribute("aria-label", "Maximum price");
-  });
-
-  it("calls onChange with a [number, number] tuple", async () => {
-    const user = userEvent.setup();
-    const handleChange = vi.fn();
-    render(
-      <NimbusProvider>
-        <RangeSlider
-          aria-label="Price range"
-          defaultValue={[20, 60]}
-          minValue={0}
-          maxValue={100}
-          onChange={handleChange}
-        />
-      </NimbusProvider>
-    );
-
-    const thumbs = screen.getAllByRole("slider");
-    thumbs[0].focus();
-    await user.keyboard("{ArrowRight}");
-
-    expect(handleChange).toHaveBeenCalledWith([21, 60]);
-  });
-
-  it("keeps the lower handle from crossing the upper handle", async () => {
-    const user = userEvent.setup();
-    render(
-      <NimbusProvider>
-        <RangeSlider
-          aria-label="Price range"
-          defaultValue={[20, 60]}
-          minValue={0}
-          maxValue={100}
-        />
-      </NimbusProvider>
-    );
-
-    const thumbs = screen.getAllByRole("slider");
-    thumbs[0].focus();
-    await user.keyboard("{End}");
-
-    const lower = Number((thumbs[0] as HTMLInputElement).value);
-    const upper = Number((thumbs[1] as HTMLInputElement).value);
-    expect(lower).toBeLessThanOrEqual(upper);
-  });
-});
-
-/**
  * @docs-section states
  * @docs-title Testing States
  * @docs-description Verify disabled and invalid states render correctly
- * @docs-order 4
+ * @docs-order 3
  */
 describe("Slider - States", () => {
   it("handles disabled state", () => {
@@ -239,7 +144,7 @@ describe("Slider - States", () => {
  * @docs-section form-field-integration
  * @docs-title FormField Integration Tests
  * @docs-description Verify the slider composes correctly inside FormField
- * @docs-order 5
+ * @docs-order 4
  */
 describe("Slider - FormField integration", () => {
   it("resolves an accessible name from FormField.Label", () => {

@@ -65,7 +65,7 @@ type SliderCommonProps = {
 // `defaultValue` below and produces an unsatisfiable type for the range
 // tuple (it only survives for the single-number Slider by accidental union
 // overlap) — exclude it here so each component's own declaration wins.
-type SliderSharedProps = OmitInternalProps<
+export type SliderSharedProps = OmitInternalProps<
   SliderRootSlotProps,
   "onChange" | "defaultValue"
 > &
@@ -82,12 +82,9 @@ export type SliderProps = SliderSharedProps & {
   onChangeEnd?: (value: number) => void;
 };
 
-export type RangeSliderProps = SliderSharedProps & {
-  value?: [number, number];
-  defaultValue?: [number, number];
-  onChange?: (value: [number, number]) => void;
-  onChangeEnd?: (value: [number, number]) => void;
-};
+// `RangeSliderProps` lives with the RangeSlider derivative in
+// `derivatives/range-slider/range-slider.types.ts`, built on the exported
+// `SliderSharedProps` above.
 
 // ============================================================
 // INTERNAL PROPS (shared implementation accepts the union)
