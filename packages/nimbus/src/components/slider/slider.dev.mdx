@@ -9,12 +9,7 @@ tab-order: 3
 ### Import
 
 ```tsx
-import {
-  Slider,
-  RangeSlider,
-  type SliderProps,
-  type RangeSliderProps,
-} from "@commercetools/nimbus";
+import { Slider, type SliderProps } from "@commercetools/nimbus";
 ```
 
 ### Basic usage
@@ -30,26 +25,11 @@ const App = () => (
 );
 ```
 
+> Need to select a range with two handles instead of a single value? See the
+> [Range Slider](/components/inputs/range-slider) component — it shares the same
+> track, handle, and tick styling.
+
 ## Usage examples
-
-### Range selection
-
-`RangeSlider` selects a `[number, number]` tuple using two handles that can't be
-dragged past each other — the lower value never exceeds the upper one. Use
-`thumbLabels` to give each handle its own accessible name; when omitted, the
-handles fall back to localized "Minimum" / "Maximum" labels.
-
-```jsx live-dev
-const App = () => (
-  <RangeSlider
-    aria-label="Price range"
-    thumbLabels={["Minimum", "Maximum"]}
-    defaultValue={[20, 60]}
-    minValue={0}
-    maxValue={100}
-  />
-);
-```
 
 ### Size options
 
@@ -68,8 +48,9 @@ const App = () => (
 
 `variant` changes the track/progress/thumb treatment. `plain` (the default) is
 the standard filled track; `enclosed` is a thick, contained bar with the thumb
-inset inside it. Applies to both `Slider` and `RangeSlider` since they share the
-same recipe.
+inset inside it. The same variants apply to the
+[Range Slider](/components/inputs/range-slider), since they share the same
+recipe.
 
 ```jsx live-dev
 const App = () => (
@@ -225,45 +206,15 @@ const App = () => {
 };
 ```
 
-### Controlled RangeSlider
-
-`RangeSlider`'s controlled value is a `[number, number]` tuple; `onChange`
-receives the updated tuple. As above, the `Text` element is a stand-in for your
-own logic consuming the live range — not a suggested UI pattern to place next to
-the track.
-
-```jsx live-dev
-const App = () => {
-  const [range, setRange] = useState([20, 60]);
-
-  return (
-    <Stack direction="column" gap="400">
-      <RangeSlider
-        aria-label="Price range"
-        thumbLabels={["Minimum", "Maximum"]}
-        value={range}
-        onChange={setRange}
-        minValue={0}
-        maxValue={100}
-      />
-      <Text fontSize="sm">
-        Range (for demo purposes): {range[0]} – {range[1]}
-      </Text>
-    </Stack>
-  );
-};
-```
-
 ## Component requirements
 
 ### Accessibility
 
-`Slider` and `RangeSlider` handle keyboard, pointer, touch, and RTL behavior
-internally via React Aria. However, unlike most Nimbus inputs, **neither
-component renders a visible label or a static value readout** — the current
-value is only ever shown in a tooltip above the handle while it's hovered,
-focused, or dragged. You must always supply an accessible name through one of
-the following:
+`Slider` handles keyboard, pointer, touch, and RTL behavior internally via React
+Aria. However, unlike most Nimbus inputs, **it renders no visible label or a
+static value readout** — the current value is only ever shown in a tooltip above
+the handle while it's hovered, focused, or dragged. You must always supply an
+accessible name through one of the following:
 
 - Composing inside `FormField.Root` with `FormField.Label` (recommended for
   forms):
@@ -291,18 +242,14 @@ the following:
 <Slider aria-labelledby="opacity-label" defaultValue={80} minValue={0} maxValue={100} />
 ```
 
-For `RangeSlider`, use `thumbLabels` to name each handle individually (e.g.
-`["Minimum price", "Maximum price"]`); if omitted, the handles fall back to
-localized "Minimum" / "Maximum" labels rather than being left anonymous.
-
 If your use case requires tracking and analytics for this component, it is good
 practice to add a **persistent**, **unique** id:
 
 ```tsx
-const PERSISTENT_ID = "checkout-price-range-filter";
+const PERSISTENT_ID = "settings-opacity-slider";
 
-export const PriceRangeFilter = () => (
-  <RangeSlider id={PERSISTENT_ID} minValue={0} maxValue={500} />
+export const OpacitySlider = () => (
+  <Slider id={PERSISTENT_ID} minValue={0} maxValue={100} />
 );
 ```
 
@@ -310,66 +257,21 @@ export const PriceRangeFilter = () => (
 
 The component supports full keyboard interaction:
 
-- `Tab` / `Shift+Tab`: move focus to/from a handle (`RangeSlider` has two
-  independently focusable handles).
+- `Tab` / `Shift+Tab`: move focus to/from the handle.
 - `Arrow Left` / `Arrow Right` (or `Arrow Down` / `Arrow Up` when
-  `orientation="vertical"`): decrement/increment the focused handle's value by
-  `step`.
+  `orientation="vertical"`): decrement/increment the handle's value by `step`.
 - `Page Down` / `Page Up`: decrement/increment by a larger amount.
-- `Home`: jump the focused handle to `minValue`.
-- `End`: jump the focused handle to `maxValue`.
-
-On `RangeSlider`, a handle can never be moved past the other handle — its
-effective range is clamped to `[minValue, upperValue]` for the lower handle and
-`[lowerValue, maxValue]` for the upper handle.
+- `Home`: jump the handle to `minValue`.
+- `End`: jump the handle to `maxValue`.
 
 ## API reference
 
-### Slider
-
 <PropsTable id="Slider" />
 
-### RangeSlider
-
-<PropsTable id="RangeSlider" />
+The [Range Slider](/components/inputs/range-slider) has its own API reference on
+its Implementation tab.
 
 ## Common patterns
-
-### Price range filter
-
-A typical use of `RangeSlider` alongside a `FormField.Description` that
-summarizes the current selection. Unlike a bare value readout placed directly
-beside the track (see Guidelines), this description is a permanent part of the
-form field's own text stack, below the control — useful context for anyone who
-isn't actively hovering or focusing a handle, rather than a duplicate of the
-tooltip.
-
-```jsx live-dev
-const App = () => {
-  const [range, setRange] = useState([20, 80]);
-
-  return (
-    <Stack direction="column" gap="300">
-      <FormField.Root>
-        <FormField.Label>Price range</FormField.Label>
-        <FormField.Input>
-          <RangeSlider
-            thumbLabels={["Minimum price", "Maximum price"]}
-            value={range}
-            onChange={setRange}
-            minValue={0}
-            maxValue={200}
-            formatOptions={{ style: "currency", currency: "USD" }}
-          />
-        </FormField.Input>
-        <FormField.Description>
-          ${range[0]} – ${range[1]}
-        </FormField.Description>
-      </FormField.Root>
-    </Stack>
-  );
-};
-```
 
 ### Slider inside a form field with validation
 
@@ -393,9 +295,9 @@ const App = () => (
 
 ## Testing your implementation
 
-These examples demonstrate how to test your implementation when using Slider and
-RangeSlider within your application. As the components' internal functionality
-is already tested by Nimbus, these patterns help you verify your integration and
+These examples demonstrate how to test your implementation when using Slider
+within your application. As the component's internal functionality is already
+tested by Nimbus, these patterns help you verify your integration and
 application-specific logic.
 
 {{docs-tests: slider.docs.spec.tsx}}
@@ -403,6 +305,6 @@ application-specific logic.
 ## Resources
 
 - [Storybook: Slider](https://nimbus-storybook.vercel.app/?path=/docs/components-slider--docs)
-- [Storybook: RangeSlider](https://nimbus-storybook.vercel.app/?path=/docs/components-rangeslider--docs)
+- [Range Slider](/components/inputs/range-slider) — the two-handle range counterpart
 - [React Aria Slider](https://react-spectrum.adobe.com/react-aria/Slider.html)
 - [W3C ARIA Authoring Practices Guide (APG): Slider pattern](https://www.w3.org/WAI/ARIA/apg/patterns/slider/)
