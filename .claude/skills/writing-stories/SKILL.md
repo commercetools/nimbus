@@ -94,9 +94,9 @@ type Story = StoryObj<typeof ComponentName>;
 Stories MUST be exported in this order:
 
 1. **Base/Default** - Simplest usage, first story
-2. **Focused** - Keyboard-focus snapshot (visual components)
-3. **Sizes** - Size variants (if applicable)
-4. **Variants** - Visual variants (if applicable)
+2. **Sizes** - Size variants (if applicable)
+3. **Variants** - Visual variants (if applicable)
+4. **Focused** - Focus state (if applicable)
 5. **States** - Disabled, Invalid, Required, etc.
 6. **Controlled** - Controlled state example
 7. **Complex** - Advanced scenarios, edge cases
@@ -288,7 +288,7 @@ export const SmokeTest: Story = {
 };
 ```
 
-#### Focused Story (visual components)
+#### Focused Story (if applicable)
 
 Captures the keyboard-focus state, which no other story renders:
 
@@ -656,9 +656,9 @@ You MUST validate against these requirements:
 #### Required Stories
 
 - [ ] Base/Default story exists (MUST be first)
-- [ ] Focused story (visual components; `preserveFocusRing: true` param + `vrt` tag)
 - [ ] Sizes story (if component has sizes)
 - [ ] Variants story (if component has variants)
+- [ ] Focused story (if component is focusable)
 - [ ] Disabled story (for interactive components)
 - [ ] Controlled story (for stateful components)
 - [ ] SmokeTest story (MUST be last)

@@ -20,23 +20,6 @@ const variants = ["outline", "ghost"] as const;
 
 const colorPalettes = ["primary", "neutral", "critical", "info"] as const;
 
-export const Focused: Story = {
-  tags: ["vrt"],
-  parameters: {
-    preserveFocusRing: true,
-    chromatic: { disableSnapshot: false },
-  },
-  args: {
-    children: "Toggle Me",
-    "aria-label": "test-toggle-button",
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.tab();
-    await expect(canvas.getByRole("button")).toHaveFocus();
-  },
-};
-
 export const Base: Story = {
   args: {
     children: "Toggle Me",
@@ -187,6 +170,23 @@ export const Variants: Story = {
         ))}
       </Stack>
     );
+  },
+};
+
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    preserveFocusRing: true,
+    chromatic: { disableSnapshot: false },
+  },
+  args: {
+    children: "Toggle Me",
+    "aria-label": "test-toggle-button",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("button")).toHaveFocus();
   },
 };
 

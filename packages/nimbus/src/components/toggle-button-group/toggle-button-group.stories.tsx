@@ -37,30 +37,6 @@ const colorPalettes: ToggleButtonGroupColorPalette[] = [
 ];
 
 /**
- * Captures the focus ring on a button within the group.
- */
-export const Focused: Story = {
-  tags: ["vrt"],
-  parameters: {
-    preserveFocusRing: true,
-    chromatic: { disableSnapshot: false },
-  },
-  args: {
-    children: defaultChildren,
-    "aria-label": "Focused Test Group",
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.tab();
-    const group = canvas.getByRole("radiogroup", {
-      name: /Focused Test Group/i,
-    });
-    const [leftButton] = within(group).getAllByRole("radio");
-    await expect(leftButton).toHaveFocus();
-  },
-};
-
-/**
  * Base story
  *
  * Demonstrates the most basic implementation with interaction tests.
@@ -298,6 +274,30 @@ export const Sizes: Story = {
         within(groups[1]).getAllByRole("radio").length
       ).toBeGreaterThan(0);
     });
+  },
+};
+
+/**
+ * Captures the focus ring on a button within the group.
+ */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    preserveFocusRing: true,
+    chromatic: { disableSnapshot: false },
+  },
+  args: {
+    children: defaultChildren,
+    "aria-label": "Focused Test Group",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    const group = canvas.getByRole("radiogroup", {
+      name: /Focused Test Group/i,
+    });
+    const [leftButton] = within(group).getAllByRole("radio");
+    await expect(leftButton).toHaveFocus();
   },
 };
 

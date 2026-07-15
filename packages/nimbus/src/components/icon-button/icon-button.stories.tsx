@@ -41,23 +41,6 @@ const variants: IconButtonProps["variant"][] = [
  */
 type Story = StoryObj<typeof IconButton>;
 
-export const Focused: Story = {
-  tags: ["vrt"],
-  parameters: {
-    preserveFocusRing: true,
-    chromatic: { disableSnapshot: false },
-  },
-  args: {
-    children: <DemoIcon />,
-    ["aria-label"]: "test-button",
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.tab();
-    await expect(canvas.getByRole("button")).toHaveFocus();
-  },
-};
-
 /**
  * Base story
  * Demonstrates the most basic implementation
@@ -149,6 +132,23 @@ export const Variants: Story = {
         ))}
       </Stack>
     );
+  },
+};
+
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    preserveFocusRing: true,
+    chromatic: { disableSnapshot: false },
+  },
+  args: {
+    children: <DemoIcon />,
+    ["aria-label"]: "test-button",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("button")).toHaveFocus();
   },
 };
 

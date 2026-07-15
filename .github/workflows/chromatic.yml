@@ -25,6 +25,9 @@ jobs:
       'pull_request'
     permissions:
       contents: read
+      # Skip path posts a passing "UI Tests" status so a required check still
+      # reports when Chromatic doesn't run. See runbook "Merge gating".
+      statuses: write
     steps:
       # Full history: Chromatic needs it to find the baseline build to diff against.
       - name: Checkout repository
@@ -51,13 +54,21 @@ jobs:
             # Blind spot: dep bumps land here - dispatch a manual run after them.
             packages/nimbus/package.json
 
+      # No UI changed, so Chromatic won't run and won't post its "UI Tests"
+      # status. Post a passing one ourselves on the PR head SHA - otherwise a
+      # required "UI Tests" check would wait forever and block non-UI PRs.
       - name: No UI changes detected
         if:
           steps.changed-files.outputs.any_changed != 'true' && github.event_name
           != 'workflow_dispatch'
-        run:
-          echo "::notice::No UI-affecting changes detected in this push.
-          Skipping the Chromatic visual regression build."
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "::notice::No UI-affecting changes detected. Skipping the Chromatic visual regression build."
+          gh api --method POST "repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha || github.sha }}" \
+            -f state=success \
+            -f context='UI Tests' \
+            -f description='No UI-affecting changes; Chromatic skipped'
 
       - name: Installing dependencies and building packages
         if:
@@ -79,9 +90,6 @@ jobs:
           zip: true
           # TurboSnap: snapshot only diff-affected stories (full on dispatch). See runbook.
           onlyChanged: ${{ github.event_name != 'workflow_dispatch' }}
-          # Keeps this GHA check green on visual diffs; Chromatic's async "UI Tests"
-          # check still reports them. Gating is two switches - see runbook "Merge gating".
-          exitZeroOnChanges: true
           # Return once Storybook is uploaded; Chromatic tests on its servers and
           # posts the status check when done. Avoids timeouts on full builds.
           exitOnceUploaded: true

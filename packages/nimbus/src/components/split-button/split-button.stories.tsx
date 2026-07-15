@@ -156,25 +156,6 @@ export const Basic: Story = {
   },
 };
 
-export const Focused: Story = {
-  tags: ["vrt"],
-  parameters: {
-    preserveFocusRing: true,
-    chromatic: { disableSnapshot: false },
-  },
-  render: () => (
-    <SplitButton onAction={fn()} aria-label="More actions" icon={<Save />}>
-      <Menu.Item id="save">Save</Menu.Item>
-      <Menu.Item id="save-publish">Save and publish</Menu.Item>
-    </SplitButton>
-  ),
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.tab();
-    await expect(canvas.getAllByRole("button")[0]).toHaveFocus();
-  },
-};
-
 /**
  * The disabled treatment is a uniform opacity layer, captured here across
  * variants because the dropdown-trigger delimiter border is variant-specific
@@ -394,6 +375,25 @@ export const SplitButtonVariants: Story = {
       </Stack>
     </Stack>
   ),
+};
+
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    preserveFocusRing: true,
+    chromatic: { disableSnapshot: false },
+  },
+  render: () => (
+    <SplitButton onAction={fn()} aria-label="More actions" icon={<Save />}>
+      <Menu.Item id="save">Save</Menu.Item>
+      <Menu.Item id="save-publish">Save and publish</Menu.Item>
+    </SplitButton>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getAllByRole("button")[0]).toHaveFocus();
+  },
 };
 
 export const DisabledStates: Story = {

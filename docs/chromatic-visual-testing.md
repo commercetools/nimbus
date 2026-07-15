@@ -115,11 +115,15 @@ common misconception:
 
 - Every build **diffs against the existing baseline.** A build does not become
   the new baseline just by running.
-- A baseline only **moves when snapshots are accepted** - either explicitly in
-  the Chromatic dashboard, or by changes landing on `main` (which future
-  branches then inherit from).
-- Because this project sets `exitZeroOnChanges: true`, diffs never auto-accept -
-  a human accepts them in the dashboard.
+- A baseline only **moves when snapshots are accepted** in the Chromatic
+  dashboard. Accepting on a branch makes that snapshot the baseline its
+  descendants inherit, so accepting on a PR branch (or on `main` itself) is what
+  future branches pick up after merge.
+- **Merging does not auto-accept.** This project sets no `autoAcceptChanges`, so
+  a diff that lands on `main` unaccepted stays that way - `main`'s baseline does
+  not advance, and the same diff resurfaces on every later build until a human
+  accepts it. (`exitZeroOnChanges` is unrelated to acceptance; it only affects
+  the CLI exit code, and it isn't set here either.)
 
 ## The manual button
 
@@ -157,17 +161,19 @@ changes.
 A PR shows **two distinct Chromatic rows**, and they mean different things.
 Conflating them is the most common source of confusion:
 
-| Check on the PR                        | What it is                                                                                         | What controls its color                                                                                  |
-| -------------------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `Chromatic / chromatic (pull_request)` | The **GHA job** in this workflow                                                                   | The action's exit code. `exitZeroOnChanges: true` keeps it **green even when diffs exist**.              |
-| `UI Tests` (orange Chromatic icon)     | A status check **posted by Chromatic's servers**, asynchronously (the `exitOnceUploaded` behavior) | Chromatic's own verdict. It **still reports the diff** and can go red regardless of `exitZeroOnChanges`. |
+| Check on the PR                        | What it is                                                                                         | What controls its color                                                                                                                                            |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Chromatic / chromatic (pull_request)` | The **GHA job** in this workflow                                                                   | The action's exit code. With `exitOnceUploaded: true` the job returns at upload - _before_ diffing - so it's **green whenever the upload succeeds**, diffs or not. |
+| `UI Tests` (orange Chromatic icon)     | A status check **posted by Chromatic's servers**, asynchronously (the `exitOnceUploaded` behavior) | Chromatic's own verdict. It **still reports the diff** and goes red on an unaccepted diff, independent of the GHA job.                                             |
 
-So "the check stays green" refers **only** to the GHA job row.
-`exitZeroOnChanges` does not touch the `UI Tests` row.
+So "the check stays green" refers **only** to the GHA job row - visual diffs
+never touch it, because `exitOnceUploaded: true` makes the action exit before
+Chromatic diffs. (`exitZeroOnChanges` is **not** set; it would only matter if we
+dropped `exitOnceUploaded` and let the job wait for the verdict.)
 
 The `Chromatic / chromatic` check answers **"did the job run without
-breaking?"** - not "are there visual changes?" `exitZeroOnChanges` only
-suppresses the visual-diff failure; genuine breakage still turns it red:
+breaking?"** - not "are there visual changes?" Genuine breakage still turns it
+red:
 
 - Storybook fails to build (`build-storybook` errors).
 - Dependency install / the `./.github/actions/ci` step fails.
@@ -182,28 +188,47 @@ the `UI Tests` check.
 
 ## Merge gating
 
-**Current state (pre-stabilization): nothing Chromatic-related blocks a merge.**
+**Current state: `UI Tests` reports on every PR, but it is not yet a required
+check, so nothing Chromatic-related blocks a merge.** Branch protection on
+`main` requires only `build-and-test` (confirmed against both classic protection
+and rulesets); merges are gated today only by the review-approval rule.
 
-- `exitZeroOnChanges: true` keeps the **`Chromatic / chromatic` GHA check**
-  green even with visual diffs. (Genuine build failures - Storybook won't build,
-  install fails - still turn that job red.)
-- The **`UI Tests`** check may still report diffs, but neither Chromatic check
-  is a **required** status check on `main` (branch protection requires only
-  `build-and-test`, confirmed against both classic protection and rulesets), so
-  neither gates a merge. Merges are blocked today only by the review-approval
-  rule, not by Chromatic.
+Two workflow pieces already make `UI Tests` a reliable gate candidate:
 
-### Turning gating on later
+- **`exitZeroOnChanges` is not set.** Diffs surface on the async `UI Tests`
+  check, not the GHA job (see "Two checks" above); the GHA job stays green via
+  `exitOnceUploaded: true`. Genuine build failures - Storybook won't build,
+  install fails - still turn the GHA job red.
+- **The skip path posts its own `UI Tests` status.** When the changed-files gate
+  finds no UI changes, Chromatic doesn't run and never posts `UI Tests`. A
+  required check that never reports blocks the PR forever ("Expected - waiting
+  for status to be reported"), which would wedge every docs-only PR. So the "No
+  UI changes detected" step posts a passing `UI Tests` status (context must
+  match Chromatic's exactly) on the PR head SHA. Net: `UI Tests` is green-or-red
+  on UI PRs and instantly green on non-UI PRs - always reported, never stuck.
 
-Making Chromatic block merges is **two switches, not one**:
+### Turning gating on
 
-1. Remove `exitZeroOnChanges: true` from the workflow so diffs exit non-zero.
-2. Add Chromatic's check (e.g. `UI Tests`) to the **required status checks** on
-   `main` in branch protection. Point branch protection at the async Chromatic
-   check, not just this job's status - otherwise a PR could merge green before
-   Chromatic finishes.
+One switch remains:
 
-Flipping only step 1 does nothing on its own, because the check isn't required.
+- Add **`UI Tests`** to the **required status checks** on `main` (Settings ->
+  Branches, or a ruleset). Point branch protection at the async `UI Tests`
+  check, **not** the `Chromatic / chromatic` GHA job - with
+  `exitOnceUploaded: true` the job goes green at upload, before the verdict
+  exists, so requiring it would let a PR merge before Chromatic finishes
+  diffing.
+
+Caveats:
+
+- **Coverage is opt-in.** Only stories with `disableSnapshot: false` snapshot,
+  so only those components can produce a blocking diff (today: avatar + the
+  button family). A regression in an un-instrumented component won't block
+  anything until its stories opt in.
+- **Admins bypass.** `enforce_admins` is off, so an admin can still merge past a
+  red `UI Tests`. Tighten only if you want it airtight.
+- **Context-name coupling.** The skip-path status hardcodes the `UI Tests`
+  context to match Chromatic's. If Chromatic's check name ever changes, update
+  both the workflow step and the required-check config.
 
 ## Deterministic dates in snapshots (the `Date` shim)
 

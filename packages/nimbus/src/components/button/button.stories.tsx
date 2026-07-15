@@ -38,22 +38,6 @@ const variants: ButtonProps["variant"][] = [
   "link",
 ];
 
-export const Focused: Story = {
-  tags: ["vrt"],
-  parameters: {
-    preserveFocusRing: true,
-    chromatic: { disableSnapshot: false },
-  },
-  args: {
-    children: "Button",
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.tab();
-    await expect(canvas.getByRole("button")).toHaveFocus();
-  },
-};
-
 export const Base: Story = {
   parameters: { chromatic: { disableSnapshot: true } },
   args: {
@@ -364,6 +348,22 @@ export const Variants: Story = {
         ))}
       </Stack>
     );
+  },
+};
+
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    preserveFocusRing: true,
+    chromatic: { disableSnapshot: false },
+  },
+  args: {
+    children: "Button",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("button")).toHaveFocus();
   },
 };
 

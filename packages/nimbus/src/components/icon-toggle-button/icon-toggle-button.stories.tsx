@@ -22,23 +22,6 @@ const sizes: IconToggleButtonProps["size"][] = ["md", "xs", "2xs"];
 
 const variants: IconToggleButtonProps["variant"][] = ["outline", "ghost"];
 
-export const Focused: Story = {
-  tags: ["vrt"],
-  parameters: {
-    preserveFocusRing: true,
-    chromatic: { disableSnapshot: false },
-  },
-  args: {
-    children: <ThumbUp />,
-    "aria-label": "Like",
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await userEvent.tab();
-    await expect(canvas.getByRole("button")).toHaveFocus();
-  },
-};
-
 export const Base: Story = {
   parameters: { chromatic: { disableSnapshot: true } },
   args: {
@@ -106,6 +89,23 @@ export const Variants: Story = {
         </Stack>
       </Stack>
     );
+  },
+};
+
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    preserveFocusRing: true,
+    chromatic: { disableSnapshot: false },
+  },
+  args: {
+    children: <ThumbUp />,
+    "aria-label": "Like",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("button")).toHaveFocus();
   },
 };
 
