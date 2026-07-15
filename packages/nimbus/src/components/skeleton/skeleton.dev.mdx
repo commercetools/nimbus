@@ -1,5 +1,5 @@
 ---
-title: Skeleton component
+title: Skeleton Component
 tab-title: Implementation
 tab-order: 3
 ---
@@ -148,22 +148,6 @@ const App = () => (
 )
 ```
 
-### Composing a card skeleton
-
-Combine the three components to build realistic loading layouts.
-
-```jsx live-dev
-const App = () => (
-  <Stack direction="row" gap="400" alignItems="flex-start">
-    <SkeletonCircle size="md" />
-    <Stack gap="200">
-      <SkeletonText textStyle="lg" lines={1} width="180px" />
-      <SkeletonText lines={2} width="240px" />
-    </Stack>
-  </Stack>
-)
-```
-
 ## Component requirements
 
 ## Accessibility
@@ -211,7 +195,35 @@ Skeleton components are non-interactive and decorative. They do not receive focu
 
 ## API reference
 
+### Skeleton
+
 <PropsTable id="Skeleton" />
+
+### SkeletonText
+
+<PropsTable id="SkeletonText" />
+
+### SkeletonCircle
+
+<PropsTable id="SkeletonCircle" />
+
+## Common patterns
+
+### Composing a card skeleton
+
+Combine the three components to build realistic loading layouts.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="flex-start">
+    <SkeletonCircle size="md" />
+    <Stack gap="200">
+      <SkeletonText textStyle="lg" lines={1} width="180px" />
+      <SkeletonText lines={2} width="240px" />
+    </Stack>
+  </Stack>
+)
+```
 
 ## Testing your implementation
 

@@ -1,12 +1,11 @@
 ## Context
 
-Nimbus is missing a loading-placeholder component (2nd gap in
-`docs/missing-components.md`). Chakra UI v3 dropped its built-in Skeleton, so
-there is nothing to inherit — it must be implemented from scratch as a CSS-driven
-recipe. There is no React Aria primitive (skeletons are non-interactive and
-decorative). Full research is in `docs/research-notes/skeleton.md`. References:
-`badge` (defineRecipe), `loading-spinner` (a11y + file structure), `progress-bar`
-(`_motionReduce`, CSS custom properties).
+Nimbus is missing a loading-placeholder component. Chakra UI v3 dropped its
+built-in Skeleton, so there is nothing to inherit — it must be implemented from
+scratch as a CSS-driven recipe. There is no React Aria primitive (skeletons are
+non-interactive and decorative). References: `badge` (defineRecipe),
+`loading-spinner` (a11y + file structure), `progress-bar` (`_motionReduce`, CSS
+custom properties).
 
 ## Goals / Non-Goals
 

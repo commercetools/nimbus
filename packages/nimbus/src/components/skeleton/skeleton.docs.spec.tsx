@@ -3,6 +3,7 @@ import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
+  Skeleton,
   SkeletonText,
   SkeletonCircle,
   Stack,
@@ -12,13 +13,43 @@ import {
 } from "@commercetools/nimbus";
 
 /**
+ * @docs-section basic-usage
+ * @docs-title Basic Usage
+ * @docs-description The three building blocks of the family: `Skeleton` (the
+ * base rectangle/circle placeholder), `SkeletonText` (a paragraph of lines sized
+ * to a `textStyle`), and `SkeletonCircle` (an avatar/icon placeholder).
+ * @docs-order 1
+ */
+describe("Skeleton - Basic usage", () => {
+  it("renders the base Skeleton, SkeletonText, and SkeletonCircle", () => {
+    render(
+      <NimbusProvider>
+        <Stack gap="400" alignItems="flex-start">
+          <Skeleton data-testid="skeleton" width="7200" height="1000" />
+          <SkeletonText
+            data-testid="skeleton-text"
+            lines={3}
+            textStyle="body"
+          />
+          <SkeletonCircle data-testid="skeleton-circle" size="md" />
+        </Stack>
+      </NimbusProvider>
+    );
+
+    expect(screen.getByTestId("skeleton")).toBeInTheDocument();
+    expect(screen.getByTestId("skeleton-text")).toBeInTheDocument();
+    expect(screen.getByTestId("skeleton-circle")).toBeInTheDocument();
+  });
+});
+
+/**
  * @docs-section standalone-pattern
  * @docs-title Standalone Loading Pattern
  * @docs-description The recommended way to use Skeleton: render placeholders
  * while data is loading, then swap in the real content with conditional
  * rendering. Skeleton deliberately has no `isLoaded` wrapper prop — the
  * consumer owns the loading state.
- * @docs-order 1
+ * @docs-order 2
  */
 describe("Skeleton - Standalone loading pattern", () => {
   /**
@@ -77,7 +108,7 @@ describe("Skeleton - Standalone loading pattern", () => {
  * @docs-description Skeleton shapes are decorative (`aria-hidden`) so they are
  * not announced individually. Communicate the loading state to assistive
  * technology by setting `aria-busy` on the surrounding container instead.
- * @docs-order 2
+ * @docs-order 3
  */
 describe("Skeleton - Container aria-busy pattern", () => {
   it("announces loading state via aria-busy on the container", () => {
