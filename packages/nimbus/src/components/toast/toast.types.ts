@@ -18,10 +18,7 @@ export type ToastType = "info" | "success" | "warning" | "error" | "loading";
  * Maps to Chakra UI placement values and numpad positions for hotkeys.
  */
 export type ToastPlacement =
-  | "top-start"
-  | "top-end"
-  | "bottom-start"
-  | "bottom-end";
+  "top-start" | "top-end" | "bottom-start" | "bottom-end";
 
 /**
  * Action button configuration for toast.

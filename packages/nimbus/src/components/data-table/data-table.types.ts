@@ -222,9 +222,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
   onSettingsChange?: (
     action:
-      | (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS]
-      | string
-      | undefined
+      (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS] | string | undefined
   ) => void;
   customSettings?: DataTableCustomSettings;
 };

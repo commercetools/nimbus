@@ -47,8 +47,7 @@ const MIN_CANDIDATES = 10;
 
 /** Pre-computed lowercased fields for each search index entry. */
 let loweredFieldsCache:
-  | Map<SearchIndexEntry, LoweredRelevanceFields>
-  | undefined;
+  Map<SearchIndexEntry, LoweredRelevanceFields> | undefined;
 let loweredFieldsIndexRef: SearchIndexEntry[] | undefined;
 
 function getLoweredFields(
@@ -149,10 +148,8 @@ function findCandidates(
   loweredMap: Map<SearchIndexEntry, LoweredRelevanceFields>
 ): CandidateResult {
   // Exact substring match — single-pass filter + rank using pre-lowered fields.
-  const exactMatches = filterAndRankPreLowered(
-    index,
-    tokens,
-    (entry) => loweredMap.get(entry)!
+  const exactMatches = filterAndRankPreLowered(index, tokens, (entry) =>
+    loweredMap.get(entry)!
   );
 
   if (exactMatches.length >= MIN_CANDIDATES) {

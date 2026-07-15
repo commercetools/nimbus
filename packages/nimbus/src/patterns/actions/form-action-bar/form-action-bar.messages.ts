@@ -36,7 +36,4 @@ export const formActionBarMessagesStrings: LocalizedStrings<
  * Available message keys for FormActionBar component
  */
 export type FormActionBarMessageKey =
-  | "ariaLabel"
-  | "cancel"
-  | "delete"
-  | "save";
+  "ariaLabel" | "cancel" | "delete" | "save";

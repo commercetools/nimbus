@@ -64,10 +64,8 @@ async function searchIcons(query: string): Promise<IconCatalogEntry[]> {
   const tokens = query.toLowerCase().split(/\s+/).filter(Boolean);
 
   // Pass 1: exact substring match using shared utility.
-  const exactMatches = filterAndRankPreLowered(
-    icons,
-    tokens,
-    (icon) => loweredMap.get(icon)!
+  const exactMatches = filterAndRankPreLowered(icons, tokens, (icon) =>
+    loweredMap.get(icon)!
   );
 
   if (exactMatches.length >= MIN_CANDIDATES) {

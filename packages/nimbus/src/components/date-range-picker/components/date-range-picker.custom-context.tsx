@@ -56,14 +56,12 @@ export const DateRangePickerCustomContext = ({
       case "minute":
         return msg.format(
           `${messageKey}TimeHourMinute` as
-            | "startTimeHourMinute"
-            | "endTimeHourMinute"
+            "startTimeHourMinute" | "endTimeHourMinute"
         );
       case "second":
         return msg.format(
           `${messageKey}TimeHourMinuteSecond` as
-            | "startTimeHourMinuteSecond"
-            | "endTimeHourMinuteSecond"
+            "startTimeHourMinuteSecond" | "endTimeHourMinuteSecond"
         );
       default:
         return msg.format(`${messageKey}Time` as "startTime" | "endTime");
