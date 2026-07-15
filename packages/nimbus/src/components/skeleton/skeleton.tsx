@@ -60,13 +60,16 @@ Skeleton.displayName = "Skeleton";
  * ending. Composed of `Skeleton` lines; does not use its own recipe.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/skeleton}
+ *
+ * @supportsStyleProps
  */
 export const SkeletonText = (props: SkeletonTextProps) => {
   const {
     ref: forwardedRef,
     lines = 3,
+    textStyle = "body",
     lineHeight = "1em",
-    spacing = "400",
+    spacing = "calc(1lh - 1em)",
     lastLineWidth = "60%",
     animation = "pulse",
     "aria-hidden": ariaHidden = true,
@@ -74,10 +77,15 @@ export const SkeletonText = (props: SkeletonTextProps) => {
   } = props;
 
   return (
+    // `textStyle` sets the container's font-size + line-height, so each line's
+    // `1em` height and the `calc(1lh - 1em)` gap resolve to that style's glyph
+    // size and leading — giving the placeholder the same vertical rhythm as real
+    // text of the chosen style.
     <ChakraBox
       ref={forwardedRef}
       display="flex"
       flexDirection="column"
+      textStyle={textStyle}
       gap={spacing}
       aria-hidden={ariaHidden}
       {...rest}
@@ -103,6 +111,8 @@ SkeletonText.displayName = "SkeletonText";
  * to width and height. Sugar over `Skeleton` with `shape="circle"`.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/skeleton}
+ *
+ * @supportsStyleProps
  */
 export const SkeletonCircle = (props: SkeletonCircleProps) => {
   const {

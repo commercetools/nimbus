@@ -117,6 +117,22 @@ const App = () => (
 )
 ```
 
+#### Matching text size
+
+Set `textStyle` (default `body`) so the placeholder lines match the size and
+line spacing of the text they stand in for — from small captions to large
+headings. The bars and the gaps between them resize together.
+
+```jsx live
+const App = () => (
+  <Stack gap="600" width="300px">
+    <SkeletonText textStyle="caption" />
+    <SkeletonText textStyle="body" />
+    <SkeletonText textStyle="3xl" lines={2} />
+  </Stack>
+)
+```
+
 ### Circle convenience
 
 `SkeletonCircle` is a single-prop shorthand for circular placeholders. Pass

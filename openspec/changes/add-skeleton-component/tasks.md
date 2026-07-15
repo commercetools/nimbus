@@ -67,3 +67,13 @@
       engineering docs, and `skeleton.mdx` designer docs. Document the standalone
       (no `isLoaded`) usage pattern and the container `aria-busy` accessibility
       guidance, plus reduced-motion behavior.
+
+## 7. Text-style-matched sizing (SkeletonText)
+
+- [x] 7.1 Add a `textStyle` prop to `SkeletonText` (default `body`) that sets the
+      container's `font-size`/`line-height`, so each line's `1em` bar height and
+      the `calc(1lh - 1em)` gap scale to the chosen Nimbus text style. Keep
+      `lineHeight` and `spacing` as explicit overrides.
+- [x] 7.2 Add stories asserting the bar height and line pitch match the text
+      style (e.g. `body` 16/26 and `3xl` 30/36) via measured geometry.
+- [x] 7.3 Document `textStyle` in `skeleton.mdx` and `skeleton.dev.mdx`.
