@@ -102,8 +102,7 @@ type DefaultPageFlexibleProps = DefaultPageBaseProps & {
  * - `"flexible"` — whole-page scroll; unlocks `stickyHeader` / `stickyFooter`.
  */
 export type DefaultPageProps =
-  | DefaultPageConstrainedProps
-  | DefaultPageFlexibleProps;
+  DefaultPageConstrainedProps | DefaultPageFlexibleProps;
 
 export type DefaultPageHeaderProps =
   OmitInternalProps<DefaultPageHeaderSlotProps> & {

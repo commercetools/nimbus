@@ -389,6 +389,27 @@ export type UiKitMappingType =
   | "pattern" // Replaced by a design-token or layout pattern
   | "removed"; // No Nimbus equivalent
 
+/** Describes how a single prop changes during a UIKit-to-Nimbus migration. */
+export interface PropMapping {
+  /** The UIKit prop name (e.g. "tone", "label", "isCondensed"). */
+  uiKitProp: string;
+  /** The Nimbus prop name, or `null` if the prop is removed / becomes children. */
+  nimbusProp: string | null;
+  /**
+   * - "rename": same semantics, different name (e.g. isChecked → isSelected)
+   * - "value-mapping": same concept but values change (e.g. tone → colorPalette)
+   * - "structural": fundamental API change (e.g. label → children)
+   * - "removed": prop has no equivalent and should be dropped
+   */
+  changeType: "rename" | "value-mapping" | "structural" | "removed";
+  /** Value-level translations. Only present when changeType is "value-mapping". */
+  valueMapping?: Array<{ from: string; to: string }>;
+  /** Fixed Nimbus value when the mapping is constant (e.g. variant="solid"). */
+  fixedValue?: string;
+  /** Short explanation when the mapping isn't obvious. */
+  notes?: string;
+}
+
 /** A single UI Kit → Nimbus migration entry. */
 export interface UiKitMigrationEntry {
   /** UI Kit component name (e.g. "PrimaryButton"). */
@@ -403,6 +424,8 @@ export interface UiKitMigrationEntry {
   notes: string;
   /** Specific breaking changes to be aware of during migration. */
   breakingChanges: string[];
+  /** Structured prop-level migration mappings, validated at build time. */
+  propMappings?: PropMapping[];
 }
 
 /** Single component migration result returned by migrate_from_uikit. */
@@ -415,6 +438,8 @@ export interface MigrateComponentResult {
   breakingChanges: string[];
   /** Suggestion to use another MCP tool for further assistance. */
   hint?: string;
+  /** Structured prop-level migration mappings, if available. */
+  propMappings?: PropMapping[];
 }
 
 /** A suggested Nimbus component for an unmapped UI Kit component. */

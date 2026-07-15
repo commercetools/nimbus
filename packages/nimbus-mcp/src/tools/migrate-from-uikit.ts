@@ -249,6 +249,8 @@ function buildComponentResult(
     breakingChanges: entry.breakingChanges,
   };
 
+  if (entry.propMappings) result.propMappings = entry.propMappings;
+
   const hint = deriveToolHint(
     uiKitName,
     entry.nimbusEquivalent,
@@ -289,8 +291,7 @@ function splitPascalCase(name: string): string[] {
 // Module-level cache for the component catalog and pre-lowered fields.
 let _componentRoutes: RouteManifestEntry[] | undefined;
 let _componentLowered:
-  | Map<RouteManifestEntry, LoweredRelevanceFields>
-  | undefined;
+  Map<RouteManifestEntry, LoweredRelevanceFields> | undefined;
 
 async function getComponentCatalog(): Promise<{
   routes: RouteManifestEntry[];
@@ -349,10 +350,8 @@ async function findNimbusSuggestion(
   const usingGenericFallback = distinctive.length === 0;
   const tokens = usingGenericFallback ? allWords : distinctive;
 
-  const exactMatches = filterAndRankPreLowered(
-    routes,
-    tokens,
-    (r) => lowered.get(r)!
+  const exactMatches = filterAndRankPreLowered(routes, tokens, (r) =>
+    lowered.get(r)!
   );
 
   if (exactMatches.length > 0) {
@@ -466,8 +465,8 @@ export function registerMigrateFromUiKit(server: McpServer): void {
           const response: MigrateCompoundResult = {
             compoundRoot: componentName,
             note: `"${componentName}" is used as a namespace (e.g. ${compoundEntries.map((e) => e.uiKitName).join(", ")}). Each sub-component has its own mapping.`,
-            mappings: compoundEntries.map(
-              (e) => buildComponentResult(e.uiKitName)!
+            mappings: compoundEntries.map((e) =>
+              buildComponentResult(e.uiKitName)!
             ),
           };
           return {

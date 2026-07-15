@@ -467,13 +467,26 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           <RaCollection items={activeColumns}>
             {(col: DataTableColumnItem<T>) => {
               const cellValue = col.accessor(row);
+              const align = col.align ?? "start";
+              const isStretch = align === "stretch";
 
               return (
-                <DataTableCell isDisabled={isDisabled} key={col.id}>
+                <DataTableCell
+                  isDisabled={isDisabled}
+                  key={col.id}
+                  textAlign={
+                    align === "center"
+                      ? "center"
+                      : align === "end"
+                        ? "end"
+                        : undefined
+                  }
+                >
                   <Box
                     className={isTruncated ? "truncated-cell" : ""}
                     data-truncated={isTruncated ? "true" : "false"}
-                    display="inline-block"
+                    display={isStretch ? "block" : "inline-block"}
+                    w={isStretch ? "100%" : undefined}
                     minW="0"
                     maxW="100%"
                     position="relative"

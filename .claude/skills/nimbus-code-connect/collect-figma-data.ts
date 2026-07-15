@@ -197,7 +197,9 @@ interface CodeConnectData {
 // ---------------------------------------------------------------------------
 
 function loadEnv() {
-  config({ path: join(ROOT, ".env") });
+  // quiet: dotenv 17 logs an "injected env" line on load by default; suppress it
+  // to keep this script's output clean (behavior matched dotenv 16).
+  config({ path: join(ROOT, ".env"), quiet: true });
   const token = process.env.FIGMA_ACCESS_TOKEN;
   if (!token) {
     console.error(

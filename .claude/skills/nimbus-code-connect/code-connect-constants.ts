@@ -15,11 +15,7 @@ import type { CodeConnectEntry } from "./generate-code-connect";
 // ---------------------------------------------------------------------------
 
 export type PropPosition =
-  | "attribute"
-  | "leading"
-  | "trailing"
-  | "child"
-  | "children";
+  "attribute" | "leading" | "trailing" | "child" | "children";
 
 export interface EntryOverride {
   /** Raw prop code lines to add/replace (codePropName → figma.xxx() code) */
