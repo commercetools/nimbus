@@ -500,9 +500,10 @@ export const RefForwarding: Story = {
 /**
  * LoadingLayoutShowcase — TEMPORARY story for the PR screenshot. A realistic
  * "content card, still loading" assembled from the whole family: a SkeletonCircle
- * avatar, textStyle-matched SkeletonText for the name/heading, a wave-animated
- * media block, a body paragraph, a stat row, and two action buttons. Pure visual
- * (no play function) — safe to delete after the screenshot is captured.
+ * avatar, textStyle-matched SkeletonText for the name/heading, a media block, a
+ * body paragraph, a stat row, and two action buttons. Every element uses
+ * `animation="none"` so the layout is frozen for a clean still screenshot. Pure
+ * visual (no play function) — safe to delete after the screenshot is captured.
  */
 export const LoadingLayoutShowcase: Story = {
   name: "Loading Layout (PR showcase)",
@@ -517,35 +518,65 @@ export const LoadingLayoutShowcase: Story = {
       <Stack gap="600">
         {/* Header: avatar + name / subtitle */}
         <Stack direction="row" gap="400" alignItems="center">
-          <SkeletonCircle size="md" />
+          <SkeletonCircle size="md" animation="none" />
           <Stack gap="200" flexGrow="1">
-            <SkeletonText textStyle="lg" lines={1} width="60%" />
-            <SkeletonText textStyle="sm" lines={1} width="40%" />
+            <SkeletonText
+              textStyle="lg"
+              lines={1}
+              width="60%"
+              animation="none"
+            />
+            <SkeletonText
+              textStyle="sm"
+              lines={1}
+              width="40%"
+              animation="none"
+            />
           </Stack>
         </Stack>
 
         {/* Hero media */}
-        <Skeleton width="100%" height="4800" animation="wave" />
+        <Skeleton width="100%" height="4800" animation="none" />
 
         {/* Body copy */}
-        <SkeletonText lines={4} />
+        <SkeletonText lines={4} animation="none" />
 
         {/* Stat row */}
         <Stack direction="row" gap="400">
           <Stack gap="200" flexGrow="1">
-            <SkeletonText textStyle="2xl" lines={1} width="50%" />
-            <SkeletonText textStyle="xs" lines={1} width="80%" />
+            <SkeletonText
+              textStyle="2xl"
+              lines={1}
+              width="50%"
+              animation="none"
+            />
+            <SkeletonText
+              textStyle="xs"
+              lines={1}
+              width="80%"
+              animation="none"
+            />
           </Stack>
           <Stack gap="200" flexGrow="1">
-            <SkeletonText textStyle="2xl" lines={1} width="50%" />
-            <SkeletonText textStyle="xs" lines={1} width="80%" />
+            <SkeletonText
+              textStyle="2xl"
+              lines={1}
+              width="50%"
+              animation="none"
+            />
+            <SkeletonText
+              textStyle="xs"
+              lines={1}
+              width="80%"
+              animation="none"
+            />
           </Stack>
         </Stack>
 
         {/* Action buttons */}
         <Stack direction="row" gap="300">
-          <Skeleton width="4400" height="1000" />
-          <Skeleton width="4400" height="1000" />
+          <Skeleton width="4400" height="1000" animation="none" />
+          <Skeleton width="4400" height="1000" animation="none" />
         </Stack>
       </Stack>
     </Box>

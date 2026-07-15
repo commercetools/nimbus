@@ -3,9 +3,8 @@
 The Merchant Center is data-heavy: most screens fetch records before they can
 render. Without a shared loading-placeholder, teams either show spinners (which
 cause layout shift when content pops in) or hand-roll grey boxes. Nimbus has no
-`Skeleton` component, the second-highest gap in `docs/missing-components.md`. A
-skeleton holds space for content while it loads, reducing perceived wait and
-preventing layout shift.
+`Skeleton` component. A skeleton holds space for content while it loads, reducing
+perceived wait and preventing layout shift.
 
 ## What Changes
 
