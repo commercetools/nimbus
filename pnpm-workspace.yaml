@@ -176,7 +176,7 @@ catalogs:
     "@internationalized/string-compiler": ^3.4.1
   utils:
     dequal: ^2.0.3
-    dotenv: ^16.6.1
+    dotenv: ^17.4.2
     dompurify: ^3.4.12
     lodash: ^4.18.1
     "@types/lodash": ^4.17.24
