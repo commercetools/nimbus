@@ -9,15 +9,25 @@ tab-order: 3
 FeedbackCard is a layout-only composition of existing primitives. It renders no
 text and no button of its own — you provide those as children — and it exposes
 no `variant` prop. The visual treatment is entirely yours, applied through
-standard Chakra style props on `FeedbackCard.Root`.
+standard Chakra style props on `FeedbackCard.Root`. Set `colorPalette` on
+`FeedbackCard.Root` and the whole card themes cohesively: use `colorPalette.*`
+tokens for the surface and text, and the `Button` inherits the palette
+automatically (see [Theming](#theming)).
 
 **With FeedbackCard:**
 
 ```tsx
-<FeedbackCard.Root bg="positive.2" borderRadius="200" p="400">
+<FeedbackCard.Root
+  colorPalette="positive"
+  bg="colorPalette.2"
+  borderRadius="200"
+  p="400"
+>
   <FeedbackCard.Content>
-    <Text fontWeight="700">Suggestion approved</Text>
-    <Text color="neutral.11">Applied the recommended discount.</Text>
+    <Text fontWeight="700" color="colorPalette.11">
+      Suggestion approved
+    </Text>
+    <Text color="colorPalette.11">Applied the recommended discount.</Text>
   </FeedbackCard.Content>
   <FeedbackCard.Action>
     <Button variant="outline" onPress={handleUndo}>
@@ -31,7 +41,8 @@ standard Chakra style props on `FeedbackCard.Root`.
 
 ```tsx
 <Flex
-  bg="positive.2"
+  colorPalette="positive"
+  bg="colorPalette.2"
   borderRadius="200"
   p="400"
   wrap="wrap"
@@ -40,8 +51,10 @@ standard Chakra style props on `FeedbackCard.Root`.
   gap="400"
 >
   <Stack gap="100" flex="1 1 auto" minWidth="0">
-    <Text fontWeight="700">Suggestion approved</Text>
-    <Text color="neutral.11">Applied the recommended discount.</Text>
+    <Text fontWeight="700" color="colorPalette.11">
+      Suggestion approved
+    </Text>
+    <Text color="colorPalette.11">Applied the recommended discount.</Text>
   </Stack>
   <Button variant="outline" onPress={handleUndo}>
     Undo
@@ -74,14 +87,22 @@ import { FeedbackCard } from "@commercetools/nimbus";
 
 Compose the three parts. Give `FeedbackCard.Content` your title and subtitle,
 and drop your own `Button` into `FeedbackCard.Action`. Apply the visual context
-with style props on `FeedbackCard.Root`.
+with style props on `FeedbackCard.Root` — set `colorPalette` and reach for
+`colorPalette.*` tokens so the surface, text, and button all read as one.
 
 ```jsx live-dev
 const App = () => (
-  <FeedbackCard.Root bg="positive.2" borderRadius="200" p="400">
+  <FeedbackCard.Root
+    colorPalette="positive"
+    bg="colorPalette.2"
+    borderRadius="200"
+    p="400"
+  >
     <FeedbackCard.Content>
-      <Text fontWeight="700">Suggestion approved</Text>
-      <Text color="neutral.11">
+      <Text fontWeight="700" color="colorPalette.11">
+        Suggestion approved
+      </Text>
+      <Text color="colorPalette.11">
         Applied the recommended discount to 3 products.
       </Text>
     </FeedbackCard.Content>
@@ -94,24 +115,44 @@ const App = () => (
 );
 ```
 
+## Theming
+
+FeedbackCard adds no colors of its own. Establish a
+[color palette](/guidelines/colors) on `FeedbackCard.Root` with the
+`colorPalette` prop, then reference `colorPalette.*` tokens for the surface and
+text. The palette **cascades to descendants**, so a `Button` inside
+`FeedbackCard.Action` inherits it automatically — you rarely need to set
+`colorPalette` on the button too.
+
+- **Surface**: `bg="colorPalette.2"`, optional `borderColor="colorPalette.6"`
+- **Text**: `color="colorPalette.11"` on your `Text`/`Heading`
+- **Action**: nothing — the `Button` inherits `colorPalette` from `Root`
+
+Switch contexts by switching the palette: `colorPalette="positive"` for an
+approval, `colorPalette="critical"` for a rejection, `colorPalette="info"` for a
+neutral notice, and so on.
+
 ## Usage examples
 
 ### Approve context
 
-Express an approval with a positive background and border via style props.
+An approval reads as a single positive-tinted unit — surface, text, and button.
 
 ```jsx live-dev
 const App = () => (
   <FeedbackCard.Root
-    bg="positive.2"
+    colorPalette="positive"
+    bg="colorPalette.2"
     border="solid-25"
-    borderColor="positive.6"
+    borderColor="colorPalette.6"
     borderRadius="200"
     p="400"
   >
     <FeedbackCard.Content>
-      <Text fontWeight="700">Suggestion approved</Text>
-      <Text color="neutral.11">Applied the recommended discount.</Text>
+      <Text fontWeight="700" color="colorPalette.11">
+        Suggestion approved
+      </Text>
+      <Text color="colorPalette.11">Applied the recommended discount.</Text>
     </FeedbackCard.Content>
     <FeedbackCard.Action>
       <Button variant="outline" onPress={() => console.log("Undo")}>
@@ -124,20 +165,23 @@ const App = () => (
 
 ### Reject context
 
-The same composition — only the style props change.
+The same composition — only the palette changes to `critical`.
 
 ```jsx live-dev
 const App = () => (
   <FeedbackCard.Root
-    bg="critical.2"
+    colorPalette="critical"
+    bg="colorPalette.2"
     border="solid-25"
-    borderColor="critical.6"
+    borderColor="colorPalette.6"
     borderRadius="200"
     p="400"
   >
     <FeedbackCard.Content>
-      <Text fontWeight="700">Suggestion rejected</Text>
-      <Text color="neutral.11">No changes were applied.</Text>
+      <Text fontWeight="700" color="colorPalette.11">
+        Suggestion rejected
+      </Text>
+      <Text color="colorPalette.11">No changes were applied.</Text>
     </FeedbackCard.Content>
     <FeedbackCard.Action>
       <Button variant="outline" onPress={() => console.log("Undo")}>
@@ -157,12 +201,17 @@ it in action.
 ```jsx live-dev
 const App = () => (
   <Box maxWidth="320px">
-    <FeedbackCard.Root bg="neutral.2" borderRadius="200" p="400">
+    <FeedbackCard.Root
+      colorPalette="neutral"
+      bg="colorPalette.2"
+      borderRadius="200"
+      p="400"
+    >
       <FeedbackCard.Content>
-        <Text fontWeight="700">
+        <Text fontWeight="700" color="colorPalette.11">
           This title and subtitle are intentionally long
         </Text>
-        <Text color="neutral.11">
+        <Text color="colorPalette.11">
           So the action button wraps to a new line on narrow containers.
         </Text>
       </FeedbackCard.Content>
@@ -228,9 +277,9 @@ integration you own: wiring the action into your application's state.
 
 ### React to undo with your own state
 
-The pattern positions the button but doesn't change it. Own the state
-transition in your component — here, pressing Undo reverts the outcome and swaps
-the card for an acknowledgement.
+The pattern positions the button but doesn't change it. Own the state transition
+in your component — here, pressing Undo reverts the outcome and swaps the card
+for an acknowledgement.
 
 ```tsx
 import { useState } from "react";

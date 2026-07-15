@@ -24,19 +24,23 @@ export const ApproveContext: Story = {
   render: () => (
     <FeedbackCard.Root
       data-testid="feedback-card"
-      bg="positive.2"
+      colorPalette="positive"
+      bg="colorPalette.2"
       border="solid-25"
-      borderColor="positive.6"
+      borderColor="colorPalette.6"
       borderRadius="200"
       p="400"
     >
       <FeedbackCard.Content>
-        <Text fontWeight="700">Suggestion approved</Text>
-        <Text color="neutral.11">
+        <Text fontWeight="700" color="colorPalette.11">
+          Suggestion approved
+        </Text>
+        <Text color="colorPalette.11">
           Applied the recommended discount to 3 products.
         </Text>
       </FeedbackCard.Content>
       <FeedbackCard.Action>
+        {/* The Button needs no colorPalette — it inherits "positive" from Root. */}
         <Button variant="outline" onPress={onApproveUndo}>
           Undo
         </Button>
@@ -77,17 +81,21 @@ export const RejectedContext: Story = {
   render: () => (
     <FeedbackCard.Root
       data-testid="feedback-card"
-      bg="critical.2"
+      colorPalette="critical"
+      bg="colorPalette.2"
       border="solid-25"
-      borderColor="critical.6"
+      borderColor="colorPalette.6"
       borderRadius="200"
       p="400"
     >
       <FeedbackCard.Content>
-        <Text fontWeight="700">Suggestion rejected</Text>
-        <Text color="neutral.11">No changes were applied.</Text>
+        <Text fontWeight="700" color="colorPalette.11">
+          Suggestion rejected
+        </Text>
+        <Text color="colorPalette.11">No changes were applied.</Text>
       </FeedbackCard.Content>
       <FeedbackCard.Action>
+        {/* No colorPalette on the Button — it inherits "critical" from Root. */}
         <Button variant="outline" onPress={onRejectUndo}>
           Undo
         </Button>

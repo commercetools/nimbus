@@ -51,15 +51,18 @@ side, the action drops below the message rather than crowding it.
 ```jsx live
 const App = () => (
   <FeedbackCard.Root
-    bg="positive.2"
+    colorPalette="positive"
+    bg="colorPalette.2"
     border="solid-25"
-    borderColor="positive.6"
+    borderColor="colorPalette.6"
     borderRadius="200"
     p="400"
   >
     <FeedbackCard.Content>
-      <Text fontWeight="700">Suggestion approved</Text>
-      <Text color="neutral.11">
+      <Text fontWeight="700" color="colorPalette.11">
+        Suggestion approved
+      </Text>
+      <Text color="colorPalette.11">
         Applied the recommended discount to 3 products.
       </Text>
     </FeedbackCard.Content>
@@ -85,15 +88,18 @@ Use a positive surface to acknowledge that a suggestion was accepted.
 ```jsx live
 const App = () => (
   <FeedbackCard.Root
-    bg="positive.2"
+    colorPalette="positive"
+    bg="colorPalette.2"
     border="solid-25"
-    borderColor="positive.6"
+    borderColor="colorPalette.6"
     borderRadius="200"
     p="400"
   >
     <FeedbackCard.Content>
-      <Text fontWeight="700">Suggestion approved</Text>
-      <Text color="neutral.11">Applied the recommended discount.</Text>
+      <Text fontWeight="700" color="colorPalette.11">
+        Suggestion approved
+      </Text>
+      <Text color="colorPalette.11">Applied the recommended discount.</Text>
     </FeedbackCard.Content>
     <FeedbackCard.Action>
       <Button variant="outline" onPress={() => {}}>
@@ -112,15 +118,18 @@ layout is identical — only the color treatment changes.
 ```jsx live
 const App = () => (
   <FeedbackCard.Root
-    bg="critical.2"
+    colorPalette="critical"
+    bg="colorPalette.2"
     border="solid-25"
-    borderColor="critical.6"
+    borderColor="colorPalette.6"
     borderRadius="200"
     p="400"
   >
     <FeedbackCard.Content>
-      <Text fontWeight="700">Suggestion rejected</Text>
-      <Text color="neutral.11">No changes were applied.</Text>
+      <Text fontWeight="700" color="colorPalette.11">
+        Suggestion rejected
+      </Text>
+      <Text color="colorPalette.11">No changes were applied.</Text>
     </FeedbackCard.Content>
     <FeedbackCard.Action>
       <Button variant="outline" onPress={() => {}}>
