@@ -79,6 +79,12 @@ narrower (`lastLineWidth`) to approximate a paragraph of text.
 - **WHEN** `SkeletonText` is rendered with more than one line
 - **THEN** the last line is rendered narrower than the preceding lines
 
+#### Scenario: Single line spans full width
+
+- **WHEN** `SkeletonText` is rendered with exactly one line
+- **THEN** that line spans the full width (the shorter-last-line treatment does
+  not apply to the first line)
+
 ### Requirement: Text skeleton matches a text style
 
 `SkeletonText` SHALL accept a `textStyle` prop (default `body`) that sizes the
@@ -100,14 +106,27 @@ SHALL override the derived values.
 
 ### Requirement: Circle skeleton convenience
 
-`SkeletonCircle` SHALL render a circular placeholder sized by a single `size`
-prop applied equally to width and height.
+`SkeletonCircle` SHALL render a circular placeholder with equal width and height.
+It SHALL accept an avatar-aligned `size` prop (`2xs`/`xs`/`md`, matching the
+`Avatar` size scale) and a `boxSize` prop for custom dimensions; when neither is
+provided it SHALL default to a `1em` circle.
 
-#### Scenario: Sized circle
+#### Scenario: Avatar-aligned size
 
-- **WHEN** `SkeletonCircle` is rendered with a `size`
-- **THEN** it renders a circular element with equal width and height equal to
-  that size
+- **WHEN** `SkeletonCircle` is rendered with `size="md"`
+- **THEN** it renders a circle whose width and height equal the Avatar `md`
+  dimension (40px)
+
+#### Scenario: Custom size
+
+- **WHEN** `SkeletonCircle` is rendered with a `boxSize`
+- **THEN** it renders a circle with equal width and height equal to that
+  `boxSize`
+
+#### Scenario: Default size
+
+- **WHEN** `SkeletonCircle` is rendered with neither `size` nor `boxSize`
+- **THEN** it renders a `1em` circle
 
 ### Requirement: Style and ref passthrough
 

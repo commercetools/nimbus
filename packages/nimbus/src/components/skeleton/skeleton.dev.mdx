@@ -131,11 +131,20 @@ You can still override the derived sizing with the `lineHeight` (bar height) and
 
 ### Circle skeleton
 
-`SkeletonCircle` is a convenience wrapper over `Skeleton shape="circle"`. Pass a single `size` prop to set equal width and height.
+`SkeletonCircle` is a convenience wrapper over `Skeleton shape="circle"`. Use
+the avatar-aligned `size` prop (`"2xs"` / `"xs"` / `"md"`) to stand in for an
+`Avatar`, or `boxSize` for a custom dimension. With neither set it defaults to a
+`1em` circle (handy inline next to text).
 
 ```jsx live-dev
 const App = () => (
-  <SkeletonCircle size="64px" />
+  <Stack direction="row" gap="400" alignItems="center">
+    <SkeletonCircle />
+    <SkeletonCircle size="2xs" />
+    <SkeletonCircle size="xs" />
+    <SkeletonCircle size="md" />
+    <SkeletonCircle boxSize="4800" />
+  </Stack>
 )
 ```
 
@@ -146,9 +155,9 @@ Combine the three components to build realistic loading layouts.
 ```jsx live-dev
 const App = () => (
   <Stack direction="row" gap="400" alignItems="flex-start">
-    <SkeletonCircle size="48px" />
+    <SkeletonCircle size="md" />
     <Stack gap="200">
-      <Skeleton width="180px" height="1rem" />
+      <SkeletonText textStyle="lg" lines={1} width="180px" />
       <SkeletonText lines={2} width="240px" />
     </Stack>
   </Stack>

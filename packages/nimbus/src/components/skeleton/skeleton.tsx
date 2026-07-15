@@ -1,5 +1,3 @@
-import { useRef } from "react";
-import { useObjectRef, mergeProps } from "react-aria";
 import { Box as ChakraBox } from "@chakra-ui/react/box";
 import { SkeletonRoot } from "./skeleton.slots";
 import type {
@@ -7,7 +5,17 @@ import type {
   SkeletonTextProps,
   SkeletonCircleProps,
 } from "./skeleton.types";
-import { mergeRefs } from "@/utils";
+
+/**
+ * Avatar-aligned named sizes for {@link SkeletonCircle}. Kept in sync with the
+ * `size` variant in `avatar.recipe.ts` (2xs = 24px, xs = 32px, md = 40px) so a
+ * SkeletonCircle can stand in for an Avatar at the same dimensions.
+ */
+const avatarSizeScale = {
+  "2xs": "600",
+  xs: "800",
+  md: "1000",
+} as const;
 
 /**
  * # Skeleton
@@ -21,33 +29,12 @@ import { mergeRefs } from "@/utils";
  * @supportsStyleProps
  */
 export const Skeleton = (props: SkeletonProps) => {
-  const {
-    ref: forwardedRef,
-    shape,
-    animation,
-    width,
-    height,
-    borderRadius,
-    "aria-hidden": ariaHidden = true,
-    ...rest
-  } = props;
+  // `aria-hidden` needs a default; everything else (ref, shape, animation, and
+  // all Chakra style props like width/height/borderRadius) flows straight
+  // through to the recipe-styled root.
+  const { ref, "aria-hidden": ariaHidden = true, ...rest } = props;
 
-  const localRef = useRef<HTMLDivElement>(null);
-  const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
-
-  return (
-    <SkeletonRoot
-      {...mergeProps(rest, {
-        ref,
-        shape,
-        animation,
-        width,
-        height,
-        borderRadius,
-        "aria-hidden": ariaHidden,
-      })}
-    />
-  );
+  return <SkeletonRoot ref={ref} aria-hidden={ariaHidden} {...rest} />;
 };
 
 Skeleton.displayName = "Skeleton";
@@ -71,7 +58,7 @@ export const SkeletonText = (props: SkeletonTextProps) => {
     lineHeight = "1em",
     spacing = "calc(1lh - 1em)",
     lastLineWidth = "60%",
-    animation = "pulse",
+    animation,
     "aria-hidden": ariaHidden = true,
     ...rest
   } = props;
@@ -90,14 +77,21 @@ export const SkeletonText = (props: SkeletonTextProps) => {
       aria-hidden={ariaHidden}
       {...rest}
     >
-      {Array.from({ length: lines }, (_, index) => (
-        <Skeleton
-          key={index}
-          width={index === lines - 1 ? lastLineWidth : "100%"}
-          height={lineHeight}
-          animation={animation}
-        />
-      ))}
+      {Array.from({ length: lines }, (_, index) => {
+        // Only the last line is narrowed (to mimic a paragraph ending). The
+        // first line always spans the full width, so a single-line skeleton
+        // isn't rendered arbitrarily short; narrow the whole block via the
+        // container's `width` prop instead.
+        const isShortLastLine = index === lines - 1 && index !== 0;
+        return (
+          <Skeleton
+            key={index}
+            width={isShortLastLine ? lastLineWidth : "100%"}
+            height={lineHeight}
+            animation={animation}
+          />
+        );
+      })}
     </ChakraBox>
   );
 };
@@ -118,17 +112,23 @@ export const SkeletonCircle = (props: SkeletonCircleProps) => {
   const {
     ref: forwardedRef,
     size,
+    boxSize,
     animation,
     "aria-hidden": ariaHidden = true,
     ...rest
   } = props;
 
+  // Precedence: a named avatar-aligned `size` wins; otherwise a custom
+  // `boxSize`; otherwise default to a 1em circle (matches the current text
+  // line height, useful inline).
+  const dimension = size ? avatarSizeScale[size] : (boxSize ?? "1em");
+
   return (
     <Skeleton
       ref={forwardedRef}
       shape="circle"
-      width={size}
-      height={size}
+      width={dimension}
+      height={dimension}
       animation={animation}
       aria-hidden={ariaHidden}
       {...rest}

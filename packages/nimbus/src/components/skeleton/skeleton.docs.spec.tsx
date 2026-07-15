@@ -29,7 +29,7 @@ describe("Skeleton - Standalone loading pattern", () => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
         {isLoading ? (
-          <SkeletonCircle size="2000" />
+          <SkeletonCircle boxSize="2000" />
         ) : (
           <img src="/avatar.png" alt="Product thumbnail" width={80} />
         )}
