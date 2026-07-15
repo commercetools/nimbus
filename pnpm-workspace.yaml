@@ -104,9 +104,9 @@ catalogs:
     publint: ^0.3.21
     "@commercetools-frontend/ui-kit": ^20.6.4
     "@modelcontextprotocol/inspector": ^0.21.2
-    "@babel/core": ^7.29.6
-    "@babel/runtime": ^7.29.7
-    "@babel/preset-typescript": ^7.29.7
+    "@babel/core": ^8.0.1
+    "@babel/runtime": ^8.0.0
+    "@babel/preset-typescript": ^8.0.1
     "@eslint/js": ^10.0.1
     "@react-types/shared": ^3.36.0
     eslint: ^10.5.0
