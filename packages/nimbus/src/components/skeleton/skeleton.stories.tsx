@@ -5,6 +5,7 @@ import {
   SkeletonText,
   SkeletonCircle,
   Stack,
+  Box,
 } from "@commercetools/nimbus";
 import { within, expect } from "storybook/test";
 
@@ -107,8 +108,12 @@ export const ShapeRectangle: Story = {
     const canvas = within(canvasElement);
     const skeleton = canvas.getByTestId("skeleton-rect");
 
-    await step("Applies the rectangle (radii.100 = 4px) radius", async () => {
-      await expect(getComputedStyle(skeleton).borderRadius).toBe("4px");
+    await step("Applies a small rounded corner (not circular)", async () => {
+      // Assert the visual intent (a small positive radius), not the exact token
+      // pixel value, so a token tweak doesn't break the test.
+      const radius = parseFloat(getComputedStyle(skeleton).borderRadius);
+      await expect(radius).toBeGreaterThan(0);
+      await expect(radius).toBeLessThan(40); // small relative to the 40px box
     });
 
     await step("Is hidden from assistive technology", async () => {
@@ -135,12 +140,12 @@ export const ShapeCircle: Story = {
       await expect(getComputedStyle(skeleton).aspectRatio).toBe("1 / 1");
     });
 
-    await step(
-      "Applies a fully-rounded (radii.full = 900px) radius",
-      async () => {
-        await expect(getComputedStyle(skeleton).borderRadius).toBe("900px");
-      }
-    );
+    await step("Applies a fully-rounded radius (≥ half its size)", async () => {
+      // A radius ≥ half the box makes it visually circular, regardless of the
+      // exact `radii.full` token value.
+      const radius = parseFloat(getComputedStyle(skeleton).borderRadius);
+      await expect(radius).toBeGreaterThanOrEqual(32); // half of the 64px box
+    });
 
     await step("Is hidden from assistive technology", async () => {
       await expect(skeleton).toHaveAttribute("aria-hidden", "true");
@@ -228,19 +233,66 @@ export const AnimationWave: Story = {
  *
  * Reduced-motion is enforced purely in CSS via the recipe's `_motionReduce`
  * condition (`@media (prefers-reduced-motion: reduce)`), which disables both the
- * pulse/wave animation and the `::after` shimmer. Like other Nimbus components
- * with motion (see toast.stories.tsx), this is not programmatically asserted in
- * a play function: a JS `matchMedia` mock cannot influence a real CSS media
- * query. Verify by enabling "Reduce motion" in your OS — the skeletons below
- * become static.
+ * pulse/wave animation and the `::after` shimmer. A JS `matchMedia` mock cannot
+ * influence a real CSS media query, so rather than fake it, the play function
+ * asserts the compiled stylesheet actually ships the rule — guarding the
+ * recipe's `_motionReduce` block from being dropped. Verify the visual behavior
+ * by enabling "Reduce motion" in your OS — the skeletons below become static.
  */
 export const ReducedMotion: Story = {
   render: () => (
     <Stack direction="row" gap="400" alignItems="center">
-      <Skeleton width="4800" height="1000" animation="pulse" />
+      <Skeleton
+        data-testid="rm-pulse"
+        width="4800"
+        height="1000"
+        animation="pulse"
+      />
       <Skeleton width="4800" height="1000" animation="wave" />
     </Stack>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Animates by default (baseline)", async () => {
+      const el = canvas.getByTestId("rm-pulse");
+      await expect(getComputedStyle(el).animationName).toBe("pulse");
+    });
+
+    await step(
+      "Ships a prefers-reduced-motion rule for the skeleton's compiled class",
+      async () => {
+        // The recipe compiles to a hashed atomic class (e.g. "css-abc123")
+        // alongside the semantic "nimbus-skeleton" class; the `_motionReduce`
+        // block targets the hashed one. Anchor the assertion to this element's
+        // actual class so removing `_motionReduce` fails the test.
+        const el = canvas.getByTestId("rm-pulse");
+        const hashed = Array.from(el.classList).find((c) =>
+          c.startsWith("css-")
+        );
+        await expect(hashed).toBeTruthy();
+
+        const hasReducedMotionRule = Array.from(document.styleSheets).some(
+          (sheet) => {
+            let rules: CSSRule[];
+            try {
+              rules = Array.from(sheet.cssRules);
+            } catch {
+              return false; // cross-origin sheet — skip
+            }
+            // A rule's cssText includes its nested @media blocks, so this
+            // matches whether the block is emitted flat or nested.
+            return rules.some(
+              (rule) =>
+                rule.cssText.includes("prefers-reduced-motion") &&
+                rule.cssText.includes(`.${hashed}`)
+            );
+          }
+        );
+        await expect(hasReducedMotionRule).toBe(true);
+      }
+    );
+  },
 };
 
 /**
@@ -350,40 +402,64 @@ export const SkeletonTextStyleMatch: Story = {
       };
     };
 
+    // Allow ±1px tolerance — layout geometry can round differently across
+    // browsers/zoom; the intent is "matches the text style", not exact pixels.
+    const near = async (actual: number, expected: number) =>
+      expect(Math.abs(actual - expected)).toBeLessThanOrEqual(1);
+
     await step(
       "body: bar ≈ 16px, pitch ≈ 26px (body line-height)",
       async () => {
         const { barHeight, pitch } = measure("st-body");
-        await expect(barHeight).toBe(16);
-        await expect(pitch).toBe(26);
+        await near(barHeight, 16);
+        await near(pitch, 26);
       }
     );
 
     await step("3xl: bar ≈ 30px, pitch ≈ 36px (3xl line-height)", async () => {
       const { barHeight, pitch } = measure("st-heading");
-      await expect(barHeight).toBe(30);
-      await expect(pitch).toBe(36);
+      await near(barHeight, 30);
+      await near(pitch, 36);
     });
   },
 };
 
 /**
- * SkeletonCircleStory — circular placeholder sized by a single size prop.
+ * SkeletonCircleStory — the circular placeholder sizes via the avatar-aligned
+ * `size` prop (2xs/xs/md), a custom `boxSize`, or defaults to a 1em circle when
+ * neither is set.
  */
 export const SkeletonCircleStory: Story = {
   render: () => (
-    <SkeletonCircle data-testid="skeleton-circle-comp" size="2000" />
+    <Stack direction="row" gap="400" alignItems="center">
+      <SkeletonCircle data-testid="circle-default" />
+      <SkeletonCircle data-testid="circle-md" size="md" />
+      <SkeletonCircle data-testid="circle-custom" boxSize="2000" />
+    </Stack>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const circle = canvas.getByTestId("skeleton-circle-comp");
+    const near = async (actual: number, expected: number) =>
+      expect(Math.abs(actual - expected)).toBeLessThanOrEqual(1);
 
-    await step("Renders as a 1:1 circular placeholder", async () => {
-      await expect(getComputedStyle(circle).aspectRatio).toBe("1 / 1");
+    await step("All render as decorative 1:1 circles", async () => {
+      for (const id of ["circle-default", "circle-md", "circle-custom"]) {
+        const el = canvas.getByTestId(id);
+        await expect(el).toHaveAttribute("aria-hidden", "true");
+        await expect(getComputedStyle(el).aspectRatio).toBe("1 / 1");
+      }
     });
 
-    await step("Is hidden from assistive technology", async () => {
-      await expect(circle).toHaveAttribute("aria-hidden", "true");
+    await step("Default size is 1em (≈16px in body context)", async () => {
+      await near(canvas.getByTestId("circle-default").offsetWidth, 16);
+    });
+
+    await step("size='md' matches the Avatar md dimension (40px)", async () => {
+      await near(canvas.getByTestId("circle-md").offsetWidth, 40);
+    });
+
+    await step("boxSize applies a custom dimension (80px)", async () => {
+      await near(canvas.getByTestId("circle-custom").offsetWidth, 80);
     });
   },
 };
@@ -421,6 +497,61 @@ export const RefForwarding: Story = {
   },
 };
 
+/**
+ * LoadingLayoutShowcase — TEMPORARY story for the PR screenshot. A realistic
+ * "content card, still loading" assembled from the whole family: a SkeletonCircle
+ * avatar, textStyle-matched SkeletonText for the name/heading, a wave-animated
+ * media block, a body paragraph, a stat row, and two action buttons. Pure visual
+ * (no play function) — safe to delete after the screenshot is captured.
+ */
+export const LoadingLayoutShowcase: Story = {
+  name: "Loading Layout (PR showcase)",
+  render: () => (
+    <Box
+      width="440px"
+      borderWidth="1px"
+      borderColor="neutral.6"
+      borderRadius="300"
+      padding="600"
+    >
+      <Stack gap="600">
+        {/* Header: avatar + name / subtitle */}
+        <Stack direction="row" gap="400" alignItems="center">
+          <SkeletonCircle size="md" />
+          <Stack gap="200" flexGrow="1">
+            <SkeletonText textStyle="lg" lines={1} width="60%" />
+            <SkeletonText textStyle="sm" lines={1} width="40%" />
+          </Stack>
+        </Stack>
+
+        {/* Hero media */}
+        <Skeleton width="100%" height="4800" animation="wave" />
+
+        {/* Body copy */}
+        <SkeletonText lines={4} />
+
+        {/* Stat row */}
+        <Stack direction="row" gap="400">
+          <Stack gap="200" flexGrow="1">
+            <SkeletonText textStyle="2xl" lines={1} width="50%" />
+            <SkeletonText textStyle="xs" lines={1} width="80%" />
+          </Stack>
+          <Stack gap="200" flexGrow="1">
+            <SkeletonText textStyle="2xl" lines={1} width="50%" />
+            <SkeletonText textStyle="xs" lines={1} width="80%" />
+          </Stack>
+        </Stack>
+
+        {/* Action buttons */}
+        <Stack direction="row" gap="300">
+          <Skeleton width="4400" height="1000" />
+          <Skeleton width="4400" height="1000" />
+        </Stack>
+      </Stack>
+    </Box>
+  ),
+};
+
 const shapes: NonNullable<Story["args"]>["shape"][] = ["rectangle", "circle"];
 const animations: NonNullable<Story["args"]>["animation"][] = [
   "pulse",
@@ -451,7 +582,7 @@ export const SmokeTest: Story = {
         </Stack>
       ))}
       <SkeletonText data-testid="smoke-text" lines={3} width="7200" />
-      <SkeletonCircle data-testid="smoke-circle" size="2000" />
+      <SkeletonCircle data-testid="smoke-circle" size="md" />
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {

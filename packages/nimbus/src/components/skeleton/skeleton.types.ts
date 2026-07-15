@@ -122,18 +122,21 @@ export type SkeletonTextProps = OmitInternalProps<HTMLChakraProps<"div">> & {
 
 /**
  * Props for the SkeletonCircle component.
- * Renders a circular loading placeholder sized by a single `size` prop.
- * Use `size` instead of `width`/`height` — SkeletonCircle maps `size` to equal
- * width and height automatically.
+ * Renders a circular loading placeholder. Use the avatar-aligned `size` prop to
+ * match an Avatar, or `boxSize` for a custom dimension — SkeletonCircle applies
+ * whichever you set to equal width and height. `width`/`height` are omitted in
+ * favor of these.
  */
 export type SkeletonCircleProps = OmitInternalProps<
   HTMLChakraProps<"div">,
   "width" | "height"
 > & {
   /**
-   * Equal width and height of the circular placeholder.
+   * Named circle size, aligned with the `Avatar` size scale
+   * (`2xs` = 24px, `xs` = 32px, `md` = 40px). For a custom dimension use
+   * `boxSize` instead. When neither is set, the circle defaults to `1em`.
    */
-  size?: string | number;
+  size?: "2xs" | "xs" | "md";
   /**
    * Animation of the skeleton placeholder.
    * @default "pulse"

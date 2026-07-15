@@ -31,8 +31,8 @@ Three components are available for different content shapes:
   buttons, or any custom shape
 - **SkeletonText** — a stack of narrowing lines that approximates a paragraph of
   text
-- **SkeletonCircle** — a circular placeholder sized by a single `size` prop,
-  useful for avatars and icons
+- **SkeletonCircle** — a circular placeholder whose `size` matches the Avatar
+  scale (or a custom `boxSize`), useful for avatars and icons
 
 ### Resources
 
@@ -135,12 +135,18 @@ const App = () => (
 
 ### Circle convenience
 
-`SkeletonCircle` is a single-prop shorthand for circular placeholders. Pass
-`size` to set equal width and height without needing `shape="circle"`.
+`SkeletonCircle` is a shorthand for circular placeholders. Use `size` to match
+an Avatar (`2xs`, `xs`, `md`), `boxSize` for a custom dimension, or neither for a
+`1em` circle — no need for `shape="circle"`.
 
 ```jsx live
 const App = () => (
-  <SkeletonCircle size="64px" />
+  <Stack direction="row" gap="400" alignItems="center">
+    <SkeletonCircle size="2xs" />
+    <SkeletonCircle size="xs" />
+    <SkeletonCircle size="md" />
+    <SkeletonCircle boxSize="4800" />
+  </Stack>
 )
 ```
 
@@ -152,9 +158,9 @@ possible.
 ```jsx live
 const App = () => (
   <Stack direction="row" gap="400" alignItems="flex-start">
-    <SkeletonCircle size="48px" />
+    <SkeletonCircle size="md" />
     <Stack gap="200">
-      <Skeleton width="180px" height="1rem" />
+      <SkeletonText textStyle="lg" lines={1} width="180px" />
       <SkeletonText lines={2} width="240px" />
     </Stack>
   </Stack>
