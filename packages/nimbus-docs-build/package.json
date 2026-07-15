@@ -21,13 +21,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@typescript-eslint/types": "^8.48.1",
-    "@typescript-eslint/typescript-estree": "^8.56.1",
-    "gray-matter": "^4.0.3",
-    "react-docgen-typescript": "^2.4.0",
-    "remark": "^15.0.1",
-    "remark-flexible-toc": "^1.2.4",
-    "to-vfile": "^8.0.0",
+    "@typescript-eslint/types": "catalog:tooling",
+    "@typescript-eslint/typescript-estree": "catalog:tooling",
+    "gray-matter": "catalog:utils",
+    "react-docgen-typescript": "catalog:tooling",
+    "remark": "catalog:markdown",
+    "remark-flexible-toc": "catalog:markdown",
+    "to-vfile": "catalog:markdown",
     "zod": "catalog:utils"
   },
   "devDependencies": {

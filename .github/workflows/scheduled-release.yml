@@ -32,14 +32,14 @@ jobs:
     steps:
       - name: Generate GitHub token (via CT Changesets App)
         id: generate_github_token
-        uses: tibdex/github-app-token@v2.1.0
+        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
         with:
           app_id: ${{ secrets.CT_CHANGESETS_APP_ID }}
           private_key: ${{ secrets.CT_CHANGESETS_APP_PEM }}
 
       - name: Find Version Packages PR
         id: find_pr
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           github-token: ${{ steps.generate_github_token.outputs.token }}
           script: |
@@ -92,7 +92,7 @@ jobs:
       - name: Check PR CI status
         if: steps.find_pr.outputs.found == 'true' && steps.check_stale.outputs.is_stale == 'true'
         id: check_ci
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           github-token: ${{ steps.generate_github_token.outputs.token }}
           script: |
@@ -145,7 +145,7 @@ jobs:
           steps.check_stale.outputs.is_stale == 'true' &&
           steps.check_ci.outputs.passed == 'true' &&
           inputs.dry_run != 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           github-token: ${{ steps.generate_github_token.outputs.token }}
           script: |
