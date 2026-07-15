@@ -1,0 +1,339 @@
+---
+title: FeedbackCard Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+## Comparison: pattern vs manual composition
+
+FeedbackCard is a layout-only composition of existing primitives. It renders no
+text and no button of its own — you provide those as children — and it exposes
+no `variant` prop. The visual treatment is entirely yours, applied through
+standard Chakra style props on `FeedbackCard.Root`.
+
+**With FeedbackCard:**
+
+```tsx
+<FeedbackCard.Root bg="positive.2" borderRadius="200" p="400">
+  <FeedbackCard.Content>
+    <Text fontWeight="700">Suggestion approved</Text>
+    <Text color="neutral.11">Applied the recommended discount.</Text>
+  </FeedbackCard.Content>
+  <FeedbackCard.Action>
+    <Button variant="outline" onPress={handleUndo}>
+      Undo
+    </Button>
+  </FeedbackCard.Action>
+</FeedbackCard.Root>
+```
+
+**Manual composition (escape hatch):**
+
+```tsx
+<Flex
+  bg="positive.2"
+  borderRadius="200"
+  p="400"
+  wrap="wrap"
+  align="center"
+  justify="space-between"
+  gap="400"
+>
+  <Stack gap="100" flex="1 1 auto" minWidth="0">
+    <Text fontWeight="700">Suggestion approved</Text>
+    <Text color="neutral.11">Applied the recommended discount.</Text>
+  </Stack>
+  <Button variant="outline" onPress={handleUndo}>
+    Undo
+  </Button>
+</Flex>
+```
+
+### When to use which
+
+**Use FeedbackCard when:**
+
+- You want the canonical embedded confirmation layout (responsive wrapping row,
+  content on the start, action on the end)
+- You want consistent spacing and wrapping behavior across the app
+- You want a semantic, self-documenting API (`Root` / `Content` / `Action`)
+
+**Use manual composition when:**
+
+- You need a fundamentally different layout the slots do not express
+
+## Getting started
+
+### Import
+
+```tsx
+import { FeedbackCard } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+Compose the three parts. Give `FeedbackCard.Content` your title and subtitle,
+and drop your own `Button` into `FeedbackCard.Action`. Apply the visual context
+with style props on `FeedbackCard.Root`.
+
+```jsx live-dev
+const App = () => (
+  <FeedbackCard.Root bg="positive.2" borderRadius="200" p="400">
+    <FeedbackCard.Content>
+      <Text fontWeight="700">Suggestion approved</Text>
+      <Text color="neutral.11">
+        Applied the recommended discount to 3 products.
+      </Text>
+    </FeedbackCard.Content>
+    <FeedbackCard.Action>
+      <Button variant="outline" onPress={() => console.log("Undo")}>
+        Undo
+      </Button>
+    </FeedbackCard.Action>
+  </FeedbackCard.Root>
+);
+```
+
+## Usage examples
+
+### Approve context
+
+Express an approval with a positive background and border via style props.
+
+```jsx live-dev
+const App = () => (
+  <FeedbackCard.Root
+    bg="positive.2"
+    border="solid-25"
+    borderColor="positive.6"
+    borderRadius="200"
+    p="400"
+  >
+    <FeedbackCard.Content>
+      <Text fontWeight="700">Suggestion approved</Text>
+      <Text color="neutral.11">Applied the recommended discount.</Text>
+    </FeedbackCard.Content>
+    <FeedbackCard.Action>
+      <Button variant="outline" onPress={() => console.log("Undo")}>
+        Undo
+      </Button>
+    </FeedbackCard.Action>
+  </FeedbackCard.Root>
+);
+```
+
+### Reject context
+
+The same composition — only the style props change.
+
+```jsx live-dev
+const App = () => (
+  <FeedbackCard.Root
+    bg="critical.2"
+    border="solid-25"
+    borderColor="critical.6"
+    borderRadius="200"
+    p="400"
+  >
+    <FeedbackCard.Content>
+      <Text fontWeight="700">Suggestion rejected</Text>
+      <Text color="neutral.11">No changes were applied.</Text>
+    </FeedbackCard.Content>
+    <FeedbackCard.Action>
+      <Button variant="outline" onPress={() => console.log("Undo")}>
+        Undo
+      </Button>
+    </FeedbackCard.Action>
+  </FeedbackCard.Root>
+);
+```
+
+### Responsive wrapping
+
+`FeedbackCard.Root` is a `flex-wrap` row. When the content and action no longer
+fit side by side, the action wraps below the content. Resize the preview to see
+it in action.
+
+```jsx live-dev
+const App = () => (
+  <Box maxWidth="320px">
+    <FeedbackCard.Root bg="neutral.2" borderRadius="200" p="400">
+      <FeedbackCard.Content>
+        <Text fontWeight="700">
+          This title and subtitle are intentionally long
+        </Text>
+        <Text color="neutral.11">
+          So the action button wraps to a new line on narrow containers.
+        </Text>
+      </FeedbackCard.Content>
+      <FeedbackCard.Action>
+        <Button variant="outline" onPress={() => console.log("Undo")}>
+          Undo
+        </Button>
+      </FeedbackCard.Action>
+    </FeedbackCard.Root>
+  </Box>
+);
+```
+
+## Component requirements
+
+### Accessibility
+
+FeedbackCard is layout-only and introduces no interactive elements of its own,
+so accessibility rests on the primitives you compose inside it:
+
+- **No implicit role**: `FeedbackCard.Root` renders a plain `<div>` with no ARIA
+  role, so it does not falsely announce as an alert or live region. If you want
+  the card announced as a single unit, pass `role="group"` together with an
+  `aria-label` — both forward onto the root element.
+- **The action**: use a Nimbus `Button` (or another React Aria control) inside
+  `FeedbackCard.Action`. It supplies its own accessible name, focus behavior,
+  and keyboard support.
+- **The text**: `FeedbackCard.Content` renders whatever you pass. Use semantic
+  primitives (e.g. `Text`, `Heading`) so the title and subtitle read correctly.
+
+If your use case requires analytics for the action, it is good practice to add a
+**persistent**, **unique** id to your button:
+
+```tsx
+const PERSISTENT_ID = "agent-suggestion-undo";
+
+export const Example = () => (
+  <FeedbackCard.Action>
+    <Button id={PERSISTENT_ID} variant="outline" onPress={handleUndo}>
+      Undo
+    </Button>
+  </FeedbackCard.Action>
+);
+```
+
+#### Keyboard navigation
+
+FeedbackCard adds no keyboard behavior of its own. The consumer-provided action
+button participates in the normal tab order:
+
+- `Tab` / `Shift+Tab`: move focus to and from the action button
+- `Enter` or `Space`: activate the action button
+
+## API reference
+
+<PropsTable id="FeedbackCard" />
+
+## Testing your implementation
+
+FeedbackCard's own rendering, layout, and style-prop forwarding are covered by
+Nimbus story tests — you don't need to re-test them. These examples focus on the
+integration you own: wiring the action into your application's state.
+
+### React to undo with your own state
+
+The pattern positions the button but doesn't change it. Own the state
+transition in your component — here, pressing Undo reverts the outcome and swaps
+the card for an acknowledgement.
+
+```tsx
+import { useState } from "react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import {
+  FeedbackCard,
+  Text,
+  Button,
+  NimbusProvider,
+} from "@commercetools/nimbus";
+
+it("reverts the applied change when undo is pressed", async () => {
+  const user = userEvent.setup();
+
+  const AgentSuggestion = () => {
+    const [status, setStatus] = useState("applied");
+
+    if (status === "reverted") {
+      return <Text>Change reverted.</Text>;
+    }
+
+    return (
+      <FeedbackCard.Root bg="positive.2" borderRadius="200" p="400">
+        <FeedbackCard.Content>
+          <Text fontWeight="700">Suggestion approved</Text>
+        </FeedbackCard.Content>
+        <FeedbackCard.Action>
+          <Button variant="outline" onPress={() => setStatus("reverted")}>
+            Undo
+          </Button>
+        </FeedbackCard.Action>
+      </FeedbackCard.Root>
+    );
+  };
+
+  render(
+    <NimbusProvider>
+      <AgentSuggestion />
+    </NimbusProvider>
+  );
+
+  await user.click(screen.getByRole("button", { name: /undo/i }));
+  expect(screen.getByText("Change reverted.")).toBeInTheDocument();
+});
+```
+
+### Dismiss one card from a feed
+
+Render a list of confirmations and remove the matching entry when its undo is
+pressed — a common chat-feed workflow.
+
+```tsx
+it("removes only the undone entry from the feed", async () => {
+  const user = userEvent.setup();
+
+  const SuggestionFeed = () => {
+    const [items, setItems] = useState([
+      { id: 1, label: "Discount applied" },
+      { id: 2, label: "Tax rate updated" },
+    ]);
+
+    return (
+      <Stack gap="200">
+        {items.map((item) => (
+          <FeedbackCard.Root key={item.id} bg="neutral.2" p="400">
+            <FeedbackCard.Content>
+              <Text>{item.label}</Text>
+            </FeedbackCard.Content>
+            <FeedbackCard.Action>
+              <Button
+                variant="outline"
+                aria-label={`Undo ${item.label}`}
+                onPress={() =>
+                  setItems((prev) => prev.filter((i) => i.id !== item.id))
+                }
+              >
+                Undo
+              </Button>
+            </FeedbackCard.Action>
+          </FeedbackCard.Root>
+        ))}
+      </Stack>
+    );
+  };
+
+  render(
+    <NimbusProvider>
+      <SuggestionFeed />
+    </NimbusProvider>
+  );
+
+  await user.click(
+    screen.getByRole("button", { name: /undo discount applied/i })
+  );
+
+  expect(screen.queryByText("Discount applied")).not.toBeInTheDocument();
+  expect(screen.getByText("Tax rate updated")).toBeInTheDocument();
+});
+```
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/patterns-feedback-feedbackcard--docs)
+- [Button Component](/components/inputs/button)
+- [Card Component](/components/data-display/card)
