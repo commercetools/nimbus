@@ -36,7 +36,7 @@ describe("FeedbackCard - Undo drives external state", () => {
           p="400"
         >
           <FeedbackCard.Content>
-            <Heading size="sm">Suggestion approved</Heading>
+            <Heading size="md">Suggestion approved</Heading>
             <Text>Applied the recommended discount.</Text>
           </FeedbackCard.Content>
           <FeedbackCard.Action>

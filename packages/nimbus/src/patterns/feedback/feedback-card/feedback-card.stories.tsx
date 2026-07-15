@@ -32,7 +32,7 @@ export const ApproveContext: Story = {
       p="400"
     >
       <FeedbackCard.Content>
-        <Heading size="sm">Suggestion approved</Heading>
+        <Heading size="md">Suggestion approved</Heading>
         <Text>Applied the recommended discount to 3 products.</Text>
       </FeedbackCard.Content>
       <FeedbackCard.Action>
@@ -85,7 +85,7 @@ export const RejectedContext: Story = {
       p="400"
     >
       <FeedbackCard.Content>
-        <Heading size="sm">Suggestion rejected</Heading>
+        <Heading size="md">Suggestion rejected</Heading>
         <Text>No changes were applied.</Text>
       </FeedbackCard.Content>
       <FeedbackCard.Action>

@@ -15,8 +15,8 @@ children.
 - **WHEN** a consumer renders `FeedbackCard.Root` containing a
   `FeedbackCard.Content` and a `FeedbackCard.Action`
 - **THEN** all three parts render as `div` elements, the content children and
-  the action children appear in the document, and the action element follows
-  the content element in DOM order
+  the action children appear in the document, and the action element follows the
+  content element in DOM order
 
 #### Scenario: Parts carry stable slot identity
 
@@ -25,15 +25,18 @@ children.
   `action`) so that slot layout styles from the `nimbusFeedbackCard` recipe are
   applied to the correct element
 
-### Requirement: Layout-only styling with no variants
+### Requirement: Layout and palette-aware styling with no variants
 
-The `FeedbackCard` pattern SHALL provide layout only and SHALL NOT define any
-recipe `variant` or `size` props. `FeedbackCard.Root` SHALL lay its children out
-as a horizontal flex row that wraps (`flex-wrap`), aligns items centrally, uses
+The `FeedbackCard` pattern SHALL NOT define any recipe `variant` or `size`
+props. `FeedbackCard.Root` SHALL lay its children out as a horizontal flex row
+that wraps (`flex-wrap`), aligns items centrally, uses
 `justify-content: space-between`, and applies a design-token gap.
 `FeedbackCard.Content` SHALL be a vertical stack that grows to fill available
 space and permits wrapping. `FeedbackCard.Action` SHALL not shrink. All spacing
-SHALL use design tokens, never hardcoded values.
+SHALL use design tokens, never hardcoded values. `FeedbackCard.Root` SHALL set a
+palette-aware text color (`colorPalette.11`) that the content copy inherits, so
+the copy reads in the consumer's chosen `colorPalette`; it SHALL NOT set any
+fixed hue.
 
 #### Scenario: Responsive wrapping row
 
@@ -47,6 +50,14 @@ SHALL use design tokens, never hardcoded values.
 - **WHEN** a consumer inspects the `FeedbackCard.Root` prop types
 - **THEN** there is no `variant` or `size` prop, and visual treatment is
   achievable only through forwarded style props
+
+#### Scenario: Content copy inherits the card's palette
+
+- **WHEN** a consumer sets `colorPalette="critical"` on `FeedbackCard.Root` and
+  places plain `Heading`/`Text` (with no `color` prop) inside
+  `FeedbackCard.Content`
+- **THEN** that copy renders in the `critical` palette (inherited from Root's
+  `colorPalette.11` text color), without the consumer setting any color
 
 ### Requirement: Visual treatment via forwarded Chakra style props
 

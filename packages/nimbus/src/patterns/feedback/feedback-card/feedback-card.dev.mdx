@@ -6,21 +6,25 @@ tab-order: 3
 
 ## Comparison: pattern vs manual composition
 
-FeedbackCard is a layout-only composition of existing primitives. It renders no
-text and no button of its own — you provide those as children — and it exposes
-no `variant` prop. The visual treatment is entirely yours, applied through
-standard Chakra style props on `FeedbackCard.Root`. Set `colorPalette` on
-`FeedbackCard.Root` and the whole card themes cohesively: use `colorPalette.*`
-tokens for the surface, compose the copy from `Heading` and `Text` (their
-default colors read well on the subtle tint — no color prop needed), and the
-`Button` inherits the palette automatically (see [Theming](#theming)).
+FeedbackCard is a composition of existing primitives. It renders no text and no
+button of its own — you provide those as children — and it exposes no `variant`
+prop. Set `colorPalette` on `FeedbackCard.Root` and the whole card themes
+cohesively: use `colorPalette.*` tokens for the surface, and the copy and
+`Button` follow the palette automatically. `Root` sets a palette-aware text
+color, so plain `Heading`/`Text` render in the card's palette with no color prop
+(see [Theming](#theming)).
 
 **With FeedbackCard:**
 
 ```tsx
-<FeedbackCard.Root colorPalette="positive" bg="colorPalette.2" borderRadius="200" p="400">
+<FeedbackCard.Root
+  colorPalette="positive"
+  bg="colorPalette.2"
+  borderRadius="200"
+  p="400"
+>
   <FeedbackCard.Content>
-    <Heading size="sm">Suggestion approved</Heading>
+    <Heading size="md">Suggestion approved</Heading>
     <Text>Applied the recommended discount.</Text>
   </FeedbackCard.Content>
   <FeedbackCard.Action>
@@ -45,7 +49,7 @@ default colors read well on the subtle tint — no color prop needed), and the
   gap="400"
 >
   <Stack gap="100" flex="1 1 auto" minWidth="0">
-    <Heading size="sm">Suggestion approved</Heading>
+    <Heading size="md">Suggestion approved</Heading>
     <Text>Applied the recommended discount.</Text>
   </Stack>
   <Button variant="outline" onPress={handleUndo}>
@@ -78,16 +82,21 @@ import { FeedbackCard } from "@commercetools/nimbus";
 ### Basic usage
 
 Compose the three parts. Give `FeedbackCard.Content` a `Heading` title and a
-`Text` subtitle, and drop your own `Button` into `FeedbackCard.Action`. Apply the
-visual context with style props on `FeedbackCard.Root` — set `colorPalette` and
-reach for `colorPalette.*` tokens for the surface; the copy and button take care
-of themselves.
+`Text` subtitle, and drop your own `Button` into `FeedbackCard.Action`. Apply
+the visual context with style props on `FeedbackCard.Root` — set `colorPalette`
+and reach for `colorPalette.*` tokens for the surface; the copy and button take
+care of themselves.
 
 ```jsx live-dev
 const App = () => (
-  <FeedbackCard.Root colorPalette="positive" bg="colorPalette.2" borderRadius="200" p="400">
+  <FeedbackCard.Root
+    colorPalette="positive"
+    bg="colorPalette.2"
+    borderRadius="200"
+    p="400"
+  >
     <FeedbackCard.Content>
-      <Heading size="sm">Suggestion approved</Heading>
+      <Heading size="md">Suggestion approved</Heading>
       <Text>Applied the recommended discount to 3 products.</Text>
     </FeedbackCard.Content>
     <FeedbackCard.Action>
@@ -101,17 +110,17 @@ const App = () => (
 
 ## Theming
 
-FeedbackCard adds no colors of its own. Establish a
-[color palette](/guidelines/colors) on `FeedbackCard.Root` with the
-`colorPalette` prop, then reference `colorPalette.*` tokens for the surface. The
-palette **cascades to descendants**, so a `Button` inside `FeedbackCard.Action`
-inherits it automatically — you rarely need to set `colorPalette` on the button
-too.
+FeedbackCard derives its colors entirely from the palette you set — it has no
+fixed hues of its own. Establish a [color palette](/guidelines/colors) on
+`FeedbackCard.Root` with the `colorPalette` prop, then reference
+`colorPalette.*` tokens for the surface. Everything else follows automatically:
 
 - **Surface**: `bg="colorPalette.2"`, optional `borderColor="colorPalette.6"`
-- **Copy**: compose `Heading` + `Text`. Their default text colors read well on
-  the subtle tinted surface — no `color` prop needed.
-- **Action**: nothing — the `Button` inherits `colorPalette` from `Root`.
+- **Copy**: nothing — `Root` sets a palette-aware text color
+  (`color: "colorPalette.11"`), which the copy inherits, so plain `Heading` and
+  `Text` render in the card's palette. No `color` prop needed.
+- **Action**: nothing — the `Button` inherits `colorPalette` from `Root` via the
+  cascade.
 
 Switch contexts by switching the palette: `colorPalette="positive"` for an
 approval, `colorPalette="critical"` for a rejection, `colorPalette="info"` for a
@@ -135,7 +144,7 @@ const App = () => (
     p="400"
   >
     <FeedbackCard.Content>
-      <Heading size="sm">Suggestion approved</Heading>
+      <Heading size="md">Suggestion approved</Heading>
       <Text>Applied the recommended discount.</Text>
     </FeedbackCard.Content>
     <FeedbackCard.Action>
@@ -162,7 +171,7 @@ const App = () => (
     p="400"
   >
     <FeedbackCard.Content>
-      <Heading size="sm">Suggestion rejected</Heading>
+      <Heading size="md">Suggestion rejected</Heading>
       <Text>No changes were applied.</Text>
     </FeedbackCard.Content>
     <FeedbackCard.Action>
@@ -183,10 +192,19 @@ it in action.
 ```jsx live-dev
 const App = () => (
   <Box maxWidth="320px">
-    <FeedbackCard.Root colorPalette="neutral" bg="colorPalette.2" borderRadius="200" p="400">
+    <FeedbackCard.Root
+      colorPalette="neutral"
+      bg="colorPalette.2"
+      borderRadius="200"
+      p="400"
+    >
       <FeedbackCard.Content>
-        <Heading size="sm">This title and subtitle are intentionally long</Heading>
-        <Text>So the action button wraps to a new line on narrow containers.</Text>
+        <Heading size="md">
+          This title and subtitle are intentionally long
+        </Heading>
+        <Text>
+          So the action button wraps to a new line on narrow containers.
+        </Text>
       </FeedbackCard.Content>
       <FeedbackCard.Action>
         <Button variant="outline" onPress={() => console.log("Undo")}>
@@ -278,9 +296,14 @@ it("reverts the applied change when undo is pressed", async () => {
     }
 
     return (
-      <FeedbackCard.Root colorPalette="positive" bg="colorPalette.2" borderRadius="200" p="400">
+      <FeedbackCard.Root
+        colorPalette="positive"
+        bg="colorPalette.2"
+        borderRadius="200"
+        p="400"
+      >
         <FeedbackCard.Content>
-          <Heading size="sm">Suggestion approved</Heading>
+          <Heading size="md">Suggestion approved</Heading>
         </FeedbackCard.Content>
         <FeedbackCard.Action>
           <Button variant="outline" onPress={() => setStatus("reverted")}>
@@ -320,7 +343,12 @@ it("removes only the undone entry from the feed", async () => {
     return (
       <Stack gap="200">
         {items.map((item) => (
-          <FeedbackCard.Root key={item.id} colorPalette="neutral" bg="colorPalette.2" p="400">
+          <FeedbackCard.Root
+            key={item.id}
+            colorPalette="neutral"
+            bg="colorPalette.2"
+            p="400"
+          >
             <FeedbackCard.Content>
               <Text>{item.label}</Text>
             </FeedbackCard.Content>

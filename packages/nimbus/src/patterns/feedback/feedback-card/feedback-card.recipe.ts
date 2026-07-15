@@ -3,10 +3,17 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 /**
  * Recipe configuration for the FeedbackCard pattern.
  *
- * Layout only: FeedbackCard is a composition of existing primitives, not a new
+ * No variants: FeedbackCard is a composition of existing primitives, not a new
  * visual primitive, so the recipe defines no `variant` or `size` axes. Consumers
- * supply all visual treatment (bg, border, borderRadius, padding) via standard
- * Chakra style props forwarded on `FeedbackCard.Root`.
+ * supply the surface treatment (bg, border, borderRadius, padding) via standard
+ * Chakra style props forwarded on `FeedbackCard.Root`, and choose the context by
+ * setting `colorPalette` on Root.
+ *
+ * The card expects short feedback copy (a title + optional subtitle), so Root
+ * sets `color: "colorPalette.11"`. Because `color` is inherited, all text
+ * content reads in the card's palette automatically (green for `positive`, red
+ * for `critical`, …) with no per-element color props. The action `Button` is
+ * unaffected — it sets its own color from its recipe.
  */
 export const feedbackCardRecipe = defineSlotRecipe({
   slots: ["root", "content", "action"],
@@ -23,6 +30,9 @@ export const feedbackCardRecipe = defineSlotRecipe({
       alignItems: "center",
       justifyContent: "space-between",
       gap: "400",
+      // Palette-aware text color: inherited by the content copy so the whole
+      // card themes as one. Consumers set the hue via `colorPalette` on Root.
+      color: "colorPalette.11",
     },
     // Text area: a vertical stack (title + subtitle) that grows to fill the
     // row and may shrink below its content width so the row can wrap cleanly.

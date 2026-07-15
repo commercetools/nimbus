@@ -63,13 +63,14 @@ If the answer is "composing existing ones," it's a pattern.
 > **Layout-only exception.** A pattern MAY define a slot recipe
 > (`defineSlotRecipe`) and a compound `.Root`/part API purely to encapsulate a
 > **reusable layout** — provided it introduces **no recipe variants** and **no
-> new interaction behavior**. The recipe carries structural styles only (flex
-> layout, gap, wrapping); all visual treatment (bg, border, radius, padding)
-> stays with the consumer via forwarded style props. `FeedbackCard`
-> (`src/patterns/feedback/feedback-card/`) is the reference example. It remains
-> a pattern because it composes existing primitives and adds no new themed
-> primitive — the slot recipe is a layout convenience, not an independent visual
-> identity.
+> new interaction behavior**. The recipe carries structural styles (flex layout,
+> gap, wrapping) plus palette-aware defaults that resolve against the consumer's
+> `colorPalette` (e.g. a `colorPalette.11` text color) — never a fixed hue; the
+> surface treatment (bg, border, radius, padding) stays with the consumer via
+> forwarded style props. `FeedbackCard` (`src/patterns/feedback/feedback-card/`)
+> is the reference example. It remains a pattern because it composes existing
+> primitives and adds no new themed primitive — the slot recipe is a layout
+> convenience, not an independent visual identity.
 
 ### Decision flow
 
@@ -153,9 +154,10 @@ src/patterns/category/pattern-name/
 
 `FeedbackCard` (`src/patterns/feedback/feedback-card/`) is the reference. The
 recipe is registered in the theme like any other, but carries only structural
-styles (flex layout, gap, wrapping); consumers supply all visual treatment via
-forwarded style props. This stays a pattern because it adds no recipe variants
-and no new interaction behavior.
+styles (flex layout, gap, wrapping) plus palette-aware defaults that resolve
+against the consumer's `colorPalette` (never a fixed hue); consumers supply the
+surface treatment via forwarded style props. This stays a pattern because it
+adds no recipe variants and no new interaction behavior.
 
 **Pattern (documented only)** — documentation files only, no exported code:
 
