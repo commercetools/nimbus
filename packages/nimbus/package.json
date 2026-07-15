@@ -123,7 +123,7 @@
     "playwright": "catalog:tooling",
     "react": "catalog:react",
     "react-dom": "catalog:react",
-    "slate": "^0.123.0",
+    "slate": "^0.126.0",
     "slate-history": "^0.115.0",
     "slate-hyperscript": "^0.115.0",
     "slate-react": "^0.123.0",
@@ -137,7 +137,7 @@
     "@commercetools/nimbus-icons": "workspace:^",
     "@commercetools/nimbus-tokens": "workspace:^",
     "react": "19.x",
-    "slate": "^0.123.0",
+    "slate": "^0.126.0",
     "slate-history": "^0.115.0",
     "slate-hyperscript": "^0.115.0",
     "slate-react": "^0.123.0"
