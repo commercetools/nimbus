@@ -1,0 +1,141 @@
+---
+title: SkeletonCircle Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { SkeletonCircle, type SkeletonCircleProps } from '@commercetools/nimbus';
+```
+
+`SkeletonCircle` is a convenience wrapper over
+[Skeleton](/components/feedback/skeleton) with `shape="circle"`. For rectangular
+blocks use `Skeleton`; for paragraphs use
+[SkeletonText](/components/feedback/skeletontext).
+
+### Basic usage
+
+`SkeletonCircle` renders a circular placeholder. Use the avatar-aligned `size`
+prop (`"2xs"` / `"xs"` / `"md"`) to stand in for an `Avatar`.
+
+```jsx live-dev
+const App = () => (
+  <SkeletonCircle size="md" />
+)
+```
+
+## Usage examples
+
+### Avatar-aligned sizes
+
+The `size` prop is aligned with the `Avatar` size scale — `2xs` = 24 px,
+`xs` = 32 px, `md` = 40 px — and applies equally to width and height, so the
+circle stays round.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <SkeletonCircle size="2xs" />
+    <SkeletonCircle size="xs" />
+    <SkeletonCircle size="md" />
+  </Stack>
+)
+```
+
+### Custom dimension with `boxSize`
+
+For a dimension outside the Avatar scale, pass `boxSize` (a spacing token or CSS
+value) instead of `size`. `width` and `height` are intentionally omitted from
+the props in favor of `size`/`boxSize`, so the placeholder can never be
+non-circular. With neither set, it defaults to a `1em` circle useful inline next
+to text.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <SkeletonCircle />
+    <SkeletonCircle boxSize="1600" />
+    <SkeletonCircle boxSize="80px" />
+  </Stack>
+)
+```
+
+### Conditional rendering (standalone pattern)
+
+Like the rest of the family, `SkeletonCircle` has no `isLoaded` prop. Render it
+while loading and swap it for the real avatar with conditional rendering.
+
+```jsx live-dev
+const App = () => {
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  return (
+    <Stack gap="400">
+      <Button onPress={() => setIsLoading(v => !v)}>Toggle loading</Button>
+      <div aria-busy={isLoading}>
+        {isLoading ? (
+          <SkeletonCircle size="md" />
+        ) : (
+          <Avatar size="md" firstName="Ada" lastName="Lovelace" />
+        )}
+      </div>
+    </Stack>
+  )
+}
+```
+
+## Component requirements
+
+### Accessibility
+
+`SkeletonCircle` is **decorative by default** — it renders with
+`aria-hidden="true"` so screen readers skip over it.
+
+To communicate loading state to assistive technology, set `aria-busy="true"` on
+the **container** that wraps the skeleton region, then clear it and render the
+real content once loading completes.
+
+```tsx
+<div aria-busy={isLoading} aria-label="User avatar">
+  {isLoading ? (
+    <SkeletonCircle size="md" />
+  ) : (
+    <Avatar size="md" firstName={user.firstName} lastName={user.lastName} />
+  )}
+</div>
+```
+
+Announce the loading region on the wrapping container rather than labelling the
+skeleton itself — see [Skeleton](/components/feedback/skeleton) for the full
+rationale.
+
+#### Reduced motion
+
+When the user has enabled `prefers-reduced-motion: reduce`, the animation is
+automatically disabled regardless of the `animation` prop value. No additional
+configuration is required.
+
+#### Keyboard navigation
+
+`SkeletonCircle` is non-interactive and decorative. It does not receive focus or
+support keyboard interaction.
+
+## API reference
+
+<PropsTable id="SkeletonCircle" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using SkeletonCircle within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: skeleton-circle.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-skeleton--docs)
+- [Skeleton](/components/feedback/skeleton)
+- [SkeletonText](/components/feedback/skeletontext)

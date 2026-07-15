@@ -4,8 +4,6 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   Skeleton,
-  SkeletonText,
-  SkeletonCircle,
   Stack,
   Text,
   Button,
@@ -13,72 +11,50 @@ import {
 } from "@commercetools/nimbus";
 
 /**
- * @docs-section basic-usage
- * @docs-title Basic Usage
- * @docs-description The three building blocks of the family: `Skeleton` (the
- * base rectangle/circle placeholder), `SkeletonText` (a paragraph of lines sized
- * to a `textStyle`), and `SkeletonCircle` (an avatar/icon placeholder).
+ * @docs-section basic-rendering
+ * @docs-title Basic Rendering
+ * @docs-description Render a `Skeleton` placeholder and confirm it is present; it stretches to the `width`/`height` you give it and is decorative (`aria-hidden`) by default, so assistive technology skips it.
  * @docs-order 1
  */
-describe("Skeleton - Basic usage", () => {
-  it("renders the base Skeleton, SkeletonText, and SkeletonCircle", () => {
+describe("Skeleton - Basic rendering", () => {
+  it("renders a decorative placeholder block", () => {
     render(
       <NimbusProvider>
-        <Stack gap="400" alignItems="flex-start">
-          <Skeleton data-testid="skeleton" width="7200" height="1000" />
-          <SkeletonText
-            data-testid="skeleton-text"
-            lines={3}
-            textStyle="body"
-          />
-          <SkeletonCircle data-testid="skeleton-circle" size="md" />
-        </Stack>
+        <Skeleton data-testid="skeleton" width="200px" height="40px" />
       </NimbusProvider>
     );
 
-    expect(screen.getByTestId("skeleton")).toBeInTheDocument();
-    expect(screen.getByTestId("skeleton-text")).toBeInTheDocument();
-    expect(screen.getByTestId("skeleton-circle")).toBeInTheDocument();
+    const skeleton = screen.getByTestId("skeleton");
+    expect(skeleton).toBeInTheDocument();
+    expect(skeleton).toHaveAttribute("aria-hidden", "true");
   });
 });
 
 /**
  * @docs-section standalone-pattern
  * @docs-title Standalone Loading Pattern
- * @docs-description The recommended way to use Skeleton: render placeholders
- * while data is loading, then swap in the real content with conditional
- * rendering. Skeleton deliberately has no `isLoaded` wrapper prop — the
- * consumer owns the loading state.
+ * @docs-description The recommended way to use Skeleton: render a placeholder while data is loading, then swap in the real content with conditional rendering — Skeleton has no `isLoaded` prop, so the consumer owns the loading state.
  * @docs-order 2
  */
 describe("Skeleton - Standalone loading pattern", () => {
   /**
-   * A representative consumer component: show a skeleton placeholder while
-   * `isLoading`, then render the real content once loading completes.
+   * A representative consumer component: show a skeleton banner while
+   * `isLoading`, then render the real image once loading completes.
    */
-  function ProductSummary({ isLoading }: { isLoading: boolean }) {
-    return (
-      <Stack direction="row" gap="400" alignItems="center">
-        {isLoading ? (
-          <SkeletonCircle boxSize="2000" />
-        ) : (
-          <img src="/avatar.png" alt="Product thumbnail" width={80} />
-        )}
-        {isLoading ? (
-          <SkeletonText lines={2} width="7200" />
-        ) : (
-          <Text>Wireless keyboard — $49.00</Text>
-        )}
-      </Stack>
+  function ProductBanner({ isLoading }: { isLoading: boolean }) {
+    return isLoading ? (
+      <Skeleton width="288px" height="120px" />
+    ) : (
+      <img src="/banner.png" alt="Product banner" width={288} />
     );
   }
 
-  it("shows skeleton placeholders while loading, then real content", async () => {
+  it("shows a skeleton while loading, then the real content", async () => {
     const Example = () => {
       const [isLoading, setIsLoading] = useState(true);
       return (
         <Stack gap="400">
-          <ProductSummary isLoading={isLoading} />
+          <ProductBanner isLoading={isLoading} />
           <Button onPress={() => setIsLoading(false)}>Finish loading</Button>
         </Stack>
       );
@@ -91,23 +67,21 @@ describe("Skeleton - Standalone loading pattern", () => {
     );
 
     // While loading: real content is absent.
-    expect(screen.queryByText("Wireless keyboard — $49.00")).toBeNull();
+    expect(screen.queryByAltText("Product banner")).toBeNull();
 
     await userEvent.click(
       screen.getByRole("button", { name: "Finish loading" })
     );
 
     // After loading: real content is present.
-    expect(screen.getByText("Wireless keyboard — $49.00")).toBeInTheDocument();
+    expect(screen.getByAltText("Product banner")).toBeInTheDocument();
   });
 });
 
 /**
  * @docs-section aria-busy-pattern
  * @docs-title Announcing Loading with aria-busy
- * @docs-description Skeleton shapes are decorative (`aria-hidden`) so they are
- * not announced individually. Communicate the loading state to assistive
- * technology by setting `aria-busy` on the surrounding container instead.
+ * @docs-description Skeleton shapes are decorative (`aria-hidden`) so they are not announced individually; communicate the loading state to assistive technology by setting `aria-busy` on the surrounding container instead.
  * @docs-order 3
  */
 describe("Skeleton - Container aria-busy pattern", () => {
@@ -119,7 +93,7 @@ describe("Skeleton - Container aria-busy pattern", () => {
           aria-busy={true}
           aria-label="Product details"
         >
-          <SkeletonText lines={3} width="100%" />
+          <Skeleton width="100%" height="120px" />
         </section>
       </NimbusProvider>
     );
@@ -133,7 +107,7 @@ describe("Skeleton - Container aria-busy pattern", () => {
     render(
       <NimbusProvider>
         <section data-testid="container" aria-busy={false}>
-          <p>Product details loaded</p>
+          <Text>Product details loaded</Text>
         </section>
       </NimbusProvider>
     );
