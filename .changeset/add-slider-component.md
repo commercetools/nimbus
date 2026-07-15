@@ -2,9 +2,9 @@
 "@commercetools/nimbus": minor
 ---
 
-**Slider / RangeSlider**: new components for selecting numeric values by
-dragging a handle, built on React Aria with full keyboard, pointer, touch, and
-RTL support (WCAG 2.1 AA).
+**Slider / RangeSlider**: new components for selecting a numeric value — or a
+numeric range — by dragging a handle. Fully operable by keyboard, pointer, and
+touch, and correct under right-to-left layouts.
 
 - `Slider` selects a single `number`; `RangeSlider` selects a `[number, number]`
   min–max pair with two handles that can't cross. Both support controlled and
@@ -17,7 +17,7 @@ RTL support (WCAG 2.1 AA).
 - `variant`: `plain` (default, a thin filled track with a knob) and `enclosed`
   (a thick, contained iOS-style bar with the knob inset inside it).
 - Opt-in tick marks via `showTicks` / `tickStep`.
-- Integrates with `FormField` for label association, description, and invalid
-  state; usable standalone with an `aria-label`.
+- Works inside `FormField` for its label, description, and error state; usable
+  standalone with an `aria-label`.
 - `RangeSlider` names each handle via `thumbLabels`, falling back to localized
   "Minimum" / "Maximum" labels.
