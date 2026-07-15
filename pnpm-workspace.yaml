@@ -63,7 +63,13 @@ overrides:
   "brace-expansion@2": "~2.0.3"
   "brace-expansion@>=4.0.0 <5.0.6": ">=5.0.6"
   mdast-util-to-hast: "^13.2.1"
-  js-yaml: "^3.14.2"
+  # js-yaml 3.x security floor — >=3.15.0 fixes GHSA-h67p-54hq-rp68
+  # (quadratic-complexity DoS in merge-key handling).
+  js-yaml: "^3.15.0"
+  # Force the transitively-pulled dompurify (3.4.5 via @commercetools-uikit/icons
+  # + rich-text-utils) up to the vetted catalog version, clearing the dompurify
+  # GHSA cluster (…-cmwh-pvxp-8882, …-rp9w-3fw7-7cwq, …-76mc-f452-cxcm, etc.).
+  dompurify: "catalog:utils"
   qs: ">=6.15.2"
   "minimatch@>=3.0.0 <3.1.4": "3.1.4"
   svgo: ">=3.3.3"

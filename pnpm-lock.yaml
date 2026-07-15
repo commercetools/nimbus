@@ -201,9 +201,6 @@ catalogs:
     dequal:
       specifier: ^2.0.3
       version: 2.0.3
-    dompurify:
-      specifier: ^3.4.12
-      version: 3.4.12
     dotenv:
       specifier: ^17.4.2
       version: 17.4.2
@@ -227,7 +224,8 @@ overrides:
   brace-expansion@2: ~2.0.3
   brace-expansion@>=4.0.0 <5.0.6: '>=5.0.6'
   mdast-util-to-hast: ^13.2.1
-  js-yaml: ^3.14.2
+  js-yaml: ^3.15.0
+  dompurify: ^3.4.12
   qs: '>=6.15.2'
   minimatch@>=3.0.0 <3.1.4: 3.1.4
   svgo: '>=3.3.3'
@@ -387,7 +385,7 @@ importers:
         version: 5.108.4(esbuild@0.28.1)(webpack-cli@7.2.1)
       webpack-cli:
         specifier: catalog:tooling
-        version: 7.2.1(js-yaml@3.14.2)(json5@2.2.3)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@3.15.0)(json5@2.2.3)(webpack@5.108.4)
 
   apps/docs:
     dependencies:
@@ -538,7 +536,7 @@ importers:
         version: 5.108.4(esbuild@0.28.1)(webpack-cli@7.2.1)
       webpack-cli:
         specifier: catalog:tooling
-        version: 7.2.1(js-yaml@3.14.2)(json5@2.2.3)(webpack@5.108.4)
+        version: 7.2.1(js-yaml@3.15.0)(json5@2.2.3)(webpack@5.108.4)
 
   packages/color-tokens:
     dependencies:
@@ -728,7 +726,7 @@ importers:
         specifier: ^4.11.0
         version: 4.11.0
       dompurify:
-        specifier: catalog:utils
+        specifier: ^3.4.12
         version: 3.4.12
       glob:
         specifier: catalog:tooling
@@ -5449,9 +5447,6 @@ packages:
   dompurify@3.4.12:
     resolution: {integrity: sha512-zQvGet8Z2sWbQhCmfFz/T5QWH2oBmjnqK3qvOjaqaNLrLEF912WamU+ohnTp0TCep/MFVHpdJuCZEdFOdTnEFg==}
 
-  dompurify@3.4.5:
-    resolution: {integrity: sha512-OrwIBKsdNSVEeubdJ1HBv/wNENRM9ytAVCv7YXt//A3vPdVMNuACRqK9mXCGCBW2ln7BT/A4X0jXHo2Gu89miA==}
-
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
 
@@ -6424,8 +6419,8 @@ packages:
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
-  js-yaml@3.14.2:
-    resolution: {integrity: sha512-PMSmkqxr106Xa156c2M265Z+FTrPl+oxd/rgOQy2tijQeK5TxQ43psO1ZCwhVOSdnn+RzkzlRz/eY4BgJBYVpg==}
+  js-yaml@3.15.0:
+    resolution: {integrity: sha512-ttBQIIQPDeLjpPOohtUdXuXUVoA2uIB6fEH9HyJ7234s5mBJ5wTx20njxplLZQgLaOfpmPQA7X2t5AX6tIPbog==}
     hasBin: true
 
   jsdom@29.0.1:
@@ -8835,7 +8830,7 @@ packages:
     engines: {node: '>=20.9.0'}
     hasBin: true
     peerDependencies:
-      js-yaml: ^3.14.2
+      js-yaml: ^3.15.0
       json5: ^2.2.3
       toml: ^3.0.0 || ^4.0.0
       webpack: ^5.101.0
@@ -9543,7 +9538,7 @@ snapshots:
   '@changesets/parse@0.4.3':
     dependencies:
       '@changesets/types': 6.1.0
-      js-yaml: 3.14.2
+      js-yaml: 3.15.0
 
   '@changesets/pre@2.0.2':
     dependencies:
@@ -10451,7 +10446,7 @@ snapshots:
       '@emotion/react': 11.14.0(@types/react@19.2.17)(react@19.2.0)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.0))(@types/react@19.2.17)(react@19.2.0)
       '@types/dompurify': 2.4.0
-      dompurify: 3.4.5
+      dompurify: 3.4.12
       react: 19.2.0
       react-from-dom: 0.7.5(react@19.2.0)
     transitivePeerDependencies:
@@ -11173,7 +11168,7 @@ snapshots:
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.17)(react@19.2.0))(@types/react@19.2.17)(react@19.2.0)
       '@types/dompurify': 2.4.0
       '@types/escape-html': 1.0.4
-      dompurify: 3.4.5
+      dompurify: 3.4.12
       downshift: 9.3.3(react@19.2.0)
       escape-html: 1.0.3
       is-hotkey: 0.2.0
@@ -15774,7 +15769,7 @@ snapshots:
   cosmiconfig@8.3.6(typescript@5.9.3):
     dependencies:
       import-fresh: 3.3.1
-      js-yaml: 3.14.2
+      js-yaml: 3.15.0
       parse-json: 5.2.0
       path-type: 4.0.0
     optionalDependencies:
@@ -15939,10 +15934,6 @@ snapshots:
       domelementtype: 2.3.0
 
   dompurify@3.4.12:
-    optionalDependencies:
-      '@types/trusted-types': 2.0.7
-
-  dompurify@3.4.5:
     optionalDependencies:
       '@types/trusted-types': 2.0.7
 
@@ -16593,7 +16584,7 @@ snapshots:
 
   gray-matter@4.0.3:
     dependencies:
-      js-yaml: 3.14.2
+      js-yaml: 3.15.0
       kind-of: 6.0.3
       section-matter: 1.0.0
       strip-bom-string: 1.0.0
@@ -16991,7 +16982,7 @@ snapshots:
 
   js-tokens@4.0.0: {}
 
-  js-yaml@3.14.2:
+  js-yaml@3.15.0:
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
@@ -18558,7 +18549,7 @@ snapshots:
   read-yaml-file@1.1.0:
     dependencies:
       graceful-fs: 4.2.11
-      js-yaml: 3.14.2
+      js-yaml: 3.15.0
       pify: 4.0.1
       strip-bom: 3.0.0
 
@@ -19824,7 +19815,7 @@ snapshots:
 
   webidl-conversions@8.0.1: {}
 
-  webpack-cli@7.2.1(js-yaml@3.14.2)(json5@2.2.3)(webpack@5.108.4):
+  webpack-cli@7.2.1(js-yaml@3.15.0)(json5@2.2.3)(webpack@5.108.4):
     dependencies:
       '@discoveryjs/json-ext': 1.1.0
       commander: 14.0.3
@@ -19836,7 +19827,7 @@ snapshots:
       webpack: 5.108.4(esbuild@0.28.1)(webpack-cli@7.2.1)
       webpack-merge: 6.0.1
     optionalDependencies:
-      js-yaml: 3.14.2
+      js-yaml: 3.15.0
       json5: 2.2.3
 
   webpack-merge@6.0.1:
@@ -19913,7 +19904,7 @@ snapshots:
       watchpack: 2.5.2
       webpack-sources: 3.5.0
     optionalDependencies:
-      webpack-cli: 7.2.1(js-yaml@3.14.2)(json5@2.2.3)(webpack@5.108.4)
+      webpack-cli: 7.2.1(js-yaml@3.15.0)(json5@2.2.3)(webpack@5.108.4)
     transitivePeerDependencies:
       - '@minify-html/node'
       - '@swc/core'
