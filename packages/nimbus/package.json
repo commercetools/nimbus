@@ -117,6 +117,7 @@
     "@vueless/storybook-dark-mode": "catalog:tooling",
     "apca-w3": "^0.1.9",
     "axe-core": "catalog:tooling",
+    "chromatic": "catalog:tooling",
     "dompurify": "catalog:utils",
     "glob": "catalog:tooling",
     "jsdom": "catalog:tooling",
