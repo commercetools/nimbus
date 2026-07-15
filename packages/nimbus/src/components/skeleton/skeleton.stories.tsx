@@ -19,6 +19,10 @@ import { within, expect } from "storybook/test";
  * every play function below queries by `data-testid` intentionally (per the
  * query-preference order in docs/file-type-guidelines/stories.md, testid is the
  * correct fallback for non-interactive, role-less elements).
+ *
+ * The `SkeletonText` and `SkeletonCircle` derivatives have their own stories
+ * under `derivatives/`; this file covers the base `Skeleton` plus a family
+ * composition showcase.
  */
 const meta: Meta<typeof Skeleton> = {
   title: "Components/Skeleton",
@@ -296,175 +300,6 @@ export const ReducedMotion: Story = {
 };
 
 /**
- * SkeletonTextDefault — default multi-line text skeleton renders 3 lines.
- */
-export const SkeletonTextDefault: Story = {
-  render: () => (
-    <SkeletonText data-testid="skeleton-text-default" width="7200" />
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const container = canvas.getByTestId("skeleton-text-default");
-
-    await step("Renders the default number of lines (3)", async () => {
-      await expect(container.children).toHaveLength(3);
-    });
-
-    await step(
-      "Root container is hidden from assistive technology",
-      async () => {
-        await expect(container).toHaveAttribute("aria-hidden", "true");
-      }
-    );
-  },
-};
-
-/**
- * SkeletonTextStory — multi-line text skeleton with a configurable line count.
- */
-export const SkeletonTextStory: Story = {
-  render: () => (
-    <SkeletonText data-testid="skeleton-text-root" lines={4} width="7200" />
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const container = canvas.getByTestId("skeleton-text-root");
-
-    await step("Renders the requested number of child lines", async () => {
-      await expect(container.children).toHaveLength(4);
-    });
-
-    await step(
-      "Root container is hidden from assistive technology",
-      async () => {
-        await expect(container).toHaveAttribute("aria-hidden", "true");
-      }
-    );
-  },
-};
-
-/**
- * SkeletonTextLastLine — verifies the last line of SkeletonText is narrower
- * than the preceding full-width lines, mimicking a real paragraph ending.
- */
-export const SkeletonTextLastLine: Story = {
-  render: () => (
-    <SkeletonText
-      data-testid="skeleton-text-narrow"
-      lines={3}
-      lastLineWidth="40%"
-      width="7200"
-    />
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const container = canvas.getByTestId("skeleton-text-narrow");
-
-    await step("Renders the correct number of child lines", async () => {
-      await expect(container.children).toHaveLength(3);
-    });
-
-    await step("Renders the last line narrower than the others", async () => {
-      const first = container.children[0] as HTMLElement;
-      const last = container.children[
-        container.children.length - 1
-      ] as HTMLElement;
-      await expect(last.offsetWidth).toBeLessThan(first.offsetWidth);
-    });
-  },
-};
-
-/**
- * SkeletonTextStyleMatch — the `textStyle` prop makes the placeholder's bar
- * height and line pitch mirror real text of that style. Here `body` (16/26) and
- * `3xl` (30/36) are compared: bar height ≈ font-size and line pitch ≈
- * line-height for each, so the skeleton occupies the same vertical rhythm as the
- * text it stands in for.
- */
-export const SkeletonTextStyleMatch: Story = {
-  render: () => (
-    <Stack gap="600">
-      <SkeletonText data-testid="st-body" textStyle="body" width="7200" />
-      <SkeletonText data-testid="st-heading" textStyle="3xl" width="7200" />
-    </Stack>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    const measure = (testId: string) => {
-      const root = canvas.getByTestId(testId);
-      const kids = Array.from(root.children) as HTMLElement[];
-      const first = kids[0].getBoundingClientRect();
-      const second = kids[1].getBoundingClientRect();
-      return {
-        barHeight: Math.round(first.height),
-        pitch: Math.round(second.top - first.top),
-      };
-    };
-
-    // Allow ±1px tolerance — layout geometry can round differently across
-    // browsers/zoom; the intent is "matches the text style", not exact pixels.
-    const near = async (actual: number, expected: number) =>
-      expect(Math.abs(actual - expected)).toBeLessThanOrEqual(1);
-
-    await step(
-      "body: bar ≈ 16px, pitch ≈ 26px (body line-height)",
-      async () => {
-        const { barHeight, pitch } = measure("st-body");
-        await near(barHeight, 16);
-        await near(pitch, 26);
-      }
-    );
-
-    await step("3xl: bar ≈ 30px, pitch ≈ 36px (3xl line-height)", async () => {
-      const { barHeight, pitch } = measure("st-heading");
-      await near(barHeight, 30);
-      await near(pitch, 36);
-    });
-  },
-};
-
-/**
- * SkeletonCircleStory — the circular placeholder sizes via the avatar-aligned
- * `size` prop (2xs/xs/md), a custom `boxSize`, or defaults to a 1em circle when
- * neither is set.
- */
-export const SkeletonCircleStory: Story = {
-  render: () => (
-    <Stack direction="row" gap="400" alignItems="center">
-      <SkeletonCircle data-testid="circle-default" />
-      <SkeletonCircle data-testid="circle-md" size="md" />
-      <SkeletonCircle data-testid="circle-custom" boxSize="2000" />
-    </Stack>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const near = async (actual: number, expected: number) =>
-      expect(Math.abs(actual - expected)).toBeLessThanOrEqual(1);
-
-    await step("All render as decorative 1:1 circles", async () => {
-      for (const id of ["circle-default", "circle-md", "circle-custom"]) {
-        const el = canvas.getByTestId(id);
-        await expect(el).toHaveAttribute("aria-hidden", "true");
-        await expect(getComputedStyle(el).aspectRatio).toBe("1 / 1");
-      }
-    });
-
-    await step("Default size is 1em (≈16px in body context)", async () => {
-      await near(canvas.getByTestId("circle-default").offsetWidth, 16);
-    });
-
-    await step("size='md' matches the Avatar md dimension (40px)", async () => {
-      await near(canvas.getByTestId("circle-md").offsetWidth, 40);
-    });
-
-    await step("boxSize applies a custom dimension (80px)", async () => {
-      await near(canvas.getByTestId("circle-custom").offsetWidth, 80);
-    });
-  },
-};
-
-/**
  * RefForwarding — verifies that a ref passed to Skeleton resolves to the root element.
  * A data attribute is set via the ref after mount to confirm forwarding works.
  */
@@ -498,15 +333,14 @@ export const RefForwarding: Story = {
 };
 
 /**
- * LoadingLayoutShowcase — TEMPORARY story for the PR screenshot. A realistic
- * "content card, still loading" assembled from the whole family: a SkeletonCircle
- * avatar, textStyle-matched SkeletonText for the name/heading, a media block, a
- * body paragraph, a stat row, and two action buttons. Every element uses
- * `animation="none"` so the layout is frozen for a clean still screenshot. Pure
- * visual (no play function) — safe to delete after the screenshot is captured.
+ * LoadingLayoutShowcase — a realistic "content card, still loading" assembled
+ * from the whole family: a SkeletonCircle avatar, textStyle-matched SkeletonText
+ * for the name/heading, a media block, a body paragraph, a stat row, and two
+ * action buttons. Every element uses `animation="none"` so the layout is frozen
+ * for a clean still screenshot. Pure visual (no play function).
  */
 export const LoadingLayoutShowcase: Story = {
-  name: "Loading Layout (PR showcase)",
+  name: "Loading Layout (family showcase)",
   render: () => (
     <Box
       width="440px"
@@ -591,9 +425,10 @@ const animations: NonNullable<Story["args"]>["animation"][] = [
 ];
 
 /**
- * SmokeTest — comprehensive matrix of every shape × animation combination plus
- * the SkeletonText and SkeletonCircle members. Asserts the full family renders
- * and stays decorative. MUST remain the last story.
+ * SmokeTest — comprehensive matrix of every shape × animation combination for
+ * the base Skeleton. Asserts each renders and stays decorative. MUST remain the
+ * last story. (The SkeletonText and SkeletonCircle derivatives have their own
+ * smoke coverage in their respective stories.)
  */
 export const SmokeTest: Story = {
   render: () => (
@@ -612,8 +447,6 @@ export const SmokeTest: Story = {
           ))}
         </Stack>
       ))}
-      <SkeletonText data-testid="smoke-text" lines={3} width="7200" />
-      <SkeletonCircle data-testid="smoke-circle" size="md" />
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
@@ -627,17 +460,6 @@ export const SmokeTest: Story = {
           await expect(el).toHaveAttribute("aria-hidden", "true");
         }
       }
-    });
-
-    await step("SkeletonText renders its default 3 lines", async () => {
-      const text = canvas.getByTestId("smoke-text");
-      await expect(text.children).toHaveLength(3);
-    });
-
-    await step("SkeletonCircle renders decoratively", async () => {
-      const circle = canvas.getByTestId("smoke-circle");
-      await expect(circle).toHaveAttribute("aria-hidden", "true");
-      await expect(getComputedStyle(circle).aspectRatio).toBe("1 / 1");
     });
   },
 };

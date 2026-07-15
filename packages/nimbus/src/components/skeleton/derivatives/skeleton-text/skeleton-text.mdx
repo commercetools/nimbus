@@ -1,0 +1,114 @@
+---
+id: Components-SkeletonText
+title: SkeletonText
+exportName: SkeletonText
+description: A stack of placeholder lines that approximates a paragraph of text while content loads.
+lifecycleState: Stable
+order: 999
+menu:
+  - Components
+  - Feedback
+  - SkeletonText
+tags:
+  - component
+  - skeleton
+  - loading
+  - placeholder
+  - feedback
+  - text
+---
+
+## Overview
+
+`SkeletonText` renders a stack of placeholder lines that stand in for a
+paragraph of text while it loads. The last line is narrower by default to mimic
+a natural paragraph ending, and the lines are sized to the same vertical rhythm
+as the real text they replace — so the transition to loaded content stays
+smooth.
+
+`SkeletonText` is part of the Skeleton family, built from
+[Skeleton](/components/feedback/skeleton) lines. For single blocks, images, or
+custom shapes use `Skeleton` directly; for avatars and icons use
+[SkeletonCircle](/components/feedback/skeletoncircle).
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system)
+
+## Variables
+
+Get familiar with the features.
+
+### Line count
+
+Use `lines` to set how many placeholder lines to render. Set the block's
+`width` to match the column the text will occupy.
+
+```jsx live
+const App = () => (
+  <Stack direction="row" gap="800" width="600px">
+    <SkeletonText lines={2} width="100%" />
+    <SkeletonText lines={4} width="100%" />
+  </Stack>
+)
+```
+
+### Matching text size
+
+Set `textStyle` (default `body`) so the placeholder lines match the size and
+line spacing of the text they stand in for — from small captions to large
+headings. Each bar's height and the gaps between them resize together, keeping
+the same vertical rhythm as real text of that style.
+
+```jsx live
+const App = () => (
+  <Stack gap="600" width="300px">
+    <SkeletonText textStyle="caption" />
+    <SkeletonText textStyle="body" />
+    <SkeletonText textStyle="3xl" lines={2} />
+  </Stack>
+)
+```
+
+### Last line width
+
+The last line is narrower by default (`lastLineWidth="60%"`) to mimic a
+paragraph ending. Adjust it to match the content, or set it to `"100%"` for a
+justified block.
+
+```jsx live
+const App = () => (
+  <Stack direction="row" gap="800" width="600px">
+    <SkeletonText lines={3} width="100%" lastLineWidth="40%" />
+    <SkeletonText lines={3} width="100%" lastLineWidth="100%" />
+  </Stack>
+)
+```
+
+## Guidelines
+
+### Best practices
+
+- Match `textStyle` to the text you are standing in for so the placeholder
+  occupies the same space as the loaded content and avoids layout shift.
+- Use `SkeletonText` for multi-line paragraphs; for a single heading or line,
+  the base `Skeleton` gives you more direct control over height and width.
+- Keep the line count realistic — approximating the real paragraph length keeps
+  the transition to loaded content smooth.
+
+### When to use
+
+> [!TIP]\
+> Use SkeletonText when:
+- You are loading a paragraph, description, or block of running text
+- You want the placeholder to match a specific text style's size and rhythm
+- A detail panel or card contains several lines of text
+
+> [!CAUTION]\
+> When NOT to use SkeletonText:
+- For a single line, heading, or non-text block — use
+  [Skeleton](/components/feedback/skeleton) instead
+- For circular content such as avatars — use
+  [SkeletonCircle](/components/feedback/skeletoncircle)

@@ -19,20 +19,21 @@ tags:
 
 ## Overview
 
-Skeleton placeholders hold space for content that is loading. They reduce layout
-shift and communicate that the interface is active — giving users confidence the
-page hasn't frozen. Unlike a spinner, skeletons mirror the shape of the content
-that will appear, so the transition from loading to loaded feels smooth and
-intentional.
+`Skeleton` is the base loading placeholder — a single, sizeable block that holds
+space for content while it loads. It reduces layout shift and communicates that
+the interface is active, giving users confidence the page hasn't frozen. Unlike
+a spinner, a skeleton mirrors the shape of the content that will appear, so the
+transition from loading to loaded feels smooth and intentional.
 
-Three components are available for different content shapes:
+Two convenience components are built on top of it for the most common shapes:
 
-- **Skeleton** — a single, sizeable block placeholder for images, headings,
-  buttons, or any custom shape
-- **SkeletonText** — a stack of narrowing lines that approximates a paragraph of
-  text
-- **SkeletonCircle** — a circular placeholder whose `size` matches the Avatar
-  scale (or a custom `boxSize`), useful for avatars and icons
+- **[SkeletonText](/components/feedback/skeletontext)** — a stack of narrowing
+  lines that approximates a paragraph of text
+- **[SkeletonCircle](/components/feedback/skeletoncircle)** — a circular
+  placeholder sized to the Avatar scale, for avatars and icons
+
+Use `Skeleton` directly for images, headings, buttons, cards, or any custom
+rectangular or circular shape.
 
 ### Resources
 
@@ -46,114 +47,56 @@ Get familiar with the features.
 
 ### Animation
 
-Three animation variants are available. Choose the one that best matches the
-surrounding interface style.
-
-#### Pulse (default)
-
-A gentle opacity oscillation. Use this for most loading states — it draws
-minimal attention while still signaling activity.
+Three animation variants signal loading activity with different levels of
+energy. Use `pulse` (a gentle opacity oscillation) for most loading states,
+`wave` (a gradient shimmer sweep) for data-heavy surfaces like dashboards, and
+`none` when motion would distract from other activity on the page.
 
 ```jsx live
 const App = () => (
-  <Skeleton width="300px" height="40px" animation="pulse" />
-)
-```
-
-#### Wave
-
-A gradient shimmer sweep across the element. Use this when you want a more
-energetic loading feel, such as in data-heavy dashboards.
-
-```jsx live
-const App = () => (
-  <Skeleton width="300px" height="40px" animation="wave" />
-)
-```
-
-#### None
-
-No animation. Use this when motion would distract from other activity on the
-page, or when you prefer a purely static placeholder.
-
-```jsx live
-const App = () => (
-  <Skeleton width="300px" height="40px" animation="none" />
+  <Stack gap="400" width="300px">
+    <Skeleton height="40px" animation="pulse" />
+    <Skeleton height="40px" animation="wave" />
+    <Skeleton height="40px" animation="none" />
+  </Stack>
 )
 ```
 
 ### Shape
 
-#### Rectangle (default)
-
-The default shape with a small border radius. Use for text lines, images, cards,
-buttons, and any rectangular content area.
-
-```jsx live
-const App = () => (
-  <Skeleton width="200px" height="48px" shape="rectangle" />
-)
-```
-
-#### Circle
-
-Fully-rounded with a forced 1:1 aspect ratio. Use for avatars, user icons, and
-circular thumbnails.
-
-```jsx live
-const App = () => (
-  <Skeleton width="60px" height="60px" shape="circle" />
-)
-```
-
-### Multi-line text
-
-`SkeletonText` renders a configurable number of placeholder lines. The last line
-is narrower by default to mimic a natural paragraph ending.
-
-```jsx live
-const App = () => (
-  <SkeletonText lines={3} width="300px" />
-)
-```
-
-#### Matching text size
-
-Set `textStyle` (default `body`) so the placeholder lines match the size and
-line spacing of the text they stand in for — from small captions to large
-headings. The bars and the gaps between them resize together.
-
-```jsx live
-const App = () => (
-  <Stack gap="600" width="300px">
-    <SkeletonText textStyle="caption" />
-    <SkeletonText textStyle="body" />
-    <SkeletonText textStyle="3xl" lines={2} />
-  </Stack>
-)
-```
-
-### Circle convenience
-
-`SkeletonCircle` is a shorthand for circular placeholders. Use `size` to match
-an Avatar (`2xs`, `xs`, `md`), `boxSize` for a custom dimension, or neither for a
-`1em` circle — no need for `shape="circle"`.
+`rectangle` (the default) applies a small border radius — use it for text lines,
+images, cards, and buttons. `circle` forces a 1:1 aspect ratio — use it for
+avatars, user icons, and circular thumbnails.
 
 ```jsx live
 const App = () => (
   <Stack direction="row" gap="400" alignItems="center">
-    <SkeletonCircle size="2xs" />
-    <SkeletonCircle size="xs" />
-    <SkeletonCircle size="md" />
-    <SkeletonCircle boxSize="4800" />
+    <Skeleton width="200px" height="48px" shape="rectangle" />
+    <Skeleton width="60px" height="60px" shape="circle" />
   </Stack>
 )
 ```
 
-### Composing layouts
+### Sizing
 
-Combine components to match the shape of the real content as closely as
-possible.
+`Skeleton` has no dedicated size prop — it stretches to the `width` and `height`
+(or any Chakra style props) you give it, so it can stand in for content of any
+dimension.
+
+```jsx live
+const App = () => (
+  <Stack gap="400">
+    <Skeleton width="120px" height="16px" />
+    <Skeleton width="240px" height="32px" />
+    <Skeleton width="100%" height="120px" />
+  </Stack>
+)
+```
+
+### Composing a layout
+
+Combine `Skeleton` with `SkeletonCircle` and `SkeletonText` to match the shape
+of the real content as closely as possible.
 
 ```jsx live
 const App = () => (
@@ -173,8 +116,8 @@ const App = () => (
 
 - Mirror the real content's shape as closely as possible. The closer the
   skeleton matches the loaded layout, the smoother the transition feels.
-- Use `SkeletonText` for paragraphs and `Skeleton` for individual lines,
-  headings, or images — don't mix them arbitrarily.
+- Reach for `SkeletonText` for paragraphs and `SkeletonCircle` for avatars; use
+  the base `Skeleton` for individual lines, headings, images, and custom shapes.
 - Keep skeletons on screen only while loading. Swap them for real content as
   soon as data is available.
 
