@@ -26,7 +26,7 @@ flowchart TD
     E -->|no| G[TurboSnap ON:<br/>only changed stories]
     F --> H[Diff against existing baseline]
     G --> H
-    H --> I["GHA job check 'Chromatic / chromatic':<br/>exitZeroOnChanges keeps it GREEN even with diffs"]
+    H --> I["GHA job check 'Chromatic / chromatic':<br/>exitOnceUploaded returns at upload (before diffing), stays GREEN"]
     H --> K["Chromatic's own 'UI Tests' check, posted async:<br/>still reports the diff (can go red)"]
 
     style S fill:#9e9e9e,color:#fff
@@ -38,7 +38,10 @@ flowchart TD
 
 Triggers (the `on:` block):
 
-- **`push` to `main`** - keeps `main`'s baseline current.
+- **`push` to `main`** - runs Chromatic on `main`'s history, the source of the
+  baseline other branches inherit. A push builds and diffs; the baseline
+  advances only on acceptance (see
+  [Baselines and acceptance](#baselines-and-acceptance)).
 - **`pull_request`** (`opened`, `synchronize`, `reopened`, `ready_for_review`) -
   `synchronize` is the workhorse (fires on every new commit pushed to the PR).
   `ready_for_review` matters because draft PRs are skipped, so it's what fires
@@ -388,14 +391,6 @@ but neither is currently captured, and it's an infra limitation, not a choice:
   [stories.md](./file-type-guidelines/stories.md) for the pattern.
 - **`preview.js` barrel imports trigger full rebuilds under TurboSnap** - not
   our concern in the stories, but a caution for the shared `preview.tsx`.
-
-### Net for the `Base` question
-
-Our instinct is aligned with the docs: keep `Base` as one multi-step play
-function (one end-state snapshot), don't split it just for VRT, and rely on
-`disableSnapshot` + the `afterEach` blur to control what the single snapshot
-captures. Splitting would only make sense to capture a different intermediate
-state as its own baseline.
 
 ### Sources
 

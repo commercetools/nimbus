@@ -353,12 +353,13 @@ For each dependency group (or the specified target group):
 
    The Chromatic gate ignores `packages/nimbus/package.json`, so a
    dependency-only PR won't auto-trigger a visual build. If any updated package
-   can affect rendered output — `@chakra-ui/*`, `react-aria*`, `react-stately`,
-   `@react-aria/*`, `next-themes`, or the `markdown` catalog (`react-markdown`,
-   `remark-gfm`, `remend`, bundled into `@commercetools/nimbus`) — dispatch the
-   workflow against the branch (GitHub → Actions → "Chromatic" → "Run workflow",
-   or the CLI below), and note it in the PR body so reviewers know the visual
-   diff was checked.
+   can affect rendered output, dispatch the workflow against the branch (GitHub
+   → Actions → "Chromatic" → "Run workflow", or the CLI below), and note it in
+   the PR body so reviewers know the visual diff was checked.
+   Rendering-affecting packages are `@chakra-ui/*`, `react-aria*`,
+   `react-stately`, `@react-aria/*`, `next-themes`, and the `markdown` catalog
+   (`react-markdown`, `remark-gfm`, `remend`) bundled into
+   `@commercetools/nimbus`.
 
    ```bash
    gh workflow run chromatic.yml --ref <current-branch-name>

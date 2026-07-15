@@ -184,16 +184,11 @@ export const SmokeTest: Story = {
 `vrt` tag. `vrt` is our own label for spotting and selecting snapshotted
 stories, so keep the two together.
 
-**What to snapshot:** cover every prop-driven visual state. Put the axes that
-_interact_ (`colorPalette × size × variant`, plus selected/unselected for
-toggles) in one exhaustive `SmokeTest` matrix, and give any state the matrix
-can't render in one static image its own snapshotted story (`Focused`,
-disabled-but-focusable, an open tooltip/popover). Skip the matrix when the axes
-don't interact (Avatar's `size`, `colorPalette`, and content mode) and snapshot
-the existing showcase stories directly instead. Showcase stories that only
-re-render a state a snapshot already covers stay snapshot-off. Never drop a
-visual state to save cost; cost is controlled by TurboSnap and by packing
-interacting states into one matrix render.
+**What to snapshot:** cover every prop-driven visual state. Any state the matrix
+can't render in one static image gets its own snapshotted story (`Focused`,
+disabled-but-focusable, an open tooltip/popover); a showcase story whose look a
+snapshot already covers stays snapshot-off. Never drop a visual state to save
+cost.
 
 **`Focused` needs `preserveFocusRing`.** `preview.tsx` blurs the focused element
 after every play function so a stray ring doesn't bleed into a snapshot;
@@ -230,17 +225,13 @@ hides its `<img>` until `onLoad` and swaps to a fallback on error), so a story
 snapshotting a post-load or post-error state must wait for it:
 
 ```typescript
+// Wait for the state the component derives from the load (here, the <img>
+// hidden behind its fallback) before the snapshot is captured.
 play: async ({ canvasElement }) => {
-  await waitFor(
-    () => {
-      const imgs = [...canvasElement.querySelectorAll("img")];
-      expect(imgs.length).toBe(2);
-      imgs.forEach((img) =>
-        expect(getComputedStyle(img).display).toBe("none")
-      );
-    },
-    { timeout: 3000 }
-  );
+  const img = canvasElement.querySelector("img");
+  await waitFor(() => expect(img).toHaveStyle("display: none"), {
+    timeout: 3000,
+  });
 },
 ```
 
