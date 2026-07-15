@@ -90,10 +90,8 @@ export function registerListComponents(server: McpServer): void {
           }
 
           // Pass 1: exact substring match, ranked by field-weighted relevance.
-          const exactMatches = filterAndRankPreLowered(
-            routes,
-            tokens,
-            (r) => loweredMap.get(r)!
+          const exactMatches = filterAndRankPreLowered(routes, tokens, (r) =>
+            loweredMap.get(r)!
           );
 
           if (exactMatches.length > 0) {

@@ -297,9 +297,7 @@ export type SplitterHandleProps = OmitInternalProps<SplitterHandleSlotProps> & {
  * percentages: through the hook a bare number is pixels.
  */
 export type ResponsiveSplitterSizeValue =
-  | number
-  | SplitterSizeToken
-  | `${number}%`;
+  number | SplitterSizeToken | `${number}%`;
 
 /**
  * A container **min-width threshold** key for a responsive size map. A threshold

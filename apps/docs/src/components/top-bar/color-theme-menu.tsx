@@ -52,8 +52,7 @@ const RADIX_COLORS = [
 const BRAND_COLORS = ["ctviolet", "ctyellow", "ctteal"] as const;
 
 type ColorPalette =
-  | (typeof RADIX_COLORS)[number]
-  | (typeof BRAND_COLORS)[number];
+  (typeof RADIX_COLORS)[number] | (typeof BRAND_COLORS)[number];
 
 // Default primary color
 const DEFAULT_PRIMARY_COLOR: ColorPalette = "ctviolet";
