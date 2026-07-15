@@ -76,7 +76,8 @@ export const Avatar = (props: AvatarProps) => {
   // while the image is loading, or when the image failed to load.
   const shouldShowFallback = !src || !imageLoaded || imageError;
 
-  // Custom content (e.g. an icon) overrides the default rendering entirely.
+  // Custom content (e.g. an icon) overrides the default rendering entirely —
+  // `src` (and its load/error handling) is intentionally ignored when present.
   if (children != null) {
     return <AvatarRoot {...sharedProps}>{children}</AvatarRoot>;
   }

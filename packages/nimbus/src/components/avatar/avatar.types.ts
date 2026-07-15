@@ -58,7 +58,11 @@ export type AvatarProps = OmitInternalProps<AvatarRootSlotProps> &
      */
     alt?: string;
     /**
-     * Custom content to override default avatar rendering
+     * Custom content (e.g. an icon) to override the default avatar rendering.
+     * Takes **unconditional precedence**: when `children` is provided, `src` is
+     * ignored — the image is never rendered and its `onLoad`/`onError` never
+     * fire. Use `children` for a bespoke avatar, not as a fallback shown while
+     * `src` loads.
      */
     children?: React.ReactNode;
     /**

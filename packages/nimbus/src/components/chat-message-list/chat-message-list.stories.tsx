@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
   ChatMessageList,
@@ -7,6 +7,7 @@ import {
   Button,
   Stack,
   Box,
+  type ChatMessageListHandle,
 } from "@commercetools/nimbus";
 import { AutoAwesome } from "@commercetools/nimbus-icons";
 import { within, expect, waitFor, userEvent } from "storybook/test";
@@ -204,6 +205,86 @@ export const ReleaseOnScrollUp: Story = {
         expect(
           canvas.queryByRole("button", { name: "Scroll to latest message" })
         ).not.toBeInTheDocument()
+      );
+    });
+  },
+};
+
+/** A list driven through its imperative handle, for the redundant-scroll test. */
+const ImperativeList = () => {
+  const ref = useRef<ChatMessageListHandle>(null);
+  return (
+    <Stack gap="400" alignItems="start">
+      <Button
+        data-testid="scroll-to-bottom"
+        onPress={() => ref.current?.scrollToBottom()}
+      >
+        Scroll to bottom
+      </Button>
+      <ChatMessageList.Root
+        ref={ref}
+        aria-label="Conversation"
+        height="240px"
+        width="480px"
+        data-testid="list"
+      >
+        {Array.from({ length: 6 }).map((_, i) => (
+          <ChatMessageList.Item key={i}>
+            <ChatMessage.Root sender={i % 2 === 0 ? "user" : "agent"}>
+              <ChatMessage.Avatar />
+              <ChatMessage.Body>
+                <Text>
+                  Message {i + 1}. {SAMPLE}
+                </Text>
+              </ChatMessage.Body>
+            </ChatMessage.Root>
+          </ChatMessageList.Item>
+        ))}
+      </ChatMessageList.Root>
+    </Stack>
+  );
+};
+
+/**
+ * Redundant scrollToBottom() while pinned does not wedge the pin
+ * Calling `scrollToBottom()` while already at the bottom is a no-op scroll that
+ * fires no `scroll` event. A subsequent user scroll-up must still release the
+ * pin and reveal the jump-to-latest control — the programmatic-scroll guard
+ * must be seeded with the real distance, not `Infinity` (which no later
+ * distance could exceed, wedging `isPinned` at `true`). Regression test for a
+ * consumer that calls `scrollToBottom()` defensively on every append.
+ */
+export const RedundantScrollToBottomStillReleases: Story = {
+  render: () => <ImperativeList />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const list = canvas.getByTestId("list");
+    const viewport = getViewport(list);
+
+    await step("Starts pinned to the newest message", async () => {
+      await waitFor(() =>
+        expect(distanceFromBottom(viewport)).toBeLessThanOrEqual(33)
+      );
+    });
+
+    await step("scrollToBottom() while at the bottom is a no-op", async () => {
+      await userEvent.click(canvas.getByTestId("scroll-to-bottom"));
+      await waitFor(() =>
+        expect(distanceFromBottom(viewport)).toBeLessThanOrEqual(33)
+      );
+      // Still pinned ⇒ no jump-to-latest control yet.
+      await expect(
+        canvas.queryByRole("button", { name: "Scroll to latest message" })
+      ).not.toBeInTheDocument();
+    });
+
+    await step("A later scroll-up still releases the pin", async () => {
+      viewport.scrollTop = 0;
+      viewport.dispatchEvent(new Event("scroll"));
+      await waitFor(() =>
+        expect(
+          canvas.getByRole("button", { name: "Scroll to latest message" })
+        ).toBeInTheDocument()
       );
     });
   },

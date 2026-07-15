@@ -126,7 +126,14 @@ export const useStickToBottom = ({
       // A smooth scroll animates over several frames; suppress pin-release for
       // its duration so the jump-to-latest control doesn't flicker back in.
       programmaticScrollRef.current = true;
-      lastProgrammaticDistanceRef.current = Number.POSITIVE_INFINITY;
+      // Seed the guard with the *current* distance, not Infinity. When the list
+      // is already at the bottom, `scrollTo` is a no-op and fires no scroll
+      // event, so the guard would otherwise stay armed with an Infinity baseline
+      // that no later distance can exceed — leaving `isPinned` stuck `true` and
+      // the jump-to-latest control unable to reappear. A real baseline lets the
+      // next genuine user scroll-up (distance > baseline + 4) release the guard.
+      lastProgrammaticDistanceRef.current =
+        el.scrollHeight - el.scrollTop - el.clientHeight;
       el.scrollTo({ top: el.scrollHeight, behavior: effective });
       setPinned(true);
     },
