@@ -23,21 +23,18 @@ export type SkeletonTextProps = OmitInternalProps<HTMLChakraProps<"div">> & {
   /**
    * Nimbus text style the placeholder should visually match (e.g. `"body"`,
    * `"caption"`, `"3xl"`). Sets the container's `font-size` and `line-height`,
-   * so the default bar height (`1em`) and line spacing (`calc(1lh - 1em)`) scale
-   * to give the same vertical rhythm as real text of that style.
+   * so the default bar height (`0.75em`, ≈ the font's cap-height) and line
+   * spacing (`calc(1lh - 0.75em)`) scale to give the same vertical rhythm as
+   * real text of that style.
    * @default "body"
    */
   textStyle?: HTMLChakraProps<"div">["textStyle"];
   /**
-   * Height of each placeholder line. Overrides the `textStyle`-derived height.
-   * @default "1em"
-   */
-  lineHeight?: string | number;
-  /**
    * Gap between lines (accepts Nimbus spacing tokens or CSS values). Defaults to
-   * the `textStyle`'s leading (`line-height − font-size`) via the `1lh`/`1em`
-   * units; pass an explicit value to override.
-   * @default "calc(1lh - 1em)"
+   * `calc(1lh - 0.75em)` so that bar height + gap sum to exactly one line-height
+   * (`1lh`), matching the `textStyle`'s line pitch; pass an explicit value to
+   * override.
+   * @default "calc(1lh - 0.75em)"
    */
   spacing?: string | number;
   /**
