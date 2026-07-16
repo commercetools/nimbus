@@ -304,7 +304,7 @@ const App = () => {
 The `Alert` component has built-in accessibility features:
 
 - **Role**: `role` is a native, overridable prop on `Alert.Root`. The default is `role="status"` — a polite live region that doesn't interrupt the user. For critical/interrupting messages, pass `role="alert"` explicitly. For silent inline confirmations that shouldn't be announced as a live region at all, pass `role="group"` with an `aria-label`. See the Accessibility tab for the full announcement model, including live-region priming guidance.
-- **Icons**: Decorative icons (the automatic status icon and any `Alert.Icon`) are automatically hidden from screen readers to avoid redundancy.
+- **Icons**: The automatic status icon is decorative and automatically hidden from screen readers to avoid redundancy. A custom `Alert.Icon` is rendered as-is — mark it `aria-hidden` yourself if it's purely decorative, or give it an accessible label if it conveys meaning on its own.
 - **Dismiss Button**: The `Alert.DismissButton` (composable or auto-rendered via `dismissible`) comes with a default accessible label ("Dismiss") which can be localized or overridden via `aria-label`.
 
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:

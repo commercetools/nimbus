@@ -79,13 +79,14 @@ render — e.g. conditionally rendering `<Alert.Root>` for the first time with
 the message already in place — can fail to announce in some
 browser/screen-reader combinations.
 
-To announce reliably, either:
-
-- Keep a persistent `Alert.Root` mounted (even empty, or visually hidden) and
-  update its children afterward, so the live region is "primed" before the
-  content arrives, or
-- Use React Aria's imperative announcer (`useAnnounce`/`announce` API) for
-  cases that must be announced immediately regardless of mount timing.
+To announce reliably, keep a persistent `Alert.Root` mounted (even empty, or
+visually managed) and update its children when you have something to
+announce, rather than conditionally mounting the whole alert at announce-time.
+Because the region is already registered as a live region before its content
+changes, the browser's accessibility tree picks up the subsequent insertion
+and assistive technology announces it — mounting the region and its message
+together in the same render risks the announcement being missed by some
+screen readers.
 
 This is a documentation-only pattern — Alert has no built-in helper for
 priming a live region.
@@ -99,8 +100,10 @@ priming a live region.
   choice, so you don't need to set those attributes yourself.
 - **Non-text content:** If the alert contains non-text content (e.g., icons),
   provide text alternatives (e.g., alt text for images). Alert's automatic
-  status icon and any custom `Alert.Icon` are already marked decorative
-  (`aria-hidden`) since the message text conveys the same information.
+  status icon is already marked decorative (`aria-hidden`) since the message
+  text conveys the same information. A custom `Alert.Icon` is rendered as-is —
+  if its content is purely decorative, mark it `aria-hidden` yourself; if it
+  conveys meaning on its own, give it an accessible label instead.
 - **Color contrast:** Ensure sufficient color contrast between the alert's text
   and background.
 - **Use of color:** Don't rely solely on color to convey the alert's meaning.
