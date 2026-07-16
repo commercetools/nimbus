@@ -70,7 +70,7 @@ export const Base: Story = {
 
     await step("Renders all parts correctly", async () => {
       await expect(alertRoot).toBeInTheDocument();
-      await expect(alertRoot).toHaveAttribute("role", "alert");
+      await expect(alertRoot).toHaveAttribute("role", "status");
       await expect(canvas.getByText("Base Alert Title")).toBeInTheDocument();
       await expect(
         canvas.getByText("Base Alert Description")
@@ -388,6 +388,49 @@ export const InlineLayout: Story = {
     const root = canvas.getByTestId("inline-alert");
     await step("inline layout uses a grid", async () => {
       await expect(getComputedStyle(root).display).toBe("grid");
+    });
+  },
+};
+
+export const RoleBehavior: Story = {
+  name: "A11y: role default + override",
+  render: () => (
+    <>
+      <Alert.Root data-testid="role-default" colorPalette="critical">
+        <Alert.Title>default</Alert.Title>
+      </Alert.Root>
+      <Alert.Root data-testid="role-alert" colorPalette="critical" role="alert">
+        <Alert.Title>assertive</Alert.Title>
+      </Alert.Root>
+      <Alert.Root
+        data-testid="role-group"
+        colorPalette="positive"
+        role="group"
+        aria-label="Feedback"
+      >
+        <Alert.Title>silent</Alert.Title>
+      </Alert.Root>
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("defaults to role=status (polite)", async () => {
+      await expect(canvas.getByTestId("role-default")).toHaveAttribute(
+        "role",
+        "status"
+      );
+    });
+    await step("role can be overridden to alert", async () => {
+      await expect(canvas.getByTestId("role-alert")).toHaveAttribute(
+        "role",
+        "alert"
+      );
+    });
+    await step("role=group silent mode is honored", async () => {
+      await expect(canvas.getByTestId("role-group")).toHaveAttribute(
+        "role",
+        "group"
+      );
     });
   },
 };

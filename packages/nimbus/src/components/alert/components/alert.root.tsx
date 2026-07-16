@@ -31,7 +31,7 @@ export const AlertRoot: AlertRootComponent = (props) => {
   const { ref, children, ...restProps } = props;
 
   return (
-    <AlertRootSlot ref={ref} {...restProps} role="alert">
+    <AlertRootSlot ref={ref} role="status" {...restProps}>
       <AlertIcon alignItems="flex-start">
         {getIconFromColorPalette(restProps.colorPalette)}
       </AlertIcon>
