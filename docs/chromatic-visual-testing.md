@@ -178,7 +178,7 @@ The `Chromatic / chromatic` check answers **"did the job run without
 breaking?"** - not "are there visual changes?" Genuine breakage still turns it
 red:
 
-- Storybook fails to build (`build-storybook` errors).
+- Storybook fails to build (`build:storybook` errors).
 - Dependency install / the `./.github/actions/ci` step fails.
 - The `chromaui/action` itself errors: missing/invalid
   `CHROMATIC_PROJECT_TOKEN`, upload failure, network or API error.

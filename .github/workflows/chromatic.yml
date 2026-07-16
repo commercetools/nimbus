@@ -86,7 +86,7 @@ jobs:
           # Mirror chromatic.config.json (which only local runs read). Keep in
           # sync. See runbook "Config lives in two places".
           storybookBaseDir: packages/nimbus
-          buildScriptName: build-storybook
+          buildScriptName: build:storybook
           zip: true
           # TurboSnap: snapshot only diff-affected stories (full on dispatch). See runbook.
           onlyChanged: ${{ github.event_name != 'workflow_dispatch' }}
