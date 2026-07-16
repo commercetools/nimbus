@@ -349,23 +349,11 @@ For each dependency group (or the specified target group):
      deps, only list that one)
    - Include the changeset in the final commit before pushing
 
-7. **Trigger a Chromatic visual check (when rendering deps changed):**
+7. **Chromatic visual check (automatic):**
 
-   The Chromatic gate ignores `packages/nimbus/package.json`, so a
-   dependency-only PR won't auto-trigger a visual build. If any updated package
-   can affect rendered output, dispatch the workflow against the branch (GitHub
-   → Actions → "Chromatic" → "Run workflow", or the CLI below), and note it in
-   the PR body so reviewers know the visual diff was checked.
-   Rendering-affecting packages are `@chakra-ui/*`, `react-aria*`,
-   `react-stately`, `@react-aria/*`, `next-themes`, and the `markdown` catalog
-   (`react-markdown`, `remark-gfm`, `remend`) bundled into
-   `@commercetools/nimbus`.
-
-   ```bash
-   gh workflow run chromatic.yml --ref <current-branch-name>
-   ```
-
-   Why this is needed and how the dispatch behaves (full snapshot, baselines):
+   No manual dispatch needed - the changed-files gate watches `pnpm-lock.yaml`,
+   so the PR auto-runs a full Chromatic snapshot. Review the visual diff before
+   merging. See
    [Chromatic Visual Testing](../../docs/chromatic-visual-testing.md).
 
 ---

@@ -58,22 +58,21 @@ Two filters decide whether the job actually does work:
 
 ### The changed-files gate
 
-The gate watches the packages whose output feeds a rendered component:
+The gate watches the paths whose contents feed rendered output:
 
 | Path                       | Why it's watched                                                                      |
 | -------------------------- | ------------------------------------------------------------------------------------- |
 | `packages/nimbus/**`       | Component source + Storybook globals (`preview.tsx`, decorators, `preview-head.html`) |
 | `packages/tokens/**`       | Design tokens (colors, spacing, type)                                                 |
 | `packages/nimbus-icons/**` | Icons rendered inside components                                                      |
+| `pnpm-lock.yaml`           | Dependency version changes that can shift rendered output                             |
 
 `color-tokens` and `design-token-ts-plugin` are deliberately **not** watched:
 `color-tokens` isn't consumed by any rendered package, and the TS plugin is
 editor-only autocomplete tooling. Neither changes rendered pixels.
 
 Some files inside the watched packages are ignored because they don't change how
-components look: `chromatic.config.json`, `.storybook/main.ts`, and
-`package.json`. The `package.json` ignore is a **deliberate blind spot** - see
-below.
+components look: `chromatic.config.json` and `.storybook/main.ts`.
 
 **What the gate diffs against depends on the event** (`since_last_remote_commit`
 is set to `${{ github.event_name == 'push' }}`):
@@ -104,11 +103,13 @@ files disables TurboSnap for that build, snapshotting all stories instead. Avoid
 editing `.storybook/` files unnecessarily mid-PR; batch those changes into a
 single commit so only one full build is triggered.
 
-**The dep-bump blind spot:** because `packages/nimbus/package.json` is ignored
-by the changed-files gate, a runtime dependency bump (a new React Aria or Chakra
-version that shifts pixels) will **not** trigger a normal run, and TurboSnap
-wouldn't reliably scope it even if it did. After updating runtime deps, click
-the manual button to force a full snapshot.
+**Dependency bumps force a full snapshot:** the gate watches `pnpm-lock.yaml`,
+so any dependency change (Dependabot or housekeeping) triggers a build. Because
+TurboSnap can't trace a lockfile change to specific stories, it snapshots every
+story instead. This is intentional: a runtime bump (a new React Aria or Chakra
+version) can shift pixels anywhere, so a full snapshot is the only safe scope.
+Grouped Dependabot PRs keep this to a handful of full builds rather than one per
+package.
 
 ## Baselines and acceptance
 
@@ -143,7 +144,8 @@ Reach for it to:
   Chromatic. The button alone does not reset the baseline; acceptance is what
   establishes it. Run it on `main` to re-seed the baseline everyone inherits;
   run it on a feature branch and it only diffs against that branch's baseline.
-- **Cover a TurboSnap blind spot** - most importantly after a runtime dep bump.
+- **Cover a TurboSnap gap** - force a full snapshot when you suspect its
+  diff-tracing missed an affected story.
 
 You can also run Chromatic locally
 (`pnpm --filter @commercetools/nimbus chromatic`), but it needs

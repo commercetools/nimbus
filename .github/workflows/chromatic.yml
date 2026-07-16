@@ -48,11 +48,12 @@ jobs:
             packages/nimbus/**
             packages/tokens/**
             packages/nimbus-icons/**
+            # Dep bumps (Dependabot + housekeeping) surface via the lockfile;
+            # a lockfile change forces a full snapshot (TurboSnap can't scope it).
+            pnpm-lock.yaml
           files_ignore: |
             packages/nimbus/chromatic.config.json
             packages/nimbus/.storybook/main.ts
-            # Blind spot: dep bumps land here - dispatch a manual run after them.
-            packages/nimbus/package.json
 
       # No UI changed, so Chromatic won't run and won't post its "UI Tests"
       # status. Post a passing one ourselves on the PR head SHA - otherwise a
