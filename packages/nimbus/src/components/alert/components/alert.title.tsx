@@ -16,7 +16,7 @@ export const AlertTitle = (props: AlertTitleProps) => {
 
   return (
     <AlertTitleSlot asChild {...restProps}>
-      <Heading ref={forwardedRef} as={as} fontWeight="600">
+      <Heading ref={forwardedRef} as={as} size="md" fontWeight="600">
         {children}
       </Heading>
     </AlertTitleSlot>

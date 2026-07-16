@@ -553,5 +553,12 @@ export const TitleRendersHeading: Story = {
     await step("Title can be promoted to a heading via as", async () => {
       await expect(canvas.getByText("Heading title").tagName).toBe("H2");
     });
+    await step(
+      "Title renders at body size (16px), not heading xl",
+      async () => {
+        const titleEl = canvas.getByText("Default title");
+        await expect(getComputedStyle(titleEl).fontSize).toBe("16px");
+      }
+    );
   },
 };
