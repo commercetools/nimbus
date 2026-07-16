@@ -1,5 +1,3 @@
-import { useState } from "react";
-import type { Selection } from "react-aria-components";
 import { useDragAndDrop } from "react-aria-components";
 import { useListData } from "react-stately";
 import type { Meta, StoryObj } from "@storybook/react-vite";

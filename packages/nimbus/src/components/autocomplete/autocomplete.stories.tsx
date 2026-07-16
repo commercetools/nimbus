@@ -361,7 +361,7 @@ export const AsyncLoading: Story = {
 
     await step("Loading indicator appears during async filtering", async () => {
       await waitFor(() => {
-        const loadingIndicator = canvas.queryByTestId("loading-indicator");
+        canvas.queryByTestId("loading-indicator");
         // Loading indicator may or may not still be visible depending on timing,
         // but the input value should have propagated.
         const input = canvas.getByRole("searchbox", { name: "Async search" });

@@ -12,8 +12,7 @@ import type {
 } from "./types";
 
 type SemanticTokenValue =
-  | { value: { _light: string; _dark: string } }
-  | { value: string };
+  { value: { _light: string; _dark: string } } | { value: string };
 
 type SemanticTokenPalette = Record<string, SemanticTokenValue>;
 

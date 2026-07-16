@@ -1,16 +1,5 @@
 export type ColorStep =
-  | "1"
-  | "2"
-  | "3"
-  | "4"
-  | "5"
-  | "6"
-  | "7"
-  | "8"
-  | "9"
-  | "10"
-  | "11"
-  | "12";
+  "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12";
 
 export type ColorScale = Record<ColorStep, string>;
 
@@ -41,17 +30,10 @@ export type PresetPaletteConfig = {
 };
 
 export type PaletteConfig =
-  | GeneratedPaletteConfig
-  | ManualPaletteConfig
-  | PresetPaletteConfig;
+  GeneratedPaletteConfig | ManualPaletteConfig | PresetPaletteConfig;
 
 export type SemanticName =
-  | "primary"
-  | "neutral"
-  | "info"
-  | "critical"
-  | "warning"
-  | "positive";
+  "primary" | "neutral" | "info" | "critical" | "warning" | "positive";
 
 export type TokenOverrides = {
   fonts?: Record<string, { value: string }>;
