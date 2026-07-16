@@ -40,6 +40,21 @@ const App = () => (
 )
 ```
 
+### Style variants
+
+Two visual variants are available. `subtle` (the default) uses a soft tinted
+background, while `solid` fills the avatar with the palette's solid color —
+matching the equivalent Button variant:
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Avatar firstName="John" lastName="Doe" variant="subtle" />
+    <Avatar firstName="John" lastName="Doe" variant="solid" />
+  </Stack>
+)
+```
+
 ### Color palettes
 
 Avatars support different color palettes to convey semantic meaning or match

@@ -1,0 +1,118 @@
+---
+id: Components-ChatMessageList
+title: Chat message list
+exportName: ChatMessageList
+description:
+  A scrollable transcript that arranges chat messages and notices, owning
+  autoscroll, the "jump to latest" control, and the live region that announces
+  new and streamed replies.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Chat
+  - Chat message list
+tags:
+  - component
+  - chat
+  - message
+  - list
+  - transcript
+  - ai
+  - conversation
+---
+
+## Overview
+
+`ChatMessageList` presents a **scrollable sequence of chat messages** and owns
+the transcript-level behavior that a single `ChatMessage` deliberately does not:
+scrolling, autoscroll / stick-to-bottom, the "jump to latest" affordance, and
+the single live region that announces appended and streamed replies.
+
+A list is defined by its items, so `ChatMessageList` is a compound of a `Root`
+and its `Item`s — not a box that happens to contain children:
+
+- `ChatMessageList.Root` — the scroll container. Wraps `ScrollArea`, keeps the
+  view pinned to the newest message while you are at the bottom, and is the
+  transcript's `role="log"` live region.
+- `ChatMessageList.Item` — one list member. It is content-agnostic: it holds a
+  `ChatMessage` or any other content, which is what lets a system notice be a
+  peer of a message rather than a message variant.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+## Variables
+
+Get familiar with the features.
+
+### A conversation transcript
+
+Wrap each turn in a `ChatMessageList.Item`. A system notice is just another
+member — the list does not treat it specially, so a consumer renders their own
+centered, subdued content.
+
+```jsx live
+const App = () => (
+  <ChatMessageList.Root aria-label="Conversation with the agent" height="360px">
+    <ChatMessageList.Item>
+      <ChatMessage.Root sender="user">
+        <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
+        <ChatMessage.Body>
+          <Text>Can you summarise last week's orders?</Text>
+        </ChatMessage.Body>
+      </ChatMessage.Root>
+    </ChatMessageList.Item>
+
+    <ChatMessageList.Item>
+      <ChatMessage.Root sender="agent">
+        <ChatMessage.Avatar>
+          <Icons.AutoAwesome />
+        </ChatMessage.Avatar>
+        <ChatMessage.Body>
+          <Markdown>
+            {[
+              "Here's what I found:",
+              "",
+              "- **Revenue** is up 12% week-over-week",
+              "- Top SKU: `ABC-123`",
+            ].join("\n")}
+          </Markdown>
+        </ChatMessage.Body>
+      </ChatMessage.Root>
+    </ChatMessageList.Item>
+
+    <ChatMessageList.Item>
+      <Box mx="auto" textAlign="center" color="neutral.11" textStyle="sm">
+        Conversation history was cleared.
+      </Box>
+    </ChatMessageList.Item>
+  </ChatMessageList.Root>
+);
+```
+
+### Empty state
+
+With no items, the list renders the `emptyState` you supply — an onboarding
+prompt or a simple "no messages yet" line.
+
+```jsx live
+const App = () => (
+  <ChatMessageList.Root
+    aria-label="Conversation"
+    height="220px"
+    emptyState={
+      <Text>No messages yet — ask the agent anything to get started.</Text>
+    }
+  />
+);
+```
+
+### Autoscroll and "jump to latest"
+
+`Root` keeps the newest message in view while you are at the bottom, including
+while a reply streams. Scroll up to read history and the pin releases, revealing
+a "jump to latest" control that returns you to the bottom and re-engages the
+pin. Set `autoScroll={false}` to turn automatic scrolling off and drive it
+yourself via the ref's `scrollToBottom()`.

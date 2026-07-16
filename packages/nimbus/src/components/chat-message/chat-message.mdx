@@ -1,0 +1,190 @@
+---
+id: Components-ChatMessage
+title: Chat message
+exportName: ChatMessage
+description:
+  A single message in an AI chat conversation, pairing a sender avatar with a
+  message body and optional actions, meta, and typing indicator.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Chat
+  - Chat message
+tags:
+  - component
+  - chat
+  - message
+  - body
+  - ai
+  - conversation
+figmaLink: >-
+  https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=10601-14469
+---
+
+## Overview
+
+`ChatMessage` renders **one message** in an AI chat conversation — an avatar
+paired with a message body, plus optional actions, a meta row, and a typing
+indicator for streaming replies. It does not compose the surrounding feed:
+stacking messages, scrolling, and the live region that announces new content are
+the transcript's job (see `ChatMessageList`).
+
+The `sender` prop drives which participant the message is from and controls both
+the layout direction and the body/avatar styling:
+
+- `user` — the human; avatar trails the body.
+- `agent` (default) — the agent; avatar leads the body.
+
+`sender` denotes only _who_ sent the message. System notices are out of scope
+here — a system notice isn't a message, and it isn't a standardized component
+either; consumers render their own content (for example inside a
+`ChatMessageList.Item`). Tool/function output is content _inside_ an `agent`
+message. Neither is a `sender` value.
+
+`tone="error"` is independent of `sender` — it tints the body to flag a failed
+generation, since an agent message can still fail.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system?node-id=10601-14469)
+
+## Variables
+
+Get familiar with the features.
+
+### Senders
+
+Each sender has its own layout direction and surface: `user` places the body
+before the avatar, `agent` places the avatar before the body. A system
+notice (not standardized in this release, so a consumer renders their own
+centered, subdued content) can sit between turns as an interjection.
+
+```jsx live
+const App = () => (
+  <Stack gap="600">
+    <ChatMessage.Root sender="user">
+      <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
+      <ChatMessage.Body>
+        <Text>Can you summarise last week's orders?</Text>
+      </ChatMessage.Body>
+    </ChatMessage.Root>
+    <Box mx="auto" textAlign="center" color="neutral.11" textStyle="sm">
+      Conversation history was cleared.
+    </Box>
+    <ChatMessage.Root sender="agent">
+      <ChatMessage.Avatar>
+        <Icons.AutoAwesome />
+      </ChatMessage.Avatar>
+      <ChatMessage.Body>
+        <Text>Revenue is up 12% week-over-week.</Text>
+      </ChatMessage.Body>
+    </ChatMessage.Root>
+  </Stack>
+);
+```
+
+### Tone
+
+`tone="error"` tints the body with the critical palette to flag a failed
+generation, on top of whatever `sender` styling already applies.
+
+```jsx live
+const App = () => (
+  <ChatMessage.Root sender="agent" tone="error">
+    <ChatMessage.Avatar>
+      <Icons.AutoAwesome />
+    </ChatMessage.Avatar>
+    <ChatMessage.Body>
+      <Text>Something went wrong generating this response.</Text>
+      <ChatMessage.Actions>
+        <Button variant="outline" colorPalette="primary">
+          Retry
+        </Button>
+      </ChatMessage.Actions>
+    </ChatMessage.Body>
+  </ChatMessage.Root>
+);
+```
+
+### Actions
+
+`ChatMessage.Actions` is a right-aligned row of buttons rendered inside the
+body. Place it last so the actions pin to the bottom of the card.
+
+```jsx live
+const App = () => (
+  <ChatMessage.Root sender="agent">
+    <ChatMessage.Avatar>
+      <Icons.AutoAwesome />
+    </ChatMessage.Avatar>
+    <ChatMessage.Body>
+      <Text>I drafted the date range for your report. Approve to apply.</Text>
+      <ChatMessage.Actions>
+        <Button variant="outline" colorPalette="primary">
+          Save as draft
+        </Button>
+        <Button variant="solid" colorPalette="primary">
+          Approve
+        </Button>
+      </ChatMessage.Actions>
+    </ChatMessage.Body>
+  </ChatMessage.Root>
+);
+```
+
+### Meta
+
+`ChatMessage.Meta` is a `space-between` row rendered below the body, for a
+timestamp, a trust/provenance link, or reaction icons.
+
+```jsx live
+const App = () => (
+  <ChatMessage.Root sender="agent">
+    <ChatMessage.Avatar>
+      <Icons.AutoAwesome />
+    </ChatMessage.Avatar>
+    <ChatMessage.Body>
+      <Text>Here is the summary you asked for.</Text>
+    </ChatMessage.Body>
+    <ChatMessage.Meta>
+      <Link href="#">How was this generated?</Link>
+      <Stack direction="row" alignItems="center" gap="100">
+        <Text color="neutral.11">Apr 13, 11:56pm</Text>
+        <IconButton aria-label="Good response" variant="ghost" size="xs">
+          <Icons.ThumbUp />
+        </IconButton>
+        <IconButton aria-label="Bad response" variant="ghost" size="xs">
+          <Icons.ThumbDown />
+        </IconButton>
+        <IconButton aria-label="Copy" variant="ghost" size="xs">
+          <Icons.ContentCopy />
+        </IconButton>
+      </Stack>
+    </ChatMessage.Meta>
+  </ChatMessage.Root>
+);
+```
+
+### Typing / streaming
+
+`ChatMessage.Typing` shows an animated "generating…" indicator as the body's
+payload while a reply streams. Pair it with `isStreaming` on the root, which
+sets `aria-busy`.
+
+```jsx live
+const App = () => (
+  <ChatMessage.Root sender="agent" isStreaming>
+    <ChatMessage.Avatar>
+      <Icons.AutoAwesome />
+    </ChatMessage.Avatar>
+    <ChatMessage.Body>
+      <ChatMessage.Typing>
+        <Text color="neutral.11">Agent is typing…</Text>
+      </ChatMessage.Typing>
+    </ChatMessage.Body>
+  </ChatMessage.Root>
+);
+```

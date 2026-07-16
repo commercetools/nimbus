@@ -6,6 +6,7 @@ import {
   Stack,
   Tooltip,
 } from "@commercetools/nimbus";
+import { AutoAwesome } from "@commercetools/nimbus-icons";
 import { within, expect, waitFor } from "storybook/test";
 import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 
@@ -27,6 +28,8 @@ export default meta;
 type Story = StoryObj<typeof Avatar>;
 
 const sizes: AvatarProps["size"][] = ["md", "xs", "2xs"];
+
+const variants: AvatarProps["variant"][] = ["subtle", "solid"];
 
 const avatarImg = "https://thispersondoesnotexist.com/ ";
 
@@ -70,6 +73,48 @@ export const Sizes: Story = {
           <Avatar key={size as string} {...args} size={size} alt="avatar" />
         ))}
       </Stack>
+    );
+  },
+};
+
+export const Variants: Story = {
+  args: {
+    firstName: "John",
+    lastName: "Doe",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="row" gap="400" alignItems="center">
+        {variants.map((variant) => (
+          <Avatar
+            key={variant as string}
+            {...args}
+            variant={variant}
+            aria-label={`${variant as string} avatar`}
+          />
+        ))}
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Each variant renders the initials", async () => {
+      for (const variant of variants) {
+        const avatar = canvas.getByLabelText(`${variant as string} avatar`);
+        await expect(avatar).toHaveTextContent("JD");
+      }
+    });
+
+    await step(
+      "subtle and solid render visibly different backgrounds",
+      async () => {
+        const subtle = canvas.getByLabelText("subtle avatar");
+        const solid = canvas.getByLabelText("solid avatar");
+        await expect(getComputedStyle(subtle).backgroundColor).not.toBe(
+          getComputedStyle(solid).backgroundColor
+        );
+      }
     );
   },
 };
@@ -366,6 +411,30 @@ export const ImageErrorWithMissingNames: Story = {
       const img = avatar.querySelector("img");
       await expect(img).not.toBeNull();
       await expect(img).toHaveStyle("display: none");
+    });
+  },
+};
+
+/**
+ * Custom content
+ * A custom icon passed via `children` overrides the default rendering
+ * (initials / Person fallback / image).
+ */
+export const CustomContent: Story = {
+  args: {
+    ["aria-label"]: "avatar",
+    children: <AutoAwesome />,
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const avatar = canvas.getByLabelText("avatar");
+
+    await step("Renders the custom child content (an svg icon)", async () => {
+      await expect(avatar.querySelector("svg")).not.toBeNull();
+    });
+
+    await step("Renders no initials text", async () => {
+      await expect(avatar.textContent?.trim() ?? "").toBe("");
     });
   },
 };

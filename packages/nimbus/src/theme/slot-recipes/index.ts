@@ -5,6 +5,8 @@ import { stepsSlotRecipe } from "@/components/steps/steps.recipe";
 import { alertRecipe } from "@/components/alert/alert.recipe";
 import { calendarSlotRecipe } from "@/components/calendar/calendar.recipe";
 import { cardRecipe } from "@/components/card/card.recipe";
+import { chatMessageSlotRecipe } from "@/components/chat-message/chat-message.recipe";
+import { chatMessageListSlotRecipe } from "@/components/chat-message-list/chat-message-list.recipe";
 import { checkboxSlotRecipe } from "@/components/checkbox/checkbox.recipe";
 import { collapsibleMotionSlotRecipe } from "@/components/collapsible-motion/collapsible-motion.recipe";
 import { comboBoxSlotRecipe } from "@/components/combobox/combobox.recipe";
@@ -78,6 +80,8 @@ export const slotRecipes = {
   nimbusAlert: alertRecipe,
   nimbusCalendar: calendarSlotRecipe,
   nimbusCard: cardRecipe,
+  nimbusChatMessage: chatMessageSlotRecipe,
+  nimbusChatMessageList: chatMessageListSlotRecipe,
   nimbusCheckbox: checkboxSlotRecipe,
   nimbusCollapsibleMotion: collapsibleMotionSlotRecipe,
   nimbusCombobox: comboBoxSlotRecipe,
