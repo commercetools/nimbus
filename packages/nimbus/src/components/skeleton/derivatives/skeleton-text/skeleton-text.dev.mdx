@@ -34,10 +34,10 @@ const App = () => (
 
 `SkeletonText` accepts a `textStyle` prop (default `"body"`) that makes the
 placeholder lines occupy the same vertical rhythm as real text of that style. It
-sets the container's `font-size` and `line-height`, so each bar's height (`1em`)
-and the inter-line gap (`calc(1lh - 1em)`, the style's leading) scale
-automatically — a `body` skeleton uses a 26 px pitch, a `3xl` heading skeleton a
-36 px pitch. Pass any Nimbus text style to match the content you are standing in
+sets the container's `font-size` and `line-height`, so each bar's height
+(`0.75em`, ≈ the font's cap-height) and the inter-line gap (`calc(1lh - 0.75em)`)
+scale automatically, summing to one full line-height — a `body` skeleton uses a
+26 px pitch, a `3xl` heading skeleton a 36 px pitch. Pass any Nimbus text style to match the content you are standing in
 for.
 
 ```jsx live-dev
@@ -50,14 +50,15 @@ const App = () => (
 )
 ```
 
-### Overriding the derived sizing
+### Overriding the derived spacing
 
-You can override the `textStyle`-derived sizing with the `lineHeight` (bar
-height) and `spacing` (gap between lines) props when you need a bespoke layout.
+Each bar's height always follows the chosen `textStyle` (`0.75em`, roughly the
+font's cap-height). When you need a bespoke gap between lines, override the
+`textStyle`-derived spacing with the `spacing` prop.
 
 ```jsx live-dev
 const App = () => (
-  <SkeletonText lines={3} width="300px" lineHeight="12px" spacing="600" />
+  <SkeletonText lines={3} width="300px" spacing="600" />
 )
 ```
 

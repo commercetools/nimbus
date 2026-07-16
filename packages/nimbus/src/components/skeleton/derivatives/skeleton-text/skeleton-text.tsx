@@ -18,8 +18,7 @@ export const SkeletonText = (props: SkeletonTextProps) => {
     ref: forwardedRef,
     lines = 3,
     textStyle = "body",
-    lineHeight = "1em",
-    spacing = "calc(1lh - 1em)",
+    spacing = "calc(1lh - 0.75em)",
     lastLineWidth = "60%",
     animation,
     "aria-hidden": ariaHidden = true,
@@ -27,10 +26,12 @@ export const SkeletonText = (props: SkeletonTextProps) => {
   } = props;
 
   return (
-    // `textStyle` sets the container's font-size + line-height, so each line's
-    // `1em` height and the `calc(1lh - 1em)` gap resolve to that style's glyph
-    // size and leading — giving the placeholder the same vertical rhythm as real
-    // text of the chosen style.
+    // `textStyle` sets the container's font-size + line-height. Each bar is
+    // `0.75em` tall (≈ the font's cap-height, the visual "mass" of a real line —
+    // a full `1em` reads too heavy and its gap collapses on tight-leaded
+    // headings) and the `calc(1lh - 0.75em)` gap makes bar + gap sum to exactly
+    // one line-height (`1lh`), so the placeholder keeps the same vertical rhythm
+    // as real text of the chosen style.
     <ChakraBox
       ref={forwardedRef}
       display="flex"
@@ -50,7 +51,10 @@ export const SkeletonText = (props: SkeletonTextProps) => {
           <Skeleton
             key={index}
             width={isShortLastLine ? lastLineWidth : "100%"}
-            height={lineHeight}
+            // Bar height tracks the chosen `textStyle`'s cap-height (`0.75em`
+            // against the container's font-size), so it follows the typography
+            // rhythm rather than a separately tunable prop.
+            height="0.75em"
             animation={animation}
           />
         );
