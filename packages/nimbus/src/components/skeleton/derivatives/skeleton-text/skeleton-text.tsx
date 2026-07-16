@@ -18,7 +18,6 @@ export const SkeletonText = (props: SkeletonTextProps) => {
     ref: forwardedRef,
     lines = 3,
     textStyle = "body",
-    spacing = "calc(1lh - 0.75em)",
     lastLineWidth = "60%",
     animation,
     "aria-hidden": ariaHidden = true,
@@ -26,18 +25,10 @@ export const SkeletonText = (props: SkeletonTextProps) => {
   } = props;
 
   return (
-    // `textStyle` sets the container's font-size + line-height. Each bar is
-    // `0.75em` tall (≈ the font's cap-height, the visual "mass" of a real line —
-    // a full `1em` reads too heavy and its gap collapses on tight-leaded
-    // headings) and the `calc(1lh - 0.75em)` gap makes bar + gap sum to exactly
-    // one line-height (`1lh`), so the placeholder keeps the same vertical rhythm
-    // as real text of the chosen style.
     <ChakraBox
       ref={forwardedRef}
       display="flex"
       flexDirection="column"
-      textStyle={textStyle}
-      gap={spacing}
       aria-hidden={ariaHidden}
       {...rest}
     >
@@ -48,15 +39,27 @@ export const SkeletonText = (props: SkeletonTextProps) => {
         // container's `width` prop instead.
         const isShortLastLine = index === lines - 1 && index !== 0;
         return (
-          <Skeleton
+          // Each line gets its own `textStyle`-sized line-box (`height: 1lh`)
+          // with the bar vertically centered. Centering splits the leftover
+          // leading (`1lh - 0.75em`) equally above and below the bar — mirroring
+          // how CSS distributes a real line's leading — so bar centers align
+          // with glyph centers. N rows sum to N×1lh, matching a real paragraph's
+          // exact height, with the rhythm coming purely from the text style.
+          <ChakraBox
             key={index}
-            width={isShortLastLine ? lastLineWidth : "100%"}
-            // Bar height tracks the chosen `textStyle`'s cap-height (`0.75em`
-            // against the container's font-size), so it follows the typography
-            // rhythm rather than a separately tunable prop.
-            height="0.75em"
-            animation={animation}
-          />
+            textStyle={textStyle}
+            height="1lh"
+            display="flex"
+            alignItems="center"
+          >
+            <Skeleton
+              width={isShortLastLine ? lastLineWidth : "100%"}
+              // Bar height tracks the textStyle's cap-height (`0.75em` against
+              // the line-box font-size).
+              height="0.75em"
+              animation={animation}
+            />
+          </ChakraBox>
         );
       })}
     </ChakraBox>
