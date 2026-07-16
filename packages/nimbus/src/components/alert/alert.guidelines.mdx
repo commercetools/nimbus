@@ -22,14 +22,38 @@ their workflow.
   critical notifications due to overexposure, often stemming from alerts that
   are too frequent, irrelevant to the user's context, or lacking in actionable
   information.
-  - **Flat styled:** Use inline in forms and within popovers when needed. These
-    can be used inside forms to signal validation status.
-  - **Outlined styled:** Be mindful of how many alerts occur on one page. These
-    are best used for page or product wide information. They are not meant to be
-    used as toasts.
+  - **Flat (`variant="flat"`):** No chrome. Use inline in forms and within
+    popovers when needed. These can be used inside forms to signal validation
+    status.
+  - **Subtle (`variant="subtle"`, default):** Tinted card. Be mindful of how
+    many alerts occur on one page. These are best used for page or product
+    wide information. They are not meant to be used as toasts.
+    (`variant="outlined"` is a deprecated alias for `subtle` — prefer
+    `subtle` going forward.)
+  - **Outline (`variant="outline"`):** Border-only, minimal fill. A
+    lighter-weight alternative to `subtle` for the same page/product-wide
+    contexts.
+  - **Solid (`variant="solid"`):** High-contrast fill. Reserve for the
+    messages that most need to stand out, such as page-level banners — use
+    the sparsest.
+- **Layout:** Choose `layout` to match how the alert sits in the page.
+  - **`stack` (default):** icon and content stack vertically. The general-purpose
+    layout for most standalone alerts.
+  - **`inline`:** a compact, single-line row with the action trailing —
+    content leading, actions/dismiss trailing, wrapping on narrow widths. Use
+    for section-scoped confirmations, such as an agent-confirmation banner
+    with an "Undo" action.
+  - **`banner`:** full-width, edge-to-edge, no border radius. Use for
+    page-level messages that span the full width of the page.
 - **Accessibility and design:** Maintain consistent styling, use color and icons
   effectively, and ensure alerts are accessible to all users. For example, do
   not use the information colorPalette to communicate a critical error.
+  - **Announcement (polite vs. assertive):** Alerts default to a polite
+    announcement (`role="status"`) that doesn't interrupt the user. Reserve
+    the assertive, interrupting announcement (`role="alert"`) for critical
+    errors that truly require immediate attention — using it for routine
+    messages contributes to alert fatigue and undermines its urgency when it
+    matters most.
 
 ### Usage
 
@@ -89,7 +113,7 @@ best. If you choose the wrong type, it will confuse users.
 
 ```jsx live
 const App = () => (
-  <Alert.Root colorPalette="critical" variant="outlined">
+  <Alert.Root colorPalette="critical" variant="subtle" role="alert">
     <Alert.Title>Payment Processing Error</Alert.Title>
     <Alert.Description>
       A payment processing error occurred for order #12345. Please <Link>verify your
@@ -115,7 +139,7 @@ const App = () => (
 
 ```jsx live
 const App = () => (
-  <Alert.Root colorPalette="positive" variant="outlined">
+  <Alert.Root colorPalette="positive" variant="subtle">
     <Alert.Title>Payment Processing Error</Alert.Title>
     <Alert.Actions>
       <Button variant="outline">Dismiss</Button>
@@ -148,7 +172,7 @@ Alerts should not hover or lay on top of other elements.
 ```jsx live
 const App = () => (
   <Stack direction="column" width="8000">
-    <Alert.Root colorPalette="critical" variant="outlined">
+    <Alert.Root colorPalette="critical" variant="subtle">
       <Alert.Title>Account needs validation</Alert.Title>
       <Alert.Description>
         To edit these fields you must first validate your account. Please check your email.
@@ -178,7 +202,7 @@ const App = () => (
       <TextInput isInvalid />
     </Stack>
 
-   <Alert.Root colorPalette="critical" variant="outlined" width="9600" position="relative" top="-500" left="500">
+   <Alert.Root colorPalette="critical" variant="subtle" width="9600" position="relative" top="-500" left="500">
       <Alert.Title>Product price mode error</Alert.Title>
       <Alert.Description>
         This price mode has not been defined.

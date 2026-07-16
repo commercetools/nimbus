@@ -31,7 +31,7 @@ const App = () => (
 
 ### Color palettes
 
-The `colorPalette` prop determines the semantic color and the accompanying icon. The following examples demonstrate every palette available for this component (`positive`, `warning`, `critical`, `info`).
+The `colorPalette` prop determines the semantic color and the accompanying icon. The following examples demonstrate every palette available for this component (`positive`, `warning`, `critical`, `info`, `neutral`). `neutral` has no automatic icon — pair it with a custom `Alert.Icon` or `hideIcon`.
 
 ```jsx live-dev
 const App = () => (
@@ -46,7 +46,7 @@ const App = () => (
       <Alert.Description>Please review your changes.</Alert.Description>
     </Alert.Root>
 
-    <Alert.Root colorPalette="critical">
+    <Alert.Root colorPalette="critical" role="alert">
       <Alert.Title>Critical</Alert.Title>
       <Alert.Description>An error occurred while saving.</Alert.Description>
     </Alert.Root>
@@ -55,29 +55,137 @@ const App = () => (
       <Alert.Title>Info</Alert.Title>
       <Alert.Description>New updates are available.</Alert.Description>
     </Alert.Root>
+
+    <Alert.Root colorPalette="neutral" hideIcon>
+      <Alert.Title>Neutral</Alert.Title>
+      <Alert.Description>General notice with no severity.</Alert.Description>
+    </Alert.Root>
   </Stack>
 )
 ```
 
-### Visual variants
+### Visual variants (emphasis)
 
-Two visual variants are available to suit different interface needs: `outlined` (default) and `flat`.
+The `variant` prop controls emphasis: `subtle` (default, tinted card), `outline` (border-only, minimal fill), `solid` (high-contrast fill), and `flat` (no chrome). `variant="outlined"` is a deprecated alias for `subtle` and renders identically — prefer `subtle`.
 
 ```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="400">
-    <Alert.Root variant="outlined" colorPalette="info">
-      <Alert.Title>Outlined (Default)</Alert.Title>
+    <Alert.Root variant="subtle" colorPalette="info">
+      <Alert.Title>Subtle (default)</Alert.Title>
       <Alert.Description>
-        Best for high-contrast environments or when the alert needs to stand out against a colored background.
+        Tinted card. Best when the alert needs to stand out against surrounding content.
+      </Alert.Description>
+    </Alert.Root>
+
+    <Alert.Root variant="outline" colorPalette="info">
+      <Alert.Title>Outline</Alert.Title>
+      <Alert.Description>
+        Border-only, minimal fill. Lighter-weight than subtle.
+      </Alert.Description>
+    </Alert.Root>
+
+    <Alert.Root variant="solid" colorPalette="info">
+      <Alert.Title>Solid</Alert.Title>
+      <Alert.Description>
+        High-contrast fill. Use sparingly for the messages that must stand out most.
       </Alert.Description>
     </Alert.Root>
 
     <Alert.Root variant="flat" colorPalette="info">
       <Alert.Title>Flat</Alert.Title>
       <Alert.Description>
-        A subtler look, suitable for dense interfaces or secondary notifications.
+        No chrome. Suitable for dense interfaces or secondary notifications.
       </Alert.Description>
+    </Alert.Root>
+  </Stack>
+)
+```
+
+### Layout
+
+The `layout` prop controls how parts are arranged: `stack` (default — icon and content stack vertically), `inline` (content leading, actions trailing, wraps on narrow widths), or `banner` (full-width, edge-to-edge, page-level).
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Alert.Root layout="stack" colorPalette="info">
+      <Alert.Title>Stack (default)</Alert.Title>
+      <Alert.Description>
+        Icon and content stack vertically; actions and the dismiss button sit below the description.
+      </Alert.Description>
+    </Alert.Root>
+
+    <Alert.Root layout="inline" colorPalette="info">
+      <Alert.Title>Inline</Alert.Title>
+      <Alert.Description>
+        Content leads, actions trail on the same row, and wrap below on narrow widths.
+      </Alert.Description>
+      <Alert.Actions>
+        <Button variant="outline">Action</Button>
+      </Alert.Actions>
+    </Alert.Root>
+
+    <Alert.Root layout="banner" colorPalette="warning">
+      <Alert.Title>Banner</Alert.Title>
+      <Alert.Description>
+        Full-width, edge-to-edge — no border radius. Intended for page-level messages.
+      </Alert.Description>
+    </Alert.Root>
+  </Stack>
+)
+```
+
+#### Silent inline confirmation (agent-confirmation pattern)
+
+`layout="inline"` combined with `role="group"` + `aria-label` and `hideIcon` produces a compact confirmation banner that is not announced as a live region — useful for confirming a user-initiated action (e.g. an agent applying a suggestion) that the user is already watching, where an additional announcement would be redundant.
+
+```jsx live-dev
+const App = () => {
+  const [applied, setApplied] = useState(true);
+
+  if (!applied) {
+    return <Text>Change undone.</Text>;
+  }
+
+  return (
+    <Alert.Root
+      layout="inline"
+      colorPalette="positive"
+      role="group"
+      aria-label="Suggestion approved"
+      hideIcon
+    >
+      <Alert.Title>Suggestion approved</Alert.Title>
+      <Alert.Description>
+        Applied the recommended discount to 3 products.
+      </Alert.Description>
+      <Alert.Actions>
+        <Button variant="outline" onPress={() => setApplied(false)}>
+          Undo
+        </Button>
+      </Alert.Actions>
+    </Alert.Root>
+  );
+}
+```
+
+### Icon customization
+
+Omit `Alert.Icon` for the automatic status icon (based on `colorPalette`). Provide `Alert.Icon` with any icon to override it, or use `hideIcon` on `Alert.Root` to suppress the icon entirely (it takes precedence over both the automatic icon and an explicit `Alert.Icon`).
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="400">
+    <Alert.Root colorPalette="info">
+      <Alert.Icon><Icons.StarOutline /></Alert.Icon>
+      <Alert.Title>Custom icon</Alert.Title>
+      <Alert.Description>Replaces the automatic status icon.</Alert.Description>
+    </Alert.Root>
+
+    <Alert.Root colorPalette="info" hideIcon>
+      <Alert.Title>No icon</Alert.Title>
+      <Alert.Description>hideIcon suppresses the icon entirely.</Alert.Description>
     </Alert.Root>
   </Stack>
 )
@@ -132,7 +240,9 @@ const App = () => (
 
 ### Dismissible alerts
 
-Add the `Alert.DismissButton` to provide a close action. You must handle the dismissal logic (e.g., removing the alert from the DOM) yourself.
+There are two ways to add a close action. Either way, **you** must handle the dismissal logic (e.g., removing the alert from the DOM) — Alert has no internal open/closed state.
+
+**`dismissible` + `onDismiss` (convenience):** set `dismissible` and Alert renders a localized, correctly-positioned dismiss button for you; `onDismiss` fires when it's pressed.
 
 ```jsx live-dev
 const App = () => {
@@ -147,7 +257,36 @@ const App = () => {
   }
 
   return (
-    <Alert.Root colorPalette="info" variant="outlined">
+    <Alert.Root
+      colorPalette="info"
+      dismissible
+      onDismiss={() => setIsVisible(false)}
+    >
+      <Alert.Title>Dismissible Alert</Alert.Title>
+      <Alert.Description>
+        Click the close button to dismiss this message.
+      </Alert.Description>
+    </Alert.Root>
+  );
+}
+```
+
+**Composable `Alert.DismissButton` (advanced):** render it explicitly when you need to customize its placement, `variant`, `size`, or other button props. If both `dismissible` and a manual `Alert.DismissButton` child are present, the manual slot wins — the automatic button is not rendered.
+
+```jsx live-dev
+const App = () => {
+  const [isVisible, setIsVisible] = useState(true);
+
+  if (!isVisible) {
+    return (
+      <Button onPress={() => setIsVisible(true)}>
+        Reset Example
+      </Button>
+    );
+  }
+
+  return (
+    <Alert.Root colorPalette="info" variant="subtle">
       <Alert.Title>Dismissible Alert</Alert.Title>
       <Alert.Description>
         Click the close button to dismiss this message.
@@ -164,9 +303,9 @@ const App = () => {
 
 The `Alert` component has built-in accessibility features:
 
-- **Role**: The root element automatically has `role="alert"`. This informs screen readers that the content is important and time-sensitive. Because of `role="alert"`'s intrusive nature, the `Alert` component should be used sparingly and only in situations where the user's immediate attention is required.
-- **Icons**: Decorative icons are automatically hidden from screen readers to avoid redundancy.
-- **Dismiss Button**: The `Alert.DismissButton` comes with a default accessible label ("Dismiss") which can be localized or overridden via `aria-label`.
+- **Role**: `role` is a native, overridable prop on `Alert.Root`. The default is `role="status"` — a polite live region that doesn't interrupt the user. For critical/interrupting messages, pass `role="alert"` explicitly. For silent inline confirmations that shouldn't be announced as a live region at all, pass `role="group"` with an `aria-label`. See the Accessibility tab for the full announcement model, including live-region priming guidance.
+- **Icons**: Decorative icons (the automatic status icon and any `Alert.Icon`) are automatically hidden from screen readers to avoid redundancy.
+- **Dismiss Button**: The `Alert.DismissButton` (composable or auto-rendered via `dismissible`) comes with a default accessible label ("Dismiss") which can be localized or overridden via `aria-label`.
 
 If your use case requires tracking and analytics for this component, it is good practice to add a **persistent**, **unique** id to the component:
 

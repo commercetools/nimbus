@@ -16,7 +16,7 @@ import {
  *
  * @example
  * ```tsx
- * <Alert.Root tone="info" variant="outlined">
+ * <Alert.Root colorPalette="info" variant="subtle">
  *   <Alert.Title>Information</Alert.Title>
  *   <Alert.Description>This is an informational alert message.</Alert.Description>
  * </Alert.Root>
@@ -31,7 +31,7 @@ export const Alert = {
    *
    * @example
    * ```tsx
-   * <Alert.Root tone="info" variant="outlined">
+   * <Alert.Root colorPalette="info" variant="subtle">
    *   <Alert.Title>Title</Alert.Title>
    *   <Alert.Description>Description</Alert.Description>
    * </Alert.Root>
@@ -47,7 +47,7 @@ export const Alert = {
    * @example
    * ```tsx
    * <Alert.Root colorPalette="info">
-   *   <Alert.Icon><Sparkle /></Alert.Icon>
+   *   <Alert.Icon><Info /></Alert.Icon>
    *   <Alert.Title>Custom</Alert.Title>
    * </Alert.Root>
    * ```
@@ -61,7 +61,7 @@ export const Alert = {
    *
    * @example
    * ```tsx
-   * <Alert.Root tone="critical">
+   * <Alert.Root colorPalette="critical">
    *   <Alert.Title>Error Occurred</Alert.Title>
    * </Alert.Root>
    * ```
@@ -75,7 +75,7 @@ export const Alert = {
    *
    * @example
    * ```tsx
-   * <Alert.Root tone="warning">
+   * <Alert.Root colorPalette="warning">
    *   <Alert.Title>Warning</Alert.Title>
    *   <Alert.Description>Please review the following items before proceeding.</Alert.Description>
    * </Alert.Root>
@@ -90,7 +90,7 @@ export const Alert = {
    *
    * @example
    * ```tsx
-   * <Alert.Root tone="positive">
+   * <Alert.Root colorPalette="positive">
    *   <Alert.Title>Success</Alert.Title>
    *   <Alert.Description>Your changes have been saved.</Alert.Description>
    *   <Alert.Actions>
@@ -108,10 +108,10 @@ export const Alert = {
    *
    * @example
    * ```tsx
-   * <Alert.Root tone="info">
+   * <Alert.Root colorPalette="info">
    *   <Alert.Title>Notification</Alert.Title>
    *   <Alert.Description>You have new messages.</Alert.Description>
-   *   <Alert.DismissButton onClick={() => console.log('Dismissed')} />
+   *   <Alert.DismissButton onPress={() => console.log('Dismissed')} />
    * </Alert.Root>
    * ```
    */

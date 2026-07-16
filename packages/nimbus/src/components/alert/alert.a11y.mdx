@@ -11,7 +11,7 @@ cognitive, and physical limitations.
 
 ```jsx live
 const App = () => (
-  <Alert.Root colorPalette="critical" variant="outlined">
+  <Alert.Root colorPalette="critical" variant="subtle" role="alert">
     <Alert.Title>Payment Processing Error</Alert.Title>
     <Alert.Description>
       A payment processing error occurred for order #12345. Please <Link>verify your
@@ -25,31 +25,101 @@ const App = () => (
 );
 ```
 
+### Announcement model (`role`)
+
+`Alert.Root` renders a native, overridable `role` attribute — pass any valid
+`role` and it wins over the default. The default is **`role="status"`**, a
+polite live region: screen readers announce the content without interrupting
+whatever the user is currently doing, and only once they're idle.
+
+The `aria-live` / `aria-atomic` behavior for a live region comes **implicitly**
+from the role the browser and assistive technology map it to (`status` →
+polite + atomic, `alert` → assertive + atomic). Alert does not set
+`aria-live`/`aria-atomic` itself and never overrides an `aria-*` prop you pass
+— the implicit mapping is what does the work.
+
+- **Default — `role="status"` (polite):** the right choice for most alerts:
+  confirmations, informational messages, and anything that shouldn't interrupt
+  the user's current task.
+- **`role="alert"` (assertive) — critical/interrupting messages:** reserve
+  this for errors that block the user's task and must be announced
+  immediately, as in the example above. This is the one behavior change to
+  watch for if you're migrating existing critical alerts: the default used to
+  always be assertive, so re-assert `role="alert"` explicitly wherever an
+  alert genuinely needs to interrupt.
+- **`role="group"` + `aria-label` (silent) — inline confirmations:** for
+  content that should not be announced as a live region at all, such as an
+  agent-confirmation banner shown after a user-initiated action the user is
+  already watching. Pair with `layout="inline"` and `hideIcon` for the compact
+  look:
+  ```tsx
+  <Alert.Root
+    layout="inline"
+    colorPalette="positive"
+    role="group"
+    aria-label="Suggestion approved"
+    hideIcon
+  >
+    <Alert.Title>Suggestion approved</Alert.Title>
+    <Alert.Description>
+      Applied the recommended discount to 3 products.
+    </Alert.Description>
+    <Alert.Actions>
+      <Button variant="outline">Undo</Button>
+    </Alert.Actions>
+  </Alert.Root>
+  ```
+
+### Live-region priming
+
+Assistive technology only reliably announces a live region's content if the
+region (with its `role`) is already present in the DOM *before* the content
+inside it changes. Mounting the region and its final content in the same
+render — e.g. conditionally rendering `<Alert.Root>` for the first time with
+the message already in place — can fail to announce in some
+browser/screen-reader combinations.
+
+To announce reliably, either:
+
+- Keep a persistent `Alert.Root` mounted (even empty, or visually hidden) and
+  update its children afterward, so the live region is "primed" before the
+  content arrives, or
+- Use React Aria's imperative announcer (`useAnnounce`/`announce` API) for
+  cases that must be announced immediately regardless of mount timing.
+
+This is a documentation-only pattern — Alert has no built-in helper for
+priming a live region.
+
 ### Accessibility standards
 
 - **Info and relationships:** Ensure the alert's content and purpose are
-  programmatically determinable. Use `ARIA` attributes like `aria-live` and
-  `aria-atomic` to announce dynamic content changes to assistive technologies.
+  programmatically determinable. Choose the `role` that matches how the
+  message should be announced (see [Announcement model](#announcement-model-role)
+  above) — the implicit `aria-live`/`aria-atomic` behavior follows from that
+  choice, so you don't need to set those attributes yourself.
 - **Non-text content:** If the alert contains non-text content (e.g., icons),
-  provide text alternatives (e.g., alt text for images).
+  provide text alternatives (e.g., alt text for images). Alert's automatic
+  status icon and any custom `Alert.Icon` are already marked decorative
+  (`aria-hidden`) since the message text conveys the same information.
 - **Color contrast:** Ensure sufficient color contrast between the alert's text
   and background.
 - **Use of color:** Don't rely solely on color to convey the alert's meaning.
   Use additional visual cues like icons or text.
 - **Keyboard accessibility:** If the alert contains interactive elements (e.g.,
-  buttons), ensure they are keyboard operable. If the alert requires dismissal,
-  ensure it can be dismissed using the keyboard (e.g., Esc key).
+  buttons, `Alert.DismissButton`), ensure they are keyboard operable — this is
+  the case out of the box since they render native, focusable elements.
 - **Focus visible:** If the alert contains interactive elements, provide a clear
   visual focus indicator.
 - **On focus:** Ensure that the alert doesn't cause unexpected changes to the
-  page or context.
+  page or context. Alert does not move or manage focus on your behalf; if
+  showing an alert should move focus (e.g. to a critical error), manage that
+  focus yourself.
 - **Error identification:** If the alert indicates an error, clearly identify
   and describe the error in text.
 - **Labels or instructions:** Provide clear and concise messages that are easy
   to understand.
-- **Name, role, value:** Use appropriate semantic `HTML` and `ARIA` attributes
-  to define the alert's role, name, and value. This ensures compatibility with
-  assistive technologies. Use `role="alert"` or `role="alertdialog"` to define
-  the alert.
-- **Status messages:** For status messages that don't interrupt the user, use
-  `role="status"` instead of `role="alert"`.
+- **Name, role, value:** Use the `role` prop to define how the alert should be
+  announced — `status` (default, polite), `alert` (assertive), or `group` with
+  `aria-label` (silent) — as described above.
+- **Status messages:** For status messages that don't interrupt the user, the
+  default `role="status"` already applies — no extra configuration needed.
