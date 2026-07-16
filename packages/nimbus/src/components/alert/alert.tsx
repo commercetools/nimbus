@@ -4,6 +4,7 @@ import {
   AlertActions,
   AlertDismissButton,
   AlertRoot,
+  AlertIcon,
 } from "./components";
 
 /**
@@ -37,6 +38,21 @@ export const Alert = {
    * ```
    */
   Root: AlertRoot,
+  /**
+   * # Alert.Icon
+   *
+   * Optional custom icon. Omit for the automatic status icon; provide to
+   * override it. Use the `hideIcon` prop on `Alert.Root` to remove it entirely.
+   *
+   * @example
+   * ```tsx
+   * <Alert.Root colorPalette="info">
+   *   <Alert.Icon><Sparkle /></Alert.Icon>
+   *   <Alert.Title>Custom</Alert.Title>
+   * </Alert.Root>
+   * ```
+   */
+  Icon: AlertIcon,
   /**
    * # Alert.Title
    *
@@ -109,4 +125,5 @@ export {
   AlertDescription as _AlertDescription,
   AlertActions as _AlertActions,
   AlertDismissButton as _AlertDismissButton,
+  AlertIcon as _AlertIcon,
 };

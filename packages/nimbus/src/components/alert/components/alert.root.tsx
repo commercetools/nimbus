@@ -1,4 +1,9 @@
-import { AlertRoot as AlertRootSlot, AlertIcon } from "../alert.slots";
+import { Children, isValidElement } from "react";
+import {
+  AlertRoot as AlertRootSlot,
+  AlertIcon as AlertIconSlot,
+} from "../alert.slots";
+import { AlertIcon } from "./alert.icon";
 import type { AlertProps, AlertRootComponent } from "../alert.types";
 import {
   CheckCircleOutline,
@@ -28,14 +33,30 @@ const getIconFromColorPalette = (colorPalette: AlertProps["colorPalette"]) => {
  * @supportsStyleProps
  */
 export const AlertRoot: AlertRootComponent = (props) => {
-  const { ref, children, ...restProps } = props;
+  const { ref, children, hideIcon, ...restProps } = props;
+
+  const childArray = Children.toArray(children);
+  const hasCustomIcon = childArray.some(
+    (child) => isValidElement(child) && child.type === AlertIcon
+  );
+
+  // hideIcon strips any explicit <Alert.Icon> children as well as the auto icon.
+  const renderedChildren = hideIcon
+    ? childArray.filter(
+        (child) => !(isValidElement(child) && child.type === AlertIcon)
+      )
+    : children;
+
+  const showAutoIcon = !hideIcon && !hasCustomIcon;
 
   return (
     <AlertRootSlot ref={ref} role="status" {...restProps}>
-      <AlertIcon alignItems="flex-start">
-        {getIconFromColorPalette(restProps.colorPalette)}
-      </AlertIcon>
-      {children}
+      {showAutoIcon && (
+        <AlertIconSlot alignItems="flex-start">
+          {getIconFromColorPalette(restProps.colorPalette)}
+        </AlertIconSlot>
+      )}
+      {renderedChildren}
     </AlertRootSlot>
   );
 };

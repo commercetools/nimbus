@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { Alert, type AlertProps, Button, Stack } from "@commercetools/nimbus";
+import { Info } from "@commercetools/nimbus-icons";
 
 const colorPalettes: AlertProps["colorPalette"][] = [
   "critical",
@@ -431,6 +432,57 @@ export const RoleBehavior: Story = {
         "role",
         "group"
       );
+    });
+  },
+};
+
+export const CustomIcon: Story = {
+  render: () => (
+    <Alert.Root data-testid="custom-icon" colorPalette="info">
+      <Alert.Icon>
+        <Info data-testid="my-custom-icon" />
+      </Alert.Icon>
+      <Alert.Title>Custom icon</Alert.Title>
+    </Alert.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("renders the consumer-provided icon", async () => {
+      await expect(canvas.getByTestId("my-custom-icon")).toBeInTheDocument();
+    });
+  },
+};
+
+export const HideIcon: Story = {
+  render: () => (
+    <Alert.Root data-testid="hide-icon" colorPalette="info" hideIcon>
+      <Alert.Title>No icon</Alert.Title>
+    </Alert.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("renders no icon svg", async () => {
+      const root = canvas.getByTestId("hide-icon");
+      await expect(root.querySelector("svg")).toBeNull();
+    });
+  },
+};
+
+export const HideIconSuppressesCustom: Story = {
+  render: () => (
+    <Alert.Root data-testid="hide-custom" colorPalette="info" hideIcon>
+      <Alert.Icon>
+        <Info data-testid="should-not-render" />
+      </Alert.Icon>
+      <Alert.Title>No icon even when explicit</Alert.Title>
+    </Alert.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("explicit Alert.Icon is suppressed", async () => {
+      await expect(
+        canvas.queryByTestId("should-not-render")
+      ).not.toBeInTheDocument();
     });
   },
 };
