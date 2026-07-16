@@ -60,23 +60,11 @@ If the answer is "composing existing ones," it's a pattern.
   components
 - Its interaction behavior is **fully delegated** to the composed components
 
-> **Layout-only exception.** A pattern MAY define a slot recipe
-> (`defineSlotRecipe`) and a compound `.Root`/part API purely to encapsulate a
-> **reusable layout** — provided it introduces **no recipe variants** and **no
-> new interaction behavior**. The recipe carries structural styles (flex layout,
-> gap, wrapping) plus palette-aware defaults that resolve against the consumer's
-> `colorPalette` (e.g. a `colorPalette.11` text color) — never a fixed hue; the
-> surface treatment (bg, border, radius, padding) stays with the consumer via
-> forwarded style props. `FeedbackCard` (`src/patterns/feedback/feedback-card/`)
-> is the reference example. It remains a pattern because it composes existing
-> primitives and adds no new themed primitive — the slot recipe is a layout
-> convenience, not an independent visual identity.
-
 ### Decision flow
 
 ```mermaid
 graph TD
-    Start[New UI element] --> Q1{Needs recipe variants,<br/>or React Aria integration?}
+    Start[New UI element] --> Q1{Needs own recipe, slots,<br/>or React Aria integration?}
     Q1 -->|Yes| Component[→ Component<br/>src/components/]
     Q1 -->|No| Q2{New visual primitive?}
     Q2 -->|Yes| Component
@@ -85,11 +73,6 @@ graph TD
     style Component fill:#4CAF50,color:#fff
     style Pattern fill:#FFC107,color:#000
 ```
-
-A **layout-only slot recipe with no variants** does not trigger the Component
-branch — answer Q1 "No" for it (see the layout-only exception above).
-`FeedbackCard` takes this path: it has a slot recipe but no variants and no
-React Aria integration, so it stays a Pattern.
 
 ### Where code lives
 
@@ -133,31 +116,6 @@ src/patterns/pattern-name/
 Key differences from a component: no `.recipe.ts`, no `.slots.tsx`, no
 `components/` subfolder. The props type typically extends or picks from the
 composed components' props.
-
-**Pattern (with a layout-only slot recipe)** — the layout-only exception above:
-a shipped pattern MAY add a slot recipe + compound parts when it encapsulates a
-reusable layout with **no variants**:
-
-```
-src/patterns/category/pattern-name/
-├── index.ts                        # Barrel exports
-├── pattern-name.tsx                # Compound object { Root, ... }
-├── pattern-name.types.ts           # TypeScript interfaces
-├── pattern-name.recipe.ts          # defineSlotRecipe — layout only, NO variants
-├── pattern-name.slots.tsx          # Styled slot components
-├── pattern-name.stories.tsx        # Storybook stories
-├── pattern-name.mdx                # Designer documentation
-├── pattern-name.dev.mdx            # Engineering documentation
-├── pattern-name.docs.spec.tsx      # Consumer implementation tests
-└── components/                     # Compound sub-parts
-```
-
-`FeedbackCard` (`src/patterns/feedback/feedback-card/`) is the reference. The
-recipe is registered in the theme like any other, but carries only structural
-styles (flex layout, gap, wrapping) plus palette-aware defaults that resolve
-against the consumer's `colorPalette` (never a fixed hue); consumers supply the
-surface treatment via forwarded style props. This stays a pattern because it
-adds no recipe variants and no new interaction behavior.
 
 **Pattern (documented only)** — documentation files only, no exported code:
 
@@ -215,16 +173,11 @@ A pattern can be promoted to a component when it outgrows composition.
 
 **Signals that promotion is needed:**
 
-- You need to add a `.recipe.ts` **with variants** for custom styling
-- You need `.slots.tsx` for styled sub-elements **that carry variants**
+- You need to add a `.recipe.ts` for custom styling
+- You need `.slots.tsx` for styled sub-elements
 - You need React Aria integration for new interaction patterns
 - The pattern's props are fighting against the composed components' APIs
 - Consumers need recipe variants (size, variant) on the pattern itself
-
-> A **layout-only slot recipe with no variants** (the `FeedbackCard` exception)
-> is **not** a promotion signal on its own. Promotion is driven by needing
-> recipe **variants** or **React Aria integration** — not by the mere presence
-> of a structural recipe.
 
 **Steps:**
 
@@ -274,21 +227,15 @@ _(Representative subset. See `src/components/` for the full list.)_
 
 All current patterns compose existing components with flat-props APIs:
 
-| Pattern                 | Composes                                       |
-| ----------------------- | ---------------------------------------------- |
-| TextInputField          | FormField + TextInput                          |
-| NumberInputField        | FormField + NumberInput                        |
-| PasswordInputField      | FormField + PasswordInput                      |
-| SearchInputField        | FormField + SearchInput                        |
-| MultilineTextInputField | FormField + MultilineTextInput                 |
-| MoneyInputField         | FormField + MoneyInput                         |
-| DateRangePickerField    | FormField + DateRangePicker                    |
-| FeedbackCard¹           | Layout of consumer content + a consumer Button |
-
-¹ **Exception:** `FeedbackCard` ships a layout-only slot recipe and a compound
-`Root`/`Content`/`Action` API. It remains a pattern because the recipe has **no
-variants** and it adds **no new interaction behavior** — see the
-[layout-only exception](#its-a-pattern-when) above.
+| Pattern                 | Composes                       |
+| ----------------------- | ------------------------------ |
+| TextInputField          | FormField + TextInput          |
+| NumberInputField        | FormField + NumberInput        |
+| PasswordInputField      | FormField + PasswordInput      |
+| SearchInputField        | FormField + SearchInput        |
+| MultilineTextInputField | FormField + MultilineTextInput |
+| MoneyInputField         | FormField + MoneyInput         |
+| DateRangePickerField    | FormField + DateRangePicker    |
 
 ## Related Guidelines
 

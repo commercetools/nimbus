@@ -15,7 +15,6 @@ import { dateRangePickerSlotRecipe } from "@/components/date-range-picker/date-r
 import { dialogSlotRecipe } from "@/components/dialog/dialog.recipe";
 import { draggableListSlotRecipe } from "@/components/draggable-list/draggable-list.recipe";
 import { drawerSlotRecipe } from "@/components/drawer/drawer.recipe";
-import { feedbackCardRecipe } from "@/patterns/feedback/feedback-card/feedback-card.recipe";
 import { fieldErrorsRecipe } from "@/components/field-errors/field-errors.recipe";
 import { formFieldRecipe } from "@/components/form-field/form-field.recipe";
 import { listSlotRecipe } from "@/components/list/list.recipe";
@@ -90,7 +89,6 @@ export const slotRecipes = {
   nimbusDialog: dialogSlotRecipe,
   nimbusDraggableList: draggableListSlotRecipe,
   nimbusDrawer: drawerSlotRecipe,
-  nimbusFeedbackCard: feedbackCardRecipe,
   nimbusFieldErrors: fieldErrorsRecipe,
   nimbusFormField: formFieldRecipe,
   nimbusList: listSlotRecipe,
