@@ -49,15 +49,7 @@ export const Base: Story = {
       </GridList.Item>
     </GridList.Root>
   ),
-  play: async ({
-    canvasElement,
-    args,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    args: { onSelectionChange: ReturnType<typeof fn> };
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders grid role and row items", async () => {
@@ -98,13 +90,7 @@ export const DynamicItems: Story = {
       )}
     </GridList.Root>
   ),
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders all dynamic items as rows", async () => {
@@ -137,15 +123,7 @@ export const MultipleSelection: Story = {
       </GridList.Item>
     </GridList.Root>
   ),
-  play: async ({
-    canvasElement,
-    args,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    args: { onSelectionChange: ReturnType<typeof fn> };
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
 
     await step("Allows selecting multiple items independently", async () => {
@@ -202,13 +180,7 @@ export const GridLayout: Story = {
       </Box>
     );
   },
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders grid layout wrapper", async () => {
@@ -317,13 +289,7 @@ export const DragAndDrop: Story = {
 
     return <DragAndDropExample />;
   },
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders all draggable rows", async () => {
@@ -364,13 +330,7 @@ export const EmptyState: Story = {
       {[]}
     </GridList.Root>
   ),
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Shows empty state text when list has no items", async () => {

@@ -235,13 +235,7 @@ export const TreeComboBox: Story = {
     };
     return <TreeComboBoxExample />;
   },
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders the trigger button", async () => {
@@ -375,13 +369,7 @@ export const VirtualizedComboBox: Story = {
     };
     return <VirtualizedComboBoxExample />;
   },
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders the trigger", async () => {
@@ -536,13 +524,7 @@ export const GridPickerComboBox: Story = {
     };
     return <GridPickerExample />;
   },
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders the trigger", async () => {

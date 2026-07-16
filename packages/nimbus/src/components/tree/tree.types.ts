@@ -136,3 +136,24 @@ export type TreeIndicatorProps = Omit<
      */
     ref?: Ref<HTMLButtonElement>;
   };
+
+/**
+ * Props for the `Tree.SubTree` component.
+ *
+ * Renders an item's nested children. Supports both static composition (nested
+ * `Tree.Item` elements as `children`) and dynamic collections (an `items` array
+ * plus a render function).
+ *
+ * @template T - The item object type when using dynamic collections.
+ */
+export type TreeSubTreeProps<T extends object = object> = {
+  /**
+   * The items to render when using dynamic collections.
+   */
+  items?: Iterable<T>;
+  /**
+   * Static children (`Tree.Item` elements) or a render function when using
+   * dynamic `items`.
+   */
+  children?: ReactNode | ((item: T) => ReactNode);
+};

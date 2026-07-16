@@ -40,15 +40,7 @@ export const Base: Story = {
       <ListBox.Item id="date">Date</ListBox.Item>
     </ListBox.Root>
   ),
-  play: async ({
-    canvasElement,
-    args,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    args: { onSelectionChange: ReturnType<typeof fn> };
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders listbox with options", async () => {
@@ -84,13 +76,7 @@ export const DynamicItems: Story = {
       {(item) => <ListBox.Item id={item.id}>{item.name}</ListBox.Item>}
     </ListBox.Root>
   ),
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders all dynamic items", async () => {
@@ -116,15 +102,7 @@ export const MultipleSelection: Story = {
       <ListBox.Item id="cherry">Cherry</ListBox.Item>
     </ListBox.Root>
   ),
-  play: async ({
-    canvasElement,
-    args,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    args: { onSelectionChange: ReturnType<typeof fn> };
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
 
     await step("Allows selecting multiple items", async () => {
@@ -151,13 +129,7 @@ export const Sections: Story = {
       </ListBox.Section>
     </ListBox.Root>
   ),
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders sections with headers", async () => {
@@ -184,13 +156,7 @@ export const DisabledItems: Story = {
       <ListBox.Item id="date">Date</ListBox.Item>
     </ListBox.Root>
   ),
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Disabled items have aria-disabled", async () => {
@@ -239,13 +205,7 @@ export const EmptyState: Story = {
       {[]}
     </ListBox.Root>
   ),
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Shows empty state text", async () => {

@@ -103,13 +103,7 @@ export const FilteredVirtualizedList: Story = {
 
     return <FilteredVirtualizedExample />;
   },
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders search input and virtualized listbox", async () => {
@@ -288,13 +282,7 @@ export const TransferList: Story = {
 
     return <TransferListExample />;
   },
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders both lists with correct initial counts", async () => {
@@ -496,13 +484,7 @@ export const SortableListWithSearch: Story = {
 
     return <SortableListWithSearchExample />;
   },
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders search field and grid list", async () => {

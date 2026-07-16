@@ -75,12 +75,12 @@ const LAST_NAMES = [
   "Roberts",
 ] as const;
 
-type EmployeeRow = DataTableRowItem<{
+type EmployeeRow = {
   name: string;
   email: string;
   department: string;
   status: string;
-}>;
+};
 
 /**
  * Generate a deterministic list of employee rows.
@@ -88,7 +88,7 @@ type EmployeeRow = DataTableRowItem<{
  * Using index arithmetic instead of `Math.random()` keeps the data stable
  * across renders and avoids stale-closure issues with Storybook controls.
  */
-function generateEmployees(count: number): EmployeeRow[] {
+function generateEmployees(count: number): DataTableRowItem<EmployeeRow>[] {
   return Array.from({ length: count }, (_, i) => {
     const firstName = FIRST_NAMES[i % FIRST_NAMES.length];
     const lastName =
@@ -207,13 +207,7 @@ export const VirtualizedDataTable: Story = {
       </Virtualizer>
     </div>
   ),
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders a table element", async () => {
@@ -278,13 +272,7 @@ export const VirtualizedTree: Story = {
       </div>
     );
   },
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step(
@@ -385,13 +373,7 @@ export const FilteredVirtualizedTree: Story = {
       </div>
     );
   },
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders search input and tree on load", async () => {

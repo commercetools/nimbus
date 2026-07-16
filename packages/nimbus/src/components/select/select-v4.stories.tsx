@@ -106,13 +106,7 @@ export const SearchableSelect: Story = {
     };
     return <SearchableSelectExample />;
   },
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders the trigger button", async () => {
@@ -214,13 +208,7 @@ export const VirtualizedSelect: Story = {
     };
     return <VirtualizedSelectExample />;
   },
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders the trigger button", async () => {

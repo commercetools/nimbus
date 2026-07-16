@@ -64,13 +64,7 @@ export const ListBoxVirtualized: Story = {
       </Virtualizer>
     </div>
   ),
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step(
@@ -144,13 +138,7 @@ export const GridListVirtualized: Story = {
       </Virtualizer>
     </div>
   ),
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("GridList is accessible with aria-label", async () => {
@@ -192,13 +180,7 @@ export const HorizontalList: Story = {
       </Virtualizer>
     </div>
   ),
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Listbox is accessible with aria-label", async () => {

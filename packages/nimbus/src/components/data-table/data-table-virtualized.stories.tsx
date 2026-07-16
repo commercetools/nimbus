@@ -63,13 +63,7 @@ export const VirtualizedCompound: Story = {
       </DataTable.Root>
     </div>
   ),
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders the table grid", async () => {
@@ -97,13 +91,7 @@ export const NonVirtualizedBaseline: Story = {
       />
     </div>
   ),
-  play: async ({
-    canvasElement,
-    step,
-  }: {
-    canvasElement: HTMLElement;
-    step: (name: string, fn: () => Promise<void>) => Promise<void>;
-  }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
     await step("Renders the table", async () => {
