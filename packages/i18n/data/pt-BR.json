@@ -29,11 +29,11 @@
   },
   "Nimbus.ChatMessageList.conversationLabel": {
     "developer_comment": "default accessible name for the chat transcript live region when the consumer does not provide one",
-    "string": "Conversa"
+    "string": "Conversation"
   },
   "Nimbus.ChatMessageList.scrollToBottom": {
     "developer_comment": "aria-label for the control that jumps to the newest message in a chat transcript",
-    "string": "Ir para a mensagem mais recente"
+    "string": "Scroll to latest message"
   },
   "Nimbus.ComboBox.clearSelection": {
     "developer_comment": "aria-label for clear selection button in ComboBox",
