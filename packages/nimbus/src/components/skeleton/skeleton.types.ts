@@ -8,13 +8,22 @@ import type {
 // RECIPE PROPS
 // ============================================================
 
-// The `shape`/`animation` unions are declared explicitly here rather than
-// derived from `RecipeProps<"nimbusSkeleton">`. This avoids coupling the public
-// API type to the generated Chakra theme typings (which only exist after
+// The `size`/`shape`/`animation` unions are declared explicitly here rather
+// than derived from `RecipeProps<"nimbusSkeleton">`. This avoids coupling the
+// public API type to the generated Chakra theme typings (which only exist after
 // `build-theme-typings`), keeps the type self-documenting, and is stable before
 // the typings are regenerated. Keep these values in sync with the recipe's
-// `variants.shape` / `variants.animation` blocks in skeleton.recipe.ts.
+// `variants.size` / `variants.shape` / `variants.animation` blocks in
+// skeleton.recipe.ts.
 export type SkeletonRecipeProps = {
+  /**
+   * Named square size, aligned with the Avatar size scale
+   * (`2xs` = 24px, `xs` = 32px, `md` = 40px), applied as equal width and height.
+   * Opt-in with no default — leave unset and size the placeholder with
+   * `width`/`height`/`boxSize` instead. `SkeletonCircle` reuses this to size its
+   * circle.
+   */
+  size?: "2xs" | "xs" | "md";
   /**
    * Shape variant of the skeleton placeholder.
    * - rectangle: default shape with small border radius (~4px)

@@ -99,6 +99,38 @@ export const SizedPlaceholder: Story = {
 };
 
 /**
+ * SizeVariants — the avatar-aligned `size` prop applies equal width and height
+ * (2xs = 24px, xs = 32px, md = 40px).
+ */
+export const SizeVariants: Story = {
+  render: () => (
+    <Stack direction="row" gap="400" alignItems="center">
+      <Skeleton data-testid="size-2xs" size="2xs" />
+      <Skeleton data-testid="size-xs" size="xs" />
+      <Skeleton data-testid="size-md" size="md" />
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const near = async (actual: number, expected: number) =>
+      expect(Math.abs(actual - expected)).toBeLessThanOrEqual(1);
+
+    const cases: Array<[string, number]> = [
+      ["size-2xs", 24],
+      ["size-xs", 32],
+      ["size-md", 40],
+    ];
+    for (const [id, px] of cases) {
+      await step(`${id} is a ${px}px square`, async () => {
+        const el = canvas.getByTestId(id);
+        await near(el.offsetWidth, px);
+        await near(el.offsetHeight, px);
+      });
+    }
+  },
+};
+
+/**
  * ShapeRectangle — default rectangle shape with a small border radius.
  */
 export const ShapeRectangle: Story = {
