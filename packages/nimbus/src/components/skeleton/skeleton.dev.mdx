@@ -99,6 +99,27 @@ const App = () => (
 )
 ```
 
+### Size
+
+The optional `size` prop is a square shortcut aligned with the `Avatar` scale —
+it applies equal width and height so you don't have to set both.
+
+- `2xs`: 24 px · `xs`: 32 px · `md`: 40 px
+
+It is opt-in with no default; leave it unset to size the placeholder with
+`width`/`height`/`boxSize` instead. [SkeletonCircle](/components/feedback/skeletoncircle)
+builds on it to size its circle.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Skeleton size="2xs" />
+    <Skeleton size="xs" />
+    <Skeleton size="md" />
+  </Stack>
+)
+```
+
 ## Component requirements
 
 ### Accessibility

@@ -2,21 +2,12 @@ import { Skeleton } from "../../skeleton";
 import type { SkeletonCircleProps } from "./skeleton-circle.types";
 
 /**
- * Avatar-aligned named sizes for {@link SkeletonCircle}. Kept in sync with the
- * `size` variant in `avatar.recipe.ts` (2xs = 24px, xs = 32px, md = 40px) so a
- * SkeletonCircle can stand in for an Avatar at the same dimensions.
- */
-const avatarSizeScale = {
-  "2xs": "600",
-  xs: "800",
-  md: "1000",
-} as const;
-
-/**
  * # SkeletonCircle
  *
- * A circular loading placeholder sized by a single `size` prop applied equally
- * to width and height. Sugar over `Skeleton` with `shape="circle"`.
+ * A circular loading placeholder. Sugar over `Skeleton` with `shape="circle"`:
+ * size it with the avatar-aligned `size` prop (inherited from `Skeleton`) to
+ * stand in for an `Avatar`, or with a `boxSize` style prop for a custom
+ * dimension. Defaults to a `1em` circle, useful inline.
  *
  * @see {@link https://nimbus-documentation.vercel.app/components/feedback/skeletoncircle}
  *
@@ -25,26 +16,21 @@ const avatarSizeScale = {
 export const SkeletonCircle = (props: SkeletonCircleProps) => {
   const {
     ref: forwardedRef,
-    size,
-    boxSize,
-    animation,
     "aria-hidden": ariaHidden = true,
     ...rest
   } = props;
 
-  // Precedence: a named avatar-aligned `size` wins; otherwise a custom
-  // `boxSize`; otherwise default to a 1em circle (matches the current text
-  // line height, useful inline).
-  const dimension = size ? avatarSizeScale[size] : (boxSize ?? "1em");
+  // Default to a 1em circle only when the consumer hasn't sized it — via the
+  // avatar-aligned `size` variant (inherited from Skeleton) or a native
+  // `boxSize` style prop. Applied before `...rest` so either of those wins.
+  const isSized = rest.size != null || rest.boxSize != null;
 
   return (
     <Skeleton
       ref={forwardedRef}
       shape="circle"
-      width={dimension}
-      height={dimension}
-      animation={animation}
       aria-hidden={ariaHidden}
+      {...(isSized ? {} : { boxSize: "1em" })}
       {...rest}
     />
   );

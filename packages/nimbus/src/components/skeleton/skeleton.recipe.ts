@@ -39,6 +39,18 @@ export const skeletonRecipe = defineRecipe({
 
   // Available variants for customizing the component's appearance
   variants: {
+    // Named square size aligned with the Avatar scale (2xs = 24px, xs = 32px,
+    // md = 40px), applied as equal width + height. Opt-in — there is no default
+    // size variant, so an un-sized Skeleton is still driven by width/height /
+    // boxSize style props. `SkeletonCircle` inherits this to size its circle.
+    // Values are the sizing-scale token keys (as strings, the Nimbus recipe
+    // convention). Kept in sync with `avatar.recipe.ts`' `size` variant.
+    size: {
+      "2xs": { width: "600", height: "600" },
+      xs: { width: "800", height: "800" },
+      md: { width: "1000", height: "1000" },
+    },
+
     shape: {
       rectangle: {
         borderRadius: "{radii.100}",

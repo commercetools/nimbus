@@ -17,8 +17,8 @@ import type { SkeletonProps } from "./skeleton.types";
  * @supportsStyleProps
  */
 export const Skeleton = (props: SkeletonProps) => {
-  // `aria-hidden` needs a default; everything else (ref, shape, animation, and
-  // all Chakra style props like width/height/borderRadius) flows straight
+  // `aria-hidden` needs a default; everything else (ref, size, shape, animation,
+  // and all Chakra style props like width/height/borderRadius) flows straight
   // through to the recipe-styled root.
   const { ref, "aria-hidden": ariaHidden = true, ...rest } = props;
 
