@@ -16,7 +16,7 @@
       "@commercetools/nimbus-mcp"
     ]
   ],
-  "ignore": ["@commercetools/nimbus-i18n", "color-tokens", "blank-app", "docs"],
+  "ignore": ["@commercetools/nimbus-i18n", "@commercetools/nimbus-docs-build", "color-tokens", "blank-app", "docs", "ssr-test"],
   "access": "restricted",
   "baseBranch": "main",
   "bumpVersionsWithWorkspaceProtocolOnly": false,
