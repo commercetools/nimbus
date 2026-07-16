@@ -52,7 +52,7 @@ allowBuilds:
   "@fission-ai/openspec": false
   "@modelcontextprotocol/ext-apps": false
   core-js-pure: true
-  sharp: set this to true or false
+  sharp: false
 
 overrides:
   rollup: "catalog:tooling"
