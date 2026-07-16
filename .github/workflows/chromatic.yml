@@ -83,8 +83,10 @@ jobs:
         uses: chromaui/action@v18
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
-          # Mirror chromatic.config.json (which only local runs read). Keep in
-          # sync. See runbook "Config lives in two places".
+          # storybookBaseDir + zip mirror chromatic.config.json (local-only);
+          # keep in sync. buildScriptName differs: CI resolves at the repo root
+          # (build:storybook), the config file inside packages/nimbus
+          # (build-storybook). See runbook "Config lives in two places".
           storybookBaseDir: packages/nimbus
           buildScriptName: build:storybook
           zip: true

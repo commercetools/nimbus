@@ -153,11 +153,12 @@ snapshot, so the button is usually the easier path.
 ### Config lives in two places (by design)
 
 `packages/nimbus/chromatic.config.json` (`storybookBaseDir`, `buildScriptName`,
-`zip`) drives **local** runs, which execute inside `packages/nimbus` where that
-file is found. The **CI** action runs at the repo root and does not load that
-config, so the workflow passes the same values as `with:` inputs. They are
-intentionally mirrored, not redundant - **keep the two in sync** when either
-changes.
+`zip`) drives **local** runs from inside `packages/nimbus`. The **CI** action
+runs at the repo root and does not load that config, so the workflow mirrors the
+values as `with:` inputs. `storybookBaseDir` and `zip` are identical - **keep
+them in sync**. `buildScriptName` differs by design: CI resolves it at the root
+(`build:storybook`), the config file inside `packages/nimbus`
+(`build-storybook`).
 
 ## Two checks on the PR (read this before merge gating)
 

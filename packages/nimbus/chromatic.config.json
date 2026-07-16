@@ -1,6 +1,6 @@
 {
   "storybookBaseDir": "packages/nimbus",
-  "buildScriptName": "build:storybook",
+  "buildScriptName": "build-storybook",
   "onlyChanged": true,
   "zip": true
 }

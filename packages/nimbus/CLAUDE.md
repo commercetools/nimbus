@@ -49,7 +49,7 @@ pnpm test --coverage
 pnpm --filter @commercetools/nimbus storybook
 
 # Build Storybook
-pnpm --filter @commercetools/nimbus build:storybook
+pnpm --filter @commercetools/nimbus build-storybook
 ```
 
 ### Type Checking
