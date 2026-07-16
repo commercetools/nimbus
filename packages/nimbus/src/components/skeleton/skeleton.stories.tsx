@@ -353,7 +353,7 @@ export const LoadingLayoutShowcase: Story = {
         {/* Header: avatar + name / subtitle */}
         <Stack direction="row" gap="400" alignItems="center">
           <SkeletonCircle size="md" animation="none" />
-          <Stack gap="200" flexGrow="1">
+          <Stack gap="0" flexGrow="1">
             <SkeletonText
               textStyle="lg"
               lines={1}
@@ -377,7 +377,7 @@ export const LoadingLayoutShowcase: Story = {
 
         {/* Stat row */}
         <Stack direction="row" gap="400">
-          <Stack gap="200" flexGrow="1">
+          <Stack gap="0" flexGrow="1">
             <SkeletonText
               textStyle="2xl"
               lines={1}
@@ -391,7 +391,7 @@ export const LoadingLayoutShowcase: Story = {
               animation="none"
             />
           </Stack>
-          <Stack gap="200" flexGrow="1">
+          <Stack gap="0" flexGrow="1">
             <SkeletonText
               textStyle="2xl"
               lines={1}
