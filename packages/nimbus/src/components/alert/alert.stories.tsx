@@ -9,7 +9,12 @@ const colorPalettes: AlertProps["colorPalette"][] = [
   "warning",
   "positive",
 ];
-const variants: AlertProps["variant"][] = ["flat", "outlined"];
+const variants: AlertProps["variant"][] = [
+  "flat",
+  "subtle",
+  "outline",
+  "solid",
+];
 
 /**
  * Storybook metadata configuration
@@ -588,6 +593,135 @@ export const DismissButtonVariantOverride: Story = {
       const def = getComputedStyle(canvas.getByTestId("btn-default"));
       const solid = getComputedStyle(canvas.getByTestId("btn-solid"));
       await expect(solid.backgroundColor).not.toBe(def.backgroundColor);
+    });
+  },
+};
+
+export const EmphasisShowcase: Story = {
+  name: "Showcase: Emphasis × Status",
+  render: () => (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      {(["info", "positive", "warning", "critical", "neutral"] as const).map(
+        (cp) => (
+          <Stack key={cp} direction="row" gap="400" width="100%">
+            {variants.map((variant) => (
+              <Alert.Root
+                key={`${cp}-${variant}`}
+                colorPalette={cp}
+                variant={variant}
+              >
+                <Alert.Title>
+                  {cp} / {variant as string}
+                </Alert.Title>
+                <Alert.Description>Description.</Alert.Description>
+              </Alert.Root>
+            ))}
+          </Stack>
+        )
+      )}
+    </Stack>
+  ),
+};
+
+export const BannerLayout: Story = {
+  name: "Layout: Banner",
+  args: {
+    colorPalette: "warning",
+    layout: "banner",
+    variant: "solid",
+    dismissible: true,
+    onDismiss: fn(),
+    "data-testid": "banner-alert",
+    children: (
+      <>
+        <Alert.Title>Scheduled maintenance</Alert.Title>
+        <Alert.Description>
+          The system will be unavailable at 02:00 UTC.
+        </Alert.Description>
+      </>
+    ),
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const root = canvas.getByTestId("banner-alert");
+    await step("banner spans full width with no radius", async () => {
+      await expect(getComputedStyle(root).borderTopLeftRadius).toBe("0px");
+    });
+  },
+};
+
+// --- Migrated from the former FeedbackCard pattern (agent confirmation flows) ---
+
+const onApproveUndo = fn();
+export const InlineApproveConfirmation: Story = {
+  name: "Inline: Approve confirmation",
+  render: () => (
+    <Alert.Root
+      data-testid="approve"
+      layout="inline"
+      colorPalette="positive"
+      role="group"
+      aria-label="Suggestion approved"
+      hideIcon
+    >
+      <Alert.Title>Suggestion approved</Alert.Title>
+      <Alert.Description>
+        Applied the recommended discount to 3 products.
+      </Alert.Description>
+      <Alert.Actions>
+        <Button variant="outline" onPress={onApproveUndo}>
+          Undo
+        </Button>
+      </Alert.Actions>
+    </Alert.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("renders the confirmation copy and undo action", async () => {
+      await expect(canvas.getByText("Suggestion approved")).toBeInTheDocument();
+      await expect(
+        canvas.getByRole("button", { name: /undo/i })
+      ).toBeInTheDocument();
+    });
+    await step("the group has no live-region role", async () => {
+      await expect(canvas.getByTestId("approve")).toHaveAttribute(
+        "role",
+        "group"
+      );
+    });
+    await step("undo action fires", async () => {
+      await userEvent.click(canvas.getByRole("button", { name: /undo/i }));
+      await expect(onApproveUndo).toHaveBeenCalledTimes(1);
+    });
+  },
+};
+
+const onRejectUndo = fn();
+export const InlineRejectConfirmation: Story = {
+  name: "Inline: Reject confirmation",
+  render: () => (
+    <Alert.Root
+      data-testid="reject"
+      layout="inline"
+      colorPalette="critical"
+      role="group"
+      aria-label="Suggestion rejected"
+      hideIcon
+    >
+      <Alert.Title>Suggestion rejected</Alert.Title>
+      <Alert.Description>No changes were applied.</Alert.Description>
+      <Alert.Actions>
+        <Button variant="outline" onPress={onRejectUndo}>
+          Undo
+        </Button>
+      </Alert.Actions>
+    </Alert.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("reject action fires", async () => {
+      await userEvent.click(canvas.getByRole("button", { name: /undo/i }));
+      await expect(onRejectUndo).toHaveBeenCalledTimes(1);
     });
   },
 };
