@@ -562,3 +562,32 @@ export const TitleRendersHeading: Story = {
     );
   },
 };
+
+export const DismissButtonVariantOverride: Story = {
+  name: "Dismiss: consumer variant reaches the button",
+  render: () => (
+    <>
+      <Alert.Root data-testid="db-default" colorPalette="info">
+        <Alert.Title>Default dismiss</Alert.Title>
+        <Alert.DismissButton data-testid="btn-default" onPress={fn()} />
+      </Alert.Root>
+      <Alert.Root data-testid="db-solid" colorPalette="info">
+        <Alert.Title>Solid dismiss</Alert.Title>
+        <Alert.DismissButton
+          data-testid="btn-solid"
+          variant="solid"
+          onPress={fn()}
+        />
+      </Alert.Root>
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("variant override changes the button background", async () => {
+      // Default dismiss is "ghost" (transparent); "solid" must differ.
+      const def = getComputedStyle(canvas.getByTestId("btn-default"));
+      const solid = getComputedStyle(canvas.getByTestId("btn-solid"));
+      await expect(solid.backgroundColor).not.toBe(def.backgroundColor);
+    });
+  },
+};

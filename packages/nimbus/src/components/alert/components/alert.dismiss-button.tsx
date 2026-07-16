@@ -17,9 +17,9 @@ export const AlertDismissButton = ({ ...props }: AlertDismissButtonProps) => {
     <AlertDismissButtonSlot>
       <IconButton
         aria-label={msg.format("dismiss")}
-        {...props}
         variant="ghost"
         size="2xs"
+        {...props}
       >
         <Clear role="img" />
       </IconButton>
