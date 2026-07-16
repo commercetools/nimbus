@@ -308,3 +308,86 @@ export const NoActions: Story = {
     });
   },
 };
+
+export const EmphasisDefaultsToSubtle: Story = {
+  args: {
+    colorPalette: "info",
+    "data-testid": "default-alert",
+    children: <Alert.Title>Default emphasis</Alert.Title>,
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const root = canvas.getByTestId("default-alert");
+    await step(
+      "Omitting variant renders the subtle tinted surface",
+      async () => {
+        const bg = getComputedStyle(root).backgroundColor;
+        await expect(bg).not.toBe("rgba(0, 0, 0, 0)");
+        await expect(bg).not.toBe("transparent");
+      }
+    );
+  },
+};
+
+export const OutlinedAliasesSubtle: Story = {
+  name: "Compat: outlined aliases subtle",
+  render: () => (
+    <>
+      <Alert.Root data-testid="v-subtle" colorPalette="info" variant="subtle">
+        <Alert.Title>subtle</Alert.Title>
+      </Alert.Root>
+      <Alert.Root
+        data-testid="v-outlined"
+        colorPalette="info"
+        variant="outlined"
+      >
+        <Alert.Title>outlined</Alert.Title>
+      </Alert.Root>
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("outlined renders identically to subtle", async () => {
+      const s = getComputedStyle(canvas.getByTestId("v-subtle"));
+      const o = getComputedStyle(canvas.getByTestId("v-outlined"));
+      await expect(o.backgroundColor).toBe(s.backgroundColor);
+      await expect(o.borderTopWidth).toBe(s.borderTopWidth);
+      await expect(o.borderTopLeftRadius).toBe(s.borderTopLeftRadius);
+    });
+  },
+};
+
+export const NeutralStatus: Story = {
+  args: {
+    colorPalette: "neutral",
+    "data-testid": "neutral-alert",
+    children: <Alert.Title>Neutral status</Alert.Title>,
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("neutral colorPalette renders", async () => {
+      await expect(canvas.getByTestId("neutral-alert")).toBeInTheDocument();
+    });
+  },
+};
+
+export const InlineLayout: Story = {
+  args: {
+    colorPalette: "positive",
+    layout: "inline",
+    "data-testid": "inline-alert",
+    children: (
+      <>
+        <Alert.Title>Inline title</Alert.Title>
+        <Alert.Description>Inline description</Alert.Description>
+      </>
+    ),
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const root = canvas.getByTestId("inline-alert");
+    await step("inline layout uses a grid", async () => {
+      await expect(getComputedStyle(root).display).toBe("grid");
+    });
+  },
+};
