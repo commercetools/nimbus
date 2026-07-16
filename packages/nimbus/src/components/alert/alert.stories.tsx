@@ -532,3 +532,26 @@ export const ManualDismissWins: Story = {
     });
   },
 };
+
+export const TitleRendersHeading: Story = {
+  name: "Semantics: Title Heading",
+  render: () => (
+    <>
+      <Alert.Root data-testid="title-default" colorPalette="info">
+        <Alert.Title>Default title</Alert.Title>
+      </Alert.Root>
+      <Alert.Root data-testid="title-h2" colorPalette="info">
+        <Alert.Title as="h2">Heading title</Alert.Title>
+      </Alert.Root>
+    </>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("Title defaults to non-heading element", async () => {
+      await expect(canvas.getByText("Default title").tagName).toBe("P");
+    });
+    await step("Title can be promoted to a heading via as", async () => {
+      await expect(canvas.getByText("Heading title").tagName).toBe("H2");
+    });
+  },
+};
