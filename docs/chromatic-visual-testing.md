@@ -287,9 +287,9 @@ the entire play function to execute and captures a snapshot only at the end."
 Two consequences for us:
 
 - IconButton's `Base`, with its six `step()`s, produces exactly one snapshot -
-  the final resting state (button focused after the space-bar step). That's
-  precisely why the `afterEach` blur (in `preview.tsx`) matters: the end state
-  is what gets captured.
+  its final resting state. Nothing blurs the element for you, so whatever state
+  the last step leaves (including a focus ring) is exactly what gets captured;
+  end the play function in the state you want snapshotted.
 - If you want a snapshot of an intermediate state, the docs say to break it into
   multiple stories rather than expect mid-play captures. So splitting `Base`
   would only be worth it if you wanted to snapshot a state that isn't its final
@@ -310,8 +310,8 @@ when content sits flush against it - body or `layout: "padded"` padding sits
 outside the crop and can't reach in. A `preview.tsx` decorator therefore wraps
 every non-`fullscreen` story in `1rem` of padding, giving rings room in the crop
 and keeping the canvas from jumping as you browse. It's independent of
-`preserveFocusRing` and `disableSnapshot` - not something you opt into per
-story. `fullscreen` stories are exempt because they're meant to touch the edges.
+`disableSnapshot` - not something you opt into per story. `fullscreen` stories
+are exempt because they're meant to touch the edges.
 
 **Cost is controlled by TurboSnap and matrix-packing, not by dropping visual
 states.** TurboSnap bills unchanged snapshots at 1/5 cost, and packing a whole

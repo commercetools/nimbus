@@ -36,9 +36,9 @@ const variants: AvatarProps["variant"][] = ["subtle", "solid"];
 // Photo from Unsplash (License: free commercial use, no attribution required).
 const avatarImg = "/avatar-demo.jpg";
 
-// d=404 forces gravatar to return a 404 so the image-error fallback path runs.
-const brokenImageSrc =
-  "https://www.gravatar.com/avatar/thisWill404?s=200&d=404";
+// Nonexistent local path (served from staticDirs `public/`) that 404s instantly
+// to exercise the image-error fallback, without an external fetch Chromatic can't reach.
+const brokenImageSrc = "/broken-avatar.jpg";
 
 export const Base: Story = {
   args: {

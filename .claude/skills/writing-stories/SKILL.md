@@ -226,12 +226,9 @@ Captures the keyboard-focus state, which no other story renders:
 export const Focused: Story = {
   tags: ["vrt"],
   parameters: {
-    preserveFocusRing: true,
     chromatic: { disableSnapshot: false },
   },
-  args: {
-    /* minimal render */
-  },
+  args: {/* minimal render */},
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.tab();
@@ -375,17 +372,10 @@ leave a stray focus ring on an unrelated story. Some visual states can't be
 captured statically yet (notably `:hover` and `:active`/pressed); see the
 Chromatic doc for the current gaps.
 
-Two knobs control snapshotting, and they're different kinds of thing:
-
-- **`vrt`** (tag) is a **label**, not a Chromatic input. Chromatic captures based
-  on `disableSnapshot` alone and never reads `vrt`; the tag just marks a story as
-  a visual-regression case so tooling can find and select it.
-  `disableSnapshot: false` is what takes the picture.
-- **`preserveFocusRing`** (parameter) is **functional**: `preview.tsx` blurs the
-  active element after each play function so a stray focus ring doesn't leak into
-  a snapshot, and skips that blur only when a story sets `preserveFocusRing:
-true`. Use it on a `Focused` story, or any story whose final state legitimately
-  keeps focus (e.g. an open combobox).
+The snapshot switch is `disableSnapshot`, not `vrt`. Chromatic captures based on
+`disableSnapshot` alone and never reads `vrt`; the tag is just a **label** that
+marks a story as a visual-regression case so tooling can find and select it.
+`disableSnapshot: false` is what takes the picture.
 
 See docs/chromatic-visual-testing.md for the full rationale, CI details, and the
 current hover/pressed limitation.
@@ -691,12 +681,10 @@ You MUST validate against these requirements:
       not folded into the matrix (`disabled` typically resolves to one shared
       style regardless of size/variant/palette → its own `Disabled` snapshot, not
       a grid dimension)
-- [ ] `Focused` story captures the focus ring (`preserveFocusRing: true` + `vrt`)
+- [ ] `Focused` story captures the focus ring (`disableSnapshot: false` + `vrt`)
 - [ ] Visual-state stories opt in via `disableSnapshot: false` + `tags: ["vrt"]`
 - [ ] Only behavior-only stories and stories whose look is already in `SmokeTest`
       left snapshot-off (project default) - never drop a visual state to save cost
-- [ ] `preserveFocusRing: true` param used on focus-snapshot stories and stories
-      whose final state legitimately keeps focus (not as a tag)
 
 #### Play Functions (CRITICAL)
 

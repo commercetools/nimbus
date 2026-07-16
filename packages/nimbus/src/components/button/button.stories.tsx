@@ -148,7 +148,6 @@ export const DisabledAsLink: Story = {
 export const DisabledButFocusable: Story = {
   tags: ["vrt"],
   parameters: {
-    preserveFocusRing: true,
     chromatic: { disableSnapshot: false },
   },
   args: {
@@ -198,7 +197,7 @@ const submitSpy = fn();
  * focusable and a real `type="submit"` button.
  */
 export const DisabledButFocusableDoesNotSubmit: Story = {
-  parameters: { preserveFocusRing: true, chromatic: { disableSnapshot: true } },
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: "Submit",
     type: "submit",
@@ -242,7 +241,6 @@ export const DisabledButFocusableDoesNotSubmit: Story = {
 export const DisabledWithTooltip: Story = {
   tags: ["vrt"],
   parameters: {
-    preserveFocusRing: true,
     chromatic: { disableSnapshot: false },
   },
   render: () => (
@@ -354,7 +352,6 @@ export const Variants: Story = {
 export const Focused: Story = {
   tags: ["vrt"],
   parameters: {
-    preserveFocusRing: true,
     chromatic: { disableSnapshot: false },
   },
   args: {

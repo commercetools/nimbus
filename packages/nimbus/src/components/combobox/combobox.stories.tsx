@@ -336,7 +336,6 @@ export const MultiSelectCustomOptions: Story = {
  * - Error handling
  */
 export const AsyncLoading: Story = {
-  parameters: { preserveFocusRing: true },
   render: () => {
     const [error, setError] = useState<string | null>(null);
     const getPokemonValue = useCallback((pokemon: Pokemon) => pokemon.name, []);
@@ -408,7 +407,6 @@ export const AsyncLoading: Story = {
  * Simulates a failing API to show error states with the built-in async API.
  */
 export const AsyncLoadingWithError: Story = {
-  parameters: { preserveFocusRing: true },
   render: () => {
     const [error, setError] = useState<string | null>(null);
     const getPokemonValue = useCallback((pokemon: Pokemon) => pokemon.name, []);
@@ -895,7 +893,6 @@ export const LayoutToggleButton: Story = {
  * Tests that clear button displays when selection exists and hides when cleared
  */
 export const LayoutClearButton: Story = {
-  parameters: { preserveFocusRing: true },
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([1]);
 
@@ -1250,7 +1247,6 @@ export const MultiSelectTagRemoval: Story = {
  * Tests that input remains accessible and functional after adding multiple tags
  */
 export const MultiSelectInputAccessible: Story = {
-  parameters: { preserveFocusRing: true },
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
       1, 2, 3,
@@ -1428,7 +1424,6 @@ export const InputWrapsToNewLine: Story = {
  * Tests that placeholder text displays when input is empty
  */
 export const InputPlaceholder: Story = {
-  parameters: { preserveFocusRing: true },
   render: () => {
     return (
       <ComposedComboBox
@@ -1690,7 +1685,6 @@ export const FocusLosesOnOutsideClick: Story = {
  * Tests that focus indicators are visible when navigating with keyboard
  */
 export const FocusIndicatorsVisible: Story = {
-  parameters: { preserveFocusRing: true },
   render: () => {
     return (
       <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
@@ -1753,7 +1747,6 @@ export const FocusIndicatorsVisible: Story = {
  * Tests that Arrow Down opens the menu and focuses the first option
  */
 export const KeyboardArrowDownOpensMenu: Story = {
-  parameters: { preserveFocusRing: true },
   render: () => {
     return (
       <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
@@ -1796,7 +1789,6 @@ export const KeyboardArrowDownOpensMenu: Story = {
  * Tests that Arrow Up/Down navigate through options
  */
 export const KeyboardArrowKeysNavigate: Story = {
-  parameters: { preserveFocusRing: true },
   render: () => {
     return (
       <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
@@ -1852,7 +1844,6 @@ export const KeyboardArrowKeysNavigate: Story = {
  * Tests that Enter key selects the focused option
  */
 export const KeyboardEnterSelects: Story = {
-  parameters: { preserveFocusRing: true },
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([]);
 
@@ -2181,7 +2172,6 @@ export const KeyboardOnlyWorkflow: Story = {
  * Tests that toggle and clear buttons remain accessible when tags wrap to multiple lines
  */
 export const ButtonsAccessibleWhenWrapping: Story = {
-  parameters: { preserveFocusRing: true },
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
       1, 2, 3, 4, 5, 6,
@@ -2262,7 +2252,6 @@ export const ButtonsAccessibleWhenWrapping: Story = {
  * Tests that button click areas are large enough for interaction (min 44x44px for WCAG)
  */
 export const ButtonsClickAreas: Story = {
-  parameters: { preserveFocusRing: true },
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([1]);
 
@@ -2341,7 +2330,6 @@ export const ButtonsClickAreas: Story = {
  * Tests that menu opens automatically when user starts typing (menuTrigger="input")
  */
 export const MenuOpensOnTyping: Story = {
-  parameters: { preserveFocusRing: true },
   render: () => {
     return (
       <ComposedComboBox

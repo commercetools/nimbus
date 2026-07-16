@@ -138,7 +138,6 @@ export const Variants: Story = {
 export const Focused: Story = {
   tags: ["vrt"],
   parameters: {
-    preserveFocusRing: true,
     chromatic: { disableSnapshot: false },
   },
   args: {

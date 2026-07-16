@@ -47,21 +47,11 @@ component needs.
 **Example Coverage:**
 
 ```typescript
-export const Base: Story = {
-  /* minimal example */
-};
-export const Sizes: Story = {
-  /* sm, md, lg in one story */
-};
-export const Variants: Story = {
-  /* all variants in one story */
-};
-export const Disabled: Story = {
-  /* disabled state */
-};
-export const SmokeTest: Story = {
-  /* comprehensive matrix */
-};
+export const Base: Story = {/* minimal example */};
+export const Sizes: Story = {/* sm, md, lg in one story */};
+export const Variants: Story = {/* all variants in one story */};
+export const Disabled: Story = {/* disabled state */};
+export const SmokeTest: Story = {/* comprehensive matrix */};
 ```
 
 ### Form Components (TextInput, Select, Checkbox, RadioGroup, Switch)
@@ -190,21 +180,20 @@ disabled-but-focusable, an open tooltip/popover); a showcase story whose look a
 snapshot already covers stays snapshot-off. Never drop a visual state to save
 cost.
 
-**`Focused` needs `preserveFocusRing`.** `preview.tsx` blurs the focused element
-after every play function so a stray ring doesn't bleed into a snapshot;
-`preserveFocusRing: true` skips that blur. Use it on a `Focused` story, or any
-story whose final state legitimately keeps focus (e.g. an open combobox):
+**A `Focused` story keeps its ring for free.** Nothing blurs the focused element
+after a play function, so a story whose final state legitimately keeps focus (a
+`Focused` story, or an open combobox) snapshots the ring as-is - no extra
+parameter needed. The flip side: a behavior story that leaves a stray ring it
+doesn't want in the snapshot should blur in its own play function, or better, be
+split so the snapshotted visual story doesn't end focused:
 
 ```typescript
 export const Focused: Story = {
   tags: ["vrt"],
   parameters: {
-    preserveFocusRing: true,
     chromatic: { disableSnapshot: false },
   },
-  args: {
-    /* minimal render */
-  },
+  args: {/* minimal render */},
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.tab();

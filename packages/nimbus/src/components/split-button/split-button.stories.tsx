@@ -380,7 +380,6 @@ export const SplitButtonVariants: Story = {
 export const Focused: Story = {
   tags: ["vrt"],
   parameters: {
-    preserveFocusRing: true,
     chromatic: { disableSnapshot: false },
   },
   render: () => (
