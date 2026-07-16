@@ -33,7 +33,7 @@ function run(script, env = {}) {
 // here to the new measured size. The nimbus baseline was raised when the
 // Markdown component bundled react-markdown/remark-gfm/remend (~+14.6%).
 const VALID_BASELINE = JSON.stringify({
-  "@commercetools/nimbus": { dist: 19619225 },
+  "@commercetools/nimbus": { dist: 21285558 },
   "@commercetools/nimbus-icons": { dist: 4889696 },
   "@commercetools/nimbus-tokens": { dist: 417934 },
 });
@@ -142,7 +142,7 @@ describe("per-package size policies", () => {
   describe("absolute policy passes when relative would fail", () => {
     it("tokens pass under absolute budget even with >5% relative increase", () => {
       const baseline = {
-        "@commercetools/nimbus": { dist: 19619225 },
+        "@commercetools/nimbus": { dist: 21285558 },
         "@commercetools/nimbus-icons": { dist: 4889696 },
         "@commercetools/nimbus-tokens": { dist: 380000 },
       };
