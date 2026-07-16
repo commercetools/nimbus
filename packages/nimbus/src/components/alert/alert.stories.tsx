@@ -486,3 +486,49 @@ export const HideIconSuppressesCustom: Story = {
     });
   },
 };
+
+const mockDismissibleProp = fn();
+export const DismissibleProp: Story = {
+  name: "Dismiss: dismissible prop",
+  args: {
+    colorPalette: "info",
+    dismissible: true,
+    onDismiss: mockDismissibleProp,
+    "data-testid": "dismissible-alert",
+    children: <Alert.Title>Dismiss me</Alert.Title>,
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("auto-renders a single dismiss button", async () => {
+      const buttons = canvas.getAllByRole("button", { name: "Dismiss" });
+      await expect(buttons).toHaveLength(1);
+    });
+    await step("calls onDismiss when pressed", async () => {
+      await userEvent.click(canvas.getByRole("button", { name: "Dismiss" }));
+      await expect(mockDismissibleProp).toHaveBeenCalledTimes(1);
+    });
+  },
+};
+
+export const ManualDismissWins: Story = {
+  name: "Dismiss: manual slot wins over dismissible",
+  args: {
+    colorPalette: "info",
+    dismissible: true,
+    onDismiss: fn(),
+    "data-testid": "manual-dismiss",
+    children: (
+      <>
+        <Alert.Title>Manual dismiss</Alert.Title>
+        <Alert.DismissButton onPress={fn()} data-testid="manual-btn" />
+      </>
+    ),
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("renders exactly one dismiss button", async () => {
+      const buttons = canvas.getAllByRole("button", { name: "Dismiss" });
+      await expect(buttons).toHaveLength(1);
+    });
+  },
+};
