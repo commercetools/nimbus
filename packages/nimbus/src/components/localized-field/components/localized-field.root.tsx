@@ -21,7 +21,7 @@ import {
   Stack,
   type CurrencyCode,
 } from "@/components";
-import { Popover } from "../../popover";
+import { PopoverBase } from "../../popover";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { localizedFieldMessagesStrings } from "../localized-field.messages";
 import {
@@ -233,13 +233,13 @@ export const LocalizedField = ({
                 <HelpOutline />
               </IconButton>
 
-              <Popover padding={0}>
+              <PopoverBase padding={0}>
                 <LocalizedFieldInfoDialogSlot asChild>
                   <RaDialog>
                     <Box p="300">{hint}</Box>
                   </RaDialog>
                 </LocalizedFieldInfoDialogSlot>
-              </Popover>
+              </PopoverBase>
             </RaDialogTrigger>
           )}
         </Stack>

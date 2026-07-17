@@ -13,7 +13,7 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react/styled-system";
 import type { TagGroupProps as NimbusTagGroupProps } from "../tag-group/tag-group.types";
-import type { PopoverProps as NimbusPopoverProps } from "../popover/popover.types";
+import type { PopoverBaseProps as NimbusPopoverProps } from "../popover/popover.types";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================

@@ -1,4 +1,4 @@
-import { Popover } from "../../popover";
+import { PopoverBase } from "../../popover";
 import { ComboBoxPopoverSlot } from "../combobox.slots";
 import type { ComboBoxPopoverProps } from "../combobox.types";
 import { extractStyleProps } from "@/utils";
@@ -34,14 +34,14 @@ export const ComboBoxPopover = ({
 
   return (
     <ComboBoxPopoverSlot asChild {...styleProps}>
-      <Popover
+      <PopoverBase
         ref={ref}
         isNonModal={true}
         autoFocus={false}
         {...functionalProps}
       >
         {children}
-      </Popover>
+      </PopoverBase>
     </ComboBoxPopoverSlot>
   );
 };

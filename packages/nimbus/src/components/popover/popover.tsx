@@ -1,15 +1,14 @@
 import { PopoverRootSlot } from "./popover.slots";
-import type { PopoverProps } from "./popover.types";
+import type { PopoverBaseProps } from "./popover.types";
 
 /**
- * # Popover
+ * # PopoverBase
  *
- * A component that displays floating content in relation to a trigger element.
- *
- * Note this component is only used internally.
+ * A styled wrapper around React Aria's Popover for internal use.
+ * For the public compound component API, use Popover.Root/Trigger/Content.
  */
-export const Popover = ({ children, ...props }: PopoverProps) => {
+export const PopoverBase = ({ children, ...props }: PopoverBaseProps) => {
   return <PopoverRootSlot {...props}>{children}</PopoverRootSlot>;
 };
 
-Popover.displayName = "Popover";
+PopoverBase.displayName = "PopoverBase";

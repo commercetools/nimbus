@@ -1,12 +1,12 @@
 import { createRecipeContext } from "@chakra-ui/react/styled-system";
 import { Popover as RaPopover } from "react-aria-components";
-import type { PopoverProps, PopoverComponent } from "./popover.types";
+import type { PopoverBaseProps, PopoverBaseComponent } from "./popover.types";
 
 const { withContext } = createRecipeContext({
   key: "nimbusPopover",
 });
 
-export const PopoverRootSlot: PopoverComponent = withContext<
+export const PopoverRootSlot: PopoverBaseComponent = withContext<
   typeof RaPopover,
-  PopoverProps
+  PopoverBaseProps
 >(RaPopover);

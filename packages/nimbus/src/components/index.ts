@@ -53,6 +53,7 @@ export * from "./icon";
 export * from "./inline-svg";
 export * from "./loading-spinner";
 export * from "./password-input";
+export * from "./popover";
 export * from "./search-input";
 export * from "./scoped-search-input";
 export * from "./split-button";
