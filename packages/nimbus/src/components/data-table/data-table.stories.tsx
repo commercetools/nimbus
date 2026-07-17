@@ -2546,10 +2546,6 @@ export const StickyColumnScrollShadows: Story = {
   },
 
   play: async ({ canvasElement, step }) => {
-    const canvas = within(
-      (canvasElement.parentNode as HTMLElement) ?? canvasElement
-    );
-
     await step(
       "At initial scroll position, right shadow is present but not left",
       async () => {

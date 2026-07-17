@@ -5,7 +5,6 @@ import {
   Button,
   Checkbox,
   Separator,
-  Stack,
   Text,
   TextInput,
 } from "@commercetools/nimbus";
