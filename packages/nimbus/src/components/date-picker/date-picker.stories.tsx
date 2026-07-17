@@ -2912,6 +2912,13 @@ export const InFormFieldContext: Story = {
           await expect(datePicker.getAttribute("aria-describedby")).toContain(
             description.id
           );
+
+          const segments = within(datePicker).getAllByRole("spinbutton");
+          for (const segment of segments) {
+            const ariaLabel = segment.getAttribute("aria-label");
+            await expect(ariaLabel).toBeTruthy();
+            await expect(segment).toHaveAttribute("tabindex", "0");
+          }
         }
       }
     );
