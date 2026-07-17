@@ -3,6 +3,7 @@ import { Box, Stack, Text, ToggleButton } from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { ThumbUp, Star, Bookmark } from "@commercetools/nimbus-icons";
 import { useState, createRef } from "react";
+import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
 
 const meta: Meta<typeof ToggleButton> = {
   title: "Components/Buttons/ToggleButton",
@@ -172,6 +173,22 @@ export const Variants: Story = {
   },
 };
 
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    chromatic: { disableSnapshot: false },
+  },
+  args: {
+    children: "Toggle Me",
+    "aria-label": "test-toggle-button",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("button")).toHaveFocus();
+  },
+};
+
 export const ColorPalettes: Story = {
   render: () => {
     return (
@@ -214,6 +231,8 @@ export const ColorPalettes: Story = {
 };
 
 export const Disabled: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Disabled Toggle",
     isDisabled: true,
@@ -263,4 +282,39 @@ export const WithRef: Story = {
       await expect(toggleButtonRef.current).toBe(button);
     });
   },
+};
+
+/**
+ * Comprehensive visual matrix: every colorPalette x size x variant, in both
+ * unselected and selected states. The disabled treatment (a uniform opacity
+ * layer) is captured separately by the `Disabled` story.
+ */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="1200">
+      {SEMANTIC_COLOR_PALETTES.map((colorPalette) => (
+        <Stack key={colorPalette as string} direction="column" gap="400">
+          {sizes.map((size) => (
+            <Stack direction="row" key={size} gap="400" align="center">
+              {variants.flatMap((variant) =>
+                [false, true].map((isSelected) => (
+                  <ToggleButton
+                    key={`${variant}-${isSelected}`}
+                    variant={variant}
+                    size={size}
+                    colorPalette={colorPalette}
+                    isSelected={isSelected}
+                  >
+                    {`${variant} ${isSelected ? "on" : "off"}`}
+                  </ToggleButton>
+                ))
+              )}
+            </Stack>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  ),
 };

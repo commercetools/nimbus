@@ -346,9 +346,14 @@ export const SizeConstraints: Story = {
     const canvas = within(canvasElement);
     const handle = await canvas.findByRole("separator");
 
-    // aria-valuemin = minSize; aria-valuemax = maxSize.
-    await expect(handle).toHaveAttribute("aria-valuemin", "15");
-    await expect(handle).toHaveAttribute("aria-valuemax", "75");
+    // aria-valuemin = minSize; aria-valuemax = maxSize. These settle after the
+    // splitter's initial pane measurement; wait for them (the production
+    // Storybook bundle settles slower than the dev-transform test env, so a
+    // synchronous assert reads the pre-measurement default and races).
+    await waitFor(() => {
+      expect(handle).toHaveAttribute("aria-valuemin", "15");
+      expect(handle).toHaveAttribute("aria-valuemax", "75");
+    });
 
     handle.focus();
     // Large jump right → clamps at maxSize (75).
@@ -419,6 +424,10 @@ export const AriaControlsAttribute: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const handle = await canvas.findByRole("separator");
+    // aria-controls is wired after the splitter measures its panes; wait for it
+    // (the production Storybook bundle settles slower than the dev-transform
+    // test env and would otherwise read the attribute before it is set).
+    await waitFor(() => expect(handle).toHaveAttribute("aria-controls"));
     const ariaControls = handle.getAttribute("aria-controls");
     await expect(ariaControls).toBeTruthy();
 

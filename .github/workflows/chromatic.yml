@@ -1,0 +1,98 @@
+name: Chromatic
+
+# Visual regression testing. Runbook (triggers, baselines, gating, the manual
+# button): docs/chromatic-visual-testing.md
+on:
+  # Manual full build: TurboSnap off, gate bypassed. See runbook "The manual button".
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+# Cancel an in-progress run when a newer push lands on the same ref; the latest wins.
+concurrency:
+  group: chromatic-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  chromatic:
+    runs-on: ubuntu-latest
+    # Skip draft PRs; always allow push and manual runs.
+    if:
+      github.event.pull_request.draft == false || github.event_name !=
+      'pull_request'
+    permissions:
+      contents: read
+      # Skip path posts a passing "UI Tests" status so a required check still
+      # reports when Chromatic doesn't run. See runbook "Merge gating".
+      statuses: write
+    steps:
+      # Full history: Chromatic needs it to find the baseline build to diff against.
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # Gate: run only when files that affect rendered output change (a manual
+      # dispatch bypasses it via the step `if:` conditions below). See runbook
+      # "The changed-files gate".
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v46
+        with:
+          # push: diff newest commit. PR: diff whole PR (base...head). See runbook.
+          since_last_remote_commit: ${{ github.event_name == 'push' }}
+          files: |
+            packages/nimbus/**
+            packages/tokens/**
+            packages/nimbus-icons/**
+            # Dep bumps (Dependabot + housekeeping) surface via the lockfile;
+            # a lockfile change forces a full snapshot (TurboSnap can't scope it).
+            pnpm-lock.yaml
+          files_ignore: |
+            packages/nimbus/chromatic.config.json
+            packages/nimbus/.storybook/main.ts
+
+      # No UI changed, so Chromatic won't run and won't post its "UI Tests"
+      # status. Post a passing one ourselves on the PR head SHA - otherwise a
+      # required "UI Tests" check would wait forever and block non-UI PRs.
+      - name: No UI changes detected
+        if:
+          steps.changed-files.outputs.any_changed != 'true' && github.event_name
+          != 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "::notice::No UI-affecting changes detected. Skipping the Chromatic visual regression build."
+          gh api --method POST "repos/${{ github.repository }}/statuses/${{ github.event.pull_request.head.sha || github.sha }}" \
+            -f state=success \
+            -f context='UI Tests' \
+            -f description='No UI-affecting changes; Chromatic skipped'
+
+      - name: Installing dependencies and building packages
+        if:
+          steps.changed-files.outputs.any_changed == 'true' || github.event_name
+          == 'workflow_dispatch'
+        uses: ./.github/actions/ci
+
+      - name: Run Chromatic
+        if:
+          steps.changed-files.outputs.any_changed == 'true' || github.event_name
+          == 'workflow_dispatch'
+        uses: chromaui/action@v18
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          # storybookBaseDir + zip mirror chromatic.config.json (local-only);
+          # keep in sync. buildScriptName differs: CI resolves at the repo root
+          # (build:storybook), the config file inside packages/nimbus
+          # (build-storybook). See runbook "Config lives in two places".
+          storybookBaseDir: packages/nimbus
+          buildScriptName: build:storybook
+          zip: true
+          # TurboSnap: snapshot only diff-affected stories (full on dispatch). See runbook.
+          onlyChanged: ${{ github.event_name != 'workflow_dispatch' }}
+          # Return once Storybook is uploaded; Chromatic tests on its servers and
+          # posts the status check when done. Avoids timeouts on full builds.
+          exitOnceUploaded: true

@@ -71,8 +71,11 @@ export const ProjectIntoNamedRegion: Story = {
       "Content authored in one place paints at the target",
       async () => {
         const host = canvasElement.querySelector<HTMLElement>("#sidebar-host")!;
-        const projected = canvas.getByTestId("projected");
-        await expect(host.contains(projected)).toBe(true);
+        // The projected node mounts via the region portal after an effect; wait
+        // for it. The production Storybook bundle settles slower than the
+        // dev-transform test env, so a synchronous query races the portal commit.
+        const projected = await canvas.findByTestId("projected");
+        await waitFor(() => expect(host.contains(projected)).toBe(true));
       }
     );
   },
@@ -285,9 +288,11 @@ export const ShellOwnedSidePanel: Story = {
     await step(
       "Content projects into the aside from the main pane",
       async () => {
-        await expect(aside.contains(canvas.getByTestId("panel-content"))).toBe(
-          true
-        );
+        // The panel projects into the aside via the region portal after an
+        // effect; wait for it (the production Storybook bundle settles slower
+        // than the dev-transform test env and would otherwise race the commit).
+        const panelContent = await canvas.findByTestId("panel-content");
+        await waitFor(() => expect(aside.contains(panelContent)).toBe(true));
       }
     );
 

@@ -90,10 +90,14 @@ This project follows strict development standards detailed in the documentation:
 - **Styling**: Chakra UI v3 with design token-based recipes
   `./docs/file-type-guidelines/recipes.md`
 - **Testing**:
-  - Storybook interaction tests (browser-based, required for interactive
-    components) `./docs/file-type-guidelines/stories.md`
-  - Unit tests (JSDOM-based, fast isolated tests)
+  - Story tests (browser-based play functions; interactive components MUST have
+    them) `./docs/file-type-guidelines/stories.md`
+  - Internal unit tests (JSDOM-based, fast; utilities and hooks)
     `./docs/file-type-guidelines/unit-testing.md`
+  - Consumer implementation tests (`*.docs.spec.tsx`; copy-ready examples for
+    consumers) `./docs/file-type-guidelines/testing-strategy.md`
+  - Visual regression is handled separately by Chromatic in CI
+    `./docs/chromatic-visual-testing.md`
 - **TypeScript**: Strict typing with comprehensive interfaces
   `./docs/file-type-guidelines/types.md`
 - **Documentation**: JSDoc comments required for all code
@@ -149,23 +153,32 @@ provide feedback without first validating against the appropriate guidelines.**
 
 ### Testing Strategy
 
-The testing system uses Vitest with two distinct test types:
+The testing system uses Vitest with three distinct test categories:
 
-**Component Testing (Storybook stories with play functions):**
+**Story Tests (`*.stories.tsx`, Storybook play functions):**
 
 - Stories serve as both maintainer documentation AND tests via play functions
 - Browser testing runs in headless Chromium with Playwright
-- **ALL component behavior, interactions, and visual states are tested in
-  Storybook**
+- **ALL component behavior, interactions, states, and a11y are tested here**
 - **Critical**: Interactive components MUST have play functions that test user
   interactions
 
-**Unit Testing (utilities and hooks only):**
+**Internal Unit Tests (`*.spec.tsx`, utilities and hooks only):**
 
 - Fast JSDOM-based tests for utilities, hooks, and non-component logic
 - All component testing happens in Storybook stories with play functions
 - Unit tests focus exclusively on pure functions, custom hooks, and business
   logic
+
+**Consumer Implementation Tests (`*.docs.spec.tsx`):**
+
+- Copy-ready working examples consumers use to test components in their apps
+- Injected into `.dev.mdx` docs at build time
+
+Visual regression is handled separately by Chromatic in CI. Play functions are
+the shared source of truth: Chromatic runs them and snapshots the result, so
+visual states are verified there rather than asserted in play functions. See
+`./docs/chromatic-visual-testing.md`.
 
 ### Testing Workflow
 

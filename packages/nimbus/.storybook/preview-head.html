@@ -1,0 +1,35 @@
+<script>
+  // Chromatic-only: override window.Date so date-dependent snapshots don't drift.
+  // OFFSET from a fixed anchor, don't freeze: today() stays May 15 while Date.now()
+  // keeps advancing, so timers/debounces/async loads resolve and Date.now() IDs stay
+  // unique. Runs here (pre-bundle) because today() is read at module load.
+  // Full rationale: docs/chromatic-visual-testing.md "Deterministic dates in snapshots".
+  (function () {
+    if (
+      !/Chromatic/.test(navigator.userAgent) &&
+      !/chromatic=true/.test(location.href)
+    )
+      return;
+    var RealDate = Date;
+    var realNow = RealDate.now.bind(RealDate);
+    var start = realNow();
+    var ANCHOR = RealDate.UTC(2026, 4, 15, 12, 0, 0);
+    function anchoredNow() {
+      return ANCHOR + (realNow() - start);
+    }
+    function FakeDate() {
+      if (!(this instanceof FakeDate))
+        return new RealDate(anchoredNow()).toString();
+      if (arguments.length === 0) return new RealDate(anchoredNow());
+      return new (Function.prototype.bind.apply(
+        RealDate,
+        [null].concat([].slice.call(arguments))
+      ))();
+    }
+    FakeDate.prototype = RealDate.prototype;
+    FakeDate.UTC = RealDate.UTC;
+    FakeDate.parse = RealDate.parse;
+    FakeDate.now = anchoredNow;
+    window.Date = FakeDate;
+  })();
+</script>

@@ -27,6 +27,7 @@ const preview: Preview = {
       stylePreview: false,
       classTarget: "html",
     },
+    chromatic: { disableSnapshot: true },
     backgrounds: {
       disable: true,
     },
@@ -66,9 +67,19 @@ const preview: Preview = {
   tags: ["autodocs", "a11y-test"],
   decorators: [
     (Story, context) => {
+      // Pad every story so Chromatic's crop doesn't clip focus/selection rings at
+      // the edge, and so browsing doesn't jump. Skip `fullscreen`, which is meant
+      // to touch the edges.
+      const isFullscreen = context.parameters?.layout === "fullscreen";
       return (
         <ThemeDecorator context={context}>
-          <Story />
+          {isFullscreen ? (
+            <Story />
+          ) : (
+            <div style={{ padding: "1rem" }}>
+              <Story />
+            </div>
+          )}
         </ThemeDecorator>
       );
     },

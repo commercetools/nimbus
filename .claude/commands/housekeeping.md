@@ -349,6 +349,13 @@ For each dependency group (or the specified target group):
      deps, only list that one)
    - Include the changeset in the final commit before pushing
 
+7. **Chromatic visual check (automatic):**
+
+   No manual dispatch needed - the changed-files gate watches `pnpm-lock.yaml`,
+   so the PR auto-runs a full Chromatic snapshot. Review the visual diff before
+   merging. See
+   [Chromatic Visual Testing](../../docs/chromatic-visual-testing.md).
+
 ---
 
 ## **Safety Features & Error Handling**

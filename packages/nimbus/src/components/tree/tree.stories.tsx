@@ -13,6 +13,19 @@ export default meta;
 
 type Story = StoryObj<typeof Tree.Root>;
 
+/**
+ * React Aria builds the Tree collection asynchronously after mount. In the
+ * production Storybook bundle (Chromatic) this settles noticeably slower than
+ * the dev-transform test environment, so a play function that queries rows (or
+ * row-derived elements like checkboxes / drag handles) synchronously at the
+ * start races the build and intermittently fails. Awaiting the rows first
+ * guarantees the collection is built before any synchronous query. Generous
+ * timeout because the built bundle can settle past testing-library's 1s
+ * `findBy` default.
+ */
+const waitForTreeRows = (canvas: ReturnType<typeof within>) =>
+  canvas.findAllByRole("row", undefined, { timeout: 15000 });
+
 /** Recursive render function for a dynamic collection of `TreeNode`s. */
 const renderNode = (node: TreeNode) => (
   <Tree.Item key={node.id} id={node.id} textValue={node.title}>
@@ -70,6 +83,7 @@ export const Base: Story = {
   ),
   play: async ({ canvasElement, args, step }) => {
     const canvas = within(canvasElement);
+    await waitForTreeRows(canvas);
 
     await step("Exposes the treegrid role and rows", async () => {
       const treegrid = canvas.getByRole("treegrid", { name: "Files" });
@@ -123,6 +137,7 @@ export const Dynamic: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForTreeRows(canvas);
 
     await step("Renders the hierarchy from data", async () => {
       await expect(
@@ -148,6 +163,7 @@ export const ExpandCollapse: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForTreeRows(canvas);
     const documents = canvas.getByRole("row", { name: /Documents/ });
 
     await step("Starts collapsed", async () => {
@@ -248,6 +264,7 @@ export const SingleSelection: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForTreeRows(canvas);
 
     await step("Selecting a row sets aria-selected", async () => {
       const project = canvas.getByRole("row", { name: /Project/ });
@@ -275,6 +292,7 @@ export const MultipleSelection: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForTreeRows(canvas);
 
     await step("Renders a selection checkbox per row", async () => {
       const checkboxes = canvas.getAllByRole("checkbox");
@@ -323,6 +341,7 @@ export const Controlled: Story = {
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForTreeRows(canvas);
     const documents = canvas.getByRole("row", { name: /Documents/ });
 
     await step("Parent state reflects the initial expansion", async () => {
@@ -362,6 +381,7 @@ export const DisabledItems: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForTreeRows(canvas);
 
     await step(
       "Disabled row is marked disabled and not selectable",
@@ -441,6 +461,7 @@ export const Sizes: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForTreeRows(canvas);
     await step("Both sizes render with the full feature set", async () => {
       for (const size of ["sm", "md"]) {
         const treegrid = canvas.getByRole("treegrid", {
@@ -470,6 +491,7 @@ export const DragAndDrop: Story = {
   render: () => <FeatureTree aria-label="Files" selectionMode="multiple" />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForTreeRows(canvas);
 
     await step(
       "Wires drag-and-drop: tree and rows are draggable, with keyboard handles",
@@ -585,6 +607,7 @@ export const ReorderWithoutSelection: Story = {
   render: () => <FeatureTree aria-label="Navigation" selectionMode="none" />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForTreeRows(canvas);
 
     await step(
       "Drag-and-drop is enabled without any selection UI",
@@ -677,10 +700,13 @@ export const SmokeTest: Story = {
   render: () => <SmokeTestView />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    await waitForTreeRows(canvas);
 
     await step("Every permutation renders", async () => {
       // 2 sizes × 2 layouts × 3 selection modes = 12 trees.
-      await expect(canvas.getAllByRole("treegrid")).toHaveLength(12);
+      await waitFor(() =>
+        expect(canvas.getAllByRole("treegrid")).toHaveLength(12)
+      );
     });
 
     await step(

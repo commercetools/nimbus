@@ -4,6 +4,7 @@ import {
   type AvatarProps,
   Button,
   Stack,
+  Text,
   Tooltip,
 } from "@commercetools/nimbus";
 import { AutoAwesome } from "@commercetools/nimbus-icons";
@@ -31,7 +32,13 @@ const sizes: AvatarProps["size"][] = ["md", "xs", "2xs"];
 
 const variants: AvatarProps["variant"][] = ["subtle", "solid"];
 
-const avatarImg = "https://thispersondoesnotexist.com/ ";
+// Served locally from Storybook's staticDirs (`public/`) for consistent Chromatic runs.
+// Photo from Unsplash (License: free commercial use, no attribution required).
+const avatarImg = "/avatar-demo.jpg";
+
+// Nonexistent local path (served from staticDirs `public/`) that 404s instantly
+// to exercise the image-error fallback, without an external fetch Chromatic can't reach.
+const brokenImageSrc = "/broken-avatar.jpg";
 
 export const Base: Story = {
   args: {
@@ -58,7 +65,9 @@ export const Base: Story = {
   },
 };
 
-export const Sizes: Story = {
+export const SizesWithImages: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     firstName: "John",
     lastName: "Doe",
@@ -120,6 +129,8 @@ export const Variants: Story = {
 };
 
 export const BaseWithInitials: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     firstName: "John",
     lastName: "Doe",
@@ -145,6 +156,8 @@ export const BaseWithInitials: Story = {
 };
 
 export const SizesWithInitials: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     firstName: "Michael",
     lastName: "Douglas",
@@ -166,6 +179,8 @@ export const SizesWithInitials: Story = {
  * Showcase Possible Color Palettes
  */
 export const ColorPalettes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     firstName: "Michael",
     lastName: "Douglas",
@@ -196,7 +211,7 @@ export const ImageErrorFallback: Story = {
   args: {
     firstName: "Jane",
     lastName: "Smith",
-    src: "https://www.gravatar.com/avatar/thisWill404?s=200&d=404", // d=404 will return a 404 if the image doesn't exist
+    src: brokenImageSrc,
     ["aria-label"]: "Jane Smith avatar",
     alt: "Jane Smith",
   },
@@ -289,6 +304,8 @@ export const WhitespaceNames: Story = {
 };
 
 export const OnlyFirstName: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: { firstName: "John" },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -314,6 +331,8 @@ export const OnlyFirstName: Story = {
 };
 
 export const OnlyLastName: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: { lastName: "Doe" },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -340,6 +359,8 @@ export const OnlyLastName: Story = {
 };
 
 export const LeadingWhitespaceName: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: { firstName: " John", lastName: "Doe" },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -358,6 +379,8 @@ export const LeadingWhitespaceName: Story = {
 };
 
 export const EmojiName: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: { firstName: "\u{1F468}", lastName: "Doe" },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -375,6 +398,8 @@ export const EmojiName: Story = {
 };
 
 export const LowercaseName: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: { firstName: "john", lastName: "doe" },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -388,7 +413,7 @@ export const LowercaseName: Story = {
 
 export const ImageErrorWithMissingNames: Story = {
   args: {
-    src: "https://www.gravatar.com/avatar/thisWill404?s=200&d=404",
+    src: brokenImageSrc,
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
@@ -412,6 +437,83 @@ export const ImageErrorWithMissingNames: Story = {
       await expect(img).not.toBeNull();
       await expect(img).toHaveStyle("display: none");
     });
+  },
+};
+
+/**
+ * Consolidated snapshot of every fallback path, rendered side by side:
+ * undefined / empty / whitespace names (Person icon), plus a broken image with
+ * and without names (initials / Person icon). Each cell exercises a distinct
+ * path, so a regression in any one still surfaces here; the individual stories
+ * above keep the per-path behavioral assertions.
+ */
+export const AllFallbacks: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => {
+    const groups = [
+      {
+        heading: "No image",
+        cases: [
+          {
+            label: "With names",
+            node: <Avatar firstName="John" lastName="Doe" />,
+          },
+          { label: "Missing names (undefined)", node: <Avatar /> },
+          { label: "Empty names", node: <Avatar firstName="" lastName="" /> },
+          {
+            label: "Whitespace names",
+            node: <Avatar firstName="  " lastName={"\t"} />,
+          },
+        ],
+      },
+      {
+        heading: "Broken image",
+        cases: [
+          {
+            label: "With names",
+            node: (
+              <Avatar
+                src={brokenImageSrc}
+                firstName="Jane"
+                lastName="Smith"
+                alt="Jane Smith"
+              />
+            ),
+          },
+          { label: "No names", node: <Avatar src={brokenImageSrc} /> },
+        ],
+      },
+    ];
+    return (
+      <Stack direction="column" gap="800" alignItems="start">
+        {groups.map(({ heading, cases }) => (
+          <Stack key={heading} direction="column" gap="400" alignItems="start">
+            <Text fontWeight="700">{heading}</Text>
+            {cases.map(({ label, node }) => (
+              <Stack key={label} direction="row" gap="400" alignItems="center">
+                {node}
+                <Text>{label}</Text>
+              </Stack>
+            ))}
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+  // Wait for both broken images to error out and hide before the snapshot,
+  // otherwise Chromatic may capture the pre-error state.
+  play: async ({ canvasElement }) => {
+    await waitFor(
+      () => {
+        const imgs = Array.from(canvasElement.querySelectorAll("img"));
+        expect(imgs.length).toBe(2);
+        imgs.forEach((img) =>
+          expect(getComputedStyle(img).display).toBe("none")
+        );
+      },
+      { timeout: 3000 }
+    );
   },
 };
 

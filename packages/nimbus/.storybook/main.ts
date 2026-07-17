@@ -119,6 +119,22 @@ const config: StorybookConfig = {
                 },
               ],
       },
+      build: {
+        // Disable rolldown's lazy-barrel optimization (default-on since
+        // rolldown 1.1.0, shipped in vite 8.1.0). It drops a still-referenced
+        // binding re-exported through a `sideEffects:false` `export *` barrel —
+        // here the `CodeRoot` binding that `Code` re-exports — so the
+        // production Storybook bundle throws `ReferenceError: CodeRoot is not
+        // defined` at module-eval time, aborting story extraction.
+        // Upstream: rolldown/rolldown#9806, #9964, #9961.
+        // Remove once a fixed rolldown ships (the flag itself is slated for
+        // removal upstream).
+        rolldownOptions: {
+          experimental: {
+            lazyBarrel: false,
+          },
+        },
+      },
     });
   },
 };
