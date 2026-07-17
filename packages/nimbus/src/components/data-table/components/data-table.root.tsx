@@ -1,4 +1,11 @@
-import { useMemo, useState, useCallback, useRef, startTransition } from "react";
+import {
+  useMemo,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  startTransition,
+} from "react";
 import { ResizableTableContainer } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
@@ -72,6 +79,31 @@ export const DataTableRoot = function DataTableRoot<
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const selectRowLabel = msg.format("selectRow");
+
+  useEffect(() => {
+    const el = localRef.current;
+    if (!el) return;
+
+    const updateScrollShadows = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = el;
+      const canScrollLeft = scrollLeft > 1;
+      const canScrollRight = scrollLeft < scrollWidth - clientWidth - 1;
+
+      el.toggleAttribute("data-scroll-left", canScrollLeft);
+      el.toggleAttribute("data-scroll-right", canScrollRight);
+    };
+
+    updateScrollShadows();
+    el.addEventListener("scroll", updateScrollShadows, { passive: true });
+
+    const ro = new ResizeObserver(updateScrollShadows);
+    ro.observe(el);
+
+    return () => {
+      el.removeEventListener("scroll", updateScrollShadows);
+      ro.disconnect();
+    };
+  }, []);
 
   const [internalSortDescriptor, setInternalSortDescriptor] = useState<
     SortDescriptor | undefined

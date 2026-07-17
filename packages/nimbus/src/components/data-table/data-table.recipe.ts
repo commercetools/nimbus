@@ -16,6 +16,28 @@ const stickyBgOverlap = {
   },
 } as const;
 
+const stickyScrollShadow = (side: "left" | "right") =>
+  ({
+    content: '""',
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    width: "8px",
+    pointerEvents: "none",
+    zIndex: 1,
+    ...(side === "right"
+      ? {
+          right: "-8px",
+          background:
+            "linear-gradient(to right, rgba(0, 0, 0, 0.08), transparent)",
+        }
+      : {
+          left: "-8px",
+          background:
+            "linear-gradient(to left, rgba(0, 0, 0, 0.08), transparent)",
+        }),
+  }) as const;
+
 /**
  * Slot recipe configuration for the DataTable component.
  * Defines the styling variants, base styles, and slots using Chakra UI's slot recipe system.
@@ -49,6 +71,18 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       display: "block",
       overflow: "auto",
       contain: "layout style",
+
+      // Scroll shadow on right edge of left-sticky columns
+      "&[data-scroll-left]": {
+        "& .data-table-sticky-cell::after, & .selection-column-header::after, & .drag-column-header::after, & .expand-column-header::after":
+          stickyScrollShadow("right"),
+      },
+      // Scroll shadow on left edge of right-sticky columns
+      "&[data-scroll-right]": {
+        "& [data-slot='pin-row-cell']::after, & .pin-rows-column-header::after":
+          stickyScrollShadow("left"),
+      },
+
       "& .data-table-row": {
         "& [data-slot='pin-row-cell']": {
           position: "sticky",
