@@ -24,6 +24,8 @@ export type FilterMenuSectionProps = {
   children: React.ReactNode;
   label: string;
   defaultExpanded?: boolean;
+  /** Layout direction for section content */
+  direction?: "row" | "column";
 };
 
 export type FilterMenuOptionProps = OmitInternalProps<

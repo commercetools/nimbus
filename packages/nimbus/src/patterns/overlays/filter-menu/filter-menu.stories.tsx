@@ -7,6 +7,7 @@ import {
   Separator,
   Stack,
   Text,
+  TextInput,
 } from "@commercetools/nimbus";
 import { FilterList } from "@commercetools/nimbus-icons";
 import { FilterMenu } from "./filter-menu";
@@ -218,6 +219,66 @@ export const CollapsibleSections: Story = {
       await waitFor(() => {
         expect(statusTrigger).toHaveAttribute("aria-expanded", "false");
       });
+    });
+  },
+};
+
+export const HorizontalSectionLayout: Story = {
+  render: () => {
+    return (
+      <FilterMenu.Root defaultOpen>
+        <FilterMenu.Trigger asChild>
+          <Button variant="ghost" size="xs">
+            Filters
+          </Button>
+        </FilterMenu.Trigger>
+        <FilterMenu.Content width="360px">
+          <FilterMenu.Section label="Price range" direction="row">
+            <TextInput aria-label="Min price" placeholder="Min" />
+            <TextInput aria-label="Max price" placeholder="Max" />
+          </FilterMenu.Section>
+          <FilterMenu.Section label="Status">
+            <FilterMenu.Option isSelected={false} onSelect={() => {}}>
+              Active
+            </FilterMenu.Option>
+            <FilterMenu.Option isSelected={false} onSelect={() => {}}>
+              Archived
+            </FilterMenu.Option>
+          </FilterMenu.Section>
+        </FilterMenu.Content>
+      </FilterMenu.Root>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Wait for popover to open", async () => {
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+    });
+
+    await step("Horizontal section has row flex-direction", async () => {
+      const minInput = canvas.getByRole("textbox", { name: "Min price" });
+      const container = minInput.parentElement as HTMLElement;
+
+      const computedStyle = window.getComputedStyle(container);
+      expect(computedStyle.flexDirection).toBe("row");
+    });
+
+    await step("Vertical section (default) renders items stacked", async () => {
+      const active = canvas.getByRole("button", { name: "Active" });
+      const archived = canvas.getByRole("button", { name: "Archived" });
+
+      const activeRect = active.getBoundingClientRect();
+      const archivedRect = archived.getBoundingClientRect();
+
+      // Items should be stacked (different Y, same X)
+      expect(archivedRect.top).toBeGreaterThan(activeRect.top);
+      expect(Math.abs(activeRect.left - archivedRect.left)).toBeLessThan(5);
     });
   },
 };

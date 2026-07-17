@@ -42,6 +42,7 @@ const FilterMenuSection = ({
   children,
   label,
   defaultExpanded = true,
+  direction = "column",
 }: FilterMenuSectionProps) => {
   return (
     <CollapsibleMotion.Root defaultExpanded={defaultExpanded}>
@@ -65,7 +66,13 @@ const FilterMenuSection = ({
         </Button>
       </CollapsibleMotion.Trigger>
       <CollapsibleMotion.Content>
-        <chakra.div display="flex" flexDirection="column" gap="100" pt="100">
+        <chakra.div
+          display="flex"
+          flexDirection={direction}
+          flexWrap={direction === "row" ? "wrap" : undefined}
+          gap="100"
+          pt="100"
+        >
           {children}
         </chakra.div>
       </CollapsibleMotion.Content>
