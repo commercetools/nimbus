@@ -29,8 +29,13 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
 }: DataTableBodyProps<T>) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const { activeColumns, renderEmptyState } = useDataTableContext<T>();
-  const { sortedRows, expanded, pinnedRows, pinnedRowIds } =
-    useInteractionContext<T>();
+  const {
+    sortedRows,
+    expanded,
+    pinnedRows,
+    pinnedRowIds,
+    detailsExpandedRows,
+  } = useInteractionContext<T>();
   const [styleProps, restProps] = extractStyleProps(props);
 
   // Use provided aria-label or fall back to default
@@ -42,7 +47,13 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
         ref={ref}
         aria-label={ariaLabel}
         items={sortedRows}
-        dependencies={[activeColumns, expanded, pinnedRows, pinnedRowIds]}
+        dependencies={[
+          activeColumns,
+          expanded,
+          pinnedRows,
+          pinnedRowIds,
+          detailsExpandedRows,
+        ]}
         renderEmptyState={renderEmptyState ?? DefaultEmptyStateMessage}
         {...restProps}
       >
@@ -54,6 +65,7 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
               key={row.id}
               row={row}
               isExpanded={expanded.has(row.id)}
+              isDetailsExpanded={detailsExpandedRows.has(row.id)}
               isPinned={isPinned}
               isFirstPinned={pinnedIdx === 0}
               isLastPinned={pinnedIdx === pinnedRowIds.length - 1}

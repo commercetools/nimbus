@@ -23,6 +23,11 @@ type ToggleButtonGroupRecipeVariantProps = {
    * @default "md"
    */
   size?: SlotRecipeProps<"nimbusToggleButtonGroup">["size"];
+  /**
+   * Visual style variant of the toggle button group
+   * @default "outline"
+   */
+  variant?: SlotRecipeProps<"nimbusToggleButtonGroup">["variant"];
 };
 
 // ============================================================

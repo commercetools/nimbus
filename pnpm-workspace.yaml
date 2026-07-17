@@ -2,6 +2,9 @@ packages:
   - packages/*
   - apps/*
 
+catalog:
+  '@types/culori': ^4.0.1
+
 catalogMode: strict
 
 # --- pnpm install & supply-chain settings (made explicit) ---
@@ -49,6 +52,7 @@ allowBuilds:
   "@fission-ai/openspec": false
   "@modelcontextprotocol/ext-apps": false
   core-js-pure: true
+  sharp: false
 
 overrides:
   rollup: "catalog:tooling"
@@ -93,6 +97,7 @@ overrides:
   "yaml@2": ">=2.8.3"
   "path-to-regexp@>=8.0.0 <8.4.0": ">=8.4.0"
   "happy-dom@<20.8.9": ">=20.8.9"
+  "ws@>=8.0.0 <8.21.0": ">=8.21.0"
   jsdom: "catalog:tooling"
   # Keep every Storybook copy off 10.5.0 (see the pin note in catalogs.tooling).
   # These are pulled transitively (e.g. @github-ui/storybook-addon-performance-panel
@@ -198,4 +203,3 @@ catalogs:
     react-markdown: ^10.1.0
     remark-gfm: ^4.0.1
     remend: ^1.3.0
-

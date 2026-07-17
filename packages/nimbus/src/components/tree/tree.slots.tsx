@@ -1,11 +1,9 @@
-import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
+import {
+  createSlotRecipeContext,
+  type HTMLChakraProps,
+} from "@chakra-ui/react/styled-system";
 import type { SlotComponent } from "@/type-utils";
-import type {
-  TreeRootSlotProps,
-  TreeItemSlotProps,
-  TreeItemContentSlotProps,
-  TreeIndicatorSlotProps,
-} from "./tree.types";
+import type { TreeRootSlotProps } from "./tree.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
   key: "nimbusTree",
@@ -18,27 +16,26 @@ export const TreeRootSlot: SlotComponent<HTMLDivElement, TreeRootSlotProps> =
   withProvider<HTMLDivElement, TreeRootSlotProps>("div", "root");
 
 /**
- * Item slot — the focusable tree row (`role="row"`).
+ * Item slot — the focusable tree row (`role="treeitem"`).
  */
-export const TreeItemSlot: SlotComponent<HTMLDivElement, TreeItemSlotProps> =
-  withContext<HTMLDivElement, TreeItemSlotProps>("div", "item");
+export const TreeItemSlot = withContext<HTMLDivElement, HTMLChakraProps<"div">>(
+  "div",
+  "item"
+);
 
 /**
  * Item content slot — the row's content container (indicator, optional
  * selection checkbox, and label). Applies level-based indentation.
  */
-export const TreeItemContentSlot: SlotComponent<
+export const TreeItemContentSlot = withContext<
   HTMLDivElement,
-  TreeItemContentSlotProps
-> = withContext<HTMLDivElement, TreeItemContentSlotProps>("div", "itemContent");
+  HTMLChakraProps<"div">
+>("div", "itemContent");
 
 /**
  * Indicator slot — the expand/collapse chevron button.
  */
-export const TreeIndicatorSlot: SlotComponent<
+export const TreeIndicatorSlot = withContext<
   HTMLButtonElement,
-  TreeIndicatorSlotProps
-> = withContext<HTMLButtonElement, TreeIndicatorSlotProps>(
-  "button",
-  "indicator"
-);
+  HTMLChakraProps<"button">
+>("button", "indicator");

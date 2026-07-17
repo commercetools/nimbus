@@ -4,6 +4,7 @@ import type {
   SearchInputRootSlotProps,
   SearchInputLeadingElementSlotProps,
   SearchInputInputSlotProps,
+  SearchInputTrailingElementSlotProps,
 } from "./search-input.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
@@ -27,3 +28,11 @@ export const SearchInputInputSlot: SlotComponent<
   HTMLInputElement,
   SearchInputInputSlotProps
 > = withContext<HTMLInputElement, SearchInputInputSlotProps>("input", "input");
+
+export const SearchInputTrailingElementSlot: SlotComponent<
+  HTMLDivElement,
+  SearchInputTrailingElementSlotProps
+> = withContext<HTMLDivElement, SearchInputTrailingElementSlotProps>(
+  "div",
+  "trailingElement"
+);

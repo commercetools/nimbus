@@ -27,15 +27,19 @@ type DraggableListRecipeProps = {
 // SLOT PROPS
 // ============================================================
 
+/** @deprecated DraggableList is deprecated. Use GridList with dragAndDropHooks instead. See: https://nimbus-documentation.vercel.app/components/grid-list#drag-and-drop */
 export type DraggableListRootSlotProps = HTMLChakraProps<
   "div",
   DraggableListRecipeProps
 >;
 
+/** @deprecated DraggableList is deprecated. Use GridList with dragAndDropHooks instead. See: https://nimbus-documentation.vercel.app/components/grid-list#drag-and-drop */
 export type DraggableListItemSlotProps = HTMLChakraProps<"div">;
 
+/** @deprecated DraggableList is deprecated. Use GridList with dragAndDropHooks instead. See: https://nimbus-documentation.vercel.app/components/grid-list#drag-and-drop */
 export type DraggableListItemContentSlotProps = HTMLChakraProps<"div">;
 
+/** @deprecated DraggableList is deprecated. Use GridList with dragAndDropHooks instead. See: https://nimbus-documentation.vercel.app/components/grid-list#drag-and-drop */
 export type DraggableListEmptySlotProps = HTMLChakraProps<"div">;
 
 // ============================================================
@@ -50,6 +54,8 @@ export type DraggableListEmptySlotProps = HTMLChakraProps<"div">;
  *
  * If either `key` or `label` are not defined, you must provide custom children
  * to the DraggableList.Root component.
+ *
+ * @deprecated DraggableList is deprecated. Use GridList with dragAndDropHooks instead. See: https://nimbus-documentation.vercel.app/components/grid-list#drag-and-drop
  */
 export type DraggableListItemData = {
   key?: string;
@@ -64,6 +70,8 @@ export type DraggableListItemData = {
  *
  * @property key - Unique identifier for the item (required)
  * @property label - Display content for the item (required)
+ *
+ * @deprecated DraggableList is deprecated. Use GridList with dragAndDropHooks instead. See: https://nimbus-documentation.vercel.app/components/grid-list#drag-and-drop
  */
 export type DraggableListFieldItemData = DraggableListItemData & {
   key: string;
@@ -81,6 +89,8 @@ export type DraggableListFieldItemData = DraggableListItemData & {
  * Uses React Aria's GridList for accessibility and drag-and-drop functionality.
  *
  * @template T - Type for item data displayed in the list. Items array type is `T[]`.
+ *
+ * @deprecated DraggableList is deprecated. Use GridList with dragAndDropHooks instead. See: https://nimbus-documentation.vercel.app/components/grid-list#drag-and-drop
  */
 export type DraggableListRootProps<T extends DraggableListItemData> = Omit<
   RaGridListProps<T>,
@@ -151,6 +161,8 @@ export type DraggableListRootProps<T extends DraggableListItemData> = Omit<
  * Supports drag-and-drop interaction and optional removal.
  *
  * @template T - Type for the item's data object
+ *
+ * @deprecated DraggableList is deprecated. Use GridList with dragAndDropHooks instead. See: https://nimbus-documentation.vercel.app/components/grid-list#drag-and-drop
  */
 export type DraggableListItemProps<T extends DraggableListItemData> = Omit<
   RaGridListItemProps<T>,
@@ -187,6 +199,8 @@ export type DraggableListItemProps<T extends DraggableListItemData> = Omit<
  * Items are rendered using their `key` and `label` properties.
  *
  * @template T - Type for item data, must extend DraggableListFieldItemData
+ *
+ * @deprecated DraggableList is deprecated. Use GridList with dragAndDropHooks instead. See: https://nimbus-documentation.vercel.app/components/grid-list#drag-and-drop
  */
 export type DraggableListFieldProps<T extends DraggableListFieldItemData> =
   Omit<DraggableListRootProps<T>, "children" | "direction"> &

@@ -42,6 +42,7 @@
     "test:storybook:dev": "pnpm vitest run --config vitest.dev.config.ts --project=storybook-dev",
     "check:bundle-size": "node .github/actions/bundle-size/check-bundle-size.mjs",
     "check:package-shape": "node scripts/check-package-shape.mjs",
+    "check:use-client": "node scripts/check-use-client.mjs",
     "bundle-sizes:trend": "node scripts/bundle-sizes-trend.mjs"
   },
   "packageManager": "pnpm@11.10.0+sha512.0b7f8b98060031904c017e3a41eb187a16d40eeb829b95c4f8cb03681761fc4ab53dd219115b9b447f4dce1a05a214764461e7d3703392a9f32f9511ce8c86c8",

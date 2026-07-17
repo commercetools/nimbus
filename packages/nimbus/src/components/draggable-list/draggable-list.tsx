@@ -33,6 +33,10 @@ import {
  * ```
  *
  * @see https://react-spectrum.adobe.com/react-aria/dnd.html
+ *
+ * @deprecated DraggableList is deprecated and will be removed in a future major version.
+ * Use GridList with dragAndDropHooks instead.
+ * See: https://nimbus-documentation.vercel.app/components/grid-list#drag-and-drop
  */
 export const DraggableList = {
   /**

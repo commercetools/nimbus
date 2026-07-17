@@ -1,0 +1,46 @@
+---
+id: Patterns-FilterMenu
+title: Filter menu
+exportName: FilterMenu
+description: A popover-based compound component for structured filter forms with collapsible sections.
+order: 999
+menu:
+  - Patterns
+  - Overlays
+  - Filter menu
+tags:
+  - component
+  - pattern
+  - popover
+  - FilterMenu
+related-components:
+  - Popover
+  - CollapsibleMotion
+  - Checkbox
+  - TextInput
+---
+
+## Overview
+
+FilterMenu is a pattern component that wraps the Popover compound component with a structured layout for filter forms. It looks and behaves like a menu (compact, positioned near its trigger) but contains interactive form inputs — checkboxes, text inputs, selects — that stay focusable without closing the popover.
+
+The pattern provides collapsible sections for grouping related filters, selectable option rows for single-select patterns, and a clear action button for resetting all filters at once.
+
+### When to use
+
+- Toolbar-style filter controls that open a compact form near the trigger
+- Multi-faceted filtering with grouped controls (status, date range, category)
+- Any scenario where filter controls should float over content without navigating away
+
+### When not to use
+
+- Action menus with navigation-style items that close on click — use `Menu`
+- Full-page filter panels with many controls — use a `Drawer` or inline form
+- Simple single-select dropdowns — use `Select`
+
+### Resources
+
+For detailed guidance on the underlying primitives, consult the component guidelines:
+
+- [Popover Guidelines](/components/overlays/popover) — Positioning, dismissal, focus management
+- [CollapsibleMotion Guidelines](/components/animation/collapsible-motion) — Expand/collapse animation

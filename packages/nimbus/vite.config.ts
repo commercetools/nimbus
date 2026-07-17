@@ -2,11 +2,32 @@ import { fileURLToPath } from "node:url";
 import { glob } from "glob";
 import optimizeLocales from "@react-aria/optimize-locales-plugin";
 import { defineConfig, esmExternalRequirePlugin } from "vite";
-import type { LibraryFormats, PluginOption, Rollup } from "vite";
+import type { LibraryFormats, Plugin, PluginOption, Rollup } from "vite";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
 import { analyzer } from "vite-bundle-analyzer";
 import { LOCALE_BCP47_CODES } from "../i18n/scripts/locales";
+
+/**
+ * Rollup plugin that prepends `"use client"` to every entry-point chunk.
+ *
+ * This makes all published components compatible with React Server Components
+ * (RSC) — bundlers like Next.js App Router see the directive and treat the
+ * import as a client boundary. Non-entry chunks (shared helpers) are skipped
+ * because the directive on the entry is sufficient, and `setup-jsdom-polyfills`
+ * is skipped because it is a test utility, not a React component.
+ */
+function useClientDirectivePlugin(): Plugin {
+  return {
+    name: "nimbus:use-client-directive",
+    renderChunk(code, chunk) {
+      if (chunk.isEntry && chunk.name !== "setup-jsdom-polyfills") {
+        return { code: `"use client";\n${code}`, map: { mappings: "" } };
+      }
+      return null;
+    },
+  };
+}
 
 /**
  * Builds the entry map for the library build.
@@ -57,6 +78,11 @@ const createEntries = async () => {
   entries.set(
     "plugins/stub",
     fileURLToPath(new URL("src/plugins/stub.ts", import.meta.url))
+  );
+  // Theme generator — separate entrypoint so culori is only bundled when used.
+  entries.set(
+    "theme-generator",
+    fileURLToPath(new URL("src/theme-generator/index.ts", import.meta.url))
   );
   return Object.fromEntries(entries);
 };
@@ -157,7 +183,11 @@ export default defineConfig(async () => {
           // otherwise you get an error when you `require` them
           const extension = format === "cjs" ? `${format}` : `${format}.js`;
           // Keep main entrypoints at root, put everything else in subfolders
-          if (["index", "setup-jsdom-polyfills"].includes(entryName)) {
+          if (
+            ["index", "setup-jsdom-polyfills", "theme-generator"].includes(
+              entryName
+            )
+          ) {
             return `${entryName}.${extension}`;
           }
           // Plugin entries keep their plugins/ prefix
@@ -183,6 +213,7 @@ export default defineConfig(async () => {
          */
         plugins: [
           esmExternalRequirePlugin({ external: requireRewriteExternals }),
+          useClientDirectivePlugin(),
         ],
         external,
         output: {

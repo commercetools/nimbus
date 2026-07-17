@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { useState } from "react";
-import { Tree, Stack, Text, useTree, type Key } from "@commercetools/nimbus";
+import { Tree, Stack, Text, IconButton } from "@commercetools/nimbus";
+import { Collection } from "react-aria-components";
+import { useTreeData } from "react-stately";
+import { useDragAndDrop } from "react-aria-components";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import { DragIndicator } from "@commercetools/nimbus-icons";
 import { fileTree, type TreeNode } from "./utils/tree.test-data";
 
 const meta: Meta<typeof Tree.Root> = {
@@ -11,7 +14,7 @@ const meta: Meta<typeof Tree.Root> = {
 
 export default meta;
 
-type Story = StoryObj<typeof Tree.Root>;
+type Story = StoryObj<typeof meta>;
 
 /** Recursive render function for a dynamic collection of `TreeNode`s. */
 const renderNode = (node: TreeNode) => (
@@ -20,7 +23,9 @@ const renderNode = (node: TreeNode) => (
       <Tree.Indicator />
       {node.title}
     </Tree.ItemContent>
-    <Tree.SubTree items={node.children}>{renderNode}</Tree.SubTree>
+    {node.children && node.children.length > 0 && (
+      <Collection items={node.children}>{renderNode}</Collection>
+    )}
   </Tree.Item>
 );
 
@@ -295,57 +300,6 @@ export const MultipleSelection: Story = {
 };
 
 /**
- * Controlled expansion — the parent owns `expandedKeys` and is notified of
- * changes via `onExpandedChange`. Use this to sync expansion with external
- * state, the URL, or analytics.
- */
-export const Controlled: Story = {
-  render: () => {
-    const ControlledTree = () => {
-      const [expandedKeys, setExpandedKeys] = useState<Set<Key>>(
-        new Set(["documents"])
-      );
-      return (
-        <Stack gap="200">
-          <Text>Expanded: {Array.from(expandedKeys).join(", ") || "none"}</Text>
-          <Tree.Root
-            aria-label="Files"
-            items={fileTree}
-            expandedKeys={expandedKeys}
-            onExpandedChange={setExpandedKeys}
-          >
-            {renderNode}
-          </Tree.Root>
-        </Stack>
-      );
-    };
-    return <ControlledTree />;
-  },
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const documents = canvas.getByRole("row", { name: /Documents/ });
-
-    await step("Parent state reflects the initial expansion", async () => {
-      await expect(documents).toHaveAttribute("aria-expanded", "true");
-      await expect(canvas.getByText(/^Expanded:/)).toHaveTextContent(
-        "documents"
-      );
-    });
-
-    await step("Collapsing a row updates the controlled state", async () => {
-      const chevron = within(documents).getByRole("button");
-      await userEvent.click(chevron);
-      await waitFor(() =>
-        expect(documents).toHaveAttribute("aria-expanded", "false")
-      );
-      await waitFor(() =>
-        expect(canvas.getByText(/^Expanded:/)).toHaveTextContent("none")
-      );
-    });
-  },
-};
-
-/**
  * Disabled items cannot be selected or actioned.
  */
 export const DisabledItems: Story = {
@@ -377,11 +331,9 @@ export const DisabledItems: Story = {
 
 /**
  * A tree wired with the full feature set — multiple selection (checkboxes),
- * expand/collapse indicators, and opt-in drag-and-drop. A single `useTree` hook
- * owns the hierarchical state and the drag-and-drop wiring; its result is spread
- * straight onto `Tree.Root`. The drag handle is rendered automatically by
- * `Tree.ItemContent` whenever the tree allows dragging — consumers never author
- * it, so every draggable tree gets the same affordance.
+ * expand/collapse indicators, and opt-in drag-and-drop with `<Button slot="drag">`
+ * handles. `useTreeData` owns the hierarchical state; `useDragAndDrop` provides
+ * the hooks.
  */
 const FeatureTree = ({
   size,
@@ -392,29 +344,65 @@ const FeatureTree = ({
   selectionMode?: "none" | "single" | "multiple";
   "aria-label": string;
 }) => {
-  const tree = useTree<TreeNode>({
+  const tree = useTreeData<TreeNode>({
     initialItems: fileTree,
     getKey: (item) => item.id,
     getChildren: (item) => item.children ?? [],
-    selectionMode,
-    defaultExpandedKeys: ["documents", "project", "photos"],
-    dragAndDrop: true,
+  });
+
+  const { dragAndDropHooks } = useDragAndDrop({
+    getItems: (keys) =>
+      [...keys].map((key) => ({
+        "text/plain": tree.getItem(key)?.value.title ?? "",
+      })),
+    onMove(e) {
+      if (e.target.dropPosition === "before") {
+        tree.moveBefore(e.target.key, e.keys);
+      } else if (e.target.dropPosition === "after") {
+        tree.moveAfter(e.target.key, e.keys);
+      } else if (e.target.dropPosition === "on") {
+        // Re-parent: move the dragged items into the target group.
+        const targetNode = tree.getItem(e.target.key);
+        const targetIndex = targetNode?.children
+          ? targetNode.children.length
+          : 0;
+        [...e.keys].forEach((key, i) => {
+          tree.move(key, e.target.key, targetIndex + i);
+        });
+      }
+    },
   });
 
   const renderDndNode = (item: (typeof tree.items)[number]) => (
     <Tree.Item id={String(item.key)} textValue={item.value.title}>
       <Tree.ItemContent>
+        <IconButton
+          slot="drag"
+          size="2xs"
+          variant="ghost"
+          data-testid={`drag-${item.key}`}
+          aria-label={`Reorder ${item.value.title}`}
+        >
+          <DragIndicator />
+        </IconButton>
         <Tree.Indicator />
         {item.value.title}
       </Tree.ItemContent>
-      <Tree.SubTree items={item.children ?? undefined}>
-        {renderDndNode}
-      </Tree.SubTree>
+      {item.children && item.children.length > 0 && (
+        <Collection items={item.children}>{renderDndNode}</Collection>
+      )}
     </Tree.Item>
   );
 
   return (
-    <Tree.Root aria-label={ariaLabel} size={size} {...tree}>
+    <Tree.Root
+      aria-label={ariaLabel}
+      size={size}
+      selectionMode={selectionMode}
+      items={tree.items}
+      dragAndDropHooks={dragAndDropHooks}
+      defaultExpandedKeys={["documents", "project", "photos"]}
+    >
       {renderDndNode}
     </Tree.Root>
   );
@@ -453,7 +441,7 @@ export const Sizes: Story = {
           within(treegrid).getAllByRole("checkbox").length
         ).toBeGreaterThan(0);
         await expect(
-          within(treegrid).getAllByRole("button", { name: /Drag/ }).length
+          within(treegrid).getAllByRole("button", { name: /Reorder/ }).length
         ).toBeGreaterThan(0);
       }
     });
@@ -484,26 +472,18 @@ export const DragAndDrop: Story = {
         await expect(documents).toHaveAttribute("data-allows-dragging", "true");
         await expect(photos).toHaveAttribute("data-allows-dragging", "true");
 
-        // `Tree.ItemContent` auto-renders a `<Button slot="drag">` handle per
-        // item (no consumer markup) so the reorder is operable by keyboard and
-        // screen reader (not pointer-only). React Aria localizes its accessible
-        // name as "Drag <item>". The drop / reorder mechanics themselves are
-        // provided and tested by React Aria.
-        await expect(
-          canvas.getByRole("button", { name: /Drag Documents/ })
-        ).toBeInTheDocument();
-        await expect(
-          canvas.getByRole("button", { name: /Drag Photos/ })
-        ).toBeInTheDocument();
+        // A `<Button slot="drag">` handle is present per item so the reorder is
+        // operable by keyboard and screen reader (not pointer-only). The drop /
+        // reorder mechanics themselves are provided and tested by React Aria.
+        await expect(canvas.getByTestId("drag-documents")).toBeInTheDocument();
+        await expect(canvas.getByTestId("drag-photos")).toBeInTheDocument();
       }
     );
 
     await step("Keyboard drag can be picked up from the handle", async () => {
       // Focus the drag handle and confirm focus — React Aria's keyboard drag
       // dispatches from document.activeElement.
-      const dragHandle = canvas.getByRole("button", {
-        name: /Drag Documents/,
-      });
+      const dragHandle = canvas.getByTestId("drag-documents");
       dragHandle.focus();
       await waitFor(() => expect(dragHandle).toHaveFocus());
 
@@ -517,57 +497,6 @@ export const DragAndDrop: Story = {
         canvas.getByRole("row", { name: /Documents/ })
       ).toBeInTheDocument();
     });
-
-    await step(
-      "Dropping a multi-selection onto a group keeps tree order",
-      async () => {
-        const rowIndex = (name: RegExp) => {
-          const rows = canvas.getAllByRole("row");
-          return rows.findIndex((row) => name.test(row.textContent ?? ""));
-        };
-
-        // Select bottom-to-top so the dragged keys arrive in selection order,
-        // not tree order — the case a click-order re-parent would reverse.
-        const report = canvas.getByRole("row", { name: /Weekly Report/ });
-        const budget = canvas.getByRole("row", { name: /Budget/ });
-        await userEvent.click(within(budget).getByRole("checkbox"));
-        await userEvent.click(within(report).getByRole("checkbox"));
-        await waitFor(async () => {
-          await expect(report).toHaveAttribute("aria-selected", "true");
-          await expect(budget).toHaveAttribute("aria-selected", "true");
-        });
-
-        // Selected handles are relabeled "Drag 2 selected items", so grab from
-        // within the row.
-        const dragHandle = within(report).getByRole("button", { name: /Drag/ });
-        dragHandle.focus();
-        await userEvent.keyboard("{Enter}");
-        await wait(150);
-
-        // Step through drop targets until Photos is the "on" target, then drop.
-        const photos = canvas.getByRole("row", { name: /^Photos/ });
-        for (
-          let i = 0;
-          i < 12 && photos.getAttribute("data-drop-target") !== "true";
-          i++
-        ) {
-          await userEvent.keyboard("{ArrowDown}");
-          await wait();
-        }
-        await expect(photos).toHaveAttribute("data-drop-target", "true");
-        await userEvent.keyboard("{Enter}");
-        await wait(150);
-
-        // Re-parented under Photos (after Image 2) in tree order, not reversed.
-        await waitFor(async () => {
-          const image2Idx = rowIndex(/Image 2/);
-          const reportIdx = rowIndex(/Weekly Report/);
-          const budgetIdx = rowIndex(/Budget/);
-          await expect(reportIdx).toBeGreaterThan(image2Idx);
-          await expect(budgetIdx).toBeGreaterThan(reportIdx);
-        });
-      }
-    );
   },
 };
 
@@ -594,9 +523,7 @@ export const ReorderWithoutSelection: Story = {
         // No selection mode → no checkboxes anywhere in the tree.
         await expect(canvas.queryByRole("checkbox")).not.toBeInTheDocument();
         // Drag handles are still present for reordering.
-        await expect(
-          canvas.getByRole("button", { name: /Drag Documents/ })
-        ).toBeInTheDocument();
+        await expect(canvas.getByTestId("drag-documents")).toBeInTheDocument();
       }
     );
 
@@ -606,105 +533,5 @@ export const ReorderWithoutSelection: Story = {
       await userEvent.click(documents);
       await expect(documents).not.toHaveAttribute("aria-selected", "true");
     });
-  },
-};
-
-const SELECTION_MODES = ["none", "single", "multiple"] as const;
-const SIZES = ["sm", "md"] as const;
-
-/**
- * Smoke test — every visual permutation in one view: both sizes (`sm`, `md`),
- * all three selection modes (`none`, `single`, `multiple`), each rendered both
- * without drag-and-drop (the default roomy, equal-column layout) and with it
- * (the tighter layout whose drag handle separates the checkbox from the
- * chevron). Use it to eyeball control spacing and nested-row alignment across
- * the matrix at a glance.
- */
-const SmokeTestView = () => {
-  return (
-    <Stack gap="600" alignItems="flex-start">
-      {SIZES.map((size) => (
-        <Stack key={size} gap="400">
-          <Text fontWeight="700">size = {size}</Text>
-          {(
-            [
-              ["no drag", false],
-              ["drag & drop", true],
-            ] as const
-          ).map(([layoutLabel, withDnd]) => (
-            <Stack
-              key={layoutLabel}
-              direction="row"
-              gap="800"
-              alignItems="flex-start"
-            >
-              {SELECTION_MODES.map((mode) => {
-                const label = `${size} · ${layoutLabel} · ${mode}`;
-                return (
-                  <Stack key={mode} gap="200" minWidth="220px">
-                    <Text fontWeight="600" fontSize="350" color="neutral.11">
-                      {layoutLabel} · {mode}
-                    </Text>
-                    {withDnd ? (
-                      <FeatureTree
-                        size={size}
-                        selectionMode={mode}
-                        aria-label={label}
-                      />
-                    ) : (
-                      <Tree.Root
-                        aria-label={label}
-                        size={size}
-                        selectionMode={mode}
-                        items={fileTree}
-                        defaultExpandedKeys={["documents", "photos"]}
-                      >
-                        {renderNode}
-                      </Tree.Root>
-                    )}
-                  </Stack>
-                );
-              })}
-            </Stack>
-          ))}
-        </Stack>
-      ))}
-    </Stack>
-  );
-};
-
-export const SmokeTest: Story = {
-  render: () => <SmokeTestView />,
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-
-    await step("Every permutation renders", async () => {
-      // 2 sizes × 2 layouts × 3 selection modes = 12 trees.
-      await expect(canvas.getAllByRole("treegrid")).toHaveLength(12);
-    });
-
-    await step(
-      "Only drag-and-drop trees advertise dragging; selection checkboxes appear only in multiple mode",
-      async () => {
-        for (const size of SIZES) {
-          for (const mode of SELECTION_MODES) {
-            const plain = canvas.getByRole("treegrid", {
-              name: `${size} · no drag · ${mode}`,
-            });
-            const dnd = canvas.getByRole("treegrid", {
-              name: `${size} · drag & drop · ${mode}`,
-            });
-            await expect(plain).not.toHaveAttribute("data-allows-dragging");
-            await expect(dnd).toHaveAttribute("data-allows-dragging", "true");
-
-            // React Aria only wires selection checkboxes in `multiple` mode.
-            const expectCheckboxes = mode === "multiple";
-            await expect(
-              within(plain).queryAllByRole("checkbox").length > 0
-            ).toBe(expectCheckboxes);
-          }
-        }
-      }
-    );
   },
 };

@@ -1,5 +1,6 @@
 import * as NimbusUi from "@commercetools/nimbus";
 import * as icons from "@commercetools/nimbus-icons";
+import * as themeGenerator from "@commercetools/nimbus/theme-generator";
 import {
   Box,
   Menu,
@@ -38,6 +39,7 @@ const baseHooks = {
 const scope = {
   ...NimbusUi,
   ...baseHooks,
+  ...themeGenerator,
   Icons: { ...icons },
   Time,
   CalendarDate,

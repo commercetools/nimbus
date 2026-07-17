@@ -6,32 +6,79 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react/styled-system";
 import type { FC } from "react";
+import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
-// RECIPE PROPS
+// RECIPE PROPS (internal PopoverBase)
 // ============================================================
 
 type PopoverRecipeProps = RecipeProps<"nimbusPopover"> & UnstyledProp;
 
 // ============================================================
-// SLOT PROPS
+// SLOT PROPS (internal PopoverBase)
 // ============================================================
 
 export type PopoverRootSlotProps = HTMLChakraProps<"div", PopoverRecipeProps>;
 
 // ============================================================
-// MAIN PROPS
+// INTERNAL POPOVER BASE PROPS
 // ============================================================
 
-export type PopoverProps = RaPopoverProps &
+export type PopoverBaseProps = RaPopoverProps &
   Omit<PopoverRootSlotProps, keyof RaPopoverProps> & {
-    /**
-     * Reference to the popover element
-     */
     ref?: React.Ref<typeof RaPopover>;
   };
 
-/**
- * Type signature for the Popover component.
- */
-export type PopoverComponent = FC<PopoverProps>;
+export type PopoverBaseComponent = FC<PopoverBaseProps>;
+
+// ============================================================
+// COMPOUND POPOVER PROPS
+// ============================================================
+
+export type PopoverRootProps = OmitInternalProps<HTMLChakraProps<"div">> & {
+  children: React.ReactNode;
+
+  /** Whether the popover is open (controlled mode) */
+  isOpen?: boolean;
+
+  /** Whether the popover is open by default (uncontrolled mode) */
+  defaultOpen?: boolean;
+
+  /** Callback fired when the popover open state changes */
+  onOpenChange?: (isOpen: boolean) => void;
+
+  /** Position relative to trigger */
+  placement?: RaPopoverProps["placement"];
+
+  /** Gap between trigger and popover */
+  offset?: number;
+
+  /** Close on click outside (default true) */
+  isDismissable?: boolean;
+
+  /** Prevent Escape key from closing */
+  isKeyboardDismissDisabled?: boolean;
+};
+
+export type PopoverTriggerProps = OmitInternalProps<
+  HTMLChakraProps<"button">
+> & {
+  children: React.ReactNode;
+
+  /** Render as child element (same pattern as Dialog.Trigger) */
+  asChild?: boolean;
+
+  /** Whether the trigger is disabled */
+  isDisabled?: boolean;
+
+  ref?: React.RefObject<HTMLButtonElement>;
+};
+
+export type PopoverContentProps = OmitInternalProps<HTMLChakraProps<"div">> & {
+  children: React.ReactNode;
+
+  /** CSS width value */
+  width?: string;
+
+  ref?: React.RefObject<HTMLDivElement>;
+};

@@ -822,3 +822,37 @@ export const WithFormField: Story = {
     });
   },
 };
+
+export const TrailingElement: Story = {
+  args: {
+    placeholder: "Search...",
+    ["aria-label"]: "test-search-input",
+    // `slot={null}` opts this Text out of the ambient TextContext that
+    // SearchField provides to its children (which otherwise requires a
+    // "description" or "errorMessage" slot).
+    trailingElement: (
+      <Text color="fg.muted" slot={null}>
+        kg
+      </Text>
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("searchbox");
+
+    const trailingElement = canvasElement.querySelector(
+      ".nimbus-search-input__trailingElement"
+    );
+    await expect(trailingElement).toBeInTheDocument();
+    await expect(trailingElement).toHaveTextContent("kg");
+
+    // Trailing element renders after the clear button, once one appears.
+    await userEvent.type(input, "test");
+    const clearButton = canvas.getByRole("button");
+    await expect(
+      clearButton.compareDocumentPosition(trailingElement as Node) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+    await userEvent.clear(input);
+  },
+};

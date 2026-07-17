@@ -51,6 +51,17 @@ export const badgeRecipe = defineRecipe({
           height: "500",
         },
       },
+      sm: {
+        fontSize: "350",
+        gap: "100",
+        h: "900",
+        lineHeight: "450",
+        px: "300",
+        _icon: {
+          width: "500",
+          height: "500",
+        },
+      },
       md: {
         fontSize: "400",
         gap: "200",

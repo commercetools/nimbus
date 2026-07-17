@@ -1081,3 +1081,52 @@ export const LeadingElement: Story = {
     );
   },
 };
+
+/**
+ * Trailing Element Example
+ * Demonstrates the trailingElement prop, which renders after the built-in
+ * clear button and dropdown indicator.
+ */
+export const TrailingElement: Story = {
+  render: () => {
+    return (
+      <Stack direction="row" gap="400" alignItems="center">
+        <Select.Root
+          aria-label="unit-select"
+          // `slot={null}` opts this Text out of the ambient TextContext that
+          // Select provides to its children (which otherwise requires a
+          // "description" or "errorMessage" slot).
+          trailingElement={
+            <Text color="fg.muted" slot={null}>
+              kg
+            </Text>
+          }
+        >
+          <Select.Options>
+            <Select.Option id="option1">Option 1</Select.Option>
+            <Select.Option id="option2">Option 2</Select.Option>
+            <Select.Option id="option3">Option 3</Select.Option>
+          </Select.Options>
+        </Select.Root>
+      </Stack>
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const trailingElement = canvasElement.querySelector(
+      ".nimbus-select__trailingElement"
+    );
+    expect(trailingElement).toBeInTheDocument();
+    expect(trailingElement).toHaveTextContent("kg");
+
+    // The trailing element appears after the trigger button (which holds
+    // the built-in clear/dropdown controls) in the DOM.
+    const trigger = canvas.getByRole("button", { name: /unit-select/i });
+    expect(
+      trigger.compareDocumentPosition(trailingElement as Node) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+  },
+};

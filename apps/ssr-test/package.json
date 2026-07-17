@@ -1,0 +1,24 @@
+{
+  "name": "ssr-test",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@commercetools/nimbus": "workspace:*",
+    "@commercetools/nimbus-icons": "workspace:*",
+    "@emotion/react": "catalog:react",
+    "@chakra-ui/react": "catalog:react",
+    "next": "^15.3.4",
+    "react": "catalog:react",
+    "react-dom": "catalog:react"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:react",
+    "@types/react-dom": "catalog:react",
+    "typescript": "catalog:tooling"
+  }
+}

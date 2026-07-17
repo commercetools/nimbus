@@ -35,6 +35,8 @@ export type SearchInputLeadingElementSlotProps = HTMLChakraProps<"div">;
 
 export type SearchInputInputSlotProps = HTMLChakraProps<"input">;
 
+export type SearchInputTrailingElementSlotProps = HTMLChakraProps<"div">;
+
 // ============================================================
 // MAIN PROPS
 // ============================================================
@@ -52,4 +54,11 @@ export type SearchInputProps = OmitInternalProps<
      * Placeholder text for the search input
      */
     placeholder?: string;
+    /**
+     * Optional element to display at the end of the input. Respects text
+     * direction (right in LTR, left in RTL).
+     *
+     * Renders after the built-in clear button.
+     */
+    trailingElement?: React.ReactNode;
   };

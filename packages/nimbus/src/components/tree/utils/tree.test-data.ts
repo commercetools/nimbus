@@ -1,11 +1,11 @@
 /**
  * Shared sample data for Tree stories and tests.
  */
-export type TreeNode = {
+export interface TreeNode {
   id: string;
   title: string;
   children?: TreeNode[];
-};
+}
 
 export const fileTree: TreeNode[] = [
   {

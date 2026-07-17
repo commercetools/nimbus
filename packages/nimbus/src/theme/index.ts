@@ -12,7 +12,7 @@ import { slotRecipes } from "./slot-recipes";
 import { textStyles } from "./text-styles";
 import { tokens } from "./tokens";
 
-const themeConfig = defineConfig({
+export const themeConfig = defineConfig({
   preflight: true,
   cssVarsPrefix: "nimbus",
   cssVarsRoot: ":where(:root, :host)",

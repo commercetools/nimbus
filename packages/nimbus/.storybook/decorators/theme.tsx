@@ -89,8 +89,15 @@ export const ThemeDecorator = ({
     return () => channel.off(DARK_MODE_EVENT_NAME, setDark);
   }, []);
 
+  const customTheme = context.parameters?.nimbusTheme;
+
   return (
-    <NimbusProvider locale={locale} defaultTheme={theme} router={noopRouter}>
+    <NimbusProvider
+      locale={locale}
+      defaultTheme={theme}
+      theme={customTheme}
+      router={noopRouter}
+    >
       <ColorModeSync isDark={isDark} />
       {children}
     </NimbusProvider>

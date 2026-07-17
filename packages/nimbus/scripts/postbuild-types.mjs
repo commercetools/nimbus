@@ -54,6 +54,20 @@ const RELOCATIONS = [
   },
 ];
 
+// Theme-generator types live in a subdirectory; create a barrel that re-exports.
+const THEME_GEN_BARREL = join(DIST, "theme-generator.d.ts");
+const THEME_GEN_INDEX = join(DIST, "theme-generator", "index.d.ts");
+if (existsSync(THEME_GEN_INDEX)) {
+  const content = readFileSync(THEME_GEN_INDEX, "utf8");
+  writeFileSync(
+    THEME_GEN_BARREL,
+    content.replace(/from '\.\//g, "from './theme-generator/")
+  );
+  console.log(
+    `[postbuild-types] generated theme-generator.d.ts (barrel → theme-generator/)`
+  );
+}
+
 for (const { from, to } of RELOCATIONS) {
   if (!existsSync(from)) {
     console.error(`[postbuild-types] missing ${from}`);
@@ -82,6 +96,7 @@ const ENTRY_POINTS = [
   "plugins/webpack",
   "plugins/vite",
   "plugins/stub",
+  "theme-generator",
 ];
 
 for (const entry of ENTRY_POINTS) {

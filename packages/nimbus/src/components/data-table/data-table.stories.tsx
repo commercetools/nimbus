@@ -2530,6 +2530,65 @@ export const HorizontalScrolling: Story = {
   },
 };
 
+export const StickyColumnScrollShadows: Story = {
+  render: () => {
+    return (
+      <Box maxW="600px">
+        <DataTable
+          columns={manyColumns}
+          rows={wideData}
+          selectionMode="multiple"
+          defaultSelectedKeys={new Set(["1"])}
+          maxHeight="300px"
+        />
+      </Box>
+    );
+  },
+
+  play: async ({ canvasElement, step }) => {
+    await step(
+      "At initial scroll position, right shadow is present but not left",
+      async () => {
+        const root = canvasElement.querySelector(
+          ".nimbus-data-table__root"
+        ) as HTMLElement;
+
+        await waitFor(() => {
+          expect(root).toHaveAttribute("data-scroll-right");
+        });
+        expect(root).not.toHaveAttribute("data-scroll-left");
+      }
+    );
+
+    await step("After scrolling right, left shadow appears", async () => {
+      const root = canvasElement.querySelector(
+        ".nimbus-data-table__root"
+      ) as HTMLElement;
+
+      root.scrollLeft = 100;
+      root.dispatchEvent(new Event("scroll"));
+
+      await waitFor(() => {
+        expect(root).toHaveAttribute("data-scroll-left");
+      });
+    });
+
+    await step("Scrolling to the end removes right shadow", async () => {
+      const root = canvasElement.querySelector(
+        ".nimbus-data-table__root"
+      ) as HTMLElement;
+
+      root.scrollLeft = root.scrollWidth - root.clientWidth;
+      root.dispatchEvent(new Event("scroll"));
+
+      await waitFor(() => {
+        expect(root).not.toHaveAttribute("data-scroll-right");
+      });
+      expect(root).toHaveAttribute("data-scroll-left");
+    });
+  },
+};
+
 export const FlexibleNestedChildren: Story = {
   render: (args) => {
     return (

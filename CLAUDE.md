@@ -482,13 +482,14 @@ capabilities.
 
 ### Testing Strategy
 
-The testing system uses Vitest with three distinct test categories:
+The testing system uses Vitest with four distinct test categories:
 
-| Category                          | File Pattern      | Purpose                                  | Audience     |
-| --------------------------------- | ----------------- | ---------------------------------------- | ------------ |
-| **Story Tests**                   | `*.stories.tsx`   | Internal component behavior testing      | Internal     |
-| **Internal Unit Tests**           | `*.spec.tsx`      | Internal utility and hook testing        | Internal     |
-| **Consumer Implementation Tests** | `*.docs.spec.tsx` | Documentation examples for consumer apps | **External** |
+| Category                          | File Pattern       | Purpose                                  | Audience     |
+| --------------------------------- | ------------------ | ---------------------------------------- | ------------ |
+| **Story Tests**                   | `*.stories.tsx`    | Internal component behavior testing      | Internal     |
+| **Internal Unit Tests**           | `*.spec.tsx`       | Internal utility and hook testing        | Internal     |
+| **Consumer Implementation Tests** | `*.docs.spec.tsx`  | Documentation examples for consumer apps | **External** |
+| **SSR Smoke Tests**               | `ssr.ssr.spec.tsx` | Server-side rendering validation         | Internal     |
 
 - **Story Tests**: Test component behavior with play functions in headless
   Chromium via Playwright. ALL component states, interactions, and a11y tested

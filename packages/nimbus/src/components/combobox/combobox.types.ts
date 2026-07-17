@@ -13,7 +13,7 @@ import type {
   UnstyledProp,
 } from "@chakra-ui/react/styled-system";
 import type { TagGroupProps as NimbusTagGroupProps } from "../tag-group/tag-group.types";
-import type { PopoverProps as NimbusPopoverProps } from "../popover/popover.types";
+import type { PopoverBaseProps as NimbusPopoverProps } from "../popover/popover.types";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
@@ -49,6 +49,7 @@ export type ComboBoxOptionSlotProps = HTMLChakraProps<"div">; // Will wrap React
 export type ComboBoxOptionIndicatorSlotProps = HTMLChakraProps<"div">; // Indicator for selected state (multi-select)
 export type ComboBoxOptionContentSlotProps = HTMLChakraProps<"div">; // Content wrapper for option text
 export type ComboBoxSectionSlotProps = HTMLChakraProps<"div">; // Will wrap React Aria Section
+export type ComboBoxTrailingElementSlotProps = HTMLChakraProps<"div">;
 
 // ============================================================
 // HELPER TYPES
@@ -161,6 +162,9 @@ export type ComboBoxRootContextValue<T> = {
 
   /** Leading visual element (e.g., search icon) rendered before the input */
   leadingElement?: ReactNode;
+
+  /** Trailing visual element rendered after the clear and toggle buttons */
+  trailingElement?: ReactNode;
 
   /** Ref to trigger element (for popover positioning) */
   triggerRef: React.RefObject<HTMLDivElement | null>;
@@ -670,6 +674,23 @@ export type ComboBoxRootProps<T extends object> = Omit<
    * ```
    */
   leadingElement?: ReactNode;
+
+  /**
+   * Optional element to display at the end of the input. Respects text
+   * direction (right in LTR, left in RTL).
+   *
+   * Renders after the built-in clear and toggle buttons, at the far
+   * trailing edge of the trigger.
+   *
+   * **Accessibility**: Ensure decorative elements have aria-hidden="true".
+   * If the element is functional (clickable), it needs its own aria-label.
+   *
+   * @example
+   * ```tsx
+   * <ComboBox.Root trailingElement={<Text color="fg.muted">kg</Text>} />
+   * ```
+   */
+  trailingElement?: ReactNode;
 
   /**
    * Whether component is disabled
