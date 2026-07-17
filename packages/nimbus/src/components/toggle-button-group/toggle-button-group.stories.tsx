@@ -28,12 +28,21 @@ const defaultChildren = (
 
 type ToggleButtonGroupSize = "md" | "xs"; // Replace with actual derived type if possible
 type ToggleButtonGroupColorPalette = "primary" | "critical" | "neutral"; // Replace with actual derived type
+type ToggleButtonGroupVariant =
+  "outline" | "ghost" | "solid" | "subtle" | "segmented"; // Replace with actual derived type if possible
 
 const sizes: ToggleButtonGroupSize[] = ["md", "xs"];
 const colorPalettes: ToggleButtonGroupColorPalette[] = [
   "primary",
   "critical",
   "neutral",
+];
+const variants: ToggleButtonGroupVariant[] = [
+  "outline",
+  "ghost",
+  "solid",
+  "subtle",
+  "segmented",
 ];
 
 /**
@@ -271,6 +280,78 @@ export const Sizes: Story = {
       await expect(
         within(groups[1]).getAllByRole("radio").length
       ).toBeGreaterThan(0);
+    });
+  },
+};
+
+/**
+ * Showcase Variants - Renders all five visual variants side by side, each
+ * with a pre-selected button, and verifies selection can still be toggled.
+ */
+export const Variants: Story = {
+  args: {
+    size: "md",
+    colorPalette: "primary",
+    selectedKeys: ["center"],
+    onSelectionChange: fn(),
+  },
+  render: (args) => (
+    <Stack direction="row" gap="400" alignItems="flex-start">
+      {variants.map((variant) => (
+        <ToggleButtonGroup.Root
+          key={variant}
+          {...args}
+          variant={variant}
+          aria-label={`${variant} Variant Group`}
+        >
+          {defaultChildren}
+        </ToggleButtonGroup.Root>
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, args, step }) => {
+    const canvas = within(canvasElement);
+    const onSelectionChange = args.onSelectionChange as ReturnType<typeof fn>;
+
+    await step("Render a group for each variant", async () => {
+      const groups = canvas.getAllByRole("radiogroup");
+      await expect(groups).toHaveLength(variants.length);
+
+      // Every group should render with the pre-selected "center" button
+      groups.forEach((group) => {
+        const buttons = within(group).getAllByRole("radio");
+        expect(buttons).toHaveLength(3);
+        const [, centerButton] = buttons;
+        expect(centerButton).toHaveAttribute("aria-checked", "true");
+      });
+    });
+
+    await step("Selection can still be toggled per variant", async () => {
+      // `selectedKeys` is a controlled prop here (fixed at "center" via
+      // args), so clicking won't visually move the selection - but the
+      // group must still notify the caller so a real consumer can react.
+      const outlineGroup = canvas.getByRole("radiogroup", {
+        name: "outline Variant Group",
+      });
+      const [leftButton] = within(outlineGroup).getAllByRole("radio");
+
+      await userEvent.click(leftButton);
+      await expect(onSelectionChange).toHaveBeenCalledTimes(1);
+      await expect(onSelectionChange).toHaveBeenLastCalledWith(
+        new Set(["left"])
+      );
+
+      const segmentedGroup = canvas.getByRole("radiogroup", {
+        name: "segmented Variant Group",
+      });
+      const [segmentedLeftButton] =
+        within(segmentedGroup).getAllByRole("radio");
+
+      await userEvent.click(segmentedLeftButton);
+      await expect(onSelectionChange).toHaveBeenCalledTimes(2);
+      await expect(onSelectionChange).toHaveBeenLastCalledWith(
+        new Set(["left"])
+      );
     });
   },
 };
