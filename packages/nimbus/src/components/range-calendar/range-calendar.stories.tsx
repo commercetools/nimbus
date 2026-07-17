@@ -11,8 +11,10 @@ import {
 import {
   today,
   getLocalTimeZone,
+  CalendarDate,
   type DateValue,
 } from "@internationalized/date";
+import { expect, waitFor } from "storybook/test";
 
 import { useState } from "react";
 
@@ -34,13 +36,19 @@ const meta: Meta<typeof RangeCalendar> = {
 export default meta;
 type Story = StoryObj<typeof RangeCalendar>;
 
+// Fixed anchor so snapshotted stories are deterministic. Live "today" stories
+// (Base, Controlled) stay live. See FEC-1149.
+const ANCHOR = new CalendarDate(2026, 5, 15);
+
 export const Base: Story = {};
 
 export const DefaultValue: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     defaultValue: {
-      start: today(getLocalTimeZone()).add({ days: 3 }),
-      end: today(getLocalTimeZone()).add({ days: 5 }),
+      start: ANCHOR.add({ days: 3 }),
+      end: ANCHOR.add({ days: 5 }),
     },
   },
 };
@@ -82,8 +90,17 @@ export const Controlled: Story = {
 
 /** Focus the calendar when it mounts. */
 export const Autofocus: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     autoFocus: true,
+    defaultFocusedValue: ANCHOR,
+  },
+  play: async ({ canvasElement }) => {
+    await waitFor(async () => {
+      const focused = canvasElement.ownerDocument.activeElement;
+      await expect(focused?.textContent?.trim()).toBe("15");
+    });
   },
 };
 
@@ -91,8 +108,10 @@ export const Autofocus: Story = {
  * Demonstrates internationalization with Spanish locale.
  */
 export const SpanishCalendar: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
-    // firstDayOfWeek: "sun",
+    defaultFocusedValue: ANCHOR,
   },
 
   render: (args: RangeCalendarProps<DateValue>) => (
@@ -121,8 +140,11 @@ export const GermanCalendar: Story = {
  * Demonstrates custom width styling.
  */
 export const CustomWidth: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     width: "720px",
+    defaultFocusedValue: ANCHOR,
   },
   render: (args: RangeCalendarProps<DateValue>) => <RangeCalendar {...args} />,
 };
@@ -131,10 +153,12 @@ export const CustomWidth: Story = {
  * Display more than one month
  */
 export const VisibleDuration: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     defaultValue: {
-      start: today(getLocalTimeZone()).add({ days: 3 }),
-      end: today(getLocalTimeZone()).add({ days: 8 }),
+      start: ANCHOR.add({ days: 3 }),
+      end: ANCHOR.add({ days: 8 }),
     },
     visibleDuration: { months: 3 },
     pageBehavior: "single",
@@ -179,10 +203,12 @@ export const PagingBehavior: Story = {
  * Demonstrates different form states: disabled and read-only.
  */
 export const CalendarFormStates: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const defaultRange = {
-      start: today(getLocalTimeZone()).add({ days: 3 }),
-      end: today(getLocalTimeZone()).add({ days: 8 }),
+      start: ANCHOR.add({ days: 3 }),
+      end: ANCHOR.add({ days: 8 }),
     };
 
     return (
@@ -218,9 +244,12 @@ export const MaxValue: Story = {
  * Allow only dates from 1 week back to 4 weeks ahead.
  */
 export const MinAndMaxValue: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
-    minValue: today(getLocalTimeZone()).subtract({ weeks: 1 }),
-    maxValue: today(getLocalTimeZone()).add({ weeks: 1 }),
+    defaultFocusedValue: ANCHOR,
+    minValue: ANCHOR.subtract({ weeks: 1 }),
+    maxValue: ANCHOR.add({ weeks: 1 }),
   },
   render: (args: RangeCalendarProps<DateValue>) => (
     <Stack alignItems="start">
@@ -236,8 +265,11 @@ export const MinAndMaxValue: Story = {
  * Specify the day that starts the week.
  */
 export const CustomWeekStartDay: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     firstDayOfWeek: "fri",
+    defaultFocusedValue: ANCHOR,
   },
   render: (args: RangeCalendarProps<DateValue>) => (
     <Stack alignItems="start">
@@ -254,7 +286,10 @@ export const CustomWeekStartDay: Story = {
  * This example marks the third full week of each month as unavailable.
  */
 export const UnavailableDates: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
+    defaultFocusedValue: ANCHOR,
     isDateUnavailable: (date: DateValue) => {
       const dateObj = date.toDate(getLocalTimeZone());
       const dayOfMonth = dateObj.getDate();
@@ -278,8 +313,14 @@ export const UnavailableDates: Story = {
  * This enables selecting ranges that span across blocked-out periods.
  */
 export const NonContiguousRanges: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     allowsNonContiguousRanges: true,
+    defaultValue: {
+      start: ANCHOR,
+      end: ANCHOR.add({ days: 5 }),
+    },
     isDateUnavailable: (date: DateValue) => {
       const dateObj = date.toDate(getLocalTimeZone());
       const dayOfWeek = dateObj.getDay();

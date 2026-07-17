@@ -237,9 +237,8 @@ One switch remains:
 Caveats:
 
 - **Coverage is opt-in.** Only stories with `disableSnapshot: false` snapshot,
-  so only those components can produce a blocking diff (today: avatar + the
-  button family). A regression in an un-instrumented component won't block
-  anything until its stories opt in.
+  so only those components can produce a blocking diff. A regression in an
+  un-instrumented component won't block anything until its stories opt in.
 - **Admins bypass.** `enforce_admins` is off, so an admin can still merge past a
   red `UI Tests`. Tighten only if you want it airtight.
 - **Context-name coupling.** The skip-path status hardcodes the `UI Tests`
