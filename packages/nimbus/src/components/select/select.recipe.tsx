@@ -13,6 +13,7 @@ export const selectSlotRecipe = defineSlotRecipe({
     "options",
     "optionGroup",
     "option",
+    "trailingElement",
   ],
   // Unique class name prefix for the component
   className: "nimbus-select",
@@ -54,6 +55,11 @@ export const selectSlotRecipe = defineSlotRecipe({
       },
     },
     leadingElement: {
+      display: "flex",
+      alignItems: "center",
+      color: "neutral.11",
+    },
+    trailingElement: {
       display: "flex",
       alignItems: "center",
       color: "neutral.11",
@@ -163,6 +169,11 @@ export const selectSlotRecipe = defineSlotRecipe({
             boxSize: "400",
           },
         },
+        trailingElement: {
+          "& > svg": {
+            boxSize: "400",
+          },
+        },
       },
       md: {
         root: {},
@@ -173,6 +184,11 @@ export const selectSlotRecipe = defineSlotRecipe({
           textStyle: "md",
         },
         leadingElement: {
+          "& > svg": {
+            boxSize: "500",
+          },
+        },
+        trailingElement: {
           "& > svg": {
             boxSize: "500",
           },

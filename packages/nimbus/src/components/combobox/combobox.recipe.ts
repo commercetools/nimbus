@@ -19,6 +19,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     "option",
     "optionIndicator",
     "optionContent",
+    "trailingElement",
   ],
   // Unique class name prefix for the component
   className: "nimbus-combobox",
@@ -58,10 +59,21 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         pr: "100",
       },
     },
+    trailingElement: {
+      gridArea: "trailingElement",
+      display: "flex",
+      alignItems: "center",
+      color: "neutral.11",
+      "& svg": {
+        minH: "600",
+        minW: "600",
+      },
+    },
     trigger: {
       display: "grid",
-      gridTemplateColumns: "auto 1fr auto auto",
-      gridTemplateAreas: '"leadingElement content clear toggle"',
+      gridTemplateColumns: "auto 1fr auto auto auto",
+      gridTemplateAreas:
+        '"leadingElement content clear toggle trailingElement"',
       alignItems: "center",
       gap: "100",
       width: "100%",
@@ -235,6 +247,9 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
         leadingElement: {
           minH: "800",
         },
+        trailingElement: {
+          minH: "800",
+        },
       },
       // Medium
       md: {
@@ -243,6 +258,9 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           textStyle: "md",
         },
         leadingElement: {
+          minH: "1000",
+        },
+        trailingElement: {
           minH: "1000",
         },
       },

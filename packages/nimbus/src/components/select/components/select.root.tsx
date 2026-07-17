@@ -20,6 +20,7 @@ import {
   SelectTriggerSlot,
   SelectTriggerLabelSlot,
   SelectLeadingElementSlot,
+  SelectTrailingElementSlot,
 } from "./../select.slots";
 import { SelectClearButton } from "./select.clear-button";
 import { type SelectProps } from "./../select.types";
@@ -34,6 +35,7 @@ export const SelectRoot = function SelectRoot({
   ref: forwardedRef,
   children,
   leadingElement,
+  trailingElement,
   isLoading,
   isDisabled,
   isClearable = true,
@@ -53,45 +55,53 @@ export const SelectRoot = function SelectRoot({
   return (
     <SelectRootSlot asChild ref={ref} {...recipeProps} {...styleProps}>
       <RaSelect {...raSelectProps}>
-        <chakra.div position="relative">
-          <SelectTriggerSlot zIndex={0} asChild>
-            <RaButton>
-              {leadingElement && (
-                <SelectLeadingElementSlot asChild>
-                  {leadingElement}
-                </SelectLeadingElementSlot>
-              )}
-              <SelectTriggerLabelSlot asChild>
-                <RaSelectValue />
-              </SelectTriggerLabelSlot>
-            </RaButton>
-          </SelectTriggerSlot>
-          <Flex
-            position="absolute"
-            top="0"
-            bottom="0"
-            zIndex={1}
-            right="400"
-            pointerEvents="none"
-          >
-            {isClearable && (
-              <Flex width="600" my="auto">
-                <SelectClearButton isDisabled={isLoading || isDisabled} />
-              </Flex>
-            )}
-
-            <Flex my="auto" w="600" h="600">
-              <Box color="neutral.9" asChild m="auto" w="400" h="400">
-                {isLoading ? (
-                  <Box asChild animation="spin" animationDuration="slowest">
-                    <SpinnerIcon />
-                  </Box>
-                ) : (
-                  <DropdownIndicatorIcon />
+        <chakra.div display="flex" alignItems="center" width="100%">
+          <chakra.div position="relative" flex="1" minWidth="0">
+            <SelectTriggerSlot zIndex={0} asChild>
+              <RaButton>
+                {leadingElement && (
+                  <SelectLeadingElementSlot asChild>
+                    {leadingElement}
+                  </SelectLeadingElementSlot>
                 )}
-              </Box>
+                <SelectTriggerLabelSlot asChild>
+                  <RaSelectValue />
+                </SelectTriggerLabelSlot>
+              </RaButton>
+            </SelectTriggerSlot>
+            <Flex
+              position="absolute"
+              top="0"
+              bottom="0"
+              zIndex={1}
+              right="400"
+              pointerEvents="none"
+            >
+              {isClearable && (
+                <Flex width="600" my="auto">
+                  <SelectClearButton isDisabled={isLoading || isDisabled} />
+                </Flex>
+              )}
+
+              <Flex my="auto" w="600" h="600">
+                <Box color="neutral.9" asChild m="auto" w="400" h="400">
+                  {isLoading ? (
+                    <Box asChild animation="spin" animationDuration="slowest">
+                      <SpinnerIcon />
+                    </Box>
+                  ) : (
+                    <DropdownIndicatorIcon />
+                  )}
+                </Box>
+              </Flex>
             </Flex>
-          </Flex>
+          </chakra.div>
+
+          {trailingElement && (
+            <SelectTrailingElementSlot>
+              {trailingElement}
+            </SelectTrailingElementSlot>
+          )}
         </chakra.div>
 
         <RaPopover>{children}</RaPopover>

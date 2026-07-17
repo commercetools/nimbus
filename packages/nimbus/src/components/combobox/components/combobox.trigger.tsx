@@ -6,6 +6,7 @@ import { ComboBoxTriggerSlot, ComboBoxContentSlot } from "../combobox.slots";
 import type { ComboBoxTriggerProps } from "../combobox.types";
 import { ComboBoxInput } from "./combobox.input";
 import { ComboBoxLeadingElement } from "./combobox.leading-element";
+import { ComboBoxTrailingElement } from "./combobox.trailing-element";
 import { ComboBoxTagGroup } from "./combobox.tag-group";
 
 /**
@@ -33,8 +34,14 @@ export const ComboBoxTrigger = ({
   children,
   ...restProps
 }: ComboBoxTriggerProps) => {
-  const { triggerRef, leadingElement, inputRef, isLoading, isDisabled } =
-    useComboBoxRootContext();
+  const {
+    triggerRef,
+    leadingElement,
+    trailingElement,
+    inputRef,
+    isLoading,
+    isDisabled,
+  } = useComboBoxRootContext();
 
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     // Focus input when clicking anywhere on the trigger, except on buttons
@@ -78,6 +85,10 @@ export const ComboBoxTrigger = ({
           <KeyboardArrowDown />
         )}
       </IconButton>
+
+      {trailingElement && (
+        <ComboBoxTrailingElement>{trailingElement}</ComboBoxTrailingElement>
+      )}
 
       {children}
     </ComboBoxTriggerSlot>

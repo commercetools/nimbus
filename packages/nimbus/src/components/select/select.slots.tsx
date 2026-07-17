@@ -26,6 +26,11 @@ export const SelectLeadingElementSlot = withContext<
   HTMLChakraProps<"div">
 >("div", "leadingElement");
 
+export const SelectTrailingElementSlot = withContext<
+  HTMLDivElement,
+  HTMLChakraProps<"div">
+>("div", "trailingElement");
+
 // Trigger Button
 export const SelectTriggerSlot = withContext<
   HTMLButtonElement,

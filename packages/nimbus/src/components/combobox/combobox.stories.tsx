@@ -819,6 +819,43 @@ export const LayoutLeadingElement: Story = {
 };
 
 /**
+ * Layout: Trailing Element
+ * Tests that a trailing element (e.g. a unit suffix) displays correctly
+ * after the built-in clear and toggle buttons when provided.
+ */
+export const LayoutTrailingElement: Story = {
+  render: () => {
+    return (
+      <ComposedComboBox
+        aria-label="Combobox with trailing element"
+        items={simpleOptions}
+        trailingElement={<Text color="fg.muted">kg</Text>}
+      />
+    );
+  },
+
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Trailing element renders in its own slot
+    const trailingElement = canvasElement.querySelector(
+      ".nimbus-combobox__trailingElement"
+    );
+    expect(trailingElement).toBeInTheDocument();
+    expect(trailingElement).toHaveTextContent("kg");
+
+    // It appears after the toggle button in the DOM
+    const toggleButton = canvas.getByRole("button", {
+      name: /toggle options/i,
+    });
+    expect(
+      toggleButton.compareDocumentPosition(trailingElement as Node) &
+        Node.DOCUMENT_POSITION_FOLLOWING
+    ).toBeTruthy();
+  },
+};
+
+/**
  * Layout: Input Field Visibility
  * Tests that input field is visible and functional
  */

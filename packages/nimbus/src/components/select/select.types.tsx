@@ -66,6 +66,13 @@ export type SelectProps = OmitInternalProps<SelectRootSlotProps> &
      */
     leadingElement?: ReactNode;
     /**
+     * Optional element to display at the end of the input. Respects text
+     * direction (right in LTR, left in RTL).
+     *
+     * Renders after the built-in clear button and dropdown indicator.
+     */
+    trailingElement?: ReactNode;
+    /**
      * Whether to show a clear button when a value is selected
      * @default false
      */

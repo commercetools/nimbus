@@ -18,6 +18,7 @@ import {
   SearchInputRootSlot,
   SearchInputLeadingElementSlot,
   SearchInputInputSlot,
+  SearchInputTrailingElementSlot,
 } from "./search-input.slots";
 import type { SearchInputProps } from "./search-input.types";
 import { searchInputMessagesStrings } from "./search-input.messages";
@@ -32,7 +33,7 @@ import { searchInputMessagesStrings } from "./search-input.messages";
  * @supportsStyleProps
  */
 export const SearchInput = (props: SearchInputProps) => {
-  const { ref: forwardedRef, ...restProps } = props;
+  const { ref: forwardedRef, trailingElement, ...restProps } = props;
 
   const msg = useLocalizedStringFormatter(searchInputMessagesStrings);
   const recipe = useSlotRecipe({ recipe: searchInputSlotRecipe });
@@ -83,6 +84,11 @@ export const SearchInput = (props: SearchInputProps) => {
             >
               <Close />
             </IconButton>
+            {trailingElement && (
+              <SearchInputTrailingElementSlot>
+                {trailingElement}
+              </SearchInputTrailingElementSlot>
+            )}
           </SearchInputRootSlot>
         )}
       </RaSearchField>

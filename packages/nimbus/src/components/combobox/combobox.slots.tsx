@@ -13,6 +13,7 @@ import type {
   ComboBoxOptionSlotProps,
   ComboBoxOptionIndicatorSlotProps,
   ComboBoxOptionContentSlotProps,
+  ComboBoxTrailingElementSlotProps,
 } from "./combobox.types";
 
 const { withProvider, withContext } = createSlotRecipeContext({
@@ -90,3 +91,9 @@ export const ComboBoxOptionContentSlot = withContext<
   HTMLDivElement,
   ComboBoxOptionContentSlotProps
 >("div", "optionContent");
+
+// TrailingElement slot - wrapper for trailing element (icon, action, etc.)
+export const ComboBoxTrailingElementSlot = withContext<
+  HTMLDivElement,
+  ComboBoxTrailingElementSlotProps
+>("div", "trailingElement");
