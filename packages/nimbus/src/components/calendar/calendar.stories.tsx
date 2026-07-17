@@ -276,11 +276,11 @@ export const TodayHighlighting: Story = {
     const todayCells = canvasElement.querySelectorAll('[data-today="true"]');
     await expect(todayCells).toHaveLength(1);
 
-    const normalCell = canvasElement.querySelector('[data-today="false"]');
-    if (!normalCell) throw new Error("expected a non-today cell to compare");
+    const nonTodayCell = canvasElement.querySelector('[data-today="false"]');
+    if (!nonTodayCell) throw new Error("expected a non-today cell to compare");
 
     await expect(getComputedStyle(todayCells[0]).backgroundColor).not.toBe(
-      getComputedStyle(normalCell).backgroundColor
+      getComputedStyle(nonTodayCell).backgroundColor
     );
   },
 };
