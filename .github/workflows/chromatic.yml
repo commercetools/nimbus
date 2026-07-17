@@ -55,13 +55,14 @@ jobs:
             packages/nimbus/chromatic.config.json
             packages/nimbus/.storybook/main.ts
 
-      # No UI changed, so Chromatic won't run and won't post its "UI Tests"
-      # status. Post a passing one ourselves on the PR head SHA - otherwise a
-      # required "UI Tests" check would wait forever and block non-UI PRs.
+      # No UI changed (or the changesets release PR - version/CHANGELOG bumps
+      # only), so Chromatic is skipped. Post a passing "UI Tests" status
+      # ourselves. See runbook "Merge gating".
       - name: No UI changes detected
         if:
-          steps.changed-files.outputs.any_changed != 'true' && github.event_name
-          != 'workflow_dispatch'
+          (steps.changed-files.outputs.any_changed != 'true' || github.head_ref
+          == 'changeset-release/main') && github.event_name !=
+          'workflow_dispatch'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -73,14 +74,16 @@ jobs:
 
       - name: Installing dependencies and building packages
         if:
-          steps.changed-files.outputs.any_changed == 'true' || github.event_name
-          == 'workflow_dispatch'
+          (steps.changed-files.outputs.any_changed == 'true' ||
+          github.event_name == 'workflow_dispatch') && github.head_ref !=
+          'changeset-release/main'
         uses: ./.github/actions/ci
 
       - name: Run Chromatic
         if:
-          steps.changed-files.outputs.any_changed == 'true' || github.event_name
-          == 'workflow_dispatch'
+          (steps.changed-files.outputs.any_changed == 'true' ||
+          github.event_name == 'workflow_dispatch') && github.head_ref !=
+          'changeset-release/main'
         uses: chromaui/action@94713c544284a14195de3b50ef24301579f1877e # v18
         with:
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}

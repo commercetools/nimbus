@@ -74,6 +74,16 @@ editor-only autocomplete tooling. Neither changes rendered pixels.
 Some files inside the watched packages are ignored because they don't change how
 components look: `chromatic.config.json` and `.storybook/main.ts`.
 
+The changesets **"Version Packages" release PR** (head branch
+`changeset-release/main`) is a special case: its only diff is version bumps and
+`CHANGELOG.md` under `packages/nimbus/**`, so the gate would otherwise open and
+run a full build for zero rendered-output change. Instead, that branch is routed
+to the skip-path (build + Chromatic steps carry
+`github.head_ref != 'changeset-release/main'`), so it posts a passing `UI Tests`
+status without building - keeping it unblocked if `UI Tests` becomes required
+(see [Merge gating](#merge-gating)). The release commit still gets a real build
+on the `push` to `main` after that PR merges.
+
 **What the gate diffs against depends on the event** (`since_last_remote_commit`
 is set to `${{ github.event_name == 'push' }}`):
 
