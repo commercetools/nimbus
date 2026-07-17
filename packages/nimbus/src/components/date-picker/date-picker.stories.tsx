@@ -1002,6 +1002,8 @@ export const PlaceholderValue: Story = {
  * Demonstrates all combinations of available sizes, variants, and form states
  */
 export const VariantsSizesAndStates: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     ["aria-label"]: "Select a date",
   },
@@ -2556,6 +2558,8 @@ export const UnavailableDates: Story = {
  * Demonstrates that DatePicker accepts a width property
  */
 export const CustomWidth: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     ["aria-label"]: "Select a date",
   },
@@ -2580,6 +2584,8 @@ export const CustomWidth: Story = {
  * Demonstrates the DatePicker adapting to different locales
  */
 export const MultipleLocales: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     ["aria-label"]: "Select a date",
   },
@@ -2874,25 +2880,8 @@ export const InFormFieldContext: Story = {
     );
 
     await step(
-      "DatePicker width='full' fills FormField container",
+      "FormField wires label and description to the DatePicker group via ARIA",
       async () => {
-        const datePickers = canvas.getAllByRole("group");
-
-        for (const datePicker of datePickers) {
-          // Check that DatePicker is rendered properly
-          await expect(datePicker).toBeInTheDocument();
-
-          // Verify DatePicker is wide enough by checking it's not tiny
-          const rect = datePicker.getBoundingClientRect();
-          await expect(rect.width).toBeGreaterThan(180); // Reasonable minimum width
-        }
-      }
-    );
-
-    await step(
-      "FormField accessibility relationships are established",
-      async () => {
-        // Test each FormField context for proper ARIA relationships
         const formFieldContexts = [
           {
             label: "Event Date",
@@ -2909,25 +2898,20 @@ export const InFormFieldContext: Story = {
         ];
 
         for (const context of formFieldContexts) {
-          // Verify label and description are present
-          await expect(
-            await canvas.findByText(context.label)
-          ).toBeInTheDocument();
-          await expect(
-            await canvas.findByText(context.description)
-          ).toBeInTheDocument();
-
           const datePicker = await canvas.findByRole("group", {
             name: new RegExp(context.label, "i"),
           });
-          await expect(datePicker).toBeInTheDocument();
+          const label = canvas.getByText(context.label);
+          const description = canvas.getByText(context.description);
 
-          const segments = within(datePicker).getAllByRole("spinbutton");
-          for (const segment of segments) {
-            const ariaLabel = segment.getAttribute("aria-label");
-            await expect(ariaLabel).toBeTruthy();
-            await expect(segment).toHaveAttribute("tabindex", "0");
-          }
+          // toContain, not exact: React Aria merges the FormField ids with its
+          // own, so the group references more than just these two elements.
+          await expect(datePicker.getAttribute("aria-labelledby")).toContain(
+            label.id
+          );
+          await expect(datePicker.getAttribute("aria-describedby")).toContain(
+            description.id
+          );
         }
       }
     );
@@ -3190,5 +3174,21 @@ export const PopoverBehavior: Story = {
         await expect(calendar).toBeInTheDocument();
       }
     );
+  },
+};
+
+export const OpenCalendar: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    ["aria-label"]: "Select a date",
+    defaultValue: new CalendarDate(2025, 6, 15),
+    defaultOpen: true,
+  },
+  play: async ({ step }) => {
+    await step("Calendar opens to the pinned month", async () => {
+      const calendarGrid = await within(document.body).findByRole("grid");
+      await expect(calendarGrid).toBeInTheDocument();
+    });
   },
 };
