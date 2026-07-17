@@ -1,0 +1,314 @@
+---
+title: FilterMenu Pattern
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { FilterMenu, type FilterMenuSectionProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+A minimal filter menu with a status filter and a clear action:
+
+```jsx live-dev
+const App = () => {
+  const [status, setStatus] = useState(null);
+
+  return (
+    <FilterMenu.Root>
+      <FilterMenu.Trigger asChild>
+        <Button variant="ghost" size="xs">
+          Filters {status && "(1)"}
+        </Button>
+      </FilterMenu.Trigger>
+      <FilterMenu.Content width="280px">
+        <FilterMenu.Section label="Status">
+          <FilterMenu.Option
+            isSelected={status === "Published"}
+            onSelect={() =>
+              setStatus((s) => (s === "Published" ? null : "Published"))
+            }
+          >
+            Published
+          </FilterMenu.Option>
+          <FilterMenu.Option
+            isSelected={status === "Modified"}
+            onSelect={() =>
+              setStatus((s) => (s === "Modified" ? null : "Modified"))
+            }
+          >
+            Modified
+          </FilterMenu.Option>
+          <FilterMenu.Option
+            isSelected={status === "Unpublished"}
+            onSelect={() =>
+              setStatus((s) => (s === "Unpublished" ? null : "Unpublished"))
+            }
+          >
+            Unpublished
+          </FilterMenu.Option>
+        </FilterMenu.Section>
+        <Separator />
+        <FilterMenu.ClearAction onPress={() => setStatus(null)}>
+          Clear all filters
+        </FilterMenu.ClearAction>
+      </FilterMenu.Content>
+    </FilterMenu.Root>
+  );
+};
+```
+
+## Compound API
+
+FilterMenu exposes six sub-components through a namespace object:
+
+| Sub-component | Purpose |
+| --- | --- |
+| `FilterMenu.Root` | Wraps `Popover.Root` — manages open state and positioning |
+| `FilterMenu.Trigger` | Wraps `Popover.Trigger` — the button that opens the menu |
+| `FilterMenu.Content` | Wraps `Popover.Content` — scrollable container with vertical layout |
+| `FilterMenu.Section` | Collapsible group with a label header (uses `CollapsibleMotion`) |
+| `FilterMenu.Option` | Selectable row with `data-selected` state and hover styling |
+| `FilterMenu.ClearAction` | Bottom action button in critical color for resetting filters |
+
+## Usage examples
+
+### Collapsible sections
+
+Sections are expanded by default. Set `defaultExpanded={false}` to start collapsed. Clicking the section header toggles expand/collapse with animation.
+
+```jsx live-dev
+const App = () => {
+  return (
+    <FilterMenu.Root>
+      <FilterMenu.Trigger asChild>
+        <Button variant="ghost" size="xs">
+          Filters
+        </Button>
+      </FilterMenu.Trigger>
+      <FilterMenu.Content width="280px">
+        <FilterMenu.Section label="Category" defaultExpanded={false}>
+          <FilterMenu.Option isSelected={false} onSelect={() => {}}>
+            Electronics
+          </FilterMenu.Option>
+          <FilterMenu.Option isSelected={false} onSelect={() => {}}>
+            Clothing
+          </FilterMenu.Option>
+        </FilterMenu.Section>
+        <FilterMenu.Section label="Availability">
+          <FilterMenu.Option isSelected onSelect={() => {}}>
+            In stock
+          </FilterMenu.Option>
+          <FilterMenu.Option isSelected={false} onSelect={() => {}}>
+            Out of stock
+          </FilterMenu.Option>
+        </FilterMenu.Section>
+      </FilterMenu.Content>
+    </FilterMenu.Root>
+  );
+};
+```
+
+### Horizontal section layout
+
+Use `direction="row"` on a section to lay out children horizontally. This is useful for range inputs (min/max) or compact control groups.
+
+```jsx live-dev
+const App = () => {
+  const [min, setMin] = useState("");
+  const [max, setMax] = useState("");
+
+  return (
+    <FilterMenu.Root>
+      <FilterMenu.Trigger asChild>
+        <Button variant="ghost" size="xs">
+          Filters
+        </Button>
+      </FilterMenu.Trigger>
+      <FilterMenu.Content width="320px">
+        <FilterMenu.Section label="Price range" direction="row">
+          <TextInput
+            aria-label="Minimum price"
+            placeholder="Min"
+            value={min}
+            onChange={setMin}
+          />
+          <TextInput
+            aria-label="Maximum price"
+            placeholder="Max"
+            value={max}
+            onChange={setMax}
+          />
+        </FilterMenu.Section>
+      </FilterMenu.Content>
+    </FilterMenu.Root>
+  );
+};
+```
+
+### Mixed filter types
+
+Sections accept arbitrary children — combine `FilterMenu.Option` with Nimbus form components like `Checkbox`, `TextInput`, or `Select`.
+
+```jsx live-dev
+const App = () => {
+  const [status, setStatus] = useState(null);
+  const [missing, setMissing] = useState(false);
+
+  return (
+    <FilterMenu.Root>
+      <FilterMenu.Trigger asChild>
+        <Button variant="ghost" size="xs">
+          Filters
+        </Button>
+      </FilterMenu.Trigger>
+      <FilterMenu.Content width="320px">
+        <FilterMenu.Section label="Status">
+          <FilterMenu.Option
+            isSelected={status === "Published"}
+            onSelect={() =>
+              setStatus((s) => (s === "Published" ? null : "Published"))
+            }
+          >
+            Published
+          </FilterMenu.Option>
+          <FilterMenu.Option
+            isSelected={status === "Modified"}
+            onSelect={() =>
+              setStatus((s) => (s === "Modified" ? null : "Modified"))
+            }
+          >
+            Modified
+          </FilterMenu.Option>
+        </FilterMenu.Section>
+        <FilterMenu.Section label="Missing fields">
+          <Checkbox isSelected={missing} onChange={setMissing}>
+            Description
+          </Checkbox>
+        </FilterMenu.Section>
+        <Separator />
+        <FilterMenu.ClearAction
+          onPress={() => {
+            setStatus(null);
+            setMissing(false);
+          }}
+        >
+          Clear all filters
+        </FilterMenu.ClearAction>
+      </FilterMenu.Content>
+    </FilterMenu.Root>
+  );
+};
+```
+
+### Controlled mode
+
+Pass `isOpen` and `onOpenChange` to `FilterMenu.Root` for controlled open state:
+
+```tsx
+const [isOpen, setIsOpen] = useState(false);
+
+<FilterMenu.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+  <FilterMenu.Trigger asChild>
+    <Button>Filters</Button>
+  </FilterMenu.Trigger>
+  <FilterMenu.Content width="280px">
+    {/* sections */}
+  </FilterMenu.Content>
+</FilterMenu.Root>
+```
+
+## Behaviour
+
+### Focus management
+
+- All form inputs inside sections receive focus normally via Tab
+- The popover does NOT close when the user interacts with content inside it (unlike Menu)
+- Pressing Escape closes the popover and returns focus to the trigger
+- Clicking outside the popover closes it
+
+### FilterMenu.Option
+
+Options are plain buttons with selected-state styling:
+
+- `data-selected="true"` is set when `isSelected` is true
+- Selected background: `primary.2`
+- Hover background: `neutral.3`
+- Clicking an option calls `onSelect` but does NOT close the popover
+
+### FilterMenu.ClearAction
+
+A bottom-positioned button styled with the critical color palette. Clicking it calls `onPress` but does NOT close the popover — the consumer resets filter state in the callback.
+
+## Comparison: FilterMenu vs Menu
+
+| Behaviour | FilterMenu | Menu |
+| --- | --- | --- |
+| Closes on item click | No | Yes |
+| Supports form inputs | Yes | No |
+| Focus model | Normal tab navigation | Roving tabindex (arrow keys) |
+| Selection | Consumer-managed `isSelected` | Built-in `selectionMode` |
+| Sections | Collapsible with animation | Static groups with separators |
+| Built on | Popover (DialogTrigger) | MenuTrigger |
+
+Use FilterMenu when you need interactive form controls that stay open. Use Menu for action lists that close after selection.
+
+## API reference
+
+### FilterMenu.Root
+
+Accepts all `Popover.Root` props:
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `isOpen` | `boolean` | — | Controlled open state |
+| `defaultOpen` | `boolean` | `false` | Uncontrolled initial state |
+| `onOpenChange` | `(isOpen: boolean) => void` | — | Open state change callback |
+| `placement` | `Placement` | `"bottom start"` | Position relative to trigger |
+| `offset` | `number` | `4` | Gap between trigger and popover |
+
+### FilterMenu.Trigger
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `asChild` | `boolean` | `false` | Render as child element |
+| `isDisabled` | `boolean` | `false` | Whether the trigger is disabled |
+
+### FilterMenu.Content
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `width` | `string` | — | CSS width value for the popover |
+
+### FilterMenu.Section
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `label` | `string` | — | Section header text |
+| `defaultExpanded` | `boolean` | `true` | Whether the section starts expanded |
+| `direction` | `"row" \| "column"` | `"column"` | Layout direction for section content |
+
+### FilterMenu.Option
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `isSelected` | `boolean` | — | Whether the option is selected |
+| `onSelect` | `() => void` | — | Selection toggle callback |
+
+### FilterMenu.ClearAction
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `onPress` | `() => void` | — | Callback when the clear button is clicked |
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using FilterMenu within your application. The component's internal behaviour is already covered by Nimbus — these tests help you verify your integration.
+
+{{docs-tests: filter-menu.docs.spec.tsx}}
