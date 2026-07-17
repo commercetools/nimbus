@@ -60,12 +60,12 @@ Two filters decide whether the job actually does work:
 
 The gate watches the paths whose contents feed rendered output:
 
-| Path                       | Why it's watched                                                                      |
-| -------------------------- | ------------------------------------------------------------------------------------- |
-| `packages/nimbus/**`       | Component source + Storybook globals (`preview.tsx`, decorators, `preview-head.html`) |
-| `packages/tokens/**`       | Design tokens (colors, spacing, type)                                                 |
-| `packages/nimbus-icons/**` | Icons rendered inside components                                                      |
-| `pnpm-lock.yaml`           | Dependency version changes that can shift rendered output                             |
+| Path                       | Why it's watched                                                 |
+| -------------------------- | ---------------------------------------------------------------- |
+| `packages/nimbus/**`       | Component source + Storybook globals (`preview.tsx`, decorators) |
+| `packages/tokens/**`       | Design tokens (colors, spacing, type)                            |
+| `packages/nimbus-icons/**` | Icons rendered inside components                                 |
+| `pnpm-lock.yaml`           | Dependency version changes that can shift rendered output        |
 
 `color-tokens` and `design-token-ts-plugin` are deliberately **not** watched:
 `color-tokens` isn't consumed by any rendered package, and the TS plugin is
@@ -106,12 +106,12 @@ and cheap.
 
 **Storybook config files force a full build:** TurboSnap traces the JavaScript
 module graph (`import` chains) to determine which stories are affected by a
-change. Files like `preview-head.html`, `preview.tsx`, and other `.storybook/`
-globals are injected at the document level - they are not imported by any story
-file, so Chromatic cannot link them to specific stories. Any change to these
-files disables TurboSnap for that build, snapshotting all stories instead. Avoid
-editing `.storybook/` files unnecessarily mid-PR; batch those changes into a
-single commit so only one full build is triggered.
+change. Files like `preview.tsx` and other `.storybook/` globals are injected at
+the document level - they are not imported by any story file, so Chromatic
+cannot link them to specific stories. Any change to these files disables
+TurboSnap for that build, snapshotting all stories instead. Avoid editing
+`.storybook/` files unnecessarily mid-PR; batch those changes into a single
+commit so only one full build is triggered.
 
 **Dependency bumps force a full snapshot:** the gate watches `pnpm-lock.yaml`,
 so any dependency change (Dependabot or housekeeping) triggers a build. Because
@@ -245,48 +245,13 @@ Caveats:
   context to match Chromatic's. If Chromatic's check name ever changes, update
   both the workflow step and the required-check config.
 
-## Deterministic dates in snapshots (the `Date` shim)
+## Deterministic dates in snapshots
 
-`.storybook/preview-head.html` overrides `window.Date` in the Chromatic browser
-so date-dependent components snapshot the same image every day. Without it,
-anything that renders "today" or a relative time drifts the baseline and shows a
-spurious diff on every run. Two things read the clock: React Aria date
-components read a live "today" at render (Calendar's highlighted cell), and
-story args compute `today()` at module load and bake it into the output.
-
-**Why offset instead of freeze.** The obvious fix, freezing `Date.now()` to a
-constant, stabilizes the date but breaks every component that depends on time
-_elapsing_, because they compute duration as `Date.now() - startTime`:
-
-- Async loads, debounces (`use-debounce`), and `setTimeout` logic see
-  `now - start === 0` forever, so they never resolve; the play function hangs
-  and the snapshot captures a stuck loading state.
-- Code that mints IDs from `Date.now()` returns the same value on every call,
-  producing duplicate React keys / colliding IDs.
-
-So the shim **anchors** now to a fixed instant (May 15, 2026, 12:00 UTC) and
-lets real time flow forward from it:
-
-```
-anchoredNow() = ANCHOR + (realNow() - start)
-```
-
-A snapshot run lasts seconds, so `ANCHOR + a few seconds` is still May 15 (the
-date is deterministic), while `Date.now()` keeps increasing, so timers resolve,
-async loads finish, and `Date.now()` IDs stay unique. Freeze gives a
-deterministic date but frozen time; offset gives a deterministic date _and_
-elapsing time.
-
-**Two implementation details:**
-
-- It runs in `preview-head.html`, not a decorator, because `today()` is read at
-  module-load time. `window.Date` must be replaced before any story module
-  evaluates, and the `<head>` script is the only hook that runs before the
-  bundle; a decorator or `beforeEach` runs too late.
-- It's gated to Chromatic (`navigator.userAgent` / `chromatic=true`) and only
-  overrides the no-arg path. `new Date("2020-01-01")` passes straight through,
-  so explicit dates are untouched and normal interactive Storybook keeps the
-  real clock.
+Date-dependent stories are made deterministic per story: snapshotted stories pin
+a fixed date anchor (a `CalendarDate` / `CalendarDateTime` in the story args or
+`defaultValue` / `defaultFocusedValue`), while stories that render a live
+"today" opt out of snapshots (`tags: ["vrt"]` is omitted) and verify their
+behavior with a play function instead.
 
 ## Writing stories for Chromatic (best practices from Chromatic's docs)
 

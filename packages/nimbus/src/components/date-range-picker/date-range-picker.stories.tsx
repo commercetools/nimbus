@@ -1106,6 +1106,8 @@ export const PlaceholderValue: Story = {
 };
 
 export const VariantsSizesAndStates: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     ["aria-label"]: "Select a date range",
   },
@@ -2610,18 +2612,6 @@ export const UnavailableDates: Story = {
         });
       }
     );
-    await step(
-      "Can successfully select available range from calendar",
-      async () => {}
-    );
-    await step(
-      "Cannot select first 10 days from calendar (clicking disabled dates)",
-      async () => {}
-    );
-    await step(
-      "Keyboard navigation in day segment respects unavailable dates",
-      async () => {}
-    );
   },
 };
 
@@ -2667,6 +2657,8 @@ export const NonContiguousRanges: Story = {
 };
 
 export const CustomWidth: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     ["aria-label"]: "Select a date range",
   },
@@ -2687,6 +2679,8 @@ export const CustomWidth: Story = {
 };
 
 export const MultipleLocales: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     ["aria-label"]: "Select a date range",
     firstDayOfWeek: "sun",
@@ -3365,5 +3359,24 @@ export const ForceLeadingZeros: Story = {
         });
       }
     );
+  },
+};
+
+export const OpenCalendar: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    ["aria-label"]: "Select a date range",
+    defaultValue: {
+      start: new CalendarDate(2025, 6, 15),
+      end: new CalendarDate(2025, 6, 20),
+    },
+    defaultOpen: true,
+  },
+  play: async ({ step }) => {
+    await step("Range calendar opens to the pinned month", async () => {
+      const calendarGrid = await within(document.body).findByRole("grid");
+      await expect(calendarGrid).toBeInTheDocument();
+    });
   },
 };
