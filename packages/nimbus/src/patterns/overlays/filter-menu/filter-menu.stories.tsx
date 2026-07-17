@@ -4,12 +4,12 @@ import { userEvent, within, expect, waitFor, fn } from "storybook/test";
 import {
   Button,
   Checkbox,
+  FilterMenu,
   Separator,
   Text,
   TextInput,
 } from "@commercetools/nimbus";
 import { FilterList } from "@commercetools/nimbus-icons";
-import { FilterMenu } from "./filter-menu";
 
 const meta: Meta<typeof FilterMenu.Root> = {
   title: "Patterns/Overlays/FilterMenu",
