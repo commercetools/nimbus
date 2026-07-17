@@ -87,6 +87,8 @@ export const SizesWithImages: Story = {
 };
 
 export const Variants: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     firstName: "John",
     lastName: "Doe",
@@ -523,6 +525,8 @@ export const AllFallbacks: Story = {
  * (initials / Person fallback / image).
  */
 export const CustomContent: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     ["aria-label"]: "avatar",
     children: <AutoAwesome />,
