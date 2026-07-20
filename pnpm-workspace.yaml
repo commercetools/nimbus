@@ -146,6 +146,10 @@ catalogs:
     "@testing-library/react": ^16.3.2
     playwright: ^1.61.1
     vitest: ^4.1.10
+    axe-core: ^4.11.0
+    "@typescript-eslint/types": ^8.48.1
+    "@typescript-eslint/typescript-estree": ^8.56.1
+    react-docgen-typescript: ^2.4.0
     # Storybook pinned exact at 10.4.6: 10.5.0 wraps HTMLElement.focus in its CSF
     # runtime and throws "Illegal invocation" when react-aria's
     # setupGlobalFocusEvents calls it, breaking browser story tests (flaky set of
@@ -181,6 +185,9 @@ catalogs:
     "@internationalized/date": ^3.12.2
     "@internationalized/string": ^3.2.9
     "@internationalized/string-compiler": ^3.4.1
+    react-hotkeys-hook: ^5.3.3
+    react-use: ^17.6.1
+    use-debounce: ^10.1.1
   utils:
     dequal: ^2.0.3
     dotenv: ^17.4.2
@@ -189,6 +196,12 @@ catalogs:
     "@types/lodash": ^4.17.24
     "@types/node": ^24.13.3
     zod: ^4.4.3
+    escape-html: ^1.0.3
+    "@types/escape-html": ^1.0.4
+    gray-matter: ^4.0.3
+    is-hotkey: ^0.2.0
+    "@types/is-hotkey": ^0.1.10
+    is-plain-obj: ^4.1.0
   # Markdown rendering stack for the Markdown component (react-markdown +
   # remark plugins). Grouped here so the whole pipeline is versioned together.
   # Markdown is safe by default (no raw HTML), so no rehype-raw/rehype-sanitize;
@@ -199,4 +212,26 @@ catalogs:
     react-markdown: ^10.1.0
     remark-gfm: ^4.0.1
     remend: ^1.3.0
+    remark: ^15.0.1
+    remark-flexible-toc: ^1.2.5
+    to-vfile: ^8.0.0
+  # Private docs-app pins — not published to npm. Exact versions (no ^ or ~) so
+  # Renovate updates are explicit PRs rather than silent range expansion.
+  apps:
+    "@mdx-js/mdx": 3.1.1
+    "@types/mdx": 2.0.13
+    "@types/react-syntax-highlighter": 15.5.13
+    "@types/slug": 5.0.9
+    chokidar: 5.0.0
+    fuse.js: 7.3.0
+    github-slugger: 2.0.0
+    jotai: 2.20.1
+    prism-react-renderer: 2.4.1
+    react-live: 4.1.8
+    react-router: 8.1.0
+    react-router-dom: 7.17.0
+    react-syntax-highlighter: 16.1.1
+    remark-mark-highlight: 0.1.1
+    slug: 11.0.1
+    vite-plugin-compression: 0.5.1
 

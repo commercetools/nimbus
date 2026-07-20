@@ -5,16 +5,74 @@ settings:
   excludeLinksFromLockfile: false
 
 catalogs:
+  apps:
+    '@mdx-js/mdx':
+      specifier: 3.1.1
+      version: 3.1.1
+    '@types/mdx':
+      specifier: 2.0.13
+      version: 2.0.13
+    '@types/react-syntax-highlighter':
+      specifier: 15.5.13
+      version: 15.5.13
+    '@types/slug':
+      specifier: 5.0.9
+      version: 5.0.9
+    chokidar:
+      specifier: 5.0.0
+      version: 5.0.0
+    fuse.js:
+      specifier: 7.3.0
+      version: 7.3.0
+    github-slugger:
+      specifier: 2.0.0
+      version: 2.0.0
+    jotai:
+      specifier: 2.20.1
+      version: 2.20.1
+    prism-react-renderer:
+      specifier: 2.4.1
+      version: 2.4.1
+    react-live:
+      specifier: 4.1.8
+      version: 4.1.8
+    react-router:
+      specifier: 8.1.0
+      version: 8.1.0
+    react-router-dom:
+      specifier: 7.17.0
+      version: 7.17.0
+    react-syntax-highlighter:
+      specifier: 16.1.1
+      version: 16.1.1
+    remark-mark-highlight:
+      specifier: 0.1.1
+      version: 0.1.1
+    slug:
+      specifier: 11.0.1
+      version: 11.0.1
+    vite-plugin-compression:
+      specifier: 0.5.1
+      version: 0.5.1
   markdown:
     react-markdown:
       specifier: ^10.1.0
       version: 10.1.0
+    remark:
+      specifier: ^15.0.1
+      version: 15.0.1
+    remark-flexible-toc:
+      specifier: ^1.2.5
+      version: 1.2.5
     remark-gfm:
       specifier: ^4.0.1
       version: 4.0.1
     remend:
       specifier: ^1.3.0
       version: 1.3.0
+    to-vfile:
+      specifier: ^8.0.0
+      version: 8.0.0
   react:
     '@chakra-ui/cli':
       specifier: ^3.36.0
@@ -58,6 +116,15 @@ catalogs:
     react-dom:
       specifier: ^19.0.0
       version: 19.2.0
+    react-hotkeys-hook:
+      specifier: ^5.3.3
+      version: 5.3.3
+    react-use:
+      specifier: ^17.6.1
+      version: 17.6.1
+    use-debounce:
+      specifier: ^10.1.1
+      version: 10.1.1
   tooling:
     '@arethetypeswrong/cli':
       specifier: ^0.18.5
@@ -110,6 +177,12 @@ catalogs:
     '@testing-library/user-event':
       specifier: ^14.6.1
       version: 14.6.1
+    '@typescript-eslint/types':
+      specifier: ^8.48.1
+      version: 8.64.0
+    '@typescript-eslint/typescript-estree':
+      specifier: ^8.56.1
+      version: 8.64.0
     '@vitejs/plugin-react':
       specifier: ^6.0.3
       version: 6.0.3
@@ -128,6 +201,9 @@ catalogs:
     '@vueless/storybook-dark-mode':
       specifier: ^10.0.8
       version: 10.0.8
+    axe-core:
+      specifier: ^4.11.0
+      version: 4.11.0
     chromatic:
       specifier: ^17.7.2
       version: 17.7.2
@@ -164,6 +240,9 @@ catalogs:
     publint:
       specifier: ^0.3.21
       version: 0.3.21
+    react-docgen-typescript:
+      specifier: ^2.4.0
+      version: 2.4.0
     storybook:
       specifier: 10.4.6
       version: 10.4.6
@@ -195,6 +274,12 @@ catalogs:
       specifier: ^7.2.1
       version: 7.2.1
   utils:
+    '@types/escape-html':
+      specifier: ^1.0.4
+      version: 1.0.4
+    '@types/is-hotkey':
+      specifier: ^0.1.10
+      version: 0.1.10
     '@types/lodash':
       specifier: ^4.17.24
       version: 4.17.24
@@ -207,6 +292,18 @@ catalogs:
     dotenv:
       specifier: ^17.4.2
       version: 17.4.2
+    escape-html:
+      specifier: ^1.0.3
+      version: 1.0.3
+    gray-matter:
+      specifier: ^4.0.3
+      version: 4.0.3
+    is-hotkey:
+      specifier: ^0.2.0
+      version: 0.2.0
+    is-plain-obj:
+      specifier: ^4.1.0
+      version: 4.1.0
     lodash:
       specifier: ^4.18.1
       version: 4.18.1
@@ -411,37 +508,37 @@ importers:
         specifier: catalog:react
         version: 3.12.2
       '@mdx-js/mdx':
-        specifier: ^3.1.1
+        specifier: catalog:apps
         version: 3.1.1
       '@types/mdx':
-        specifier: ^2.0.13
+        specifier: catalog:apps
         version: 2.0.13
       '@types/react-syntax-highlighter':
-        specifier: ^15.5.13
+        specifier: catalog:apps
         version: 15.5.13
       '@types/slug':
-        specifier: ^5.0.9
+        specifier: catalog:apps
         version: 5.0.9
       chokidar:
-        specifier: ^5.0.0
+        specifier: catalog:apps
         version: 5.0.0
       fuse.js:
-        specifier: ^7.3.0
+        specifier: catalog:apps
         version: 7.3.0
       github-slugger:
-        specifier: ^2.0.0
+        specifier: catalog:apps
         version: 2.0.0
       gray-matter:
-        specifier: ^4.0.3
+        specifier: catalog:utils
         version: 4.0.3
       jotai:
-        specifier: ^2.20.1
+        specifier: catalog:apps
         version: 2.20.1(@babel/core@7.29.7)(@babel/template@7.29.7)(@types/react@19.2.17)(react@19.2.0)
       lodash:
         specifier: catalog:utils
         version: 4.18.1
       prism-react-renderer:
-        specifier: ^2.4.1
+        specifier: catalog:apps
         version: 2.4.1(react@19.2.0)
       react:
         specifier: catalog:react
@@ -453,40 +550,40 @@ importers:
         specifier: 1.19.0
         version: 1.19.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-docgen-typescript:
-        specifier: ^2.4.0
+        specifier: catalog:tooling
         version: 2.4.0(typescript@5.9.3)
       react-dom:
         specifier: catalog:react
         version: 19.2.0(react@19.2.0)
       react-live:
-        specifier: ^4.1.8
+        specifier: catalog:apps
         version: 4.1.8(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-router:
-        specifier: ^8.1.0
+        specifier: catalog:apps
         version: 8.1.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-router-dom:
-        specifier: ^7.17.0
+        specifier: catalog:apps
         version: 7.17.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-stately:
         specifier: 3.48.0
         version: 3.48.0(react@19.2.0)
       react-syntax-highlighter:
-        specifier: ^16.1.1
+        specifier: catalog:apps
         version: 16.1.1(react@19.2.0)
       remark-flexible-toc:
-        specifier: ^1.2.5
+        specifier: catalog:markdown
         version: 1.2.5(unified@11.0.5)
       remark-gfm:
         specifier: catalog:markdown
         version: 4.0.1
       remark-mark-highlight:
-        specifier: ^0.1.1
+        specifier: catalog:apps
         version: 0.1.1
       slug:
-        specifier: ^11.0.1
+        specifier: catalog:apps
         version: 11.0.1
       use-debounce:
-        specifier: ^10.1.1
+        specifier: catalog:react
         version: 10.1.1(react@19.2.0)
       zod:
         specifier: catalog:utils
@@ -529,7 +626,7 @@ importers:
         specifier: catalog:tooling
         version: 8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.44.0)(tsx@4.23.1)(yaml@2.8.3)
       vite-plugin-compression:
-        specifier: ^0.5.1
+        specifier: catalog:apps
         version: 0.5.1(vite@8.1.5(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.44.0)(tsx@4.23.1)(yaml@2.8.3))
 
   apps/plugin-test:
@@ -623,10 +720,10 @@ importers:
         specifier: catalog:utils
         version: 2.0.3
       escape-html:
-        specifier: ^1.0.3
+        specifier: catalog:utils
         version: 1.0.3
       is-hotkey:
-        specifier: ^0.2.0
+        specifier: catalog:utils
         version: 0.2.0
       next-themes:
         specifier: catalog:react
@@ -638,7 +735,7 @@ importers:
         specifier: 1.19.0
         version: 1.19.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-hotkeys-hook:
-        specifier: ^5.3.3
+        specifier: catalog:react
         version: 5.3.3(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-markdown:
         specifier: catalog:markdown
@@ -647,7 +744,7 @@ importers:
         specifier: 3.48.0
         version: 3.48.0(react@19.2.0)
       react-use:
-        specifier: ^17.6.1
+        specifier: catalog:react
         version: 17.6.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       remark-gfm:
         specifier: catalog:markdown
@@ -656,7 +753,7 @@ importers:
         specifier: catalog:markdown
         version: 1.3.0
       use-debounce:
-        specifier: ^10.1.0
+        specifier: catalog:react
         version: 10.1.1(react@19.2.0)
     devDependencies:
       '@chakra-ui/react':
@@ -702,10 +799,10 @@ importers:
         specifier: catalog:tooling
         version: 14.6.1(@testing-library/dom@10.4.1)
       '@types/escape-html':
-        specifier: ^1.0.4
+        specifier: catalog:utils
         version: 1.0.4
       '@types/is-hotkey':
-        specifier: ^0.1.10
+        specifier: catalog:utils
         version: 0.1.10
       '@types/react':
         specifier: catalog:react
@@ -732,7 +829,7 @@ importers:
         specifier: ^0.1.9
         version: 0.1.9
       axe-core:
-        specifier: ^4.11.0
+        specifier: catalog:tooling
         version: 4.11.0
       chromatic:
         specifier: catalog:tooling
@@ -783,25 +880,25 @@ importers:
   packages/nimbus-docs-build:
     dependencies:
       '@typescript-eslint/types':
-        specifier: ^8.48.1
-        version: 8.62.0
+        specifier: catalog:tooling
+        version: 8.64.0
       '@typescript-eslint/typescript-estree':
-        specifier: ^8.56.1
-        version: 8.62.0(typescript@5.9.3)
+        specifier: catalog:tooling
+        version: 8.64.0(typescript@5.9.3)
       gray-matter:
-        specifier: ^4.0.3
+        specifier: catalog:utils
         version: 4.0.3
       react-docgen-typescript:
-        specifier: ^2.4.0
+        specifier: catalog:tooling
         version: 2.4.0(typescript@5.9.3)
       remark:
-        specifier: ^15.0.1
+        specifier: catalog:markdown
         version: 15.0.1
       remark-flexible-toc:
-        specifier: ^1.2.4
+        specifier: catalog:markdown
         version: 1.2.5(unified@11.0.5)
       to-vfile:
-        specifier: ^8.0.0
+        specifier: catalog:markdown
         version: 8.0.0
       zod:
         specifier: catalog:utils
@@ -888,7 +985,7 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3(style-dictionary@5.4.4(tslib@2.8.1))
       is-plain-obj:
-        specifier: ^4.1.0
+        specifier: catalog:utils
         version: 4.1.0
       prettier:
         specifier: catalog:tooling
@@ -4182,12 +4279,6 @@ packages:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
       typescript: ~5.9.3
 
-  '@typescript-eslint/project-service@8.62.0':
-    resolution: {integrity: sha512-wexnCqiTg7BOGtbLDftYpRWlmLq4xfoMd7BKFR6Y75sZS3QmRKLdN3yWLhmIYgqMmP/OXWpj3H8odkb5nGURCQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      typescript: ~5.9.3
-
   '@typescript-eslint/project-service@8.64.0':
     resolution: {integrity: sha512-tk4WpOJ6IEbGrVHaNmM0YRrwAD3exZlIK3iadQNAxh4YKk6jvUQ4ecq18n+v7+meh+cJ3j+D8nbk8sRKhlwLQg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -4197,12 +4288,6 @@ packages:
   '@typescript-eslint/scope-manager@8.64.0':
     resolution: {integrity: sha512-CXEaFdYXjSTgKhisNkwCcJwTP8Pl+fmRrEQrri4nm3vU743bALrxzLmq7fHG/7e6a5xO0lDYeURpZmBuhHk54w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@typescript-eslint/tsconfig-utils@8.62.0':
-    resolution: {integrity: sha512-y2GAdB6ykaXUvuspbYnizQc4oDDz0Tz/Yc7iWrXf9mx8vm/L/0vLHCe0tS2boG96Zy+DivnVDQ9ZUEWoHqqx1g==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      typescript: ~5.9.3
 
   '@typescript-eslint/tsconfig-utils@8.64.0':
     resolution: {integrity: sha512-2yo8rRNKuzbVWQp5kslhANqZ2uDAeROQHBRZNPu8JDsHmeFNj/XJJhX/FhNUWmkHHvoNsKa6+tHJiig87EzsQw==}
@@ -4217,19 +4302,9 @@ packages:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
       typescript: ~5.9.3
 
-  '@typescript-eslint/types@8.62.0':
-    resolution: {integrity: sha512-KvAclkktORPvM54TgLgA4z9HIV1M8zOgw9ZVNXl9f/8dLYfXYX1wkMXP7qmabpijQRV5bHJLOmoyGQbLMaUYeg==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
   '@typescript-eslint/types@8.64.0':
     resolution: {integrity: sha512-qjhfuTfLXjA4IOzXvz0rTjT01BqEiIgPoUeMwiEjnaHKJMTNo8rH5pYW1a2L/0Dnux2fPC85AeyJoWaGa8WxTA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
-  '@typescript-eslint/typescript-estree@8.62.0':
-    resolution: {integrity: sha512-+hVbNxtW64pIcZWDPGbyaKF7vp2IBTVY5ma1blwwksrjdsbdqqEKvJWMGbBofei4F6Dovx1M0RJgoFeNu2279A==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      typescript: ~5.9.3
 
   '@typescript-eslint/typescript-estree@8.64.0':
     resolution: {integrity: sha512-Pztpsn1aCE1oWDvDEfUk31nngvvF7vUB5SwHFEaZIFpvw7WJtqUHHL4plBZDA9HfWJJjL13BdG0YrJInTUvoVA==}
@@ -4243,10 +4318,6 @@ packages:
     peerDependencies:
       eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
       typescript: ~5.9.3
-
-  '@typescript-eslint/visitor-keys@8.62.0':
-    resolution: {integrity: sha512-CY3uyFSRbcQv3nnSv8S0+lDftMVz6P963PoRlxrV7ew/Md564g9ut60PYzdLM5qW4jFn93GBF+Soi90ISAN+GQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@typescript-eslint/visitor-keys@8.64.0':
     resolution: {integrity: sha512-mrtuL8Nsn6gi2H4mo5KMTp823M+3Q19Ew/i+Zlikq20tIMm99C3Ez0dCmkWWnxut20esQvTg8aUSEhMcAOXhEw==}
@@ -14211,15 +14282,6 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/project-service@8.62.0(typescript@5.9.3)':
-    dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.62.0(typescript@5.9.3)
-      '@typescript-eslint/types': 8.62.0
-      debug: 4.4.3
-      typescript: 5.9.3
-    transitivePeerDependencies:
-      - supports-color
-
   '@typescript-eslint/project-service@8.64.0(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.64.0(typescript@5.9.3)
@@ -14233,10 +14295,6 @@ snapshots:
     dependencies:
       '@typescript-eslint/types': 8.64.0
       '@typescript-eslint/visitor-keys': 8.64.0
-
-  '@typescript-eslint/tsconfig-utils@8.62.0(typescript@5.9.3)':
-    dependencies:
-      typescript: 5.9.3
 
   '@typescript-eslint/tsconfig-utils@8.64.0(typescript@5.9.3)':
     dependencies:
@@ -14254,24 +14312,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@typescript-eslint/types@8.62.0': {}
-
   '@typescript-eslint/types@8.64.0': {}
-
-  '@typescript-eslint/typescript-estree@8.62.0(typescript@5.9.3)':
-    dependencies:
-      '@typescript-eslint/project-service': 8.62.0(typescript@5.9.3)
-      '@typescript-eslint/tsconfig-utils': 8.62.0(typescript@5.9.3)
-      '@typescript-eslint/types': 8.62.0
-      '@typescript-eslint/visitor-keys': 8.62.0
-      debug: 4.4.3
-      minimatch: 10.2.5
-      semver: 7.7.4
-      tinyglobby: 0.2.17
-      ts-api-utils: 2.5.0(typescript@5.9.3)
-      typescript: 5.9.3
-    transitivePeerDependencies:
-      - supports-color
 
   '@typescript-eslint/typescript-estree@8.64.0(typescript@5.9.3)':
     dependencies:
@@ -14298,11 +14339,6 @@ snapshots:
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
-
-  '@typescript-eslint/visitor-keys@8.62.0':
-    dependencies:
-      '@typescript-eslint/types': 8.62.0
-      eslint-visitor-keys: 5.0.1
 
   '@typescript-eslint/visitor-keys@8.64.0':
     dependencies:

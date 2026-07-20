@@ -23,13 +23,13 @@ jobs:
       # Get GitHub token via the CT Changesets App
       - name: Generate GitHub token (via CT Changesets App)
         id: generate_github_token
-        uses: tibdex/github-app-token@v2.1.0
+        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
         with:
           app_id: ${{ secrets.CT_CHANGESETS_APP_ID }}
           private_key: ${{ secrets.CT_CHANGESETS_APP_PEM }}
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           # Pass a personal access token (using our `ct-changesets` app) to be able to trigger other workflows
           # https://help.github.com/en/actions/reference/events-that-trigger-workflows#triggering-new-workflows-using-a-personal-access-token
@@ -38,7 +38,7 @@ jobs:
 
       # Ensure we are using valid node version for npm trusted publising AFTER checkout
       # https://docs.npmjs.com/trusted-publishers#github-actions-configuration
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
@@ -57,7 +57,7 @@ jobs:
       # This must run AFTER the CI action to override the Node setup with registry config
       # https://docs.npmjs.com/trusted-publishers#github-actions-configuration
       - name: Setup npm registry for publishing
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
@@ -71,7 +71,7 @@ jobs:
 
       - name: Creating release pull request or publishing release to npm registry
         id: changesets
-        uses: changesets/action@v1.7.0
+        uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # v1.7.0
         with:
           publish: pnpm changeset publish
           version: pnpm changeset:version-and-format
@@ -88,7 +88,7 @@ jobs:
         if: steps.changesets.outputs.published != 'true' && github.ref ==
           'refs/heads/main'
         id: generate_github_token_canary
-        uses: tibdex/github-app-token@v2.1.0
+        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
         with:
           app_id: ${{ secrets.CT_CHANGESETS_APP_ID }}
           private_key: ${{ secrets.CT_CHANGESETS_APP_PEM }}
@@ -117,7 +117,7 @@ jobs:
     steps:
       - name: Get PR branch
         id: pr
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           script: |
             const pr = await github.rest.pulls.get({
@@ -132,7 +132,7 @@ jobs:
             core.setOutput('tag', sanitized);
 
       - name: React to comment
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           script: |
             await github.rest.reactions.createForIssueComment({
@@ -143,11 +143,11 @@ jobs:
             });
 
       - name: Checkout PR branch
-        uses: actions/checkout@v5
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5
         with:
           ref: ${{ steps.pr.outputs.ref }}
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
@@ -159,14 +159,14 @@ jobs:
         uses: ./.github/actions/ci
 
       - name: Setup npm registry for publishing
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
       - name: Generate GitHub token
         id: generate_github_token
-        uses: tibdex/github-app-token@v2.1.0
+        uses: tibdex/github-app-token@3beb63f4bd073e61482598c45c71c1019b59b73a # v2.1.0
         with:
           app_id: ${{ secrets.CT_CHANGESETS_APP_ID }}
           private_key: ${{ secrets.CT_CHANGESETS_APP_PEM }}
@@ -185,7 +185,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate_github_token.outputs.token }}
 
       - name: Comment with install instructions
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           script: |
             const version = '${{ steps.publish.outputs.version }}';
