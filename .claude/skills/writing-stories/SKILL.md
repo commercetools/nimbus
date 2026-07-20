@@ -237,6 +237,27 @@ export const Focused: Story = {
 };
 ```
 
+**Capture the ring on every distinctly-styled focusable sub-element, not just
+the primary one.** A split button's dropdown trigger, an input's clear button or
+stepper, and a date field's calendar toggle each style their own
+`:focus-visible` and each need to be tabbed to and snapshotted - a `Focused`
+story that stops at the first focusable leaves the others untested.
+
+**Text-entry inputs: hide the caret in the `Focused` play function.** Focusing a
+text input paints the browser's blinking caret, which Chromatic can't pause (it's
+neither a CSS nor a JS animation). Set `canvasElement.style.caretColor =
+"transparent"` before tabbing - `caret-color` is inherited, so it cascades to the
+input and the focused snapshot stays deterministic. We scope this to the story
+rather than editing the shared `preview.tsx`. See docs/chromatic-visual-testing.md.
+
+```typescript
+play: async ({ canvasElement }) => {
+  canvasElement.style.caretColor = "transparent"; // deterministic focused snapshot
+  await userEvent.tab();
+  await expect(/* the input */).toHaveFocus();
+},
+```
+
 #### Disabled Story (REQUIRED for interactive components)
 
 ```typescript
@@ -304,6 +325,28 @@ capture it once in a dedicated `Disabled` story (see below) rather than
 multiplying it through the grid. (`:hover` and `:active`/pressed can't be
 captured as static states - see the note under "What Gets Captured".)
 
+**Axes must span the full supported range, not a dev subset.** A trimmed axis
+array is the most common regression-hiding mistake: snapshotting `md/sm` when the
+component supports five sizes, or three palettes when it supports six, leaves
+those cells covered by nothing. A commented-out axis value is a red flag. Scope
+call: matrices iterate the 6 `SEMANTIC_COLOR_PALETTES` as the representative set;
+the `BRAND` (3) and `SYSTEM` (25) palettes a consumer can also pass run the same
+token machinery and are deliberately not snapshotted.
+
+**Cover distinct state-combinations, not just single flags.** When a component
+has multiple boolean states (selected, disabled, invalid, read-only), each
+combination that renders differently needs coverage. Selected-disabled is
+visually distinct from unselected-disabled, so a `Disabled` story showing only
+the unselected case leaves a gap.
+
+**Thin wrappers get no matrix.** A component that only constrains or forwards a
+wrapped component's props (a fixed-shape variant, a field wrapper) re-covers
+nothing by re-rendering the wrapped grid. Snapshot only the axis the wrapper
+introduces, plus `Focused`/`Disabled` if it adds them. FloatingActionButton wraps
+IconButton with a fixed circular shape, so it snapshots only `ColorPalettes` +
+`Focused` + `Disabled`, not a size x variant matrix - those are IconButton's
+states, already covered there.
+
 ```typescript
 export const SmokeTest: Story = {
   tags: ["vrt"],
@@ -365,10 +408,38 @@ whole snapshot, and editing the matrix re-snapshots the entire grid (Chromatic
 can't sub-diff within one image). Reserve standalone snapshots for states that
 need distinct setup or isolated review.
 
+**But a state can render more than one way - one story each, not a gallery
+frame.** Matrix-packing is for axes that _interact_. It is not license to fold
+_independent_ surfaces of a single state into one render. Before assuming a
+single `Focused` / `Disabled` / `ReadOnly` / `Invalid` story covers a state,
+check whether the component renders that state more than one way (mode- or
+variant-driven); if so, each distinct recipe surface gets its own snapshotted
+story. MoneyInput carries `Focused` + `FocusedWithCurrencyLabel` and
+`DisabledState` + `DisabledWithCurrencyLabel` (dropdown vs. `currencies={[]}`
+label mode) rather than one folded frame apiece - independent surfaces don't
+interact, so a shared frame only trades away their independent baselines and
+per-surface triage. Chromatic's idiom is discrete stories, one meaningful state
+each, independently baselined; count is not a performance concern (it
+parallelizes) and TurboSnap keeps an extra stable story near free. Modes
+(`chromatic.modes`) are for _global_ config only (viewport, theme, locale), so a
+mode is never the answer to two prop-driven surfaces.
+
+**Snapshot the component, not the harness.** Chromatic photographs the story's
+whole rendered output, so a snapshotted story must render the component
+**directly** - no debug read-outs, value dumps, or controls scaffolding in the
+frame. A stateful demo wrapper (MoneyInput's `MoneyInputExample` renders a
+`JSON.stringify(value)` panel beside the input) is fine on un-snapshotted
+behavioral stories, but snapshotting one bakes the read-out into the baseline and
+flaps it on every value change. Keep those wrappers on the behavioral stories;
+render the bare component in the ones you snapshot.
+
 **Determinism matters most for snapshots.** A snapshot must render identically
 every run or it diffs on noise: don't bake in live dates or random values, wait
 for async-derived state (image load, data fetch) before the capture, and don't
-leave a stray focus ring on an unrelated story. Some visual states can't be
+leave a stray focus ring on an unrelated story. A focused text input paints the
+browser's blinking caret, which Chromatic can't pause (it's neither a CSS nor a
+JS animation) - hide it in the `Focused` play function with
+`canvasElement.style.caretColor = "transparent"`. Some visual states can't be
 captured statically yet (notably `:hover` and `:active`/pressed); see the
 Chromatic doc for the current gaps.
 
@@ -379,6 +450,17 @@ marks a story as a visual-regression case so tooling can find and select it.
 
 See docs/chromatic-visual-testing.md for the full rationale, CI details, and the
 current hover/pressed limitation.
+
+**When a VRT pattern changes, sync all three canonical docs.** Any change to a
+Chromatic/VRT convention (a new opt-in state, a matrix rule, or a determinism fix
+like `caret-color: transparent` for focused text inputs) must land in all three
+places at once, or they drift:
+
+1. `docs/chromatic-visual-testing.md` — the how/why guide + best practices.
+2. `docs/file-type-guidelines/stories.md` — the "Chromatic Visual Regression
+   Snapshots" section.
+3. `.claude/skills/writing-stories/SKILL.md` (this file) — the `SmokeTest` /
+   `Focused` templates, the "what gets captured" blurb, and the checklist.
 
 ### Step 3: Portal Content Handling
 
@@ -677,11 +759,28 @@ You MUST validate against these requirements:
 - [ ] `SmokeTest` matrix is **exhaustive** over the interacting axes the
       component has (e.g. size x variant x palette, plus selected/unselected for
       toggles) - every distinct combined look appears in the one snapshot
+- [ ] Axis arrays span the **full supported range** - no trimmed or
+      commented-out values; palettes use the 6 `SEMANTIC_COLOR_PALETTES`
+- [ ] Distinct **state-combinations** are covered, not just single flags
+      (selected-disabled is a separate look from unselected-disabled)
+- [ ] For each state (focus, disabled, read-only, invalid), checked whether the
+      component renders it more than one way (mode-/variant-driven); each distinct
+      surface gets its **own** snapshotted story, not a folded gallery frame
+      (MoneyInput: `Focused` + `FocusedWithCurrencyLabel`, `DisabledState` +
+      `DisabledWithCurrencyLabel`)
+- [ ] Snapshotted stories render the component **directly** - no debug read-outs,
+      value dumps, or demo-wrapper scaffolding in the frame (those stay on the
+      un-snapshotted behavioral stories)
 - [ ] Uniform, axis-independent states are captured in a **dedicated** story,
       not folded into the matrix (`disabled` typically resolves to one shared
       style regardless of size/variant/palette → its own `Disabled` snapshot, not
       a grid dimension)
-- [ ] `Focused` story captures the focus ring (`disableSnapshot: false` + `vrt`)
+- [ ] Thin wrappers snapshot only the axis they introduce (+ `Focused`/`Disabled`
+      if added), not a re-rendered copy of the wrapped component's matrix
+- [ ] `Focused` story captures the focus ring (`disableSnapshot: false` + `vrt`);
+      for text-entry inputs the play function hides the blinking caret with
+      `canvasElement.style.caretColor = "transparent"` before tabbing
+      on **every** distinctly-styled focusable sub-element, not just the primary
 - [ ] Visual-state stories opt in via `disableSnapshot: false` + `tags: ["vrt"]`
 - [ ] Only behavior-only stories and stories whose look is already in `SmokeTest`
       left snapshot-off (project default) - never drop a visual state to save cost

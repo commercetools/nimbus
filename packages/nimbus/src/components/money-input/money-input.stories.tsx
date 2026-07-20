@@ -213,72 +213,172 @@ export const HighPrecisionExample: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Verify that the high precision badge appears for the initial value
-    // Initial value "42.12345" EUR should show high precision (5 > 2 decimal places)
+    // "42.12345" EUR has 5 fraction digits, past EUR's 2, so the badge shows.
     const highPrecisionBadge = canvas.getByLabelText(/High Precision Price/i);
     expect(highPrecisionBadge).toBeInTheDocument();
-
-    // With consistent formatting, all currencies now use the same decimal separator
-    // EUR and USD both use periods for decimals, no more German locale issues
   },
 };
 
+/**
+ * Disabled in dropdown mode: the amount input and the currency Select are both
+ * disabled. The label-mode dimming rule is a distinct recipe surface, captured
+ * separately by DisabledWithCurrencyLabel.
+ */
 export const DisabledState: Story = {
-  render: (args) => (
-    <MoneyInputExample
-      initialValue={{ amount: "100.005", currencyCode: "USD" }}
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <MoneyInput
+      value={{ amount: "100.005", currencyCode: "USD" }}
+      currencies={DEFAULT_CURRENCIES}
+      isDisabled
+      hasHighPrecisionBadge
       aria-label="Money input example"
-      {...args}
     />
   ),
-  args: {
-    isDisabled: true,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const amountInput = canvas.getByRole("textbox", { name: /Amount/i });
+    expect(amountInput).toBeDisabled();
+
+    const currencySelect = canvas.getByRole("button", { name: /Currency/i });
+    expect(currencySelect).toHaveAttribute("data-disabled", "true");
   },
+};
+
+/**
+ * Disabled in label mode: with no currencies supplied the static currency label
+ * dims via money-input's own `currencyLabel[data-disabled] { opacity: 0.5 }`
+ * recipe rule, which renders nowhere else. Distinct recipe surface from the
+ * dropdown-mode DisabledState above, so it gets its own snapshot (mirrors the
+ * Focused / FocusedWithCurrencyLabel split).
+ */
+export const DisabledWithCurrencyLabel: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <MoneyInput
+      value={{ amount: "100.005", currencyCode: "USD" }}
+      currencies={[]}
+      isDisabled
+      hasHighPrecisionBadge
+      aria-label="Money input example"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const amountInput = canvas.getByRole("textbox", { name: /Amount/i });
+    expect(amountInput).toBeDisabled();
+
+    const currencyLabel = canvasElement.querySelector(
+      "label[data-disabled='true']"
+    );
+    expect(currencyLabel).toBeInTheDocument();
+  },
+};
+
+export const ReadOnlyState: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <MoneyInput
+      value={{ amount: "250.75", currencyCode: "GBP" }}
+      currencies={DEFAULT_CURRENCIES}
+      isReadOnly
+      aria-label="Money input example"
+    />
+  ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
     const amountInput = canvas.getByRole("textbox", {
       name: /Amount/i,
     });
-    const currencySelect = canvas.getByRole("button", { name: /Currency/i });
-
-    expect(amountInput).toBeDisabled();
-    // Check that the Select component is disabled (may use different attributes)
-    expect(currencySelect).toHaveAttribute("data-disabled", "true");
-  },
-};
-
-export const ReadOnlyState: Story = {
-  render: (args) => (
-    <MoneyInputExample
-      initialValue={{ amount: "250.75", currencyCode: "GBP" }}
-      aria-label="Money input example"
-      {...args}
-    />
-  ),
-  args: {
-    isReadOnly: true,
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const amountInput = canvas.getByRole("textbox", {
-      name: "Amount",
-    });
     expect(amountInput).toHaveAttribute("readonly");
   },
 };
 
 export const ErrorState: Story = {
-  render: (args) => (
-    <MoneyInputExample
-      initialValue={{ amount: "invalid", currencyCode: "EUR" }}
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <MoneyInput
+      value={{ amount: "1234.56", currencyCode: "EUR" }}
+      currencies={DEFAULT_CURRENCIES}
+      isInvalid
       aria-label="Money input example"
-      {...args}
     />
   ),
-  args: {
-    isInvalid: true,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const amountInput = canvas.getByRole("textbox", {
+      name: /Amount/i,
+    });
+    expect(amountInput).toHaveAttribute("data-invalid", "true");
+  },
+};
+
+/**
+ * Captures the keyboard-focus ring on the amount input, the state no other
+ * snapshot renders. See docs/chromatic-visual-testing.md for why the caret is
+ * hidden here.
+ */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <MoneyInput
+      value={{ amount: "1234.56", currencyCode: "EUR" }}
+      currencies={DEFAULT_CURRENCIES}
+      aria-label="Money input example"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const amountInput = canvas.getByRole("textbox", { name: /Amount/i });
+
+    // Hide the blinking text caret so the focused snapshot is deterministic.
+    // The caret blink is browser-native (not a CSS/JS animation Chromatic can
+    // pause); caret-color is inherited, so this cascades to the input.
+    canvasElement.style.caretColor = "transparent";
+
+    // Tab past the currency selector (first focusable) to the amount input so
+    // its keyboard focus ring renders.
+    await userEvent.tab();
+    await userEvent.tab();
+    await expect(amountInput).toHaveFocus();
+  },
+};
+
+/**
+ * Label-mode focus: with no currencies supplied the currency renders as a static
+ * label, and focusing the amount input draws a single continuous outline around
+ * the label + input together. This is money-input's own recipe styling, distinct
+ * from the dropdown-mode focus ring above, so it needs its own snapshot. Caret
+ * hidden for determinism, same as Focused. A two-decimal value keeps it out of
+ * high precision so the amount input is the only focusable element (single tab).
+ */
+export const FocusedWithCurrencyLabel: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <MoneyInput
+      value={{ amount: "1234.56", currencyCode: "USD" }}
+      currencies={[]}
+      aria-label="Money input example"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const amountInput = canvas.getByRole("textbox");
+
+    canvasElement.style.caretColor = "transparent";
+
+    await userEvent.tab();
+    await expect(amountInput).toHaveFocus();
   },
 };
 
@@ -508,10 +608,8 @@ export const EULocaleFormattingExample: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // All should show high precision badges since they exceed standard fraction digits
-    // NOTE: This test will fail locally until locale normalization is implemented
-    // (useLocale() may return "de-DE" but dictionary only has "de", causing fallback to "en")
-    // TODO: FIGURE THIS OUT. Fix locale normalization in component (see PROGRESS_COMPILE_TIME_PARSING.md)
+    // All three exceed their currency's standard fraction digits, so each shows
+    // the high-precision badge.
     const highPrecisionLabel = getMessage("highPrecisionPrice", "de");
     const badges = canvas.getAllByLabelText(highPrecisionLabel);
     expect(badges).toHaveLength(3);
@@ -1078,4 +1176,38 @@ export const ModernApiTest: Story = {
       expect(eventsText).toContain('"currencyCode":"EUR"');
     });
   },
+};
+
+/**
+ * Packs the interacting visual axes into one snapshot: size (`md`/`sm`) x
+ * currency chrome (dropdown vs. static label when no currencies are supplied).
+ * Each cell holds a high-precision value so the badge and value alignment are
+ * captured too. Uniform states (disabled/read-only/invalid/focus) live in their
+ * own dedicated snapshotted stories, not this matrix.
+ */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="600">
+      {inputSize.map((size) => (
+        <Stack key={size} direction="row" gap="400" alignItems="flex-start">
+          <MoneyInput
+            size={size}
+            value={{ amount: "1234.567", currencyCode: "EUR" }}
+            currencies={DEFAULT_CURRENCIES}
+            hasHighPrecisionBadge
+            aria-label={`Money input ${size} with currency dropdown`}
+          />
+          <MoneyInput
+            size={size}
+            value={{ amount: "1234.567", currencyCode: "USD" }}
+            currencies={[]}
+            hasHighPrecisionBadge
+            aria-label={`Money input ${size} with currency label`}
+          />
+        </Stack>
+      ))}
+    </Stack>
+  ),
 };
