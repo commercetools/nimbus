@@ -34,7 +34,8 @@ export const breadcrumbsSlotRecipe = defineSlotRecipe({
       flexDirection: "row",
       alignItems: "center",
       gap: "var(--breadcrumbs-gap)",
-      fontSize: "var(--breadcrumbs-font-size)",
+      // Type ramp (font-size + paired line-height) is set per size variant via
+      // `textStyle`; link/separator children inherit it.
     },
     link: {
       display: "inline-flex",
@@ -82,8 +83,8 @@ export const breadcrumbsSlotRecipe = defineSlotRecipe({
     size: {
       sm: {
         item: {
-          // Aligned with the `sm` textStyle font-size (fontSizes.350 = 14px).
-          "--breadcrumbs-font-size": "fontSizes.350",
+          // `sm` type ramp: fontSize.350 (14px) + its paired line-height.
+          textStyle: "sm",
           "--breadcrumbs-gap": "{spacing.100}",
         },
         list: {
@@ -92,9 +93,9 @@ export const breadcrumbsSlotRecipe = defineSlotRecipe({
       },
       md: {
         item: {
-          // Aligned with the `md` textStyle font-size (fontSizes.400 = 16px),
-          // i.e. Nimbus's primary body size (matches Link/Button `md`).
-          "--breadcrumbs-font-size": "fontSizes.400",
+          // `md` type ramp: fontSize.400 (16px) + its paired line-height;
+          // md is Nimbus's primary body size (matches Link/Button `md`).
+          textStyle: "md",
           "--breadcrumbs-gap": "{spacing.200}",
         },
         list: {
