@@ -50,7 +50,7 @@
     "@arethetypeswrong/cli": "catalog:tooling",
     "@babel/core": "catalog:tooling",
     "@changesets/changelog-github": "0.7.0",
-    "@changesets/cli": "2.30.0",
+    "@changesets/cli": "2.31.1",
     "@commercetools/nimbus": "workspace:^",
     "@eslint/js": "catalog:tooling",
     "@figma/code-connect": "catalog:tooling",
