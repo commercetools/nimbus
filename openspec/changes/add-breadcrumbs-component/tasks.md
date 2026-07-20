@@ -46,3 +46,9 @@
 - [x] 6.2 Build the package, then run `pnpm test packages/nimbus/src/components/breadcrumbs/breadcrumbs.stories.tsx` against `dist` — all play functions green
 - [x] 6.3 `pnpm lint` clean for the touched files
 - [x] 6.4 Add a changeset describing the new Breadcrumbs component (consumer-facing)
+
+## 7. Chromatic visual regression (added after FCT-1100 landed)
+
+- [x] 7.1 Instrument `breadcrumbs.stories.tsx` for Chromatic per `docs/chromatic-visual-testing.md`: opt visual-state stories in via `tags: ["vrt"]` + `chromatic: { disableSnapshot: false }` (Sizes, CustomSeparator, Focused, Disabled, SmokeTest); explicitly opt behaviour-only stories out (`disableSnapshot: true`)
+- [x] 7.2 Add a render-only `Disabled` visual story (dimmed item, no focus) and a `Focused` story that ends focused to capture the focus-visible ring — keeping the tab-skipping behaviour assertions in `WithDisabledItem`/`KeyboardNavigation` snapshot-off (no stray focus rings in visual baselines)
+- [ ] 7.3 Accept the initial Breadcrumbs snapshots as baselines on the Chromatic `UI Tests` build once the PR runs (out-of-band, in the Chromatic UI)

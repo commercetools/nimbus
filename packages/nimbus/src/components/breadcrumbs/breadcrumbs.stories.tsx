@@ -7,11 +7,20 @@ import { Breadcrumbs, Stack, Text } from "@commercetools/nimbus";
  * ordered list of navigation links. Built on React Aria Components'
  * `Breadcrumbs`/`Breadcrumb`; the last item is treated as the current page
  * automatically.
+ *
+ * ## Chromatic visual regression
+ *
+ * Snapshots are opt-in (the project default in `.storybook/preview.tsx`
+ * disables them). The stories tagged `["vrt"]` with
+ * `chromatic: { disableSnapshot: false }` are the visual baselines — one per
+ * distinct prop-driven look (sizes, custom separator, focus ring, disabled
+ * item, deep/wrapping trail). Behaviour-only stories (semantics, keyboard,
+ * attribute assertions) stay opted-out so we don't create redundant baselines.
+ * See `docs/chromatic-visual-testing.md`.
  */
 const meta: Meta<typeof Breadcrumbs.Root> = {
   title: "Components/Breadcrumbs",
   component: Breadcrumbs.Root,
-  tags: ["autodocs"],
   parameters: {
     layout: "padded",
   },
@@ -36,8 +45,12 @@ const getSeparators = (root: HTMLElement) =>
  * The default Breadcrumbs usage with three items. The first two are links; the
  * last item is automatically the current page (`aria-current="page"`, no
  * `isCurrent` prop needed).
+ *
+ * Behaviour test — its look is captured by `Sizes` (md) and `SmokeTest`, so it
+ * is opted out of Chromatic.
  */
 export const Base: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Breadcrumbs.Root aria-label="Breadcrumb">
       <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
@@ -84,8 +97,11 @@ export const Base: Story = {
 /**
  * Data-driven usage via the declarative `items` API. The last entry is the
  * current page automatically, exactly as with compound children.
+ *
+ * API variant — visually identical to `Base`, so it is opted out of Chromatic.
  */
 export const DeclarativeItems: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Breadcrumbs.Root
       aria-label="Breadcrumb"
@@ -119,8 +135,13 @@ export const DeclarativeItems: Story = {
 /**
  * The two size variants: `sm` and `md` (default). Size controls the font size
  * and the gap between items.
+ *
+ * Visual baseline — captures the default trail look (links + current page) at
+ * both sizes. No focus is moved, so nothing leaves a stray focus ring.
  */
 export const Sizes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack direction="column" gap="600">
       {(["sm", "md"] as const).map((size) => (
@@ -155,8 +176,12 @@ export const Sizes: Story = {
  * A custom separator. Any React node may be supplied via the `separator` prop
  * on `Breadcrumbs.Root`; it is decorative and hidden from assistive
  * technologies. The leading separator (before the first item) is not shown.
+ *
+ * Visual baseline — captures the custom separator look.
  */
 export const CustomSeparator: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Breadcrumbs.Root aria-label="Breadcrumb" separator="/">
       <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
@@ -199,10 +224,57 @@ export const CustomSeparator: Story = {
 };
 
 /**
+ * Visual baseline for the focus-visible ring on a breadcrumb link. Tab moves
+ * focus to the first link and the play function ends focused, so Chromatic
+ * captures the ring intentionally (mirrors the button family's `Focused`).
+ */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Breadcrumbs.Root aria-label="Breadcrumb">
+      <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+      <Breadcrumbs.Item href="/orders">Orders</Breadcrumbs.Item>
+      <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
+    </Breadcrumbs.Root>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("link", { name: "Home" })).toHaveFocus();
+  },
+};
+
+/**
+ * Visual baseline for a disabled item. A disabled non-current item is visually
+ * dimmed (the shared `disabled` layer style). Render-only — no focus is moved,
+ * so the snapshot shows the dimmed state without a stray focus ring. The
+ * disabled *behaviour* (tab-skipping, `aria-disabled`) is asserted in
+ * `WithDisabledItem`.
+ */
+export const Disabled: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Breadcrumbs.Root aria-label="Breadcrumb">
+      <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
+      <Breadcrumbs.Item href="/orders" isDisabled>
+        Orders
+      </Breadcrumbs.Item>
+      <Breadcrumbs.Item>Order #123</Breadcrumbs.Item>
+    </Breadcrumbs.Root>
+  ),
+};
+
+/**
  * `isDisabled` on an individual item. Disabled items are visually dimmed,
  * cannot be activated, carry `aria-disabled="true"`, and are skipped by Tab.
+ *
+ * Behaviour test — the play function leaves focus on a link, so it is opted out
+ * of Chromatic; the dimmed look is captured by `Disabled`.
  */
 export const WithDisabledItem: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Breadcrumbs.Root aria-label="Breadcrumb">
       <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
@@ -243,8 +315,11 @@ export const WithDisabledItem: Story = {
 /**
  * Keyboard navigation. Breadcrumbs use standard sequential Tab navigation (no
  * roving tabindex). The current (last) item is skipped in the tab sequence.
+ *
+ * Behaviour test — opted out of Chromatic (focus ring is captured by `Focused`).
  */
 export const KeyboardNavigation: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Breadcrumbs.Root aria-label="Breadcrumb">
       <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
@@ -272,8 +347,12 @@ export const KeyboardNavigation: Story = {
 /**
  * `target` and `rel` for opening a breadcrumb in a new browser tab — standard
  * anchor semantics for external references.
+ *
+ * Attribute test — visually equivalent to `Base`, so it is opted out of
+ * Chromatic.
  */
 export const WithExternalLink: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Breadcrumbs.Root aria-label="Breadcrumb">
       <Breadcrumbs.Item
@@ -299,8 +378,11 @@ export const WithExternalLink: Story = {
 
 /**
  * A single-item trail. With only one item, that item is the current page.
+ *
+ * Edge-case semantics test — opted out of Chromatic.
  */
 export const SingleItem: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Breadcrumbs.Root aria-label="Breadcrumb">
       <Breadcrumbs.Item>Dashboard</Breadcrumbs.Item>
@@ -321,8 +403,13 @@ export const SingleItem: Story = {
 
 /**
  * Comprehensive smoke test with a deeper hierarchy and a single current item.
+ *
+ * Visual baseline — captures a deep, potentially wrapping trail (links +
+ * current page). No focus is moved, so nothing leaves a stray focus ring.
  */
 export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Breadcrumbs.Root aria-label="Breadcrumb">
       <Breadcrumbs.Item href="/">Home</Breadcrumbs.Item>
