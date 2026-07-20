@@ -82,7 +82,8 @@ export const breadcrumbsSlotRecipe = defineSlotRecipe({
     size: {
       sm: {
         item: {
-          "--breadcrumbs-font-size": "fontSizes.300",
+          // Aligned with the `sm` textStyle font-size (fontSizes.350 = 14px).
+          "--breadcrumbs-font-size": "fontSizes.350",
           "--breadcrumbs-gap": "{spacing.100}",
         },
         list: {
@@ -91,7 +92,9 @@ export const breadcrumbsSlotRecipe = defineSlotRecipe({
       },
       md: {
         item: {
-          "--breadcrumbs-font-size": "fontSizes.350",
+          // Aligned with the `md` textStyle font-size (fontSizes.400 = 16px),
+          // i.e. Nimbus's primary body size (matches Link/Button `md`).
+          "--breadcrumbs-font-size": "fontSizes.400",
           "--breadcrumbs-gap": "{spacing.200}",
         },
         list: {
