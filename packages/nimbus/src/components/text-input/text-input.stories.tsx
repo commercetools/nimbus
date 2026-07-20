@@ -35,6 +35,7 @@ export const Base: Story = {
     placeholder: "base text input",
     ["aria-label"]: "test-input",
   },
+  render: (args) => <TextInput {...args} data-testid="base-input" />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByLabelText("test-input");
@@ -45,6 +46,7 @@ export const Base: Story = {
 
     await step("Forwards data- & aria-attributes", async () => {
       await expect(input).toHaveAttribute("aria-label", "test-input");
+      await expect(input).toHaveAttribute("data-testid", "base-input");
     });
 
     await step("Is focusable with <tab> key", async () => {
@@ -205,7 +207,41 @@ export const Invalid: Story = {
   },
 };
 
+/**
+ * Captures the keyboard-focus ring the matrix can't render (only one element
+ * holds focus at a time). A bare TextInput has no trailing control, so one tab
+ * lands on the input and draws the `_focusWithin` ring. See
+ * docs/chromatic-visual-testing.md for why the caret is hidden here.
+ */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <TextInput defaultValue="Focused text input" aria-label="focused-input" />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByLabelText("focused-input");
+
+    // Caret blink is browser-native, not a CSS/JS animation Chromatic can pause;
+    // caret-color inherits, so hiding it here cascades to the input.
+    canvasElement.style.caretColor = "transparent";
+
+    await userEvent.tab();
+    await expect(input).toHaveFocus();
+  },
+};
+
+/**
+ * Packs the interacting axes into one snapshot: state (default / disabled /
+ * invalid / invalid & disabled) x size (md/sm) x variant (solid/ghost). No
+ * colorPalette axis - the recipe styles fixed semantic tokens, not a palette
+ * variant. Focus (its own ring, `Focused`) and read-only (no `data-readonly`
+ * rule, so it renders like the default) are deliberately not in the matrix.
+ */
 export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     onChange: fn(),
     ["aria-label"]: "test-input",
@@ -302,6 +338,8 @@ export const Controlled: Story = {
 };
 
 export const LeadingAndTrailingElements: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const examples: Array<{
       label: string;
@@ -407,7 +445,14 @@ export const LeadingAndTrailingElements: Story = {
   },
 };
 
+/**
+ * RTL mirrors the leading/trailing adornment layout (icons swap sides), a
+ * distinct visual captured nowhere else. `dir="rtl"` is set on a wrapping Box
+ * (prop-driven), so this is a story rather than a Chromatic mode.
+ */
 export const RTLSupport: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <Stack direction="column" gap="400">
