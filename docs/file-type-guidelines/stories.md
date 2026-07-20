@@ -47,21 +47,11 @@ component needs.
 **Example Coverage:**
 
 ```typescript
-export const Base: Story = {
-  /* minimal example */
-};
-export const Sizes: Story = {
-  /* sm, md, lg in one story */
-};
-export const Variants: Story = {
-  /* all variants in one story */
-};
-export const Disabled: Story = {
-  /* disabled state */
-};
-export const SmokeTest: Story = {
-  /* comprehensive matrix */
-};
+export const Base: Story = {/* minimal example */};
+export const Sizes: Story = {/* sm, md, lg in one story */};
+export const Variants: Story = {/* all variants in one story */};
+export const Disabled: Story = {/* disabled state */};
+export const SmokeTest: Story = {/* comprehensive matrix */};
 ```
 
 ### Form Components (TextInput, Select, Checkbox, RadioGroup, Switch)
@@ -164,6 +154,79 @@ graph TD
 
     Q3 -->|No| SimpleStories[Simple Component Stories:<br/>Base, Sizes, Variants,<br/>Disabled if applicable,<br/>SmokeTest]
 ```
+
+## Chromatic Visual Regression Snapshots
+
+Stories double as Chromatic's visual-regression cases, but snapshots are
+**opt-in**: `.storybook/preview.tsx` sets `chromatic: { disableSnapshot: true }`
+as the project default, so a story is captured only when it turns snapshots back
+on:
+
+```typescript
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  // ...
+};
+```
+
+`disableSnapshot: false` is what takes the picture; Chromatic never reads the
+`vrt` tag. `vrt` is our own label for spotting and selecting snapshotted
+stories, so keep the two together.
+
+**What to snapshot:** cover every prop-driven visual state. Any state the matrix
+can't render in one static image gets its own snapshotted story (`Focused`,
+disabled-but-focusable, an open tooltip/popover); a showcase story whose look a
+snapshot already covers stays snapshot-off. Never drop a visual state to save
+cost.
+
+**A `Focused` story keeps its ring for free.** Nothing blurs the focused element
+after a play function, so a story whose final state legitimately keeps focus (a
+`Focused` story, or an open combobox) snapshots the ring as-is - no extra
+parameter needed. The flip side: a behavior story that leaves a stray ring it
+doesn't want in the snapshot should blur in its own play function, or better, be
+split so the snapshotted visual story doesn't end focused:
+
+```typescript
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    chromatic: { disableSnapshot: false },
+  },
+  args: {/* minimal render */},
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("button")).toHaveFocus();
+  },
+};
+```
+
+**Crop padding is global.** A `preview.tsx` decorator wraps every
+non-`fullscreen` story in `1rem` so focus and selection rings don't clip at
+Chromatic's content crop. You don't opt into it.
+
+**Prefer local images, and wait for image-driven state.** Serve images from
+`public/` via `staticDirs`, not a remote URL (a remote image is a flaky network
+dependency that can fail the play function before capture). Chromatic waits for
+images to load but not for state your component _derives_ from that load (Avatar
+hides its `<img>` until `onLoad` and swaps to a fallback on error), so a story
+snapshotting a post-load or post-error state must wait for it:
+
+```typescript
+// Wait for the state the component derives from the load (here, the <img>
+// hidden behind its fallback) before the snapshot is captured.
+play: async ({ canvasElement }) => {
+  const img = canvasElement.querySelector("img");
+  await waitFor(() => expect(img).toHaveStyle("display: none"), {
+    timeout: 3000,
+  });
+},
+```
+
+For the matrix-vs-individual tradeoff, the fold-an-axis rule, the hover/pressed
+coverage gap, CI triggers, baselines, and TurboSnap, see
+[Chromatic Visual Testing](../chromatic-visual-testing.md).
 
 ## File Structure
 

@@ -1,5 +1,21 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
+// Pseudo-element that extends a sticky cell's background by 2px on each side.
+// Fixes a Firefox/Safari rendering gap where the table's inset box-shadow
+// bleeds through at the edges of sticky cells in border-collapse:collapse tables.
+const stickyBgOverlap = {
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    top: 0,
+    bottom: 0,
+    left: "-2px",
+    right: "-2px",
+    background: "inherit",
+    pointerEvents: "none",
+  },
+} as const;
+
 /**
  * Slot recipe configuration for the DataTable component.
  * Defines the styling variants, base styles, and slots using Chakra UI's slot recipe system.
@@ -38,6 +54,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           position: "sticky",
           right: 0,
           zIndex: 3,
+          backgroundColor: "bg",
+          ...stickyBgOverlap,
           "& [data-slot='nimbus-table-cell-pin-button']": {
             opacity: 0,
           },
@@ -48,6 +66,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         "& .data-table-sticky-cell": {
           position: "sticky",
           left: 0,
+          backgroundColor: "bg",
+          ...stickyBgOverlap,
         },
         "& [data-slot='drag']": {
           zIndex: 11,
@@ -302,6 +322,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         position: "sticky",
         left: 0,
         zIndex: 13,
+        background: "colorPalette.2",
+        ...stickyBgOverlap,
       },
       "&.drag-column-header": {
         cursor: "default",
@@ -309,6 +331,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         position: "sticky",
         left: 0,
         zIndex: 13,
+        background: "colorPalette.2",
+        ...stickyBgOverlap,
       },
       "&.expand-column-header": {
         cursor: "default",
@@ -316,6 +340,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         position: "sticky",
         left: 0, // Default position when no selection column
         zIndex: 12,
+        background: "colorPalette.2",
+        ...stickyBgOverlap,
       },
       // When drag column is present, offset selection and expand columns
       "&.drag-column-header + &.selection-column-header": {
@@ -340,6 +366,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         position: "sticky",
         right: 0,
         zIndex: 11,
+        background: "colorPalette.2",
+        ...stickyBgOverlap,
       },
       "&[aria-sort]": {
         fontWeight: 600,
@@ -395,7 +423,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       paddingBottom: "400",
       paddingLeft: "600",
       paddingRight: "600",
-      color: "neutral.11",
+      color: "neutral.12",
       focusVisibleRing: "inside",
       hyphens: "auto",
       // td height:auto is not "definite" per CSS spec, so child height:100%

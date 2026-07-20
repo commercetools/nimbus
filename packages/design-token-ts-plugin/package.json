@@ -25,6 +25,7 @@
     "@commercetools/nimbus-tokens": "workspace:^",
     "@types/node": "catalog:utils",
     "typescript": "catalog:tooling",
+    "vite": "catalog:tooling",
     "vitest": "catalog:tooling"
   },
   "files": ["dist"]

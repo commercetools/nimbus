@@ -80,17 +80,44 @@ order of update priority** (safest first):
 
 For each dependency group (or the specified target group):
 
-1. **Fetch Latest Versions:**
+1. **Fetch Latest Versions (age-gated):**
+
+   This repo enables pnpm's `minimumReleaseAge` supply-chain gate in
+   `pnpm-workspace.yaml` (default `1440` minutes = 24h): freshly published
+   versions are deliberately held back until they have "aged", giving the
+   ecosystem time to catch a compromised release. Your target version MUST
+   respect that gate. If you pick a version younger than the gate, pnpm cannot
+   resolve it and will **silently rewrite `pnpm-workspace.yaml` with a
+   `minimumReleaseAgeExclude` block** to force the too-new version in — which
+   defeats the protection (this has happened: a single patch bump generated a
+   99-entry exclude list).
+
+   So don't just take "latest". For each dependency, pick the **newest
+   minor/patch version that is also at least `minimumReleaseAge` old**. Fetch
+   per-version publish times and filter:
 
    ```bash
-   # Check current and latest versions for each dependency
-   pnpm view [package-name] version
+   # The gate, in minutes (fall back to 1440 if unset)
+   AGE_MIN=$(grep -E '^minimumReleaseAge:' pnpm-workspace.yaml | grep -oE '[0-9]+' | head -1)
+   AGE_MIN=${AGE_MIN:-1440}
+
+   # Publish timestamps for every version of a package (newest last)
+   npm view [package-name] time --json
    ```
+
+   A candidate version is **eligible** only if
+   `now - publishTime >= AGE_MIN minutes`. Choose the highest eligible version
+   within the allowed semver range and ignore any newer-but-too-fresh version.
 
 2. **Version Comparison:**
    - You MUST only update to latest minor/patch versions (no major bumps)
    - You MUST respect semver constraints (e.g., `^7.28.0` can go to `^7.29.1`
      but not `^8.0.0`)
+   - You MUST NOT select a target version younger than the repo's
+     `minimumReleaseAge` gate. If the only newer minor/patch is too fresh, leave
+     the package at its current version and report it as **"held back by
+     minimumReleaseAge"** (see Phase 4 summary). This is expected, not a failure
+     — the package will update on a later run once the version has aged.
    - **Critical Constraint on React Runtime**: Since this is a React UI library,
      the runtime packages `react`, `react-dom`, and `@emotion/react` are frozen
      at their current versions. You MUST NOT update these packages because UI
@@ -108,10 +135,27 @@ For each dependency group (or the specified target group):
 4. **Install & Verify:**
 
    ```bash
-   pnpm install --lockfile-only  # Update lockfile
-   pnpm build:packages           # Verify build integrity
-   pnpm test                     # Verify test suite passes
+   pnpm install         # Resolve + update lockfile AND node_modules
+   pnpm build:packages  # Verify build integrity
+   pnpm test            # Verify test suite passes
    ```
+
+   > Use a full `pnpm install`, not `--lockfile-only`: `build:packages` and
+   > `test` must run against the actually-resolved `node_modules`, and the
+   > `minimumReleaseAgeExclude` rewrite (below) only surfaces on a real install.
+
+   **Supply-chain guard — after every `pnpm install`:** confirm pnpm did NOT
+   append a `minimumReleaseAgeExclude:` block to `pnpm-workspace.yaml`:
+
+   ```bash
+   grep -n 'minimumReleaseAgeExclude' pnpm-workspace.yaml   # expect: no output
+   ```
+
+   If the block appeared, you selected a version younger than the age gate. **Do
+   not commit it.** Remove the generated block, revert that package's catalog
+   entry to its previous (age-appropriate) version, `pnpm install` again to
+   confirm the block does not reappear, and report the package as "held back by
+   minimumReleaseAge".
 
 5. **Safety Checkpoint:**
    - If build or tests fail, immediately rollback the group's updates
@@ -142,10 +186,13 @@ For each dependency group (or the specified target group):
 3. **Generate Update Summary:**
    - List all updated packages with before/after versions
    - Report any packages that were skipped (major version changes)
+   - Report any packages **held back by `minimumReleaseAge`** (a newer
+     minor/patch exists but is younger than the age gate) as their own category
+     — distinct from "skipped (major)" and "already at latest"
    - Identify packages that are already at latest versions
    - Display total update count by category
-   - Note: Keep frozen packages and "already at latest" packages separate in the
-     PR body
+   - Note: Keep frozen packages, "held back by minimumReleaseAge", and "already
+     at latest" packages separate in the PR body
 
 4. **Permission check before push:**
 
@@ -203,6 +250,13 @@ For each dependency group (or the specified target group):
    These packages are at their latest versions:
    - [List packages that are current but updateable in future]
 
+   **⏳ Held Back (minimumReleaseAge)**
+
+   A newer minor/patch exists but is younger than the repo's `minimumReleaseAge`
+   supply-chain gate, so it was intentionally not adopted (will update on a
+   later run once aged):
+   - [package]: staying at [current] ([newer] published <24h ago)
+
    ## 📊 Update Strategy
 
    Dependencies were updated in risk-ordered groups with validation checkpoints:
@@ -232,6 +286,7 @@ For each dependency group (or the specified target group):
 
    - ✅ **[X] packages updated** (tooling/utils/etc.)
    - ⏸️ **5 packages frozen** (React core + types + Emotion)
+   - ⏳ **[X] packages held back** (minimumReleaseAge — newer version too fresh)
    - ✅ **[X] packages already current** (Chakra UI, React Aria, etc.)
    - ✅ **0 packages failed**
    - ✅ **100% test pass rate** ([X]/[X] tests)
@@ -294,6 +349,13 @@ For each dependency group (or the specified target group):
      deps, only list that one)
    - Include the changeset in the final commit before pushing
 
+7. **Chromatic visual check (automatic):**
+
+   No manual dispatch needed - the changed-files gate watches `pnpm-lock.yaml`,
+   so the PR auto-runs a full Chromatic snapshot. Review the visual diff before
+   merging. See
+   [Chromatic Visual Testing](../../docs/chromatic-visual-testing.md).
+
 ---
 
 ## **Safety Features & Error Handling**
@@ -314,6 +376,19 @@ If any group fails build/tests:
 4. Report which specific group failed
 5. Suggest updating that group manually or investigating failures
 
+### **`minimumReleaseAgeExclude` must never be committed:**
+
+If `pnpm install` appended a `minimumReleaseAgeExclude:` block to
+`pnpm-workspace.yaml`, a selected target version is younger than the repo's
+supply-chain age gate and pnpm force-included it. This defeats the protection —
+do not commit it. Instead:
+
+1. Delete the generated `minimumReleaseAgeExclude:` block from
+   `pnpm-workspace.yaml`.
+2. Revert the offending catalog entry to its previous, age-appropriate version.
+3. `pnpm install` again and confirm the block does not reappear.
+4. Report the package as "held back by minimumReleaseAge" in the summary.
+
 ### **Logging:**
 
 - Log each step with timestamps
@@ -328,6 +403,8 @@ or `housekeeping tooling dry run`). When active, show:
 
 - Which packages would be updated
 - Current vs. target versions
+- Any packages held back by `minimumReleaseAge` (newer version too fresh), with
+  how long until it becomes eligible
 - Update order and grouping
 - No actual changes made
 
@@ -355,6 +432,7 @@ or `housekeeping tooling dry run`). When active, show:
    @types/react-dom: 19.1.6 → 19.1.9
    @chakra-ui/react: 3.26.0 → 3.27.2
    react-aria: 3.42.0 → 3.43.2
+   ⏳ next-themes: 0.4.6 (held back — 0.4.7 published 5h ago, gate is 24h)
    ⏸ react: 19.0.0 (FROZEN)
    ⏸ react-dom: 19.0.0 (FROZEN)
    ⏸ @emotion/react: 11.14.0 (FROZEN)
@@ -362,6 +440,7 @@ or `housekeeping tooling dry run`). When active, show:
 
 =� SUMMARY:
 -  23 packages updated successfully
+- ⏳ 1 package held back (minimumReleaseAge — newer version too fresh)
 - � 0 packages skipped (major versions)
 - � 0 packages failed
 - =R Total time: 3m 42s

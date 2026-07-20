@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FloatingActionButton, Stack } from "@commercetools/nimbus";
 import { Add as AddIcon } from "@commercetools/nimbus-icons";
-import { expect, within } from "storybook/test";
+import { expect, userEvent, within } from "storybook/test";
 import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
 
 /**
@@ -38,9 +38,32 @@ export const Base: Story = {
 };
 
 /**
- * The FAB forwards `colorPalette`, its one meaningful styling axis.
+ * Captures the focus ring on the FAB's circular, elevated shape — a visual
+ * IconButton's own `Focused` story (default size, non-circular) doesn't cover.
+ */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    chromatic: { disableSnapshot: false },
+  },
+  args: {
+    children: <AddIcon />,
+    "aria-label": "Add item",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("button")).toHaveFocus();
+  },
+};
+
+/**
+ * The FAB forwards `colorPalette`, its one meaningful styling axis (size/variant
+ * are fixed to its circular, elevated shape and covered by IconButton's matrix).
  */
 export const ColorPalettes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack direction="row" gap="400" alignItems="center" flexWrap="wrap">
       {SEMANTIC_COLOR_PALETTES.map((colorPalette) => (
@@ -54,4 +77,18 @@ export const ColorPalettes: Story = {
       ))}
     </Stack>
   ),
+};
+
+/**
+ * The disabled treatment: a uniform opacity layer, so one instance captures it
+ * (it doesn't vary by colorPalette).
+ */
+export const Disabled: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    children: <AddIcon />,
+    "aria-label": "Add item",
+    isDisabled: true,
+  },
 };

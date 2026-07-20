@@ -1,7 +1,14 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
-import { Menu, Separator, SplitButton, Stack } from "@commercetools/nimbus";
+import {
+  Menu,
+  Separator,
+  SplitButton,
+  type SplitButtonProps,
+  Stack,
+} from "@commercetools/nimbus";
 import { Save, Edit, Share } from "@commercetools/nimbus-icons";
+import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
 
 const meta: Meta<typeof SplitButton> = {
   title: "Components/Buttons/SplitButton",
@@ -15,6 +22,17 @@ const meta: Meta<typeof SplitButton> = {
 
 export default meta;
 type Story = StoryObj<typeof SplitButton>;
+
+const sizes: SplitButtonProps["size"][] = ["xl", "md", "sm", "xs", "2xs"];
+
+// "link" is intentionally omitted: a borderless link has no button-group
+// delimiter to render, so it is not a meaningful SplitButton appearance.
+const variants: SplitButtonProps["variant"][] = [
+  "solid",
+  "subtle",
+  "outline",
+  "ghost",
+];
 
 export const Basic: Story = {
   render: () => (
@@ -138,6 +156,33 @@ export const Basic: Story = {
   },
 };
 
+/**
+ * The disabled treatment is a uniform opacity layer, captured here across
+ * variants because the dropdown-trigger delimiter border is variant-specific
+ * (it does not vary by size or colorPalette).
+ */
+export const Disabled: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="row" gap="400" alignItems="center">
+      {variants.map((variant) => (
+        <SplitButton
+          key={variant as string}
+          variant={variant}
+          isDisabled
+          onAction={fn()}
+          aria-label={`disabled ${variant as string} actions`}
+          icon={<Save />}
+        >
+          <Menu.Item id="save">Save</Menu.Item>
+          <Menu.Item id="save-publish">Save and publish</Menu.Item>
+        </SplitButton>
+      ))}
+    </Stack>
+  ),
+};
+
 export const DocumentManagement: Story = {
   render: () => (
     <SplitButton
@@ -186,6 +231,7 @@ export const WithComplexContent: Story = {
 };
 
 export const SizeVariants: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Stack direction="row" gap="400" alignItems="center">
       <SplitButton
@@ -222,6 +268,7 @@ export const SizeVariants: Story = {
 };
 
 export const SplitButtonVariants: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Stack gap="600">
       {/* Split Button Mode - Size Variants */}
@@ -330,7 +377,26 @@ export const SplitButtonVariants: Story = {
   ),
 };
 
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    chromatic: { disableSnapshot: false },
+  },
+  render: () => (
+    <SplitButton onAction={fn()} aria-label="More actions" icon={<Save />}>
+      <Menu.Item id="save">Save</Menu.Item>
+      <Menu.Item id="save-publish">Save and publish</Menu.Item>
+    </SplitButton>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getAllByRole("button")[0]).toHaveFocus();
+  },
+};
+
 export const DisabledStates: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => (
     <Stack direction="row" gap="400">
       <SplitButton
@@ -718,4 +784,51 @@ export const EdgeCasesAndFallbacks: Story = {
       }
     );
   },
+};
+
+/**
+ * Exhaustive matrix over the axes that interact: colorPalette x size x variant.
+ * The dropdown-trigger delimiter border resolves from both variant and
+ * colorPalette (solid uses colorPalette.contrast, ghost uses colorPalette.7),
+ * so only the full grid covers the cross-axis cells where recipe regressions
+ * hide. Menus stay closed - the button-group is the SplitButton-specific
+ * surface; the open menu is Menu's own coverage. disabled and focus are
+ * captured by their dedicated stories.
+ */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="1200">
+      {SEMANTIC_COLOR_PALETTES.map((colorPalette) => (
+        <Stack key={colorPalette} direction="column" gap="400">
+          {sizes.map((size) => (
+            <Stack
+              direction="row"
+              key={size as string}
+              gap="400"
+              alignItems="center"
+            >
+              {variants.map((variant) => (
+                <SplitButton
+                  key={variant as string}
+                  variant={variant}
+                  size={size}
+                  colorPalette={colorPalette}
+                  onAction={fn()}
+                  aria-label={`${colorPalette} ${size as string} ${
+                    variant as string
+                  } actions`}
+                  icon={<Save />}
+                >
+                  <Menu.Item id="save">Save</Menu.Item>
+                  <Menu.Item id="save-publish">Save and publish</Menu.Item>
+                </SplitButton>
+              ))}
+            </Stack>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  ),
 };

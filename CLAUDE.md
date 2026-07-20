@@ -500,6 +500,10 @@ The testing system uses Vitest with three distinct test categories:
 See [Testing Strategy Guide](./docs/file-type-guidelines/testing-strategy.md)
 for detailed rules and examples.
 
+Visual regression is handled separately by Chromatic in CI. See
+[Chromatic Visual Testing](./docs/chromatic-visual-testing.md) for triggers,
+baselines, the manual full-snapshot run, and merge gating.
+
 ### Git Conventions
 
 See [Git Conventions](./docs/git-conventions.md) for branch naming, commit

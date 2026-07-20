@@ -81,6 +81,7 @@ export type DataTableColumnItem<T extends object = Record<string, unknown>> = {
   minWidth?: number | null;
   maxWidth?: number | null;
   sticky?: boolean;
+  align?: "start" | "center" | "end" | "stretch";
   isSortable?: boolean;
   isRowHeader?: boolean;
   headerIcon?: ReactNode;
@@ -221,9 +222,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
   onSettingsChange?: (
     action:
-      | (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS]
-      | string
-      | undefined
+      (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS] | string | undefined
   ) => void;
   customSettings?: DataTableCustomSettings;
 };

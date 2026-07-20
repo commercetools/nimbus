@@ -1,0 +1,315 @@
+---
+title: Chat message component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { ChatMessage, type ChatMessageProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+`ChatMessage` is a compound component: wrap `ChatMessage.Avatar` and
+`ChatMessage.Body` in `ChatMessage.Root`. `sender` defaults to `"agent"`.
+
+```jsx live-dev
+const App = () => (
+  <ChatMessage.Root sender="agent">
+    <ChatMessage.Avatar>
+      <Icons.AutoAwesome />
+    </ChatMessage.Avatar>
+    <ChatMessage.Body>
+      <Text>Here is the summary you asked for.</Text>
+    </ChatMessage.Body>
+  </ChatMessage.Root>
+);
+```
+
+## Usage examples
+
+### User and agent messages
+
+`sender="user"` trails the avatar and uses the `colorPalette.2` surface
+(`primary` by default);
+`sender="agent"` (the default) leads with the avatar. Name a message with
+`aria-label` (or `aria-labelledby`) — the avatar itself stays decorative unless
+you give it `firstName`/`lastName` or its own `aria-label`.
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="600">
+    <ChatMessage.Root sender="user" aria-label="Message from Ada Lovelace">
+      <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
+      <ChatMessage.Body>
+        <Text>Can you summarise last week's orders for me?</Text>
+      </ChatMessage.Body>
+    </ChatMessage.Root>
+    <ChatMessage.Root sender="agent" aria-label="Message from the agent">
+      <ChatMessage.Avatar aria-label="Agent">
+        <Icons.AutoAwesome />
+      </ChatMessage.Avatar>
+      <ChatMessage.Body>
+        <Text>Revenue is up 12% week-over-week.</Text>
+      </ChatMessage.Body>
+    </ChatMessage.Root>
+  </Stack>
+);
+```
+
+### System notices
+
+System notices and dividers aren't standardized in this release. There's no
+dedicated Nimbus component for them — because `ChatMessageList` is
+content-agnostic, a consumer renders their own centered, subdued content inside a
+`ChatMessageList.Item`.
+
+```jsx live-dev
+const App = () => (
+  <Box mx="auto" textAlign="center" color="neutral.11" textStyle="sm">
+    Conversation history was cleared.
+  </Box>
+);
+```
+
+### Tool output
+
+Tool / function-call output is content _inside_ an `agent` message (there is no
+`sender="tool"`) — for example a JSON code block rendered by `Markdown`.
+
+````jsx live-dev
+const App = () => (
+  <ChatMessage.Root sender="agent">
+    <ChatMessage.Avatar>
+      <Icons.AutoAwesome />
+    </ChatMessage.Avatar>
+    <ChatMessage.Body>
+      <Markdown>
+        {["```json", '{ "orders": 42, "revenue": 12890 }', "```"].join("\n")}
+      </Markdown>
+    </ChatMessage.Body>
+  </ChatMessage.Root>
+);
+````
+
+### Error tone
+
+`tone="error"` is orthogonal to `sender` — it tints the body to flag a failed
+generation, so an `agent` message can be both `sender="agent"` and
+`tone="error"`.
+
+```jsx live-dev
+const App = () => (
+  <ChatMessage.Root sender="agent" tone="error">
+    <ChatMessage.Avatar>
+      <Icons.AutoAwesome />
+    </ChatMessage.Avatar>
+    <ChatMessage.Body>
+      <Text>Something went wrong generating this response.</Text>
+      <ChatMessage.Actions>
+        <Button variant="outline" colorPalette="primary">
+          Retry
+        </Button>
+      </ChatMessage.Actions>
+    </ChatMessage.Body>
+  </ChatMessage.Root>
+);
+```
+
+### Actions
+
+`ChatMessage.Actions` renders a right-aligned button row inside the body.
+Place it as the last child of `ChatMessage.Body` so it pins to the bottom of
+the card.
+
+```jsx live-dev
+const App = () => (
+  <ChatMessage.Root sender="agent">
+    <ChatMessage.Avatar>
+      <Icons.AutoAwesome />
+    </ChatMessage.Avatar>
+    <ChatMessage.Body>
+      <Text>I drafted the date range for your report. Approve to apply.</Text>
+      <ChatMessage.Actions>
+        <Button variant="outline" colorPalette="primary">
+          Save as draft
+        </Button>
+        <Button variant="solid" colorPalette="primary">
+          Approve
+        </Button>
+      </ChatMessage.Actions>
+    </ChatMessage.Body>
+  </ChatMessage.Root>
+);
+```
+
+### Meta: timestamp and reactions
+
+`ChatMessage.Meta` renders a `space-between` row below the body — a trust link
+on the start side, a timestamp and reaction `IconButton`s on the end side. With
+a single child, `space-between` leaves it at the start of the row.
+
+```jsx live-dev
+const App = () => (
+  <ChatMessage.Root sender="agent">
+    <ChatMessage.Avatar>
+      <Icons.AutoAwesome />
+    </ChatMessage.Avatar>
+    <ChatMessage.Body>
+      <Text>Here is the summary you asked for.</Text>
+    </ChatMessage.Body>
+    <ChatMessage.Meta>
+      <Link href="#">How was this generated?</Link>
+      <Stack direction="row" alignItems="center" gap="100">
+        <Text color="neutral.11">Apr 13, 11:56pm</Text>
+        <IconButton aria-label="Good response" variant="ghost" size="xs">
+          <Icons.ThumbUp />
+        </IconButton>
+        <IconButton aria-label="Bad response" variant="ghost" size="xs">
+          <Icons.ThumbDown />
+        </IconButton>
+        <IconButton aria-label="Copy" variant="ghost" size="xs">
+          <Icons.ContentCopy />
+        </IconButton>
+      </Stack>
+    </ChatMessage.Meta>
+  </ChatMessage.Root>
+);
+```
+
+### Markdown payload
+
+The body's payload is arbitrary content — render a `Markdown` string for
+formatted replies (lists, links, inline code, code blocks).
+
+```jsx live-dev
+const App = () => (
+  <ChatMessage.Root sender="agent">
+    <ChatMessage.Avatar>
+      <Icons.AutoAwesome />
+    </ChatMessage.Avatar>
+    <ChatMessage.Body>
+      <Markdown>
+        {[
+          "Here's what I found:",
+          "",
+          "- **Revenue** is up 12% week-over-week",
+          "- Top SKU: `ABC-123`",
+          "",
+          "See the [full report](#) for details.",
+        ].join("\n")}
+      </Markdown>
+      <ChatMessage.Actions>
+        <Button variant="solid" colorPalette="primary">
+          Approve
+        </Button>
+      </ChatMessage.Actions>
+    </ChatMessage.Body>
+  </ChatMessage.Root>
+);
+```
+
+### Streaming replies
+
+While a reply generates, set `isStreaming` on `ChatMessage.Root` (which sets
+`aria-busy`). Before the first token, render `ChatMessage.Typing` as the
+body's payload; once text starts streaming, render it with
+`<Markdown isStreaming>` — the `Markdown` component owns safe incremental
+rendering (completing unterminated markdown, re-parsing only the final block per
+token), so `ChatMessage` never re-implements streamed-text rendering itself.
+
+```jsx live-dev
+const App = () => (
+  <ChatMessage.Root sender="agent" isStreaming>
+    <ChatMessage.Avatar>
+      <Icons.AutoAwesome />
+    </ChatMessage.Avatar>
+    <ChatMessage.Body>
+      <ChatMessage.Typing>
+        <Text color="neutral.11">Agent is typing…</Text>
+      </ChatMessage.Typing>
+    </ChatMessage.Body>
+  </ChatMessage.Root>
+);
+```
+
+### Accessible transcript (recommended composition)
+
+`ChatMessage` renders one message; you compose the transcript. Wrap the messages
+in a `role="log"` `aria-live="polite"` container so streamed replies are
+announced without per-token spam, and name each message for assistive tech. See
+the Accessibility tab for the full rationale, including why `role="feed"` is not
+a drop-in replacement here.
+
+```jsx live-dev
+const App = () => (
+  <Box
+    role="log"
+    aria-live="polite"
+    aria-label="Conversation with the agent"
+    display="flex"
+    flexDirection="column"
+    gap="600"
+  >
+    <ChatMessage.Root sender="user" aria-label="Message from Ada Lovelace">
+      <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
+      <ChatMessage.Body>
+        <Text>Can you summarise last week's orders?</Text>
+      </ChatMessage.Body>
+    </ChatMessage.Root>
+
+    <ChatMessage.Root sender="agent" aria-label="Message from the agent">
+      <ChatMessage.Avatar aria-label="Agent">
+        <Icons.AutoAwesome />
+      </ChatMessage.Avatar>
+      <ChatMessage.Body>
+        <Text>Revenue is up 12% week-over-week.</Text>
+      </ChatMessage.Body>
+    </ChatMessage.Root>
+  </Box>
+);
+```
+
+## Component requirements
+
+- Render `ChatMessage.Avatar` and `ChatMessage.Body` as direct children of
+  `ChatMessage.Root`; add `ChatMessage.Meta` as a sibling after the body for a
+  below-body row.
+- Nest `ChatMessage.Actions` inside `ChatMessage.Body`, as the last child, so
+  it pins to the bottom of the card.
+- Non-message interjections (system notices, dividers) aren't standardized in
+  this release — render your own centered, subdued content inside a
+  `ChatMessageList.Item`; it is not a `sender` variant.
+- `ChatMessage.Root` renders a semantic `<article>` by default; override the
+  element with `as` (for example `as="li"` inside a list) when composing a
+  transcript that needs a different tag.
+
+## Accessibility
+
+`ChatMessage` is a single-message primitive — it does not own the surrounding
+feed's container semantics or live region. In brief: name each message with
+`aria-label`/`aria-labelledby`, keep the avatar decorative unless you give it a
+real name, and set `isStreaming` for streamed replies (it sets `aria-busy`). See
+the **Accessibility tab** for the full guidance on composing an accessible
+transcript.
+
+## API reference
+
+<PropsTable id="ChatMessage" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using
+ChatMessage within your application. As the component's internal functionality
+is already tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+{{docs-tests: chat-message.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-chatmessage--docs)

@@ -1,8 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { IconToggleButton, Stack } from "@commercetools/nimbus";
+import {
+  IconToggleButton,
+  type IconToggleButtonProps,
+  Stack,
+} from "@commercetools/nimbus";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { ThumbUp, Star, Bookmark } from "@commercetools/nimbus-icons";
 import { useState } from "react";
+import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
 
 const meta: Meta<typeof IconToggleButton> = {
   title: "Components/Buttons/IconToggleButton",
@@ -13,7 +18,12 @@ export default meta;
 
 type Story = StoryObj<typeof IconToggleButton>;
 
+const sizes: IconToggleButtonProps["size"][] = ["md", "xs", "2xs"];
+
+const variants: IconToggleButtonProps["variant"][] = ["outline", "ghost"];
+
 export const Base: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: <ThumbUp />,
     "aria-label": "Like",
@@ -49,6 +59,7 @@ export const Base: Story = {
 
 export const Variants: Story = {
   name: "Visual Variants",
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => {
     return (
       <Stack gap="400">
@@ -81,8 +92,25 @@ export const Variants: Story = {
   },
 };
 
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    chromatic: { disableSnapshot: false },
+  },
+  args: {
+    children: <ThumbUp />,
+    "aria-label": "Like",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("button")).toHaveFocus();
+  },
+};
+
 export const InContext: Story = {
   name: "Multiple in Context",
+  parameters: { chromatic: { disableSnapshot: true } },
   render: () => {
     const [liked, setLiked] = useState(false);
     const [starred, setStarred] = useState(false);
@@ -113,6 +141,74 @@ export const InContext: Story = {
         >
           <Bookmark />
         </IconToggleButton>
+      </Stack>
+    );
+  },
+};
+
+/**
+ * The disabled treatment: a uniform opacity layer, captured across variants and
+ * both selected/unselected (it doesn't vary by size or colorPalette).
+ */
+export const Disabled: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="row" gap="400" align="center">
+      {variants.flatMap((variant) =>
+        [false, true].map((isSelected) => (
+          <IconToggleButton
+            key={`${variant}-${isSelected}`}
+            variant={variant}
+            isSelected={isSelected}
+            isDisabled
+            aria-label={`disabled ${variant} ${
+              isSelected ? "selected" : "unselected"
+            }`}
+          >
+            <Star />
+          </IconToggleButton>
+        ))
+      )}
+    </Stack>
+  ),
+};
+
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => {
+    return (
+      <Stack gap="1200">
+        {SEMANTIC_COLOR_PALETTES.map((colorPalette) => (
+          <Stack key={colorPalette as string} direction="column" gap="400">
+            {sizes.map((size) => (
+              <Stack
+                direction="row"
+                key={size as string}
+                gap="400"
+                align="center"
+              >
+                {variants.flatMap((variant) =>
+                  [false, true].map((isSelected) => (
+                    <IconToggleButton
+                      key={`${variant}-${isSelected}`}
+                      variant={variant}
+                      size={size}
+                      colorPalette={colorPalette}
+                      isSelected={isSelected}
+                      aria-label={`${colorPalette} ${variant} ${
+                        isSelected ? "selected" : "unselected"
+                      }`}
+                    >
+                      <Star />
+                    </IconToggleButton>
+                  ))
+                )}
+              </Stack>
+            ))}
+          </Stack>
+        ))}
       </Stack>
     );
   },

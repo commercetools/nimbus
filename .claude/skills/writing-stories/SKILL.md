@@ -17,6 +17,32 @@ for testing component behavior.
 have play functions that test user interactions, state changes, and
 accessibility.
 
+### A story's three testing roles
+
+A story is documentation and a test at once, and it can serve three roles, often
+simultaneously (not as separate stories):
+
+- **Interaction test** - the play function drives the component and asserts
+  behavior (clicks, typing, keyboard nav, resulting ARIA/DOM state).
+- **Visual snapshot** - Chromatic captures the story's end state and diffs it
+  against the baseline (opt-in via `disableSnapshot: false`).
+- **Accessibility check** - axe and the APCA contrast check run on every story
+  via `addon-a11y` and **fail the run** on a violation (`test: "error"`); play
+  functions may add targeted a11y assertions on top.
+
+Unit tests of utilities and hooks live in `*.spec.tsx`, and consumer examples in
+`*.docs.spec.tsx` - separate test categories, not story roles.
+
+Whichever role(s) a story serves, it MUST be:
+
+- **Concise** - the minimal setup to exercise one thing.
+- **Deterministic** - identical output every run: no live dates or random values
+  in a snapshot, wait for async-derived state before the capture, don't leave a
+  stray focus ring.
+- **True to its name** - it does exactly what its title says and nothing more.
+  `Focused` tests focus, `Disabled` shows the disabled look, `SmokeTest` is the
+  matrix, `WithRef` asserts ref forwarding. One job per story.
+
 ## Mode Detection
 
 Parse the request to determine the operation:
@@ -96,10 +122,11 @@ Stories MUST be exported in this order:
 1. **Base/Default** - Simplest usage, first story
 2. **Sizes** - Size variants (if applicable)
 3. **Variants** - Visual variants (if applicable)
-4. **States** - Disabled, Invalid, Required, etc.
-5. **Controlled** - Controlled state example
-6. **Complex** - Advanced scenarios, edge cases
-7. **SmokeTest** - Comprehensive matrix (last story)
+4. **Focused** - Focus state (if applicable)
+5. **States** - Disabled, Invalid, Required, etc.
+6. **Controlled** - Controlled state example
+7. **Complex** - Advanced scenarios, edge cases
+8. **SmokeTest** - Comprehensive matrix (last story)
 
 ## Create Mode
 
@@ -191,6 +218,25 @@ export const Variants: Story = {
 };
 ```
 
+#### Focused Story (if applicable)
+
+Captures the keyboard-focus state, which no other story renders:
+
+```typescript
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    chromatic: { disableSnapshot: false },
+  },
+  args: {/* minimal render */},
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("button")).toHaveFocus();
+  },
+};
+```
+
 #### Disabled Story (REQUIRED for interactive components)
 
 ```typescript
@@ -246,8 +292,22 @@ export const Controlled: Story = {
 
 #### SmokeTest Story (REQUIRED)
 
+Pack the **interacting** axes your component actually has into one matrix:
+iterate whichever of `sizes`, `variants`, `colorPalettes`, and
+selected/unselected (toggles) apply, covering every combination that produces a
+distinct visual. Content edge cases that change layout (long labels, icon +
+text) can go here too.
+
+Don't fold in an axis that applies a uniform, axis-independent transform. When
+`disabled` resolves to one shared style regardless of palette/size/variant,
+capture it once in a dedicated `Disabled` story (see below) rather than
+multiplying it through the grid. (`:hover` and `:active`/pressed can't be
+captured as static states - see the note under "What Gets Captured".)
+
 ```typescript
 export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Demo",
     ["data-testid"]: "test",
@@ -272,6 +332,53 @@ export const SmokeTest: Story = {
   },
 };
 ```
+
+### Chromatic Snapshots: What Gets Captured
+
+This is the **visual snapshot role**. Snapshots are **opt-in**:
+`.storybook/preview.tsx` sets `chromatic: { disableSnapshot: true }` as the
+project default, so Chromatic captures a story only when it sets
+`disableSnapshot: false`.
+
+**Cover every visual state that can differ.** Anything that changes rendered
+pixels is worth a snapshot: sizes, variants, color palettes,
+selected/unselected, focus rings, disabled/invalid/read-only states, empty vs
+filled content, long text and truncation, icon + text layouts, RTL, and open
+overlays (tooltip/popover/menu). Capture them economically: pack the
+**interacting** axes into one `SmokeTest` matrix (one snapshot for every
+combination that produces a distinct look), and give a dedicated story to each
+state the matrix can't or shouldn't hold (`Focused`, `Disabled`, an open
+popover). Cost is controlled by TurboSnap (unchanged snapshots bill at 1/5) and
+by matrix-packing - **never** by omitting a visual state.
+
+**Leave snapshots off** for stories that add no new visual state: behavior-only
+tests (e.g. `WithRef`, context/DOM-prop assertions) and showcase stories whose
+look is already captured by an on-snapshot story. That's a redundant baseline,
+not missing coverage - but only when the capturing snapshot truly holds every
+state the showcase renders (a `ColorPalettes` story with a disabled column needs
+`Disabled` to cover that column). Verify per component; don't assume.
+
+**Prefer one matrix over many individual snapshots.** A single matrix render is
+one billable snapshot instead of one per combination, and a reviewer spots
+cross-axis regressions in a single image. Tradeoff: a diff in any cell flags the
+whole snapshot, and editing the matrix re-snapshots the entire grid (Chromatic
+can't sub-diff within one image). Reserve standalone snapshots for states that
+need distinct setup or isolated review.
+
+**Determinism matters most for snapshots.** A snapshot must render identically
+every run or it diffs on noise: don't bake in live dates or random values, wait
+for async-derived state (image load, data fetch) before the capture, and don't
+leave a stray focus ring on an unrelated story. Some visual states can't be
+captured statically yet (notably `:hover` and `:active`/pressed); see the
+Chromatic doc for the current gaps.
+
+The snapshot switch is `disableSnapshot`, not `vrt`. Chromatic captures based on
+`disableSnapshot` alone and never reads `vrt`; the tag is just a **label** that
+marks a story as a visual-regression case so tooling can find and select it.
+`disableSnapshot: false` is what takes the picture.
+
+See docs/chromatic-visual-testing.md for the full rationale, CI details, and the
+current hover/pressed limitation.
 
 ### Step 3: Portal Content Handling
 
@@ -560,9 +667,24 @@ You MUST validate against these requirements:
 - [ ] Base/Default story exists (MUST be first)
 - [ ] Sizes story (if component has sizes)
 - [ ] Variants story (if component has variants)
+- [ ] Focused story (if component is focusable)
 - [ ] Disabled story (for interactive components)
 - [ ] Controlled story (for stateful components)
 - [ ] SmokeTest story (MUST be last)
+
+#### Chromatic Snapshots
+
+- [ ] `SmokeTest` matrix is **exhaustive** over the interacting axes the
+      component has (e.g. size x variant x palette, plus selected/unselected for
+      toggles) - every distinct combined look appears in the one snapshot
+- [ ] Uniform, axis-independent states are captured in a **dedicated** story,
+      not folded into the matrix (`disabled` typically resolves to one shared
+      style regardless of size/variant/palette → its own `Disabled` snapshot, not
+      a grid dimension)
+- [ ] `Focused` story captures the focus ring (`disableSnapshot: false` + `vrt`)
+- [ ] Visual-state stories opt in via `disableSnapshot: false` + `tags: ["vrt"]`
+- [ ] Only behavior-only stories and stories whose look is already in `SmokeTest`
+      left snapshot-off (project default) - never drop a visual state to save cost
 
 #### Play Functions (CRITICAL)
 

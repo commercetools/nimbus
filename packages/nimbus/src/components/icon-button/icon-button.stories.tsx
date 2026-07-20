@@ -47,6 +47,7 @@ type Story = StoryObj<typeof IconButton>;
  * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: <DemoIcon />,
     onPress: fn(),
@@ -98,6 +99,7 @@ export const Base: Story = {
  * Showcase Sizes
  */
 export const Sizes: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: <DemoIcon />,
     ["aria-label"]: "test-button",
@@ -117,6 +119,7 @@ export const Sizes: Story = {
  * Showcase Variants
  */
 export const Variants: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: <DemoIcon />,
     ["aria-label"]: "test-button",
@@ -132,10 +135,27 @@ export const Variants: Story = {
   },
 };
 
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    chromatic: { disableSnapshot: false },
+  },
+  args: {
+    children: <DemoIcon />,
+    ["aria-label"]: "test-button",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("button")).toHaveFocus();
+  },
+};
+
 /**
  * Showcase Color Palettes
  */
 export const ColorPalettes: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: <DemoIcon />,
     ["aria-label"]: "test-button",
@@ -172,6 +192,7 @@ export const ColorPalettes: Story = {
 const buttonRef = createRef<HTMLButtonElement>();
 
 export const WithRef: Story = {
+  parameters: { chromatic: { disableSnapshot: true } },
   args: {
     children: <DemoIcon />,
     ["aria-label"]: "test-button",
@@ -190,5 +211,60 @@ export const WithRef: Story = {
     await step("Does accept ref's", async () => {
       await expect(buttonRef.current).toBe(button);
     });
+  },
+};
+
+/**
+ * The disabled treatment: a uniform opacity layer, captured across variants
+ * (it doesn't vary by size or colorPalette).
+ */
+export const Disabled: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="row" gap="400" alignItems="center">
+      {variants.map((variant) => (
+        <IconButton
+          key={variant as string}
+          variant={variant}
+          isDisabled
+          aria-label={`disabled ${variant as string}`}
+        >
+          <DemoIcon />
+        </IconButton>
+      ))}
+    </Stack>
+  ),
+};
+
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    children: <DemoIcon />,
+    ["aria-label"]: "test-button",
+  },
+  render: (args) => {
+    return (
+      <Stack gap="1200">
+        {SEMANTIC_COLOR_PALETTES.map((colorPalette) => (
+          <Stack key={colorPalette as string} direction="column" gap="400">
+            {sizes.map((size) => (
+              <Stack direction="row" key={size as string} gap="400">
+                {variants.map((variant) => (
+                  <IconButton
+                    {...args}
+                    key={variant as string}
+                    variant={variant}
+                    size={size}
+                    colorPalette={colorPalette}
+                  />
+                ))}
+              </Stack>
+            ))}
+          </Stack>
+        ))}
+      </Stack>
+    );
   },
 };

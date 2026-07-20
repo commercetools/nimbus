@@ -6,10 +6,44 @@
  * is scored exactly once regardless of list size.
  */
 
-import type { RelevanceFields, LoweredRelevanceFields } from "../types.js";
+import type {
+  RelevanceFields,
+  LoweredRelevanceFields,
+  RouteManifestEntry,
+} from "../types.js";
 
 /** Field weights. Higher = more relevant when a query token matches this field. */
-const WEIGHTS = { title: 8, description: 4, tags: 4, content: 1 } as const;
+export const WEIGHTS = {
+  title: 8,
+  description: 4,
+  tags: 4,
+  content: 1,
+} as const;
+
+/**
+ * Builds pre-lowercased relevance fields for a route manifest entry,
+ * including pre-split words and no-spaces variants for fuzzy matching.
+ */
+export function toLoweredRouteFields(
+  r: RouteManifestEntry
+): LoweredRelevanceFields {
+  const title = r.title.toLowerCase();
+  const description = r.description.toLowerCase();
+  const tags = [...r.tags, r.exportName ?? ""].join(" ").toLowerCase();
+  return {
+    title,
+    description,
+    tags,
+    content: "",
+    combined: title + " " + description + " " + tags,
+    titleNoSpaces: title.replace(/\s+/g, ""),
+    titleWords: title.split(/\s+/).filter(Boolean),
+    descriptionNoSpaces: description.replace(/\s+/g, ""),
+    descriptionWords: description.split(/\s+/).filter(Boolean),
+    tagsNoSpaces: tags.replace(/\s+/g, ""),
+    tagsWords: tags.split(/\s+/).filter(Boolean),
+  };
+}
 
 /**
  * Computes a relevance score for a set of fields against pre-parsed query tokens.

@@ -27,6 +27,14 @@
     "developer_comment": "aria-label for previous year navigation button",
     "string": "Année précédente"
   },
+  "Nimbus.ChatMessageList.conversationLabel": {
+    "developer_comment": "default accessible name for the chat transcript live region when the consumer does not provide one",
+    "string": "Conversation"
+  },
+  "Nimbus.ChatMessageList.scrollToBottom": {
+    "developer_comment": "aria-label for the control that jumps to the newest message in a chat transcript",
+    "string": "Aller au message le plus récent"
+  },
   "Nimbus.ComboBox.clearSelection": {
     "developer_comment": "aria-label for clear selection button in ComboBox",
     "string": "Effacer la sélection"
@@ -282,6 +290,10 @@
   "Nimbus.Drawer.closeTrigger": {
     "developer_comment": "aria-label for the default close trigger button",
     "string": "Fermer le volet"
+  },
+  "Nimbus.DropZone.defaultLabel": {
+    "developer_comment": "Default accessible label for the drop zone when the consumer provides no aria-label, aria-labelledby, or label content",
+    "string": "Drag and drop files here"
   },
   "Nimbus.FieldErrors.duplicateValue": {
     "developer_comment": "Error message for duplicate value validation",
