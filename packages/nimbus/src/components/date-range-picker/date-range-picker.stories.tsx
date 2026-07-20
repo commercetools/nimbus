@@ -40,7 +40,7 @@ export default meta;
 type Story = StoryObj<typeof DateRangePicker>;
 
 // Fixed anchor so date-dependent stories are deterministic.
-const ANCHOR = new CalendarDate(2025, 6, 15);
+const ANCHOR = new CalendarDate(2026, 6, 15);
 
 // Shared helper functions that work for both single and multiple DateRangePicker components scenarios.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -627,17 +627,17 @@ export const Controlled: Story = {
 
       // Should display the current value in the text
       const valueText = await canvas.findByText(
-        /current value: 2025-06-15 to 2025-06-20/
+        /current value: 2026-06-15 to 2026-06-20/
       );
       await expect(valueText).toBeInTheDocument();
 
-      // Date segments should show the controlled value (2025-06-15 to 2025-06-20)
+      // Date segments should show the controlled value (2026-06-15 to 2026-06-20)
       const helpers = createDateRangePickerHelpers(canvas, dateGroup);
       const segments = helpers.getDateSegments();
       await helpers.verifyDateRangeValues(
         segments,
-        ["6", "15", "2025"],
-        ["6", "20", "2025"]
+        ["6", "15", "2026"],
+        ["6", "20", "2026"]
       );
 
       // Clear button should be enabled since there's a value
@@ -667,7 +667,7 @@ export const Controlled: Story = {
         // The displayed value should update to reflect the change
         await waitFor(async () => {
           const valueText = await canvas.findByText(
-            /current value: 2025-08-15/
+            /current value: 2026-08-15/
           );
           await expect(valueText).toBeInTheDocument();
         });
@@ -685,7 +685,7 @@ export const Controlled: Story = {
         // The displayed value should update again
         await waitFor(async () => {
           const valueText = await canvas.findByText(
-            /current value: 2025-08-25/
+            /current value: 2026-08-25/
           );
           await expect(valueText).toBeInTheDocument();
         });
@@ -704,7 +704,7 @@ export const Controlled: Story = {
         // The displayed value should update to show the new end month
         await waitFor(async () => {
           const valueText = await canvas.findByText(
-            /current value: 2025-08-25 to 2025-09-20/
+            /current value: 2026-08-25 to 2026-09-20/
           );
           await expect(valueText).toBeInTheDocument();
         });
@@ -722,7 +722,7 @@ export const Controlled: Story = {
         // The displayed value should update to show the new end day
         await waitFor(async () => {
           const valueText = await canvas.findByText(
-            /current value: 2025-08-25 to 2025-09-30/
+            /current value: 2026-08-25 to 2026-09-30/
           );
           await expect(valueText).toBeInTheDocument();
         });
@@ -1018,7 +1018,7 @@ export const PlaceholderValue: Story = {
         await userEvent.keyboard("{ArrowUp}");
         // After editing, year segment should show the placeholder value
         await waitFor(async () => {
-          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2026");
         });
 
         // Now test the end date inputs (segments 3, 4, 5)
@@ -1043,7 +1043,7 @@ export const PlaceholderValue: Story = {
         await userEvent.keyboard("{ArrowUp}");
         // After editing, end date year should show the placeholder value
         await waitFor(async () => {
-          await expect(segments[5]).toHaveAttribute("aria-valuenow", "2025");
+          await expect(segments[5]).toHaveAttribute("aria-valuenow", "2026");
         });
 
         // Now that we have a complete date range, clear button should be enabled
@@ -2306,11 +2306,11 @@ export const MinMaxValues: Story = {
       const segments = helpers.getDateSegments();
       const clearButton = await helpers.getClearButton();
 
-      // Should have default value of 2025-06-22 (start) to 2025-06-27 (end)
+      // Should have default value of 2026-06-22 (start) to 2026-06-27 (end)
       await helpers.verifyDateRangeValues(
         segments,
-        ["6", "22", "2025"],
-        ["6", "27", "2025"]
+        ["6", "22", "2026"],
+        ["6", "27", "2026"]
       );
 
       // Clear button should be enabled
@@ -2386,7 +2386,7 @@ export const MinMaxValues: Story = {
         });
         const segments = within(dateRangePicker).getAllByRole("spinbutton");
 
-        // Try to set a date before minValue (2025-06-15, which is before 2025-06-16)
+        // Try to set a date before minValue (2026-06-15, which is before 2026-06-16)
         await userEvent.click(segments[1]); // day segment
         await userEvent.keyboard("{Control>}a{/Control}");
         await userEvent.keyboard("15"); // 15th (before minValue of 16th)
@@ -2480,7 +2480,7 @@ export const MinMaxValues: Story = {
         await userEvent.keyboard("1");
 
         await userEvent.click(segments[2]);
-        await userEvent.keyboard("2025");
+        await userEvent.keyboard("2026");
 
         // DateInput 2 - Set a new valid date within range by typing
         await userEvent.click(segments[3]);
@@ -2490,7 +2490,7 @@ export const MinMaxValues: Story = {
         await userEvent.keyboard("7");
 
         await userEvent.click(segments[5]);
-        await userEvent.keyboard("2025");
+        await userEvent.keyboard("2026");
 
         // Clear button should now be enabled
         await expect(clearButton).not.toBeDisabled();
@@ -2499,10 +2499,10 @@ export const MinMaxValues: Story = {
         await waitFor(async () => {
           await expect(segments[0]).toHaveAttribute("aria-valuenow", "7");
           await expect(segments[1]).toHaveAttribute("aria-valuenow", "1");
-          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2026");
           await expect(segments[3]).toHaveAttribute("aria-valuenow", "8");
           await expect(segments[4]).toHaveAttribute("aria-valuenow", "7");
-          await expect(segments[5]).toHaveAttribute("aria-valuenow", "2025");
+          await expect(segments[5]).toHaveAttribute("aria-valuenow", "2026");
         });
       }
     );
