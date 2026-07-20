@@ -324,8 +324,15 @@ but neither is currently captured, and it's an infra limitation, not a choice:
   Aria's `[data-hovered]` attribute - an addon forces one convention, so the
   recipes have to converge on it. Track this as a cross-cutting foundation task,
   not per-component work.
-- **Pressed** needs nothing: no button-family recipe styles `:active`/pressed,
-  so there is no visual state to capture.
+- **Pressed** needs nothing _for the button family_: none of its recipes style
+  `:active`/pressed (Button sets a `data-pressed` attribute, but no recipe rule
+  paints it), so there's no visual to capture there. Don't generalize that to
+  every component - some non-button recipes do style pressed. NumberInput's
+  steppers set `_active` (`bg: neutral.4`), a real pressed visual, so for
+  components like it pressed is a genuine uncaptured state deferred alongside
+  hover (a held-down frame isn't deterministically snapshottable today, same
+  infra family). Check the recipe rather than assuming pressed is always a
+  no-op.
 
 ### Broader best practices
 
