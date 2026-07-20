@@ -318,29 +318,30 @@ export function registerGetComponent(server: McpServer): void {
         // Section: props
         if (section === "props") {
           const exportName = entry.exportName ?? entry.title;
+
+          // The top-level type file is absent for object-literal compound
+          // components (e.g. `export const Drawer = { Root, … }`): react-docgen
+          // cannot resolve their display name through a named barrel re-export,
+          // so no `Drawer.json` is emitted. Treat a missing top-level file as
+          // "no own props" and fall back to aggregating the sub-component type
+          // files, rather than erroring.
+          let typeData: TypeData | null = null;
           try {
-            const typeData = await getTypeData(exportName);
-            let filtered = filterProps(typeData);
-
-            // Compound components have no props on the top-level export.
-            // Aggregate from sub-component type files (e.g. DrawerRoot, DrawerContent).
-            if (filtered.length === 0) {
-              filtered = await aggregateSubComponentProps(exportName);
-            }
-
-            return {
-              content: [
-                {
-                  type: "text" as const,
-                  text: JSON.stringify({
-                    component: exportName,
-                    propCount: filtered.length,
-                    props: filtered,
-                  }),
-                },
-              ],
-            };
+            typeData = await getTypeData(exportName);
           } catch {
+            typeData = null;
+          }
+
+          let filtered = typeData ? filterProps(typeData) : [];
+
+          // Compound components have no props on the top-level export.
+          // Aggregate from sub-component type files (e.g. DrawerRoot, DrawerContent).
+          if (filtered.length === 0) {
+            filtered = await aggregateSubComponentProps(exportName);
+          }
+
+          // No top-level type file AND no sub-component files — genuinely absent.
+          if (!typeData && filtered.length === 0) {
             return {
               content: [
                 {
@@ -351,6 +352,19 @@ export function registerGetComponent(server: McpServer): void {
               isError: true,
             };
           }
+
+          return {
+            content: [
+              {
+                type: "text" as const,
+                text: JSON.stringify({
+                  component: exportName,
+                  propCount: filtered.length,
+                  props: filtered,
+                }),
+              },
+            ],
+          };
         }
 
         // Section: overview, guidelines, implementation, accessibility

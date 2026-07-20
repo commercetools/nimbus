@@ -1,7 +1,12 @@
 import { render } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
-import { NimbusProvider } from "./nimbus-provider";
-import { Region, useRegion } from "@commercetools/nimbus";
+// Import everything from the package so NimbusProvider and Region/useRegion
+// share a single module instance (one Region context). In the JSDOM unit
+// config `@commercetools/nimbus` resolves to the built dist; importing
+// NimbusProvider relatively (source) here would give it a *different* Region
+// context than the dist `useRegion`, so the ambient scope would silently fail
+// to connect and the projected content would never render.
+import { NimbusProvider, Region, useRegion } from "@commercetools/nimbus";
 
 describe("NimbusProvider - Font Loading", () => {
   it("should render children with default loadFonts=true", () => {
