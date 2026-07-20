@@ -57,8 +57,9 @@ flowchart LR
       `/packages/nimbus/src/components/{component-name}/`
 - [ ] You MUST follow the two-lane import convention (implementation files
       import via the `@/` alias; stories/tests/docs import Nimbus components
-      from `@commercetools/nimbus`) and never use a value `export *` (reason:
-      lint-enforced, prevents build regressions) — see
+      from `@commercetools/nimbus`) and never use a value `export *` in a leaf
+      barrel — the component's `index.ts` (reason: lint-enforced, prevents build
+      regressions; the mega-barrel rollup keeps `export *` and is exempt) — see
       [Barrel Exports: The Rule](../../docs/file-type-guidelines/barrel-exports.md#the-rule-locked)
 
 **SHOULD-Level Best Practices (strongly recommended):**

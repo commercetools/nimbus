@@ -72,7 +72,7 @@ Before any operation, you MUST research in parallel:
    - File: `docs/file-type-guidelines/barrel-exports.md`
    - Purpose: The two-lane import rule (canonical source) — implementation
      files use `@/`, stories/tests/docs use `@commercetools/nimbus`, no value
-     `export *`
+     `export *` in leaf barrels (root + category rollup barrels exempt)
 
 7. **Analyze** component type (single vs compound):
    - Single: Implementation in main file
@@ -319,9 +319,10 @@ guideline references.
       or deep, either is safe:
   - ✅ Correct: `import type { ButtonProps } from '@/components/button'`
   - ✅ Correct: `import type { ButtonProps } from '../button/button.types'`
-- [ ] **No value `export *`**: Barrels never use value `export *` (lint-error);
-      values are named re-exports (`export { X } from "./x"`). `export type *`
-      is allowed
+- [ ] **No value `export *` in this leaf barrel**: the component's `index.ts`
+      names every value re-export (`export { X } from "./x"`); `export type *`
+      is allowed. Rollup barrels (`components/index.ts`, etc.) are exempt and
+      keep `export *`.
 - [ ] **Utils barrel OK**: Utils/hooks CAN use barrel exports: `@/utils`,
       `@/hooks` (these are safe)
 - [ ] **Import organization**: Imports organized logically (React, third-party,

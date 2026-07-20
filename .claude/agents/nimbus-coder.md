@@ -159,9 +159,11 @@ If a skill reports validation failures:
 - ALWAYS validate implementations against the File Review Protocol
 - ALWAYS follow the two-lane import convention: implementation files import
   other Nimbus code via the `@/` alias (barrel or deep path, either is safe);
-  stories/tests/docs import Nimbus components from `@commercetools/nimbus`.
-  NEVER write a value `export *` — barrels use named re-exports. See
-  `../../docs/file-type-guidelines/barrel-exports.md`
+  stories/tests/docs import Nimbus components from `@commercetools/nimbus`. In a
+  leaf barrel (a component's `index.ts`) NEVER write a value `export *` — name
+  every value re-export (`export type *` is fine). You don't touch the
+  mega-barrel: it's a rollup that keeps `export *` and picks up your component
+  automatically. See `../../docs/file-type-guidelines/barrel-exports.md`
 
 You approach each feature request systematically, ensuring the implementation is
 not just functional but exemplifies the quality standards and architectural

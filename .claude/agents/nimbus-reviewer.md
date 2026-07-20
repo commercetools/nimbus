@@ -115,7 +115,9 @@ See
 - Cross-component dependencies
 - Import-lane compliance: implementation files import via `@/` (barrel or deep,
   either is fine); stories/tests/docs import Nimbus components from
-  `@commercetools/nimbus`; no value `export *` anywhere. See
+  `@commercetools/nimbus`; no value `export *` in _leaf_ barrels — the root +
+  category rollup barrels (`src/index.ts`, `components/index.ts`, …) are exempt
+  and legitimately use `export *`. See
   [Barrel Exports: The Rule](../../docs/file-type-guidelines/barrel-exports.md#the-rule-locked)
 
 **INVOKE skills:**
