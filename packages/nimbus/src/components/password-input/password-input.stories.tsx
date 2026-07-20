@@ -35,8 +35,7 @@ export const Base: Story = {
       "Toggle is reachable by tab and operable with Enter/Space",
       async () => {
         const toggleButton = canvas.getByRole("button");
-        // Anchor focus on the input, then tab to prove the toggle is in the tab
-        // order (not force-focused), before exercising Enter/Space activation.
+        // Tab from the input to prove the toggle is in the tab order (not force-focused).
         input.focus();
         await userEvent.tab();
         await expect(toggleButton).toHaveFocus();
@@ -183,13 +182,9 @@ export const Controlled: Story = {
 };
 
 /**
- * PasswordInput is a thin wrapper over TextInput, so its size/variant/state chrome
- * and the input focus ring are TextInput's coverage. What's unique here is the
- * masked value and the trailing visibility toggle, whose size tracks the input
- * (md -> xs, sm -> 2xs). This matrix captures both at both sizes; variant is not
- * an axis (the toggle is always ghost/primary and the input chrome is
- * TextInput's), so it adds no password-specific signal. The revealed state
- * (plaintext + hide icon) needs an interaction, so it lives in `Revealed`.
+ * Thin wrapper over TextInput, so it snapshots only what it adds: the masked
+ * value + visibility toggle, at both sizes (the toggle tracks input size). Chrome
+ * is TextInput's coverage; variant isn't an axis. Revealed state is `Revealed`.
  */
 export const SmokeTest: Story = {
   tags: ["vrt"],
@@ -209,10 +204,8 @@ export const SmokeTest: Story = {
 };
 
 /**
- * The revealed state: clicking the toggle swaps type=password -> text (dots ->
- * plaintext) and the show icon -> hide icon. The play clicks the toggle, then
- * blurs so the toggle's focus ring (IconButton's own coverage) stays out of the
- * frame - this snapshot is only the unmasked value + hide icon.
+ * Revealed state (plaintext + hide icon). The play blurs after toggling so the
+ * toggle's focus ring (IconButton's coverage) stays out of the frame.
  */
 export const Revealed: Story = {
   tags: ["vrt"],

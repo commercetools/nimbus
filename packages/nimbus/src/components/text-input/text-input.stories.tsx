@@ -207,12 +207,6 @@ export const Invalid: Story = {
   },
 };
 
-/**
- * Captures the keyboard-focus ring the matrix can't render (only one element
- * holds focus at a time). A bare TextInput has no trailing control, so one tab
- * lands on the input and draws the `_focusWithin` ring. See
- * docs/chromatic-visual-testing.md for why the caret is hidden here.
- */
 export const Focused: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
@@ -223,8 +217,7 @@ export const Focused: Story = {
     const canvas = within(canvasElement);
     const input = canvas.getByLabelText("focused-input");
 
-    // Caret blink is browser-native, not a CSS/JS animation Chromatic can pause;
-    // caret-color inherits, so hiding it here cascades to the input.
+    // Hide the native caret (Chromatic can't pause its blink); caret-color inherits.
     canvasElement.style.caretColor = "transparent";
 
     await userEvent.tab();
@@ -233,11 +226,8 @@ export const Focused: Story = {
 };
 
 /**
- * Packs the interacting axes into one snapshot: state (default / disabled /
- * invalid / invalid & disabled) x size (md/sm) x variant (solid/ghost). No
- * colorPalette axis - the recipe styles fixed semantic tokens, not a palette
- * variant. Focus (its own ring, `Focused`) and read-only (no `data-readonly`
- * rule, so it renders like the default) are deliberately not in the matrix.
+ * Matrix: state x size x variant. No colorPalette axis (recipe styles fixed
+ * semantic tokens, not a palette variant).
  */
 export const SmokeTest: Story = {
   tags: ["vrt"],
@@ -446,9 +436,8 @@ export const LeadingAndTrailingElements: Story = {
 };
 
 /**
- * RTL mirrors the leading/trailing adornment layout (icons swap sides), a
- * distinct visual captured nowhere else. `dir="rtl"` is set on a wrapping Box
- * (prop-driven), so this is a story rather than a Chromatic mode.
+ * RTL mirrors the adornment layout (icons swap sides) - a distinct visual,
+ * prop-driven so a story not a mode.
  */
 export const RTLSupport: Story = {
   tags: ["vrt"],

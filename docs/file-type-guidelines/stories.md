@@ -158,9 +158,9 @@ graph TD
 ## Chromatic Visual Regression Snapshots
 
 Stories double as Chromatic's visual-regression cases, but snapshots are
-**opt-in**: `.storybook/preview.tsx` sets `chromatic: { disableSnapshot: true }`
-as the project default, so a story is captured only when it turns snapshots back
-on:
+**opt-in**: `.storybook/preview.tsx` defaults to
+`chromatic: { disableSnapshot: true }`, so a story is captured only when it
+turns snapshots back on:
 
 ```typescript
 export const SmokeTest: Story = {
@@ -170,59 +170,45 @@ export const SmokeTest: Story = {
 };
 ```
 
-`disableSnapshot: false` is what takes the picture; Chromatic never reads the
-`vrt` tag. `vrt` is our own label for spotting and selecting snapshotted
-stories, so keep the two together.
+`disableSnapshot: false` takes the picture; Chromatic never reads `vrt` (our own
+label for finding snapshot stories - keep the two together).
 
-**What to snapshot:** cover every prop-driven visual state. Any state the matrix
-can't render in one static image gets its own snapshotted story (`Focused`,
-disabled-but-focusable, an open tooltip/popover); a showcase story whose look a
-snapshot already covers stays snapshot-off. Never drop a visual state to save
-cost.
+**What to snapshot:** every prop-driven visual state. Fold the interacting axes
+into one `SmokeTest` matrix; any state it can't render in one static image gets
+its own story (`Focused`, disabled-but-focusable, an open tooltip/popover). A
+showcase whose look a snapshot already covers stays snapshot-off. Never drop a
+visual state to save cost.
 
-**One state can be more than one surface - one story each, no gallery frame.**
-Before assuming a single `Focused` / `Disabled` / `ReadOnly` / `Invalid` story
-covers a state, check whether the component renders it more than one way (mode-
-or variant-driven). If it does, each distinct recipe surface gets its own
-snapshotted story - MoneyInput's `Focused` + `FocusedWithCurrencyLabel` and
-`DisabledState` + `DisabledWithCurrencyLabel` (dropdown vs. `currencies={[]}`
-label mode). Don't fold those into a single "gallery" render to save a snapshot:
-independent surfaces don't interact the way matrix axes do, so a shared frame
-only costs you their independent baselines and per-surface triage. Folding is
-for the interacting axes in `SmokeTest`. (Chromatic modes are for _global_
-config - viewport, theme, locale - not prop-driven variations, so a mode is
-never the answer to two prop-driven surfaces.)
+**One state, multiple distinct surfaces → one story each, not a gallery frame.**
+If a component renders a state more than one way (mode-/variant-driven), each
+surface gets its own snapshot - MoneyInput's `Focused` +
+`FocusedWithCurrencyLabel` and `DisabledState` + `DisabledWithCurrencyLabel`
+(dropdown vs. `currencies={[]}` label mode). Folding is only for the interacting
+axes in `SmokeTest`.
 
-**A state with no distinct recipe surface gets no story.** The flip side: before
-adding a `ReadOnly` / `Disabled` / `Invalid` story, confirm the recipe renders
-that state differently from the default. Read-only is the trap because the call
-is component-dependent - MoneyInput styles read-only distinctly (it carries
-`ReadOnlyState`), but MultilineTextInput has no `data-readonly` rule, so
-read-only renders identically to default and correctly gets no snapshot. Same
-state, opposite call, decided by whether a distinct surface exists.
+**A state with no distinct recipe surface gets no story.** Confirm the recipe
+renders the state differently from default first. Read-only is the
+component-dependent trap: MoneyInput styles it (`ReadOnlyState`), but
+MultilineTextInput / NumberInput / TextInput have no `data-readonly` rule, so it
+renders like default and correctly gets no snapshot.
 
-**Snapshot the component, not the harness.** Chromatic photographs the story's
-whole rendered output, so a snapshotted story must render the component
-**directly** - no debug read-outs, value dumps, or controls scaffolding in the
-frame. A stateful demo wrapper (MoneyInput's `MoneyInputExample` renders a
-`JSON.stringify(value)` panel beside the input) is fine on un-snapshotted
-behavioral stories, but snapshotting one bakes the read-out into the baseline
-and flaps it on every value change. Keep such wrappers on the behavioral
-stories; render the bare component in the ones you snapshot.
+**Snapshot the component, not the harness.** A snapshotted story renders the
+component directly - no debug read-outs or demo wrappers in the frame
+(MoneyInput's `MoneyInputExample` JSON panel is fine on behavioral stories, but
+would flap a snapshot on every value change). Keep wrappers on the behavioral
+stories.
 
-**A `Focused` story keeps its ring for free.** Nothing blurs the focused element
-after a play function, so a story whose final state legitimately keeps focus (a
-`Focused` story, or an open combobox) snapshots the ring as-is - no extra
-parameter needed. The flip side: a behavior story that leaves a stray ring it
-doesn't want in the snapshot should blur in its own play function, or better, be
-split so the snapshotted visual story doesn't end focused:
+**A `Focused` story keeps its ring for free** - nothing blurs the focused
+element after a play function, so a story that legitimately ends focused
+snapshots the ring as-is. Conversely, a behavior story that leaves a stray ring
+should blur (or be split so the snapshotted story doesn't end focused). Tab to
+**every** distinctly-styled focusable sub-element (a split button's trigger, an
+input's stepper/clear button), not just the first.
 
 ```typescript
 export const Focused: Story = {
   tags: ["vrt"],
-  parameters: {
-    chromatic: { disableSnapshot: false },
-  },
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {/* minimal render */},
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -232,20 +218,8 @@ export const Focused: Story = {
 };
 ```
 
-**Tab to every distinctly-styled focusable sub-element.** A split button's
-dropdown trigger, an input's clear button or stepper, and a date field's
-calendar toggle each style their own `:focus-visible`, so a `Focused` story that
-stops at the first focusable leaves the rest untested.
-
-**Crop padding is global.** A `preview.tsx` decorator wraps every
-non-`fullscreen` story in `1rem` so focus and selection rings don't clip at
-Chromatic's content crop. You don't opt into it.
-
-**Hide the caret in a text-input `Focused` story.** Focusing a text-entry input
-snapshots the focus ring, but also paints the browser's blinking caret - which
-Chromatic can't stabilize (it's neither a CSS nor a JS animation). Hide it in
-the play function; `caret-color` is inherited, so one line on the canvas
-cascades to the input:
+**Text-input `Focused`: hide the caret** so the snapshot is deterministic
+(Chromatic can't pause the native caret blink). `caret-color` is inherited:
 
 ```typescript
 play: async ({ canvasElement }) => {
@@ -255,19 +229,17 @@ play: async ({ canvasElement }) => {
 },
 ```
 
-We scope this to the story instead of touching `preview.tsx`. See
-[Chromatic Visual Testing](../chromatic-visual-testing.md).
+**Crop padding is global** - a `preview.tsx` decorator wraps every
+non-`fullscreen` story in `1rem` so focus/selection rings don't clip at
+Chromatic's crop. Not opt-in.
 
-**Prefer local images, and wait for image-driven state.** Serve images from
-`public/` via `staticDirs`, not a remote URL (a remote image is a flaky network
-dependency that can fail the play function before capture). Chromatic waits for
-images to load but not for state your component _derives_ from that load (Avatar
-hides its `<img>` until `onLoad` and swaps to a fallback on error), so a story
-snapshotting a post-load or post-error state must wait for it:
+**Prefer local images, and wait for image-derived state.** Serve images from
+`public/` via `staticDirs` (a remote URL is a flaky network dependency).
+Chromatic waits for images to load but not for state your component _derives_
+from the load (Avatar hides its `<img>` until `onLoad`, swaps to a fallback on
+error), so wait for that state before the snapshot:
 
 ```typescript
-// Wait for the state the component derives from the load (here, the <img>
-// hidden behind its fallback) before the snapshot is captured.
 play: async ({ canvasElement }) => {
   const img = canvasElement.querySelector("img");
   await waitFor(() => expect(img).toHaveStyle("display: none"), {
@@ -276,11 +248,10 @@ play: async ({ canvasElement }) => {
 },
 ```
 
-For the matrix-vs-individual tradeoff, the fold-an-axis rule, full-range axis
-exhaustiveness (and the `SEMANTIC_COLOR_PALETTES` scope), distinct
-state-combinations, one-state-many-surfaces, why modes are global-only,
-thin-wrapper coverage, the hover/pressed coverage gap, CI triggers, baselines,
-and TurboSnap, see [Chromatic Visual Testing](../chromatic-visual-testing.md).
+Full rationale - matrix tradeoffs, the fold-an-axis and hardcoded-axis rules,
+`SEMANTIC_COLOR_PALETTES` scope, thin-wrapper coverage, why modes are
+global-only, the hover/pressed gap, CI, baselines, TurboSnap - is in
+[Chromatic Visual Testing](../chromatic-visual-testing.md).
 
 ## File Structure
 

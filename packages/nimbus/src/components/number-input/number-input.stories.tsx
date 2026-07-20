@@ -189,13 +189,6 @@ export const NumberConstraints: Story = {
   ),
 };
 
-/**
- * Captures the keyboard-focus ring the matrix can't render (only one element
- * holds focus at a time). The increment/decrement steppers are excluded from the
- * tab order, so a single tab lands on the input and draws the `_focusWithin` ring
- * on the root. See docs/chromatic-visual-testing.md for why the caret is hidden
- * here.
- */
 export const Focused: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
@@ -206,8 +199,7 @@ export const Focused: Story = {
     const canvas = within(canvasElement);
     const input = canvas.getByLabelText("focused-number-input");
 
-    // Caret blink is browser-native, not a CSS/JS animation Chromatic can pause;
-    // caret-color inherits, so hiding it here cascades to the input.
+    // Hide the native caret (Chromatic can't pause its blink); caret-color inherits.
     canvasElement.style.caretColor = "transparent";
 
     await userEvent.tab();
@@ -216,13 +208,8 @@ export const Focused: Story = {
 };
 
 /**
- * Packs the interacting axes into one snapshot: state (default / disabled /
- * invalid / invalid & disabled) x size (md/sm) x variant (solid/ghost). No
- * colorPalette axis - the recipe hardcodes `neutral`. Every cell renders the
- * increment/decrement steppers, so their resting chrome is captured here too.
- * Focus (its own ring, dedicated `Focused` story) and read-only (no
- * `data-readonly` recipe rule, so it renders like the default) are deliberately
- * not in the matrix.
+ * Matrix: state x size x variant. No colorPalette axis (recipe hardcodes
+ * neutral); the steppers render in every cell.
  */
 export const SmokeTest: Story = {
   tags: ["vrt"],

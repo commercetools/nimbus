@@ -289,11 +289,6 @@ export const Invalid: Story = {
   },
 };
 
-/**
- * Captures the keyboard-focus ring, the state no matrix cell can render (only one
- * element holds focus at a time). See docs/chromatic-visual-testing.md for why the
- * caret is hidden here.
- */
 export const Focused: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
@@ -307,8 +302,7 @@ export const Focused: Story = {
     const canvas = within(canvasElement);
     const textarea = canvas.getByLabelText("focused-textarea");
 
-    // Caret blink is browser-native, not a CSS/JS animation Chromatic can pause;
-    // caret-color inherits, so hiding it here cascades to the textarea.
+    // Hide the native caret (Chromatic can't pause its blink); caret-color inherits.
     canvasElement.style.caretColor = "transparent";
 
     await userEvent.tab();

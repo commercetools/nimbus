@@ -290,27 +290,19 @@ and keeping the canvas from jumping as you browse. It's independent of
 `disableSnapshot` - not something you opt into per story. `fullscreen` stories
 are exempt because they're meant to touch the edges.
 
-**Cost is controlled by TurboSnap and matrix-packing, not by dropping visual
-states.** TurboSnap bills unchanged snapshots at 1/5 cost, and packing a whole
+**Cost is TurboSnap and matrix-packing, never dropping states.** TurboSnap bills
+unchanged snapshots at 1/5, and folding a
 `colorPalette × size × variant × state` grid into one `SmokeTest` render keeps
-combinatorial coverage down to a single billable snapshot. Those are the levers.
-The `vrt` selection is therefore not "snapshot fewer states" - every visual
-state must still be covered - it's "don't re-snapshot a state an on-snapshot
-already covers." Turning an individual per-axis story's snapshot off loses no
-coverage _when_ its states are already captured elsewhere - by the matrix, or by
-a dedicated story like `Disabled` for the uniform states the matrix omits; the
-per-component audit is what confirms that. Dropping a state no snapshot covers
-does lose coverage. Never trade a visual state away to save cost.
-
-**One matrix beats many individual snapshots for the routine combinations.**
-Folding the size/variant/palette/state grid into a single `SmokeTest` render
-keeps it to one billable snapshot rather than one per combination, and a
-reviewer catches cross-axis regressions in a single image because every state
-sits next to its neighbors. The tradeoff is granularity: a diff in any one cell
-flags the whole snapshot, and editing the matrix re-snapshots the entire grid
-(Chromatic can't sub-diff within one image). So reserve standalone snapshots for
-states that need distinct setup or deserve isolated review (`Focused`,
-`DisabledGroup`, an open menu), not for states that are straight recipe output.
+combinatorial coverage to a single billable snapshot (a reviewer also catches
+cross-axis regressions in one image, every state beside its neighbors). Those
+are the only levers: the `vrt` selection means "don't re-snapshot a state an
+on-snapshot already covers" - turning a per-axis story off loses nothing _when_
+the matrix or a dedicated `Disabled` already holds its states - never "snapshot
+fewer states." The matrix's tradeoff is granularity: a diff in any cell flags
+the whole snapshot, and editing it re-snapshots the whole grid, so reserve
+standalone snapshots for states needing distinct setup or isolated review
+(`Focused`, `DisabledGroup`, an open menu), not straight recipe output. Dropping
+a state no snapshot covers does lose coverage.
 
 **Hover and pressed are a known coverage gap.** They are genuine visual states,
 but neither is currently captured, and it's an infra limitation, not a choice:
@@ -379,33 +371,30 @@ but neither is currently captured, and it's an infra limitation, not a choice:
 - **A single state can render more than one distinct surface - give each its own
   story, don't fold them into a gallery frame.** Before assuming one `Focused` /
   `Disabled` / `ReadOnly` / `Invalid` story covers a state, check whether the
-  component renders that state more than one way (mode- or variant-driven). If
-  it does, each distinct recipe surface gets its own snapshotted story.
-  MoneyInput renders focus and disabled two ways - dropdown mode (a currency
-  Select) and label mode (`currencies={[]}`, a static currency label with its
-  own `currencyLabel[data-disabled] { opacity: 0.5 }` rule) - so it carries
+  component renders it more than one way (mode-/variant-driven); if so, each
+  distinct recipe surface gets its own snapshotted story. MoneyInput renders
+  focus and disabled two ways - dropdown mode (a currency Select) and label mode
+  (`currencies={[]}`, a static label with its own
+  `currencyLabel[data-disabled] { opacity: 0.5 }` rule) - so it carries
   `Focused`
   - `FocusedWithCurrencyLabel` and `DisabledState` +
-    `DisabledWithCurrencyLabel`, not one folded frame apiece. This is not the
-    `SmokeTest` fold in reverse: the matrix folds axes that _interact_ into one
-    snapshot, but independent surfaces of a single state do **not** interact, so
-    folding them into one "gallery" render only trades away their independent
-    baselines and per-surface triage to save a single snapshot. Chromatic's
-    guidance is discrete stories, one meaningful state each, each independently
-    baselined and approved; snapshot count is not a performance concern
-    (Chromatic parallelizes), and TurboSnap keeps the recurring cost of an extra
-    stable story near zero. Reserve folding for the interacting axes in
-    `SmokeTest`.
+    `DisabledWithCurrencyLabel`. Independent surfaces don't interact the way
+    matrix axes do, so folding them into one gallery render only trades away
+    their independent baselines and per-surface triage. Snapshot count isn't a
+    performance concern (Chromatic parallelizes; TurboSnap keeps a stable extra
+    story near free); reserve folding for the interacting axes in `SmokeTest`.
 - **A state that renders identically to the default gets no snapshot at all.**
   The flip side of the rule above: before adding a `ReadOnly` / `Disabled` /
   `Invalid` story, confirm the recipe actually renders that state distinctly. If
   there's no rule for it, it looks exactly like the default, and a dedicated
   snapshot is a redundant baseline, not coverage. Read-only is the common trap
   because the call is component-dependent: MoneyInput styles read-only
-  distinctly so it carries `ReadOnlyState`, but MultilineTextInput has no
-  `data-readonly` recipe rule - read-only renders identically to default - so it
-  correctly has no read-only snapshot. Same state, opposite call, decided purely
-  by whether a distinct recipe surface exists.
+  distinctly (it disables the currency Select) so it carries `ReadOnlyState`,
+  but MultilineTextInput / NumberInput / TextInput have no `data-readonly`
+  recipe rule
+  - read-only renders identically to default - so they correctly have no
+    read-only snapshot. Same state, opposite call, decided purely by whether a
+    distinct recipe surface exists.
 - **Modes are for global config, not component props.** Chromatic
   [modes](https://www.chromatic.com/docs/modes/) (`chromatic.modes`) capture the
   same story under different _global_ settings applied through Storybook
@@ -451,30 +440,21 @@ but neither is currently captured, and it's an infra limitation, not a choice:
   animations/transitions, videos, GIFs, but not JS animations. Worth remembering
   if any button state animates via JS.
 - **Hide the blinking text caret on a focused input.** A `Focused` snapshot of a
-  text-entry input (MoneyInput, TextInput, NumberInput, etc.) captures the
-  keyboard focus ring, but focusing the input also paints the browser's blinking
-  caret. That blink is not a snapshot Chromatic can stabilize: Chromatic's
+  text-entry input captures the focus ring, but focusing also paints the
+  browser's native caret - which Chromatic can't stabilize (its
   [animations docs](https://www.chromatic.com/docs/animations/) cover only CSS
-  animations (auto-paused at their last frame) and JS animations (disable via
-  `isChromatic()`), and the native caret is neither, so a focused-input snapshot
-  would diff on whichever blink phase the capture lands on. Hide it in the
-  `Focused` story's play function - `caret-color` is inherited, so one line on
-  the story canvas cascades to the input:
+  and JS animations; the native caret is neither), so the snapshot would diff on
+  whichever blink phase it lands on. Hide it in the `Focused` play function;
+  `caret-color` is inherited, so one line on the canvas cascades to the input.
+  We scope it to the story rather than editing the shared `preview.tsx`:
 
   ```typescript
   play: async ({ canvasElement }) => {
-    // Deterministic focused snapshot: the caret blink is browser-native, so
-    // Chromatic can't pause it.
-    canvasElement.style.caretColor = "transparent";
+    canvasElement.style.caretColor = "transparent"; // native caret can't be paused
     await userEvent.tab();
-    // ...focus the input, assert the ring
+    // ...assert the ring
   },
   ```
-
-  We scope this to the `Focused` story rather than hiding the caret globally in
-  `preview.tsx`, keeping the shared config untouched. The one-liner repeats once
-  per text-entry component's `Focused` story - a deliberate trade for not
-  editing a file every story depends on.
 
 - **Fonts/async loading can shift tooltips/menus** - relevant to IconButton's
   `ColorPalettes` story (it wraps each button in a `Tooltip`). Preload fonts or

@@ -219,11 +219,6 @@ export const HighPrecisionExample: Story = {
   },
 };
 
-/**
- * Disabled in dropdown mode: the amount input and the currency Select are both
- * disabled. The label-mode dimming rule is a distinct recipe surface, captured
- * separately by DisabledWithCurrencyLabel.
- */
 export const DisabledState: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
@@ -248,11 +243,8 @@ export const DisabledState: Story = {
 };
 
 /**
- * Disabled in label mode: with no currencies supplied the static currency label
- * dims via money-input's own `currencyLabel[data-disabled] { opacity: 0.5 }`
- * recipe rule, which renders nowhere else. Distinct recipe surface from the
- * dropdown-mode DisabledState above, so it gets its own snapshot (mirrors the
- * Focused / FocusedWithCurrencyLabel split).
+ * Label mode (no currencies): the static currency label dims via its own recipe
+ * rule - a distinct surface from DisabledState.
  */
 export const DisabledWithCurrencyLabel: Story = {
   tags: ["vrt"],
@@ -321,11 +313,6 @@ export const ErrorState: Story = {
   },
 };
 
-/**
- * Captures the keyboard-focus ring on the amount input, the state no other
- * snapshot renders. See docs/chromatic-visual-testing.md for why the caret is
- * hidden here.
- */
 export const Focused: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
@@ -340,13 +327,10 @@ export const Focused: Story = {
     const canvas = within(canvasElement);
     const amountInput = canvas.getByRole("textbox", { name: /Amount/i });
 
-    // Hide the blinking text caret so the focused snapshot is deterministic.
-    // The caret blink is browser-native (not a CSS/JS animation Chromatic can
-    // pause); caret-color is inherited, so this cascades to the input.
+    // Hide the native caret (Chromatic can't pause its blink); caret-color inherits.
     canvasElement.style.caretColor = "transparent";
 
-    // Tab past the currency selector (first focusable) to the amount input so
-    // its keyboard focus ring renders.
+    // Two tabs: past the currency selector (first focusable) to the amount input.
     await userEvent.tab();
     await userEvent.tab();
     await expect(amountInput).toHaveFocus();
@@ -354,12 +338,8 @@ export const Focused: Story = {
 };
 
 /**
- * Label-mode focus: with no currencies supplied the currency renders as a static
- * label, and focusing the amount input draws a single continuous outline around
- * the label + input together. This is money-input's own recipe styling, distinct
- * from the dropdown-mode focus ring above, so it needs its own snapshot. Caret
- * hidden for determinism, same as Focused. A two-decimal value keeps it out of
- * high precision so the amount input is the only focusable element (single tab).
+ * Label mode (no currencies): focus draws one continuous outline around label +
+ * input - a distinct surface from Focused. Two-decimal value = single tab.
  */
 export const FocusedWithCurrencyLabel: Story = {
   tags: ["vrt"],
@@ -450,9 +430,7 @@ export const ConsistentFormattingAcrossCurrencies: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Every currency renders 1,234.567 identically: comma thousands separator,
-    // period decimal separator, and the same high-precision badge (3 decimals
-    // exceeds the 2-decimal standard for USD/EUR/GBP).
+    // All three format 1,234.567 identically and show the high-precision badge.
     const badges = canvas.getAllByLabelText(/High precision price/i);
     expect(badges).toHaveLength(3);
 
@@ -608,8 +586,7 @@ export const EULocaleFormattingExample: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // All three exceed their currency's standard fraction digits, so each shows
-    // the high-precision badge.
+    // All three exceed their currency's fraction digits, so each shows the badge.
     const highPrecisionLabel = getMessage("highPrecisionPrice", "de");
     const badges = canvas.getAllByLabelText(highPrecisionLabel);
     expect(badges).toHaveLength(3);
@@ -1179,11 +1156,8 @@ export const ModernApiTest: Story = {
 };
 
 /**
- * Packs the interacting visual axes into one snapshot: size (`md`/`sm`) x
- * currency chrome (dropdown vs. static label when no currencies are supplied).
- * Each cell holds a high-precision value so the badge and value alignment are
- * captured too. Uniform states (disabled/read-only/invalid/focus) live in their
- * own dedicated snapshotted stories, not this matrix.
+ * Matrix: size x currency chrome (dropdown vs. static label). High-precision
+ * values so the badge is captured; other states have dedicated stories.
  */
 export const SmokeTest: Story = {
   tags: ["vrt"],
