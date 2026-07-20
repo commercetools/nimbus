@@ -104,9 +104,9 @@ export default tseslint.config(
    * Ban value `export *` (re-export stars) below the rollup layer. They defeat
    * static tree-shaking analysis and, with vite/rolldown lazyBarrel, mis-shake
    * split-module compound components into runtime ReferenceErrors (see
-   * docs/superpowers/specs/2026-07-08-decouple-import-notation-from-build-target.md).
+   * docs/file-type-guidelines/barrel-exports.md).
    *
-   * The safe boundary (per the spec's root cause) is the *leaf* barrel: the
+   * The safe boundary (per the proven root cause) is the *leaf* barrel: the
    * one sitting directly on top of implementation files, where a compound
    * root declared in a separate module (`export const Code = CodeRoot`) first
    * enters the barrel graph. Once every leaf barrel names its re-exports, the
