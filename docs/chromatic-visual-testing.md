@@ -354,6 +354,16 @@ but neither is currently captured, and it's an infra limitation, not a choice:
   palette/size/variant, so a `Disabled`/`DisabledGroup` story captures it once
   instead of the matrix re-rendering every cell at half opacity for no new
   coverage.
+- **An axis the recipe hardcodes is not a matrix axis.** The
+  `size × variant × colorPalette` grid only spans the axes the component
+  actually varies. When a recipe pins one of them to a single value, that axis
+  drops out entirely - MultilineTextInput hardcodes `colorPalette: "neutral"`,
+  so its matrix is `state × size × variant` with no palette axis at all. This is
+  distinct from the uniform-transform case above: `disabled` is a real axis
+  folded out because it multiplies cells without adding signal; a hardcoded
+  palette was never an axis to begin with. Don't force the full
+  `SEMANTIC_COLOR_PALETTES` sweep onto a component whose recipe can only ever
+  render one.
 - **Cover distinct state-combinations, not just single flags.** When a component
   has multiple boolean states (selected, disabled, invalid, read-only), each
   combination that renders differently needs its own coverage. Selected-disabled
@@ -379,6 +389,16 @@ but neither is currently captured, and it's an infra limitation, not a choice:
     (Chromatic parallelizes), and TurboSnap keeps the recurring cost of an extra
     stable story near zero. Reserve folding for the interacting axes in
     `SmokeTest`.
+- **A state that renders identically to the default gets no snapshot at all.**
+  The flip side of the rule above: before adding a `ReadOnly` / `Disabled` /
+  `Invalid` story, confirm the recipe actually renders that state distinctly. If
+  there's no rule for it, it looks exactly like the default, and a dedicated
+  snapshot is a redundant baseline, not coverage. Read-only is the common trap
+  because the call is component-dependent: MoneyInput styles read-only
+  distinctly so it carries `ReadOnlyState`, but MultilineTextInput has no
+  `data-readonly` recipe rule - read-only renders identically to default - so it
+  correctly has no read-only snapshot. Same state, opposite call, decided purely
+  by whether a distinct recipe surface exists.
 - **Modes are for global config, not component props.** Chromatic
   [modes](https://www.chromatic.com/docs/modes/) (`chromatic.modes`) capture the
   same story under different _global_ settings applied through Storybook

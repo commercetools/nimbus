@@ -193,6 +193,14 @@ for the interacting axes in `SmokeTest`. (Chromatic modes are for _global_
 config - viewport, theme, locale - not prop-driven variations, so a mode is
 never the answer to two prop-driven surfaces.)
 
+**A state with no distinct recipe surface gets no story.** The flip side: before
+adding a `ReadOnly` / `Disabled` / `Invalid` story, confirm the recipe renders
+that state differently from the default. Read-only is the trap because the call
+is component-dependent - MoneyInput styles read-only distinctly (it carries
+`ReadOnlyState`), but MultilineTextInput has no `data-readonly` rule, so
+read-only renders identically to default and correctly gets no snapshot. Same
+state, opposite call, decided by whether a distinct surface exists.
+
 **Snapshot the component, not the harness.** Chromatic photographs the story's
 whole rendered output, so a snapshotted story must render the component
 **directly** - no debug read-outs, value dumps, or controls scaffolding in the

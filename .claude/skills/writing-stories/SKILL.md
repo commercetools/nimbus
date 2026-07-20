@@ -333,6 +333,13 @@ call: matrices iterate the 6 `SEMANTIC_COLOR_PALETTES` as the representative set
 the `BRAND` (3) and `SYSTEM` (25) palettes a consumer can also pass run the same
 token machinery and are deliberately not snapshotted.
 
+**An axis the recipe hardcodes isn't an axis.** Full-range applies only to the
+axes the component actually varies. If a recipe pins one to a single value, drop
+it from the grid - MultilineTextInput hardcodes `colorPalette: "neutral"`, so its
+matrix is `state x size x variant` with no palette axis. Different from the
+uniform-transform case above (`disabled` is a real axis folded out for adding no
+signal); a hardcoded palette was never an axis to begin with.
+
 **Cover distinct state-combinations, not just single flags.** When a component
 has multiple boolean states (selected, disabled, invalid, read-only), each
 combination that renders differently needs coverage. Selected-disabled is
@@ -423,6 +430,13 @@ each, independently baselined; count is not a performance concern (it
 parallelizes) and TurboSnap keeps an extra stable story near free. Modes
 (`chromatic.modes`) are for _global_ config only (viewport, theme, locale), so a
 mode is never the answer to two prop-driven surfaces.
+
+**A state with no distinct surface gets no story.** The flip side of the rule
+above: if the recipe has no rule for a state, it renders identically to the
+default and a dedicated story is a redundant baseline, not coverage. Read-only is
+the component-dependent trap - MoneyInput styles it distinctly (`ReadOnlyState`),
+but MultilineTextInput has no `data-readonly` rule, so read-only looks like the
+default and correctly gets no snapshot.
 
 **Snapshot the component, not the harness.** Chromatic photographs the story's
 whole rendered output, so a snapshotted story must render the component
@@ -761,6 +775,9 @@ You MUST validate against these requirements:
       toggles) - every distinct combined look appears in the one snapshot
 - [ ] Axis arrays span the **full supported range** - no trimmed or
       commented-out values; palettes use the 6 `SEMANTIC_COLOR_PALETTES`
+- [ ] Axes the recipe **hardcodes** are dropped from the grid (a pinned
+      `colorPalette` is not a palette axis - MultilineTextInput's neutral-only
+      recipe gives `state x size x variant`)
 - [ ] Distinct **state-combinations** are covered, not just single flags
       (selected-disabled is a separate look from unselected-disabled)
 - [ ] For each state (focus, disabled, read-only, invalid), checked whether the
@@ -768,6 +785,8 @@ You MUST validate against these requirements:
       surface gets its **own** snapshotted story, not a folded gallery frame
       (MoneyInput: `Focused` + `FocusedWithCurrencyLabel`, `DisabledState` +
       `DisabledWithCurrencyLabel`)
+- [ ] A state with **no distinct recipe surface** gets no dedicated story
+      (read-only with no `data-readonly` rule renders like default - no snapshot)
 - [ ] Snapshotted stories render the component **directly** - no debug read-outs,
       value dumps, or demo-wrapper scaffolding in the frame (those stay on the
       un-snapshotted behavioral stories)

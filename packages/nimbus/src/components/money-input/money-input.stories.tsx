@@ -450,16 +450,16 @@ export const ConsistentFormattingAcrossCurrencies: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // All currencies should show consistent formatting with periods as decimal separators
-    // and consistent high precision badge behavior
-
-    // Check that all three high precision badges are present
+    // Every currency renders 1,234.567 identically: comma thousands separator,
+    // period decimal separator, and the same high-precision badge (3 decimals
+    // exceeds the 2-decimal standard for USD/EUR/GBP).
     const badges = canvas.getAllByLabelText(/High precision price/i);
     expect(badges).toHaveLength(3);
 
-    // All should show high precision for 1234.567 (3 decimals > 2 standard for USD/EUR/GBP)
-    badges.forEach((badge) => {
-      expect(badge).toBeInTheDocument();
+    const inputs = canvas.getAllByRole("textbox", { name: /Amount/i });
+    expect(inputs).toHaveLength(3);
+    inputs.forEach((input) => {
+      expect(input).toHaveValue("1,234.567");
     });
   },
 };
