@@ -35,6 +35,9 @@ export default meta;
  */
 type Story = StoryObj<typeof DatePicker>;
 
+// Fixed anchor so date-dependent stories are deterministic.
+const ANCHOR = new CalendarDate(2025, 6, 15);
+
 /**
  * Base story
  * Demonstrates the most basic implementation
@@ -526,9 +529,7 @@ export const Controlled: Story = {
     ["aria-label"]: "Select a date",
   },
   render: (args) => {
-    const [date, setDate] = useState<DateValue | null>(
-      new CalendarDate(2025, 6, 15)
-    );
+    const [date, setDate] = useState<DateValue | null>(ANCHOR);
     const handleDateChange = (value: DateValue | null) => {
       setDate(value);
     };
@@ -858,7 +859,7 @@ export const PlaceholderValue: Story = {
         <Text>With placeholder value (2025-06-15)</Text>
         <DatePicker
           {...args}
-          placeholderValue={new CalendarDate(2025, 6, 15)}
+          placeholderValue={ANCHOR}
           aria-label="Date picker with placeholder"
         />
         <Text>Without placeholder value</Text>
@@ -1060,7 +1061,7 @@ export const VariantsSizesAndStates: Story = {
                           {...state.props}
                           variant={variant}
                           size={size}
-                          defaultValue={new CalendarDate(2025, 6, 15)}
+                          defaultValue={ANCHOR}
                           aria-label={`${state.label} ${variant} ${size} date picker`}
                         />
                       </Stack>
@@ -1146,7 +1147,7 @@ export const TimeSupport: Story = {
         <DatePicker
           {...args}
           granularity="day"
-          defaultValue={new CalendarDate(2025, 6, 15)}
+          defaultValue={ANCHOR}
           aria-label="Date only picker"
         />
 
@@ -2003,9 +2004,8 @@ export const MinMaxValues: Story = {
     ["aria-label"]: "Select a date",
   },
   render: (args) => {
-    const today = new CalendarDate(2025, 6, 15); // Fixed "today" for consistent stories
-    const minDate = today.add({ days: 1 });
-    const maxDate = today.add({ days: 30 });
+    const minDate = ANCHOR.add({ days: 1 });
+    const maxDate = ANCHOR.add({ days: 30 });
 
     return (
       <Stack direction="column" gap="400" alignItems="start">
@@ -2016,7 +2016,7 @@ export const MinMaxValues: Story = {
           {...args}
           minValue={minDate}
           maxValue={maxDate}
-          defaultValue={today.add({ days: 7 })}
+          defaultValue={ANCHOR.add({ days: 7 })}
           aria-label="Date picker with min/max values"
         />
         <Text fontSize="sm" color="neutral.11">
@@ -3189,7 +3189,7 @@ export const OpenCalendar: Story = {
   parameters: { chromatic: { disableSnapshot: false } },
   args: {
     ["aria-label"]: "Select a date",
-    defaultValue: new CalendarDate(2025, 6, 15),
+    defaultValue: ANCHOR,
     defaultOpen: true,
   },
   play: async ({ step }) => {

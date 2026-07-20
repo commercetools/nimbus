@@ -28,8 +28,8 @@ export default meta;
 type Story = StoryObj<typeof Calendar>;
 
 // Fixed anchor so date-dependent tests are deterministic. "today" stories
-// (Base, TodayHighlighting) stay live. See FEC-1149.
-const ANCHOR = new CalendarDate(2026, 5, 15);
+// (Base, TodayHighlighting) stay live.
+const ANCHOR = new CalendarDate(2025, 6, 15);
 
 /** Live default: lands on the current month so Storybook stays true. */
 export const Base: Story = {};
@@ -62,10 +62,10 @@ export const Controlled: Story = {
     const canvas = within(canvasElement);
     await step("Clicking a day updates the controlled value", async () => {
       await userEvent.click(
-        canvas.getByRole("button", { name: /May 20, 2026/ })
+        canvas.getByRole("button", { name: /June 20, 2025/ })
       );
       await waitFor(() =>
-        expect(canvasElement.textContent).toContain("Selected date: 2026-05-20")
+        expect(canvasElement.textContent).toContain("Selected date: 2025-06-20")
       );
     });
   },

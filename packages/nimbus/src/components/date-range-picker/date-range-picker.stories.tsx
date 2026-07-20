@@ -39,6 +39,9 @@ const meta: Meta<typeof DateRangePicker> = {
 export default meta;
 type Story = StoryObj<typeof DateRangePicker>;
 
+// Fixed anchor so date-dependent stories are deterministic.
+const ANCHOR = new CalendarDate(2025, 6, 15);
+
 // Shared helper functions that work for both single and multiple DateRangePicker components scenarios.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const createDateRangePickerHelpers = (canvas: any, target?: HTMLElement) => {
@@ -586,8 +589,8 @@ export const Controlled: Story = {
   },
   render: (args) => {
     const [range, setRange] = useState<RangeValue<DateValue> | null>({
-      start: new CalendarDate(2025, 6, 15),
-      end: new CalendarDate(2025, 6, 20),
+      start: ANCHOR,
+      end: ANCHOR.add({ days: 5 }),
     });
 
     return (
@@ -939,7 +942,7 @@ export const PlaceholderValue: Story = {
         <Text>With placeholder values</Text>
         <DateRangePicker
           {...args}
-          placeholderValue={new CalendarDate(2025, 6, 15)}
+          placeholderValue={ANCHOR}
           granularity="day"
           aria-label="Date range picker with placeholder values"
         />
@@ -1165,8 +1168,8 @@ export const VariantsSizesAndStates: Story = {
                           variant={variant}
                           size={size}
                           defaultValue={{
-                            start: new CalendarDate(2025, 6, 15),
-                            end: new CalendarDate(2025, 6, 20),
+                            start: ANCHOR,
+                            end: ANCHOR.add({ days: 5 }),
                           }}
                           aria-label={`${state.label} ${variant} ${size} date range picker`}
                         />
@@ -1251,8 +1254,8 @@ export const TimeSupport: Story = {
           {...args}
           granularity="day"
           defaultValue={{
-            start: new CalendarDate(2025, 6, 15),
-            end: new CalendarDate(2025, 6, 20),
+            start: ANCHOR,
+            end: ANCHOR.add({ days: 5 }),
           }}
           aria-label="Date only range picker"
         />
@@ -2268,9 +2271,8 @@ export const MinMaxValues: Story = {
     ["aria-label"]: "Select a date range",
   },
   render: (args) => {
-    const today = new CalendarDate(2025, 6, 15);
-    const minDate = today.add({ days: 1 });
-    const maxDate = today.add({ days: 30 });
+    const minDate = ANCHOR.add({ days: 1 });
+    const maxDate = ANCHOR.add({ days: 30 });
 
     return (
       <Stack direction="column" gap="400" alignItems="start">
@@ -2282,8 +2284,8 @@ export const MinMaxValues: Story = {
           minValue={minDate}
           maxValue={maxDate}
           defaultValue={{
-            start: today.add({ days: 7 }),
-            end: today.add({ days: 12 }),
+            start: ANCHOR.add({ days: 7 }),
+            end: ANCHOR.add({ days: 12 }),
           }}
           aria-label="Date range picker with min/max values"
         />
@@ -3368,8 +3370,8 @@ export const OpenCalendar: Story = {
   args: {
     ["aria-label"]: "Select a date range",
     defaultValue: {
-      start: new CalendarDate(2025, 6, 15),
-      end: new CalendarDate(2025, 6, 20),
+      start: ANCHOR,
+      end: ANCHOR.add({ days: 5 }),
     },
     defaultOpen: true,
   },

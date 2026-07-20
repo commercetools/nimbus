@@ -37,8 +37,8 @@ export default meta;
 type Story = StoryObj<typeof RangeCalendar>;
 
 // Fixed anchor so snapshotted stories are deterministic. Live "today" stories
-// (Base, Controlled) stay live. See FEC-1149.
-const ANCHOR = new CalendarDate(2026, 5, 15);
+// (Base, Controlled) stay live.
+const ANCHOR = new CalendarDate(2025, 6, 15);
 
 export const Base: Story = {};
 
