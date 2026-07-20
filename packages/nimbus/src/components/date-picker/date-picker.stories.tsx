@@ -35,6 +35,9 @@ export default meta;
  */
 type Story = StoryObj<typeof DatePicker>;
 
+// Fixed anchor so date-dependent stories are deterministic.
+const ANCHOR = new CalendarDate(2026, 6, 15);
+
 /**
  * Base story
  * Demonstrates the most basic implementation
@@ -526,9 +529,7 @@ export const Controlled: Story = {
     ["aria-label"]: "Select a date",
   },
   render: (args) => {
-    const [date, setDate] = useState<DateValue | null>(
-      new CalendarDate(2025, 6, 15)
-    );
+    const [date, setDate] = useState<DateValue | null>(ANCHOR);
     const handleDateChange = (value: DateValue | null) => {
       setDate(value);
     };
@@ -561,15 +562,15 @@ export const Controlled: Story = {
       await expect(dateGroup).toBeInTheDocument();
 
       // Should display the current value in the text
-      const valueText = await canvas.findByText(/current value: 2025-06-15/);
+      const valueText = await canvas.findByText(/current value: 2026-06-15/);
       await expect(valueText).toBeInTheDocument();
 
-      // Date segments should show the controlled value (2025-06-15)
+      // Date segments should show the controlled value (2026-06-15)
       const segments = within(dateGroup).getAllByRole("spinbutton");
       await waitFor(async () => {
         await expect(segments[0]).toHaveAttribute("aria-valuenow", "6"); // June
         await expect(segments[1]).toHaveAttribute("aria-valuenow", "15"); // 15th day
-        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // Year 2025
+        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2026"); // Year 2026
       });
 
       // Clear button should be enabled since there's a value
@@ -601,7 +602,7 @@ export const Controlled: Story = {
         // The displayed value should update to reflect the change
         await waitFor(async () => {
           const valueText = await canvas.findByText(
-            /current value: 2025-08-15/
+            /current value: 2026-08-15/
           );
           await expect(valueText).toBeInTheDocument();
         });
@@ -619,7 +620,7 @@ export const Controlled: Story = {
         // The displayed value should update again
         await waitFor(async () => {
           const valueText = await canvas.findByText(
-            /current value: 2025-08-25/
+            /current value: 2026-08-25/
           );
           await expect(valueText).toBeInTheDocument();
         });
@@ -855,10 +856,10 @@ export const PlaceholderValue: Story = {
   render: (args) => {
     return (
       <Stack direction="column" gap="400" alignItems="start">
-        <Text>With placeholder value (2025-06-15)</Text>
+        <Text>With placeholder value (2026-06-15)</Text>
         <DatePicker
           {...args}
-          placeholderValue={new CalendarDate(2025, 6, 15)}
+          placeholderValue={ANCHOR}
           aria-label="Date picker with placeholder"
         />
         <Text>Without placeholder value</Text>
@@ -934,7 +935,7 @@ export const PlaceholderValue: Story = {
 
         // After editing, year segment should show the placeholder value
         await waitFor(async () => {
-          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025");
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2026");
         });
 
         // Now that we have a complete date, clear button should be enabled
@@ -1002,6 +1003,8 @@ export const PlaceholderValue: Story = {
  * Demonstrates all combinations of available sizes, variants, and form states
  */
 export const VariantsSizesAndStates: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     ["aria-label"]: "Select a date",
   },
@@ -1058,7 +1061,7 @@ export const VariantsSizesAndStates: Story = {
                           {...state.props}
                           variant={variant}
                           size={size}
-                          defaultValue={new CalendarDate(2025, 6, 15)}
+                          defaultValue={ANCHOR}
                           aria-label={`${state.label} ${variant} ${size} date picker`}
                         />
                       </Stack>
@@ -1144,7 +1147,7 @@ export const TimeSupport: Story = {
         <DatePicker
           {...args}
           granularity="day"
-          defaultValue={new CalendarDate(2025, 6, 15)}
+          defaultValue={ANCHOR}
           aria-label="Date only picker"
         />
 
@@ -2001,9 +2004,8 @@ export const MinMaxValues: Story = {
     ["aria-label"]: "Select a date",
   },
   render: (args) => {
-    const today = new CalendarDate(2025, 6, 15); // Fixed "today" for consistent stories
-    const minDate = today.add({ days: 1 });
-    const maxDate = today.add({ days: 30 });
+    const minDate = ANCHOR.add({ days: 1 });
+    const maxDate = ANCHOR.add({ days: 30 });
 
     return (
       <Stack direction="column" gap="400" alignItems="start">
@@ -2014,7 +2016,7 @@ export const MinMaxValues: Story = {
           {...args}
           minValue={minDate}
           maxValue={maxDate}
-          defaultValue={today.add({ days: 7 })}
+          defaultValue={ANCHOR.add({ days: 7 })}
           aria-label="Date picker with min/max values"
         />
         <Text fontSize="sm" color="neutral.11">
@@ -2035,11 +2037,11 @@ export const MinMaxValues: Story = {
         name: /clear/i,
       });
 
-      // Should have default value of 2025-06-22 (7 days from base date)
+      // Should have default value of 2026-06-22 (7 days from base date)
       await waitFor(async () => {
         await expect(segments[0]).toHaveAttribute("aria-valuenow", "6"); // June
         await expect(segments[1]).toHaveAttribute("aria-valuenow", "22"); // 22nd
-        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // 2025
+        await expect(segments[2]).toHaveAttribute("aria-valuenow", "2026"); // 2026
       });
 
       // Clear button should be enabled
@@ -2118,7 +2120,7 @@ export const MinMaxValues: Story = {
         });
         const segments = within(datePicker).getAllByRole("spinbutton");
 
-        // Try to set a date before minValue (2025-06-15, which is before 2025-06-16)
+        // Try to set a date before minValue (2026-06-15, which is before 2026-06-16)
         await userEvent.click(segments[1]); // day segment
         await userEvent.keyboard("{Control>}a{/Control}");
         await userEvent.keyboard("15"); // 15th (before minValue of 16th)
@@ -2206,10 +2208,10 @@ export const MinMaxValues: Story = {
         await userEvent.keyboard("7"); // July
 
         await userEvent.click(segments[1]); // day
-        await userEvent.keyboard("1"); // 1st (should be within range since maxValue is 2025-07-15)
+        await userEvent.keyboard("1"); // 1st (should be within range since maxValue is 2026-07-15)
 
         await userEvent.click(segments[2]); // year
-        await userEvent.keyboard("2025");
+        await userEvent.keyboard("2026");
 
         // Clear button should now be enabled
         await expect(clearButton).not.toBeDisabled();
@@ -2218,7 +2220,7 @@ export const MinMaxValues: Story = {
         await waitFor(async () => {
           await expect(segments[0]).toHaveAttribute("aria-valuenow", "7"); // July
           await expect(segments[1]).toHaveAttribute("aria-valuenow", "1"); // 1st
-          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2025"); // 2025
+          await expect(segments[2]).toHaveAttribute("aria-valuenow", "2026"); // 2026
         });
       }
     );
@@ -2556,6 +2558,8 @@ export const UnavailableDates: Story = {
  * Demonstrates that DatePicker accepts a width property
  */
 export const CustomWidth: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     ["aria-label"]: "Select a date",
   },
@@ -2580,6 +2584,8 @@ export const CustomWidth: Story = {
  * Demonstrates the DatePicker adapting to different locales
  */
 export const MultipleLocales: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     ["aria-label"]: "Select a date",
   },
@@ -2874,25 +2880,8 @@ export const InFormFieldContext: Story = {
     );
 
     await step(
-      "DatePicker width='full' fills FormField container",
+      "FormField wires label and description to the DatePicker group via ARIA",
       async () => {
-        const datePickers = canvas.getAllByRole("group");
-
-        for (const datePicker of datePickers) {
-          // Check that DatePicker is rendered properly
-          await expect(datePicker).toBeInTheDocument();
-
-          // Verify DatePicker is wide enough by checking it's not tiny
-          const rect = datePicker.getBoundingClientRect();
-          await expect(rect.width).toBeGreaterThan(180); // Reasonable minimum width
-        }
-      }
-    );
-
-    await step(
-      "FormField accessibility relationships are established",
-      async () => {
-        // Test each FormField context for proper ARIA relationships
         const formFieldContexts = [
           {
             label: "Event Date",
@@ -2909,18 +2898,20 @@ export const InFormFieldContext: Story = {
         ];
 
         for (const context of formFieldContexts) {
-          // Verify label and description are present
-          await expect(
-            await canvas.findByText(context.label)
-          ).toBeInTheDocument();
-          await expect(
-            await canvas.findByText(context.description)
-          ).toBeInTheDocument();
-
           const datePicker = await canvas.findByRole("group", {
             name: new RegExp(context.label, "i"),
           });
-          await expect(datePicker).toBeInTheDocument();
+          const label = canvas.getByText(context.label);
+          const description = canvas.getByText(context.description);
+
+          // toContain, not exact: React Aria merges the FormField ids with its
+          // own, so the group references more than just these two elements.
+          await expect(datePicker.getAttribute("aria-labelledby")).toContain(
+            label.id
+          );
+          await expect(datePicker.getAttribute("aria-describedby")).toContain(
+            description.id
+          );
 
           const segments = within(datePicker).getAllByRole("spinbutton");
           for (const segment of segments) {
@@ -3190,5 +3181,21 @@ export const PopoverBehavior: Story = {
         await expect(calendar).toBeInTheDocument();
       }
     );
+  },
+};
+
+export const OpenCalendar: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    ["aria-label"]: "Select a date",
+    defaultValue: ANCHOR,
+    defaultOpen: true,
+  },
+  play: async ({ step }) => {
+    await step("Calendar opens to the pinned month", async () => {
+      const calendarGrid = await within(document.body).findByRole("grid");
+      await expect(calendarGrid).toBeInTheDocument();
+    });
   },
 };

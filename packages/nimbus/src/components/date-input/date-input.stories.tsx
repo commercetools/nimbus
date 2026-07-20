@@ -25,6 +25,7 @@ import {
   AddBox,
   AddReaction,
 } from "@commercetools/nimbus-icons";
+import { expect, userEvent, within } from "storybook/test";
 
 /**
  * Storybook metadata configuration
@@ -48,9 +49,25 @@ type Story = StoryObj<typeof DateInput>;
  * Base story
  * Demonstrates the most basic implementation
  */
+// DateInput is a primitive; its full interactive behavior (segment editing,
+// controlled sync, disabled/invalid, keyboard nav) is exercised through its
+// composers (DatePicker, DateRangePicker) and date-input.docs.spec.tsx. This
+// smoke play just proves the primitive stands alone. Fixed input, no drift.
 export const Base: Story = {
   args: {
     ["aria-label"]: "Enter a date",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const group = canvas.getByRole("group");
+    const segments = within(group).getAllByRole("spinbutton");
+    await expect(segments.length).toBeGreaterThanOrEqual(3);
+
+    await step("A segment accepts typed input", async () => {
+      await userEvent.click(segments[0]);
+      await userEvent.keyboard("12");
+      await expect(segments[0]).toHaveAttribute("aria-valuenow", "12");
+    });
   },
 };
 
@@ -176,6 +193,8 @@ export const WithFormField: Story = {
  * for both style variants and sizes
  */
 export const VariantsSizesAndStates: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args: DateInputProps) => {
     const states = [
       { label: "Default", props: {} },
@@ -241,6 +260,8 @@ export const VariantsSizesAndStates: Story = {
  * including IconButton examples for different sizes and variants
  */
 export const LeadingAndTrailingElements: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args: DateInputProps) => {
     const examples: Array<{
       label: string;
@@ -383,6 +404,8 @@ export const HourCycle: Story = {
  * Demonstrates all available granularity levels in a single story
  */
 export const Granularity: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args: DateInputProps) => {
     // Create a date-time value with all components for demonstration
     const dateTimeValue = new CalendarDateTime(2025, 6, 15, 14, 30, 45);
@@ -439,6 +462,8 @@ export const Granularity: Story = {
  * Demonstrates the hideTimeZone property with datetime values that include timezone information
  */
 export const HideTimeZone: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args: DateInputProps) => {
     // Create a zoned date-time value that includes timezone information
     const zonedDateTime = new ZonedDateTime(
@@ -483,6 +508,8 @@ export const HideTimeZone: Story = {
  * to show the difference between forced leading zeros and locale-default behavior
  */
 export const ShouldForceLeadingZeros: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args: DateInputProps) => {
     // Create date values with single-digit months and days to demonstrate leading zeros
     const singleDigitDate = new CalendarDate(2025, 3, 5); // March 5th
@@ -1008,6 +1035,8 @@ export const ValidationBehavior: Story = {
  * Demonstrates that DateInput accepts a width property
  */
 export const CustomWidth: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     ["aria-label"]: "Enter a date",
   },
