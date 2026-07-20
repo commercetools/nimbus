@@ -142,10 +142,12 @@ For complete development rules, patterns, and requirements, see:
 - **Import Convention**: Nimbus uses a two-lane import rule — implementation
   files import other Nimbus code via the `@/` alias (barrel or deep path, either
   is safe); stories/tests/docs import Nimbus components from the published
-  package `@commercetools/nimbus`. Value `export *` is banned repo-wide
-  (lint-enforced) — that's what makes barrel-vs-deep a non-issue inside
-  implementation code. See `./docs/file-type-guidelines/barrel-exports.md` for
-  the canonical rule.
+  package `@commercetools/nimbus`. Value `export *` is banned in leaf barrels
+  (the per-component `index.ts` files), lint-enforced — naming those is what
+  makes barrel-vs-deep a non-issue inside implementation code; the root and
+  category rollup barrels (`src/index.ts`, `src/<category>/index.ts`) may still
+  `export *`. See `./docs/file-type-guidelines/barrel-exports.md` for the
+  canonical rule.
 
 **IMPORTANT: All file reviews MUST follow the File Review Protocol. Never
 provide feedback without first validating against the appropriate guidelines.**

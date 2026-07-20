@@ -26,11 +26,17 @@ back to the rule below.
 
 Plus one global hygiene rule that makes "it does not matter" _true_:
 
-- **No value `export *` anywhere.** Every value re-export is explicit
-  (`export { Button } from "./button"`). `export type *` is allowed (types are
-  erased at build and cannot trigger the defect). This is lint-enforced
-  (`no-restricted-syntax` on `ExportAllDeclaration`, with `export type *`
-  allowed).
+- **No value `export *` in leaf barrels.** A _leaf barrel_ — the per-component
+  `index.ts` that sits directly on top of implementation files — names every
+  value re-export explicitly (`export { Button } from "./button"`). The **root
+  barrel (`src/index.ts`) and the category rollup barrels
+  (`src/<category>/index.ts`, e.g. `components/index.ts`, `hooks/index.ts`)**
+  may still use `export *`, because they only forward already-named leaf
+  barrels, and `export *` over an explicitly-named module is safe.
+  `export type *` is allowed everywhere (types are erased at build and cannot
+  trigger the defect). This is lint-enforced (`no-restricted-syntax` on
+  `ExportAllDeclaration`, with the rollup barrels exempt and `export type *`
+  always allowed).
 
 `@/` always resolves to source, in every context and command. The only specifier
 that flips src↔dist is `@commercetools/nimbus`, and that flip is a command
@@ -45,17 +51,19 @@ declaring module, drops that module as apparently unused, and leaves a free
 variable at runtime (`ReferenceError: X is not defined`). Explicit named
 re-exports give the bundler a static name→module map, so barrels become provably
 safe — which is exactly what makes barrel-vs-deep a non-issue inside
-implementation code. **Deep implementation imports are no longer required or
-recommended for correctness**; they were a workaround for a defect that no
-longer exists once value `export *` is gone.
+implementation code. Naming the **leaf** barrel breaks the `export *` chain at
+the point where a declaring module first enters the barrel graph, so the rollup
+barrels above it can safely `export *`. **Deep implementation imports are no
+longer required or recommended for correctness**; they were a workaround for a
+defect that no longer exists once leaf barrels name their re-exports.
 
 ## Barrels Are Hand-Maintained
 
-Barrels are hand-written — there is no codegen. Converting a barrel from
-`export *` to named re-exports is mechanical: one line per export, naming it
-explicitly. Adding a new component adds one named line to the relevant barrel
-(its own `index.ts` and the mega-barrel `src/components/index.ts`) — the same
-cadence as the old `export *` line.
+Barrels are hand-written — there is no codegen. A leaf barrel names its exports
+explicitly (one line per export); the mega-barrel `src/components/index.ts` and
+the other rollup barrels forward their sub-barrels with `export *`. Adding a new
+component means writing its leaf `index.ts` with named re-exports — the
+mega-barrel's `export *` picks it up automatically, no edit needed there.
 
 ## When to Use
 
@@ -100,14 +108,15 @@ export type * from "./menu.types";
 
 ### The Mega-Barrel (`src/components/index.ts`)
 
-The top-level components barrel re-exports every component by name, one
-statement per component:
+The top-level components barrel is a **rollup barrel**: it forwards the
+already-named leaf barrels with `export *`, one statement per component. Because
+each leaf barrel names its own exports, these stars are safe:
 
 ```typescript
-export { Button } from "./button";
-export { Menu } from "./menu";
-export { Badge } from "./badge";
-// ... one line per component
+export * from "./button";
+export * from "./menu";
+export * from "./badge";
+// ... one line per component (a new component is picked up automatically)
 ```
 
 ## File Extension Considerations
@@ -143,9 +152,10 @@ build.
    - Types: `export type *` (allowed; erased at build, cannot trigger the
      defect)
 
-3. **Never use value `export *`**
+3. **Never use value `export *` in a leaf barrel** (rollup barrels are exempt)
 
    ```typescript
+   // In a per-component index.ts (a leaf barrel):
    // ❌ WRONG — value export * (lint error, unsafe under lazyBarrel)
    export * from "./component-name";
 
@@ -191,8 +201,9 @@ export type { SelectProps, SelectOption } from "./select.types";
 - [ ] Exports component implementation
 - [ ] Exports TypeScript types
 - [ ] Only exports public API (no internal utilities)
-- [ ] **No value `export *`** — every value re-export is explicit
-      (`export { X } from "./x"`); lint-enforced
+- [ ] **No value `export *` in this leaf barrel** — every value re-export is
+      explicit (`export { X } from "./x"`); lint-enforced (rollup barrels
+      exempt)
 - [ ] `export type *` used for type-only re-exports (allowed)
 - [ ] File extension appropriate (.ts for exports only, .tsx if JSX present)
 - [ ] **Omits file extensions in imports** (preferred pattern)

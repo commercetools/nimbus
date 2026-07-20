@@ -101,21 +101,34 @@ export default tseslint.config(
     },
   },
   /**
-   * Ban value `export *` (re-export stars). They defeat static tree-shaking
-   * analysis and, with vite/rolldown lazyBarrel, mis-shake split-module
-   * compound components into runtime ReferenceErrors (see
+   * Ban value `export *` (re-export stars) below the rollup layer. They defeat
+   * static tree-shaking analysis and, with vite/rolldown lazyBarrel, mis-shake
+   * split-module compound components into runtime ReferenceErrors (see
    * docs/superpowers/specs/2026-07-08-decouple-import-notation-from-build-target.md).
-   * `export type *` is erased at build and stays allowed.
+   *
+   * The safe boundary (per the spec's root cause) is the *leaf* barrel: the
+   * one sitting directly on top of implementation files, where a compound
+   * root declared in a separate module (`export const Code = CodeRoot`) first
+   * enters the barrel graph. Once every leaf barrel names its re-exports, the
+   * `export *` chain is broken there and the rollup barrels above it —
+   * `src/index.ts` and each category `src/<category>/index.ts` — may safely
+   * `export *`, because a star over an explicitly-named module is safe.
+   *
+   * So: leaf barrels (and implementation files) must name their value
+   * re-exports; the root + category rollup barrels are exempt. `export type *`
+   * is erased at build and stays allowed everywhere.
    */
   {
     files: ["packages/nimbus/src/**/*.{ts,tsx}"],
+    // Rollup barrels that only forward already-named sub-modules — safe to star.
+    ignores: ["packages/nimbus/src/index.ts", "packages/nimbus/src/*/index.ts"],
     rules: {
       "no-restricted-syntax": [
         "error",
         {
           selector: "ExportAllDeclaration[exportKind!='type']",
           message:
-            "No value `export *`. Use explicit named re-exports (`export { X } from ...`); for type-only modules use `export type *`.",
+            "No value `export *` in a leaf barrel. Use explicit named re-exports (`export { X } from ...`); for type-only modules use `export type *`. (Only the root + category rollup barrels may `export *`.)",
         },
       ],
     },
