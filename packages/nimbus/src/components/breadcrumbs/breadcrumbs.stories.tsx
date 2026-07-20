@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, userEvent, within } from "storybook/test";
+import { expect, userEvent, waitFor, within } from "storybook/test";
 import { Breadcrumbs, Stack, Text } from "@commercetools/nimbus";
 
 /**
@@ -160,10 +160,13 @@ export const Sizes: Story = {
     const canvas = within(canvasElement);
 
     await step("sm renders a smaller font size than md", async () => {
-      // Compare the first listitem font-size of each size variant.
+      // React Aria builds the list as a collection: the <li> items hydrate a
+      // tick after render — slower in the production Storybook bundle Chromatic
+      // renders than in the dev test env — so wait for them with findAllByRole
+      // rather than reading synchronously.
       const navs = canvas.getAllByRole("navigation");
-      const smItem = within(navs[0]).getAllByRole("listitem")[0];
-      const mdItem = within(navs[1]).getAllByRole("listitem")[0];
+      const [smItem] = await within(navs[0]).findAllByRole("listitem");
+      const [mdItem] = await within(navs[1]).findAllByRole("listitem");
       const smSize = parseFloat(getComputedStyle(smItem).fontSize);
       const mdSize = parseFloat(getComputedStyle(mdItem).fontSize);
       await expect(smSize).toBeGreaterThan(0);
@@ -199,8 +202,9 @@ export const CustomSeparator: Story = {
     });
 
     await step("A separator is rendered for each item", async () => {
-      const separators = getSeparators(canvasElement);
-      await expect(separators).toHaveLength(3);
+      // Wait for React Aria's collection to hydrate the items (and their
+      // separators) — slower in the production bundle Chromatic renders.
+      await waitFor(() => expect(getSeparators(canvasElement)).toHaveLength(3));
     });
 
     await step(
@@ -240,8 +244,10 @@ export const Focused: Story = {
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    // Ensure the collection has hydrated the link before tabbing to it.
+    const home = await canvas.findByRole("link", { name: "Home" });
     await userEvent.tab();
-    await expect(canvas.getByRole("link", { name: "Home" })).toHaveFocus();
+    await expect(home).toHaveFocus();
   },
 };
 
@@ -424,7 +430,10 @@ export const SmokeTest: Story = {
 
     await step("Renders nav landmark and five list items", async () => {
       await expect(canvas.getByRole("navigation")).toBeInTheDocument();
-      await expect(canvas.getAllByRole("listitem")).toHaveLength(5);
+      // Wait for the collection to hydrate the <li> items before counting.
+      await waitFor(() =>
+        expect(canvas.getAllByRole("listitem")).toHaveLength(5)
+      );
     });
 
     await step("Only the last item is current", async () => {
