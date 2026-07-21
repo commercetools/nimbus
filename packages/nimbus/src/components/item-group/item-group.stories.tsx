@@ -4,7 +4,7 @@ import { Person, Settings, Notifications } from "@commercetools/nimbus-icons";
 import { within, expect } from "storybook/test";
 
 const meta: Meta<typeof ItemGroup.Root> = {
-  title: "Components/ItemGroup",
+  title: "Components/Item/ItemGroup",
   component: ItemGroup.Root,
 };
 

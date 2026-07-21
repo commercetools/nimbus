@@ -76,4 +76,4 @@
       succeeded; `pnpm test:storybook` passed against `dist` (item 7/7,
       item-group 2/2); `item.docs.spec`/`item-group.docs.spec` pass (9 total).
 - [x] 10.5 Changeset added (`.changeset/add-item-component.md`, lifecycle
-      **Experimental**) describing `Item` and `ItemGroup` for consumers.
+      **Beta**) describing `Item` and `ItemGroup` for consumers.

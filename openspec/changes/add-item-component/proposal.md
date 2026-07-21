@@ -143,7 +143,7 @@ the row link.
   `data-variant` attribute. `nimbusItemGroup`: `root` + `separator` slots.
 - **Barrel exports** `Item`, `ItemGroup`, and their public types from
   `@commercetools/nimbus`.
-- Lifecycle **Experimental**; noted in the changeset.
+- Lifecycle **Beta**; noted in the changeset.
 - Figma Code Connect deferred (no Figma design source; designed from the shadcn
   React Aria reference).
 - No tokens-package changes.
