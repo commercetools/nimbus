@@ -32,8 +32,13 @@ const makeFile = (name: string, type = "text/plain") =>
 
 /**
  * Base case: a Nimbus Button as the child trigger, single-file selection.
+ *
+ * The only VRT snapshot: a minimal guard baseline. FileTrigger renders no visual
+ * of its own, so the other stories add no unique surface and stay behavioral.
  */
 export const Base: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     onSelect: fn(),
   },
