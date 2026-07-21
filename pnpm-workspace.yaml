@@ -115,7 +115,7 @@ catalogs:
     tsx: ^4.23.1
     "@arethetypeswrong/cli": ^0.18.5
     publint: ^0.3.21
-    "@commercetools-frontend/ui-kit": ^20.6.4
+    "@commercetools-frontend/ui-kit": ^20.6.7
     "@modelcontextprotocol/inspector": ^0.21.2
     "@babel/core": ^7.29.7
     "@babel/runtime": ^7.29.7
