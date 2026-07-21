@@ -326,6 +326,11 @@ but neither is currently captured, and it's an infra limitation, not a choice:
   infra family). Check the recipe rather than assuming pressed is always a
   no-op.
 
+**If a play can drive the real interaction, snapshot the result and leave it
+settled** - drag-over (`data-drop-target`), option focus (`data-focused`),
+selection (`aria-selected`). The gap is `:hover`/`:active` and `data-hovered`,
+which no play-dispatchable event sets.
+
 ### Broader best practices
 
 - **Enumerate surfaces from source, not memory.** Before deciding what to opt
