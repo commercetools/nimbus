@@ -251,7 +251,16 @@ export const SliderBase = (props: SliderBaseProps) => {
                   : { insetInlineStart: start, width: span };
               return (
                 <>
-                  <SliderFillSlot asChild data-slot="fill">
+                  <SliderFillSlot
+                    asChild
+                    data-slot="fill"
+                    // Two-plus thumbs means this fill is a RangeSlider's range
+                    // segment (the span between thumbs), not a single slider's
+                    // 0→value progress. The `minimal` recipe colors only the
+                    // former, so it can visualize the selected range while a
+                    // single slider stays a bare handle on a neutral track.
+                    data-range={state.values.length > 1 || undefined}
+                  >
                     <RaSliderFill style={fillStyle} />
                   </SliderFillSlot>
                   {state.values.map((_, i) => {
@@ -280,8 +289,8 @@ export const SliderBase = (props: SliderBaseProps) => {
                     // recipe. Mirrors how React Aria's own `SliderFill` anchors:
                     // horizontal uses the logical `insetInlineStart` so it flips
                     // under RTL, vertical anchors from `bottom` so the minimum
-                    // sits at the bottom. Plain percent for every variant — in
-                    // `enclosed` the interactive track is inset by the thumb
+                    // sits at the bottom. A simple percent for every variant —
+                    // in `enclosed` the interactive track is inset by the thumb
                     // radius (recipe), so `frac%` of that track already lands on
                     // the contained thumb centerline and a click there maps back
                     // to the same value.

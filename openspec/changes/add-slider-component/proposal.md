@@ -15,7 +15,7 @@ reconciled against the shipped implementation.
   tuple; the two public components share one internal `SliderBase`.
 - Add the `nimbusSlider` slot recipe (slots: `root`, `track`, `fill`, `thumb`,
   `tick`, `tickLabel`) with `size` (`sm`/`md`, default `md`), `orientation`
-  (`horizontal`/`vertical`), and cosmetic `variant` (`plain` default,
+  (`horizontal`/`vertical`), and cosmetic `variant` (`filled` default, `minimal`,
   `enclosed`) variants.
 - Add a per-thumb **value tooltip** shown while the thumb is hovered, focused, or
   dragged (dismissible with Escape), honoring `formatOptions`.
@@ -25,9 +25,11 @@ reconciled against the shipped implementation.
   description, and a Nimbus-only `isInvalid` → `data-invalid` seam, since React
   Aria's `Slider` has no native validation state).
 - Add localized default thumb labels for `RangeSlider` (`Minimum` / `Maximum`).
-- Reconcile the stale visual-variants design: only **`plain`** and
-  **`enclosed`** variants ship (not the `solid`/`outline`/`minimal`/`enclosed`
-  set originally drafted), plus the thumb cross-axis centering fix.
+- Reconcile the stale visual-variants design: three variants ship — **`filled`**
+  (default), **`minimal`** (uncolored, for neutral controls like a thumbnail-size
+  picker), and **`enclosed`** — dropping the `solid` and `outline` variants from
+  the originally-drafted four (`solid`/`outline`/`minimal`/`enclosed`), plus the
+  thumb cross-axis centering fix.
 
 ## Capabilities
 

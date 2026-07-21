@@ -105,17 +105,39 @@ appropriate axis.
 
 ### Requirement: Cosmetic variants
 
-The recipe SHALL provide a cosmetic `variant` prop with two values — `plain`
-(default) and `enclosed` — applying identically to `Slider` and `RangeSlider`.
-`variant` SHALL compose orthogonally with `size`, `orientation`, `showTicks`,
-the value tooltip, and the disabled/invalid states, and SHALL introduce no
-behavioral, API, or accessibility change.
+The recipe SHALL provide a cosmetic `variant` prop with three values — `filled`
+(default), `minimal`, and `enclosed` — applying identically to `Slider` and
+`RangeSlider`. `variant` SHALL compose orthogonally with `size`, `orientation`,
+`showTicks`, the value tooltip, and the disabled/invalid states, and SHALL
+introduce no behavioral, API, or accessibility change.
 
-#### Scenario: Plain variant (default)
+#### Scenario: Filled variant (default)
 
 - **WHEN** no `variant` is provided
-- **THEN** the slider SHALL render a thin neutral track with a filled portion
-  and a bordered white thumb
+- **THEN** the slider SHALL render a thin neutral track with a colored filled
+  portion and a bordered white thumb
+
+#### Scenario: Minimal variant (idle)
+
+- **WHEN** `variant="minimal"` is set and the control is idle
+- **THEN** the slider SHALL render a neutral track whose visible bar is thinner
+  than `filled`, carrying a normal-size knob painted a single solid palette
+  color (`colorPalette.9`, fill and border together)
+- **AND** a single `Slider` SHALL show no progress fill; a `RangeSlider` SHALL
+  paint its range segment (the span between the two thumbs) the same
+  `colorPalette.9`
+- **AND** the keyboard focus ring SHALL remain the brand color
+
+#### Scenario: Minimal variant comes alive when engaged
+
+- **WHEN** a `minimal` slider is hovered, focused, or being dragged
+- **THEN** the visible track bar (and, on a `RangeSlider`, the range segment)
+  SHALL grow to the normal `filled` thickness
+- **AND** the knob (and the range segment) SHALL shift from `colorPalette.9` to
+  `colorPalette.10`, while the knob's size stays constant
+- **AND** the underlying DOM box sizes SHALL be unchanged — only painted layers
+  resize or recolor — so layout, the pointer target, and the thumb-size grid
+  match the other variants
 
 #### Scenario: Enclosed variant
 

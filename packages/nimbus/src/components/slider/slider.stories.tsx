@@ -12,10 +12,11 @@ import { within, expect, userEvent, fn, waitFor } from "storybook/test";
 
 // Visual smoke-test axes. The full matrix is every combination of these, for
 // both orientations — 2 × 2 × 2 × 2 = 16 cells.
-const SMOKE_VARIANTS = ["plain", "enclosed"] as const;
+const SMOKE_VARIANTS = ["filled", "minimal", "enclosed"] as const;
 const SMOKE_SIZES = ["sm", "md"] as const;
 const SMOKE_DISABLED = [false, true] as const;
 const SMOKE_ORIENTATIONS = ["horizontal", "vertical"] as const;
+const SMOKE_TICKS = [false, true] as const;
 
 // Set once on an ancestor; vertical slider roots read this custom property for
 // their length (`var(--slider-vertical-length, 200px)` in slider.recipe.ts),
@@ -206,16 +207,17 @@ export const Orientation: Story = {
 };
 
 /**
- * Both slider variants share the Switch's control-size grid: the thumb is
+ * All three slider variants share the Switch's control-size grid: the thumb is
  * `sizes.400` (16px) at sm and `sizes.600` (24px) at md, regardless of variant.
  * In the enclosed variant the bar is as tall as the thumb (Switch-like); the
- * plain variant keeps its thin track but the same knob. Doubles as the sizes
- * showcase, and guards the shared thumb sizing and the enclosed bar height.
+ * filled and minimal variants keep their thin track but the same knob. Doubles as
+ * the sizes showcase, and guards the shared thumb sizing and the enclosed bar
+ * height.
  */
 export const Sizes: Story = {
   render: () => (
     <>
-      {(["plain", "enclosed"] as const).flatMap((variant) =>
+      {(["filled", "minimal", "enclosed"] as const).flatMap((variant) =>
         (["sm", "md"] as const).map((size) => (
           <div key={`${variant}-${size}`} data-testid={`${variant}-${size}`}>
             <Slider
@@ -236,9 +238,9 @@ export const Sizes: Story = {
         .getBoundingClientRect();
 
     await step(
-      "the thumb follows the Switch grid in both variants (sm 16px, md 24px)",
+      "the thumb follows the Switch grid in every variant (sm 16px, md 24px)",
       async () => {
-        for (const variant of ["plain", "enclosed"]) {
+        for (const variant of ["filled", "minimal", "enclosed"]) {
           await expect(box(`${variant}-sm`, "thumb").height).toBeCloseTo(16, 0);
           await expect(box(`${variant}-md`, "thumb").height).toBeCloseTo(24, 0);
         }
@@ -251,13 +253,14 @@ export const Sizes: Story = {
     });
 
     await step(
-      "the plain track is thinner than its knob (a line, not a bar)",
+      "the filled track is thinner than its knob (a line, not a bar)",
       async () => {
-        // plain keeps a thin track; the enclosed bar is as tall as the thumb.
-        await expect(box("plain-md", "track").height).toBeLessThan(
-          box("plain-md", "thumb").height
+        // filled (and minimal) keep a thin track; the enclosed bar is as tall as
+        // the thumb.
+        await expect(box("filled-md", "track").height).toBeLessThan(
+          box("filled-md", "thumb").height
         );
-        await expect(box("plain-md", "track").height).toBeLessThan(
+        await expect(box("filled-md", "track").height).toBeLessThan(
           box("enclosed-md", "track").height
         );
       }
@@ -266,29 +269,35 @@ export const Sizes: Story = {
 };
 
 /**
- * The two visual variants — `plain` (thin track) and `enclosed` (iOS-style bar
- * with the knob inside it) — across the value range, plus an invalid enclosed.
- * Both share one inset geometry, and the play function locks in what that
- * geometry buys: the enclosed bar reads as a thick bar, thumbs stay contained at
- * the extremes in both variants, the enclosed fill cups the thumb at every
- * value (its transparent border showing the primary fill through as a ring), and
- * the invalid state still paints a visible thumb border even though `enclosed`
- * drops the base border.
+ * The three visual variants across the value range, plus an invalid enclosed:
+ * `filled` (a thin track with a colored progress fill), `minimal` (a thin
+ * neutral track with a single-color handle, understated at rest and growing on
+ * engage — for low-emphasis controls such as a thumbnail-size picker), and
+ * `enclosed` (an iOS-style bar with the knob inset inside it). All three share one inset geometry, and the
+ * play function locks in what that geometry buys: the enclosed bar reads as a
+ * thick bar, thumbs stay contained at the extremes in every variant, the
+ * enclosed fill cups the thumb at every value (its transparent border showing
+ * the primary fill through as a ring), and the invalid state still paints a
+ * visible thumb border even though `enclosed` drops the base border. The
+ * per-variant color treatment itself is covered by visual regression
+ * (Chromatic), not asserted here.
  */
 export const Variants: Story = {
   render: () => (
     <Stack direction="column" gap="400">
-      {(["plain", "enclosed"] as const).map((variant) => (
+      {(["filled", "minimal", "enclosed"] as const).map((variant) => (
         <Stack key={variant} direction="column" gap="200">
-          {(variant === "plain" ? [0, 50, 100] : [0, 50, 75, 100]).map((v) => (
-            <div key={v} data-testid={`${variant}-${v}`}>
-              <Slider
-                aria-label={`${variant} ${v}`}
-                variant={variant}
-                defaultValue={v}
-              />
-            </div>
-          ))}
+          {(variant === "enclosed" ? [0, 50, 75, 100] : [0, 50, 100]).map(
+            (v) => (
+              <div key={v} data-testid={`${variant}-${v}`}>
+                <Slider
+                  aria-label={`${variant} ${v}`}
+                  variant={variant}
+                  defaultValue={v}
+                />
+              </div>
+            )
+          )}
         </Stack>
       ))}
       <div data-testid="enclosed-invalid">
@@ -310,33 +319,35 @@ export const Variants: Story = {
     const rect = (id: string, slot: string) =>
       el(id, slot).getBoundingClientRect();
 
-    await step("renders both variants across the value range", async () => {
+    await step("renders every variant across the value range", async () => {
       // `[role="slider"]` (a literal-attribute CSS selector) never matches:
       // React Aria's SliderThumb renders a native <input type="range">, whose
       // "slider" role is implicit ARIA semantics, not a literal `role`
       // attribute in the DOM. Query by computed accessible role instead.
-      // plain [0,50,100] + enclosed [0,50,75,100] + invalid = 8.
-      await expect(canvas.getAllByRole("slider")).toHaveLength(8);
+      // filled [0,50,100] + minimal [0,50,100] + enclosed [0,50,75,100] + invalid = 11.
+      await expect(canvas.getAllByRole("slider")).toHaveLength(11);
     });
 
     await step(
-      "the enclosed track is a thick bar, thicker than plain",
+      "the enclosed track is a thick bar, thicker than the thin-track variants",
       async () => {
         const enclosedH = rect("enclosed-50", "track").height;
-        const plainH = rect("plain-50", "track").height;
-        await expect(enclosedH).toBeGreaterThan(plainH);
+        const filledH = rect("filled-50", "track").height;
+        // `minimal` shares `filled`'s thin-track geometry, so one comparison covers
+        // both against the enclosed bar.
+        await expect(enclosedH).toBeGreaterThan(filledH);
       }
     );
 
     await step(
-      "the thumb stays within the bar at min and max in both variants",
+      "the thumb stays within the bar at min and max in every variant",
       async () => {
         // Unified geometry: the interactive track is inset by a thumb radius
         // and the `::before` bar reaches back over it, so React Aria positions
         // the thumb natively-contained and its box stays inside the visible bar
         // (the root box) at 0/100 — no half-off overhang. Half-pixel tolerance
         // absorbs sub-pixel layout rounding.
-        for (const variant of ["plain", "enclosed"]) {
+        for (const variant of ["filled", "minimal", "enclosed"]) {
           for (const value of [0, 100]) {
             const bar = rect(`${variant}-${value}`, "root");
             const thumb = rect(`${variant}-${value}`, "thumb");
@@ -755,9 +766,10 @@ export const WithFormField: Story = {
 
 /**
  * Visual smoke test: every combination of orientation × variant × size ×
- * disabled-state rendered in one grid, so the whole visual surface can be
- * eyeballed at once and any combination that fails to mount is caught. The
- * play function only asserts that all 16 cells rendered (nothing threw).
+ * disabled-state × ticks/no-ticks rendered in one grid, so the whole visual
+ * surface can be eyeballed at once and any combination that fails to mount is
+ * caught. The play function only asserts that all 48 cells rendered (nothing
+ * threw).
  */
 export const SmokeTest: Story = {
   render: () => (
@@ -785,28 +797,30 @@ export const SmokeTest: Story = {
                   alignItems="start"
                 >
                   {SMOKE_SIZES.flatMap((size) =>
-                    SMOKE_DISABLED.map((isDisabled) => {
-                      const label = `${size} · ${
-                        isDisabled ? "disabled" : "enabled"
-                      }`;
-                      return (
-                        <Stack key={label} direction="column" gap="100">
-                          <Text fontSize="300" color="neutral.11">
-                            {label}
-                          </Text>
-                          <Slider
-                            aria-label={`${orientation} ${variant} ${label}`}
-                            variant={variant}
-                            size={size}
-                            orientation={orientation}
-                            isDisabled={isDisabled}
-                            defaultValue={60}
-                            showTicks
-                            tickStep={25}
-                          />
-                        </Stack>
-                      );
-                    })
+                    SMOKE_DISABLED.flatMap((isDisabled) =>
+                      SMOKE_TICKS.map((withTicks) => {
+                        const label = `${size} · ${
+                          isDisabled ? "disabled" : "enabled"
+                        } · ${withTicks ? "ticks" : "no ticks"}`;
+                        return (
+                          <Stack key={label} direction="column" gap="100">
+                            <Text fontSize="300" color="neutral.11">
+                              {label}
+                            </Text>
+                            <Slider
+                              aria-label={`${orientation} ${variant} ${label}`}
+                              variant={variant}
+                              size={size}
+                              orientation={orientation}
+                              isDisabled={isDisabled}
+                              defaultValue={60}
+                              showTicks={withTicks}
+                              tickStep={25}
+                            />
+                          </Stack>
+                        );
+                      })
+                    )
                   )}
                 </Grid>
               </Stack>
@@ -819,9 +833,10 @@ export const SmokeTest: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     await step("every combination in the matrix renders", async () => {
-      // 2 orientations × 2 variants × 2 sizes × 2 disabled-states = 16 cells,
-      // one thumb each. A missing count means some combination failed to mount.
-      await expect(canvas.getAllByRole("slider")).toHaveLength(16);
+      // 2 orientations × 3 variants × 2 sizes × 2 disabled-states × 2 tick
+      // modes = 48 cells, one thumb each. A missing count means some
+      // combination failed to mount.
+      await expect(canvas.getAllByRole("slider")).toHaveLength(48);
     });
   },
 };
