@@ -1,0 +1,131 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures that digital content and functionality are usable by
+everyone, including people with disabilities, by addressing visual, auditory,
+cognitive, and physical limitations.
+
+### Presentational by default
+
+`Item.Root` renders a plain `<div>` when no `href` is provided — no role, no
+accessible name, and no focus stop of its own. Nothing in the row is announced
+as interactive unless you either pass `href` or nest real interactive controls
+in `Item.Actions`.
+
+```jsx live
+const App = () => (
+  <Item.Root variant="outline" data-testid="static-row">
+    <Item.Media variant="icon" aria-hidden>
+      <Icons.Person />
+    </Item.Media>
+    <Item.Content>
+      <Item.Title>Profile</Item.Title>
+      <Item.Description>Name, avatar, and contact details</Item.Description>
+    </Item.Content>
+  </Item.Root>
+);
+```
+
+### Link-mode accessible name
+
+When `href` upgrades `Item.Root` to an `<a>`, its accessible name is computed
+the standard way for a link: from its visible text content — the title, the
+description, and anything else rendered inside the row. `Item` does not wire
+up `aria-labelledby`/`aria-describedby` slots the way `Card` does, so a long
+description becomes part of a long announced name. If that verbosity is
+undesirable, override it explicitly with `aria-label` or `aria-labelledby`.
+
+```jsx live
+const App = () => (
+  <Item.Root
+    href="#settings"
+    variant="outline"
+    aria-label="Open account settings"
+  >
+    <Item.Media variant="icon" aria-hidden>
+      <Icons.Settings />
+    </Item.Media>
+    <Item.Content>
+      <Item.Title>Settings</Item.Title>
+      <Item.Description>
+        Manage your profile, notifications, and connected accounts
+      </Item.Description>
+    </Item.Content>
+  </Item.Root>
+);
+```
+
+### Media is decorative unless you name it
+
+`Item.Media` injects no accessible name of its own — it is a layout slot, not
+a labeling one. Mark purely decorative media `aria-hidden` (as in the examples
+above) so it doesn't add an unlabeled node to the accessibility tree. Only give
+media its own name when it conveys information the title and description
+don't already state.
+
+### Actions keep an independent focus order
+
+Controls placed in `Item.Actions` are always their own focusable, operable
+stops — this holds whether `Item.Root` is a plain `<div>` or a link. When the
+row is a link, activating a control inside `Item.Actions` (by click, `Enter`,
+or `Space`) does **not** also activate the row's navigation: a capture-phase
+guard on the link cancels the row's own navigation whenever the originating
+event comes from inside `Item.Actions`, while the action's own handler still
+runs.
+
+```jsx live
+const App = () => (
+  <Item.Root href="#item-target" variant="outline">
+    <Item.Content>
+      <Item.Title>Report Q3</Item.Title>
+      <Item.Description>Opens the report</Item.Description>
+    </Item.Content>
+    <Item.Actions>
+      <IconButton aria-label="Delete" size="xs" variant="ghost">
+        <Icons.Delete />
+      </IconButton>
+    </Item.Actions>
+  </Item.Root>
+);
+```
+
+### No row-as-button mode
+
+`Item.Root` intentionally offers no button/pressable-row mode. Rendering the
+whole row as a single button would announce the entire title, description,
+and media subtree as one control and would make every nested `Item.Actions`
+control an invalid button-inside-button. When a row needs to perform an
+action rather than navigate, put that action in `Item.Actions` as a
+`Button`/`IconButton` — don't attach a press handler to `Item.Root` itself.
+
+### Stacking rows
+
+`Item` lays out a single row and has no opinion about the list that contains
+it. To stack multiple rows, use the separate `ItemGroup` component — see its
+own accessibility documentation for how it composes rows into a group.
+
+### Accessibility standards
+
+- **Name, role, value:** A link-mode `Item.Root` is a genuine `<a>` with a
+  computed or explicit accessible name; a non-link `Item.Root` has none, which
+  is correct for presentational content.
+- **Info and relationships:** `Item.Media`, `Item.Title`, and
+  `Item.Description` are plain, unrelated `<div>`s — nothing but visible
+  layout ties them together, so don't depend on assistive technology inferring
+  a relationship beyond DOM order.
+- **Use of color:** `variant` (`plain`/`outline`/`subtle`) and `colorPalette`
+  are visual cues only; don't use color alone to signal that a row is
+  interactive or to distinguish one row's meaning from another's — pair it
+  with visible text.
+- **Non-text content:** Keep decorative media `aria-hidden`; give meaningful
+  media (an avatar that identifies a specific person, for example) its own
+  name.
+- **Focus order / no keyboard trap:** Controls in `Item.Actions` are always
+  independent focus stops, never captured by or hidden behind the row's link.
+- **Target size:** Size interactive controls placed in `Item.Actions` (for
+  example `IconButton`) per your target-size requirements — `Item` does not
+  enforce a minimum hit area on nested controls.
