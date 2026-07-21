@@ -1,0 +1,140 @@
+---
+title: Item group component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Item, ItemGroup } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+`ItemGroup` is a compound component: wrap `Item.Root` rows in
+`ItemGroup.Root`, and place `ItemGroup.Separator` between the rows that should
+be visually divided.
+
+```jsx live-dev
+const App = () => (
+  <ItemGroup.Root>
+    <Item.Root>
+      <Item.Content>
+        <Item.Title>Profile</Item.Title>
+      </Item.Content>
+    </Item.Root>
+    <ItemGroup.Separator />
+    <Item.Root>
+      <Item.Content>
+        <Item.Title>Settings</Item.Title>
+      </Item.Content>
+    </Item.Root>
+  </ItemGroup.Root>
+)
+```
+
+## Usage examples
+
+### Rows with media and separators
+
+`ItemGroup.Root` does not restyle the rows it wraps — each `Item.Root` keeps
+its own `variant`/`size`. Use `ItemGroup.Separator` only between rows, never
+before the first or after the last.
+
+```jsx live-dev
+const App = () => (
+  <ItemGroup.Root>
+    <Item.Root>
+      <Item.Media variant="icon">
+        <Icons.Person />
+      </Item.Media>
+      <Item.Content>
+        <Item.Title>Profile</Item.Title>
+        <Item.Description>Name, avatar, and contact details</Item.Description>
+      </Item.Content>
+    </Item.Root>
+    <ItemGroup.Separator />
+    <Item.Root>
+      <Item.Media variant="icon">
+        <Icons.Notifications />
+      </Item.Media>
+      <Item.Content>
+        <Item.Title>Notifications</Item.Title>
+        <Item.Description>Email and push preferences</Item.Description>
+      </Item.Content>
+    </Item.Root>
+    <ItemGroup.Separator />
+    <Item.Root>
+      <Item.Media variant="icon">
+        <Icons.Settings />
+      </Item.Media>
+      <Item.Content>
+        <Item.Title>Settings</Item.Title>
+        <Item.Description>Workspace configuration</Item.Description>
+      </Item.Content>
+    </Item.Root>
+  </ItemGroup.Root>
+)
+```
+
+### Grouped link rows
+
+Give `Item.Root` an `href` to upgrade a row to an accessible link;
+`ItemGroup` composes with link rows the same way it composes with
+presentational ones.
+
+```jsx live-dev
+const App = () => (
+  <ItemGroup.Root>
+    <Item.Root href="#profile">
+      <Item.Content>
+        <Item.Title>Profile</Item.Title>
+      </Item.Content>
+    </Item.Root>
+    <ItemGroup.Separator />
+    <Item.Root href="#settings">
+      <Item.Content>
+        <Item.Title>Settings</Item.Title>
+      </Item.Content>
+    </Item.Root>
+  </ItemGroup.Root>
+)
+```
+
+## Component requirements
+
+- Place `ItemGroup.Separator` only _between_ `Item.Root` rows — never before
+  the first row or after the last.
+- `ItemGroup.Root` renders a plain `<div>` with no implicit `role`. It does not
+  set `role="list"` — see Accessibility for why — so it never constrains what
+  you place inside it.
+- `ItemGroup.Root` only affects layout (a vertical stack); it does not read or
+  override each row's own `variant`/`size`.
+
+## Accessibility
+
+`ItemGroup.Root` deliberately does not set `role="list"`: that role requires
+every child to be a `listitem` and forbids other content, such as a separator,
+which the free-composition API here can't guarantee. `ItemGroup.Separator`
+sets `role="separator"` and `aria-orientation="horizontal"`; it is a static,
+non-focusable divider. See the **Accessibility tab** for the full rationale.
+
+## API reference
+
+<PropsTable id="ItemGroup" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using
+ItemGroup within your application. As the component's internal functionality
+is already tested by Nimbus, these patterns help you verify your integration
+and application-specific logic.
+
+{{docs-tests: item-group.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-itemgroup--docs)

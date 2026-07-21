@@ -1,0 +1,189 @@
+---
+id: Components-Item
+title: Item
+exportName: Item
+description: A horizontal content row with leading media, a title and description, and trailing actions — for settings, notification, and resource rows.
+lifecycleState: Experimental
+order: 999
+menu:
+  - Components
+  - Data Display
+  - Item
+tags:
+  - component
+  - item
+  - row
+  - list
+  - content
+---
+
+## Overview
+
+`Item` lays out **one horizontal content row**: leading media, a title and
+description column, and trailing actions, with optional full-width bands above
+and below. It is the shape behind settings rows, notification entries,
+file/resource rows, and summary rows — the pattern teams otherwise rebuild ad
+hoc with slightly different spacing every time.
+
+`Item` is deliberately restrained. It is presentational by default and only
+becomes interactive in one way: passing `href` upgrades the entire row to an
+accessible link. There is no button mode and no built-in selection state —
+real actions live as `Button`/`IconButton` controls inside `Item.Actions`, and
+selectable, navigable collections stay the job of `Menu`. `Item` complements
+`Card`, which composes vertical containers, the same way it complements those
+interactive collections: each owns a different shape.
+
+To stack several rows into a list with dividers between them, pair `Item` with
+the separate `ItemGroup` component.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+## Variables
+
+Get familiar with the features.
+
+### Media
+
+`Item.Media` is a fixed, non-shrinking slot for an icon, avatar, or image.
+Its `variant` sizes and shapes the content independently of the row's own
+`variant`: `default` imposes no sizing (use it for a custom-sized avatar),
+`icon` sizes an inline glyph, and `image` constrains a thumbnail into a
+rounded box.
+
+```jsx live
+const App = () => (
+  <Stack gap="400">
+    <Item.Root variant="outline">
+      <Item.Media variant="icon">
+        <Icons.Person />
+      </Item.Media>
+      <Item.Content>
+        <Item.Title>Icon media</Item.Title>
+      </Item.Content>
+    </Item.Root>
+    <Item.Root variant="outline">
+      <Item.Media variant="image">
+        <img
+          src="/images/card/card-discount-template.png"
+          alt=""
+        />
+      </Item.Media>
+      <Item.Content>
+        <Item.Title>Image media</Item.Title>
+      </Item.Content>
+    </Item.Root>
+  </Stack>
+);
+```
+
+### Size
+
+The `size` prop scales the row's padding and gap. Use `xs` and `sm` for dense
+lists of rows, and `md` (the default) for standalone or spacious layouts.
+
+```jsx live
+const App = () => (
+  <Stack gap="400">
+    <Item.Root size="xs" variant="outline">
+      <Item.Content>
+        <Item.Title>Extra small</Item.Title>
+      </Item.Content>
+    </Item.Root>
+    <Item.Root size="sm" variant="outline">
+      <Item.Content>
+        <Item.Title>Small</Item.Title>
+      </Item.Content>
+    </Item.Root>
+    <Item.Root size="md" variant="outline">
+      <Item.Content>
+        <Item.Title>Medium (default)</Item.Title>
+      </Item.Content>
+    </Item.Root>
+  </Stack>
+);
+```
+
+### Variant
+
+The `variant` prop controls the row's visual treatment: `plain` (default) has
+no border or fill, `outline` adds a token-based border, and `subtle` fills the
+row with a muted surface color.
+
+```jsx live
+const App = () => (
+  <Stack gap="400">
+    <Item.Root variant="plain">
+      <Item.Content>
+        <Item.Title>Plain</Item.Title>
+        <Item.Description>No border, no fill.</Item.Description>
+      </Item.Content>
+    </Item.Root>
+    <Item.Root variant="outline">
+      <Item.Content>
+        <Item.Title>Outline</Item.Title>
+        <Item.Description>A token-based border.</Item.Description>
+      </Item.Content>
+    </Item.Root>
+    <Item.Root variant="subtle">
+      <Item.Content>
+        <Item.Title>Subtle</Item.Title>
+        <Item.Description>A muted surface fill.</Item.Description>
+      </Item.Content>
+    </Item.Root>
+  </Stack>
+);
+```
+
+### Header and footer
+
+`Item.Header` and `Item.Footer` are optional full-width bands rendered above
+and below the media·content·actions row — useful for a category label or a
+timestamp that shouldn't compete with the title for horizontal space.
+
+```jsx live
+const App = () => (
+  <Item.Root variant="outline">
+    <Item.Header>
+      <Text fontWeight="600">This week</Text>
+    </Item.Header>
+    <Item.Media variant="icon">
+      <Icons.Person />
+    </Item.Media>
+    <Item.Content>
+      <Item.Title>Weekly digest</Item.Title>
+      <Item.Description>Summarizes activity across your team.</Item.Description>
+    </Item.Content>
+    <Item.Footer>
+      <Text textStyle="sm" color="neutral.11">Sent Monday at 9:00am</Text>
+    </Item.Footer>
+  </Item.Root>
+);
+```
+
+### Link rows and actions
+
+Passing `href` upgrades the row to an accessible link — the whole row is
+keyboard focusable and navigable. Controls placed in `Item.Actions` stay
+independently operable: pressing one fires its own handler without triggering
+the row's navigation.
+
+```jsx live
+const App = () => (
+  <Item.Root href="#settings" variant="outline">
+    <Item.Media variant="icon">
+      <Icons.Settings />
+    </Item.Media>
+    <Item.Content>
+      <Item.Title>Settings</Item.Title>
+      <Item.Description>Navigate to your account settings</Item.Description>
+    </Item.Content>
+    <Item.Actions>
+      <IconButton aria-label="Remove shortcut" size="xs" variant="ghost">
+        <Icons.Delete />
+      </IconButton>
+    </Item.Actions>
+  </Item.Root>
+);
+```

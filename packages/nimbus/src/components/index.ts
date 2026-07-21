@@ -48,6 +48,8 @@ export * from "./card";
 export * from "./chat-message";
 export * from "./chat-message-list";
 export * from "./form-field";
+export * from "./item";
+export * from "./item-group";
 export * from "./icon";
 export * from "./inline-svg";
 export * from "./loading-spinner";
