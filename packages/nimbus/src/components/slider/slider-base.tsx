@@ -322,6 +322,11 @@ export const SliderBase = (props: SliderBaseProps) => {
                         data-slot="tick"
                         data-filled={isFilled || undefined}
                         data-on-thumb={isOnThumb || undefined}
+                        // Two thumbs ⇒ a RangeSlider, whose filled region is a
+                        // visibly colored range segment. The minimal recipe uses
+                        // this to contrast-tint filled ticks only where they ride
+                        // a colored surface (a single Slider's fill is invisible).
+                        data-range={state.values.length > 1 || undefined}
                         style={tickPositionStyle}
                       />
                     );
