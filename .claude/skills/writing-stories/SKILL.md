@@ -710,6 +710,9 @@ You MUST validate against these requirements:
 
 #### Chromatic Snapshots
 
+- [ ] Surfaces enumerated from the **recipe + component source** (selectors,
+      variant/size keys, conditional props), and snapshots cover their
+      **cross-product** - not recalled from memory
 - [ ] `SmokeTest` matrix is **exhaustive** over the interacting axes the
       component has (e.g. size x variant x palette, plus selected/unselected for
       toggles) - every distinct combined look appears in the one snapshot
@@ -746,6 +749,10 @@ You MUST validate against these requirements:
 #### Play Functions (CRITICAL)
 
 - [ ] ALL interactive components have play functions
+- [ ] Every `step()` name is **backed by its assertions** - if the name claims a
+      behavior the checks don't prove, strengthen the checks to prove it; only
+      rename/drop the claim when the behavior is genuinely another story's
+      concern (and note where it's covered)
 - [ ] Uses `step()` for test organization
 - [ ] Uses `within()` for scoped queries
 - [ ] Uses `waitFor()` for async operations

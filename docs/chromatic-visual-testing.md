@@ -328,6 +328,20 @@ but neither is currently captured, and it's an infra limitation, not a choice:
 
 ### Broader best practices
 
+- **Enumerate surfaces from source, not memory.** Before deciding what to opt
+  in, read the recipe (every painting selector - `_hover`, `_focusWithin`,
+  `_disabled`, `_active`, `data-invalid`, `data-readonly`, ... - and every
+  `variant`/`size` key) and the component (every conditional render or prop,
+  e.g. `isDisabled={x || isReadOnly}`). Coverage is the **cross-product** of
+  recipe states × those conditional branches, not the states alone: a read-only
+  field that stays undimmed but disables its trailing button is a distinct
+  surface even though the field "looks like default." Any "renders like default"
+  decision must name the exact delta you checked. Recipe selectors and props
+  aren't the only axes: also account for **ambient axes** no prop names -
+  RTL/`dir` (mirrored icon/adornment layout), locale, theme - and for built-in
+  adornments the component always renders. Then **diff against sibling
+  components' story sets**: a surface a peer primitive snapshots but yours
+  doesn't (e.g. `RTLSupport`) is a gap until you can name why it doesn't apply.
 - **Cover every visual state/variation** - "the more things we have in
   Storybook, the more coverage we get." This is the governing rule: the
   `SmokeTest` matrix must be **exhaustive** over the axes that _interact_

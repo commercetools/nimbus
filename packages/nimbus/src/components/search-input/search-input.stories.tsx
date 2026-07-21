@@ -35,7 +35,7 @@ export const Base: Story = {
       await expect(input).toHaveAttribute("type", "search");
     });
 
-    await step("Forwards data- & aria-attributes", async () => {
+    await step("Forwards aria-attributes", async () => {
       await expect(input).toHaveAttribute("aria-label", "test-search-input");
     });
 
@@ -66,9 +66,14 @@ export const Base: Story = {
     });
 
     await step("Clear button appears when typing", async () => {
+      const clearButton = canvas.getByRole("button", { hidden: true });
+      await waitFor(() =>
+        expect(window.getComputedStyle(clearButton).opacity).toBe("0")
+      );
       await userEvent.type(input, "test");
-      const clearButton = canvas.getByRole("button");
-      await expect(clearButton).toBeInTheDocument();
+      await waitFor(() =>
+        expect(window.getComputedStyle(clearButton).opacity).toBe("1")
+      );
       await userEvent.clear(input);
     });
   },
@@ -208,7 +213,10 @@ export const Invalid: Story = {
   },
 };
 
+/** Distinct composite: undimmed field (no `data-readonly` rule) + disabled clear button. */
 export const ReadOnly: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     isReadOnly: true,
     defaultValue: "Read-only search",
@@ -236,7 +244,66 @@ export const ReadOnly: Story = {
   },
 };
 
+/** Focus ring (`_focusWithin`) the matrix can't render; caret hidden for determinism. */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <SearchInput defaultValue="Focused search" aria-label="focused-search" />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByLabelText("focused-search");
+
+    // Caret blink is browser-native, not a CSS/JS animation Chromatic can pause;
+    // caret-color inherits, so hiding it here cascades to the input.
+    canvasElement.style.caretColor = "transparent";
+
+    await userEvent.tab();
+    await expect(input).toHaveFocus();
+  },
+};
+
+/** Value-driven clear button (absent from the empty matrix): enabled + disabled surfaces. */
+export const WithClearButton: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="row" gap="400" alignItems="center">
+      <SearchInput defaultValue="Search query" aria-label="clear-enabled" />
+      <SearchInput
+        defaultValue="Search query"
+        isDisabled
+        aria-label="clear-disabled"
+      />
+    </Stack>
+  ),
+};
+
+/** RTL mirrors the layout: the leading search icon and trailing clear button swap sides. */
+export const RTLSupport: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="400">
+      <Box>
+        <Text mb="200">LTR direction (left-to-right)</Text>
+        <SearchInput defaultValue="Search query" aria-label="ltr-search" />
+      </Box>
+      <Box dir="rtl" width="100%">
+        <Text mb="200" textAlign="right">
+          RTL direction (right-to-left)
+        </Text>
+        <SearchInput defaultValue="Search query" aria-label="rtl-search" />
+      </Box>
+    </Stack>
+  ),
+};
+
+/** Resting-chrome matrix: state x size x variant, empty. No colorPalette axis (fixed tokens). */
 export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     onChange: fn(),
     ["aria-label"]: "test-search-input",
@@ -482,7 +549,9 @@ export const KeyboardNavigation: Story = {
 
     await step("Clear button is visible but not in tab order", async () => {
       const clearButton = canvas.getByRole("button");
-      await expect(clearButton).toBeInTheDocument();
+      await waitFor(() =>
+        expect(window.getComputedStyle(clearButton).opacity).toBe("1")
+      );
       await expect(clearButton).toHaveAttribute("tabindex", "-1");
     });
 
@@ -519,7 +588,9 @@ export const DefaultValue: Story = {
 
     await step("Clear button visible with default value", async () => {
       const clearButton = canvas.getByRole("button");
-      await expect(clearButton).toBeInTheDocument();
+      await waitFor(() =>
+        expect(window.getComputedStyle(clearButton).opacity).toBe("1")
+      );
     });
 
     await step("Can modify default value", async () => {
