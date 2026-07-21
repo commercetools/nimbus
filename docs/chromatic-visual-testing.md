@@ -342,6 +342,12 @@ but neither is currently captured, and it's an infra limitation, not a choice:
   adornments the component always renders. Then **diff against sibling
   components' story sets**: a surface a peer primitive snapshots but yours
   doesn't (e.g. `RTLSupport`) is a gap until you can name why it doesn't apply.
+- **One focus snapshot per reachable focus surface.** A component with multiple
+  independent focus targets - fused/adjacent focusable sub-controls, or
+  `_focusWithin` on more than one region - needs a focus story per target, since
+  each side's ring clears the seam differently. There is no "all focused" state
+  to capture: only one element holds focus at a time, so the per-target stories
+  are the complete set (don't add a combined-ring snapshot).
 - **Cover every visual state/variation** - "the more things we have in
   Storybook, the more coverage we get." This is the governing rule: the
   `SmokeTest` matrix must be **exhaustive** over the axes that _interact_
