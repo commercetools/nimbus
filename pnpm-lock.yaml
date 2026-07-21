@@ -205,8 +205,8 @@ catalogs:
       specifier: ^4.11.0
       version: 4.11.0
     chromatic:
-      specifier: ^17.7.2
-      version: 17.7.2
+      specifier: ^18.0.1
+      version: 18.0.1
     eslint:
       specifier: ^10.7.0
       version: 10.7.0
@@ -833,7 +833,7 @@ importers:
         version: 4.11.0
       chromatic:
         specifier: catalog:tooling
-        version: 17.7.2
+        version: 18.0.1
       dompurify:
         specifier: ^3.4.12
         version: 3.4.12
@@ -5046,8 +5046,8 @@ packages:
   chroma-js@3.1.2:
     resolution: {integrity: sha512-IJnETTalXbsLx1eKEgx19d5L6SRM7cH4vINw/99p/M11HCuXGRWL+6YmCm7FWFGIo6dtWuQoQi1dc5yQ7ESIHg==}
 
-  chromatic@17.7.2:
-    resolution: {integrity: sha512-/y6LcCiOXG3ecWNLGhXgir29wKhkrmK1RIVAB/5gdDsakWNG/u7mPZFuUlMFkxvA8bMJ0cDHgt1J7K1MWTg3+A==}
+  chromatic@18.0.1:
+    resolution: {integrity: sha512-GlTYrZ4ui5ZW8Jzut6SAo5bMH3sIugYZ37Nq2DyVHBfPINeEzGA8eG5xNo4N/I2aRdM9Xnqw0SCls7wgf2llvA==}
     engines: {node: '>=22.0.0'}
     hasBin: true
     peerDependencies:
@@ -15445,7 +15445,7 @@ snapshots:
 
   chroma-js@3.1.2: {}
 
-  chromatic@17.7.2:
+  chromatic@18.0.1:
     dependencies:
       semver: 7.7.4
 
