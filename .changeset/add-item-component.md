@@ -19,4 +19,4 @@ file/resource rows; it complements `Card` (a vertical container) and
 `ItemGroup`: new component that stacks `Item` rows into a group —
 `ItemGroup.Root` with `.Separator` for dividers between rows.
 
-Both components are **Experimental**.
+Both components are **Beta**.
