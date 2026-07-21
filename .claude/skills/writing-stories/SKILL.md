@@ -745,6 +745,11 @@ You MUST validate against these requirements:
       (`canvasElement.style.caretColor = "transparent"`) before tabbing
 - [ ] Only behavior-only stories and stories whose look is already in `SmokeTest`
       left snapshot-off (project default) - never drop a visual state to save cost
+- [ ] Each snapshotted story's **play ends in the state the snapshot is named
+      for** - no stray focus ring, no cleared/mutated value, no left-open overlay
+      unless intended. Chromatic captures the play's final state and nothing
+      blurs it, so a play can be assertion-honest yet still snapshot the wrong
+      picture (blur, reset, or split the story)
 
 #### Play Functions (CRITICAL)
 

@@ -313,8 +313,6 @@ export const Loading: Story = {
  * Demonstrates the isClearable prop which shows a clear button when a value is selected
  */
 export const Clearable: Story = {
-  tags: ["vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <Stack gap="600">

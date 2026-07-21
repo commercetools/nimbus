@@ -330,7 +330,7 @@ export const KeyboardAccessible: Story = {
     const innerButton = root.querySelector("button");
 
     await step(
-      "The drop target is keyboard focusable and shows a focus ring",
+      "The drop target is keyboard focusable and sets data-focus-visible",
       async () => {
         if (!innerButton) throw new Error("Expected an inner button");
         await userEvent.tab();

@@ -265,8 +265,13 @@ Two consequences for us:
 
 - IconButton's `Base`, with its six `step()`s, produces exactly one snapshot -
   its final resting state. Nothing blurs the element for you, so whatever state
-  the last step leaves (including a focus ring) is exactly what gets captured;
-  end the play function in the state you want snapshotted.
+  the last step leaves (a stray focus ring, a cleared value, a left-open
+  overlay) is exactly what gets captured; end the play in the state you want
+  snapshotted. This is a separate axis from assertion-honesty: a play can assert
+  exactly what its step names claim yet still leave the wrong picture, so for
+  every snapshotted story confirm its **final rendered state is the visual the
+  story name implies** (it's why an honest-looking `ReadOnly`/`Clearable` can
+  still snapshot a focused or emptied control).
 - If you want a snapshot of an intermediate state, the docs say to break it into
   multiple stories rather than expect mid-play captures. So splitting `Base`
   would only be worth it if you wanted to snapshot a state that isn't its final

@@ -241,6 +241,9 @@ export const ReadOnly: Story = {
       const clearButton = canvas.getByRole("button");
       await expect(clearButton).toBeDisabled();
     });
+
+    // Blur the click-focused input so no stray focus ring lands in the snapshot.
+    input.blur();
   },
 };
 
