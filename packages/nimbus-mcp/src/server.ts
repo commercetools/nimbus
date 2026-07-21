@@ -4,6 +4,7 @@ import { registerGetTokens } from "./tools/get-tokens.js";
 import { registerListComponents } from "./tools/list-components.js";
 import { registerSearchDocs } from "./tools/search-docs.js";
 import { registerSearchIcons } from "./tools/search-icons.js";
+import { registerGetDocsPage } from "./tools/get-docs-page.js";
 import { registerMigrateFromUiKit } from "./tools/migrate-from-uikit.js";
 
 /**
@@ -28,6 +29,7 @@ export function createServer(): McpServer {
 
   // Register all tools
   registerGetComponent(server);
+  registerGetDocsPage(server);
   registerGetTokens(server);
   registerListComponents(server);
   registerSearchDocs(server);
