@@ -8,7 +8,7 @@
 
 - [x] 1.1 Create `slider.recipe.ts` — `nimbusSlider` slot recipe (slots: `root`,
       `track`, `fill`, `thumb`, `tick`, `tickLabel`) with `size` (`sm`/`md`),
-      `orientation`, and `variant` (`plain`/`enclosed`) variants
+      `orientation`, and `variant` (`filled`/`minimal`/`enclosed`) variants
 - [x] 1.2 Create `slider.types.ts` — four-layer types: recipe → slot →
       `SliderBaseProps` (union) → public `SliderProps` (`number`) /
       `RangeSliderProps` (`[number, number]`)
@@ -42,7 +42,13 @@
 - [x] 4.2 `sm` / `md` size variants (token-driven track thickness + thumb size,
       aligned to the Switch size grid)
 - [x] 4.3 `variant="enclosed"` (iOS-style thick bar, contained thumb) alongside
-      `plain` default; stories per variant/size/orientation
+      `filled` default; stories per variant/size/orientation
+- [x] 4.4 `variant="minimal"` (understated thin neutral track that grows to full
+      thickness on engage; single-color handle `colorPalette.9` → `.10`;
+      RangeSlider range segment colored the same, single `Slider` left fill-free)
+      for low-emphasis controls like a thumbnail-size picker; renamed the interim
+      `plain` default to `filled`; smoke stories cover the ticks/no-ticks axis
+      across every variant
 
 ## 5. Tick marks
 

@@ -78,15 +78,19 @@ const App = () => (
 
 ### Visual variants
 
-`variant` changes the track/progress/thumb treatment. `plain` (the default) is a
-standard filled track; `enclosed` is a thick, contained bar with the thumbs inset
-inside it. This applies to both `RangeSlider` and `Slider` since they share the
-same recipe.
+`variant` changes the track/progress/thumb treatment. `filled` (the default) is a
+standard thin track with a colored progress fill; `minimal` is a thin neutral
+track with single-color thumbs and a colored range segment that grow to full
+width on hover/focus, for low-emphasis controls such as a thumbnail-size picker;
+`enclosed` is a thick, contained bar with the
+thumbs inset inside it. This applies to both `RangeSlider` and `Slider` since
+they share the same recipe.
 
 ```jsx live-dev
 const App = () => (
   <Stack direction="column" gap="600">
-    <RangeSlider aria-label="Plain" variant="plain" defaultValue={[20, 60]} />
+    <RangeSlider aria-label="Filled" variant="filled" defaultValue={[20, 60]} />
+    <RangeSlider aria-label="Minimal" variant="minimal" defaultValue={[20, 60]} />
     <RangeSlider
       aria-label="Enclosed"
       variant="enclosed"

@@ -1,5 +1,26 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
 
+// The `minimal` variant is understated at rest and comes alive while the
+// control is engaged: the track's painted `::before` bar (and the range fill)
+// grow from a thin line to the full thickness, and the knob and range fill shift
+// from the palette's solid color (step 9) to step 10. Engagement is read from
+// the root — not the thumb — so it also fires when the thumb is hovered at a
+// track extreme (where it overhangs the inset track): pointer hover, keyboard
+// focus, or an in-progress drag (kept via `:has` so it does not revert if the
+// pointer leaves the root mid-drag). Three literal selectors target, from the
+// engaged root: a slot's painted `::before` layer (the track bar), the slot
+// element itself (the thumb, and the fill's grow), and a range fill specifically
+// (`&[data-range]`, so only the RangeSlider's range segment recolors). `as const`
+// keeps each a literal selector key (like the recipe's other `[…] &` selectors)
+// so the computed key does not widen the style object to a string index
+// signature.
+const MINIMAL_ENGAGED_TRACK =
+  '[data-slot="root"]:hover &::before, [data-slot="root"]:focus-within &::before, [data-slot="root"]:has([data-dragging="true"]) &::before' as const;
+const MINIMAL_ENGAGED_SLOT =
+  '[data-slot="root"]:hover &, [data-slot="root"]:focus-within &, [data-slot="root"]:has([data-dragging="true"]) &' as const;
+const MINIMAL_ENGAGED_RANGE_FILL =
+  '[data-slot="root"]:hover &[data-range="true"], [data-slot="root"]:focus-within &[data-range="true"], [data-slot="root"]:has([data-dragging="true"]) &[data-range="true"]' as const;
+
 /**
  * Recipe for Slider / RangeSlider components.
  * Slots map onto React Aria Slider anatomy. Sizes and orientation are
@@ -225,9 +246,10 @@ export const sliderSlotRecipe = defineSlotRecipe({
         root: {
           "--slider-track-thickness": "sizes.400",
           // Thumb (and, in enclosed, the whole bar) is sized like the Switch:
-          // sm sizes.400 (16px) / md sizes.600 (24px), so both slider variants
-          // and the Switch share one control-size grid. The thin plain track
-          // keeps its own thickness above — only the knob follows the Switch.
+          // sm sizes.400 (16px) / md sizes.600 (24px), so every slider variant
+          // and the Switch share one control-size grid. The thin track of the
+          // filled/minimal variants keeps its own thickness above — only the knob
+          // follows the Switch.
           "--slider-thumb-size": "sizes.600",
           "--slider-tick-length": "sizes.200",
         },
@@ -235,8 +257,104 @@ export const sliderSlotRecipe = defineSlotRecipe({
     },
 
     variant: {
-      // Base look — no overrides. Declared so `plain` is a valid, default value.
-      plain: {},
+      // Base look — a thin track with a colored progress fill. No overrides;
+      // declared so `filled` is a valid, default value.
+      filled: {},
+
+      // Understated at rest, coming alive while engaged (see
+      // `MINIMAL_ENGAGED_*`). The track stays neutral, but the knob — and, on a
+      // RangeSlider, the range segment — carry a single solid palette color
+      // (`colorPalette.9`) that shifts to `colorPalette.10` on engage. No DOM box
+      // changes — only painted layers resize/recolor — so layout, the pointer
+      // target, and the thumb-size grid stay put. For neutral controls such as a
+      // thumbnail-size picker, where a full colored progress bar would
+      // over-emphasize the value.
+      // - track: the visible `neutral.6` `::before` bar is a thin centered line
+      //   at rest and grows to the full `--slider-track-thickness` on engage.
+      // - fill: thin and centered like the track bar, and grows with it. It is
+      //   transparent for a single Slider (its 0→value progress is left
+      //   unemphasized); a RangeSlider's range segment (`data-range`) is painted
+      //   `colorPalette.9` → `.10` so the selected span reads.
+      // - thumb: a solid single-color dot — `colorPalette.9` → `.10` on engage
+      //   (fill and border together). The root-engaged rule outranks the base
+      //   per-thumb hover/drag colors by specificity. Size, brand
+      //   `focusVisibleRing`, and the critical invalid border are unchanged.
+      // - tick: `data-filled` contrast is undone (the track is neutral),
+      //   matching the unfilled `neutral.9`.
+      minimal: {
+        fill: {
+          top: "50%",
+          height: "calc(var(--slider-track-thickness) / 2)",
+          transform: "translateY(-50%)",
+          backgroundColor: "transparent",
+          transition: "height 0.15s, width 0.15s, background-color 0.15s",
+          [MINIMAL_ENGAGED_SLOT]: {
+            height: "var(--slider-track-thickness)",
+          },
+          "&[data-range='true']": {
+            backgroundColor: "colorPalette.9",
+          },
+          [MINIMAL_ENGAGED_RANGE_FILL]: {
+            backgroundColor: "colorPalette.10",
+          },
+          '&[data-orientation="vertical"]': {
+            top: "auto",
+            bottom: "0",
+            insetInlineStart: "50%",
+            width: "calc(var(--slider-track-thickness) / 2)",
+            height: "auto",
+            transform: "translateX(-50%)",
+            [MINIMAL_ENGAGED_SLOT]: {
+              width: "var(--slider-track-thickness)",
+            },
+          },
+        },
+        track: {
+          "&::before": {
+            insetBlock: "auto",
+            insetInline: "calc(var(--slider-thumb-size) / -2)",
+            top: "50%",
+            height: "calc(var(--slider-track-thickness) / 2)",
+            transform: "translateY(-50%)",
+            transition: "height 0.15s, width 0.15s",
+            borderRadius: "full",
+            backgroundColor: "neutral.6",
+          },
+          [MINIMAL_ENGAGED_TRACK]: {
+            height: "var(--slider-track-thickness)",
+          },
+          '&[data-orientation="vertical"]': {
+            "&::before": {
+              insetInline: "auto",
+              insetInlineStart: "50%",
+              insetBlock: "calc(var(--slider-thumb-size) / -2)",
+              top: "auto",
+              height: "auto",
+              width: "calc(var(--slider-track-thickness) / 2)",
+              transform: "translateX(-50%)",
+              borderRadius: "full",
+              backgroundColor: "neutral.6",
+            },
+            [MINIMAL_ENGAGED_TRACK]: {
+              width: "var(--slider-track-thickness)",
+              height: "auto",
+            },
+          },
+        },
+        thumb: {
+          backgroundColor: "colorPalette.9",
+          borderColor: "colorPalette.9",
+          [MINIMAL_ENGAGED_SLOT]: {
+            backgroundColor: "colorPalette.10",
+            borderColor: "colorPalette.10",
+          },
+        },
+        tick: {
+          "&[data-filled='true']": {
+            backgroundColor: "neutral.9",
+          },
+        },
+      },
 
       // Thick, contained "bar" (iOS-style). Same geometry as the base (inset
       // interactive track + full-width `::before` bar + cupped fill); the only
@@ -279,6 +397,6 @@ export const sliderSlotRecipe = defineSlotRecipe({
   },
   defaultVariants: {
     size: "md",
-    variant: "plain",
+    variant: "filled",
   },
 });

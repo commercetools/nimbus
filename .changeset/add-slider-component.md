@@ -10,6 +10,8 @@ touch, and correct under right-to-left layouts.
   range whose two handles can't cross.
 - Each handle shows its current value in a tooltip while it's hovered, focused,
   or dragged.
-- Pick a `plain` (default) or `enclosed` look, in two sizes and either
-  orientation, with optional tick marks.
+- Pick a `filled` (default), `minimal` (an understated thin track with a
+  single-color handle that grows to full size on interaction, for low-emphasis
+  controls like a thumbnail-size picker), or `enclosed` look, in two sizes and
+  either orientation, with optional tick marks.
 - Works inside `FormField` or standalone.

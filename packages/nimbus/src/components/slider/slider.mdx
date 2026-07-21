@@ -71,11 +71,15 @@ const App = () => (
 
 ### Variants
 
-`plain` is the default. One additional variant is available for contexts that
+`filled` is the default. Two additional variants are available for contexts that
 call for a different visual weight:
 
-- **Plain** (default) — a standard filled track with a colored progress bar. The
+- **Filled** (default) — a standard thin track with a colored progress fill. The
   safest choice for most forms and settings panels.
+- **Minimal** — a thin neutral track carrying a single-color handle; the track
+  grows to full width on hover or focus. For low-emphasis controls where a full
+  colored progress bar would over-emphasize the value, such as a thumbnail-size
+  picker.
 - **Enclosed** — a thick, contained bar with the handle inset inside it (an
   iOS-style control). Good for touch-first contexts or standalone controls that
   benefit from a larger, more tactile target.
@@ -83,7 +87,8 @@ call for a different visual weight:
 ```jsx live
 const App = () => (
   <Stack direction="horizontal" gap="600" alignItems="center">
-    <Slider aria-label="Plain (default)" variant="plain" defaultValue={60} />
+    <Slider aria-label="Filled (default)" variant="filled" defaultValue={60} />
+    <Slider aria-label="Minimal" variant="minimal" defaultValue={60} />
     <Slider aria-label="Enclosed" variant="enclosed" defaultValue={75} />
   </Stack>
 );

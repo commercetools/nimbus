@@ -34,8 +34,7 @@ type, the number of thumbs, and which track segment is filled — and React Aria
 - Min/max bound labels at the track ends (possible future follow-up).
 - More than two thumbs (React Aria supports N, but there is no use case).
 - Non-linear scales (logarithmic, etc.).
-- The `solid` / `outline` / `minimal` variants from the earlier draft — see
-  Decisions.
+- The `solid` / `outline` variants from the earlier draft — see Decisions.
 
 ## Decisions
 
@@ -47,14 +46,24 @@ _Alternative considered:_ a single unified component with a
 consumers a union to narrow. This mirrors the Adobe Spectrum / React Aria
 `Slider` + `RangeSlider` sibling convention Nimbus already tracks.
 
-**Variants reduced to `plain` + `enclosed`.** The earlier visual-variants design
-specified four variants (`solid`, `outline`, `minimal`, `enclosed`).
-Implementation converged on **`plain`** (default, reproducing the base look) and
-**`enclosed`** (iOS-style bar as thick as the thumb). This spec records the
-shipped set. _Rationale:_ `plain` and `enclosed` cover the real use cases; the
-other two added surface area without demand and were dropped during
-implementation (`refactor(slider): reduce variants to plain (default) +
-enclosed`).
+**Variants: `filled` (default), `minimal`, and `enclosed`.** The earlier
+visual-variants draft specified four cosmetic variants (`solid`, `outline`,
+`minimal`, `enclosed`). The shipped set keeps three, all look-descriptive:
+**`filled`** (default — a thin track with a colored progress fill, reproducing
+the base look), **`minimal`** (understated at rest — a thin neutral track line
+with a normal-size knob painted a single solid palette color, `colorPalette.9` —
+that comes alive on hover/focus/drag: the track bar grows to the normal
+thickness and the knob shifts to `colorPalette.10`, resizing and recoloring only
+painted layers so the DOM box, hit target, and thumb-size grid never change; the
+knob's size is constant and the focus ring stays brand-colored. A single
+`Slider` shows no progress fill, keeping it a bare handle on a neutral track; a
+`RangeSlider` paints its range segment the same `colorPalette.9` → `.10` so the
+selected span still reads), and **`enclosed`** (iOS-style bar as thick as the
+thumb). _Rationale:_ `solid` and `outline` added surface area without demand and
+were dropped; the surviving low-emphasis variant kept the draft's `minimal`
+name. The default was renamed from the interim `plain` to `filled` so the name
+describes the look (a colored fill) and pairs with `minimal` as filled ↔
+minimal.
 
 **Value tooltip is controlled.** Each thumb is wrapped in `Tooltip.Root` with
 `isOpen = isHovered || isFocused || isThumbDragging(index)` and a no-op

@@ -4,11 +4,12 @@ import { Grid, RangeSlider, Stack, Text } from "@commercetools/nimbus";
 import { within, expect, userEvent, fn } from "storybook/test";
 
 // Visual smoke-test axes. The full matrix is every combination of these, for
-// both orientations — 2 × 2 × 2 × 2 = 16 cells, two thumbs each.
-const SMOKE_VARIANTS = ["plain", "enclosed"] as const;
+// both orientations — 3 × 2 × 2 × 2 × 2 = 48 cells, two thumbs each.
+const SMOKE_VARIANTS = ["filled", "minimal", "enclosed"] as const;
 const SMOKE_SIZES = ["sm", "md"] as const;
 const SMOKE_DISABLED = [false, true] as const;
 const SMOKE_ORIENTATIONS = ["horizontal", "vertical"] as const;
+const SMOKE_TICKS = [false, true] as const;
 
 // Set once on an ancestor; vertical slider roots read this custom property for
 // their length (`var(--slider-vertical-length, 200px)` in slider.recipe.ts),
@@ -77,19 +78,29 @@ export const Base: Story = {
 
 /**
  * The shared slot recipe means the visual variants apply to RangeSlider too:
- * `plain` (thin track) and `enclosed` (thick bar). The play function also locks
- * in the two-thumb geometry — both enclosed thumbs stay contained at the
- * extremes, and the enclosed fill cups *both* thumbs' outer edges (unlike the
- * single slider, whose lower end is the uncupped track start, a range fill is
- * bounded by two contained thumbs, so both edges must track a thumb).
+ * `filled` (thin track with a colored fill), `minimal` (a thin neutral track
+ * with single-color handles and a colored range segment) and `enclosed` (thick
+ * bar). The play function also locks in the
+ * two-thumb geometry — both enclosed thumbs stay contained at the extremes, and
+ * the enclosed fill cups *both* thumbs' outer edges (unlike the single slider,
+ * whose lower end is the uncupped track start, a range fill is bounded by two
+ * contained thumbs, so both edges must track a thumb). Per-variant color is
+ * covered by visual regression (Chromatic), not asserted here.
  */
 export const Variants: Story = {
   render: () => (
     <>
-      <div data-testid="rs-plain">
+      <div data-testid="rs-filled">
         <RangeSlider
-          aria-label="Plain range"
-          variant="plain"
+          aria-label="Filled range"
+          variant="filled"
+          defaultValue={[20, 60]}
+        />
+      </div>
+      <div data-testid="rs-minimal">
+        <RangeSlider
+          aria-label="Minimal range"
+          variant="minimal"
           defaultValue={[20, 60]}
         />
       </div>
@@ -134,16 +145,18 @@ export const Variants: Story = {
       // React Aria's SliderThumb renders a native <input type="range">, whose
       // "slider" role is implicit ARIA semantics, not a literal `role`
       // attribute in the DOM. Query by computed accessible role instead, as
-      // the `Variants` story on `Slider` does. Three sliders → 6 thumbs.
-      await expect(canvas.getAllByRole("slider")).toHaveLength(6);
+      // the `Variants` story on `Slider` does. Four sliders → 8 thumbs.
+      await expect(canvas.getAllByRole("slider")).toHaveLength(8);
     });
 
     await step(
-      "the enclosed variant is a thick bar, thicker than plain",
+      "the enclosed variant is a thick bar, thicker than the thin-track variants",
       async () => {
         const enclosedH = parseFloat(getComputedStyle(track("rs-mid")).height);
-        const plainH = parseFloat(getComputedStyle(track("rs-plain")).height);
-        await expect(enclosedH).toBeGreaterThan(plainH);
+        // `minimal` shares `filled`'s thin-track geometry, so one comparison covers
+        // both against the enclosed bar.
+        const filledH = parseFloat(getComputedStyle(track("rs-filled")).height);
+        await expect(enclosedH).toBeGreaterThan(filledH);
       }
     );
 
@@ -183,9 +196,10 @@ export const Variants: Story = {
 
 /**
  * Visual smoke test: every combination of orientation × variant × size ×
- * disabled-state rendered in one grid, so the whole visual surface can be
- * eyeballed at once and any combination that fails to mount is caught. The
- * play function only asserts that all 32 cells rendered (two thumbs each).
+ * disabled-state × ticks/no-ticks rendered in one grid, so the whole visual
+ * surface can be eyeballed at once and any combination that fails to mount is
+ * caught. The play function only asserts that all 48 cells rendered (two thumbs
+ * each).
  */
 export const SmokeTest: Story = {
   render: () => (
@@ -213,28 +227,30 @@ export const SmokeTest: Story = {
                   alignItems="start"
                 >
                   {SMOKE_SIZES.flatMap((size) =>
-                    SMOKE_DISABLED.map((isDisabled) => {
-                      const label = `${size} · ${
-                        isDisabled ? "disabled" : "enabled"
-                      }`;
-                      return (
-                        <Stack key={label} direction="column" gap="100">
-                          <Text fontSize="300" color="neutral.11">
-                            {label}
-                          </Text>
-                          <RangeSlider
-                            aria-label={`${orientation} ${variant} ${label}`}
-                            variant={variant}
-                            size={size}
-                            orientation={orientation}
-                            isDisabled={isDisabled}
-                            defaultValue={[30, 70]}
-                            showTicks
-                            tickStep={25}
-                          />
-                        </Stack>
-                      );
-                    })
+                    SMOKE_DISABLED.flatMap((isDisabled) =>
+                      SMOKE_TICKS.map((withTicks) => {
+                        const label = `${size} · ${
+                          isDisabled ? "disabled" : "enabled"
+                        } · ${withTicks ? "ticks" : "no ticks"}`;
+                        return (
+                          <Stack key={label} direction="column" gap="100">
+                            <Text fontSize="300" color="neutral.11">
+                              {label}
+                            </Text>
+                            <RangeSlider
+                              aria-label={`${orientation} ${variant} ${label}`}
+                              variant={variant}
+                              size={size}
+                              orientation={orientation}
+                              isDisabled={isDisabled}
+                              defaultValue={[30, 70]}
+                              showTicks={withTicks}
+                              tickStep={25}
+                            />
+                          </Stack>
+                        );
+                      })
+                    )
                   )}
                 </Grid>
               </Stack>
@@ -247,10 +263,10 @@ export const SmokeTest: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     await step("every combination in the matrix renders", async () => {
-      // 2 orientations × 2 variants × 2 sizes × 2 disabled-states = 16 cells,
-      // two thumbs each = 32 thumbs. A short count means some combination
-      // failed to mount.
-      await expect(canvas.getAllByRole("slider")).toHaveLength(32);
+      // 2 orientations × 3 variants × 2 sizes × 2 disabled-states × 2 tick
+      // modes = 48 cells, two thumbs each = 96 thumbs. A short count means some
+      // combination failed to mount.
+      await expect(canvas.getAllByRole("slider")).toHaveLength(96);
     });
   },
 };
