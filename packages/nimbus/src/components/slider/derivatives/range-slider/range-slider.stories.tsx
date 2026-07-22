@@ -88,6 +88,8 @@ export const Base: Story = {
  * covered by visual regression (Chromatic), not asserted here.
  */
 export const Variants: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <>
       <div data-testid="rs-filled">
@@ -202,6 +204,8 @@ export const Variants: Story = {
  * each).
  */
 export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     // Custom property set on a plain ancestor so it cascades to every vertical
     // slider root below (CSS custom properties inherit).

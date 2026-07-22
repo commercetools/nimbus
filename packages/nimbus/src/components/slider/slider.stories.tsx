@@ -40,6 +40,8 @@ type Story = StoryObj<typeof Slider>;
  * larger Page step), the hover/focus tooltip, and the keyboard focus ring.
  */
 export const Base: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     "aria-label": "Volume",
     defaultValue: 30,
@@ -283,6 +285,8 @@ export const Sizes: Story = {
  * (Chromatic), not asserted here.
  */
 export const Variants: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack direction="column" gap="400">
       {(["filled", "minimal", "enclosed"] as const).map((variant) => (
@@ -423,6 +427,8 @@ export const Variants: Story = {
  * rounded end-cap past the last tick).
  */
 export const Ticks: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: { onChange: fn() },
   render: (args) => (
     <Stack direction="column" gap="400">
@@ -718,6 +724,8 @@ export const FormattedValue: Story = {
  * label + description and surfacing the invalid state.
  */
 export const WithFormField: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <FormField.Root isInvalid>
       <FormField.Label>Opacity</FormField.Label>
@@ -772,6 +780,8 @@ export const WithFormField: Story = {
  * threw).
  */
 export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     // Custom property set on a plain ancestor so it cascades to every vertical
     // slider root below (CSS custom properties inherit).
