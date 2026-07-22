@@ -136,36 +136,12 @@ describe("migrate_from_uikit — type validation", () => {
 
   describe("colorPalette default warnings", () => {
     const COMPONENTS_NEEDING_COLOR_WARNING = [
-      {
-        uiKitName: "PrimaryButton",
-        uiKitDefault: "primary",
-        searchString: "colorPalette",
-      },
-      {
-        uiKitName: "FlatButton",
-        uiKitDefault: "primary",
-        searchString: "colorPalette",
-      },
-      {
-        uiKitName: "SecondaryButton",
-        uiKitDefault: "default",
-        searchString: "colorPalette",
-      },
-      {
-        uiKitName: "Stamp",
-        uiKitDefault: "information",
-        searchString: "colorPalette",
-      },
-      {
-        uiKitName: "Link",
-        uiKitDefault: "primary",
-        searchString: "neutral",
-      },
-      {
-        uiKitName: "PrimaryActionDropdown",
-        uiKitDefault: "primary",
-        searchString: "colorPalette",
-      },
+      { uiKitName: "PrimaryButton", searchString: "colorPalette" },
+      { uiKitName: "FlatButton", searchString: "colorPalette" },
+      { uiKitName: "SecondaryButton", searchString: "colorPalette" },
+      { uiKitName: "Stamp", searchString: "colorPalette" },
+      { uiKitName: "Link", searchString: "neutral" },
+      { uiKitName: "PrimaryActionDropdown", searchString: "colorPalette" },
     ];
 
     for (const {

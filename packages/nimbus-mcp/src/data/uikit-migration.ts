@@ -28,7 +28,6 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     breakingChanges: [
       "Remove AccessibleButton wrapper, use <Button> directly",
       "label prop replaced by children",
-      "Nimbus Button defaults to colorPalette='neutral' (gray). If your AccessibleButton had custom primary styling, add colorPalette='primary' explicitly.",
     ],
     propMappings: [
       {
@@ -46,8 +45,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "variant",
     notes:
       'Use <Button variant="ghost"> for flat styling. ' +
-      "UI Kit tone prop ('primary'|'secondary'|'inverted'|'critical') maps to Nimbus colorPalette/variant. " +
-      "UI Kit FlatButton defaulted to tone='primary' (blue); Nimbus Button defaults to colorPalette='neutral' (gray).",
+      "UI Kit tone prop ('primary'|'secondary'|'inverted'|'critical') maps to Nimbus colorPalette/variant.",
     breakingChanges: [
       "Replace FlatButton with <Button>",
       "Default color changed: UI Kit FlatButton was blue (tone='primary') by default; Nimbus Button defaults to colorPalette='neutral' (gray). Add colorPalette='primary' to preserve the blue appearance.",
@@ -137,8 +135,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "variant",
     notes:
       'Use <Button variant="solid">. Note: the default Button variant is "subtle", so variant="solid" must be set explicitly. ' +
-      "UI Kit used a required label prop; Nimbus uses children for button text. " +
-      "UI Kit PrimaryButton defaulted to tone='primary' (blue); Nimbus Button defaults to colorPalette='neutral' (gray).",
+      "UI Kit used a required label prop; Nimbus uses children for button text.",
     breakingChanges: [
       "Replace PrimaryButton with <Button variant='solid'>",
       "Default color changed: UI Kit PrimaryButton was blue (tone='primary') by default; Nimbus Button defaults to colorPalette='neutral' (gray). Add colorPalette='primary' to preserve the blue appearance.",
@@ -190,8 +187,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "variant",
     notes:
       'Use <Button variant="outline"> for the secondary style. ' +
-      "UI Kit used a required label prop; Nimbus uses children. " +
-      "UI Kit SecondaryButton defaulted to theme='default' (blue outline); Nimbus Button defaults to colorPalette='neutral' (gray).",
+      "UI Kit used a required label prop; Nimbus uses children.",
     breakingChanges: [
       "Replace SecondaryButton with <Button variant='outline'>",
       "Default color changed: UI Kit SecondaryButton was blue (theme='default') by default; Nimbus Button defaults to colorPalette='neutral' (gray). Add colorPalette='primary' to preserve the blue appearance.",
@@ -307,8 +303,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
     notes:
-      "SplitButton combines a primary action button with a dropdown menu. Compose using SplitButton + Menu. " +
-      "UI Kit PrimaryActionDropdown rendered with primary (blue) styling; Nimbus SplitButton defaults to colorPalette='neutral' (gray).",
+      "SplitButton combines a primary action button with a dropdown menu. Compose using SplitButton + Menu.",
     breakingChanges: [
       "Rename to SplitButton",
       "Default color changed: UI Kit PrimaryActionDropdown was blue by default; Nimbus SplitButton defaults to colorPalette='neutral' (gray). Add colorPalette='primary' to preserve the blue appearance.",
@@ -1408,8 +1403,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     notes:
       "Rename to Badge. UI Kit used a tone prop; Nimbus uses colorPalette instead. " +
       "UI Kit tones: 'critical'|'warning'|'positive'|'information'|'primary'|'secondary'. " +
-      "Nimbus colorPalette values: 'critical'|'warning'|'positive'|'info'|'primary'|'neutral'. " +
-      "UI Kit Stamp defaulted to tone='information' (blue); Nimbus Badge defaults to colorPalette='neutral' (gray).",
+      "Nimbus colorPalette values: 'critical'|'warning'|'positive'|'info'|'primary'|'neutral'.",
     breakingChanges: [
       "Rename to Badge",
       "Default color changed: UI Kit Stamp was blue (tone='information') by default; Nimbus Badge defaults to colorPalette='neutral' (gray). Add colorPalette='info' to preserve the blue appearance.",
@@ -1546,10 +1540,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     nimbusEquivalent: "Link",
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
-    notes:
-      "Direct replacement. Use asChild for router library integration. " +
-      "UI Kit Link defaulted to tone='primary' (blue text); Nimbus Link defaults to neutral (dark text). " +
-      "Use fontColor='primary' to preserve the blue link color.",
+    notes: "Direct replacement. Use asChild for router library integration.",
     breakingChanges: [
       "Default color changed: UI Kit Link was blue (tone='primary') by default; Nimbus Link defaults to neutral (dark text). Use fontColor='primary' to preserve blue link styling.",
       "isExternal prop renamed to target='_blank' + rel='noopener'",
