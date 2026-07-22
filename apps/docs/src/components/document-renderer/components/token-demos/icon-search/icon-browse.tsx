@@ -120,6 +120,7 @@ export const IconBrowse = ({
   categorySlug,
   onSelectIcon,
   loading,
+  scrollToTop,
 }: {
   entries: IconEntry[];
   categorySlug: string;
@@ -131,6 +132,12 @@ export const IconBrowse = ({
    * lands. We render a spinner instead to avoid that flash.
    */
   loading: boolean;
+  /**
+   * Scrolls the surrounding scroll pane back to the top. Called on a pagination
+   * page change so the new page starts at its first icons instead of leaving
+   * you parked next to the (bottom) paginator.
+   */
+  scrollToTop?: () => void;
 }) => {
   const [, copyToClipboard] = useCopyToClipboard();
   const [q, setQ] = useState<string>("");
@@ -285,7 +292,10 @@ export const IconBrowse = ({
             totalItems={full.length}
             pageSize={PAGE_SIZE}
             currentPage={page}
-            onPageChange={setPage}
+            onPageChange={(next) => {
+              setPage(next);
+              scrollToTop?.();
+            }}
             enablePageSizeSelector={false}
             aria-label="Icon pages"
           />
