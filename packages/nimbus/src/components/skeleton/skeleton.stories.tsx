@@ -103,6 +103,8 @@ export const SizedPlaceholder: Story = {
  * (2xs = 24px, xs = 32px, md = 40px).
  */
 export const SizeVariants: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack direction="row" gap="400" alignItems="center">
       <Skeleton data-testid="size-2xs" size="2xs" />
@@ -373,6 +375,8 @@ export const RefForwarding: Story = {
  */
 export const LoadingLayoutShowcase: Story = {
   name: "Loading Layout (family showcase)",
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Box
       width="440px"
@@ -463,6 +467,8 @@ const animations: NonNullable<Story["args"]>["animation"][] = [
  * smoke coverage in their respective stories.)
  */
 export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack gap="600">
       {shapes.map((shape) => (

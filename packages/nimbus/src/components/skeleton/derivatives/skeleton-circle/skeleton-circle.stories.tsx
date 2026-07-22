@@ -28,6 +28,8 @@ type Story = StoryObj<typeof SkeletonCircle>;
  * set.
  */
 export const Sizes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack direction="row" gap="400" alignItems="center">
       <SkeletonCircle data-testid="circle-default" />
