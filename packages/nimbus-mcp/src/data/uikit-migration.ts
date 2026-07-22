@@ -684,11 +684,11 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       {
         prop: "onChange",
         from: "(event: TCustomEvent) => void — access event.target.value",
-        to: "(value: Key | null) => void — single selection; (value: Key[]) => void — multiple selection",
+        to: "(value: Key | null) => void — single selection only",
       },
     ],
     typeNotes: [
-      "Key type is string | number from @react-types/shared; onChange receives Key | null for single selection, Key[] for multiple",
+      "Key type is string | number from @react-types/shared; Nimbus Select is single-selection only — for multi-select use cases, migrate to ComboBox instead",
     ],
   },
   {
@@ -1090,7 +1090,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     callbackAdapters: [
       {
         prop: "onChange",
-        from: "(event: TCustomEvent) => void — string-based time value",
+        from: "(event: ChangeEvent<HTMLInputElement>) => void — event.target.value is a time string",
         to: "(value: Time | null) => void",
       },
     ],
@@ -1236,7 +1236,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     callbackAdapters: [
       {
         prop: "onChange",
-        from: "per-locale onChange handlers",
+        from: "(event: ChangeEvent<HTMLLocalizedInputElement>) => void — event.target.language identifies the locale",
         to: "(event: LocalizedFieldChangeEvent) => void — event.target.locale identifies which locale changed",
       },
     ],
@@ -1317,7 +1317,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     callbackAdapters: [
       {
         prop: "onChange",
-        from: "per-locale onChange handlers",
+        from: "(event: ChangeEvent<HTMLLocalizedInputElement>) => void — event.target.language identifies the locale",
         to: "(event: LocalizedFieldChangeEvent) => void — event.target.locale identifies which locale changed",
       },
     ],
@@ -1399,7 +1399,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     callbackAdapters: [
       {
         prop: "onChange",
-        from: "per-currency onChange handlers",
+        from: "(event: ChangeEvent<HTMLLocalizedInputElement>) => void — event.target.language identifies the currency",
         to: "(event: LocalizedFieldChangeEvent) => void — event.target.currency identifies which currency changed",
       },
     ],
@@ -1450,7 +1450,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     callbackAdapters: [
       {
         prop: "onChange",
-        from: "per-locale onChange handlers",
+        from: "(event: ChangeEvent<HTMLLocalizedInputElement>) => void — event.target.language identifies the locale",
         to: "(event: LocalizedFieldChangeEvent) => void — event.target.locale identifies which locale changed",
       },
     ],
@@ -1626,7 +1626,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     callbackAdapters: [
       {
         prop: "onRemove",
-        from: "(key: string) => void — single tag key",
+        from: "(event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) => void — DOM event from remove button",
         to: "(keys: Set<Key>) => void — set of removed tag keys",
       },
     ],
@@ -1777,7 +1777,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     breakingChanges: [
       "Rename to Menu (use Menu.Root, Menu.Trigger, Menu.Content, Menu.Item)",
       "options array replaced by Menu.Item children inside Menu.Content",
-      "onSelect replaced by onAction on Menu.Item or Menu",
+      "per-item onClick replaced by onAction on Menu.Item or Menu (receives key)",
     ],
     propMappings: [
       {
@@ -1789,8 +1789,8 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     ],
     callbackAdapters: [
       {
-        prop: "onSelect",
-        from: "(option: object) => void — receives selected option object",
+        prop: "onClick",
+        from: "per-item onClick: () => void — no arguments, set on each DropdownMenu.ListMenuItem",
         to: "onAction: (key: Key) => void — receives the item's key; set on Menu or individual Menu.Item",
       },
     ],

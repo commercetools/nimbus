@@ -647,7 +647,11 @@ describe("migrate_from_uikit — structured migration guidance", () => {
     );
     expect(adapter).toBeDefined();
     expect(adapter.from).toContain("TCustomEvent");
-    expect(adapter.to).toContain("Key");
+    expect(adapter.to).toContain("single selection only");
+
+    expect(data.typeNotes).toBeInstanceOf(Array);
+    const note = data.typeNotes.find((n: string) => n.includes("ComboBox"));
+    expect(note).toBeDefined();
   });
 
   it("includes callbackAdapters and typeNotes for DateInput", async () => {
@@ -679,9 +683,16 @@ describe("migrate_from_uikit — structured migration guidance", () => {
     expect(note).toBeDefined();
   });
 
-  it("includes typeNotes for TimeInput with Time import", async () => {
+  it("includes callbackAdapters and typeNotes for TimeInput", async () => {
     const result = await callMigrate({ componentName: "TimeInput" });
     const data = JSON.parse(getText(result));
+
+    expect(data.callbackAdapters).toBeInstanceOf(Array);
+    const adapter = data.callbackAdapters.find(
+      (a: { prop: string }) => a.prop === "onChange"
+    );
+    expect(adapter).toBeDefined();
+    expect(adapter.from).toContain("ChangeEvent<HTMLInputElement>");
 
     expect(data.typeNotes).toBeInstanceOf(Array);
     const note = data.typeNotes.find((n: string) =>
@@ -756,6 +767,7 @@ describe("migrate_from_uikit — structured migration guidance", () => {
       (a: { prop: string }) => a.prop === "onRemove"
     );
     expect(adapter).toBeDefined();
+    expect(adapter.from).toContain("MouseEvent");
     expect(adapter.to).toContain("Set<Key>");
 
     expect(data.typeNotes).toBeInstanceOf(Array);
@@ -775,15 +787,16 @@ describe("migrate_from_uikit — structured migration guidance", () => {
     expect(data.typeNotes).toBeInstanceOf(Array);
   });
 
-  it("includes callbackAdapters for DropdownMenu onSelect", async () => {
+  it("includes callbackAdapters for DropdownMenu onClick", async () => {
     const result = await callMigrate({ componentName: "DropdownMenu" });
     const data = JSON.parse(getText(result));
 
     expect(data.callbackAdapters).toBeInstanceOf(Array);
     const adapter = data.callbackAdapters.find(
-      (a: { prop: string }) => a.prop === "onSelect"
+      (a: { prop: string }) => a.prop === "onClick"
     );
     expect(adapter).toBeDefined();
+    expect(adapter.from).toContain("per-item onClick");
     expect(adapter.to).toContain("onAction");
   });
 
@@ -796,6 +809,7 @@ describe("migrate_from_uikit — structured migration guidance", () => {
       (a: { prop: string }) => a.prop === "onChange"
     );
     expect(adapter).toBeDefined();
+    expect(adapter.from).toContain("ChangeEvent<HTMLLocalizedInputElement>");
     expect(adapter.to).toContain("LocalizedFieldChangeEvent");
 
     expect(data.typeNotes).toBeInstanceOf(Array);
