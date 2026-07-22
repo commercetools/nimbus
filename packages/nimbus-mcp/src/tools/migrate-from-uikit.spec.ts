@@ -538,8 +538,34 @@ describe("migrate_from_uikit — propMigrations (slot-prop collapse)", () => {
     expect(iconMigration.position).toBe("before");
   });
 
-  it("omits propMigrations for entries without them", async () => {
+  it("includes propMigrations for PrimaryButton label/icon collapse", async () => {
     const result = await callMigrate({ componentName: "PrimaryButton" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.propMigrations).toBeInstanceOf(Array);
+    expect(data.propMigrations.length).toBe(3);
+
+    const labelMigration = data.propMigrations.find(
+      (m: { from: string }) => m.from === "label"
+    );
+    expect(labelMigration).toBeDefined();
+    expect(labelMigration.to).toBe("children");
+
+    const iconLeftMigration = data.propMigrations.find(
+      (m: { from: string }) => m.from === "iconLeft"
+    );
+    expect(iconLeftMigration).toBeDefined();
+    expect(iconLeftMigration.position).toBe("before");
+
+    const iconRightMigration = data.propMigrations.find(
+      (m: { from: string }) => m.from === "iconRight"
+    );
+    expect(iconRightMigration).toBeDefined();
+    expect(iconRightMigration.position).toBe("after");
+  });
+
+  it("omits propMigrations for entries without them", async () => {
+    const result = await callMigrate({ componentName: "Tag" });
     const data = JSON.parse(getText(result));
 
     expect(data.propMigrations).toBeUndefined();
