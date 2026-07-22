@@ -257,6 +257,7 @@ function buildComponentResult(
     result.propShapeTransforms = entry.propShapeTransforms;
   if (entry.callbackAdapters) result.callbackAdapters = entry.callbackAdapters;
   if (entry.typeNotes) result.typeNotes = entry.typeNotes;
+  if (entry.layoutGuidance) result.layoutGuidance = entry.layoutGuidance;
 
   const hint = deriveToolHint(
     uiKitName,
@@ -469,13 +470,18 @@ export function registerMigrateFromUiKit(server: McpServer): void {
         // Check if this is a compound root (e.g. "Spacings" → Spacings.Stack, Spacings.Inline, ...)
         const compoundEntries = getUiKitCompoundMigrations(componentName);
         if (compoundEntries) {
+          const mappings = compoundEntries.map((e) =>
+            buildComponentResult(e.uiKitName)!
+          );
           const response: MigrateCompoundResult = {
             compoundRoot: componentName,
             note: `"${componentName}" is used as a namespace (e.g. ${compoundEntries.map((e) => e.uiKitName).join(", ")}). Each sub-component has its own mapping.`,
-            mappings: compoundEntries.map((e) =>
-              buildComponentResult(e.uiKitName)!
-            ),
+            mappings,
           };
+          const guidance = mappings.find(
+            (m) => m.layoutGuidance
+          )?.layoutGuidance;
+          if (guidance) response.layoutGuidance = guidance;
           return {
             content: [
               {
@@ -599,6 +605,10 @@ export function registerMigrateFromUiKit(server: McpServer): void {
         mappings,
         unmapped,
       };
+      const fileGuidance = mappings.find(
+        (m) => m.layoutGuidance
+      )?.layoutGuidance;
+      if (fileGuidance) response.layoutGuidance = fileGuidance;
 
       return {
         content: [
