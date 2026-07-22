@@ -4,7 +4,12 @@ import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import ts from "typescript";
 import { getAllUiKitMigrations } from "../src/data/uikit-migration.js";
-import type { IconWrapper, PropMapping } from "../src/types.js";
+import type {
+  IconWrapper,
+  PropMapping,
+  CodeReduction,
+  PropMigration,
+} from "../src/types.js";
 import {
   STYLE_PROPS,
   extractNimbusComponentName,
@@ -291,6 +296,62 @@ export async function validateMigrationData(): Promise<void> {
     allErrors.push(...errors);
   }
   console.log(`[validate] ✓ ${iconWrapperCount} iconWrapper entries validated`);
+
+  // --- propMigrations validation (UIKit prop existence) ---
+  const propsMap = buildUiKitPropsMap();
+  if (propsMap.size > 0) {
+    let pmValidated = 0;
+    for (const entry of migrations) {
+      if (!entry.propMigrations || entry.propMigrations.length === 0) continue;
+      const uikitProps = propsMap.get(entry.uiKitName);
+      if (!uikitProps) continue;
+      pmValidated++;
+      for (const pm of entry.propMigrations) {
+        if (!uikitProps.has(pm.from)) {
+          allErrors.push({
+            entry: entry.uiKitName,
+            prop: pm.from,
+            message: `propMigrations.from "${pm.from}" does not exist on ${entry.uiKitName}`,
+          });
+        }
+      }
+    }
+    console.log(
+      `[validate] ✓ ${pmValidated} entries with propMigrations validated`
+    );
+  }
+
+  // --- codeReduction validation (required fields) ---
+  let crValidated = 0;
+  for (const entry of migrations) {
+    if (!entry.codeReduction) continue;
+    crValidated++;
+    const cr = entry.codeReduction;
+    if (!cr.type) {
+      allErrors.push({
+        entry: entry.uiKitName,
+        prop: "codeReduction.type",
+        message: `codeReduction.type is empty or missing`,
+      });
+    }
+    if (!cr.deletableFiles || cr.deletableFiles.length === 0) {
+      allErrors.push({
+        entry: entry.uiKitName,
+        prop: "codeReduction.deletableFiles",
+        message: `codeReduction.deletableFiles is empty or missing`,
+      });
+    }
+    if (!cr.rationale) {
+      allErrors.push({
+        entry: entry.uiKitName,
+        prop: "codeReduction.rationale",
+        message: `codeReduction.rationale is empty or missing`,
+      });
+    }
+  }
+  console.log(
+    `[validate] ✓ ${crValidated} entries with codeReduction validated`
+  );
 
   // --- UIKit-side validation ---
   const uikitErrors = validateUiKitProps(migrations);

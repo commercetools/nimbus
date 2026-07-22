@@ -1442,6 +1442,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         notes: "Default size is 'md'.",
       },
     ],
+    propMigrations: [
+      { from: "label", to: "children" },
+      { from: "icon", to: "children", position: "before" },
+    ],
   },
   {
     uiKitName: "Tag",
@@ -1526,6 +1530,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
           "Row interaction via onRowClick replaced by onSelectionChange with a Set of keys.",
       },
     ],
+    codeReduction: {
+      type: "selection-model-collapse",
+      deletableFiles: [
+        "**/*-selection-column-cell.tsx",
+        "**/*-selection-column-label.tsx",
+      ],
+      rationale:
+        "Nimbus DataTable provides built-in selection via selectionMode='multiple'.",
+    },
   },
   {
     uiKitName: "DataTableManager",

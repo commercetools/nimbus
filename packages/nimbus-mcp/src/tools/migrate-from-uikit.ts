@@ -251,6 +251,8 @@ function buildComponentResult(
 
   if (entry.propMappings) result.propMappings = entry.propMappings;
   if (entry.iconWrapper) result.iconWrapper = entry.iconWrapper;
+  if (entry.propMigrations) result.propMigrations = entry.propMigrations;
+  if (entry.codeReduction) result.codeReduction = entry.codeReduction;
 
   const hint = deriveToolHint(
     uiKitName,

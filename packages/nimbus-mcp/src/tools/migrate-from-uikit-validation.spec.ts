@@ -145,4 +145,67 @@ describe("migrate_from_uikit — type validation", () => {
     const toValues = sizeProp!.valueMapping!.map((vm) => vm.to);
     expect(toValues).not.toContain("sm");
   });
+
+  it("every propMigrations[].from is a non-empty string", () => {
+    const errors: string[] = [];
+    for (const entry of migrations) {
+      if (!entry.propMigrations) continue;
+      for (const pm of entry.propMigrations) {
+        if (!pm.from || typeof pm.from !== "string") {
+          errors.push(
+            `${entry.uiKitName}: propMigrations entry has invalid 'from': ${JSON.stringify(pm.from)}`
+          );
+        }
+        if (!pm.to || typeof pm.to !== "string") {
+          errors.push(
+            `${entry.uiKitName}: propMigrations entry has invalid 'to': ${JSON.stringify(pm.to)}`
+          );
+        }
+      }
+    }
+    expect(errors).toEqual([]);
+  });
+
+  it("every codeReduction has required fields", () => {
+    const errors: string[] = [];
+    for (const entry of migrations) {
+      if (!entry.codeReduction) continue;
+      if (!entry.codeReduction.type) {
+        errors.push(`${entry.uiKitName}: codeReduction missing 'type'`);
+      }
+      if (
+        !entry.codeReduction.deletableFiles ||
+        entry.codeReduction.deletableFiles.length === 0
+      ) {
+        errors.push(
+          `${entry.uiKitName}: codeReduction missing or empty 'deletableFiles'`
+        );
+      }
+      if (!entry.codeReduction.rationale) {
+        errors.push(`${entry.uiKitName}: codeReduction missing 'rationale'`);
+      }
+    }
+    expect(errors).toEqual([]);
+  });
+
+  it("Stamp has propMigrations for slot-prop collapse", () => {
+    const stampEntry = migrations.find((e) => e.uiKitName === "Stamp");
+    expect(stampEntry).toBeDefined();
+    expect(stampEntry!.propMigrations).toBeDefined();
+    expect(stampEntry!.propMigrations!.length).toBe(2);
+
+    const labelMigration = stampEntry!.propMigrations!.find(
+      (m) => m.from === "label"
+    );
+    expect(labelMigration).toBeDefined();
+    expect(labelMigration!.to).toBe("children");
+  });
+
+  it("DataTable has codeReduction for selection-model-collapse", () => {
+    const dtEntry = migrations.find((e) => e.uiKitName === "DataTable");
+    expect(dtEntry).toBeDefined();
+    expect(dtEntry!.codeReduction).toBeDefined();
+    expect(dtEntry!.codeReduction!.type).toBe("selection-model-collapse");
+    expect(dtEntry!.codeReduction!.deletableFiles.length).toBeGreaterThan(0);
+  });
 });
