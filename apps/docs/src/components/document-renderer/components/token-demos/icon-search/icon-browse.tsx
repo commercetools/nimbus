@@ -81,7 +81,9 @@ const IconTile = memo(function IconTile({
           justifyContent="center"
           title={iconId}
         >
-          <Text textStyle="3xl" color="neutral.12">
+          {/* Icons are 1em SVGs, so font-size drives their box: the "1200"
+              token = 48px. */}
+          <Text fontSize="1200" color="neutral.12">
             <Component />
           </Text>
         </Flex>
