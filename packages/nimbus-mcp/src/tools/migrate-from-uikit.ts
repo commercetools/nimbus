@@ -263,6 +263,20 @@ function buildComponentResult(
   return result;
 }
 
+/**
+ * Hoist the first `layoutGuidance` from mappings to the parent response and
+ * strip per-mapping copies to avoid repeating the identical string N times.
+ */
+function hoistLayoutGuidance(
+  mappings: MigrateComponentResult[]
+): string | undefined {
+  const guidance = mappings.find((m) => m.layoutGuidance)?.layoutGuidance;
+  if (guidance) {
+    for (const m of mappings) delete m.layoutGuidance;
+  }
+  return guidance;
+}
+
 // ---------------------------------------------------------------------------
 // Nimbus catalog suggestion for unmapped components
 // ---------------------------------------------------------------------------
@@ -471,9 +485,7 @@ export function registerMigrateFromUiKit(server: McpServer): void {
             note: `"${componentName}" is used as a namespace (e.g. ${compoundEntries.map((e) => e.uiKitName).join(", ")}). Each sub-component has its own mapping.`,
             mappings,
           };
-          const guidance = mappings.find(
-            (m) => m.layoutGuidance
-          )?.layoutGuidance;
+          const guidance = hoistLayoutGuidance(mappings);
           if (guidance) response.layoutGuidance = guidance;
           return {
             content: [
@@ -598,9 +610,7 @@ export function registerMigrateFromUiKit(server: McpServer): void {
         mappings,
         unmapped,
       };
-      const fileGuidance = mappings.find(
-        (m) => m.layoutGuidance
-      )?.layoutGuidance;
+      const fileGuidance = hoistLayoutGuidance(mappings);
       if (fileGuidance) response.layoutGuidance = fileGuidance;
 
       return {

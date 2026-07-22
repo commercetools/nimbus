@@ -18,7 +18,7 @@ const LAYOUT_NESTING_GUIDANCE =
   "do NOT migrate each component independently. Instead, analyze the full nesting structure and migrate " +
   "it as a single unit. Nimbus layout primitives (Stack, Box, Grid) can often collapse multiple nested " +
   "UIKit wrappers into fewer elements. For example, a Constraints.Horizontal > Spacings.Stack > " +
-  "Spacings.Inset chain can become a single <Stack maxWidth={...} gap={...} padding={...}>.";
+  "Spacings.Inset chain can become a single <Box maxWidth={...} gap={...} padding={...}>.";
 
 // ---------------------------------------------------------------------------
 // Migration data

@@ -39,6 +39,21 @@ When adding or editing migration entries, add `propMappings` for any prop-level
 changes. Use `_component` as the `uiKitProp` for fixed values injected by the
 component identity (e.g. `variant="solid"` for PrimaryButton).
 
+## Migration Data (`layoutGuidance`)
+
+Layout-related migration entries (`Constraints.Horizontal`, `Spacings.Stack`,
+`Spacings.Inline`, `Spacings.Inset`, `Spacings.InsetSquish`) include an optional
+`layoutGuidance` string that instructs the consuming LLM to migrate nested
+layout primitives as a single unit rather than component-by-component. The
+guidance is defined once as `LAYOUT_NESTING_GUIDANCE` in
+`src/data/uikit-migration.ts` and shared across all layout entries.
+
+When the tool returns compound-root or file-level responses, `layoutGuidance` is
+hoisted to the top-level response object and stripped from individual mappings
+to avoid repeating the identical string per mapping. When adding a new
+layout-related entry, set `layoutGuidance: LAYOUT_NESTING_GUIDANCE` on the
+entry.
+
 ## Build Scripts
 
 See [`scripts/README.md`](./scripts/README.md) for documentation on the prebuild
