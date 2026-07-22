@@ -4,7 +4,7 @@ import {
   Splitter,
   useResponsiveSplitterSizes,
 } from "@commercetools/nimbus";
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 import { ALL_CATEGORIES, useIconData } from "./use-icon-data";
@@ -29,6 +29,13 @@ export const IconSearch = () => {
   const { pathname } = useLocation();
   const { entries, categories, metadata } = useIconData();
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
+
+  // The scrollable viewport of the main (grid) pane. Held so a pagination page
+  // change can reset it to the top — see `scrollMainToTop`.
+  const mainViewportRef = useRef<HTMLDivElement>(null);
+  const scrollMainToTop = useCallback(() => {
+    mainViewportRef.current?.scrollTo({ top: 0 });
+  }, []);
 
   // Persist the category-rail width (in pixels) across reloads. The hook
   // measures the container, translates the pixel config to the percentage the
@@ -65,12 +72,13 @@ export const IconSearch = () => {
         <Splitter.Handle />
 
         <Splitter.Main>
-          <ScrollArea height="100%">
+          <ScrollArea height="100%" viewportRef={mainViewportRef}>
             <IconBrowse
               entries={entries}
               categorySlug={categorySlug}
               onSelectIcon={setSelectedIcon}
               loading={metadata === null}
+              scrollToTop={scrollMainToTop}
             />
           </ScrollArea>
         </Splitter.Main>
