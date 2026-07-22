@@ -453,15 +453,25 @@ describe("migrate_from_uikit — layoutGuidance", () => {
     expect(data.layoutGuidance).toBeUndefined();
   });
 
-  it("includes layoutGuidance on compound root Spacings response", async () => {
+  it("includes layoutGuidance on compound root Spacings response and strips per-mapping copies", async () => {
     const result = await callMigrate({ componentName: "Spacings" });
     const data = JSON.parse(getText(result));
 
     expect(data.layoutGuidance).toBeDefined();
     expect(data.layoutGuidance).toContain("nested");
+    for (const mapping of data.mappings) {
+      expect(mapping.layoutGuidance).toBeUndefined();
+    }
   });
 
-  it("includes layoutGuidance in file-level response when layout imports are present", async () => {
+  it("does NOT include layoutGuidance on compound root without layout entries", async () => {
+    const result = await callMigrate({ componentName: "Text" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.layoutGuidance).toBeUndefined();
+  });
+
+  it("includes layoutGuidance in file-level response when layout imports are present and strips per-mapping copies", async () => {
     const tmpDir = await mkdtemp(join(tmpdir(), "nimbus-mcp-layout-"));
     const layoutFile = join(tmpDir, "layout-test.tsx");
     await writeFile(
@@ -482,6 +492,9 @@ export const MyComponent = () => (
 
     expect(data.layoutGuidance).toBeDefined();
     expect(data.layoutGuidance).toContain("nested");
+    for (const mapping of data.mappings) {
+      expect(mapping.layoutGuidance).toBeUndefined();
+    }
 
     await rm(tmpDir, { recursive: true }).catch(() => {});
   });
