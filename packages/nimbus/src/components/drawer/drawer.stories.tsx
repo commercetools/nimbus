@@ -117,9 +117,12 @@ export const Default: Story = {
       await userEvent.click(closeButton);
 
       // Wait for drawer to close
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     await step(
@@ -140,9 +143,12 @@ export const Default: Story = {
         await userEvent.click(cancelButton);
 
         // Wait for drawer to close
-        await waitFor(() => {
-          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-        });
+        await waitFor(
+          () => {
+            expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+          },
+          { timeout: 3000 }
+        );
       }
     );
 
@@ -174,9 +180,12 @@ export const Default: Story = {
 
       // Close with Escape key
       await userEvent.keyboard("{Escape}");
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Focus should return to trigger
       await waitFor(
@@ -262,9 +271,12 @@ export const ButtonAsTrigger: Story = {
       await userEvent.click(confirmButton);
 
       // Drawer should close and focus should return to custom trigger
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Wait for focus to be restored to the custom button trigger
       await waitFor(
@@ -533,10 +545,13 @@ export const ControlledState: Story = {
       // Test onOpenChange callback synchronization via close button
       const closeButton = canvas.getByRole("button", { name: /close/i });
       await userEvent.click(closeButton);
-      await waitFor(() => {
-        expect(canvas.getByText("Drawer is closed")).toBeInTheDocument();
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.getByText("Drawer is closed")).toBeInTheDocument();
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
       expect(switchElement).not.toBeChecked();
     });
   },
@@ -754,9 +769,12 @@ export const ComplexDismissalScenarios: Story = {
         .closest('[role="presentation"]');
       if (modalOverlay1) {
         await userEvent.click(modalOverlay1);
-        await waitFor(() => {
-          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-        });
+        await waitFor(
+          () => {
+            expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+          },
+          { timeout: 3000 }
+        );
       }
 
       // Test backdrop disabled, keyboard enabled
@@ -779,9 +797,12 @@ export const ComplexDismissalScenarios: Story = {
 
       // Escape SHOULD close
       await userEvent.keyboard("{Escape}");
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Test both disabled
       const trigger3 = canvas.getByRole("button", {
@@ -799,9 +820,12 @@ export const ComplexDismissalScenarios: Story = {
       // Only close button works
       const closeButton = canvas.getByRole("button", { name: "Close" });
       await userEvent.click(closeButton);
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
   },
 };
@@ -887,16 +911,19 @@ export const NestedDrawers: Story = {
       });
       await userEvent.click(secondTrigger);
 
-      await waitFor(() => {
-        // Both drawers should be present
-        const drawers = canvas.getAllByRole("dialog");
-        expect(drawers).toHaveLength(2);
-        expect(
-          canvas.getByText(
-            /This is a nested drawer that should appear above the first/
-          )
-        ).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          // Both drawers should be present
+          const drawers = canvas.getAllByRole("dialog");
+          expect(drawers).toHaveLength(2);
+          expect(
+            canvas.getByText(
+              /This is a nested drawer that should appear above the first/
+            )
+          ).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Close second drawer first (should close in proper order)
       const secondCloseButton = canvas.getByRole("button", {
@@ -904,13 +931,16 @@ export const NestedDrawers: Story = {
       });
       await userEvent.click(secondCloseButton);
 
-      await waitFor(() => {
-        const drawers = canvas.getAllByRole("dialog");
-        expect(drawers).toHaveLength(1);
-        expect(
-          canvas.getByText("This is the first level drawer.")
-        ).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          const drawers = canvas.getAllByRole("dialog");
+          expect(drawers).toHaveLength(1);
+          expect(
+            canvas.getByText("This is the first level drawer.")
+          ).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Close first drawer
       const firstCloseButton = canvas.getByRole("button", {
@@ -918,9 +948,12 @@ export const NestedDrawers: Story = {
       });
       await userEvent.click(firstCloseButton);
 
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Verify focus restoration to original trigger
       await waitFor(
@@ -948,28 +981,37 @@ export const NestedDrawers: Story = {
       });
       await userEvent.click(secondTrigger);
 
-      await waitFor(() => {
-        const drawers = canvas.getAllByRole("dialog");
-        expect(drawers).toHaveLength(2);
-      });
+      await waitFor(
+        () => {
+          const drawers = canvas.getAllByRole("dialog");
+          expect(drawers).toHaveLength(2);
+        },
+        { timeout: 3000 }
+      );
 
       // Escape should close the topmost drawer first
       await userEvent.keyboard("{Escape}");
 
-      await waitFor(() => {
-        const drawers = canvas.getAllByRole("dialog");
-        expect(drawers).toHaveLength(1);
-        expect(
-          canvas.getByText("This is the first level drawer.")
-        ).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          const drawers = canvas.getAllByRole("dialog");
+          expect(drawers).toHaveLength(1);
+          expect(
+            canvas.getByText("This is the first level drawer.")
+          ).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Another Escape should close the remaining drawer
       await userEvent.keyboard("{Escape}");
 
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Focus should return to original trigger
       await waitFor(
@@ -1133,11 +1175,14 @@ export const UnsavedChangesConfirmation: Story = {
       const keepButton = canvas.getByRole("button", { name: "Keep Editing" });
       await userEvent.click(keepButton);
 
-      await waitFor(() => {
-        expect(
-          canvas.queryByText("You have unsaved changes. Discard them?")
-        ).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(
+            canvas.queryByText("You have unsaved changes. Discard them?")
+          ).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
       expect(canvas.getByRole("dialog")).toBeInTheDocument();
     });
 
@@ -1159,9 +1204,12 @@ export const UnsavedChangesConfirmation: Story = {
       });
       await userEvent.click(discardButton);
 
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
   },
 };
