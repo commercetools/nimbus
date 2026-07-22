@@ -12,11 +12,17 @@ export function TooltipRoot({
   // Match delays to current ui-kit tooltip
   delay = 300,
   closeDelay = 200,
+  isDisabled,
   ...props
 }: TooltipTriggerComponentProps) {
-  // Note: In React 19, ref forwarding is automatic for function components
-  // The ref should be placed on the trigger element directly when needed
-  return <TooltipTrigger delay={delay} closeDelay={closeDelay} {...props} />;
+  return (
+    <TooltipTrigger
+      delay={delay}
+      closeDelay={closeDelay}
+      isDisabled={isDisabled}
+      {...props}
+    />
+  );
 }
 
 TooltipRoot.displayName = "Tooltip.Root";

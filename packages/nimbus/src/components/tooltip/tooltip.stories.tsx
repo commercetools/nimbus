@@ -1,8 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect } from "storybook/test";
+import { useState } from "react";
 import {
   Button,
   Stack,
+  Switch,
   Tooltip,
   type TooltipProps,
 } from "@commercetools/nimbus";
@@ -124,5 +126,67 @@ export const Placement: Story = {
         await expect(tooltip).toHaveTextContent(placement);
       });
     }
+  },
+};
+
+/**
+ * When `isDisabled` is set on `Tooltip.Root`, the tooltip never opens
+ * via hover or focus, and no `aria-describedby` is added to the trigger.
+ */
+export const IsDisabled: Story = {
+  args: {
+    children: "Disabled Tooltip",
+  },
+  render: (args) => (
+    <Tooltip.Root delay={0} closeDelay={0} isDisabled>
+      <Button>hover/focus me</Button>
+      <Tooltip.Content {...args} />
+    </Tooltip.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("tooltip does not appear when trigger is focused", async () => {
+      const button = canvas.getByRole("button", { name: "hover/focus me" });
+      button.focus();
+
+      // small wait to allow any tooltip to appear if it were going to
+      await new Promise((r) => setTimeout(r, 100));
+
+      await expect(canvas.queryByRole("tooltip")).not.toBeInTheDocument();
+    });
+
+    await step(
+      "trigger has no aria-describedby when tooltip is disabled",
+      async () => {
+        const button = canvas.getByRole("button", { name: "hover/focus me" });
+        await expect(button).not.toHaveAttribute("aria-describedby");
+      }
+    );
+  },
+};
+
+/**
+ * Demonstrates toggling `isDisabled` at runtime via a switch control.
+ */
+export const IsDisabledToggle: Story = {
+  args: {
+    children: "Toggle Tooltip",
+  },
+  render: (args) => {
+    const [isDisabled, setIsDisabled] = useState(true);
+    return (
+      <Stack direction="row" alignItems="center" gap="400">
+        <Switch isSelected={isDisabled} onChange={setIsDisabled}>
+          Tooltip disabled
+        </Switch>
+        <Tooltip.Root delay={0} closeDelay={0} isDisabled={isDisabled}>
+          <Button>hover/focus me</Button>
+          <Tooltip.Content {...args} />
+        </Tooltip.Root>
+      </Stack>
+    );
   },
 };
