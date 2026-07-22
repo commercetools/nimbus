@@ -38,7 +38,18 @@ function resolveCustomPropertiesPath(): string {
 export async function buildUiKitTokenData(outDir?: string) {
   const resolvedOutDir = outDir ?? resolve(PACKAGE_ROOT, "data");
 
-  const customPropertiesPath = resolveCustomPropertiesPath();
+  let customPropertiesPath: string;
+  try {
+    customPropertiesPath = resolveCustomPropertiesPath();
+  } catch {
+    console.warn(
+      "⚠ @commercetools-uikit/design-system not found — skipping UI Kit token data build."
+    );
+    await mkdir(resolvedOutDir, { recursive: true });
+    await writeFile(resolve(resolvedOutDir, "uikit-tokens.json"), "{}");
+    return;
+  }
+
   const raw = await readFile(customPropertiesPath, "utf-8");
   const customProperties = JSON.parse(raw) as Record<string, string>;
 

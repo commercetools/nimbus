@@ -222,7 +222,8 @@ export function registerGetTokens(server: McpServer): void {
           .optional()
           .describe(
             'UI Kit token name to resolve, e.g. "constraint7", "spacingXl", "customProperties.constraint7", or "designTokens.spacingXl". ' +
-              "Resolves the token to its CSS value, finds matching Nimbus tokens, and recommends the best category."
+              "Resolves the token to its CSS value, finds matching Nimbus tokens, and recommends the best category. " +
+              "Tokens whose CSS value is a var(...) reference will return an empty tokens array but still provide recommendedCategory."
           ),
         offset: z
           .number()
@@ -254,7 +255,9 @@ export function registerGetTokens(server: McpServer): void {
             .replace(/^customProperties\./, "")
             .replace(/^designTokens\./, "");
 
-          const entry = tokenMap[stripped];
+          const entry = Object.hasOwn(tokenMap, stripped)
+            ? tokenMap[stripped]
+            : undefined;
           if (!entry) {
             return {
               content: [
