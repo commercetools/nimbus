@@ -59,9 +59,9 @@ overrides:
   react-aria-components: "catalog:react"
   react-stately: "catalog:react"
   "@react-aria/interactions": "catalog:react"
-  "brace-expansion@<2": "^2.0.3"
-  "brace-expansion@2": "~2.0.3"
-  "brace-expansion@>=4.0.0 <5.0.6": ">=5.0.6"
+  "brace-expansion@<2": "^2.1.2"
+  "brace-expansion@2": "^2.1.2"
+  "brace-expansion@>=3.0.0 <5.0.7": ">=5.0.7"
   mdast-util-to-hast: "^13.2.1"
   # js-yaml 3.x security floor — >=3.15.0 fixes GHSA-h67p-54hq-rp68
   # (quadratic-complexity DoS in merge-key handling).
@@ -72,13 +72,18 @@ overrides:
   dompurify: "catalog:utils"
   qs: ">=6.15.2"
   "minimatch@>=3.0.0 <3.1.4": "3.1.4"
-  svgo: ">=3.3.3"
-  hono: ">=4.12.21"
+  svgo: ">=4.0.2"
+  hono: ">=4.12.27"
   esbuild: ">=0.28.1"
-  shell-quote: ">=1.8.4"
+  shell-quote: ">=1.9.0"
   "@babel/core": "catalog:tooling"
   "@hono/node-server": ">=1.19.13"
-  fast-uri: ">=3.1.2"
+  fast-uri: ">=4.1.1"
+  # immutable <4.3.9 — GHSA-xvcm-6775-5m9r / GHSA-v56q-mh7h-f735 (hash-collision
+  # algorithmic-complexity DoS in Immutable.Map/Set). Capped <5 to stay within 4.x.
+  immutable: ">=4.3.9 <5"
+  # body-parser 2.0.0–2.2.x DoS fixed in 2.3.0 (Dependabot #147). Scoped to 2.x.
+  "body-parser@2": ">=2.3.0"
   ip-address: ">=10.1.1"
   postcss: ">=8.5.10"
   "lodash@<4.18.0": ">=4.18.0"
