@@ -636,4 +636,178 @@ describe("migrate_from_uikit — structured migration guidance", () => {
     expect(data.callbackAdapters).toBeUndefined();
     expect(data.typeNotes).toBeUndefined();
   });
+
+  it("includes callbackAdapters for SelectInput onChange", async () => {
+    const result = await callMigrate({ componentName: "SelectInput" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.callbackAdapters).toBeInstanceOf(Array);
+    const adapter = data.callbackAdapters.find(
+      (a: { prop: string }) => a.prop === "onChange"
+    );
+    expect(adapter).toBeDefined();
+    expect(adapter.from).toContain("TCustomEvent");
+    expect(adapter.to).toContain("Key");
+  });
+
+  it("includes callbackAdapters and typeNotes for DateInput", async () => {
+    const result = await callMigrate({ componentName: "DateInput" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.callbackAdapters).toBeInstanceOf(Array);
+    const adapter = data.callbackAdapters.find(
+      (a: { prop: string }) => a.prop === "onChange"
+    );
+    expect(adapter).toBeDefined();
+    expect(adapter.to).toContain("CalendarDate");
+
+    expect(data.typeNotes).toBeInstanceOf(Array);
+    const importNote = data.typeNotes.find((n: string) =>
+      n.includes("@internationalized/date")
+    );
+    expect(importNote).toBeDefined();
+  });
+
+  it("includes typeNotes for DateTimeInput with ZonedDateTime", async () => {
+    const result = await callMigrate({ componentName: "DateTimeInput" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.typeNotes).toBeInstanceOf(Array);
+    const note = data.typeNotes.find((n: string) =>
+      n.includes("ZonedDateTime")
+    );
+    expect(note).toBeDefined();
+  });
+
+  it("includes typeNotes for TimeInput with Time import", async () => {
+    const result = await callMigrate({ componentName: "TimeInput" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.typeNotes).toBeInstanceOf(Array);
+    const note = data.typeNotes.find((n: string) =>
+      n.includes("@internationalized/date")
+    );
+    expect(note).toBeDefined();
+  });
+
+  it("includes callbackAdapters for CheckboxInput onChange", async () => {
+    const result = await callMigrate({ componentName: "CheckboxInput" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.callbackAdapters).toBeInstanceOf(Array);
+    const adapter = data.callbackAdapters.find(
+      (a: { prop: string }) => a.prop === "onChange"
+    );
+    expect(adapter).toBeDefined();
+    expect(adapter.to).toContain("boolean");
+  });
+
+  it("includes callbackAdapters for ToggleInput onChange", async () => {
+    const result = await callMigrate({ componentName: "ToggleInput" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.callbackAdapters).toBeInstanceOf(Array);
+    const adapter = data.callbackAdapters.find(
+      (a: { prop: string }) => a.prop === "onChange"
+    );
+    expect(adapter).toBeDefined();
+    expect(adapter.to).toContain("boolean");
+  });
+
+  it("includes callbackAdapters and typeNotes for NumberInput", async () => {
+    const result = await callMigrate({ componentName: "NumberInput" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.callbackAdapters).toBeInstanceOf(Array);
+    const adapter = data.callbackAdapters.find(
+      (a: { prop: string }) => a.prop === "onChange"
+    );
+    expect(adapter).toBeDefined();
+    expect(adapter.to).toContain("number");
+
+    expect(data.typeNotes).toBeInstanceOf(Array);
+    const note = data.typeNotes.find((n: string) => n.includes("number"));
+    expect(note).toBeDefined();
+  });
+
+  it("includes callbackAdapters and typeNotes for MoneyInput", async () => {
+    const result = await callMigrate({ componentName: "MoneyInput" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.callbackAdapters).toBeInstanceOf(Array);
+    const adapter = data.callbackAdapters.find(
+      (a: { prop: string }) => a.prop === "onChange"
+    );
+    expect(adapter).toBeDefined();
+
+    expect(data.typeNotes).toBeInstanceOf(Array);
+    const note = data.typeNotes.find((n: string) =>
+      n.includes("onValueChange")
+    );
+    expect(note).toBeDefined();
+  });
+
+  it("includes callbackAdapters and typeNotes for Tag", async () => {
+    const result = await callMigrate({ componentName: "Tag" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.callbackAdapters).toBeInstanceOf(Array);
+    const adapter = data.callbackAdapters.find(
+      (a: { prop: string }) => a.prop === "onRemove"
+    );
+    expect(adapter).toBeDefined();
+    expect(adapter.to).toContain("Set<Key>");
+
+    expect(data.typeNotes).toBeInstanceOf(Array);
+  });
+
+  it("includes callbackAdapters and typeNotes for CollapsiblePanel", async () => {
+    const result = await callMigrate({ componentName: "CollapsiblePanel" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.callbackAdapters).toBeInstanceOf(Array);
+    const adapter = data.callbackAdapters.find(
+      (a: { prop: string }) => a.prop === "onToggle"
+    );
+    expect(adapter).toBeDefined();
+    expect(adapter.to).toContain("Set<Key>");
+
+    expect(data.typeNotes).toBeInstanceOf(Array);
+  });
+
+  it("includes callbackAdapters for DropdownMenu onSelect", async () => {
+    const result = await callMigrate({ componentName: "DropdownMenu" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.callbackAdapters).toBeInstanceOf(Array);
+    const adapter = data.callbackAdapters.find(
+      (a: { prop: string }) => a.prop === "onSelect"
+    );
+    expect(adapter).toBeDefined();
+    expect(adapter.to).toContain("onAction");
+  });
+
+  it("includes callbackAdapters and typeNotes for LocalizedTextInput", async () => {
+    const result = await callMigrate({ componentName: "LocalizedTextInput" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.callbackAdapters).toBeInstanceOf(Array);
+    const adapter = data.callbackAdapters.find(
+      (a: { prop: string }) => a.prop === "onChange"
+    );
+    expect(adapter).toBeDefined();
+    expect(adapter.to).toContain("LocalizedFieldChangeEvent");
+
+    expect(data.typeNotes).toBeInstanceOf(Array);
+  });
+
+  it("includes typeNotes for DateRangeInput with RangeValue", async () => {
+    const result = await callMigrate({ componentName: "DateRangeInput" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.callbackAdapters).toBeInstanceOf(Array);
+    expect(data.typeNotes).toBeInstanceOf(Array);
+    const note = data.typeNotes.find((n: string) => n.includes("RangeValue"));
+    expect(note).toBeDefined();
+  });
 });
