@@ -202,6 +202,41 @@ const App = () => (
 )
 ```
 
+### Disabling the tooltip
+
+Use the `isDisabled` prop on `Tooltip.Root` to suppress the tooltip without
+removing the trigger from the tree. When `isDisabled` is `true`, hover and focus
+listeners are inactive, the overlay never opens, and no `aria-describedby` is
+added to the trigger. The trigger element renders unchanged with the same DOM
+and focus order.
+
+This is useful when tooltip text is conditionally irrelevant (e.g. the trigger
+label already conveys the information) or when a parent feature flag should
+suppress all tooltips in a region.
+
+```jsx live-dev
+const App = () => {
+  const [isDisabled, setIsDisabled] = useState(true);
+  return (
+    <Stack direction="row" alignItems="center" gap="400">
+      <Switch isSelected={isDisabled} onChange={setIsDisabled}>
+        Tooltip disabled
+      </Switch>
+      <Tooltip.Root isDisabled={isDisabled}>
+        <Button>Hover me</Button>
+        <Tooltip.Content>
+          This tooltip can be toggled
+        </Tooltip.Content>
+      </Tooltip.Root>
+    </Stack>
+  );
+}
+```
+
+> **Note:** `isDisabled` on `Tooltip.Root` disables the *tooltip overlay*. To
+> keep a tooltip visible on a *disabled button*, see
+> [With disabled buttons](#with-disabled-buttons) below.
+
 ### With disabled buttons
 
 A natively disabled button cannot host a tooltip: the `disabled` attribute

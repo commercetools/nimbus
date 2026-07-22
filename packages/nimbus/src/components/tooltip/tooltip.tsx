@@ -25,6 +25,7 @@ export const Tooltip = {
    *
    * The root component that provides state management and positioning logic.
    * Wraps the trigger element and tooltip content, handling hover and focus interactions.
+   * Pass `isDisabled` to suppress the tooltip without removing the trigger from the tree.
    *
    * @example
    * ```tsx
