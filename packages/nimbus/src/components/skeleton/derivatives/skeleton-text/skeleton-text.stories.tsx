@@ -111,6 +111,8 @@ export const LastLine: Story = {
  * Chromatic to snapshot rather than asserted in a play function.
  */
 export const StyleMatch: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack gap="600">
       <SkeletonText textStyle="body" width="7200" />
