@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { within, expect } from "storybook/test";
+import { within, expect, userEvent } from "storybook/test";
 import { useState } from "react";
 import {
   Button,
@@ -188,5 +188,28 @@ export const IsDisabledToggle: Story = {
         </Tooltip.Root>
       </Stack>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("tooltip is suppressed while isDisabled is true", async () => {
+      const button = canvas.getByRole("button", { name: "hover/focus me" });
+      button.focus();
+      await new Promise((r) => setTimeout(r, 100));
+      await expect(canvas.queryByRole("tooltip")).not.toBeInTheDocument();
+      button.blur();
+    });
+
+    await step("toggle isDisabled off and tooltip appears", async () => {
+      const switchEl =
+        canvasElement.querySelector<HTMLElement>('[data-slot="root"]');
+      if (!switchEl) throw new Error("Switch not found");
+      await userEvent.click(switchEl);
+      // tab from the switch to the button — triggers a real focus event
+      await userEvent.tab();
+      await canvas.findByRole("tooltip");
+    });
   },
 };

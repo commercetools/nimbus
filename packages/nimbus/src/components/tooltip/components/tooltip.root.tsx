@@ -15,6 +15,8 @@ export function TooltipRoot({
   isDisabled,
   ...props
 }: TooltipTriggerComponentProps) {
+  // Note: In React 19, ref forwarding is automatic for function components
+  // The ref should be placed on the trigger element directly when needed
   return (
     <TooltipTrigger
       delay={delay}
