@@ -1419,6 +1419,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "tone value 'information' → colorPalette='info'",
       "tone values 'primary' and 'secondary' → colorPalette='primary' or 'neutral'",
       "isCondensed prop replaced by size='xs'",
+      "label and icon props removed; pass label text and optionally an icon as children",
     ],
     propMappings: [
       {

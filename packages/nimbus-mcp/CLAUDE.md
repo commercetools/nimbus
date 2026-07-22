@@ -54,6 +54,21 @@ Each entry spreads this and adds its own `sizeMapping` — `CustomIcon` uses
 numeric UIKit sizes (`10`–`40`) while `Icon Library` maps both deprecated
 aliases (`small`/`medium`/`big`) and current numeric values.
 
+## Migration Data (`propMigrations` and `codeReduction`)
+
+Migration entries can also include:
+
+- **`propMigrations`** — describes slot-prop-to-children collapse patterns where
+  UIKit props become Nimbus `children` (e.g. Stamp `label`/`icon` → Badge
+  `children`). Each entry has `from` (UIKit prop), `to` (Nimbus target,
+  typically `"children"`), and optional `position` (`"before"` | `"after"`). The
+  `from` field is validated against live UIKit type declarations at build time.
+- **`codeReduction`** — describes patterns where migration deletes significant
+  consumer code (e.g. DataTable's built-in selection replaces custom selection
+  column files). Has `type` (pattern identifier), `deletableFiles` (glob
+  patterns), and `rationale`. All three fields are required and validated at
+  build time.
+
 ## Build Scripts
 
 See [`scripts/README.md`](./scripts/README.md) for documentation on the prebuild
