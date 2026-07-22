@@ -290,27 +290,19 @@ and keeping the canvas from jumping as you browse. It's independent of
 `disableSnapshot` - not something you opt into per story. `fullscreen` stories
 are exempt because they're meant to touch the edges.
 
-**Cost is controlled by TurboSnap and matrix-packing, not by dropping visual
-states.** TurboSnap bills unchanged snapshots at 1/5 cost, and packing a whole
+**Cost is TurboSnap and matrix-packing, never dropping states.** TurboSnap bills
+unchanged snapshots at 1/5, and folding a
 `colorPalette × size × variant × state` grid into one `SmokeTest` render keeps
-combinatorial coverage down to a single billable snapshot. Those are the levers.
-The `vrt` selection is therefore not "snapshot fewer states" - every visual
-state must still be covered - it's "don't re-snapshot a state an on-snapshot
-already covers." Turning an individual per-axis story's snapshot off loses no
-coverage _when_ its states are already captured elsewhere - by the matrix, or by
-a dedicated story like `Disabled` for the uniform states the matrix omits; the
-per-component audit is what confirms that. Dropping a state no snapshot covers
-does lose coverage. Never trade a visual state away to save cost.
-
-**One matrix beats many individual snapshots for the routine combinations.**
-Folding the size/variant/palette/state grid into a single `SmokeTest` render
-keeps it to one billable snapshot rather than one per combination, and a
-reviewer catches cross-axis regressions in a single image because every state
-sits next to its neighbors. The tradeoff is granularity: a diff in any one cell
-flags the whole snapshot, and editing the matrix re-snapshots the entire grid
-(Chromatic can't sub-diff within one image). So reserve standalone snapshots for
-states that need distinct setup or deserve isolated review (`Focused`,
-`DisabledGroup`, an open menu), not for states that are straight recipe output.
+combinatorial coverage to a single billable snapshot (a reviewer also catches
+cross-axis regressions in one image, every state beside its neighbors). Those
+are the only levers: the `vrt` selection means "don't re-snapshot a state an
+on-snapshot already covers" - turning a per-axis story off loses nothing _when_
+the matrix or a dedicated `Disabled` already holds its states - never "snapshot
+fewer states." The matrix's tradeoff is granularity: a diff in any cell flags
+the whole snapshot, and editing it re-snapshots the whole grid, so reserve
+standalone snapshots for states needing distinct setup or isolated review
+(`Focused`, `DisabledGroup`, an open menu), not straight recipe output. Dropping
+a state no snapshot covers does lose coverage.
 
 **Hover and pressed are a known coverage gap.** They are genuine visual states,
 but neither is currently captured, and it's an infra limitation, not a choice:
@@ -324,8 +316,15 @@ but neither is currently captured, and it's an infra limitation, not a choice:
   Aria's `[data-hovered]` attribute - an addon forces one convention, so the
   recipes have to converge on it. Track this as a cross-cutting foundation task,
   not per-component work.
-- **Pressed** needs nothing: no button-family recipe styles `:active`/pressed,
-  so there is no visual state to capture.
+- **Pressed** needs nothing _for the button family_: none of its recipes style
+  `:active`/pressed (Button sets a `data-pressed` attribute, but no recipe rule
+  paints it), so there's no visual to capture there. Don't generalize that to
+  every component - some non-button recipes do style pressed. NumberInput's
+  steppers set `_active` (`bg: neutral.4`), a real pressed visual, so for
+  components like it pressed is a genuine uncaptured state deferred alongside
+  hover (a held-down frame isn't deterministically snapshottable today, same
+  infra family). Check the recipe rather than assuming pressed is always a
+  no-op.
 
 ### Broader best practices
 
@@ -336,7 +335,16 @@ but neither is currently captured, and it's an infra limitation, not a choice:
   any state the matrix can't render in one static image (focus ring,
   disabled-but-focusable, open tooltip/popover, special layouts) gets its own
   snapshotted story. Coverage is the target; the matrix is just the most
-  efficient container for the interacting axes.
+  efficient container for the interacting axes. A single-axis showcase story
+  varies one axis with the rest at defaults, so a cross-axis cell like
+  `size="2xs" variant="ghost" colorPalette="critical"` is captured by
+  **nothing** but the matrix - and that is exactly where recipe regressions
+  hide. Axis arrays must span the **full supported range** - a trimmed or
+  commented-out value (snapshotting three sizes when the component supports
+  five) leaves those cells covered by nothing. Scope call: matrices iterate the
+  6 `SEMANTIC_COLOR_PALETTES`; the `BRAND` (3) and `SYSTEM` (25) palettes a
+  consumer can also pass run the same token machinery and are deliberately not
+  snapshotted.
 - **Fold an axis into the matrix only if it interacts.** An axis whose
   combination with the others yields a distinct visual belongs in the grid; one
   that applies a **uniform, axis-independent transform** does not. `disabled` is
@@ -345,6 +353,75 @@ but neither is currently captured, and it's an infra limitation, not a choice:
   palette/size/variant, so a `Disabled`/`DisabledGroup` story captures it once
   instead of the matrix re-rendering every cell at half opacity for no new
   coverage.
+- **An axis the recipe hardcodes is not a matrix axis.** The
+  `size × variant × colorPalette` grid only spans the axes the component
+  actually varies. When a recipe pins one of them to a single value, that axis
+  drops out entirely - MultilineTextInput hardcodes `colorPalette: "neutral"`,
+  so its matrix is `state × size × variant` with no palette axis at all. This is
+  distinct from the uniform-transform case above: `disabled` is a real axis
+  folded out because it multiplies cells without adding signal; a hardcoded
+  palette was never an axis to begin with. Don't force the full
+  `SEMANTIC_COLOR_PALETTES` sweep onto a component whose recipe can only ever
+  render one.
+- **Cover distinct state-combinations, not just single flags.** When a component
+  has multiple boolean states (selected, disabled, invalid, read-only), each
+  combination that renders differently needs its own coverage. Selected-disabled
+  is visually distinct from unselected-disabled, so a `Disabled` story showing
+  only the unselected case leaves a gap.
+- **A single state can render more than one distinct surface - give each its own
+  story, don't fold them into a gallery frame.** Before assuming one `Focused` /
+  `Disabled` / `ReadOnly` / `Invalid` story covers a state, check whether the
+  component renders it more than one way (mode-/variant-driven); if so, each
+  distinct recipe surface gets its own snapshotted story. MoneyInput renders
+  focus and disabled two ways - dropdown mode (a currency Select) and label mode
+  (`currencies={[]}`, a static label with its own
+  `currencyLabel[data-disabled] { opacity: 0.5 }` rule) - so it carries
+  `Focused`
+  - `FocusedWithCurrencyLabel` and `DisabledState` +
+    `DisabledWithCurrencyLabel`. Independent surfaces don't interact the way
+    matrix axes do, so folding them into one gallery render only trades away
+    their independent baselines and per-surface triage. Snapshot count isn't a
+    performance concern (Chromatic parallelizes; TurboSnap keeps a stable extra
+    story near free); reserve folding for the interacting axes in `SmokeTest`.
+- **A state that renders identically to the default gets no snapshot at all.**
+  The flip side of the rule above: before adding a `ReadOnly` / `Disabled` /
+  `Invalid` story, confirm the recipe actually renders that state distinctly. If
+  there's no rule for it, it looks exactly like the default, and a dedicated
+  snapshot is a redundant baseline, not coverage. Read-only is the common trap
+  because the call is component-dependent: MoneyInput styles read-only
+  distinctly (it disables the currency Select) so it carries `ReadOnlyState`,
+  but MultilineTextInput / NumberInput / TextInput have no `data-readonly`
+  recipe rule
+  - read-only renders identically to default - so they correctly have no
+    read-only snapshot. Same state, opposite call, decided purely by whether a
+    distinct recipe surface exists.
+- **Modes are for global config, not component props.** Chromatic
+  [modes](https://www.chromatic.com/docs/modes/) (`chromatic.modes`) capture the
+  same story under different _global_ settings applied through Storybook
+  globals/decorators - viewport, theme, locale - each as an independently
+  baselined snapshot. They are not a mechanism for prop-driven variations: a
+  difference you produce by passing different props (MoneyInput's dropdown vs.
+  label mode is `currencies={[...]}` vs. `currencies={[]}`) is a separate
+  **story**, not a mode. We don't use modes at launch (single desktop viewport,
+  light theme only); they're the tool if/when dark-mode or multi-viewport
+  coverage lands.
+- **Snapshot the component, not the harness.** Chromatic photographs the story's
+  entire rendered output, so anything in the render tree lands in the baseline.
+  A snapshotted story must render the component **directly** - no debug
+  read-outs, value dumps, or controls scaffolding in the frame. Those authoring
+  aids are fine on the un-snapshotted behavioral stories (MoneyInput's
+  `MoneyInputExample` wrapper renders a `JSON.stringify(value)` panel next to
+  the input, useful for clicking through in Storybook), but a snapshot of one
+  would bake the read-out into the baseline and flap on every value change. So
+  the state/matrix stories render `<MoneyInput>` directly and leave the wrapper
+  to `BasicExample` and the other behavioral stories.
+- **Thin wrappers get no matrix.** A component that only constrains or forwards
+  a wrapped component's props re-covers nothing by re-rendering the wrapped
+  grid. FloatingActionButton wraps IconButton with a fixed circular shape, so it
+  snapshots only `ColorPalettes` + `Focused` + `Disabled`, not a size × variant
+  matrix - those are IconButton's states, already covered there. (Distinct from
+  the independent-axes case below: there the axes don't interact; here the
+  wrapper delegates them wholesale to a component that already snapshots them.)
 - **Not every component needs a `SmokeTest` matrix.** A matrix earns its place
   only when the axes _interact_. When they're independent (Avatar's `size` /
   `colorPalette` / content mode don't combine into novel visuals), skip the
@@ -352,11 +429,33 @@ but neither is currently captured, and it's an infra limitation, not a choice:
   family of near-identical or purely behavioral stories into one labeled
   snapshot (Avatar's `AllFallbacks`) when it aids review without losing
   coverage.
+- **Capture the focus ring on every distinctly-styled focusable sub-element.** A
+  split button's dropdown trigger, an input's clear button or stepper, and a
+  date field's calendar toggle each style their own `:focus-visible`; a
+  `Focused` story that tabs only to the primary element leaves the rest
+  untested.
 - **Use `play` for functional testing alongside visual** - the two aren't in
   tension; a story can both assert behavior and be snapshotted.
 - **Pause JS-driven animations manually** - Chromatic auto-pauses CSS
   animations/transitions, videos, GIFs, but not JS animations. Worth remembering
   if any button state animates via JS.
+- **Hide the blinking text caret on a focused input.** A `Focused` snapshot of a
+  text-entry input captures the focus ring, but focusing also paints the
+  browser's native caret - which Chromatic can't stabilize (its
+  [animations docs](https://www.chromatic.com/docs/animations/) cover only CSS
+  and JS animations; the native caret is neither), so the snapshot would diff on
+  whichever blink phase it lands on. Hide it in the `Focused` play function;
+  `caret-color` is inherited, so one line on the canvas cascades to the input.
+  We scope it to the story rather than editing the shared `preview.tsx`:
+
+  ```typescript
+  play: async ({ canvasElement }) => {
+    canvasElement.style.caretColor = "transparent"; // native caret can't be paused
+    await userEvent.tab();
+    // ...assert the ring
+  },
+  ```
+
 - **Fonts/async loading can shift tooltips/menus** - relevant to IconButton's
   `ColorPalettes` story (it wraps each button in a `Tooltip`). Preload fonts or
   add a delay if those snapshots turn out flaky.
@@ -376,3 +475,4 @@ but neither is currently captured, and it's an infra limitation, not a choice:
 - [Interaction tests](https://www.chromatic.com/docs/interactions/)
 - [Disable snapshots](https://www.chromatic.com/docs/disable-snapshots/)
 - [TurboSnap](https://www.chromatic.com/docs/turbosnap/)
+- [Modes](https://www.chromatic.com/docs/modes/)
