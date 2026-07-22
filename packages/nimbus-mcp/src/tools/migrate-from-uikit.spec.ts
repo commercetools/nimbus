@@ -441,3 +441,52 @@ describe("migrate_from_uikit — propMappings", () => {
     expect(toneMapping.valueMapping.length).toBeGreaterThan(0);
   });
 });
+
+describe("migrate_from_uikit — iconWrapper", () => {
+  it("includes iconWrapper for Icon Library with component, importPath, and defaultProps", async () => {
+    const result = await callMigrate({ componentName: "Icon Library" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.iconWrapper).toBeDefined();
+    expect(data.iconWrapper.component).toBe("Icon");
+    expect(data.iconWrapper.importPath).toBe("@commercetools/nimbus");
+    expect(data.iconWrapper.defaultProps).toBeDefined();
+    expect(data.iconWrapper.defaultProps.size).toBe("2xs");
+    expect(data.iconWrapper.defaultProps.color).toBe("neutral.11");
+  });
+
+  it("includes iconWrapper for CustomIcon", async () => {
+    const result = await callMigrate({ componentName: "CustomIcon" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.iconWrapper).toBeDefined();
+    expect(data.iconWrapper.component).toBe("Icon");
+    expect(data.iconWrapper.importPath).toBe("@commercetools/nimbus");
+  });
+
+  it("includes sizeMapping in iconWrapper with UIKit-to-Nimbus size translations", async () => {
+    const result = await callMigrate({ componentName: "Icon Library" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.iconWrapper.sizeMapping).toBeDefined();
+    expect(data.iconWrapper.sizeMapping).toEqual([
+      { from: "small", to: "2xs" },
+      { from: "medium", to: "xs" },
+      { from: "big", to: "md" },
+    ]);
+  });
+
+  it("does not include iconWrapper for non-icon components", async () => {
+    const result = await callMigrate({ componentName: "PrimaryButton" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.iconWrapper).toBeUndefined();
+  });
+
+  it("mentions the Icon wrapper pattern in notes for Icon Library", async () => {
+    const result = await callMigrate({ componentName: "Icon Library" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.notes).toContain("<Icon as={");
+  });
+});

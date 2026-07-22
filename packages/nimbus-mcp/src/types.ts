@@ -410,6 +410,18 @@ export interface PropMapping {
   notes?: string;
 }
 
+/** Describes the Icon wrapper needed for bare icon imports. */
+export interface IconWrapper {
+  /** The wrapper component name (e.g. "Icon"). */
+  component: string;
+  /** npm import path for the wrapper (e.g. "@commercetools/nimbus"). */
+  importPath: string;
+  /** Default props to apply when size/color cannot be inferred from context. */
+  defaultProps: Record<string, string>;
+  /** UIKit icon size prop → Nimbus Icon size prop value mapping. */
+  sizeMapping?: Array<{ from: string; to: string }>;
+}
+
 /** A single UI Kit → Nimbus migration entry. */
 export interface UiKitMigrationEntry {
   /** UI Kit component name (e.g. "PrimaryButton"). */
@@ -426,6 +438,8 @@ export interface UiKitMigrationEntry {
   breakingChanges: string[];
   /** Structured prop-level migration mappings, validated at build time. */
   propMappings?: PropMapping[];
+  /** Wrapper metadata for icon imports — tells the LLM to wrap bare icons. */
+  iconWrapper?: IconWrapper;
 }
 
 /** Single component migration result returned by migrate_from_uikit. */
@@ -440,6 +454,8 @@ export interface MigrateComponentResult {
   hint?: string;
   /** Structured prop-level migration mappings, if available. */
   propMappings?: PropMapping[];
+  /** Wrapper metadata for icon imports — tells the LLM to wrap bare icons. */
+  iconWrapper?: IconWrapper;
 }
 
 /** A suggested Nimbus component for an unmapped UI Kit component. */
