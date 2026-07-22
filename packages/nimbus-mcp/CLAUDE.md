@@ -39,6 +39,21 @@ When adding or editing migration entries, add `propMappings` for any prop-level
 changes. Use `_component` as the `uiKitProp` for fixed values injected by the
 component identity (e.g. `variant="solid"` for PrimaryButton).
 
+## Migration Data (`iconWrapper`)
+
+Icon-related entries can include an `iconWrapper` field (`IconWrapper` type in
+`src/types.ts`) that tells the LLM to wrap bare icon imports in the Nimbus
+`<Icon>` component. The field specifies the wrapper component name, import path,
+default size/color props, and a `sizeMapping` array translating UIKit icon sizes
+to Nimbus Icon recipe sizes. `sizeMapping.to` values are validated at build time
+against the Nimbus Icon recipe sizes by `scripts/validate-migration-data.ts`.
+
+To avoid duplication, `src/data/uikit-migration.ts` defines a shared
+`ICON_WRAPPER_BASE` constant with the common component/importPath/defaultProps.
+Each entry spreads this and adds its own `sizeMapping` — `CustomIcon` uses
+numeric UIKit sizes (`10`–`40`) while `Icon Library` maps both deprecated
+aliases (`small`/`medium`/`big`) and current numeric values.
+
 ## Build Scripts
 
 See [`scripts/README.md`](./scripts/README.md) for documentation on the prebuild

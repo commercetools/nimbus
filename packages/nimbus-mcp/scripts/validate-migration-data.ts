@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import ts from "typescript";
 import { getAllUiKitMigrations } from "../src/data/uikit-migration.js";
-import type { PropMapping } from "../src/types.js";
+import type { IconWrapper, PropMapping } from "../src/types.js";
 import {
   STYLE_PROPS,
   extractNimbusComponentName,
@@ -74,6 +74,40 @@ function validatePropMapping(
           entry: entryName,
           prop: mapping.nimbusProp,
           message: `valueMapping "${vm.from}" → "${vm.to}" — target "${vm.to}" is not valid. Valid values: ${validValues.join(", ")}`,
+        });
+      }
+    }
+  }
+
+  return errors;
+}
+
+const VALID_NIMBUS_ICON_SIZES = new Set(["2xs", "xs", "sm", "md", "lg", "xl"]);
+
+function validateIconWrapper(
+  entryName: string,
+  wrapper: IconWrapper
+): ValidationError[] {
+  const errors: ValidationError[] = [];
+
+  if (
+    wrapper.defaultProps.size &&
+    !VALID_NIMBUS_ICON_SIZES.has(wrapper.defaultProps.size)
+  ) {
+    errors.push({
+      entry: entryName,
+      prop: "iconWrapper.defaultProps.size",
+      message: `defaultProps.size "${wrapper.defaultProps.size}" is not a valid Nimbus Icon size. Valid: ${[...VALID_NIMBUS_ICON_SIZES].join(", ")}`,
+    });
+  }
+
+  if (wrapper.sizeMapping) {
+    for (const mapping of wrapper.sizeMapping) {
+      if (!VALID_NIMBUS_ICON_SIZES.has(mapping.to)) {
+        errors.push({
+          entry: entryName,
+          prop: "iconWrapper.sizeMapping",
+          message: `sizeMapping "${mapping.from}" → "${mapping.to}" — target "${mapping.to}" is not a valid Nimbus Icon size. Valid: ${[...VALID_NIMBUS_ICON_SIZES].join(", ")}`,
         });
       }
     }
@@ -246,6 +280,16 @@ export async function validateMigrationData(): Promise<void> {
   console.log(
     `[validate] ✓ ${entriesWithMappings} Nimbus entries with propMappings validated`
   );
+
+  // --- iconWrapper validation ---
+  let iconWrapperCount = 0;
+  for (const entry of migrations) {
+    if (!entry.iconWrapper) continue;
+    iconWrapperCount++;
+    const errors = validateIconWrapper(entry.uiKitName, entry.iconWrapper);
+    allErrors.push(...errors);
+  }
+  console.log(`[validate] ✓ ${iconWrapperCount} iconWrapper entries validated`);
 
   // --- UIKit-side validation ---
   const uikitErrors = validateUiKitProps(migrations);

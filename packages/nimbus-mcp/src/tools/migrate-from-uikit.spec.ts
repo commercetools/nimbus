@@ -464,7 +464,7 @@ describe("migrate_from_uikit — iconWrapper", () => {
     expect(data.iconWrapper.importPath).toBe("@commercetools/nimbus");
   });
 
-  it("includes sizeMapping in iconWrapper with UIKit-to-Nimbus size translations", async () => {
+  it("includes sizeMapping in iconWrapper with UIKit-to-Nimbus size translations for Icon Library", async () => {
     const result = await callMigrate({ componentName: "Icon Library" });
     const data = JSON.parse(getText(result));
 
@@ -473,6 +473,22 @@ describe("migrate_from_uikit — iconWrapper", () => {
       { from: "small", to: "2xs" },
       { from: "medium", to: "xs" },
       { from: "big", to: "md" },
+      { from: "10", to: "2xs" },
+      { from: "20", to: "xs" },
+      { from: "30", to: "sm" },
+      { from: "40", to: "md" },
+    ]);
+  });
+
+  it("uses numeric sizes (not deprecated aliases) for CustomIcon sizeMapping", async () => {
+    const result = await callMigrate({ componentName: "CustomIcon" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.iconWrapper.sizeMapping).toEqual([
+      { from: "10", to: "2xs" },
+      { from: "20", to: "xs" },
+      { from: "30", to: "sm" },
+      { from: "40", to: "md" },
     ]);
   });
 

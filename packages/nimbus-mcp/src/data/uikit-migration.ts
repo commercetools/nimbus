@@ -7,7 +7,17 @@
  * Source: migration-mapping.csv cross-referenced with Nimbus docs.
  */
 
-import type { UiKitMigrationEntry } from "../types.js";
+import type { IconWrapper, UiKitMigrationEntry } from "../types.js";
+
+// ---------------------------------------------------------------------------
+// Shared icon-wrapper metadata
+// ---------------------------------------------------------------------------
+
+const ICON_WRAPPER_BASE: Omit<IconWrapper, "sizeMapping"> = {
+  component: "Icon",
+  importPath: "@commercetools/nimbus",
+  defaultProps: { size: "2xs", color: "neutral.11" },
+};
 
 // ---------------------------------------------------------------------------
 // Migration data
@@ -1908,27 +1918,27 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      "Use <Icon as={YourSvg}> to wrap custom SVGs with design-system sizing and color tokens. Use InlineSvg for raw SVG markup.",
+      "Use <Icon as={YourSvg}> or <Icon><YourSvg /></Icon> to wrap custom SVGs with design-system sizing and color tokens. Use InlineSvg for raw SVG markup.",
     breakingChanges: [
       "Replace CustomIcon with <Icon as={YourSvg}> or <InlineSvg>",
-      "SVG must be passed via the as prop for proper sizing and theming",
+      "Prefer the as prop for the shorthand form; children also works",
     ],
     propMappings: [
       {
         uiKitProp: "children",
         nimbusProp: "children",
         changeType: "structural",
-        notes: "Pass the SVG via the as prop: <Icon as={YourSvg} />.",
+        notes:
+          "Prefer the as prop: <Icon as={YourSvg} />. Passing as children also works: <Icon><YourSvg /></Icon>.",
       },
     ],
     iconWrapper: {
-      component: "Icon",
-      importPath: "@commercetools/nimbus",
-      defaultProps: { size: "2xs", color: "neutral.11" },
+      ...ICON_WRAPPER_BASE,
       sizeMapping: [
-        { from: "small", to: "2xs" },
-        { from: "medium", to: "xs" },
-        { from: "big", to: "md" },
+        { from: "10", to: "2xs" },
+        { from: "20", to: "xs" },
+        { from: "30", to: "sm" },
+        { from: "40", to: "md" },
       ],
     },
   },
@@ -1976,13 +1986,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Icons must be wrapped in <Icon as={...}> for correct sizing and theming",
     ],
     iconWrapper: {
-      component: "Icon",
-      importPath: "@commercetools/nimbus",
-      defaultProps: { size: "2xs", color: "neutral.11" },
+      ...ICON_WRAPPER_BASE,
       sizeMapping: [
         { from: "small", to: "2xs" },
         { from: "medium", to: "xs" },
         { from: "big", to: "md" },
+        { from: "10", to: "2xs" },
+        { from: "20", to: "xs" },
+        { from: "30", to: "sm" },
+        { from: "40", to: "md" },
       ],
     },
   },
