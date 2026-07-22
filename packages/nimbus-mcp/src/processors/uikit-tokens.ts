@@ -13,7 +13,8 @@ export function cssPropertyToCamelCase(cssProperty: string): string {
 
 /**
  * Category derivation rules: maps UI Kit token name prefixes to recommended
- * Nimbus token categories. Order matters — longer prefixes are checked first.
+ * Nimbus token categories. Compound prefixes (e.g. "backgroundColorFor") are
+ * listed before their shorter roots (e.g. "color") so they match first.
  */
 const CATEGORY_RULES: Array<{ prefix: string; category: string }> = [
   { prefix: "backgroundColorFor", category: "color" },
