@@ -253,6 +253,10 @@ function buildComponentResult(
   if (entry.iconWrapper) result.iconWrapper = entry.iconWrapper;
   if (entry.propMigrations) result.propMigrations = entry.propMigrations;
   if (entry.codeReduction) result.codeReduction = entry.codeReduction;
+  if (entry.propShapeTransforms)
+    result.propShapeTransforms = entry.propShapeTransforms;
+  if (entry.callbackAdapters) result.callbackAdapters = entry.callbackAdapters;
+  if (entry.typeNotes) result.typeNotes = entry.typeNotes;
 
   const hint = deriveToolHint(
     uiKitName,

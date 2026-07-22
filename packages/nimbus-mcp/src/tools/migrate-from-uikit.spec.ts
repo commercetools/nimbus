@@ -589,3 +589,51 @@ describe("migrate_from_uikit — codeReduction", () => {
     expect(JSON.parse(getText(result)).codeReduction).toBeUndefined();
   });
 });
+
+describe("migrate_from_uikit — structured migration guidance", () => {
+  it("includes propShapeTransforms for DataTable columns", async () => {
+    const result = await callMigrate({ componentName: "DataTable" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.propShapeTransforms).toBeInstanceOf(Array);
+    const columnTransform = data.propShapeTransforms.find(
+      (t: { prop: string }) => t.prop === "columns"
+    );
+    expect(columnTransform).toBeDefined();
+    expect(columnTransform.rename).toEqual({ key: "id", label: "header" });
+    expect(columnTransform.addRequired).toContain("accessor");
+    expect(columnTransform.genericRequired).toContain("DataTableColumnItem");
+  });
+
+  it("includes callbackAdapters for DataTable onSortChange", async () => {
+    const result = await callMigrate({ componentName: "DataTable" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.callbackAdapters).toBeInstanceOf(Array);
+    const sortAdapter = data.callbackAdapters.find(
+      (a: { prop: string }) => a.prop === "onSortChange"
+    );
+    expect(sortAdapter).toBeDefined();
+    expect(sortAdapter.from).toBeTruthy();
+    expect(sortAdapter.to).toContain("ascending");
+  });
+
+  it("includes typeNotes for DataTable Selection type", async () => {
+    const result = await callMigrate({ componentName: "DataTable" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.typeNotes).toBeInstanceOf(Array);
+    expect(data.typeNotes.length).toBeGreaterThan(0);
+    const selectionNote = data.typeNotes.find((n: string) => n.includes("all"));
+    expect(selectionNote).toBeDefined();
+  });
+
+  it("omits structured guidance fields for entries without them", async () => {
+    const result = await callMigrate({ componentName: "Avatar" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.propShapeTransforms).toBeUndefined();
+    expect(data.callbackAdapters).toBeUndefined();
+    expect(data.typeNotes).toBeUndefined();
+  });
+});

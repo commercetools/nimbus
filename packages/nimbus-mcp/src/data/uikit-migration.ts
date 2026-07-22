@@ -1538,25 +1538,55 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
     notes:
-      "Direct replacement. Column definitions use the new columns prop with accessor keys.",
+      "Direct replacement. Column definitions require DataTableColumnItem<RowType>[] generic typing. Sort and selection callbacks have new signatures.",
     breakingChanges: [
-      "columns prop shape changed to use accessor and header fields",
-      "Row selection API updated to use onSelectionChange with a Set of keys",
+      "columns prop shape changed: key→id, label→header, accessor and render fields added",
+      "DataTableColumnItem<T> is generic — without <T> accessors return unknown and TS rejects them as ReactNode",
+      "onSortChange signature changed from (key, order) to (descriptor: { column, direction })",
+      "Selection type is 'all' | Set<Key> — missing the 'all' branch silently drops select-all clicks",
     ],
     propMappings: [
       {
         uiKitProp: "columns",
         nimbusProp: "columns",
         changeType: "structural",
-        notes: "Shape changed to use accessor and header fields.",
+        notes:
+          "Shape changed: key→id, label→header, accessor required. Must use DataTableColumnItem<RowType>[].",
       },
       {
         uiKitProp: "onRowClick",
         nimbusProp: "onSelectionChange",
         changeType: "structural",
         notes:
-          "Row interaction via onRowClick replaced by onSelectionChange with a Set of keys.",
+          "Row interaction via onRowClick replaced by onSelectionChange with Selection = 'all' | Set<Key>.",
       },
+      {
+        uiKitProp: "onSortChange",
+        nimbusProp: "onSortChange",
+        changeType: "structural",
+        notes:
+          "Signature changed from (key, order) to (descriptor: { column, direction: 'ascending' | 'descending' }).",
+      },
+    ],
+    propShapeTransforms: [
+      {
+        prop: "columns",
+        rename: { key: "id", label: "header" },
+        addRequired: ["accessor"],
+        addOptional: ["render"],
+        drop: ["width if string-typed (Nimbus uses pixels)"],
+        genericRequired: "DataTableColumnItem<RowType>[]",
+      },
+    ],
+    callbackAdapters: [
+      {
+        prop: "onSortChange",
+        from: "(key: string, order: 'asc' | 'desc')",
+        to: "(descriptor: { column: string, direction: 'ascending' | 'descending' })",
+      },
+    ],
+    typeNotes: [
+      "Selection = 'all' | Set<Key>; handle 'all' explicitly — missing the 'all' branch silently drops the select-all header click",
     ],
     codeReduction: {
       type: "selection-model-collapse",
