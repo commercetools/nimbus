@@ -11,7 +11,11 @@ import {
   TimeInput,
   type TimeValue,
 } from "@commercetools/nimbus";
-import { parseZonedDateTime, Time } from "@internationalized/date";
+import {
+  CalendarDateTime,
+  parseZonedDateTime,
+  Time,
+} from "@internationalized/date";
 import { useState } from "react";
 import { userEvent, within, expect, fn } from "storybook/test";
 import {
@@ -25,6 +29,9 @@ import {
 const inventionOfTheInternet = parseZonedDateTime(
   "1993-04-30T14:30[Europe/Zurich]"
 );
+
+// Fixed anchor (2026-06-15, shared with the Date components) for deterministic snapshots.
+const ANCHOR = new CalendarDateTime(2026, 6, 15, 14, 30);
 
 /**
  * Storybook metadata configuration
@@ -382,6 +389,8 @@ export const Variants: Story = {
  * including IconButton examples for different sizes and variants
  */
 export const LeadingAndTrailingElements: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const examples: Array<{
       label: string;
@@ -571,6 +580,8 @@ export const HourCycle: Story = {
  * Showcase Hide Time Zone
  */
 export const HideTimeZone: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     defaultValue: inventionOfTheInternet,
   },
@@ -641,6 +652,8 @@ export const HideTimeZone: Story = {
  * Showcase Granularity
  */
 export const Granularity: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     defaultValue: inventionOfTheInternet,
     hideTimeZone: true,
@@ -728,6 +741,8 @@ export const Granularity: Story = {
  * Showcase Should Force Leading Zeros
  */
 export const ShouldForceLeadingZeros: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     defaultValue: new Time(2, 5), // Use a single-digit hour and minute
     hideTimeZone: true,
@@ -1173,4 +1188,51 @@ export const WithFormField: Story = {
       await expect(errorMessage).toBeNull();
     });
   },
+};
+
+/** Focused segment highlight + root `_focusWithin` ring; one focus surface. */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: { ["aria-label"]: "focused time input", defaultValue: ANCHOR },
+  play: async ({ canvasElement }) => {
+    canvasElement.style.caretColor = "transparent"; // native caret can't be paused
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    const group = canvas.getByRole("group", { name: "focused time input" });
+    const firstSegment = group.querySelectorAll('[role="spinbutton"]')[0];
+    await expect(firstSegment).toHaveFocus();
+  },
+};
+
+/** SmokeTest: state × size × variant (the interacting axes; invalid border only shows on solid). */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      {(["solid", "ghost"] as const).map((variant) => (
+        <Stack key={variant} direction="row" gap="400" alignItems="center">
+          {(["sm", "md"] as const).map((size) =>
+            (
+              [
+                { label: "default", props: {} },
+                { label: "invalid", props: { isInvalid: true } },
+                { label: "disabled", props: { isDisabled: true } },
+              ] as const
+            ).map((state) => (
+              <TimeInput
+                key={`${variant}-${size}-${state.label}`}
+                variant={variant}
+                size={size}
+                defaultValue={ANCHOR}
+                aria-label={`${variant} ${size} ${state.label}`}
+                {...state.props}
+              />
+            ))
+          )}
+        </Stack>
+      ))}
+    </Stack>
+  ),
 };

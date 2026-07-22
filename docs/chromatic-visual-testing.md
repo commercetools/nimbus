@@ -10,6 +10,11 @@ This doc is the runbook: how runs are triggered, how baselines work, when to
 click the manual button, and what does (and doesn't) block a merge. The YAML
 comments stay intentionally thin and point here.
 
+> **Authoring or auditing stories?** Read the per-story mechanics first: the
+> Chromatic section of [`stories.md`](./file-type-guidelines/stories.md) and the
+> [`writing-stories` skill](../.claude/skills/writing-stories/SKILL.md). This
+> doc is the _why_ behind them.
+
 ## How a run is decided
 
 ```mermaid
@@ -357,7 +362,10 @@ which no play-dispatchable event sets.
   `_focusWithin` on more than one region - needs a focus story per target, since
   each side's ring clears the seam differently. There is no "all focused" state
   to capture: only one element holds focus at a time, so the per-target stories
-  are the complete set (don't add a combined-ring snapshot).
+  are the complete set (don't add a combined-ring snapshot). Confirm the ring
+  actually renders first: if it's on a slot that never gets the focus state, the
+  snapshot captures nothing (DropZone: ring on the root, focus on a hidden inner
+  element).
 - **Cover every visual state/variation** - "the more things we have in
   Storybook, the more coverage we get." This is the governing rule: the
   `SmokeTest` matrix must be **exhaustive** over the axes that _interact_

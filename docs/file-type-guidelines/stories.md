@@ -210,6 +210,10 @@ should blur (or be split so the snapshotted story doesn't end focused). Give
 **each** distinctly-styled focusable sub-element (a split button's trigger, an
 input's stepper/clear button) its own `Focused` story, not just the first - only
 one element holds focus per snapshot, so one story can't capture two rings.
+First confirm the ring actually renders: if it's styled on a slot that never
+receives the focus state (a non-focusable indicator/track keyed off `data-focus`
+or `_focusWithin`), the snapshot captures nothing - verify before opting in (see
+DropZone).
 
 ```typescript
 export const Focused: Story = {

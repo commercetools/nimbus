@@ -241,7 +241,10 @@ export const Focused: Story = {
 just the primary one** (a split button's dropdown trigger, an input's
 stepper/clear button, a date field's calendar toggle) - each styles its own
 `:focus-visible`, and since only one element holds focus per snapshot, one story
-can't capture two rings.
+can't capture two rings. **Verify the ring actually renders before opting in** -
+if it's styled on a slot that never gets the focus state (a non-focusable
+indicator/track keyed off `data-focus` / `_focusWithin`), the snapshot captures
+nothing (see DropZone).
 
 **Text-entry inputs: hide the caret** so the focused snapshot is deterministic
 (Chromatic can't pause the native caret blink). `caret-color` is inherited, so

@@ -64,7 +64,7 @@ export const Accessibility: Story = {
     const switchRoot = canvasElement.querySelector('[data-slot="root"]');
 
     await step("Has proper role", async () => {
-      await expect(switchEl).toHaveAttribute("type", "checkbox");
+      await expect(switchEl).toHaveAttribute("role", "switch");
     });
 
     await step("Supports keyboard navigation", async () => {
@@ -117,35 +117,48 @@ export const ControlledUse: Story = {
   },
 };
 
+/** Disabled (uniform opacity), folded out; off and on dim different track colors, so both shown. */
 export const Disabled: Story = {
-  args: {
-    isDisabled: true,
-    children: "Disabled Switch",
-    onChange: fn(),
-    // @ts-expect-error: data-testid is not a valid prop
-    ["data-testid"]: "disabled-switch",
-  },
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: { onChange: fn() },
+  render: (args) => (
+    <Stack direction="row" gap="600" alignItems="center">
+      <Switch {...args} isDisabled>
+        Off, disabled
+      </Switch>
+      <Switch {...args} isDisabled defaultSelected>
+        On, disabled
+      </Switch>
+    </Stack>
+  ),
   play: async ({ canvasElement, step, args }) => {
     const canvas = within(canvasElement);
-    const switchEl = canvas.getByTestId("disabled-switch");
-    const switchRoot = canvasElement.querySelector('[data-slot="root"]');
+    const switches = canvas.getAllByRole("switch");
     const onChange = args.onChange;
 
-    await step("Has disabled attribute", async () => {
-      await expect(switchEl).toHaveAttribute("disabled");
-      await expect(switchRoot?.getAttribute("data-disabled")).toBe("true");
+    await step("Both switches are disabled", async () => {
+      for (const el of switches) {
+        await expect(el).toBeDisabled();
+        await expect(el.closest('[data-slot="root"]')).toHaveAttribute(
+          "data-disabled",
+          "true"
+        );
+      }
     });
 
     await step("Cannot be focused or toggled", async () => {
       await userEvent.tab();
-      await expect(switchEl).not.toHaveFocus();
-
-      switchEl.click();
+      for (const el of switches) {
+        await expect(el).not.toHaveFocus();
+      }
+      switches[0].click();
       await expect(onChange).toHaveBeenCalledTimes(0);
     });
   },
 };
 
+/** No `data-invalid` recipe rule, so invalid looks identical to default: behavioral only, no snapshot. */
 export const Invalid: Story = {
   args: {
     isInvalid: true,
@@ -293,6 +306,36 @@ export const Sizes: Story = {
       <Box>
         <Switch size="md" {...args} />
       </Box>
+    </Stack>
+  ),
+};
+
+/** Track focus ring (keyboard-only via useFocusRing); one focus surface. */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: { children: "Focused Switch" },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("switch")).toHaveFocus();
+  },
+};
+
+/** SmokeTest: selected × size (the interacting axes). Disabled folded out; invalid has no visual; colorPalette fixed. */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="600" alignItems="flex-start">
+      {(["sm", "md"] as const).map((size) => (
+        <Stack key={size} direction="row" gap="600" alignItems="center">
+          <Switch size={size}>Off, {size}</Switch>
+          <Switch size={size} defaultSelected>
+            On, {size}
+          </Switch>
+        </Stack>
+      ))}
     </Stack>
   ),
 };

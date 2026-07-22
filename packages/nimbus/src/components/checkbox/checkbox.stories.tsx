@@ -62,7 +62,7 @@ export const Base: Story = {
     const onChange = args.onChange;
 
     await step(
-      "Forwards data- & aria-attributes to the checkbox element",
+      "Forwards data-attributes to the root and aria-attributes to the input",
       async () => {
         await expect(rootLabel.tagName).toBe("LABEL");
         await expect(rootLabel).toHaveAttribute("data-testid", "test-checkbox");
@@ -103,30 +103,40 @@ export const Base: Story = {
   },
 };
 
+/** Disabled is uniform opacity, folded out of the matrix; shown across all three glyphs. */
 export const Disabled: Story = {
-  args: {
-    children: "Disabled Checkbox",
-    // @ts-expect-error: data-testid is not a valid prop
-    "data-testid": "test-checkbox",
-    isDisabled: true,
-    isSelected: false,
-  },
-
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="row" gap="400" alignItems="flex-start">
+      <Checkbox isDisabled isSelected={false}>
+        Unchecked
+      </Checkbox>
+      <Checkbox isDisabled isSelected>
+        Checked
+      </Checkbox>
+      <Checkbox isDisabled isIndeterminate>
+        Indeterminate
+      </Checkbox>
+    </Stack>
+  ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const checkboxElement = canvas.getByTestId("test-checkbox");
-    const inputElement = checkboxElement.querySelector(
-      "input"
-    ) as HTMLInputElement;
+    const inputs = canvas.getAllByRole("checkbox");
 
     // A disabled Checkbox renders a disabled underlying <input>. The browser
     // won't forward label clicks to a disabled control or let it take focus, so
-    // asserting the input is disabled (plus the root's data-disabled state) is
-    // sufficient — simulating clicks that physically can't toggle it adds no
+    // asserting the inputs are disabled (plus the roots' data-disabled state) is
+    // sufficient — simulating clicks that physically can't toggle them adds no
     // coverage.
-    await step("Is disabled", async () => {
-      await expect(inputElement).toBeDisabled();
-      await expect(checkboxElement).toHaveAttribute("data-disabled", "true");
+    await step("Every checkbox is disabled", async () => {
+      for (const input of inputs) {
+        await expect(input).toBeDisabled();
+        await expect(input.closest("label")).toHaveAttribute(
+          "data-disabled",
+          "true"
+        );
+      }
     });
   },
 };
@@ -146,6 +156,23 @@ export const Invalid: Story = {
     await step("checkbox element has invalid state", async () => {
       await expect(checkboxElement).toHaveAttribute("data-invalid", "true");
     });
+  },
+};
+
+/** Indicator focus ring; independent of check-state, so one snapshot. */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    children: "Focused Checkbox",
+    "aria-label": "focused-checkbox",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(
+      canvas.getByRole("checkbox", { name: "focused-checkbox" })
+    ).toHaveFocus();
   },
 };
 
@@ -192,51 +219,26 @@ export const StyleProps: Story = {
   },
 };
 
-/**
- * Smoke Test
- * This story attempts to capture all visual permutations
- */
+/** SmokeTest: check-state × invalid (the interacting axes). Size/colorPalette fixed; disabled folded out. */
 export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <Stack gap="1000">
         {[false, true].map((isInvalid, j) => (
-          <Stack direction="row" key={j}>
-            {[false, true].map((isDisabled, i) => (
-              <Stack
-                width="1/2"
-                key={i}
-                direction="column"
-                alignItems="flex-start"
-              >
-                <Checkbox
-                  isSelected={false}
-                  isDisabled={isDisabled}
-                  isInvalid={isInvalid}
-                >
-                  Unchecked, {isDisabled ? "disabled" : "not disabled"},{" "}
-                  {isInvalid ? "invalid" : ""}
-                </Checkbox>
+          <Stack direction="row" gap="400" key={j} alignItems="flex-start">
+            <Checkbox isSelected={false} isInvalid={isInvalid}>
+              Unchecked{isInvalid ? ", invalid" : ""}
+            </Checkbox>
 
-                <Checkbox
-                  isDisabled={isDisabled}
-                  isInvalid={isInvalid}
-                  isSelected
-                >
-                  Checked, {isDisabled ? "disabled" : "not disabled"},{" "}
-                  {isInvalid ? "invalid" : ""}
-                </Checkbox>
+            <Checkbox isSelected isInvalid={isInvalid}>
+              Checked{isInvalid ? ", invalid" : ""}
+            </Checkbox>
 
-                <Checkbox
-                  isDisabled={isDisabled}
-                  isInvalid={isInvalid}
-                  isIndeterminate
-                >
-                  Indeterminate, {isDisabled ? "disabled" : "not disabled"},{" "}
-                  {isInvalid ? "invalid" : ""}
-                </Checkbox>
-              </Stack>
-            ))}
+            <Checkbox isIndeterminate isInvalid={isInvalid}>
+              Indeterminate{isInvalid ? ", invalid" : ""}
+            </Checkbox>
           </Stack>
         ))}
       </Stack>
