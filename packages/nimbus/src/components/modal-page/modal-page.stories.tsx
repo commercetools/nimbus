@@ -88,9 +88,12 @@ export const InfoPage: Story = {
       });
       await userEvent.click(backButton);
 
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
   },
 };
@@ -408,9 +411,12 @@ export const KeyboardNavigation: Story = {
 
     await step("Escape key closes the modal page", async () => {
       await userEvent.keyboard("{Escape}");
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     await step("Focus returns to the trigger after close", async () => {
@@ -441,9 +447,12 @@ export const KeyboardNavigation: Story = {
 
       // Close to restore state
       await userEvent.keyboard("{Escape}");
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
   },
 };
@@ -524,30 +533,42 @@ export const StackedModalPages: Story = {
       await userEvent.click(
         canvas.getByRole("button", { name: "Open Edit Product" })
       );
-      await waitFor(() => {
-        expect(canvas.getAllByRole("dialog")).toHaveLength(1);
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(canvas.getAllByRole("dialog")).toHaveLength(1);
+        },
+        { timeout: 3000 }
+      );
 
       await userEvent.click(
         canvas.getByRole("button", { name: "Open Add Variant" })
       );
-      await waitFor(() => {
-        expect(canvas.getAllByRole("dialog")).toHaveLength(2);
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(canvas.getAllByRole("dialog")).toHaveLength(2);
+        },
+        { timeout: 3000 }
+      );
 
       await userEvent.click(
         canvas.getByRole("button", { name: "Open Select Attribute" })
       );
-      await waitFor(() => {
-        expect(canvas.getAllByRole("dialog")).toHaveLength(3);
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(canvas.getAllByRole("dialog")).toHaveLength(3);
+        },
+        { timeout: 3000 }
+      );
 
       await userEvent.click(
         canvas.getByRole("button", { name: "Open Create Attribute" })
       );
-      await waitFor(() => {
-        expect(canvas.getAllByRole("dialog")).toHaveLength(4);
-      }, { timeout: 3000 });
+      await waitFor(
+        () => {
+          expect(canvas.getAllByRole("dialog")).toHaveLength(4);
+        },
+        { timeout: 3000 }
+      );
     });
 
     await step("Escape closes only the topmost level", async () => {
