@@ -263,7 +263,6 @@ export function registerGetTokens(server: McpServer): void {
                   text: `UI Kit token "${stripped}" not found. Pass a camelCase token name like "constraint7", "spacingXl", or "colorPrimary".`,
                 },
               ],
-              isError: true,
             };
           }
 

@@ -385,11 +385,11 @@ describe("get_tokens — uikitToken lookup", () => {
     expect(response.cssValue).toBe("32px");
   });
 
-  it("returns error for unknown UI Kit token", async () => {
+  it("returns not-found message (not an error) for unknown UI Kit token", async () => {
     const result = await callGetTokens(client, {
       uikitToken: "nonExistentToken",
     });
-    expect(result.isError).toBe(true);
+    expect(result.isError).toBeUndefined();
     expect(result.text).toContain("not found");
   });
 
