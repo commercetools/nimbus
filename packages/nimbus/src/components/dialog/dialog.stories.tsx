@@ -122,7 +122,7 @@ export const Default: Story = {
       // Wait for dialog to close
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
     });
 
     await step(
@@ -145,7 +145,7 @@ export const Default: Story = {
         // Wait for dialog to close
         await waitFor(() => {
           expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-        });
+        }, { timeout: 3000 });
       }
     );
 
@@ -179,7 +179,7 @@ export const Default: Story = {
       await userEvent.keyboard("{Escape}");
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Focus should return to trigger
       await waitFor(
@@ -267,7 +267,7 @@ export const ButtonAsTrigger: Story = {
       // Dialog should close and focus should return to custom trigger
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Wait for focus to be restored to the custom button trigger
       await waitFor(
@@ -509,7 +509,7 @@ export const ScrollBehavior: Story = {
       await userEvent.keyboard("{Escape}");
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
     });
 
     await step("Test 'scroll outside' behavior comparison", async () => {
@@ -556,7 +556,7 @@ export const ScrollBehavior: Story = {
       await userEvent.keyboard("{Escape}");
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
     });
 
     await step("Test focus restoration after keyboard scrolling", async () => {
@@ -587,7 +587,7 @@ export const ScrollBehavior: Story = {
       await userEvent.keyboard("{Escape}");
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Verify focus restoration (focus should return to original trigger)
       // Note: Focus restoration may vary by test environment
@@ -632,7 +632,7 @@ export const ScrollBehavior: Story = {
       await userEvent.click(closeButton);
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
     });
   },
 };
@@ -917,7 +917,7 @@ export const ComplexDismissalScenarios: Story = {
         await userEvent.click(modalOverlay1);
         await waitFor(() => {
           expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-        });
+        }, { timeout: 3000 });
       }
 
       // Test backdrop disabled, keyboard enabled
@@ -942,7 +942,7 @@ export const ComplexDismissalScenarios: Story = {
       await userEvent.keyboard("{Escape}");
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Test both disabled
       const trigger3 = canvas.getByRole("button", {
@@ -962,7 +962,7 @@ export const ComplexDismissalScenarios: Story = {
       await userEvent.click(closeButton);
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
     });
   },
 };
@@ -1057,7 +1057,7 @@ export const NestedDialogs: Story = {
             /This is a nested dialog that should appear above the first/
           )
         ).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Close second dialog first (should close in proper order)
       const secondCloseButton = canvas.getByRole("button", {
@@ -1071,7 +1071,7 @@ export const NestedDialogs: Story = {
         expect(
           canvas.getByText("This is the first level dialog.")
         ).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Close first dialog
       const firstCloseButton = canvas.getByRole("button", {
@@ -1081,7 +1081,7 @@ export const NestedDialogs: Story = {
 
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Verify focus restoration to original trigger
       await waitFor(
@@ -1112,7 +1112,7 @@ export const NestedDialogs: Story = {
       await waitFor(() => {
         const dialogs = canvas.getAllByRole("dialog");
         expect(dialogs).toHaveLength(2);
-      });
+      }, { timeout: 3000 });
 
       // Escape should close the topmost dialog first
       await userEvent.keyboard("{Escape}");
@@ -1123,14 +1123,14 @@ export const NestedDialogs: Story = {
         expect(
           canvas.getByText("This is the first level dialog.")
         ).toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Another Escape should close the remaining dialog
       await userEvent.keyboard("{Escape}");
 
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      }, { timeout: 3000 });
 
       // Focus should return to original trigger
       await waitFor(

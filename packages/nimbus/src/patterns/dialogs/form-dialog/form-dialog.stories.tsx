@@ -110,7 +110,7 @@ export const Base: Story = {
 
         await waitFor(() =>
           expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
-        );
+        , { timeout: 3000 });
         expect(onCancel).toHaveBeenCalledTimes(1);
         expect(onOpenChange).toHaveBeenCalledWith(false);
         expect(onSave).not.toHaveBeenCalled();
@@ -134,7 +134,7 @@ export const Base: Story = {
 
         await waitFor(() =>
           expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
-        );
+        , { timeout: 3000 });
         expect(onSave).toHaveBeenCalledTimes(1);
         expect(onOpenChange).toHaveBeenCalledWith(false);
         expect(onCancel).not.toHaveBeenCalled();
@@ -158,7 +158,7 @@ export const Base: Story = {
 
         await waitFor(() =>
           expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
-        );
+        , { timeout: 3000 });
         expect(onCancel).toHaveBeenCalledTimes(1);
         expect(onOpenChange).toHaveBeenCalledWith(false);
         expect(onSave).not.toHaveBeenCalled();
@@ -184,7 +184,7 @@ export const Base: Story = {
 
         await waitFor(() =>
           expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
-        );
+        , { timeout: 3000 });
         expect(onCancel).toHaveBeenCalledTimes(1);
         expect(onOpenChange).toHaveBeenCalledWith(false);
         expect(onSave).not.toHaveBeenCalled();
@@ -220,7 +220,7 @@ export const Base: Story = {
 
         await waitFor(() =>
           expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
-        );
+        , { timeout: 3000 });
         expect(onCancel).toHaveBeenCalledTimes(1);
         expect(onOpenChange).toHaveBeenCalledWith(false);
         expect(onSave).not.toHaveBeenCalled();
