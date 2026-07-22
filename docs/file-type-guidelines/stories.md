@@ -206,9 +206,10 @@ stories.
 **A `Focused` story keeps its ring for free** - nothing blurs the focused
 element after a play function, so a story that legitimately ends focused
 snapshots the ring as-is. Conversely, a behavior story that leaves a stray ring
-should blur (or be split so the snapshotted story doesn't end focused). Tab to
-**every** distinctly-styled focusable sub-element (a split button's trigger, an
-input's stepper/clear button), not just the first.
+should blur (or be split so the snapshotted story doesn't end focused). Give
+**each** distinctly-styled focusable sub-element (a split button's trigger, an
+input's stepper/clear button) its own `Focused` story, not just the first - only
+one element holds focus per snapshot, so one story can't capture two rings.
 
 ```typescript
 export const Focused: Story = {
