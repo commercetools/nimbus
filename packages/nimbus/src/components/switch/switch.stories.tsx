@@ -294,7 +294,10 @@ export const WithTooltipDisabled: Story = {
   },
 };
 
+/** Size axis (sm / md); independent of on/off, so its own story (no matrix). */
 export const Sizes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Switch Label",
   },
@@ -322,20 +325,14 @@ export const Focused: Story = {
   },
 };
 
-/** SmokeTest: selected × size (the interacting axes). Disabled folded out; invalid has no visual; colorPalette fixed. */
-export const SmokeTest: Story = {
+/** On/off track surfaces (neutral vs primary + thumb position); independent of size. */
+export const States: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
-    <Stack gap="600" alignItems="flex-start">
-      {(["sm", "md"] as const).map((size) => (
-        <Stack key={size} direction="row" gap="600" alignItems="center">
-          <Switch size={size}>Off, {size}</Switch>
-          <Switch size={size} defaultSelected>
-            On, {size}
-          </Switch>
-        </Stack>
-      ))}
+    <Stack direction="row" gap="600" alignItems="center">
+      <Switch>Off</Switch>
+      <Switch defaultSelected>On</Switch>
     </Stack>
   ),
 };

@@ -460,13 +460,15 @@ which no play-dispatchable event sets.
   matrix - those are IconButton's states, already covered there. (Distinct from
   the independent-axes case below: there the axes don't interact; here the
   wrapper delegates them wholesale to a component that already snapshots them.)
-- **Not every component needs a `SmokeTest` matrix.** A matrix earns its place
-  only when the axes _interact_. When they're independent (Avatar's `size` /
-  `colorPalette` / content mode don't combine into novel visuals), skip the
-  matrix and opt the existing showcase stories into snapshots directly; fold a
-  family of near-identical or purely behavioral stories into one labeled
-  snapshot (Avatar's `AllFallbacks`) when it aids review without losing
-  coverage.
+- **A matrix is only for _interacting_ axes; independent axes are separate
+  stories.** Build a `SmokeTest` matrix only when a cross-cell is a visual
+  neither axis produces alone (Checkbox `checked × invalid` → distinct critical
+  fill). When the axes are independent - one just scales/recolors the other
+  (Badge/Avatar `size × colorPalette`, Switch `size × on/off`) - do **not**
+  build a matrix, even a 2×2; snapshot each axis as its own showcase story. The
+  cross-product adds cells, not coverage. Still fold a family of near-identical
+  behavioral stories into one labeled snapshot (Avatar's `AllFallbacks`) when it
+  aids review without losing coverage.
 - **Capture the focus ring on every distinctly-styled focusable sub-element.** A
   split button's dropdown trigger, an input's clear button or stepper, and a
   date field's calendar toggle each style their own `:focus-visible`; a

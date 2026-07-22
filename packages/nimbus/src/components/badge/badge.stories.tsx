@@ -55,16 +55,17 @@ export const Base: Story = {
   },
 };
 
-/**
- * Showcase Sizes
- */
+/** Size axis (+ an icon so `_icon` sizing per size is covered); independent of palette, so its own story. */
 export const Sizes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {},
   render: (args) => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
         {sizes.map((size) => (
           <Badge key={size as string} {...args} size={size}>
+            <DemoIcon />
             {String(size)}
           </Badge>
         ))}
@@ -73,10 +74,10 @@ export const Sizes: Story = {
   },
 };
 
-/**
- * Showcase Possible Color Palettes
- */
+/** All palettes (semantic + brand + system); the palette axis, snapshotted in one flat showcase. */
 export const ColorPalettes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     size: "xs",
   },
@@ -93,10 +94,10 @@ export const ColorPalettes: Story = {
   },
 };
 
-/**
- * Showcase Icons
- */
+/** Icon layouts (leading / trailing / both); a distinct visual vs the text-only matrix. */
 export const WithIcons: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     size: "md",
   },

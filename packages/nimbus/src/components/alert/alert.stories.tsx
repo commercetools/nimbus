@@ -37,7 +37,10 @@ const mockOnDismiss = fn();
  * Uses the args pattern for dynamic control panel inputs.
  * Includes interaction tests.
  */
+/** Full composition incl. the Actions row (the one layout part not in SmokeTest). */
 export const Base: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     colorPalette: "positive",
     variant: "outlined",
@@ -110,36 +113,6 @@ export const ColorPalettesShowcase: Story = {
             onPress={() => alert(`Dismissed ${colorPalette as string}`)}
           />
         </Alert.Root>
-      ))}
-    </Stack>
-  ),
-};
-
-export const VariantsShowcase: Story = {
-  name: "Showcase: Variants",
-  render: () => (
-    <Stack direction="column" gap="400" alignItems="flex-start">
-      {colorPalettes.map((colorPalette) => (
-        <Stack
-          key={`stack-${colorPalette as string}`}
-          direction="row"
-          gap="400"
-          width="100%"
-        >
-          {variants.map((variant) => (
-            <Alert.Root
-              key={`alert-${colorPalette as string}-${variant as string}`}
-              colorPalette={colorPalette}
-              variant={variant}
-            >
-              <Alert.Title>
-                {colorPalette as string} / {variant as string}
-              </Alert.Title>
-              <Alert.Description>Desc.</Alert.Description>
-              <Alert.DismissButton onPress={() => alert("Dismissed")} />
-            </Alert.Root>
-          ))}
-        </Stack>
       ))}
     </Stack>
   ),
@@ -307,4 +280,36 @@ export const NoActions: Story = {
       await expect(mockDismissNoActions).toHaveBeenCalledTimes(1);
     });
   },
+};
+
+/** SmokeTest: colorPalette × variant (each palette auto-renders its own icon). */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      {colorPalettes.map((colorPalette) => (
+        <Stack
+          key={`stack-${colorPalette as string}`}
+          direction="row"
+          gap="400"
+          width="100%"
+        >
+          {variants.map((variant) => (
+            <Alert.Root
+              key={`alert-${colorPalette as string}-${variant as string}`}
+              colorPalette={colorPalette}
+              variant={variant}
+            >
+              <Alert.Title>
+                {colorPalette as string} / {variant as string}
+              </Alert.Title>
+              <Alert.Description>Desc.</Alert.Description>
+              <Alert.DismissButton onPress={() => alert("Dismissed")} />
+            </Alert.Root>
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  ),
 };
