@@ -237,9 +237,11 @@ export const Focused: Story = {
 };
 ```
 
-**Tab to every distinctly-styled focusable sub-element, not just the primary
-one** (a split button's dropdown trigger, an input's stepper/clear button, a date
-field's calendar toggle) - each styles its own `:focus-visible`.
+**Give each distinctly-styled focusable sub-element its own `Focused` story, not
+just the primary one** (a split button's dropdown trigger, an input's
+stepper/clear button, a date field's calendar toggle) - each styles its own
+`:focus-visible`, and since only one element holds focus per snapshot, one story
+can't capture two rings.
 
 **Text-entry inputs: hide the caret** so the focused snapshot is deterministic
 (Chromatic can't pause the native caret blink). `caret-color` is inherited, so
@@ -378,6 +380,11 @@ The **visual snapshot role**. Snapshots are **opt-in**: `preview.tsx` defaults t
 can find snapshot stories. Full rationale, CI details, and the hover/pressed gap
 live in docs/chromatic-visual-testing.md.
 
+- **Enumerate surfaces from source before deciding opt-ins - never from
+  memory.** List every recipe painting selector, `variant`/`size` key,
+  conditional prop, and ambient axis (RTL, locale, theme), then snapshot their
+  cross-product; diff against sibling components' story sets to catch what you
+  didn't think to list.
 - **Cover every state that changes pixels**, economically: fold the interacting
   axes into one `SmokeTest`, and give a dedicated story to each state it can't
   hold (`Focused`, `Disabled`, an open popover). Cost is controlled by TurboSnap
@@ -710,6 +717,9 @@ You MUST validate against these requirements:
 
 #### Chromatic Snapshots
 
+- [ ] Surfaces enumerated from the **recipe + component source** (selectors,
+      variant/size keys, conditional props), and snapshots cover their
+      **cross-product** - not recalled from memory
 - [ ] `SmokeTest` matrix is **exhaustive** over the interacting axes the
       component has (e.g. size x variant x palette, plus selected/unselected for
       toggles) - every distinct combined look appears in the one snapshot
@@ -736,16 +746,28 @@ You MUST validate against these requirements:
       a grid dimension)
 - [ ] Thin wrappers snapshot only the axis they introduce (+ `Focused`/`Disabled`
       if added), not a re-rendered copy of the wrapped component's matrix
-- [ ] `Focused` story opts in (`disableSnapshot: false` + `vrt`) and tabs to
-      **every** distinctly-styled focusable sub-element, not just the primary
+- [ ] A **separate `Focused` story per independent focus surface** (fused/adjacent
+      controls, or multiple `_focusWithin` regions) - not just the primary, and
+      not one story tabbing through all (only one element holds focus per
+      snapshot, so one story can't capture two rings). Each opts in
+      (`disableSnapshot: false` + `vrt`)
 - [ ] Text-entry `Focused` plays hide the caret
       (`canvasElement.style.caretColor = "transparent"`) before tabbing
 - [ ] Only behavior-only stories and stories whose look is already in `SmokeTest`
       left snapshot-off (project default) - never drop a visual state to save cost
+- [ ] Each snapshotted story's **play ends in the state the snapshot is named
+      for** - no stray focus ring, no cleared/mutated value, no left-open overlay
+      unless intended. Chromatic captures the play's final state and nothing
+      blurs it, so a play can be assertion-honest yet still snapshot the wrong
+      picture (blur, reset, or split the story)
 
 #### Play Functions (CRITICAL)
 
 - [ ] ALL interactive components have play functions
+- [ ] Every `step()` name is **backed by its assertions** - if the name claims a
+      behavior the checks don't prove, strengthen the checks to prove it; only
+      rename/drop the claim when the behavior is genuinely another story's
+      concern (and note where it's covered)
 - [ ] Uses `step()` for test organization
 - [ ] Uses `within()` for scoped queries
 - [ ] Uses `waitFor()` for async operations

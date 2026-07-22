@@ -179,6 +179,11 @@ its own story (`Focused`, disabled-but-focusable, an open tooltip/popover). A
 showcase whose look a snapshot already covers stays snapshot-off. Never drop a
 visual state to save cost.
 
+**Enumerate surfaces from the recipe + component source first** (selectors,
+variant/size keys, conditional props, and ambient axes like RTL), then snapshot
+their cross-product - not remembered states. See the full rule in
+[chromatic-visual-testing.md](../chromatic-visual-testing.md).
+
 **One state, multiple distinct surfaces → one story each, not a gallery frame.**
 If a component renders a state more than one way (mode-/variant-driven), each
 surface gets its own snapshot - MoneyInput's `Focused` +
@@ -201,9 +206,10 @@ stories.
 **A `Focused` story keeps its ring for free** - nothing blurs the focused
 element after a play function, so a story that legitimately ends focused
 snapshots the ring as-is. Conversely, a behavior story that leaves a stray ring
-should blur (or be split so the snapshotted story doesn't end focused). Tab to
-**every** distinctly-styled focusable sub-element (a split button's trigger, an
-input's stepper/clear button), not just the first.
+should blur (or be split so the snapshotted story doesn't end focused). Give
+**each** distinctly-styled focusable sub-element (a split button's trigger, an
+input's stepper/clear button) its own `Focused` story, not just the first - only
+one element holds focus per snapshot, so one story can't capture two rings.
 
 ```typescript
 export const Focused: Story = {
@@ -379,6 +385,12 @@ export const Interactive: Story = {
 - State changes
 - Accessibility features
 - Edge cases and error states
+
+**Every `step()` name must be backed by its assertions.** If a step's name
+claims a behavior the checks don't actually prove (e.g. "button appears" while
+only asserting it's in the DOM), strengthen the checks to prove the claim -
+don't rename the step down to match a weaker assertion. Only drop the claim when
+the behavior is genuinely another story's concern, and note where it's covered.
 
 ### Play Function Structure
 

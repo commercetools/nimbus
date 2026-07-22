@@ -34,7 +34,9 @@ export const dropZoneRecipe = defineRecipe({
     transitionProperty: "background-color, border-color",
     transitionDuration: "0.15s",
     transitionTimingFunction: "ease-in-smooth",
-    focusRing: "outside",
+    // Focus lands on RA's visually-hidden inner button, not this root, so match
+    // on focus-within (like SearchInput) rather than the root's own :focus-visible.
+    _focusWithin: { layerStyle: "focusRing" },
 
     // Sizes the default icon; consumer-supplied children are unaffected.
     "--drop-zone-icon-size": "{sizes.800}",

@@ -265,8 +265,13 @@ Two consequences for us:
 
 - IconButton's `Base`, with its six `step()`s, produces exactly one snapshot -
   its final resting state. Nothing blurs the element for you, so whatever state
-  the last step leaves (including a focus ring) is exactly what gets captured;
-  end the play function in the state you want snapshotted.
+  the last step leaves (a stray focus ring, a cleared value, a left-open
+  overlay) is exactly what gets captured; end the play in the state you want
+  snapshotted. This is a separate axis from assertion-honesty: a play can assert
+  exactly what its step names claim yet still leave the wrong picture, so for
+  every snapshotted story confirm its **final rendered state is the visual the
+  story name implies** (it's why an honest-looking `ReadOnly`/`Clearable` can
+  still snapshot a focused or emptied control).
 - If you want a snapshot of an intermediate state, the docs say to break it into
   multiple stories rather than expect mid-play captures. So splitting `Base`
   would only be worth it if you wanted to snapshot a state that isn't its final
@@ -326,8 +331,33 @@ but neither is currently captured, and it's an infra limitation, not a choice:
   infra family). Check the recipe rather than assuming pressed is always a
   no-op.
 
+**If a play can drive the real interaction, snapshot the result and leave it
+settled** - drag-over (`data-drop-target`), option focus (`data-focused`),
+selection (`aria-selected`). The gap is `:hover`/`:active` and `data-hovered`,
+which no play-dispatchable event sets.
+
 ### Broader best practices
 
+- **Enumerate surfaces from source, not memory.** Before deciding what to opt
+  in, read the recipe (every painting selector - `_hover`, `_focusWithin`,
+  `_disabled`, `_active`, `data-invalid`, `data-readonly`, ... - and every
+  `variant`/`size` key) and the component (every conditional render or prop,
+  e.g. `isDisabled={x || isReadOnly}`). Coverage is the **cross-product** of
+  recipe states × those conditional branches, not the states alone: a read-only
+  field that stays undimmed but disables its trailing button is a distinct
+  surface even though the field "looks like default." Any "renders like default"
+  decision must name the exact delta you checked. Recipe selectors and props
+  aren't the only axes: also account for **ambient axes** no prop names -
+  RTL/`dir` (mirrored icon/adornment layout), locale, theme - and for built-in
+  adornments the component always renders. Then **diff against sibling
+  components' story sets**: a surface a peer primitive snapshots but yours
+  doesn't (e.g. `RTLSupport`) is a gap until you can name why it doesn't apply.
+- **One focus snapshot per reachable focus surface.** A component with multiple
+  independent focus targets - fused/adjacent focusable sub-controls, or
+  `_focusWithin` on more than one region - needs a focus story per target, since
+  each side's ring clears the seam differently. There is no "all focused" state
+  to capture: only one element holds focus at a time, so the per-target stories
+  are the complete set (don't add a combined-ring snapshot).
 - **Cover every visual state/variation** - "the more things we have in
   Storybook, the more coverage we get." This is the governing rule: the
   `SmokeTest` matrix must be **exhaustive** over the axes that _interact_
