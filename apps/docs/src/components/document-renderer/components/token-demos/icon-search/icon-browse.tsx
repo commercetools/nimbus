@@ -3,7 +3,6 @@ import {
   Flex,
   Text,
   TextInput,
-  SimpleGrid,
   Pagination,
   useCopyToClipboard,
   IconButton,
@@ -18,6 +17,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  type CSSProperties,
 } from "react";
 import Fuse from "fuse.js";
 
@@ -31,8 +31,24 @@ import {
   type IconEntry,
 } from "./use-icon-data";
 
-/** Icons per page. Divisible by every column count (4/5/6/8) so rows stay full. */
+/**
+ * Icons per page. Highly composite (÷ 2,3,4,5,6,8,10,12…) so a page stays full
+ * across the range of auto-fill column counts the size slider produces.
+ */
 const PAGE_SIZE = 120;
+
+/** Icon-size slider bounds (px). Default 48 = the fontSize "1200" token. */
+const ICON_SIZE_MIN = 24;
+const ICON_SIZE_MAX = 96;
+const ICON_SIZE_STEP = 8;
+const ICON_SIZE_DEFAULT = 48;
+/**
+ * Extra width (px) added to the icon size to get a card's minimum column width.
+ * The name label lives under the glyph, so a card needs room beyond the glyph
+ * itself; this keeps the label legible at small icon sizes and lets bigger
+ * icons claim proportionally wider columns (fewer per row) as the slider moves.
+ */
+const CARD_LABEL_ROOM = 72;
 
 /**
  * One icon cell. Memoized so typing in the search box (which re-renders the
@@ -51,45 +67,73 @@ const IconTile = memo(function IconTile({
   const [active, setActive] = useState(false);
   const Component = icons[iconId as keyof typeof icons];
 
-  // The cell IS the focusable React Aria GridListItem: arrow keys move between
-  // cells, Enter/click fires the GridList's `onAction` (opens the detail). The
-  // icon name is shown via the native `title` (no React Aria Tooltip — those
-  // can't wrap a collection item, and a focusable child inside one re-triggers
-  // the warm-open anchoring bug). The copy button mounts lazily on hover; it's
-  // a child of the cell, so hovering it keeps the cell hovered (no flicker).
+  // The card IS the focusable React Aria GridListItem: arrow keys move between
+  // cards, Enter/click fires the GridList's `onAction` (opens the detail). The
+  // full export name is always readable as the label below the glyph, and the
+  // native `title` surfaces it in full on hover when the label is truncated (no
+  // React Aria Tooltip — those can't wrap a collection item, and a focusable
+  // child inside one re-triggers the warm-open anchoring bug). Borderless with
+  // a soft rounded hover tint — a gallery card, not a spreadsheet cell. The copy
+  // button mounts lazily on hover; it's a child of the card, so hovering it
+  // keeps the card hovered (no flicker).
   return (
     <Box
       asChild
       position="relative"
-      border="solid-25"
-      borderColor="neutral.5"
-      ml="-1px"
-      mb="-1px"
-      aspectRatio={1}
+      borderRadius="300"
       cursor="pointer"
       outline="none"
-      _hover={{ bg: "neutral.2" }}
+      title={iconId}
+      _hover={{ bg: "neutral.3" }}
       css={{ "&[data-focus-visible]": { layerStyle: "focusRing" } }}
       onMouseEnter={() => setActive(true)}
       onMouseLeave={() => setActive(false)}
     >
       <GridListItem id={iconId} textValue={iconId}>
         <Flex
-          position="absolute"
-          inset="0"
-          alignItems="center"
-          justifyContent="center"
-          title={iconId}
+          direction="column"
+          align="center"
+          justify="center"
+          gap="200"
+          px="200"
+          py="400"
+          width="full"
+          minW="0"
         >
-          {/* Icons are 1em SVGs, so font-size drives their box: the "1200"
-              token = 48px. */}
-          <Text fontSize="1200" color="neutral.12">
+          {/* Icons are 1em SVGs, so font-size drives their box. The size lives
+              in the --icon-preview-size custom property (set on the grid
+              container, default 48px = the "1200" token) so every glyph resizes
+              via CSS when the slider moves — no per-card re-render. The size +
+              color sit on this centering flex (not a <Text>) so no line-height
+              inflates the box and the glyph stays dead-centered above its
+              label. */}
+          <Flex
+            align="center"
+            justify="center"
+            color="neutral.12"
+            css={{
+              fontSize: "var(--icon-preview-size, 48px)",
+              height: "var(--icon-preview-size, 48px)",
+            }}
+          >
             <Component />
+          </Flex>
+          {/* The export name — what you actually import — shown verbatim and
+              truncated to one line so every card stays the same height. */}
+          <Text
+            textStyle="xs"
+            color="neutral.10"
+            width="full"
+            maxWidth="full"
+            textAlign="center"
+            truncate
+          >
+            {iconId}
           </Text>
         </Flex>
 
         {active && (
-          <Box position="absolute" top="50" right="50">
+          <Box position="absolute" top="100" right="100">
             <IconButton
               aria-label={`Copy import for ${iconId}`}
               size="xs"
@@ -149,6 +193,16 @@ export const IconBrowse = ({
   const deferredQ = useDeferredValue(q);
   // True while the grid is still reflecting an older query than what's typed.
   const isStale = q !== deferredQ;
+
+  // Rendered size (px) of the icon glyphs, driven by the header slider. Applied
+  // as a CSS custom property on the grid container so all tiles resize together
+  // via CSS — the memoized tiles never re-render — and the column count reflows
+  // (auto-fill) as tiles grow/shrink. Default 48 = the fontSize "1200" token.
+  const [iconSize, setIconSize] = useState(ICON_SIZE_DEFAULT);
+  // Minimum card column width: glyph plus room for the name label. `auto-fill`
+  // packs as many of these as fit, then `1fr` stretches them to fill the row
+  // flush to both edges (no floating, center-detached block).
+  const cardWidth = iconSize + CARD_LABEL_ROOM;
 
   // Icons in the active category (or all of them). Compared by slug so a
   // category whose name contains spaces ("common actions") still matches.
@@ -230,17 +284,56 @@ export const IconBrowse = ({
         bg="bg/75"
         backdropFilter="blur(8px)"
       >
-        <TextInput
-          width="full"
-          aria-label="Search icons"
-          placeholder={`Search through ${
-            categorySlug === ALL_CATEGORIES
-              ? ALL_ICON_NAMES.length
-              : scoped.length
-          } icons ...`}
-          value={q}
-          onChange={(value) => setQ(value)}
-        />
+        <Flex align="center" gap="400" wrap="wrap">
+          <Box flex="1 1 240px" minW="0">
+            <TextInput
+              width="full"
+              aria-label="Search icons"
+              placeholder={`Search through ${
+                categorySlug === ALL_CATEGORIES
+                  ? ALL_ICON_NAMES.length
+                  : scoped.length
+              } icons ...`}
+              value={q}
+              onChange={(value) => setQ(value)}
+            />
+          </Box>
+          {/* Icon-size control: a plain range input, lightly styled (accent
+              color + width). Resizes every previewed icon live via CSS. */}
+          <Flex align="center" gap="300" flexShrink="0">
+            <Text textStyle="sm" color="neutral.11" whiteSpace="nowrap">
+              Size
+            </Text>
+            <Box
+              asChild
+              css={{
+                width: "140px",
+                cursor: "pointer",
+                accentColor: "{colors.primary.9}",
+              }}
+            >
+              <input
+                type="range"
+                min={ICON_SIZE_MIN}
+                max={ICON_SIZE_MAX}
+                step={ICON_SIZE_STEP}
+                value={iconSize}
+                aria-label="Icon preview size"
+                onChange={(e) => setIconSize(Number(e.target.value))}
+              />
+            </Box>
+            <Text
+              textStyle="sm"
+              color="neutral.10"
+              textAlign="right"
+              minW="1200"
+              whiteSpace="nowrap"
+              css={{ fontVariantNumeric: "tabular-nums" }}
+            >
+              {iconSize}px
+            </Text>
+          </Flex>
+        </Flex>
       </Box>
       <Box
         px="400"
@@ -249,6 +342,14 @@ export const IconBrowse = ({
         // stale grid reads as "updating" rather than as the final result.
         opacity={isStale ? 0.6 : 1}
         transition="opacity 120ms ease"
+        // The size slider writes both custom properties here; they cascade to
+        // the grid (minimum card column width) and every card (glyph font-size).
+        style={
+          {
+            "--icon-preview-size": `${iconSize}px`,
+            "--card-w": `${cardWidth}px`,
+          } as CSSProperties
+        }
       >
         {loading ? (
           <Flex justify="center" py="800">
@@ -257,10 +358,21 @@ export const IconBrowse = ({
         ) : full.length === 0 ? (
           <Text color="neutral.11">No icons match “{q}”.</Text>
         ) : (
-          // SimpleGrid (asChild) supplies the responsive `display:grid` +
-          // columns; GridList reads that geometry for 2D arrow-key navigation
-          // and fires `onAction` (click or Enter) with the focused icon's id.
-          <SimpleGrid asChild columns={[4, 5, 5, 6, 8]}>
+          // A Box (asChild) supplies `display:grid`. Columns auto-fill at the
+          // --card-w minimum then stretch (`1fr`) to fill the row, so the block
+          // spans the full content column flush to both edges (no detached,
+          // centered island) and reflows as cards grow/shrink with the slider.
+          // GridList reads that geometry for 2D arrow-key navigation and fires
+          // `onAction` (click/Enter) with the focused icon's id.
+          <Box
+            asChild
+            display="grid"
+            gap="200"
+            css={{
+              gridTemplateColumns:
+                "repeat(auto-fill, minmax(var(--card-w, 120px), 1fr))",
+            }}
+          >
             <GridList
               aria-label="Icons"
               layout="grid"
@@ -271,7 +383,7 @@ export const IconBrowse = ({
                 <IconTile key={iconId} iconId={iconId} onCopy={onCopyRequest} />
               ))}
             </GridList>
-          </SimpleGrid>
+          </Box>
         )}
       </Box>
 
