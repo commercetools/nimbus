@@ -54,6 +54,8 @@ export const Base: Story = {
 };
 
 export const Sizes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => {
     return (
       <Stack direction="row" gap="400" alignItems="center">
@@ -71,6 +73,8 @@ export const Sizes: Story = {
  * One color palette for a light background and one for a dark background
  */
 export const ColorPalettes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => {
     return (
       <Box backgroundColor="blackAlpha.5">

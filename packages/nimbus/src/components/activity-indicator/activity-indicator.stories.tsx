@@ -71,6 +71,8 @@ export const Base: Story = {
  * the same inline position, to compare how each reads next to a status label.
  */
 export const InlineWithText: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => {
     const [showIcon, setShowIcon] = useState(false);
 
@@ -98,6 +100,8 @@ export const InlineWithText: Story = {
  * All sizes: `inherit` plus the fixed icon-box sizes.
  */
 export const Sizes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => (
     <Stack direction="row" gap="400" alignItems="center">
       {sizes.map((size) => (
@@ -238,6 +242,8 @@ export const SizeCalibration: Story = {
  * read on a solid colored surface.
  */
 export const ColorPalettes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <DisplayColorPalettes>
       {(palette) => (

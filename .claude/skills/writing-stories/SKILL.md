@@ -424,6 +424,23 @@ live in docs/chromatic-visual-testing.md.
   for async-derived state, no stray focus ring. Hide the caret in a `Focused`
   text-input story. `:hover` and `:active`/pressed can't be captured statically
   yet.
+- **Name the interacting-axes matrix `SmokeTest`, render it last** - the role
+  name stays accurate as axes change; the axis list goes in the doc comment (not
+  the story name).
+- **Animated components: pin only when the paused frame hides the target.**
+  Chromatic pauses CSS/SVG animations at a fixed frame (last by default;
+  `pauseAnimationAtEnd: false` = first), so most animated states are already
+  deterministic. The trap is an infinite animation whose endpoints both hide the
+  content (`progress-indeterminate` parks its pill off-track) - pin a
+  representative frame in the play (`el.style.animation = "none"` + an explicit
+  `transform`).
+- **The snapshot is the play's end state** - Chromatic captures after the play
+  passes, so land on the target frame: open an overlay/portal and don't dismiss
+  it; a play that resets to default loses its frame (keep it behavioral).
+- **Portals (Toast, overlays)** - capture is page-wide, so portal content is
+  in-frame; hold it open (`duration: Infinity`), await it, clean up between
+  stories (`clearToasts()`). Reach a portal component's own focus via its real
+  keyboard path, not a synthetic `.focus()`.
 
 **When a VRT pattern changes, sync all three canonical docs.** Any change to a
 Chromatic/VRT convention (a new opt-in state, a matrix rule, or a determinism fix
@@ -773,6 +790,16 @@ You MUST validate against these requirements:
       unless intended. Chromatic captures the play's final state and nothing
       blurs it, so a play can be assertion-honest yet still snapshot the wrong
       picture (blur, reset, or split the story)
+- [ ] The interacting-axes matrix is named **`SmokeTest`** and rendered **last**
+      (not `Variants`/`VariantsAndSizes`/etc.); the axis list lives in the doc
+      comment
+- [ ] **Animated** states: paused frame confirmed to show the target; if an
+      infinite animation's endpoints both hide it (indeterminate progress), the
+      play **pins** a representative frame (`animation: none` + explicit
+      `transform`)
+- [ ] **Portal** components (Toast/overlays): transient UI held open
+      (`duration: Infinity`), awaited, and cleaned up between stories; the
+      component's own focus reached via its **real keyboard path**, not `.focus()`
 
 #### Play Functions (CRITICAL)
 

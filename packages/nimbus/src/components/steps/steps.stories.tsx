@@ -266,6 +266,8 @@ export const Controlled: Story = {
  * Displays xs, sm, and md sizes
  */
 export const Sizes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <Stack direction="column" gap="800" alignItems="stretch" width="100%">
@@ -367,6 +369,8 @@ export const Sizes: Story = {
  * Displays horizontal and vertical layouts
  */
 export const Orientations: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <Stack direction="row" gap="800" alignItems="flex-start" width="100%">
@@ -475,10 +479,75 @@ export const Orientations: Story = {
 };
 
 /**
+ * Focused trigger
+ * Keyboard focus lands on the current step's trigger (roving tabindex), showing
+ * the `_focusVisible` ring. The matrix stories can't render focus, so it gets its
+ * own snapshot.
+ */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Steps.Root defaultStep={1} count={3} size="sm">
+      <Steps.List>
+        <Steps.Item index={0}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Account</Steps.Title>
+          </Steps.Trigger>
+          <Steps.Separator />
+        </Steps.Item>
+
+        <Steps.Item index={1}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Profile</Steps.Title>
+          </Steps.Trigger>
+          <Steps.Separator />
+        </Steps.Item>
+
+        <Steps.Item index={2}>
+          <Steps.Trigger>
+            <Steps.Indicator>
+              <Steps.Status
+                complete={<Check />}
+                incomplete={<Steps.Number />}
+              />
+            </Steps.Indicator>
+            <Steps.Title>Review</Steps.Title>
+          </Steps.Trigger>
+        </Steps.Item>
+      </Steps.List>
+    </Steps.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const user = userEvent.setup();
+
+    await step("Keyboard focus lands on a step trigger", async () => {
+      await user.tab();
+      const active = canvasElement.ownerDocument.activeElement;
+      await expect(active).toHaveAttribute("role", "tab");
+    });
+  },
+};
+
+/**
  * With Custom Icons
  * Using custom icons in the indicator
  */
 export const WithIcons: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <Steps.Root
