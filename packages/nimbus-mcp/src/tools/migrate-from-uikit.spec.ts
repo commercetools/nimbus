@@ -586,6 +586,6 @@ describe("migrate_from_uikit — codeReduction", () => {
 
   it("omits codeReduction for entries without it", async () => {
     const result = await callMigrate({ componentName: "PrimaryButton" });
-    const data = JSON.parse(getText(result));
+    expect(JSON.parse(getText(result)).codeReduction).toBeUndefined();
   });
 });

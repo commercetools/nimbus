@@ -4,12 +4,7 @@ import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import ts from "typescript";
 import { getAllUiKitMigrations } from "../src/data/uikit-migration.js";
-import type {
-  IconWrapper,
-  PropMapping,
-  CodeReduction,
-  PropMigration,
-} from "../src/types.js";
+import type { IconWrapper, PropMapping } from "../src/types.js";
 import {
   STYLE_PROPS,
   extractNimbusComponentName,
