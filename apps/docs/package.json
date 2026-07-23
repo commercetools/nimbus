@@ -9,13 +9,15 @@
     "build:app": "vite build",
     "copy-index": "cp dist/index.html dist/404.html",
     "dev": "pnpm tsx ./scripts/dev.ts",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync:icon-meta": "pnpm tsx ./scripts/sync-icon-meta.ts"
   },
   "dependencies": {
     "@commercetools/nimbus": "workspace:^",
     "@commercetools/nimbus-docs-build": "workspace:^",
     "@commercetools/nimbus-icons": "workspace:^",
     "@emotion/react": "catalog:react",
+    "@huggingface/transformers": "catalog:",
     "@internationalized/date": "catalog:react",
     "@mdx-js/mdx": "catalog:apps",
     "@types/mdx": "catalog:apps",
@@ -46,6 +48,7 @@
     "zod": "catalog:utils"
   },
   "devDependencies": {
+    "@commercetools/nimbus-design-token-ts-plugin": "workspace:^",
     "@eslint/js": "catalog:tooling",
     "@types/lodash": "catalog:utils",
     "@types/react": "catalog:react",
@@ -54,7 +57,6 @@
     "eslint": "catalog:tooling",
     "eslint-plugin-react-refresh": "catalog:tooling",
     "globals": "catalog:tooling",
-    "@commercetools/nimbus-design-token-ts-plugin": "workspace:^",
     "typescript": "catalog:tooling",
     "typescript-eslint": "catalog:tooling",
     "vite": "catalog:tooling",

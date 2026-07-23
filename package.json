@@ -31,7 +31,7 @@
     "nimbus:clean": "node scripts/clean.mjs",
     "nimbus:reset": "node scripts/clean.mjs --all --node-modules",
     "playwright:install": "pnpm exec playwright install chromium",
-    "start": "pnpm run start:docs & pnpm run start:storybook",
+    "start": "node scripts/start-dev.mjs",
     "start:docs": "pnpm --filter './apps/docs' run dev",
     "start:storybook": "pnpm --filter @commercetools/nimbus run storybook",
     "start:mcp-inspector": "pnpm --filter @commercetools/nimbus-mcp run mcp-inspector",
