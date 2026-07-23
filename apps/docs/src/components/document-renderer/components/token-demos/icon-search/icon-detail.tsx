@@ -1,13 +1,14 @@
-import type { FC, SVGProps } from "react";
+import { Fragment } from "react";
+import type { FC, ReactNode, SVGProps } from "react";
 import {
   Box,
   Stack,
   Flex,
   Text,
-  Heading,
   Badge,
-  Button,
+  IconButton,
   Dialog,
+  Tabs,
   useCopyToClipboard,
   toast,
 } from "@commercetools/nimbus";
@@ -17,24 +18,105 @@ import type { IconMeta } from "@commercetools/nimbus-icons/meta";
 import { useNavigate } from "react-router-dom";
 
 import { slugifyCategory, titleCase } from "./use-icon-data";
-import { IconInUse } from "./icon-in-use";
 
 /** A raw icon component from `@commercetools/nimbus-icons` (an SVG). */
 type Glyph = FC<SVGProps<SVGSVGElement>>;
 
-/** Pixel sizes shown on the size grid. */
-const SIZES = [16, 20, 24, 32, 40, 48, 64];
+/** Pixel sizes shown across the size matrix — a compact, representative spread. */
+const SIZES = [16, 24, 32, 48];
+
+/**
+ * Surface treatments the size matrix previews each icon against: bare on the
+ * page, on a rounded-square chip, and on a circular chip (the two shapes icons
+ * most often sit inside — buttons/avatars).
+ */
+const SIZE_SURFACES = [
+  { key: "plain", label: "Background", filled: false, radius: undefined },
+  { key: "square", label: "Square", filled: true, radius: "300" },
+  { key: "circle", label: "Circle", filled: true, radius: "full" },
+] as const;
+
+/**
+ * A small uppercase section label — the connective tissue of the reference
+ * layout. Quiet enough not to compete with the content, consistent enough to
+ * tie the two columns together.
+ */
+const SectionLabel = ({ children }: { children: ReactNode }) => (
+  <Text
+    textStyle="xs"
+    fontWeight="700"
+    color="neutral.11"
+    css={{ textTransform: "uppercase", letterSpacing: "0.05em" }}
+  >
+    {children}
+  </Text>
+);
+
+/**
+ * A multi-line, copyable code block on a soft surface. Lines scroll
+ * horizontally inside their own track (a long import path never widens the
+ * dialog), and the copy button floats in the top-right corner clear of the
+ * code via the reserved right padding.
+ */
+const CodeBlock = ({
+  code,
+  label,
+  onCopy,
+}: {
+  code: string;
+  label: string;
+  onCopy: () => void;
+}) => (
+  <Box position="relative" bg="neutral.2" borderRadius="200">
+    <Box css={{ overflowX: "auto" }} p="300" pr="900">
+      <Text
+        as="pre"
+        fontFamily="mono"
+        textStyle="xs"
+        color="neutral.12"
+        css={{ whiteSpace: "pre", margin: 0, lineHeight: "1.7" }}
+      >
+        {code}
+      </Text>
+    </Box>
+    <IconButton
+      aria-label={`Copy ${label}`}
+      size="xs"
+      variant="ghost"
+      onClick={onCopy}
+      position="absolute"
+      top="150"
+      right="150"
+    >
+      <ContentCopy />
+    </IconButton>
+  </Box>
+);
+
+/** Inline monospace token used in the behavior notes. */
+const Code = ({ children }: { children: ReactNode }) => (
+  <Text as="code" fontFamily="mono" color="neutral.12">
+    {children}
+  </Text>
+);
 
 /**
  * The icon centered on its 24×24 keyline grid — the design-spec "anatomy" view.
  * Material icons author against a 24-unit canvas with ~2 units of edge padding
- * (the "live area"), shown here as the dashed keyline.
+ * (the "live area"), shown here as the dashed keyline. `size` must stay a
+ * multiple of 24 (one px cell per unit) so the grid lines land on exact cells.
  */
-const KeylineGrid = ({ Component }: { Component: Glyph }) => {
-  const UNIT = 8; // px per grid cell
+const KeylineGrid = ({
+  Component,
+  size = 192,
+}: {
+  Component: Glyph;
+  size?: number;
+}) => {
   const UNITS = 24; // icons are authored on a 24×24 canvas
+  const SIZE = size; // an exact multiple of 24 so cells align
+  const UNIT = SIZE / UNITS; // px per grid cell
   const PAD = UNIT * 2; // 2 units of edge padding (the live area)
-  const SIZE = UNIT * UNITS; // 192px — an exact multiple of 24 so cells align
 
   return (
     <Box
@@ -86,8 +168,9 @@ const KeylineGrid = ({ Component }: { Component: Glyph }) => {
 };
 
 /**
- * Shows an icon's detail — preview at multiple sizes, import statement, and the
- * icon in use inside other Nimbus components — in a controlled Dialog. Open when
+ * Shows an icon's detail — a compact spec card — in a controlled Dialog: a hero
+ * preview beside the import and JSX usage you copy and how it sizes/colors, then
+ * the design anatomy beside a size strip, and the full tag list. Open when
  * `name` is set; `onClose` clears the selection. Rendered once at the icons
  * shell level (not per tile), so there's only ever one dialog instance.
  */
@@ -106,17 +189,60 @@ export const IconDetailDialog = ({
   const Component = name
     ? (icons[name as keyof typeof icons] as Glyph | undefined)
     : undefined;
-  const categories = (name && metadata?.[name]?.categories) || [];
+  const meta = name ? metadata?.[name] : undefined;
+  const categories = meta?.categories ?? [];
+  const tags = meta?.tags ?? [];
   const importStatement = name
     ? `import { ${name} } from '@commercetools/nimbus-icons';`
     : "";
+  const basicSnippet = name ? `${importStatement}\n\n<${name} />` : "";
+  const buttonSnippet = name
+    ? `import { Button } from '@commercetools/nimbus';\n${importStatement}\n\n<Button>\n  <${name} /> Label\n</Button>`
+    : "";
+  const standaloneSnippet = name
+    ? `import { Icon } from '@commercetools/nimbus';\n${importStatement}\n\n<Icon as={${name}} size="md" color="primary.11" />`
+    : "";
 
-  const onCopy = () => {
-    copyToClipboard(importStatement);
-    toast.success({
-      title: "Copied import to clipboard",
-      description: name ?? "",
-    });
+  // The three ways to render an icon, each with the imports that snippet needs.
+  const usageTabs = [
+    {
+      id: "basic",
+      label: "Basic",
+      code: basicSnippet,
+      caption: (
+        <>
+          The bare component — renders at <Code>1em</Code> in{" "}
+          <Code>currentColor</Code>.
+        </>
+      ),
+    },
+    {
+      id: "button",
+      label: "Button",
+      code: buttonSnippet,
+      caption: (
+        <>
+          As a child, <Code>Button</Code> and <Code>IconButton</Code> set its
+          size and color.
+        </>
+      ),
+    },
+    {
+      id: "standalone",
+      label: "Standalone",
+      code: standaloneSnippet,
+      caption: (
+        <>
+          Wrap it in <Code>Icon</Code> to set its <Code>size</Code> and{" "}
+          <Code>color</Code> yourself.
+        </>
+      ),
+    },
+  ];
+
+  const copy = (text: string, description: string) => {
+    copyToClipboard(text);
+    toast.success({ title: "Copied to clipboard", description });
   };
 
   return (
@@ -127,95 +253,170 @@ export const IconDetailDialog = ({
         if (!open) onClose();
       }}
     >
-      <Dialog.Content width="5xl" maxWidth="95vw">
+      <Dialog.Content width="3xl" maxWidth="95vw">
         <Dialog.Header>
-          <Dialog.Title>{name}</Dialog.Title>
+          <Flex align="center" gap="300" wrap="wrap" flex="1" minW="0">
+            <Dialog.Title>{name}</Dialog.Title>
+            {categories.length > 0 && (
+              <Flex gap="100" wrap="wrap">
+                {categories.map((c) => (
+                  <Box
+                    as="button"
+                    key={c}
+                    cursor="pointer"
+                    onClick={() => {
+                      onClose();
+                      navigate(`/icons/category/${slugifyCategory(c)}`);
+                    }}
+                  >
+                    <Badge size="xs">{titleCase(c)}</Badge>
+                  </Box>
+                ))}
+              </Flex>
+            )}
+          </Flex>
           <Dialog.CloseTrigger />
         </Dialog.Header>
         <Dialog.Body>
           {name && Component ? (
             <Stack gap="800" pb="400">
-              {/* Hero + categories + copy */}
-              <Flex align="center" gap="500" wrap="wrap">
+              {/* Preview + how to use it. Fixed hero height with `start`
+                  alignment: the usage tabs beside it change height as you
+                  switch tabs, and a stretched hero would jump with them. */}
+              <Box
+                display="grid"
+                gap="600"
+                alignItems="start"
+                gridTemplateColumns={{
+                  base: "1fr",
+                  md: "minmax(0, 200px) minmax(0, 1fr)",
+                }}
+              >
+                {/* Hero preview on a soft dot canvas */}
                 <Flex
                   align="center"
                   justify="center"
-                  boxSize="1600"
-                  borderRadius="300"
+                  h="200px"
                   bg="neutral.2"
+                  borderRadius="400"
                   color="neutral.12"
-                  flexShrink="0"
+                  css={{
+                    backgroundImage:
+                      "radial-gradient(circle, rgba(127,127,127,0.16) 1px, transparent 1.5px)",
+                    backgroundSize: "16px 16px",
+                  }}
                 >
-                  <Component width={40} height={40} />
+                  <Component width={96} height={96} />
                 </Flex>
-                <Stack gap="300">
-                  {categories.length > 0 && (
-                    <Flex gap="100" wrap="wrap">
-                      {categories.map((c) => (
-                        <Box
-                          as="button"
-                          key={c}
-                          cursor="pointer"
-                          onClick={() => {
-                            onClose();
-                            navigate(`/icons/category/${slugifyCategory(c)}`);
-                          }}
-                        >
-                          <Badge size="xs">{titleCase(c)}</Badge>
-                        </Box>
+
+                <Stack gap="150" minW="0">
+                  <SectionLabel>Usage</SectionLabel>
+                  <Tabs.Root size="sm">
+                    <Tabs.List>
+                      {usageTabs.map((t) => (
+                        <Tabs.Tab key={t.id} id={t.id}>
+                          {t.label}
+                        </Tabs.Tab>
                       ))}
-                    </Flex>
-                  )}
-                  <Flex align="center" gap="300" wrap="wrap">
-                    <Button variant="outline" size="xs" onClick={onCopy}>
-                      <ContentCopy /> Copy import
-                    </Button>
-                    <Text
-                      textStyle="sm"
-                      color="neutral.10"
-                      fontFamily="mono"
-                      truncate
-                      maxWidth="full"
-                    >
-                      {importStatement}
-                    </Text>
-                  </Flex>
+                    </Tabs.List>
+                    <Tabs.Panels>
+                      {usageTabs.map((t) => (
+                        <Tabs.Panel key={t.id} id={t.id}>
+                          <Stack gap="150">
+                            <CodeBlock
+                              code={t.code}
+                              label={`${t.label.toLowerCase()} usage`}
+                              onCopy={() => copy(t.code, `${t.label} usage`)}
+                            />
+                            <Text textStyle="xs" color="neutral.10">
+                              {t.caption}
+                            </Text>
+                          </Stack>
+                        </Tabs.Panel>
+                      ))}
+                    </Tabs.Panels>
+                  </Tabs.Root>
                 </Stack>
-              </Flex>
+              </Box>
 
-              {/* Keyline grid (icon anatomy) */}
-              <Stack gap="400">
-                <Heading size="sm">Grid</Heading>
-                <KeylineGrid Component={Component} />
-              </Stack>
+              {/* Anatomy + sizes */}
+              <Box
+                display="grid"
+                gap="700"
+                alignItems="start"
+                gridTemplateColumns={{ base: "1fr", md: "auto minmax(0, 1fr)" }}
+              >
+                <Stack gap="150">
+                  <SectionLabel>Anatomy</SectionLabel>
+                  <KeylineGrid Component={Component} size={168} />
+                </Stack>
 
-              {/* Size grid */}
-              <Stack gap="400">
-                <Heading size="sm">Sizes</Heading>
-                <Flex gap="700" wrap="wrap" align="flex-end">
-                  {SIZES.map((px) => (
-                    <Stack key={px} gap="200" align="center">
-                      <Flex
-                        align="center"
-                        justify="center"
-                        minH="64px"
-                        color="neutral.12"
-                      >
-                        <Component width={px} height={px} />
-                      </Flex>
-                      <Text textStyle="xs" color="neutral.10">
+                <Stack gap="300">
+                  <SectionLabel>Sizes</SectionLabel>
+                  {/* A matrix: each column is a pixel size, each row a surface
+                      the icon commonly sits on (bare, square chip, circle
+                      chip). Cells share a per-column footprint so the glyphs
+                      line up across rows. */}
+                  <Box
+                    display="grid"
+                    alignItems="center"
+                    justifyItems="center"
+                    justifyContent="start"
+                    columnGap="400"
+                    rowGap="300"
+                    gridTemplateColumns={`auto repeat(${SIZES.length}, auto)`}
+                  >
+                    {/* Header: empty corner, then a label per size column */}
+                    <Box />
+                    {SIZES.map((px) => (
+                      <Text key={px} textStyle="xs" color="neutral.10">
                         {px}px
                       </Text>
-                    </Stack>
-                  ))}
-                </Flex>
-              </Stack>
+                    ))}
 
-              {/* In use */}
-              <Stack gap="400">
-                <Heading size="sm">In use</Heading>
-                <IconInUse name={name} Component={Component} />
-              </Stack>
+                    {/* One row per surface treatment */}
+                    {SIZE_SURFACES.map((s) => (
+                      <Fragment key={s.key}>
+                        <Text
+                          textStyle="xs"
+                          color="neutral.10"
+                          justifySelf="start"
+                          whiteSpace="nowrap"
+                        >
+                          {s.label}
+                        </Text>
+                        {SIZES.map((px) => (
+                          <Flex
+                            key={px}
+                            align="center"
+                            justify="center"
+                            boxSize={`${px + 20}px`}
+                            color="neutral.12"
+                            bg={s.filled ? "neutral.3" : undefined}
+                            borderRadius={s.filled ? s.radius : undefined}
+                          >
+                            <Component width={px} height={px} />
+                          </Flex>
+                        ))}
+                      </Fragment>
+                    ))}
+                  </Box>
+                </Stack>
+              </Box>
+
+              {/* Tags — the full synonym list, wrapping across the dialog. */}
+              {tags.length > 0 && (
+                <Stack gap="200">
+                  <SectionLabel>Tags</SectionLabel>
+                  <Flex gap="100" wrap="wrap">
+                    {tags.map((t) => (
+                      <Badge key={t} size="xs" colorPalette="neutral">
+                        {t}
+                      </Badge>
+                    ))}
+                  </Flex>
+                </Stack>
+              )}
             </Stack>
           ) : null}
         </Dialog.Body>
