@@ -29,11 +29,11 @@
   },
   "Nimbus.ChatMessageList.conversationLabel": {
     "developer_comment": "default accessible name for the chat transcript live region when the consumer does not provide one",
-    "string": "Conversa"
+    "string": "Conversation"
   },
   "Nimbus.ChatMessageList.scrollToBottom": {
     "developer_comment": "aria-label for the control that jumps to the newest message in a chat transcript",
-    "string": "Ir para a mensagem mais recente"
+    "string": "Scroll to latest message"
   },
   "Nimbus.ComboBox.clearSelection": {
     "developer_comment": "aria-label for clear selection button in ComboBox",
@@ -293,7 +293,7 @@
   },
   "Nimbus.DropZone.defaultLabel": {
     "developer_comment": "Default accessible label for the drop zone when the consumer provides no aria-label, aria-labelledby, or label content",
-    "string": "Drag and drop files here"
+    "string": "Arraste e solte arquivos aqui"
   },
   "Nimbus.FieldErrors.duplicateValue": {
     "developer_comment": "Error message for duplicate value validation",
@@ -409,39 +409,39 @@
   },
   "Nimbus.Markdown.alertCaution": {
     "developer_comment": "Visually-hidden label naming a GitHub-style caution alert/callout for assistive technology",
-    "string": "Caution"
+    "string": "Atenção"
   },
   "Nimbus.Markdown.alertImportant": {
     "developer_comment": "Visually-hidden label naming a GitHub-style important alert/callout for assistive technology",
-    "string": "Important"
+    "string": "Importante"
   },
   "Nimbus.Markdown.alertNote": {
     "developer_comment": "Visually-hidden label naming a GitHub-style note alert/callout for assistive technology",
-    "string": "Note"
+    "string": "Nota"
   },
   "Nimbus.Markdown.alertTip": {
     "developer_comment": "Visually-hidden label naming a GitHub-style tip alert/callout for assistive technology",
-    "string": "Tip"
+    "string": "Dica"
   },
   "Nimbus.Markdown.alertWarning": {
     "developer_comment": "Visually-hidden label naming a GitHub-style warning alert/callout for assistive technology",
-    "string": "Warning"
+    "string": "Advertência"
   },
   "Nimbus.Markdown.footnoteBackLabel": {
     "developer_comment": "Accessible label for the link that jumps from a footnote definition back to its reference; {index} is the footnote number",
-    "string": "Back to reference {index}"
+    "string": "Voltar para a referência {index}"
   },
   "Nimbus.Markdown.footnoteLabel": {
     "developer_comment": "Visually-hidden heading that labels the GFM footnotes section at the end of the content",
-    "string": "Footnotes"
+    "string": "Notas de rodapé"
   },
   "Nimbus.Markdown.opensInNewTab": {
     "developer_comment": "Visually-hidden suffix appended to external links that open in a new browser tab",
-    "string": "(opens in new tab)"
+    "string": "(abre em uma nova aba)"
   },
   "Nimbus.Markdown.streamingComplete": {
     "developer_comment": "Polite live-region announcement made once when streamed markdown content finishes rendering",
-    "string": "Response complete"
+    "string": "Resposta concluída"
   },
   "Nimbus.ModalPage.backButton": {
     "developer_comment": "aria-label for the back navigation button in ModalPage.TopBar",
