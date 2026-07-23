@@ -28,7 +28,7 @@ FloatingActionButtonComponent.displayName = "FloatingActionButton";
  * Placement is the consumer's responsibility via standard style props
  * (`position="fixed"`, `insetBlockEnd`, `insetInlineEnd`, …).
  *
- * @see {@link https://nimbus-documentation.vercel.app/components/inputs/floating-action-button}
+ * @see {@link https://nimbus-documentation.vercel.app/patterns/buttons/floating-action-button}
  */
 export const FloatingActionButton: typeof FloatingActionButtonComponent =
   FloatingActionButtonComponent;

@@ -17,16 +17,17 @@ import {
   scorePreLowered,
 } from "../utils/relevance.js";
 import { stripMarkdown } from "../utils/markdown.js";
+import { routePathToSlug as routeToSlug } from "../utils/route.js";
 
 const MAX_RESULTS = 10;
 
-/** Maps a route to the most useful follow-up tool, if any. */
-function deriveToolHint(route: string): string | undefined {
+/** Maps a route to the most useful follow-up tool. */
+function deriveToolHint(route: string): string {
   if (route.includes("design-tokens")) return "get_tokens";
   if (route.startsWith("components/") || route.startsWith("patterns/"))
     return "get_component";
   if (route.startsWith("icons")) return "search_icons";
-  return undefined;
+  return "get_docs_page";
 }
 const SNIPPET_LENGTH = 200;
 /** Characters of context shown before the matched token in a snippet. */
@@ -115,11 +116,6 @@ function extractSnippet(content: string, tokens: string[]): string {
   if (end < content.length) snippet = snippet + "…";
 
   return snippet;
-}
-
-/** Convert a route slug to the file name format (route slashes → dashes). */
-function routeToSlug(route: string): string {
-  return route.replace(/\//g, "-");
 }
 
 const viewContentCache = new WeakMap<object, CachedViewContent>();
@@ -351,7 +347,7 @@ export function registerSearchDocs(server: McpServer): void {
       description:
         "Search all Nimbus docs (components, patterns, hooks, icons, tokens) including guidelines and accessibility views. " +
         "Returns matching pages with content snippets. Props are not searchable here — use get_component with section='props' for prop details. " +
-        "Results include a toolHint field indicating which tool to call for deeper info (e.g. get_component, get_tokens, search_icons).",
+        "Results include a toolHint field indicating which tool to call for deeper info (e.g. get_component, get_tokens, search_icons, get_docs_page).",
       inputSchema: {
         query: z
           .string()
@@ -437,7 +433,7 @@ export function registerSearchDocs(server: McpServer): void {
               snippet: viewMatch
                 ? extractSnippet(viewMatch.content, tokens)
                 : extractSnippet(stripMarkdown(entry.content), tokens),
-              ...(toolHint ? { toolHint } : {}),
+              toolHint,
             };
           });
 

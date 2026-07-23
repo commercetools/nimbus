@@ -12,7 +12,7 @@ import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
  * cover what the FAB itself adds: that it renders and its visual identity.
  */
 const meta: Meta<typeof FloatingActionButton> = {
-  title: "Components/Buttons/FloatingActionButton",
+  title: "patterns/buttons/FloatingActionButton",
   component: FloatingActionButton,
   tags: ["autodocs"],
   parameters: { layout: "centered" },

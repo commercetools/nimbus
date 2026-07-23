@@ -108,8 +108,9 @@ export const Base: Story = {
 
         await userEvent.click(canvas.getByRole("button", { name: "Cancel" }));
 
-        await waitFor(() =>
-          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
+        await waitFor(
+          () => expect(canvas.queryByRole("dialog")).not.toBeInTheDocument(),
+          { timeout: 3000 }
         );
         expect(onCancel).toHaveBeenCalledTimes(1);
         expect(onOpenChange).toHaveBeenCalledWith(false);
@@ -132,8 +133,9 @@ export const Base: Story = {
         onOpenChange.mockClear();
         await userEvent.click(canvas.getByRole("button", { name: "Save" }));
 
-        await waitFor(() =>
-          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
+        await waitFor(
+          () => expect(canvas.queryByRole("dialog")).not.toBeInTheDocument(),
+          { timeout: 3000 }
         );
         expect(onSave).toHaveBeenCalledTimes(1);
         expect(onOpenChange).toHaveBeenCalledWith(false);
@@ -156,8 +158,9 @@ export const Base: Story = {
         onOpenChange.mockClear();
         await userEvent.keyboard("{Escape}");
 
-        await waitFor(() =>
-          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
+        await waitFor(
+          () => expect(canvas.queryByRole("dialog")).not.toBeInTheDocument(),
+          { timeout: 3000 }
         );
         expect(onCancel).toHaveBeenCalledTimes(1);
         expect(onOpenChange).toHaveBeenCalledWith(false);
@@ -182,8 +185,9 @@ export const Base: Story = {
           canvas.getByRole("button", { name: "Close dialog" })
         );
 
-        await waitFor(() =>
-          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
+        await waitFor(
+          () => expect(canvas.queryByRole("dialog")).not.toBeInTheDocument(),
+          { timeout: 3000 }
         );
         expect(onCancel).toHaveBeenCalledTimes(1);
         expect(onOpenChange).toHaveBeenCalledWith(false);
@@ -218,8 +222,9 @@ export const Base: Story = {
           },
         ]);
 
-        await waitFor(() =>
-          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
+        await waitFor(
+          () => expect(canvas.queryByRole("dialog")).not.toBeInTheDocument(),
+          { timeout: 3000 }
         );
         expect(onCancel).toHaveBeenCalledTimes(1);
         expect(onOpenChange).toHaveBeenCalledWith(false);

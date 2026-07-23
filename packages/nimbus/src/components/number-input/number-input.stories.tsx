@@ -36,6 +36,7 @@ export const Base: Story = {
     placeholder: "123",
     ["aria-label"]: "test-number-input",
   },
+  render: (args) => <NumberInput {...args} data-testid="base-number-input" />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByLabelText("test-number-input");
@@ -50,6 +51,7 @@ export const Base: Story = {
 
     await step("Forwards data- & aria-attributes", async () => {
       await expect(input).toHaveAttribute("aria-label", "test-number-input");
+      await expect(input).toHaveAttribute("data-testid", "base-number-input");
     });
 
     await step("Is focusable with <tab> key", async () => {
@@ -187,58 +189,77 @@ export const NumberConstraints: Story = {
   ),
 };
 
-export const AllCombinations: Story = {
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
-    <Stack>
-      {inputSize.map((size) => (
-        <Box key={String(size)}>
-          <Text mb={2} fontSize="lg" fontWeight="bold">
-            Size: {String(size)}
-          </Text>
-          <Stack direction="row" wrap="wrap">
-            {inputVariants.map((variant) => (
-              <Box key={String(variant)} minW="200px">
-                <Text mb={1} fontSize="sm" fontWeight="medium">
-                  {String(variant)}
-                </Text>
-                <Stack>
-                  <NumberInput
-                    size={size}
-                    variant={variant}
-                    placeholder="123"
-                    aria-label={`${String(variant)} ${String(size)} default`}
-                  />
-                  <NumberInput
-                    size={size}
-                    variant={variant}
-                    defaultValue={123}
-                    aria-label={`${String(variant)} ${String(size)} with value`}
-                  />
-                  <NumberInput
-                    size={size}
-                    variant={variant}
-                    placeholder="123"
-                    isInvalid
-                    aria-label={`${String(variant)} ${String(size)} invalid`}
-                  />
-                  <NumberInput
-                    size={size}
-                    variant={variant}
-                    placeholder="123"
-                    isDisabled
-                    aria-label={`${String(variant)} ${String(size)} disabled`}
-                  />
-                </Stack>
-              </Box>
+    <NumberInput defaultValue={123} aria-label="focused-number-input" />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByLabelText("focused-number-input");
+
+    // Hide the native caret (Chromatic can't pause its blink); caret-color inherits.
+    canvasElement.style.caretColor = "transparent";
+
+    await userEvent.tab();
+    await expect(input).toHaveFocus();
+  },
+};
+
+/**
+ * Matrix: state x size x variant. No colorPalette axis (recipe hardcodes
+ * neutral); the steppers render in every cell.
+ */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => {
+    const states = [
+      { label: "Default", props: {} },
+      { label: "Disabled", props: { isDisabled: true } },
+      { label: "Invalid", props: { isInvalid: true } },
+      {
+        label: "Invalid & Disabled",
+        props: { isInvalid: true, isDisabled: true },
+      },
+    ];
+
+    return (
+      <Stack gap="600">
+        {states.map((state) => (
+          <Stack key={state.label} direction="column" gap="400">
+            <Text fontWeight="bold">{state.label}</Text>
+            {inputSize.map((size) => (
+              <Stack
+                key={size as string}
+                direction="row"
+                gap="400"
+                alignItems="flex-start"
+              >
+                {inputVariants.map((variant) => (
+                  <Box key={variant as string}>
+                    <NumberInput
+                      {...state.props}
+                      size={size}
+                      variant={variant}
+                      defaultValue={1234}
+                      aria-label={`${variant} ${size} ${state.label}`}
+                    />
+                  </Box>
+                ))}
+              </Stack>
             ))}
           </Stack>
-        </Box>
-      ))}
-    </Stack>
-  ),
+        ))}
+      </Stack>
+    );
+  },
 };
 
 export const LeadingAndTrailingElements: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const examples: Array<{
       label: string;

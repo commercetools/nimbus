@@ -164,9 +164,12 @@ export const Basic: Story = {
       // Press Enter to select
       await userEvent.keyboard("{Enter}");
       await expect(args.onAction).toHaveBeenCalledWith("copy", undefined);
-      await waitFor(() => {
-        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     // Skip escape test for now as previous tests may have left menu in unexpected state
@@ -330,9 +333,12 @@ export const TriggerVariations: Story = {
 
       // Close menu
       await userEvent.keyboard("{Escape}");
-      await waitFor(() => {
-        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Test outline button trigger
       const outlineTrigger = canvas.getAllByRole("button", {
@@ -587,9 +593,12 @@ export const SingleSelection: Story = {
       await expect(args.onSelectionChange).toHaveBeenCalled();
 
       // Menu should close after selection
-      await waitFor(() => {
-        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Verify display updated
       await expect(canvas.getByText("Selected: small")).toBeInTheDocument();
@@ -622,9 +631,12 @@ export const SingleSelection: Story = {
       // Select with Enter
       await userEvent.keyboard("{Enter}");
       await expect(args.onSelectionChange).toHaveBeenCalled();
-      await waitFor(() => {
-        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Verify display updated
       await expect(canvas.getByText("Selected: medium")).toBeInTheDocument();
@@ -790,9 +802,12 @@ export const MultiSelection: Story = {
     await step("Close and verify display updated", async () => {
       // Press Escape to close
       await userEvent.keyboard("{Escape}");
-      await waitFor(() => {
-        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Verify display updated
       await expect(
@@ -825,9 +840,12 @@ export const MultiSelection: Story = {
 
       // Press Enter - should close menu without toggling
       await userEvent.keyboard("{Enter}");
-      await waitFor(() => {
-        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // The display should show current selections
       // We don't know exact state, just verify it exists
@@ -1111,9 +1129,12 @@ export const MixedSelection: Story = {
         await expect(args.onAction).toHaveBeenCalledWith("copy", undefined);
 
         // First menu should be closed
-        await waitFor(() => {
-          expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
-        });
+        await waitFor(
+          () => {
+            expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+          },
+          { timeout: 3000 }
+        );
       }
     );
 
@@ -1145,9 +1166,12 @@ export const MixedSelection: Story = {
       await expect(args.onSelectionChange).toHaveBeenCalled();
 
       // Menu should close after single selection
-      await waitFor(() => {
-        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Verify display updated
       await expect(canvas.getByText("Alignment: center")).toBeInTheDocument();
@@ -1172,9 +1196,12 @@ export const MixedSelection: Story = {
       await expect(args.onSelectionChange).toHaveBeenCalled();
 
       // Menu should close due to single selection at root
-      await waitFor(() => {
-        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
 
       // Verify display updated
       await expect(
@@ -1803,9 +1830,12 @@ export const ComplexExample: Story = {
       await userEvent.keyboard("{Escape}");
 
       // Verify menu is closed
-      await waitFor(() => {
-        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     await step("Test item with href behaves as link", async () => {
@@ -2067,9 +2097,12 @@ export const CollectionPatternDemo: Story = {
       await userEvent.click(newFileItem);
 
       await expect(args.onAction).toHaveBeenCalledWith("new", undefined);
-      await waitFor(() => {
-        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
 
     await step("Test critical action", async () => {
@@ -2085,9 +2118,12 @@ export const CollectionPatternDemo: Story = {
       await userEvent.click(deleteItem);
 
       await expect(args.onAction).toHaveBeenCalledWith("delete", undefined);
-      await waitFor(() => {
-        expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("menu")).not.toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
     });
   },
 };

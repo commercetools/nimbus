@@ -16,6 +16,7 @@ import type {
 } from "../types.js";
 import { stripMarkdown } from "../utils/markdown.js";
 import { fuzzyResolveName } from "../utils/relevance.js";
+import { routePathToSlug as pathToSlug } from "../utils/route.js";
 
 // ---------------------------------------------------------------------------
 // Section definitions
@@ -206,12 +207,6 @@ async function resolveComponent(
     if (r.exportName) names.push(r.exportName);
     return names;
   });
-}
-
-/** Derives the route data slug from a manifest entry's path. */
-function pathToSlug(path: string): string {
-  // "/components/buttons/button" → "components-buttons-button"
-  return path.replace(/^\//, "").replace(/\//g, "-");
 }
 
 // ---------------------------------------------------------------------------

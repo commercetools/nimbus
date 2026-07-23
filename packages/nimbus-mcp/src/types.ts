@@ -45,7 +45,7 @@ export interface DocSearchResult {
   /** Content snippet highlighting the match. */
   snippet: string;
   /** Suggested tool to call for deeper info on this result. */
-  toolHint?: string;
+  toolHint: string;
 }
 
 /** Result returned by MCP tool handlers. */
@@ -474,4 +474,17 @@ export interface MigrateCompoundResult {
   compoundRoot: string;
   note: string;
   mappings: MigrateComponentResult[];
+}
+
+// ---------------------------------------------------------------------------
+// Docs page tool types (used by tools/get-docs-page)
+// ---------------------------------------------------------------------------
+
+/** Response from the get_docs_page tool. */
+export interface DocsPageResult {
+  title: string;
+  description: string;
+  path: string;
+  sections: string[];
+  content: string;
 }
