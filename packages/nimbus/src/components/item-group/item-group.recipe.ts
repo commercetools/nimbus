@@ -4,11 +4,11 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * Recipe configuration for the ItemGroup component.
  *
  * `ItemGroup.Root` lays a set of `Item` rows out as a vertical stack;
- * `ItemGroup.Separator` is a horizontal divider between rows. The group is a
- * plain container and deliberately does **not** assign `role="list"` — a list
- * role would require every child to be a `listitem` and would forbid separator
- * children (`aria-required-children`), which the free-composition API cannot
- * guarantee.
+ * `ItemGroup.Separator` is a horizontal divider between rows. The group carries
+ * `role="group"` (set in the component, not here) and deliberately does **not**
+ * assign `role="list"` — a list role would require every child to be a
+ * `listitem` and would forbid separator children (`aria-required-children`),
+ * which the free-composition API cannot guarantee.
  */
 export const itemGroupSlotRecipe = defineSlotRecipe({
   slots: ["root", "separator"],

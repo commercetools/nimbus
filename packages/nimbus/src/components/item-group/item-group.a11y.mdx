@@ -9,20 +9,26 @@ Accessibility ensures that digital content and functionality are usable by
 everyone, including people with disabilities, by addressing visual, auditory,
 cognitive, and physical limitations.
 
-### Why no `role="list"`
+### Grouping role: `group`, not `list`
 
-The ARIA `list` role carries an `aria-required-children` constraint: every
-child must be a `listitem`, and no other content is permitted. `ItemGroup.Root`
-cannot guarantee that constraint — it composes freely with any mix of
-`Item.Root` rows and `ItemGroup.Separator` dividers — so applying
-`role="list"` would produce an invalid accessibility tree the moment a
-separator (or anything else) sits between rows. `ItemGroup.Root` therefore
-renders a plain, roleless `<div>`; each `Item.Root` keeps its own semantics (a
-plain row, or a link when given `href`) unaffected by the wrapper.
+`ItemGroup.Root` exposes its contents to assistive technology with
+`role="group"`, which signals that the rows belong together. It deliberately
+does **not** use `role="list"`: the ARIA `list` role carries an
+`aria-required-children` constraint — every child must be a `listitem`, and no
+other content is permitted — which `ItemGroup.Root` cannot guarantee, because
+it composes freely with any mix of `Item.Root` rows and `ItemGroup.Separator`
+dividers. `role="list"` would produce an invalid accessibility tree the moment
+a separator (or anything else) sits between rows; `role="group"` carries no
+such constraint, so each `Item.Root` keeps its own semantics (a plain row, or a
+link when given `href`) unaffected by the wrapper.
+
+Give the group an accessible name with `aria-label` or `aria-labelledby` when
+the grouping isn't clear from surrounding context. The role is an overridable
+default — pass your own `role` to replace it.
 
 ```jsx live
 const App = () => (
-  <ItemGroup.Root>
+  <ItemGroup.Root aria-label="Account">
     <Item.Root href="#profile">
       <Item.Content>
         <Item.Title>Profile</Item.Title>
@@ -56,11 +62,13 @@ selection-aware component (e.g. `List`, `Menu`) that manages
 
 ### Accessibility standards
 
-- **Info and relationships:** `ItemGroup.Root` imposes no
-  `aria-required-children` constraint, so a mix of rows and separators stays a
-  valid accessibility tree.
-- **Name, role, value:** `ItemGroup.Separator` exposes `role="separator"` with
-  `aria-orientation="horizontal"`; it carries no accessible name because it
+- **Info and relationships:** `ItemGroup.Root` exposes `role="group"` to tie
+  its rows together without an `aria-required-children` constraint, so a mix of
+  rows and separators stays a valid accessibility tree.
+- **Name, role, value:** `ItemGroup.Root` is a `group`; give it an accessible
+  name with `aria-label`/`aria-labelledby` when the grouping isn't clear from
+  context. `ItemGroup.Separator` exposes `role="separator"` with
+  `aria-orientation="horizontal"` and carries no accessible name, because it
   conveys no information beyond the visual divide.
 - **Focus order:** neither `ItemGroup.Root` nor `ItemGroup.Separator` is a
   focus stop; keyboard focus moves directly between the interactive content
@@ -70,5 +78,6 @@ selection-aware component (e.g. `List`, `Menu`) that manages
 
 ### Resources
 
+- [WAI-ARIA: `group` role](https://www.w3.org/TR/wai-aria-1.2/#group)
 - [WAI-ARIA: `list` role](https://www.w3.org/TR/wai-aria-1.2/#list)
 - [WAI-ARIA: `separator` role](https://www.w3.org/TR/wai-aria-1.2/#separator)
