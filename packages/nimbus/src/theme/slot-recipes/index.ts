@@ -1,4 +1,5 @@
 import { accordionSlotRecipe } from "@/components/accordion/accordion.recipe";
+import { breadcrumbsSlotRecipe } from "@/components/breadcrumbs/breadcrumbs.recipe";
 import { scrollAreaSlotRecipe } from "@/components/scroll-area/scroll-area.recipe";
 import { defaultPageSlotRecipe } from "@/components/default-page/default-page.recipe";
 import { stepsSlotRecipe } from "@/components/steps/steps.recipe";
@@ -78,6 +79,7 @@ import { buttonGroupRecipe } from "@/components/toggle-button-group/toggle-butto
 export const slotRecipes = {
   nimbusAccordion: accordionSlotRecipe,
   nimbusAlert: alertRecipe,
+  nimbusBreadcrumbs: breadcrumbsSlotRecipe,
   nimbusCalendar: calendarSlotRecipe,
   nimbusCard: cardRecipe,
   nimbusChatMessage: chatMessageSlotRecipe,

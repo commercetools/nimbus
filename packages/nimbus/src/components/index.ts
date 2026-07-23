@@ -78,6 +78,7 @@ export * from "./pagination";
 export * from "./drawer";
 export * from "./tab-nav";
 export * from "./tabs";
+export * from "./breadcrumbs";
 export * from "./localized-field";
 export * from "./steps";
 export * from "./modal-page";
