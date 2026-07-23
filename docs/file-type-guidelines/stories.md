@@ -261,10 +261,42 @@ play: async ({ canvasElement }) => {
 },
 ```
 
+**Name the interacting-axes matrix `SmokeTest` and put it last.** The name marks
+the role (resting-visual carrier), not an axis list that goes stale; the axis
+list belongs in the doc comment.
+
+**Animated components: pin only when the paused frame hides the content.**
+Chromatic pauses CSS/SVG animations at a fixed frame (last by default;
+`pauseAnimationAtEnd: false` for first), so most animated states are already
+deterministic (`spin` 0→360, a settled slide-in). The exception is an infinite
+animation whose endpoints both hide the target - `progress-indeterminate` parks
+its pill off-track - so pin a representative frame in the play:
+
+```typescript
+play: async ({ canvasElement }) => {
+  canvasElement
+    .querySelectorAll<HTMLElement>('[data-indeterminate="true"]')
+    .forEach((el) => {
+      el.style.animation = "none";
+      el.style.transform = "translateX(75%)"; // center the pill for a stable shot
+    });
+},
+```
+
+**The snapshot is the play's end state.** Chromatic captures after the play
+_passes_, so the play must land on the target frame - open an overlay/portal and
+don't dismiss it; a play that resets to default loses its interesting frame
+(keep those behavioral).
+
+**Portals (Toast, overlays): capture is page-wide.** Portal content is in-frame;
+hold it open (`duration: Infinity`), await it, and clean up between stories
+(`clearToasts()`). Reach a portal component's own focus (Toast root) via its
+real keyboard path, not a synthetic `.focus()`.
+
 Full rationale - matrix tradeoffs, the fold-an-axis and hardcoded-axis rules,
 `SEMANTIC_COLOR_PALETTES` scope, thin-wrapper coverage, why modes are
-global-only, the hover/pressed gap, CI, baselines, TurboSnap - is in
-[Chromatic Visual Testing](../chromatic-visual-testing.md).
+global-only, animation pausing, portals, the hover/pressed gap, CI, baselines,
+TurboSnap - is in [Chromatic Visual Testing](../chromatic-visual-testing.md).
 
 ## File Structure
 

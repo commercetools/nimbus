@@ -311,84 +311,6 @@ export const CustomIcon: Story = {
   },
 };
 
-const TOAST_TYPES = ["info", "success", "warning", "error"] as const;
-
-const VARIANT_PLACEMENTS: Array<{
-  variant: ToastVariant;
-  placement: "top-start" | "top-end" | "bottom-end";
-}> = [
-  { variant: "accent-start", placement: "top-start" },
-  { variant: "subtle", placement: "top-end" },
-  { variant: "solid", placement: "bottom-end" },
-];
-
-/**
- * Variants
- * Fires all type × variant combinations, each variant in a different corner.
- *
- * - accent-start → top-start
- * - subtle → top-end
- * - solid → bottom-end
- */
-export const Variants: Story = {
-  parameters: {
-    layout: "fullscreen",
-  },
-  render: () => {
-    const showAll = () => {
-      VARIANT_PLACEMENTS.forEach(({ variant, placement }) => {
-        TOAST_TYPES.forEach((type) => {
-          toast[type]({
-            title: `${type} (${variant})`,
-            description: "Supporting text that provides additional context.",
-            variant,
-            placement,
-            closable: true,
-            duration: Infinity,
-            action: {
-              label: "Undo",
-              onPress: () => {},
-            },
-          });
-        });
-      });
-    };
-
-    return (
-      <Button onPress={showAll} margin="400" data-testid="show-all-variants">
-        Show All Variants
-      </Button>
-    );
-  },
-  play: async ({ canvasElement, step }) => {
-    await clearToasts();
-    const canvas = within(canvasElement);
-    const body = within(document.body);
-    const button = canvas.getByRole("button", { name: /Show All Variants/i });
-
-    await step(
-      "Clicking the button renders one toast per variant",
-      async () => {
-        await userEvent.click(button);
-
-        // One representative title per variant — each variant fires 4 types so we
-        // spot-check one per variant to confirm all three variants rendered.
-        const accentStartToast = await body.findByText(
-          "info (accent-start)",
-          {},
-          { timeout: 3000 }
-        );
-        const subtleToast = await body.findByText("info (subtle)");
-        const solidToast = await body.findByText("info (solid)");
-
-        await expect(accentStartToast).toBeInTheDocument();
-        await expect(subtleToast).toBeInTheDocument();
-        await expect(solidToast).toBeInTheDocument();
-      }
-    );
-  },
-};
-
 /**
  * Auto-Dismiss Behavior
  * Tests custom duration and disabled auto-dismiss (duration: Infinity).
@@ -1171,6 +1093,8 @@ export const KeyboardNavigation: Story = {
  * - Explicit closable: true: close button shown
  */
 export const ClosableControl: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const showClosableToasts = () => {
       toast({
@@ -1626,6 +1550,139 @@ export const ZIndexLayering: Story = {
           },
           { timeout: 3000 }
         );
+      }
+    );
+  },
+};
+
+/**
+ * Focused
+ * The toast root is focusable (`tabIndex=0`) and styles its own
+ * `focusRing: outside` - a visual the SmokeTest matrix can't render and one that
+ * isn't delegated (the action/close buttons carry their own Button/IconButton
+ * rings). The play focuses the toast so the ring renders in the snapshot.
+ */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: {
+    layout: "fullscreen",
+    chromatic: { disableSnapshot: false },
+  },
+  render: () => <div />,
+  play: async ({ step }) => {
+    await clearToasts();
+    toast.info({
+      title: "Focused toast",
+      description: "The toast root shows its focus ring when focused.",
+      duration: Infinity,
+      closable: true,
+      action: { label: "Undo", onPress: () => {} },
+      placement: "top-end",
+    });
+    const body = within(document.body);
+    const toastText = await body.findByText("Focused toast");
+    const root = toastText.closest('[data-part="root"]') as HTMLElement;
+
+    await step(
+      "Keyboard navigation focuses the toast root, showing its ring",
+      async () => {
+        // The toast region is reached by its hotkey (Ctrl+Shift+9 = top-end),
+        // then Tab lands on the toast root - the real keyboard path, not a
+        // synthetic .focus().
+        document.body.dispatchEvent(
+          new KeyboardEvent("keydown", {
+            code: "Digit9",
+            key: "9",
+            ctrlKey: true,
+            shiftKey: true,
+            bubbles: true,
+            cancelable: true,
+          })
+        );
+        await userEvent.tab();
+        await expect(root).toHaveFocus();
+      }
+    );
+  },
+};
+
+const TOAST_TYPES = ["info", "success", "warning", "error"] as const;
+
+const VARIANT_PLACEMENTS: Array<{
+  variant: ToastVariant;
+  placement: "top-start" | "top-end" | "bottom-end";
+}> = [
+  { variant: "accent-start", placement: "top-start" },
+  { variant: "subtle", placement: "top-end" },
+  { variant: "solid", placement: "bottom-end" },
+];
+
+/**
+ * SmokeTest
+ * The interacting-axes matrix (resting-visual carrier), rendered last per the
+ * SmokeTest convention: fires all type × variant combinations, each variant in a
+ * different corner.
+ *
+ * - accent-start → top-start
+ * - subtle → top-end
+ * - solid → bottom-end
+ */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: {
+    layout: "fullscreen",
+    chromatic: { disableSnapshot: false },
+  },
+  render: () => {
+    const showAll = () => {
+      VARIANT_PLACEMENTS.forEach(({ variant, placement }) => {
+        TOAST_TYPES.forEach((type) => {
+          toast[type]({
+            title: `${type} (${variant})`,
+            description: "Supporting text that provides additional context.",
+            variant,
+            placement,
+            closable: true,
+            duration: Infinity,
+            action: {
+              label: "Undo",
+              onPress: () => {},
+            },
+          });
+        });
+      });
+    };
+
+    return (
+      <Button onPress={showAll} margin="400" data-testid="show-all-variants">
+        Show All Variants
+      </Button>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    await clearToasts();
+    const canvas = within(canvasElement);
+    const body = within(document.body);
+    const button = canvas.getByRole("button", { name: /Show All Variants/i });
+
+    await step(
+      "Clicking the button renders one toast per variant",
+      async () => {
+        await userEvent.click(button);
+
+        // One representative title per variant — each variant fires 4 types so we
+        // spot-check one per variant to confirm all three variants rendered.
+        const accentStartToast = await body.findByText(
+          "info (accent-start)",
+          {},
+          { timeout: 3000 }
+        );
+        const subtleToast = await body.findByText("info (subtle)");
+        const solidToast = await body.findByText("info (solid)");
+
+        await expect(accentStartToast).toBeInTheDocument();
+        await expect(subtleToast).toBeInTheDocument();
+        await expect(solidToast).toBeInTheDocument();
       }
     );
   },
