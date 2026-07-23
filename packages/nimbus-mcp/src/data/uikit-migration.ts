@@ -7,7 +7,17 @@
  * Source: migration-mapping.csv cross-referenced with Nimbus docs.
  */
 
-import type { UiKitMigrationEntry } from "../types.js";
+import type { IconWrapper, UiKitMigrationEntry } from "../types.js";
+
+// ---------------------------------------------------------------------------
+// Shared icon-wrapper metadata
+// ---------------------------------------------------------------------------
+
+const ICON_WRAPPER_BASE: Omit<IconWrapper, "sizeMapping"> = {
+  component: "Icon",
+  importPath: "@commercetools/nimbus",
+  defaultProps: { size: "2xs", color: "neutral.11" },
+};
 
 // ---------------------------------------------------------------------------
 // Migration data
@@ -1908,19 +1918,29 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      "Use <Icon> component wrapping an SVG, or use InlineSvg for custom SVGs.",
+      "Use <Icon as={YourSvg}> or <Icon><YourSvg /></Icon> to wrap custom SVGs with design-system sizing and color tokens. Use InlineSvg for raw SVG markup.",
     breakingChanges: [
-      "Replace CustomIcon with <Icon> or <InlineSvg>",
-      "SVG must be passed as a child or via as prop",
+      "Replace CustomIcon with <Icon as={YourSvg}> or <InlineSvg>",
+      "Prefer the as prop for the shorthand form; children also works",
     ],
     propMappings: [
       {
         uiKitProp: "children",
         nimbusProp: "children",
         changeType: "structural",
-        notes: "Pass the SVG as a child of <Icon>, or use the as prop.",
+        notes:
+          "Prefer the as prop: <Icon as={YourSvg} />. Passing as children also works: <Icon><YourSvg /></Icon>.",
       },
     ],
+    iconWrapper: {
+      ...ICON_WRAPPER_BASE,
+      sizeMapping: [
+        { from: "10", to: "2xs" },
+        { from: "20", to: "xs" },
+        { from: "30", to: "sm" },
+        { from: "40", to: "md" },
+      ],
+    },
   },
   {
     uiKitName: "LeadingIcon",
@@ -1957,11 +1977,26 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus-icons",
     mappingType: "pattern",
     notes:
-      "Import icons from @commercetools/nimbus-icons. Icons are named SvgIconName (e.g. SvgAccountCircle).",
+      'Always wrap icons in the Icon component: <Icon as={SvgAccountCircle} size="2xs" color="neutral.11" />. ' +
+      "Import the icon from @commercetools/nimbus-icons and the Icon wrapper from @commercetools/nimbus. " +
+      "Never use bare icon components — the unwrapped form skips design-system sizing and color tokens.",
     breakingChanges: [
       "Update import paths to @commercetools/nimbus-icons",
       "Icon names follow Svg prefix convention",
+      "Icons must be wrapped in <Icon as={...}> for correct sizing and theming",
     ],
+    iconWrapper: {
+      ...ICON_WRAPPER_BASE,
+      sizeMapping: [
+        { from: "small", to: "2xs" },
+        { from: "medium", to: "xs" },
+        { from: "big", to: "md" },
+        { from: "10", to: "2xs" },
+        { from: "20", to: "xs" },
+        { from: "30", to: "sm" },
+        { from: "40", to: "md" },
+      ],
+    },
   },
 
   // -------------------------------------------------------------------------

@@ -250,6 +250,7 @@ function buildComponentResult(
   };
 
   if (entry.propMappings) result.propMappings = entry.propMappings;
+  if (entry.iconWrapper) result.iconWrapper = entry.iconWrapper;
 
   const hint = deriveToolHint(
     uiKitName,
