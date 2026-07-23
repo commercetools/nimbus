@@ -16,6 +16,10 @@ import { ContentCopy } from "@commercetools/nimbus-icons";
 import * as icons from "@commercetools/nimbus-icons";
 import type { IconMeta } from "@commercetools/nimbus-icons/meta";
 import { useNavigate } from "react-router-dom";
+// Same highlighter + theme the docs use for fenced code (base-tags/code.tsx),
+// so the dialog's snippets match every other code block in the app.
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import { slugifyCategory, titleCase } from "./use-icon-data";
 
@@ -53,10 +57,12 @@ const SectionLabel = ({ children }: { children: ReactNode }) => (
 );
 
 /**
- * A multi-line, copyable code block on a soft surface. Lines scroll
- * horizontally inside their own track (a long import path never widens the
- * dialog), and the copy button floats in the top-right corner clear of the
- * code via the reserved right padding.
+ * A multi-line, copyable, syntax-highlighted code block. Uses the same
+ * react-syntax-highlighter + `oneDark` theme the docs render fenced code with,
+ * so it always reads as a dark code panel regardless of the page theme. Long
+ * lines scroll horizontally inside the block; the copy button floats top-right
+ * (recolored light for the dark panel) and the code reserves right padding so
+ * its first line clears the button.
  */
 const CodeBlock = ({
   code,
@@ -67,26 +73,32 @@ const CodeBlock = ({
   label: string;
   onCopy: () => void;
 }) => (
-  <Box position="relative" bg="neutral.2" borderRadius="200">
-    <Box css={{ overflowX: "auto" }} p="300" pr="900">
-      <Text
-        as="pre"
-        fontFamily="mono"
-        textStyle="xs"
-        color="neutral.12"
-        css={{ whiteSpace: "pre", margin: 0, lineHeight: "1.7" }}
-      >
-        {code}
-      </Text>
-    </Box>
+  <Box position="relative" borderRadius="200" overflow="hidden">
+    <SyntaxHighlighter
+      language="tsx"
+      style={oneDark}
+      customStyle={{
+        margin: 0,
+        padding: "12px",
+        paddingRight: "40px",
+        fontSize: "12px",
+        lineHeight: "1.7",
+      }}
+    >
+      {code}
+    </SyntaxHighlighter>
     <IconButton
       aria-label={`Copy ${label}`}
       size="xs"
       variant="ghost"
       onClick={onCopy}
       position="absolute"
-      top="150"
-      right="150"
+      top="100"
+      right="100"
+      css={{
+        color: "rgba(255, 255, 255, 0.85)",
+        _hover: { color: "#fff", background: "rgba(255, 255, 255, 0.14)" },
+      }}
     >
       <ContentCopy />
     </IconButton>
@@ -195,35 +207,42 @@ export const IconDetailDialog = ({
   const importStatement = name
     ? `import { ${name} } from '@commercetools/nimbus-icons';`
     : "";
-  const basicSnippet = name ? `${importStatement}\n\n<${name} />` : "";
-  const buttonSnippet = name
-    ? `import { Button } from '@commercetools/nimbus';\n${importStatement}\n\n<Button>\n  <${name} /> Label\n</Button>`
+  const componentSnippet = name
+    ? `import { IconButton } from '@commercetools/nimbus';\n${importStatement}\n\n<IconButton aria-label="${name}">\n  <${name} />\n</IconButton>`
+    : "";
+  const inputSnippet = name
+    ? `import { TextInput } from '@commercetools/nimbus';\n${importStatement}\n\n<TextInput\n  leadingElement={<${name} />}\n/>`
     : "";
   const standaloneSnippet = name
     ? `import { Icon } from '@commercetools/nimbus';\n${importStatement}\n\n<Icon as={${name}} size="md" color="primary.11" />`
     : "";
+  const menuSnippet = name
+    ? `import { Menu, Icon, Text } from '@commercetools/nimbus';\n${importStatement}\n\n<Menu.Item>\n  <Icon slot="icon"><${name} /></Icon>\n  <Text slot="label">Label</Text>\n</Menu.Item>`
+    : "";
 
-  // The three ways to render an icon, each with the imports that snippet needs.
+  // Where a consumer actually puts an icon, ordered by how common the pattern
+  // is in the codebase. Each tab carries the imports that snippet needs.
   const usageTabs = [
     {
-      id: "basic",
-      label: "Basic",
-      code: basicSnippet,
+      id: "component",
+      label: "In a component",
+      code: componentSnippet,
       caption: (
         <>
-          The bare component — renders at <Code>1em</Code> in{" "}
-          <Code>currentColor</Code>.
+          <Code>Button</Code>, <Code>IconButton</Code> and <Code>Badge</Code>{" "}
+          set its size and color — pass the raw icon as a child.
         </>
       ),
     },
     {
-      id: "button",
-      label: "Button",
-      code: buttonSnippet,
+      id: "input",
+      label: "In an input",
+      code: inputSnippet,
       caption: (
         <>
-          As a child, <Code>Button</Code> and <Code>IconButton</Code> set its
-          size and color.
+          A <Code>leadingElement</Code> or <Code>trailingElement</Code> on any
+          input sizes and colors it for you — no <Code>Icon</Code> wrapper
+          needed.
         </>
       ),
     },
@@ -233,8 +252,19 @@ export const IconDetailDialog = ({
       code: standaloneSnippet,
       caption: (
         <>
-          Wrap it in <Code>Icon</Code> to set its <Code>size</Code> and{" "}
+          Wrap it in <Code>Icon</Code> to set its <Code>size</Code> (2xs–xl) and{" "}
           <Code>color</Code> yourself.
+        </>
+      ),
+    },
+    {
+      id: "menu",
+      label: "In a menu",
+      code: menuSnippet,
+      caption: (
+        <>
+          Menu items place it in a named slot — the <Code>Icon</Code> wrapper
+          carries <Code>slot="icon"</Code>.
         </>
       ),
     },
@@ -309,8 +339,12 @@ export const IconDetailDialog = ({
                   <Component width={96} height={96} />
                 </Flex>
 
-                <Stack gap="150" minW="0">
+                <Stack gap="200" minW="0">
                   <SectionLabel>Usage</SectionLabel>
+                  <Text textStyle="xs" color="neutral.10">
+                    Rendered at <Code>1em</Code> in <Code>currentColor</Code>,
+                    an icon takes its size and color from wherever it sits.
+                  </Text>
                   <Tabs.Root size="sm">
                     <Tabs.List>
                       {usageTabs.map((t) => (
@@ -322,7 +356,7 @@ export const IconDetailDialog = ({
                     <Tabs.Panels>
                       {usageTabs.map((t) => (
                         <Tabs.Panel key={t.id} id={t.id}>
-                          <Stack gap="150">
+                          <Stack gap="150" pt="300">
                             <CodeBlock
                               code={t.code}
                               label={`${t.label.toLowerCase()} usage`}
@@ -336,6 +370,11 @@ export const IconDetailDialog = ({
                       ))}
                     </Tabs.Panels>
                   </Tabs.Root>
+                  <Text textStyle="xs" color="neutral.10">
+                    Decorative icons are hidden from assistive tech; an
+                    icon-only control needs an <Code>aria-label</Code> that
+                    describes its action.
+                  </Text>
                 </Stack>
               </Box>
 

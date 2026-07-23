@@ -2,7 +2,7 @@ import {
   Box,
   Flex,
   Text,
-  TextInput,
+  SearchInput,
   Pagination,
   useCopyToClipboard,
   IconButton,
@@ -30,6 +30,12 @@ import {
   slugifyCategory,
   type IconEntry,
 } from "./use-icon-data";
+import { TagBar } from "./tag-bar";
+import {
+  SURFACE_PAD,
+  SURFACE_STYLE,
+  type Surface,
+} from "./icon-display-controls";
 
 /**
  * Icons per page. Highly composite (÷ 2,3,4,5,6,8,10,12…) so a page stays full
@@ -37,11 +43,15 @@ import {
  */
 const PAGE_SIZE = 120;
 
-/** Icon-size slider bounds (px). Default 48 = the fontSize "1200" token. */
-const ICON_SIZE_MIN = 24;
-const ICON_SIZE_MAX = 96;
-const ICON_SIZE_STEP = 8;
-const ICON_SIZE_DEFAULT = 48;
+/**
+ * Max keyword chips shown in the TagBar. Each chip is a React Aria collection
+ * item (roving focus + selection), so an uncapped list (the "all" set has many
+ * hundreds of distinct keywords) makes every filter click a multi-hundred-item
+ * synchronous re-render that blocks the page. Cap to the most frequent few; the
+ * bar scrolls, so this is still plenty to browse.
+ */
+const MAX_TAG_FACETS = 40;
+
 /**
  * Extra width (px) added to the icon size to get a card's minimum column width.
  * The name label lives under the glyph, so a card needs room beyond the glyph
@@ -60,12 +70,16 @@ const CARD_LABEL_ROOM = 72;
 const IconTile = memo(function IconTile({
   iconId,
   onCopy,
+  surface,
 }: {
   iconId: string;
   onCopy: (iconId: string) => void;
+  surface: Surface;
 }) {
   const [active, setActive] = useState(false);
   const Component = icons[iconId as keyof typeof icons];
+  const surfaceStyle = SURFACE_STYLE[surface];
+  const hasSurface = surface !== "none";
 
   // The card IS the focusable React Aria GridListItem: arrow keys move between
   // cards, Enter/click fires the GridList's `onAction` (opens the detail). The
@@ -84,7 +98,10 @@ const IconTile = memo(function IconTile({
       cursor="pointer"
       outline="none"
       title={iconId}
-      _hover={{ bg: "neutral.3" }}
+      // With a surface active, the chip behind the glyph is neutral.3 — so the
+      // hover tint drops to neutral.2 to stay one step lighter and keep the chip
+      // legible. Bare glyphs keep the original neutral.3 hover.
+      _hover={{ bg: hasSurface ? "neutral.2" : "neutral.3" }}
       css={{ "&[data-focus-visible]": { layerStyle: "focusRing" } }}
       onMouseEnter={() => setActive(true)}
       onMouseLeave={() => setActive(false)}
@@ -106,14 +123,22 @@ const IconTile = memo(function IconTile({
               via CSS when the slider moves — no per-card re-render. The size +
               color sit on this centering flex (not a <Text>) so no line-height
               inflates the box and the glyph stays dead-centered above its
-              label. */}
+              label. The flex is ALWAYS a fixed square of glyph + SURFACE_PAD (a
+              constant, even for "none") so toggling the surface only paints a
+              fill/radius inside this reserved box — the card and glyph never
+              resize (no layout shift). Fill/radius mirror the detail dialog's
+              SIZE_SURFACES treatment. */}
           <Flex
             align="center"
             justify="center"
             color="neutral.12"
+            bg={surfaceStyle.bg}
+            borderRadius={surfaceStyle.radius}
             css={{
               fontSize: "var(--icon-preview-size, 48px)",
-              height: "var(--icon-preview-size, 48px)",
+              boxSize: `calc(var(--icon-preview-size, 48px) + ${
+                SURFACE_PAD * 2
+              }px)`,
             }}
           >
             <Component />
@@ -165,6 +190,8 @@ export const IconBrowse = ({
   onSelectIcon,
   loading,
   scrollToTop,
+  iconSize,
+  surface,
 }: {
   entries: IconEntry[];
   categorySlug: string;
@@ -182,6 +209,16 @@ export const IconBrowse = ({
    * you parked next to the (bottom) paginator.
    */
   scrollToTop?: () => void;
+  /**
+   * Rendered size (px) of the previewed glyphs, owned by `IconSearch` and driven
+   * by the sidebar size slider. Applied as the `--icon-preview-size` custom
+   * property on the grid container so all tiles resize together via CSS — the
+   * memoized tiles never re-render — and the column count reflows (auto-fill) as
+   * tiles grow/shrink.
+   */
+  iconSize: number;
+  /** The optional shape drawn behind each glyph, from the sidebar selector. */
+  surface: Surface;
 }) => {
   const [, copyToClipboard] = useCopyToClipboard();
   const [q, setQ] = useState<string>("");
@@ -194,15 +231,16 @@ export const IconBrowse = ({
   // True while the grid is still reflecting an older query than what's typed.
   const isStale = q !== deferredQ;
 
-  // Rendered size (px) of the icon glyphs, driven by the header slider. Applied
-  // as a CSS custom property on the grid container so all tiles resize together
-  // via CSS — the memoized tiles never re-render — and the column count reflows
-  // (auto-fill) as tiles grow/shrink. Default 48 = the fontSize "1200" token.
-  const [iconSize, setIconSize] = useState(ICON_SIZE_DEFAULT);
-  // Minimum card column width: glyph plus room for the name label. `auto-fill`
-  // packs as many of these as fit, then `1fr` stretches them to fill the row
-  // flush to both edges (no floating, center-detached block).
-  const cardWidth = iconSize + CARD_LABEL_ROOM;
+  // The active keyword facet from the TagBar, or null. Refines the current
+  // (category + search) result set to icons carrying this exact tag.
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+
+  // Minimum card column width: glyph, the name-label room, and the surface
+  // chip's reserved padding (both sides) — the padding is always included, the
+  // same in every surface state, so switching surfaces never reflows the grid.
+  // `auto-fill` packs as many of these as fit, then `1fr` stretches them to fill
+  // the row flush to both edges (no floating, center-detached block).
+  const cardWidth = iconSize + CARD_LABEL_ROOM + SURFACE_PAD * 2;
 
   // Icons in the active category (or all of them). Compared by slug so a
   // category whose name contains spaces ("common actions") still matches.
@@ -215,6 +253,14 @@ export const IconBrowse = ({
           ),
     [entries, categorySlug]
   );
+
+  // Name -> entry lookup, so the ranked result names (from Fuse / browse sort)
+  // can be mapped back to their tags for facet building and tag filtering.
+  const entryByName = useMemo(() => {
+    const map = new Map<string, IconEntry>();
+    for (const e of entries) map.set(e.name, e);
+    return map;
+  }, [entries]);
 
   const fuse = useMemo(
     () =>
@@ -245,16 +291,52 @@ export const IconBrowse = ({
     return fuse.search(deferredQ).map((r) => r.item.name);
   }, [deferredQ, scoped, fuse]);
 
+  // Distinct keyword tags across the current (category + search) result set,
+  // ordered by frequency. Built from `full` — i.e. *before* the tag filter —
+  // so sibling tags stay visible and selectable while one is active.
+  const tagFacets = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const name of full) {
+      const entry = entryByName.get(name);
+      if (!entry) continue;
+      for (const tag of entry.tags) {
+        counts.set(tag, (counts.get(tag) ?? 0) + 1);
+      }
+    }
+    return [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, MAX_TAG_FACETS)
+      .map(([tag]) => tag);
+  }, [full, entryByName]);
+
+  // The TagBar highlight tracks `selectedTag` immediately (snappy click), but
+  // the expensive grid re-filter reads a deferred copy so a click never blocks.
+  const deferredTag = useDeferredValue(selectedTag);
+
+  // Apply the active keyword facet (if any) on top of the ranked result set.
+  const filtered = useMemo(() => {
+    if (!deferredTag) return full;
+    return full.filter((name) =>
+      entryByName.get(name)?.tags.includes(deferredTag)
+    );
+  }, [full, deferredTag, entryByName]);
+
   // 1-based current page. Reset to the first page whenever the result set
   // changes (new query or category) so you're never stranded on an empty page.
   const [page, setPage] = useState(1);
   useEffect(() => {
     setPage(1);
+  }, [deferredQ, categorySlug, selectedTag]);
+
+  // A stale keyword can't survive a new result set — clear it whenever the
+  // category or search changes.
+  useEffect(() => {
+    setSelectedTag(null);
   }, [deferredQ, categorySlug]);
 
   const pageItems = useMemo(
-    () => full.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
-    [full, page]
+    () => filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
+    [filtered, page]
   );
 
   /** Copies the import statement for an icon and confirms via a toast. */
@@ -284,56 +366,32 @@ export const IconBrowse = ({
         bg="bg/75"
         backdropFilter="blur(8px)"
       >
-        <Flex align="center" gap="400" wrap="wrap">
-          <Box flex="1 1 240px" minW="0">
-            <TextInput
-              width="full"
-              aria-label="Search icons"
-              placeholder={`Search through ${
-                categorySlug === ALL_CATEGORIES
-                  ? ALL_ICON_NAMES.length
-                  : scoped.length
-              } icons ...`}
-              value={q}
-              onChange={(value) => setQ(value)}
+        {/* Just the search field now — the size + surface controls live in the
+            sidebar (IconDisplayControls). */}
+        <SearchInput
+          width="full"
+          aria-label="Search icons"
+          placeholder={`Search through ${
+            categorySlug === ALL_CATEGORIES
+              ? ALL_ICON_NAMES.length
+              : scoped.length
+          } icons ...`}
+          value={q}
+          onChange={(value) => setQ(value)}
+        />
+
+        {/* Keyword facet filter — always shown (once keywords are available),
+            refining whatever the current result set is. */}
+        {tagFacets.length > 0 && (
+          <Box mt="300">
+            <TagBar
+              aria-label="Filter by keyword"
+              items={tagFacets}
+              selectedKey={selectedTag}
+              onSelectionChange={setSelectedTag}
             />
           </Box>
-          {/* Icon-size control: a plain range input, lightly styled (accent
-              color + width). Resizes every previewed icon live via CSS. */}
-          <Flex align="center" gap="300" flexShrink="0">
-            <Text textStyle="sm" color="neutral.11" whiteSpace="nowrap">
-              Size
-            </Text>
-            <Box
-              asChild
-              css={{
-                width: "140px",
-                cursor: "pointer",
-                accentColor: "{colors.primary.9}",
-              }}
-            >
-              <input
-                type="range"
-                min={ICON_SIZE_MIN}
-                max={ICON_SIZE_MAX}
-                step={ICON_SIZE_STEP}
-                value={iconSize}
-                aria-label="Icon preview size"
-                onChange={(e) => setIconSize(Number(e.target.value))}
-              />
-            </Box>
-            <Text
-              textStyle="sm"
-              color="neutral.10"
-              textAlign="right"
-              minW="1200"
-              whiteSpace="nowrap"
-              css={{ fontVariantNumeric: "tabular-nums" }}
-            >
-              {iconSize}px
-            </Text>
-          </Flex>
-        </Flex>
+        )}
       </Box>
       <Box
         px="400"
@@ -355,8 +413,8 @@ export const IconBrowse = ({
           <Flex justify="center" py="800">
             <LoadingSpinner />
           </Flex>
-        ) : full.length === 0 ? (
-          <Text color="neutral.11">No icons match “{q}”.</Text>
+        ) : filtered.length === 0 ? (
+          <Text color="neutral.11">No icons match your current filters.</Text>
         ) : (
           // A Box (asChild) supplies `display:grid`. Columns auto-fill at the
           // --card-w minimum then stretch (`1fr`) to fill the row, so the block
@@ -380,7 +438,12 @@ export const IconBrowse = ({
               onAction={(key) => onSelectIcon(String(key))}
             >
               {pageItems.map((iconId) => (
-                <IconTile key={iconId} iconId={iconId} onCopy={onCopyRequest} />
+                <IconTile
+                  key={iconId}
+                  iconId={iconId}
+                  onCopy={onCopyRequest}
+                  surface={surface}
+                />
               ))}
             </GridList>
           </Box>
@@ -389,7 +452,7 @@ export const IconBrowse = ({
 
       {/* Sticky paginator, mirroring the frosted header. Hidden when everything
           fits on one page. */}
-      {!loading && full.length > PAGE_SIZE && (
+      {!loading && filtered.length > PAGE_SIZE && (
         <Flex
           position="sticky"
           bottom="0"
@@ -401,7 +464,7 @@ export const IconBrowse = ({
           backdropFilter="blur(8px)"
         >
           <Pagination
-            totalItems={full.length}
+            totalItems={filtered.length}
             pageSize={PAGE_SIZE}
             currentPage={page}
             onPageChange={(next) => {
