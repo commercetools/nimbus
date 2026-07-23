@@ -944,9 +944,6 @@ importers:
       react:
         specifier: catalog:react
         version: 19.2.0
-      tsx:
-        specifier: catalog:tooling
-        version: 4.23.1
       typescript:
         specifier: ~5.9.3
         version: 5.9.3

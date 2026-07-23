@@ -35,7 +35,6 @@
     "@types/node": "catalog:utils",
     "@types/react": "catalog:react",
     "react": "catalog:react",
-    "tsx": "catalog:tooling",
     "typescript": "catalog:tooling"
   },
   "scripts": {
