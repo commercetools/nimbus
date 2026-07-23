@@ -48,48 +48,58 @@ const timestamp = new Date().toISOString().replace("T", " ").slice(0, 19);
 lines.push("## Bundle Size Report");
 lines.push("");
 lines.push(`<sub>Last updated: ${timestamp} UTC</sub>`);
-lines.push("| Package | Format | Current | Baseline | Delta | Status |");
-lines.push("|---------|--------|--------:|---------:|------:|--------|");
 
-for (const [pkg, formats] of Object.entries(data.packages)) {
-  const info = formats.dist;
-  const current =
-    info.current != null ? (info.current / 1024).toFixed(1) + " KB" : "—";
-  const baseline =
-    info.baseline != null ? (info.baseline / 1024).toFixed(1) + " KB" : "—";
-  const delta =
-    info.delta_pct != null
-      ? (info.delta_pct >= 0 ? "+" : "") + info.delta_pct.toFixed(1) + "%"
-      : info.status;
-  const icon =
-    info.status === "ok"
-      ? ":white_check_mark:"
-      : info.status === "fail"
-        ? ":x:"
-        : info.status === "approved"
-          ? ":warning:"
-          : ":new:";
-  lines.push(
-    `| ${pkg} | dist | ${current} | ${baseline} | ${delta} | ${icon} ${info.status} |`
-  );
-}
-
-lines.push("");
-lines.push(`Baseline source: **${data.baseline_source}**`);
-if (data.has_failures) {
+if (data.error) {
   lines.push("");
-  lines.push("> :x: **One or more packages exceeded their size budget.**");
-  lines.push(
-    "> To approve this increase, apply the `bundle-size-approved` label and re-run CI."
-  );
-}
+  lines.push("> :x: **Bundle size check failed**");
+  lines.push(">");
+  for (const errLine of data.error.split("\n")) {
+    lines.push(`> ${errLine}`);
+  }
+} else {
+  lines.push("| Package | Format | Current | Baseline | Delta | Status |");
+  lines.push("|---------|--------|--------:|---------:|------:|--------|");
 
-const sizes = {};
-for (const [pkg, formats] of Object.entries(data.packages)) {
-  sizes[pkg] = { dist: formats.dist.current };
+  for (const [pkg, formats] of Object.entries(data.packages)) {
+    const info = formats.dist;
+    const current =
+      info.current != null ? (info.current / 1024).toFixed(1) + " KB" : "—";
+    const baseline =
+      info.baseline != null ? (info.baseline / 1024).toFixed(1) + " KB" : "—";
+    const delta =
+      info.delta_pct != null
+        ? (info.delta_pct >= 0 ? "+" : "") + info.delta_pct.toFixed(1) + "%"
+        : info.status;
+    const icon =
+      info.status === "ok"
+        ? ":white_check_mark:"
+        : info.status === "fail"
+          ? ":x:"
+          : info.status === "approved"
+            ? ":warning:"
+            : ":new:";
+    lines.push(
+      `| ${pkg} | dist | ${current} | ${baseline} | ${delta} | ${icon} ${info.status} |`
+    );
+  }
+
+  lines.push("");
+  lines.push(`Baseline source: **${data.baseline_source}**`);
+  if (data.has_failures) {
+    lines.push("");
+    lines.push("> :x: **One or more packages exceeded their size budget.**");
+    lines.push(
+      "> To approve this increase, apply the `bundle-size-approved` label and re-run CI."
+    );
+  }
+
+  const sizes = {};
+  for (const [pkg, formats] of Object.entries(data.packages)) {
+    sizes[pkg] = { dist: formats.dist.current };
+  }
+  lines.push("");
+  lines.push(`<!-- bundle-sizes-data-v1: ${JSON.stringify(sizes)} -->`);
 }
-lines.push("");
-lines.push(`<!-- bundle-sizes-data-v1: ${JSON.stringify(sizes)} -->`);
 
 const bodyFile = "/tmp/comment-body.txt";
 writeFileSync(bodyFile, lines.join("\n"));

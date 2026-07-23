@@ -150,7 +150,7 @@ function loadBootstrapBaseline() {
   if (!existsSync(BOOTSTRAP_PATH)) {
     return null;
   }
-  console.log(
+  console.error(
     "Using bootstrap baseline (bundle-sizes.json). This file is only needed\n" +
       "to seed the comment chain — once a PR merges with a bot comment, the\n" +
       "file can be deleted.\n"
@@ -167,7 +167,7 @@ function resolveBaseline() {
     }
   }
 
-  console.log(
+  console.error(
     "BUNDLE_SIZE_BASELINE not set — fetching from comment chain via gh CLI...\n"
   );
   const commentChainBaseline = fetchBaselineFromCommentChain();
