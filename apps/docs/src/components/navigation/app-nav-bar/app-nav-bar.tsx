@@ -18,17 +18,17 @@ export const AppNavBar = () => {
       // TODO: Remove this once we have a proper layout
       maxWidth="1280px"
     >
-      {/* Left: Logo + Main Menu */}
+      {/* Left: Logo + Search + Main Menu */}
       <Stack direction="row" gap="400" alignItems="center" flexShrink="0">
         <AppNavBarBrand />
-        <AppNavBarMenuWithSuspense />
-      </Stack>
-
-      {/* Right: Search + Dev Controls + Color Mode + Color Theme */}
-      <Stack direction="row" gap="400" alignItems="center" flexShrink="0">
         <Suspense fallback={<Box>Loading search...</Box>}>
           <AppNavBarSearch />
         </Suspense>
+        <AppNavBarMenuWithSuspense />
+      </Stack>
+
+      {/* Right: Color Mode + Color Theme */}
+      <Stack direction="row" gap="400" alignItems="center" flexShrink="0">
         <ColorModeToggle />
         <ColorThemeMenu />
       </Stack>
