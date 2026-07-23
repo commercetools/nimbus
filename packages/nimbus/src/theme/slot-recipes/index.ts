@@ -34,6 +34,7 @@ import { richTextInputRecipe } from "@/components/rich-text-input/rich-text-inpu
 import { scopedSearchInputSlotRecipe } from "@/components/scoped-search-input/scoped-search-input.recipe";
 import { searchInputSlotRecipe } from "@/components/search-input/search-input.recipe";
 import { selectSlotRecipe } from "@/components/select/select.recipe";
+import { sliderSlotRecipe } from "@/components/slider/slider.recipe";
 import { splitButtonSlotRecipe } from "@/components/split-button/split-button.recipe";
 import { splitterSlotRecipe } from "@/components/splitter/splitter.recipe";
 import { switchSlotRecipe } from "@/components/switch/switch.recipe";
@@ -110,6 +111,7 @@ export const slotRecipes = {
   nimbusScopedSearchInput: scopedSearchInputSlotRecipe,
   nimbusSearchInput: searchInputSlotRecipe,
   nimbusSelect: selectSlotRecipe,
+  nimbusSlider: sliderSlotRecipe,
   nimbusSplitButton: splitButtonSlotRecipe,
   nimbusSplitter: splitterSlotRecipe,
   nimbusSwitch: switchSlotRecipe,
