@@ -11,6 +11,8 @@ import {
   PanoramaFishEye,
 } from "@commercetools/nimbus-icons";
 
+import { useIconRouteState } from "./use-icon-route-state";
+
 /** The optional shape drawn behind every previewed glyph. */
 export type Surface = "none" | "square" | "circle";
 
@@ -25,95 +27,89 @@ export const DEFAULT_SURFACE: Surface = "none";
 
 /**
  * View controls for the icon grid, rendered pinned at the top of the Icons
- * sidebar (above the scrollable category rail). Owns no state itself — the
- * `iconSize` and `surface` values live in `IconSearch` so both the grid
- * (`IconBrowse`) and these controls stay in sync. Styled to match the rail's
- * `CategoryRail` section (same padding + heading treatment) so the aside reads
- * as one panel.
+ * sidebar (above the scrollable category rail). Reads and writes the `size` and
+ * `surface` display preferences straight from the URL (`useIconRouteState`), so
+ * they stay in sync with the grid (`IconBrowse`) and survive reload/share.
+ * Styled to match the rail's `CategoryRail` section (same padding + heading
+ * treatment) so the aside reads as one panel.
  */
-export const IconDisplayControls = ({
-  iconSize,
-  onIconSizeChange,
-  surface,
-  onSurfaceChange,
-}: {
-  iconSize: number;
-  onIconSizeChange: (size: number) => void;
-  surface: Surface;
-  onSurfaceChange: (surface: Surface) => void;
-}) => (
-  <Stack gap="400" p="400">
-    <Text textStyle="sm" fontWeight="600" color="neutral.11">
-      Display
-    </Text>
+export const IconDisplayControls = () => {
+  const { size, setSize, surface, setSurface } = useIconRouteState();
 
-    {/* Icon size — a plain range input, full-width for the narrow rail, with
-        the current value shown alongside the label. Resizes every previewed
-        glyph live via the grid's --icon-preview-size custom property. */}
-    <Stack gap="100">
-      <Flex justify="space-between" align="baseline">
-        <Text textStyle="sm" color="neutral.11">
-          Size
-        </Text>
-        <Text
-          textStyle="xs"
-          color="neutral.10"
-          css={{ fontVariantNumeric: "tabular-nums" }}
-        >
-          {iconSize}px
-        </Text>
-      </Flex>
-      <Box
-        asChild
-        css={{
-          width: "100%",
-          cursor: "pointer",
-          accentColor: "{colors.primary.9}",
-        }}
-      >
-        <input
-          type="range"
-          min={ICON_SIZE_MIN}
-          max={ICON_SIZE_MAX}
-          step={ICON_SIZE_STEP}
-          value={iconSize}
-          aria-label="Icon preview size"
-          onChange={(e) => onIconSizeChange(Number(e.target.value))}
-        />
-      </Box>
-    </Stack>
-
-    {/* Surface — a single-select segmented toggle. Each option previews every
-        glyph against the shape it most often sits inside: nothing, a
-        rounded-square chip, or a circular chip. */}
-    <Stack gap="100">
-      <Text textStyle="sm" color="neutral.11">
-        Surface
+  return (
+    <Stack gap="400" p="400">
+      <Text textStyle="sm" fontWeight="600" color="neutral.11">
+        Display
       </Text>
-      <ToggleButtonGroup.Root
-        size="xs"
-        colorPalette="primary"
-        disallowEmptySelection
-        selectedKeys={[surface]}
-        onSelectionChange={(keys) => {
-          const key = [...keys][0];
-          if (key != null) onSurfaceChange(key as Surface);
-        }}
-        aria-label="Icon surface"
-      >
-        <ToggleButtonGroup.Button id="none" aria-label="No surface">
-          <HideSource />
-        </ToggleButtonGroup.Button>
-        <ToggleButtonGroup.Button id="square" aria-label="Square surface">
-          <CropSquare />
-        </ToggleButtonGroup.Button>
-        <ToggleButtonGroup.Button id="circle" aria-label="Circle surface">
-          <PanoramaFishEye />
-        </ToggleButtonGroup.Button>
-      </ToggleButtonGroup.Root>
+
+      {/* Icon size — a plain range input, full-width for the narrow rail, with
+          the current value shown alongside the label. Resizes every previewed
+          glyph live via the grid's --icon-preview-size custom property. */}
+      <Stack gap="100">
+        <Flex justify="space-between" align="baseline">
+          <Text textStyle="sm" color="neutral.11">
+            Size
+          </Text>
+          <Text
+            textStyle="xs"
+            color="neutral.10"
+            css={{ fontVariantNumeric: "tabular-nums" }}
+          >
+            {size}px
+          </Text>
+        </Flex>
+        <Box
+          asChild
+          css={{
+            width: "100%",
+            cursor: "pointer",
+            accentColor: "{colors.primary.9}",
+          }}
+        >
+          <input
+            type="range"
+            min={ICON_SIZE_MIN}
+            max={ICON_SIZE_MAX}
+            step={ICON_SIZE_STEP}
+            value={size}
+            aria-label="Icon preview size"
+            onChange={(e) => setSize(Number(e.target.value))}
+          />
+        </Box>
+      </Stack>
+
+      {/* Surface — a single-select segmented toggle. Each option previews every
+          glyph against the shape it most often sits inside: nothing, a
+          rounded-square chip, or a circular chip. */}
+      <Stack gap="100">
+        <Text textStyle="sm" color="neutral.11">
+          Surface
+        </Text>
+        <ToggleButtonGroup.Root
+          size="xs"
+          colorPalette="primary"
+          disallowEmptySelection
+          selectedKeys={[surface]}
+          onSelectionChange={(keys) => {
+            const key = [...keys][0];
+            if (key != null) setSurface(key as Surface);
+          }}
+          aria-label="Icon surface"
+        >
+          <ToggleButtonGroup.Button id="none" aria-label="No surface">
+            <HideSource />
+          </ToggleButtonGroup.Button>
+          <ToggleButtonGroup.Button id="square" aria-label="Square surface">
+            <CropSquare />
+          </ToggleButtonGroup.Button>
+          <ToggleButtonGroup.Button id="circle" aria-label="Circle surface">
+            <PanoramaFishEye />
+          </ToggleButtonGroup.Button>
+        </ToggleButtonGroup.Root>
+      </Stack>
     </Stack>
-  </Stack>
-);
+  );
+};
 
 /**
  * Breathing room (px, per side) reserved around every glyph. Applied in ALL

@@ -24,11 +24,12 @@ function NoSidebarBodyInner() {
   useScrollRestoration();
 
   // Key the content on the resolved base route (not the full pathname) so a
-  // page that owns a sub-route space — like Icons (`/icons/:name`,
-  // `/icons/category/:slug`) — is NOT remounted as you navigate within it. A
-  // remount would re-suspend (flashing the spinner), drop the page's state, and
-  // re-run its data loads even though everything is already loaded. This
-  // matches the app-frame layout's behavior.
+  // page that owns a sub-route space — like Icons, whose detail dialog is the
+  // path segment `/icons/:name` (with its filters carried as query params) — is
+  // NOT remounted as you navigate within it. A remount would re-suspend
+  // (flashing the spinner), drop the page's state, and re-run its data loads
+  // even though everything is already loaded. This matches the app-frame
+  // layout's behavior.
   const { baseRoute } = useRouteInfo();
 
   return (

@@ -1,33 +1,31 @@
 import { Box, Stack, Text } from "@commercetools/nimbus";
 import { ListBox, ListBoxItem, type Selection } from "react-aria-components";
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { ALL_CATEGORIES, slugifyCategory, titleCase } from "./use-icon-data";
+import { useIconRouteState } from "./use-icon-route-state";
 
 type CategoryOption = { id: string; label: string; count: number };
 
 /**
  * The category filter rail shown in the Splitter's aside. It is always present
- * across the `/icons` space; selecting a category navigates to its page
- * (`/icons/category/:slug`) rather than mutating local state. `activeSlug` is
- * the currently-filtered category (`ALL_CATEGORIES` on the `/icons` root); when
- * `null`, no option is highlighted.
+ * across the `/icons` space; selecting a category sets the `?category=` filter
+ * (via `useIconRouteState`) rather than mutating local state. The active
+ * category comes from the URL — `ALL_CATEGORIES` ("all") on the `/icons` root,
+ * which highlights the "All" option.
  *
  * Rendered as a single-select React Aria `ListBox` so the rail is one Tab stop:
  * Tab moves focus in/out, Up/Down (+ Home/End + typeahead) move between
  * categories, and Enter/Space selects. The selected option is the active
- * category; selecting one navigates to its route.
+ * category; selecting one updates the URL.
  */
 export const CategoryRail = ({
   categories,
   totalCount,
-  activeSlug,
 }: {
   categories: { name: string; count: number }[];
   totalCount: number;
-  activeSlug: string | null;
 }) => {
-  const navigate = useNavigate();
+  const { category, goToCategory } = useIconRouteState();
 
   const items = useMemo<CategoryOption[]>(
     () => [
@@ -43,10 +41,12 @@ export const CategoryRail = ({
 
   const handleSelectionChange = (keys: Selection) => {
     // Single selection → a Set with one key. `disallowEmptySelection` keeps the
-    // route in sync (you can't deselect into a no-category state via the rail).
+    // URL in sync (you can't deselect into a no-category state via the rail).
     const key = keys === "all" ? undefined : [...keys][0];
     if (key == null) return;
-    navigate(key === ALL_CATEGORIES ? "/icons" : `/icons/category/${key}`);
+    // `goToCategory` stays on the grid path (dropping any open dialog) and
+    // preserves the other filters; selecting "all" clears the `?category=` param.
+    goToCategory(String(key));
   };
 
   return (
@@ -58,7 +58,7 @@ export const CategoryRail = ({
         aria-label="Filter icons by category"
         selectionMode="single"
         disallowEmptySelection
-        selectedKeys={activeSlug ? [activeSlug] : []}
+        selectedKeys={[category]}
         onSelectionChange={handleSelectionChange}
         items={items}
       >

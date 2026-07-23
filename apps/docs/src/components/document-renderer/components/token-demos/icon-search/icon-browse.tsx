@@ -18,12 +18,12 @@ import {
   useDeferredValue,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type CSSProperties,
 } from "react";
 import Fuse from "fuse.js";
 import { useAtomValue } from "jotai";
-import { useNavigate } from "react-router-dom";
 
 import { semanticEnabledAtom } from "@/atoms/semantic-search";
 import { useSemanticSearch } from "@/semantic-search/use-semantic-search";
@@ -43,6 +43,7 @@ import {
   SURFACE_STYLE,
   type Surface,
 } from "./icon-display-controls";
+import { useIconRouteState } from "./use-icon-route-state";
 
 /**
  * Icons per page. Highly composite (÷ 2,3,4,5,6,8,10,12…) so a page stays full
@@ -193,16 +194,10 @@ const IconTile = memo(function IconTile({
  */
 export const IconBrowse = ({
   entries,
-  categorySlug,
-  onSelectIcon,
   loading,
   scrollToTop,
-  iconSize,
-  surface,
 }: {
   entries: IconEntry[];
-  categorySlug: string;
-  onSelectIcon: (iconId: string) => void;
   /**
    * True until the icon metadata chunk resolves. Until then every entry has
    * `popularity: 0`, so the empty-query browse would render the first page in
@@ -216,32 +211,50 @@ export const IconBrowse = ({
    * you parked next to the (bottom) paginator.
    */
   scrollToTop?: () => void;
-  /**
-   * Rendered size (px) of the previewed glyphs, owned by `IconSearch` and driven
-   * by the sidebar size slider. Applied as the `--icon-preview-size` custom
-   * property on the grid container so all tiles resize together via CSS — the
-   * memoized tiles never re-render — and the column count reflows (auto-fill) as
-   * tiles grow/shrink.
-   */
-  iconSize: number;
-  /** The optional shape drawn behind each glyph, from the sidebar selector. */
-  surface: Surface;
 }) => {
+  // All browsing state is URL-backed (category/tag/search/size/surface as query
+  // params; the open icon as the `/icons/:name` segment).
+  const {
+    category,
+    tag,
+    search,
+    size,
+    surface,
+    setTag,
+    setSearch,
+    openIcon,
+    goToCategory,
+  } = useIconRouteState();
+
   const [, copyToClipboard] = useCopyToClipboard();
-  const navigate = useNavigate();
-  const [q, setQ] = useState<string>("");
-  // The input updates `q` on every keystroke (so typing stays snappy), but the
-  // expensive Fuse search + grid render read this deferred copy. React keeps the
-  // previous results painted and does the heavy work at a lower, interruptible
-  // priority, so the field never stutters mid-type. Better than a fixed debounce:
-  // no artificial latency, and fast typers still get one search at the end.
+
+  // Search text is URL-backed, but the input keeps a snappy local buffer:
+  // binding the field straight to the param would round-trip every keystroke
+  // through the router before the value settles, risking dropped keystrokes.
+  // The input drives local `q`, the grid reads `useDeferredValue(q)` (React
+  // keeps prior results painted and does the heavy Fuse work at interruptible
+  // priority), and we mirror that deferred value into the URL below.
+  const [q, setQ] = useState<string>(() => search);
   const deferredQ = useDeferredValue(q);
   // True while the grid is still reflecting an older query than what's typed.
   const isStale = q !== deferredQ;
 
-  // The active keyword facet from the TagBar, or null. Refines the current
-  // (category + search) result set to icons carrying this exact tag.
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  // The value we last pushed to the URL ourselves, so the reconcile effect can
+  // tell our own echo apart from a genuine external change (Back/forward, deep
+  // link, category-badge nav) and never clobber in-flight typing.
+  const lastSyncedSearch = useRef(search);
+  useEffect(() => {
+    if (deferredQ !== search) {
+      lastSyncedSearch.current = deferredQ;
+      setSearch(deferredQ);
+    }
+  }, [deferredQ, search, setSearch]);
+  useEffect(() => {
+    if (search !== lastSyncedSearch.current) {
+      lastSyncedSearch.current = search;
+      setQ(search);
+    }
+  }, [search]);
 
   // --- Semantic search -------------------------------------------------------
   // When the global "Semantic search (beta)" toggle is on (the same switch the
@@ -292,18 +305,18 @@ export const IconBrowse = ({
   // same in every surface state, so switching surfaces never reflows the grid.
   // `auto-fill` packs as many of these as fit, then `1fr` stretches them to fill
   // the row flush to both edges (no floating, center-detached block).
-  const cardWidth = iconSize + CARD_LABEL_ROOM + SURFACE_PAD * 2;
+  const cardWidth = size + CARD_LABEL_ROOM + SURFACE_PAD * 2;
 
   // Icons in the active category (or all of them). Compared by slug so a
   // category whose name contains spaces ("common actions") still matches.
   const scoped = useMemo(
     () =>
-      categorySlug === ALL_CATEGORIES
+      category === ALL_CATEGORIES
         ? entries
         : entries.filter((e) =>
-            e.categories.some((c) => slugifyCategory(c) === categorySlug)
+            e.categories.some((c) => slugifyCategory(c) === category)
           ),
-    [entries, categorySlug]
+    [entries, category]
   );
 
   // Name -> entry lookup, so the ranked result names (from Fuse / browse sort)
@@ -413,7 +426,7 @@ export const IconBrowse = ({
 
   // The TagBar highlight tracks `selectedTag` immediately (snappy click), but
   // the expensive grid re-filter reads a deferred copy so a click never blocks.
-  const deferredTag = useDeferredValue(selectedTag);
+  const deferredTag = useDeferredValue(tag);
 
   // Apply the active keyword facet (if any) on top of the ranked result set.
   const filtered = useMemo(() => {
@@ -428,7 +441,7 @@ export const IconBrowse = ({
   const [page, setPage] = useState(1);
   useEffect(() => {
     setPage(1);
-  }, [deferredQ, categorySlug, selectedTag]);
+  }, [deferredQ, category, deferredTag]);
 
   // The keyword facet is never auto-cleared: it composes with the search term
   // and the category as an independent AND filter and persists across changes to
@@ -446,11 +459,8 @@ export const IconBrowse = ({
   //      one case where the active tag leads the bar, because it has nowhere else
   //      to be shown.
   const tagBarItems = useMemo(
-    () =>
-      selectedTag && !tagFacets.includes(selectedTag)
-        ? [selectedTag, ...tagFacets]
-        : tagFacets,
-    [tagFacets, selectedTag]
+    () => (tag && !tagFacets.includes(tag) ? [tag, ...tagFacets] : tagFacets),
+    [tagFacets, tag]
   );
 
   const pageItems = useMemo(
@@ -491,9 +501,7 @@ export const IconBrowse = ({
           width="full"
           aria-label="Search icons"
           placeholder={`Search through ${
-            categorySlug === ALL_CATEGORIES
-              ? ALL_ICON_NAMES.length
-              : scoped.length
+            category === ALL_CATEGORIES ? ALL_ICON_NAMES.length : scoped.length
           } icons ...`}
           value={q}
           onChange={(value) => setQ(value)}
@@ -507,8 +515,8 @@ export const IconBrowse = ({
               size="sm"
               aria-label="Filter by keyword"
               items={tagBarItems}
-              selectedKey={selectedTag}
-              onSelectionChange={setSelectedTag}
+              selectedKey={tag}
+              onSelectionChange={setTag}
             />
           </Box>
         )}
@@ -524,7 +532,7 @@ export const IconBrowse = ({
         // the grid (minimum card column width) and every card (glyph font-size).
         style={
           {
-            "--icon-preview-size": `${iconSize}px`,
+            "--icon-preview-size": `${size}px`,
             "--card-w": `${cardWidth}px`,
           } as CSSProperties
         }
@@ -564,20 +572,20 @@ export const IconBrowse = ({
                   Clear search “{q.trim()}”
                 </Button>
               )}
-              {selectedTag && (
+              {tag && (
                 <Button
                   size="xs"
                   variant="outline"
-                  onPress={() => setSelectedTag(null)}
+                  onPress={() => setTag(null)}
                 >
-                  Remove keyword “{selectedTag}”
+                  Remove keyword “{tag}”
                 </Button>
               )}
-              {categorySlug !== ALL_CATEGORIES && (
+              {category !== ALL_CATEGORIES && (
                 <Button
                   size="xs"
                   variant="outline"
-                  onPress={() => navigate("/icons")}
+                  onPress={() => goToCategory(ALL_CATEGORIES)}
                 >
                   Browse all categories
                 </Button>
@@ -604,7 +612,7 @@ export const IconBrowse = ({
               aria-label="Icons"
               layout="grid"
               selectionMode="none"
-              onAction={(key) => onSelectIcon(String(key))}
+              onAction={(key) => openIcon(String(key))}
             >
               {pageItems.map((iconId) => (
                 <IconTile
