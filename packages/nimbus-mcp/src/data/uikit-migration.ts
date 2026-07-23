@@ -48,6 +48,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "UI Kit tone prop ('primary'|'secondary'|'inverted'|'critical') maps to Nimbus colorPalette/variant.",
     breakingChanges: [
       "Replace FlatButton with <Button>",
+      "Default color changed: UI Kit FlatButton was blue (tone='primary') by default; Nimbus Button defaults to colorPalette='neutral' (gray). Add colorPalette='primary' to preserve the blue appearance.",
       "label prop replaced by children",
       "tone prop replaced by variant/colorPalette",
       "iconPosition prop removed; pass icon as a child of <Button>",
@@ -137,6 +138,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "UI Kit used a required label prop; Nimbus uses children for button text.",
     breakingChanges: [
       "Replace PrimaryButton with <Button variant='solid'>",
+      "Default color changed: UI Kit PrimaryButton was blue (tone='primary') by default; Nimbus Button defaults to colorPalette='neutral' (gray). Add colorPalette='primary' to preserve the blue appearance.",
       "label prop replaced by children",
       "iconLeft/iconRight props removed; pass icon as a child of <Button>",
       "tone prop ('urgent'|'primary'|'critical') replaced by colorPalette",
@@ -188,6 +190,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "UI Kit used a required label prop; Nimbus uses children.",
     breakingChanges: [
       "Replace SecondaryButton with <Button variant='outline'>",
+      "Default color changed: UI Kit SecondaryButton was blue (theme='default') by default; Nimbus Button defaults to colorPalette='neutral' (gray). Add colorPalette='primary' to preserve the blue appearance.",
       "label prop replaced by children",
       "iconLeft/iconRight props removed; pass icon as a child of <Button>",
       "theme prop ('default'|'info') replaced by colorPalette",
@@ -303,6 +306,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "SplitButton combines a primary action button with a dropdown menu. Compose using SplitButton + Menu.",
     breakingChanges: [
       "Rename to SplitButton",
+      "Default color changed: UI Kit PrimaryActionDropdown was blue by default; Nimbus SplitButton defaults to colorPalette='neutral' (gray). Add colorPalette='primary' to preserve the blue appearance.",
       "Menu items now use Nimbus Menu composition pattern",
     ],
   },
@@ -1402,6 +1406,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Nimbus colorPalette values: 'critical'|'warning'|'positive'|'info'|'primary'|'neutral'.",
     breakingChanges: [
       "Rename to Badge",
+      "Default color changed: UI Kit Stamp was blue (tone='information') by default; Nimbus Badge defaults to colorPalette='neutral' (gray). Add colorPalette='info' to preserve the blue appearance.",
       "tone prop replaced by colorPalette",
       "tone value 'positive' stays 'positive' (use colorPalette='positive')",
       "tone value 'critical' stays 'critical' (use colorPalette='critical')",
@@ -1537,6 +1542,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     mappingType: "direct",
     notes: "Direct replacement. Use asChild for router library integration.",
     breakingChanges: [
+      "Default color changed: UI Kit Link was blue (tone='primary') by default; Nimbus Link defaults to neutral (dark text). Use fontColor='primary' to preserve blue link styling.",
       "isExternal prop renamed to target='_blank' + rel='noopener'",
     ],
     propMappings: [

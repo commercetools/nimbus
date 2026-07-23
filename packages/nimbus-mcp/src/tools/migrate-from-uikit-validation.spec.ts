@@ -134,6 +134,36 @@ describe("migrate_from_uikit — type validation", () => {
     expect(toneProp?.nimbusProp).toBe("colorPalette");
   });
 
+  describe("colorPalette default warnings", () => {
+    const COMPONENTS_NEEDING_COLOR_WARNING = [
+      { uiKitName: "PrimaryButton", searchString: "colorPalette" },
+      { uiKitName: "FlatButton", searchString: "colorPalette" },
+      { uiKitName: "SecondaryButton", searchString: "colorPalette" },
+      { uiKitName: "Stamp", searchString: "colorPalette" },
+      { uiKitName: "Link", searchString: "neutral" },
+      { uiKitName: "PrimaryActionDropdown", searchString: "colorPalette" },
+    ];
+
+    for (const {
+      uiKitName,
+      searchString,
+    } of COMPONENTS_NEEDING_COLOR_WARNING) {
+      it(`${uiKitName} breakingChanges warns about default color change`, () => {
+        const entry = migrations.find((e) => e.uiKitName === uiKitName);
+        expect(entry).toBeDefined();
+        const hasWarning = entry!.breakingChanges.some(
+          (bc) =>
+            bc.toLowerCase().includes("default") &&
+            bc.toLowerCase().includes(searchString.toLowerCase())
+        );
+        expect(
+          hasWarning,
+          `${uiKitName} breakingChanges should warn about the default color/colorPalette change`
+        ).toBe(true);
+      });
+    }
+  });
+
   it("Badge size values are valid (no 'sm')", () => {
     const badgeEntry = migrations.find((e) => e.uiKitName === "Stamp");
     expect(badgeEntry).toBeDefined();
