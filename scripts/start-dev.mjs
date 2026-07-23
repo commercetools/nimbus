@@ -74,7 +74,9 @@ function startStorybook() {
   started = true;
   clearWaiters();
   // A clean line boundary before Storybook takes over the terminal.
-  process.stdout.write("\n" + dim("  Docs ready — starting Storybook…") + "\n\n");
+  process.stdout.write(
+    "\n" + dim("  Docs ready — starting Storybook…") + "\n\n"
+  );
   storybook = spawn("pnpm", ["run", "start:storybook"], {
     stdio: "inherit",
     detached: true,
@@ -90,9 +92,7 @@ docs = spawn("pnpm", ["run", "start:docs"], {
 });
 docs.on("exit", (c) => {
   if (!started) {
-    process.stderr.write(
-      "\n  Docs dev server exited before becoming ready.\n"
-    );
+    process.stderr.write("\n  Docs dev server exited before becoming ready.\n");
   }
   teardown(c ?? 0);
 });

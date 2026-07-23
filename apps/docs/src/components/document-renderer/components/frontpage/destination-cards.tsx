@@ -20,7 +20,8 @@ const destinations: Destination[] = [
   {
     title: "Design Tokens",
     icon: "🎨",
-    description: "Colors, spacing, typography and the rest of the token system.",
+    description:
+      "Colors, spacing, typography and the rest of the token system.",
     href: "/home/design-tokens",
   },
   {
@@ -58,7 +59,11 @@ export const DestinationCards = () => {
   return (
     <SimpleGrid as="section" columns={{ base: 1, md: 2, lg: 3 }} gap="400">
       {destinations.map((destination) => (
-        <Link key={destination.href} href={destination.href} textDecoration="none">
+        <Link
+          key={destination.href}
+          href={destination.href}
+          textDecoration="none"
+        >
           <Card.Root variant="outlined" size="lg" width="full" height="full">
             <Card.Body>
               <Stack direction="row" gap="400" alignItems="center">
