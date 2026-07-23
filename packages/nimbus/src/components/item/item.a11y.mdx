@@ -93,6 +93,38 @@ const App = () => (
 );
 ```
 
+### Interactive controls in a link row are a content-model tradeoff
+
+Combining an `href` on `Item.Root` with an interactive control in
+`Item.Actions` nests that control inside the row's `<a>`. The HTML content
+model disallows interactive content inside an `<a>`, so this arrangement is
+technically invalid — the same reason a whole row can't be a single button
+(see below).
+
+Nimbus supports it anyway as the way to pair navigation with a row action: it
+is a common, well-understood pattern, the capture-phase guard above keeps the
+click behavior correct, and the nested control remains a first-class focus
+stop. Two things to keep in mind about the tradeoff:
+
+- **Automated a11y checks won't flag it, and that's expected.** `axe`'s
+  `nested-interactive` rule only applies to elements whose role makes their
+  children presentational (for example `button`); it does **not** apply to
+  links, so a control inside a link row passes the a11y test suite. The absence
+  of a violation here is not evidence that the markup is valid.
+- **If strict content-model validity matters** in your context, don't give a
+  single row both an `href` and interactive `Item.Actions`. Make the row
+  presentational (a `<div>`) and let its controls stand on their own, or let
+  the whole row navigate with no competing actions.
+
+### `Item.Actions` is for controls, not links
+
+Place JS-activated controls — `Button`, `IconButton` — in `Item.Actions`. Do
+**not** put a navigating `<a href>` there inside a link row: the row's
+capture-phase guard cancels navigation for anything originating in
+`Item.Actions`, so the inner link would silently do nothing. If a row needs a
+second destination, express it as a control the guard leaves alone (an
+`onPress` that routes), or restructure so the destinations aren't nested.
+
 ### No row-as-button mode
 
 `Item.Root` intentionally offers no button/pressable-row mode. Rendering the
