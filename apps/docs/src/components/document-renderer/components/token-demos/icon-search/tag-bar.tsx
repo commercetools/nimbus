@@ -106,7 +106,7 @@ export const TagBar = ({
               overflow horizontally instead of stacking. */}
           <TagGroup.TagList flexWrap="nowrap" width="max-content">
             {items.map((item) => (
-              <TagGroup.Tag key={item} id={item}>
+              <TagGroup.Tag key={item} id={item} cursor="pointer">
                 {item}
               </TagGroup.Tag>
             ))}
@@ -128,13 +128,12 @@ export const TagBar = ({
           <IconButton
             aria-label="Scroll backward"
             variant="solid"
-            colorPalette="neutral"
+            colorPalette="primary"
             size="xs"
             position="absolute"
             top="50%"
             left="0"
             transform="translateY(-50%)"
-            borderRadius="full"
             onPress={() => scrollByStep(-scrollStep)}
           >
             <KeyboardArrowLeft />
@@ -156,13 +155,12 @@ export const TagBar = ({
           <IconButton
             aria-label="Scroll forward"
             variant="solid"
-            colorPalette="neutral"
+            colorPalette="primary"
             size="xs"
             position="absolute"
             top="50%"
             right="0"
             transform="translateY(-50%)"
-            borderRadius="full"
             onPress={() => scrollByStep(scrollStep)}
           >
             <KeyboardArrowRight />
