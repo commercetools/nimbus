@@ -411,17 +411,6 @@ export const IconBrowse = ({
       .map(([tag]) => tag);
   }, [full, entryByName]);
 
-  // Keep the active keyword pinned in the bar even when a narrowing search
-  // pushes it out of the (frequency-ranked, capped) facet list — a filter that
-  // is still constraining the grid must stay visible and removable.
-  const tagBarItems = useMemo(
-    () =>
-      selectedTag && !tagFacets.includes(selectedTag)
-        ? [selectedTag, ...tagFacets]
-        : tagFacets,
-    [tagFacets, selectedTag]
-  );
-
   // The TagBar highlight tracks `selectedTag` immediately (snappy click), but
   // the expensive grid re-filter reads a deferred copy so a click never blocks.
   const deferredTag = useDeferredValue(selectedTag);
@@ -441,12 +430,28 @@ export const IconBrowse = ({
     setPage(1);
   }, [deferredQ, categorySlug, selectedTag]);
 
-  // Reset the keyword facet only when the category scope changes — its facets
-  // are recomputed for the new category. A keyword persists across search-term
-  // edits, so search AND keyword compose as independent, coexisting filters.
-  useEffect(() => {
-    setSelectedTag(null);
-  }, [categorySlug]);
+  // The keyword facet is never auto-cleared: it composes with the search term
+  // and the category as an independent AND filter and persists across changes to
+  // both, until the user clears it (by clicking the selected tag again or via a
+  // no-results action).
+  //
+  // Keeping it *visible* the whole time it's active takes two cooperating rules,
+  // split so a plain click never relocates a tag:
+  //   1. While the selected tag is present in the facet list, the TagBar leaves
+  //      it exactly where it sits and only toggles its highlight — so clicking a
+  //      tag never yanks it to the front.
+  //   2. When a category change (or a narrowing search) drops the selected tag
+  //      out of the frequency-ranked, capped facet list, it would otherwise just
+  //      vanish while still constraining the grid. So we prepend it here — the
+  //      one case where the active tag leads the bar, because it has nowhere else
+  //      to be shown.
+  const tagBarItems = useMemo(
+    () =>
+      selectedTag && !tagFacets.includes(selectedTag)
+        ? [selectedTag, ...tagFacets]
+        : tagFacets,
+    [tagFacets, selectedTag]
+  );
 
   const pageItems = useMemo(
     () => filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
