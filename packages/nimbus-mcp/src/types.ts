@@ -249,6 +249,33 @@ export interface TokenReverseLookupResponse {
 }
 
 // ---------------------------------------------------------------------------
+// UI Kit token types (used by tools/get-tokens and scripts/build-uikit-token-data)
+// ---------------------------------------------------------------------------
+
+/** A single UI Kit token with its resolved CSS value and recommended Nimbus category. */
+export interface UiKitTokenEntry {
+  /** The resolved CSS value (e.g. "342px", "16px", "hsl(240, 64%, 58%)"). */
+  cssValue: string;
+  /** The recommended Nimbus token category for this use site (e.g. "size", "spacing", "color"). */
+  recommendedCategory: string | null;
+}
+
+/** Map of camelCase UI Kit token names to their entries. */
+export type UiKitTokenMap = Record<string, UiKitTokenEntry>;
+
+/** Response when looking up a UI Kit token via the get_tokens tool. */
+export interface UiKitTokenLookupResponse {
+  /** The original UI Kit token name as provided (e.g. "constraint7", "spacingXl"). */
+  uikitToken: string;
+  /** The resolved CSS value of the UI Kit token. */
+  cssValue: string;
+  /** The recommended Nimbus token category for this use site. */
+  recommendedCategory: string | null;
+  /** All matching Nimbus tokens (from reverse lookup on the CSS value). */
+  tokens: string[];
+}
+
+// ---------------------------------------------------------------------------
 // Component tool types (used by tools/get-component and tools/list-components)
 // ---------------------------------------------------------------------------
 
