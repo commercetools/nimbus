@@ -26,6 +26,13 @@ export type TagBarProps = {
 };
 
 /**
+ * Width (px) of the fade + scroll-button affordance overlaying each end of the
+ * bar. Reused as the clearance kept when scrolling a tag into view, so a
+ * revealed tag never hides beneath the button.
+ */
+const EDGE_INSET_PX = 56;
+
+/**
  * TagBar — a sloppy first-draft of a potential future Nimbus component.
  *
  * A single-row, horizontally-scrolling bar of selectable Nimbus tags that
@@ -72,6 +79,68 @@ export const TagBar = ({
     return () => ro.disconnect();
   }, [updateScrollState, items]);
 
+  // A filter change (new search term or category) re-ranks and re-scopes the
+  // facet list, so the active tag can end up scrolled off. Bring it back into
+  // view — but only along the bar's own horizontal axis (never scrolling the
+  // page), only when it's actually clipped or tucked under an edge affordance,
+  // and keeping EDGE_INSET_PX of clearance so it doesn't hide under the button.
+  // A plain click never triggers this: selecting a tag leaves `items` unchanged
+  // (facets are ranked over the pre-tag-filter set) and the clicked tag is
+  // already visible, so both the deps and the guards below no-op.
+  //
+  // The reveal is deferred to an animation frame and waits for a settled layout
+  // rather than measuring inline. React re-ranks over a *deferred* value and
+  // React Aria commits its collection across more than one render, so on the tick
+  // `items` changes the target row may not exist yet, or may still be shifting
+  // into place. Measuring then would scroll to a stale position (or skip because
+  // the row is missing) — the cause of the reveal working only intermittently.
+  // So we poll frames until the row is present and its content position holds
+  // steady across two frames, then scroll exactly once.
+  useLayoutEffect(() => {
+    if (!selectedKey) return;
+    const container = scrollRef.current;
+    if (!container) return;
+
+    let raf = 0;
+    let frames = 0;
+    let lastPos = NaN;
+    const selector = `[role="row"][data-key="${CSS.escape(selectedKey)}"]`;
+
+    const revealWhenSettled = () => {
+      const el = container.querySelector<HTMLElement>(selector);
+      const c = container.getBoundingClientRect();
+      // Position of the row within the scroll *content* (invariant to the
+      // current scrollLeft, so an in-flight smooth scroll doesn't read as churn).
+      const pos = el
+        ? el.getBoundingClientRect().left - c.left + container.scrollLeft
+        : NaN;
+      const settled = el != null && pos === lastPos;
+      lastPos = pos;
+
+      if (!settled && frames++ < 8) {
+        raf = requestAnimationFrame(revealWhenSettled);
+        return;
+      }
+      if (!el) return;
+
+      const e = el.getBoundingClientRect();
+      if (e.left < c.left + EDGE_INSET_PX) {
+        container.scrollBy({
+          left: e.left - c.left - EDGE_INSET_PX,
+          behavior: "smooth",
+        });
+      } else if (e.right > c.right - EDGE_INSET_PX) {
+        container.scrollBy({
+          left: e.right - c.right + EDGE_INSET_PX,
+          behavior: "smooth",
+        });
+      }
+    };
+
+    raf = requestAnimationFrame(revealWhenSettled);
+    return () => cancelAnimationFrame(raf);
+  }, [items, selectedKey]);
+
   const scrollByStep = (delta: number) =>
     scrollRef.current?.scrollBy({ left: delta, behavior: "smooth" });
 
@@ -87,6 +156,12 @@ export const TagBar = ({
         ref={scrollRef}
         overflowX="auto"
         overflowY="hidden"
+        // A horizontal scroll container can't keep the cross axis `visible`
+        // (CSS forces it to compute as `auto`), so `overflow` clips at the
+        // padding box on every side. Without room, that shears off the tags'
+        // 4px focus ring (2px width + 2px offset). Pad by a touch more than the
+        // ring so it lands inside the clip box and stays fully visible.
+        p="150"
         // Native scroll, no visible scrollbar.
         css={{
           scrollbarWidth: "none",
@@ -120,7 +195,7 @@ export const TagBar = ({
             position="absolute"
             insetY="0"
             left="0"
-            width="56px"
+            width={`${EDGE_INSET_PX}px`}
             pointerEvents="none"
             bgImage="linear-gradient(to right, {colors.bg}, transparent)"
           />
@@ -147,7 +222,7 @@ export const TagBar = ({
             position="absolute"
             insetY="0"
             right="0"
-            width="56px"
+            width={`${EDGE_INSET_PX}px`}
             pointerEvents="none"
             bgImage="linear-gradient(to left, {colors.bg}, transparent)"
           />
