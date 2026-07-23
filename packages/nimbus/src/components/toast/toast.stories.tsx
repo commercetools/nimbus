@@ -1093,6 +1093,7 @@ export const KeyboardNavigation: Story = {
  * - Explicit closable: true: close button shown
  */
 export const ClosableControl: Story = {
+  // VRT: only snapshot of the no-chrome toast layout (action/close buttons absent) - SmokeTest always renders both.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
@@ -1151,6 +1152,9 @@ export const ClosableControl: Story = {
       await expect(closeButton).toBeInTheDocument();
       await expect(closeButton).toBeEnabled();
     });
+
+    // Blur the clicked trigger so its focus ring isn't snapshotted.
+    button.blur();
   },
 };
 
@@ -1685,5 +1689,9 @@ export const SmokeTest: Story = {
         await expect(solidToast).toBeInTheDocument();
       }
     );
+
+    // Clicking the trigger leaves it focused; its ring would otherwise be
+    // snapshotted behind the top-start toasts. Blur so the frame is clean.
+    button.blur();
   },
 };
