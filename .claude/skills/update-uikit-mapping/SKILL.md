@@ -92,8 +92,15 @@ template:
     "Specific breaking change 1",
     "Specific breaking change 2",
   ],
+  // For layout-related entries only:
+  layoutGuidance: LAYOUT_NESTING_GUIDANCE,
 },
 ```
+
+For layout-related components (`Constraints.*`, `Spacings.*`), set the
+`layoutGuidance` field to the shared `LAYOUT_NESTING_GUIDANCE` constant. This
+tells the consuming LLM to migrate nested layout primitives as a group. Non-layout
+entries should omit this field.
 
 For compound components (dotted names like `Spacings.Stack`), place the entry
 near its siblings. The `COMPOUND_ROOT_MAP` at the bottom of the file is built

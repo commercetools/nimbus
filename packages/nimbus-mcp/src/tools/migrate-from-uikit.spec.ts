@@ -404,6 +404,122 @@ describe("migrate_from_uikit — validation", () => {
   });
 });
 
+describe("migrate_from_uikit — layoutGuidance", () => {
+  it("includes layoutGuidance for Spacings.Stack", async () => {
+    const result = await callMigrate({ componentName: "Spacings.Stack" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.layoutGuidance).toBeDefined();
+    expect(data.layoutGuidance).toContain("nested");
+  });
+
+  it("includes layoutGuidance for Constraints.Horizontal", async () => {
+    const result = await callMigrate({
+      componentName: "Constraints.Horizontal",
+    });
+    const data = JSON.parse(getText(result));
+
+    expect(data.layoutGuidance).toBeDefined();
+    expect(data.layoutGuidance).toContain("nested");
+  });
+
+  it("includes layoutGuidance for Spacings.Inline", async () => {
+    const result = await callMigrate({ componentName: "Spacings.Inline" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.layoutGuidance).toBeDefined();
+  });
+
+  it("includes layoutGuidance for Spacings.Inset", async () => {
+    const result = await callMigrate({ componentName: "Spacings.Inset" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.layoutGuidance).toBeDefined();
+  });
+
+  it("includes layoutGuidance for Spacings.InsetSquish", async () => {
+    const result = await callMigrate({
+      componentName: "Spacings.InsetSquish",
+    });
+    const data = JSON.parse(getText(result));
+
+    expect(data.layoutGuidance).toBeDefined();
+  });
+
+  it("does NOT include layoutGuidance for non-layout components", async () => {
+    const result = await callMigrate({ componentName: "PrimaryButton" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.layoutGuidance).toBeUndefined();
+  });
+
+  it("includes layoutGuidance on compound root Spacings response and strips per-mapping copies", async () => {
+    const result = await callMigrate({ componentName: "Spacings" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.layoutGuidance).toBeDefined();
+    expect(data.layoutGuidance).toContain("nested");
+    for (const mapping of data.mappings) {
+      expect(mapping.layoutGuidance).toBeUndefined();
+    }
+  });
+
+  it("does NOT include layoutGuidance on compound root without layout entries", async () => {
+    const result = await callMigrate({ componentName: "Text" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.layoutGuidance).toBeUndefined();
+  });
+
+  it("includes layoutGuidance in file-level response when layout imports are present and strips per-mapping copies", async () => {
+    const tmpDir = await mkdtemp(join(tmpdir(), "nimbus-mcp-layout-"));
+    const layoutFile = join(tmpDir, "layout-test.tsx");
+    await writeFile(
+      layoutFile,
+      `
+import { Spacings } from '@commercetools-frontend/ui-kit';
+
+export const MyComponent = () => (
+  <Spacings.Stack>
+    <Spacings.Inset>content</Spacings.Inset>
+  </Spacings.Stack>
+);
+`
+    );
+
+    const result = await callMigrate({ filePath: layoutFile });
+    const data = JSON.parse(getText(result));
+
+    expect(data.layoutGuidance).toBeDefined();
+    expect(data.layoutGuidance).toContain("nested");
+    for (const mapping of data.mappings) {
+      expect(mapping.layoutGuidance).toBeUndefined();
+    }
+
+    await rm(tmpDir, { recursive: true }).catch(() => {});
+  });
+
+  it("does NOT include layoutGuidance in file-level response when no layout imports are present", async () => {
+    const tmpDir = await mkdtemp(join(tmpdir(), "nimbus-mcp-nolayout-"));
+    const noLayoutFile = join(tmpDir, "no-layout.tsx");
+    await writeFile(
+      noLayoutFile,
+      `
+import { PrimaryButton } from '@commercetools-uikit/buttons';
+
+export const MyComponent = () => <PrimaryButton label="Click" />;
+`
+    );
+
+    const result = await callMigrate({ filePath: noLayoutFile });
+    const data = JSON.parse(getText(result));
+
+    expect(data.layoutGuidance).toBeUndefined();
+
+    await rm(tmpDir, { recursive: true }).catch(() => {});
+  });
+});
+
 describe("migrate_from_uikit — propMappings", () => {
   it("includes propMappings in the result for entries that have them", async () => {
     const result = await callMigrate({ componentName: "PrimaryButton" });
