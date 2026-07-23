@@ -12,6 +12,12 @@ import { Box, Grid, ScrollArea } from "@commercetools/nimbus";
 
 export interface AppFrameRootProps {
   children: ReactNode;
+  /**
+   * Drop the right aside column entirely and let the main content span the
+   * remaining width. Used by the home route, which has no table of contents and
+   * wants the full-bleed area rather than an empty aside gap.
+   */
+  hideAside?: boolean;
 }
 
 export interface AppFrameLeftNavProps {
@@ -22,6 +28,12 @@ export interface AppFrameLeftNavProps {
 export interface AppFrameMainContentProps {
   children: ReactNode;
   viewportRef?: RefObject<HTMLDivElement | null>;
+  /**
+   * Max width of the centered content column. Defaults to `80ch` — the reading
+   * measure used by documentation pages. The home route passes a wider value so
+   * its full-bleed layout can use the available space on large screens.
+   */
+  contentMaxWidth?: string;
 }
 
 export interface AppFrameRightAsideProps {
@@ -35,11 +47,15 @@ export interface AppFrameRightAsideProps {
  * left under the breadcrumb/top bars (`flex: 1`) and clips its own overflow so
  * each column scrolls independently.
  */
-function AppFrameRoot({ children }: AppFrameRootProps) {
+function AppFrameRoot({ children, hideAside = false }: AppFrameRootProps) {
   return (
     <Grid
-      gridTemplateAreas={`"nav main aside"`}
-      gridTemplateColumns="minmax(200px, 256px) minmax(80ch, 1fr) minmax(200px, 400px)"
+      gridTemplateAreas={hideAside ? `"nav main"` : `"nav main aside"`}
+      gridTemplateColumns={
+        hideAside
+          ? "minmax(200px, 256px) minmax(0, 1fr)"
+          : "minmax(200px, 256px) minmax(80ch, 1fr) minmax(200px, 400px)"
+      }
       flex="1"
       minHeight="0"
       width="full"
@@ -76,6 +92,7 @@ function AppFrameLeftNav({ children, viewportRef }: AppFrameLeftNavProps) {
 function AppFrameMainContent({
   children,
   viewportRef,
+  contentMaxWidth = "80ch",
 }: AppFrameMainContentProps) {
   return (
     <ScrollArea
@@ -87,7 +104,7 @@ function AppFrameMainContent({
       size="sm"
     >
       <Box p="800">
-        <Box maxWidth="80ch" mx="auto">
+        <Box maxWidth={contentMaxWidth} mx="auto">
           {children}
         </Box>
       </Box>
