@@ -57,6 +57,10 @@ let didPushDetail = false;
 
 /** Clamp a raw `size` param to the slider's valid set (24..96 step 8). */
 const readSize = (raw: string | null): number => {
+  // An absent (default-omitted) or empty param is the default. Guard before
+  // `Number`, since `Number(null)` and `Number("")` are 0 — not NaN — so the
+  // isFinite check below wouldn't catch them and they'd clamp down to the min.
+  if (raw == null || raw === "") return ICON_SIZE_DEFAULT;
   const n = Number(raw);
   if (!Number.isFinite(n)) return ICON_SIZE_DEFAULT;
   const clamped = Math.min(ICON_SIZE_MAX, Math.max(ICON_SIZE_MIN, n));
