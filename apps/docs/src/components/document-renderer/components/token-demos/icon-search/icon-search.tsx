@@ -91,7 +91,7 @@ export const IconSearch = () => {
         </Splitter.Main>
       </Splitter.Root>
 
-      <IconDetailDialog metadata={metadata} />
+      <IconDetailDialog entries={entries} metadata={metadata} />
     </Box>
   );
 };

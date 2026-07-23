@@ -3,7 +3,12 @@ import { useCallback, useEffect, useMemo } from "react";
 // duplicate `react-router@8.1.0` is installed alongside `react-router-dom@7.x`,
 // and importing from the bare package yields a different module instance —
 // a mismatched Router context that would throw or silently desync.
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useNavigationType,
+  useSearchParams,
+} from "react-router-dom";
 
 import {
   DEFAULT_SURFACE,
@@ -27,9 +32,11 @@ import { ALL_CATEGORIES, ALL_ICON_NAMES } from "./use-icon-data";
  *
  * A param equal to its default is omitted, so a pristine grid is just `/icons`.
  * Filter/display writes use `{ replace: true }` (so a tweak — including every
- * keystroke's mirrored search — never spams history and Back leaves `/icons`);
- * opening an icon pushes an entry so Back closes the dialog and restores the
- * exact filtered grid.
+ * keystroke's mirrored search — never spams history and Back leaves `/icons`).
+ * Opening an icon pushes an entry; clicking a "Similar icons" tile pushes
+ * another, building a back-trail (Back retraces icon → icon → grid). Closing the
+ * dialog (X / Escape) pops the whole trail in one step, straight back to the
+ * filtered grid — restoring its scroll position.
  */
 
 const ICON_BASE = "/icons";
@@ -46,14 +53,31 @@ const PARAM = {
 } as const;
 
 /**
- * Whether the detail dialog was opened by a push within THIS (un-reloaded) SPA
- * session — the only case where the previous history entry is provably our own
- * grid, so `navigate(-1)` on close is safe (and restores scroll). Module-scoped
- * rather than `location.state` on purpose: a reload preserves `history.state`,
- * which would make a "was pushed" signal survive the reload and let
- * `navigate(-1)` walk off-site. Reset to false whenever the grid is showing.
+ * Back-trail bookkeeping for the detail dialog, module-scoped because it models
+ * the single browser history shared by every hook consumer — and because it must
+ * NOT survive a reload (a reload starts a fresh, unknowable stack; module scope
+ * resets for free, unlike `history.state`).
+ *
+ * `trailKeys` holds the `location.key` of each icon-detail entry currently
+ * stacked above the grid, oldest → newest, so its length is exactly how many
+ * history steps `closeIcon` pops to land back on the grid. It's reconciled on
+ * every navigation (push grows it, back/forward truncates it by key), so native
+ * Back/forward keeps it honest.
+ *
+ * `gridBeneath` records whether the bottom of that trail sits on OUR OWN grid
+ * entry — true only when the first icon was opened from the grid within this
+ * session. A deep-linked icon (no grid beneath) leaves it false, so `closeIcon`
+ * falls back to navigating to the grid URL instead of `navigate(-n)` walking
+ * off-site.
  */
-let didPushDetail = false;
+let trailKeys: string[] = [];
+let gridBeneath = false;
+/**
+ * The last `location.key` reconciled by the effect. The hook runs in several
+ * components per render; this guard lets only the first to observe a new key
+ * mutate `trailKeys`, keeping the reconciliation idempotent.
+ */
+let lastReconciledKey: string | null = null;
 
 /** Clamp a raw `size` param to the slider's valid set (24..96 step 8). */
 const readSize = (raw: string | null): number => {
@@ -104,6 +128,7 @@ export interface IconRouteState {
 export const useIconRouteState = (): IconRouteState => {
   const location = useLocation();
   const navigate = useNavigate();
+  const navType = useNavigationType();
   const [params, setParams] = useSearchParams();
 
   // There is no literal `:name` route — `/icons/*` is served by the app's
@@ -125,13 +150,41 @@ export const useIconRouteState = (): IconRouteState => {
   const size = readSize(params.get(PARAM.size));
   const surface = readSurface(params.get(PARAM.surface));
 
-  // Keep the "was pushed this session" flag honest: whenever the grid is
-  // showing (the dialog was closed by any means — X, Escape, category badge, or
-  // a manual Back), a subsequent open is a fresh push. Idempotent across the
+  // Reconcile the back-trail against the current history entry. Runs on every
+  // navigation; the `lastReconciledKey` guard makes it idempotent across the
   // several components that call this hook.
+  //   • grid (or any non-icon view) → the trail is empty and nothing is beneath.
+  //   • PUSH onto an icon → a new detail entry was opened (grid→icon or the
+  //     similar-row's icon→icon); append its key.
+  //   • POP onto an icon → Back/forward. If it's a key we know, truncate to it;
+  //     if not (a deep-link's own entry, or forward past what we tracked), we
+  //     don't own a grid beneath it, so clear the trail AND `gridBeneath`.
+  //   • REPLACE onto an icon → swap the top key in place (depth unchanged).
   useEffect(() => {
-    if (iconName === null) didPushDetail = false;
-  }, [iconName]);
+    const key = location.key;
+    if (key === lastReconciledKey) return;
+    lastReconciledKey = key;
+
+    if (iconName === null) {
+      trailKeys = [];
+      gridBeneath = false;
+      return;
+    }
+    if (navType === "PUSH") {
+      trailKeys.push(key);
+    } else if (navType === "POP") {
+      const i = trailKeys.indexOf(key);
+      if (i >= 0) {
+        trailKeys = trailKeys.slice(0, i + 1);
+      } else {
+        trailKeys = [];
+        gridBeneath = false;
+      }
+    } else if (trailKeys.length > 0) {
+      // REPLACE staying on an icon entry.
+      trailKeys[trailKeys.length - 1] = key;
+    }
+  }, [location.key, iconName, navType]);
 
   // Immutable, default-omitting, replace-based writer for a single query param.
   // The functional updater reads the live params, so unrelated params are never
@@ -187,7 +240,11 @@ export const useIconRouteState = (): IconRouteState => {
 
   const openIcon = useCallback(
     (name: string) => {
-      didPushDetail = true;
+      // Opening from the grid roots a fresh trail on top of our own grid entry,
+      // so a later close can pop straight back to it. Opening from within the
+      // dialog — a "Similar icons" click — extends the current trail instead and
+      // leaves `gridBeneath` as-is (the effect appends the new entry's key).
+      if (iconName === null) gridBeneath = true;
       navigate(
         {
           pathname: `${ICON_BASE}/${encodeURIComponent(name)}`,
@@ -196,17 +253,21 @@ export const useIconRouteState = (): IconRouteState => {
         { state: { fromBrowse: true } }
       );
     },
-    [navigate, location.search]
+    [navigate, location.search, iconName]
   );
 
   const closeIcon = useCallback(() => {
-    if (didPushDetail) {
-      didPushDetail = false;
-      // Return to the exact prior grid entry (with scroll restoration).
-      navigate(-1);
+    if (gridBeneath && trailKeys.length > 0) {
+      // Pop the entire icon back-trail in one step, straight to our own grid
+      // entry — restoring its scroll position.
+      const depth = trailKeys.length;
+      trailKeys = [];
+      gridBeneath = false;
+      navigate(-depth);
     } else {
-      // Deep-link / reload / arrived from another page: no owned entry to pop,
-      // so land on the grid with filters preserved rather than leaving the site.
+      // Deep-link / reload / forward-nav / arrived from another page: no owned
+      // grid to pop back to, so land on the grid URL with filters preserved
+      // rather than risking `navigate(-n)` leaving the site.
       navigate(
         { pathname: ICON_BASE, search: location.search },
         { replace: true }
