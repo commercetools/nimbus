@@ -45,8 +45,8 @@ const SIZES = [16, 24, 32, 48];
 /** How many tags to show before the reference rail's "+N more" toggle. */
 const TAG_CAP = 12;
 
-/** How many similar icons to surface in the bottom row. */
-const SIMILAR_LIMIT = 12;
+/** How many similar icons to surface — 8 fits the row without it scrolling. */
+const SIMILAR_LIMIT = 8;
 
 /** The size-row surface toggle options (mirrors the sidebar's Surface control). */
 const SURFACE_OPTIONS: { id: Surface; label: string; Icon: Glyph }[] = [
@@ -267,6 +267,7 @@ export const IconDetailDialog = ({
     iconName: name,
     closeIcon,
     goToCategory,
+    goToTag,
     openIcon,
   } = useIconRouteState();
   const [, copyToClipboard] = useCopyToClipboard();
@@ -489,9 +490,14 @@ export const IconDetailDialog = ({
                   <Stack
                     gap="700"
                     minW="0"
+                    // Set the separator color + style once and toggle only the
+                    // width responsively. Using the `solid-25` border *shorthand*
+                    // inside a responsive value resets the side's color to
+                    // currentColor (black/white) — the longhands keep neutral.3.
                     borderColor="neutral.3"
-                    borderLeft={{ base: "none", md: "solid-25" }}
-                    borderTop={{ base: "solid-25", md: "none" }}
+                    borderStyle="solid"
+                    borderLeftWidth={{ base: "0", md: "1px" }}
+                    borderTopWidth={{ base: "1px", md: "0" }}
                     pl={{ base: "0", md: "600" }}
                     pt={{ base: "600", md: "0" }}
                   >
@@ -560,9 +566,16 @@ export const IconDetailDialog = ({
                         <SectionLabel>Tags</SectionLabel>
                         <Flex gap="100" wrap="wrap" align="center">
                           {shownTags.map((t) => (
-                            <Badge key={t} size="xs" colorPalette="neutral">
-                              {t}
-                            </Badge>
+                            <Button
+                              unstyled
+                              key={t}
+                              cursor="pointer"
+                              onPress={() => goToTag(t)}
+                            >
+                              <Badge size="xs" colorPalette="neutral">
+                                {t}
+                              </Badge>
+                            </Button>
                           ))}
                           {tags.length > TAG_CAP && (
                             <Button
