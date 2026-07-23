@@ -18,7 +18,7 @@ import {
   SEMANTIC_MODEL_DTYPE,
   SEMANTIC_MODEL_ID,
   type EmbeddableDoc,
-} from "../semantic-search.types";
+} from "./semantic-search.types";
 
 // Always load the model from the HF hub (cached by the browser Cache API on
 // first download), never from the app's own origin.
@@ -109,6 +109,37 @@ export async function embedTexts(texts: string[]): Promise<Float32Array> {
   const extractor = await loadExtractor();
   const output = await extractor(texts, { pooling: "mean", normalize: true });
   return output.data as Float32Array;
+}
+
+/**
+ * How many texts to embed per `extractor` call when indexing a corpus.
+ * Embedding an entire corpus in a single call allocates tensors proportional to
+ * the whole batch and can abort model execution by exhausting the WASM heap on
+ * large corpora (thousands of items — e.g. the ~2,100-icon gallery); batching
+ * bounds peak memory. Query embedding (a single text) never takes this path.
+ */
+export const EMBED_BATCH_SIZE = 128;
+
+/**
+ * Embed many texts in fixed-size batches, writing each batch's rows into one
+ * preallocated flat row-major matrix (`texts.length * EMBEDDING_DIMS` floats) —
+ * the exact layout {@link embedTexts} returns for a single call, so downstream
+ * ranking/caching is unaffected. `onProgress`, if given, reports the running
+ * count of embedded texts after each batch.
+ */
+export async function embedTextsBatched(
+  texts: string[],
+  onProgress?: (done: number, total: number) => void,
+  batchSize: number = EMBED_BATCH_SIZE
+): Promise<Float32Array> {
+  const matrix = new Float32Array(texts.length * EMBEDDING_DIMS);
+  for (let start = 0; start < texts.length; start += batchSize) {
+    const batch = texts.slice(start, start + batchSize);
+    const vectors = await embedTexts(batch);
+    matrix.set(vectors, start * EMBEDDING_DIMS);
+    onProgress?.(Math.min(start + batchSize, texts.length), texts.length);
+  }
+  return matrix;
 }
 
 /**

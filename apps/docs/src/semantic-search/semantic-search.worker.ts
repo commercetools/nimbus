@@ -13,10 +13,11 @@ import {
   buildCacheKey,
   buildEmbedText,
   embedTexts,
+  embedTextsBatched,
   loadExtractor,
   rankBySimilarity,
-} from "./semantic-search/embedding-core";
-import { createIdbCache } from "./semantic-search/idb-cache";
+} from "./embedding-core";
+import { createIdbCache } from "./idb-cache";
 import {
   EMBEDDING_DIMS,
   type EmbeddableDoc,
@@ -30,13 +31,16 @@ function post(message: WorkerResponse) {
   ctx.postMessage(message);
 }
 
-const cache = createIdbCache();
-
 // Index state, populated by `init` and read by `embedQuery`.
 let matrix: Float32Array | null = null;
 let ids: string[] = [];
 
-async function buildIndex(docs: EmbeddableDoc[]): Promise<ReadyPayload> {
+async function buildIndex(
+  docs: EmbeddableDoc[],
+  namespace?: string
+): Promise<ReadyPayload> {
+  // Created per-init so each corpus persists to its own namespaced database.
+  const cache = createIdbCache(namespace);
   ids = docs.map((d) => d.id);
   const texts = docs.map(buildEmbedText);
   const cacheKey = buildCacheKey(texts);
@@ -59,7 +63,9 @@ async function buildIndex(docs: EmbeddableDoc[]): Promise<ReadyPayload> {
   }
 
   post({ type: "progress", phase: "indexing" });
-  matrix = await embedTexts(texts);
+  // Batched so large corpora (the icon gallery, ~2,100 items) don't exhaust the
+  // WASM heap by embedding everything in a single extractor call.
+  matrix = await embedTextsBatched(texts);
   await cache.write({ key: cacheKey, dims: EMBEDDING_DIMS, ids, matrix });
   return { fromCache: false, count: ids.length };
 }
@@ -74,7 +80,10 @@ ctx.onmessage = async (event: MessageEvent<WorkerRequest>) => {
   const message = event.data;
   try {
     if (message.type === "init") {
-      post({ type: "ready", payload: await buildIndex(message.docs) });
+      post({
+        type: "ready",
+        payload: await buildIndex(message.docs, message.namespace),
+      });
     } else if (message.type === "embedQuery") {
       const resultIds = await queryIndex(message.query, message.topK);
       post({ type: "results", requestId: message.requestId, ids: resultIds });

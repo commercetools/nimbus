@@ -63,7 +63,17 @@ export interface CacheAdapter {
 
 /** Messages sent from the main thread to the worker. */
 export type WorkerRequest =
-  | { type: "init"; docs: EmbeddableDoc[] }
+  | {
+      type: "init";
+      docs: EmbeddableDoc[];
+      /**
+       * Optional cache namespace isolating this corpus's persisted index in its
+       * own IndexedDB database (see `createIdbCache`). Lets independent corpora —
+       * the docs search index and the icon gallery — coexist instead of evicting
+       * each other. Omitted for the default (docs) index.
+       */
+      namespace?: string;
+    }
   | { type: "embedQuery"; query: string; requestId: number; topK: number };
 
 /** Lifecycle result reported once the index is ready. */

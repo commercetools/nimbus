@@ -20,6 +20,10 @@ import {
   type CSSProperties,
 } from "react";
 import Fuse from "fuse.js";
+import { useAtomValue } from "jotai";
+
+import { semanticEnabledAtom } from "@/atoms/semantic-search";
+import { useSemanticSearch } from "@/semantic-search/use-semantic-search";
 
 import * as icons from "@commercetools/nimbus-icons";
 import { ContentCopy } from "@commercetools/nimbus-icons";
@@ -235,6 +239,50 @@ export const IconBrowse = ({
   // (category + search) result set to icons carrying this exact tag.
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
+  // --- Semantic search -------------------------------------------------------
+  // When the global "Semantic search (beta)" toggle is on (the same switch the
+  // nav-bar search uses), rank icons by embedding similarity so a conceptual
+  // query ("delete", "shopping", "happy") finds icons whose *meaning* matches,
+  // not just their spelling. When it's off, still warming up, or errored, the
+  // Fuse index below takes over — a silent, seamless fallback (no status UI).
+  const semanticEnabled = useAtomValue(semanticEnabledAtom);
+
+  // Only build the (heavy, ~2,100-icon) semantic index once the user actually
+  // searches — visitors who just browse never pay to index it. Latches true on
+  // the first non-empty query and never resets, so clearing the box doesn't tear
+  // the worker down and force a re-index.
+  const [hasSearched, setHasSearched] = useState(false);
+  useEffect(() => {
+    if (deferredQ.trim()) setHasSearched(true);
+  }, [deferredQ]);
+
+  // The semantic corpus is EVERY icon (not the category-scoped subset) so the
+  // index and its cache key stay stable as you switch categories — category
+  // filtering is applied to the results afterward. Built only once the metadata
+  // (tags + categories) has loaded, so we don't embed a name-only corpus and
+  // then re-embed when the richer text arrives. Each item is an EmbeddableDoc.
+  const iconDocs = useMemo(
+    () =>
+      loading
+        ? []
+        : entries.map((e) => ({
+            id: e.name,
+            title: e.name,
+            tags: [...e.tags, ...e.categories],
+          })),
+    [entries, loading]
+  );
+
+  // Shares the nav search's embedding engine; the "icons" namespace keeps this
+  // index in its own IndexedDB database so it and the docs index don't evict
+  // each other.
+  const semantic = useSemanticSearch(
+    semanticEnabled && hasSearched,
+    iconDocs,
+    deferredQ,
+    "icons"
+  );
+
   // Minimum card column width: glyph, the name-label room, and the surface
   // chip's reserved padding (both sides) — the padding is always included, the
   // same in every surface state, so switching surfaces never reflows the grid.
@@ -280,16 +328,66 @@ export const IconBrowse = ({
     [scoped]
   );
 
-  // The full ranked result set (no cap) — browse is popularity-sorted, a query
-  // is Fuse-ranked. Pagination then slices this into pages.
+  // Strict, name-only matcher for the "lexical rescue" in semantic mode: exact
+  // or prefix name typing (e.g. "delete" → DeleteForever) should always surface
+  // the obvious icon first, even when the embedding model ranks a synonym above
+  // it. Mirrors the nav search's nameFuse (use-search.ts).
+  const nameFuse = useMemo(
+    () =>
+      new Fuse(scoped, {
+        isCaseSensitive: false,
+        ignoreLocation: true,
+        threshold: 0.3,
+        minMatchCharLength: 2,
+        keys: [{ name: "name", weight: 1 }],
+      }),
+    [scoped]
+  );
+
+  // Names in the active category, used to restrict full-corpus semantic hits to
+  // the current category filter after ranking.
+  const scopedNames = useMemo(
+    () => new Set(scoped.map((e) => e.name)),
+    [scoped]
+  );
+
+  // Rank by semantic similarity only when it's on, the index is ready, and
+  // there's a query; otherwise the fuzzy path below runs (silent fallback).
+  const useSemantic =
+    semanticEnabled &&
+    semantic.status === "ready" &&
+    deferredQ.trim().length > 0;
+
+  // The full ranked result set (no cap). Browse (empty query) is
+  // popularity-sorted. A query is either semantically ranked (hybrid: strict
+  // name matches first, then embedding hits in similarity order, both scoped to
+  // the active category and deduped by name) or, in the fallback path,
+  // Fuse-ranked. Pagination then slices this into pages.
   const full = useMemo<string[]>(() => {
     if (!deferredQ.trim()) {
       return [...scoped]
         .sort((a, b) => b.popularity - a.popularity)
         .map((e) => e.name);
     }
+    if (useSemantic) {
+      const ordered = [
+        ...nameFuse.search(deferredQ).map((r) => r.item.name),
+        ...semantic.results
+          .map((d) => d.id)
+          .filter((name) => scopedNames.has(name)),
+      ];
+      return [...new Set(ordered)];
+    }
     return fuse.search(deferredQ).map((r) => r.item.name);
-  }, [deferredQ, scoped, fuse]);
+  }, [
+    deferredQ,
+    scoped,
+    fuse,
+    nameFuse,
+    useSemantic,
+    semantic.results,
+    scopedNames,
+  ]);
 
   // Distinct keyword tags across the current (category + search) result set,
   // ordered by frequency. Built from `full` — i.e. *before* the tag filter —
