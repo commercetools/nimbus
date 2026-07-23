@@ -499,6 +499,14 @@ describe("migrate_from_uikit — iconWrapper", () => {
     expect(data.iconWrapper).toBeUndefined();
   });
 
+  it("does not include iconWrapper for LeadingIcon (structural wrapper, not bare icon)", async () => {
+    const result = await callMigrate({ componentName: "LeadingIcon" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.nimbusEquivalent).toBe("Icon");
+    expect(data.iconWrapper).toBeUndefined();
+  });
+
   it("mentions the Icon wrapper pattern in notes for Icon Library", async () => {
     const result = await callMigrate({ componentName: "Icon Library" });
     const data = JSON.parse(getText(result));

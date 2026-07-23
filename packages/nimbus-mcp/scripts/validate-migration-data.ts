@@ -82,6 +82,7 @@ function validatePropMapping(
   return errors;
 }
 
+// Source of truth: packages/nimbus/src/components/icon/icon.recipe.tsx variants.size
 const VALID_NIMBUS_ICON_SIZES = new Set(["2xs", "xs", "sm", "md", "lg", "xl"]);
 
 function validateIconWrapper(

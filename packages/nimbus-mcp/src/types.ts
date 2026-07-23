@@ -417,7 +417,7 @@ export interface IconWrapper {
   /** npm import path for the wrapper (e.g. "@commercetools/nimbus"). */
   importPath: string;
   /** Default props to apply when size/color cannot be inferred from context. */
-  defaultProps: Record<string, string>;
+  defaultProps: { size?: string; color?: string };
   /** UIKit icon size prop → Nimbus Icon size prop value mapping. */
   sizeMapping?: Array<{ from: string; to: string }>;
 }
