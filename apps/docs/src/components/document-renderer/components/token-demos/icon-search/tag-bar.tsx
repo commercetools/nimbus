@@ -5,7 +5,6 @@ import {
 } from "@commercetools/nimbus-icons";
 import {
   useCallback,
-  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -35,6 +34,11 @@ export type TagBarProps = {
  * absolutely positioned over the start/end and appear only when scrolling that
  * direction is possible. Selection is single-select and toggles off when the
  * active tag is clicked again.
+ *
+ * The selected tag stays exactly where it is in the row — it's never pinned or
+ * reordered — so clicking a tag only changes its highlight, never its position.
+ * A selection that scrolls out of view (or isn't in the current `items` at all)
+ * simply isn't shown; it's the owner's job to surface it elsewhere if needed.
  */
 export const TagBar = ({
   items,
@@ -68,11 +72,6 @@ export const TagBar = ({
     return () => ro.disconnect();
   }, [updateScrollState, items]);
 
-  // Keep the selection scrolled into view if it changes from outside.
-  useEffect(() => {
-    updateScrollState();
-  }, [selectedKey, updateScrollState]);
-
   const scrollByStep = (delta: number) =>
     scrollRef.current?.scrollBy({ left: delta, behavior: "smooth" });
 
@@ -83,7 +82,7 @@ export const TagBar = ({
   };
 
   return (
-    <Box position="relative" w="100%">
+    <Box position="relative">
       <Box
         ref={scrollRef}
         overflowX="auto"
@@ -102,8 +101,8 @@ export const TagBar = ({
           selectedKeys={selectedKey ? [selectedKey] : []}
           onSelectionChange={handleSelectionChange}
         >
-          {/* Override the recipe's default flex-wrap so tags stay on one row and
-              overflow horizontally instead of stacking. */}
+          {/* Override the recipe's default flex-wrap so tags stay on one row
+              and overflow horizontally instead of stacking. */}
           <TagGroup.TagList flexWrap="nowrap" width="max-content">
             {items.map((item) => (
               <TagGroup.Tag key={item} id={item} cursor="pointer">
