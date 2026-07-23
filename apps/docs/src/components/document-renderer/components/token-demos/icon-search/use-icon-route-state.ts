@@ -58,6 +58,11 @@ const PARAM = {
  * NOT survive a reload (a reload starts a fresh, unknowable stack; module scope
  * resets for free, unlike `history.state`).
  *
+ * NOTE: this assumes exactly ONE live icon-browser instance in the tree at a
+ * time. All three module globals below are shared, so a second mounted instance
+ * would desync them. That holds today (the explorer renders once); revisit this
+ * if the hook is ever reused in a second concurrent tree.
+ *
  * `trailKeys` holds the `location.key` of each icon-detail entry currently
  * stacked above the grid, oldest → newest, so its length is exactly how many
  * history steps `closeIcon` pops to land back on the grid. It's reconciled on
