@@ -2,7 +2,9 @@
 id: Components-Item
 title: Item
 exportName: Item
-description: A horizontal content row with leading media, a title and description, and trailing actions — for settings, notification, and resource rows.
+description:
+  A horizontal content row with leading media, a title and description, and
+  trailing actions — for settings, notification, and resource rows.
 lifecycleState: Beta
 order: 999
 menu:
@@ -27,8 +29,8 @@ hoc with slightly different spacing every time.
 
 `Item` is deliberately restrained. It is presentational by default and only
 becomes interactive in one way: passing `href` upgrades the entire row to an
-accessible link. There is no button mode and no built-in selection state —
-real actions live as `Button`/`IconButton` controls inside `Item.Actions`, and
+accessible link. There is no button mode and no built-in selection state — real
+actions live as `Button`/`IconButton` controls inside `Item.Actions`, and
 selectable, navigable collections stay the job of `Menu`. `Item` complements
 `Card`, which composes vertical containers, the same way it complements those
 interactive collections: each owns a different shape.
@@ -40,17 +42,18 @@ the separate `ItemGroup` component.
 
 Deep dive into implementation details and access the Nimbus design library.
 
+[Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?m=dev)
+
 ## Variables
 
 Get familiar with the features.
 
 ### Media
 
-`Item.Media` is a fixed, non-shrinking slot for an icon, avatar, or image.
-Its `variant` sizes and shapes the content independently of the row's own
-`variant`: `default` imposes no sizing (use it for a custom-sized avatar),
-`icon` sizes an inline glyph, and `image` constrains a thumbnail into a
-rounded box.
+`Item.Media` is a fixed, non-shrinking slot for an icon, avatar, or image. Its
+`variant` sizes and shapes the content independently of the row's own `variant`:
+`default` imposes no sizing (use it for a custom-sized avatar), `icon` sizes an
+inline glyph, and `image` constrains a thumbnail into a rounded box.
 
 ```jsx live
 const App = () => (
@@ -65,10 +68,7 @@ const App = () => (
     </Item.Root>
     <Item.Root variant="outline">
       <Item.Media variant="image">
-        <img
-          src="/images/card/card-discount-template.png"
-          alt=""
-        />
+        <img src="/images/card/card-discount-template.png" alt="" />
       </Item.Media>
       <Item.Content>
         <Item.Title>Image media</Item.Title>
@@ -107,9 +107,9 @@ const App = () => (
 
 ### Variant
 
-The `variant` prop controls the row's visual treatment: `plain` (default) has
-no border or fill, `outline` adds a token-based border, and `subtle` fills the
-row with a muted surface color.
+The `variant` prop controls the row's visual treatment: `plain` (default) has no
+border or fill, `outline` adds a token-based border, and `subtle` fills the row
+with a muted surface color.
 
 ```jsx live
 const App = () => (
@@ -138,9 +138,9 @@ const App = () => (
 
 ### Header and footer
 
-`Item.Header` and `Item.Footer` are optional full-width bands rendered above
-and below the media·content·actions row — useful for a category label or a
-timestamp that shouldn't compete with the title for horizontal space.
+`Item.Header` and `Item.Footer` are optional full-width bands rendered above and
+below the media·content·actions row — useful for a category label or a timestamp
+that shouldn't compete with the title for horizontal space.
 
 ```jsx live
 const App = () => (
@@ -156,7 +156,9 @@ const App = () => (
       <Item.Description>Summarizes activity across your team.</Item.Description>
     </Item.Content>
     <Item.Footer>
-      <Text textStyle="sm" color="neutral.11">Sent Monday at 9:00am</Text>
+      <Text textStyle="sm" color="neutral.11">
+        Sent Monday at 9:00am
+      </Text>
     </Item.Footer>
   </Item.Root>
 );

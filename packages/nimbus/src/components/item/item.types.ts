@@ -64,7 +64,12 @@ export type ItemLinkProps = Partial<
 export type ItemRootProps = OmitInternalProps<ItemRootSlotProps> &
   ItemLinkProps & {
     children?: React.ReactNode;
-    ref?: React.Ref<HTMLDivElement & HTMLAnchorElement>;
+    /**
+     * Ref to the root element. `Item.Root` renders a `<div>` by default and an
+     * `<a>` in link mode, so the ref is typed to the default element; in link
+     * mode it resolves to the underlying `HTMLAnchorElement` at runtime.
+     */
+    ref?: React.Ref<HTMLDivElement>;
     [key: `data-${string}`]: unknown;
   };
 
