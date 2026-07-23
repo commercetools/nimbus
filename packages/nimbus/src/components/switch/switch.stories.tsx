@@ -218,7 +218,7 @@ export const WithRef: Story = {
 /**
  * Verifies that Switch can trigger a Tooltip when wrapped in Tooltip.Root
  */
-export const WithTooltip: Story = {
+export const ToggleWithTooltip: Story = {
   args: {
     children: "Switch with Tooltip",
     onChange: fn(),
@@ -249,6 +249,31 @@ export const WithTooltip: Story = {
       await expect(args.onChange).toHaveBeenCalledTimes(1);
       await expect(switchRoot.getAttribute("data-selected")).toBe("true");
     });
+  },
+};
+
+/**
+ * Snapshots the open tooltip on a switch. Focuses the trigger so the bubble is
+ * visible in the frame; Chromatic captures the resting open state.
+ */
+export const DisplaysTooltip: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    children: "Switch with Tooltip",
+  },
+  render: (args) => (
+    <Tooltip.Root delay={0} closeDelay={0}>
+      <Switch {...args} />
+      <Tooltip.Content>Switch tooltip text</Tooltip.Content>
+    </Tooltip.Root>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+    await userEvent.tab();
+    await canvas.findByRole("tooltip", { name: "Switch tooltip text" });
   },
 };
 
