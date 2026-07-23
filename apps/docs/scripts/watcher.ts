@@ -69,6 +69,9 @@ const dim = (s: string) => `\x1b[2m${s}\x1b[0m`;
 /**
  * Render an in-place progress bar for the initial scan. `\r` returns to the
  * start of the line and `\x1b[2K` clears it, so each call overwrites the last.
+ * A cleared blank line is kept directly below the bar for breathing room, then
+ * the cursor is moved back up onto the bar line (`\x1b[1A`) so the next call
+ * redraws the bar rather than the spacer.
  */
 function renderProgressBar(current: number, total: number): void {
   const width = 28;
@@ -77,7 +80,8 @@ function renderProgressBar(current: number, total: number): void {
   const bar = "█".repeat(filled) + "░".repeat(width - filled);
   const pct = String(Math.round(ratio * 100)).padStart(3);
   process.stdout.write(
-    `\r\x1b[2K${green(`  ➜ Building routes  ${bar}  ${pct}%  (${current}/${total})`)}`
+    `\r\x1b[2K${green(`  ➜ Building routes  ${bar}  ${pct}%  (${current}/${total})`)}` +
+      `\n\x1b[2K\x1b[1A`
   );
 }
 
@@ -347,7 +351,8 @@ watcher
   .on("ready", async () => {
     isReady = true;
 
-    // Finalize the progress bar at 100%, then drop to a fresh line.
+    // Finalize the progress bar at 100%, then drop onto the blank spacer line
+    // the bar reserved directly below itself.
     renderProgressBar(totalMdxFiles, totalMdxFiles);
     process.stdout.write("\n");
 
