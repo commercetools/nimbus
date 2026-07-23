@@ -389,6 +389,32 @@ export type UiKitMappingType =
   | "pattern" // Replaced by a design-token or layout pattern
   | "removed"; // No Nimbus equivalent
 
+/** Describes how a complex prop shape transforms during migration (e.g. column config objects). */
+export interface PropShapeTransform {
+  /** The prop being transformed (e.g. "columns"). */
+  prop: string;
+  /** Fields that are renamed: UIKit field name → Nimbus field name. */
+  rename?: Record<string, string>;
+  /** Fields that must be added (not present in UIKit). */
+  addRequired?: string[];
+  /** Optional fields that can be added. */
+  addOptional?: string[];
+  /** Fields or constraints to drop or rethink. */
+  drop?: string[];
+  /** TypeScript type signature the migrator must use (e.g. "DataTableColumnItem<RowType>[]"). */
+  genericRequired?: string;
+}
+
+/** Describes how a callback prop's signature changes during migration. */
+export interface CallbackAdapter {
+  /** The callback prop name (e.g. "onSortChange"). */
+  prop: string;
+  /** UIKit callback signature. */
+  from: string;
+  /** Nimbus callback signature. */
+  to: string;
+}
+
 /** Describes how a single prop changes during a UIKit-to-Nimbus migration. */
 export interface PropMapping {
   /** The UIKit prop name (e.g. "tone", "label", "isCondensed"). */
@@ -464,6 +490,12 @@ export interface UiKitMigrationEntry {
   propMigrations?: PropMigration[];
   /** Pattern where migration deletes significant code (e.g. built-in selection). */
   codeReduction?: CodeReduction;
+  /** Structured guidance for transforming complex prop shapes (e.g. column config objects). */
+  propShapeTransforms?: PropShapeTransform[];
+  /** Structured guidance for adapting callback signatures. */
+  callbackAdapters?: CallbackAdapter[];
+  /** Type-level migration notes requiring explicit handling. */
+  typeNotes?: string[];
 }
 
 /** Single component migration result returned by migrate_from_uikit. */
@@ -484,6 +516,12 @@ export interface MigrateComponentResult {
   propMigrations?: PropMigration[];
   /** Code-deletion pattern, if available. */
   codeReduction?: CodeReduction;
+  /** Structured guidance for transforming complex prop shapes. */
+  propShapeTransforms?: PropShapeTransform[];
+  /** Structured guidance for adapting callback signatures. */
+  callbackAdapters?: CallbackAdapter[];
+  /** Type-level migration notes requiring explicit handling. */
+  typeNotes?: string[];
 }
 
 /** A suggested Nimbus component for an unmapped UI Kit component. */

@@ -680,6 +680,16 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         notes: "Receives selected key instead of TCustomEvent.",
       },
     ],
+    callbackAdapters: [
+      {
+        prop: "onChange",
+        from: "(event: TCustomEvent) => void — access event.target.value",
+        to: "(value: Key | null) => void — single selection only",
+      },
+    ],
+    typeNotes: [
+      "Key type is string | number from @react-types/shared; Nimbus Select is single-selection only — for multi-select use cases, migrate to ComboBox instead",
+    ],
   },
   {
     uiKitName: "CreatableSelectInput",
@@ -822,6 +832,16 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         notes: "Was string|number; now must be a number.",
       },
     ],
+    callbackAdapters: [
+      {
+        prop: "onChange",
+        from: "(event: ChangeEvent<HTMLInputElement>) => void — event.target.value is a string",
+        to: "(value: number) => void",
+      },
+    ],
+    typeNotes: [
+      "value was string | number, now must be number; empty string '' is no longer valid — use NaN or conditional rendering",
+    ],
   },
   {
     uiKitName: "NumberField",
@@ -876,6 +896,17 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         notes:
           "Receives { amount, currencyCode } directly instead of a TCustomEvent.",
       },
+    ],
+    callbackAdapters: [
+      {
+        prop: "onChange",
+        from: "(event: TCustomEvent) => void — access event.target.value",
+        to: "(event: CustomEvent) => void — legacy; prefer onValueChange: (value: MoneyInputValue) => void",
+      },
+    ],
+    typeNotes: [
+      "Prefer onValueChange over onChange; also available: onAmountChange: (amount: string) => void and onCurrencyChange: (currencyCode: CurrencyCode) => void",
+      "MoneyInputValue = { amount: string, currencyCode: CurrencyCode | '' }",
     ],
   },
   {
@@ -943,6 +974,17 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
           "Receives a CalendarDate directly instead of a TCustomEvent with a string.",
       },
     ],
+    callbackAdapters: [
+      {
+        prop: "onChange",
+        from: "(event: TCustomEvent) => void — event.target.value is a 'YYYY-MM-DD' string",
+        to: "(value: CalendarDate | null) => void",
+      },
+    ],
+    typeNotes: [
+      "import { CalendarDate } from '@internationalized/date' is required; value and onChange use CalendarDate, not strings",
+      "minValue/maxValue also changed from strings to CalendarDate objects",
+    ],
   },
   {
     uiKitName: "DateTimeInput",
@@ -972,6 +1014,17 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
           "Must be a ZonedDateTime or CalendarDateTime from @internationalized/date.",
       },
     ],
+    callbackAdapters: [
+      {
+        prop: "onChange",
+        from: "(event: TCustomEvent) => void — string-based date-time value",
+        to: "(value: CalendarDateTime | ZonedDateTime | null) => void",
+      },
+    ],
+    typeNotes: [
+      "import { CalendarDateTime, ZonedDateTime } from '@internationalized/date' is required; use CalendarDateTime for local times, ZonedDateTime for timezone-aware values",
+      "Set granularity='minute' or 'second' on DatePicker to enable time fields",
+    ],
   },
   {
     uiKitName: "DateRangeInput",
@@ -998,6 +1051,17 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         notes: "Receives the { start, end } CalendarDate range directly.",
       },
     ],
+    callbackAdapters: [
+      {
+        prop: "onChange",
+        from: "(event: TCustomEvent) => void — string-based date range",
+        to: "(value: RangeValue<CalendarDate> | null) => void — where RangeValue<T> = { start: T, end: T }",
+      },
+    ],
+    typeNotes: [
+      "import { CalendarDate } from '@internationalized/date' and RangeValue from '@react-types/shared' are required",
+      "Value type is RangeValue<CalendarDate> = { start: CalendarDate, end: CalendarDate } | null",
+    ],
   },
   {
     uiKitName: "DateRangeField",
@@ -1022,6 +1086,16 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         changeType: "structural",
         notes: "Must be a Time object from @internationalized/date.",
       },
+    ],
+    callbackAdapters: [
+      {
+        prop: "onChange",
+        from: "(event: ChangeEvent<HTMLInputElement>) => void — event.target.value is a time string",
+        to: "(value: Time | null) => void",
+      },
+    ],
+    typeNotes: [
+      "import { Time } from '@internationalized/date' is required; value and onChange use Time objects, not strings",
     ],
   },
 
@@ -1052,6 +1126,13 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         nimbusProp: "onChange",
         changeType: "structural",
         notes: "Receives boolean isSelected instead of ChangeEvent.",
+      },
+    ],
+    callbackAdapters: [
+      {
+        prop: "onChange",
+        from: "(event: ChangeEvent<HTMLInputElement>) => void — access event.target.checked",
+        to: "(isSelected: boolean) => void",
       },
     ],
   },
@@ -1100,6 +1181,13 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         ],
       },
     ],
+    callbackAdapters: [
+      {
+        prop: "onChange",
+        from: "(event: ChangeEvent<HTMLInputElement>) => void — access event.target.checked",
+        to: "(isSelected: boolean) => void",
+      },
+    ],
   },
 
   // -------------------------------------------------------------------------
@@ -1144,6 +1232,16 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         changeType: "structural",
         notes: "Receives a LocalizedFieldChangeEvent with target.locale.",
       },
+    ],
+    callbackAdapters: [
+      {
+        prop: "onChange",
+        from: "(event: ChangeEvent<HTMLLocalizedInputElement>) => void — event.target.language identifies the locale",
+        to: "(event: LocalizedFieldChangeEvent) => void — event.target.locale identifies which locale changed",
+      },
+    ],
+    typeNotes: [
+      "LocalizedFieldChangeEvent has target.locale (string), target.value (string | string[] | null), and optional target.id/name",
     ],
   },
   {
@@ -1215,6 +1313,16 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         changeType: "structural",
         notes: "Receives a LocalizedFieldChangeEvent with target.locale.",
       },
+    ],
+    callbackAdapters: [
+      {
+        prop: "onChange",
+        from: "(event: ChangeEvent<HTMLLocalizedInputElement>) => void — event.target.language identifies the locale",
+        to: "(event: LocalizedFieldChangeEvent) => void — event.target.locale identifies which locale changed",
+      },
+    ],
+    typeNotes: [
+      "LocalizedFieldChangeEvent has target.locale (string), target.value (string | string[] | null), and optional target.id/name",
     ],
   },
   {
@@ -1288,6 +1396,16 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         notes: "Receives a LocalizedFieldChangeEvent with target.currency.",
       },
     ],
+    callbackAdapters: [
+      {
+        prop: "onChange",
+        from: "(event: ChangeEvent<HTMLLocalizedInputElement>) => void — event.target.language identifies the currency",
+        to: "(event: LocalizedFieldChangeEvent) => void — event.target.currency identifies which currency changed",
+      },
+    ],
+    typeNotes: [
+      "LocalizedFieldChangeEvent has target.currency (CurrencyCode), target.value (string | string[] | null), and optional target.id/name",
+    ],
   },
   {
     uiKitName: "LocalizedRichTextInput",
@@ -1328,6 +1446,16 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         changeType: "structural",
         notes: "Receives a LocalizedFieldChangeEvent with target.locale.",
       },
+    ],
+    callbackAdapters: [
+      {
+        prop: "onChange",
+        from: "(event: ChangeEvent<HTMLLocalizedInputElement>) => void — event.target.language identifies the locale",
+        to: "(event: LocalizedFieldChangeEvent) => void — event.target.locale identifies which locale changed",
+      },
+    ],
+    typeNotes: [
+      "LocalizedFieldChangeEvent has target.locale (string), target.value (string | string[] | null), and optional target.id/name",
     ],
   },
 
@@ -1495,6 +1623,16 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
           "Restructure into TagGroup.Root > TagGroup.TagList > TagGroup.Tag.",
       },
     ],
+    callbackAdapters: [
+      {
+        prop: "onRemove",
+        from: "(event: MouseEvent<HTMLElement> | KeyboardEvent<HTMLElement>) => void — DOM event from remove button",
+        to: "(keys: Set<Key>) => void — set of removed tag keys",
+      },
+    ],
+    typeNotes: [
+      "onRemove receives Set<Key> (where Key = string | number), not a single key; must iterate the set or use Set.has()",
+    ],
   },
   {
     uiKitName: "TagList",
@@ -1538,25 +1676,55 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
     notes:
-      "Direct replacement. Column definitions use the new columns prop with accessor keys.",
+      "Direct replacement. Column definitions require DataTableColumnItem<RowType>[] generic typing. Sort and selection callbacks have new signatures.",
     breakingChanges: [
-      "columns prop shape changed to use accessor and header fields",
-      "Row selection API updated to use onSelectionChange with a Set of keys",
+      "columns prop shape changed: key→id, label→header, accessor and render fields added",
+      "DataTableColumnItem<T> is generic — without <T> accessors return unknown and TS rejects them as ReactNode",
+      "onSortChange signature changed from (key, order) to (descriptor: { column, direction })",
+      "Selection type is 'all' | Set<Key> — missing the 'all' branch silently drops select-all clicks",
     ],
     propMappings: [
       {
         uiKitProp: "columns",
         nimbusProp: "columns",
         changeType: "structural",
-        notes: "Shape changed to use accessor and header fields.",
+        notes:
+          "Shape changed: key→id, label→header, accessor required. Must use DataTableColumnItem<RowType>[].",
       },
       {
         uiKitProp: "onRowClick",
         nimbusProp: "onSelectionChange",
         changeType: "structural",
         notes:
-          "Row interaction via onRowClick replaced by onSelectionChange with a Set of keys.",
+          "Row interaction via onRowClick replaced by onSelectionChange with Selection = 'all' | Set<Key>.",
       },
+      {
+        uiKitProp: "onSortChange",
+        nimbusProp: "onSortChange",
+        changeType: "structural",
+        notes:
+          "Signature changed from (key, order) to (descriptor: { column, direction: 'ascending' | 'descending' }).",
+      },
+    ],
+    propShapeTransforms: [
+      {
+        prop: "columns",
+        rename: { key: "id", label: "header" },
+        addRequired: ["accessor"],
+        addOptional: ["render"],
+        drop: ["width if string-typed (Nimbus uses pixels)"],
+        genericRequired: "DataTableColumnItem<RowType>[]",
+      },
+    ],
+    callbackAdapters: [
+      {
+        prop: "onSortChange",
+        from: "(key: string, order: 'asc' | 'desc')",
+        to: "(descriptor: { column: string, direction: 'ascending' | 'descending' })",
+      },
+    ],
+    typeNotes: [
+      "Selection = 'all' | Set<Key>; handle 'all' explicitly — missing the 'all' branch silently drops the select-all header click",
     ],
     codeReduction: {
       type: "selection-model-collapse",
@@ -1609,7 +1777,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     breakingChanges: [
       "Rename to Menu (use Menu.Root, Menu.Trigger, Menu.Content, Menu.Item)",
       "options array replaced by Menu.Item children inside Menu.Content",
-      "onSelect replaced by onAction on Menu.Item or Menu",
+      "per-item onClick replaced by onAction on Menu.Item or Menu (receives key)",
     ],
     propMappings: [
       {
@@ -1617,6 +1785,13 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         nimbusProp: null,
         changeType: "structural",
         notes: "Compose Menu.Root > Menu.Trigger + Menu.Content > Menu.Item.",
+      },
+    ],
+    callbackAdapters: [
+      {
+        prop: "onClick",
+        from: "per-item onClick: () => void — no arguments, set on each DropdownMenu.ListMenuItem",
+        to: "onAction: (key: Key) => void — receives the item's key; set on Menu or individual Menu.Item",
       },
     ],
   },
@@ -1816,6 +1991,17 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       },
       { uiKitProp: "condensed", nimbusProp: null, changeType: "removed" },
       { uiKitProp: "tone", nimbusProp: null, changeType: "removed" },
+    ],
+    callbackAdapters: [
+      {
+        prop: "onToggle",
+        from: "() => void — simple toggle callback",
+        to: "onExpandedChange: (keys: Set<Key>) => void — receives the full set of expanded item keys",
+      },
+    ],
+    typeNotes: [
+      "Controlled state uses expandedKeys: Iterable<Key> + onExpandedChange: (keys: Set<Key>) => void; each Accordion.Item needs a value (string) prop as its key",
+      "Key type is string | number from @react-types/shared",
     ],
   },
   {
