@@ -146,7 +146,7 @@ export const Variants: Story = {
 export const MediaVariants: Story = {
   render: () => (
     <Stack gap="400">
-      <Item.Root variant="outline" data-testid="media-icon">
+      <Item.Root variant="outline">
         <Item.Media variant="icon" data-testid="media-icon-slot">
           <Person />
         </Item.Media>
@@ -154,7 +154,7 @@ export const MediaVariants: Story = {
           <Item.Title>Icon media</Item.Title>
         </Item.Content>
       </Item.Root>
-      <Item.Root variant="outline" data-testid="media-image">
+      <Item.Root variant="outline">
         <Item.Media variant="image" data-testid="media-image-slot">
           <Image
             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
@@ -248,7 +248,7 @@ export const WithButtonActions: Story = {
 
     await step("Action is operable", async () => {
       const action = canvas.getByRole("button", { name: "Manage" });
-      action.focus();
+      await userEvent.tab();
       await expect(action).toHaveFocus();
 
       await userEvent.click(action);
@@ -262,7 +262,7 @@ export const WithButtonActions: Story = {
  */
 export const AsLink: Story = {
   render: () => (
-    <Item.Root href="#item-target" variant="outline" data-testid="item">
+    <Item.Root href="#item-target" variant="outline">
       <Item.Media variant="icon">
         <Settings />
       </Item.Media>
@@ -304,7 +304,6 @@ export const LinkWithActions: Story = {
     <Item.Root
       href="#item-target"
       variant="outline"
-      data-testid="item"
       // A consumer-supplied capture handler must coexist with the row's own
       // navigation guard, not replace it (regression guard for the guard being
       // merged rather than passed as a bare prop before the spread).
@@ -320,7 +319,6 @@ export const LinkWithActions: Story = {
           size="xs"
           variant="ghost"
           onPress={onDeleteAction}
-          data-testid="delete-action"
         >
           <Delete />
         </IconButton>
@@ -343,7 +341,9 @@ export const LinkWithActions: Story = {
 
     await step("Action activates without navigating the row", async () => {
       const action = canvas.getByRole("button", { name: "Delete" });
-      action.focus();
+      // Tab past the row link to reach the action control (both are tab stops).
+      await userEvent.tab();
+      await userEvent.tab();
       await expect(action).toHaveFocus();
 
       await userEvent.click(action);
@@ -393,14 +393,14 @@ const onMemberSettings = fn();
 
 export const Showcase: Story = {
   render: () => (
-    <Stack gap="800" maxWidth="640px" data-testid="showcase">
+    <Stack gap="800" maxWidth="640px">
       <Text textStyle="lg" fontWeight="700">
         Item &amp; ItemGroup — full showcase
       </Text>
 
       {/* Standalone card: a full-width banner image in the Header, a thumbnail
           in the Media slot, a Button action, and a Footer band. */}
-      <Item.Root variant="outline" data-testid="hero-card">
+      <Item.Root variant="outline">
         <Item.Header>
           <Image
             src="https://picsum.photos/seed/hero/640/200"

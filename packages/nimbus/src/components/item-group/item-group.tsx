@@ -24,12 +24,33 @@ export const ItemGroup = {
    * # ItemGroup.Root
    *
    * The container that lays grouped `Item` rows out as a vertical stack.
+   * Exposes the grouping to assistive technology with `role="group"`; give it
+   * an accessible name with `aria-label`/`aria-labelledby` when the grouping
+   * isn't obvious from surrounding context.
+   *
+   * @example
+   * ```tsx
+   * <ItemGroup.Root aria-label="Account settings">
+   *   <Item.Root>…</Item.Root>
+   *   <ItemGroup.Separator />
+   *   <Item.Root>…</Item.Root>
+   * </ItemGroup.Root>
+   * ```
    */
   Root: ItemGroupRoot,
   /**
    * # ItemGroup.Separator
    *
    * A horizontal divider placed between rows in an `ItemGroup.Root`.
+   *
+   * @example
+   * ```tsx
+   * <ItemGroup.Root>
+   *   <Item.Root>…</Item.Root>
+   *   <ItemGroup.Separator />
+   *   <Item.Root>…</Item.Root>
+   * </ItemGroup.Root>
+   * ```
    */
   Separator: ItemGroupSeparator,
 };
