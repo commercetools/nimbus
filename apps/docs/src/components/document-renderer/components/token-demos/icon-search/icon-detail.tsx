@@ -15,13 +15,13 @@ import {
 import { ContentCopy } from "@commercetools/nimbus-icons";
 import * as icons from "@commercetools/nimbus-icons";
 import type { IconMeta } from "@commercetools/nimbus-icons/meta";
-import { useNavigate } from "react-router-dom";
 // Same highlighter + theme the docs use for fenced code (base-tags/code.tsx),
 // so the dialog's snippets match every other code block in the app.
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import { slugifyCategory, titleCase } from "./use-icon-data";
+import { useIconRouteState } from "./use-icon-route-state";
 
 /** A raw icon component from `@commercetools/nimbus-icons` (an SVG). */
 type Glyph = FC<SVGProps<SVGSVGElement>>;
@@ -187,15 +187,14 @@ const KeylineGrid = ({
  * shell level (not per tile), so there's only ever one dialog instance.
  */
 export const IconDetailDialog = ({
-  name,
   metadata,
-  onClose,
 }: {
-  name: string | null;
   metadata: Record<string, IconMeta> | null;
-  onClose: () => void;
 }) => {
-  const navigate = useNavigate();
+  // The open icon comes from the `/icons/:name` segment; aliased to `name`
+  // since the rest of the component reads it as `name`. `closeIcon` returns to
+  // the filtered grid; `goToCategory` swaps the dialog for a category filter.
+  const { iconName: name, closeIcon, goToCategory } = useIconRouteState();
   const [, copyToClipboard] = useCopyToClipboard();
 
   const Component = name
@@ -280,7 +279,7 @@ export const IconDetailDialog = ({
       isOpen={name != null}
       scrollBehavior="inside"
       onOpenChange={(open) => {
-        if (!open) onClose();
+        if (!open) closeIcon();
       }}
     >
       <Dialog.Content width="3xl" maxWidth="95vw">
@@ -294,10 +293,7 @@ export const IconDetailDialog = ({
                     as="button"
                     key={c}
                     cursor="pointer"
-                    onClick={() => {
-                      onClose();
-                      navigate(`/icons/category/${slugifyCategory(c)}`);
-                    }}
+                    onClick={() => goToCategory(slugifyCategory(c))}
                   >
                     <Badge size="xs">{titleCase(c)}</Badge>
                   </Box>
