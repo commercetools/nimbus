@@ -72,6 +72,28 @@ When adding or updating a mapping, gather information to write accurate data:
    - `pattern` — Replaced by design tokens or layout patterns
    - `removed` — No Nimbus equivalent exists
 
+4. **Check for slot-prop collapse** — If UIKit props (e.g. `label`, `icon`)
+   become `children` in Nimbus, add a `propMigrations` array:
+
+   ```typescript
+   propMigrations: [
+     { from: "label", to: "children" },
+     { from: "icon", to: "children", position: "before" },
+   ],
+   ```
+
+5. **Check for code-deletion patterns** — If the Nimbus component has built-in
+   functionality that replaces custom consumer code (e.g. selection columns),
+   add a `codeReduction` object:
+
+   ```typescript
+   codeReduction: {
+     type: "selection-model-collapse",
+     deletableFiles: ["**/*-selection-column-cell.tsx"],
+     rationale: "Nimbus DataTable provides built-in selection via selectionMode='multiple'.",
+   },
+   ```
+
 ## Step 3: Apply Changes
 
 ### Add Mode

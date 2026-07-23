@@ -514,3 +514,78 @@ describe("migrate_from_uikit — iconWrapper", () => {
     expect(data.notes).toContain("<Icon as={");
   });
 });
+
+describe("migrate_from_uikit — propMigrations (slot-prop collapse)", () => {
+  it("includes propMigrations for Stamp → Badge slot-prop collapse", async () => {
+    const result = await callMigrate({ componentName: "Stamp" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.propMigrations).toBeInstanceOf(Array);
+    expect(data.propMigrations.length).toBe(2);
+
+    const labelMigration = data.propMigrations.find(
+      (m: { from: string }) => m.from === "label"
+    );
+    expect(labelMigration).toBeDefined();
+    expect(labelMigration.to).toBe("children");
+    expect(labelMigration.position).toBeUndefined();
+
+    const iconMigration = data.propMigrations.find(
+      (m: { from: string }) => m.from === "icon"
+    );
+    expect(iconMigration).toBeDefined();
+    expect(iconMigration.to).toBe("children");
+    expect(iconMigration.position).toBe("before");
+  });
+
+  it("includes propMigrations for PrimaryButton label/icon collapse", async () => {
+    const result = await callMigrate({ componentName: "PrimaryButton" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.propMigrations).toBeInstanceOf(Array);
+    expect(data.propMigrations.length).toBe(3);
+
+    const labelMigration = data.propMigrations.find(
+      (m: { from: string }) => m.from === "label"
+    );
+    expect(labelMigration).toBeDefined();
+    expect(labelMigration.to).toBe("children");
+
+    const iconLeftMigration = data.propMigrations.find(
+      (m: { from: string }) => m.from === "iconLeft"
+    );
+    expect(iconLeftMigration).toBeDefined();
+    expect(iconLeftMigration.position).toBe("before");
+
+    const iconRightMigration = data.propMigrations.find(
+      (m: { from: string }) => m.from === "iconRight"
+    );
+    expect(iconRightMigration).toBeDefined();
+    expect(iconRightMigration.position).toBe("after");
+  });
+
+  it("omits propMigrations for entries without them", async () => {
+    const result = await callMigrate({ componentName: "Tag" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.propMigrations).toBeUndefined();
+  });
+});
+
+describe("migrate_from_uikit — codeReduction", () => {
+  it("includes codeReduction for DataTable selection-model-collapse", async () => {
+    const result = await callMigrate({ componentName: "DataTable" });
+    const data = JSON.parse(getText(result));
+
+    expect(data.codeReduction).toBeDefined();
+    expect(data.codeReduction.type).toBe("selection-model-collapse");
+    expect(data.codeReduction.deletableFiles).toBeInstanceOf(Array);
+    expect(data.codeReduction.deletableFiles.length).toBeGreaterThan(0);
+    expect(data.codeReduction.rationale).toContain("selectionMode");
+  });
+
+  it("omits codeReduction for entries without it", async () => {
+    const result = await callMigrate({ componentName: "PrimaryButton" });
+    expect(JSON.parse(getText(result)).codeReduction).toBeUndefined();
+  });
+});

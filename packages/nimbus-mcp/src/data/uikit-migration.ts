@@ -47,6 +47,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         notes: "Use children instead.",
       },
     ],
+    propMigrations: [{ from: "label", to: "children" }],
   },
   {
     uiKitName: "FlatButton",
@@ -87,11 +88,21 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         notes: "'inverted' has no direct equivalent; use variant/colorPalette.",
       },
       {
+        uiKitProp: "icon",
+        nimbusProp: null,
+        changeType: "structural",
+        notes: "Pass icon as a child.",
+      },
+      {
         uiKitProp: "iconPosition",
         nimbusProp: null,
         changeType: "removed",
         notes: "Pass icon as a child.",
       },
+    ],
+    propMigrations: [
+      { from: "label", to: "children" },
+      { from: "icon", to: "children", position: "before" },
     ],
   },
   {
@@ -135,6 +146,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         changeType: "removed",
         notes: "Pass icon as a child.",
       },
+    ],
+    propMigrations: [
+      { from: "label", to: "children" },
+      { from: "iconLeft", to: "children", position: "before" },
     ],
   },
   {
@@ -187,6 +202,11 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         notes: "Pass icon as a child.",
       },
     ],
+    propMigrations: [
+      { from: "label", to: "children" },
+      { from: "iconLeft", to: "children", position: "before" },
+      { from: "iconRight", to: "children", position: "after" },
+    ],
   },
   {
     uiKitName: "SecondaryButton",
@@ -237,6 +257,11 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         notes: "Pass icon as a child.",
       },
     ],
+    propMigrations: [
+      { from: "label", to: "children" },
+      { from: "iconLeft", to: "children", position: "before" },
+      { from: "iconRight", to: "children", position: "after" },
+    ],
   },
   {
     uiKitName: "IconButton",
@@ -266,6 +291,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         notes: "UIKit theme maps to both variant and colorPalette in Nimbus.",
       },
     ],
+    propMigrations: [{ from: "icon", to: "children" }],
   },
   {
     uiKitName: "SecondaryIconButton",
@@ -303,6 +329,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       },
       { uiKitProp: "label", nimbusProp: "aria-label", changeType: "rename" },
     ],
+    propMigrations: [{ from: "icon", to: "children" }],
   },
   {
     uiKitName: "PrimaryActionDropdown",
@@ -1419,6 +1446,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "tone value 'information' → colorPalette='info'",
       "tone values 'primary' and 'secondary' → colorPalette='primary' or 'neutral'",
       "isCondensed prop replaced by size='xs'",
+      "label and icon props removed; pass label text and optionally an icon as children",
     ],
     propMappings: [
       {
@@ -1441,6 +1469,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         valueMapping: [{ from: "true", to: "xs" }],
         notes: "Default size is 'md'.",
       },
+    ],
+    propMigrations: [
+      { from: "label", to: "children" },
+      { from: "icon", to: "children", position: "before" },
     ],
   },
   {
@@ -1526,6 +1558,15 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
           "Row interaction via onRowClick replaced by onSelectionChange with a Set of keys.",
       },
     ],
+    codeReduction: {
+      type: "selection-model-collapse",
+      deletableFiles: [
+        "**/*-selection-column-cell.tsx",
+        "**/*-selection-column-label.tsx",
+      ],
+      rationale:
+        "Nimbus DataTable provides built-in selection via selectionMode='multiple'.",
+    },
   },
   {
     uiKitName: "DataTableManager",

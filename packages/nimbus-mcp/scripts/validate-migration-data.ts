@@ -200,9 +200,10 @@ function buildUiKitPropsMap(): Map<string, Set<string>> {
 }
 
 function validateUiKitProps(
-  migrations: ReturnType<typeof getAllUiKitMigrations>
+  migrations: ReturnType<typeof getAllUiKitMigrations>,
+  existingPropsMap?: Map<string, Set<string>>
 ): ValidationError[] {
-  const propsMap = buildUiKitPropsMap();
+  const propsMap = existingPropsMap ?? buildUiKitPropsMap();
   if (propsMap.size === 0) {
     console.log(
       "[validate] ⚠ @commercetools-frontend/ui-kit not installed or types not found, skipping UIKit prop validation"
@@ -292,8 +293,86 @@ export async function validateMigrationData(): Promise<void> {
   }
   console.log(`[validate] ✓ ${iconWrapperCount} iconWrapper entries validated`);
 
-  // --- UIKit-side validation ---
-  const uikitErrors = validateUiKitProps(migrations);
+  // --- propMigrations validation (UIKit + Nimbus-side) ---
+  const propsMap = buildUiKitPropsMap();
+  const IMPLICIT_REACT_PROPS = new Set(["children"]);
+  let pmValidated = 0;
+  for (const entry of migrations) {
+    if (!entry.propMigrations || entry.propMigrations.length === 0) continue;
+    pmValidated++;
+
+    // UIKit-side: validate `from` exists on the source component
+    if (propsMap.size > 0) {
+      const uikitProps = propsMap.get(entry.uiKitName);
+      if (uikitProps) {
+        for (const pm of entry.propMigrations) {
+          if (!uikitProps.has(pm.from)) {
+            allErrors.push({
+              entry: entry.uiKitName,
+              prop: pm.from,
+              message: `propMigrations.from "${pm.from}" does not exist on ${entry.uiKitName}`,
+            });
+          }
+        }
+      }
+    }
+
+    // Nimbus-side: validate `to` exists on the target component
+    const componentName = extractNimbusComponentName(entry.nimbusEquivalent);
+    if (componentName) {
+      const nimbusProps = await loadTypeData(TYPES_DIR, componentName);
+      if (Object.keys(nimbusProps).length > 0) {
+        for (const pm of entry.propMigrations) {
+          if (IMPLICIT_REACT_PROPS.has(pm.to)) continue;
+          if (!(pm.to in nimbusProps)) {
+            allErrors.push({
+              entry: entry.uiKitName,
+              prop: pm.to,
+              message: `propMigrations.to "${pm.to}" does not exist on ${componentName}. Available: ${Object.keys(nimbusProps).join(", ")}`,
+            });
+          }
+        }
+      }
+    }
+  }
+  console.log(
+    `[validate] ✓ ${pmValidated} entries with propMigrations validated`
+  );
+
+  // --- codeReduction validation (required fields) ---
+  let crValidated = 0;
+  for (const entry of migrations) {
+    if (!entry.codeReduction) continue;
+    crValidated++;
+    const cr = entry.codeReduction;
+    if (!cr.type) {
+      allErrors.push({
+        entry: entry.uiKitName,
+        prop: "codeReduction.type",
+        message: `codeReduction.type is empty or missing`,
+      });
+    }
+    if (!cr.deletableFiles || cr.deletableFiles.length === 0) {
+      allErrors.push({
+        entry: entry.uiKitName,
+        prop: "codeReduction.deletableFiles",
+        message: `codeReduction.deletableFiles is empty or missing`,
+      });
+    }
+    if (!cr.rationale) {
+      allErrors.push({
+        entry: entry.uiKitName,
+        prop: "codeReduction.rationale",
+        message: `codeReduction.rationale is empty or missing`,
+      });
+    }
+  }
+  console.log(
+    `[validate] ✓ ${crValidated} entries with codeReduction validated`
+  );
+
+  // --- UIKit-side validation (reuse propsMap to avoid a second ts.createProgram) ---
+  const uikitErrors = validateUiKitProps(migrations, propsMap);
   allErrors.push(...uikitErrors);
 
   if (allErrors.length > 0) {

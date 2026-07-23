@@ -422,6 +422,26 @@ export interface IconWrapper {
   sizeMapping?: Array<{ from: string; to: string }>;
 }
 
+/** Describes a slot-prop that collapses into children during migration. */
+export interface PropMigration {
+  /** The UIKit prop name that becomes part of children (e.g. "label", "icon"). */
+  from: string;
+  /** The target in Nimbus (typically "children"). */
+  to: string;
+  /** Where this content appears relative to other children. */
+  position?: "before" | "after";
+}
+
+/** Describes a pattern where migration results in significant code deletion. */
+export interface CodeReduction {
+  /** Identifier for the reduction pattern (e.g. "selection-model-collapse"). */
+  type: string;
+  /** Glob patterns for files that can be deleted after migration. */
+  deletableFiles: string[];
+  /** Explanation of why the code can be deleted. */
+  rationale: string;
+}
+
 /** A single UI Kit → Nimbus migration entry. */
 export interface UiKitMigrationEntry {
   /** UI Kit component name (e.g. "PrimaryButton"). */
@@ -440,6 +460,10 @@ export interface UiKitMigrationEntry {
   propMappings?: PropMapping[];
   /** Wrapper metadata for icon imports — tells the LLM to wrap bare icons. */
   iconWrapper?: IconWrapper;
+  /** Slot-prop-to-children collapse transforms (e.g. label/icon → children). */
+  propMigrations?: PropMigration[];
+  /** Pattern where migration deletes significant code (e.g. built-in selection). */
+  codeReduction?: CodeReduction;
 }
 
 /** Single component migration result returned by migrate_from_uikit. */
@@ -456,6 +480,10 @@ export interface MigrateComponentResult {
   propMappings?: PropMapping[];
   /** Wrapper metadata for icon imports — tells the LLM to wrap bare icons. */
   iconWrapper?: IconWrapper;
+  /** Slot-prop-to-children collapse transforms, if available. */
+  propMigrations?: PropMigration[];
+  /** Code-deletion pattern, if available. */
+  codeReduction?: CodeReduction;
 }
 
 /** A suggested Nimbus component for an unmapped UI Kit component. */
