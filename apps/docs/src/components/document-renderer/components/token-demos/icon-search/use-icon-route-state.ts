@@ -119,6 +119,8 @@ export interface IconRouteState {
 
   /** Filter to a category (stays on the grid, dropping any open dialog). */
   goToCategory: (slug: string) => void;
+  /** Filter to a keyword tag on the grid, dropping any open dialog. */
+  goToTag: (tag: string) => void;
   /** Open an icon's detail dialog (pushes history). */
   openIcon: (name: string) => void;
   /** Close the detail dialog, returning to the current filtered grid. */
@@ -238,6 +240,22 @@ export const useIconRouteState = (): IconRouteState => {
     [params, navigate]
   );
 
+  const goToTag = useCallback(
+    (nextTag: string) => {
+      const next = new URLSearchParams(params);
+      if (!nextTag) next.delete(PARAM.tag);
+      else next.set(PARAM.tag, nextTag);
+      // Same shape as goToCategory: jump to the grid (dropping any `:name`, which
+      // closes the dialog) with this keyword facet active, preserving the other
+      // filters, and replacing rather than leaving a back-step.
+      navigate(
+        { pathname: ICON_BASE, search: next.toString() },
+        { replace: true }
+      );
+    },
+    [params, navigate]
+  );
+
   const openIcon = useCallback(
     (name: string) => {
       // Opening from the grid roots a fresh trail on top of our own grid entry,
@@ -287,6 +305,7 @@ export const useIconRouteState = (): IconRouteState => {
     setSize,
     setSurface,
     goToCategory,
+    goToTag,
     openIcon,
     closeIcon,
   };
