@@ -1,0 +1,107 @@
+---
+title: ItemGroup
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+`ItemGroup` guidelines focus on using visual grouping and separators to signal
+that a set of `Item` rows belong to the same category, without changing how
+each row behaves on its own.
+
+### Best practices
+
+- **Group related rows only:** Put rows in the same `ItemGroup.Root` because
+  they belong to the same category or section — not simply because they sit
+  next to each other on the page.
+- **Use separators sparingly:** A separator signals a boundary between
+  subsections within the group. Don't add one between every row if the whole
+  group is already a single category.
+- **Don't restyle individual rows to compensate:** `ItemGroup.Root` only
+  stacks rows vertically; each `Item.Root` keeps its own `variant` and `size`.
+  Pick a consistent `variant`/`size` across the rows in a group rather than
+  varying it row-by-row.
+- **Keep rows self-contained:** Each `Item.Root` should make sense read on its
+  own — a group is a visual convenience, not a shared sentence split across
+  rows.
+
+### Usage
+
+> [!TIP]\
+> When to use
+
+- **A settings or preferences list:** A vertical stack of related,
+  individually navigable rows (Profile, Notifications, Settings…).
+- **A short list of linked resources:** Rows that each navigate elsewhere,
+  optionally divided into sections by separators.
+- **A summary list of key-value rows:** Presentational rows (no interaction)
+  that belong together, such as an order's line items.
+
+> [!CAUTION]\
+> When not to use
+
+- **Selectable options:** If a user needs to select one or more rows (a
+  listbox, a menu), use a selection-aware component instead — `ItemGroup` has
+  no selection state or keyboard navigation of its own.
+- **A single row:** If there's only one row, skip the group — it adds a
+  wrapper with no visual benefit.
+- **Unrelated content:** Don't reach for `ItemGroup` just to stack arbitrary
+  content vertically; use `Stack` for that and reserve `ItemGroup` for a set
+  of `Item` rows.
+
+```jsx live
+const App = () => (
+  <ItemGroup.Root>
+    <Item.Root>
+      <Item.Media variant="icon">
+        <Icons.Person />
+      </Item.Media>
+      <Item.Content>
+        <Item.Title>Profile</Item.Title>
+        <Item.Description>Name, avatar, and contact details</Item.Description>
+      </Item.Content>
+    </Item.Root>
+    <ItemGroup.Separator />
+    <Item.Root>
+      <Item.Media variant="icon">
+        <Icons.Notifications />
+      </Item.Media>
+      <Item.Content>
+        <Item.Title>Notifications</Item.Title>
+        <Item.Description>Email and push preferences</Item.Description>
+      </Item.Content>
+    </Item.Root>
+  </ItemGroup.Root>
+);
+```
+
+### Composition
+
+Separators divide rows from each other — they don't set the group apart from
+its surroundings.
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't lead or trail the group with a separator.
+> - Don't place two separators back-to-back — there's no row between them to
+>   divide.
+
+```jsx live
+const App = () => (
+  <ItemGroup.Root>
+    <ItemGroup.Separator />
+    <Item.Root>
+      <Item.Content>
+        <Item.Title>Profile</Item.Title>
+      </Item.Content>
+    </Item.Root>
+    <Item.Root>
+      <Item.Content>
+        <Item.Title>Settings</Item.Title>
+      </Item.Content>
+    </Item.Root>
+  </ItemGroup.Root>
+);
+```

@@ -1,0 +1,187 @@
+---
+title: Item
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+Item guidelines focus on keeping a single content row scannable, restrained,
+and predictable, so a page built from many rows stays easy to read and use.
+
+### Best practices
+
+- **One row, one subject:** Keep each row focused on a single item — a
+  setting, a notification, a file. Don't merge two unrelated things into one
+  row's title and description.
+- **Concise title and description:** The title should read as a short label;
+  push supporting detail into the description rather than lengthening the
+  title itself.
+- **Limited, obvious actions:** Place only the actions a row actually needs in
+  `Item.Actions`. A row crowded with icon buttons is harder to scan and harder
+  to hit accurately.
+- **Consistent rows within a group:** When several rows sit together (via
+  `ItemGroup`), keep their structure consistent — if one row has media and
+  actions, give its siblings the same shape, even if a slot is empty.
+- **Choose one interaction model per row:** A row either navigates (`href`) or
+  hosts actions (`Item.Actions`), or both together — it never behaves like a
+  button in its own right. Don't design a row that expects a whole-row click
+  to trigger something other than navigation.
+- **Match density to context:** Use `size="xs"` or `size="sm"` for dense
+  lists with many rows, and `size="md"` for standalone or spacious rows.
+
+### Usage
+
+`Item` is the shape behind the horizontal rows that make up settings screens,
+notification lists, and resource/file browsers — content that is naturally a
+sequence of similar, scannable lines rather than a single detailed view.
+
+> [!TIP]\
+> When to use
+
+- **Settings and preference rows:** A label, a short description, and a
+  control or a link to a detail page.
+- **Notifications and activity entries:** An icon or avatar, a short message,
+  and optional actions like dismiss or mark-as-read.
+- **File or resource rows:** A thumbnail or type icon, a name and metadata,
+  and actions like download or delete.
+- **Navigational rows:** A row that exists purely to link somewhere else, with
+  a leading icon and a trailing chevron as the visual cue.
+
+> [!CAUTION]\
+> When not to use
+
+- **A single, detailed item:** When you need to present a lot of information
+  about one specific thing, use `Card` or a dedicated page instead of forcing
+  it into one row.
+- **Selectable or multi-select collections:** `Item` has no selection state.
+  If users need to select one or more rows, reach for `Menu` or a purpose-built
+  selectable list instead.
+- **A row that should act like a button:** If activating the whole row should
+  trigger an action rather than navigate, don't attach a press handler to
+  `Item.Root` — put a `Button`/`IconButton` in `Item.Actions` instead.
+- **Comparing structured data across many attributes:** When rows would need
+  many aligned columns to be useful, a table communicates that better than a
+  row layout.
+
+### Content
+
+Keep a row's text short enough to scan at a glance. The title carries the
+subject; the description adds just enough context to disambiguate it from
+its neighbors.
+
+> [!TIP]\
+> **Do**
+>
+> - Write titles as short, specific labels ("Two-factor authentication", not
+>   "Settings related to your account security").
+> - Use the description for one supporting detail, not a second paragraph.
+
+```jsx live
+const App = () => (
+  <Item.Root variant="outline" width="384px">
+    <Item.Media variant="icon">
+      <Icons.Security />
+    </Item.Media>
+    <Item.Content>
+      <Item.Title>Two-factor authentication</Item.Title>
+      <Item.Description>Adds a second step when you sign in.</Item.Description>
+    </Item.Content>
+    <Item.Actions>
+      <Button size="xs" variant="outline">Enable</Button>
+    </Item.Actions>
+  </Item.Root>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't stack multiple unrelated facts into the title.
+> - Don't let the description grow into a paragraph — a link-mode row's
+>   accessible name is built from that same text, so a long description makes
+>   for a long, awkward announcement.
+
+```jsx live
+const App = () => (
+  <Item.Root variant="outline" width="384px">
+    <Item.Content>
+      <Item.Title>Two-factor authentication and password and email</Item.Title>
+      <Item.Description>
+        Adds a second step when you sign in, also lets you change your
+        password, and also shows your current recovery email address plus a
+        button to change it if you no longer have access to it.
+      </Item.Description>
+    </Item.Content>
+  </Item.Root>
+);
+```
+
+### Actions
+
+Keep the trailing actions short, obvious, and limited to what that specific
+row needs — a row is meant to be scanned quickly, not studied.
+
+> [!TIP]\
+> **Do**
+>
+> - Use one primary action per row, and reach for an icon button only when its
+>   meaning is unambiguous (a trash icon for delete).
+> - When a row also links somewhere, keep any action clearly separated from
+>   the row's own navigation — for example a trailing chevron for "go to
+>   details" versus a distinct trash icon for "delete this".
+
+```jsx live
+const App = () => (
+  <Item.Root href="#report" variant="outline" width="384px">
+    <Item.Media variant="icon">
+      <Icons.Description />
+    </Item.Media>
+    <Item.Content>
+      <Item.Title>Q3 report</Item.Title>
+      <Item.Description>Updated 2 days ago</Item.Description>
+    </Item.Content>
+    <Item.Actions>
+      <IconButton aria-label="Delete report" size="xs" variant="ghost">
+        <Icons.Delete />
+      </IconButton>
+    </Item.Actions>
+  </Item.Root>
+);
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Don't crowd a row with many actions — split them into a menu behind a
+>   single overflow control instead.
+> - Don't rely on a whole-row click to do something a visible action should do
+>   instead; nested actions must stay independently operable.
+
+```jsx live
+const App = () => (
+  <Item.Root href="#report" variant="outline" width="384px">
+    <Item.Media variant="icon">
+      <Icons.Description />
+    </Item.Media>
+    <Item.Content>
+      <Item.Title>Q3 report</Item.Title>
+      <Item.Description>Updated 2 days ago</Item.Description>
+    </Item.Content>
+    <Item.Actions>
+      <IconButton aria-label="Share" size="xs" variant="ghost">
+        <Icons.Share />
+      </IconButton>
+      <IconButton aria-label="Rename" size="xs" variant="ghost">
+        <Icons.Edit />
+      </IconButton>
+      <IconButton aria-label="Archive" size="xs" variant="ghost">
+        <Icons.Archive />
+      </IconButton>
+      <IconButton aria-label="Delete report" size="xs" variant="ghost">
+        <Icons.Delete />
+      </IconButton>
+    </Item.Actions>
+  </Item.Root>
+);
+```

@@ -1,0 +1,113 @@
+---
+id: Components-ItemGroup
+title: Item group
+exportName: ItemGroup
+description:
+  A container that groups a set of Item rows into a vertical stack, with
+  optional dividers between them.
+lifecycleState: Beta
+order: 999
+menu:
+  - Components
+  - Data Display
+  - Item group
+tags:
+  - component
+  - item-group
+  - group
+  - list
+  - container
+  - rows
+  - separator
+---
+
+## Overview
+
+`ItemGroup` visually groups a set of `Item` rows into a single vertical stack,
+with an optional divider between rows. It is a **peer** of `Item` — it wraps
+`Item.Root` rows from the outside rather than nesting inside one — so it ships
+as its own component instead of an `Item.*` part.
+
+- `ItemGroup.Root` — the container. Lays its children out as a vertical stack;
+  it does not add spacing or a border of its own beyond the rows placed inside
+  it.
+- `ItemGroup.Separator` — a horizontal divider placed between rows.
+
+Grouping is purely visual: `ItemGroup.Root` does not impose a list semantic on
+its children, so any mix of presentational and linked `Item.Root` rows — divided
+by as many or as few separators as needed — is valid. See the **Accessibility
+tab** for why no `role="list"` is applied.
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[Figma library](https://www.figma.com/design/gHbAJGfcrCv7f2bgzUQgHq/NIMBUS-Guidelines?m=dev)
+
+## Variables
+
+Get familiar with the features.
+
+### Rows with separators
+
+Place `ItemGroup.Separator` between rows to divide related but distinct pieces
+of information within the group.
+
+```jsx live
+const App = () => (
+  <ItemGroup.Root>
+    <Item.Root>
+      <Item.Media variant="icon">
+        <Icons.Person />
+      </Item.Media>
+      <Item.Content>
+        <Item.Title>Profile</Item.Title>
+        <Item.Description>Name, avatar, and contact details</Item.Description>
+      </Item.Content>
+    </Item.Root>
+    <ItemGroup.Separator />
+    <Item.Root>
+      <Item.Media variant="icon">
+        <Icons.Notifications />
+      </Item.Media>
+      <Item.Content>
+        <Item.Title>Notifications</Item.Title>
+        <Item.Description>Email and push preferences</Item.Description>
+      </Item.Content>
+    </Item.Root>
+    <ItemGroup.Separator />
+    <Item.Root>
+      <Item.Media variant="icon">
+        <Icons.Settings />
+      </Item.Media>
+      <Item.Content>
+        <Item.Title>Settings</Item.Title>
+        <Item.Description>Workspace configuration</Item.Description>
+      </Item.Content>
+    </Item.Root>
+  </ItemGroup.Root>
+);
+```
+
+### Grouped navigation rows
+
+Rows can be links (`Item.Root href="..."`) just as easily as static rows; the
+group divides them the same way either way.
+
+```jsx live
+const App = () => (
+  <ItemGroup.Root>
+    <Item.Root href="#profile">
+      <Item.Content>
+        <Item.Title>Profile</Item.Title>
+      </Item.Content>
+    </Item.Root>
+    <ItemGroup.Separator />
+    <Item.Root href="#settings">
+      <Item.Content>
+        <Item.Title>Settings</Item.Title>
+      </Item.Content>
+    </Item.Root>
+  </ItemGroup.Root>
+);
+```

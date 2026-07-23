@@ -19,6 +19,8 @@ import { draggableListSlotRecipe } from "@/components/draggable-list/draggable-l
 import { drawerSlotRecipe } from "@/components/drawer/drawer.recipe";
 import { fieldErrorsRecipe } from "@/components/field-errors/field-errors.recipe";
 import { formFieldRecipe } from "@/components/form-field/form-field.recipe";
+import { itemRecipe } from "@/components/item/item.recipe";
+import { itemGroupSlotRecipe } from "@/components/item-group/item-group.recipe";
 import { listSlotRecipe } from "@/components/list/list.recipe";
 import { localizedFieldSlotRecipe } from "@/components/localized-field/localized-field.recipe";
 import { menuSlotRecipe } from "@/components/menu/menu.recipe";
@@ -95,6 +97,8 @@ export const slotRecipes = {
   nimbusDrawer: drawerSlotRecipe,
   nimbusFieldErrors: fieldErrorsRecipe,
   nimbusFormField: formFieldRecipe,
+  nimbusItem: itemRecipe,
+  nimbusItemGroup: itemGroupSlotRecipe,
   nimbusList: listSlotRecipe,
   nimbusLocalizedField: localizedFieldSlotRecipe,
   nimbusMenu: menuSlotRecipe,
