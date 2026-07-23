@@ -108,9 +108,12 @@ export const ViewTabs = memo(({ tabs }: ViewTabsProps) => {
       id="floating-nav"
       bg="bg"
       borderRadius="full"
+      border="1px solid"
+      borderColor="neutral.6"
+      p="100"
       position="sticky"
       top="800"
-      zIndex="1"
+      zIndex="2"
       css={{
         transform: isVisible ? "translateY(0)" : "translateY(-100%)",
         opacity: isVisible ? 1 : 0,
