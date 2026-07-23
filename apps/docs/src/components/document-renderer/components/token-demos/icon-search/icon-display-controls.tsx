@@ -92,6 +92,7 @@ export const IconDisplayControls = ({
       </Text>
       <ToggleButtonGroup.Root
         size="xs"
+        colorPalette="primary"
         disallowEmptySelection
         selectedKeys={[surface]}
         onSelectionChange={(keys) => {
