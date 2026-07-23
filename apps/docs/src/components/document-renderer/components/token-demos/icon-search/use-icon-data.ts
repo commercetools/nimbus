@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import * as icons from "@commercetools/nimbus-icons";
-import type { IconMeta } from "@commercetools/nimbus-icons/meta";
+import type { IconMeta } from "./custom-icons-meta";
 
 /** A searchable icon: its export name plus the metadata we match against. */
 export interface IconEntry {
@@ -44,7 +44,7 @@ export const useIconData = (): IconData => {
 
   useEffect(() => {
     let cancelled = false;
-    import("@commercetools/nimbus-icons/meta").then((mod) => {
+    import("./icon-meta").then((mod) => {
       if (!cancelled) setMetadata(mod.iconMetadata);
     });
     return () => {

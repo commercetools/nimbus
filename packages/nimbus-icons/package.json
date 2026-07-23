@@ -15,16 +15,6 @@
         "default": "./dist/cjs/index.js"
       }
     },
-    "./meta": {
-      "import": {
-        "types": "./dist/esm/meta.d.ts",
-        "default": "./dist/esm/meta.js"
-      },
-      "require": {
-        "types": "./dist/cjs/meta.d.ts",
-        "default": "./dist/cjs/meta.js"
-      }
-    },
     "./package.json": "./package.json"
   },
   "publishConfig": {
@@ -54,7 +44,6 @@
     "build:esm": "tsc --project tsconfig.esm.json",
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "build:postbuild": "node scripts/postbuild.mjs",
-    "sync:meta": "tsx scripts/sync-meta.ts",
     "dev": "pnpm run build:esm && pnpm run build:cjs && pnpm run build:postbuild"
   }
 }

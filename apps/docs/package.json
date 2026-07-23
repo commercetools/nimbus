@@ -9,7 +9,8 @@
     "build:app": "vite build",
     "copy-index": "cp dist/index.html dist/404.html",
     "dev": "pnpm tsx ./scripts/dev.ts",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sync:icon-meta": "pnpm tsx ./scripts/sync-icon-meta.ts"
   },
   "dependencies": {
     "@commercetools/nimbus": "workspace:^",

@@ -1,27 +1,52 @@
 #!/usr/bin/env tsx
 /**
- * Generate search metadata for the icon set.
+ * Generate search metadata for the icon set (docs app only).
  *
  * No Material npm package ships synonym tags — the canonical source of
  * `tags` / `categories` / `popularity` is Google's metadata endpoint. This
- * script fetches that feed, joins it against the icons we actually ship
- * (the svgr-generated barrel), merges hand-authored metadata for the custom
- * icons, and writes `src/meta.generated.json` (committed).
+ * script fetches that feed, joins it against the icons we actually ship (the
+ * svgr-generated barrel in `@commercetools/nimbus-icons`), merges hand-authored
+ * metadata for the custom icons, and writes the committed
+ * `icon-meta.generated.json` next to the icon explorer that consumes it.
  *
- * Run on icon version bumps (after `build:icons`), NOT as part of `build` —
- * the build path stays network-free. Mirrors the registry `sync` scripts.
+ * This lives in the docs app — NOT in `@commercetools/nimbus-icons` — so the
+ * published package surface stays unchanged and the metadata only ships to the
+ * docs bundle. Run it after an icon bump (once `build:icons` has refreshed the
+ * barrel) and commit the result; the build path itself stays network-free.
  *
- *   pnpm --filter @commercetools/nimbus-icons sync:meta
+ *   pnpm --filter docs sync:icon-meta
  */
 
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { customIconsMeta, type IconMeta } from "../src/custom-icons-meta";
+import {
+  customIconsMeta,
+  type IconMeta,
+} from "../src/components/document-renderer/components/token-demos/icon-search/custom-icons-meta";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
-const SRC = join(__dirname, "..", "src");
+const REPO_ROOT = join(__dirname, "..", "..", "..");
+const MATERIAL_INDEX = join(
+  REPO_ROOT,
+  "packages",
+  "nimbus-icons",
+  "src",
+  "material-icons",
+  "index.ts"
+);
+const OUT_PATH = join(
+  __dirname,
+  "..",
+  "src",
+  "components",
+  "document-renderer",
+  "components",
+  "token-demos",
+  "icon-search",
+  "icon-meta.generated.json"
+);
 
 const GOOGLE_METADATA_URL =
   "https://fonts.google.com/metadata/icons?incomplete=true&key=material_symbols";
@@ -63,7 +88,7 @@ function readMaterialIconExports(): Array<{
   exportName: string;
   file: string;
 }> {
-  const index = readFileSync(join(SRC, "material-icons", "index.ts"), "utf8");
+  const index = readFileSync(MATERIAL_INDEX, "utf8");
   const re = /export\s*\{\s*default as (\w+)\s*\}\s*from\s*"\.\/([\w-]+)"/g;
   const pairs: Array<{ exportName: string; file: string }> = [];
   for (const m of index.matchAll(re)) {
@@ -94,20 +119,19 @@ async function main() {
     metadata[exportName] = meta;
   }
 
-  const outPath = join(SRC, "meta.generated.json");
-  writeFileSync(outPath, JSON.stringify(metadata, null, 0) + "\n");
+  writeFileSync(OUT_PATH, JSON.stringify(metadata, null, 0) + "\n");
 
   console.log(
-    `[sync-meta] wrote ${Object.keys(metadata).length} entries ` +
+    `[sync-icon-meta] wrote ${Object.keys(metadata).length} entries ` +
       `(${exports.length} material + ${Object.keys(customIconsMeta).length} custom)`
   );
   if (misses.length) {
     console.warn(
-      `[sync-meta] ${misses.length} icon(s) had no Google match ` +
+      `[sync-icon-meta] ${misses.length} icon(s) had no Google match ` +
         `(check for renames in the icon source):\n  ${misses.join("\n  ")}`
     );
   } else {
-    console.log("[sync-meta] 0 join misses — full coverage");
+    console.log("[sync-icon-meta] 0 join misses — full coverage");
   }
 }
 
