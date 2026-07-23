@@ -185,12 +185,27 @@ export const AppNavBarSearch = () => {
         onOpenChange={() => setOpen(!open)}
         scrollBehavior="inside"
       >
-        <Dialog.Trigger>
+        {/* Match the input's corner radius so the trigger's focus ring
+            (focusRing="outside" → CSS outline) follows the rounded input
+            shape instead of rendering as a square. */}
+        <Dialog.Trigger borderRadius="200">
           <Box position="relative">
             <TextInput
               size="sm"
               type="search"
               placeholder="Search documentation..."
+              // This input is decorative — the surrounding Dialog.Trigger button
+              // is the real control that opens the search dialog. Without this,
+              // the input is a *second*, invisible tab stop right after the
+              // trigger: tabbing lands on it, its onFocus immediately blurs it,
+              // and focus falls to <body> (nothing visible) until the next Tab.
+              // React Aria's useTextField strips a `tabIndex` prop, so remove
+              // the input from the tab order at the DOM level via the forwarded
+              // ref. It stays click-focusable (tabIndex -1), so the onFocus blur
+              // still guards the mouse-click case.
+              ref={(node) => {
+                if (node) node.tabIndex = -1;
+              }}
               onFocus={(e) => e.target.blur()}
               aria-label="Search the documentation"
               trailingElement={

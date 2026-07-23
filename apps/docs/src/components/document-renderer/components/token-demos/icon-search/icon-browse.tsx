@@ -504,6 +504,7 @@ export const IconBrowse = ({
         {tagBarItems.length > 0 && (
           <Box mt="300">
             <TagBar
+              size="sm"
               aria-label="Filter by keyword"
               items={tagBarItems}
               selectedKey={selectedTag}
