@@ -120,7 +120,7 @@ export const Base: Story = {
       await expect(button).toHaveTextContent("Bananas");
     });
 
-    await step("Value can be cleared with keyboard", async () => {
+    await step("Value can be cleared via the clear button", async () => {
       const clearButton = select.querySelectorAll("button")[1];
       await userEvent.click(clearButton);
       await expect(button).toHaveTextContent("Select an item");
@@ -294,6 +294,20 @@ export const AsyncLoading: Story = {
   },
 };
 
+/** isLoading: spinner replaces the chevron and the trigger is disabled; Chromatic pauses the spin for a deterministic frame. */
+export const Loading: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Select.Root isLoading aria-label="Loading select">
+      <Select.Options>
+        <Select.Option>Apples</Select.Option>
+        <Select.Option>Bananas</Select.Option>
+      </Select.Options>
+    </Select.Root>
+  ),
+};
+
 /**
  * Clearable
  * Demonstrates the isClearable prop which shows a clear button when a value is selected
@@ -439,9 +453,12 @@ export const Disabled: Story = {
       await expect(button).not.toHaveFocus();
     });
 
-    await step("Disabled select cannot be clicked to open", async () => {
-      await expect(button).toHaveStyle({ pointerEvents: "none" });
-    });
+    await step(
+      "Disabled trigger has pointer-events: none, so it cannot be opened",
+      async () => {
+        await expect(button).toHaveStyle({ pointerEvents: "none" });
+      }
+    );
   },
 };
 
@@ -451,6 +468,8 @@ export const Disabled: Story = {
  * @see https://github.com/commercetools/nimbus/issues/1243
  */
 export const DisabledClearButton: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <Select.Root
@@ -571,6 +590,26 @@ export const Invalid: Story = {
       await userEvent.click(options[0]);
       await expect(button).toHaveTextContent("Apples");
     });
+  },
+};
+
+/** Trigger keyboard-focus ring (`focusRing: outside`). */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Select.Root aria-label="Focused select" data-testid="select">
+      <Select.Options>
+        <Select.Option>Apples</Select.Option>
+        <Select.Option>Bananas</Select.Option>
+      </Select.Options>
+    </Select.Root>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByTestId("select").querySelector("button");
+    await userEvent.tab();
+    await expect(button).toHaveFocus();
   },
 };
 
@@ -729,6 +768,84 @@ export const WithDescriptions: Story = {
   },
 };
 
+/** Open listbox with all option states in one frame: group headers, descriptions, selected (primary.3), keyboard-focused (primary.2), and disabled. */
+export const OpenPopover: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Select.Root
+      defaultSelectedKey="banana"
+      disabledKeys={["orange"]}
+      aria-label="Open popover"
+      data-testid="select"
+    >
+      <Select.Options>
+        <Select.OptionGroup label="Fruits">
+          <Select.Option id="apple" textValue="Apple">
+            <Text slot="label">Apple</Text>
+            <Text slot="description">A crisp and juicy classic.</Text>
+          </Select.Option>
+          <Select.Option id="banana" textValue="Banana">
+            <Text slot="label">Banana</Text>
+            <Text slot="description">A good source of potassium.</Text>
+          </Select.Option>
+          <Select.Option id="orange" textValue="Orange">
+            <Text slot="label">Orange</Text>
+            <Text slot="description">Rich in vitamin C.</Text>
+          </Select.Option>
+        </Select.OptionGroup>
+        <Select.OptionGroup label="Vegetables">
+          <Select.Option id="carrot" textValue="Carrot">
+            <Text slot="label">Carrot</Text>
+            <Text slot="description">A crunchy root vegetable.</Text>
+          </Select.Option>
+        </Select.OptionGroup>
+      </Select.Options>
+    </Select.Root>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByTestId("select").querySelector("button");
+    await userEvent.click(button!);
+    await waitFor(() => {
+      expect(document.querySelector('[role="listbox"]')).toBeInTheDocument();
+    });
+    // Opening focuses the selected option (banana); move up to Apple so the
+    // selected (primary.3) and focused (primary.2) highlights read distinctly.
+    await userEvent.keyboard("{ArrowUp}");
+    await waitFor(() => {
+      const focused = document.querySelector('[data-focused="true"]');
+      expect(focused).toBeInTheDocument();
+      expect(focused).toHaveTextContent("Apple");
+    });
+  },
+};
+
+/** Open listbox tall enough to hit `maxHeight: 40svh` and scroll - captures the clip + custom thin scrollbar. */
+export const OpenPopoverScrollable: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Select.Root aria-label="Scrollable popover" data-testid="select">
+      <Select.Options>
+        {Array.from({ length: 30 }, (_, i) => (
+          <Select.Option key={i} id={`opt-${i}`}>
+            Option {i + 1}
+          </Select.Option>
+        ))}
+      </Select.Options>
+    </Select.Root>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const button = canvas.getByTestId("select").querySelector("button");
+    await userEvent.click(button!);
+    await waitFor(() => {
+      expect(document.querySelector('[role="listbox"]')).toBeInTheDocument();
+    });
+  },
+};
+
 /**
  * Custom Widths
  * custom widths for select-trigger button and popover
@@ -865,16 +982,13 @@ export const SuperLongAndComplex: Story = {
  * Variants and Sizes combined
  */
 export const VariantsAndSizes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
-    const [isInvalid, setInvalid] = useState(false);
     return (
       <Stack>
         {[{}, { isDisabled: true }, { isInvalid: true }].map((props) => (
-          <Stack
-            key={JSON.stringify({ props })}
-            bg="neutral.2"
-            onClick={() => setInvalid(!isInvalid)}
-          >
+          <Stack key={JSON.stringify({ props })} bg="neutral.2">
             {selectVariants.map((variant) => (
               <Stack alignItems="start" key={JSON.stringify({ variant })}>
                 <Text my="400" fontWeight="600">
@@ -1004,6 +1118,8 @@ export const VariantsAndSizes: Story = {
  * Demonstrates different leadingElement configurations with Select component
  */
 export const LeadingElement: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const examples: Array<{
       label: string;

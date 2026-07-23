@@ -35,6 +35,8 @@ const makeFile = (name: string, type = "text/plain") =>
 // ============================================================
 
 export const Base: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     "data-testid": "drop-zone-root",
   } as never,
@@ -176,6 +178,28 @@ export const RestrictedDropTypes: Story = {
   },
 };
 
+/**
+ * Drag-over (drop-target) visual: `data-drop-target` switches to a solid primary
+ * border + `colorPalette.3` fill. It's a JS-set attribute (not CSS `:hover`), so
+ * the play fires a dragOver and leaves the state active for the snapshot.
+ */
+export const DropTarget: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    "data-testid": "drop-zone-root",
+    onDrop: fn(),
+  } as never,
+  play: async ({ canvasElement }) => {
+    const root = getRoot(canvasElement);
+    const dataTransfer = makeFileDataTransfer(makeFile("photo.png"));
+    fireDragOver(root, dataTransfer);
+    await waitFor(() => {
+      expect(root).toHaveAttribute("data-drop-target", "true");
+    });
+  },
+};
+
 // ============================================================
 // Composition (children replace the default) + disabled
 // ============================================================
@@ -214,7 +238,7 @@ export const WithFileTriggerComposition: Story = {
       await expect(button).toBeInTheDocument();
     });
 
-    await step("Opens the native file picker when activated", async () => {
+    await step("Renders a hidden file input for click-to-upload", async () => {
       const input =
         canvasElement.querySelector<HTMLInputElement>('input[type="file"]');
       await expect(input).toBeInTheDocument();
@@ -246,12 +270,14 @@ export const CustomContent: Story = {
 };
 
 export const Disabled: Story = {
+  tags: ["vrt"],
   args: {
     "data-testid": "drop-zone-root",
     isDisabled: true,
     onDrop: fn(),
   } as never,
   parameters: {
+    chromatic: { disableSnapshot: false },
     // The disabled layer style intentionally reduces opacity (per WCAG's
     // exemption for disabled/inactive UI, 1.4.3/1.4.11 do not apply), which
     // trips the automated contrast checker. Matches the precedent in
@@ -294,6 +320,8 @@ export const Disabled: Story = {
 // ============================================================
 
 export const KeyboardAccessible: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     "data-testid": "drop-zone-root",
   } as never,
@@ -302,7 +330,7 @@ export const KeyboardAccessible: Story = {
     const innerButton = root.querySelector("button");
 
     await step(
-      "The drop target is keyboard focusable and shows a focus ring",
+      "The drop target is keyboard focusable and sets data-focus-visible",
       async () => {
         if (!innerButton) throw new Error("Expected an inner button");
         await userEvent.tab();

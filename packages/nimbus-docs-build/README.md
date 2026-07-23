@@ -1,5 +1,9 @@
 # @commercetools/nimbus-docs-build
 
+> **Internal package.** This is a build-time tool used by `apps/docs` within the
+> Nimbus monorepo. It is not published to npm and is not intended for external
+> consumption.
+
 Documentation build system for the Nimbus design system. This package handles:
 
 - **MDX Parsing**: Extracts frontmatter, generates table of contents, supports multi-view documentation

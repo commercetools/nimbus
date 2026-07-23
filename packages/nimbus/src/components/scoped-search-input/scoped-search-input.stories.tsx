@@ -71,7 +71,10 @@ export const Default: Story = {
   },
 };
 
+/** Fused chrome (Select + SearchInput seam) at sm and md. */
 export const SizeVariants: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const [valueSm, setValueSm] = useState<ScopedSearchInputValue>({
       text: "",
@@ -124,7 +127,10 @@ export const GroupedOptions: Story = {
   },
 };
 
+/** Composite states: default / disabled / read-only / invalid (invalid is asymmetric - only the search half gets it). */
 export const States: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const [value, setValue] = useState<ScopedSearchInputValue>({
       text: "",
@@ -166,6 +172,71 @@ export const States: Story = {
         />
       </Stack>
     );
+  },
+};
+
+/** Search-half focus ring: the right wrapper's `_focusWithin` zIndex lifts the ring above the seam's left edge. */
+export const SearchFocused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => {
+    const [value, setValue] = useState<ScopedSearchInputValue>({
+      text: "search term",
+      option: "all",
+    });
+
+    return (
+      <ScopedSearchInput
+        value={value}
+        onValueChange={setValue}
+        onSubmit={() => {}}
+        options={defaultOptions}
+        selectPlaceholder="Select field"
+        searchPlaceholder="Search..."
+      />
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Caret blink is browser-native, not a CSS/JS animation Chromatic can pause.
+    canvasElement.style.caretColor = "transparent";
+
+    const searchInput = canvas.getByRole("searchbox");
+    // Tab past the Select trigger to land keyboard focus on the search half.
+    await userEvent.tab();
+    await userEvent.tab();
+    await expect(searchInput).toHaveFocus();
+  },
+};
+
+/** Select-half focus ring: the left wrapper's `_focusWithin` zIndex lifts the trigger ring above the seam's right edge. */
+export const SelectFocused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => {
+    const [value, setValue] = useState<ScopedSearchInputValue>({
+      text: "",
+      option: "all",
+    });
+
+    return (
+      <ScopedSearchInput
+        value={value}
+        onValueChange={setValue}
+        onSubmit={() => {}}
+        options={defaultOptions}
+        selectPlaceholder="Select field"
+        searchPlaceholder="Search..."
+      />
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // First tab lands keyboard focus on the Select trigger (the left half).
+    await userEvent.tab();
+    const selectTrigger = canvas.getByRole("button", { name: /all fields/i });
+    await expect(selectTrigger).toHaveFocus();
   },
 };
 

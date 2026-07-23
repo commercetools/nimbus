@@ -213,72 +213,152 @@ export const HighPrecisionExample: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Verify that the high precision badge appears for the initial value
-    // Initial value "42.12345" EUR should show high precision (5 > 2 decimal places)
+    // "42.12345" EUR has 5 fraction digits, past EUR's 2, so the badge shows.
     const highPrecisionBadge = canvas.getByLabelText(/High Precision Price/i);
     expect(highPrecisionBadge).toBeInTheDocument();
-
-    // With consistent formatting, all currencies now use the same decimal separator
-    // EUR and USD both use periods for decimals, no more German locale issues
   },
 };
 
 export const DisabledState: Story = {
-  render: (args) => (
-    <MoneyInputExample
-      initialValue={{ amount: "100.005", currencyCode: "USD" }}
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <MoneyInput
+      value={{ amount: "100.005", currencyCode: "USD" }}
+      currencies={DEFAULT_CURRENCIES}
+      isDisabled
+      hasHighPrecisionBadge
       aria-label="Money input example"
-      {...args}
     />
   ),
-  args: {
-    isDisabled: true,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const amountInput = canvas.getByRole("textbox", { name: /Amount/i });
+    expect(amountInput).toBeDisabled();
+
+    const currencySelect = canvas.getByRole("button", { name: /Currency/i });
+    expect(currencySelect).toHaveAttribute("data-disabled", "true");
   },
+};
+
+/**
+ * Label mode (no currencies): the static currency label dims via its own recipe
+ * rule - a distinct surface from DisabledState.
+ */
+export const DisabledWithCurrencyLabel: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <MoneyInput
+      value={{ amount: "100.005", currencyCode: "USD" }}
+      currencies={[]}
+      isDisabled
+      hasHighPrecisionBadge
+      aria-label="Money input example"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const amountInput = canvas.getByRole("textbox", { name: /Amount/i });
+    expect(amountInput).toBeDisabled();
+
+    const currencyLabel = canvasElement.querySelector(
+      "label[data-disabled='true']"
+    );
+    expect(currencyLabel).toBeInTheDocument();
+  },
+};
+
+export const ReadOnlyState: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <MoneyInput
+      value={{ amount: "250.75", currencyCode: "GBP" }}
+      currencies={DEFAULT_CURRENCIES}
+      isReadOnly
+      aria-label="Money input example"
+    />
+  ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
     const amountInput = canvas.getByRole("textbox", {
       name: /Amount/i,
     });
-    const currencySelect = canvas.getByRole("button", { name: /Currency/i });
-
-    expect(amountInput).toBeDisabled();
-    // Check that the Select component is disabled (may use different attributes)
-    expect(currencySelect).toHaveAttribute("data-disabled", "true");
-  },
-};
-
-export const ReadOnlyState: Story = {
-  render: (args) => (
-    <MoneyInputExample
-      initialValue={{ amount: "250.75", currencyCode: "GBP" }}
-      aria-label="Money input example"
-      {...args}
-    />
-  ),
-  args: {
-    isReadOnly: true,
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const amountInput = canvas.getByRole("textbox", {
-      name: "Amount",
-    });
     expect(amountInput).toHaveAttribute("readonly");
   },
 };
 
 export const ErrorState: Story = {
-  render: (args) => (
-    <MoneyInputExample
-      initialValue={{ amount: "invalid", currencyCode: "EUR" }}
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <MoneyInput
+      value={{ amount: "1234.56", currencyCode: "EUR" }}
+      currencies={DEFAULT_CURRENCIES}
+      isInvalid
       aria-label="Money input example"
-      {...args}
     />
   ),
-  args: {
-    isInvalid: true,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const amountInput = canvas.getByRole("textbox", {
+      name: /Amount/i,
+    });
+    expect(amountInput).toHaveAttribute("data-invalid", "true");
+  },
+};
+
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <MoneyInput
+      value={{ amount: "1234.56", currencyCode: "EUR" }}
+      currencies={DEFAULT_CURRENCIES}
+      aria-label="Money input example"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const amountInput = canvas.getByRole("textbox", { name: /Amount/i });
+
+    // Hide the native caret (Chromatic can't pause its blink); caret-color inherits.
+    canvasElement.style.caretColor = "transparent";
+
+    // Two tabs: past the currency selector (first focusable) to the amount input.
+    await userEvent.tab();
+    await userEvent.tab();
+    await expect(amountInput).toHaveFocus();
+  },
+};
+
+/**
+ * Label mode (no currencies): focus draws one continuous outline around label +
+ * input - a distinct surface from Focused. Two-decimal value = single tab.
+ */
+export const FocusedWithCurrencyLabel: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <MoneyInput
+      value={{ amount: "1234.56", currencyCode: "USD" }}
+      currencies={[]}
+      aria-label="Money input example"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const amountInput = canvas.getByRole("textbox");
+
+    canvasElement.style.caretColor = "transparent";
+
+    await userEvent.tab();
+    await expect(amountInput).toHaveFocus();
   },
 };
 
@@ -350,16 +430,14 @@ export const ConsistentFormattingAcrossCurrencies: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // All currencies should show consistent formatting with periods as decimal separators
-    // and consistent high precision badge behavior
-
-    // Check that all three high precision badges are present
+    // All three format 1,234.567 identically and show the high-precision badge.
     const badges = canvas.getAllByLabelText(/High precision price/i);
     expect(badges).toHaveLength(3);
 
-    // All should show high precision for 1234.567 (3 decimals > 2 standard for USD/EUR/GBP)
-    badges.forEach((badge) => {
-      expect(badge).toBeInTheDocument();
+    const inputs = canvas.getAllByRole("textbox", { name: /Amount/i });
+    expect(inputs).toHaveLength(3);
+    inputs.forEach((input) => {
+      expect(input).toHaveValue("1,234.567");
     });
   },
 };
@@ -508,10 +586,7 @@ export const EULocaleFormattingExample: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // All should show high precision badges since they exceed standard fraction digits
-    // NOTE: This test will fail locally until locale normalization is implemented
-    // (useLocale() may return "de-DE" but dictionary only has "de", causing fallback to "en")
-    // TODO: FIGURE THIS OUT. Fix locale normalization in component (see PROGRESS_COMPILE_TIME_PARSING.md)
+    // All three exceed their currency's fraction digits, so each shows the badge.
     const highPrecisionLabel = getMessage("highPrecisionPrice", "de");
     const badges = canvas.getAllByLabelText(highPrecisionLabel);
     expect(badges).toHaveLength(3);
@@ -1078,4 +1153,35 @@ export const ModernApiTest: Story = {
       expect(eventsText).toContain('"currencyCode":"EUR"');
     });
   },
+};
+
+/**
+ * Matrix: size x currency chrome (dropdown vs. static label). High-precision
+ * values so the badge is captured; other states have dedicated stories.
+ */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="600">
+      {inputSize.map((size) => (
+        <Stack key={size} direction="row" gap="400" alignItems="flex-start">
+          <MoneyInput
+            size={size}
+            value={{ amount: "1234.567", currencyCode: "EUR" }}
+            currencies={DEFAULT_CURRENCIES}
+            hasHighPrecisionBadge
+            aria-label={`Money input ${size} with currency dropdown`}
+          />
+          <MoneyInput
+            size={size}
+            value={{ amount: "1234.567", currencyCode: "USD" }}
+            currencies={[]}
+            hasHighPrecisionBadge
+            aria-label={`Money input ${size} with currency label`}
+          />
+        </Stack>
+      ))}
+    </Stack>
+  ),
 };

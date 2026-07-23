@@ -31,14 +31,20 @@ export const Base: Story = {
       await userEvent.click(toggleButton);
       await expect(input).toHaveAttribute("type", "password");
     });
-    await step("Can toggle with keyboard (Enter/Space)", async () => {
-      const toggleButton = canvas.getByRole("button");
-      toggleButton.focus();
-      await userEvent.keyboard("{enter}");
-      await expect(input).toHaveAttribute("type", "text");
-      await userEvent.keyboard(" ");
-      await expect(input).toHaveAttribute("type", "password");
-    });
+    await step(
+      "Toggle is reachable by tab and operable with Enter/Space",
+      async () => {
+        const toggleButton = canvas.getByRole("button");
+        // Tab from the input to prove the toggle is in the tab order (not force-focused).
+        input.focus();
+        await userEvent.tab();
+        await expect(toggleButton).toHaveFocus();
+        await userEvent.keyboard("{enter}");
+        await expect(input).toHaveAttribute("type", "text");
+        await userEvent.keyboard(" ");
+        await expect(input).toHaveAttribute("type", "password");
+      }
+    );
   },
 };
 
@@ -172,5 +178,49 @@ export const Controlled: Story = {
       await expect(input).toHaveValue("");
       await expect(valueDisplay).toHaveTextContent("Current value:");
     });
+  },
+};
+
+/**
+ * Thin wrapper over TextInput, so it snapshots only what it adds: the masked
+ * value + visibility toggle, at both sizes (the toggle tracks input size). Chrome
+ * is TextInput's coverage; variant isn't an axis. Revealed state is `Revealed`.
+ */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="600" align="flex-start">
+      {(["sm", "md"] as const).map((size) => (
+        <PasswordInput
+          key={size}
+          size={size}
+          defaultValue="hunter2"
+          aria-label={`password ${size}`}
+        />
+      ))}
+    </Stack>
+  ),
+};
+
+/**
+ * Revealed state (plaintext + hide icon). The play blurs after toggling so the
+ * toggle's focus ring (IconButton's coverage) stays out of the frame.
+ */
+export const Revealed: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <PasswordInput defaultValue="hunter2" aria-label="revealed password" />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByLabelText("revealed password");
+    const toggleButton = canvas.getByRole("button");
+
+    await userEvent.click(toggleButton);
+    await expect(input).toHaveAttribute("type", "text");
+
+    await userEvent.click(document.body);
   },
 };

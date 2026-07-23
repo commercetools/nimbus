@@ -30,6 +30,9 @@ export const Base: Story = {
     placeholder: "base multiline text input",
     ["aria-label"]: "test-textarea",
   },
+  render: (args) => (
+    <MultilineTextInput {...args} data-testid="base-textarea" />
+  ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const textarea = canvas.getByLabelText("test-textarea");
@@ -40,6 +43,7 @@ export const Base: Story = {
 
     await step("Forwards data- & aria-attributes", async () => {
       await expect(textarea).toHaveAttribute("aria-label", "test-textarea");
+      await expect(textarea).toHaveAttribute("data-testid", "base-textarea");
     });
 
     await step("Is focusable with <tab> key", async () => {
@@ -97,6 +101,8 @@ export const Variants: Story = {
 };
 
 export const LeadingElements: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const examples: Array<{
       label: string;
@@ -283,7 +289,30 @@ export const Invalid: Story = {
   },
 };
 
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <MultilineTextInput
+      defaultValue="Focused multiline text input"
+      aria-label="focused-textarea"
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const textarea = canvas.getByLabelText("focused-textarea");
+
+    // Hide the native caret (Chromatic can't pause its blink); caret-color inherits.
+    canvasElement.style.caretColor = "transparent";
+
+    await userEvent.tab();
+    await expect(textarea).toHaveFocus();
+  },
+};
+
 export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     onChange: fn(),
     ["aria-label"]: "test-textarea",
@@ -383,6 +412,8 @@ export const Controlled: Story = {
 };
 
 export const WithRows: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     rows: 5,
     placeholder: "Textarea with 5 rows",
@@ -493,19 +524,21 @@ export const AutoGrow: Story = {
     await step(
       "Auto-shrinks to minimum when all content is deleted",
       async () => {
-        // Clear all content
         await userEvent.clear(autoGrowTextarea);
-
-        // Should shrink to minimal height
-        const emptyHeight = autoGrowTextarea.clientHeight;
-
-        // Add content again
         await userEvent.type(
           autoGrowTextarea,
           "Line 1{enter}Line 2{enter}Line 3{enter}Line 4"
         );
+        const filledHeight = autoGrowTextarea.clientHeight;
 
-        // Should grow again
+        await userEvent.clear(autoGrowTextarea);
+        const emptyHeight = autoGrowTextarea.clientHeight;
+        await expect(emptyHeight).toBeLessThan(filledHeight);
+
+        await userEvent.type(
+          autoGrowTextarea,
+          "Line 1{enter}Line 2{enter}Line 3{enter}Line 4"
+        );
         await expect(autoGrowTextarea.clientHeight).toBeGreaterThan(
           emptyHeight
         );

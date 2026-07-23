@@ -35,6 +35,7 @@ export const Base: Story = {
     placeholder: "base text input",
     ["aria-label"]: "test-input",
   },
+  render: (args) => <TextInput {...args} data-testid="base-input" />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const input = canvas.getByLabelText("test-input");
@@ -45,6 +46,7 @@ export const Base: Story = {
 
     await step("Forwards data- & aria-attributes", async () => {
       await expect(input).toHaveAttribute("aria-label", "test-input");
+      await expect(input).toHaveAttribute("data-testid", "base-input");
     });
 
     await step("Is focusable with <tab> key", async () => {
@@ -205,7 +207,31 @@ export const Invalid: Story = {
   },
 };
 
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <TextInput defaultValue="Focused text input" aria-label="focused-input" />
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByLabelText("focused-input");
+
+    // Hide the native caret (Chromatic can't pause its blink); caret-color inherits.
+    canvasElement.style.caretColor = "transparent";
+
+    await userEvent.tab();
+    await expect(input).toHaveFocus();
+  },
+};
+
+/**
+ * Matrix: state x size x variant. No colorPalette axis (recipe styles fixed
+ * semantic tokens, not a palette variant).
+ */
 export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     onChange: fn(),
     ["aria-label"]: "test-input",
@@ -302,6 +328,8 @@ export const Controlled: Story = {
 };
 
 export const LeadingAndTrailingElements: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const examples: Array<{
       label: string;
@@ -407,7 +435,13 @@ export const LeadingAndTrailingElements: Story = {
   },
 };
 
+/**
+ * RTL mirrors the adornment layout (icons swap sides) - a distinct visual,
+ * prop-driven so a story not a mode.
+ */
 export const RTLSupport: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <Stack direction="column" gap="400">
