@@ -108,19 +108,22 @@ const App = () => (
 
 - Place `ItemGroup.Separator` only _between_ `Item.Root` rows — never before
   the first row or after the last.
-- `ItemGroup.Root` renders a plain `<div>` with no implicit `role`. It does not
-  set `role="list"` — see Accessibility for why — so it never constrains what
-  you place inside it.
+- `ItemGroup.Root` exposes its rows as a `role="group"` (an overridable
+  default). It does not set `role="list"` — see Accessibility for why — so it
+  never constrains what you place inside it.
 - `ItemGroup.Root` only affects layout (a vertical stack); it does not read or
   override each row's own `variant`/`size`.
 
 ## Accessibility
 
-`ItemGroup.Root` deliberately does not set `role="list"`: that role requires
-every child to be a `listitem` and forbids other content, such as a separator,
-which the free-composition API here can't guarantee. `ItemGroup.Separator`
-sets `role="separator"` and `aria-orientation="horizontal"`; it is a static,
-non-focusable divider. See the **Accessibility tab** for the full rationale.
+`ItemGroup.Root` exposes `role="group"` so assistive tech announces the rows as
+belonging together; give it a name with `aria-label`/`aria-labelledby` when the
+grouping isn't clear from context. It deliberately does not use `role="list"`:
+that role requires every child to be a `listitem` and forbids other content,
+such as a separator, which the free-composition API here can't guarantee.
+`ItemGroup.Separator` sets `role="separator"` and `aria-orientation="horizontal"`;
+it is a static, non-focusable divider. See the **Accessibility tab** for the
+full rationale.
 
 ## API reference
 

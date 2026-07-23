@@ -17,7 +17,7 @@ type Story = StoryObj<typeof ItemGroup.Root>;
  */
 export const Base: Story = {
   render: () => (
-    <ItemGroup.Root data-testid="group">
+    <ItemGroup.Root data-testid="group" aria-label="Account">
       <Item.Root>
         <Item.Media variant="icon">
           <Person />
@@ -60,6 +60,13 @@ export const Base: Story = {
         within(group).getByText("Notifications")
       ).toBeInTheDocument();
       await expect(within(group).getByText("Settings")).toBeInTheDocument();
+    });
+
+    await step("Exposes the rows as a named group to AT", async () => {
+      // role="group" gives assistive tech a grouping signal without imposing
+      // listitem requirements; aria-label passes straight through as its name.
+      const group = canvas.getByRole("group", { name: "Account" });
+      await expect(group).toBe(canvas.getByTestId("group"));
     });
 
     await step("Renders separators between rows", async () => {
