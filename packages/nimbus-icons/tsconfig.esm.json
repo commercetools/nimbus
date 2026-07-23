@@ -3,7 +3,6 @@
     "module": "ESNext",
     "target": "ESNext",
     "moduleResolution": "node",
-    "resolveJsonModule": true,
     "declaration": true,
     "outDir": "dist/esm",
     "jsx": "react-jsx",
