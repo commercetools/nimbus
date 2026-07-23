@@ -1,7 +1,8 @@
-import { Fragment } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { FC, ReactNode, SVGProps } from "react";
 import {
   Box,
+  Button,
   Stack,
   Flex,
   Text,
@@ -9,10 +10,16 @@ import {
   IconButton,
   Dialog,
   Tabs,
+  ToggleButtonGroup,
   useCopyToClipboard,
   toast,
 } from "@commercetools/nimbus";
-import { ContentCopy } from "@commercetools/nimbus-icons";
+import {
+  ContentCopy,
+  HideSource,
+  CropSquare,
+  PanoramaFishEye,
+} from "@commercetools/nimbus-icons";
 import * as icons from "@commercetools/nimbus-icons";
 import type { IconMeta } from "@commercetools/nimbus-icons/meta";
 // Same highlighter + theme the docs use for fenced code (base-tags/code.tsx),
@@ -20,25 +27,33 @@ import type { IconMeta } from "@commercetools/nimbus-icons/meta";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-import { slugifyCategory, titleCase } from "./use-icon-data";
+import { slugifyCategory, titleCase, type IconEntry } from "./use-icon-data";
 import { useIconRouteState } from "./use-icon-route-state";
+import {
+  SURFACE_PAD,
+  SURFACE_STYLE,
+  type Surface,
+} from "./icon-display-controls";
+import { buildSimilarityIndex, computeSimilarIcons } from "./similar-icons";
 
 /** A raw icon component from `@commercetools/nimbus-icons` (an SVG). */
 type Glyph = FC<SVGProps<SVGSVGElement>>;
 
-/** Pixel sizes shown across the size matrix — a compact, representative spread. */
+/** Pixel sizes shown across the compact size row — a representative spread. */
 const SIZES = [16, 24, 32, 48];
 
-/**
- * Surface treatments the size matrix previews each icon against: bare on the
- * page, on a rounded-square chip, and on a circular chip (the two shapes icons
- * most often sit inside — buttons/avatars).
- */
-const SIZE_SURFACES = [
-  { key: "plain", label: "Background", filled: false, radius: undefined },
-  { key: "square", label: "Square", filled: true, radius: "300" },
-  { key: "circle", label: "Circle", filled: true, radius: "full" },
-] as const;
+/** How many tags to show before the reference rail's "+N more" toggle. */
+const TAG_CAP = 12;
+
+/** How many similar icons to surface in the bottom row. */
+const SIMILAR_LIMIT = 12;
+
+/** The size-row surface toggle options (mirrors the sidebar's Surface control). */
+const SURFACE_OPTIONS: { id: Surface; label: string; Icon: Glyph }[] = [
+  { id: "none", label: "No surface", Icon: HideSource },
+  { id: "square", label: "Square surface", Icon: CropSquare },
+  { id: "circle", label: "Circle surface", Icon: PanoramaFishEye },
+];
 
 /**
  * A small uppercase section label — the connective tissue of the reference
@@ -180,22 +195,110 @@ const KeylineGrid = ({
 };
 
 /**
- * Shows an icon's detail — a compact spec card — in a controlled Dialog: a hero
- * preview beside the import and JSX usage you copy and how it sizes/colors, then
- * the design anatomy beside a size strip, and the full tag list. Open when
- * `name` is set; `onClose` clears the selection. Rendered once at the icons
- * shell level (not per tile), so there's only ever one dialog instance.
+ * One tile in the "Similar icons" row — a small, self-contained button (unlike
+ * the grid's `IconTile`, which is welded to a react-aria `GridList`). Clicking it
+ * opens that icon's detail in the same dialog via `onOpen` (a history push, so
+ * Back retraces the trail). The full export name shows below the glyph and in a
+ * native `title` for hover.
+ */
+const SimilarTile = ({
+  name,
+  onOpen,
+}: {
+  name: string;
+  onOpen: (name: string) => void;
+}) => {
+  const Component = icons[name as keyof typeof icons] as Glyph | undefined;
+  if (!Component) return null;
+  return (
+    <Button
+      unstyled
+      onPress={() => onOpen(name)}
+      title={name}
+      flexShrink="0"
+      width="80px"
+      p="200"
+      borderRadius="300"
+      cursor="pointer"
+      color="neutral.12"
+      outline="none"
+      _hover={{ bg: "neutral.3" }}
+      css={{ "&[data-focus-visible]": { layerStyle: "focusRing" } }}
+    >
+      <Stack gap="150" align="center" minW="0" width="full">
+        <Flex align="center" justify="center" boxSize="32px">
+          <Component width={32} height={32} />
+        </Flex>
+        <Text
+          textStyle="xs"
+          color="neutral.10"
+          width="full"
+          maxWidth="full"
+          textAlign="center"
+          truncate
+        >
+          {name}
+        </Text>
+      </Stack>
+    </Button>
+  );
+};
+
+/**
+ * Shows an icon's detail in a controlled Dialog, laid out as a two-pane hub: a
+ * primary column (hero preview + copyable usage) beside a calm reference rail
+ * (anatomy keyline grid, a compact size row, and the tag list), with a
+ * full-width "Similar icons" row below that turns the dialog into a browsing
+ * loop. Open state comes from the `/icons/:name` route (`useIconRouteState`);
+ * rendered once at the icons shell level, so there's only ever one instance.
  */
 export const IconDetailDialog = ({
+  entries,
   metadata,
 }: {
+  entries: IconEntry[];
   metadata: Record<string, IconMeta> | null;
 }) => {
-  // The open icon comes from the `/icons/:name` segment; aliased to `name`
-  // since the rest of the component reads it as `name`. `closeIcon` returns to
-  // the filtered grid; `goToCategory` swaps the dialog for a category filter.
-  const { iconName: name, closeIcon, goToCategory } = useIconRouteState();
+  // The open icon comes from the `/icons/:name` segment; aliased to `name` since
+  // the rest of the component reads it as `name`. `closeIcon` returns to the
+  // filtered grid; `goToCategory` swaps the dialog for a category filter;
+  // `openIcon` (used by the similar row) pushes another icon onto the trail.
+  const {
+    iconName: name,
+    closeIcon,
+    goToCategory,
+    openIcon,
+  } = useIconRouteState();
   const [, copyToClipboard] = useCopyToClipboard();
+
+  // Surface previewed behind the compact size row — a local preview affordance,
+  // independent of the grid's persisted (URL-backed) surface preference.
+  const [sizeSurface, setSizeSurface] = useState<Surface>("none");
+  // Tags are demoted to a capped, expandable list in the reference rail.
+  const [showAllTags, setShowAllTags] = useState(false);
+
+  // Tag-similarity index over the whole corpus. It depends only on `entries`, so
+  // it builds once (when the lazy metadata chunk resolves) and is reused for
+  // every selected icon — the dialog stays mounted across selections. See
+  // similar-icons.ts for the scoring.
+  const similarityIndex = useMemo(
+    () => buildSimilarityIndex(entries),
+    [entries]
+  );
+  const similar = useMemo(
+    () =>
+      name ? computeSimilarIcons(name, similarityIndex, SIMILAR_LIMIT) : [],
+    [name, similarityIndex]
+  );
+
+  // Scroll the dialog body back to its top and collapse the tag list whenever
+  // the icon changes (e.g. after clicking through the similar row), so each new
+  // icon opens on its hero rather than parked at the previous scroll position.
+  const topRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    setShowAllTags(false);
+    if (name) topRef.current?.scrollIntoView({ block: "start" });
+  }, [name]);
 
   const Component = name
     ? (icons[name as keyof typeof icons] as Glyph | undefined)
@@ -203,6 +306,7 @@ export const IconDetailDialog = ({
   const meta = name ? metadata?.[name] : undefined;
   const categories = meta?.categories ?? [];
   const tags = meta?.tags ?? [];
+  const shownTags = showAllTags ? tags : tags.slice(0, TAG_CAP);
   const importStatement = name
     ? `import { ${name} } from '@commercetools/nimbus-icons';`
     : "";
@@ -289,14 +393,14 @@ export const IconDetailDialog = ({
             {categories.length > 0 && (
               <Flex gap="100" wrap="wrap">
                 {categories.map((c) => (
-                  <Box
-                    as="button"
+                  <Button
+                    unstyled
                     key={c}
                     cursor="pointer"
-                    onClick={() => goToCategory(slugifyCategory(c))}
+                    onPress={() => goToCategory(slugifyCategory(c))}
                   >
                     <Badge size="xs">{titleCase(c)}</Badge>
-                  </Box>
+                  </Button>
                 ))}
               </Flex>
             )}
@@ -305,154 +409,205 @@ export const IconDetailDialog = ({
         </Dialog.Header>
         <Dialog.Body>
           {name && Component ? (
-            <Stack gap="800" pb="400">
-              {/* Preview + how to use it. Fixed hero height with `start`
-                  alignment: the usage tabs beside it change height as you
-                  switch tabs, and a stretched hero would jump with them. */}
-              <Box
-                display="grid"
-                gap="600"
-                alignItems="start"
-                gridTemplateColumns={{
-                  base: "1fr",
-                  md: "minmax(0, 200px) minmax(0, 1fr)",
-                }}
-              >
-                {/* Hero preview on a soft dot canvas */}
-                <Flex
-                  align="center"
-                  justify="center"
-                  h="200px"
-                  bg="neutral.2"
-                  borderRadius="400"
-                  color="neutral.12"
-                  css={{
-                    backgroundImage:
-                      "radial-gradient(circle, rgba(127,127,127,0.16) 1px, transparent 1.5px)",
-                    backgroundSize: "16px 16px",
+            <Box ref={topRef}>
+              <Stack gap="800" pb="400">
+                {/* Two-pane hub: primary column (hero + usage) beside a calm
+                    reference rail. On a narrow dialog the rail drops below. */}
+                <Box
+                  display="grid"
+                  gap="600"
+                  alignItems="start"
+                  gridTemplateColumns={{
+                    base: "1fr",
+                    md: "minmax(0, 1.4fr) minmax(0, 1fr)",
                   }}
                 >
-                  <Component width={96} height={96} />
-                </Flex>
+                  {/* LEFT — the hero preview leads, usage sits beneath it. The
+                      hero is above the height-changing usage tabs, so switching
+                      tabs never makes it jump. */}
+                  <Stack gap="600" minW="0">
+                    <Flex
+                      align="center"
+                      justify="center"
+                      h="200px"
+                      bg="neutral.2"
+                      borderRadius="400"
+                      color="neutral.12"
+                      css={{
+                        backgroundImage:
+                          "radial-gradient(circle, rgba(127,127,127,0.16) 1px, transparent 1.5px)",
+                        backgroundSize: "16px 16px",
+                      }}
+                    >
+                      <Component width={96} height={96} />
+                    </Flex>
 
-                <Stack gap="200" minW="0">
-                  <SectionLabel>Usage</SectionLabel>
-                  <Text textStyle="xs" color="neutral.10">
-                    Rendered at <Code>1em</Code> in <Code>currentColor</Code>,
-                    an icon takes its size and color from wherever it sits.
-                  </Text>
-                  <Tabs.Root size="sm">
-                    <Tabs.List>
-                      {usageTabs.map((t) => (
-                        <Tabs.Tab key={t.id} id={t.id}>
-                          {t.label}
-                        </Tabs.Tab>
-                      ))}
-                    </Tabs.List>
-                    <Tabs.Panels>
-                      {usageTabs.map((t) => (
-                        <Tabs.Panel key={t.id} id={t.id}>
-                          <Stack gap="150" pt="300">
-                            <CodeBlock
-                              code={t.code}
-                              label={`${t.label.toLowerCase()} usage`}
-                              onCopy={() => copy(t.code, `${t.label} usage`)}
-                            />
+                    <Stack gap="200" minW="0">
+                      <SectionLabel>Usage</SectionLabel>
+                      <Text textStyle="xs" color="neutral.10">
+                        Rendered at <Code>1em</Code> in{" "}
+                        <Code>currentColor</Code>, an icon takes its size and
+                        color from wherever it sits.
+                      </Text>
+                      <Tabs.Root size="sm">
+                        <Tabs.List>
+                          {usageTabs.map((t) => (
+                            <Tabs.Tab key={t.id} id={t.id}>
+                              {t.label}
+                            </Tabs.Tab>
+                          ))}
+                        </Tabs.List>
+                        <Tabs.Panels>
+                          {usageTabs.map((t) => (
+                            <Tabs.Panel key={t.id} id={t.id}>
+                              <Stack gap="150" pt="300">
+                                <CodeBlock
+                                  code={t.code}
+                                  label={`${t.label.toLowerCase()} usage`}
+                                  onCopy={() =>
+                                    copy(t.code, `${t.label} usage`)
+                                  }
+                                />
+                                <Text textStyle="xs" color="neutral.10">
+                                  {t.caption}
+                                </Text>
+                              </Stack>
+                            </Tabs.Panel>
+                          ))}
+                        </Tabs.Panels>
+                      </Tabs.Root>
+                      <Text textStyle="xs" color="neutral.10">
+                        Decorative icons are hidden from assistive tech; an
+                        icon-only control needs an <Code>aria-label</Code> that
+                        describes its action.
+                      </Text>
+                    </Stack>
+                  </Stack>
+
+                  {/* RIGHT — reference rail. A left divider at md, a top divider
+                      when it stacks below on a narrow dialog. */}
+                  <Stack
+                    gap="700"
+                    minW="0"
+                    borderColor="neutral.3"
+                    borderLeft={{ base: "none", md: "solid-25" }}
+                    borderTop={{ base: "solid-25", md: "none" }}
+                    pl={{ base: "0", md: "600" }}
+                    pt={{ base: "600", md: "0" }}
+                  >
+                    <Stack gap="150">
+                      <SectionLabel>Anatomy</SectionLabel>
+                      {/* 144 = 6×24, so the 24-unit keyline stays crisp (one px
+                          cell per unit) while fitting the narrower rail. */}
+                      <KeylineGrid Component={Component} size={144} />
+                    </Stack>
+
+                    <Stack gap="300">
+                      <Flex
+                        justify="space-between"
+                        align="center"
+                        gap="300"
+                        wrap="wrap"
+                      >
+                        <SectionLabel>Sizes</SectionLabel>
+                        {/* One row of sizes on a chosen chip, instead of the old
+                            size×surface matrix — the surface is a small toggle. */}
+                        <ToggleButtonGroup.Root
+                          size="xs"
+                          colorPalette="primary"
+                          disallowEmptySelection
+                          selectedKeys={[sizeSurface]}
+                          onSelectionChange={(keys) => {
+                            const key = [...keys][0];
+                            if (key != null) setSizeSurface(key as Surface);
+                          }}
+                          aria-label="Size preview surface"
+                        >
+                          {SURFACE_OPTIONS.map(({ id, label, Icon }) => (
+                            <ToggleButtonGroup.Button
+                              key={id}
+                              id={id}
+                              aria-label={label}
+                            >
+                              <Icon />
+                            </ToggleButtonGroup.Button>
+                          ))}
+                        </ToggleButtonGroup.Root>
+                      </Flex>
+                      <Flex align="flex-end" gap="400" wrap="wrap">
+                        {SIZES.map((px) => (
+                          <Stack key={px} gap="150" align="center">
+                            <Flex
+                              align="center"
+                              justify="center"
+                              boxSize={`${px + SURFACE_PAD * 2}px`}
+                              color="neutral.12"
+                              bg={SURFACE_STYLE[sizeSurface].bg}
+                              borderRadius={SURFACE_STYLE[sizeSurface].radius}
+                            >
+                              <Component width={px} height={px} />
+                            </Flex>
                             <Text textStyle="xs" color="neutral.10">
-                              {t.caption}
+                              {px}px
                             </Text>
                           </Stack>
-                        </Tabs.Panel>
-                      ))}
-                    </Tabs.Panels>
-                  </Tabs.Root>
-                  <Text textStyle="xs" color="neutral.10">
-                    Decorative icons are hidden from assistive tech; an
-                    icon-only control needs an <Code>aria-label</Code> that
-                    describes its action.
-                  </Text>
-                </Stack>
-              </Box>
-
-              {/* Anatomy + sizes */}
-              <Box
-                display="grid"
-                gap="700"
-                alignItems="start"
-                gridTemplateColumns={{ base: "1fr", md: "auto minmax(0, 1fr)" }}
-              >
-                <Stack gap="150">
-                  <SectionLabel>Anatomy</SectionLabel>
-                  <KeylineGrid Component={Component} size={168} />
-                </Stack>
-
-                <Stack gap="300">
-                  <SectionLabel>Sizes</SectionLabel>
-                  {/* A matrix: each column is a pixel size, each row a surface
-                      the icon commonly sits on (bare, square chip, circle
-                      chip). Cells share a per-column footprint so the glyphs
-                      line up across rows. */}
-                  <Box
-                    display="grid"
-                    alignItems="center"
-                    justifyItems="center"
-                    justifyContent="start"
-                    columnGap="400"
-                    rowGap="300"
-                    gridTemplateColumns={`auto repeat(${SIZES.length}, auto)`}
-                  >
-                    {/* Header: empty corner, then a label per size column */}
-                    <Box />
-                    {SIZES.map((px) => (
-                      <Text key={px} textStyle="xs" color="neutral.10">
-                        {px}px
-                      </Text>
-                    ))}
-
-                    {/* One row per surface treatment */}
-                    {SIZE_SURFACES.map((s) => (
-                      <Fragment key={s.key}>
-                        <Text
-                          textStyle="xs"
-                          color="neutral.10"
-                          justifySelf="start"
-                          whiteSpace="nowrap"
-                        >
-                          {s.label}
-                        </Text>
-                        {SIZES.map((px) => (
-                          <Flex
-                            key={px}
-                            align="center"
-                            justify="center"
-                            boxSize={`${px + 20}px`}
-                            color="neutral.12"
-                            bg={s.filled ? "neutral.3" : undefined}
-                            borderRadius={s.filled ? s.radius : undefined}
-                          >
-                            <Component width={px} height={px} />
-                          </Flex>
                         ))}
-                      </Fragment>
-                    ))}
-                  </Box>
-                </Stack>
-              </Box>
+                      </Flex>
+                    </Stack>
 
-              {/* Tags — the full synonym list, wrapping across the dialog. */}
-              {tags.length > 0 && (
-                <Stack gap="200">
-                  <SectionLabel>Tags</SectionLabel>
-                  <Flex gap="100" wrap="wrap">
-                    {tags.map((t) => (
-                      <Badge key={t} size="xs" colorPalette="neutral">
-                        {t}
-                      </Badge>
-                    ))}
-                  </Flex>
-                </Stack>
-              )}
-            </Stack>
+                    {tags.length > 0 && (
+                      <Stack gap="200">
+                        <SectionLabel>Tags</SectionLabel>
+                        <Flex gap="100" wrap="wrap" align="center">
+                          {shownTags.map((t) => (
+                            <Badge key={t} size="xs" colorPalette="neutral">
+                              {t}
+                            </Badge>
+                          ))}
+                          {tags.length > TAG_CAP && (
+                            <Button
+                              unstyled
+                              cursor="pointer"
+                              onPress={() => setShowAllTags((v) => !v)}
+                            >
+                              <Badge size="xs" colorPalette="primary">
+                                {showAllTags
+                                  ? "Show less"
+                                  : `+${tags.length - TAG_CAP} more`}
+                              </Badge>
+                            </Button>
+                          )}
+                        </Flex>
+                      </Stack>
+                    )}
+                  </Stack>
+                </Box>
+
+                {/* Similar icons — a full-width strip that turns the dialog into
+                    a browsing loop. Hidden until the metadata (tags) has loaded
+                    and yielded candidates. */}
+                {similar.length > 0 && (
+                  <Stack gap="300">
+                    <SectionLabel>Similar icons</SectionLabel>
+                    <Flex
+                      as="nav"
+                      aria-label="Similar icons"
+                      gap="200"
+                      pb="100"
+                      css={{ overflowX: "auto" }}
+                    >
+                      {similar.map((simName) => (
+                        <SimilarTile
+                          key={simName}
+                          name={simName}
+                          onOpen={openIcon}
+                        />
+                      ))}
+                    </Flex>
+                  </Stack>
+                )}
+              </Stack>
+            </Box>
           ) : null}
         </Dialog.Body>
       </Dialog.Content>
