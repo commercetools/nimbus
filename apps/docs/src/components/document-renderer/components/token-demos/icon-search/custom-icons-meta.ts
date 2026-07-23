@@ -2,9 +2,10 @@
  * Hand-authored search metadata for the custom (non-Material) icons.
  *
  * Material icons get their `tags` / `categories` / `popularity` from Google's
- * metadata feed (see scripts/sync-metadata.ts). The custom icons aren't in that
- * feed, so their metadata lives here and is merged into the generated artifact.
- * Keyed by export name (as re-exported from src/index.ts).
+ * metadata feed (see apps/docs/scripts/sync-icon-meta.ts). The custom icons
+ * aren't in that feed, so their metadata lives here and is merged into the
+ * generated artifact. Keyed by export name (as exported from
+ * `@commercetools/nimbus-icons`).
  */
 
 export interface IconMeta {

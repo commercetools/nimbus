@@ -21,7 +21,7 @@ import {
   PanoramaFishEye,
 } from "@commercetools/nimbus-icons";
 import * as icons from "@commercetools/nimbus-icons";
-import type { IconMeta } from "@commercetools/nimbus-icons/meta";
+import type { IconMeta } from "./custom-icons-meta";
 // Same highlighter + theme the docs use for fenced code (base-tags/code.tsx),
 // so the dialog's snippets match every other code block in the app.
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
