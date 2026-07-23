@@ -39,8 +39,13 @@ function AppFrameBodyInner() {
 
   const { baseRoute } = useRouteInfo();
 
+  // The home route uses a full-bleed editorial layout, so it opts out of the
+  // 80ch reading column and spans the wider content area (matching the top
+  // nav's own 1280px max width). Every other doc keeps the reading measure.
+  const isHome = baseRoute === "" || baseRoute === "home";
+
   return (
-    <AppFrame.Root>
+    <AppFrame.Root hideAside={isHome}>
       {/* Left Navigation */}
       <AppFrame.LeftNav viewportRef={sidebarViewportRef}>
         <Suspense fallback={<LoadingSpinner />}>
@@ -49,7 +54,10 @@ function AppFrameBodyInner() {
       </AppFrame.LeftNav>
 
       {/* Main Content */}
-      <AppFrame.MainContent viewportRef={mainViewportRef}>
+      <AppFrame.MainContent
+        viewportRef={mainViewportRef}
+        contentMaxWidth={isHome ? "1280px" : "80ch"}
+      >
         <Suspense fallback={<LoadingSpinner />}>
           {/* Animated wrapper that re-renders on route change */}
           <Box key={baseRoute} animationName="fade-in" animationDuration="slow">
@@ -58,14 +66,17 @@ function AppFrameBodyInner() {
         </Suspense>
       </AppFrame.MainContent>
 
-      {/* Right Aside (TOC only - Settings disabled) */}
-      <AppFrame.RightAside>
-        <Stack gap="800">
-          <Suspense fallback={<LoadingSpinner />}>
-            <Toc />
-          </Suspense>
-        </Stack>
-      </AppFrame.RightAside>
+      {/* Right Aside (TOC only - Settings disabled). Omitted on the home route,
+          which has no TOC and uses the full-bleed width instead. */}
+      {!isHome && (
+        <AppFrame.RightAside>
+          <Stack gap="800">
+            <Suspense fallback={<LoadingSpinner />}>
+              <Toc />
+            </Suspense>
+          </Stack>
+        </AppFrame.RightAside>
+      )}
     </AppFrame.Root>
   );
 }
