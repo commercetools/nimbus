@@ -8,7 +8,10 @@ import {
 } from "@/atoms/searchable-docs";
 import { semanticEnabledAtom } from "@/atoms/semantic-search";
 import Fuse from "fuse.js";
-import { useSemanticSearch, type SemanticStatus } from "./use-semantic-search";
+import {
+  useSemanticSearch,
+  type SemanticStatus,
+} from "@/semantic-search/use-semantic-search";
 import {
   categorize,
   getItemCategory,
