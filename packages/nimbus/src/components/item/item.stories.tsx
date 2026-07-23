@@ -297,10 +297,19 @@ export const AsLink: Story = {
  * is operable without triggering row navigation.
  */
 const onDeleteAction = fn();
+const onRootClickCapture = fn();
 
 export const LinkWithActions: Story = {
   render: () => (
-    <Item.Root href="#item-target" variant="outline" data-testid="item">
+    <Item.Root
+      href="#item-target"
+      variant="outline"
+      data-testid="item"
+      // A consumer-supplied capture handler must coexist with the row's own
+      // navigation guard, not replace it (regression guard for the guard being
+      // merged rather than passed as a bare prop before the spread).
+      onClickCapture={onRootClickCapture}
+    >
       <Item.Content>
         <Item.Title>Report Q3</Item.Title>
         <Item.Description>Opens the report</Item.Description>
@@ -321,6 +330,7 @@ export const LinkWithActions: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     onDeleteAction.mockClear();
+    onRootClickCapture.mockClear();
 
     await step("Row link and action are both present", async () => {
       await expect(
@@ -340,6 +350,9 @@ export const LinkWithActions: Story = {
 
       // The action handler fired...
       await expect(onDeleteAction).toHaveBeenCalledTimes(1);
+      // ...the consumer's own onClickCapture on the row also fired (the guard
+      // is chained via mergeProps, not clobbered by the consumer handler)...
+      await expect(onRootClickCapture).toHaveBeenCalledTimes(1);
       // ...and the click did NOT navigate the row link (still mounted; the
       // location hash never became the row's href target).
       await expect(

@@ -66,8 +66,11 @@ const ItemRootLink = ({
     <ItemRootSlot
       as="a"
       ref={ref as React.Ref<HTMLDivElement>}
-      onClickCapture={handleClickCapture}
-      {...mergeProps(rest, linkProps)}
+      // Fold the guard into `mergeProps` (rather than passing it as a bare prop
+      // before the spread) so it *chains* with any consumer-supplied
+      // `onClickCapture` — react-aria composes `on*` handlers — instead of being
+      // silently overwritten by the spread.
+      {...mergeProps(rest, linkProps, { onClickCapture: handleClickCapture })}
     >
       {children}
     </ItemRootSlot>
