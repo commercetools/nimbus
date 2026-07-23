@@ -1,5 +1,6 @@
 import {
   Box,
+  Flex,
   ScrollArea,
   Splitter,
   useResponsiveSplitterSizes,
@@ -11,6 +12,12 @@ import { ALL_CATEGORIES, useIconData } from "./use-icon-data";
 import { CategoryRail } from "./category-rail";
 import { IconBrowse } from "./icon-browse";
 import { IconDetailDialog } from "./icon-detail";
+import {
+  DEFAULT_SURFACE,
+  ICON_SIZE_DEFAULT,
+  IconDisplayControls,
+  type Surface,
+} from "./icon-display-controls";
 
 /**
  * IconSearch is the entry point rendered by the Icons doc (`<IconSearch />` in
@@ -29,6 +36,12 @@ export const IconSearch = () => {
   const { pathname } = useLocation();
   const { entries, categories, metadata } = useIconData();
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null);
+
+  // Grid view controls, owned here so the sidebar controls and the grid stay in
+  // sync. `iconSize` (px) drives the previewed glyph size; `surface` picks the
+  // optional shape drawn behind each glyph.
+  const [iconSize, setIconSize] = useState(ICON_SIZE_DEFAULT);
+  const [surface, setSurface] = useState<Surface>(DEFAULT_SURFACE);
 
   // The scrollable viewport of the main (grid) pane. Held so a pagination page
   // change can reset it to the top — see `scrollMainToTop`.
@@ -60,13 +73,27 @@ export const IconSearch = () => {
     <Box position="absolute" inset="0" overflow="hidden">
       <Splitter.Root {...rootProps}>
         <Splitter.Aside borderRight="solid-25" borderColor="neutral.3">
-          <ScrollArea height="100%">
-            <CategoryRail
-              categories={categories}
-              totalCount={entries.length}
-              activeSlug={categorySlug}
-            />
-          </ScrollArea>
+          {/* Controls pinned above the scrollable category list so size +
+              surface stay reachable no matter how far the list is scrolled. */}
+          <Flex direction="column" height="100%">
+            <Box flexShrink={0} borderBottom="solid-25" borderColor="neutral.3">
+              <IconDisplayControls
+                iconSize={iconSize}
+                onIconSizeChange={setIconSize}
+                surface={surface}
+                onSurfaceChange={setSurface}
+              />
+            </Box>
+            <Box flex="1" minH="0">
+              <ScrollArea height="100%">
+                <CategoryRail
+                  categories={categories}
+                  totalCount={entries.length}
+                  activeSlug={categorySlug}
+                />
+              </ScrollArea>
+            </Box>
+          </Flex>
         </Splitter.Aside>
 
         <Splitter.Handle />
@@ -79,6 +106,8 @@ export const IconSearch = () => {
               onSelectIcon={setSelectedIcon}
               loading={metadata === null}
               scrollToTop={scrollMainToTop}
+              iconSize={iconSize}
+              surface={surface}
             />
           </ScrollArea>
         </Splitter.Main>

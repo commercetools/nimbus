@@ -193,7 +193,16 @@ export const AppNavBarSearch = () => {
               placeholder="Search documentation..."
               onFocus={(e) => e.target.blur()}
               aria-label="Search the documentation"
-              trailingElement={<Kbd fontSize=".75em">⌘+K</Kbd>}
+              trailingElement={
+                <>
+                  <Kbd fontSize=".75em">
+                    <Text transform="scale(1.5)" mr="50">
+                      ⌘
+                    </Text>
+                    K
+                  </Kbd>
+                </>
+              }
             />
           </Box>
         </Dialog.Trigger>
