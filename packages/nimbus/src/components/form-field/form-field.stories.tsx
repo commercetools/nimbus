@@ -469,3 +469,71 @@ export const Controlled: Story = {
     );
   },
 };
+
+/** Open InfoBox popover - the `popover` slot chrome (border/shadow/radius); portal overlay a matrix can't reach. */
+export const OpenInfoBox: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: defaultArgs,
+  render: (args) => (
+    <FormField.Root {...args}>
+      <FormField.Label>Input Label</FormField.Label>
+      <FormField.Input>
+        <TextInput placeholder="Enter some text here" type="text" />
+      </FormField.Input>
+      <FormField.InfoBox>Show me in a tooltip box</FormField.InfoBox>
+    </FormField.Root>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button"));
+    await within(document.body).findByText(/Show me in a tooltip/);
+  },
+};
+
+/** SmokeTest: direction × size × state (default / required-asterisk / invalid-error). Wrapped input is TextInput's coverage. */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => {
+    const states = [
+      { key: "default", props: {} },
+      { key: "required", props: { isRequired: true } },
+      { key: "invalid", props: { isInvalid: true } },
+    ] as const;
+    return (
+      <Stack direction="column" gap="600" alignItems="flex-start">
+        {(["column", "row"] as const).map((direction) =>
+          sizes.map((size) => (
+            <Stack
+              key={`${direction}-${size as string}`}
+              direction="row"
+              gap="600"
+              alignItems="flex-start"
+            >
+              {states.map((state) => (
+                <FormField.Root
+                  key={state.key}
+                  direction={direction}
+                  size={size}
+                  {...state.props}
+                >
+                  <FormField.Label>
+                    {direction}/{size as string} {state.key}
+                  </FormField.Label>
+                  <FormField.Input>
+                    <TextInput placeholder="Enter some text here" type="text" />
+                  </FormField.Input>
+                  <FormField.Description>
+                    Description text
+                  </FormField.Description>
+                  <FormField.Error>Error message</FormField.Error>
+                </FormField.Root>
+              ))}
+            </Stack>
+          ))
+        )}
+      </Stack>
+    );
+  },
+};

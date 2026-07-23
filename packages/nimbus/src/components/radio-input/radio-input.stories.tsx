@@ -47,7 +47,7 @@ export const Base: Story = {
     const radioInput = canvas.getByLabelText("No");
 
     await step(
-      "Forwards data- & aria-attributes to the actual html-input",
+      "Forwards data- & aria-attributes to the radio group root",
       async () => {
         await expect(htmlInput.tagName).toBe("DIV");
         await expect(htmlInput).toHaveAttribute(
@@ -78,16 +78,22 @@ export const Base: Story = {
       await expect(onChange).toHaveBeenCalledTimes(1);
     });
 
-    await step("Can be triggered by clicking on a label", async () => {
-      await userEvent.click(radioInput);
-      await expect(onChange).toHaveBeenCalledTimes(1);
-    });
+    await step(
+      "Selecting a different option by clicking triggers onChange",
+      async () => {
+        const radioYes = canvas.getByLabelText("Yes");
+        await userEvent.click(radioYes);
+        await expect(radioYes).toBeChecked();
+        await expect(onChange).toHaveBeenCalledTimes(2);
+      }
+    );
 
     await step(
-      "Clicking the display label does not trigger onChange again",
+      "Clicking the already-selected option does not trigger onChange again",
       async () => {
-        await userEvent.click(radioInput);
-        await expect(onChange).toHaveBeenCalledTimes(1);
+        const radioYes = canvas.getByLabelText("Yes");
+        await userEvent.click(radioYes);
+        await expect(onChange).toHaveBeenCalledTimes(2);
       }
     );
   },
@@ -136,7 +142,10 @@ export const Disabled: Story = {
   },
 };
 
+/** Disabled (uniform opacity), folded out; one preselected group shows both glyphs dimmed. */
 export const DisabledAndSelected: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack gap="1000">
       <RadioInput.Root
@@ -326,7 +335,10 @@ export const InvisibleLabel: Story = {
   },
 };
 
+/** `orientation` variant (vertical/horizontal); a layout surface, so its own snapshot. */
 export const Orientation: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack gap="1000">
       {/* Vertical (default) */}
@@ -423,9 +435,8 @@ export const WithFormField: StoryObj = {
     await step(
       "RadioInput renders a radio group with correct ARIA attributes",
       async () => {
-        // Check that ARIA attributes exist
-        radioGroup.getAttribute("aria-labelledby");
-        radioGroup.getAttribute("aria-describedby");
+        await expect(radioGroup).toHaveAttribute("aria-labelledby");
+        await expect(radioGroup).toHaveAttribute("aria-describedby");
       }
     );
 
@@ -491,4 +502,48 @@ export const WithTooltip: Story = {
       }
     );
   },
+};
+
+/** Option focus ring (keyboard-only via useFocusRing); one focus surface. */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <RadioInput.Root aria-label="focused-radio" name="focused-radio">
+      <RadioInput.Option value="first">First</RadioInput.Option>
+      <RadioInput.Option value="second">Second</RadioInput.Option>
+    </RadioInput.Root>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByLabelText("First")).toHaveFocus();
+  },
+};
+
+/** SmokeTest: selection × invalid. One group per invalid value shows selected + unselected together. */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="800">
+      <RadioInput.Root aria-label="smoke-default" defaultValue="selected">
+        <RadioInput.Option value="unselected">Unselected</RadioInput.Option>
+        <RadioInput.Option value="selected">Selected</RadioInput.Option>
+      </RadioInput.Root>
+
+      <RadioInput.Root
+        aria-label="smoke-invalid"
+        isInvalid
+        defaultValue="selected"
+      >
+        <RadioInput.Option value="unselected">
+          Unselected, invalid
+        </RadioInput.Option>
+        <RadioInput.Option value="selected">
+          Selected, invalid
+        </RadioInput.Option>
+      </RadioInput.Root>
+    </Stack>
+  ),
 };

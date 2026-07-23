@@ -10,6 +10,11 @@ This doc is the runbook: how runs are triggered, how baselines work, when to
 click the manual button, and what does (and doesn't) block a merge. The YAML
 comments stay intentionally thin and point here.
 
+> **Authoring or auditing stories?** Read the per-story mechanics first: the
+> Chromatic section of [`stories.md`](./file-type-guidelines/stories.md) and the
+> [`writing-stories` skill](../.claude/skills/writing-stories/SKILL.md). This
+> doc is the _why_ behind them.
+
 ## How a run is decided
 
 ```mermaid
@@ -357,7 +362,10 @@ which no play-dispatchable event sets.
   `_focusWithin` on more than one region - needs a focus story per target, since
   each side's ring clears the seam differently. There is no "all focused" state
   to capture: only one element holds focus at a time, so the per-target stories
-  are the complete set (don't add a combined-ring snapshot).
+  are the complete set (don't add a combined-ring snapshot). Confirm the ring
+  actually renders first: if it's on a slot that never gets the focus state, the
+  snapshot captures nothing (DropZone: ring on the root, focus on a hidden inner
+  element).
 - **Cover every visual state/variation** - "the more things we have in
   Storybook, the more coverage we get." This is the governing rule: the
   `SmokeTest` matrix must be **exhaustive** over the axes that _interact_
@@ -452,13 +460,15 @@ which no play-dispatchable event sets.
   matrix - those are IconButton's states, already covered there. (Distinct from
   the independent-axes case below: there the axes don't interact; here the
   wrapper delegates them wholesale to a component that already snapshots them.)
-- **Not every component needs a `SmokeTest` matrix.** A matrix earns its place
-  only when the axes _interact_. When they're independent (Avatar's `size` /
-  `colorPalette` / content mode don't combine into novel visuals), skip the
-  matrix and opt the existing showcase stories into snapshots directly; fold a
-  family of near-identical or purely behavioral stories into one labeled
-  snapshot (Avatar's `AllFallbacks`) when it aids review without losing
-  coverage.
+- **A matrix is only for _interacting_ axes; independent axes are separate
+  stories.** Build a `SmokeTest` matrix only when a cross-cell is a visual
+  neither axis produces alone (Checkbox `checked × invalid` → distinct critical
+  fill). When the axes are independent - one just scales/recolors the other
+  (Badge/Avatar `size × colorPalette`, Switch `size × on/off`) - do **not**
+  build a matrix, even a 2×2; snapshot each axis as its own showcase story. The
+  cross-product adds cells, not coverage. Still fold a family of near-identical
+  behavioral stories into one labeled snapshot (Avatar's `AllFallbacks`) when it
+  aids review without losing coverage.
 - **Capture the focus ring on every distinctly-styled focusable sub-element.** A
   split button's dropdown trigger, an input's clear button or stepper, and a
   date field's calendar toggle each style their own `:focus-visible`; a

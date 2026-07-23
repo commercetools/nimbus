@@ -795,3 +795,25 @@ export const FormFieldIntegration: Story = {
     },
   },
 };
+
+/** SmokeTest: message color per colorPalette (critical default / warning) × multi-line stacking. Other stories only vary error text. */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="400" alignItems="flex-start">
+      <FieldErrors
+        id="smoke-critical"
+        isVisible
+        errors={{ missing: true, invalid: true, format: true }}
+      />
+      <FieldErrors
+        id="smoke-warning"
+        isVisible
+        colorPalette="warning"
+        role="status"
+        errors={{ missing: true, invalid: true, format: true }}
+      />
+    </Stack>
+  ),
+};

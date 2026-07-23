@@ -64,7 +64,7 @@ export const Accessibility: Story = {
     const switchRoot = canvasElement.querySelector('[data-slot="root"]');
 
     await step("Has proper role", async () => {
-      await expect(switchEl).toHaveAttribute("type", "checkbox");
+      await expect(switchEl).toHaveAttribute("role", "switch");
     });
 
     await step("Supports keyboard navigation", async () => {
@@ -117,35 +117,48 @@ export const ControlledUse: Story = {
   },
 };
 
+/** Disabled (uniform opacity), folded out; off and on dim different track colors, so both shown. */
 export const Disabled: Story = {
-  args: {
-    isDisabled: true,
-    children: "Disabled Switch",
-    onChange: fn(),
-    // @ts-expect-error: data-testid is not a valid prop
-    ["data-testid"]: "disabled-switch",
-  },
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: { onChange: fn() },
+  render: (args) => (
+    <Stack direction="row" gap="600" alignItems="center">
+      <Switch {...args} isDisabled>
+        Off, disabled
+      </Switch>
+      <Switch {...args} isDisabled defaultSelected>
+        On, disabled
+      </Switch>
+    </Stack>
+  ),
   play: async ({ canvasElement, step, args }) => {
     const canvas = within(canvasElement);
-    const switchEl = canvas.getByTestId("disabled-switch");
-    const switchRoot = canvasElement.querySelector('[data-slot="root"]');
+    const switches = canvas.getAllByRole("switch");
     const onChange = args.onChange;
 
-    await step("Has disabled attribute", async () => {
-      await expect(switchEl).toHaveAttribute("disabled");
-      await expect(switchRoot?.getAttribute("data-disabled")).toBe("true");
+    await step("Both switches are disabled", async () => {
+      for (const el of switches) {
+        await expect(el).toBeDisabled();
+        await expect(el.closest('[data-slot="root"]')).toHaveAttribute(
+          "data-disabled",
+          "true"
+        );
+      }
     });
 
     await step("Cannot be focused or toggled", async () => {
       await userEvent.tab();
-      await expect(switchEl).not.toHaveFocus();
-
-      switchEl.click();
+      for (const el of switches) {
+        await expect(el).not.toHaveFocus();
+      }
+      switches[0].click();
       await expect(onChange).toHaveBeenCalledTimes(0);
     });
   },
 };
 
+/** No `data-invalid` recipe rule, so invalid looks identical to default: behavioral only, no snapshot. */
 export const Invalid: Story = {
   args: {
     isInvalid: true,
@@ -205,7 +218,7 @@ export const WithRef: Story = {
 /**
  * Verifies that Switch can trigger a Tooltip when wrapped in Tooltip.Root
  */
-export const WithTooltip: Story = {
+export const ToggleWithTooltip: Story = {
   args: {
     children: "Switch with Tooltip",
     onChange: fn(),
@@ -236,6 +249,31 @@ export const WithTooltip: Story = {
       await expect(args.onChange).toHaveBeenCalledTimes(1);
       await expect(switchRoot.getAttribute("data-selected")).toBe("true");
     });
+  },
+};
+
+/**
+ * Snapshots the open tooltip on a switch. Focuses the trigger so the bubble is
+ * visible in the frame; Chromatic captures the resting open state.
+ */
+export const DisplaysTooltip: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    children: "Switch with Tooltip",
+  },
+  render: (args) => (
+    <Tooltip.Root delay={0} closeDelay={0}>
+      <Switch {...args} />
+      <Tooltip.Content>Switch tooltip text</Tooltip.Content>
+    </Tooltip.Root>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+    await userEvent.tab();
+    await canvas.findByRole("tooltip", { name: "Switch tooltip text" });
   },
 };
 
@@ -281,7 +319,10 @@ export const WithTooltipDisabled: Story = {
   },
 };
 
+/** Size axis (sm / md); independent of on/off, so its own story (no matrix). */
 export const Sizes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Switch Label",
   },
@@ -293,6 +334,30 @@ export const Sizes: Story = {
       <Box>
         <Switch size="md" {...args} />
       </Box>
+    </Stack>
+  ),
+};
+
+/** Track focus ring (keyboard-only via useFocusRing); one focus surface. */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: { children: "Focused Switch" },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.tab();
+    await expect(canvas.getByRole("switch")).toHaveFocus();
+  },
+};
+
+/** On/off track surfaces (neutral vs primary + thumb position); independent of size. */
+export const States: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="row" gap="600" alignItems="center">
+      <Switch>Off</Switch>
+      <Switch defaultSelected>On</Switch>
     </Stack>
   ),
 };

@@ -241,7 +241,10 @@ export const Focused: Story = {
 just the primary one** (a split button's dropdown trigger, an input's
 stepper/clear button, a date field's calendar toggle) - each styles its own
 `:focus-visible`, and since only one element holds focus per snapshot, one story
-can't capture two rings.
+can't capture two rings. **Verify the ring actually renders before opting in** -
+if it's styled on a slot that never gets the focus state (a non-focusable
+indicator/track keyed off `data-focus` / `_focusWithin`), the snapshot captures
+nothing (see DropZone).
 
 **Text-entry inputs: hide the caret** so the focused snapshot is deterministic
 (Chromatic can't pause the native caret blink). `caret-color` is inherited, so
@@ -308,13 +311,23 @@ export const Controlled: Story = {
 };
 ```
 
-#### SmokeTest Story (REQUIRED)
+#### SmokeTest Story (only for interacting axes)
 
 Pack the **interacting** axes your component actually has into one matrix:
 iterate whichever of `sizes`, `variants`, `colorPalettes`, and
 selected/unselected (toggles) apply, covering every combination that produces a
 distinct visual. Content edge cases that change layout (long labels, icon +
 text) can go here too.
+
+**A matrix is only for interacting axes.** Build one only when a cross-cell is a
+visual neither axis produces alone (checked × invalid → a distinct critical
+fill). If the axes are **independent** - no novel cross-cell, one just
+scales/recolors the other (`size × colorPalette`, `size × on/off`) - do **not**
+build a matrix, even a small 2×2; snapshot each axis as its own showcase story
+(`Sizes`, `ColorPalettes`, a states story). The cross-product adds cells, not
+coverage. So not every component has a `SmokeTest` - components with only
+independent axes (Avatar, Badge, Switch) use dedicated showcase snapshots
+instead.
 
 Don't fold in an axis that applies a uniform, axis-independent transform:
 `disabled` resolves to one shared style regardless of palette/size/variant, so
@@ -713,7 +726,7 @@ You MUST validate against these requirements:
 - [ ] Focused story (if component is focusable)
 - [ ] Disabled story (for interactive components)
 - [ ] Controlled story (for stateful components)
-- [ ] SmokeTest story (MUST be last)
+- [ ] SmokeTest story if the component has interacting axes (MUST be last); independent axes use dedicated showcase stories instead
 
 #### Chromatic Snapshots
 

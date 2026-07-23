@@ -222,6 +222,8 @@ export const Base: Story = {
 };
 
 export const Sizes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <Stack gap="500">
@@ -243,6 +245,8 @@ export const Sizes: Story = {
 };
 
 export const Required: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return <LocalizedFieldStoryComponent {...baseStoryProps} isRequired />;
   },
@@ -328,6 +332,8 @@ export const Required: Story = {
 };
 
 export const Disabled: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return <LocalizedFieldStoryComponent {...baseStoryProps} isDisabled />;
   },
@@ -656,6 +662,8 @@ export const SingleLocaleOrCurrency: Story = {
 };
 
 export const DefaultExpanded: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return <LocalizedFieldStoryComponent {...baseStoryProps} defaultExpanded />;
   },
@@ -783,6 +791,8 @@ export const DisplayAllLocalesOrCurrencies: Story = {
 };
 
 export const HintDialog: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return <LocalizedFieldStoryComponent {...hintStoryProps} />;
   },
@@ -832,16 +842,14 @@ export const HintDialog: Story = {
     });
     await step("Money Field", async () => {
       const moneyField = await getFieldContainerForType(canvas, "money");
-      await step(
-        "Hint dialog button displays dialog with correct value when pressed",
-        async () => {
-          await checkFieldDetailsDialog(
-            moneyField,
-            document.body,
-            baseMoneyContextFields.hint
-          );
-        }
-      );
+      // Last field: open the hint and leave it open (no closing click) so the
+      // VRT snapshot captures the infoDialog popover.
+      await step("Hint dialog opens and stays open", async () => {
+        await userEvent.click(
+          within(moneyField).getByRole("button", { name: "more info" })
+        );
+        await within(document.body).findByText(baseMoneyContextFields.hint);
+      });
     });
   },
 };
@@ -2107,4 +2115,85 @@ export const CustomWidth: Story = {
       );
     }
   },
+};
+
+const localizedValues = { en: "Hello", de: "Hallo", "zh-Hans": "你好" };
+const noop = () => {};
+
+/** Collapsed default state: the default locale field + the show-all toggle. */
+export const Collapsed: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <LocalizedField
+      type="text"
+      label="Product name"
+      defaultLocaleOrCurrency="en"
+      valuesByLocaleOrCurrency={localizedValues}
+      onChange={noop}
+    />
+  ),
+};
+
+/** Fused locale label+input focus ring (`:has(:focus-within)` outline spanning both). */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <LocalizedField
+      type="text"
+      label="Product name"
+      defaultLocaleOrCurrency="en"
+      valuesByLocaleOrCurrency={localizedValues}
+      onChange={noop}
+      displayAllLocalesOrCurrencies
+    />
+  ),
+  play: async ({ canvasElement }) => {
+    canvasElement.style.caretColor = "transparent"; // native caret can't be paused
+    const canvas = within(canvasElement);
+    const inputs = await canvas.findAllByRole("textbox");
+    inputs[0].focus();
+    await expect(inputs[0]).toHaveFocus();
+  },
+};
+
+/** Invalid: red locale fields + group error (touched). */
+export const Invalid: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <LocalizedField
+      type="text"
+      label="Product name"
+      defaultLocaleOrCurrency="en"
+      valuesByLocaleOrCurrency={localizedValues}
+      onChange={noop}
+      displayAllLocalesOrCurrencies
+      error="Group error"
+      touched
+    />
+  ),
+};
+
+/** Warning: per-locale warning text in `warning.11` + the amber `WarningAmber` icon (distinct from neutral description / critical error). */
+export const Warning: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <LocalizedField
+      type="text"
+      label="Product name"
+      defaultLocaleOrCurrency="en"
+      valuesByLocaleOrCurrency={localizedValues}
+      warningsByLocaleOrCurrency={{
+        en: "Heads up",
+        de: "Achtung",
+        "zh-Hans": "注意",
+      }}
+      touched
+      onChange={noop}
+      displayAllLocalesOrCurrencies
+    />
+  ),
 };

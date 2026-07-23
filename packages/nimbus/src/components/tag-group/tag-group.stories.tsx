@@ -10,6 +10,7 @@ import {
   Text,
 } from "@commercetools/nimbus";
 import { DisplayColorPalettes } from "@/utils/display-color-palettes";
+import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
 
 /**
  * Storybook metadata configuration
@@ -268,10 +269,10 @@ export const EmptyState: Story = {
     });
   },
 };
-/**
- * Showcase Sizes
- */
+/** `size` variant (sm/md/lg); independent of color/selection, so its own snapshot. */
 export const Sizes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {},
   render: () => {
     const animalList = useListData({
@@ -295,9 +296,48 @@ export const Sizes: Story = {
   },
 };
 
-/**
- * Showcase Color Palettes
- */
+/** Removable resting chip (dismiss button); removal is offered only when the group is not selectable. */
+export const Removable: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: { onRemove: fn() },
+  render: ({ onRemove }) => (
+    <TagGroup.Root
+      aria-label="removable animals"
+      selectionMode="none"
+      onRemove={onRemove}
+    >
+      <TagGroup.TagList items={animalOptions.slice(0, 3)}>
+        {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+      </TagGroup.TagList>
+    </TagGroup.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await step("Each tag renders a dismiss button", async () => {
+      await expect(canvas.getAllByLabelText("Remove tag")).toHaveLength(3);
+    });
+  },
+};
+
+/** Tag focus ring; roving tabindex means one focus surface, so one snapshot. */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <TagGroup.Root aria-label="focused tags">
+      <TagGroup.TagList items={animalOptions.slice(0, 3)}>
+        {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
+      </TagGroup.TagList>
+    </TagGroup.Root>
+  ),
+  play: async () => {
+    await userEvent.tab();
+    expect(document.activeElement?.textContent).toContain("Koala");
+  },
+};
+
+/** Not snapshotted: renders all 34 palettes, but only the 6 semantic are in scope (covered by SmokeTest). */
 export const ColorPalettes: Story = {
   args: {},
   render: () => (
@@ -312,5 +352,34 @@ export const ColorPalettes: Story = {
         </TagGroup.Root>
       )}
     </DisplayColorPalettes>
+  ),
+};
+
+/** SmokeTest: colorPalette × selected (both use palette-dependent fills). Size is its own story; disabled has no visual (see coverage matrix). */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="400" alignItems="flex-start">
+      {SEMANTIC_COLOR_PALETTES.map((palette) => (
+        <TagGroup.Root
+          key={palette}
+          aria-label={`${palette} tags`}
+          selectionMode="multiple"
+          defaultSelectedKeys={new Set(["selected"])}
+        >
+          <TagGroup.TagList
+            items={[
+              { id: "unselected", name: `${palette} unselected` },
+              { id: "selected", name: `${palette} selected` },
+            ]}
+          >
+            {(item) => (
+              <TagGroup.Tag colorPalette={palette}>{item.name}</TagGroup.Tag>
+            )}
+          </TagGroup.TagList>
+        </TagGroup.Root>
+      ))}
+    </Stack>
   ),
 };

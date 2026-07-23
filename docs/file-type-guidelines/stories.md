@@ -173,11 +173,14 @@ export const SmokeTest: Story = {
 `disableSnapshot: false` takes the picture; Chromatic never reads `vrt` (our own
 label for finding snapshot stories - keep the two together).
 
-**What to snapshot:** every prop-driven visual state. Fold the interacting axes
-into one `SmokeTest` matrix; any state it can't render in one static image gets
-its own story (`Focused`, disabled-but-focusable, an open tooltip/popover). A
-showcase whose look a snapshot already covers stays snapshot-off. Never drop a
-visual state to save cost.
+**What to snapshot:** every prop-driven visual state. Fold **interacting** axes
+into one `SmokeTest` matrix (only when a cross-cell is a visual neither axis
+produces alone); independent axes that just scale/recolor each other
+(`size × colorPalette`, `size × on/off`) get separate showcase stories, not a
+matrix. Any state the matrix can't render gets its own story (`Focused`,
+disabled-but-focusable, an open tooltip/popover). A showcase whose look a
+snapshot already covers stays snapshot-off. Never drop a visual state to save
+cost.
 
 **Enumerate surfaces from the recipe + component source first** (selectors,
 variant/size keys, conditional props, and ambient axes like RTL), then snapshot
@@ -210,6 +213,10 @@ should blur (or be split so the snapshotted story doesn't end focused). Give
 **each** distinctly-styled focusable sub-element (a split button's trigger, an
 input's stepper/clear button) its own `Focused` story, not just the first - only
 one element holds focus per snapshot, so one story can't capture two rings.
+First confirm the ring actually renders: if it's styled on a slot that never
+receives the focus state (a non-focusable indicator/track keyed off `data-focus`
+or `_focusWithin`), the snapshot captures nothing - verify before opting in (see
+DropZone).
 
 ```typescript
 export const Focused: Story = {
