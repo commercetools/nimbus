@@ -1,6 +1,8 @@
 import {
   Box,
+  Button,
   Flex,
+  Stack,
   Text,
   SearchInput,
   Pagination,
@@ -21,12 +23,13 @@ import {
 } from "react";
 import Fuse from "fuse.js";
 import { useAtomValue } from "jotai";
+import { useNavigate } from "react-router-dom";
 
 import { semanticEnabledAtom } from "@/atoms/semantic-search";
 import { useSemanticSearch } from "@/semantic-search/use-semantic-search";
 
 import * as icons from "@commercetools/nimbus-icons";
-import { ContentCopy } from "@commercetools/nimbus-icons";
+import { ContentCopy, SearchOff } from "@commercetools/nimbus-icons";
 
 import {
   ALL_CATEGORIES,
@@ -225,6 +228,7 @@ export const IconBrowse = ({
   surface: Surface;
 }) => {
   const [, copyToClipboard] = useCopyToClipboard();
+  const navigate = useNavigate();
   const [q, setQ] = useState<string>("");
   // The input updates `q` on every keystroke (so typing stays snappy), but the
   // expensive Fuse search + grid render read this deferred copy. React keeps the
@@ -407,6 +411,17 @@ export const IconBrowse = ({
       .map(([tag]) => tag);
   }, [full, entryByName]);
 
+  // Keep the active keyword pinned in the bar even when a narrowing search
+  // pushes it out of the (frequency-ranked, capped) facet list — a filter that
+  // is still constraining the grid must stay visible and removable.
+  const tagBarItems = useMemo(
+    () =>
+      selectedTag && !tagFacets.includes(selectedTag)
+        ? [selectedTag, ...tagFacets]
+        : tagFacets,
+    [tagFacets, selectedTag]
+  );
+
   // The TagBar highlight tracks `selectedTag` immediately (snappy click), but
   // the expensive grid re-filter reads a deferred copy so a click never blocks.
   const deferredTag = useDeferredValue(selectedTag);
@@ -426,11 +441,12 @@ export const IconBrowse = ({
     setPage(1);
   }, [deferredQ, categorySlug, selectedTag]);
 
-  // A stale keyword can't survive a new result set — clear it whenever the
-  // category or search changes.
+  // Reset the keyword facet only when the category scope changes — its facets
+  // are recomputed for the new category. A keyword persists across search-term
+  // edits, so search AND keyword compose as independent, coexisting filters.
   useEffect(() => {
     setSelectedTag(null);
-  }, [deferredQ, categorySlug]);
+  }, [categorySlug]);
 
   const pageItems = useMemo(
     () => filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE),
@@ -480,11 +496,11 @@ export const IconBrowse = ({
 
         {/* Keyword facet filter — always shown (once keywords are available),
             refining whatever the current result set is. */}
-        {tagFacets.length > 0 && (
+        {tagBarItems.length > 0 && (
           <Box mt="300">
             <TagBar
               aria-label="Filter by keyword"
-              items={tagFacets}
+              items={tagBarItems}
               selectedKey={selectedTag}
               onSelectionChange={setSelectedTag}
             />
@@ -512,7 +528,56 @@ export const IconBrowse = ({
             <LoadingSpinner />
           </Flex>
         ) : filtered.length === 0 ? (
-          <Text color="neutral.11">No icons match your current filters.</Text>
+          // Search, category and keyword filters are combined with AND, so an
+          // over-constrained set yields nothing. Name the situation and offer a
+          // one-click way to drop each active filter and widen the results.
+          <Flex
+            direction="column"
+            align="center"
+            justify="center"
+            textAlign="center"
+            gap="400"
+            py="800"
+            px="400"
+          >
+            <Box color="neutral.8" css={{ fontSize: "48px" }}>
+              <SearchOff />
+            </Box>
+            <Stack gap="100" maxWidth="30rem">
+              <Text textStyle="lg" fontWeight="600" color="neutral.12">
+                No icons match all your filters
+              </Text>
+              <Text textStyle="sm" color="neutral.11">
+                Search, category and keyword filters are combined — an icon has
+                to match every one. Drop a filter to widen the results.
+              </Text>
+            </Stack>
+            <Flex gap="200" wrap="wrap" justify="center">
+              {q.trim() !== "" && (
+                <Button size="xs" variant="outline" onPress={() => setQ("")}>
+                  Clear search “{q.trim()}”
+                </Button>
+              )}
+              {selectedTag && (
+                <Button
+                  size="xs"
+                  variant="outline"
+                  onPress={() => setSelectedTag(null)}
+                >
+                  Remove keyword “{selectedTag}”
+                </Button>
+              )}
+              {categorySlug !== ALL_CATEGORIES && (
+                <Button
+                  size="xs"
+                  variant="outline"
+                  onPress={() => navigate("/icons")}
+                >
+                  Browse all categories
+                </Button>
+              )}
+            </Flex>
+          </Flex>
         ) : (
           // A Box (asChild) supplies `display:grid`. Columns auto-fill at the
           // --card-w minimum then stretch (`1fr`) to fill the row, so the block
