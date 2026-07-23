@@ -1,0 +1,113 @@
+---
+id: Components-SkeletonCircle
+title: SkeletonCircle
+exportName: SkeletonCircle
+description: A circular loading placeholder sized to the Avatar scale, for avatars and icons.
+lifecycleState: Stable
+order: 999
+menu:
+  - Components
+  - Feedback
+  - SkeletonCircle
+tags:
+  - component
+  - skeleton
+  - loading
+  - placeholder
+  - feedback
+  - circle
+  - avatar
+---
+
+## Overview
+
+`SkeletonCircle` is a circular loading placeholder for avatars, user icons, and
+circular thumbnails. Its `size` prop is aligned with the Avatar scale, so it can
+stand in for an `Avatar` at the same dimensions while the image loads — keeping
+the layout stable during the transition.
+
+`SkeletonCircle` is part of the Skeleton family, a convenience wrapper over
+[Skeleton](/components/feedback/skeleton) with `shape="circle"`. For rectangular
+blocks use `Skeleton`; for paragraphs of text use
+[SkeletonText](/components/feedback/skeletontext).
+
+### Resources
+
+Deep dive into implementation details and access the Nimbus design library.
+
+[Figma library](https://www.figma.com/design/AvtPX6g7OGGCRvNlatGOIY/NIMBUS-design-system)
+
+## Variables
+
+Get familiar with the features.
+
+### Size
+
+Use the avatar-aligned `size` prop to match an `Avatar`: `2xs` (24 px), `xs`
+(32 px), or `md` (40 px). The value applies equally to width and height.
+
+```jsx live
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <SkeletonCircle size="2xs" />
+    <SkeletonCircle size="xs" />
+    <SkeletonCircle size="md" />
+  </Stack>
+)
+```
+
+### Custom dimension
+
+For a size outside the Avatar scale, pass `boxSize` (a spacing token or CSS
+value). It sets both width and height, keeping the circle perfectly round.
+
+```jsx live
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <SkeletonCircle boxSize="1600" />
+    <SkeletonCircle boxSize="4800" />
+    <SkeletonCircle boxSize="80px" />
+  </Stack>
+)
+```
+
+### Inline default
+
+With neither `size` nor `boxSize` set, `SkeletonCircle` defaults to a `1em`
+circle that matches the current line height — handy for a placeholder icon
+sitting inline next to text.
+
+```jsx live
+const App = () => (
+  <Stack direction="row" gap="200" alignItems="center">
+    <SkeletonCircle />
+    <Text>Loading inline label…</Text>
+  </Stack>
+)
+```
+
+## Guidelines
+
+### Best practices
+
+- When standing in for an `Avatar`, use the matching `size` value so the
+  placeholder and the loaded avatar occupy exactly the same space.
+- Reach for `boxSize` only when the circle sits outside the Avatar scale;
+  otherwise prefer the named `size` for consistency.
+- Pair `SkeletonCircle` with [SkeletonText](/components/feedback/skeletontext)
+  to build avatar-plus-text loading rows.
+
+### When to use
+
+> [!TIP]\
+> Use SkeletonCircle when:
+- You are loading an avatar, user icon, or circular thumbnail
+- You want the placeholder to match the Avatar size scale
+- A row or card pairs a circular image with adjacent text
+
+> [!CAUTION]\
+> When NOT to use SkeletonCircle:
+- For rectangular content such as images or cards — use
+  [Skeleton](/components/feedback/skeleton) instead
+- For paragraphs of text — use
+  [SkeletonText](/components/feedback/skeletontext)

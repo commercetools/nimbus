@@ -1,0 +1,130 @@
+---
+title: SkeletonText Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { SkeletonText, type SkeletonTextProps } from '@commercetools/nimbus';
+```
+
+`SkeletonText` is built on [Skeleton](/components/feedback/skeleton). For single
+blocks use `Skeleton`; for circular placeholders see
+[SkeletonCircle](/components/feedback/skeletoncircle).
+
+### Basic usage
+
+`SkeletonText` renders a configurable number of placeholder lines to approximate
+a paragraph. The last line is narrower by default (`lastLineWidth="60%"`) to
+mimic a natural paragraph ending.
+
+```jsx live-dev
+const App = () => (
+  <SkeletonText lines={4} width="300px" />
+)
+```
+
+## Usage examples
+
+### Matching text size with `textStyle`
+
+`SkeletonText` accepts a `textStyle` prop (default `"body"`) that makes the
+placeholder lines occupy the same vertical rhythm as real text of that style.
+Each line becomes a `1lh` line-box sized by the style, with a `0.75em`
+(≈ cap-height) bar centered in it — so the bar sits where real glyphs sit and the
+pitch scales automatically: a `body` skeleton uses a 26 px line pitch, a `3xl`
+heading skeleton a 36 px pitch. Pass any Nimbus text style to match the content
+you are standing in for.
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="600" width="300px">
+    <SkeletonText textStyle="caption" />
+    <SkeletonText textStyle="body" />
+    <SkeletonText textStyle="3xl" lines={2} />
+  </Stack>
+)
+```
+
+### Conditional rendering (standalone pattern)
+
+Like the rest of the family, `SkeletonText` has no `isLoaded` prop. Render it
+while loading and swap it for the real text with conditional rendering.
+
+```jsx live-dev
+const App = () => {
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  return (
+    <Stack gap="400" width="320px">
+      <Button onPress={() => setIsLoading(v => !v)}>Toggle loading</Button>
+      <div aria-busy={isLoading}>
+        {isLoading ? (
+          <SkeletonText lines={3} width="100%" />
+        ) : (
+          <Text>
+            A short product description that replaces the placeholder once the
+            data has finished loading.
+          </Text>
+        )}
+      </div>
+    </Stack>
+  )
+}
+```
+
+## Component requirements
+
+### Accessibility
+
+`SkeletonText` is **decorative by default** — its container and lines render
+with `aria-hidden="true"` so screen readers skip over them.
+
+To communicate loading state to assistive technology, set `aria-busy="true"` on
+the **container** that wraps the skeleton region, then clear it and render the
+real content once loading completes.
+
+```tsx
+<section aria-busy={isLoading} aria-label="Product description">
+  {isLoading ? (
+    <SkeletonText lines={3} width="100%" />
+  ) : (
+    <ProductDescription product={product} />
+  )}
+</section>
+```
+
+Announce the loading region on the wrapping container rather than labelling the
+skeleton itself — see [Skeleton](/components/feedback/skeleton) for the full
+rationale.
+
+#### Reduced motion
+
+When the user has enabled `prefers-reduced-motion: reduce`, the line animations
+are automatically disabled regardless of the `animation` prop value. No
+additional configuration is required.
+
+#### Keyboard navigation
+
+`SkeletonText` is non-interactive and decorative. It does not receive focus or
+support keyboard interaction.
+
+## API reference
+
+<PropsTable id="SkeletonText" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using SkeletonText within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: skeleton-text.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-skeleton--docs)
+- [Skeleton](/components/feedback/skeleton)
+- [SkeletonCircle](/components/feedback/skeletoncircle)

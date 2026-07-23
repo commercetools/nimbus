@@ -1,0 +1,211 @@
+---
+title: Skeleton Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Skeleton, type SkeletonProps } from '@commercetools/nimbus';
+```
+
+For paragraph and circular placeholders, see
+[SkeletonText](/components/feedback/skeletontext) and
+[SkeletonCircle](/components/feedback/skeletoncircle) — both are built on
+`Skeleton`.
+
+### Basic usage
+
+`Skeleton` renders a muted, animated block that holds space for content while it
+loads. Give it a `width` and `height` (or any Chakra style props) to match the
+content it stands in for.
+
+```jsx live-dev
+const App = () => (
+  <Skeleton width="200px" height="40px" />
+)
+```
+
+## Usage examples
+
+### Conditional rendering (standalone pattern)
+
+Skeleton does **not** have an `isLoaded` prop. Instead, render the skeleton
+during loading and swap it for real content using conditional rendering. This
+keeps loading-state management in your own code, separate from the styling
+component.
+
+```jsx live-dev
+const App = () => {
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  return (
+    <Stack gap="400">
+      <Button onPress={() => setIsLoading(v => !v)}>Toggle loading</Button>
+      <div aria-busy={isLoading}>
+        {isLoading ? (
+          <Skeleton width="300px" height="80px" />
+        ) : (
+          <Stack
+            width="300px"
+            height="80px"
+            backgroundColor="neutral.2"
+            alignItems="center"
+            justifyContent="center"
+          >
+            Content loaded
+          </Stack>
+        )}
+      </div>
+    </Stack>
+  )
+}
+```
+
+### Animation variants
+
+The `animation` prop controls how the placeholder animates while loading.
+
+- `pulse` (default): opacity oscillation
+- `wave`: gradient shimmer sweep via an `::after` pseudo-element
+- `none`: no animation
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="400">
+    <Skeleton width="200px" height="40px" animation="pulse" />
+    <Skeleton width="200px" height="40px" animation="wave" />
+    <Skeleton width="200px" height="40px" animation="none" />
+  </Stack>
+)
+```
+
+### Shape variants
+
+The `shape` prop controls the border radius applied to the placeholder.
+
+- `rectangle` (default): small border radius (~4 px)
+- `circle`: fully-rounded with a forced 1:1 aspect ratio
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Skeleton width="120px" height="40px" shape="rectangle" />
+    <Skeleton width="60px" height="60px" shape="circle" />
+  </Stack>
+)
+```
+
+### Size
+
+The optional `size` prop is a square shortcut aligned with the `Avatar` scale —
+it applies equal width and height so you don't have to set both.
+
+- `2xs`: 24 px · `xs`: 32 px · `md`: 40 px
+
+It is opt-in with no default; leave it unset to size the placeholder with
+`width`/`height`/`boxSize` instead. [SkeletonCircle](/components/feedback/skeletoncircle)
+builds on it to size its circle.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="center">
+    <Skeleton size="2xs" />
+    <Skeleton size="xs" />
+    <Skeleton size="md" />
+  </Stack>
+)
+```
+
+## Component requirements
+
+### Accessibility
+
+Skeleton placeholders are **decorative by default** — they render with
+`aria-hidden="true"` so screen readers skip over them. This is the correct
+behavior: the shapes convey visual loading activity but carry no semantic
+meaning on their own.
+
+To communicate loading state to assistive technology, set `aria-busy="true"` on
+the **container** that wraps the skeleton region. When content has loaded, remove
+the attribute (or set it to `false`) and render the real content in its place.
+
+```tsx
+// Announce the loading region to screen readers via aria-busy
+<section aria-busy={isLoading} aria-label="Product details">
+  {isLoading ? (
+    <Skeleton width="100%" height="120px" />
+  ) : (
+    <ProductDetails product={product} />
+  )}
+</section>
+```
+
+Prefer the container `aria-busy` pattern above over labelling individual
+skeletons. A skeleton is a role-less `<div>`, so adding `aria-label` to it while
+un-hiding it (`aria-hidden={false}`) is an invalid ARIA combination that
+accessibility linters (axe) flag as `aria-prohibited-attr`. Announce the loading
+region on the wrapping container instead.
+
+#### Reduced motion
+
+When the user has enabled the `prefers-reduced-motion: reduce` media condition,
+all animations are automatically disabled — regardless of the `animation` prop
+value. The `::after` wave sweep is also hidden. No additional configuration is
+required.
+
+If your use case requires tracking and analytics for this component, it is good
+practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "product-detail-skeleton";
+
+export const ProductDetailSkeleton = () => (
+  <div id={PERSISTENT_ID} aria-busy>
+    <Skeleton width="100%" height="120px" />
+  </div>
+);
+```
+
+#### Keyboard navigation
+
+Skeleton components are non-interactive and decorative. They do not receive
+focus or support keyboard interaction.
+
+## API reference
+
+<PropsTable id="Skeleton" />
+
+## Common patterns
+
+### Composing a card skeleton
+
+Combine `Skeleton` with `SkeletonCircle` and `SkeletonText` to build realistic
+loading layouts that mirror the final content.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="row" gap="400" alignItems="flex-start">
+    <SkeletonCircle size="md" />
+    <Stack gap="200">
+      <SkeletonText textStyle="lg" lines={1} width="180px" />
+      <SkeletonText lines={2} width="240px" />
+    </Stack>
+  </Stack>
+)
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Skeleton within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: skeleton.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-skeleton--docs)
+- [SkeletonText](/components/feedback/skeletontext)
+- [SkeletonCircle](/components/feedback/skeletoncircle)

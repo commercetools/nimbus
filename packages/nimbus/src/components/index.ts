@@ -40,6 +40,7 @@ export * from "./number-input";
 export * from "./grid";
 export * from "./select";
 export * from "./separator";
+export * from "./skeleton";
 export * from "./spacer";
 export * from "./accordion";
 export * from "./alert";
