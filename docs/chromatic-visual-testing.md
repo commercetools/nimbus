@@ -508,6 +508,22 @@ which no play-dispatchable event sets.
   so nothing leaks into the next capture. A component can be focusable in its
   own right (Toast's root has `tabIndex=0` + `focusRing: outside`) - reach it
   the real way (its keyboard hotkey + Tab), not a synthetic `.focus()`.
+- **Overlays: snapshot the _open_ state.** A portal component's primary visual
+  is its open state, so render it open - `defaultOpen` (Dialog/Drawer/Menu) or
+  open it in the play and await the portal - and leave it open; the entrance
+  animation settles on its last frame. Give each distinct open surface its own
+  story: open dialogs/drawers fill the viewport with a backdrop and can't share
+  a frame, so there's no `SmokeTest` matrix (independent recipe variants become
+  separate open showcases). open/close, focus trap, and dismissal stay
+  behavioral.
+- **Snapshot `placement` only when it's a _recipe variant_, not RA
+  positioning.** Dialog/Drawer `placement` is a recipe layout variant (different
+  `alignItems`/margins, a full-height side panel vs a full-width top panel) -
+  one open snapshot per placement. Menu/Tooltip `placement` is React Aria
+  positioning
+  - the same box repositioned, no arrow, no recipe delta - so it's behavioral,
+    no per-placement snapshot. The test: does the axis flow through the recipe
+    (visual) or RA's positioning engine (behavioral)?
 - **Hide the blinking text caret on a focused input.** A `Focused` snapshot of a
   text-entry input captures the focus ring, but focusing also paints the
   browser's native caret - which Chromatic can't stabilize (its

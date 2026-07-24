@@ -1,4 +1,5 @@
 ---
+name: writing-stories
 description:
   Create, update, or validate Storybook stories with comprehensive play
   functions
@@ -441,17 +442,27 @@ live in docs/chromatic-visual-testing.md.
   in-frame; hold it open (`duration: Infinity`), await it, clean up between
   stories (`clearToasts()`). Reach a portal component's own focus via its real
   keyboard path, not a synthetic `.focus()`.
+- **Overlays: snapshot the open state** - render open (`defaultOpen` or play-open
+  - await) and leave it open (entrance settles on its last frame). Each distinct
+    open surface is its own story (backdrops can't share a frame); open/close and
+    dismissal stay behavioral.
+- **Snapshot `placement` only when it's a recipe variant** - Dialog/Drawer
+  placement is a recipe layout (snapshot each); Menu/Tooltip placement is RA
+  positioning (same box repositioned, no arrow) - behavioral, no per-placement
+  snapshot.
 
-**When a VRT pattern changes, sync all three canonical docs.** Any change to a
-Chromatic/VRT convention (a new opt-in state, a matrix rule, or a determinism fix
-like `caret-color: transparent` for focused text inputs) must land in all three
-places at once, or they drift:
+**When a VRT pattern changes, sync all three canonical docs — at their set
+depth.** The overlap is intentional but tiered: the rationale lives in **one**
+place; the others state the rule and point to it. Don't paste reasoning/examples
+into more than one, or they duplicate and drift. Any change must land in all
+three, each at its depth:
 
-1. `docs/chromatic-visual-testing.md` — the how/why guide + best practices.
-2. `docs/file-type-guidelines/stories.md` — the "Chromatic Visual Regression
-   Snapshots" section.
-3. `.claude/skills/writing-stories/SKILL.md` (this file) — the `SmokeTest` /
-   `Focused` templates, the "what gets captured" blurb, and the checklist.
+1. `docs/chromatic-visual-testing.md` — **source of truth**: full rationale,
+   examples, edge cases.
+2. `docs/file-type-guidelines/stories.md` — **terse rule + the copy-paste
+   snippet only**; defer the _why_ to #1 (no restated reasoning).
+3. `.claude/skills/writing-stories/SKILL.md` (this file) — templates + the
+   "what gets captured" bullets + the checklist.
 
 ### Step 3: Portal Content Handling
 
@@ -800,6 +811,11 @@ You MUST validate against these requirements:
 - [ ] **Portal** components (Toast/overlays): transient UI held open
       (`duration: Infinity`), awaited, and cleaned up between stories; the
       component's own focus reached via its **real keyboard path**, not `.focus()`
+- [ ] **Overlays** snapshot the **open** state (rendered open, left open); each
+      distinct open surface is its own story; open/close & dismissal stay behavioral
+- [ ] **`placement`** snapshotted only when it's a **recipe variant**
+      (Dialog/Drawer); RA-positioning placement (Menu/Tooltip, same box) is
+      behavioral
 
 #### Play Functions (CRITICAL)
 

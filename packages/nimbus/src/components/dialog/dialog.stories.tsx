@@ -424,108 +424,37 @@ export const ScrollBehavior: Story = {
       (canvasElement.parentNode as HTMLElement) ?? canvasElement
     );
 
-    await step("Test 'scroll inside' keyboard accessibility", async () => {
-      // Test scroll inside dialog
-      const scrollInsideTrigger = canvas.getByRole("button", {
-        name: "Scroll inside",
-      });
-      await userEvent.click(scrollInsideTrigger);
+    await step(
+      "Scroll-inside body is the keyboard-focusable scroll region",
+      async () => {
+        const scrollInsideTrigger = canvas.getByRole("button", {
+          name: "Scroll inside",
+        });
+        await userEvent.click(scrollInsideTrigger);
+        await waitFor(() => {
+          expect(canvas.getByRole("dialog")).toBeInTheDocument();
+        });
 
-      await waitFor(() => {
-        expect(canvas.getByRole("dialog")).toBeInTheDocument();
-      });
-
-      // Verify dialog body is focusable (tabIndex=0) for scroll inside
-      const dialogBody = canvas.getByTestId("dialog-body-inside");
-      expect(dialogBody).toHaveAttribute("tabIndex", "0");
-
-      // Test keyboard navigation to dialog body
-      await userEvent.tab(); // Move to Close button
-      await userEvent.tab(); // Move to Dialog.Body
-      await waitFor(() => {
-        // Verify dialog body is focusable and accessible
-        expect(dialogBody).toBeInTheDocument();
+        const dialogBody = canvas.getByTestId("dialog-body-inside");
         expect(dialogBody).toHaveAttribute("tabIndex", "0");
-      });
 
-      // Test keyboard scrolling with arrow keys
-      // Get initial scroll position - re-query to ensure we have the current state
-      const initialDialogBody = canvas.getByTestId("dialog-body-inside");
-      const initialScrollTop = initialDialogBody?.scrollTop || 0;
+        // Tab (real keyboard) until the scroll region holds focus.
+        for (let i = 0; i < 6 && document.activeElement !== dialogBody; i++) {
+          await userEvent.tab();
+        }
+        await expect(dialogBody).toHaveFocus();
+        // Keyboard scroll (Arrow/PageDown/Home/End moving scrollTop) is not
+        // asserted - scrollTop doesn't update in the test browser. See matrix.
 
-      // Scroll down with arrow keys
-      await userEvent.keyboard("{ArrowDown}");
-      await userEvent.keyboard("{ArrowDown}");
-      await userEvent.keyboard("{ArrowDown}");
-
-      // Verify scrolling occurred
-      // Note: In some test environments, scrollTop might not update immediately
-      // or might be subject to environment differences. We check both scroll position
-      // change and ensure the element remains focused (indicating key handling works)
-      await waitFor(
-        () => {
-          // Re-query the element to ensure we have the current state
-          const currentDialogBody = canvas.getByTestId("dialog-body-inside");
-          const currentScrollTop = currentDialogBody?.scrollTop || 0;
-
-          // Check that keyboard interaction is working by verifying the dialog body
-          // is still focusable and the arrow keys didn't cause navigation away from the dialog
-          expect(currentDialogBody).toBeInTheDocument();
-          expect(currentDialogBody).toHaveAttribute("tabIndex", "0");
-
-          // Then check for scroll position change (if supported in this environment)
-          // If scroll position doesn't change due to environment limitations,
-          // the focus check above already validates keyboard interaction works
-          if (currentScrollTop > 0 || initialScrollTop > 0) {
-            expect(currentScrollTop).toBeGreaterThanOrEqual(initialScrollTop);
-          }
-        },
-        { timeout: 3000, interval: 100 }
-      );
-
-      // Test Page Down key
-      await userEvent.keyboard("{PageDown}");
-      await waitFor(
-        () => {
-          const currentDialogBody = canvas.getByTestId("dialog-body-inside");
-          // Verify keyboard navigation is working by confirming dialog still exists and is interactive
-          expect(currentDialogBody).toBeInTheDocument();
-          expect(currentDialogBody).toHaveAttribute("tabIndex", "0");
-        },
-        { timeout: 3000, interval: 100 }
-      );
-
-      // Test Home key to scroll to top
-      await userEvent.keyboard("{Home}");
-      await waitFor(
-        () => {
-          const currentDialogBody = canvas.getByTestId("dialog-body-inside");
-          expect(currentDialogBody).toBeInTheDocument();
-          expect(currentDialogBody).toHaveAttribute("tabIndex", "0");
-        },
-        { timeout: 3000, interval: 100 }
-      );
-
-      // Test End key to scroll to bottom
-      await userEvent.keyboard("{End}");
-      await waitFor(
-        () => {
-          const currentDialogBody = canvas.getByTestId("dialog-body-inside");
-          expect(currentDialogBody).toBeInTheDocument();
-          expect(currentDialogBody).toHaveAttribute("tabIndex", "0");
-        },
-        { timeout: 3000, interval: 100 }
-      );
-
-      // Close dialog
-      await userEvent.keyboard("{Escape}");
-      await waitFor(
-        () => {
-          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-        },
-        { timeout: 3000 }
-      );
-    });
+        await userEvent.keyboard("{Escape}");
+        await waitFor(
+          () => {
+            expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+          },
+          { timeout: 3000 }
+        );
+      }
+    );
 
     await step("Test 'scroll outside' behavior comparison", async () => {
       // Test scroll outside dialog
@@ -577,31 +506,15 @@ export const ScrollBehavior: Story = {
       );
     });
 
-    await step("Test focus restoration after keyboard scrolling", async () => {
-      // Re-open scroll inside dialog
+    await step("Focus returns to the trigger after close", async () => {
       const scrollInsideTrigger = canvas.getByRole("button", {
         name: "Scroll inside",
       });
       await userEvent.click(scrollInsideTrigger);
-
       await waitFor(() => {
         expect(canvas.getByRole("dialog")).toBeInTheDocument();
       });
 
-      // Tab to dialog body and scroll
-      const dialogBody = canvas.getByTestId("dialog-body-inside");
-      await userEvent.tab(); // Move to Decline button
-      await userEvent.tab(); // Move to Accept button
-      await userEvent.tab(); // Move to dialog body
-      await userEvent.keyboard("{PageDown}"); // Scroll
-
-      // Verify dialog body remains accessible during scrolling
-      await waitFor(() => {
-        expect(dialogBody).toBeInTheDocument();
-        expect(dialogBody).toHaveAttribute("tabIndex", "0");
-      });
-
-      // Close dialog and verify focus restoration
       await userEvent.keyboard("{Escape}");
       await waitFor(
         () => {
@@ -609,54 +522,9 @@ export const ScrollBehavior: Story = {
         },
         { timeout: 3000 }
       );
-
-      // Verify focus restoration (focus should return to original trigger)
-      // Note: Focus restoration may vary by test environment
-      await waitFor(
-        () => {
-          // Check if trigger is at least accessible and in document
-          expect(scrollInsideTrigger).toBeInTheDocument();
-          expect(scrollInsideTrigger).toHaveAttribute("type", "button");
-        },
-        { timeout: 1000 }
-      );
-    });
-
-    await step("Test scroll indicators and visual feedback", async () => {
-      // Test that focus ring is visible when dialog body is focused
-      const scrollInsideTrigger = canvas.getByRole("button", {
-        name: "Scroll inside",
+      await waitFor(() => expect(scrollInsideTrigger).toHaveFocus(), {
+        timeout: 1000,
       });
-      await userEvent.click(scrollInsideTrigger);
-
-      await waitFor(() => {
-        expect(canvas.getByRole("dialog")).toBeInTheDocument();
-      });
-
-      const dialogBody = canvas.getByTestId("dialog-body-inside");
-
-      // Tab to dialog body
-      await userEvent.tab(); // Move to Decline button
-      await userEvent.tab(); // Move to Accept button
-      await userEvent.tab(); // Move to dialog body
-      await waitFor(() => {
-        // Verify dialog body is accessible for keyboard interaction
-        expect(dialogBody).toBeInTheDocument();
-        expect(dialogBody).toHaveAttribute("tabIndex", "0");
-      });
-
-      // Verify dialog body is properly configured for focus and scroll
-      expect(dialogBody).toHaveAttribute("tabIndex", "0");
-
-      // Close dialog
-      const closeButton = canvas.getByRole("button", { name: /close/i });
-      await userEvent.click(closeButton);
-      await waitFor(
-        () => {
-          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-        },
-        { timeout: 3000 }
-      );
     });
   },
 };
@@ -1191,5 +1059,152 @@ export const NestedDialogs: Story = {
         { timeout: 1000 }
       );
     });
+  },
+};
+
+// VRT open-state snapshots: `defaultOpen` so Chromatic captures the settled overlay (entrance animation pauses in place).
+
+const awaitOpen = async (canvasElement: HTMLElement) => {
+  const canvas = within(
+    (canvasElement.parentNode as HTMLElement) ?? canvasElement
+  );
+  await waitFor(() => expect(canvas.getByRole("dialog")).toBeInTheDocument());
+};
+
+/**
+ * Open dialog (center) - the canonical chrome: header + title + close button,
+ * body, footer actions, and the blurred backdrop.
+ */
+export const Open: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Dialog.Root defaultOpen>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>Dialog Title</Dialog.Title>
+          <Dialog.CloseTrigger />
+        </Dialog.Header>
+        <Dialog.Body>
+          <Text>This is the default dialog with basic functionality.</Text>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Button slot="close">Cancel</Button>
+          <Button variant="solid">Save</Button>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog.Root>
+  ),
+  play: async ({ canvasElement }) => awaitOpen(canvasElement),
+};
+
+/**
+ * Placement `top` - dialog pinned to the top of the viewport.
+ */
+export const OpenTop: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Dialog.Root defaultOpen placement="top">
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>Placement: top</Dialog.Title>
+          <Dialog.CloseTrigger />
+        </Dialog.Header>
+        <Dialog.Body>
+          <Text>This dialog is positioned at the top.</Text>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Button slot="close">Close</Button>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog.Root>
+  ),
+  play: async ({ canvasElement }) => awaitOpen(canvasElement),
+};
+
+/**
+ * Placement `bottom` - dialog pinned to the bottom of the viewport.
+ */
+export const OpenBottom: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Dialog.Root defaultOpen placement="bottom">
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>Placement: bottom</Dialog.Title>
+          <Dialog.CloseTrigger />
+        </Dialog.Header>
+        <Dialog.Body>
+          <Text>This dialog is positioned at the bottom.</Text>
+        </Dialog.Body>
+        <Dialog.Footer>
+          <Button slot="close">Close</Button>
+        </Dialog.Footer>
+      </Dialog.Content>
+    </Dialog.Root>
+  ),
+  play: async ({ canvasElement }) => awaitOpen(canvasElement),
+};
+
+const ScrollInsideDialog = () => (
+  <Dialog.Root defaultOpen scrollBehavior="inside">
+    <Dialog.Content>
+      <Dialog.Header>
+        <Dialog.Title>Terms and conditions</Dialog.Title>
+        <Dialog.CloseTrigger />
+      </Dialog.Header>
+      <Separator />
+      <Dialog.Body data-testid="scroll-inside-body">
+        <Stack>
+          {Array.from({ length: 20 }, (_, i) => (
+            <Text key={i}>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. This
+              is paragraph {i + 1} of scrollable content.
+            </Text>
+          ))}
+        </Stack>
+      </Dialog.Body>
+      <Separator />
+      <Dialog.Footer>
+        <Button slot="close">Decline</Button>
+        <Button variant="solid">Accept</Button>
+      </Dialog.Footer>
+    </Dialog.Content>
+  </Dialog.Root>
+);
+
+/**
+ * `scrollBehavior="inside"` - constrained height with a scrollable body and
+ * header/footer separators; distinct from the default `outside`.
+ */
+export const OpenScrollInside: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => <ScrollInsideDialog />,
+  play: async ({ canvasElement }) => awaitOpen(canvasElement),
+};
+
+/**
+ * The scroll-inside body is a keyboard-focusable scroll region with its own
+ * `focusVisibleRing` (a11y for scrolling). Reached via Tab, so the ring renders.
+ */
+export const OpenScrollInsideFocused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => <ScrollInsideDialog />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+    await waitFor(() => expect(canvas.getByRole("dialog")).toBeInTheDocument());
+    const body = canvas.getByTestId("scroll-inside-body");
+    // Tab (real keyboard, so :focus-visible fires) until the body holds focus.
+    for (let i = 0; i < 6 && document.activeElement !== body; i++) {
+      await userEvent.tab();
+    }
+    await expect(body).toHaveFocus();
   },
 };
