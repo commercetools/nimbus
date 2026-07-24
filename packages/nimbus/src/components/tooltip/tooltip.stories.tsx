@@ -53,6 +53,8 @@ type Story = StoryObj<typeof Tooltip.Content>;
  * Demonstrates the most basic implementation
  */
 export const Base: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Demo Tooltip",
   },

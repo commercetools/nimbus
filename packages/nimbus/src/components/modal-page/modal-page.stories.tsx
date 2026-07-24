@@ -102,6 +102,9 @@ export const InfoPage: Story = {
  * Form page — header actions and footer with save/cancel buttons.
  */
 export const FormPage: Story = {
+  // VRT: the back button auto-focuses on open (a11y, focus-trapped), so its focus ring is expected in the snapshot.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <ModalPage.Root isOpen onClose={() => {}}>
       <ModalPage.TopBar
@@ -211,6 +214,8 @@ const TabularPageRender = () => {
 };
 
 export const TabularPage: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => <TabularPageRender />,
 
   play: async ({ canvasElement, step }) => {
