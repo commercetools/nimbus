@@ -37,6 +37,8 @@ const meta: Meta = {
     layout: "centered",
   },
   tags: ["autodocs"],
+  // Teardown (post-snapshot) clear so persistent VRT toasts don't leak into the next story under isolate:false.
+  beforeEach: () => clearToasts,
 };
 
 export default meta;
