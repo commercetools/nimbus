@@ -178,8 +178,8 @@ catalogs:
       specifier: ^14.6.1
       version: 14.6.1
     '@typescript-eslint/types':
-      specifier: ^8.48.1
-      version: 8.64.0
+      specifier: ^8.65.0
+      version: 8.65.0
     '@typescript-eslint/typescript-estree':
       specifier: ^8.56.1
       version: 8.64.0
@@ -883,7 +883,7 @@ importers:
     dependencies:
       '@typescript-eslint/types':
         specifier: catalog:tooling
-        version: 8.64.0
+        version: 8.65.0
       '@typescript-eslint/typescript-estree':
         specifier: catalog:tooling
         version: 8.64.0(typescript@5.9.3)
@@ -4308,6 +4308,10 @@ packages:
 
   '@typescript-eslint/types@8.64.0':
     resolution: {integrity: sha512-qjhfuTfLXjA4IOzXvz0rTjT01BqEiIgPoUeMwiEjnaHKJMTNo8rH5pYW1a2L/0Dnux2fPC85AeyJoWaGa8WxTA==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@typescript-eslint/types@8.65.0':
+    resolution: {integrity: sha512-JSSwWNy+H0E/01jJEM+hrX6N0OFDzFzeIhHFSAS01tlVaevpG8cFyYRPhS5yjGOvBUx3sqQHVMjCL1CAZZMxBg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@typescript-eslint/typescript-estree@8.64.0':
@@ -14292,7 +14296,7 @@ snapshots:
   '@typescript-eslint/project-service@8.64.0(typescript@5.9.3)':
     dependencies:
       '@typescript-eslint/tsconfig-utils': 8.64.0(typescript@5.9.3)
-      '@typescript-eslint/types': 8.64.0
+      '@typescript-eslint/types': 8.65.0
       debug: 4.4.3
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -14320,6 +14324,8 @@ snapshots:
       - supports-color
 
   '@typescript-eslint/types@8.64.0': {}
+
+  '@typescript-eslint/types@8.65.0': {}
 
   '@typescript-eslint/typescript-estree@8.64.0(typescript@5.9.3)':
     dependencies:
