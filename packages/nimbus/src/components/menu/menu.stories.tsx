@@ -2178,3 +2178,161 @@ export const CustomWidth: Story = {
     });
   },
 };
+
+// VRT open-state snapshots: `defaultOpen` so Chromatic captures the settled open popover (entry animation pauses in place).
+
+const awaitMenuOpen = async (canvasElement: HTMLElement) => {
+  const canvas = within(
+    (canvasElement.parentNode as HTMLElement) ?? canvasElement
+  );
+  await waitFor(() => expect(canvas.getByRole("menu")).toBeInTheDocument());
+};
+
+/**
+ * Open action menu - item slot layouts (icon/label/description/keyboard), a
+ * section with an uppercase label, separators, a critical item, a disabled item,
+ * and a submenu-parent (caret). The auto-focused first item shows the focus ring.
+ */
+export const OpenMenu: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Menu.Root defaultOpen>
+      <Menu.Trigger>Menu</Menu.Trigger>
+      <Menu.Content>
+        <Menu.Section label="Menu items">
+          {/* Every 4-column grid combo: icon / description / keyboard on & off */}
+          <Menu.Item id="full">
+            <Icon slot="icon">
+              <InsertDriveFile />
+            </Icon>
+            <Text slot="label">Icon + label + description + kbd</Text>
+            <Text slot="description">All four columns populated</Text>
+            <Kbd slot="keyboard">⌘N</Kbd>
+          </Menu.Item>
+          <Menu.Item id="label-only">
+            <Text slot="label">Label only</Text>
+          </Menu.Item>
+          <Menu.Item id="label-desc">
+            <Text slot="label">Label + description</Text>
+            <Text slot="description">No icon, no keyboard</Text>
+          </Menu.Item>
+          <Menu.Item id="label-kbd">
+            <Text slot="label">Label + keyboard</Text>
+            <Kbd slot="keyboard">⌘K</Kbd>
+          </Menu.Item>
+          <Menu.Item id="delete" isCritical>
+            <Icon slot="icon">
+              <Delete />
+            </Icon>
+            <Text slot="label">Critical (icon + label + kbd)</Text>
+            <Kbd slot="keyboard">⌫</Kbd>
+          </Menu.Item>
+          <Menu.Item id="disabled" isDisabled>
+            <Icon slot="icon">
+              <Backup />
+            </Icon>
+            <Text slot="label">Disabled (icon + label)</Text>
+          </Menu.Item>
+        </Menu.Section>
+        <Separator />
+        <Menu.SubmenuTrigger>
+          <Menu.Item>
+            <Icon slot="icon">
+              <Settings />
+            </Icon>
+            <Text slot="label">More options</Text>
+          </Menu.Item>
+          <Menu.Submenu>
+            <Menu.Item id="sub1">
+              <Text slot="label">Submenu item</Text>
+            </Menu.Item>
+          </Menu.Submenu>
+        </Menu.SubmenuTrigger>
+      </Menu.Content>
+    </Menu.Root>
+  ),
+  play: async ({ canvasElement }) => awaitMenuOpen(canvasElement),
+};
+
+/**
+ * Selection menu - selected items render the `data-selected` background
+ * (distinct from the focus/hover background).
+ */
+export const OpenSelection: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Menu.Root
+      defaultOpen
+      selectionMode="multiple"
+      defaultSelectedKeys={new Set(["bold", "italic"])}
+    >
+      <Menu.Trigger>Format</Menu.Trigger>
+      <Menu.Content>
+        <Menu.Section label="Text style">
+          <Menu.Item id="bold">
+            <Text slot="label">Bold</Text>
+          </Menu.Item>
+          <Menu.Item id="italic">
+            <Text slot="label">Italic</Text>
+          </Menu.Item>
+          <Menu.Item id="underline">
+            <Text slot="label">Underline</Text>
+          </Menu.Item>
+        </Menu.Section>
+      </Menu.Content>
+    </Menu.Root>
+  ),
+  play: async ({ canvasElement }) => awaitMenuOpen(canvasElement),
+};
+
+/**
+ * Open submenu - the nested flyout, opened by hovering the submenu-parent and
+ * left open so the second popover + caret are captured.
+ */
+export const OpenSubmenu: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Menu.Root defaultOpen>
+      <Menu.Trigger>Menu</Menu.Trigger>
+      <Menu.Content>
+        <Menu.SubmenuTrigger>
+          <Menu.Item>
+            <Icon slot="icon">
+              <Settings />
+            </Icon>
+            <Text slot="label">Settings</Text>
+            <Text slot="description">Opens a submenu</Text>
+          </Menu.Item>
+          <Menu.Submenu>
+            <Menu.Item id="general">
+              <Icon slot="icon">
+                <Settings />
+              </Icon>
+              <Text slot="label">General</Text>
+            </Menu.Item>
+            <Menu.Item id="account">
+              <Icon slot="icon">
+                <AccountCircle />
+              </Icon>
+              <Text slot="label">Account</Text>
+            </Menu.Item>
+          </Menu.Submenu>
+        </Menu.SubmenuTrigger>
+        <Menu.Item id="other">
+          <Text slot="label">Other item</Text>
+        </Menu.Item>
+      </Menu.Content>
+    </Menu.Root>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+    await waitFor(() => expect(canvas.getByRole("menu")).toBeInTheDocument());
+    await userEvent.hover(canvas.getByRole("menuitem", { name: /Settings/ }));
+    await waitFor(() => expect(canvas.getAllByRole("menu")).toHaveLength(2));
+  },
+};

@@ -468,7 +468,11 @@ which no play-dispatchable event sets.
   build a matrix, even a 2×2; snapshot each axis as its own showcase story. The
   cross-product adds cells, not coverage. Still fold a family of near-identical
   behavioral stories into one labeled snapshot (Avatar's `AllFallbacks`) when it
-  aids review without losing coverage.
+  aids review without losing coverage. **Name that matrix `SmokeTest` and render
+  it last** - it marks the role (the comprehensive resting-visual carrier) and
+  stays accurate when axes change, unlike an axis-list name; the axis list lives
+  in the doc comment. (Older components use descriptive names like
+  `VariantsSizesAndStates` - being reconciled to `SmokeTest`.)
 - **Capture the focus ring on every distinctly-styled focusable sub-element.** A
   split button's dropdown trigger, an input's clear button or stepper, and a
   date field's calendar toggle each style their own `:focus-visible`; a
@@ -476,9 +480,52 @@ which no play-dispatchable event sets.
   untested.
 - **Use `play` for functional testing alongside visual** - the two aren't in
   tension; a story can both assert behavior and be snapshotted.
-- **Pause JS-driven animations manually** - Chromatic auto-pauses CSS
-  animations/transitions, videos, GIFs, but not JS animations. Worth remembering
-  if any button state animates via JS.
+- **Animated components: know where Chromatic pauses.** It auto-pauses CSS
+  transitions, CSS/SVG animations, and videos (not JS animations - pause those
+  manually) and seeks to a **fixed** frame, so the capture is deterministic
+  regardless of when the run fires. The default pause point is the **last**
+  frame of the cycle (`pauseAnimationAtEnd: false` switches it to the first).
+  That cuts differently per keyframe, and the trap is an
+  `iteration-count: infinite` animation whose endpoints both hide the content:
+  `progress-indeterminate` sweeps a 40% pill `translateX(-100% → 300%)`, so both
+  the first and last frame park it off the track - a default snapshot is an
+  empty track. When that happens, **pin a representative frame** in the play
+  (`animation: none` + an explicit transform), e.g. ProgressBar's
+  `Indeterminate` centers the pill with `translateX(75%)`. A full-turn `spin`
+  (0deg → 360deg) needs no pin - both endpoints render identically. The docs
+  don't spell out the infinite case, so confirm the paused frame on the first
+  run.
+- **A snapshot is the play function's _end state_.** Chromatic runs the whole
+  play, waits for it to **pass**, then captures - so the play must _land_ on the
+  frame you want and can't be flaky. Open an overlay/portal and **don't**
+  dismiss it; if a play cleans up or resets to default, its interesting frame is
+  gone (that's why `DescriptionsAndWarnings`-style stories stay behavioral).
+  This is also what makes `Focused` and open-popover snapshots work.
+- **Portal-rendered components (Toast, overlays).** Chromatic captures the whole
+  page, so portal content is in-frame even though it renders outside the story
+  root. Hold transient UI open for the shot (`duration: Infinity` for toasts),
+  await it in the play, and clean up between stories (Toast's `clearToasts()`)
+  so nothing leaks into the next capture. A component can be focusable in its
+  own right (Toast's root has `tabIndex=0` + `focusRing: outside`) - reach it
+  the real way (its keyboard hotkey + Tab), not a synthetic `.focus()`.
+- **Overlays: snapshot the _open_ state.** A portal component's primary visual
+  is its open state, so render it open - `defaultOpen` (Dialog/Drawer/Menu) or
+  open it in the play and await the portal - and leave it open; the entrance
+  animation settles on its last frame. Give each distinct open surface its own
+  story: open dialogs/drawers fill the viewport with a backdrop and can't share
+  a frame, so there's no `SmokeTest` matrix (independent recipe variants become
+  separate open showcases). open/close, focus trap, and dismissal stay
+  behavioral.
+- **Snapshot `placement` only when it changes the _layout_, not when it merely
+  repositions the same box.** The test isn't "is it a recipe variant" - it's
+  "does the box render differently, or just sit somewhere else?"
+  - **Drawer** placement swaps the layout (full-height side panel ↔ full-width
+    top/bottom bar) - a different shape per placement → one open snapshot each.
+  - **Dialog** placement is a recipe variant but only shifts vertical position
+    (`alignItems` + margin; the same box, higher/lower) → snapshot **center
+    only**; top/bottom add no new visual.
+  - **Menu/Tooltip** placement is React Aria positioning (same box repositioned,
+    no arrow) → behavioral, no per-placement snapshot.
 - **Hide the blinking text caret on a focused input.** A `Focused` snapshot of a
   text-entry input captures the focus ring, but focusing also paints the
   browser's native caret - which Chromatic can't stabilize (its

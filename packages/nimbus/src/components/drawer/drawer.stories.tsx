@@ -467,21 +467,18 @@ export const ScrollableContent: Story = {
       expect(drawerBody).toHaveAttribute("tabIndex", "0");
     });
 
-    await step("Test keyboard navigation to drawer body", async () => {
+    await step("Drawer body is focusable", async () => {
       const drawerBody = canvas.getByTestId("scrollable-drawer-body");
-
-      // Verify drawer body is focusable
       expect(drawerBody).toHaveAttribute("tabIndex", "0");
-
-      // Focus the drawer body directly to test keyboard scrolling capability
       drawerBody.focus();
-
       await waitFor(() => {
         expect(drawerBody).toHaveFocus();
       });
     });
 
-    await step("Test keyboard scrolling functionality", async () => {
+    await step("Drawer body is scrollable", async () => {
+      // fireEvent sets scrollTop directly (not keyboard); keyboard-scroll
+      // assertion is deferred - scrollTop doesn't update on key press in-env.
       const drawerBody = canvas.getByTestId("scrollable-drawer-body");
       await fireEvent.scroll(drawerBody, { target: { scrollTop: 500 } });
       expect(drawerBody.scrollTop).toBeGreaterThan(0);
@@ -1211,5 +1208,137 @@ export const UnsavedChangesConfirmation: Story = {
         { timeout: 3000 }
       );
     });
+  },
+};
+
+// VRT open-state snapshots: `defaultOpen` so Chromatic captures the settled drawer (slide-in pauses in place).
+
+const awaitOpen = async (canvasElement: HTMLElement) => {
+  const canvas = within(
+    (canvasElement.parentNode as HTMLElement) ?? canvasElement
+  );
+  await waitFor(() => expect(canvas.getByRole("dialog")).toBeInTheDocument());
+};
+
+const PlacementDrawer = ({
+  placement,
+}: {
+  placement: "left" | "right" | "top" | "bottom";
+}) => (
+  <Drawer.Root defaultOpen placement={placement}>
+    <Drawer.Content>
+      <Drawer.Header>
+        <Drawer.Title>Placement: {placement}</Drawer.Title>
+        <Drawer.CloseTrigger />
+      </Drawer.Header>
+      <Drawer.Body>
+        <Text>This drawer slides in from the {placement}.</Text>
+      </Drawer.Body>
+      <Drawer.Footer>
+        <Button slot="close">Cancel</Button>
+        <Button variant="solid">Save</Button>
+      </Drawer.Footer>
+    </Drawer.Content>
+  </Drawer.Root>
+);
+
+/** Open drawer, `right` placement (default) - the canonical chrome + backdrop. */
+export const OpenRight: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => <PlacementDrawer placement="right" />,
+  play: async ({ canvasElement }) => awaitOpen(canvasElement),
+};
+
+/** `placement="left"` - full-height panel on the inline-start edge. */
+export const OpenLeft: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => <PlacementDrawer placement="left" />,
+  play: async ({ canvasElement }) => awaitOpen(canvasElement),
+};
+
+/** `placement="top"` - full-width panel on the top edge. */
+export const OpenTop: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => <PlacementDrawer placement="top" />,
+  play: async ({ canvasElement }) => awaitOpen(canvasElement),
+};
+
+/** `placement="bottom"` - full-width panel on the bottom edge. */
+export const OpenBottom: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => <PlacementDrawer placement="bottom" />,
+  play: async ({ canvasElement }) => awaitOpen(canvasElement),
+};
+
+/** `showBackdrop={false}` - transparent overlay (no dim/blur behind the drawer). */
+export const OpenNoBackdrop: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Drawer.Root defaultOpen showBackdrop={false}>
+      <Drawer.Content>
+        <Drawer.Header>
+          <Drawer.Title>No backdrop</Drawer.Title>
+          <Drawer.CloseTrigger />
+        </Drawer.Header>
+        <Drawer.Body>
+          <Text>This drawer renders without a backdrop overlay.</Text>
+        </Drawer.Body>
+        <Drawer.Footer>
+          <Button slot="close">Close</Button>
+        </Drawer.Footer>
+      </Drawer.Content>
+    </Drawer.Root>
+  ),
+  play: async ({ canvasElement }) => awaitOpen(canvasElement),
+};
+
+/**
+ * The scrollable body is keyboard-focusable with its own `focusVisibleRing`;
+ * reached via Tab, so the ring renders.
+ */
+export const OpenScrollFocused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Drawer.Root defaultOpen>
+      <Drawer.Content>
+        <Drawer.Header>
+          <Drawer.Title>Scrollable body</Drawer.Title>
+          <Drawer.CloseTrigger />
+        </Drawer.Header>
+        <Separator />
+        <Drawer.Body data-testid="drawer-focus-body">
+          <Stack>
+            {Array.from({ length: 25 }, (_, i) => (
+              <Text key={i}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. This is
+                paragraph {i + 1} of scrollable content.
+              </Text>
+            ))}
+          </Stack>
+        </Drawer.Body>
+        <Separator />
+        <Drawer.Footer>
+          <Button slot="close">Close</Button>
+        </Drawer.Footer>
+      </Drawer.Content>
+    </Drawer.Root>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+    await waitFor(() => expect(canvas.getByRole("dialog")).toBeInTheDocument());
+    const body = canvas.getByTestId("drawer-focus-body");
+    // Tab (real keyboard, so :focus-visible fires) until the body holds focus.
+    for (let i = 0; i < 6 && document.activeElement !== body; i++) {
+      await userEvent.tab();
+    }
+    await expect(body).toHaveFocus();
   },
 };
