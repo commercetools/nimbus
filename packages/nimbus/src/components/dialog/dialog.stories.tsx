@@ -1098,56 +1098,6 @@ export const Open: Story = {
   play: async ({ canvasElement }) => awaitOpen(canvasElement),
 };
 
-/**
- * Placement `top` - dialog pinned to the top of the viewport.
- */
-export const OpenTop: Story = {
-  tags: ["vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
-  render: () => (
-    <Dialog.Root defaultOpen placement="top">
-      <Dialog.Content>
-        <Dialog.Header>
-          <Dialog.Title>Placement: top</Dialog.Title>
-          <Dialog.CloseTrigger />
-        </Dialog.Header>
-        <Dialog.Body>
-          <Text>This dialog is positioned at the top.</Text>
-        </Dialog.Body>
-        <Dialog.Footer>
-          <Button slot="close">Close</Button>
-        </Dialog.Footer>
-      </Dialog.Content>
-    </Dialog.Root>
-  ),
-  play: async ({ canvasElement }) => awaitOpen(canvasElement),
-};
-
-/**
- * Placement `bottom` - dialog pinned to the bottom of the viewport.
- */
-export const OpenBottom: Story = {
-  tags: ["vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
-  render: () => (
-    <Dialog.Root defaultOpen placement="bottom">
-      <Dialog.Content>
-        <Dialog.Header>
-          <Dialog.Title>Placement: bottom</Dialog.Title>
-          <Dialog.CloseTrigger />
-        </Dialog.Header>
-        <Dialog.Body>
-          <Text>This dialog is positioned at the bottom.</Text>
-        </Dialog.Body>
-        <Dialog.Footer>
-          <Button slot="close">Close</Button>
-        </Dialog.Footer>
-      </Dialog.Content>
-    </Dialog.Root>
-  ),
-  play: async ({ canvasElement }) => awaitOpen(canvasElement),
-};
-
 const ScrollInsideDialog = () => (
   <Dialog.Root defaultOpen scrollBehavior="inside">
     <Dialog.Content>
