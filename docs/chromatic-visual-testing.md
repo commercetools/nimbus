@@ -516,14 +516,16 @@ which no play-dispatchable event sets.
   a frame, so there's no `SmokeTest` matrix (independent recipe variants become
   separate open showcases). open/close, focus trap, and dismissal stay
   behavioral.
-- **Snapshot `placement` only when it's a _recipe variant_, not RA
-  positioning.** Dialog/Drawer `placement` is a recipe layout variant (different
-  `alignItems`/margins, a full-height side panel vs a full-width top panel) -
-  one open snapshot per placement. Menu/Tooltip `placement` is React Aria
-  positioning
-  - the same box repositioned, no arrow, no recipe delta - so it's behavioral,
-    no per-placement snapshot. The test: does the axis flow through the recipe
-    (visual) or RA's positioning engine (behavioral)?
+- **Snapshot `placement` only when it changes the _layout_, not when it merely
+  repositions the same box.** The test isn't "is it a recipe variant" - it's
+  "does the box render differently, or just sit somewhere else?"
+  - **Drawer** placement swaps the layout (full-height side panel ↔ full-width
+    top/bottom bar) - a different shape per placement → one open snapshot each.
+  - **Dialog** placement is a recipe variant but only shifts vertical position
+    (`alignItems` + margin; the same box, higher/lower) → snapshot **center
+    only**; top/bottom add no new visual.
+  - **Menu/Tooltip** placement is React Aria positioning (same box repositioned,
+    no arrow) → behavioral, no per-placement snapshot.
 - **Hide the blinking text caret on a focused input.** A `Focused` snapshot of a
   text-entry input captures the focus ring, but focusing also paints the
   browser's native caret - which Chromatic can't stabilize (its

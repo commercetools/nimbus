@@ -201,8 +201,8 @@ label for finding snapshot stories - keep the two together).
 - **Overlays: snapshot the open state** - render open (`defaultOpen` or
   play-open
   - await), leave it open; each distinct open surface is its own story.
-- **Snapshot `placement` only when it's a recipe variant** (Dialog/Drawer);
-  RA-positioning placement (Menu/Tooltip, same box) is behavioral.
+- **Snapshot `placement` only when it changes the layout, not just reposition
+  the same box** (Drawer qualifies; Dialog/Menu/Tooltip don't).
 - **Portals: capture is page-wide** - hold open (`duration: Infinity`), await,
   clean up between stories (`clearToasts()`); reach a portal's own focus via its
   real keyboard path, not `.focus()`.

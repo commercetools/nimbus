@@ -446,10 +446,9 @@ live in docs/chromatic-visual-testing.md.
   - await) and leave it open (entrance settles on its last frame). Each distinct
     open surface is its own story (backdrops can't share a frame); open/close and
     dismissal stay behavioral.
-- **Snapshot `placement` only when it's a recipe variant** - Dialog/Drawer
-  placement is a recipe layout (snapshot each); Menu/Tooltip placement is RA
-  positioning (same box repositioned, no arrow) - behavioral, no per-placement
-  snapshot.
+- **Snapshot `placement` only when it changes the _layout_, not just position** -
+  Drawer (side panel ↔ top/bottom bar) → snapshot each; Dialog (same box, just
+  higher/lower) → center only; Menu/Tooltip (RA positioning) → behavioral.
 
 **When a VRT pattern changes, sync all three canonical docs — at their set
 depth.** The overlap is intentional but tiered: the rationale lives in **one**
@@ -813,9 +812,9 @@ You MUST validate against these requirements:
       component's own focus reached via its **real keyboard path**, not `.focus()`
 - [ ] **Overlays** snapshot the **open** state (rendered open, left open); each
       distinct open surface is its own story; open/close & dismissal stay behavioral
-- [ ] **`placement`** snapshotted only when it's a **recipe variant**
-      (Dialog/Drawer); RA-positioning placement (Menu/Tooltip, same box) is
-      behavioral
+- [ ] **`placement`** snapshotted only when it changes the **layout** (Drawer
+      side/top/bottom panels), not a mere reposition (Dialog = center only;
+      Menu/Tooltip RA-positioning = behavioral)
 
 #### Play Functions (CRITICAL)
 
