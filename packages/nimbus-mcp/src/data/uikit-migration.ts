@@ -1737,7 +1737,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     notes:
       "Direct replacement. Column definitions require DataTableColumnItem<RowType>[] generic typing. Sort and selection callbacks have new signatures.",
     breakingChanges: [
-      "columns prop shape changed: key→id, label→header, accessor and render fields added",
+      "columns prop shape changed: key→id, label→header, accessor required (returns cell content, can be string or JSX)",
       "DataTableColumnItem<T> is generic — without <T> accessors return unknown and TS rejects them as ReactNode",
       "onSortChange signature changed from (key, order) to (descriptor: { column, direction })",
       "Selection type is 'all' | Set<Key> — missing the 'all' branch silently drops select-all clicks",
@@ -1748,7 +1748,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         nimbusProp: "columns",
         changeType: "structural",
         notes:
-          "Shape changed: key→id, label→header, accessor required. Must use DataTableColumnItem<RowType>[].",
+          "Shape changed: key→id, label→header. accessor is required and serves as both data getter and cell renderer: return a string for plain text or JSX for custom rendering. UI Kit's separate renderItem/render function should be merged into accessor. width must be a number (pixels), percentage string, or fr unit; CSS values like minmax() or max-content are not supported.",
       },
       {
         uiKitProp: "onRowClick",
@@ -1770,8 +1770,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         prop: "columns",
         rename: { key: "id", label: "header" },
         addRequired: ["accessor"],
-        addOptional: ["render"],
-        drop: ["width if string-typed (Nimbus uses pixels)"],
+        drop: [
+          "render/renderItem (merge into accessor instead)",
+          "width if CSS string (minmax, max-content, min-content); use numeric pixels, percentage, or fr",
+        ],
         genericRequired: "DataTableColumnItem<RowType>[]",
       },
     ],
