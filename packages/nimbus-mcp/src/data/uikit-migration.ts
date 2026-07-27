@@ -685,6 +685,13 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         changeType: "structural",
         notes: "Receives string value instead of ChangeEvent.",
       },
+      {
+        uiKitProp: "onSubmit",
+        nimbusProp: "onClear",
+        changeType: "structural",
+        notes:
+          "UIKit onSubmit (search action) has no direct equivalent. Use onClear for the clear button action.",
+      },
     ],
   },
 
@@ -1877,6 +1884,22 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Replace ViewSwitcher.Group with <ToggleButtonGroup selectionMode='single'>",
       "Replace ViewSwitcher.Button with <ToggleButton>",
       "isActive prop replaced by selection state managed via selectedKeys/onSelectionChange",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "isActive",
+        nimbusProp: "selectedKeys",
+        changeType: "structural",
+        notes:
+          "ViewSwitcher.Button isActive is replaced by ToggleButtonGroup's selectedKeys/onSelectionChange controlled state.",
+      },
+      {
+        uiKitProp: "onClick",
+        nimbusProp: "onSelectionChange",
+        changeType: "structural",
+        notes:
+          "ViewSwitcher.Button onClick is replaced by ToggleButtonGroup's onSelectionChange callback.",
+      },
     ],
   },
 

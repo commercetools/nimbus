@@ -152,9 +152,23 @@ describe("migrate_from_uikit — componentName mode", () => {
     expect(data.uiKitName).toBe("SearchTextInput");
     expect(data.nimbusEquivalent).toBe("SearchInput");
     expect(data.mappingType).toBe("direct");
+    expect(data.propMappings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          uiKitProp: "onChange",
+          nimbusProp: "onChange",
+          changeType: "structural",
+        }),
+        expect.objectContaining({
+          uiKitProp: "onSubmit",
+          nimbusProp: "onClear",
+          changeType: "structural",
+        }),
+      ])
+    );
   });
 
-  it("returns direct mapping for ViewSwitcher", async () => {
+  it("returns direct mapping for ViewSwitcher with propMappings", async () => {
     const result = await callMigrate({
       componentName: "ViewSwitcher",
     });
@@ -165,6 +179,15 @@ describe("migrate_from_uikit — componentName mode", () => {
     expect(data.nimbusEquivalent).toBe("ToggleButtonGroup");
     expect(data.mappingType).toBe("direct");
     expect(data.breakingChanges.length).toBeGreaterThan(0);
+    expect(data.propMappings).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          uiKitProp: "isActive",
+          nimbusProp: "selectedKeys",
+          changeType: "structural",
+        }),
+      ])
+    );
   });
 
   it("returns icon mapping with iconWrapper for a specific icon", async () => {
