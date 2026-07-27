@@ -79,6 +79,8 @@ export const Base: Story = {
  * Showcase Sizes
  */
 export const Sizes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     value: 60,
     label: "Progress",
@@ -141,6 +143,8 @@ export const Variants: Story = {
  * Showcase Layouts
  */
 export const Layouts: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     value: 45,
     label: "Loading",
@@ -177,6 +181,8 @@ export const Layouts: Story = {
  * Showcase Possible Color Palettes
  */
 export const ColorPalettes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     value: 70,
     layout: "stacked",
@@ -270,6 +276,8 @@ export const IsDynamic: Story = {
  * Indeterminate State
  */
 export const Indeterminate: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     isIndeterminate: true,
     size: "md",
@@ -298,6 +306,25 @@ export const Indeterminate: Story = {
         ))}
       </Stack>
     );
+  },
+  play: async ({ canvasElement, step }) => {
+    const fills = canvasElement.querySelectorAll<HTMLElement>(
+      '[data-indeterminate="true"]'
+    );
+
+    await step("Renders an indeterminate fill per layout", async () => {
+      await expect(fills.length).toBe(layouts.length);
+    });
+
+    // progress-indeterminate sweeps the 40%-wide pill off both track edges at
+    // its keyframe endpoints, so Chromatic's paused frame would show an empty
+    // track. Freeze each fill centered for a deterministic, representative shot.
+    await step("Pin the sweeping pill mid-track for a stable snapshot", () => {
+      fills.forEach((fill) => {
+        fill.style.animation = "none";
+        fill.style.transform = "translateX(75%)";
+      });
+    });
   },
 };
 

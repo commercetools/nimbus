@@ -1,4 +1,5 @@
 ---
+name: writing-stories
 description:
   Create, update, or validate Storybook stories with comprehensive play
   functions
@@ -424,17 +425,43 @@ live in docs/chromatic-visual-testing.md.
   for async-derived state, no stray focus ring. Hide the caret in a `Focused`
   text-input story. `:hover` and `:active`/pressed can't be captured statically
   yet.
+- **Name the interacting-axes matrix `SmokeTest`, render it last** - the role
+  name stays accurate as axes change; the axis list goes in the doc comment (not
+  the story name).
+- **Animated components: pin only when the paused frame hides the target.**
+  Chromatic pauses CSS/SVG animations at a fixed frame (last by default;
+  `pauseAnimationAtEnd: false` = first), so most animated states are already
+  deterministic. The trap is an infinite animation whose endpoints both hide the
+  content (`progress-indeterminate` parks its pill off-track) - pin a
+  representative frame in the play (`el.style.animation = "none"` + an explicit
+  `transform`).
+- **The snapshot is the play's end state** - Chromatic captures after the play
+  passes, so land on the target frame: open an overlay/portal and don't dismiss
+  it; a play that resets to default loses its frame (keep it behavioral).
+- **Portals (Toast, overlays)** - capture is page-wide, so portal content is
+  in-frame; hold it open (`duration: Infinity`), await it, clean up between
+  stories (`clearToasts()`). Reach a portal component's own focus via its real
+  keyboard path, not a synthetic `.focus()`.
+- **Overlays: snapshot the open state** - render open (`defaultOpen` or play-open
+  - await) and leave it open (entrance settles on its last frame). Each distinct
+    open surface is its own story (backdrops can't share a frame); open/close and
+    dismissal stay behavioral.
+- **Snapshot `placement` only when it changes the _layout_, not just position** -
+  Drawer (side panel ↔ top/bottom bar) → snapshot each; Dialog (same box, just
+  higher/lower) → center only; Menu/Tooltip (RA positioning) → behavioral.
 
-**When a VRT pattern changes, sync all three canonical docs.** Any change to a
-Chromatic/VRT convention (a new opt-in state, a matrix rule, or a determinism fix
-like `caret-color: transparent` for focused text inputs) must land in all three
-places at once, or they drift:
+**When a VRT pattern changes, sync all three canonical docs — at their set
+depth.** The overlap is intentional but tiered: the rationale lives in **one**
+place; the others state the rule and point to it. Don't paste reasoning/examples
+into more than one, or they duplicate and drift. Any change must land in all
+three, each at its depth:
 
-1. `docs/chromatic-visual-testing.md` — the how/why guide + best practices.
-2. `docs/file-type-guidelines/stories.md` — the "Chromatic Visual Regression
-   Snapshots" section.
-3. `.claude/skills/writing-stories/SKILL.md` (this file) — the `SmokeTest` /
-   `Focused` templates, the "what gets captured" blurb, and the checklist.
+1. `docs/chromatic-visual-testing.md` — **source of truth**: full rationale,
+   examples, edge cases.
+2. `docs/file-type-guidelines/stories.md` — **terse rule + the copy-paste
+   snippet only**; defer the _why_ to #1 (no restated reasoning).
+3. `.claude/skills/writing-stories/SKILL.md` (this file) — templates + the
+   "what gets captured" bullets + the checklist.
 
 ### Step 3: Portal Content Handling
 
@@ -773,6 +800,21 @@ You MUST validate against these requirements:
       unless intended. Chromatic captures the play's final state and nothing
       blurs it, so a play can be assertion-honest yet still snapshot the wrong
       picture (blur, reset, or split the story)
+- [ ] The interacting-axes matrix is named **`SmokeTest`** and rendered **last**
+      (not `Variants`/`VariantsAndSizes`/etc.); the axis list lives in the doc
+      comment
+- [ ] **Animated** states: paused frame confirmed to show the target; if an
+      infinite animation's endpoints both hide it (indeterminate progress), the
+      play **pins** a representative frame (`animation: none` + explicit
+      `transform`)
+- [ ] **Portal** components (Toast/overlays): transient UI held open
+      (`duration: Infinity`), awaited, and cleaned up between stories; the
+      component's own focus reached via its **real keyboard path**, not `.focus()`
+- [ ] **Overlays** snapshot the **open** state (rendered open, left open); each
+      distinct open surface is its own story; open/close & dismissal stay behavioral
+- [ ] **`placement`** snapshotted only when it changes the **layout** (Drawer
+      side/top/bottom panels), not a mere reposition (Dialog = center only;
+      Menu/Tooltip RA-positioning = behavioral)
 
 #### Play Functions (CRITICAL)
 
