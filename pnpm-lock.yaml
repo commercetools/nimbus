@@ -37,8 +37,8 @@ catalogs:
       specifier: 4.1.8
       version: 4.1.8
     react-router:
-      specifier: 8.1.0
-      version: 8.1.0
+      specifier: 8.3.0
+      version: 8.3.0
     react-router-dom:
       specifier: 7.17.0
       version: 7.17.0
@@ -562,7 +562,7 @@ importers:
         version: 4.1.8(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-router:
         specifier: catalog:apps
-        version: 8.1.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        version: 8.3.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-router-dom:
         specifier: catalog:apps
         version: 7.17.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -7593,8 +7593,8 @@ packages:
       react-dom:
         optional: true
 
-  react-router@8.1.0:
-    resolution: {integrity: sha512-Mdfi61uObuvWNN9OhChOC0HV6YWOIfKRzEWOvCHRSuQg8IM+Nv10edaM/2HE8ZixBpUTdQbruyWqC3sDkkh9vw==}
+  react-router@8.3.0:
+    resolution: {integrity: sha512-qyPMvW83jGIct3yiieisxdk9M745anqhpIMKN5m1t6yBMfgVPpt77aHOqs5fUlEJRMCGffg9BaQLH9oPVOL7xQ==}
     engines: {node: '>=22.22.0'}
     peerDependencies:
       react: '>=19.2.7'
@@ -18276,7 +18276,7 @@ snapshots:
     optionalDependencies:
       react-dom: 19.2.0(react@19.2.0)
 
-  react-router@8.1.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
+  react-router@8.3.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       cookie-es: 3.1.1
       react: 19.2.0
