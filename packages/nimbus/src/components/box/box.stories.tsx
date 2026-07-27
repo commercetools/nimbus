@@ -1,12 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box } from "@commercetools/nimbus";
 
-// Intentionally no Chromatic VRT: Box is a pass-through styling primitive (a
-// <div> + Chakra style props) with no recipe, variants, or states — so it has no
-// intrinsic visual to regression-test. Any appearance comes from consumer style
-// props, which the design-token/style system owns and real components exercise.
-// Snapshotting Box would test Chakra + tokens, not Box. See
-// chromatic-visual-testing.md ("pure styling primitives get no VRT").
+// No VRT: pass-through style primitive (see chromatic-visual-testing.md).
 const meta: Meta<typeof Box> = {
   title: "Components/Box",
   component: Box,

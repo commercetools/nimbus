@@ -1,11 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box, Button, Spacer, Stack } from "@commercetools/nimbus";
 
-// Intentionally no Chromatic VRT: Spacer is a layout primitive (`<Box flexGrow={1}>`)
-// with no recipe, variants, or states — it renders no visual of its own (an
-// invisible space-filler). Any pixels in these stories are the surrounding
-// layout, not the Spacer. See chromatic-visual-testing.md ("pure styling
-// primitives get no VRT").
+// No VRT: invisible flex filler (see chromatic-visual-testing.md).
 const meta: Meta<typeof Spacer> = {
   title: "Components/Spacer",
   component: Spacer,

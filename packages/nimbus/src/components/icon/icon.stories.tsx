@@ -27,6 +27,9 @@ type Story = StoryObj<typeof Icon>;
  * Icon is the wrapper component, the actual icon is passed as a child. Default size is the currently inherited font-size, same applies to the color.
  */
 export const Base: Story = {
+  // VRT: unsized default - inherits font-size (no `defaultVariants`); `Sizes` is all-explicit.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: <Bathtub />,
     // @ts-expect-error - data-testid is not a standard prop on IconProps but is used for testing
@@ -73,6 +76,9 @@ export const ViaAsProperty: Story = {
  * predefined sizes from the recipe, configurable via the `size` property
  */
 export const Sizes: Story = {
+  // VRT: the `size` axis - all six box-sizes.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     as: Bathtub,
     // @ts-expect-error - data-testid is not a standard prop on IconProps but is used for testing
@@ -117,6 +123,9 @@ export const CustomSize: Story = {
  * A custom color can be set via the style-property `color` and a color-token.
  */
 export const CustomColor: Story = {
+  // VRT: the color axis - `currentColor` via the `color` prop.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     as: Bathtub,
     size: "xl",

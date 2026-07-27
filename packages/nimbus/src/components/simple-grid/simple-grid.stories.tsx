@@ -7,11 +7,7 @@ import { within, expect } from "storybook/test";
  * - title: determines the location in the sidebar
  * - component: references the component being documented
  */
-// Intentionally no Chromatic VRT: SimpleGrid is a pass-through layout primitive
-// (a <div style="display:grid"> + Chakra props) with no recipe, variants, or
-// states. Its layout is consumer-driven (columns, gap, colSpan), owned by CSS
-// grid + the style system — snapshotting it would test those, not SimpleGrid. See
-// chromatic-visual-testing.md ("pure styling primitives get no VRT").
+// No VRT: pass-through style primitive (see chromatic-visual-testing.md).
 const meta: Meta<typeof SimpleGrid> = {
   title: "Components/SimpleGrid",
   component: SimpleGrid,

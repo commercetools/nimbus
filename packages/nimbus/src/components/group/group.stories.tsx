@@ -7,6 +7,7 @@ import { within, expect } from "storybook/test";
  * - title: determines the location in the sidebar
  * - component: references the component being documented
  */
+// No VRT: recipe paints nothing (see chromatic-visual-testing.md).
 const meta: Meta<typeof Group> = {
   title: "Components/Group",
   component: Group,

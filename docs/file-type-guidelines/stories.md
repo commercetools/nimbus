@@ -191,9 +191,11 @@ label for finding snapshot stories - keep the two together).
   gallery.
 - **A state with no distinct recipe surface gets no story** (read-only with no
   `data-readonly` rule renders like default → no snapshot).
-- **Pure styling primitives get no VRT at all** (Box/Flex/Stack/Grid - a `<div>`
-  - style props, no recipe/variants/states); note it in the story file so it
-    reads as deliberate.
+- **Primitives with no painted surface get no VRT at all** - not "has no
+  recipe," but paints nothing: pass-through style props (Box/Stack/Grid/Spacer),
+  a recipe that paints nothing (Group), or headless `display: contents`
+  (Region). Note it on `meta`. One that **does** paint gets a normal audit
+  (Separator, Icon).
 - **Snapshot the component, not the harness** - no debug read-outs/wrappers in a
   snapshotted frame.
 - **Name the interacting-axes matrix `SmokeTest`, rendered last** - the axis

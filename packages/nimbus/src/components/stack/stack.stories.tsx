@@ -1,11 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box, Stack } from "@commercetools/nimbus";
 
-// Intentionally no Chromatic VRT: Stack is a pass-through layout primitive (a
-// flex <div> + Chakra style props) with no recipe, variants, or states. Its
-// layout is consumer-driven (direction, gap, separator), owned by flexbox + the
-// style system — snapshotting it would test those, not Stack. See
-// chromatic-visual-testing.md ("pure styling primitives get no VRT").
+// No VRT: pass-through style primitive (see chromatic-visual-testing.md).
 const meta: Meta<typeof Stack> = {
   title: "Components/Stack",
   component: Stack,

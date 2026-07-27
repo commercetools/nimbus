@@ -73,6 +73,9 @@ export const Vertical: Story = {
 };
 
 export const Orientations: Story = {
+  // VRT: the `orientation` axis - both variants in one frame.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack gap="400">
       <Box>
@@ -90,6 +93,9 @@ export const Orientations: Story = {
 };
 
 export const MultipleBackgrounds: Story = {
+  // VRT: the `colorPalette` axis - the fill against three surfaces.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack direction="row" height="300px" gap="0">
       <Box
