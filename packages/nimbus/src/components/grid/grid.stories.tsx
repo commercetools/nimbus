@@ -7,6 +7,11 @@ import { within, expect } from "storybook/test";
  * - title: determines the location in the sidebar
  * - component: references the component being documented
  */
+// Intentionally no Chromatic VRT: Grid is a pass-through layout primitive (a
+// <div style="display:grid"> + Chakra grid props) with no recipe, variants, or
+// states. Its layout is entirely consumer-driven (templateColumns, templateAreas,
+// gap), which CSS grid + the style system own — snapshotting it would test those,
+// not Grid. See chromatic-visual-testing.md ("pure styling primitives get no VRT").
 const meta: Meta<typeof Grid> = {
   title: "Components/Grid",
   component: Grid,

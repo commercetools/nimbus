@@ -418,6 +418,11 @@ live in docs/chromatic-visual-testing.md.
   component-dependent trap: MoneyInput styles it (`ReadOnlyState`), but
   MultilineTextInput / NumberInput / TextInput have no `data-readonly` rule, so it
   renders like default - no snapshot.
+- **Pure styling primitives get no VRT at all.** A pass-through primitive with no
+  recipe/variants/states (Box/Flex/Stack/Grid - a `<div>` + style props) has no
+  intrinsic visual; snapshotting it tests Chakra + tokens, not the component.
+  Leave it un-snapshotted with a one-line note in the story so it reads as
+  deliberate, not forgotten.
 - **Snapshot the component, not the harness** - render it directly, no debug
   read-outs or demo wrappers in the frame (those stay on behavioral stories, e.g.
   MoneyInput's `MoneyInputExample` JSON panel).
@@ -777,6 +782,9 @@ You MUST validate against these requirements:
       `DisabledWithCurrencyLabel`)
 - [ ] A state with **no distinct recipe surface** gets no dedicated story
       (read-only with no `data-readonly` rule renders like default - no snapshot)
+- [ ] **Pure styling primitives** (Box/Flex/Stack/Grid - no recipe/variants/
+      states) get **no VRT at all**, with a one-line note in the story so the
+      omission reads as deliberate
 - [ ] Snapshotted stories render the component **directly** - no debug read-outs,
       value dumps, or demo-wrapper scaffolding in the frame (those stay on the
       un-snapshotted behavioral stories)

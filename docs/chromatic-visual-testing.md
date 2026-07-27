@@ -460,6 +460,14 @@ which no play-dispatchable event sets.
   matrix - those are IconButton's states, already covered there. (Distinct from
   the independent-axes case below: there the axes don't interact; here the
   wrapper delegates them wholesale to a component that already snapshots them.)
+- **Pure styling primitives get no VRT at all.** A pass-through primitive with
+  no recipe/variants/states (Box, Flex, Stack, Grid - a `<div>` + Chakra style
+  props) has no intrinsic visual to regression-test: an unstyled instance is a
+  bare box, and every appearance comes from consumer style props, which the
+  design-token/style system owns and real components already exercise.
+  Snapshotting one would test Chakra + tokens, not the component, and there's no
+  bounded state space to be "exhaustive" over. Leave them un-snapshotted with a
+  one-line note in the story file so it reads as deliberate, not forgotten.
 - **A matrix is only for _interacting_ axes; independent axes are separate
   stories.** Build a `SmokeTest` matrix only when a cross-cell is a visual
   neither axis produces alone (Checkbox `checked × invalid` → distinct critical
