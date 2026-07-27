@@ -19,6 +19,21 @@ const ICON_WRAPPER_BASE: Omit<IconWrapper, "sizeMapping"> = {
   defaultProps: { size: "2xs", color: "neutral.11" },
 };
 
+const ICON_SIZE_MAPPING: IconWrapper["sizeMapping"] = [
+  { from: "small", to: "2xs" },
+  { from: "medium", to: "xs" },
+  { from: "big", to: "md" },
+  { from: "10", to: "2xs" },
+  { from: "20", to: "xs" },
+  { from: "30", to: "sm" },
+  { from: "40", to: "md" },
+];
+
+const ICON_WRAPPER: IconWrapper = {
+  ...ICON_WRAPPER_BASE,
+  sizeMapping: ICON_SIZE_MAPPING,
+};
+
 // ---------------------------------------------------------------------------
 // Layout nesting guidance (shared across layout primitives)
 // ---------------------------------------------------------------------------
@@ -648,6 +663,27 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
         changeType: "structural",
         notes:
           "Shape changed to ScopedSearchInputOption[] | ScopedSearchInputOptionGroup[].",
+      },
+    ],
+  },
+  {
+    uiKitName: "SearchTextInput",
+    nimbusEquivalent: "SearchInput",
+    importPath: "@commercetools/nimbus",
+    mappingType: "direct",
+    notes:
+      "Direct replacement. Nimbus SearchInput provides built-in clear button and search icon.",
+    breakingChanges: [
+      "Rename to SearchInput",
+      "onChange receives a string value instead of ChangeEvent",
+      "onSubmit replaced by onClear for the clear action",
+    ],
+    propMappings: [
+      {
+        uiKitProp: "onChange",
+        nimbusProp: "onChange",
+        changeType: "structural",
+        notes: "Receives string value instead of ChangeEvent.",
       },
     ],
   },
@@ -1829,6 +1865,21 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     ],
   },
 
+  {
+    uiKitName: "ViewSwitcher",
+    nimbusEquivalent: "ToggleButtonGroup",
+    importPath: "@commercetools/nimbus",
+    mappingType: "direct",
+    notes:
+      "Replace ViewSwitcher.Group with ToggleButtonGroup and ViewSwitcher.Button with ToggleButton. " +
+      "Nimbus ToggleButtonGroup uses selectionMode='single' for exclusive view switching.",
+    breakingChanges: [
+      "Replace ViewSwitcher.Group with <ToggleButtonGroup selectionMode='single'>",
+      "Replace ViewSwitcher.Button with <ToggleButton>",
+      "isActive prop replaced by selection state managed via selectedKeys/onSelectionChange",
+    ],
+  },
+
   // -------------------------------------------------------------------------
   // Overlays
   // -------------------------------------------------------------------------
@@ -2159,7 +2210,207 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
   },
 
   // -------------------------------------------------------------------------
-  // Icons
+  // Icons — specific UI Kit icon → Nimbus icon mappings
+  // -------------------------------------------------------------------------
+  {
+    uiKitName: "AngleLeftIcon",
+    nimbusEquivalent: "Icon",
+    importPath: "@commercetools/nimbus",
+    mappingType: "variant",
+    notes:
+      'Use <Icon as={SvgChevronLeft} /> from @commercetools/nimbus-icons. Import: import { SvgChevronLeft } from "@commercetools/nimbus-icons";',
+    breakingChanges: [
+      "Replace AngleLeftIcon with <Icon as={SvgChevronLeft} />",
+      "Import SvgChevronLeft from @commercetools/nimbus-icons",
+      "Wrap with <Icon> component from @commercetools/nimbus",
+    ],
+    iconWrapper: ICON_WRAPPER,
+  },
+  {
+    uiKitName: "AngleRightIcon",
+    nimbusEquivalent: "Icon",
+    importPath: "@commercetools/nimbus",
+    mappingType: "variant",
+    notes:
+      'Use <Icon as={SvgChevronRight} /> from @commercetools/nimbus-icons. Import: import { SvgChevronRight } from "@commercetools/nimbus-icons";',
+    breakingChanges: [
+      "Replace AngleRightIcon with <Icon as={SvgChevronRight} />",
+      "Import SvgChevronRight from @commercetools/nimbus-icons",
+      "Wrap with <Icon> component from @commercetools/nimbus",
+    ],
+    iconWrapper: ICON_WRAPPER,
+  },
+  {
+    uiKitName: "BinLinearIcon",
+    nimbusEquivalent: "Icon",
+    importPath: "@commercetools/nimbus",
+    mappingType: "variant",
+    notes:
+      'Use <Icon as={SvgDelete} /> from @commercetools/nimbus-icons. Import: import { SvgDelete } from "@commercetools/nimbus-icons";',
+    breakingChanges: [
+      "Replace BinLinearIcon with <Icon as={SvgDelete} />",
+      "Import SvgDelete from @commercetools/nimbus-icons",
+      "Wrap with <Icon> component from @commercetools/nimbus",
+    ],
+    iconWrapper: ICON_WRAPPER,
+  },
+  {
+    uiKitName: "DragIcon",
+    nimbusEquivalent: "Icon",
+    importPath: "@commercetools/nimbus",
+    mappingType: "variant",
+    notes:
+      'Use <Icon as={SvgDragIndicator} /> from @commercetools/nimbus-icons. Import: import { SvgDragIndicator } from "@commercetools/nimbus-icons";',
+    breakingChanges: [
+      "Replace DragIcon with <Icon as={SvgDragIndicator} />",
+      "Import SvgDragIndicator from @commercetools/nimbus-icons",
+      "Wrap with <Icon> component from @commercetools/nimbus",
+    ],
+    iconWrapper: ICON_WRAPPER,
+  },
+  {
+    uiKitName: "DragDropIcon",
+    nimbusEquivalent: "Icon",
+    importPath: "@commercetools/nimbus",
+    mappingType: "variant",
+    notes:
+      'Use <Icon as={SvgDragIndicator} /> from @commercetools/nimbus-icons. Import: import { SvgDragIndicator } from "@commercetools/nimbus-icons";',
+    breakingChanges: [
+      "Replace DragDropIcon with <Icon as={SvgDragIndicator} />",
+      "Import SvgDragIndicator from @commercetools/nimbus-icons",
+      "Wrap with <Icon> component from @commercetools/nimbus",
+    ],
+    iconWrapper: ICON_WRAPPER,
+  },
+  {
+    uiKitName: "ExportIcon",
+    nimbusEquivalent: "Icon",
+    importPath: "@commercetools/nimbus",
+    mappingType: "variant",
+    notes:
+      'Use <Icon as={SvgCloudDownload} /> from @commercetools/nimbus-icons. Import: import { SvgCloudDownload } from "@commercetools/nimbus-icons";',
+    breakingChanges: [
+      "Replace ExportIcon with <Icon as={SvgCloudDownload} />",
+      "Import SvgCloudDownload from @commercetools/nimbus-icons",
+      "Wrap with <Icon> component from @commercetools/nimbus",
+    ],
+    iconWrapper: ICON_WRAPPER,
+  },
+  {
+    uiKitName: "ImportIcon",
+    nimbusEquivalent: "Icon",
+    importPath: "@commercetools/nimbus",
+    mappingType: "variant",
+    notes:
+      'Use <Icon as={SvgCloudUpload} /> from @commercetools/nimbus-icons. Import: import { SvgCloudUpload } from "@commercetools/nimbus-icons";',
+    breakingChanges: [
+      "Replace ImportIcon with <Icon as={SvgCloudUpload} />",
+      "Import SvgCloudUpload from @commercetools/nimbus-icons",
+      "Wrap with <Icon> component from @commercetools/nimbus",
+    ],
+    iconWrapper: ICON_WRAPPER,
+  },
+  {
+    uiKitName: "InformationIcon",
+    nimbusEquivalent: "Icon",
+    importPath: "@commercetools/nimbus",
+    mappingType: "variant",
+    notes:
+      'Use <Icon as={SvgInfo} /> from @commercetools/nimbus-icons. Import: import { SvgInfo } from "@commercetools/nimbus-icons";',
+    breakingChanges: [
+      "Replace InformationIcon with <Icon as={SvgInfo} />",
+      "Import SvgInfo from @commercetools/nimbus-icons",
+      "Wrap with <Icon> component from @commercetools/nimbus",
+    ],
+    iconWrapper: ICON_WRAPPER,
+  },
+  {
+    uiKitName: "PlusBoldIcon",
+    nimbusEquivalent: "Icon",
+    importPath: "@commercetools/nimbus",
+    mappingType: "variant",
+    notes:
+      'Use <Icon as={SvgAdd} /> from @commercetools/nimbus-icons. Import: import { SvgAdd } from "@commercetools/nimbus-icons";',
+    breakingChanges: [
+      "Replace PlusBoldIcon with <Icon as={SvgAdd} />",
+      "Import SvgAdd from @commercetools/nimbus-icons",
+      "Wrap with <Icon> component from @commercetools/nimbus",
+    ],
+    iconWrapper: ICON_WRAPPER,
+  },
+  {
+    uiKitName: "RefreshIcon",
+    nimbusEquivalent: "Icon",
+    importPath: "@commercetools/nimbus",
+    mappingType: "variant",
+    notes:
+      'Use <Icon as={SvgRefresh} /> from @commercetools/nimbus-icons. Import: import { SvgRefresh } from "@commercetools/nimbus-icons";',
+    breakingChanges: [
+      "Replace RefreshIcon with <Icon as={SvgRefresh} />",
+      "Import SvgRefresh from @commercetools/nimbus-icons",
+      "Wrap with <Icon> component from @commercetools/nimbus",
+    ],
+    iconWrapper: ICON_WRAPPER,
+  },
+  {
+    uiKitName: "RevertIcon",
+    nimbusEquivalent: "Icon",
+    importPath: "@commercetools/nimbus",
+    mappingType: "variant",
+    notes:
+      'Use <Icon as={SvgUndo} /> from @commercetools/nimbus-icons. Import: import { SvgUndo } from "@commercetools/nimbus-icons";',
+    breakingChanges: [
+      "Replace RevertIcon with <Icon as={SvgUndo} />",
+      "Import SvgUndo from @commercetools/nimbus-icons",
+      "Wrap with <Icon> component from @commercetools/nimbus",
+    ],
+    iconWrapper: ICON_WRAPPER,
+  },
+  {
+    uiKitName: "SearchIcon",
+    nimbusEquivalent: "Icon",
+    importPath: "@commercetools/nimbus",
+    mappingType: "variant",
+    notes:
+      'Use <Icon as={SvgSearch} /> from @commercetools/nimbus-icons. Import: import { SvgSearch } from "@commercetools/nimbus-icons";',
+    breakingChanges: [
+      "Replace SearchIcon with <Icon as={SvgSearch} />",
+      "Import SvgSearch from @commercetools/nimbus-icons",
+      "Wrap with <Icon> component from @commercetools/nimbus",
+    ],
+    iconWrapper: ICON_WRAPPER,
+  },
+  {
+    uiKitName: "TreeStructureIcon",
+    nimbusEquivalent: "Icon",
+    importPath: "@commercetools/nimbus",
+    mappingType: "variant",
+    notes:
+      'Use <Icon as={SvgAccountTree} /> from @commercetools/nimbus-icons. Import: import { SvgAccountTree } from "@commercetools/nimbus-icons";',
+    breakingChanges: [
+      "Replace TreeStructureIcon with <Icon as={SvgAccountTree} />",
+      "Import SvgAccountTree from @commercetools/nimbus-icons",
+      "Wrap with <Icon> component from @commercetools/nimbus",
+    ],
+    iconWrapper: ICON_WRAPPER,
+  },
+  {
+    uiKitName: "WarningIcon",
+    nimbusEquivalent: "Icon",
+    importPath: "@commercetools/nimbus",
+    mappingType: "variant",
+    notes:
+      'Use <Icon as={SvgWarning} /> from @commercetools/nimbus-icons. Import: import { SvgWarning } from "@commercetools/nimbus-icons";',
+    breakingChanges: [
+      "Replace WarningIcon with <Icon as={SvgWarning} />",
+      "Import SvgWarning from @commercetools/nimbus-icons",
+      "Wrap with <Icon> component from @commercetools/nimbus",
+    ],
+    iconWrapper: ICON_WRAPPER,
+  },
+
+  // -------------------------------------------------------------------------
+  // Icons — generic
   // -------------------------------------------------------------------------
   {
     uiKitName: "CustomIcon",
@@ -2234,18 +2485,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Icon names follow Svg prefix convention",
       "Icons must be wrapped in <Icon as={...}> for correct sizing and theming",
     ],
-    iconWrapper: {
-      ...ICON_WRAPPER_BASE,
-      sizeMapping: [
-        { from: "small", to: "2xs" },
-        { from: "medium", to: "xs" },
-        { from: "big", to: "md" },
-        { from: "10", to: "2xs" },
-        { from: "20", to: "xs" },
-        { from: "30", to: "sm" },
-        { from: "40", to: "md" },
-      ],
-    },
+    iconWrapper: ICON_WRAPPER,
   },
 
   // -------------------------------------------------------------------------
