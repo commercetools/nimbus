@@ -2241,10 +2241,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgKeyboardArrowDown} /> from @commercetools/nimbus-icons. Import: import { SvgKeyboardArrowDown } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={KeyboardArrowDown} /> from @commercetools/nimbus-icons. Import: import { KeyboardArrowDown } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace AngleDownIcon with <Icon as={SvgKeyboardArrowDown} />",
-      "Import SvgKeyboardArrowDown from @commercetools/nimbus-icons",
+      "Replace AngleDownIcon with <Icon as={KeyboardArrowDown} />",
+      "Import KeyboardArrowDown from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2255,10 +2255,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgChevronLeft} /> from @commercetools/nimbus-icons. Import: import { SvgChevronLeft } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ChevronLeft} /> from @commercetools/nimbus-icons. Import: import { ChevronLeft } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace AngleThinLeftIcon with <Icon as={SvgChevronLeft} />",
-      "Import SvgChevronLeft from @commercetools/nimbus-icons",
+      "Replace AngleThinLeftIcon with <Icon as={ChevronLeft} />",
+      "Import ChevronLeft from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2269,10 +2269,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgChevronRight} /> from @commercetools/nimbus-icons. Import: import { SvgChevronRight } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ChevronRight} /> from @commercetools/nimbus-icons. Import: import { ChevronRight } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace AngleThinRightIcon with <Icon as={SvgChevronRight} />",
-      "Import SvgChevronRight from @commercetools/nimbus-icons",
+      "Replace AngleThinRightIcon with <Icon as={ChevronRight} />",
+      "Import ChevronRight from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2283,10 +2283,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgUnfoldMore} /> from @commercetools/nimbus-icons. Import: import { SvgUnfoldMore } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={UnfoldMore} /> from @commercetools/nimbus-icons. Import: import { UnfoldMore } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace AngleUpDownIcon with <Icon as={SvgUnfoldMore} />",
-      "Import SvgUnfoldMore from @commercetools/nimbus-icons",
+      "Replace AngleUpDownIcon with <Icon as={UnfoldMore} />",
+      "Import UnfoldMore from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2297,10 +2297,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgExpandLess} /> from @commercetools/nimbus-icons. Import: import { SvgExpandLess } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ExpandLess} /> from @commercetools/nimbus-icons. Import: import { ExpandLess } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace AngleUpIcon with <Icon as={SvgExpandLess} />",
-      "Import SvgExpandLess from @commercetools/nimbus-icons",
+      "Replace AngleUpIcon with <Icon as={ExpandLess} />",
+      "Import ExpandLess from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2311,10 +2311,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgArrowDownward} /> from @commercetools/nimbus-icons. Import: import { SvgArrowDownward } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ArrowDownward} /> from @commercetools/nimbus-icons. Import: import { ArrowDownward } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ArrowDownIcon with <Icon as={SvgArrowDownward} />",
-      "Import SvgArrowDownward from @commercetools/nimbus-icons",
+      "Replace ArrowDownIcon with <Icon as={ArrowDownward} />",
+      "Import ArrowDownward from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2325,10 +2325,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgArrowLeft} /> from @commercetools/nimbus-icons. Import: import { SvgArrowLeft } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ArrowLeft} /> from @commercetools/nimbus-icons. Import: import { ArrowLeft } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ArrowLeftIcon with <Icon as={SvgArrowLeft} />",
-      "Import SvgArrowLeft from @commercetools/nimbus-icons",
+      "Replace ArrowLeftIcon with <Icon as={ArrowLeft} />",
+      "Import ArrowLeft from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2339,10 +2339,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgSouth} /> from @commercetools/nimbus-icons. Import: import { SvgSouth } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={South} /> from @commercetools/nimbus-icons. Import: import { South } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ArrowLongDownIcon with <Icon as={SvgSouth} />",
-      "Import SvgSouth from @commercetools/nimbus-icons",
+      "Replace ArrowLongDownIcon with <Icon as={South} />",
+      "Import South from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2353,10 +2353,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgArrowRight} /> from @commercetools/nimbus-icons. Import: import { SvgArrowRight } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ArrowRight} /> from @commercetools/nimbus-icons. Import: import { ArrowRight } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ArrowRightIcon with <Icon as={SvgArrowRight} />",
-      "Import SvgArrowRight from @commercetools/nimbus-icons",
+      "Replace ArrowRightIcon with <Icon as={ArrowRight} />",
+      "Import ArrowRight from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2367,10 +2367,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgSwapVert} /> from @commercetools/nimbus-icons. Import: import { SvgSwapVert } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={SwapVert} /> from @commercetools/nimbus-icons. Import: import { SwapVert } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ArrowsIcon with <Icon as={SvgSwapVert} />",
-      "Import SvgSwapVert from @commercetools/nimbus-icons",
+      "Replace ArrowsIcon with <Icon as={SwapVert} />",
+      "Import SwapVert from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2381,10 +2381,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgUnfoldLess} /> from @commercetools/nimbus-icons. Import: import { SvgUnfoldLess } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={UnfoldLess} /> from @commercetools/nimbus-icons. Import: import { UnfoldLess } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ArrowsMinimizeIcon with <Icon as={SvgUnfoldLess} />",
-      "Import SvgUnfoldLess from @commercetools/nimbus-icons",
+      "Replace ArrowsMinimizeIcon with <Icon as={UnfoldLess} />",
+      "Import UnfoldLess from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2395,10 +2395,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgArrowDropDown} /> from @commercetools/nimbus-icons. Import: import { SvgArrowDropDown } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ArrowDropDown} /> from @commercetools/nimbus-icons. Import: import { ArrowDropDown } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ArrowTriangleDownIcon with <Icon as={SvgArrowDropDown} />",
-      "Import SvgArrowDropDown from @commercetools/nimbus-icons",
+      "Replace ArrowTriangleDownIcon with <Icon as={ArrowDropDown} />",
+      "Import ArrowDropDown from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2409,10 +2409,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgArrowDropUp} /> from @commercetools/nimbus-icons. Import: import { SvgArrowDropUp } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ArrowDropUp} /> from @commercetools/nimbus-icons. Import: import { ArrowDropUp } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ArrowTriangleUpIcon with <Icon as={SvgArrowDropUp} />",
-      "Import SvgArrowDropUp from @commercetools/nimbus-icons",
+      "Replace ArrowTriangleUpIcon with <Icon as={ArrowDropUp} />",
+      "Import ArrowDropUp from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2423,10 +2423,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgArrowUpward} /> from @commercetools/nimbus-icons. Import: import { SvgArrowUpward } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ArrowUpward} /> from @commercetools/nimbus-icons. Import: import { ArrowUpward } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ArrowUpIcon with <Icon as={SvgArrowUpward} />",
-      "Import SvgArrowUpward from @commercetools/nimbus-icons",
+      "Replace ArrowUpIcon with <Icon as={ArrowUpward} />",
+      "Import ArrowUpward from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2437,10 +2437,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgArrowBack} /> from @commercetools/nimbus-icons. Import: import { SvgArrowBack } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ArrowBack} /> from @commercetools/nimbus-icons. Import: import { ArrowBack } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace BackIcon with <Icon as={SvgArrowBack} />",
-      "Import SvgArrowBack from @commercetools/nimbus-icons",
+      "Replace BackIcon with <Icon as={ArrowBack} />",
+      "Import ArrowBack from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2451,10 +2451,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgShoppingBag} /> from @commercetools/nimbus-icons. Import: import { SvgShoppingBag } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ShoppingBag} /> from @commercetools/nimbus-icons. Import: import { ShoppingBag } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace BagIcon with <Icon as={SvgShoppingBag} />",
-      "Import SvgShoppingBag from @commercetools/nimbus-icons",
+      "Replace BagIcon with <Icon as={ShoppingBag} />",
+      "Import ShoppingBag from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2465,10 +2465,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgSwapHoriz} /> from @commercetools/nimbus-icons. Import: import { SvgSwapHoriz } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={SwapHoriz} /> from @commercetools/nimbus-icons. Import: import { SwapHoriz } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace BidirectionalArrowIcon with <Icon as={SvgSwapHoriz} />",
-      "Import SvgSwapHoriz from @commercetools/nimbus-icons",
+      "Replace BidirectionalArrowIcon with <Icon as={SwapHoriz} />",
+      "Import SwapHoriz from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2479,10 +2479,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgDelete} /> from @commercetools/nimbus-icons. Import: import { SvgDelete } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Delete} /> from @commercetools/nimbus-icons. Import: import { Delete } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace BinFilledIcon with <Icon as={SvgDelete} />",
-      "Import SvgDelete from @commercetools/nimbus-icons",
+      "Replace BinFilledIcon with <Icon as={Delete} />",
+      "Import Delete from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2493,10 +2493,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgInventory} /> from @commercetools/nimbus-icons. Import: import { SvgInventory } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Inventory} /> from @commercetools/nimbus-icons. Import: import { Inventory } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace BoxIcon with <Icon as={SvgInventory} />",
-      "Import SvgInventory from @commercetools/nimbus-icons",
+      "Replace BoxIcon with <Icon as={Inventory} />",
+      "Import Inventory from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2507,10 +2507,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgPsychology} /> from @commercetools/nimbus-icons. Import: import { SvgPsychology } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Psychology} /> from @commercetools/nimbus-icons. Import: import { Psychology } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace BrainIcon with <Icon as={SvgPsychology} />",
-      "Import SvgPsychology from @commercetools/nimbus-icons",
+      "Replace BrainIcon with <Icon as={Psychology} />",
+      "Import Psychology from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2521,10 +2521,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgCalendarToday} /> from @commercetools/nimbus-icons. Import: import { SvgCalendarToday } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={CalendarToday} /> from @commercetools/nimbus-icons. Import: import { CalendarToday } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CalendarIcon with <Icon as={SvgCalendarToday} />",
-      "Import SvgCalendarToday from @commercetools/nimbus-icons",
+      "Replace CalendarIcon with <Icon as={CalendarToday} />",
+      "Import CalendarToday from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2535,10 +2535,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgCameraAlt} /> from @commercetools/nimbus-icons. Import: import { SvgCameraAlt } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={CameraAlt} /> from @commercetools/nimbus-icons. Import: import { CameraAlt } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CameraIcon with <Icon as={SvgCameraAlt} />",
-      "Import SvgCameraAlt from @commercetools/nimbus-icons",
+      "Replace CameraIcon with <Icon as={CameraAlt} />",
+      "Import CameraAlt from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2549,10 +2549,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgArrowDropDown} /> from @commercetools/nimbus-icons. Import: import { SvgArrowDropDown } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ArrowDropDown} /> from @commercetools/nimbus-icons. Import: import { ArrowDropDown } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CaretDownIcon with <Icon as={SvgArrowDropDown} />",
-      "Import SvgArrowDropDown from @commercetools/nimbus-icons",
+      "Replace CaretDownIcon with <Icon as={ArrowDropDown} />",
+      "Import ArrowDropDown from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2563,10 +2563,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgArrowDropDown} /> from @commercetools/nimbus-icons. Import: import { SvgArrowDropDown } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ArrowDropDown} /> from @commercetools/nimbus-icons. Import: import { ArrowDropDown } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CaretDownSmallIcon with <Icon as={SvgArrowDropDown} />",
-      "Import SvgArrowDropDown from @commercetools/nimbus-icons",
+      "Replace CaretDownSmallIcon with <Icon as={ArrowDropDown} />",
+      "Import ArrowDropDown from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2577,10 +2577,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgArrowDropUp} /> from @commercetools/nimbus-icons. Import: import { SvgArrowDropUp } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ArrowDropUp} /> from @commercetools/nimbus-icons. Import: import { ArrowDropUp } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CaretUpIcon with <Icon as={SvgArrowDropUp} />",
-      "Import SvgArrowDropUp from @commercetools/nimbus-icons",
+      "Replace CaretUpIcon with <Icon as={ArrowDropUp} />",
+      "Import ArrowDropUp from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2591,10 +2591,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgArrowDropUp} /> from @commercetools/nimbus-icons. Import: import { SvgArrowDropUp } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ArrowDropUp} /> from @commercetools/nimbus-icons. Import: import { ArrowDropUp } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CaretUpSmallIcon with <Icon as={SvgArrowDropUp} />",
-      "Import SvgArrowDropUp from @commercetools/nimbus-icons",
+      "Replace CaretUpSmallIcon with <Icon as={ArrowDropUp} />",
+      "Import ArrowDropUp from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2605,10 +2605,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgShoppingCart} /> from @commercetools/nimbus-icons. Import: import { SvgShoppingCart } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ShoppingCart} /> from @commercetools/nimbus-icons. Import: import { ShoppingCart } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CartIcon with <Icon as={SvgShoppingCart} />",
-      "Import SvgShoppingCart from @commercetools/nimbus-icons",
+      "Replace CartIcon with <Icon as={ShoppingCart} />",
+      "Import ShoppingCart from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2619,10 +2619,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgLinkOff} /> from @commercetools/nimbus-icons. Import: import { SvgLinkOff } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={LinkOff} /> from @commercetools/nimbus-icons. Import: import { LinkOff } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ChainBrokenIcon with <Icon as={SvgLinkOff} />",
-      "Import SvgLinkOff from @commercetools/nimbus-icons",
+      "Replace ChainBrokenIcon with <Icon as={LinkOff} />",
+      "Import LinkOff from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2633,10 +2633,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgLink} /> from @commercetools/nimbus-icons. Import: import { SvgLink } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Link} /> from @commercetools/nimbus-icons. Import: import { Link } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ChainIcon with <Icon as={SvgLink} />",
-      "Import SvgLink from @commercetools/nimbus-icons",
+      "Replace ChainIcon with <Icon as={Link} />",
+      "Import Link from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2647,10 +2647,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgCheckCircle} /> from @commercetools/nimbus-icons. Import: import { SvgCheckCircle } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={CheckCircle} /> from @commercetools/nimbus-icons. Import: import { CheckCircle } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CheckActiveIcon with <Icon as={SvgCheckCircle} />",
-      "Import SvgCheckCircle from @commercetools/nimbus-icons",
+      "Replace CheckActiveIcon with <Icon as={CheckCircle} />",
+      "Import CheckCircle from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2661,10 +2661,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgCheck} /> from @commercetools/nimbus-icons. Import: import { SvgCheck } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Check} /> from @commercetools/nimbus-icons. Import: import { Check } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CheckBoldIcon with <Icon as={SvgCheck} />",
-      "Import SvgCheck from @commercetools/nimbus-icons",
+      "Replace CheckBoldIcon with <Icon as={Check} />",
+      "Import Check from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2675,10 +2675,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgRadioButtonUnchecked} /> from @commercetools/nimbus-icons. Import: import { SvgRadioButtonUnchecked } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={RadioButtonUnchecked} /> from @commercetools/nimbus-icons. Import: import { RadioButtonUnchecked } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CheckInactiveIcon with <Icon as={SvgRadioButtonUnchecked} />",
-      "Import SvgRadioButtonUnchecked from @commercetools/nimbus-icons",
+      "Replace CheckInactiveIcon with <Icon as={RadioButtonUnchecked} />",
+      "Import RadioButtonUnchecked from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2689,10 +2689,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgDone} /> from @commercetools/nimbus-icons. Import: import { SvgDone } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Done} /> from @commercetools/nimbus-icons. Import: import { Done } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CheckThinIcon with <Icon as={SvgDone} />",
-      "Import SvgDone from @commercetools/nimbus-icons",
+      "Replace CheckThinIcon with <Icon as={Done} />",
+      "Import Done from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2703,10 +2703,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgFiberManualRecord} /> from @commercetools/nimbus-icons. Import: import { SvgFiberManualRecord } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={FiberManualRecord} /> from @commercetools/nimbus-icons. Import: import { FiberManualRecord } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CircleIcon with <Icon as={SvgFiberManualRecord} />",
-      "Import SvgFiberManualRecord from @commercetools/nimbus-icons",
+      "Replace CircleIcon with <Icon as={FiberManualRecord} />",
+      "Import FiberManualRecord from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2717,10 +2717,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgContentPaste} /> from @commercetools/nimbus-icons. Import: import { SvgContentPaste } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ContentPaste} /> from @commercetools/nimbus-icons. Import: import { ContentPaste } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ClipboardIcon with <Icon as={SvgContentPaste} />",
-      "Import SvgContentPaste from @commercetools/nimbus-icons",
+      "Replace ClipboardIcon with <Icon as={ContentPaste} />",
+      "Import ContentPaste from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2731,10 +2731,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgSchedule} /> from @commercetools/nimbus-icons. Import: import { SvgSchedule } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Schedule} /> from @commercetools/nimbus-icons. Import: import { Schedule } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ClockIcon with <Icon as={SvgSchedule} />",
-      "Import SvgSchedule from @commercetools/nimbus-icons",
+      "Replace ClockIcon with <Icon as={Schedule} />",
+      "Import Schedule from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2745,10 +2745,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgHistory} /> from @commercetools/nimbus-icons. Import: import { SvgHistory } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={History} /> from @commercetools/nimbus-icons. Import: import { History } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ClockWithArrowIcon with <Icon as={SvgHistory} />",
-      "Import SvgHistory from @commercetools/nimbus-icons",
+      "Replace ClockWithArrowIcon with <Icon as={History} />",
+      "Import History from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2759,10 +2759,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgClose} /> from @commercetools/nimbus-icons. Import: import { SvgClose } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Close} /> from @commercetools/nimbus-icons. Import: import { Close } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CloseBoldIcon with <Icon as={SvgClose} />",
-      "Import SvgClose from @commercetools/nimbus-icons",
+      "Replace CloseBoldIcon with <Icon as={Close} />",
+      "Import Close from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2773,10 +2773,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgClose} /> from @commercetools/nimbus-icons. Import: import { SvgClose } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Close} /> from @commercetools/nimbus-icons. Import: import { Close } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CloseIcon with <Icon as={SvgClose} />",
-      "Import SvgClose from @commercetools/nimbus-icons",
+      "Replace CloseIcon with <Icon as={Close} />",
+      "Import Close from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2787,10 +2787,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgCode} /> from @commercetools/nimbus-icons. Import: import { SvgCode } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Code} /> from @commercetools/nimbus-icons. Import: import { Code } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CodeViewIcon with <Icon as={SvgCode} />",
-      "Import SvgCode from @commercetools/nimbus-icons",
+      "Replace CodeViewIcon with <Icon as={Code} />",
+      "Import Code from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2801,10 +2801,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgMonetizationOn} /> from @commercetools/nimbus-icons. Import: import { SvgMonetizationOn } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={MonetizationOn} /> from @commercetools/nimbus-icons. Import: import { MonetizationOn } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CoinsIcon with <Icon as={SvgMonetizationOn} />",
-      "Import SvgMonetizationOn from @commercetools/nimbus-icons",
+      "Replace CoinsIcon with <Icon as={MonetizationOn} />",
+      "Import MonetizationOn from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2815,10 +2815,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgViewColumn} /> from @commercetools/nimbus-icons. Import: import { SvgViewColumn } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ViewColumn} /> from @commercetools/nimbus-icons. Import: import { ViewColumn } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ColumnsIcon with <Icon as={SvgViewColumn} />",
-      "Import SvgViewColumn from @commercetools/nimbus-icons",
+      "Replace ColumnsIcon with <Icon as={ViewColumn} />",
+      "Import ViewColumn from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2829,10 +2829,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgDeviceHub} /> from @commercetools/nimbus-icons. Import: import { SvgDeviceHub } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={DeviceHub} /> from @commercetools/nimbus-icons. Import: import { DeviceHub } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ConnectedSquareIcon with <Icon as={SvgDeviceHub} />",
-      "Import SvgDeviceHub from @commercetools/nimbus-icons",
+      "Replace ConnectedSquareIcon with <Icon as={DeviceHub} />",
+      "Import DeviceHub from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2843,10 +2843,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgShare} /> from @commercetools/nimbus-icons. Import: import { SvgShare } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Share} /> from @commercetools/nimbus-icons. Import: import { Share } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ConnectedTriangleIcon with <Icon as={SvgShare} />",
-      "Import SvgShare from @commercetools/nimbus-icons",
+      "Replace ConnectedTriangleIcon with <Icon as={Share} />",
+      "Import Share from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2857,10 +2857,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgContentCopy} /> from @commercetools/nimbus-icons. Import: import { SvgContentCopy } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ContentCopy} /> from @commercetools/nimbus-icons. Import: import { ContentCopy } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CopyIcon with <Icon as={SvgContentCopy} />",
-      "Import SvgContentCopy from @commercetools/nimbus-icons",
+      "Replace CopyIcon with <Icon as={ContentCopy} />",
+      "Import ContentCopy from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2871,10 +2871,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgShoppingCartCheckout} /> from @commercetools/nimbus-icons. Import: import { SvgShoppingCartCheckout } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ShoppingCartCheckout} /> from @commercetools/nimbus-icons. Import: import { ShoppingCartCheckout } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CtCheckoutIcon with <Icon as={SvgShoppingCartCheckout} />",
-      "Import SvgShoppingCartCheckout from @commercetools/nimbus-icons",
+      "Replace CtCheckoutIcon with <Icon as={ShoppingCartCheckout} />",
+      "Import ShoppingCartCheckout from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2885,10 +2885,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgViewInAr} /> from @commercetools/nimbus-icons. Import: import { SvgViewInAr } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ViewInAr} /> from @commercetools/nimbus-icons. Import: import { ViewInAr } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CubeIcon with <Icon as={SvgViewInAr} />",
-      "Import SvgViewInAr from @commercetools/nimbus-icons",
+      "Replace CubeIcon with <Icon as={ViewInAr} />",
+      "Import ViewInAr from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2899,10 +2899,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgWidgets} /> from @commercetools/nimbus-icons. Import: import { SvgWidgets } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Widgets} /> from @commercetools/nimbus-icons. Import: import { Widgets } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace CubesIcon with <Icon as={SvgWidgets} />",
-      "Import SvgWidgets from @commercetools/nimbus-icons",
+      "Replace CubesIcon with <Icon as={Widgets} />",
+      "Import Widgets from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2913,10 +2913,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgDiamond} /> from @commercetools/nimbus-icons. Import: import { SvgDiamond } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Diamond} /> from @commercetools/nimbus-icons. Import: import { Diamond } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace DiamondIcon with <Icon as={SvgDiamond} />",
-      "Import SvgDiamond from @commercetools/nimbus-icons",
+      "Replace DiamondIcon with <Icon as={Diamond} />",
+      "Import Diamond from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2927,10 +2927,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgDomain} /> from @commercetools/nimbus-icons. Import: import { SvgDomain } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Domain} /> from @commercetools/nimbus-icons. Import: import { Domain } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace DomainIcon with <Icon as={SvgDomain} />",
-      "Import SvgDomain from @commercetools/nimbus-icons",
+      "Replace DomainIcon with <Icon as={Domain} />",
+      "Import Domain from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2941,10 +2941,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgFiberManualRecord} /> from @commercetools/nimbus-icons. Import: import { SvgFiberManualRecord } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={FiberManualRecord} /> from @commercetools/nimbus-icons. Import: import { FiberManualRecord } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace DotIcon with <Icon as={SvgFiberManualRecord} />",
-      "Import SvgFiberManualRecord from @commercetools/nimbus-icons",
+      "Replace DotIcon with <Icon as={FiberManualRecord} />",
+      "Import FiberManualRecord from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2955,10 +2955,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgDownload} /> from @commercetools/nimbus-icons. Import: import { SvgDownload } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Download} /> from @commercetools/nimbus-icons. Import: import { Download } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace DownloadIcon with <Icon as={SvgDownload} />",
-      "Import SvgDownload from @commercetools/nimbus-icons",
+      "Replace DownloadIcon with <Icon as={Download} />",
+      "Import Download from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2969,10 +2969,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgEdit} /> from @commercetools/nimbus-icons. Import: import { SvgEdit } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Edit} /> from @commercetools/nimbus-icons. Import: import { Edit } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace EditIcon with <Icon as={SvgEdit} />",
-      "Import SvgEdit from @commercetools/nimbus-icons",
+      "Replace EditIcon with <Icon as={Edit} />",
+      "Import Edit from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2983,10 +2983,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgError} /> from @commercetools/nimbus-icons. Import: import { SvgError } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Error} /> from @commercetools/nimbus-icons. Import: import { Error } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ErrorIcon with <Icon as={SvgError} />",
-      "Import SvgError from @commercetools/nimbus-icons",
+      "Replace ErrorIcon with <Icon as={Error} />",
+      "Import Error from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -2997,10 +2997,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgOpenInFull} /> from @commercetools/nimbus-icons. Import: import { SvgOpenInFull } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={OpenInFull} /> from @commercetools/nimbus-icons. Import: import { OpenInFull } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ExpandIcon with <Icon as={SvgOpenInFull} />",
-      "Import SvgOpenInFull from @commercetools/nimbus-icons",
+      "Replace ExpandIcon with <Icon as={OpenInFull} />",
+      "Import OpenInFull from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3011,10 +3011,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgOpenInNew} /> from @commercetools/nimbus-icons. Import: import { SvgOpenInNew } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={OpenInNew} /> from @commercetools/nimbus-icons. Import: import { OpenInNew } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ExternalLinkIcon with <Icon as={SvgOpenInNew} />",
-      "Import SvgOpenInNew from @commercetools/nimbus-icons",
+      "Replace ExternalLinkIcon with <Icon as={OpenInNew} />",
+      "Import OpenInNew from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3025,10 +3025,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgVisibilityOff} /> from @commercetools/nimbus-icons. Import: import { SvgVisibilityOff } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={VisibilityOff} /> from @commercetools/nimbus-icons. Import: import { VisibilityOff } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace EyeCrossedIcon with <Icon as={SvgVisibilityOff} />",
-      "Import SvgVisibilityOff from @commercetools/nimbus-icons",
+      "Replace EyeCrossedIcon with <Icon as={VisibilityOff} />",
+      "Import VisibilityOff from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3039,10 +3039,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgVisibility} /> from @commercetools/nimbus-icons. Import: import { SvgVisibility } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Visibility} /> from @commercetools/nimbus-icons. Import: import { Visibility } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace EyeIcon with <Icon as={SvgVisibility} />",
-      "Import SvgVisibility from @commercetools/nimbus-icons",
+      "Replace EyeIcon with <Icon as={Visibility} />",
+      "Import Visibility from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3053,10 +3053,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgFilterList} /> from @commercetools/nimbus-icons. Import: import { SvgFilterList } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={FilterList} /> from @commercetools/nimbus-icons. Import: import { FilterList } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace FilterAndListIcon with <Icon as={SvgFilterList} />",
-      "Import SvgFilterList from @commercetools/nimbus-icons",
+      "Replace FilterAndListIcon with <Icon as={FilterList} />",
+      "Import FilterList from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3067,10 +3067,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgFilterAlt} /> from @commercetools/nimbus-icons. Import: import { SvgFilterAlt } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={FilterAlt} /> from @commercetools/nimbus-icons. Import: import { FilterAlt } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace FilterIcon with <Icon as={SvgFilterAlt} />",
-      "Import SvgFilterAlt from @commercetools/nimbus-icons",
+      "Replace FilterIcon with <Icon as={FilterAlt} />",
+      "Import FilterAlt from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3081,10 +3081,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgFlag} /> from @commercetools/nimbus-icons. Import: import { SvgFlag } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Flag} /> from @commercetools/nimbus-icons. Import: import { Flag } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace FlagFilledIcon with <Icon as={SvgFlag} />",
-      "Import SvgFlag from @commercetools/nimbus-icons",
+      "Replace FlagFilledIcon with <Icon as={Flag} />",
+      "Import Flag from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3095,10 +3095,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgOutlinedFlag} /> from @commercetools/nimbus-icons. Import: import { SvgOutlinedFlag } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={OutlinedFlag} /> from @commercetools/nimbus-icons. Import: import { OutlinedFlag } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace FlagLinearIcon with <Icon as={SvgOutlinedFlag} />",
-      "Import SvgOutlinedFlag from @commercetools/nimbus-icons",
+      "Replace FlagLinearIcon with <Icon as={OutlinedFlag} />",
+      "Import OutlinedFlag from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3109,10 +3109,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgWhatshot} /> from @commercetools/nimbus-icons. Import: import { SvgWhatshot } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Whatshot} /> from @commercetools/nimbus-icons. Import: import { Whatshot } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace FlameIcon with <Icon as={SvgWhatshot} />",
-      "Import SvgWhatshot from @commercetools/nimbus-icons",
+      "Replace FlameIcon with <Icon as={Whatshot} />",
+      "Import Whatshot from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3137,10 +3137,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgWeb} /> from @commercetools/nimbus-icons. Import: import { SvgWeb } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Web} /> from @commercetools/nimbus-icons. Import: import { Web } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace FrontendStudioIcon with <Icon as={SvgWeb} />",
-      "Import SvgWeb from @commercetools/nimbus-icons",
+      "Replace FrontendStudioIcon with <Icon as={Web} />",
+      "Import Web from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3151,10 +3151,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgSettings} /> from @commercetools/nimbus-icons. Import: import { SvgSettings } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Settings} /> from @commercetools/nimbus-icons. Import: import { Settings } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace GearIcon with <Icon as={SvgSettings} />",
-      "Import SvgSettings from @commercetools/nimbus-icons",
+      "Replace GearIcon with <Icon as={Settings} />",
+      "Import Settings from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3165,10 +3165,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgSchool} /> from @commercetools/nimbus-icons. Import: import { SvgSchool } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={School} /> from @commercetools/nimbus-icons. Import: import { School } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace GraduationCapIcon with <Icon as={SvgSchool} />",
-      "Import SvgSchool from @commercetools/nimbus-icons",
+      "Replace GraduationCapIcon with <Icon as={School} />",
+      "Import School from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3179,10 +3179,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgAnalytics} /> from @commercetools/nimbus-icons. Import: import { SvgAnalytics } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Analytics} /> from @commercetools/nimbus-icons. Import: import { Analytics } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace GraphIcon with <Icon as={SvgAnalytics} />",
-      "Import SvgAnalytics from @commercetools/nimbus-icons",
+      "Replace GraphIcon with <Icon as={Analytics} />",
+      "Import Analytics from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3193,10 +3193,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgGridView} /> from @commercetools/nimbus-icons. Import: import { SvgGridView } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={GridView} /> from @commercetools/nimbus-icons. Import: import { GridView } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace GridIcon with <Icon as={SvgGridView} />",
-      "Import SvgGridView from @commercetools/nimbus-icons",
+      "Replace GridIcon with <Icon as={GridView} />",
+      "Import GridView from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3207,10 +3207,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgGroupAdd} /> from @commercetools/nimbus-icons. Import: import { SvgGroupAdd } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={GroupAdd} /> from @commercetools/nimbus-icons. Import: import { GroupAdd } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace GroupAddIcon with <Icon as={SvgGroupAdd} />",
-      "Import SvgGroupAdd from @commercetools/nimbus-icons",
+      "Replace GroupAddIcon with <Icon as={GroupAdd} />",
+      "Import GroupAdd from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3221,10 +3221,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgFavorite} /> from @commercetools/nimbus-icons. Import: import { SvgFavorite } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Favorite} /> from @commercetools/nimbus-icons. Import: import { Favorite } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace HeartIcon with <Icon as={SvgFavorite} />",
-      "Import SvgFavorite from @commercetools/nimbus-icons",
+      "Replace HeartIcon with <Icon as={Favorite} />",
+      "Import Favorite from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3235,10 +3235,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgHome} /> from @commercetools/nimbus-icons. Import: import { SvgHome } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Home} /> from @commercetools/nimbus-icons. Import: import { Home } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace HomeIcon with <Icon as={SvgHome} />",
-      "Import SvgHome from @commercetools/nimbus-icons",
+      "Replace HomeIcon with <Icon as={Home} />",
+      "Import Home from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3249,10 +3249,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgHub} /> from @commercetools/nimbus-icons. Import: import { SvgHub } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Hub} /> from @commercetools/nimbus-icons. Import: import { Hub } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace HubIcon with <Icon as={SvgHub} />",
-      "Import SvgHub from @commercetools/nimbus-icons",
+      "Replace HubIcon with <Icon as={Hub} />",
+      "Import Hub from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3263,10 +3263,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgInfo} /> from @commercetools/nimbus-icons. Import: import { SvgInfo } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Info} /> from @commercetools/nimbus-icons. Import: import { Info } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace InfoIcon with <Icon as={SvgInfo} />",
-      "Import SvgInfo from @commercetools/nimbus-icons",
+      "Replace InfoIcon with <Icon as={Info} />",
+      "Import Info from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3277,10 +3277,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgLayers} /> from @commercetools/nimbus-icons. Import: import { SvgLayers } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Layers} /> from @commercetools/nimbus-icons. Import: import { Layers } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace LayersIcon with <Icon as={SvgLayers} />",
-      "Import SvgLayers from @commercetools/nimbus-icons",
+      "Replace LayersIcon with <Icon as={Layers} />",
+      "Import Layers from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3291,10 +3291,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgList} /> from @commercetools/nimbus-icons. Import: import { SvgList } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={List} /> from @commercetools/nimbus-icons. Import: import { List } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ListIcon with <Icon as={SvgList} />",
-      "Import SvgList from @commercetools/nimbus-icons",
+      "Replace ListIcon with <Icon as={List} />",
+      "Import List from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3305,10 +3305,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgManageSearch} /> from @commercetools/nimbus-icons. Import: import { SvgManageSearch } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ManageSearch} /> from @commercetools/nimbus-icons. Import: import { ManageSearch } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ListWithSearchIcon with <Icon as={SvgManageSearch} />",
-      "Import SvgManageSearch from @commercetools/nimbus-icons",
+      "Replace ListWithSearchIcon with <Icon as={ManageSearch} />",
+      "Import ManageSearch from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3319,10 +3319,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgPlace} /> from @commercetools/nimbus-icons. Import: import { SvgPlace } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Place} /> from @commercetools/nimbus-icons. Import: import { Place } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace LocationIcon with <Icon as={SvgPlace} />",
-      "Import SvgPlace from @commercetools/nimbus-icons",
+      "Replace LocationIcon with <Icon as={Place} />",
+      "Import Place from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3333,10 +3333,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgLock} /> from @commercetools/nimbus-icons. Import: import { SvgLock } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Lock} /> from @commercetools/nimbus-icons. Import: import { Lock } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace LockIcon with <Icon as={SvgLock} />",
-      "Import SvgLock from @commercetools/nimbus-icons",
+      "Replace LockIcon with <Icon as={Lock} />",
+      "Import Lock from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3347,10 +3347,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgLogout} /> from @commercetools/nimbus-icons. Import: import { SvgLogout } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Logout} /> from @commercetools/nimbus-icons. Import: import { Logout } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace LogoutIcon with <Icon as={SvgLogout} />",
-      "Import SvgLogout from @commercetools/nimbus-icons",
+      "Replace LogoutIcon with <Icon as={Logout} />",
+      "Import Logout from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3361,10 +3361,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgMail} /> from @commercetools/nimbus-icons. Import: import { SvgMail } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Mail} /> from @commercetools/nimbus-icons. Import: import { Mail } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace MailIcon with <Icon as={SvgMail} />",
-      "Import SvgMail from @commercetools/nimbus-icons",
+      "Replace MailIcon with <Icon as={Mail} />",
+      "Import Mail from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3375,10 +3375,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgCloseFullscreen} /> from @commercetools/nimbus-icons. Import: import { SvgCloseFullscreen } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={CloseFullscreen} /> from @commercetools/nimbus-icons. Import: import { CloseFullscreen } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace MinimizeIcon with <Icon as={SvgCloseFullscreen} />",
-      "Import SvgCloseFullscreen from @commercetools/nimbus-icons",
+      "Replace MinimizeIcon with <Icon as={CloseFullscreen} />",
+      "Import CloseFullscreen from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3389,10 +3389,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgAccountTree} /> from @commercetools/nimbus-icons. Import: import { SvgAccountTree } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={AccountTree} /> from @commercetools/nimbus-icons. Import: import { AccountTree } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace NestedViewIcon with <Icon as={SvgAccountTree} />",
-      "Import SvgAccountTree from @commercetools/nimbus-icons",
+      "Replace NestedViewIcon with <Icon as={AccountTree} />",
+      "Import AccountTree from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3403,10 +3403,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgEngineering} /> from @commercetools/nimbus-icons. Import: import { SvgEngineering } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Engineering} /> from @commercetools/nimbus-icons. Import: import { Engineering } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace OperationsIcon with <Icon as={SvgEngineering} />",
-      "Import SvgEngineering from @commercetools/nimbus-icons",
+      "Replace OperationsIcon with <Icon as={Engineering} />",
+      "Import Engineering from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3417,10 +3417,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgSettingsApplications} /> from @commercetools/nimbus-icons. Import: import { SvgSettingsApplications } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={SettingsApplications} /> from @commercetools/nimbus-icons. Import: import { SettingsApplications } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace PageGearIcon with <Icon as={SvgSettingsApplications} />",
-      "Import SvgSettingsApplications from @commercetools/nimbus-icons",
+      "Replace PageGearIcon with <Icon as={SettingsApplications} />",
+      "Import SettingsApplications from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3431,10 +3431,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgPages} /> from @commercetools/nimbus-icons. Import: import { SvgPages } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Pages} /> from @commercetools/nimbus-icons. Import: import { Pages } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace PagesIcon with <Icon as={SvgPages} />",
-      "Import SvgPages from @commercetools/nimbus-icons",
+      "Replace PagesIcon with <Icon as={Pages} />",
+      "Import Pages from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3445,10 +3445,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgPaid} /> from @commercetools/nimbus-icons. Import: import { SvgPaid } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Paid} /> from @commercetools/nimbus-icons. Import: import { Paid } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace PaidIcon with <Icon as={SvgPaid} />",
-      "Import SvgPaid from @commercetools/nimbus-icons",
+      "Replace PaidIcon with <Icon as={Paid} />",
+      "Import Paid from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3459,10 +3459,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgReceipt} /> from @commercetools/nimbus-icons. Import: import { SvgReceipt } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Receipt} /> from @commercetools/nimbus-icons. Import: import { Receipt } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace PaperBillInvertedIcon with <Icon as={SvgReceipt} />",
-      "Import SvgReceipt from @commercetools/nimbus-icons",
+      "Replace PaperBillInvertedIcon with <Icon as={Receipt} />",
+      "Import Receipt from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3473,10 +3473,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgAttachFile} /> from @commercetools/nimbus-icons. Import: import { SvgAttachFile } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={AttachFile} /> from @commercetools/nimbus-icons. Import: import { AttachFile } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace PaperclipIcon with <Icon as={SvgAttachFile} />",
-      "Import SvgAttachFile from @commercetools/nimbus-icons",
+      "Replace PaperclipIcon with <Icon as={AttachFile} />",
+      "Import AttachFile from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3487,10 +3487,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgPushPin} /> from @commercetools/nimbus-icons. Import: import { SvgPushPin } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={PushPin} /> from @commercetools/nimbus-icons. Import: import { PushPin } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace PinFilledIcon with <Icon as={SvgPushPin} />",
-      "Import SvgPushPin from @commercetools/nimbus-icons",
+      "Replace PinFilledIcon with <Icon as={PushPin} />",
+      "Import PushPin from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3501,10 +3501,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgPushPin} /> from @commercetools/nimbus-icons. Import: import { SvgPushPin } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={PushPin} /> from @commercetools/nimbus-icons. Import: import { PushPin } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace PinLinearIcon with <Icon as={SvgPushPin} />",
-      "Import SvgPushPin from @commercetools/nimbus-icons",
+      "Replace PinLinearIcon with <Icon as={PushPin} />",
+      "Import PushPin from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3515,10 +3515,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgExtension} /> from @commercetools/nimbus-icons. Import: import { SvgExtension } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Extension} /> from @commercetools/nimbus-icons. Import: import { Extension } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace PluginIcon with <Icon as={SvgExtension} />",
-      "Import SvgExtension from @commercetools/nimbus-icons",
+      "Replace PluginIcon with <Icon as={Extension} />",
+      "Import Extension from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3529,10 +3529,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgAdd} /> from @commercetools/nimbus-icons. Import: import { SvgAdd } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Add} /> from @commercetools/nimbus-icons. Import: import { Add } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace PlusThinIcon with <Icon as={SvgAdd} />",
-      "Import SvgAdd from @commercetools/nimbus-icons",
+      "Replace PlusThinIcon with <Icon as={Add} />",
+      "Import Add from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3543,10 +3543,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgPolicy} /> from @commercetools/nimbus-icons. Import: import { SvgPolicy } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Policy} /> from @commercetools/nimbus-icons. Import: import { Policy } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace PrivacyPolicyIcon with <Icon as={SvgPolicy} />",
-      "Import SvgPolicy from @commercetools/nimbus-icons",
+      "Replace PrivacyPolicyIcon with <Icon as={Policy} />",
+      "Import Policy from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3557,10 +3557,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgSettingsBackupRestore} /> from @commercetools/nimbus-icons. Import: import { SvgSettingsBackupRestore } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={SettingsBackupRestore} /> from @commercetools/nimbus-icons. Import: import { SettingsBackupRestore } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace RestoreIcon with <Icon as={SvgSettingsBackupRestore} />",
-      "Import SvgSettingsBackupRestore from @commercetools/nimbus-icons",
+      "Replace RestoreIcon with <Icon as={SettingsBackupRestore} />",
+      "Import SettingsBackupRestore from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3571,10 +3571,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgRateReview} /> from @commercetools/nimbus-icons. Import: import { SvgRateReview } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={RateReview} /> from @commercetools/nimbus-icons. Import: import { RateReview } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ReviewIcon with <Icon as={SvgRateReview} />",
-      "Import SvgRateReview from @commercetools/nimbus-icons",
+      "Replace ReviewIcon with <Icon as={RateReview} />",
+      "Import RateReview from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3585,10 +3585,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgPlayArrow} /> from @commercetools/nimbus-icons. Import: import { SvgPlayArrow } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={PlayArrow} /> from @commercetools/nimbus-icons. Import: import { PlayArrow } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace RightTriangleFilledIcon with <Icon as={SvgPlayArrow} />",
-      "Import SvgPlayArrow from @commercetools/nimbus-icons",
+      "Replace RightTriangleFilledIcon with <Icon as={PlayArrow} />",
+      "Import PlayArrow from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3599,10 +3599,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgPlayCircleOutline} /> from @commercetools/nimbus-icons. Import: import { SvgPlayCircleOutline } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={PlayCircleOutline} /> from @commercetools/nimbus-icons. Import: import { PlayCircleOutline } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace RightTriangleLinearIcon with <Icon as={SvgPlayCircleOutline} />",
-      "Import SvgPlayCircleOutline from @commercetools/nimbus-icons",
+      "Replace RightTriangleLinearIcon with <Icon as={PlayCircleOutline} />",
+      "Import PlayCircleOutline from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3613,10 +3613,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgRocketLaunch} /> from @commercetools/nimbus-icons. Import: import { SvgRocketLaunch } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={RocketLaunch} /> from @commercetools/nimbus-icons. Import: import { RocketLaunch } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace RocketIcon with <Icon as={SvgRocketLaunch} />",
-      "Import SvgRocketLaunch from @commercetools/nimbus-icons",
+      "Replace RocketIcon with <Icon as={RocketLaunch} />",
+      "Import RocketLaunch from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3627,10 +3627,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgDisplaySettings} /> from @commercetools/nimbus-icons. Import: import { SvgDisplaySettings } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={DisplaySettings} /> from @commercetools/nimbus-icons. Import: import { DisplaySettings } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ScreenGearIcon with <Icon as={SvgDisplaySettings} />",
-      "Import SvgDisplaySettings from @commercetools/nimbus-icons",
+      "Replace ScreenGearIcon with <Icon as={DisplaySettings} />",
+      "Import DisplaySettings from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3641,10 +3641,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgPersonalVideo} /> from @commercetools/nimbus-icons. Import: import { SvgPersonalVideo } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={PersonalVideo} /> from @commercetools/nimbus-icons. Import: import { PersonalVideo } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ScreenUserIcon with <Icon as={SvgPersonalVideo} />",
-      "Import SvgPersonalVideo from @commercetools/nimbus-icons",
+      "Replace ScreenUserIcon with <Icon as={PersonalVideo} />",
+      "Import PersonalVideo from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3655,10 +3655,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgTerminal} /> from @commercetools/nimbus-icons. Import: import { SvgTerminal } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Terminal} /> from @commercetools/nimbus-icons. Import: import { Terminal } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace SdkIcon with <Icon as={SvgTerminal} />",
-      "Import SvgTerminal from @commercetools/nimbus-icons",
+      "Replace SdkIcon with <Icon as={Terminal} />",
+      "Import Terminal from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3669,10 +3669,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgMenuOpen} /> from @commercetools/nimbus-icons. Import: import { SvgMenuOpen } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={MenuOpen} /> from @commercetools/nimbus-icons. Import: import { MenuOpen } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace SidebarCollapseIcon with <Icon as={SvgMenuOpen} />",
-      "Import SvgMenuOpen from @commercetools/nimbus-icons",
+      "Replace SidebarCollapseIcon with <Icon as={MenuOpen} />",
+      "Import MenuOpen from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3683,10 +3683,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgMenu} /> from @commercetools/nimbus-icons. Import: import { SvgMenu } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Menu} /> from @commercetools/nimbus-icons. Import: import { Menu } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace SidebarExpandIcon with <Icon as={SvgMenu} />",
-      "Import SvgMenu from @commercetools/nimbus-icons",
+      "Replace SidebarExpandIcon with <Icon as={Menu} />",
+      "Import Menu from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3697,10 +3697,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgSwapVert} /> from @commercetools/nimbus-icons. Import: import { SvgSwapVert } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={SwapVert} /> from @commercetools/nimbus-icons. Import: import { SwapVert } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace SortingIcon with <Icon as={SvgSwapVert} />",
-      "Import SvgSwapVert from @commercetools/nimbus-icons",
+      "Replace SortingIcon with <Icon as={SwapVert} />",
+      "Import SwapVert from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3711,10 +3711,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgAutoAwesome} /> from @commercetools/nimbus-icons. Import: import { SvgAutoAwesome } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={AutoAwesome} /> from @commercetools/nimbus-icons. Import: import { AutoAwesome } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace SparklesIcon with <Icon as={SvgAutoAwesome} />",
-      "Import SvgAutoAwesome from @commercetools/nimbus-icons",
+      "Replace SparklesIcon with <Icon as={AutoAwesome} />",
+      "Import AutoAwesome from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3725,10 +3725,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgChatBubble} /> from @commercetools/nimbus-icons. Import: import { SvgChatBubble } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={ChatBubble} /> from @commercetools/nimbus-icons. Import: import { ChatBubble } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace SpeechBubbleIcon with <Icon as={SvgChatBubble} />",
-      "Import SvgChatBubble from @commercetools/nimbus-icons",
+      "Replace SpeechBubbleIcon with <Icon as={ChatBubble} />",
+      "Import ChatBubble from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3739,10 +3739,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgSpeed} /> from @commercetools/nimbus-icons. Import: import { SvgSpeed } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Speed} /> from @commercetools/nimbus-icons. Import: import { Speed } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace SpeedometerIcon with <Icon as={SvgSpeed} />",
-      "Import SvgSpeed from @commercetools/nimbus-icons",
+      "Replace SpeedometerIcon with <Icon as={Speed} />",
+      "Import Speed from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3753,10 +3753,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgCallSplit} /> from @commercetools/nimbus-icons. Import: import { SvgCallSplit } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={CallSplit} /> from @commercetools/nimbus-icons. Import: import { CallSplit } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace SplitIcon with <Icon as={SvgCallSplit} />",
-      "Import SvgCallSplit from @commercetools/nimbus-icons",
+      "Replace SplitIcon with <Icon as={CallSplit} />",
+      "Import CallSplit from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3767,10 +3767,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgLayers} /> from @commercetools/nimbus-icons. Import: import { SvgLayers } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Layers} /> from @commercetools/nimbus-icons. Import: import { Layers } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace StackIcon with <Icon as={SvgLayers} />",
-      "Import SvgLayers from @commercetools/nimbus-icons",
+      "Replace StackIcon with <Icon as={Layers} />",
+      "Import Layers from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3781,10 +3781,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgStar} /> from @commercetools/nimbus-icons. Import: import { SvgStar } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Star} /> from @commercetools/nimbus-icons. Import: import { Star } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace StarIcon with <Icon as={SvgStar} />",
-      "Import SvgStar from @commercetools/nimbus-icons",
+      "Replace StarIcon with <Icon as={Star} />",
+      "Import Star from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3795,10 +3795,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgSubdirectoryArrowRight} /> from @commercetools/nimbus-icons. Import: import { SvgSubdirectoryArrowRight } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={SubdirectoryArrowRight} /> from @commercetools/nimbus-icons. Import: import { SubdirectoryArrowRight } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace SubdirectoryArrowIcon with <Icon as={SvgSubdirectoryArrowRight} />",
-      "Import SvgSubdirectoryArrowRight from @commercetools/nimbus-icons",
+      "Replace SubdirectoryArrowIcon with <Icon as={SubdirectoryArrowRight} />",
+      "Import SubdirectoryArrowRight from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3809,10 +3809,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgSupportAgent} /> from @commercetools/nimbus-icons. Import: import { SvgSupportAgent } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={SupportAgent} /> from @commercetools/nimbus-icons. Import: import { SupportAgent } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace SupportIcon with <Icon as={SvgSupportAgent} />",
-      "Import SvgSupportAgent from @commercetools/nimbus-icons",
+      "Replace SupportIcon with <Icon as={SupportAgent} />",
+      "Import SupportAgent from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3823,10 +3823,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgSwapHoriz} /> from @commercetools/nimbus-icons. Import: import { SvgSwapHoriz } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={SwapHoriz} /> from @commercetools/nimbus-icons. Import: import { SwapHoriz } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace SwitcherIcon with <Icon as={SvgSwapHoriz} />",
-      "Import SvgSwapHoriz from @commercetools/nimbus-icons",
+      "Replace SwitcherIcon with <Icon as={SwapHoriz} />",
+      "Import SwapHoriz from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3837,10 +3837,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgTableChart} /> from @commercetools/nimbus-icons. Import: import { SvgTableChart } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={TableChart} /> from @commercetools/nimbus-icons. Import: import { TableChart } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace TableIcon with <Icon as={SvgTableChart} />",
-      "Import SvgTableChart from @commercetools/nimbus-icons",
+      "Replace TableIcon with <Icon as={TableChart} />",
+      "Import TableChart from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3851,10 +3851,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgLabel} /> from @commercetools/nimbus-icons. Import: import { SvgLabel } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Label} /> from @commercetools/nimbus-icons. Import: import { Label } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace TagIcon with <Icon as={SvgLabel} />",
-      "Import SvgLabel from @commercetools/nimbus-icons",
+      "Replace TagIcon with <Icon as={Label} />",
+      "Import Label from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3865,10 +3865,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgSell} /> from @commercetools/nimbus-icons. Import: import { SvgSell } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Sell} /> from @commercetools/nimbus-icons. Import: import { Sell } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace TagMultiIcon with <Icon as={SvgSell} />",
-      "Import SvgSell from @commercetools/nimbus-icons",
+      "Replace TagMultiIcon with <Icon as={Sell} />",
+      "Import Sell from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3879,10 +3879,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgBookmarks} /> from @commercetools/nimbus-icons. Import: import { SvgBookmarks } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Bookmarks} /> from @commercetools/nimbus-icons. Import: import { Bookmarks } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace TagStackedIcon with <Icon as={SvgBookmarks} />",
-      "Import SvgBookmarks from @commercetools/nimbus-icons",
+      "Replace TagStackedIcon with <Icon as={Bookmarks} />",
+      "Import Bookmarks from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3893,10 +3893,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgTerminal} /> from @commercetools/nimbus-icons. Import: import { SvgTerminal } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Terminal} /> from @commercetools/nimbus-icons. Import: import { Terminal } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace TerminalIcon with <Icon as={SvgTerminal} />",
-      "Import SvgTerminal from @commercetools/nimbus-icons",
+      "Replace TerminalIcon with <Icon as={Terminal} />",
+      "Import Terminal from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3907,10 +3907,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgLocalShipping} /> from @commercetools/nimbus-icons. Import: import { SvgLocalShipping } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={LocalShipping} /> from @commercetools/nimbus-icons. Import: import { LocalShipping } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace TruckIcon with <Icon as={SvgLocalShipping} />",
-      "Import SvgLocalShipping from @commercetools/nimbus-icons",
+      "Replace TruckIcon with <Icon as={LocalShipping} />",
+      "Import LocalShipping from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3921,10 +3921,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgTune} /> from @commercetools/nimbus-icons. Import: import { SvgTune } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Tune} /> from @commercetools/nimbus-icons. Import: import { Tune } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace TuneIcon with <Icon as={SvgTune} />",
-      "Import SvgTune from @commercetools/nimbus-icons",
+      "Replace TuneIcon with <Icon as={Tune} />",
+      "Import Tune from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3935,10 +3935,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgPerson} /> from @commercetools/nimbus-icons. Import: import { SvgPerson } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Person} /> from @commercetools/nimbus-icons. Import: import { Person } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace UserFilledIcon with <Icon as={SvgPerson} />",
-      "Import SvgPerson from @commercetools/nimbus-icons",
+      "Replace UserFilledIcon with <Icon as={Person} />",
+      "Import Person from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3949,10 +3949,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgPersonOutline} /> from @commercetools/nimbus-icons. Import: import { SvgPersonOutline } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={PersonOutline} /> from @commercetools/nimbus-icons. Import: import { PersonOutline } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace UserLinearIcon with <Icon as={SvgPersonOutline} />",
-      "Import SvgPersonOutline from @commercetools/nimbus-icons",
+      "Replace UserLinearIcon with <Icon as={PersonOutline} />",
+      "Import PersonOutline from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3963,10 +3963,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgGroup} /> from @commercetools/nimbus-icons. Import: import { SvgGroup } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Group} /> from @commercetools/nimbus-icons. Import: import { Group } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace UsersIcon with <Icon as={SvgGroup} />",
-      "Import SvgGroup from @commercetools/nimbus-icons",
+      "Replace UsersIcon with <Icon as={Group} />",
+      "Import Group from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3977,10 +3977,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgVerified} /> from @commercetools/nimbus-icons. Import: import { SvgVerified } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Verified} /> from @commercetools/nimbus-icons. Import: import { Verified } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace VerifiedIcon with <Icon as={SvgVerified} />",
-      "Import SvgVerified from @commercetools/nimbus-icons",
+      "Replace VerifiedIcon with <Icon as={Verified} />",
+      "Import Verified from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -3991,10 +3991,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgDashboardCustomize} /> from @commercetools/nimbus-icons. Import: import { SvgDashboardCustomize } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={DashboardCustomize} /> from @commercetools/nimbus-icons. Import: import { DashboardCustomize } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace ViewGridPlusIcon with <Icon as={SvgDashboardCustomize} />",
-      "Import SvgDashboardCustomize from @commercetools/nimbus-icons",
+      "Replace ViewGridPlusIcon with <Icon as={DashboardCustomize} />",
+      "Import DashboardCustomize from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -4005,10 +4005,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgPreview} /> from @commercetools/nimbus-icons. Import: import { SvgPreview } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Preview} /> from @commercetools/nimbus-icons. Import: import { Preview } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace WindowEyeIcon with <Icon as={SvgPreview} />",
-      "Import SvgPreview from @commercetools/nimbus-icons",
+      "Replace WindowEyeIcon with <Icon as={Preview} />",
+      "Import Preview from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -4019,10 +4019,10 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Icon as={SvgPublic} /> from @commercetools/nimbus-icons. Import: import { SvgPublic } from "@commercetools/nimbus-icons";',
+      'Use <Icon as={Public} /> from @commercetools/nimbus-icons. Import: import { Public } from "@commercetools/nimbus-icons";',
     breakingChanges: [
-      "Replace WorldIcon with <Icon as={SvgPublic} />",
-      "Import SvgPublic from @commercetools/nimbus-icons",
+      "Replace WorldIcon with <Icon as={Public} />",
+      "Import Public from @commercetools/nimbus-icons",
       "Wrap with <Icon> component from @commercetools/nimbus",
     ],
     iconWrapper: ICON_WRAPPER,
@@ -4097,12 +4097,12 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus-icons",
     mappingType: "pattern",
     notes:
-      'Always wrap icons in the Icon component: <Icon as={SvgAccountCircle} size="2xs" color="neutral.11" />. ' +
+      'Always wrap icons in the Icon component: <Icon as={AccountCircle} size="2xs" color="neutral.11" />. ' +
       "Import the icon from @commercetools/nimbus-icons and the Icon wrapper from @commercetools/nimbus. " +
       "Never use bare icon components — the unwrapped form skips design-system sizing and color tokens.",
     breakingChanges: [
       "Update import paths to @commercetools/nimbus-icons",
-      "Icon names follow Svg prefix convention",
+      "Icon names are PascalCase (e.g. Add, ChevronLeft); only icons starting with numbers use a Svg prefix (e.g. Svg123)",
       "Icons must be wrapped in <Icon as={...}> for correct sizing and theming",
     ],
     iconWrapper: ICON_WRAPPER,
