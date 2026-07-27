@@ -62,7 +62,8 @@ if (data.error) {
   if (data.packages) {
     const sizes = {};
     for (const [pkg, formats] of Object.entries(data.packages)) {
-      if (formats.dist?.current != null) sizes[pkg] = { dist: formats.dist.current };
+      if (formats.dist?.current != null)
+        sizes[pkg] = { dist: formats.dist.current };
     }
     if (Object.keys(sizes).length > 0) {
       lines.push("");
