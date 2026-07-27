@@ -14,7 +14,7 @@ jobs:
   post-merge-label:
     # For direct trigger: only run on merged PRs.
     # For workflow_call: caller is responsible for gating on merged.
-    if: inputs.pr-number || github.event.pull_request.merged == true
+    if: (inputs.pr-number || github.event.pull_request.merged == true) && vars.BUNDLE_SIZE_ENABLED != 'false'
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write

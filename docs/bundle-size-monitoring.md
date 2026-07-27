@@ -41,7 +41,7 @@ comment chain is self-sustaining and the bootstrap file should be deleted.
 
 If the comment chain is ever lost (e.g., all `bundle-sizes` labels are removed),
 create a new bootstrap file to re-seed it. See
-[First-Time Setup](#first-time-setup) below.
+[Restoring a Broken Chain](#restoring-a-broken-chain) below.
 
 ### Post-Merge Labeling
 
@@ -157,6 +157,25 @@ The action:
    (`.github/actions/bundle-size/post-bundle-size-comment.mjs`)
 5. Fails the job if thresholds are exceeded and the approval label is absent
 
+## Emergency Pause (Killswitch)
+
+If the workflow is broken and blocking PRs, a maintainer can pause it
+immediately without any code change or PR:
+
+1. Go to **Settings → Secrets and variables → Actions → Variables** in the
+   GitHub UI.
+2. Create (or edit) the repository variable `BUNDLE_SIZE_ENABLED` and set its
+   value to `false`.
+3. All subsequent CI runs will skip both the bundle-size check and the
+   post-merge labeling step.
+
+To re-enable, delete the variable or set its value to anything other than
+`false`.
+
+**When re-enabling after a pause:** the comment chain resumes from the last
+labeled PR before the pause. If that PR's comment has no valid data block,
+follow the [chain restoration steps](#restoring-a-broken-chain) below.
+
 ## Running Locally
 
 You need built packages and the [GitHub CLI](https://cli.github.com) (`gh`)
@@ -212,7 +231,7 @@ Example output:
 Requires the [GitHub CLI](https://cli.github.com) (`gh`) to be installed and
 authenticated. The script is read-only — it only queries the API, never writes.
 
-## First-Time Setup
+## Restoring a Broken Chain
 
 To establish the comment chain for the first time (or re-establish it after it
 breaks):
