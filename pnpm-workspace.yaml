@@ -152,7 +152,7 @@ catalogs:
     playwright: ^1.61.1
     vitest: ^4.1.10
     axe-core: ^4.11.0
-    "@typescript-eslint/types": ^8.48.1
+    "@typescript-eslint/types": ^8.65.0
     "@typescript-eslint/typescript-estree": ^8.56.1
     react-docgen-typescript: ^2.4.0
     # Storybook pinned exact at 10.4.6: 10.5.0 wraps HTMLElement.focus in its CSF
