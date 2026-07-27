@@ -4005,7 +4005,6 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     iconWrapper: ICON_WRAPPER,
   },
 
-
   // -------------------------------------------------------------------------
   // Icons — generic
   // -------------------------------------------------------------------------
@@ -4029,6 +4028,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
           "Prefer the as prop: <Icon as={YourSvg} />. Passing as children also works: <Icon><YourSvg /></Icon>.",
       },
     ],
+    // Numeric-only sizes: CustomIcon only accepts "10"–"40", not the named aliases ("small"/"medium"/"big").
     iconWrapper: {
       ...ICON_WRAPPER_BASE,
       sizeMapping: [

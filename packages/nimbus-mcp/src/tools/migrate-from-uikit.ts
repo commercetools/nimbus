@@ -234,6 +234,24 @@ function deriveToolHint(
   return undefined;
 }
 
+function buildTokenRedirect(name: string): MigrateComponentResult {
+  return {
+    uiKitName: name,
+    nimbusEquivalent: "Nimbus design tokens",
+    importPath: "@commercetools/nimbus-tokens",
+    mappingType: "pattern",
+    notes:
+      `Replace ${name}.tokenName usages with Nimbus design tokens. ` +
+      `Use the get_tokens tool with the uikitToken parameter to resolve each token ` +
+      `(e.g. get_tokens(uikitToken: "constraint3") or get_tokens(uikitToken: "spacingXl")).`,
+    breakingChanges: [
+      `Remove ${name} import from @commercetools-uikit/design-system or @commercetools-frontend/ui-kit`,
+      "Replace each token reference with the equivalent Nimbus token value or CSS variable",
+    ],
+    hint: `Use the get_tokens tool with the uikitToken parameter to resolve each ${name} token (e.g. get_tokens(uikitToken: "constraint3"))`,
+  };
+}
+
 function buildComponentResult(
   uiKitName: string
 ): MigrateComponentResult | null {
@@ -478,20 +496,7 @@ export function registerMigrateFromUiKit(server: McpServer): void {
             content: [
               {
                 type: "text" as const,
-                text: JSON.stringify({
-                  uiKitName: componentName,
-                  nimbusEquivalent: "Nimbus design tokens",
-                  importPath: "@commercetools/nimbus-tokens",
-                  mappingType: "pattern",
-                  notes:
-                    `Replace ${componentName}.tokenName usages with Nimbus design tokens. ` +
-                    `Use the get_tokens tool with the uikitToken parameter to resolve each token.`,
-                  breakingChanges: [
-                    `Remove ${componentName} import from @commercetools-frontend/ui-kit`,
-                    "Replace each token reference with the equivalent Nimbus token value or CSS variable",
-                  ],
-                  hint: `Use the get_tokens tool with the uikitToken parameter to resolve each ${componentName} token (e.g. get_tokens(uikitToken: "constraint3"))`,
-                }),
+                text: JSON.stringify(buildTokenRedirect(componentName)),
               },
             ],
           };
@@ -614,21 +619,7 @@ export function registerMigrateFromUiKit(server: McpServer): void {
       for (const name of componentNames) {
         // Token object imports — redirect to the get_tokens tool
         if (name === "customProperties" || name === "designTokens") {
-          mappings.push({
-            uiKitName: name,
-            nimbusEquivalent: "Nimbus design tokens",
-            importPath: "@commercetools/nimbus-tokens",
-            mappingType: "pattern",
-            notes:
-              `Replace ${name}.tokenName usages with Nimbus design tokens. ` +
-              `Use the get_tokens tool with the uikitToken parameter to resolve each token ` +
-              `(e.g. get_tokens(uikitToken: "constraint3") or get_tokens(uikitToken: "spacingXl")).`,
-            breakingChanges: [
-              `Remove ${name} import from @commercetools-frontend/ui-kit`,
-              "Replace each token reference with the equivalent Nimbus token value or CSS variable",
-            ],
-            hint: `Use the get_tokens tool with the uikitToken parameter to resolve each ${name} token (e.g. get_tokens(uikitToken: "constraint3"))`,
-          });
+          mappings.push(buildTokenRedirect(name));
           continue;
         }
 
