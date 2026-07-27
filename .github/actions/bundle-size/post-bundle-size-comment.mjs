@@ -56,6 +56,19 @@ if (data.error) {
   for (const errLine of data.error.split("\n")) {
     lines.push(`> ${errLine}`);
   }
+
+  // Self-healing: even on error, embed current sizes so the next PR can use
+  // them as a baseline rather than perpetuating a broken chain.
+  if (data.packages) {
+    const sizes = {};
+    for (const [pkg, formats] of Object.entries(data.packages)) {
+      if (formats.dist?.current != null) sizes[pkg] = { dist: formats.dist.current };
+    }
+    if (Object.keys(sizes).length > 0) {
+      lines.push("");
+      lines.push(`<!-- bundle-sizes-data-v1: ${JSON.stringify(sizes)} -->`);
+    }
+  }
 } else {
   lines.push("| Package | Format | Current | Baseline | Delta | Status |");
   lines.push("|---------|--------|--------:|---------:|------:|--------|");

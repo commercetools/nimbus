@@ -34,10 +34,26 @@ const ENV_BASELINE = process.env.BUNDLE_SIZE_BASELINE || "";
 const IS_APPROVED = process.env.BUNDLE_SIZE_APPROVED === "true";
 const JSON_OUTPUT = process.argv.includes("--json");
 
-function failWithError(message) {
+function failWithError(message, currentSizes = null) {
   console.error(message);
   if (JSON_OUTPUT) {
-    console.log(JSON.stringify({ error: message, has_failures: true }));
+    const output = { error: message, has_failures: true };
+    if (currentSizes) {
+      const packages = {};
+      for (const [pkgName, formats] of Object.entries(currentSizes)) {
+        packages[pkgName] = {};
+        for (const [format, size] of Object.entries(formats)) {
+          packages[pkgName][format] = {
+            current: size,
+            baseline: null,
+            delta_pct: null,
+            status: "new",
+          };
+        }
+      }
+      output.packages = packages;
+    }
+    console.log(JSON.stringify(output));
   }
   process.exit(1);
 }
@@ -202,7 +218,8 @@ function compare(currentSizes) {
         "",
         "If the chain was previously working, re-add the `bundle-sizes` label to the",
         "most recently merged PR that has a valid bot comment.",
-      ].join("\n")
+      ].join("\n"),
+      currentSizes
     );
   }
 

@@ -196,4 +196,24 @@ describe("diagnostic errors", () => {
     expect(result.stderr).toContain("No baseline available");
     expect(result.stderr).toContain("comment chain");
   });
+
+  it("includes measured sizes in JSON output even when no baseline is available", () => {
+    const result = run(`${CHECK_SCRIPT} --json`, {
+      BUNDLE_SIZE_BASELINE: "",
+      GH_TOKEN: "",
+      GITHUB_REPOSITORY: "",
+      GH_CONFIG_DIR: "/tmp/nonexistent-gh-config-dir",
+    });
+    expect(result.status).toBe(1);
+    const json = JSON.parse(result.stdout);
+    expect(json.error).toBeTruthy();
+    expect(json.has_failures).toBe(true);
+    expect(json.packages).toBeDefined();
+    expect(json.packages["@commercetools/nimbus"]).toBeDefined();
+    expect(json.packages["@commercetools/nimbus"].dist.current).toBeGreaterThan(
+      0
+    );
+    expect(json.packages["@commercetools/nimbus"].dist.baseline).toBeNull();
+    expect(json.packages["@commercetools/nimbus"].dist.status).toBe("new");
+  });
 });
