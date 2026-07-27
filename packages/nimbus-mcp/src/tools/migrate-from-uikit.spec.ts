@@ -209,7 +209,7 @@ describe("migrate_from_uikit — componentName mode", () => {
         { from: "10", to: "2xs" },
       ])
     );
-    expect(data.notes).toContain("SvgDelete");
+    expect(data.notes).toContain("Delete");
   });
 
   it("redirects customProperties to get_tokens tool", async () => {
