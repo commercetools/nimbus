@@ -6,6 +6,7 @@ import type {
   TokenCategorySummary,
   TokenCategoryResponse,
   TokenReverseLookupResponse,
+  UiKitTokenLookupResponse,
 } from "../types.js";
 
 /**
@@ -20,6 +21,7 @@ async function callGetTokens(
   args: {
     category?: string;
     value?: string;
+    uikitToken?: string;
     offset?: number;
     limit?: number;
   } = {}
@@ -327,5 +329,87 @@ describe("get_tokens — value reverse-lookup", () => {
       value: "999999px-nonexistent",
     });
     expect(text).toContain("No tokens found");
+  });
+});
+
+describe("get_tokens — uikitToken lookup", () => {
+  let client: Client;
+  let close: () => Promise<void>;
+
+  beforeAll(async () => {
+    const ctx = createTestClient();
+    await ctx.connect();
+    client = ctx.client;
+    close = ctx.close;
+  });
+
+  afterAll(() => close());
+
+  it("resolves constraint7 to its CSS value and matching Nimbus tokens", async () => {
+    const { text } = await callGetTokens(client, {
+      uikitToken: "constraint7",
+    });
+    const response = JSON.parse(text) as UiKitTokenLookupResponse;
+    expect(response.uikitToken).toBe("constraint7");
+    expect(response.cssValue).toBe("342px");
+    expect(response.recommendedCategory).toBe("size");
+    expect(Array.isArray(response.tokens)).toBe(true);
+  });
+
+  it("resolves spacingXl to spacing tokens", async () => {
+    const { text } = await callGetTokens(client, {
+      uikitToken: "spacingXl",
+    });
+    const response = JSON.parse(text) as UiKitTokenLookupResponse;
+    expect(response.uikitToken).toBe("spacingXl");
+    expect(response.cssValue).toBe("32px");
+    expect(response.recommendedCategory).toBe("spacing");
+    expect(response.tokens.length).toBeGreaterThan(0);
+  });
+
+  it("strips customProperties. prefix", async () => {
+    const { text } = await callGetTokens(client, {
+      uikitToken: "customProperties.constraint7",
+    });
+    const response = JSON.parse(text) as UiKitTokenLookupResponse;
+    expect(response.uikitToken).toBe("constraint7");
+    expect(response.cssValue).toBe("342px");
+  });
+
+  it("strips designTokens. prefix", async () => {
+    const { text } = await callGetTokens(client, {
+      uikitToken: "designTokens.spacingXl",
+    });
+    const response = JSON.parse(text) as UiKitTokenLookupResponse;
+    expect(response.uikitToken).toBe("spacingXl");
+    expect(response.cssValue).toBe("32px");
+  });
+
+  it("returns not-found message (not an error) for unknown UI Kit token", async () => {
+    const result = await callGetTokens(client, {
+      uikitToken: "nonExistentToken",
+    });
+    expect(result.isError).toBeUndefined();
+    expect(result.text).toContain("not found");
+  });
+
+  it("resolves a color token", async () => {
+    const { text } = await callGetTokens(client, {
+      uikitToken: "colorPrimary",
+    });
+    const response = JSON.parse(text) as UiKitTokenLookupResponse;
+    expect(response.cssValue).toBe("hsl(240, 64%, 58%)");
+    expect(response.recommendedCategory).toBe("color");
+  });
+
+  it("returns null recommendedCategory for unrecognized token prefixes", async () => {
+    const { text } = await callGetTokens(client, {
+      uikitToken: "breakPointMobile",
+    });
+    const response = JSON.parse(text) as UiKitTokenLookupResponse;
+    expect(response.uikitToken).toBe("breakPointMobile");
+    expect(response.cssValue).toBe("768px");
+    expect(response.recommendedCategory).toBeNull();
+    expect(Array.isArray(response.tokens)).toBe(true);
   });
 });

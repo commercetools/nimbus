@@ -1,6 +1,10 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
-import { getFlatTokenData, reverseLookup } from "../data-loader.js";
+import {
+  getFlatTokenData,
+  getUiKitTokenMap,
+  reverseLookup,
+} from "../data-loader.js";
 import type {
   FlatToken,
   FlatTokenData,
@@ -9,6 +13,7 @@ import type {
   TokenCategorySummary,
   TokenCategoryResponse,
   TokenReverseLookupResponse,
+  UiKitTokenLookupResponse,
 } from "../types.js";
 
 /** Threshold above which a category is considered "large". */
@@ -185,6 +190,7 @@ function buildCategoryResponse(
  * - No params: returns all token categories with counts
  * - `category` param: returns tokens in that category (paginated for large categories)
  * - `value` param: reverse-lookup to find which tokens resolve to that value
+ * - `uikitToken` param: resolve a UI Kit token name to matching Nimbus tokens
  */
 export function registerGetTokens(server: McpServer): void {
   server.registerTool(
@@ -195,7 +201,9 @@ export function registerGetTokens(server: McpServer): void {
         "Returns Nimbus design tokens. " +
         "No params: lists all categories with counts. " +
         "With category: returns tokens in that category (large categories are paginated by default). " +
-        'With value: reverse-lookup to find which tokens resolve to that value (e.g. "16px" → spacing.400).',
+        'With value: reverse-lookup to find which tokens resolve to that value (e.g. "16px" → spacing.400). ' +
+        'With uikitToken: resolve a UI Kit token name (e.g. "customProperties.constraint7" or "designTokens.spacingXl") ' +
+        "to its CSS value, find matching Nimbus tokens, and recommend the best category.",
       inputSchema: {
         category: z
           .string()
@@ -208,6 +216,14 @@ export function registerGetTokens(server: McpServer): void {
           .optional()
           .describe(
             'Reverse-lookup: find tokens whose resolved value matches this string, e.g. "16px" or "#0969DA". Case-insensitive.'
+          ),
+        uikitToken: z
+          .string()
+          .optional()
+          .describe(
+            'UI Kit token name to resolve, e.g. "constraint7", "spacingXl", "customProperties.constraint7", or "designTokens.spacingXl". ' +
+              "Resolves the token to its CSS value, finds matching Nimbus tokens, and recommends the best category. " +
+              "Tokens whose CSS value is a var(...) reference will return an empty tokens array but still provide recommendedCategory."
           ),
         offset: z
           .number()
@@ -227,9 +243,44 @@ export function registerGetTokens(server: McpServer): void {
           ),
       },
     },
-    async ({ category, value, offset, limit }) => {
+    async ({ category, value, uikitToken, offset, limit }) => {
       try {
         const data = await getFlatTokenData();
+
+        // uikitToken param: resolve UI Kit token name to Nimbus tokens
+        if (uikitToken !== undefined) {
+          const tokenMap = await getUiKitTokenMap();
+
+          const stripped = uikitToken
+            .replace(/^customProperties\./, "")
+            .replace(/^designTokens\./, "");
+
+          const entry = Object.hasOwn(tokenMap, stripped)
+            ? tokenMap[stripped]
+            : undefined;
+          if (!entry) {
+            return {
+              content: [
+                {
+                  type: "text" as const,
+                  text: `UI Kit token "${stripped}" not found. Pass a camelCase token name like "constraint7", "spacingXl", or "colorPrimary".`,
+                },
+              ],
+            };
+          }
+
+          const matches = reverseLookup(data, entry.cssValue);
+
+          const payload: UiKitTokenLookupResponse = {
+            uikitToken: stripped,
+            cssValue: entry.cssValue,
+            recommendedCategory: entry.recommendedCategory,
+            tokens: matches,
+          };
+          return {
+            content: [{ type: "text" as const, text: JSON.stringify(payload) }],
+          };
+        }
 
         // value param: reverse-lookup
         if (value !== undefined) {

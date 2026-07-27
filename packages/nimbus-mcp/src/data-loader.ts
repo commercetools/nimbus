@@ -11,6 +11,7 @@ import type {
   DocsManifest,
   IconCatalog,
   FlatTokenData,
+  UiKitTokenMap,
 } from "./types.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -180,3 +181,12 @@ export { reverseLookup } from "./processors/flatten-tokens.js";
  * Loads the pre-built flattened token data from `data/tokens.json`.
  */
 export const getFlatTokenData = lazyJson<FlatTokenData>("tokens.json");
+
+// ---------------------------------------------------------------------------
+// UI Kit token map
+// ---------------------------------------------------------------------------
+
+/**
+ * Loads the pre-built UI Kit token map from `data/uikit-tokens.json`.
+ */
+export const getUiKitTokenMap = lazyJson<UiKitTokenMap>("uikit-tokens.json");

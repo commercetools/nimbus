@@ -11,6 +11,7 @@ All scripts are TypeScript and run via `tsx`.
 | `build-icon-catalog.ts`      | Scans nimbus-icons and builds a searchable catalog at `data/icons.json`                                           |
 | `build-token-data.ts`        | Flattens design tokens into `data/tokens.json` for runtime lookup                                                 |
 | `build-search-index.ts`      | Augments search index with pre-lowered fields for faster runtime matching                                         |
+| `build-uikit-token-data.ts`  | Builds UI Kit token map from `custom-properties.json` into `data/uikit-tokens.json`                               |
 | `validate-migration-data.ts` | Validates `propMappings`, `propMigrations`, and `codeReduction` in migration data against live Nimbus/UIKit types |
 | `validation-helpers.ts`      | Shared helpers for type resolution and value extraction (used by validator and tests)                             |
 
