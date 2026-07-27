@@ -20,6 +20,17 @@ const ICON_WRAPPER_BASE: Omit<IconWrapper, "sizeMapping"> = {
 };
 
 // ---------------------------------------------------------------------------
+// Layout nesting guidance (shared across layout primitives)
+// ---------------------------------------------------------------------------
+
+const LAYOUT_NESTING_GUIDANCE =
+  "When you encounter nested layout components (e.g. Constraints wrapping Spacings wrapping Card), " +
+  "do NOT migrate each component independently. Instead, analyze the full nesting structure and migrate " +
+  "it as a single unit. Nimbus layout primitives (Stack, Box, Grid) can often collapse multiple nested " +
+  "UIKit wrappers into fewer elements. For example, a Constraints.Horizontal > Spacings.Stack > " +
+  "Spacings.Inset chain can become a single <Box maxWidth={...} gap={...} padding={...}>.";
+
+// ---------------------------------------------------------------------------
 // Migration data
 // ---------------------------------------------------------------------------
 
@@ -1888,6 +1899,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Remove Constraints.Horizontal",
       "Use maxWidth prop with design token values on Box or Container",
     ],
+    layoutGuidance: LAYOUT_NESTING_GUIDANCE,
   },
   {
     uiKitName: "Spacings.Inline",
@@ -1899,6 +1911,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Replace Spacings.Inline with <Stack direction='row'>",
       "Spacing values use design token scale (e.g. gap='300')",
     ],
+    layoutGuidance: LAYOUT_NESTING_GUIDANCE,
   },
   {
     uiKitName: "Spacings.Inset",
@@ -1911,6 +1924,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Replace Spacings.Inset with padding prop on Box",
       "Spacing values use design token scale",
     ],
+    layoutGuidance: LAYOUT_NESTING_GUIDANCE,
   },
   {
     uiKitName: "Spacings.InsetSquish",
@@ -1922,6 +1936,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     breakingChanges: [
       "Replace Spacings.InsetSquish with paddingX/paddingY props on Box",
     ],
+    layoutGuidance: LAYOUT_NESTING_GUIDANCE,
   },
   {
     uiKitName: "Spacings.Stack",
@@ -1934,6 +1949,7 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "Replace Spacings.Stack with <Stack direction='column'>",
       "Spacing values use design token scale",
     ],
+    layoutGuidance: LAYOUT_NESTING_GUIDANCE,
   },
 
   // -------------------------------------------------------------------------

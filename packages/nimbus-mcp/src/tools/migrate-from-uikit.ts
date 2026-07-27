@@ -257,6 +257,7 @@ function buildComponentResult(
     result.propShapeTransforms = entry.propShapeTransforms;
   if (entry.callbackAdapters) result.callbackAdapters = entry.callbackAdapters;
   if (entry.typeNotes) result.typeNotes = entry.typeNotes;
+  if (entry.layoutGuidance) result.layoutGuidance = entry.layoutGuidance;
 
   const hint = deriveToolHint(
     uiKitName,
@@ -267,6 +268,20 @@ function buildComponentResult(
   if (hint) result.hint = hint;
 
   return result;
+}
+
+/**
+ * Hoist the first `layoutGuidance` from mappings to the parent response and
+ * strip per-mapping copies to avoid repeating the identical string N times.
+ */
+function hoistLayoutGuidance(
+  mappings: MigrateComponentResult[]
+): string | undefined {
+  const guidance = mappings.find((m) => m.layoutGuidance)?.layoutGuidance;
+  if (guidance) {
+    for (const m of mappings) delete m.layoutGuidance;
+  }
+  return guidance;
 }
 
 // ---------------------------------------------------------------------------
@@ -469,13 +484,16 @@ export function registerMigrateFromUiKit(server: McpServer): void {
         // Check if this is a compound root (e.g. "Spacings" → Spacings.Stack, Spacings.Inline, ...)
         const compoundEntries = getUiKitCompoundMigrations(componentName);
         if (compoundEntries) {
+          const mappings = compoundEntries.map((e) =>
+            buildComponentResult(e.uiKitName)!
+          );
           const response: MigrateCompoundResult = {
             compoundRoot: componentName,
             note: `"${componentName}" is used as a namespace (e.g. ${compoundEntries.map((e) => e.uiKitName).join(", ")}). Each sub-component has its own mapping.`,
-            mappings: compoundEntries.map((e) =>
-              buildComponentResult(e.uiKitName)!
-            ),
+            mappings,
           };
+          const guidance = hoistLayoutGuidance(mappings);
+          if (guidance) response.layoutGuidance = guidance;
           return {
             content: [
               {
@@ -599,6 +617,8 @@ export function registerMigrateFromUiKit(server: McpServer): void {
         mappings,
         unmapped,
       };
+      const fileGuidance = hoistLayoutGuidance(mappings);
+      if (fileGuidance) response.layoutGuidance = fileGuidance;
 
       return {
         content: [

@@ -523,6 +523,8 @@ export interface UiKitMigrationEntry {
   callbackAdapters?: CallbackAdapter[];
   /** Type-level migration notes requiring explicit handling. */
   typeNotes?: string[];
+  /** Guidance for migrating nested layout primitives as a group. */
+  layoutGuidance?: string;
 }
 
 /** Single component migration result returned by migrate_from_uikit. */
@@ -549,6 +551,8 @@ export interface MigrateComponentResult {
   callbackAdapters?: CallbackAdapter[];
   /** Type-level migration notes requiring explicit handling. */
   typeNotes?: string[];
+  /** Guidance for migrating nested layout primitives as a group. */
+  layoutGuidance?: string;
 }
 
 /** A suggested Nimbus component for an unmapped UI Kit component. */
@@ -576,6 +580,8 @@ export interface MigrateFileResult {
   mappings: MigrateComponentResult[];
   /** Components found in imports but not in the migration database. */
   unmapped: UnmappedComponent[];
+  /** Guidance for migrating nested layout primitives as a group. */
+  layoutGuidance?: string;
 }
 
 /** Response for compound root lookups (e.g. "Spacings" → all Spacings.* sub-components). */
@@ -583,6 +589,8 @@ export interface MigrateCompoundResult {
   compoundRoot: string;
   note: string;
   mappings: MigrateComponentResult[];
+  /** Guidance for migrating nested layout primitives as a group. */
+  layoutGuidance?: string;
 }
 
 // ---------------------------------------------------------------------------
