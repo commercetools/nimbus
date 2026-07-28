@@ -95,11 +95,18 @@ export const BreadcrumbNav = () => {
         })}
       </Box>
 
-      {/* Copy Link Button - Visible on hover */}
+      {/* Copy Link Button - revealed on hover, and on keyboard focus so the
+          control is visible when it receives focus (WCAG 2.4.7 Focus Visible).
+          The button stays in the tab order even while hidden (opacity 0), so
+          without _focusWithin, tabbing would land on an invisible control. */}
       <Box
         opacity={isHovered ? 1 : 0}
         transition="opacity 0.2s ease-in-out"
         pointerEvents={isHovered ? "auto" : "none"}
+        _focusWithin={{
+          opacity: 1,
+          pointerEvents: "auto",
+        }}
       >
         <Button
           aria-label={isCopied ? "Link copied!" : "Copy link to this page"}

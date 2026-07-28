@@ -236,6 +236,16 @@ AlertRoot.displayName = 'Alert.Root';
 This ensures consistent behavior across the design system and proper prop
 forwarding.
 
+> **Slot-context shortcut:** When a Root component renders _only_ a slot
+> component (no React Aria wrapper, no custom context provider), the
+> `withProvider` slot already owns the recipe context and handles variant
+> extraction internally. In that case the explicit `useSlotRecipe` /
+> `splitVariantProps` / `extractStyleProps` calls may be omitted — the slot
+> component does the work. `Item.Root` and `ItemGroup.Root` use this simplified
+> pattern. Prefer the full pattern when the Root wraps a React Aria component or
+> a custom context provider, since variant and style props must be split before
+> reaching those wrappers.
+
 ### Sub-Component Implementation
 
 Sub-components should support flexible composition and avoid hardcoding content:
