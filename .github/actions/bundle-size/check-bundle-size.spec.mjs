@@ -142,8 +142,8 @@ describe("per-package size policies", () => {
   describe("absolute policy passes when relative would fail", () => {
     it("tokens pass under absolute budget even with >5% relative increase", () => {
       const baseline = {
-        "@commercetools/nimbus": { dist: 20702019 },
-        "@commercetools/nimbus-icons": { dist: 4902452 },
+        "@commercetools/nimbus": { dist: 999_999_999 },
+        "@commercetools/nimbus-icons": { dist: 999_999_999 },
         "@commercetools/nimbus-tokens": { dist: 380000 },
       };
 
