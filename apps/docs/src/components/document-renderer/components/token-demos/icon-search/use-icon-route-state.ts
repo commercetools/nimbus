@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 // Import router hooks from `react-router-dom`, NOT bare `react-router`: a
 // duplicate `react-router@8.1.0` is installed alongside `react-router-dom@7.x`,
 // and importing from the bare package yields a different module instance —
@@ -53,15 +53,7 @@ const PARAM = {
 } as const;
 
 /**
- * Back-trail bookkeeping for the detail dialog, module-scoped because it models
- * the single browser history shared by every hook consumer — and because it must
- * NOT survive a reload (a reload starts a fresh, unknowable stack; module scope
- * resets for free, unlike `history.state`).
- *
- * NOTE: this assumes exactly ONE live icon-browser instance in the tree at a
- * time. All three module globals below are shared, so a second mounted instance
- * would desync them. That holds today (the explorer renders once); revisit this
- * if the hook is ever reused in a second concurrent tree.
+ * Back-trail bookkeeping for the detail dialog.
  *
  * `trailKeys` holds the `location.key` of each icon-detail entry currently
  * stacked above the grid, oldest → newest, so its length is exactly how many
@@ -74,15 +66,24 @@ const PARAM = {
  * session. A deep-linked icon (no grid beneath) leaves it false, so `closeIcon`
  * falls back to navigating to the grid URL instead of `navigate(-n)` walking
  * off-site.
+ *
+ * `lastReconciledKey` dedupes reconciliation across multiple components calling
+ * the hook per render.
+ *
+ * All three live in a ref so they're scoped to the component tree's lifetime
+ * and reset cleanly on HMR, rather than persisting as module globals that
+ * survive a hot-reload while the history stack they model does not.
  */
-let trailKeys: string[] = [];
-let gridBeneath = false;
-/**
- * The last `location.key` reconciled by the effect. The hook runs in several
- * components per render; this guard lets only the first to observe a new key
- * mutate `trailKeys`, keeping the reconciliation idempotent.
- */
-let lastReconciledKey: string | null = null;
+interface TrailState {
+  trailKeys: string[];
+  gridBeneath: boolean;
+  lastReconciledKey: string | null;
+}
+const INITIAL_TRAIL_STATE: TrailState = {
+  trailKeys: [],
+  gridBeneath: false,
+  lastReconciledKey: null,
+};
 
 /** Clamp a raw `size` param to the slider's valid set (24..96 step 8). */
 const readSize = (raw: string | null): number => {
@@ -137,6 +138,7 @@ export const useIconRouteState = (): IconRouteState => {
   const navigate = useNavigate();
   const navType = useNavigationType();
   const [params, setParams] = useSearchParams();
+  const trail = useRef<TrailState>({ ...INITIAL_TRAIL_STATE });
 
   // There is no literal `:name` route — `/icons/*` is served by the app's
   // catch-all and longest-prefix-resolved to the single `/icons` doc — so the
@@ -169,27 +171,28 @@ export const useIconRouteState = (): IconRouteState => {
   //   • REPLACE onto an icon → swap the top key in place (depth unchanged).
   useEffect(() => {
     const key = location.key;
-    if (key === lastReconciledKey) return;
-    lastReconciledKey = key;
+    const t = trail.current;
+    if (key === t.lastReconciledKey) return;
+    t.lastReconciledKey = key;
 
     if (iconName === null) {
-      trailKeys = [];
-      gridBeneath = false;
+      t.trailKeys = [];
+      t.gridBeneath = false;
       return;
     }
     if (navType === "PUSH") {
-      trailKeys.push(key);
+      t.trailKeys.push(key);
     } else if (navType === "POP") {
-      const i = trailKeys.indexOf(key);
+      const i = t.trailKeys.indexOf(key);
       if (i >= 0) {
-        trailKeys = trailKeys.slice(0, i + 1);
+        t.trailKeys = t.trailKeys.slice(0, i + 1);
       } else {
-        trailKeys = [];
-        gridBeneath = false;
+        t.trailKeys = [];
+        t.gridBeneath = false;
       }
-    } else if (trailKeys.length > 0) {
+    } else if (t.trailKeys.length > 0) {
       // REPLACE staying on an icon entry.
-      trailKeys[trailKeys.length - 1] = key;
+      t.trailKeys[t.trailKeys.length - 1] = key;
     }
   }, [location.key, iconName, navType]);
 
@@ -267,7 +270,7 @@ export const useIconRouteState = (): IconRouteState => {
       // so a later close can pop straight back to it. Opening from within the
       // dialog — a "Similar icons" click — extends the current trail instead and
       // leaves `gridBeneath` as-is (the effect appends the new entry's key).
-      if (iconName === null) gridBeneath = true;
+      if (iconName === null) trail.current.gridBeneath = true;
       navigate(
         {
           pathname: `${ICON_BASE}/${encodeURIComponent(name)}`,
@@ -280,12 +283,13 @@ export const useIconRouteState = (): IconRouteState => {
   );
 
   const closeIcon = useCallback(() => {
-    if (gridBeneath && trailKeys.length > 0) {
+    const t = trail.current;
+    if (t.gridBeneath && t.trailKeys.length > 0) {
       // Pop the entire icon back-trail in one step, straight to our own grid
       // entry — restoring its scroll position.
-      const depth = trailKeys.length;
-      trailKeys = [];
-      gridBeneath = false;
+      const depth = t.trailKeys.length;
+      t.trailKeys = [];
+      t.gridBeneath = false;
       navigate(-depth);
     } else {
       // Deep-link / reload / forward-nav / arrived from another page: no owned

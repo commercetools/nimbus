@@ -1,16 +1,25 @@
+import type { FC, SVGProps } from "react";
 import {
   Box,
   Card,
   Heading,
+  Icon,
   Link,
   SimpleGrid,
   Stack,
   Text,
 } from "@commercetools/nimbus";
+import {
+  ColorLens,
+  Widgets,
+  Extension,
+  Category,
+  Code,
+} from "@commercetools/nimbus-icons";
 
 type Destination = {
   title: string;
-  icon: string;
+  icon: FC<SVGProps<SVGSVGElement>>;
   description: string;
   /** Absolute route path (leading slash) — matches how the top nav links. */
   href: string;
@@ -19,32 +28,32 @@ type Destination = {
 const destinations: Destination[] = [
   {
     title: "Design Tokens",
-    icon: "🎨",
+    icon: ColorLens,
     description:
       "Colors, spacing, typography and the rest of the token system.",
     href: "/home/design-tokens",
   },
   {
     title: "Components",
-    icon: "🧱",
+    icon: Widgets,
     description: "Accessible React components for building user interfaces.",
     href: "/components",
   },
   {
     title: "Patterns",
-    icon: "🧩",
+    icon: Extension,
     description: "Composable solutions to recurring UX problems.",
     href: "/patterns",
   },
   {
     title: "Icons",
-    icon: "🗂️",
+    icon: Category,
     description: "Search for icons in the Nimbus Icons library.",
     href: "/icons",
   },
   {
     title: "Hooks",
-    icon: "🎣",
+    icon: Code,
     description: "React hooks provided by Nimbus.",
     href: "/hooks",
   },
@@ -67,8 +76,8 @@ export const DestinationCards = () => {
           <Card.Root variant="outlined" size="lg" width="full" height="full">
             <Card.Body>
               <Stack direction="row" gap="400" alignItems="center">
-                <Box>
-                  <Text textStyle="6xl">{destination.icon}</Text>
+                <Box color="primary.11" flexShrink="0">
+                  <Icon as={destination.icon} size="xl" />
                 </Box>
                 <Box>
                   <Heading color="neutral.12" truncate>

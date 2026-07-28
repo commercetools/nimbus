@@ -227,6 +227,10 @@ export const IconBrowse = ({
   } = useIconRouteState();
 
   const [, copyToClipboard] = useCopyToClipboard();
+  // Stabilize the identity so `onCopyRequest` (and therefore every memoized
+  // `IconTile`) doesn't re-render when `useCopyToClipboard` returns a new ref.
+  const copyRef = useRef(copyToClipboard);
+  copyRef.current = copyToClipboard;
 
   // Search text is URL-backed, but the input keeps a snappy local buffer:
   // binding the field straight to the param would round-trip every keystroke
@@ -239,21 +243,29 @@ export const IconBrowse = ({
   // True while the grid is still reflecting an older query than what's typed.
   const isStale = q !== deferredQ;
 
-  // The value we last pushed to the URL ourselves, so the reconcile effect can
-  // tell our own echo apart from a genuine external change (Back/forward, deep
-  // link, category-badge nav) and never clobber in-flight typing.
-  const lastSyncedSearch = useRef(search);
+  // Local→URL: push the settled (deferred) query into the URL. Every value we
+  // write is tracked in `ownWrites` so the URL→local effect can tell our echoes
+  // apart from genuine external navigations. We track *all* pending values (not
+  // just the last) because `setParams` is async and multiple writes can be
+  // in-flight simultaneously during fast typing.
+  const ownWrites = useRef(new Set<string>());
   useEffect(() => {
     if (deferredQ !== search) {
-      lastSyncedSearch.current = deferredQ;
+      ownWrites.current.add(deferredQ);
       setSearch(deferredQ);
     }
   }, [deferredQ, search, setSearch]);
+
+  // URL→local: pull the URL value into the local buffer ONLY when the URL
+  // changed due to an external navigation (Back/Forward, deep link, programmatic
+  // goToCategory). Our own writes land in `ownWrites` and are consumed here
+  // without touching `q`, so the user's in-flight typing is never clobbered.
   useEffect(() => {
-    if (search !== lastSyncedSearch.current) {
-      lastSyncedSearch.current = search;
-      setQ(search);
+    if (ownWrites.current.has(search)) {
+      ownWrites.current.delete(search);
+      return;
     }
+    setQ(search);
   }, [search]);
 
   // --- Semantic search -------------------------------------------------------
@@ -469,18 +481,13 @@ export const IconBrowse = ({
   );
 
   /** Copies the import statement for an icon and confirms via a toast. */
-  const onCopyRequest = useCallback(
-    (iconId: string) => {
-      copyToClipboard(
-        `import { ${iconId} } from '@commercetools/nimbus-icons';`
-      );
-      toast.success({
-        title: "Copied import to clipboard",
-        description: iconId,
-      });
-    },
-    [copyToClipboard]
-  );
+  const onCopyRequest = useCallback((iconId: string) => {
+    copyRef.current(`import { ${iconId} } from '@commercetools/nimbus-icons';`);
+    toast.success({
+      title: "Copied import to clipboard",
+      description: iconId,
+    });
+  }, []);
 
   return (
     <Box minW="0">

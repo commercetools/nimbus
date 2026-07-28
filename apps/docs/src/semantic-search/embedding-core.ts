@@ -39,7 +39,10 @@ let extractorPromise: Promise<FeatureExtractionPipeline> | null = null;
 
 /**
  * Lazily load (once) the feature-extraction pipeline. Subsequent calls return
- * the same promise; `onProgress` is only meaningful on the first call.
+ * the same promise; `onProgress` is only meaningful on the first call. If the
+ * load fails (network error, WASM OOM), the cached promise is cleared so the
+ * next call retries from scratch instead of returning a permanently rejected
+ * promise.
  */
 export function loadExtractor(
   onProgress?: DownloadProgressCallback
@@ -97,6 +100,10 @@ export function loadExtractor(
   extractorPromise = createPipeline("feature-extraction", SEMANTIC_MODEL_ID, {
     dtype: SEMANTIC_MODEL_DTYPE,
     progress_callback: handleProgress,
+  }).catch((err) => {
+    // Reset so the next call retries instead of returning a stuck rejection.
+    extractorPromise = null;
+    throw err;
   });
   return extractorPromise;
 }

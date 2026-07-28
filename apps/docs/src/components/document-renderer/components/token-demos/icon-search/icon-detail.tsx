@@ -106,14 +106,13 @@ const CodeBlock = ({
       aria-label={`Copy ${label}`}
       size="xs"
       variant="ghost"
+      colorPalette="neutral"
       onClick={onCopy}
       position="absolute"
       top="100"
       right="100"
-      css={{
-        color: "rgba(255, 255, 255, 0.85)",
-        _hover: { color: "#fff", background: "rgba(255, 255, 255, 0.14)" },
-      }}
+      color="neutral.1"
+      _hover={{ color: "neutral.1", bg: "whiteAlpha.3" }}
     >
       <ContentCopy />
     </IconButton>

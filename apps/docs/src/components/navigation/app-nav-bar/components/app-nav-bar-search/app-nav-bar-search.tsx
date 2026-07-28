@@ -182,7 +182,7 @@ export const AppNavBarSearch = () => {
       <Dialog.Root
         isOpen={open}
         placement="top"
-        onOpenChange={() => setOpen(!open)}
+        onOpenChange={(isOpen) => setOpen(isOpen)}
         scrollBehavior="inside"
       >
         {/* Match the input's corner radius so the trigger's focus ring
