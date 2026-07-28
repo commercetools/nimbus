@@ -1,8 +1,10 @@
 /**
  * AppFrame - Holy Grail Layout Component
  *
- * Implements a 3-column layout with sticky header
- * All built with Nimbus components
+ * Implements the 3-column body (left nav · main · right aside) of the app-frame
+ * layout. The breadcrumb bar and top bar are owned by the persistent layout
+ * shell (`dynamic-layout.tsx`) so they survive layout swaps; this grid only
+ * fills the remaining space below them.
  */
 
 import type { ReactNode, RefObject } from "react";
@@ -10,14 +12,12 @@ import { Box, Grid, ScrollArea } from "@commercetools/nimbus";
 
 export interface AppFrameRootProps {
   children: ReactNode;
-}
-
-export interface AppFrameBreadcrumbBarProps {
-  children: ReactNode;
-}
-
-export interface AppFrameTopBarProps {
-  children: ReactNode;
+  /**
+   * Drop the right aside column entirely and let the main content span the
+   * remaining width. Used by the home route, which has no table of contents and
+   * wants the full-bleed area rather than an empty aside gap.
+   */
+  hideAside?: boolean;
 }
 
 export interface AppFrameLeftNavProps {
@@ -28,6 +28,12 @@ export interface AppFrameLeftNavProps {
 export interface AppFrameMainContentProps {
   children: ReactNode;
   viewportRef?: RefObject<HTMLDivElement | null>;
+  /**
+   * Max width of the centered content column. Defaults to `80ch` — the reading
+   * measure used by documentation pages. The home route passes a wider value so
+   * its full-bleed layout can use the available space on large screens.
+   */
+  contentMaxWidth?: string;
 }
 
 export interface AppFrameRightAsideProps {
@@ -35,66 +41,28 @@ export interface AppFrameRightAsideProps {
 }
 
 /**
- * Root component - Holy Grail grid layout with breadcrumb bar at top
+ * Root component - 3-column grid (left nav · main · right aside).
+ *
+ * Designed to be a flex child of the layout shell: it grows to fill the space
+ * left under the breadcrumb/top bars (`flex: 1`) and clips its own overflow so
+ * each column scrolls independently.
  */
-function AppFrameRoot({ children }: AppFrameRootProps) {
+function AppFrameRoot({ children, hideAside = false }: AppFrameRootProps) {
   return (
     <Grid
-      gridTemplateAreas={`
-        "breadcrumbs breadcrumbs breadcrumbs"
-        "header header header"
-        "nav main aside"
-      `}
-      gridTemplateRows="auto auto 1fr"
-      gridTemplateColumns="minmax(200px, 256px) minmax(80ch, 1fr) minmax(200px, 400px)"
-      height="100vh"
-      width="100vw"
+      gridTemplateAreas={hideAside ? `"nav main"` : `"nav main aside"`}
+      gridTemplateColumns={
+        hideAside
+          ? "minmax(200px, 256px) minmax(0, 1fr)"
+          : "minmax(200px, 256px) minmax(80ch, 1fr) minmax(200px, 400px)"
+      }
+      flex="1"
+      minHeight="0"
+      width="full"
       overflow="hidden"
     >
       {children}
     </Grid>
-  );
-}
-
-/**
- * Breadcrumb Bar - Sticky bar at the very top
- * Slides down with animation when transitioning away from /home route
- */
-function AppFrameBreadcrumbBar({ children }: AppFrameBreadcrumbBarProps) {
-  return (
-    <Box
-      gridArea="breadcrumbs"
-      position="sticky"
-      top={0}
-      zIndex={1000}
-      bg="bg"
-      borderBottom="solid-25"
-      borderColor="neutral.3"
-      px="400"
-      py="200"
-    >
-      {children}
-    </Box>
-  );
-}
-
-/**
- * Top Bar - Sticky header below breadcrumbs
- */
-function AppFrameTopBar({ children }: AppFrameTopBarProps) {
-  return (
-    <Box
-      id="app-frame-top-bar"
-      gridArea="header"
-      position="sticky"
-      top={0}
-      zIndex={999}
-      bg="bg"
-      borderBottom="solid-25"
-      borderColor="neutral.3"
-    >
-      {children}
-    </Box>
   );
 }
 
@@ -124,6 +92,7 @@ function AppFrameLeftNav({ children, viewportRef }: AppFrameLeftNavProps) {
 function AppFrameMainContent({
   children,
   viewportRef,
+  contentMaxWidth = "80ch",
 }: AppFrameMainContentProps) {
   return (
     <ScrollArea
@@ -135,7 +104,7 @@ function AppFrameMainContent({
       size="sm"
     >
       <Box p="800">
-        <Box maxWidth="80ch" mx="auto">
+        <Box maxWidth={contentMaxWidth} mx="auto">
           {children}
         </Box>
       </Box>
@@ -161,8 +130,6 @@ function AppFrameRightAside({ children }: AppFrameRightAsideProps) {
  */
 export const AppFrame = {
   Root: AppFrameRoot,
-  BreadcrumbBar: AppFrameBreadcrumbBar,
-  TopBar: AppFrameTopBar,
   LeftNav: AppFrameLeftNav,
   MainContent: AppFrameMainContent,
   RightAside: AppFrameRightAside,

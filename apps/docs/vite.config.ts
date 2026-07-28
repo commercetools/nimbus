@@ -126,6 +126,11 @@ export default defineConfig({
       },
     },
   },
+  // Web workers (semantic search worker) must be emitted as ES modules so the
+  // ESM-only @huggingface/transformers can be imported inside them.
+  worker: {
+    format: "es",
+  },
   server: {
     open: true,
     // Enable HMR
@@ -137,6 +142,9 @@ export default defineConfig({
   // propagate immediately after rebuild without cache invalidation issues.
   optimizeDeps: {
     include: ["react", "react-dom", "jotai"],
+    // esbuild's dep pre-bundling chokes on onnxruntime-web's dynamic requires;
+    // transformers is loaded lazily inside the semantic-search worker only.
+    exclude: ["@huggingface/transformers"],
   },
   resolve: { tsconfigPaths: true },
   define: {

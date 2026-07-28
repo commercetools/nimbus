@@ -5,7 +5,7 @@
  * Routes are defined by the menu property in MDX frontmatter, not hardcoded.
  */
 
-import { Suspense, useState, useEffect } from "react";
+import { Suspense } from "react";
 import {
   Box,
   LoadingSpinner,
@@ -21,20 +21,9 @@ import { useRouteInfo } from "@/hooks/use-route-info";
 export default function DynamicRoute() {
   const { routeManifest, isLoading } = useManifest();
   const { baseRoute, normalizedPath } = useRouteInfo();
-  const [isRouteChecked, setIsRouteChecked] = useState(false);
 
-  // Reset route check state when base route changes (not on sub-page navigation)
-  useEffect(() => {
-    setIsRouteChecked(false);
-    // Give the manifest a moment to stabilize before checking route
-    const timer = setTimeout(() => {
-      setIsRouteChecked(true);
-    }, 50);
-    return () => clearTimeout(timer);
-  }, [baseRoute]);
-
-  // Show loading while manifest is loading or route hasn't been checked yet
-  if (isLoading || !routeManifest || !isRouteChecked) {
+  // Show loading only while the manifest itself is loading.
+  if (isLoading || !routeManifest) {
     return <LoadingSpinner />;
   }
 
