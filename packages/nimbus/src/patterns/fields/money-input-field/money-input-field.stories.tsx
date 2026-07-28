@@ -15,7 +15,6 @@ export default meta;
 type Story = StoryObj<typeof MoneyInputField>;
 
 export const Base: Story = {
-  // VRT: composed resting field.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   args: {
@@ -192,7 +191,6 @@ export const Invalid: Story = {
 };
 
 export const WithErrors: Story = {
-  // VRT: composed error state - error rows + invalid amount input.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   args: {

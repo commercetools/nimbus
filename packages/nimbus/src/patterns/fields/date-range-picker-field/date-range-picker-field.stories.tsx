@@ -54,7 +54,6 @@ export default meta;
 type Story = StoryObj<typeof DateRangePickerField>;
 
 export const Base: Story = {
-  // VRT: composed resting field.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => {
@@ -146,7 +145,6 @@ export const Base: Story = {
 };
 
 export const WithErrors: Story = {
-  // VRT: composed error state - asterisk, error rows, invalid input.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   args: {

@@ -14,7 +14,6 @@ export default meta;
 type Story = StoryObj<typeof PasswordInputField>;
 
 export const Base: Story = {
-  // VRT: composed resting field - label + description + masked input + reveal toggle.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   args: {
@@ -169,7 +168,6 @@ export const Invalid: Story = {
 };
 
 export const WithErrors: Story = {
-  // VRT: composed error state - error rows + invalid input.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   args: {
