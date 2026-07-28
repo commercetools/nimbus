@@ -1,6 +1,7 @@
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import {
+  Box,
   Dialog,
   FormField,
   Grid,
@@ -714,6 +715,45 @@ export const FormattedValue: Story = {
         await userEvent.unhover(thumb);
       }
     );
+  },
+};
+
+/**
+ * Controlled slider driven by external state. The readout above the slider
+ * proves `value` and `onChange` synchronize correctly — moving the thumb
+ * updates the displayed number, confirming the controlled loop.
+ */
+export const Controlled: Story = {
+  render: () => {
+    const [value, setValue] = useState(40);
+    return (
+      <Box>
+        <Text mb="200">Current value: {value}</Text>
+        <Slider
+          aria-label="Controlled volume"
+          value={value}
+          onChange={setValue}
+          minValue={0}
+          maxValue={100}
+        />
+      </Box>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const thumb = canvas.getByRole("slider");
+
+    await step("reflects the initial controlled value", async () => {
+      await expect(thumb).toHaveValue("40");
+      await expect(canvas.getByText("Current value: 40")).toBeInTheDocument();
+    });
+
+    await step("external state updates when the thumb moves", async () => {
+      thumb.focus();
+      await userEvent.keyboard("{ArrowRight}");
+      await expect(thumb).toHaveValue("41");
+      await expect(canvas.getByText("Current value: 41")).toBeInTheDocument();
+    });
   },
 };
 

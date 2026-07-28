@@ -14,11 +14,17 @@ type SliderRecipeProps = SlotRecipeProps<"nimbusSlider">;
 // ============================================================
 // SLOT PROPS
 // ============================================================
+/** Props for the outermost slider container (the `root` slot). */
 export type SliderRootSlotProps = HTMLChakraProps<"div", SliderRecipeProps>;
+/** Props for the interactive track area (the `track` slot). */
 export type SliderTrackSlotProps = HTMLChakraProps<"div">;
+/** Props for the colored fill region (the `fill` slot). */
 export type SliderFillSlotProps = HTMLChakraProps<"div">;
+/** Props for an individual draggable thumb (the `thumb` slot). */
 export type SliderThumbSlotProps = HTMLChakraProps<"div">;
+/** Props for a single tick mark along the track (the `tick` slot). */
 export type SliderTickSlotProps = HTMLChakraProps<"div">;
+/** Props for a tick's text label (the `tickLabel` slot). */
 export type SliderTickLabelSlotProps = HTMLChakraProps<"div">;
 
 // ============================================================
