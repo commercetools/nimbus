@@ -33,9 +33,9 @@ function run(script, env = {}) {
 // here to the new measured size. The nimbus baseline was raised when the
 // Markdown component bundled react-markdown/remark-gfm/remend (~+14.6%).
 const VALID_BASELINE = JSON.stringify({
-  "@commercetools/nimbus": { dist: 19619225 },
-  "@commercetools/nimbus-icons": { dist: 4889696 },
-  "@commercetools/nimbus-tokens": { dist: 417934 },
+  "@commercetools/nimbus": { dist: 20065078 },
+  "@commercetools/nimbus-icons": { dist: 4902452 },
+  "@commercetools/nimbus-tokens": { dist: 418031 },
 });
 
 describe("check-bundle-size", () => {
@@ -188,6 +188,7 @@ describe("diagnostic errors", () => {
     const result = run(CHECK_SCRIPT, {
       BUNDLE_SIZE_BASELINE: "",
       GH_TOKEN: "",
+      GITHUB_TOKEN: "", // Actions injects this; gh uses it if GH_TOKEN is absent
       GITHUB_REPOSITORY: "",
       // Point gh at a nonexistent config so stored credentials aren't used
       GH_CONFIG_DIR: "/tmp/nonexistent-gh-config-dir",
@@ -201,6 +202,7 @@ describe("diagnostic errors", () => {
     const result = run(`${CHECK_SCRIPT} --json`, {
       BUNDLE_SIZE_BASELINE: "",
       GH_TOKEN: "",
+      GITHUB_TOKEN: "", // Actions injects this; gh uses it if GH_TOKEN is absent
       GITHUB_REPOSITORY: "",
       GH_CONFIG_DIR: "/tmp/nonexistent-gh-config-dir",
     });
