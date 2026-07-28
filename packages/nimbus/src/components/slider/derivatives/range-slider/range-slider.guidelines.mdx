@@ -1,0 +1,123 @@
+---
+title: Range Slider
+tab-title: Guidelines
+tab-order: 2
+---
+
+## Guidelines
+
+Range slider guidelines focus on picking a scale users can reason about, naming
+both handles clearly, and keeping each value visible while it's being changed,
+even though the control draws no visible label of its own.
+
+### Best practices
+
+- **Name both handles.** Pass `thumbLabels` as a `[lower, upper]` pair (for
+  example `["Minimum price", "Maximum price"]`) so each handle has a distinct
+  accessible name. When omitted, the handles fall back to localized
+  "Minimum" / "Maximum" — usable, but less specific than a domain label.
+- **Give the control an accessible name too.** A range slider renders no visible
+  label — place it inside `FormField.Root` with `FormField.Label`, or pass an
+  `aria-label` (or `aria-labelledby`) when there's no surrounding form field.
+  This names the group; `thumbLabels` names the individual handles.
+- **Choose a scale people can reason about.** Range sliders work best when the
+  exact numbers matter less than their position relative to the whole range —
+  pick `minValue`, `maxValue`, and `step` so most handle positions feel
+  meaningful.
+- **Summarize the selected range with `FormField.Description`, not a duplicate
+  readout.** Each handle's value already appears in its tooltip on hover, focus,
+  or drag. A `FormField.Description` that states the current bounds (e.g. a price
+  range) is a separate, permanent piece of context and is fine to keep — don't
+  add a second number readout right beside the track that just repeats the
+  tooltip.
+- **Reach for `RangeSlider` when both bounds are set together by feel.** Its two
+  handles can't cross, so it guarantees the lower value never exceeds the upper
+  one — useful for filters like price, distance, or rating ranges.
+- **Disable, don't hide.** When the range is temporarily not applicable, disable
+  it with `isDisabled` rather than removing it from the layout, so surrounding
+  controls don't shift.
+
+### Usage
+
+A range slider lets users choose a lower and an upper bound by dragging two
+handles along a shared track, best for ranges that are set by feel rather than
+typed precisely.
+
+> [!TIP]\
+> When to use
+>
+> - Filtering by a numeric range set by feel, such as price, distance, or
+>   rating.
+> - Both a lower and an upper bound need to be chosen together, and the pair
+>   must stay valid (lower ≤ upper).
+> - The exact numbers matter less than their position relative to the minimum
+>   and maximum.
+
+> [!CAUTION]\
+> When not to use
+>
+> - Only a single value is needed — use [`Slider`](/components/inputs/slider)
+>   instead.
+> - The bounds must be typed precisely, or fall outside a small, well-known
+>   range — pair two `NumberInput`s instead.
+> - Users need to see the min/max bounds labeled directly on the track — that
+>   isn't supported yet; consider pairing the slider with your own labels.
+
+### Keeping interactions simple
+
+Simple, predictable interactions matter because a range slider is operated by
+feel — unexpected jumps or hidden values erode trust in the control.
+
+> [!TIP]\
+> **Do**
+>
+> - Give the control a clear accessible name via `FormField.Label` or
+>   `aria-label`, and name each handle with `thumbLabels`.
+> - Set `minValue`, `maxValue`, and a `step` that make sense for the data.
+> - Summarize the current bounds in a `FormField.Description` when a permanent
+>   readout adds context.
+> - Let the disabled state show when the range can't currently be changed.
+
+```jsx live
+const App = () => {
+  const [range, setRange] = useState([20, 80]);
+
+  return (
+    <Stack gap="200" alignItems="start">
+      <FormField.Root>
+        <FormField.Label>Price range</FormField.Label>
+        <FormField.Input>
+          <RangeSlider
+            thumbLabels={["Minimum price", "Maximum price"]}
+            value={range}
+            onChange={setRange}
+            minValue={0}
+            maxValue={200}
+            formatOptions={{ style: "currency", currency: "USD" }}
+          />
+        </FormField.Input>
+        <FormField.Description>
+          ${range[0]} – ${range[1]}
+        </FormField.Description>
+      </FormField.Root>
+    </Stack>
+  );
+};
+```
+
+> [!CAUTION]\
+> **Don't**
+>
+> - Leave the control without any accessible name — a bare `<RangeSlider />`
+>   with no `aria-label` and no `FormField.Label` is unusable with a screen
+>   reader.
+> - Duplicate the tooltip's job by placing a bare numeric readout directly
+>   beside the track — the tooltips already cover that on hover, focus, and
+>   drag.
+> - Use a range slider for bounds that require exact, typed precision.
+
+```tsx
+// Missing an accessible name — screen reader users have no way to know what
+// this control is for, and the handles are unnamed.
+<RangeSlider defaultValue={[20, 60]} minValue={0} maxValue={100} />
+```

@@ -639,6 +639,14 @@
     "developer_comment": "aria-label for select clear button",
     "string": "Effacer la sélection"
   },
+  "Nimbus.Slider.maximumThumb": {
+    "developer_comment": "Default aria-label for the upper (maximum) thumb of a range slider",
+    "string": "Maximum"
+  },
+  "Nimbus.Slider.minimumThumb": {
+    "developer_comment": "Default aria-label for the lower (minimum) thumb of a range slider",
+    "string": "Minimum"
+  },
   "Nimbus.SplitButton.noActionsAvailable": {
     "developer_comment": "fallback message when split button has no menu items",
     "string": "Aucune action disponible"

@@ -1,0 +1,397 @@
+---
+title: Range Slider Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { RangeSlider, type RangeSliderProps } from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+`RangeSlider` selects a `[number, number]` tuple using two handles that can't be
+dragged past each other — the lower value never exceeds the upper one. It renders
+no visible label and no static value readout — each handle's current value
+appears in a tooltip above it while it's hovered, focused, or dragged, so an
+accessible name must be supplied separately (see [Accessibility](#accessibility)
+below).
+
+Use `thumbLabels` to give each handle its own accessible name; when omitted, the
+handles fall back to localized "Minimum" / "Maximum" labels.
+
+```jsx live-dev
+const App = () => (
+  <RangeSlider
+    aria-label="Price range"
+    thumbLabels={["Minimum", "Maximum"]}
+    defaultValue={[20, 60]}
+    minValue={0}
+    maxValue={100}
+  />
+);
+```
+
+> For selecting a single value rather than a range, use the
+> [`Slider`](/components/inputs/slider) component. The two share the same track,
+> handle, and tick styling.
+
+## Usage examples
+
+### Thumb labels
+
+`thumbLabels` is a `[lower, upper]` array that names each handle individually.
+Prefer domain-specific labels over the generic fallbacks.
+
+```jsx live-dev
+const App = () => (
+  <RangeSlider
+    aria-label="Price range"
+    thumbLabels={["Minimum price", "Maximum price"]}
+    defaultValue={[20, 60]}
+    minValue={0}
+    maxValue={100}
+  />
+);
+```
+
+### Size options
+
+`sm` and `md` size variants are available to match the surrounding density.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <RangeSlider aria-label="Small" size="sm" defaultValue={[20, 60]} />
+    <RangeSlider
+      aria-label="Medium (default)"
+      size="md"
+      defaultValue={[20, 60]}
+    />
+  </Stack>
+);
+```
+
+### Visual variants
+
+`variant` changes the track/progress/thumb treatment. `filled` (the default) is a
+standard thin track with a colored progress fill; `minimal` is a thin neutral
+track with single-color thumbs and a colored range segment that grow to full
+width on hover/focus, for low-emphasis controls such as a thumbnail-size picker;
+`enclosed` is a thick, contained bar with the
+thumbs inset inside it. This applies to both `RangeSlider` and `Slider` since
+they share the same recipe.
+
+```jsx live-dev
+const App = () => (
+  <Stack direction="column" gap="600">
+    <RangeSlider aria-label="Filled" variant="filled" defaultValue={[20, 60]} />
+    <RangeSlider aria-label="Minimal" variant="minimal" defaultValue={[20, 60]} />
+    <RangeSlider
+      aria-label="Enclosed"
+      variant="enclosed"
+      defaultValue={[25, 75]}
+    />
+  </Stack>
+);
+```
+
+### Orientation
+
+Set `orientation="vertical"` for a vertical track. The vertical track has a
+built-in default length, so no explicit `height` is required.
+
+```jsx live-dev
+const App = () => (
+  <RangeSlider
+    aria-label="Volume range"
+    defaultValue={[20, 60]}
+    orientation="vertical"
+  />
+);
+```
+
+### Ticks
+
+Turn on `showTicks` to render tick marks at every `tickStep` interval (falling
+back to `step` when `tickStep` is omitted). Useful for scales where the discrete
+stops themselves are meaningful.
+
+```jsx live-dev
+const App = () => (
+  <RangeSlider
+    aria-label="Rating range"
+    defaultValue={[25, 75]}
+    minValue={0}
+    maxValue={100}
+    step={25}
+    showTicks
+  />
+);
+```
+
+**Behavioral notes:**
+
+- `tickStep` controls the spacing of ticks; it defaults to `step` when
+  `showTicks` is set and `tickStep` is omitted.
+- Ticks are purely visual — they don't constrain the values a handle can land
+  on. Use `step` for that.
+- Ticks are spaced evenly starting at `minValue`. When `(maxValue - minValue)`
+  isn't evenly divisible by the tick step, the last tick lands on the final full
+  step short of `maxValue`, not on `maxValue` itself.
+
+### Value formatting
+
+`formatOptions` (an `Intl.NumberFormatOptions` object) formats the value shown in
+each handle's tooltip, without changing the underlying numeric values.
+
+```jsx live-dev
+const App = () => (
+  <RangeSlider
+    aria-label="Price range"
+    thumbLabels={["Minimum price", "Maximum price"]}
+    defaultValue={[20, 120]}
+    minValue={0}
+    maxValue={200}
+    formatOptions={{ style: "currency", currency: "USD" }}
+  />
+);
+```
+
+### Disabled state
+
+Disable interaction with `isDisabled`.
+
+```jsx live-dev
+const App = () => (
+  <RangeSlider
+    aria-label="Price range"
+    defaultValue={[20, 60]}
+    minValue={0}
+    maxValue={100}
+    isDisabled
+  />
+);
+```
+
+### Uncontrolled mode
+
+For simpler use cases, use uncontrolled mode with `defaultValue` and `onChange`.
+The `Text` element below stands in for **your own** application code reacting to
+the live range (e.g. updating a preview elsewhere on the page) — it's a demo of
+what `onChange` gives you, not the recommended "value readout beside the track"
+pattern; each handle's own tooltip already shows its value on hover, focus, and
+drag (see the Guidelines tab).
+
+```jsx live-dev
+const App = () => {
+  const [range, setRange] = useState([20, 60]);
+
+  return (
+    <Stack direction="column" gap="400">
+      <RangeSlider
+        aria-label="Price range"
+        thumbLabels={["Minimum", "Maximum"]}
+        defaultValue={[20, 60]}
+        minValue={0}
+        maxValue={100}
+        onChange={setRange}
+      />
+      <Text fontSize="sm">
+        Current range (for demo purposes): {range[0]} – {range[1]}
+      </Text>
+    </Stack>
+  );
+};
+```
+
+### Controlled mode
+
+For scenarios requiring programmatic control, use controlled mode. The value is a
+`[number, number]` tuple; `onChange` receives the updated tuple.
+
+```jsx live-dev
+const App = () => {
+  const [range, setRange] = useState([20, 60]);
+
+  return (
+    <Stack direction="column" gap="400">
+      <RangeSlider
+        aria-label="Price range"
+        thumbLabels={["Minimum", "Maximum"]}
+        value={range}
+        onChange={setRange}
+        minValue={0}
+        maxValue={100}
+      />
+      <Stack direction="row" gap="300">
+        <Button onPress={() => setRange([0, 100])}>Reset</Button>
+        <Button onPress={() => setRange([40, 60])}>Narrow</Button>
+      </Stack>
+    </Stack>
+  );
+};
+```
+
+## Component requirements
+
+### Accessibility
+
+`RangeSlider` handles keyboard, pointer, touch, and RTL behavior internally via
+React Aria. However, unlike most Nimbus inputs, **it renders no visible label and
+no static value readout** — each handle's current value is only ever shown in a
+tooltip above it while it's hovered, focused, or dragged. You must always supply
+an accessible name for the control through one of the following:
+
+- Composing inside `FormField.Root` with `FormField.Label` (recommended in
+  forms):
+
+```tsx
+<FormField.Root>
+  <FormField.Label>Price range</FormField.Label>
+  <FormField.Input>
+    <RangeSlider
+      thumbLabels={["Minimum price", "Maximum price"]}
+      defaultValue={[20, 120]}
+      minValue={0}
+      maxValue={200}
+    />
+  </FormField.Input>
+</FormField.Root>
+```
+
+- Passing `aria-label` directly, for standalone use where no visible label is
+  part of the design:
+
+```tsx
+<RangeSlider
+  aria-label="Price range"
+  thumbLabels={["Minimum price", "Maximum price"]}
+  defaultValue={[20, 120]}
+  minValue={0}
+  maxValue={200}
+/>
+```
+
+- Associating an existing `<label>` element via `aria-labelledby`:
+
+```tsx
+<label id="price-label">Price range</label>
+<RangeSlider
+  aria-labelledby="price-label"
+  thumbLabels={["Minimum price", "Maximum price"]}
+  defaultValue={[20, 120]}
+  minValue={0}
+  maxValue={200}
+/>
+```
+
+On top of the control's name, use `thumbLabels` to name each handle
+individually (e.g. `["Minimum price", "Maximum price"]`); if omitted, the handles
+fall back to localized "Minimum" / "Maximum" labels rather than being left
+anonymous.
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction, with two independently
+focusable handles:
+
+- `Tab` / `Shift+Tab`: move focus to, between, and away from the two handles.
+- `Arrow Left` / `Arrow Right` (or `Arrow Down` / `Arrow Up` when
+  `orientation="vertical"`): decrement/increment the focused handle's value by
+  `step`.
+- `Page Down` / `Page Up`: decrement/increment the focused handle by a larger
+  amount.
+- `Home`: jump the focused handle to its currently allowed minimum.
+- `End`: jump the focused handle to its currently allowed maximum.
+
+A handle is never moved past the other one — the effective range is clamped to
+`[minValue, upperValue]` for the lower handle and `[lowerValue, maxValue]` for
+the upper handle.
+
+## API reference
+
+<PropsTable id="RangeSlider" />
+
+## Common patterns
+
+### Price range filter
+
+A typical use of `RangeSlider` pairs it with a `FormField.Description` that
+summarizes the current selection. Unlike a bare value readout placed directly
+beside the track (see Guidelines), the description is a permanent part of the
+form field's own text stack, below the control — useful context for anyone who
+isn't actively hovering or focusing a handle, rather than a duplicate of the
+tooltip.
+
+```jsx live-dev
+const App = () => {
+  const [range, setRange] = useState([20, 80]);
+
+  return (
+    <Stack direction="column" gap="300">
+      <FormField.Root>
+        <FormField.Label>Price range</FormField.Label>
+        <FormField.Input>
+          <RangeSlider
+            thumbLabels={["Minimum price", "Maximum price"]}
+            value={range}
+            onChange={setRange}
+            minValue={0}
+            maxValue={200}
+            formatOptions={{ style: "currency", currency: "USD" }}
+          />
+        </FormField.Input>
+        <FormField.Description>
+          ${range[0]} – ${range[1]}
+        </FormField.Description>
+      </FormField.Root>
+    </Stack>
+  );
+};
+```
+
+### RangeSlider inside a form field with validation
+
+`FormField.Input` clones its React-Aria-named props (`aria-labelledby`,
+`aria-describedby`, `isInvalid`, `isDisabled`, `isRequired`, `isReadOnly`) onto
+the slider, so the label, description, and error state all associate
+automatically.
+
+```jsx live-dev
+const App = () => (
+  <FormField.Root isInvalid>
+    <FormField.Label>Price range</FormField.Label>
+    <FormField.Input>
+      <RangeSlider
+        thumbLabels={["Minimum price", "Maximum price"]}
+        defaultValue={[20, 120]}
+        minValue={0}
+        maxValue={200}
+      />
+    </FormField.Input>
+    <FormField.Description>Set the price bounds to filter by</FormField.Description>
+    <FormField.Error>Range is out of bounds</FormField.Error>
+  </FormField.Root>
+);
+```
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using
+`RangeSlider` within your application. As the component's internal functionality
+is already tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+{{docs-tests: range-slider.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook: RangeSlider](https://nimbus-storybook.vercel.app/?path=/docs/components-rangeslider--docs)
+- [Slider](/components/inputs/slider) — the single-value counterpart
+- [React Aria Slider](https://react-spectrum.adobe.com/react-aria/Slider.html)
+- [W3C ARIA Authoring Practices Guide (APG): Slider (Multi-Thumb) pattern](https://www.w3.org/WAI/ARIA/apg/patterns/slider-multithumb/)

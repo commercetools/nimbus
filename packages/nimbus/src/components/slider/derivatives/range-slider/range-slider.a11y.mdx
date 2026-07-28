@@ -1,0 +1,73 @@
+---
+tab-title: Accessibility
+tab-order: 4
+---
+
+## Accessibility
+
+Accessibility ensures digital content and functionality are usable by everyone,
+including people with disabilities, by addressing visual, auditory, cognitive,
+and physical limitations.
+
+`RangeSlider` renders no visible label of its own, so the control's accessible
+name must always come from somewhere — either `FormField.Label` composed inside
+a form field, or an `aria-label` / `aria-labelledby` when used standalone. On top
+of that, each of the two handles needs its own name via `thumbLabels`.
+
+```jsx live
+const App = () => (
+  <RangeSlider
+    aria-label="Price range"
+    thumbLabels={["Minimum price", "Maximum price"]}
+    defaultValue={[20, 60]}
+    minValue={0}
+    maxValue={100}
+  />
+);
+```
+
+### Accessibility standards
+
+- Always give the range slider an accessible name: `aria-label` (or
+  `aria-labelledby`) when standalone, or `FormField.Label` when composed inside
+  `FormField.Root`. A slider with no accessible name is unusable with a screen
+  reader.
+- Give each handle its own name via `thumbLabels` (e.g.
+  `["Minimum price", "Maximum price"]`); when omitted, the handles fall back to
+  localized "Minimum" / "Maximum" labels so they're never anonymous.
+- Each handle's current value is exposed to assistive technology through its
+  native range value, not just the visual tooltip — screen readers announce it
+  without needing the tooltip open.
+- Support full keyboard interaction: `Tab` moves focus between the two handles,
+  `Arrow` keys adjust the focused handle by `step`, and `Home` / `End` jump it to
+  its currently allowed minimum / maximum.
+- Ensure sufficient color contrast for the track, fill, and handles in every
+  state (default, hover, focus, dragging, disabled, invalid).
+- Communicate an invalid state with both a visual cue and a `FormField.Error`
+  message — never color alone.
+- The invalid visual cue comes from `data-invalid` on the root element, not
+  `aria-invalid` on the underlying range inputs — React Aria's `Slider` has no
+  validation-state concept of its own (unlike text-style inputs). Assistive
+  technology instead picks up the `FormField.Error` message.
+
+### Keyboard interactions
+
+`RangeSlider` has two independently focusable handles.
+
+| Key                                | Action                                                            |
+| ---------------------------------- | ----------------------------------------------------------------- |
+| `Tab` / `Shift+Tab`                | Move focus to / between / away from the two handles.              |
+| `Arrow Left` / `Arrow Right`       | Decrement / increment the focused handle by `step` (horizontal).  |
+| `Arrow Down` / `Arrow Up`          | Decrement / increment the focused handle by `step` (vertical).    |
+| `Page Down` / `Page Up`            | Decrement / increment the focused handle by a larger amount.      |
+| `Home`                             | Jump the focused handle to its currently allowed minimum.         |
+| `End`                              | Jump the focused handle to its currently allowed maximum.         |
+
+A handle is never moved past the other one — the effective range is clamped to
+`[minValue, upperValue]` for the lower handle and `[lowerValue, maxValue]` for
+the upper handle.
+
+### Resources
+
+- [React Aria Slider](https://react-spectrum.adobe.com/react-aria/Slider.html)
+- [W3C ARIA Authoring Practices Guide (APG): Slider (Multi-Thumb) pattern](https://www.w3.org/WAI/ARIA/apg/patterns/slider-multithumb/)
