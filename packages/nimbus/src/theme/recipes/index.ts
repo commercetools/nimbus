@@ -1,7 +1,6 @@
 import { activityIndicatorRecipe } from "@/components/activity-indicator/activity-indicator.recipe";
 import { avatarRecipe } from "@/components/avatar/avatar.recipe";
 import { badgeRecipe } from "@/components/badge/badge.recipe";
-import { skeletonRecipe } from "@/components/skeleton/skeleton.recipe";
 import { buttonRecipe } from "@/components/button/button.recipe";
 import { codeRecipe } from "@/components/code/code.recipe";
 import { dropZoneRecipe } from "@/components/drop-zone/drop-zone.recipe";
@@ -14,6 +13,7 @@ import { loadingSpinnerRecipe } from "@/components/loading-spinner/loading-spinn
 import { popoverRecipe } from "@/components/popover/popover.recipe";
 import { radioInputSlotRecipe } from "@/components/radio-input/radio-input.recipe";
 import { separatorRecipe } from "@/components/separator/separator.recipe";
+import { skeletonRecipe } from "@/components/skeleton/skeleton.recipe";
 import { toggleButtonRecipe } from "@/components/toggle-button/toggle-button.recipe";
 import { toolbarRecipe } from "@/components/toolbar/toolbar.recipe";
 import { tooltipRecipe } from "@/components/tooltip/tooltip.recipe";
@@ -51,8 +51,8 @@ export const recipes = {
   nimbusPopover: popoverRecipe,
   nimbusRadioInput: radioInputSlotRecipe,
   nimbusSeparator: separatorRecipe,
+  nimbusSkeleton: skeletonRecipe,
   nimbusToggleButton: toggleButtonRecipe,
   nimbusToolbar: toolbarRecipe,
-  nimbusSkeleton: skeletonRecipe,
   nimbusTooltip: tooltipRecipe,
 };
