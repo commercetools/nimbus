@@ -128,6 +128,7 @@ export const ComplexSvg: Story = {
  * Different sizes showcase
  */
 export const Sizes: Story = {
+  // No VRT: size axis covered by Icon's `Sizes` - the slot reuses `iconRecipe`.
   render: () => (
     <Group gap="200">
       <InlineSvg data={simpleSvg} size="2xs" />
@@ -156,6 +157,7 @@ export const Sizes: Story = {
  * Different colors showcase
  */
 export const Colors: Story = {
+  // No VRT: color axis covered by Icon's `CustomColor` - same recipe delegation.
   render: () => (
     <Group gap="200">
       <InlineSvg data={simpleSvg} size="lg" color="primary.9" />
