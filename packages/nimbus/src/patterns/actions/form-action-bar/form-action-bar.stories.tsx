@@ -54,6 +54,9 @@ export const SaveAndCancel: Story = {
 };
 
 export const WithDelete: Story = {
+  // VRT: the full arrangement - critical delete, outline cancel, solid save, in order.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     onSave: fn(),
     onCancel: fn(),
@@ -75,6 +78,9 @@ export const WithDelete: Story = {
       async () => {
         await userEvent.click(deleteButton);
         await expect(args.onDelete).toHaveBeenCalledTimes(1);
+
+        // Keep the click's focus ring out of the snapshot.
+        deleteButton.blur();
       }
     );
   },
@@ -145,6 +151,9 @@ export const SaveDisabled: Story = {
 };
 
 export const SaveLoading: Story = {
+  // VRT: spinner inside the primary button + every button disabled; the spinner inherits the Button's palette.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     onSave: fn(),
     onCancel: fn(),
@@ -193,6 +202,9 @@ export const SaveLoading: Story = {
 };
 
 export const DeleteLoading: Story = {
+  // VRT: spinner inside the critical button - it inherits `critical` from the Button, so this is a different frame from SaveLoading.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     onSave: fn(),
     onCancel: fn(),

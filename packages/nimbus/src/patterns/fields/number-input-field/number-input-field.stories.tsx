@@ -14,6 +14,9 @@ export default meta;
 type Story = StoryObj<typeof NumberInputField>;
 
 export const Base: Story = {
+  // VRT: composed resting field.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     label: "Quantity",
     description: "Enter the product quantity",
@@ -81,6 +84,9 @@ export const Base: Story = {
       const decrementButton = canvas.getByLabelText("Decrement");
       await expect(incrementButton).toBeInTheDocument();
       await expect(decrementButton).toBeInTheDocument();
+
+      // Keep the focus ring and caret out of the snapshot.
+      input.blur();
     });
   },
 };
@@ -180,6 +186,9 @@ export const Invalid: Story = {
 };
 
 export const WithErrors: Story = {
+  // VRT: composed error state - error rows + invalid input.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     label: "Product Price",
     description: "Enter the product price",

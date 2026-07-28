@@ -173,48 +173,46 @@ export const SmokeTest: Story = {
 `disableSnapshot: false` takes the picture; Chromatic never reads `vrt` (our own
 label for finding snapshot stories - keep the two together).
 
-> **Editing rule:** keep this section **rule + snippet only**.
-> [chromatic-visual-testing.md](../chromatic-visual-testing.md) is the source of
-> truth for the _why_/examples - if you're about to write a paragraph explaining
-> a rule here, it belongs there. State the rule in one line and let the pointer
-> below carry the depth.
+> **Editing rule:** rule + snippet only. Reasoning and examples belong in
+> [chromatic-visual-testing.md](../chromatic-visual-testing.md).
 
-- **What to snapshot:** every prop-driven visual state. Fold **interacting**
-  axes into one `SmokeTest` matrix; independent axes (`size × colorPalette`,
-  `size × on/off`) get separate showcase stories. Any state the matrix can't
-  render (`Focused`, disabled-but-focusable, open overlay) gets its own story.
-  Never drop a visual state to save cost.
+- **What to snapshot:** every prop-driven visual state. Interacting axes fold
+  into one `SmokeTest`; independent axes get separate showcases; any state the
+  matrix can't render gets its own story. Never drop a state to save cost.
 - **Enumerate surfaces from the recipe + component source**, then snapshot their
   cross-product - not remembered states.
-- **One state rendered more than one way → one story each**
-  (mode-/variant-driven, e.g. MoneyInput dropdown vs. label mode), not a folded
+- **Inherited tokens make cross-cells** - a child with no `colorPalette` takes
+  its host's; one frame per host.
+- **One state rendered more than one way → one story each**, not a folded
   gallery.
-- **A state with no distinct recipe surface gets no story** (read-only with no
-  `data-readonly` rule renders like default → no snapshot).
-- **Primitives with no painted surface get no VRT at all** - not "has no
-  recipe," but paints nothing: pass-through style props (Box/Stack/Grid/Spacer),
-  a recipe that paints nothing (Group), or headless `display: contents`
-  (Region). Note it on `meta`. One that **does** paint gets a normal audit
-  (Separator, Icon).
-- **Snapshot the component, not the harness** - no debug read-outs/wrappers in a
-  snapshotted frame.
+- **A state with no distinct recipe surface gets no story.**
+- **A composition pattern owns the values it hardcodes**; children and consumer
+  props delegate.
+- **`*Field` patterns get two snapshots** - composed resting + composed error;
+  layout/`size`, InfoButton, disabled/read-only and input-painted surfaces
+  delegate. State arrives via `FormField.Input`'s clone, not the JSX.
+- **Primitives that paint no surface get no VRT** - pass-through style props, a
+  recipe that paints nothing, or headless `display: contents`. Note it on
+  `meta`.
+- **A play's end state never justifies skipping a snapshot** - fix the play. A
+  snapshotted story that ends focused needs `blur()`.
+- **If a step name overstates what it asserts, raise the assertion to meet the
+  name** - don't rename the step down.
+- **Snapshot the component, not the harness** - no debug read-outs or wrappers
+  in a snapshotted frame.
 - **Name the interacting-axes matrix `SmokeTest`, rendered last** - the axis
-  list lives in the doc comment, not the name.
-- **Give each distinctly-styled focusable sub-element its own `Focused`** (not
-  just the first), and confirm the ring actually renders (a ring on a slot that
-  never gets focus captures nothing).
-- **Overlays: snapshot the open state** - render open (`defaultOpen` or
-  play-open
-  - await), leave it open; each distinct open surface is its own story.
-- **Snapshot `placement` only when it changes the layout, not just reposition
-  the same box** (Drawer qualifies; Dialog/Menu/Tooltip don't).
-- **Portals: capture is page-wide** - hold open (`duration: Infinity`), await,
-  clean up between stories (`clearToasts()`); reach a portal's own focus via its
-  real keyboard path, not `.focus()`.
-- **The snapshot is the play's end state** - land on the target frame; a play
-  that resets/dismisses loses it.
+  list lives in the doc comment.
+- **Give each distinctly-styled focusable sub-element its own `Focused`**, and
+  confirm the ring actually renders.
+- **Overlays: snapshot the open state** and leave it open; each distinct open
+  surface is its own story.
+- **Snapshot `placement` only when it changes the layout**, not when it
+  repositions the same box.
+- **Portals: capture is page-wide** - hold open, await, clean up between
+  stories; reach a portal's focus via its real keyboard path.
+- **The snapshot is the play's end state** - land on the target frame.
 - **Crop padding is global** - a `preview.tsx` decorator wraps non-`fullscreen`
-  stories in `1rem` so rings don't clip. Not opt-in.
+  stories in `1rem`. Not opt-in.
 
 Snippets to paste:
 
@@ -257,10 +255,7 @@ play: async ({ canvasElement }) => {
 };
 ```
 
-Full rationale - matrix tradeoffs, the fold-an-axis and hardcoded-axis rules,
-`SEMANTIC_COLOR_PALETTES` scope, thin-wrapper coverage, why modes are
-global-only, animation pausing, portals/overlays, placement (recipe vs RA
-positioning), the hover/pressed gap, CI, baselines, TurboSnap - is in
+Full rationale, edge cases, CI, baselines and TurboSnap are in
 [Chromatic Visual Testing](../chromatic-visual-testing.md).
 
 ## File Structure

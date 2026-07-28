@@ -54,6 +54,9 @@ export default meta;
 type Story = StoryObj<typeof DateRangePickerField>;
 
 export const Base: Story = {
+  // VRT: composed resting field.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => {
     const [value, setValue] = useState<DateRange | null>(null);
     return <DateRangePickerField {...args} value={value} onChange={setValue} />;
@@ -135,11 +138,17 @@ export const Base: Story = {
         const calendarAfter = within(document.body).queryByRole("application");
         await expect(calendarAfter).not.toBeInTheDocument();
       });
+
+      // Escape returns focus to the calendar button; keep it out of the snapshot.
+      (document.activeElement as HTMLElement | null)?.blur();
     });
   },
 };
 
 export const WithErrors: Story = {
+  // VRT: composed error state - asterisk, error rows, invalid input.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     touched: true,
     errors: { missing: true, format: true },

@@ -14,6 +14,9 @@ export default meta;
 type Story = StoryObj<typeof SearchInputField>;
 
 export const Base: Story = {
+  // VRT: composed resting field - label + description + search input.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     label: "Search products",
     description: "Enter keywords to search for products",
@@ -76,6 +79,9 @@ export const Base: Story = {
       // Use keyboard navigation to focus the input
       await userEvent.keyboard("{Tab}");
       await expect(input).toHaveFocus();
+
+      // Keep the focus ring and caret out of the snapshot.
+      input.blur();
     });
   },
 };
@@ -143,6 +149,9 @@ export const Invalid: Story = {
 };
 
 export const WithErrors: Story = {
+  // VRT: composed error state - error rows + invalid input.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     label: "Search products",
     description: "Enter search keywords",

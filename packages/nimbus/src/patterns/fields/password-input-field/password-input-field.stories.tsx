@@ -14,6 +14,9 @@ export default meta;
 type Story = StoryObj<typeof PasswordInputField>;
 
 export const Base: Story = {
+  // VRT: composed resting field - label + description + masked input + reveal toggle.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     label: "Password",
     description: "Enter a secure password",
@@ -71,6 +74,9 @@ export const Base: Story = {
       await userEvent.type(input, "Secret123");
       await expect(input).toHaveValue("Secret123");
       await userEvent.clear(input);
+
+      // Keep the focus ring and caret out of the snapshot.
+      input.blur();
     });
   },
 };
@@ -163,6 +169,9 @@ export const Invalid: Story = {
 };
 
 export const WithErrors: Story = {
+  // VRT: composed error state - error rows + invalid input.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     label: "Password",
     description: "Enter your password",

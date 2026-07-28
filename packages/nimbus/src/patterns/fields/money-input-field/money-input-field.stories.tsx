@@ -15,6 +15,9 @@ export default meta;
 type Story = StoryObj<typeof MoneyInputField>;
 
 export const Base: Story = {
+  // VRT: composed resting field.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     label: "Product Price",
     description: "Enter the product price with currency",
@@ -78,6 +81,9 @@ export const Base: Story = {
       await userEvent.keyboard("{Tab}");
       const amountInput = canvas.getByRole("textbox", { name: /amount/i });
       await expect(amountInput).toHaveFocus();
+
+      // Keep the focus ring and caret out of the snapshot.
+      amountInput.blur();
     });
   },
 };
@@ -186,6 +192,9 @@ export const Invalid: Story = {
 };
 
 export const WithErrors: Story = {
+  // VRT: composed error state - error rows + invalid amount input.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     label: "Product Price",
     description: "Enter the product price",
