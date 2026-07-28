@@ -1,0 +1,111 @@
+import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
+
+/**
+ * Recipe configuration for the Breadcrumbs component.
+ * Defines the styling variants and base styles using Chakra UI's recipe system.
+ *
+ * Renders navigation semantics (`<nav>` landmark + ordered list of `<a>`
+ * elements) for the path to the current page. The last item represents the
+ * current page and is rendered as non-interactive text with
+ * `aria-current="page"`.
+ */
+export const breadcrumbsSlotRecipe = defineSlotRecipe({
+  slots: ["root", "list", "item", "link", "separator"],
+
+  className: "nimbus-breadcrumbs",
+
+  base: {
+    root: {
+      display: "block",
+      width: "100%",
+    },
+    list: {
+      display: "flex",
+      flexDirection: "row",
+      flexWrap: "wrap",
+      alignItems: "center",
+      listStyle: "none",
+      margin: "0",
+      padding: "0",
+      gap: "var(--breadcrumbs-gap)",
+    },
+    item: {
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      gap: "var(--breadcrumbs-gap)",
+      // Type ramp (font-size + paired line-height) is set per size variant via
+      // `textStyle`; link/separator children inherit it.
+    },
+    link: {
+      display: "inline-flex",
+      alignItems: "center",
+      gap: "200",
+      color: "neutral.11",
+      textDecoration: "none",
+      cursor: "pointer",
+      borderRadius: "200",
+      transition: "color 150ms ease",
+      focusVisibleRing: "outside",
+      _hover: {
+        color: "primary.11",
+        textDecoration: "underline",
+      },
+      // React Aria's Breadcrumb sets data-current on the current (last) item's
+      // link automatically.
+      "&[data-current]": {
+        color: "neutral.12",
+        fontWeight: "500",
+        textDecoration: "none",
+        cursor: "default",
+        pointerEvents: "none",
+      },
+      // React Aria marks the current item as disabled too (it sets
+      // `data-disabled` on it), so scope the dimmed disabled styling to
+      // genuinely disabled, non-current items only.
+      "&[data-disabled]:not([data-current])": {
+        layerStyle: "disabled",
+      },
+    },
+    separator: {
+      display: "inline-flex",
+      alignItems: "center",
+      color: "neutral.9",
+      userSelect: "none",
+      // The first breadcrumb has no preceding separator.
+      "li:first-of-type > &": {
+        display: "none",
+      },
+    },
+  },
+
+  variants: {
+    size: {
+      sm: {
+        item: {
+          // `sm` type ramp: fontSize.350 (14px) + its paired line-height.
+          textStyle: "sm",
+          "--breadcrumbs-gap": "{spacing.100}",
+        },
+        list: {
+          "--breadcrumbs-gap": "{spacing.100}",
+        },
+      },
+      md: {
+        item: {
+          // `md` type ramp: fontSize.400 (16px) + its paired line-height;
+          // md is Nimbus's primary body size (matches Link/Button `md`).
+          textStyle: "md",
+          "--breadcrumbs-gap": "{spacing.200}",
+        },
+        list: {
+          "--breadcrumbs-gap": "{spacing.200}",
+        },
+      },
+    },
+  },
+
+  defaultVariants: {
+    size: "md",
+  },
+});
