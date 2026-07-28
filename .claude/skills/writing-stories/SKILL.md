@@ -401,7 +401,8 @@ live in docs/chromatic-visual-testing.md.
   one `SmokeTest`, each state it can't hold gets its own story. Never drop a state to
   save cost.
 - **Leave snapshots off** for behavior-only stories and any look `SmokeTest` already
-  holds. Verify per component.
+  holds. Verify per component; a `ColorPalettes` story with a disabled column still
+  needs `Disabled`.
 - **One state, multiple distinct surfaces → one story each**, not a gallery
   (MoneyInput's dropdown vs label mode). `chromatic.modes` is global config only
   (viewport/theme/locale), never prop-driven.

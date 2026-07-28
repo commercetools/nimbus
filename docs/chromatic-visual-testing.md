@@ -77,15 +77,8 @@ The gate watches the paths whose contents feed rendered output:
 editor-only autocomplete tooling. Neither changes rendered pixels.
 
 Two files inside the watched packages are ignored because they don't change how
-Two files inside the watched packages are ignored because they don't change how
 components look: `chromatic.config.json` and `.storybook/main.ts`.
 
-The changesets **"Version Packages" release PR** (`changeset-release/main`) is a
-special case: its only diff is version bumps and `CHANGELOG.md` under
-`packages/nimbus/**`, which would open the gate for zero rendered-output change.
-It's routed to the skip-path instead (build + Chromatic steps carry
-`github.head_ref != 'changeset-release/main'`), posting a passing `UI Tests`
-status without building - so it stays unblocked if `UI Tests` becomes required
 The changesets **"Version Packages" release PR** (`changeset-release/main`) is a
 special case: its only diff is version bumps and `CHANGELOG.md` under
 `packages/nimbus/**`, which would open the gate for zero rendered-output change.
@@ -455,11 +448,15 @@ which no play-dispatchable event sets.
   gets a normal audit - Separator's `orientation` over a `colorPalette.6` fill,
   Icon's six-value `size`.
 
-- **A matrix is only for _interacting_ axes.** When axes are independent - one
+- **A matrix is only for _interacting_ axes.** Build a `SmokeTest` matrix only
+  when a cross-cell is a visual neither axis produces alone (Checkbox
+  `checked × invalid` → distinct critical fill). When axes are independent - one
   just scales or recolors the other (Badge/Avatar `size × colorPalette`, Switch
   `size × on/off`) - snapshot each as its own showcase; the cross-product adds
-  cells, not coverage. **Name the matrix `SmokeTest` and render it last** - the
-  role name stays accurate as axes change; the axis list goes in the doc
+  cells, not coverage. Still fold a family of near-identical behavioral stories
+  into one labeled snapshot (Avatar's `AllFallbacks`) when it aids review
+  without losing coverage. **Name the matrix `SmokeTest` and render it last** -
+  the role name stays accurate as axes change; the axis list goes in the doc
   comment. (Older components use names like `VariantsSizesAndStates` - being
   reconciled.)
 - **Use `play` for functional testing alongside visual** - the two aren't in
