@@ -29,6 +29,7 @@ import { useRegion } from "./use-region";
  * their own source-side scope. The ambient path is covered by the
  * `NimbusProvider` unit test.
  */
+// No VRT: headless, renders no box (see chromatic-visual-testing.md).
 const meta: Meta<typeof Region> = {
   title: "Components/Region",
   component: Region,

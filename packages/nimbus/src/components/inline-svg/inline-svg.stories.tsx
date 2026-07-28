@@ -72,6 +72,9 @@ const maliciousSvg = `<svg fill="none" height="24" stroke="currentColor" stroke-
  * Basic usage of InlineSvg component with a simple SVG path
  */
 export const Basic: Story = {
+  // VRT: baseline of the parse-and-render path (fill geometry).
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     data: simpleSvg,
     size: "md",
@@ -92,6 +95,9 @@ export const Basic: Story = {
  * Complex SVG with groups and multiple paths
  */
 export const ComplexSvg: Story = {
+  // VRT: stroke-based geometry, root stroke attrs preserved - Basic is fill-based.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     data: complexSvg,
     size: "xl",
@@ -122,6 +128,7 @@ export const ComplexSvg: Story = {
  * Different sizes showcase
  */
 export const Sizes: Story = {
+  // No VRT: size axis covered by Icon's `Sizes` - the slot reuses `iconRecipe`.
   render: () => (
     <Group gap="200">
       <InlineSvg data={simpleSvg} size="2xs" />
@@ -150,6 +157,7 @@ export const Sizes: Story = {
  * Different colors showcase
  */
 export const Colors: Story = {
+  // No VRT: color axis covered by Icon's `CustomColor` - same recipe delegation.
   render: () => (
     <Group gap="200">
       <InlineSvg data={simpleSvg} size="lg" color="primary.9" />
@@ -177,6 +185,9 @@ export const Colors: Story = {
  * Multi-color SVG (preserves inline colors)
  */
 export const MultiColorSvg: Story = {
+  // VRT: inline fills survive sanitization - the one surface `color` can't reach.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     data: multiColorSvg,
     size: "xl",

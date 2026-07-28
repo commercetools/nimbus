@@ -76,73 +76,56 @@ The gate watches the paths whose contents feed rendered output:
 `color-tokens` isn't consumed by any rendered package, and the TS plugin is
 editor-only autocomplete tooling. Neither changes rendered pixels.
 
-Some files inside the watched packages are ignored because they don't change how
+Two files inside the watched packages are ignored because they don't change how
 components look: `chromatic.config.json` and `.storybook/main.ts`.
 
-The changesets **"Version Packages" release PR** (head branch
-`changeset-release/main`) is a special case: its only diff is version bumps and
-`CHANGELOG.md` under `packages/nimbus/**`, so the gate would otherwise open and
-run a full build for zero rendered-output change. Instead, that branch is routed
-to the skip-path (build + Chromatic steps carry
-`github.head_ref != 'changeset-release/main'`), so it posts a passing `UI Tests`
-status without building - keeping it unblocked if `UI Tests` becomes required
+The changesets **"Version Packages" release PR** (`changeset-release/main`) is a
+special case: its only diff is version bumps and `CHANGELOG.md` under
+`packages/nimbus/**`, which would open the gate for zero rendered-output change.
+It's routed to the skip-path instead (build + Chromatic steps carry
+`github.head_ref != 'changeset-release/main'`), posting a passing `UI Tests`
+status without building - so it stays unblocked if `UI Tests` becomes required
 (see [Merge gating](#merge-gating)). The release commit still gets a real build
-on the `push` to `main` after that PR merges.
+on the `push` to `main`.
 
-**What the gate diffs against depends on the event** (`since_last_remote_commit`
-is set to `${{ github.event_name == 'push' }}`):
+**What the gate diffs depends on the event** (`since_last_remote_commit` is
+`${{ github.event_name == 'push' }}`): `push` compares only the newest commit,
+`pull_request` compares the whole PR (`base...head`).
 
-- **`push`** - compares only the newest commit.
-- **`pull_request`** - compares the whole PR (`base...head`), _not_ just the
-  latest commit.
-
-The PR behavior matters: if the gate only diffed the newest commit, a PR whose
-first commit touched `button.tsx` and whose later commit touched only
-`README.md` would **skip** Chromatic on that later push, leaving the PR head
-with no Chromatic build. Diffing `base...head` means any UI change anywhere in
-the PR keeps the gate open through the final commit.
+That PR behavior matters. Diffing only the newest commit would let a PR that
+touched `button.tsx` first and `README.md` last **skip** Chromatic on the final
+push, leaving the head with no build.
 
 ## TurboSnap
 
-TurboSnap (`onlyChanged`) tells Chromatic to snapshot only the stories affected
-by the git diff, instead of every story. It traces the dependency graph from
-changed files to the stories that render them. This keeps normal PR runs fast
-and cheap.
+TurboSnap (`onlyChanged`) snapshots only the stories affected by the git diff,
+traced through the module graph. This keeps normal PR runs fast and cheap.
 
-**Storybook config files force a full build:** TurboSnap traces the JavaScript
-module graph (`import` chains) to determine which stories are affected by a
-change. Files like `preview.tsx` and other `.storybook/` globals are injected at
-the document level - they are not imported by any story file, so Chromatic
-cannot link them to specific stories. Any change to these files disables
-TurboSnap for that build, snapshotting all stories instead. Avoid editing
-`.storybook/` files unnecessarily mid-PR; batch those changes into a single
-commit so only one full build is triggered.
+Two things defeat it, both by design:
 
-**Dependency bumps force a full snapshot:** the gate watches `pnpm-lock.yaml`,
-so any dependency change (Dependabot or housekeeping) triggers a build. Because
-TurboSnap can't trace a lockfile change to specific stories, it snapshots every
-story instead. This is intentional: a runtime bump (a new React Aria or Chakra
-version) can shift pixels anywhere, so a full snapshot is the only safe scope.
-Grouped Dependabot PRs keep this to a handful of full builds rather than one per
-package.
+- **Storybook config files.** `preview.tsx` and other `.storybook/` globals are
+  injected at the document level, so no story imports them and Chromatic can't
+  link them to specific stories. Any change disables TurboSnap for that build.
+  Batch such edits into one commit so only one full build fires.
+- **Dependency bumps.** The gate watches `pnpm-lock.yaml`, and a lockfile change
+  can't be traced to specific stories. That's the safe scope anyway - a React
+  Aria or Chakra bump can shift pixels anywhere. Grouped Dependabot PRs keep
+  this to a handful of full builds rather than one per package.
 
 ## Baselines and acceptance
 
-A "baseline" in Chromatic is not a build you designate. It is **the last
-accepted snapshot on the branch's git ancestry.** Understanding this avoids a
-common misconception:
+A baseline isn't a build you designate - it's **the last accepted snapshot on
+the branch's git ancestry**:
 
-- Every build **diffs against the existing baseline.** A build does not become
-  the new baseline just by running.
-- A baseline only **moves when snapshots are accepted** in the Chromatic
-  dashboard. Accepting on a branch makes that snapshot the baseline its
-  descendants inherit, so accepting on a PR branch (or on `main` itself) is what
-  future branches pick up after merge.
-- **Merging does not auto-accept.** This project sets no `autoAcceptChanges`, so
-  a diff that lands on `main` unaccepted stays that way - `main`'s baseline does
-  not advance, and the same diff resurfaces on every later build until a human
-  accepts it. (`exitZeroOnChanges` is unrelated to acceptance; it only affects
-  the CLI exit code, and it isn't set here either.)
+- Every build **diffs against** the existing baseline; running doesn't make it
+  the new one.
+- A baseline **moves only on acceptance** in the dashboard. Accepting on a
+  branch makes that snapshot what its descendants inherit, so accepting on a PR
+  branch (or on `main`) is what future branches pick up after merge.
+- **Merging does not auto-accept.** No `autoAcceptChanges` is set, so a diff
+  that lands on `main` unaccepted keeps resurfacing on every later build until a
+  human accepts it. (`exitZeroOnChanges` only affects the CLI exit code, and
+  isn't set either.)
 
 ## The manual button
 
@@ -187,68 +170,56 @@ Conflating them is the most common source of confusion:
 | `Chromatic / chromatic (pull_request)` | The **GHA job** in this workflow                                                                   | The action's exit code. With `exitOnceUploaded: true` the job returns at upload - _before_ diffing - so it's **green whenever the upload succeeds**, diffs or not. |
 | `UI Tests` (orange Chromatic icon)     | A status check **posted by Chromatic's servers**, asynchronously (the `exitOnceUploaded` behavior) | Chromatic's own verdict. It **still reports the diff** and goes red on an unaccepted diff, independent of the GHA job.                                             |
 
-So "the check stays green" refers **only** to the GHA job row - visual diffs
-never touch it, because `exitOnceUploaded: true` makes the action exit before
-Chromatic diffs. (`exitZeroOnChanges` is **not** set; it would only matter if we
-dropped `exitOnceUploaded` and let the job wait for the verdict.)
+So "the check stays green" refers **only** to the GHA job row:
+`exitOnceUploaded: true` makes the action exit before Chromatic diffs.
+(`exitZeroOnChanges` is **not** set; it would only matter if we dropped
+`exitOnceUploaded`.)
 
-The `Chromatic / chromatic` check answers **"did the job run without
-breaking?"** - not "are there visual changes?" Genuine breakage still turns it
-red:
-
-- Storybook fails to build (`build:storybook` errors).
-- Dependency install / the `./.github/actions/ci` step fails.
-- The `chromaui/action` itself errors: missing/invalid
-  `CHROMATIC_PROJECT_TOKEN`, upload failure, network or API error.
-- A malformed workflow.
-
-It can also show as **cancelled** (not a pass) when
+That row answers **"did the job run without breaking?"**, not "are there visual
+changes?" Genuine breakage still turns it red: Storybook fails to build,
+dependency install / `./.github/actions/ci` fails, `chromaui/action` errors
+(missing or invalid `CHROMATIC_PROJECT_TOKEN`, upload/network/API failure), or a
+malformed workflow. It can also show **cancelled** when
 `concurrency: cancel-in-progress` supersedes the run with a newer push, or on
-timeout. Visual changes, by contrast, never turn this check red - they live on
-the `UI Tests` check.
+timeout.
 
 ## Merge gating
 
-**Current state: `UI Tests` reports on every PR, but it is not yet a required
-check, so nothing Chromatic-related blocks a merge.** Branch protection on
-`main` requires only `build-and-test` (confirmed against both classic protection
-and rulesets); merges are gated today only by the review-approval rule.
+**Current state: `UI Tests` reports on every PR but is not a required check, so
+nothing Chromatic-related blocks a merge.** Branch protection on `main` requires
+only `build-and-test` (confirmed against both classic protection and rulesets);
+merges are gated today only by review approval.
 
 Two workflow pieces already make `UI Tests` a reliable gate candidate:
 
-- **`exitZeroOnChanges` is not set.** Diffs surface on the async `UI Tests`
-  check, not the GHA job (see "Two checks" above); the GHA job stays green via
-  `exitOnceUploaded: true`. Genuine build failures - Storybook won't build,
-  install fails - still turn the GHA job red.
-- **The skip path posts its own `UI Tests` status.** When the changed-files gate
-  finds no UI changes, Chromatic doesn't run and never posts `UI Tests`. A
-  required check that never reports blocks the PR forever ("Expected - waiting
-  for status to be reported"), which would wedge every docs-only PR. So the "No
-  UI changes detected" step posts a passing `UI Tests` status (context must
-  match Chromatic's exactly) on the PR head SHA. Net: `UI Tests` is green-or-red
-  on UI PRs and instantly green on non-UI PRs - always reported, never stuck.
+- **`exitZeroOnChanges` is not set**, so diffs surface on the async `UI Tests`
+  check while the GHA job stays green via `exitOnceUploaded: true`. Genuine
+  build failures still turn the GHA job red.
+- **The skip path posts its own `UI Tests` status.** With no UI changes
+  Chromatic never runs and never posts `UI Tests`, and a required check that
+  never reports blocks the PR forever ("Expected - waiting for status to be
+  reported") - which would wedge every docs-only PR. So the "No UI changes
+  detected" step posts a passing `UI Tests` (context must match Chromatic's
+  exactly) on the PR head SHA. Net: always reported, never stuck.
 
 ### Turning gating on
 
-One switch remains:
-
-- Add **`UI Tests`** to the **required status checks** on `main` (Settings ->
-  Branches, or a ruleset). Point branch protection at the async `UI Tests`
-  check, **not** the `Chromatic / chromatic` GHA job - with
-  `exitOnceUploaded: true` the job goes green at upload, before the verdict
-  exists, so requiring it would let a PR merge before Chromatic finishes
-  diffing.
+One switch remains: add **`UI Tests`** to the required status checks on `main`
+(Settings -> Branches, or a ruleset). Point branch protection at the async
+`UI Tests` check, **not** the `Chromatic / chromatic` GHA job - that one goes
+green at upload, before the verdict exists, so requiring it would let a PR merge
+before Chromatic finishes diffing.
 
 Caveats:
 
 - **Coverage is opt-in.** Only stories with `disableSnapshot: false` snapshot,
-  so only those components can produce a blocking diff. A regression in an
-  un-instrumented component won't block anything until its stories opt in.
+  so a regression in an un-instrumented component won't block anything until its
+  stories opt in.
 - **Admins bypass.** `enforce_admins` is off, so an admin can still merge past a
-  red `UI Tests`. Tighten only if you want it airtight.
+  red `UI Tests`.
 - **Context-name coupling.** The skip-path status hardcodes the `UI Tests`
-  context to match Chromatic's. If Chromatic's check name ever changes, update
-  both the workflow step and the required-check config.
+  context to match Chromatic's. If that name changes, update both the workflow
+  step and the required-check config.
 
 ## Deterministic dates in snapshots
 
@@ -266,29 +237,25 @@ What Chromatic's docs say, and how it maps to how we author Nimbus stories.
 
 **Snapshot is taken only at the end of the play function.** "Chromatic waits for
 the entire play function to execute and captures a snapshot only at the end."
-Two consequences for us:
+Two consequences:
 
 - IconButton's `Base`, with its six `step()`s, produces exactly one snapshot -
-  its final resting state. Nothing blurs the element for you, so whatever state
-  the last step leaves (a stray focus ring, a cleared value, a left-open
-  overlay) is exactly what gets captured; end the play in the state you want
-  snapshotted. This is a separate axis from assertion-honesty: a play can assert
-  exactly what its step names claim yet still leave the wrong picture, so for
-  every snapshotted story confirm its **final rendered state is the visual the
-  story name implies** (it's why an honest-looking `ReadOnly`/`Clearable` can
-  still snapshot a focused or emptied control).
-- If you want a snapshot of an intermediate state, the docs say to break it into
-  multiple stories rather than expect mid-play captures. So splitting `Base`
-  would only be worth it if you wanted to snapshot a state that isn't its final
-  one - which we don't.
+  its final resting state. Nothing blurs the element for you, so whatever the
+  last step leaves (a stray focus ring, a cleared value, a left-open overlay) is
+  what gets captured. This is a separate axis from assertion-honesty: a play can
+  assert exactly what its step names claim and still leave the wrong picture, so
+  confirm each snapshotted story's **final state is the visual its name
+  implies** - it's why an honest-looking `ReadOnly`/`Clearable` can snapshot a
+  focused or emptied control.
+- For an intermediate state, the docs say split it into its own story rather
+  than expect a mid-play capture.
 
-**Disabling snapshots is a first-class, recommended mechanism.**
-`chromatic.disableSnapshot` is settable "at story, component, and project
-levels." That's exactly our layering: project default `disableSnapshot: true` in
-`preview.tsx`, overridden to `false` on the VRT stories. The docs explicitly
-call out disabling for interaction-focused / behavior tests to "prevent false
-positives" - which validates leaving `WithRef` (and Button's context /
-DOM-filtering stories) un-snapshotted.
+**Disabling snapshots is a first-class mechanism.** `chromatic.disableSnapshot`
+is settable "at story, component, and project levels" - exactly our layering:
+project default `disableSnapshot: true` in `preview.tsx`, overridden to `false`
+on the VRT stories. The docs explicitly recommend disabling for
+interaction-focused tests to "prevent false positives," which validates leaving
+`WithRef` and Button's context/DOM-filtering stories un-snapshotted.
 
 **Crop padding is applied to every story, globally.** Chromatic crops each
 snapshot to the story's rendered content, so an outline/selection/focus ring
@@ -302,39 +269,32 @@ are exempt because they're meant to touch the edges.
 
 **Cost is TurboSnap and matrix-packing, never dropping states.** TurboSnap bills
 unchanged snapshots at 1/5, and folding a
-`colorPalette × size × variant × state` grid into one `SmokeTest` render keeps
+`colorPalette × size × variant × state` grid into one `SmokeTest` keeps
 combinatorial coverage to a single billable snapshot (a reviewer also catches
-cross-axis regressions in one image, every state beside its neighbors). Those
-are the only levers: the `vrt` selection means "don't re-snapshot a state an
-on-snapshot already covers" - turning a per-axis story off loses nothing _when_
-the matrix or a dedicated `Disabled` already holds its states - never "snapshot
-fewer states." The matrix's tradeoff is granularity: a diff in any cell flags
-the whole snapshot, and editing it re-snapshots the whole grid, so reserve
+cross-axis regressions in one image). Those are the only levers. The `vrt`
+selection means "don't re-snapshot a state an on-snapshot already covers" -
+never "snapshot fewer states"; dropping a state no snapshot covers does lose
+coverage. The matrix's tradeoff is granularity: a diff in any cell flags the
+whole snapshot, and editing it re-snapshots the whole grid, so reserve
 standalone snapshots for states needing distinct setup or isolated review
-(`Focused`, `DisabledGroup`, an open menu), not straight recipe output. Dropping
-a state no snapshot covers does lose coverage.
+(`Focused`, `DisabledGroup`, an open menu), not straight recipe output.
 
 **Hover and pressed are a known coverage gap.** They are genuine visual states,
 but neither is currently captured, and it's an infra limitation, not a choice:
 
-- **Hover** can't be landed from a play function in the snapshot browser. A
-  spike confirmed `userEvent.hover` produces neither a real CSS `:hover` nor
-  React Aria's `data-hovered`, and a synthetic `pointerenter` doesn't set it
-  either. Capturing it needs the `storybook-addon-pseudo-states` addon to force
-  the state **plus** recipe normalization, because our button-family recipes are
-  split between Chakra `_hover` (compiles to `:hover, [data-hover]`) and React
-  Aria's `[data-hovered]` attribute - an addon forces one convention, so the
-  recipes have to converge on it. Track this as a cross-cutting foundation task,
-  not per-component work.
-- **Pressed** needs nothing _for the button family_: none of its recipes style
-  `:active`/pressed (Button sets a `data-pressed` attribute, but no recipe rule
-  paints it), so there's no visual to capture there. Don't generalize that to
-  every component - some non-button recipes do style pressed. NumberInput's
-  steppers set `_active` (`bg: neutral.4`), a real pressed visual, so for
-  components like it pressed is a genuine uncaptured state deferred alongside
-  hover (a held-down frame isn't deterministically snapshottable today, same
-  infra family). Check the recipe rather than assuming pressed is always a
-  no-op.
+- **Hover** can't be landed from a play function. A spike confirmed
+  `userEvent.hover` produces neither a real CSS `:hover` nor React Aria's
+  `data-hovered`, and a synthetic `pointerenter` doesn't either. Capturing it
+  needs `storybook-addon-pseudo-states` to force the state **plus** recipe
+  normalization: our button-family recipes are split between Chakra `_hover`
+  (compiles to `:hover, [data-hover]`) and React Aria's `[data-hovered]`, and an
+  addon forces one convention. Cross-cutting foundation work, not per-component.
+- **Pressed** needs nothing _for the button family_ - none of its recipes paint
+  `:active` (Button sets `data-pressed` but no rule styles it). Don't
+  generalize: NumberInput's steppers set `_active` (`bg: neutral.4`), a real
+  pressed visual, and for components like it pressed is a genuine uncaptured
+  state deferred alongside hover. Check the recipe rather than assuming pressed
+  is a no-op.
 
 **If a play can drive the real interaction, snapshot the result and leave it
 settled** - drag-over (`data-drop-target`), option focus (`data-focused`),
@@ -343,20 +303,19 @@ which no play-dispatchable event sets.
 
 ### Broader best practices
 
-- **Enumerate surfaces from source, not memory.** Before deciding what to opt
-  in, read the recipe (every painting selector - `_hover`, `_focusWithin`,
-  `_disabled`, `_active`, `data-invalid`, `data-readonly`, ... - and every
-  `variant`/`size` key) and the component (every conditional render or prop,
-  e.g. `isDisabled={x || isReadOnly}`). Coverage is the **cross-product** of
-  recipe states × those conditional branches, not the states alone: a read-only
-  field that stays undimmed but disables its trailing button is a distinct
-  surface even though the field "looks like default." Any "renders like default"
-  decision must name the exact delta you checked. Recipe selectors and props
-  aren't the only axes: also account for **ambient axes** no prop names -
-  RTL/`dir` (mirrored icon/adornment layout), locale, theme - and for built-in
-  adornments the component always renders. Then **diff against sibling
-  components' story sets**: a surface a peer primitive snapshots but yours
-  doesn't (e.g. `RTLSupport`) is a gap until you can name why it doesn't apply.
+- **Enumerate surfaces from source, not memory.** Read the recipe (every
+  painting selector - `_hover`, `_focusWithin`, `_disabled`, `_active`,
+  `data-invalid`, `data-readonly`, ... - and every `variant`/`size` key) and the
+  component (every conditional render or prop, e.g.
+  `isDisabled={x || isReadOnly}`). Coverage is the **cross-product** of recipe
+  states × conditional branches, not the states alone: a read-only field that
+  stays undimmed but disables its trailing button is a distinct surface even
+  though the field "looks like default." Any "renders like default" call must
+  name the exact delta you checked. Also account for **ambient axes** no prop
+  names - RTL/`dir` (mirrored adornment layout), locale, theme - and for
+  built-in adornments. Then **diff against sibling components' story sets**: a
+  surface a peer snapshots but yours doesn't (e.g. `RTLSupport`) is a gap until
+  you can name why it doesn't apply.
 - **One focus snapshot per reachable focus surface.** A component with multiple
   independent focus targets - fused/adjacent focusable sub-controls, or
   `_focusWithin` on more than one region - needs a focus story per target, since
@@ -373,16 +332,14 @@ which no play-dispatchable event sets.
   any state the matrix can't render in one static image (focus ring,
   disabled-but-focusable, open tooltip/popover, special layouts) gets its own
   snapshotted story. Coverage is the target; the matrix is just the most
-  efficient container for the interacting axes. A single-axis showcase story
-  varies one axis with the rest at defaults, so a cross-axis cell like
+  efficient container for the interacting axes. A single-axis showcase varies
+  one axis with the rest at defaults, so a cell like
   `size="2xs" variant="ghost" colorPalette="critical"` is captured by
-  **nothing** but the matrix - and that is exactly where recipe regressions
-  hide. Axis arrays must span the **full supported range** - a trimmed or
-  commented-out value (snapshotting three sizes when the component supports
-  five) leaves those cells covered by nothing. Scope call: matrices iterate the
-  6 `SEMANTIC_COLOR_PALETTES`; the `BRAND` (3) and `SYSTEM` (25) palettes a
-  consumer can also pass run the same token machinery and are deliberately not
-  snapshotted.
+  **nothing** but the matrix - exactly where recipe regressions hide. Axis
+  arrays must span the **full supported range**; a trimmed or commented-out
+  value leaves those cells covered by nothing. Scope call: matrices iterate the
+  6 `SEMANTIC_COLOR_PALETTES`; the `BRAND` (3) and `SYSTEM` (25) palettes run
+  the same token machinery and are deliberately not snapshotted.
 - **Fold an axis into the matrix only if it interacts.** An axis whose
   combination with the others yields a distinct visual belongs in the grid; one
   that applies a **uniform, axis-independent transform** does not. `disabled` is
@@ -407,52 +364,41 @@ which no play-dispatchable event sets.
   is visually distinct from unselected-disabled, so a `Disabled` story showing
   only the unselected case leaves a gap.
 - **A single state can render more than one distinct surface - give each its own
-  story, don't fold them into a gallery frame.** Before assuming one `Focused` /
-  `Disabled` / `ReadOnly` / `Invalid` story covers a state, check whether the
-  component renders it more than one way (mode-/variant-driven); if so, each
-  distinct recipe surface gets its own snapshotted story. MoneyInput renders
-  focus and disabled two ways - dropdown mode (a currency Select) and label mode
+  story, not a gallery frame.** Before assuming one `Focused` / `Disabled` /
+  `ReadOnly` / `Invalid` story covers a state, check whether the component
+  renders it more than one way (mode-/variant-driven); if so, each distinct
+  recipe surface gets its own snapshotted story. MoneyInput renders focus and
+  disabled two ways - dropdown mode (a currency Select) and label mode
   (`currencies={[]}`, a static label with its own
   `currencyLabel[data-disabled] { opacity: 0.5 }` rule) - so it carries
-  `Focused`
-  - `FocusedWithCurrencyLabel` and `DisabledState` +
-    `DisabledWithCurrencyLabel`. Independent surfaces don't interact the way
-    matrix axes do, so folding them into one gallery render only trades away
-    their independent baselines and per-surface triage. Snapshot count isn't a
-    performance concern (Chromatic parallelizes; TurboSnap keeps a stable extra
-    story near free); reserve folding for the interacting axes in `SmokeTest`.
+  `Focused` and `FocusedWithCurrencyLabel`, `DisabledState` and
+  `DisabledWithCurrencyLabel`. Independent surfaces don't interact the way
+  matrix axes do, so folding them into one render trades away their independent
+  baselines and per-surface triage. Snapshot count isn't a performance concern
+  (Chromatic parallelizes; TurboSnap keeps a stable extra story near free).
 - **A state that renders identically to the default gets no snapshot at all.**
-  The flip side of the rule above: before adding a `ReadOnly` / `Disabled` /
-  `Invalid` story, confirm the recipe actually renders that state distinctly. If
-  there's no rule for it, it looks exactly like the default, and a dedicated
-  snapshot is a redundant baseline, not coverage. Read-only is the common trap
-  because the call is component-dependent: MoneyInput styles read-only
-  distinctly (it disables the currency Select) so it carries `ReadOnlyState`,
-  but MultilineTextInput / NumberInput / TextInput have no `data-readonly`
-  recipe rule
-  - read-only renders identically to default - so they correctly have no
-    read-only snapshot. Same state, opposite call, decided purely by whether a
-    distinct recipe surface exists.
+  The flip side: before adding a `ReadOnly` / `Disabled` / `Invalid` story,
+  confirm the recipe renders that state distinctly. With no rule for it, it
+  looks exactly like the default, and a dedicated snapshot is a redundant
+  baseline, not coverage. Read-only is the common trap because the call is
+  component-dependent: MoneyInput styles it distinctly (it disables the currency
+  Select) so it carries `ReadOnlyState`, but MultilineTextInput / NumberInput /
+  TextInput have no `data-readonly` rule, so read-only renders identically to
+  default and they correctly have no read-only snapshot. Same state, opposite
+  call, decided purely by whether a distinct recipe surface exists.
 - **Modes are for global config, not component props.** Chromatic
   [modes](https://www.chromatic.com/docs/modes/) (`chromatic.modes`) capture the
-  same story under different _global_ settings applied through Storybook
-  globals/decorators - viewport, theme, locale - each as an independently
-  baselined snapshot. They are not a mechanism for prop-driven variations: a
-  difference you produce by passing different props (MoneyInput's dropdown vs.
-  label mode is `currencies={[...]}` vs. `currencies={[]}`) is a separate
-  **story**, not a mode. We don't use modes at launch (single desktop viewport,
-  light theme only); they're the tool if/when dark-mode or multi-viewport
-  coverage lands.
-- **Snapshot the component, not the harness.** Chromatic photographs the story's
-  entire rendered output, so anything in the render tree lands in the baseline.
-  A snapshotted story must render the component **directly** - no debug
-  read-outs, value dumps, or controls scaffolding in the frame. Those authoring
-  aids are fine on the un-snapshotted behavioral stories (MoneyInput's
-  `MoneyInputExample` wrapper renders a `JSON.stringify(value)` panel next to
-  the input, useful for clicking through in Storybook), but a snapshot of one
-  would bake the read-out into the baseline and flap on every value change. So
-  the state/matrix stories render `<MoneyInput>` directly and leave the wrapper
-  to `BasicExample` and the other behavioral stories.
+  same story under different _global_ settings - viewport, theme, locale - each
+  independently baselined. A difference you produce by passing props
+  (MoneyInput's dropdown vs. label mode) is a separate **story**, not a mode. We
+  don't use modes at launch (single desktop viewport, light theme only); they're
+  the tool if dark-mode or multi-viewport coverage lands.
+- **Snapshot the component, not the harness.** Anything in the render tree lands
+  in the baseline, so a snapshotted story must render the component
+  **directly** - no debug read-outs, value dumps, or controls scaffolding in the
+  frame. Those aids are fine on un-snapshotted behavioral stories (MoneyInput's
+  `MoneyInputExample` renders a `JSON.stringify(value)` panel), but snapshotting
+  one would bake the read-out into the baseline and flap on every value change.
 - **Thin wrappers get no matrix.** A component that only constrains or forwards
   a wrapped component's props re-covers nothing by re-rendering the wrapped
   grid. FloatingActionButton wraps IconButton with a fixed circular shape, so it
@@ -460,19 +406,36 @@ which no play-dispatchable event sets.
   matrix - those are IconButton's states, already covered there. (Distinct from
   the independent-axes case below: there the axes don't interact; here the
   wrapper delegates them wholesale to a component that already snapshots them.)
+- **Primitives with no painted surface get no VRT at all.** The test isn't "has
+  a `.recipe.ts`" - it's **does it paint, and is there a state space to
+  enumerate?** Three shapes fail it, and each gets zero snapshots plus a
+  one-line `meta` note so the omission reads as deliberate:
+  - **Pass-through style-prop primitives** (Box, Flex, Stack, Grid, SimpleGrid,
+    Spacer - a `<div>`, no recipe). Every appearance comes from consumer style
+    props, so a snapshot tests Chakra + tokens, not the component.
+  - **A recipe that paints nothing** (Group: `inline-flex` + `alignItems`, zero
+    variants). The recipe's existence isn't the point - it sets no color,
+    border, or spacing, so the pixels are the children's.
+  - **Headless / layout-transparent** (Region: `display: contents`). No box is
+    rendered, so there's nothing to capture; the stories assert _where content
+    lands_, which is DOM containment.
+
+  The inverse is the more common case: a primitive whose recipe **does** paint
+  gets a normal audit - Separator's `orientation` over a `colorPalette.6` fill,
+  Icon's six-value `size`.
+
 - **A matrix is only for _interacting_ axes; independent axes are separate
   stories.** Build a `SmokeTest` matrix only when a cross-cell is a visual
   neither axis produces alone (Checkbox `checked × invalid` → distinct critical
   fill). When the axes are independent - one just scales/recolors the other
   (Badge/Avatar `size × colorPalette`, Switch `size × on/off`) - do **not**
-  build a matrix, even a 2×2; snapshot each axis as its own showcase story. The
+  build a matrix, even a 2×2; snapshot each axis as its own showcase. The
   cross-product adds cells, not coverage. Still fold a family of near-identical
   behavioral stories into one labeled snapshot (Avatar's `AllFallbacks`) when it
-  aids review without losing coverage. **Name that matrix `SmokeTest` and render
-  it last** - it marks the role (the comprehensive resting-visual carrier) and
-  stays accurate when axes change, unlike an axis-list name; the axis list lives
-  in the doc comment. (Older components use descriptive names like
-  `VariantsSizesAndStates` - being reconciled to `SmokeTest`.)
+  aids review without losing coverage. **Name the matrix `SmokeTest` and render
+  it last** - that marks its role and stays accurate when axes change, unlike an
+  axis-list name; the axis list lives in the doc comment. (Older components use
+  names like `VariantsSizesAndStates` - being reconciled.)
 - **Capture the focus ring on every distinctly-styled focusable sub-element.** A
   split button's dropdown trigger, an input's clear button or stepper, and a
   date field's calendar toggle each style their own `:focus-visible`; a
@@ -482,19 +445,17 @@ which no play-dispatchable event sets.
   tension; a story can both assert behavior and be snapshotted.
 - **Animated components: know where Chromatic pauses.** It auto-pauses CSS
   transitions, CSS/SVG animations, and videos (not JS animations - pause those
-  manually) and seeks to a **fixed** frame, so the capture is deterministic
-  regardless of when the run fires. The default pause point is the **last**
-  frame of the cycle (`pauseAnimationAtEnd: false` switches it to the first).
-  That cuts differently per keyframe, and the trap is an
+  manually) and seeks a **fixed** frame, so the capture is deterministic. The
+  default pause point is the **last** frame of the cycle
+  (`pauseAnimationAtEnd: false` switches it to the first). The trap is an
   `iteration-count: infinite` animation whose endpoints both hide the content:
   `progress-indeterminate` sweeps a 40% pill `translateX(-100% → 300%)`, so both
-  the first and last frame park it off the track - a default snapshot is an
-  empty track. When that happens, **pin a representative frame** in the play
-  (`animation: none` + an explicit transform), e.g. ProgressBar's
-  `Indeterminate` centers the pill with `translateX(75%)`. A full-turn `spin`
-  (0deg → 360deg) needs no pin - both endpoints render identically. The docs
-  don't spell out the infinite case, so confirm the paused frame on the first
-  run.
+  endpoints park it off the track and the default snapshot is an empty track.
+  Then **pin a representative frame** in the play (`animation: none` + an
+  explicit transform), as ProgressBar's `Indeterminate` does with
+  `translateX(75%)`. A full-turn `spin` needs no pin - both endpoints render
+  identically. The docs don't spell out the infinite case, so confirm the paused
+  frame on the first run.
 - **A snapshot is the play function's _end state_.** Chromatic runs the whole
   play, waits for it to **pass**, then captures - so the play must _land_ on the
   frame you want and can't be flaky. Open an overlay/portal and **don't**
@@ -504,10 +465,10 @@ which no play-dispatchable event sets.
 - **Portal-rendered components (Toast, overlays).** Chromatic captures the whole
   page, so portal content is in-frame even though it renders outside the story
   root. Hold transient UI open for the shot (`duration: Infinity` for toasts),
-  await it in the play, and clean up between stories (Toast's `clearToasts()`)
-  so nothing leaks into the next capture. A component can be focusable in its
-  own right (Toast's root has `tabIndex=0` + `focusRing: outside`) - reach it
-  the real way (its keyboard hotkey + Tab), not a synthetic `.focus()`.
+  await it, and clean up between stories (Toast's `clearToasts()`) so nothing
+  leaks into the next capture. A portal component can be focusable in its own
+  right (Toast's root has `tabIndex=0` + `focusRing: outside`) - reach it the
+  real way (hotkey + Tab), not a synthetic `.focus()`.
 - **Overlays: snapshot the _open_ state.** A portal component's primary visual
   is its open state, so render it open - `defaultOpen` (Dialog/Drawer/Menu) or
   open it in the play and await the portal - and leave it open; the entrance
@@ -526,14 +487,14 @@ which no play-dispatchable event sets.
     only**; top/bottom add no new visual.
   - **Menu/Tooltip** placement is React Aria positioning (same box repositioned,
     no arrow) → behavioral, no per-placement snapshot.
-- **Hide the blinking text caret on a focused input.** A `Focused` snapshot of a
-  text-entry input captures the focus ring, but focusing also paints the
-  browser's native caret - which Chromatic can't stabilize (its
+- **Hide the blinking text caret on a focused input.** A `Focused` snapshot
+  captures the focus ring, but focusing also paints the browser's native caret,
+  which Chromatic can't stabilize (its
   [animations docs](https://www.chromatic.com/docs/animations/) cover only CSS
-  and JS animations; the native caret is neither), so the snapshot would diff on
-  whichever blink phase it lands on. Hide it in the `Focused` play function;
-  `caret-color` is inherited, so one line on the canvas cascades to the input.
-  We scope it to the story rather than editing the shared `preview.tsx`:
+  and JS animations), so the snapshot diffs on whichever blink phase it lands
+  on. Hide it in the `Focused` play; `caret-color` inherits, so one line on the
+  canvas cascades to the input. Scoped to the story rather than the shared
+  `preview.tsx`:
 
   ```typescript
   play: async ({ canvasElement }) => {

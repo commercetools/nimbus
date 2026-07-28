@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box, Stack } from "@commercetools/nimbus";
 
+// No VRT: pass-through style primitive (see chromatic-visual-testing.md).
 const meta: Meta<typeof Stack> = {
   title: "Components/Stack",
   component: Stack,

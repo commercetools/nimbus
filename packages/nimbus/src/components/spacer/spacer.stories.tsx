@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box, Button, Spacer, Stack } from "@commercetools/nimbus";
 
+// No VRT: invisible flex filler (see chromatic-visual-testing.md).
 const meta: Meta<typeof Spacer> = {
   title: "Components/Spacer",
   component: Spacer,

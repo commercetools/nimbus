@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box } from "@commercetools/nimbus";
 
+// No VRT: pass-through style primitive (see chromatic-visual-testing.md).
 const meta: Meta<typeof Box> = {
   title: "Components/Box",
   component: Box,
@@ -30,7 +31,8 @@ export const WithBorder: Story = {
 
 export const AsFlexContainer: Story = {
   args: {
-    display: "grid",
+    display: "flex",
+    gap: "200",
     children: (
       <>
         <Box p="100" bg="primary.3">
