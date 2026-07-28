@@ -65,6 +65,8 @@ export const Base: Story = {
       const amountInput = canvas.getByRole("textbox", { name: /amount/i });
       await userEvent.type(amountInput, "99.99");
       await expect(amountInput).toHaveValue("99.99");
+      await userEvent.clear(amountInput);
+      await expect(amountInput).toHaveValue("");
     });
 
     await step("Both inputs are focusable with tab key", async () => {
