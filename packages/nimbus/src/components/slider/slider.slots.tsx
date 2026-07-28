@@ -1,4 +1,5 @@
 import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
+import type { SlotComponent } from "@/type-utils";
 import type {
   SliderRootSlotProps,
   SliderTrackSlotProps,
@@ -13,10 +14,10 @@ const { withProvider, withContext } = createSlotRecipeContext({
 });
 
 /** Root — provides the recipe context; grafts React Aria <Slider> via asChild. */
-export const SliderRootSlot = withProvider<HTMLDivElement, SliderRootSlotProps>(
-  "div",
-  "root"
-);
+export const SliderRootSlot: SlotComponent<
+  HTMLDivElement,
+  SliderRootSlotProps
+> = withProvider<HTMLDivElement, SliderRootSlotProps>("div", "root");
 
 export const SliderTrackSlot = withContext<
   HTMLDivElement,
