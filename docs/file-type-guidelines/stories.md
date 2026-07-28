@@ -196,6 +196,15 @@ label for finding snapshot stories - keep the two together).
   `meta`.
 - **A play's end state never justifies skipping a snapshot** - fix the play. A
   snapshotted story that ends focused needs `blur()`.
+- **A compound component's unit is the recipe rule, not the composition** - slot
+  presence only makes a new surface where a rule keys off it (`:has()`). Name
+  the rule the frame alone fires, or leave it off-snapshot.
+- **A state that only resolves under scroll → scroll in the play** (sticky, as a
+  recipe variant or an inline prop; at rest it is identical to its absence).
+  Needs a bounded `overflow: auto` ancestor and an `offsetHeight`-derived
+  target. Each combination is its own frame.
+- **Load-bearing, static scaffolding may stay in the frame** - a bounded scroll
+  port, or visible children for a component that paints nothing itself.
 - **If a step name overstates what it asserts, raise the assertion to meet the
   name** - don't rename the step down.
 - **Snapshot the component, not the harness** - no debug read-outs or wrappers
@@ -234,6 +243,16 @@ play: async ({ canvasElement }) => {
   canvasElement.style.caretColor = "transparent";
   await userEvent.tab();
   // ...assert focus
+};
+
+// Scroll-resolved (sticky): scroll before the capture, target derived not hardcoded
+play: async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+  const scrollContainer = canvas.getByTestId("scroll-container");
+  const header = canvasElement.querySelector("header")!;
+  const scrollTarget = header.offsetHeight + 50;
+  scrollContainer.scrollTop = scrollTarget;
+  await waitFor(() => expect(scrollContainer.scrollTop).toBe(scrollTarget));
 };
 
 // Animated: pin a frame only when the paused endpoints hide the content

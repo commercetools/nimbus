@@ -401,8 +401,7 @@ live in docs/chromatic-visual-testing.md.
   one `SmokeTest`, each state it can't hold gets its own story. Never drop a state to
   save cost.
 - **Leave snapshots off** for behavior-only stories and any look `SmokeTest` already
-  holds. Verify per component; a `ColorPalettes` story with a disabled column still
-  needs `Disabled`.
+  holds. Verify per component.
 - **One state, multiple distinct surfaces → one story each**, not a gallery
   (MoneyInput's dropdown vs label mode). `chromatic.modes` is global config only
   (viewport/theme/locale), never prop-driven.
@@ -418,13 +417,22 @@ live in docs/chromatic-visual-testing.md.
   host's; one frame per host.
 - **A play's end state never justifies skipping a snapshot** - fix the play. A
   snapshotted story ending focused needs `blur()`.
+- **A compound component's unit is the recipe rule, not the realistic composition** -
+  slot presence only counts where a rule keys off it (`:has()`). Name the rule the
+  frame alone fires; "it's a realistic page" means documentation, not a snapshot.
+- **A state that only resolves under scroll** (sticky, whether a recipe variant or an
+  inline prop) - scroll in the play, capture pinned; at rest it is identical to its
+  absence. Needs a bounded `overflow: auto` ancestor and an `offsetHeight`-derived
+  target. Each combination is its own frame.
 - **Primitives that paint no surface get no VRT** - pass-through style props, a recipe
   that paints nothing (Group), or headless `display: contents` (Region). Leave a
   one-line note on `meta`. One that does paint gets a normal audit.
 - **A step name is a promise** - raise the assertion to meet it, don't rename down.
   Watch for tautologies and un-`await`ed helpers.
 - **Snapshot the component, not the harness** - no debug read-outs or demo wrappers in
-  the frame.
+  the frame. Exception: **load-bearing, static** scaffolding - a bounded scroll port
+  `height: 100%`/sticky needs to resolve, or visible children for a component that
+  paints nothing itself.
 - **Determinism** - no live dates or random values, await async-derived state, no stray
   focus ring, hide the caret in a `Focused` text-input story. `:hover` and pressed
   aren't capturable yet.
@@ -775,7 +783,16 @@ You MUST validate against these requirements:
       assertions, no un-`await`ed async helpers
 - [ ] Snapshotted stories render the component **directly** - no debug read-outs,
       value dumps, or demo-wrapper scaffolding in the frame (those stay on the
-      un-snapshotted behavioral stories)
+      un-snapshotted behavioral stories). **Load-bearing, static** scaffolding is
+      admissible and named as such (a bounded scroll port; visible children for a
+      component that paints nothing)
+- [ ] For a **compound component with optional slots**, each frame names the recipe
+      rule it alone fires (typically a `:has()` selector); plausible-but-duplicate
+      compositions stay off-snapshot with a pointer to the frame that holds them
+- [ ] **Scroll-resolved** states (`position: sticky`) scroll in the play before
+      the capture - at rest they are identical to their absence. Bounded
+      `overflow: auto` ancestor, `offsetHeight`-derived scroll target, and each
+      combination its own frame (header / footer / both)
 - [ ] Uniform, axis-independent states are captured in a **dedicated** story,
       not folded into the matrix (`disabled` typically resolves to one shared
       style regardless of size/variant/palette → its own `Disabled` snapshot, not

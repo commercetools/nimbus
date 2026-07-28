@@ -403,6 +403,10 @@ which no play-dispatchable event sets.
   frame. Those aids are fine on un-snapshotted behavioral stories (MoneyInput's
   `MoneyInputExample` renders a `JSON.stringify(value)` panel), but snapshotting
   one would bake the read-out into the baseline and flap on every value change.
+  The line is **load-bearing and static**, not "is it a wrapper": a wrapper the
+  component needs to resolve at all (DefaultPage's fixed-height `overflow: auto`
+  Box), or visible children for a component that paints nothing (PageContent's
+  placeholder boxes). Both are static; a read-out isn't.
 - **Thin wrappers get no matrix.** A component that only constrains or forwards
   a wrapped component's props re-covers nothing by re-rendering the wrapped
   grid. FloatingActionButton wraps IconButton with a fixed circular shape, so it
@@ -430,6 +434,22 @@ which no play-dispatchable event sets.
   "ends cleaned up", "drifts because nothing is pinned" are work to do.
   Conversely a snapshotted story that ends focused needs `blur()`, or the ring
   and caret land in the baseline.
+- **A compound component's unit is the recipe rule, not the realistic
+  composition.** With several optional slots the pull is to snapshot every
+  plausible arrangement - DefaultPage's info/form/tabular x main/detail. Slot
+  presence only makes a new surface where a **rule keys off it** (there, two
+  `:has()` selectors); the rest is the same slots in a different grid row. Ask
+  which rule the frame alone fires - "it's a realistic page" means
+  documentation, not a snapshot. It cost three of twelve first-pass opt-ins.
+- **A state that only resolves under scroll needs the play to scroll** - a
+  recipe variant (DefaultPage's `stickyHeader`) or an inline prop
+  (PageContent.Column's `sticky`). `position: sticky` paints nothing and its
+  `bg` is invisible until content passes beneath, so at rest the page is
+  **pixel-identical to one without it**: the snapshot baselines the state being
+  off while reading as coverage. Scroll in the play, capture pinned. Needs a
+  **bounded scroll port** (`height: 100%` resolves against nothing otherwise)
+  and an **`offsetHeight`-derived** target, so a padding-token change can't
+  silently stop it scrolling past. Header, footer and both are three frames.
 - **Primitives with no painted surface get no VRT at all.** The test isn't "has
   a `.recipe.ts`" - it's **does it paint, and is there a state space to
   enumerate?** Three shapes fail it, and each gets zero snapshots plus a
@@ -448,15 +468,11 @@ which no play-dispatchable event sets.
   gets a normal audit - Separator's `orientation` over a `colorPalette.6` fill,
   Icon's six-value `size`.
 
-- **A matrix is only for _interacting_ axes.** Build a `SmokeTest` matrix only
-  when a cross-cell is a visual neither axis produces alone (Checkbox
-  `checked × invalid` → distinct critical fill). When axes are independent - one
+- **A matrix is only for _interacting_ axes.** When axes are independent - one
   just scales or recolors the other (Badge/Avatar `size × colorPalette`, Switch
   `size × on/off`) - snapshot each as its own showcase; the cross-product adds
-  cells, not coverage. Still fold a family of near-identical behavioral stories
-  into one labeled snapshot (Avatar's `AllFallbacks`) when it aids review
-  without losing coverage. **Name the matrix `SmokeTest` and render it last** -
-  the role name stays accurate as axes change; the axis list goes in the doc
+  cells, not coverage. **Name the matrix `SmokeTest` and render it last** - the
+  role name stays accurate as axes change; the axis list goes in the doc
   comment. (Older components use names like `VariantsSizesAndStates` - being
   reconciled.)
 - **Use `play` for functional testing alongside visual** - the two aren't in
