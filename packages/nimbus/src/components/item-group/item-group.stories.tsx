@@ -16,8 +16,9 @@ type Story = StoryObj<typeof ItemGroup.Root>;
  * Base — a group of Item rows divided by separators.
  */
 export const Base: Story = {
+  tags: ["vrt"],
   render: () => (
-    <ItemGroup.Root data-testid="group" aria-label="Account">
+    <ItemGroup.Root aria-label="Account">
       <Item.Root>
         <Item.Media variant="icon">
           <Person />
@@ -53,7 +54,7 @@ export const Base: Story = {
     const canvas = within(canvasElement);
 
     await step("Group wraps all its rows", async () => {
-      const group = canvas.getByTestId("group");
+      const group = canvas.getByRole("group", { name: "Account" });
       await expect(group).toBeInTheDocument();
       await expect(within(group).getByText("Profile")).toBeInTheDocument();
       await expect(
@@ -66,7 +67,7 @@ export const Base: Story = {
       // role="group" gives assistive tech a grouping signal without imposing
       // listitem requirements; aria-label passes straight through as its name.
       const group = canvas.getByRole("group", { name: "Account" });
-      await expect(group).toBe(canvas.getByTestId("group"));
+      await expect(group).toBeInTheDocument();
     });
 
     await step("Renders separators between rows", async () => {
@@ -80,7 +81,7 @@ export const Base: Story = {
  */
 export const LinkRows: Story = {
   render: () => (
-    <ItemGroup.Root data-testid="group">
+    <ItemGroup.Root>
       <Item.Root href="#profile">
         <Item.Content>
           <Item.Title>Profile</Item.Title>

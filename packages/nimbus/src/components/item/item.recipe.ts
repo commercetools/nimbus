@@ -12,7 +12,7 @@ import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
  * media slot rather than a recipe variant (which would collide with the root's
  * `variant` prop across the shared slot-recipe context).
  */
-export const itemRecipe = defineSlotRecipe({
+export const itemSlotRecipe = defineSlotRecipe({
   // Only the parts that live *inside* the row share the recipe context.
   // `Item.Group` wraps rows (it is a parent of `Item.Root`, not a child), and
   // `Item.Separator` reuses the standalone Nimbus `Separator`, so neither is a
