@@ -18,10 +18,8 @@ const invisibleCssProps = {
 /**
  * hides content from the viewers eye but keeps it visible to screen readers.
  * Makes it visible if focused.
- *
- * No VRT: paints nothing - hidden content is off-screen, and the focus-revealed
- * frame is the child Button's pixels.
  */
+// No VRT: content is off-screen by design (see chromatic-visual-testing.md).
 const meta: Meta<typeof VisuallyHidden> = {
   title: "Utils/VisuallyHidden",
   component: VisuallyHidden,

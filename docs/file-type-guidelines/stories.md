@@ -199,10 +199,10 @@ label for finding snapshot stories - keep the two together).
 - **A compound component's unit is the recipe rule, not the composition** - slot
   presence only makes a new surface where a rule keys off it (`:has()`). Name
   the rule the frame alone fires, or leave it off-snapshot.
-- **A state that only resolves under scroll → scroll in the play** (sticky, as a
-  recipe variant or an inline prop; at rest it is identical to its absence).
-  Needs a bounded `overflow: auto` ancestor and an `offsetHeight`-derived
-  target. Each combination is its own frame.
+- **A state inert in the default frame → snapshot the condition that fires it.**
+  Sticky needs a scroll in the play (bounded `overflow: auto` ancestor,
+  `offsetHeight`-derived target, each combination its own frame);
+  `scrollBehavior="inside"` needs overflowing content.
 - **Load-bearing, static scaffolding may stay in the frame** - a bounded scroll
   port, or visible children for a component that paints nothing itself.
 - **If a step name overstates what it asserts, raise the assertion to meet the

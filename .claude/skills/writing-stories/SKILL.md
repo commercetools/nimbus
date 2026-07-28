@@ -420,10 +420,10 @@ live in docs/chromatic-visual-testing.md.
 - **A compound component's unit is the recipe rule, not the realistic composition** -
   slot presence only counts where a rule keys off it (`:has()`). Name the rule the
   frame alone fires; "it's a realistic page" means documentation, not a snapshot.
-- **A state that only resolves under scroll** (sticky, whether a recipe variant or an
-  inline prop) - scroll in the play, capture pinned; at rest it is identical to its
-  absence. Needs a bounded `overflow: auto` ancestor and an `offsetHeight`-derived
-  target. Each combination is its own frame.
+- **A state inert in the default frame** - snapshot the condition that fires it. Sticky
+  needs a scroll in the play (bounded `overflow: auto` ancestor, `offsetHeight`-derived
+  target, each combination its own frame); `scrollBehavior="inside"` needs overflowing
+  content.
 - **Primitives that paint no surface get no VRT** - pass-through style props, a recipe
   that paints nothing (Group), or headless `display: contents` (Region). Leave a
   one-line note on `meta`. One that does paint gets a normal audit.
@@ -789,10 +789,10 @@ You MUST validate against these requirements:
 - [ ] For a **compound component with optional slots**, each frame names the recipe
       rule it alone fires (typically a `:has()` selector); plausible-but-duplicate
       compositions stay off-snapshot with a pointer to the frame that holds them
-- [ ] **Scroll-resolved** states (`position: sticky`) scroll in the play before
-      the capture - at rest they are identical to their absence. Bounded
-      `overflow: auto` ancestor, `offsetHeight`-derived scroll target, and each
-      combination its own frame (header / footer / both)
+- [ ] **Condition-triggered** states get a frame where the trigger actually holds -
+      at rest they are identical to their absence. Sticky scrolled in the play
+      (bounded `overflow: auto` ancestor, `offsetHeight`-derived target, each
+      combination its own frame); `scrollBehavior="inside"` given overflowing content
 - [ ] Uniform, axis-independent states are captured in a **dedicated** story,
       not folded into the matrix (`disabled` typically resolves to one shared
       style regardless of size/variant/palette → its own `Disabled` snapshot, not

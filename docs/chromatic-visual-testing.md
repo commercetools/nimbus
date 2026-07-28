@@ -441,15 +441,17 @@ which no play-dispatchable event sets.
   `:has()` selectors); the rest is the same slots in a different grid row. Ask
   which rule the frame alone fires - "it's a realistic page" means
   documentation, not a snapshot. It cost three of twelve first-pass opt-ins.
-- **A state that only resolves under scroll needs the play to scroll** - a
-  recipe variant (DefaultPage's `stickyHeader`) or an inline prop
-  (PageContent.Column's `sticky`). `position: sticky` paints nothing and its
-  `bg` is invisible until content passes beneath, so at rest the page is
-  **pixel-identical to one without it**: the snapshot baselines the state being
-  off while reading as coverage. Scroll in the play, capture pinned. Needs a
-  **bounded scroll port** (`height: 100%` resolves against nothing otherwise)
-  and an **`offsetHeight`-derived** target, so a padding-token change can't
-  silently stop it scrolling past. Header, footer and both are three frames.
+- **A state can be inert in the default frame - snapshot the condition that
+  fires it.** Nothing looks wrong: the prop is set, the story renders, and the
+  baseline records the state being _off_ while reading as coverage.
+  `position: sticky` (a recipe variant in DefaultPage, an inline prop on
+  PageContent.Column) paints nothing until content passes beneath it, so scroll
+  in the play and capture pinned - that needs a **bounded scroll port**
+  (`height: 100%` resolves against nothing otherwise) and an
+  **`offsetHeight`-derived** target, so a padding-token change can't silently
+  stop it scrolling past. Overflow is the other trigger seen so far:
+  `scrollBehavior="inside"` is only `maxH` + `overflow: auto`, so it wants tall
+  content, not a scroll.
 - **Primitives with no painted surface get no VRT at all.** The test isn't "has
   a `.recipe.ts`" - it's **does it paint, and is there a state space to
   enumerate?** Three shapes fail it, and each gets zero snapshots plus a

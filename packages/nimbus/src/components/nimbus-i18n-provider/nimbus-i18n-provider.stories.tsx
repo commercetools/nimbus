@@ -38,11 +38,7 @@ function normalizeLocaleForTesting(locale: string): string {
   return langMap[lang] ?? "en";
 }
 
-/**
- * No VRT: a proxy over React Aria's I18nProvider with no recipe. Locale-formatted
- * output is the children's pixels, and translated strings would drift the baseline
- * on every Transifex update.
- */
+// No VRT: proxy provider, renders no DOM (see chromatic-visual-testing.md).
 const meta: Meta<typeof NimbusI18nProvider> = {
   title: "Components/NimbusI18nProvider",
   component: NimbusI18nProvider,

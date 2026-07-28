@@ -17,10 +17,7 @@ import type { DateValue } from "react-aria";
 import { useLocale } from "react-aria-components";
 import type { NimbusRouterConfig } from "./nimbus-provider.types";
 
-/**
- * No VRT: context, theme and router plumbing with no recipe - every pixel in these
- * stories belongs to the demo children.
- */
+// No VRT: provider renders no DOM of its own (see chromatic-visual-testing.md).
 const meta: Meta<typeof NimbusProvider> = {
   title: "Components/NimbusProvider",
   component: NimbusProvider,
