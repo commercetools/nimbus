@@ -40,7 +40,6 @@ const createFieldHelpers = (canvas: any, fieldElement?: HTMLElement) => {
 const meta: Meta<typeof DateRangePickerField> = {
   title: "Patterns/Fields/DateRangePickerField",
   component: DateRangePickerField,
-  parameters: { layout: "centered" },
   tags: ["autodocs"],
   args: {
     label: "Date Range",
@@ -120,9 +119,12 @@ export const Base: Story = {
         await expect(segments[0]).toHaveAttribute("aria-valuenow", "12");
       });
 
-      // Clear for next tests
-      await userEvent.keyboard("{Control>}a{/Control}");
-      await userEvent.keyboard("{Delete}");
+      // A complete value auto-advances focus, and Delete drops one digit per press.
+      await userEvent.click(segments[0]);
+      await userEvent.keyboard("{Delete}{Delete}");
+      await waitFor(async () => {
+        await expect(segments[0]).toHaveAttribute("aria-valuetext", "Empty");
+      });
     });
 
     await step("Calendar functionality is integrated", async () => {
