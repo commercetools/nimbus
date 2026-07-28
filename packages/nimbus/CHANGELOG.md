@@ -1,5 +1,82 @@
 # @commercetools/nimbus
 
+## 3.4.0
+
+### Minor Changes
+
+- [#1740](https://github.com/commercetools/nimbus/pull/1740)
+  [`4268c0d`](https://github.com/commercetools/nimbus/commit/4268c0df4969afb8dc674954bb0529a8d83437a0)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Breadcrumbs`: new
+  component for showing the hierarchical path to the current page as an ordered
+  list of links.
+
+  - Build trails from compound `Breadcrumbs.Item` children or a declarative
+    `items` array, with an optional `onAction(id)` handler for client-side
+    routing.
+  - The last item is automatically the current page (`aria-current="page"`,
+    non-interactive, removed from the tab order) — there is no `isCurrent` prop.
+  - `Breadcrumbs.Item` supports `href`, `target`, `rel`, `routerOptions`, and
+    `isDisabled`; set the `separator` (default `›`) and `size` (`sm`/`md`) on
+    the root.
+
+- [#1796](https://github.com/commercetools/nimbus/pull/1796)
+  [`b335335`](https://github.com/commercetools/nimbus/commit/b3353351032999ac5c498fd4f5be1e0023bdde91)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Item`: new compound
+  component for a horizontal content row — `Item.Root` with `.Header`, `.Media`,
+  `.Content` (wrapping `.Title` and `.Description`), `.Actions`, and `.Footer`.
+  Use it for settings rows, notification entries, and file/resource rows.
+
+  - Presentational by default. Pass an `href` to `Item.Root` to turn the whole
+    row into an accessible, router-aware link; controls in `Item.Actions` stay
+    independently operable and never trigger row navigation.
+  - `variant` (`plain` | `outline` | `subtle`) and `size` (`xs` | `sm` | `md`)
+    set the row's treatment and density. `Item.Media` takes its own `variant`
+    (`default` | `icon` | `image`) for icons, avatars, or thumbnails.
+
+  `ItemGroup`: new compound component that stacks `Item` rows into a group —
+  `ItemGroup.Root` with `.Separator` for dividers between rows.
+
+  Both components are **Beta**.
+
+- [#1766](https://github.com/commercetools/nimbus/pull/1766)
+  [`2932dc4`](https://github.com/commercetools/nimbus/commit/2932dc45ea037e841e7edbe7ef93c0a7f1683b0e)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - `Skeleton`: new
+  loading-placeholder component family for holding space while content loads,
+  reducing layout shift. Use `Skeleton` for a single rectangle or circle
+  placeholder, `SkeletonText` for a stack of placeholder lines (configurable
+  `lines`, with a shorter last line to mimic a paragraph, and a `textStyle` prop
+  that sizes the lines and spacing to match any Nimbus text style from captions
+  to headings), and `SkeletonCircle` for avatar/icon placeholders whose `size`
+  matches the `Avatar` scale (`2xs`/`xs`/`md`), with `boxSize` for custom
+  dimensions. Each supports a `pulse` (default), `wave`, or `none` animation,
+  sizing via standard style props, and is decorative by default (`aria-hidden`)
+  — communicate loading state with `aria-busy` on the surrounding container.
+  Animations are automatically disabled when the user prefers reduced motion.
+  Render skeletons during loading and swap to real content once it arrives.
+
+- [#1745](https://github.com/commercetools/nimbus/pull/1745)
+  [`519c49a`](https://github.com/commercetools/nimbus/commit/519c49afd080dcf0d332138aac2e7d7310e42a15)
+  Thanks [@misama-ct](https://github.com/misama-ct)! - **Slider / RangeSlider**:
+  new components for selecting a numeric value — or a min–max range — by
+  dragging a handle. Fully operable by keyboard, pointer, and touch, and correct
+  under right-to-left layouts.
+
+  - `Slider` selects a single `number`; `RangeSlider` selects a
+    `[number, number]` range whose two handles can't cross.
+  - Each handle shows its current value in a tooltip while it's hovered,
+    focused, or dragged.
+  - Pick a `filled` (default), `minimal` (an understated thin track with a
+    single-color handle that grows to full size on interaction, for low-emphasis
+    controls like a thumbnail-size picker), or `enclosed` look, in two sizes and
+    either orientation, with optional tick marks.
+  - Works inside `FormField` or standalone.
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @commercetools/nimbus-tokens@3.4.0
+  - @commercetools/nimbus-icons@3.4.0
+
 ## 3.3.0
 
 ### Minor Changes
