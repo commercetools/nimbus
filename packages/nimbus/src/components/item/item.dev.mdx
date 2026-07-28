@@ -1,0 +1,309 @@
+---
+title: Item Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import { Item, type ItemRootProps } from '@commercetools/nimbus';
+```
+
+### Basic usage
+
+`Item` is a compound component. Wrap `Item.Media`, `Item.Content` (itself
+wrapping `Item.Title` and `Item.Description`), and `Item.Actions` inside
+`Item.Root`. `Item.Root` renders a plain `<div>` unless you pass `href`.
+
+```jsx live-dev
+const App = () => (
+  <Item.Root variant="outline">
+    <Item.Media variant="icon">
+      <Icons.Person />
+    </Item.Media>
+    <Item.Content>
+      <Item.Title>Profile</Item.Title>
+      <Item.Description>Name, avatar, and contact details</Item.Description>
+    </Item.Content>
+    <Item.Actions>
+      <IconButton aria-label="Settings" size="xs" variant="ghost">
+        <Icons.Settings />
+      </IconButton>
+    </Item.Actions>
+  </Item.Root>
+);
+```
+
+## Usage examples
+
+### Sizes
+
+The `size` prop (`xs`, `sm`, `md`) scales the row's padding and gap via the
+`nimbusItem` recipe's density tokens. `md` is the default.
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="400">
+    <Item.Root size="xs" variant="outline">
+      <Item.Media variant="icon"><Icons.Person /></Item.Media>
+      <Item.Content>
+        <Item.Title>Extra small</Item.Title>
+      </Item.Content>
+    </Item.Root>
+    <Item.Root size="sm" variant="outline">
+      <Item.Media variant="icon"><Icons.Person /></Item.Media>
+      <Item.Content>
+        <Item.Title>Small</Item.Title>
+      </Item.Content>
+    </Item.Root>
+    <Item.Root size="md" variant="outline">
+      <Item.Media variant="icon"><Icons.Person /></Item.Media>
+      <Item.Content>
+        <Item.Title>Medium (default)</Item.Title>
+      </Item.Content>
+    </Item.Root>
+  </Stack>
+);
+```
+
+### Variants
+
+`variant` (`plain`, `outline`, `subtle`) controls the row's border and fill.
+`plain` is the default.
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="400">
+    <Item.Root variant="plain">
+      <Item.Content><Item.Title>Plain (default)</Item.Title></Item.Content>
+    </Item.Root>
+    <Item.Root variant="outline">
+      <Item.Content><Item.Title>Outline</Item.Title></Item.Content>
+    </Item.Root>
+    <Item.Root variant="subtle">
+      <Item.Content><Item.Title>Subtle</Item.Title></Item.Content>
+    </Item.Root>
+  </Stack>
+);
+```
+
+### Media variants
+
+`Item.Media` carries its own `variant` (`default`, `icon`, `image`), applied
+via a `data-variant` attribute rather than the shared recipe context — this
+keeps it independent of `Item.Root`'s `variant` prop. `default` applies no
+sizing, so use it when you need to size the media yourself (for example a
+custom avatar component).
+
+```jsx live-dev
+const App = () => (
+  <Stack gap="400">
+    <Item.Root variant="outline">
+      <Item.Media variant="icon">
+        <Icons.Person />
+      </Item.Media>
+      <Item.Content>
+        <Item.Title>Icon media</Item.Title>
+      </Item.Content>
+    </Item.Root>
+    <Item.Root variant="outline">
+      <Item.Media variant="image">
+        <img
+          src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+          alt="Placeholder thumbnail"
+        />
+      </Item.Media>
+      <Item.Content>
+        <Item.Title>Image media</Item.Title>
+      </Item.Content>
+    </Item.Root>
+  </Stack>
+);
+```
+
+### Header and footer bands
+
+`Item.Header` and `Item.Footer` set `flex-basis: 100%` inside the row's
+`flex-wrap` layout, so they occupy their own full-width band above or below
+the media·content·actions line.
+
+```jsx live-dev
+const App = () => (
+  <Item.Root variant="outline">
+    <Item.Header>
+      <Text fontWeight="600">Header band</Text>
+    </Item.Header>
+    <Item.Media variant="icon">
+      <Icons.Person />
+    </Item.Media>
+    <Item.Content>
+      <Item.Title>With header and footer</Item.Title>
+      <Item.Description>Both bands span the full row width.</Item.Description>
+    </Item.Content>
+    <Item.Footer>
+      <Text textStyle="sm">Footer band</Text>
+    </Item.Footer>
+  </Item.Root>
+);
+```
+
+### Link-upgrade
+
+Passing `href` (plus optional `target`, `rel`, `download`, `ping`,
+`referrerPolicy`, `routerOptions`, `onPress`) switches `Item.Root`'s rendered
+element from `<div>` to `<a>` and wires it up with React Aria's `useLink` —
+the same hook Nimbus's own `Link` uses internally. `Item`'s recipe stays
+authoritative on appearance; `useLink` only supplies keyboard, focus, and
+press behavior.
+
+```jsx live-dev
+const App = () => (
+  <Item.Root href="#item-target" variant="outline">
+    <Item.Media variant="icon">
+      <Icons.Settings />
+    </Item.Media>
+    <Item.Content>
+      <Item.Title>Settings</Item.Title>
+      <Item.Description>Navigate to settings</Item.Description>
+    </Item.Content>
+  </Item.Root>
+);
+```
+
+### Actions inside a link row
+
+`Item.Actions` controls remain independently operable even when `Item.Root`
+is a link: an internal capture-phase guard on the link cancels the row's own
+navigation whenever the originating click comes from inside `Item.Actions`,
+while the action's own handler still runs normally. There is no button mode
+for `Item.Root` itself — a row rendered as a `<button>` would make every
+nested `Item.Actions` control an invalid button-inside-button, so real
+actions always live in `Item.Actions`.
+
+```jsx live-dev
+const App = () => (
+  <Item.Root href="#item-target" variant="outline">
+    <Item.Content>
+      <Item.Title>Report Q3</Item.Title>
+      <Item.Description>Opens the report</Item.Description>
+    </Item.Content>
+    <Item.Actions>
+      <IconButton
+        aria-label="Delete"
+        size="xs"
+        variant="ghost"
+        onPress={() => console.log("delete")}
+      >
+        <Icons.Delete />
+      </IconButton>
+    </Item.Actions>
+  </Item.Root>
+);
+```
+
+### Color palette
+
+The row inherits the `slate` color palette by default (media, title, and
+description colors, plus the `subtle`/`outline` variant surfaces all read from
+`colorPalette.*` tokens). Override `colorPalette` like any other Chakra style
+prop to tint a row semantically, for example a destructive row.
+
+```jsx live-dev
+const App = () => (
+  <Item.Root variant="subtle" colorPalette="critical">
+    <Item.Media variant="icon">
+      <Icons.Delete />
+    </Item.Media>
+    <Item.Content>
+      <Item.Title>Delete account</Item.Title>
+      <Item.Description>This action cannot be undone.</Item.Description>
+    </Item.Content>
+  </Item.Root>
+);
+```
+
+### Stacking rows with ItemGroup
+
+`Item` only lays out a single row. To stack several rows into a list, with
+optional dividers between them, wrap `Item.Root` rows in the separate
+`ItemGroup` component rather than nesting them inside one `Item.Root`.
+
+```jsx live-dev
+const App = () => (
+  <ItemGroup.Root>
+    <Item.Root href="#profile">
+      <Item.Content><Item.Title>Profile</Item.Title></Item.Content>
+    </Item.Root>
+    <ItemGroup.Separator />
+    <Item.Root href="#billing">
+      <Item.Content><Item.Title>Billing</Item.Title></Item.Content>
+    </Item.Root>
+  </ItemGroup.Root>
+);
+```
+
+## Component requirements
+
+- Nest `Item.Media`, `Item.Content`, and `Item.Actions` as direct children of
+  `Item.Root`; wrap `Item.Title` and `Item.Description` inside `Item.Content`.
+- `Item.Header` and `Item.Footer` are optional and render as full-width bands;
+  place them as direct children of `Item.Root` alongside the other parts.
+- Passing `href` is the only thing that changes `Item.Root`'s rendered
+  element and interaction model — every other prop behaves the same on the
+  `<div>` and `<a>` paths.
+- `Item.Root` does not accept `as`/`asChild`; it is not polymorphic.
+
+### Accessibility
+
+`Item.Root` renders a plain, unlabeled `<div>` by default — no role or
+accessible name is implied. When it upgrades to a link, its accessible name is
+computed the standard way, from its visible text content (title, description,
+and any other text inside the row), unless you override it with `aria-label`
+or `aria-labelledby`. `Item.Media` injects no accessible name of its own: mark
+decorative media `aria-hidden` (as shown in the link-upgrade example above) or
+give it an explicit name when the media conveys information the title doesn't
+already state.
+
+If your use case requires tracking and analytics for this component, it is
+good practice to add a **persistent**, **unique** id to the component:
+
+```tsx
+const PERSISTENT_ID = "settings-item-row";
+
+export const Example = () => (
+  <Item.Root id={PERSISTENT_ID} href="/settings">
+    <Item.Content>
+      <Item.Title>Settings</Item.Title>
+    </Item.Content>
+  </Item.Root>
+);
+```
+
+#### Keyboard navigation
+
+- `Tab`: When `href` is set, the row is one focusable stop, like any link;
+  controls inside `Item.Actions` are additional, independent focusable stops.
+  Without `href`, `Item.Root` introduces no focusable stop of its own.
+- `Enter`: Activates the row's link.
+- Activating a control inside `Item.Actions` (by click, `Enter`, or `Space`)
+  does not activate the row's link, even when the row is a link.
+
+## API reference
+
+<PropsTable id="Item" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Item
+within your application. As the component's internal functionality is already
+tested by Nimbus, these patterns help you verify your integration and
+application-specific logic.
+
+{{docs-tests: item.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-item--docs)
