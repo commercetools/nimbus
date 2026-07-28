@@ -176,6 +176,12 @@ To re-enable, delete the variable or set its value to anything other than
 labeled PR before the pause. If that PR's comment has no valid data block,
 follow the [chain restoration steps](#restoring-a-broken-chain) below.
 
+**PRs opened during the pause:** these never received a bundle-size comment, so
+if one is merged after re-enabling, the post-merge workflow will add the
+`bundle-sizes` label but the comment will have no data block. The next PR will
+skip past it and fall back to the last labeled PR with a valid comment — so the
+chain recovers automatically as long as that earlier PR is still intact.
+
 ## Running Locally
 
 You need built packages and the [GitHub CLI](https://cli.github.com) (`gh`)
