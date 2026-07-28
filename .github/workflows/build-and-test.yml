@@ -25,7 +25,7 @@ jobs:
         uses: ./.github/actions/ci
 
       - name: Bundle size check
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && vars.BUNDLE_SIZE_ENABLED != 'false'
         uses: ./.github/actions/bundle-size
         with:
           gh-token: ${{ github.token }}
