@@ -1,2 +1,2 @@
 export * from "./item-group";
-export * from "./item-group.types";
+export type * from "./item-group.types";
