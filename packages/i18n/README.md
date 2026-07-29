@@ -298,17 +298,16 @@ consumers do not need to install or use this package directly.
 3. **GitHub-Transifex Integration**: The `transifex.yml` configuration file
    enables automated synchronization with Transifex, detecting new or updated
    translation keys
-4. **Localization Manager Coordination**: A ticket must be created for the
-   localization manager to initiate professional translation of new or updated
-   keys
-5. **Translation Management**: Localization manager coordinates translation work
-   through the Transifex platform
-6. **Automated PR Creation**: Once translations are complete, Transifex
+4. **Automatic Translation**: All keys sent from GitHub to Transifex are
+   translated automatically every 2 weeks (triggered Thursdays, delivered by
+   Tuesday EoD). No ticket or manual coordination is required, though an urgent
+   turnaround can still be requested from the localization manager.
+5. **Automated PR Creation**: Once translations are complete, Transifex
    automatically creates a pull request with updated translation files
-7. **Manual Compilation & Merge**: Run
+6. **Manual Compilation & Merge**: Run
    `pnpm --filter @commercetools/nimbus-i18n build` on the PR branch, commit any
    compiled output changes, and merge to `main`
-8. **Runtime Usage**: Components import and use compiled `*.messages.ts` files
+7. **Runtime Usage**: Components import and use compiled `*.messages.ts` files
 
 ```mermaid
 flowchart TD
@@ -316,7 +315,7 @@ flowchart TD
     Extract["🔍 Extraction<br/>data/core.json"]
     MergeMain["🔀 Merge to Main<br/>(triggers GitHub integration)"]
     Transifex["🌐 Transifex Platform<br/>(Translation Management)"]
-    LocTicket["📋 Localization Manager<br/>(Manual ticket creation<br/>for new/updated keys)"]
+    AutoTranslate["🗓️ Automatic Translation<br/>(Every 2 weeks: triggered Thursdays,<br/>delivered by Tuesday EoD)"]
     GitHubIntegration["⚙️ GitHub-Transifex Integration<br/>(Automated via transifex.yml)"]
     AutoPR["🤖 Automated PR<br/>(Created by Transifex<br/>when translations ready)"]
     TranslatedData["📦 Translated Data<br/>data/en.json<br/>data/de.json<br/>data/es.json<br/>data/fr-FR.json<br/>data/pt-BR.json"]
@@ -326,10 +325,8 @@ flowchart TD
     MergeMain -->|"Automatic sync"| GitHubIntegration
     GitHubIntegration -->|"Detects changes"| Transifex
 
-    Transifex -.->|"Required for<br/>new/updated keys"| LocTicket
-    LocTicket -.->|"Coordinates<br/>translation"| Transifex
-
-    Transifex -->|"Translations complete"| AutoPR
+    Transifex -->|"Batched on<br/>biweekly cadence"| AutoTranslate
+    AutoTranslate -->|"Translations complete"| AutoPR
     AutoPR -->|"Manual compile & merge"| TranslatedData
 
     TranslatedData --> BuildPipeline
@@ -356,7 +353,7 @@ flowchart TD
     style MergeMain fill:#c8e6c9,color:#000000
     style GitHubIntegration fill:#b2dfdb,color:#000000
     style Transifex fill:#f3e5f5,color:#000000
-    style LocTicket fill:#ffe0b2,color:#000000
+    style AutoTranslate fill:#ffe0b2,color:#000000
     style AutoPR fill:#c5cae9,color:#000000
     style AutoWorkflow fill:#a5d6a7,color:#000000
     style TranslatedData fill:#e8f5e9,color:#000000
@@ -373,19 +370,15 @@ flowchart TD
   `packages/i18n/data/core.json` are merged to the `main` branch, the
   GitHub-Transifex integration automatically detects new or updated translation
   keys and syncs them to the Transifex project.
+- **Translation Cadence**: Every key sent from GitHub to Transifex is translated
+  automatically on a biweekly cadence (triggered Thursdays, delivered by Tuesday
+  EoD). No ticket, and no notification to the localization manager, is needed
+  for the normal cadence. If strings are needed sooner than the next delivery,
+  reach out to the localization manager to request an urgent translation.
 - **Pull Request Creation**: Once professional translators complete translations
   in Transifex, the platform automatically creates a pull request with the
   updated translation files (`data/*.json`), streamlining the integration of
   translated content back into the codebase.
-
-**Manual Coordination:**
-
-- **Localization Manager Notification**: For any new or updated translation
-  keys, a ticket must be created to notify the localization manager. This
-  initiates the professional translation coordination process and ensures proper
-  review, context provision, and quality assurance for all translatable content.
-  The `notify-localization-team` GitHub Actions workflow will automatically post
-  a reminder comment on any PR that modifies `.i18n.ts` files.
 
 **Complete Workflow:**
 
@@ -394,10 +387,8 @@ flowchart TD
 3. Commit and merge changes to `main` branch
 4. GitHub-Transifex integration (via `transifex.yml`) automatically syncs
    changes to Transifex
-5. **Create ticket** for localization manager to coordinate translation work _(a
-   reminder comment is automatically posted on the PR by
-   `notify-localization-team`)_
-6. Localization manager coordinates professional translation through Transifex
-7. Transifex automatically creates a pull request when translations are complete
-8. Run `pnpm --filter @commercetools/nimbus-i18n build` on the PR branch, commit
+5. Transifex translates the new keys automatically on its biweekly cadence
+   (triggered Thursdays, delivered by Tuesday EoD)
+6. Transifex automatically creates a pull request when translations are complete
+7. Run `pnpm --filter @commercetools/nimbus-i18n build` on the PR branch, commit
    any compiled output changes, and merge to `main`
