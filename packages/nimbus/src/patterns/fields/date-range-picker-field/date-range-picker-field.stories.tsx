@@ -40,7 +40,6 @@ const createFieldHelpers = (canvas: any, fieldElement?: HTMLElement) => {
 const meta: Meta<typeof DateRangePickerField> = {
   title: "Patterns/Fields/DateRangePickerField",
   component: DateRangePickerField,
-  parameters: { layout: "centered" },
   tags: ["autodocs"],
   args: {
     label: "Date Range",
@@ -54,6 +53,8 @@ export default meta;
 type Story = StoryObj<typeof DateRangePickerField>;
 
 export const Base: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => {
     const [value, setValue] = useState<DateRange | null>(null);
     return <DateRangePickerField {...args} value={value} onChange={setValue} />;
@@ -118,9 +119,12 @@ export const Base: Story = {
         await expect(segments[0]).toHaveAttribute("aria-valuenow", "12");
       });
 
-      // Clear for next tests
-      await userEvent.keyboard("{Control>}a{/Control}");
-      await userEvent.keyboard("{Delete}");
+      // A complete value auto-advances focus, and Delete drops one digit per press.
+      await userEvent.click(segments[0]);
+      await userEvent.keyboard("{Delete}{Delete}");
+      await waitFor(async () => {
+        await expect(segments[0]).toHaveAttribute("aria-valuetext", "Empty");
+      });
     });
 
     await step("Calendar functionality is integrated", async () => {
@@ -135,11 +139,16 @@ export const Base: Story = {
         const calendarAfter = within(document.body).queryByRole("application");
         await expect(calendarAfter).not.toBeInTheDocument();
       });
+
+      // Escape returns focus to the calendar button; keep it out of the snapshot.
+      (document.activeElement as HTMLElement | null)?.blur();
     });
   },
 };
 
 export const WithErrors: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     touched: true,
     errors: { missing: true, format: true },

@@ -78,6 +78,9 @@ export const Default: Story = {
 };
 
 export const WideContent: Story = {
+  // VRT: the `contentWidth` axis - content maxW 3xl instead of sm.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     logo: <DemoLogo />,
     welcomeMessage: "Create your account",
@@ -142,6 +145,9 @@ export const CustomLogo: Story = {
 };
 
 export const WithLegalMessage: Story = {
+  // VRT: maximal assembly - logo, welcome, content, legal; the pattern's own rhythm and centering.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     logo: <DemoLogo />,
     welcomeMessage: "Sign in",
@@ -174,6 +180,9 @@ export const WithLegalMessage: Story = {
 };
 
 export const MinimalLayout: Story = {
+  // VRT: content-only assembly; the absent-slot end of the arrangement.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: <Text>Only children are required</Text>,
   },

@@ -15,6 +15,8 @@ export default meta;
 type Story = StoryObj<typeof MoneyInputField>;
 
 export const Base: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     label: "Product Price",
     description: "Enter the product price with currency",
@@ -63,6 +65,8 @@ export const Base: Story = {
       const amountInput = canvas.getByRole("textbox", { name: /amount/i });
       await userEvent.type(amountInput, "99.99");
       await expect(amountInput).toHaveValue("99.99");
+      await userEvent.clear(amountInput);
+      await expect(amountInput).toHaveValue("");
     });
 
     await step("Both inputs are focusable with tab key", async () => {
@@ -78,6 +82,9 @@ export const Base: Story = {
       await userEvent.keyboard("{Tab}");
       const amountInput = canvas.getByRole("textbox", { name: /amount/i });
       await expect(amountInput).toHaveFocus();
+
+      // Keep the focus ring and caret out of the snapshot.
+      amountInput.blur();
     });
   },
 };
@@ -186,6 +193,8 @@ export const Invalid: Story = {
 };
 
 export const WithErrors: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     label: "Product Price",
     description: "Enter the product price",

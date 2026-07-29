@@ -14,6 +14,8 @@ export default meta;
 type Story = StoryObj<typeof MultilineTextInputField>;
 
 export const Base: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     label: "Project description",
     description: "Enter a descriptive summary for your project",
@@ -78,6 +80,9 @@ export const Base: Story = {
       // Use keyboard navigation to focus the input
       await userEvent.keyboard("{Tab}");
       await expect(input).toHaveFocus();
+
+      // Keep the focus ring and caret out of the snapshot.
+      input.blur();
     });
   },
 };
@@ -170,6 +175,8 @@ export const Invalid: Story = {
 };
 
 export const WithErrors: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     label: "Project description",
     description: "Enter your project description",

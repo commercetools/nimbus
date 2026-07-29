@@ -340,6 +340,10 @@ which no play-dispatchable event sets.
   value leaves those cells covered by nothing. Scope call: matrices iterate the
   6 `SEMANTIC_COLOR_PALETTES`; the `BRAND` (3) and `SYSTEM` (25) palettes run
   the same token machinery and are deliberately not snapshotted.
+- **An inherited token makes a cross-cell neither audit covers.** `colorPalette`
+  cascades, so a child with no palette default takes its host's -
+  FormActionBar's spinner strokes `primary.10` in save, `critical.10` in delete.
+  One frame per host palette.
 - **Fold an axis into the matrix only if it interacts.** An axis whose
   combination with the others yields a distinct visual belongs in the grid; one
   that applies a **uniform, axis-independent transform** does not. `disabled` is
@@ -406,6 +410,26 @@ which no play-dispatchable event sets.
   matrix - those are IconButton's states, already covered there. (Distinct from
   the independent-axes case below: there the axes don't interact; here the
   wrapper delegates them wholesale to a component that already snapshots them.)
+- **A composition pattern owns the values it hardcodes.** Same paint-vs-forward
+  test as the primitives, one level up: FormActionBar fixes the button set,
+  order and palettes; PublicPageLayout fixes `gap`, `maxW`, `minHeight`.
+  Snapshot those. Delegate what the children paint, and anything the consumer
+  passes in.
+- **Composed field patterns snapshot the composition, not its parts.** A
+  `*Field` (`src/patterns/fields/`) has no recipe - it wraps `FormField` around
+  an input - so it takes two snapshots: composed resting field, composed error
+  state. Delegate the rest: layout / `direction` / `size` to FormField's
+  `SmokeTest`, the InfoButton to its `OpenInfoBox`, disabled and read-only to
+  the input (FormField's recipe styles neither), and every input-painted surface
+  to that input's audit. Read propagation from `FormField.Input`, not the
+  pattern's JSX: `cloneElement(child, inputProps)` delivers `isInvalid` /
+  `isDisabled` / `isRequired` / `isReadOnly` by context, so the prop list will
+  tell you a state isn't forwarded when it is.
+- **A play's end state is never a reason to skip a snapshot.** Adjust the play
+  to land on the frame, or author one that does. "Ends focused", "ends open",
+  "ends cleaned up", "drifts because nothing is pinned" are work to do.
+  Conversely a snapshotted story that ends focused needs `blur()`, or the ring
+  and caret land in the baseline.
 - **Primitives with no painted surface get no VRT at all.** The test isn't "has
   a `.recipe.ts`" - it's **does it paint, and is there a state space to
   enumerate?** Three shapes fail it, and each gets zero snapshots plus a
@@ -424,23 +448,17 @@ which no play-dispatchable event sets.
   gets a normal audit - Separator's `orientation` over a `colorPalette.6` fill,
   Icon's six-value `size`.
 
-- **A matrix is only for _interacting_ axes; independent axes are separate
-  stories.** Build a `SmokeTest` matrix only when a cross-cell is a visual
-  neither axis produces alone (Checkbox `checked × invalid` → distinct critical
-  fill). When the axes are independent - one just scales/recolors the other
-  (Badge/Avatar `size × colorPalette`, Switch `size × on/off`) - do **not**
-  build a matrix, even a 2×2; snapshot each axis as its own showcase. The
-  cross-product adds cells, not coverage. Still fold a family of near-identical
-  behavioral stories into one labeled snapshot (Avatar's `AllFallbacks`) when it
-  aids review without losing coverage. **Name the matrix `SmokeTest` and render
-  it last** - that marks its role and stays accurate when axes change, unlike an
-  axis-list name; the axis list lives in the doc comment. (Older components use
-  names like `VariantsSizesAndStates` - being reconciled.)
-- **Capture the focus ring on every distinctly-styled focusable sub-element.** A
-  split button's dropdown trigger, an input's clear button or stepper, and a
-  date field's calendar toggle each style their own `:focus-visible`; a
-  `Focused` story that tabs only to the primary element leaves the rest
-  untested.
+- **A matrix is only for _interacting_ axes.** Build a `SmokeTest` matrix only
+  when a cross-cell is a visual neither axis produces alone (Checkbox
+  `checked × invalid` → distinct critical fill). When axes are independent - one
+  just scales or recolors the other (Badge/Avatar `size × colorPalette`, Switch
+  `size × on/off`) - snapshot each as its own showcase; the cross-product adds
+  cells, not coverage. Still fold a family of near-identical behavioral stories
+  into one labeled snapshot (Avatar's `AllFallbacks`) when it aids review
+  without losing coverage. **Name the matrix `SmokeTest` and render it last** -
+  the role name stays accurate as axes change; the axis list goes in the doc
+  comment. (Older components use names like `VariantsSizesAndStates` - being
+  reconciled.)
 - **Use `play` for functional testing alongside visual** - the two aren't in
   tension; a story can both assert behavior and be snapshotted.
 - **Animated components: know where Chromatic pauses.** It auto-pauses CSS
@@ -456,12 +474,6 @@ which no play-dispatchable event sets.
   `translateX(75%)`. A full-turn `spin` needs no pin - both endpoints render
   identically. The docs don't spell out the infinite case, so confirm the paused
   frame on the first run.
-- **A snapshot is the play function's _end state_.** Chromatic runs the whole
-  play, waits for it to **pass**, then captures - so the play must _land_ on the
-  frame you want and can't be flaky. Open an overlay/portal and **don't**
-  dismiss it; if a play cleans up or resets to default, its interesting frame is
-  gone (that's why `DescriptionsAndWarnings`-style stories stay behavioral).
-  This is also what makes `Focused` and open-popover snapshots work.
 - **Portal-rendered components (Toast, overlays).** Chromatic captures the whole
   page, so portal content is in-frame even though it renders outside the story
   root. Hold transient UI open for the shot (`duration: Infinity` for toasts),

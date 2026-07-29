@@ -394,80 +394,57 @@ The **visual snapshot role**. Snapshots are **opt-in**: `preview.tsx` defaults t
 can find snapshot stories. Full rationale, CI details, and the hover/pressed gap
 live in docs/chromatic-visual-testing.md.
 
-- **Enumerate surfaces from source before deciding opt-ins - never from
-  memory.** List every recipe painting selector, `variant`/`size` key,
-  conditional prop, and ambient axis (RTL, locale, theme), then snapshot their
-  cross-product; diff against sibling components' story sets to catch what you
-  didn't think to list.
-- **Cover every state that changes pixels**, economically: fold the interacting
-  axes into one `SmokeTest`, and give a dedicated story to each state it can't
-  hold (`Focused`, `Disabled`, an open popover). Cost is controlled by TurboSnap
-  and matrix-packing - never by dropping a visual state.
-- **Leave snapshots off** for behavior-only stories (`WithRef`, DOM/context
-  assertions) and any whose look `SmokeTest` already holds - a redundant baseline,
-  not a gap. Verify per component; a `ColorPalettes` story with a disabled column
-  still needs `Disabled`.
-- **One state, multiple distinct surfaces → one story each, not a gallery.** If a
-  component renders a state more than one way (mode-/variant-driven), each surface
-  gets its own snapshot (MoneyInput: `Focused` + `FocusedWithCurrencyLabel`,
-  `DisabledState` + `DisabledWithCurrencyLabel`). Independent surfaces don't
-  interact, so folding them only loses their independent baselines. Modes
-  (`chromatic.modes`) are global config only (viewport/theme/locale), never
-  prop-driven surfaces.
-- **A state with no distinct recipe surface gets no story.** Read-only is the
-  component-dependent trap: MoneyInput styles it (`ReadOnlyState`), but
-  MultilineTextInput / NumberInput / TextInput have no `data-readonly` rule, so it
-  renders like default - no snapshot.
-- **Primitives with no painted surface get no VRT at all.** Not "has no recipe" -
-  paints nothing and has no state space. Three shapes: pass-through style props
-  (Box/Stack/Grid/Spacer, no recipe); a recipe that paints nothing (Group -
-  `inline-flex` + `alignItems`, zero variants); headless `display: contents`
-  (Region). Leave un-snapshotted with a one-line note on `meta`. One that **does**
-  paint gets a normal audit (Separator, Icon).
-- **Snapshot the component, not the harness** - render it directly, no debug
-  read-outs or demo wrappers in the frame (those stay on behavioral stories, e.g.
-  MoneyInput's `MoneyInputExample` JSON panel).
-- **Determinism** - identical output every run: no live dates/random values, wait
-  for async-derived state, no stray focus ring. Hide the caret in a `Focused`
-  text-input story. `:hover` and `:active`/pressed can't be captured statically
-  yet.
-- **Name the interacting-axes matrix `SmokeTest`, render it last** - the role
-  name stays accurate as axes change; the axis list goes in the doc comment (not
-  the story name).
-- **Animated components: pin only when the paused frame hides the target.**
-  Chromatic pauses CSS/SVG animations at a fixed frame (last by default;
-  `pauseAnimationAtEnd: false` = first), so most animated states are already
-  deterministic. The trap is an infinite animation whose endpoints both hide the
-  content (`progress-indeterminate` parks its pill off-track) - pin a
-  representative frame in the play (`el.style.animation = "none"` + an explicit
-  `transform`).
-- **The snapshot is the play's end state** - Chromatic captures after the play
-  passes, so land on the target frame: open an overlay/portal and don't dismiss
-  it; a play that resets to default loses its frame (keep it behavioral).
-- **Portals (Toast, overlays)** - capture is page-wide, so portal content is
-  in-frame; hold it open (`duration: Infinity`), await it, clean up between
-  stories (`clearToasts()`). Reach a portal component's own focus via its real
-  keyboard path, not a synthetic `.focus()`.
-- **Overlays: snapshot the open state** - render open (`defaultOpen` or play-open
-  - await) and leave it open (entrance settles on its last frame). Each distinct
-    open surface is its own story (backdrops can't share a frame); open/close and
-    dismissal stay behavioral.
-- **Snapshot `placement` only when it changes the _layout_, not just position** -
-  Drawer (side panel ↔ top/bottom bar) → snapshot each; Dialog (same box, just
-  higher/lower) → center only; Menu/Tooltip (RA positioning) → behavioral.
+- **Enumerate surfaces from source, never memory** - every painting selector,
+  `variant`/`size` key, conditional prop, and ambient axis (RTL/locale/theme);
+  snapshot the cross-product, then diff against sibling components' story sets.
+- **Cover every state that changes pixels**, economically: interacting axes fold into
+  one `SmokeTest`, each state it can't hold gets its own story. Never drop a state to
+  save cost.
+- **Leave snapshots off** for behavior-only stories and any look `SmokeTest` already
+  holds. Verify per component; a `ColorPalettes` story with a disabled column still
+  needs `Disabled`.
+- **One state, multiple distinct surfaces → one story each**, not a gallery
+  (MoneyInput's dropdown vs label mode). `chromatic.modes` is global config only
+  (viewport/theme/locale), never prop-driven.
+- **A state with no distinct recipe surface gets no story** - read-only is the
+  component-dependent trap.
+- **`*Field` patterns snapshot the composition** - composed resting + composed error;
+  layout/`size`, InfoButton, disabled/read-only and input-painted surfaces delegate.
+  Check `FormField.Input`'s `cloneElement(child, inputProps)` before deciding a state
+  isn't forwarded.
+- **A composition pattern snapshots what it hardcodes**, not what children paint or
+  consumers pass.
+- **Inherited tokens make cross-cells** - a child with no `colorPalette` takes its
+  host's; one frame per host.
+- **A play's end state never justifies skipping a snapshot** - fix the play. A
+  snapshotted story ending focused needs `blur()`.
+- **Primitives that paint no surface get no VRT** - pass-through style props, a recipe
+  that paints nothing (Group), or headless `display: contents` (Region). Leave a
+  one-line note on `meta`. One that does paint gets a normal audit.
+- **A step name is a promise** - raise the assertion to meet it, don't rename down.
+  Watch for tautologies and un-`await`ed helpers.
+- **Snapshot the component, not the harness** - no debug read-outs or demo wrappers in
+  the frame.
+- **Determinism** - no live dates or random values, await async-derived state, no stray
+  focus ring, hide the caret in a `Focused` text-input story. `:hover` and pressed
+  aren't capturable yet.
+- **Name the interacting-axes matrix `SmokeTest`, render it last**; the axis list goes
+  in the doc comment, not the name.
+- **Animated components: pin only when the paused frame hides the target** - the trap
+  is an infinite animation whose endpoints both park content off-screen.
+- **The snapshot is the play's end state** - land on the target frame; a play that
+  resets to default loses it.
+- **Portals** - capture is page-wide, so hold the content open, await it, and clean up
+  between stories. Reach portal focus via its real keyboard path.
+- **Overlays: snapshot the open state**, one story per distinct open surface;
+  open/close and dismissal stay behavioral.
+- **Snapshot `placement` only when it changes the layout** - Drawer each, Dialog center
+  only, Menu/Tooltip behavioral.
 
-**When a VRT pattern changes, sync all three canonical docs — at their set
-depth.** The overlap is intentional but tiered: the rationale lives in **one**
-place; the others state the rule and point to it. Don't paste reasoning/examples
-into more than one, or they duplicate and drift. Any change must land in all
-three, each at its depth:
-
-1. `docs/chromatic-visual-testing.md` — **source of truth**: full rationale,
-   examples, edge cases.
-2. `docs/file-type-guidelines/stories.md` — **terse rule + the copy-paste
-   snippet only**; defer the _why_ to #1 (no restated reasoning).
-3. `.claude/skills/writing-stories/SKILL.md` (this file) — templates + the
-   "what gets captured" bullets + the checklist.
+**When a VRT pattern changes, sync all three canonical docs at their set depth** -
+rationale and examples in `docs/chromatic-visual-testing.md` only;
+`docs/file-type-guidelines/stories.md` gets the terse rule + snippet; this file gets
+the bullet + checklist item. Don't restate reasoning in more than one, or they drift.
 
 ### Step 3: Portal Content Handling
 
@@ -783,10 +760,19 @@ You MUST validate against these requirements:
       `DisabledWithCurrencyLabel`)
 - [ ] A state with **no distinct recipe surface** gets no dedicated story
       (read-only with no `data-readonly` rule renders like default - no snapshot)
+- [ ] A child inheriting `colorPalette` from its host is snapshotted per host
+- [ ] A composition pattern snapshots what it hardcodes, not what children paint or
+      consumers pass
+- [ ] A `*Field` pattern has exactly **two** snapshots, with every delegation named
+- [ ] No `No` verdict rests on the play's end state; snapshotted stories that end
+      focused call `blur()`
 - [ ] **Primitives that paint no surface** get **no VRT at all**, with a one-line
       note on `meta` - pass-through style props, a recipe that paints nothing
       (Group), or headless `display: contents` (Region). Check whether the recipe
       **paints**, not whether it exists (Separator and Icon get normal audits)
+- [ ] Every `step()` name matches what it asserts; where it overstated, the
+      **assertion was raised to the name** (not the name lowered). No tautological
+      assertions, no un-`await`ed async helpers
 - [ ] Snapshotted stories render the component **directly** - no debug read-outs,
       value dumps, or demo-wrapper scaffolding in the frame (those stay on the
       un-snapshotted behavioral stories)
