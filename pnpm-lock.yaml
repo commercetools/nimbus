@@ -136,6 +136,9 @@ catalogs:
     '@babel/preset-typescript':
       specifier: ^7.29.7
       version: 7.29.7
+    '@changesets/cli':
+      specifier: 2.31.1
+      version: 2.31.1
     '@commercetools-frontend/ui-kit':
       specifier: ^20.6.4
       version: 20.6.4
@@ -375,7 +378,7 @@ importers:
         specifier: 0.7.0
         version: 0.7.0
       '@changesets/cli':
-        specifier: 2.31.1
+        specifier: catalog:tooling
         version: 2.31.1(@types/node@24.13.3)
       '@commercetools/nimbus':
         specifier: workspace:^
