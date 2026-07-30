@@ -3,6 +3,8 @@ import { useState } from "react";
 import { within, userEvent, expect, waitFor } from "storybook/test";
 import { Box, Button, CollapsibleMotion, Text } from "@commercetools/nimbus";
 
+// No VRT: recipe paints nothing - both settled frames are the consumer's
+// children (see chromatic-visual-testing.md).
 const meta: Meta<typeof CollapsibleMotion.Root> = {
   title: "Components/Layout/CollapsibleMotion",
   component: CollapsibleMotion.Root,
@@ -387,10 +389,14 @@ export const AccessibilityTest: Story = {
     const canvas = within(canvasElement);
     const button = canvas.getByRole("button");
     const content = canvas.getByText(/This example demonstrates/);
+    const panel = canvas.getByRole("group", { hidden: true });
 
     // Test ARIA attributes
     expect(button).toHaveAttribute("aria-expanded", "false");
-    expect(button).toHaveAttribute("aria-controls");
+    expect(button).toHaveAttribute("aria-controls", panel.id);
+
+    expect(panel).toHaveAttribute("aria-hidden", "true");
+    expect(content).not.toBeVisible();
 
     // Tab to button (activates :focus-visible) then toggle with keyboard
     await userEvent.tab();
@@ -398,14 +404,8 @@ export const AccessibilityTest: Story = {
     await userEvent.keyboard(" ");
     expect(button).toHaveAttribute("aria-expanded", "true");
 
-    // Wait for animation
-    await new Promise((resolve) => setTimeout(resolve, 250));
-
-    // Content should be accessible when expanded
-    const expandedPanel = content.closest('[aria-hidden="false"]');
-    if (expandedPanel) {
-      expect(expandedPanel).not.toHaveAttribute("tabindex", "-1");
-    }
+    await waitFor(() => expect(panel).toHaveAttribute("aria-hidden", "false"));
+    expect(content).toBeVisible();
   },
 };
 

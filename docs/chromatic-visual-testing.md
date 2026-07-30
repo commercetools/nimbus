@@ -313,9 +313,13 @@ which no play-dispatchable event sets.
   though the field "looks like default." Any "renders like default" call must
   name the exact delta you checked. Also account for **ambient axes** no prop
   names - RTL/`dir` (mirrored adornment layout), locale, theme - and for
-  built-in adornments. Then **diff against sibling components' story sets**: a
-  surface a peer snapshots but yours doesn't (e.g. `RTLSupport`) is a gap until
-  you can name why it doesn't apply.
+  built-in adornments. **A comma-separated selector list is as many surfaces as
+  it names**, and reads like one rule: Toolbar styles
+  `& .nimbus-group, & .nimbus-toggle-button-group__root` together, so a matrix
+  built from `Group` alone leaves the toggle-group half baselined nowhere - a
+  frame has to contain each child type the rule reaches. Then **diff against
+  sibling components' story sets**: a surface a peer snapshots but yours doesn't
+  (e.g. `RTLSupport`) is a gap until you can name why it doesn't apply.
 - **One focus snapshot per reachable focus surface.** A component with multiple
   independent focus targets - fused/adjacent focusable sub-controls, or
   `_focusWithin` on more than one region - needs a focus story per target, since
@@ -403,6 +407,10 @@ which no play-dispatchable event sets.
   frame. Those aids are fine on un-snapshotted behavioral stories (MoneyInput's
   `MoneyInputExample` renders a `JSON.stringify(value)` panel), but snapshotting
   one would bake the read-out into the baseline and flap on every value change.
+  The line is **load-bearing and static**, not "is it a wrapper": a wrapper the
+  component needs to resolve at all (DefaultPage's fixed-height `overflow: auto`
+  Box), or visible children for a component that paints nothing (PageContent's
+  placeholder boxes). Both are static; a read-out isn't.
 - **Thin wrappers get no matrix.** A component that only constrains or forwards
   a wrapped component's props re-covers nothing by re-rendering the wrapped
   grid. FloatingActionButton wraps IconButton with a fixed circular shape, so it
@@ -429,7 +437,43 @@ which no play-dispatchable event sets.
   to land on the frame, or author one that does. "Ends focused", "ends open",
   "ends cleaned up", "drifts because nothing is pinned" are work to do.
   Conversely a snapshotted story that ends focused needs `blur()`, or the ring
-  and caret land in the baseline.
+  and caret land in the baseline - and **a click leaves it focused**: React Aria
+  keeps `data-focus-visible` set after `userEvent.click`, so a clicked trigger
+  paints its ring even though a real mouse click wouldn't.
+- **A play on a snapshotted story is a determinism liability, so don't add one
+  for completeness.** The capture is its end state, so each interaction is
+  another frame to land deliberately, while a resting visual props alone produce
+  is already tested by the snapshot plus the always-on a11y check. The
+  plays-for-interactive-components rule is per **component**, not per story; see
+  [stories.md](./file-type-guidelines/stories.md) for which stories need one.
+- **A compound component's unit is the recipe rule, not the realistic
+  composition.** With several optional slots the pull is to snapshot every
+  plausible arrangement - DefaultPage's info/form/tabular x main/detail. Slot
+  presence only makes a new surface where a **rule keys off it** (there, two
+  `:has()` selectors); the rest is the same slots in a different grid row. Ask
+  which rule the frame alone fires - "it's a realistic page" means
+  documentation, not a snapshot. It cost three of twelve first-pass opt-ins.
+- **A state can be inert in the default frame - snapshot the condition that
+  fires it.** Nothing looks wrong: the prop is set, the story renders, and the
+  baseline records the state being _off_ while reading as coverage.
+  `position: sticky` (a recipe variant in DefaultPage, an inline prop on
+  PageContent.Column) paints nothing until content passes beneath it, so scroll
+  in the play and capture pinned - that needs a **bounded scroll port**
+  (`height: 100%` resolves against nothing otherwise) and an
+  **`offsetHeight`-derived** target, so a padding-token change can't silently
+  stop it scrolling past. Three more triggers seen so far:
+
+  - **Overflow.** `scrollBehavior="inside"` is only `maxH` + `overflow: auto`,
+    so it wants tall content, not a scroll.
+  - **A variant that zeroes the surface.** ScrollArea's default `hover` sets
+    `scrollbar { opacity: 0 }`, so the matrix has to pin `always` to paint a
+    track at all - and its `Sizes` showcase, left at the default, baselines four
+    blank boxes while its width assertions still pass.
+  - **An inherited property with nothing to inherit.** ScrollArea's viewport
+    sets `borderRadius: inherit`, inert until a consumer passes a radius, so the
+    rounded-corner clipping was baselined nowhere until the matrix cells set
+    one.
+
 - **Primitives with no painted surface get no VRT at all.** The test isn't "has
   a `.recipe.ts`" - it's **does it paint, and is there a state space to
   enumerate?** Three shapes fail it, and each gets zero snapshots plus a
@@ -448,15 +492,11 @@ which no play-dispatchable event sets.
   gets a normal audit - Separator's `orientation` over a `colorPalette.6` fill,
   Icon's six-value `size`.
 
-- **A matrix is only for _interacting_ axes.** Build a `SmokeTest` matrix only
-  when a cross-cell is a visual neither axis produces alone (Checkbox
-  `checked × invalid` → distinct critical fill). When axes are independent - one
+- **A matrix is only for _interacting_ axes.** When axes are independent - one
   just scales or recolors the other (Badge/Avatar `size × colorPalette`, Switch
   `size × on/off`) - snapshot each as its own showcase; the cross-product adds
-  cells, not coverage. Still fold a family of near-identical behavioral stories
-  into one labeled snapshot (Avatar's `AllFallbacks`) when it aids review
-  without losing coverage. **Name the matrix `SmokeTest` and render it last** -
-  the role name stays accurate as axes change; the axis list goes in the doc
+  cells, not coverage. **Name the matrix `SmokeTest` and render it last** - the
+  role name stays accurate as axes change; the axis list goes in the doc
   comment. (Older components use names like `VariantsSizesAndStates` - being
   reconciled.)
 - **Use `play` for functional testing alongside visual** - the two aren't in

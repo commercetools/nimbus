@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { within, expect } from "storybook/test";
+import { within, expect, userEvent, waitFor } from "storybook/test";
 import { useState } from "react";
 import {
   Badge,
@@ -97,6 +97,9 @@ const productColumns: DataTableColumnItem<Product>[] = [
  * No BackLink, no Footer. Verifies correct semantic HTML (`header`, `h1`, `main`).
  */
 export const Base: Story = {
+  // VRT: default header + content padding, no footer.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <DefaultPage.Root
       border="solid-25"
@@ -232,11 +235,53 @@ export const CustomTitleContent: Story = {
 };
 
 // ============================================================
+// 4. FOCUSED BACK LINK — The only slot DefaultPage renders focusable
+// ============================================================
+
+/**
+ * BackLink is the only slot rendered as a focusable element, and carries the recipe's
+ * only `focusRing`. Buttons and tabs passed into Actions / TabNav ring per their own
+ * recipes and are covered by those components' audits.
+ */
+export const FocusedBackLink: Story = {
+  // VRT: the backLink's focus ring - the recipe's only one.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <DefaultPage.Root
+      border="solid-25"
+      borderColor="neutral.6"
+      borderRadius="200"
+    >
+      <DefaultPage.Header>
+        <DefaultPage.BackLink href="/products">
+          Back to products
+        </DefaultPage.BackLink>
+        <DefaultPage.Title>Classic T-Shirt</DefaultPage.Title>
+      </DefaultPage.Header>
+      <DefaultPage.Content>
+        <Text>Product detail content goes here.</Text>
+      </DefaultPage.Content>
+    </DefaultPage.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Back link is the first tab stop and takes focus", async () => {
+      await userEvent.tab();
+      await expect(
+        canvas.getByRole("link", { name: /back to products/i })
+      ).toHaveFocus();
+    });
+  },
+};
+
+// ============================================================
 // MAIN PAGE PATTERNS
 // ============================================================
 
 // ============================================================
-// 4. INFO MAIN PAGE — Listing page with Actions and DataTable
+// 5. INFO MAIN PAGE — Listing page with Actions and DataTable
 // ============================================================
 
 /**
@@ -292,7 +337,7 @@ export const InfoMainPage: Story = {
 };
 
 // ============================================================
-// 5. FORM MAIN PAGE — Form page with footer
+// 6. FORM MAIN PAGE — Form page with footer
 // ============================================================
 
 /**
@@ -380,7 +425,7 @@ export const FormMainPage: Story = {
 };
 
 // ============================================================
-// 6. TABULAR MAIN PAGE — Main page with TabNav and footer
+// 7. TABULAR MAIN PAGE — Main page with TabNav and footer
 // ============================================================
 
 /**
@@ -389,6 +434,9 @@ export const FormMainPage: Story = {
  * content sections have save/cancel actions.
  */
 export const TabularMainPage: Story = {
+  // VRT: `:has(tabNav)` padding collapse, Actions on row 1, and the constrained footer pin.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Box
       height="500px"
@@ -486,7 +534,7 @@ export const TabularMainPage: Story = {
 // ============================================================
 
 // ============================================================
-// 7. INFO DETAIL PAGE — Read-only detail view
+// 8. INFO DETAIL PAGE — Read-only detail view
 // ============================================================
 
 /**
@@ -494,6 +542,9 @@ export const TabularMainPage: Story = {
  * and subtitle. No footer needed for info-only views.
  */
 export const InfoDetailPage: Story = {
+  // VRT: the backLink slot + `:has(backLink)` shifting Actions to row 2.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Box
       height="500px"
@@ -572,7 +623,7 @@ export const InfoDetailPage: Story = {
 };
 
 // ============================================================
-// 8. FORM DETAIL PAGE — Editable detail view with footer
+// 9. FORM DETAIL PAGE — Editable detail view with footer
 // ============================================================
 
 /**
@@ -659,7 +710,7 @@ export const FormDetailPage: Story = {
 };
 
 // ============================================================
-// 9. TABULAR DETAIL PAGE — Detail with tabs and footer
+// 10. TABULAR DETAIL PAGE — Detail with tabs and footer
 // ============================================================
 
 /**
@@ -668,6 +719,9 @@ export const FormDetailPage: Story = {
  * editing within a tabbed detail view (e.g., Order detail, Customer detail).
  */
 export const TabularDetailPage: Story = {
+  // VRT: both `:has()` rules at once; flexible + short content, so the footer flows under it.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Box
       height="500px"
@@ -763,7 +817,7 @@ export const TabularDetailPage: Story = {
 // ============================================================
 
 // ============================================================
-// 10. FLEXIBLE LAYOUT — Whole-page scroll, no sticky
+// 11. FLEXIBLE LAYOUT — Whole-page scroll, no sticky
 // ============================================================
 
 /**
@@ -772,6 +826,9 @@ export const TabularDetailPage: Story = {
  * container in Storybook to make the scroll behaviour visible.
  */
 export const FlexibleLayout: Story = {
+  // VRT: flexible - the outer box scrolls, not the content slot.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Box
       height="500px"
@@ -844,7 +901,7 @@ export const FlexibleLayout: Story = {
 };
 
 // ============================================================
-// 11. FLEXIBLE STICKY HEADER — Header pinned while page scrolls
+// 12. FLEXIBLE STICKY HEADER — Header pinned while page scrolls
 // ============================================================
 
 /**
@@ -853,8 +910,12 @@ export const FlexibleLayout: Story = {
  * listing or info pages where the header context should remain visible.
  */
 export const FlexibleStickyHeader: Story = {
+  // VRT: header pinned over scrolled content; at rest it looks static, so the play scrolls.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Box
+      data-testid="scroll-container"
       height="500px"
       overflow="auto"
       border="solid-25"
@@ -908,11 +969,27 @@ export const FlexibleStickyHeader: Story = {
       await expect(canvas.getByLabelText("Field 1")).toBeInTheDocument();
       await expect(canvas.getByLabelText("Field 8")).toBeInTheDocument();
     });
+
+    await step("Header stays pinned once the page is scrolled", async () => {
+      const scrollContainer = canvas.getByTestId("scroll-container");
+      const header = canvasElement.querySelector("header")!;
+      // Derived, so a padding-token change cannot stop it scrolling past.
+      const scrollTarget = header.offsetHeight + 50;
+      scrollContainer.scrollTop = scrollTarget;
+      await waitFor(() => expect(scrollContainer.scrollTop).toBe(scrollTarget));
+
+      const offsetFromTop =
+        header.getBoundingClientRect().top -
+        scrollContainer.getBoundingClientRect().top;
+      // Tolerance for the container border.
+      await expect(offsetFromTop).toBeGreaterThanOrEqual(0);
+      await expect(offsetFromTop).toBeLessThanOrEqual(2);
+    });
   },
 };
 
 // ============================================================
-// 12. FLEXIBLE STICKY FOOTER — Footer pinned, header scrolls
+// 13. FLEXIBLE STICKY FOOTER — Footer pinned, header scrolls
 // ============================================================
 
 /**
@@ -921,8 +998,12 @@ export const FlexibleStickyHeader: Story = {
  * save actions must always be reachable but header context is less critical.
  */
 export const FlexibleStickyFooter: Story = {
+  // VRT: footer pinned while the header scrolls out of view - the inverse frame.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Box
+      data-testid="scroll-container"
       height="500px"
       overflow="auto"
       border="solid-25"
@@ -962,6 +1043,8 @@ export const FlexibleStickyFooter: Story = {
     </Box>
   ),
   play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
     await step("Header does not have sticky positioning", async () => {
       const header = canvasElement.querySelector("header");
       await expect(header).toBeInTheDocument();
@@ -975,11 +1058,37 @@ export const FlexibleStickyFooter: Story = {
       const style = window.getComputedStyle(footer!);
       await expect(style.position).toBe("sticky");
     });
+
+    await step(
+      "Footer stays pinned while the header scrolls out of view",
+      async () => {
+        const scrollContainer = canvas.getByTestId("scroll-container");
+        const header = canvasElement.querySelector("header")!;
+        // Derived, so a padding-token change cannot stop it scrolling past.
+        const scrollTarget = header.offsetHeight + 50;
+        scrollContainer.scrollTop = scrollTarget;
+        await waitFor(() =>
+          expect(scrollContainer.scrollTop).toBe(scrollTarget)
+        );
+
+        const containerRect = scrollContainer.getBoundingClientRect();
+        await expect(header.getBoundingClientRect().bottom).toBeLessThan(
+          containerRect.top
+        );
+
+        const footer = canvasElement.querySelector("footer")!;
+        const offsetFromBottom =
+          containerRect.bottom - footer.getBoundingClientRect().bottom;
+        // Tolerance for the container border.
+        await expect(offsetFromBottom).toBeGreaterThanOrEqual(0);
+        await expect(offsetFromBottom).toBeLessThanOrEqual(2);
+      }
+    );
   },
 };
 
 // ============================================================
-// 13. FLEXIBLE STICKY HEADER AND FOOTER — Both pinned
+// 14. FLEXIBLE STICKY HEADER AND FOOTER — Both pinned
 // ============================================================
 
 /**
@@ -988,8 +1097,12 @@ export const FlexibleStickyFooter: Story = {
  * Useful for long form pages where save actions should always be accessible.
  */
 export const FlexibleStickyHeaderAndFooter: Story = {
+  // VRT: both edges pinned - a third frame, not the sum of the two single-flag stories.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Box
+      data-testid="scroll-container"
       height="500px"
       overflow="auto"
       border="solid-25"
@@ -1053,11 +1166,32 @@ export const FlexibleStickyHeaderAndFooter: Story = {
         canvas.getByRole("button", { name: "Cancel" })
       ).toBeInTheDocument();
     });
+
+    await step("Both edges stay pinned once the page is scrolled", async () => {
+      const scrollContainer = canvas.getByTestId("scroll-container");
+      const header = canvasElement.querySelector("header")!;
+      const scrollTarget = header.offsetHeight + 50;
+      scrollContainer.scrollTop = scrollTarget;
+      await waitFor(() => expect(scrollContainer.scrollTop).toBe(scrollTarget));
+
+      const containerRect = scrollContainer.getBoundingClientRect();
+      // Tolerance for the container border.
+      const headerOffset =
+        header.getBoundingClientRect().top - containerRect.top;
+      await expect(headerOffset).toBeGreaterThanOrEqual(0);
+      await expect(headerOffset).toBeLessThanOrEqual(2);
+
+      const footer = canvasElement.querySelector("footer")!;
+      const footerOffset =
+        containerRect.bottom - footer.getBoundingClientRect().bottom;
+      await expect(footerOffset).toBeGreaterThanOrEqual(0);
+      await expect(footerOffset).toBeLessThanOrEqual(2);
+    });
   },
 };
 
 // ============================================================
-// 14. WITH STEPS — Multi-step wizard inside a page
+// 15. WITH STEPS — Multi-step wizard inside a page
 // ============================================================
 
 /**

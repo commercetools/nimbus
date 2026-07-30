@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Box, PageContent, Stack, Text } from "@commercetools/nimbus";
-import { within, expect } from "storybook/test";
+import { within, expect, waitFor } from "storybook/test";
 
 const variants = ["wide", "narrow", "full"] as const;
 const columnOptions = ["1", "1/1", "2/1"] as const;
@@ -150,6 +150,9 @@ export const ColumnLayouts: Story = {
  * Sticky sidebar in a 2/1 layout with a scroll container
  */
 export const StickySidebar: Story = {
+  // VRT: `sticky` pinned over scrolled content - the one surface SmokeTest can't hold.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <PageContent.Root
       variant="wide"
@@ -183,11 +186,9 @@ export const StickySidebar: Story = {
         const scrollContainer = canvas.getByLabelText("Sticky layout");
         const stickyCol = canvas.getByLabelText("Sidebar");
 
-        // Scroll down far enough that the main content label is out of view
+        // Past the 800px main box, so the label clears the viewport.
         scrollContainer.scrollTop = 400;
-
-        // Wait a frame for scroll to settle
-        await new Promise((resolve) => requestAnimationFrame(resolve));
+        await waitFor(() => expect(scrollContainer.scrollTop).toBe(400));
 
         const containerRect = scrollContainer.getBoundingClientRect();
         const stickyRect = stickyCol.getBoundingClientRect();
@@ -272,6 +273,9 @@ export const WithoutCompound: Story = {
  * SmokeTest - renders all variant × columns combinations
  */
 export const SmokeTest: Story = {
+  // VRT: variant x columns - the axes interact, since variant sets the band columns splits.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack gap="1200">
       {variants.map((variant) => (

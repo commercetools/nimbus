@@ -20,6 +20,8 @@ const meta: Meta<typeof FormDialog> = {
 export default meta;
 type Story = StoryObj<typeof FormDialog>;
 
+// VRT open-state snapshots: `defaultOpen` so Chromatic captures the settled dialog (entrance animation pauses in place).
+
 /**
  * Basic controlled usage with a string title and a single form field.
  * Cancel and Save use the localized default labels. The play function
@@ -235,6 +237,42 @@ export const Base: Story = {
 };
 
 /**
+ * The resting open state, rendered open on mount.
+ */
+export const Open: Story = {
+  // VRT: the fixed footer at rest.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    onSave: fn(),
+    onCancel: fn(),
+  },
+  render: (args) => (
+    <FormDialog {...args} title="Edit display name" defaultOpen>
+      <FormField.Root>
+        <FormField.Label>Display name</FormField.Label>
+        <FormField.Input>
+          <TextInput defaultValue="Ada Lovelace" />
+        </FormField.Input>
+      </FormField.Root>
+    </FormDialog>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Opens on mount with both footer buttons enabled", async () => {
+      await waitFor(() =>
+        expect(canvas.getByRole("dialog")).toBeInTheDocument()
+      );
+      expect(canvas.getByRole("button", { name: "Cancel" })).toBeEnabled();
+      expect(canvas.getByRole("button", { name: "Save" })).toBeEnabled();
+    });
+  },
+};
+
+/**
  * `saveLabel` and `cancelLabel` accept any ReactNode, so consumers can
  * pass `intl.formatMessage(...)` results directly.
  */
@@ -294,6 +332,9 @@ export const CustomLabels: Story = {
  * invalid). Cancel remains enabled so the user can always discard.
  */
 export const SaveDisabled: Story = {
+  // VRT: save dimmed, cancel active.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     onSave: fn(),
     onCancel: fn(),
@@ -370,6 +411,9 @@ export const SaveDisabled: Story = {
  * across an in-flight async save.
  */
 export const LoadingLockout: Story = {
+  // VRT: spinner + both dimmed.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     onSave: fn(),
     onCancel: fn(),
@@ -701,6 +745,9 @@ export const WithReactNodeTitle: Story = {
  * save) stays pinned at the bottom.
  */
 export const LongForm: Story = {
+  // VRT: `scrollBehavior="inside"` firing - capped height, scrolling body.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     onSave: fn(),
     onCancel: fn(),

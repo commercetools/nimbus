@@ -19,6 +19,7 @@ const invisibleCssProps = {
  * hides content from the viewers eye but keeps it visible to screen readers.
  * Makes it visible if focused.
  */
+// No VRT: content is off-screen by design (see chromatic-visual-testing.md).
 const meta: Meta<typeof VisuallyHidden> = {
   title: "Utils/VisuallyHidden",
   component: VisuallyHidden,
@@ -41,7 +42,7 @@ export const Base: Story = {
       <VisuallyHidden data-testid="container">
         <div data-testid="content">I should not be visible.</div>
         <Button data-testid="button" onPress={() => alert("meh")}>
-          I should not be focusable.
+          I am hidden, but still focusable.
         </Button>
       </VisuallyHidden>
     );
@@ -61,9 +62,12 @@ export const Base: Story = {
       await expect(content.parentElement).toBe(container);
     });
 
-    await step("button is focusable", async () => {
+    // Hiding is visual only; without `isFocusable` the child stays in the tab order
+    // but the container does not reveal itself. VisibleWhenFocused covers the opt-in.
+    await step("button is still focusable while hidden", async () => {
       await userEvent.tab();
       await expect(button).toHaveFocus();
+      await expect(container).toHaveStyle(invisibleCssProps);
     });
   },
 };

@@ -180,7 +180,8 @@ label for finding snapshot stories - keep the two together).
   into one `SmokeTest`; independent axes get separate showcases; any state the
   matrix can't render gets its own story. Never drop a state to save cost.
 - **Enumerate surfaces from the recipe + component source**, then snapshot their
-  cross-product - not remembered states.
+  cross-product - not remembered states. A comma-separated selector list counts
+  once per child type it names; a frame needs each of them.
 - **Inherited tokens make cross-cells** - a child with no `colorPalette` takes
   its host's; one frame per host.
 - **One state rendered more than one way → one story each**, not a folded
@@ -195,7 +196,22 @@ label for finding snapshot stories - keep the two together).
   recipe that paints nothing, or headless `display: contents`. Note it on
   `meta`.
 - **A play's end state never justifies skipping a snapshot** - fix the play. A
-  snapshotted story that ends focused needs `blur()`.
+  snapshotted story that ends focused needs `blur()`, and `userEvent.click`
+  counts as focused (React Aria keeps `data-focus-visible` set).
+- **No play where the claim is a resting visual props alone produce** - see
+  [Which stories need one](#which-stories-need-one).
+- **A compound component's unit is the recipe rule, not the composition** - slot
+  presence only makes a new surface where a rule keys off it (`:has()`). Name
+  the rule the frame alone fires, or leave it off-snapshot.
+- **A state inert in the default frame → snapshot the condition that fires it.**
+  Sticky needs a scroll in the play (bounded `overflow: auto` ancestor,
+  `offsetHeight`-derived target, each combination its own frame);
+  `scrollBehavior="inside"` needs overflowing content; a surface a variant
+  zeroes needs the variant that paints it (a showcase left at that default
+  baselines blank boxes); an inherited property needs a consumer value to
+  inherit.
+- **Load-bearing, static scaffolding may stay in the frame** - a bounded scroll
+  port, or visible children for a component that paints nothing itself.
 - **If a step name overstates what it asserts, raise the assertion to meet the
   name** - don't rename the step down.
 - **Snapshot the component, not the harness** - no debug read-outs or wrappers
@@ -234,6 +250,16 @@ play: async ({ canvasElement }) => {
   canvasElement.style.caretColor = "transparent";
   await userEvent.tab();
   // ...assert focus
+};
+
+// Scroll-resolved (sticky): scroll before the capture, target derived not hardcoded
+play: async ({ canvasElement }) => {
+  const canvas = within(canvasElement);
+  const scrollContainer = canvas.getByTestId("scroll-container");
+  const header = canvasElement.querySelector("header")!;
+  const scrollTarget = header.offsetHeight + 50;
+  scrollContainer.scrollTop = scrollTarget;
+  await waitFor(() => expect(scrollContainer.scrollTop).toBe(scrollTarget));
 };
 
 // Animated: pin a frame only when the paused endpoints hide the content
@@ -390,6 +416,21 @@ claims a behavior the checks don't actually prove (e.g. "button appears" while
 only asserting it's in the DOM), strengthen the checks to prove the claim -
 don't rename the step down to match a weaker assertion. Only drop the claim when
 the behavior is genuinely another story's concern, and note where it's covered.
+
+### Which stories need one
+
+The requirement above is **per component, not per story** - a component needs
+play coverage in its file, not on every story it exports.
+
+- **Needs one:** the story's name makes a behavioral claim, or its snapshot
+  can't be reached from props alone (focus ring, opened overlay, scroll-fired
+  sticky/overflow).
+- **Needs none:** the claim is a resting visual props alone produce - the
+  snapshot and the always-on a11y check are the test.
+
+Never add a play for completeness; on a snapshotted story every interaction is
+one more frame to land deliberately. Rationale in
+[chromatic-visual-testing.md](../chromatic-visual-testing.md).
 
 ### Play Function Structure
 

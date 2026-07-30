@@ -36,10 +36,20 @@ const WideContent = () => (
   </Box>
 );
 
+// One line, so a maxH box overflows on x only.
+const WideShortContent = () => (
+  <Box whiteSpace="nowrap">
+    <Text fontSize="sm">{"Long horizontal content ".repeat(20)}</Text>
+  </Box>
+);
+
 // ============================================================
 // Default: overflowing, vertical scrollbar, keyboard focusable
 // ============================================================
 export const Default: Story = {
+  // VRT: the default `hover` variant at rest - no scrollbar painted, no gutter reserved.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <ScrollArea
       maxH="200px"
@@ -74,11 +84,20 @@ export const Default: Story = {
       expect(viewport).toHaveAttribute("data-overflow-y");
     });
 
-    await step("Scrollbar is visible", async () => {
-      const scrollbar = canvasElement.querySelector('[data-part="scrollbar"]');
-      expect(scrollbar).toBeTruthy();
-      expect(scrollbar).toHaveAttribute("data-orientation", "vertical");
-    });
+    await step(
+      "Vertical scrollbar is laid out but transparent at rest",
+      async () => {
+        const scrollbar = canvasElement.querySelector(
+          '[data-part="scrollbar"]'
+        ) as HTMLElement;
+        expect(scrollbar).toBeTruthy();
+        expect(scrollbar).toHaveAttribute("data-orientation", "vertical");
+        const styles = window.getComputedStyle(scrollbar);
+        expect(styles.display).not.toBe("none");
+        // Default `hover` variant: painted only on hover or while scrolling.
+        expect(styles.opacity).toBe("0");
+      }
+    );
 
     await step(
       "Horizontal scrollbar is hidden when only Y overflows",
@@ -141,7 +160,7 @@ export const DefaultSurfacesBothScrollbars: Story = {
     });
 
     await step(
-      "Both scrollbars are rendered and visible with no orientation set",
+      "A scrollbar for each axis is rendered and laid out with no orientation set",
       async () => {
         const scrollbars = Array.from(
           canvasElement.querySelectorAll('[data-part="scrollbar"]')
@@ -153,7 +172,9 @@ export const DefaultSurfacesBothScrollbars: Story = {
           expect.arrayContaining(["vertical", "horizontal"])
         );
         scrollbars.forEach((sb) => {
+          // Laid out but not painted: `hover` holds both at 0 until hover/scroll.
           expect(window.getComputedStyle(sb).display).not.toBe("none");
+          expect(window.getComputedStyle(sb).opacity).toBe("0");
         });
       }
     );
@@ -388,6 +409,8 @@ export const ContentFillsViewport: Story = {
 // Keyboard focus ring: Tab focuses viewport, ring appears on root
 // ============================================================
 export const KeyboardFocusRing: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Box>
       <Text>Press Tab to focus the scroll area below:</Text>
@@ -1336,4 +1359,67 @@ export const ContentPadding: Story = {
       );
     }
   },
+};
+
+// ============================================================
+// SmokeTest: variant="always" x size x overflowing axis
+// ============================================================
+const overflowCases = [
+  {
+    key: "y",
+    label: "y overflow",
+    props: { maxH: "120px", w: "240px" },
+    content: () => <OverflowingContent />,
+  },
+  {
+    key: "x",
+    label: "x overflow",
+    props: { maxH: "120px", maxW: "240px" },
+    content: () => <WideShortContent />,
+  },
+  {
+    key: "both",
+    label: "both axes",
+    props: { maxH: "120px", maxW: "240px" },
+    content: () => (
+      <>
+        <OverflowingContent />
+        <WideShortContent />
+      </>
+    ),
+  },
+] as const;
+
+export const SmokeTest: Story = {
+  // VRT: `always`, because the default `hover` variant paints every bar at opacity 0.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Box display="flex" gap="600" alignItems="flex-start">
+      {overflowCases.map(({ key, label, props, content }) => (
+        <Box key={key} display="flex" flexDirection="column" gap="400">
+          <Text fontSize="sm" fontWeight="bold">
+            {label}
+          </Text>
+          {(["xs", "sm", "md", "lg"] as const).map((size) => (
+            <Box key={size}>
+              <Text fontSize="xs" color="neutral.11" mb="100">
+                size=&quot;{size}&quot;
+              </Text>
+              {/* borderRadius fires the viewport's `borderRadius: inherit`, which paints nothing without one. */}
+              <ScrollArea
+                variant="always"
+                size={size}
+                bg="neutral.2"
+                borderRadius="300"
+                {...props}
+              >
+                {content()}
+              </ScrollArea>
+            </Box>
+          ))}
+        </Box>
+      ))}
+    </Box>
+  ),
 };

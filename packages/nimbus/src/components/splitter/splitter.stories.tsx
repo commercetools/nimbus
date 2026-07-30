@@ -103,6 +103,9 @@ export const Default: Story = {
 // ============================================================
 
 export const Vertical: Story = {
+  // VRT: stacked pane geometry; the handle is invisible at rest.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     orientation: "vertical",
     defaultSize: 40,
@@ -120,10 +123,21 @@ export const Vertical: Story = {
       </Splitter.Root>
     </Box>
   ),
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const handle = await canvas.findByRole("separator");
     await expect(handle).toHaveAttribute("aria-orientation", "vertical");
+
+    await step("Handle takes its thickness on the block axis", async () => {
+      // Vertical transposes the handle: root-width x 8px, not 8px x root-height.
+      const root = canvasElement.querySelector(".nimbus-splitter__root")!;
+      const handleRect = handle.getBoundingClientRect();
+      const rootRect = root.getBoundingClientRect();
+      await expect(Math.round(handleRect.width)).toBe(
+        Math.round(rootRect.width)
+      );
+      await expect(Math.round(handleRect.height)).toBe(8);
+    });
   },
 };
 
@@ -134,6 +148,9 @@ export const Vertical: Story = {
 // ============================================================
 
 export const AsideTrailing: Story = {
+  // VRT: the only frame with the aside trailing; the plays check aria values, not geometry.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     orientation: "horizontal",
     defaultSize: 30,
@@ -1474,4 +1491,45 @@ const PersistedResponsiveComponent = () => {
 
 export const PersistedResponsiveSizes: Story = {
   render: () => <PersistedResponsiveComponent />,
+};
+
+// ============================================================
+// Collapsed (aside at its rail)
+// ============================================================
+
+export const Collapsed: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    orientation: "horizontal",
+    defaultSize: 30,
+    minSize: 15,
+    collapsible: true,
+    collapsedSize: 6,
+    defaultCollapsed: true,
+  },
+  render: (args) => (
+    <Box h="xl">
+      <Splitter.Root {...args}>
+        <Splitter.Aside>
+          <DemoPane bg="indigo.3" title="Aside" />
+        </Splitter.Aside>
+        <Splitter.Handle />
+        <Splitter.Main>
+          <DemoPane bg="amber.3" title="Main" />
+        </Splitter.Main>
+      </Splitter.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+
+    await step("Aside starts collapsed and the handle locks", async () => {
+      await waitFor(() =>
+        expect(Number(handle.getAttribute("aria-valuenow"))).toBe(6)
+      );
+      await expect(handle).toHaveAttribute("data-resize-locked", "true");
+    });
+  },
 };

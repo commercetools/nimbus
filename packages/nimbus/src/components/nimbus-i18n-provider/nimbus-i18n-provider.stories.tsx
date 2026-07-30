@@ -38,6 +38,7 @@ function normalizeLocaleForTesting(locale: string): string {
   return langMap[lang] ?? "en";
 }
 
+// No VRT: proxy provider, renders no DOM (see chromatic-visual-testing.md).
 const meta: Meta<typeof NimbusI18nProvider> = {
   title: "Components/NimbusI18nProvider",
   component: NimbusI18nProvider,

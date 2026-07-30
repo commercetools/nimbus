@@ -12,6 +12,8 @@ const meta: Meta<typeof ConfirmationDialog> = {
 export default meta;
 type Story = StoryObj<typeof ConfirmationDialog>;
 
+// VRT open-state snapshots: `defaultOpen` so Chromatic captures the settled dialog (entrance animation pauses in place).
+
 /**
  * Basic controlled usage with the default intent. Cancel and Confirm
  * use the localized default labels. The play function exercises every
@@ -196,6 +198,37 @@ export const Base: Story = {
 };
 
 /**
+ * The resting open state, rendered open on mount.
+ */
+export const Open: Story = {
+  // VRT: the fixed footer at rest.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    onConfirm: fn(),
+    onCancel: fn(),
+  },
+  render: (args) => (
+    <ConfirmationDialog {...args} title="Discard changes?" defaultOpen>
+      <Text>You will lose any unsaved changes.</Text>
+    </ConfirmationDialog>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Opens on mount with both footer buttons enabled", async () => {
+      await waitFor(() =>
+        expect(canvas.getByRole("dialog")).toBeInTheDocument()
+      );
+      expect(canvas.getByRole("button", { name: "Cancel" })).toBeEnabled();
+      expect(canvas.getByRole("button", { name: "Confirm" })).toBeEnabled();
+    });
+  },
+};
+
+/**
  * Destructive intent renders the confirm button with the critical
  * color palette, signalling that the action is irreversible (delete,
  * remove, discard).
@@ -268,6 +301,41 @@ export const DestructiveIntent: Story = {
 };
 
 /**
+ * The resting open state at destructive intent.
+ */
+export const OpenDestructive: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    onConfirm: fn(),
+    onCancel: fn(),
+  },
+  render: (args) => (
+    <ConfirmationDialog
+      {...args}
+      title="Delete project"
+      intent="destructive"
+      confirmLabel="Delete"
+      defaultOpen
+    >
+      <Text>This will permanently delete the project and all its data.</Text>
+    </ConfirmationDialog>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Opens on mount with the destructive confirm", async () => {
+      await waitFor(() =>
+        expect(canvas.getByRole("dialog")).toBeInTheDocument()
+      );
+      expect(canvas.getByRole("button", { name: "Delete" })).toBeEnabled();
+    });
+  },
+};
+
+/**
  * `confirmLabel` and `cancelLabel` accept any ReactNode, so consumers
  * can pass `intl.formatMessage(...)` results directly.
  */
@@ -322,6 +390,9 @@ export const CustomLabels: Story = {
  * checkbox is unchecked).
  */
 export const DisabledConfirm: Story = {
+  // VRT: confirm dimmed, cancel active.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     onConfirm: fn(),
     onCancel: fn(),
@@ -380,6 +451,9 @@ export const DisabledConfirm: Story = {
  * in-flight async confirm.
  */
 export const LoadingLockout: Story = {
+  // VRT: spinner + both dimmed; the spinner inherits `primary`.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     onConfirm: fn(),
     onCancel: fn(),
@@ -474,6 +548,44 @@ export const LoadingLockout: Story = {
         expect(onConfirm).not.toHaveBeenCalled();
       }
     );
+  },
+};
+
+/**
+ * The loading lockout at destructive intent.
+ */
+export const LoadingDestructive: Story = {
+  // VRT: the spinner inherits `critical`.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    onConfirm: fn(),
+    onCancel: fn(),
+  },
+  render: (args) => (
+    <ConfirmationDialog
+      {...args}
+      title="Deleting project…"
+      intent="destructive"
+      confirmLabel="Delete"
+      isConfirmLoading
+      defaultOpen
+    >
+      <Text>This will permanently delete the project and all its data.</Text>
+    </ConfirmationDialog>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Opens locked, with the destructive confirm", async () => {
+      await waitFor(() =>
+        expect(canvas.getByRole("dialog")).toBeInTheDocument()
+      );
+      expect(canvas.getByRole("button", { name: /delete/i })).toBeDisabled();
+      expect(canvas.getByRole("button", { name: /cancel/i })).toBeDisabled();
+    });
   },
 };
 
@@ -696,6 +808,9 @@ export const WithReactNodeTitle: Story = {
  * pinned at the bottom.
  */
 export const LongContent: Story = {
+  // VRT: `scrollBehavior="inside"` firing - capped height, scrolling body.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     onConfirm: fn(),
     onCancel: fn(),

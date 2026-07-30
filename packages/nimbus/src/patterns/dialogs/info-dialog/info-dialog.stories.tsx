@@ -12,6 +12,8 @@ const meta: Meta<typeof InfoDialog> = {
 export default meta;
 type Story = StoryObj<typeof InfoDialog>;
 
+// VRT open-state snapshots: `isOpen` so Chromatic captures the settled dialog (entrance animation pauses in place).
+
 /**
  * Basic controlled usage with a string title. The pattern has no trigger
  * slot — consumers render their own button and drive `isOpen` / `onOpenChange`.
@@ -137,6 +139,34 @@ export const Base: Story = {
 };
 
 /**
+ * The resting open state, rendered open on mount. InfoDialog renders no footer.
+ */
+export const Open: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <InfoDialog title="Plan details" isOpen onOpenChange={() => {}}>
+      <Text>
+        Your current plan includes unlimited projects and priority support.
+      </Text>
+    </InfoDialog>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(
+      (canvasElement.parentNode as HTMLElement) ?? canvasElement
+    );
+
+    await step("Opens on mount with no footer rendered", async () => {
+      const dialog = await waitFor(() => canvas.getByRole("dialog"));
+      expect(
+        canvas.getByRole("heading", { name: "Plan details" })
+      ).toBeInTheDocument();
+      expect(dialog.querySelector("footer")).toBeNull();
+    });
+  },
+};
+
+/**
  * Title accepts any ReactNode, so consumers can compose a heading with inline
  * elements like a badge or icon. When the composed title would produce a
  * confusing accessible name, pass an explicit `aria-label` to override it.
@@ -212,6 +242,9 @@ export const WithReactNodeTitle: Story = {
  * close button stays pinned at the top.
  */
 export const LongContent: Story = {
+  // VRT: `scrollBehavior="inside"` firing - capped height, scrolling body.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const [isOpen, setIsOpen] = useState(false);
     const paragraphs = Array.from({ length: 25 }, (_, i) => (

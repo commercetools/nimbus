@@ -296,8 +296,11 @@ export const WithGroups: Story = {
 };
 
 export const Variants: Story = {
+  // VRT: the `.nimbus-toggle-button-group__root` half of the descendant rule; SmokeTest only exercises `.nimbus-group`.
+  tags: ["vrt"],
   args: {},
   parameters: {
+    chromatic: { disableSnapshot: false },
     a11y: {
       config: {
         rules: [
@@ -421,6 +424,9 @@ export const Variants: Story = {
       // Save and print should still be active
       await expect(saveToggle).toHaveAttribute("aria-pressed", "true");
       await expect(printToggle).toHaveAttribute("aria-pressed", "true");
+
+      // Clicking leaves the toggle focus-visible; blur so its ring isn't snapshotted.
+      newToggle.blur();
     });
   },
 };
@@ -739,4 +745,57 @@ export const RichTextEditor: Story = {
       await expect(menuTrigger).toHaveFocus();
     });
   },
+};
+
+const orientations = ["horizontal", "vertical"] as const;
+const toolbarSizes = ["xs", "md"] as const;
+const toolbarVariants = ["plain", "outline"] as const;
+
+export const SmokeTest: Story = {
+  // VRT: the axes interact - spacing and separator size are size-driven, and orientation decides which dimension each takes.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Box display="flex" gap="800" alignItems="flex-start">
+      {toolbarVariants.map((variant) => (
+        <Box key={variant} display="flex" flexDirection="column" gap="600">
+          {orientations.map((orientation) =>
+            toolbarSizes.map((size) => {
+              const label = `${variant} / ${orientation} / ${size}`;
+              return (
+                <Box key={label}>
+                  <Text textStyle="xs" color="neutral.11" mb="100">
+                    {label}
+                  </Text>
+                  <Toolbar
+                    orientation={orientation}
+                    size={size}
+                    variant={variant}
+                    aria-label={label}
+                  >
+                    <IconButton size="xs" variant="ghost" aria-label="Undo">
+                      <Undo />
+                    </IconButton>
+                    <Separator
+                      orientation={
+                        orientation === "horizontal" ? "vertical" : "horizontal"
+                      }
+                    />
+                    <Group>
+                      <IconButton size="xs" variant="ghost" aria-label="Bold">
+                        <FormatBold />
+                      </IconButton>
+                      <IconButton size="xs" variant="ghost" aria-label="Italic">
+                        <FormatItalic />
+                      </IconButton>
+                    </Group>
+                  </Toolbar>
+                </Box>
+              );
+            })
+          )}
+        </Box>
+      ))}
+    </Box>
+  ),
 };
