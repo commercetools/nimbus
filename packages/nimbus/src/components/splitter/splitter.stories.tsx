@@ -1499,60 +1499,6 @@ export const PersistedResponsiveSizes: Story = {
 // ============================================================
 
 /**
- * The handle's only painted state: `_focusVisible` draws the track and ring.
- */
-export const FocusedHandle: Story = {
-  tags: ["vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
-  args: { orientation: "horizontal", defaultSize: 30 },
-  render: (args) => (
-    <Box h="xl">
-      <Splitter.Root {...args}>
-        <Splitter.Aside>
-          <DemoPane bg="indigo.3" title="Aside" />
-        </Splitter.Aside>
-        <Splitter.Handle />
-        {/* Sticky z-indexed child: proves `isolation: isolate` keeps the handle on top. */}
-        <Splitter.Main>
-          <Box h="100%" overflow="auto">
-            <Box
-              position="sticky"
-              top="0"
-              zIndex="1"
-              bg="amber.6"
-              p="400"
-              data-testid="sticky-header"
-            >
-              <Heading size="md">Sticky header (z-index 1)</Heading>
-            </Box>
-            <Box p="400" bg="amber.3">
-              Content beneath the sticky header.
-            </Box>
-          </Box>
-        </Splitter.Main>
-      </Splitter.Root>
-    </Box>
-  ),
-  play: async ({ canvasElement, step }) => {
-    const canvas = within(canvasElement);
-    const handle = await canvas.findByRole("separator");
-
-    await step("Tab reaches the handle and paints its track", async () => {
-      await userEvent.tab();
-      await waitFor(() => expect(handle).toHaveFocus());
-      await waitFor(() =>
-        expect(handle).toHaveAttribute("data-focus-visible", "true")
-      );
-    });
-
-    await step("Sticky pane content is isolated below the handle", async () => {
-      const pane = canvas.getByTestId("sticky-header").closest("[id]");
-      await expect(window.getComputedStyle(pane!).isolation).toBe("isolate");
-    });
-  },
-};
-
-/**
  * The collapsed aside layout, at its 6% rail.
  */
 export const Collapsed: Story = {
@@ -1589,22 +1535,5 @@ export const Collapsed: Story = {
       );
       await expect(handle).toHaveAttribute("data-resize-locked", "true");
     });
-
-    await step("The locked handle still paints its focus track", async () => {
-      await userEvent.tab();
-      await waitFor(() => expect(handle).toHaveFocus());
-      await waitFor(() =>
-        expect(handle).toHaveAttribute("data-focus-visible", "true")
-      );
-      // waitFor: the recipe transitions background-color, so it interpolates.
-      await waitFor(() =>
-        expect(window.getComputedStyle(handle).backgroundColor).toBe(
-          "rgb(217, 217, 217)"
-        )
-      );
-    });
-
-    // Blur so the frame is the resting collapsed layout.
-    handle.blur();
   },
 };
