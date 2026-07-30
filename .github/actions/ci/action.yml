@@ -17,8 +17,10 @@ runs:
         node-version: "24"
         cache: pnpm
 
-    - name: Update npm to latest
-      run: npm install -g npm@latest
+    # Pinned to v11: npm@12 broke `npm info --json` for older changesets and
+    # ships a broken sigstore dep. Keep in sync with release.yml.
+    - name: Update npm
+      run: npm install -g npm@11
       shell: bash
 
     - name: Install dependencies
