@@ -94,6 +94,11 @@ export type DataTableRowItem<T extends object = Record<string, unknown>> = T & {
   [key: string]: unknown;
 };
 
+export type DataTableDetailsOptions = {
+  /** Closes the detail panel for the current row */
+  close: () => void;
+};
+
 export type DataTableDensity = "default" | "condensed";
 
 export type DataTableCustomSettings = {
@@ -207,8 +212,11 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   onRowClick?: (row: DataTableRowItem<T>) => void;
   /** Callback fired when a row's detail panel is toggled */
   onDetailsClick?: (row: DataTableRowItem<T>) => void;
-  /** Renders a full-width detail panel below a row when clicked. Clicking the row toggles the panel open/closed. */
-  renderDetails?: (row: DataTableRowItem<T>) => ReactNode;
+  /** Renders a full-width detail panel below a row when clicked. Clicking the row toggles the panel open/closed. The options object provides a `close` callback for dismissing the panel from within. */
+  renderDetails?: (
+    row: DataTableRowItem<T>,
+    options: DataTableDetailsOptions
+  ) => ReactNode;
   children?: ReactNode;
   density?: DataTableDensity;
   isTruncated?: boolean;

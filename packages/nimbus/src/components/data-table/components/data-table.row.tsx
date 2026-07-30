@@ -415,6 +415,8 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           ref={rowRef}
           id={row.id}
           data-clickable={isClickable && !isDisabled}
+          aria-expanded={renderDetails ? isDetailExpanded : undefined}
+          aria-controls={renderDetails ? `detail-panel-${row.id}` : undefined}
           className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
           {...restProps}
           dependencies={[isExpanded, isDetailExpanded, search, isTruncated]}
@@ -585,6 +587,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       {renderDetails && (
         <DataTableRowSlot {...styleProps} asChild>
           <RaRow
+            id={`detail-panel-${row.id}`}
             data-detail-row-expanded={isDetailExpanded ? "true" : "false"}
             dependencies={[isDetailExpanded]}
           >
@@ -599,7 +602,11 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               }
               data-detail-cell
             >
-              {isDetailExpanded ? renderDetails(row) : null}
+              {isDetailExpanded
+                ? renderDetails(row, {
+                    close: () => toggleDetails(row.id),
+                  })
+                : null}
             </DataTableCell>
           </RaRow>
         </DataTableRowSlot>

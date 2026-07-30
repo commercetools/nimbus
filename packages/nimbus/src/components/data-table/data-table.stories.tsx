@@ -2818,6 +2818,92 @@ export const RowDetailPanelsWithSelection: Story = {
   },
 };
 
+/**
+ * ## Row Detail Panels with Close Button
+ *
+ * Demonstrates the `close` callback passed to `renderDetails` which allows
+ * consumers to dismiss the detail panel from within.
+ */
+export const RowDetailPanelsWithClose: Story = {
+  render: () => {
+    return (
+      <DataTable
+        columns={columns}
+        rows={rows}
+        renderDetails={(row, { close }) => (
+          <Flex p="400" justifyContent="space-between" alignItems="center">
+            <Text>Detail panel for row: {row.id}</Text>
+            <Button size="sm" variant="secondary" onPress={close}>
+              Close
+            </Button>
+          </Flex>
+        )}
+        data-testid="detail-close-table"
+      />
+    );
+  },
+  args: {},
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Open a detail panel by clicking a row", async () => {
+      const allRows = canvas.getAllByRole("row");
+      const firstDataRow = allRows[1];
+      const cells = within(firstDataRow).getAllByRole("gridcell");
+      const nonInteractiveCell = cells.find(
+        (cell) =>
+          !within(cell).queryByRole("checkbox") &&
+          !within(cell).queryByRole("button")
+      );
+
+      if (nonInteractiveCell) {
+        await userEvent.click(nonInteractiveCell);
+
+        await waitFor(
+          () => {
+            const openDetails = canvasElement.querySelectorAll(
+              "[data-detail-row-expanded='true']"
+            );
+            expect(openDetails.length).toBe(1);
+          },
+          { timeout: 3000 }
+        );
+      }
+    });
+
+    await step("Close button dismisses the detail panel", async () => {
+      const closeButton = await canvas.findByRole("button", {
+        name: /close/i,
+      });
+      await userEvent.click(closeButton);
+
+      await waitFor(
+        () => {
+          const openDetails = canvasElement.querySelectorAll(
+            "[data-detail-row-expanded='true']"
+          );
+          expect(openDetails.length).toBe(0);
+        },
+        { timeout: 3000 }
+      );
+    });
+
+    await step(
+      "Row has aria-expanded and aria-controls attributes",
+      async () => {
+        const allRows = canvas.getAllByRole("row");
+        const firstDataRow = allRows[1];
+
+        expect(firstDataRow).toHaveAttribute("aria-expanded", "false");
+        expect(firstDataRow).toHaveAttribute(
+          "aria-controls",
+          `detail-panel-${rows[0].id}`
+        );
+      }
+    );
+  },
+};
+
 export const NoNestedContent: Story = {
   render: (args) => {
     return (

@@ -381,6 +381,63 @@ describe("DataTable - Row detail panels", () => {
       expect(screen.getByTestId("detail-1")).toBeInTheDocument();
     });
   });
+
+  it("provides a close callback to dismiss the detail panel", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          renderDetails={(row, { close }) => (
+            <Box data-testid={`detail-${row.id}`}>
+              <button data-testid={`close-${row.id}`} onClick={close}>
+                Close
+              </button>
+            </Box>
+          )}
+        />
+      </NimbusProvider>
+    );
+
+    // Open the detail panel
+    const allRows = screen.getAllByRole("row");
+    const firstDataRow = allRows[1];
+    const clickableCell = within(firstDataRow).getAllByRole("gridcell")[0];
+    await user.click(clickableCell);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("detail-1")).toBeInTheDocument();
+    });
+
+    // Close via the close callback
+    await user.click(screen.getByTestId("close-1"));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("detail-1")).not.toBeInTheDocument();
+    });
+  });
+
+  it("sets aria-expanded and aria-controls on the row", () => {
+    render(
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          renderDetails={(row) => (
+            <Box data-testid={`detail-${row.id}`}>Detail</Box>
+          )}
+        />
+      </NimbusProvider>
+    );
+
+    const allRows = screen.getAllByRole("row");
+    const firstDataRow = allRows[1];
+
+    expect(firstDataRow).toHaveAttribute("aria-expanded", "false");
+    expect(firstDataRow).toHaveAttribute("aria-controls", "detail-panel-1");
+  });
 });
 
 /**
