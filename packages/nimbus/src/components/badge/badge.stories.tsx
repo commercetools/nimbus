@@ -4,7 +4,7 @@ import { SentimentSatisfied as DemoIcon } from "@commercetools/nimbus-icons";
 import { within, expect } from "storybook/test";
 import { DisplayColorPalettes } from "@/utils/display-color-palettes";
 
-const sizes: BadgeProps["size"][] = ["2xs", "xs", "md"];
+const sizes: BadgeProps["size"][] = ["2xs", "xs", "sm", "md"];
 
 /**
  * Storybook metadata configuration
