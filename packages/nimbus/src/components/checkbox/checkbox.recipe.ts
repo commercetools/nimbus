@@ -16,8 +16,10 @@ export const checkboxSlotRecipe = defineSlotRecipe({
       gap: "200",
       alignItems: "center",
       verticalAlign: "top",
-      minWidth: "600",
       minHeight: "600",
+      "&:has([data-slot='label'])": {
+        minWidth: "600",
+      },
 
       ["&[data-disabled='true']"]: {
         layerStyle: "disabled",
