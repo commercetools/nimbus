@@ -575,6 +575,44 @@ const App = () => {
 }
 ```
 
+### Row detail panels
+
+Use `renderDetails` to show a full-width detail panel below a row when clicked.
+The panel toggles open and closed on each click. This works alongside selection
+and nested rows.
+
+```jsx live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Product', accessor: (row) => row.name },
+    { id: 'category', header: 'Category', accessor: (row) => row.category },
+    { id: 'price', header: 'Price', accessor: (row) => row.price },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Laptop', category: 'Electronics', price: '$999', description: 'A high-performance laptop with 16GB RAM and 512GB SSD.' },
+    { id: '2', name: 'Headphones', category: 'Audio', price: '$199', description: 'Noise-cancelling wireless headphones with 30-hour battery life.' },
+    { id: '3', name: 'Monitor', category: 'Electronics', price: '$449', description: '27-inch 4K monitor with HDR support and USB-C connectivity.' },
+  ];
+
+  return (
+    <Stack gap="300">
+      <Text>Click a row to expand its detail panel.</Text>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        renderDetails={(row) => (
+          <Box p="400">
+            <Heading as="h4" size="sm">{row.name}</Heading>
+            <Text>{row.description}</Text>
+          </Box>
+        )}
+      />
+    </Stack>
+  );
+}
+```
+
 ### With footer
 
 Add pagination or summary content using the `footer` prop:

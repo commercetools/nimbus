@@ -49,6 +49,7 @@ export const DataTableRoot = function DataTableRoot<
     nestedKey,
     onRowClick,
     onDetailsClick,
+    renderDetails,
     disabledKeys,
     onRowAction,
     isResizable,
@@ -81,6 +82,9 @@ export const DataTableRoot = function DataTableRoot<
   );
   const [internalPinnedRows, setInternalPinnedRows] = useState<Set<string>>(
     () => defaultPinnedRows || new Set()
+  );
+  const [detailExpandedRows, setDetailExpandedRows] = useState<Set<string>>(
+    () => new Set()
   );
 
   const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
@@ -153,6 +157,30 @@ export const DataTableRoot = function DataTableRoot<
     });
   }, []);
 
+  const onDetailsClickRef = useRef(onDetailsClick);
+  onDetailsClickRef.current = onDetailsClick;
+
+  const rowsRef = useRef(rows);
+  rowsRef.current = rows;
+
+  const toggleDetails = useCallback((id: string) => {
+    startTransition(() => {
+      setDetailExpandedRows((prev) => {
+        const next = new Set(prev);
+        if (next.has(id)) {
+          next.delete(id);
+        } else {
+          next.add(id);
+        }
+        return next;
+      });
+      const row = rowsRef.current.find((r) => r.id === id);
+      if (row && onDetailsClickRef.current) {
+        onDetailsClickRef.current(row);
+      }
+    });
+  }, []);
+
   const onPinToggleRef = useRef(onPinToggle);
   onPinToggleRef.current = onPinToggle;
 
@@ -193,6 +221,7 @@ export const DataTableRoot = function DataTableRoot<
       filteredRows,
       sortDescriptor,
       expanded,
+      detailExpandedRows,
       pinnedRows,
       pinnedRowIds,
     }),
@@ -201,6 +230,7 @@ export const DataTableRoot = function DataTableRoot<
       filteredRows,
       sortDescriptor,
       expanded,
+      detailExpandedRows,
       pinnedRows,
       pinnedRowIds,
     ]
@@ -221,6 +251,8 @@ export const DataTableRoot = function DataTableRoot<
       nestedKey,
       onSortChange: handleSortChange,
       onRowClick,
+      renderDetails,
+      toggleDetails,
       onDetailsClick,
       toggleExpand,
       activeColumns,
@@ -251,6 +283,8 @@ export const DataTableRoot = function DataTableRoot<
       nestedKey,
       handleSortChange,
       onRowClick,
+      renderDetails,
+      toggleDetails,
       onDetailsClick,
       toggleExpand,
       activeColumns,

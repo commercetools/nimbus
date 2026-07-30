@@ -1,0 +1,8 @@
+---
+"@commercetools/nimbus": minor
+---
+
+Add `renderDetails` prop to DataTable for rendering full-width detail panels
+below rows. Clicking a row toggles the detail panel open/closed. The
+`onDetailsClick` callback fires when a detail panel is toggled. Works alongside
+existing selection, pinning, and nested row expansion features.

@@ -12,6 +12,7 @@ type InteractionContextValue<T extends object = Record<string, unknown>> = {
   filteredRows: DataTableRowItem<T>[];
   sortDescriptor?: SortDescriptor;
   expanded: Set<string>;
+  detailExpandedRows: Set<string>;
   pinnedRows: Set<string>;
   pinnedRowIds: string[];
 };

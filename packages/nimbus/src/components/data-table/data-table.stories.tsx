@@ -2599,6 +2599,225 @@ export const FlexibleNestedChildren: Story = {
   },
 };
 
+/**
+ * ## Row Detail Panels
+ *
+ * Demonstrates the `renderDetails` prop which renders a full-width detail panel
+ * below a row when clicked. The detail panel spans all columns and toggles
+ * open/closed on row click. Works alongside selection and nested expansion.
+ */
+export const RowDetailPanels: Story = {
+  render: () => {
+    return (
+      <DataTable
+        columns={columns}
+        rows={rows}
+        renderDetails={(row) => (
+          <Box p="400">
+            <Heading as="h4" size="sm">
+              Details for {row.id}
+            </Heading>
+            <Text>
+              This is the detail panel content for the row. It spans the full
+              width of the table.
+            </Text>
+          </Box>
+        )}
+        data-testid="detail-panels-table"
+      />
+    );
+  },
+  args: {},
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Table renders without any detail panels open", async () => {
+      const table = await canvas.findByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      const detailRows = canvasElement.querySelectorAll(
+        "[data-detail-row-expanded='true']"
+      );
+      expect(detailRows.length).toBe(0);
+    });
+
+    await step("Clicking a row opens its detail panel", async () => {
+      const allRows = canvas.getAllByRole("row");
+      const firstDataRow = allRows[1];
+      const cells = within(firstDataRow).getAllByRole("gridcell");
+      const nonInteractiveCell = cells.find(
+        (cell) => !within(cell).queryByRole("checkbox")
+      );
+
+      if (nonInteractiveCell) {
+        await userEvent.click(nonInteractiveCell);
+
+        await waitFor(
+          () => {
+            const openDetails = canvasElement.querySelectorAll(
+              "[data-detail-row-expanded='true']"
+            );
+            expect(openDetails.length).toBe(1);
+          },
+          { timeout: 3000 }
+        );
+
+        expect(
+          canvas.getByText(`Details for ${rows[0].id}`)
+        ).toBeInTheDocument();
+      }
+    });
+
+    await step("Clicking the same row closes its detail panel", async () => {
+      const allRows = canvas.getAllByRole("row");
+      const firstDataRow = allRows[1];
+      const cells = within(firstDataRow).getAllByRole("gridcell");
+      const nonInteractiveCell = cells.find(
+        (cell) => !within(cell).queryByRole("checkbox")
+      );
+
+      if (nonInteractiveCell) {
+        await userEvent.click(nonInteractiveCell);
+
+        await waitFor(
+          () => {
+            const openDetails = canvasElement.querySelectorAll(
+              "[data-detail-row-expanded='true']"
+            );
+            expect(openDetails.length).toBe(0);
+          },
+          { timeout: 3000 }
+        );
+      }
+    });
+
+    await step("Detail panel spans all columns", async () => {
+      const allRows = canvas.getAllByRole("row");
+      const firstDataRow = allRows[1];
+      const cells = within(firstDataRow).getAllByRole("gridcell");
+      const nonInteractiveCell = cells.find(
+        (cell) => !within(cell).queryByRole("checkbox")
+      );
+
+      if (nonInteractiveCell) {
+        await userEvent.click(nonInteractiveCell);
+
+        await waitFor(
+          () => {
+            const openDetails = canvasElement.querySelectorAll(
+              "[data-detail-row-expanded='true']"
+            );
+            expect(openDetails.length).toBe(1);
+          },
+          { timeout: 3000 }
+        );
+
+        const detailCell = canvasElement.querySelector("[data-detail-cell]");
+        expect(detailCell).toBeInTheDocument();
+
+        const headerCells = canvasElement.querySelectorAll("thead th");
+        const colSpan = detailCell?.getAttribute("colspan");
+        expect(Number(colSpan)).toBe(headerCells.length);
+      }
+    });
+
+    await step("Multiple rows can have details open", async () => {
+      const allRows = canvas.getAllByRole("row");
+      // First row should already be open from previous step
+      // Click second data row
+      const thirdRow = allRows[3]; // index 3 because detail row is now in between
+      const cells = within(thirdRow).getAllByRole("gridcell");
+      const nonInteractiveCell = cells.find(
+        (cell) => !within(cell).queryByRole("checkbox")
+      );
+
+      if (nonInteractiveCell) {
+        await userEvent.click(nonInteractiveCell);
+
+        await waitFor(
+          () => {
+            const openDetails = canvasElement.querySelectorAll(
+              "[data-detail-row-expanded='true']"
+            );
+            expect(openDetails.length).toBe(2);
+          },
+          { timeout: 3000 }
+        );
+      }
+    });
+  },
+};
+
+/**
+ * ## Row Detail Panels with Selection
+ *
+ * Demonstrates that `renderDetails` works alongside row selection.
+ */
+export const RowDetailPanelsWithSelection: Story = {
+  render: () => {
+    return (
+      <DataTable
+        columns={columns}
+        rows={rows}
+        selectionMode="multiple"
+        renderDetails={(row) => (
+          <Box p="400">
+            <Text>Detail panel for row: {row.id}</Text>
+          </Box>
+        )}
+        data-testid="detail-panels-selection-table"
+      />
+    );
+  },
+  args: {},
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Clicking a checkbox does not toggle detail panel", async () => {
+      const allRows = canvas.getAllByRole("row");
+      const firstDataRow = allRows[1];
+      const checkbox = within(firstDataRow).getByRole("checkbox");
+      await userEvent.click(checkbox);
+
+      await new Promise((resolve) => setTimeout(resolve, 600));
+
+      const openDetails = canvasElement.querySelectorAll(
+        "[data-detail-row-expanded='true']"
+      );
+      expect(openDetails.length).toBe(0);
+      expect(checkbox).toBeChecked();
+    });
+
+    await step(
+      "Clicking a non-interactive cell opens detail panel",
+      async () => {
+        const allRows = canvas.getAllByRole("row");
+        const firstDataRow = allRows[1];
+        const cells = within(firstDataRow).getAllByRole("gridcell");
+        const nonInteractiveCell = cells.find(
+          (cell) =>
+            !within(cell).queryByRole("checkbox") &&
+            !within(cell).queryByRole("button")
+        );
+
+        if (nonInteractiveCell) {
+          await userEvent.click(nonInteractiveCell);
+
+          await waitFor(
+            () => {
+              const openDetails = canvasElement.querySelectorAll(
+                "[data-detail-row-expanded='true']"
+              );
+              expect(openDetails.length).toBe(1);
+            },
+            { timeout: 3000 }
+          );
+        }
+      }
+    );
+  },
+};
+
 export const NoNestedContent: Story = {
   render: (args) => {
     return (

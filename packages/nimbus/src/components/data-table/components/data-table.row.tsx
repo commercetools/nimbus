@@ -68,6 +68,7 @@ function stopPropagationForNonInteractiveElements(e: Event) {
 
 type DataTableRowPerRowProps = {
   isExpanded: boolean;
+  isDetailExpanded: boolean;
   isPinned: boolean;
   isFirstPinned: boolean;
   isLastPinned: boolean;
@@ -78,6 +79,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   row,
   ref,
   isExpanded,
+  isDetailExpanded,
   isPinned,
   isFirstPinned,
   isLastPinned,
@@ -97,6 +99,8 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     isTruncated,
     onRowClick,
     onRowAction,
+    renderDetails,
+    toggleDetails,
     togglePin,
     selectRowLabel,
   } = useStableDataTableContext<T>();
@@ -153,9 +157,11 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   const expandViaRowClick =
     hasExpandableContent && !showExpandColumn && !onRowClick;
 
+  const isClickable = !!(onRowClick || renderDetails || expandViaRowClick);
+
   const handleRowClick = useCallback(
     (e: Event) => {
-      if (!onRowClick && !expandViaRowClick) return;
+      if (!isClickable) return;
       const isInteractiveElement = getIsTableRowChildElementInteractive(e);
       if (!isInteractiveElement) {
         const hasSelectedText =
@@ -171,6 +177,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
             if (expandViaRowClick && hasNestedContent) {
               toggleExpand(row.id);
             }
+            if (renderDetails) {
+              toggleDetails(row.id);
+            }
             onRowClick?.(row);
           } else {
             if (onRowAction) {
@@ -181,7 +190,17 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         }, 300);
       }
     },
-    [onRowClick, onRowAction, row, isDisabled, expandViaRowClick, toggleExpand]
+    [
+      isClickable,
+      onRowClick,
+      renderDetails,
+      toggleDetails,
+      onRowAction,
+      row,
+      isDisabled,
+      expandViaRowClick,
+      toggleExpand,
+    ]
   );
 
   /**
@@ -395,10 +414,10 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           columns={activeColumns}
           ref={rowRef}
           id={row.id}
-          data-clickable={!!onRowClick && !isDisabled}
+          data-clickable={isClickable && !isDisabled}
           className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
           {...restProps}
-          dependencies={[isExpanded, search, isTruncated]}
+          dependencies={[isExpanded, isDetailExpanded, search, isTruncated]}
         >
           {/** Internal/non-data columns like drag, selection, and expand
            * need to be in the same order in the header and row components*/}
@@ -558,6 +577,29 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                   ? `${(row[nestedKey] as unknown[]).length} nested items`
                   : nestedKey && (row[nestedKey] as React.ReactNode)
                 : null}
+            </DataTableCell>
+          </RaRow>
+        </DataTableRowSlot>
+      )}
+
+      {renderDetails && (
+        <DataTableRowSlot {...styleProps} asChild>
+          <RaRow
+            data-detail-row-expanded={isDetailExpanded ? "true" : "false"}
+            dependencies={[isDetailExpanded]}
+          >
+            <DataTableCell
+              isDisabled={isDisabled}
+              colSpan={
+                activeColumns.length +
+                (allowsDragging ? 1 : 0) +
+                (showExpandColumn ? 1 : 0) +
+                (showSelectionColumn ? 1 : 0) +
+                1
+              }
+              data-detail-cell
+            >
+              {isDetailExpanded ? renderDetails(row) : null}
             </DataTableCell>
           </RaRow>
         </DataTableRowSlot>

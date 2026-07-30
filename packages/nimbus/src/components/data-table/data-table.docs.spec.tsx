@@ -280,10 +280,114 @@ describe("DataTable - Row interactions", () => {
 });
 
 /**
+ * @docs-section row-detail-panels
+ * @docs-title Row Detail Panel Tests
+ * @docs-description Test renderDetails prop for inline detail panels
+ * @docs-order 5
+ */
+describe("DataTable - Row detail panels", () => {
+  it("renders a detail panel below a row when clicked", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          renderDetails={(row) => (
+            <Box data-testid={`detail-${row.id}`}>
+              Detail content for {row.id}
+            </Box>
+          )}
+        />
+      </NimbusProvider>
+    );
+
+    // No detail panels open initially
+    expect(screen.queryByTestId("detail-1")).not.toBeInTheDocument();
+
+    // Click the first data row
+    const allRows = screen.getAllByRole("row");
+    const firstDataRow = allRows[1];
+    const clickableCell = within(firstDataRow).getAllByRole("gridcell")[0];
+    await user.click(clickableCell);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("detail-1")).toBeInTheDocument();
+      expect(screen.getByText("Detail content for 1")).toBeInTheDocument();
+    });
+  });
+
+  it("toggles detail panel closed on second click", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          renderDetails={(row) => (
+            <Box data-testid={`detail-${row.id}`}>
+              Detail content for {row.id}
+            </Box>
+          )}
+        />
+      </NimbusProvider>
+    );
+
+    const allRows = screen.getAllByRole("row");
+    const firstDataRow = allRows[1];
+    const clickableCell = within(firstDataRow).getAllByRole("gridcell")[0];
+
+    // Open
+    await user.click(clickableCell);
+    await waitFor(() => {
+      expect(screen.getByTestId("detail-1")).toBeInTheDocument();
+    });
+
+    // Close
+    await user.click(clickableCell);
+    await waitFor(() => {
+      expect(screen.queryByTestId("detail-1")).not.toBeInTheDocument();
+    });
+  });
+
+  it("fires onRowClick alongside renderDetails toggle", async () => {
+    const user = userEvent.setup();
+    const handleRowClick = vi.fn();
+
+    render(
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          onRowClick={handleRowClick}
+          renderDetails={(row) => (
+            <Box data-testid={`detail-${row.id}`}>
+              Detail content for {row.id}
+            </Box>
+          )}
+        />
+      </NimbusProvider>
+    );
+
+    const allRows = screen.getAllByRole("row");
+    const firstDataRow = allRows[1];
+    const clickableCell = within(firstDataRow).getAllByRole("gridcell")[0];
+    await user.click(clickableCell);
+
+    await waitFor(() => {
+      expect(handleRowClick).toHaveBeenCalled();
+      expect(screen.getByTestId("detail-1")).toBeInTheDocument();
+    });
+  });
+});
+
+/**
  * @docs-section search-filtering
  * @docs-title Search and Filtering Tests
  * @docs-description Test search functionality
- * @docs-order 5
+ * @docs-order 6
  */
 describe("DataTable - Search and filtering", () => {
   it("filters rows based on search term", () => {

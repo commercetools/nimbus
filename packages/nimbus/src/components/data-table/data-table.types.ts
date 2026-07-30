@@ -129,6 +129,8 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     onSortChange?: (descriptor: SortDescriptor) => void;
     onSelectionChange?: (keys: Selection) => void;
     onRowClick?: (row: DataTableRowItem<T>) => void;
+    renderDetails?: (row: DataTableRowItem<T>) => ReactNode;
+    toggleDetails: (id: string) => void;
     toggleExpand: (id: string) => void;
     activeColumns: DataTableColumnItem<T>[];
     filteredRows: DataTableRowItem<T>[];
@@ -203,7 +205,9 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   defaultSelectedKeys?: Selection;
   onSelectionChange?: (keys: Selection) => void;
   onRowClick?: (row: DataTableRowItem<T>) => void;
+  /** Callback fired when a row's detail panel is toggled */
   onDetailsClick?: (row: DataTableRowItem<T>) => void;
+  /** Renders a full-width detail panel below a row when clicked. Clicking the row toggles the panel open/closed. */
   renderDetails?: (row: DataTableRowItem<T>) => ReactNode;
   children?: ReactNode;
   density?: DataTableDensity;
