@@ -1539,7 +1539,7 @@ export const FocusedHandle: Story = {
 
     await step("Tab reaches the handle and paints its track", async () => {
       await userEvent.tab();
-      await expect(handle).toHaveFocus();
+      await waitFor(() => expect(handle).toHaveFocus());
       await waitFor(() =>
         expect(handle).toHaveAttribute("data-focus-visible", "true")
       );
@@ -1592,7 +1592,7 @@ export const Collapsed: Story = {
 
     await step("The locked handle still paints its focus track", async () => {
       await userEvent.tab();
-      await expect(handle).toHaveFocus();
+      await waitFor(() => expect(handle).toHaveFocus());
       await waitFor(() =>
         expect(handle).toHaveAttribute("data-focus-visible", "true")
       );
