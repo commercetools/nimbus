@@ -169,9 +169,6 @@ export const AllowMultiple: Story = {
   ),
 };
 
-/**
- * Keyboard focus on an item trigger.
- */
 export const Focused: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
@@ -283,9 +280,6 @@ export const WithStyleProps: Story = {
   ),
 };
 
-/**
- * SmokeTest - size x expanded/collapsed.
- */
 export const SmokeTest: Story = {
   // VRT: the axes interact - size drives the panel padding, which only renders while expanded.
   tags: ["vrt"],

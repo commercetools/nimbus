@@ -103,7 +103,7 @@ export const Default: Story = {
 // ============================================================
 
 export const Vertical: Story = {
-  // VRT: the stacked 40/60 layout. The handle is invisible at rest, so this frame is about pane geometry; the vertical handle's swapped dimensions are asserted numerically below.
+  // VRT: stacked pane geometry; the handle is invisible at rest.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   args: {
@@ -148,7 +148,7 @@ export const Vertical: Story = {
 // ============================================================
 
 export const AsideTrailing: Story = {
-  // VRT: the only frame where the aside trails, so the only one proving `size` lands on the trailing pane - every other snapshot has it leading, and the plays check aria values rather than rendered geometry.
+  // VRT: the only frame with the aside trailing; the plays check aria values, not geometry.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   args: {
@@ -1494,13 +1494,9 @@ export const PersistedResponsiveSizes: Story = {
 };
 
 // ============================================================
-// The handle only paints while focus-visible, and `handle.focus()` doesn't set
-// it — these tab for real.
+// Collapsed (aside at its rail)
 // ============================================================
 
-/**
- * The collapsed aside layout, at its 6% rail.
- */
 export const Collapsed: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },

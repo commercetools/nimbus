@@ -142,7 +142,6 @@ export const Base: Story = {
  * The resting open state, rendered open on mount. InfoDialog renders no footer.
  */
 export const Open: Story = {
-  // VRT: the footerless composition.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (

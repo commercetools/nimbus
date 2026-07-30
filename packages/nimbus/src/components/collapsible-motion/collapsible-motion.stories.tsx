@@ -395,7 +395,6 @@ export const AccessibilityTest: Story = {
     expect(button).toHaveAttribute("aria-expanded", "false");
     expect(button).toHaveAttribute("aria-controls", panel.id);
 
-    // Collapsed content is hidden from assistive tech and from the tab order
     expect(panel).toHaveAttribute("aria-hidden", "true");
     expect(content).not.toBeVisible();
 
@@ -405,7 +404,6 @@ export const AccessibilityTest: Story = {
     await userEvent.keyboard(" ");
     expect(button).toHaveAttribute("aria-expanded", "true");
 
-    // Expanding exposes the panel to assistive tech
     await waitFor(() => expect(panel).toHaveAttribute("aria-hidden", "false"));
     expect(content).toBeVisible();
   },

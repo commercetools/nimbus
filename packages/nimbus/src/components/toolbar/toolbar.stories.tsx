@@ -752,7 +752,7 @@ const toolbarSizes = ["xs", "md"] as const;
 const toolbarVariants = ["plain", "outline"] as const;
 
 export const SmokeTest: Story = {
-  // VRT: all three axes interact - `--toolbar-spacing` sets padding and gap, `--separator-size` becomes the separator's height or width depending on orientation, and the outline traces whatever shape those produce.
+  // VRT: the axes interact - spacing and separator size are size-driven, and orientation decides which dimension each takes.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (

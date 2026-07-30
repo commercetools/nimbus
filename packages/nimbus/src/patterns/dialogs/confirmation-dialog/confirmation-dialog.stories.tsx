@@ -304,7 +304,6 @@ export const DestructiveIntent: Story = {
  * The resting open state at destructive intent.
  */
 export const OpenDestructive: Story = {
-  // VRT: destructive intent - critical confirm.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   args: {
