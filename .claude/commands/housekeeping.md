@@ -353,8 +353,7 @@ For each dependency group (or the specified target group):
 
    No manual dispatch needed - the changed-files gate watches `pnpm-lock.yaml`,
    so the PR auto-runs a full Chromatic snapshot. Review the visual diff before
-   merging. See
-   [Chromatic Visual Testing](../../docs/chromatic-visual-testing.md).
+   merging. See [Chromatic CI Runbook](../../docs/chromatic-ci.md).
 
 ---
 

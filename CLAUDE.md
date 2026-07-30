@@ -501,8 +501,10 @@ See [Testing Strategy Guide](./docs/file-type-guidelines/testing-strategy.md)
 for detailed rules and examples.
 
 Visual regression is handled separately by Chromatic in CI. See
-[Chromatic Visual Testing](./docs/chromatic-visual-testing.md) for triggers,
-baselines, the manual full-snapshot run, and merge gating.
+[Chromatic CI Runbook](./docs/chromatic-ci.md) for triggers, baselines, the
+manual full-snapshot run, and merge gating, and
+[Chromatic Visual Regression: Authoring Stories](./docs/chromatic-visual-testing.md)
+for which stories to snapshot and why.
 
 ### Git Conventions
 

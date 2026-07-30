@@ -70,6 +70,8 @@ review:
 - Recipes: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-recipes skill report
 - Slots: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-slots skill report
 - Stories: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-stories skill report
+- VRT coverage: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - your own check, recipe vs.
+  opted-in stories (see "Chromatic (VRT) Coverage Review")
 - i18n: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-i18n skill report
 - Dev Docs: [✅ PASS / ❌ FAIL / ⚠️ WARNING] - writing-developer-documentation
   skill report
@@ -104,6 +106,39 @@ instead of consumer integration patterns (form libraries, async data).
 See
 [Testing Strategy Guide](../../docs/file-type-guidelines/testing-strategy.md).
 
+### Chromatic (VRT) Coverage Review
+
+Visual coverage is **opt-in**, so its failure mode is silence: a story file with
+no `tags: ["vrt"]` story reads as finished while having zero visual coverage.
+Nothing else in the review will catch that, so check it explicitly.
+
+Read the component's `*.recipe.ts` first - the surface list is derived from the
+recipe, never from the story names. Then verify:
+
+- [ ] Some story opts in (`tags: ["vrt"]` +
+      `parameters: { chromatic: { disableSnapshot: false } }`), **or** the
+      recipe paints nothing and `meta` carries a one-line note saying so
+- [ ] Every state the recipe paints distinctly is reachable in some snapshotted
+      frame - including states no prop names (RTL, an inherited `colorPalette`)
+      and every child type a comma-separated selector list reaches
+- [ ] Interacting axes folded into one `SmokeTest` (rendered last); independent
+      axes given their own showcase stories rather than a cross-product
+- [ ] States a matrix can't hold have their own snapshotted story - `Focused`
+      per **independent** focus surface, open overlays, condition-fired states
+      (sticky/overflow/variant-zeroed)
+- [ ] Snapshotted stories are deterministic - no live dates, no stray focus ring
+      (a `userEvent.click` leaves one), caret hidden on a focused text input,
+      async-derived state awaited
+- [ ] Any state deliberately left un-snapshotted names where its visual **is**
+      covered. Reject "it's behavioral" on its own, and reject reasons resting
+      on `aria-*` values or callback arguments - those prove state, not pixels
+
+Flag a missing opt-in as a **critical violation**, not a warning: it ships a
+component with no visual regression protection.
+
+Rules and rationale: `docs/file-type-guidelines/stories.md`, then
+`docs/chromatic-visual-testing.md` for calls a rule doesn't settle.
+
 ### When You Review Directly vs. Invoke Skills
 
 **YOU review directly:**
@@ -113,6 +148,8 @@ See
 - Barrel exports and module structure
 - Build/test execution results
 - Cross-component dependencies
+- **VRT coverage** - it spans the recipe and the story file, so no single
+  file-type skill can see the whole picture
 
 **INVOKE skills:**
 

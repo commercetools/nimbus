@@ -119,13 +119,42 @@ The task list MUST include these file creation steps in this order:
    - Run linting and TypeScript checks (violations block shipping)
    - Run the full test suite
 
-4. **Validation steps** - You MUST verify standards compliance before shipping:
+4. **Instrument for Chromatic (VRT)** - You MUST include this as its own task,
+   after the recipe exists and before validation. Snapshots are opt-in, so a
+   component with no opted-in story has **zero** visual coverage and this step
+   is the only thing that prevents that.
+
+   The task MUST say: audit the finished stories per
+   `docs/chromatic-visual-testing.md`, then opt each genuine visual state in
+   with `tags: ["vrt"]` +
+   `parameters: { chromatic: { disableSnapshot: false } }`. Derive the list from
+   the **recipe**, not from the story names.
+
+   Acceptance criteria for the task:
+   - Every state the recipe paints distinctly is reachable in some snapshotted
+     frame; interacting axes folded into one `SmokeTest` (rendered last),
+     independent axes given their own showcase stories
+   - States a matrix can't hold have their own snapshotted story (`Focused` per
+     independent focus surface, open overlay, condition-fired states)
+   - Behavior-only stories left un-snapshotted (project default), and any state
+     deliberately not snapshotted has a reason naming where its visual **is**
+     covered
+   - A component whose recipe paints nothing gets **no** VRT plus a one-line
+     `meta` note, so the omission reads as deliberate
+   - Snapshotted stories are deterministic: no live dates, no stray focus ring,
+     caret hidden on a focused text input, async-derived state awaited
+   - A row added to `docs/chromatic/chromatic-vrt-coverage-matrix.md` recording
+     the decision for every story
+
+5. **Validation steps** - You MUST verify standards compliance before shipping:
    - Component TypeScript compiles without errors
    - Storybook tests pass (play functions execute without error)
    - Unit tests pass (if applicable for hooks/utils)
    - Linting passes (`pnpm lint`)
    - Documentation is complete and accurate
    - Component is exported from main `packages/nimbus` barrel export
+   - **VRT instrumented** - at least one story opts in, or a `meta` note
+     documents why the component gets none
 
 **Proposal Completion**: You MUST ensure the proposal includes clear acceptance
 criteria for each task. Acceptance criteria help implementers know when they're
@@ -143,6 +172,9 @@ done and prevent ambiguous task definitions.
       component, index)
 - [ ] MUST follow the order specified in Step 3
 - [ ] MUST include play functions for all component behaviors in story file
+- [ ] MUST include a **Chromatic (VRT) instrumentation task** with acceptance
+      criteria - not folded into the story-writing task, since snapshots are
+      opt-in and a missed opt-in means zero visual coverage
 - [ ] SHOULD use appropriate skills (developer-documentation,
       designer-documentation) for documentation tasks
 - [ ] MUST explicitly check standards compliance in validation steps

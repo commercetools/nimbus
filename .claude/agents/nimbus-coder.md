@@ -105,7 +105,11 @@ See
    - Main component implementation (YOU handle this directly)
 
 3. **Quality Layer** (after integration):
-   - Invoke `writing-stories` for Storybook stories + tests
+   - Invoke `writing-stories` for Storybook stories + tests. This includes
+     **Chromatic (VRT) instrumentation** - snapshots are opt-in, so a story file
+     with no `tags: ["vrt"]` story leaves the component at **zero** visual
+     coverage. The story task is not done until either some story opts in, or
+     the recipe paints nothing and `meta` carries a one-line note saying so.
    - Invoke `writing-i18n` if component has default labels
 
 4. **Documentation Layer** (after quality):
@@ -153,6 +157,10 @@ If a skill reports validation failures:
   /docs/file-type-guidelines/
 - ALWAYS register recipes in theme configuration when creating new styling
 - ALWAYS include play functions for interactive components in stories
+- ALWAYS instrument stories for Chromatic - every state the recipe paints
+  distinctly must be reachable in some snapshotted frame. Derive that list from
+  the **recipe**, not from the story names. Snapshots are opt-in, so silence
+  means no coverage, not default coverage
 - ALWAYS use jsx live blocks in MDX documentation (never Storybook imports)
 - ALWAYS follow the compound component pattern with .Root as first property when
   applicable

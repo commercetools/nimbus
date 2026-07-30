@@ -1,7 +1,7 @@
 name: Chromatic
 
 # Visual regression testing. Runbook (triggers, baselines, gating, the manual
-# button): docs/chromatic-visual-testing.md
+# button): docs/chromatic-ci.md
 on:
   # Manual full build: TurboSnap off, gate bypassed. See runbook "The manual button".
   workflow_dispatch:

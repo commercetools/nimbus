@@ -3,6 +3,7 @@ currently checked out branch.
 
 Branch argument: $ARGUMENTS
 
-Use the nimbus-reviewer agent to review the current branch's changes vs `main`
-for accuracy, effectiveness, consistency, performance, security posture, and any
-potential for adding bugs, regressions or undue maintenance.
+Use the nimbus-reviewer agent to review the current branch's changes vs
+`origin/main` (not local `main`, which is often stale) for accuracy,
+effectiveness, consistency, performance, security posture, and any potential for
+adding bugs, regressions or undue maintenance.
