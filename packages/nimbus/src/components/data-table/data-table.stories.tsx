@@ -5173,21 +5173,23 @@ export const HiddenPinColumn: Story = {
       const table = await canvas.findByRole("grid");
       expect(table).toBeInTheDocument();
 
-      const pinHeader = canvasElement.querySelector(".pin-rows-column-header");
-      expect(pinHeader).toBeNull();
+      const pinHeader = canvas.queryByRole("columnheader", {
+        name: /pin rows/i,
+      });
+      expect(pinHeader).not.toBeInTheDocument();
     });
 
     await step("Pin buttons are not rendered in any row", async () => {
-      const pinButtons = canvasElement.querySelectorAll(
-        '[data-slot="pin-row-cell"]'
-      );
+      const pinButtons = canvas.queryAllByRole("button", {
+        name: /pin row|unpin row/i,
+      });
       expect(pinButtons.length).toBe(0);
     });
 
     await step("Data columns still render correctly", async () => {
       expect(canvas.getByText("Name")).toBeInTheDocument();
-      const dataRows = canvasElement.querySelectorAll("tbody tr");
-      expect(dataRows.length).toBeGreaterThan(0);
+      const dataRows = canvas.getAllByRole("row");
+      expect(dataRows.length).toBeGreaterThan(1);
     });
   },
 };
@@ -5222,15 +5224,17 @@ export const HiddenExpandColumn: Story = {
       const table = await canvas.findByRole("grid");
       expect(table).toBeInTheDocument();
 
-      const expandHeader = canvasElement.querySelector(".expand-column-header");
-      expect(expandHeader).toBeNull();
+      const expandHeader = canvas.queryByRole("columnheader", {
+        name: /expand rows/i,
+      });
+      expect(expandHeader).not.toBeInTheDocument();
     });
 
     await step("Expand chevron buttons are not rendered", async () => {
-      const expandCells = canvasElement.querySelectorAll(
-        '[data-slot="expand"]'
-      );
-      expect(expandCells.length).toBe(0);
+      const expandButtons = canvas.queryAllByRole("button", {
+        name: /expand|collapse/i,
+      });
+      expect(expandButtons.length).toBe(0);
     });
 
     await step("Row click expands nested content", async () => {
@@ -5300,20 +5304,22 @@ export const HiddenPinAndExpandColumns: Story = {
       const table = await canvas.findByRole("grid");
       expect(table).toBeInTheDocument();
 
-      const pinHeader = canvasElement.querySelector(".pin-rows-column-header");
-      expect(pinHeader).toBeNull();
+      const pinHeader = canvas.queryByRole("columnheader", {
+        name: /pin rows/i,
+      });
+      expect(pinHeader).not.toBeInTheDocument();
 
-      const expandHeader = canvasElement.querySelector(".expand-column-header");
-      expect(expandHeader).toBeNull();
+      const expandHeader = canvas.queryByRole("columnheader", {
+        name: /expand rows/i,
+      });
+      expect(expandHeader).not.toBeInTheDocument();
     });
 
     await step(
       "Only data columns are present (no internal columns)",
       async () => {
-        const headerCells = canvasElement.querySelectorAll(
-          ".data-table-header th"
-        );
-        expect(headerCells.length).toBe(2);
+        const columnHeaders = canvas.getAllByRole("columnheader");
+        expect(columnHeaders.length).toBe(2);
       }
     );
 

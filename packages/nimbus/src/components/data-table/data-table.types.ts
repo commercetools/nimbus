@@ -220,7 +220,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   onExpandRowsChange?: (expanded: Set<string>) => void;
   /** Whether to show the pin column. Defaults to `true`. */
   allowsPinning?: boolean;
-  /** Whether to show the expand chevron column. When `false`, rows with nested content can still be expanded via row click. Defaults to `true`. */
+  /** Whether to show the expand chevron column. When `false` and no `onRowClick` is provided, rows with nested content can still be expanded via row click. When `onRowClick` is provided it takes precedence and the expand-via-click behavior is disabled. Defaults to `true`. */
   allowsExpandColumn?: boolean;
   pinnedRows?: Set<string>;
   defaultPinnedRows?: Set<string>;

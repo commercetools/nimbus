@@ -150,7 +150,8 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     row[nestedKey] &&
     (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
 
-  const expandViaRowClick = hasExpandableContent && !showExpandColumn;
+  const expandViaRowClick =
+    hasExpandableContent && !showExpandColumn && !onRowClick;
 
   const handleRowClick = useCallback(
     (e: Event) => {
@@ -180,15 +181,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         }, 300);
       }
     },
-    [
-      onRowClick,
-      onRowAction,
-      row,
-      isDisabled,
-      expandViaRowClick,
-      hasNestedContent,
-      toggleExpand,
-    ]
+    [onRowClick, onRowAction, row, isDisabled, expandViaRowClick, toggleExpand]
   );
 
   /**
