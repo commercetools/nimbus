@@ -5,6 +5,7 @@ import {
   Button,
   Checkbox,
   Flex,
+  Stack,
 } from "@commercetools/nimbus";
 import { expect, userEvent, waitFor, within } from "storybook/test";
 
@@ -61,7 +62,13 @@ export const Basic: Story = {
   },
 };
 
+/**
+ * `Accordion.HeaderRightContent` is pulled out of the header's children into its
+ * own slot, splitting the header into trigger + right cluster.
+ */
 export const WithHeaderItemsToRight: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Accordion.Root>
       <Accordion.Item value="a">
@@ -86,31 +93,30 @@ export const WithHeaderItemsToRight: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
-    const additionalButtons = canvas.getAllByRole("button");
     const trigger = canvas.getByRole("button", { name: "Second Item" });
+    const panel = canvas.getAllByRole("group", { hidden: true })[1];
 
-    await step("Additional buttons don't trigger accordion", async () => {
-      const panel = canvas.getAllByRole("group", { hidden: true })[1];
+    await step("Header-right buttons don't toggle the item", async () => {
       await expect(panel).not.toBeVisible();
 
-      // Click additional buttons
-      for (const button of Array.from(additionalButtons)) {
-        if (button !== trigger) {
-          await userEvent.click(button);
-          await expect(panel).not.toBeVisible();
-        }
+      for (const name of ["First action", "Second Action"]) {
+        await userEvent.click(canvas.getByRole("button", { name }));
+        await expect(panel).not.toBeVisible();
       }
     });
 
-    await step("Main trigger still works", async () => {
-      const panel = canvas.getAllByRole("group", { hidden: true })[1];
+    await step("The item trigger expands the panel", async () => {
       await userEvent.click(trigger);
       await expect(panel).toBeVisible();
     });
 
-    await step("Main trigger still works", async () => {
+    await step("The item trigger collapses the panel again", async () => {
       await userEvent.click(trigger);
+      await expect(panel).not.toBeVisible();
     });
+
+    // Clicking the trigger leaves it focus-visible; blur so its ring isn't snapshotted.
+    trigger.blur();
   },
 };
 
@@ -163,9 +169,45 @@ export const AllowMultiple: Story = {
   ),
 };
 
-export const Disabled: Story = {
+/**
+ * Keyboard focus on an item trigger.
+ */
+export const Focused: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
-    <Accordion.Root isDisabled>
+    <Accordion.Root>
+      {items.map((item) => (
+        <Accordion.Item key={item.value} value={item.value}>
+          <Accordion.Header>{item.title}</Accordion.Header>
+          <Accordion.Content>{item.text}</Accordion.Content>
+        </Accordion.Item>
+      ))}
+    </Accordion.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Tab moves focus to the first item trigger", async () => {
+      await userEvent.tab();
+      await waitFor(() =>
+        expect(
+          canvas.getByRole("button", { name: items[0].title })
+        ).toHaveFocus()
+      );
+    });
+  },
+};
+
+/**
+ * A disabled group. Only the trigger dims, so the first item is left expanded to
+ * show the dimmed header above an undimmed panel.
+ */
+export const Disabled: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Accordion.Root isDisabled defaultExpandedKeys={["a"]}>
       {items.map((item, index) => (
         <Accordion.Item key={index} value={item.value}>
           <Accordion.Header>{item.title}</Accordion.Header>
@@ -238,5 +280,35 @@ export const WithStyleProps: Story = {
         </Accordion.Content>
       </Accordion.Item>
     </Accordion.Root>
+  ),
+};
+
+/**
+ * SmokeTest - size x expanded/collapsed.
+ */
+export const SmokeTest: Story = {
+  // VRT: the axes interact - size drives the panel padding, which only renders while expanded.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="800">
+      {sizes.map((size) => (
+        <Accordion.Root
+          key={size}
+          size={size}
+          allowsMultipleExpanded
+          defaultExpandedKeys={[`${size}-expanded`]}
+        >
+          <Accordion.Item value={`${size}-expanded`}>
+            <Accordion.Header>{size} / expanded</Accordion.Header>
+            <Accordion.Content>{size} expanded panel</Accordion.Content>
+          </Accordion.Item>
+          <Accordion.Item value={`${size}-collapsed`}>
+            <Accordion.Header>{size} / collapsed</Accordion.Header>
+            <Accordion.Content>{size} collapsed panel</Accordion.Content>
+          </Accordion.Item>
+        </Accordion.Root>
+      ))}
+    </Stack>
   ),
 };

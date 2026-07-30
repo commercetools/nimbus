@@ -34,6 +34,13 @@ simultaneously (not as separate stories):
 Unit tests of utilities and hooks live in `*.spec.tsx`, and consumer examples in
 `*.docs.spec.tsx` - separate test categories, not story roles.
 
+**The play requirement is per component, not per story.** Give a story its own
+play when its name makes a behavioral claim, or when its snapshot needs an
+interaction to exist (focus ring, opened overlay, scroll-fired sticky/overflow).
+Do NOT add one when the claim is a resting visual props alone produce - the
+snapshot and the always-on a11y check already test it. Never add a play for
+completeness.
+
 Whichever role(s) a story serves, it MUST be:
 
 - **Concise** - the minimal setup to exercise one thing.
@@ -396,7 +403,9 @@ live in docs/chromatic-visual-testing.md.
 
 - **Enumerate surfaces from source, never memory** - every painting selector,
   `variant`/`size` key, conditional prop, and ambient axis (RTL/locale/theme);
-  snapshot the cross-product, then diff against sibling components' story sets.
+  snapshot the cross-product, then diff against sibling components' story sets. A
+  comma-separated selector list is one surface **per child type it names** - render
+  each, or that half is baselined nowhere.
 - **Cover every state that changes pixels**, economically: interacting axes fold into
   one `SmokeTest`, each state it can't hold gets its own story. Never drop a state to
   save cost.
@@ -423,7 +432,10 @@ live in docs/chromatic-visual-testing.md.
 - **A state inert in the default frame** - snapshot the condition that fires it. Sticky
   needs a scroll in the play (bounded `overflow: auto` ancestor, `offsetHeight`-derived
   target, each combination its own frame); `scrollBehavior="inside"` needs overflowing
-  content.
+  content; a surface a variant zeroes needs the variant that paints it (a showcase left
+  at that default baselines blank boxes while reading as coverage); an inherited
+  property needs a consumer value to inherit. Ask what in the frame makes the rule
+  fire - if nothing does, the baseline is recording the state **off**.
 - **Primitives that paint no surface get no VRT** - pass-through style props, a recipe
   that paints nothing (Group), or headless `display: contents` (Region). Leave a
   one-line note on `meta`. One that does paint gets a normal audit.
@@ -774,6 +786,9 @@ You MUST validate against these requirements:
 - [ ] A `*Field` pattern has exactly **two** snapshots, with every delegation named
 - [ ] No `No` verdict rests on the play's end state; snapshotted stories that end
       focused call `blur()`
+- [ ] No `No` verdict rests on an assertion that tests **state instead of pixels** -
+      `aria-*` values, callback arguments and attributes prove the state, not the
+      rendered layout, so they can't be why a visual goes uncaptured
 - [ ] **Primitives that paint no surface** get **no VRT at all**, with a one-line
       note on `meta` - pass-through style props, a recipe that paints nothing
       (Group), or headless `display: contents` (Region). Check whether the recipe
@@ -813,6 +828,12 @@ You MUST validate against these requirements:
       unless intended. Chromatic captures the play's final state and nothing
       blurs it, so a play can be assertion-honest yet still snapshot the wrong
       picture (blur, reset, or split the story)
+- [ ] No play added **for completeness** - each one is there because the story's
+      name makes a behavioral claim or its frame needs an interaction to exist; a
+      resting visual props alone produce is covered by the snapshot + a11y check
+- [ ] A story left focused by `userEvent.click` is blurred - React Aria keeps
+      `data-focus-visible` set after a synthetic click, so the ring lands in the
+      capture even though a real mouse click wouldn't paint it
 - [ ] The interacting-axes matrix is named **`SmokeTest`** and rendered **last**
       (not `Variants`/`VariantsAndSizes`/etc.); the axis list lives in the doc
       comment

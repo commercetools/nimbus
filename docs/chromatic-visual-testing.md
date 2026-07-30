@@ -313,9 +313,13 @@ which no play-dispatchable event sets.
   though the field "looks like default." Any "renders like default" call must
   name the exact delta you checked. Also account for **ambient axes** no prop
   names - RTL/`dir` (mirrored adornment layout), locale, theme - and for
-  built-in adornments. Then **diff against sibling components' story sets**: a
-  surface a peer snapshots but yours doesn't (e.g. `RTLSupport`) is a gap until
-  you can name why it doesn't apply.
+  built-in adornments. **A comma-separated selector list is as many surfaces as
+  it names**, and reads like one rule: Toolbar styles
+  `& .nimbus-group, & .nimbus-toggle-button-group__root` together, so a matrix
+  built from `Group` alone leaves the toggle-group half baselined nowhere - a
+  frame has to contain each child type the rule reaches. Then **diff against
+  sibling components' story sets**: a surface a peer snapshots but yours doesn't
+  (e.g. `RTLSupport`) is a gap until you can name why it doesn't apply.
 - **One focus snapshot per reachable focus surface.** A component with multiple
   independent focus targets - fused/adjacent focusable sub-controls, or
   `_focusWithin` on more than one region - needs a focus story per target, since
@@ -433,7 +437,15 @@ which no play-dispatchable event sets.
   to land on the frame, or author one that does. "Ends focused", "ends open",
   "ends cleaned up", "drifts because nothing is pinned" are work to do.
   Conversely a snapshotted story that ends focused needs `blur()`, or the ring
-  and caret land in the baseline.
+  and caret land in the baseline - and **a click leaves it focused**: React Aria
+  keeps `data-focus-visible` set after `userEvent.click`, so a clicked trigger
+  paints its ring even though a real mouse click wouldn't.
+- **A play on a snapshotted story is a determinism liability, so don't add one
+  for completeness.** The capture is its end state, so each interaction is
+  another frame to land deliberately, while a resting visual props alone produce
+  is already tested by the snapshot plus the always-on a11y check. The
+  plays-for-interactive-components rule is per **component**, not per story; see
+  [stories.md](./file-type-guidelines/stories.md) for which stories need one.
 - **A compound component's unit is the recipe rule, not the realistic
   composition.** With several optional slots the pull is to snapshot every
   plausible arrangement - DefaultPage's info/form/tabular x main/detail. Slot
@@ -449,9 +461,19 @@ which no play-dispatchable event sets.
   in the play and capture pinned - that needs a **bounded scroll port**
   (`height: 100%` resolves against nothing otherwise) and an
   **`offsetHeight`-derived** target, so a padding-token change can't silently
-  stop it scrolling past. Overflow is the other trigger seen so far:
-  `scrollBehavior="inside"` is only `maxH` + `overflow: auto`, so it wants tall
-  content, not a scroll.
+  stop it scrolling past. Three more triggers seen so far:
+
+  - **Overflow.** `scrollBehavior="inside"` is only `maxH` + `overflow: auto`,
+    so it wants tall content, not a scroll.
+  - **A variant that zeroes the surface.** ScrollArea's default `hover` sets
+    `scrollbar { opacity: 0 }`, so the matrix has to pin `always` to paint a
+    track at all - and its `Sizes` showcase, left at the default, baselines four
+    blank boxes while its width assertions still pass.
+  - **An inherited property with nothing to inherit.** ScrollArea's viewport
+    sets `borderRadius: inherit`, inert until a consumer passes a radius, so the
+    rounded-corner clipping was baselined nowhere until the matrix cells set
+    one.
+
 - **Primitives with no painted surface get no VRT at all.** The test isn't "has
   a `.recipe.ts`" - it's **does it paint, and is there a state space to
   enumerate?** Three shapes fail it, and each gets zero snapshots plus a

@@ -103,6 +103,9 @@ export const Default: Story = {
 // ============================================================
 
 export const Vertical: Story = {
+  // VRT: the stacked 40/60 layout. The handle is invisible at rest, so this frame is about pane geometry; the vertical handle's swapped dimensions are asserted numerically below.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     orientation: "vertical",
     defaultSize: 40,
@@ -120,10 +123,21 @@ export const Vertical: Story = {
       </Splitter.Root>
     </Box>
   ),
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
     const handle = await canvas.findByRole("separator");
     await expect(handle).toHaveAttribute("aria-orientation", "vertical");
+
+    await step("Handle takes its thickness on the block axis", async () => {
+      // Vertical transposes the handle: root-width x 8px, not 8px x root-height.
+      const root = canvasElement.querySelector(".nimbus-splitter__root")!;
+      const handleRect = handle.getBoundingClientRect();
+      const rootRect = root.getBoundingClientRect();
+      await expect(Math.round(handleRect.width)).toBe(
+        Math.round(rootRect.width)
+      );
+      await expect(Math.round(handleRect.height)).toBe(8);
+    });
   },
 };
 
@@ -134,6 +148,9 @@ export const Vertical: Story = {
 // ============================================================
 
 export const AsideTrailing: Story = {
+  // VRT: the only frame where the aside trails, so the only one proving `size` lands on the trailing pane - every other snapshot has it leading, and the plays check aria values rather than rendered geometry.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     orientation: "horizontal",
     defaultSize: 30,
@@ -1474,4 +1491,120 @@ const PersistedResponsiveComponent = () => {
 
 export const PersistedResponsiveSizes: Story = {
   render: () => <PersistedResponsiveComponent />,
+};
+
+// ============================================================
+// The handle only paints while focus-visible, and `handle.focus()` doesn't set
+// it — these tab for real.
+// ============================================================
+
+/**
+ * The handle's only painted state: `_focusVisible` draws the track and ring.
+ */
+export const FocusedHandle: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: { orientation: "horizontal", defaultSize: 30 },
+  render: (args) => (
+    <Box h="xl">
+      <Splitter.Root {...args}>
+        <Splitter.Aside>
+          <DemoPane bg="indigo.3" title="Aside" />
+        </Splitter.Aside>
+        <Splitter.Handle />
+        {/* Sticky z-indexed child: proves `isolation: isolate` keeps the handle on top. */}
+        <Splitter.Main>
+          <Box h="100%" overflow="auto">
+            <Box
+              position="sticky"
+              top="0"
+              zIndex="1"
+              bg="amber.6"
+              p="400"
+              data-testid="sticky-header"
+            >
+              <Heading size="md">Sticky header (z-index 1)</Heading>
+            </Box>
+            <Box p="400" bg="amber.3">
+              Content beneath the sticky header.
+            </Box>
+          </Box>
+        </Splitter.Main>
+      </Splitter.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+
+    await step("Tab reaches the handle and paints its track", async () => {
+      await userEvent.tab();
+      await expect(handle).toHaveFocus();
+      await waitFor(() =>
+        expect(handle).toHaveAttribute("data-focus-visible", "true")
+      );
+    });
+
+    await step("Sticky pane content is isolated below the handle", async () => {
+      const pane = canvas.getByTestId("sticky-header").closest("[id]");
+      await expect(window.getComputedStyle(pane!).isolation).toBe("isolate");
+    });
+  },
+};
+
+/**
+ * The collapsed aside layout, at its 6% rail.
+ */
+export const Collapsed: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    orientation: "horizontal",
+    defaultSize: 30,
+    minSize: 15,
+    collapsible: true,
+    collapsedSize: 6,
+    defaultCollapsed: true,
+  },
+  render: (args) => (
+    <Box h="xl">
+      <Splitter.Root {...args}>
+        <Splitter.Aside>
+          <DemoPane bg="indigo.3" title="Aside" />
+        </Splitter.Aside>
+        <Splitter.Handle />
+        <Splitter.Main>
+          <DemoPane bg="amber.3" title="Main" />
+        </Splitter.Main>
+      </Splitter.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const handle = await canvas.findByRole("separator");
+
+    await step("Aside starts collapsed and the handle locks", async () => {
+      await waitFor(() =>
+        expect(Number(handle.getAttribute("aria-valuenow"))).toBe(6)
+      );
+      await expect(handle).toHaveAttribute("data-resize-locked", "true");
+    });
+
+    await step("The locked handle still paints its focus track", async () => {
+      await userEvent.tab();
+      await expect(handle).toHaveFocus();
+      await waitFor(() =>
+        expect(handle).toHaveAttribute("data-focus-visible", "true")
+      );
+      // waitFor: the recipe transitions background-color, so it interpolates.
+      await waitFor(() =>
+        expect(window.getComputedStyle(handle).backgroundColor).toBe(
+          "rgb(217, 217, 217)"
+        )
+      );
+    });
+
+    // Blur so the frame is the resting collapsed layout.
+    handle.blur();
+  },
 };
