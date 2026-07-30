@@ -34,6 +34,12 @@ export const messages = {
     description: "aria-label for the pin rows column header",
     defaultMessage: "Pin rows",
   },
+  detailPanelRow: {
+    id: "Nimbus.DataTable.detailPanelRow",
+    description:
+      "aria-label for the detail panel row that expands below a data row",
+    defaultMessage: "Details for row {rowId}",
+  },
   selectRow: {
     id: "Nimbus.DataTable.selectRow",
     description: "aria-label for the row selection checkbox",

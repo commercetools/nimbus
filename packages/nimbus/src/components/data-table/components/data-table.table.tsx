@@ -6,6 +6,7 @@ import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import {
   useDataTableContext,
+  useInteractionContext,
   useTableSelectionContext,
 } from "./data-table.context";
 import { DataTableTableSlot } from "../data-table.slots";
@@ -33,7 +34,10 @@ export const DataTableTable = function DataTableTable({
     selectionMode,
     disallowEmptySelection,
     disabledKeys,
+    renderDetails,
   } = useDataTableContext();
+
+  const { detailExpandedRows } = useInteractionContext();
 
   const { selectedKeys, defaultSelectedKeys, onSelectionChange } =
     useTableSelectionContext();
@@ -75,6 +79,7 @@ export const DataTableTable = function DataTableTable({
         disallowEmptySelection={disallowEmptySelection}
         disabledKeys={disabledKeys}
         disabledBehavior="all"
+        expandedKeys={renderDetails ? detailExpandedRows : undefined}
         dragAndDropHooks={dragAndDropHooks}
         {...restProps}
       >

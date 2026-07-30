@@ -419,7 +419,7 @@ describe("DataTable - Row detail panels", () => {
     });
   });
 
-  it("sets aria-expanded and aria-controls on the row", () => {
+  it("sets aria-controls on the row linking to the detail panel", async () => {
     render(
       <NimbusProvider>
         <DataTable
@@ -435,8 +435,9 @@ describe("DataTable - Row detail panels", () => {
     const allRows = screen.getAllByRole("row");
     const firstDataRow = allRows[1];
 
-    expect(firstDataRow).toHaveAttribute("aria-expanded", "false");
-    expect(firstDataRow).toHaveAttribute("aria-controls", "detail-panel-1");
+    await waitFor(() => {
+      expect(firstDataRow).toHaveAttribute("aria-controls", "detail-panel-1");
+    });
   });
 });
 

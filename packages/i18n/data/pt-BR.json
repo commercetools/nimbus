@@ -87,6 +87,10 @@
     "developer_comment": "aria-label for the data table header element",
     "string": "Cabeçalho da tabela de dados"
   },
+  "Nimbus.DataTable.detailPanelRow": {
+    "developer_comment": "aria-label for the detail panel row that expands below a data row",
+    "string": "Details for row {rowId}"
+  },
   "Nimbus.DataTable.dragRow": {
     "developer_comment": "aria-label for the drag handle button on each row",
     "string": "Arrastar para reordenar"

@@ -2833,7 +2833,7 @@ export const RowDetailPanelsWithClose: Story = {
         renderDetails={(row, { close }) => (
           <Flex p="400" justifyContent="space-between" alignItems="center">
             <Text>Detail panel for row: {row.id}</Text>
-            <Button size="sm" variant="secondary" onPress={close}>
+            <Button size="sm" variant="outline" onPress={close}>
               Close
             </Button>
           </Flex>
@@ -2849,26 +2849,19 @@ export const RowDetailPanelsWithClose: Story = {
     await step("Open a detail panel by clicking a row", async () => {
       const allRows = canvas.getAllByRole("row");
       const firstDataRow = allRows[1];
-      const cells = within(firstDataRow).getAllByRole("gridcell");
-      const nonInteractiveCell = cells.find(
-        (cell) =>
-          !within(cell).queryByRole("checkbox") &&
-          !within(cell).queryByRole("button")
+      const cell = within(firstDataRow).getAllByRole("rowheader")[0];
+
+      await userEvent.click(cell);
+
+      await waitFor(
+        () => {
+          const openDetails = canvasElement.querySelectorAll(
+            "[data-detail-row-expanded='true']"
+          );
+          expect(openDetails.length).toBe(1);
+        },
+        { timeout: 3000 }
       );
-
-      if (nonInteractiveCell) {
-        await userEvent.click(nonInteractiveCell);
-
-        await waitFor(
-          () => {
-            const openDetails = canvasElement.querySelectorAll(
-              "[data-detail-row-expanded='true']"
-            );
-            expect(openDetails.length).toBe(1);
-          },
-          { timeout: 3000 }
-        );
-      }
     });
 
     await step("Close button dismisses the detail panel", async () => {
@@ -2889,12 +2882,11 @@ export const RowDetailPanelsWithClose: Story = {
     });
 
     await step(
-      "Row has aria-expanded and aria-controls attributes",
+      "Row has aria-controls linking to the detail panel",
       async () => {
         const allRows = canvas.getAllByRole("row");
         const firstDataRow = allRows[1];
 
-        expect(firstDataRow).toHaveAttribute("aria-expanded", "false");
         expect(firstDataRow).toHaveAttribute(
           "aria-controls",
           `detail-panel-${rows[0].id}`

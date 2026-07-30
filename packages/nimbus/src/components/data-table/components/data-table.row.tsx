@@ -382,7 +382,18 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const rowRef = mergeRefs(ref, rowCallbackRef);
+  // aria-expanded is not valid on role="row" in a grid (only treegrid).
+  // Use aria-controls to link the data row to its detail panel.
+  const detailPanelId = `detail-panel-${row.id}`;
+  const ariaRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (!node || !renderDetails) return;
+      node.setAttribute("aria-controls", detailPanelId);
+    },
+    [renderDetails, detailPanelId]
+  );
+
+  const rowRef = mergeRefs(ref, rowCallbackRef, ariaRef);
 
   const { selectionBehavior, allowsDragging } = useTableOptions();
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
@@ -415,8 +426,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           ref={rowRef}
           id={row.id}
           data-clickable={isClickable && !isDisabled}
-          aria-expanded={renderDetails ? isDetailExpanded : undefined}
-          aria-controls={renderDetails ? `detail-panel-${row.id}` : undefined}
+          hasChildItems={!!renderDetails || undefined}
           className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
           {...restProps}
           dependencies={[isExpanded, isDetailExpanded, search, isTruncated]}
@@ -587,7 +597,16 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       {renderDetails && (
         <DataTableRowSlot {...styleProps} asChild>
           <RaRow
-            id={`detail-panel-${row.id}`}
+            ref={(node: HTMLElement | null) => {
+              if (node) {
+                node.id = detailPanelId;
+                node.removeAttribute("aria-labelledby");
+                node.setAttribute(
+                  "aria-label",
+                  msg.format("detailPanelRow", { rowId: row.id })
+                );
+              }
+            }}
             data-detail-row-expanded={isDetailExpanded ? "true" : "false"}
             dependencies={[isDetailExpanded]}
           >
