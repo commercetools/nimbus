@@ -91,7 +91,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     nestedKey,
     disabledKeys,
     showExpandColumn,
+    hasExpandableContent,
     showSelectionColumn,
+    showPinColumn,
     isTruncated,
     onRowClick,
     onRowAction,
@@ -143,31 +145,33 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
    *
    * @param e - Native DOM Event from the click listener
    */
+  const hasNestedContent =
+    nestedKey &&
+    row[nestedKey] &&
+    (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
+
+  const expandViaRowClick = hasExpandableContent && !showExpandColumn;
+
   const handleRowClick = useCallback(
     (e: Event) => {
-      // Don't do anything if onRowClick is undefined
-      if (!onRowClick) return;
-      // Prevent row click when clicking on interactive elements to avoid conflicts
+      if (!onRowClick && !expandViaRowClick) return;
       const isInteractiveElement = getIsTableRowChildElementInteractive(e);
       if (!isInteractiveElement) {
-        // Prevent row click when user has selected text (e.g. click-drag)
         const hasSelectedText =
           (window.getSelection()?.toString().trim().length ?? 0) > 0;
         if (hasSelectedText) return;
 
-        // Clear any existing timeout to handle rapid clicks
         if (clickTimeoutRef.current) {
           window.clearTimeout(clickTimeoutRef.current);
         }
 
-        // Delay the row click to allow for potential double-click cancellation
-        // Standard double-click timeout is typically 300-500ms
         clickTimeoutRef.current = window.setTimeout(() => {
           if (!isDisabled) {
-            onRowClick(row);
+            if (expandViaRowClick && hasNestedContent) {
+              toggleExpand(row.id);
+            }
+            onRowClick?.(row);
           } else {
-            // Handle disabled row clicks differently - allows for special disabled row actions
-            // TODO: Clarify business requirement - why allow clicks on disabled rows?
             if (onRowAction) {
               onRowAction(row, "click");
             }
@@ -176,7 +180,15 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         }, 300);
       }
     },
-    [onRowClick, onRowAction, row, isDisabled]
+    [
+      onRowClick,
+      onRowAction,
+      row,
+      isDisabled,
+      expandViaRowClick,
+      hasNestedContent,
+      toggleExpand,
+    ]
   );
 
   /**
@@ -363,11 +375,6 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   const { selectionBehavior, allowsDragging } = useTableOptions();
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
 
-  const hasNestedContent =
-    nestedKey &&
-    row[nestedKey] &&
-    (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
-
   // Generate pinned row CSS classes
   const getPinnedRowClasses = () => {
     if (!isPinned) return "";
@@ -505,36 +512,38 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               );
             }}
           </RaCollection>
-          <DataTableCell
-            className={"data-table-sticky-cell"}
-            data-slot="pin-row-cell"
-            isDisabled={isDisabled}
-          >
-            <Box
-              data-slot={
-                isPinned
-                  ? "nimbus-table-cell-pin-button-pinned"
-                  : "nimbus-table-cell-pin-button"
-              }
-              title={isPinned ? "Unpin row" : "Pin row"}
+          {showPinColumn && (
+            <DataTableCell
+              className={"data-table-sticky-cell"}
+              data-slot="pin-row-cell"
+              isDisabled={isDisabled}
             >
-              <IconToggleButton
-                key="pin-btn"
-                size="2xs"
-                variant="ghost"
-                aria-label={isPinned ? "Unpin row" : "Pin row"}
-                colorPalette="primary"
-                isSelected={isPinned}
-                onChange={() => togglePin(row.id)}
+              <Box
+                data-slot={
+                  isPinned
+                    ? "nimbus-table-cell-pin-button-pinned"
+                    : "nimbus-table-cell-pin-button"
+                }
+                title={isPinned ? "Unpin row" : "Pin row"}
               >
-                <PushPin />
-              </IconToggleButton>
-            </Box>
-          </DataTableCell>
+                <IconToggleButton
+                  key="pin-btn"
+                  size="2xs"
+                  variant="ghost"
+                  aria-label={isPinned ? "Unpin row" : "Pin row"}
+                  colorPalette="primary"
+                  isSelected={isPinned}
+                  onChange={() => togglePin(row.id)}
+                >
+                  <PushPin />
+                </IconToggleButton>
+              </Box>
+            </DataTableCell>
+          )}
         </RaRow>
       </DataTableRowSlot>
 
-      {showExpandColumn && (
+      {hasExpandableContent && (
         <DataTableRowSlot {...styleProps} asChild>
           <RaRow
             data-nested-row-expanded={isExpanded ? "true" : "false"}
@@ -547,7 +556,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                 (allowsDragging ? 1 : 0) +
                 (showExpandColumn ? 1 : 0) +
                 (showSelectionColumn ? 1 : 0) +
-                1
+                (showPinColumn ? 1 : 0)
               }
               data-nested-cell
             >

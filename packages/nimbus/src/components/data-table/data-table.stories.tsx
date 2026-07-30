@@ -5153,3 +5153,185 @@ export const StickyColumnBackground: Story = {
     );
   },
 };
+
+export const HiddenPinColumn: Story = {
+  render: () => {
+    return (
+      <DataTable
+        columns={sortableColumns}
+        rows={rows}
+        allowsPinning={false}
+        allowsSorting={true}
+        data-testid="no-pin-table"
+      />
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Pin column header is not rendered", async () => {
+      const table = await canvas.findByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      const pinHeader = canvasElement.querySelector(".pin-rows-column-header");
+      expect(pinHeader).toBeNull();
+    });
+
+    await step("Pin buttons are not rendered in any row", async () => {
+      const pinButtons = canvasElement.querySelectorAll(
+        '[data-slot="pin-row-cell"]'
+      );
+      expect(pinButtons.length).toBe(0);
+    });
+
+    await step("Data columns still render correctly", async () => {
+      expect(canvas.getByText("Name")).toBeInTheDocument();
+      const dataRows = canvasElement.querySelectorAll("tbody tr");
+      expect(dataRows.length).toBeGreaterThan(0);
+    });
+  },
+};
+
+export const HiddenExpandColumn: Story = {
+  render: () => {
+    return (
+      <DataTable
+        columns={[
+          {
+            id: "name",
+            header: "Name",
+            accessor: (row) => row.name as React.ReactNode,
+          },
+          {
+            id: "role",
+            header: "Role",
+            accessor: (row) => row.role as React.ReactNode,
+          },
+        ]}
+        rows={flexibleNestedData}
+        nestedKey="children"
+        allowsExpandColumn={false}
+        data-testid="no-expand-table"
+      />
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Expand column header is not rendered", async () => {
+      const table = await canvas.findByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      const expandHeader = canvasElement.querySelector(".expand-column-header");
+      expect(expandHeader).toBeNull();
+    });
+
+    await step("Expand chevron buttons are not rendered", async () => {
+      const expandCells = canvasElement.querySelectorAll(
+        '[data-slot="expand"]'
+      );
+      expect(expandCells.length).toBe(0);
+    });
+
+    await step("Row click expands nested content", async () => {
+      const dataRows = canvasElement.querySelectorAll("tbody tr");
+      const firstDataRow = dataRows[0] as HTMLElement;
+
+      await userEvent.click(firstDataRow);
+
+      await waitFor(
+        async () => {
+          const expandedRows = canvasElement.querySelectorAll(
+            '[data-nested-row-expanded="true"]'
+          );
+          expect(expandedRows.length).toBe(1);
+        },
+        { timeout: 1000 }
+      );
+    });
+
+    await step("Row click collapses expanded content", async () => {
+      const dataRows = canvasElement.querySelectorAll("tbody tr");
+      const firstDataRow = dataRows[0] as HTMLElement;
+
+      await userEvent.click(firstDataRow);
+
+      await waitFor(
+        async () => {
+          const expandedRows = canvasElement.querySelectorAll(
+            '[data-nested-row-expanded="true"]'
+          );
+          expect(expandedRows.length).toBe(0);
+        },
+        { timeout: 1000 }
+      );
+    });
+  },
+};
+
+export const HiddenPinAndExpandColumns: Story = {
+  render: () => {
+    return (
+      <DataTable
+        columns={[
+          {
+            id: "name",
+            header: "Name",
+            accessor: (row) => row.name as React.ReactNode,
+          },
+          {
+            id: "role",
+            header: "Role",
+            accessor: (row) => row.role as React.ReactNode,
+          },
+        ]}
+        rows={flexibleNestedData}
+        nestedKey="children"
+        allowsPinning={false}
+        allowsExpandColumn={false}
+        data-testid="no-pin-expand-table"
+      />
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Neither pin nor expand columns are rendered", async () => {
+      const table = await canvas.findByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      const pinHeader = canvasElement.querySelector(".pin-rows-column-header");
+      expect(pinHeader).toBeNull();
+
+      const expandHeader = canvasElement.querySelector(".expand-column-header");
+      expect(expandHeader).toBeNull();
+    });
+
+    await step(
+      "Only data columns are present (no internal columns)",
+      async () => {
+        const headerCells = canvasElement.querySelectorAll(
+          ".data-table-header th"
+        );
+        expect(headerCells.length).toBe(2);
+      }
+    );
+
+    await step("Row click still expands nested content", async () => {
+      const dataRows = canvasElement.querySelectorAll("tbody tr");
+      const firstDataRow = dataRows[0] as HTMLElement;
+
+      await userEvent.click(firstDataRow);
+
+      await waitFor(
+        async () => {
+          const expandedRows = canvasElement.querySelectorAll(
+            '[data-nested-row-expanded="true"]'
+          );
+          expect(expandedRows.length).toBe(1);
+        },
+        { timeout: 1000 }
+      );
+    });
+  },
+};

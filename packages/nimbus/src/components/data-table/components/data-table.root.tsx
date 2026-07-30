@@ -55,6 +55,8 @@ export const DataTableRoot = function DataTableRoot<
     expandedRows: controlledExpandedRows,
     defaultExpandedRows,
     onExpandRowsChange,
+    allowsPinning = true,
+    allowsExpandColumn = true,
     pinnedRows: controlledPinnedRows,
     defaultPinnedRows,
     onPinToggle,
@@ -120,11 +122,13 @@ export const DataTableRoot = function DataTableRoot<
     [rows, pinnedRows]
   );
 
-  const showExpandColumn = useMemo(
+  const hasExpandableContent = useMemo(
     () => hasExpandableRows(filteredRows, nestedKey),
     [filteredRows, nestedKey]
   );
+  const showExpandColumn = hasExpandableContent && allowsExpandColumn;
   const showSelectionColumn = selectionMode !== "none";
+  const showPinColumn = allowsPinning;
 
   const expandedRef = useRef(expanded);
   expandedRef.current = expanded;
@@ -221,7 +225,9 @@ export const DataTableRoot = function DataTableRoot<
       toggleExpand,
       activeColumns,
       showExpandColumn,
+      hasExpandableContent,
       showSelectionColumn,
+      showPinColumn,
       selectRowLabel,
       isResizable,
       disabledKeys,
@@ -249,7 +255,9 @@ export const DataTableRoot = function DataTableRoot<
       toggleExpand,
       activeColumns,
       showExpandColumn,
+      hasExpandableContent,
       showSelectionColumn,
+      showPinColumn,
       selectRowLabel,
       isResizable,
       disabledKeys,
