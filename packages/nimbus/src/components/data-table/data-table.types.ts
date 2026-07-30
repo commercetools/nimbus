@@ -134,7 +134,9 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     filteredRows: DataTableRowItem<T>[];
     sortedRows: DataTableRowItem<T>[];
     showExpandColumn: boolean;
+    hasExpandableContent: boolean;
     showSelectionColumn: boolean;
+    showPinColumn: boolean;
     pinnedRowIds: string[];
     selectRowLabel: string;
     disabledKeys?: Selection;
@@ -216,6 +218,10 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   defaultExpandedRows?: Set<string>;
   /** Callback fired when expansion state changes */
   onExpandRowsChange?: (expanded: Set<string>) => void;
+  /** Whether to show the pin column. Defaults to `true`. */
+  allowsPinning?: boolean;
+  /** Whether to show the expand chevron column. When `false` and no `onRowClick` is provided, rows with nested content can still be expanded via row click. When `onRowClick` is provided it takes precedence and the expand-via-click behavior is disabled. Defaults to `true`. */
+  allowsExpandColumn?: boolean;
   pinnedRows?: Set<string>;
   defaultPinnedRows?: Set<string>;
   onPinToggle?: (rowId: string) => void;
