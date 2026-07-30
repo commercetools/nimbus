@@ -5341,3 +5341,102 @@ export const HiddenPinAndExpandColumns: Story = {
     });
   },
 };
+
+export const HiddenExpandColumnWithRowClick: Story = {
+  render: () => {
+    const [expanded, setExpanded] = useState<Set<string>>(new Set());
+    const [lastClicked, setLastClicked] = useState<string | null>(null);
+
+    return (
+      <Stack gap="300">
+        <Text data-testid="last-clicked">
+          {lastClicked
+            ? `Clicked: ${lastClicked}`
+            : "Click a row to expand and see its id"}
+        </Text>
+        <DataTable
+          columns={[
+            {
+              id: "name",
+              header: "Name",
+              accessor: (row) => row.name as React.ReactNode,
+            },
+            {
+              id: "role",
+              header: "Role",
+              accessor: (row) => row.role as React.ReactNode,
+            },
+          ]}
+          rows={flexibleNestedData}
+          nestedKey="children"
+          allowsExpandColumn={false}
+          expandedRows={expanded}
+          onExpandRowsChange={setExpanded}
+          onRowClick={(row) => {
+            setLastClicked(row.id);
+            const next = new Set(expanded);
+            if (next.has(row.id)) {
+              next.delete(row.id);
+            } else {
+              next.add(row.id);
+            }
+            setExpanded(next);
+          }}
+          data-testid="expand-row-click-table"
+        />
+      </Stack>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Expand column is not rendered", async () => {
+      await canvas.findByRole("grid");
+
+      const expandHeader = canvas.queryByRole("columnheader", {
+        name: /expand rows/i,
+      });
+      expect(expandHeader).not.toBeInTheDocument();
+    });
+
+    await step(
+      "Row click fires onRowClick and expands via controlled state",
+      async () => {
+        const dataRows = canvasElement.querySelectorAll("tbody tr");
+        const firstDataRow = dataRows[0] as HTMLElement;
+
+        await userEvent.click(firstDataRow);
+
+        await waitFor(
+          async () => {
+            const clickedText = canvas.getByTestId("last-clicked");
+            expect(clickedText.textContent).toContain("Clicked:");
+
+            const expandedRows = canvasElement.querySelectorAll(
+              '[data-nested-row-expanded="true"]'
+            );
+            expect(expandedRows.length).toBe(1);
+          },
+          { timeout: 1000 }
+        );
+      }
+    );
+
+    await step("Second click collapses via controlled state", async () => {
+      const dataRows = canvasElement.querySelectorAll("tbody tr");
+      const firstDataRow = dataRows[0] as HTMLElement;
+
+      await userEvent.click(firstDataRow);
+
+      await waitFor(
+        async () => {
+          const expandedRows = canvasElement.querySelectorAll(
+            '[data-nested-row-expanded="true"]'
+          );
+          expect(expandedRows.length).toBe(0);
+        },
+        { timeout: 1000 }
+      );
+    });
+  },
+};
