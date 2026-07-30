@@ -123,8 +123,8 @@ the branch's git ancestry**:
   branch (or on `main`) is what future branches pick up after merge.
 - **Merging does not auto-accept.** No `autoAcceptChanges` is set, so a diff
   that lands on `main` unaccepted keeps resurfacing on every later build until a
-  human accepts it. (`exitZeroOnChanges` only affects the CLI exit code, and
-  isn't set either.)
+  human accepts it. (`exitZeroOnChanges` only affects the CLI exit code, and the
+  workflow doesn't set it either - though the local `chromatic` script does.)
 
 ## The manual button
 
@@ -146,18 +146,21 @@ Reach for it to:
 
 You can also run Chromatic locally
 (`pnpm --filter @commercetools/nimbus chromatic`), but it needs
-`CHROMATIC_PROJECT_TOKEN` set locally plus `--no-only-changed` to force the full
-snapshot, so the button is usually the easier path.
+`CHROMATIC_PROJECT_TOKEN` set locally, and two behaviors differ from CI: the
+config file sets `onlyChanged: true`, so pass `--no-only-changed` to force the
+full snapshot, and the script itself passes `--exit-zero-on-changes`, so a local
+run reports diffs without failing. The button is usually the easier path.
 
 ### Config lives in two places (by design)
 
 `packages/nimbus/chromatic.config.json` (`storybookBaseDir`, `buildScriptName`,
-`zip`) drives **local** runs from inside `packages/nimbus`. The **CI** action
-runs at the repo root and does not load that config, so the workflow mirrors the
-values as `with:` inputs. `storybookBaseDir` and `zip` are identical - **keep
-them in sync**. `buildScriptName` differs by design: CI resolves it at the root
-(`build:storybook`), the config file inside `packages/nimbus`
-(`build-storybook`).
+`onlyChanged`, `zip`) drives **local** runs from inside `packages/nimbus`. The
+**CI** action runs at the repo root and does not load that config, so the
+workflow mirrors the values as `with:` inputs. `storybookBaseDir` and `zip` are
+identical - **keep them in sync**. Two differ by design: `buildScriptName` (CI
+resolves it at the root, `build:storybook`; the config file inside
+`packages/nimbus`, `build-storybook`) and `onlyChanged` (pinned `true` in the
+config, but expression-driven in CI so the manual button can turn it off).
 
 ## Two checks on the PR (read this before merge gating)
 

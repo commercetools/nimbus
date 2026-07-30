@@ -73,9 +73,10 @@ Before implementation, you MUST research in parallel:
 
 2. **Analyze** component characteristics to determine story type
 
-3. **Review** similar story implementations:
+3. **Review** similar story implementations - patterns live outside
+   `components/`, so search both:
    ```bash
-   ls packages/nimbus/src/components/*/*.stories.tsx
+   find packages/nimbus/src -name "*.stories.tsx"
    ```
 
 **Conditionally, for a first-pass VRT audit only** - when you are deciding _which_
@@ -99,7 +100,9 @@ decision flowchart.
 
 Quick reference:
 
-- **Simple components**: Base, Sizes, Variants, Disabled, SmokeTest
+- **Simple components**: Base, Sizes, Variants, Disabled, plus `SmokeTest` **only
+  if its axes interact** (see the SmokeTest section - independent axes get their
+  own showcase stories instead)
 - **Form components**: Add Required, Invalid, Controlled stories
 - **Interactive components**: Add KeyboardNavigation, Controlled stories
 - **Portal components**: Add Placement, Dismissal stories with special portal
@@ -147,7 +150,9 @@ Stories MUST be exported in this order:
 5. **States** - Disabled, Invalid, Required, etc.
 6. **Controlled** - Controlled state example
 7. **Complex** - Advanced scenarios, edge cases
-8. **SmokeTest** - Comprehensive matrix (last story)
+8. **SmokeTest** - the interacting-axes matrix, last story. Omit it entirely when
+   the axes are independent; don't substitute a cross-product that adds no
+   coverage
 
 ## Create Mode
 
@@ -156,7 +161,8 @@ Stories MUST be exported in this order:
 **Start with the recipe. Read it, don't recall it.**
 
 ```bash
-cat packages/nimbus/src/components/{component}/{component}.recipe.ts
+# .tsx as well as .ts; patterns live in src/patterns/, not src/components/
+find packages/nimbus/src -path "*{component}*" -name "*.recipe.*"
 ```
 
 Every VRT decision is derived from this file, so read it before deciding anything
@@ -171,8 +177,9 @@ about snapshots:
   the default and gets no story of its own. If the recipe sets no color, border or
   spacing at all, the component gets no VRT (see "What Gets Captured").
 
-Not every component has one - 61 of them do. A missing `.recipe.ts` is itself the
-answer for pass-through style primitives.
+Not every component has one - 70 do (61 `.ts` + 9 `.tsx`). Genuinely having none
+is itself the answer for pass-through style primitives, so glob both extensions
+before concluding a component has no recipe.
 
 Then analyze:
 
@@ -438,7 +445,7 @@ The **visual snapshot role**. Snapshots are **opt-in**: `preview.tsx` defaults t
 can find snapshot stories. Crop padding is global (a `preview.tsx` decorator wraps
 non-`fullscreen` stories in `1rem`), so focus rings aren't clipped.
 
-Four questions decide every snapshot call:
+Four questions decide every snapshot call, then a fifth step packs the survivors:
 
 1. **Does it paint?** Is there a component-owned pixel at all.
 2. **Is the state reachable in this frame?** Inert props, zeroing variants,
@@ -447,8 +454,7 @@ Four questions decide every snapshot call:
    composition patterns.
 4. **Does the play land the frame?** End state, blur, settled animation,
    determinism.
-
-Then pack what survives into as few frames as the axes allow.
+5. **Packing the surfaces into frames.** Into as few as the axes allow.
 
 **The rules themselves live in `docs/file-type-guidelines/stories.md`** (its
 "Chromatic Visual Regression Snapshots" section) - terse rules plus paste-ready
@@ -457,9 +463,9 @@ Snapshots** validation checklist repeats them as checkboxes under the same five
 headings, and is what you tick off when validating.
 
 **Escalate to `docs/chromatic-visual-testing.md` only when a rule doesn't settle
-the case.** Do not load it by default: it is ~5k tokens of rationale and worked
-examples, and adds nothing for mechanical authoring. Read it when you hit one of
-these, because each is a call the terse rule states but cannot decide for you:
+the case** - it is ~5k tokens of rationale and worked examples, so don't load it
+by default. Read it when you hit one of these, because each is a call the terse
+rule states but cannot decide for you:
 
 - **Does this state paint differently from the default?** Read-only is the
   classic - the answer is component-dependent (MoneyInput yes, TextInput no).
@@ -746,7 +752,8 @@ await step("Verify state changes", async () => {
 You MUST verify the changes:
 
 ```bash
-pnpm test:dev packages/nimbus/src/components/{component}/{component}.stories.tsx
+# components/ for a component; patterns/{group}/ for a pattern
+pnpm test:dev $(find packages/nimbus/src -name "{component}.stories.tsx")
 ```
 
 ## Validate Mode
@@ -757,13 +764,14 @@ You MUST validate against these requirements:
 
 #### File Structure
 
-- [ ] Story file location:
-      `packages/nimbus/src/components/{component}/{component}.stories.tsx`
+- [ ] Story file location - `src/components/{name}/{name}.stories.tsx` for a
+      component, `src/patterns/{group}/{name}/{name}.stories.tsx` for a pattern
+      (groups: `buttons`, `actions`, `dialogs`, `fields`, `pages`)
 - [ ] Imports from `@storybook/react-vite` and `storybook/test`
 - [ ] Meta configuration with title, component, tags
 - [ ] Default export of meta
 - [ ] Story type from `StoryObj<typeof ComponentName>` (the component, not
-      `typeof meta` — see note in `docs/file-type-guidelines/stories.md`)
+      `typeof meta` - see note in `docs/file-type-guidelines/stories.md`)
 
 #### Required Stories
 

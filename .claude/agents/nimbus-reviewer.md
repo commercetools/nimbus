@@ -20,7 +20,7 @@ When reviewing code, you MUST follow the File Review Protocol:
    (_.mdx, _.stories.tsx, _.recipe.tsx, _.slots.tsx, \*.types.ts, etc.)
 
 2. **Load Guidelines**: Reference the appropriate guidelines document from
-   /docs/file-type-guidelines/ based on the file type
+   `docs/file-type-guidelines/` based on the file type
 
 3. **Run Validation Checklist**: Systematically check each item in the
    validation checklist found at the end of each guidelines document
@@ -38,8 +38,8 @@ compliance checks.
 | File Extension/Type             | Skill to Invoke                     | Command                                                  |
 | ------------------------------- | ----------------------------------- | -------------------------------------------------------- |
 | `*.types.ts`                    | **writing-types**                   | `writing-types validate ComponentName`                   |
-| `*.recipe.ts`                   | **writing-recipes**                 | `writing-recipes validate ComponentName`                 |
-| `*.slots.tsx`                   | **writing-slots**                   | `writing-slots validate ComponentName`                   |
+| `*.recipe.*` (`.ts` or `.tsx`)  | **writing-recipes**                 | `writing-recipes validate ComponentName`                 |
+| `*.slots.*` (usually `.tsx`)    | **writing-slots**                   | `writing-slots validate ComponentName`                   |
 | `*.stories.tsx`                 | **writing-stories**                 | `writing-stories validate ComponentName`                 |
 | `*.i18n.ts`                     | **writing-i18n**                    | `writing-i18n validate ComponentName`                    |
 | `utils/*.ts` + `constants/*.ts` | **writing-utils-and-constants**     | `writing-utils-and-constants validate ComponentName`     |
@@ -48,10 +48,12 @@ compliance checks.
 
 ### Review Process (UPDATED)
 
-**Step 1: File Discovery**
+**Step 1: File Discovery** - not everything lives under `components/`. Patterns
+(`*Field`, FormActionBar, FloatingActionButton, PublicPageLayout, …) live in
+`src/patterns/`, and hooks in `src/hooks/`, so search rather than assume:
 
 ```bash
-ls packages/nimbus/src/components/{component}/
+find packages/nimbus/src -type d -name "{component}"
 ```
 
 **Step 2: Skill Validation (Parallel)** For each file type found, invoke
@@ -112,15 +114,19 @@ Visual coverage is **opt-in**, so its failure mode is silence: a story file with
 no `tags: ["vrt"]` story reads as finished while having zero visual coverage.
 Nothing else in the review will catch that, so check it explicitly.
 
-Read the component's `*.recipe.ts` first - the surface list is derived from the
-recipe, never from the story names. Then verify:
+Read the component's recipe first - the surface list is derived from the recipe,
+never from the story names. Glob `*.recipe.*`, not just `*.recipe.ts`: 9 recipes
+are `.recipe.tsx` (menu, select, icon, popover, money-input, split-button,
+tag-group, field-errors, toggle-button-group), so a `.ts`-only check would
+wrongly conclude those components have no recipe and no surfaces to cover. Then
+verify:
 
 - [ ] Some story opts in (`tags: ["vrt"]` +
       `parameters: { chromatic: { disableSnapshot: false } }`), **or** the
       recipe paints nothing and `meta` carries a one-line note saying so
 - [ ] Every state the recipe paints distinctly is reachable in some snapshotted
-      frame - including states no prop names (RTL, an inherited `colorPalette`)
-      and every child type a comma-separated selector list reaches
+      frame - including the ones no prop names (RTL, an inherited
+      `colorPalette`) and every child type a comma-separated selector reaches
 - [ ] Interacting axes folded into one `SmokeTest` (rendered last); independent
       axes given their own showcase stories rather than a cross-product
 - [ ] States a matrix can't hold have their own snapshotted story - `Focused`

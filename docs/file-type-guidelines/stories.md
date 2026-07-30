@@ -173,8 +173,8 @@ export const SmokeTest: Story = {
 `disableSnapshot: false` takes the picture; Chromatic never reads `vrt` (our own
 label for finding snapshot stories - keep the two together).
 
-Crop padding is global too: a `preview.tsx` decorator wraps every
-non-`fullscreen` story in `1rem` so focus rings aren't clipped. Not opt-in.
+Crop padding is global, not per story: a `preview.tsx` decorator wraps every
+non-`fullscreen` story in `1rem` so focus rings aren't clipped.
 
 The rules below are enough to author a story. **Read
 [chromatic-visual-testing.md](../chromatic-visual-testing.md) when a rule
@@ -183,12 +183,12 @@ rule can state but not decide: whether a state paints differently from the
 default (read-only), whether two axes interact (matrix vs. separate showcases),
 a variant that zeroes its surface, how many frames a comma-separated selector
 needs, which slot arrangements are genuine surfaces, and any "renders like
-default" verdict. Auditing coverage for the first time → read it; adding a story
-to an already-audited component → don't.
+default" verdict. It groups them under the same five headings used below.
+Auditing coverage for the first time → read it; adding a story to an
+already-audited component → don't.
 
-> **Editing rule:** rule + snippet only. Reasoning and worked examples belong in
-> [chromatic-visual-testing.md](../chromatic-visual-testing.md), which groups
-> them under the same five headings used below.
+> **Editing rule:** rule + snippet only here; reasoning and worked examples go
+> in `chromatic-visual-testing.md`.
 
 **1. Does it paint?**
 
@@ -209,8 +209,8 @@ to an already-audited component → don't.
   `offsetHeight`-derived target, each combination its own frame);
   `scrollBehavior="inside"` needs overflowing content; a surface a variant
   zeroes needs the variant that paints it (a showcase left at that default
-  baselines blank boxes); an inherited property needs a consumer value to
-  inherit.
+  renders blank boxes while its assertions still pass); an inherited property
+  needs a consumer value to inherit.
 - **Hover/pressed need a forced pseudo-class a play can't deliver** - and don't
   hand-set `[data-hovered]`/`[data-pressed]` instead: recipes are split between
   those and Chakra `_hover`/`_active`, so it half-styles the frame. Pressed
@@ -265,8 +265,10 @@ to an already-audited component → don't.
   matrix can't render gets its own story. Never drop a state to save cost.
 - **Name the interacting-axes matrix `SmokeTest`, rendered last** - the axis
   list lives in the doc comment.
-- **Axis arrays span the full supported range**; an axis the recipe hardcodes
-  isn't an axis; a uniform transform (`disabled`) folds out into its own story.
+- **Axis arrays span the full supported range** - palettes iterate the 6
+  `SEMANTIC_COLOR_PALETTES`, not the `BRAND` or `SYSTEM` sets. An axis the
+  recipe hardcodes isn't an axis; a uniform transform (`disabled`) folds out
+  into its own story.
 - **Cover distinct state-combinations**, not just single flags
   (selected-disabled ≠ unselected-disabled).
 - **One state rendered more than one way → one story each**, not a folded

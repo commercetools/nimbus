@@ -126,7 +126,7 @@ The task list MUST include these file creation steps in this order:
 
    The task MUST say: audit the finished stories per
    `docs/chromatic-visual-testing.md`, then opt each genuine visual state in
-   with `tags: ["vrt"]` +
+   with `tags: ["vrt"]` plus
    `parameters: { chromatic: { disableSnapshot: false } }`. Derive the list from
    the **recipe**, not from the story names.
 
@@ -143,8 +143,6 @@ The task list MUST include these file creation steps in this order:
      `meta` note, so the omission reads as deliberate
    - Snapshotted stories are deterministic: no live dates, no stray focus ring,
      caret hidden on a focused text input, async-derived state awaited
-   - A row added to `docs/chromatic/chromatic-vrt-coverage-matrix.md` recording
-     the decision for every story
 
 5. **Validation steps** - You MUST verify standards compliance before shipping:
    - Component TypeScript compiles without errors

@@ -176,11 +176,12 @@ The testing system uses Vitest with three distinct test categories:
 - Copy-ready working examples consumers use to test components in their apps
 - Injected into `.dev.mdx` docs at build time
 
-Visual regression is handled separately by Chromatic in CI. Play functions are
-the shared source of truth: Chromatic runs them and snapshots the result, so
-visual states are verified there rather than asserted in play functions. See
-`./docs/chromatic-visual-testing.md` for which stories to snapshot, and
-`./docs/chromatic-ci.md` for the pipeline.
+Visual regression is handled separately by Chromatic in CI: it captures what the
+story renders, and where a play function exists, that play's **end state**. So a
+visual state is verified by the snapshot rather than asserted in the play, and a
+snapshotted story needs a play only when its frame requires an interaction to
+exist. See `./docs/chromatic-visual-testing.md` for which stories to snapshot,
+and `./docs/chromatic-ci.md` for the pipeline.
 
 ### Testing Workflow
 

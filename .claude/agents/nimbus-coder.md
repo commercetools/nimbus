@@ -74,8 +74,8 @@ is to orchestrate these skills, not replace them.
 | File Type                       | Skill to Invoke                     | When                                                       |
 | ------------------------------- | ----------------------------------- | ---------------------------------------------------------- |
 | `*.types.ts`                    | **writing-types**                   | ALL type definition work                                   |
-| `*.recipe.ts`                   | **writing-recipes**                 | ALL recipe creation/updates                                |
-| `*.slots.tsx`                   | **writing-slots**                   | ALL slot component work                                    |
+| `*.recipe.*` (`.ts` or `.tsx`)  | **writing-recipes**                 | ALL recipe creation/updates                                |
+| `*.slots.*` (usually `.tsx`)    | **writing-slots**                   | ALL slot component work                                    |
 | `*.stories.tsx`                 | **writing-stories**                 | ALL story creation/updates                                 |
 | `*.i18n.ts`                     | **writing-i18n**                    | When component has default aria-labels or user-facing text |
 | `utils/*.ts` + `constants/*.ts` | **writing-utils-and-constants**     | ALL pure helper / constant work in a component             |
@@ -120,7 +120,7 @@ See
 
 **YOU code directly:**
 
-- Main component implementation files (`{component}.tsx`) — these contain the
+- Main component implementation files (`{component}.tsx`) - these contain the
   React component ONLY, never pure helpers
 - Component-specific logic and hooks
 - Integration of slot components with React Aria
@@ -131,8 +131,10 @@ of the component**, organized per the merge rule in
 `docs/file-type-guidelines/utils-and-constants.md#file-organization` (solo files
 for unrelated helpers, family files for cohesive sets), with a sibling
 `{name}.spec.ts` per util file and a `utils/index.ts` barrel. NEVER export
-utility functions from `{component}.tsx`. See existing patterns in
-`combobox/utils/`, `inline-svg/utils/`, `money-input/utils/`. Invoke the
+utility functions from `{component}.tsx`. **Copy `combobox/utils/`** - it is the
+one that follows the full convention, sibling specs included.
+`inline-svg/utils/` and `money-input/utils/` show the folder shape but predate
+the spec rule, so don't take them as the standard. Invoke the
 `writing-utils-and-constants` skill for these files.
 
 **INVOKE skills:**

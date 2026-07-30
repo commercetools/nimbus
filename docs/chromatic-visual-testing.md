@@ -63,8 +63,8 @@ that stays undimmed but disables its trailing button is a distinct surface even
 though the field "looks like default." Any "renders like default" call must name
 the exact delta you checked. Three things that get missed:
 
-- **Ambient axes no prop names** - RTL/`dir` (mirrored adornment layout),
-  locale, theme - and built-in adornments.
+- **Ambient axes** - nothing in the prop list names these: RTL/`dir` (mirrored
+  adornment layout), locale, theme. Same for built-in adornments.
 - **A comma-separated selector list is as many surfaces as it names**, while
   reading like one rule. Toolbar styles
   `& .nimbus-group, & .nimbus-toggle-button-group__root` together, so a matrix
@@ -81,9 +81,10 @@ carries `ReadOnlyState`; MultilineTextInput / NumberInput / TextInput have no
 `data-readonly` rule and correctly carry none.
 
 **Primitives with no painted surface get no VRT at all.** The test isn't "has a
-`.recipe.ts`" - it's **does it paint, and is there a state space to enumerate?**
-Three shapes fail it, each getting zero snapshots plus a one-line `meta` note so
-the omission reads as deliberate:
+recipe file" - it's **does it paint, and is there a state space to enumerate?**
+(Glob `*.recipe.*` when checking: 9 recipes are `.recipe.tsx`, so a `.ts`-only
+look concludes they have none.) Three shapes fail it, each getting zero
+snapshots plus a one-line `meta` note so the omission reads as deliberate:
 
 - **Pass-through style-prop primitives** (Box, Flex, Stack, Grid, SimpleGrid,
   Spacer - a `<div>`, no recipe). Every appearance comes from consumer style
