@@ -706,6 +706,137 @@ const App = () => {
 }
 ```
 
+### Hiding the pin column
+
+Set `allowsPinning={false}` to remove the pin column entirely. The pin toggle
+buttons and pin column header will not render:
+
+```jsx live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice', role: 'Admin' },
+    { id: '2', name: 'Bob', role: 'User' },
+    { id: '3', name: 'Carol', role: 'Editor' },
+  ];
+
+  return <DataTable columns={columns} rows={rows} allowsPinning={false} />;
+}
+```
+
+### Hiding the expand column
+
+Set `allowsExpandColumn={false}` to hide the expand chevron column. When no
+`onRowClick` handler is provided, rows with nested content can still be expanded
+by clicking anywhere on the row:
+
+```jsx live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Category', accessor: (row) => row.name },
+    { id: 'count', header: 'Products', accessor: (row) => row.count },
+  ];
+
+  const rows = [
+    {
+      id: '1',
+      name: 'Electronics',
+      count: 3,
+      children: [
+        { id: '1-1', name: 'Laptops', count: 15 },
+        { id: '1-2', name: 'Phones', count: 25 },
+      ],
+    },
+    {
+      id: '2',
+      name: 'Clothing',
+      count: 2,
+      children: [
+        { id: '2-1', name: 'Shirts', count: 50 },
+      ],
+    },
+    { id: '3', name: 'Books', count: 0 },
+  ];
+
+  return (
+    <Stack gap="300">
+      <Text>Click a row to expand its nested content.</Text>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        nestedKey="children"
+        allowsExpandColumn={false}
+      />
+    </Stack>
+  );
+}
+```
+
+### Hidden expand column with custom row click
+
+When `onRowClick` is provided alongside `allowsExpandColumn={false}`, the
+`onRowClick` handler takes precedence and the automatic expand-on-click behavior
+is disabled. To still support expansion, use controlled expansion state:
+
+```jsx live-dev
+const App = () => {
+  const [expanded, setExpanded] = useState(new Set());
+
+  const columns = [
+    { id: 'name', header: 'Category', accessor: (row) => row.name },
+    { id: 'count', header: 'Products', accessor: (row) => row.count },
+  ];
+
+  const rows = [
+    {
+      id: '1',
+      name: 'Electronics',
+      count: 3,
+      children: [
+        { id: '1-1', name: 'Laptops', count: 15 },
+        { id: '1-2', name: 'Phones', count: 25 },
+      ],
+    },
+    {
+      id: '2',
+      name: 'Clothing',
+      count: 2,
+      children: [
+        { id: '2-1', name: 'Shirts', count: 50 },
+      ],
+    },
+    { id: '3', name: 'Books', count: 0 },
+  ];
+
+  return (
+    <Stack gap="300">
+      <Text>Click a row to toggle expansion and trigger custom logic.</Text>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        nestedKey="children"
+        allowsExpandColumn={false}
+        expandedRows={expanded}
+        onExpandRowsChange={setExpanded}
+        onRowClick={(row) => {
+          const next = new Set(expanded);
+          if (next.has(row.id)) {
+            next.delete(row.id);
+          } else {
+            next.add(row.id);
+          }
+          setExpanded(next);
+        }}
+      />
+    </Stack>
+  );
+}
+```
+
 ## Drag and drop
 
 DataTable supports row reordering via drag and drop using the shared `useDragAndDrop` hook. Pass `dragAndDropHooks` to `DataTable` to enable it.
