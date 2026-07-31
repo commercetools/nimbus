@@ -82,7 +82,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           position: "sticky",
           right: 0,
           zIndex: 3,
-          backgroundColor: "bg",
+          backgroundColor: "inherit",
           ...stickyBgOverlap,
           "&::before": { right: 0 },
           "& [data-slot='nimbus-table-cell-pin-button']": {
@@ -95,7 +95,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         "& .data-table-sticky-cell:not([data-slot='pin-row-cell'])": {
           position: "sticky",
           left: 0,
-          backgroundColor: "bg",
+          backgroundColor: "inherit",
           ...stickyBgOverlap,
         },
         "& [data-slot='drag']": {
@@ -214,7 +214,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
             left: "2400",
           },
         "& [data-slot='pin-row-cell']": {
-          backgroundColor: "bg",
+          backgroundColor: "inherit",
           position: "sticky",
           clipPath: "inset(2px 2px 2px 0)",
         },
@@ -269,6 +269,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       boxSizing: "border-box",
       boxShadow: "inset 0 0 0 1px {colors.neutral.3}",
       borderRadius: "0 0 {sizes.200} {sizes.200}",
+      overflow: "hidden",
       colorPalette: "slate",
       width: "100%",
     },
@@ -421,6 +422,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     row: {
       position: "relative",
       borderBottom: "1px solid {colors.neutral.3}",
+      backgroundColor: "bg",
       focusVisibleRing: "inside",
       "&[data-dragging='true']": {
         cursor: "grabbing",
