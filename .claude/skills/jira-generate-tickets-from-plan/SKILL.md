@@ -1,5 +1,5 @@
 ---
-description: Create Jira tickets from a plan or spec, with dependency links, epic parenting, phase labels, and a bulk link script.
+description: Create Jira tickets from a plan or spec, with dependency links, epic parenting, and phase labels.
 argument-hint: <epic-key> [plan-file-path] [--dry-run]
 ---
 
@@ -17,13 +17,13 @@ skill will:
 1. Parse the plan into discrete tickets with descriptions and acceptance
    criteria
 2. Create all tickets in Jira under a specified epic
-3. Generate a shell script to create predecessor/successor dependency links
+3. Create predecessor/successor dependency links via the Atlassian MCP
 
 ## Mode Detection
 
 Parse the request to determine the operation:
 
-- **create** - Parse plan, create tickets, generate link script
+- **create** - Parse plan, create tickets + dependency links
 - **dry-run** - Parse plan, output ticket list and dependency map without
   creating anything
 
@@ -229,132 +229,51 @@ additional_fields:
 - You SHOULD create tickets in rough dependency order (foundations first) so the
   key sequence is intuitive
 
-### Known Limitations
+## Step 5: Create Dependency Links
 
-The Atlassian MCP tool does NOT support creating issue links. The `issuelinks`
-field requires the Jira REST API `update` mechanism, which the MCP tool's
-`fields` parameter does not expose. This is a
-[known limitation](https://community.atlassian.com/forums/Atlassian-Remote-MCP-Server/Using-MCP-how-do-you-Link-two-tickets-together-creation-or-edit/td-p/3064213).
-
-## Step 5: Generate Dependency Link Script
-
-Since the MCP tool cannot create issue links, generate a shell script that uses
-the Jira REST API directly.
+After all tickets are created with their real Jira keys, create dependency links
+using `mcp__atlassian__createIssueLink`.
 
 ### Link Type Discovery
 
-The script MUST first query available link types from the instance:
+First, call `mcp__atlassian__getIssueLinkTypes` to discover available link types
+on the instance.
 
-```bash
-curl -s \
-  -H "Authorization: Basic $AUTH" \
-  "$JIRA_HOST/rest/api/3/issueLinkType"
-```
+### Preferred Link Type
 
-### Jira REST API Direction Semantics (CRITICAL)
+Use the `dependency` link type, NOT "Blocks". Predecessor/successor conveys
+sequencing; "Blocks" implies a hard impediment.
 
-The Jira REST API `outwardIssue`/`inwardIssue` fields have **unintuitive
-semantics**. The direction is:
+At commercetools, the `dependency` type has:
+
+- outward: "is predecessor of"
+- inward: "is successor of"
+
+### Direction Semantics (CRITICAL)
+
+The `mcp__atlassian__createIssueLink` tool uses these semantics:
 
 - `inwardIssue` = the **predecessor** (the ticket done first)
 - `outwardIssue` = the **successor** (the ticket done after)
 
-This means for a link type with `outward: "is predecessor of"` and
-`inward: "is successor of"`:
+### Creating Links
 
-- `inwardIssue` displays the **outward** label ("is predecessor of")
-- `outwardIssue` displays the **inward** label ("is successor of")
+For each dependency in the dependency table, call
+`mcp__atlassian__createIssueLink`:
 
-### Preferred Link Type
-
-Use the **predecessor/successor** link type, NOT "Blocks". Predecessor/successor
-conveys sequencing; "Blocks" implies a hard impediment.
-
-Common Jira type names for predecessor/successor:
-
-| Type name             | outward               | inward               |
-| --------------------- | --------------------- | -------------------- |
-| `dependency`          | is predecessor of     | is successor of      |
-| `Sequence`            | is predecessor of     | is successor of      |
-| `Gantt: finish-start` | has to be done before | has to be done after |
-
-The script SHOULD default to `dependency` (the most common name at
-commercetools) and accept an override via environment variable.
-
-### Script Template
-
-Generate the script at `scripts/jira-link-{feature}.sh`:
-
-```bash
-#!/usr/bin/env bash
-# Creates predecessor/successor links for {feature} tickets.
-#
-# Usage:
-#   JIRA_EMAIL="you@example.com" JIRA_API_TOKEN="token" bash scripts/jira-link-{feature}.sh
-#
-# Get an API token at: https://id.atlassian.com/manage-profile/security/api-tokens
-
-set -euo pipefail
-
-JIRA_HOST="https://commercetools.atlassian.net"
-LINK_API="$JIRA_HOST/rest/api/3/issueLink"
-
-if [[ -z "${JIRA_EMAIL:-}" || -z "${JIRA_API_TOKEN:-}" ]]; then
-  echo "Error: Set JIRA_EMAIL and JIRA_API_TOKEN environment variables."
-  exit 1
-fi
-
-AUTH=$(printf '%s:%s' "$JIRA_EMAIL" "$JIRA_API_TOKEN" | base64)
-LINK_TYPE="${JIRA_LINK_TYPE:-dependency}"
-
-OK_COUNT=0
-FAIL_COUNT=0
-
-create_link() {
-  local predecessor="$1"
-  local successor="$2"
-  local reason="$3"
-
-  local status
-  status=$(curl -s -o /dev/null -w "%{http_code}" \
-    -X POST "$LINK_API" \
-    -H "Authorization: Basic $AUTH" \
-    -H "Content-Type: application/json" \
-    -d "{
-      \"type\": { \"name\": \"$LINK_TYPE\" },
-      \"inwardIssue\": { \"key\": \"$predecessor\" },
-      \"outwardIssue\": { \"key\": \"$successor\" }
-    }")
-
-  if [[ "$status" == "201" ]]; then
-    echo "  OK  $predecessor -> $successor ($reason)"
-    OK_COUNT=$((OK_COUNT + 1))
-  else
-    echo "  FAIL[$status]  $predecessor -> $successor ($reason)"
-    FAIL_COUNT=$((FAIL_COUNT + 1))
-  fi
-}
-
-# --- Links ---
-# create_link PREDECESSOR SUCCESSOR "reason"
-
-# --- Summary ---
-# echo ""
-# echo "=== Summary ==="
-# echo "  OK: $OK_COUNT"
-# echo "  FAIL: $FAIL_COUNT"
-# echo "  Total: $((OK_COUNT + FAIL_COUNT))"
+```
+cloudId: "commercetools.atlassian.net"
+type: "dependency"
+inwardIssue: <predecessor-key>    # the ticket done first
+outwardIssue: <successor-key>     # the ticket done after
 ```
 
-### Script Requirements
+### Execution Strategy
 
-- The script MUST be executable (`chmod +x`)
-- The script MUST print a summary count at the end
-- The script MUST clearly label each section of links
-- The script MUST NOT use `((var++))` for counters — with `set -e`, post-increment
-  from 0 returns falsy and kills the script. Use `var=$((var + 1))` instead.
-- The script SHOULD include a `--cleanup` flag to remove links from a prior bad
-  run (query each ticket's links, filter by type, DELETE each link ID)
+- Create all dependency links in parallel for efficiency
+- Log each link created: "predecessor → successor (reason)"
+- Report a summary: "N/M links created successfully"
+- If a link fails, log the error and continue with remaining links
 
 ## Step 6: Update Plan Document
 
@@ -372,11 +291,11 @@ Before declaring done, verify:
 - [ ] All tickets created with correct parent epic
 - [ ] All tickets have labels and component (if applicable)
 - [ ] All tickets have acceptance criteria in description
-- [ ] Dependency table uses real CRAFT keys
-- [ ] Link script generated with correct direction (`inwardIssue` = predecessor)
-- [ ] Link script uses `dependency` type (not `Blocks`)
-- [ ] Link script is executable
-- [ ] Plan document updated with real CRAFT keys
+- [ ] Dependency table uses real Jira keys
+- [ ] All dependency links created via `mcp__atlassian__createIssueLink`
+- [ ] Links use `dependency` type (not `Blocks`)
+- [ ] Links use correct direction (`inwardIssue` = predecessor)
+- [ ] Plan document updated with real Jira keys
 - [ ] Independent tickets clearly identified
 
 ## Error Recovery
@@ -385,20 +304,15 @@ Before declaring done, verify:
 
 If links are created backwards (predecessor shows "is successor of"):
 
-1. Run the script with `--cleanup` flag to delete bad links
-2. Verify the `create_link` function uses `inwardIssue` for predecessor
-3. Re-run the script
+1. Note the affected ticket keys
+2. Recreate the links with `inwardIssue` and `outwardIssue` swapped
+3. The user may need to manually delete the incorrect links in Jira
 
-### Link type not found (404)
+### Link type not found
 
-1. Check the link type discovery output at the top of the script
-2. Set `JIRA_LINK_TYPE` env var to the correct type name
+1. Call `mcp__atlassian__getIssueLinkTypes` to list available types
+2. Use the correct type name from the response
 3. Common alternatives: `Sequence`, `Gantt: finish-start`, `Gantt Dependency`
-
-### MCP tool returns "Bad Request" for issue links
-
-This is expected. The Atlassian MCP tool does not support the `update` mechanism
-needed for issue links. Use the generated shell script instead.
 
 ## RFC 2119 Key Words
 
