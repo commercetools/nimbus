@@ -387,8 +387,12 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   const detailPanelId = `detail-panel-${row.id}`;
   const ariaRef = useCallback(
     (node: HTMLElement | null) => {
-      if (!node || !renderDetails) return;
-      node.setAttribute("aria-controls", detailPanelId);
+      if (!node) return;
+      if (renderDetails) {
+        node.setAttribute("aria-controls", detailPanelId);
+      } else {
+        node.removeAttribute("aria-controls");
+      }
     },
     [renderDetails, detailPanelId]
   );
@@ -617,7 +621,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                 (allowsDragging ? 1 : 0) +
                 (showExpandColumn ? 1 : 0) +
                 (showSelectionColumn ? 1 : 0) +
-                1
+                (showPinColumn ? 1 : 0)
               }
               data-detail-cell
             >

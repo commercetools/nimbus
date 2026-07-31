@@ -2649,24 +2649,21 @@ export const RowDetailPanels: Story = {
       const nonInteractiveCell = cells.find(
         (cell) => !within(cell).queryByRole("checkbox")
       );
+      expect(nonInteractiveCell).toBeDefined();
 
-      if (nonInteractiveCell) {
-        await userEvent.click(nonInteractiveCell);
+      await userEvent.click(nonInteractiveCell!);
 
-        await waitFor(
-          () => {
-            const openDetails = canvasElement.querySelectorAll(
-              "[data-detail-row-expanded='true']"
-            );
-            expect(openDetails.length).toBe(1);
-          },
-          { timeout: 3000 }
-        );
+      await waitFor(
+        () => {
+          const openDetails = canvasElement.querySelectorAll(
+            "[data-detail-row-expanded='true']"
+          );
+          expect(openDetails.length).toBe(1);
+        },
+        { timeout: 3000 }
+      );
 
-        expect(
-          canvas.getByText(`Details for ${rows[0].id}`)
-        ).toBeInTheDocument();
-      }
+      expect(canvas.getByText(`Details for ${rows[0].id}`)).toBeInTheDocument();
     });
 
     await step("Clicking the same row closes its detail panel", async () => {
@@ -2676,20 +2673,19 @@ export const RowDetailPanels: Story = {
       const nonInteractiveCell = cells.find(
         (cell) => !within(cell).queryByRole("checkbox")
       );
+      expect(nonInteractiveCell).toBeDefined();
 
-      if (nonInteractiveCell) {
-        await userEvent.click(nonInteractiveCell);
+      await userEvent.click(nonInteractiveCell!);
 
-        await waitFor(
-          () => {
-            const openDetails = canvasElement.querySelectorAll(
-              "[data-detail-row-expanded='true']"
-            );
-            expect(openDetails.length).toBe(0);
-          },
-          { timeout: 3000 }
-        );
-      }
+      await waitFor(
+        () => {
+          const openDetails = canvasElement.querySelectorAll(
+            "[data-detail-row-expanded='true']"
+          );
+          expect(openDetails.length).toBe(0);
+        },
+        { timeout: 3000 }
+      );
     });
 
     await step("Detail panel spans all columns", async () => {
@@ -2699,27 +2695,26 @@ export const RowDetailPanels: Story = {
       const nonInteractiveCell = cells.find(
         (cell) => !within(cell).queryByRole("checkbox")
       );
+      expect(nonInteractiveCell).toBeDefined();
 
-      if (nonInteractiveCell) {
-        await userEvent.click(nonInteractiveCell);
+      await userEvent.click(nonInteractiveCell!);
 
-        await waitFor(
-          () => {
-            const openDetails = canvasElement.querySelectorAll(
-              "[data-detail-row-expanded='true']"
-            );
-            expect(openDetails.length).toBe(1);
-          },
-          { timeout: 3000 }
-        );
+      await waitFor(
+        () => {
+          const openDetails = canvasElement.querySelectorAll(
+            "[data-detail-row-expanded='true']"
+          );
+          expect(openDetails.length).toBe(1);
+        },
+        { timeout: 3000 }
+      );
 
-        const detailCell = canvasElement.querySelector("[data-detail-cell]");
-        expect(detailCell).toBeInTheDocument();
+      const detailCell = canvasElement.querySelector("[data-detail-cell]");
+      expect(detailCell).toBeInTheDocument();
 
-        const headerCells = canvasElement.querySelectorAll("thead th");
-        const colSpan = detailCell?.getAttribute("colspan");
-        expect(Number(colSpan)).toBe(headerCells.length);
-      }
+      const headerCells = canvasElement.querySelectorAll("thead th");
+      const colSpan = detailCell?.getAttribute("colspan");
+      expect(Number(colSpan)).toBe(headerCells.length);
     });
 
     await step("Multiple rows can have details open", async () => {
@@ -2731,20 +2726,19 @@ export const RowDetailPanels: Story = {
       const nonInteractiveCell = cells.find(
         (cell) => !within(cell).queryByRole("checkbox")
       );
+      expect(nonInteractiveCell).toBeDefined();
 
-      if (nonInteractiveCell) {
-        await userEvent.click(nonInteractiveCell);
+      await userEvent.click(nonInteractiveCell!);
 
-        await waitFor(
-          () => {
-            const openDetails = canvasElement.querySelectorAll(
-              "[data-detail-row-expanded='true']"
-            );
-            expect(openDetails.length).toBe(2);
-          },
-          { timeout: 3000 }
-        );
-      }
+      await waitFor(
+        () => {
+          const openDetails = canvasElement.querySelectorAll(
+            "[data-detail-row-expanded='true']"
+          );
+          expect(openDetails.length).toBe(2);
+        },
+        { timeout: 3000 }
+      );
     });
   },
 };
@@ -2780,13 +2774,17 @@ export const RowDetailPanelsWithSelection: Story = {
       const checkbox = within(firstDataRow).getByRole("checkbox");
       await userEvent.click(checkbox);
 
-      await new Promise((resolve) => setTimeout(resolve, 600));
+      await waitFor(
+        () => {
+          expect(checkbox).toBeChecked();
+        },
+        { timeout: 3000 }
+      );
 
       const openDetails = canvasElement.querySelectorAll(
         "[data-detail-row-expanded='true']"
       );
       expect(openDetails.length).toBe(0);
-      expect(checkbox).toBeChecked();
     });
 
     await step(
@@ -2800,20 +2798,19 @@ export const RowDetailPanelsWithSelection: Story = {
             !within(cell).queryByRole("checkbox") &&
             !within(cell).queryByRole("button")
         );
+        expect(nonInteractiveCell).toBeDefined();
 
-        if (nonInteractiveCell) {
-          await userEvent.click(nonInteractiveCell);
+        await userEvent.click(nonInteractiveCell!);
 
-          await waitFor(
-            () => {
-              const openDetails = canvasElement.querySelectorAll(
-                "[data-detail-row-expanded='true']"
-              );
-              expect(openDetails.length).toBe(1);
-            },
-            { timeout: 3000 }
-          );
-        }
+        await waitFor(
+          () => {
+            const openDetails = canvasElement.querySelectorAll(
+              "[data-detail-row-expanded='true']"
+            );
+            expect(openDetails.length).toBe(1);
+          },
+          { timeout: 3000 }
+        );
       }
     );
   },
