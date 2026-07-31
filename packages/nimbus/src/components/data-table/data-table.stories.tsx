@@ -2628,6 +2628,7 @@ export const RowDetailPanels: Story = {
     );
   },
   args: {},
+  parameters: { chromatic: { disableSnapshot: false } },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
