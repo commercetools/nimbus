@@ -83,12 +83,21 @@ export const DataTableRoot = function DataTableRoot<
     const el = localRef.current;
     if (!el) return;
 
+    let prevLeft: boolean | undefined;
+    let prevRight: boolean | undefined;
+
     const update = () => {
       const { scrollLeft, scrollWidth, clientWidth } = el;
       const canScrollLeft = scrollLeft > 1;
       const canScrollRight = scrollLeft + clientWidth < scrollWidth - 1;
-      el.setAttribute("data-scroll-left", String(canScrollLeft));
-      el.setAttribute("data-scroll-right", String(canScrollRight));
+      if (canScrollLeft !== prevLeft) {
+        prevLeft = canScrollLeft;
+        el.setAttribute("data-scroll-left", String(canScrollLeft));
+      }
+      if (canScrollRight !== prevRight) {
+        prevRight = canScrollRight;
+        el.setAttribute("data-scroll-right", String(canScrollRight));
+      }
     };
 
     update();
