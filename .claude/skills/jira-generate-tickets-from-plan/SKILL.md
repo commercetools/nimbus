@@ -234,11 +234,6 @@ additional_fields:
 After all tickets are created with their real Jira keys, create dependency links
 using `mcp__atlassian__createIssueLink`.
 
-### Link Type Discovery
-
-First, call `mcp__atlassian__getIssueLinkTypes` to discover available link types
-on the instance.
-
 ### Preferred Link Type
 
 Use the `dependency` link type, NOT "Blocks". Predecessor/successor conveys
@@ -304,9 +299,10 @@ Before declaring done, verify:
 
 If links are created backwards (predecessor shows "is successor of"):
 
-1. Note the affected ticket keys
-2. Recreate the links with `inwardIssue` and `outwardIssue` swapped
-3. The user may need to manually delete the incorrect links in Jira
+1. Ask the user to manually delete the incorrect links in Jira (there is no MCP
+   tool for deleting issue links)
+2. Once the bad links are removed, recreate them with `inwardIssue` and
+   `outwardIssue` swapped
 
 ### Link type not found
 
