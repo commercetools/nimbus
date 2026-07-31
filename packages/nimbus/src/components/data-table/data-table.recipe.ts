@@ -13,6 +13,7 @@ const stickyBgOverlap = {
     right: "-2px",
     background: "inherit",
     pointerEvents: "none",
+    zIndex: -1,
   },
 } as const;
 
