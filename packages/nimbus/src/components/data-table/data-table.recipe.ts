@@ -269,7 +269,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       boxSizing: "border-box",
       boxShadow: "inset 0 0 0 1px {colors.neutral.3}",
       borderRadius: "0 0 {sizes.200} {sizes.200}",
-      overflow: "hidden",
       colorPalette: "slate",
       width: "100%",
     },
