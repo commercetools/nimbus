@@ -46,6 +46,8 @@ import {
   initialHiddenColumns,
   alignDemoColumns,
   alignDemoRows,
+  compoundColumns,
+  compoundRows,
 } from "./data-table.test-data";
 
 import { useDragAndDrop, createArrayHandlers } from "@commercetools/nimbus";
@@ -6132,6 +6134,260 @@ export const ScrollShadows: Story = {
       await waitFor(() => {
         expect(root.getAttribute("data-scroll-left")).toBe("false");
         expect(root.getAttribute("data-scroll-right")).toBe("true");
+      });
+    });
+  },
+};
+
+export const CompoundBasic: Story = {
+  render: () => (
+    <DataTable.Root
+      columns={compoundColumns}
+      rows={compoundRows}
+      data-testid="compound-basic"
+    >
+      <DataTable.Table aria-label="Compound basic table">
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+    </DataTable.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Table renders with correct structure", async () => {
+      const table = canvas.getByRole("grid");
+      expect(table).toBeInTheDocument();
+      expect(table).toHaveAttribute("aria-label", "Compound basic table");
+    });
+
+    await step("Header columns render", async () => {
+      expect(canvas.getByText("Name")).toBeInTheDocument();
+      expect(canvas.getByText("Email")).toBeInTheDocument();
+      expect(canvas.getByText("Department")).toBeInTheDocument();
+    });
+
+    await step("Data rows render", async () => {
+      const rows = canvas.getAllByRole("row");
+      expect(rows.length).toBe(4); // 1 header + 3 data rows
+      expect(canvas.getByText("Alice")).toBeInTheDocument();
+      expect(canvas.getByText("bob@example.com")).toBeInTheDocument();
+      expect(canvas.getByText("PM")).toBeInTheDocument();
+    });
+  },
+};
+
+export const CompoundWithFooter: Story = {
+  render: () => (
+    <DataTable.Root
+      columns={compoundColumns}
+      rows={compoundRows}
+      data-testid="compound-footer"
+    >
+      <DataTable.Table aria-label="Compound table with footer">
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+      <DataTable.Footer>
+        <Text data-testid="footer-content">
+          Showing {compoundRows.length} results
+        </Text>
+      </DataTable.Footer>
+    </DataTable.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Table and footer both render", async () => {
+      const table = canvas.getByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      const footer = canvas.getByTestId("footer-content");
+      expect(footer).toBeInTheDocument();
+      expect(footer).toHaveTextContent("Showing 3 results");
+    });
+
+    await step("Data rows render alongside footer", async () => {
+      expect(canvas.getByText("Alice")).toBeInTheDocument();
+      expect(canvas.getByText("Carol")).toBeInTheDocument();
+    });
+  },
+};
+
+const CompoundWithSortingRender = () => {
+  const [sortDescriptor, setSortDescriptor] = useState<
+    SortDescriptor | undefined
+  >(undefined);
+
+  return (
+    <DataTable.Root
+      columns={compoundColumns}
+      rows={compoundRows}
+      allowsSorting
+      sortDescriptor={sortDescriptor}
+      onSortChange={setSortDescriptor}
+      data-testid="compound-sorting"
+    >
+      <DataTable.Table aria-label="Compound table with sorting">
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+};
+
+export const CompoundWithSorting: Story = {
+  render: () => <CompoundWithSortingRender />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Sorting columns are rendered", async () => {
+      const table = canvas.getByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      const columnHeaders = canvas.getAllByRole("columnheader");
+      expect(columnHeaders.length).toBeGreaterThanOrEqual(3);
+    });
+
+    await step("Clicking a column header triggers sort", async () => {
+      const nameHeader = canvas.getByText("Name");
+      await userEvent.click(nameHeader);
+
+      await waitFor(() => {
+        const headerCell = nameHeader.closest("[role='columnheader']");
+        expect(headerCell).toHaveAttribute("aria-sort", "ascending");
+      });
+    });
+
+    await step("Second click reverses sort", async () => {
+      const nameHeader = canvas.getByText("Name");
+      await userEvent.click(nameHeader);
+
+      await waitFor(() => {
+        const headerCell = nameHeader.closest("[role='columnheader']");
+        expect(headerCell).toHaveAttribute("aria-sort", "descending");
+      });
+    });
+  },
+};
+
+const CompoundWithSelectionRender = () => {
+  const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
+
+  return (
+    <DataTable.Root
+      columns={compoundColumns}
+      rows={compoundRows}
+      selectionMode="multiple"
+      selectedKeys={selectedKeys}
+      onSelectionChange={setSelectedKeys}
+      data-testid="compound-selection"
+    >
+      <DataTable.Table aria-label="Compound table with selection">
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+      <DataTable.Footer>
+        <Text data-testid="selection-count">
+          {selectedKeys === "all" ? compoundRows.length : selectedKeys.size}{" "}
+          selected
+        </Text>
+      </DataTable.Footer>
+    </DataTable.Root>
+  );
+};
+
+export const CompoundWithSelection: Story = {
+  render: () => <CompoundWithSelectionRender />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Selection checkboxes render", async () => {
+      const checkboxes = canvas.getAllByRole("checkbox");
+      expect(checkboxes.length).toBeGreaterThanOrEqual(3);
+    });
+
+    await step("Selecting a row updates the footer count", async () => {
+      const rows = canvas.getAllByRole("row");
+      const firstDataRow = rows[1];
+      const checkbox = within(firstDataRow).getByRole("checkbox");
+
+      await userEvent.click(checkbox);
+
+      await waitFor(() => {
+        expect(checkbox).toBeChecked();
+      });
+
+      const countEl = canvas.getByTestId("selection-count");
+      expect(countEl).toHaveTextContent("1 selected");
+    });
+
+    await step("Selecting another row updates count", async () => {
+      const rows = canvas.getAllByRole("row");
+      const secondDataRow = rows[2];
+      const checkbox = within(secondDataRow).getByRole("checkbox");
+
+      await userEvent.click(checkbox);
+
+      await waitFor(() => {
+        expect(checkbox).toBeChecked();
+      });
+
+      const countEl = canvas.getByTestId("selection-count");
+      expect(countEl).toHaveTextContent("2 selected");
+    });
+  },
+};
+
+const CompoundWithNestedContentRender = () => {
+  return (
+    <DataTable.Root
+      columns={compoundColumns}
+      rows={compoundRows}
+      renderNestedContent={(row) => (
+        <Box p="400" data-testid={`nested-${row.id}`}>
+          <Text fontWeight="bold">Details for {row.name as string}</Text>
+          <Text>Email: {row.email as string}</Text>
+        </Box>
+      )}
+      data-testid="compound-nested"
+    >
+      <DataTable.Table aria-label="Compound table with nested content">
+        <DataTable.Header />
+        <DataTable.Body />
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+};
+
+export const CompoundWithNestedContent: Story = {
+  render: () => <CompoundWithNestedContentRender />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Expand buttons render for each row", async () => {
+      const expandButtons = canvas.getAllByLabelText("Expand");
+      expect(expandButtons.length).toBe(3);
+    });
+
+    await step("Clicking expand reveals nested content", async () => {
+      const expandButtons = canvas.getAllByLabelText("Expand");
+      await userEvent.click(expandButtons[0]);
+
+      await waitFor(() => {
+        const nested = canvas.getByTestId("nested-1");
+        expect(nested).toBeInTheDocument();
+        expect(nested).toHaveTextContent("Details for Alice");
+        expect(nested).toHaveTextContent("Email: alice@example.com");
+      });
+    });
+
+    await step("Clicking collapse hides nested content", async () => {
+      const collapseButton = canvas.getByLabelText("Collapse");
+      await userEvent.click(collapseButton);
+
+      await waitFor(() => {
+        expect(canvas.queryByTestId("nested-1")).not.toBeInTheDocument();
       });
     });
   },

@@ -6,6 +6,9 @@ import {
   DataTableTable,
   DataTableHeader,
   DataTableBody,
+  DataTableRow,
+  DataTableCell,
+  DataTableColumn,
   DataTableFooter,
   DataTableManager,
   DataTableContext,
@@ -116,6 +119,47 @@ export const DataTable = Object.assign(DataTableBase, {
    */
   Body: DataTableBody,
   /**
+   * # DataTable.Row
+   *
+   * Individual row component that renders data cells and handles row-level interactions.
+   * Use directly for custom row rendering in compound composition patterns.
+   *
+   * @example
+   * ```tsx
+   * <DataTable.Root columns={columns} rows={rows}>
+   *   <DataTable.Table>
+   *     <DataTable.Header />
+   *     <DataTable.Body />
+   *   </DataTable.Table>
+   * </DataTable.Root>
+   * ```
+   */
+  Row: DataTableRow,
+  /**
+   * # DataTable.Cell
+   *
+   * Individual cell component that displays data values with proper accessibility attributes.
+   * Use directly for custom cell rendering in compound composition patterns.
+   *
+   * @example
+   * ```tsx
+   * <DataTable.Cell>Cell content</DataTable.Cell>
+   * ```
+   */
+  Cell: DataTableCell,
+  /**
+   * # DataTable.Column
+   *
+   * Individual column header component that handles sorting interactions.
+   * Use directly for custom header rendering in compound composition patterns.
+   *
+   * @example
+   * ```tsx
+   * <DataTable.Column allowsSorting>Column Title</DataTable.Column>
+   * ```
+   */
+  Column: DataTableColumn,
+  /**
    * # DataTable.Footer
    *
    * Optional footer section for displaying summary information, pagination, or actions.
@@ -190,6 +234,9 @@ export {
   DataTableTable as _DataTableTable,
   DataTableHeader as _DataTableHeader,
   DataTableBody as _DataTableBody,
+  DataTableRow as _DataTableRow,
+  DataTableCell as _DataTableCell,
+  DataTableColumn as _DataTableColumn,
   DataTableFooter as _DataTableFooter,
   DataTableManager as _DataTableManager,
 };
