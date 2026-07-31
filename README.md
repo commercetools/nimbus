@@ -16,6 +16,7 @@
   - [🚀 Getting Started](#-getting-started)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
+    - [Dependencies \& supply chain security](#dependencies--supply-chain-security)
   - [💻 Development Workflow](#-development-workflow)
     - [Development Mode](#development-mode)
     - [Building the Project](#building-the-project)
@@ -97,6 +98,15 @@ All commands should be run from the repository root.
 > switching branches, you must run `pnpm nimbus:init` or `pnpm build` to
 > generate the required `*.messages.ts` and `intl/*.ts` files. Without these
 > files, TypeScript compilation and Storybook will fail.
+
+### Dependencies & supply chain security
+
+Dependency management in this repository follows the Merchant Center supply
+chain security baseline: a pnpm install delay/cooldown (`minimumReleaseAge`),
+build-script allowlists, SHA-pinned GitHub Actions, and centralized Renovate
+configuration. Before adding, updating, or overriding a dependency — or when a
+`minimumReleaseAge` cooldown or `pnpm audit --fix` blocks you — follow the
+[Supply Chain Security — Baseline & Override Procedures](https://commercetools.atlassian.net/wiki/spaces/MCF/pages/3580231746/Supply+Chain+Security+-+Baseline+Override+Procedures).
 
 ## 💻 Development Workflow
 
