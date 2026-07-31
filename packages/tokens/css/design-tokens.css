@@ -2260,6 +2260,8 @@
   --shadow-4: 0 6px 16px 0 hsla(0, 0%, 0%, 0.1);
   --shadow-5: 0 8px 20px 0 hsla(0, 0%, 0%, 0.1);
   --shadow-6: 0 10px 24px 0 hsla(0, 0%, 0%, 0.15);
+  --shadow-right: 6px 0 8px -2px hsla(0, 0%, 0%, 0.15);
+  --shadow-left: -6px 0 8px -2px hsla(0, 0%, 0%, 0.15);
   --opacity-5: 0.05;
   --opacity-10: 0.1;
   --opacity-15: 0.15;
