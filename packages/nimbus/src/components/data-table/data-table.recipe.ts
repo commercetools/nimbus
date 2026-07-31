@@ -50,6 +50,33 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       display: "block",
       overflow: "auto",
       contain: "layout style",
+
+      // Scroll shadows activated by JS scroll detection via data attributes.
+      // Body selectors include .data-table-row to beat the base specificity.
+      // Left-side sticky cells get a right shadow (facing the scrolled content).
+      // Pin-row-cell is excluded (it's sticky-right, shadowed separately).
+      // The expand column is excluded when it follows selection, because
+      // selection already casts the shadow at that edge.
+      "&[data-scroll-left='true']": {
+        "& .data-table-row .data-table-sticky-cell:not([data-slot='pin-row-cell']):not([data-slot='selection'] ~ [data-slot='expand'])":
+          { boxShadow: "{shadows.right}" },
+        "& .data-table-row-pinned .data-table-sticky-cell:not([data-slot='pin-row-cell'])":
+          { clipPath: "none" },
+        "& .data-table-header .selection-column-header, & .data-table-header .drag-column-header, & .data-table-header .expand-column-header:not(.selection-column-header ~ .expand-column-header)":
+          { boxShadow: "{shadows.right}" },
+      },
+      "&[data-scroll-right='true']": {
+        "& .data-table-row [data-slot='pin-row-cell']": {
+          boxShadow: "{shadows.left}",
+        },
+        "& .data-table-row-pinned [data-slot='pin-row-cell']": {
+          clipPath: "none",
+        },
+        "& .data-table-header .pin-rows-column-header": {
+          boxShadow: "{shadows.left}",
+        },
+      },
+
       "& .data-table-row": {
         "& [data-slot='pin-row-cell']": {
           position: "sticky",
@@ -57,6 +84,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           zIndex: 3,
           backgroundColor: "bg",
           ...stickyBgOverlap,
+          "&::before": { right: 0 },
           "& [data-slot='nimbus-table-cell-pin-button']": {
             opacity: 0,
           },
@@ -64,7 +92,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
             opacity: 1,
           },
         },
-        "& .data-table-sticky-cell": {
+        "& .data-table-sticky-cell:not([data-slot='pin-row-cell'])": {
           position: "sticky",
           left: 0,
           backgroundColor: "bg",
@@ -87,8 +115,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           left: "600",
         },
         // When selection column is present, move expand column to the right
+        // and lower its z-index so it doesn't overlap selection during scroll
         "& [data-slot='selection'] ~ [data-slot='expand']": {
           left: "1800",
+          zIndex: 10,
         },
         // When both drag and selection columns are present, offset expand column
         "& [data-slot='drag'] ~ [data-slot='selection'] ~ [data-slot='expand']":
@@ -123,6 +153,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           // When selection column is present, move expand column to the right on hover
           "& [data-slot='selection'] ~ [data-slot='expand']": {
             left: "1800",
+            zIndex: 10,
           },
           // When both drag and selection columns are present, offset expand column on hover
           "& [data-slot='drag'] ~ [data-slot='selection'] ~ [data-slot='expand']":
@@ -175,6 +206,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         // When selection column is present in pinned rows, move expand column
         "& [data-slot='selection'] ~ [data-slot='expand']": {
           left: "1800",
+          zIndex: 10,
         },
         // When both drag and selection columns are present in pinned rows
         "& [data-slot='drag'] ~ [data-slot='selection'] ~ [data-slot='expand']":
@@ -369,6 +401,7 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         zIndex: 11,
         background: "colorPalette.2",
         ...stickyBgOverlap,
+        "&::before": { right: 0 },
       },
       "&[aria-sort]": {
         fontWeight: 600,

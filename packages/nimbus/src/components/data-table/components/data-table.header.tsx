@@ -4,7 +4,8 @@ import {
   Collection as RaCollection,
   useTableOptions,
 } from "react-aria-components";
-import { Box, Checkbox } from "@/components";
+import { Box, Checkbox, Icon } from "@/components";
+import { KeyboardArrowRight, PushPin } from "@commercetools/nimbus-icons";
 import { extractStyleProps } from "@/utils";
 import { useLocalizedStringFormatter } from "@/hooks";
 import type {
@@ -91,6 +92,16 @@ export const DataTableHeader = <
             isInternalColumn={true}
           >
             <VisuallyHidden>{msg.format("expandRows")}</VisuallyHidden>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              w="100%"
+              h="100%"
+              aria-hidden="true"
+            >
+              <Icon as={KeyboardArrowRight} boxSize="400" color="neutral.10" />
+            </Box>
           </DataTableColumn>
         )}
         <RaCollection items={activeColumns}>
@@ -139,6 +150,16 @@ export const DataTableHeader = <
             aria-label={msg.format("pinRows")}
           >
             <VisuallyHidden>{msg.format("pinRows")}</VisuallyHidden>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              w="100%"
+              h="100%"
+              aria-hidden="true"
+            >
+              <Icon as={PushPin} boxSize="400" color="neutral.10" />
+            </Box>
           </DataTableColumn>
         )}
       </RaTableHeader>

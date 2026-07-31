@@ -507,6 +507,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                   cursor="pointer"
                   focusVisibleRing="inside"
                   borderRadius="0"
+                  color="neutral.10"
                   aria-label={
                     isExpanded
                       ? msg.format("collapseRow")

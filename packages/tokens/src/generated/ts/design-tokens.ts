@@ -2785,6 +2785,8 @@ export default {
     "4": "0 6px 16px 0 hsla(0, 0%, 0%, 0.1)",
     "5": "0 8px 20px 0 hsla(0, 0%, 0%, 0.1)",
     "6": "0 10px 24px 0 hsla(0, 0%, 0%, 0.15)",
+    right: "6px 0 8px -2px hsla(0, 0%, 0%, 0.15)",
+    left: "-6px 0 8px -2px hsla(0, 0%, 0%, 0.15)",
   },
   opacity: {
     "5": 0.05,

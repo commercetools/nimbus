@@ -7014,6 +7014,12 @@ export default {
     "6": {
       value: "0 10px 24px 0 hsla(0, 0%, 0%, 0.15)",
     },
+    right: {
+      value: "6px 0 8px -2px hsla(0, 0%, 0%, 0.15)",
+    },
+    left: {
+      value: "-6px 0 8px -2px hsla(0, 0%, 0%, 0.15)",
+    },
   },
   opacity: {
     "5": {

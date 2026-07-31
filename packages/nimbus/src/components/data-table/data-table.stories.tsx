@@ -6006,3 +6006,133 @@ export const HiddenExpandColumnWithRowClick: Story = {
     });
   },
 };
+
+export const ScrollShadows: Story = {
+  render: () => {
+    const scrollColumns: DataTableColumnItem[] = [
+      {
+        id: "name",
+        header: "Name",
+        accessor: (row) => row.name as React.ReactNode,
+        minWidth: 150,
+      },
+      ...Array.from({ length: 10 }, (_, i) => ({
+        id: `col-${i}`,
+        header: `Column ${i + 1}`,
+        accessor: (row: Record<string, unknown>) =>
+          (row[`col${i}`] || `Value ${i + 1}`) as React.ReactNode,
+        minWidth: 200,
+      })),
+    ];
+
+    const scrollRows: DataTableRowItem[] = Array.from(
+      { length: 10 },
+      (_, i) => ({
+        id: `${i + 1}`,
+        name: `Employee ${i + 1}`,
+        ...Object.fromEntries(
+          Array.from({ length: 10 }, (_, j) => [
+            `col${j}`,
+            `Data R${i + 1}C${j + 1}`,
+          ])
+        ),
+      })
+    );
+
+    return (
+      <Box maxW="700px" data-testid="scroll-shadow-container">
+        <DataTable
+          columns={scrollColumns}
+          rows={scrollRows}
+          selectionMode="multiple"
+          selectionBehavior="toggle"
+          data-testid="scroll-shadow-table"
+        />
+      </Box>
+    );
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Table renders with scroll attributes", async () => {
+      const table = await canvas.findByRole("grid");
+      expect(table).toBeInTheDocument();
+
+      const root = table.closest(
+        '[data-testid="scroll-shadow-table"]'
+      ) as HTMLElement;
+      expect(root).toBeInTheDocument();
+    });
+
+    await step(
+      "No left shadow at initial scroll position (scrolled to start)",
+      async () => {
+        const root = canvasElement.querySelector(
+          '[data-testid="scroll-shadow-table"]'
+        ) as HTMLElement;
+
+        await waitFor(() => {
+          expect(root.getAttribute("data-scroll-left")).toBe("false");
+        });
+      }
+    );
+
+    await step(
+      "Right shadow present when content overflows to the right",
+      async () => {
+        const root = canvasElement.querySelector(
+          '[data-testid="scroll-shadow-table"]'
+        ) as HTMLElement;
+
+        await waitFor(() => {
+          expect(root.getAttribute("data-scroll-right")).toBe("true");
+        });
+      }
+    );
+
+    await step("Left shadow appears after scrolling right", async () => {
+      const root = canvasElement.querySelector(
+        '[data-testid="scroll-shadow-table"]'
+      ) as HTMLElement;
+
+      root.scrollLeft = 200;
+      root.dispatchEvent(new Event("scroll"));
+
+      await waitFor(() => {
+        expect(root.getAttribute("data-scroll-left")).toBe("true");
+      });
+
+      const stickyCells = canvasElement.querySelectorAll(
+        ".data-table-sticky-cell:not([data-slot='pin-row-cell'])"
+      );
+      expect(stickyCells.length).toBeGreaterThan(0);
+    });
+
+    await step("Right shadow disappears when scrolled to the end", async () => {
+      const root = canvasElement.querySelector(
+        '[data-testid="scroll-shadow-table"]'
+      ) as HTMLElement;
+
+      root.scrollLeft = root.scrollWidth - root.clientWidth;
+      root.dispatchEvent(new Event("scroll"));
+
+      await waitFor(() => {
+        expect(root.getAttribute("data-scroll-right")).toBe("false");
+      });
+    });
+
+    await step("Both shadows gone at scroll start", async () => {
+      const root = canvasElement.querySelector(
+        '[data-testid="scroll-shadow-table"]'
+      ) as HTMLElement;
+
+      root.scrollLeft = 0;
+      root.dispatchEvent(new Event("scroll"));
+
+      await waitFor(() => {
+        expect(root.getAttribute("data-scroll-left")).toBe("false");
+        expect(root.getAttribute("data-scroll-right")).toBe("true");
+      });
+    });
+  },
+};

@@ -1,4 +1,11 @@
-import { useMemo, useState, useCallback, useRef, startTransition } from "react";
+import {
+  useMemo,
+  useState,
+  useCallback,
+  useRef,
+  useEffect,
+  startTransition,
+} from "react";
 import { ResizableTableContainer } from "react-aria-components";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
@@ -71,6 +78,38 @@ export const DataTableRoot = function DataTableRoot<
   const ref = useObjectRef(mergeRefs(localRef, forwardedRef));
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const selectRowLabel = msg.format("selectRow");
+
+  useEffect(() => {
+    const el = localRef.current;
+    if (!el) return;
+
+    let prevLeft: boolean | undefined;
+    let prevRight: boolean | undefined;
+
+    const update = () => {
+      const { scrollLeft, scrollWidth, clientWidth } = el;
+      const canScrollLeft = scrollLeft > 1;
+      const canScrollRight = scrollLeft + clientWidth < scrollWidth - 1;
+      if (canScrollLeft !== prevLeft) {
+        prevLeft = canScrollLeft;
+        el.setAttribute("data-scroll-left", String(canScrollLeft));
+      }
+      if (canScrollRight !== prevRight) {
+        prevRight = canScrollRight;
+        el.setAttribute("data-scroll-right", String(canScrollRight));
+      }
+    };
+
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+
+    return () => {
+      el.removeEventListener("scroll", update);
+      ro.disconnect();
+    };
+  }, []);
 
   const [internalSortDescriptor, setInternalSortDescriptor] = useState<
     SortDescriptor | undefined
