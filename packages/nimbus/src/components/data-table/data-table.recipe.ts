@@ -395,12 +395,11 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         cursor: "grab",
       },
 
-      "&:hover:not([data-nested-row-expanded]):not([data-detail-row-expanded])":
-        {
-          backgroundColor: "{colors.primary.3}",
-          transition: "background-color 200ms ease",
-          transform: "translate3d(0, 0, 0)",
-        },
+      "&:hover:not([data-nested-row-expanded])": {
+        backgroundColor: "{colors.primary.3}",
+        transition: "background-color 200ms ease",
+        transform: "translate3d(0, 0, 0)",
+      },
       _last: {
         borderBottom: "none",
       },
@@ -416,9 +415,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         cursor: "not-allowed",
       },
       "&[data-nested-row-expanded='false']": {
-        display: "none",
-      },
-      "&[data-detail-row-expanded='false']": {
         display: "none",
       },
     },
@@ -441,9 +437,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         padding: 0,
       },
       "&[data-nested-cell]": {
-        boxShadow: "inset 2px 0 0 {colors.primary.10}",
-      },
-      "&[data-detail-cell]": {
         boxShadow: "inset 2px 0 0 {colors.primary.10}",
       },
     },

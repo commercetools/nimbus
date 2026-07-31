@@ -34,10 +34,10 @@ export const messages = {
     description: "aria-label for the pin rows column header",
     defaultMessage: "Pin rows",
   },
-  detailPanelRow: {
-    id: "Nimbus.DataTable.detailPanelRow",
+  nestedContentRow: {
+    id: "Nimbus.DataTable.nestedContentRow",
     description:
-      "aria-label for the detail panel row that expands below a data row",
+      "aria-label for the nested content row that expands below a data row",
     defaultMessage: "Details for row {rowId}",
   },
   selectRow: {

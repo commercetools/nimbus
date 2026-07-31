@@ -2,9 +2,12 @@
 "@commercetools/nimbus": minor
 ---
 
-Add `renderDetails` prop to DataTable for rendering full-width detail panels
-below rows. Clicking a row toggles the detail panel open/closed. The
-`onDetailsClick` callback fires when a detail panel is toggled. The render
-callback receives the row and a `DataTableRowDetailsOptions` object with a
-`close` function for dismissing the panel from within. Works alongside existing
-selection, pinning, and nested row expansion features.
+Add `renderNestedContent` prop to DataTable for rendering a uniform component
+template below each row when expanded. Clicking a row toggles the nested content
+open/closed. The render callback receives the row and a
+`DataTableNestedContentOptions` object with a `close` function for collapsing
+the content from within. Uses the same expansion system as `nestedKey` — state
+is managed via `expandedRows` / `onExpandRowsChange`. The `onExpandRowsChange`
+callback now receives `toggledRowId` and `columnId` arguments identifying which
+row and column triggered the expansion. Works alongside existing selection and
+pinning features.

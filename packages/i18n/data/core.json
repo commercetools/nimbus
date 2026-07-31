@@ -87,10 +87,6 @@
     "developer_comment": "aria-label for the data table header element",
     "string": "Data table header"
   },
-  "Nimbus.DataTable.detailPanelRow": {
-    "developer_comment": "aria-label for the detail panel row that expands below a data row",
-    "string": "Details for row {rowId}"
-  },
   "Nimbus.DataTable.dragRow": {
     "developer_comment": "aria-label for the drag handle button on each row",
     "string": "Drag to reorder"
@@ -130,6 +126,10 @@
   "Nimbus.DataTable.layoutSettingsAriaLabel": {
     "developer_comment": "aria-label for the layout settings section in the data table manager",
     "string": "Layout settings section"
+  },
+  "Nimbus.DataTable.nestedContentRow": {
+    "developer_comment": "aria-label for the nested content row that expands below a data row",
+    "string": "Details for row {rowId}"
   },
   "Nimbus.DataTable.noHiddenColumns": {
     "developer_comment": "message when there is no hidden columns in the data table manager",

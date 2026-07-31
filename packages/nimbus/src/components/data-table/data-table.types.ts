@@ -94,8 +94,8 @@ export type DataTableRowItem<T extends object = Record<string, unknown>> = T & {
   [key: string]: unknown;
 };
 
-export type DataTableRowDetailsOptions = {
-  /** Closes the detail panel for the current row */
+export type DataTableNestedContentOptions = {
+  /** Collapses the nested content for the current row */
   close: () => void;
 };
 
@@ -134,12 +134,11 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     onSortChange?: (descriptor: SortDescriptor) => void;
     onSelectionChange?: (keys: Selection) => void;
     onRowClick?: (row: DataTableRowItem<T>) => void;
-    renderDetails?: (
+    renderNestedContent?: (
       row: DataTableRowItem<T>,
-      options: DataTableRowDetailsOptions
+      options: DataTableNestedContentOptions
     ) => ReactNode;
-    toggleDetails: (id: string) => void;
-    toggleExpand: (id: string) => void;
+    toggleExpand: (id: string, columnId?: string) => void;
     activeColumns: DataTableColumnItem<T>[];
     filteredRows: DataTableRowItem<T>[];
     sortedRows: DataTableRowItem<T>[];
@@ -213,12 +212,10 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   defaultSelectedKeys?: Selection;
   onSelectionChange?: (keys: Selection) => void;
   onRowClick?: (row: DataTableRowItem<T>) => void;
-  /** Callback fired when a row's detail panel is toggled */
-  onDetailsClick?: (row: DataTableRowItem<T>) => void;
-  /** Renders a full-width detail panel below a row when clicked. Clicking the row toggles the panel open/closed. The options object provides a `close` callback for dismissing the panel from within. */
-  renderDetails?: (
+  /** Renders a full-width nested content panel below a row when expanded. Use this when every row should render the same component template with its own data. For per-row heterogeneous content, use `nestedKey` instead. The options object provides a `close` callback for collapsing the panel from within. */
+  renderNestedContent?: (
     row: DataTableRowItem<T>,
-    options: DataTableRowDetailsOptions
+    options: DataTableNestedContentOptions
   ) => ReactNode;
   children?: ReactNode;
   density?: DataTableDensity;
@@ -231,8 +228,12 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   expandedRows?: Set<string>;
   /** Default expansion state for uncontrolled mode */
   defaultExpandedRows?: Set<string>;
-  /** Callback fired when expansion state changes */
-  onExpandRowsChange?: (expanded: Set<string>) => void;
+  /** Callback fired when expansion state changes. Receives the new expanded set, the ID of the toggled row, and the column ID that triggered the expansion (if triggered by a cell click). */
+  onExpandRowsChange?: (
+    expanded: Set<string>,
+    toggledRowId: string,
+    columnId?: string
+  ) => void;
   /** Whether to show the pin column. Defaults to `true`. */
   allowsPinning?: boolean;
   /** Whether to show the expand chevron column. When `false` and no `onRowClick` is provided, rows with nested content can still be expanded via row click. When `onRowClick` is provided it takes precedence and the expand-via-click behavior is disabled. Defaults to `true`. */

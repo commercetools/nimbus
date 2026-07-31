@@ -131,6 +131,10 @@
     "developer_comment": "aria-label for the layout settings section in the data table manager",
     "string": "Layout settings section"
   },
+  "Nimbus.DataTable.nestedContentRow": {
+    "developer_comment": "aria-label for the nested content row that expands below a data row",
+    "string": "Details for row {rowId}"
+  },
   "Nimbus.DataTable.noHiddenColumns": {
     "developer_comment": "message when there is no hidden columns in the data table manager",
     "string": "No Hidden columns"

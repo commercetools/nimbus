@@ -48,8 +48,7 @@ export const DataTableRoot = function DataTableRoot<
     density = "default",
     nestedKey,
     onRowClick,
-    onDetailsClick,
-    renderDetails,
+    renderNestedContent,
     disabledKeys,
     onRowAction,
     isResizable,
@@ -82,9 +81,6 @@ export const DataTableRoot = function DataTableRoot<
   );
   const [internalPinnedRows, setInternalPinnedRows] = useState<Set<string>>(
     () => defaultPinnedRows || new Set()
-  );
-  const [detailExpandedRows, setDetailExpandedRows] = useState<Set<string>>(
-    () => new Set()
   );
 
   const sortDescriptor = controlledSortDescriptor ?? internalSortDescriptor;
@@ -126,11 +122,12 @@ export const DataTableRoot = function DataTableRoot<
     [rows, pinnedRows]
   );
 
-  const hasExpandableContent = useMemo(
+  const hasNestedKeyContent = useMemo(
     () => hasExpandableRows(filteredRows, nestedKey),
     [filteredRows, nestedKey]
   );
-  const showExpandColumn = hasExpandableContent && allowsExpandColumn;
+  const hasExpandableContent = hasNestedKeyContent || !!renderNestedContent;
+  const showExpandColumn = hasNestedKeyContent && allowsExpandColumn;
   const showSelectionColumn = selectionMode !== "none";
   const showPinColumn = allowsPinning;
 
@@ -141,7 +138,7 @@ export const DataTableRoot = function DataTableRoot<
   const onExpandRowsChangeRef = useRef(onExpandRowsChange);
   onExpandRowsChangeRef.current = onExpandRowsChange;
 
-  const toggleExpand = useCallback((id: string) => {
+  const toggleExpand = useCallback((id: string, columnId?: string) => {
     startTransition(() => {
       const current = controlledExpandedRef.current ?? expandedRef.current;
       const newExpanded = new Set(current);
@@ -150,33 +147,9 @@ export const DataTableRoot = function DataTableRoot<
       } else {
         newExpanded.add(id);
       }
-      onExpandRowsChangeRef.current?.(newExpanded);
+      onExpandRowsChangeRef.current?.(newExpanded, id, columnId);
       if (controlledExpandedRef.current === undefined) {
         setInternalExpandedRows(newExpanded);
-      }
-    });
-  }, []);
-
-  const onDetailsClickRef = useRef(onDetailsClick);
-  onDetailsClickRef.current = onDetailsClick;
-
-  const rowsRef = useRef(rows);
-  rowsRef.current = rows;
-
-  const toggleDetails = useCallback((id: string) => {
-    startTransition(() => {
-      setDetailExpandedRows((prev) => {
-        const next = new Set(prev);
-        if (next.has(id)) {
-          next.delete(id);
-        } else {
-          next.add(id);
-        }
-        return next;
-      });
-      const row = rowsRef.current.find((r) => r.id === id);
-      if (row && onDetailsClickRef.current) {
-        onDetailsClickRef.current(row);
       }
     });
   }, []);
@@ -221,7 +194,6 @@ export const DataTableRoot = function DataTableRoot<
       filteredRows,
       sortDescriptor,
       expanded,
-      detailExpandedRows,
       pinnedRows,
       pinnedRowIds,
     }),
@@ -230,7 +202,6 @@ export const DataTableRoot = function DataTableRoot<
       filteredRows,
       sortDescriptor,
       expanded,
-      detailExpandedRows,
       pinnedRows,
       pinnedRowIds,
     ]
@@ -251,8 +222,7 @@ export const DataTableRoot = function DataTableRoot<
       nestedKey,
       onSortChange: handleSortChange,
       onRowClick,
-      renderDetails,
-      toggleDetails,
+      renderNestedContent,
       toggleExpand,
       activeColumns,
       showExpandColumn,
@@ -282,8 +252,7 @@ export const DataTableRoot = function DataTableRoot<
       nestedKey,
       handleSortChange,
       onRowClick,
-      renderDetails,
-      toggleDetails,
+      renderNestedContent,
       toggleExpand,
       activeColumns,
       showExpandColumn,

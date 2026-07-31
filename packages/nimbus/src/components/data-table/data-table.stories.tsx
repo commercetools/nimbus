@@ -2600,26 +2600,26 @@ export const FlexibleNestedChildren: Story = {
 };
 
 /**
- * ## Row Detail Panels
+ * ## Row Nested Content Panels
  *
- * Demonstrates the `renderDetails` prop which renders a full-width detail panel
- * below a row when clicked. The detail panel spans all columns and toggles
+ * Demonstrates the `renderNestedContent` prop which renders a full-width nested content panel
+ * below a row when clicked. The nested content panel spans all columns and toggles
  * open/closed on row click. Works alongside selection and nested expansion.
  */
-export const RowDetailPanels: Story = {
+export const RowNestedContent: Story = {
   render: () => {
     return (
       <DataTable
         columns={columns}
         rows={rows}
-        renderDetails={(row) => (
+        renderNestedContent={(row) => (
           <Box p="400">
             <Heading as="h4" size="sm">
               Details for {row.id}
             </Heading>
             <Text>
-              This is the detail panel content for the row. It spans the full
-              width of the table.
+              This is the nested content panel content for the row. It spans the
+              full width of the table.
             </Text>
           </Box>
         )}
@@ -2632,17 +2632,20 @@ export const RowDetailPanels: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Table renders without any detail panels open", async () => {
-      const table = await canvas.findByRole("grid");
-      expect(table).toBeInTheDocument();
+    await step(
+      "Table renders without any nested content panels open",
+      async () => {
+        const table = await canvas.findByRole("grid");
+        expect(table).toBeInTheDocument();
 
-      const detailRows = canvasElement.querySelectorAll(
-        "[data-detail-row-expanded='true']"
-      );
-      expect(detailRows.length).toBe(0);
-    });
+        const detailRows = canvasElement.querySelectorAll(
+          "[data-nested-row-expanded='true']"
+        );
+        expect(detailRows.length).toBe(0);
+      }
+    );
 
-    await step("Clicking a row opens its detail panel", async () => {
+    await step("Clicking a row opens its nested content panel", async () => {
       const allRows = canvas.getAllByRole("row");
       const firstDataRow = allRows[1];
       const cells = within(firstDataRow).getAllByRole("gridcell");
@@ -2656,7 +2659,7 @@ export const RowDetailPanels: Story = {
       await waitFor(
         () => {
           const openDetails = canvasElement.querySelectorAll(
-            "[data-detail-row-expanded='true']"
+            "[data-nested-row-expanded='true']"
           );
           expect(openDetails.length).toBe(1);
         },
@@ -2666,7 +2669,32 @@ export const RowDetailPanels: Story = {
       expect(canvas.getByText(`Details for ${rows[0].id}`)).toBeInTheDocument();
     });
 
-    await step("Clicking the same row closes its detail panel", async () => {
+    await step(
+      "Clicking the same row closes its nested content panel",
+      async () => {
+        const allRows = canvas.getAllByRole("row");
+        const firstDataRow = allRows[1];
+        const cells = within(firstDataRow).getAllByRole("gridcell");
+        const nonInteractiveCell = cells.find(
+          (cell) => !within(cell).queryByRole("checkbox")
+        );
+        expect(nonInteractiveCell).toBeDefined();
+
+        await userEvent.click(nonInteractiveCell!);
+
+        await waitFor(
+          () => {
+            const openDetails = canvasElement.querySelectorAll(
+              "[data-nested-row-expanded='true']"
+            );
+            expect(openDetails.length).toBe(0);
+          },
+          { timeout: 3000 }
+        );
+      }
+    );
+
+    await step("Nested content panel spans all columns", async () => {
       const allRows = canvas.getAllByRole("row");
       const firstDataRow = allRows[1];
       const cells = within(firstDataRow).getAllByRole("gridcell");
@@ -2680,36 +2708,14 @@ export const RowDetailPanels: Story = {
       await waitFor(
         () => {
           const openDetails = canvasElement.querySelectorAll(
-            "[data-detail-row-expanded='true']"
-          );
-          expect(openDetails.length).toBe(0);
-        },
-        { timeout: 3000 }
-      );
-    });
-
-    await step("Detail panel spans all columns", async () => {
-      const allRows = canvas.getAllByRole("row");
-      const firstDataRow = allRows[1];
-      const cells = within(firstDataRow).getAllByRole("gridcell");
-      const nonInteractiveCell = cells.find(
-        (cell) => !within(cell).queryByRole("checkbox")
-      );
-      expect(nonInteractiveCell).toBeDefined();
-
-      await userEvent.click(nonInteractiveCell!);
-
-      await waitFor(
-        () => {
-          const openDetails = canvasElement.querySelectorAll(
-            "[data-detail-row-expanded='true']"
+            "[data-nested-row-expanded='true']"
           );
           expect(openDetails.length).toBe(1);
         },
         { timeout: 3000 }
       );
 
-      const detailCell = canvasElement.querySelector("[data-detail-cell]");
+      const detailCell = canvasElement.querySelector("[data-nested-cell]");
       expect(detailCell).toBeInTheDocument();
 
       const headerCells = canvasElement.querySelectorAll("thead th");
@@ -2733,7 +2739,7 @@ export const RowDetailPanels: Story = {
       await waitFor(
         () => {
           const openDetails = canvasElement.querySelectorAll(
-            "[data-detail-row-expanded='true']"
+            "[data-nested-row-expanded='true']"
           );
           expect(openDetails.length).toBe(2);
         },
@@ -2744,20 +2750,20 @@ export const RowDetailPanels: Story = {
 };
 
 /**
- * ## Row Detail Panels with Selection
+ * ## Row Nested Content Panels with Selection
  *
- * Demonstrates that `renderDetails` works alongside row selection.
+ * Demonstrates that `renderNestedContent` works alongside row selection.
  */
-export const RowDetailPanelsWithSelection: Story = {
+export const RowNestedContentWithSelection: Story = {
   render: () => {
     return (
       <DataTable
         columns={columns}
         rows={rows}
         selectionMode="multiple"
-        renderDetails={(row) => (
+        renderNestedContent={(row) => (
           <Box p="400">
-            <Text>Detail panel for row: {row.id}</Text>
+            <Text>Nested content panel for row: {row.id}</Text>
           </Box>
         )}
         data-testid="detail-panels-selection-table"
@@ -2768,27 +2774,30 @@ export const RowDetailPanelsWithSelection: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Clicking a checkbox does not toggle detail panel", async () => {
-      const allRows = canvas.getAllByRole("row");
-      const firstDataRow = allRows[1];
-      const checkbox = within(firstDataRow).getByRole("checkbox");
-      await userEvent.click(checkbox);
+    await step(
+      "Clicking a checkbox does not toggle nested content panel",
+      async () => {
+        const allRows = canvas.getAllByRole("row");
+        const firstDataRow = allRows[1];
+        const checkbox = within(firstDataRow).getByRole("checkbox");
+        await userEvent.click(checkbox);
 
-      await waitFor(
-        () => {
-          expect(checkbox).toBeChecked();
-        },
-        { timeout: 3000 }
-      );
+        await waitFor(
+          () => {
+            expect(checkbox).toBeChecked();
+          },
+          { timeout: 3000 }
+        );
 
-      const openDetails = canvasElement.querySelectorAll(
-        "[data-detail-row-expanded='true']"
-      );
-      expect(openDetails.length).toBe(0);
-    });
+        const openDetails = canvasElement.querySelectorAll(
+          "[data-nested-row-expanded='true']"
+        );
+        expect(openDetails.length).toBe(0);
+      }
+    );
 
     await step(
-      "Clicking a non-interactive cell opens detail panel",
+      "Clicking a non-interactive cell opens nested content panel",
       async () => {
         const allRows = canvas.getAllByRole("row");
         const firstDataRow = allRows[1];
@@ -2805,7 +2814,7 @@ export const RowDetailPanelsWithSelection: Story = {
         await waitFor(
           () => {
             const openDetails = canvasElement.querySelectorAll(
-              "[data-detail-row-expanded='true']"
+              "[data-nested-row-expanded='true']"
             );
             expect(openDetails.length).toBe(1);
           },
@@ -2817,20 +2826,20 @@ export const RowDetailPanelsWithSelection: Story = {
 };
 
 /**
- * ## Row Detail Panels with Close Button
+ * ## Row Nested Content Panels with Close Button
  *
- * Demonstrates the `close` callback passed to `renderDetails` which allows
- * consumers to dismiss the detail panel from within.
+ * Demonstrates the `close` callback passed to `renderNestedContent` which allows
+ * consumers to dismiss the nested content panel from within.
  */
-export const RowDetailPanelsWithClose: Story = {
+export const RowNestedContentWithClose: Story = {
   render: () => {
     return (
       <DataTable
         columns={columns}
         rows={rows}
-        renderDetails={(row, { close }) => (
+        renderNestedContent={(row, { close }) => (
           <Flex p="400" justifyContent="space-between" alignItems="center">
-            <Text>Detail panel for row: {row.id}</Text>
+            <Text>Nested content panel for row: {row.id}</Text>
             <Button size="sm" variant="outline" onPress={close}>
               Close
             </Button>
@@ -2844,7 +2853,7 @@ export const RowDetailPanelsWithClose: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Open a detail panel by clicking a row", async () => {
+    await step("Open a nested content panel by clicking a row", async () => {
       const allRows = canvas.getAllByRole("row");
       const firstDataRow = allRows[1];
       const cell = within(firstDataRow).getAllByRole("rowheader")[0];
@@ -2854,7 +2863,7 @@ export const RowDetailPanelsWithClose: Story = {
       await waitFor(
         () => {
           const openDetails = canvasElement.querySelectorAll(
-            "[data-detail-row-expanded='true']"
+            "[data-nested-row-expanded='true']"
           );
           expect(openDetails.length).toBe(1);
         },
@@ -2862,7 +2871,7 @@ export const RowDetailPanelsWithClose: Story = {
       );
     });
 
-    await step("Close button dismisses the detail panel", async () => {
+    await step("Close button dismisses the nested content panel", async () => {
       const closeButton = await canvas.findByRole("button", {
         name: /close/i,
       });
@@ -2871,7 +2880,7 @@ export const RowDetailPanelsWithClose: Story = {
       await waitFor(
         () => {
           const openDetails = canvasElement.querySelectorAll(
-            "[data-detail-row-expanded='true']"
+            "[data-nested-row-expanded='true']"
           );
           expect(openDetails.length).toBe(0);
         },
@@ -2880,14 +2889,126 @@ export const RowDetailPanelsWithClose: Story = {
     });
 
     await step(
-      "Row has aria-controls linking to the detail panel",
+      "Row has aria-controls linking to the nested content panel",
       async () => {
         const allRows = canvas.getAllByRole("row");
         const firstDataRow = allRows[1];
 
         expect(firstDataRow).toHaveAttribute(
           "aria-controls",
-          `detail-panel-${rows[0].id}`
+          `nested-content-${rows[0].id}`
+        );
+      }
+    );
+  },
+};
+
+/**
+ * ## Nested Content Override with nestedKey
+ *
+ * When both `renderNestedContent` and `nestedKey` are provided, rows that have
+ * data at `row[nestedKey]` render that content instead of the default template.
+ * Rows without `nestedKey` data fall through to `renderNestedContent`.
+ */
+export const NestedContentOverride: Story = {
+  render: () => {
+    const overrideColumns = [
+      {
+        id: "name",
+        header: "Name",
+        accessor: (row: Record<string, unknown>) => row.name as string,
+        isRowHeader: true,
+      },
+      {
+        id: "role",
+        header: "Role",
+        accessor: (row: Record<string, unknown>) => row.role as string,
+      },
+    ];
+
+    const overrideRows = [
+      { id: "1", name: "Alice", role: "Admin" },
+      {
+        id: "2",
+        name: "Bob",
+        role: "User",
+        details: (
+          <Box p="400" bg="yellow.2">
+            <Text fontWeight="bold">Custom override for Bob</Text>
+            <Text>This row uses nestedKey content instead of the default.</Text>
+          </Box>
+        ),
+      },
+      { id: "3", name: "Carol", role: "User" },
+      {
+        id: "4",
+        name: "David",
+        role: "Manager",
+        details: (
+          <Box p="400" bg="yellow.2">
+            <Text fontWeight="bold">Custom override for David</Text>
+            <Text>This row also uses nestedKey content.</Text>
+          </Box>
+        ),
+      },
+    ];
+
+    return (
+      <DataTable
+        columns={overrideColumns}
+        rows={overrideRows}
+        nestedKey="details"
+        renderNestedContent={(row) => (
+          <Box p="400">
+            <Text>
+              Default nested content for {row.name as string} (
+              {row.role as string})
+            </Text>
+          </Box>
+        )}
+        data-testid="nested-override-table"
+      />
+    );
+  },
+  args: {},
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Row with nestedKey data shows override content", async () => {
+      const allRows = canvas.getAllByRole("row");
+      // Click Bob (row index 2)
+      const bobRow = allRows[2];
+      const cell = within(bobRow).getAllByRole("gridcell")[0];
+      expect(cell).toBeDefined();
+      await userEvent.click(cell);
+
+      await waitFor(
+        () => {
+          expect(
+            canvas.getByText("Custom override for Bob")
+          ).toBeInTheDocument();
+        },
+        { timeout: 3000 }
+      );
+    });
+
+    await step(
+      "Row without nestedKey data shows renderNestedContent",
+      async () => {
+        const allRows = canvas.getAllByRole("row");
+        // Click Alice (row index 1) — no nestedKey data
+        const aliceRow = allRows[1];
+        const cell = within(aliceRow).getAllByRole("gridcell")[0];
+        expect(cell).toBeDefined();
+        await userEvent.click(cell);
+
+        await waitFor(
+          () => {
+            expect(
+              canvas.getByText("Default nested content for Alice (Admin)")
+            ).toBeInTheDocument();
+          },
+          { timeout: 3000 }
         );
       }
     );

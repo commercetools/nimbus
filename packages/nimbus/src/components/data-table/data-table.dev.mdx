@@ -575,11 +575,14 @@ const App = () => {
 }
 ```
 
-### Row detail panels
+### Nested content via render function
 
-Use `renderDetails` to show a full-width detail panel below a row when clicked.
-The panel toggles open and closed on each click. This works alongside selection
-and nested rows.
+Use `renderNestedContent` to render a uniform component template below each row
+when expanded. This is ideal when every row should show the same layout with its
+own data. For per-row heterogeneous content, use `nestedKey` instead.
+
+Clicking a row toggles the nested content open and closed. This works alongside
+selection and other features.
 
 ```jsx live-dev
 const App = () => {
@@ -597,11 +600,11 @@ const App = () => {
 
   return (
     <Stack gap="300">
-      <Text>Click a row to expand its detail panel.</Text>
+      <Text>Click a row to expand its nested content.</Text>
       <DataTable
         columns={columns}
         rows={rows}
-        renderDetails={(row) => (
+        renderNestedContent={(row) => (
           <Box p="400">
             <Heading as="h4" size="sm">{row.name}</Heading>
             <Text>{row.description}</Text>
@@ -609,6 +612,42 @@ const App = () => {
         )}
       />
     </Stack>
+  );
+}
+```
+
+### Overriding renderNestedContent with nestedKey
+
+When both `renderNestedContent` and `nestedKey` are provided, rows that have
+data at `row[nestedKey]` render that content instead of the default template.
+Rows without `nestedKey` data fall through to `renderNestedContent`. This lets
+you define a default layout for most rows while providing custom content for
+specific ones.
+
+```jsx live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice', role: 'Admin' },
+    { id: '2', name: 'Bob', role: 'User', details: <Box p="400" bg="yellow.2"><Text fontWeight="bold">Custom content for Bob</Text></Box> },
+    { id: '3', name: 'Carol', role: 'User' },
+  ];
+
+  return (
+    <DataTable
+      columns={columns}
+      rows={rows}
+      nestedKey="details"
+      renderNestedContent={(row) => (
+        <Box p="400">
+          <Text>Default: {row.name} ({row.role})</Text>
+        </Box>
+      )}
+    />
   );
 }
 ```

@@ -280,13 +280,13 @@ describe("DataTable - Row interactions", () => {
 });
 
 /**
- * @docs-section row-detail-panels
- * @docs-title Row Detail Panel Tests
- * @docs-description Test renderDetails prop for inline detail panels
+ * @docs-section row-nested-content
+ * @docs-title Row Nested Content Tests
+ * @docs-description Test renderNestedContent prop for inline nested content panels
  * @docs-order 5
  */
-describe("DataTable - Row detail panels", () => {
-  it("renders a detail panel below a row when clicked", async () => {
+describe("DataTable - Row nested content panels", () => {
+  it("renders a nested content panel below a row when clicked", async () => {
     const user = userEvent.setup();
 
     render(
@@ -294,16 +294,16 @@ describe("DataTable - Row detail panels", () => {
         <DataTable
           columns={columns}
           rows={rows}
-          renderDetails={(row) => (
+          renderNestedContent={(row) => (
             <Box data-testid={`detail-${row.id}`}>
-              Detail content for {row.id}
+              Nested content for {row.id}
             </Box>
           )}
         />
       </NimbusProvider>
     );
 
-    // No detail panels open initially
+    // No nested content panels open initially
     expect(screen.queryByTestId("detail-1")).not.toBeInTheDocument();
 
     // Click the first data row
@@ -314,11 +314,11 @@ describe("DataTable - Row detail panels", () => {
 
     await waitFor(() => {
       expect(screen.getByTestId("detail-1")).toBeInTheDocument();
-      expect(screen.getByText("Detail content for 1")).toBeInTheDocument();
+      expect(screen.getByText("Nested content for 1")).toBeInTheDocument();
     });
   });
 
-  it("toggles detail panel closed on second click", async () => {
+  it("toggles nested content panel closed on second click", async () => {
     const user = userEvent.setup();
 
     render(
@@ -326,9 +326,9 @@ describe("DataTable - Row detail panels", () => {
         <DataTable
           columns={columns}
           rows={rows}
-          renderDetails={(row) => (
+          renderNestedContent={(row) => (
             <Box data-testid={`detail-${row.id}`}>
-              Detail content for {row.id}
+              Nested content for {row.id}
             </Box>
           )}
         />
@@ -352,7 +352,7 @@ describe("DataTable - Row detail panels", () => {
     });
   });
 
-  it("fires onRowClick alongside renderDetails toggle", async () => {
+  it("fires onRowClick alongside renderNestedContent toggle", async () => {
     const user = userEvent.setup();
     const handleRowClick = vi.fn();
 
@@ -362,9 +362,9 @@ describe("DataTable - Row detail panels", () => {
           columns={columns}
           rows={rows}
           onRowClick={handleRowClick}
-          renderDetails={(row) => (
+          renderNestedContent={(row) => (
             <Box data-testid={`detail-${row.id}`}>
-              Detail content for {row.id}
+              Nested content for {row.id}
             </Box>
           )}
         />
@@ -382,7 +382,7 @@ describe("DataTable - Row detail panels", () => {
     });
   });
 
-  it("provides a close callback to dismiss the detail panel", async () => {
+  it("provides a close callback to dismiss the nested content panel", async () => {
     const user = userEvent.setup();
 
     render(
@@ -390,7 +390,7 @@ describe("DataTable - Row detail panels", () => {
         <DataTable
           columns={columns}
           rows={rows}
-          renderDetails={(row, { close }) => (
+          renderNestedContent={(row, { close }) => (
             <Box data-testid={`detail-${row.id}`}>
               <button data-testid={`close-${row.id}`} onClick={close}>
                 Close
@@ -401,7 +401,7 @@ describe("DataTable - Row detail panels", () => {
       </NimbusProvider>
     );
 
-    // Open the detail panel
+    // Open the nested content panel
     const allRows = screen.getAllByRole("row");
     const firstDataRow = allRows[1];
     const clickableCell = within(firstDataRow).getAllByRole("gridcell")[0];
@@ -419,13 +419,13 @@ describe("DataTable - Row detail panels", () => {
     });
   });
 
-  it("sets aria-controls on the row linking to the detail panel", async () => {
+  it("sets aria-controls on the row linking to the nested content panel", async () => {
     render(
       <NimbusProvider>
         <DataTable
           columns={columns}
           rows={rows}
-          renderDetails={(row) => (
+          renderNestedContent={(row) => (
             <Box data-testid={`detail-${row.id}`}>Detail</Box>
           )}
         />
@@ -436,7 +436,7 @@ describe("DataTable - Row detail panels", () => {
     const firstDataRow = allRows[1];
 
     await waitFor(() => {
-      expect(firstDataRow).toHaveAttribute("aria-controls", "detail-panel-1");
+      expect(firstDataRow).toHaveAttribute("aria-controls", "nested-content-1");
     });
   });
 });

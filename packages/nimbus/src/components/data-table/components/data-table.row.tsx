@@ -68,7 +68,6 @@ function stopPropagationForNonInteractiveElements(e: Event) {
 
 type DataTableRowPerRowProps = {
   isExpanded: boolean;
-  isDetailExpanded: boolean;
   isPinned: boolean;
   isFirstPinned: boolean;
   isLastPinned: boolean;
@@ -79,7 +78,6 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   row,
   ref,
   isExpanded,
-  isDetailExpanded,
   isPinned,
   isFirstPinned,
   isLastPinned,
@@ -99,8 +97,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     isTruncated,
     onRowClick,
     onRowAction,
-    renderDetails,
-    toggleDetails,
+    renderNestedContent,
     togglePin,
     selectRowLabel,
   } = useStableDataTableContext<T>();
@@ -157,7 +154,11 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   const expandViaRowClick =
     hasExpandableContent && !showExpandColumn && !onRowClick;
 
-  const isClickable = !!(onRowClick || renderDetails || expandViaRowClick);
+  const isClickable = !!(
+    onRowClick ||
+    renderNestedContent ||
+    expandViaRowClick
+  );
 
   const handleRowClick = useCallback(
     (e: Event) => {
@@ -172,13 +173,17 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           window.clearTimeout(clickTimeoutRef.current);
         }
 
+        const clickedCell = (e.target as Element)?.closest("[data-column-id]");
+        const columnId =
+          clickedCell?.getAttribute("data-column-id") ?? undefined;
+
         clickTimeoutRef.current = window.setTimeout(() => {
           if (!isDisabled) {
-            if (expandViaRowClick && hasNestedContent) {
-              toggleExpand(row.id);
-            }
-            if (renderDetails) {
-              toggleDetails(row.id);
+            if (
+              renderNestedContent ||
+              (expandViaRowClick && hasNestedContent)
+            ) {
+              toggleExpand(row.id, columnId);
             }
             onRowClick?.(row);
           } else {
@@ -193,8 +198,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     [
       isClickable,
       onRowClick,
-      renderDetails,
-      toggleDetails,
+      renderNestedContent,
       onRowAction,
       row,
       isDisabled,
@@ -382,19 +386,17 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // aria-expanded is not valid on role="row" in a grid (only treegrid).
-  // Use aria-controls to link the data row to its detail panel.
-  const detailPanelId = `detail-panel-${row.id}`;
+  const nestedContentId = `nested-content-${row.id}`;
   const ariaRef = useCallback(
     (node: HTMLElement | null) => {
       if (!node) return;
-      if (renderDetails) {
-        node.setAttribute("aria-controls", detailPanelId);
+      if (renderNestedContent) {
+        node.setAttribute("aria-controls", nestedContentId);
       } else {
         node.removeAttribute("aria-controls");
       }
     },
-    [renderDetails, detailPanelId]
+    [renderNestedContent, nestedContentId]
   );
 
   const rowRef = mergeRefs(ref, rowCallbackRef, ariaRef);
@@ -430,10 +432,12 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           ref={rowRef}
           id={row.id}
           data-clickable={isClickable && !isDisabled}
-          hasChildItems={!!renderDetails || undefined}
+          hasChildItems={
+            !!(renderNestedContent || hasNestedContent) || undefined
+          }
           className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
           {...restProps}
-          dependencies={[isExpanded, isDetailExpanded, search, isTruncated]}
+          dependencies={[isExpanded, search, isTruncated]}
         >
           {/** Internal/non-data columns like drag, selection, and expand
            * need to be in the same order in the header and row components*/}
@@ -509,6 +513,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                 <DataTableCell
                   isDisabled={isDisabled}
                   key={col.id}
+                  data-column-id={col.id}
                   textAlign={
                     align === "center"
                       ? "center"
@@ -571,9 +576,23 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         </RaRow>
       </DataTableRowSlot>
 
-      {hasExpandableContent && (
+      {(hasExpandableContent || renderNestedContent) && (
         <DataTableRowSlot {...styleProps} asChild>
           <RaRow
+            ref={
+              renderNestedContent
+                ? (node: HTMLElement | null) => {
+                    if (node) {
+                      node.id = nestedContentId;
+                      node.removeAttribute("aria-labelledby");
+                      node.setAttribute(
+                        "aria-label",
+                        msg.format("nestedContentRow", { rowId: row.id })
+                      );
+                    }
+                  }
+                : undefined
+            }
             data-nested-row-expanded={isExpanded ? "true" : "false"}
             dependencies={[isExpanded]}
           >
@@ -589,46 +608,15 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               data-nested-cell
             >
               {isExpanded
-                ? nestedKey && Array.isArray(row[nestedKey])
-                  ? `${(row[nestedKey] as unknown[]).length} nested items`
-                  : nestedKey && (row[nestedKey] as React.ReactNode)
-                : null}
-            </DataTableCell>
-          </RaRow>
-        </DataTableRowSlot>
-      )}
-
-      {renderDetails && (
-        <DataTableRowSlot {...styleProps} asChild>
-          <RaRow
-            ref={(node: HTMLElement | null) => {
-              if (node) {
-                node.id = detailPanelId;
-                node.removeAttribute("aria-labelledby");
-                node.setAttribute(
-                  "aria-label",
-                  msg.format("detailPanelRow", { rowId: row.id })
-                );
-              }
-            }}
-            data-detail-row-expanded={isDetailExpanded ? "true" : "false"}
-            dependencies={[isDetailExpanded]}
-          >
-            <DataTableCell
-              isDisabled={isDisabled}
-              colSpan={
-                activeColumns.length +
-                (allowsDragging ? 1 : 0) +
-                (showExpandColumn ? 1 : 0) +
-                (showSelectionColumn ? 1 : 0) +
-                (showPinColumn ? 1 : 0)
-              }
-              data-detail-cell
-            >
-              {isDetailExpanded
-                ? renderDetails(row, {
-                    close: () => toggleDetails(row.id),
-                  })
+                ? hasNestedContent
+                  ? nestedKey && Array.isArray(row[nestedKey])
+                    ? `${(row[nestedKey] as unknown[]).length} nested items`
+                    : nestedKey && (row[nestedKey] as React.ReactNode)
+                  : renderNestedContent
+                    ? renderNestedContent(row, {
+                        close: () => toggleExpand(row.id),
+                      })
+                    : null
                 : null}
             </DataTableCell>
           </RaRow>
