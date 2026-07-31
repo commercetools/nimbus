@@ -152,7 +152,12 @@ For each dependency group (or the specified target group):
    younger than the age gate. Revert that package's catalog entry to its
    previous (age-appropriate) version, `pnpm install` again, and report the
    package as "held back by minimumReleaseAge". You MUST NOT add a
-   `minimumReleaseAgeExclude` entry to get past it:
+   `minimumReleaseAgeExclude` entry to get past it.
+
+   Under `minimumReleaseAgeStrict: true` pnpm cannot append that block itself,
+   so the check below is not the failure signal — the error above is. It is a
+   self-audit that you did not hand-add an exclude while working around a
+   held-back package:
 
    ```bash
    grep -n 'minimumReleaseAgeExclude' pnpm-workspace.yaml   # expect: no output
