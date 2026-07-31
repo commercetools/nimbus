@@ -581,8 +581,9 @@ Use `renderNestedContent` to render a uniform component template below each row
 when expanded. This is ideal when every row should show the same layout with its
 own data. For per-row heterogeneous content, use `nestedKey` instead.
 
-Clicking a row toggles the nested content open and closed. This works alongside
-selection and other features.
+An expand column with a chevron button is shown by default. Set
+`allowsExpandColumn={false}` to hide the chevron and expand via row click
+instead. This works alongside selection and other features.
 
 ```jsx live-dev
 const App = () => {
@@ -600,7 +601,7 @@ const App = () => {
 
   return (
     <Stack gap="300">
-      <Text>Click a row to expand its nested content.</Text>
+      <Text>Click the expand button to toggle nested content.</Text>
       <DataTable
         columns={columns}
         rows={rows}
@@ -841,7 +842,7 @@ const App = () => {
 
   return (
     <Stack gap="300">
-      <Text>Click a row to expand its nested content.</Text>
+      <Text>Click the expand button to toggle nested content.</Text>
       <DataTable
         columns={columns}
         rows={rows}

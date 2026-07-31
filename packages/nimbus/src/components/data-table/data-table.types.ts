@@ -231,7 +231,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   /** Callback fired when expansion state changes. Receives the new expanded set, the ID of the toggled row, and the column ID that triggered the expansion (if triggered by a cell click). */
   onExpandRowsChange?: (
     expanded: Set<string>,
-    toggledRowId: string,
+    toggledRowId?: string,
     columnId?: string
   ) => void;
   /** Whether to show the pin column. Defaults to `true`. */

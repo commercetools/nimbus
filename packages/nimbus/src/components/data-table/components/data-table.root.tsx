@@ -127,7 +127,7 @@ export const DataTableRoot = function DataTableRoot<
     [filteredRows, nestedKey]
   );
   const hasExpandableContent = hasNestedKeyContent || !!renderNestedContent;
-  const showExpandColumn = hasNestedKeyContent && allowsExpandColumn;
+  const showExpandColumn = hasExpandableContent && allowsExpandColumn;
   const showSelectionColumn = selectionMode !== "none";
   const showPinColumn = allowsPinning;
 

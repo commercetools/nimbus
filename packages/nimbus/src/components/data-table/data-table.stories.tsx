@@ -2645,16 +2645,14 @@ export const RowNestedContent: Story = {
       }
     );
 
-    await step("Clicking a row opens its nested content panel", async () => {
+    await step("Clicking expand button opens nested content", async () => {
       const allRows = canvas.getAllByRole("row");
       const firstDataRow = allRows[1];
-      const cells = within(firstDataRow).getAllByRole("gridcell");
-      const nonInteractiveCell = cells.find(
-        (cell) => !within(cell).queryByRole("checkbox")
-      );
-      expect(nonInteractiveCell).toBeDefined();
+      const expandButton = within(firstDataRow).getByRole("button", {
+        name: "Expand",
+      });
 
-      await userEvent.click(nonInteractiveCell!);
+      await userEvent.click(expandButton);
 
       await waitFor(
         () => {
@@ -2669,41 +2667,34 @@ export const RowNestedContent: Story = {
       expect(canvas.getByText(`Details for ${rows[0].id}`)).toBeInTheDocument();
     });
 
-    await step(
-      "Clicking the same row closes its nested content panel",
-      async () => {
-        const allRows = canvas.getAllByRole("row");
-        const firstDataRow = allRows[1];
-        const cells = within(firstDataRow).getAllByRole("gridcell");
-        const nonInteractiveCell = cells.find(
-          (cell) => !within(cell).queryByRole("checkbox")
-        );
-        expect(nonInteractiveCell).toBeDefined();
+    await step("Clicking collapse button closes nested content", async () => {
+      const allRows = canvas.getAllByRole("row");
+      const firstDataRow = allRows[1];
+      const collapseButton = within(firstDataRow).getByRole("button", {
+        name: "Collapse",
+      });
 
-        await userEvent.click(nonInteractiveCell!);
+      await userEvent.click(collapseButton);
 
-        await waitFor(
-          () => {
-            const openDetails = canvasElement.querySelectorAll(
-              "[data-nested-row-expanded='true']"
-            );
-            expect(openDetails.length).toBe(0);
-          },
-          { timeout: 3000 }
-        );
-      }
-    );
+      await waitFor(
+        () => {
+          const openDetails = canvasElement.querySelectorAll(
+            "[data-nested-row-expanded='true']"
+          );
+          expect(openDetails.length).toBe(0);
+        },
+        { timeout: 3000 }
+      );
+    });
 
     await step("Nested content panel spans all columns", async () => {
       const allRows = canvas.getAllByRole("row");
       const firstDataRow = allRows[1];
-      const cells = within(firstDataRow).getAllByRole("gridcell");
-      const nonInteractiveCell = cells.find(
-        (cell) => !within(cell).queryByRole("checkbox")
-      );
-      expect(nonInteractiveCell).toBeDefined();
+      const expandButton = within(firstDataRow).getByRole("button", {
+        name: "Expand",
+      });
 
-      await userEvent.click(nonInteractiveCell!);
+      await userEvent.click(expandButton);
 
       await waitFor(
         () => {
@@ -2726,15 +2717,13 @@ export const RowNestedContent: Story = {
     await step("Multiple rows can have details open", async () => {
       const allRows = canvas.getAllByRole("row");
       // First row should already be open from previous step
-      // Click second data row
-      const thirdRow = allRows[3]; // index 3 because detail row is now in between
-      const cells = within(thirdRow).getAllByRole("gridcell");
-      const nonInteractiveCell = cells.find(
-        (cell) => !within(cell).queryByRole("checkbox")
-      );
-      expect(nonInteractiveCell).toBeDefined();
+      // Click second data row — index 3 because detail row is in between
+      const thirdRow = allRows[3];
+      const expandButton = within(thirdRow).getByRole("button", {
+        name: "Expand",
+      });
 
-      await userEvent.click(nonInteractiveCell!);
+      await userEvent.click(expandButton);
 
       await waitFor(
         () => {
@@ -2797,19 +2786,15 @@ export const RowNestedContentWithSelection: Story = {
     );
 
     await step(
-      "Clicking a non-interactive cell opens nested content panel",
+      "Clicking expand button opens nested content panel",
       async () => {
         const allRows = canvas.getAllByRole("row");
         const firstDataRow = allRows[1];
-        const cells = within(firstDataRow).getAllByRole("gridcell");
-        const nonInteractiveCell = cells.find(
-          (cell) =>
-            !within(cell).queryByRole("checkbox") &&
-            !within(cell).queryByRole("button")
-        );
-        expect(nonInteractiveCell).toBeDefined();
+        const expandButton = within(firstDataRow).getByRole("button", {
+          name: "Expand",
+        });
 
-        await userEvent.click(nonInteractiveCell!);
+        await userEvent.click(expandButton);
 
         await waitFor(
           () => {
@@ -2853,12 +2838,14 @@ export const RowNestedContentWithClose: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Open a nested content panel by clicking a row", async () => {
+    await step("Open a nested content panel via expand button", async () => {
       const allRows = canvas.getAllByRole("row");
       const firstDataRow = allRows[1];
-      const cell = within(firstDataRow).getAllByRole("rowheader")[0];
+      const expandButton = within(firstDataRow).getByRole("button", {
+        name: "Expand",
+      });
 
-      await userEvent.click(cell);
+      await userEvent.click(expandButton);
 
       await waitFor(
         () => {
@@ -2870,6 +2857,19 @@ export const RowNestedContentWithClose: Story = {
         { timeout: 3000 }
       );
     });
+
+    await step(
+      "Expanded row has aria-controls linking to the nested content panel",
+      async () => {
+        const allRows = canvas.getAllByRole("row");
+        const firstDataRow = allRows[1];
+
+        expect(firstDataRow).toHaveAttribute(
+          "aria-controls",
+          `nested-content-${rows[0].id}`
+        );
+      }
+    );
 
     await step("Close button dismisses the nested content panel", async () => {
       const closeButton = await canvas.findByRole("button", {
@@ -2888,18 +2888,88 @@ export const RowNestedContentWithClose: Story = {
       );
     });
 
-    await step(
-      "Row has aria-controls linking to the nested content panel",
-      async () => {
-        const allRows = canvas.getAllByRole("row");
-        const firstDataRow = allRows[1];
+    await step("Collapsed row does not have aria-controls", async () => {
+      const allRows = canvas.getAllByRole("row");
+      const firstDataRow = allRows[1];
 
-        expect(firstDataRow).toHaveAttribute(
-          "aria-controls",
-          `nested-content-${rows[0].id}`
-        );
-      }
+      expect(firstDataRow).not.toHaveAttribute("aria-controls");
+    });
+  },
+};
+
+/**
+ * ## Row Nested Content via Row Click
+ *
+ * When `allowsExpandColumn` is `false`, rows expand via row click instead
+ * of the chevron button. This mirrors how `nestedKey` behaves when the
+ * expand column is hidden.
+ */
+export const RowNestedContentViaRowClick: Story = {
+  render: () => {
+    return (
+      <DataTable
+        columns={columns}
+        rows={rows}
+        allowsExpandColumn={false}
+        renderNestedContent={(row) => (
+          <Box p="400">
+            <Heading as="h4" size="sm">
+              Details for {row.id}
+            </Heading>
+            <Text>Expanded via row click (no chevron column).</Text>
+          </Box>
+        )}
+        data-testid="nested-row-click-table"
+      />
     );
+  },
+  args: {},
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("No expand button is rendered", async () => {
+      const allRows = canvas.getAllByRole("row");
+      const firstDataRow = allRows[1];
+      expect(
+        within(firstDataRow).queryByRole("button", { name: "Expand" })
+      ).not.toBeInTheDocument();
+    });
+
+    await step("Clicking a row expands nested content", async () => {
+      const allRows = canvas.getAllByRole("row");
+      const firstDataRow = allRows[1];
+      const cell = within(firstDataRow).getAllByRole("rowheader")[0];
+
+      await userEvent.click(cell);
+
+      await waitFor(
+        () => {
+          const openDetails = canvasElement.querySelectorAll(
+            "[data-nested-row-expanded='true']"
+          );
+          expect(openDetails.length).toBe(1);
+        },
+        { timeout: 3000 }
+      );
+    });
+
+    await step("Clicking again collapses nested content", async () => {
+      const allRows = canvas.getAllByRole("row");
+      const firstDataRow = allRows[1];
+      const cell = within(firstDataRow).getAllByRole("rowheader")[0];
+
+      await userEvent.click(cell);
+
+      await waitFor(
+        () => {
+          const openDetails = canvasElement.querySelectorAll(
+            "[data-nested-row-expanded='true']"
+          );
+          expect(openDetails.length).toBe(0);
+        },
+        { timeout: 3000 }
+      );
+    });
   },
 };
 
@@ -2976,11 +3046,12 @@ export const NestedContentOverride: Story = {
 
     await step("Row with nestedKey data shows override content", async () => {
       const allRows = canvas.getAllByRole("row");
-      // Click Bob (row index 2)
+      // Click Bob's expand button (row index 2)
       const bobRow = allRows[2];
-      const cell = within(bobRow).getAllByRole("gridcell")[0];
-      expect(cell).toBeDefined();
-      await userEvent.click(cell);
+      const expandButton = within(bobRow).getByRole("button", {
+        name: "Expand",
+      });
+      await userEvent.click(expandButton);
 
       await waitFor(
         () => {
@@ -2996,11 +3067,12 @@ export const NestedContentOverride: Story = {
       "Row without nestedKey data shows renderNestedContent",
       async () => {
         const allRows = canvas.getAllByRole("row");
-        // Click Alice (row index 1) — no nestedKey data
+        // Click Alice's expand button (row index 1) — no nestedKey data
         const aliceRow = allRows[1];
-        const cell = within(aliceRow).getAllByRole("gridcell")[0];
-        expect(cell).toBeDefined();
-        await userEvent.click(cell);
+        const expandButton = within(aliceRow).getByRole("button", {
+          name: "Expand",
+        });
+        await userEvent.click(expandButton);
 
         await waitFor(
           () => {

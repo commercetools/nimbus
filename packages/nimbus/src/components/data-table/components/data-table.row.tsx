@@ -151,14 +151,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     row[nestedKey] &&
     (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
 
-  const expandViaRowClick =
-    hasExpandableContent && !showExpandColumn && !onRowClick;
+  const expandViaRowClick = hasExpandableContent && !showExpandColumn;
 
-  const isClickable = !!(
-    onRowClick ||
-    renderNestedContent ||
-    expandViaRowClick
-  );
+  const isClickable = !!(onRowClick || expandViaRowClick);
 
   const handleRowClick = useCallback(
     (e: Event) => {
@@ -180,8 +175,8 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         clickTimeoutRef.current = window.setTimeout(() => {
           if (!isDisabled) {
             if (
-              renderNestedContent ||
-              (expandViaRowClick && hasNestedContent)
+              expandViaRowClick &&
+              (hasNestedContent || renderNestedContent)
             ) {
               toggleExpand(row.id, columnId);
             }
@@ -203,6 +198,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       row,
       isDisabled,
       expandViaRowClick,
+      hasNestedContent,
       toggleExpand,
     ]
   );
@@ -387,17 +383,20 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   }, []);
 
   const nestedContentId = `nested-content-${row.id}`;
-  const ariaRef = useCallback(
-    (node: HTMLElement | null) => {
-      if (!node) return;
-      if (renderNestedContent) {
-        node.setAttribute("aria-controls", nestedContentId);
-      } else {
-        node.removeAttribute("aria-controls");
-      }
-    },
-    [renderNestedContent, nestedContentId]
-  );
+  const ariaNodeRef = useRef<HTMLElement | null>(null);
+  const ariaRef = useCallback((node: HTMLElement | null) => {
+    ariaNodeRef.current = node;
+  }, []);
+
+  useEffect(() => {
+    const node = ariaNodeRef.current;
+    if (!node) return;
+    if (renderNestedContent && isExpanded) {
+      node.setAttribute("aria-controls", nestedContentId);
+    } else {
+      node.removeAttribute("aria-controls");
+    }
+  }, [renderNestedContent, isExpanded, nestedContentId]);
 
   const rowRef = mergeRefs(ref, rowCallbackRef, ariaRef);
 
@@ -485,7 +484,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               data-slot="expand"
               isDisabled={isDisabled}
             >
-              {hasNestedContent ? (
+              {hasNestedContent || renderNestedContent ? (
                 // TODO:Button does not occupy the whole height
                 <IconButton
                   w="100%"
