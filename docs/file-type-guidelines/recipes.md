@@ -353,7 +353,7 @@ with the component name in kebab-case (e.g., `--accordion-font-size`,
 - **Typography (fontWeight)**: `100`, `200`, `300`, `400`, `500`, `600`, `700`,
   `800`, `900`
 - **Radii**: `50`, `100`, `150`, `200`, `300`, `400`, `500`, `600`, `full`
-- **Shadows**: `1`, `2`, `3`, `4`, `5`, `6`
+- **Shadows**: `1`, `2`, `3`, `4`, `5`, `6`, `right`, `left`
 - **Transitions (duration)**: `fastest`, `faster`, `fast`, `moderate`, `slow`,
   `slower`, `slowest`
 
@@ -517,15 +517,9 @@ export const buttonRecipe = defineRecipe({
   },
   variants: {
     variant: {
-      solid: {
-        /* ... */
-      },
-      outline: {
-        /* ... */
-      },
-      ghost: {
-        /* ... */
-      },
+      solid: {/* ... */},
+      outline: {/* ... */},
+      ghost: {/* ... */},
     },
     size: {
       sm: { paddingX: "300", fontSize: "350" },

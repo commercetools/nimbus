@@ -53,6 +53,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
 
       // Scroll shadows activated by JS scroll detection via data attributes.
       // Body selectors include .data-table-row to beat the base specificity.
+      // Left-side sticky cells get a right shadow (facing the scrolled content).
+      // Pin-row-cell is excluded (it's sticky-right, shadowed separately).
+      // The expand column is excluded when it follows selection, because
+      // selection already casts the shadow at that edge.
       "&[data-scroll-left='true']": {
         "& .data-table-row .data-table-sticky-cell:not([data-slot='pin-row-cell']):not([data-slot='selection'] ~ [data-slot='expand'])":
           { boxShadow: "{shadows.right}" },
