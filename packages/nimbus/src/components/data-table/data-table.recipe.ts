@@ -60,12 +60,17 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       "&[data-scroll-left='true']": {
         "& .data-table-row .data-table-sticky-cell:not([data-slot='pin-row-cell']):not([data-slot='selection'] ~ [data-slot='expand'])":
           { boxShadow: "{shadows.right}" },
+        "& .data-table-row-pinned .data-table-sticky-cell:not([data-slot='pin-row-cell'])":
+          { clipPath: "none" },
         "& .data-table-header .selection-column-header, & .data-table-header .drag-column-header, & .data-table-header .expand-column-header:not(.selection-column-header ~ .expand-column-header)":
           { boxShadow: "{shadows.right}" },
       },
       "&[data-scroll-right='true']": {
         "& .data-table-row [data-slot='pin-row-cell']": {
           boxShadow: "{shadows.left}",
+        },
+        "& .data-table-row-pinned [data-slot='pin-row-cell']": {
+          clipPath: "none",
         },
         "& .data-table-header .pin-rows-column-header": {
           boxShadow: "{shadows.left}",
