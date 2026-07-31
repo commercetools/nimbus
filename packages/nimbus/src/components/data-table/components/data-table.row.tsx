@@ -104,6 +104,12 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   } = useStableDataTableContext<T>();
 
   const [styleProps, restProps] = extractStyleProps(props);
+  const hasCustomBg = !!(
+    styleProps.bg ||
+    styleProps.bgColor ||
+    styleProps.backgroundColor ||
+    styleProps.background
+  );
 
   // Helper function to check if row is disabled
   const getIsDisabled = (rowId: string) => {
@@ -491,6 +497,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           ref={rowRef}
           id={row.id}
           data-clickable={isClickable && !isDisabled}
+          data-custom-bg={hasCustomBg || undefined}
           hasChildItems={
             !!(renderNestedContent || hasNestedContent) || undefined
           }
