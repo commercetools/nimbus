@@ -575,6 +575,84 @@ const App = () => {
 }
 ```
 
+### Nested content via render function
+
+Use `renderNestedContent` to render a uniform component template below each row
+when expanded. This is ideal when every row should show the same layout with its
+own data. For per-row heterogeneous content, use `nestedKey` instead.
+
+An expand column with a chevron button is shown by default. Set
+`allowsExpandColumn={false}` to hide the chevron and expand via row click
+instead. This works alongside selection and other features.
+
+```jsx live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Product', accessor: (row) => row.name },
+    { id: 'category', header: 'Category', accessor: (row) => row.category },
+    { id: 'price', header: 'Price', accessor: (row) => row.price },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Laptop', category: 'Electronics', price: '$999', description: 'A high-performance laptop with 16GB RAM and 512GB SSD.' },
+    { id: '2', name: 'Headphones', category: 'Audio', price: '$199', description: 'Noise-cancelling wireless headphones with 30-hour battery life.' },
+    { id: '3', name: 'Monitor', category: 'Electronics', price: '$449', description: '27-inch 4K monitor with HDR support and USB-C connectivity.' },
+  ];
+
+  return (
+    <Stack gap="300">
+      <Text>Click the expand button to toggle nested content.</Text>
+      <DataTable
+        columns={columns}
+        rows={rows}
+        renderNestedContent={(row) => (
+          <Box p="400">
+            <Heading as="h4" size="sm">{row.name}</Heading>
+            <Text>{row.description}</Text>
+          </Box>
+        )}
+      />
+    </Stack>
+  );
+}
+```
+
+### Overriding renderNestedContent with nestedKey
+
+When both `renderNestedContent` and `nestedKey` are provided, rows that have
+data at `row[nestedKey]` render that content instead of the default template.
+Rows without `nestedKey` data fall through to `renderNestedContent`. This lets
+you define a default layout for most rows while providing custom content for
+specific ones.
+
+```jsx live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'role', header: 'Role', accessor: (row) => row.role },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice', role: 'Admin' },
+    { id: '2', name: 'Bob', role: 'User', details: <Box p="400" bg="yellow.2"><Text fontWeight="bold">Custom content for Bob</Text></Box> },
+    { id: '3', name: 'Carol', role: 'User' },
+  ];
+
+  return (
+    <DataTable
+      columns={columns}
+      rows={rows}
+      nestedKey="details"
+      renderNestedContent={(row) => (
+        <Box p="400">
+          <Text>Default: {row.name} ({row.role})</Text>
+        </Box>
+      )}
+    />
+  );
+}
+```
+
 ### With footer
 
 Add pagination or summary content using the `footer` prop:
@@ -764,7 +842,7 @@ const App = () => {
 
   return (
     <Stack gap="300">
-      <Text>Click a row to expand its nested content.</Text>
+      <Text>Click the expand button to toggle nested content.</Text>
       <DataTable
         columns={columns}
         rows={rows}

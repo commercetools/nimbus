@@ -97,6 +97,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     isTruncated,
     onRowClick,
     onRowAction,
+    renderNestedContent,
     togglePin,
     selectRowLabel,
   } = useStableDataTableContext<T>();
@@ -150,12 +151,13 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     row[nestedKey] &&
     (Array.isArray(row[nestedKey]) ? row[nestedKey].length > 0 : true);
 
-  const expandViaRowClick =
-    hasExpandableContent && !showExpandColumn && !onRowClick;
+  const expandViaRowClick = hasExpandableContent && !showExpandColumn;
+
+  const isClickable = !!(onRowClick || expandViaRowClick);
 
   const handleRowClick = useCallback(
     (e: Event) => {
-      if (!onRowClick && !expandViaRowClick) return;
+      if (!isClickable) return;
       const isInteractiveElement = getIsTableRowChildElementInteractive(e);
       if (!isInteractiveElement) {
         const hasSelectedText =
@@ -166,10 +168,17 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           window.clearTimeout(clickTimeoutRef.current);
         }
 
+        const clickedCell = (e.target as Element)?.closest("[data-column-id]");
+        const columnId =
+          clickedCell?.getAttribute("data-column-id") ?? undefined;
+
         clickTimeoutRef.current = window.setTimeout(() => {
           if (!isDisabled) {
-            if (expandViaRowClick && hasNestedContent) {
-              toggleExpand(row.id);
+            if (
+              expandViaRowClick &&
+              (hasNestedContent || renderNestedContent)
+            ) {
+              toggleExpand(row.id, columnId);
             }
             onRowClick?.(row);
           } else {
@@ -181,7 +190,17 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         }, 300);
       }
     },
-    [onRowClick, onRowAction, row, isDisabled, expandViaRowClick, toggleExpand]
+    [
+      isClickable,
+      onRowClick,
+      renderNestedContent,
+      onRowAction,
+      row,
+      isDisabled,
+      expandViaRowClick,
+      hasNestedContent,
+      toggleExpand,
+    ]
   );
 
   /**
@@ -363,10 +382,40 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const rowRef = mergeRefs(ref, rowCallbackRef);
+  const nestedContentId = `nested-content-${row.id}`;
+  const ariaNodeRef = useRef<HTMLElement | null>(null);
+  const ariaRef = useCallback((node: HTMLElement | null) => {
+    ariaNodeRef.current = node;
+  }, []);
+
+  useEffect(() => {
+    const node = ariaNodeRef.current;
+    if (!node) return;
+    if (renderNestedContent && isExpanded) {
+      node.setAttribute("aria-controls", nestedContentId);
+    } else {
+      node.removeAttribute("aria-controls");
+    }
+  }, [renderNestedContent, isExpanded, nestedContentId]);
+
+  const rowRef = mergeRefs(ref, rowCallbackRef, ariaRef);
 
   const { selectionBehavior, allowsDragging } = useTableOptions();
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
+
+  const nestedContentRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (node) {
+        node.id = nestedContentId;
+        node.removeAttribute("aria-labelledby");
+        node.setAttribute(
+          "aria-label",
+          msg.format("nestedContentRow", { rowId: row.id })
+        );
+      }
+    },
+    [nestedContentId, msg, row.id]
+  );
 
   // Generate pinned row CSS classes
   const getPinnedRowClasses = () => {
@@ -395,7 +444,10 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           columns={activeColumns}
           ref={rowRef}
           id={row.id}
-          data-clickable={!!onRowClick && !isDisabled}
+          data-clickable={isClickable && !isDisabled}
+          hasChildItems={
+            !!(renderNestedContent || hasNestedContent) || undefined
+          }
           className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
           {...restProps}
           dependencies={[isExpanded, search, isTruncated]}
@@ -446,7 +498,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               data-slot="expand"
               isDisabled={isDisabled}
             >
-              {hasNestedContent ? (
+              {hasNestedContent || renderNestedContent ? (
                 // TODO:Button does not occupy the whole height
                 <IconButton
                   w="100%"
@@ -455,7 +507,11 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                   cursor="pointer"
                   focusVisibleRing="inside"
                   borderRadius="0"
-                  aria-label={isExpanded ? "Collapse" : "Expand"}
+                  aria-label={
+                    isExpanded
+                      ? msg.format("collapseRow")
+                      : msg.format("expandRow")
+                  }
                   onPress={() => toggleExpand(row.id)}
                 >
                   {isExpanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
@@ -474,6 +530,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                 <DataTableCell
                   isDisabled={isDisabled}
                   key={col.id}
+                  data-column-id={col.id}
                   textAlign={
                     align === "center"
                       ? "center"
@@ -539,6 +596,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       {hasExpandableContent && (
         <DataTableRowSlot {...styleProps} asChild>
           <RaRow
+            ref={renderNestedContent ? nestedContentRowRef : undefined}
             data-nested-row-expanded={isExpanded ? "true" : "false"}
             dependencies={[isExpanded]}
           >
@@ -554,9 +612,15 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               data-nested-cell
             >
               {isExpanded
-                ? nestedKey && Array.isArray(row[nestedKey])
-                  ? `${(row[nestedKey] as unknown[]).length} nested items`
-                  : nestedKey && (row[nestedKey] as React.ReactNode)
+                ? hasNestedContent
+                  ? nestedKey && Array.isArray(row[nestedKey])
+                    ? `${(row[nestedKey] as unknown[]).length} nested items`
+                    : nestedKey && (row[nestedKey] as React.ReactNode)
+                  : renderNestedContent
+                    ? renderNestedContent(row, {
+                        close: () => toggleExpand(row.id),
+                      })
+                    : null
                 : null}
             </DataTableCell>
           </RaRow>

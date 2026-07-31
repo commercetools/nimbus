@@ -48,7 +48,7 @@ export const DataTableRoot = function DataTableRoot<
     density = "default",
     nestedKey,
     onRowClick,
-    onDetailsClick,
+    renderNestedContent,
     disabledKeys,
     onRowAction,
     isResizable,
@@ -122,10 +122,11 @@ export const DataTableRoot = function DataTableRoot<
     [rows, pinnedRows]
   );
 
-  const hasExpandableContent = useMemo(
+  const hasNestedKeyContent = useMemo(
     () => hasExpandableRows(filteredRows, nestedKey),
     [filteredRows, nestedKey]
   );
+  const hasExpandableContent = hasNestedKeyContent || !!renderNestedContent;
   const showExpandColumn = hasExpandableContent && allowsExpandColumn;
   const showSelectionColumn = selectionMode !== "none";
   const showPinColumn = allowsPinning;
@@ -137,7 +138,7 @@ export const DataTableRoot = function DataTableRoot<
   const onExpandRowsChangeRef = useRef(onExpandRowsChange);
   onExpandRowsChangeRef.current = onExpandRowsChange;
 
-  const toggleExpand = useCallback((id: string) => {
+  const toggleExpand = useCallback((id: string, columnId?: string) => {
     startTransition(() => {
       const current = controlledExpandedRef.current ?? expandedRef.current;
       const newExpanded = new Set(current);
@@ -146,7 +147,7 @@ export const DataTableRoot = function DataTableRoot<
       } else {
         newExpanded.add(id);
       }
-      onExpandRowsChangeRef.current?.(newExpanded);
+      onExpandRowsChangeRef.current?.(newExpanded, id, columnId);
       if (controlledExpandedRef.current === undefined) {
         setInternalExpandedRows(newExpanded);
       }
@@ -221,7 +222,7 @@ export const DataTableRoot = function DataTableRoot<
       nestedKey,
       onSortChange: handleSortChange,
       onRowClick,
-      onDetailsClick,
+      renderNestedContent,
       toggleExpand,
       activeColumns,
       showExpandColumn,
@@ -251,7 +252,7 @@ export const DataTableRoot = function DataTableRoot<
       nestedKey,
       handleSortChange,
       onRowClick,
-      onDetailsClick,
+      renderNestedContent,
       toggleExpand,
       activeColumns,
       showExpandColumn,

@@ -280,10 +280,203 @@ describe("DataTable - Row interactions", () => {
 });
 
 /**
+ * @docs-section row-nested-content
+ * @docs-title Row Nested Content Tests
+ * @docs-description Test renderNestedContent prop for inline nested content panels
+ * @docs-order 5
+ */
+describe("DataTable - Row nested content panels", () => {
+  it("renders a nested content panel below a row when expanded", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          renderNestedContent={(row) => (
+            <Box data-testid={`detail-${row.id}`}>
+              Nested content for {row.id}
+            </Box>
+          )}
+        />
+      </NimbusProvider>
+    );
+
+    // No nested content panels open initially
+    expect(screen.queryByTestId("detail-1")).not.toBeInTheDocument();
+
+    // Click the expand button on the first data row
+    const allRows = screen.getAllByRole("row");
+    const firstDataRow = allRows[1];
+    const expandButton = within(firstDataRow).getByRole("button", {
+      name: "Expand",
+    });
+    await user.click(expandButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("detail-1")).toBeInTheDocument();
+      expect(screen.getByText("Nested content for 1")).toBeInTheDocument();
+    });
+  });
+
+  it("toggles nested content panel closed on second click", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          renderNestedContent={(row) => (
+            <Box data-testid={`detail-${row.id}`}>
+              Nested content for {row.id}
+            </Box>
+          )}
+        />
+      </NimbusProvider>
+    );
+
+    const allRows = screen.getAllByRole("row");
+    const firstDataRow = allRows[1];
+    const expandButton = within(firstDataRow).getByRole("button", {
+      name: "Expand",
+    });
+
+    // Open
+    await user.click(expandButton);
+    await waitFor(() => {
+      expect(screen.getByTestId("detail-1")).toBeInTheDocument();
+    });
+
+    // Close
+    const collapseButton = within(firstDataRow).getByRole("button", {
+      name: "Collapse",
+    });
+    await user.click(collapseButton);
+    await waitFor(() => {
+      expect(screen.queryByTestId("detail-1")).not.toBeInTheDocument();
+    });
+  });
+
+  it("fires onRowClick alongside expand toggle", async () => {
+    const user = userEvent.setup();
+    const handleRowClick = vi.fn();
+
+    render(
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          onRowClick={handleRowClick}
+          renderNestedContent={(row) => (
+            <Box data-testid={`detail-${row.id}`}>
+              Nested content for {row.id}
+            </Box>
+          )}
+        />
+      </NimbusProvider>
+    );
+
+    // Expand via chevron — onRowClick should NOT fire
+    const allRows = screen.getAllByRole("row");
+    const firstDataRow = allRows[1];
+    const expandButton = within(firstDataRow).getByRole("button", {
+      name: "Expand",
+    });
+    await user.click(expandButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("detail-1")).toBeInTheDocument();
+    });
+    expect(handleRowClick).not.toHaveBeenCalled();
+
+    // Click a data cell — onRowClick should fire
+    const dataCell = within(firstDataRow).getAllByRole("gridcell").at(-1)!;
+    await user.click(dataCell);
+
+    await waitFor(() => {
+      expect(handleRowClick).toHaveBeenCalled();
+    });
+  });
+
+  it("provides a close callback to dismiss the nested content panel", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          renderNestedContent={(row, { close }) => (
+            <Box data-testid={`detail-${row.id}`}>
+              <button data-testid={`close-${row.id}`} onClick={close}>
+                Close
+              </button>
+            </Box>
+          )}
+        />
+      </NimbusProvider>
+    );
+
+    // Open via expand button
+    const allRows = screen.getAllByRole("row");
+    const firstDataRow = allRows[1];
+    const expandButton = within(firstDataRow).getByRole("button", {
+      name: "Expand",
+    });
+    await user.click(expandButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("detail-1")).toBeInTheDocument();
+    });
+
+    // Close via the close callback
+    await user.click(screen.getByTestId("close-1"));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("detail-1")).not.toBeInTheDocument();
+    });
+  });
+
+  it("sets aria-controls on the row when expanded", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <NimbusProvider>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          renderNestedContent={(row) => (
+            <Box data-testid={`detail-${row.id}`}>Detail</Box>
+          )}
+        />
+      </NimbusProvider>
+    );
+
+    const allRows = screen.getAllByRole("row");
+    const firstDataRow = allRows[1];
+
+    // aria-controls should not be present when collapsed
+    expect(firstDataRow).not.toHaveAttribute("aria-controls");
+
+    // Expand the row
+    const expandButton = within(firstDataRow).getByRole("button", {
+      name: "Expand",
+    });
+    await user.click(expandButton);
+
+    await waitFor(() => {
+      expect(firstDataRow).toHaveAttribute("aria-controls", "nested-content-1");
+    });
+  });
+});
+
+/**
  * @docs-section search-filtering
  * @docs-title Search and Filtering Tests
  * @docs-description Test search functionality
- * @docs-order 5
+ * @docs-order 6
  */
 describe("DataTable - Search and filtering", () => {
   it("filters rows based on search term", () => {
