@@ -19,6 +19,16 @@ export const messages = {
     description: "aria-label for the expand rows column header",
     defaultMessage: "Expand rows",
   },
+  expandRow: {
+    id: "Nimbus.DataTable.expandRow",
+    description: "aria-label for the expand button on a collapsed row",
+    defaultMessage: "Expand",
+  },
+  collapseRow: {
+    id: "Nimbus.DataTable.collapseRow",
+    description: "aria-label for the collapse button on an expanded row",
+    defaultMessage: "Collapse",
+  },
   dragRow: {
     id: "Nimbus.DataTable.dragRow",
     description: "aria-label for the drag handle button on each row",

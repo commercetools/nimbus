@@ -403,6 +403,20 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   const { selectionBehavior, allowsDragging } = useTableOptions();
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
 
+  const nestedContentRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (node) {
+        node.id = nestedContentId;
+        node.removeAttribute("aria-labelledby");
+        node.setAttribute(
+          "aria-label",
+          msg.format("nestedContentRow", { rowId: row.id })
+        );
+      }
+    },
+    [nestedContentId, msg, row.id]
+  );
+
   // Generate pinned row CSS classes
   const getPinnedRowClasses = () => {
     if (!isPinned) return "";
@@ -493,7 +507,11 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                   cursor="pointer"
                   focusVisibleRing="inside"
                   borderRadius="0"
-                  aria-label={isExpanded ? "Collapse" : "Expand"}
+                  aria-label={
+                    isExpanded
+                      ? msg.format("collapseRow")
+                      : msg.format("expandRow")
+                  }
                   onPress={() => toggleExpand(row.id)}
                 >
                   {isExpanded ? <KeyboardArrowDown /> : <KeyboardArrowRight />}
@@ -575,23 +593,10 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
         </RaRow>
       </DataTableRowSlot>
 
-      {(hasExpandableContent || renderNestedContent) && (
+      {hasExpandableContent && (
         <DataTableRowSlot {...styleProps} asChild>
           <RaRow
-            ref={
-              renderNestedContent
-                ? (node: HTMLElement | null) => {
-                    if (node) {
-                      node.id = nestedContentId;
-                      node.removeAttribute("aria-labelledby");
-                      node.setAttribute(
-                        "aria-label",
-                        msg.format("nestedContentRow", { rowId: row.id })
-                      );
-                    }
-                  }
-                : undefined
-            }
+            ref={renderNestedContent ? nestedContentRowRef : undefined}
             data-nested-row-expanded={isExpanded ? "true" : "false"}
             dependencies={[isExpanded]}
           >

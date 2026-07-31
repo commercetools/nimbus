@@ -59,6 +59,10 @@
     "developer_comment": "default label for the confirm button in a confirmation dialog",
     "string": "Confirmar"
   },
+  "Nimbus.DataTable.collapseRow": {
+    "developer_comment": "aria-label for the collapse button on an expanded row",
+    "string": "Collapse"
+  },
   "Nimbus.DataTable.comfortable": {
     "developer_comment": "title for the comfortable togglebutton in the data table manager layout",
     "string": "Cómoda"
@@ -94,6 +98,10 @@
   "Nimbus.DataTable.dragRowsColumn": {
     "developer_comment": "aria-label for the drag rows column header",
     "string": "Reordenar filas"
+  },
+  "Nimbus.DataTable.expandRow": {
+    "developer_comment": "aria-label for the expand button on a collapsed row",
+    "string": "Expand"
   },
   "Nimbus.DataTable.expandRows": {
     "developer_comment": "aria-label for the expand rows column header",

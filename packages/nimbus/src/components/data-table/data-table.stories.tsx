@@ -2974,6 +2974,84 @@ export const RowNestedContentViaRowClick: Story = {
 };
 
 /**
+ * ## Row Nested Content via Row Click with onRowClick
+ *
+ * When `allowsExpandColumn` is `false` and `onRowClick` is provided,
+ * clicking a row fires both the expand toggle and `onRowClick`.
+ */
+export const RowNestedContentViaRowClickWithOnRowClick: Story = {
+  render: () => {
+    const [lastClicked, setLastClicked] = React.useState<string | null>(null);
+    return (
+      <Stack gap="300">
+        <Text data-testid="last-clicked">
+          {lastClicked ? `Clicked: ${lastClicked}` : "No row clicked"}
+        </Text>
+        <DataTable
+          columns={columns}
+          rows={rows}
+          allowsExpandColumn={false}
+          onRowClick={(row) => setLastClicked(row.id)}
+          renderNestedContent={(row) => (
+            <Box p="400">
+              <Text>Details for {row.id}</Text>
+            </Box>
+          )}
+          data-testid="nested-row-click-onrowclick-table"
+        />
+      </Stack>
+    );
+  },
+  args: {},
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Clicking a row fires both expand and onRowClick", async () => {
+      const allRows = canvas.getAllByRole("row");
+      const firstDataRow = allRows[1];
+      const cell = within(firstDataRow).getAllByRole("rowheader")[0];
+
+      await userEvent.click(cell);
+
+      await waitFor(
+        () => {
+          const openDetails = canvasElement.querySelectorAll(
+            "[data-nested-row-expanded='true']"
+          );
+          expect(openDetails.length).toBe(1);
+        },
+        { timeout: 3000 }
+      );
+
+      expect(canvas.getByTestId("last-clicked")).toHaveTextContent(
+        `Clicked: ${rows[0].id}`
+      );
+    });
+
+    await step(
+      "Clicking again collapses and fires onRowClick again",
+      async () => {
+        const allRows = canvas.getAllByRole("row");
+        const firstDataRow = allRows[1];
+        const cell = within(firstDataRow).getAllByRole("rowheader")[0];
+
+        await userEvent.click(cell);
+
+        await waitFor(
+          () => {
+            const openDetails = canvasElement.querySelectorAll(
+              "[data-nested-row-expanded='true']"
+            );
+            expect(openDetails.length).toBe(0);
+          },
+          { timeout: 3000 }
+        );
+      }
+    );
+  },
+};
+
+/**
  * ## Nested Content Override with nestedKey
  *
  * When both `renderNestedContent` and `nestedKey` are provided, rows that have
