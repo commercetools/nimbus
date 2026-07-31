@@ -67,21 +67,22 @@ function stopPropagationForNonInteractiveElements(e: Event) {
 }
 
 type DataTableRowPerRowProps = {
-  isExpanded: boolean;
-  isPinned: boolean;
-  isFirstPinned: boolean;
-  isLastPinned: boolean;
-  isSinglePinned: boolean;
+  isExpanded?: boolean;
+  isPinned?: boolean;
+  isFirstPinned?: boolean;
+  isLastPinned?: boolean;
+  isSinglePinned?: boolean;
 };
 
 const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   row,
   ref,
-  isExpanded,
-  isPinned,
-  isFirstPinned,
-  isLastPinned,
-  isSinglePinned,
+  children,
+  isExpanded = false,
+  isPinned = false,
+  isFirstPinned = false,
+  isLastPinned = false,
+  isSinglePinned = false,
   ...props
 }: DataTableRowProps<T> & DataTableRowPerRowProps) => {
   const {
@@ -435,7 +436,52 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     ) : (
       (value as React.ReactNode)
     );
-  // TODO: does the row need a slot for styling?
+
+  const defaultDataCells = (cols: DataTableColumnItem<T>[]) => (
+    <RaCollection items={cols}>
+      {(col: DataTableColumnItem<T>) => {
+        const cellValue = col.accessor(row);
+        const align = col.align ?? "start";
+        const isStretch = align === "stretch";
+
+        return (
+          <DataTableCell
+            isDisabled={isDisabled}
+            key={col.id}
+            data-column-id={col.id}
+            textAlign={
+              align === "center"
+                ? "center"
+                : align === "end"
+                  ? "end"
+                  : undefined
+            }
+          >
+            <Box
+              className={isTruncated ? "truncated-cell" : ""}
+              data-truncated={isTruncated ? "true" : "false"}
+              display={isStretch ? "block" : "inline-block"}
+              w={isStretch ? "100%" : undefined}
+              minW="0"
+              maxW="100%"
+              position="relative"
+              overflow="hidden"
+              cursor={isDisabled ? "not-allowed" : undefined}
+            >
+              {col.render
+                ? col.render({
+                    value: highlightCell(cellValue),
+                    row,
+                    column: col,
+                  })
+                : highlightCell(cellValue)}
+            </Box>
+          </DataTableCell>
+        );
+      }}
+    </RaCollection>
+  );
+
   return (
     <>
       <DataTableRowSlot asChild {...styleProps}>
@@ -521,48 +567,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
             </DataTableCell>
           )}
           {/* Data cells */}
-          <RaCollection items={activeColumns}>
-            {(col: DataTableColumnItem<T>) => {
-              const cellValue = col.accessor(row);
-              const align = col.align ?? "start";
-              const isStretch = align === "stretch";
-
-              return (
-                <DataTableCell
-                  isDisabled={isDisabled}
-                  key={col.id}
-                  data-column-id={col.id}
-                  textAlign={
-                    align === "center"
-                      ? "center"
-                      : align === "end"
-                        ? "end"
-                        : undefined
-                  }
-                >
-                  <Box
-                    className={isTruncated ? "truncated-cell" : ""}
-                    data-truncated={isTruncated ? "true" : "false"}
-                    display={isStretch ? "block" : "inline-block"}
-                    w={isStretch ? "100%" : undefined}
-                    minW="0"
-                    maxW="100%"
-                    position="relative"
-                    overflow="hidden"
-                    cursor={isDisabled ? "not-allowed" : undefined}
-                  >
-                    {col.render
-                      ? col.render({
-                          value: highlightCell(cellValue),
-                          row,
-                          column: col,
-                        })
-                      : highlightCell(cellValue)}
-                  </Box>
-                </DataTableCell>
-              );
-            }}
-          </RaCollection>
+          {children
+            ? children({ columns: activeColumns, row, isDisabled })
+            : defaultDataCells(activeColumns)}
           {showPinColumn && (
             <DataTableCell
               className={"data-table-sticky-cell"}

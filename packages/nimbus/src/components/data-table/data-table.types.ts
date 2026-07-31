@@ -249,10 +249,24 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   customSettings?: DataTableCustomSettings;
 };
 
+/** Render props passed to custom DataTable.Header children. */
+export type DataTableColumnRenderProps = {
+  column: DataTableColumnItem;
+  allowsSorting: boolean;
+};
+
 /**Combined props for the TableHeader element (Chakra styles + Aria behavior). */
-export type DataTableHeaderProps<T extends DataTableColumnItem> =
-  RaTableHeaderProps<T> &
-    DataTableHeaderSlotProps & { ref?: Ref<HTMLTableSectionElement> };
+export type DataTableHeaderProps<T extends DataTableColumnItem> = Omit<
+  RaTableHeaderProps<T>,
+  "children"
+> &
+  Omit<DataTableHeaderSlotProps, "children"> & {
+    ref?: Ref<HTMLTableSectionElement>;
+    children?: (
+      columns: DataTableColumnItem[],
+      renderProps: { allowsSorting: boolean }
+    ) => ReactNode;
+  };
 
 /** Combined props for the Column element (Chakra styles + Aria behavior). */
 export type DataTableColumnProps = RaColumnProps &
@@ -266,17 +280,47 @@ export type DataTableColumnProps = RaColumnProps &
 /** Type signature for the `DataTable.Column` sub-component. */
 export type DataTableColumnComponent = FC<DataTableColumnProps>;
 
+/** Per-row state computed by DataTable.Body and passed to custom render functions. */
+export type DataTableRowRenderProps = {
+  isExpanded: boolean;
+  isPinned: boolean;
+  isFirstPinned: boolean;
+  isLastPinned: boolean;
+  isSinglePinned: boolean;
+};
+
 /** Combined props for the TableBody element (Chakra styles + Aria behavior). */
-export type DataTableBodyProps<T extends DataTableRowItem> =
-  RaTableBodyProps<T> &
-    DataTableBodySlotProps & { ref?: Ref<HTMLTableSectionElement> };
+export type DataTableBodyProps<T extends DataTableRowItem> = Omit<
+  RaTableBodyProps<T>,
+  "children"
+> &
+  Omit<DataTableBodySlotProps, "children"> & {
+    ref?: Ref<HTMLTableSectionElement>;
+    children?: (
+      row: DataTableRowItem<T>,
+      renderProps: DataTableRowRenderProps
+    ) => ReactNode;
+  };
+
+/** Render props passed to custom DataTable.Row children for rendering cells. */
+export type DataTableCellRenderProps<
+  T extends object = Record<string, unknown>,
+> = {
+  columns: DataTableColumnItem<T>[];
+  row: DataTableRowItem<T>;
+  isDisabled: boolean;
+};
 
 /** Combined props for the Row element (Chakra styles + Aria behavior). */
-export type DataTableRowProps<T extends DataTableRowItem> = RaRowProps<T> &
-  DataTableRowSlotProps & {
+export type DataTableRowProps<T extends DataTableRowItem> = Omit<
+  RaRowProps<T>,
+  "children"
+> &
+  Omit<DataTableRowSlotProps, "children"> & {
     ref?: Ref<HTMLTableRowElement>;
     row: T;
     depth?: number;
+    children?: (renderProps: DataTableCellRenderProps<T>) => ReactNode;
   };
 
 /** Combined props for the Cell element (Chakra styles + Aria behavior). */
