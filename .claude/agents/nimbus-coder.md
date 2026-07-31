@@ -74,8 +74,8 @@ is to orchestrate these skills, not replace them.
 | File Type                       | Skill to Invoke                     | When                                                       |
 | ------------------------------- | ----------------------------------- | ---------------------------------------------------------- |
 | `*.types.ts`                    | **writing-types**                   | ALL type definition work                                   |
-| `*.recipe.ts`                   | **writing-recipes**                 | ALL recipe creation/updates                                |
-| `*.slots.tsx`                   | **writing-slots**                   | ALL slot component work                                    |
+| `*.recipe.*` (`.ts` or `.tsx`)  | **writing-recipes**                 | ALL recipe creation/updates                                |
+| `*.slots.*` (usually `.tsx`)    | **writing-slots**                   | ALL slot component work                                    |
 | `*.stories.tsx`                 | **writing-stories**                 | ALL story creation/updates                                 |
 | `*.i18n.ts`                     | **writing-i18n**                    | When component has default aria-labels or user-facing text |
 | `utils/*.ts` + `constants/*.ts` | **writing-utils-and-constants**     | ALL pure helper / constant work in a component             |
@@ -105,7 +105,11 @@ See
    - Main component implementation (YOU handle this directly)
 
 3. **Quality Layer** (after integration):
-   - Invoke `writing-stories` for Storybook stories + tests
+   - Invoke `writing-stories` for Storybook stories + tests. This includes
+     **Chromatic (VRT) instrumentation** - snapshots are opt-in, so a story file
+     with no `tags: ["vrt"]` story leaves the component at **zero** visual
+     coverage. The story task is not done until either some story opts in, or
+     the recipe paints nothing and `meta` carries a one-line note saying so.
    - Invoke `writing-i18n` if component has default labels
 
 4. **Documentation Layer** (after quality):
@@ -116,7 +120,7 @@ See
 
 **YOU code directly:**
 
-- Main component implementation files (`{component}.tsx`) — these contain the
+- Main component implementation files (`{component}.tsx`) - these contain the
   React component ONLY, never pure helpers
 - Component-specific logic and hooks
 - Integration of slot components with React Aria
@@ -127,8 +131,10 @@ of the component**, organized per the merge rule in
 `docs/file-type-guidelines/utils-and-constants.md#file-organization` (solo files
 for unrelated helpers, family files for cohesive sets), with a sibling
 `{name}.spec.ts` per util file and a `utils/index.ts` barrel. NEVER export
-utility functions from `{component}.tsx`. See existing patterns in
-`combobox/utils/`, `inline-svg/utils/`, `money-input/utils/`. Invoke the
+utility functions from `{component}.tsx`. **Copy `combobox/utils/`** - it is the
+one that follows the full convention, sibling specs included.
+`inline-svg/utils/` and `money-input/utils/` show the folder shape but predate
+the spec rule, so don't take them as the standard. Invoke the
 `writing-utils-and-constants` skill for these files.
 
 **INVOKE skills:**
@@ -153,6 +159,10 @@ If a skill reports validation failures:
   /docs/file-type-guidelines/
 - ALWAYS register recipes in theme configuration when creating new styling
 - ALWAYS include play functions for interactive components in stories
+- ALWAYS instrument stories for Chromatic - every state the recipe paints
+  distinctly must be reachable in some snapshotted frame. Derive that list from
+  the **recipe**, not from the story names. Snapshots are opt-in, so silence
+  means no coverage, not default coverage
 - ALWAYS use jsx live blocks in MDX documentation (never Storybook imports)
 - ALWAYS follow the compound component pattern with .Root as first property when
   applicable

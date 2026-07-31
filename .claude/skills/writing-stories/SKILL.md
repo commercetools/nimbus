@@ -73,10 +73,24 @@ Before implementation, you MUST research in parallel:
 
 2. **Analyze** component characteristics to determine story type
 
-3. **Review** similar story implementations:
+3. **Review** similar story implementations - patterns live outside
+   `components/`, so search both:
    ```bash
-   ls packages/nimbus/src/components/*/*.stories.tsx
+   find packages/nimbus/src -name "*.stories.tsx"
    ```
+
+**Conditionally, for a first-pass VRT audit only** - when you are deciding _which_
+stories snapshot rather than writing one to a settled spec:
+
+```bash
+cat docs/chromatic-visual-testing.md
+```
+
+That doc is rationale and worked precedent, not instructions; it is ~5k tokens and
+adds nothing for mechanical authoring. See
+"Chromatic Snapshots: What Gets Captured" below for the specific calls that
+warrant reading it. For CI behavior (triggers, baselines, gating) see
+`docs/chromatic-ci.md` - never needed to author a story.
 
 ## Story Requirements by Component Type
 
@@ -86,7 +100,9 @@ decision flowchart.
 
 Quick reference:
 
-- **Simple components**: Base, Sizes, Variants, Disabled, SmokeTest
+- **Simple components**: Base, Sizes, Variants, Disabled, plus `SmokeTest` **only
+  if its axes interact** (see the SmokeTest section - independent axes get their
+  own showcase stories instead)
 - **Form components**: Add Required, Invalid, Controlled stories
 - **Interactive components**: Add KeyboardNavigation, Controlled stories
 - **Portal components**: Add Placement, Dismissal stories with special portal
@@ -134,15 +150,43 @@ Stories MUST be exported in this order:
 5. **States** - Disabled, Invalid, Required, etc.
 6. **Controlled** - Controlled state example
 7. **Complex** - Advanced scenarios, edge cases
-8. **SmokeTest** - Comprehensive matrix (last story)
+8. **SmokeTest** - the interacting-axes matrix, last story. Omit it entirely when
+   the axes are independent; don't substitute a cross-product that adds no
+   coverage
 
 ## Create Mode
 
 ### Step 1: Component Analysis
 
-You MUST analyze:
+**Start with the recipe. Read it, don't recall it.**
 
-- Component props and variants
+```bash
+# .tsx as well as .ts; patterns live in src/patterns/, not src/components/
+find packages/nimbus/src -path "*{component}*" -name "*.recipe.*"
+```
+
+Every VRT decision is derived from this file, so read it before deciding anything
+about snapshots:
+
+- **Every painting selector** - `_hover`, `_focusWithin`, `_disabled`, `_active`,
+  `data-invalid`, `data-readonly`, `:has()`, and any comma-separated selector list
+  (which counts once **per child type it names**).
+- **Every `variant` / `size` / `colorPalette` key**, and any the recipe
+  **hardcodes** - a pinned value was never an axis.
+- **What it does _not_ style.** A state with no rule here renders identically to
+  the default and gets no story of its own. If the recipe sets no color, border or
+  spacing at all, the component gets no VRT (see "What Gets Captured").
+
+Not every component has one - 70 do (61 `.ts` + 9 `.tsx`). Genuinely having none
+is itself the answer for pass-through style primitives, so glob both extensions
+before concluding a component has no recipe.
+
+Then analyze:
+
+- **The component source** - every conditional render or prop that changes what
+  paints (e.g. `isDisabled={x || isReadOnly}`). Coverage is the cross-product of
+  recipe states x conditional branches, not the recipe states alone.
+- Component props and variants (drives `argTypes`)
 - Interactive behavior (click, type, keyboard nav)
 - State management (controlled vs uncontrolled)
 - Portal content (overlays, dropdowns)
@@ -340,8 +384,8 @@ instead.
 Don't fold in an axis that applies a uniform, axis-independent transform:
 `disabled` resolves to one shared style regardless of palette/size/variant, so
 capture it once in a dedicated `Disabled` story, not multiplied through the grid.
-(`:hover` and `:active`/pressed can't be captured statically - see "What Gets
-Captured".)
+(Hover and pressed can't be forced from a play at all, so they're not matrix
+axes either - see "What Gets Captured".)
 
 **Span the full supported range, not a dev subset** - a trimmed or commented-out
 axis (three sizes when the component has five) leaves those cells covered by
@@ -398,73 +442,52 @@ export const SmokeTest: Story = {
 The **visual snapshot role**. Snapshots are **opt-in**: `preview.tsx` defaults to
 `disableSnapshot: true`; a story opts in with `disableSnapshot: false` + `tags:
 ["vrt"]`. Chromatic reads only `disableSnapshot`; `vrt` is just a label so tooling
-can find snapshot stories. Full rationale, CI details, and the hover/pressed gap
-live in docs/chromatic-visual-testing.md.
+can find snapshot stories. Crop padding is global (a `preview.tsx` decorator wraps
+non-`fullscreen` stories in `1rem`), so focus rings aren't clipped.
 
-- **Enumerate surfaces from source, never memory** - every painting selector,
-  `variant`/`size` key, conditional prop, and ambient axis (RTL/locale/theme);
-  snapshot the cross-product, then diff against sibling components' story sets. A
-  comma-separated selector list is one surface **per child type it names** - render
-  each, or that half is baselined nowhere.
-- **Cover every state that changes pixels**, economically: interacting axes fold into
-  one `SmokeTest`, each state it can't hold gets its own story. Never drop a state to
-  save cost.
-- **Leave snapshots off** for behavior-only stories and any look `SmokeTest` already
-  holds. Verify per component.
-- **One state, multiple distinct surfaces → one story each**, not a gallery
-  (MoneyInput's dropdown vs label mode). `chromatic.modes` is global config only
-  (viewport/theme/locale), never prop-driven.
-- **A state with no distinct recipe surface gets no story** - read-only is the
-  component-dependent trap.
-- **`*Field` patterns snapshot the composition** - composed resting + composed error;
-  layout/`size`, InfoButton, disabled/read-only and input-painted surfaces delegate.
-  Check `FormField.Input`'s `cloneElement(child, inputProps)` before deciding a state
-  isn't forwarded.
-- **A composition pattern snapshots what it hardcodes**, not what children paint or
-  consumers pass.
-- **Inherited tokens make cross-cells** - a child with no `colorPalette` takes its
-  host's; one frame per host.
-- **A play's end state never justifies skipping a snapshot** - fix the play. A
-  snapshotted story ending focused needs `blur()`.
-- **A compound component's unit is the recipe rule, not the realistic composition** -
-  slot presence only counts where a rule keys off it (`:has()`). Name the rule the
-  frame alone fires; "it's a realistic page" means documentation, not a snapshot.
-- **A state inert in the default frame** - snapshot the condition that fires it. Sticky
-  needs a scroll in the play (bounded `overflow: auto` ancestor, `offsetHeight`-derived
-  target, each combination its own frame); `scrollBehavior="inside"` needs overflowing
-  content; a surface a variant zeroes needs the variant that paints it (a showcase left
-  at that default baselines blank boxes while reading as coverage); an inherited
-  property needs a consumer value to inherit. Ask what in the frame makes the rule
-  fire - if nothing does, the baseline is recording the state **off**.
-- **Primitives that paint no surface get no VRT** - pass-through style props, a recipe
-  that paints nothing (Group), or headless `display: contents` (Region). Leave a
-  one-line note on `meta`. One that does paint gets a normal audit.
-- **A step name is a promise** - raise the assertion to meet it, don't rename down.
-  Watch for tautologies and un-`await`ed helpers.
-- **Snapshot the component, not the harness** - no debug read-outs or demo wrappers in
-  the frame. Exception: **load-bearing, static** scaffolding - a bounded scroll port
-  `height: 100%`/sticky needs to resolve, or visible children for a component that
-  paints nothing itself.
-- **Determinism** - no live dates or random values, await async-derived state, no stray
-  focus ring, hide the caret in a `Focused` text-input story. `:hover` and pressed
-  aren't capturable yet.
-- **Name the interacting-axes matrix `SmokeTest`, render it last**; the axis list goes
-  in the doc comment, not the name.
-- **Animated components: pin only when the paused frame hides the target** - the trap
-  is an infinite animation whose endpoints both park content off-screen.
-- **The snapshot is the play's end state** - land on the target frame; a play that
-  resets to default loses it.
-- **Portals** - capture is page-wide, so hold the content open, await it, and clean up
-  between stories. Reach portal focus via its real keyboard path.
-- **Overlays: snapshot the open state**, one story per distinct open surface;
-  open/close and dismissal stay behavioral.
-- **Snapshot `placement` only when it changes the layout** - Drawer each, Dialog center
-  only, Menu/Tooltip behavioral.
+Four questions decide every snapshot call, then a fifth step packs the survivors:
+
+1. **Does it paint?** Is there a component-owned pixel at all.
+2. **Is the state reachable in this frame?** Inert props, zeroing variants,
+   inherited values with nothing to inherit, hover/pressed.
+3. **Who owns the pixels?** Delegation to children, consumers, thin wrappers,
+   composition patterns.
+4. **Does the play land the frame?** End state, blur, settled animation,
+   determinism.
+5. **Packing the surfaces into frames.** Into as few as the axes allow.
+
+**The rules themselves live in `docs/file-type-guidelines/stories.md`** (its
+"Chromatic Visual Regression Snapshots" section) - terse rules plus paste-ready
+snippets, already loaded by Required Research. This skill's **Chromatic
+Snapshots** validation checklist repeats them as checkboxes under the same five
+headings, and is what you tick off when validating.
+
+**Escalate to `docs/chromatic-visual-testing.md` only when a rule doesn't settle
+the case** - it is ~5k tokens of rationale and worked examples, so don't load it
+by default. Read it when you hit one of these, because each is a call the terse
+rule states but cannot decide for you:
+
+- **Does this state paint differently from the default?** Read-only is the
+  classic - the answer is component-dependent (MoneyInput yes, TextInput no).
+- **Do these two axes interact, or are they independent?** Decides `SmokeTest`
+  matrix vs. separate showcase stories.
+- **A recipe variant that zeroes the surface**, or an inherited property with
+  nothing to inherit - the state is inert in the default frame.
+- **One rule with a comma-separated selector list** - how many frames it needs.
+- **A compound component with optional slots** - which arrangements are genuine
+  surfaces rather than the same slots rearranged.
+- **A focus ring possibly styled on a slot that never receives focus.**
+- Any **"renders like default"** verdict you are about to write without having
+  named the exact delta you checked.
+
+Rule of thumb: **auditing** a component's coverage for the first time → read it.
+**Authoring** a story into an already-audited component, or fixing a play → don't.
 
 **When a VRT pattern changes, sync all three canonical docs at their set depth** -
-rationale and examples in `docs/chromatic-visual-testing.md` only;
-`docs/file-type-guidelines/stories.md` gets the terse rule + snippet; this file gets
-the bullet + checklist item. Don't restate reasoning in more than one, or they drift.
+rationale and worked examples in `docs/chromatic-visual-testing.md`;
+`docs/file-type-guidelines/stories.md` gets the terse rule + snippet; this file
+gets the checklist item, under the matching numbered heading. One statement per
+depth - don't restate a rule at two depths, or they drift.
 
 ### Step 3: Portal Content Handling
 
@@ -729,7 +752,8 @@ await step("Verify state changes", async () => {
 You MUST verify the changes:
 
 ```bash
-pnpm test:dev packages/nimbus/src/components/{component}/{component}.stories.tsx
+# components/ for a component; patterns/{group}/ for a pattern
+pnpm test:dev $(find packages/nimbus/src -name "{component}.stories.tsx")
 ```
 
 ## Validate Mode
@@ -740,13 +764,14 @@ You MUST validate against these requirements:
 
 #### File Structure
 
-- [ ] Story file location:
-      `packages/nimbus/src/components/{component}/{component}.stories.tsx`
+- [ ] Story file location - `src/components/{name}/{name}.stories.tsx` for a
+      component, `src/patterns/{group}/{name}/{name}.stories.tsx` for a pattern
+      (groups: `buttons`, `actions`, `dialogs`, `fields`, `pages`)
 - [ ] Imports from `@storybook/react-vite` and `storybook/test`
 - [ ] Meta configuration with title, component, tags
 - [ ] Default export of meta
 - [ ] Story type from `StoryObj<typeof ComponentName>` (the component, not
-      `typeof meta` — see note in `docs/file-type-guidelines/stories.md`)
+      `typeof meta` - see note in `docs/file-type-guidelines/stories.md`)
 
 #### Required Stories
 
@@ -760,95 +785,113 @@ You MUST validate against these requirements:
 
 #### Chromatic Snapshots
 
-- [ ] Surfaces enumerated from the **recipe + component source** (selectors,
-      variant/size keys, conditional props), and snapshots cover their
-      **cross-product** - not recalled from memory
-- [ ] `SmokeTest` matrix is **exhaustive** over the interacting axes the
-      component has (e.g. size x variant x palette, plus selected/unselected for
-      toggles) - every distinct combined look appears in the one snapshot
-- [ ] Axis arrays span the **full supported range** - no trimmed or
-      commented-out values; palettes use the 6 `SEMANTIC_COLOR_PALETTES`
-- [ ] Axes the recipe **hardcodes** are dropped from the grid (a pinned
-      `colorPalette` is not a palette axis - MultilineTextInput's neutral-only
-      recipe gives `state x size x variant`)
-- [ ] Distinct **state-combinations** are covered, not just single flags
-      (selected-disabled is a separate look from unselected-disabled)
-- [ ] For each state (focus, disabled, read-only, invalid), checked whether the
-      component renders it more than one way (mode-/variant-driven); each distinct
-      surface gets its **own** snapshotted story, not a folded gallery frame
-      (MoneyInput: `Focused` + `FocusedWithCurrencyLabel`, `DisabledState` +
-      `DisabledWithCurrencyLabel`)
+One line per check; the rule and its reasoning are in **Chromatic Snapshots: What
+Gets Captured** above.
+
+**1. Does it paint?**
+
+- [ ] Surfaces enumerated from the **recipe + component source** (painting
+      selectors, variant/size keys, conditional props, ambient RTL/locale/theme
+      axes), and snapshots cover their **cross-product** - not recalled from memory
+- [ ] Every child type a **comma-separated selector** names appears in some frame
+- [ ] Diffed against **sibling components'** story sets; each surface a peer
+      snapshots and this one doesn't is either covered or named as not applicable
+- [ ] Any "renders like default" verdict **names the exact delta** checked
 - [ ] A state with **no distinct recipe surface** gets no dedicated story
-      (read-only with no `data-readonly` rule renders like default - no snapshot)
-- [ ] A child inheriting `colorPalette` from its host is snapshotted per host
-- [ ] A composition pattern snapshots what it hardcodes, not what children paint or
-      consumers pass
-- [ ] A `*Field` pattern has exactly **two** snapshots, with every delegation named
-- [ ] No `No` verdict rests on the play's end state; snapshotted stories that end
-      focused call `blur()`
-- [ ] No `No` verdict rests on an assertion that tests **state instead of pixels** -
-      `aria-*` values, callback arguments and attributes prove the state, not the
-      rendered layout, so they can't be why a visual goes uncaptured
+      (read-only with no `data-readonly` rule renders like default)
 - [ ] **Primitives that paint no surface** get **no VRT at all**, with a one-line
       note on `meta` - pass-through style props, a recipe that paints nothing
-      (Group), or headless `display: contents` (Region). Check whether the recipe
+      (Group), headless `display: contents` (Region). Check whether the recipe
       **paints**, not whether it exists (Separator and Icon get normal audits)
-- [ ] Every `step()` name matches what it asserts; where it overstated, the
-      **assertion was raised to the name** (not the name lowered). No tautological
-      assertions, no un-`await`ed async helpers
-- [ ] Snapshotted stories render the component **directly** - no debug read-outs,
-      value dumps, or demo-wrapper scaffolding in the frame (those stay on the
-      un-snapshotted behavioral stories). **Load-bearing, static** scaffolding is
-      admissible and named as such (a bounded scroll port; visible children for a
-      component that paints nothing)
-- [ ] For a **compound component with optional slots**, each frame names the recipe
-      rule it alone fires (typically a `:has()` selector); plausible-but-duplicate
-      compositions stay off-snapshot with a pointer to the frame that holds them
-- [ ] **Condition-triggered** states get a frame where the trigger actually holds -
-      at rest they are identical to their absence. Sticky scrolled in the play
-      (bounded `overflow: auto` ancestor, `offsetHeight`-derived target, each
-      combination its own frame); `scrollBehavior="inside"` given overflowing content
-- [ ] Uniform, axis-independent states are captured in a **dedicated** story,
-      not folded into the matrix (`disabled` typically resolves to one shared
-      style regardless of size/variant/palette → its own `Disabled` snapshot, not
-      a grid dimension)
-- [ ] Thin wrappers snapshot only the axis they introduce (+ `Focused`/`Disabled`
-      if added), not a re-rendered copy of the wrapped component's matrix
+
+**2. Is the state reachable in this frame?**
+
+- [ ] **Condition-triggered** states get a frame where the trigger actually holds:
+      sticky scrolled in the play (bounded `overflow: auto` ancestor,
+      `offsetHeight`-derived target, each combination its own frame),
+      `scrollBehavior="inside"` given overflowing content, a variant-zeroed surface
+      pinned to the variant that paints it, an inherited property given a value to
+      inherit
 - [ ] A **separate `Focused` story per independent focus surface** (fused/adjacent
-      controls, or multiple `_focusWithin` regions) - not just the primary, and
-      not one story tabbing through all (only one element holds focus per
-      snapshot, so one story can't capture two rings). Each opts in
-      (`disableSnapshot: false` + `vrt`)
-- [ ] Text-entry `Focused` plays hide the caret
-      (`canvasElement.style.caretColor = "transparent"`) before tabbing
-- [ ] Only behavior-only stories and stories whose look is already in `SmokeTest`
-      left snapshot-off (project default) - never drop a visual state to save cost
-- [ ] Each snapshotted story's **play ends in the state the snapshot is named
-      for** - no stray focus ring, no cleared/mutated value, no left-open overlay
-      unless intended. Chromatic captures the play's final state and nothing
-      blurs it, so a play can be assertion-honest yet still snapshot the wrong
-      picture (blur, reset, or split the story)
-- [ ] No play added **for completeness** - each one is there because the story's
-      name makes a behavioral claim or its frame needs an interaction to exist; a
-      resting visual props alone produce is covered by the snapshot + a11y check
-- [ ] A story left focused by `userEvent.click` is blurred - React Aria keeps
-      `data-focus-visible` set after a synthetic click, so the ring lands in the
-      capture even though a real mouse click wouldn't paint it
-- [ ] The interacting-axes matrix is named **`SmokeTest`** and rendered **last**
-      (not `Variants`/`VariantsAndSizes`/etc.); the axis list lives in the doc
-      comment
-- [ ] **Animated** states: paused frame confirmed to show the target; if an
-      infinite animation's endpoints both hide it (indeterminate progress), the
-      play **pins** a representative frame (`animation: none` + explicit
-      `transform`)
+      controls, or multiple `_focusWithin` regions) - not one story tabbing through
+      all, since only one element holds focus per snapshot. Each opts in
+- [ ] The focus **ring is confirmed to render** before opting in - not styled on a
+      slot that never gets the focus state (DropZone)
+- [ ] **Overlays** snapshot the **open** state (rendered open, left open); each
+      distinct open surface is its own story; open/close & dismissal stay behavioral
 - [ ] **Portal** components (Toast/overlays): transient UI held open
       (`duration: Infinity`), awaited, and cleaned up between stories; the
       component's own focus reached via its **real keyboard path**, not `.focus()`
-- [ ] **Overlays** snapshot the **open** state (rendered open, left open); each
-      distinct open surface is its own story; open/close & dismissal stay behavioral
 - [ ] **`placement`** snapshotted only when it changes the **layout** (Drawer
       side/top/bottom panels), not a mere reposition (Dialog = center only;
       Menu/Tooltip RA-positioning = behavioral)
+- [ ] No hand-rolled **hover/pressed** capture - a play can't force the
+      pseudo-class, and setting `[data-hovered]`/`[data-pressed]` by hand
+      half-styles the frame (recipes are split with Chakra `_hover`/`_active`).
+      Pressed is not categorically a no-op - the recipe was checked. Everything
+      else a play can drive is snapshotted settled
+
+**3. Who owns the pixels?**
+
+- [ ] Snapshotted stories render the component **directly** - no debug read-outs,
+      value dumps, or demo-wrapper scaffolding in the frame. **Load-bearing,
+      static** scaffolding is admissible and named as such
+- [ ] **Thin wrappers** snapshot only the axis they introduce (+ `Focused`/`Disabled`
+      if added), not a re-rendered copy of the wrapped component's matrix
+- [ ] A **composition pattern** snapshots what it hardcodes, not what children paint
+      or consumers pass
+- [ ] A **`*Field` pattern** has exactly **two** snapshots, with every delegation
+      named; `FormField.Input`'s `cloneElement` checked before calling a state
+      un-forwarded
+- [ ] For a **compound component with optional slots**, each frame names the recipe
+      rule it alone fires (typically a `:has()` selector); plausible-but-duplicate
+      compositions stay off-snapshot with a pointer to the frame that holds them
+- [ ] A child **inheriting `colorPalette`** from its host is snapshotted per host
+
+**4. Does the play land the frame?**
+
+- [ ] Each snapshotted story's **play ends in the state the snapshot is named for** -
+      no stray focus ring, cleared/mutated value, or left-open overlay unless
+      intended. A play can be assertion-honest yet snapshot the wrong picture
+- [ ] A story left focused by **`userEvent.click`** is blurred - React Aria keeps
+      `data-focus-visible` set after a synthetic click
+- [ ] No `No` verdict rests on the play's **end state**; snapshotted stories that end
+      focused call `blur()`
+- [ ] No `No` verdict rests on an assertion that tests **state instead of pixels** -
+      `aria-*` values, callback arguments and attributes prove the state, not the
+      rendered layout
+- [ ] Every `step()` name matches what it asserts; where it overstated, the
+      **assertion was raised to the name** (not the name lowered). No tautological
+      assertions, no un-`await`ed async helpers
+- [ ] No play added **for completeness** - each is there because the story's name
+      makes a behavioral claim or its frame needs an interaction to exist
+- [ ] Text-entry `Focused` plays hide the caret
+      (`canvasElement.style.caretColor = "transparent"`) before tabbing
+- [ ] **Determinism**: dates pinned to a fixed anchor (live "today" stays
+      off-snapshot), no random values, async-derived state awaited
+- [ ] **Animated** states: paused frame confirmed to show the target; if an infinite
+      animation's endpoints both hide it (indeterminate progress), the play **pins** a
+      representative frame (`animation: none` + explicit `transform`)
+
+**5. Packing the surfaces into frames**
+
+- [ ] `SmokeTest` matrix is **exhaustive** over the interacting axes the component
+      has (e.g. size x variant x palette, plus selected/unselected for toggles)
+- [ ] Axis arrays span the **full supported range** - no trimmed or commented-out
+      values; palettes use the 6 `SEMANTIC_COLOR_PALETTES`
+- [ ] Axes the recipe **hardcodes** are dropped from the grid (MultilineTextInput's
+      neutral-only recipe gives `state x size x variant`)
+- [ ] **Uniform, axis-independent** states are captured in a **dedicated** story, not
+      folded into the matrix (`disabled` → its own `Disabled` snapshot)
+- [ ] Distinct **state-combinations** are covered, not just single flags
+      (selected-disabled is a separate look from unselected-disabled)
+- [ ] Each state checked for being rendered **more than one way** (mode-/variant-
+      driven); each distinct surface gets its **own** story, not a folded gallery
+      (MoneyInput: `Focused` + `FocusedWithCurrencyLabel`)
+- [ ] The interacting-axes matrix is named **`SmokeTest`** and rendered **last** (not
+      `Variants`/`VariantsAndSizes`); the axis list lives in the doc comment
+- [ ] Only behavior-only stories and stories whose look is already in `SmokeTest` left
+      snapshot-off (project default) - never drop a visual state to save cost
 
 #### Play Functions (CRITICAL)
 

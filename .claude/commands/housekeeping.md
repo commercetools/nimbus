@@ -352,9 +352,10 @@ For each dependency group (or the specified target group):
 7. **Chromatic visual check (automatic):**
 
    No manual dispatch needed - the changed-files gate watches `pnpm-lock.yaml`,
-   so the PR auto-runs a full Chromatic snapshot. Review the visual diff before
-   merging. See
-   [Chromatic Visual Testing](../../docs/chromatic-visual-testing.md).
+   so the PR runs Chromatic on its own. TurboSnap stays on, but a lockfile
+   change can't be traced to specific stories, so nothing gets skipped and you
+   effectively get a full snapshot. Review the visual diff before merging. See
+   [Chromatic CI Runbook](../../docs/chromatic-ci.md).
 
 ---
 
