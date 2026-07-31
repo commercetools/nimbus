@@ -32,7 +32,7 @@ If no mode is specified, default to **create**.
 ## Required Inputs
 
 1. **Epic key** (required) - The Jira epic to parent all tickets under (e.g.,
-   `CRAFT-2126`)
+   `PROJECT-2126`)
 2. **Plan source** (required) - One of:
    - A file path to a markdown plan
    - An OpenSpec proposal path
@@ -143,9 +143,9 @@ Analyze the plan for sequencing relationships:
 Create a table mapping all dependencies:
 
 ```markdown
-| Predecessor | Successor  | Reason |
-| ----------- | ---------- | ------ |
-| CRAFT-XXXX  | CRAFT-YYYY | [why]  |
+| Predecessor | Successor   | Reason |
+| ----------- | ----------- | ------ |
+| PROJECT-100 | PROJECT-101 | [why]  |
 ```
 
 ## Step 3: User Approval (REQUIRED)
@@ -224,7 +224,7 @@ additional_fields:
 ### Execution Strategy
 
 - You MUST create tickets in parallel batches (up to 9 per batch) for efficiency
-- You MUST track the returned CRAFT-XXXX keys for each ticket
+- You MUST track the returned Jira keys for each ticket
 - You MUST map plan ticket IDs to actual Jira keys for the dependency step
 - You SHOULD create tickets in rough dependency order (foundations first) so the
   key sequence is intuitive
@@ -246,7 +246,9 @@ At commercetools, the `dependency` type has:
 
 ### Direction Semantics (CRITICAL)
 
-The `mcp__atlassian__createIssueLink` tool uses these semantics:
+These directions are **unintuitive** — they mirror the Jira REST API, where the
+field names feel backwards. Verify on your first link that the result looks
+correct in the Jira UI before creating the rest.
 
 - `inwardIssue` = the **predecessor** (the ticket done first)
 - `outwardIssue` = the **successor** (the ticket done after)
@@ -274,7 +276,7 @@ outwardIssue: <successor-key>     # the ticket done after
 
 After creating tickets, you MUST update the plan/tickets markdown file to:
 
-- Replace placeholder IDs with actual CRAFT-XXXX keys
+- Replace placeholder IDs with actual Jira keys
 - Include the dependency table with real keys
 - Note which tickets are fully independent (no predecessors or successors)
 
@@ -299,8 +301,10 @@ Before declaring done, verify:
 
 If links are created backwards (predecessor shows "is successor of"):
 
-1. Ask the user to manually delete the incorrect links in Jira (there is no MCP
-   tool for deleting issue links)
+1. Try deleting the bad links via `mcp__atlassian__fetch` with a DELETE request
+   to `/rest/api/3/issueLink/{linkId}` (get link IDs from the ticket's
+   `issuelinks` field). If that fails, ask the user to manually delete them in
+   the Jira UI.
 2. Once the bad links are removed, recreate them with `inwardIssue` and
    `outwardIssue` swapped
 
