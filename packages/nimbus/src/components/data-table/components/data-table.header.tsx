@@ -116,7 +116,17 @@ export const DataTableHeader = <
             allowsSorting={false}
             isInternalColumn={true}
           >
-            {selectionMode === "multiple" && <Checkbox slot="selection" />}
+            {selectionMode === "multiple" && (
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                w="100%"
+                h="100%"
+              >
+                <Checkbox slot="selection" />
+              </Box>
+            )}
           </DataTableColumn>
         )}
         {showExpandColumn && (
