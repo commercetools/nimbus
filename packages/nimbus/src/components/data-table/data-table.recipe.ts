@@ -50,6 +50,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       display: "block",
       overflow: "auto",
       contain: "layout style",
+      border: "1px solid {colors.neutral.3}",
+      borderRadius: "{sizes.200}",
 
       // Scroll shadows activated by JS scroll detection via data attributes.
       // Body selectors include .data-table-row to beat the base specificity.
@@ -272,15 +274,11 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       borderCollapse: "collapse",
       borderSpacing: 0,
       boxSizing: "border-box",
-      boxShadow: "inset 0 0 0 1px {colors.neutral.3}",
-      borderRadius: "0 0 {sizes.200} {sizes.200}",
       colorPalette: "slate",
       width: "100%",
     },
     header: {
       background: "colorPalette.2",
-      boxShadow: "inset 0 0 0 1px {colors.neutral.3}",
-      borderRadius: "{sizes.200} {sizes.200} 0 0",
       color: "colorPalette.11",
       borderBottom: "1px solid {colors.neutral.3}",
       lineHeight: "400",
