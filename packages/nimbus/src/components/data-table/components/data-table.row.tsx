@@ -92,6 +92,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     showPinColumn,
     isTruncated,
     isRowClickable,
+    hasRenderNestedContent,
     onRowClickRef,
     onRowActionRef,
     renderNestedContentRef,
@@ -179,7 +180,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           if (!isDisabled) {
             if (
               expandViaRowClick &&
-              (hasNestedContent || renderNestedContentRef.current)
+              (hasNestedContent || hasRenderNestedContent)
             ) {
               toggleExpand(row.id, columnId);
             }
@@ -196,7 +197,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     [
       isClickable,
       onRowClickRef,
-      renderNestedContentRef,
+      hasRenderNestedContent,
       onRowActionRef,
       row,
       isDisabled,
@@ -394,15 +395,12 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   useEffect(() => {
     const node = ariaNodeRef.current;
     if (!node) return;
-    if (renderNestedContentRef.current && isExpanded) {
+    if (hasRenderNestedContent && isExpanded) {
       node.setAttribute("aria-controls", nestedContentId);
     } else {
       node.removeAttribute("aria-controls");
     }
-    // renderNestedContentRef is stable — truthiness changes are captured
-    // by hasExpandableContent which triggers re-render via context.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isExpanded, nestedContentId]);
+  }, [hasRenderNestedContent, isExpanded, nestedContentId]);
 
   const rowRef = mergeRefs(ref, rowCallbackRef, ariaRef);
 
@@ -498,7 +496,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           data-clickable={isClickable && !isDisabled}
           data-custom-bg={hasCustomBg || undefined}
           hasChildItems={
-            !!(renderNestedContentRef.current || hasNestedContent) || undefined
+            !!(hasRenderNestedContent || hasNestedContent) || undefined
           }
           className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
           {...restProps}
@@ -550,7 +548,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               data-slot="expand"
               isDisabled={isDisabled}
             >
-              {hasNestedContent || renderNestedContentRef.current ? (
+              {hasNestedContent || hasRenderNestedContent ? (
                 // TODO:Button does not occupy the whole height
                 <IconButton
                   w="100%"
@@ -610,9 +608,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       {hasExpandableContent && (
         <DataTableRowSlot {...styleProps} asChild>
           <RaRow
-            ref={
-              renderNestedContentRef.current ? nestedContentRowRef : undefined
-            }
+            ref={hasRenderNestedContent ? nestedContentRowRef : undefined}
             data-nested-row-expanded={isExpanded ? "true" : "false"}
             dependencies={[isExpanded]}
           >

@@ -128,6 +128,7 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     onSortChange?: (descriptor: SortDescriptor) => void;
     onSelectionChange?: (keys: Selection) => void;
     isRowClickable: boolean;
+    hasRenderNestedContent: boolean;
     onRowClickRef: React.RefObject<
       ((row: DataTableRowItem<T>) => void) | undefined
     >;

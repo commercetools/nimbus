@@ -263,6 +263,9 @@ export const DataTableRoot = function DataTableRoot<
     ]
   );
 
+  const isRowClickable = !!onRowClick;
+  const hasRenderNestedContent = !!renderNestedContent;
+
   const contextValue = useMemo(
     () => ({
       columns,
@@ -277,7 +280,8 @@ export const DataTableRoot = function DataTableRoot<
       density,
       nestedKey,
       onSortChange: handleSortChange,
-      isRowClickable: !!onRowClick,
+      isRowClickable,
+      hasRenderNestedContent,
       onRowClickRef,
       renderNestedContentRef,
       toggleExpand,
@@ -307,8 +311,8 @@ export const DataTableRoot = function DataTableRoot<
       density,
       nestedKey,
       handleSortChange,
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      !!onRowClick,
+      isRowClickable,
+      hasRenderNestedContent,
       toggleExpand,
       activeColumns,
       showExpandColumn,

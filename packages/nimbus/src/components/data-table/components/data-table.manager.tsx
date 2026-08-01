@@ -21,13 +21,8 @@ export const DataTableManager = () => {
   const context = useDataTableContext();
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
 
-  const {
-    columns,
-    visibleColumns,
-    onColumnsChangeRef,
-    onSettingsChangeRef,
-    // customSettings,
-  } = context;
+  const { columns, visibleColumns, onColumnsChangeRef, onSettingsChangeRef } =
+    context;
   const hiddenColumns = columns.filter(
     (col) => !visibleColumns?.includes(col.id)
   );
@@ -147,6 +142,14 @@ export const DataTableManager = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleSettingsChange = useCallback(
+    (...args: Parameters<NonNullable<typeof onSettingsChangeRef.current>>) => {
+      onSettingsChangeRef.current?.(...args);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   if (!visibleColumns || !hiddenColumns) {
     return null;
   }
@@ -214,7 +217,7 @@ export const DataTableManager = () => {
                   ),
                   panelContent: (
                     <LayoutSettingsPanel
-                      onSettingsChange={onSettingsChangeRef}
+                      onSettingsChange={handleSettingsChange}
                     />
                   ),
                 },

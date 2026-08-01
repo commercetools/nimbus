@@ -15,7 +15,7 @@ import type { DataTableProps } from "../data-table.types";
 export const LayoutSettingsPanel = ({
   onSettingsChange,
 }: {
-  onSettingsChange?: React.RefObject<DataTableProps["onSettingsChange"]>;
+  onSettingsChange?: DataTableProps["onSettingsChange"];
 }) => {
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const context = useDataTableContext();
@@ -27,14 +27,14 @@ export const LayoutSettingsPanel = ({
   const handleTextVisibilityChange = (keys: Set<string | number>) => {
     const selected = Array.from(keys)[0] as "full" | "preview";
     if (selected) {
-      onSettingsChange?.current?.(UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY);
+      onSettingsChange?.(UPDATE_ACTIONS.TOGGLE_TEXT_VISIBILITY);
     }
   };
 
   const handleRowDensityChange = (keys: Set<string | number>) => {
     const selected = Array.from(keys)[0] as "comfortable" | "compact";
     if (selected) {
-      onSettingsChange?.current?.(UPDATE_ACTIONS.TOGGLE_ROW_DENSITY);
+      onSettingsChange?.(UPDATE_ACTIONS.TOGGLE_ROW_DENSITY);
     }
   };
 
