@@ -335,7 +335,6 @@ export type DataTableRowProps<T extends DataTableRowItem> = Omit<
   Omit<DataTableRowSlotProps, "children"> & {
     ref?: Ref<HTMLTableRowElement>;
     row: T;
-    depth?: number;
     children?: (renderProps: DataTableCellRenderProps<T>) => ReactNode;
   };
 
