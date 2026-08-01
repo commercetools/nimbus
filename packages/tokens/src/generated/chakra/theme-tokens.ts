@@ -6407,46 +6407,46 @@ export default {
   },
   fontSize: {
     "250": {
-      value: "10px",
+      value: "0.625rem",
     },
     "300": {
-      value: "12px",
+      value: "0.75rem",
     },
     "350": {
-      value: "14px",
+      value: "0.875rem",
     },
     "400": {
-      value: "16px",
+      value: "1rem",
     },
     "450": {
-      value: "18px",
+      value: "1.125rem",
     },
     "500": {
-      value: "20px",
+      value: "1.25rem",
     },
     "600": {
-      value: "24px",
+      value: "1.5rem",
     },
     "750": {
-      value: "30px",
+      value: "1.875rem",
     },
     "900": {
-      value: "36px",
+      value: "2.25rem",
     },
     "1200": {
-      value: "48px",
+      value: "3rem",
     },
     "1500": {
-      value: "60px",
+      value: "3.75rem",
     },
     "1800": {
-      value: "72px",
+      value: "4.5rem",
     },
     "2400": {
-      value: "96px",
+      value: "6rem",
     },
     "3200": {
-      value: "128px",
+      value: "8rem",
     },
   },
   fontWeight: {
@@ -6526,173 +6526,173 @@ export default {
   },
   lineHeight: {
     "250": {
-      value: "10px",
+      value: "0.625rem",
     },
     "300": {
-      value: "12px",
+      value: "0.75rem",
     },
     "350": {
-      value: "14px",
+      value: "0.875rem",
     },
     "400": {
-      value: "16px",
+      value: "1rem",
     },
     "450": {
-      value: "18px",
+      value: "1.125rem",
     },
     "500": {
-      value: "20px",
+      value: "1.25rem",
     },
     "550": {
-      value: "22px",
+      value: "1.375rem",
     },
     "600": {
-      value: "24px",
+      value: "1.5rem",
     },
     "650": {
-      value: "26px",
+      value: "1.625rem",
     },
     "700": {
-      value: "28px",
+      value: "1.75rem",
     },
     "750": {
-      value: "30px",
+      value: "1.875rem",
     },
     "800": {
-      value: "32px",
+      value: "2rem",
     },
     "900": {
-      value: "36px",
+      value: "2.25rem",
     },
     "1100": {
-      value: "44px",
+      value: "2.75rem",
     },
     "1200": {
-      value: "48px",
+      value: "3rem",
     },
     "1400": {
-      value: "56px",
+      value: "3.5rem",
     },
     "1500": {
-      value: "60px",
+      value: "3.75rem",
     },
     "1800": {
-      value: "72px",
+      value: "4.5rem",
     },
     "2000": {
-      value: "80px",
+      value: "5rem",
     },
     "2100": {
-      value: "84px",
+      value: "5.25rem",
     },
     "2300": {
-      value: "92px",
+      value: "5.75rem",
     },
     "2400": {
-      value: "96px",
+      value: "6rem",
     },
     "2800": {
-      value: "112px",
+      value: "7rem",
     },
     "3200": {
-      value: "128px",
+      value: "8rem",
     },
     "3500": {
-      value: "140px",
+      value: "8.75rem",
     },
     "3800": {
-      value: "152px",
+      value: "9.5rem",
     },
   },
   textStyle: {
     "2xs": {
       value: {
-        fontSize: "10px",
-        lineHeight: "14px",
+        fontSize: "0.625rem",
+        lineHeight: "0.875rem",
       },
     },
     xs: {
       value: {
-        fontSize: "12px",
-        lineHeight: "18px",
+        fontSize: "0.75rem",
+        lineHeight: "1.125rem",
       },
     },
     sm: {
       value: {
-        fontSize: "14px",
-        lineHeight: "22px",
+        fontSize: "0.875rem",
+        lineHeight: "1.375rem",
       },
     },
     md: {
       value: {
-        fontSize: "16px",
-        lineHeight: "22px",
+        fontSize: "1rem",
+        lineHeight: "1.375rem",
       },
     },
     lg: {
       value: {
-        fontSize: "18px",
-        lineHeight: "24px",
+        fontSize: "1.125rem",
+        lineHeight: "1.5rem",
       },
     },
     xl: {
       value: {
-        fontSize: "20px",
-        lineHeight: "28px",
+        fontSize: "1.25rem",
+        lineHeight: "1.75rem",
       },
     },
     "2xl": {
       value: {
-        fontSize: "24px",
-        lineHeight: "28px",
+        fontSize: "1.5rem",
+        lineHeight: "1.75rem",
       },
     },
     "3xl": {
       value: {
-        fontSize: "30px",
-        lineHeight: "36px",
+        fontSize: "1.875rem",
+        lineHeight: "2.25rem",
       },
     },
     "4xl": {
       value: {
-        fontSize: "36px",
-        lineHeight: "44px",
+        fontSize: "2.25rem",
+        lineHeight: "2.75rem",
       },
     },
     "5xl": {
       value: {
-        fontSize: "48px",
-        lineHeight: "60px",
+        fontSize: "3rem",
+        lineHeight: "3.75rem",
       },
     },
     "6xl": {
       value: {
-        fontSize: "60px",
-        lineHeight: "72px",
+        fontSize: "3.75rem",
+        lineHeight: "4.5rem",
       },
     },
     "7xl": {
       value: {
-        fontSize: "72px",
-        lineHeight: "92px",
+        fontSize: "4.5rem",
+        lineHeight: "5.75rem",
       },
     },
     caption: {
       value: {
-        fontSize: "12px",
-        lineHeight: "18px",
+        fontSize: "0.75rem",
+        lineHeight: "1.125rem",
       },
     },
     detail: {
       value: {
-        fontSize: "14px",
-        lineHeight: "22px",
+        fontSize: "0.875rem",
+        lineHeight: "1.375rem",
       },
     },
     body: {
       value: {
-        fontSize: "16px",
-        lineHeight: "26px",
+        fontSize: "1rem",
+        lineHeight: "1.625rem",
       },
     },
   },
