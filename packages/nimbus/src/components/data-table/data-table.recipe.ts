@@ -128,49 +128,14 @@ export const dataTableSlotRecipe = defineSlotRecipe({
             left: "2400",
           },
         _hover: {
-          backgroundColor: "{colors.primary.3}",
-          transition: "background-color 100ms ease",
-          transform: "translate3d(0, 0, 0)",
           "& .data-table-sticky-cell": {
             transition: "background-color 100ms ease",
             backgroundColor: "inherit",
-            position: "sticky",
           },
-          "& [data-slot='drag']": {
-            zIndex: 11,
-          },
-          "& [data-slot='selection']": {
-            zIndex: 11,
-          },
-          "& [data-slot='expand']": {
-            zIndex: 12,
-          },
-          // When drag column is present, offset selection and expand columns on hover
-          "& [data-slot='drag'] ~ [data-slot='selection']": {
-            left: "600",
-          },
-          "& [data-slot='drag'] ~ [data-slot='expand']": {
-            left: "600",
-          },
-          // When selection column is present, move expand column to the right on hover
-          "& [data-slot='selection'] ~ [data-slot='expand']": {
-            left: "1800",
-            zIndex: 10,
-          },
-          // When both drag and selection columns are present, offset expand column on hover
-          "& [data-slot='drag'] ~ [data-slot='selection'] ~ [data-slot='expand']":
-            {
-              left: "2400",
-            },
           "& [data-slot='pin-row-cell']": {
-            right: 0,
-            zIndex: 10,
             "& [data-slot='nimbus-table-cell-pin-button']": {
               opacity: 1,
             },
-          },
-          "& .data-table-row[data-disabled='true']": {
-            opacity: 0.8,
           },
         },
       },
@@ -435,7 +400,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       "&:hover:not([data-nested-row-expanded])": {
         backgroundColor: "{colors.primary.3}",
         transition: "background-color 200ms ease",
-        transform: "translate3d(0, 0, 0)",
       },
       _last: {
         borderBottom: "none",

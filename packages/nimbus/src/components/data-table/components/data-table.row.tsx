@@ -91,9 +91,10 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     showSelectionColumn,
     showPinColumn,
     isTruncated,
-    onRowClick,
-    onRowAction,
-    renderNestedContent,
+    isRowClickable,
+    onRowClickRef,
+    onRowActionRef,
+    renderNestedContentRef,
     togglePin,
     selectRowLabel,
   } = useStableDataTableContext<T>();
@@ -155,7 +156,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
 
   const expandViaRowClick = hasExpandableContent && !showExpandColumn;
 
-  const isClickable = !!(onRowClick || expandViaRowClick);
+  const isClickable = isRowClickable || expandViaRowClick;
 
   const handleRowClick = useCallback(
     (e: Event) => {
@@ -178,14 +179,14 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           if (!isDisabled) {
             if (
               expandViaRowClick &&
-              (hasNestedContent || renderNestedContent)
+              (hasNestedContent || renderNestedContentRef.current)
             ) {
               toggleExpand(row.id, columnId);
             }
-            onRowClick?.(row);
+            onRowClickRef.current?.(row);
           } else {
-            if (onRowAction) {
-              onRowAction(row, "click");
+            if (onRowActionRef.current) {
+              onRowActionRef.current(row, "click");
             }
           }
           clickTimeoutRef.current = null;
@@ -194,9 +195,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     },
     [
       isClickable,
-      onRowClick,
-      renderNestedContent,
-      onRowAction,
+      onRowClickRef,
+      renderNestedContentRef,
+      onRowActionRef,
       row,
       isDisabled,
       expandViaRowClick,
@@ -393,12 +394,15 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   useEffect(() => {
     const node = ariaNodeRef.current;
     if (!node) return;
-    if (renderNestedContent && isExpanded) {
+    if (renderNestedContentRef.current && isExpanded) {
       node.setAttribute("aria-controls", nestedContentId);
     } else {
       node.removeAttribute("aria-controls");
     }
-  }, [renderNestedContent, isExpanded, nestedContentId]);
+    // renderNestedContentRef is stable — truthiness changes are captured
+    // by hasExpandableContent which triggers re-render via context.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isExpanded, nestedContentId]);
 
   const rowRef = mergeRefs(ref, rowCallbackRef, ariaRef);
 
@@ -494,7 +498,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           data-clickable={isClickable && !isDisabled}
           data-custom-bg={hasCustomBg || undefined}
           hasChildItems={
-            !!(renderNestedContent || hasNestedContent) || undefined
+            !!(renderNestedContentRef.current || hasNestedContent) || undefined
           }
           className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
           {...restProps}
@@ -546,7 +550,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               data-slot="expand"
               isDisabled={isDisabled}
             >
-              {hasNestedContent || renderNestedContent ? (
+              {hasNestedContent || renderNestedContentRef.current ? (
                 // TODO:Button does not occupy the whole height
                 <IconButton
                   w="100%"
@@ -606,7 +610,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       {hasExpandableContent && (
         <DataTableRowSlot {...styleProps} asChild>
           <RaRow
-            ref={renderNestedContent ? nestedContentRowRef : undefined}
+            ref={
+              renderNestedContentRef.current ? nestedContentRowRef : undefined
+            }
             data-nested-row-expanded={isExpanded ? "true" : "false"}
             dependencies={[isExpanded]}
           >
@@ -626,8 +632,8 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                   ? nestedKey && Array.isArray(row[nestedKey])
                     ? `${(row[nestedKey] as unknown[]).length} nested items`
                     : nestedKey && (row[nestedKey] as React.ReactNode)
-                  : renderNestedContent
-                    ? renderNestedContent(row, {
+                  : renderNestedContentRef.current
+                    ? renderNestedContentRef.current(row, {
                         close: () => toggleExpand(row.id),
                       })
                     : null

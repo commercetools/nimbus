@@ -112,12 +112,6 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     columns: DataTableColumnItem<T>[];
     rows: DataTableRowItem<T>[];
     visibleColumns?: string[];
-    onSettingsChange?: (
-      action:
-        | (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS]
-        | string
-        | undefined
-    ) => void;
     renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
     search?: string;
     sortDescriptor?: SortDescriptor;
@@ -133,11 +127,17 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     nestedKey?: string;
     onSortChange?: (descriptor: SortDescriptor) => void;
     onSelectionChange?: (keys: Selection) => void;
-    onRowClick?: (row: DataTableRowItem<T>) => void;
-    renderNestedContent?: (
-      row: DataTableRowItem<T>,
-      options: DataTableNestedContentOptions
-    ) => ReactNode;
+    isRowClickable: boolean;
+    onRowClickRef: React.RefObject<
+      ((row: DataTableRowItem<T>) => void) | undefined
+    >;
+    renderNestedContentRef: React.RefObject<
+      | ((
+          row: DataTableRowItem<T>,
+          options: DataTableNestedContentOptions
+        ) => ReactNode)
+      | undefined
+    >;
     toggleExpand: (id: string, columnId?: string) => void;
     activeColumns: DataTableColumnItem<T>[];
     filteredRows: DataTableRowItem<T>[];
@@ -149,15 +149,25 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     pinnedRowIds: string[];
     selectRowLabel: string;
     disabledKeys?: Selection;
-    onRowAction?: (
-      row: DataTableRowItem<T>,
-      action: "click" | "select"
-    ) => void;
+    onRowActionRef: React.RefObject<
+      | ((row: DataTableRowItem<T>, action: "click" | "select") => void)
+      | undefined
+    >;
     isResizable?: boolean;
     pinnedRows: Set<string>;
-    onPinToggle?: (rowId: string) => void;
     togglePin: (id: string) => void;
-    onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
+    onColumnsChangeRef: React.RefObject<
+      ((columns: DataTableColumnItem<T>[]) => void) | undefined
+    >;
+    onSettingsChangeRef: React.RefObject<
+      | ((
+          action:
+            | (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS]
+            | string
+            | undefined
+        ) => void)
+      | undefined
+    >;
     onVisibilityChange?: (visibleColumnIds: string[]) => void;
   };
 

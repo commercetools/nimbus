@@ -24,8 +24,8 @@ export const DataTableManager = () => {
   const {
     columns,
     visibleColumns,
-    onColumnsChange,
-    onSettingsChange,
+    onColumnsChangeRef,
+    onSettingsChangeRef,
     // customSettings,
   } = context;
   const hiddenColumns = columns.filter(
@@ -80,10 +80,7 @@ export const DataTableManager = () => {
       // Update the ref with new IDs
       lastNotifiedColumnsRef.current = updatedIds;
 
-      // Notify about column order and visibility changes if callback is provided
-      if (onColumnsChange) {
-        onColumnsChange(updatedColumns);
-      }
+      onColumnsChangeRef.current?.(updatedColumns);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -122,38 +119,33 @@ export const DataTableManager = () => {
   }, [columns, visibleColumns]);
 
   const handleResetColumns = useCallback(() => {
-    // Reset to original column order and visibility
-    if (onColumnsChange) {
-      const initialVisibleCols = initialVisibleColumnsRef.current;
+    const onColumnsChange = onColumnsChangeRef.current;
+    if (!onColumnsChange) return;
 
-      // If there were initially visible columns specified, restore them
-      if (initialVisibleCols && initialVisibleCols.length > 0) {
-        const columnMap = new Map(
-          initialColumnsRef.current.map((col) => [col.id, col])
+    const initialVisibleCols = initialVisibleColumnsRef.current;
+
+    if (initialVisibleCols && initialVisibleCols.length > 0) {
+      const columnMap = new Map(
+        initialColumnsRef.current.map((col) => [col.id, col])
+      );
+
+      const restoredColumns = initialVisibleCols
+        .map((id) => columnMap.get(id))
+        .filter(
+          (col): col is DataTableColumnItem<Record<string, unknown>> =>
+            col !== undefined
         );
 
-        // Map the initial visible column IDs back to their full column objects
-        const restoredColumns = initialVisibleCols
-          .map((id) => columnMap.get(id))
-          .filter(
-            (col): col is DataTableColumnItem<Record<string, unknown>> =>
-              col !== undefined
-          );
-
-        // Update the refs
-        lastNotifiedColumnsRef.current = initialVisibleCols;
-
-        // Notify parent
-        onColumnsChange(restoredColumns);
-      } else {
-        // No initial visibleColumns was set, so restore all columns
-        lastNotifiedColumnsRef.current = initialColumnsRef.current.map(
-          (col) => col.id
-        );
-        onColumnsChange(initialColumnsRef.current);
-      }
+      lastNotifiedColumnsRef.current = initialVisibleCols;
+      onColumnsChange(restoredColumns);
+    } else {
+      lastNotifiedColumnsRef.current = initialColumnsRef.current.map(
+        (col) => col.id
+      );
+      onColumnsChange(initialColumnsRef.current);
     }
-  }, [onColumnsChange]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!visibleColumns || !hiddenColumns) {
     return null;
@@ -221,7 +213,9 @@ export const DataTableManager = () => {
                     </>
                   ),
                   panelContent: (
-                    <LayoutSettingsPanel onSettingsChange={onSettingsChange} />
+                    <LayoutSettingsPanel
+                      onSettingsChange={onSettingsChangeRef}
+                    />
                   ),
                 },
                 customSettings
