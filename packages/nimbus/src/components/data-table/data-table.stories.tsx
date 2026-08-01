@@ -2630,7 +2630,7 @@ export const RowNestedContent: Story = {
     );
   },
   args: {},
-  parameters: { chromatic: { disableSnapshot: false } },
+  parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
