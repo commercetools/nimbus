@@ -260,6 +260,9 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   customSettings?: DataTableCustomSettings;
 };
 
+// Not generic over the row type — DataTableHeader receives columns from
+// context which defaults to Record<string, unknown>; the row type isn't
+// available at the header level without a larger threading change.
 /** Render props passed to custom DataTable.Header children. */
 export type DataTableColumnRenderProps = {
   columns: DataTableColumnItem[];
