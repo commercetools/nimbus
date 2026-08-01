@@ -21,8 +21,8 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
     },
     header: {
       height: "1200",
-      p: "200",
-      mb: "300",
+      p: "150",
+      mb: "200",
       borderBottom: "solid-25",
       borderColor: "neutral.3",
     },
@@ -30,8 +30,8 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
     grids: {
       display: "flex",
       flexWrap: "wrap",
-      gap: "800",
-      mx: "200",
+      gap: "600",
+      mx: "150",
       maxWidth: "full",
     },
     // Month title above each grid
@@ -40,8 +40,8 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
       fontSize: "400",
       fontWeight: "600",
       color: "neutral.11",
-      mb: "300",
-      px: "200",
+      mb: "200",
+      px: "150",
     },
     // A single grid (<table>) containing a months days
     grid: {
@@ -53,8 +53,8 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
     gridHeader: {},
     // Weekday Item
     headerCell: {
-      p: "200",
-      pb: "300",
+      p: "150",
+      pb: "200",
       textAlign: "center",
       color: "neutral.9",
       fontSize: "300",
@@ -66,7 +66,7 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
     // Day Item
     bodyCell: {
       cursor: "pointer",
-      p: "200",
+      p: "150",
       minW: "1400",
       fontSize: "350",
       lineHeight: "500",
@@ -76,7 +76,7 @@ export const rangeCalendarSlotRecipe = defineSlotRecipe({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      mb: "200",
+      mb: "150",
       focusRing: "outside",
 
       /** today cell (lowest priority, styling-wise) */

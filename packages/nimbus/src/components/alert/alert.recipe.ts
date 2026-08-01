@@ -13,7 +13,7 @@ export const alertRecipe = defineSlotRecipe({
     root: {
       display: "grid",
       gridTemplateColumns: "auto 1fr auto",
-      gap: "200",
+      gap: "150",
       width: "100%",
       alignItems: "start",
     },
@@ -55,7 +55,7 @@ export const alertRecipe = defineSlotRecipe({
           border: "solid-25",
           borderColor: "colorPalette.5",
           backgroundColor: "colorPalette.2",
-          padding: "200",
+          padding: "150",
           borderRadius: "200",
         },
       },

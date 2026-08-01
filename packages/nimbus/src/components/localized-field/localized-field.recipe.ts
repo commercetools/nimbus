@@ -38,7 +38,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       display: "grid",
       width: "fit-content",
       gridTemplateAreas: fieldGroupGrid,
-      gap: "100",
+      gap: "50",
     },
     label: {
       gridArea: "label",
@@ -65,7 +65,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       gridArea: "fields",
       display: "flex",
       flexDirection: "column",
-      gap: "200",
+      gap: "150",
 
       // Animation for when container expands to show more fields
       '&[data-expanded="true"]': {
@@ -82,7 +82,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       fontSize: "var(--localized-field-font-size)",
       lineHeight: "var(--localized-field-line-height)",
       display: "flex",
-      gap: "100",
+      gap: "50",
       alignItems: "center",
     },
     error: {
@@ -91,7 +91,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       fontSize: "var(--localized-field-font-size)",
       lineHeight: "var(--localized-field-line-height)",
       display: "flex",
-      gap: "100",
+      gap: "50",
       alignItems: "center",
     },
     toggleButtonContainer: { gridArea: "toggle" },
@@ -119,7 +119,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       // This is because `FormField` does not allow wrapping the two in a div, so we cannot use `FocusWithin`.
       clipPath: `inset(-4px -1px -4px -4px)`,
       marginInlineEnd: "-25",
-      paddingInline: "400",
+      paddingInline: "300",
       alignItems: "center",
       "&[data-disabled='true']": {
         opacity: "0.5",

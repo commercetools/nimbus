@@ -109,10 +109,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         },
         // When drag column is present, offset selection and expand columns
         "& [data-slot='drag'] ~ [data-slot='selection']": {
-          left: "600",
+          left: "400",
         },
         "& [data-slot='drag'] ~ [data-slot='expand']": {
-          left: "600",
+          left: "400",
         },
         // When selection column is present, move expand column to the right
         // and lower its z-index so it doesn't overlap selection during scroll
@@ -145,10 +145,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
           },
           // When drag column is present, offset selection and expand columns on hover
           "& [data-slot='drag'] ~ [data-slot='selection']": {
-            left: "600",
+            left: "400",
           },
           "& [data-slot='drag'] ~ [data-slot='expand']": {
-            left: "600",
+            left: "400",
           },
           // When selection column is present, move expand column to the right on hover
           "& [data-slot='selection'] ~ [data-slot='expand']": {
@@ -198,10 +198,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         },
         // When drag column is present in pinned rows, offset selection and expand columns
         "& [data-slot='drag'] ~ [data-slot='selection']": {
-          left: "600",
+          left: "400",
         },
         "& [data-slot='drag'] ~ [data-slot='expand']": {
-          left: "600",
+          left: "400",
         },
         // When selection column is present in pinned rows, move expand column
         "& [data-slot='selection'] ~ [data-slot='expand']": {
@@ -335,8 +335,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       focusVisibleRing: "inside",
 
       "& > .nimbus-data-table__column-container": {
-        py: "100",
-        px: "600",
+        py: "50",
+        px: "400",
         display: "flex",
         alignItems: "center",
         h: "100%",
@@ -348,10 +348,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
       "&.selection-column-header": {
         cursor: "default",
-        paddingTop: "100",
-        paddingBottom: "100",
-        paddingLeft: "600",
-        paddingRight: "600",
+        paddingTop: "50",
+        paddingBottom: "50",
+        paddingLeft: "400",
+        paddingRight: "400",
         position: "sticky",
         left: 0,
         zIndex: 13,
@@ -378,10 +378,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
       // When drag column is present, offset selection and expand columns
       "&.drag-column-header + &.selection-column-header": {
-        left: "600",
+        left: "400",
       },
       "&.drag-column-header + &.expand-column-header": {
-        left: "600",
+        left: "400",
       },
       // When selection column is present, adjust expand column header position
       "&.selection-column-header + &.expand-column-header": {
@@ -394,8 +394,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
         },
       "&.pin-rows-column-header": {
         cursor: "default",
-        py: "100",
-        px: "600",
+        py: "50",
+        px: "400",
         position: "sticky",
         right: 0,
         zIndex: 11,
@@ -453,10 +453,10 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       },
     },
     cell: {
-      paddingTop: "400",
-      paddingBottom: "400",
-      paddingLeft: "600",
-      paddingRight: "600",
+      paddingTop: "300",
+      paddingBottom: "300",
+      paddingLeft: "400",
+      paddingRight: "400",
       color: "neutral.12",
       focusVisibleRing: "inside",
       hyphens: "auto",
@@ -546,14 +546,14 @@ export const dataTableSlotRecipe = defineSlotRecipe({
     density: {
       default: {
         cell: {
-          paddingTop: "400",
-          paddingBottom: "400",
+          paddingTop: "300",
+          paddingBottom: "300",
         },
       },
       condensed: {
         cell: {
-          paddingTop: "300",
-          paddingBottom: "300",
+          paddingTop: "200",
+          paddingBottom: "200",
         },
       },
     },

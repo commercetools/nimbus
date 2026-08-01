@@ -16,7 +16,7 @@ export const progressBarSlotRecipe = defineSlotRecipe({
       width: "100%",
       display: "flex",
       flexDirection: "column",
-      gap: "200",
+      gap: "150",
     },
 
     track: {
@@ -129,7 +129,7 @@ export const progressBarSlotRecipe = defineSlotRecipe({
         root: {
           flexDirection: "row",
           alignItems: "center",
-          gap: "400",
+          gap: "300",
         },
         track: {
           flex: 1,
@@ -138,7 +138,7 @@ export const progressBarSlotRecipe = defineSlotRecipe({
       stacked: {
         root: {
           flexDirection: "column",
-          gap: "200",
+          gap: "150",
         },
         text: {
           display: "flex",

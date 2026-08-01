@@ -31,10 +31,10 @@ export const badgeRecipe = defineRecipe({
     size: {
       "2xs": {
         fontSize: "300",
-        gap: "100",
+        gap: "50",
         h: "600",
         lineHeight: "350",
-        px: "200",
+        px: "150",
         _icon: {
           width: "400",
           height: "400",
@@ -42,10 +42,10 @@ export const badgeRecipe = defineRecipe({
       },
       xs: {
         fontSize: "350",
-        gap: "100",
+        gap: "50",
         h: "800",
         lineHeight: "400",
-        px: "300",
+        px: "200",
         _icon: {
           width: "500",
           height: "500",
@@ -53,10 +53,10 @@ export const badgeRecipe = defineRecipe({
       },
       sm: {
         fontSize: "400",
-        gap: "100",
+        gap: "50",
         h: "900",
         lineHeight: "500",
-        px: "300",
+        px: "200",
         _icon: {
           width: "500",
           height: "500",
@@ -64,10 +64,10 @@ export const badgeRecipe = defineRecipe({
       },
       md: {
         fontSize: "400",
-        gap: "200",
+        gap: "150",
         h: "1000",
         lineHeight: "500",
-        px: "400",
+        px: "300",
         _icon: {
           width: "600",
           height: "600",

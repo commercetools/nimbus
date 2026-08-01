@@ -25,7 +25,7 @@ export const treeSlotRecipe = defineSlotRecipe({
       // control sits directly under its parent's chevron with no per-mode
       // offset/size compensation. The indent step is simply one control column
       // plus the inter-control gap.
-      "--tree-control-gap": "{spacing.100}",
+      "--tree-control-gap": "{spacing.50}",
       "--tree-indent-step":
         "calc(var(--tree-control-size) + var(--tree-control-gap))",
 
@@ -47,7 +47,7 @@ export const treeSlotRecipe = defineSlotRecipe({
         justifyContent: "center",
         color: "neutral.11",
         fontStyle: "italic",
-        py: "400",
+        py: "300",
       },
 
       // Drop target highlight for drops on the tree root
@@ -62,7 +62,7 @@ export const treeSlotRecipe = defineSlotRecipe({
       // renders it as a zero-height element with the default `react-aria-*`
       // class; style it with Nimbus tokens and indent it to the target's level
       // using the same per-level `--tree-indent-step` as `itemContent`. The base
-      // `{spacing.400}` offset (larger than `itemContent`'s `{spacing.200}`)
+      // `{spacing.300}` offset (larger than `itemContent`'s `{spacing.150}`)
       // pushes the line into the leading-control column so it sits under the
       // chevron rather than at the row's outer edge.
       "& [class*='react-aria-DropIndicator'][data-drop-target]": {
@@ -70,8 +70,8 @@ export const treeSlotRecipe = defineSlotRecipe({
         outlineColor: "primary.9",
         borderRadius: "full",
         marginInlineStart:
-          "calc({spacing.400} + (var(--tree-item-level, 1) - 1) * var(--tree-indent-step))",
-        marginInlineEnd: "200",
+          "calc({spacing.300} + (var(--tree-item-level, 1) - 1) * var(--tree-indent-step))",
+        marginInlineEnd: "150",
       },
     },
 
@@ -150,13 +150,13 @@ export const treeSlotRecipe = defineSlotRecipe({
       alignItems: "center",
       gap: "var(--tree-control-gap)",
       width: "100%",
-      pr: "200",
+      pr: "150",
       py: "var(--tree-row-padding-y)",
       // Visual indentation by nesting level. React Aria sets `--tree-item-level`
       // (1-based depth) on each row; the content is offset proportionally.
       // The base offset gives the leading control (checkbox/chevron) room from
       // the row's edge.
-      pl: "calc({spacing.200} + (var(--tree-item-level, 1) - 1) * var(--tree-indent-step))",
+      pl: "calc({spacing.150} + (var(--tree-item-level, 1) - 1) * var(--tree-indent-step))",
 
       // Uniform leading-control column. The checkbox (`slot='selection'`), the
       // drag handle (`slot='drag'`), and the chevron are all framed in the same
@@ -209,7 +209,7 @@ export const treeSlotRecipe = defineSlotRecipe({
           "--tree-control-size": "sizes.600",
           // Chevron glyph size (the icon inside the control box).
           "--tree-indicator-size": "sizes.500",
-          "--tree-row-padding-y": "spacing.200",
+          "--tree-row-padding-y": "spacing.150",
         },
         item: {
           fontSize: "400",
@@ -224,7 +224,7 @@ export const treeSlotRecipe = defineSlotRecipe({
           "--tree-control-size": "sizes.500",
           // Chevron glyph size (the icon inside the control box).
           "--tree-indicator-size": "sizes.400",
-          "--tree-row-padding-y": "spacing.100",
+          "--tree-row-padding-y": "spacing.50",
         },
         item: {
           fontSize: "350",

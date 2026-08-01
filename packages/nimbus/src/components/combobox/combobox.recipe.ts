@@ -55,7 +55,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       "& svg": {
         minH: "600",
         minW: "600",
-        pr: "100",
+        pr: "50",
       },
     },
     trigger: {
@@ -63,11 +63,11 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       gridTemplateColumns: "auto 1fr auto auto",
       gridTemplateAreas: '"leadingElement content clear toggle"',
       alignItems: "center",
-      gap: "100",
+      gap: "50",
       width: "100%",
       focusRing: "outside",
-      px: "300",
-      py: "100",
+      px: "200",
+      py: "50",
       borderRadius: "200",
       color: "neutral.12",
       textAlign: "left",
@@ -89,7 +89,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       '& button[slot="clear"]': {
         gridArea: "clear",
         alignSelf: "center",
-        mr: "-100",
+        mr: "-50",
         _expanded: {
           bg: "colorPalette.3",
         },
@@ -100,7 +100,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       display: "flex",
       flexWrap: "wrap",
       alignItems: "center",
-      gap: "100",
+      gap: "50",
       minWidth: 0,
       cursor: "text",
       maxHeight: "var(--combobox-content-max-height, 40svh)",
@@ -146,8 +146,8 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
     listBox: {
       "--scrollbar-color": "colors.neutral.8",
       "--scrollbar-bg": "colors.neutral.3",
-      gap: "100",
-      padding: "200",
+      gap: "50",
+      padding: "150",
       focusRing: "outside",
 
       maxH: "40svh",
@@ -162,19 +162,19 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       lineHeight: "350",
       letterSpacing: "25",
       textTransform: "uppercase",
-      p: "200",
+      p: "150",
       borderBottom: "solid-25",
       borderColor: "neutral.3",
-      mx: "-200",
-      mt: "200",
-      mb: "300",
+      mx: "-150",
+      mt: "150",
+      mb: "200",
     },
     option: {
       focusRing: "outside",
       cursor: "pointer",
       color: "neutral.12",
       textStyle: "sm",
-      padding: "200",
+      padding: "150",
       borderRadius: "200",
       whiteSpace: "wrap",
       overflow: "hidden",
@@ -284,8 +284,8 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
       multiple: {
         options: {
           boxShadow: "none",
-          px: "200",
-          my: "200",
+          px: "150",
+          my: "150",
           minW: "unset",
           "& section:first-of-type > header": {
             mt: 0,
@@ -298,7 +298,7 @@ export const comboBoxSlotRecipe = defineSlotRecipe({
           justifyContent: "center",
           position: "relative",
           cursor: "pointer",
-          gap: "200",
+          gap: "150",
           mb: "var(--focus-ring-width)",
           "&:last-of-type": {
             mb: 0,

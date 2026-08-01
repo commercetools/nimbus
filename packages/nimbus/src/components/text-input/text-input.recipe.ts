@@ -69,8 +69,8 @@ export const textInputSlotRecipe = defineSlotRecipe({
       sm: {
         root: {
           height: "800",
-          px: "300",
-          gap: "100",
+          px: "200",
+          gap: "50",
           textStyle: "sm",
         },
         leadingElement: {
@@ -87,8 +87,8 @@ export const textInputSlotRecipe = defineSlotRecipe({
       md: {
         root: {
           height: "1000",
-          px: "400",
-          gap: "200",
+          px: "300",
+          gap: "150",
           textStyle: "md",
         },
         leadingElement: {

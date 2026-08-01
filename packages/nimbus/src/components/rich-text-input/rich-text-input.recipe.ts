@@ -33,7 +33,7 @@ export const richTextInputRecipe = defineSlotRecipe({
     },
     editable: {
       position: "relative", // Required for Slate's absolutely-positioned placeholder
-      padding: "400",
+      padding: "300",
       minHeight: "inherit",
       maxHeight: "inherit",
       overflow: "auto",
@@ -48,7 +48,7 @@ export const richTextInputRecipe = defineSlotRecipe({
 
       "& [data-slate-placeholder]": {
         opacity: "0.5!",
-        paddingTop: "400",
+        paddingTop: "300",
       },
       // Styling for user-facing editor text
       "& p": {
@@ -79,22 +79,22 @@ export const richTextInputRecipe = defineSlotRecipe({
         textStyle: "md",
         fontWeight: "400",
         borderLeftWidth: "{sizes.100}",
-        paddingLeft: "400",
+        paddingLeft: "300",
       },
       "& ul": {
-        paddingLeft: "600",
+        paddingLeft: "400",
         listStyleType: "disc",
       },
       "& ol": {
-        paddingLeft: "600",
+        paddingLeft: "400",
         listStyleType: "decimal",
       },
       "& code": {
-        padding: "100",
+        padding: "50",
         fontFamily: "mono",
       },
       "& pre": {
-        padding: "300",
+        padding: "200",
         borderRadius: "200",
         overflow: "auto",
         "& code": {

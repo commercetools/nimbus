@@ -51,7 +51,7 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
       // a `columnGap`: a `columnGap` applies to the empty avatar track even when
       // no `ChatMessage.Avatar` is composed, indenting an avatar-less body. With
       // the gap on the avatar itself, an avatar-less message sits flush.
-      rowGap: "200",
+      rowGap: "150",
     },
     avatar: {
       // Palette inherited from `root` (overridable via the `colorPalette` prop).
@@ -64,7 +64,7 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
       display: "flex",
       flexDirection: "column",
       alignItems: "flex-start",
-      gap: "400",
+      gap: "300",
       gridRow: 1,
       width: "fit-content",
       // Let the body shrink below its content's intrinsic width so long,
@@ -77,8 +77,8 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
       border: "solid-25",
       borderColor: "neutral.6",
       borderRadius: "300",
-      px: "600",
-      py: "500",
+      px: "400",
+      py: "400",
     },
     actions: {
       display: "flex",
@@ -86,7 +86,7 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
       flexWrap: "wrap",
       alignItems: "center",
       justifyContent: "flex-end",
-      gap: "400",
+      gap: "300",
       width: "100%",
     },
     meta: {
@@ -95,7 +95,7 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
       flexWrap: "wrap",
       alignItems: "center",
       justifyContent: "space-between",
-      gap: "400",
+      gap: "300",
       gridRow: 2,
       width: "100%",
       // Metadata (timestamps, trust links) is secondary to the message body, so
@@ -107,7 +107,7 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
       display: "flex",
       flexDirection: "row",
       alignItems: "center",
-      gap: "200",
+      gap: "150",
     },
   },
 
@@ -127,7 +127,7 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
         avatar: {
           gridColumn: 2,
           // Gutter to the body on its leading side (avatar trails the body).
-          marginInlineStart: "200",
+          marginInlineStart: "150",
         },
         meta: {
           gridColumn: 1,
@@ -148,7 +148,7 @@ export const chatMessageSlotRecipe = defineSlotRecipe({
         avatar: {
           gridColumn: 1,
           // Gutter to the body on its trailing side (avatar leads the body).
-          marginInlineEnd: "200",
+          marginInlineEnd: "150",
         },
         meta: {
           gridColumn: 2,

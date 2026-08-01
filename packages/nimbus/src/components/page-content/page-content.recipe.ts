@@ -13,7 +13,7 @@ export const pageContentRecipe = defineSlotRecipe({
     root: {
       display: "grid",
       width: "100%",
-      gap: "800",
+      gap: "600",
     },
     column: {},
   },

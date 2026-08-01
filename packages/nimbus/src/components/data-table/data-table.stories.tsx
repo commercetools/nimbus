@@ -1183,10 +1183,10 @@ export const Condensed: Story = {
         right: defaultStyles.paddingRight,
       };
       // Verify default padding is reasonable (not zero or very small)
-      expect(defaultPadding.top).toBe("16px");
-      expect(defaultPadding.bottom).toBe("16px");
-      expect(defaultPadding.left).toBe("24px");
-      expect(defaultPadding.right).toBe("24px");
+      expect(defaultPadding.top).toBe("12px");
+      expect(defaultPadding.bottom).toBe("12px");
+      expect(defaultPadding.left).toBe("16px");
+      expect(defaultPadding.right).toBe("16px");
     });
 
     await step("Toggling condensed mode changes table density", async () => {
@@ -1212,7 +1212,7 @@ export const Condensed: Story = {
       const newPadding = window.getComputedStyle(newFirstCell).padding;
 
       // Condensed mode should have different padding than default
-      expect(newPadding).toBe("12px 24px");
+      expect(newPadding).toBe("8px 16px");
     });
 
     await step(
@@ -4728,10 +4728,10 @@ export const WithTableManager: Story = {
         right: defaultStyles.paddingRight,
       };
       // Verify default padding is reasonable (not zero or very small)
-      expect(defaultPadding.top).toBe("16px");
-      expect(defaultPadding.bottom).toBe("16px");
-      expect(defaultPadding.left).toBe("24px");
-      expect(defaultPadding.right).toBe("24px");
+      expect(defaultPadding.top).toBe("12px");
+      expect(defaultPadding.bottom).toBe("12px");
+      expect(defaultPadding.left).toBe("16px");
+      expect(defaultPadding.right).toBe("16px");
     });
 
     await step("Row density toggle changes state", async () => {
@@ -4759,7 +4759,7 @@ export const WithTableManager: Story = {
       const newPadding = window.getComputedStyle(newFirstCell).padding;
 
       // Condensed mode should have different padding than default
-      expect(newPadding).toBe("12px 24px");
+      expect(newPadding).toBe("8px 16px");
     });
 
     await step("Text visibility toggle changes state", async () => {

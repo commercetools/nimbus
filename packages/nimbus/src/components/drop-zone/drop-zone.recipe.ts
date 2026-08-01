@@ -15,8 +15,8 @@ export const dropZoneRecipe = defineRecipe({
     textAlign: "center",
     width: "100%",
     minHeight: "2400",
-    padding: "600",
-    gap: "300",
+    padding: "400",
+    gap: "200",
     // Nimbus's theme does not register a `borderWidths` token category, so a
     // bare scale key (e.g. "25") is emitted as an invalid unitless CSS value.
     // Reference the `sizes` scale instead — `{sizes.50}` resolves to `2px`.

@@ -18,7 +18,7 @@ export const radioInputSlotRecipe = defineSlotRecipe({
       verticalAlign: "top",
     },
     option: {
-      gap: "200",
+      gap: "150",
       flexShrink: 0,
       whiteSpace: "nowrap",
       userSelect: "none",
@@ -63,14 +63,14 @@ export const radioInputSlotRecipe = defineSlotRecipe({
       horizontal: {
         root: {
           flexDirection: "row",
-          gap: "600",
+          gap: "400",
         },
       },
       vertical: {
         root: {
           flexDirection: "column",
           alignItems: "flex-start",
-          gap: "400",
+          gap: "300",
         },
       },
     },

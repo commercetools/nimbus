@@ -38,8 +38,8 @@ export const buttonRecipe = defineRecipe({
         fontSize: "300",
         fontWeight: "500",
         lineHeight: "400",
-        px: "200",
-        gap: "100",
+        px: "150",
+        gap: "50",
         _icon: {
           width: "400",
           height: "400",
@@ -51,8 +51,8 @@ export const buttonRecipe = defineRecipe({
         fontSize: "350",
         fontWeight: "500",
         lineHeight: "400",
-        px: "300",
-        gap: "100",
+        px: "200",
+        gap: "50",
         _icon: {
           width: "500",
           height: "500",
@@ -61,10 +61,10 @@ export const buttonRecipe = defineRecipe({
       sm: {
         h: "900",
         minW: "900",
-        px: "350",
+        px: "250",
         fontSize: "350",
         lineHeight: "400",
-        gap: "200",
+        gap: "150",
         _icon: {
           width: "500",
           height: "500",
@@ -75,8 +75,8 @@ export const buttonRecipe = defineRecipe({
         minW: "1000",
         fontSize: "400",
         lineHeight: "500",
-        px: "400",
-        gap: "200",
+        px: "300",
+        gap: "150",
         _icon: {
           width: "600",
           height: "600",
@@ -86,8 +86,8 @@ export const buttonRecipe = defineRecipe({
         h: "1100",
         minW: "1100",
         textStyle: "md",
-        px: "500",
-        gap: "300",
+        px: "400",
+        gap: "200",
         _icon: {
           width: "500",
           height: "500",
@@ -97,8 +97,8 @@ export const buttonRecipe = defineRecipe({
         h: "1200",
         minW: "1200",
         textStyle: "md",
-        px: "500",
-        gap: "250",
+        px: "400",
+        gap: "150",
         _icon: {
           width: "700",
           height: "700",
@@ -108,8 +108,8 @@ export const buttonRecipe = defineRecipe({
         h: "1600",
         minW: "1600",
         textStyle: "lg",
-        px: "700",
-        gap: "300",
+        px: "500",
+        gap: "200",
         _icon: {
           width: "600",
           height: "600",

@@ -23,7 +23,7 @@ export const formFieldRecipe = defineSlotRecipe({
 
   base: {
     root: {
-      "--grid-gap": "spacing.100",
+      "--grid-gap": "spacing.50",
 
       display: "grid",
       width: "auto",
@@ -58,7 +58,7 @@ export const formFieldRecipe = defineSlotRecipe({
       lineHeight: "var(--form-field-line-height)",
       display: "flex",
       alignItems: "flex-start",
-      gap: "100",
+      gap: "50",
     },
     popover: {
       "--scrollbar-color": "colors.neutral.8",
@@ -111,7 +111,7 @@ export const formFieldRecipe = defineSlotRecipe({
         root: {
           gridTemplateAreas: rowLayout,
           gridTemplateColumns: "auto 1fr",
-          gridColumnGap: "200",
+          gridColumnGap: "150",
         },
         description: {
           mt: "var(--grid-gap)",

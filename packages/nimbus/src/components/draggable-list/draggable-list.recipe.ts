@@ -13,11 +13,11 @@ export const draggableListSlotRecipe = defineSlotRecipe({
       width: "2xs",
       display: "flex",
       flexDirection: "column",
-      padding: "200",
+      padding: "150",
       border: "{sizes.25} solid",
       borderColor: "colorPalette.3",
       borderRadius: "200",
-      gap: "200",
+      gap: "150",
 
       "& >.react-aria-DropIndicator": {
         "&[data-drop-target]": {
@@ -64,8 +64,8 @@ export const draggableListSlotRecipe = defineSlotRecipe({
         flex: "1 1 auto",
         alignItems: "center",
         justifyContent: "center",
-        gap: "100",
-        paddingInline: "200",
+        gap: "50",
+        paddingInline: "150",
         fontSize: "350",
         lineHeight: "400",
         focusVisibleRing: "outside",

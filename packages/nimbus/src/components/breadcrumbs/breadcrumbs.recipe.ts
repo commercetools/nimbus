@@ -40,7 +40,7 @@ export const breadcrumbsSlotRecipe = defineSlotRecipe({
     link: {
       display: "inline-flex",
       alignItems: "center",
-      gap: "200",
+      gap: "150",
       color: "neutral.11",
       textDecoration: "none",
       cursor: "pointer",
@@ -85,10 +85,10 @@ export const breadcrumbsSlotRecipe = defineSlotRecipe({
         item: {
           // `sm` type ramp: fontSize.350 (14px) + its paired line-height.
           textStyle: "sm",
-          "--breadcrumbs-gap": "{spacing.100}",
+          "--breadcrumbs-gap": "{spacing.50}",
         },
         list: {
-          "--breadcrumbs-gap": "{spacing.100}",
+          "--breadcrumbs-gap": "{spacing.50}",
         },
       },
       md: {
@@ -96,10 +96,10 @@ export const breadcrumbsSlotRecipe = defineSlotRecipe({
           // `md` type ramp: fontSize.400 (16px) + its paired line-height;
           // md is Nimbus's primary body size (matches Link/Button `md`).
           textStyle: "md",
-          "--breadcrumbs-gap": "{spacing.200}",
+          "--breadcrumbs-gap": "{spacing.150}",
         },
         list: {
-          "--breadcrumbs-gap": "{spacing.200}",
+          "--breadcrumbs-gap": "{spacing.150}",
         },
       },
     },
