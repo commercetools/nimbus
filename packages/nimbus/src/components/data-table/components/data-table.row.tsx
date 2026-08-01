@@ -73,6 +73,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   row,
   ref,
   children,
+  className: consumerClassName,
   isExpanded = false,
   isPinned = false,
   isFirstPinned = false,
@@ -499,7 +500,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           {...restProps}
           data-clickable={isClickable && !isDisabled}
           data-custom-bg={hasCustomBg || undefined}
-          className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}${restProps.className ? ` ${restProps.className}` : ""}`}
+          className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}${consumerClassName ? ` ${consumerClassName}` : ""}`}
           dependencies={[isExpanded, search, isTruncated]}
         >
           {/** Internal/non-data columns like drag, selection, and expand
