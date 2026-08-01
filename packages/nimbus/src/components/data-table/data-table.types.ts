@@ -251,7 +251,7 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
 
 /** Render props passed to custom DataTable.Header children. */
 export type DataTableColumnRenderProps = {
-  column: DataTableColumnItem;
+  columns: DataTableColumnItem[];
   allowsSorting: boolean;
 };
 
@@ -262,10 +262,7 @@ export type DataTableHeaderProps<T extends DataTableColumnItem> = Omit<
 > &
   Omit<DataTableHeaderSlotProps, "children"> & {
     ref?: Ref<HTMLTableSectionElement>;
-    children?: (
-      columns: DataTableColumnItem[],
-      renderProps: { allowsSorting: boolean }
-    ) => ReactNode;
+    children?: (renderProps: DataTableColumnRenderProps) => ReactNode;
   };
 
 /** Combined props for the Column element (Chakra styles + Aria behavior). */

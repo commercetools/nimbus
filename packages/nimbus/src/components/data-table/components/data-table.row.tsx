@@ -14,6 +14,7 @@ import type {
   DataTableRowItem,
   DataTableColumnItem,
   DataTableRowProps,
+  DataTableRowRenderProps,
 } from "../data-table.types";
 import { Box, Checkbox, IconButton } from "@/components";
 import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
@@ -66,13 +67,7 @@ function stopPropagationForNonInteractiveElements(e: Event) {
   }
 }
 
-type DataTableRowPerRowProps = {
-  isExpanded?: boolean;
-  isPinned?: boolean;
-  isFirstPinned?: boolean;
-  isLastPinned?: boolean;
-  isSinglePinned?: boolean;
-};
+type DataTableRowPerRowProps = Partial<DataTableRowRenderProps>;
 
 const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   row,

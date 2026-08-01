@@ -6407,7 +6407,7 @@ export const CompoundCustomColumns: Story = {
     >
       <DataTable.Table aria-label="Custom column styling">
         <DataTable.Header>
-          {(columns, { allowsSorting: sorting }) =>
+          {({ columns, allowsSorting: sorting }) =>
             columns.map((col) => (
               <DataTable.Column
                 key={col.id}

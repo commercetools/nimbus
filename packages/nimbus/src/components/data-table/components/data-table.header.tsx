@@ -152,7 +152,10 @@ export const DataTableHeader = <
           </DataTableColumn>
         )}
         {children
-          ? children(activeColumns, { allowsSorting: !!allowsSorting })
+          ? children({
+              columns: activeColumns,
+              allowsSorting: !!allowsSorting,
+            })
           : defaultDataColumns}
         {showPinColumn && (
           <DataTableColumn

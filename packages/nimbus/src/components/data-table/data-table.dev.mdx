@@ -15,6 +15,7 @@ import {
   type DataTableColumnItem,
   type DataTableRowItem,
   type SortDescriptor,
+  type DataTableColumnRenderProps,
   type DataTableRowRenderProps,
   type DataTableCellRenderProps,
 } from "@commercetools/nimbus";
@@ -1154,7 +1155,7 @@ const App = () => {
     <DataTable.Root columns={columns} rows={rows} allowsSorting>
       <DataTable.Table aria-label="Team members with custom headers">
         <DataTable.Header>
-          {(cols, { allowsSorting: sorting }) =>
+          {({ columns: cols, allowsSorting: sorting }) =>
             cols.map((col) => (
               <DataTable.Column
                 key={col.id}
@@ -1652,6 +1653,17 @@ type DataTableRowItem<T extends object = Record<string, unknown>> = T & {
 type SortDescriptor = {
   column: string; // Column ID to sort by
   direction: "ascending" | "descending"; // Sort direction
+};
+```
+
+### DataTableColumnRenderProps
+
+Passed to `DataTable.Header` children for custom column rendering:
+
+```tsx
+type DataTableColumnRenderProps = {
+  columns: DataTableColumnItem[]; // Active columns to render
+  allowsSorting: boolean; // Whether sorting is enabled
 };
 ```
 
