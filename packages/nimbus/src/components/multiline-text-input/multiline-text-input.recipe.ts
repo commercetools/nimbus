@@ -80,15 +80,15 @@ export const multilineTextInputRecipe = defineSlotRecipe({
         root: {
           minH: "800",
           textStyle: "sm",
-          gap: "100",
-          pl: "300",
+          gap: "50",
+          pl: "200",
         },
         textarea: {
-          pr: "300",
-          py: "100",
+          pr: "200",
+          py: "50",
         },
         leadingElement: {
-          pt: "200",
+          pt: "150",
           "& svg": {
             boxSize: "400",
           },
@@ -98,15 +98,15 @@ export const multilineTextInputRecipe = defineSlotRecipe({
         root: {
           minH: "1000",
           textStyle: "md",
-          gap: "200",
-          pl: "400",
+          gap: "150",
+          pl: "300",
         },
         textarea: {
-          py: "200",
-          pr: "400",
+          py: "150",
+          pr: "300",
         },
         leadingElement: {
-          pt: "200",
+          pt: "150",
           "& svg": {
             mt: "50",
             boxSize: "500",

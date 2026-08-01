@@ -41,10 +41,10 @@ export const chatMessageListSlotRecipe = defineSlotRecipe({
       display: "flex",
       flexDirection: "column",
       // The transcript rhythm — the space between consecutive members.
-      gap: "600",
+      gap: "400",
       width: "100%",
-      px: "400",
-      py: "600",
+      px: "300",
+      py: "400",
     },
     item: {
       // The membership socket: a block in the scroll flow. Content-agnostic —
@@ -54,7 +54,7 @@ export const chatMessageListSlotRecipe = defineSlotRecipe({
     },
     scrollToBottom: {
       position: "absolute",
-      bottom: "400",
+      bottom: "300",
       left: "50%",
       transform: "translateX(-50%)",
       zIndex: "1",
@@ -67,10 +67,10 @@ export const chatMessageListSlotRecipe = defineSlotRecipe({
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
-      gap: "200",
+      gap: "150",
       minHeight: "0",
-      px: "600",
-      py: "800",
+      px: "400",
+      py: "600",
       color: "neutral.11",
       textAlign: "center",
     },

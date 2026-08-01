@@ -104,8 +104,8 @@ export const dateInputSlotRecipe = defineSlotRecipe({
         root: {
           h: "800",
           textStyle: "sm",
-          px: "300",
-          gap: "100",
+          px: "200",
+          gap: "50",
         },
         leadingElement: {
           "& > svg": {
@@ -122,8 +122,8 @@ export const dateInputSlotRecipe = defineSlotRecipe({
         root: {
           h: "1000",
           textStyle: "md",
-          px: "400",
-          gap: "200",
+          px: "300",
+          gap: "150",
         },
         leadingElement: {
           "& > svg": {

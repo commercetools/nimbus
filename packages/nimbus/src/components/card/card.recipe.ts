@@ -56,13 +56,13 @@ export const cardRecipe = defineSlotRecipe({
   variants: {
     size: {
       sm: {
-        root: { "--card-spacing": "spacing.300" },
+        root: { "--card-spacing": "spacing.200" },
       },
       md: {
-        root: { "--card-spacing": "spacing.400" },
+        root: { "--card-spacing": "spacing.300" },
       },
       lg: {
-        root: { "--card-spacing": "spacing.600" },
+        root: { "--card-spacing": "spacing.400" },
       },
     },
 

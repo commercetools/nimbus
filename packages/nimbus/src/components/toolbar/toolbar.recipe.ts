@@ -19,11 +19,11 @@ export const toolbarRecipe = defineRecipe({
   variants: {
     size: {
       xs: {
-        "--toolbar-spacing": "{spacing.100}",
+        "--toolbar-spacing": "{spacing.50}",
         "--separator-size": "{sizes.600}",
       },
       md: {
-        "--toolbar-spacing": "{spacing.200}",
+        "--toolbar-spacing": "{spacing.150}",
         "--separator-size": "{sizes.800}",
       },
     },

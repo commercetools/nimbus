@@ -13,7 +13,7 @@ export const switchSlotRecipe = defineSlotRecipe({
     root: {
       colorPalette: "primary",
       display: "inline-flex",
-      gap: "200",
+      gap: "150",
       alignItems: "center",
       verticalAlign: "top",
       cursor: "pointer",

@@ -127,12 +127,12 @@ export const tableSlotRecipe = defineSlotRecipe({
           textStyle: "sm",
         },
         columnHeader: {
-          px: "200",
-          py: "200",
+          px: "150",
+          py: "150",
         },
         cell: {
-          px: "200",
-          py: "200",
+          px: "150",
+          py: "150",
         },
       },
       md: {
@@ -140,12 +140,12 @@ export const tableSlotRecipe = defineSlotRecipe({
           textStyle: "sm",
         },
         columnHeader: {
-          px: "300",
-          py: "300",
+          px: "200",
+          py: "200",
         },
         cell: {
-          px: "300",
-          py: "300",
+          px: "200",
+          py: "200",
         },
       },
       lg: {
@@ -153,12 +153,12 @@ export const tableSlotRecipe = defineSlotRecipe({
           textStyle: "md",
         },
         columnHeader: {
-          px: "400",
-          py: "300",
+          px: "300",
+          py: "200",
         },
         cell: {
-          px: "400",
-          py: "300",
+          px: "300",
+          py: "200",
         },
       },
     },

@@ -26,7 +26,7 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
       justifyContent: "flex-start",
       boxShadow: "inset 0 0 0 var(--border-width) var(--border-color)",
       borderRadius: "200",
-      px: "300",
+      px: "200",
       gap: 0,
       position: "relative", // Ensure stacking context for border
 
@@ -57,8 +57,8 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
     },
     trigger: {
       position: "absolute",
-      right: "400",
-      top: "100",
+      right: "300",
+      top: "50",
     },
     popover: {
       bg: "neutral.1",
@@ -82,7 +82,7 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
       sm: {
         group: {
           height: "800", // Match DateInput sm height
-          pr: "calc({spacing.1400} + {spacing.400})", // Smaller right padding for sm size
+          pr: "calc({spacing.1000} + {spacing.300})", // Smaller right padding for sm size
         },
         trigger: {
           top: "50",
@@ -91,10 +91,10 @@ export const dateRangePickerSlotRecipe = defineSlotRecipe({
       md: {
         group: {
           height: "1000", // Match DateInput md height
-          pr: "calc({spacing.1600} + {spacing.200} + {spacing.400})", // Right padding for trigger buttons
+          pr: "calc({spacing.1200} + {spacing.150} + {spacing.300})", // Right padding for trigger buttons
         },
         trigger: {
-          top: "100",
+          top: "50",
         },
       },
     },

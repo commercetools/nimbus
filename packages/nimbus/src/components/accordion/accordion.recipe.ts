@@ -70,9 +70,9 @@ export const accordionSlotRecipe = defineSlotRecipe({
           },
         },
         panel: {
-          "--accordion-padding-top": "spacing.600",
-          "--accordion-padding-bottom": "spacing.800",
-          "--accordion-padding-left": "spacing.800",
+          "--accordion-padding-top": "spacing.400",
+          "--accordion-padding-bottom": "spacing.600",
+          "--accordion-padding-left": "spacing.600",
         },
       },
       sm: {
@@ -84,9 +84,9 @@ export const accordionSlotRecipe = defineSlotRecipe({
           },
         },
         panel: {
-          "--accordion-padding-top": "spacing.400",
-          "--accordion-padding-bottom": "spacing.600",
-          "--accordion-padding-left": "spacing.700",
+          "--accordion-padding-top": "spacing.300",
+          "--accordion-padding-bottom": "spacing.400",
+          "--accordion-padding-left": "spacing.500",
         },
       },
     },

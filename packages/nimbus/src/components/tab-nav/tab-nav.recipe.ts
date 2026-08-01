@@ -93,7 +93,7 @@ export const tabNavSlotRecipe = defineSlotRecipe({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      gap: "200",
+      gap: "150",
       fontSize: "var(--tab-nav-font-size)",
       paddingTop: "var(--tab-nav-padding-top)",
       paddingRight: "var(--tab-nav-padding-right)",
@@ -143,7 +143,7 @@ export const tabNavSlotRecipe = defineSlotRecipe({
       rounded: {
         root: {
           colorPalette: "primary",
-          gap: "100",
+          gap: "50",
         },
         // Full-height highlight behind the active item's label.
         indicator: {
@@ -157,7 +157,7 @@ export const tabNavSlotRecipe = defineSlotRecipe({
       pill: {
         root: {
           colorPalette: "primary",
-          gap: "100",
+          gap: "50",
         },
         // Fully-rounded capsule highlight behind the active item's label.
         indicator: {
@@ -167,8 +167,8 @@ export const tabNavSlotRecipe = defineSlotRecipe({
         item: {
           ...highlightItemBase,
           borderRadius: "full",
-          paddingLeft: "calc(var(--tab-nav-padding-left) + {spacing.100})",
-          paddingRight: "calc(var(--tab-nav-padding-right) + {spacing.100})",
+          paddingLeft: "calc(var(--tab-nav-padding-left) + {spacing.50})",
+          paddingRight: "calc(var(--tab-nav-padding-right) + {spacing.50})",
         },
       },
     },
@@ -176,28 +176,28 @@ export const tabNavSlotRecipe = defineSlotRecipe({
       sm: {
         item: {
           "--tab-nav-font-size": "fontSizes.300",
-          "--tab-nav-padding-top": "spacing.100",
-          "--tab-nav-padding-right": "spacing.300",
-          "--tab-nav-padding-bottom": "spacing.100",
-          "--tab-nav-padding-left": "spacing.300",
+          "--tab-nav-padding-top": "spacing.50",
+          "--tab-nav-padding-right": "spacing.200",
+          "--tab-nav-padding-bottom": "spacing.50",
+          "--tab-nav-padding-left": "spacing.200",
         },
       },
       md: {
         item: {
           "--tab-nav-font-size": "fontSizes.350",
-          "--tab-nav-padding-top": "spacing.200",
-          "--tab-nav-padding-right": "spacing.400",
-          "--tab-nav-padding-bottom": "spacing.200",
-          "--tab-nav-padding-left": "spacing.400",
+          "--tab-nav-padding-top": "spacing.150",
+          "--tab-nav-padding-right": "spacing.300",
+          "--tab-nav-padding-bottom": "spacing.150",
+          "--tab-nav-padding-left": "spacing.300",
         },
       },
       lg: {
         item: {
           "--tab-nav-font-size": "fontSizes.400",
-          "--tab-nav-padding-top": "spacing.300",
-          "--tab-nav-padding-right": "spacing.600",
-          "--tab-nav-padding-bottom": "spacing.300",
-          "--tab-nav-padding-left": "spacing.600",
+          "--tab-nav-padding-top": "spacing.200",
+          "--tab-nav-padding-right": "spacing.400",
+          "--tab-nav-padding-bottom": "spacing.200",
+          "--tab-nav-padding-left": "spacing.400",
         },
       },
     },

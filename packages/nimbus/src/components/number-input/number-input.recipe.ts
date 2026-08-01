@@ -123,9 +123,9 @@ export const numberInputRecipe = defineSlotRecipe({
     size: {
       sm: {
         root: {
-          pl: "300",
-          pr: "900", // inc+dec-button width + default padding
-          gap: "100",
+          pl: "200",
+          pr: "600", // inc+dec-button width + default padding
+          gap: "50",
         },
         input: {
           h: "800",
@@ -144,9 +144,9 @@ export const numberInputRecipe = defineSlotRecipe({
       },
       md: {
         root: {
-          pl: "400",
-          pr: "1000", // inc+dec-button width + default padding
-          gap: "200",
+          pl: "300",
+          pr: "700", // inc+dec-button width + default padding
+          gap: "150",
         },
         input: {
           h: "1000",

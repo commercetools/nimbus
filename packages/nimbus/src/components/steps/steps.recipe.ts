@@ -143,10 +143,10 @@ export const stepsSlotRecipe = defineSlotRecipe({
           "--indicator-size": "sizes.600", // 24px
         },
         item: {
-          gap: "200", // 8px
+          gap: "150", // 8px
         },
         trigger: {
-          gap: "200", // 8px
+          gap: "150", // 8px
         },
         indicator: {
           width: "var(--indicator-size)",
@@ -173,10 +173,10 @@ export const stepsSlotRecipe = defineSlotRecipe({
           "--indicator-size": "sizes.800", // 32px
         },
         item: {
-          gap: "300", // 12px
+          gap: "200", // 12px
         },
         trigger: {
-          gap: "300", // 12px
+          gap: "200", // 12px
         },
         indicator: {
           width: "var(--indicator-size)",
@@ -203,10 +203,10 @@ export const stepsSlotRecipe = defineSlotRecipe({
           "--indicator-size": "sizes.1000", // 40px
         },
         item: {
-          gap: "400", // 16px
+          gap: "300", // 16px
         },
         trigger: {
-          gap: "400", // 16px
+          gap: "300", // 16px
         },
         indicator: {
           width: "var(--indicator-size)",
@@ -233,7 +233,7 @@ export const stepsSlotRecipe = defineSlotRecipe({
       horizontal: {
         list: {
           flexDirection: "row",
-          gap: "300", // 12px
+          gap: "200", // 12px
         },
         item: {
           flex: "1", // Allow items to grow so separators can fill available space
@@ -261,8 +261,8 @@ export const stepsSlotRecipe = defineSlotRecipe({
           // Center separator under indicator: (indicator / 2) - (separator / 2)
           marginLeft:
             "calc(var(--indicator-size) / 2 - var(--separator-width) / 2)",
-          marginTop: "100", // 4px gap above separator
-          marginBottom: "100", // 4px gap below separator
+          marginTop: "50", // 4px gap above separator
+          marginBottom: "50", // 4px gap below separator
         },
       },
     },

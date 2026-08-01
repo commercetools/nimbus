@@ -122,7 +122,7 @@ export const itemSlotRecipe = defineSlotRecipe({
       display: "flex",
       flexShrink: 0,
       alignItems: "center",
-      gap: "spacing.100",
+      gap: "spacing.50",
       marginInlineStart: "auto",
     },
 
@@ -139,20 +139,20 @@ export const itemSlotRecipe = defineSlotRecipe({
     size: {
       xs: {
         root: {
-          "--item-gap": "spacing.200",
-          "--item-padding": "spacing.200",
+          "--item-gap": "spacing.150",
+          "--item-padding": "spacing.150",
         },
       },
       sm: {
         root: {
-          "--item-gap": "spacing.300",
-          "--item-padding": "spacing.300",
+          "--item-gap": "spacing.200",
+          "--item-padding": "spacing.200",
         },
       },
       md: {
         root: {
-          "--item-gap": "spacing.400",
-          "--item-padding": "spacing.400",
+          "--item-gap": "spacing.300",
+          "--item-padding": "spacing.300",
         },
       },
     },
