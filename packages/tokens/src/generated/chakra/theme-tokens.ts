@@ -6614,13 +6614,13 @@ export default {
     xs: {
       value: {
         fontSize: "0.75rem",
-        lineHeight: "1.125rem",
+        lineHeight: "1rem",
       },
     },
     sm: {
       value: {
         fontSize: "0.875rem",
-        lineHeight: "1.375rem",
+        lineHeight: "1.25rem",
       },
     },
     md: {
@@ -6680,19 +6680,19 @@ export default {
     caption: {
       value: {
         fontSize: "0.75rem",
-        lineHeight: "1.125rem",
+        lineHeight: "1rem",
       },
     },
     detail: {
       value: {
         fontSize: "0.875rem",
-        lineHeight: "1.375rem",
+        lineHeight: "1.25rem",
       },
     },
     body: {
       value: {
         fontSize: "1rem",
-        lineHeight: "1.625rem",
+        lineHeight: "1.375rem",
       },
     },
   },

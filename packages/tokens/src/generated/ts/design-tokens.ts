@@ -2618,11 +2618,11 @@ export default {
     },
     xs: {
       fontSize: "0.75rem",
-      lineHeight: "1.125rem",
+      lineHeight: "1rem",
     },
     sm: {
       fontSize: "0.875rem",
-      lineHeight: "1.375rem",
+      lineHeight: "1.25rem",
     },
     md: {
       fontSize: "1rem",
@@ -2662,15 +2662,15 @@ export default {
     },
     caption: {
       fontSize: "0.75rem",
-      lineHeight: "1.125rem",
+      lineHeight: "1rem",
     },
     detail: {
       fontSize: "0.875rem",
-      lineHeight: "1.375rem",
+      lineHeight: "1.25rem",
     },
     body: {
       fontSize: "1rem",
-      lineHeight: "1.625rem",
+      lineHeight: "1.375rem",
     },
   },
   letterSpacing: {

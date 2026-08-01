@@ -14,8 +14,8 @@
   },
   "textStyles": {
     "2xs": "fontSize: 0.625rem, lineHeight: 0.875rem",
-    "xs": "fontSize: 0.75rem, lineHeight: 1.125rem",
-    "sm": "fontSize: 0.875rem, lineHeight: 1.375rem",
+    "xs": "fontSize: 0.75rem, lineHeight: 1rem",
+    "sm": "fontSize: 0.875rem, lineHeight: 1.25rem",
     "md": "fontSize: 1rem, lineHeight: 1.375rem",
     "lg": "fontSize: 1.125rem, lineHeight: 1.5rem",
     "xl": "fontSize: 1.25rem, lineHeight: 1.75rem",
@@ -25,9 +25,9 @@
     "5xl": "fontSize: 3rem, lineHeight: 3.75rem",
     "6xl": "fontSize: 3.75rem, lineHeight: 4.5rem",
     "7xl": "fontSize: 4.5rem, lineHeight: 5.75rem",
-    "caption": "fontSize: 0.75rem, lineHeight: 1.125rem",
-    "detail": "fontSize: 0.875rem, lineHeight: 1.375rem",
-    "body": "fontSize: 1rem, lineHeight: 1.625rem"
+    "caption": "fontSize: 0.75rem, lineHeight: 1rem",
+    "detail": "fontSize: 0.875rem, lineHeight: 1.25rem",
+    "body": "fontSize: 1rem, lineHeight: 1.375rem"
   },
   "layerStyles": {
     "disabled": "opacity: 0.5, cursor: not-allowed",

@@ -110,4 +110,50 @@ describe("token rem conversion", () => {
       expect(css).toContain("--line-height-550: 1.375rem");
     });
   });
+
+  describe("Phase 2: text style line-height tightening", () => {
+    it("body textStyle uses lineHeight 22px (1.375rem), not 26px", () => {
+      const ts = readFile(GENERATED_TS);
+      const bodyMatch = ts.match(/body:\s*\{[^}]*lineHeight:\s*"([^"]+)"/s);
+      expect(bodyMatch).not.toBeNull();
+      expect(bodyMatch![1]).toBe("1.375rem");
+    });
+
+    it("caption textStyle uses lineHeight 16px (1rem), not 18px", () => {
+      const ts = readFile(GENERATED_TS);
+      const captionMatch = ts.match(
+        /caption:\s*\{[^}]*lineHeight:\s*"([^"]+)"/s
+      );
+      expect(captionMatch).not.toBeNull();
+      expect(captionMatch![1]).toBe("1rem");
+    });
+
+    it("detail textStyle uses lineHeight 20px (1.25rem), not 22px", () => {
+      const ts = readFile(GENERATED_TS);
+      const detailMatch = ts.match(/detail:\s*\{[^}]*lineHeight:\s*"([^"]+)"/s);
+      expect(detailMatch).not.toBeNull();
+      expect(detailMatch![1]).toBe("1.25rem");
+    });
+
+    it("xs textStyle uses lineHeight 16px (1rem), not 18px", () => {
+      const ts = readFile(GENERATED_TS);
+      const xsMatch = ts.match(/xs:\s*\{[^}]*lineHeight:\s*"([^"]+)"/s);
+      expect(xsMatch).not.toBeNull();
+      expect(xsMatch![1]).toBe("1rem");
+    });
+
+    it("sm textStyle uses lineHeight 20px (1.25rem), not 22px", () => {
+      const ts = readFile(GENERATED_TS);
+      const smMatch = ts.match(/sm:\s*\{[^}]*lineHeight:\s*"([^"]+)"/s);
+      expect(smMatch).not.toBeNull();
+      expect(smMatch![1]).toBe("1.25rem");
+    });
+
+    it("md textStyle keeps lineHeight at 22px (1.375rem)", () => {
+      const ts = readFile(GENERATED_TS);
+      const mdMatch = ts.match(/md:\s*\{[^}]*lineHeight:\s*"([^"]+)"/s);
+      expect(mdMatch).not.toBeNull();
+      expect(mdMatch![1]).toBe("1.375rem");
+    });
+  });
 });
