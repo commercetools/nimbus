@@ -297,7 +297,15 @@ export type DataTableRowRenderProps = {
   isSinglePinned: boolean;
 };
 
-/** Combined props for the TableBody element (Chakra styles + Aria behavior). */
+/**
+ * Combined props for the TableBody element (Chakra styles + Aria behavior).
+ *
+ * **Reactivity constraint:** custom `children` render functions are only
+ * re-invoked when row data, expansion, or pin state changes. They should
+ * derive output purely from the `row` and `renderProps` arguments — closing
+ * over external React state will produce stale renders. Route reactive values
+ * through the `rows` array or row keys instead.
+ */
 export type DataTableBodyProps<T extends DataTableRowItem> = Omit<
   RaTableBodyProps<T>,
   "children"

@@ -1033,6 +1033,13 @@ the default rendering is used. Internal columns (selection checkboxes, expand
 buttons, pin toggles) are always rendered automatically — custom children only
 replace the **data columns/cells**.
 
+> **Reactivity constraint:** render functions passed to `DataTable.Body` and
+> `DataTable.Row` are only re-invoked when row data, expansion, or pin state
+> changes. They should derive output purely from the `row` and `renderProps`
+> arguments — closing over external React state (e.g. a `useState` value from
+> a parent component) will produce stale renders. Route reactive values through
+> the `rows` array or row keys instead.
+
 #### Custom row styling
 
 Pass a render function to `DataTable.Body` to control how each row renders.

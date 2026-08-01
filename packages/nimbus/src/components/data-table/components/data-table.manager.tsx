@@ -139,6 +139,8 @@ export const DataTableManager = () => {
       );
       onColumnsChange(initialColumnsRef.current);
     }
+    // Stable identity — delegates through refs so children never re-render
+    // due to a new callback reference.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -146,6 +148,7 @@ export const DataTableManager = () => {
     (...args: Parameters<NonNullable<typeof onSettingsChangeRef.current>>) => {
       onSettingsChangeRef.current?.(...args);
     },
+    // Stable identity — delegates through refs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
