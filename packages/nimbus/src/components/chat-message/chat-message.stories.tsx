@@ -15,7 +15,6 @@ import {
   ThumbUp,
   ThumbDown,
   ContentCopy,
-
 } from "@commercetools/nimbus-icons";
 import { within, expect } from "storybook/test";
 import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
@@ -41,8 +40,6 @@ type Story = StoryObj<typeof ChatMessage.Root>;
  * The default (agent) body with a single text payload.
  */
 export const Base: Story = {
-  // No VRT: SmokeTest's agent / neutral cell. This story's claims are DOM ones
-  // (grid display, `<article>` element, decorative avatar), not pixels.
   args: {
     sender: "agent",
     "data-testid": "chat-message",
@@ -88,8 +85,6 @@ export const Base: Story = {
  * message with `aria-label` opts the avatar back into the a11y tree.
  */
 export const UserText: Story = {
-  // No VRT: SmokeTest's user / neutral cell; the subject here is the a11y
-  // naming that opts the avatar back into the tree, which paints nothing.
   render: () => (
     <ChatMessage.Root
       sender="user"
@@ -130,7 +125,6 @@ export const UserText: Story = {
  * An agent body with a single text payload.
  */
 export const AgentText: Story = {
-  // No VRT: renders the same frame as Base - SmokeTest's agent / neutral cell.
   render: () => (
     <ChatMessage.Root sender="agent" data-testid="agent-body">
       <ChatMessage.Avatar>
@@ -157,8 +151,7 @@ export const AgentText: Story = {
  * Action buttons sit inside the body, right-aligned at the bottom.
  */
 export const AgentWithActions: Story = {
-  // VRT: the `actions` slot - a right-aligned, wrapping row pinned to the
-  // bottom of the body. No other snapshot composes it.
+  // VRT: the only frame composing the `actions` slot.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
@@ -199,8 +192,7 @@ export const AgentWithActions: Story = {
  * timestamp and reaction icons on the right.
  */
 export const AgentWithMeta: Story = {
-  // VRT: the `meta` slot - grid row 2 indented under the body, `space-between`
-  // and the `sm` text scale. The only frame that fills the second row.
+  // VRT: the `meta` slot - grid row 2, indented under the body.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
@@ -244,14 +236,45 @@ export const AgentWithMeta: Story = {
 };
 
 /**
+ * User message with meta
+ * The meta row follows its body into grid column 1, so it sits under the
+ * narrower, right-aligned user body rather than the agent's.
+ */
+export const UserWithMeta: Story = {
+  // VRT: the `meta` slot on the user sender - grid column 1 under the 480px body.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <ChatMessage.Root sender="user" data-testid="user-meta">
+      <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
+      <ChatMessage.Body data-testid="user-meta-body">
+        <Text>{SAMPLE_MESSAGE}</Text>
+      </ChatMessage.Body>
+      <ChatMessage.Meta data-testid="user-meta-row">
+        <Link href="#">Edit</Link>
+        <Text color="neutral.11">Apr 13, 11:58pm</Text>
+      </ChatMessage.Meta>
+    </ChatMessage.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Meta tracks the body into column 1", async () => {
+      const body = canvas.getByTestId("user-meta-body").getBoundingClientRect();
+      const row = canvas.getByTestId("user-meta-row").getBoundingClientRect();
+      // Agent puts both in column 2; user puts both in column 1, so the meta
+      // row starts with the body rather than beside the avatar.
+      await expect(Math.round(row.left)).toBe(Math.round(body.left));
+    });
+  },
+};
+
+/**
  * With Markdown content
  * The body payload is arbitrary content — here a `Markdown` string rendered
  * into Nimbus-styled elements, plus actions and meta.
  */
 export const AgentWithMarkdown: Story = {
-  // No VRT: the rendered elements are Markdown's pixels and belong to its own
-  // audit. No ChatMessage rule fires here that AgentWithActions and
-  // AgentWithMeta don't already baseline.
   render: () => (
     <ChatMessage.Root sender="agent" data-testid="agent-markdown">
       <ChatMessage.Avatar>
@@ -298,9 +321,7 @@ export const AgentWithMarkdown: Story = {
  * than overflowing its rounded card (and pushing horizontal page scroll).
  */
 export const Overflow: Story = {
-  // VRT: the body's `overflowWrap: anywhere` / `wordBreak: break-word` /
-  // `minWidth: 0` rules. The play proves no overflow numerically; the snapshot
-  // is what catches the wrap breaking the card's rounded shape.
+  // VRT: a long unbreakable token wrapped inside the card (`overflowWrap: anywhere`).
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
@@ -333,9 +354,6 @@ export const Overflow: Story = {
  * JSON code block via `Markdown`) — not a distinct sender.
  */
 export const ToolOutput: Story = {
-  // No VRT: the code block is Markdown's pixels. The point of the story is the
-  // taxonomy claim - tool output is agent *content*, not a third sender - and
-  // that is a composition statement, not a surface.
   render: () => (
     <ChatMessage.Root sender="agent" data-testid="tool-output">
       <ChatMessage.Avatar>
@@ -365,8 +383,6 @@ export const ToolOutput: Story = {
  * sender (here an agent message).
  */
 export const ErrorTone: Story = {
-  // No VRT: SmokeTest's agent / error cell. The critical-palette Retry button
-  // is Button's pixels.
   render: () => (
     <ChatMessage.Root sender="agent" tone="error" data-testid="error-body">
       <ChatMessage.Avatar>
@@ -400,10 +416,7 @@ export const ErrorTone: Story = {
  * `isStreaming` on the root (which sets `aria-busy`).
  */
 export const Streaming: Story = {
-  // VRT: the `typing` slot - the ActivityIndicator row beside its label. No
-  // frame pinning needed: `activity-bounce` parks at `translateY(0)`,
-  // `opacity: 0.35` at both 0% and 100%, so the paused frame still shows dots
-  // (contrast the indeterminate ProgressBar, which parks off its track).
+  // VRT: the `typing` slot; `activity-bounce` parks visible, so no frame pin.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
@@ -437,8 +450,6 @@ export const Streaming: Story = {
  * Compares the two sender layout directions.
  */
 export const Senders: Story = {
-  // No VRT: SmokeTest's neutral row. Kept for the geometry assertions below,
-  // which pin the column order the snapshot can only show.
   render: () => (
     <Stack gap="600">
       <ChatMessage.Root sender="user" data-testid="user-msg">
@@ -484,9 +495,7 @@ export const Senders: Story = {
  * sits flush against the message's leading edge with no phantom gutter.
  */
 export const AvatarLess: Story = {
-  // VRT: the collapsed avatar track. Every other snapshot composes an avatar,
-  // so this is the only frame proving the gutter lives on the avatar slot and
-  // not as a root `columnGap` that would indent an avatar-less body.
+  // VRT: the body flush at the leading edge - the avatar track collapses to 0px.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
@@ -514,8 +523,6 @@ export const AvatarLess: Story = {
  * the accessibility tree — it must not be force-hidden.
  */
 export const AvatarLabelledBy: Story = {
-  // No VRT: an a11y-tree claim with no pixel of its own, and the frame carries
-  // a clipped off-screen span that exists only to name the avatar.
   render: () => (
     <Box>
       <span
@@ -564,10 +571,7 @@ export const AvatarLabelledBy: Story = {
  * person icon for the user. An explicit `variant` always wins.
  */
 export const AvatarVariantBySender: Story = {
-  // VRT: two avatar surfaces at once - the per-sender `variant` default
-  // (`subtle` for the user, `solid` for the agent) and the unconfigured glyph
-  // fallback (person vs. AI sparkle), plus the explicit-override cells. These
-  // defaults are resolved in TS, not the recipe, so no other frame holds them.
+  // VRT: per-sender avatar variant + glyph fallback; resolved in TS, not the recipe.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
@@ -636,12 +640,7 @@ export const AvatarVariantBySender: Story = {
  * `colorPalette` to `ChatMessage.Root` to retint the whole message.
  */
 export const ThemedPalette: Story = {
-  // VRT: the `colorPalette` axis, over the full semantic range. Rendered on the
-  // `user` sender because that is where the palette reaches two surfaces at
-  // once - the body's `colorPalette.2` tint and the avatar. (The agent body is
-  // a flat `bg`, so only its avatar would move.) The leading un-tinted message
-  // is the recipe's `primary` default, which the play pins against explicit
-  // `primary`.
+  // VRT: the `colorPalette` axis on `user`, where it tints the body and the avatar.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
@@ -692,8 +691,6 @@ export const ThemedPalette: Story = {
  * spam) and, unlike `role="feed"`, it validly contains non-article children.
  */
 export const AccessibleFeed: Story = {
-  // No VRT: the `role="log"` container is the consumer's, and both messages are
-  // SmokeTest cells. The claim is the live-region composition, not a surface.
   render: () => (
     <Box
       role="log"
@@ -744,11 +741,7 @@ export const AccessibleFeed: Story = {
  * SmokeTest - sender × tone.
  */
 export const SmokeTest: Story = {
-  // VRT: the axes interact. `tone` is declared after `sender` precisely so the
-  // error body's bg/border win the merge, and each sender hands it a different
-  // starting surface to beat (the user's `colorPalette.2` tint vs. the agent's
-  // flat `bg`). Layout stays sender-driven underneath - column order, avatar
-  // gutter side and the 480px/632px body max-widths - so all four cells differ.
+  // VRT: sender x tone interact - the error surface lands on two different layouts.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
