@@ -132,6 +132,9 @@ export const dataTableSlotRecipe = defineSlotRecipe({
             transition: "background-color 100ms ease",
             backgroundColor: "inherit",
           },
+          // Pin cell keeps base zIndex (3) on hover — left-sticky and
+          // right-sticky cells don't overlap, so the old hover zIndex (10)
+          // was unnecessary. Verified visually with pinned rows.
           "& [data-slot='pin-row-cell']": {
             "& [data-slot='nimbus-table-cell-pin-button']": {
               opacity: 1,

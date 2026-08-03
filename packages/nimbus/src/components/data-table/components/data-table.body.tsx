@@ -30,6 +30,7 @@ const DefaultEmptyStateMessage = () => (
 export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
   ref,
   children,
+  dependencies: dependenciesFromProps,
   "aria-label": ariaLabelProp,
   ...props
 }: DataTableBodyProps<T>) => {
@@ -82,9 +83,15 @@ export const DataTableBody = <T extends DataTableRowItem = DataTableRowItem>({
         ref={ref}
         aria-label={ariaLabel}
         items={sortedRows}
-        dependencies={[activeColumns, expanded, pinnedRows, pinnedRowIds]}
         renderEmptyState={renderEmptyState ?? DefaultEmptyStateMessage}
         {...restProps}
+        dependencies={[
+          activeColumns,
+          expanded,
+          pinnedRows,
+          pinnedRowIds,
+          ...(dependenciesFromProps ?? []),
+        ]}
       >
         {renderRow}
       </RaTableBody>

@@ -19,3 +19,6 @@ automatically.
 `DataTable`: Improved hover and re-render performance. Removed compositing-layer
 churn from row hover styles and ref-stabilized consumer callback props so inline
 callbacks no longer cascade re-renders to every row.
+
+**Breaking:** the `depth` prop has been removed from `DataTableRowProps`. It was
+unused internally — consumers passing it will see a TypeScript error.

@@ -1038,7 +1038,10 @@ replace the **data columns/cells**.
 > changes. They should derive output purely from the `row` and `renderProps`
 > arguments — closing over external React state (e.g. a `useState` value from
 > a parent component) will produce stale renders. Route reactive values through
-> the `rows` array or row keys instead.
+> the `rows` array or row keys instead. If you need rows to re-render in
+> response to additional values, pass a `dependencies` array to
+> `DataTable.Body` — those values are merged with the internal dependency
+> tracking so expansion and pin invalidation are never lost.
 
 #### Custom row styling
 

@@ -132,13 +132,10 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     onRowClickRef: React.RefObject<
       ((row: DataTableRowItem<T>) => void) | undefined
     >;
-    renderNestedContentRef: React.RefObject<
-      | ((
-          row: DataTableRowItem<T>,
-          options: DataTableNestedContentOptions
-        ) => ReactNode)
-      | undefined
-    >;
+    renderNestedContent?: (
+      row: DataTableRowItem<T>,
+      options: DataTableNestedContentOptions
+    ) => ReactNode;
     toggleExpand: (id: string, columnId?: string) => void;
     activeColumns: DataTableColumnItem<T>[];
     filteredRows: DataTableRowItem<T>[];
@@ -307,7 +304,9 @@ export type DataTableRowRenderProps = {
  * re-invoked when row data, expansion, or pin state changes. They should
  * derive output purely from the `row` and `renderProps` arguments — closing
  * over external React state will produce stale renders. Route reactive values
- * through the `rows` array or row keys instead.
+ * through the `rows` array or row keys instead. If you need rows to
+ * re-render in response to additional values, pass a `dependencies` array —
+ * it is merged with the internal dependency tracking.
  */
 export type DataTableBodyProps<T extends DataTableRowItem> = Omit<
   RaTableBodyProps<T>,

@@ -201,8 +201,6 @@ export const DataTableRoot = function DataTableRoot<
   // sites read .current at invocation time.
   const onRowClickRef = useRef(onRowClick);
   onRowClickRef.current = onRowClick;
-  const renderNestedContentRef = useRef(renderNestedContent);
-  renderNestedContentRef.current = renderNestedContent;
   const onRowActionRef = useRef(onRowAction);
   onRowActionRef.current = onRowAction;
   const onColumnsChangeRef = useRef(onColumnsChange);
@@ -283,7 +281,7 @@ export const DataTableRoot = function DataTableRoot<
       isRowClickable,
       hasRenderNestedContent,
       onRowClickRef,
-      renderNestedContentRef,
+      renderNestedContent,
       toggleExpand,
       activeColumns,
       showExpandColumn,
@@ -313,6 +311,7 @@ export const DataTableRoot = function DataTableRoot<
       handleSortChange,
       isRowClickable,
       hasRenderNestedContent,
+      renderNestedContent,
       toggleExpand,
       activeColumns,
       showExpandColumn,

@@ -96,7 +96,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     hasRenderNestedContent,
     onRowClickRef,
     onRowActionRef,
-    renderNestedContentRef,
+    renderNestedContent,
     togglePin,
     selectRowLabel,
   } = useStableDataTableContext<T>();
@@ -629,8 +629,8 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
                   ? nestedKey && Array.isArray(row[nestedKey])
                     ? `${(row[nestedKey] as unknown[]).length} nested items`
                     : nestedKey && (row[nestedKey] as React.ReactNode)
-                  : renderNestedContentRef.current
-                    ? renderNestedContentRef.current(row, {
+                  : renderNestedContent
+                    ? renderNestedContent(row, {
                         close: () => toggleExpand(row.id),
                       })
                     : null
