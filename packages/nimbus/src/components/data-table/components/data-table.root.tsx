@@ -193,6 +193,21 @@ export const DataTableRoot = function DataTableRoot<
     });
   }, []);
 
+  // Ref-stabilize consumer callback props so their identity doesn't
+  // destabilize contextValue. Without this, inline callbacks like
+  // `onRowClick={(row) => ...}` create a new context value every
+  // consumer render, which bypasses memo() on every Row and forces a
+  // full table re-render. The refs are passed into the context; call
+  // sites read .current at invocation time.
+  const onRowClickRef = useRef(onRowClick);
+  onRowClickRef.current = onRowClick;
+  const onRowActionRef = useRef(onRowAction);
+  onRowActionRef.current = onRowAction;
+  const onColumnsChangeRef = useRef(onColumnsChange);
+  onColumnsChangeRef.current = onColumnsChange;
+  const onSettingsChangeRef = useRef(onSettingsChange);
+  onSettingsChangeRef.current = onSettingsChange;
+
   const onPinToggleRef = useRef(onPinToggle);
   onPinToggleRef.current = onPinToggle;
 
@@ -246,6 +261,9 @@ export const DataTableRoot = function DataTableRoot<
     ]
   );
 
+  const isRowClickable = !!onRowClick;
+  const hasRenderNestedContent = !!renderNestedContent;
+
   const contextValue = useMemo(
     () => ({
       columns,
@@ -260,7 +278,9 @@ export const DataTableRoot = function DataTableRoot<
       density,
       nestedKey,
       onSortChange: handleSortChange,
-      onRowClick,
+      isRowClickable,
+      hasRenderNestedContent,
+      onRowClickRef,
       renderNestedContent,
       toggleExpand,
       activeColumns,
@@ -271,11 +291,10 @@ export const DataTableRoot = function DataTableRoot<
       selectRowLabel,
       isResizable,
       disabledKeys,
-      onRowAction,
-      onPinToggle,
+      onRowActionRef,
       togglePin,
-      onColumnsChange,
-      onSettingsChange,
+      onColumnsChangeRef,
+      onSettingsChangeRef,
     }),
     [
       columns,
@@ -290,7 +309,8 @@ export const DataTableRoot = function DataTableRoot<
       density,
       nestedKey,
       handleSortChange,
-      onRowClick,
+      isRowClickable,
+      hasRenderNestedContent,
       renderNestedContent,
       toggleExpand,
       activeColumns,
@@ -301,11 +321,7 @@ export const DataTableRoot = function DataTableRoot<
       selectRowLabel,
       isResizable,
       disabledKeys,
-      onRowAction,
-      onPinToggle,
       togglePin,
-      onColumnsChange,
-      onSettingsChange,
     ]
   );
 

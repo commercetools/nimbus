@@ -20,7 +20,6 @@ export const LayoutSettingsPanel = ({
   const msg = useLocalizedStringFormatter(dataTableMessagesStrings);
   const context = useDataTableContext();
 
-  // Connected to DataTable context state
   const textVisibility = context.isTruncated ?? false;
   const rowDensity: "comfortable" | "compact" =
     context.density === "condensed" ? "compact" : "comfortable";

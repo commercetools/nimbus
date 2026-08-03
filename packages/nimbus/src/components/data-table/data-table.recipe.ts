@@ -50,6 +50,8 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       display: "block",
       overflow: "auto",
       contain: "layout style",
+      border: "1px solid {colors.neutral.3}",
+      borderRadius: "{sizes.200}",
 
       // Scroll shadows activated by JS scroll detection via data attributes.
       // Body selectors include .data-table-row to beat the base specificity.
@@ -126,53 +128,26 @@ export const dataTableSlotRecipe = defineSlotRecipe({
             left: "2400",
           },
         _hover: {
-          backgroundColor: "{colors.primary.3}",
-          transition: "background-color 100ms ease",
-          transform: "translate3d(0, 0, 0)",
           "& .data-table-sticky-cell": {
             transition: "background-color 100ms ease",
             backgroundColor: "inherit",
-            position: "sticky",
           },
-          "& [data-slot='drag']": {
-            zIndex: 11,
-          },
-          "& [data-slot='selection']": {
-            zIndex: 11,
-          },
-          "& [data-slot='expand']": {
-            zIndex: 12,
-          },
-          // When drag column is present, offset selection and expand columns on hover
-          "& [data-slot='drag'] ~ [data-slot='selection']": {
-            left: "600",
-          },
-          "& [data-slot='drag'] ~ [data-slot='expand']": {
-            left: "600",
-          },
-          // When selection column is present, move expand column to the right on hover
-          "& [data-slot='selection'] ~ [data-slot='expand']": {
-            left: "1800",
-            zIndex: 10,
-          },
-          // When both drag and selection columns are present, offset expand column on hover
-          "& [data-slot='drag'] ~ [data-slot='selection'] ~ [data-slot='expand']":
-            {
-              left: "2400",
-            },
+          // Pin cell keeps base zIndex (3) on hover — left-sticky and
+          // right-sticky cells don't overlap, so the old hover zIndex (10)
+          // was unnecessary. Verified visually with pinned rows.
           "& [data-slot='pin-row-cell']": {
-            right: 0,
-            zIndex: 10,
             "& [data-slot='nimbus-table-cell-pin-button']": {
               opacity: 1,
             },
           },
-          "& .data-table-row[data-disabled='true']": {
-            opacity: 0.8,
-          },
         },
       },
       "& .data-table-row[data-selected='true']": {
+        "& .data-table-sticky-cell": {
+          backgroundColor: "inherit",
+        },
+      },
+      "& .data-table-row[data-custom-bg]": {
         "& .data-table-sticky-cell": {
           backgroundColor: "inherit",
         },
@@ -267,15 +242,11 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       borderCollapse: "collapse",
       borderSpacing: 0,
       boxSizing: "border-box",
-      boxShadow: "inset 0 0 0 1px {colors.neutral.3}",
-      borderRadius: "0 0 {sizes.200} {sizes.200}",
       colorPalette: "slate",
       width: "100%",
     },
     header: {
       background: "colorPalette.2",
-      boxShadow: "inset 0 0 0 1px {colors.neutral.3}",
-      borderRadius: "{sizes.200} {sizes.200} 0 0",
       color: "colorPalette.11",
       borderBottom: "1px solid {colors.neutral.3}",
       lineHeight: "400",
@@ -432,7 +403,6 @@ export const dataTableSlotRecipe = defineSlotRecipe({
       "&:hover:not([data-nested-row-expanded])": {
         backgroundColor: "{colors.primary.3}",
         transition: "background-color 200ms ease",
-        transform: "translate3d(0, 0, 0)",
       },
       _last: {
         borderBottom: "none",

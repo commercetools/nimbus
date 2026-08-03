@@ -33,7 +33,7 @@ export const DataTableTable = function DataTableTable({
     selectionMode,
     disallowEmptySelection,
     disabledKeys,
-    renderNestedContent,
+    hasRenderNestedContent,
     expanded,
   } = useDataTableContext();
 
@@ -78,7 +78,7 @@ export const DataTableTable = function DataTableTable({
         disabledKeys={disabledKeys}
         disabledBehavior="all"
         // nestedKey rows manage expansion internally; only renderNestedContent needs React Aria to track expanded state for aria-expanded
-        expandedKeys={renderNestedContent ? expanded : undefined}
+        expandedKeys={hasRenderNestedContent ? expanded : undefined}
         dragAndDropHooks={dragAndDropHooks}
         {...restProps}
       >

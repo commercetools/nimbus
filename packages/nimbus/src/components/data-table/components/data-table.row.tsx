@@ -14,6 +14,7 @@ import type {
   DataTableRowItem,
   DataTableColumnItem,
   DataTableRowProps,
+  DataTableRowRenderProps,
 } from "../data-table.types";
 import { Box, Checkbox, IconButton } from "@/components";
 import { IconToggleButton } from "@/components/icon-toggle-button/icon-toggle-button";
@@ -66,22 +67,18 @@ function stopPropagationForNonInteractiveElements(e: Event) {
   }
 }
 
-type DataTableRowPerRowProps = {
-  isExpanded: boolean;
-  isPinned: boolean;
-  isFirstPinned: boolean;
-  isLastPinned: boolean;
-  isSinglePinned: boolean;
-};
+type DataTableRowPerRowProps = Partial<DataTableRowRenderProps>;
 
 const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   row,
   ref,
-  isExpanded,
-  isPinned,
-  isFirstPinned,
-  isLastPinned,
-  isSinglePinned,
+  children,
+  className: consumerClassName,
+  isExpanded = false,
+  isPinned = false,
+  isFirstPinned = false,
+  isLastPinned = false,
+  isSinglePinned = false,
   ...props
 }: DataTableRowProps<T> & DataTableRowPerRowProps) => {
   const {
@@ -95,14 +92,22 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     showSelectionColumn,
     showPinColumn,
     isTruncated,
-    onRowClick,
-    onRowAction,
+    isRowClickable,
+    hasRenderNestedContent,
+    onRowClickRef,
+    onRowActionRef,
     renderNestedContent,
     togglePin,
     selectRowLabel,
   } = useStableDataTableContext<T>();
 
   const [styleProps, restProps] = extractStyleProps(props);
+  const hasCustomBg = !!(
+    styleProps.bg ||
+    styleProps.bgColor ||
+    styleProps.backgroundColor ||
+    styleProps.background
+  );
 
   // Helper function to check if row is disabled
   const getIsDisabled = (rowId: string) => {
@@ -153,7 +158,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
 
   const expandViaRowClick = hasExpandableContent && !showExpandColumn;
 
-  const isClickable = !!(onRowClick || expandViaRowClick);
+  const isClickable = isRowClickable || expandViaRowClick;
 
   const handleRowClick = useCallback(
     (e: Event) => {
@@ -176,14 +181,14 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           if (!isDisabled) {
             if (
               expandViaRowClick &&
-              (hasNestedContent || renderNestedContent)
+              (hasNestedContent || hasRenderNestedContent)
             ) {
               toggleExpand(row.id, columnId);
             }
-            onRowClick?.(row);
+            onRowClickRef.current?.(row);
           } else {
-            if (onRowAction) {
-              onRowAction(row, "click");
+            if (onRowActionRef.current) {
+              onRowActionRef.current(row, "click");
             }
           }
           clickTimeoutRef.current = null;
@@ -192,9 +197,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     },
     [
       isClickable,
-      onRowClick,
-      renderNestedContent,
-      onRowAction,
+      onRowClickRef,
+      hasRenderNestedContent,
+      onRowActionRef,
       row,
       isDisabled,
       expandViaRowClick,
@@ -391,12 +396,12 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
   useEffect(() => {
     const node = ariaNodeRef.current;
     if (!node) return;
-    if (renderNestedContent && isExpanded) {
+    if (hasRenderNestedContent && isExpanded) {
       node.setAttribute("aria-controls", nestedContentId);
     } else {
       node.removeAttribute("aria-controls");
     }
-  }, [renderNestedContent, isExpanded, nestedContentId]);
+  }, [hasRenderNestedContent, isExpanded, nestedContentId]);
 
   const rowRef = mergeRefs(ref, rowCallbackRef, ariaRef);
 
@@ -435,7 +440,52 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
     ) : (
       (value as React.ReactNode)
     );
-  // TODO: does the row need a slot for styling?
+
+  const defaultDataCells = (cols: DataTableColumnItem<T>[]) => (
+    <RaCollection items={cols}>
+      {(col: DataTableColumnItem<T>) => {
+        const cellValue = col.accessor(row);
+        const align = col.align ?? "start";
+        const isStretch = align === "stretch";
+
+        return (
+          <DataTableCell
+            isDisabled={isDisabled}
+            key={col.id}
+            data-column-id={col.id}
+            textAlign={
+              align === "center"
+                ? "center"
+                : align === "end"
+                  ? "end"
+                  : undefined
+            }
+          >
+            <Box
+              className={isTruncated ? "truncated-cell" : ""}
+              data-truncated={isTruncated ? "true" : "false"}
+              display={isStretch ? "block" : "inline-block"}
+              w={isStretch ? "100%" : undefined}
+              minW="0"
+              maxW="100%"
+              position="relative"
+              overflow="hidden"
+              cursor={isDisabled ? "not-allowed" : undefined}
+            >
+              {col.render
+                ? col.render({
+                    value: highlightCell(cellValue),
+                    row,
+                    column: col,
+                  })
+                : highlightCell(cellValue)}
+            </Box>
+          </DataTableCell>
+        );
+      }}
+    </RaCollection>
+  );
+
   return (
     <>
       <DataTableRowSlot asChild {...styleProps}>
@@ -444,12 +494,13 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
           columns={activeColumns}
           ref={rowRef}
           id={row.id}
-          data-clickable={isClickable && !isDisabled}
           hasChildItems={
-            !!(renderNestedContent || hasNestedContent) || undefined
+            !!(hasRenderNestedContent || hasNestedContent) || undefined
           }
-          className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}`}
           {...restProps}
+          data-clickable={isClickable && !isDisabled}
+          data-custom-bg={hasCustomBg || undefined}
+          className={`data-table-row ${isDisabled ? "data-table-row-disabled" : ""} ${isPinned ? `data-table-row-pinned ${getPinnedRowClasses()}` : ""}${consumerClassName ? ` ${consumerClassName}` : ""}`}
           dependencies={[isExpanded, search, isTruncated]}
         >
           {/** Internal/non-data columns like drag, selection, and expand
@@ -498,7 +549,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
               data-slot="expand"
               isDisabled={isDisabled}
             >
-              {hasNestedContent || renderNestedContent ? (
+              {hasNestedContent || hasRenderNestedContent ? (
                 // TODO:Button does not occupy the whole height
                 <IconButton
                   w="100%"
@@ -521,48 +572,9 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
             </DataTableCell>
           )}
           {/* Data cells */}
-          <RaCollection items={activeColumns}>
-            {(col: DataTableColumnItem<T>) => {
-              const cellValue = col.accessor(row);
-              const align = col.align ?? "start";
-              const isStretch = align === "stretch";
-
-              return (
-                <DataTableCell
-                  isDisabled={isDisabled}
-                  key={col.id}
-                  data-column-id={col.id}
-                  textAlign={
-                    align === "center"
-                      ? "center"
-                      : align === "end"
-                        ? "end"
-                        : undefined
-                  }
-                >
-                  <Box
-                    className={isTruncated ? "truncated-cell" : ""}
-                    data-truncated={isTruncated ? "true" : "false"}
-                    display={isStretch ? "block" : "inline-block"}
-                    w={isStretch ? "100%" : undefined}
-                    minW="0"
-                    maxW="100%"
-                    position="relative"
-                    overflow="hidden"
-                    cursor={isDisabled ? "not-allowed" : undefined}
-                  >
-                    {col.render
-                      ? col.render({
-                          value: highlightCell(cellValue),
-                          row,
-                          column: col,
-                        })
-                      : highlightCell(cellValue)}
-                  </Box>
-                </DataTableCell>
-              );
-            }}
-          </RaCollection>
+          {children
+            ? children({ columns: activeColumns, row, isDisabled })
+            : defaultDataCells(activeColumns)}
           {showPinColumn && (
             <DataTableCell
               className={"data-table-sticky-cell"}
@@ -597,7 +609,7 @@ const DataTableRowInner = <T extends DataTableRowItem = DataTableRowItem>({
       {hasExpandableContent && (
         <DataTableRowSlot {...styleProps} asChild>
           <RaRow
-            ref={renderNestedContent ? nestedContentRowRef : undefined}
+            ref={hasRenderNestedContent ? nestedContentRowRef : undefined}
             data-nested-row-expanded={isExpanded ? "true" : "false"}
             dependencies={[isExpanded]}
           >

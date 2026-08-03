@@ -15,6 +15,9 @@ import {
   type DataTableColumnItem,
   type DataTableRowItem,
   type SortDescriptor,
+  type DataTableColumnRenderProps,
+  type DataTableRowRenderProps,
+  type DataTableCellRenderProps,
 } from "@commercetools/nimbus";
 ```
 
@@ -1010,14 +1013,234 @@ const App = () => {
 
 ### Available sub-components
 
-| Component           | Description                                                                                             |
-| ------------------- | ------------------------------------------------------------------------------------------------------- |
-| `DataTable.Root`    | Provider component that manages state and context                                                       |
-| `DataTable.Table`   | The main table element                                                                                  |
-| `DataTable.Header`  | Table header with column headers                                                                        |
-| `DataTable.Body`    | Table body containing rows                                                                              |
-| `DataTable.Footer`  | Footer section for pagination or summaries                                                              |
-| `DataTable.Manager` | Settings panel for column visibility and layout - [see detailed docs below](#advanced-datatablemanager) |
+| Component            | Description                                                                                             |
+| -------------------- | ------------------------------------------------------------------------------------------------------- |
+| `DataTable.Root`     | Provider component that manages state and context                                                       |
+| `DataTable.Table`    | The main table element                                                                                  |
+| `DataTable.Header`   | Table header with column headers — accepts render function children for custom columns                  |
+| `DataTable.Body`     | Table body containing rows — accepts render function children for custom row rendering                  |
+| `DataTable.Row`      | Individual row component — accepts render function children for custom cell rendering                   |
+| `DataTable.Cell`     | Individual cell component for custom cell content                                                       |
+| `DataTable.Column`   | Individual column header component with sorting support                                                 |
+| `DataTable.Footer`   | Footer section for pagination or summaries                                                              |
+| `DataTable.Manager`  | Settings panel for column visibility and layout - [see detailed docs below](#advanced-datatablemanager) |
+
+### Compound composition
+
+The compound sub-components (`Body`, `Header`, `Row`) accept render function
+children for fine-grained control over rendering. When no children are provided,
+the default rendering is used. Internal columns (selection checkboxes, expand
+buttons, pin toggles) are always rendered automatically — custom children only
+replace the **data columns/cells**.
+
+> **Reactivity constraint:** render functions passed to `DataTable.Body` and
+> `DataTable.Row` are only re-invoked when row data, expansion, or pin state
+> changes. They should derive output purely from the `row` and `renderProps`
+> arguments — closing over external React state (e.g. a `useState` value from
+> a parent component) will produce stale renders. Route reactive values through
+> the `rows` array or row keys instead. If you need rows to re-render in
+> response to additional values, pass a `dependencies` array to
+> `DataTable.Body` — those values are merged with the internal dependency
+> tracking so expansion and pin invalidation are never lost.
+
+#### Custom row styling
+
+Pass a render function to `DataTable.Body` to control how each row renders.
+The function receives the row data and render props (`isExpanded`, `isPinned`,
+etc.). Spread the render props onto `DataTable.Row` to preserve expansion and
+pinning behavior:
+
+```jsx live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'email', header: 'Email', accessor: (row) => row.email },
+    { id: 'department', header: 'Department', accessor: (row) => row.department },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice', email: 'alice@example.com', department: 'Eng' },
+    { id: '2', name: 'Bob', email: 'bob@example.com', department: 'Design' },
+    { id: '3', name: 'Carol', email: 'carol@example.com', department: 'PM' },
+  ];
+
+  return (
+    <DataTable.Root columns={columns} rows={rows}>
+      <DataTable.Table aria-label="Team members with row styling">
+        <DataTable.Header />
+        <DataTable.Body>
+          {(row, rowRenderProps) => (
+            <DataTable.Row
+              row={row}
+              {...rowRenderProps}
+              bg={
+                row.department === 'Eng'
+                  ? 'primary.2'
+                  : row.department === 'Design'
+                    ? 'warning.2'
+                    : undefined
+              }
+            />
+          )}
+        </DataTable.Body>
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+}
+```
+
+#### Custom cell rendering
+
+Pass a render function to `DataTable.Row` to control individual cells. The
+function receives `columns`, `row`, and `isDisabled`. You are responsible for
+rendering a `DataTable.Cell` for each column:
+
+```jsx live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'email', header: 'Email', accessor: (row) => row.email },
+    { id: 'department', header: 'Department', accessor: (row) => row.department },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice', email: 'alice@example.com', department: 'Eng' },
+    { id: '2', name: 'Bob', email: 'bob@example.com', department: 'Design' },
+    { id: '3', name: 'Carol', email: 'carol@example.com', department: 'PM' },
+  ];
+
+  return (
+    <DataTable.Root columns={columns} rows={rows}>
+      <DataTable.Table aria-label="Team members with custom cells">
+        <DataTable.Header />
+        <DataTable.Body>
+          {(row, rowRenderProps) => (
+            <DataTable.Row row={row} {...rowRenderProps}>
+              {({ columns: cols }) =>
+                cols.map((col) => (
+                  <DataTable.Cell
+                    key={col.id}
+                    data-column-id={col.id}
+                    fontWeight={col.id === 'name' ? 'bold' : undefined}
+                    bg={
+                      col.id === 'department' && row.department === 'Eng'
+                        ? 'primary.2'
+                        : undefined
+                    }
+                  >
+                    {col.accessor(row)}
+                  </DataTable.Cell>
+                ))
+              }
+            </DataTable.Row>
+          )}
+        </DataTable.Body>
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+}
+```
+
+#### Custom column headers
+
+Pass a render function to `DataTable.Header` to control how data column headers
+render. The function receives the active columns array and `{ allowsSorting }`.
+Internal columns (selection, expand, pin) are still rendered automatically:
+
+```jsx live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'email', header: 'Email', accessor: (row) => row.email },
+    { id: 'department', header: 'Department', accessor: (row) => row.department },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice', email: 'alice@example.com', department: 'Eng' },
+    { id: '2', name: 'Bob', email: 'bob@example.com', department: 'Design' },
+    { id: '3', name: 'Carol', email: 'carol@example.com', department: 'PM' },
+  ];
+
+  return (
+    <DataTable.Root columns={columns} rows={rows} allowsSorting>
+      <DataTable.Table aria-label="Team members with custom headers">
+        <DataTable.Header>
+          {({ columns: cols, allowsSorting: sorting }) =>
+            cols.map((col) => (
+              <DataTable.Column
+                key={col.id}
+                id={col.id}
+                column={col}
+                allowsSorting={sorting}
+                isRowHeader
+                minWidth={col.minWidth ?? 150}
+                bg={col.id === 'name' ? 'primary.2' : undefined}
+              >
+                {col.id === 'name' ? (
+                  <Text fontWeight="bold" color="primary.11">
+                    {col.header}
+                  </Text>
+                ) : (
+                  <span data-multiline-header>{col.header}</span>
+                )}
+              </DataTable.Column>
+            ))
+          }
+        </DataTable.Header>
+        <DataTable.Body />
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+}
+```
+
+#### Compound composition with features
+
+Custom children work seamlessly with selection, expansion, sorting, and other
+DataTable features. Internal columns are always handled automatically:
+
+```jsx live-dev
+const App = () => {
+  const columns = [
+    { id: 'name', header: 'Name', accessor: (row) => row.name },
+    { id: 'email', header: 'Email', accessor: (row) => row.email },
+    { id: 'department', header: 'Department', accessor: (row) => row.department },
+  ];
+
+  const rows = [
+    { id: '1', name: 'Alice', email: 'alice@example.com', department: 'Eng' },
+    { id: '2', name: 'Bob', email: 'bob@example.com', department: 'Design' },
+    { id: '3', name: 'Carol', email: 'carol@example.com', department: 'PM' },
+  ];
+
+  return (
+    <DataTable.Root
+      columns={columns}
+      rows={rows}
+      selectionMode="multiple"
+      renderNestedContent={(row) => (
+        <Box p="400">
+          <Text fontWeight="bold">Details for {row.name}</Text>
+          <Text>Email: {row.email}</Text>
+        </Box>
+      )}
+    >
+      <DataTable.Table aria-label="Team members with selection and expansion">
+        <DataTable.Header />
+        <DataTable.Body>
+          {(row, rowRenderProps) => (
+            <DataTable.Row
+              row={row}
+              {...rowRenderProps}
+              bg={row.department === 'Eng' ? 'primary.2' : undefined}
+            />
+          )}
+        </DataTable.Body>
+      </DataTable.Table>
+    </DataTable.Root>
+  );
+}
+```
 
 ## Advanced: DataTable.Manager
 
@@ -1443,6 +1666,42 @@ type SortDescriptor = {
 };
 ```
 
+### DataTableColumnRenderProps
+
+Passed to `DataTable.Header` children for custom column rendering:
+
+```tsx
+type DataTableColumnRenderProps = {
+  columns: DataTableColumnItem[]; // Active columns to render
+  allowsSorting: boolean; // Whether sorting is enabled
+};
+```
+
+### DataTableRowRenderProps
+
+Passed to `DataTable.Body` children alongside the row data:
+
+```tsx
+type DataTableRowRenderProps = {
+  isExpanded: boolean;
+  isPinned: boolean;
+  isFirstPinned: boolean;
+  isLastPinned: boolean;
+  isSinglePinned: boolean;
+};
+```
+
+### DataTableCellRenderProps
+
+Passed to `DataTable.Row` children for custom cell rendering:
+
+```tsx
+type DataTableCellRenderProps<T extends object = Record<string, unknown>> = {
+  columns: DataTableColumnItem<T>[]; // Active columns to render
+  row: DataTableRowItem<T>; // Current row data
+  isDisabled: boolean; // Whether the row is disabled
+};
+```
 
 ## Testing your implementation
 

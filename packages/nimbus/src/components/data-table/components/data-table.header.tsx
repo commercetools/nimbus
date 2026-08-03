@@ -26,6 +26,7 @@ export const DataTableHeader = <
   T extends DataTableColumnItem = DataTableColumnItem,
 >({
   ref,
+  children,
   "aria-label": ariaLabelProp,
   ...props
 }: DataTableHeaderProps<T>) => {
@@ -43,6 +44,43 @@ export const DataTableHeader = <
 
   // Use provided aria-label or fall back to default
   const ariaLabel = ariaLabelProp ?? msg.format("dataTableHeader");
+
+  const defaultDataColumns = (
+    <RaCollection items={activeColumns}>
+      {(column) => {
+        const align = column.align ?? "start";
+        return (
+          <DataTableColumn
+            allowsSorting={
+              column.isSortable !== undefined
+                ? column.isSortable
+                : allowsSorting
+            }
+            isRowHeader={true}
+            width={column.width}
+            defaultWidth={column.defaultWidth}
+            minWidth={column.minWidth ?? 150}
+            maxWidth={column.maxWidth}
+            column={column}
+            textAlign={
+              align === "center"
+                ? "center"
+                : align === "end" || align === "stretch"
+                  ? "end"
+                  : undefined
+            }
+          >
+            <span data-multiline-header>{column.header}</span>
+            {column.headerIcon && (
+              <Box as="span" ml="200">
+                {column.headerIcon}
+              </Box>
+            )}
+          </DataTableColumn>
+        );
+      }}
+    </RaCollection>
+  );
 
   return (
     <DataTableHeaderSlot {...styleProps} asChild>
@@ -78,13 +116,22 @@ export const DataTableHeader = <
             allowsSorting={false}
             isInternalColumn={true}
           >
-            {selectionMode === "multiple" && <Checkbox slot="selection" />}
+            {selectionMode === "multiple" && (
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                w="100%"
+                h="100%"
+              >
+                <Checkbox slot="selection" />
+              </Box>
+            )}
           </DataTableColumn>
         )}
         {showExpandColumn && (
           <DataTableColumn
             className="expand-column-header"
-            // Don't add so much padding if the selection column is first
             maxWidth={selectionBehavior === "toggle" ? 24 : 72}
             minWidth={selectionBehavior === "toggle" ? 24 : 72}
             allowsSorting={false}
@@ -104,41 +151,12 @@ export const DataTableHeader = <
             </Box>
           </DataTableColumn>
         )}
-        <RaCollection items={activeColumns}>
-          {(column) => {
-            const align = column.align ?? "start";
-            return (
-              <DataTableColumn
-                allowsSorting={
-                  // use column.isSortable if defined, and fallback to allowsSorting if not
-                  column.isSortable !== undefined
-                    ? column.isSortable
-                    : allowsSorting
-                }
-                isRowHeader={true}
-                width={column.width}
-                defaultWidth={column.defaultWidth}
-                minWidth={column.minWidth ?? 150}
-                maxWidth={column.maxWidth}
-                column={column}
-                textAlign={
-                  align === "center"
-                    ? "center"
-                    : align === "end" || align === "stretch"
-                      ? "end"
-                      : undefined
-                }
-              >
-                <span data-multiline-header>{column.header}</span>
-                {column.headerIcon && (
-                  <Box as="span" ml="200">
-                    {column.headerIcon}
-                  </Box>
-                )}
-              </DataTableColumn>
-            );
-          }}
-        </RaCollection>
+        {children
+          ? children({
+              columns: activeColumns,
+              allowsSorting: !!allowsSorting,
+            })
+          : defaultDataColumns}
         {showPinColumn && (
           <DataTableColumn
             className="pin-rows-column-header"

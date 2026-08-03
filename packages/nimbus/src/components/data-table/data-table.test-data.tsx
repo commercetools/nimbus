@@ -1401,3 +1401,28 @@ export const alignDemoRows: DataTableRowItem[] = [
     percent: 0,
   },
 ];
+
+export const compoundColumns: DataTableColumnItem[] = [
+  {
+    id: "name",
+    header: "Name",
+    accessor: (row: Record<string, unknown>) => row.name as React.ReactNode,
+  },
+  {
+    id: "email",
+    header: "Email",
+    accessor: (row: Record<string, unknown>) => row.email as React.ReactNode,
+  },
+  {
+    id: "department",
+    header: "Department",
+    accessor: (row: Record<string, unknown>) =>
+      row.department as React.ReactNode,
+  },
+];
+
+export const compoundRows: DataTableRowItem[] = [
+  { id: "1", name: "Alice", email: "alice@example.com", department: "Eng" },
+  { id: "2", name: "Bob", email: "bob@example.com", department: "Design" },
+  { id: "3", name: "Carol", email: "carol@example.com", department: "PM" },
+];

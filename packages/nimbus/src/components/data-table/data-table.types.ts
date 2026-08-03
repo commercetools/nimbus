@@ -112,12 +112,6 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     columns: DataTableColumnItem<T>[];
     rows: DataTableRowItem<T>[];
     visibleColumns?: string[];
-    onSettingsChange?: (
-      action:
-        | (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS]
-        | string
-        | undefined
-    ) => void;
     renderEmptyState?: RaTableBodyProps<T>["renderEmptyState"];
     search?: string;
     sortDescriptor?: SortDescriptor;
@@ -133,7 +127,11 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     nestedKey?: string;
     onSortChange?: (descriptor: SortDescriptor) => void;
     onSelectionChange?: (keys: Selection) => void;
-    onRowClick?: (row: DataTableRowItem<T>) => void;
+    isRowClickable: boolean;
+    hasRenderNestedContent: boolean;
+    onRowClickRef: React.RefObject<
+      ((row: DataTableRowItem<T>) => void) | undefined
+    >;
     renderNestedContent?: (
       row: DataTableRowItem<T>,
       options: DataTableNestedContentOptions
@@ -149,15 +147,25 @@ export type DataTableContextValue<T extends object = Record<string, unknown>> =
     pinnedRowIds: string[];
     selectRowLabel: string;
     disabledKeys?: Selection;
-    onRowAction?: (
-      row: DataTableRowItem<T>,
-      action: "click" | "select"
-    ) => void;
+    onRowActionRef: React.RefObject<
+      | ((row: DataTableRowItem<T>, action: "click" | "select") => void)
+      | undefined
+    >;
     isResizable?: boolean;
     pinnedRows: Set<string>;
-    onPinToggle?: (rowId: string) => void;
     togglePin: (id: string) => void;
-    onColumnsChange?: (columns: DataTableColumnItem<T>[]) => void;
+    onColumnsChangeRef: React.RefObject<
+      ((columns: DataTableColumnItem<T>[]) => void) | undefined
+    >;
+    onSettingsChangeRef: React.RefObject<
+      | ((
+          action:
+            | (typeof UPDATE_ACTIONS)[keyof typeof UPDATE_ACTIONS]
+            | string
+            | undefined
+        ) => void)
+      | undefined
+    >;
     onVisibilityChange?: (visibleColumnIds: string[]) => void;
   };
 
@@ -249,10 +257,24 @@ export type DataTableProps<T extends object = Record<string, unknown>> = Omit<
   customSettings?: DataTableCustomSettings;
 };
 
+// Not generic over the row type — DataTableHeader receives columns from
+// context which defaults to Record<string, unknown>; the row type isn't
+// available at the header level without a larger threading change.
+/** Render props passed to custom DataTable.Header children. */
+export type DataTableColumnRenderProps = {
+  columns: DataTableColumnItem[];
+  allowsSorting: boolean;
+};
+
 /**Combined props for the TableHeader element (Chakra styles + Aria behavior). */
-export type DataTableHeaderProps<T extends DataTableColumnItem> =
-  RaTableHeaderProps<T> &
-    DataTableHeaderSlotProps & { ref?: Ref<HTMLTableSectionElement> };
+export type DataTableHeaderProps<T extends DataTableColumnItem> = Omit<
+  RaTableHeaderProps<T>,
+  "children"
+> &
+  Omit<DataTableHeaderSlotProps, "children"> & {
+    ref?: Ref<HTMLTableSectionElement>;
+    children?: (renderProps: DataTableColumnRenderProps) => ReactNode;
+  };
 
 /** Combined props for the Column element (Chakra styles + Aria behavior). */
 export type DataTableColumnProps = RaColumnProps &
@@ -266,17 +288,56 @@ export type DataTableColumnProps = RaColumnProps &
 /** Type signature for the `DataTable.Column` sub-component. */
 export type DataTableColumnComponent = FC<DataTableColumnProps>;
 
-/** Combined props for the TableBody element (Chakra styles + Aria behavior). */
-export type DataTableBodyProps<T extends DataTableRowItem> =
-  RaTableBodyProps<T> &
-    DataTableBodySlotProps & { ref?: Ref<HTMLTableSectionElement> };
+/** Per-row state computed by DataTable.Body and passed to custom render functions. */
+export type DataTableRowRenderProps = {
+  isExpanded: boolean;
+  isPinned: boolean;
+  isFirstPinned: boolean;
+  isLastPinned: boolean;
+  isSinglePinned: boolean;
+};
+
+/**
+ * Combined props for the TableBody element (Chakra styles + Aria behavior).
+ *
+ * **Reactivity constraint:** custom `children` render functions are only
+ * re-invoked when row data, expansion, or pin state changes. They should
+ * derive output purely from the `row` and `renderProps` arguments — closing
+ * over external React state will produce stale renders. Route reactive values
+ * through the `rows` array or row keys instead. If you need rows to
+ * re-render in response to additional values, pass a `dependencies` array —
+ * it is merged with the internal dependency tracking.
+ */
+export type DataTableBodyProps<T extends DataTableRowItem> = Omit<
+  RaTableBodyProps<T>,
+  "children"
+> &
+  Omit<DataTableBodySlotProps, "children"> & {
+    ref?: Ref<HTMLTableSectionElement>;
+    children?: (
+      row: DataTableRowItem<T>,
+      renderProps: DataTableRowRenderProps
+    ) => ReactNode;
+  };
+
+/** Render props passed to custom DataTable.Row children for rendering cells. */
+export type DataTableCellRenderProps<
+  T extends object = Record<string, unknown>,
+> = {
+  columns: DataTableColumnItem<T>[];
+  row: DataTableRowItem<T>;
+  isDisabled: boolean;
+};
 
 /** Combined props for the Row element (Chakra styles + Aria behavior). */
-export type DataTableRowProps<T extends DataTableRowItem> = RaRowProps<T> &
-  DataTableRowSlotProps & {
+export type DataTableRowProps<T extends DataTableRowItem> = Omit<
+  RaRowProps<T>,
+  "children"
+> &
+  Omit<DataTableRowSlotProps, "children"> & {
     ref?: Ref<HTMLTableRowElement>;
     row: T;
-    depth?: number;
+    children?: (renderProps: DataTableCellRenderProps<T>) => ReactNode;
   };
 
 /** Combined props for the Cell element (Chakra styles + Aria behavior). */
