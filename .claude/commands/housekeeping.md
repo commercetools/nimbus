@@ -83,14 +83,17 @@ For each dependency group (or the specified target group):
 1. **Fetch Latest Versions (age-gated):**
 
    This repo enables pnpm's `minimumReleaseAge` supply-chain gate in
-   `pnpm-workspace.yaml` (default `1440` minutes = 24h): freshly published
-   versions are deliberately held back until they have "aged", giving the
-   ecosystem time to catch a compromised release. Your target version MUST
-   respect that gate. If you pick a version younger than the gate, pnpm cannot
-   resolve it and will **silently rewrite `pnpm-workspace.yaml` with a
-   `minimumReleaseAgeExclude` block** to force the too-new version in — which
-   defeats the protection (this has happened: a single patch bump generated a
-   99-entry exclude list).
+   `pnpm-workspace.yaml` (`1440` minutes = 24h): freshly published versions are
+   deliberately held back until they have "aged", giving the ecosystem time to
+   catch a compromised release. `minimumReleaseAgeStrict: true` is set alongside
+   it, so your target version MUST respect that gate — pick one younger and
+   resolution **fails hard** with `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`
+   instead of quietly proceeding.
+
+   > Historically (`minimumReleaseAgeStrict: false`) pnpm fell back to the
+   > too-new version and silently appended a `minimumReleaseAgeExclude` block to
+   > `pnpm-workspace.yaml`, defeating the gate — one patch bump once generated a
+   > 99-entry exclude list. A loud error has replaced that failure mode.
 
    So don't just take "latest". For each dependency, pick the **newest
    minor/patch version that is also at least `minimumReleaseAge` old**. Fetch
@@ -114,7 +117,8 @@ For each dependency group (or the specified target group):
    - You MUST respect semver constraints (e.g., `^7.28.0` can go to `^7.29.1`
      but not `^8.0.0`)
    - You MUST NOT select a target version younger than the repo's
-     `minimumReleaseAge` gate. If the only newer minor/patch is too fresh, leave
+     `minimumReleaseAge` gate — under `minimumReleaseAgeStrict: true` the
+     install fails outright. If the only newer minor/patch is too fresh, leave
      the package at its current version and report it as **"held back by
      minimumReleaseAge"** (see Phase 4 summary). This is expected, not a failure
      — the package will update on a later run once the version has aged.
@@ -141,21 +145,28 @@ For each dependency group (or the specified target group):
    ```
 
    > Use a full `pnpm install`, not `--lockfile-only`: `build:packages` and
-   > `test` must run against the actually-resolved `node_modules`, and the
-   > `minimumReleaseAgeExclude` rewrite (below) only surfaces on a real install.
+   > `test` must run against the actually-resolved `node_modules`.
 
-   **Supply-chain guard — after every `pnpm install`:** confirm pnpm did NOT
-   append a `minimumReleaseAgeExclude:` block to `pnpm-workspace.yaml`:
+   **Supply-chain guard — if `pnpm install` fails with
+   `ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`:** a target version you selected is
+   younger than the age gate. Revert that package's catalog entry to its
+   previous (age-appropriate) version, `pnpm install` again, and report the
+   package as "held back by minimumReleaseAge". You MUST NOT add a
+   `minimumReleaseAgeExclude` entry to get past it.
+
+   Under `minimumReleaseAgeStrict: true` pnpm cannot append that block itself,
+   so the check below is not the failure signal — the error above is. It is a
+   self-audit that you did not hand-add an exclude while working around a
+   held-back package:
 
    ```bash
    grep -n 'minimumReleaseAgeExclude' pnpm-workspace.yaml   # expect: no output
    ```
 
-   If the block appeared, you selected a version younger than the age gate. **Do
-   not commit it.** Remove the generated block, revert that package's catalog
-   entry to its previous (age-appropriate) version, `pnpm install` again to
-   confirm the block does not reappear, and report the package as "held back by
-   minimumReleaseAge".
+   Note that `optimisticRepeatInstall: true` lets an unchanged workspace
+   short-circuit — "Already up to date" in well under a second means nothing was
+   re-resolved and no gate was re-checked. To force a real resolution pass, run
+   `pnpm install --resolution-only --no-optimistic-repeat-install`.
 
 5. **Safety Checkpoint:**
    - If build or tests fail, immediately rollback the group's updates
@@ -377,18 +388,22 @@ If any group fails build/tests:
 4. Report which specific group failed
 5. Suggest updating that group manually or investigating failures
 
-### **`minimumReleaseAgeExclude` must never be committed:**
+### **`ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION` must never be bypassed:**
 
-If `pnpm install` appended a `minimumReleaseAgeExclude:` block to
-`pnpm-workspace.yaml`, a selected target version is younger than the repo's
-supply-chain age gate and pnpm force-included it. This defeats the protection —
-do not commit it. Instead:
+`minimumReleaseAgeStrict: true` makes pnpm fail resolution when no old-enough
+version satisfies a range. If `pnpm install` errors with
+`ERR_PNPM_MINIMUM_RELEASE_AGE_VIOLATION`, a selected target version is younger
+than the repo's supply-chain age gate. Back off the version — never widen the
+exception list:
 
-1. Delete the generated `minimumReleaseAgeExclude:` block from
-   `pnpm-workspace.yaml`.
-2. Revert the offending catalog entry to its previous, age-appropriate version.
-3. `pnpm install` again and confirm the block does not reappear.
-4. Report the package as "held back by minimumReleaseAge" in the summary.
+1. Revert the offending catalog entry to its previous, age-appropriate version.
+2. `pnpm install` again and confirm it resolves.
+3. Report the package as "held back by minimumReleaseAge" in the summary.
+
+This command MUST NOT add a `minimumReleaseAgeExclude` entry to
+`pnpm-workspace.yaml`. Bypassing the gate for a genuine hotfix is a deliberate
+human decision that earns its own review; it is never a step in an automated
+dependency sweep.
 
 ### **Logging:**
 

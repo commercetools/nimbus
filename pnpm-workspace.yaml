@@ -11,20 +11,26 @@ catalogMode: strict
 # pnpm 11 ships these as built-in defaults. They are pinned here so the repo's
 # install behavior is visible and version-independent rather than silently
 # inherited from whichever pnpm version happens to be running. Values below
-# mirror pnpm 11's defaults, so this is documentation, not a behavior change —
-# with one deliberate exception noted on minimumReleaseAgeStrict.
+# mirror pnpm 11's effective defaults, with one deliberate tightening noted on
+# minimumReleaseAgeIgnoreMissingTime.
 
 # Delay resolving newly published versions until they are at least this many
 # minutes old (supply-chain protection: gives the ecosystem time to catch a
 # compromised release). pnpm 11 default: 1440 (24h). Set to 0 to disable.
 minimumReleaseAge: 1440
-# Because minimumReleaseAge is set EXPLICITLY, pnpm would otherwise flip this to
-# `true` and FAIL resolution when no old-enough version satisfies a range. We
-# pin it to `false` to keep the softer default behavior (skip/warn, don't error).
-minimumReleaseAgeStrict: false
-# Don't apply the age gate to packages whose registry metadata has no publish
-# time (avoids spurious failures on such packages).
-minimumReleaseAgeIgnoreMissingTime: true
+# FAIL resolution when no old-enough version satisfies a range, rather than
+# falling back to a too-new one. pnpm already defaults this to `true` because
+# minimumReleaseAge is set EXPLICITLY above; pinned so the guarantee survives any
+# future edit to that line. Without it, pnpm silently appends a
+# `minimumReleaseAgeExclude` block to this file to force the fresh version
+# through, defeating the gate (this once produced a 99-entry exclude list).
+# Bypasses must be hand-written and reviewed.
+minimumReleaseAgeStrict: true
+# FAIL resolution for packages whose registry metadata omits the `time` field,
+# rather than waiving the age gate for them (pnpm's default is `true` = waive).
+# Otherwise a mirror or private registry that drops `time` would silently skip
+# the cooldown for every package it serves.
+minimumReleaseAgeIgnoreMissingTime: false
 # Fail the install if any dependency has an unreviewed build (postinstall)
 # script — every builder must be an explicit decision in `allowBuilds` below.
 strictDepBuilds: true
