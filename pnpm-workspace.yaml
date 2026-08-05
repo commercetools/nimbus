@@ -191,8 +191,15 @@ catalogs:
   react:
     "@types/react": ^19.2.17
     "@types/react-dom": ^19.2.3
-    react: ^19.0.0
-    react-dom: ^19.0.0
+    # Floor raised from ^19.0.0 to satisfy react-router@8.3.0, which declares a
+    # `react`/`react-dom` peer of >=19.2.7; the lockfile was resolving 19.2.0.
+    # This catalog is dev/test-only — it is referenced from devDependencies and
+    # the private apps, never from a published package's dependencies or
+    # peerDependencies. The consumer-facing contract stays the literal
+    # `"react": "19.x"` peer in packages/nimbus/package.json, so consumers keep
+    # full control of their React version.
+    react: ^19.2.7
+    react-dom: ^19.2.7
     "@emotion/react": ^11.14.0
     "@emotion/is-prop-valid": ^1.4.0
     "@chakra-ui/cli": ^3.36.1
@@ -251,7 +258,13 @@ catalogs:
     prism-react-renderer: 2.4.1
     react-live: 4.1.8
     react-router: 8.3.0
-    react-router-dom: 7.17.0
+    # Must stay >=7.18.0: react-router-dom hard-pins react-router to its own
+    # version, so this governs the *second* react-router copy in the tree.
+    # 7.17.0 kept a vulnerable react-router@7.17.0 installed (high-severity
+    # route-matching DoS, plus XSS / open-redirect / constructor-injection
+    # advisories, all patched in 7.18.0) even after the direct react-router
+    # dependency moved to 8.3.0.
+    react-router-dom: 7.18.2
     react-syntax-highlighter: 16.1.1
     remark-mark-highlight: 0.1.1
     slug: 11.0.1
