@@ -49,8 +49,8 @@ catalogs:
       specifier: 0.1.1
       version: 0.1.1
     slug:
-      specifier: 11.0.1
-      version: 11.0.1
+      specifier: 12.0.1
+      version: 12.0.1
     vite-plugin-compression:
       specifier: 0.5.1
       version: 0.5.1
@@ -593,7 +593,7 @@ importers:
         version: 0.1.1
       slug:
         specifier: catalog:apps
-        version: 11.0.1
+        version: 12.0.1
       use-debounce:
         specifier: catalog:react
         version: 10.1.1(react@19.2.0)
@@ -8420,8 +8420,8 @@ packages:
   slate@0.75.0:
     resolution: {integrity: sha512-ZLejJN1S9VXZPj1Si4BIoiJSwYS6rMwSyOTHVQQGiASLvstLZFS4jPrk3cx+MrHRYXvt72TlYMTd/U3Mgn7Uhw==}
 
-  slug@11.0.1:
-    resolution: {integrity: sha512-VrM060OM/E7rdLQSnp6JHrzFfJFmqQBp0+TMhZStnEB8PfNliaZ9UWYjTHGHLUFVJorZ8TjVd/aKvIxHWU2O7g==}
+  slug@12.0.1:
+    resolution: {integrity: sha512-p8lJZLw/5GDmxXO3FKjiOYjiBMFGDc+/8DgutoXKqjn8KX7buzbkX1unEavO7T+GHGLTOyeb7VjWTRWpb8wmuQ==}
     hasBin: true
 
   snake-case@3.0.4:
@@ -19781,7 +19781,7 @@ snapshots:
       is-plain-object: 5.0.0
       tiny-warning: 1.0.3
 
-  slug@11.0.1: {}
+  slug@12.0.1: {}
 
   snake-case@3.0.4:
     dependencies:
