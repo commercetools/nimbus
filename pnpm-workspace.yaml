@@ -163,7 +163,12 @@ catalogs:
     "@vitest/browser-playwright": ^4.1.10
     "@vitest/coverage-v8": ^4.1.10
     "@testing-library/dom": 10.4.1
-    "@testing-library/jest-dom": ^6.10.0
+    # Pinned exact at 6.9.1: 6.10.0 is deprecated upstream as an "incorrect
+    # minor release with breaking changes" (raises the floor to Node >=22 and
+    # makes @testing-library/dom a required peer). A caret range can't hold it
+    # back — ^6.9.1 re-resolves straight to 6.10.0. The 6.x line ends here;
+    # moving forward means 7.0.0, which is a major and needs its own PR.
+    "@testing-library/jest-dom": 6.9.1
     "@testing-library/user-event": ^14.6.3
     "@testing-library/react": ^16.3.2
     playwright: ^1.62.1
@@ -241,17 +246,17 @@ catalogs:
   # Renovate updates are explicit PRs rather than silent range expansion.
   apps:
     "@mdx-js/mdx": 3.1.1
-    "@types/mdx": 2.0.13
+    "@types/mdx": 2.0.14
     "@types/react-syntax-highlighter": 15.5.13
     "@types/slug": 5.0.9
     chokidar: 5.0.0
-    fuse.js: 7.3.0
+    fuse.js: 7.5.0
     github-slugger: 2.0.0
-    jotai: 2.20.1
+    jotai: 2.20.2
     prism-react-renderer: 2.4.1
     react-live: 4.1.8
-    react-router: 8.1.0
-    react-router-dom: 7.17.0
+    react-router: 8.3.0
+    react-router-dom: 7.18.2
     react-syntax-highlighter: 16.1.1
     remark-mark-highlight: 0.1.1
     slug: 11.0.1
