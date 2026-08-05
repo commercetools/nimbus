@@ -256,6 +256,4 @@ catalogs:
     remark-mark-highlight: 0.1.1
     slug: 11.0.1
     vite-plugin-compression: 0.5.1
-minimumReleaseAgeExclude:
-  # Renovate security update: react-router@8.3.0
-  - react-router@8.3.0
+
