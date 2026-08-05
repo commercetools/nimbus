@@ -13,9 +13,13 @@ jobs:
       contents: read
       pull-requests: write
     container:
-      # Make sure to grab the latest version of the Playwright image
+      # Must track the `playwright` version in pnpm-workspace.yaml's tooling
+      # catalog. The image ships pre-downloaded browsers under a build-specific
+      # revision directory, so a Playwright bump that changes that revision
+      # fails at launch with "Executable doesn't exist at
+      # /ms-playwright/chromium_headless_shell-<rev>". Bump both together.
       # https://playwright.dev/docs/docker#pull-the-image
-      image: mcr.microsoft.com/playwright:v1.61.0-noble
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
 
     steps:
       - name: Checkout repository
