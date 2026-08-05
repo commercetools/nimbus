@@ -41,6 +41,13 @@ export const datePickerSlotRecipe = defineSlotRecipe({
         animationName: "fade-out, scale-out",
         animationDuration: "faster",
       },
+
+      // `!important` is required: the `[data-entering]`/`[data-exiting]` rules
+      // above are more specific than this block, so a plain `animation: none`
+      // would not win the cascade.
+      _motionReduce: {
+        animation: "none !important",
+      },
     },
   },
   variants: {

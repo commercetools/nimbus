@@ -42,6 +42,12 @@ export const dialogSlotRecipe = defineSlotRecipe({
         animationName: "fade-out",
         animationDuration: "faster",
       },
+      // `!important` is required: the `[data-entering]`/`[data-exiting]` rules
+      // above are more specific than this block, so a plain `animation: none`
+      // would not win the cascade.
+      _motionReduce: {
+        animation: "none !important",
+      },
     },
     modal: {
       display: "flex",
@@ -62,6 +68,12 @@ export const dialogSlotRecipe = defineSlotRecipe({
       "&[data-exiting]": {
         animationDuration: "faster",
         animationName: "slide-to-top, scale-out, fade-out",
+      },
+      // `!important` is required: the `[data-entering]`/`[data-exiting]` rules
+      // above are more specific than this block, so a plain `animation: none`
+      // would not win the cascade.
+      _motionReduce: {
+        animation: "none !important",
       },
     },
     content: {

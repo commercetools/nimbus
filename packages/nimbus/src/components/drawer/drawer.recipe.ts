@@ -41,6 +41,12 @@ export const drawerSlotRecipe = defineSlotRecipe({
         animationDuration: "moderate",
         animationTimingFunction: "ease-in-out",
       },
+      // `!important` is required: the `[data-entering]`/`[data-exiting]` rules
+      // above are more specific than this block, so a plain `animation: none`
+      // would not win the cascade.
+      _motionReduce: {
+        animation: "none !important",
+      },
     },
     modal: {
       display: "flex",
@@ -63,6 +69,12 @@ export const drawerSlotRecipe = defineSlotRecipe({
       "&[data-exiting]": {
         animationDuration: "moderate",
         animationTimingFunction: "ease-in-out",
+      },
+      // `!important` is required here too, and additionally because the
+      // `placement` variants set their own `animationName` (slide-from/to-*) in
+      // rules emitted after this base block.
+      _motionReduce: {
+        animation: "none !important",
       },
     },
     content: {
