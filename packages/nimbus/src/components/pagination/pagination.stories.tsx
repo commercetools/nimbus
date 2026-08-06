@@ -778,6 +778,9 @@ export const ConfigurationToggles: Story = {
     <Stack direction="column" gap="600">
       {(
         [
+          // Both-on first: each toggle is named for what it removes, so the frame
+          // needs the full composition to read against.
+          ["Both enabled", {}],
           ["Without page size selector", { enablePageSizeSelector: false }],
           ["Without page input", { enablePageInput: false }],
         ] as const
@@ -820,9 +823,11 @@ export const Locales: Story = {
           </Text>
           <NimbusProvider locale={locale}>
             <Pagination
-              totalItems={1250000}
+              totalItems={250000}
               currentPage={2500}
-              pageSize={500}
+              // Must be one of the default pageSizeOptions, or the Select renders
+              // its placeholder and the translated label sits next to an empty box.
+              pageSize={100}
               onPageChange={noop}
               onPageSizeChange={noop}
               aria-label={`Pagination ${locale}`}

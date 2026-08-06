@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 import { useState, useCallback } from "react";
 import { userEvent, within, expect, waitFor } from "storybook/test";
 import { Box, Dialog, FormField, Stack, Text } from "@commercetools/nimbus";
@@ -82,6 +82,16 @@ const meta: Meta<typeof ComboBox.Root> = {
   title: "Components/ComboBox",
   component: ComboBox.Root,
 };
+
+/**
+ * The popover portals out and is absolutely positioned, so it adds no document
+ * height and Chromatic's crop cuts it off. Reserve room for any open-listbox frame.
+ */
+const roomForPopover: Decorator = (Story) => (
+  <Box minHeight="26rem">
+    <Story />
+  </Box>
+);
 
 export default meta;
 
@@ -339,6 +349,7 @@ export const AsyncLoading: Story = {
   // VRT: the open listbox with async results loaded.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
+  decorators: [roomForPopover],
   render: () => {
     const [error, setError] = useState<string | null>(null);
     const getPokemonValue = useCallback((pokemon: Pokemon) => pokemon.name, []);
@@ -399,6 +410,19 @@ export const AsyncLoading: Story = {
       await waitFor(
         () => {
           expect(findOptionByText("pikachu")).toBeTruthy();
+        },
+        { timeout: 5000 }
+      );
+
+      // The option renders name-only, then grows when its details resolve; the frame
+      // should show the settled row.
+      await waitFor(
+        () => {
+          const sprite = document.querySelector<HTMLImageElement>(
+            '[role="option"] img'
+          );
+          expect(sprite?.complete).toBe(true);
+          expect(findOptionByText("electric")).toBeTruthy();
         },
         { timeout: 5000 }
       );
@@ -1702,6 +1726,7 @@ export const FocusIndicatorsVisible: Story = {
   // VRT: `[data-focused]` outline on the active option.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
+  decorators: [roomForPopover],
   render: () => {
     return (
       <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
@@ -2798,6 +2823,7 @@ export const OptionSelectedVisuallyDistinguished: Story = {
   // VRT: all three option states at once - selected, unselected and disabled.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
+  decorators: [roomForPopover],
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
       1, 3,
@@ -4280,6 +4306,7 @@ export const FilteringWithSections: Story = {
   // VRT: section headers inside the open listbox.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
+  decorators: [roomForPopover],
   render: () => {
     const sectionsData = [
       {
@@ -4861,6 +4888,7 @@ export const EmptyStateCustomMessage: Story = {
   // VRT: the open listbox with no results - the empty-state render.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
+  decorators: [roomForPopover],
   render: () => {
     return (
       <ComposedComboBox
@@ -6295,6 +6323,7 @@ export const OptionWithDescription: Story = {
   // VRT: the only frame with `[slot="description"]`; the rest are plain-text options.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
+  decorators: [roomForPopover],
   render: () => (
     <ComboBox.Root aria-label="Option descriptions" menuTrigger="focus">
       <ComboBox.Trigger />
