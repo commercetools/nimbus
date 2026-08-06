@@ -137,9 +137,9 @@ catalogs:
     publint: ^0.3.23
     "@commercetools-frontend/ui-kit": ^20.6.7
     "@modelcontextprotocol/inspector": ^0.22.0
-    "@babel/core": ^7.29.7
-    "@babel/runtime": ^7.29.7
-    "@babel/preset-typescript": ^7.29.7
+    "@babel/core": ^8.0.0
+    "@babel/runtime": ^8.0.0
+    "@babel/preset-typescript": ^8.0.0
     "@eslint/js": ^10.0.1
     "@react-types/shared": ^3.36.1
     eslint: ^10.8.0
@@ -261,4 +261,3 @@ catalogs:
     remark-mark-highlight: 0.1.1
     slug: 11.0.1
     vite-plugin-compression: 0.5.1
-
