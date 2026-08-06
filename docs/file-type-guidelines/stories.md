@@ -206,7 +206,8 @@ already-audited component → don't.
 
 - **A state inert in the default frame → snapshot the condition that fires it.**
   Sticky needs a scroll in the play (bounded `overflow: auto` ancestor,
-  `offsetHeight`-derived target, each combination its own frame);
+  `offsetHeight`-derived target, each combination its own frame, and a
+  `scrollHeight > clientHeight` wait before scrolling);
   `scrollBehavior="inside"` needs overflowing content; a surface a variant
   zeroes needs the variant that paints it (a showcase left at that default
   renders blank boxes while its assertions still pass); an inherited property

@@ -17,10 +17,14 @@ import {
   ContentCopy,
 } from "@commercetools/nimbus-icons";
 import { within, expect } from "storybook/test";
+import { SEMANTIC_COLOR_PALETTES } from "@/constants/color-palettes";
 
 const SAMPLE_MESSAGE =
   "Lorem ipsum dolor sit amet consectetur adipiscing elit. Ut et massa mi. " +
   "Aliquam in hendrerit urna. Pellentesque sit amet sapien fringilla.";
+
+const senders = ["agent", "user"] as const;
+const tones = ["neutral", "error"] as const;
 
 const meta: Meta<typeof ChatMessage.Root> = {
   title: "Components/Chat/ChatMessage",
@@ -147,6 +151,9 @@ export const AgentText: Story = {
  * Action buttons sit inside the body, right-aligned at the bottom.
  */
 export const AgentWithActions: Story = {
+  // VRT: the only frame composing the `actions` slot.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <ChatMessage.Root sender="agent" data-testid="agent-actions">
       <ChatMessage.Avatar>
@@ -185,6 +192,9 @@ export const AgentWithActions: Story = {
  * timestamp and reaction icons on the right.
  */
 export const AgentWithMeta: Story = {
+  // VRT: the `meta` slot - grid row 2, indented under the body.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <ChatMessage.Root sender="agent" data-testid="agent-meta">
       <ChatMessage.Avatar>
@@ -221,6 +231,40 @@ export const AgentWithMeta: Story = {
         canvas.getByRole("button", { name: "Good response" })
       ).toBeInTheDocument();
       await expect(canvas.getByText("Apr 13, 11:56pm")).toBeInTheDocument();
+    });
+  },
+};
+
+/**
+ * User message with meta
+ * The meta row follows its body into grid column 1, so it sits under the
+ * narrower, right-aligned user body rather than the agent's.
+ */
+export const UserWithMeta: Story = {
+  // VRT: the `meta` slot on the user sender - grid column 1 under the 480px body.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <ChatMessage.Root sender="user" data-testid="user-meta">
+      <ChatMessage.Avatar firstName="Ada" lastName="Lovelace" />
+      <ChatMessage.Body data-testid="user-meta-body">
+        <Text>{SAMPLE_MESSAGE}</Text>
+      </ChatMessage.Body>
+      <ChatMessage.Meta data-testid="user-meta-row">
+        <Link href="#">Edit</Link>
+        <Text color="neutral.11">Apr 13, 11:58pm</Text>
+      </ChatMessage.Meta>
+    </ChatMessage.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Meta tracks the body into column 1", async () => {
+      const body = canvas.getByTestId("user-meta-body").getBoundingClientRect();
+      const row = canvas.getByTestId("user-meta-row").getBoundingClientRect();
+      // Agent puts both in column 2; user puts both in column 1, so the meta
+      // row starts with the body rather than beside the avatar.
+      await expect(Math.round(row.left)).toBe(Math.round(body.left));
     });
   },
 };
@@ -277,6 +321,9 @@ export const AgentWithMarkdown: Story = {
  * than overflowing its rounded card (and pushing horizontal page scroll).
  */
 export const Overflow: Story = {
+  // VRT: a long unbreakable token wrapped inside the card (`overflowWrap: anywhere`).
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <ChatMessage.Root sender="agent">
       <ChatMessage.Avatar>
@@ -369,6 +416,9 @@ export const ErrorTone: Story = {
  * `isStreaming` on the root (which sets `aria-busy`).
  */
 export const Streaming: Story = {
+  // VRT: the `typing` slot; `activity-bounce` parks visible, so no frame pin.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <ChatMessage.Root sender="agent" isStreaming data-testid="streaming-body">
       <ChatMessage.Avatar>
@@ -445,6 +495,9 @@ export const Senders: Story = {
  * sits flush against the message's leading edge with no phantom gutter.
  */
 export const AvatarLess: Story = {
+  // VRT: the body flush at the leading edge - the avatar track collapses to 0px.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <ChatMessage.Root sender="agent" data-testid="msg">
       <ChatMessage.Body data-testid="body">
@@ -518,6 +571,9 @@ export const AvatarLabelledBy: Story = {
  * person icon for the user. An explicit `variant` always wins.
  */
 export const AvatarVariantBySender: Story = {
+  // VRT: per-sender avatar variant + glyph fallback; resolved in TS, not the recipe.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack gap="600" alignItems="start">
       {/* Unconfigured avatars → sender-appropriate glyph in the per-sender default. */}
@@ -584,6 +640,9 @@ export const AvatarVariantBySender: Story = {
  * `colorPalette` to `ChatMessage.Root` to retint the whole message.
  */
 export const ThemedPalette: Story = {
+  // VRT: the `colorPalette` axis on `user`, where it tints the body and the avatar.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <Stack gap="600" alignItems="start">
       <ChatMessage.Root sender="user">
@@ -592,12 +651,18 @@ export const ThemedPalette: Story = {
           <Text>Default palette (primary)</Text>
         </ChatMessage.Body>
       </ChatMessage.Root>
-      <ChatMessage.Root sender="user" colorPalette="neutral">
-        <ChatMessage.Avatar />
-        <ChatMessage.Body data-testid="palette-neutral">
-          <Text>Retinted with colorPalette="neutral"</Text>
-        </ChatMessage.Body>
-      </ChatMessage.Root>
+      {SEMANTIC_COLOR_PALETTES.map((colorPalette) => (
+        <ChatMessage.Root
+          key={colorPalette}
+          sender="user"
+          colorPalette={colorPalette}
+        >
+          <ChatMessage.Avatar />
+          <ChatMessage.Body data-testid={`palette-${colorPalette}`}>
+            <Text>Retinted with colorPalette="{colorPalette}"</Text>
+          </ChatMessage.Body>
+        </ChatMessage.Root>
+      ))}
     </Stack>
   ),
   play: async ({ canvasElement, step }) => {
@@ -609,6 +674,10 @@ export const ThemedPalette: Story = {
       // The user body uses `colorPalette.2`; overriding `colorPalette` on Root
       // resolves that token against the new palette, so the surface changes.
       await expect(bg("palette-default")).not.toBe(bg("palette-neutral"));
+    });
+
+    await step("Palette defaults to primary", async () => {
+      await expect(bg("palette-default")).toBe(bg("palette-primary"));
     });
   },
 };
@@ -666,4 +735,34 @@ export const AccessibleFeed: Story = {
       ).toBeInTheDocument();
     });
   },
+};
+
+/**
+ * SmokeTest - sender × tone.
+ */
+export const SmokeTest: Story = {
+  // VRT: sender x tone interact - the error surface lands on two different layouts.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack gap="600" alignItems="start">
+      {tones.flatMap((tone) =>
+        senders.map((sender) => (
+          <ChatMessage.Root
+            key={`${sender}-${tone}`}
+            sender={sender}
+            tone={tone}
+            data-testid={`smoke-${sender}-${tone}`}
+          >
+            <ChatMessage.Avatar />
+            <ChatMessage.Body>
+              <Text>
+                {sender} / {tone} — {SAMPLE_MESSAGE}
+              </Text>
+            </ChatMessage.Body>
+          </ChatMessage.Root>
+        ))
+      )}
+    </Stack>
+  ),
 };

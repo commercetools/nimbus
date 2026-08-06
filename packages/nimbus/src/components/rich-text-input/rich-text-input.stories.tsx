@@ -158,6 +158,26 @@ export const WithPlaceholder: Story = {
   },
 };
 
+/**
+ * An untouched editor showing its placeholder.
+ */
+export const Placeholder: Story = {
+  // VRT: the placeholder's own rule; Default and WithPlaceholder both type it away.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    placeholder: "Enter your content here...",
+  },
+  play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
+    const canvas = within(canvasElement);
+    const editor = canvas.getByRole("textbox");
+
+    await waitFor(() => {
+      expect(editor.querySelector("[data-slate-placeholder]")).toBeVisible();
+    });
+  },
+};
+
 export const WithDefaultValue: Story = {
   args: {
     defaultValue: "<p>This is the <strong>default</strong> content.</p>",
@@ -222,6 +242,9 @@ export const Controlled: Story = {
 // =============================================================================
 
 export const Disabled: Story = {
+  // VRT: toolbar and editable both at 0.5 opacity; the toolbar still renders.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     defaultValue: "<p>This input is <strong>disabled</strong>.</p>",
     isDisabled: true,
@@ -256,6 +279,9 @@ export const Disabled: Story = {
 };
 
 export const ReadOnly: Story = {
+  // VRT: no recipe rule for read-only, but the component drops the toolbar entirely.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     defaultValue: "<p>This input is <strong>read-only</strong>.</p>",
     isReadOnly: true,
@@ -282,6 +308,9 @@ export const ReadOnly: Story = {
 };
 
 export const Invalid: Story = {
+  // VRT: the thicker `critical.7` border; blurred so AutoFocus's ring doesn't overlay it.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     defaultValue: "<p>This input has an error state.</p>",
     isInvalid: true,
@@ -307,10 +336,15 @@ export const Invalid: Story = {
     await waitFor(() => {
       expect(editor).toHaveTextContent("Additional text.");
     });
+
+    editor.blur();
   },
 };
 
 export const AutoFocus: Story = {
+  // VRT: the root's `_focusWithin` ring - one shared layerStyle, so one frame covers it.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     autoFocus: true,
     placeholder: "This input should be focused",
@@ -318,6 +352,7 @@ export const AutoFocus: Story = {
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
     const editor = canvas.getByRole("textbox");
+    canvasElement.style.caretColor = "transparent";
 
     // Note: Auto-focus testing in Storybook can be unreliable
     // We'll verify the prop is set correctly
@@ -791,11 +826,17 @@ export const OnFocusBlurCallbacks: Story = {
 // =============================================================================
 
 export const ComplexHTML: Story = {
+  // VRT: every reachable `& element` rule. No `<pre>`: a code block renders as a `<p>`.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     defaultValue: `
       <h1>Document Title</h1>
       <p>This is a paragraph with <strong>bold</strong> and <em>italic</em> text.</p>
       <h2>Section Header</h2>
+      <h3>Subsection</h3>
+      <h4>Minor heading</h4>
+      <h5>Smallest heading</h5>
       <blockquote>This is an important quote with <u>underlined</u> text.</blockquote>
       <ul>
         <li>First bulleted item</li>
@@ -805,6 +846,7 @@ export const ComplexHTML: Story = {
         <li>First numbered item</li>
         <li>Second numbered item</li>
       </ol>
+      <p>A paragraph with <a href="https://example.com">a link</a> in it.</p>
       <p>Paragraph with <del>strikethrough</del> and super<sup>script</sup> and sub<sub>script</sub>.</p>
     `,
   },
@@ -815,6 +857,10 @@ export const ComplexHTML: Story = {
     // Verify all HTML elements are rendered correctly
     expect(editor.querySelector("h1")).toHaveTextContent("Document Title");
     expect(editor.querySelector("h2")).toHaveTextContent("Section Header");
+    expect(editor.querySelector("h3")).toBeInTheDocument();
+    expect(editor.querySelector("h4")).toBeInTheDocument();
+    expect(editor.querySelector("h5")).toBeInTheDocument();
+    expect(editor.querySelector("a")).toBeInTheDocument();
     expect(editor.querySelector("blockquote")).toBeInTheDocument();
     expect(editor.querySelector("ul")).toBeInTheDocument();
     expect(editor.querySelector("ol")).toBeInTheDocument();

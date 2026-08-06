@@ -41,6 +41,9 @@ type Story = StoryObj<typeof ChatMessageList.Root>;
  * members do not know they are inside a list.
  */
 export const MixedTranscript: Story = {
+  // VRT: the viewport's transcript rhythm - inter-item `gap` and the list's own padding.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <ChatMessageList.Root
       aria-label="Conversation with the agent"
@@ -210,6 +213,36 @@ export const ReleaseOnScrollUp: Story = {
   },
 };
 
+/**
+ * Scrolled up
+ * The jump-to-latest control, shown while the stick-to-bottom pin is released.
+ */
+export const ScrolledUp: Story = {
+  // VRT: the floating jump-to-latest pill; nothing renders it until the pin releases.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => <AppendableList />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const viewport = getViewport(canvas.getByTestId("list"));
+
+    await step("Scrolling up reveals the jump-to-latest control", async () => {
+      // Until the list has laid out there is nothing to scroll, so the pin never releases.
+      await waitFor(() =>
+        expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight)
+      );
+
+      viewport.scrollTop = 0;
+      viewport.dispatchEvent(new Event("scroll"));
+      await waitFor(() =>
+        expect(
+          canvas.getByRole("button", { name: "Scroll to latest message" })
+        ).toBeInTheDocument()
+      );
+    });
+  },
+};
+
 /** A list driven through its imperative handle, for the redundant-scroll test. */
 const ImperativeList = () => {
   const ref = useRef<ChatMessageListHandle>(null);
@@ -359,6 +392,9 @@ export const StreamingGrow: Story = {
  * With no items, the list renders its consumer-supplied `emptyState`.
  */
 export const EmptyState: Story = {
+  // VRT: the `empty` slot. Two children, or its `gap` between them never fires.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <ChatMessageList.Root
       aria-label="Conversation"
@@ -366,9 +402,15 @@ export const EmptyState: Story = {
       width="480px"
       data-testid="list"
       emptyState={
-        <Text data-testid="empty">
-          No messages yet — ask the agent anything to get started.
-        </Text>
+        <>
+          <Text data-testid="empty" fontWeight="bold">
+            No messages yet
+          </Text>
+          <Text>
+            Ask the agent anything to get started — it can summarise orders,
+            draft copy, or look up a customer.
+          </Text>
+        </>
       }
     />
   ),

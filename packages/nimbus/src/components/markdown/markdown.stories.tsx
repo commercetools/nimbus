@@ -69,6 +69,7 @@ export const Defaults: Story = {
   },
 };
 
+// Local `staticDirs` asset: this frame is snapshotted, and a lazy image over the network would flake.
 const allElementsSource = `# Heading level 1
 ## Heading level 2
 ### Heading level 3
@@ -103,7 +104,7 @@ a [regular link](https://example.com).
 const answer = 42;
 \`\`\`
 
-![A descriptive alt](https://cdn.example.com/image.png)
+![A descriptive alt](/avatar-demo.jpg)
 
 ---
 
@@ -118,6 +119,9 @@ A claim that needs a citation.[^src]
  * blockquotes, GitHub alerts, tables, code blocks, and footnotes.
  */
 export const AllElements: Story = {
+  // VRT: every default renderer in one frame - the content-fidelity baseline.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => <Markdown>{allElementsSource}</Markdown>,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -233,6 +237,9 @@ const alertsSource = `> [!NOTE]
  * recognized marker renders as an ordinary quote.
  */
 export const Alerts: Story = {
+  // VRT: all five alert palettes and icons; AllElements renders only `tip`.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => <Markdown>{alertsSource}</Markdown>,
   play: async ({ canvasElement }) => {
     // Each recognized marker tags its blockquote with data-alert and strips the
