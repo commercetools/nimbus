@@ -8,30 +8,32 @@ import * as a11yAddonAnnotations from "@storybook/addon-a11y/preview";
 setProjectAnnotations([a11yAddonAnnotations, projectAnnotations]);
 
 /**
- * Neutralize overlay enter/exit animations for the duration of a test run.
+ * Collapse overlay enter/exit animations to near-zero duration.
  *
  * React Aria's `useExitAnimation` keeps an overlay mounted until every
- * animation returned by `element.getAnimations()` settles, so any component
- * with a `&[data-exiting]` animation only unmounts once the browser has
- * actually finished running that animation. Four recipes opt into this —
- * Drawer, Dialog, DatePicker and DateRangePicker — which makes every
- * "overlay is gone after close" assertion a race against the real animation
- * timeline. Every other overlay (Tooltip, Menu, Select, ComboBox, Popover)
- * declares no exit animation, so `getAnimations()` is empty and React Aria
- * unmounts synchronously.
+ * animation returned by `element.getAnimations()` settles.  Drawer, Dialog,
+ * DatePicker and DateRangePicker define CSS `@keyframes` animations on their
+ * `[data-entering]` / `[data-exiting]` states, which means overlay-close
+ * assertions race the real animation timeline (200–400 ms).
  *
- * Setting `animation: none` empties `getAnimations()`, which puts the animated
- * overlays on that same synchronous path. No story asserts on `data-entering`
- * or `data-exiting`, so nothing is under test here — the wait was incidental.
+ * We shorten the duration to 10 ms rather than removing the animation
+ * entirely.  `animation: none` empties `getAnimations()`, which forces React
+ * Aria onto its synchronous `onEnd()` code path — a different lifecycle from
+ * what real animations exercise, and one that breaks sequential open/close
+ * interactions in Chromium.  A short but non-zero duration keeps the animation
+ * registered in the browser's timeline so React Aria still goes through its
+ * normal async `Promise.allSettled → flushSync(onEnd)` path, but the
+ * animation finishes within a single frame.
  *
- * Scoped to this setup file, so `pnpm start:storybook` and the Storybook build
- * that Chromatic snapshots keep their animations.
+ * Scoped to this setup file so `pnpm start:storybook` and the Storybook build
+ * that Chromatic snapshots keep their real durations.
  */
 const style = document.createElement("style");
-style.setAttribute("data-nimbus-test-no-animation", "");
+style.setAttribute("data-nimbus-test-fast-animation", "");
 style.textContent = `
   [data-entering], [data-exiting] {
-    animation: none !important;
+    animation-duration: 10ms !important;
+    animation-delay: 0s !important;
   }
 `;
 document.head.appendChild(style);
