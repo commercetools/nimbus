@@ -657,7 +657,7 @@
   },
   "Nimbus.Slider.minimumThumb": {
     "developer_comment": "Default aria-label for the lower (minimum) thumb of a range slider",
-    "string": "Mínimo"
+    "string": "Mínima"
   },
   "Nimbus.SplitButton.noActionsAvailable": {
     "developer_comment": "fallback message when split button has no menu items",
