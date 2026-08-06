@@ -263,7 +263,9 @@ already-audited component → don't.
 
 - **What to snapshot:** every prop-driven visual state. Interacting axes fold
   into one `SmokeTest`; independent axes get separate showcases; any state the
-  matrix can't render gets its own story. Never drop a state to save cost.
+  matrix can't render gets its own story. Never drop a state to save cost. A
+  recipe with `compoundVariants` over two axes has already declared they
+  interact - build the matrix.
 - **Name the interacting-axes matrix `SmokeTest`, rendered last** - the axis
   list lives in the doc comment.
 - **Axis arrays span the full supported range** - palettes iterate the 6

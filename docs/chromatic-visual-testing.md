@@ -316,9 +316,13 @@ separate frame, never a dropped state.
 **A matrix is only for _interacting_ axes.** When axes are independent - one
 just scales or recolors the other (Badge/Avatar `size × colorPalette`, Switch
 `size × on/off`) - snapshot each as its own showcase; the cross-product adds
-cells, not coverage. **Name the matrix `SmokeTest` and render it last** - the
-role name stays accurate as axes change, and the axis list goes in the doc
-comment.
+cells, not coverage. **`compoundVariants` settle it without judgment**: a recipe
+that declares one is stating those axes produce something neither yields alone,
+so the cross-product is mandatory. Combobox has four over
+`variant × selectionMode` (popover width, trigger flex) and needs the matrix;
+Link, audited the same day, has none and correctly gets showcases. **Name the
+matrix `SmokeTest` and render it last** - the role name stays accurate as axes
+change, and the axis list goes in the doc comment.
 
 **Over the axes it does span, the matrix must be exhaustive.** A single-axis
 showcase varies one axis with the rest at defaults, so

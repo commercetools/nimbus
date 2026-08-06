@@ -373,7 +373,8 @@ text) can go here too.
 
 **A matrix is only for interacting axes.** Build one only when a cross-cell is a
 visual neither axis produces alone (checked × invalid → a distinct critical
-fill). If the axes are **independent** - no novel cross-cell, one just
+fill). `compoundVariants` over two axes is the recipe declaring exactly that -
+build the matrix. If the axes are **independent** - no novel cross-cell, one just
 scales/recolors the other (`size × colorPalette`, `size × on/off`) - do **not**
 build a matrix, even a small 2×2; snapshot each axis as its own showcase story
 (`Sizes`, `ColorPalettes`, a states story). The cross-product adds cells, not
@@ -866,8 +867,10 @@ Gets Captured** above.
       assertions, no un-`await`ed async helpers
 - [ ] No play added **for completeness** - each is there because the story's name
       makes a behavioral claim or its frame needs an interaction to exist
-- [ ] Text-entry `Focused` plays hide the caret
-      (`canvasElement.style.caretColor = "transparent"`) before tabbing
+- [ ] Any frame ending with focus in a text input hides the caret
+      (`canvasElement.style.caretColor = "transparent"`) - not just `Focused`
+      stories: an open Combobox keeps focus in its input, so six of its frames
+      needed it
 - [ ] **Determinism**: dates pinned to a fixed anchor (live "today" stays
       off-snapshot), no random values, async-derived state awaited
 - [ ] **Animated** states: paused frame confirmed to show the target; if an infinite

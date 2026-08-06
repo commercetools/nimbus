@@ -336,6 +336,9 @@ export const MultiSelectCustomOptions: Story = {
  * - Error handling
  */
 export const AsyncLoading: Story = {
+  // VRT: the open listbox with async results loaded.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const [error, setError] = useState<string | null>(null);
     const getPokemonValue = useCallback((pokemon: Pokemon) => pokemon.name, []);
@@ -371,6 +374,7 @@ export const AsyncLoading: Story = {
   },
 
   play: async ({ canvasElement, step }) => {
+    canvasElement.style.caretColor = "transparent";
     const canvas = within(canvasElement);
 
     await step("Type search query", async () => {
@@ -799,6 +803,9 @@ export const AsyncMultiSelectCustomOptions: Story = {
  * Tests that leading element (icon) displays correctly when provided
  */
 export const LayoutLeadingElement: Story = {
+  // VRT: the `leadingElement` slot; SmokeTest renders no leading icon.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <ComposedComboBox
@@ -1113,6 +1120,9 @@ export const MultiSelectTagsInline: Story = {
  * Tests that tags wrap to new lines when space is limited by measuring container height
  */
 export const MultiSelectTagsWrapping: Story = {
+  // VRT: tags wrapping the field to a second row.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([1]);
 
@@ -1424,6 +1434,9 @@ export const InputWrapsToNewLine: Story = {
  * Tests that placeholder text displays when input is empty
  */
 export const InputPlaceholder: Story = {
+  // VRT: the `[data-placeholder]` treatment; the play clears back to it.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <ComposedComboBox
@@ -1435,6 +1448,7 @@ export const InputPlaceholder: Story = {
   },
 
   play: async ({ canvasElement, step }) => {
+    canvasElement.style.caretColor = "transparent";
     const canvas = within(canvasElement);
     const input = canvas.getByRole("combobox") as HTMLInputElement;
 
@@ -1685,6 +1699,9 @@ export const FocusLosesOnOutsideClick: Story = {
  * Tests that focus indicators are visible when navigating with keyboard
  */
 export const FocusIndicatorsVisible: Story = {
+  // VRT: `[data-focused]` outline on the active option.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <ComposedComboBox aria-label="Test combobox" items={simpleOptions} />
@@ -1692,6 +1709,7 @@ export const FocusIndicatorsVisible: Story = {
   },
 
   play: async ({ canvasElement, step }) => {
+    canvasElement.style.caretColor = "transparent";
     const canvas = within(canvasElement);
     const input = canvas.getByRole("combobox");
 
@@ -2777,6 +2795,9 @@ export const OptionHoverFeedback: Story = {
  * Tests that selected options have visual distinction (aria-selected, styling)
  */
 export const OptionSelectedVisuallyDistinguished: Story = {
+  // VRT: all three option states at once - selected, unselected and disabled.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<(string | number)[]>([
       1, 3,
@@ -2789,12 +2810,15 @@ export const OptionSelectedVisuallyDistinguished: Story = {
         selectionMode="multiple"
         menuTrigger="focus"
         selectedKeys={selectedKeys}
+        // Disabled options render nowhere else: Base sets `disabledKeys` but never opens.
+        disabledKeys={[4]}
         onSelectionChange={setSelectedKeys}
       />
     );
   },
 
   play: async ({ canvasElement, step }) => {
+    canvasElement.style.caretColor = "transparent";
     const canvas = within(canvasElement);
     const input = canvas.getByRole("combobox");
 
@@ -2821,6 +2845,12 @@ export const OptionSelectedVisuallyDistinguished: Story = {
 
       // Unselected option should not be selected
       expect(isOptionSelected(kangarooOption)).toBe(false);
+    });
+
+    await step("A disabled option is rendered alongside them", async () => {
+      expect(
+        document.querySelector('[role="option"][data-disabled="true"]')
+      ).toBeInTheDocument();
     });
   },
 };
@@ -4247,6 +4277,9 @@ export const FilteringNoResultsState: Story = {
  * Tests section-aware filtering behavior with grouped options
  */
 export const FilteringWithSections: Story = {
+  // VRT: section headers inside the open listbox.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const sectionsData = [
       {
@@ -4302,6 +4335,7 @@ export const FilteringWithSections: Story = {
   },
 
   play: async ({ canvasElement, step }) => {
+    canvasElement.style.caretColor = "transparent";
     const canvas = within(canvasElement);
     const input = canvas.getByRole("combobox");
 
@@ -4824,6 +4858,9 @@ export const EmptyStateMenuClosesDefault: Story = {
  * Tests that custom empty state message renders correctly
  */
 export const EmptyStateCustomMessage: Story = {
+  // VRT: the open listbox with no results - the empty-state render.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <ComposedComboBox
@@ -4843,6 +4880,7 @@ export const EmptyStateCustomMessage: Story = {
   },
 
   play: async ({ canvasElement, step }) => {
+    canvasElement.style.caretColor = "transparent";
     const canvas = within(canvasElement);
     const input = canvas.getByRole("combobox");
 
@@ -5768,6 +5806,9 @@ export const StateIsReadOnly: Story = {
  * Tests that disabled state disables all interactive elements
  */
 export const StateIsDisabled: Story = {
+  // VRT: the disabled field - `[data-disabled]` dims the trigger and its buttons.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <ComposedComboBox
@@ -5792,6 +5833,9 @@ export const StateIsDisabled: Story = {
  * Tests that invalid state shows error styling
  */
 export const StateIsInvalid: Story = {
+  // VRT: `[data-invalid]` on the trigger border.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <ComposedComboBox
@@ -6195,6 +6239,91 @@ export const ContentAreaScrollBehavior: Story = {
 
       // Content should still be near the top (not scrolled to bottom)
       expect(content.scrollTop).toBeLessThan(50);
+    });
+  },
+};
+
+// ============================================================
+// SMOKE TEST
+// ============================================================
+
+/**
+ * SmokeTest
+ * The closed field across `size` x `variant` x `selectionMode`.
+ */
+export const SmokeTest: Story = {
+  // VRT: the axes interact via `compoundVariants`, so the cross-product is one frame.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => {
+    const sizes = ["sm", "md"] as const;
+    const variants = ["solid", "ghost"] as const;
+    const selectionModes = ["single", "multiple", "none"] as const;
+
+    return (
+      <Stack gap="800" alignItems="flex-start">
+        {sizes.map((size) => (
+          <Stack key={size} gap="400" alignItems="flex-start">
+            <Text fontWeight="600">size={size}</Text>
+            {variants.map((variant) => (
+              <Stack key={variant} direction="row" gap="400">
+                {selectionModes.map((selectionMode) => (
+                  <ComposedComboBox<SimpleOption>
+                    key={selectionMode}
+                    aria-label={`${size} ${variant} ${selectionMode}`}
+                    items={simpleOptions}
+                    size={size}
+                    variant={variant}
+                    selectionMode={selectionMode}
+                    selectedKeys={selectionMode === "none" ? [] : [1]}
+                  />
+                ))}
+              </Stack>
+            ))}
+          </Stack>
+        ))}
+      </Stack>
+    );
+  },
+};
+
+/**
+ * Option: Label And Description
+ * The two-line option layout, composed from the `label` and `description` slots.
+ */
+export const OptionWithDescription: Story = {
+  // VRT: the only frame with `[slot="description"]`; the rest are plain-text options.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <ComboBox.Root aria-label="Option descriptions" menuTrigger="focus">
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          <ComboBox.Option textValue="Koala">
+            <Text slot="label">Koala</Text>
+            <Text slot="description">Sleeps up to 20 hours a day</Text>
+          </ComboBox.Option>
+          <ComboBox.Option textValue="Platypus">
+            <Text slot="label">Platypus</Text>
+            <Text slot="description">Lays eggs and is venomous</Text>
+          </ComboBox.Option>
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    canvasElement.style.caretColor = "transparent";
+    const canvas = within(canvasElement);
+
+    await step("Opens with two-line options", async () => {
+      await userEvent.click(canvas.getByRole("combobox"));
+      await waitFor(() => {
+        expect(getListBox(document)).toBeInTheDocument();
+      });
+      expect(
+        document.querySelector('[role="option"] [slot="description"]')
+      ).toBeInTheDocument();
     });
   },
 };
