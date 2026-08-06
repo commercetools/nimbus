@@ -885,7 +885,8 @@ Gets Captured** above.
 - [ ] **Uniform, axis-independent** states are captured in a **dedicated** story, not
       folded into the matrix (`disabled` → its own `Disabled` snapshot)
 - [ ] Distinct **state-combinations** are covered, not just single flags
-      (selected-disabled is a separate look from unselected-disabled)
+      (selected-disabled ≠ unselected-disabled), and nothing else repaints what a
+      folded-out `disabled` dims
 - [ ] Each state checked for being rendered **more than one way** (mode-/variant-
       driven); each distinct surface gets its **own** story, not a folded gallery
       (MoneyInput: `Focused` + `FocusedWithCurrencyLabel`)

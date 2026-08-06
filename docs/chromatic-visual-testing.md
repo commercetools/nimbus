@@ -335,6 +335,15 @@ it resolves to a single shared `layerStyle` (`opacity: 0.5` +
 `Disabled`/`DisabledGroup` story captures it once instead of the matrix
 re-rendering every cell at half opacity for no new coverage.
 
+**The fold-out only holds while what it dims is uniform**, so it loses to "cover
+distinct state-combinations" below. `layerStyle: "disabled"` dims whatever sits
+underneath, so once another state repaints that surface - Tree and DraggableList
+both tint `[data-selected]` - selected-disabled is a separate pixel and belongs
+in the matrix (FEC-1180: missed in both). Whether it exists at all depends on
+the selection model: React Aria reassigns single selection away from a disabled
+item (unreachable in Tabs), while consumer-owned props and multi-select allow
+it.
+
 **An axis the recipe hardcodes was never an axis.** MultilineTextInput pins
 `colorPalette: "neutral"`, so its matrix is `state × size × variant` with no
 palette axis - don't force the full `SEMANTIC_COLOR_PALETTES` sweep onto a

@@ -1,6 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect } from "storybook/test";
-import { Box, Pagination, Stack, Text } from "@commercetools/nimbus";
+import {
+  Box,
+  NimbusProvider,
+  Pagination,
+  Stack,
+  Text,
+} from "@commercetools/nimbus";
 import { useState } from "react";
 
 const meta: Meta<typeof Pagination> = {
@@ -700,7 +706,8 @@ export const WithoutPageSizeSelector: Story = {
 
       // Test next navigation
       await userEvent.click(nextButton);
-      // Check page input value instead of navigation textContent (NumberInput value not captured in textContent)\n      const pageInputAfterNext = canvas.getByLabelText(\"Current page\");\n      await expect(pageInputAfterNext).toHaveValue(\"11\");
+      // The NumberInput's value is not in `navigation.textContent`.
+      await expect(canvas.getByLabelText("Current page")).toHaveValue("11");
 
       // Previous should now be enabled
       await expect(prevButton).toBeEnabled();
@@ -717,10 +724,124 @@ export const WithoutPageSizeSelector: Story = {
         await userEvent.clear(pageInput);
         await userEvent.type(pageInput, "128");
         await expect(pageInput).toHaveValue("128");
-
-        // Should still show 128 total pages
-        // Check that we have navigated to page 128 by checking the input value\n        const pageInput128 = canvas.getByLabelText(\"Current page\");\n        await expect(pageInput128).toHaveValue(\"128\");\n        \n        // Verify \"of 128\" text is visible\n        await expect(navigation).toHaveTextContent(/of\s+128/);
       }
     );
+  },
+};
+
+const noop = () => {};
+
+/**
+ * Every bound of the page range, in one frame. Which arrow is disabled is
+ * Pagination's own logic; the dimming itself is IconButton's.
+ */
+export const PageBounds: Story = {
+  // VRT: the four disabled-arrow combinations.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="600">
+      {[
+        { label: "First page - previous disabled", totalItems: 2560, page: 1 },
+        { label: "Middle page - both enabled", totalItems: 2560, page: 64 },
+        { label: "Last page - next disabled", totalItems: 2560, page: 128 },
+        { label: "Single page - both disabled", totalItems: 15, page: 1 },
+      ].map(({ label, totalItems, page }) => (
+        <Stack key={label} direction="column" gap="200">
+          <Text fontSize="300" color="neutral.11">
+            {label}
+          </Text>
+          <Pagination
+            totalItems={totalItems}
+            currentPage={page}
+            pageSize={20}
+            onPageChange={noop}
+            onPageSizeChange={noop}
+            // Distinct names, or axe flags `landmark-unique` on the repeated navs.
+            aria-label={label}
+          />
+        </Stack>
+      ))}
+    </Stack>
+  ),
+};
+
+/**
+ * The two feature toggles. Each removes or swaps a whole region of Pagination's
+ * own composition: the Select + label, or the NumberInput.
+ */
+export const ConfigurationToggles: Story = {
+  // VRT: the region-level layout shifts each toggle causes.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="600">
+      {(
+        [
+          ["Without page size selector", { enablePageSizeSelector: false }],
+          ["Without page input", { enablePageInput: false }],
+        ] as const
+      ).map(([label, override]) => (
+        <Stack key={label} direction="column" gap="200">
+          <Text fontSize="300" color="neutral.11">
+            {label}
+          </Text>
+          <Pagination
+            totalItems={2560}
+            currentPage={5}
+            pageSize={20}
+            onPageChange={noop}
+            onPageSizeChange={noop}
+            aria-label={label}
+            {...override}
+          />
+        </Stack>
+      ))}
+    </Stack>
+  ),
+};
+
+/**
+ * Pagination in each supported locale. Two Pagination-owned things move and are
+ * both invisible in an English-only frame: the translated label widths, and the
+ * total-pages count from its own `Intl.NumberFormat`. The page count is kept above
+ * 1000 so the formatter has a separator to place.
+ */
+export const Locales: Story = {
+  // VRT: translated label widths + the per-locale group separator.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="600">
+      {["en-US", "de-DE", "es-ES", "fr-FR", "pt-BR"].map((locale) => (
+        <Stack key={locale} direction="column" gap="200">
+          <Text fontSize="300" color="neutral.11">
+            {locale}
+          </Text>
+          <NimbusProvider locale={locale}>
+            <Pagination
+              totalItems={1250000}
+              currentPage={2500}
+              pageSize={500}
+              onPageChange={noop}
+              onPageSizeChange={noop}
+              aria-label={`Pagination ${locale}`}
+            />
+          </NimbusProvider>
+        </Stack>
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Each locale formats the total-pages count", async () => {
+      await expect(canvas.getAllByRole("navigation")).toHaveLength(5);
+      // A bypassed formatter would render "2500" in both.
+      const nav = (locale: string) =>
+        canvas.getByRole("navigation", { name: `Pagination ${locale}` });
+      await expect(nav("en-US")).toHaveTextContent("2,500");
+      await expect(nav("de-DE")).toHaveTextContent("2.500");
+    });
   },
 };

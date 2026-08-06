@@ -271,7 +271,8 @@ already-audited component → don't.
   recipe hardcodes isn't an axis; a uniform transform (`disabled`) folds out
   into its own story.
 - **Cover distinct state-combinations**, not just single flags
-  (selected-disabled ≠ unselected-disabled).
+  (selected-disabled ≠ unselected-disabled) - beats the fold-out above, when
+  reachable (React Aria reassigns selection off disabled items).
 - **One state rendered more than one way → one story each**, not a folded
   gallery.
 - **`chromatic.modes` is global config only** (viewport/theme/locale), never

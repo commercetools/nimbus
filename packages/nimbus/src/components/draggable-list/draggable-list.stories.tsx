@@ -113,6 +113,9 @@ export const DragAndDrop: Story = {
 };
 
 export const EmptyState: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+
   render: () => {
     return <DraggableList.Root aria-label="empty list" />;
   },
@@ -473,6 +476,10 @@ export const DisabledItems: Story = {
       // Disabled item should still be in place
       const rows = await within(grid).findAllByRole("row");
       expect(rows[1]).toHaveAttribute("data-key", "2");
+
+      // Cancel any drag this attempt started so it can't leak into the next story.
+      await userEvent.keyboard("{Escape}");
+      disabledRow.blur();
     });
   },
 };
@@ -883,6 +890,9 @@ export const Field: Story = {
 };
 
 export const FieldWithError: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+
   render: () => {
     return (
       <DraggableList.Field
@@ -1309,9 +1319,96 @@ export const MultipleSelection: Story = {
 };
 
 /**
+ * Keyboard focus on a row. The `item` slot rings via `_focus`, not
+ * `_focusVisible`, so this ring also shows on mouse focus.
+ */
+export const FocusedItem: Story = {
+  // VRT: the ring is expected in this capture.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => <DraggableList.Root aria-label="focus list" items={items} />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Tab focuses the first row and paints a ring", async () => {
+      const row = await canvas.findByRole("row", {
+        name: items[0].label as string,
+      });
+      await userEvent.tab();
+      await expect(row).toHaveFocus();
+
+      // Without this, a ring that never paints baselines as a silent pass.
+      await expect(row).toHaveStyle({ outlineStyle: "solid" });
+    });
+  },
+};
+
+/** label, selected keys, disabled */
+const ROW_STATES = [
+  ["default", [], false],
+  ["selected", ["1", "3"], false],
+  ["disabled", [], true],
+  ["selected + disabled", ["1", "3"], true],
+] as const;
+
+/**
+ * `size` x row state, at rest.
+ *
+ * All four row states are here because `layerStyle: "disabled"` dims whichever
+ * background is underneath, and selected/unselected differ (`colorPalette.5` vs
+ * `.3`) — so selected-disabled is its own pixel, not a repeat of disabled.
+ */
+export const SmokeTest: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Flex direction="row" gap={800} alignItems="flex-start">
+      {(["sm", "md"] as const).map((size) => (
+        <Flex key={size} direction="column" gap={400}>
+          <Text fontWeight="600">{size}</Text>
+          {ROW_STATES.map(([label, selected, isDisabled]) => (
+            <Flex key={label} direction="column" gap={100}>
+              <Text fontSize="300" color="neutral.11">
+                {label}
+              </Text>
+              <DraggableList.Root
+                aria-label={`${size} ${label}`}
+                items={items.slice(0, 3).map((i) => ({ ...i, isDisabled }))}
+                size={size}
+                selectionMode="multiple"
+                selectedKeys={new Set(selected)}
+              />
+            </Flex>
+          ))}
+        </Flex>
+      ))}
+    </Flex>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "All eight cells render, selection surviving disabled",
+      async () => {
+        await waitFor(() => {
+          expect(canvas.getAllByRole("grid")).toHaveLength(8);
+          // If disabled rows refused selection, cell four would copy cell three.
+          expect(
+            canvasElement.querySelectorAll("[data-selected][data-disabled]")
+          ).not.toHaveLength(0);
+        });
+      }
+    );
+  },
+};
+
+/**
  * Showcase Possible Color Palettes
  */
 export const ColorPalettes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+
   render: () => (
     <DisplayColorPalettes>
       {(palette) => {
