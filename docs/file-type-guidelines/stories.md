@@ -221,8 +221,10 @@ already-audited component → don't.
   ring actually renders.
 - **Overlays: snapshot the open state** and leave it open; each distinct open
   surface is its own story.
-- **Portals: capture is page-wide** - hold open, await, clean up between
-  stories; reach a portal's focus via its real keyboard path.
+- **Portals: capture is page-wide, but the page must be tall enough** - an
+  overlay hanging below a short root is cropped, so reserve `minHeight`. Hold
+  open, await, clean up between stories; reach a portal's focus via its real
+  keyboard path.
 - **Snapshot `placement` only when it changes the layout**, not when it
   repositions the same box.
 

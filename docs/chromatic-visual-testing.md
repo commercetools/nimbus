@@ -157,8 +157,12 @@ story: open dialogs/drawers fill the viewport with a backdrop and can't share a
 frame, so there's no `SmokeTest` matrix (independent recipe variants become
 separate open showcases). open/close, focus trap and dismissal stay behavioral.
 
-**Portals land in the frame, so the capture is page-wide.** Hold transient UI
-open (`duration: Infinity` for toasts), await it, and clean up between stories
+**Portals land in the frame only if the page is tall enough.** An
+absolutely-positioned portal adds no document height, so an overlay below a
+short root is cropped - fine in Storybook, cut in the build. Dialog and Toast
+fill the viewport and escape it; a listbox under one input needs a decorator
+reserving room (Combobox's `roomForPopover`). Hold transient UI open
+(`duration: Infinity` for toasts), await it, and clean up between stories
 (Toast's `clearToasts()`) so nothing leaks into the next capture. A portal
 component can be focusable in its own right (Toast's root has `tabIndex=0` +
 `focusRing: outside`) - reach it the real way (hotkey + Tab), not a synthetic
@@ -316,13 +320,11 @@ separate frame, never a dropped state.
 **A matrix is only for _interacting_ axes.** When axes are independent - one
 just scales or recolors the other (Badge/Avatar `size × colorPalette`, Switch
 `size × on/off`) - snapshot each as its own showcase; the cross-product adds
-cells, not coverage. **`compoundVariants` settle it without judgment**: a recipe
-that declares one is stating those axes produce something neither yields alone,
-so the cross-product is mandatory. Combobox has four over
-`variant × selectionMode` (popover width, trigger flex) and needs the matrix;
-Link, audited the same day, has none and correctly gets showcases. **Name the
-matrix `SmokeTest` and render it last** - the role name stays accurate as axes
-change, and the axis list goes in the doc comment.
+cells, not coverage. **`compoundVariants` settle it**: declaring one states the
+axes produce something neither yields alone, so the matrix is mandatory -
+Combobox has four, Link none. **Name the matrix `SmokeTest` and render it
+last** - the role name stays accurate as axes change, and the axis list goes in
+the doc comment.
 
 **Over the axes it does span, the matrix must be exhaustive.** A single-axis
 showcase varies one axis with the rest at defaults, so

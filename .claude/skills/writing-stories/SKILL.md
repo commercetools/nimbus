@@ -823,7 +823,8 @@ Gets Captured** above.
       distinct open surface is its own story; open/close & dismissal stay behavioral
 - [ ] **Portal** components (Toast/overlays): transient UI held open
       (`duration: Infinity`), awaited, and cleaned up between stories; the
-      component's own focus reached via its **real keyboard path**, not `.focus()`
+      component's own focus reached via its **real keyboard path**, not `.focus()`;
+      an overlay hanging below a short root given `minHeight` so the crop keeps it
 - [ ] **`placement`** snapshotted only when it changes the **layout** (Drawer
       side/top/bottom panels), not a mere reposition (Dialog = center only;
       Menu/Tooltip RA-positioning = behavioral)
