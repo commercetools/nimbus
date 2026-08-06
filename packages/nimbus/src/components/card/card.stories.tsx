@@ -118,6 +118,9 @@ export const Sizes: Story = {
  * split by background (default vs. muted).
  */
 export const Variants: Story = {
+  // VRT: all 8 permutations of border, shadow and muted background.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const rows: {
       label: string;
@@ -216,16 +219,36 @@ export const Variants: Story = {
  * without and with dividers: Body only, Header + Body, Header + Body + Footer
  */
 export const PartCombinations: Story = {
+  // VRT: the adjacent-sibling padding collapse, and a Separator between slots defeating it.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const combinations = [
-      { label: "Body only", hasHeader: false, hasFooter: false },
-      { label: "Header + Body", hasHeader: true, hasFooter: false },
-      { label: "Header + Body + Footer", hasHeader: true, hasFooter: true },
+      { label: "Body only", hasHeader: false, hasBody: true, hasFooter: false },
+      {
+        label: "Header + Body",
+        hasHeader: true,
+        hasBody: true,
+        hasFooter: false,
+      },
+      {
+        label: "Header + Body + Footer",
+        hasHeader: true,
+        hasBody: true,
+        hasFooter: true,
+      },
+      // The only row that fires the recipe's `header + footer` collapse.
+      {
+        label: "Header + Footer",
+        hasHeader: true,
+        hasBody: false,
+        hasFooter: true,
+      },
     ];
 
     return (
       <Stack gap="800">
-        {combinations.map(({ label, hasHeader, hasFooter }) => (
+        {combinations.map(({ label, hasHeader, hasBody, hasFooter }) => (
           <Stack key={label} gap="400">
             <Text fontWeight="bold">{label}</Text>
             <Stack direction="row" gap="800">
@@ -243,9 +266,11 @@ export const PartCombinations: Story = {
                         <Text fontWeight="bold">Header ({size as string})</Text>
                       </Card.Header>
                     )}
-                    <Card.Body>
-                      <Text>Body content for the {size as string} size.</Text>
-                    </Card.Body>
+                    {hasBody && (
+                      <Card.Body>
+                        <Text>Body content for the {size as string} size.</Text>
+                      </Card.Body>
+                    )}
                     {hasFooter && (
                       <Card.Footer>
                         <Stack direction="row" gap="200">
@@ -284,12 +309,15 @@ export const PartCombinations: Story = {
                         <Separator />
                       </>
                     )}
-                    <Card.Body>
-                      <Text>Body content for the {size as string} size.</Text>
-                    </Card.Body>
+                    {hasBody && (
+                      <Card.Body>
+                        <Text>Body content for the {size as string} size.</Text>
+                      </Card.Body>
+                    )}
                     {hasFooter && (
                       <>
-                        <Separator />
+                        {/* With no body, the header's divider already splits them. */}
+                        {hasBody && <Separator />}
                         <Card.Footer>
                           <Stack direction="row" gap="200">
                             <Button
@@ -317,35 +345,37 @@ export const PartCombinations: Story = {
   },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
+    const labels = [
+      "Body only",
+      "Header + Body",
+      "Header + Body + Footer",
+      "Header + Footer",
+    ];
 
     await step("All combinations render across sizes", async () => {
       for (const size of sizes) {
-        await expect(
-          canvas.getByTestId(`card-Body only-${size as string}`)
-        ).toBeInTheDocument();
-        await expect(
-          canvas.getByTestId(`card-Header + Body-${size as string}`)
-        ).toBeInTheDocument();
-        await expect(
-          canvas.getByTestId(`card-Header + Body + Footer-${size as string}`)
-        ).toBeInTheDocument();
+        for (const label of labels) {
+          await expect(
+            canvas.getByTestId(`card-${label}-${size as string}`)
+          ).toBeInTheDocument();
+        }
       }
     });
 
     await step("Divided variants render", async () => {
       for (const size of sizes) {
-        await expect(
-          canvas.getByTestId(`card-Body only-divided-${size as string}`)
-        ).toBeInTheDocument();
-        await expect(
-          canvas.getByTestId(`card-Header + Body-divided-${size as string}`)
-        ).toBeInTheDocument();
-        await expect(
-          canvas.getByTestId(
-            `card-Header + Body + Footer-divided-${size as string}`
-          )
-        ).toBeInTheDocument();
+        for (const label of labels) {
+          await expect(
+            canvas.getByTestId(`card-${label}-divided-${size as string}`)
+          ).toBeInTheDocument();
+        }
       }
+    });
+
+    await step("Footer after a header collapses its top padding", async () => {
+      const card = canvas.getByTestId("card-Header + Footer-md");
+      const footer = card.querySelector(".nimbus-card__footer")!;
+      await expect(window.getComputedStyle(footer).paddingTop).toBe("0px");
     });
   },
 };
@@ -355,6 +385,9 @@ export const PartCombinations: Story = {
  * Demonstrates free-form content inside Card.Root
  */
 export const WithoutCompound: Story = {
+  // VRT: with no slot children the padding moves to Root, via the recipe's `:not(:has())`.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <Card.Root variant="muted" size="md" data-testid="card-freeform">
