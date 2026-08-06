@@ -39,7 +39,7 @@ jobs:
 
       - name: Find Version Packages PR
         id: find_pr
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           github-token: ${{ steps.generate_github_token.outputs.token }}
           script: |
@@ -92,7 +92,7 @@ jobs:
       - name: Check PR CI status
         if: steps.find_pr.outputs.found == 'true' && steps.check_stale.outputs.is_stale == 'true'
         id: check_ci
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           github-token: ${{ steps.generate_github_token.outputs.token }}
           script: |
@@ -145,7 +145,7 @@ jobs:
           steps.check_stale.outputs.is_stale == 'true' &&
           steps.check_ci.outputs.passed == 'true' &&
           inputs.dry_run != 'true'
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           github-token: ${{ steps.generate_github_token.outputs.token }}
           script: |
