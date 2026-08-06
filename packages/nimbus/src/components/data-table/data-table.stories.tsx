@@ -420,6 +420,8 @@ type Story = StoryObj<DataTableProps>;
  * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
+  // VRT: the default grid - header, cell padding, row borders, last-row border removed.
+  tags: ["vrt"],
   render: (args) => (
     <DataTableWithModals
       {...args}
@@ -439,6 +441,7 @@ export const Base: Story = {
     },
   },
   parameters: {
+    chromatic: { disableSnapshot: false },
     a11y: {
       config: {
         rules: [
@@ -631,6 +634,8 @@ export const Base: Story = {
       const nameCell = within(firstDataRow).getAllByRole("rowheader")[0]; // Name is 1st data column
       expect(nameCell.textContent).toContain("Product ID:");
     });
+
+    (document.activeElement as HTMLElement | null)?.blur();
   },
 };
 
@@ -1111,6 +1116,9 @@ export const SearchAndHighlight: Story = {
 };
 
 export const AdjustableColumns: Story = {
+  // VRT: the column resizer and dividers at rest.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => {
     const [isResizable, setIsResizable] = useState(false);
     return (
@@ -1133,6 +1141,9 @@ export const AdjustableColumns: Story = {
 };
 
 export const Condensed: Story = {
+  // VRT: `density: condensed`; the play ends in condensed mode.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => {
     const [condensed, setCondensed] = useState(false);
     return (
@@ -1344,10 +1355,15 @@ export const Condensed: Story = {
 
       expect(hasSmallerPadding).toBe(true);
     });
+
+    (document.activeElement as HTMLElement | null)?.blur();
   },
 };
 
 export const StickyHeader: Story = {
+  // VRT: `[data-sticky]` header.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => {
     const [sticky, setSticky] = useState(false);
     return (
@@ -1506,6 +1522,8 @@ export const StickyHeader: Story = {
         expect(headerStyles.position).toBeDefined();
       }
     );
+
+    (document.activeElement as HTMLElement | null)?.blur();
   },
 };
 
@@ -1763,6 +1781,9 @@ export const ClickableRows: Story = {
 };
 
 export const WithSorting: Story = {
+  // VRT: `[aria-sort]` weight on sortable headers, with no column sorted yet.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => {
     return (
       <Stack gap="500" alignItems="flex-start">
@@ -1786,6 +1807,9 @@ export const WithSorting: Story = {
 };
 
 export const ControlledSorting: Story = {
+  // VRT: an active sort - icon revealed, rotated for `ascending`.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => {
     const [sortDescriptor, setSortDescriptor] = useState<SortDescriptor>({
       column: "name",
@@ -1883,6 +1907,9 @@ export const SortingWithSearch: Story = {
 };
 
 export const SelectionShowcase: Story = {
+  // VRT: `[data-selected]` row background.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set());
     const [search, setSearch] = useState("");
@@ -2290,10 +2317,15 @@ export const SelectionShowcase: Story = {
         expect(checkbox).toHaveAttribute("aria-label");
       });
     });
+
+    (document.activeElement as HTMLElement | null)?.blur();
   },
 };
 
 export const TextTruncation: Story = {
+  // VRT: `truncated` ellipsis; the play re-enables it after testing the off state.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => {
     const [isTruncated, setIsTruncated] = useState(false);
 
@@ -2360,10 +2392,28 @@ export const TextTruncation: Story = {
 
       expect(innerDiv).toHaveAttribute("data-truncated", "false");
     });
+
+    await step("Re-enables truncation", async () => {
+      await toggleCheckbox(canvas.getByTestId("truncation-checkbox"));
+      await waitFor(() => {
+        const cell = canvas.getAllByRole("rowheader", {
+          name: /description/i,
+        })[0];
+        expect(cell.querySelector("div")).toHaveAttribute(
+          "data-truncated",
+          "true"
+        );
+      });
+    });
+
+    (document.activeElement as HTMLElement | null)?.blur();
   },
 };
 
 export const MultilineHeaders: Story = {
+  // VRT: the header's `[data-multiline-header]` 2-line clamp and ellipsis.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => <DataTableWithModals {...args} />,
   args: {
     columns: multilineHeadersColumns,
@@ -2375,6 +2425,9 @@ export const MultilineHeaders: Story = {
 };
 
 export const WithFooter: Story = {
+  // VRT: the footer slot - the only frame that renders one.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const footerContent = (
       <Stack
@@ -2609,6 +2662,9 @@ export const FlexibleNestedChildren: Story = {
  * open/closed on row click. Works alongside selection and nested expansion.
  */
 export const RowNestedContent: Story = {
+  // VRT: `[data-nested-cell]` inset shadow; the play ends with rows expanded.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     return (
       <DataTable
@@ -2630,7 +2686,6 @@ export const RowNestedContent: Story = {
     );
   },
   args: {},
-  parameters: { chromatic: { disableSnapshot: true } },
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -2737,6 +2792,8 @@ export const RowNestedContent: Story = {
         { timeout: 3000 }
       );
     });
+
+    (document.activeElement as HTMLElement | null)?.blur();
   },
 };
 
@@ -4037,6 +4094,9 @@ export const AllFeatures: Story = {
 };
 
 export const DisabledRowsShowcase: Story = {
+  // VRT: `[data-disabled]` row opacity, alongside a selected row.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set(["2"]));
     const [disabledKeys, setDisabledKeys] = useState<Selection>(
@@ -4166,6 +4226,9 @@ export const DisabledRowsShowcase: Story = {
 };
 
 export const RowPinning: Story = {
+  // VRT: the pin-row-cell pinned to the right edge.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const [pinnedRows, setPinnedRows] = React.useState<Set<string>>(new Set());
 
@@ -4343,6 +4406,8 @@ export const RowPinning: Story = {
         expect(firstDataRowAfterSort).toHaveClass("data-table-row-pinned");
       });
     });
+
+    (document.activeElement as HTMLElement | null)?.blur();
   },
 };
 
@@ -5631,6 +5696,9 @@ export const ColumnAlignment: Story = {
 };
 
 export const StickyColumnBackground: Story = {
+  // VRT: the sticky column's own background over scrolled cells.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const stickyColumns: DataTableColumnItem[] = [
       {
@@ -5719,6 +5787,8 @@ export const StickyColumnBackground: Story = {
         }
       }
     );
+
+    (document.activeElement as HTMLElement | null)?.blur();
   },
 };
 
@@ -6010,6 +6080,9 @@ export const HiddenExpandColumnWithRowClick: Story = {
 };
 
 export const ScrollShadows: Story = {
+  // VRT: both scroll shadows at once; they only paint mid-scroll, so the play lands there.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => {
     const scrollColumns: DataTableColumnItem[] = [
       {
@@ -6123,7 +6196,7 @@ export const ScrollShadows: Story = {
       });
     });
 
-    await step("Both shadows gone at scroll start", async () => {
+    await step("Left shadow clears again at scroll start", async () => {
       const root = canvasElement.querySelector(
         '[data-testid="scroll-shadow-table"]'
       ) as HTMLElement;
@@ -6136,10 +6209,27 @@ export const ScrollShadows: Story = {
         expect(root.getAttribute("data-scroll-right")).toBe("true");
       });
     });
+
+    await step("Both shadows paint mid-scroll", async () => {
+      const root = canvasElement.querySelector(
+        '[data-testid="scroll-shadow-table"]'
+      ) as HTMLElement;
+
+      root.scrollLeft = 200;
+      root.dispatchEvent(new Event("scroll"));
+
+      await waitFor(() => {
+        expect(root.getAttribute("data-scroll-left")).toBe("true");
+        expect(root.getAttribute("data-scroll-right")).toBe("true");
+      });
+    });
   },
 };
 
 export const CompoundCustomRowStyling: Story = {
+  // VRT: `[data-custom-bg]` - sticky cells inherit the row's custom background.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <DataTable.Root
       columns={compoundColumns}

@@ -227,6 +227,11 @@ export const ScrolledUp: Story = {
     const viewport = getViewport(canvas.getByTestId("list"));
 
     await step("Scrolling up reveals the jump-to-latest control", async () => {
+      // Until the list has laid out there is nothing to scroll, so the pin never releases.
+      await waitFor(() =>
+        expect(viewport.scrollHeight).toBeGreaterThan(viewport.clientHeight)
+      );
+
       viewport.scrollTop = 0;
       viewport.dispatchEvent(new Event("scroll"));
       await waitFor(() =>

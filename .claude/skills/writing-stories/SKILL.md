@@ -808,7 +808,8 @@ Gets Captured** above.
 
 - [ ] **Condition-triggered** states get a frame where the trigger actually holds:
       sticky scrolled in the play (bounded `overflow: auto` ancestor,
-      `offsetHeight`-derived target, each combination its own frame),
+      `offsetHeight`-derived target, each combination its own frame, and a
+      `scrollHeight > clientHeight` wait before scrolling),
       `scrollBehavior="inside"` given overflowing content, a variant-zeroed surface
       pinned to the variant that paints it, an inherited property given a value to
       inherit

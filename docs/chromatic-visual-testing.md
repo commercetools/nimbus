@@ -110,7 +110,10 @@ records the state _off_ while reading as coverage. Four triggers seen so far:
   scroll in the play and capture pinned. Needs a **bounded scroll port**
   (`height: 100%` resolves against nothing otherwise) and an
   **`offsetHeight`-derived** target, so a padding-token change can't silently
-  stop it scrolling past.
+  stop it scrolling past. **Wait for the port to be scrollable before scrolling
+  it** (`scrollHeight > clientHeight`): CI lays out later than a local run, so a
+  play that scrolls on mount can find nothing to scroll, leave the state
+  unfired, and fail only in Chromatic.
 - **Overflow.** `scrollBehavior="inside"` is only `maxH` + `overflow: auto`, so
   it wants tall content, not a scroll.
 - **A variant that zeroes the surface.** ScrollArea's default `hover` sets
