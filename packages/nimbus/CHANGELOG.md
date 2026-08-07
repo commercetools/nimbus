@@ -1,5 +1,84 @@
 # @commercetools/nimbus
 
+## 3.5.0
+
+### Minor Changes
+
+- [#1861](https://github.com/commercetools/nimbus/pull/1861)
+  [`140852c`](https://github.com/commercetools/nimbus/commit/140852c0fe3b86200fb3b46213dadaf4e86ca72b)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - `DataTable`: Expose
+  `Row`, `Cell`, and `Column` as compound sub-components for custom rendering.
+  `DataTable.Body`, `DataTable.Header`, and `DataTable.Row` accept optional
+  render-function children that replace only the data columns/cells — internal
+  columns (selection, expand, pin) are always rendered automatically.
+
+  - `DataTable.Body` children receive `(row, renderProps)` for custom row
+    styling
+  - `DataTable.Row` children receive `({ columns, row, isDisabled })` for custom
+    cell rendering
+  - `DataTable.Header` children receive `({ columns, allowsSorting })` for
+    custom column headers
+  - New types `DataTableColumnRenderProps`, `DataTableRowRenderProps`, and
+    `DataTableCellRenderProps` are exported for typing render functions
+
+  `DataTable`: Improved hover and re-render performance. Removed
+  compositing-layer churn from row hover styles and ref-stabilized consumer
+  callback props so inline callbacks no longer cascade re-renders to every row.
+
+  **Breaking:** the `depth` prop has been removed from `DataTableRowProps`. It
+  was unused internally — consumers passing it will see a TypeScript error.
+
+- [#1851](https://github.com/commercetools/nimbus/pull/1851)
+  [`d29d923`](https://github.com/commercetools/nimbus/commit/d29d923c5233c568e1a87fbaa2dbaf65b3f9fba1)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - **DataTable:** Added
+  `allowsPinning` and `allowsExpandColumn` props to control visibility of the
+  pin and expand internal columns. Both default to `true` (no breaking change).
+
+  - Set `allowsPinning={false}` to hide the pin column entirely.
+  - Set `allowsExpandColumn={false}` to hide the expand chevron column. Rows
+    with nested content can still be expanded by clicking the row.
+
+- [#1852](https://github.com/commercetools/nimbus/pull/1852)
+  [`62a75e5`](https://github.com/commercetools/nimbus/commit/62a75e5aad2df31905b63a6a8a01e2c1bfb245fe)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Add
+  `renderNestedContent` prop to DataTable for rendering a uniform component
+  template below each row when expanded. Clicking a row toggles the nested
+  content open/closed. The render callback receives the row and a
+  `DataTableNestedContentOptions` object with a `close` function for collapsing
+  the content from within. Uses the same expansion system as `nestedKey` — state
+  is managed via `expandedRows` / `onExpandRowsChange`. The `onExpandRowsChange`
+  callback now receives `toggledRowId` and `columnId` arguments identifying
+  which row and column triggered the expansion. Works alongside existing
+  selection and pinning features.
+
+- [#1860](https://github.com/commercetools/nimbus/pull/1860)
+  [`76a3193`](https://github.com/commercetools/nimbus/commit/76a3193d4e9f3aa1d8358f356ff253ba8444af71)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - `DataTable`: sticky
+  columns now display scroll shadows at their edges when the table content is
+  horizontally scrollable. Shadows appear on the left-side sticky columns when
+  scrolled away from the start, and on the right-side pin column when scrolled
+  away from the end. New `right` and `left` shadow design tokens are available
+  for directional shadow effects.
+
+### Patch Changes
+
+- [#1850](https://github.com/commercetools/nimbus/pull/1850)
+  [`cf67d56`](https://github.com/commercetools/nimbus/commit/cf67d56beec06cfd0e38b4e4bcc0fdf4b9cf04ff)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - `Badge`: Added `sm`
+  size variant, providing an intermediate option between `xs` and `md`.
+
+  `Checkbox`: Fixed excess horizontal spacing when rendered without a visible
+  label.
+
+- [#1870](https://github.com/commercetools/nimbus/pull/1870)
+  [`0587df8`](https://github.com/commercetools/nimbus/commit/0587df859417eb661da746b184b2e0ddb8704e98)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - Update bundled runtime
+  dependencies to their latest patch and minor versions. The React Aria stack
+  moves to `react-aria` 3.51.0, `react-aria-components` 1.20.0 and
+  `react-stately` 3.49.0, alongside `@internationalized/string` 3.2.10 and a
+  refreshed bundled copy of `dompurify` (3.4.13). No API changes — upgrading
+  requires no action.
+
 ## 3.4.0
 
 ### Minor Changes

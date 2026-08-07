@@ -1,5 +1,18 @@
 # @commercetools/nimbus-tokens
 
+## 3.5.0
+
+### Minor Changes
+
+- [#1860](https://github.com/commercetools/nimbus/pull/1860)
+  [`76a3193`](https://github.com/commercetools/nimbus/commit/76a3193d4e9f3aa1d8358f356ff253ba8444af71)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - `DataTable`: sticky
+  columns now display scroll shadows at their edges when the table content is
+  horizontally scrollable. Shadows appear on the left-side sticky columns when
+  scrolled away from the start, and on the right-side pin column when scrolled
+  away from the end. New `right` and `left` shadow design tokens are available
+  for directional shadow effects.
+
 ## 3.4.0
 
 ## 3.3.0
