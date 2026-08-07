@@ -1461,6 +1461,8 @@ export const InputPlaceholder: Story = {
   // VRT: the `[data-placeholder]` treatment; the play clears back to it.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
+  // Clearing the input leaves the listbox open, so the frame needs the room.
+  decorators: [roomForPopover],
   render: () => {
     return (
       <ComposedComboBox
