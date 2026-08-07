@@ -696,7 +696,165 @@ const SmokeTestView = () => {
   );
 };
 
+/**
+ * Selected, disabled, and both at once. They share one tree per size because
+ * `layerStyle: "disabled"` dims whichever background is underneath, so
+ * selected-disabled is its own pixel rather than a repeat of either.
+ */
+export const RowStates: Story = {
+  // VRT: Documents = selected, Project = disabled, Photos = both.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="row" gap="800" alignItems="flex-start">
+      {(["sm", "md"] as const).map((size) => (
+        <Stack key={size} gap="200">
+          <Text fontWeight="700">{size}</Text>
+          <Tree.Root
+            aria-label={`Row states ${size}`}
+            size={size}
+            selectionMode="multiple"
+            selectedKeys={["documents", "photos"]}
+            disabledKeys={["project", "photos"]}
+            items={fileTree}
+            defaultExpandedKeys={["documents", "photos"]}
+          >
+            {renderNode}
+          </Tree.Root>
+        </Stack>
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // React Aria builds the collection async; without this the frame can be empty.
+    await waitForTreeRows(canvas);
+    // A refusal to select disabled rows would drop the third state from the frame.
+    await expect(
+      canvasElement.querySelectorAll("[data-selected][data-disabled]")
+    ).not.toHaveLength(0);
+  },
+};
+
+/**
+ * The empty state, via `renderEmptyState`. No other story passes an empty
+ * collection, so the root's `&[data-empty]` rule renders nowhere else.
+ */
+export const EmptyState: Story = {
+  // VRT: root `&[data-empty]`; the only frame with an empty collection.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Tree.Root
+      aria-label="No files"
+      items={[]}
+      renderEmptyState={() => "No files yet"}
+    >
+      {renderNode}
+    </Tree.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "Root carries data-empty and renders the placeholder",
+      async () => {
+        await canvas.findByText("No files yet");
+        // React Aria wraps the placeholder in a row, so row count proves nothing.
+        await expect(canvas.getByRole("treegrid")).toHaveAttribute(
+          "data-empty"
+        );
+      }
+    );
+  },
+};
+
+/**
+ * Keyboard focus on a row. The `item` slot's ring is `focusRing: "inside"`, unlike
+ * every other focus frame in this batch.
+ */
+export const FocusedRow: Story = {
+  // VRT: the ring is expected here, painted inside the row box.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Tree.Root
+      aria-label="Files"
+      items={fileTree}
+      defaultExpandedKeys={["documents"]}
+    >
+      {renderNode}
+    </Tree.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    const rows = await waitForTreeRows(canvas);
+
+    await step("Tab focuses the first row and paints a ring", async () => {
+      await userEvent.tab();
+      await expect(rows[0]).toHaveFocus();
+      // Without this, a ring that never paints baselines as a silent pass.
+      await expect(rows[0]).toHaveStyle({ outlineStyle: "solid" });
+    });
+  },
+};
+
+/**
+ * A drag held open mid-flight. Pointer dragging can't be paused for a capture, but
+ * the keyboard path can: Enter picks a row up and the drop target persists until
+ * Enter drops or Escape cancels. Nothing else renders `[data-dragging]` or
+ * `[data-drop-target]`.
+ */
+export const DragInProgress: Story = {
+  // VRT: deliberately captured mid-drag - the play must NOT complete the drop.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  // React Aria's keyboard drag session is a module global that only Enter or
+  // Escape ends - unmounting the story does not. Left live, it keeps `inert`
+  // over the page and an observer that re-applies it to whatever mounts next,
+  // so clicks in later stories go nowhere. Runs after Chromatic's capture.
+  beforeEach: () => () => {
+    document.body.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true })
+    );
+  },
+  render: () => <FeatureTree aria-label="Files" selectionMode="none" />,
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+    await waitForTreeRows(canvas);
+
+    await step("Pick a row up from its drag handle", async () => {
+      const handle = canvas.getAllByRole("button", { name: /Drag/ })[0];
+      handle.focus();
+      await userEvent.keyboard("{Enter}");
+      await wait();
+    });
+
+    await step("Move the drop target down one position", async () => {
+      await userEvent.keyboard("{ArrowDown}");
+      await wait();
+
+      // Leave the drag open: this frame IS the snapshot.
+      await waitFor(() =>
+        expect(
+          canvasElement.querySelector("[data-drop-target]")
+        ).toBeInTheDocument()
+      );
+      // Keyboard DnD only offers row targets, so `DropIndicator` stays pointer-only.
+      await expect(
+        canvasElement.querySelector("[data-drop-target]")
+      ).toHaveAttribute("role", "row");
+      await expect(
+        canvasElement.querySelectorAll("[data-dragging]")
+      ).toHaveLength(1);
+    });
+  },
+};
+
 export const SmokeTest: Story = {
+  // VRT: resting-visual carrier.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => <SmokeTestView />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
