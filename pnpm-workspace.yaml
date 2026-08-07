@@ -202,7 +202,7 @@ catalogs:
     # ecosystem — including the copies pulled transitively by the @github-ui /
     # @vueless addons — off 10.5.0. Reconfirmed on 2026-07-15.
     storybook: 10.4.6
-    eslint-plugin-storybook: 10.4.6
+    eslint-plugin-storybook: 10.5.6
     "@storybook/addon-a11y": 10.4.6
     "@storybook/addon-docs": 10.4.6
     "@storybook/addon-vitest": 10.4.6
@@ -279,4 +279,3 @@ catalogs:
     remark-mark-highlight: 0.1.1
     slug: 11.0.1
     vite-plugin-compression: 0.5.1
-
