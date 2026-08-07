@@ -3,5 +3,109 @@
   "extends": ["github>commercetools/renovate-config"],
   "toolSettings": {
     "nodeMaxMemory": 2560
-  }
+  },
+  "packageRules": [
+    {
+      "description": "Extra cooldown for major upgrades on top of the org's minimumReleaseAgeNpm (3 days), so majors clear the pnpm-workspace.yaml minimumReleaseAge: 1440 (24h) supply-chain gate with a wider safety margin before the PR's lockfile is built.",
+      "matchUpdateTypes": ["major"],
+      "minimumReleaseAge": "7 days"
+    },
+    {
+      "description": "React ecosystem: react types, emotion, chakra-ui, next-themes",
+      "groupName": "react",
+      "matchPackageNames": [
+        "@types/react",
+        "@types/react-dom",
+        "@emotion/*",
+        "@chakra-ui/*",
+        "next-themes"
+      ]
+    },
+    {
+      "description": "React Aria / React Stately / Internationalized packages",
+      "groupName": "react-aria",
+      "matchPackageNames": [
+        "react-aria",
+        "react-aria-components",
+        "react-stately",
+        "@react-aria/*",
+        "@react-types/*",
+        "@react-stately/*",
+        "@internationalized/*"
+      ]
+    },
+    {
+      "description": "Storybook and its addons",
+      "groupName": "storybook",
+      "matchPackageNames": [
+        "storybook",
+        "@storybook/*",
+        "@vueless/storybook-dark-mode",
+        "eslint-plugin-storybook"
+      ]
+    },
+    {
+      "description": "Vitest, Playwright and testing libraries",
+      "groupName": "testing",
+      "matchPackageNames": [
+        "vitest",
+        "@vitest/*",
+        "playwright",
+        "@playwright/*",
+        "jsdom",
+        "@testing-library/*"
+      ]
+    },
+    {
+      "description": "Vite, Rollup and build tooling",
+      "groupName": "build-tooling",
+      "matchPackageNames": [
+        "vite",
+        "@vitejs/*",
+        "vite-*",
+        "rollup",
+        "rollup-*",
+        "@preconstruct/*",
+        "vite-bundle-analyzer"
+      ]
+    },
+    {
+      "description": "TypeScript, ESLint, Prettier and code quality tools",
+      "groupName": "linting-and-types",
+      "matchPackageNames": [
+        "typescript",
+        "typescript-eslint",
+        "eslint",
+        "@eslint/*",
+        "eslint-*",
+        "prettier",
+        "globals",
+        "glob",
+        "tsx"
+      ]
+    },
+    {
+      "description": "Babel transpilation packages",
+      "groupName": "babel",
+      "matchPackageNames": ["@babel/*"]
+    },
+    {
+      "description": "react and react-dom use intentionally broad ranges (^19.0.0) to avoid forcing specific patch versions on consumers. Don't narrow them via major bumps.",
+      "matchPackageNames": ["react", "react-dom"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "@types/node version must match the Node.js runtime version (v24 LTS). Upgrading to @types/node@25+ would add types for APIs not available in our runtime.",
+      "matchPackageNames": ["@types/node"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    },
+    {
+      "description": "Babel is pinned to 7.x (catalog carets in pnpm-workspace.yaml). Babel 8 is blocked: @babel/runtime@8 dropped the ./helpers/esm/* export subpaths that the frozen @emotion/react@11.14 imports, and @preconstruct/cli still pins @babel/core ^7.7.7. Allow minor/patch within 7.x; suppress the 8.x major PR.",
+      "matchPackageNames": ["@babel/*"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    }
+  ]
 }
