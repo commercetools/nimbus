@@ -1343,34 +1343,6 @@ export const FocusedItem: Story = {
   },
 };
 
-/**
- * Showcase Possible Color Palettes
- */
-export const ColorPalettes: Story = {
-  tags: ["vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
-
-  render: () => (
-    <DisplayColorPalettes>
-      {(palette) => {
-        const itemsForPalette = fieldItems.map((item) => ({
-          ...item,
-          key: `${palette}-${item.key}`,
-        }));
-        return (
-          <DraggableList.Field
-            label={palette}
-            items={itemsForPalette}
-            removableItems
-            width="3600"
-            colorPalette={palette}
-          />
-        );
-      }}
-    </DisplayColorPalettes>
-  ),
-};
-
 /** label, selected keys, disabled */
 const ROW_STATES = [
   ["default", [], false],
@@ -1428,4 +1400,32 @@ export const SmokeTest: Story = {
       }
     );
   },
+};
+
+/**
+ * Showcase Possible Color Palettes
+ */
+export const ColorPalettes: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+
+  render: () => (
+    <DisplayColorPalettes>
+      {(palette) => {
+        const itemsForPalette = fieldItems.map((item) => ({
+          ...item,
+          key: `${palette}-${item.key}`,
+        }));
+        return (
+          <DraggableList.Field
+            label={palette}
+            items={itemsForPalette}
+            removableItems
+            width="3600"
+            colorPalette={palette}
+          />
+        );
+      }}
+    </DisplayColorPalettes>
+  ),
 };
