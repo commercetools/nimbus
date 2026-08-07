@@ -3,7 +3,7 @@ packages:
   - apps/*
 
 catalog:
-  '@huggingface/transformers': ^3.8.1
+  '@huggingface/transformers': ^4.0.0
 
 # catalogMode set to prefer rather than strict. Strict mode requires the
 # requested version to match the catalog specifier as an exact string, even
@@ -279,4 +279,3 @@ catalogs:
     remark-mark-highlight: 0.1.1
     slug: 11.0.1
     vite-plugin-compression: 0.5.1
-
