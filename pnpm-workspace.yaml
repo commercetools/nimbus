@@ -168,7 +168,7 @@ catalogs:
     # makes @testing-library/dom a required peer). A caret range can't hold it
     # back — ^6.9.1 re-resolves straight to 6.10.0. The 6.x line ends here;
     # moving forward means 7.0.0, which is a major and needs its own PR.
-    "@testing-library/jest-dom": 6.9.1
+    "@testing-library/jest-dom": 7.0.0
     "@testing-library/user-event": ^14.6.3
     "@testing-library/react": ^16.3.2
     playwright: ^1.62.1
@@ -192,7 +192,7 @@ catalogs:
     "@vueless/storybook-dark-mode": ^10.0.8
     "@github-ui/storybook-addon-performance-panel": ^1.1.4
     chromatic: ^17.8.0
-    jsdom: 29.0.1 # pinned: 29.0.2+ breaks Chakra/Emotion CSS in JSDOM (style assertions return padding: 0); reconfirmed against 29.1.0 on 2026-04-29
+    jsdom: 30.0.1 # pinned: 29.0.2+ breaks Chakra/Emotion CSS in JSDOM (style assertions return padding: 0); reconfirmed against 29.1.0 on 2026-04-29
   react:
     "@types/react": ^19.2.18
     "@types/react-dom": ^19.2.4
