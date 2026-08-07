@@ -65,18 +65,6 @@ const preview: Preview = {
     },
   },
   tags: ["autodocs", "a11y-test"],
-  // React Aria's keyboard drag session is a module global that only Enter or
-  // Escape ends - unmounting the story does not. A story that captures a
-  // mid-drag frame otherwise leaves `inert` on the document plus a live
-  // MutationObserver that marks the next story's root inert too, which silently
-  // swallows every click in the stories that follow it in the same page.
-  beforeEach: () => () => {
-    // The story is already unmounted here, so anything still `inert` is leaked.
-    if (!document.querySelector("[inert]")) return;
-    document.body.dispatchEvent(
-      new KeyboardEvent("keydown", { key: "Escape", bubbles: true })
-    );
-  },
   decorators: [
     (Story, context) => {
       // Pad every story so Chromatic's crop doesn't clip focus/selection rings at

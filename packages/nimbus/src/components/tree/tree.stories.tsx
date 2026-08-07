@@ -809,6 +809,15 @@ export const DragInProgress: Story = {
   // VRT: deliberately captured mid-drag - the play must NOT complete the drop.
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
+  // React Aria's keyboard drag session is a module global that only Enter or
+  // Escape ends - unmounting the story does not. Left live, it keeps `inert`
+  // over the page and an observer that re-applies it to whatever mounts next,
+  // so clicks in later stories go nowhere. Runs after Chromatic's capture.
+  beforeEach: () => () => {
+    document.body.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true })
+    );
+  },
   render: () => <FeatureTree aria-label="Files" selectionMode="none" />,
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
