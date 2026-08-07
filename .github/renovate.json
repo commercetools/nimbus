@@ -4,6 +4,7 @@
   "toolSettings": {
     "nodeMaxMemory": 2560
   },
+  "osvVulnerabilityAlerts": true,
   "packageRules": [
     {
       "description": "Extra cooldown for major upgrades on top of the org's minimumReleaseAgeNpm (3 days), so majors clear the pnpm-workspace.yaml minimumReleaseAge: 1440 (24h) supply-chain gate with a wider safety margin before the PR's lockfile is built.",
