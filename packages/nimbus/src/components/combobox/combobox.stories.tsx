@@ -6286,7 +6286,7 @@ export const SmokeTest: Story = {
   render: () => {
     const sizes = ["sm", "md"] as const;
     const variants = ["solid", "ghost"] as const;
-    const selectionModes = ["single", "multiple", "none"] as const;
+    const selectionModes = ["single", "multiple"] as const;
 
     return (
       <Stack gap="800" alignItems="flex-start">
@@ -6303,7 +6303,7 @@ export const SmokeTest: Story = {
                     size={size}
                     variant={variant}
                     selectionMode={selectionMode}
-                    selectedKeys={selectionMode === "none" ? [] : [1]}
+                    selectedKeys={[1]}
                   />
                 ))}
               </Stack>

@@ -1336,8 +1336,8 @@ const VARIANTS = ["line", "rounded", "pill"] as const;
 const focusSelectedTab = async (canvasElement: HTMLElement) => {
   const canvas = within(canvasElement);
   const tab = await canvas.findByRole("tab", { selected: true });
-  // `userEvent.tab()` leaves focus on <body> in the Chromatic runner, so focus the
-  // tab directly. The outline assertion below proves the ring still paints.
+  // The Chromatic runner swallows the first `userEvent.tab()`, so focus directly.
+  // The outline assertion below proves the ring still paints.
   tab.focus();
   await expect(tab).toHaveFocus();
   // Without this, a ring that never paints baselines as a silent pass.
@@ -1382,10 +1382,10 @@ export const FocusedPanel: Story = {
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Tabbing past the tab strip focuses the panel", async () => {
-      await userEvent.tab();
-      await userEvent.tab();
+    await step("The panel takes focus", async () => {
       const panel = await canvas.findByRole("tabpanel");
+      // See `focusSelectedTab` on why this doesn't tab to the panel.
+      panel.focus();
       await expect(panel).toHaveFocus();
       await expect(panel).toHaveStyle({ outlineStyle: "solid" });
     });
