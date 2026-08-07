@@ -221,8 +221,10 @@ already-audited component → don't.
   ring actually renders.
 - **Overlays: snapshot the open state** and leave it open; each distinct open
   surface is its own story.
-- **Portals: capture is page-wide** - hold open, await, clean up between
-  stories; reach a portal's focus via its real keyboard path.
+- **Portals: capture is page-wide, but the page must be tall enough** - an
+  overlay hanging below a short root is cropped, so reserve `minHeight`. Hold
+  open, await, clean up between stories; reach a portal's focus via its real
+  keyboard path.
 - **Snapshot `placement` only when it changes the layout**, not when it
   repositions the same box.
 
@@ -263,7 +265,9 @@ already-audited component → don't.
 
 - **What to snapshot:** every prop-driven visual state. Interacting axes fold
   into one `SmokeTest`; independent axes get separate showcases; any state the
-  matrix can't render gets its own story. Never drop a state to save cost.
+  matrix can't render gets its own story. Never drop a state to save cost. A
+  recipe with `compoundVariants` over two axes has already declared they
+  interact - build the matrix.
 - **Name the interacting-axes matrix `SmokeTest`, rendered last** - the axis
   list lives in the doc comment.
 - **Axis arrays span the full supported range** - palettes iterate the 6
@@ -271,7 +275,8 @@ already-audited component → don't.
   recipe hardcodes isn't an axis; a uniform transform (`disabled`) folds out
   into its own story.
 - **Cover distinct state-combinations**, not just single flags
-  (selected-disabled ≠ unselected-disabled).
+  (selected-disabled ≠ unselected-disabled) - beats the fold-out above, when
+  reachable (React Aria reassigns selection off disabled items).
 - **One state rendered more than one way → one story each**, not a folded
   gallery.
 - **`chromatic.modes` is global config only** (viewport/theme/locale), never

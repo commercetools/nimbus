@@ -1,10 +1,17 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Link, type LinkProps, Stack, Text } from "@commercetools/nimbus";
+import { OpenInNew as DemoIcon } from "@commercetools/nimbus-icons";
 import { userEvent, within, expect, fn } from "storybook/test";
 import { createRef } from "react";
 
 const sizes: LinkProps["size"][] = ["xs", "sm", "md"];
 const fontColors: LinkProps["fontColor"][] = ["primary", "inherit"];
+
+/** `fontColor` has no default, so unset is a third rendering, not an alias. */
+const smokeFontColors: LinkProps["fontColor"][] = [
+  undefined,
+  ...fontColors,
+] as const;
 
 /**
  * The Link component allows a user to navigate to a different page or resource.
@@ -28,6 +35,9 @@ type Story = StoryObj<typeof Link>;
  * Uses the args pattern for dynamic control panel inputs
  */
 export const Base: Story = {
+  // VRT: the only frame with `fontColor` and `size` both unset.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Demo Link",
     onClick: fn(),
@@ -56,6 +66,29 @@ export const Base: Story = {
       await userEvent.tab();
       await expect(link).toHaveFocus();
     });
+
+    link.blur();
+  },
+};
+
+/**
+ * Showcase the focus ring
+ */
+export const Focused: Story = {
+  // VRT: the ring is expected in this capture.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    children: "Demo Link",
+    href: "#",
+  },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Shows a focus ring when tabbed to", async () => {
+      await userEvent.tab();
+      await expect(canvas.getByRole("link")).toHaveFocus();
+    });
   },
 };
 
@@ -82,6 +115,9 @@ export const Sizes: Story = {
  * Showcase FontColors
  */
 export const FontColors: Story = {
+  // VRT: snapshotted for the inline-in-text layout, not the colors.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: (args) => {
     return (
       <Stack direction="column">
@@ -97,6 +133,32 @@ export const FontColors: Story = {
 
   args: {
     children: "Link",
+  },
+};
+
+/**
+ * Showcase a link with a leading icon
+ */
+export const WithIcon: Story = {
+  // VRT: the only frame with an icon child, which base's `inline-flex` exists for.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    href: "https://commercetools.com",
+    target: "_blank",
+    rel: "noopener noreferrer",
+  },
+  render: (args) => {
+    return (
+      <Stack direction="column" gap="400" alignItems="flex-start">
+        {sizes.map((size) => (
+          <Link key={size as string} {...args} size={size}>
+            <DemoIcon />
+            Documentation
+          </Link>
+        ))}
+      </Stack>
+    );
   },
 };
 
@@ -177,6 +239,9 @@ export const WithCustomHref: Story = {
 };
 
 export const SmokeTest: Story = {
+  // VRT: independent axes, but one frame is cheaper than two showcases.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     children: "Demo Link",
     ["data-testid"]: "smoke-test",
@@ -184,8 +249,8 @@ export const SmokeTest: Story = {
   render: (args) => {
     return (
       <Stack gap="1200">
-        {fontColors.map((color) => (
-          <Stack key={color as string} direction="row" gap="400">
+        {smokeFontColors.map((color, index) => (
+          <Stack key={index} direction="row" gap="400">
             {sizes.map((size) => (
               <Stack direction="row" key={size as string}>
                 <Link {...args} size={size} fontColor={color} />

@@ -390,6 +390,9 @@ export const KeyboardNavigation: Story = {
  * React Aria's `useLink` handles the disabled behaviour.
  */
 export const WithDisabledItem: Story = {
+  // VRT: the shared `layerStyle: "disabled"`, folded out of SmokeTest.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <InteractiveTabNav
       aria-label="Order navigation"
@@ -437,6 +440,92 @@ export const WithDisabledItem: Story = {
 
         // Shipping is never focused
         await expect(shippingLink).not.toHaveFocus();
+
+        // Snapshotted: without this, the tabbing above leaves a ring in the frame.
+        itemsLink.blur();
+      }
+    );
+  },
+};
+
+const focusActiveItem = async (canvasElement: HTMLElement) => {
+  const canvas = within(canvasElement);
+  await userEvent.tab();
+  const item = canvas.getByRole("link", { name: "General" });
+  await expect(item).toHaveFocus();
+  // Without this, a ring that never paints baselines as a silent pass.
+  await expect(item).toHaveStyle({ outlineStyle: "solid" });
+};
+
+/**
+ * The focus ring on `line`. The ring follows the item's own `borderRadius`, so
+ * each variant is its own surface, and only one element can hold focus at a time,
+ * hence one story per variant.
+ */
+export const FocusedLine: Story = {
+  // VRT: the ring is expected in this capture.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <InteractiveTabNav aria-label="Order navigation" variant="line" />
+  ),
+  play: async ({ canvasElement }) => focusActiveItem(canvasElement),
+};
+
+/** The same ring on `rounded`. */
+export const FocusedRounded: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <InteractiveTabNav aria-label="Order navigation" variant="rounded" />
+  ),
+  play: async ({ canvasElement }) => focusActiveItem(canvasElement),
+};
+
+/** The same ring on `pill`. */
+export const FocusedPill: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <InteractiveTabNav aria-label="Order navigation" variant="pill" />
+  ),
+  play: async ({ canvasElement }) => focusActiveItem(canvasElement),
+};
+
+/**
+ * A TabNav whose route matches no item. Every other story has an active one, so
+ * without this frame an indicator left visible at the container corner would be
+ * caught by nothing.
+ */
+export const NoActiveItem: Story = {
+  // VRT: the indicator's hidden branch; a regression paints a stray highlight.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <TabNav.Root aria-label="Order navigation">
+      {ORDER_ITEMS.map((item) => (
+        <TabNav.Item key={item.href} href={item.href}>
+          {item.label}
+        </TabNav.Item>
+      ))}
+    </TabNav.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step(
+      "No item is current, so the indicator stays hidden",
+      async () => {
+        await expect(
+          canvas.queryAllByRole("link", { current: "page" })
+        ).toHaveLength(0);
+        await waitFor(() =>
+          expect(
+            canvasElement.querySelector<HTMLElement>(
+              ".nimbus-tab-nav__indicator"
+            )
+          ).toHaveStyle({ opacity: "0" })
+        );
       }
     );
   },
@@ -582,55 +671,106 @@ export const DeprecatedVariantAlias: Story = {
 };
 
 /**
- * Comprehensive smoke test showing multiple navigation items with one active
- * item. Validates the complete rendering of the TabNav component.
+ * An item that is both current and disabled, reachable because `isCurrent` and
+ * `isDisabled` are independent props. `_disabled` dims the item, but the
+ * indicator is a root-level sibling the dimming cannot reach, so the highlight
+ * stays at full strength over a dimmed label.
  */
-export const SmokeTest: Story = {
+export const DisabledCurrentItem: Story = {
+  // VRT: dimmed label under an undimmed indicator.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
-    <InteractiveTabNav
-      aria-label="Page navigation"
-      items={[
-        { href: "/page/overview", label: "Overview" },
-        { href: "/page/details", label: "Details" },
-        { href: "/page/history", label: "History" },
-        { href: "/page/settings", label: "Settings" },
-      ]}
-    />
+    <Stack direction="column" gap="800">
+      {(["line", "rounded", "pill"] as const).map((variant) => (
+        <Stack key={variant} direction="column" gap="300">
+          <Text fontWeight="600">{variant}</Text>
+          <InteractiveTabNav
+            aria-label={`Order navigation (${variant})`}
+            variant={variant}
+            items={[
+              {
+                href: "/orders/123/general",
+                label: "General",
+                isDisabled: true,
+              },
+              { href: "/orders/123/items", label: "Items" },
+              { href: "/orders/123/shipping", label: "Shipping" },
+            ]}
+          />
+        </Stack>
+      ))}
+    </Stack>
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = within(canvasElement);
 
-    await step("Renders nav landmark", async () => {
-      const nav = canvas.getByRole("navigation");
-      await expect(nav).toBeInTheDocument();
+    await step("The current item is also disabled", async () => {
+      const current = canvas.getAllByRole("link", { current: "page" });
+      await expect(current).toHaveLength(3);
+      await expect(
+        current.filter((el) => el.getAttribute("aria-disabled") !== "true")
+      ).toHaveLength(0);
+    });
+  },
+};
+
+/**
+ * The full `variant` x `size` grid, each nav with its first item active.
+ *
+ * Both axes shape the indicator, so neither alone covers the matrix: `size` sets
+ * the `--tab-nav-*` font-size and padding vars that size each item's box, and
+ * `getGeometry` measures that box to place the highlight. Hence a 2px bottom bar
+ * for `line` and a full-height rounded-rect or capsule for `rounded`/`pill`, at
+ * three item widths each.
+ */
+export const SmokeTest: Story = {
+  // VRT: resting-visual carrier.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="800">
+      {(["line", "rounded", "pill"] as const).map((variant) => (
+        <Stack key={variant} direction="column" gap="300">
+          <Text fontWeight="600">{variant}</Text>
+          {(["sm", "md", "lg"] as const).map((size) => (
+            <InteractiveTabNav
+              key={size}
+              aria-label={`Order navigation (${variant} ${size})`}
+              variant={variant}
+              size={size}
+            />
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Every cell renders a nav landmark", async () => {
+      await expect(canvas.getAllByRole("navigation")).toHaveLength(9);
     });
 
-    await step("Renders all navigation links", async () => {
-      const links = canvas.getAllByRole("link");
-      await expect(links).toHaveLength(4);
+    await step("Every cell has one active item", async () => {
+      await expect(
+        canvas.getAllByRole("link", { current: "page" })
+      ).toHaveLength(9);
     });
 
-    await step("Active item has correct aria-current", async () => {
-      const overviewLink = canvas.getByRole("link", { name: "Overview" });
-      await expect(overviewLink).toHaveAttribute("aria-current", "page");
-    });
-
-    await step("Inactive items lack aria-current", async () => {
-      const detailsLink = canvas.getByRole("link", { name: "Details" });
-      const historyLink = canvas.getByRole("link", { name: "History" });
-      const settingsLink = canvas.getByRole("link", { name: "Settings" });
-
-      await expect(detailsLink).not.toHaveAttribute("aria-current");
-      await expect(historyLink).not.toHaveAttribute("aria-current");
-      await expect(settingsLink).not.toHaveAttribute("aria-current");
-    });
-
-    await step("Links have correct href values", async () => {
-      const overviewLink = canvas.getByRole("link", { name: "Overview" });
-      const detailsLink = canvas.getByRole("link", { name: "Details" });
-
-      await expect(overviewLink).toHaveAttribute("href", "/page/overview");
-      await expect(detailsLink).toHaveAttribute("href", "/page/details");
+    await step("Every cell's indicator is positioned", async () => {
+      // If the hook stopped, the cells would render with no highlight.
+      const indicators = Array.from(
+        canvasElement.querySelectorAll<HTMLElement>(
+          ".nimbus-tab-nav__indicator"
+        )
+      );
+      await waitFor(() => {
+        expect(indicators.map((i) => i.style.opacity)).toEqual(
+          Array(9).fill("1")
+        );
+        expect(indicators.filter((i) => !i.style.transform)).toHaveLength(0);
+      });
     });
   },
 };

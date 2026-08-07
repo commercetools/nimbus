@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, fn, userEvent, within } from "storybook/test";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import {
   Box,
   Button,
@@ -680,6 +680,9 @@ export const WithDisabledKeys: Story = {
 };
 
 export const Disabled: Story = {
+  // VRT: the shared `layerStyle: "disabled"`, folded out of SmokeTest.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   args: {
     "data-testid": "disabled-tabs",
   },
@@ -786,6 +789,9 @@ export const Disabled: Story = {
 
       const activePanel = canvas.getByRole("tabpanel");
       await expect(activePanel).toHaveTextContent("This tab is also enabled.");
+
+      // Snapshotted: React Aria keeps `data-focus-visible` after a click.
+      enabledTab2.blur();
     });
   },
 };
@@ -1316,6 +1322,162 @@ export const DeprecatedVariantAliases: Story = {
       const tabs = await canvas.findAllByRole("tab");
       await expect(tabs).toHaveLength(3);
       await expect(tabs[0]).toHaveAttribute("aria-selected", "true");
+    });
+  },
+};
+
+const VARIANTS = ["line", "rounded", "pill"] as const;
+
+const focusSelectedTab = async (canvasElement: HTMLElement) => {
+  const canvas = within(canvasElement);
+  const tab = await canvas.findByRole("tab", { selected: true });
+  // The Chromatic runner swallows the first `userEvent.tab()`, so focus directly.
+  // The outline assertion below proves the ring still paints.
+  tab.focus();
+  await expect(tab).toHaveFocus();
+  // Without this, a ring that never paints baselines as a silent pass.
+  await expect(tab).toHaveStyle({ outlineStyle: "solid" });
+};
+
+/**
+ * The tab focus ring on `line`. The ring follows the tab's own `borderRadius`, so
+ * each variant is its own surface, and only one element can hold focus at a time,
+ * hence one story per variant.
+ */
+export const FocusedTabLine: Story = {
+  // VRT: the ring is expected in this capture.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: { variant: "line", tabs: navigationTabs, tabListAriaLabel: "Sections" },
+  play: async ({ canvasElement }) => focusSelectedTab(canvasElement),
+};
+
+/** The same ring on `rounded`. */
+export const FocusedTabRounded: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: {
+    variant: "rounded",
+    tabs: navigationTabs,
+    tabListAriaLabel: "Sections",
+  },
+  play: async ({ canvasElement }) => focusSelectedTab(canvasElement),
+};
+
+/** The same ring on `pill`. */
+export const FocusedTabPill: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: { variant: "pill", tabs: navigationTabs, tabListAriaLabel: "Sections" },
+  play: async ({ canvasElement }) => focusSelectedTab(canvasElement),
+};
+
+/**
+ * The panel is a second, independent focus surface: the `panel` slot has its own
+ * `_focusVisible`, and React Aria makes a childless panel tabbable.
+ */
+export const FocusedPanel: Story = {
+  // VRT: the panel slot's own ring, baselined nowhere else.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  args: { tabs: navigationTabs, tabListAriaLabel: "Sections" },
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("The panel takes focus", async () => {
+      const panel = await canvas.findByRole("tabpanel");
+      // See `focusSelectedTab` on why this doesn't tab to the panel.
+      panel.focus();
+      await expect(panel).toHaveFocus();
+      await expect(panel).toHaveStyle({ outlineStyle: "solid" });
+    });
+  },
+};
+
+/**
+ * The `orientation` x `placement` grid, per variant — the axes every
+ * `compoundVariant` keys off, and the four branches `getGeometry` takes to place
+ * the indicator. `size` is held at the default, since SmokeTest spans it.
+ */
+export const LayoutMatrix: Story = {
+  // VRT: every `compoundVariant` and all four indicator-geometry branches.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="1200">
+      {VARIANTS.map((variant) => (
+        <Stack key={variant} direction="column" gap="600">
+          <Text fontWeight="600">{variant}</Text>
+          {(["horizontal", "vertical"] as const).map((orientation) =>
+            (["start", "end"] as const).map((placement) => (
+              <Stack key={`${orientation}-${placement}`} direction="column">
+                <Text fontSize="300" color="neutral.11">
+                  {orientation} / {placement}
+                </Text>
+                <Tabs.Root
+                  variant={variant}
+                  orientation={orientation}
+                  placement={placement}
+                  tabs={navigationTabs}
+                  tabListAriaLabel={`${variant} ${orientation} ${placement}`}
+                />
+              </Stack>
+            ))
+          )}
+        </Stack>
+      ))}
+    </Stack>
+  ),
+};
+
+/**
+ * The full `variant` x `size` grid. The axes interact: `size` writes the `--tabs-*`
+ * vars that size each tab's box, which is what `getGeometry` measures to place the
+ * indicator, and which `pill` derives its extra padding from.
+ */
+export const SmokeTest: Story = {
+  // VRT: resting-visual carrier.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Stack direction="column" gap="1200">
+      {VARIANTS.map((variant) => (
+        <Stack key={variant} direction="column" gap="600">
+          <Text fontWeight="600">{variant}</Text>
+          {(["sm", "md", "lg"] as const).map((size) => (
+            <Tabs.Root
+              key={size}
+              variant={variant}
+              size={size}
+              tabs={navigationTabs}
+              tabListAriaLabel={`${variant} ${size}`}
+            />
+          ))}
+        </Stack>
+      ))}
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = within(canvasElement);
+
+    await step("Every cell has one selected tab", async () => {
+      await expect(
+        await canvas.findAllByRole("tab", { selected: true })
+      ).toHaveLength(9);
+    });
+
+    await step("Every cell's indicator is positioned", async () => {
+      // If the hook stopped, the cells would render with no highlight.
+      const indicators = Array.from(
+        canvasElement.querySelectorAll<HTMLElement>(".nimbus-tabs__indicator")
+      );
+      // The indicator is measured and positioned a beat after the tabs render.
+      await waitFor(() => {
+        expect(indicators.map((i) => i.style.opacity)).toEqual(
+          Array(9).fill("1")
+        );
+        expect(indicators.filter((i) => !i.style.transform)).toHaveLength(0);
+      });
     });
   },
 };
