@@ -5,6 +5,10 @@
     "nodeMaxMemory": 2560
   },
   "osvVulnerabilityAlerts": true,
+  "vulnerabilityAlerts": {
+    "description": "Force-enable vulnerability-fix PRs even for packages the packageRules below block on major updates (react/react-dom, @types/node, @babel/*). Without this, a CVE whose only fix crosses one of those major-version boundaries would be silently suppressed by our own ignore rules instead of raised.",
+    "enabled": true
+  },
   "packageRules": [
     {
       "description": "Extra cooldown for major upgrades on top of the org's minimumReleaseAgeNpm (3 days), so majors clear the pnpm-workspace.yaml minimumReleaseAge: 1440 (24h) supply-chain gate with a wider safety margin before the PR's lockfile is built.",
