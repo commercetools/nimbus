@@ -807,8 +807,7 @@ export const ConfigurationToggles: Story = {
 /**
  * Pagination in each supported locale. Two Pagination-owned things move and are
  * both invisible in an English-only frame: the translated label widths, and the
- * total-pages count from its own `Intl.NumberFormat`. The page count is kept above
- * 1000 so the formatter has a separator to place.
+ * total-pages count from its own `Intl.NumberFormat`.
  */
 export const Locales: Story = {
   // VRT: translated label widths + the per-locale group separator.
@@ -823,7 +822,8 @@ export const Locales: Story = {
           </Text>
           <NimbusProvider locale={locale}>
             <Pagination
-              totalItems={250000}
+              // Five digits of pages, or es-ES renders no separator at all.
+              totalItems={2500000}
               currentPage={2500}
               // Must be one of the default pageSizeOptions, or the Select renders
               // its placeholder and the translated label sits next to an empty box.
@@ -842,11 +842,12 @@ export const Locales: Story = {
 
     await step("Each locale formats the total-pages count", async () => {
       await expect(canvas.getAllByRole("navigation")).toHaveLength(5);
-      // A bypassed formatter would render "2500" in both.
+      // A bypassed formatter would render "25000" in all three.
       const nav = (locale: string) =>
         canvas.getByRole("navigation", { name: `Pagination ${locale}` });
-      await expect(nav("en-US")).toHaveTextContent("2,500");
-      await expect(nav("de-DE")).toHaveTextContent("2.500");
+      await expect(nav("en-US")).toHaveTextContent("25,000");
+      await expect(nav("de-DE")).toHaveTextContent("25.000");
+      await expect(nav("es-ES")).toHaveTextContent("25.000");
     });
   },
 };

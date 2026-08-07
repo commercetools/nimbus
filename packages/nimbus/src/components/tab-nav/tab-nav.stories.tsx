@@ -448,11 +448,6 @@ export const WithDisabledItem: Story = {
   },
 };
 
-/**
- * Showcase the focus ring on each variant. The ring follows the item's own
- * `borderRadius` — square, `200`, `full` — so each variant is a separate surface,
- * and only one element can hold focus at a time.
- */
 const focusActiveItem = async (canvasElement: HTMLElement) => {
   const canvas = within(canvasElement);
   await userEvent.tab();
@@ -462,6 +457,11 @@ const focusActiveItem = async (canvasElement: HTMLElement) => {
   await expect(item).toHaveStyle({ outlineStyle: "solid" });
 };
 
+/**
+ * The focus ring on `line`. The ring follows the item's own `borderRadius`, so
+ * each variant is its own surface, and only one element can hold focus at a time,
+ * hence one story per variant.
+ */
 export const FocusedLine: Story = {
   // VRT: the ring is expected in this capture.
   tags: ["vrt"],
@@ -472,6 +472,7 @@ export const FocusedLine: Story = {
   play: async ({ canvasElement }) => focusActiveItem(canvasElement),
 };
 
+/** The same ring on `rounded`. */
 export const FocusedRounded: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
@@ -481,6 +482,7 @@ export const FocusedRounded: Story = {
   play: async ({ canvasElement }) => focusActiveItem(canvasElement),
 };
 
+/** The same ring on `pill`. */
 export const FocusedPill: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
@@ -669,17 +671,8 @@ export const DeprecatedVariantAlias: Story = {
 };
 
 /**
- * The full `variant` x `size` grid, each nav with its first item active.
- *
- * The axes interact rather than merely scaling each other: size drives the
- * `--tab-nav-*` padding and font-size vars, which set each item's box, which is
- * what `getGeometry` measures to place the indicator — so the highlight's shape
- * is a product of both (a 2px bar for `line`, a full-height rounded-rect or
- * capsule for `rounded`/`pill`, each at three widths).
- */
-/**
- * An item that is both current and disabled — reachable here because `isCurrent`
- * and `isDisabled` are independent props. `_disabled` dims the item, but the
+ * An item that is both current and disabled, reachable because `isCurrent` and
+ * `isDisabled` are independent props. `_disabled` dims the item, but the
  * indicator is a root-level sibling the dimming cannot reach, so the highlight
  * stays at full strength over a dimmed label.
  */
@@ -722,6 +715,15 @@ export const DisabledCurrentItem: Story = {
   },
 };
 
+/**
+ * The full `variant` x `size` grid, each nav with its first item active.
+ *
+ * Both axes shape the indicator, so neither alone covers the matrix: `size` sets
+ * the `--tab-nav-*` font-size and padding vars that size each item's box, and
+ * `getGeometry` measures that box to place the highlight. Hence a 2px bottom bar
+ * for `line` and a full-height rounded-rect or capsule for `rounded`/`pill`, at
+ * three item widths each.
+ */
 export const SmokeTest: Story = {
   // VRT: resting-visual carrier.
   tags: ["vrt"],

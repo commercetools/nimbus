@@ -6273,6 +6273,48 @@ export const ContentAreaScrollBehavior: Story = {
   },
 };
 
+/**
+ * Option: Label And Description
+ * The two-line option layout, composed from the `label` and `description` slots.
+ */
+export const OptionWithDescription: Story = {
+  // VRT: the only frame with `[slot="description"]`; the rest are plain-text options.
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  decorators: [roomForPopover],
+  render: () => (
+    <ComboBox.Root aria-label="Option descriptions" menuTrigger="focus">
+      <ComboBox.Trigger />
+      <ComboBox.Popover>
+        <ComboBox.ListBox>
+          <ComboBox.Option textValue="Koala">
+            <Text slot="label">Koala</Text>
+            <Text slot="description">Sleeps up to 20 hours a day</Text>
+          </ComboBox.Option>
+          <ComboBox.Option textValue="Platypus">
+            <Text slot="label">Platypus</Text>
+            <Text slot="description">Lays eggs and is venomous</Text>
+          </ComboBox.Option>
+        </ComboBox.ListBox>
+      </ComboBox.Popover>
+    </ComboBox.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    canvasElement.style.caretColor = "transparent";
+    const canvas = within(canvasElement);
+
+    await step("Opens with two-line options", async () => {
+      await userEvent.click(canvas.getByRole("combobox"));
+      await waitFor(() => {
+        expect(getListBox(document)).toBeInTheDocument();
+      });
+      expect(
+        document.querySelector('[role="option"] [slot="description"]')
+      ).toBeInTheDocument();
+    });
+  },
+};
+
 // ============================================================
 // SMOKE TEST
 // ============================================================
@@ -6314,47 +6356,5 @@ export const SmokeTest: Story = {
         ))}
       </Stack>
     );
-  },
-};
-
-/**
- * Option: Label And Description
- * The two-line option layout, composed from the `label` and `description` slots.
- */
-export const OptionWithDescription: Story = {
-  // VRT: the only frame with `[slot="description"]`; the rest are plain-text options.
-  tags: ["vrt"],
-  parameters: { chromatic: { disableSnapshot: false } },
-  decorators: [roomForPopover],
-  render: () => (
-    <ComboBox.Root aria-label="Option descriptions" menuTrigger="focus">
-      <ComboBox.Trigger />
-      <ComboBox.Popover>
-        <ComboBox.ListBox>
-          <ComboBox.Option textValue="Koala">
-            <Text slot="label">Koala</Text>
-            <Text slot="description">Sleeps up to 20 hours a day</Text>
-          </ComboBox.Option>
-          <ComboBox.Option textValue="Platypus">
-            <Text slot="label">Platypus</Text>
-            <Text slot="description">Lays eggs and is venomous</Text>
-          </ComboBox.Option>
-        </ComboBox.ListBox>
-      </ComboBox.Popover>
-    </ComboBox.Root>
-  ),
-  play: async ({ canvasElement, step }) => {
-    canvasElement.style.caretColor = "transparent";
-    const canvas = within(canvasElement);
-
-    await step("Opens with two-line options", async () => {
-      await userEvent.click(canvas.getByRole("combobox"));
-      await waitFor(() => {
-        expect(getListBox(document)).toBeInTheDocument();
-      });
-      expect(
-        document.querySelector('[role="option"] [slot="description"]')
-      ).toBeInTheDocument();
-    });
   },
 };

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { expect, fn, userEvent, within } from "storybook/test";
+import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import {
   Box,
   Button,
@@ -1328,11 +1328,6 @@ export const DeprecatedVariantAliases: Story = {
 
 const VARIANTS = ["line", "rounded", "pill"] as const;
 
-/**
- * Showcase the tab focus ring on each variant. The ring follows the tab's own
- * `borderRadius` — square, `200`, `full` — so each variant is a separate surface,
- * and only one element can hold focus at a time.
- */
 const focusSelectedTab = async (canvasElement: HTMLElement) => {
   const canvas = within(canvasElement);
   const tab = await canvas.findByRole("tab", { selected: true });
@@ -1344,6 +1339,11 @@ const focusSelectedTab = async (canvasElement: HTMLElement) => {
   await expect(tab).toHaveStyle({ outlineStyle: "solid" });
 };
 
+/**
+ * The tab focus ring on `line`. The ring follows the tab's own `borderRadius`, so
+ * each variant is its own surface, and only one element can hold focus at a time,
+ * hence one story per variant.
+ */
 export const FocusedTabLine: Story = {
   // VRT: the ring is expected in this capture.
   tags: ["vrt"],
@@ -1352,6 +1352,7 @@ export const FocusedTabLine: Story = {
   play: async ({ canvasElement }) => focusSelectedTab(canvasElement),
 };
 
+/** The same ring on `rounded`. */
 export const FocusedTabRounded: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
@@ -1363,6 +1364,7 @@ export const FocusedTabRounded: Story = {
   play: async ({ canvasElement }) => focusSelectedTab(canvasElement),
 };
 
+/** The same ring on `pill`. */
 export const FocusedTabPill: Story = {
   tags: ["vrt"],
   parameters: { chromatic: { disableSnapshot: false } },
@@ -1469,12 +1471,13 @@ export const SmokeTest: Story = {
       const indicators = Array.from(
         canvasElement.querySelectorAll<HTMLElement>(".nimbus-tabs__indicator")
       );
-      await expect(indicators.map((i) => i.style.opacity)).toEqual(
-        Array(9).fill("1")
-      );
-      await expect(indicators.filter((i) => !i.style.transform)).toHaveLength(
-        0
-      );
+      // The indicator is measured and positioned a beat after the tabs render.
+      await waitFor(() => {
+        expect(indicators.map((i) => i.style.opacity)).toEqual(
+          Array(9).fill("1")
+        );
+        expect(indicators.filter((i) => !i.style.transform)).toHaveLength(0);
+      });
     });
   },
 };
