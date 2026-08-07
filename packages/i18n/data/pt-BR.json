@@ -29,11 +29,11 @@
   },
   "Nimbus.ChatMessageList.conversationLabel": {
     "developer_comment": "default accessible name for the chat transcript live region when the consumer does not provide one",
-    "string": "Conversation"
+    "string": "Conversa"
   },
   "Nimbus.ChatMessageList.scrollToBottom": {
     "developer_comment": "aria-label for the control that jumps to the newest message in a chat transcript",
-    "string": "Scroll to latest message"
+    "string": "Rolar até a mensagem mais recente"
   },
   "Nimbus.ComboBox.clearSelection": {
     "developer_comment": "aria-label for clear selection button in ComboBox",
@@ -61,7 +61,7 @@
   },
   "Nimbus.DataTable.collapseRow": {
     "developer_comment": "aria-label for the collapse button on an expanded row",
-    "string": "Collapse"
+    "string": "Recolher"
   },
   "Nimbus.DataTable.comfortable": {
     "developer_comment": "title for the comfortable togglebutton in the data table manager layout",
@@ -101,7 +101,7 @@
   },
   "Nimbus.DataTable.expandRow": {
     "developer_comment": "aria-label for the expand button on a collapsed row",
-    "string": "Expand"
+    "string": "Expandir"
   },
   "Nimbus.DataTable.expandRows": {
     "developer_comment": "aria-label for the expand rows column header",
@@ -137,7 +137,7 @@
   },
   "Nimbus.DataTable.nestedContentRow": {
     "developer_comment": "aria-label for the nested content row that expands below a data row",
-    "string": "Details for row {rowId}"
+    "string": "Detalhes da linha {rowId}"
   },
   "Nimbus.DataTable.noHiddenColumns": {
     "developer_comment": "message when there is no hidden columns in the data table manager",
@@ -653,11 +653,11 @@
   },
   "Nimbus.Slider.maximumThumb": {
     "developer_comment": "Default aria-label for the upper (maximum) thumb of a range slider",
-    "string": "Maximum"
+    "string": "Máximo"
   },
   "Nimbus.Slider.minimumThumb": {
     "developer_comment": "Default aria-label for the lower (minimum) thumb of a range slider",
-    "string": "Minimum"
+    "string": "Mínima"
   },
   "Nimbus.SplitButton.noActionsAvailable": {
     "developer_comment": "fallback message when split button has no menu items",
@@ -665,7 +665,7 @@
   },
   "Nimbus.Splitter.resizePanes": {
     "developer_comment": "Default aria-label for the Splitter handle that users drag to redistribute space between the two panes.",
-    "string": "Resize panes"
+    "string": "Redimensionar painéis"
   },
   "Nimbus.TagGroup.removeTag": {
     "developer_comment": "aria-label for remove tag button",
