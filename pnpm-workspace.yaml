@@ -5,7 +5,25 @@ packages:
 catalog:
   '@huggingface/transformers': ^3.8.1
 
-catalogMode: strict
+# catalogMode set to prefer rather than strict. Strict mode requires the
+# requested version to match the catalog specifier as an exact string, even
+# when the specifier is a range (as nearly every entry above and in the named
+# catalogs below is) that the requested version already satisfies. That exact
+# equality check breaks Renovate's targeted lockfile-update command,
+# `pnpm update <pkg>@<version> --recursive --lockfile-only`, which fails with
+# ERR_PNPM_CATALOG_VERSION_MISMATCH for any range-pinned catalog entry. This
+# is confirmed upstream pnpm behavior (pnpm/pnpm#11570, closed by #11706,
+# which declined to change the underlying comparison), so it will not be
+# fixed by a future pnpm release.
+#
+# Filed upstream: pnpm/pnpm#13715, proposing semver.satisfies for a range
+# catalog entry under strict mode instead of exact string equality. When that
+# lands and ships in a pnpm release, revisit switching this back to strict.
+#
+# Prefer mode still prefers the catalog version when compatible, but falls
+# back to the requested version with a warning instead of a hard error, which
+# unblocks Renovate.
+catalogMode: prefer
 
 # --- pnpm install & supply-chain settings (made explicit) ---
 # pnpm 11 ships these as built-in defaults. They are pinned here so the repo's
