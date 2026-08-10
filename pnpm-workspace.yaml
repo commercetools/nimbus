@@ -135,10 +135,10 @@ overrides:
   # Keep every Storybook copy off 10.5.0 (see the pin note in catalogs.tooling).
   # These are pulled transitively (e.g. @github-ui/storybook-addon-performance-panel
   # → @storybook/react) where the catalog pins don't reach.
-  "@storybook/react": "10.4.6"
-  "@storybook/react-dom-shim": "10.4.6"
-  "@storybook/builder-vite": "10.4.6"
-  "@storybook/csf-plugin": "10.4.6"
+  "@storybook/react": "10.5.7"
+  "@storybook/react-dom-shim": "10.5.7"
+  "@storybook/builder-vite": "10.5.7"
+  "@storybook/csf-plugin": "10.5.7"
 
 catalogs:
   tooling:
@@ -201,12 +201,12 @@ catalogs:
     # files per run). Exact pins + the @storybook/* overrides below keep the whole
     # ecosystem — including the copies pulled transitively by the @github-ui /
     # @vueless addons — off 10.5.0. Reconfirmed on 2026-07-15.
-    storybook: 10.4.6
+    storybook: 10.5.7
     eslint-plugin-storybook: 10.4.6
-    "@storybook/addon-a11y": 10.4.6
-    "@storybook/addon-docs": 10.4.6
-    "@storybook/addon-vitest": 10.4.6
-    "@storybook/react-vite": 10.4.6
+    "@storybook/addon-a11y": 10.5.7
+    "@storybook/addon-docs": 10.5.7
+    "@storybook/addon-vitest": 10.5.7
+    "@storybook/react-vite": 10.5.7
     "@vueless/storybook-dark-mode": ^10.0.8
     "@github-ui/storybook-addon-performance-panel": ^1.1.4
     chromatic: ^17.8.0
@@ -279,4 +279,3 @@ catalogs:
     remark-mark-highlight: 0.1.1
     slug: 11.0.1
     vite-plugin-compression: 0.5.1
-
