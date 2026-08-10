@@ -4,6 +4,9 @@
   "toolSettings": {
     "nodeMaxMemory": 2560
   },
+  "gitIgnoredAuthors": [
+    "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+  ],
   "osvVulnerabilityAlerts": true,
   "vulnerabilityAlerts": {
     "description": "Force-enable vulnerability-fix PRs even for packages the packageRules below block on major updates (react/react-dom, @types/node, @babel/*). Without this, a CVE whose only fix crosses one of those major-version boundaries would be silently suppressed by our own ignore rules instead of raised.",
