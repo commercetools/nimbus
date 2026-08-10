@@ -3,7 +3,7 @@ packages:
   - apps/*
 
 catalog:
-  '@huggingface/transformers': ^3.8.1
+  "@huggingface/transformers": ^3.8.1
 
 # catalogMode set to prefer rather than strict. Strict mode requires the
 # requested version to match the catalog specifier as an exact string, even
@@ -104,11 +104,7 @@ overrides:
   # GHSA cluster (…-cmwh-pvxp-8882, …-rp9w-3fw7-7cwq, …-76mc-f452-cxcm, etc.).
   dompurify: "catalog:utils"
   qs: ">=6.15.2"
-<<<<<<< HEAD
-  "minimatch@>=3.0.0 <3.1.4": "3.1.5"
-=======
   "minimatch@>=3.0.0 <3.1.4": "10.2.6"
->>>>>>> c96196b09 (chore(deps): update minimatch override to v10.2.6)
   svgo: ">=4.0.2"
   hono: ">=4.12.27"
   esbuild: ">=0.28.1"
@@ -128,7 +124,7 @@ overrides:
   "ajv@>=8.0.0 <8.18.0": ">=8.18.0"
   "minimatch@>=10.0.0 <10.2.3": ">=10.2.3"
   flatted: ">=3.4.2"
-  undici: ">=7.28.0 <9"
+  undici: ">=7.28.0 <8"
   "picomatch@<2.3.2": ">=2.3.2"
   "picomatch@>=4.0.0 <4.0.4": ">=4.0.4"
   "yaml@1": "1.10.3"
@@ -283,4 +279,3 @@ catalogs:
     remark-mark-highlight: 0.1.1
     slug: 12.0.1
     vite-plugin-compression: 0.5.1
-
