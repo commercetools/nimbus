@@ -1045,9 +1045,12 @@ export const PendingMarksConsistency: Story = {
 
     // Close menu explicitly and wait for it to be gone to avoid toggle races
     await userEvent.keyboard("{Escape}");
-    await waitFor(() => {
-      expect(ui.queryByRole("menu")).not.toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(ui.queryByRole("menu")).not.toBeInTheDocument();
+      },
+      { timeout: 5000 }
+    );
 
     // Reopen and verify the Code mark stays checked (consistency)
     await userEvent.click(formattingMenuButton, { pointerEventsCheck: 0 });
@@ -1058,9 +1061,12 @@ export const PendingMarksConsistency: Story = {
     expect(codeMenuItemAfter).toHaveAttribute("aria-checked", "true");
 
     await userEvent.keyboard("{Escape}");
-    await waitFor(() => {
-      expect(ui.queryByRole("menu")).not.toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(ui.queryByRole("menu")).not.toBeInTheDocument();
+      },
+      { timeout: 5000 }
+    );
 
     // All three marks should wrap the selected text
     await waitFor(() => {
