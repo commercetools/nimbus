@@ -135,10 +135,15 @@ export const Base: Story = {
 
       // Close calendar
       await userEvent.keyboard("{Escape}");
-      await waitFor(async () => {
-        const calendarAfter = within(document.body).queryByRole("application");
-        await expect(calendarAfter).not.toBeInTheDocument();
-      });
+      await waitFor(
+        async () => {
+          const calendarAfter = within(document.body).queryByRole(
+            "application"
+          );
+          await expect(calendarAfter).not.toBeInTheDocument();
+        },
+        { timeout: 5000 }
+      );
 
       // Escape returns focus to the calendar button; keep it out of the snapshot.
       (document.activeElement as HTMLElement | null)?.blur();

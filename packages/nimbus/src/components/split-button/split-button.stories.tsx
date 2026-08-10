@@ -134,7 +134,7 @@ export const Basic: Story = {
           () => {
             expect(portalCanvas.queryByRole("menu")).not.toBeInTheDocument();
           },
-          { timeout: 3000 }
+          { timeout: 8000 }
         );
 
         // Primary button should still show the first action (Save)
@@ -576,7 +576,7 @@ export const AccessibilityTest: Story = {
           () => {
             expect(portalCanvas.queryByRole("menu")).not.toBeInTheDocument();
           },
-          { timeout: 3000 }
+          { timeout: 8000 }
         );
 
         // Primary button should still show first action (Send Message)

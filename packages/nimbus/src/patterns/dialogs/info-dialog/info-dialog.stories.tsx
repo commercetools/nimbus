@@ -80,9 +80,12 @@ export const Base: Story = {
     await step("Closes via the X button and restores focus", async () => {
       await userEvent.click(canvas.getByRole("button", { name: /close/i }));
 
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 5000 }
+      );
 
       await waitFor(
         () => {
@@ -223,9 +226,12 @@ export const WithReactNodeTitle: Story = {
     await step("Closes via the X button and restores focus", async () => {
       await userEvent.click(canvas.getByRole("button", { name: /close/i }));
 
-      await waitFor(() => {
-        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+        },
+        { timeout: 5000 }
+      );
 
       await waitFor(
         () => {

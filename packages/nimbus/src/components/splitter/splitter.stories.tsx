@@ -540,6 +540,24 @@ export const RestoreDefaultsWithZeroSize: Story = {
     await waitFor(() => {
       expect(Number(handle.getAttribute("aria-valuenow"))).toBe(0);
     });
+
+    // Zag's ResizeObserver-driven overflow detection (which drives the ScrollArea
+    // viewport's conditional tabIndex) settles asynchronously after the resize -
+    // wait for it so the a11y check below doesn't run mid-transition and flag a
+    // transiently non-focusable-but-scrollable viewport.
+    await waitFor(() => {
+      const viewports = Array.from(
+        canvasElement.querySelectorAll<HTMLElement>('[data-part="viewport"]')
+      );
+      for (const viewport of viewports) {
+        const overflowing =
+          viewport.scrollWidth > viewport.clientWidth ||
+          viewport.scrollHeight > viewport.clientHeight;
+        if (overflowing) {
+          expect(viewport).toHaveAttribute("tabindex", "0");
+        }
+      }
+    });
   },
 };
 
