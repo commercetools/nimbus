@@ -38,7 +38,7 @@ jobs:
 
       # Ensure we are using valid node version for npm trusted publising AFTER checkout
       # https://docs.npmjs.com/trusted-publishers#github-actions-configuration
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
@@ -57,7 +57,7 @@ jobs:
       # This must run AFTER the CI action to override the Node setup with registry config
       # https://docs.npmjs.com/trusted-publishers#github-actions-configuration
       - name: Setup npm registry for publishing
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
@@ -147,7 +147,7 @@ jobs:
         with:
           ref: ${{ steps.pr.outputs.ref }}
 
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
@@ -159,7 +159,7 @@ jobs:
         uses: ./.github/actions/ci
 
       - name: Setup npm registry for publishing
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
