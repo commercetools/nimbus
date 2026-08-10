@@ -104,7 +104,7 @@ overrides:
   # GHSA cluster (…-cmwh-pvxp-8882, …-rp9w-3fw7-7cwq, …-76mc-f452-cxcm, etc.).
   dompurify: "catalog:utils"
   qs: ">=6.15.2"
-  "minimatch@>=3.0.0 <3.1.4": "3.1.4"
+  "minimatch@>=3.0.0 <3.1.4": "3.1.5"
   svgo: ">=4.0.2"
   hono: ">=4.12.27"
   esbuild: ">=0.28.1"
@@ -279,4 +279,3 @@ catalogs:
     remark-mark-highlight: 0.1.1
     slug: 11.0.1
     vite-plugin-compression: 0.5.1
-
