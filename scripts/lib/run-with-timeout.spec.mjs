@@ -45,11 +45,10 @@ describe("runWithTimeout", () => {
   });
 
   it("resolves with a populated error for a nonexistent command instead of throwing", async () => {
-    const result = await runWithTimeout(
-      "this-binary-does-not-exist-xyz",
-      [],
-      { timeoutMs: 5000, stdio: "ignore" }
-    );
+    const result = await runWithTimeout("this-binary-does-not-exist-xyz", [], {
+      timeoutMs: 5000,
+      stdio: "ignore",
+    });
 
     expect(result.error).toBeTruthy();
     expect(result.timedOut).toBe(false);
