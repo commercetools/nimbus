@@ -3,7 +3,7 @@ packages:
   - apps/*
 
 catalog:
-  '@huggingface/transformers': ^3.8.1
+  "@huggingface/transformers": ^3.8.1
 
 # catalogMode set to prefer rather than strict. Strict mode requires the
 # requested version to match the catalog specifier as an exact string, even
@@ -104,7 +104,7 @@ overrides:
   # GHSA cluster (…-cmwh-pvxp-8882, …-rp9w-3fw7-7cwq, …-76mc-f452-cxcm, etc.).
   dompurify: "catalog:utils"
   qs: ">=6.15.2"
-  "minimatch@>=3.0.0 <3.1.4": "3.1.5"
+  "minimatch@>=3.0.0 <3.1.4": "10.2.6"
   svgo: ">=4.0.2"
   hono: ">=4.12.27"
   esbuild: ">=0.28.1"
@@ -209,7 +209,7 @@ catalogs:
     "@storybook/react-vite": 10.4.6
     "@vueless/storybook-dark-mode": ^10.0.8
     "@github-ui/storybook-addon-performance-panel": ^1.1.4
-    chromatic: ^17.8.0
+    chromatic: ^18.0.0
     jsdom: 29.0.1 # pinned: 29.0.2+ breaks Chakra/Emotion CSS in JSDOM (style assertions return padding: 0); reconfirmed against 29.1.0 on 2026-04-29
   react:
     "@types/react": ^19.2.18
@@ -277,6 +277,5 @@ catalogs:
     react-router-dom: 7.18.2
     react-syntax-highlighter: 16.1.1
     remark-mark-highlight: 0.1.1
-    slug: 11.0.1
+    slug: 12.0.1
     vite-plugin-compression: 0.5.1
-
