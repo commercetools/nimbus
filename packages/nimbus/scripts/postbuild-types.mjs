@@ -37,6 +37,7 @@ import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { walkAndRewriteImports } from "../../../scripts/lib/rewrite-relative-imports.mjs";
 import { fixCjsChunkExtensions } from "../../../scripts/lib/rewrite-cjs-chunk-extensions.mjs";
+import { listCjsEntryFiles } from "../../../scripts/lib/list-cjs-entry-files.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const DIST = join(__dirname, "..", "dist");
@@ -51,10 +52,14 @@ const RELOCATIONS = [
   },
   {
     // theme/index.d.ts only declares `system` typed against
-    // `@chakra-ui/react`'s public types — no relative imports to rewrite —
-    // so a plain copy is safe. Unlike dist/test/, dist/theme/ is NOT removed
-    // afterward: sibling component .d.ts files still import from
-    // ./theme/recipes, ./theme/tokens, etc.
+    // `@chakra-ui/react`'s public types. A plain copy is safe here
+    // regardless of what it currently imports: step 2 below
+    // (walkAndRewriteImports) runs over every .d.ts in dist/ after
+    // relocation and rewrites relative imports unconditionally, so import
+    // paths are handled either way, not because this file happens to have
+    // none today. Unlike dist/test/, dist/theme/ is NOT removed afterward:
+    // sibling component .d.ts files still import from ./theme/recipes,
+    // ./theme/tokens, etc.
     from: join(DIST, "theme", "index.d.ts"),
     to: join(DIST, "theme.d.ts"),
   },
@@ -123,13 +128,15 @@ console.log(`[postbuild-types] wrote CJS stub content to plugins/stub.cjs`);
 // in every other chunk (chunks require each other, not just entry points —
 // see scripts/lib/rewrite-cjs-chunk-extensions.mjs for the regression this
 // guards against).
-
-const cjsEntryFiles = [
-  join(DIST, "index.cjs"),
-  ...ENTRY_POINTS.filter((e) => e !== "index").map((e) =>
-    join(DIST, `${e}.cjs`)
-  ),
-];
+//
+// Entry points aren't limited to the curated ENTRY_POINTS list above:
+// vite.config.ts's createEntries() also globs every
+// src/{components,patterns}/**/index.ts into its own CJS entry under
+// dist/components/*.cjs — well over a hundred of them. Any of those can
+// require() a renamed chunk too, so scan every entry `.cjs` file actually on
+// disk (skipping dist/chunks/ itself) rather than deriving the list from
+// ENTRY_POINTS.
+const cjsEntryFiles = listCjsEntryFiles(DIST);
 const { renamed, filesUpdated } = fixCjsChunkExtensions(DIST, cjsEntryFiles);
 if (renamed > 0) {
   console.log(
