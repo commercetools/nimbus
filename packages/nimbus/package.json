@@ -17,6 +17,16 @@
       }
     },
     "./package.json": "./package.json",
+    "./theme": {
+      "import": {
+        "types": "./dist/theme.d.ts",
+        "default": "./dist/theme.es.js"
+      },
+      "require": {
+        "types": "./dist/theme.d.cts",
+        "default": "./dist/theme.cjs"
+      }
+    },
     "./setup-jsdom-polyfills": {
       "import": {
         "types": "./dist/setup-jsdom-polyfills.d.ts",
@@ -67,6 +77,7 @@
       "plugins/webpack": ["./dist/plugins/webpack.d.ts"],
       "plugins/vite": ["./dist/plugins/vite.d.ts"],
       "plugins/stub": ["./dist/plugins/stub.d.ts"],
+      "theme": ["./dist/theme.d.ts"],
       "*": ["./dist/index.d.ts"]
     }
   },
@@ -152,7 +163,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.prod.json",
     "typecheck:dev": "tsc --noEmit -p tsconfig.json",
     "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
-    "postinstall": "test -f ./dist/index.es.js && chakra typegen ./dist/index.es.js || true",
+    "postinstall": "test -f ./dist/theme.es.js && chakra typegen ./dist/theme.es.js || true",
     "bundles:analyze": "ANALYZE_BUNDLE=true vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
