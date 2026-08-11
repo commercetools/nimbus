@@ -1,5 +1,41 @@
 # @commercetools/nimbus-tokens
 
+## 3.5.0
+
+### Minor Changes
+
+- [#1860](https://github.com/commercetools/nimbus/pull/1860)
+  [`76a3193`](https://github.com/commercetools/nimbus/commit/76a3193d4e9f3aa1d8358f356ff253ba8444af71)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! - `DataTable`: sticky
+  columns now display scroll shadows at their edges when the table content is
+  horizontally scrollable. Shadows appear on the left-side sticky columns when
+  scrolled away from the start, and on the right-side pin column when scrolled
+  away from the end. New `right` and `left` shadow design tokens are available
+  for directional shadow effects.
+
+- [#1911](https://github.com/commercetools/nimbus/pull/1911)
+  [`36d6b15`](https://github.com/commercetools/nimbus/commit/36d6b15ed995635263624a430b70523425097392)
+  Thanks [@ByronDWall](https://github.com/ByronDWall)! -
+  `@commercetools/nimbus`: Fixed the `postinstall` type-generation hook, which
+  previously crashed (`process is not defined`) instead of generating theme
+  typings. It now targets a new, lightweight `@commercetools/nimbus/theme` entry
+  point instead of the full package bundle. If type generation didn't run
+  automatically, the manual command from the installation guide has changed to:
+
+  ```bash
+  npx @chakra-ui/cli typegen node_modules/@commercetools/nimbus/dist/theme.es.js
+  ```
+
+  Also fixed `require("@commercetools/nimbus")` and
+  `require("@commercetools/nimbus/<component>")` (the CommonJS build), which
+  threw `MODULE_NOT_FOUND`. CommonJS consumers can now `require` the package and
+  its component subpaths correctly.
+
+  `@commercetools/nimbus-tokens`: Fixed
+  `require("@commercetools/nimbus-tokens")` (the CommonJS build), which threw
+  `MODULE_NOT_FOUND`. CommonJS consumers can now `require` the package
+  correctly.
+
 ## 3.4.0
 
 ## 3.3.0
