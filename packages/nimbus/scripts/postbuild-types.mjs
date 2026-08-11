@@ -5,9 +5,12 @@
  *
  * Three tasks, in order:
  *
- *   1. Relocate setup-jsdom-polyfills.d.ts from dist/test/ to dist/ to match
- *      where the runtime files (.es.js / .cjs) land. vite-plugin-dts preserves
- *      src/ subdirs; vite emits the runtime flat for declared entry points.
+ *   1. Relocate setup-jsdom-polyfills.d.ts (from dist/test/) and theme.d.ts
+ *      (from dist/theme/index.d.ts) to dist/ to match where the runtime
+ *      files (.es.js / .cjs) land. vite-plugin-dts preserves src/ subdirs;
+ *      vite emits the runtime flat for declared entry points. dist/theme/
+ *      itself is kept — other components' .d.ts files still import from
+ *      ./theme/recipes, ./theme/tokens, etc.
  *
  *   2. Walk every .d.ts in dist/ and rewrite bare relative imports
  *      (`export * from './foo'`) to include explicit `.js` extensions
@@ -16,9 +19,10 @@
  *      moduleResolution: "nodenext". The shared rewriter lives at
  *      scripts/lib/rewrite-relative-imports.mjs.
  *
- *   3. Duplicate index.d.ts and setup-jsdom-polyfills.d.ts to .d.cts variants
- *      for the CJS exports path. Identical content; the extension flips how
- *      TypeScript interprets the module kind (CJS regardless of `"type"`).
+ *   3. Duplicate index.d.ts, theme.d.ts, and setup-jsdom-polyfills.d.ts to
+ *      .d.cts variants for the CJS exports path. Identical content; the
+ *      extension flips how TypeScript interprets the module kind (CJS
+ *      regardless of `"type"`).
  *
  * Steps 1 & 2 run before step 3 so the .d.cts copies inherit the rewritten
  * imports.
@@ -28,18 +32,11 @@
  * `vite build` (which emits dist/test/) before invoking this script.
  */
 
-import {
-  copyFileSync,
-  existsSync,
-  readdirSync,
-  readFileSync,
-  renameSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
+import { copyFileSync, existsSync, rmSync, writeFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { walkAndRewriteImports } from "../../../scripts/lib/rewrite-relative-imports.mjs";
+import { fixCjsChunkExtensions } from "../../../scripts/lib/rewrite-cjs-chunk-extensions.mjs";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 const DIST = join(__dirname, "..", "dist");
@@ -51,6 +48,15 @@ const RELOCATIONS = [
   {
     from: join(DIST, "test", "setup-jsdom-polyfills.d.ts"),
     to: join(DIST, "setup-jsdom-polyfills.d.ts"),
+  },
+  {
+    // theme/index.d.ts only declares `system` typed against
+    // `@chakra-ui/react`'s public types — no relative imports to rewrite —
+    // so a plain copy is safe. Unlike dist/test/, dist/theme/ is NOT removed
+    // afterward: sibling component .d.ts files still import from
+    // ./theme/recipes, ./theme/tokens, etc.
+    from: join(DIST, "theme", "index.d.ts"),
+    to: join(DIST, "theme.d.ts"),
   },
 ];
 
@@ -78,6 +84,7 @@ console.log(`[postbuild-types] rewrote imports in ${rewritten} .d.ts file(s)`);
 
 const ENTRY_POINTS = [
   "index",
+  "theme",
   "setup-jsdom-polyfills",
   "plugins/webpack",
   "plugins/vite",
@@ -112,52 +119,20 @@ console.log(`[postbuild-types] wrote CJS stub content to plugins/stub.cjs`);
 // Rolldown names chunks with the template `[name]-[hash].[format].js`.
 // For CJS chunks this produces `.cjs.js`. In a `type: "module"` package,
 // Node treats `.js` files as ESM, so `require("./chunk.cjs.js")` fails.
-// Rename `.cjs.js` → `.cjs` and update references in CJS entry points.
+// Rename `.cjs.js` → `.cjs` and update references in CJS entry points AND
+// in every other chunk (chunks require each other, not just entry points —
+// see scripts/lib/rewrite-cjs-chunk-extensions.mjs for the regression this
+// guards against).
 
-const CHUNKS_DIR = join(DIST, "chunks");
-if (existsSync(CHUNKS_DIR)) {
-  const cjsChunks = readdirSync(CHUNKS_DIR).filter((f) =>
-    f.endsWith(".cjs.js")
+const cjsEntryFiles = [
+  join(DIST, "index.cjs"),
+  ...ENTRY_POINTS.filter((e) => e !== "index").map((e) =>
+    join(DIST, `${e}.cjs`)
+  ),
+];
+const { renamed, filesUpdated } = fixCjsChunkExtensions(DIST, cjsEntryFiles);
+if (renamed > 0) {
+  console.log(
+    `[postbuild-types] renamed ${renamed} CJS chunk(s): .cjs.js → .cjs (updated ${filesUpdated} referencing file(s))`
   );
-  const renames = new Map();
-
-  for (const oldName of cjsChunks) {
-    const newName = oldName.replace(/\.cjs\.js$/, ".cjs");
-    renameSync(join(CHUNKS_DIR, oldName), join(CHUNKS_DIR, newName));
-    renames.set(oldName, newName);
-
-    // Rename the sourcemap too
-    const oldMap = oldName + ".map";
-    const newMap = newName + ".map";
-    if (existsSync(join(CHUNKS_DIR, oldMap))) {
-      renameSync(join(CHUNKS_DIR, oldMap), join(CHUNKS_DIR, newMap));
-    }
-  }
-
-  // Update require() references in all CJS entry points
-  if (renames.size > 0) {
-    const cjsEntries = [
-      join(DIST, "index.cjs"),
-      ...ENTRY_POINTS.filter((e) => e !== "index").map((e) =>
-        join(DIST, `${e}.cjs`)
-      ),
-    ];
-
-    for (const entry of cjsEntries) {
-      if (!existsSync(entry)) continue;
-      let content = readFileSync(entry, "utf8");
-      let changed = false;
-      for (const [oldName, newName] of renames) {
-        if (content.includes(oldName)) {
-          content = content.replaceAll(oldName, newName);
-          changed = true;
-        }
-      }
-      if (changed) writeFileSync(entry, content);
-    }
-
-    console.log(
-      `[postbuild-types] renamed ${renames.size} CJS chunk(s): .cjs.js → .cjs`
-    );
-  }
 }

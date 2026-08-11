@@ -39,6 +39,16 @@ const createEntries = async () => {
   // Main entries — must match the `exports` field in `package.json`.
   // `index` bundles all non-component code (theme, hooks, etc).
   entries.set("index", fileURLToPath(new URL("src/index.ts", import.meta.url)));
+  // Theme-only entry (tokens/recipes/config — no React components, no DOM
+  // side effects). Consumers' `chakra typegen` postinstall hook targets this
+  // instead of `index`, since bundling the full component library (React,
+  // markdown, icons, etc.) for typegen crashes: it forces `chakra-cli` to
+  // fully evaluate browser-only code (e.g. `document.createElement` at
+  // module scope) in a headless Node sandbox with no DOM.
+  entries.set(
+    "theme",
+    fileURLToPath(new URL("src/theme/index.ts", import.meta.url))
+  );
   // Separate entry so the jest polyfill ships as CJS.
   entries.set(
     "setup-jsdom-polyfills",
@@ -157,7 +167,7 @@ export default defineConfig(async () => {
           // otherwise you get an error when you `require` them
           const extension = format === "cjs" ? `${format}` : `${format}.js`;
           // Keep main entrypoints at root, put everything else in subfolders
-          if (["index", "setup-jsdom-polyfills"].includes(entryName)) {
+          if (["index", "theme", "setup-jsdom-polyfills"].includes(entryName)) {
             return `${entryName}.${extension}`;
           }
           // Plugin entries keep their plugins/ prefix
