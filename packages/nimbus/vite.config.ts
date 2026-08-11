@@ -45,6 +45,14 @@ const createEntries = async () => {
   // markdown, icons, etc.) for typegen crashes: it forces `chakra-cli` to
   // fully evaluate browser-only code (e.g. `document.createElement` at
   // module scope) in a headless Node sandbox with no DOM.
+  //
+  // The `postinstall` script in package.json still ends in `|| true`: theme
+  // typegen is a nice-to-have (better editor autocomplete for theme tokens),
+  // not something a consumer's install may ever fail on. If this entry ever
+  // regresses back to crashing, `|| true` intentionally keeps that failure
+  // silent rather than breaking `pnpm install` for every consumer — the cost
+  // is no error trail, so if theme typegen stops working, this comment (and
+  // the entry above) is where to look first.
   entries.set(
     "theme",
     fileURLToPath(new URL("src/theme/index.ts", import.meta.url))
