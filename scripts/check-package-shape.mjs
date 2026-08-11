@@ -37,11 +37,17 @@ const REPORT_ONLY = false;
 // package the changeset bot ships should be linted here.
 //
 // `@commercetools/nimbus-tokens` is intentionally excluded: it ships with a
-// pre-existing shape issue (preconstruct emits `.cjs.js` under a package that
-// declares `"type": "module"`, so the CJS path is broken at runtime, and the
-// exports map has no `types` condition). Tracked in
-// https://github.com/commercetools/nimbus/issues/1509 — re-add this entry when
-// that lands.
+// pre-existing shape issue tracked in
+// https://github.com/commercetools/nimbus/issues/1509. Two interacting
+// problems were reported there — preconstruct emits `.cjs.js` under a
+// package that declares `"type": "module"`, so the CJS path was broken at
+// runtime; and the `exports` map's `import` condition has no `types`
+// condition, so ESM consumers under node16/bundler resolution get no types.
+// The first (runtime CJS breakage) is fixed by
+// `packages/tokens/scripts/postbuild-cjs-extensions.mjs` and the `require`
+// condition's `types` entry in `packages/tokens/package.json`. The second
+// (missing ESM types) is still open — re-add this entry once that's
+// resolved too and `pnpm check:package-shape` exits 0 for this package.
 const PACKAGES = [
   { name: "@commercetools/nimbus", dir: join(ROOT, "packages/nimbus") },
   {
