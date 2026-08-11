@@ -152,7 +152,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.prod.json",
     "typecheck:dev": "tsc --noEmit -p tsconfig.json",
     "build-theme-typings": "pnpm chakra typegen ./src/theme/index.ts",
-    "postinstall": "test -f ./dist/index.es.js && chakra typegen ./dist/index.es.js || true",
+    "postinstall": "node scripts/postinstall-typegen.mjs ./dist/index.es.js",
     "bundles:analyze": "ANALYZE_BUNDLE=true vite build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
