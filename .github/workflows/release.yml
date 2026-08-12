@@ -117,7 +117,7 @@ jobs:
     steps:
       - name: Get PR branch
         id: pr
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           script: |
             const pr = await github.rest.pulls.get({
@@ -132,7 +132,7 @@ jobs:
             core.setOutput('tag', sanitized);
 
       - name: React to comment
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           script: |
             await github.rest.reactions.createForIssueComment({
@@ -185,7 +185,7 @@ jobs:
           GITHUB_TOKEN: ${{ steps.generate_github_token.outputs.token }}
 
       - name: Comment with install instructions
-        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
         with:
           script: |
             const version = '${{ steps.publish.outputs.version }}';
