@@ -108,7 +108,13 @@ overrides:
   # GHSA cluster (…-cmwh-pvxp-8882, …-rp9w-3fw7-7cwq, …-76mc-f452-cxcm, etc.).
   dompurify: "catalog:utils"
   qs: ">=6.15.2"
-  "minimatch@>=3.0.0 <3.1.4": "10.2.6"
+  # Pinned to the 3.x line, not the current v10 major: v10's CJS entry is a
+  # named-exports object ({ minimatch, match, ... }), not the callable
+  # `require('minimatch')(path, pattern)` default that serve-handler (via
+  # @modelcontextprotocol/inspector) and other transitive <9 consumers expect.
+  # 10.2.6 broke `pnpm --filter @commercetools/nimbus-mcp inspector` with
+  # "TypeError: minimatch is not a function" — see git history on this line.
+  "minimatch@>=3.0.0 <3.1.4": "3.1.5"
   svgo: ">=4.0.2"
   hono: ">=4.12.27"
   esbuild: ">=0.28.1"
