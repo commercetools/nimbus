@@ -75,6 +75,10 @@ allowBuilds:
   style-dictionary: true
   "@fission-ai/openspec": false
   "@modelcontextprotocol/ext-apps": false
+  # v2's postinstall installs deps for its own clients/* checkout subfolders —
+  # a no-op when installed as a dependency. Deny per least-privilege rather
+  # than relying on that no-op holding true in future releases.
+  "@modelcontextprotocol/inspector": false
   core-js-pure: true
   # Transitive deps of @huggingface/transformers (docs browser semantic search).
   # The search runs entirely in a Web Worker on onnxruntime-web, so these native
