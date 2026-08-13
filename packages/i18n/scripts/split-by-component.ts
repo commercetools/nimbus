@@ -42,7 +42,7 @@
 
 import fs from "fs/promises";
 import path from "path";
-import { LOCALE_CODES } from "./locales";
+import { LOCALE_CODES } from "./locales.mts";
 
 const LOCALES = LOCALE_CODES;
 

@@ -12,7 +12,6 @@
   "keywords": ["typescript", "design-system", "react", "nimbus"],
   "license": "MIT",
   "private": true,
-  "type": "module",
   "sideEffects": false,
   "files": ["data"],
   "scripts": {

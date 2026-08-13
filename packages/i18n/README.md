@@ -33,7 +33,7 @@ This is an **internal build tool package** that:
 ### Locale Configuration
 
 **Single Source of Truth:** All supported locales are defined in
-`packages/i18n/scripts/locales.ts` and shared between the build scripts and the
+`packages/i18n/scripts/locales.mts` and shared between the build scripts and the
 Vite config (`optimize-locales-plugin`).
 
 ### Build Pipeline

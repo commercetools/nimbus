@@ -6,7 +6,7 @@ import type { LibraryFormats, PluginOption, Rollup } from "vite";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
 import { analyzer } from "vite-bundle-analyzer";
-import { LOCALE_BCP47_CODES } from "../i18n/scripts/locales.ts";
+import { LOCALE_BCP47_CODES } from "../i18n/scripts/locales.mts";
 
 /**
  * Builds the entry map for the library build.
@@ -156,7 +156,7 @@ export default defineConfig(async () => {
     plugins: [
       react(),
       // Only package locale strings for locales we internationalize in our products
-      // Locales are defined in packages/i18n/scripts/locales.ts (single source of truth)
+      // Locales are defined in packages/i18n/scripts/locales.mts (single source of truth)
       // https://github.com/commercetools/merchant-center-application-kit/blob/main/packages/i18n/README.md#supported-locales
       // https://react-spectrum.adobe.com/react-aria/internationalization.html#vite
       optimizeLocales.vite({
