@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: write
 
 jobs:
   renovate-changeset:
@@ -30,6 +31,7 @@ jobs:
       # This action talks entirely to the GitHub API (reads PR files/commits
       # and writes the changeset via the Contents API) - no checkout needed.
       - name: Add changeset for dependency update
+        id: add_changeset
         uses: mscharley/dependency-changesets-action@874dac2372a085cb94f750e8bdf5b1173a838a75 # v1.2.5
         with:
           token: ${{ steps.generate_github_token.outputs.token }}
@@ -42,3 +44,15 @@ jobs:
           commit-message: "chore(deps): add changeset for dependency update"
           author-name: "github-actions[bot]"
           author-email: "41898282+github-actions[bot]@users.noreply.github.com"
+
+      # The action no-ops (and leaves this output unset/false) when a
+      # changeset already exists for the PR, e.g. on the re-run its own
+      # commit triggers via `synchronize`. Only label on an actual write.
+      - name: Label PR when a changeset was added
+        if: steps.add_changeset.outputs.created-changeset == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr edit "${{ github.event.pull_request.number }}" \
+            --repo "${{ github.repository }}" \
+            --add-label "changeset-added"

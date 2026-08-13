@@ -2,9 +2,6 @@ packages:
   - packages/*
   - apps/*
 
-catalog:
-  "@huggingface/transformers": ^3.8.1
-
 # catalogMode set to prefer rather than strict. Strict mode requires the
 # requested version to match the catalog specifier as an exact string, even
 # when the specifier is a range (as nearly every entry above and in the named
@@ -149,6 +146,7 @@ overrides:
   "@storybook/react-dom-shim": "10.4.6"
   "@storybook/builder-vite": "10.4.6"
   "@storybook/csf-plugin": "10.4.6"
+  "adm-zip": ">=0.6.0"
 
 catalogs:
   tooling:
@@ -273,6 +271,7 @@ catalogs:
   # Private docs-app pins — not published to npm. Exact versions (no ^ or ~) so
   # Renovate updates are explicit PRs rather than silent range expansion.
   apps:
+    "@huggingface/transformers": 4.2.0
     "@mdx-js/mdx": 3.1.1
     "@types/mdx": 2.0.14
     "@types/react-syntax-highlighter": 15.5.13
