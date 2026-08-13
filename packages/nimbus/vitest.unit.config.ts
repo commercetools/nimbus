@@ -1,5 +1,5 @@
 import { defineConfig, mergeConfig } from "vitest/config";
-import createBaseConfig from "./vite.config";
+import createBaseConfig from "./vite.config.ts";
 
 export default defineConfig(async () => {
   const baseConfig = await createBaseConfig({

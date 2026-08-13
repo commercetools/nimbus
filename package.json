@@ -34,8 +34,8 @@
     "test": "pnpm vitest run",
     "test:unit": "pnpm vitest run --project=unit",
     "test:storybook": "pnpm vitest run --project=storybook",
-    "test:dev": "pnpm vitest run --config vitest.dev.config.ts",
-    "test:storybook:dev": "pnpm vitest run --config vitest.dev.config.ts --project=storybook-dev",
+    "test:dev": "pnpm vitest run --config vitest.dev.config.mts",
+    "test:storybook:dev": "pnpm vitest run --config vitest.dev.config.mts --project=storybook-dev",
     "check:bundle-size": "node .github/actions/bundle-size/check-bundle-size.mjs",
     "check:package-shape": "node scripts/check-package-shape.mjs",
     "bundle-sizes:trend": "node scripts/bundle-sizes-trend.mjs"

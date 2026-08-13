@@ -6,7 +6,7 @@ import type { LibraryFormats, PluginOption, Rollup } from "vite";
 import react from "@vitejs/plugin-react";
 import dts from "vite-plugin-dts";
 import { analyzer } from "vite-bundle-analyzer";
-import { LOCALE_BCP47_CODES } from "../i18n/scripts/locales";
+import { LOCALE_BCP47_CODES } from "../i18n/scripts/locales.ts";
 
 /**
  * Builds the entry map for the library build.

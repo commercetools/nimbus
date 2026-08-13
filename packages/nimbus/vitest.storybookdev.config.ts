@@ -10,7 +10,7 @@ import {
   defineConfig,
   mergeConfig,
 } from "vitest/config";
-import createBaseConfig from "./vite.config";
+import createBaseConfig from "./vite.config.ts";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import { playwright } from "@vitest/browser-playwright";
 import path from "node:path";
@@ -22,7 +22,7 @@ const __dirname = path.dirname(__filename);
 
 // Signal to .storybook/main.ts to suppress the "PRODUCTION/TEST" log.
 // Safe to set here because this config is loaded from a separate root
-// (vitest.dev.config.ts) that never includes the production storybook project.
+// (vitest.dev.config.mts) that never includes the production storybook project.
 process.env.VITEST_USE_SOURCE = "true";
 
 /**
