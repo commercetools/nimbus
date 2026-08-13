@@ -1,5 +1,14 @@
 # @commercetools/nimbus
 
+## 3.5.1
+
+### Patch Changes
+
+- [#1881](https://github.com/commercetools/nimbus/pull/1881)
+  [`4945afd`](https://github.com/commercetools/nimbus/commit/4945afde6ad819187d3450a72a92bff7a57c0b1a)
+  Thanks [@renovate](https://github.com/apps/renovate)! - chore(deps): update
+  all dependencies
+
 ## 3.5.0
 
 ### Minor Changes
