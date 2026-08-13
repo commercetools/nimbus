@@ -44,7 +44,7 @@ See [Testing Strategy Guide](./testing-strategy.md) for detailed rules.
 The project uses **Vitest** with two separate test projects:
 
 ```typescript
-// vitest.config.ts - Root orchestrator
+// vitest.config.mts - Root orchestrator
 export default defineConfig({
   test: {
     projects: [
