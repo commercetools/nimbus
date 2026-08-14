@@ -1,5 +1,7 @@
 # @commercetools/nimbus-design-token-ts-plugin
 
+## 3.5.1
+
 ## 3.5.0
 
 ## 3.4.0
