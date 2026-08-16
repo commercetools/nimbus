@@ -105,7 +105,10 @@ Two things defeat it, both by design:
 - **Storybook config files.** `preview.tsx` and other `.storybook/` globals are
   injected at the document level, so no story imports them and Chromatic can't
   link them to specific stories. Any change disables TurboSnap for that build.
-  Batch such edits into one commit so only one full build fires.
+  Batch such edits into one commit so only one full build fires, and keep barrel
+  imports out of `preview.tsx` - importing the package barrel puts every
+  component in its dependency graph, so unrelated component edits start
+  invalidating it too.
 - **Dependency bumps.** The gate watches `pnpm-lock.yaml`, and a lockfile change
   can't be traced to specific stories. That's the safe scope anyway - a React
   Aria or Chakra bump can shift pixels anywhere. Grouped Dependabot PRs keep
@@ -172,16 +175,13 @@ Conflating them is the most common source of confusion:
 | `Chromatic / chromatic (pull_request)` | The **GHA job** in this workflow                                                                   | The action's exit code. With `exitOnceUploaded: true` the job returns at upload - _before_ diffing - so it's **green whenever the upload succeeds**, diffs or not. |
 | `UI Tests` (orange Chromatic icon)     | A status check **posted by Chromatic's servers**, asynchronously (the `exitOnceUploaded` behavior) | Chromatic's own verdict. It **still reports the diff** and goes red on an unaccepted diff, independent of the GHA job.                                             |
 
-So "the check stays green" refers **only** to the GHA job row:
-`exitOnceUploaded: true` makes the action exit before Chromatic diffs.
+So "the check stays green" refers **only** to the GHA job row, which answers
+**"did the job run without breaking?"**, not "are there visual changes?"
 (`exitZeroOnChanges` is **not** set; it would only matter if we dropped
-`exitOnceUploaded`.)
-
-That row answers **"did the job run without breaking?"**, not "are there visual
-changes?" Genuine breakage still turns it red: Storybook fails to build,
-dependency install / `./.github/actions/ci` fails, `chromaui/action` errors
-(missing or invalid `CHROMATIC_PROJECT_TOKEN`, upload/network/API failure), or a
-malformed workflow. It can also show **cancelled** when
+`exitOnceUploaded`.) Genuine breakage still turns it red: Storybook fails to
+build, dependency install / `./.github/actions/ci` fails, `chromaui/action`
+errors (missing or invalid `CHROMATIC_PROJECT_TOKEN`, upload/network/API
+failure), or a malformed workflow. It can also show **cancelled** when
 `concurrency: cancel-in-progress` supersedes the run with a newer push, or on
 timeout.
 
