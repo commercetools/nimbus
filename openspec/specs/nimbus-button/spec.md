@@ -8,7 +8,9 @@ interactive states while maintaining WCAG 2.1 AA accessibility compliance.
 
 **Component:** `Button` **Package:** `@commercetools/nimbus` **Type:**
 Single-slot component **React Aria:** Uses `Button` from react-aria-components
+
 ## Requirements
+
 ### Requirement: Button Variants
 
 The component SHALL support multiple visual variants.
@@ -89,7 +91,8 @@ The component SHALL support loading state with spinner.
 
 ### Requirement: Disabled State
 
-The component SHALL support disabled state.
+The component SHALL support disabled state, with an opt-in variant that remains
+focusable so it can host a `Tooltip` (or other focus/hover-driven affordance).
 
 #### Scenario: Disabled via isDisabled
 
@@ -105,6 +108,25 @@ The component SHALL support disabled state.
 - **WHEN** `disabled={true}` is set (deprecated)
 - **THEN** SHALL behave identically to `isDisabled={true}`
 - **AND** `isDisabled` SHALL take precedence if both are provided
+
+#### Scenario: Focusable disabled via allowFocusWhenDisabled
+
+- **WHEN** `isDisabled={true}` AND `allowFocusWhenDisabled={true}` are both set
+- **THEN** SHALL render `aria-disabled="true"` and SHALL NOT render the native
+  `disabled` attribute
+- **AND** SHALL remain focusable and stay in the natural tab order (so keyboard
+  users can reach it), unless `excludeFromTabOrder` is also set
+- **AND** SHALL remain hoverable so hover/focus-driven affordances (e.g.
+  `Tooltip`) can open
+- **AND** SHALL apply the same disabled styling as a natively-disabled button
+  (via the recipe `_disabled` / `[aria-disabled=true]` selector)
+- **AND** SHALL suppress activation: `onPress` and `onClick` SHALL NOT fire, and
+  `Enter`/`Space`, form submit/reset, and link navigation SHALL NOT occur
+
+#### Scenario: allowFocusWhenDisabled without isDisabled
+
+- **WHEN** `allowFocusWhenDisabled={true}` is set but the button is not disabled
+- **THEN** SHALL behave as a normal enabled button (the prop has no effect)
 
 ### Requirement: Click Handling
 
@@ -209,6 +231,10 @@ standards.
 - **THEN** SHALL announce to screen readers via aria-busy
 - **WHEN** disabled
 - **THEN** SHALL set aria-disabled="true"
+- **WHEN** disabled with `allowFocusWhenDisabled`
+- **THEN** SHALL set `aria-disabled="true"` while keeping the element in the
+  accessibility tree and focusable, so any associated tooltip description is
+  announced on focus
 
 ### Requirement: Recipe-Based Styling
 
@@ -303,8 +329,9 @@ mark them as deprecated to guide consumers toward the preferred API.
 
 ### Requirement: useButton Hook Integration
 
-The component SHALL delegate all behavior and accessibility concerns to React
-Aria's `useButton` hook.
+The component SHALL delegate behavior and accessibility concerns to React Aria's
+`useButton` hook for the default path, and SHALL layer soft-disable behavior on
+top only when `allowFocusWhenDisabled` is engaged.
 
 #### Scenario: Handler processing
 
@@ -317,7 +344,8 @@ Aria's `useButton` hook.
 
 #### Scenario: Disabled state delegation
 
-- **WHEN** `isDisabled` is set (via props or ButtonContext)
+- **WHEN** `isDisabled` is set (via props or ButtonContext) and
+  `allowFocusWhenDisabled` is not engaged
 - **THEN** `useButton` SHALL manage `disabled` attribute for native `<button>`
   elements
 - **AND** `useButton` SHALL manage `aria-disabled` for non-native elements
@@ -325,3 +353,13 @@ Aria's `useButton` hook.
 - **AND** the component SHALL NOT manually set `aria-disabled` or
   `data-disabled`
 
+#### Scenario: Disabled state delegation (focusable disabled)
+
+- **WHEN** `isDisabled` AND `allowFocusWhenDisabled` are both set
+- **THEN** the component SHALL pass `isDisabled: false` to `useButton` so no
+  native `disabled` attribute is emitted and the element stays focusable
+- **AND** the component SHALL set `aria-disabled="true"` itself
+- **AND** the component SHALL withhold activation handlers from `useButton` and
+  suppress the default action (via `preventDefault`/`stopPropagation` on click)
+  so the button cannot be activated by mouse, touch, keyboard, or form
+  submission
