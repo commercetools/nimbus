@@ -94,7 +94,7 @@ overrides:
   react-stately: "catalog:react"
   "@react-aria/interactions": "catalog:react"
   "brace-expansion@<2": "^2.1.2"
-  "brace-expansion@2": "^2.1.2"
+  "brace-expansion@2": "^5.0.0"
   "brace-expansion@>=3.0.0 <5.0.7": ">=5.0.7"
   mdast-util-to-hast: "^13.2.1"
   # js-yaml 3.x security floor — >=3.15.0 fixes GHSA-h67p-54hq-rp68
