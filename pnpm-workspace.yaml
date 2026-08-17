@@ -121,7 +121,7 @@ overrides:
   fast-uri: ">=4.1.1"
   # immutable <4.3.9 — GHSA-xvcm-6775-5m9r / GHSA-v56q-mh7h-f735 (hash-collision
   # algorithmic-complexity DoS in Immutable.Map/Set). Capped <5 to stay within 4.x.
-  immutable: ">=4.3.9 <5"
+  immutable: "<6"
   # body-parser 2.0.0–2.2.x DoS fixed in 2.3.0 (Dependabot #147). Scoped to 2.x.
   "body-parser@2": ">=2.3.0"
   ip-address: ">=10.1.1"
