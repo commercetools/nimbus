@@ -16,7 +16,9 @@ type Story = StoryObj<typeof ItemGroup.Root>;
  * Base — a group of Item rows divided by separators.
  */
 export const Base: Story = {
+  // VRT: the separator's own `colorPalette.6` fill - no Item story snapshots a group.
   tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
   render: () => (
     <ItemGroup.Root aria-label="Account">
       <Item.Root>

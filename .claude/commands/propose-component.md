@@ -132,8 +132,8 @@ The task list MUST include these file creation steps in this order:
 
    Acceptance criteria for the task:
    - Every state the recipe paints distinctly is reachable in some snapshotted
-     frame; interacting axes folded into one `SmokeTest` (rendered last),
-     independent axes given their own showcase stories
+     frame; interacting axes folded into one `SmokeTest`, independent axes given
+     their own showcase stories
    - States a matrix can't hold have their own snapshotted story (`Focused` per
      independent focus surface, open overlay, condition-fired states)
    - Behavior-only stories left un-snapshotted (project default), and any state

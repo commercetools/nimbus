@@ -115,20 +115,21 @@ no `tags: ["vrt"]` story reads as finished while having zero visual coverage.
 Nothing else in the review will catch that, so check it explicitly.
 
 Read the component's recipe first - the surface list is derived from the recipe,
-never from the story names. Glob `*.recipe.*`, not just `*.recipe.ts`: 9 recipes
-are `.recipe.tsx` (menu, select, icon, popover, money-input, split-button,
-tag-group, field-errors, toggle-button-group), so a `.ts`-only check would
-wrongly conclude those components have no recipe and no surfaces to cover. Then
-verify:
+never from the story names. Glob `*.recipe.*`, not just `*.recipe.ts`: some
+recipes are `.recipe.tsx`, so a `.ts`-only check would wrongly conclude those
+components have no recipe and no surfaces to cover. Then verify:
 
-- [ ] Some story opts in (`tags: ["vrt"]` +
-      `parameters: { chromatic: { disableSnapshot: false } }`), **or** the
-      recipe paints nothing and `meta` carries a one-line note saying so
+- [ ] Some story opts in, **or** the recipe paints nothing and `meta` carries a
+      one-line note saying so
+- [ ] Opting in means **both** `tags: ["vrt"]` and
+      `parameters: { chromatic: { disableSnapshot: false } }` on the same story.
+      Don't read the tag as proof of coverage - Chromatic never reads it, so a
+      tag without the parameter snapshots nothing while looking audited
 - [ ] Every state the recipe paints distinctly is reachable in some snapshotted
       frame - including the ones no prop names (RTL, an inherited
       `colorPalette`) and every child type a comma-separated selector reaches
-- [ ] Interacting axes folded into one `SmokeTest` (rendered last); independent
-      axes given their own showcase stories rather than a cross-product
+- [ ] Interacting axes folded into one `SmokeTest`; independent axes given their
+      own showcase stories rather than a cross-product
 - [ ] States a matrix can't hold have their own snapshotted story - `Focused`
       per **independent** focus surface, open overlays, condition-fired states
       (sticky/overflow/variant-zeroed)
