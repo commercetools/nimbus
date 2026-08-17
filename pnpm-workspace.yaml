@@ -111,7 +111,7 @@ overrides:
   # @modelcontextprotocol/inspector) and other transitive <9 consumers expect.
   # 10.2.6 broke `pnpm --filter @commercetools/nimbus-mcp inspector` with
   # "TypeError: minimatch is not a function" — see git history on this line.
-  "minimatch@>=3.0.0 <3.1.4": "3.1.5"
+  "minimatch@>=3.0.0 <3.1.4": "10.2.6"
   svgo: ">=4.0.2"
   hono: ">=4.12.27"
   esbuild: ">=0.28.1"
