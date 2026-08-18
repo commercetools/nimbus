@@ -68,7 +68,7 @@ packages/i18n/
 │   ├── split-by-component.ts
 │   ├── compile-component-messages.ts
 │   ├── generate-dictionaries.ts
-│   └── locales.ts
+│   └── locales.mts
 ├── .temp/             # Temporary build artifacts (gitignored)
 │   └── by-component/  # Messages grouped by component
 ├── package.json
@@ -286,7 +286,7 @@ from the generated `*.messages.ts` files.
 
 ## Supported Locales
 
-Available locales (defined in `scripts/locales.ts`):
+Available locales (defined in `scripts/locales.mts`):
 
 - `en` - English
 - `de` - German
@@ -300,7 +300,7 @@ English for unsupported locales.
 
 To add a new locale:
 
-1. Add locale code to `scripts/locales.ts`
+1. Add locale code to `scripts/locales.mts`
 2. Create `data/[locale].json` file with Transifex translations
 3. Update Vite config's `optimize-locales-plugin` to include new locale
 4. Run build to compile: `pnpm --filter @commercetools/nimbus-i18n build`

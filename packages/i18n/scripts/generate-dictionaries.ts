@@ -37,7 +37,7 @@
 import fs from "fs/promises";
 import path from "path";
 import { format, resolveConfig } from "prettier";
-import { SUPPORTED_LOCALES } from "./locales";
+import { SUPPORTED_LOCALES } from "./locales.mts";
 
 const LOCALES = SUPPORTED_LOCALES;
 

@@ -8,7 +8,7 @@
 import { glob } from "glob";
 import * as fs from "fs";
 import * as path from "path";
-import { LOCALE_CODES } from "./locales";
+import { LOCALE_CODES } from "./locales.mts";
 
 // Type definitions for message descriptors in .i18n.ts files
 type MessageDescriptor = {

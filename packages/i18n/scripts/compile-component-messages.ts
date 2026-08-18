@@ -32,7 +32,7 @@ import { compileStrings } from "@internationalized/string-compiler";
 import fs from "fs/promises";
 import path from "path";
 import { format } from "prettier";
-import { LOCALE_CODES } from "./locales";
+import { LOCALE_CODES } from "./locales.mts";
 
 const LOCALES = LOCALE_CODES;
 
