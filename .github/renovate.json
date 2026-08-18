@@ -119,6 +119,16 @@
       "description": "pnpm is pinned to 11.17.0 via packageManager. Versions past 11.14.0 have broken `deploy: legacy` support (pnpm/pnpm#13618, fixed by pnpm/pnpm#13755, not yet released), which breaks `pnpm deploy` in our Docker build steps. Hold here until that ships, then remove this rule.",
       "matchPackageNames": ["pnpm"],
       "enabled": false
+    },
+    {
+      "description": "pnpm override entries are hand-authored security remediations, not tracked dependencies, and Renovate misreads them. Each key is a *selector* -- `yaml@1`, `brace-expansion@2`, `minimatch@>=3.0.0 <3.1.4` all mean \"transitive consumers resolving into this range get the patched version on the right\" -- but Renovate reads the key as a package name and proposes cross-major bumps that invert the band's purpose, forcing v1 consumers onto a v2 API. It also rewrites floor+cap ranges into bare caps (`immutable: >=4.3.9 <5` -> `<6`, `undici: >=7.28.0 <8` -> `<9`), dropping the security floor that justified the override in the first place. Observed breakage: `brace-expansion@2` -> ^5.0.0 fails the build with `TypeError: expand is not a function` (v5 dropped the callable CJS default that minimatch@3 requires); `js-yaml` ^3.15.0 -> ^5.0.0 breaks gray-matter's `yaml.safeLoad.bind()` in the docs build (`safeLoad` removed in v4); `minimatch` 3.1.5 -> 10.2.6 broke the MCP inspector at runtime and had to be reverted in #1913 -- and Renovate proposed it again in #1920. Suppress majors here: minor/patch still flow so security floors can be raised, and genuine CVE remediation is unaffected because `vulnerabilityAlerts` above bypasses packageRules. Crossing a major on an override band must be done by hand, keeping the floor (e.g. `immutable: \">=5.0.0 <6\"`) and verifying the actual transitive consumers -- CI does not exercise most of them.",
+      "matchDepTypes": [
+        "pnpm-workspace.overrides",
+        "pnpm.overrides",
+        "overrides"
+      ],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ]
 }
