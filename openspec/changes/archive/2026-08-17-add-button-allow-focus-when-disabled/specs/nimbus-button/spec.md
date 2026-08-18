@@ -77,7 +77,7 @@ top only when `allowFocusWhenDisabled` is engaged.
 - **AND** SHALL NOT use `mergeProps` to combine context and hook output (to
   prevent double-firing)
 
-#### Scenario: Disabled state delegation (default)
+#### Scenario: Disabled state delegation
 
 - **WHEN** `isDisabled` is set (via props or ButtonContext) and
   `allowFocusWhenDisabled` is not engaged

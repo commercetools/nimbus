@@ -148,8 +148,8 @@ catalogs:
       specifier: ^1.5.3
       version: 1.5.3
     '@fission-ai/openspec':
-      specifier: ^1.7.0
-      version: 1.7.0
+      specifier: ^1.9.0
+      version: 1.9.0
     '@github-ui/storybook-addon-performance-panel':
       specifier: ^1.1.4
       version: 1.1.4
@@ -391,7 +391,7 @@ importers:
         version: 1.5.3
       '@fission-ai/openspec':
         specifier: catalog:tooling
-        version: 1.7.0(@types/node@24.13.3)
+        version: 1.9.0(@types/node@24.13.3)
       '@preconstruct/cli':
         specifier: catalog:tooling
         version: 2.8.13(supports-color@8.1.1)
@@ -2182,8 +2182,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@fission-ai/openspec@1.7.0':
-    resolution: {integrity: sha512-FGuMzBqJVB7/mbn/+kt9MsHzCvjoAVNguDWtuHBjdlF3GkUGrc5QlU6FJ70wbb4sBPsd9zbXB2wftMmxCzEJCw==}
+  '@fission-ai/openspec@1.9.0':
+    resolution: {integrity: sha512-yKV8mFz+J5+epLugvcSt7B+mBkkCSycOB6euLJmW6JL+2jhL+Um0JZ6zuGIdXcbsd3jU2+YQfeDz2EVwft++LA==}
     engines: {node: '>=20.19.0'}
     hasBin: true
 
@@ -4324,12 +4324,6 @@ packages:
         optional: true
       '@types/react-dom':
         optional: true
-
-  '@testing-library/user-event@14.6.3':
-    resolution: {integrity: sha512-6dBq67jT8lE+JTE8Exm02Kt6ze43hz1jdiSpSJwtTZiT1xQQ6b7nZYTTQ9njdArdU8XklOwaDp/AbT/eYSKF4g==}
-    engines: {node: '>=12', npm: '>=6'}
-    peerDependencies:
-      '@testing-library/dom': '>=7.21.4'
 
   '@testing-library/user-event@14.6.4':
     resolution: {integrity: sha512-QCGwP6QrjypBLwyj5cuyfVamkaIEy/XGY+1VDehbtbQqOggYmTFpFOdWR5mPz14vX8vXLMVjDHlRNBcClyO9ew==}
@@ -12340,7 +12334,7 @@ snapshots:
       - '@noble/hashes'
       - canvas
 
-  '@fission-ai/openspec@1.7.0(@types/node@24.13.3)':
+  '@fission-ai/openspec@1.9.0(@types/node@24.13.3)':
     dependencies:
       '@inquirer/core': 10.3.2(@types/node@24.13.3)
       '@inquirer/prompts': 7.10.1(@types/node@24.13.3)
@@ -14658,10 +14652,6 @@ snapshots:
       '@types/react': 19.2.18
       '@types/react-dom': 19.2.4(@types/react@19.2.18)
 
-  '@testing-library/user-event@14.6.3(@testing-library/dom@10.4.1)':
-    dependencies:
-      '@testing-library/dom': 10.4.1
-
   '@testing-library/user-event@14.6.4(@testing-library/dom@10.4.1)':
     dependencies:
       '@testing-library/dom': 10.4.1
@@ -15032,7 +15022,7 @@ snapshots:
       sirv: 3.0.2
       tinyrainbow: 3.1.0
       vitest: 4.1.10(@types/node@24.13.3)(@vitest/browser-playwright@4.1.10)(@vitest/coverage-v8@4.1.10)(jsdom@29.0.1)(vite@8.2.1(@types/node@24.13.3)(esbuild@0.28.1)(terser@5.44.0)(tsx@4.23.12)(yaml@2.8.3))
-      ws: 8.21.0
+      ws: 8.21.1
     transitivePeerDependencies:
       - bufferutil
       - msw
@@ -19768,7 +19758,7 @@ snapshots:
       '@storybook/icons': 2.0.2(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@testing-library/dom': 10.4.1
       '@testing-library/jest-dom': 6.9.1
-      '@testing-library/user-event': 14.6.3(@testing-library/dom@10.4.1)
+      '@testing-library/user-event': 14.6.4(@testing-library/dom@10.4.1)
       '@vitest/expect': 3.2.4
       '@vitest/spy': 3.2.4
       '@webcontainer/env': 1.1.1
