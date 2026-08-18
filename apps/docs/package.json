@@ -17,7 +17,7 @@
     "@commercetools/nimbus-docs-build": "workspace:^",
     "@commercetools/nimbus-icons": "workspace:^",
     "@emotion/react": "catalog:react",
-    "@huggingface/transformers": "catalog:",
+    "@huggingface/transformers": "catalog:apps",
     "@internationalized/date": "catalog:react",
     "@mdx-js/mdx": "catalog:apps",
     "@types/mdx": "catalog:apps",

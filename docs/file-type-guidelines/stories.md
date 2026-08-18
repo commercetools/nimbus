@@ -174,16 +174,27 @@ export const SmokeTest: Story = {
 label for finding snapshot stories - keep the two together).
 
 Crop padding is global, not per story: a `preview.tsx` decorator wraps every
-non-`fullscreen` story in `1rem` so focus rings aren't clipped.
+non-`fullscreen` story in `1rem` so focus rings aren't clipped. Don't reach for
+`layout: "padded"` when a ring clips - Chromatic crops to the rendered content,
+so that padding sits outside the crop and can't reach in.
 
 The rules below are enough to author a story. **Read
 [chromatic-visual-testing.md](../chromatic-visual-testing.md) when a rule
 doesn't settle the case** - it holds the worked precedent for the calls a terse
-rule can state but not decide: whether a state paints differently from the
-default (read-only), whether two axes interact (matrix vs. separate showcases),
-a variant that zeroes its surface, how many frames a comma-separated selector
-needs, which slot arrangements are genuine surfaces, and any "renders like
-default" verdict. It groups them under the same five headings used below.
+rule can state but not decide. It groups them under the same five headings used
+below, so jump to the one you need rather than reading it through:
+
+- Whether a state paints differently from the default (read-only), how many
+  frames a comma-separated selector needs, any "renders like default" verdict →
+  [1. Does it paint?](../chromatic-visual-testing.md#1-does-it-paint)
+- A variant that zeroes its surface, an inherited property with nothing to
+  inherit, a focus ring on a slot that never focuses →
+  [2. Is the state reachable?](../chromatic-visual-testing.md#2-is-the-state-reachable-in-this-frame)
+- Which slot arrangements are genuine surfaces →
+  [3. Who owns the pixels?](../chromatic-visual-testing.md#3-who-owns-the-pixels)
+- Whether two axes interact (matrix vs. separate showcases) →
+  [5. Packing the surfaces into frames](../chromatic-visual-testing.md#5-packing-the-surfaces-into-frames)
+
 Auditing coverage for the first time → read it; adding a story to an
 already-audited component → don't.
 
@@ -199,8 +210,11 @@ already-audited component → don't.
 - **A state with no distinct recipe surface gets no story** - read-only is the
   component-dependent trap.
 - **Primitives that paint no surface get no VRT** - pass-through style props, a
-  recipe that paints nothing, or headless `display: contents`. Note it on
-  `meta`.
+  recipe that paints nothing, headless `display: contents`, anything rendering
+  no DOM of its own (providers, behavior-only wrappers, VisuallyHidden), or a
+  component whose every axis belongs to another recipe (InlineSvg → Icon).
+  Record it on `meta` in the settled format:
+  `// No VRT: <reason> (see chromatic-visual-testing.md).`
 
 **2. Is the state reachable in this frame?**
 
@@ -223,8 +237,13 @@ already-audited component → don't.
   surface is its own story.
 - **Portals: capture is page-wide, but the page must be tall enough** - an
   overlay hanging below a short root is cropped, so reserve `minHeight`. Hold
-  open, await, clean up between stories; reach a portal's focus via its real
-  keyboard path.
+  transient UI open and await it; reach a portal's focus via its real keyboard
+  path.
+- **State held outside React leaks into the next story's frame** - the run is
+  `isolate: false`, so a file's stories share one page and a live toast queue or
+  React Aria drag session outlives unmount. Clear it in the teardown a
+  `beforeEach` returns, which runs after the capture, not at the top of the next
+  play (snippet below).
 - **Snapshot `placement` only when it changes the layout**, not when it
   repositions the same box.
 
@@ -258,8 +277,12 @@ already-audited component → don't.
   name** - don't rename the step down.
 - **Pin dates** in a snapshotted story; a live "today" stays off-snapshot and
   behavioral.
-- Caret, sticky scroll, animation pinning and image-derived state have snippets
-  below.
+- **Freeze an animation with the component's own prop** where it has one
+  (`animation="none"`); hand-pin a frame only when it doesn't. **Reduced motion
+  isn't snapshottable** - no mode is configured and JS can't fake a media query,
+  so assert the compiled `_motionReduce` rule still ships instead.
+- Caret, sticky scroll, animation pinning, teardown and image-derived state have
+  snippets below.
 
 **5. Packing the surfaces into frames**
 
@@ -268,15 +291,24 @@ already-audited component → don't.
   matrix can't render gets its own story. Never drop a state to save cost. A
   recipe with `compoundVariants` over two axes has already declared they
   interact - build the matrix.
-- **Name the interacting-axes matrix `SmokeTest`, rendered last** - the axis
-  list lives in the doc comment.
-- **Axis arrays span the full supported range** - palettes iterate the 6
-  `SEMANTIC_COLOR_PALETTES`, not the `BRAND` or `SYSTEM` sets. An axis the
-  recipe hardcodes isn't an axis; a uniform transform (`disabled`) folds out
-  into its own story.
+- **Name the interacting-axes matrix `SmokeTest`** - the axis list lives in the
+  doc comment.
+- **Axis arrays span the recipe's live keys**, not every key the type union
+  names - mirroring a value the recipe itself comments out is fine, trimming one
+  it still ships is a gap. A component with no recipe inherits the range of the
+  one it borrows (IconButton → Button); a value the recipe hardcodes collapses
+  the axis entirely.
+- **Palette scope depends on the frame** - as a **matrix axis**,
+  `SEMANTIC_COLOR_PALETTES` only, since every extra multiplies the cells. A
+  **standalone `ColorPalettes` showcase** costs one frame either way, so it uses
+  the shared `DisplayColorPalettes` helper (`@/utils`), which covers all three
+  groups.
 - **Cover distinct state-combinations**, not just single flags
-  (selected-disabled ≠ unselected-disabled) - beats the fold-out above, when
-  reachable (React Aria reassigns selection off disabled items).
+  (selected-disabled ≠ unselected-disabled), where the selection model makes
+  them reachable (React Aria reassigns selection off disabled items).
+- **`disabled` folds out into its own story only while what it dims is
+  uniform** - once another state repaints that surface (a tinted
+  `[data-selected]`), the combination goes back in the matrix.
 - **One state rendered more than one way → one story each**, not a folded
   gallery.
 - **`chromatic.modes` is global config only** (viewport/theme/locale), never
@@ -331,10 +363,27 @@ play: async ({ canvasElement }) => {
     timeout: 3000,
   });
 };
+
+// Teardown under isolate: false: the returned fn runs AFTER the capture.
+// On meta, for state every story in the file can leave behind:
+const meta: Meta = {
+  beforeEach: () => clearToasts, // toast.remove() + toast.reset(), awaited
+};
+
+// On one story, for state only it creates:
+export const DragInProgress: Story = {
+  beforeEach: () => () => {
+    // React Aria's keyboard drag is a module global; unmounting doesn't end it.
+    document.body.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true })
+    );
+  },
+};
 ```
 
-Full rationale, edge cases, CI, baselines and TurboSnap are in
-[Chromatic Visual Testing](../chromatic-visual-testing.md).
+Full rationale and edge cases are in
+[Chromatic Visual Testing](../chromatic-visual-testing.md); triggers, baselines
+and TurboSnap are in the [Chromatic CI Runbook](../chromatic-ci.md).
 
 ## File Structure
 
@@ -481,8 +530,8 @@ play coverage in its file, not on every story it exports.
   snapshot and the always-on a11y check are the test.
 
 Never add a play for completeness; on a snapshotted story every interaction is
-one more frame to land deliberately. Rationale in
-[chromatic-visual-testing.md](../chromatic-visual-testing.md).
+one more frame to land deliberately, and a resting visual is already tested by
+the snapshot plus the always-on a11y check.
 
 ### Play Function Structure
 

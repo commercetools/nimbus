@@ -3,6 +3,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { within, expect } from "storybook/test";
 import { MakeElementFocusable, Tooltip } from "@commercetools/nimbus";
 
+// No VRT: adds focusability to its child, paints nothing of its own
+// (see chromatic-visual-testing.md).
 const meta: Meta<typeof MakeElementFocusable> = {
   title: "Components/Tooltip/MakeElementFocusable",
   component: MakeElementFocusable,

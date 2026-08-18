@@ -385,9 +385,10 @@ export const LinkWithActions: Story = {
  * - **`ItemGroup.Root` + `ItemGroup.Separator`** for grouped sections, and a
  *   standalone `Item.Root` outside any group.
  *
- * Not VRT-snapshotted (the network imagery would flake, and `SmokeTest` already
- * owns visual coverage with an offline image); the play function asserts
- * behavior and the deterministic image `src`.
+ * Not VRT-snapshotted (the network imagery would flake); the play function
+ * asserts behavior and the deterministic image `src`. Item's visuals live in
+ * `SmokeTest` with an offline image, ItemGroup's in its own `Base` - `SmokeTest`
+ * renders no group.
  */
 const onMemberSettings = fn();
 
