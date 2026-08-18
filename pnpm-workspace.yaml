@@ -162,7 +162,7 @@ catalogs:
     "@arethetypeswrong/cli": ^0.18.5
     publint: ^0.3.23
     "@commercetools-frontend/ui-kit": ^20.6.7
-    "@modelcontextprotocol/inspector": ^0.22.0
+    "@modelcontextprotocol/inspector": ^2.0.0
     "@babel/core": ^7.29.7
     "@babel/runtime": ^7.29.7
     "@babel/preset-typescript": ^7.29.7
