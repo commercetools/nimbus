@@ -323,10 +323,29 @@ async function handleFileChange(
 const watcher = chokidar.watch(PACKAGES_DIR, {
   persistent: true,
   ignoreInitial: false,
-  usePolling: true,
+  // Stay on native `fs.watch` (event-driven). `usePolling: true` makes chokidar
+  // `fs.watchFile` every watched path, which re-`stat`s all of them every
+  // `interval` (100ms) forever — ~80% of a CPU core while completely idle on
+  // this tree. Only switch this on for filesystems that genuinely don't emit
+  // change events (network mounts, some container bind mounts).
+  usePolling: false,
   ignored: (filePath, stats) => {
     // Always ignore node_modules
     if (filePath.includes("node_modules")) {
+      return true;
+    }
+
+    // Ignore build output. Nothing here feeds the docs: routes come from `.mdx`
+    // under `src/` (dist ships none) and types are parsed from
+    // COMPONENT_INDEX_PATH. Watching it also meant every `build` fired
+    // thousands of `change` events that each re-triggered type parsing.
+    if (filePath.includes(`${path.sep}dist${path.sep}`)) {
+      return true;
+    }
+
+    // Ignore generated icon components — thousands of files that never affect
+    // docs routes or the parsed type surface.
+    if (filePath.includes("material-icons")) {
       return true;
     }
 
