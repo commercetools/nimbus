@@ -104,45 +104,45 @@ Iterate with `pnpm --filter @commercetools/nimbus typecheck:dev` and
       preserving `LocalizedFieldInfoDialogSlot` styling on the content children
 - [x] 6.5 Run the ComboBox story suite and confirm it passes unchanged
 - [x] 6.6 Run the LocalizedField story suite and confirm it passes unchanged
-- [ ] 6.7 Visually compare both consumers before/after in Storybook (ComboBox
+- [x] 6.7 Visually compare both consumers before/after in Storybook (ComboBox
       dropdown surface + stacking; LocalizedField info popover)
 
 ## 7. Documentation
 
-- [ ] 7.1 Write `popover.mdx` with frontmatter — `id: Components-Popover`,
+- [x] 7.1 Write `popover.mdx` with frontmatter — `id: Components-Popover`,
       `exportName: Popover`, `lifecycleState: Beta`,
       `menu: [Components, Feedback, Popover]` — and overview content
-- [ ] 7.2 Write `popover.dev.mdx` (engineering guide) via the
+- [x] 7.2 Write `popover.dev.mdx` (engineering guide) via the
       `writing-developer-documentation` skill
-- [ ] 7.3 Write `popover.docs.spec.tsx` with copy-ready consumer test examples
-- [ ] 7.4 Write `popover.a11y.mdx` covering keyboard interaction, the
+- [x] 7.3 Write `popover.docs.spec.tsx` with copy-ready consumer test examples
+- [x] 7.4 Write `popover.a11y.mdx` covering keyboard interaction, the
       dialog-in-popover pattern, and accessible-name guidance
-- [ ] 7.5 Write `popover.guidelines.mdx` covering Popover vs Tooltip vs Dialog
+- [x] 7.5 Write `popover.guidelines.mdx` covering Popover vs Tooltip vs Dialog
       vs Drawer
-- [ ] 7.6 Confirm the page renders in the docs site and appears under
+- [x] 7.6 Confirm the page renders in the docs site and appears under
       Components > Feedback
 
 ## 8. Spec correction and release
 
-- [ ] 8.1 Fix the header metadata in `openspec/specs/nimbus-popover/spec.md`
+- [x] 8.1 Fix the header metadata in `openspec/specs/nimbus-popover/spec.md`
       (drop the "i18n: 1 message (closePopover)" line)
-- [ ] 8.2 Correct the Overview and Purpose prose in
+- [x] 8.2 Correct the Overview and Purpose prose in
       `openspec/specs/nimbus-popover/spec.md`, which describes the component as
       non-modal with non-trapped focus — the opposite of React Aria's default
       (delta specs cannot change an existing capability's Purpose, so this is a
       direct edit)
-- [ ] 8.3 Add a changeset — minor bump for `@commercetools/nimbus`, written for
+- [x] 8.3 Add a changeset — minor bump for `@commercetools/nimbus`, written for
       consumers per `docs/changeset-conventions.md`
 
 ## 9. Verification
 
-- [ ] 9.1 `pnpm --filter @commercetools/nimbus typecheck:dev` clean
-- [ ] 9.2 `pnpm test:dev` clean for the popover, combobox and localized-field
+- [x] 9.1 `pnpm --filter @commercetools/nimbus typecheck:dev` clean
+- [x] 9.2 `pnpm test:dev` clean for the popover, combobox and localized-field
       suites
-- [ ] 9.3 `pnpm lint` clean
-- [ ] 9.4 `pnpm --filter @commercetools/nimbus build` then
+- [x] 9.3 `pnpm lint` clean
+- [x] 9.4 `pnpm --filter @commercetools/nimbus build` then
       `pnpm typecheck:strict` clean (validates the published type surface)
-- [ ] 9.5 `pnpm test:storybook` clean against the built bundle
-- [ ] 9.6 `pnpm exec openspec validate --strict` clean for this change
+- [x] 9.5 `pnpm test:storybook` clean against the built bundle
+- [x] 9.6 `pnpm exec openspec validate --strict` clean for this change
 - [ ] 9.7 Commit per `docs/git-conventions.md` with the `FEC-1167` footer, push,
       and open a PR; review Chromatic diffs for the two migrated consumers

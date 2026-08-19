@@ -2,17 +2,19 @@
 
 ## Overview
 
-The Popover component provides an accessible non-modal overlay positioned relative to a trigger element, containing interactive content. It follows ARIA popover/dialog patterns with intelligent positioning and focus management.
+The Popover component provides an accessible overlay positioned relative to a trigger element, containing interactive content. It follows the ARIA dialog pattern with intelligent positioning and focus management.
 
-**Component:** `Popover` (compound namespace)
+**Component:** `Popover` (compound namespace: `Root`, `Trigger`, `Content`)
 **Package:** `@commercetools/nimbus`
 **Type:** Compound component (multi-slot recipe)
-**React Aria:** Uses `Popover` from react-aria-components
-**i18n:** 1 message (closePopover)
+**React Aria:** Uses `DialogTrigger`, `Popover` and `Dialog` from react-aria-components
+**i18n:** None
 
 ## Purpose
 
-Popover provides a non-modal overlay for displaying rich, interactive content relative to a trigger element. Unlike Tooltip (non-interactive info on hover), Popover supports forms, buttons, and complex UI while maintaining accessibility. Unlike Dialog (modal with focus trap), Popover allows background interaction and non-trapped focus. Use Popover for supplementary actions, filters, settings panels, or context-sensitive content that doesn't require full modal attention.
+Popover provides an overlay for displaying rich, interactive content relative to a trigger element. Unlike Tooltip (non-interactive info on hover), Popover supports forms, buttons, and complex UI while maintaining accessibility. Unlike Dialog, it stays anchored to its trigger rather than taking over the page, and it is dismissed by Escape or an outside press rather than requiring an explicit action. Use Popover for supplementary actions, filters, settings panels, or context-sensitive content that doesn't require full modal attention.
+
+Focus is contained within the popover and outside interaction dismisses it, following React Aria's default for a dialog inside a popover. `isNonModal` relaxes that containment; React Aria's guidance is that most popovers should not use it.
 
 ## Requirements
 

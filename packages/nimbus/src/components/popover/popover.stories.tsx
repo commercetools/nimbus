@@ -349,7 +349,9 @@ export const CustomTrigger: Story = {
 
     await step("No nested interactive element is produced", async () => {
       expect(trigger.querySelector("button")).toBeNull();
-      expect(canvas.getAllByRole("button", { name: "Options" })).toHaveLength(1);
+      expect(canvas.getAllByRole("button", { name: "Options" })).toHaveLength(
+        1
+      );
     });
 
     await step("The custom trigger opens the popover", async () => {
@@ -433,11 +435,14 @@ export const NonModal: Story = {
       });
     });
 
-    await step("Outside content is not hidden from assistive tech", async () => {
-      const outside = canvas.getByRole("button", { name: "Outside button" });
-      await expect(outside).toBeInTheDocument();
-      await expect(outside).not.toHaveAttribute("aria-hidden", "true");
-    });
+    await step(
+      "Outside content is not hidden from assistive tech",
+      async () => {
+        const outside = canvas.getByRole("button", { name: "Outside button" });
+        await expect(outside).toBeInTheDocument();
+        await expect(outside).not.toHaveAttribute("aria-hidden", "true");
+      }
+    );
   },
 };
 

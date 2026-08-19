@@ -1,0 +1,332 @@
+---
+title: Popover Component
+tab-title: Implementation
+tab-order: 3
+---
+
+## Getting started
+
+### Import
+
+```tsx
+import {
+  Popover,
+  type PopoverRootProps,
+  type PopoverTriggerProps,
+  type PopoverContentProps,
+} from "@commercetools/nimbus";
+```
+
+### Basic usage
+
+Popover is a compound component with three parts. `Root` owns the open state and
+the styling context, `Trigger` opens it, and `Content` is the positioned surface.
+
+```jsx live-dev
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>Open popover</Popover.Trigger>
+    <Popover.Content aria-label="Example popover">
+      <Text>Content goes here.</Text>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+Two things about this structure are worth knowing up front:
+
+- **`Root` renders no DOM element.** It wraps React Aria's `DialogTrigger`, which
+  is a context provider, so it adds nothing to your layout. A trigger inside a
+  flex row stays where you put it.
+- **`Content` supplies its own dialog.** You do not add `<Dialog>` yourself.
+  React Aria needs a dialog inside a popover for the role, name and Escape
+  handling to work, so `Content` owns it.
+
+## Usage examples
+
+### Uncontrolled mode
+
+`defaultOpen` sets the initial state and lets the component manage it.
+
+```jsx live-dev
+const App = () => (
+  <Popover.Root defaultOpen>
+    <Popover.Trigger>Open popover</Popover.Trigger>
+    <Popover.Content aria-label="Initially open">
+      <Text>Open on mount.</Text>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+### Controlled mode
+
+Pass `isOpen` and `onOpenChange` to own the state. In controlled mode the popover
+does not close itself — it reports the request and waits for `isOpen` to change.
+
+```jsx live-dev
+const App = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <Stack gap="200">
+      <Popover.Root isOpen={isOpen} onOpenChange={setIsOpen}>
+        <Popover.Trigger>Toggle popover</Popover.Trigger>
+        <Popover.Content aria-label="Controlled popover">
+          <Text>Controlled by the parent.</Text>
+        </Popover.Content>
+      </Popover.Root>
+      <Text>State: {isOpen ? "open" : "closed"}</Text>
+    </Stack>
+  );
+};
+```
+
+### Closing from inside the content
+
+Because `Content` owns the dialog, React Aria's `close` render prop is forwarded
+through a function child. This is the idiomatic way to dismiss from an action
+inside the popover — reach for it before wiring up controlled state.
+
+```jsx live-dev
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>Discard changes</Popover.Trigger>
+    <Popover.Content aria-label="Discard changes">
+      {({ close }) => (
+        <Stack gap="200">
+          <Text>Discard your changes?</Text>
+          <Stack direction="horizontal" gap="200">
+            <Button variant="outline" onPress={close}>
+              Cancel
+            </Button>
+            <Button onPress={close}>Discard</Button>
+          </Stack>
+        </Stack>
+      )}
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+### Custom triggers
+
+Without `asChild`, `Trigger` renders its own button. With `asChild`, it applies
+trigger behavior to the element you supply, which avoids nesting one interactive
+element inside another.
+
+```jsx live-dev
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger asChild>
+      <IconButton aria-label="Options" size="xs" variant="ghost">
+        <Icons.MoreVert />
+      </IconButton>
+    </Popover.Trigger>
+    <Popover.Content aria-label="Options">
+      <Text>Options list</Text>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+### Positioning
+
+`placement` accepts a side, optionally followed by an alignment. The alignment
+values depend on the axis — this trips people up, so it is worth stating
+explicitly:
+
+| Side | Valid alignments |
+| --- | --- |
+| `top`, `bottom` | `left`, `right`, `start`, `end` |
+| `left`, `right`, `start`, `end` | `top`, `bottom` |
+
+So `bottom start` and `right top` are valid; `right start` is not, and will fail
+to typecheck.
+
+```jsx live-dev
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>Positioned</Popover.Trigger>
+    <Popover.Content
+      placement="right top"
+      offset={12}
+      crossOffset={4}
+      aria-label="Positioned popover"
+    >
+      <Text>placement="right top"</Text>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+`offset` adjusts distance along the trigger's axis, `crossOffset` along the
+perpendicular one, both in pixels. `shouldFlip` (default `true`) controls whether
+the popover may flip to the opposite side to stay in the viewport.
+
+### Dismissal behavior
+
+By default the popover closes on Escape and on an outside press. Both can be
+adjusted:
+
+```jsx live-dev
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>Keyboard dismiss disabled</Popover.Trigger>
+    <Popover.Content
+      isKeyboardDismissDisabled
+      aria-label="No Escape dismissal"
+    >
+      <Text>Escape will not close this. Click outside instead.</Text>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+`shouldCloseOnInteractOutside` takes a predicate receiving the interacted
+element, so you can exempt specific regions from dismissing the popover.
+
+> [!CAUTION]\
+> If you set `isKeyboardDismissDisabled`, provide another keyboard route to close
+> the popover. Otherwise keyboard users can open something they cannot dismiss.
+
+### Styling
+
+Style props on each part apply to that part's slot. Padding lives on the content
+surface, so a single prop removes it:
+
+```jsx live-dev
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>Flush content</Popover.Trigger>
+    <Popover.Content padding="0" maxWidth="4800" aria-label="Flush popover">
+      <Box padding="300" backgroundColor="primary.2">
+        <Text>Zero padding on the surface.</Text>
+      </Box>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+## Component requirements
+
+### Accessibility
+
+The Popover component handles most accessibility requirements internally via
+React Aria.
+
+- **Labeling**: `Popover.Content` renders a dialog, so it needs an accessible
+  name. Pass `aria-label`, or `aria-labelledby` pointing at a heading inside the
+  content. This is the one accessibility requirement the component cannot satisfy
+  for you.
+- **Role**: `Content` renders an element with `role="dialog"`.
+- **Focus management**: focus moves into the dialog on open and returns to the
+  trigger on close, by every dismissal route.
+- **ARIA state**: the trigger carries `aria-expanded`, plus `aria-controls` while
+  open. It deliberately does not carry `aria-haspopup` — React Aria sets that only
+  for `menu` and `listbox` overlays, since screen readers often announce other
+  values as "menu".
+
+By default focus is contained within the popover and outside interaction
+dismisses it. `isNonModal` relaxes containment so assistive technologies can
+reach the surrounding page; React Aria's guidance is that most popovers should
+not use it.
+
+If your use case requires tracking and analytics for this component, it is good
+practice to add a **persistent**, **unique** id:
+
+```tsx
+const PERSISTENT_ID = "filters-popover-trigger";
+
+export const Example = () => (
+  <Popover.Root>
+    <Popover.Trigger id={PERSISTENT_ID}>Filters</Popover.Trigger>
+    <Popover.Content aria-label="Filters">…</Popover.Content>
+  </Popover.Root>
+);
+```
+
+#### Keyboard navigation
+
+The component supports full keyboard interaction:
+
+- `Tab`: moves focus between focusable elements inside the popover
+- `Enter` or `Space`: toggles the popover when the trigger is focused
+- `Escape`: closes the popover and returns focus to the trigger
+
+### Composition constraints
+
+- `Popover.Trigger` and `Popover.Content` must be inside a `Popover.Root`.
+- Do not add your own `Dialog` inside `Popover.Content` — it already renders one,
+  and nesting a second breaks the naming and focus contract.
+- Do not nest a Popover inside another Popover.
+
+## Common patterns
+
+### Filter panel
+
+```jsx live-dev
+const App = () => {
+  const [onlyActive, setOnlyActive] = useState(false);
+
+  return (
+    <Popover.Root>
+      <Popover.Trigger>Filters</Popover.Trigger>
+      <Popover.Content aria-labelledby="filters-title" maxWidth="4800">
+        {({ close }) => (
+          <Stack gap="300">
+            <Heading id="filters-title" size="sm">
+              Filters
+            </Heading>
+            <Checkbox isSelected={onlyActive} onChange={setOnlyActive}>
+              Only active
+            </Checkbox>
+            <Button onPress={close}>Apply filters</Button>
+          </Stack>
+        )}
+      </Popover.Content>
+    </Popover.Root>
+  );
+};
+```
+
+### Inline edit
+
+```jsx live-dev
+const App = () => {
+  const [name, setName] = useState("Ada Lovelace");
+  const [draft, setDraft] = useState(name);
+
+  return (
+    <Stack direction="horizontal" gap="200" alignItems="center">
+      <Text>{name}</Text>
+      <Popover.Root onOpenChange={(open) => open && setDraft(name)}>
+        <Popover.Trigger asChild>
+          <IconButton aria-label="Edit name" size="2xs" variant="ghost">
+            <Icons.Edit />
+          </IconButton>
+        </Popover.Trigger>
+        <Popover.Content aria-label="Edit name">
+          {({ close }) => (
+            <Stack gap="200">
+              <TextInput
+                aria-label="Name"
+                value={draft}
+                onChange={setDraft}
+              />
+              <Button
+                onPress={() => {
+                  setName(draft);
+                  close();
+                }}
+              >
+                Save
+              </Button>
+            </Stack>
+          )}
+        </Popover.Content>
+      </Popover.Root>
+    </Stack>
+  );
+};
+```

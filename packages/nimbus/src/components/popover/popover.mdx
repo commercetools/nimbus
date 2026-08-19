@@ -1,0 +1,242 @@
+---
+id: Components-Popover
+title: Popover
+exportName: Popover
+description:
+  A positioned overlay for rich, interactive content anchored to a trigger.
+  Built with React Aria Components for accessibility and WCAG 2.1 AA compliance.
+lifecycleState: Beta
+order: 999
+menu:
+  - Components
+  - Feedback
+  - Popover
+tags:
+  - component
+  - overlay
+  - popover
+  - dialog
+  - interactive
+---
+
+## Overview
+
+Popover shows interactive content in a floating surface anchored to the element
+that opened it. It sits between Tooltip and Dialog: its content can be focused
+and operated, unlike a tooltip, but it stays tethered to its trigger instead of
+taking over the page.
+
+Visually it is a single elevated surface — a background, a corner radius and a
+shadow — with no header, footer or arrow. That plainness is deliberate: the
+content is authored by the consumer, so the component supplies elevation and
+positioning and stays out of the way.
+
+Reach for it when the content is genuinely interactive: a filter panel, a short
+edit form, a set of context-sensitive actions.
+
+### Choosing an overlay
+
+| Use          | When                                              |
+| ------------ | ------------------------------------------------- |
+| **Popover**  | Interactive content anchored to a trigger         |
+| **Tooltip**  | A short, non-interactive hint on hover or focus   |
+| **Dialog**   | A flow that should block the rest of the page     |
+| **Drawer**   | Content too large for a floating surface          |
+
+### Resources
+
+[ARIA dialog pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
+[React Aria Popover](https://react-spectrum.adobe.com/react-aria/Popover.html)
+
+## Variables
+
+Popover has no size or color variants. One surface treatment covers every use,
+because the content decides how much room it needs. What varies is where the
+surface sits relative to its trigger, and how much space it takes.
+
+### Placement
+
+`placement` takes a side, optionally followed by an alignment. The alignment
+vocabulary depends on the axis: vertical sides (`top`, `bottom`) take `left`,
+`right`, `start` or `end`, while horizontal sides (`left`, `right`) take `top` or
+`bottom`. The default is `bottom`.
+
+Placement is a preference, not a guarantee — the popover flips and shifts to stay
+inside the viewport.
+
+```jsx live
+const App = () => (
+  <Stack direction="horizontal" gap="400">
+    <Popover.Root>
+      <Popover.Trigger>Bottom start</Popover.Trigger>
+      <Popover.Content placement="bottom start" aria-label="Bottom start">
+        <Text>placement="bottom start"</Text>
+      </Popover.Content>
+    </Popover.Root>
+    <Popover.Root>
+      <Popover.Trigger>Right top</Popover.Trigger>
+      <Popover.Content placement="right top" aria-label="Right top">
+        <Text>placement="right top"</Text>
+      </Popover.Content>
+    </Popover.Root>
+    <Popover.Root>
+      <Popover.Trigger>Top</Popover.Trigger>
+      <Popover.Content placement="top" aria-label="Top">
+        <Text>placement="top"</Text>
+      </Popover.Content>
+    </Popover.Root>
+  </Stack>
+);
+```
+
+### Spacing
+
+`offset` moves the surface along the trigger's axis; `crossOffset` moves it
+along the perpendicular one. Both take pixels. Use them to fine-tune the gap,
+not to fake an alignment that `placement` already expresses.
+
+```jsx live
+const App = () => (
+  <Stack direction="horizontal" gap="400">
+    <Popover.Root>
+      <Popover.Trigger>Default gap</Popover.Trigger>
+      <Popover.Content aria-label="Default gap">
+        <Text>No offset</Text>
+      </Popover.Content>
+    </Popover.Root>
+    <Popover.Root>
+      <Popover.Trigger>Wider gap</Popover.Trigger>
+      <Popover.Content offset={16} aria-label="Wider gap">
+        <Text>offset={16}</Text>
+      </Popover.Content>
+    </Popover.Root>
+  </Stack>
+);
+```
+
+### Width
+
+Content sizes to itself. Constrain it with the standard style props when the
+content would otherwise stretch too wide to read.
+
+```jsx live
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>Constrained width</Popover.Trigger>
+    <Popover.Content maxWidth="4800" aria-label="Constrained width">
+      <Text>
+        A longer passage wraps instead of stretching into one unreadable line.
+      </Text>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+## Guidelines
+
+### Basic usage
+
+Three parts: a `Root` that owns open state, a `Trigger`, and a `Content` surface.
+
+```jsx live
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>Open popover</Popover.Trigger>
+    <Popover.Content aria-label="Example popover">
+      <Stack gap="200">
+        <Text fontWeight="700">Popover title</Text>
+        <Text>Rich, interactive content lives here.</Text>
+      </Stack>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+### Interactive content
+
+Inputs and buttons inside the popover behave normally. Typing does not dismiss
+it.
+
+```jsx live
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>Edit name</Popover.Trigger>
+    <Popover.Content aria-label="Edit name">
+      <Stack gap="200">
+        <TextInput aria-label="Name" />
+        <Button>Save</Button>
+      </Stack>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+### Closing from inside
+
+Pass a function as the content to receive a `close` callback, so an action inside
+the popover can dismiss it.
+
+```jsx live
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>Discard changes</Popover.Trigger>
+    <Popover.Content aria-label="Discard changes">
+      {({ close }) => (
+        <Stack gap="200">
+          <Text>Discard your changes?</Text>
+          <Stack direction="horizontal" gap="200">
+            <Button variant="outline" onPress={close}>
+              Cancel
+            </Button>
+            <Button onPress={close}>Discard</Button>
+          </Stack>
+        </Stack>
+      )}
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+### Custom triggers
+
+`asChild` applies trigger behavior to your own pressable element instead of
+nesting one button inside another.
+
+```jsx live
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger asChild>
+      <IconButton aria-label="Options" size="xs" variant="ghost">
+        <Icons.MoreVert />
+      </IconButton>
+    </Popover.Trigger>
+    <Popover.Content aria-label="Options">
+      <Text>Options list</Text>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+### Best practices
+
+> [!TIP]\
+> **Do** give `Popover.Content` an `aria-label` or `aria-labelledby` whenever the
+> content has no visible heading. Without a name, screen readers announce an
+> unlabelled dialog.
+
+> [!CAUTION]\
+> **Do not** use Popover for plain text hints. Use `Tooltip`, which is built for
+> hover and focus and leaves focus on the trigger.
+
+> [!CAUTION]\
+> **Do not** nest a Popover inside another Popover. Anchor both to the same
+> surface, or promote the second step to a `Dialog`.
+
+> [!TIP]\
+> **Do** keep the content small enough to sit on screen near its trigger. Once it
+> needs its own header and scroll region, it wants `Drawer` or a full page.
+
+> [!CAUTION]\
+> **Do not** put a destructive confirmation behind a Popover alone if losing it
+> to a stray outside click would cost the user work. An outside press dismisses
+> the popover silently.
