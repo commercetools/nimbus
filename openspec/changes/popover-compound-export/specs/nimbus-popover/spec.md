@@ -79,8 +79,12 @@ detection.
 #### Scenario: Placement options
 
 - **WHEN** the `placement` prop is set on `Popover.Content`
-- **THEN** it SHALL accept a side (`top`, `bottom`, `left`, `right`) optionally
-  followed by a space and an alignment (`start`, `end`)
+- **THEN** it SHALL accept a primary side — physical (`top`, `bottom`, `left`,
+  `right`) or logical (`start`, `end`)
+- **AND** a vertical side SHALL accept the alignments `left`, `right`, `start`
+  or `end`, separated by a space
+- **AND** a horizontal side SHALL accept the alignments `top` or `bottom`,
+  separated by a space
 - **AND** it SHALL default to `bottom`
 - **AND** it SHALL use React Aria's overlay positioning
 
@@ -186,7 +190,10 @@ The component SHALL implement the ARIA dialog-in-popover pattern.
 - **WHEN** the popover renders
 - **THEN** `Popover.Content` SHALL contain an element with `role="dialog"`
 - **AND** the trigger SHALL expose `aria-expanded` reflecting open state
-- **AND** the trigger SHALL expose `aria-haspopup="dialog"`
+- **AND** the trigger SHALL expose `aria-controls` referencing the overlay while
+  open
+- **AND** the trigger SHALL NOT expose `aria-haspopup`, matching React Aria's
+  deliberate omission for dialog-type overlays
 
 #### Scenario: Accessible name
 

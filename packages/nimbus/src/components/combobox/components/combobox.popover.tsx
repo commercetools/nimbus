@@ -1,4 +1,4 @@
-import { Popover } from "../../popover";
+import { Popover as RaPopover } from "react-aria-components";
 import { ComboBoxPopoverSlot } from "../combobox.slots";
 import type { ComboBoxPopoverProps } from "../combobox.types";
 import { extractStyleProps } from "@/utils";
@@ -7,7 +7,15 @@ import { extractStyleProps } from "@/utils";
  * # ComboBox.Popover
  *
  * Popover wrapper for the options dropdown list.
- * Uses Nimbus Popover component which reads from PopoverContext provided by the custom context provider.
+ * Uses React Aria's Popover directly, which reads from PopoverContext provided by
+ * the custom context provider. The dropdown does not use the shared Nimbus
+ * Popover: its own `popover` slot already declares every surface style, so the
+ * shared recipe would contribute nothing.
+ *
+ * Note: this previously passed `autoFocus={false}`, which was never a React Aria
+ * Popover prop — it only typechecked because the old Nimbus wrapper intersected
+ * Chakra's div props, and React Aria drops props it does not recognise. It was a
+ * no-op and has been removed.
  *
  * The PopoverContext provides:
  * - open state
@@ -34,14 +42,9 @@ export const ComboBoxPopover = ({
 
   return (
     <ComboBoxPopoverSlot asChild {...styleProps}>
-      <Popover
-        ref={ref}
-        isNonModal={true}
-        autoFocus={false}
-        {...functionalProps}
-      >
+      <RaPopover ref={ref} isNonModal={true} {...functionalProps}>
         {children}
-      </Popover>
+      </RaPopover>
     </ComboBoxPopoverSlot>
   );
 };

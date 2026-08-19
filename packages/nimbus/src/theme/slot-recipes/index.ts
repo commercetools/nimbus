@@ -30,6 +30,7 @@ import { pageContentRecipe } from "@/components/page-content/page-content.recipe
 import { moneyInputRecipe } from "@/components/money-input/money-input.recipe";
 import { multilineTextInputRecipe } from "@/components/multiline-text-input/multiline-text-input.recipe";
 import { numberInputRecipe } from "@/components/number-input/number-input.recipe";
+import { popoverSlotRecipe } from "@/components/popover/popover.recipe";
 import { progressBarSlotRecipe } from "@/components/progress-bar/progress-bar.recipe";
 import { radioInputSlotRecipe } from "@/components/radio-input/radio-input.recipe";
 import { rangeCalendarSlotRecipe } from "@/components/range-calendar/range-calendar.recipe";
@@ -110,6 +111,7 @@ export const slotRecipes = {
   nimbusMultilineTextInput: multilineTextInputRecipe,
   nimbusNumberInput: numberInputRecipe,
   nimbusPageContent: pageContentRecipe,
+  nimbusPopover: popoverSlotRecipe,
   nimbusProgressBar: progressBarSlotRecipe,
   nimbusRadioInput: radioInputSlotRecipe,
   nimbusRangeCalendar: rangeCalendarSlotRecipe,

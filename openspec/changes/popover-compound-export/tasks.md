@@ -10,100 +10,100 @@ Iterate with `pnpm --filter @commercetools/nimbus typecheck:dev` and
 
 ## 1. Recipe and theme registration
 
-- [ ] 1.1 Convert `popover/popover.recipe.tsx` from `defineRecipe` to
+- [x] 1.1 Convert `popover/popover.recipe.tsx` from `defineRecipe` to
       `defineSlotRecipe` with slots `root`, `trigger`, `content`, `dialog`
-- [ ] 1.2 Move the existing flat base styles onto the `content` slot, replacing
+- [x] 1.2 Move the existing flat base styles onto the `content` slot, replacing
       `bg: "white"` with the semantic `bg` token and keeping
       `borderRadius: "200"`, `boxShadow: "5"`, `padding: "400"`, `zIndex: 1`
-- [ ] 1.3 Add `&[data-entering]` / `&[data-exiting]` fade+scale animations to the
+- [x] 1.3 Add `&[data-entering]` / `&[data-exiting]` fade+scale animations to the
       `content` slot, matching `menu.recipe.tsx`
-- [ ] 1.4 Remove `nimbusPopover` from `theme/recipes/index.ts` (import + map
+- [x] 1.4 Remove `nimbusPopover` from `theme/recipes/index.ts` (import + map
       entry)
-- [ ] 1.5 Register `nimbusPopover` in `theme/slot-recipes/index.ts`, keeping
+- [x] 1.5 Register `nimbusPopover` in `theme/slot-recipes/index.ts`, keeping
       alphabetical ordering
-- [ ] 1.6 Confirm the theme still builds and `nimbusPopover` resolves as a slot
+- [x] 1.6 Confirm the theme still builds and `nimbusPopover` resolves as a slot
       recipe (`pnpm --filter @commercetools/nimbus build-theme-typings`)
 
 ## 2. Types, slots, and scaffolding
 
-- [ ] 2.1 Rewrite `popover.slots.tsx` to use `createSlotRecipeContext({ key: "nimbusPopover" })`,
+- [x] 2.1 Rewrite `popover.slots.tsx` to use `createSlotRecipeContext({ key: "nimbusPopover" })`,
       exporting `PopoverRootSlot` (via `withProvider`, `"div"`, `"root"`),
       `PopoverTriggerSlot`, `PopoverContentSlot`, `PopoverDialogSlot`
-- [ ] 2.2 Rewrite `popover.types.ts` for the four-layer architecture: recipe
+- [x] 2.2 Rewrite `popover.types.ts` for the four-layer architecture: recipe
       props, slot props, then `PopoverRootProps` / `PopoverTriggerProps` /
       `PopoverContentProps` with JSDoc on every public prop
-- [ ] 2.3 Create `popover/components/` with an `index.ts` barrel
-- [ ] 2.4 Create `popover.stories.tsx` with a single render-only `Base` story to
+- [x] 2.3 Create `popover/components/` with an `index.ts` barrel
+- [x] 2.4 Create `popover.stories.tsx` with a single render-only `Base` story to
       drive development from a real harness
 
 ## 3. Component parts
 
-- [ ] 3.1 Implement `components/popover.root.tsx` as
+- [x] 3.1 Implement `components/popover.root.tsx` as
       `<PopoverRootSlot asChild><RaDialogTrigger>`, splitting recipe variants
       then extracting style props; set `displayName = "Popover.Root"`
-- [ ] 3.2 Verify Root mounts no DOM element of its own (inspect the rendered
+- [x] 3.2 Verify Root mounts no DOM element of its own (inspect the rendered
       tree in the Base story — the trigger must be a direct child of its parent)
-- [ ] 3.3 Implement `components/popover.trigger.tsx` as
+- [x] 3.3 Implement `components/popover.trigger.tsx` as
       `<PopoverTriggerSlot asChild><RaButton>` with an `asChild` passthrough,
       matching `menu.trigger.tsx`; set `displayName = "Popover.Trigger"`
-- [ ] 3.4 Implement `components/popover.content.tsx` as
+- [x] 3.4 Implement `components/popover.content.tsx` as
       `<PopoverContentSlot asChild><RaPopover><PopoverDialogSlot asChild><RaDialog>`,
       forwarding `placement`, `offset`, `crossOffset`, `shouldFlip` and
       `isNonModal` to `RaPopover`; set `displayName = "Popover.Content"`
-- [ ] 3.5 Forward a function child through `Popover.Content` to the dialog's
+- [x] 3.5 Forward a function child through `Popover.Content` to the dialog's
       render prop so `{({ close }) => …}` works for programmatic close
-- [ ] 3.6 Export all three parts from `components/index.ts`
+- [x] 3.6 Export all three parts from `components/index.ts`
 
 ## 4. Namespace and public export
 
-- [ ] 4.1 Rewrite `popover.tsx` as exports only — `Popover = { Root, Trigger, Content }`
+- [x] 4.1 Rewrite `popover.tsx` as exports only — `Popover = { Root, Trigger, Content }`
       with `Root` first, one JSDoc block with an `@example` per part, importing
       from the `./components` barrel
-- [ ] 4.2 Add the `_PopoverRoot` / `_PopoverTrigger` / `_PopoverContent`
+- [x] 4.2 Add the `_PopoverRoot` / `_PopoverTrigger` / `_PopoverContent`
       internal exports for react-docgen, following `dialog.tsx`
-- [ ] 4.3 Update `popover/index.ts` to export the namespace and its types
-- [ ] 4.4 Add `export * from "./popover"` to `components/index.ts` in
+- [x] 4.3 Update `popover/index.ts` to export the namespace and its types
+- [x] 4.4 Add `export * from "./popover"` to `components/index.ts` in
       alphabetical position
-- [ ] 4.5 Confirm `Popover` and its part prop types are importable from the
+- [x] 4.5 Confirm `Popover` and its part prop types are importable from the
       package root
 
 ## 5. Behavior tests (play functions)
 
-- [ ] 5.1 Add a play function asserting click-to-open: pressing the trigger
+- [x] 5.1 Add a play function asserting click-to-open: pressing the trigger
       reveals the dialog (queried from `document.body`, since content is
       portaled)
-- [ ] 5.2 Add a play function asserting Escape closes the popover and focus
+- [x] 5.2 Add a play function asserting Escape closes the popover and focus
       returns to the trigger
-- [ ] 5.3 Add a play function asserting an outside press dismisses the popover
-- [ ] 5.4 Add a play function asserting press-to-toggle: a second press on an
+- [x] 5.3 Add a play function asserting an outside press dismisses the popover
+- [x] 5.4 Add a play function asserting press-to-toggle: a second press on an
       open trigger closes it
-- [ ] 5.5 Add a story covering controlled mode (`isOpen` + `onOpenChange`) and
+- [x] 5.5 Add a story covering controlled mode (`isOpen` + `onOpenChange`) and
       assert `onOpenChange` fires without the popover self-closing
-- [ ] 5.6 Add a story covering interactive content (a focusable input inside the
+- [x] 5.6 Add a story covering interactive content (a focusable input inside the
       popover) and assert typing does not dismiss it
-- [ ] 5.7 Add a story with a custom `asChild` trigger and assert no nested
+- [x] 5.7 Add a story with a custom `asChild` trigger and assert no nested
       interactive element is produced
-- [ ] 5.8 Confirm ARIA wiring in a play function: `role="dialog"` present,
+- [x] 5.8 Confirm ARIA wiring in a play function: `role="dialog"` present,
       trigger carries `aria-expanded` and `aria-haspopup="dialog"`
-- [ ] 5.9 Add a story using a function child with a close button and assert
+- [x] 5.9 Add a story using a function child with a close button and assert
       calling `close` dismisses the popover and returns focus to the trigger
-- [ ] 5.10 Add a story with `isNonModal` and assert an element outside the
+- [x] 5.10 Add a story with `isNonModal` and assert an element outside the
       popover is reachable, contrasting it with the contained-focus default
 
 ## 6. Consumer migration
 
-- [ ] 6.1 Add explicit `zIndex: 1` to the `popover` slot in
+- [x] 6.1 Add explicit `zIndex: 1` to the `popover` slot in
       `combobox/combobox.recipe.ts` (preserves the one property ComboBox
       inherited from the old flat recipe)
-- [ ] 6.2 Change `combobox/components/combobox.popover.tsx` to import `Popover`
+- [x] 6.2 Change `combobox/components/combobox.popover.tsx` to import `Popover`
       from `react-aria-components` directly, matching `select.root.tsx`
-- [ ] 6.3 Update the JSDoc in `combobox.popover.tsx` — it currently states the
+- [x] 6.3 Update the JSDoc in `combobox.popover.tsx` — it currently states the
       component "Uses Nimbus Popover component"
-- [ ] 6.4 Migrate `localized-field/components/localized-field.root.tsx:236` to
+- [x] 6.4 Migrate `localized-field/components/localized-field.root.tsx:236` to
       `<Popover.Content padding={0}>`, removing its hand-rolled `RaDialog` and
       preserving `LocalizedFieldInfoDialogSlot` styling on the content children
-- [ ] 6.5 Run the ComboBox story suite and confirm it passes unchanged
-- [ ] 6.6 Run the LocalizedField story suite and confirm it passes unchanged
+- [x] 6.5 Run the ComboBox story suite and confirm it passes unchanged
+- [x] 6.6 Run the LocalizedField story suite and confirm it passes unchanged
 - [ ] 6.7 Visually compare both consumers before/after in Storybook (ComboBox
       dropdown surface + stacking; LocalizedField info popover)
 

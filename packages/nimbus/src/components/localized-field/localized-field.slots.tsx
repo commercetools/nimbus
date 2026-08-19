@@ -2,6 +2,7 @@ import { createSlotRecipeContext } from "@chakra-ui/react/styled-system";
 import type {
   LocalizedFieldRootSlotProps,
   LocalizedFieldLabelSlotProps,
+  LocalizedFieldInfoPopoverSlotProps,
   LocalizedFieldInfoDialogSlotProps,
   LocalizedFieldFieldsContainerSlotProps,
   LocalizedFieldDescriptionSlotProps,
@@ -27,6 +28,12 @@ export const LocalizedFieldLabelSlot = withContext<
   HTMLLabelElement,
   LocalizedFieldLabelSlotProps
 >("legend", "label");
+
+// InfoPopover Slot
+export const LocalizedFieldInfoPopoverSlot = withContext<
+  HTMLDivElement,
+  LocalizedFieldInfoPopoverSlotProps
+>("div", "infoPopover");
 
 // InfoDialog Slot
 export const LocalizedFieldInfoDialogSlot = withContext<

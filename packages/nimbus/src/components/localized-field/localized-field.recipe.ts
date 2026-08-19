@@ -20,6 +20,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
     // Group / Fieldset slots
     "root",
     "label",
+    "infoPopover",
     "infoDialog",
     "fieldsContainer",
     "description",
@@ -47,6 +48,15 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       fontSize: "var(--localized-field-font-size)",
       lineHeight: "var(--localized-field-line-height)",
       position: "relative",
+    },
+    // Outer overlay box. Carries exactly what this popover previously inherited
+    // from the shared `nimbusPopover` recipe, which it no longer routes
+    // through, so the rendered result is unchanged.
+    infoPopover: {
+      bg: "bg",
+      borderRadius: "200",
+      boxShadow: "5",
+      zIndex: 1,
     },
     infoDialog: {
       bg: "neutral.1",

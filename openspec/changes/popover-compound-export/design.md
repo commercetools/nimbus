@@ -116,6 +116,19 @@ This is the one cost of owning the Dialog, and it is cheap to pay back. Without
 it, the only way to close from inside would be controlled mode, which is a lot
 of ceremony for a "Cancel" button.
 
+### No `aria-haspopup` on the trigger
+
+The old spec required `aria-haspopup="dialog"`. React Aria does not set it, and
+that is deliberate — `useOverlayTrigger` only sets it for `menu` and `listbox`,
+with the source comment: *"we only add it for menus for now because screen
+readers often announce it as a menu even for other values."*
+
+We follow React Aria rather than forcing the attribute. Overriding a considered
+accessibility decision from the library that owns the pattern would likely make
+screen reader announcements worse, not better. What the trigger does expose —
+verified against the rendered DOM — is `aria-expanded` always, and
+`aria-controls` while open.
+
 ### Slot recipe replaces the plain recipe
 
 `nimbusPopover` moves from `theme/recipes/index.ts` to
@@ -129,9 +142,10 @@ A compound component with three styleable parts needs per-slot styling; a flat
 recipe cannot express it. The key stays `nimbusPopover` so nothing else has to
 be renamed.
 
-### ComboBox drops to React Aria's Popover; LocalizedField adopts Content
+### Both consumers drop to React Aria's Popover
 
-The migration is asymmetric because the two consumers want different things.
+The migration is symmetric: both consumers already override the shared surface
+completely, so neither gains anything by routing through the new component.
 
 **ComboBox** already overrides everything the shared recipe provides. Its own
 `popover` slot re-declares `bg`, `borderRadius`, `boxShadow` and `padding: 0`
@@ -142,13 +156,36 @@ ComboBox therefore uses React Aria's `Popover` directly, exactly as Select
 does, and `zIndex: 1` is added explicitly to its `popover` slot. Net effect:
 one less layer, identical computed styles.
 
-**LocalizedField** genuinely wants the shared surface — it keeps the
-background, radius and shadow and only zeroes padding
-(`localized-field/components/localized-field.root.tsx:236`). It is already
-inside an `RaDialogTrigger`, so it becomes `<Popover.Content padding={0}>` and
-its hand-rolled `RaDialog` disappears, since `Content` now provides one. Its
-existing `LocalizedFieldInfoDialogSlot` styling is preserved by applying it to
-the content children.
+**LocalizedField** turns out to be the same story, not the exception. An
+earlier draft of this design claimed it "genuinely wants the shared surface"
+based on its call site (`<Popover padding={0}>`). Reading its recipe disproved
+that: the `infoDialog` slot (`localized-field.recipe.ts:51-63`) re-declares the
+whole surface on the **inner** dialog — `bg: neutral.1`, `borderRadius: 200`,
+`boxShadow: 6`, `border`, `maxHeight`, `overflow`, `focusRing: outside`. What it
+actually inherits from the shared recipe is a `boxShadow: 5` on the outer box
+(visible, stacked under the inner shadow), `zIndex: 1`, and a background and
+radius that are hidden behind the padding-zero inner dialog.
+
+Migrating it to `Popover.Content` is also blocked outright: now that `Content`
+owns the `RaDialog`, there is no way to apply `LocalizedFieldInfoDialogSlot` to
+the dialog element via `asChild`. Moving those styles to an inner `div` would
+put `focusRing: outside` on a non-focusable element and lose the dialog's focus
+ring — an accessibility regression, not a refactor.
+
+So LocalizedField drops to raw React Aria too, symmetric with ComboBox, and
+gains an `infoPopover` slot on its own recipe carrying exactly what it
+previously inherited (`bg`, `borderRadius: 200`, `boxShadow: 5`, `zIndex: 1`).
+That keeps it pixel-identical while decoupling it entirely.
+
+*Consequence:* the new public `Popover` ships with **zero** internal consumers.
+That is deliberate. Both existing consumers fully override the shared surface,
+so routing them through a brand-new public API would couple them to it for no
+styling benefit.
+
+*Noted for a separate ticket:* the stacked `boxShadow: 5` + `boxShadow: 6` on
+LocalizedField's info popover looks like a latent bug rather than intent. We
+replicate it here to hold the pixel-identical guarantee; changing it is a
+visual decision that deserves its own change.
 
 *Alternative considered:* keep a shared internal surface primitive for both.
 Rejected — it would exist solely to serve ComboBox's single inherited `zIndex`

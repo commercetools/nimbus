@@ -7,13 +7,13 @@ import type {
   ListBoxItemProps as RaListBoxItemProps,
   ListBoxSectionProps as RaListBoxSectionProps,
 } from "react-aria-components";
+import type { PopoverProps as RaPopoverProps } from "react-aria-components";
 import type {
   HTMLChakraProps,
   SlotRecipeProps,
   UnstyledProp,
 } from "@chakra-ui/react/styled-system";
 import type { TagGroupProps as NimbusTagGroupProps } from "../tag-group/tag-group.types";
-import type { PopoverProps as NimbusPopoverProps } from "../popover/popover.types";
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 
 // ============================================================
@@ -780,8 +780,11 @@ export type ComboBoxInputProps = ComboBoxInputSlotProps & RaInputProps;
  * Popover wrapper for options list
  * Gets props from PopoverContext provided by Nimbus context
  */
-export type ComboBoxPopoverProps = NimbusPopoverProps &
-  Omit<ComboBoxPopoverSlotProps, keyof NimbusPopoverProps>;
+export type ComboBoxPopoverProps = RaPopoverProps &
+  Omit<ComboBoxPopoverSlotProps, keyof RaPopoverProps> & {
+    /** Reference to the popover element */
+    ref?: Ref<HTMLElement>;
+  };
 
 /**
  * Props for ComboBox.ListBox component

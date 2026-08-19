@@ -3,6 +3,7 @@ import {
   Collection as RaCollection,
   Dialog as RaDialog,
   DialogTrigger as RaDialogTrigger,
+  Popover as RaPopover,
 } from "react-aria-components";
 import { useField, useId } from "react-aria";
 import {
@@ -21,12 +22,12 @@ import {
   Stack,
   type CurrencyCode,
 } from "@/components";
-import { Popover } from "../../popover";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { localizedFieldMessagesStrings } from "../localized-field.messages";
 import {
   LocalizedFieldRootSlot,
   LocalizedFieldLabelSlot,
+  LocalizedFieldInfoPopoverSlot,
   LocalizedFieldInfoDialogSlot,
   LocalizedFieldFieldsContainerSlot,
   LocalizedFieldDescriptionSlot,
@@ -233,13 +234,15 @@ export const LocalizedField = ({
                 <HelpOutline />
               </IconButton>
 
-              <Popover padding={0}>
-                <LocalizedFieldInfoDialogSlot asChild>
-                  <RaDialog>
-                    <Box p="300">{hint}</Box>
-                  </RaDialog>
-                </LocalizedFieldInfoDialogSlot>
-              </Popover>
+              <LocalizedFieldInfoPopoverSlot asChild>
+                <RaPopover>
+                  <LocalizedFieldInfoDialogSlot asChild>
+                    <RaDialog>
+                      <Box p="300">{hint}</Box>
+                    </RaDialog>
+                  </LocalizedFieldInfoDialogSlot>
+                </RaPopover>
+              </LocalizedFieldInfoPopoverSlot>
             </RaDialogTrigger>
           )}
         </Stack>
