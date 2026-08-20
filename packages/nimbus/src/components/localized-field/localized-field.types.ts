@@ -32,8 +32,6 @@ export type LocalizedFieldRootSlotProps = HTMLChakraProps<
 
 export type LocalizedFieldLabelSlotProps = HTMLChakraProps<"label">;
 
-export type LocalizedFieldInfoPopoverSlotProps = HTMLChakraProps<"div">;
-
 export type LocalizedFieldInfoDialogSlotProps = HTMLChakraProps<"div">;
 
 export type LocalizedFieldFieldsContainerSlotProps = HTMLChakraProps<"div">;

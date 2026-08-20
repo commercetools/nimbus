@@ -1,10 +1,5 @@
 import { useState, useMemo } from "react";
-import {
-  Collection as RaCollection,
-  Dialog as RaDialog,
-  DialogTrigger as RaDialogTrigger,
-  Popover as RaPopover,
-} from "react-aria-components";
+import { Collection as RaCollection } from "react-aria-components";
 import { useField, useId } from "react-aria";
 import {
   ErrorOutline,
@@ -22,12 +17,12 @@ import {
   Stack,
   type CurrencyCode,
 } from "@/components";
+import { Popover } from "../../popover/popover";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { localizedFieldMessagesStrings } from "../localized-field.messages";
 import {
   LocalizedFieldRootSlot,
   LocalizedFieldLabelSlot,
-  LocalizedFieldInfoPopoverSlot,
   LocalizedFieldInfoDialogSlot,
   LocalizedFieldFieldsContainerSlot,
   LocalizedFieldDescriptionSlot,
@@ -223,27 +218,28 @@ export const LocalizedField = ({
             {isRequired && <sup aria-hidden="true">*</sup>}
           </LocalizedFieldLabelSlot>
           {hint && (
-            <RaDialogTrigger>
-              <IconButton
-                id={moreDetailsButtonId}
-                aria-label={msg.format("infoBoxTriggerAriaLabel")}
-                size="2xs"
-                colorPalette="info"
-                variant="link"
-              >
-                <HelpOutline />
-              </IconButton>
+            <Popover.Root>
+              <Popover.Trigger asChild>
+                <IconButton
+                  id={moreDetailsButtonId}
+                  aria-label={msg.format("infoBoxTriggerAriaLabel")}
+                  size="2xs"
+                  colorPalette="info"
+                  variant="link"
+                >
+                  <HelpOutline />
+                </IconButton>
+              </Popover.Trigger>
 
-              <LocalizedFieldInfoPopoverSlot asChild>
-                <RaPopover>
-                  <LocalizedFieldInfoDialogSlot asChild>
-                    <RaDialog>
-                      <Box p="300">{hint}</Box>
-                    </RaDialog>
-                  </LocalizedFieldInfoDialogSlot>
-                </RaPopover>
-              </LocalizedFieldInfoPopoverSlot>
-            </RaDialogTrigger>
+              <Popover.Content
+                padding="0"
+                aria-label={msg.format("infoBoxTriggerAriaLabel")}
+              >
+                <LocalizedFieldInfoDialogSlot>
+                  <Box p="300">{hint}</Box>
+                </LocalizedFieldInfoDialogSlot>
+              </Popover.Content>
+            </Popover.Root>
           )}
         </Stack>
       )}
