@@ -6,8 +6,8 @@ import type {
   ListBoxProps as RaListBoxProps,
   ListBoxItemProps as RaListBoxItemProps,
   ListBoxSectionProps as RaListBoxSectionProps,
+  PopoverProps as RaPopoverProps,
 } from "react-aria-components";
-import type { PopoverProps as RaPopoverProps } from "react-aria-components";
 import type {
   HTMLChakraProps,
   SlotRecipeProps,

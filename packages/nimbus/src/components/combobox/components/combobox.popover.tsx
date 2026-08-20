@@ -12,11 +12,6 @@ import { extractStyleProps } from "@/utils";
  * Popover: its own `popover` slot already declares every surface style, so the
  * shared recipe would contribute nothing.
  *
- * Note: this previously passed `autoFocus={false}`, which was never a React Aria
- * Popover prop — it only typechecked because the old Nimbus wrapper intersected
- * Chakra's div props, and React Aria drops props it does not recognise. It was a
- * no-op and has been removed.
- *
  * The PopoverContext provides:
  * - open state
  * - positioning configuration (fixed strategy, bottom-start placement, --nimbus-combobox-trigger-width CSS var)
