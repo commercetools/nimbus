@@ -341,19 +341,23 @@ The component SHALL be operable on touch devices.
 - **AND** `Tooltip` SHALL be used for hover-activated content instead
 
 ### Requirement: Optimized Rendering
-The component SHALL optimize for performance.
+
+The component SHALL keep overlay content out of the DOM while closed, and SHALL
+stay anchored to its trigger while the page moves.
 
 #### Scenario: Lazy mounting
-- **WHEN** popover is closed
-- **THEN** SHALL not mount content in DOM
-- **AND** SHALL only mount when opening
-- **AND** SHALL unmount when fully closed after animation
+
+- **WHEN** the popover is closed
+- **THEN** the overlay content SHALL NOT be mounted in the DOM
+- **AND** it SHALL mount when the popover opens
+- **AND** it SHALL unmount once the exit animation has finished
 
 #### Scenario: Scroll optimization
-- **WHEN** page scrolls with popover open
-- **THEN** SHALL update position efficiently
-- **AND** SHALL use requestAnimationFrame for positioning updates
-- **AND** MAY close popover on scroll if configured
+
+- **WHEN** the page scrolls or the viewport resizes while the popover is open
+- **THEN** the popover SHALL remain anchored to its trigger
+- **AND** it SHALL stay within the viewport, flipping or shifting as needed
+- **AND** no scroll-dismissal option SHALL be exposed
 
 ### Requirement: Usage Guidelines
 
