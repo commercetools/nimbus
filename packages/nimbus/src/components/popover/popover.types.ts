@@ -1,10 +1,13 @@
-import type { ReactNode, Ref } from "react";
+import type { ReactElement, ReactNode, Ref } from "react";
 import type {
   ButtonProps as RaButtonProps,
   DialogRenderProps as RaDialogRenderProps,
   PopoverProps as RaPopoverProps,
 } from "react-aria-components";
-import type { HTMLChakraProps } from "@chakra-ui/react/styled-system";
+import type {
+  HTMLChakraProps,
+  JsxStyleProps,
+} from "@chakra-ui/react/styled-system";
 
 import type { OmitInternalProps } from "../../type-utils/omit-props";
 
@@ -89,24 +92,47 @@ export type PopoverRootProps = OmitInternalProps<PopoverRootSlotProps> & {
  *
  * The element that opens the popover when pressed. Renders its own button
  * unless `asChild` is set.
+ *
+ * The two modes accept different props. React Aria hands the whole trigger
+ * contract — press handling, `aria-expanded`, `aria-controls` and the trigger
+ * ref — to the rendered element through context, so under `asChild` the only
+ * thing this component adds is the `trigger` slot's styling. Button props
+ * belong on the element you supply and are rejected here, rather than being
+ * accepted and quietly having no effect.
  */
-export type PopoverTriggerProps = OmitInternalProps<
-  PopoverTriggerSlotProps,
-  keyof RaButtonProps
-> &
-  RaButtonProps & {
-    /**
-     * When true, Trigger will not render its own button element. Instead, it
-     * applies trigger behavior to the child element, which must be able to
-     * receive a ref and press handlers.
-     */
-    asChild?: boolean;
+export type PopoverTriggerProps =
+  | (OmitInternalProps<PopoverTriggerSlotProps, keyof RaButtonProps> &
+      RaButtonProps & {
+        /**
+         * Render an own button element (the default). Pass `asChild` instead to
+         * supply your own pressable element.
+         */
+        asChild?: false;
 
-    /**
-     * Reference to the trigger element.
-     */
-    ref?: Ref<HTMLButtonElement>;
-  };
+        /**
+         * Reference to the trigger element.
+         */
+        ref?: Ref<HTMLButtonElement>;
+      })
+  | (Omit<JsxStyleProps, "css"> & {
+      /**
+       * Apply trigger behavior to the supplied child rather than rendering an
+       * own button, which avoids nesting one interactive element inside
+       * another. The child must be able to receive a ref, and carries its own
+       * props — put `id`, `isDisabled`, `aria-label` and friends on it.
+       */
+      asChild: true;
+
+      /**
+       * The pressable element to turn into the trigger.
+       */
+      children: ReactElement;
+
+      /**
+       * Reference to the trigger element.
+       */
+      ref?: Ref<HTMLButtonElement>;
+    });
 
 /**
  * Props for the Popover.Content component.

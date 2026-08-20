@@ -335,14 +335,20 @@ export const InteractiveContent: Story = {
  * Custom trigger
  *
  * `asChild` applies trigger behavior to a supplied pressable element rather
- * than nesting one button inside another. Props passed to the Trigger are
- * forwarded to that element, so `id` and friends are not dropped.
+ * than nesting one button inside another. React Aria delivers the trigger
+ * contract to that element through context, so its own props — `id`,
+ * `aria-label`, `isDisabled` — go on the element itself, not on the Trigger.
  */
 export const CustomTrigger: Story = {
   render: () => (
     <Popover.Root>
-      <Popover.Trigger asChild id="custom-trigger">
-        <IconButton aria-label="Options" size="xs" variant="ghost">
+      <Popover.Trigger asChild>
+        <IconButton
+          id="custom-trigger"
+          aria-label="Options"
+          size="xs"
+          variant="ghost"
+        >
           <MoreVert />
         </IconButton>
       </Popover.Trigger>
@@ -362,9 +368,18 @@ export const CustomTrigger: Story = {
       );
     });
 
-    await step("Props on the Trigger reach the supplied element", async () => {
+    await step("The supplied element keeps its own props", async () => {
       await expect(trigger).toHaveAttribute("id", "custom-trigger");
     });
+
+    await step(
+      "React Aria wires the trigger contract via context",
+      async () => {
+        // Nothing is forwarded by Popover.Trigger in asChild mode; the child
+        // picks this up from DialogTrigger's PressResponder.
+        await expect(trigger).toHaveAttribute("aria-expanded", "false");
+      }
+    );
 
     await step("The custom trigger opens the popover", async () => {
       await userEvent.click(trigger);

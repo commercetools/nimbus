@@ -130,6 +130,14 @@ const App = () => (
 );
 ```
 
+The two modes accept different props. React Aria delivers the trigger contract —
+press handling, `aria-expanded`, `aria-controls` and the trigger ref — to the
+rendered element through context, so with `asChild` there is nothing for
+`Trigger` to forward. Put the element's own props (`id`, `aria-label`,
+`isDisabled`) on the element itself; `Trigger` accepts only style props in this
+mode, and rejects the rest at compile time rather than accepting them and having
+no effect.
+
 ### Positioning
 
 `placement` accepts a side, optionally followed by an alignment. The alignment
