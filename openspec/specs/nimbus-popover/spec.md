@@ -19,265 +19,185 @@ Focus is contained within the popover and outside interaction dismisses it, foll
 ## Requirements
 
 ### Requirement: Namespace Structure
-The component SHALL export as compound component namespace.
+
+The component SHALL be exported from `@commercetools/nimbus` as a compound
+component namespace with exactly three parts.
 
 #### Scenario: Component parts
-- **WHEN** Popover is imported
-- **THEN** SHALL provide Popover.Root as configuration wrapper
-- **AND** SHALL provide Popover.Trigger for trigger element
-- **AND** SHALL provide Popover.Content for popover container
-- **AND** SHALL provide Popover.Header for title section
-- **AND** SHALL provide Popover.Body for main content
-- **AND** SHALL provide Popover.Footer for actions section
-- **AND** SHALL provide Popover.CloseButton for dismiss button
-- **AND** SHALL provide Popover.Arrow for pointer element
-- **AND** Root SHALL be first property in namespace
+
+- **WHEN** `Popover` is imported from `@commercetools/nimbus`
+- **THEN** it SHALL provide `Popover.Root` as the configuration and state scope
+- **AND** it SHALL provide `Popover.Trigger` as the activating element
+- **AND** it SHALL provide `Popover.Content` as the overlay surface
+- **AND** `Root` SHALL be the first property in the namespace
+- **AND** it SHALL NOT expose any other parts
+
+#### Scenario: Public availability
+
+- **WHEN** a consumer installs the package
+- **THEN** `Popover` SHALL be importable from the package root
+- **AND** its part prop types SHALL be exported alongside it
 
 #### Scenario: Compound component coordination
-- **WHEN** Popover.Root wraps trigger and content
-- **THEN** SHALL coordinate state between trigger and content
-- **AND** SHALL manage open/close state internally or via props
-- **AND** SHALL provide context to child components
 
+- **WHEN** `Popover.Root` wraps a trigger and content
+- **THEN** it SHALL coordinate open state between trigger and content
+- **AND** it SHALL provide styling context to both child parts
+- **AND** the context SHALL reach content rendered in a portal
+
+#### Scenario: Root introduces no layout box
+
+- **WHEN** `Popover.Root` renders
+- **THEN** it SHALL NOT mount a DOM element of its own
+- **AND** the trigger's position in its parent's layout SHALL be unaffected
+
+#### Scenario: Content supplies its own dialog
+
+- **WHEN** `Popover.Content` renders children
+- **THEN** it SHALL wrap them in a dialog element
+- **AND** consumers SHALL NOT be required to supply one
+- **AND** the dialog SHALL carry the overlay's accessible name
 
 ### Requirement: Trigger Activation
-The component SHALL provide trigger for opening popover.
+
+The component SHALL open the popover from a press interaction on the trigger.
 
 #### Scenario: Click trigger
-- **WHEN** user clicks Popover.Trigger
-- **THEN** SHALL open popover overlay
-- **AND** SHALL position content relative to trigger
-- **AND** SHALL set aria-expanded="true" on trigger
-- **AND** SHALL focus first focusable element in content if autoFocus enabled
+
+- **WHEN** the user clicks or taps `Popover.Trigger` while closed
+- **THEN** it SHALL open the popover
+- **AND** it SHALL position the popover relative to the trigger
+- **WHEN** the user clicks or taps `Popover.Trigger` while open
+- **THEN** it SHALL close the popover
 
 #### Scenario: Programmatic control
-- **WHEN** isOpen prop is set to true
-- **THEN** SHALL open popover
-- **AND** SHALL call onOpenChange(true) callback
-- **AND** SHALL support controlled mode
+
+- **WHEN** `isOpen`, `defaultOpen` or `onOpenChange` is set on `Popover.Root`
+- **THEN** open state SHALL be controllable without a user interaction
+- **AND** `onOpenChange` SHALL fire for every open and close transition
 
 #### Scenario: Hover trigger mode
-- **WHEN** trigger="hover" prop is set
-- **THEN** SHALL open on mouse enter
-- **AND** SHALL respect openDelay for hover activation
-- **AND** SHALL behave like Tooltip for hover interactions
-- **AND** SHALL support fallback click on touch devices
 
+- **WHEN** the user hovers over `Popover.Trigger`
+- **THEN** it SHALL NOT open the popover
+- **AND** the component SHALL NOT offer a hover-activation mode
+- **AND** hover-activated overlays SHALL remain the responsibility of Tooltip
+
+#### Scenario: Custom trigger element
+
+- **WHEN** `Popover.Trigger` is given a custom child element via `asChild`
+- **THEN** it SHALL apply trigger behavior to that element
+- **AND** it SHALL NOT introduce a nested interactive element
 
 ### Requirement: Intelligent Placement
-The component SHALL position popover relative to trigger with collision detection.
+
+The component SHALL position the popover relative to the trigger with collision
+detection.
 
 #### Scenario: Placement options
-- **WHEN** placement prop is set
-- **THEN** SHALL support: top, bottom, left, right, top-start, top-end, bottom-start, bottom-end, left-start, left-end, right-start, right-end
-- **AND** SHALL default to bottom placement
-- **AND** SHALL use React Aria's overlay positioning
+
+- **WHEN** the `placement` prop is set on `Popover.Content`
+- **THEN** it SHALL accept a primary side — physical (`top`, `bottom`, `left`,
+  `right`) or logical (`start`, `end`)
+- **AND** a vertical side SHALL accept the alignments `left`, `right`, `start`
+  or `end`, separated by a space
+- **AND** a horizontal side SHALL accept the alignments `top` or `bottom`,
+  separated by a space
+- **AND** it SHALL default to `bottom`
+- **AND** it SHALL use React Aria's overlay positioning
 
 #### Scenario: Viewport collision detection
-- **WHEN** popover would overflow viewport
-- **THEN** SHALL automatically flip to opposite side
-- **AND** SHALL adjust position to stay within viewport bounds
-- **AND** SHALL prioritize visibility over preferred placement
-- **AND** SHALL prevent content clipping
+
+- **WHEN** the popover would overflow the viewport
+- **THEN** it SHALL flip to the opposite side
+- **AND** it SHALL adjust position to stay within viewport bounds
+- **AND** it SHALL prioritize visibility over the preferred placement
 
 #### Scenario: Offset positioning
-- **WHEN** offset prop is set
-- **THEN** SHALL adjust distance from trigger element
-- **AND** SHALL maintain proper spacing
-- **AND** SHALL apply offset in pixels
+
+- **WHEN** the `offset` prop is set
+- **THEN** it SHALL adjust the distance from the trigger in pixels
 
 #### Scenario: Cross-axis offset
-- **WHEN** crossOffset prop is set
-- **THEN** SHALL adjust position along perpendicular axis
-- **AND** SHALL allow fine-tuned alignment
-- **AND** SHALL combine with primary placement
 
-
-### Requirement: Visual Connection
-The component SHALL support optional arrow pointer to trigger.
-
-#### Scenario: Arrow rendering
-- **WHEN** Popover.Arrow is included
-- **THEN** SHALL render arrow pointing toward trigger
-- **AND** SHALL position arrow at edge of popover
-- **AND** arrow SHALL adjust with popover position
-- **AND** SHALL apply proper styling from recipe
-
-#### Scenario: Arrow positioning
-- **WHEN** popover placement changes due to collision
-- **THEN** arrow SHALL reposition to maintain connection to trigger
-- **AND** SHALL align with trigger element center
-- **AND** SHALL stay within popover bounds
-
+- **WHEN** the `crossOffset` prop is set
+- **THEN** it SHALL adjust position along the perpendicular axis
+- **AND** it SHALL combine with the primary placement
 
 ### Requirement: Close Mechanisms
-The component SHALL provide multiple ways to close popover.
+
+The component SHALL provide multiple ways to dismiss the popover.
 
 #### Scenario: Close button
-- **WHEN** Popover.CloseButton is rendered
-- **THEN** clicking SHALL close popover
-- **AND** SHALL call onOpenChange(false)
-- **AND** SHALL use i18n aria-label "Close popover"
-- **AND** SHALL return focus to trigger
+
+- **WHEN** content inside the popover needs to dismiss it
+- **THEN** `Popover.Content` SHALL accept a function child receiving a `close`
+  callback
+- **AND** calling `close` SHALL dismiss the popover and return focus to the
+  trigger
+- **AND** the component SHALL NOT render a built-in close button of its own
 
 #### Scenario: Escape key
-- **WHEN** popover is open and user presses Escape
-- **THEN** SHALL close popover
-- **AND** SHALL return focus to trigger
-- **AND** isDismissable prop SHALL control this behavior
+
+- **WHEN** the popover is open and the user presses Escape
+- **THEN** it SHALL close the popover
+- **AND** it SHALL return focus to the trigger
+- **AND** it SHALL NOT propagate Escape to parent overlays
 
 #### Scenario: Outside click
-- **WHEN** user clicks outside popover
-- **THEN** SHALL close popover if isDismissable={true}
-- **OR** SHALL not close if isDismissable={false}
-- **AND** SHALL not prevent outside click action
+
+- **WHEN** the user clicks or taps outside the popover
+- **THEN** it SHALL close the popover
 
 #### Scenario: Controlled closure
-- **WHEN** isOpen and onOpenChange props are provided
-- **THEN** SHALL call onOpenChange(false) on close attempt
-- **AND** SHALL not close until isOpen changes to false
-- **AND** SHALL support fully controlled state management
 
-
-### Requirement: Non-Modal Focus Behavior
-The component SHALL manage focus appropriately as non-modal overlay per nimbus-core standards.
-
-#### Scenario: Opening focus
-- **WHEN** popover opens with autoFocus={true}
-- **THEN** SHALL move focus to first focusable element
-- **OR** to element specified by autoFocus selector
-- **AND** SHALL announce content to screen readers
-- **WHEN** popover opens with autoFocus={false}
-- **THEN** SHALL leave focus on trigger element
-
-#### Scenario: Non-modal interaction
-- **WHEN** popover is open
-- **THEN** SHALL allow Tab to move focus outside popover
-- **AND** SHALL not trap focus within popover
-- **AND** SHALL allow interaction with background content
-- **AND** tabbing away SHALL close popover by default
-
-#### Scenario: Closing focus
-- **WHEN** popover closes
-- **THEN** SHALL return focus to trigger element
-- **OR** to element that had focus before opening
-- **AND** focus SHALL be visible
-
-#### Scenario: Focus containment option
-- **WHEN** shouldCloseOnBlur={true} (default)
-- **THEN** SHALL close when focus leaves popover
-- **WHEN** shouldCloseOnBlur={false}
-- **THEN** SHALL remain open when focus leaves
-- **AND** SHALL support persistent popovers
-
+- **WHEN** `isOpen` and `onOpenChange` are provided
+- **THEN** it SHALL call `onOpenChange(false)` on a close attempt
+- **AND** it SHALL NOT close until `isOpen` becomes false
 
 ### Requirement: Complex Content
-The component SHALL support interactive elements within popover.
+
+The component SHALL support interactive elements within the popover.
 
 #### Scenario: Form elements
-- **WHEN** Popover.Body contains form inputs
-- **THEN** SHALL allow typing and interaction
-- **AND** SHALL support form submission
-- **AND** SHALL maintain focus within interactive elements
-- **AND** Enter key SHALL not close popover when editing
+
+- **WHEN** the popover contains form inputs
+- **THEN** the user SHALL be able to focus and type in them
+- **AND** typing SHALL NOT dismiss the popover
 
 #### Scenario: Buttons and links
-- **WHEN** Popover.Body contains clickable elements
-- **THEN** SHALL support clicking buttons without closing
-- **AND** SHALL support link navigation
-- **AND** SHALL support custom onSelect handlers
+
+- **WHEN** the popover contains buttons or links
+- **THEN** they SHALL be reachable by keyboard and operable by press
+- **AND** activating them SHALL NOT dismiss the popover unless the handler does
+  so
 
 #### Scenario: Nested interactive content
-- **WHEN** popover contains complex UI (tabs, selects, etc.)
-- **THEN** SHALL support full interaction patterns
-- **AND** SHALL manage focus correctly for nested components
-- **AND** SHALL not conflict with nested overlay triggers
 
+- **WHEN** the popover contains complex UI such as tabs or selects
+- **THEN** it SHALL support their full interaction patterns
+- **AND** it SHALL NOT conflict with nested overlay triggers
 
 ### Requirement: Keyboard Support
+
 The component SHALL support comprehensive keyboard interaction.
 
 #### Scenario: Trigger keyboard
-- **WHEN** Popover.Trigger is focused and user presses Enter or Space
-- **THEN** SHALL toggle popover open/closed
-- **AND** SHALL set appropriate aria-expanded state
+
+- **WHEN** `Popover.Trigger` is focused and the user presses Enter or Space
+- **THEN** it SHALL toggle the popover open or closed
+- **AND** the trigger SHALL expose its expanded state
 
 #### Scenario: Tab navigation
-- **WHEN** popover is open and user presses Tab
-- **THEN** SHALL move focus to next focusable element
-- **AND** SHALL allow tabbing outside popover (non-modal behavior)
-- **AND** tabbing outside SHALL close popover if shouldCloseOnBlur={true}
+
+- **WHEN** the popover is open and the user presses Tab
+- **THEN** focus SHALL move between focusable elements inside the popover
+- **AND** the tab order SHALL follow document order within the dialog
 
 #### Scenario: Escape key
-- **WHEN** popover is open and user presses Escape
-- **THEN** SHALL close popover
-- **AND** SHALL return focus to trigger
-- **AND** SHALL not propagate Escape to parent overlays
 
-
-### Requirement: Size Options
-The component SHALL support multiple size variants per nimbus-core standards.
-
-#### Scenario: Size variants
-- **WHEN** size prop is set on Popover.Content
-- **THEN** SHALL support: sm, md, lg
-- **AND** SHALL adjust popover width accordingly
-- **AND** md SHALL be default size
-
-#### Scenario: Custom dimensions
-- **WHEN** explicit width/maxWidth props provided
-- **THEN** SHALL override size variant
-- **AND** SHALL support responsive values
-- **AND** SHALL respect minWidth and maxWidth constraints
-
-
-### Requirement: Title Section
-The component SHALL provide accessible title section.
-
-#### Scenario: Header content
-- **WHEN** Popover.Header is rendered
-- **THEN** SHALL display title/heading content
-- **AND** SHALL associate with popover via aria-labelledby
-- **AND** SHALL apply header slot styling
-
-#### Scenario: Header with close button
-- **WHEN** Popover.CloseButton is in header
-- **THEN** SHALL position in top-right corner
-- **AND** SHALL be easily clickable/tappable (44x44px)
-- **AND** SHALL align with header content
-
-
-### Requirement: Content Area
-The component SHALL provide main content container.
-
-#### Scenario: Body content
-- **WHEN** Popover.Body is rendered
-- **THEN** SHALL contain main popover content
-- **AND** SHALL support any content type (text, forms, lists, etc.)
-- **AND** SHALL apply body slot styling
-- **AND** SHALL handle scrolling if content exceeds maxHeight
-
-#### Scenario: Scrolling content
-- **WHEN** content exceeds available space
-- **THEN** SHALL enable scrolling within body
-- **AND** SHALL maintain header and footer visibility
-- **AND** SHALL show scroll indicators
-
-
-### Requirement: Actions Section
-The component SHALL provide optional actions container.
-
-#### Scenario: Footer actions
-- **WHEN** Popover.Footer contains buttons
-- **THEN** SHALL render action buttons
-- **AND** SHALL align buttons appropriately (right-aligned by default)
-- **AND** SHALL support primary and secondary actions
-
-#### Scenario: Footer layout
-- **WHEN** multiple buttons are present
-- **THEN** SHALL space buttons with appropriate gaps
-- **AND** SHALL support responsive stacking on small screens
-
+- **WHEN** the popover is open and the user presses Escape
+- **THEN** it SHALL close the popover and return focus to the trigger
 
 ### Requirement: Controlled and Uncontrolled Modes
 The component SHALL support both state management patterns.
@@ -294,104 +214,131 @@ The component SHALL support both state management patterns.
 - **AND** SHALL call onOpenChange on interaction
 - **AND** SHALL not manage state internally
 
-
 ### Requirement: ARIA Popover Pattern
-The component SHALL implement ARIA popover/dialog pattern per nimbus-core standards.
+
+The component SHALL implement the ARIA dialog-in-popover pattern.
 
 #### Scenario: Popover roles
-- **WHEN** popover renders
-- **THEN** Popover.Content SHALL use role="dialog" or role="group"
-- **AND** SHALL have aria-modal="false" (non-modal)
-- **AND** SHALL associate with trigger via aria-describedby or aria-labelledby
-- **AND** trigger SHALL have aria-expanded reflecting state
-- **AND** trigger SHALL have aria-haspopup="dialog"
+
+- **WHEN** the popover renders
+- **THEN** `Popover.Content` SHALL contain an element with `role="dialog"`
+- **AND** the trigger SHALL expose `aria-expanded` reflecting open state
+- **AND** the trigger SHALL expose `aria-controls` referencing the overlay while
+  open
+- **AND** the trigger SHALL NOT expose `aria-haspopup`, matching React Aria's
+  deliberate omission for dialog-type overlays
+
+#### Scenario: Accessible name
+
+- **WHEN** the popover has no visible heading
+- **THEN** it SHALL accept `aria-label` or `aria-labelledby` for its name
+- **AND** the name SHALL be announced when the popover opens
 
 #### Scenario: Screen reader announcements
-- **WHEN** popover opens
-- **THEN** SHALL announce popover content
-- **AND** SHALL provide context about interactive elements
-- **AND** SHALL support aria-label or aria-labelledby for accessible name
+
+- **WHEN** the popover opens
+- **THEN** the dialog and its content SHALL be announced
 
 #### Scenario: Focus indicators
-- **WHEN** elements within popover receive focus
-- **THEN** SHALL show visible focus indicators
-- **AND** SHALL meet 3:1 contrast ratio requirement
 
-### Requirement: Internationalized Labels
-The component SHALL use i18n for screen reader text per nimbus-core standards.
-
-#### Scenario: Close button label
-- **WHEN** Popover.CloseButton renders
-- **THEN** SHALL use i18n aria-label from popover.i18n.ts
-- **AND** message "Close popover" SHALL translate across locales
-
+- **WHEN** a focusable element inside the popover receives keyboard focus
+- **THEN** a visible focus indicator SHALL be rendered
+- **AND** the indicator SHALL meet WCAG AA contrast against its background
 
 ### Requirement: Smooth Transitions
-The component SHALL provide smooth appearance and dismissal animations.
+
+The component SHALL animate appearance and dismissal.
 
 #### Scenario: Enter animation
-- **WHEN** popover opens
-- **THEN** SHALL fade in with opacity transition
-- **AND** SHALL scale from trigger position
-- **AND** SHALL use duration from design tokens
-- **AND** animation SHALL be performant (GPU-accelerated)
+
+- **WHEN** the popover opens
+- **THEN** it SHALL fade and scale in
+- **AND** it SHALL use duration design tokens
 
 #### Scenario: Exit animation
-- **WHEN** popover closes
-- **THEN** SHALL fade out before removing from DOM
-- **AND** SHALL scale toward trigger position
-- **AND** SHALL use same duration as enter
-- **AND** SHALL complete before focus return
 
+- **WHEN** the popover closes
+- **THEN** it SHALL fade and scale out before leaving the DOM
+- **AND** it SHALL use the same duration as the enter animation
 
 ### Requirement: Multi-Slot Recipe
-The component SHALL use multi-slot recipe per nimbus-core standards.
+
+The component SHALL use a multi-slot recipe registered as a slot recipe.
 
 #### Scenario: Slot styling
-- **WHEN** popover renders
-- **THEN** SHALL apply popover slot recipe from theme/slot-recipes/popover.ts
-- **AND** SHALL style slots: content, arrow, header, body, footer, closeButton
-- **AND** SHALL support size variants (sm, md, lg)
-- **AND** SHALL use design tokens for colors, spacing, shadows
+
+- **WHEN** the popover renders
+- **THEN** it SHALL apply a slot recipe keyed `nimbusPopover`
+- **AND** the recipe SHALL define the slots `root`, `trigger`, `content`, and
+  `dialog`
+- **AND** the recipe SHALL be registered among the theme's slot recipes
+
+#### Scenario: Token-based styling
+
+- **WHEN** the popover surface renders
+- **THEN** every color, spacing, radius and shadow value SHALL come from a
+  design token
+- **AND** no raw CSS color values SHALL be used
 
 #### Scenario: Visual styling
-- **WHEN** popover displays
-- **THEN** SHALL have elevated appearance with shadow
-- **AND** SHALL have border radius from tokens
-- **AND** SHALL have appropriate background color
-- **AND** SHALL ensure content contrast meets WCAG AA
 
+- **WHEN** the popover displays
+- **THEN** it SHALL have an elevated appearance via a shadow token
+- **AND** it SHALL use a radius token for its corners
+- **AND** content contrast SHALL meet WCAG AA
+
+#### Scenario: Style prop overrides
+
+- **WHEN** a consumer passes style props to `Popover.Content`
+- **THEN** those props SHALL override the corresponding recipe values
 
 ### Requirement: DOM Positioning
-The component SHALL render in portal for correct stacking.
+
+The component SHALL render in a portal for correct stacking.
 
 #### Scenario: Portal mounting
-- **WHEN** popover opens
-- **THEN** SHALL render in portal at document root
-- **AND** SHALL avoid z-index conflicts
-- **AND** SHALL position above other content
-- **AND** SHALL clean up portal on unmount
+
+- **WHEN** the popover opens
+- **THEN** it SHALL render in a portal at the document root
+- **AND** it SHALL position above other content
+- **AND** it SHALL clean up the portal on unmount
+
+#### Scenario: Slot recipe context crosses the portal
+
+- **WHEN** `Popover.Content` renders inside the portal
+- **THEN** it SHALL still receive the slot-recipe context installed by
+  `Popover.Root`
+- **AND** the surface SHALL be styled rather than falling back to unstyled
 
 #### Scenario: Container option
-- **WHEN** portalContainer prop is provided
-- **THEN** SHALL render portal in specified container
-- **AND** SHALL support custom portal targets
 
+- **WHEN** a consumer needs the overlay to portal into a specific container
+- **THEN** `Popover.Content` SHALL NOT expose a portal-container prop of its own
+- **AND** the portal target SHALL be controlled by React Aria's
+  `UNSAFE_PortalProvider` placed higher in the tree
 
 ### Requirement: Mobile Interaction
-The component SHALL adapt for touch devices.
+
+The component SHALL be operable on touch devices.
 
 #### Scenario: Touch interaction
-- **WHEN** on touch device
-- **THEN** trigger SHALL respond to tap
-- **AND** SHALL not interfere with scrolling
-- **AND** SHALL provide adequate touch targets (44x44px minimum)
+
+- **WHEN** used on a touch device
+- **THEN** the trigger SHALL respond to tap
+- **AND** the popover SHALL NOT interfere with page scrolling while closed
+
+#### Scenario: Touch target sizing
+
+- **WHEN** the default `Popover.Trigger` renders
+- **THEN** it SHALL NOT impose a minimum target size of its own
+- **AND** meeting the minimum target size SHALL be the responsibility of the
+  element supplied via `asChild`, or of the consumer styling the trigger
 
 #### Scenario: Hover mode on touch
-- **WHEN** trigger="hover" on touch device
-- **THEN** SHALL fallback to click/tap interaction
-- **OR** SHALL use long press for hover activation
 
+- **WHEN** a consumer wants an overlay activated by hover
+- **THEN** `Popover` SHALL NOT provide a hover trigger mode
+- **AND** `Tooltip` SHALL be used for hover-activated content instead
 
 ### Requirement: Optimized Rendering
 The component SHALL optimize for performance.
@@ -408,43 +355,64 @@ The component SHALL optimize for performance.
 - **AND** SHALL use requestAnimationFrame for positioning updates
 - **AND** MAY close popover on scroll if configured
 
-
-### Requirement: Optional Overlay
-The component SHALL support optional backdrop for emphasis.
-
-#### Scenario: Backdrop rendering
-- **WHEN** hasBackdrop={true} prop is set
-- **THEN** SHALL render semi-transparent backdrop
-- **AND** SHALL dim background content
-- **AND** backdrop click SHALL close popover
-- **AND** SHALL behave more modal-like with backdrop
-
-#### Scenario: No backdrop (default)
-- **WHEN** hasBackdrop is false or not set
-- **THEN** SHALL not render backdrop
-- **AND** SHALL allow full interaction with background
-- **AND** SHALL maintain non-modal behavior
-
-
 ### Requirement: Usage Guidelines
+
 The component documentation SHALL provide usage guidance.
 
 #### Scenario: Content guidelines
-- Popovers SHALL contain rich interactive content
-- For simple text hints, use Tooltip instead
-- For critical flows requiring focus trap, use Dialog instead
-- For large content, consider Drawer or full-page navigation
-- Keep content focused and scannable
+
+- **WHEN** choosing between overlay components
+- **THEN** Popover SHALL be recommended for rich interactive content
+- **AND** Tooltip SHALL be recommended for simple non-interactive hints
+- **AND** Dialog SHALL be recommended for flows requiring a page-blocking modal
+- **AND** Drawer or full-page navigation SHALL be recommended for large content
 
 #### Scenario: Accessibility guidelines
-- Popovers SHALL support keyboard navigation
-- Interactive elements SHALL be focusable and operable
-- Provide clear close mechanisms
-- Ensure contrast meets WCAG AA standards
-- Test with screen readers
+
+- **WHEN** authoring popover content
+- **THEN** an accessible name SHALL be provided when no heading is present
+- **AND** all interactive elements SHALL be keyboard operable
+- **AND** contrast SHALL meet WCAG AA
+
+#### Scenario: Composition guidelines
+
+- **WHEN** documenting the component
+- **THEN** examples SHALL show the three-part composition
+- **AND** examples SHALL show controlled and uncontrolled open state
 
 #### Scenario: Performance guidelines
-- Avoid complex content that causes layout thrashing
-- Lazy load heavy content in popover body
-- Consider using controlled mode for complex state
-- Test on mobile devices for touch interactions
+
+- **WHEN** authoring popover content
+- **THEN** heavy content SHALL be lazy-loaded inside the popover
+- **AND** content SHALL avoid layout thrashing while the popover is positioned
+
+### Requirement: Focus Management
+
+The component SHALL manage focus using React Aria's default popover focus
+behavior, and SHALL allow that behavior to be relaxed.
+
+#### Scenario: Opening focus
+
+- **WHEN** the popover opens
+- **THEN** it SHALL move focus into the popover's dialog
+- **AND** screen readers SHALL announce the dialog
+
+#### Scenario: Focus containment by default
+
+- **WHEN** the popover is open and no override is set
+- **THEN** keyboard focus SHALL be contained within the popover
+- **AND** pointer interaction outside the popover SHALL dismiss it rather than
+  reach the element beneath
+
+#### Scenario: Relaxed containment
+
+- **WHEN** `isNonModal` is set on `Popover.Content`
+- **THEN** assistive technologies SHALL be able to reach content outside the
+  popover
+- **AND** focus SHALL NOT be contained within the popover
+
+#### Scenario: Closing focus
+
+- **WHEN** the popover closes
+- **THEN** it SHALL return focus to the trigger element
+- **AND** the focus indicator SHALL be visible

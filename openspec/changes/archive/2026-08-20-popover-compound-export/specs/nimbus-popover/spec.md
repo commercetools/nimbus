@@ -259,6 +259,54 @@ The component SHALL use a multi-slot recipe registered as a slot recipe.
 - **WHEN** a consumer passes style props to `Popover.Content`
 - **THEN** those props SHALL override the corresponding recipe values
 
+### Requirement: DOM Positioning
+
+The component SHALL render in a portal for correct stacking.
+
+#### Scenario: Portal mounting
+
+- **WHEN** the popover opens
+- **THEN** it SHALL render in a portal at the document root
+- **AND** it SHALL position above other content
+- **AND** it SHALL clean up the portal on unmount
+
+#### Scenario: Slot recipe context crosses the portal
+
+- **WHEN** `Popover.Content` renders inside the portal
+- **THEN** it SHALL still receive the slot-recipe context installed by
+  `Popover.Root`
+- **AND** the surface SHALL be styled rather than falling back to unstyled
+
+#### Scenario: Container option
+
+- **WHEN** a consumer needs the overlay to portal into a specific container
+- **THEN** `Popover.Content` SHALL NOT expose a portal-container prop of its own
+- **AND** the portal target SHALL be controlled by React Aria's
+  `UNSAFE_PortalProvider` placed higher in the tree
+
+### Requirement: Mobile Interaction
+
+The component SHALL be operable on touch devices.
+
+#### Scenario: Touch interaction
+
+- **WHEN** used on a touch device
+- **THEN** the trigger SHALL respond to tap
+- **AND** the popover SHALL NOT interfere with page scrolling while closed
+
+#### Scenario: Touch target sizing
+
+- **WHEN** the default `Popover.Trigger` renders
+- **THEN** it SHALL NOT impose a minimum target size of its own
+- **AND** meeting the minimum target size SHALL be the responsibility of the
+  element supplied via `asChild`, or of the consumer styling the trigger
+
+#### Scenario: Hover mode on touch
+
+- **WHEN** a consumer wants an overlay activated by hover
+- **THEN** `Popover` SHALL NOT provide a hover trigger mode
+- **AND** `Tooltip` SHALL be used for hover-activated content instead
+
 ### Requirement: Usage Guidelines
 
 The component documentation SHALL provide usage guidance.
