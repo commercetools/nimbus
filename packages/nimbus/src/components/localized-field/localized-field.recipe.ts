@@ -49,12 +49,7 @@ export const localizedFieldSlotRecipe = defineSlotRecipe({
       position: "relative",
     },
     infoDialog: {
-      bg: "neutral.1",
       maxWidth: "xl",
-      borderRadius: "200",
-      boxShadow: "6",
-      border: "solid-25",
-      borderColor: "neutral.8",
       maxHeight: "40svh",
       overflow: "auto",
       scrollbarWidth: "thin",
