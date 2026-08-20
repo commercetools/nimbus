@@ -42,13 +42,6 @@ export const popoverSlotRecipe = defineSlotRecipe({
       // The dialog fills the content surface; padding lives on `content` so
       // consumers can zero it with a single style prop.
       outline: "none",
-
-      // React Aria focuses the first focusable child on open, falling back to
-      // the dialog itself when the content has none. In that fallback the
-      // dialog is the only thing holding focus, so it needs a ring — otherwise
-      // a keyboard user opens a text-only popover and sees no focus at all.
-      // Gated on `:focus-visible` so a mouse press does not draw one.
-      focusVisibleRing: "outside",
     },
   },
 });
