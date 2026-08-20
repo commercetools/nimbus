@@ -23,11 +23,13 @@ export const PopoverTrigger = ({
   const [styleProps, restProps] = extractStyleProps(props);
 
   /**
-   * The consumer supplied their own pressable element as the trigger.
+   * The consumer supplied their own pressable element as the trigger. The
+   * remaining props are forwarded too, so `id`, `isDisabled` and friends reach
+   * the supplied element instead of being dropped.
    */
   if (asChild) {
     return (
-      <PopoverTriggerSlot ref={ref} asChild {...styleProps}>
+      <PopoverTriggerSlot ref={ref} asChild {...styleProps} {...restProps}>
         {children as ReactElement}
       </PopoverTriggerSlot>
     );
