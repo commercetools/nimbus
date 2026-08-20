@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Decorator, Meta, StoryObj } from "@storybook/react-vite";
 import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import {
   Box,
@@ -183,6 +183,13 @@ export const OutsidePressToClose: Story = {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
       });
     });
+
+    await step("Focus returns to the trigger", async () => {
+      // The dismissing press landed on a non-focusable area, so React Aria
+      // restores focus. Pressing a focusable element outside would leave focus
+      // on that element instead.
+      await expect(trigger).toHaveFocus();
+    });
   },
 };
 
@@ -328,12 +335,13 @@ export const InteractiveContent: Story = {
  * Custom trigger
  *
  * `asChild` applies trigger behavior to a supplied pressable element rather
- * than nesting one button inside another.
+ * than nesting one button inside another. Props passed to the Trigger are
+ * forwarded to that element, so `id` and friends are not dropped.
  */
 export const CustomTrigger: Story = {
   render: () => (
     <Popover.Root>
-      <Popover.Trigger asChild>
+      <Popover.Trigger asChild id="custom-trigger">
         <IconButton aria-label="Options" size="xs" variant="ghost">
           <MoreVert />
         </IconButton>
@@ -352,6 +360,10 @@ export const CustomTrigger: Story = {
       expect(canvas.getAllByRole("button", { name: "Options" })).toHaveLength(
         1
       );
+    });
+
+    await step("Props on the Trigger reach the supplied element", async () => {
+      await expect(trigger).toHaveAttribute("id", "custom-trigger");
     });
 
     await step("The custom trigger opens the popover", async () => {
@@ -438,9 +450,11 @@ export const NonModal: Story = {
     await step(
       "Outside content is not hidden from assistive tech",
       async () => {
+        // This role query is the assertion: `getByRole` skips aria-hidden
+        // subtrees, and without `isNonModal` React Aria's `ariaHideOutside`
+        // hides the container holding this button, so the lookup would throw.
         const outside = canvas.getByRole("button", { name: "Outside button" });
         await expect(outside).toBeInTheDocument();
-        await expect(outside).not.toHaveAttribute("aria-hidden", "true");
       }
     );
   },
@@ -452,6 +466,10 @@ export const NonModal: Story = {
  * Content accepts React Aria placement values. The alignment vocabulary depends
  * on the axis: vertical sides take `left`/`right`/`start`/`end`, horizontal
  * sides take `top`/`bottom`.
+ *
+ * Not snapshotted: placement is React Aria repositioning the same box, with no
+ * arrow or layout change, so it is behavioral rather than visual (see
+ * docs/chromatic-visual-testing.md).
  */
 export const Placement: Story = {
   render: () => (
@@ -464,4 +482,70 @@ export const Placement: Story = {
       </Popover.Root>
     </Box>
   ),
+};
+
+// VRT open-state snapshots: `defaultOpen` so Chromatic captures the settled
+// surface (the entry animation pauses on its last frame).
+
+const awaitOpen = async (canvasElement: HTMLElement) => {
+  const canvas = portalCanvas(canvasElement);
+  await waitFor(() => expect(canvas.getByRole("dialog")).toBeInTheDocument());
+};
+
+/**
+ * The popover portals out and is absolutely positioned, so it adds no document
+ * height and Chromatic's crop cuts it off. Reserve room for any open frame.
+ */
+const roomForPopover: Decorator = (Story) => (
+  <Box minHeight="16rem">
+    <Story />
+  </Box>
+);
+
+/**
+ * Open popover - the `content` surface: `bg`, `borderRadius: 200`,
+ * `boxShadow: 5`, `padding: 400` and `zIndex: 1`. The recipe has no variants or
+ * sizes, so this one frame covers every styled state of the surface.
+ */
+export const OpenPopover: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  decorators: [roomForPopover],
+  render: () => (
+    <Popover.Root defaultOpen>
+      <Popover.Trigger>Open popover</Popover.Trigger>
+      <Popover.Content aria-label="Example popover">
+        <Stack gap="200">
+          <Text fontWeight="700">Popover title</Text>
+          <Text>Rich, interactive content lives here.</Text>
+        </Stack>
+      </Popover.Content>
+    </Popover.Root>
+  ),
+  play: async ({ canvasElement }) => awaitOpen(canvasElement),
+};
+
+/**
+ * Focused trigger - the `trigger` slot's `focusRing: "outside"`. The trigger is
+ * a bare `button`, not the Button recipe, so no other component's baseline
+ * covers this ring. Reached via Tab (real keyboard, so `:focus-visible` fires)
+ * and left closed, since the open frame moves focus into the dialog.
+ */
+export const FocusedTrigger: Story = {
+  tags: ["vrt"],
+  parameters: { chromatic: { disableSnapshot: false } },
+  render: () => (
+    <Popover.Root>
+      <Popover.Trigger>Open popover</Popover.Trigger>
+      <Popover.Content aria-label="Example popover">
+        <Text>Not opened in this frame.</Text>
+      </Popover.Content>
+    </Popover.Root>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = portalCanvas(canvasElement);
+    const trigger = canvas.getByRole("button", { name: "Open popover" });
+    await userEvent.tab();
+    await expect(trigger).toHaveFocus();
+  },
 };
