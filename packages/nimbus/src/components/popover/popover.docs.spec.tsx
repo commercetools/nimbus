@@ -1,337 +1,364 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 import { useState } from "react";
 import {
   Popover,
   Button,
+  Checkbox,
+  Stack,
+  Text,
   TextInput,
   NimbusProvider,
 } from "@commercetools/nimbus";
 
 /**
- * @docs-section basic-rendering
- * @docs-title Basic Rendering Tests
- * @docs-description Verify the popover renders its trigger and keeps content out of the DOM until opened
+ * Copy-ready examples for testing a Popover integration in your own app.
+ *
+ * The component's own behavior — opening, dismissal, keyboard activation, focus
+ * and ARIA state — is already covered by Nimbus's story tests, so these
+ * examples focus on the wiring you own: forms, async data, downstream state and
+ * guarded dismissal.
+ */
+
+/**
+ * @docs-section form-submission
+ * @docs-title Form Submission Tests
+ * @docs-description Validate a form inside a popover and dismiss it only once the input is valid
  * @docs-order 1
  */
-describe("Popover - Basic rendering", () => {
-  it("renders the trigger", () => {
-    render(
+describe("Popover - Form submission", () => {
+  const RenamePopover = ({ onSave }: { onSave: (name: string) => void }) => {
+    const [draft, setDraft] = useState("");
+    const [error, setError] = useState<string | null>(null);
+
+    return (
       <NimbusProvider>
         <Popover.Root>
-          <Popover.Trigger>Open popover</Popover.Trigger>
-          <Popover.Content aria-label="Example popover">
-            Content
+          <Popover.Trigger>Rename</Popover.Trigger>
+          <Popover.Content aria-label="Rename">
+            {({ close }) => (
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  if (!draft.trim()) {
+                    setError("Name is required");
+                    return;
+                  }
+                  onSave(draft);
+                  close();
+                }}
+              >
+                <Stack gap="200">
+                  <TextInput
+                    aria-label="Name"
+                    value={draft}
+                    onChange={(value) => setDraft(value)}
+                  />
+                  {error && <Text>{error}</Text>}
+                  <Button type="submit">Save</Button>
+                </Stack>
+              </form>
+            )}
           </Popover.Content>
         </Popover.Root>
       </NimbusProvider>
     );
+  };
 
-    expect(
-      screen.getByRole("button", { name: "Open popover" })
-    ).toBeInTheDocument();
-  });
+  it("reports the error and stays open when the input is invalid", async () => {
+    const user = userEvent.setup();
+    const handleSave = vi.fn();
 
-  it("does not render content while closed", () => {
-    render(
-      <NimbusProvider>
-        <Popover.Root>
-          <Popover.Trigger>Open popover</Popover.Trigger>
-          <Popover.Content aria-label="Example popover">
-            Content
-          </Popover.Content>
-        </Popover.Root>
-      </NimbusProvider>
-    );
+    render(<RenamePopover onSave={handleSave} />);
 
-    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-  });
-
-  it("renders content on mount when defaultOpen is set", async () => {
-    render(
-      <NimbusProvider>
-        <Popover.Root defaultOpen>
-          <Popover.Trigger>Open popover</Popover.Trigger>
-          <Popover.Content aria-label="Example popover">
-            Content
-          </Popover.Content>
-        </Popover.Root>
-      </NimbusProvider>
-    );
-
+    await user.click(screen.getByRole("button", { name: "Rename" }));
     await waitFor(() => {
       expect(screen.getByRole("dialog")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    await waitFor(() => {
+      expect(screen.getByText("Name is required")).toBeInTheDocument();
+    });
+    expect(handleSave).not.toHaveBeenCalled();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+  });
+
+  it("saves and dismisses the popover when the input is valid", async () => {
+    const user = userEvent.setup();
+    const handleSave = vi.fn();
+
+    render(<RenamePopover onSave={handleSave} />);
+
+    await user.click(screen.getByRole("button", { name: "Rename" }));
+    await waitFor(() => {
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
+    });
+
+    await user.type(screen.getByRole("textbox", { name: "Name" }), "Ada");
+    await user.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(handleSave).toHaveBeenCalledWith("Ada");
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
   });
 });
 
 /**
- * @docs-section opening-closing
- * @docs-title Opening and Closing Interaction Tests
- * @docs-description Test every route into and out of the popover
+ * @docs-section async-data
+ * @docs-title Async Data Loading Tests
+ * @docs-description Fetch the popover's contents when it opens, showing a loading state until the request resolves
  * @docs-order 2
  */
-describe("Popover - Opening and closing", () => {
-  it("opens when the trigger is pressed", async () => {
-    const user = userEvent.setup();
-    render(
+describe("Popover - Async data loading", () => {
+  const DetailsPopover = ({ load }: { load: () => Promise<string> }) => {
+    const [detail, setDetail] = useState<string | null>(null);
+
+    return (
       <NimbusProvider>
-        <Popover.Root>
-          <Popover.Trigger>Open popover</Popover.Trigger>
-          <Popover.Content aria-label="Example popover">
-            Content
+        <Popover.Root
+          onOpenChange={(isOpen) => {
+            if (!isOpen || detail) return;
+            void load().then(setDetail);
+          }}
+        >
+          <Popover.Trigger>Details</Popover.Trigger>
+          <Popover.Content aria-label="Details">
+            <Text>{detail ?? "Loading…"}</Text>
           </Popover.Content>
         </Popover.Root>
       </NimbusProvider>
     );
+  };
 
-    await user.click(screen.getByRole("button", { name: "Open popover" }));
+  it("shows a loading state until the request resolves", async () => {
+    const user = userEvent.setup();
+    let resolveLoad!: (value: string) => void;
+    const load = vi.fn(
+      () =>
+        new Promise<string>((resolve) => {
+          resolveLoad = resolve;
+        })
+    );
+
+    render(<DetailsPopover load={load} />);
+
+    await user.click(screen.getByRole("button", { name: "Details" }));
+    await waitFor(() => {
+      expect(screen.getByText("Loading…")).toBeInTheDocument();
+    });
+
+    resolveLoad("Created 3 days ago");
 
     await waitFor(() => {
-      expect(screen.getByRole("dialog")).toBeInTheDocument();
+      expect(screen.getByText("Created 3 days ago")).toBeInTheDocument();
     });
+    expect(load).toHaveBeenCalledTimes(1);
   });
 
-  it("closes when the trigger is pressed again", async () => {
+  it("does not refetch when the popover is reopened", async () => {
     const user = userEvent.setup();
-    render(
-      <NimbusProvider>
-        <Popover.Root>
-          <Popover.Trigger>Open popover</Popover.Trigger>
-          <Popover.Content aria-label="Example popover">
-            Content
-          </Popover.Content>
-        </Popover.Root>
-      </NimbusProvider>
-    );
+    const load = vi.fn(() => Promise.resolve("Created 3 days ago"));
 
-    const trigger = screen.getByRole("button", { name: "Open popover" });
+    render(<DetailsPopover load={load} />);
+
+    const trigger = screen.getByRole("button", { name: "Details" });
     await user.click(trigger);
     await waitFor(() => {
-      expect(screen.getByRole("dialog")).toBeInTheDocument();
+      expect(screen.getByText("Created 3 days ago")).toBeInTheDocument();
     });
 
     await user.click(trigger);
     await waitFor(() => {
       expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
-  });
-
-  // Note: focus restoration to the trigger is verified in popover.stories.tsx
-  // (EscapeToClose). React Aria's focus restore does not survive JSDOM, so
-  // asserting it here would give consumers an example that fails in their own
-  // JSDOM suites.
-  it("closes on Escape", async () => {
-    const user = userEvent.setup();
-    render(
-      <NimbusProvider>
-        <Popover.Root>
-          <Popover.Trigger>Open popover</Popover.Trigger>
-          <Popover.Content aria-label="Example popover">
-            Content
-          </Popover.Content>
-        </Popover.Root>
-      </NimbusProvider>
-    );
-
-    const trigger = screen.getByRole("button", { name: "Open popover" });
     await user.click(trigger);
-    await waitFor(() => {
-      expect(screen.getByRole("dialog")).toBeInTheDocument();
-    });
 
-    await user.keyboard("{Escape}");
     await waitFor(() => {
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+      expect(screen.getByText("Created 3 days ago")).toBeInTheDocument();
     });
-  });
-
-  it("closes via the close callback handed to a function child", async () => {
-    const user = userEvent.setup();
-    render(
-      <NimbusProvider>
-        <Popover.Root>
-          <Popover.Trigger>Open popover</Popover.Trigger>
-          <Popover.Content aria-label="Example popover">
-            {({ close }) => <Button onPress={close}>Done</Button>}
-          </Popover.Content>
-        </Popover.Root>
-      </NimbusProvider>
-    );
-
-    await user.click(screen.getByRole("button", { name: "Open popover" }));
-    await waitFor(() => {
-      expect(screen.getByRole("dialog")).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Done" }));
-    await waitFor(() => {
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    });
+    expect(load).toHaveBeenCalledTimes(1);
   });
 });
 
 /**
- * @docs-section keyboard
- * @docs-title Keyboard Interaction Tests
- * @docs-description Verify the trigger is operable from the keyboard
+ * @docs-section filter-workflow
+ * @docs-title Multi-Component Workflow Tests
+ * @docs-description Apply filters chosen in a popover to a list rendered outside it
  * @docs-order 3
  */
-describe("Popover - Keyboard interaction", () => {
-  it("opens on Enter when the trigger is focused", async () => {
-    const user = userEvent.setup();
-    render(
+describe("Popover - Filter workflow", () => {
+  const ITEMS = [
+    { id: "1", name: "Active item", isActive: true },
+    { id: "2", name: "Archived item", isActive: false },
+  ];
+
+  const FilterableList = () => {
+    const [onlyActive, setOnlyActive] = useState(false);
+    const [draft, setDraft] = useState(false);
+    const visible = onlyActive ? ITEMS.filter((item) => item.isActive) : ITEMS;
+
+    return (
       <NimbusProvider>
-        <Popover.Root>
-          <Popover.Trigger>Open popover</Popover.Trigger>
-          <Popover.Content aria-label="Example popover">
-            Content
-          </Popover.Content>
-        </Popover.Root>
+        <Stack gap="200">
+          <Popover.Root
+            onOpenChange={(isOpen) => {
+              // Seed the draft from the applied value each time it opens, so
+              // an abandoned popover does not leak changes into the list.
+              if (isOpen) setDraft(onlyActive);
+            }}
+          >
+            <Popover.Trigger>Filters</Popover.Trigger>
+            <Popover.Content aria-label="Filters">
+              {({ close }) => (
+                <Stack gap="200">
+                  <Checkbox isSelected={draft} onChange={setDraft}>
+                    Only active
+                  </Checkbox>
+                  <Button
+                    onPress={() => {
+                      setOnlyActive(draft);
+                      close();
+                    }}
+                  >
+                    Apply filters
+                  </Button>
+                </Stack>
+              )}
+            </Popover.Content>
+          </Popover.Root>
+          <ul>
+            {visible.map((item) => (
+              <li key={item.id}>{item.name}</li>
+            ))}
+          </ul>
+        </Stack>
       </NimbusProvider>
     );
+  };
 
-    await user.tab();
-    expect(screen.getByRole("button", { name: "Open popover" })).toHaveFocus();
+  it("filters the list once the popover applies its selection", async () => {
+    const user = userEvent.setup();
 
-    await user.keyboard("{Enter}");
+    render(<FilterableList />);
+
+    expect(screen.getByText("Active item")).toBeInTheDocument();
+    expect(screen.getByText("Archived item")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Filters" }));
     await waitFor(() => {
       expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
+
+    await user.click(screen.getByRole("checkbox", { name: "Only active" }));
+    await user.click(screen.getByRole("button", { name: "Apply filters" }));
+
+    await waitFor(() => {
+      expect(screen.queryByText("Archived item")).not.toBeInTheDocument();
+    });
+    expect(screen.getByText("Active item")).toBeInTheDocument();
+  });
+
+  it("leaves the list untouched when the popover is abandoned", async () => {
+    const user = userEvent.setup();
+
+    render(<FilterableList />);
+
+    await user.click(screen.getByRole("button", { name: "Filters" }));
+    await waitFor(() => {
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByRole("checkbox", { name: "Only active" }));
+    await user.keyboard("{Escape}");
+
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
+    expect(screen.getByText("Archived item")).toBeInTheDocument();
   });
 });
 
 /**
- * @docs-section controlled
- * @docs-title Controlled State Tests
- * @docs-description Verify the popover reports state changes without applying them itself
+ * @docs-section guarded-dismissal
+ * @docs-title Controlled Dismissal Tests
+ * @docs-description Own the open state so the popover cannot be dismissed while there are unsaved edits
  * @docs-order 4
  */
-describe("Popover - Controlled state", () => {
-  it("reflects the isOpen prop and reports close requests", async () => {
-    const user = userEvent.setup();
-    const seen: boolean[] = [];
+describe("Popover - Guarded dismissal", () => {
+  const GuardedPopover = () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [isDirty, setIsDirty] = useState(false);
 
-    const ControlledPopover = () => {
-      const [isOpen, setIsOpen] = useState(false);
-      return (
+    return (
+      <NimbusProvider>
         <Popover.Root
           isOpen={isOpen}
           onOpenChange={(next) => {
-            seen.push(next);
-            // Only ever applies `open`, so a close request is observable
-            // without the popover actually closing.
-            if (next) setIsOpen(true);
+            // In controlled mode the popover reports the request rather than
+            // acting on it, so unsaved edits can veto the dismissal.
+            if (!next && isDirty) return;
+            setIsOpen(next);
           }}
         >
-          <Popover.Trigger>Open popover</Popover.Trigger>
-          <Popover.Content aria-label="Example popover">
-            Content
+          <Popover.Trigger>Edit</Popover.Trigger>
+          <Popover.Content aria-label="Edit">
+            <Stack gap="200">
+              <Button onPress={() => setIsDirty(true)}>Make an edit</Button>
+              <Button
+                onPress={() => {
+                  setIsDirty(false);
+                  setIsOpen(false);
+                }}
+              >
+                Discard
+              </Button>
+            </Stack>
           </Popover.Content>
         </Popover.Root>
-      );
-    };
-
-    render(
-      <NimbusProvider>
-        <ControlledPopover />
       </NimbusProvider>
     );
+  };
 
-    await user.click(screen.getByRole("button", { name: "Open popover" }));
+  it("dismisses normally while there are no unsaved edits", async () => {
+    const user = userEvent.setup();
+
+    render(<GuardedPopover />);
+
+    await user.click(screen.getByRole("button", { name: "Edit" }));
     await waitFor(() => {
       expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
-    expect(seen).toContain(true);
 
     await user.keyboard("{Escape}");
-    await waitFor(() => {
-      expect(seen).toContain(false);
-    });
-    // Still open: the consumer never applied the close.
-    expect(screen.getByRole("dialog")).toBeInTheDocument();
-  });
-});
-
-/**
- * @docs-section accessibility
- * @docs-title Accessibility Tests
- * @docs-description Verify naming, roles and ARIA state on the trigger
- * @docs-order 5
- */
-describe("Popover - Accessibility", () => {
-  it("names the dialog from aria-label", async () => {
-    const user = userEvent.setup();
-    render(
-      <NimbusProvider>
-        <Popover.Root>
-          <Popover.Trigger>Open popover</Popover.Trigger>
-          <Popover.Content aria-label="Filters">Content</Popover.Content>
-        </Popover.Root>
-      </NimbusProvider>
-    );
-
-    await user.click(screen.getByRole("button", { name: "Open popover" }));
 
     await waitFor(() => {
-      expect(screen.getByRole("dialog")).toHaveAccessibleName("Filters");
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     });
   });
 
-  it("exposes aria-expanded on the trigger", async () => {
+  it("refuses to dismiss while there are unsaved edits", async () => {
     const user = userEvent.setup();
-    render(
-      <NimbusProvider>
-        <Popover.Root>
-          <Popover.Trigger>Open popover</Popover.Trigger>
-          <Popover.Content aria-label="Example popover">
-            Content
-          </Popover.Content>
-        </Popover.Root>
-      </NimbusProvider>
-    );
 
-    const trigger = screen.getByRole("button", { name: "Open popover" });
-    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    render(<GuardedPopover />);
 
-    await user.click(trigger);
-    await waitFor(() => {
-      expect(trigger).toHaveAttribute("aria-expanded", "true");
-    });
-  });
-});
-
-/**
- * @docs-section interactive-content
- * @docs-title Interactive Content Tests
- * @docs-description Verify inputs inside the popover work and do not dismiss it
- * @docs-order 6
- */
-describe("Popover - Interactive content", () => {
-  it("accepts typed input without dismissing", async () => {
-    const user = userEvent.setup();
-    render(
-      <NimbusProvider>
-        <Popover.Root>
-          <Popover.Trigger>Edit name</Popover.Trigger>
-          <Popover.Content aria-label="Edit name">
-            <TextInput aria-label="Name" />
-          </Popover.Content>
-        </Popover.Root>
-      </NimbusProvider>
-    );
-
-    await user.click(screen.getByRole("button", { name: "Edit name" }));
+    await user.click(screen.getByRole("button", { name: "Edit" }));
     await waitFor(() => {
       expect(screen.getByRole("dialog")).toBeInTheDocument();
     });
 
-    const input = screen.getByRole("textbox", { name: "Name" });
-    await user.click(input);
-    await user.type(input, "Ada");
+    await user.click(screen.getByRole("button", { name: "Make an edit" }));
+    await user.keyboard("{Escape}");
 
-    expect(input).toHaveValue("Ada");
     expect(screen.getByRole("dialog")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Discard" }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    });
   });
 });

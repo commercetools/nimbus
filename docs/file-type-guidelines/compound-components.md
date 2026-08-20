@@ -23,7 +23,7 @@ components - components with multiple parts that work together (e.g.,
 - Menu (Root, Trigger, Content, Item)
 - Select (Root, Trigger, Option)
 - Accordion (Root, Item, Trigger, Content)
-- Popover (Root, Trigger, Content, Title, Close)
+- Popover (Root, Trigger, Content)
 
 ## Critical Rules
 

@@ -73,7 +73,9 @@ const App = () => (
 
 Focus moves into the popover's dialog when it opens, and returns to the trigger
 when it closes — whether it was closed by Escape, by an outside press, or by a
-`close` callback from inside.
+`close` callback from inside. The one exception is a dismissing press that lands
+on another focusable element: focus stays where the press put it rather than
+jumping back to the trigger.
 
 By default focus is contained within the popover and interaction outside
 dismisses it. This is React Aria's default for a dialog inside a popover, and it
@@ -112,4 +114,4 @@ decision rather than overriding it.
 
 - [ARIA dialog pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
 - [React Aria Popover](https://react-spectrum.adobe.com/react-aria/Popover.html)
-- [WCAG 2.1 AA](https://www.w3.org/WAI/WCAG21/quickref/?levels=aaa)
+- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)

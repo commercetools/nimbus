@@ -221,7 +221,8 @@ React Aria.
   for you.
 - **Role**: `Content` renders an element with `role="dialog"`.
 - **Focus management**: focus moves into the dialog on open and returns to the
-  trigger on close, by every dismissal route.
+  trigger on close. The exception is a dismissing press on another focusable
+  element, which leaves focus on that element.
 - **ARIA state**: the trigger carries `aria-expanded`, plus `aria-controls` while
   open. It deliberately does not carry `aria-haspopup` — React Aria sets that only
   for `menu` and `listbox` overlays, since screen readers often announce other
@@ -330,3 +331,19 @@ const App = () => {
   );
 };
 ```
+
+## API reference
+
+<PropsTable id="Popover" />
+
+## Testing your implementation
+
+These examples demonstrate how to test your implementation when using Popover within your application. As the component's internal functionality is already tested by Nimbus, these patterns help you verify your integration and application-specific logic.
+
+{{docs-tests: popover.docs.spec.tsx}}
+
+## Resources
+
+- [Storybook](https://nimbus-storybook.vercel.app/?path=/docs/components-popover--docs)
+- [React Aria Popover](https://react-spectrum.adobe.com/react-aria/Popover.html)
+- [ARIA Dialog Pattern](https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/)
