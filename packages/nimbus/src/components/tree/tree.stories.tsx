@@ -239,6 +239,17 @@ export const KeyboardNavigation: Story = {
       );
     });
 
+    await step("Up arrow moves focus back through visible rows", async () => {
+      await userEvent.keyboard("{End}");
+      await waitFor(() =>
+        expect(canvas.getByRole("row", { name: /Image 2/ })).toHaveFocus()
+      );
+      await userEvent.keyboard("{ArrowUp}");
+      await waitFor(() =>
+        expect(canvas.getByRole("row", { name: /Image 1/ })).toHaveFocus()
+      );
+    });
+
     await step("Type-ahead jumps to a matching row", async () => {
       await userEvent.keyboard("Photos");
       await waitFor(() =>
@@ -638,10 +649,9 @@ const SIZES = ["sm", "md"] as const;
 /**
  * Smoke test — every visual permutation in one view: both sizes (`sm`, `md`),
  * all three selection modes (`none`, `single`, `multiple`), each rendered both
- * without drag-and-drop (the default roomy, equal-column layout) and with it
- * (the tighter layout whose drag handle separates the checkbox from the
- * chevron). Use it to eyeball control spacing and nested-row alignment across
- * the matrix at a glance.
+ * without drag-and-drop and with it (which adds a drag handle ahead of the
+ * shared leading-control column). Use it to eyeball control spacing and
+ * nested-row alignment across the matrix at a glance.
  */
 const SmokeTestView = () => {
   return (
@@ -796,6 +806,18 @@ export const FocusedRow: Story = {
       // Without this, a ring that never paints baselines as a silent pass.
       await expect(rows[0]).toHaveStyle({ outlineStyle: "solid" });
     });
+
+    await step(
+      "Root is not a scroll container, so rings aren't clipped",
+      async () => {
+        // The row's ring paints 2px outside a full-width row box, so a forced
+        // `overflow` on the root would clip it horizontally. The recipe sets none
+        // for exactly this reason; consumers opt into scrolling themselves.
+        const treegrid = canvas.getByRole("treegrid", { name: "Files" });
+        const { overflowX, overflowY } = getComputedStyle(treegrid);
+        await expect([overflowX, overflowY]).toEqual(["visible", "visible"]);
+      }
+    );
   },
 };
 
