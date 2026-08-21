@@ -1,5 +1,5 @@
 ---
-"@commercetools/nimbus": patch
+"@commercetools/nimbus": minor
 ---
 
 `LocalizedField`: the info popover opened by the hint button now has an
