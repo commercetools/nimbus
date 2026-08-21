@@ -22,6 +22,44 @@ function keysInTreeOrder<T extends object>(
 }
 
 /**
+ * Whether `candidate` is `ancestor` itself, or sits anywhere inside its
+ * subtree.
+ *
+ * Moving a node into its own subtree has no valid result: React Stately
+ * detaches the node first, then re-attaches it under a parent key that no
+ * longer exists, so the node and every descendant are dropped from the tree
+ * without an error being raised.
+ */
+function isSelfOrDescendant<T extends object>(
+  items: TreeData<T>["items"],
+  ancestor: Key,
+  candidate: Key
+): boolean {
+  if (ancestor === candidate) return true;
+
+  const findNode = (
+    nodes: TreeData<T>["items"]
+  ): TreeData<T>["items"][number] | undefined => {
+    for (const node of nodes) {
+      if (node.key === ancestor) return node;
+      const found = node.children ? findNode(node.children) : undefined;
+      if (found) return found;
+    }
+    return undefined;
+  };
+
+  const contains = (nodes: TreeData<T>["items"]): boolean =>
+    nodes.some(
+      (node) =>
+        node.key === candidate ||
+        (node.children ? contains(node.children) : false)
+    );
+
+  const subtree = findNode(items);
+  return subtree?.children ? contains(subtree.children) : false;
+}
+
+/**
  * Tree.Root configuration that `useTree` accepts and echoes back so the whole
  * result can be spread onto `Tree.Root`.
  */
@@ -147,12 +185,36 @@ export function useTree<T extends object>(
         // whose child count doesn't update mid-loop, so offset by `i` rather
         // than re-reading the length per key.
         const targetIndex = tree.getItem(e.target.key)?.children?.length ?? 0;
-        keysInTreeOrder(tree.items, e.keys).forEach((key, i) => {
-          tree.move(key, e.target.key, targetIndex + i);
-        });
+        keysInTreeOrder(tree.items, e.keys)
+          // React Aria's `getDropOperation` already cancels a drop onto a
+          // dragged key or its descendants, so this filter is belt-and-braces
+          // — it keeps a drop a no-op rather than destructive if a custom
+          // `getDropOperation` ever widens what reaches this handler.
+          .filter((key) => !isSelfOrDescendant(tree.items, key, e.target.key))
+          .forEach((key, i) => {
+            tree.move(key, e.target.key, targetIndex + i);
+          });
       }
     },
   });
+
+  /**
+   * `move`, with the invalid target rejected. `moveBefore` / `moveAfter`
+   * already throw for this condition inside React Stately, so without this the
+   * re-parent path is the only tree mutation that loses data instead of
+   * reporting the mistake.
+   */
+  const move: TreeData<T>["move"] = (key, toParentKey, index) => {
+    if (
+      toParentKey != null &&
+      isSelfOrDescendant(tree.items, key, toParentKey)
+    ) {
+      throw new Error(
+        "Cannot move an item into itself or one of its own descendants."
+      );
+    }
+    tree.move(key, toParentKey, index);
+  };
 
   return {
     ...(rootProps as ForwardableRootProps<T>),
@@ -165,7 +227,7 @@ export function useTree<T extends object>(
     append: tree.append,
     prepend: tree.prepend,
     remove: tree.remove,
-    move: tree.move,
+    move,
     moveBefore: tree.moveBefore,
     moveAfter: tree.moveAfter,
     update: tree.update,
