@@ -30,8 +30,8 @@ const DIST = join(__dirname, "..", "dist");
 // Step 1: dual-package markers
 
 const MARKERS = [
-  ["esm", { type: "module" }],
-  ["cjs", { type: "commonjs" }],
+  ["esm", { type: "module", sideEffects: false }],
+  ["cjs", { type: "commonjs", sideEffects: false }],
 ];
 
 for (const [subdir, contents] of MARKERS) {

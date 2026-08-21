@@ -1,31 +1,23 @@
-import { useEffect, useSyncExternalStore } from "react";
-import { Toaster, Toast as ChakraToast } from "@chakra-ui/react/toast";
+import { lazy, Suspense, useEffect, useSyncExternalStore } from "react";
 import {
-  getToasterEntries,
   isToastersActive,
   onToastersActivated,
-} from "../services/toast.toasters";
-import { ToastContent } from "./toast.content";
-import { COLOR_PALETTE_MAP, NUMPAD_HOTKEYS } from "../constants";
-import type { ChakraToastData, ToastType } from "../toast.types";
+} from "../services/toast.activation";
+import { NUMPAD_HOTKEYS } from "../constants";
 
 /**
- * Returns the correct ARIA role and live-region politeness for a toast type.
- * Error toasts use `role="alert"` with `aria-live="assertive"`,
- * all others use `role="status"` with `aria-live="polite"`.
+ * Lazy-loaded heavy rendering implementation.
  *
- * An explicit `ariaLive` override (from `ToastOptions`) takes precedence
- * over the type-based default.
+ * This dynamic import is the key to toast code-splitting: the impl module
+ * imports `@chakra-ui/react/toast` (which pulls in @zag-js, ~18 KB gz).
+ * By loading it lazily, consumers who never call `toast()` never pay for
+ * the toast rendering infrastructure.
+ *
+ * In the nimbus library build (Vite lib mode), this `import()` is preserved
+ * as a dynamic import in the ESM output. The consumer's bundler then handles
+ * code-splitting it into a separate chunk.
  */
-const getARIAAttributes = (
-  type?: ToastType,
-  ariaLive?: "polite" | "assertive" | "off"
-) => {
-  const liveDefault = type === "error" ? "assertive" : "polite";
-  const live = ariaLive ?? liveDefault;
-  const role = live === "assertive" ? ("alert" as const) : ("status" as const);
-  return { role, "aria-live": live as "polite" | "assertive" };
-};
+const ToastOutletImpl = lazy(() => import("./toast.outlet.impl"));
 
 /**
  * Subscribe function for useSyncExternalStore.
@@ -47,6 +39,12 @@ function subscribeToActivation(onStoreChange: () => void) {
  * toast is actually created. This avoids mounting internal state machines
  * (and their DOM event listeners) when toasts are never used, and
  * eliminates spurious `act(...)` warnings in JSDOM-based tests.
+ *
+ * This shell component is deliberately lightweight — it imports only from
+ * the `toast.activation` module (no @chakra-ui/react/toast dependencies).
+ * The heavy rendering code is loaded via `React.lazy()` only when toasters
+ * become active, keeping @zag-js out of the main bundle for consumers who
+ * never use toast.
  *
  * @example
  * ```tsx
@@ -89,30 +87,8 @@ export function ToastOutlet() {
   }
 
   return (
-    <>
-      {getToasterEntries().map(([placement, toaster]) => (
-        <Toaster
-          key={placement}
-          toaster={toaster}
-          data-react-aria-top-layer="true"
-        >
-          {(chakraToast) => {
-            const toast = chakraToast as ChakraToastData;
-            const type = (toast.type as ToastType) || "info";
-            const variant = toast.meta?.variant || "accent-start";
-
-            return (
-              <ChakraToast.Root
-                colorPalette={COLOR_PALETTE_MAP[type]}
-                variant={variant}
-                {...getARIAAttributes(type, toast.meta?.["aria-live"])}
-              >
-                <ToastContent toast={toast} toaster={toaster} />
-              </ChakraToast.Root>
-            );
-          }}
-        </Toaster>
-      ))}
-    </>
+    <Suspense fallback={null}>
+      <ToastOutletImpl />
+    </Suspense>
   );
 }
