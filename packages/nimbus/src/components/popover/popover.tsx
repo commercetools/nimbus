@@ -11,9 +11,9 @@ import { PopoverRoot, PopoverTrigger, PopoverContent } from "./components";
  * non-interactive hints, and `Dialog` when the flow should block the page.
  *
  * Focus is contained within the popover and an outside press dismisses it,
- * which is React Aria's default. `isNonModal` on `Popover.Content` relaxes
- * that; read the React Aria guidance before using it, since it affects the
- * screen reader experience.
+ * which is React Aria's default. `isNonModal` on `Popover.Root` relaxes that;
+ * read the React Aria guidance before using it, since it affects the screen
+ * reader experience.
  *
  * @example
  * ```tsx
@@ -75,7 +75,7 @@ export const Popover = {
    *
    * @example
    * ```tsx
-   * <Popover.Content placement="bottom start" aria-label="Confirm">
+   * <Popover.Content aria-label="Confirm">
    *   {({ close }) => (
    *     <Stack gap="200">
    *       <Text>Discard your changes?</Text>

@@ -630,9 +630,9 @@ export const NonModal: Story = {
 /**
  * Placement
  *
- * Content accepts React Aria placement values. The alignment vocabulary depends
- * on the axis: vertical sides take `left`/`right`/`start`/`end`, horizontal
- * sides take `top`/`bottom`.
+ * Root accepts React Aria placement values. The alignment vocabulary depends on
+ * the axis: vertical sides take `left`/`right`/`start`/`end`, horizontal sides
+ * take `top`/`bottom`.
  *
  * Not snapshotted: placement is React Aria repositioning the same box, with no
  * arrow or layout change, so it is behavioral rather than visual (see
