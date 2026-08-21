@@ -226,13 +226,16 @@ The full set of behavioral props, all on `Popover.Root`:
 | `arrowRef`, `arrowBoundaryOffset` | Arrow positioning — inert, as Nimbus renders no arrow |
 
 > [!NOTE]\
-> Cap the surface height with `maxHeight` on `Popover.Root`, not with the style
-> prop of the same name on `Popover.Content`. React Aria assigns
-> `overlay.style.maxHeight` imperatively on every position pass, and that inline
-> value always beats a Chakra class — so the style prop cannot take effect on
-> this element. Root's value is also the correct one semantically: it feeds the
-> placement and flip calculation rather than clipping a box that has already been
-> positioned.
+> Three of those names — `role`, `offset` and `maxHeight` — also exist in the DOM
+> and Chakra prop surfaces that `Popover.Content` is derived from, so Content
+> excludes them by name. `role` is the one that matters: it is not a style prop,
+> so it would have reached the dialog element and outranked the value Root
+> published. A CSS height cap would not work on Content either way — React Aria
+> assigns `overlay.style.maxHeight` imperatively on every position pass, and that
+> inline value always beats a Chakra class, which is why the still-accepted `maxH`
+> alias cannot take effect on this element. Root's `maxHeight` is also the
+> semantically correct one: it feeds the placement and flip calculation rather
+> than clipping a box that has already been positioned.
 
 The open-state props — `isOpen`, `defaultOpen` and `onOpenChange` — live on
 `Popover.Root` and nowhere else, because the trigger and the surface have to

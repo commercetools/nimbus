@@ -36,11 +36,17 @@ export const PopoverContent = ({
     <PopoverContentSlot {...styleProps} asChild>
       <RaPopover ref={ref} {...overlayConfig}>
         <PopoverDialogSlot asChild>
+          {/*
+            `role` is applied after the spread so Root stays the only source of
+            it. PopoverContentProps excludes the name, so a typed consumer
+            cannot reach this; an untyped one is dropped rather than allowed to
+            outrank the configuration Root published.
+          */}
           <RaDialog
+            {...restProps}
             role={role}
             aria-label={ariaLabel}
             aria-labelledby={ariaLabelledBy}
-            {...restProps}
           >
             {children}
           </RaDialog>

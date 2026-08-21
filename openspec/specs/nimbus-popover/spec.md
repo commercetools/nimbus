@@ -145,21 +145,31 @@ their behavioral props and publish them to `Popover.Content` through context.
   `className`, `data-*`, `aria-*` and event handlers destined for the dialog
 - **AND** there SHALL be no precedence rule between the parts, since exactly one
   `Popover.Content` exists per `Popover.Root`
+- **AND** the configuration names that the DOM and Chakra prop surfaces
+  `Popover.Content` is derived from also declare SHALL be excluded from it by
+  name, so the type error holds for the whole configuration set
 
 #### Scenario: Colliding names resolve to Root
 
-- **WHEN** `maxHeight` or `offset` is set on `Popover.Root`
-- **THEN** it SHALL be React Aria's numeric positioning input, which
-  participates in the placement and flip computation
-- **AND** these SHALL be the only two names React Aria and Chakra share across
-  the two parts
+- **WHEN** `maxHeight`, `offset` or `role` is set on `Popover.Root`
+- **THEN** `maxHeight` and `offset` SHALL be React Aria's numeric positioning
+  input, which participates in the placement and flip computation, and `role`
+  SHALL apply to the dialog element
+- **AND** these SHALL be the only three configuration names that the DOM and
+  Chakra prop surfaces `Popover.Content` is derived from also declare —
+  `maxHeight` and `offset` as CSS properties, `role` as a DOM attribute
+- **AND** `role` SHALL be excluded from `Popover.Content` for a second reason: it
+  is not a style prop, so it would otherwise reach the dialog element and
+  outrank the value `Popover.Root` published, and its DOM type admits roles
+  `Dialog` does not accept
 
 #### Scenario: The surface height cap belongs to Root
 
 - **WHEN** the surface height needs capping
 - **THEN** `maxHeight` on `Popover.Root` SHALL be the supported way to do it
-- **AND** the Chakra `maxHeight` style prop on `Popover.Content` SHALL NOT be
-  able to take effect on that element, because React Aria assigns
+- **AND** `maxHeight` on `Popover.Content` SHALL be a type error
+- **AND** its Chakra alias `maxH` SHALL remain accepted but SHALL NOT be able to
+  take effect on that element, because React Aria assigns
   `overlay.style.maxHeight` imperatively on every position pass and an inline
   value outranks a class
 

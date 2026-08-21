@@ -11,6 +11,7 @@ import {
   Text,
   TextInput,
 } from "@commercetools/nimbus";
+import type { PopoverContentProps } from "@commercetools/nimbus";
 import { MoreVert } from "@commercetools/nimbus-icons";
 
 const meta: Meta<typeof Popover.Content> = {
@@ -752,8 +753,9 @@ export const AttributeForwarding: Story = {
  * Content renders on its behalf, and publishes them through context.
  *
  * This covers all three destinations at once: `placement` reaches the surface,
- * `role` reaches the dialog, and `maxHeight` — which on Content would be the
- * Chakra CSS style prop — is React Aria's numeric positioning cap here.
+ * `role` reaches the dialog, and `maxHeight` is React Aria's numeric positioning
+ * cap. The last step checks the other half of the design — that none of the
+ * three can be set on Content instead.
  *
  * Not snapshotted: nothing here changes the painted box beyond a height cap that
  * only engages in a short viewport, so it is behavioral rather than visual.
@@ -801,12 +803,31 @@ export const RootConfiguration: Story = {
 
     await step("Root's maxHeight is the positioning cap", async () => {
       // React Aria writes its computed cap as an inline style on the surface.
-      // Reaching the element as a number at all is the point: the same name on
-      // Content would have been consumed by Chakra as a CSS style prop.
+      // Reaching the element as a number at all is the point: Chakra also
+      // declares this name, and the CSS property it denotes cannot cap the
+      // surface, because the inline value React Aria writes outranks a class.
       const surface = canvas
         .getByRole("alertdialog")
         .closest("[data-placement]") as HTMLElement;
       await expect(surface.style.maxHeight).toBeTruthy();
+    });
+
+    await step("Content rejects the same three names", async () => {
+      // The compile-time half of "Root is the only configuration surface".
+      // Each directive below fails the build with TS2578 (unused
+      // '@ts-expect-error') the moment one of these names is admitted to
+      // PopoverContentProps again. `role` is the one worth guarding: it is not
+      // a Chakra style property, so it would reach the dialog element and
+      // outrank the value Root published.
+      const rejectedOnContent: PopoverContentProps[] = [
+        // @ts-expect-error `role` is set on Popover.Root
+        { role: "dialog" },
+        // @ts-expect-error `offset` is set on Popover.Root
+        { offset: 12 },
+        // @ts-expect-error `maxHeight` is set on Popover.Root
+        { maxHeight: 240 },
+      ];
+      await expect(rejectedOnContent).toHaveLength(3);
     });
   },
 };
@@ -816,11 +837,11 @@ export const RootConfiguration: Story = {
  *
  * Root owns the overlay's behavior; Content owns how its own two elements look.
  *
- * `maxHeight` is the one place those two touch the same CSS property, and React
- * Aria wins it outright: `useOverlayPosition` assigns `overlay.style.maxHeight`
+ * Height is the one place those two touch the same CSS property, and React Aria
+ * wins it outright: `useOverlayPosition` assigns `overlay.style.maxHeight`
  * imperatively on every position pass, so an inline value always beats Chakra's
- * class. Capping the surface therefore means `maxHeight` on Root — the style prop
- * of that name on Content cannot take effect on this element.
+ * class. Capping the surface therefore means `maxHeight` on Root; the name is
+ * rejected on Content, and its `maxH` alias cannot take effect on this element.
  *
  * Not snapshotted: the padded surface is already covered by the VRT stories.
  */

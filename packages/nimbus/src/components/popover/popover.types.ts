@@ -107,9 +107,8 @@ export type PopoverOverlayConfigProps = Pick<
  * `DialogTrigger` honours directly, plus every behavioural prop of the `Popover`
  * and `Dialog` elements that `Popover.Content` renders on its behalf (see
  * {@link PopoverOverlayConfigProps}). Those travel to `Popover.Content` through
- * context. `Popover.Content` may still override the positioning and dismissal
- * subset per instance — the nearer value wins, matching React Aria's own
- * context-merging convention.
+ * context, and `Popover.Content` rejects every one of them, so there is no
+ * precedence rule between the two parts.
  *
  * Only `isOpen`, `defaultOpen` and `onOpenChange` reach `DialogTrigger`. They are
  * never forwarded to the surface: React Aria's `Popover` derives its own state
@@ -215,8 +214,8 @@ export type PopoverTriggerProps =
  * consumers do not need to add one for correct accessibility.
  *
  * Focus is contained within the popover and outside interaction dismisses it,
- * which is React Aria's default. Pass `isNonModal` to relax that — see the
- * React Aria guidance before doing so.
+ * which is React Aria's default. Pass `isNonModal` on `Popover.Root` to relax
+ * that — see the React Aria guidance before doing so.
  *
  * Carries no overlay configuration. `Popover.Root` is the compound's single
  * configuration surface, so `placement`, `offset`, `isNonModal`, `role` and the
@@ -233,15 +232,23 @@ export type PopoverTriggerProps =
  * `data-*`, `aria-*`, `dir` / `lang` / `hidden` / `inert`, and the mouse,
  * pointer, touch, scroll, animation and transition event families.
  *
- * One name to watch: `maxHeight` is accepted here as a Chakra style prop, but it
- * cannot take effect on the surface. React Aria assigns `overlay.style.maxHeight`
+ * Three configuration names also exist in `HTMLChakraProps<"div">`, so they are
+ * excluded explicitly rather than by absence. `role` is the one that matters:
+ * React's `AriaRole` is wider than the `dialog | alertdialog` `RaDialog` accepts,
+ * and `role` is not a Chakra style property, so it would reach the dialog element
+ * and outrank whatever Root published. `offset` and `maxHeight` are CSS
+ * properties Chakra recognises whose React Aria namesakes are positioning input,
+ * so `offset={12}` would read as "nudge the popover" and compile to inert CSS.
+ *
+ * The `maxH` shorthand and the `maxBlockSize` logical property stay accepted, but
+ * no class can cap the surface: React Aria assigns `overlay.style.maxHeight`
  * imperatively on every position pass, and that inline value outranks a class.
- * Cap the surface with `maxHeight` on `Popover.Root` instead, where it is React
- * Aria's positioning input and feeds the placement and flip calculation.
+ * Cap the surface with `maxHeight` on `Popover.Root`, where it is React Aria's
+ * positioning input and feeds the placement and flip calculation.
  */
 export type PopoverContentProps = OmitInternalProps<
   PopoverContentSlotProps,
-  "children"
+  "children" | "role" | "offset" | "maxHeight"
 > & {
   /**
    * The popover's content. Pass a function to receive a `close` callback for
