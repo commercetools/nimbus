@@ -260,6 +260,11 @@ export const Example = () => (
 );
 ```
 
+`Popover.Content` takes an `id` too. It lands on the dialog element, and React
+Aria re-points the trigger's `aria-controls` at it, so the trigger-to-overlay
+link is kept. `data-*` attributes and click handlers on `Popover.Content` reach
+the same element. `Popover.Root` takes neither — it renders nothing.
+
 #### Keyboard navigation
 
 The component supports full keyboard interaction:

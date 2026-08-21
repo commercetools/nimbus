@@ -149,6 +149,11 @@ export type PopoverTriggerProps =
  * Focus is contained within the popover and outside interaction dismisses it,
  * which is React Aria's default. Pass `isNonModal` to relax that — see the
  * React Aria guidance before doing so.
+ *
+ * Style props apply to the positioned surface; `id`, `className`, `data-*`,
+ * `aria-*` and event handlers apply to the dialog inside it. React Aria filters
+ * that second set, so `title`, `tabIndex` and the keyboard and focus handlers
+ * are accepted here but never reach the DOM — see the note on `PopoverContent`.
  */
 export type PopoverContentProps = OmitInternalProps<
   PopoverContentSlotProps,

@@ -600,6 +600,81 @@ export const Placement: Story = {
   },
 };
 
+/** Records Popover.Content's onClick for the forwarding story's assertions. */
+const contentClickSpy = fn();
+
+/**
+ * Attribute forwarding
+ *
+ * Content renders two elements: the positioned surface (the `content` slot) and
+ * the dialog inside it (the `dialog` slot). Style props go to the surface;
+ * everything else goes to the dialog. This pins that split down, since both
+ * halves used to be dropped on the floor.
+ */
+export const AttributeForwarding: Story = {
+  render: () => (
+    <Popover.Root>
+      <Popover.Trigger>Open popover</Popover.Trigger>
+      <Popover.Content
+        aria-label="Forwarding popover"
+        id="filters-surface"
+        className="consumer-class"
+        data-testid="filters-content"
+        onClick={contentClickSpy}
+        maxWidth="4800"
+      >
+        <Text>Rich, interactive content lives here.</Text>
+      </Popover.Content>
+    </Popover.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = portalCanvas(canvasElement);
+    const trigger = canvas.getByRole("button", { name: "Open popover" });
+    await userEvent.click(trigger);
+    const dialog = await waitFor(() => canvas.getByRole("dialog"));
+    const surface = dialog.parentElement!;
+
+    await step("data-testid reaches the DOM", async () => {
+      await expect(dialog).toHaveAttribute("data-testid", "filters-content");
+    });
+
+    await step(
+      "id lands on the dialog and keeps aria-controls valid",
+      async () => {
+        // The dialog is the element the trigger points at, so a consumer id has
+        // to replace React Aria's generated one on *that* element or the link
+        // breaks. React Aria re-points aria-controls at whatever id it receives.
+        await expect(dialog).toHaveAttribute("id", "filters-surface");
+        await expect(trigger).toHaveAttribute(
+          "aria-controls",
+          "filters-surface"
+        );
+        await expect(document.getElementById("filters-surface")).toBe(dialog);
+      }
+    );
+
+    await step(
+      "className is added to the slot's classes, not swapped in",
+      async () => {
+        await expect(dialog).toHaveClass("consumer-class");
+        await expect(dialog.className).toContain("nimbus-popover__dialog");
+      }
+    );
+
+    await step("style props stay on the surface", async () => {
+      // The recipe styles the surface, so style props must not follow the DOM
+      // props onto the dialog.
+      await expect(surface.className).toContain("nimbus-popover__content");
+      await expect(surface).not.toHaveAttribute("data-testid");
+    });
+
+    await step("event handlers fire", async () => {
+      await userEvent.click(dialog);
+      await expect(contentClickSpy).toHaveBeenCalled();
+    });
+  },
+};
+
 // VRT open-state snapshots: `defaultOpen` so Chromatic captures the settled
 // surface (the entry animation pauses on its last frame).
 

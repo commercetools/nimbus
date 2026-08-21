@@ -17,6 +17,9 @@ plain hints, and `Dialog` a flow that should block the page.
 - `Popover.Root` takes only `isOpen`, `defaultOpen` and `onOpenChange`. It
   renders no element of its own, so style props and DOM attributes belong on
   `Popover.Trigger` or `Popover.Content`.
+- On `Popover.Content`, style props apply to the positioned surface while `id`,
+  `className`, `data-*` and click handlers apply to the dialog inside it. An
+  `id` you supply keeps the trigger's `aria-controls` pointing at the overlay.
 - Position with `placement`, `offset` and `crossOffset` on `Popover.Content`.
   Focus is contained and an outside press dismisses it, which `isNonModal`
   relaxes.
