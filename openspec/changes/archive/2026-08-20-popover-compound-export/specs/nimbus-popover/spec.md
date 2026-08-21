@@ -1,22 +1,4 @@
-# Specification: Popover Component
-
-## Overview
-
-The Popover component provides an accessible overlay positioned relative to a trigger element, containing interactive content. It follows the ARIA dialog pattern with intelligent positioning and focus management.
-
-**Component:** `Popover` (compound namespace: `Root`, `Trigger`, `Content`)
-**Package:** `@commercetools/nimbus`
-**Type:** Compound component (multi-slot recipe)
-**React Aria:** Uses `DialogTrigger`, `Popover` and `Dialog` from react-aria-components
-**i18n:** None
-
-## Purpose
-
-Popover provides an overlay for displaying rich, interactive content relative to a trigger element. Unlike Tooltip (non-interactive info on hover), Popover supports forms, buttons, and complex UI while maintaining accessibility. Unlike Dialog, it stays anchored to its trigger rather than taking over the page, and it is dismissed by Escape or an outside press rather than requiring an explicit action. Use Popover for supplementary actions, filters, settings panels, or context-sensitive content that doesn't require full modal attention.
-
-Focus is contained within the popover and outside interaction dismisses it, following React Aria's default for a dialog inside a popover. `isNonModal` does not relax either — it leaves the rest of the page interactive and scrollable instead of `inert`; React Aria's guidance is that most popovers should not use it.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Namespace Structure
 
@@ -88,99 +70,6 @@ The component SHALL open the popover from a press interaction on the trigger.
 - **WHEN** `Popover.Trigger` is given a custom child element via `asChild`
 - **THEN** it SHALL apply trigger behavior to that element
 - **AND** it SHALL NOT introduce a nested interactive element
-
-### Requirement: Root as the Configuration Surface
-
-`Popover.Root` SHALL be the configuration surface for the whole compound. It
-renders React Aria's `DialogTrigger`, but the `Popover` and `Dialog` elements it
-configures are rendered by `Popover.Content`, so `Popover.Root` SHALL accept
-their behavioral props and publish them to `Popover.Content` through context.
-
-#### Scenario: Overlay behavior configured on Root
-
-- **WHEN** a behavioral prop of React Aria's `Popover` or `Dialog` is set on
-  `Popover.Root`
-- **THEN** it SHALL reach the element that prop belongs to
-- **AND** `role` SHALL apply to the dialog element inside the surface
-- **AND** every other prop in the set below SHALL apply to the surface
-
-#### Scenario: The accepted configuration set
-
-- **WHEN** `Popover.Root`'s prop surface is enumerated
-- **THEN** it SHALL accept exactly these overlay behavioral props, and no others:
-  - positioning — `placement`, `offset`, `crossOffset`, `shouldFlip`,
-    `containerPadding`, `boundaryElement`, `maxHeight`, `shouldUpdatePosition`,
-    `scrollRef`, `getTargetRect`, `arrowBoundaryOffset`, `arrowRef`
-  - dismissal and modality — `isNonModal`, `isKeyboardDismissDisabled`,
-    `shouldCloseOnInteractOutside`
-  - anchoring — `triggerRef`, `trigger`
-  - animation — `isEntering`, `isExiting`, `shouldSkipAnimation`
-  - portal — `UNSTABLE_portalContainer`
-  - focus containment — `onFocusWithin`, `onBlurWithin`, `onFocusWithinChange`
-  - dialog — `role`
-- **AND** it SHALL additionally accept `isOpen`, `defaultOpen`, `onOpenChange`
-  and `children`, which are `DialogTrigger`'s own props
-- **AND** `arrowRef` and `arrowBoundaryOffset` SHALL have no observable effect
-  while Nimbus renders no `OverlayArrow`, and are accepted only so the surface
-  stays complete against React Aria's
-- **AND** `UNSTABLE_portalContainer` SHALL keep React Aria's `UNSTABLE_` prefix,
-  so that its stability marker stays visible in the Nimbus API
-
-#### Scenario: Presentation props stay on the rendering part
-
-- **WHEN** a per-element presentation prop — `className`, `style`, `id`,
-  `data-*`, `aria-*`, `slot`, `render`, `children` or a DOM event handler — is
-  needed
-- **THEN** `Popover.Root` SHALL NOT accept it
-- **AND** it SHALL be set on the part that renders the element, because React
-  Aria's `Popover` and `Dialog` declare those names with incompatible types and
-  `Popover.Root` renders no element to disambiguate against
-
-#### Scenario: Root is the only configuration surface
-
-- **WHEN** an overlay behavioral prop is set on `Popover.Content`
-- **THEN** it SHALL be a type error
-- **AND** `Popover.Content` SHALL accept only its own presentation and
-  labelling — style props, `aria-label`, `aria-labelledby`, and the `id`,
-  `className`, `data-*`, `aria-*` and event handlers destined for the dialog
-- **AND** there SHALL be no precedence rule between the parts, since exactly one
-  `Popover.Content` exists per `Popover.Root`
-- **AND** the configuration names that the DOM and Chakra prop surfaces
-  `Popover.Content` is derived from also declare SHALL be excluded from it by
-  name, so the type error holds for the whole configuration set
-
-#### Scenario: Colliding names resolve to Root
-
-- **WHEN** `maxHeight`, `offset` or `role` is set on `Popover.Root`
-- **THEN** `maxHeight` and `offset` SHALL be React Aria's numeric positioning
-  input, which participates in the placement and flip computation, and `role`
-  SHALL apply to the dialog element
-- **AND** these SHALL be the only three configuration names that the DOM and
-  Chakra prop surfaces `Popover.Content` is derived from also declare —
-  `maxHeight` and `offset` as CSS properties, `role` as a DOM attribute
-- **AND** `role` SHALL be excluded from `Popover.Content` for a second reason: it
-  is not a style prop, so it would otherwise reach the dialog element and
-  outrank the value `Popover.Root` published, and its DOM type admits roles
-  `Dialog` does not accept
-
-#### Scenario: The surface height cap belongs to Root
-
-- **WHEN** the surface height needs capping
-- **THEN** `maxHeight` on `Popover.Root` SHALL be the supported way to do it
-- **AND** `maxHeight` on `Popover.Content` SHALL be a type error
-- **AND** its Chakra aliases `maxH` and `maxBlockSize` SHALL remain accepted but
-  SHALL NOT be able to take effect on that element, because React Aria assigns
-  `overlay.style.maxHeight` imperatively on every position pass and an inline
-  value outranks a class
-
-#### Scenario: Open state is never forwarded to the surface
-
-- **WHEN** `isOpen`, `defaultOpen` or `onOpenChange` is set on `Popover.Root`
-- **THEN** it SHALL reach `DialogTrigger` only
-- **AND** it SHALL NOT be published to `Popover.Content`
-- **AND** the trigger and the surface SHALL remain driven by a single open state,
-  because React Aria's `Popover` derives its own state when either `isOpen` or
-  `defaultOpen` is set on it
 
 ### Requirement: Intelligent Placement
 
@@ -292,21 +181,6 @@ The component SHALL support comprehensive keyboard interaction.
 - **WHEN** the popover is open and the user presses Escape
 - **THEN** it SHALL close the popover and return focus to the trigger
 
-### Requirement: Controlled and Uncontrolled Modes
-The component SHALL support both state management patterns.
-
-#### Scenario: Uncontrolled mode
-- **WHEN** only defaultOpen prop is provided
-- **THEN** SHALL manage state internally
-- **AND** SHALL call onOpenChange when state changes
-- **AND** SHALL support initial open state via defaultOpen
-
-#### Scenario: Controlled mode
-- **WHEN** isOpen and onOpenChange props are provided
-- **THEN** SHALL show/hide based on isOpen prop
-- **AND** SHALL call onOpenChange on interaction
-- **AND** SHALL not manage state internally
-
 ### Requirement: ARIA Popover Pattern
 
 The component SHALL implement the ARIA dialog-in-popover pattern.
@@ -327,8 +201,7 @@ The component SHALL implement the ARIA dialog-in-popover pattern.
 - **THEN** `Popover.Content` SHALL accept `aria-label` or `aria-labelledby` for it
 - **AND** the name SHALL be announced when the popover opens
 - **AND** with neither set, React Aria SHALL fall back to labelling the dialog
-  with the trigger's own accessible name — a visible heading inside the popover
-  SHALL NOT name it unless `aria-labelledby` points at that heading
+  with the trigger's own accessible name
 
 #### Scenario: Screen reader announcements
 
@@ -356,7 +229,7 @@ The component SHALL animate appearance and dismissal.
 - **WHEN** the popover closes
 - **THEN** it SHALL fade and scale out before leaving the DOM
 - **AND** it SHALL use a duration token one step shorter than the enter
-  animation's, so dismissal feels immediate while entry stays legible
+  animation's
 
 ### Requirement: Multi-Slot Recipe
 
@@ -415,8 +288,6 @@ The component SHALL render in a portal for correct stacking.
 - **AND** `Popover.Content` SHALL NOT expose a portal-container prop of its own
 - **AND** React Aria's `UNSAFE_PortalProvider` placed higher in the tree SHALL
   remain available for retargeting a whole subtree at once
-- **AND** the `UNSTABLE_` prefix SHALL be preserved verbatim, so that React
-  Aria's own stability marker stays visible in the Nimbus API
 
 ### Requirement: Mobile Interaction
 
@@ -440,25 +311,6 @@ The component SHALL be operable on touch devices.
 - **WHEN** a consumer wants an overlay activated by hover
 - **THEN** `Popover` SHALL NOT provide a hover trigger mode
 - **AND** `Tooltip` SHALL be used for hover-activated content instead
-
-### Requirement: Optimized Rendering
-
-The component SHALL keep overlay content out of the DOM while closed, and SHALL
-stay anchored to its trigger while the page moves.
-
-#### Scenario: Lazy mounting
-
-- **WHEN** the popover is closed
-- **THEN** the overlay content SHALL NOT be mounted in the DOM
-- **AND** it SHALL mount when the popover opens
-- **AND** it SHALL unmount once the exit animation has finished
-
-#### Scenario: Scroll optimization
-
-- **WHEN** the page scrolls or the viewport resizes while the popover is open
-- **THEN** the popover SHALL remain anchored to its trigger
-- **AND** it SHALL stay within the viewport, flipping or shifting as needed
-- **AND** no scroll-dismissal option SHALL be exposed
 
 ### Requirement: Usage Guidelines
 
@@ -491,6 +343,8 @@ The component documentation SHALL provide usage guidance.
 - **THEN** heavy content SHALL be lazy-loaded inside the popover
 - **AND** content SHALL avoid layout thrashing while the popover is positioned
 
+## ADDED Requirements
+
 ### Requirement: Focus Management
 
 The component SHALL manage focus using React Aria's default popover focus
@@ -509,18 +363,93 @@ behavior, and SHALL allow that behavior to be relaxed.
 - **AND** pointer interaction outside the popover SHALL dismiss it rather than
   reach the element beneath
 
-#### Scenario: Relaxed modality
+#### Scenario: Relaxed containment
 
 - **WHEN** `isNonModal` is set on `Popover.Root`
-- **THEN** the rest of the page SHALL NOT be marked `inert`, so assistive
-  technologies can reach content outside the popover
-- **AND** page scroll SHALL NOT be locked while the popover is open
-- **AND** keyboard focus SHALL still be contained within the popover, and an
-  outside press SHALL still dismiss it, because containment comes from the dialog
-  `Popover.Content` renders rather than from modality
+- **THEN** assistive technologies SHALL be able to reach content outside the
+  popover
+- **AND** focus SHALL NOT be contained within the popover
 
 #### Scenario: Closing focus
 
 - **WHEN** the popover closes
 - **THEN** it SHALL return focus to the trigger element
 - **AND** the focus indicator SHALL be visible
+
+## REMOVED Requirements
+
+### Requirement: Non-Modal Focus Behavior
+
+**Reason**: Mis-specified the component's focus model. It required that
+background content stay interactive and that focus never be contained, but
+React Aria's `Popover` under a `DialogTrigger` contains focus and blocks
+outside interaction unless `isNonModal` is passed — which is why ComboBox
+passes it explicitly today. Specifying non-modal as the default would also
+change LocalizedField's current behavior, which this change is required to
+preserve. It also referenced a `shouldCloseOnBlur` prop that does not exist in
+React Aria Components. Replaced by `Focus Management`, which specifies the real
+default and the documented opt-out.
+
+**Migration**: Consumers wanting the previously specified behavior pass
+`isNonModal` to `Popover.Root`. No implementation existed, so no shipped
+behavior changes.
+
+### Requirement: Visual Connection
+
+**Reason**: Specified a `Popover.Arrow` part that was never implemented. The
+three-part surface approved for FEC-1167 has no arrow, and React Aria's
+`OverlayArrow` can be added later without changing the parts contract.
+
+**Migration**: None required — no implementation existed. Consumers needing a
+visual connector should rely on placement and offset for now.
+
+### Requirement: Size Options
+
+**Reason**: Specified `sm`/`md`/`lg` width variants that were never
+implemented. Popover content is consumer-authored and varies too much for
+preset widths to be meaningful as a first cut.
+
+**Migration**: None required — no implementation existed. Use `width`,
+`minWidth` and `maxWidth` style props on `Popover.Content`.
+
+### Requirement: Title Section
+
+**Reason**: Specified a `Popover.Header` part outside the approved three-part
+scope.
+
+**Migration**: None required — no implementation existed. Compose a heading
+inside `Popover.Content` and reference it with `aria-labelledby`.
+
+### Requirement: Content Area
+
+**Reason**: Specified a `Popover.Body` part outside the approved three-part
+scope.
+
+**Migration**: None required — no implementation existed. Place content
+directly inside `Popover.Content`.
+
+### Requirement: Actions Section
+
+**Reason**: Specified a `Popover.Footer` part outside the approved three-part
+scope.
+
+**Migration**: None required — no implementation existed. Compose actions with
+existing layout components inside `Popover.Content`.
+
+### Requirement: Internationalized Labels
+
+**Reason**: Specified a `closePopover` message for a `Popover.CloseButton` part
+that is not in scope. With no built-in close button there is no
+component-owned translatable string.
+
+**Migration**: None required — no message was ever registered. Consumers
+supplying their own close control provide its label.
+
+### Requirement: Optional Overlay
+
+**Reason**: Specified a `hasBackdrop` prop that was never implemented. React
+Aria already renders an underlay for a modal popover, so the prop conflated
+two separate concerns and had no implementation to preserve.
+
+**Migration**: None required — no implementation existed. Use `Dialog` when
+page-blocking modal semantics are wanted.
