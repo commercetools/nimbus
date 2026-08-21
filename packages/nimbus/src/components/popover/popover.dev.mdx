@@ -193,76 +193,6 @@ const App = () => (
 perpendicular one, both in pixels. `shouldFlip` (default `true`) controls whether
 the popover may flip to the opposite side to stay in the viewport.
 
-### Where configuration goes
-
-`Popover.Root` is the configuration surface for the whole compound — the only
-one. It renders React Aria's `DialogTrigger`, but it also accepts the behavioral
-props of the `Popover` and `Dialog` elements that `Popover.Content` renders on
-its behalf, and passes them along internally.
-
-`Popover.Content` accepts none of them. There is exactly one `Popover.Content`
-per `Popover.Root`, so a second place to set the same option would only be a
-second place to look for it:
-
-```jsx live-dev
-const App = () => (
-  <Popover.Root placement="right top" offset={12} maxHeight={320}>
-    <Popover.Trigger>Configured on Root</Popover.Trigger>
-    {/* placement, offset and the height cap all belong on Root */}
-    <Popover.Content aria-label="Configured popover">
-      <Text>Content carries only its own styling and labelling.</Text>
-    </Popover.Content>
-  </Popover.Root>
-);
-```
-
-What `Popover.Content` does own is how its own two elements look: style props for
-the positioned surface, and `id` / `className` / `data-*` / the labelling `aria-*`
-/ pointer and animation event handlers for the dialog inside it. React Aria
-filters that second set, so keyboard and focus handlers (`onKeyDown`, `onFocus`,
-`onBlur`), `title`, `tabIndex` and any non-labelling `aria-*` are accepted by the
-type but never reach the DOM — put those on your own content element.
-
-The full set of behavioral props, all on `Popover.Root`:
-
-| Prop | Purpose |
-| --- | --- |
-| `placement`, `offset`, `crossOffset` | Side, alignment and distance from the trigger |
-| `shouldFlip` | Allow flipping to the opposite side to stay visible |
-| `containerPadding`, `boundaryElement` | Viewport-collision boundary and its padding |
-| `isNonModal` | Leave outside content reachable |
-| `isKeyboardDismissDisabled` | Disable Escape to close |
-| `shouldCloseOnInteractOutside` | Filter which outside interactions dismiss |
-| `triggerRef` | Anchor to an element other than the trigger |
-| `maxHeight` | Numeric cap on the surface height, in pixels |
-| `shouldUpdatePosition` | Set `false` to freeze position on scroll and resize |
-| `scrollRef` | Nominates the scrollable region inside the overlay |
-| `getTargetRect` | Anchors to an arbitrary rect — a cursor point or text selection |
-| `trigger` | Sets `data-trigger` on the surface, for trigger-dependent styling |
-| `isEntering`, `isExiting` | Drive the enter and exit animations externally |
-| `shouldSkipAnimation` | Suppresses animation, e.g. when swapping along one axis |
-| `UNSTABLE_portalContainer` | Renders the overlay into a container other than `document.body` |
-| `onFocusWithin`, `onBlurWithin`, `onFocusWithinChange` | Focus tracking across the whole surface |
-| `role` | `"dialog"` (default) or `"alertdialog"`, applied to the dialog element |
-| `arrowRef`, `arrowBoundaryOffset` | Arrow positioning — inert, as Nimbus renders no arrow |
-
-> [!NOTE]\
-> Three of those names — `role`, `offset` and `maxHeight` — also exist in the DOM
-> and Chakra prop surfaces that `Popover.Content` is derived from, so Content
-> excludes them by name. `role` is the one that matters: it is not a style prop,
-> so without the exclusion it would be accepted and then dropped — Content
-> re-applies Root's `role` after spreading the rest — and its DOM type admits
-> roles the dialog rejects. A CSS height cap would not work on Content either
-> way — React Aria assigns `overlay.style.maxHeight` on every position pass, and
-> that inline value always beats a Chakra class, which is why the still-accepted
-> `maxH` alias cannot take effect on this element either. Root's `maxHeight` is
-> also the semantically correct one: it feeds the placement calculation rather
-> than clipping a box that has already been positioned.
-
-The open-state props — `isOpen`, `defaultOpen` and `onOpenChange` — live on
-`Popover.Root` and nowhere else, because the trigger and the surface have to
-share one state.
-
 ### Dismissal behavior
 
 By default the popover closes on Escape and on an outside press. Both can be
@@ -285,25 +215,6 @@ element, so you can exempt specific regions from dismissing the popover.
 > [!CAUTION]\
 > If you set `isKeyboardDismissDisabled`, provide another keyboard route to close
 > the popover. Otherwise keyboard users can open something they cannot dismiss.
-
-### Styling
-
-Style props on `Trigger` and `Content` apply to that part's slot. `Root` renders
-no element, so it takes none. Padding lives on the content surface, so a single
-prop removes it:
-
-```jsx live-dev
-const App = () => (
-  <Popover.Root>
-    <Popover.Trigger>Flush content</Popover.Trigger>
-    <Popover.Content padding="0" maxWidth="4800" aria-label="Flush popover">
-      <Box padding="300" backgroundColor="primary.2">
-        <Text>Zero padding on the surface.</Text>
-      </Box>
-    </Popover.Content>
-  </Popover.Root>
-);
-```
 
 ## Component requirements
 
