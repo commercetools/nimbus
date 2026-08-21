@@ -12,13 +12,7 @@ const { withProvider, withContext } = createSlotRecipeContext({
   key: "nimbusPopover",
 });
 
-/**
- * Popover Root
- *
- * Installs the slot-recipe context for every part. Rendered with `asChild`
- * around React Aria's `DialogTrigger`, which mounts no DOM element, so this
- * slot contributes context but no element of its own.
- */
+/** Popover Root - installs the slot-recipe context; renders no element itself */
 export const PopoverRootSlot: SlotComponent<
   HTMLDivElement,
   PopoverRootSlotProps

@@ -227,8 +227,11 @@ export type PopoverTriggerProps =
  * What remains here is this element's own presentation and labelling. Style props
  * apply to the positioned surface; `id`, `className`, `data-*`, `aria-*` and
  * event handlers apply to the dialog inside it. React Aria filters that second
- * set, so `title`, `tabIndex` and the keyboard and focus handlers are accepted
- * here but never reach the DOM — see the note on `PopoverContent`.
+ * set, so `title`, `tabIndex` and the keyboard and focus handlers (`onKeyDown`,
+ * `onFocus`, `onBlur`) are accepted here but never reach the DOM — put those on
+ * your own content element instead. What does arrive: `id`, `className`,
+ * `data-*`, `aria-*`, `dir` / `lang` / `hidden` / `inert`, and the mouse,
+ * pointer, touch, scroll, animation and transition event families.
  *
  * One name to watch: `maxHeight` is accepted here as a Chakra style prop, but it
  * cannot take effect on the surface. React Aria assigns `overlay.style.maxHeight`

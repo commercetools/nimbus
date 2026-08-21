@@ -7,22 +7,15 @@ import { extractStyleProps } from "@/utils";
 /**
  * Popover.Trigger - The element that opens the popover when pressed
  *
- * Renders its own button by default. With `asChild`, trigger behavior is
- * applied to the supplied child instead, which avoids nesting one interactive
- * element inside another.
- *
  * React Aria's `DialogTrigger` wraps whatever is rendered here in a
  * `PressResponder`, which publishes the press handlers, `aria-expanded`,
  * `aria-controls` and the trigger ref through context. Nothing has to be
- * forwarded for that to work, so in `asChild` mode this component only applies
+ * forwarded for that to work, so under `asChild` this component applies only
  * the `trigger` slot's styling and the child owns its own props.
  *
  * @supportsStyleProps
  */
 export const PopoverTrigger = (props: PopoverTriggerProps) => {
-  /**
-   * The consumer supplied their own pressable element as the trigger.
-   */
   if (props.asChild) {
     const {
       children,
@@ -40,10 +33,7 @@ export const PopoverTrigger = (props: PopoverTriggerProps) => {
     );
   }
 
-  /**
-   * No pressable element was supplied, so wrap whatever the consumer passed in
-   * a button to make it a trigger.
-   */
+  // No pressable element supplied, so wrap the children in our own button.
   const {
     children,
     ref,
