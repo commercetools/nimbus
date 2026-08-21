@@ -1,5 +1,5 @@
 import { defineSlotRecipe } from "@chakra-ui/react/styled-system";
-import { designTokens } from "@commercetools/nimbus-tokens";
+import { themeTokens } from "@commercetools/nimbus-tokens";
 
 /**
  * Recipe configuration for the MultilineTextInput component.
@@ -35,7 +35,7 @@ export const multilineTextInputRecipe = defineSlotRecipe({
             <rect width="1.03391" height="8.27125" transform="matrix(0.716448 0.69764 -0.716448 0.69764 5.87891 -0.0262451)" fill="currentColor"/>
           </mask>
           <g mask="url(#mask0_4610_25787)">
-            <rect width="8" height="8" fill="${designTokens.color["semantic-palettes"].primary.light[9]}"/>
+            <rect width="8" height="8" fill="${themeTokens.color["semantic-palettes"].primary["9"].value._light}"/>
           </g>
         </svg>
       `)}")`,

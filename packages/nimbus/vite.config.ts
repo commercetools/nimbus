@@ -133,13 +133,6 @@ const external = [
   // "react-aria-components",
   // "react-stately",
   // "@react-aria/interactions",
-
-  // Internal packages
-  // TODO: Icons from @commercetools/nimbus-icons should be tree-shakeable, it might make more sense to just bundle the necessary icons with their components, and not care whether this package is installed in consuming apps.
-  "@commercetools/nimbus-icons",
-  // TODO: @commercetools/nimbus-tokens is really a dev dependency we use to build the theme for chakra's styled-system, which is where we consume tokens from in all components, and in any components that are a child of the NimbusProvider.
-  //       We should evaluate whether it's necessary to specify @commercetools/nimbus-tokens as a peer dep, since the styled-system theme is created at build time and exported separately from this package.
-  "@commercetools/nimbus-tokens",
 ];
 
 // Define the config
