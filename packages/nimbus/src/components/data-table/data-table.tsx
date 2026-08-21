@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { lazy, Suspense, useRef } from "react";
 import { useObjectRef } from "react-aria";
 import { mergeRefs } from "@/utils";
 import {
@@ -10,13 +10,29 @@ import {
   DataTableCell,
   DataTableColumn,
   DataTableFooter,
-  DataTableManager,
   DataTableContext,
   useDataTableContext,
 } from "./components";
 import type { DataTableProps } from "./data-table.types";
 import { useLocalizedStringFormatter } from "@/hooks";
 import { dataTableMessagesStrings } from "./data-table.messages";
+
+// Lazy-load the Manager (settings drawer) to keep Drawer, Tabs, DraggableList,
+// and SearchInput out of the core DataTable chunk. These heavy dependencies are
+// only needed when a consumer explicitly renders <DataTable.Manager />.
+const LazyManager = lazy(() =>
+  import("./components/data-table.manager").then((m) => ({
+    default: m.DataTableManager,
+  }))
+);
+
+/** @internal Suspense wrapper so consumers don't need their own boundary. */
+const DataTableManagerLazy = () => (
+  <Suspense fallback={null}>
+    <LazyManager />
+  </Suspense>
+);
+DataTableManagerLazy.displayName = "DataTable.Manager";
 
 // Default DataTable component that provides the standard structure
 const DataTableBase = function DataTable<
@@ -197,7 +213,7 @@ export const DataTable = Object.assign(DataTableBase, {
    * </DataTable.Root>
    * ```
    */
-  Manager: DataTableManager,
+  Manager: DataTableManagerLazy,
   /**
    * # DataTable.Context
    *
@@ -238,5 +254,7 @@ export {
   DataTableCell as _DataTableCell,
   DataTableColumn as _DataTableColumn,
   DataTableFooter as _DataTableFooter,
-  DataTableManager as _DataTableManager,
 };
+// DataTableManager is lazy-loaded — the docgen export uses the Suspense
+// wrapper which is functionally identical for consumers (Manager has no props).
+export { DataTableManagerLazy as _DataTableManager };
