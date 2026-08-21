@@ -18,6 +18,8 @@ export const PopoverConfigProvider = PopoverConfigContext.Provider;
 
 /**
  * Reads the configuration published by `Popover.Root`. `undefined` without a
- * Root above, which keeps a bare `Popover.Content` working.
+ * Root above, leaving React Aria's own defaults. That case is not a supported
+ * arrangement: the slot-recipe context comes from `Popover.Root` too, so a
+ * Root-less `Popover.Content` throws before any of this matters.
  */
 export const usePopoverConfigContext = () => useContext(PopoverConfigContext);

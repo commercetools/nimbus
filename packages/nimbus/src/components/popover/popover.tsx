@@ -11,9 +11,10 @@ import { PopoverRoot, PopoverTrigger, PopoverContent } from "./components";
  * non-interactive hints, and `Dialog` when the flow should block the page.
  *
  * Focus is contained within the popover and an outside press dismisses it,
- * which is React Aria's default. `isNonModal` on `Popover.Root` relaxes that;
- * read the React Aria guidance before using it, since it affects the screen
- * reader experience.
+ * which is React Aria's default. `isNonModal` on `Popover.Root` lifts neither:
+ * it stops React Aria marking the rest of the page `inert` and locking page
+ * scroll, so assistive technology can reach the surrounding page. Read the React
+ * Aria guidance before using it, since it affects the screen reader experience.
  *
  * @example
  * ```tsx
@@ -36,7 +37,9 @@ export const Popover = {
    *
    * Renders no DOM element of its own, so it does not affect the layout around
    * the trigger. Accepts `isOpen` / `defaultOpen` / `onOpenChange` for
-   * controlled and uncontrolled use.
+   * controlled and uncontrolled use, and is the compound's single configuration
+   * surface: placement, dismissal, animation, portal container and the dialog's
+   * `role` are all set here and reach `Popover.Content` through context.
    *
    * @example
    * ```tsx

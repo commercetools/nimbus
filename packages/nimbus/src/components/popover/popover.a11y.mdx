@@ -25,9 +25,13 @@ const App = () => (
 
 ### Give every popover a name
 
-This is the one thing a consumer must supply. `Popover.Content` renders a dialog,
-and a dialog without an accessible name is announced as an unnamed dialog — the
-user is told something opened but not what.
+This is the one thing a consumer should supply. `Popover.Content` renders a
+dialog, and React Aria falls back to labelling that dialog with the **trigger's**
+accessible name when nothing else names it. That fallback is a floor, not a
+result: an icon-only trigger announces the dialog as "Options", and a trigger
+whose label describes an action ("Edit") names a surface that is not an action.
+Note that a visible heading does not name the dialog by itself — it has to be
+referenced, as in the second example below.
 
 Either label it directly:
 
@@ -82,11 +86,16 @@ dismisses it. This is React Aria's default for a dialog inside a popover, and it
 is the right behavior for almost every case: it keeps the interaction sequence
 predictable for screen reader and keyboard users.
 
-`isNonModal` relaxes that containment so assistive technologies can reach content
-outside the popover. React Aria's own guidance is that most popovers should not
-use it, because screen readers can announce the surrounding page in ways that
-make the popover harder to follow. It exists for components like combobox, where
-the trigger must keep focus while the overlay is open.
+`isNonModal` does not lift that containment. What it changes is the page behind
+the popover: by default React Aria marks the rest of the page `inert` and locks
+page scroll, and `isNonModal` leaves both alone, so assistive technologies can
+reach the surrounding content. Focus still cycles inside the dialog and an
+outside press still dismisses it — containment comes from the dialog
+`Popover.Content` renders, not from modality. React Aria's own guidance is that
+most popovers should not use it, because screen readers can announce the
+surrounding page in ways that make the popover harder to follow. It exists for
+components like combobox, where the trigger must keep focus while the overlay is
+open.
 
 ### ARIA attributes
 

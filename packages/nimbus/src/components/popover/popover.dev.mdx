@@ -199,8 +199,11 @@ const App = () => (
 ```
 
 What `Popover.Content` does own is how its own two elements look: style props for
-the positioned surface, and `id` / `className` / `data-*` / `aria-*` / event
-handlers for the dialog inside it.
+the positioned surface, and `id` / `className` / `data-*` / the labelling `aria-*`
+/ pointer and animation event handlers for the dialog inside it. React Aria
+filters that second set, so keyboard and focus handlers (`onKeyDown`, `onFocus`,
+`onBlur`), `title`, `tabIndex` and any non-labelling `aria-*` are accepted by the
+type but never reach the DOM — put those on your own content element.
 
 The full set of behavioral props, all on `Popover.Root`:
 
@@ -229,12 +232,13 @@ The full set of behavioral props, all on `Popover.Root`:
 > Three of those names — `role`, `offset` and `maxHeight` — also exist in the DOM
 > and Chakra prop surfaces that `Popover.Content` is derived from, so Content
 > excludes them by name. `role` is the one that matters: it is not a style prop,
-> so it would have reached the dialog element and outranked the value Root
-> published. A CSS height cap would not work on Content either way — React Aria
-> assigns `overlay.style.maxHeight` imperatively on every position pass, and that
-> inline value always beats a Chakra class, which is why the still-accepted `maxH`
-> alias cannot take effect on this element. Root's `maxHeight` is also the
-> semantically correct one: it feeds the placement and flip calculation rather
+> so without the exclusion it would be accepted and then dropped — Content
+> re-applies Root's `role` after spreading the rest — and its DOM type admits
+> roles the dialog rejects. A CSS height cap would not work on Content either
+> way — React Aria assigns `overlay.style.maxHeight` on every position pass, and
+> that inline value always beats a Chakra class, which is why the still-accepted
+> `maxH` alias cannot take effect on this element either. Root's `maxHeight` is
+> also the semantically correct one: it feeds the placement calculation rather
 > than clipping a box that has already been positioned.
 
 The open-state props — `isOpen`, `defaultOpen` and `onOpenChange` — live on
@@ -304,9 +308,10 @@ React Aria.
   values as "menu".
 
 By default focus is contained within the popover and outside interaction
-dismisses it. `isNonModal` relaxes containment so assistive technologies can
-reach the surrounding page; React Aria's guidance is that most popovers should
-not use it.
+dismisses it. `isNonModal` changes neither: it stops React Aria marking the rest
+of the page `inert` and locking page scroll, so assistive technologies can reach
+the surrounding page, while focus stays inside the dialog. React Aria's guidance
+is that most popovers should not use it.
 
 If your use case requires tracking and analytics for this component, it is good
 practice to add a **persistent**, **unique** id:

@@ -512,7 +512,9 @@ export const CloseFromContent: Story = {
  *
  * The default popover is modal: opening it moves focus into the dialog, Tab and
  * Shift+Tab cycle inside it rather than escaping to the page, and dismissing it
- * returns focus to the trigger. `NonModal` below is the opposite arrangement.
+ * returns focus to the trigger. `NonModal` below keeps all of that — containment
+ * comes from the dialog rather than from modality — and changes only what the
+ * rest of the page is to assistive technology.
  */
 export const FocusContainment: Story = {
   render: () => (
@@ -573,6 +575,17 @@ export const FocusContainment: Story = {
       expect(after).not.toHaveFocus();
     });
 
+    await step("The page behind the modal popover is inert", async () => {
+      // The half `isNonModal` actually turns off, asserted here so the pair of
+      // stories brackets it: modal marks the rest of the page `inert` and locks
+      // page scroll; `NonModal` asserts the absence of both.
+      const after = canvas.getByRole("button", { name: "After" });
+      expect(after.closest("[inert]")).not.toBeNull();
+      expect(getComputedStyle(document.documentElement).overflow).toBe(
+        "hidden"
+      );
+    });
+
     await step("Dismissal returns focus to the trigger", async () => {
       await userEvent.keyboard("{Escape}");
       await waitFor(() => {
@@ -586,10 +599,11 @@ export const FocusContainment: Story = {
 /**
  * Non-modal
  *
- * `isNonModal` relaxes React Aria's default containment so assistive
- * technologies can reach content outside the popover. Read the React Aria
- * guidance before using it — the contained default is preferable for most
- * popovers.
+ * `isNonModal` stops React Aria marking the rest of the page `inert` and locking
+ * page scroll, so assistive technology can reach content outside the popover.
+ * It does not lift focus containment — that comes from the dialog Content always
+ * renders, not from modality — and an outside press still dismisses. Read the
+ * React Aria guidance before using it; the modal default suits most popovers.
  */
 export const NonModal: Story = {
   render: () => (
@@ -597,7 +611,11 @@ export const NonModal: Story = {
       <Popover.Root isNonModal>
         <Popover.Trigger>Open popover</Popover.Trigger>
         <Popover.Content aria-label="Non-modal popover">
-          <Text>Outside content stays reachable.</Text>
+          <Stack gap="200">
+            <Text>Outside content stays reachable.</Text>
+            <Button>Inside one</Button>
+            <Button>Inside two</Button>
+          </Stack>
         </Popover.Content>
       </Popover.Root>
       <Button>Outside button</Button>
@@ -605,26 +623,39 @@ export const NonModal: Story = {
   ),
   play: async ({ canvasElement, step }) => {
     const canvas = portalCanvas(canvasElement);
+    let dialog!: HTMLElement;
 
     await step("Open the popover", async () => {
       await userEvent.click(
         canvas.getByRole("button", { name: "Open popover" })
       );
-      await waitFor(() => {
-        expect(canvas.getByRole("dialog")).toBeInTheDocument();
-      });
+      dialog = await waitFor(() => canvas.getByRole("dialog"));
     });
 
-    await step(
-      "Outside content is not hidden from assistive tech",
-      async () => {
-        // This role query is the assertion: `getByRole` skips aria-hidden
-        // subtrees, and without `isNonModal` React Aria's `ariaHideOutside`
-        // hides the container holding this button, so the lookup would throw.
-        const outside = canvas.getByRole("button", { name: "Outside button" });
-        await expect(outside).toBeInTheDocument();
+    await step("Rest of the page is left reachable", async () => {
+      // React Aria hides the page behind a modal popover with `inert`, not
+      // `aria-hidden` (`ariaHideOutside({shouldUseInert: true})`), so `inert` is
+      // what has to be absent here. A role query cannot carry this assertion:
+      // Testing Library skips aria-hidden subtrees but not inert ones, so the
+      // lookup would succeed with or without `isNonModal` and prove nothing.
+      const outside = canvas.getByRole("button", { name: "Outside button" });
+      await expect(outside.closest("[inert]")).toBeNull();
+      // The other half React Aria drops for a non-modal overlay: no scroll lock.
+      await expect(
+        getComputedStyle(document.documentElement).overflow
+      ).not.toBe("hidden");
+    });
+
+    await step("Focus stays contained regardless", async () => {
+      // The paired assertion for the doc claim: non-modal is about the page's
+      // exposure, not about letting Tab leave the dialog. `Popover.Content`
+      // always renders a dialog, and the dialog contains focus on its own.
+      canvas.getByRole("button", { name: "Inside two" }).focus();
+      for (let i = 0; i < 3; i++) {
+        await userEvent.tab();
+        await expect(dialog.contains(document.activeElement)).toBe(true);
       }
-    );
+    });
   },
 };
 
@@ -678,8 +709,8 @@ const contentClickSpy = fn();
  *
  * Content renders two elements: the positioned surface (the `content` slot) and
  * the dialog inside it (the `dialog` slot). Style props go to the surface;
- * everything else goes to the dialog. This pins that split down, since both
- * halves used to be dropped on the floor.
+ * everything React Aria's `filterDOMProps` admits goes to the dialog. This pins
+ * that split down, since both halves used to be dropped on the floor.
  */
 export const AttributeForwarding: Story = {
   render: () => (
@@ -817,8 +848,9 @@ export const RootConfiguration: Story = {
       // Each directive below fails the build with TS2578 (unused
       // '@ts-expect-error') the moment one of these names is admitted to
       // PopoverContentProps again. `role` is the one worth guarding: it is not
-      // a Chakra style property, so it would reach the dialog element and
-      // outrank the value Root published.
+      // a Chakra style property, so without the exclusion it would be accepted
+      // and then dropped — Content re-applies Root's `role` after the spread —
+      // and its DOM type admits roles RaDialog rejects.
       const rejectedOnContent: PopoverContentProps[] = [
         // @ts-expect-error `role` is set on Popover.Root
         { role: "dialog" },
