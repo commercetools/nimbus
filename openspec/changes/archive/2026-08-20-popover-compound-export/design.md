@@ -93,7 +93,13 @@ interaction unless `isNonModal` is passed — which is precisely why ComboBox
 passes it explicitly today (`combobox.popover.tsx`). The old spec also cited a
 `shouldCloseOnBlur` prop that does not exist in React Aria Components.
 
-We keep React Aria's default and expose `isNonModal` on `Popover.Content`.
+We keep React Aria's default and expose `isNonModal` on `Popover.Root`.
+
+> **Superseded.** This decision originally placed `isNonModal` on
+> `Popover.Content`. `Popover.Root` later became the compound's single
+> configuration surface, so every overlay behavioral prop — `isNonModal`
+> included — moved there and `Popover.Content` rejects them. The reasoning below
+> about React Aria's default is unchanged; only the part it is set on differs.
 
 *Decisive argument:* LocalizedField currently renders `<Popover>` with no
 `isNonModal`, so it gets the contained-focus default today. Defaulting

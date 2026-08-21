@@ -48,8 +48,9 @@ Iterate with `pnpm --filter @commercetools/nimbus typecheck:dev` and
       matching `menu.trigger.tsx`; set `displayName = "Popover.Trigger"`
 - [x] 3.4 Implement `components/popover.content.tsx` as
       `<PopoverContentSlot asChild><RaPopover><PopoverDialogSlot asChild><RaDialog>`,
-      forwarding `placement`, `offset`, `crossOffset`, `shouldFlip` and
-      `isNonModal` to `RaPopover`; set `displayName = "Popover.Content"`
+      applying the overlay configuration published by `Popover.Root` to
+      `RaPopover`, and `role` to `RaDialog`; set
+      `displayName = "Popover.Content"`
 - [x] 3.5 Forward a function child through `Popover.Content` to the dialog's
       render prop so `{({ close }) => …}` works for programmatic close
 - [x] 3.6 Export all three parts from `components/index.ts`

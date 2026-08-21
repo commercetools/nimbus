@@ -78,7 +78,7 @@ detection.
 
 #### Scenario: Placement options
 
-- **WHEN** the `placement` prop is set on `Popover.Content`
+- **WHEN** the `placement` prop is set on `Popover.Root`
 - **THEN** it SHALL accept a primary side — physical (`top`, `bottom`, `left`,
   `right`) or logical (`start`, `end`)
 - **AND** a vertical side SHALL accept the alignments `left`, `right`, `start`
@@ -360,7 +360,7 @@ behavior, and SHALL allow that behavior to be relaxed.
 
 #### Scenario: Relaxed containment
 
-- **WHEN** `isNonModal` is set on `Popover.Content`
+- **WHEN** `isNonModal` is set on `Popover.Root`
 - **THEN** assistive technologies SHALL be able to reach content outside the
   popover
 - **AND** focus SHALL NOT be contained within the popover
@@ -386,7 +386,7 @@ React Aria Components. Replaced by `Focus Management`, which specifies the real
 default and the documented opt-out.
 
 **Migration**: Consumers wanting the previously specified behavior pass
-`isNonModal` to `Popover.Content`. No implementation existed, so no shipped
+`isNonModal` to `Popover.Root`. No implementation existed, so no shipped
 behavior changes.
 
 ### Requirement: Visual Connection

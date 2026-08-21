@@ -18,10 +18,13 @@ be held to:
   about React Aria's internals. Nimbus neither implements nor tests it, and it
   would silently become false if React Aria changed its scheduling.
 - **`MAY close popover on scroll if configured`** — there is no such option.
-  `Popover.Content` forwards `placement`, `offset`, `crossOffset`, `shouldFlip`,
+  `Popover.Root` accepts `placement`, `offset`, `crossOffset`, `shouldFlip`,
   `containerPadding`, `boundaryElement`, `isNonModal`,
   `isKeyboardDismissDisabled`, `shouldCloseOnInteractOutside` and `triggerRef`,
-  and none of them dismisses on scroll.
+  and none of them dismisses on scroll. (At the time of this change those props
+  were accepted on `Popover.Content`; they moved to `Popover.Root` when it
+  became the compound's single configuration surface. The conclusion is
+  unaffected.)
 
 Both are the same class of inaccuracy as the `portalContainer` and
 `trigger="hover"` scenarios corrected in the previous change, and they were left

@@ -24,7 +24,8 @@ plain hints, and `Dialog` a flow that should block the page.
   anchoring (`triggerRef`, `trigger`), animation (`isEntering`, `isExiting`,
   `shouldSkipAnimation`), focus tracking (`onFocusWithin`, `onBlurWithin`,
   `onFocusWithinChange`), `UNSTABLE_portalContainer`, and `role` for
-  `"alertdialog"`.
+  `"alertdialog"`. `arrowRef` and `arrowBoundaryOffset` are accepted too, but do
+  nothing until Nimbus renders an arrow.
 - `Popover.Content` carries only its own styling and labelling. Behavior props
   are rejected there, so there is exactly one place to look for any given
   setting.

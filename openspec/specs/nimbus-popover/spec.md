@@ -101,9 +101,30 @@ their behavioral props and publish them to `Popover.Content` through context.
 - **WHEN** a behavioral prop of React Aria's `Popover` or `Dialog` is set on
   `Popover.Root`
 - **THEN** it SHALL reach the element that prop belongs to
-- **AND** positioning, dismissal, anchoring, animation, portal, focus-tracking
-  and `scrollRef` props SHALL apply to the surface
 - **AND** `role` SHALL apply to the dialog element inside the surface
+- **AND** every other prop in the set below SHALL apply to the surface
+
+#### Scenario: The accepted configuration set
+
+- **WHEN** `Popover.Root`'s prop surface is enumerated
+- **THEN** it SHALL accept exactly these overlay behavioral props, and no others:
+  - positioning — `placement`, `offset`, `crossOffset`, `shouldFlip`,
+    `containerPadding`, `boundaryElement`, `maxHeight`, `shouldUpdatePosition`,
+    `scrollRef`, `getTargetRect`, `arrowBoundaryOffset`, `arrowRef`
+  - dismissal and modality — `isNonModal`, `isKeyboardDismissDisabled`,
+    `shouldCloseOnInteractOutside`
+  - anchoring — `triggerRef`, `trigger`
+  - animation — `isEntering`, `isExiting`, `shouldSkipAnimation`
+  - portal — `UNSTABLE_portalContainer`
+  - focus containment — `onFocusWithin`, `onBlurWithin`, `onFocusWithinChange`
+  - dialog — `role`
+- **AND** it SHALL additionally accept `isOpen`, `defaultOpen`, `onOpenChange`
+  and `children`, which are `DialogTrigger`'s own props
+- **AND** `arrowRef` and `arrowBoundaryOffset` SHALL have no observable effect
+  while Nimbus renders no `OverlayArrow`, and are accepted only so the surface
+  stays complete against React Aria's
+- **AND** `UNSTABLE_portalContainer` SHALL keep React Aria's `UNSTABLE_` prefix,
+  so that its stability marker stays visible in the Nimbus API
 
 #### Scenario: Presentation props stay on the rendering part
 
@@ -158,7 +179,7 @@ detection.
 
 #### Scenario: Placement options
 
-- **WHEN** the `placement` prop is set on `Popover.Root` or `Popover.Content`
+- **WHEN** the `placement` prop is set on `Popover.Root`
 - **THEN** it SHALL accept a primary side — physical (`top`, `bottom`, `left`,
   `right`) or logical (`start`, `end`)
 - **AND** a vertical side SHALL accept the alignments `left`, `right`, `start`
@@ -177,12 +198,12 @@ detection.
 
 #### Scenario: Offset positioning
 
-- **WHEN** the `offset` prop is set
+- **WHEN** the `offset` prop is set on `Popover.Root`
 - **THEN** it SHALL adjust the distance from the trigger in pixels
 
 #### Scenario: Cross-axis offset
 
-- **WHEN** the `crossOffset` prop is set
+- **WHEN** the `crossOffset` prop is set on `Popover.Root`
 - **THEN** it SHALL adjust position along the perpendicular axis
 - **AND** it SHALL combine with the primary placement
 
@@ -476,7 +497,7 @@ behavior, and SHALL allow that behavior to be relaxed.
 
 #### Scenario: Relaxed containment
 
-- **WHEN** `isNonModal` is set on `Popover.Content`
+- **WHEN** `isNonModal` is set on `Popover.Root`
 - **THEN** assistive technologies SHALL be able to reach content outside the
   popover
 - **AND** focus SHALL NOT be contained within the popover
