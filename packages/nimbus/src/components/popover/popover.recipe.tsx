@@ -17,7 +17,7 @@ export const popoverSlotRecipe = defineSlotRecipe({
     // so `withProvider` can install the slot-recipe context.
     root: {},
     trigger: {
-      focusRing: "outside",
+      focusVisibleRing: "outside",
     },
     content: {
       bg: "bg",
