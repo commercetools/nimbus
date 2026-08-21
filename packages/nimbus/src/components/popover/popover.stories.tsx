@@ -593,9 +593,9 @@ export const FocusContainment: Story = {
 export const NonModal: Story = {
   render: () => (
     <Stack gap="400">
-      <Popover.Root>
+      <Popover.Root isNonModal>
         <Popover.Trigger>Open popover</Popover.Trigger>
-        <Popover.Content isNonModal aria-label="Non-modal popover">
+        <Popover.Content aria-label="Non-modal popover">
           <Text>Outside content stays reachable.</Text>
         </Popover.Content>
       </Popover.Root>
@@ -641,9 +641,9 @@ export const NonModal: Story = {
 export const Placement: Story = {
   render: () => (
     <Box padding="2000">
-      <Popover.Root defaultOpen>
+      <Popover.Root defaultOpen placement="right top">
         <Popover.Trigger>Opens to the right</Popover.Trigger>
-        <Popover.Content placement="right top" aria-label="Placed popover">
+        <Popover.Content aria-label="Placed popover">
           <Text>Placed with `right top`.</Text>
         </Popover.Content>
       </Popover.Root>
@@ -740,6 +740,166 @@ export const AttributeForwarding: Story = {
     await step("event handlers fire", async () => {
       await userEvent.click(dialog);
       await expect(contentClickSpy).toHaveBeenCalled();
+    });
+  },
+};
+
+/**
+ * Root configuration
+ *
+ * Root is the compound's configuration surface. It renders `DialogTrigger`, but
+ * accepts the behavioral props of the `Popover` and `Dialog` elements that
+ * Content renders on its behalf, and publishes them through context.
+ *
+ * This covers all three destinations at once: `placement` reaches the surface,
+ * `role` reaches the dialog, and `maxHeight` — which on Content would be the
+ * Chakra CSS style prop — is React Aria's numeric positioning cap here.
+ *
+ * Not snapshotted: nothing here changes the painted box beyond a height cap that
+ * only engages in a short viewport, so it is behavioral rather than visual.
+ */
+export const RootConfiguration: Story = {
+  render: () => (
+    <Box padding="2000">
+      <Popover.Root
+        defaultOpen
+        placement="right top"
+        role="alertdialog"
+        maxHeight={240}
+      >
+        <Popover.Trigger>Configured on Root</Popover.Trigger>
+        <Popover.Content aria-label="Configured popover">
+          <Text>Every option came from Root.</Text>
+        </Popover.Content>
+      </Popover.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = portalCanvas(canvasElement);
+
+    await step("Root's role reaches the dialog element", async () => {
+      // `role` is a RaDialog prop, so it must land on the inner element rather
+      // than the surface. RaDialog defaults to `role="dialog"`, so resolving by
+      // the alertdialog role proves both that it arrived and that it replaced
+      // the default.
+      const dialog = await waitFor(() => canvas.getByRole("alertdialog"));
+      await expect(dialog).toHaveAttribute("role", "alertdialog");
+      await expect(dialog).toHaveClass("nimbus-popover__dialog");
+    });
+
+    await step("Root's placement reaches the surface element", async () => {
+      const surface = canvas
+        .getByRole("alertdialog")
+        .closest("[data-placement]");
+      await expect(surface).not.toBeNull();
+      // Axis rather than exact side: React Aria may flip within the requested
+      // axis in a tight viewport, but the unset default would be `bottom`.
+      await expect(["right", "left"]).toContain(
+        surface!.getAttribute("data-placement")
+      );
+    });
+
+    await step("Root's maxHeight is the positioning cap", async () => {
+      // React Aria writes its computed cap as an inline style on the surface.
+      // Reaching the element as a number at all is the point: the same name on
+      // Content would have been consumed by Chakra as a CSS style prop.
+      const surface = canvas
+        .getByRole("alertdialog")
+        .closest("[data-placement]") as HTMLElement;
+      await expect(surface.style.maxHeight).toBeTruthy();
+    });
+  },
+};
+
+/**
+ * Style props stay on Content
+ *
+ * Root owns the overlay's behavior; Content owns how its own two elements look.
+ *
+ * `maxHeight` is the one place those two touch the same CSS property, and React
+ * Aria wins it outright: `useOverlayPosition` assigns `overlay.style.maxHeight`
+ * imperatively on every position pass, so an inline value always beats Chakra's
+ * class. Capping the surface therefore means `maxHeight` on Root — the style prop
+ * of that name on Content cannot take effect on this element.
+ *
+ * Not snapshotted: the padded surface is already covered by the VRT stories.
+ */
+export const ContentStyling: Story = {
+  render: () => (
+    <Box padding="2000">
+      <Popover.Root defaultOpen placement="bottom start" maxHeight={320}>
+        <Popover.Trigger>Styled content</Popover.Trigger>
+        <Popover.Content padding="0" aria-label="Styled popover">
+          <Box padding="400">
+            <Text>Padding zeroed on the surface, restored inside.</Text>
+          </Box>
+        </Popover.Content>
+      </Popover.Root>
+    </Box>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = portalCanvas(canvasElement);
+    const surface = async () =>
+      (await waitFor(() => canvas.getByRole("dialog"))).closest(
+        "[data-placement]"
+      ) as HTMLElement;
+
+    await step("Content's style props reach the surface", async () => {
+      await expect(await surface()).toHaveStyle({ padding: "0px" });
+    });
+
+    await step("Root's maxHeight governs the height cap", async () => {
+      // React Aria writes the cap inline as `min(available, userSetMaxHeight)`,
+      // so it never exceeds what Root asked for.
+      const cap = Number.parseFloat((await surface()).style.maxHeight);
+      await expect(cap).toBeGreaterThan(0);
+      await expect(cap).toBeLessThanOrEqual(320);
+    });
+  },
+};
+
+/**
+ * Root's open state stays with the trigger
+ *
+ * React Aria's `Popover` declares `isOpen` / `defaultOpen` / `onOpenChange` too,
+ * and derives its own state the moment either of the first two is set on it. If
+ * Root forwarded them along with the rest of its configuration, the trigger
+ * would toggle one state while the surface rendered another.
+ *
+ * This is the regression guard for that split: `defaultOpen` is set on Root, and
+ * the trigger must still be able to close the surface. A leak would leave the
+ * dialog on screen with `aria-expanded="false"`.
+ */
+export const RootOpenStateIsNotForwarded: Story = {
+  render: () => (
+    <Popover.Root defaultOpen placement="bottom start">
+      <Popover.Trigger>Toggle popover</Popover.Trigger>
+      <Popover.Content aria-label="State-owned popover">
+        <Text>The trigger and this surface share one state.</Text>
+      </Popover.Content>
+    </Popover.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = portalCanvas(canvasElement);
+    const trigger = canvas.getByRole("button", { name: "Toggle popover" });
+
+    await step("defaultOpen on Root opens the surface", async () => {
+      await waitFor(() => expect(canvas.getByRole("dialog")).toBeVisible());
+      await expect(trigger).toHaveAttribute("aria-expanded", "true");
+    });
+
+    await step("The trigger closes the surface it did not open", async () => {
+      await userEvent.click(trigger);
+      await waitFor(() =>
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
+      );
+      await expect(trigger).toHaveAttribute("aria-expanded", "false");
+    });
+
+    await step("And reopens it, so the two stay in step", async () => {
+      await userEvent.click(trigger);
+      await waitFor(() => expect(canvas.getByRole("dialog")).toBeVisible());
+      await expect(trigger).toHaveAttribute("aria-expanded", "true");
     });
   },
 };

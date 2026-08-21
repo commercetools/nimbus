@@ -99,21 +99,21 @@ inside the viewport.
 ```jsx live
 const App = () => (
   <Stack direction="horizontal" gap="400">
-    <Popover.Root>
+    <Popover.Root placement="bottom start">
       <Popover.Trigger>Bottom start</Popover.Trigger>
-      <Popover.Content placement="bottom start" aria-label="Bottom start">
+      <Popover.Content aria-label="Bottom start">
         <Text>placement="bottom start"</Text>
       </Popover.Content>
     </Popover.Root>
-    <Popover.Root>
+    <Popover.Root placement="right top">
       <Popover.Trigger>Right top</Popover.Trigger>
-      <Popover.Content placement="right top" aria-label="Right top">
+      <Popover.Content aria-label="Right top">
         <Text>placement="right top"</Text>
       </Popover.Content>
     </Popover.Root>
-    <Popover.Root>
+    <Popover.Root placement="top">
       <Popover.Trigger>Top</Popover.Trigger>
-      <Popover.Content placement="top" aria-label="Top">
+      <Popover.Content aria-label="Top">
         <Text>placement="top"</Text>
       </Popover.Content>
     </Popover.Root>
@@ -136,9 +136,9 @@ const App = () => (
         <Text>No offset</Text>
       </Popover.Content>
     </Popover.Root>
-    <Popover.Root>
+    <Popover.Root offset={16}>
       <Popover.Trigger>Wider gap</Popover.Trigger>
-      <Popover.Content offset={16} aria-label="Wider gap">
+      <Popover.Content aria-label="Wider gap">
         <Text>{"offset={16}"}</Text>
       </Popover.Content>
     </Popover.Root>

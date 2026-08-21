@@ -89,6 +89,68 @@ The component SHALL open the popover from a press interaction on the trigger.
 - **THEN** it SHALL apply trigger behavior to that element
 - **AND** it SHALL NOT introduce a nested interactive element
 
+### Requirement: Root as the Configuration Surface
+
+`Popover.Root` SHALL be the configuration surface for the whole compound. It
+renders React Aria's `DialogTrigger`, but the `Popover` and `Dialog` elements it
+configures are rendered by `Popover.Content`, so `Popover.Root` SHALL accept
+their behavioral props and publish them to `Popover.Content` through context.
+
+#### Scenario: Overlay behavior configured on Root
+
+- **WHEN** a behavioral prop of React Aria's `Popover` or `Dialog` is set on
+  `Popover.Root`
+- **THEN** it SHALL reach the element that prop belongs to
+- **AND** positioning, dismissal, anchoring, animation, portal, focus-tracking
+  and `scrollRef` props SHALL apply to the surface
+- **AND** `role` SHALL apply to the dialog element inside the surface
+
+#### Scenario: Presentation props stay on the rendering part
+
+- **WHEN** a per-element presentation prop — `className`, `style`, `id`,
+  `data-*`, `aria-*`, `slot`, `render`, `children` or a DOM event handler — is
+  needed
+- **THEN** `Popover.Root` SHALL NOT accept it
+- **AND** it SHALL be set on the part that renders the element, because React
+  Aria's `Popover` and `Dialog` declare those names with incompatible types and
+  `Popover.Root` renders no element to disambiguate against
+
+#### Scenario: Root is the only configuration surface
+
+- **WHEN** an overlay behavioral prop is set on `Popover.Content`
+- **THEN** it SHALL be a type error
+- **AND** `Popover.Content` SHALL accept only its own presentation and
+  labelling — style props, `aria-label`, `aria-labelledby`, and the `id`,
+  `className`, `data-*`, `aria-*` and event handlers destined for the dialog
+- **AND** there SHALL be no precedence rule between the parts, since exactly one
+  `Popover.Content` exists per `Popover.Root`
+
+#### Scenario: Colliding names resolve to Root
+
+- **WHEN** `maxHeight` or `offset` is set on `Popover.Root`
+- **THEN** it SHALL be React Aria's numeric positioning input, which
+  participates in the placement and flip computation
+- **AND** these SHALL be the only two names React Aria and Chakra share across
+  the two parts
+
+#### Scenario: The surface height cap belongs to Root
+
+- **WHEN** the surface height needs capping
+- **THEN** `maxHeight` on `Popover.Root` SHALL be the supported way to do it
+- **AND** the Chakra `maxHeight` style prop on `Popover.Content` SHALL NOT be
+  able to take effect on that element, because React Aria assigns
+  `overlay.style.maxHeight` imperatively on every position pass and an inline
+  value outranks a class
+
+#### Scenario: Open state is never forwarded to the surface
+
+- **WHEN** `isOpen`, `defaultOpen` or `onOpenChange` is set on `Popover.Root`
+- **THEN** it SHALL reach `DialogTrigger` only
+- **AND** it SHALL NOT be published to `Popover.Content`
+- **AND** the trigger and the surface SHALL remain driven by a single open state,
+  because React Aria's `Popover` derives its own state when either `isOpen` or
+  `defaultOpen` is set on it
+
 ### Requirement: Intelligent Placement
 
 The component SHALL position the popover relative to the trigger with collision
@@ -96,7 +158,7 @@ detection.
 
 #### Scenario: Placement options
 
-- **WHEN** the `placement` prop is set on `Popover.Content`
+- **WHEN** the `placement` prop is set on `Popover.Root` or `Popover.Content`
 - **THEN** it SHALL accept a primary side — physical (`top`, `bottom`, `left`,
   `right`) or logical (`start`, `end`)
 - **AND** a vertical side SHALL accept the alignments `left`, `right`, `start`
@@ -313,9 +375,13 @@ The component SHALL render in a portal for correct stacking.
 #### Scenario: Container option
 
 - **WHEN** a consumer needs the overlay to portal into a specific container
-- **THEN** `Popover.Content` SHALL NOT expose a portal-container prop of its own
-- **AND** the portal target SHALL be controlled by React Aria's
-  `UNSAFE_PortalProvider` placed higher in the tree
+- **THEN** `Popover.Root` SHALL accept `UNSTABLE_portalContainer` for that single
+  popover
+- **AND** `Popover.Content` SHALL NOT expose a portal-container prop of its own
+- **AND** React Aria's `UNSAFE_PortalProvider` placed higher in the tree SHALL
+  remain available for retargeting a whole subtree at once
+- **AND** the `UNSTABLE_` prefix SHALL be preserved verbatim, so that React
+  Aria's own stability marker stays visible in the Nimbus API
 
 ### Requirement: Mobile Interaction
 

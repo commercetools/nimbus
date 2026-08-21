@@ -162,14 +162,9 @@ to typecheck.
 
 ```jsx live-dev
 const App = () => (
-  <Popover.Root>
+  <Popover.Root placement="right top" offset={12} crossOffset={4}>
     <Popover.Trigger>Positioned</Popover.Trigger>
-    <Popover.Content
-      placement="right top"
-      offset={12}
-      crossOffset={4}
-      aria-label="Positioned popover"
-    >
+    <Popover.Content aria-label="Positioned popover">
       <Text>placement="right top"</Text>
     </Popover.Content>
   </Popover.Root>
@@ -180,6 +175,69 @@ const App = () => (
 perpendicular one, both in pixels. `shouldFlip` (default `true`) controls whether
 the popover may flip to the opposite side to stay in the viewport.
 
+### Where configuration goes
+
+`Popover.Root` is the configuration surface for the whole compound — the only
+one. It renders React Aria's `DialogTrigger`, but it also accepts the behavioral
+props of the `Popover` and `Dialog` elements that `Popover.Content` renders on
+its behalf, and passes them along internally.
+
+`Popover.Content` accepts none of them. There is exactly one `Popover.Content`
+per `Popover.Root`, so a second place to set the same option would only be a
+second place to look for it:
+
+```jsx live-dev
+const App = () => (
+  <Popover.Root placement="right top" offset={12} maxHeight={320}>
+    <Popover.Trigger>Configured on Root</Popover.Trigger>
+    {/* placement, offset and the height cap all belong on Root */}
+    <Popover.Content aria-label="Configured popover">
+      <Text>Content carries only its own styling and labelling.</Text>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+What `Popover.Content` does own is how its own two elements look: style props for
+the positioned surface, and `id` / `className` / `data-*` / `aria-*` / event
+handlers for the dialog inside it.
+
+The full set of behavioral props, all on `Popover.Root`:
+
+| Prop | Purpose |
+| --- | --- |
+| `placement`, `offset`, `crossOffset` | Side, alignment and distance from the trigger |
+| `shouldFlip` | Allow flipping to the opposite side to stay visible |
+| `containerPadding`, `boundaryElement` | Viewport-collision boundary and its padding |
+| `isNonModal` | Leave outside content reachable |
+| `isKeyboardDismissDisabled` | Disable Escape to close |
+| `shouldCloseOnInteractOutside` | Filter which outside interactions dismiss |
+| `triggerRef` | Anchor to an element other than the trigger |
+| `maxHeight` | Numeric cap on the surface height, in pixels |
+| `shouldUpdatePosition` | Set `false` to freeze position on scroll and resize |
+| `scrollRef` | Nominates the scrollable region inside the overlay |
+| `getTargetRect` | Anchors to an arbitrary rect — a cursor point or text selection |
+| `trigger` | Sets `data-trigger` on the surface, for trigger-dependent styling |
+| `isEntering`, `isExiting` | Drive the enter and exit animations externally |
+| `shouldSkipAnimation` | Suppresses animation, e.g. when swapping along one axis |
+| `UNSTABLE_portalContainer` | Renders the overlay into a container other than `document.body` |
+| `onFocusWithin`, `onBlurWithin`, `onFocusWithinChange` | Focus tracking across the whole surface |
+| `role` | `"dialog"` (default) or `"alertdialog"`, applied to the dialog element |
+| `arrowRef`, `arrowBoundaryOffset` | Arrow positioning — inert, as Nimbus renders no arrow |
+
+> [!NOTE]\
+> Cap the surface height with `maxHeight` on `Popover.Root`, not with the style
+> prop of the same name on `Popover.Content`. React Aria assigns
+> `overlay.style.maxHeight` imperatively on every position pass, and that inline
+> value always beats a Chakra class — so the style prop cannot take effect on
+> this element. Root's value is also the correct one semantically: it feeds the
+> placement and flip calculation rather than clipping a box that has already been
+> positioned.
+
+The open-state props — `isOpen`, `defaultOpen` and `onOpenChange` — live on
+`Popover.Root` and nowhere else, because the trigger and the surface have to
+share one state.
+
 ### Dismissal behavior
 
 By default the popover closes on Escape and on an outside press. Both can be
@@ -187,12 +245,9 @@ adjusted:
 
 ```jsx live-dev
 const App = () => (
-  <Popover.Root>
+  <Popover.Root isKeyboardDismissDisabled>
     <Popover.Trigger>Keyboard dismiss disabled</Popover.Trigger>
-    <Popover.Content
-      isKeyboardDismissDisabled
-      aria-label="No Escape dismissal"
-    >
+    <Popover.Content aria-label="No Escape dismissal">
       <Text>Escape will not close this. Click outside instead.</Text>
     </Popover.Content>
   </Popover.Root>
