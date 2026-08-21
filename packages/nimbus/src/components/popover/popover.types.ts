@@ -31,30 +31,17 @@ export type PopoverDialogSlotProps = HTMLChakraProps<"div">;
 
 /**
  * The render-prop argument handed to a `Popover.Content` function child.
- * Provides a `close` callback so content can dismiss its own popover.
+ * Provides a `close` callback for dismissing the popover from within.
  */
 export type PopoverContentRenderProps = RaDialogRenderProps;
 
 /**
- * The React Aria overlay props that configure the popover surface and the dialog
- * inside it.
+ * Overlay behavior accepted on `Popover.Root` and forwarded through context to
+ * the `Popover` and `Dialog` elements that `Popover.Content` renders.
  *
- * `Popover.Root` renders `DialogTrigger`, but `Popover.Content` renders the
- * `Popover` and `Dialog` elements. These props therefore describe elements Root
- * does not own: Root accepts them as the compound's single configuration surface
- * and hands them to `Popover.Content` through context.
- *
- * Only behavioural props are hoisted. Per-element presentation — `className`,
- * `style`, `id`, `data-*`, `aria-*`, `slot`, `render`, `children` and the DOM
- * event handlers — stays on the part that renders the element, because `Popover`
- * and `Dialog` share 78 of those prop names with incompatible types (`className`
- * is `ClassNameOrFunction<PopoverRenderProps>` on one and `string` on the other)
- * and Root has no element of its own to disambiguate against.
- *
- * The open-state props (`isOpen`, `defaultOpen`, `onOpenChange`) are absent by
- * design. React Aria's `Popover` also declares them, but setting them on the
- * surface makes it derive its own state instead of reading the trigger's, which
- * desynchronises the two — so they belong to `DialogTrigger` alone. See the note
+ * Behavior only — per-element presentation (`className`, `style`, `id`,
+ * `data-*`, event handlers) stays on the part that renders the element. Open
+ * state is absent by design: it belongs on `DialogTrigger` alone, so it lives
  * on {@link PopoverRootProps}.
  */
 export type PopoverOverlayConfigProps = Pick<
@@ -99,29 +86,13 @@ export type PopoverOverlayConfigProps = Pick<
 /**
  * Props for the Popover.Root component.
  *
- * Establishes the popover's open state and styling context. Renders React
- * Aria's `DialogTrigger`, which mounts no DOM element of its own, so Root does
- * not affect the surrounding layout.
+ * Renders React Aria's `DialogTrigger` and mounts no DOM element of its own, so
+ * it takes no style props — put those on `Popover.Trigger` or
+ * `Popover.Content`. Root is the compound's single configuration surface: every
+ * overlay option in {@link PopoverOverlayConfigProps} is set here and reaches
+ * `Popover.Content` through context.
  *
- * Root is the compound's configuration surface: it accepts the open-state props
- * `DialogTrigger` honours directly, plus every behavioural prop of the `Popover`
- * and `Dialog` elements that `Popover.Content` renders on its behalf (see
- * {@link PopoverOverlayConfigProps}). Those travel to `Popover.Content` through
- * context, and `Popover.Content` rejects every one of them, so there is no
- * precedence rule between the two parts.
- *
- * Only `isOpen`, `defaultOpen` and `onOpenChange` reach `DialogTrigger`. They are
- * never forwarded to the surface: React Aria's `Popover` derives its own state
- * when either `isOpen` or `defaultOpen` is set, which would leave the trigger
- * toggling one state while the surface renders another.
- *
- * Deliberately not derived from `PopoverRootSlotProps`. Root renders no element,
- * so style props and DOM attributes would have nothing to attach to — put `id`,
- * `className`, `data-*` and style props on `Popover.Trigger` or
- * `Popover.Content` instead. The absence of Chakra style props is also why
- * `maxHeight` here is React Aria's numeric positioning cap rather than the CSS
- * property the same name denotes in `HTMLChakraProps` — which is why
- * `Popover.Content` excludes that name outright.
+ * @see https://nimbus-documentation.vercel.app/components/feedback/popover
  */
 export type PopoverRootProps = PopoverOverlayConfigProps & {
   /**
@@ -150,11 +121,7 @@ export type PopoverRootProps = PopoverOverlayConfigProps & {
 
 /**
  * The configuration `Popover.Root` publishes to `Popover.Content` through
- * context.
- *
- * Derived by removing `DialogTrigger`'s own prop surface from
- * {@link PopoverRootProps}, so the open-state props and `children` cannot reach
- * the overlay by construction rather than by convention.
+ * context — every Root prop except `DialogTrigger`'s own surface.
  */
 export type PopoverConfigContextValue = Omit<
   PopoverRootProps,
@@ -165,14 +132,10 @@ export type PopoverConfigContextValue = Omit<
  * Props for the Popover.Trigger component.
  *
  * The element that opens the popover when pressed. Renders its own button
- * unless `asChild` is set.
- *
- * The two modes accept different props. React Aria hands the whole trigger
- * contract — press handling, `aria-expanded`, `aria-controls` and the trigger
- * ref — to the rendered element through context, so under `asChild` the only
- * thing this component adds is the `trigger` slot's styling. Button props
- * belong on the element you supply and are rejected here, rather than being
- * accepted and quietly having no effect.
+ * unless `asChild` is set. React Aria hands the whole trigger contract to the
+ * rendered element through context, so under `asChild` this part adds only the
+ * `trigger` slot's styling — button props belong on the element you supply and
+ * are rejected here rather than accepted with no effect.
  */
 export type PopoverTriggerProps =
   | (OmitInternalProps<PopoverTriggerSlotProps, keyof RaButtonProps> &
@@ -211,49 +174,23 @@ export type PopoverTriggerProps =
 /**
  * Props for the Popover.Content component.
  *
- * The positioned overlay surface. Supplies its own dialog element, so
- * consumers do not need to add one for correct accessibility.
+ * The positioned overlay surface. Supplies its own dialog element, so consumers
+ * do not need to add one for correct accessibility. Focus is contained and
+ * outside interaction dismisses it; `isNonModal` on `Popover.Root` relaxes
+ * neither.
  *
- * Focus is contained within the popover and outside interaction dismisses it,
- * which is React Aria's default. `isNonModal` on `Popover.Root` does not lift
- * either: it stops React Aria marking the rest of the page `inert` and locking
- * page scroll, so assistive technology can reach the surrounding page, but focus
- * stays contained and an outside press still closes the popover — this element
- * always renders a dialog, and the dialog contains focus on its own.
+ * Carries no overlay configuration — `placement`, `offset`, `isNonModal`,
+ * `role` and the rest of {@link PopoverOverlayConfigProps} are set on
+ * `Popover.Root`, including the `maxHeight` cap on the surface. Three of those
+ * names are excluded here explicitly rather than by absence, because Chakra
+ * declares them too and would otherwise accept them as inert CSS.
  *
- * Carries no overlay configuration. `Popover.Root` is the compound's single
- * configuration surface, so `placement`, `offset`, `isNonModal`, `role` and the
- * rest of {@link PopoverOverlayConfigProps} are set there and rejected here —
- * there is exactly one `Popover.Content` per `Popover.Root`, so a second place
- * to set the same option would only be a second place to look for it.
+ * Style props apply to the positioned surface; everything else is forwarded to
+ * the dialog inside it, where React Aria's `filterDOMProps` drops `title`,
+ * `tabIndex`, the keyboard focus handlers and every `aria-*` name outside the
+ * labelling four. Put those on your own content element instead.
  *
- * What remains here is this element's own presentation and labelling. Style props
- * apply to the positioned surface; the rest applies to the dialog inside it —
- * but React Aria runs that second set through `filterDOMProps`, so the type is
- * wider than what reaches the DOM. Accepted and then dropped: `title`, `tabIndex`
- * (the dialog forces `-1`), the keyboard and focus handlers (`onKeyDown`,
- * `onFocus`, `onBlur`), and every `aria-*` name outside the labelling four —
- * `aria-live` and `aria-roledescription` among them. Put those on your own
- * content element instead. What does arrive: `id`, `className`, `data-*`, `dir`,
- * `lang`, `inert`, the labelling `aria-label` / `aria-labelledby` /
- * `aria-describedby` / `aria-details`, and the mouse, pointer, touch, scroll,
- * animation and transition event families.
- *
- * Three configuration names also exist in `HTMLChakraProps<"div">`, so they are
- * excluded explicitly rather than by absence. `role` is the one that matters:
- * React's `AriaRole` is wider than the `dialog | alertdialog` `RaDialog` accepts,
- * so the name would admit roles the dialog rejects, and it is not a Chakra style
- * property, so it would be accepted and then silently dropped — `Popover.Content`
- * re-applies Root's `role` after spreading the rest. Excluding the name turns
- * that no-op into a compile error. `offset` and `maxHeight` are CSS properties
- * Chakra recognises whose React Aria namesakes are positioning input, so
- * `offset={12}` would read as "nudge the popover" and compile to inert CSS.
- *
- * The `maxH` shorthand and the `maxBlockSize` logical property stay accepted, but
- * no class can cap the surface: React Aria assigns `overlay.style.maxHeight`
- * imperatively on every position pass, and that inline value outranks a class.
- * Cap the surface with `maxHeight` on `Popover.Root`, where it is React Aria's
- * positioning input and feeds the placement calculation.
+ * @see https://nimbus-documentation.vercel.app/components/feedback/popover
  */
 export type PopoverContentProps = OmitInternalProps<
   PopoverContentSlotProps,
@@ -266,13 +203,13 @@ export type PopoverContentProps = OmitInternalProps<
   children?: ReactNode | ((opts: PopoverContentRenderProps) => ReactNode);
 
   /**
-   * An accessible name for the popover's dialog. Required when the content
-   * has no visible heading.
+   * An accessible name for the popover's dialog. Required when the content has
+   * no visible heading.
    */
   "aria-label"?: string;
 
   /**
-   * The id of an element that labels the popover's dialog.
+   * The id of the element that labels the popover's dialog.
    */
   "aria-labelledby"?: string;
 
