@@ -11,9 +11,10 @@ plain hints, and `Dialog` a flow that should block the page.
   `aria-labelledby` whenever the content has no visible heading.
 - Pass a function as the content to receive a `close` callback for dismissing
   the popover from inside.
-- `Popover.Trigger` renders a button by default; with `asChild` it applies
-  trigger behavior to your own pressable element, which then carries its own
-  props.
+- `Popover.Trigger` renders a bare `button` by default; with `asChild` it
+  applies trigger behavior to your own pressable element, which then carries its
+  own props. Reach for `asChild` with a `Button` or `IconButton` when you want
+  Nimbus styling.
 - `Popover.Root` takes only `isOpen`, `defaultOpen` and `onOpenChange`. It
   renders no element of its own, so style props and DOM attributes belong on
   `Popover.Trigger` or `Popover.Content`.

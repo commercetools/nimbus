@@ -4,6 +4,7 @@ import { userEvent, within, expect, fn, waitFor } from "storybook/test";
 import {
   Box,
   Button,
+  Dialog,
   IconButton,
   Popover,
   Stack,
@@ -147,6 +148,74 @@ export const EscapeToClose: Story = {
       // Focus restoration happens after the exit animation unmounts the
       // overlay, so it is not observable on the same tick as the dismissal.
       await waitFor(() => expect(trigger).toHaveFocus());
+    });
+  },
+};
+
+/**
+ * Escape does not reach a parent overlay
+ *
+ * A popover inside a Dialog takes Escape for itself: the popover closes and the
+ * Dialog stays open, so one Escape never dismisses two layers.
+ */
+export const EscapeStopsAtThePopover: Story = {
+  render: () => (
+    <Dialog.Root>
+      <Dialog.Trigger>Open dialog</Dialog.Trigger>
+      <Dialog.Content>
+        <Dialog.Header>
+          <Dialog.Title>Parent dialog</Dialog.Title>
+        </Dialog.Header>
+        <Dialog.Body>
+          <Popover.Root>
+            <Popover.Trigger>Open popover</Popover.Trigger>
+            <Popover.Content aria-label="Nested popover">
+              <Text>Escape closes only this.</Text>
+            </Popover.Content>
+          </Popover.Root>
+        </Dialog.Body>
+      </Dialog.Content>
+    </Dialog.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = portalCanvas(canvasElement);
+
+    await step("Open the dialog, then the popover inside it", async () => {
+      await userEvent.click(
+        canvas.getByRole("button", { name: "Open dialog" })
+      );
+      const dialogTrigger = await waitFor(() =>
+        canvas.getByRole("button", { name: "Open popover" })
+      );
+      await userEvent.click(dialogTrigger);
+      // Both overlays are open: the Dialog and the popover's own dialog element.
+      await waitFor(() =>
+        expect(canvas.getAllByRole("dialog")).toHaveLength(2)
+      );
+    });
+
+    await step(
+      "Escape closes the popover and leaves the dialog open",
+      async () => {
+        await userEvent.keyboard("{Escape}");
+        await waitFor(() =>
+          expect(
+            canvas.queryByRole("dialog", { name: "Nested popover" })
+          ).not.toBeInTheDocument()
+        );
+        // The parent survives, which is the half a single-overlay story cannot show.
+        await expect(canvas.getByRole("dialog")).toBeInTheDocument();
+        await expect(
+          canvas.getByRole("button", { name: "Open popover" })
+        ).toBeInTheDocument();
+      }
+    );
+
+    await step("A second Escape then closes the dialog", async () => {
+      await userEvent.keyboard("{Escape}");
+      await waitFor(() =>
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument()
+      );
     });
   },
 };

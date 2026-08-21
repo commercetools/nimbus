@@ -33,7 +33,7 @@ const App = () => (
 );
 ```
 
-Two things about this structure are worth knowing up front:
+Three things about this structure are worth knowing up front:
 
 - **`Root` renders no DOM element.** It wraps React Aria's `DialogTrigger`, which
   is a context provider, so it adds nothing to your layout. A trigger inside a
@@ -41,6 +41,10 @@ Two things about this structure are worth knowing up front:
 - **`Content` supplies its own dialog.** You do not add `<Dialog>` yourself.
   React Aria needs a dialog inside a popover for the role, name and Escape
   handling to work, so `Content` owns it.
+- **`Trigger` renders a bare `button`.** Its slot adds a focus ring and nothing
+  else, so the form above gives you browser default chrome. Reach for `asChild`
+  with a `Button` or `IconButton` when you want Nimbus styling, as the later
+  examples do.
 
 ## Usage examples
 
