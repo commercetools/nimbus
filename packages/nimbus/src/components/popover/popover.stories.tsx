@@ -19,7 +19,7 @@ const meta: Meta<typeof Popover.Content> = {
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof Popover.Content>;
 
 /** Records onOpenChange calls for the Controlled story's assertions. */
 const onOpenChangeSpy = fn();
@@ -144,7 +144,9 @@ export const EscapeToClose: Story = {
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
       });
-      await expect(trigger).toHaveFocus();
+      // Focus restoration happens after the exit animation unmounts the
+      // overlay, so it is not observable on the same tick as the dismissal.
+      await waitFor(() => expect(trigger).toHaveFocus());
     });
   },
 };
@@ -187,8 +189,9 @@ export const OutsidePressToClose: Story = {
     await step("Focus returns to the trigger", async () => {
       // The dismissing press landed on a non-focusable area, so React Aria
       // restores focus. Pressing a focusable element outside would leave focus
-      // on that element instead.
-      await expect(trigger).toHaveFocus();
+      // on that element instead. Restoration lands after the exit animation
+      // unmounts the overlay, so it is not observable on the dismissal tick.
+      await waitFor(() => expect(trigger).toHaveFocus());
     });
   },
 };
@@ -228,7 +231,10 @@ export const KeyboardActivation: Story = {
     });
 
     await step("Space on a focused trigger opens the popover", async () => {
-      await expect(trigger).toHaveFocus();
+      // Escape restored focus to the trigger asynchronously, after the exit
+      // animation unmounted the overlay. Without the wait, the keyboard press
+      // below can land before the trigger is focused again.
+      await waitFor(() => expect(trigger).toHaveFocus());
       await userEvent.keyboard("{ }");
       await waitFor(() => {
         expect(canvas.getByRole("dialog")).toBeInTheDocument();
@@ -425,7 +431,84 @@ export const CloseFromContent: Story = {
       await waitFor(() => {
         expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
       });
-      await expect(trigger).toHaveFocus();
+      // Restoration lands after the exit animation unmounts the overlay.
+      await waitFor(() => expect(trigger).toHaveFocus());
+    });
+  },
+};
+
+/**
+ * Focus containment
+ *
+ * The default popover is modal: opening it moves focus into the dialog, Tab and
+ * Shift+Tab cycle inside it rather than escaping to the page, and dismissing it
+ * returns focus to the trigger. `NonModal` below is the opposite arrangement.
+ */
+export const FocusContainment: Story = {
+  render: () => (
+    <Stack gap="400">
+      <Button>Before</Button>
+      <Popover.Root>
+        <Popover.Trigger>Open popover</Popover.Trigger>
+        <Popover.Content aria-label="Contained popover">
+          <Stack gap="200">
+            <TextInput aria-label="Search" />
+            <Button>Apply</Button>
+            <Button>Reset</Button>
+          </Stack>
+        </Popover.Content>
+      </Popover.Root>
+      <Button>After</Button>
+    </Stack>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = portalCanvas(canvasElement);
+    const trigger = canvas.getByRole("button", { name: "Open popover" });
+
+    let dialog!: HTMLElement;
+
+    await step("Opening moves focus into the dialog", async () => {
+      await userEvent.click(trigger);
+      dialog = await waitFor(() => canvas.getByRole("dialog"));
+      // React Aria focuses the dialog itself (tabindex="-1") when no child
+      // requests autoFocus. `contains` covers both that case and a focused
+      // descendant, since a node contains itself.
+      await waitFor(() =>
+        expect(dialog.contains(document.activeElement)).toBe(true)
+      );
+    });
+
+    await step("Tab cycles forward without leaving the dialog", async () => {
+      // Three focusable children, tabbed five times: focus must wrap inside the
+      // dialog instead of reaching "After" or the browser chrome.
+      for (let i = 0; i < 5; i++) {
+        await userEvent.tab();
+        expect(dialog.contains(document.activeElement)).toBe(true);
+      }
+    });
+
+    await step("Shift+Tab cycles backward without leaving either", async () => {
+      for (let i = 0; i < 4; i++) {
+        await userEvent.tab({ shift: true });
+        expect(dialog.contains(document.activeElement)).toBe(true);
+      }
+    });
+
+    await step("Neither outside button ever took focus", async () => {
+      // The complement of the two cycles above: containment is only meaningful
+      // if the tab order never reached the page behind the popover.
+      const before = canvas.getByRole("button", { name: "Before" });
+      const after = canvas.getByRole("button", { name: "After" });
+      expect(before).not.toHaveFocus();
+      expect(after).not.toHaveFocus();
+    });
+
+    await step("Dismissal returns focus to the trigger", async () => {
+      await userEvent.keyboard("{Escape}");
+      await waitFor(() => {
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+      await waitFor(() => expect(trigger).toHaveFocus());
     });
   },
 };
@@ -484,7 +567,7 @@ export const NonModal: Story = {
  *
  * Not snapshotted: placement is React Aria repositioning the same box, with no
  * arrow or layout change, so it is behavioral rather than visual (see
- * docs/chromatic-visual-testing.md).
+ * docs/chromatic-visual-testing.md). The play asserts it instead.
  */
 export const Placement: Story = {
   render: () => (
@@ -497,6 +580,24 @@ export const Placement: Story = {
       </Popover.Root>
     </Box>
   ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = portalCanvas(canvasElement);
+
+    await step("The requested placement reaches the surface", async () => {
+      const dialog = await waitFor(() => canvas.getByRole("dialog"));
+      // React Aria writes the resolved side onto the popover element that wraps
+      // the dialog. It reports the axis only (`right`), not the alignment.
+      const surface = dialog.closest("[data-placement]");
+      await expect(surface).not.toBeNull();
+
+      // Asserted as an axis rather than the exact side: React Aria may flip to
+      // the opposite side when the viewport is tight, but a flip stays on the
+      // requested axis. Landing on `right`/`left` therefore proves `right top`
+      // was honoured, since the unset default would place it on `bottom`.
+      const placement = surface!.getAttribute("data-placement");
+      await expect(["right", "left"]).toContain(placement);
+    });
+  },
 };
 
 // VRT open-state snapshots: `defaultOpen` so Chromatic captures the settled
@@ -541,10 +642,11 @@ export const OpenPopover: Story = {
 };
 
 /**
- * Focused trigger - the `trigger` slot's `focusRing: "outside"`. The trigger is
- * a bare `button`, not the Button recipe, so no other component's baseline
- * covers this ring. Reached via Tab (real keyboard, so `:focus-visible` fires)
- * and left closed, since the open frame moves focus into the dialog.
+ * Focused trigger - the `trigger` slot's `focusVisibleRing: "outside"`. The
+ * trigger is a bare `button`, not the Button recipe, so no other component's
+ * baseline covers this ring. Reached via Tab (real keyboard, so
+ * `:focus-visible` fires) and left closed, since the open frame moves focus
+ * into the dialog.
  */
 export const FocusedTrigger: Story = {
   tags: ["vrt"],
