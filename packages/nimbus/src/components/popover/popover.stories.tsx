@@ -508,6 +508,44 @@ export const CloseFromContent: Story = {
 };
 
 /**
+ * Close via slot
+ *
+ * `Popover.Content` renders a dialog, so React Aria's `slot="close"` wiring is
+ * available to buttons inside it — no function child needed.
+ */
+export const CloseViaSlot: Story = {
+  render: () => (
+    <Popover.Root>
+      <Popover.Trigger>Discard changes</Popover.Trigger>
+      <Popover.Content aria-label="Discard changes">
+        <Stack gap="200">
+          <Text>Discard your changes?</Text>
+          <Button slot="close">Cancel</Button>
+        </Stack>
+      </Popover.Content>
+    </Popover.Root>
+  ),
+  play: async ({ canvasElement, step }) => {
+    const canvas = portalCanvas(canvasElement);
+    const trigger = canvas.getByRole("button", { name: "Discard changes" });
+
+    await step("Open the popover", async () => {
+      await userEvent.click(trigger);
+      await waitFor(() => {
+        expect(canvas.getByRole("dialog")).toBeInTheDocument();
+      });
+    });
+
+    await step('slot="close" dismisses the popover', async () => {
+      await userEvent.click(canvas.getByRole("button", { name: "Cancel" }));
+      await waitFor(() => {
+        expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+      });
+    });
+  },
+};
+
+/**
  * Focus containment
  *
  * The default popover is modal: opening it moves focus into the dialog, Tab and

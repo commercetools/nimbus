@@ -92,9 +92,27 @@ const App = () => {
 
 ### Closing from inside the content
 
-Because `Content` owns the dialog, React Aria's `close` render prop is forwarded
-through a function child. This is the idiomatic way to dismiss from an action
-inside the popover — reach for it before wiring up controlled state.
+Because `Content` owns the dialog, buttons inside it can use `slot="close"`,
+the same way they do in `Dialog` and `Drawer`:
+
+```jsx live-dev
+const App = () => (
+  <Popover.Root>
+    <Popover.Trigger>Discard changes</Popover.Trigger>
+    <Popover.Content aria-label="Discard changes">
+      <Stack gap="200">
+        <Text>Discard your changes?</Text>
+        <Button slot="close">Discard</Button>
+      </Stack>
+    </Popover.Content>
+  </Popover.Root>
+);
+```
+
+Reach for a function child instead when the action has to do something *before*
+it dismisses — `Content` forwards React Aria's `close` render prop, so the
+callback can run inside your own handler. Either way, prefer these over wiring
+up controlled state just to close the popover.
 
 ```jsx live-dev
 const App = () => (
