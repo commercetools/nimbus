@@ -46,17 +46,21 @@ Two things about this structure are worth knowing up front:
 
 ### Uncontrolled mode
 
-`defaultOpen` sets the initial state and lets the component manage it.
+`defaultOpen` sets the initial state and lets the component manage it from
+there.
 
-```jsx live-dev
-const App = () => (
-  <Popover.Root defaultOpen>
-    <Popover.Trigger>Open popover</Popover.Trigger>
-    <Popover.Content aria-label="Initially open">
-      <Text>Open on mount.</Text>
-    </Popover.Content>
-  </Popover.Root>
-);
+This one is shown as code rather than rendered live: a `defaultOpen` popover is
+modal from the moment it mounts, so a live example would open over the page,
+contain focus and hide the surrounding documentation from assistive technology
+as soon as you scrolled to it.
+
+```tsx
+<Popover.Root defaultOpen>
+  <Popover.Trigger>Open popover</Popover.Trigger>
+  <Popover.Content aria-label="Initially open">
+    <Text>Open on mount.</Text>
+  </Popover.Content>
+</Popover.Root>
 ```
 
 ### Controlled mode
