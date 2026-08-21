@@ -61,8 +61,14 @@ type PopoverPositioningProps = Pick<
  * Establishes the popover's open state and styling context. Renders React
  * Aria's `DialogTrigger`, which mounts no DOM element of its own, so Root does
  * not affect the surrounding layout.
+ *
+ * Deliberately not derived from `PopoverRootSlotProps`. `DialogTrigger`'s prop
+ * surface is exactly the four props below, and it renders no element, so style
+ * props and DOM attributes would have nothing to attach to. Put `id`,
+ * `className`, `data-*` and style props on `Popover.Trigger` or
+ * `Popover.Content` instead.
  */
-export type PopoverRootProps = OmitInternalProps<PopoverRootSlotProps> & {
+export type PopoverRootProps = {
   /**
    * The popover's parts — typically a `Popover.Trigger` and a
    * `Popover.Content`.

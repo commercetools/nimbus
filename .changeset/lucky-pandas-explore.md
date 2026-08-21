@@ -14,6 +14,9 @@ plain hints, and `Dialog` a flow that should block the page.
 - `Popover.Trigger` renders a button by default; with `asChild` it applies
   trigger behavior to your own pressable element, which then carries its own
   props.
+- `Popover.Root` takes only `isOpen`, `defaultOpen` and `onOpenChange`. It
+  renders no element of its own, so style props and DOM attributes belong on
+  `Popover.Trigger` or `Popover.Content`.
 - Position with `placement`, `offset` and `crossOffset` on `Popover.Content`.
   Focus is contained and an outside press dismisses it, which `isNonModal`
   relaxes.

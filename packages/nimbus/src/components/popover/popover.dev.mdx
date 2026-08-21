@@ -204,8 +204,9 @@ element, so you can exempt specific regions from dismissing the popover.
 
 ### Styling
 
-Style props on each part apply to that part's slot. Padding lives on the content
-surface, so a single prop removes it:
+Style props on `Trigger` and `Content` apply to that part's slot. `Root` renders
+no element, so it takes none. Padding lives on the content surface, so a single
+prop removes it:
 
 ```jsx live-dev
 const App = () => (

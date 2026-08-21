@@ -2,7 +2,6 @@ import { DialogTrigger as RaDialogTrigger } from "react-aria-components";
 
 import { PopoverRootSlot } from "../popover.slots";
 import type { PopoverRootProps } from "../popover.types";
-import { extractStyleProps } from "@/utils";
 
 /**
  * Popover.Root - Establishes the popover's open state and styling context
@@ -12,15 +11,15 @@ import { extractStyleProps } from "@/utils";
  * still installing the slot-recipe context that `Popover.Content` reads through
  * the portal.
  *
- * @supportsStyleProps
+ * Accepts no style props: with no element of its own there is nothing for them
+ * to attach to, so the style-props JSDoc tag is deliberately absent here. The
+ * `root` slot exists only so `withProvider` can install that context.
  */
 export const PopoverRoot = (props: PopoverRootProps) => {
-  const { children, isOpen, defaultOpen, onOpenChange, ...restProps } = props;
-
-  const [styleProps] = extractStyleProps(restProps);
+  const { children, isOpen, defaultOpen, onOpenChange } = props;
 
   return (
-    <PopoverRootSlot {...styleProps} asChild>
+    <PopoverRootSlot asChild>
       <RaDialogTrigger
         isOpen={isOpen}
         defaultOpen={defaultOpen}
