@@ -1,6 +1,7 @@
 import { createToaster } from "@chakra-ui/react/toast";
 import type { ToastPlacement } from "../toast.types";
 import { ALL_PLACEMENTS, PLACEMENT_HOTKEYS } from "../constants";
+import { markToastersActive, resetActivation } from "./toast.activation";
 
 /** Local alias to avoid exposing transitive @zag-js/toast types in declarations. */
 type Toaster = ReturnType<typeof createToaster>;
@@ -21,12 +22,6 @@ type Toaster = ReturnType<typeof createToaster>;
 let toasters: Map<ToastPlacement, ReturnType<typeof createToaster>> | null =
   null;
 
-/**
- * Listeners notified when toasters are first initialized.
- * Used by ToastOutlet to defer rendering until a toast is actually created.
- */
-const activationListeners = new Set<() => void>();
-
 function ensureToasters() {
   if (!toasters) {
     toasters = new Map(
@@ -43,8 +38,8 @@ function ensureToasters() {
       })
     );
 
-    // Notify outlet that toasters are now available
-    activationListeners.forEach((listener) => listener());
+    // Notify the lightweight activation module (and thus ToastOutlet's shell)
+    markToastersActive();
   }
   return toasters;
 }
@@ -58,29 +53,7 @@ function ensureToasters() {
  */
 export function resetToasters(): void {
   toasters = null;
-}
-
-/**
- * Whether toasters have been initialized (i.e., at least one toast was created).
- */
-export function isToastersActive(): boolean {
-  return toasters !== null;
-}
-
-/**
- * Subscribe to toaster activation. The callback fires once when toasters
- * are first initialized. Returns an unsubscribe function.
- */
-export function onToastersActivated(callback: () => void): () => void {
-  // Already active — fire immediately
-  if (toasters) {
-    callback();
-    return () => {};
-  }
-  activationListeners.add(callback);
-  return () => {
-    activationListeners.delete(callback);
-  };
+  resetActivation();
 }
 
 /**
