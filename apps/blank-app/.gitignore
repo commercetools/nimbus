@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 dist
+bundle-report.html
 dist-ssr
 dist-webpack
 *.local

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:analyze": "ANALYZE_BUNDLE=true tsc -b && ANALYZE_BUNDLE=true vite build",
     "build:webpack": "webpack --mode production",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -26,6 +27,7 @@
     "globals": "catalog:tooling",
     "typescript": "catalog:tooling",
     "typescript-eslint": "catalog:tooling",
+    "rollup-plugin-visualizer": "^5.14.0",
     "vite": "catalog:tooling",
     "webpack": "catalog:tooling",
     "webpack-cli": "catalog:tooling"

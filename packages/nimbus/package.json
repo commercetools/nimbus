@@ -146,8 +146,6 @@
   },
   "peerDependencies": {
     "@chakra-ui/react": "catalog:react",
-    "@commercetools/nimbus-icons": "workspace:^",
-    "@commercetools/nimbus-tokens": "workspace:^",
     "react": "19.x",
     "slate": "^0.123.0",
     "slate-history": "^0.115.0",
