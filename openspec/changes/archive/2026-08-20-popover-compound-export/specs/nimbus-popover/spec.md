@@ -97,12 +97,12 @@ detection.
 
 #### Scenario: Offset positioning
 
-- **WHEN** the `offset` prop is set
+- **WHEN** the `offset` prop is set on `Popover.Root`
 - **THEN** it SHALL adjust the distance from the trigger in pixels
 
 #### Scenario: Cross-axis offset
 
-- **WHEN** the `crossOffset` prop is set
+- **WHEN** the `crossOffset` prop is set on `Popover.Root`
 - **THEN** it SHALL adjust position along the perpendicular axis
 - **AND** it SHALL combine with the primary placement
 
@@ -197,9 +197,11 @@ The component SHALL implement the ARIA dialog-in-popover pattern.
 
 #### Scenario: Accessible name
 
-- **WHEN** the popover has no visible heading
-- **THEN** it SHALL accept `aria-label` or `aria-labelledby` for its name
+- **WHEN** the popover needs an accessible name
+- **THEN** `Popover.Content` SHALL accept `aria-label` or `aria-labelledby` for it
 - **AND** the name SHALL be announced when the popover opens
+- **AND** with neither set, React Aria SHALL fall back to labelling the dialog
+  with the trigger's own accessible name
 
 #### Scenario: Screen reader announcements
 
@@ -226,7 +228,8 @@ The component SHALL animate appearance and dismissal.
 
 - **WHEN** the popover closes
 - **THEN** it SHALL fade and scale out before leaving the DOM
-- **AND** it SHALL use the same duration as the enter animation
+- **AND** it SHALL use a duration token one step shorter than the enter
+  animation's
 
 ### Requirement: Multi-Slot Recipe
 
@@ -280,9 +283,11 @@ The component SHALL render in a portal for correct stacking.
 #### Scenario: Container option
 
 - **WHEN** a consumer needs the overlay to portal into a specific container
-- **THEN** `Popover.Content` SHALL NOT expose a portal-container prop of its own
-- **AND** the portal target SHALL be controlled by React Aria's
-  `UNSAFE_PortalProvider` placed higher in the tree
+- **THEN** `Popover.Root` SHALL accept `UNSTABLE_portalContainer` for that single
+  popover
+- **AND** `Popover.Content` SHALL NOT expose a portal-container prop of its own
+- **AND** React Aria's `UNSAFE_PortalProvider` placed higher in the tree SHALL
+  remain available for retargeting a whole subtree at once
 
 ### Requirement: Mobile Interaction
 

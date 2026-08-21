@@ -188,6 +188,20 @@ That is deliberate. Both existing consumers fully override the shared surface,
 so routing them through a brand-new public API would couple them to it for no
 styling benefit.
 
+> **Superseded** (the LocalizedField half only; the ComboBox reasoning above
+> still holds). LocalizedField was migrated onto the public compound after all:
+> `localized-field.root.tsx` renders `Popover.Root` / `Popover.Trigger asChild` /
+> `Popover.Content padding="0"`, so the new `Popover` ships with **one** internal
+> consumer, not zero. The blocker named above dissolved rather than being worked
+> around — the duplicated surface was not preserved on an inner element but
+> dropped: `infoDialog` now carries only `maxWidth`, `maxHeight`, `overflow` and
+> the scrollbar properties, while background, radius and elevation come from the
+> compound's `content` slot. `focusRing: outside` was removed rather than
+> relocated (the dialog uses `outline: none`, matching `Dialog` and `Drawer`, and
+> the only ring left is the hint trigger's), which also resolved the stacked
+> shadow noted below. No `infoPopover` slot and no `LocalizedFieldInfoPopoverSlot`
+> were added.
+
 *Noted for a separate ticket:* the stacked `boxShadow: 5` + `boxShadow: 6` on
 LocalizedField's info popover looks like a latent bug rather than intent. We
 replicate it here to hold the pixel-identical guarantee; changing it is a

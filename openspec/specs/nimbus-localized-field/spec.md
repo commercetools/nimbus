@@ -425,12 +425,16 @@ The component SHALL provide fieldset legend with optional info box popover.
 #### Scenario: Info box popover display
 
 - **WHEN** user clicks info button
-- **THEN** SHALL open React Aria DialogTrigger with Popover
-- **AND** popover SHALL render hint content inside Dialog
-- **AND** popover SHALL use infoDialog slot styling (bg: neutral.1, maxWidth:
-  xl, boxShadow: 6)
-- **AND** popover SHALL have maxHeight: 40svh with overflow: auto
-- **AND** popover SHALL have focusRing: outside
+- **THEN** SHALL open the `Popover` compound (`Popover.Root` / `Popover.Trigger` /
+  `Popover.Content`), which supplies the React Aria DialogTrigger and Dialog
+  underneath
+- **AND** popover SHALL render hint content inside that Dialog
+- **AND** the surface treatment — background, corner radius and elevation — SHALL
+  come from the `Popover` recipe's `content` slot rather than being restated here
+- **AND** infoDialog slot SHALL contribute only sizing and scrolling (maxWidth:
+  xl, maxHeight: 40svh, overflow: auto, thin scrollbar)
+- **AND** the only focus ring SHALL be the hint trigger's; the dialog itself SHALL
+  NOT draw one
 
 #### Scenario: Info box keyboard interaction
 

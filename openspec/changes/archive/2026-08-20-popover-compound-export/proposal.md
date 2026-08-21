@@ -33,9 +33,10 @@ foundation and the compound patterns (Menu, Dialog) are both already in place.
 - **The recipe stops using a raw CSS color.** `bg: "white"` becomes the
   semantic token `bg`, matching Menu and Dialog. Enter/exit fade+scale
   animations are lifted from Menu's popover slot for consistency.
-- **Internal consumers migrate off the callable `Popover`.** Both ComboBox and
-  LocalizedField drop to a bare React Aria `Popover` (what Select already
-  does), since both fully override the shared surface in their own recipes.
+- **Internal consumers migrate off the callable `Popover`.** ComboBox drops to a
+  bare React Aria `Popover` (what Select already does), since it fully overrides
+  the shared surface in its own recipe; LocalizedField moves onto the new public
+  compound instead, keeping only sizing and scrolling in its own slot.
   Neither is a public API break — `Popover` is not currently exported.
 - **Full documentation set** (`.mdx`, `.dev.mdx`, `.a11y.mdx`,
   `.guidelines.mdx`, `.docs.spec.tsx`) plus stories with play functions,
@@ -86,9 +87,8 @@ unchanged, so `nimbus-combobox` and `nimbus-localized-field` need no delta.
 | `theme/slot-recipes/index.ts` | Adds `nimbusPopover` |
 | `combobox/components/combobox.popover.tsx` | Uses React Aria `Popover` directly |
 | `combobox/combobox.recipe.ts` | Explicit `zIndex: 1` on the `popover` slot |
-| `localized-field/components/localized-field.root.tsx` | Uses React Aria `Popover` directly |
-| `localized-field/localized-field.recipe.ts` | New `infoPopover` slot preserving inherited styles |
-| `localized-field/localized-field.slots.tsx` | New `LocalizedFieldInfoPopoverSlot` |
+| `localized-field/components/localized-field.root.tsx` | Uses the public `Popover.Root` / `Trigger` / `Content` |
+| `localized-field/localized-field.recipe.ts` | `infoDialog` reduced to sizing and scroll styles |
 | `openspec/specs/nimbus-popover/spec.md` | Narrowed to shipped surface |
 
 **Risk.** The recipe re-keying is the one place this can regress: ComboBox and

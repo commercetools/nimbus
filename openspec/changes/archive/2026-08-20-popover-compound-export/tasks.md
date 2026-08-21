@@ -29,9 +29,9 @@ Iterate with `pnpm --filter @commercetools/nimbus typecheck:dev` and
 - [x] 2.1 Rewrite `popover.slots.tsx` to use `createSlotRecipeContext({ key: "nimbusPopover" })`,
       exporting `PopoverRootSlot` (via `withProvider`, `"div"`, `"root"`),
       `PopoverTriggerSlot`, `PopoverContentSlot`, `PopoverDialogSlot`
-- [x] 2.2 Rewrite `popover.types.ts` for the four-layer architecture: recipe
-      props, slot props, then `PopoverRootProps` / `PopoverTriggerProps` /
-      `PopoverContentProps` with JSDoc on every public prop
+- [x] 2.2 Rewrite `popover.types.ts` for the layered architecture: slot props,
+      then `PopoverRootProps` / `PopoverTriggerProps` / `PopoverContentProps`
+      with JSDoc on every public prop
 - [x] 2.3 Create `popover/components/` with an `index.ts` barrel
 - [x] 2.4 Create `popover.stories.tsx` with a single render-only `Base` story to
       drive development from a real harness
@@ -39,8 +39,9 @@ Iterate with `pnpm --filter @commercetools/nimbus typecheck:dev` and
 ## 3. Component parts
 
 - [x] 3.1 Implement `components/popover.root.tsx` as
-      `<PopoverRootSlot asChild><RaDialogTrigger>`, splitting recipe variants
-      then extracting style props; set `displayName = "Popover.Root"`
+      `<PopoverRootSlot asChild><RaDialogTrigger>`, forwarding the open-state
+      props to `DialogTrigger` and publishing the rest as overlay config; set
+      `displayName = "Popover.Root"`
 - [x] 3.2 Verify Root mounts no DOM element of its own (inspect the rendered
       tree in the Base story — the trigger must be a direct child of its parent)
 - [x] 3.3 Implement `components/popover.trigger.tsx` as
@@ -85,7 +86,7 @@ Iterate with `pnpm --filter @commercetools/nimbus typecheck:dev` and
 - [x] 5.7 Add a story with a custom `asChild` trigger and assert no nested
       interactive element is produced
 - [x] 5.8 Confirm ARIA wiring in a play function: `role="dialog"` present,
-      trigger carries `aria-expanded` and `aria-haspopup="dialog"`
+      trigger carries `aria-expanded` and no `aria-haspopup`
 - [x] 5.9 Add a story using a function child with a close button and assert
       calling `close` dismisses the popover and returns focus to the trigger
 - [x] 5.10 Add a story with `isNonModal` and assert an element outside the

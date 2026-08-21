@@ -459,18 +459,40 @@ export const MenuRoot = (props) => {
 
 ### Flexible Child Composition
 
-```typescript
+```tsx
 // Allow flexible ordering
-<Popover.Root>
-  <Popover.Content>
-    <Popover.Title>Title</Popover.Title>
-    <Popover.Description>Description</Popover.Description>
-    {/* User can add custom content */}
-    <CustomContent />
-    <Popover.Actions>
+<Dialog.Root>
+  <Dialog.Trigger>Open</Dialog.Trigger>
+  <Dialog.Content>
+    <Dialog.Header>
+      <Dialog.Title>Title</Dialog.Title>
+      <Dialog.CloseTrigger>×</Dialog.CloseTrigger>
+    </Dialog.Header>
+    <Dialog.Body>
+      {/* User can add custom content */}
+      <CustomContent />
+    </Dialog.Body>
+    <Dialog.Footer>
       <Button>Cancel</Button>
       <Button>Confirm</Button>
-    </Popover.Actions>
+    </Dialog.Footer>
+  </Dialog.Content>
+</Dialog.Root>
+```
+
+Where a compound has no such sub-parts, the consumer's own markup fills that
+role and the parts stay minimal — `Popover` is three parts, and everything
+inside the surface is the consumer's:
+
+```tsx
+<Popover.Root placement="bottom start">
+  <Popover.Trigger>Filters</Popover.Trigger>
+  <Popover.Content aria-label="Filters">
+    <CustomContent />
+    <Stack direction="row" gap="200">
+      <Button>Cancel</Button>
+      <Button>Apply</Button>
+    </Stack>
   </Popover.Content>
 </Popover.Root>
 ```

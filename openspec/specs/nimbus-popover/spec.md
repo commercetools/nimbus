@@ -14,7 +14,7 @@ The Popover component provides an accessible overlay positioned relative to a tr
 
 Popover provides an overlay for displaying rich, interactive content relative to a trigger element. Unlike Tooltip (non-interactive info on hover), Popover supports forms, buttons, and complex UI while maintaining accessibility. Unlike Dialog, it stays anchored to its trigger rather than taking over the page, and it is dismissed by Escape or an outside press rather than requiring an explicit action. Use Popover for supplementary actions, filters, settings panels, or context-sensitive content that doesn't require full modal attention.
 
-Focus is contained within the popover and outside interaction dismisses it, following React Aria's default for a dialog inside a popover. `isNonModal` relaxes that containment; React Aria's guidance is that most popovers should not use it.
+Focus is contained within the popover and outside interaction dismisses it, following React Aria's default for a dialog inside a popover. `isNonModal` does not relax either — it leaves the rest of the page interactive and scrollable instead of `inert`; React Aria's guidance is that most popovers should not use it.
 
 ## Requirements
 
@@ -168,8 +168,8 @@ their behavioral props and publish them to `Popover.Content` through context.
 - **WHEN** the surface height needs capping
 - **THEN** `maxHeight` on `Popover.Root` SHALL be the supported way to do it
 - **AND** `maxHeight` on `Popover.Content` SHALL be a type error
-- **AND** its Chakra alias `maxH` SHALL remain accepted but SHALL NOT be able to
-  take effect on that element, because React Aria assigns
+- **AND** its Chakra aliases `maxH` and `maxBlockSize` SHALL remain accepted but
+  SHALL NOT be able to take effect on that element, because React Aria assigns
   `overlay.style.maxHeight` imperatively on every position pass and an inline
   value outranks a class
 
@@ -323,9 +323,12 @@ The component SHALL implement the ARIA dialog-in-popover pattern.
 
 #### Scenario: Accessible name
 
-- **WHEN** the popover has no visible heading
-- **THEN** it SHALL accept `aria-label` or `aria-labelledby` for its name
+- **WHEN** the popover needs an accessible name
+- **THEN** `Popover.Content` SHALL accept `aria-label` or `aria-labelledby` for it
 - **AND** the name SHALL be announced when the popover opens
+- **AND** with neither set, React Aria SHALL fall back to labelling the dialog
+  with the trigger's own accessible name — a visible heading inside the popover
+  SHALL NOT name it unless `aria-labelledby` points at that heading
 
 #### Scenario: Screen reader announcements
 
@@ -352,7 +355,8 @@ The component SHALL animate appearance and dismissal.
 
 - **WHEN** the popover closes
 - **THEN** it SHALL fade and scale out before leaving the DOM
-- **AND** it SHALL use the same duration as the enter animation
+- **AND** it SHALL use a duration token one step shorter than the enter
+  animation's, so dismissal feels immediate while entry stays legible
 
 ### Requirement: Multi-Slot Recipe
 
@@ -505,12 +509,15 @@ behavior, and SHALL allow that behavior to be relaxed.
 - **AND** pointer interaction outside the popover SHALL dismiss it rather than
   reach the element beneath
 
-#### Scenario: Relaxed containment
+#### Scenario: Relaxed modality
 
 - **WHEN** `isNonModal` is set on `Popover.Root`
-- **THEN** assistive technologies SHALL be able to reach content outside the
-  popover
-- **AND** focus SHALL NOT be contained within the popover
+- **THEN** the rest of the page SHALL NOT be marked `inert`, so assistive
+  technologies can reach content outside the popover
+- **AND** page scroll SHALL NOT be locked while the popover is open
+- **AND** keyboard focus SHALL still be contained within the popover, and an
+  outside press SHALL still dismiss it, because containment comes from the dialog
+  `Popover.Content` renders rather than from modality
 
 #### Scenario: Closing focus
 
