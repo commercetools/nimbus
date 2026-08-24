@@ -204,6 +204,7 @@ export function ProductDetailForm() {
       <Button
         variant="ghost"
         colorPalette="primary"
+        size="sm"
         onPress={() => {}}
         alignSelf="flex-start"
       >
@@ -393,51 +394,55 @@ export function ProductDetailForm() {
           <Stack direction="column" gap="400" width="100%">
             <Stack direction="row" gap="400" maxW="2xl" flexWrap="wrap">
               <Box flex="1">
-                <Text
-                  id="category-label"
-                  as="label"
-                  fontSize="sm"
-                  fontWeight="medium"
-                >
-                  Category
-                </Text>
-                <Select.Root
-                  aria-labelledby="category-label"
-                  selectedKey={values.category}
-                  onSelectionChange={handleCategoryChange}
-                >
-                  <Select.Options>
-                    {CATEGORY_OPTIONS.map((option) => (
-                      <Select.Option key={option.value} id={option.value}>
-                        {option.label}
-                      </Select.Option>
-                    ))}
-                  </Select.Options>
-                </Select.Root>
+                <Stack direction="column" gap="100">
+                  <Text
+                    id="category-label"
+                    as="label"
+                    fontSize="sm"
+                    fontWeight="medium"
+                  >
+                    Category
+                  </Text>
+                  <Select.Root
+                    aria-labelledby="category-label"
+                    selectedKey={values.category}
+                    onSelectionChange={handleCategoryChange}
+                  >
+                    <Select.Options>
+                      {CATEGORY_OPTIONS.map((option) => (
+                        <Select.Option key={option.value} id={option.value}>
+                          {option.label}
+                        </Select.Option>
+                      ))}
+                    </Select.Options>
+                  </Select.Root>
+                </Stack>
               </Box>
 
               <Box flex="1">
-                <Text
-                  id="status-label"
-                  as="label"
-                  fontSize="sm"
-                  fontWeight="medium"
-                >
-                  Status
-                </Text>
-                <Select.Root
-                  aria-labelledby="status-label"
-                  selectedKey={values.status}
-                  onSelectionChange={handleStatusChange}
-                >
-                  <Select.Options>
-                    {STATUS_OPTIONS.map((option) => (
-                      <Select.Option key={option.value} id={option.value}>
-                        {option.label}
-                      </Select.Option>
-                    ))}
-                  </Select.Options>
-                </Select.Root>
+                <Stack direction="column" gap="100">
+                  <Text
+                    id="status-label"
+                    as="label"
+                    fontSize="sm"
+                    fontWeight="medium"
+                  >
+                    Status
+                  </Text>
+                  <Select.Root
+                    aria-labelledby="status-label"
+                    selectedKey={values.status}
+                    onSelectionChange={handleStatusChange}
+                  >
+                    <Select.Options>
+                      {STATUS_OPTIONS.map((option) => (
+                        <Select.Option key={option.value} id={option.value}>
+                          {option.label}
+                        </Select.Option>
+                      ))}
+                    </Select.Options>
+                  </Select.Root>
+                </Stack>
               </Box>
             </Stack>
 

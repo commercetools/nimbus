@@ -81,10 +81,11 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "variant",
     notes:
-      'Use <Button variant="ghost"> for flat styling. ' +
+      'Use <Button variant="ghost" size="sm"> for flat styling. ' +
+      "FlatButton renders compact — set size='sm' to match. " +
       "UI Kit tone prop ('primary'|'secondary'|'inverted'|'critical') maps to Nimbus colorPalette/variant.",
     breakingChanges: [
-      "Replace FlatButton with <Button>",
+      "Replace FlatButton with <Button variant='ghost' size='sm'>",
       "Default color changed: UI Kit FlatButton was blue (tone='primary') by default; Nimbus Button defaults to colorPalette='neutral' (gray). Add colorPalette='primary' to preserve the blue appearance.",
       "label prop replaced by children",
       "tone prop replaced by variant/colorPalette",
@@ -1742,7 +1743,11 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus",
     mappingType: "direct",
     notes:
-      "Direct replacement. Column definitions require DataTableColumnItem<RowType>[] generic typing. Sort and selection callbacks have new signatures.",
+      "Direct replacement. Column definitions require DataTableColumnItem<RowType>[] generic typing. Sort and selection callbacks have new signatures. " +
+      "Set allowsPinning={false} unless you need row pinning (UIKit DataTable had no pin column). " +
+      "For sticky header with vertical scrolling, set maxHeight on the DataTable. " +
+      "Horizontal scroll shadows are automatic — they appear when the table overflows its container width. " +
+      "DataTable supports style props, so set maxW directly on it to constrain width and trigger horizontal scrolling.",
     breakingChanges: [
       "columns prop shape changed: key→id, label→header, accessor required (returns cell content, can be string or JSX)",
       "DataTableColumnItem<T> is generic — without <T> accessors return unknown and TS rejects them as ReactNode",

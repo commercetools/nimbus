@@ -422,6 +422,7 @@ export function ProductListView() {
             columns={columns}
             rows={filteredProducts}
             maxHeight="600px"
+            allowsPinning={false}
             allowsSorting
             sortDescriptor={sortDescriptor}
             onSortChange={setSortDescriptor}
