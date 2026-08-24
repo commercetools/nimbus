@@ -191,7 +191,7 @@ export function ProductDetailForm() {
       <Stack gap="600">
         {/* Back navigation */}
         <Stack direction="row" gap="200" align="center">
-          <Button variant="ghost" onPress={() => {}}>
+          <Button variant="ghost" colorPalette="primary" onPress={() => {}}>
             <Icon as={ArrowBack} />
             Back to Products
           </Button>

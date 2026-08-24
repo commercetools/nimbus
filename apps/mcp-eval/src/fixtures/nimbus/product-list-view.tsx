@@ -257,11 +257,11 @@ export function ProductListView() {
           </Stack>
 
           <Stack direction="row" gap="200">
-            <Button variant="outline" onPress={() => {}}>
+            <Button variant="outline" colorPalette="primary" onPress={() => {}}>
               <Icon as={FileDownload} />
               Export
             </Button>
-            <Button variant="solid" onPress={() => {}}>
+            <Button variant="solid" colorPalette="primary" onPress={() => {}}>
               <Icon as={Add} />
               Add Product
             </Button>
@@ -366,7 +366,7 @@ export function ProductListView() {
         {selectedCount > 0 && (
           <Stack direction="row" gap="400" alignItems="center">
             <Text>{selectedCount} product(s) selected</Text>
-            <Button variant="outline" onPress={() => {}}>
+            <Button variant="outline" colorPalette="primary" onPress={() => {}}>
               <Icon as={Edit} />
               Edit selected
             </Button>
