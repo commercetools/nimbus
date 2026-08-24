@@ -33,7 +33,6 @@ import {
   Switch,
   DataTable,
   type DataTableColumnItem,
-  DataTableManager,
   Accordion,
   Pagination,
   Badge,
@@ -382,22 +381,20 @@ export function ProductListView() {
           <LoadingSpinner aria-label="Loading products" />
         </Stack>
       ) : (
-        <DataTableManager columns={columns}>
-          <DataTable
-            columns={columns}
-            rows={filteredProducts}
-            maxH="600px"
-            allowsSorting
-            sortDescriptor={sortDescriptor}
-            onSortChange={setSortDescriptor}
-            selectionMode="multiple"
-            selectedKeys={selectedKeys}
-            onSelectionChange={setSelectedKeys}
-            onRowClick={(row) => {
-              window.location.href = `/products/${row.id}`;
-            }}
-          />
-        </DataTableManager>
+        <DataTable
+          columns={columns}
+          rows={filteredProducts}
+          maxH="600px"
+          allowsSorting
+          sortDescriptor={sortDescriptor}
+          onSortChange={setSortDescriptor}
+          selectionMode="multiple"
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys}
+          onRowClick={(row) => {
+            window.location.href = `/products/${row.id}`;
+          }}
+        />
       )}
 
       {/* Pagination */}
