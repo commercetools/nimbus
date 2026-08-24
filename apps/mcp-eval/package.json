@@ -12,11 +12,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "react": "catalog:react",
-    "react-dom": "catalog:react",
+    "@commercetools-frontend/ui-kit": "catalog:tooling",
     "@commercetools/nimbus": "workspace:*",
     "@commercetools/nimbus-icons": "workspace:*",
-    "@commercetools-frontend/ui-kit": "catalog:tooling",
+    "react": "catalog:react",
+    "react-dom": "catalog:react",
     "react-intl": "catalog:utils"
   },
   "devDependencies": {
@@ -25,6 +25,7 @@
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
     "@vitejs/plugin-react-swc": "catalog:tooling",
+    "nimbus-mcp-published": "catalog:apps",
     "typescript": "catalog:tooling",
     "vite": "catalog:tooling",
     "vitest": "catalog:tooling"

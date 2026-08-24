@@ -305,3 +305,4 @@ catalogs:
     remark-mark-highlight: 0.1.1
     slug: 12.0.1
     vite-plugin-compression: 0.5.1
+    nimbus-mcp-published: npm:@commercetools/nimbus-mcp@^3.5.1

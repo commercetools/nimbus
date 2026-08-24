@@ -1004,10 +1004,7 @@ export function App() {
             </div>
           }
         >
-          <VisualCompare
-            comparisons={data.mcpComparisons}
-            localFileMigrations={migDims[0]?.fileMigrations}
-          />
+          <VisualCompare />
         </Suspense>
       )}
 

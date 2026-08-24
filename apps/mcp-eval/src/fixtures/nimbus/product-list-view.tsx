@@ -45,7 +45,6 @@ import {
   Select,
   Stack,
   Switch,
-  Tag,
   TagGroup,
   Text,
   type BadgeProps,
@@ -182,7 +181,7 @@ const columns: DataTableColumnItem<Product>[] = [
             name: category,
           }))}
         >
-          {(item) => <Tag>{item.name}</Tag>}
+          {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
         </TagGroup.TagList>
       </TagGroup.Root>
     ),

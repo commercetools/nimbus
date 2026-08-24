@@ -364,23 +364,30 @@ interface EvalResults {
 // Run all dimensions
 // ---------------------------------------------------------------------------
 
-/** Try to create a published MCP client. Returns null if not installed. */
+/** Try to create a published MCP client via stdio child process. */
 async function createPublishedClient(): Promise<Client | null> {
   try {
-    const mod = await import(
-      // @ts-expect-error — alias may not be installed
-      "nimbus-mcp-published"
-    );
-    const server = mod.createServer();
-    const [ct, st] = InMemoryTransport.createLinkedPair();
+    // import.meta.resolve gives us the main entry (dist/index.js) as a file URL
+    const entryUrl = import.meta.resolve("nimbus-mcp-published");
+    const binPath = fileURLToPath(entryUrl);
+
+    const { StdioClientTransport } =
+      await import("@modelcontextprotocol/sdk/client/stdio.js");
+    const transport = new StdioClientTransport({
+      command: "node",
+      args: [binPath],
+    });
     const client = new Client(
       { name: "eval-published", version: "1.0.0" },
       { capabilities: {} }
     );
-    await server.connect(st);
-    await client.connect(ct);
+    await client.connect(transport);
     return client;
-  } catch {
+  } catch (e) {
+    console.warn(
+      "[eval] Could not connect to published MCP:",
+      (e as Error).message
+    );
     return null;
   }
 }
