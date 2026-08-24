@@ -199,8 +199,9 @@ For custom drag data, pass an options object instead of `true`:
 *internal* drag will accept; dropping from an external source is not wired up in
 this iteration, so external drops are always cancelled. For programmatic edits,
 the same `tree` object exposes `insert`, `remove`, `move`, `update`, and more —
-note `move` rejects a target inside the moved node's own subtree, which would
-otherwise discard it.
+note that `move`, `moveBefore` and `moveAfter` all reject a destination inside
+the moved node's own subtree, which would otherwise discard it and everything
+beneath it.
 
 ## Accessibility
 
