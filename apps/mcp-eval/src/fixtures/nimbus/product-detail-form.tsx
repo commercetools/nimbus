@@ -1,47 +1,42 @@
 /**
  * Realistic Merchant Center "Product Detail / Edit" form built with Nimbus.
  *
- * Nimbus equivalent of `fixtures/uikit/product-detail-form.tsx`. Exercises the
- * migration patterns that fixture was designed to cover:
+ * This is the Nimbus equivalent of the UI Kit fixture at
+ * `../uikit/product-detail-form.tsx`. It exercises the same migration
+ * patterns using their Nimbus counterparts:
  *
- * - TextInputField (Field-level wrapper, `label` instead of `title`, string
- *   `onChange`)
- * - LocalizedField `type="text"` / `type="multiLine"` replacing
- *   LocalizedTextInput / LocalizedMultilineTextInput (single component,
- *   `valuesByLocaleOrCurrency` + `LocalizedFieldChangeEvent`)
- * - MoneyInput (`onValueChange` returns `{ amount, currencyCode }` directly)
- * - NumberInput (`onChange` returns a number directly)
- * - Select (`Select.Root` / `Select.Options` / `Select.Option`, selection by key)
- * - Button variants (`solid` + `colorPalette="primary"` for the primary action,
- *   `outline` for secondary, `ghost` for flat/back navigation)
- * - Card.Root / Card.Body (style-props-enabled target)
- * - ProgressBar, Badge, TagGroup, Link, Alert (renamed from ContentNotification)
- * - Nested Spacings.Inline/Stack + Constraints.Horizontal collapsed into
- *   Stack/Box with design-token gap and maxWidth values
+ * - LocalizedField (type="text" / type="multiLine") for localized inputs
+ * - MoneyInput with onValueChange (MoneyInputValue)
+ * - NumberInput with a plain number onChange
+ * - TextInputField (Field-level pattern component)
+ * - Heading / Text (typography variants)
+ * - Card (style-props-enabled compound component)
+ * - ProgressBar
+ * - Stack collapsing nested Spacings.Inline / Spacings.Stack layouts
+ * - Alert (mapped from ContentNotification)
+ * - Link
  */
 
 import { useCallback, useState } from "react";
 import {
-  Alert,
-  Badge,
-  Box,
-  Button,
-  Card,
-  FieldErrors,
+  Stack,
   Heading,
+  Text,
+  Button,
   Icon,
-  Link,
+  TextInputField,
   LocalizedField,
   MoneyInput,
   NumberInput,
-  ProgressBar,
   Select,
-  Stack,
+  Alert,
+  Card,
+  Link,
+  ProgressBar,
+  Badge,
   TagGroup,
-  Text,
-  TextInputField,
-  type LocalizedFieldChangeEvent,
   type LocalizedString,
+  type LocalizedFieldChangeEvent,
   type MoneyInputValue,
 } from "@commercetools/nimbus";
 import { ArrowBack, Check, Close, Warning } from "@commercetools/nimbus-icons";
@@ -69,15 +64,15 @@ interface ProductFormValues {
 const LANGUAGES = ["en", "de", "fr"];
 
 const CATEGORY_OPTIONS = [
-  { id: "apparel", label: "Apparel" },
-  { id: "footwear", label: "Footwear" },
-  { id: "accessories", label: "Accessories" },
-  { id: "electronics", label: "Electronics" },
+  { value: "apparel", label: "Apparel" },
+  { value: "footwear", label: "Footwear" },
+  { value: "accessories", label: "Accessories" },
+  { value: "electronics", label: "Electronics" },
 ];
 
 const STATUS_OPTIONS = [
-  { id: "draft", label: "Draft" },
-  { id: "published", label: "Published" },
+  { value: "draft", label: "Draft" },
+  { value: "published", label: "Published" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -94,25 +89,28 @@ export function ProductDetailForm() {
     },
     slug: "premium-t-shirt",
     sku: "TSH-001",
-    price: { amount: "2999", currencyCode: "EUR" },
+    price: { amount: "29.99", currencyCode: "EUR" },
     quantity: 150,
     weight: 0.2,
     category: "apparel",
     status: "published",
   });
 
-  const [errors] = useState<Record<string, Record<string, boolean>>>({});
+  const [errors, setErrors] = useState<Record<string, Record<string, string>>>(
+    {}
+  );
   const [isSaving, setIsSaving] = useState(false);
   const [saveProgress, setSaveProgress] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // LocalizedField reports the changed locale via event.target.locale
+  // LocalizedField uses a standardized change event for all locale inputs
   const handleLocalizedNameChange = useCallback(
     (event: LocalizedFieldChangeEvent) => {
-      const locale = String(event.target.locale);
+      const locale = event.target.locale;
+      if (!locale) return;
       setValues((prev) => ({
         ...prev,
-        name: { ...prev.name, [locale]: String(event.target.value ?? "") },
+        name: { ...prev.name, [locale]: event.target.value as string },
       }));
     },
     []
@@ -120,43 +118,48 @@ export function ProductDetailForm() {
 
   const handleLocalizedDescriptionChange = useCallback(
     (event: LocalizedFieldChangeEvent) => {
-      const locale = String(event.target.locale);
+      const locale = event.target.locale;
+      if (!locale) return;
       setValues((prev) => ({
         ...prev,
         description: {
           ...prev.description,
-          [locale]: String(event.target.value ?? ""),
+          [locale]: event.target.value as string,
         },
       }));
     },
     []
   );
 
-  // MoneyInput's modern API hands back the full { amount, currencyCode } value
+  // MoneyInput's recommended onValueChange receives MoneyInputValue directly
   const handlePriceChange = useCallback((value: MoneyInputValue) => {
-    setValues((prev) => ({ ...prev, price: value }));
+    setValues((prev) => ({
+      ...prev,
+      price: value,
+    }));
   }, []);
 
-  // NumberInput's onChange receives the numeric value directly
+  // NumberInput's onChange receives a plain number
   const handleQuantityChange = useCallback((value: number) => {
-    setValues((prev) => ({ ...prev, quantity: value }));
+    setValues((prev) => ({
+      ...prev,
+      quantity: value,
+    }));
   }, []);
 
   const handleWeightChange = useCallback((value: number) => {
-    setValues((prev) => ({ ...prev, weight: value }));
+    setValues((prev) => ({
+      ...prev,
+      weight: value,
+    }));
   }, []);
 
-  // Select reports the selected key directly
-  const handleCategoryChange = useCallback((key: React.Key | null) => {
-    if (key != null) {
-      setValues((prev) => ({ ...prev, category: String(key) }));
-    }
+  const handleCategoryChange = useCallback((key: unknown) => {
+    setValues((prev) => ({ ...prev, category: key as string }));
   }, []);
 
-  const handleStatusChange = useCallback((key: React.Key | null) => {
-    if (key != null) {
-      setValues((prev) => ({ ...prev, status: String(key) }));
-    }
+  const handleStatusChange = useCallback((key: unknown) => {
+    setValues((prev) => ({ ...prev, status: key as string }));
   }, []);
 
   const handleSave = useCallback(async () => {
@@ -177,264 +180,261 @@ export function ProductDetailForm() {
     LANGUAGES.filter((l) => values.name[l]).length / LANGUAGES.length;
 
   return (
-    <Box maxWidth="642px">
-      <Stack direction="column" gap="600">
-        {/* Back navigation */}
-        <Button variant="ghost" onPress={() => {}} alignSelf="flex-start">
-          <Icon as={ArrowBack} size="xs" />
-          Back to Products
-        </Button>
+    <Stack direction="column" gap="600" maxW="2xl">
+      {/* Back navigation */}
+      <Button variant="ghost" colorPalette="primary" onPress={() => {}}>
+        <Icon as={ArrowBack} />
+        Back to Products
+      </Button>
 
-        {/* Page header */}
-        <Stack direction="row" align="center" justify="space-between" gap="400">
-          <Stack direction="row" align="center" gap="200">
-            <Heading as="h1" size="lg">
-              {values.name.en || "New Product"}
-            </Heading>
-            <Badge
-              colorPalette={
-                values.status === "published" ? "positive" : "warning"
-              }
-            >
-              {values.status}
-            </Badge>
-          </Stack>
-          <Stack direction="row" gap="200">
-            <Button variant="outline" colorPalette="primary" onPress={() => {}}>
-              <Icon as={Close} size="xs" />
-              Discard
-            </Button>
-            <Button
-              variant="solid"
-              colorPalette="primary"
-              onPress={handleSave}
-              isDisabled={isSaving}
-            >
-              <Icon as={Check} size="xs" />
-              Save
-            </Button>
-          </Stack>
+      {/* Page header */}
+      <Stack direction="row" justify="space-between" align="center" gap="400">
+        <Stack direction="row" align="center" gap="200">
+          <Heading as="h1" size="lg">
+            {values.name.en || "New Product"}
+          </Heading>
+          <Badge
+            size="sm"
+            colorPalette={
+              values.status === "published" ? "positive" : "warning"
+            }
+          >
+            {values.status}
+          </Badge>
         </Stack>
+        <Stack direction="row" gap="200">
+          <Button variant="outline" colorPalette="primary" onPress={() => {}}>
+            <Icon as={Close} />
+            Discard
+          </Button>
+          <Button
+            variant="solid"
+            colorPalette="primary"
+            onPress={handleSave}
+            isDisabled={isSaving}
+          >
+            <Icon as={Check} />
+            Save
+          </Button>
+        </Stack>
+      </Stack>
 
-        {/* Success notification */}
-        {showSuccess && (
-          <Alert.Root colorPalette="positive">
-            <Alert.Description>
-              Product saved successfully.{" "}
-              <Link href="/products" fontColor="primary">
-                Return to list
-              </Link>
-            </Alert.Description>
-          </Alert.Root>
-        )}
-
-        {/* Save progress */}
-        {isSaving && (
-          <ProgressBar
-            value={saveProgress}
-            label={`Saving... ${saveProgress}%`}
-          />
-        )}
-
-        {/* General information card */}
-        <Card.Root>
-          <Card.Body>
-            <Stack direction="column" gap="400">
-              <Heading as="h4" size="sm">
-                General Information
-              </Heading>
-
-              {/* Localized name — exercises LocalizedField migration */}
-              <Stack direction="column" gap="100">
-                <Stack direction="row" align="center" gap="200">
-                  <Text fontSize="sm">
-                    {`${Math.round(nameCompletion * 100)}% translated`}
-                  </Text>
-                  <ProgressBar value={nameCompletion * 100} />
-                </Stack>
-                <LocalizedField
-                  type="text"
-                  label="Product Name"
-                  isRequired
-                  defaultLocaleOrCurrency="en"
-                  valuesByLocaleOrCurrency={values.name}
-                  onChange={handleLocalizedNameChange}
-                />
-                {errors.name && <FieldErrors errors={errors.name} />}
-              </Stack>
-
-              {/* Localized description */}
-              <LocalizedField
-                type="multiLine"
-                label="Description"
-                defaultLocaleOrCurrency="en"
-                valuesByLocaleOrCurrency={values.description}
-                onChange={handleLocalizedDescriptionChange}
-              />
-
-              {/* Slug and SKU — collapsed Constraints.Horizontal widths */}
-              <Stack direction="row" gap="400">
-                <Box maxWidth="460px" flex="1">
-                  <TextInputField
-                    label="Slug"
-                    value={values.slug}
-                    onChange={(value) =>
-                      setValues((prev) => ({ ...prev, slug: value }))
-                    }
-                  />
-                </Box>
-                <Box maxWidth="320px" flex="1">
-                  <TextInputField
-                    label="SKU"
-                    value={values.sku}
-                    onChange={(value) =>
-                      setValues((prev) => ({ ...prev, sku: value }))
-                    }
-                  />
-                </Box>
-              </Stack>
-            </Stack>
-          </Card.Body>
-        </Card.Root>
-
-        {/* Pricing and inventory card */}
-        <Card.Root>
-          <Card.Body>
-            <Stack direction="column" gap="400">
-              <Heading as="h4" size="sm">
-                Pricing &amp; Inventory
-              </Heading>
-
-              <Stack direction="row" gap="400" align="flex-end">
-                {/* MoneyInput — exercises the onValueChange adapter */}
-                <Box flex="1" maxWidth="460px">
-                  <Stack direction="column" gap="100">
-                    <Text fontSize="sm" fontWeight="medium">
-                      Price *
-                    </Text>
-                    <MoneyInput
-                      value={values.price}
-                      onValueChange={handlePriceChange}
-                      currencies={["EUR", "USD", "GBP"]}
-                      isRequired
-                    />
-                  </Stack>
-                </Box>
-
-                {/* NumberInput — exercises the numeric onChange adapter */}
-                <Box flex="1" maxWidth="320px">
-                  <NumberInput
-                    label="Quantity"
-                    value={values.quantity}
-                    onChange={handleQuantityChange}
-                    minValue={0}
-                  />
-                </Box>
-
-                <Box flex="1" maxWidth="320px">
-                  <NumberInput
-                    label="Weight (kg)"
-                    value={values.weight}
-                    onChange={handleWeightChange}
-                    minValue={0}
-                    step={0.1}
-                  />
-                </Box>
-              </Stack>
-            </Stack>
-          </Card.Body>
-        </Card.Root>
-
-        {/* Classification card */}
-        <Card.Root>
-          <Card.Body>
-            <Stack direction="column" gap="400">
-              <Heading as="h4" size="sm">
-                Classification
-              </Heading>
-
-              <Stack direction="row" gap="400">
-                <Box maxWidth="284px" flex="1">
-                  <Stack direction="column" gap="100">
-                    <Text fontSize="sm" fontWeight="medium">
-                      Category
-                    </Text>
-                    <Select.Root
-                      selectedKey={values.category}
-                      onSelectionChange={handleCategoryChange}
-                      aria-label="Category"
-                    >
-                      <Select.Options>
-                        {CATEGORY_OPTIONS.map((option) => (
-                          <Select.Option key={option.id} id={option.id}>
-                            {option.label}
-                          </Select.Option>
-                        ))}
-                      </Select.Options>
-                    </Select.Root>
-                  </Stack>
-                </Box>
-
-                <Box maxWidth="284px" flex="1">
-                  <Stack direction="column" gap="100">
-                    <Text fontSize="sm" fontWeight="medium">
-                      Status
-                    </Text>
-                    <Select.Root
-                      selectedKey={values.status}
-                      onSelectionChange={handleStatusChange}
-                      aria-label="Status"
-                    >
-                      <Select.Options>
-                        {STATUS_OPTIONS.map((option) => (
-                          <Select.Option key={option.id} id={option.id}>
-                            {option.label}
-                          </Select.Option>
-                        ))}
-                      </Select.Options>
-                    </Select.Root>
-                  </Stack>
-                </Box>
-              </Stack>
-
-              <Stack direction="column" gap="100">
-                <Text fontSize="sm" fontWeight="medium">
-                  Tags
-                </Text>
-                <TagGroup.Root aria-label="Tags" onRemove={() => {}}>
-                  <TagGroup.TagList>
-                    <TagGroup.Tag>Cotton</TagGroup.Tag>
-                    <TagGroup.Tag>Premium</TagGroup.Tag>
-                    <TagGroup.Tag>Summer</TagGroup.Tag>
-                  </TagGroup.TagList>
-                </TagGroup.Root>
-              </Stack>
-            </Stack>
-          </Card.Body>
-        </Card.Root>
-
-        {/* Warning notification */}
-        <Alert.Root colorPalette="warning">
+      {/* Success notification */}
+      {showSuccess && (
+        <Alert.Root colorPalette="positive">
           <Alert.Description>
-            <Stack direction="row" align="center" gap="200">
-              <Icon as={Warning} size="xs" />
-              <Text>
-                This product has{" "}
-                {LANGUAGES.filter((l) => !values.name[l]).length} missing
-                translations.{" "}
-                <Link
-                  href="https://docs.example.com/i18n"
-                  target="_blank"
-                  rel="noopener"
-                  fontColor="primary"
-                >
-                  Learn more about translations
-                </Link>
-              </Text>
-            </Stack>
+            Product saved successfully.{" "}
+            <Link href="/products">Return to list</Link>
           </Alert.Description>
         </Alert.Root>
-      </Stack>
-    </Box>
+      )}
+
+      {/* Save progress */}
+      {isSaving && (
+        <ProgressBar
+          value={saveProgress}
+          label={`Saving... ${saveProgress}%`}
+        />
+      )}
+
+      {/* General information card */}
+      <Card.Root>
+        <Card.Body>
+          <Stack direction="column" gap="400">
+            <Heading as="h4" size="xs" fontWeight="medium">
+              General Information
+            </Heading>
+
+            {/* Localized name — exercises LocalizedField (type="text") */}
+            <Stack direction="column" gap="200">
+              <Stack direction="row" gap="200" align="center">
+                <Text fontSize="sm">
+                  {`${Math.round(nameCompletion * 100)}% translated`}
+                </Text>
+                <ProgressBar
+                  value={nameCompletion * 100}
+                  layout="minimal"
+                  aria-label="Translation completion"
+                />
+              </Stack>
+              <LocalizedField
+                type="text"
+                label="Product Name"
+                isRequired
+                defaultLocaleOrCurrency="en"
+                valuesByLocaleOrCurrency={values.name}
+                errorsByLocaleOrCurrency={errors.name}
+                onChange={handleLocalizedNameChange}
+              />
+            </Stack>
+
+            {/* Localized description — exercises LocalizedField (type="multiLine") */}
+            <LocalizedField
+              type="multiLine"
+              label="Description"
+              defaultLocaleOrCurrency="en"
+              valuesByLocaleOrCurrency={values.description}
+              onChange={handleLocalizedDescriptionChange}
+            />
+
+            {/* Slug and SKU — narrow fields, matching original Constraints.Horizontal */}
+            <Stack direction="row" gap="400">
+              <TextInputField
+                label="Slug"
+                value={values.slug}
+                onChange={(value) =>
+                  setValues((prev) => ({ ...prev, slug: value }))
+                }
+                maxW="sm"
+              />
+              <TextInputField
+                label="SKU"
+                value={values.sku}
+                onChange={(value) =>
+                  setValues((prev) => ({ ...prev, sku: value }))
+                }
+                maxW="xs"
+              />
+            </Stack>
+          </Stack>
+        </Card.Body>
+      </Card.Root>
+
+      {/* Pricing and inventory card */}
+      <Card.Root>
+        <Card.Body>
+          <Stack direction="column" gap="400">
+            <Heading as="h4" size="xs" fontWeight="medium">
+              Pricing &amp; Inventory
+            </Heading>
+
+            <Stack direction="row" gap="400" align="flex-end">
+              {/* MoneyInput — exercises onValueChange(MoneyInputValue) */}
+              <Stack direction="column" gap="100" maxW="xs">
+                <Text as="label" fontSize="sm" fontWeight="medium">
+                  Price
+                </Text>
+                <MoneyInput
+                  value={values.price}
+                  onValueChange={handlePriceChange}
+                  currencies={["EUR", "USD", "GBP"]}
+                  aria-label="Price"
+                />
+              </Stack>
+
+              {/* NumberInput — exercises number-only onChange */}
+              <Stack direction="column" gap="100" maxW="2xs">
+                <Text as="label" fontSize="sm" fontWeight="medium">
+                  Quantity
+                </Text>
+                <NumberInput
+                  value={values.quantity}
+                  onChange={handleQuantityChange}
+                  minValue={0}
+                  aria-label="Quantity"
+                />
+              </Stack>
+
+              <Stack direction="column" gap="100" maxW="2xs">
+                <Text as="label" fontSize="sm" fontWeight="medium">
+                  Weight (kg)
+                </Text>
+                <NumberInput
+                  value={values.weight}
+                  onChange={handleWeightChange}
+                  minValue={0}
+                  step={0.1}
+                  aria-label="Weight (kg)"
+                />
+              </Stack>
+            </Stack>
+          </Stack>
+        </Card.Body>
+      </Card.Root>
+
+      {/* Classification card */}
+      <Card.Root>
+        <Card.Body>
+          <Stack direction="column" gap="400">
+            <Heading as="h4" size="xs" fontWeight="medium">
+              Classification
+            </Heading>
+
+            <Stack direction="row" gap="400">
+              <Stack direction="column" gap="100" maxW="xs">
+                <Text as="label" fontSize="sm" fontWeight="medium">
+                  Category
+                </Text>
+                <Select.Root
+                  selectedKey={values.category}
+                  onSelectionChange={handleCategoryChange}
+                  aria-label="Category"
+                >
+                  <Select.Options>
+                    {CATEGORY_OPTIONS.map((option) => (
+                      <Select.Option key={option.value} id={option.value}>
+                        {option.label}
+                      </Select.Option>
+                    ))}
+                  </Select.Options>
+                </Select.Root>
+              </Stack>
+
+              <Stack direction="column" gap="100" maxW="xs">
+                <Text as="label" fontSize="sm" fontWeight="medium">
+                  Status
+                </Text>
+                <Select.Root
+                  selectedKey={values.status}
+                  onSelectionChange={handleStatusChange}
+                  aria-label="Status"
+                >
+                  <Select.Options>
+                    {STATUS_OPTIONS.map((option) => (
+                      <Select.Option key={option.value} id={option.value}>
+                        {option.label}
+                      </Select.Option>
+                    ))}
+                  </Select.Options>
+                </Select.Root>
+              </Stack>
+            </Stack>
+
+            <Stack direction="column" gap="100">
+              <Text as="label" fontSize="sm" fontWeight="medium">
+                Tags
+              </Text>
+              <TagGroup.Root aria-label="Tags" onRemove={() => {}}>
+                <TagGroup.TagList>
+                  <TagGroup.Tag id="cotton">Cotton</TagGroup.Tag>
+                  <TagGroup.Tag id="premium">Premium</TagGroup.Tag>
+                  <TagGroup.Tag id="summer">Summer</TagGroup.Tag>
+                </TagGroup.TagList>
+              </TagGroup.Root>
+            </Stack>
+          </Stack>
+        </Card.Body>
+      </Card.Root>
+
+      {/* Warning notification */}
+      <Alert.Root colorPalette="warning">
+        <Alert.Description>
+          <Stack direction="row" gap="200" align="center">
+            <Icon as={Warning} aria-hidden="true" />
+            <Text>
+              This product has {LANGUAGES.filter((l) => !values.name[l]).length}{" "}
+              missing translations.{" "}
+              <Link
+                href="https://docs.example.com/i18n"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Learn more about translations
+              </Link>
+            </Text>
+          </Stack>
+        </Alert.Description>
+      </Alert.Root>
+    </Stack>
   );
 }
