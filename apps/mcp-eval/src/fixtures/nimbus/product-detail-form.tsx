@@ -1,69 +1,54 @@
 /**
- * Realistic Merchant Center "Product Detail / Edit" form built entirely with
- * Nimbus.
+ * Realistic Merchant Center "Product Detail / Edit" form migrated to Nimbus.
  *
- * This is the migrated counterpart of `fixtures/uikit/product-detail-form.tsx`.
- * It exercises the trickiest migration patterns from that fixture:
+ * This fixture is the Nimbus counterpart of
+ * `fixtures/uikit/product-detail-form.tsx` and covers migration patterns the
+ * product-list-view fixture doesn't:
  *
- * - TextInputField / MultilineTextInputField in spirit (here: TextInputField
- *   for Slug/SKU) — label/description/errors replace title/hint/errors
- * - LocalizedField (type="text" | "multiLine") replacing
- *   LocalizedTextInput/LocalizedMultilineTextInput — collapse-by-default,
- *   LocalizedFieldChangeEvent with target.locale
- * - MoneyInput with onValueChange (MoneyInputValue) replacing the old
- *   TCustomEvent-based onChange
- * - NumberInput with a numeric value/onChange replacing the
- *   ChangeEvent<HTMLInputElement> adapter, plus its own built-in label
- * - Select.Root / Select.Options / Select.Option replacing SelectInput's
- *   options array + TCustomEvent onChange
- * - Card.Root / Card.Body replacing the single-slot Card
- * - Alert.Root/.Description replacing ContentNotification (built-in status
- *   icon — no manual WarningIcon/InformationIcon needed)
- * - TagGroup.Root/.TagList/.Tag replacing a standalone Tag, with
- *   onRemove receiving a Set<Key>
- * - Stack (direction="row"|"column") replacing Spacings.Inline/Stack, with
- *   flexWrap="wrap" on rows holding multiple inputs
- * - maxW style props applied directly on inputs, replacing
- *   Constraints.Horizontal wrappers
- * - FieldErrors for standalone error display; Badge for the status stamp
- * - Button (variant + colorPalette="primary", icon as children) replacing
- *   PrimaryButton/SecondaryButton/FlatButton
- * - Link with fontColor="primary" replacing the default-blue UI Kit Link
+ * - LocalizedField (type="text" / type="multiLine") replacing
+ *   LocalizedTextInput / LocalizedMultilineTextInput
+ * - MoneyInput's onValueChange adapter (value shape unchanged)
+ * - NumberInput's numeric value/onChange (react-aria AriaNumberFieldProps)
+ * - TextInputField (Field-level wrapper with built-in label/description/errors)
+ * - Text / Heading size variants replacing Text.Body / Text.Headline /
+ *   Text.Subheadline / Text.Detail
+ * - Card compound slots (Card.Root / Card.Header / Card.Body)
+ * - ProgressBar
+ * - Collapsed Constraints.Horizontal + Spacings nesting into Stack/Box style
+ *   props (maxW on the row, flex ratios on the children)
+ * - Alert replacing ContentNotification (icon is automatic — no manual icon)
+ * - Link with fontColor="primary" to preserve the legacy blue styling
  */
 
 import { useCallback, useState } from "react";
 import {
-  Button,
-  TextInputField,
-  LocalizedField,
-  type LocalizedFieldChangeEvent,
-  MoneyInput,
-  type MoneyInputValue,
-  NumberInput,
-  Select,
-  Alert,
-  FieldErrors,
+  Box,
+  Stack,
   Text,
   Heading,
+  Button,
+  Icon,
   Card,
   Link,
   ProgressBar,
   Badge,
   TagGroup,
-  Stack,
+  Alert,
+  Select,
+  TextInputField,
+  LocalizedField,
+  MoneyInput,
+  NumberInput,
+  FieldErrors,
+  type MoneyInputValue,
+  type LocalizedString,
+  type LocalizedFieldChangeEvent,
 } from "@commercetools/nimbus";
 import { ArrowBack, Check, Close } from "@commercetools/nimbus-icons";
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
-
-interface LocalizedString {
-  en: string;
-  de: string;
-  fr: string;
-  [locale: string]: string;
-}
 
 interface ProductFormValues {
   name: LocalizedString;
@@ -75,6 +60,11 @@ interface ProductFormValues {
   weight: number;
   category: string;
   status: string;
+}
+
+interface TagItem {
+  id: string;
+  name: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -116,16 +106,24 @@ export function ProductDetailForm() {
     status: "published",
   });
 
-  const [tags, setTags] = useState<string[]>(["Cotton", "Premium", "Summer"]);
-  const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [tags, setTags] = useState<TagItem[]>([
+    { id: "cotton", name: "Cotton" },
+    { id: "premium", name: "Premium" },
+    { id: "summer", name: "Summer" },
+  ]);
+
+  // Kept for parity with the UIKit fixture's FieldErrors demonstration; never
+  // populated here, so the error message never renders.
+  const [errors] = useState<Record<string, boolean>>({});
   const [isSaving, setIsSaving] = useState(false);
   const [saveProgress, setSaveProgress] = useState(0);
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // LocalizedField reports which locale changed via event.target.locale
+  // LocalizedField uses a LocalizedFieldChangeEvent with target.locale
   const handleLocalizedNameChange = useCallback(
     (event: LocalizedFieldChangeEvent) => {
-      const locale = event.target.locale as keyof LocalizedString;
+      const locale = event.target.locale;
+      if (!locale) return;
       setValues((prev) => ({
         ...prev,
         name: { ...prev.name, [locale]: (event.target.value as string) ?? "" },
@@ -136,7 +134,8 @@ export function ProductDetailForm() {
 
   const handleLocalizedDescriptionChange = useCallback(
     (event: LocalizedFieldChangeEvent) => {
-      const locale = event.target.locale as keyof LocalizedString;
+      const locale = event.target.locale;
+      if (!locale) return;
       setValues((prev) => ({
         ...prev,
         description: {
@@ -148,12 +147,12 @@ export function ProductDetailForm() {
     []
   );
 
-  // MoneyInput's modern onValueChange receives the full value directly
+  // MoneyInput — prefer onValueChange over the deprecated onChange
   const handlePriceChange = useCallback((value: MoneyInputValue) => {
     setValues((prev) => ({ ...prev, price: value }));
   }, []);
 
-  // NumberInput's onChange receives a number directly
+  // NumberInput onChange receives a number value directly
   const handleQuantityChange = useCallback((value: number) => {
     setValues((prev) => ({ ...prev, quantity: value }));
   }, []);
@@ -162,18 +161,21 @@ export function ProductDetailForm() {
     setValues((prev) => ({ ...prev, weight: value }));
   }, []);
 
-  // Select's onSelectionChange receives the selected key directly
+  // Select onSelectionChange receives the selected key directly
   const handleCategoryChange = useCallback((key: string | number | null) => {
-    setValues((prev) => ({ ...prev, category: (key as string) ?? "apparel" }));
+    if (key !== null) {
+      setValues((prev) => ({ ...prev, category: String(key) }));
+    }
   }, []);
 
   const handleStatusChange = useCallback((key: string | number | null) => {
-    setValues((prev) => ({ ...prev, status: (key as string) ?? "draft" }));
+    if (key !== null) {
+      setValues((prev) => ({ ...prev, status: String(key) }));
+    }
   }, []);
 
-  // TagGroup's onRemove receives a Set of removed tag keys
-  const handleRemoveTag = useCallback((keys: Set<string | number>) => {
-    setTags((prev) => prev.filter((tag) => !keys.has(tag)));
+  const handleRemoveTags = useCallback((keys: Set<string | number>) => {
+    setTags((prev) => prev.filter((tag) => !keys.has(tag.id)));
   }, []);
 
   const handleSave = useCallback(async () => {
@@ -189,47 +191,44 @@ export function ProductDetailForm() {
     setTimeout(() => setShowSuccess(false), 3000);
   }, []);
 
-  // Compute completion for the localized name field
+  // Compute completion for the localized fields
   const nameCompletion =
-    LANGUAGES.filter((l) => values.name[l as keyof LocalizedString]).length /
-    LANGUAGES.length;
-
+    LANGUAGES.filter((l) => values.name[l]).length / LANGUAGES.length;
   const missingTranslationCount = LANGUAGES.filter(
-    (l) => !values.name[l as keyof LocalizedString]
+    (l) => !values.name[l]
   ).length;
 
   return (
     <Stack direction="column" gap="600" maxW="2xl">
       {/* Back navigation */}
-      <Button variant="ghost" colorPalette="primary" onPress={() => {}}>
-        <ArrowBack />
+      <Button
+        variant="ghost"
+        colorPalette="primary"
+        onPress={() => {}}
+        alignSelf="flex-start"
+      >
+        <Icon as={ArrowBack} size="2xs" />
         Back to Products
       </Button>
 
       {/* Page header */}
-      <Stack
-        direction="row"
-        gap="400"
-        alignItems="center"
-        justify="space-between"
-        flexWrap="wrap"
-      >
-        <Stack direction="row" gap="200" alignItems="center">
+      <Stack direction="row" gap="400" align="center" justify="space-between">
+        <Stack direction="row" gap="200" align="center">
           <Heading as="h1" size="lg">
             {values.name.en || "New Product"}
           </Heading>
           <Badge
-            size="sm"
             colorPalette={
               values.status === "published" ? "positive" : "warning"
             }
+            size="sm"
           >
             {values.status}
           </Badge>
         </Stack>
         <Stack direction="row" gap="200">
           <Button variant="outline" colorPalette="primary" onPress={() => {}}>
-            <Close />
+            <Icon as={Close} size="2xs" />
             Discard
           </Button>
           <Button
@@ -238,15 +237,15 @@ export function ProductDetailForm() {
             onPress={handleSave}
             isDisabled={isSaving}
           >
-            <Check />
+            <Icon as={Check} size="2xs" />
             Save
           </Button>
         </Stack>
       </Stack>
 
-      {/* Success notification */}
+      {/* Success notification — Alert selects its own icon from colorPalette */}
       {showSuccess && (
-        <Alert.Root colorPalette="positive" variant="outlined">
+        <Alert.Root colorPalette="positive">
           <Alert.Description>
             Product saved successfully.{" "}
             <Link href="/products" fontColor="primary">
@@ -260,41 +259,45 @@ export function ProductDetailForm() {
       {isSaving && (
         <ProgressBar
           value={saveProgress}
-          label={`Saving... ${saveProgress}%`}
+          label="Saving…"
+          valueLabel={`${saveProgress}%`}
         />
       )}
 
       {/* General information card */}
       <Card.Root>
+        <Card.Header>
+          <Heading as="h4" size="xs" fontWeight="medium">
+            General Information
+          </Heading>
+        </Card.Header>
         <Card.Body>
           <Stack direction="column" gap="400">
-            <Heading as="h4" size="xs" fontWeight="medium">
-              General Information
-            </Heading>
-
-            {/* Localized name — exercises the LocalizedField migration */}
+            {/* Localized name — exercises LocalizedField (type="text") */}
             <Stack direction="column" gap="100">
-              <Text as="label" textStyle="sm" fontWeight="medium">
-                Product Name
-              </Text>
-              <Stack direction="row" gap="200" alignItems="center">
-                <Text textStyle="sm">
+              <Stack direction="row" gap="200" align="center">
+                <Text fontSize="sm">
                   {`${Math.round(nameCompletion * 100)}% translated`}
                 </Text>
-                <ProgressBar value={nameCompletion * 100} size="2xs" />
+                <ProgressBar
+                  size="2xs"
+                  layout="minimal"
+                  value={Math.round(nameCompletion * 100)}
+                  valueLabel={`${Math.round(nameCompletion * 100)}%`}
+                />
               </Stack>
               <LocalizedField
                 type="text"
+                label="Product Name"
                 isRequired
-                aria-label="Product Name"
                 defaultLocaleOrCurrency="en"
                 valuesByLocaleOrCurrency={values.name}
                 onChange={handleLocalizedNameChange}
               />
-              {errors.name && <FieldErrors errors={errors} />}
+              <FieldErrors errors={errors} />
             </Stack>
 
-            {/* Localized description */}
+            {/* Localized description — exercises LocalizedField (type="multiLine") */}
             <LocalizedField
               type="multiLine"
               label="Description"
@@ -303,24 +306,27 @@ export function ProductDetailForm() {
               onChange={handleLocalizedDescriptionChange}
             />
 
-            {/* Slug and SKU — maxW replaces Constraints.Horizontal */}
-            <Stack direction="row" gap="400" flexWrap="wrap">
-              <TextInputField
-                label="Slug"
-                value={values.slug}
-                onChange={(value) =>
-                  setValues((prev) => ({ ...prev, slug: value }))
-                }
-                maxW="sm"
-              />
-              <TextInputField
-                label="SKU"
-                value={values.sku}
-                onChange={(value) =>
-                  setValues((prev) => ({ ...prev, sku: value }))
-                }
-                maxW="xs"
-              />
+            {/* Slug and SKU — constrained siblings share space via flex on a
+                maxW row (collapses the old Constraints.Horizontal nesting) */}
+            <Stack direction="row" gap="400" maxW="2xl" flexWrap="wrap">
+              <Box flex="7">
+                <TextInputField
+                  label="Slug"
+                  value={values.slug}
+                  onChange={(value) =>
+                    setValues((prev) => ({ ...prev, slug: value }))
+                  }
+                />
+              </Box>
+              <Box flex="5">
+                <TextInputField
+                  label="SKU"
+                  value={values.sku}
+                  onChange={(value) =>
+                    setValues((prev) => ({ ...prev, sku: value }))
+                  }
+                />
+              </Box>
             </Stack>
           </Stack>
         </Card.Body>
@@ -328,72 +334,72 @@ export function ProductDetailForm() {
 
       {/* Pricing and inventory card */}
       <Card.Root>
+        <Card.Header>
+          <Heading as="h4" size="xs" fontWeight="medium">
+            Pricing &amp; Inventory
+          </Heading>
+        </Card.Header>
         <Card.Body>
-          <Stack direction="column" gap="400">
-            <Heading as="h4" size="xs" fontWeight="medium">
-              Pricing & Inventory
-            </Heading>
+          {/* MoneyInput and NumberInput — constrained siblings share space via
+              flex on a maxW row */}
+          <Stack direction="row" gap="400" maxW="4xl" flexWrap="wrap">
+            <Box flex="6">
+              <Text as="label" fontSize="sm" fontWeight="medium">
+                Price
+              </Text>
+              <MoneyInput
+                value={values.price}
+                onValueChange={handlePriceChange}
+                currencies={["EUR", "USD", "GBP"]}
+                isRequired
+              />
+            </Box>
 
-            <Stack
-              direction="row"
-              gap="400"
-              alignItems="flex-end"
-              flexWrap="wrap"
-            >
-              {/* MoneyInput — exercises the onValueChange adapter */}
-              <Stack direction="column" gap="100">
-                <Text as="label" textStyle="sm" fontWeight="medium">
-                  Price
-                </Text>
-                <MoneyInput
-                  value={values.price}
-                  onValueChange={handlePriceChange}
-                  currencies={["EUR", "USD", "GBP"]}
-                  isRequired
-                  maxW="xs"
-                />
-              </Stack>
-
-              {/* NumberInput — exercises the numeric value/onChange adapter */}
+            <Box flex="4">
               <NumberInput
                 label="Quantity"
                 value={values.quantity}
                 onChange={handleQuantityChange}
                 minValue={0}
-                maxW="2xs"
               />
+            </Box>
 
+            <Box flex="4">
               <NumberInput
                 label="Weight (kg)"
                 value={values.weight}
                 onChange={handleWeightChange}
                 minValue={0}
                 step={0.1}
-                maxW="2xs"
               />
-            </Stack>
+            </Box>
           </Stack>
         </Card.Body>
       </Card.Root>
 
       {/* Classification card */}
       <Card.Root>
+        <Card.Header>
+          <Heading as="h4" size="xs" fontWeight="medium">
+            Classification
+          </Heading>
+        </Card.Header>
         <Card.Body>
           <Stack direction="column" gap="400">
-            <Heading as="h4" size="xs" fontWeight="medium">
-              Classification
-            </Heading>
-
-            <Stack direction="row" gap="400" flexWrap="wrap">
-              <Stack direction="column" gap="100">
-                <Text as="label" textStyle="sm" fontWeight="medium">
+            <Stack direction="row" gap="400" maxW="2xl" flexWrap="wrap">
+              <Box flex="1">
+                <Text
+                  id="category-label"
+                  as="label"
+                  fontSize="sm"
+                  fontWeight="medium"
+                >
                   Category
                 </Text>
                 <Select.Root
+                  aria-labelledby="category-label"
                   selectedKey={values.category}
                   onSelectionChange={handleCategoryChange}
-                  aria-label="Category"
-                  maxW="xs"
                 >
                   <Select.Options>
                     {CATEGORY_OPTIONS.map((option) => (
@@ -403,17 +409,21 @@ export function ProductDetailForm() {
                     ))}
                   </Select.Options>
                 </Select.Root>
-              </Stack>
+              </Box>
 
-              <Stack direction="column" gap="100">
-                <Text as="label" textStyle="sm" fontWeight="medium">
+              <Box flex="1">
+                <Text
+                  id="status-label"
+                  as="label"
+                  fontSize="sm"
+                  fontWeight="medium"
+                >
                   Status
                 </Text>
                 <Select.Root
+                  aria-labelledby="status-label"
                   selectedKey={values.status}
                   onSelectionChange={handleStatusChange}
-                  aria-label="Status"
-                  maxW="xs"
                 >
                   <Select.Options>
                     {STATUS_OPTIONS.map((option) => (
@@ -423,21 +433,24 @@ export function ProductDetailForm() {
                     ))}
                   </Select.Options>
                 </Select.Root>
-              </Stack>
+              </Box>
             </Stack>
 
             <Stack direction="column" gap="100">
-              <Text as="label" textStyle="sm" fontWeight="medium">
+              <Text
+                id="tags-label"
+                as="label"
+                fontSize="sm"
+                fontWeight="medium"
+              >
                 Tags
               </Text>
               <TagGroup.Root
-                aria-label="Product tags"
-                onRemove={handleRemoveTag}
+                aria-labelledby="tags-label"
+                onRemove={handleRemoveTags}
               >
-                <TagGroup.TagList>
-                  {tags.map((tag) => (
-                    <TagGroup.Tag key={tag}>{tag}</TagGroup.Tag>
-                  ))}
+                <TagGroup.TagList items={tags}>
+                  {(item) => <TagGroup.Tag>{item.name}</TagGroup.Tag>}
                 </TagGroup.TagList>
               </TagGroup.Root>
             </Stack>
@@ -445,8 +458,8 @@ export function ProductDetailForm() {
         </Card.Body>
       </Card.Root>
 
-      {/* Warning notification — Alert renders its own status icon */}
-      <Alert.Root colorPalette="warning" variant="outlined">
+      {/* Warning notification — Alert selects its own icon from colorPalette */}
+      <Alert.Root colorPalette="warning">
         <Alert.Description>
           This product has {missingTranslationCount} missing translations.{" "}
           <Link
