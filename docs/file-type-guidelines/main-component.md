@@ -1033,10 +1033,7 @@ export const ComponentName = {
 ### Style Props Support Tag
 
 Components that accept Chakra UI style props (margin, padding, color, etc.)
-**must** include the `@supportsStyleProps` JSDoc tag. This tag is **required**,
-not optional — omitting it means the nimbus-mcp server will never tell consuming
-LLMs that the component accepts style props, causing them to unnecessarily wrap
-components in `Box` just to add spacing or layout.
+**must** include the `@supportsStyleProps` JSDoc tag:
 
 ```typescript
 /**
@@ -1068,16 +1065,9 @@ through ANY of these patterns:
 **Key Indicator**: If users can pass `margin`, `padding`, `backgroundColor`, or
 other Chakra style props to your component and they work, add the tag.
 
-**Why this matters**: The nimbus-mcp server reads this tag from the extracted
-type data and includes a `styleProps` hint in `get_component`, `get_docs_page`,
-and `migrate_from_uikit` responses. Without the tag, LLMs migrating from UI Kit
-will not know the Nimbus component accepts inline spacing/layout props and will
-produce less idiomatic code.
-
 **For compound components**: Only tag the **implementation files** (e.g.,
-`card.root.tsx`, `card.body.tsx`). The nimbus-mcp server automatically detects
-style props support from sub-components — no tag is needed on the barrel
-namespace JSDoc (`card.tsx`).
+`card.root.tsx`, `card.body.tsx`). No tag is needed on the barrel namespace
+(`card.tsx`).
 
 **Applies To**:
 

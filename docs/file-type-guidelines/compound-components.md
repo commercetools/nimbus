@@ -352,10 +352,9 @@ export const Menu = {
 };
 ````
 
-**Important**: Place `@supportsStyleProps` in **implementation files only**
-(e.g., `menu.trigger.tsx`, `menu.root.tsx`). The nimbus-mcp server automatically
-detects style props support from sub-components — no tag is needed on the barrel
-namespace JSDoc (`menu.tsx`).
+**Note**: Place `@supportsStyleProps` in **implementation files only** (e.g.,
+`menu.trigger.tsx`, `menu.root.tsx`). No tag is needed on the barrel namespace
+(`menu.tsx`).
 
 ### Components Index File
 
@@ -531,8 +530,7 @@ For comprehensive type patterns and examples for compound components, see:
 - [ ] **Each component implementation has JSDoc directly above the component
       function**
 - [ ] **`@supportsStyleProps` JSDoc tag added in implementation files** (e.g.,
-      `menu.trigger.tsx`) — the MCP detects compound support from sub-components
-      automatically; no barrel tag needed
+      `menu.trigger.tsx`); no barrel tag needed
 
 ### Standard Patterns
 
