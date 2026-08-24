@@ -272,7 +272,7 @@ export function ProductDetailForm() {
           </Heading>
         </Card.Header>
         <Card.Body>
-          <Stack direction="column" gap="400">
+          <Stack direction="column" gap="400" width="100%">
             {/* Localized name — exercises LocalizedField (type="text") */}
             <Stack direction="column" gap="100">
               <Stack direction="row" gap="200" align="center">
@@ -341,9 +341,14 @@ export function ProductDetailForm() {
         </Card.Header>
         <Card.Body>
           {/* MoneyInput and NumberInput — constrained siblings share space via
-              flex on a maxW row */}
-          <Stack direction="row" gap="400" maxW="4xl" flexWrap="wrap">
-            <Box flex="6">
+              per-input maxW constraints matching UIKit's width tokens */}
+          <Stack
+            direction="row"
+            gap="400"
+            alignItems="flex-end"
+            flexWrap="wrap"
+          >
+            <Box maxW="xs">
               <Text as="label" fontSize="sm" fontWeight="medium">
                 Price
               </Text>
@@ -355,7 +360,7 @@ export function ProductDetailForm() {
               />
             </Box>
 
-            <Box flex="4">
+            <Box maxW="2xs">
               <NumberInput
                 label="Quantity"
                 value={values.quantity}
@@ -364,7 +369,7 @@ export function ProductDetailForm() {
               />
             </Box>
 
-            <Box flex="4">
+            <Box maxW="2xs">
               <NumberInput
                 label="Weight (kg)"
                 value={values.weight}
@@ -385,7 +390,7 @@ export function ProductDetailForm() {
           </Heading>
         </Card.Header>
         <Card.Body>
-          <Stack direction="column" gap="400">
+          <Stack direction="column" gap="400" width="100%">
             <Stack direction="row" gap="400" maxW="2xl" flexWrap="wrap">
               <Box flex="1">
                 <Text
