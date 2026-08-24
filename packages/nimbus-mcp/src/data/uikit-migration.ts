@@ -1983,8 +1983,12 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
     importPath: "@commercetools/nimbus-tokens",
     mappingType: "pattern",
     notes:
-      'Replace <Constraints.Horizontal max={N}> with <Box maxW="TOKEN">. ' +
-      "If the child component supports style props, you may apply maxW directly on it instead. " +
+      "Replace <Constraints.Horizontal max={N}> with maxW on the appropriate container. " +
+      "Three approaches depending on context: " +
+      '(1) Single child: <Box maxW="TOKEN"> wrapper or maxW style prop on the child. ' +
+      '(2) Multiple constrained siblings in a row: put maxW on the parent <Stack direction="row"> ' +
+      'and use flex props on children to share the space proportionally (e.g. flex="2" for wider, flex="1" for narrower). ' +
+      "(3) Page-level constraint: maxW on the outermost container. " +
       "UIKit max value → Nimbus size token: " +
       "max=3→'3xs' (224px), max=4→'2xs' (256px), max=5→'xs' (320px), " +
       "max=6→'xs' (320px), max=7→'sm' (384px), max=8→'sm' (384px), " +
@@ -1992,8 +1996,8 @@ const MIGRATION_DATA: UiKitMigrationEntry[] = [
       "max=12→'xl' (576px), max=13→'2xl' (672px), max=14→'2xl' (672px), " +
       "max=15→'3xl' (768px), max=16→'3xl' (768px).",
     breakingChanges: [
-      'Replace Constraints.Horizontal with <Box maxW="TOKEN">, or apply maxW directly on the child if it supports style props',
-      "Use Nimbus size tokens for maxW values (see notes for lookup table)",
+      "Remove Constraints.Horizontal wrapper",
+      "Use maxW with Nimbus size tokens (see notes for lookup table and three approaches)",
     ],
     layoutGuidance: LAYOUT_NESTING_GUIDANCE,
   },
