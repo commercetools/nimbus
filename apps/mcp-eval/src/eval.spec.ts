@@ -335,8 +335,16 @@ describe("migrate_from_uikit — component-level scenarios", () => {
 // ---------------------------------------------------------------------------
 
 describe("get_component — style props coverage", () => {
-  const STYLE_PROPS_COMPONENTS = ["Box", "Avatar", "Badge", "Text", "Stack"];
-  const NO_STYLE_PROPS = ["Button", "Pagination", "Menu"];
+  const STYLE_PROPS_COMPONENTS = [
+    "Box",
+    "Avatar",
+    "Badge",
+    "Text",
+    "Stack",
+    "Button",
+    "Menu",
+  ];
+  const NO_STYLE_PROPS = ["Pagination"];
 
   for (const name of STYLE_PROPS_COMPONENTS) {
     it(`${name} metadata includes styleProps hint`, async () => {
